@@ -1,0 +1,845 @@
+{
+  "captured_at": "2026-08-25T21:09:52.786Z",
+  "repo": "Lucent-Financial-Group/Zeta",
+  "cases": [
+    {
+      "run": {
+        "id": 32890184155,
+        "name": "CodeQL",
+        "head_branch": "soraya/rank-16-discriminating-test",
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-08-25T19:32:53Z",
+        "updated_at": "2026-08-25T20:01:16Z",
+        "run_attempt": 2
+      },
+      "total_jobs": 6,
+      "jobs": [
+        {
+          "id": 97946436709,
+          "name": "Analyze (csharp)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Detect first-party source for csharp",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Emit no-findings SARIF (no-source baseline)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 5,
+              "name": "Upload no-source SARIF",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 6,
+              "name": "Cache NuGet",
+              "conclusion": "success"
+            },
+            {
+              "number": 7,
+              "name": "Install toolchain (three-way-parity script)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 8,
+              "name": "Initialize CodeQL",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 9,
+              "name": "Build (csharp - for CodeQL DB extraction)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 10,
+              "name": "Perform CodeQL Analysis",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 19,
+              "name": "Post Cache NuGet",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 20,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 21,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ],
+      "logExcerpts": {
+        "97946436709": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97946436709/logs (85286 bytes, 890 lines)",
+          "excerpt": "36: 2026-08-25T19:53:59.5214430Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n195: 2026-08-25T19:54:10.0485873Z ##[group]Run set -euo pipefail\n275: 2026-08-25T19:54:10.1026741Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n296: 2026-08-25T19:54:13.1564260Z ##[group]Run ./tools/setup/install.sh\n308: 2026-08-25T19:54:13.2339112Z ↻ apt phase budget: 420s (override: ZETA_APT_BUDGET_SECONDS)\n565: 2026-08-25T19:58:28.9933028Z ⚠ apt-get install exceeded its 247s slice of the 420s\n697: 2026-08-25T20:00:13.2091017Z ⚠ apt-get install exceeded its 89s slice of the 420s\n848: 2026-08-25T20:01:13.2390373Z ⚠ apt-get install exceeded its 45s slice of the 420s\n851: 2026-08-25T20:01:13.2391532Z ✗ apt-get install did not succeed within the 420s apt budget\n856: 2026-08-25T20:01:13.2406856Z ##[error]Process completed with exit code 124."
+        }
+      },
+      "expect": "skip",
+      "why": "CodeQL Analyze (csharp): the signature MATCHES (install step, exit 124) but GitHub already recorded a second attempt, so the one-rerun ceiling refuses it. A real bounded-retry case, not a hand-made one.",
+      "expect_reason": "already-retried"
+    },
+    {
+      "run": {
+        "id": 32890329848,
+        "name": "k8s-argocd-health-test",
+        "head_branch": "stage0-minimization-metric",
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-08-25T19:34:23Z",
+        "updated_at": "2026-08-25T19:54:17Z",
+        "run_attempt": 1
+      },
+      "total_jobs": 6,
+      "jobs": [
+        {
+          "id": 97942225220,
+          "name": "live kind ArgoCD health (ubuntu-24.04)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Install toolchain via three-way-parity script",
+              "conclusion": "failure"
+            },
+            {
+              "number": 5,
+              "name": "Install bun dependencies",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 6,
+              "name": "Measure the runner's disk and check it against the envelope",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 7,
+              "name": "Run live kind ArgoCD health check",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 8,
+              "name": "Logs from crash-looping pods, including the PREVIOUS container",
+              "conclusion": "success"
+            },
+            {
+              "number": 9,
+              "name": "Print cluster diagnostics",
+              "conclusion": "success"
+            },
+            {
+              "number": 10,
+              "name": "Tear down kind cluster",
+              "conclusion": "failure"
+            },
+            {
+              "number": 19,
+              "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 20,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 21,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97942225268,
+          "name": "live kind included Synced+Healthy proof (ubuntu-24.04)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Install toolchain via three-way-parity script",
+              "conclusion": "failure"
+            },
+            {
+              "number": 5,
+              "name": "Install bun dependencies",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 6,
+              "name": "Measure the runner's disk and check it against the envelope",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 7,
+              "name": "Run live kind included ArgoCD health proof",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 8,
+              "name": "Summarise the included proof",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 9,
+              "name": "Name the drifting resources (per-Application, failures only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 10,
+              "name": "Logs from crash-looping pods, including the PREVIOUS container",
+              "conclusion": "success"
+            },
+            {
+              "number": 11,
+              "name": "Print cluster diagnostics",
+              "conclusion": "success"
+            },
+            {
+              "number": 12,
+              "name": "Tear down kind cluster",
+              "conclusion": "failure"
+            },
+            {
+              "number": 23,
+              "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 24,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 25,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ],
+      "logExcerpts": {
+        "97942225220": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97942225220/logs (95659 bytes, 949 lines)",
+          "excerpt": "33: 2026-08-25T19:40:11.5184507Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n212: 2026-08-25T19:40:20.5033517Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n249: 2026-08-25T19:40:42.8598186Z ##[group]Run ./tools/setup/install.sh\n262: 2026-08-25T19:40:43.2375186Z ↻ apt phase budget: 420s (override: ZETA_APT_BUDGET_SECONDS)\n579: 2026-08-25T19:44:57.1896532Z ⚠ apt-get install exceeded its 248s slice of the 420s\n717: 2026-08-25T19:46:42.2340433Z ⚠ apt-get install exceeded its 90s slice of the 420s\n843: 2026-08-25T19:47:43.2762338Z ⚠ apt-get install exceeded its 46s slice of the 420s\n846: 2026-08-25T19:47:43.2764422Z ✗ apt-get install did not succeed within the 420s apt budget\n851: 2026-08-25T19:47:43.2792109Z ##[error]Process completed with exit code 124.\n852: 2026-08-25T19:47:43.2871806Z ##[group]Run kubectl get pods -A -o json 2>/dev/null \\\n871: 2026-08-25T19:47:46.6376610Z ##[group]Run kubectl get nodes -o wide || true\n907: 2026-08-25T19:47:46.9721531Z ##[group]Run bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci\n914: 2026-08-25T19:47:46.9814791Z /home/runner/work/_temp/05b60bf6-ecec-454d-a09b-901465b37883.sh: line 1: bun: command not found\n915: 2026-08-25T19:47:46.9819974Z ##[error]Process completed with exit code 127."
+        },
+        "97942225268": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97942225268/logs (100333 bytes, 972 lines)",
+          "excerpt": "33: 2026-08-25T19:40:12.2178204Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n199: 2026-08-25T19:40:27.0084865Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n238: 2026-08-25T19:40:58.9918606Z ##[group]Run ./tools/setup/install.sh\n251: 2026-08-25T19:40:59.1175712Z ↻ apt phase budget: 420s (override: ZETA_APT_BUDGET_SECONDS)\n559: 2026-08-25T19:45:15.7611989Z ⚠ apt-get install exceeded its 246s slice of the 420s\n706: 2026-08-25T19:46:59.8037065Z ⚠ apt-get install exceeded its 89s slice of the 420s\n832: 2026-08-25T19:47:59.8987689Z ⚠ apt-get install exceeded its 45s slice of the 420s\n835: 2026-08-25T19:47:59.8989073Z ✗ apt-get install did not succeed within the 420s apt budget\n840: 2026-08-25T19:47:59.9007846Z ##[error]Process completed with exit code 124.\n841: 2026-08-25T19:47:59.9135112Z ##[group]Run kubectl -n argocd get applications.argoproj.io -o json 2>/dev/null \\\n856: 2026-08-25T19:48:06.4458229Z ##[group]Run kubectl get pods -A -o json 2>/dev/null \\\n875: 2026-08-25T19:48:06.5225737Z ##[group]Run kubectl get nodes -o wide || true\n930: 2026-08-25T19:48:06.9996112Z ##[group]Run bun src/Core.TypeScript/cluster/dev-cluster/kind-down.ts --cluster-name zeta-ci-included\n937: 2026-08-25T19:48:07.0095552Z /home/runner/work/_temp/cb72b7b9-363e-4344-b4eb-af9a2893617c.sh: line 1: bun: command not found\n938: 2026-08-25T19:48:07.0100750Z ##[error]Process completed with exit code 127."
+        }
+      },
+      "expect": "rerun",
+      "why": "k8s-argocd-health-test: two jobs, each first-failing in the install step with exit 124, each with the downstream `bun: command not found` 127 in a later cleanup step.",
+      "expect_reason": "toolchain-install-stall"
+    },
+    {
+      "run": {
+        "id": 32889687326,
+        "name": "helm-validate",
+        "head_branch": "path-resolver-privileged",
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-08-25T19:27:37Z",
+        "updated_at": "2026-08-25T19:34:57Z",
+        "run_attempt": 1
+      },
+      "total_jobs": 2,
+      "jobs": [
+        {
+          "id": 97938416381,
+          "name": "manifests (offline) + mutation proof",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Cache install.sh outputs (mise runtimes + dotnet tools)",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Install toolchain via three-way-parity script",
+              "conclusion": "failure"
+            },
+            {
+              "number": 5,
+              "name": "Install bun dependencies",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 6,
+              "name": "Validate Application manifests (offline)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 7,
+              "name": "Prove the validator can go red (mutation suite)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 8,
+              "name": "Validate K3S first-boot bootstrap manifests",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 9,
+              "name": "Validate the full-ai-cluster K3S bootstrap roster",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 10,
+              "name": "Validate the charts this repo owns (offline)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 11,
+              "name": "Prove the chart validator can go red (mutation suite)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 12,
+              "name": "Prove the bootstrap validator can go red (mutation suite)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 23,
+              "name": "Post Cache install.sh outputs (mise runtimes + dotnet tools)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 24,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 25,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ],
+      "logExcerpts": {
+        "97938416381": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97938416381/logs (84417 bytes, 856 lines)",
+          "excerpt": "32: 2026-08-25T19:27:42.3203212Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n208: 2026-08-25T19:27:53.4086277Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n224: 2026-08-25T19:27:53.7930373Z ##[group]Run ./tools/setup/install.sh\n236: 2026-08-25T19:27:53.8801457Z ↻ apt phase budget: 420s (override: ZETA_APT_BUDGET_SECONDS)\n541: 2026-08-25T19:32:07.5760378Z ⚠ apt-get install exceeded its 248s slice of the 420s\n688: 2026-08-25T19:33:52.6195561Z ⚠ apt-get install exceeded its 90s slice of the 420s\n814: 2026-08-25T19:34:53.6611259Z ⚠ apt-get install exceeded its 46s slice of the 420s\n817: 2026-08-25T19:34:53.6613420Z ✗ apt-get install did not succeed within the 420s apt budget\n822: 2026-08-25T19:34:53.6647571Z ##[error]Process completed with exit code 124."
+        }
+      },
+      "expect": "rerun",
+      "why": "helm-validate: sole failure is the install step, exit 124 on the 420s apt budget.",
+      "expect_reason": "toolchain-install-stall"
+    },
+    {
+      "run": {
+        "id": 32896165119,
+        "name": "gate",
+        "head_branch": "claim/081M0X9PVZF-auto-vivify-source-paths",
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-08-25T20:35:11Z",
+        "updated_at": "2026-08-25T20:49:52Z",
+        "run_attempt": 1
+      },
+      "total_jobs": 35,
+      "jobs": [
+        {
+          "id": 97959253197,
+          "name": "test (TS hermetic)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup pinned Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Install JavaScript dependencies from the locked graph",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Verify npm devDependencies are installed",
+              "conclusion": "success"
+            },
+            {
+              "number": 6,
+              "name": "Pin z3 4.16.0 and cvc5 1.3.4 (081KZZ27KJ8)",
+              "conclusion": "success"
+            },
+            {
+              "number": 7,
+              "name": "Verify light-time endpoint-speed envelope certificates",
+              "conclusion": "success"
+            },
+            {
+              "number": 8,
+              "name": "Tier manifest (what the hermetic tier deliberately does not run, and why)",
+              "conclusion": "success"
+            },
+            {
+              "number": 9,
+              "name": "Whole TypeScript suite (hermetic tier)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 17,
+              "name": "Post Setup pinned Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 18,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 19,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97959253601,
+          "name": "lint (TS)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup pinned Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Install npm devDependencies (typescript@6.0.3 + eslint stack)",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Run TypeScript type check (tsc --noEmit, via the orchestrator)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 6,
+              "name": "ESLint over the measured-clean path roster",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 11,
+              "name": "Post Setup pinned Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 12,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 13,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97959399860,
+          "name": "build-and-test (ubuntu-24.04)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Enable git long paths (Windows; pre-checkout)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 3,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Cache .NET SDK",
+              "conclusion": "success"
+            },
+            {
+              "number": 6,
+              "name": "Cache mise runtimes (python only post round 32)",
+              "conclusion": "success"
+            },
+            {
+              "number": 7,
+              "name": "Cache elan (Lean 4 toolchain)",
+              "conclusion": "success"
+            },
+            {
+              "number": 8,
+              "name": "Cache NuGet packages",
+              "conclusion": "success"
+            },
+            {
+              "number": 9,
+              "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 10,
+              "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 11,
+              "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 12,
+              "name": "Build (0 Warning(s) / 0 Error(s) required)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 13,
+              "name": "Test",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 14,
+              "name": "Name the crashed/hung test (on failure)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 15,
+              "name": "Skipped (docs-only PR)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 26,
+              "name": "Post Cache NuGet packages",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 27,
+              "name": "Post Cache elan (Lean 4 toolchain)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 28,
+              "name": "Post Cache mise runtimes (python only post round 32)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 29,
+              "name": "Post Cache .NET SDK",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 30,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 31,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97963423399,
+          "name": "gate (required)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout (summary script + this workflow only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Emit scope -- which floor jobs actually ran",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Check all gate jobs",
+              "conclusion": "failure"
+            },
+            {
+              "number": 9,
+              "name": "Post Setup Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 10,
+              "name": "Post Checkout (summary script + this workflow only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 11,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ],
+      "logExcerpts": {
+        "97959253197": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97959253197/logs (3758203 bytes, 34751 lines)",
+          "excerpt": "32: 2026-08-25T20:35:16.2410523Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n183: 2026-08-25T20:35:24.7156041Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n199: 2026-08-25T20:35:26.0857031Z ##[group]Run bun install --frozen-lockfile\n243: 2026-08-25T20:35:29.9829557Z ##[group]Run test -d node_modules\n249: 2026-08-25T20:35:30.1823351Z ##[group]Run bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts\n256: 2026-08-25T20:35:33.2138303Z ##[group]Run bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts\n280: 2026-08-25T20:35:33.3500835Z ##[group]Run bun src/Core.TypeScript/hygiene/environment-dependent-test-files.ts\n290: 2026-08-25T20:35:33.4799882Z ##[group]Run bun --config=bunfig.hermetic.toml test\n34717: 2026-08-25T20:44:24.2655115Z ##[error]Process completed with exit code 1."
+        },
+        "97959253601": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97959253601/logs (23628 bytes, 316 lines)",
+          "excerpt": "32: 2026-08-25T20:35:15.5014580Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n212: 2026-08-25T20:35:24.5586287Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n228: 2026-08-25T20:35:25.3204628Z ##[group]Run bun install --frozen-lockfile\n272: 2026-08-25T20:35:26.4321215Z ##[group]Run bun src/Core.TypeScript/lint/lint-typescript.ts\n282: 2026-08-25T20:35:52.7225746Z ##[error]Process completed with exit code 1."
+        },
+        "97959399860": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97959399860/logs (90046 bytes, 932 lines)",
+          "excerpt": "32: 2026-08-25T20:35:44.5939780Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n210: 2026-08-25T20:36:12.9175584Z ##[group]Run if [ \"${CODE_PATH}\" = \"true\" ]; then\n222: 2026-08-25T20:36:12.9970846Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n239: 2026-08-25T20:36:14.0465277Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n265: 2026-08-25T20:36:28.4588393Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n277: 2026-08-25T20:36:28.8987050Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n291: 2026-08-25T20:36:29.2665856Z ##[group]Run ./tools/setup/install.sh\n302: 2026-08-25T20:36:29.3537597Z ↻ apt phase budget: 420s (override: ZETA_APT_BUDGET_SECONDS)\n576: 2026-08-25T20:40:43.7062664Z ⚠ apt-get install exceeded its 249s slice of the 420s\n756: 2026-08-25T20:42:28.7502855Z ⚠ apt-get install exceeded its 90s slice of the 420s\n882: 2026-08-25T20:43:29.7906409Z ⚠ apt-get install exceeded its 46s slice of the 420s\n885: 2026-08-25T20:43:29.7908740Z ✗ apt-get install did not succeed within the 420s apt budget\n890: 2026-08-25T20:43:29.7943046Z ##[error]Process completed with exit code 124.\n891: 2026-08-25T20:43:29.8039050Z ##[group]Run bun src/Core.TypeScript/ci/print-blame-sequences.ts\n897: 2026-08-25T20:43:29.8137845Z /home/runner/work/_temp/9c4f538d-3a84-424f-aa73-348342ef3600.sh: line 1: bun: command not found\n898: 2026-08-25T20:43:29.8142982Z ##[error]Process completed with exit code 127."
+        },
+        "97963423399": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97963423399/logs (22589 bytes, 318 lines)",
+          "excerpt": "33: 2026-08-25T20:48:54.0121238Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n140: 2026-08-25T20:48:55.7040712Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n151: 2026-08-25T20:48:57.0829837Z ##[group]Run set -euo pipefail\n213: 2026-08-25T20:48:58.3704226Z ##[group]Run # A job result is one of: success, failure, cancelled, skipped.\n280: 2026-08-25T20:48:58.3876552Z ##[error]One or more gate jobs failed or were cancelled.\n281: 2026-08-25T20:48:58.3879298Z ##[error]Process completed with exit code 1."
+        }
+      },
+      "expect": "skip",
+      "why": "gate: an install stall in build-and-test AND two genuine reds in the same run (tsc type error; hermetic TypeScript suite). THE falsifier for the widening guard.",
+      "expect_reason": "mixed-failure"
+    },
+    {
+      "run": {
+        "id": 32896987670,
+        "name": "gate",
+        "head_branch": "heartbeat/society",
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-08-25T20:43:38Z",
+        "updated_at": "2026-08-25T20:56:25Z",
+        "run_attempt": 1
+      },
+      "total_jobs": 35,
+      "jobs": [
+        {
+          "id": 97961835409,
+          "name": "lint (TS)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup pinned Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Install npm devDependencies (typescript@6.0.3 + eslint stack)",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Run TypeScript type check (tsc --noEmit, via the orchestrator)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 6,
+              "name": "ESLint over the measured-clean path roster",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 11,
+              "name": "Post Setup pinned Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 12,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 13,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97965399863,
+          "name": "gate (required)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout (summary script + this workflow only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Emit scope -- which floor jobs actually ran",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Check all gate jobs",
+              "conclusion": "failure"
+            },
+            {
+              "number": 9,
+              "name": "Post Setup Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 10,
+              "name": "Post Checkout (summary script + this workflow only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 11,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ],
+      "logExcerpts": {
+        "97961835409": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97961835409/logs (23569 bytes, 315 lines)",
+          "excerpt": "32: 2026-08-25T20:43:43.3005312Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n210: 2026-08-25T20:44:09.8030200Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n227: 2026-08-25T20:44:12.2042594Z ##[group]Run bun install --frozen-lockfile\n271: 2026-08-25T20:44:13.0803189Z ##[group]Run bun src/Core.TypeScript/lint/lint-typescript.ts\n281: 2026-08-25T20:44:39.8697867Z ##[error]Process completed with exit code 1."
+        },
+        "97965399863": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97965399863/logs (22374 bytes, 318 lines)",
+          "excerpt": "33: 2026-08-25T20:55:31.0777978Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n140: 2026-08-25T20:55:33.0332649Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n151: 2026-08-25T20:55:34.4130714Z ##[group]Run set -euo pipefail\n212: 2026-08-25T20:55:35.4388580Z ##[group]Run # A job result is one of: success, failure, cancelled, skipped.\n279: 2026-08-25T20:55:35.4556173Z ##[error]One or more gate jobs failed or were cancelled.\n280: 2026-08-25T20:55:35.4558445Z ##[error]Process completed with exit code 1."
+        }
+      },
+      "expect": "skip",
+      "why": "gate: a genuine tsc type error and the derived roll-up. No install step failed at all.",
+      "expect_reason": "no-install-stall"
+    }
+  ],
+  "note": [
+    "REAL captured production data, not synthetic. Every run id, job id, step list and log excerpt",
+    "below was read from the GitHub Actions API of Lucent-Financial-Group/Zeta on 2026-08-25.",
+    "",
+    "Log excerpts are LINE-NUMBERED slices of the real job log, keeping only lines a scanner could",
+    "key on (the apt banner lines, `##[error]Process completed with exit code N`, `command not",
+    "found`, and step-group headers). `logExcerpts[jobId].source` records the full log's byte and",
+    "line count so an excerpt can be checked against the original. The policy's checks are",
+    "substring/line tests, so an excerpt preserving the signature lines is a faithful stand-in and",
+    "one that drops them correctly fails to match.",
+    "",
+    "Cases were chosen to include the NEGATIVES, because the negatives are the safety property:",
+    "one run mixing an install stall with genuine reds, and one run with only genuine reds."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d01d6019eb010a0130008f07edcdb",
+  "at": "2026-08-25T21:07:49.846Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XC0CYN087G0R002DXY5SV",
+    "type": "bug",
+    "title": "auto-rerun ubuntu jobs whose toolchain install died on the apt wall budget (exit 124), and nothing else",
+    "slug": "auto-rerun-ubuntu-jobs-whose-toolchain-install-died-on-the-a",
+    "priority": "P2",
+    "filename": "081M0XC0CYN087G0R002DXY5SV-auto-rerun-ubuntu-jobs-whose-toolchain-install-died-on-the-a.md"
+  }
+}
