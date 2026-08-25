@@ -8,11 +8,25 @@ export interface ZetaDbRetentionDecision {
   readonly retainedEventIds: readonly string[];
 }
 
+export interface ZetaDbCheckpointByteRetentionProposal extends ZetaDbRetentionProposal {
+  readonly maxCheckpointBytes: number;
+  /** Exact kernel-owned measurement; `null` means the proposed subset cannot form a valid image. */
+  measureCheckpointBytes(retainedEventIds: readonly string[]): number | null;
+}
+
+export interface ZetaDbCheckpointByteRetentionContext {
+  readonly maxCheckpointBytes: number;
+  measureCheckpointBytes(retainedEventIds: readonly string[]): number | null;
+}
+
+export type ZetaDbRetentionResource = "retained-events" | "checkpoint-bytes";
+
 export interface ZetaDbRetentionHeatReceipt {
   readonly code: "database-retention-displaced";
   readonly signal: "forgotten";
   readonly kind: "database-retention.forgotten";
   readonly policyId: string;
+  readonly resource: ZetaDbRetentionResource;
   readonly limit: number;
   readonly units: number;
   readonly displacedEventIds: readonly string[];
@@ -21,6 +35,7 @@ export interface ZetaDbRetentionHeatReceipt {
 
 export interface ZetaDbRetentionReceipt {
   readonly policyId: string;
+  readonly resource: ZetaDbRetentionResource;
   readonly limit: number;
   readonly retainedEventIds: readonly string[];
   readonly displacedEventIds: readonly string[];
@@ -38,11 +53,21 @@ export type ZetaDbRetentionResult =
   | { readonly ok: true; readonly value: ZetaDbRetentionReceipt }
   | { readonly ok: false; readonly feedback: ZetaDbRetentionFeedback };
 
-/** Pure policy port. The evaluator owns validation and derives all loss accounting. */
-export interface ZetaDbRetentionPolicyPort {
+/** Pure event-count policy port. The evaluator owns validation and derives all loss accounting. */
+export interface ZetaDbEventCountRetentionPolicyPort {
   readonly id: string;
+  readonly resource: "retained-events";
   plan(proposal: ZetaDbRetentionProposal): ZetaDbRetentionDecision;
 }
+
+/** Pure byte-bound policy port. Encoding and row folding stay behind the supplied measurement capability. */
+export interface ZetaDbCheckpointByteRetentionPolicyPort {
+  readonly id: string;
+  readonly resource: "checkpoint-bytes";
+  plan(proposal: ZetaDbCheckpointByteRetentionProposal): ZetaDbRetentionDecision;
+}
+
+export type ZetaDbRetentionPolicyPort = ZetaDbEventCountRetentionPolicyPort | ZetaDbCheckpointByteRetentionPolicyPort;
 
 function isRecord(value: unknown): value is Readonly<Record<string, unknown>> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -82,7 +107,7 @@ function validProposal(value: unknown): value is ZetaDbRetentionProposal {
   if (!Number.isSafeInteger(value.limit) || (value.limit as number) < 1) return false;
   if (!value.currentEventIds.every(isEventId) || !value.candidateEventIds.every(isEventId)) return false;
   const current = new Set(value.currentEventIds);
-  return current.size === value.currentEventIds.length && current.size <= (value.limit as number);
+  return current.size === value.currentEventIds.length;
 }
 
 function snapshotDecision(value: unknown): unknown {
@@ -99,6 +124,125 @@ function validDecision(value: unknown, known: ReadonlySet<string>, limit: number
     retained.size <= limit &&
     value.retainedEventIds.every((eventId) => known.has(eventId))
   );
+}
+
+interface ZetaDbEvaluatedRetentionDecision {
+  readonly policyId: string;
+  readonly resource: ZetaDbRetentionResource;
+  readonly limit: number;
+  readonly decision: unknown;
+}
+
+type ZetaDbEvaluatedRetentionDecisionResult =
+  | { readonly ok: true; readonly value: ZetaDbEvaluatedRetentionDecision }
+  | { readonly ok: false; readonly feedback: ZetaDbRetentionFeedback };
+
+function validPolicy(value: unknown): value is ZetaDbRetentionPolicyPort {
+  return (
+    isRecord(value) &&
+    isEventId(value.id) &&
+    (value.resource === "retained-events" || value.resource === "checkpoint-bytes") &&
+    typeof value.plan === "function"
+  );
+}
+
+function validCheckpointContext(value: unknown): value is ZetaDbCheckpointByteRetentionContext {
+  return (
+    isRecord(value) &&
+    Number.isSafeInteger(value.maxCheckpointBytes) &&
+    (value.maxCheckpointBytes as number) > 0 &&
+    typeof value.measureCheckpointBytes === "function"
+  );
+}
+
+function guardedCheckpointMeasurement(
+  proposal: ZetaDbRetentionProposal,
+  context: ZetaDbCheckpointByteRetentionContext,
+): (retainedEventIds: readonly string[]) => number | null {
+  const known = new Set([...proposal.currentEventIds, ...proposal.candidateEventIds]);
+  return (retainedEventIds) => {
+    if (!Array.isArray(retainedEventIds) || !retainedEventIds.every(isEventId)) return null;
+    const retained = new Set(retainedEventIds);
+    if (
+      retained.size !== retainedEventIds.length ||
+      retained.size > proposal.limit ||
+      retainedEventIds.some((eventId) => !known.has(eventId))
+    ) {
+      return null;
+    }
+    try {
+      const measured = context.measureCheckpointBytes([...retainedEventIds]);
+      return typeof measured === "number" && Number.isSafeInteger(measured) && measured >= 0 ? measured : null;
+    } catch {
+      return null;
+    }
+  };
+}
+
+function decisionFailed(code: ZetaDbRetentionFeedback["code"], detail: string): ZetaDbEvaluatedRetentionDecisionResult {
+  return { ok: false, feedback: { code, detail } };
+}
+
+function executeRetentionPolicy(
+  policyValue: unknown,
+  proposal: ZetaDbRetentionProposal,
+  checkpointContext?: ZetaDbCheckpointByteRetentionContext,
+): ZetaDbEvaluatedRetentionDecisionResult {
+  let policyId = "<unreadable>";
+  try {
+    if (!validPolicy(policyValue)) {
+      return decisionFailed(
+        "database-retention-policy-failed",
+        "The database retention policy is not a named pure planner.",
+      );
+    }
+    const policy = policyValue;
+    policyId = policy.id;
+    if (policy.resource === "retained-events") {
+      return {
+        ok: true,
+        value: {
+          policyId: policy.id,
+          resource: policy.resource,
+          limit: proposal.limit,
+          decision: snapshotDecision(policy.plan(proposal)),
+        },
+      };
+    }
+    if (!validCheckpointContext(checkpointContext)) {
+      return decisionFailed(
+        "database-retention-request-invalid",
+        "Checkpoint-byte retention requires a positive byte limit and an exact measurement capability.",
+      );
+    }
+    const measureCheckpointBytes = guardedCheckpointMeasurement(proposal, checkpointContext);
+    const decision = snapshotDecision(
+      policy.plan({ ...proposal, maxCheckpointBytes: checkpointContext.maxCheckpointBytes, measureCheckpointBytes }),
+    );
+    const retainedEventIds = isRecord(decision) ? decision.retainedEventIds : null;
+    const measured = Array.isArray(retainedEventIds) ? measureCheckpointBytes(retainedEventIds) : null;
+    const retainedCount = Array.isArray(retainedEventIds) ? retainedEventIds.length : 0;
+    if (measured === null || (retainedCount > 0 && measured > checkpointContext.maxCheckpointBytes)) {
+      return decisionFailed(
+        "database-retention-policy-failed",
+        `Database retention policy ${policy.id} returned a plan outside the checkpoint-byte bound.`,
+      );
+    }
+    return {
+      ok: true,
+      value: {
+        policyId: policy.id,
+        resource: policy.resource,
+        limit: checkpointContext.maxCheckpointBytes,
+        decision,
+      },
+    };
+  } catch (error) {
+    return decisionFailed(
+      "database-retention-policy-failed",
+      `Database retention policy ${policyId} failed: ${String(error)}`,
+    );
+  }
 }
 
 function failed(code: ZetaDbRetentionFeedback["code"], detail: string): ZetaDbRetentionResult {
@@ -129,6 +273,7 @@ function candidateSets(
 export function evaluateZetaDbRetentionPolicy(
   policy: ZetaDbRetentionPolicyPort,
   proposalValue: ZetaDbRetentionProposal,
+  checkpointContext?: ZetaDbCheckpointByteRetentionContext,
 ): ZetaDbRetentionResult {
   let proposal: unknown;
   try {
@@ -146,23 +291,14 @@ export function evaluateZetaDbRetentionPolicy(
     );
   }
 
-  let policyId = "<unreadable>";
-  let decision: unknown;
-  try {
-    if (!isRecord(policy) || !isEventId(policy.id) || typeof policy.plan !== "function") {
-      return failed("database-retention-policy-failed", "The database retention policy is not a named pure planner.");
-    }
-    policyId = policy.id;
-    decision = snapshotDecision(
-      policy.plan({
-        currentEventIds: [...proposal.currentEventIds],
-        candidateEventIds: [...proposal.candidateEventIds],
-        limit: proposal.limit,
-      }),
-    );
-  } catch (error) {
-    return failed("database-retention-policy-failed", `Database retention policy ${policyId} failed: ${String(error)}`);
-  }
+  const countProposal: ZetaDbRetentionProposal = {
+    currentEventIds: [...proposal.currentEventIds],
+    candidateEventIds: [...proposal.candidateEventIds],
+    limit: proposal.limit,
+  };
+  const evaluated = executeRetentionPolicy(policy, countProposal, checkpointContext);
+  if (!evaluated.ok) return evaluated;
+  const { policyId, resource, limit, decision } = evaluated.value;
 
   const current = new Set(proposal.currentEventIds);
   const candidates = candidateSets(current, proposal.candidateEventIds);
@@ -187,7 +323,8 @@ export function evaluateZetaDbRetentionPolicy(
             signal: "forgotten",
             kind: "database-retention.forgotten",
             policyId,
-            limit: proposal.limit,
+            resource,
+            limit,
             units: displacedEventIds.length,
             displacedEventIds,
             detail: `Retention policy ${policyId} displaced ${String(displacedEventIds.length)} retained event(s).`,
@@ -197,7 +334,8 @@ export function evaluateZetaDbRetentionPolicy(
     ok: true,
     value: {
       policyId,
-      limit: proposal.limit,
+      resource,
+      limit,
       retainedEventIds: sorted(retained),
       displacedEventIds,
       refusedEventIds: sorted(refused),
@@ -208,8 +346,9 @@ export function evaluateZetaDbRetentionPolicy(
 }
 
 /** Preserve admitted history and refuse novel events once the finite entry limit binds. */
-export const noForgetBackpressureRetentionPolicy: ZetaDbRetentionPolicyPort = {
+export const noForgetBackpressureRetentionPolicy: ZetaDbEventCountRetentionPolicyPort = {
   id: "no-forget-backpressure",
+  resource: "retained-events",
   plan: (proposal) => {
     const retained = [...proposal.currentEventIds];
     const seen = new Set(retained);
@@ -226,11 +365,33 @@ export const noForgetBackpressureRetentionPolicy: ZetaDbRetentionPolicyPort = {
  * Retain the ordinally-smallest event IDs from the observed union. This converges for a shared
  * finite event-count bound, at the explicit cost of displacing previously retained history.
  */
-export const canonicalEventIdRetentionPolicy: ZetaDbRetentionPolicyPort = {
+export const canonicalEventIdRetentionPolicy: ZetaDbEventCountRetentionPolicyPort = {
   id: "canonical-event-id",
+  resource: "retained-events",
   plan: (proposal) => ({
     retainedEventIds: [...new Set([...proposal.currentEventIds, ...proposal.candidateEventIds])]
       .sort(compareOrdinal)
       .slice(0, proposal.limit),
   }),
+};
+
+/**
+ * Retain the ordinally-smallest event-ID subset whose exact canonical image fits the byte bound.
+ * Invalid intermediate folds and oversized candidates are skipped deterministically.
+ */
+export const canonicalCheckpointByteRetentionPolicy: ZetaDbCheckpointByteRetentionPolicyPort = {
+  id: "canonical-checkpoint-byte",
+  resource: "checkpoint-bytes",
+  plan: (proposal) => {
+    let retainedEventIds: readonly string[] = [];
+    for (const eventId of [...new Set([...proposal.currentEventIds, ...proposal.candidateEventIds])].sort(
+      compareOrdinal,
+    )) {
+      if (retainedEventIds.length >= proposal.limit) break;
+      const candidate = [...retainedEventIds, eventId];
+      const measured = proposal.measureCheckpointBytes(candidate);
+      if (measured !== null && measured <= proposal.maxCheckpointBytes) retainedEventIds = candidate;
+    }
+    return { retainedEventIds };
+  },
 };

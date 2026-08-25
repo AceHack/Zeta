@@ -19,7 +19,9 @@ import { describe, expect, test } from "bun:test";
 import fc from "fast-check";
 import {
   createInMemoryZetaDbImagePort,
+  encodeZetaDbImage,
   runZetaDbNodeTick,
+  ZETA_DB_IMAGE_SCHEMA,
   type ZetaDbDelta,
   type ZetaDbImagePort,
   type ZetaDbImageRecord,
@@ -36,7 +38,11 @@ import {
 } from "../browser-node/browser-checkpoint-port";
 import { createBrowserZetaDbImagePort } from "../browser-node/browser-zetadb-image-port";
 import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
-import { canonicalEventIdRetentionPolicy } from "./retention-policy";
+import {
+  canonicalCheckpointByteRetentionPolicy,
+  canonicalEventIdRetentionPolicy,
+  type ZetaDbRetentionPolicyPort,
+} from "./retention-policy";
 
 // ── The roster ───────────────────────────────────────────────────────────────
 
@@ -695,5 +701,100 @@ describe("BIND · no-forget diverges while canonical retention converges", () =>
     expect(bThenA.eventIds).toEqual(aThenB.eventIds);
     expect(aThenB.heatCodes).not.toContain("database-retention-displaced");
     expect(bThenA.heatCodes).toContain("database-retention-displaced");
+  });
+
+  test("event-count retention still diverges at a byte bound while byte retention converges", async () => {
+    const first: ZetaDbDelta = {
+      eventId: "e1",
+      rowKey: "row/1",
+      payload: "A".repeat(120),
+      weight: 1,
+    };
+    const second: ZetaDbDelta = {
+      eventId: "e2",
+      rowKey: "row/2",
+      payload: "B".repeat(120),
+      weight: 1,
+    };
+    const third: ZetaDbDelta = {
+      eventId: "e3",
+      rowKey: "row/3",
+      payload: "C".repeat(120),
+      weight: 1,
+    };
+    const measured = encodeZetaDbImage({
+      schema: ZETA_DB_IMAGE_SCHEMA,
+      nodeId: NODE,
+      revision: 1,
+      entries: [first, second],
+      rows: [
+        { rowKey: first.rowKey, payload: first.payload, weight: first.weight },
+        { rowKey: second.rowKey, payload: second.payload, weight: second.weight },
+      ],
+    });
+    if (!measured.ok) throw new Error(measured.feedback.detail);
+    const limits: ZetaDbTickLimits = {
+      maxDeltas: 8,
+      maxEntries: 8,
+      maxCheckpointBytes: measured.value.byteLength,
+    };
+
+    const ledger = async (
+      batches: readonly (readonly ZetaDbDelta[])[],
+      policy: ZetaDbRetentionPolicyPort,
+    ): Promise<{
+      readonly eventIds: readonly string[];
+      readonly heatCodes: readonly string[];
+      readonly heatResources: readonly string[];
+      readonly payload: string;
+    }> => {
+      const port = createInMemoryZetaDbImagePort();
+      const heatCodes: string[] = [];
+      const heatResources: string[] = [];
+      for (const batch of batches) {
+        const result = await runZetaDbNodeTick(
+          port,
+          {
+            nodeId: NODE,
+            executorId: "bind/checkpoint-bytes",
+            executorKind: "local-process",
+            deltas: batch,
+            limits,
+          },
+          undefined,
+          policy,
+        );
+        if (!result.ok) throw new Error(result.feedback.detail);
+        heatCodes.push(...result.value.feedback.map((feedback) => feedback.code));
+        heatResources.push(
+          ...result.value.feedback.flatMap((feedback) =>
+            feedback.retentionHeatReceipt === undefined ? [] : [feedback.retentionHeatReceipt.resource],
+          ),
+        );
+      }
+      const stored = await loadedRecord(port);
+      if (stored === null) return { eventIds: [], heatCodes, heatResources, payload: "empty" };
+      const payload = new TextDecoder().decode(stored.payload);
+      const parsed = JSON.parse(payload) as {
+        readonly entries: readonly { readonly eventId: string }[];
+      };
+      return { eventIds: parsed.entries.map((entry) => entry.eventId), heatCodes, heatResources, payload };
+    };
+
+    const eventForward = await ledger([[first, third], [second]], canonicalEventIdRetentionPolicy);
+    const eventReverse = await ledger([[second], [first, third]], canonicalEventIdRetentionPolicy);
+    expect(eventForward.eventIds).toEqual(["e1", "e3"]);
+    expect(eventReverse.eventIds).toEqual(["e2"]);
+    expect(eventForward.payload).not.toBe(eventReverse.payload);
+
+    const byteForward = await ledger([[first, third], [second]], canonicalCheckpointByteRetentionPolicy);
+    const byteReverse = await ledger([[second], [first, third]], canonicalCheckpointByteRetentionPolicy);
+    expect(byteForward.eventIds).toEqual(["e1", "e2"]);
+    expect(byteReverse.eventIds).toEqual(byteForward.eventIds);
+    expect(byteReverse.payload).toBe(byteForward.payload);
+    expect(byteForward.payload).toContain('"revision":2');
+    expect(byteForward.heatCodes).toContain("database-retention-displaced");
+    expect(byteForward.heatResources).toEqual(["checkpoint-bytes"]);
+    expect(byteReverse.heatCodes).not.toContain("database-retention-displaced");
   });
 });

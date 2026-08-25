@@ -141,3 +141,31 @@ the canonical policy through the real in-memory image port and reaches `e1,e2,e3
 orders; the reverse order carries exact displacement heat for `e4`. This closes the opt-in
 event-count path. Checkpoint-byte convergence remains open: this slice refuses an oversized image
 honestly but does not claim that a byte-bounded retained-set policy is order-independent.
+
+## Progress 2026-08-25 - exact checkpoint-byte retention is executable
+
+The byte-bound counterexample is now pinned separately from the entry-count witness. A two-event
+batch and a one-event batch each fit alone, their three-event union does not, and the event-count
+canonical policy leaves `e1,e3` versus `e2` under opposite arrival order because the kernel
+correctly refuses the oversized second image. This proves that event-count convergence did not
+silently become a checkpoint-byte claim.
+
+`canonicalCheckpointByteRetentionPolicy` closes that witness. Its hexagonal port receives only
+event identifiers, the count and byte limits, and a guarded kernel-owned measurement capability.
+The policy therefore cannot redefine JSON encoding or row folding. It considers event identifiers
+in ordinal order and retains each candidate only when the exact canonical image remains valid and
+within the byte bound. The evaluator rejects unknown, duplicate, over-count, malformed, or
+nonempty oversized decisions, while an impossible empty-image envelope becomes ordinary typed
+capacity backpressure. The admission port independently rechecks every final encoded mutation
+before persistence.
+
+The same observed union now reaches `e1,e2` in both batch orders and produces byte-identical
+revision-2 images. The two-event-first order displaces `e3` and emits
+`database-retention-displaced` heat whose receipt identifies `checkpoint-bytes` as the governing
+resource and records the exact byte limit. Omitting retention still preserves the default
+no-forget behavior and its typed backpressure.
+
+This policy is deterministic, not globally optimal: it selects the ordinally-first exact-fitting
+subset and may skip an event whose inclusion would require a later compensating event. Each
+measurement performs the real fold and encoding, so the opt-in planner trades bounded extra work
+for an honest byte decision rather than estimating additive per-event costs that do not exist.

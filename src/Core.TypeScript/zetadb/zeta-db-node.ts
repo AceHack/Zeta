@@ -820,8 +820,12 @@ function retentionCapacityDetail(
 ): string | null {
   const details: string[] = [];
   if (receipt.refusedEventIds.length > 0) {
+    const bound =
+      receipt.resource === "retained-events"
+        ? `${String(receipt.limit)}-entry bound`
+        : `${String(receipt.limit)}-byte checkpoint bound`;
     details.push(
-      `Retention policy ${receipt.policyId} refused ${String(receipt.refusedEventIds.length)} novel event(s) at the ${String(receipt.limit)}-entry bound.`,
+      `Retention policy ${receipt.policyId} refused ${String(receipt.refusedEventIds.length)} novel event(s) at the ${bound}.`,
     );
   }
   if (processed < total) details.push(`The tick spent its ${String(maxDeltas)}-delta execution budget.`);
@@ -874,6 +878,30 @@ function materializeRetainedEntries(
   return succeeded(entries);
 }
 
+function sameEventIdSet(left: readonly ZetaDbDelta[], retainedEventIds: readonly string[]): boolean {
+  if (left.length !== retainedEventIds.length) return false;
+  const retained = new Set(retainedEventIds);
+  return left.every((entry) => retained.has(entry.eventId));
+}
+
+function measureRetentionCheckpointBytes(
+  image: ZetaDbImage,
+  observed: ReadonlyMap<string, ZetaDbDelta>,
+  retainedEventIds: readonly string[],
+): number | null {
+  const entries: ZetaDbDelta[] = [];
+  for (const eventId of retainedEventIds) {
+    const entry = observed.get(eventId);
+    if (entry === undefined) return null;
+    entries.push(entry);
+  }
+  const rows = foldRows(entries);
+  if (!rows.ok) return null;
+  const revision = sameEventIdSet(image.entries, retainedEventIds) ? image.revision : image.revision + 1;
+  const encoded = encodeZetaDbImage({ ...image, revision, entries, rows: rows.value });
+  return encoded.ok ? encoded.value.byteLength : null;
+}
+
 function decideRetentionMutationAdmission(
   image: ZetaDbImage,
   entries: readonly ZetaDbDelta[],
@@ -907,9 +935,10 @@ function decideRetentionMutationAdmission(
 }
 
 /**
- * Apply an explicit retained-set policy as one finite batch. The policy owns event-count
- * selection; the admission policy still enforces its final entry reservation and exact encoded
- * checkpoint-byte budget. A byte refusal leaves the durable image and continuation untouched.
+ * Apply an explicit retained-set policy as one finite batch. A byte-aware policy may query exact
+ * candidate image sizes through a kernel-owned measurement capability; the admission policy still
+ * rechecks the final entry reservation and encoded checkpoint-byte budget. A byte refusal leaves
+ * the durable image and continuation untouched.
  */
 function retainZetaDbDeltas(
   image: ZetaDbImage,
@@ -923,11 +952,19 @@ function retainZetaDbDeltas(
   const candidates = collectRetentionCandidates(image, processed);
   if (!candidates.ok) return candidates;
 
-  const planned = evaluateZetaDbRetentionPolicy(retentionPolicy, {
-    currentEventIds: image.entries.map((entry) => entry.eventId),
-    candidateEventIds: processed.map((delta) => delta.eventId),
-    limit: limits.maxEntries,
-  });
+  const planned = evaluateZetaDbRetentionPolicy(
+    retentionPolicy,
+    {
+      currentEventIds: image.entries.map((entry) => entry.eventId),
+      candidateEventIds: processed.map((delta) => delta.eventId),
+      limit: limits.maxEntries,
+    },
+    {
+      maxCheckpointBytes: limits.maxCheckpointBytes,
+      measureCheckpointBytes: (retainedEventIds) =>
+        measureRetentionCheckpointBytes(image, candidates.value.observed, retainedEventIds),
+    },
+  );
   if (!planned.ok) return retentionFailure(planned.feedback);
 
   const entries = materializeRetainedEntries(planned.value, candidates.value.observed);

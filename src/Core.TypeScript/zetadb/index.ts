@@ -36,15 +36,21 @@ export {
 } from "./admission-policy";
 
 export {
+  canonicalCheckpointByteRetentionPolicy,
   canonicalEventIdRetentionPolicy,
   evaluateZetaDbRetentionPolicy,
   noForgetBackpressureRetentionPolicy,
+  type ZetaDbCheckpointByteRetentionContext,
+  type ZetaDbCheckpointByteRetentionPolicyPort,
+  type ZetaDbCheckpointByteRetentionProposal,
+  type ZetaDbEventCountRetentionPolicyPort,
   type ZetaDbRetentionDecision,
   type ZetaDbRetentionFeedback,
   type ZetaDbRetentionHeatReceipt,
   type ZetaDbRetentionPolicyPort,
   type ZetaDbRetentionProposal,
   type ZetaDbRetentionReceipt,
+  type ZetaDbRetentionResource,
   type ZetaDbRetentionResult,
 } from "./retention-policy";
 

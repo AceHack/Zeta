@@ -15,7 +15,11 @@ import {
   type ZetaDbAdmissionPolicyPort,
   type ZetaDbAdmissionProposal,
 } from "./admission-policy";
-import { canonicalEventIdRetentionPolicy, type ZetaDbRetentionPolicyPort } from "./retention-policy";
+import {
+  canonicalCheckpointByteRetentionPolicy,
+  canonicalEventIdRetentionPolicy,
+  type ZetaDbRetentionPolicyPort,
+} from "./retention-policy";
 
 const limits = { maxDeltas: 16, maxEntries: 32, maxCheckpointBytes: 32 * 1024 };
 
@@ -383,6 +387,31 @@ describe("event-driven ZetaDB node", () => {
     expect(stored.ok && stored.value).toBeNull();
   });
 
+  test("reports an impossible empty-image byte envelope as capacity backpressure", async () => {
+    const port = createInMemoryZetaDbImagePort();
+    const result = await runZetaDbNodeTick(
+      port,
+      {
+        nodeId: "global-browser-db",
+        executorId: "tab/retention-impossible-byte-limit",
+        executorKind: "browser-tab",
+        deltas: [firstDelta],
+        limits: { ...limits, maxCheckpointBytes: 1 },
+      },
+      noForgetBackpressureAdmissionPolicy,
+      canonicalCheckpointByteRetentionPolicy,
+    );
+
+    expect(result.ok && result.value).toMatchObject({
+      revision: 0,
+      admission: "backpressured",
+      accepted: 0,
+      nextDeltaIndex: 1,
+      retentionReceipt: { resource: "checkpoint-bytes", limit: 1, refusedEventIds: ["event-1"] },
+      feedback: [{ code: "database-capacity-exhausted" }],
+    });
+  });
+
   test("keeps complete-required retention atomic when a novel event is refused", async () => {
     const port = createInMemoryZetaDbImagePort();
     const result = await runZetaDbNodeTick(
@@ -413,6 +442,7 @@ describe("event-driven ZetaDB node", () => {
     expect(initial.ok).toBe(true);
     const dropAll: ZetaDbRetentionPolicyPort = {
       id: "test-drop-all",
+      resource: "retained-events",
       plan: () => ({ retainedEventIds: [] }),
     };
 
@@ -801,6 +831,7 @@ describe("event-driven ZetaDB node", () => {
     let plans = 0;
     const retainObserved: ZetaDbRetentionPolicyPort = {
       id: "test-retain-observed",
+      resource: "retained-events",
       plan: (proposal) => {
         plans += 1;
         return { retainedEventIds: [...proposal.currentEventIds, ...proposal.candidateEventIds] };
