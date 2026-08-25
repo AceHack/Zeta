@@ -110,7 +110,7 @@ jobs:
           # makes the unbound variable exit non-zero, so the check cannot be
           # removed by accident without the job going red. (Measured: with the
           # variable unset the step exits 1.)
-          ARC_MIN_TESTS: "23"
+          ARC_MIN_TESTS: "31"
         run: |
           set -euo pipefail
           uv run --project src/Arc.Python pytest src/Arc.Python/tests -q --junitxml=/tmp/arc-junit.xml
@@ -132,19 +132,59 @@ jobs:
         # The unit tests can all pass while the loop itself is broken. This is
         # the whole pipeline — environment, perception, agent, scoring — and it
         # asserts the agent still clears every level rather than merely running.
+        env:
+          # THE KEY IS WITHHELD FROM `pull_request` ON PURPOSE, and this is a
+          # security boundary rather than a tidiness preference.
+          #
+          # GitHub withholds secrets only from FORK pull requests. This repo's
+          # PRs come from branches on the repo itself, so a `pull_request` run
+          # here WOULD receive the real secret — and every agent in this repo
+          # pushes branches and opens PRs. Any PR touching `src/Arc.Python/**`
+          # could then add a step that prints it. Exposing a credential to
+          # code that has not been reviewed yet is exactly backwards.
+          #
+          # So PRs run the OFFLINE path (no key -> `operation_mode_for` returns
+          # OFFLINE, which is measured to make no request), and only
+          # `push: main` and `workflow_dispatch` — where the code is already
+          # merged or a human pressed the button — get the key.
+          #
+          # The cost is real and accepted: no hosted-environment feedback at PR
+          # time. The lane still runs, because absence of a key degrades rather
+          # than fails, and `test_play_mode.py` holds that.
+          ARC_API_KEY: ${{ github.event_name != 'pull_request' && secrets.ARC_API_KEY || '' }}
+          # THE FALSIFIER FOR THE WIRING ITSELF. Without this the secret is
+          # unfalsifiable: rename it, unset it, or typo it, and the lane simply
+          # degrades to OFFLINE and the job stays GREEN — "verifying nothing"
+          # wearing a success. On runs that are SUPPOSED to have the key, a
+          # mode other than NORMAL means the secret did not arrive, and that is
+          # a wiring fault worth surfacing. It costs nothing to say so here:
+          # this workflow blocks no merge.
+          EXPECT_ARC_KEY: ${{ github.event_name != 'pull_request' && 'yes' || 'no' }}
         run: |
           set -euo pipefail
           uv run --project src/Arc.Python python -m zeta_arc.play --agent pixel --seed 4 \
             | tee /tmp/arc-play.json
           python3 - <<'PY'
-          import json, sys
+          import json, os, sys
           # play.py logs to stderr; stdout is the JSON object.
           text = open("/tmp/arc-play.json").read()
           start = text.index("{")
           result = json.loads(text[start:])
           cleared, levels = result["levels_cleared"], result["levels"]
-          print(f"levels_cleared={cleared} score={result['environment_score']}")
+          mode, found = result["mode"], result["arcade_environments_discovered"]
+          print(f"mode={mode} environments={found} levels_cleared={cleared} score={result['environment_score']}")
           if cleared < len(levels) or not all(l["solved"] for l in levels):
               unsolved = [l["level"] for l in levels if not l["solved"]]
               sys.exit(f"::error::the pixel agent no longer clears every level; unsolved={unsolved}")
+          if os.environ["EXPECT_ARC_KEY"] == "yes" and mode != "NORMAL":
+              sys.exit(
+                  f"::error::ARC_API_KEY did not reach this run — mode is {mode!r}, expected "
+                  "'NORMAL'. The lane degraded to OFFLINE and would otherwise have passed "
+                  "silently. Check the repository secret is named exactly ARC_API_KEY."
+              )
+          if os.environ["EXPECT_ARC_KEY"] == "no" and mode != "OFFLINE":
+              sys.exit(
+                  f"::error::a pull_request run obtained mode {mode!r} — the credential is "
+                  "reaching unreviewed code, which the env guard above exists to prevent."
+              )
           PY

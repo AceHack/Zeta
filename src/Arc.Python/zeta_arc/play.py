@@ -4,10 +4,17 @@ Run:
     uv run --project src/Arc.Python python -m zeta_arc.play
     uv run --project src/Arc.Python python -m zeta_arc.play --agent random --seed 4
 
-NO KEY, NO NETWORK. `OperationMode.OFFLINE` is MEASURED to initialise with
-`arc_api_key=''` and never contact the API, so this lane runs on a laptop, in
-CI, and in a container with egress blocked. `ARC_API_KEY` only matters for the
-hosted leaderboard, and its absence must DEGRADE, never fail.
+NO KEY, NO NETWORK — and that is now a DECISION rather than a hardcode. With
+no `ARC_API_KEY` the lane runs `OperationMode.OFFLINE`, which is MEASURED to
+initialise with `arc_api_key=''` and never contact the API, so it still runs on
+a laptop, in CI without secrets, and in a container with egress blocked. With a
+key it runs `NORMAL` and can see the hosted environments.
+
+The mode is CHOSEN by `operation_mode_for` and REPORTED as whatever was
+actually obtained — see `open_arcade`. The reported mode used to be the string
+literal `"OFFLINE"` regardless of anything, which is a claim no test could
+falsify. A key that is present but unreachable degrades to a scored offline
+episode and says so; absence must DEGRADE, never fail.
 
 THE SCORE, and what it is not. ARC's level formula (design doc §6) is
 
@@ -25,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections import deque
 
 # `arc_agi` ships no py.typed marker, so mypy cannot see into it. Ignoring the
@@ -106,13 +114,56 @@ def choose(
     return GameAction.ACTION4
 
 
+def operation_mode_for(api_key: str | None) -> OperationMode:
+    """Which mode a given key buys. Pure policy, so it is testable without a network.
+
+    THE LINE IS NETWORK ACCESS, not features. MEASURED in `arc_agi/base.py`:
+    every mode EXCEPT `OFFLINE` reaches the network during construction — it
+    calls `_fetch_from_api()`, and with an empty key it first calls
+    `_get_anonymous_api_key()`. `OFFLINE` is the only mode that provably makes
+    no request. So a blank key must map to `OFFLINE` rather than to "NORMAL and
+    hope": that is what keeps this lane runnable on a laptop, in a container
+    with egress blocked, and in CI without secrets.
+
+    Whitespace counts as blank. A secret that expanded to `""` is the shape an
+    unset GitHub secret takes, and treating it as a key would turn a missing
+    secret into a network call.
+    """
+    return OperationMode.NORMAL if (api_key or "").strip() else OperationMode.OFFLINE
+
+
+def open_arcade() -> tuple[Arcade, str]:
+    """The Arcade this episode runs against, and the mode it ACTUALLY got.
+
+    Returns the real mode rather than the requested one, because the result
+    dict reports it and a hardcoded label would be a claim nothing checks. It
+    used to say `"mode": "OFFLINE"` unconditionally.
+
+    DEGRADE, NEVER FAIL (design doc §3.2). A key that is present but cannot
+    reach the API must still produce a scored episode. MEASURED: with a key and
+    an unreachable base URL, `Arcade` constructs in 0.09s, logs the
+    `ConnectionError`, and returns zero API environments — `_fetch_from_api`
+    swallows `RequestException` and `Exception` alike. The `try` below is the
+    belt for the case the constructor itself raises before reaching that
+    handler; it is not the primary mechanism.
+    """
+    key = os.environ.get("ARC_API_KEY", "")
+    mode = operation_mode_for(key)
+    if mode is OperationMode.OFFLINE:
+        return Arcade(operation_mode=OperationMode.OFFLINE), "OFFLINE"
+    try:
+        return Arcade(operation_mode=mode), mode.name
+    except Exception:  # noqa: BLE001 — degrading is the requirement, not the exception's identity
+        return Arcade(
+            operation_mode=OperationMode.OFFLINE
+        ), "OFFLINE (degraded from NORMAL)"
+
+
 def play(
     agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300
 ) -> dict:
     """One full episode. Returns per-level and aggregate scores."""
-    # Constructed to prove the toolkit's own offline path initialises with no
-    # key and no network — the fact this whole lane rests on.
-    arcade = Arcade(operation_mode=OperationMode.OFFLINE)
+    arcade, mode = open_arcade()
     game = ZetaChase(seed=seed)
 
     pixel = PixelAgent()
@@ -166,7 +217,7 @@ def play(
     return {
         "agent": agent,
         "seed": seed,
-        "mode": "OFFLINE",
+        "mode": mode,
         "arcade_environments_discovered": len(arcade.get_environments()),
         "levels_cleared": sum(1 for entry in levels if entry["solved"]),
         "levels": levels,
