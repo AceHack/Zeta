@@ -1,29 +1,29 @@
 {
-  "asOf": "2026-08-25T02:26:46Z",
+  "asOf": "2026-08-25T02:31:19Z",
   "report": {
     "runs": 500,
-    "executedRuns": 142,
-    "cancelledRuns": 358,
-    "coverage": 0.284,
+    "executedRuns": 143,
+    "cancelledRuns": 357,
+    "coverage": 0.286,
     "legs": [
       {
         "name": "build-and-test (macos-26)",
         "classification": "unobserved",
-        "executedRuns": 142,
+        "executedRuns": 143,
         "failures": 0,
         "nonBlockingFailures": 0,
         "failureRate": 0,
-        "cleanStreak": 142,
+        "cleanStreak": 143,
         "lastFailure": null
       },
       {
         "name": "build-and-test (ubuntu-24.04)",
         "classification": "blocking",
-        "executedRuns": 142,
+        "executedRuns": 143,
         "failures": 1,
         "nonBlockingFailures": 0,
-        "failureRate": 0.007042253521126761,
-        "cleanStreak": 77,
+        "failureRate": 0.006993006993006993,
+        "cleanStreak": 78,
         "lastFailure": {
           "runId": 32669399955,
           "at": "2026-08-23T22:03:21Z",
@@ -33,45 +33,61 @@
       {
         "name": "build-and-test (ubuntu-24.04-arm)",
         "classification": "unobserved",
-        "executedRuns": 142,
+        "executedRuns": 143,
         "failures": 0,
         "nonBlockingFailures": 0,
         "failureRate": 0,
-        "cleanStreak": 142,
+        "cleanStreak": 143,
         "lastFailure": null
       },
       {
         "name": "build-and-test (windows-11-arm)",
         "classification": "non-blocking",
-        "executedRuns": 142,
-        "failures": 22,
-        "nonBlockingFailures": 21,
-        "failureRate": 0.15492957746478872,
+        "executedRuns": 143,
+        "failures": 23,
+        "nonBlockingFailures": 22,
+        "failureRate": 0.16083916083916083,
         "cleanStreak": 0,
         "lastFailure": {
-          "runId": 32799792315,
-          "at": "2026-08-25T02:01:30Z",
+          "runId": 32800646073,
+          "at": "2026-08-25T02:14:25Z",
           "blocked": false
         }
       },
       {
         "name": "build-and-test (windows-2025)",
         "classification": "non-blocking",
-        "executedRuns": 142,
-        "failures": 25,
-        "nonBlockingFailures": 24,
-        "failureRate": 0.176056338028169,
+        "executedRuns": 143,
+        "failures": 26,
+        "nonBlockingFailures": 25,
+        "failureRate": 0.18181818181818182,
         "cleanStreak": 0,
         "lastFailure": {
-          "runId": 32799792315,
-          "at": "2026-08-25T02:01:30Z",
+          "runId": 32800646073,
+          "at": "2026-08-25T02:14:25Z",
           "blocked": false
         }
       }
     ],
-    "latestRunId": 32801420883
+    "latestRunId": 32801718557
   },
   "records": [
+    {
+      "id": 32801718557,
+      "at": "2026-08-25T02:31:19Z",
+      "sha": "55c70165f162913e2565d2c42a24d8810d3fde2a",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
+    {
+      "id": 32801671559,
+      "at": "2026-08-25T02:30:38Z",
+      "sha": "884957167b3cb4e267739815da1b90ee76ebaa23",
+      "conclusion": "cancelled",
+      "rollup": "absent",
+      "legs": {}
+    },
     {
       "id": 32801420883,
       "at": "2026-08-25T02:26:46Z",
@@ -111,6 +127,20 @@
       "conclusion": "cancelled",
       "rollup": "absent",
       "legs": {}
+    },
+    {
+      "id": 32800646073,
+      "at": "2026-08-25T02:14:25Z",
+      "sha": "830e36fe69d23f404e3ff93cafdaf6cf5341a9f4",
+      "conclusion": "failure",
+      "rollup": "success",
+      "legs": {
+        "build-and-test (ubuntu-24.04)": "success",
+        "build-and-test (ubuntu-24.04-arm)": "success",
+        "build-and-test (macos-26)": "success",
+        "build-and-test (windows-2025)": "failure",
+        "build-and-test (windows-11-arm)": "failure"
+      }
     },
     {
       "id": 32800620856,
@@ -4896,30 +4926,6 @@
       "id": 32211891550,
       "at": "2026-08-19T03:22:15Z",
       "sha": "c6c4a6574fe86f42166607d377eae3cf54e236ef",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32211769609,
-      "at": "2026-08-19T03:20:13Z",
-      "sha": "6b141a8a54e04a1692a54c21b0c3df24337faf57",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32211725455,
-      "at": "2026-08-19T03:19:27Z",
-      "sha": "16f684e4aa741bd85353284831eaa8b6a04565f8",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
-    },
-    {
-      "id": 32211659275,
-      "at": "2026-08-19T03:18:19Z",
-      "sha": "0a107500c9cb352576838d2fa5797fd65b85883b",
       "conclusion": "cancelled",
       "rollup": "absent",
       "legs": {}
