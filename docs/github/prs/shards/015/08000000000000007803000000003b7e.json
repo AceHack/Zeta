@@ -1,0 +1,12 @@
+{
+  "pr_number": 15230,
+  "archive_path": "docs/history/pr-reviews/PR-15230-fix-hygiene-normalize-prior-art-emphasis-style.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:23:33.145Z",
+  "schema_version": "v1",
+  "commit_sha": "79367288840170ca0c38f6b5ec8c2ecf8639e72b",
+  "title": "fix(hygiene): normalize prior-art emphasis style",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:22:48Z",
+  "head_ref": "claim/task-markdownlint-prior-art-md049-20260825"
+}
