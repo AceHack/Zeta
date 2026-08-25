@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd84740010a0130008cb4ed929",
+  "at": "2026-08-25T16:11:07.264Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WV13KZ087G0R003Z0W0PV",
+    "type": "bug",
+    "title": "a fabricated Task ZetaId passes the AgencySignature gate because only its shape is checked",
+    "slug": "a-fabricated-task-zetaid-passes-the-agencysignature-gate-bec",
+    "priority": "P2",
+    "filename": "081M0WV13KZ087G0R003Z0W0PV-a-fabricated-task-zetaid-passes-the-agencysignature-gate-bec.md"
+  }
+}

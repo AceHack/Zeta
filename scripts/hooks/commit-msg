@@ -36,4 +36,43 @@ if [ -z "$first" ]; then
 fi
 
 cat "$tmp" >"$msg_file"
+
+# ---------------------------------------------------------------------------
+# A `Task:` id that is well-formed and names nothing (AH006).
+#
+# The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE,
+# never existence — so an invented-but-well-formed ZetaId passes CI silently,
+# and it is HARDER to spot than a placeholder because it looks exactly right.
+# Catching it here means the author sees it while they still have the context to
+# fix it, instead of a red check twenty minutes later on a PR.
+#
+# Written after its author did this TWICE in one day. Neither was deception: a
+# long commit message, a reached-for value, `new-workitem.ts` not run. That is
+# the ordinary shape of the mistake — see
+# `.claude/rules/never-assume-malice-where-mistake-is-possible.md`.
+#
+# FAILS OPEN on missing tooling, CLOSED on an unresolvable id. A commit-msg hook
+# that blocks every commit because `bun` is absent is worse than the defect it
+# guards; CI is the backstop for that case, and it fails closed there.
+# ---------------------------------------------------------------------------
+task_id="$(grep -E '^Task:[[:space:]]*081[0-9A-Z]{23}[[:space:]]*$' "$msg_file" 2>/dev/null | head -n 1 | sed -E 's/^Task:[[:space:]]*//; s/[[:space:]]*$//' || true)"
+if [ -n "$task_id" ]; then
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+  if [ -n "$repo_root" ] && [ -d "$repo_root/workitems" ]; then
+    # Resolution = a work-item file carries the id as its FILENAME PREFIX, in
+    # either state. `workitems/done/` is a valid referent: state is a folder
+    # here, so checking only the open set would refuse every commit whose item
+    # has since been completed.
+    if ! find "$repo_root/workitems" -type d -name events -prune -o \
+              -type f -name "${task_id}-*.md" -print 2>/dev/null | grep -q .; then
+      echo "commit-msg: refused — Task id '${task_id}' resolves to no work-item." >&2
+      echo "  A well-formed id that names nothing passes the shape check and identifies nothing." >&2
+      echo "  Mint one instead of writing one:" >&2
+      echo "    bun src/Core.TypeScript/backlog/new-workitem.ts --type task|bug --title \"...\"" >&2
+      echo "  ...then commit the work-item file alongside this change." >&2
+      exit 1
+    fi
+  fi
+fi
+
 exit 0

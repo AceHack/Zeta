@@ -2513,6 +2513,27 @@ jobs:
       - name: Step outputs have writers (a step that cannot succeed)
         run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
 
+      # A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
+      #
+      # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never
+      # existence — so an invented-but-well-formed ZetaId passes silently, and it is harder
+      # to spot than a placeholder because it looks exactly right. The legacy `B-NNNN`
+      # scheme has had this guard since `b-ref-resolve.ts`; the ZetaId scheme that REPLACED
+      # it never got one, so the newer mandatory key was the less-checked one.
+      #
+      # Live instance the day this landed: `Task: 081M0X0JQGY087G0R000EBCPQ3`, written by
+      # hand instead of minted, caught only because its author re-read his own trailer.
+      - name: Task ZetaIds resolve to work-items (AH006)
+        env:
+          # The PR body carries the AgencySignature block, and unlike `git log` it is present
+          # on a SHALLOW checkout. The first wiring of this step piped `git log -50`, CI checks
+          # out depth 1, and the audit passed having examined ZERO ids — the exact vacuity it
+          # was written to catch, in its own wiring. It now exits 2 on empty input, so a
+          # regression here goes red instead of green.
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" | bun src/Core.TypeScript/hygiene/audit-task-zetaid-resolves.ts --stdin
+
       # THE FALSIFIER FOR CREDENTIAL-ROLE COLLAPSE (AH003, 2026-08-25).
       #
       # `docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md`
