@@ -37,8 +37,10 @@
 # the measured 5h15m window (~535/day extrapolated); a per-run watcher at ~40s per evaluation
 # is ~356 runner-min/day and scales WITH the failure rate, i.e. costs most exactly when CI is
 # worst. This sweep costs the same whether nothing failed or fifty things did: 96 ticks/day at
-# ~45s measured is ~72 min/day, flat, and one tick covers every workflow that calls install.sh
-# without a per-workflow roster to drift. The price is LATENCY, stated honestly: this repo has
+# 17s MEASURED ON THE FIRST RUN (32907739489, 22:46:35Z-22:46:52Z, 45-minute window, 5 failed
+# runs evaluated) is ~27 min/day, flat -- ~13x cheaper than (b), not the ~5x estimated before
+# the workflow had ever executed. One tick covers every workflow that calls install.sh without
+# a per-workflow roster to drift. The price is LATENCY, stated honestly: this repo has
 # measured GitHub dropping ~16% of `*/15` slots with gaps of 12-43 minutes (p50 16, p90 27 —
 # see heartbeat-liveness.yml), so worst-case time-to-rerun is ~8min (to fail) + ~43min (to the
 # next tick) ~= 51 minutes. Against a human noticing hours later, that trade is not close.

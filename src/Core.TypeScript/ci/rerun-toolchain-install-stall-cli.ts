@@ -15,8 +15,10 @@
  * extrapolated. At ~40s per evaluation (checkout + bun + API) that is ~356 runner-min/day,
  * and it scales WITH the failure rate — most expensive exactly when CI is worst. A sweep on
  * a fixed cadence costs the same whether nothing failed or fifty things did: 96 ticks/day at
- * ~45s is ~72 min/day, flat and predictable, and one tick covers EVERY workflow that calls
- * install.sh rather than needing a per-workflow roster that drifts. It is also idempotent by
+ * 17s MEASURED (run 32907739489, the first real execution) is ~27 min/day, flat and
+ * predictable, and one tick covers EVERY workflow that calls install.sh rather than needing a
+ * per-workflow roster that drifts. The pre-execution estimate was ~45s; it is corrected here
+ * rather than left as a figure that happened to flatter the decision it justified. It is also idempotent by
  * construction (§12): re-running the sweep re-evaluates the same runs, and the run_attempt
  * ceiling makes the second pass a no-op.
  *

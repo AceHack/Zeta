@@ -106,11 +106,14 @@ is **~356 runner-min/day**, and it scales *with* the failure rate — most expen
 when CI is worst.
 
 **(c) A scheduled sweep** — chosen. Its cost is the same whether nothing failed or fifty
-things did: 96 ticks/day at ~45s measured (7.2s observed for a 25-minute window carrying 4
-failed runs) is **~72 min/day, flat and predictable**, roughly a 5x saving over (b). One tick
-covers *every* workflow that calls `install.sh`, so there is no per-workflow roster to drift.
-And it is idempotent by construction (§12): re-running the sweep re-evaluates the same runs,
-and the `run_attempt` ceiling makes the second pass a no-op.
+things did: 96 ticks/day at **17s measured on the first real execution** (run 32907739489,
+22:46:35Z-22:46:52Z, 45-minute window, 5 failed runs evaluated) is **~27 min/day, flat and
+predictable** — about a **13x** saving over (b). The figure written here before the workflow
+had ever run was ~45s / ~72 min/day / ~5x; it is corrected rather than left as an estimate that
+happened to flatter the decision it justified. One tick covers *every* workflow that calls
+`install.sh`, so there is no per-workflow roster to drift. And it is idempotent by construction
+(§12): re-running the sweep re-evaluates the same runs, and the `run_attempt` ceiling makes the
+second pass a no-op.
 
 **The price is latency, stated honestly.** This repo has measured GitHub dropping ~16% of
 `*/15` cron slots with inter-run gaps of 12-43 minutes (p50 16, p90 27 — see the header of
@@ -194,6 +197,30 @@ line-numbered excerpts of their real logs — not hand-made examples.
 5. **Fix the banner.** `linux.sh` says "stalled archive mirror"; §2 shows that is usually
    false and the word sends the reader at the wrong fix. It should say *the apt phase ran out
    of wall clock*, and print the observed throughput.
+
+## 7a. First live evidence — the mixed-failure guard fired on traffic, not on a fixture
+
+Run **32907739489** (dry, 45-minute window) evaluated 5 failed runs and declined all of them.
+One of the declines is the safety property working on data captured *after* the fixture was
+built:
+
+```
+run 32904208329  gate  main  action=skip  reason=mixed-failure
+  detail: 1 install stall(s) but also 1 unexplained failure(s):
+          lint (bash retirement inventory + hygiene unit tests)
+          (first failing step is "A check may not claim a property of higher arity than it tests")
+  jobs: lint (bash retirement...)=unexplained
+        build-and-test (ubuntu-24.04)=install-stall
+        gate (required)=derived
+```
+
+A run carrying **both** a genuine apt wall-budget stall and a genuine red. The sweep declined
+it, named the real failure, and left it for a human.
+
+Separately, `--run-id --apply` was exercised against runs 32905161271 (CodeQL) and 32905161106
+(gate) on this change's own pull request, which failed on the exact bug it fixes. Both were
+classified `install-stall` and re-run; `gate (required)` classified `derived`, which is the
+roster entry without which the policy would be vacuous on `gate`.
 
 ## 8. Follow-up owed after merge
 

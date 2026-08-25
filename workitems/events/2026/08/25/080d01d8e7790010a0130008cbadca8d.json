@@ -1,0 +1,10 @@
+{
+  "id": "080d01d8e7790010a0130008cbadca8d",
+  "at": "2026-08-25T22:49:07.104Z",
+  "by": "otto-cli",
+  "kind": "closed",
+  "payload": {
+    "workItemId": "081M0XC0CYN087G0R002DXY5SV",
+    "reason": "landed in #15440; sweep measured at 17s/tick on run 32907739489"
+  }
+}

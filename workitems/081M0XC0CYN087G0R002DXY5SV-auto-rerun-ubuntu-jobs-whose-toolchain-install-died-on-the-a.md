@@ -1,7 +1,7 @@
 ---
 id: 081M0XC0CYN087G0R002DXY5SV
 type: bug
-state: in-progress
+state: closed
 priority: P2
 slug: auto-rerun-ubuntu-jobs-whose-toolchain-install-died-on-the-a
 title: "auto-rerun ubuntu jobs whose toolchain install died on the apt wall budget (exit 124), and nothing else"
