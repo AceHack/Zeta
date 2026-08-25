@@ -1,0 +1,12 @@
+{
+  "pr_number": 15245,
+  "archive_path": "docs/history/pr-reviews/PR-15245-feat-arc-zetadiscovery-levels-where-what-winning-means-is-not-announced.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:53:55.520Z",
+  "schema_version": "v1",
+  "commit_sha": "eb29931bcc495ffb7354872c6a772135258a448a",
+  "title": "feat(arc): ZetaDiscovery — levels where what winning MEANS is not announced",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:53:06Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}
