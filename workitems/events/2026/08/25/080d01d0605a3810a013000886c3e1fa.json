@@ -1,0 +1,14 @@
+{
+  "id": "080d01d0605a3810a013000886c3e1fa",
+  "at": "2026-08-25T17:51:02.983Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X0R2T5087G0R0008J5PSH",
+    "type": "bug",
+    "title": "223 ambient-PATH command sites across 125 files, including 8 sudo invocations",
+    "slug": "223-ambient-path-command-sites-across-125-files-including-8",
+    "priority": "P2",
+    "filename": "081M0X0R2T5087G0R0008J5PSH-223-ambient-path-command-sites-across-125-files-including-8.md"
+  }
+}
