@@ -1,0 +1,14 @@
+{
+  "id": "080d01d2823e1810a013000880e024fa",
+  "at": "2026-08-25T19:05:34.915Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X50HY1087G0R003HTDJ1N",
+    "type": "task",
+    "title": "Rank-16 discriminating test: do the in-tree E8 routes agree where the target is not unique?",
+    "slug": "rank-16-discriminating-test-do-the-in-tree-e8-routes-agree-w",
+    "priority": "P2",
+    "filename": "081M0X50HY1087G0R003HTDJ1N-rank-16-discriminating-test-do-the-in-tree-e8-routes-agree-w.md"
+  }
+}
