@@ -1,0 +1,14 @@
+{
+  "id": "080d01cf32f18010a0130008e5e37ce9",
+  "at": "2026-08-25T17:09:53.840Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WYCQHF087G0R000ZVPA7T",
+    "type": "task",
+    "title": "Second tick source off GitHub Actions: bare local service adapter for the heartbeat lane",
+    "slug": "second-tick-source-off-github-actions-bare-local-service-ada",
+    "priority": "P2",
+    "filename": "081M0WYCQHF087G0R000ZVPA7T-second-tick-source-off-github-actions-bare-local-service-ada.md"
+  }
+}

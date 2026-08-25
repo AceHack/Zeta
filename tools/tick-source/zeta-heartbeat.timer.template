@@ -1,0 +1,22 @@
+# Timer for the second tick source. Substitute AGENT.
+#
+# 15 minutes matches the Actions lane's declared cadence. `Persistent=true` runs a missed tick
+# once after a resume rather than replaying every slot the machine slept through -- a burst of
+# catch-up ticks would push a pile of near-identical events at the flush and tell the cadence
+# measurement a story about the substrate that is not true.
+#
+# AccuracySec is tightened from systemd's one-minute default because the whole value of this
+# source is being more punctual than the scheduler it backs up.
+
+[Unit]
+Description=Run the Zeta heartbeat tick source (AGENT) every 15 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+AccuracySec=15s
+Persistent=true
+Unit=zeta-heartbeat-AGENT.service
+
+[Install]
+WantedBy=timers.target

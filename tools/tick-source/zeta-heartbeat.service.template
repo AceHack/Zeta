@@ -1,0 +1,26 @@
+# systemd unit for the SECOND tick source (Linux). Substitute AGENT, REPO_ROOT, MODEL, BUN_PATH.
+#
+# Paired with zeta-heartbeat.timer -- a oneshot service plus a timer, NOT a long-running daemon.
+# One tick per activation is what makes a missed tick recoverable: the lane carries its unflushed
+# state forward, so a skipped activation costs a gap and never costs state. A resident loop would
+# have to reimplement that recovery itself.
+#
+# NO CREDENTIAL HERE. The push uses the invoking user's git credential. Run this as a USER unit
+# (`systemctl --user`) so it inherits that user's ssh agent / credential helper rather than
+# needing a secret of its own.
+
+[Unit]
+Description=Zeta heartbeat tick source (AGENT) on local compute
+Documentation=file://REPO_ROOT/tools/tick-source/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=REPO_ROOT
+Environment=ZETA_SINK_MODE=local
+Environment=ZETA_AGENT_ID=AGENT
+ExecStart=BUN_PATH REPO_ROOT/src/Core.TypeScript/agent-heartbeats/local-tick.ts --agent AGENT --repo-root REPO_ROOT --model MODEL --runtime systemd/zeta-heartbeat-AGENT
+# BOUNDED. A tick that cannot finish inside the interval must be killed rather than overlap the
+# next one: two concurrent ticks on one lane fight over --force-with-lease and both lose.
+TimeoutStartSec=600

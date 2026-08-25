@@ -177,15 +177,174 @@ export function extractRuns(payload: unknown): readonly HeartbeatRunRecord[] {
 }
 
 /**
- * CLI: `bun heartbeat-liveness.ts <runs.json> [staleAfterMinutes]`.
+ * ---------------------------------------------------------------------------------------------
+ * FLEET LIVENESS - the same question asked of EVERY tick source, not just of GitHub Actions.
+ * ---------------------------------------------------------------------------------------------
  *
- * Exits 1 when the lane is not alive. The non-zero exit IS the alarm surface — the calling
- * workflow turns red — so this must never be softened into a warning.
+ * Everything above answers "how old is the newest SUCCESSFUL Actions run?". That is a question
+ * about the PROVIDER'S JOB STATUS, and it is not the same question as "is the fleet ticking".
+ * The two came apart in both directions, measured on this repository:
+ *
+ *   FALSE ALARM, observed 2026-08-25T17:11Z. `assessHeartbeatLiveness` returned
+ *   "NO SUCCESSFUL agent-heartbeat IN 102 MINUTES - last success 2026-08-25T15:29:08Z" and the
+ *   CLI exited 1. At that moment `heartbeat/alexa` carried "heartbeat(alexa): accumulated tick
+ *   2026-08-25T16:49:05Z" - 22 minutes old. The tick HAD landed; the run that produced it went
+ *   red at a later step, so its conclusion was not `success`, so the watchdog could not see the
+ *   tick it had itself produced.
+ *
+ *   FALSE GREEN, by construction. agent-heartbeat.yml runs its tick body under
+ *   `|| echo "[heartbeat] tick failed (non-fatal)"`, and its commit step prints "no new events to
+ *   commit" and succeeds when nothing is staged. A run can conclude `success` having committed
+ *   and pushed nothing, and this watchdog reads that as proof of life.
+ *
+ * And the coupling that matters for decoupling: a tick produced by ANY substrate that is not
+ * GitHub Actions contributes zero rows to the Actions runs list, so it is invisible here no
+ * matter how correct it is. Until this function existed, "alive" was DEFINED as "GitHub ran a
+ * job", and a second tick source could not have turned the check green even in principle.
+ *
+ * WHY THIS IS NOT A WEAKENING OF THE EXISTING CHECK. The threshold, the clamping, the
+ * empty-is-an-alarm rule and the refusal to treat in-progress runs as success are all unchanged -
+ * `assessHeartbeatLiveness` above is untouched and its tests still pin it. What changes is only
+ * that Actions is now ONE source among several rather than the definition of the term. The
+ * verdict still fails when nothing has ticked; it stops failing when something HAS ticked and
+ * merely was not GitHub.
+ *
+ * THE ADDITIVE-ONLY RULE, which this function must never break. Lane evidence can prove a source
+ * ALIVE and can never prove one DEAD. A lane holds only UNFLUSHED ticks - the preparer resets it
+ * over main every tick - so a flush that just landed legitimately leaves a lane with zero tick
+ * commits. Reading that absence as an outage would manufacture a failure out of a healthy flush,
+ * which is the "absent read as EMPTY" defect this repo fixed in #15381. Hence: a source with no
+ * observations is NOT reported stale, it is simply not reported.
+ */
+
+/** One observed tick, attributed to the substrate that produced it. */
+export interface FleetTickObservation {
+  readonly source: string;
+  readonly at: string;
+}
+
+/** Per-source freshness. */
+export interface SourceLiveness {
+  readonly source: string;
+  readonly lastAt: string;
+  readonly ageMinutes: number;
+  readonly fresh: boolean;
+}
+
+export interface FleetLivenessVerdict {
+  /** True when AT LEAST ONE source has ticked inside the threshold. */
+  readonly alive: boolean;
+  readonly summary: string;
+  /** Every source that produced at least one observation, newest-first by recency. */
+  readonly sources: readonly SourceLiveness[];
+  readonly consideredObservations: number;
+}
+
+/** Convert Actions run records into observations so they can be folded with lane evidence. */
+export function runsToObservations(
+  runs: readonly HeartbeatRunRecord[],
+  source = "github-actions/.github/workflows/agent-heartbeat.yml",
+): readonly FleetTickObservation[] {
+  const out: FleetTickObservation[] = [];
+  for (const run of runs) {
+    if (!isSuccessfulRun(run)) continue;
+    const at = parseTimestamp(run.created_at);
+    if (at === undefined) continue;
+    out.push({ source, at: at.toISOString() });
+  }
+  return out;
+}
+
+/**
+ * Is ANY tick source alive?
+ *
+ * Pure: no network, no clock, no filesystem. `now` is injected so every outage shape is reachable
+ * from a test - a monitor whose alarm path never executes in test is a monitor nobody has seen
+ * work.
+ */
+export function assessFleetLiveness(
+  observations: readonly FleetTickObservation[],
+  now: Date,
+  staleAfterMinutes: number = DEFAULT_STALE_AFTER_MINUTES,
+): FleetLivenessVerdict {
+  const considered = observations.length;
+
+  // NO EVIDENCE FROM ANY SOURCE IS AN ALARM, NOT A PASS. Same reasoning as the single-source
+  // version: a bad filter, a lost permission or an API hiccup all yield zero rows, and reading
+  // zero as "nothing wrong" makes the monitor report healthiest exactly when it has gone blind.
+  if (considered === 0) {
+    return {
+      alive: false,
+      summary:
+        "no tick evidence from ANY source - either every tick source has stopped or the watchdog cannot see any of them; both need a human",
+      sources: [],
+      consideredObservations: 0,
+    };
+  }
+
+  const newestBySource = new Map<string, number>();
+  for (const observation of observations) {
+    const at = parseTimestamp(observation.at);
+    // A malformed timestamp drops the record rather than defaulting to now: a bad value read as
+    // the current time makes a dead source look fresh, which is health nobody measured.
+    if (at === undefined) continue;
+    const previous = newestBySource.get(observation.source);
+    if (previous === undefined || at.getTime() > previous) newestBySource.set(observation.source, at.getTime());
+  }
+
+  if (newestBySource.size === 0) {
+    return {
+      alive: false,
+      summary: `no PARSEABLE tick timestamps among ${considered} observations - the evidence exists but cannot be read, which is a watchdog fault and not a clean bill of health`,
+      sources: [],
+      consideredObservations: considered,
+    };
+  }
+
+  const sources: SourceLiveness[] = [...newestBySource.entries()]
+    .map(([source, ms]) => {
+      // Clamped at zero for the same reason as above: a future-dated record (clock skew) would
+      // otherwise yield a NEGATIVE age that sails under every threshold and silences the alarm
+      // permanently.
+      const ageMinutes = Math.max(0, Math.floor((now.getTime() - ms) / MS_PER_MINUTE));
+      return { source, lastAt: new Date(ms).toISOString(), ageMinutes, fresh: ageMinutes < staleAfterMinutes };
+    })
+    .sort((a, b) => a.ageMinutes - b.ageMinutes);
+
+  const freshest = sources[0];
+  const alive = sources.some((s) => s.fresh);
+  const stale = sources.filter((s) => !s.fresh);
+
+  const staleNote =
+    stale.length === 0
+      ? ""
+      : ` DEGRADED: ${stale.map((s) => `${s.source} last ticked ${s.ageMinutes}min ago`).join("; ")}.`;
+
+  return {
+    alive,
+    summary: alive
+      ? `fleet alive - ${sources.filter((s) => s.fresh).length}/${sources.length} tick sources fresh; newest ${freshest?.source} ${freshest?.ageMinutes}min ago (threshold ${staleAfterMinutes}min).${staleNote}`
+      : `NO TICK FROM ANY SOURCE IN ${freshest?.ageMinutes} MINUTES - newest was ${freshest?.source} at ${freshest?.lastAt}, threshold ${staleAfterMinutes}min`,
+    sources,
+    consideredObservations: considered,
+  };
+}
+
+/**
+ * CLI: `bun heartbeat-liveness.ts <runs.json> [staleAfterMinutes] [evidence.json]`.
+ *
+ * The third argument is OPTIONAL additional tick evidence - a JSON array of
+ * `{ source, at }` produced by `lane-tick-evidence.ts`. When it is absent the verdict is computed
+ * over the Actions runs alone, which is what this CLI did before fleet liveness existed; the
+ * single-source path is therefore unchanged for any caller that does not opt in.
+ *
+ * Exits 1 when nothing is alive. The non-zero exit IS the alarm surface - the calling workflow
+ * turns red - so it must never be softened into a warning.
  */
 async function main(argv: readonly string[]): Promise<number> {
-  const [pathArg, thresholdArg] = argv;
+  const [pathArg, thresholdArg, evidenceArg] = argv;
   if (pathArg === undefined) {
-    console.error("usage: heartbeat-liveness.ts <runs.json> [staleAfterMinutes]");
+    console.error("usage: heartbeat-liveness.ts <runs.json> [staleAfterMinutes] [evidence.json]");
     return 2;
   }
 
@@ -196,14 +355,43 @@ async function main(argv: readonly string[]): Promise<number> {
   }
 
   const raw = await Bun.file(pathArg).text();
-  const verdict = assessHeartbeatLiveness(extractRuns(JSON.parse(raw)), new Date(), staleAfterMinutes);
+  const runs = extractRuns(JSON.parse(raw));
+
+  let extra: readonly FleetTickObservation[] = [];
+  if (evidenceArg !== undefined) {
+    // A MALFORMED EVIDENCE FILE MUST FAIL LOUDLY, never degrade to an empty array. Silently
+    // dropping it would remove the second source from the verdict at exactly the moment the
+    // second source is what is keeping the fleet alive - the watchdog would then report an
+    // outage caused by its own parser.
+    const parsed: unknown = JSON.parse(await Bun.file(evidenceArg).text());
+    if (!Array.isArray(parsed))
+      throw new Error(`evidence file ${evidenceArg} must contain a JSON array of { source, at }`);
+    extra = parsed as readonly FleetTickObservation[];
+  }
+
+  const observations = [...runsToObservations(runs), ...extra];
+  const verdict = assessFleetLiveness(observations, new Date(), staleAfterMinutes);
 
   console.log(`[heartbeat-liveness] ${verdict.summary}`);
-  console.log(`[heartbeat-liveness] runs considered: ${verdict.consideredRuns}`);
+  console.log(
+    `[heartbeat-liveness] observations considered: ${verdict.consideredObservations} (actions runs: ${runs.length}, lane evidence: ${extra.length})`,
+  );
+  for (const source of verdict.sources) {
+    console.log(
+      `[heartbeat-liveness]   ${source.fresh ? "FRESH" : "STALE"} ${source.source} ${source.ageMinutes}min ago`,
+    );
+  }
   if (!verdict.alive) {
     // `::error::` so the annotation lands on the run summary, not just in the log body.
     console.log(`::error::[heartbeat-liveness] ${verdict.summary}`);
     return 1;
+  }
+  // A degraded-but-alive fleet must still be LOUD, or a permanently dead Actions lane becomes
+  // invisible the moment a second source covers for it - trading one blind spot for another.
+  for (const source of verdict.sources.filter((s) => !s.fresh)) {
+    console.log(
+      `::warning::[heartbeat-liveness] tick source ${source.source} has not ticked in ${source.ageMinutes}min, but the fleet is alive on another source`,
+    );
   }
   return 0;
 }

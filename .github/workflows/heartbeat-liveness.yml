@@ -70,6 +70,10 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # Lane evidence is read from commit history, so the default depth-1 checkout cannot
+          # answer the question. Depth 0 costs a fuller clone on a 5-minute job; that is the
+          # price of the watchdog being able to see ticks it did not schedule.
+          fetch-depth: 0
 
       - name: Setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -93,6 +97,42 @@ jobs:
           gh api "repos/${REPO}/actions/workflows/agent-heartbeat.yml/runs?per_page=50" > runs.json
           echo "fetched $(bun -e 'console.log(JSON.parse(require("fs").readFileSync("runs.json","utf8")).workflow_runs.length)') runs"
 
+      - name: Collect lane tick evidence (every source, not just Actions)
+        # WHY THIS STEP EXISTS. The step above asks GitHub whether GitHub ran a job. That is the
+        # provider's job status, and it is not the same question as "did a tick happen" -- the two
+        # were measured coming apart in BOTH directions on 2026-08-25:
+        #
+        #   FALSE ALARM at 17:11Z: the assessor exited 1 with "NO SUCCESSFUL agent-heartbeat IN
+        #   102 MINUTES" while heartbeat/alexa carried a tick 22 minutes old. The run that
+        #   produced that tick went red at a LATER step, so its conclusion was not `success`.
+        #
+        #   FALSE GREEN, structurally: agent-heartbeat.yml runs its tick body under `|| echo` and
+        #   its commit step succeeds on an empty stage, so a run can conclude `success` having
+        #   committed nothing at all.
+        #
+        # And a tick from any substrate that is not GitHub Actions contributes ZERO rows to the
+        # runs list, so it could never have turned this check green -- which made the watchdog the
+        # hardest GitHub coupling in the fleet, harder than the workflow it watches.
+        #
+        # ADDITIVE ONLY. A lane holds just UNFLUSHED ticks (the preparer resets it over main every
+        # tick), so a flush that just landed legitimately leaves a lane empty. Absence here is NOT
+        # evidence of death, and `assessFleetLiveness` is written so it cannot become one.
+        #
+        # COST: one extra fetch of the heartbeat refs on a job that already runs every 15 minutes.
+        run: |
+          set -euo pipefail
+          # Lanes are fetched explicitly: they are not part of the default refspec, and reading
+          # origin/main alone under-reports liveness by up to a flush interval.
+          git fetch --quiet origin "+refs/heads/heartbeat/*:refs/remotes/origin/heartbeat/*"
+          # Every lane, not a hardcoded roster -- a new tick source must become visible by
+          # EXISTING, not by someone remembering to add it to a list here.
+          refs=$(git for-each-ref --format="%(refname)" "refs/remotes/origin/heartbeat/*")
+          echo "[evidence] lanes discovered:"
+          echo "$refs"
+          # shellcheck disable=SC2086
+          bun src/Core.TypeScript/agent-heartbeats/lane-tick-evidence.ts $refs > lane-evidence.json
+          echo "[evidence] observations: $(bun -e 'console.log(JSON.parse(require("fs").readFileSync("lane-evidence.json","utf8")).length)')"
+
       - name: Assess liveness
         id: assess
         env:
@@ -102,7 +142,9 @@ jobs:
           # Exits non-zero when the lane is not alive. That non-zero IS the alarm — this step is
           # deliberately not `continue-on-error`, because a watchdog that cannot turn the run red
           # reports nothing a human will ever see.
-          bun src/Core.TypeScript/agent-heartbeats/heartbeat-liveness.ts runs.json "$STALE_AFTER_MINUTES" \
+          # Third argument is the lane evidence. Without it this is the single-source check it
+          # has always been; with it, "alive" means at least one tick source ticked, whichever one.
+          bun src/Core.TypeScript/agent-heartbeats/heartbeat-liveness.ts runs.json "$STALE_AFTER_MINUTES" lane-evidence.json \
             | tee liveness.txt
 
       - name: Raise or refresh the tracking issue

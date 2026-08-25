@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  launchd unit for the SECOND tick source (macOS). Substitute AGENT, REPO_ROOT, MODEL, BUN_PATH.
+
+  StartInterval is 900s to match the Actions lane's declared `*/15 * * * *`. Note that GitHub's
+  scheduler is best-effort and was measured DROPPING 16% of slots on this repository, with gaps
+  of 12..43 minutes against a declared 15. launchd's StartInterval does not drop slots while the
+  machine is awake, so this source is expected to be MORE punctual than the one it backs up --
+  which is the point of it existing.
+
+  NO CREDENTIAL IS SET HERE, deliberately. The push rides the invoking user's existing git
+  credential (on the maintainer's machine, ssh -- `gh auth status` reports
+  "Git operations protocol: ssh"). A launchd agent runs as the user and inherits the keychain.
+  Putting a token in this file would create exactly the artifact that must not exist.
+
+  RunAtLoad is FALSE. A tick on load means a tick every time the plist is reloaded, which turns
+  an edit into a heartbeat and makes the cadence measurement lie about the substrate.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lucent.zeta.heartbeat.AGENT</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>BUN_PATH</string>
+        <string>REPO_ROOT/src/Core.TypeScript/agent-heartbeats/local-tick.ts</string>
+        <string>--agent</string>
+        <string>AGENT</string>
+        <string>--repo-root</string>
+        <string>REPO_ROOT</string>
+        <string>--model</string>
+        <string>MODEL</string>
+        <string>--runtime</string>
+        <string>launchd/com.lucent.zeta.heartbeat.AGENT</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>900</integer>
+    <key>WorkingDirectory</key>
+    <string>REPO_ROOT</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>ZETA_SINK_MODE</key>
+        <string>local</string>
+        <key>ZETA_AGENT_ID</key>
+        <string>AGENT</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/tmp/zeta-heartbeat-AGENT.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/zeta-heartbeat-AGENT.err.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

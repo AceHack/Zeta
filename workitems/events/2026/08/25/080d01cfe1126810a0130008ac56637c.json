@@ -1,0 +1,14 @@
+{
+  "id": "080d01cfe1126810a0130008ac56637c",
+  "at": "2026-08-25T17:33:40.301Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WZR8JC087G0R001F4HSSS",
+    "type": "task",
+    "title": "PWA bounded-grant renewal series as a DORA outcome signal: emit grant events into the work-item fold",
+    "slug": "pwa-bounded-grant-renewal-series-as-a-dora-outcome-signal-em",
+    "priority": "P2",
+    "filename": "081M0WZR8JC087G0R001F4HSSS-pwa-bounded-grant-renewal-series-as-a-dora-outcome-signal-em.md"
+  }
+}
