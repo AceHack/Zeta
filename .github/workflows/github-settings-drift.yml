@@ -35,6 +35,10 @@ on:
       - "src/Core.TypeScript/hygiene/snapshot-github-settings.ts"
       - "src/Core.TypeScript/hygiene/check-github-settings-drift.ts"
       - ".github/workflows/github-settings-drift.yml"
+      # The ruleset reconciler's PLAN (read-only) half rides this workflow.
+      - "src/Core.TypeScript/hygiene/reconcile-rulesets.ts"
+      - "src/Core.TypeScript/hygiene/ruleset-model.ts"
+      - "docs/operations/rulesets/**"
 
 permissions:
   # `actions: read` covers workflow reads + Actions variables +
@@ -85,3 +89,49 @@ jobs:
         run: |
           set -euo pipefail
           bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"
+
+  # ---------------------------------------------------------------------------
+  # Ruleset reconciliation — the DETECT (plan) half only.
+  #
+  # This job is READ-ONLY by construction: it never passes --apply, and the
+  # token it holds cannot write rulesets even if it did. The write half lives
+  # in ruleset-apply.yml, which is deliberately a SEPARATE workflow: this one
+  # is `pull_request`-triggered, and a workflow reachable from a pull request
+  # must never hold `administration: write`.
+  #
+  # ADVISORY, like its sibling above (ISociety observe lane) — but note the
+  # exit-code semantics differ from `continue-on-error` optics: exit 2 means
+  # the reconciler could NOT read live state, i.e. the check did not run. That
+  # is reported as a distinct line rather than being allowed to look green.
+  # ---------------------------------------------------------------------------
+  ruleset-plan:
+    name: ruleset reconciliation (plan only)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: plan ruleset reconciliation
+        env:
+          # First-party trusted context only, as above.
+          # GITHUB_TOKEN cannot read rulesets; RULESET_READER_TOKEN is an
+          # optional read-scoped credential. When it is absent the plan exits
+          # 2 (INDETERMINATE) and says so — it does not report success.
+          GH_TOKEN: ${{ secrets.RULESET_READER_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          bun src/Core.TypeScript/hygiene/reconcile-rulesets.ts --repo "$GH_REPO"
+          rc=$?
+          case "$rc" in
+            0) echo "::notice::rulesets in sync with committed desired state" ;;
+            1) echo "::warning::ruleset DRIFT — live differs from docs/operations/rulesets/" ;;
+            2) echo "::warning::ruleset plan INDETERMINATE — could not read live state; this check DID NOT RUN" ;;
+            3) echo "::error::ruleset plan REFUSED — ungated widening or structural violation" ;;
+            *) echo "::error::ruleset plan unexpected exit $rc" ;;
+          esac
+          # Advisory lane: surface the signal, never block the merge.
+          exit 0

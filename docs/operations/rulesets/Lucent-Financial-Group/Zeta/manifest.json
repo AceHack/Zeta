@@ -1,0 +1,6 @@
+{
+  "repo": "Lucent-Financial-Group/Zeta",
+  "default_branch": "main",
+  "managed_ruleset_ids": [16934633],
+  "note": "managed_ruleset_ids is an ALLOWLIST, and it is the reconciler's own least-privilege boundary. The token the reconciler runs under can edit EVERY ruleset in this repository; the constraint that it edits only these comes from this reviewed file, not from the token. Adding an id here is a reviewed change that must land with a matching <id>-<slug>.json desired-state file in this directory — the reconciler refuses to run if either half is missing, because a desired-state file nothing applies constrains nothing, and a managed id with no file has no intent to converge to. Rulesets NOT listed here are covered only by the advisory detect-only snapshot at src/Core.TypeScript/hygiene/github-settings.expected.json. This reconciler never CREATES and never DELETES a ruleset."
+}

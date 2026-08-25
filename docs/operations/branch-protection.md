@@ -11,6 +11,23 @@ Both must be snapshotted; missing either gives an incomplete picture and re-crea
 
 **Last snapshot:** 2026-04-26 — see `branch-protection-lfg-main.json` (rulesets) + `branch-protection-lfg-main-classic.json` (classic) + the AceHack equivalents for raw GitHub API output.
 
+> **THESE FOUR JSON FILES ARE DETECT-ONLY SNAPSHOTS WITH NO RECONCILER, AND THEY HAVE DRIFTED.**
+> Measured 2026-08-25: `branch-protection-lfg-main.json` attributes `pull_request`
+> (squash-only + `required_review_thread_resolution`), `code_quality`,
+> `copilot_code_review`, and `required_linear_history` to ruleset `15256879` —
+> which live carries **`rules: []`**. No live ruleset carries a `pull_request`
+> rule at all. Those properties *are* still enforced on `main`, but by **classic
+> branch protection** (`required_conversation_resolution`, `required_linear_history`)
+> and the **repo-level merge settings** (`allow_merge_commit: false`,
+> `allow_rebase_merge: false`) — not by the ruleset named here. The enforcement
+> survived by a different mechanism while the record went quietly false, which is
+> the worst shape of drift: the outcome still looks right, so nothing prompts
+> anyone to notice the control moved. That is the whole argument for
+> [`RULESET-RECONCILIATION.md`](RULESET-RECONCILIATION.md), which now owns the
+> managed subset under `docs/operations/rulesets/` and converges it automatically.
+> Treat everything in this file as **history plus a live-read recipe**, never as
+> current state — and read live before acting.
+
 > **STALE ON ONE POINT, CORRECTED 2026-08-19 — do not read the required-status-checks
 > list below as current.** The snapshot is from 2026-04-26 and predates the
 > drift-and-heal flip. Read live, today:

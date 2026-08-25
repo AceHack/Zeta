@@ -1,0 +1,20 @@
+{
+  "bypass_actors": [],
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "refs/heads/heartbeat/*"
+      ]
+    }
+  },
+  "enforcement": "active",
+  "id": 16934633,
+  "name": "Heartbeat Branch Protection",
+  "rules": [
+    {
+      "type": "deletion"
+    }
+  ],
+  "target": "branch"
+}
