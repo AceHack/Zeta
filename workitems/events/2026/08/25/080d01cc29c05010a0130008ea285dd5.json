@@ -1,0 +1,14 @@
+{
+  "id": "080d01cc29c05010a0130008ea285dd5",
+  "at": "2026-08-25T15:23:47.082Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WRAE0A087G0R003C2CPTK",
+    "type": "bug",
+    "title": "the flush credential probe tested a contents read while the step does a PR write",
+    "slug": "the-flush-credential-probe-tested-a-contents-read-while-the",
+    "priority": "P2",
+    "filename": "081M0WRAE0A087G0R003C2CPTK-the-flush-credential-probe-tested-a-contents-read-while-the.md"
+  }
+}

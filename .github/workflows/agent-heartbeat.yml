@@ -1682,7 +1682,46 @@ jobs:
             echo "::error title=Missing ZETA_PR_ARCHIVE_TOKEN::$AGENT: this step holds the PR-CREATE role and its credential is absent. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Contents: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
             exit 1
           fi
+          # PROBE THE SCOPE THE STEP ACTUALLY USES, NOT A SCOPE IT HAPPENS TO HAVE.
+          #
+          # This read `repos/$GITHUB_REPOSITORY/commits` — a CONTENTS read — while the
+          # step's real work is `gh pr create`, which needs `pull_requests: write`.
+          # Those are different permissions, so a credential could sail through the
+          # probe and die on the work. It did, twice on 2026-08-25: the probe passed
+          # and `gh pr create` returned HTTP 403, and because the guard could not fail
+          # for the reason the step fails, three agents read the red as a broken flush
+          # and one of them (me) spent two rounds telling the maintainer his token was
+          # wrong. It was not; the step was calling PR-create with the branch-push
+          # credential.
+          #
+          # A write scope has no side-effect-free endpoint, so this probes it with a
+          # create that CANNOT succeed — `head` names a ref that does not exist — and
+          # reads the status code, which discriminates exactly the two cases:
+          #
+          #     403  the credential may NOT create pull requests here
+          #     422  the credential MAY; the request was merely invalid
+          #
+          # Verified against a known-good credential before shipping: returns 422 with
+          # `{"resource":"PullRequest","field":"head","code":"invalid"}` and creates
+          # nothing. The contents probe is kept as a second, separate question — the
+          # step reads the repo too — so a failure now says WHICH capability is absent.
           probe_api() { { gh api "repos/$GITHUB_REPOSITORY/commits?per_page=1" --jq '.[0].sha' >/dev/null; } 2>&1; }
+          probe_pr_create_scope() {
+            gh api -X POST "repos/$GITHUB_REPOSITORY/pulls" \
+              -f "title=zeta-scope-probe" \
+              -f "head=zeta-scope-probe-nonexistent-ref-$GITHUB_RUN_ID" \
+              -f "base=main" 2>&1
+          }
+          if PR_PROBE_OUT=$(probe_pr_create_scope); then
+            echo "::warning title=Heartbeat PR-scope probe unexpectedly succeeded::$AGENT: the probe create was supposed to fail on a nonexistent head. Check for a stray PR."
+          elif printf '%s' "$PR_PROBE_OUT" | grep -q 'HTTP 403'; then
+            echo "::error title=Heartbeat PR-CREATE credential lacks the scope::$AGENT: the PR-create credential is refused POST /repos/.../pulls with HTTP 403, so this flush WILL fail at 'gh pr create' no matter what the contents probe says. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+          elif printf '%s' "$PR_PROBE_OUT" | grep -q 'HTTP 422'; then
+            echo "[flush] $AGENT: PR-create scope confirmed (422 on an invalid head = permitted)."
+          else
+            echo "$PR_PROBE_OUT"
+            echo "::warning title=Heartbeat PR-scope probe inconclusive::$AGENT: neither 403 nor 422. Leaving the credential alone — this is not evidence of denial."
+          fi
           if ! OUT=$(probe_api); then
             if printf '%s' "$OUT" | grep -qE 'HTTP (401|403|404)'; then
               echo "::warning title=Heartbeat API credential denied::$AGENT: ZETA_PR_ARCHIVE_TOKEN cannot read this repository over the API; falling back to GITHUB_TOKEN. FIX: grant that fine-grained PAT 'Contents: read and write' on Lucent-Financial-Group/Zeta (081M010H4KE)."
