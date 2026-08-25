@@ -1,0 +1,12 @@
+{
+  "pr_number": 14586,
+  "archive_path": "docs/history/pr-reviews/PR-14586-deps-bump-lucide-react-from-0-453-0-to-1-33-0-in-src-renderers-website.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:12:42.663Z",
+  "schema_version": "v1",
+  "commit_sha": "9010b9b8a1fc465040ce398d07c50d46f576708a",
+  "title": "deps: Bump lucide-react from 0.453.0 to 1.33.0 in /src/Renderers/website",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:12:01Z",
+  "head_ref": "dependabot/npm_and_yarn/src/Renderers/website/lucide-react-1.33.0"
+}
