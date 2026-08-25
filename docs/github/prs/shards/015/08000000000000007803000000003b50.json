@@ -1,0 +1,12 @@
+{
+  "pr_number": 15184,
+  "archive_path": "docs/history/pr-reviews/PR-15184-design-rx-stage-two-planner-joins-the-statistics-layer-is-repair-and-connect-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T03:55:36.777Z",
+  "schema_version": "v1",
+  "commit_sha": "f9770ebd16295359fba4683a28b2a742b2127161",
+  "title": "design(rx): stage-two planner joins — the statistics layer is repair-and-connect, and Plan.fs's join estimates are unfalsified",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T03:54:50Z",
+  "head_ref": "rx-planner-joins-stage-two-statistics"
+}
