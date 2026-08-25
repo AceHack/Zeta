@@ -1,0 +1,12 @@
+{
+  "pr_number": 14569,
+  "archive_path": "docs/history/pr-reviews/PR-14569-deps-bump-z3-solver-from-4-16-0-to-5-1-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:17:55.079Z",
+  "schema_version": "v1",
+  "commit_sha": "6ba19b7b7ac9e57b5763aa37646128b2771b92ff",
+  "title": "deps: Bump z3-solver from 4.16.0 to 5.1.0",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:17:07Z",
+  "head_ref": "dependabot/bun/z3-solver-5.1.0"
+}
