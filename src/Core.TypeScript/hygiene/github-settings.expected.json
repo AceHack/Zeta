@@ -296,6 +296,11 @@
       "state": "active"
     },
     {
+      "name": "agentic-organization-integration",
+      "path": ".github/workflows/agentic-organization-integration.yml",
+      "state": "active"
+    },
+    {
       "name": "agentic-organization-tests",
       "path": ".github/workflows/agentic-organization-tests.yml",
       "state": "active"
@@ -431,6 +436,11 @@
       "state": "active"
     },
     {
+      "name": "interp-lane",
+      "path": ".github/workflows/interp-lane.yml",
+      "state": "active"
+    },
+    {
       "name": "inventory-hardening-check",
       "path": ".github/workflows/inventory-hardening-check.yml",
       "state": "active"
@@ -563,6 +573,11 @@
     {
       "name": "rerun-cancelled-gate",
       "path": ".github/workflows/rerun-cancelled-gate.yml",
+      "state": "active"
+    },
+    {
+      "name": "rerun-toolchain-install-stall",
+      "path": ".github/workflows/rerun-toolchain-install-stall.yml",
       "state": "active"
     },
     {
