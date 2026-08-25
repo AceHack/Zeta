@@ -60,7 +60,7 @@ on both the write and read paths and an Ed25519 signature, all identical across 
 
 Found by measurement while closing a coverage gap (the parity scenarios did not originally
 exercise the YAML modules this change touched). `ace deps validate` on a graph using flow
-sequences or folded block scalars routes through `yaml/vendor.ts`, whose adapter is the Bun
+sequences or folded block scalars routes through `src/Core.TypeScript/yaml/vendor.ts`, whose adapter is the Bun
 built-in **`Bun.YAML`**. On node that path returns a **named refusal** (rc=1,
 `Bun.YAML is unavailable on this runtime`) — not a crash, not a different answer. Subset-YAML
 graphs validate byte-identically on both. Pinned by a test asserting the refusal is named and

@@ -31,7 +31,7 @@ the implementation defeats it. Nothing here is an argument for deleting the modu
 ## P0
 
 1. **Zero falsifiers.** 275 lines of measurement on `main` that nothing could distinguish from a
-   stub. `toy-is-free-metered-must-be-earned.md`: unfalsified is `unmetered`.
+   stub. `.claude/rules/toy-is-free-metered-must-be-earned.md`: unfalsified is `unmetered`.
 2. **Forced agreement scored as maximum independence.** A menu of one option gives
    `expectedByChance = 1`, denominator `1 - 1 = 0`, the guard returns excess `0`, and the fold
    reports `coefficient = 1.0`, band `"strongly-independent"`. Two agents that could not possibly
@@ -88,7 +88,7 @@ the implementation defeats it. Nothing here is an argument for deleting the modu
   agreement on one tick is one correlator with no settings. Missing structure, not sampling error.
 - **No information.** `S = 2(1+c)` is affine and invertible. Its only effect was to place
   `2*sqrt(2)` at `c ~ 0.414` on a scale the mapping itself chose — numerology in the exact sense of
-  `numerology-vs-number-theory.md`.
+  `.claude/rules/numerology-vs-number-theory.md`.
 - **Self-refuting.** Header: "S > 2*sqrt(2): impossible if measured honestly". Its own best case
   `c = 1` gives `S = 4 > 2.828`.
 - **Inference inverted.** `DecorrelationMeter.fs` establishes that a passive shared common cause
