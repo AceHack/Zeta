@@ -1,0 +1,12 @@
+{
+  "pr_number": 15241,
+  "archive_path": "docs/history/pr-reviews/PR-15241-fix-query-planner-two-physical-joins-two-cost-functions-and-the-five-tests-named.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:51:52.379Z",
+  "schema_version": "v1",
+  "commit_sha": "00f3f48bf9f680aedf5b3e2430cdbcf9f6e4c0f6",
+  "title": "fix(query-planner): two physical joins, two cost functions — and the five tests named after formulas they never asserted",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:51:02Z",
+  "head_ref": "fix/query-planner-cost-model-two-joins"
+}
