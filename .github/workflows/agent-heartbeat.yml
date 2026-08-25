@@ -1829,10 +1829,67 @@ jobs:
             BLOCKER_STATE=$(gh pr view "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
               --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo UNKNOWN)
             if [ "$BLOCKER_STATE" = "DIRTY" ]; then
-              echo "::warning title=Heartbeat flush blocker retired::$AGENT: PR #$OPEN_FLUSH_PR is CONFLICTED (DIRTY) and can never merge; closing it so the lane can re-cut. No events are lost — heartbeat/$AGENT still carries them."
-              gh pr close "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
-                --comment "Retired by the flush lane: mergeStateStatus was DIRTY, so this snapshot could never merge. The lane (heartbeat/$AGENT) still holds every unflushed event; the next flush re-cuts from the current lane head over current main, which also resolves the conflict." >/dev/null 2>&1 || true
-              OPEN_FLUSH_PR=""
+              # ONE RETRY, THEN BE LOUD — retiring a blocker assumes the re-cut FIXES it.
+              #
+              # The original escape (mine, earlier today) assumed a re-cut from the
+              # current lane head over current main resolves the conflict. Measured
+              # hours later: it does not always. #15362 was retired as DIRTY, the lane
+              # re-cut as #15366, and #15366 came back DIRTY too — so the escape would
+              # retire and re-cut forever, replacing a permanent wedge with a permanent
+              # churn. Quieter than the wedge, and therefore worse: nothing goes red.
+              #
+              # Stranger still, and the reason this backs off rather than trying harder:
+              # `git merge-tree` says that head merges into that exact base CLEANLY
+              # (rc=0, same base 7e1e1487f, same head 5a67ec385), while GitHub reports
+              # CONFLICTING on three consecutive reads. I could not reconcile them. An
+              # automation that does not understand why a thing is failing must not keep
+              # acting on it — so it acts ONCE and then hands over.
+              RETIRE_MARKER="Retired by the flush lane"
+              # COUNT ONLY THE LANE'S OWN RETIREMENTS, identified by the marker it writes.
+              # Two false positives were caught by running this query live before shipping:
+              #   * `--state closed` INCLUDES MERGED, so a HEALTHY lane that merged two
+              #     flushes in 2h looked like two retirements and the guard would have
+              #     refused to retire a genuinely-stuck blocker — reinstating the wedge.
+              #   * a HUMAN closing a flush PR by hand (I closed #15319 this afternoon)
+              #     also counted, so a manual intervention would silently disable the
+              #     automatic one.
+              # Matching the lane's own comment marker excludes both: it counts exactly the
+              # thing whose repetition means 're-cutting is not working'.
+              # `--jq` with an interpolated marker needs escaping through two quoting layers
+              # and got it wrong silently: the expression errored, `2>/dev/null` ate it, the
+              # result was EMPTY, and `${PRIOR_RETIRED:-0}` turned that into 0 — i.e. the
+              # guard would have permitted every retirement and been perfectly vacuous.
+              # `jq --arg` passes the marker as data, so there is nothing to escape.
+              # READ gh's STATUS, NOT THE PIPELINE'S. This block runs under `set -e` WITHOUT
+              # `pipefail`, so `$?` after `gh ... | jq ...` is JQ's status — `gh` could fail
+              # outright and the guard would still read success. That is the same defect this
+              # repo has been repairing all day, and I wrote it into the repair. So the fetch
+              # and the parse are separate statements with separately-checked outcomes.
+              #
+              # `|| PRIOR_GH_RC=$?` rather than a bare assignment because `set -e` would
+              # otherwise abort the whole step on a transient API blip, taking down a flush
+              # that had nothing wrong with it.
+              PRIOR_GH_RC=0
+              PRIOR_JSON=$(gh pr list --repo "$GITHUB_REPOSITORY" --state closed --limit 10 \
+                --head "$SNAPSHOT_REF" --base main --json number,closedAt,mergedAt,comments) || PRIOR_GH_RC=$?
+              if [ "$PRIOR_GH_RC" -ne 0 ] || [ -z "$PRIOR_JSON" ]; then
+                echo "::error title=Heartbeat retire-guard could not read history::$AGENT: the prior-retirement query failed (rc=$PRIOR_GH_RC). REFUSING to retire PR #$OPEN_FLUSH_PR — a guard that cannot read its own history must not authorise the action it guards."
+                PRIOR_RETIRED=1
+              else
+                PRIOR_RETIRED=$(printf '%s' "$PRIOR_JSON" | jq --arg m "$RETIRE_MARKER" '[.[] | select(.mergedAt == null) | select((now - (.closedAt|fromdateiso8601)) < 7200) | select([.comments[]?.body] | join(" ") | contains($m))] | length') || PRIOR_RETIRED=""
+                if [ -z "$PRIOR_RETIRED" ]; then
+                  echo "::error title=Heartbeat retire-guard could not parse history::$AGENT: the prior-retirement filter produced no value. REFUSING to retire PR #$OPEN_FLUSH_PR."
+                  PRIOR_RETIRED=1
+                fi
+              fi
+              if [ "${PRIOR_RETIRED:-0}" -ge 1 ]; then
+                echo "::error title=Heartbeat lane wedged — retire did not help::$AGENT: PR #$OPEN_FLUSH_PR is DIRTY and a previous flush PR on $SNAPSHOT_REF was already closed within the last 2h. Re-cutting is NOT resolving this, so the lane is NOT retiring it again — that would churn silently instead of failing visibly. Needs a look. No events are lost; heartbeat/$AGENT holds them and the flush is idempotent (G-Set union)."
+              else
+                echo "::warning title=Heartbeat flush blocker retired::$AGENT: PR #$OPEN_FLUSH_PR is CONFLICTED (DIRTY) and can never merge; closing it so the lane can re-cut ONCE. If the re-cut is DIRTY too, the next tick escalates instead of retrying. No events are lost — heartbeat/$AGENT still carries them."
+                gh pr close "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
+                  --comment "$RETIRE_MARKER: mergeStateStatus was DIRTY, so this snapshot could never merge. The lane (heartbeat/$AGENT) still holds every unflushed event and the flush is idempotent, so nothing is lost by re-cutting. If the re-cut comes back DIRTY as well, the lane will STOP retiring and escalate rather than loop." >/dev/null 2>&1 || true
+                OPEN_FLUSH_PR=""
+              fi
             fi
           fi
 

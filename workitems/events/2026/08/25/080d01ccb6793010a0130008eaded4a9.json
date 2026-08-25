@@ -1,0 +1,14 @@
+{
+  "id": "080d01ccb6793010a0130008eaded4a9",
+  "at": "2026-08-25T15:42:59.878Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WSDKS5087G0R0034ED7H5",
+    "type": "bug",
+    "title": "the DIRTY escape assumed re-cutting resolves the conflict; when it does not it churns forever",
+    "slug": "the-dirty-escape-assumed-re-cutting-resolves-the-conflict-wh",
+    "priority": "P2",
+    "filename": "081M0WSDKS5087G0R0034ED7H5-the-dirty-escape-assumed-re-cutting-resolves-the-conflict-wh.md"
+  }
+}
