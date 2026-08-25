@@ -1,0 +1,14 @@
+{
+  "id": "080d01cddaec9010a013000886441360",
+  "at": "2026-08-25T16:22:55.634Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WVPQCH087G0R000EVN349",
+    "type": "task",
+    "title": "record the ladder that replaces per-PR human review in VISION.md",
+    "slug": "record-the-ladder-that-replaces-per-pr-human-review-in-visio",
+    "priority": "P2",
+    "filename": "081M0WVPQCH087G0R000EVN349-record-the-ladder-that-replaces-per-pr-human-review-in-visio.md"
+  }
+}

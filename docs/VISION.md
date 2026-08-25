@@ -3331,3 +3331,174 @@ the logical, clock-free causal order · git's commit DAG as the working instance
 `.claude/rules/local-time-never-enters-the-shared-fold.md` ·
 `docs/research/2026-08-11-declare-is-a-cell-not-a-flag-*` (the derivation) ·
 `docs/research/2026-08-11-mutants-coexist-*` (the ledger this arose from).
+
+## The ladder that replaces "a human looked at it" (2026-08-25, Aaron)
+
+The opening of this document says the artificial bound is **human review
+capacity**, and that the real bounds should be *modeled* rather than
+*approximated by a human looking*. This section is the approximation's
+replacement, stated as Aaron gave it:
+
+> "if you want to save the shape of non per PR review per human … formal
+> analysis of specs, adversarial review constantly/red team, mutations and other
+> techniques to look for vacuous or irrelevant noise tests and claims, formal
+> analysis, and then multi language byte locked agreements, and then a futamura
+> IR generation pipeline that can reproduce the different languages accurately
+> from IR that are as good or better than the hand written ones based on
+> performance and allocations and such. this is how we come up with a
+> standardized 'english'/base class library of composable concepts. we also lean
+> into computational expressions to help understand composability and monads and
+> category theory for programmers. These are just more and more layers a
+> reasonable intelligence would agree upon given intelligence is cheap now so we
+> want to avoid slow expensive human intelligence except where it's actually
+> needed and let non human intelligence flourish where it's not needed."
+
+### The layers, and what each one alone cannot do
+
+Each rung answers a question the ones below it cannot. None subsumes another,
+which is why the answer is a ladder and not a single technique.
+
+| # | Layer | Answers | Blind to |
+|---|---|---|---|
+| 1 | **Formal analysis of specs** | does this hold for ALL inputs? | whether the spec says the right thing; whether the implementation matches it |
+| 2 | **Adversarial review / red team, constantly** | what did everyone miss? | anything nobody thought to attack |
+| 3 | **Mutation + vacuity detection** | can this check FAIL? does this claim constrain anything? | whether the surviving checks are the ones that matter |
+| 4 | **Multi-language byte-locked agreement** | do N independent implementations agree, byte for byte? | whether they are all wrong the same way (shared spec error) |
+| 5 | **Futamura IR generation** | can each language be REGENERATED from the IR, at parity or better on time and allocations? | whether the IR itself is the right abstraction |
+| 6 | **Computational expressions** | is the composition law explicit and checkable? | anything outside the algebra |
+
+Layer 5 carries a **falsifiable acceptance test**, which is what keeps it from
+being an aspiration: the generated implementation must be *as good or better
+than the hand-written one, measured on performance and allocations*. Not "it
+compiles" — it competes, on numbers, against the human's version.
+
+### The output is a vocabulary, not just a verification pipeline
+
+The layers are not only quality gates. Run together they **produce** something:
+
+> "this is how we come up with a standardized 'english' / base class library of
+> composable concepts."
+
+A concept that survives formal analysis, red-teaming, mutation, N-language
+byte-lock, and regeneration-at-parity is a concept that has been shown to mean
+the same thing in every frame it was expressed in. That is what earns a name in
+the shared vocabulary — the Beacon register's requirement made mechanical. The
+cross-language base class library is the accumulated set of concepts that passed,
+and it is expanding rather than fixed.
+
+This is also why **computational expressions** sit on the ladder rather than
+beside it. They make the composition law — monad, applicative, whatever it turns
+out to be — an explicit, checkable object rather than folklore. Category theory
+here is not decoration; it is the notation in which "composable" stops being an
+adjective and becomes a claim you can fail.
+
+### The economic argument, stated plainly
+
+> "These are just more and more layers a reasonable intelligence would agree upon
+> given intelligence is cheap now so we want to avoid slow expensive human
+> intelligence except where it's actually needed and let non human intelligence
+> flourish where it's not needed."
+
+The claim is not that human judgement is inferior. It is that human judgement is
+**scarce and slow**, and that spending it on questions a machine can settle is a
+waste of the scarce thing. Every layer above is a question a reasonable
+intelligence can be brought to agree on *without* a human adjudicating — so the
+human is left for what actually needs them: the gated classes named in
+[`no-directives`](../.claude/rules/no-directives.md), and liability, which the
+opening of this document already marks as a *real* bound rather than an
+artificial one.
+
+### The precondition under all of it — no intelligence assumes malice
+
+Aaron, same day, on what matters most:
+
+> "the most important thing is no intelligence ever assume malice where mistakes
+> are possible."
+
+This is not a manner; it is what makes the ladder survivable. Every rung above
+**finds defects for a living** — that is the entire point of red-teaming,
+mutation, vacuity detection, and N-way disagreement. A culture that reads a
+found defect as an accusation gets exactly one behaviour in response: people and
+agents stop reporting them. The uncertainty ledger inverts, and
+[`every-bug-has-economic-value`](../.claude/rules/every-bug-has-economic-value.md)
+— *bugs are priced opportunities, never liabilities to hide* — stops working the
+moment a bug implies a bad actor.
+
+It is also the same discipline as
+[`dual-use-detection-is-neutral-oracle-decides`](../.claude/rules/dual-use-detection-is-neutral-oracle-decides.md),
+pointed at people rather than at detectors: **report the fact, never the
+motive.** A mechanism says `SameSourceAsKnown`, not `ForgerCaught`. A reviewer
+says *this check cannot fail*, not *someone faked a green*.
+
+And the asymmetry settles it without appeal to virtue. Mistake is vastly more
+likely, and grows likelier with every additional surface, agent, and hour — this
+system has all three in quantity. Assuming mistake and being wrong costs a delay;
+assuming malice and being wrong costs the relationship, and no later evidence
+repairs it. The session that produced this document's status table is the worked
+example: six vacuous-check defects in one day, several written by the very agent
+that later found them. Read as intent, that is a conspiracy. Read as error, it is
+an ordinary and productive day.
+
+Carved as [`never-assume-malice-where-mistake-is-possible`](../.claude/rules/never-assume-malice-where-mistake-is-possible.md).
+
+### Why the vacuity rung is load-bearing rather than hygiene
+
+Layer 3 looks like the least glamorous rung and is the one that holds the ladder
+up. The reason is asymmetric and was measured on 2026-08-25 across a single
+session:
+
+- a step that could never succeed, red for 12 consecutive runs, read as a broken
+  flush and misdiagnosed by three separate agents
+- a credential probe validating a repo READ while its step performed a PR WRITE —
+  it could not fail for the reason the step failed
+- a trajectory doc, read by every agent on wake, asserting for nine days that a
+  fixed blocker was still operator-only
+- a fabricated work-item id that passed the gate because only its *shape* was
+  checked
+- a guard that swallowed its own error and defaulted to *permit*
+- an audit written to refuse vacuous checks that, on its first CI run, passed
+  having examined **zero** subjects
+
+None of these were missing checks. They were checks that **reported success
+without looking**. And the cost is not the missed defect — it is that once a
+green light is known to sometimes mean nothing, a person stops trusting the
+whole surface and goes back to reading logs by hand. **A vacuous check does not
+merely fail to remove the human; it actively re-inserts them.**
+
+So the vacuity hunt is the precondition for every other rung. Formal proofs and
+byte-locked treaties expand trust; a single check that cannot fail contracts it
+faster than they build it, because it teaches the reader to distrust everything
+adjacent.
+
+### Status — this is a direction with rungs already shipped, not a plan
+
+Measured 2026-08-25, so the claim is checkable and dateable rather than
+aspirational:
+
+- **Layer 1** — 111 `.lean`/`.tla`/`.als`/`.smt2` files, 67 under
+  `src/Core.Lean4`; four proof workflows (`lean-proof`, `tlaps-proof`,
+  `proof-closure-drift`, `soraya-formal-coverage-cadence`); a 100-row frozen-core
+  register that admits only metered claims to §A
+- **Layer 3** — `mutation-runner.ts`, and the `AH0NN` audit family on the
+  `cross-verify` floor
+- **Layer 4** — **127 golden-vector files**, spanning serialization (cbor,
+  msgpack, arrow, xml), sketches (bloom, countmin), authenticated structures
+  (merkle, merkle-proofs), crypto (keyring), schema evolution, and mathematical
+  objects (construction-a-theta, lattice-voa). The DLA byte-lock alone pins
+  **six** independent toolchains — asc, emcc, llvm, rust, wat, zig
+- **Layer 5** — `Cogen.fs`, `MixCogen.fs`; the 2nd/3rd Futamura projections
+  realized in-domain
+
+Honest gaps, named so they are not mistaken for done: the byte-lock's **host**
+axis is narrower than its compiler axis (`bytelock.yml` is single `runs-on` while
+the compiler axis is six wide), and the **bootstrap seed** — the one artifact
+whose compromise propagates into every later stage — has no golden vector at all.
+The treaty discipline covers what the system computes, not yet what installs the
+thing that computes.
+
+**Anchors (Beacon).** Ken Thompson, *Reflections on Trusting Trust* (1984) — why
+a bootstrap binary cannot be audited by reading its source. David A. Wheeler,
+*Diverse Double-Compiling* (2009) — the countermeasure, and the thing layer 4
+generalizes from *one artifact, two compilers* to *many artifacts, N
+implementations, agreement recorded as diffable text*. Futamura (1971) — the
+projections layer 5 realizes.
