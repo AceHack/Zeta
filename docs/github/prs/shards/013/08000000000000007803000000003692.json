@@ -1,0 +1,12 @@
+{
+  "pr_number": 13970,
+  "archive_path": "docs/history/pr-reviews/PR-13970-fix-agent-heartbeat-data-ci-runs-jsonl-add-add-wedged-all-three-lanes-the-moment.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T04:07:39.947Z",
+  "schema_version": "v1",
+  "commit_sha": "ba35ba6040d5442657053520afdec5dafeffd97d",
+  "title": "fix(agent-heartbeat): data/ci-runs.jsonl add/add wedged all three lanes the moment it reached main",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:06:43Z",
+  "head_ref": "fix/heartbeat-ci-runs-addadd"
+}
