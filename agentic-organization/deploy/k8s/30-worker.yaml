@@ -24,9 +24,15 @@ spec:
           image: agentic-org-worker:keepalive
           imagePullPolicy: IfNotPresent
           # GEN3 live-flip: the work-provider secret is OPTIONAL — absent → the org runs
-          # internal-only (the safe default). Apply deploy/k8s/31-work-provider-secret.example.yaml
-          # (filled with a real token) to turn the GitHub/GitLab/Jira/Linear port live. WORK_PROVIDER
-          # selects; the token never appears in this manifest or the logs — only the resolved mode is.
+          # internal-only (the safe default). Fill a copy of
+          # deploy/k8s-templates/31-work-provider-secret.example.yaml with a real token and apply it
+          # to turn the GitHub/GitLab/Jira/Linear port live. WORK_PROVIDER selects; the token never
+          # appears in this manifest or the logs — only the resolved mode is.
+          #
+          # The template lives OUTSIDE deploy/k8s/ on purpose: `kubectl apply -f deploy/k8s/` selects
+          # files by EXTENSION, not by name, so while it sat in this directory as `.example.yaml` the
+          # bring-up command applied it — installing WORK_PROVIDER=github with the literal placeholder
+          # token and silently destroying the internal-only safe default described above.
           envFrom:
             - secretRef:
                 name: work-provider-secrets

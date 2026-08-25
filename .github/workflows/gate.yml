@@ -862,14 +862,65 @@ jobs:
         # rate-limited schema downloads count as ERRORS, not missing schemas.
         # -strict: reject unknown fields on the manifests we DO have schemas for.
         # find-pipe so it recurses explicitly (portable across kubeconform versions).
+        #
+        # -kubernetes-version 1.33.0 ADDED 2026-08-25. Without it kubeconform checks
+        # against the schema registry's `master` set -- i.e. against whatever
+        # Kubernetes released most recently, which is NOT the version any of our
+        # clusters run and which DRIFTS UNDER US with no commit here. The pin's
+        # provenance is this repo's own already-declared target: the `kube-version`
+        # default in infra/k8s/tests/validate-applications.ts, which the helm-validate
+        # lane has been rendering against for the other cluster tree. Two lanes
+        # validating the same kinds against two different Kubernetes versions is the
+        # drift this closes. MEASURED on the agentic-org tree before landing: 26
+        # resources in 12 files, Valid 26 / Invalid 0 both with and without the flag,
+        # so the pin changes no verdict today -- it fixes WHICH QUESTION is being asked.
         run: |
           crd_kinds="Application,Blueprint,CiliumL2AnnouncementPolicy,CiliumLoadBalancerIPPool,ClusterIssuer,ConstraintTemplate,Deployable,Gateway,HTTPRoute,Hat,HatConflict,HatCooldown,HatMaxBindings,HatMaxNew,HatNoCycle,HatPolicy,HatQuorum,HatWarmup,HelmChart,Policy"
           kc() {
             find full-ai-cluster/k8s infra/k8s agentic-organization/deploy -type f \( -name '*.yaml' -o -name '*.yml' \) -print0 \
-              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -skip "$crd_kinds"
+              | xargs -0 kubeconform -strict -ignore-missing-schemas -summary -schema-location default -kubernetes-version 1.33.0 -skip "$crd_kinds"
           }
           kc || { echo "[yaml/k8s] retry in 30s (schema-registry rate limit?)"; sleep 30; kc; } \
              || { echo "[yaml/k8s] retry in 90s"; sleep 90; kc; }
+
+      - name: Cross-manifest consistency (agentic-org apply set)
+        # ADDED 2026-08-25. The two steps above are the only checks this tree has,
+        # and NEITHER CAN SEE ACROSS DOCUMENTS: yamllint reads one file's syntax,
+        # kubeconform reads one resource against its schema. Every defect this step
+        # exists for is schema-VALID YAML that a cluster accepts at apply time and
+        # that fails later with a symptom that does not name its cause -- a Service
+        # whose named targetPort no container declares (endpoints with no port), an
+        # env var naming a Service port nothing exposes (telemetry into a black
+        # hole), a subPath key absent from its ConfigMap (a silently empty mount).
+        #
+        # THIS IS THE TREE A USB-BOOTED NODE ACTUALLY RUNS. It is raw YAML applied
+        # with one `kubectl apply -f`, not a chart and not an ArgoCD Application, so
+        # none of the helm-validate machinery reaches it.
+        #
+        # MEASURED on first contact at 60e2024e9: 6 findings, all real. The headline
+        # one is that `31-work-provider-secret.example.yaml` sat INSIDE the apply
+        # directory -- kubectl selects by extension, never by filename, so the
+        # documented bring-up applied the template, installing WORK_PROVIDER=github
+        # with the literal placeholder token and destroying the internal-only safe
+        # default the worker manifest promises. All 6 are fixed in the landing PR, so
+        # this step lands GREEN and is a ratchet against regression, not a debt.
+        #
+        # Offline, no network, ~0.15 s. No pipe: a pipeline would report the exit
+        # status of its last stage and discard the tool's.
+        run: bun src/Core.TypeScript/cluster/audit-agentic-org-manifests.ts
+
+      - name: Cross-manifest consistency — falsifiers (proves it goes red)
+        # The step above is only worth its slot if it can fail. 34 cases: each copies
+        # the real tree, breaks exactly one thing, and asserts exit 1 AND the specific
+        # check that fired -- plus an unmutated control asserting exit 0, and three
+        # vacuity guards asserting that an empty directory, a directory that parses to
+        # zero documents, and a nonexistent directory all FAIL rather than reporting a
+        # serene "0 findings".
+        #
+        # VERIFIED 2026-08-25 by stubbing the tool's non-zero exit: 22 of the 34 went
+        # red immediately, and the 12 that stayed green are exactly the controls and
+        # the pure-unit cases, which do not read the exit code. ~2.8 s.
+        run: bun test src/Core.TypeScript/cluster/audit-agentic-org-manifests.test.ts
 
   lint-shell:
     # Shellcheck on every bash script under tools/setup/ + tools/.

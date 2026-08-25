@@ -36,6 +36,15 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /cockroach/cockroach-data
+          # REQUESTS ONLY, DELIBERATELY. Without a requests block this container is
+          # BestEffort, and the kubelet evicts BestEffort pods FIRST under node memory
+          # pressure -- i.e. on a single USB-booted node the DATABASE is the first thing
+          # to die. Requests move it to Burstable and off that front line.
+          # No limits: a memory ceiling picked without a measured working set OOMKills
+          # where no ceiling does not. These numbers are CONVENTIONAL (they match the
+          # light-service profile used elsewhere in this directory), not metered.
+          resources:
+            requests: { cpu: "100m", memory: "512Mi" }
           readinessProbe:
             httpGet:
               path: "/health?ready=1"

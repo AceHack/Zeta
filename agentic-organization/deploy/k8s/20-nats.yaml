@@ -1,7 +1,18 @@
 # NATS with JetStream for the in-cluster end-to-end test. Memory storage
-# (ephemeral) — the stream + durable consumer are provisioned by the
-# nats-provision Job before the worker starts (the worker fails-fast if the
-# durable consumer does not exist).
+# (ephemeral).
+#
+# THE STREAM AND DURABLE CONSUMER ARE NOT CREATED BY ANYTHING IN THIS DIRECTORY.
+# This header used to say they were "provisioned by the nats-provision Job". There
+# is no such Job, here or anywhere in the tree -- provisioning is a HOST-RUN SCRIPT
+# that needs a port-forward:
+#
+#   kubectl -n agentic-org port-forward svc/nats 4222:4222 &
+#   node --experimental-strip-types deploy/provision-nats.ts
+#
+# The difference matters because the worker BINDS an existing durable consumer and
+# never creates one (apps/workers/src/adapters/nats-js-transport-connection.ts calls
+# consumers.get and rethrows). So `kubectl apply -f deploy/k8s/` ALONE brings up a
+# worker that crash-loops on an unhandled rejection until that script has been run.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +39,11 @@ spec:
             - { name: monitor, containerPort: 8222 }
           volumeMounts:
             - { name: data, mountPath: /data }
+          # REQUESTS ONLY -- see the note in 10-cockroach.yaml. BestEffort would make the
+          # message bus an early eviction candidate on a single node; the worker fails
+          # fast when it cannot reach NATS, so this pod dying takes the org down with it.
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
           readinessProbe:
             httpGet: { path: /healthz, port: 8222 }
             initialDelaySeconds: 3
