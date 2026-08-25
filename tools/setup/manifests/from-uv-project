@@ -1,0 +1,29 @@
+# Mechanism: from-uv-project — LOCKED uv projects via `uv sync --frozen`.
+# Realizer: src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts
+#
+# Format per line:
+#   <repo-relative-project-dir>  opt-in=<ENV_VAR>  [tier=slim|standard|full]
+#
+# `opt-in=` is REQUIRED. A row without it is refused rather than defaulted to
+# "install everywhere" — every project reachable through this mechanism carries
+# a large native closure, and a heavy lane that installs by default is how a CI
+# minute budget disappears.
+#
+# NOT `opt-in=ZETA_INSTALL_FULL`, and the reason is measured rather than
+# stylistic: `ZETA_INSTALL_FULL=1` is set by three workflows
+# (macos-install-sh-test.yml, tlaps-proof.yml, wsl-install-sh-test.yml). Those
+# jobs exist to test the INSTALLER; folding a 111-192 MB torch download into
+# them would spend the download on three jobs that never read an activation.
+# A dedicated flag keeps the cost with the lane that wants it.
+#
+# `src/Core.Python` and `src/Arc.Python` are deliberately ABSENT. They are real
+# locked uv projects and would fit this mechanism, but they are synced today by
+# explicit steps in gate.yml / arc-lane.yml, and moving them here would add
+# their cost to every install.sh run. Migrating them is a separate decision with
+# its own cost case — see docs/INSTALLED.md.
+
+# The model-interpretability lane: activation access (residual-stream reads and
+# causal writes) for docs/research/2026-08-23-measuring-latent-geometry-*.md.
+# tier=standard because torch needs real RAM; the 8 GB low-memory lane must not
+# try. Unblocks work-item 081M0QD23P3087G0R002NQ8217.
+src/Interp.Python  opt-in=ZETA_INSTALL_INTERP  tier=standard

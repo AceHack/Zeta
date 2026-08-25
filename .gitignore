@@ -314,6 +314,10 @@ data/ARC-AGI/
 
 # The ARC lane's local venv (its own uv project; never committed).
 src/Arc.Python/.venv/
+
+# The interpretability lane's local venv (its own uv project; never committed).
+# ~2 GB installed once torch is unpacked -- the uv.lock is the committed artifact.
+src/Interp.Python/.venv/
 src/Arc.Python/recordings/
 src/Arc.Python/environment_files/
 .reaper-cache/

@@ -13,6 +13,7 @@ import { realizeFromOllama } from "./from-ollama.ts";
 import { realizeFromOpamGit } from "./from-opam-git.ts";
 import { realizeFromShim } from "./from-shim.ts";
 import { realizeFromUrl } from "./from-url.ts";
+import { realizeFromUvProject } from "./from-uv-project.ts";
 import { realizeFromUvTool } from "./from-uv-tool.ts";
 import { realizeFromUvVenv } from "./from-uv-venv.ts";
 import type { SetupRealizer } from "./shared.ts";
@@ -33,6 +34,7 @@ export const SETUP_REALIZERS: Readonly<Record<string, SetupRealizer>> = {
   "from-opam-git": realizeFromOpamGit,
   "from-shim": realizeFromShim,
   "from-url": realizeFromUrl,
+  "from-uv-project": realizeFromUvProject,
   "from-uv-tool": realizeFromUvTool,
   "from-uv-venv": realizeFromUvVenv,
 };
@@ -53,6 +55,9 @@ export const POST_MISE_REALIZER_IDS = [
   "from-bun-workspace",
   "from-uv-tool",
   "from-uv-venv",
+  // After the other uv mechanisms so `uv` is certainly present. Every project
+  // here is opt-in, so on a default run this costs one manifest read.
+  "from-uv-project",
   "from-elan",
   "from-dotnet-global",
   "from-dotnet-workload",

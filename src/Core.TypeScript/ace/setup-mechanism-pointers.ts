@@ -70,6 +70,18 @@ export function buildSetupMechanismPointers(): ReadonlyArray<PackageManagerPoint
       optIn: ["ZETA_INSTALL_QUANTUM=1", "ZETA_INSTALL_FULL=1"],
       defaultUpdate: "pinned",
     }),
+    pointerFromSetupManifest({
+      text: readManifest("from-uv-project"),
+      ecosystem: "uv-project",
+      purpose:
+        "Locked uv projects via `uv sync --frozen` (committed uv.lock, sha256 per wheel)",
+      realizer: bunMechanismRealizer("from-uv-project"),
+      manifest: "tools/setup/manifests/from-uv-project",
+      // Per-project, declared in the manifest's `opt-in=` column. Listed here so
+      // ace's pointer set shows the gate without having to read the realizer.
+      optIn: ["ZETA_INSTALL_INTERP=1"],
+      defaultUpdate: "pinned",
+    }),
     pointerFromMechanismManifest({
       mechanism: "from-elan",
       text: readManifest("from-elan"),

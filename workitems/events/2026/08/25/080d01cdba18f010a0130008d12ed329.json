@@ -1,0 +1,14 @@
+{
+  "id": "080d01cdba18f010a0130008d12ed329",
+  "at": "2026-08-25T16:18:26.718Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WVEGRT087G0R002PCMCV3",
+    "type": "task",
+    "title": "Declare PyTorch/TransformerLens/nnsight through ace as a locked opt-in uv project (from-uv-project) and prove activation access with a falsifier",
+    "slug": "declare-pytorch-transformerlens-nnsight-through-ace-as-a-loc",
+    "priority": "P2",
+    "filename": "081M0WVEGRT087G0R002PCMCV3-declare-pytorch-transformerlens-nnsight-through-ace-as-a-loc.md"
+  }
+}

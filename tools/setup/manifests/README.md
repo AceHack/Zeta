@@ -20,7 +20,7 @@ manifest. Measured rather than assumed — the pointer set is
 
 | manifest family | declared in | realized by | in ace's pointer set |
 |---|---|---|---|
-| the 15 `from-*` | `manifests/from-*` | `ace-realize --all` (macos.sh step 6) | **yes** (17 entries) |
+| the 15 `from-*` | `manifests/from-*` | `ace-realize --all` (macos.sh step 6) | **yes** (18 entries) |
 | `brew`, `brew-cask`, `apt`, `windows` | `manifests/<name>` | shell loop in `macos.sh` / `linux.sh` / `install.ps1` | **no** |
 
 So the four OS-native package managers are the part that has not moved yet.

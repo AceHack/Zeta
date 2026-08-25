@@ -36,6 +36,49 @@ be able to recreate the environment from this doc.
 | **qsharp**        | 1.29.1  | Direct Q# package pin for `qsharp` / `%%qsharp` parity when producing `qsharp-golden.json` observables                   | Same optional quantum path as above                                                                                                                                                                                                               |
 | **azure-quantum** | 3.10.0  | Explicit pin for the optional Azure backend edge owned by `qdk[azure]`; local simulation remains the default oracle path | Same optional quantum path as above                                                                                                                                                                                                               |
 
+## Python model-interpretability libraries (activation access)
+
+Opt-in and **not** part of any default install tier. Declared as a locked `uv`
+project at `src/Interp.Python` (its own project, on the `src/Arc.Python`
+precedent) and realized by `ace` through
+`tools/setup/manifests/from-uv-project` -> `from-uv-project.ts`, which runs
+`uv sync --frozen` against the committed `uv.lock`. The lock carries a sha256
+for every wheel, so a `git clone` at a tag resolves nothing.
+
+Install: `ZETA_INSTALL_INTERP=1` (deliberately **not** `ZETA_INSTALL_FULL`,
+which `macos-install-sh-test.yml`, `tlaps-proof.yml` and `wsl-install-sh-test.yml`
+already set -- those jobs test the installer and never read an activation).
+`tier=standard`, so the 8 GB low-memory lane skips it.
+
+| Package              | Version  | Why                                                                                                            | How installed                                                                                       |
+| -------------------- | -------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **torch**            | 2.13.0   | The activation aperture Ollama's completion API cannot provide; hidden states, attention, residual stream       | `ZETA_INSTALL_INTERP=1`; **platform-split** -- see the table below                                     |
+| **transformer-lens** | 3.8.0    | Named hook points (`blocks.N.hook_resid_post`) and `run_with_hooks` causal patching for H1's "respect" clause   | Same opt-in path; PyPI                                                                                |
+| **nnsight**          | 0.7.0    | Second aperture -- traces arbitrary `torch` modules, not just supported architectures                          | Same opt-in path; PyPI                                                                                |
+
+**`torch` is not one pin.** Measured 2026-08-25 (wheel `Content-Length`):
+
+| Host | Build | Wheel | Accelerator |
+|---|---|---|---|
+| macOS arm64 (`macos-26`) | `2.13.0` from PyPI | 111.2 MB | CPU + **MPS** |
+| `ubuntu-24.04` (x86_64) | `2.13.0+cpu` from the PyTorch CPU index | 191.8 MB | CPU only |
+| `ubuntu-24.04-arm` (aarch64) | `2.13.0+cpu` from the PyTorch CPU index | 155.0 MB | CPU only |
+
+The linux split is `[tool.uv.sources]` in `src/Interp.Python/pyproject.toml`.
+Without it linux x86_64 takes the 526.6 MB default wheel plus the `nvidia-*`
+CUDA closure; with it the lock contains **zero** nvidia/cuda/triton packages,
+asserted by `test_lock_has_no_cuda_bulk`. macOS stays on PyPI on purpose --
+that is the wheel carrying the Metal backend. No runner in the matrix has a
+GPU, so a CUDA build would never execute.
+
+Windows: the lock holds `win_amd64` wheels but no workflow exercises them.
+Unmetered, not supported.
+
+**`src/Core.Python` and `src/Arc.Python` are not on this mechanism**, though
+they would fit. They are synced today by explicit steps in `gate.yml` and
+`arc-lane.yml`; moving them onto `from-uv-project` would add their cost to every
+`install.sh` run and is a separate decision with its own cost case.
+
 ## NPM / Bun quantum simulator dependencies
 
 | Package             | Version | Why                                                                                               | How installed                                                                        |

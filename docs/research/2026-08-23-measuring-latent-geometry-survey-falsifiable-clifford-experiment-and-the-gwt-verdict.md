@@ -157,6 +157,22 @@ Real activation access needs PyTorch + HF `transformers`, or `nnsight` / `Transf
 new infrastructure, it is a real cost, and pretending Ollama suffices would be the vacuity shape.
 **Scoped as a work-item, not assumed.**
 
+> **UPDATE 2026-08-25 (`081M0WVEGRT087G0R002PCMCV3`) — the toolchain half is built.**
+> `src/Interp.Python` is a locked `uv` project pinning `torch==2.13.0`,
+> `transformer-lens==3.8.0`, `nnsight==0.7.0`, declared through `ace`
+> (`tools/setup/manifests/from-uv-project`) and opt-in on `ZETA_INSTALL_INTERP=1`
+> so no default CI job pays for it. Residual-stream reads AND causal writes are
+> exercised by a falsifier that is verified to fail when the write is a no-op.
+>
+> **What that does and does not license.** The aperture is open on a
+> RANDOMLY-INITIALISED toy transformer, with no HuggingFace download anywhere in
+> the path. So the *tooling* precondition for T2-C and T3 is met and the
+> *evidential* one is not: nothing here has yet touched a trained model, and
+> until it does, H1 has exactly as much evidence as it had on 2026-08-23 — none.
+> Reading this update as "T2-C is unblocked" would be the silent-promotion shape
+> the register table below exists to prevent. Work-item
+> `081M0QD23P3087G0R002NQ8217` stays open on the real-weights half.
+
 One thing *is* reachable today with zero new infrastructure: Ollama's `/api/embeddings` returns a
 pooled representation. That is not a residual-stream activation, and a result there is scoped to
 pooled embeddings only — but it is enough for a real, pre-registered, publishable **negative**. See

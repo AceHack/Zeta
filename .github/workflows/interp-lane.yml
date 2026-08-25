@@ -1,0 +1,157 @@
+name: interp-lane
+
+# MODEL-INTERPRETABILITY LANE — a drift check, NOT a gate.
+#
+# Same posture, and for the same stated reason, as `arc-lane.yml`:
+# `src/Interp.Python` is a separate uv project precisely so that A RESOLUTION
+# FAILURE IN THIS LANE CANNOT BREAK `uv sync --project src/Core.Python`. A
+# required job here would hand the heaviest dependency closure in the repo the
+# power to block every PR — the exact coupling the split exists to prevent.
+#
+# So this workflow appears in NO `needs:` list, and `gate (required)` neither
+# waits for it nor sees it. Red here is information, not a stop.
+#
+# COST, MEASURED (2026-08-25, wheel Content-Length), which is why it is
+# path-filtered rather than run on every PR:
+#
+#   ubuntu-24.04     torch 2.13.0+cpu  191.8 MB   (this job)
+#   ubuntu-24.04-arm torch 2.13.0+cpu  155.0 MB
+#   macos-26         torch 2.13.0      111.2 MB   CPU + MPS
+#
+# Estimated spend: ~6 min/run on one ubuntu-24.04 runner. It fires only when
+# the lane or this file changes -- call it 4 runs/month at the current rate of
+# change on `src/Interp.Python/**`, so ~24 CI-minutes/month. If the lane starts
+# changing daily, revisit; a path-filtered job whose path changes constantly is
+# an unfiltered job wearing a filter.
+#
+# ONE RUNNER, NOT A MATRIX, ON PURPOSE. A three-OS matrix would triple the spend
+# to prove a portability property nothing in this lane currently depends on: no
+# code here is platform-conditional except the torch index selection, and THAT
+# is asserted from the committed lock by `test_linux_resolves_the_cpu_wheel`
+# without downloading anything. When a test needs MPS, a macos-26 axis earns its
+# slot then.
+
+on:
+  pull_request:
+    paths:
+      - "src/Interp.Python/**"
+      - "tools/setup/manifests/from-uv-project"
+      - "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts"
+      - ".github/workflows/interp-lane.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/Interp.Python/**"
+      - "tools/setup/manifests/from-uv-project"
+      - "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts"
+      - ".github/workflows/interp-lane.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: interp-lane-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  interp-tests:
+    name: interp lane (drift check)
+    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Cache install.sh outputs (mise runtimes + uv cache)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.cache/uv
+          key: interp-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'src/Interp.Python/uv.lock') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # install.sh, not a third-party setup action. `astral-sh/setup-uv` is
+        # used NOWHERE else in this repo, and adding a new third-party action --
+        # a new SHA to pin, audit and keep current -- to save a cached install
+        # is supply-chain surface bought with nothing. mise already provides uv.
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Sync the lane THROUGH the ace realizer (dogfooding row 8)
+        # Deliberately not a bare `uv sync`. This is the declarative path the
+        # dependency is declared on, so running it here means the manifest, the
+        # opt-in gate and the realizer are all exercised by CI rather than
+        # merely asserted by unit tests. If the gate regresses to skipping, the
+        # next step fails on a missing torch instead of passing quietly.
+        env:
+          ZETA_INSTALL_INTERP: "1"
+          ZETA_HOST_TIER: standard
+        run: bun src/Core.TypeScript/ace/setup-realize.ts from-uv-project
+
+      - name: Prove the linux resolution stayed on the CPU wheel
+        # The cost guard, asserted from the INSTALLED tree rather than the lock,
+        # so it catches a drift the lock-parsing test cannot see.
+        run: |
+          set -euo pipefail
+          version=$(uv run --project src/Interp.Python python -c 'import torch; print(torch.__version__)')
+          echo "torch: ${version}"
+          case "${version}" in
+            *+cpu) ;;
+            *) echo "::error::expected a +cpu build on linux, got ${version}" >&2; exit 1 ;;
+          esac
+          if uv run --project src/Interp.Python python -c 'import torch; raise SystemExit(0 if torch.cuda.is_available() else 1)'; then
+            echo "::error::CUDA reported available on a CPU-only runner" >&2
+            exit 1
+          fi
+
+      - name: Run the activation-access falsifier
+        env:
+          # The floor that makes a green here mean something. A pytest that
+          # collects 0 tests exits 5, but a suite that silently shrinks from 9
+          # to 2 exits 0 and looks identical to success.
+          #
+          # FAIL-CLOSED: `set -u` below makes an unset variable exit non-zero,
+          # so deleting this entry turns the job red rather than quietly
+          # disabling the check.
+          INTERP_MIN_TESTS: "9"
+        run: |
+          set -euo pipefail
+          uv run --project src/Interp.Python pytest src/Interp.Python/tests -q \
+            --junitxml=/tmp/interp-junit.xml
+          collected=$(python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse("/tmp/interp-junit.xml").getroot()
+          suites = root.findall("testsuite") or [root]
+          print(sum(int(s.get("tests", 0)) for s in suites))
+          PY
+          )
+          echo "collected ${collected} tests (floor ${INTERP_MIN_TESTS})"
+          if [ "${collected}" -lt "${INTERP_MIN_TESTS}" ]; then
+            echo "::error::LIVENESS FAILURE - only ${collected} tests ran, floor is ${INTERP_MIN_TESTS}." >&2
+            echo "A suite that stops running looks identical to a suite that passes." >&2
+            exit 2
+          fi
+
+      - name: Lint the lane
+        working-directory: src/Interp.Python
+        run: |
+          set -euo pipefail
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run mypy zeta_interp/ tests/

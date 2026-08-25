@@ -1,0 +1,86 @@
+# src/Interp.Python — the model-interpretability lane (activation access).
+#
+# ITS OWN uv PROJECT, deliberately, on the precedent src/Arc.Python set and for
+# the same stated reason: "a resolution failure in this lane must not be able to
+# break `uv sync --project src/Core.Python`, and separate projects is the only
+# structural way to guarantee that." That argument is STRONGER here than it was
+# there — this lane's closure is 112 packages including a ~111-192 MB native
+# wheel, so it is the most likely thing in the repo to fail resolution.
+#
+# So, exactly as with the ARC lane: never a dependency of zeta-core, never
+# referenced by BOOTSTRAP_SURFACES, and no `gate (required)` job may depend on it.
+#
+# WHY THIS LANE EXISTS. `src/Core.TypeScript/accelerator/local-llm.ts` talks to
+# Ollama's `/api/generate` — a completion API that returns text. There is no
+# activation access, no layer indexing, no hook points, so the causal tests in
+# docs/research/2026-08-23-measuring-latent-geometry-*.md could not run at all.
+# Work-item 081M0QD23P3087G0R002NQ8217 scoped that gap. This project closes it.
+#
+# PLATFORM SPLIT, MEASURED NOT ASSUMED (2026-08-25, wheel Content-Length):
+#
+#   macOS arm64  (maintainer laptop, macos-26)  torch 2.13.0      111.2 MB  CPU + MPS
+#   linux x86_64 (ubuntu-24.04)                 torch 2.13.0+cpu  191.8 MB  CPU only
+#   linux aarch64(ubuntu-24.04-arm)             torch 2.13.0+cpu  155.0 MB  CPU only
+#
+# The `[tool.uv.sources]` block below is what makes the linux rows read `+cpu`.
+# WITHOUT it, linux resolves the default PyPI wheel — 526.6 MB on x86_64 — and
+# drags the whole `nvidia-*` CUDA stack in as transitive dependencies. With it,
+# the lock contains ZERO nvidia/cuda/triton packages (checked, not hoped: see
+# the assertion in tests/test_activation_access.py::test_lock_has_no_cuda_bulk).
+# That is a measured ~335 MB saving on x86_64 before the CUDA wheels are counted.
+#
+# No runner in this repo's matrix has a GPU, so a CUDA build would be dead
+# weight that never executes. If a GPU runner ever lands, THAT is the moment to
+# add a CUDA index — not before.
+[project]
+name = "zeta-interp"
+version = "0.1.0"
+description = "Activation access for trained models: residual-stream reads and causal writes."
+requires-python = ">=3.14"
+dependencies = [
+    # Pinned exactly, not floored. Determinism across laptops and CI is §7 DST;
+    # a loose pin trades it away for an uptake it would not get anyway. The
+    # companion uv.lock carries a sha256 for every wheel, so `uv sync --frozen`
+    # is reproducible from a `git clone` at a tag with no resolver decisions left.
+    "torch==2.13.0",
+    "transformer-lens==3.8.0",
+    "nnsight==0.7.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["zeta_interp"]
+
+# Same dev toolchain as src/Core.Python and src/Arc.Python so the lane can run
+# through identical ruff/mypy/pytest steps rather than special-casing it.
+[dependency-groups]
+dev = [
+    "mypy>=2.1.0",
+    "pytest>=9.1.0",
+    "ruff>=0.9.0",
+]
+
+# `explicit = true` means NOTHING resolves from this index unless a
+# [tool.uv.sources] entry below names it. Without `explicit`, the PyTorch index
+# would shadow PyPI for every package in the closure — a supply-chain widening
+# nobody asked for, and the reason this flag is set rather than defaulted.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+# linux only. macOS arm64 must NOT come from this index: the PyPI macOS wheel
+# carries the MPS (Metal) backend, and routing darwin here would silently
+# downgrade the maintainer's laptop to CPU-only. Platform-correct beats uniform.
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+# nnsight ships no py.typed marker, so mypy cannot see its types. Silencing the
+# import is narrower than loosening the whole project's strictness, and it is
+# scoped to that one module so a future typed release starts being checked.
+[[tool.mypy.overrides]]
+module = ["nnsight.*"]
+ignore_missing_imports = true

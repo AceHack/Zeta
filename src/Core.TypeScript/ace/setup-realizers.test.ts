@@ -15,8 +15,8 @@ import { createContext, defaultRepoRoot } from "./setup-realizers/shared.ts";
 import { getSetupRealizer, listSetupRealizerIds, listSetupRealizerInstallOrder, listPostMiseRealizerIds, listPreMiseRealizerIds } from "./setup-realizers/index.ts";
 
 describe("setup-realizers registry", () => {
-  test("install order lists all 17 realizers in graph order", () => {
-    expect(listSetupRealizerInstallOrder()).toHaveLength(17);
+  test("install order lists all 18 realizers in graph order", () => {
+    expect(listSetupRealizerInstallOrder()).toHaveLength(18);
     expect(listSetupRealizerInstallOrder()[0]).toBe("from-deb");
     expect(listSetupRealizerInstallOrder().at(-1)).toBe("from-git-hooks");
     expect(listPreMiseRealizerIds()).toEqual(["from-deb", "from-shim", "from-autotools-tarball"]);
@@ -43,6 +43,7 @@ describe("setup-realizers registry", () => {
       "from-opam-git",
       "from-shim",
       "from-url",
+      "from-uv-project",
       "from-uv-tool",
       "from-uv-venv",
     ]);

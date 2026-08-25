@@ -96,6 +96,22 @@
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
+    "purpose": "Locked uv projects via `uv sync --frozen` (committed uv.lock, sha256 per wheel)",
+    "realizer": "src/Core.TypeScript/ace/setup-realizers/from-uv-project.ts",
+    "manifest": "tools/setup/manifests/from-uv-project",
+    "dependencies": [
+      {
+        "ecosystem": "uv-project",
+        "spec": "src/Interp.Python",
+        "update": "pinned"
+      }
+    ],
+    "opt_in": [
+      "ZETA_INSTALL_INTERP=1"
+    ]
+  },
+  {
+    "schema": "zeta.ace.package-manager-pointers.v1",
     "purpose": "Lean 4 toolchain manager (pinned elan-init.sh)",
     "realizer": "src/Core.TypeScript/ace/setup-realizers/from-elan.ts",
     "manifest": "tools/setup/manifests/from-elan",
