@@ -1,0 +1,14 @@
+{
+  "id": "080d01d25aafb010a01300084d9e14b5",
+  "at": "2026-08-25T19:00:10.870Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X4PNFN087G0R0034MZVZ4",
+    "type": "task",
+    "title": "Banana split applied to the Cayley-Dickson lattice ladder: does generator+join factor",
+    "slug": "banana-split-applied-to-the-cayley-dickson-lattice-ladder-do",
+    "priority": "P2",
+    "filename": "081M0X4PNFN087G0R0034MZVZ4-banana-split-applied-to-the-cayley-dickson-lattice-ladder-do.md"
+  }
+}

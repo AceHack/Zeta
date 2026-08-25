@@ -3295,6 +3295,18 @@ jobs:
       - name: Clifford cross-verify (Cl(3,0) geometric algebra)
         run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
 
+      # The Cayley-Dickson -> maximal-order ladder (A2 / D4 / E8). Wired HERE, and not left
+      # sitting in src/ as an unrun file, because #14914 measured that a test nothing invokes
+      # reads exactly like a passing one. Two prior reviews of this material (#15415, #15417)
+      # both self-labelled `unmetered` for precisely that reason: their arithmetic lived in a
+      # scratch worktree and nothing in the tree went red if it was wrong. This step is what
+      # makes the successor document's numbers falsifiable -- the octavian completion count
+      # (3, not 1), the six S_3 gluings, the split-condition witness, and the rank-16 control.
+      # Runtime ~35s; the slow cases carry explicit per-test timeouts (bunfig's cap is 5000ms).
+      - name: CD order ladder (banana-split factorisation falsifiers)
+        run: bun test src/Core.TypeScript/research/banana-split/cd-order-ladder.test.ts
+        timeout-minutes: 5
+
       - name: Notify on failure
         if: failure()
         env:
