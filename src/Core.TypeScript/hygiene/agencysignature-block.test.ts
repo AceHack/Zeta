@@ -24,9 +24,11 @@ import {
   AUTHORITY_BASES,
   GOVERNANCE_KEYS,
   HUMAN_REVIEW_BY_HUMAN_AUTHORITY,
+  HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH,
   accountabilityAnchor,
   reconcileHumanReview,
   reconcileReviewEvidence,
+  reconcileReviewPair,
   validateAccountabilityPair,
   REQUIRED_KEYS,
   blockValue,
@@ -349,18 +351,30 @@ describe("LAST-WINS: the last complete block is authoritative", () => {
 });
 
 describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
-  test("FALSIFIER: two blocks disagreeing on Human-Review is an ERROR, not a pick", () => {
+  // CHANGED 2026-08-24 (second pass). This case used to assert that a
+  // `Human-Review` disagreement is an ERROR. It is now RECONCILED — downward, and
+  // only downward. The invariant the original test was protecting is untouched and
+  // is asserted here directly: last-wins would have recorded the review the other
+  // block denies, and this does the opposite. See §GENERALISATION in the module.
+  test("FALSIFIER: a Human-Review disagreement resolves DOWN — never to the review", () => {
     // Live shape on main: c417b28c6357 has `Human-Review: none` and `explicit`.
-    // Last-wins would RECORD A REVIEW THE OTHER BLOCK DENIES.
     const a = block({ "Human-Review": "none", "Human-Review-Evidence": "none" });
     const z = block({ "Human-Review": "explicit", "Human-Review-Evidence": "pr-review" });
     const text = `chore: squash\n\n${a}\n\n* second\n\n${z}\n`;
-    const d = detectBlockDisagreement(text);
-    expect(d).not.toBeNull();
-    expect(d?.keys).toContain("Human-Review");
-    const v = validateText(text).violations;
-    expect(v[0]?.code).toBe("block-disagreement");
-    expect(preMergeAccepts(text)).toBe(false);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).violations).toEqual([]);
+    expect(preMergeAccepts(text)).toBe(true);
+    // The LAST block claims `explicit`. If the resolution ever tracks position
+    // rather than weakness, this is where it shows.
+    const byKey = new Map(validateText(text).reconciliations.map((r) => [r.key, r.resolved]));
+    expect(byKey.get("Human-Review")).toBe("none");
+    expect(byKey.get("Human-Review")).not.toBe("explicit");
+    expect(byKey.get("Human-Review-Evidence")).toBe("none");
+    // ...and order must not matter: last-wins is exactly what this replaces.
+    const flipped = `chore: squash\n\n${z}\n\n* second\n\n${a}\n`;
+    expect(
+      validateText(flipped).reconciliations.find((r) => r.key === "Human-Review")?.resolved,
+    ).toBe("none");
   });
 
   // CHANGED 2026-08-23. This case used to pair `supervised` with
@@ -398,9 +412,14 @@ describe("BLOCK-DISAGREEMENT: contradictory governance claims are loud", () => {
   });
 
   test("disagreement is checked BEFORE value validation", () => {
-    // A contradiction must not be masked by the last block being well-formed.
-    const a = block({ "Human-Review": "none", "Human-Review-Evidence": "none" });
+    // A contradiction must not be masked by the last block being well-formed. The
+    // pair used here is one that must stay loud forever: two blocks agreeing that a
+    // human reviewed, citing DIFFERENT live evidence pointers. Both blocks are
+    // internally valid, so only the ordering of the two checks makes this red.
+    const a = block({ "Human-Review": "explicit", "Human-Review-Evidence": "chat" });
     const z = block({ "Human-Review": "explicit", "Human-Review-Evidence": "pr-review" });
+    expect(validateBlock(a)).toEqual([]);
+    expect(validateBlock(z)).toEqual([]);
     const v = validateText(`x\n\n${a}\n\ny\n\n${z}\n`).violations;
     expect(v.length).toBe(1);
     expect(v[0]?.code).toBe("block-disagreement");
@@ -602,6 +621,19 @@ describe("validateBlock", () => {
 //
 // plus the one that keeps it narrow: NO OTHER GOVERNANCE KEY changed.
 
+/**
+ * The reconcilable set, stated by the TEST rather than imported from the module.
+ * The module names its three keys literally and deliberately keeps no table (a table
+ * is an invitation for the next key to inherit the exemption without the argument),
+ * so the roster is written here — where drifting from the implementation is what
+ * turns the scope falsifier red instead of silently widening it.
+ */
+const RECONCILABLE_KEYS: readonly string[] = [
+  "Human-Review",
+  "Human-Review-Evidence",
+  "Action-Mode",
+];
+
 describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () => {
   const AM = "Action-Mode";
 
@@ -675,20 +707,31 @@ describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () =>
     );
   });
 
-  test("SCOPE: no OTHER governance key became reconcilable", () => {
-    // The narrowing falsifier. If a later edit generalises the carve-out into a
-    // table, this goes red for whichever key was added.
-    const others = GOVERNANCE_KEYS.filter((k) => k !== AM);
-    expect(others.length).toBe(6);
+  test("SCOPE: no key outside the three per-commit ones became reconcilable", () => {
+    // The narrowing falsifier. The reconcilable set is exactly the three keys that
+    // describe HOW ONE COMMIT WAS MADE. If a later edit generalises the carve-out
+    // into a table over all of `GOVERNANCE_KEYS`, this goes red for whichever key
+    // was added.
+    //
+    // MUTANT THIS CATCHES: widening (a table, or dropping a key from the loud set).
+    // It is deliberately NOT sensitive to reverting the 2026-08-24 generalisation —
+    // that direction is covered by §THE #13909 SHAPE below.
+    const others = GOVERNANCE_KEYS.filter((k) => !RECONCILABLE_KEYS.includes(k));
+    expect(others).toEqual([
+      "Agency-Signature-Version",
+      "Credential-Mode",
+      "Accountable-Party",
+      "Authority-Basis",
+    ]);
     const alt: Readonly<Record<string, readonly [string, string]>> = {
+      // The schema discriminator: changes how everything else is read.
       "Agency-Signature-Version": ["1", "2"],
+      // WHOSE credential acted. Not a per-commit causal fact about how the work was
+      // made — it is a claim about whether a human was reachable at all, and the two
+      // values are not ordered by anything. Stays loud.
       "Credential-Mode": ["shared", "dedicated-agent"],
-      // Still loud here, and that is the point: these blocks carry NO
-      // accountability anchor, so the 2026-08-24 carve-out does not apply to them
-      // and `Human-Review` behaves exactly as it did before it existed.
-      "Human-Review": ["explicit", "none"],
-      "Human-Review-Evidence": ["chat", "none"],
-      // The two accountability keys: governance-critical and NEVER reconcilable.
+      // The two accountability keys: governance-critical and NEVER reconcilable. A
+      // change with two accountable parties has no accountable party.
       "Accountable-Party": ["acehack", "lucent-financial-group"],
       "Authority-Basis": ["standing-grant", "per-act"],
     };
@@ -698,16 +741,21 @@ describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () =>
       const a = block({ [key]: pair?.[0] ?? "" });
       const z = block({ [key]: pair?.[1] ?? "" });
       const text = `x\n\n${a}\n\ny\n\n${z}\n`;
-      expect(detectBlockDisagreement(text)?.keys).toContain(key);
+      expect(detectBlockDisagreement(text)?.keys ?? []).toContain(key);
       expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+      expect(preMergeAccepts(text)).toBe(false);
+      // ...and none of them appears as a RECONCILIATION either — loud, not resolved.
+      expect(validateText(text).reconciliations.map((r) => r.key)).not.toContain(key);
     }
   });
 
-  test("DISCRIMINATION: the #14430 shape stays BLOCKED on Human-Review", () => {
-    // Same mixed Action-Mode as #14251, but its constituents also disagree about
-    // whether a human reviewed the change. That half must NOT be unblocked here:
-    // `Human-Review` is a claim about THE CHANGE, and one change cannot have been
-    // both reviewed and not reviewed.
+  test("DISCRIMINATION: the #14430 shape resolves on ALL THREE keys, unanchored", () => {
+    // CHANGED 2026-08-24 (second pass). This used to assert the shape stays BLOCKED
+    // on `Human-Review`. The block was real and so was the reasoning behind it — but
+    // it rested on `Human-Review` carrying the accountability claim, and the fix for
+    // that (`Accountable-Party` / `Authority-Basis`) gated the relief on a key NO
+    // BLOCK ON MAIN CARRIES. So the relief never arrived and the shape recurred.
+    // What actually makes the resolution safe is the DIRECTION, which needs no anchor.
     const reviewed = block({
       "Human-Review": "explicit",
       "Human-Review-Evidence": "chat",
@@ -719,14 +767,13 @@ describe("ACTION-MODE RECONCILIATION: weakest claim, never the strongest", () =>
       [AM]: "autonomous-fail-closed",
     });
     const text = `feat: agendas\n\n${reviewed}\n\n* later\n\n${not}\n`;
-    const d = detectBlockDisagreement(text);
-    expect(d).not.toBeNull();
-    expect(d?.keys).toContain("Human-Review");
-    expect(d?.keys).toContain("Human-Review-Evidence");
-    // ...and Action-Mode is no longer among the reasons, which is the whole
-    // point: the diagnosis now names only the fields that are really in conflict.
-    expect(d?.keys).not.toContain(AM);
-    expect(preMergeAccepts(text)).toBe(false);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).violations).toEqual([]);
+    expect(preMergeAccepts(text)).toBe(true);
+    const byKey = new Map(validateText(text).reconciliations.map((r) => [r.key, r.resolved]));
+    expect(byKey.get("Human-Review")).toBe("not-implied-by-credential");
+    expect(byKey.get("Human-Review-Evidence")).toBe("none");
+    expect(byKey.get(AM)).toBe("autonomous-fail-closed");
   });
 
   test("the verdict CARRIES the resolution, so a report cannot print the stronger value", () => {
@@ -862,13 +909,21 @@ describe("ACCOUNTABILITY SPLIT: who carries blame is not whether a human looked"
     const v1 = block({ [HR]: "not-implied-by-credential", [HRE]: "none" });
     expect(blockValue(v1, AP)).toBe("");
     expect(accountabilityAnchor([v1.split("\n")])).toBeNull();
-    // ...and silence buys NOTHING: an unanchored #14430 shape is as loud as ever.
+    // ...and silence still buys NOTHING FOR ACCOUNTABILITY: an unanchored squash is
+    // read as naming nobody, and no party is invented for it. What silence no longer
+    // costs is the REVIEW resolution — that runs on the direction argument, which the
+    // anchor never supplied. Two different questions, and only one of them is
+    // answered by a field these blocks do not carry.
     const text = join(
       block({ [HR]: "explicit", [HRE]: "chat", "Action-Mode": "human-directed" }),
-      block({ [HR]: "not-implied-by-credential", [HRE]: "none" }),
+      block({ [HR]: "not-implied-by-credential", [HRE]: "none", "Action-Mode": "autonomous-fail-closed" }),
     );
-    expect(detectBlockDisagreement(text)?.keys).toContain(HR);
-    expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+    expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
+    const reconciled = validateText(text).reconciliations;
+    expect(reconciled.map((r) => r.key)).not.toContain(AP);
+    expect(reconciled.map((r) => r.key)).not.toContain(AB);
+    expect(reconciled.find((r) => r.key === HR)?.resolved).toBe("not-implied-by-credential");
+    expect(validateText(text).violations).toEqual([]);
   });
 
   test("SILENCE IS NOT A COMPETING CLAIM: named + unnamed is quiet, and the name survives", () => {
@@ -942,7 +997,7 @@ describe("ACCOUNTABILITY SPLIT: who carries blame is not whether a human looked"
 
   // -- 3. THE #14430 SHAPE, ANCHORED ---------------------------------------
 
-  test("THE DISSOLUTION: #14430's real shape resolves once the anchor is present", () => {
+  test("THE DISSOLUTION: #14430's real shape resolves, anchor or no anchor", () => {
     // The three real commits of PR #14430, verbatim field values, PLUS the anchor
     // its standing grant always implied. Held constant: `Accountable-Party`,
     // `Authority-Basis`. Left mixed exactly as they are: the causal facts.
@@ -1015,23 +1070,35 @@ describe("ACCOUNTABILITY SPLIT: who carries blame is not whether a human looked"
     expect(reconcileReviewEvidence(["explicit", "none"], ["chat", "pr-review"])).toBeNull();
   });
 
-  test("a PARTIAL anchor buys nothing — full coverage is required to relax", () => {
-    // One commit's claim about the others is the manufacture wearing the new field.
+  test("a PARTIAL anchor is still not an anchor — and the review keys no longer care", () => {
+    // Partial coverage is one commit's claim about the others, so it is not an
+    // anchor and never becomes one. It ALSO no longer decides the review keys: those
+    // resolve on the direction argument. Both halves are asserted, because the first
+    // is what stops the anchor being laundered and the second is what stops the
+    // anchor being a toll.
     const text = join(
       anchored({ [HR]: "explicit", [HRE]: "chat" }),
       block({ [HR]: "not-implied-by-credential", [HRE]: "none" }), // no anchor
     );
     expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
-    expect(detectBlockDisagreement(text)?.keys).toContain(HR);
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(
+      validateText(text).reconciliations.find((r) => r.key === HR)?.resolved,
+    ).toBe("not-implied-by-credential");
   });
 
-  test("an UNROSTERED anchor buys nothing", () => {
+  test("an UNROSTERED anchor is still not an anchor — and the review keys no longer care", () => {
     const text = join(
       block({ [AP]: "acme-corp", [AB]: "standing-grant", [HR]: "explicit", [HRE]: "chat" }),
       block({ [AP]: "acme-corp", [AB]: "standing-grant", [HR]: "none" }),
     );
     expect(accountabilityAnchor(findAllSignatureBlocks(text))).toBeNull();
-    expect(detectBlockDisagreement(text)?.keys).toContain(HR);
+    // `acme-corp` is off the roster, so the BLOCKS are invalid — but that is an
+    // enum failure on the authoritative block, not a disagreement, and the review
+    // keys still resolve downward.
+    expect(detectBlockDisagreement(text)).toBeNull();
+    expect(validateText(text).reconciliations.find((r) => r.key === HR)?.resolved).toBe("none");
+    expect(validateText(text).violations[0]?.code).toBe("invalid-enum");
   });
 
   // -- 4. THE FALSIFIER -----------------------------------------------------
@@ -1085,5 +1152,192 @@ describe("ACCOUNTABILITY SPLIT: who carries blame is not whether a human looked"
     for (const key of ACCOUNTABILITY_KEYS) expect(GOVERNANCE_KEYS).toContain(key);
     const text = join(anchored(), anchored({ [AP]: "lucent-financial-group" }));
     expect(detectReconciliations(text)).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE #13909 SHAPE — the falsifiers for the 2026-08-24 GENERALISATION
+// ---------------------------------------------------------------------------
+// The anchored `Human-Review` reconciliation shipped gated on `accountabilityAnchor`,
+// a pair NO BLOCK ON MAIN CARRIES (0 of 17,162). So the relief it was written to
+// deliver never reached a single real PR, and the shape it was written for kept
+// recurring. Two live PRs, measured the night this section was written:
+//
+//   #13909  18 commits; exactly one (`75ac62459`, a security fix) carries
+//           explicit / chat / human-directed. `Credential-Mode` (`shared`) and the
+//           version (`1`) agree across every block. Red on `Human-Review` alone.
+//   #14430  the same shape, 3 commits, 2 explicit + 1 not-implied.
+//
+// BOTH CLAIMS ARE TRUE — the maintainer reviewed one commit in chat and not the
+// others. Five properties are checked here. The first three fail if the
+// generalisation is reverted; the last two fail if it is WIDENED. A test that could
+// not fail under either mutation would be the vacuity class this module refuses, so
+// each one names the mutant it catches.
+
+describe("THE #13909 SHAPE: mixed review provenance is not a contradiction", () => {
+  const HR = "Human-Review";
+  const HRE = "Human-Review-Evidence";
+  const AM = "Action-Mode";
+
+  /** #13909's real field values: one reviewed commit among many that were not. */
+  const reviewedCommit = block({
+    Agent: "mateo",
+    [HR]: "explicit",
+    [HRE]: "chat",
+    [AM]: "human-directed",
+    "Credential-Mode": "shared",
+  });
+  const autonomousCommit = (i: number): string =>
+    block({
+      Agent: "shadow",
+      [HR]: "not-implied-by-credential",
+      [HRE]: "none",
+      [AM]: "autonomous-fail-closed",
+      "Credential-Mode": "shared",
+      Task: `work-item-${String(i)}`,
+    });
+
+  /** The squash preimage: every commit message concatenated, prose between. */
+  const preimageOf = (...blocks: readonly string[]): string =>
+    blocks.map((b, i) => `commit ${String(i)}: work\n\n${b}`).join("\n\n") + "\n";
+
+  // -- reverting the generalisation turns these three red -------------------
+
+  test("THE FALSIFIER: 18 blocks, one reviewed, resolves to the WEAKEST and passes", () => {
+    // MUTANT: revert the generalisation (re-gate on `accountabilityAnchor`). These
+    // blocks carry no anchor, so the gate would refuse and the squash goes red —
+    // which is the state #13909 is in on `main` today.
+    const rest = Array.from({ length: 17 }, (_, i) => autonomousCommit(i));
+    for (const order of [
+      preimageOf(reviewedCommit, ...rest), // reviewed commit first
+      preimageOf(...rest, reviewedCommit), // reviewed commit LAST — last-wins bait
+      preimageOf(...rest.slice(0, 9), reviewedCommit, ...rest.slice(9)), // in the middle
+    ]) {
+      expect(findAllSignatureBlocks(order).length).toBe(18);
+      expect(detectBlockDisagreement(order)).toBeNull();
+      expect(validateText(order).violations).toEqual([]);
+      expect(preMergeAccepts(order)).toBe(true);
+
+      const byKey = new Map(validateText(order).reconciliations.map((r) => [r.key, r.resolved]));
+      expect(byKey.get(HR)).toBe("not-implied-by-credential");
+      expect(byKey.get(HRE)).toBe("none");
+      expect(byKey.get(AM)).toBe("autonomous-fail-closed");
+      // The discarded claim is PRINTED, never silently dropped (#14594).
+      const from = validateText(order).reconciliations.find((r) => r.key === HR)?.from ?? [];
+      expect(from).toContain("explicit");
+      expect(from).toContain("not-implied-by-credential");
+    }
+  });
+
+  test("THE DIRECTION, end to end: no arrangement of blocks ever resolves UP", () => {
+    // MUTANT: revert (nothing resolves at all, so `resolved` is undefined), OR flip
+    // `Math.min` to `Math.max` in `reconcileHumanReview` (resolves to `explicit`).
+    // Every non-empty subset of the vocabulary with 2+ members, driven through the
+    // real gate, in both orders.
+    const vocab = HUMAN_REVIEW_BY_HUMAN_AUTHORITY;
+    const evidenceFor = (hr: string): string => (hr === "explicit" ? "chat" : "none");
+    for (let mask = 0; mask < 1 << vocab.length; mask++) {
+      const pick = vocab.filter((_, i) => (mask & (1 << i)) !== 0);
+      if (pick.length < 2) continue;
+      const blocks = pick.map((hr) => block({ [HR]: hr, [HRE]: evidenceFor(hr) }));
+      for (const ordered of [blocks, [...blocks].reverse()]) {
+        const text = preimageOf(...ordered);
+        const resolved = validateText(text).reconciliations.find((r) => r.key === HR)?.resolved;
+        expect(resolved).toBeDefined();
+        // (1) never strengthened — always the minimum of what was present
+        const ranks = pick.map((v) => vocab.indexOf(v));
+        expect(vocab.indexOf(resolved ?? "")).toBe(Math.min(...ranks));
+        // (2) never a claim of review
+        expect(resolved).not.toBe("explicit");
+        // (3) never invented — always a value some constituent wrote
+        expect(pick).toContain(resolved ?? "");
+      }
+    }
+  });
+
+  test("THE CROSS-FIELD GUARD: a resolution the schema itself refuses stays LOUD", () => {
+    // MUTANT: delete the `validateReviewConsistency` line from `reconcileReviewPair`.
+    // Reviews disagree while EVERY block cites `chat`, so resolving key-by-key gives
+    // (`not-implied-by-credential`, `chat`) — a pair `validateBlock` refuses. Silently
+    // reporting it green is a resolution manufacturing an invalid record.
+    //
+    // This is red under the pre-generalisation code too, but only by accident (no
+    // anchor). The ANCHORED variant below is the one that was GREEN and wrong before
+    // this guard existed, which is what makes the guard non-vacuous.
+    const mixedReviewsOneEvidence = (wrap: (o: Record<string, string>) => string): string =>
+      `x\n\n${wrap({ [HR]: "explicit", [HRE]: "chat" })}\n\ny\n\n${wrap({
+        [HR]: "not-implied-by-credential",
+        [HRE]: "chat",
+      })}\n`;
+    for (const text of [
+      mixedReviewsOneEvidence((o) => block(o)),
+      mixedReviewsOneEvidence((o) =>
+        block({ "Accountable-Party": "acehack", "Authority-Basis": "standing-grant", ...o }),
+      ),
+    ]) {
+      expect(reconcileReviewPair(["explicit", "not-implied-by-credential"], ["chat"])).toBeNull();
+      expect(detectBlockDisagreement(text)?.keys ?? []).toContain(HR);
+      expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+      expect(validateText(text).reconciliations.map((r) => r.key)).not.toContain(HR);
+      expect(preMergeAccepts(text)).toBe(false);
+    }
+  });
+
+  // -- widening the generalisation turns these two red ----------------------
+
+  test("SCOPE: Credential-Mode and the version still disagree LOUDLY", () => {
+    // MUTANT: widen the carve-out to all of `GOVERNANCE_KEYS`. `Credential-Mode` is
+    // not a per-commit causal fact — it says whether a human was reachable at all —
+    // and its values are not ordered by anything, so there is no weakest to take.
+    for (const [key, a, z] of [
+      ["Credential-Mode", "shared", "dedicated-agent"],
+      ["Credential-Mode", "human-only", "dedicated-agent"],
+      ["Agency-Signature-Version", "1", "2"],
+    ] as const) {
+      const text = `x\n\n${block({ [key]: a })}\n\ny\n\n${block({
+        [key]: z,
+        ...(key === "Agency-Signature-Version" ? { Agent: "soraya", Cell: "core" } : {}),
+      })}\n`;
+      expect(detectBlockDisagreement(text)?.keys ?? []).toContain(key);
+      expect(validateText(text).violations[0]?.code).toBe("block-disagreement");
+      expect(preMergeAccepts(text)).toBe(false);
+    }
+  });
+
+  test("SCOPE: two live evidence pointers have no weakest, so they stay LOUD", () => {
+    // MUTANT: give the four tier-1 evidence values a total order and take the
+    // minimum. They name different PLACES a review is recorded, not different
+    // AMOUNTS, so picking one would discard a true pointer to keep another.
+    const tier1 = HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH[1] ?? [];
+    expect(tier1.length).toBe(4);
+    expect(tier1).not.toContain("none");
+    for (const a of tier1) {
+      for (const z of tier1) {
+        if (a === z) continue;
+        // Under an AGREEING explicit review: two true statements, neither weaker.
+        expect(reconcileReviewEvidence(["explicit"], [a, z])).toBeNull();
+        // ...and under a DISAGREEING review, where `none` was never written.
+        expect(reconcileReviewEvidence(["explicit", "not-implied-by-credential"], [a, z])).toBeNull();
+        const text = `x\n\n${block({ [HR]: "explicit", [HRE]: a })}\n\ny\n\n${block({
+          [HR]: "explicit",
+          [HRE]: z,
+        })}\n`;
+        expect(detectBlockDisagreement(text)?.keys ?? []).toContain(HRE);
+        expect(preMergeAccepts(text)).toBe(false);
+      }
+    }
+    // The one tier-0 member is what makes a weakest element exist at all.
+    expect(HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH[0]).toEqual(["none"]);
+  });
+
+  test("an out-of-enum evidence spelling has no tier, so it is not ordered", () => {
+    // MUTANT: drop the `known.includes` refusal from `reconcileReviewEvidence`.
+    // Reverting that line makes `['none', 'slack-thread']` resolve to `none`,
+    // guessing an unknown vocabulary into position.
+    for (const bad of ["slack-thread", "CHAT", "verbal", ""]) {
+      expect(
+        reconcileReviewEvidence(["explicit", "not-implied-by-credential"], [bad, "none"]),
+      ).toBeNull();
+    }
   });
 });
