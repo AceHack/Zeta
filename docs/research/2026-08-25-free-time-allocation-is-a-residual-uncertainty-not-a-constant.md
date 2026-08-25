@@ -480,6 +480,22 @@ contributors could shape a domain's allocation (§4.3, open).
   floor where both halves do form pairs. Recorded because it is the exact failure this
   discipline exists to catch, and because #15426 hit the same class of masking one day
   earlier — which says something about the method, not about luck.
+
+  **A second vacuous check, found by CI and measured rather than argued.** `FTA-5` originally
+  asserted `classify x = classify x` — two identical calls compared for equality, to claim
+  "no ambient input". `audit-check-arity.ts` flagged it as an **R2 self-comparison**: both
+  sides normalize to one expression, so the check claims a property of higher arity than it
+  tests. The tool's prescribed remedy for a *correct* self-comparison is to raise the count in
+  `registry/check-arity-census.json`. **That would have been wrong here**, and the measurement
+  says so: mutation `M17` replaced `Phase_ = phase` with `Phase_ = DateTime.UtcNow.Ticks`, and
+  **all 31 tests passed, `FTA-5` included**. Two identical calls capture the *same* clock, so
+  the comparison succeeds **because** of the impurity rather than despite it — the vacuity
+  class in its purest form, inside the test meant to prevent it.
+
+  The fix lowers the **claim**, not the **allowance**: `FTA-5` now asserts each field against
+  the argument it must have come from, plus a control that a different phase really changes the
+  value. `M17` then dies deterministically, and the census is **untouched** — a self-comparison
+  that should never have been counted was deleted rather than licensed.
 - `src/Core.TypeScript/ledger/measure.ts` — `provenance` + `provenanceAttestedBy` become
   required, validated fields with their own refusals, so the free/directed split is
   **recordable** (§2).

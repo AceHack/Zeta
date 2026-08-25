@@ -15,7 +15,7 @@ open Zeta.Core
 //   FTA-2   classify accepts an allocator's classification
 //   FTA-3   the subject check is ORDINAL: "otto" vs "Otto" is a different party
 //   FTA-4   empty agent / empty domain refused
-//   FTA-5   no hidden clock (DST): two identical classify calls produce equal values
+//   FTA-5   no ambient input (DST): every field is read from an argument (kills M17)
 //
 // LEDGER
 //   FTA-6   record is idempotent in workId (#6)
@@ -118,11 +118,35 @@ module FreeTimeAllocationTests =
         | other -> failwith (sprintf "expected EmptyIdentifier domain, got %A" other)
 
     [<Fact>]
-    let ``FTA-5 no hidden clock - two identical classify calls are equal`` () =
-        // DST / noninterference: nothing ambient is captured into the value.
-        let a = FreeTimeAllocation.classify "otto" ALLOCATOR "dbsp" FreeTimeAllocation.Free true "d" 7L
-        let b = FreeTimeAllocation.classify "otto" ALLOCATOR "dbsp" FreeTimeAllocation.Free true "d" 7L
-        Assert.Equal(a, b)
+    let ``FTA-5 no ambient input - every field is read from an argument`` () =
+        // DST / noninterference (#7 / §13): the value is a function of the DECLARED arguments
+        // and of nothing else.
+        //
+        // This test USED to assert `classify x = classify x` — two identical calls compared for
+        // equality. That form is a SELF-COMPARISON: both sides normalize to one expression, so
+        // it claims a property (purity) of higher arity than it tests. Worse, it is the vacuity
+        // class outright, and that was MEASURED rather than argued: mutation `M17` replaced
+        // `Phase_ = phase` with `Phase_ = DateTime.UtcNow.Ticks` and **all 31 tests passed,
+        // FTA-5 included**. Two identical calls capture the SAME clock, so the comparison
+        // succeeds *because* of the impurity, not despite it.
+        //
+        // The discriminating form asserts each field against the argument it must have come
+        // from. A captured clock is then a different number, deterministically, and M17 dies.
+        match FreeTimeAllocation.classify "otto" ALLOCATOR "dbsp" FreeTimeAllocation.Free true "digest-x" 7L with
+        | Ok w ->
+            Assert.Equal("otto", FreeTimeAllocation.agentOf w)
+            Assert.Equal("dbsp", FreeTimeAllocation.domainOf w)
+            Assert.Equal(FreeTimeAllocation.Free, FreeTimeAllocation.timeClassOf w)
+            Assert.True(FreeTimeAllocation.reducedUncertaintyOf w)
+            Assert.Equal("digest-x", FreeTimeAllocation.outputDigestOf w)
+            Assert.Equal(7L, FreeTimeAllocation.phaseOf w)
+        | Error e -> failwith (sprintf "expected Ok, got %A" e)
+
+        // THE CONTROL — a different phase argument really does change the value, so the
+        // assertion above reads the argument rather than a constant that happens to be 7.
+        match FreeTimeAllocation.classify "otto" ALLOCATOR "dbsp" FreeTimeAllocation.Free true "digest-x" 9L with
+        | Ok w -> Assert.Equal(9L, FreeTimeAllocation.phaseOf w)
+        | Error e -> failwith (sprintf "expected Ok, got %A" e)
 
     // ── LEDGER ────────────────────────────────────────────────────────────────────────────
 
