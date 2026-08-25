@@ -117,3 +117,86 @@ The "Eve" naming likely references diplomatic / governance themes; the row leave
 ## Status
 
 Open. **LOCKED-IN** by Aaron + Mika line 3065 as 3rd of 4 languages. Implementation marked "to be developed later" per Mika; this row is the planning + design substrate.
+
+## Primitive: PRE-DECLARED BIAS (Aaron 2026-08-25)
+
+A first-class move in the protocol. A party states **before the result arrives** that it
+wants a particular answer to be true.
+
+Origin, verbatim — Aaron, while asking for a specific mathematical bridge to be checked:
+
+> *"i've been looking for this bridge eagerly, so if i over try to convince you it's cause
+> i'm biased"*
+
+### Why this belongs in EVE specifically
+
+This row's own thesis is that **no party gets a home-field advantage**. An eager party
+*has* one — it has been looking longer, knows where the supporting evidence is, and can
+marshal it faster than a neutral party can check it. Usually it holds that advantage
+**silently, and often without noticing**. Pre-declaration is the move by which a party
+**voluntarily surrenders an advantage it would otherwise keep by default**. That is the
+neutrality this protocol exists to manufacture, performed by the party who benefits from
+its absence.
+
+### The property that makes it self-enforcing
+
+Declaring eagerness can only ever **lower the weight of your own claim**. There is no
+version where volunteering it helps you. So it needs no verification and cannot be
+gamed — the same shape as `Credential-Mode: unknown` degrading rather than asserting a
+convenient value, and as the stage-0 entrypoint marker whose sole effect is to make the
+declarer's own metric worse.
+
+### EAGER IS NOT A DISCOUNT — the refinement that keeps it honest
+
+The naive reading ("eager ⇒ trust less") is wrong and would make the primitive costly to
+use, which would kill it. An eager party has been **searching**, so it has **higher
+recall and lower precision** — more candidate connections found, a larger share of them
+spurious. The correct semantics is therefore:
+
+> **Weight the evidence, not the enthusiasm.** An eager claim requires an *independent*
+> confirmation, because the eager party's own corroboration is **correlated with itself**.
+
+That is `numerology-vs-number-theory.md`'s *"too many correlations is a WARNING, not a
+confirmation signal"* applied to a single observer across time rather than to many
+observers at once. An eager party producing five supporting arguments has produced
+approximately one.
+
+### Timing is load-bearing
+
+Declared **before** the result: a disclosure. Offered **after** an unfavourable result:
+an excuse. The primitive only functions in the first position, and a protocol
+implementation should record **when** the declaration was made, not merely that it was.
+
+### The reciprocal obligation
+
+The receiving party must **declare its own stake in the same exchange**, or the
+disclosure has simply transferred the advantage rather than removed it. In the originating
+instance the receiver had supplied part of the very construction under review and said so.
+A one-sided disclosure is not neutrality; it is a handicap accepted by one side.
+
+### Shape
+
+- `eagerness: eager | neutral | averse` — **self-claimed, never inferred**
+  ([`pigeonhole-by-self-claim`](../../..); and the ask-don't-infer discipline in
+  `engagement-profiles-public-work-only-not-surveillance-dossiers.md` — an observer
+  attributing eagerness to a counterpart is modelling their inner life, which the rule
+  forbids).
+- `declaredAt` — before or after the result is known; the protocol records which.
+- `stakeDescription` — free text, what the party wants to be true and why.
+- The receiver's own `eagerness` on the same exchange is **required**, not optional.
+
+### Falsifier
+
+A protocol implementation that lets `eagerness` be set by an observer about a
+counterparty, or that accepts a declaration timestamped after the result, has
+reimplemented the bias it was built to disclose.
+
+## Pointers
+
+- [`numerology-vs-number-theory.md`](../../../.claude/rules/numerology-vs-number-theory.md)
+  — coincidence as generator vs conclusion; the correlation-density warning this primitive
+  operationalises for one observer.
+- `memory/user_aaron_stores_long_term_memory_by_coincidence_index_*` — the index stores the
+  resonance, not the evidence, so a spurious match *feels* exactly as strong as a real one.
+  Pre-declaration is the mitigation Aaron applies to himself.
+- `.claude/rules/engagement-profiles-*.md` — ask, never infer, about inner states.
