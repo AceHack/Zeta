@@ -79,6 +79,34 @@ jobs:
           cp docs/books/you-born-at-the-hinge/site/index.fa.html dist/books/you-born-at-the-hinge/fa/index.html
           cp docs/books/you-born-at-the-hinge/site/index.en-nc.html dist/books/you-born-at-the-hinge/en-nc/index.html
           cp docs/books/you-born-at-the-hinge/site/index.my.html dist/books/you-born-at-the-hinge/my/index.html
+
+          # REDIRECT STUBS for the paths readers actually guess. Measured live 2026-08-25:
+          # /en/ and /en both 200, but /index.en.html, /en.html and /english/ all 404 —
+          # and /index.en.html is the REPO filename, so anyone who found the book by
+          # reading the repository tries exactly that and gets nothing. Reported as
+          # "people are getting 404 at my English version".
+          # Purely additive: no existing path changes, and each stub is a 2-line meta
+          # refresh with a real anchor so it works with JS disabled and for crawlers.
+          for pair in "index.en.html:en/" "en.html:en/" "index.zh.html:./" "index.ko.html:ko/" \
+                      "index.th.html:th/" "index.ru.html:ru/" "index.ar.html:ar/" \
+                      "index.fa.html:fa/" "index.id.html:id/" "index.vi.html:vi/" \
+                      "index.my.html:my/" "index.en-nc.html:en-nc/"; do
+            stub="${pair%%:*}"; target="${pair##*:}"
+            printf '<!doctype html><meta charset="utf-8"><title>Redirecting</title><meta http-equiv="refresh" content="0; url=%s"><link rel="canonical" href="%s"><p>Redirecting to <a href="%s">%s</a>.</p>\n' \
+              "$target" "$target" "$target" "$target" \
+              > "dist/books/you-born-at-the-hinge/$stub"
+          done
+          # /zh/ is a 404 while every OTHER language has a suffixed directory: Chinese lives
+          # only at the root. Measured 2026-08-25 — /zh/ 404, all ten others 200. So anyone
+          # building a Chinese link by the same pattern as the rest gets nothing, which is the
+          # same defect as the English case one level over: the path a reader would construct
+          # does not exist. Redirect it to the root rather than duplicating the page.
+          mkdir -p dist/books/you-born-at-the-hinge/zh
+          printf '<!doctype html><meta charset="utf-8"><title>Redirecting</title><meta http-equiv="refresh" content="0; url=../"><link rel="canonical" href="../"><p>Redirecting to <a href="../">../</a>.</p>\n' \
+            > dist/books/you-born-at-the-hinge/zh/index.html
+          mkdir -p dist/books/you-born-at-the-hinge/english
+          printf '<!doctype html><meta charset="utf-8"><title>Redirecting</title><meta http-equiv="refresh" content="0; url=../en/"><link rel="canonical" href="../en/"><p>Redirecting to <a href="../en/">../en/</a>.</p>\n' \
+            > dist/books/you-born-at-the-hinge/english/index.html
       - name: Generate eBooks
         run: bun run docs/books/you-born-at-the-hinge/scripts/build_ebooks.ts
       # Runs AFTER the book copy on purpose: the language pages only sit at their served

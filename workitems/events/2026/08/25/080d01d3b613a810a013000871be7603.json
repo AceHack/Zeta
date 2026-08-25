@@ -1,0 +1,14 @@
+{
+  "id": "080d01d3b613a810a013000871be7603",
+  "at": "2026-08-25T19:47:36.693Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X7DGKM087G0R001PSBQKS",
+    "type": "bug",
+    "title": "Book site: guessable English URLs 404 while /en/ works; add redirect stubs",
+    "slug": "book-site-guessable-english-urls-404-while-en-works-add-redi",
+    "priority": "P2",
+    "filename": "081M0X7DGKM087G0R001PSBQKS-book-site-guessable-english-urls-404-while-en-works-add-redi.md"
+  }
+}
