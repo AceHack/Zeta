@@ -1,0 +1,14 @@
+{
+  "id": "080d01c435e08010a01300088d98a6bc",
+  "at": "2026-08-25T10:45:49.200Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0W8DF0F087G0R0037NBDHZ",
+    "type": "bug",
+    "title": "AgencySignature commit audit header reports HEAD instead of the audited commit",
+    "slug": "agencysignature-commit-audit-header-reports-head-instead-of",
+    "priority": "P2",
+    "filename": "081M0W8DF0F087G0R0037NBDHZ-agencysignature-commit-audit-header-reports-head-instead-of.md"
+  }
+}

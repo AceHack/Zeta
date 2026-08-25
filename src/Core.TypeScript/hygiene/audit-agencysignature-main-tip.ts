@@ -868,9 +868,10 @@ function emitHeader(
   ship: ShipState | null,
   roster: IdentityRoster,
 ): void {
-  const sha = gitOutput(["rev-parse", targetRev]).stdout.trim();
+  const auditedRev = args.mode === "commit" ? args.commitSha : targetRev;
+  const sha = gitOutput(["rev-parse", auditedRev]).stdout.trim();
   process.stdout.write("AgencySignature v1 main-tip audit\n");
-  process.stdout.write(`  target_rev:    ${targetRev} (${sha})\n`);
+  process.stdout.write(`  target_rev:    ${auditedRev} (${sha})\n`);
   if (ship !== null) {
     process.stdout.write(`  v1-ship-date:  ${ship.date}`);
     if (ship.sha !== "") {

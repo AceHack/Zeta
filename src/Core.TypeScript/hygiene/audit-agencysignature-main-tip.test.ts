@@ -473,6 +473,9 @@ describe("end-to-end against real git", () => {
   let repo = "";
   let exitCode = 2;
   let output = "";
+  let commitExitCode = 2;
+  let commitOutput = "";
+  let auditedSha = "";
 
   beforeAll(() => {
     repo = mkdtempSync(join(tmpdir(), "zeta-agsig-"));
@@ -481,10 +484,11 @@ describe("end-to-end against real git", () => {
       GIT_CONFIG_GLOBAL: "/dev/null",
       GIT_CONFIG_SYSTEM: "/dev/null",
     };
-    const git = (args: readonly string[], extra: Record<string, string> = {}): void => {
+    const git = (args: readonly string[], extra: Record<string, string> = {}): string => {
       // eslint-disable-next-line sonarjs/no-os-command-from-path
       const r = spawnSync("git", args, { cwd: repo, env: { ...env, ...extra }, encoding: "utf8" });
       if ((r.status ?? 1) !== 0) throw new Error(`git ${args.join(" ")}: ${r.stderr}`);
+      return r.stdout.trim();
     };
     const commit = (subject: string, body: string, date: string): void => {
       git(
@@ -505,10 +509,12 @@ describe("end-to-end against real git", () => {
       "2026-08-01T00:00:00Z",
     );
     for (const p of PLANTED) commit(p.subject, p.body, p.date);
+    auditedSha = git(["rev-parse", "HEAD~1"]);
 
     const cwd = process.cwd();
     const write = process.stdout.write.bind(process.stdout);
     const chunks: string[] = [];
+    const commitChunks: string[] = [];
     try {
       process.chdir(repo);
       (process.stdout as { write: (s: string) => boolean }).write = (s: string): boolean => {
@@ -516,11 +522,17 @@ describe("end-to-end against real git", () => {
         return true;
       };
       exitCode = main(["--max", String(PLANTED.length)]);
+      (process.stdout as { write: (s: string) => boolean }).write = (s: string): boolean => {
+        commitChunks.push(s);
+        return true;
+      };
+      commitExitCode = main(["--commit", auditedSha]);
     } finally {
       (process.stdout as { write: typeof write }).write = write;
       process.chdir(cwd);
     }
     output = chunks.join("");
+    commitOutput = commitChunks.join("");
   });
 
   afterAll(() => {
@@ -546,6 +558,12 @@ describe("end-to-end against real git", () => {
     expect(output).toContain("HUMAN-ROSTER-EXEMPT:    1");
     expect(output).toContain("MACHINE-LANE-EXEMPT:    1");
     expect(output).toContain("REGRESSION:             6");
+  });
+
+  test("commit mode names the non-HEAD revision it actually audits", () => {
+    expect(commitExitCode).toBe(0);
+    expect(commitOutput).toContain(`target_rev:    ${auditedSha} (${auditedSha})`);
+    expect(commitOutput).not.toContain("target_rev:    HEAD");
   });
 });
 
