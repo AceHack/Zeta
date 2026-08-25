@@ -54,10 +54,44 @@ const HEAD_NAME_RE = /^[A-Za-z0-9](?:[A-Za-z0-9_-]|\.(?=[A-Za-z0-9_-])){0,62}$/;
 const COMMIT_SHA_RE = /^[0-9a-f]{40}$/;
 
 /**
- * Derive the immutable PR head for one exact mutable heartbeat tip.
+ * Derive the PR head for one exact mutable heartbeat tip: ONE FIXED REF PER LANE.
  *
- * The ref stays under `heartbeat/*`, where the lane's branch policy already applies. A rerun at
- * the same source SHA derives the same ref; a later tick necessarily derives a different one.
+ * WHY THIS IS NO LONGER `-flush-<sha>` (2026-08-25).
+ * ---------------------------------------------------
+ * The ref used to embed the source SHA, so "a later tick necessarily derives a different
+ * one" — which is exactly what the old docstring promised, and it is an unbounded ref
+ * generator. Measured on `origin`: 1,631 `heartbeat/*` refs, of which 1,610 are
+ * `-flush-<sha>` snapshots (alexa 564, otto 532, soraya 514). The mutable lanes and their
+ * buffers account for the other 21.
+ *
+ * NOTHING COULD EVER HAVE REAPED THEM, and that is the part worth stating precisely,
+ * because the obvious fix does not work here. Ruleset "Heartbeat Branch Protection"
+ * (16934633) targets `refs/heads/heartbeat/*` with a `deletion` rule, `bypass_actors: []`
+ * and `current_user_can_bypass: "never"`. So:
+ *
+ *   - no agent, admin or workflow can delete one of these refs;
+ *   - `delete_branch_on_merge` (which IS enabled on the repo) cannot fire on them either.
+ *
+ * Verified rather than assumed: the merged flush PRs #15267 and #15255 still have their
+ * `heartbeat/soraya-flush-<sha>` heads on the remote, while `automation/*` archive branches
+ * — same repo, same setting, no deletion ruleset — ARE removed on merge. So this leak is
+ * not the "closed unmerged PR" case it was reported as: EVERY flush leaked its ref, merged
+ * or not, and deleting them was never an available remedy.
+ *
+ * That rules out "delete the branch when the PR reaches a terminal state" and leaves the
+ * only fix that works under the ruleset as written: STOP MINTING NEW NAMES. The ref is now
+ * `heartbeat/<lane>-flush`, one per lane, force-updated in place — so the lane's ref
+ * population is constant (lane + buffer + flush) no matter how many times it flushes.
+ *
+ * This is not a new invention; it is the shape `flush-via-staging.ts` has been running in
+ * production on `tick-metrics`, `society` and `drift-sweep` for months, and those lanes
+ * leak nothing. The immutability the old snapshot bought is preserved by the CALLER, which
+ * must not move this ref while a PR is open on it — the same active/buffer discipline
+ * `chooseFlushRoute` implements. See `.github/workflows/agent-heartbeat.yml`.
+ *
+ * `sourceSha` stays in the returned value: it is what `verifySnapshotRef` checks the ref
+ * against, so the PR-only credential can still confirm it is looking at the exact commit
+ * the contents-write credential published, without being able to move it.
  */
 export function heartbeatSnapshot(
   sourceHead: string,
@@ -75,7 +109,7 @@ export function heartbeatSnapshot(
     ok: {
       sourceHead,
       sourceSha,
-      snapshotRef: `heartbeat/${lane}-flush-${sourceSha}`,
+      snapshotRef: `heartbeat/${lane}-flush`,
     },
   };
 }

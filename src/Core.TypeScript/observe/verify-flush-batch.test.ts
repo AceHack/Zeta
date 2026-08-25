@@ -44,6 +44,24 @@ describe("deriveProducer", () => {
     expect(deriveProducer("heartbeat/soraya-flush-901ddb7a93d1582c65a2eb4c85597fab8c561ad3")).toBe("soraya");
   });
 
+  test("parses the CURRENT fixed-ref form, one per lane", () => {
+    // The lane stopped embedding the source sha in the ref name: `heartbeat/*`
+    // is undeletable (ruleset 16934633), so a per-tick name was a permanent ref
+    // generator that had already produced 1,610 refs. See `heartbeatSnapshot`.
+    expect(deriveProducer("heartbeat/otto-flush")).toBe("otto");
+    expect(deriveProducer("heartbeat/alexa-flush")).toBe("alexa");
+    expect(deriveProducer("heartbeat/soraya-flush")).toBe("soraya");
+  });
+
+  test("does not mistake a lane or its buffer for a flush head", () => {
+    // `heartbeat/otto` is the MUTABLE tick lane and `-buffer` is the aggregate;
+    // neither is a flush batch, and naming one as a producer would attribute a
+    // batch to a ref that never carried a PR.
+    expect(deriveProducer("heartbeat/otto")).toBeNull();
+    expect(deriveProducer("heartbeat/otto-buffer")).toBeNull();
+    expect(deriveProducer("heartbeat/otto-flush-buffer")).toBeNull();
+  });
+
   test("still parses the legacy form, three of which exist on the remote", () => {
     expect(deriveProducer("flush/heartbeat-alexa-20260801T1500Z")).toBe("alexa");
   });

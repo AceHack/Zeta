@@ -102,6 +102,14 @@ export const EVENT_DIR = "docs/observe-events";
  * (`otto`, `alexa`, `soraya`) is a single lowercase word.
  */
 const BRANCH_PATTERNS: readonly RegExp[] = [
+  // The CURRENT shape: one fixed flush ref per lane, force-updated in place.
+  // `-flush-<sha>` minted a new ref every tick and, because ruleset 16934633
+  // makes `heartbeat/*` undeletable, every one of those 1,610 refs was permanent.
+  // See `heartbeatSnapshot` in agent-heartbeats/merge-heartbeats-to-main.ts.
+  /^heartbeat\/([a-z0-9]+)-flush$/,
+  // The historical per-tick snapshot shape. KEPT, and not merely for tidiness:
+  // those refs cannot be deleted, so batches produced under them stay replayable
+  // forever and must keep parsing to a named producer rather than to `null`.
   /^heartbeat\/([a-z0-9]+)-flush-[0-9a-f]{40}$/,
   /^flush\/heartbeat-([a-z0-9]+)-[A-Za-z0-9]+$/,
 ];

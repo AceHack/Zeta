@@ -1524,19 +1524,60 @@ jobs:
           AHEAD=$(git rev-list --count "origin/main..origin/heartbeat/$AGENT")
           echo "[flush] $AGENT: $AHEAD heartbeat commits to flush"
 
-          # Freeze the exact checked input before the mutable lane can advance on its next tick.
-          # Snapshot creation belongs to this checkout's contents-write credential. The tool below
-          # deliberately has only PR + metadata authority and verifies this ref without moving it.
+          # ════════════════════════════════════════════════════════════════════════
+          # ONE FIXED FLUSH REF PER LANE — this block used to mint one per tick
+          # ════════════════════════════════════════════════════════════════════════
+          #
+          # It pushed `heartbeat/$AGENT-flush-$SOURCE_SHA`, a NEW ref on every flush. Measured
+          # on origin 2026-08-25: 1,610 such refs (alexa 564, otto 532, soraya 514) out of
+          # 1,631 `heartbeat/*` refs total.
+          #
+          # AND NOTHING COULD EVER HAVE CLEANED THEM UP. Ruleset "Heartbeat Branch Protection"
+          # (16934633) covers `refs/heads/heartbeat/*` with a `deletion` rule, `bypass_actors:
+          # []`, `current_user_can_bypass: "never"`. No agent, no admin and no workflow may
+          # delete one, and `delete_branch_on_merge` cannot fire on them either. Checked, not
+          # assumed: merged flush PRs #15267/#15255 still have their heads on the remote,
+          # while `automation/*` branches in the same repo ARE deleted on merge.
+          #
+          # So the leak was never the "superseded PR closed unmerged" case it was reported as
+          # — a MERGED flush leaked its ref just the same — and "delete the branch when the PR
+          # reaches a terminal state" is not an available fix here. Under the ruleset as
+          # written the only remedy is to stop minting names. Note this needs NO ruleset change
+          # and adds NO bypass actor: the protection stays exactly as strict as it was.
+          #
+          # THE REF IS NOW IMMUTABLE-WHILE-OPEN RATHER THAN IMMUTABLE-FOREVER, which is what
+          # the snapshot was really buying. The head must not move while its PR is under test,
+          # so this checks for an open PR FIRST and simply does not flush when one exists. That
+          # costs nothing: the tick job rebuilds `heartbeat/$AGENT` every 15 minutes carrying
+          # any prior unflushed delta over current main, so a skipped flush's payload is
+          # re-accumulated into the next one. This is the same active/buffer backpressure
+          # `flush-via-staging.ts` implements for the other lanes, and it is why the
+          # "superseded flush carries observations the newer one does not" hazard cannot arise
+          # here: there is never more than one open flush PR per lane, so nothing is ever
+          # superseded, and the lane — not the ref — is what holds unlanded work.
           SOURCE_SHA=$(git rev-parse "origin/heartbeat/$AGENT")
-          SNAPSHOT_REF="heartbeat/$AGENT-flush-$SOURCE_SHA"
+          SNAPSHOT_REF="heartbeat/$AGENT-flush"
+
+          OPEN_FLUSH_PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            --head "$SNAPSHOT_REF" --base main --json number --jq '.[0].number // empty' 2>/dev/null || true)
+          if [ -n "$OPEN_FLUSH_PR" ]; then
+            echo "::notice title=Heartbeat flush backpressured::$AGENT: PR #$OPEN_FLUSH_PR is still testing $SNAPSHOT_REF; leaving the head alone. The lane keeps accumulating and the next flush carries this tick too."
+            echo "[flush] $AGENT: backpressured behind PR #$OPEN_FLUSH_PR — nothing lost"
+            exit 0
+          fi
+
           EXISTING_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
-          if [ -z "$EXISTING_SHA" ]; then
+          if [ "$EXISTING_SHA" = "$SOURCE_SHA" ]; then
+            echo "[flush] $AGENT: $SNAPSHOT_REF already at $SOURCE_SHA"
+          elif [ -z "$EXISTING_SHA" ]; then
             git push origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"
-          elif [ "$EXISTING_SHA" != "$SOURCE_SHA" ]; then
-            echo "::error title=Heartbeat snapshot collision::$SNAPSHOT_REF points to $EXISTING_SHA, expected $SOURCE_SHA"
-            exit 1
           else
-            echo "[flush] $AGENT: reusing immutable $SNAPSHOT_REF"
+            # No PR is open on it (checked above), so the previous flush is terminal and its
+            # payload is either on main or still carried by the lane. `--force-with-lease`
+            # against the sha we just observed, so a flush racing us loses instead of being
+            # silently overwritten.
+            git push --force-with-lease="refs/heads/$SNAPSHOT_REF:$EXISTING_SHA" \
+              origin "$SOURCE_SHA:refs/heads/$SNAPSHOT_REF"
           fi
           CONFIRMED_SHA=$(git ls-remote --heads origin "refs/heads/$SNAPSHOT_REF" | awk '{print $1}')
           if [ "$CONFIRMED_SHA" != "$SOURCE_SHA" ]; then

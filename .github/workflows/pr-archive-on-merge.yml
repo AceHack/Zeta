@@ -32,16 +32,22 @@ name: pr-archive-on-merge
 # PR number is also validated as a positive integer before being passed
 # to the archival tool.
 #
-# PR-based posture: branch protection rejects direct GITHUB_TOKEN pushes
-# to main, so this workflow commits archive output to a unique bot branch
-# and opens a small PR instead. GITHUB_TOKEN-created PRs may not trigger
-# downstream required checks; like budget-snapshot-cadence.yml, this
-# workflow therefore opens the PR and leaves merge/auto-merge handling to
-# the next maintainer or agent pass through the queue. If repository settings
-# forbid GitHub Actions from creating PRs, the workflow still pushes the
-# archive branch and exits green with a notice; the next agent pass can open
-# that branch as a normal PR without treating the durable archive branch as a
-# failed archival run.
+# DELIVERY POSTURE: branch protection rejects direct GITHUB_TOKEN pushes to
+# main, so archive output is batched onto ONE reusable staging ref and landed
+# by `flush-via-staging.ts` — the same route tick-metrics, society, drift-sweep
+# and the agent-heartbeat lanes use. This workflow mints NO per-record branch.
+#
+# The paragraph that stood here described the opposite posture (a unique bot
+# branch per archived PR, and "if repository settings forbid GitHub Actions
+# from creating PRs, the workflow still pushes the archive branch and exits
+# green with a notice"). That sentence was the design, and the design was the
+# bug: it is a documented promise to strand a ref and report success. Four
+# accumulations came through that door. No path here now pushes a ref and
+# exits 0 — see the step below.
+#
+# The PR that `flush-via-staging.ts` opens is TRANSITIONAL. The factory is
+# moving off forge PRs; the durable half of this change is the BATCHING, not
+# the delivery, and delivery is one swappable call. See #12058.
 
 on:
   pull_request:
@@ -72,13 +78,28 @@ jobs:
     # a recursive archive-of-archive chain, so local claim/archive-pr-* repair
     # branches and automation/pr-archive-* bot branches are intentionally
     # skipped here. Fork PRs with matching branch names must still be archived.
+    #
+    # `heartbeat/pr-archive` JOINED THAT LIST when the lane moved onto the shared
+    # staging ref, and it is the load-bearing addition rather than tidiness. The
+    # lane's own flush PR is itself a merged PR, so without this the lane archives
+    # its own flush, which produces a record, which is flushed, which merges, which
+    # is archived — a self-sustaining loop that keeps flushing forever with no real
+    # merges feeding it. The `automation/pr-archive-*` entry above closed exactly
+    # this loop for the per-record branches it replaced; the batched lane needs the
+    # same exclusion for the same reason.
+    #
+    # Only the archive lane's own ref is excluded. The other `heartbeat/*` flush
+    # PRs (tick-metrics, society, drift-sweep, the three agents) still get archived
+    # as before — they are ordinary merged PRs and each produces one bounded record,
+    # not a cycle.
     if: >
       github.event.pull_request.merged == true &&
       !(
         github.event.pull_request.head.repo.full_name == github.repository &&
         (
           startsWith(github.event.pull_request.head.ref, 'claim/archive-pr-') ||
-          startsWith(github.event.pull_request.head.ref, 'automation/pr-archive-')
+          startsWith(github.event.pull_request.head.ref, 'automation/pr-archive-') ||
+          github.event.pull_request.head.ref == 'heartbeat/pr-archive'
         )
       )
 
@@ -132,201 +153,140 @@ jobs:
             exit 1
           fi
 
-      - name: Archive PR review substrate
+      # ══════════════════════════════════════════════════════════════════════════
+      # ONE SHARED STAGING LANE — no branch per archived PR
+      # ══════════════════════════════════════════════════════════════════════════
+      #
+      # WHAT THIS REPLACED, AND WHY THE OLD SHAPE COULD NOT BE PATCHED AGAIN.
+      # This step used to: commit, `git push origin HEAD:automation/pr-archive-<N>-run-<M>
+      # -attempt-<A>`, then `gh pr create`. On a PR-creation policy denial it classified the
+      # error, wrote a step-summary note and `exit 0` — WITH THE BRANCH ALREADY PUSHED.
+      #
+      # That tolerance is the actual root cause of four successive branch accumulations
+      # (~4,049 drained in #6879, 1,132 in #8043, 16 in #9059, 1,229 in #10346, and 1,290
+      # alive when this was written). This workflow was changed SEVENTEEN times; the fix log
+      # reads as a list of reasons `gh pr create` could fail, each one duly removed:
+      #
+      #   2026-05-08  tolerate archive PR creation policy denial      <- the tolerance
+      #   2026-08-13  open the PR as a PAT
+      #   2026-08-15  the archive PRs could never pass the AgencySignature gate
+      #   2026-08-16  put the AgencySignature block in the COMMIT, not only the PR body
+      #
+      # Every one of those removed a REASON. None removed the TOLERANCE, so each time
+      # creation failed for the next reason, `exit 0` still caught it and the run went green
+      # with a ref stranded. Ten fixes, one unchanged escape hatch. An eleventh fix of that
+      # shape was not worth writing.
+      #
+      # THE ROUTE NOW: the lane batches onto ONE reusable staging ref via
+      # `flush-via-staging.ts` — the same mechanism `tick-metrics`, `society`, `drift-sweep`
+      # and the three `agent-heartbeat` lanes already use. Those lanes reuse
+      # `heartbeat/<lane>` and `heartbeat/<lane>-buffer` and mint nothing per flush, which is
+      # why they hold at ~2 refs each while this lane reached 1,290. Nothing here is invented:
+      # the delivery is one call, and the branch-per-record generator is simply gone.
+      #
+      # THERE IS NO `exit 0` ON A FAILED PUBLISH ANY MORE. `flush-via-staging.ts` exits 3 when
+      # the staging push or the PR call fails, and this step has no `|| true`, no
+      # `continue-on-error` and no policy-denial classifier — so a lane that cannot publish
+      # goes RED. A genuinely empty archival run is still a clean no-op, because `flush`
+      # returns 0 when nothing is staged. That distinction is the one the old code collapsed:
+      # "nothing to do" and "could not deliver" must not share an exit code.
+      #
+      # CONCURRENCY — WHY A RETRY LOOP AND NOT A LANE-WIDE CONCURRENCY GROUP.
+      # Merges land ~25 s apart here, so several archive runs are genuinely in flight at once
+      # and they now share one ref. Serialising them with a lane-scoped `concurrency:` group
+      # would be worse than the race: GitHub keeps only ONE pending run per group and cancels
+      # any earlier pending one, so under exactly the load that matters the queue would DROP
+      # archive runs silently. The group therefore stays keyed on the PR number (no run is
+      # ever cancelled) and the race is handled where it actually occurs — on the push.
+      #
+      # The loop is ordinary optimistic concurrency, and it is safe because every part of it
+      # is idempotent. `prepare` resets the tree to `origin/main` and unions in the lane
+      # buffer, so a loser re-derives its record ON TOP OF the winner's rather than clobbering
+      # it; `archive-pr-reviews.ts` short-circuits on identical bytes; the shard path is a
+      # function of the PR number, so two archive runs can never write the same file. The
+      # regeneration inside the loop is not redundant work — it is what makes the retry
+      # correct, because `prepare` has by then moved the base.
+      #
+      # LATENCY TRADEOFF, STATED RATHER THAN DISCOVERED LATER. Before, a record got its own PR
+      # immediately. Now it rides the lane's next flush: if the lane's PR is already under
+      # test the record parks on the buffer and lands on the following flush instead. "PR
+      # merged" and "archive on main" are no longer simultaneous. That is acceptable for a
+      # historical record — nothing reads these docs on the merge path; the readers are the
+      # backfill sweep, `derive-pr-manifest.ts` and the audits, all of which are cadence jobs
+      # that already tolerate a lag and are keyed on "is the record present", never "did it
+      # arrive within N seconds". The completeness guarantee is not this step at all: it is
+      # the `--all-merged` backfill in `agent-heartbeat.yml` plus the audit named below.
+      #
+      # THE PR STEP INSIDE `flush-via-staging.ts` IS TRANSITIONAL. PRs are the corporate lane
+      # of a forge host and the factory is moving off them; a new design that REQUIRES a PR is
+      # a smell. What is durable here is the BATCHING — one staging ref instead of one ref per
+      # record — which is right whether delivery is a PR today or a direct push tomorrow.
+      # Delivery is deliberately a single call so it can be swapped without touching this
+      # workflow. See #12058 for the forge-agnostic direction (attestation + post-hoc audit
+      # rather than a blocking gate).
+      #
+      # THE FALSIFIER: `src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts` checks the
+      # invariant this lane could never state — a record that exists must be ON MAIN — and it
+      # is delivery-mechanism-agnostic, so it survives the move off PRs. Every check this
+      # workflow previously had asked a proxy question ("did the tool run", "did I create a
+      # PR"), which is how it stayed green through four accumulations.
+      - name: Archive the PR and land it via the shared staging lane
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Same credential ladder as the other lanes that flush through this tool. A PAT is
+          # required because the enterprise forbids the Actions identity from CREATING pull
+          # requests; the restriction is on the identity, not the operation.
+          GH_TOKEN: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN || secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_SHA_OVERRIDE: ${{ github.sha }}
         run: |
           set -euo pipefail
-          # GITHUB_SHA in the GHA env is the merge-commit SHA on main; we
-          # want that recorded as the shard commit_sha so future re-runs
-          # against the same merge can detect "same archival baseline".
-          export GITHUB_SHA="$GITHUB_SHA_OVERRIDE"
-          bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts "$PR_NUMBER"
 
-      - name: Inspect diff
-        id: diff
-        run: |
-          set -euo pipefail
-          # Stage the archive markdown + this PR ONE shard. Anything else is noise the
-          # archival tool should not be producing.
-          #
-          # THE DERIVED MANIFEST IS DELIBERATELY NOT STAGED (081KZYP7MNV087G0R002X0E3V9).
-          # docs/github/prs/manifest.jsonl is a DERIVED index over the shard store
-          # (081KZYMY46P087G0R003S64V2B); staging it here is what made every in-flight archive
-          # PR append to the same trailing region of the same file and therefore conflict
-          # PAIRWISE. Measured 2026-08-13: 26 open archive PRs, 13 already CONFLICTING.
-          # Reproduced with a control at the git level before this change landed:
-          #   two archive commits off one base, each appending a manifest line
-          #     -> CONFLICT (content) in docs/github/prs/manifest.jsonl
-          #   the same two commits writing only their own shard
-          #     -> clean merge
-          # The shard path is a function of pr_number, so two archive commits can never
-          # write the same file and can never conflict. git restore drops the tool side
-          # manifest mutation from the worktree so a later git add -a cannot resurrect it.
-          #
-          # The index is repaired by the serialised single writer in agent-heartbeat.yml
-          # (soraya archive duty runs derive-pr-manifest.ts --write); the staleness bound is
-          # stated at that step. pr-manifest-integrity.yml is the watchdog that fails loudly
-          # if that repair cadence stops running.
-          git add docs/history/pr-reviews/ docs/github/prs/shards/
-          git restore docs/github/prs/manifest.jsonl 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "changed=false" >>"$GITHUB_OUTPUT"
-            echo "archival produced no diff -- nothing to commit (deterministic-rerun no-op)"
-            exit 0
-          fi
-          echo "changed=true" >>"$GITHUB_OUTPUT"
-
-      - name: Commit and open archive PR
-        if: steps.diff.outputs.changed == 'true'
-        env:
-          # PR CREATION RUNS AS A PAT, NOT AS ACTIONS — this is the whole fix.
-          #
-          # The enterprise forbids the Actions identity from creating pull requests
-          # (`409: The enterprise does not allow GitHub Actions to create or approve pull
-          # requests`, reproduced against the repo API on 2026-08-13). That restriction is on the
-          # IDENTITY, not the operation: a fine-grained PAT authenticates as its owner and is not
-          # subject to it. So the archive PR opens, and the branch stops orphaning at the source.
-          #
-          # This is what 1,229 orphaned `automation/pr-archive-*` branches cost — ~3.5 MB of
-          # PR-review substrate stranded off main, the FOURTH such accumulation (~4,049 drained in
-          # #6879, 1,132 in #8043, 16 in #9059, 1,229 in #10346). Each previous round drained the
-          # symptom; this closes the generator.
-          #
-          # SCOPE: ZETA_PR_ARCHIVE_TOKEN carries `pull_requests: write` + `metadata: read` ONLY.
-          # It deliberately does NOT carry `contents: write` — the branch push below is
-          # authenticated by actions/checkout's persisted GITHUB_TOKEN credentials and already
-          # works — nor `actions`, which belongs to ZETA_SOCIETY_DISPATCH_TOKEN. Two secrets, two
-          # authorities: neither can do the other's job if either leaks.
-          #
-          # FALLBACK: if the secret is absent the expression yields GITHUB_TOKEN, `gh pr create`
-          # fails the same way it does today, and `is-pr-create-policy-denial.ts` catches it and
-          # exits green with the branch pushed. Removing the secret degrades to the OLD behaviour
-          # rather than turning the job red.
-          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN || secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          RUN_ID: ${{ github.run_id }}
-          RUN_ATTEMPT: ${{ github.run_attempt }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          # Configure committer identity for the workflow commit.
-          # github-actions[bot] is the canonical workflow identity per
-          # the budget-snapshot-cadence.yml convention.
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Compose commit message. PR_TITLE is untrusted (PR-author-
-          # controlled) so it's only embedded in the markdown body via
-          # printf with %s, never interpreted as shell.
-          #
-          # The AgencySignature block goes in the COMMIT MESSAGE, not only in the
-          # PR body below. These archive PRs carry exactly one commit and are
-          # auto-merged with squash, so GitHub composes the squash message from
-          # THIS string -- a block that exists only in the PR body never reaches
-          # main, and `agencysignature (main tip)` then fails on the merge commit.
-          # Observed on 63ebc56f7 ("archive(pr-reviews): PR #11119 on merge"),
-          # whose whole body was "Archive PR. Auto-merge armed." This is the
-          # failure mode .github/PULL_REQUEST_TEMPLATE.md documents from #11002:
-          # "Put the block in the COMMIT MESSAGE too, not only here."
-          #
-          # Values are identical to the PR-body block emitted further down (they
-          # describe this workflow, not a human) -- keep the two in step.
-          #
-          # Trailer-parse safety with untrusted PR_TITLE: the block must be the
-          # final paragraph and nothing above it may START a line with `---`
-          # (git interpret-trailers treats that as the patch boundary). The title
-          # is emitted as "PR title: %s", so the line always begins with the
-          # literal label; and GitHub PR titles cannot contain newlines, so an
-          # embedded `---` line is not reachable.
-          msg="$(printf 'archive(pr-reviews): PR #%s on merge -- run %s\n\nPR title: %s\n\nGenerated by .github/workflows/pr-archive-on-merge.yml\nfrom src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts.\n\nAgency-Signature-Version: 1\nAgent: pr-archive-on-merge\nAgent-Runtime: GitHub Actions\nAgent-Model: bun + git + gh CLI\nCredential-Identity: github-actions[bot]\nCredential-Mode: dedicated-agent\nHuman-Review: not-implied-by-credential\nHuman-Review-Evidence: none\nAction-Mode: autonomous-fail-open\nTask: none\nCo-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>\n' "$PR_NUMBER" "$RUN_ID" "$PR_TITLE")"
+          FLUSH=src/Core.TypeScript/forge-host/github/flush-via-staging.ts
+          # GITHUB_SHA in the Actions env is the merge commit on main; the shard records it as
+          # its archival baseline so a re-run against the same merge is detectable.
+          export GITHUB_SHA="$GITHUB_SHA_OVERRIDE"
 
-          git commit -m "$msg"
+          attempt=1
+          max_attempts=5
+          while :; do
+            echo "[archive] attempt ${attempt}/${max_attempts} for PR #${PR_NUMBER}"
 
-          branch="automation/pr-archive-${PR_NUMBER}-run-${RUN_ID}-attempt-${RUN_ATTEMPT}"
-          git push origin "HEAD:${branch}"
+            # Resets the tree to origin/main and unions in whatever is parked on the lane
+            # buffer. This is what makes the retry correct rather than merely repeated.
+            bun "$FLUSH" prepare --lane pr-archive
 
-          body_file="$(mktemp)"
-          create_log="$(mktemp)"
-          trap 'rm -f "$body_file" "$create_log"' EXIT
-          {
-            echo "## Summary"
-            echo
-            echo "- Archive review substrate for merged PR #${PR_NUMBER}"
-            echo "- Add docs/github/prs/shards/<NNN>/<zetaid>.json (the derived manifest is regenerated separately)"
-            echo
-            echo "## Notes"
-            echo
-            echo "Generated by .github/workflows/pr-archive-on-merge.yml"
-            echo "from src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts."
-            echo
-            echo "PR title: ${PR_TITLE}"
-            echo "Workflow run: ${RUN_ID}"
-            echo "Workflow attempt: ${RUN_ATTEMPT}"
-            # AgencySignature v1 trailer block. Required in the PR BODY by
-            # .github/workflows/agencysignature-enforcement.yml for every PR created after
-            # FAIL_CLOSED_CUTOVER (2026-08-15T00:00:00Z); this workflow predates the cutover
-            # and so emitted archive PRs that failed the gate on creation, every time.
-            #
-            # Two shape constraints, both load-bearing, both learned the hard way:
-            #   * the block must be the LAST contiguous group of trailer lines, with exactly
-            #     one blank line before it and ZERO blank lines inside it — including before
-            #     Co-authored-by, which is itself a trailer and belongs in the same group.
-            #   * nothing above it may start a line with `---`. `git interpret-trailers`
-            #     reads a leading `---` as the diff/patch boundary and discards everything
-            #     after it, so a markdown horizontal rule anywhere above silently makes a
-            #     perfectly well-formed block invisible to the parser.
-            #
-            # Values describe THIS workflow, not a human: the credential is the Actions bot,
-            # nobody reviewed this PR, and it runs unattended — so Human-Review is
-            # not-implied-by-credential with no evidence, and the mode is autonomous. Same
-            # shape the red-state-flush workflow already emits on its commits.
-            echo
-            echo "Agency-Signature-Version: 1"
-            echo "Agent: pr-archive-on-merge"
-            echo "Agent-Runtime: GitHub Actions"
-            echo "Agent-Model: bun + git + gh CLI"
-            echo "Credential-Identity: github-actions[bot]"
-            echo "Credential-Mode: dedicated-agent"
-            echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: none"
-            echo "Action-Mode: autonomous-fail-open"
-            echo "Task: none"
-            echo "Co-authored-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
-          } >"${body_file}"
+            bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts "$PR_NUMBER"
 
-          set +e
-          gh pr create \
-            --repo "$REPO" \
-            --base main \
-            --head "$branch" \
-            --title "archive(pr-reviews): PR #${PR_NUMBER} on merge" \
-            --body-file "${body_file}" >"$create_log" 2>&1
-          create_status=$?
-          set -e
+            # The DERIVED manifest is never carried by this lane (081KZYP7MNV087G0R002X0E3V9):
+            # it is an index over the shard store, and appending to it from concurrent runs is
+            # what made archive PRs conflict pairwise. `--paths` below already excludes it;
+            # the restore keeps the worktree clean so the next `prepare` checkout cannot trip
+            # over a local modification.
+            git restore docs/github/prs/manifest.jsonl 2>/dev/null || true
 
-          if [ "$create_status" -eq 0 ]; then
-            cat "$create_log"
-            exit 0
-          fi
+            set +e
+            bun "$FLUSH" flush --lane pr-archive \
+              --paths docs/history/pr-reviews docs/github/prs/shards \
+              --message "archive(pr-reviews): PR #${PR_NUMBER} on merge"
+            rc=$?
+            set -e
 
-          cat "$create_log" >&2
-          if bun src/Core.TypeScript/forge-host/github/is-pr-create-policy-denial.ts "$create_log"; then
-            {
-              echo "### Archive PR creation skipped by repository policy"
-              echo
-              echo "Archive branch pushed successfully:"
-              echo
-              echo "\`${branch}\`"
-              echo
-              echo "GitHub Actions is not permitted to create pull requests in this repository."
-              echo "A maintainer or agent pass can open that branch as a normal PR."
-            } >>"$GITHUB_STEP_SUMMARY"
-            echo "::notice title=Archive branch pushed::GitHub Actions cannot create PRs here; open ${branch} manually."
-            exit 0
-          fi
+            if [ "$rc" -eq 0 ]; then
+              echo "[archive] PR #${PR_NUMBER} landed on the pr-archive lane"
+              break
+            fi
 
-          exit "$create_status"
+            if [ "$attempt" -ge "$max_attempts" ]; then
+              echo "::error title=Archive record could not be delivered::PR #${PR_NUMBER}: the pr-archive lane failed to publish after ${max_attempts} attempts (last rc=${rc}). The record is NOT on main and NO branch was left behind. Re-run this workflow, or let the --all-merged backfill in agent-heartbeat.yml pick it up; audit-orphaned-archive-refs.ts is the check that will notice if neither happens."
+              exit "$rc"
+            fi
+
+            # Contended lane (another archive run won the --force-with-lease race). Back off
+            # and re-derive on top of the winner.
+            echo "[archive] lane contended or publish failed (rc=${rc}); retrying"
+            sleep $(( attempt * 3 ))
+            attempt=$(( attempt + 1 ))
+          done

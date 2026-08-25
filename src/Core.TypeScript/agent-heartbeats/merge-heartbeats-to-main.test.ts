@@ -129,17 +129,46 @@ describe("immutable heartbeat snapshots", () => {
     const replay = heartbeatSnapshot("heartbeat/alexa", SHA_A);
     if ("error" in first || "error" in replay) throw new Error("valid snapshot rejected");
     expect(first.ok).toEqual(replay.ok);
-    expect(first.ok.snapshotRef).toBe(`heartbeat/alexa-flush-${SHA_A}`);
+    expect(first.ok.snapshotRef).toBe("heartbeat/alexa-flush");
     expect(first.ok.snapshotRef).not.toBe(first.ok.sourceHead);
   });
 
-  it("a later mutable tip cannot move or reuse the older checked ref", () => {
+  // ═══ THE REF-LEAK FALSIFIER ═══════════════════════════════════════════════
+  //
+  // This replaces a test asserting the OPPOSITE — "a later mutable tip cannot
+  // move or reuse the older checked ref" — which passed happily while the lane
+  // minted 1,610 permanent refs. It was not wrong about what the code did; it
+  // was wrong about what the code should do, which is the more expensive kind
+  // of green test.
+  //
+  // `heartbeat/*` is undeletable by ruleset 16934633 (deletion rule, zero bypass
+  // actors), so a ref name that varies per tick is an unbounded and IRREVERSIBLE
+  // ref generator: merged or not, nothing can ever reap it. Bounding the NAME is
+  // the only fix available under that ruleset, and this is what fails if anyone
+  // puts the sha — or a timestamp, or a run id — back into it.
+  it("does not mint a new ref per tick — the ref name is bounded per lane", () => {
     const first = heartbeatSnapshot("heartbeat/alexa", SHA_A);
     const later = heartbeatSnapshot("heartbeat/alexa", SHA_B);
     if ("error" in first || "error" in later) throw new Error("valid snapshot rejected");
-    expect(first.ok.snapshotRef).not.toBe(later.ok.snapshotRef);
+
+    // One lane, one ref, however many flushes.
+    expect(later.ok.snapshotRef).toBe(first.ok.snapshotRef);
+    // And the ref carries no per-tick entropy at all.
+    expect(first.ok.snapshotRef).not.toContain(SHA_A);
+    expect(later.ok.snapshotRef).not.toContain(SHA_B);
+
+    // The source SHA is still tracked — `verifySnapshotRef` needs it to confirm
+    // the ref points at the exact commit that was published. What changed is
+    // that it no longer NAMES the ref.
     expect(first.ok.sourceSha).toBe(SHA_A);
     expect(later.ok.sourceSha).toBe(SHA_B);
+  });
+
+  it("gives different lanes different refs, so lanes cannot collide", () => {
+    const alexa = heartbeatSnapshot("heartbeat/alexa", SHA_A);
+    const otto = heartbeatSnapshot("heartbeat/otto", SHA_A);
+    if ("error" in alexa || "error" in otto) throw new Error("valid snapshot rejected");
+    expect(alexa.ok.snapshotRef).not.toBe(otto.ok.snapshotRef);
   });
 
   it("rejects unsafe lane names and non-canonical SHAs as values", () => {
@@ -155,7 +184,7 @@ describe("immutable heartbeat snapshots", () => {
     if ("error" in snapshot) throw new Error(snapshot.error);
     expect(heartbeatSnapshotOutput(snapshot.ok, 11096)).toBe(
       `skip=false\nsource_head=heartbeat/vera\nsource_sha=${SHA_A}\n` +
-        `snapshot_ref=heartbeat/vera-flush-${SHA_A}\npr_number=11096\n`,
+        `snapshot_ref=heartbeat/vera-flush\npr_number=11096\n`,
     );
   });
 });

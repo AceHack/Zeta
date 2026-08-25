@@ -2444,6 +2444,27 @@ jobs:
       - name: Commit-back lane can actually land (AH002)
         run: bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts
 
+      # AH003 — the archive lane's record actually reached `main`.
+      #
+      # The third instance of the same class as the two above, and the most expensive to date.
+      # `pr-archive-on-merge.yml` was changed SEVENTEEN times; its recent runs read 12 success
+      # / 8 skipped / 0 failures — green, while 1,290 `automation/pr-archive-*` refs sat on the
+      # remote. Every check it had asked a PROXY question ("did the tool run", "did I create a
+      # PR"), and its sibling `audit-archive-pr-lane.ts` takes `gh pr list` as its input, so it
+      # is structurally blind to a ref that never had a PR at all — which is what these were.
+      #
+      # This one takes REFS as input and asks the only question that is the point: is the
+      # record ON MAIN? It runs HERE, on the pre-merge floor and fatal, rather than as the
+      # non-fatal warning its sibling gets inside the heartbeat tick. A lane that leaked
+      # because one failure was tolerated does not get its falsifier installed as another
+      # tolerated failure.
+      #
+      # It gates on a high-water mark that may only be lowered, so the pre-existing backlog
+      # cannot hold the floor red while any NEW strand fails immediately. Deleting a stranded
+      # ref does not make it pass — the record is still absent from main.
+      - name: Archive lane record reached main (AH003)
+        run: bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts
+
       # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
       # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
       # automatic security uptake and is not — it only selects among ALREADY-INSTALLED SDKs)
