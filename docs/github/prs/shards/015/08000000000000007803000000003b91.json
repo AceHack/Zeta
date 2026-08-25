@@ -1,0 +1,12 @@
+{
+  "pr_number": 15249,
+  "archive_path": "docs/history/pr-reviews/PR-15249-feat-query-surface-computational-expression-linq-over-one-plan-with-the-equivale.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T06:16:41.452Z",
+  "schema_version": "v1",
+  "commit_sha": "3ff02125b55fc0a9bde196b55b1244fb9e0f7497",
+  "title": "feat(query-surface): computational expression + LINQ over ONE plan — with the equivalence falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T06:15:50Z",
+  "head_ref": "query-surfaces-ce-and-linq-over-one-plan"
+}
