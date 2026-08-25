@@ -1,0 +1,14 @@
+{
+  "id": "080d01d012c61010a013000874e3c42b",
+  "at": "2026-08-25T17:40:27.458Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X04P61087G0R0031HE7WF",
+    "type": "bug",
+    "title": "Lane worktrees are allocated without a mise trust grant (34 of 56 untrusted)",
+    "slug": "lane-worktrees-are-allocated-without-a-mise-trust-grant-34-o",
+    "priority": "P2",
+    "filename": "081M0X04P61087G0R0031HE7WF-lane-worktrees-are-allocated-without-a-mise-trust-grant-34-o.md"
+  }
+}
