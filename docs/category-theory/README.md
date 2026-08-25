@@ -9,7 +9,7 @@ category-theoretic abstraction over streaming IVM.
 Round 34 moved both CTFP references from in-repo copies to
 reference-source clones under `references/prior-art/` per the
 `references/reference-sources.json` manifest. Run
-`tools/setup/common/sync-prior-art.sh` to populate them.
+`tools/setup/common/sync-prior-art.ts` to populate them.
 
 ## Reference sources to read
 

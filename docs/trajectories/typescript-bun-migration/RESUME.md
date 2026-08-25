@@ -86,7 +86,6 @@ tools/setup/common/mise.sh
 tools/setup/common/profile-edit.sh
 tools/setup/mechanisms/from-uv-tool.sh
 tools/setup/common/shellenv.sh
-tools/setup/common/sync-prior-art.sh
 tools/setup/common/verifiers.sh
 ```
 

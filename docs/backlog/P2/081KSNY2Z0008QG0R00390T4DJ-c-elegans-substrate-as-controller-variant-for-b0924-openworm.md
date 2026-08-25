@@ -99,7 +99,7 @@ Searched surfaces:
 - `.claude/skills/`: algebra-owner (z-sets substrate)
 - `memory/`: incidental "C. elegans" mentions; no named substrate
 - `docs/research/`: incidental "connectome" mentions; no named substrate
-- `references/prior-art/`: OpenWorm not yet mirrored (would compose with `tools/setup/common/sync-prior-art.sh` extension)
+- `references/prior-art/`: OpenWorm not yet mirrored (would compose with `tools/setup/common/sync-prior-art.ts` extension)
 
 Conclusion: no existing row covers C. elegans-substrate-as-controller-variant; mint-new authorized per operator 2026-05-28 directive "file as 081KSNY2Z0008QG0R00390T4DJ (shadow*) mirror it too".
 
@@ -115,7 +115,7 @@ The research note preserves the substrate-rhyme observation at mirror-tier (per 
 
 ## Acceptance criteria
 
-- [ ] OpenWorm `references/prior-art/openworm/` mirror (compose with `tools/setup/common/sync-prior-art.sh`)
+- [ ] OpenWorm `references/prior-art/openworm/` mirror (compose with `tools/setup/common/sync-prior-art.ts`)
 - [ ] c302 NeuroML loader stub (F#; loads connectome JSON; produces typed substrate)
 - [ ] IScheduler DST wrapper around c302 substrate (deterministic worm-tick from seed)
 - [ ] Sensory-input mapping substrate (2600 TIA frame-buffer → worm sensory-neuron-substrate; smallest-scope: 1 sensory neuron + 1 game-pixel)

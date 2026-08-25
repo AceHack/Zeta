@@ -702,7 +702,7 @@ coordination, pull-before-push discipline.
   foundations the operator algebra rests on. The CTFP
   reference sources (Milewski + the .NET port) live under
   `references/prior-art/` after
-  `tools/setup/common/sync-prior-art.sh` runs.
+  `tools/setup/common/sync-prior-art.ts` runs.
 - `GOVERNANCE.md` — the numbered repo-wide rules
   themselves.
 

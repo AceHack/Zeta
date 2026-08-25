@@ -63,7 +63,7 @@ Each row: existing script → proposed mechanism name → manifest (unchanged pa
 | `common/tlaps.sh` | *(inline TLAPM_COMMIT)* | `from-opam-git` | heavy; keep `ZETA_INSTALL_FULL` gate; pin commit in manifest |
 | `common/local-llm.sh` | `manifests/local-llm` | `from-ollama` | mac brew vs linux binary split via `_when.sh` |
 | `common/repo-bins.sh` | *(inline)* | `from-symlink` or extend `from-shim` | repo-local bin wiring |
-| `common/sync-prior-art.sh` | — | audit | may stay edge script or become `from-url` rows |
+| `common/sync-prior-art.ts` | — | audit | may stay edge script or become `from-url` rows |
 
 ## Explicitly **not** in scope (bootstrap / OS edge — stay shell)
 

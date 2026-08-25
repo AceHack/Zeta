@@ -72,7 +72,6 @@ tools/hygiene/capture-tick-snapshot.sh:41:Amara
 tools/lint/doc-comment-history-audit.sh:77:Attribution:,Provenance:
 tools/lint/no-empty-dirs.sh:5:Aaron
 tools/setup/common/profile-edit.sh:34:Aaron
-tools/setup/common/sync-prior-art.sh:8:Aaron
 tools/setup/common/verifiers.sh:38:Aaron
 tools/setup/common/verifiers.sh:7:Aaron
 tools/setup/doctor.sh:11:Aaron

@@ -179,9 +179,9 @@ Other legitimate explicit-target reasons:
 **Refresh the mirror on demand:**
 
 ```bash
-tools/setup/common/sync-prior-art.sh             # refresh all
-tools/setup/common/sync-prior-art.sh --name foo,bar  # subset
-tools/setup/common/sync-prior-art.sh --prune     # drop stale
+bun tools/setup/common/sync-prior-art.ts             # refresh all
+bun tools/setup/common/sync-prior-art.ts --name foo,bar  # subset
+bun tools/setup/common/sync-prior-art.ts --prune     # drop stale
 ```
 
 The script reads `references/reference-sources.json`, shallow-clones

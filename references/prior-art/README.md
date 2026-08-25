@@ -33,7 +33,7 @@ implement from it — code is never carried across.
 ## How the mirror is regenerated
 
 `references/reference-sources.json` is the canonical list.
-[`tools/setup/common/sync-prior-art.sh`](../../tools/setup/common/sync-prior-art.sh)
+[`tools/setup/common/sync-prior-art.ts`](../../tools/setup/common/sync-prior-art.ts)
 reads it and clones (or pulls) each entry under
 `references/prior-art/<project-name>/`. The sync script is **not**
 wired into `tools/setup/install.sh` — run it standalone, on demand,

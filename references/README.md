@@ -57,7 +57,7 @@ references/
 - **Adding a source:** append a row to
   `reference-sources.json`, add a one-liner below in the
   **Reference sources** section, then run
-  `tools/setup/common/sync-prior-art.sh`.
+  `bun tools/setup/common/sync-prior-art.ts`.
 - **Removing a source:** remove the row + the prose line; the
   sync script, run next with `--prune`, is authorised to delete
   the now-orphan `prior-art/<name>/` mirror.
@@ -162,15 +162,16 @@ references/
 
 ## Sync script
 
-[`tools/setup/common/sync-prior-art.sh`](../tools/setup/common/sync-prior-art.sh)
+[`tools/setup/common/sync-prior-art.ts`](../tools/setup/common/sync-prior-art.ts)
 populates `references/prior-art/` from `reference-sources.json`. It is
 **not** part of `tools/setup/install.sh` — run it on demand, when you
 actually need a mirror to read:
 
 ```bash
-tools/setup/common/sync-prior-art.sh                 # refresh all
-tools/setup/common/sync-prior-art.sh --name foo,bar  # subset
-tools/setup/common/sync-prior-art.sh --prune         # drop orphans
+bun tools/setup/common/sync-prior-art.ts                 # refresh all
+bun tools/setup/common/sync-prior-art.ts --name foo,bar  # subset
+bun tools/setup/common/sync-prior-art.ts --prune         # drop orphans
+bun tools/setup/common/sync-prior-art.ts --dry-run       # plan only
 ```
 
 Everything it writes lands under `references/prior-art/<name>/`, which

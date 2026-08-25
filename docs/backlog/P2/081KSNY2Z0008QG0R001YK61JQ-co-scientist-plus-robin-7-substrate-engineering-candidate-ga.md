@@ -178,6 +178,6 @@ Aaron 2026-05-28 explicit *"we should add coscientis and add it to our upstram r
 
 - This PR: adds SakanaAI/AI-Scientist + AI-Scientist-v2 + jataware/open-coscientist + llnl/open-ai-co-scientist + The-Swarm-Corporation/AI-CoScientist + Microsoft/Infer.NET to `references/reference-sources.json` + `docs/UPSTREAM-LIST.md`
 - This row: backlogs all 7 candidates as decomposition target
-- Operator may run `tools/setup/common/sync-prior-art.sh` to mirror the new repos into `references/prior-art/` per refresh discipline (operator-side; Otto-CLI does not auto-run sync per safety discipline)
+- Operator may run `tools/setup/common/sync-prior-art.ts` to mirror the new repos into `references/prior-art/` per refresh discipline (operator-side; Otto-CLI does not auto-run sync per safety discipline)
 
 Substrate-engineering arc: framework's 10× scope is positioned to operationalize what co-scientist + Robin demonstrated at biomedical scope; 7 candidate gaps are the substrate-engineering integration targets per Aaron's *"missing a few step"* framing.

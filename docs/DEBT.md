@@ -48,22 +48,6 @@ feature + debt budget).
 
 ## Live debt
 
-### `tools/setup/common/sync-prior-art.sh` is bash, not cross-platform
-
-- **Site:** `tools/setup/common/sync-prior-art.sh`
-- **Found:** round 34 by Aaron
-- **Effort:** M (needs BACKLOG P1 "Post-install repo automation
-  runtime choice" decided first)
-- **Friction:** Aaron: "you are starting to write post install
-  scripts that are not cross platform although you could because
-  we have a two way common starting point now, we are incurring
-  debt." Windows contributors can't run upstream sync; any
-  post-install cross-platform automation hits the same pattern.
-- **Fix:** once the post-install runtime research lands
-  (Bun/Deno/Python/.NET-CLI/etc.), port sync-prior-art to that
-  runtime. Install.sh stays bash (pre-bootstrap; can't depend
-  on its own output).
-
 ### `tools/setup/` script organisation less rich than `../scratch`
 
 - **Site:** `tools/setup/` vs `../scratch/scripts/setup/`
