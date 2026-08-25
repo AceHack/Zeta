@@ -1,0 +1,52 @@
+{
+  "id": "society-mt7x6r41",
+  "at": "2026-08-25T00:21:43.489Z",
+  "by": "society",
+  "kind": "evolution",
+  "populationPolicy": "per-agent-window/corpus-anchored@1",
+  "generation": 180,
+  "agents": [
+    {
+      "id": "alexa",
+      "fitness": 0.6499999999999999,
+      "generation": 0
+    },
+    {
+      "id": "soraya",
+      "fitness": 0.6469976267819044,
+      "generation": 0
+    },
+    {
+      "id": "gen180-0",
+      "fitness": 0,
+      "generation": 2
+    }
+  ],
+  "meanFitness": 0.4323325422606348,
+  "fitnessSpread": 0.6499999999999999,
+  "geneticDiversity": 8.03024067812484,
+  "priorHints": [
+    {
+      "dimension": "calibration",
+      "mu": 0.8243403293165755,
+      "sigma2": 0.002057913856606953,
+      "robustnessWeight": 1.3197137194635298,
+      "obsCount": 424,
+      "senderZid": "society-runner"
+    }
+  ],
+  "heatReadout": {
+    "band": "indeterminate",
+    "pointBand": "cold",
+    "lowBand": "cold",
+    "highBand": "warm",
+    "transportMu": 0,
+    "transportSigma": 1,
+    "transportPpm": 0,
+    "transportPpmSigma": 250000,
+    "robustnessWeight": 1,
+    "obsCount": 0,
+    "evidence": "prior",
+    "trend": "indeterminate"
+  }
+}
