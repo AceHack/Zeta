@@ -37,6 +37,7 @@
     "src/Core.TypeScript/secrets/env-witness.test.ts": 3,
     "src/Core.TypeScript/zflash/file-backed.test.ts": 5,
     "src/Core.TypeScript/zflash/firstboot-role.test.ts": 1,
+    "src/Core.TypeScript/zflash/injection-rail.test.ts": 9,
     "src/Core.TypeScript/zflash/lib.test.ts": 6,
     "src/Core.TypeScript/zflash/test-harness/serial-markers.test.ts": 3,
     "tests/Tests.FSharp/Algebra/SchemaZ.Tests.fs": 1,

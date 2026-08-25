@@ -13,6 +13,7 @@ import {
   resolveZetaTestInfraPubkeyFromZflashModule,
 } from "./lib.ts";
 import { firstbootRoleFromFlags, validateJoinTokenMaterial, type ZetaFirstbootRole } from "./firstboot-role.ts";
+import { railFindingsForEspWrites } from "./injection-rail.ts";
 import type {
   FileBackedZflashImageExecution,
   FileBackedZflashImageExecutionFeedback,
@@ -56,6 +57,14 @@ export interface FileBackedZflashCliRunDeps {
    * exercise the verification with a mock.
    */
   readonly verifyEspWrites?: boolean;
+  /**
+   * Where constitutional-rail findings go (081KTWFYC9108QG0R001C8RDPK).
+   *
+   * Defaults to stderr. Injectable so a test can assert the operator was told
+   * — a disclosure nobody can observe is the vacuity class, and the rail is
+   * only worth having if it is READ. See `injection-rail.ts`.
+   */
+  readonly warn?: (line: string) => void;
 }
 
 export type FileBackedZflashCliRunResult =
@@ -365,6 +374,24 @@ export function runFileBackedZflashCli(
   };
   const planned = planFileBackedZflashImage(planInput);
   if (!planned.ok) return { ok: false, error: planned.error };
+
+  // 081KTWFYC9108QG0R001C8RDPK — constitutional-rail disclosure.
+  //
+  // This DISCLOSES, it does not refuse. Two of the six ESP destinations carry
+  // secret material in plaintext onto a FAT partition anyone holding the stick
+  // can read; one of them (`/zeta-join-token`) ships under a recorded exception
+  // and the other (`/zeta-wifi-credentials.json`) contradicts the catalog with
+  // no exception on file. Turning either into a hard refusal would remove a
+  // shipped operator workflow, which is a maintainer's call and not this
+  // change's to make. #11477's precedent applies: record it loudly rather than
+  // ship it quietly.
+  const railFindings = railFindingsForEspWrites(planned.value.espWrites.map((write) => write.destination));
+  if (railFindings.length > 0) {
+    const warn = deps.warn ?? ((line: string) => process.stderr.write(`${line}\n`));
+    for (const finding of railFindings) {
+      warn(`zflash: constitutional-rail finding: ${finding}`);
+    }
+  }
 
   const needsInlineStaging = planned.value.espWrites.some((write) => write.content !== undefined);
   const inlineStagingDirectory = needsInlineStaging
