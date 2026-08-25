@@ -1,0 +1,12 @@
+{
+  "pr_number": 15218,
+  "archive_path": "docs/history/pr-reviews/PR-15218-fix-hygiene-ignore-arc-virtual-environment-prose.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:03:00.111Z",
+  "schema_version": "v1",
+  "commit_sha": "364210852b3fae8dee1c980116c42079dd773ab7",
+  "title": "fix(hygiene): ignore ARC virtual environment prose",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:02:21Z",
+  "head_ref": "claim/task-markdownlint-arc-venv-20260825"
+}
