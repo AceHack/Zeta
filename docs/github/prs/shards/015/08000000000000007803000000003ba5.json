@@ -1,0 +1,12 @@
+{
+  "pr_number": 15269,
+  "archive_path": "docs/history/pr-reviews/PR-15269-perf-columnar-vectorise-sumweights-the-exactness-fix-reversed-the-measurement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T06:53:43.770Z",
+  "schema_version": "v1",
+  "commit_sha": "7e0645f1746d04a07e05a4884cd49345a936c036",
+  "title": "perf(columnar): vectorise SumWeights — the exactness fix reversed the measurement",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T06:52:58Z",
+  "head_ref": "perf/columnar-sumweights-vectorized"
+}
