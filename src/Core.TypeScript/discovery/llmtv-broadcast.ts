@@ -22,6 +22,7 @@
 // in the proof lineage); LWW-by-seq viewer fold (idempotent §12, order-independent →
 // DST-replayable §7); scale-free (1 source and N fold on the same path §1).
 
+import type { FrostReceipt } from "../ledger/privacy-budget";
 import {
   PHASE_CLOCK_BASIS,
   PHASE_CLOCK_SCHEMA,
@@ -69,15 +70,27 @@ export interface BroadcastMind {
 }
 
 /// The SOURCE-side mind — the private form, before the membrane. `required` always
-/// broadcasts. `personal` is the dweller's own region: if `frosted`, its predictions are
-/// withheld (only the veil label survives); if not, they broadcast (glass-halo default).
+/// broadcasts. `personal` is the dweller's own region: if it carries a `frost` RECEIPT, its
+/// predictions are withheld (only the veil label survives); otherwise they broadcast
+/// (glass-halo default: open unless privacy was earned and paid for).
+///
+/// `frost` REPLACED a plain `frosted: boolean`. The boolean was free and self-asserted — anyone
+/// could write `frosted: true` and be private at no cost, which is precisely what
+/// `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` says privacy is not. Every
+/// `frosted: true` in this repository was a literal in a test or a demo, because there was
+/// nothing else it could be. A `FrostReceipt` cannot be written by hand: its brand is a
+/// module-private `unique symbol` in `ledger/privacy-budget.ts`, so the ONLY way to obtain one
+/// is `spend()`, and the only way `spend()` returns one is if the debit reached the book.
+/// Frost is now DERIVED from a recorded spend rather than asserted. Work-item
+/// 081M0X23R19087G0R003XHGB2B.
 export interface SourceMind {
   readonly role: string;
   readonly hat: string;
   readonly required: readonly BroadcastPrediction[];
   readonly temperatureTreaty?: TemperatureTreatyBundle;
   readonly personal?: {
-    readonly frosted: boolean;
+    /// Present if and only if budget was spent to frost this region. Not a boolean.
+    readonly frost?: FrostReceipt;
     readonly veilLabel: string;
     readonly predictions: readonly BroadcastPrediction[];
   };
@@ -93,10 +106,12 @@ export function frostStrip(mind: SourceMind): BroadcastMind {
     mind.temperatureTreaty === undefined
       ? { role: mind.role, hat: mind.hat, predictions }
       : { role: mind.role, hat: mind.hat, predictions, temperatureTreaty: mind.temperatureTreaty };
-  if (mind.personal && !mind.personal.frosted) {
+  // Frost is a PAID receipt, never a flag. No receipt ⇒ nothing was earned and spent ⇒ the
+  // glass-halo default applies and the personal predictions broadcast.
+  if (mind.personal && mind.personal.frost === undefined) {
     predictions.push(...mind.personal.predictions);
   }
-  if (mind.personal && mind.personal.frosted) {
+  if (mind.personal && mind.personal.frost !== undefined) {
     return { ...base, frostMarker: { veilLabel: mind.personal.veilLabel } };
   }
   return base;

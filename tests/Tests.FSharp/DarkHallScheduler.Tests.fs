@@ -48,10 +48,29 @@ let private mustOk =
 let private rejectSlots slots : ModuloGSetConfig =
     ModuloGSetConfig.rejectCollision slots
 
+/// Budget is EARNED, not passed in: a peer attests value to `owner`, and the boundary reads the
+/// resulting balance out of the book. `RoomBoundary.create` no longer accepts a bare int, so this
+/// fixture is what "give this test some budget" now honestly costs.
+let private ledgerCrediting (owner: string) (budget: int) : PrivacyLedger.Ledger =
+    if budget <= 0 then
+        PrivacyLedger.empty
+    else
+        match
+            PrivacyLedger.attest
+                ("attestation:" + owner)
+                owner
+                ("peer-of-" + owner)
+                budget
+                "test fixture: a peer attests that the owner added value"
+                PrivacyLedger.empty
+        with
+        | Ok ledger -> ledger
+        | Error refusal -> failwith (PrivacyLedger.describeRefusal refusal)
+
 let private emptyBoundary source room budget config =
     ModuloGSet.empty<string> config
     |> mustOk
-    |> RoomBoundary.create source room budget
+    |> RoomBoundary.create (ledgerCrediting source budget) source source room
 
 let private horizonConfig capacity policy : BoundedGSetConfig =
     BoundedGSetConfig.withPolicy capacity policy

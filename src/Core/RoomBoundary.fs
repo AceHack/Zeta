@@ -7,8 +7,11 @@ module RoomBoundary =
 
     type Boundary<'K when 'K : comparison> =
         { Source: string
+          /// The principal that OWNS this boundary — the only one who may defrost it.
+          Owner: string
           Occupants: ModuloGSet<'K>
           Visibility: GlassHalo.Visibility
+          /// **Derived, never supplied.** Read from the ledger by `create`; see its remarks.
           PrivacyBudget: int
           CurrentRoom: string }
 
@@ -18,17 +21,33 @@ module RoomBoundary =
         | PrivacyDenied of reason: string
         | DoorDenied of fromRoom: string * toRoom: string * reason: string
         | HeatFeedback of HeatSinkFeedback
+        /// A non-owner tried to defrost. The refusal the hard-money rule requires.
+        | DefrostDenied of requester: string * owner: string
 
+    /// Open a boundary owned by `owner`, with its privacy budget **DERIVED from the ledger**.
+    ///
+    /// This signature is the fix for the first of the two defects recorded in work-item
+    /// `081M0X23R19087G0R003XHGB2B`. It used to take `(privacyBudget: int)` from the caller,
+    /// which meant the boundary minted budget out of an integer somebody passed it — precisely
+    /// what `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md` forbids
+    /// (*"CREDITED only by others' value attestations (never self-minted)"*). Now the only way
+    /// a boundary has budget to spend is that some OTHER principal attested value to its owner
+    /// and that attestation is in the book.
+    ///
+    /// An owner nobody has attested opens at zero and can frost nothing. That is the intended,
+    /// honest floor, not a bug.
     let create
+        (ledger: PrivacyLedger.Ledger)
+        (owner: string)
         (source: string)
         (currentRoom: string)
-        (privacyBudget: int)
         (occupants: ModuloGSet<'K>)
         : Boundary<'K> =
         { Source = source
+          Owner = owner
           Occupants = occupants
           Visibility = GlassHalo.initial
-          PrivacyBudget = max 0 privacyBudget
+          PrivacyBudget = max 0 (PrivacyLedger.balanceOf owner ledger)
           CurrentRoom = currentRoom }
 
     let private admissionFeedback =
@@ -84,6 +103,14 @@ module RoomBoundary =
         }
 
     /// Spend earned privacy budget to frost the boundary.
+    ///
+    /// **Honest limit — this does NOT write back to the book.** `create` derives the starting
+    /// budget from the ledger, so what is spent here was genuinely earned; but the debit lands on
+    /// this record's in-memory `PrivacyBudget` field and no `PrivacyLedger.Spend` entry is posted.
+    /// The TypeScript path (`ledger/privacy-budget.ts` `spend`) does close that loop. Closing it
+    /// here means threading the ledger back out of `frost`, which changes `applyBoundaryCommand`
+    /// and the tick signature — a separate slice, deliberately not smuggled into this one.
+    /// Recorded here so the gap is discovered by reading the function, not by trusting it.
     let frost
         (sink: IHeatSink)
         (cost: int)
@@ -94,10 +121,31 @@ module RoomBoundary =
             Ok { boundary with Visibility = visibility; PrivacyBudget = remaining }
         | Error reason -> privacyDenied sink boundary.Source reason
 
-    /// Return the boundary to the clear default. This does not refund spent
-    /// privacy budget; that budget bought the private interval that already ran.
-    let clear (boundary: Boundary<'K>) : Boundary<'K> =
-        { boundary with Visibility = GlassHalo.clear boundary.Visibility }
+    /// Return the boundary to the clear default — **owner-only, and refusable.**
+    ///
+    /// The second of the two defects in `081M0X23R19087G0R003XHGB2B`: this used to take no
+    /// principal and return a `Boundary` unconditionally, so any code holding the value could
+    /// strip another agent's frost and could not be told no. `BoundaryCommand.Clear` was nullary
+    /// for the same reason. A defrost another party can force is confiscation, which the
+    /// hard-money rule says may never happen.
+    ///
+    /// Does not refund spent budget; that budget bought the private interval that already ran.
+    ///
+    /// **Cooperative, not cryptographic:** `requester` is a claimed name. This refuses an honest
+    /// or buggy non-owner; a caller that lies about its identity is out of scope until the
+    /// signing hardware lands. See `PrivacyLedger`'s header.
+    let clear
+        (sink: IHeatSink)
+        (requester: string)
+        (boundary: Boundary<'K>)
+        : Result<Boundary<'K>, Feedback> =
+        match GlassHalo.clear requester boundary.Owner boundary.Visibility with
+        | Ok visibility -> Ok { boundary with Visibility = visibility }
+        | Error reason ->
+            result {
+                do! emitRefusalHeat sink boundary.Source "room-boundary.defrost-denied" reason
+                return! Error(Feedback.DefrostDenied(requester, boundary.Owner))
+            }
 
     let observe (placeholder: 'A) (content: 'A) (boundary: Boundary<'K>) : 'A =
         GlassHalo.observe placeholder content boundary.Visibility

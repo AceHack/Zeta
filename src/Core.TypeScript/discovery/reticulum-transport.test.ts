@@ -18,6 +18,21 @@ import { createLlmtvNode, type Scheduler, type LlmtvNodeConfig } from "./llmtv-n
 import type { SourceMind } from "./llmtv-broadcast";
 import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
 
+import { earnThenFrostOrThrow } from "../ledger/privacy-budget";
+
+// Frost is EARNED now, not asserted: `SourceMind.personal.frost` takes a `FrostReceipt`, and the
+// only way to get one is to have a peer attest value and then spend it. A `frosted: true` literal
+// no longer typechecks. See src/Core.TypeScript/ledger/privacy-budget.ts.
+const frostReceiptFor = (region: string) =>
+  earnThenFrostOrThrow({
+    owner: `owner-of-${region}`,
+    attestor: `peer-of-${region}`,
+    earn: 100,
+    cost: 10,
+    region,
+    witness: "fixture: a peer attested that the owner added value",
+  });
+
 // ── A topology-aware fake physical layer ──────────────────────────────────────
 // A packet from `id` reaches only its neighbours (bidirectional adjacency). This lets us
 // build a LINE A—B—C where A and C are NOT directly connected, so multi-hop routing and
@@ -170,7 +185,7 @@ const mindOf = (role: string, hat: string, label: string, secret?: string): (() 
   role,
   hat,
   required: [{ label, temp: "hot", valueMilli: 800, epsilonMilli: 100 }],
-  ...(secret ? { personal: { frosted: true, veilLabel: `${hat} veil`, predictions: [{ label: secret, temp: "warm", valueMilli: 500, epsilonMilli: 300 }] } } : {}),
+  ...(secret ? { personal: { frost: frostReceiptFor("reticulum"), veilLabel: `${hat} veil`, predictions: [{ label: secret, temp: "warm", valueMilli: 500, epsilonMilli: 300 }] } } : {}),
 });
 
 const nodeCfg = (name: string, mind: () => SourceMind): LlmtvNodeConfig => ({

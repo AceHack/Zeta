@@ -329,3 +329,7 @@ src/Arc.Python/environment_files/
 # somewhere collectable with ZETA_CAPABILITY_VECTOR_OUT (CI can upload it as a
 # workflow artifact without it ever entering the tree).
 .zeta/
+
+# privacy-budget ledger — per-machine EPHEMERAL runtime state (work-item 081M0X23R19087G0R003XHGB2B).
+# Wiped freely; `bun src/Core.TypeScript/ledger/privacy-frost-demo.ts --reset` rebuilds it.
+db/ledgers/privacy/

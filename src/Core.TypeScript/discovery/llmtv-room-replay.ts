@@ -7,6 +7,21 @@ import type { DwellerMind } from "../darkhall-ui/darkhall-tv";
 import { publishFrame, type BroadcastMessage, type BroadcastSource, type SourceMind } from "./llmtv-broadcast";
 import { REPLAY_SCHEMA, replayFrame, type ReplayArtifact, type ReplayWireFrame } from "./llmtv-replay";
 
+import { earnThenFrostOrThrow } from "../ledger/privacy-budget";
+
+// Frost is EARNED now, not asserted: `SourceMind.personal.frost` takes a `FrostReceipt`, and the
+// only way to get one is to have a peer attest value and then spend it. A `frosted: true` literal
+// no longer typechecks. See src/Core.TypeScript/ledger/privacy-budget.ts.
+const frostReceiptFor = (region: string) =>
+  earnThenFrostOrThrow({
+    owner: `owner-of-${region}`,
+    attestor: `peer-of-${region}`,
+    earn: 100,
+    cost: 10,
+    region,
+    witness: "fixture: a peer attested that the owner added value",
+  });
+
 export interface RoomTranscriptReplayOptions extends RoomTranscriptLlmtvOptions {
   readonly sourceZid?: string;
   readonly sourceName?: string;
@@ -71,7 +86,7 @@ function sourceMindFromDweller(dweller: DwellerMind): SourceMind {
   return {
     ...base,
     personal: {
-      frosted: true,
+      frost: frostReceiptFor("room-replay"),
       veilLabel: dweller.frost.veilLabel,
       predictions: [],
     },

@@ -43,9 +43,38 @@ module GlassHalo =
             elif available < cost then Error "insufficient privacy budget to frost this surface"
             else Ok(Frosted cost, available - cost)
 
-    /// **Clear (return to transparency): free.** Transparency is the default state, so going back to it
-    /// costs nothing (the paid budget is not refunded — it bought the privacy you had). Idempotent.
-    let clear (v: Visibility) : Visibility = Clear
+    /// **Clear / defrost (return to transparency): OWNER-ONLY, and refusable.**
+    ///
+    /// This was `clear (v: Visibility) : Visibility = Clear` — free, total, callable by anyone
+    /// about anyone. That contradicted its own governing rule,
+    /// `.claude/rules/privacy-budget-is-hard-money-earned-by-others.md`: *"there is no `defrost`
+    /// that another party can force — only the owner may reveal (consent-first, one-way to MORE
+    /// privacy is free, less privacy needs the owner)."* A defrost anyone can call is
+    /// **confiscation** — the one operation of the rule's three that may **never** happen.
+    ///
+    /// The gate lives HERE, on the primitive, and not only on `RoomBoundary`. Gating the caller
+    /// while leaving the primitive free keeps a bypass around the consent check, and a bypass
+    /// around a consent check is the vacuity class: it looks like a guarantee and carries none.
+    ///
+    /// Still free *in budget* when the owner does it — returning to the default costs nothing, and
+    /// the spent budget is not refunded (it bought the private interval that already ran).
+    /// Idempotent for the owner.
+    ///
+    /// **Cooperative, not cryptographic:** `requester` is a claimed name, not a verified one.
+    /// This refuses an honest or buggy non-owner; it does not withstand a caller that lies about
+    /// who it is. See `PrivacyLedger`'s header for the full boundary.
+    let clear (requester: string) (owner: string) (v: Visibility) : Result<Visibility, string> =
+        if System.String.Equals(requester, owner, System.StringComparison.Ordinal) then
+            Ok Clear
+        else
+            Error(
+                System.String.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    "only the owner may defrost: {0} is not {1}",
+                    requester,
+                    owner
+                )
+            )
 
     /// What an observer may see of a surface, honouring the glass-halo default.
     /// `content` is shown when Clear; when Frosted, only the `placeholder` (e.g. "🔒 private") is shown.

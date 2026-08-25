@@ -18,13 +18,28 @@ import type { LlmtvLiveReplayBridge } from "./llmtv-live-replay-bridge";
 import type { LlmtvLiveReadoutIo } from "./llmtv-live-readout";
 import type { LlmtvNodeHandle, Scheduler } from "./llmtv-node";
 
+import { earnThenFrostOrThrow } from "../ledger/privacy-budget";
+
+// Frost is EARNED now, not asserted: `SourceMind.personal.frost` takes a `FrostReceipt`, and the
+// only way to get one is to have a peer attest value and then spend it. A `frosted: true` literal
+// no longer typechecks. See src/Core.TypeScript/ledger/privacy-budget.ts.
+const frostReceiptFor = (region: string) =>
+  earnThenFrostOrThrow({
+    owner: `owner-of-${region}`,
+    attestor: `peer-of-${region}`,
+    earn: 100,
+    cost: 10,
+    region,
+    witness: "fixture: a peer attested that the owner added value",
+  });
+
 function sourceMind(label: string): SourceMind {
   return {
     role: "root-site",
     hat: "viewer hat",
     required: [{ label, temp: "hot", valueMilli: 810, epsilonMilli: 120 }],
     personal: {
-      frosted: true,
+      frost: frostReceiptFor("root-site-readout"),
       veilLabel: "private root-site prior",
       predictions: [{ label: "SECRET", temp: "warm", valueMilli: 500, epsilonMilli: 300 }],
     },

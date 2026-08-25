@@ -8,6 +8,21 @@ import {
   type ReplayRenderIo,
 } from "./llmtv-replay-render";
 
+import { earnThenFrostOrThrow } from "../ledger/privacy-budget";
+
+// Frost is EARNED now, not asserted: `SourceMind.personal.frost` takes a `FrostReceipt`, and the
+// only way to get one is to have a peer attest value and then spend it. A `frosted: true` literal
+// no longer typechecks. See src/Core.TypeScript/ledger/privacy-budget.ts.
+const frostReceiptFor = (region: string) =>
+  earnThenFrostOrThrow({
+    owner: `owner-of-${region}`,
+    attestor: `peer-of-${region}`,
+    earn: 100,
+    cost: 10,
+    region,
+    witness: "fixture: a peer attested that the owner added value",
+  });
+
 const alexa: BroadcastSource = { zid: "zid-alexa-0001", name: "alexa" };
 
 const alexaMind: SourceMind = {
@@ -15,7 +30,7 @@ const alexaMind: SourceMind = {
   hat: "coder hat",
   required: [{ label: "next tick lands green", temp: "hot", valueMilli: 820, epsilonMilli: 120 }],
   personal: {
-    frosted: true,
+    frost: frostReceiptFor("replay-render"),
     veilLabel: "private hope",
     predictions: [{ label: "SECRET private hope", temp: "warm", valueMilli: 700, epsilonMilli: 110 }],
   },

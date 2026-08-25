@@ -273,6 +273,7 @@
     <Compile Include="SchedulerShedHeat.fs" />
     <Compile Include="RoomHorizon.fs" />
     <Compile Include="RoomAdmission.fs" />
+    <Compile Include="PrivacyLedger.fs" />
     <Compile Include="RoomBoundary.fs" />
     <Compile Include="Query.fs" />
     <Compile Include="QuerySurface.fs" />

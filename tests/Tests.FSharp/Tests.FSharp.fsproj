@@ -516,6 +516,7 @@
     <Compile Include="Formal/ForceLayout.Tests.fs" />
     <Compile Include="Formal/MetaspaceMap.Tests.fs" />
     <Compile Include="Formal/MetaspaceGraphRender.Tests.fs" />
+    <Compile Include="Formal/PrivacyLedger.Tests.fs" />
     <Compile Include="Formal/GlassHalo.Tests.fs" />
     <Compile Include="Formal/GiftOfErasure.Tests.fs" />
     <Compile Include="Formal/DoorGraph.Tests.fs" />

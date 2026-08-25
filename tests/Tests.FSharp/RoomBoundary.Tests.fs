@@ -17,10 +17,28 @@ let private rejectSlots slots : ModuloGSetConfig =
 let private replaceSlots slots : ModuloGSetConfig =
     ModuloGSetConfig.replaceExisting slots
 
+/// Budget is EARNED, not passed in: a peer attests value to `source` (who also OWNS the
+/// boundary here), and `RB.create` reads the resulting balance out of the book.
+let private ledgerCrediting (owner: string) (budget: int) : PrivacyLedger.Ledger =
+    if budget <= 0 then
+        PrivacyLedger.empty
+    else
+        match
+            PrivacyLedger.attest
+                ("attestation:" + owner)
+                owner
+                ("peer-of-" + owner)
+                budget
+                "test fixture: a peer attests that the owner added value"
+                PrivacyLedger.empty
+        with
+        | Ok ledger -> ledger
+        | Error refusal -> failwith (PrivacyLedger.describeRefusal refusal)
+
 let private emptyBoundary source room budget config =
     ModuloGSet.empty<string> config
     |> mustOk
-    |> RB.create source room budget
+    |> RB.create (ledgerCrediting source budget) source source room
 
 let private sampleVault () =
     let v =
@@ -75,7 +93,13 @@ let ``frost spends privacy budget and observe hides content`` () =
     Assert.Equal(2, frosted.PrivacyBudget)
     Assert.False(GlassHalo.isVisible frosted.Visibility)
     Assert.Equal("private", RB.observe "private" "payload" frosted)
-    Assert.Equal("payload", frosted |> RB.clear |> RB.observe "private" "payload")
+    // The OWNER may defrost; `RB.clear` is now owner-gated and returns a Result.
+    Assert.Equal(
+        "payload",
+        RB.clear (sink :> IHeatSink) "experience-room" frosted
+        |> mustOk
+        |> RB.observe "private" "payload"
+    )
     Assert.Empty(sink.Signatures)
 
 [<Fact>]

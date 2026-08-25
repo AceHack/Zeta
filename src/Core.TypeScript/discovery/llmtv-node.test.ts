@@ -4,6 +4,21 @@ import type { DiscoveryTransport } from "./discovery-beacon";
 import type { BroadcastTransport, SourceMind } from "./llmtv-broadcast";
 import { renderLlmtvGrid } from "../darkhall-ui/darkhall-tv";
 
+import { earnThenFrostOrThrow } from "../ledger/privacy-budget";
+
+// Frost is EARNED now, not asserted: `SourceMind.personal.frost` takes a `FrostReceipt`, and the
+// only way to get one is to have a peer attest value and then spend it. A `frosted: true` literal
+// no longer typechecks. See src/Core.TypeScript/ledger/privacy-budget.ts.
+const frostReceiptFor = (region: string) =>
+  earnThenFrostOrThrow({
+    owner: `owner-of-${region}`,
+    attestor: `peer-of-${region}`,
+    earn: 100,
+    cost: 10,
+    region,
+    witness: "fixture: a peer attested that the owner added value",
+  });
+
 // ── Fake in-memory mesh bus + fake scheduler ──────────────────────────────────
 // The whole point of the injected ports: run the live node logic with NO real socket and
 // NO real clock, deterministically. A send delivers synchronously to every OTHER attached
@@ -73,7 +88,7 @@ const mindOf = (role: string, hat: string, label: string, secret?: string): (() 
   role,
   hat,
   required: [{ label, temp: "hot", valueMilli: 800, epsilonMilli: 100 }],
-  ...(secret ? { personal: { frosted: true, veilLabel: `${hat} private`, predictions: [{ label: secret, temp: "warm", valueMilli: 500, epsilonMilli: 300 }] } } : {}),
+  ...(secret ? { personal: { frost: frostReceiptFor("node"), veilLabel: `${hat} private`, predictions: [{ label: secret, temp: "warm", valueMilli: 500, epsilonMilli: 300 }] } } : {}),
 });
 
 const cfg = (name: string, mind: () => SourceMind, phaseClock = false): LlmtvNodeConfig => ({

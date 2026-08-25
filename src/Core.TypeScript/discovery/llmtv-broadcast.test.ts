@@ -23,6 +23,21 @@ import {
   type HeatRow,
 } from "../darkhall-ui/heat";
 
+import { earnThenFrostOrThrow } from "../ledger/privacy-budget";
+
+// Frost is EARNED now, not asserted: `SourceMind.personal.frost` takes a `FrostReceipt`, and the
+// only way to get one is to have a peer attest value and then spend it. A `frosted: true` literal
+// no longer typechecks. See src/Core.TypeScript/ledger/privacy-budget.ts.
+const frostReceiptFor = (region: string) =>
+  earnThenFrostOrThrow({
+    owner: `owner-of-${region}`,
+    attestor: `peer-of-${region}`,
+    earn: 100,
+    cost: 10,
+    region,
+    witness: "fixture: a peer attested that the owner added value",
+  });
+
 const alexa: BroadcastSource = { zid: "zid-alexa-0001", name: "alexa" };
 const soraya: BroadcastSource = { zid: "zid-soraya-0002", name: "soraya" };
 
@@ -56,7 +71,7 @@ const alexaMind: SourceMind = {
   temperatureTreaty: alexaTemperatureTreaty,
   required: [{ label: "next tick lands green", temp: "hot", valueMilli: 820, epsilonMilli: 120 }],
   personal: {
-    frosted: true,
+    frost: frostReceiptFor("broadcast"),
     veilLabel: "what it is really hoping for",
     predictions: [{ label: "SECRET private hope", temp: "warm", valueMilli: 500, epsilonMilli: 300 }],
   },
@@ -76,7 +91,6 @@ describe("frostStrip — the membrane; frosted personal predictions never cross"
     const open: SourceMind = {
       ...alexaMind,
       personal: {
-        frosted: false,
         veilLabel: "n/a",
         predictions: [{ label: "shared hope", temp: "cool", valueMilli: 700, epsilonMilli: 100 }],
       },

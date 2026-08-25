@@ -33,7 +33,9 @@ module DarkHallRoomLoop =
     type BoundaryCommand<'K when 'K : comparison> =
         | AdmitWithSlot of rawSlot: int64 * key: 'K
         | Frost of cost: int
-        | Clear
+        /// Carries the principal asking to defrost. Nullary `Clear` was an unauthenticated
+        /// defrost — anyone could strip anyone's frost and the call could not fail.
+        | Clear of principal: string
         | Traverse of heldKeys: Set<string> * toRoom: string * vault: DoorGraph.Vault
 
     type BoundaryRequestResolver<'K when 'K : comparison> =
@@ -190,6 +192,14 @@ module DarkHallRoomLoop =
             HeatSignature.ofMass source "room-boundary.door-denied" 1 1.0 detail
             |> List.singleton
             |> heatReadoutOfSignatures
+        | RoomBoundary.Feedback.DefrostDenied(requester, owner) ->
+            // A refused confiscation is host-visible heat like every other boundary refusal: an
+            // attempt to strip someone else's frost should leave a trace, not vanish silently.
+            let detail = sprintf "%s may not defrost a boundary owned by %s" requester owner
+
+            HeatSignature.ofMass source "room-boundary.defrost-denied" 1 1.0 detail
+            |> List.singleton
+            |> heatReadoutOfSignatures
 
     let private heatReadoutOfResult =
         function
@@ -259,7 +269,9 @@ module DarkHallRoomLoop =
                 let! next = RoomBoundary.frost sink cost boundary
                 return next, BoundaryEffect.Frosted
 
-            | BoundaryCommand.Clear -> return RoomBoundary.clear boundary, BoundaryEffect.Cleared
+            | BoundaryCommand.Clear principal ->
+                let! next = RoomBoundary.clear sink principal boundary
+                return next, BoundaryEffect.Cleared
 
             | BoundaryCommand.Traverse(heldKeys, toRoom, vault) ->
                 let fromRoom = boundary.CurrentRoom
