@@ -1,0 +1,12 @@
+{
+  "pr_number": 15313,
+  "archive_path": "docs/history/pr-reviews/PR-15313-design-heartbeat-pr-free-lane-attestation-instead-of-a-gate-path-scoped-exclusio.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:01:55.596Z",
+  "schema_version": "v1",
+  "commit_sha": "bec77e431fe2e9dc884a077e429593dca7450852",
+  "title": "design(heartbeat): PR-free lane — attestation instead of a gate; path-scoped exclusion is not expressible, and the audit that makes the bypass checkable",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T08:01:05Z",
+  "head_ref": "otto/pr-free-heartbeat-lane"
+}

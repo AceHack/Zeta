@@ -1,0 +1,12 @@
+{
+  "pr_number": 15315,
+  "archive_path": "docs/history/pr-reviews/PR-15315-fix-rust-make-lint-fail-closed-on-stale-lockfiles.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:00:45.511Z",
+  "schema_version": "v1",
+  "commit_sha": "622f579dc7fdd93caf140a0c2b53b2a5bbed14bb",
+  "title": "fix(rust): make lint fail closed on stale lockfiles",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:59:55Z",
+  "head_ref": "claim/bug-rust-lockfile-lint-mutation"
+}
