@@ -96,6 +96,14 @@ export interface HeartbeatPrSnapshot {
 export interface RequiredWorkflowPresence {
   readonly number: number;
   readonly runCount: number;
+  /**
+   * Runs whose `status` is not yet `completed`. A run that FINISHED without
+   * publishing the required check will never publish it, however many runs
+   * exist -- so `runCount > 0` alone cannot mean "merely slow". Optional so
+   * existing callers keep compiling; absent reads as "unmeasured, assume live",
+   * preserving the old, more forgiving verdict rather than inventing a red.
+   */
+  readonly liveRunCount?: number;
 }
 
 export interface MissingCheckClassification {
@@ -113,9 +121,17 @@ export interface MissingCheckClassification {
 export function classifyMissingRequiredCheck(
   presence: readonly RequiredWorkflowPresence[],
 ): MissingCheckClassification {
+  // Reaching here means the required check is ABSENT from the rollup, so the only
+  // thing that can still rescue this PR is a run that has not finished yet. Zero
+  // runs and "every run already finished" are therefore the SAME verdict -- the
+  // check can never report. Splitting on `runCount` alone conflated them: an
+  // `action_required` run (terminal, 0 jobs) counted as progress and read as
+  // "merely slow" on #15327 for fourteen hours.
+  const canStillReport = (p: RequiredWorkflowPresence): boolean =>
+    p.liveRunCount === undefined ? p.runCount > 0 : p.liveRunCount > 0;
   return {
-    stalled: presence.filter((p) => p.runCount === 0).map((p) => p.number),
-    queued: presence.filter((p) => p.runCount > 0).map((p) => p.number),
+    stalled: presence.filter((p) => !canStillReport(p)).map((p) => p.number),
+    queued: presence.filter(canStillReport).map((p) => p.number),
   };
 }
 
@@ -304,7 +320,18 @@ async function main(argv: readonly string[]): Promise<number> {
     const counted = await listWithTransientRetry(() => {
       const result = spawnSync(
         "gh",
-        ["api", `repos/{owner}/{repo}/actions/workflows/${workflowFile}/runs?head_sha=${sha}`, "--jq", ".total_count"],
+        [
+          "api",
+          `repos/{owner}/{repo}/actions/workflows/${workflowFile}/runs?head_sha=${sha}&per_page=100`,
+          "--jq",
+          // Two numbers, one call: how many runs exist, and how many can STILL
+          // publish the check. `status != "completed"` is the live set.
+          // `@tsv` rather than jq string interpolation: `\(` inside a JS string
+          // literal is silently eaten by JS escaping, which produced a jq parse
+          // error that every unit test missed because they exercise the pure
+          // classifier, never this shell boundary.
+          '[.total_count, ([.workflow_runs[] | select(.status != "completed")] | length)] | @tsv',
+        ],
         { encoding: "utf8" },
       );
       return {
@@ -321,12 +348,14 @@ async function main(argv: readonly string[]): Promise<number> {
       );
       return 2;
     }
-    const runCount = Number(counted.stdout.trim());
-    if (!Number.isFinite(runCount)) {
+    const [totalRaw, liveRaw] = counted.stdout.trim().split(/\s+/);
+    const runCount = Number(totalRaw);
+    const liveRunCount = Number(liveRaw);
+    if (!Number.isFinite(runCount) || !Number.isFinite(liveRunCount)) {
       process.stderr.write(`required-check-started: unparseable run count for #${number}: ${counted.stdout}\n`);
       return 2;
     }
-    presence.push({ number, runCount });
+    presence.push({ number, runCount, liveRunCount });
   }
 
   const { stalled, queued } = classifyMissingRequiredCheck(presence);
@@ -341,12 +370,13 @@ async function main(argv: readonly string[]): Promise<number> {
   // ::error:: so the absence is LOUD in the run itself, per the drift-loud discipline —
   // this lane blocks nothing, so an unannotated line in a log is the same as silence.
   process.stderr.write(
-    `::error::required-check-started: no ${workflowFile} run exists for ${list} — ` +
+    `::error::required-check-started: no LIVE ${workflowFile} run for ${list} ` +
+      `(either none was created, or every run finished without publishing it) — ` +
       `${REQUIRED_GATE_NAME} can never report on ${stalled.length === 1 ? "it" : "them"}. ` +
       `Note that a bare \`gh pr checks\` reads this as green; \`--required\` does not.\n`,
   );
   process.stderr.write(
-    `required-check-started: no ${workflowFile} run exists for ${scope}: ${list} — ` +
+    `required-check-started: no LIVE ${workflowFile} run for ${scope}: ${list} — ` +
       `${REQUIRED_GATE_NAME} can never report\n`,
   );
   return 1;

@@ -98,6 +98,54 @@ describe("classifyMissingRequiredCheck — absent-from-rollup is not never-going
     });
   });
 
+  // THE FALSIFIER FOR THE 2026-08-25 DEFECT (#15327). Every test below fails
+  // against the previous implementation, which split on `runCount` alone.
+  test("a TERMINAL run that never published the check is stalled, not queued (#15327 shape)", () => {
+    // `action_required`: GitHub withholds execution for PRs opened with
+    // GITHUB_TOKEN. The run exists and has 0 jobs, and it is finished — so the
+    // check will never appear. `runCount: 1` called this "merely slow" for 14h.
+    expect(classifyMissingRequiredCheck([{ number: 15327, runCount: 1, liveRunCount: 0 }])).toEqual({
+      stalled: [15327],
+      queued: [],
+    });
+  });
+
+  test("a live run is still queued — the fix must not make in-flight PRs red", () => {
+    expect(classifyMissingRequiredCheck([{ number: 15499, runCount: 1, liveRunCount: 1 }])).toEqual({
+      stalled: [],
+      queued: [15499],
+    });
+  });
+
+  test("finished runs alongside one live run is queued — the live one can still publish", () => {
+    expect(classifyMissingRequiredCheck([{ number: 15500, runCount: 3, liveRunCount: 1 }])).toEqual({
+      stalled: [],
+      queued: [15500],
+    });
+  });
+
+  test("many runs, all finished, none published — stalled however high the count", () => {
+    expect(classifyMissingRequiredCheck([{ number: 15501, runCount: 9, liveRunCount: 0 }])).toEqual({
+      stalled: [15501],
+      queued: [],
+    });
+  });
+
+  test("liveRunCount absent falls back to the old, more forgiving reading", () => {
+    // An unmeasured field must never manufacture a red. Absent is not zero.
+    expect(classifyMissingRequiredCheck([{ number: 15502, runCount: 1 }])).toEqual({
+      stalled: [],
+      queued: [15502],
+    });
+  });
+
+  test("zero runs is stalled whether or not the live count was measured", () => {
+    expect(classifyMissingRequiredCheck([{ number: 15503, runCount: 0, liveRunCount: 0 }])).toEqual({
+      stalled: [15503],
+      queued: [],
+    });
+  });
+
   test("a mixed batch reports each PR under the right verdict", () => {
     expect(
       classifyMissingRequiredCheck([
