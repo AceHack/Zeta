@@ -191,6 +191,48 @@ A protocol implementation that lets `eagerness` be set by an observer about a
 counterparty, or that accepts a declaration timestamped after the result, has
 reimplemented the bias it was built to disclose.
 
+### The posterior half — a tracked parameter, not only a per-exchange flag (Aaron 2026-08-25)
+
+> *"yes this is very accurate over a bayesian inference prior on individuals, similar to
+> TrueSkill. eager is also aggressive and reaches local optima quicker and gets stuck,
+> it's mostly selfish but not always in the extremes."*
+
+The declaration above is **per-exchange**. Its across-exchange complement is
+`src/Core/DeclaredStanceLedger.fs` (work-item `081M0X49HBD087G0R001HM9VHF`): cells keyed
+`(party, domain, DECLARED stance)` over the TrueSkill/ADF posterior already in
+`src/Core/TravelerRankLedger.fs`.
+
+The guard that decides whether such a ledger is legitimate at all:
+
+> **The outcome record is trackable. The inner state is not.**
+
+Keying the cell **by the self-claim** is what holds it — the module never decides what a
+party *is*, only how claims filed under a self-chosen label turned out. So the `Shape`
+section's *"self-claimed, never inferred"* survives having a posterior attached to it:
+`Stance` has one introduction form, it refuses observer attribution, and no function in
+the module returns a `Stance`.
+
+Three consequences worth naming on this row:
+
+- **Declared `neutral`, record says otherwise.** The record is evidence; the declaration
+  is still authority over *intent*, never over *accuracy*. When a party's cells are
+  indistinguishable the receiver stops conditioning on the label and pools — it does
+  **not** relabel the party.
+- **"Eager is not a discount" is now mechanical.** `RequiresIndependentConfirmation` never
+  reads the stance, so declaring costs nothing; the independence requirement is a
+  threshold on *effective* corroborations under Kish's (1965) design effect
+  `n_eff = n/(1+(n−1)ρ)`, which is exactly 1 at ρ=1 — the quantity behind *"five
+  supporting arguments has produced approximately one"*.
+- **"Mostly selfish but not always in the extremes" is DECLINED, not modelled.**
+  Selfishness is a motivation, so mapping a declared stance to it is the inference this
+  row's own `Shape` section forbids. What is recorded instead is who the resolved claim's
+  value actually accrued to — an observable allocation — and a falsifier asserts that
+  nothing reads it into a weighting.
+
+Argument, anchors (Kirkpatrick 1983 · Hajek 1988 · Lai–Robbins 1985 · Kish 1965) and the
+explicit unverified claims:
+[`docs/research/2026-08-25-declared-stance-posterior-eagerness-is-a-temperature-not-a-rate.md`](../../research/2026-08-25-declared-stance-posterior-eagerness-is-a-temperature-not-a-rate.md).
+
 ## Pointers
 
 - [`numerology-vs-number-theory.md`](../../../.claude/rules/numerology-vs-number-theory.md)

@@ -32,6 +32,7 @@
     "tests/Tests.FSharp/ContentHasher.Tests.fs": 1,
     "tests/Tests.FSharp/CorrespondencePong.Tests.fs": 1,
     "tests/Tests.FSharp/DarkHall.Tests.fs": 2,
+    "tests/Tests.FSharp/DeclaredStanceLedger.Tests.fs": 2,
     "tests/Tests.FSharp/DecorrelationExcess.Tests.fs": 7,
     "tests/Tests.FSharp/DeltaLogEntryCodec.Tests.fs": 1,
     "tests/Tests.FSharp/Detour.Tests.fs": 1,
