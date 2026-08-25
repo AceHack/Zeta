@@ -822,9 +822,38 @@ jobs:
           # RAISE IT once this lane has produced a few clean ticks — at which point it will have
           # a track record for the first time, and the measurement above is already done.
           #
+          # RAISED 3 -> 15 on 2026-08-25, and the condition above is what authorises it: the lane
+          # has run cleanly for days and the fifth defect did not appear. It is raised because at
+          # 3 THE SWEEP CANNOT KEEP UP, and it has to — it is no longer the safety net, it is the
+          # ONLY path for a large population of merges.
+          #
+          # WHY. GitHub does not deliver a `pull_request` event for an action taken with
+          # GITHUB_TOKEN, so a PR merged by `github-actions[bot]` never triggers
+          # pr-archive-on-merge.yml — no run is created, nothing fails, nothing is red. Measured
+          # over 2026-08-21..25: of 765 eligible unarchived PRs, 747 (97.6%) were bot-merged;
+          # of 539 archived in the same window, 530 (98.3%) were user-merged. The bot-merge share
+          # of all merges crossed over on 08-20; coverage collapsed on 08-21.
+          #
+          # THE ARITHMETIC. Bot-merged PRs accrue at ~150/day. At --limit 3 over 96 ticks/day the
+          # ceiling is 288/day, and 41% of that budget was going to `automation/pr-archive-*` PRs
+          # that pr-archive-on-merge.yml's `if:` deliberately skips (524 of the 1,289 unarchived
+          # PRs in the sweep's reachable window, sitting at the HEAD of an oldest-first queue).
+          # Effective drain was therefore ~170/day against ~150/day of accrual — break-even, which
+          # is exactly the flat ~1,289 backlog observed. Both halves are fixed: `listMergedPRs` now
+          # applies the same eligibility predicate the workflow does, and the bound is 15.
+          #
           # The OTHER ceiling this must respect is `timeout-minutes: 10` on this job: blowing it
           # kills the whole tick, not just archive duty. Measured on the three most recent soraya
           # ticks: 136s / 293s / 188s of a 600s budget, with this step at 18s under --limit 3.
+          # That is ~6s/PR, so 15 costs ~90s: worst measured tick 293s + 72s = ~365s of 600s.
+          # 15 x 96 ticks = 1,440/day against ~150/day of accrual, so the backlog drains rather
+          # than holding station. If the job starts timing out, LOWER THIS FIRST — a tick killed
+          # by archive duty loses the whole heartbeat, which costs more than a slow drain.
+          #
+          # THE COVERAGE NUMBER IS NOW MEASURED, which is what makes a raise safe to make at all:
+          # src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts runs 4x/day in
+          # pr-manifest-integrity.yml and FAILS below its floors. If this bound is wrong in either
+          # direction, that audit says so instead of a human counting files by hand.
           #
           # NO PIPE on the command itself — the output is captured, then printed separately —
           # because piping is what hid the failure for months. The exit code is checked
@@ -834,7 +863,7 @@ jobs:
           echo "[archive] Checking for un-archived merged PRs..."
           set +e
           ARCHIVE_OUT=$(bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts \
-            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 3 2>&1)
+            --owner Lucent-Financial-Group --repo Zeta --all-merged --limit 15 2>&1)
           ARCHIVE_RC=$?
           printf '%s\n' "$ARCHIVE_OUT" | tail -20
           if [ "$ARCHIVE_RC" -ne 0 ]; then

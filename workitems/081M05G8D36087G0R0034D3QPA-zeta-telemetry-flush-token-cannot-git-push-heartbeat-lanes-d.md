@@ -172,3 +172,43 @@ PAT costs a degraded lane rather than the dead one #10850 produced.
       held-gate defect. **Deliberately out of scope here**: those two lanes stayed alive
       through the outage, this exact change has broken the society twice, and one lane
       proven on a real tick beats three changed at once.
+
+## MEASURED DOWNSTREAM COST (added 2026-08-25) — this P1 is silently losing training data
+
+The API-side fallback in this same step has a second consequence nobody had connected to
+it, and it is larger than the flush-liveness symptom this item was filed for.
+
+`agent-heartbeat.yml` falls back to `GITHUB_TOKEN` when the PAT is refused, so every flush
+PR **merges as `github-actions[bot]`**. GitHub does not deliver a `pull_request` event for
+an action taken with `GITHUB_TOKEN`, so `pr-archive-on-merge.yml` never runs for those
+merges — no workflow run is created, nothing fails, nothing goes red, and the PR's review
+substrate is simply never written to git.
+
+```text
+ZETA_TELEMETRY_FLUSH_TOKEN denied
+   -> fallback to GITHUB_TOKEN
+   -> flush PRs merge as github-actions[bot]
+   -> `pull_request: closed` event SUPPRESSED
+   -> pr-archive-on-merge.yml never runs
+   -> the PR is never archived, silently
+```
+
+Checked, not assumed:
+
+- All six most recent heartbeat runs emit `::warning title=Heartbeat API credential denied`
+  (32823324598, 32821142228, 32818569388, 32816194481, 32814829813, 32813161986). The
+  fallback is not an edge case, it is **every run**.
+- Of 765 eligible unarchived PRs merged 2026-08-21..25, **747 (97.6%) were merged by
+  `github-actions`**. Of 539 archived in the same window, **530 (98.3%) were merged by a
+  user**. The separation is essentially total.
+- Per merge SHA: `#15280` and `#15267` (bot-merged) return **0** archive workflow runs;
+  `#15272` and `#15264` (user-merged) return 1 run, success.
+
+**Cost as of 2026-08-25: 910 eligible merged PRs with no archive record**, accruing at
+~150/day. Archive coverage over eligible PRs is 80.91% lifetime and **64.92% over the last
+7 days**. That review discussion lives only in GitHub's database until this is granted.
+
+Coverage is now measured and goes red on its own (`audit-pr-archive-coverage.ts`, 4x/day in
+`pr-manifest-integrity.yml`), and the backfill sweep was resized so the backlog drains
+rather than holding station. But that is a **net under a suppressed trigger**, not a repair
+of it. The trigger is repaired by granting this PAT `Contents: read and write`.

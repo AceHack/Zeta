@@ -1,0 +1,12 @@
+{
+  "pr_number": 14882,
+  "archive_path": "docs/history/pr-reviews/PR-14882-ferry-ksk-is-the-kinetic-rung-and-zeta-already-built-four-of-its-parts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:27:52.746Z",
+  "schema_version": "v1",
+  "commit_sha": "cc73d55437755c7dd6b889428bbb08c89e7f841c",
+  "title": "ferry: KSK is the kinetic rung — and Zeta already built four of its parts",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T17:49:04Z",
+  "head_ref": "ferry/ksk-kinetic-safeguard-lineage"
+}

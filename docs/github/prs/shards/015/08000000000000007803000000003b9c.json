@@ -1,0 +1,12 @@
+{
+  "pr_number": 15260,
+  "archive_path": "docs/history/pr-reviews/PR-15260-fix-columnar-columnzset-overflow-was-host-isa-dependent-the-advertised-falsifier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:27:56.013Z",
+  "schema_version": "v1",
+  "commit_sha": "cc73d55437755c7dd6b889428bbb08c89e7f841c",
+  "title": "fix(columnar): ColumnZSet overflow was host-ISA-dependent — the advertised falsifier did not exist",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T06:20:46Z",
+  "head_ref": "fix/columnar-exact-overflow"
+}

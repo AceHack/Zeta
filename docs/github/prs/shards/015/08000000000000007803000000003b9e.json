@@ -1,0 +1,12 @@
+{
+  "pr_number": 15262,
+  "archive_path": "docs/history/pr-reviews/PR-15262-docs-research-mark-the-memory-role-restructure-plan-superseded-do-not-execute.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:27:57.696Z",
+  "schema_version": "v1",
+  "commit_sha": "cc73d55437755c7dd6b889428bbb08c89e7f841c",
+  "title": "docs(research): mark the memory-role-restructure plan SUPERSEDED — do not execute",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T06:12:56Z",
+  "head_ref": "docs/supersede-memory-role-restructure"
+}

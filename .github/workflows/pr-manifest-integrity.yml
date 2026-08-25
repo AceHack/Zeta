@@ -235,3 +235,82 @@ jobs:
 
           echo "::error title=Review-thread capture gap outlived the reconcile sweep::One or more PRs merged over 30 minutes ago still record fewer review threads than GitHub holds, so the merge-race repair (agent-heartbeat.yml soraya archive duty) has stopped landing. Repair by hand: bun src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts --write"
           exit 1
+
+      - name: PR archive COVERAGE (does every merged PR have a record at all?)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_EVENT: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+
+          # THE THIRD QUESTION THIS WORKFLOW ASKS, and the one that was missing.
+          #
+          # The two steps above both presuppose that a record EXISTS: one checks the derived
+          # index against the shards, the other checks a doc's thread count against GitHub.
+          # Neither can see a PR that was never archived at all — for such a PR there is no
+          # shard to be unreconciled and no doc to under-report. It is absent from every
+          # surface that reports, which is why 77.4% lifetime coverage survived four days of
+          # green watchdog runs and was found by counting files by hand.
+          #
+          # The archive exists so the project OWNS this data rather than renting it from
+          # GitHub's API. An unarchived PR is not a degraded record, it is data we do not
+          # have — and a rate limit is not something you can train on.
+          #
+          # WHAT GOES RED. Window coverage (7d, minus a 90-minute in-flight grace) below 95%.
+          # That is the "is the lane working now" signal and it catches a new break within a
+          # day. The measured 2026-08-21 break ran at 43%; main was at 65.2% when this landed.
+          # Lifetime coverage is a separate ratchet that only a backfill moves.
+          #
+          # --window-only on pull_request keeps the routine cost to a handful of GraphQL pages.
+          # The scheduled run does the full-history scan (~134 pages of a 5,000-point budget),
+          # which is what keeps the lifetime ratchet honest.
+          #
+          # IT FITS THE BUDGET, MEASURED — because an audit that trips `timeout-minutes: 10` is
+          # a check that did not run, and this job's other two steps already spend ~2 min.
+          # Full-history scan timed end-to-end 2026-08-25: 108s. It is bounded by round trips,
+          # so it grows with PR COUNT rather than with history depth. If it ever approaches the
+          # budget, move the schedule to --window-only and put the lifetime ratchet on its own
+          # less-frequent cron; do NOT raise the job timeout, because the other two steps have
+          # their own reasons for the bound.
+          #
+          # Its output on main at the moment it landed, for the record:
+          #   lifetime 10336/12775 = 80.91%  (floor 75%)  -> PASS
+          #   window    1386/2135  = 64.92%  (floor 95%)  -> FAIL
+          #   excluded=580 pre-lane=1506 in-flight=23 missing=910
+          #
+          # Exit codes: 0 above both floors, 1 below a floor, 2 LIVENESS (nothing inspected).
+          set +e
+          if [ "$GH_EVENT" = "schedule" ] || [ "$GH_EVENT" = "workflow_dispatch" ]; then
+            report=$(bun src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts 2>&1)
+          else
+            report=$(bun src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts --window-only 2>&1)
+          fi
+          rc=$?
+          set -e
+
+          printf '%s\n' "### PR archive coverage" "" \
+            "Trigger: $GH_EVENT. audit-pr-archive-coverage.ts exit code: $rc." "" \
+            '```' "$report" '```' | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$rc" -eq 0 ]; then
+            echo "Archive coverage is above both floors."
+            exit 0
+          fi
+
+          if [ "$rc" -eq 2 ]; then
+            # Liveness failure is never a pass and never a silent green. Nothing was
+            # inspected, so nothing was learned — the same refusal the step above makes for
+            # an inconclusive verdict.
+            echo "::error title=Coverage audit inspected nothing::Zero eligible merged PRs were examined, so the merged-PR listing or the shard index is broken. A check that did not run must not read as one that passed."
+            exit 1
+          fi
+
+          if [ "$GH_EVENT" = "pull_request" ]; then
+            # Same precedent as both steps above: the gap belongs to main, not to the
+            # contributor whose branch happened to touch this directory.
+            echo "::notice title=Archive coverage below floor (informational)::Merged PRs on main have no archive record. Drained by agent-heartbeat.yml soraya archive duty; not attributable to this PR, so not failing it."
+            exit 0
+          fi
+
+          echo "::error title=Archive coverage below floor::Merged PRs are not being archived. The usual cause is a merge path GitHub will not let trigger pr-archive-on-merge.yml — a merge performed with GITHUB_TOKEN creates NO pull_request event, so the backfill sweep in agent-heartbeat.yml is the only net. Check that it is running and that its --limit keeps up. Backfill by hand: bun src/Core.TypeScript/forge-host/github/backfill-pr-archive.ts --resume"
+          exit 1
