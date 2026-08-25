@@ -46,9 +46,11 @@ PATH surface.
   in our terms + version guarantee), the launchctl adapter, and `inMemoryServiceControl`,
   a second adapter with no subprocess that is the evidence the interface is a port rather
   than a way of invoking a binary.
-- 10 call sites converted across `service/adapters/launchd.ts`, `service/loop-liveness.ts`,
-  `observe/world-infra.ts`, `ops/setup-dual-background-agents.ts`,
-  `shadow/launchd/install-launchagent.ts`.
+- 10 call sites converted across `src/Core.TypeScript/service/adapters/launchd.ts`,
+  `src/Core.TypeScript/service/loop-liveness.ts`,
+  `src/Core.TypeScript/observe/world-infra.ts`,
+  `src/Core.TypeScript/ops/setup-dual-background-agents.ts`, and
+  `src/Core.TypeScript/shadow/launchd/install-launchagent.ts`.
 - `src/Core.TypeScript/privilege` added to the `lint:eslint` allowlist — the rule this work
   is about was not running on the code that fixes it.
 
@@ -64,7 +66,7 @@ PATH surface.
 ## Follow-ups
 
 - Wire a pinned identity baseline and decide who authorises the first record.
-- `observe/world-infra.ts` collapses indeterminate into "nothing running" (pre-existing).
+- `src/Core.TypeScript/observe/world-infra.ts` collapses indeterminate into "nothing running" (pre-existing).
 - `git` / `bun` / `gh` / `bash` PATH sites remain — a separate, larger migration. Content
   hashing is measured too slow for a 63 MB runtime per invocation (31.75 ms vs 0.36 ms for
   launchctl), so that migration needs a different identity strategy.

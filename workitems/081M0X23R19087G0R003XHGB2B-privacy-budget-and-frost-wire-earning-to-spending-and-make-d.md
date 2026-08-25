@@ -36,7 +36,7 @@ Three separately-good subsystems exist and no call edge joins any two of them:
 
 A repo-wide cross-check (every file naming `frosted`/`GlassHalo`/`privacyBudget`,
 intersected with every file naming `encrypt`/`aes-gcm`/`pkcs11`/`hsm`/`sealShare`)
-returns exactly one file, `discovery/llmtv-node.ts`, and both of its hits are
+returns exactly one file, `src/Core.TypeScript/discovery/llmtv-node.ts`, and both of its hits are
 comments about unrelated things. No code path makes frost cryptographic.
 
 ## The two defects, in priority order

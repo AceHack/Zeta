@@ -33,16 +33,16 @@ Two consequences:
 
 ## What shipped
 
-- `zeta_arc/frames.py` — the frame seam. Two frame types disagree about what a
+- `src/Arc.Python/zeta_arc/frames.py` — the frame seam. Two frame types disagree about what a
   frame is (`FrameData.frame` is nested lists; `FrameDataRaw.frame` is ndarrays,
   and hosted play always takes the second door), so the grid is normalised once,
   explicitly. Also `offered_actions`, the per-frame action space.
-- `zeta_arc/click.py` — the coordinate prior. `ACTION6` spans 4096 points, so
+- `src/Arc.Python/zeta_arc/click.py` — the coordinate prior. `ACTION6` spans 4096 points, so
   uniform sampling is no policy at all. **Objects are clickable**: component
   centroids first, then a coarse-to-fine lattice; forget what did nothing when
   the world moves.
-- `zeta_arc/layered.py` — the chooser. Picks the layer that MOVES THE WORLD.
-- `zeta_arc/hosted.py` — the loop, plus `play_roster`.
+- `src/Arc.Python/zeta_arc/layered.py` — the chooser. Picks the layer that MOVES THE WORLD.
+- `src/Arc.Python/zeta_arc/hosted.py` — the loop, plus `play_roster`.
 - `.github/workflows/arc-lane.yml` — `arc-hosted-sweep`, a separate job that runs
   only where the credential arrives.
 

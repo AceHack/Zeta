@@ -1,0 +1,14 @@
+{
+  "id": "080d01d4db7f8010a0130008474c054b",
+  "at": "2026-08-25T20:27:40.400Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X9PVZF087G0R000GC0SP6",
+    "type": "bug",
+    "title": "Repair auto-vivify references to source-owned paths",
+    "slug": "repair-auto-vivify-references-to-source-owned-paths",
+    "priority": "P1",
+    "filename": "081M0X9PVZF087G0R000GC0SP6-repair-auto-vivify-references-to-source-owned-paths.md"
+  }
+}

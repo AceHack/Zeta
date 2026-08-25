@@ -41,7 +41,7 @@ measurement-context boundary.
 
 ## Findings raised (detail in the report)
 
-- **P0** — `common/curl-fetch.sh`'s "all upstream-installer call sites" claim is
+- **P0** — `tools/setup/common/curl-fetch.sh`'s "all upstream-installer call sites" claim is
   ornamental: 2 call sites vs 3 bypasses, including a live pipe-to-shell of
   `https://sh.rustup.rs` at `install-rust-wasm32.sh:32`. Windows (`install.ps1`)
   holds the stronger policy than Unix.
