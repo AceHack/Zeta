@@ -1,6 +1,13 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
-import { parseArgs } from "./check-github-settings-drift";
+import {
+  countLeaves,
+  formatReadabilityReport,
+  parseArgs,
+  partitionByReadability,
+} from "./check-github-settings-drift";
+
+const SENTINEL = { _skipped: "insufficient-token-scope" } as const;
 
 let priorGhRepo: string | undefined;
 
@@ -84,5 +91,125 @@ describe("parseArgs", () => {
     if (result.kind === "args") {
       expect(result.args.repo).toBe("argv/zeta");
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// READABILITY — a scan that compared nothing did not pass.
+//
+// The defect these pin: the previous implementation stripped unreadable fields
+// from BOTH sides and then diffed what was left. Strip everything and the diff
+// is empty, so a credential that could read no settings at all produced
+// `exit 0, "no drift"`. Reproduced against origin/main at ba92c40373:
+// UNFIXED exit 0; fixed exit 3.
+// ---------------------------------------------------------------------------
+
+describe("countLeaves", () => {
+  test("counts scalars, and an array as one leaf", () => {
+    expect(countLeaves({ a: 1, b: "x", c: [1, 2, 3] })).toBe(3);
+  });
+
+  test("an empty object has zero leaves — the case that must not read as success", () => {
+    expect(countLeaves({})).toBe(0);
+    expect(countLeaves({ a: {}, b: { c: {} } })).toBe(0);
+  });
+});
+
+describe("partitionByReadability", () => {
+  test("drops live-side sentinels from BOTH sides and names them", () => {
+    const live: Record<string, unknown> = { repo: SENTINEL, topics: [] };
+    const exp: Record<string, unknown> = { repo: { has_wiki: true }, topics: [] };
+    const part = partitionByReadability(live, exp);
+
+    expect(part.unreadableLive).toEqual(["repo"]);
+    expect(part.unreadableExpected).toEqual([]);
+    expect(live).toEqual({ topics: [] });
+    expect(exp).toEqual({ topics: [] });
+    expect(part.comparedLeaves).toBe(1);
+  });
+
+  test("reports an EXPECTED-side sentinel separately — the old walk could not see it", () => {
+    // The previous strip iterated `Object.keys(live)` only. A sentinel sitting
+    // in the COMMITTED file was therefore diffed against a real live value and
+    // reported as ordinary drift — an unrecorded field wearing the costume of
+    // a changed one. They need different fixes: a changed setting is reverted,
+    // an unrecorded one is re-snapshotted with a stronger credential.
+    const live: Record<string, unknown> = { codeql_default_setup: { state: "configured" } };
+    const exp: Record<string, unknown> = { codeql_default_setup: SENTINEL };
+    const part = partitionByReadability(live, exp);
+
+    expect(part.unreadableExpected).toEqual(["codeql_default_setup"]);
+    expect(part.unreadableLive).toEqual([]);
+    expect(part.comparedLeaves).toBe(0);
+  });
+
+  test("recurses into nested objects", () => {
+    const live: Record<string, unknown> = { counts: { webhooks: SENTINEL, deploy_keys: 0 } };
+    const exp: Record<string, unknown> = { counts: { webhooks: 3, deploy_keys: 0 } };
+    const part = partitionByReadability(live, exp);
+
+    expect(part.unreadableLive).toEqual(["counts.webhooks"]);
+    expect(live).toEqual({ counts: { deploy_keys: 0 } });
+    expect(part.comparedLeaves).toBe(1);
+  });
+
+  test("everything unreadable ⇒ comparedLeaves 0, which the caller turns into exit 3", () => {
+    const live: Record<string, unknown> = { repo: SENTINEL, rulesets: SENTINEL, counts: SENTINEL };
+    const exp: Record<string, unknown> = { repo: { a: 1 }, rulesets: [], counts: { webhooks: 0 } };
+    const part = partitionByReadability(live, exp);
+
+    expect(part.comparedLeaves).toBe(0);
+    expect(part.unreadableLive).toEqual(["counts", "repo", "rulesets"]);
+    // And the two sides are now byte-identical — which is precisely why the
+    // old code called this "no drift".
+    expect(JSON.stringify(live)).toBe(JSON.stringify(exp));
+  });
+});
+
+describe("formatReadabilityReport", () => {
+  test("names the field, the endpoint that produced it, and the remedy", () => {
+    const lines = formatReadabilityReport(
+      { unreadableLive: ["default_branch_protection"], unreadableExpected: [], comparedLeaves: 12 },
+      "Lucent-Financial-Group/Zeta",
+    ).join("\n");
+
+    expect(lines).toContain("RECORDED BUT NOT CHECKED — 1 field(s)");
+    expect(lines).toContain("default_branch_protection");
+    expect(lines).toContain("/repos/Lucent-Financial-Group/Zeta/branches/");
+    expect(lines).toContain("DRIFT_DETECTOR_PAT");
+  });
+
+  test("always states the denominator, even on a fully readable run", () => {
+    // A check that will not say how much it covered is not reporting a result.
+    const lines = formatReadabilityReport(
+      { unreadableLive: [], unreadableExpected: [], comparedLeaves: 71 },
+      "o/r",
+    ).join("\n");
+
+    expect(lines).toContain("compared 71 readable leaf value(s)");
+  });
+
+  test("distinguishes unrecorded from unverified in the wording", () => {
+    const lines = formatReadabilityReport(
+      { unreadableLive: [], unreadableExpected: ["actions_permissions"], comparedLeaves: 3 },
+      "o/r",
+    ).join("\n");
+
+    expect(lines).toContain("NOT RECORDED AT ALL");
+    expect(lines).toContain("there is no recorded value to compare against");
+  });
+});
+
+describe("parseArgs — --live-from", () => {
+  test("accepts a replay path", async () => {
+    const result = await parseArgs(["--repo", "o/r", "--live-from", "/tmp/live.json"]);
+    expect(result.kind).toBe("args");
+    if (result.kind === "args") expect(result.args.liveFrom).toBe("/tmp/live.json");
+  });
+
+  test("--live-from without value returns an error", async () => {
+    const result = await parseArgs(["--live-from"]);
+    expect(result.kind).toBe("error");
+    if (result.kind === "error") expect(result.message).toContain("--live-from requires PATH argument");
   });
 });

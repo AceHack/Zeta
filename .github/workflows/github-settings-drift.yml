@@ -10,6 +10,34 @@ name: github-settings-drift
 # alerts — not a merge gate. Resolve by refreshing the expected snapshot when
 # the GitHub-side change is intentional, or revert the setting in GitHub UI.
 #
+# WHY THIS IS STILL ADVISORY, stated rather than assumed (2026-08-25).
+#
+# The obvious next step after fixing a detector is to make it blocking. It was
+# considered and is refused for now, on evidence:
+#
+#   * The compare is GREEN against live as of 2026-08-25 — but only under an
+#     admin credential. The job below runs under `GITHUB_TOKEN`, which has no
+#     `administration` scope at all, so ~21 fields arrive unreadable and are
+#     dropped from the comparison. A required check whose coverage silently
+#     depends on which credential ran it is worse than an advisory one.
+#   * The snapshot contains fast-moving rows that no PR author controls: the
+#     workflow inventory (90 entries, changed by any merge that adds a
+#     workflow) and `counts.actions_secrets` (changed by the operator adding a
+#     secret). Required-and-red-for-reasons-outside-the-PR is the exact
+#     condition under which the next person disables the check — which would
+#     leave the repo with less protection than the advisory lane gives it.
+#
+# So the promotion is gated on two things that do not exist yet, and naming
+# them is the point of this comment: (1) DRIFT_DETECTOR_PAT wired, so coverage
+# stops depending on the credential, and (2) the compare split so the STABLE
+# security-relevant subset — rulesets incl. `bypass_actors`, branch protection,
+# `security_and_analysis` — can be required while the volatile inventory stays
+# advisory. Until both land, `continue-on-error: true` is the honest setting.
+#
+# What DID change here: the step no longer lets every non-zero outcome look
+# alike. Exit 3 (the credential read nothing, so the check DID NOT RUN) is now
+# reported as a distinct `::error::` rather than blending into drift.
+#
 # Security note (safe-pattern compliance): this workflow only consumes
 # first-party trusted context — `secrets.GITHUB_TOKEN` and
 # `github.repository` (the owner/repo string). No user-authored
@@ -84,11 +112,47 @@ jobs:
         env:
           # Both values below are first-party trusted context.
           # No user-authored input is used anywhere in this workflow.
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #
+          # ROLE: READ (repo settings). Two credentials are passed as SEPARATE
+          # env vars and selected in the shell below, deliberately NOT as
+          # `${{ secrets.A || secrets.B }}`. That `||` form is AH003's subject
+          # (audit-workflow-credential-role-separation.ts) and it is the wrong
+          # shape here for a reason worth stating: it hides WHICH credential
+          # ran, and for this tool the credential IS the coverage. The shell
+          # branch below prints the answer.
+          #
+          # The fallback is legitimate where AH003's was not: GITHUB_TOKEN can
+          # genuinely read part of this surface (workflows, environments,
+          # topics, pages), and the tool now reports by name every field it
+          # could not read instead of quietly comparing a smaller set. A
+          # degradation that announces its own scope is not a substitution.
+          DRIFT_DETECTOR_PAT: ${{ secrets.DRIFT_DETECTOR_PAT }}
+          FALLBACK_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          if [ -n "${DRIFT_DETECTOR_PAT:-}" ]; then
+            export GH_TOKEN="$DRIFT_DETECTOR_PAT"
+            echo "::notice::github-settings-drift using DRIFT_DETECTOR_PAT (admin-read); full field coverage expected."
+          else
+            export GH_TOKEN="$FALLBACK_TOKEN"
+            echo "::warning::github-settings-drift using GITHUB_TOKEN — it holds no 'administration' scope, so the admin-only fields (branch protection, actions permissions, CodeQL default setup, security_and_analysis, merge settings) are RECORDED IN-TREE AND NOT CHECKED by this run. The field list is printed below. FIX (operator): set repository secret DRIFT_DETECTOR_PAT to a fine-grained PAT with Administration/Secrets/Variables/Webhooks read on this repo (081KQ8P5D0008QG0R000JHD7AB)."
+          fi
           bun src/Core.TypeScript/hygiene/check-github-settings-drift.ts --repo "$GH_REPO"
+          rc=$?
+          case "$rc" in
+            0) echo "::notice::github-settings settings match the committed record across every field this credential could read" ;;
+            1) echo "::warning::github-settings DRIFT — live differs from src/Core.TypeScript/hygiene/github-settings.expected.json" ;;
+            2) echo "::error::github-settings check ERRORED — tooling or input failure; no verdict" ;;
+            3) echo "::error::github-settings check INDETERMINATE — the credential could read NOTHING, so ZERO fields were compared. This check DID NOT RUN; it did not pass." ;;
+            *) echo "::error::github-settings check unexpected exit $rc" ;;
+          esac
+          # Advisory lane: surface the signal, never block the merge. The exit
+          # code is preserved in the annotations above rather than in the step
+          # status, because `continue-on-error` erases the distinction between
+          # 1, 2 and 3 in the checks list — and 3 is the one that must not be
+          # mistaken for either of the others.
+          exit 0
 
   # ---------------------------------------------------------------------------
   # Ruleset reconciliation — the DETECT (plan) half only.

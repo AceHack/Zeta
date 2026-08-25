@@ -16,12 +16,36 @@
 // pre-commit hooks are all *already* declarative in-tree — no need to
 // snapshot them. This script covers the click-ops surfaces:
 //   - repo-level toggles (merge methods, security-and-analysis, ...)
-//   - rulesets + their rule contents
+//   - rulesets + their rule contents + THEIR BYPASS ACTORS
 //   - classic branch protection on default branch
 //   - Actions permissions + Actions variables (names + values, NOT secrets)
 //   - environments (names + protection rule types)
 //   - GitHub Pages config
 //   - CodeQL default-setup state
+//
+// TWO DEFECTS THIS FILE USED TO HAVE, both of the same class — a record that
+// looks complete and is not:
+//
+//   1. `bypass_actors` WAS NOT CAPTURED AT ALL. It is the single most
+//      safety-relevant field on a ruleset: it names who may merge past the
+//      rule. A drift detector blind to it cannot see the change that matters
+//      most — and on 2026-08-13T21:50:54Z this repository acquired
+//      `{RepositoryRole 5 (admin), bypass_mode: pull_request}` on ruleset
+//      16134995 "CI Gate" with nothing in-tree recording it. Captured now.
+//
+//   2. LIST ENDPOINTS WERE READ UNPAGINATED. `/actions/workflows` returned
+//      the first 30 of 90 workflows and the snapshot recorded those 30 as if
+//      they were all of them. Two thirds of the workflow inventory — every
+//      one of which could be `disabled_manually` — was outside the detector's
+//      field of view, and the truncation was silent: the file looked whole.
+//      All list reads now go through `ghApiPaginatedItems`, which uses
+//      `--paginate --slurp` and projects in TypeScript (gh refuses `--slurp`
+//      together with `--jq`, so the projection cannot stay in jq).
+//
+// Fields the running credential cannot read are recorded IN BAND as
+// `{"_skipped":"insufficient-token-scope"}` rather than omitted, and
+// `unreadablePaths()` enumerates them for the caller. Omission would make a
+// weak-token snapshot indistinguishable from a complete one.
 //
 // Exit 0 on a successful snapshot. Exit 2 on CLI-argument errors or
 // fatal API failures.
@@ -32,7 +56,109 @@ interface SpawnResult {
   readonly exitCode: number;
 }
 
-const insufficientTokenScope = { _skipped: "insufficient-token-scope" } as const;
+export const INSUFFICIENT_TOKEN_SCOPE = "insufficient-token-scope" as const;
+
+const insufficientTokenScope = { _skipped: INSUFFICIENT_TOKEN_SCOPE } as const;
+
+/**
+ * Which REST endpoint produced each snapshot field.
+ *
+ * This exists so that "field X was not readable" can be reported with the
+ * reason rather than as a bare name: a reader who is told
+ * `codeql_default_setup <- GET /repos/{repo}/code-scanning/default-setup`
+ * can look up the permission that endpoint wants. Without it the drift
+ * check can say a field is missing but not what would fix it, and
+ * "unreadable" quietly becomes a permanent state nobody can act on.
+ *
+ * Keys are snapshot paths (dot-joined), values are endpoint templates with
+ * `{repo}` left unexpanded so the map stays a constant.
+ */
+export const FIELD_SOURCE_ENDPOINT: Readonly<Record<string, string>> = {
+  repo: "GET /repos/{repo}",
+  "repo.allow_auto_merge": "GET /repos/{repo} (admin-only field)",
+  "repo.allow_merge_commit": "GET /repos/{repo} (admin-only field)",
+  "repo.allow_rebase_merge": "GET /repos/{repo} (admin-only field)",
+  "repo.allow_squash_merge": "GET /repos/{repo} (admin-only field)",
+  "repo.allow_update_branch": "GET /repos/{repo} (admin-only field)",
+  "repo.delete_branch_on_merge": "GET /repos/{repo} (admin-only field)",
+  "repo.merge_commit_message": "GET /repos/{repo} (admin-only field)",
+  "repo.merge_commit_title": "GET /repos/{repo} (admin-only field)",
+  "repo.security_and_analysis": "GET /repos/{repo} (admin-only field)",
+  "repo.squash_merge_commit_message": "GET /repos/{repo} (admin-only field)",
+  "repo.squash_merge_commit_title": "GET /repos/{repo} (admin-only field)",
+  "repo.use_squash_pr_title_as_default": "GET /repos/{repo} (admin-only field)",
+  topics: "GET /repos/{repo}/topics",
+  security: "GET /repos/{repo}/{vulnerability-alerts,automated-security-fixes,private-vulnerability-reporting}",
+  counts: "GET /repos/{repo}/{hooks,keys,actions/secrets,dependabot/secrets}",
+  rulesets: "GET /repos/{repo}/rulesets + /rulesets/{id}",
+  default_branch_protection: "GET /repos/{repo}/branches/{branch}/protection",
+  actions_permissions: "GET /repos/{repo}/actions/permissions",
+  actions_variables: "GET /repos/{repo}/actions/variables",
+  workflows: "GET /repos/{repo}/actions/workflows",
+  environments: "GET /repos/{repo}/environments",
+  pages: "GET /repos/{repo}/pages",
+  codeql_default_setup: "GET /repos/{repo}/code-scanning/default-setup",
+  "security.vulnerability_alerts_enabled": "GET /repos/{repo}/vulnerability-alerts",
+  "security.automated_security_fixes": "GET /repos/{repo}/automated-security-fixes",
+  "security.private_vulnerability_reporting": "GET /repos/{repo}/private-vulnerability-reporting",
+  autolinks: "GET /repos/{repo}/autolinks",
+  interaction_limits: "GET /repos/{repo}/interaction-limits",
+  "counts.webhooks": "GET /repos/{repo}/hooks",
+  "counts.deploy_keys": "GET /repos/{repo}/keys",
+  "counts.actions_secrets": "GET /repos/{repo}/actions/secrets",
+  "counts.dependabot_secrets": "GET /repos/{repo}/dependabot/secrets",
+};
+
+/**
+ * The credential class that reads the admin-only endpoints above.
+ *
+ * Stated as prose rather than as a check because nothing in this process can
+ * verify a token's grants without spending them. It is here so the drift
+ * report can name a remedy instead of only naming a gap.
+ */
+export const ADMIN_READ_CREDENTIAL_NOTE =
+  "GITHUB_TOKEN has no `administration` scope at all — it is not a weaker admin token, it is a " +
+  "non-admin one (see the permissions comment in .github/workflows/github-settings-drift.yml). " +
+  "Reading the admin-only endpoints needs a separate fine-grained PAT on this repository with " +
+  "Repository permissions: Administration: read (rulesets, branch protection, deploy keys, " +
+  "merge settings, security_and_analysis, Actions permissions), Secrets: read, Variables: read, " +
+  "Webhooks: read, Dependabot secrets: read. Wire it as repository secret DRIFT_DETECTOR_PAT " +
+  "(081KQ8P5D0008QG0R000JHD7AB). Configuring it is the operator's call, not this tool's.";
+
+/** Codepoint-ordinal comparator. Never `localeCompare`: a snapshot that sorts
+ *  differently per machine is not a snapshot, it is noise. */
+export function ordinal(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+export function isSkippedSentinel(v: unknown): boolean {
+  return (
+    v !== null &&
+    typeof v === "object" &&
+    "_skipped" in (v as Record<string, unknown>) &&
+    (v as Record<string, unknown>)._skipped === INSUFFICIENT_TOKEN_SCOPE
+  );
+}
+
+/**
+ * Every dot-joined path in `obj` whose value is the unreadable sentinel.
+ *
+ * Pure, so the drift check can reuse it and so it is testable without a
+ * network. Recurses into plain objects only: an array element carrying a
+ * sentinel would mean a partially-read list, which this snapshot never
+ * produces (a list read either succeeds whole or is a sentinel whole).
+ */
+export function unreadablePaths(obj: unknown, prefix = ""): string[] {
+  if (obj === null || typeof obj !== "object" || Array.isArray(obj)) return [];
+  const out: string[] = [];
+  for (const key of Object.keys(obj as Record<string, unknown>).sort(ordinal)) {
+    const path = prefix.length > 0 ? `${prefix}.${key}` : key;
+    const val = (obj as Record<string, unknown>)[key];
+    if (isSkippedSentinel(val)) out.push(path);
+    else out.push(...unreadablePaths(val, path));
+  }
+  return out;
+}
 
 const adminLimitedRepoNullFields = [
   "allow_auto_merge",
@@ -129,6 +255,87 @@ async function ghApiSkip403(path: string, jqFilter?: string): Promise<string | n
     throw new Error(`gh api ${path} failed (exit ${r.exitCode}): ${r.stderr.trim()}`);
   }
   return r.stdout.trim();
+}
+
+/**
+ * Read a LIST endpoint across ALL of its pages.
+ *
+ * `gh api --paginate --slurp` returns an array whose elements are the raw
+ * page bodies; gh refuses `--slurp` together with `--jq`, so the projection
+ * happens in TypeScript below rather than in a jq filter. That refusal is
+ * the reason the old code read one page: it used `--jq`, and `--jq` without
+ * `--paginate` silently stops at the API default of 30 items.
+ *
+ * `pick` extracts the items from one page body: GitHub returns bare arrays
+ * for some list endpoints (`/rulesets`, `/hooks`) and `{total_count, xs}`
+ * envelopes for others (`/actions/workflows`, `/environments`).
+ *
+ * Returns `null` — never a short list — on an insufficient-token-scope 403,
+ * so the caller records the sentinel instead of an under-count. A truncated
+ * list that reads as complete is the defect this function exists to remove;
+ * re-introducing it on the error path would defeat the point.
+ */
+async function ghApiPaginatedItems(
+  path: string,
+  pick: (page: unknown) => readonly unknown[],
+): Promise<unknown[] | null> {
+  const r = await runCmd(["gh", "api", "--paginate", "--slurp", path]);
+  if (r.exitCode !== 0) {
+    if (isInsufficientTokenScope403(r.stderr)) return null;
+    if (r.stderr.includes("HTTP 404")) return null;
+    throw new Error(`gh api --paginate ${path} failed (exit ${r.exitCode}): ${r.stderr.trim()}`);
+  }
+  const pages = parseJsonSafe(r.stdout.trim(), []);
+  if (!Array.isArray(pages)) return [];
+  const items: unknown[] = [];
+  for (const page of pages) items.push(...pick(page));
+  return items;
+}
+
+/** Items of a page body that is either a bare array or an envelope `{key: []}`. */
+function pageItems(key: string): (page: unknown) => readonly unknown[] {
+  return (page: unknown): readonly unknown[] => {
+    if (Array.isArray(page)) return page;
+    if (page !== null && typeof page === "object") {
+      const inner = (page as Record<string, unknown>)[key];
+      if (Array.isArray(inner)) return inner;
+    }
+    return [];
+  };
+}
+
+function asRecord(v: unknown): Record<string, unknown> {
+  return v !== null && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
+}
+
+function str(v: unknown): string {
+  return typeof v === "string" ? v : "";
+}
+
+/**
+ * Canonical projection of one ruleset's bypass actors.
+ *
+ * Sorted ordinally on the whole triple so the snapshot is byte-stable: the
+ * API does not promise an order, and an unstable order would make every run
+ * report drift, which is how a detector gets muted.
+ */
+export function normalizeBypassActors(raw: unknown): Array<Record<string, unknown>> {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((a) => {
+      const o = asRecord(a);
+      return {
+        actor_id: typeof o.actor_id === "number" ? o.actor_id : null,
+        actor_type: str(o.actor_type),
+        bypass_mode: str(o.bypass_mode),
+      };
+    })
+    .sort((x, y) =>
+      ordinal(
+        `${x.actor_type}\u0000${String(x.actor_id)}\u0000${x.bypass_mode}`,
+        `${y.actor_type}\u0000${String(y.actor_id)}\u0000${y.bypass_mode}`,
+      ),
+    );
 }
 
 async function ghApiOptionalScopeAware(path: string, jqFilter?: string): Promise<OptionalScopeResult> {
@@ -280,11 +487,17 @@ export async function snapshot(repo: string): Promise<string> {
   }
 
   // Autolinks
-  const autolinksRaw = await ghApiOptional(
-    `/repos/${repo}/autolinks`,
-    "[.[] | {key_prefix, url_template, is_alphanumeric}] | sort_by(.key_prefix)"
-  );
-  const autolinks = parseJsonSafe(autolinksRaw, []);
+  const autolinkItems = await ghApiPaginatedItems(`/repos/${repo}/autolinks`, pageItems("autolinks"));
+  const autolinks =
+    autolinkItems === null
+      ? insufficientTokenScope
+      : autolinkItems
+          .map((a) => ({
+            is_alphanumeric: asRecord(a).is_alphanumeric ?? null,
+            key_prefix: str(asRecord(a).key_prefix),
+            url_template: str(asRecord(a).url_template),
+          }))
+          .sort((a, b) => ordinal(a.key_prefix, b.key_prefix));
 
   // Vulnerability alerts: 204 = enabled, 404 = disabled
   const vulnAlertsResult = await runCmd(["gh", "api", `/repos/${repo}/vulnerability-alerts`]);
@@ -301,19 +514,31 @@ export async function snapshot(repo: string): Promise<string> {
     );
   }
 
-  // Rulesets
-  const rulesetIdsRaw = await ghApiOptional(`/repos/${repo}/rulesets`, "[.[].id] | sort | .[]");
+  // Rulesets. Paginated: the list endpoint defaults to 30 and a repository
+  // that crosses that line would silently stop recording its later rulesets.
+  //
+  // `bypass_actors` is projected on every ruleset. It is the field that says
+  // WHO MAY MERGE PAST THE RULE, and it was absent from this snapshot until
+  // 2026-08-25 — so for the 12 days after an admin bypass was added to "CI
+  // Gate" the committed record showed a gate with no exceptions. An empty
+  // array is a real, load-bearing value here ("nobody bypasses"), so it is
+  // always emitted rather than omitted when empty.
+  const rulesetListItems = await ghApiPaginatedItems(`/repos/${repo}/rulesets`, pageItems("rulesets"));
   const rulesetDetails: unknown[] = [];
-  if (rulesetIdsRaw !== null && rulesetIdsRaw.length > 0) {
-    const ids = rulesetIdsRaw.split("\n").filter(s => s.trim().length > 0);
+  if (rulesetListItems !== null) {
+    const ids = rulesetListItems
+      .map((r) => asRecord(r).id)
+      .filter((id): id is number => typeof id === "number")
+      .sort((a, b) => a - b);
     for (const rid of ids) {
       const oneRaw = await ghApi(
         `/repos/${repo}/rulesets/${rid}`,
-        "{id, name, target, enforcement, conditions, rules: [.rules[] | {type, parameters}]}"
+        "{id, name, target, enforcement, bypass_actors, conditions, rules: [.rules[] | {type, parameters}]}"
       );
       const one = parseJsonSafe(oneRaw);
       if (one !== null) {
-        rulesetDetails.push(one);
+        const o = asRecord(one);
+        rulesetDetails.push({ ...o, bypass_actors: normalizeBypassActors(o.bypass_actors) });
       }
     }
   }
@@ -343,25 +568,40 @@ export async function snapshot(repo: string): Promise<string> {
 
   // Actions variables — requires admin token; falls back to a sentinel when the
   // GITHUB_TOKEN in CI lacks that scope (HTTP 403).
-  const actionsVarsRaw = await ghApiOptional(
-    `/repos/${repo}/actions/variables`,
-    "[.variables[]? | {name, value}] | sort_by(.name)"
-  );
-  const actionsVars = actionsVarsRaw === null ? insufficientTokenScope : parseJsonSafe(actionsVarsRaw, []);
+  const actionsVarItems = await ghApiPaginatedItems(`/repos/${repo}/actions/variables`, pageItems("variables"));
+  const actionsVars =
+    actionsVarItems === null
+      ? insufficientTokenScope
+      : actionsVarItems
+          .map((v) => ({ name: str(asRecord(v).name), value: asRecord(v).value ?? null }))
+          .sort((a, b) => ordinal(a.name, b.name));
 
-  // Workflows
-  const workflowsRaw = await ghApi(
-    `/repos/${repo}/actions/workflows`,
-    "[.workflows[] | {name, state, path}] | sort_by(.name, .path)"
-  );
-  const workflows = parseJsonSafe(workflowsRaw, []);
+  // Workflows. PAGINATED — this endpoint returns 30 per page and this repo has
+  // 90, so the previous single-page read recorded exactly one third of the
+  // inventory and the file gave no sign of it. Every workflow carries a
+  // `state`, and `disabled_manually` on a workflow outside page 1 was
+  // undetectable: a check that stops running, with a record that cannot
+  // notice. Same class as a required check that never ran reading as green.
+  const workflowItems = await ghApiPaginatedItems(`/repos/${repo}/actions/workflows`, pageItems("workflows"));
+  const workflows =
+    workflowItems === null
+      ? insufficientTokenScope
+      : workflowItems
+          .map((w) => ({ name: str(asRecord(w).name), path: str(asRecord(w).path), state: str(asRecord(w).state) }))
+          .sort((a, b) => ordinal(a.name, b.name) || ordinal(a.path, b.path));
 
-  // Environments
-  const envsRaw = await ghApi(
-    `/repos/${repo}/environments`,
-    "[.environments[]? | {name, protection_rule_types: [.protection_rules[]?.type] | sort}] | sort_by(.name)"
-  );
-  const envs = parseJsonSafe(envsRaw, []);
+  // Environments (paginated).
+  const envItems = await ghApiPaginatedItems(`/repos/${repo}/environments`, pageItems("environments"));
+  const envs =
+    envItems === null
+      ? insufficientTokenScope
+      : envItems
+          .map((e) => {
+            const rules = asRecord(e).protection_rules;
+            const types = Array.isArray(rules) ? rules.map((r) => str(asRecord(r).type)).sort(ordinal) : [];
+            return { name: str(asRecord(e).name), protection_rule_types: types };
+          })
+          .sort((a, b) => ordinal(a.name, b.name));
 
   // Pages (optional)
   const pagesRaw = await ghApiOptional(`/repos/${repo}/pages`, "{source, build_type, https_enforced, public}");
@@ -379,13 +619,21 @@ export async function snapshot(repo: string): Promise<string> {
   // Counts — these admin-level endpoints fall back to a sentinel when the
   // GITHUB_TOKEN in CI lacks that scope (HTTP 403). Other errors remain fatal
   // so transient API failures are not silently hidden from the drift check.
-  const webhooksCountRaw = await ghApiSkip403(`/repos/${repo}/hooks`, "length");
-  const deployKeysCountRaw = await ghApiSkip403(`/repos/${repo}/keys`, "length");
-  const actionsSecretsCountRaw = await ghApiSkip403(`/repos/${repo}/actions/secrets`, ".secrets | length");
-  const dependabotSecretsCountRaw = await ghApiOptional(`/repos/${repo}/dependabot/secrets`, ".secrets | length");
+  //
+  // These are COUNTS, not names. A count cannot distinguish a secret being
+  // rotated from a secret being replaced by an attacker's, so the invariant
+  // this row carries is only "no secret was added or removed". Recorded as
+  // the limit it is rather than left to be read as coverage it does not have.
+  //
+  // `.secrets | length` on an unpaginated read counted at most 30; the
+  // envelope's own `total_count` is exact in one call, so counts use it.
+  const webhookItems = await ghApiPaginatedItems(`/repos/${repo}/hooks`, pageItems("hooks"));
+  const deployKeyItems = await ghApiPaginatedItems(`/repos/${repo}/keys`, pageItems("keys"));
+  const actionsSecretsCountRaw = await ghApiSkip403(`/repos/${repo}/actions/secrets`, ".total_count");
+  const dependabotSecretsCountRaw = await ghApiOptional(`/repos/${repo}/dependabot/secrets`, ".total_count");
 
-  const webhooksCount = webhooksCountRaw === null ? insufficientTokenScope : (parseInt(webhooksCountRaw, 10) || 0);
-  const deployKeysCount = deployKeysCountRaw === null ? insufficientTokenScope : (parseInt(deployKeysCountRaw, 10) || 0);
+  const webhooksCount = webhookItems === null ? insufficientTokenScope : webhookItems.length;
+  const deployKeysCount = deployKeyItems === null ? insufficientTokenScope : deployKeyItems.length;
   const actionsSecretsCount = actionsSecretsCountRaw === null ? insufficientTokenScope : (parseInt(actionsSecretsCountRaw, 10) || 0);
   const dependabotSecretsCount = parseInt(dependabotSecretsCountRaw ?? "0", 10) || 0;
 
@@ -428,6 +676,23 @@ export async function main(argv: readonly string[]): Promise<number> {
   try {
     const output = await snapshot(parsed.args.repo);
     process.stdout.write(output + "\n");
+
+    // Say out loud what this run could NOT read. A snapshot written by a weak
+    // token is a partial record; committing one without saying so is how
+    // "recorded and unchecked" degrades into "absent and unchecked" with a
+    // green check on top.
+    const unreadable = unreadablePaths(parseJsonSafe(output, {}));
+    if (unreadable.length > 0) {
+      process.stderr.write(
+        `snapshot-github-settings: ${unreadable.length} field(s) NOT readable with this credential ` +
+          `(recorded in band as {"_skipped":"${INSUFFICIENT_TOKEN_SCOPE}"}):\n`,
+      );
+      for (const path of unreadable) {
+        const src = FIELD_SOURCE_ENDPOINT[path] ?? FIELD_SOURCE_ENDPOINT[path.split(".")[0] ?? ""] ?? "(endpoint unmapped)";
+        process.stderr.write(`  ${path}  <-  ${src.replace("{repo}", parsed.args.repo)}\n`);
+      }
+      process.stderr.write(`${ADMIN_READ_CREDENTIAL_NOTE}\n`);
+    }
     return 0;
   } catch (err: unknown) {
     process.stderr.write(`error: snapshot failed: ${err instanceof Error ? err.message : String(err)}\n`);

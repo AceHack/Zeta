@@ -1,6 +1,16 @@
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
-import { isInsufficientTokenScope403, parseArgs, parseJsonSafe } from "./snapshot-github-settings";
+import {
+  INSUFFICIENT_TOKEN_SCOPE,
+  isInsufficientTokenScope403,
+  normalizeBypassActors,
+  parseArgs,
+  parseJsonSafe,
+  unreadablePaths,
+} from "./snapshot-github-settings";
 
 const NULL_RESOLVER = async (): Promise<string> => "";
 
@@ -152,5 +162,135 @@ describe("parseArgs", () => {
     delete process.env["GH_REPO"];
     const r3 = await parseArgs([], resolver);
     expect(r3.kind === "args" && r3.args.repo).toBe("resolver/zeta");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// bypass_actors — the field the snapshot did not capture until 2026-08-25.
+//
+// It names WHO MAY MERGE PAST A RULE. A drift detector blind to it cannot see
+// the change that matters most on a ruleset, which is why these are the first
+// tests in this block and why the committed-record assertions below are
+// phrased as refusals rather than as expectations.
+// ---------------------------------------------------------------------------
+
+describe("normalizeBypassActors", () => {
+  test("projects the three fields the API returns", () => {
+    expect(
+      normalizeBypassActors([{ actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request", extra: 1 }]),
+    ).toEqual([{ actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request" }]);
+  });
+
+  test("sorts ordinally so the snapshot is byte-stable across runs", () => {
+    // The API promises no order. An unstable order would make every run report
+    // drift, and a detector that always cries drift is a detector that gets
+    // muted — the failure this sort exists to prevent.
+    const a = normalizeBypassActors([
+      { actor_id: 2, actor_type: "Team", bypass_mode: "always" },
+      { actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request" },
+      { actor_id: 1, actor_type: "OrganizationAdmin", bypass_mode: "always" },
+    ]);
+    const b = normalizeBypassActors([
+      { actor_id: 1, actor_type: "OrganizationAdmin", bypass_mode: "always" },
+      { actor_id: 2, actor_type: "Team", bypass_mode: "always" },
+      { actor_id: 5, actor_type: "RepositoryRole", bypass_mode: "pull_request" },
+    ]);
+    expect(a).toEqual(b);
+    expect(a.map((x) => x.actor_type)).toEqual(["OrganizationAdmin", "RepositoryRole", "Team"]);
+  });
+
+  test("an EMPTY list is a value, not an absence", () => {
+    // "nobody may bypass this ruleset" is the strongest statement a ruleset
+    // makes. Collapsing it to `undefined` would make the safe case and the
+    // unrecorded case identical in the committed file.
+    expect(normalizeBypassActors([])).toEqual([]);
+  });
+
+  test("a missing or malformed field yields [], never a throw", () => {
+    expect(normalizeBypassActors(undefined)).toEqual([]);
+    expect(normalizeBypassActors(null)).toEqual([]);
+    expect(normalizeBypassActors("nope")).toEqual([]);
+    expect(normalizeBypassActors([null])).toEqual([{ actor_id: null, actor_type: "", bypass_mode: "" }]);
+  });
+});
+
+describe("unreadablePaths", () => {
+  test("finds sentinels at top level and nested, ordinally sorted", () => {
+    expect(
+      unreadablePaths({
+        zeta: { _skipped: INSUFFICIENT_TOKEN_SCOPE },
+        counts: { webhooks: { _skipped: INSUFFICIENT_TOKEN_SCOPE }, deploy_keys: 0 },
+        alpha: 1,
+      }),
+    ).toEqual(["counts.webhooks", "zeta"]);
+  });
+
+  test("returns [] when everything was readable", () => {
+    expect(unreadablePaths({ a: 1, b: { c: [1, 2] } })).toEqual([]);
+  });
+
+  test("does not mistake an unrelated _skipped value for the sentinel", () => {
+    expect(unreadablePaths({ a: { _skipped: "some-other-reason" } })).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE COMMITTED RECORD ITSELF.
+//
+// These assert properties of `github-settings.expected.json` rather than of
+// any function, because the defect class they guard is a FILE that looks
+// complete and is not. Both fail against the record as it stood on
+// origin/main at ba92c40373.
+// ---------------------------------------------------------------------------
+
+describe("github-settings.expected.json — the record must not lie by omission", () => {
+  const EXPECTED_PATH = join(import.meta.dir, "github-settings.expected.json");
+  const record = JSON.parse(readFileSync(EXPECTED_PATH, "utf8")) as Record<string, unknown>;
+
+  test("every recorded ruleset carries bypass_actors", () => {
+    const rulesets = record["rulesets"] as Array<Record<string, unknown>>;
+    expect(Array.isArray(rulesets)).toBe(true);
+    expect(rulesets.length).toBeGreaterThan(0);
+    for (const rs of rulesets) {
+      expect(
+        Array.isArray(rs["bypass_actors"]),
+        `ruleset ${String(rs["id"])} "${String(rs["name"])}" has no bypass_actors — ` +
+          "the record cannot say who may merge past it",
+      ).toBe(true);
+    }
+  });
+
+  test("the record contains NO insufficient-token-scope sentinel", () => {
+    // This is the guard on the REFUSED fix. When the drift check goes red, the
+    // cheapest way to make it green is to re-snapshot with the CI token: every
+    // admin-only field becomes a sentinel, the checker drops sentinels from
+    // both sides, and the diff is empty. That turns "recorded and unchecked"
+    // into "absent and unchecked" and calls it success.
+    //
+    // So the committed record is required to have been produced by a
+    // credential that could read everything. If this test is red, the fix is
+    // to re-snapshot with an admin credential — never to relax this test.
+    const sentinels = unreadablePaths(record);
+    expect(sentinels, `record was captured by a credential that could not read: ${sentinels.join(", ")}`).toEqual([]);
+  });
+
+  test("the recorded workflow inventory is not truncated below the in-tree one", () => {
+    // `/actions/workflows` pages at 30. Before pagination was fixed this file
+    // recorded 30 of 90 workflows and looked whole.
+    //
+    // Stated limit, so nobody reads more into this than it carries: `>=`, not
+    // `===`. GitHub keeps listing a workflow after its file is deleted, and a
+    // PR that ADDS a workflow file cannot re-snapshot (the workflow does not
+    // exist in the API until the PR merges). So the two sets legitimately
+    // differ at the margin; what may NOT happen is the record falling below
+    // the committed inventory, which is exactly what truncation causes.
+    const workflowFiles = readdirSync(join(import.meta.dir, "..", "..", "..", ".github", "workflows")).filter((f) =>
+      f.endsWith(".yml") || f.endsWith(".yaml"),
+    );
+    const recorded = record["workflows"] as unknown[];
+    expect(
+      recorded.length,
+      `record lists ${recorded.length} workflows; ${workflowFiles.length} workflow files are committed`,
+    ).toBeGreaterThanOrEqual(workflowFiles.length);
   });
 });

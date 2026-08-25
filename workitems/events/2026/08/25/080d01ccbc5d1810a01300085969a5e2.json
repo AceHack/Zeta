@@ -1,0 +1,14 @@
+{
+  "id": "080d01ccbc5d1810a01300085969a5e2",
+  "at": "2026-08-25T15:43:48.131Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WSF2X2087G0R003F18DDJ",
+    "type": "bug",
+    "title": "github-settings record was wrong in the permissive direction: CI Gate recorded disabled while active, bypass_actors never captured, workflow list truncated at 30 of 90",
+    "slug": "github-settings-record-was-wrong-in-the-permissive-direction",
+    "priority": "P2",
+    "filename": "081M0WSF2X2087G0R003F18DDJ-github-settings-record-was-wrong-in-the-permissive-direction.md"
+  }
+}
