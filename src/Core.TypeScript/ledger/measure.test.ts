@@ -23,6 +23,8 @@ const spec = (over: Partial<MeasureSpec> = {}): MeasureSpec => ({
   sign: "reduced",
   because: "a lying peer could write any slot of any block; the address is no longer attacker-supplied",
   witness: "ULT-36 fails without the fix",
+  provenance: "directed",
+  provenanceAttestedBy: "kenji",
   ...over,
 });
 
@@ -196,4 +198,38 @@ test("slugify is ordinal, hyphenated and bounded", () => {
   expect(slugify("Derive Block Address From Seq!")).toBe("derive-block-address-from-seq");
   expect(slugify("a".repeat(200)).length).toBeLessThanOrEqual(60);
   expect(slugify("---")).toBe("");
+});
+
+// ── it REFUSES an entry that cannot answer the free-vs-directed question ───────────────────────
+//
+// These two refusals exist so that the ΔU-per-unit-of-free-time comparison is answerable at all.
+// See docs/research/2026-08-25-free-time-allocation-is-a-residual-uncertainty-not-a-constant.md §2:
+// before this field, the ledger could not separate the two populations even in principle.
+
+test("refuses a missing provenance — the free-vs-directed split must be recordable", () => {
+  const r = validateMeasure(spec({ provenance: "" as never }), known);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.code).toBe("unattributed");
+});
+
+test("refuses an invalid provenance value rather than coercing it", () => {
+  const r = validateMeasure(spec({ provenance: "whenever-i-felt-like-it" as never }), known);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.code).toBe("unattributed");
+});
+
+test("refuses an unattributed provenance attribution", () => {
+  const r = validateMeasure(spec({ provenanceAttestedBy: "   " }), known);
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.code).toBe("unattested-provenance");
+});
+
+test("BOTH provenance values are accepted — the control, so the check is not a rubber stamp", () => {
+  expect(validateMeasure(spec({ provenance: "directed" }), known).ok).toBe(true);
+  expect(validateMeasure(spec({ provenance: "self-directed" }), known).ok).toBe(true);
+});
+
+test("the rendered entry carries the provenance AND its attestor, so a self-attestation is legible", () => {
+  const rendered = renderEntry(spec({ provenance: "self-directed", provenanceAttestedBy: "otto" }));
+  expect(rendered).toContain("- **provenance:** self-directed (attested by otto)");
 });

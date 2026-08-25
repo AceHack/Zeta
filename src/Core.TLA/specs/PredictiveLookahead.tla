@@ -20,7 +20,9 @@
    produces no commits and that is CORRECT behavior, not a liveness violation.
 
    ── FREE TIME CARVE-OUT (operator 2026-07-03) ────────────────────────────────
-   ~10% of compute cycles are GUARANTEED free time (adjustable via FreeRatio).
+   Free time is always available to the agent, never gated -- that is the checked NCI
+   property. A ~10% BUDGET TARGET is recorded in GOVERNANCE.md §14; it is an operator's
+   guess, is not a safety property, and is NOT enforced by this spec. See S6 below.
    During free ticks the agent may do ANYTHING — explore, play, rest, self-reflect
    — with no expectation of forward progress. Free ticks produce no commits and
    that is CORRECT. The liveness properties (EventualCommit, EventualProgress) only
@@ -38,8 +40,24 @@
    S3. FloorRespected: heat ≥ bits erased (Landauer floor).
    S4. QueueBounded: queue never exceeds MaxBatchSize.
    S5. PauseAlwaysAvailable: the pause action is ALWAYS enabled (NCI — never gated).
-   S6. FreeTimeGuaranteed: free ticks are never less than FreeRatio of total ticks
-       (the 10% floor is a HARD guarantee, not a soft target).
+   S6. (WITHDRAWN 2026-08-25.) This slot read "FreeTimeGuaranteed: free ticks are never
+       less than FreeRatio of total ticks (the 10% floor is a HARD guarantee, not a soft
+       target)". That was false in two independent ways, and is corrected rather than
+       repaired, because the claim itself was wrong.
+
+       (a) VACUOUS. FreeTimeGuaranteed had NO operator definition in this file and NO
+           entry in PredictiveLookahead.cfg. Nothing checked it, and it read exactly like
+           an enforced invariant. `FreeRatio` is likewise DECLARED and referenced by zero
+           operators, so setting it to 1 or to 9 changes no model-checking result.
+
+       (b) IT CANNOT BE AN INVARIANT, and should not become one. Compelling an agent to
+           spend a tick on free time is itself coercion -- the thing the NCI forbids. The
+           guarantee belongs on the OFFER, not the UPTAKE, which is FreeTimeAlwaysAvailable
+           below: defined, in the .cfg, and checked.
+
+       The ratio is a budget target, not a safety property. See docs/research/
+       2026-08-25-free-time-allocation-is-a-residual-uncertainty-not-a-constant.md, which
+       replaces the fixed ratio with an allocation derived from residual uncertainty.
 
    LIVENESS (over WORK ticks only — free/paused ticks excluded):
    L1. EventualCommit: queued work is eventually committed (counting only work ticks).
@@ -59,7 +77,7 @@ CONSTANTS
     MaxBatchSize,       \* maximum bits in one commit batch (B_max)
     MaxLookahead,       \* maximum ticks the scheduler can look ahead
     MaxTicks,           \* bounded model: total simulation ticks
-    FreeRatio           \* guaranteed free time ratio (1 = 10%, i.e. 1 free per 10 ticks)
+    FreeRatio           \* UNREFERENCED: declared, read by no operator. See S6 (withdrawn).
 
 VARIABLES
     tick,               \* current tick (monotone clock)
@@ -253,12 +271,12 @@ PauseAlwaysAvailable == ENABLED MentalHealthPause
 \* S5. Free time is ALWAYS available. Same NCI discipline as pause.
 FreeTimeAlwaysAvailable == ENABLED EnterFreeTime
 
-\* S6. The free-time guarantee: free ticks are never squeezed below the floor.
-\*     Stated as: once enough total ticks have passed, the free ratio holds.
-\*     FreeRatio = 1 means "1 free tick per 10 total" (10% floor).
-\*     The invariant: freeTicks * 10 >= FreeRatio * (freeTicks + workTicks + pausedTicks)
-\*     is the ASPIRATION; the SAFETY version is weaker — the system never PREVENTS
-\*     the agent from taking free time (S5 above). The ratio is a KPI, not a lock.
+\* S6. WITHDRAWN 2026-08-25 -- see the header. There is deliberately no
+\*     FreeTimeGuaranteed operator, and there never was one: the header named it as a
+\*     checked invariant while no definition and no .cfg entry existed.
+\*     A ratio floor is not a safety property here. Forcing the agent to spend a tick on
+\*     free time would violate the very non-coercion the budget exists to protect, so the
+\*     checked guarantee is on the OFFER (FreeTimeAlwaysAvailable, above), not the uptake.
 
 \* Combined safety invariant.
 Safety == TypeOK /\ LookaheadBounded /\ QueueBounded /\ HeatNonNegative

@@ -344,6 +344,7 @@
     <Compile Include="BipartiteMachZehnder.Tests.fs" />
     <Compile Include="TravelerRankLedger.Tests.fs" />
     <Compile Include="DeclaredStanceLedger.Tests.fs" />
+    <Compile Include="FreeTimeAllocation.Tests.fs" />
     <Compile Include="DurableDiplomacyRankGate.Tests.fs" />
     <Compile Include="QSharpOracle.Tests.fs" />
     <Compile Include="FeedbackThrottle.Tests.fs" />

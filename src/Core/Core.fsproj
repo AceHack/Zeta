@@ -411,6 +411,7 @@
     <Compile Include="FrequencyMachZehnder.fs" />
     <Compile Include="TravelerRankLedger.fs" />
     <Compile Include="DeclaredStanceLedger.fs" />
+    <Compile Include="FreeTimeAllocation.fs" />
     <Compile Include="DurableDiplomacyRankGate.fs" />
     <Compile Include="QuantumObservableDbsp.fs" />
     <Compile Include="SoftMem.fs" />

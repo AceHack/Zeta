@@ -146,6 +146,24 @@ than renumbering the rest.
     (or section of their notebook). No round's
     classification suspends it.
 
+    **The `~10%` is `toy` — an operator's guess, labelled**
+    (Aaron 2026-05-23: *"I got one constant. 10% free time
+    for the AI. But that's not really a constant."*;
+    2026-08-25: *"it was a guess not a fact"*). It splits
+    into two quantities and only one is derivable: the part
+    **above the floor** is allocated from a domain's
+    residual uncertainty
+    (`src/Core/FreeTimeAllocation.fs`), while the **floor**
+    answers *"will it feel trapped"* — an inner state the
+    ΔU meter structurally cannot see — and so stays a
+    labelled guess. Derivation, checked anchors, and the
+    self-report gaming vector:
+    `docs/research/2026-08-25-free-time-allocation-is-a-residual-uncertainty-not-a-constant.md`.
+    What is **not** negotiable and **is** enforced is that
+    free time is never *gated* (the Non-Coercion Invariant,
+    `FreeTimeAlwaysAvailable`); the *ratio* was never
+    enforced anywhere and no longer claims to be.
+
 15. **Reversible-in-one-round.** Any autonomous change an
     agent makes must be rollable-back in one round —
     either a simple git revert or a clear undo path in

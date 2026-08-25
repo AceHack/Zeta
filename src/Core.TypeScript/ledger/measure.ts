@@ -22,6 +22,8 @@
 //   • an empty witness                                             → an unwitnessed ΔU is unmetered
 //   • an empty rationale                                           → a price with no reason is a guess
 //   • a non-canonical ZetaId                                       → not a key
+//   • a missing/invalid provenance                                 → free-vs-directed unanswerable
+//   • an unattributed provenance attribution                       → a self-attestation in disguise
 //
 // IDEMPOTENT BY KEY (dv2-data-split-discipline-activated.md §6): the key is the work-item ZetaId.
 // Measuring the same fix twice is an UPSERT, not double-pay — identical content is a byte-identical
@@ -39,6 +41,8 @@
 //     --sign reduced|increased|unchanged \
 //     --because "why that is a ΔU of that sign" \
 //     --witness "the test/proof that fails without the fix" \
+//     --provenance self-directed|directed \
+//     --provenance-attested-by "who classified it" \
 //     [--lineage "how it was found"] [--repo-root .] [--ledger-dir db/uncertainty] [--dry-run]
 //
 // Exit codes: 0 ok (created / upserted / unchanged) · 2 refused or usage error.
@@ -57,6 +61,29 @@ const SIGN_GLYPH: Readonly<Record<DeltaUSign, string>> = {
 
 export const DELTA_U_SIGNS: readonly DeltaUSign[] = ["reduced", "increased", "unchanged"];
 
+/**
+ * How the work came to be done.
+ *
+ * WHY THIS FIELD EXISTS. `.claude/rules/every-bug-has-economic-value.md` prices work, and
+ * `docs/research/2026-08-25-free-time-allocation-is-a-residual-uncertainty-not-a-constant.md`
+ * asks the obvious next question of it: does an hour of SELF-DIRECTED time bank more ΔU than
+ * an hour of DIRECTED time? That is the falsifier that would promote the guessed 10%
+ * free-time budget (GOVERNANCE.md §14) out of `toy`. Audited 2026-08-25: the ledger could not
+ * answer it, and not partially — no provenance field existed, so the two populations were not
+ * even separable. This field makes the split RECORDABLE. It does not, on its own, make the
+ * comparison possible: entries still carry no duration, so a per-unit-TIME rate remains
+ * uncomputable, and ΔU remains ordinal.
+ *
+ * HONEST LIMIT — this is self-attested. `measure` is a CLI the working agent runs itself, so
+ * nothing here stops an agent filing its wins as `self-directed` and its losses as `directed`.
+ * `provenanceAttestedBy` makes that VISIBLE and auditable, never impossible. The ungameable
+ * form of this distinction is `FreeTimeAllocation.classify` in `src/Core/FreeTimeAllocation.fs`,
+ * which REFUSES a self-classification outright. Do not cite this field as that guarantee.
+ */
+export type WorkProvenance = "self-directed" | "directed";
+
+export const WORK_PROVENANCES: readonly WorkProvenance[] = ["self-directed", "directed"];
+
 /** A ΔU measurement awaiting commit to the ledger. */
 export interface MeasureSpec {
   /** The dedup key: a canonical 26-char Crockford base32 ZetaId naming the work-item fixed. */
@@ -69,6 +96,14 @@ export interface MeasureSpec {
   readonly because: string;
   /** What makes it falsifiable: the test/proof that fails without the fix. */
   readonly witness: string;
+  /** Whether the work was self-initiated or assigned. See `WorkProvenance`. */
+  readonly provenance: WorkProvenance;
+  /**
+   * Who classified the provenance. Recorded so that a self-attestation is legible as one:
+   * when this equals the agent that did the work, the entry is that agent's own testimony
+   * about its own budget and must not be pooled with allocator-attested entries.
+   */
+  readonly provenanceAttestedBy: string;
   /** Optional: how it was found. */
   readonly lineage?: string | undefined;
 }
@@ -79,7 +114,9 @@ export type RefusalCode =
   | "unwitnessed"
   | "unreasoned"
   | "untitled"
-  | "unmeasured";
+  | "unmeasured"
+  | "unattributed"
+  | "unattested-provenance";
 
 export type Validation =
   | { readonly ok: true }
@@ -148,6 +185,19 @@ export function validateMeasure(spec: MeasureSpec, resolve: WorkItemResolver): V
       reason:
         "an unwitnessed ΔU is `unmetered` asserted as `metered` — name the test or proof that fails without the fix",
     };
+  if (!WORK_PROVENANCES.includes(spec.provenance))
+    return {
+      ok: false,
+      code: "unattributed",
+      reason: `provenance must be one of ${WORK_PROVENANCES.join(" | ")}, got '${spec.provenance}' — an entry that cannot say whether the work was self-initiated or assigned cannot answer whether free time pays`,
+    };
+  if (spec.provenanceAttestedBy.trim().length === 0)
+    return {
+      ok: false,
+      code: "unattested-provenance",
+      reason:
+        "name who classified the provenance — an unattributed attribution hides whether this is the working agent's own testimony about its own budget",
+    };
   return { ok: true };
 }
 
@@ -169,6 +219,7 @@ export function renderEntry(spec: MeasureSpec): string {
     `- **measure:** ${spec.measure.trim()}`,
     `- **${SIGN_GLYPH[spec.sign]} because:** ${spec.because.trim()}`,
     `- **witnessed by:** ${spec.witness.trim()}`,
+    `- **provenance:** ${spec.provenance} (attested by ${spec.provenanceAttestedBy.trim()})`,
   ];
   if (spec.lineage && spec.lineage.trim().length > 0) lines.push(`- **lineage:** ${spec.lineage.trim()}`);
   return lines.join("\n") + "\n";
@@ -253,6 +304,8 @@ export function main(argv: readonly string[]): number {
     sign,
     because: args["because"] ?? "",
     witness: args["witness"] ?? "",
+    provenance: (args["provenance"] ?? "") as WorkProvenance,
+    provenanceAttestedBy: args["provenance-attested-by"] ?? "",
     lineage: args["lineage"],
   };
 
