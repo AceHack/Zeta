@@ -675,6 +675,30 @@ jobs:
         # shellenv.sh wires BASH_ENV so subsequent run: steps auto-
         # source the managed shellenv. Same pattern as build-and-test
         # job above.
+        # WHY THIS LANE DECLARES A TIER (081M0K36K69087G0R003BYSCF8 applied to gate).
+        # `tools/setup/manifests/apt` carries `agda tier=standard`, and Ubuntu's
+        # `agda` transitively pulls `ghc` (79.0 MB) plus 63 `libghc-*-dev` packages:
+        # 237 MB of the 556 MB this job fetched on 2026-08-25 (job 97707217922) was
+        # Haskell that nothing in this job runs. That download is what stalled the
+        # archive mirror three times and burned the whole 420s apt budget, killing
+        # nine checks across seven PRs in one 14-minute window. Nothing in this lane
+        # touches Agda, GHC, emscripten, llvm, pandoc, r-base, podman, qemu or opam
+        # — it runs mise-provided tools only — so the tier gate that already exists
+        # subtracts them: 388 packages / 713 MiB becomes 149 / 139.7 MiB.
+        #
+        # THE BUDGET IS UNCHANGED, deliberately. 420s is a hang guard with a reasoned
+        # derivation in tools/setup/linux.sh and an audit that keeps it inside every
+        # job's timeout; the measured distribution (107 successes at median 116s, 11
+        # failures at exactly 420-421s) is bimodal, so a bigger budget only makes each
+        # hang cost more. The guard was right; the payload was wrong.
+        #
+        # SAFE BY CONSTRUCTION on the agda side: the cubical realizer already
+        # degrades — src/Core.TypeScript/ace/setup-realizers/from-agda-cubical.ts:25
+        # logs "agda not on PATH (slim tier ...); skipping" and returns success.
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts asserts this line is
+        # still here, so deleting it goes red instead of going silently expensive.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run Semgrep (floor rules only — seconds-fast floor check)
@@ -718,6 +742,12 @@ jobs:
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs semgrep (mise `pipx:semgrep` pin) and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run Semgrep (full detector set — findings are drift, not locks)
@@ -929,6 +959,12 @@ jobs:
         # currently inline-duplicated across multiple jobs;
         # extracting to a composite action is a follow-up
         # improvement candidate.
+        # tier=slim — this lane runs shellcheck (mise pin 0.11.0) and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -1388,6 +1424,12 @@ jobs:
         # memory-reference-existence-lint.yml (#1378). shellenv.sh
         # wires BASH_ENV so subsequent run: steps auto-source the
         # managed shellenv with bun on PATH.
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run check-no-conflict-markers
@@ -1441,6 +1483,12 @@ jobs:
         # memory-reference-existence-lint.yml (#1378). shellenv.sh
         # wires BASH_ENV so subsequent run: steps auto-source the
         # managed shellenv with bun on PATH.
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run check-archive-header-section33
@@ -1486,6 +1534,12 @@ jobs:
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run audit-section-33-migration-xrefs (--enforce)
@@ -1531,6 +1585,12 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs one bun hygiene script and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: ./tools/setup/install.sh
 
       - name: Run audit-tick-shard-relative-paths (--enforce --baseline)
@@ -2076,6 +2136,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-fsharp.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2117,6 +2183,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-csharp.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2158,6 +2230,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-go.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2199,6 +2277,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-python.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -2240,6 +2324,12 @@ jobs:
             ~/.cache/zeta/from-autotools-tarball/*.tgz
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # tier=slim — this lane runs `bun src/Core.TypeScript/lint/lint-rust.ts` and nothing else, so it must not
+        # fetch the 237 MB agda->ghc apt payload. Full measurement + reasoning at
+        # the `lint (semgrep)` job above; pinned by
+        # src/Core.TypeScript/ci/apt-manifest-host-tier.test.ts.
+        env:
+          ZETA_HOST_TIER: slim
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do

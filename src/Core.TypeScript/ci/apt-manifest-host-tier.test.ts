@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "bun:test";
+import { parse as parseYaml } from "yaml";
 
 // 081M0K36K69087G0R003BYSCF8 — manifests/apt is tier-gated, like manifests/brew already was.
 //
@@ -17,6 +18,40 @@ const APT_MANIFEST = join(ROOT, "tools/setup/manifests/apt");
 const BREW_MANIFEST = join(ROOT, "tools/setup/manifests/brew");
 const LINUX_SH = join(ROOT, "tools/setup/linux.sh");
 const LOW_MEMORY_WORKFLOW = join(ROOT, ".github/workflows/low-memory.yml");
+const GATE_WORKFLOW = join(ROOT, ".github/workflows/gate.yml");
+
+/**
+ * The gate.yml jobs whose whole body is a mise-provided tool (bun, shellcheck, semgrep, a
+ * language linter) and which therefore must declare `ZETA_HOST_TIER: slim` on their
+ * installer step. Without the declaration the runner auto-detects `full` and each of these
+ * lanes fetches 713 MiB of apt — 237 MB of it the `agda` row's transitive `ghc` +
+ * 63 `libghc-*-dev` — which is what stalled the archive mirror and burned the whole 420s
+ * apt budget on 2026-08-25 (job 97707217922, `lint (no conflict markers)`).
+ *
+ * Three installer jobs are deliberately ABSENT: build-and-test (whole F# suite),
+ * test-typescript-environment (zflash esp-inject) and full-verify (smoke-7-toolchains needs
+ * emscripten). They genuinely reach past slim, and pretending otherwise would trade a slow
+ * lane for a broken one. They are also where the remaining GHC exposure lives, stated here
+ * rather than left to be rediscovered: src/Core.TypeScript/cluster/runner-disk.ts:130 already
+ * reclaims `/opt/ghc` because "this tree has no Haskell source and no lane invokes `ghc`,
+ * `cabal` or `stack`" — the repo deletes the compiler from its runners and the apt manifest
+ * puts it back. Closing that needs evidence about what those three lanes actually reach for,
+ * which is a separate measurement, not a guess to make here.
+ */
+const SLIM_GATE_JOBS = [
+  "lint", //                        semgrep, via the `pipx:semgrep` mise pin
+  "lint-semgrep-drift",
+  "lint-shell", //                  shellcheck, mise pin 0.11.0
+  "lint-no-conflict-markers",
+  "lint-archive-header-section33",
+  "lint-section-33-migration-xrefs",
+  "lint-tick-shard-relative-paths",
+  "lint-fsharp",
+  "lint-csharp",
+  "lint-go",
+  "lint-python",
+  "lint-rust",
+] as const;
 
 /** Run the installer's own filter at a declared tier. Returns stdout packages + stderr skips. */
 function filterAt(tier: string, manifest = APT_MANIFEST): { packages: string[]; skips: string } {
@@ -146,6 +181,61 @@ describe("the gate is wired to the things that depend on it", () => {
     // Without this line the lane silently reverts to the full 713 MiB apt phase and the
     // budget defect comes back with nothing red to show for it.
     expect(readFileSync(LOW_MEMORY_WORKFLOW, "utf8")).toMatch(/ZETA_HOST_TIER:\s*slim/);
+  });
+
+  describe("gate.yml lint lanes declare the tier they actually need", () => {
+    interface WorkflowStep {
+      readonly run?: unknown;
+      readonly env?: Record<string, unknown>;
+    }
+    interface WorkflowJob {
+      readonly steps?: readonly WorkflowStep[];
+      readonly env?: Record<string, unknown>;
+    }
+
+    /**
+     * Every gate.yml job that runs the installer, with the tier its installer step declares
+     * (`null` when it declares none and the runner therefore auto-detects — 16 GB of runner
+     * memory resolves to `full`, which is how twelve lint lanes came to install a Haskell
+     * compiler). Read from the YAML the runner reads; nothing here restates the roster.
+     */
+    const installerJobs = (): Map<string, string | null> => {
+      const wf = parseYaml(readFileSync(GATE_WORKFLOW, "utf8")) as { jobs: Record<string, WorkflowJob> };
+      const out = new Map<string, string | null>();
+      for (const [id, job] of Object.entries(wf.jobs)) {
+        const step = (job.steps ?? []).find(
+          (s) => typeof s.run === "string" && /tools\/setup\/(install|linux)\.sh/.test(s.run),
+        );
+        if (!step) continue;
+        const declared = step.env?.ZETA_HOST_TIER ?? job.env?.ZETA_HOST_TIER;
+        out.set(id, declared === undefined || declared === null ? null : String(declared));
+      }
+      return out;
+    };
+
+    it("every job on the slim roster still declares it", () => {
+      // Delete a declaration and the lane silently reverts to the 713 MiB apt phase that
+      // stalled nine checks across seven PRs on 2026-08-25 — with nothing red to say why.
+      // That is the exact failure shape this repo refuses: a check that did not run reading
+      // as one that passed, moved one layer down into what the check had to download first.
+      const jobs = installerJobs();
+      for (const id of SLIM_GATE_JOBS) {
+        expect(jobs.has(id)).toBe(true); // the roster may not name a job that stopped installing
+        expect(jobs.get(id)).toBe("slim");
+      }
+    });
+
+    it("the roster is not vacuous — some installer job is NOT on it", () => {
+      // Negative control. A roster that had quietly grown to cover every installer job would
+      // satisfy the test above and would ALSO mean someone had put the F# suite, the zflash
+      // esp-inject tests and smoke-7-toolchains on a host with no emscripten and no mtools.
+      // "Everything is slim" must not be able to pass silently.
+      const jobs = installerJobs();
+      const roster = new Set<string>(SLIM_GATE_JOBS);
+      const offRoster = [...jobs.keys()].filter((id) => !roster.has(id));
+      expect(offRoster.length).toBeGreaterThan(0);
+      for (const id of offRoster) expect(jobs.get(id)).not.toBe("slim");
+    });
   });
 
   it("apt and brew agree on which tools are tier=standard", () => {
