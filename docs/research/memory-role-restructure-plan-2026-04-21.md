@@ -1,3 +1,50 @@
+> # SUPERSEDED — DO NOT EXECUTE
+>
+> **Superseded 2026-08-25 by the maintainer.** This plan must not be executed,
+> in whole or in part, and its four open questions must not be answered — they
+> all presuppose a premise the project has since rejected.
+>
+> **The premise is wrong.** This plan elevates a ROLE axis above personas
+> (`memory/<role>/<persona>/`). The project does not have roles; it has **hats**,
+> and the ordering is the opposite of what this document assumes:
+>
+> > *"Personas are the root of memories. Hats come on and off, and nothing
+> > should be above personas ever."* — Aaron, 2026-08-25
+>
+> **Why it cannot work, structurally.** `docs/writer-actor-routing-model.md:75`
+> quotes CLAUDE.md: *"the architect hat may be worn by any persona."* If any
+> persona may wear the architect hat, then `memory/architect/` has no stable
+> membership — a persona changing hats would have to MOVE DIRECTORIES, breaking
+> every memory path that points at it. That makes the fastest-changing attribute
+> the directory root, which inverts Data Vault 2.0: the persona is the hub, a hat
+> is a satellite. Per
+> `.claude/rules/dv2-data-split-discipline-activated.md`, *"a hub is only as
+> stable as the SCOPE of the key you chose for it"* — and a hat is the least
+> stable key available.
+>
+> **On the trigger line below.** The `Triggered by:` quote is real: Aaron did ask
+> for `memory/role/persona` on 2026-04-19. It was an early design, superseded
+> long since, and he does not recall it. It is left in place because deleting it
+> would falsify the record — but it is NOT a live requirement, and no agent
+> should treat it as one.
+>
+> **What actually went wrong, and it is worth more than the restructure.** This
+> document sat in `docs/research/` for four months carrying
+> `Status: awaiting Aaron's sign-off`. That reads to any agent scanning for work
+> as an approved-in-principle task blocked on a formality. On 2026-08-25 an
+> automated review policy approved it and execution began — `git mv` had already
+> run, with a ~260-reference search-and-replace queued behind it — without the
+> sign-off the document itself named as required.
+>
+> **A stale plan with an unresolved human gate is a landmine, not a record.** An
+> agent cannot tell a four-month-dead design from a live one when both say
+> "awaiting sign-off". If a plan is not to be executed, it must say so at the
+> top, in the first screen, where a scanning agent will see it before it reads
+> the trigger line. That is what this banner is for.
+>
+> Nothing from this plan reached `main`: no role directory exists there and
+> `memory/` remains persona-rooted. The damage was confined to a working tree.
+
 # Memory Folder Role Restructure — Design Plan
 
 **Date:** 2026-04-21
