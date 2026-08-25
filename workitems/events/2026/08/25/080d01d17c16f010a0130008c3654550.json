@@ -1,0 +1,14 @@
+{
+  "id": "080d01d17c16f010a0130008c3654550",
+  "at": "2026-08-25T18:29:47.358Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X2Z0PX087G0R000237BCR",
+    "type": "bug",
+    "title": "L1 ladder row recorded the YubiHSM as unreachable for 11 days after it became reachable",
+    "slug": "l1-ladder-row-recorded-the-yubihsm-as-unreachable-for-11-day",
+    "priority": "P2",
+    "filename": "081M0X2Z0PX087G0R000237BCR-l1-ladder-row-recorded-the-yubihsm-as-unreachable-for-11-day.md"
+  }
+}

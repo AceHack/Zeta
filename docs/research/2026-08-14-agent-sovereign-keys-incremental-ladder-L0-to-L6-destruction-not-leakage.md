@@ -662,13 +662,70 @@ $ bun tools/setup/persona-keys/frost-hardware-probe.ts
 
 | Claim | Verdict | How checked |
 |---|---|---|
-| L1 is reachable on this machine | **NO** | probe: zero honourable tiers. No TPM (Apple Silicon), no token attached. |
+| L1 is reachable on this machine | ~~**NO**~~ → **YES, as of 2026-08-25** | See the SUPERSEDED note below. The 2026-08-14 verdict was true when measured and became false without anything updating it. |
 | "Every machine you own already has the chip" | **FALSE here** | probe, above. Corrected in the L1 rung and in step 2 of the runbook. |
 | Apple Silicon has no TPM 2.0 | **CONFIRMED** | probe reports absent; `frost-share-adapter.ts` says the same and is right. |
 | A Secure Enclave is present | **YES** | `ioreg -rc AppleSEPManager` → registered, matched, active. |
 | Any seal tier can use that Secure Enclave | **NO** | `FrostSealTier` has no such member; no adapter exists in-repo. |
 | The Touch ID approval gate is live here | **YES** | `bioutil -r` → biometrics enrolled; `pam_tid.so` present in `/etc/pam.d/sudo`, which is `biometric.ts`'s stated precondition. Aaron's operator-approves-via-biometric model is executable on this host **today** — it is the one hardware-backed control that is. |
 | Secure Boot posture | **Reduced Security** | `system_profiler SPiBridgeDataType`. Noted because any future measured-boot / attestation rung (L3) must not assume full security on this host. |
+
+### SUPERSEDED 2026-08-25 — L1 is now reachable, and the stale row was green in the *favourable* direction
+
+The table above was measured 2026-08-14 with no token attached. **A YubiHSM 2 is now
+inserted in this host and reachable.** Nothing updated this document for eleven days,
+so a row asserting a *harder* posture than reality sat here unchallenged — the same
+shape as a check that did not run reading as one that passed, except inverted: a
+capability we HAD was recorded as absent.
+
+Re-measured 2026-08-25, live, on the same host:
+
+```
+Version number:  2.4.1
+Serial number:   39160506
+Log used:        2/62
+Part number:     78CLUFX5000P
+```
+
+```
+  YubiHSM 2:          ATTACHED (bulk USB — invisible to the reader/ykman probes above)
+  yubihsm_pkcs11:     /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib (a DRIVER — not evidence of a device)
+  PKCS#11 pair:       /usr/local/lib/pkcs11/yubihsm_pkcs11.dylib drives YubiHSM 2
+  Device present:     YES
+  Honourable tiers:   hardware-pkcs11
+```
+
+**What changed operationally, and it was not the hardware alone.** `yubihsm-connector`
+was installed but **not running** (`pgrep -l yubihsm` → no process), so the device sat
+on the USB bus unreachable over PKCS#11. Starting the connector — a USB↔HTTP bridge
+requiring no credential — made it visible. The device had been present and
+unreachable, which reads identically to absent from anything that only probes PKCS#11.
+
+**Firmware and serial match `hsm-domain-map.ts` exactly** (2.4.1 / 39160506), so that
+roster is accurate and was not the stale part.
+
+**What is still NOT reachable, stated so this note does not become the next stale
+green:**
+
+- **No FROST-capable mechanism.** The full pre-auth algorithm list was read from the
+  device and contains `eck256` (secp256k1), `ecdsa-sha256`, `ed25519`, RSA, AES, ECDH —
+  and **no threshold or partial-signature primitive**. The chip cannot compute a FROST
+  partial. So this is L1 (at-rest wrapping), not L2 (on-chip signing); the share still
+  enters host RAM. `YUBIHSM2_MECHANISMS_OBSERVED` remains correct.
+- **No session was opened.** Everything above is pre-authentication. A session needs an
+  auth key password, which is the operator's to enter — not an agent's, under the
+  standing no-credential-entry rule. So "L1 is reachable" here means *the device
+  answers and the driver pairs with it*, *not* that any key operation has been
+  performed.
+- **n = 1 device.** Unconfiscatability needs shares on distinct devices; the
+  SmartCard-HSM is ordered and not arrived. One HSM is one seizure point, and no code
+  changes that.
+
+**The lesson worth keeping**: a probe that cannot distinguish *absent* from *present
+but unreachable* will report both as absent, and an operator reading it will conclude
+the hardware is missing. The probe was not wrong on 2026-08-14; it was answering a
+narrower question than its row implied.
+
 
 **Not exercised, and therefore still documentary:** every claim at L2 and above; the PKCS#11 FFI path
 (no token to talk to); the TPM2 path (no Linux TPM host tried); the L1 seal round-trip end-to-end.
