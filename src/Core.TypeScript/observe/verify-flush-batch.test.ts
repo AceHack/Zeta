@@ -345,13 +345,97 @@ describe("the workflow that calls this", () => {
     expect(body).toContain("pull-requests: read");
   });
 
-  test("its trigger matches the branch form the fleet actually produces", () => {
-    const wf = executableBody();
-    expect(wf).toContain("-flush-");
-    expect(wf).not.toContain("startsWith(github.head_ref, 'flush/')");
-    // And the pattern the workflow gates on must agree with this module's parser
-    // on a real branch name, or the two drift the way the trigger already did.
-    expect(deriveProducer("heartbeat/otto-flush-5199aeccbc2ce8f6243173130385ce3297473715")).not.toBeNull();
+  /**
+   * The workflow's `if:` expression, EVALUATED — not string-matched.
+   *
+   * Why this exists in this shape. The predecessor was named "its trigger matches
+   * the branch form the fleet actually produces" and asserted
+   * `expect(wf).toContain("-flush-")`. When #15309 moved the fleet from
+   * `heartbeat/<agent>-flush-<40 hex>` to the reused `heartbeat/<agent>-flush`,
+   * that assertion kept passing — it was pinned to the very substring that had
+   * gone stale, so it passed BECAUSE the trigger was broken, and it would have
+   * refused the fix. The job was `skipped` on all twelve most recent runs.
+   *
+   * A magic-string assertion cannot notice its string going wrong. So this
+   * evaluates the real expression against the real parser: whatever the trigger
+   * fires on must be what `deriveProducer` can name, and vice versa.
+   *
+   * The evaluator covers exactly the GitHub Actions expression surface this
+   * trigger uses — `startsWith` / `endsWith` / `contains` over `github.head_ref`,
+   * with `&&`, `||`, `!` and parentheses. It deliberately THROWS on anything
+   * else rather than guessing: a silently-mis-evaluated expression would put us
+   * back where we started, with a green test over a trigger nobody checked.
+   */
+  const triggerExpression = (): string => {
+    const line = readFileSync(WF, "utf8")
+      .split("\n")
+      .find((l) => /^\s*if:\s*startsWith\(github\.head_ref/.test(l));
+    if (line === undefined) throw new Error("no head_ref trigger found in agent-reviewer.yml");
+    return line.replace(/^\s*if:\s*/, "").trim();
+  };
+
+  const evalTrigger = (expr: string, headRef: string): boolean => {
+    // Tokenise into the small set this expression is allowed to contain.
+    const js = expr.replace(
+      /(startsWith|endsWith|contains)\(\s*github\.head_ref\s*,\s*'([^']*)'\s*\)/g,
+      (_m, fn: string, arg: string) => {
+        const a = JSON.stringify(arg);
+        if (fn === "startsWith") return `__R.startsWith(${a})`;
+        if (fn === "endsWith") return `__R.endsWith(${a})`;
+        return `__R.includes(${a})`;
+      },
+    );
+    // Anything left that is not boolean glue means the expression grew a
+    // construct this evaluator does not model. Refuse rather than approximate.
+    const residue = js.replace(/__R\.(startsWith|endsWith|includes)\("[^"]*"\)/g, "");
+    if (!/^[\s()&|!]*$/.test(residue)) {
+      throw new Error(`trigger uses unmodelled syntax: ${residue.trim()}`);
+    }
+    // eslint-disable-next-line no-new-func
+    return new Function("__R", `return (${js});`)(headRef) as boolean;
+  };
+
+  test("EVALUATES: the trigger fires on exactly what the parser can name", () => {
+    const expr = triggerExpression();
+
+    // Every form the fleet actually produces today, plus the legacy form that
+    // still heads at least one open PR. Both must fire AND parse.
+    for (const ref of [
+      "heartbeat/otto-flush",
+      "heartbeat/alexa-flush",
+      "heartbeat/soraya-flush",
+      "heartbeat/otto-flush-5199aeccbc2ce8f6243173130385ce3297473715",
+      "heartbeat/alexa-flush-9954c7958d1988ba54e08e33ea2f85c5b9b09353",
+    ]) {
+      expect({ ref, fires: evalTrigger(expr, ref) }).toEqual({ ref, fires: true });
+      expect({ ref, producer: deriveProducer(ref) !== null }).toEqual({ ref, producer: true });
+    }
+
+    // Lanes and buffers are not batches. These must NOT fire — a buffer parses to
+    // a null producer, which is a `fail` finding, so firing would manufacture a
+    // red from a healthy ref.
+    for (const ref of [
+      "heartbeat/otto",
+      "heartbeat/tick-metrics",
+      "heartbeat/society-buffer",
+      "heartbeat/otto-flush-buffer",
+    ]) {
+      expect({ ref, fires: evalTrigger(expr, ref) }).toEqual({ ref, fires: false });
+    }
+  });
+
+  test("CONTROL: the evaluator is not vacuous — the old trigger fails these cases", () => {
+    // The exact expression that shipped and could never fire. If this evaluator
+    // said "true" here, it would be incapable of catching the regression it was
+    // written for.
+    const stale = "startsWith(github.head_ref, 'heartbeat/') && contains(github.head_ref, '-flush-')";
+    expect(evalTrigger(stale, "heartbeat/otto-flush")).toBe(false);
+    // ...while still firing on the legacy form, which is why it looked fine.
+    expect(evalTrigger(stale, "heartbeat/otto-flush-5199aeccbc2ce8f6243173130385ce3297473715")).toBe(true);
+  });
+
+  test("CONTROL: the evaluator refuses syntax it does not model", () => {
+    expect(() => evalTrigger("github.event.pull_request.draft == false", "x")).toThrow();
   });
 });
 

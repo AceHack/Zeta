@@ -1,0 +1,14 @@
+{
+  "id": "080d01ca1b44d810a013000847970246",
+  "at": "2026-08-25T14:11:54.139Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WM6T4T087G0R003ACJVHZ",
+    "type": "bug",
+    "title": "verify-flush-batch trigger can never fire after the reused-flush-ref change, and its test pinned the stale form",
+    "slug": "verify-flush-batch-trigger-can-never-fire-after-the-reused-f",
+    "priority": "P2",
+    "filename": "081M0WM6T4T087G0R003ACJVHZ-verify-flush-batch-trigger-can-never-fire-after-the-reused-f.md"
+  }
+}

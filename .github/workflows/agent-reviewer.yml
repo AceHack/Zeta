@@ -98,12 +98,28 @@ jobs:
     name: verify flush batch
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    # The trigger that was wrong for the life of this file. `-flush-` is what
-    # distinguishes a snapshot from a LANE: `heartbeat/otto` and
+    # A snapshot must be distinguished from a LANE: `heartbeat/otto` and
     # `heartbeat/tick-metrics` are both `heartbeat/*` and neither is a batch.
-    # The producer parser in verify-flush-batch.ts is anchored on the same
-    # shape, and its test pins that these two agree.
-    if: startsWith(github.head_ref, 'heartbeat/') && contains(github.head_ref, '-flush-')
+    #
+    # THIS TRIGGER WAS WRONG A SECOND TIME, and the way it happened is the reason
+    # the test below was rewritten. It read `contains(head_ref, '-flush-')`, which
+    # was right while every snapshot ref was `heartbeat/<agent>-flush-<40 hex>`.
+    # #15309 moved the fleet to a REUSED ref, `heartbeat/<agent>-flush`, with no
+    # trailing `-`. The parser in verify-flush-batch.ts was updated to accept both
+    # forms; this trigger was not. It then matched nothing the fleet produced and
+    # was `skipped` on all twelve most recent runs — a check that never ran,
+    # reading as a check that passed.
+    #
+    # The old test was NAMED "its trigger matches the branch form the fleet
+    # actually produces" and asserted `expect(wf).toContain("-flush-")`. It passed
+    # BECAUSE the trigger was stale, and it would have refused this fix. A test
+    # that pins a magic string cannot notice the string going wrong; only one that
+    # EVALUATES the trigger against the parser can, which is what now runs.
+    #
+    # `-buffer` is excluded because `heartbeat/<agent>-flush-buffer` satisfies
+    # `contains('-flush-')` but parses to a null producer, which is a `fail`
+    # finding — firing on it would manufacture a red from a healthy ref.
+    if: startsWith(github.head_ref, 'heartbeat/') && (endsWith(github.head_ref, '-flush') || contains(github.head_ref, '-flush-')) && !endsWith(github.head_ref, '-buffer')
 
     steps:
       # depth 1. The predecessor used `fetch-depth: 0` to diff base..head — on a
