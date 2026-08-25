@@ -1,0 +1,12 @@
+{
+  "pr_number": 15309,
+  "archive_path": "docs/history/pr-reviews/PR-15309-fix-lanes-stop-both-ref-leaks-at-the-source-1-610-heartbeat-refs-one-per-archive.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:41:38.295Z",
+  "schema_version": "v1",
+  "commit_sha": "40dcaaccc938623219ecff9ae796fe1d98966429",
+  "title": "fix(lanes): stop both ref leaks at the source — 1,610 heartbeat refs + one per archived PR",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:40:50Z",
+  "head_ref": "fix/lane-ref-leak-at-source"
+}
