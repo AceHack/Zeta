@@ -183,15 +183,33 @@ export function getTargetPath(target: string): string {
   return parts.join(".");
 }
 
+/**
+ * Keys that do not name a value on an object -- they name the object's relationship to
+ * every other object. Writing through one of these is prototype pollution (CodeQL
+ * `js/prototype-pollution-utility`), and this function's `path` comes from a dependency
+ * graph's `consumes.target` in YAML, so it is not a hypothetical caller.
+ */
+const UNWRITABLE_SEGMENTS: ReadonlySet<string> = new Set(["__proto__", "constructor", "prototype"]);
+
 export function setNestedProperty(obj: any, path: string, value: any): void {
   const parts = path.split(".");
   if (parts.length === 0 || parts[0] === "") {
     throw new Error("nested path must be non-empty");
   }
+  // REFUSED, not silently skipped: a path that names the prototype chain is a spec that
+  // means something other than what it says, and quietly writing it somewhere else would
+  // hide that. Same register as the empty-path throw above.
+  const unwritable = parts.find((part) => UNWRITABLE_SEGMENTS.has(part));
+  if (unwritable !== undefined) {
+    throw new Error(`nested path segment '${unwritable}' is not a value key: ${path}`);
+  }
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i]!;
-    if (!(part in current)) {
+    // OWN property, not `in`: `in` walks the prototype chain, so `toString` and friends
+    // "exist" on every object and the walk would descend into an inherited function
+    // instead of creating the intermediate object the path asks for.
+    if (!Object.prototype.hasOwnProperty.call(current, part)) {
       current[part] = {};
     }
     current = current[part];

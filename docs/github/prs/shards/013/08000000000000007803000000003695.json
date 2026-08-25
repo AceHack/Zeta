@@ -1,0 +1,12 @@
+{
+  "pr_number": 13973,
+  "archive_path": "docs/history/pr-reviews/PR-13973-feat-mutual-simulation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-22T22:54:20.571Z",
+  "schema_version": "v1",
+  "commit_sha": "2caebefa654237f1e12a9d948e2efd85f4d52d9a",
+  "title": "feat: mutual simulation",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T22:53:40Z",
+  "head_ref": "feat/mutual-sim"
+}

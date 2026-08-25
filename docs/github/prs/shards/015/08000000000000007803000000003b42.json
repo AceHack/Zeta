@@ -1,0 +1,12 @@
+{
+  "pr_number": 15170,
+  "archive_path": "docs/history/pr-reviews/PR-15170-bug-forensics-the-panicmedic-telemetry-cross-check-returns-false-on-live-data-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T03:27:16.949Z",
+  "schema_version": "v1",
+  "commit_sha": "95f338529a40849536c0bfd32656feec95ecd185",
+  "title": "bug(forensics): the panicmedic telemetry cross-check returns false on live data — the two NVRAM variables differ by exactly 1,000,000 us",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T03:26:29Z",
+  "head_ref": "otto/panicmedic-telemetry-cross-check-disagrees-on-live-data"
+}

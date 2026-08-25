@@ -69,6 +69,32 @@ describe("Path formatting helpers", () => {
     setNestedProperty(obj, "database.password", "secret");
     expect(obj.database.password).toBe("secret");
   });
+
+  // CodeQL `js/prototype-pollution-utility`. `path` reaches here from a dependency
+  // graph's `consumes.target` in YAML, so a spec -- not a caller -- picks these segments.
+  test("setNestedProperty refuses a path that names the prototype chain", () => {
+    const obj: any = {};
+    expect(() => setNestedProperty(obj, "__proto__.polluted", "yes")).toThrow(/not a value key/);
+    expect(() => setNestedProperty(obj, "a.constructor.prototype.polluted", "yes")).toThrow(/not a value key/);
+    expect(() => setNestedProperty(obj, "a.prototype", "yes")).toThrow(/not a value key/);
+    expect(({} as any).polluted).toBeUndefined();
+    expect(obj).toEqual({});
+  });
+
+  // `in` walks the prototype chain, so an inherited name reads as already-present and the
+  // walk descends into `Object.prototype.toString` instead of creating a fresh object.
+  test("setNestedProperty creates an intermediate named like an inherited member", () => {
+    const obj: any = {};
+    setNestedProperty(obj, "toString.enabled", true);
+    // The OWN-property assertion is the discriminating one: under `in`, `toString`
+    // already "exists", so the walk descends into `Object.prototype.toString` and writes
+    // `enabled` onto the shared function -- `obj.toString.enabled` then reads `true`
+    // through the prototype chain and looks correct while every object in the process
+    // has been mutated.
+    expect(Object.prototype.hasOwnProperty.call(obj, "toString")).toBe(true);
+    expect(obj.toString.enabled).toBe(true);
+    expect(Object.prototype.hasOwnProperty.call(Object.prototype.toString, "enabled")).toBe(false);
+  });
 });
 
 describe("Graph Resolution & Topo Sort", () => {

@@ -167,7 +167,11 @@ function renderReport(result: AuditResult, now: Date): string {
         lines.push("| Line | Chars | Preview |");
         lines.push("|------|-------|---------|");
         for (const e of result.bloatEntries) {
-            const preview = e.preview.replace(/\|/g, "\\|");
+            // The BACKSLASH is escaped too (CodeQL `js/incomplete-sanitization`): escaping
+            // `|` alone means a preview ending in `\` produced `\\|`, which markdown reads
+            // as a literal backslash followed by an UNESCAPED cell separator -- the row
+            // splits and the table below it renders as loose text.
+            const preview = e.preview.replace(/[\\|]/g, "\\$&");
             lines.push(`| ${e.lineNumber} | ${e.chars} | ${preview}... |`);
         }
     }

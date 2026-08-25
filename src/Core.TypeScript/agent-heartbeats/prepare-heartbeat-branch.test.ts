@@ -352,6 +352,52 @@ describe("prepareHeartbeatBranch", () => {
     expect(merged).not.toContain("<<<<<<< HEAD");
   });
 
+
+  it("carries a ci-runs log both sides CREATED, keeping every row exactly once", () => {
+    // The shape that took ALL THREE lanes down at 22:05Z on 2026-08-22 (runs 32601483043,
+    // 32602358227): `CONFLICT (add/add): Merge conflict in data/ci-runs.jsonl`. Third add/add
+    // member, and the first caused by a file ARRIVING on main -- #13935 made the drift-rate
+    // append actually commit, so the file reached main at 21:54:47Z and both sides had then
+    // independently created it. So this cannot reuse `partialFlush` either.
+    //
+    // `union`, not `theirs`, and the assertions below are what force that: this is an
+    // append-only log with rows from DIFFERENT lanes, so taking one side drops the other's
+    // records. The live divergence, byte-for-byte -- main holds soraya's two flushed rows, the
+    // alexa lane holds its own row, and the merge must end up with all three.
+    const { work } = fixture();
+    const p = "data/ci-runs.jsonl";
+    seedAttributes(work);
+
+    const row = (lane: string, at: string, runId: string): string =>
+      `${JSON.stringify({ checkId: "agent-heartbeat", outcome: "green", at, lane, runId })}\n`;
+    const soraya1 = row("soraya", "2026-08-22T21:26:28.533Z", "32599512363");
+    const soraya2 = row("soraya", "2026-08-22T21:40:41.897Z", "32600184721");
+    const alexa1 = row("alexa", "2026-08-22T21:55:02.782Z", "32600831751");
+
+    git(work, "switch", "-c", "heartbeat/alexa");
+    // The lane also carries soraya1 to exercise the partial-flush overlap: an addition IDENTICAL
+    // on both sides must survive as ONE row. If union ever duplicated it, the count below is 4.
+    commitFile(work, p, `${soraya1}${alexa1}`, "lane records its own tick");
+    pushLane(work);
+
+    git(work, "switch", "main");
+    commitFile(work, p, `${soraya1}${soraya2}`, "main receives an earlier lane's flush");
+    git(work, "push", "origin", "main");
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    const merged = readFileSync(join(work, p), "utf8");
+    expect(merged).not.toContain("<<<<<<< HEAD");
+    const lines = merged.split("\n").filter((l) => l !== "");
+    // Every row present exactly once: nothing dropped (which `theirs` would do to soraya2) and
+    // nothing duplicated (which is union's only real failure mode).
+    expect(lines.length).toBe(3);
+    expect(new Set(lines).size).toBe(3);
+    for (const r of [soraya1, soraya2, alexa1]) expect(merged).toContain(r.trim());
+    // Still one JSON object per line -- a concatenation would make the log unparseable.
+    for (const l of lines) expect(() => JSON.parse(l) as unknown).not.toThrow();
+  });
   it("still refuses a conflict outside the declared lane paths", () => {
     const { work } = fixture();
     seedAttributes(work);

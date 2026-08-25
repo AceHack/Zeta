@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { kiroExecutor, buildDoItemSpec } from "./kiro-executor";
+import { kiroExecutor, buildDoItemSpec, yamlDoubleQuoted } from "./kiro-executor";
 import type { BacklogItem } from "./observe";
 
 const SAMPLE_ITEM: BacklogItem = {
@@ -54,5 +54,24 @@ describe("buildDoItemSpec", () => {
   test("defaults agentId to 'alexa'", () => {
     const { spec } = buildDoItemSpec(SAMPLE_ITEM, { repoRoot: "/tmp/fake" });
     expect(spec.script).toContain("alexa");
+  });
+});
+
+// CodeQL `js/incomplete-sanitization` on the claim file's `title:` line: it escaped the
+// quote and left the BACKSLASH alone, so YAML's own escape character passed through raw.
+describe("yamlDoubleQuoted — the escape character is escaped first", () => {
+  test("a title ending in a backslash still closes its scalar", () => {
+    // `"a\\"` under the old escape: the closing quote is itself escaped, the scalar runs
+    // on, and the claim file's front matter stops parsing.
+    expect(yamlDoubleQuoted("a\\")).toBe('"a\\\\"');
+  });
+
+  test("a quote is still escaped, and both together are unambiguous", () => {
+    expect(yamlDoubleQuoted('say "hi"')).toBe('"say \\"hi\\""');
+    expect(yamlDoubleQuoted('a\\"b')).toBe('"a\\\\\\"b"');
+  });
+
+  test("an ordinary title is unchanged apart from its quotes", () => {
+    expect(yamlDoubleQuoted("Substrate-claim-checker TS tool")).toBe('"Substrate-claim-checker TS tool"');
   });
 });

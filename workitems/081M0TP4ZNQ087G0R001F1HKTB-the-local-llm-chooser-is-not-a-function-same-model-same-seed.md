@@ -41,7 +41,7 @@ to identical inputs is not a function, so:
 
 **This is not a general falsification of DST in this repo.** Pure code paths
 remain deterministic and their DST claims are unaffected. The failure is
-confined to `localLlmParticipant` (`observe/run-loop-real.ts` →
+confined to `localLlmParticipant` (`src/Core.TypeScript/observe/run-loop-real.ts` →
 `resolveParticipant`), where the "function" is an external model invocation.
 
 Nor is it surprising in hindsight: sampling temperature, non-associative float

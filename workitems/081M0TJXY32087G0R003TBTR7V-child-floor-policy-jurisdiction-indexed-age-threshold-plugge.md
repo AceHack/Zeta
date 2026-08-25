@@ -23,7 +23,7 @@ denies is never executed, at ANY depth. That is the gate. It quantifies over
 `policy : Nat → Verdict` and says nothing about what the policy denies — it is satisfied by
 `fun _ => .admit`. The gate was proven; the policy it enforces was never declared.
 
-`lucent-ksk`'s `docs/ksk_architecture.yaml` names `red_lines: [no_minors, …]`. Nothing connected
+`lucent-ksk`'s [architecture declaration](https://github.com/Lucent-Financial-Group/lucent-ksk/blob/main/docs/ksk_architecture.yaml) names `red_lines: [no_minors, …]`. Nothing connected
 a jurisdiction's age parameter to the proven gate. Identified as the one piece of new work in
 `docs/research/2026-08-24-ksk-is-the-kinetic-rung-and-zeta-already-built-four-of-its-parts.md` §6.
 

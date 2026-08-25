@@ -27,7 +27,7 @@
 // notification letter is written to docs/letters/ and rides the same
 // bookkeeping commit (Riven-2: recipe verbatim).
 
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 import { readLedger } from "./drift-ledger.ts";
@@ -93,8 +93,40 @@ function writeEpisodes(e: EpisodeFile): void {
 
 // ── IO shell ────────────────────────────────────────────────────────────────
 
-function sh(cmd: string): string {
-  return execSync(cmd, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+/**
+ * One `git` invocation. Arguments as an ARRAY, and NO SHELL.
+ *
+ * This was `execSync` over a concatenated string, which put `head_sha` from the Actions
+ * API onto a shell command line (`git rev-list ${greenHead}..${redHead}`) inside a job
+ * that holds a `GH_TOKEN` with push access to `main` -- CodeQL `js/command-line-injection`,
+ * critical, and correct. The usual dismissal ("GitHub only returns real shas") is a claim
+ * about the server that is checked nowhere.
+ *
+ * `execFileSync` removes the shell entirely, so there is no command line for a response
+ * body to be read as. It also removes the quoting: the `git config user.name` calls below
+ * used to carry literal `"` characters that only worked because a shell stripped them.
+ *
+ * Exported so the absence of the shell is a FALSIFIER rather than a claim: the test feeds
+ * it an argument containing `;` and asserts git rejects it as a revision, which is the
+ * assertion that goes red the moment anyone reintroduces a concatenated command line.
+ */
+export function git(...args: readonly string[]): string {
+  return execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+}
+
+/** Lowercase hex, 7..64 -- sha1 (40) and a future sha256 (64). Ordinal, anchored. */
+const SHA_RE = /^[0-9a-f]{7,64}$/;
+
+/**
+ * Is this a sha? The gate for any API- or `git`-derived value that becomes an ARGUMENT.
+ *
+ * Removing the shell closes command injection; it does not close ARGUMENT injection --
+ * `git revert --no-edit <x>` with `x` of `--upload-pack=...` is still a git option, not a
+ * revision. Every value that reaches `git` as data is checked against this first, and a
+ * value that fails makes the picture UNCLEAN rather than being repaired into one.
+ */
+export function isSha(value: string): boolean {
+  return SHA_RE.test(value);
 }
 
 async function gh(path: string): Promise<unknown> {
@@ -125,6 +157,13 @@ if (invokedDirectly) {
   };
   const anyRunning = runsRaw.workflow_runs.some((r) => r.status !== "completed");
   const runs: GateRunFact[] = runsRaw.workflow_runs.map((r) => ({ headSha: r.head_sha, conclusion: r.conclusion }));
+  // The API's `head_sha` becomes a `git` ARGUMENT below. This is the one door it enters
+  // through, so it is checked here and the whole picture is refused if any head is not a
+  // sha -- loud and standing down, never a repaired value handed to `git`.
+  if (!runs.every((r) => isSha(r.headSha))) {
+    console.log("actuator: a gate run head_sha is not a sha - the picture is not trustworthy, standing down");
+    process.exit(0);
+  }
   const iso = isolateBreak(runs);
 
   const episodes = readEpisodes();
@@ -158,12 +197,12 @@ if (invokedDirectly) {
 
   // Trigger evaluation.
   if (machine.kind === "idle" && iso !== null) {
-    const mainHead = sh("git rev-parse origin/main");
+    const mainHead = git("rev-parse", "origin/main");
     const fleetInFlight = anyRunning || mainHead !== iso.redHead;
-    const candidates = sh(`git rev-list ${iso.greenHead}..${iso.redHead}`).split("\n").filter(Boolean);
+    const candidates = git("rev-list", `${iso.greenHead}..${iso.redHead}`).split("\n").filter((l) => isSha(l));
     const single = candidates.length === 1 ? candidates[0]! : null;
-    const paths = single === null ? [] : sh(`git diff-tree --no-commit-id --name-only -r ${single}`).split("\n").filter(Boolean);
-    const author = single === null ? "unknown" : sh(`git log -1 --format=%an ${single}`);
+    const paths = single === null ? [] : git("diff-tree", "--no-commit-id", "--name-only", "-r", single).split("\n").filter(Boolean);
+    const author = single === null ? "unknown" : git("log", "-1", "--format=%an", single);
     const event: EpisodeEvent = {
       kind: "break_detected",
       tick: latestTick,
@@ -179,14 +218,14 @@ if (invokedDirectly) {
 
     if (r.command.kind === "push_retraction") {
       const sha = r.command.breakSha;
-      sh(`git config user.name "github-actions[bot]"`);
-      sh(`git config user.email "github-actions[bot]@users.noreply.github.com"`);
-      sh("git fetch origin main");
-      sh("git checkout -B retraction-work origin/main");
+      git("config", "user.name", "github-actions[bot]");
+      git("config", "user.email", "github-actions[bot]@users.noreply.github.com");
+      git("fetch", "origin", "main");
+      git("checkout", "-B", "retraction-work", "origin/main");
       try {
-        sh(`git revert --no-edit ${sha}`);
-        sh("git push origin HEAD:main");
-        pushedSha = sh("git rev-parse HEAD");
+        git("revert", "--no-edit", sha);
+        git("push", "origin", "HEAD:main");
+        pushedSha = git("rev-parse", "HEAD");
         const pr = step(episodeId, machine, { kind: "push_result", tick: latestTick, pushed: true });
         machine = pr.state;
         console.log(`actuator: retraction pushed ${pushedSha.slice(0, 9)} (reverts ${sha.slice(0, 9)})`);
@@ -220,7 +259,9 @@ if (invokedDirectly) {
         machine = pr.state;
         console.log(`actuator: push failed → ${machine.kind}: ${(err as Error).message.slice(0, 200)}`);
       } finally {
-        sh("git checkout --detach origin/main 2>/dev/null || true");
+        // Was `2>/dev/null || true` -- shell for "best effort". With no shell the
+        // best-effort is a `catch`, which is also the honest place for it.
+        try { git("checkout", "--detach", "origin/main"); } catch { /* best effort */ }
       }
     }
   } else if (machine.kind === "idle") {

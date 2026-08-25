@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { bd001OpenTicks, isolateBreak, touchesVectors } from "./retraction-actuator";
+import { bd001OpenTicks, git, isolateBreak, isSha, touchesVectors } from "./retraction-actuator";
 
 // The edge's pure fact-computations. All DECISIONS are episode-protocol's
 // (12 laws there); these tests cover only what the edge computes for it.
@@ -44,5 +44,42 @@ describe("touchesVectors — the byte-lock contract patterns", () => {
   });
   test("ordinary paths pass", () => {
     expect(touchesVectors(["src/Core.TypeScript/hygiene/x.ts", "docs/a.md"])).toBe(false);
+  });
+});
+
+// ── The edge's ARGUMENTS are arguments, never a command line ─────────────────
+//
+// CodeQL `js/command-line-injection` (critical) on the old `execSync` wrapper: `head_sha`
+// from the Actions API was concatenated into a shell command line in a job holding a
+// `GH_TOKEN` with push access to `main`. The fix is `execFileSync` -- no shell at all --
+// plus `isSha` on every value that reaches `git` as data, because removing the shell
+// closes COMMAND injection and not ARGUMENT injection.
+
+describe("git — no shell, so a metacharacter is data", () => {
+  test("a `;` cannot start a second command; git rejects it as a revision", () => {
+    // `execSync("git rev-parse HEAD; echo pwned")` returned "<sha>\npwned". With no shell
+    // the whole string is one (invalid) revision, so git exits non-zero and this throws.
+    expect(() => git("rev-parse", "HEAD; echo pwned")).toThrow();
+  });
+  test("an ordinary invocation is unaffected", () => {
+    expect(git("rev-parse", "--is-inside-work-tree")).toBe("true");
+  });
+});
+
+describe("isSha — the gate on every value that becomes a git argument", () => {
+  test("accepts sha1 and sha256 shapes, and an abbreviation", () => {
+    expect(isSha("3168e5411a2b3c4d5e6f708192a3b4c5d6e7f809")).toBe(true);
+    expect(isSha("a".repeat(64))).toBe(true);
+    expect(isSha("abcdef1")).toBe(true);
+  });
+  test("refuses what argument injection is made of", () => {
+    // Each of these is a git OPTION or a shell fragment, not a revision. Under the old
+    // code every one of them reached the command line for `git revert --no-edit <x>`.
+    expect(isSha("--upload-pack=/tmp/evil")).toBe(false);
+    expect(isSha("HEAD; echo pwned")).toBe(false);
+    expect(isSha("$(id)")).toBe(false);
+    expect(isSha("3168E5411A2B3C4D5E6F708192A3B4C5D6E7F809")).toBe(false); // ordinal: lowercase only
+    expect(isSha("abcdef")).toBe(false); // shorter than any abbreviation git will resolve
+    expect(isSha("")).toBe(false);
   });
 });

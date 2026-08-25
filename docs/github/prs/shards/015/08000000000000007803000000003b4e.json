@@ -1,0 +1,12 @@
+{
+  "pr_number": 15182,
+  "archive_path": "docs/history/pr-reviews/PR-15182-fix-agencysignature-the-review-keys-reconcile-to-the-weakest-claim-unanchored-un.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T03:52:47.301Z",
+  "schema_version": "v1",
+  "commit_sha": "6c0cc06b6fb15f060f7905f95e729da606303e6b",
+  "title": "fix(agencysignature): the review keys reconcile to the weakest claim, unanchored — unblocks #13909 and #14430",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T03:51:56Z",
+  "head_ref": "otto/agencysignature-self-heal-review-reconciliation"
+}

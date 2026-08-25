@@ -1,5 +1,12 @@
 # docs/agendas/ — agenda surfaces split by claim-status + scope
 
+> **Not to be confused with `agendas/` at the repo root (2026-08-23).** This directory
+> holds **topic/project** agendas (`docs/agendas/<topic>/AGENDA.md`) with claim-status and
+> scope. The root `agendas/` directory holds **per-declarer** agenda declarations, one
+> ZetaId-keyed file each, so no shared document has to be agreed on — see
+> `docs/DECISIONS/2026-08-23-zetaid-keyed-agenda-declarations.md`. Neither surface is
+> migrated into the other.
+
 Per Amara cross-AI synthesis 2026-05-22 (extending operator's substrate-engineering work + ratifying factory-agent's earlier proposal): **agenda surfaces need the same decomposition as trajectories.**
 
 **Operational distinction**:

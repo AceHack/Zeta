@@ -65,9 +65,13 @@ export const CANONICAL_SHAPE =
   "weakest claim present, never the strongest, and never to a claim of human involvement. " +
   "The two OPTIONAL accountability keys — `Accountable-Party` and `Authority-Basis` — say who " +
   "carries blame and what authorised the act; they never reconcile and never layer, and a " +
-  "block that omits them is read as SILENT, never as a default. When every block carries the " +
-  "same rostered pair, `Human-Review` stops being the accountability claim and is reconciled " +
-  "to the weakest review claim present, the same way and in the same direction as `Action-Mode`.";
+  "block that omits them is read as SILENT, never as a default. `Human-Review` and " +
+  "`Human-Review-Evidence` reconcile the same way and in the same direction as `Action-Mode` — " +
+  "to the WEAKEST claim present, never upward to a claim of review, only to a value some " +
+  "constituent actually wrote, and only when the resolved pair still satisfies the cross-field " +
+  "constraint. NO ACCOUNTABILITY ANCHOR IS REQUIRED for that: the rostered pair never guarded " +
+  "the DIRECTION of the resolution, and requiring it left every v1 squash with honestly-mixed " +
+  "review provenance permanently red.";
 
 /** The ten v1 keys, in canonical (spec Section 7.4) order. */
 export const REQUIRED_KEYS: readonly string[] = [
@@ -364,11 +368,13 @@ export function missingRequiredKeys(blockText: string): readonly string[] {
  * constituents claim `Human-Review: none` and `Human-Review: explicit` cannot be
  * resolved by a parser preferring one end of the message.
  *
- * ONE governance key is resolved rather than refused — `Action-Mode`, and NOT by
- * last-wins. See the RECONCILABLE section above `GOVERNANCE_KEYS`: it is ordered
- * by claimed human authority and the MINIMUM wins, so the resolution can only
- * weaken a claim. Last-wins is still forbidden for it, precisely because it would
- * let commit ordering decide whether a squash reads as human-directed.
+ * THREE governance keys are resolved rather than refused — `Action-Mode`,
+ * `Human-Review`, `Human-Review-Evidence` — and NEVER by last-wins. See the
+ * RECONCILABLE section above `GOVERNANCE_KEYS` and §GENERALISATION below it: each
+ * vocabulary is ordered by how much human backing it claims and the MINIMUM wins, so
+ * a resolution can only weaken a claim. Last-wins stays forbidden for all three,
+ * precisely because it would let commit ordering decide whether a squash reads as
+ * human-directed or human-reviewed.
  */
 export function findSignatureBlock(text: string): readonly string[] | null {
   const all = findAllSignatureBlocks(text);
@@ -515,8 +521,8 @@ export function findAllSignatureBlocks(text: string): readonly (readonly string[
 export const GOVERNANCE_KEYS: readonly string[] = [
   "Agency-Signature-Version", // schema discriminator: changes how all the rest is read
   "Credential-Mode", // whether the credential implies a human at all
-  "Human-Review", // THE accountability claim
-  "Human-Review-Evidence", // where that claim's evidence lives (spec Section 5.3)
+  "Human-Review", // THE accountability claim — RECONCILABLE to the weakest, see §GENERALISATION
+  "Human-Review-Evidence", // that claim's evidence (spec Section 5.3) — RECONCILABLE with it
   "Action-Mode", // autonomous vs supervised vs human-directed — RECONCILABLE, see above
   // THE TWO ACCOUNTABILITY KEYS. Governance-critical and NEVER reconcilable — see
   // `accountabilityAnchor`. Adding them here can only ADD failures: no block on
@@ -616,12 +622,15 @@ export function reconcileActionMode(values: readonly string[]): string | null {
  * The single accountability claim every block in `blocks` shares, or `null`.
  *
  * Requires FULL coverage — every block carries the same non-empty
- * `Accountable-Party` AND the same non-empty `Authority-Basis`. The asymmetry with
- * the silence-tolerance above is deliberate and is the whole safety argument:
- * partial coverage is tolerated where it costs nothing (the disagreement check),
- * and full coverage is REQUIRED where a check is being relaxed (below). A
- * partial-coverage anchor would let a squash buy the relaxation with one commit's
- * claim about the others — which is the manufacture, wearing the new field.
+ * `Accountable-Party` AND the same non-empty `Authority-Basis`.
+ *
+ * NO LONGER A GATE (2026-08-24, second pass — see §GENERALISATION below). This
+ * used to be the precondition for reconciling `Human-Review`. It is not any more,
+ * because it never guarded the property that makes the reconciliation safe: the
+ * DIRECTION. It is retained as the canonical query for "does this squash carry one
+ * agreeing, rostered accountability claim", and it is still what the falsifiers use
+ * to show that a partial or unrostered pair is not an anchor. What it must never
+ * again become is a coverage toll on a resolution that was already sound without it.
  */
 export function accountabilityAnchor(
   blocks: readonly (readonly string[])[],
@@ -636,6 +645,74 @@ export function accountabilityAnchor(
   if (!ACCOUNTABLE_PARTIES.includes(party) || !AUTHORITY_BASES.includes(basis)) return null;
   return { party, basis };
 }
+
+// ---------------------------------------------------------------------------
+// GENERALISATION: the anchor was a coverage toll, not a safety property
+// (2026-08-24, second pass — Aaron: *"we need to make agencysignature more self
+// healing"*)
+// ---------------------------------------------------------------------------
+// The `Human-Review` reconciliation above shipped gated on `accountabilityAnchor`.
+// That gate is removed here, and the reason is that it never did the job the
+// comment around it claimed. Measured on two live PRs the night this was written:
+//
+//   * #13909 — 18 commits. Exactly ONE (`75ac62459`, a security fix) carries
+//     `Human-Review: explicit` / `Human-Review-Evidence: chat` /
+//     `Action-Mode: human-directed`. The rest carry
+//     `not-implied-by-credential` / `none` / `autonomous-fail-closed`.
+//     `Credential-Mode` (`shared`) and the version (`1`) AGREE across all of them,
+//     and NO block carries either accountability key — as no block on `main` does
+//     (0 of 17,162). So the anchored path could never fire, and the squash preimage
+//     was red on `Human-Review` alone.
+//   * #14430 — the same shape, 3 commits, 2 explicit + 1 not-implied.
+//
+// BOTH CLAIMS ARE TRUE. The maintainer reviewed one commit in chat and did not
+// review the others. That is not a defect in either PR; it is the structural
+// consequence of ANY multi-commit PR with mixed review provenance, and gated on a
+// key nothing on `main` carries, it recurs forever.
+//
+// WHY THE GATE WAS NOT WHAT MADE IT SAFE. This module's own error text names the
+// hazard exactly: *"no parser may pick between them … manufacturing authorization
+// nobody gave."* The manufacture is a STRENGTHENING. Taking the WEAKEST claim
+// present cannot strengthen anything — structurally, not by convention:
+// `explicit` is the MAXIMUM of `HUMAN_REVIEW_BY_HUMAN_AUTHORITY`, so the minimum
+// of a DISAGREEING set can never be it. The loud failure is therefore warranted in
+// the strengthening direction only. Under-claiming is always safe; over-claiming is
+// the sin. The anchor added coverage, not direction — and it charged for a
+// relaxation that was already sound.
+//
+// WHAT STILL HAS TEETH, since removing a gate is exactly how a check becomes one
+// that cannot fail, and this file has been burned by that before. Four refusals,
+// each with a falsifier in the test file:
+//
+//   1. A value outside the enum has no rank and is not ordered. `main` carries 25
+//      out-of-enum `Human-Review` spellings over 273 blocks (`pending` x77,
+//      `EXPLICIT` x38, `implied-by-interactive-session` x60, free text such as
+//      `aaron-lets-do-it`). A set containing one stays LOUD.
+//   2. The resolved value is always one a constituent ACTUALLY WROTE. This only
+//      ever discards; it never invents. (`Action-Mode` property 1, unchanged.)
+//   3. `Human-Review-Evidence` NEVER reconciles on its own — only as a consequence
+//      of a review disagreement, and only to `none` when some constituent wrote
+//      `none`. Two live evidence pointers under an agreeing review are two TRUE
+//      statements and collapsing them would assert there is no evidence when there
+//      is. The evidence order is a PARTIAL one for exactly that reason.
+//   4. THE CROSS-FIELD GUARD, new here and load-bearing precisely because removing
+//      the anchor makes its shape reachable: the resolved PAIR must satisfy
+//      `validateReviewConsistency`. Without it, a squash whose blocks disagree on
+//      review while all citing `chat` would resolve to
+//      (`not-implied-by-credential`, `chat`) — an authoritative reading the schema
+//      itself refuses, reported green. That set stays LOUD.
+//
+// AND THE SCOPE IS STILL NARROW. `Credential-Mode`, `Agency-Signature-Version`,
+// `Accountable-Party` and `Authority-Basis` are untouched: a disagreement in any of
+// them is as loud as it has ever been. Only the three keys that describe HOW ONE
+// COMMIT WAS MADE — `Action-Mode`, and now the two review keys that vary with it —
+// reconcile.
+//
+// WHAT IS GIVEN UP is the same loss the `Action-Mode` reconciliation already
+// accepted one screen up, and it is real: #13909's genuinely-reviewed security fix
+// lands under an authoritative reading that says no human reviewed the change, with
+// no per-commit attribution left to recover it from. The record may understate human
+// backing. It may never overstate it. That asymmetry is the entire warrant.
 
 /**
  * The `Human-Review` vocabulary ordered by HOW MUCH HUMAN BACKING IT CLAIMS,
@@ -662,10 +739,8 @@ export const HUMAN_REVIEW_BY_HUMAN_AUTHORITY: readonly string[] = [
 /**
  * Resolve several `Human-Review` values to the single weakest claim, or `null`.
  *
- * ONLY MEANINGFUL BEHIND AN `accountabilityAnchor` — the callers gate on one and
- * this function does not, because a pure function that silently depended on its
- * caller's context would be the worse of the two designs. Read it as "what is the
- * weakest of these", not "may this be resolved".
+ * Read it as "what is the weakest of these", not "may this be resolved" — the
+ * whole-answer question is `reconcileReviewPair`, which adds the cross-field guard.
  *
  * A NOTE ON THE GUARD THAT IS NOT HERE, because a check that cannot fail is worse
  * than no check and this file has been burned by exactly that. `reconcileActionMode`
@@ -674,9 +749,11 @@ export const HUMAN_REVIEW_BY_HUMAN_AUTHORITY: readonly string[] = [
  * `human-directed`) neither of which implies the other. `Human-Review` has exactly
  * ONE presence value and it is the MAXIMUM, so the minimum of a disagreeing set can
  * never be a presence claim. Writing the same guard here would be a line that can
- * never fire, dressed as safety. THE TEETH FOR THIS KEY ARE THE COVERAGE GATE
- * INSTEAD: without a full, agreeing, rostered accountability anchor, nothing here
- * runs and the disagreement stays as loud as it is today.
+ * never fire, dressed as safety.
+ *
+ * That structural fact is ALSO why this no longer sits behind an accountability
+ * anchor (§GENERALISATION above): the anchor was coverage, and the direction was
+ * never in its keeping.
  *
  * What DOES refuse, non-vacuously and measurably: a value outside the enum has no
  * rank and is not ordered. `main` carries 25 out-of-enum `Human-Review` spellings
@@ -694,8 +771,41 @@ export function reconcileHumanReview(values: readonly string[]): string | null {
 }
 
 /**
+ * The `Human-Review-Evidence` vocabulary ordered by HOW MUCH EVIDENCE IT CLAIMS,
+ * weakest first — and unlike the other two orders this one is deliberately PARTIAL,
+ * expressed as tiers rather than a flat list, because a total order here would be a
+ * fiction with real consequences.
+ *
+ *   tier 0  `none`                                       THE ONLY ABSENCE CLAIM.
+ *           Claims no evidence exists, so recording it can never flatter anyone —
+ *           the same role `autonomous-fail-open` plays for `Action-Mode` and `none`
+ *           plays for `Human-Review`. It is the unique floor, which is what makes a
+ *           weakest element exist at all.
+ *
+ *   tier 1  `chat` · `pr-review` · `pr-comment` ·         ALL PRESENCE CLAIMS,
+ *           `signed-policy`                               MUTUALLY INCOMPARABLE.
+ *           Each names a DIFFERENT PLACE a review is recorded, not a different
+ *           AMOUNT of review. `pr-review` is not weaker than `signed-policy` and
+ *           `chat` is not weaker than `pr-comment`; they are four pointers, and
+ *           picking between two live ones would DISCARD a true evidence pointer
+ *           while keeping another — inventing nothing, but destroying a fact for no
+ *           reason a reader could reconstruct. So within this tier there is no
+ *           minimum and nothing reconciles: the set stays LOUD.
+ *
+ * The consequence, which is the whole behaviour: a set reconciles iff `none` is in
+ * it. Anything else with two or more distinct values has no weakest element.
+ */
+export const HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH: readonly (readonly string[])[] = [
+  ["none"],
+  ["chat", "pr-review", "pr-comment", "signed-policy"],
+];
+
+/** The weakest evidence value — the unique tier-0 member, named once. */
+const WEAKEST_EVIDENCE = HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH[0]?.[0] ?? "none";
+
+/**
  * Resolve `Human-Review-Evidence` — but ONLY as a consequence of a `Human-Review`
- * reconciliation, never on its own. Three refusals, each with a falsifier:
+ * reconciliation, never on its own. Four refusals, each with a falsifier:
  *
  *   * the review values must actually have DISAGREED. Blocks that all claim the
  *     same review state but cite different evidence are NOT reconciled: that shape
@@ -707,7 +817,11 @@ export function reconcileHumanReview(values: readonly string[]): string | null {
  *     `none` under an explicit review would manufacture an invalid block.
  *   * `none` must be a value some constituent ACTUALLY WROTE. Property 1 of the
  *     `Action-Mode` reconciliation, unchanged: this only ever discards values, it
- *     never invents one.
+ *     never invents one. Equivalently, in the vocabulary of the order above: the set
+ *     must contain the unique tier-0 member, because tier 1 has no minimum.
+ *   * every value must be IN THE ENUM. An unknown evidence spelling has no tier, so
+ *     it is not ordered and not reconciled — the same refusal `reconcileActionMode`
+ *     and `reconcileHumanReview` make, stated here rather than left implicit.
  */
 export function reconcileReviewEvidence(
   reviewValues: readonly string[],
@@ -717,8 +831,47 @@ export function reconcileReviewEvidence(
   const review = reconcileHumanReview(reviewValues);
   if (review === null || review === "explicit") return null;
   const distinct = [...new Set(evidenceValues)];
+  const known = HUMAN_REVIEW_EVIDENCE_BY_EVIDENCE_STRENGTH.flat();
+  if (distinct.some((v) => !known.includes(v))) return null;
   if (distinct.length <= 1) return distinct[0] ?? null;
-  return distinct.includes("none") ? "none" : null;
+  return distinct.includes(WEAKEST_EVIDENCE) ? WEAKEST_EVIDENCE : null;
+}
+
+/**
+ * THE WHOLE ANSWER for the two review keys: the pair a squash is read as carrying,
+ * or `null` when it must stay loud. One function, so the disagreement check and the
+ * reconciliation report cannot drift — the defect this whole module was extracted to
+ * remove, reproduced at a smaller scale, is two implementations of one rule.
+ *
+ * The two keys are resolved TOGETHER because they are constrained together. Resolving
+ * them independently is not a smaller version of this — it is a different and wrong
+ * answer, reachable in practice: blocks disagreeing on `Human-Review` while all citing
+ * `Human-Review-Evidence: chat` resolve, key by key, to
+ * (`not-implied-by-credential`, `chat`) — a pair `validateReviewConsistency` refuses,
+ * manufactured by a resolution and reported as green. THE GUARD IS THE LAST LINE.
+ *
+ * Not gated on `accountabilityAnchor`; see §GENERALISATION above for why the anchor
+ * was coverage rather than safety.
+ */
+export function reconcileReviewPair(
+  reviewValues: readonly string[],
+  evidenceValues: readonly string[],
+): { readonly review: string; readonly evidence: string } | null {
+  const review = reconcileHumanReview(reviewValues);
+  if (review === null) return null;
+  const distinctEvidence = [...new Set(evidenceValues)];
+  // A single evidence value is not a reconciliation — it is simply what every block
+  // said — but it is still what the resolved PAIR carries, so it must face the guard.
+  const evidence =
+    distinctEvidence.length === 1
+      ? (distinctEvidence[0] ?? "")
+      : reconcileReviewEvidence(reviewValues, evidenceValues);
+  if (evidence === null) return null;
+  const consistency = validateReviewConsistency(
+    `Human-Review: ${review}\nHuman-Review-Evidence: ${evidence}`,
+  );
+  if (consistency !== null) return null;
+  return { review, evidence };
 }
 
 /** A governance key whose differing values were resolved rather than refused. */
@@ -734,10 +887,10 @@ export interface Reconciliation {
  * The reconciliations applied to a text, so the instruments can PRINT what the
  * squash is being read as instead of quietly reporting the last block's value.
  *
- * `Action-Mode` is the only reconcilable key and is named literally rather than
- * looked up in a table. A table is an invitation: the next key added to it would
- * inherit this exemption without inheriting the argument for it, and the argument
- * is specific to a field that describes a COMMIT rather than THE CHANGE.
+ * The three reconcilable keys are named LITERALLY rather than looked up in a table.
+ * A table is an invitation: the next key added to it would inherit this exemption
+ * without inheriting the argument for it, and the argument is specific to fields that
+ * describe HOW ONE COMMIT WAS MADE rather than what THE CHANGE claims.
  */
 export function detectReconciliations(text: string): readonly Reconciliation[] {
   const blocks = findAllSignatureBlocks(text);
@@ -753,23 +906,20 @@ export function detectReconciliations(text: string): readonly Reconciliation[] {
     if (resolved !== null) out.push({ key: "Action-Mode", resolved, from: actionModes });
   }
 
-  // The two review keys are reconcilable ONLY behind a full, agreeing, rostered
-  // accountability anchor. Without one this is dead code and the disagreement
-  // check stays exactly as loud as it is today — which is the whole safety
-  // argument, and is why 17,087 v1 blocks are untouched by this.
-  if (accountabilityAnchor(blocks) !== null) {
-    const reviews = distinct("Human-Review");
-    if (reviews.length >= 2) {
-      const resolved = reconcileHumanReview(reviews);
-      if (resolved !== null) out.push({ key: "Human-Review", resolved, from: reviews });
-      const evidence = distinct("Human-Review-Evidence");
-      const resolvedEvidence = reconcileReviewEvidence(reviews, evidence);
-      if (resolved !== null && resolvedEvidence !== null && evidence.length >= 2) {
-        out.push({
-          key: "Human-Review-Evidence",
-          resolved: resolvedEvidence,
-          from: evidence,
-        });
+  // The two review keys, resolved as ONE pair (`reconcileReviewPair`) and reported
+  // as two entries — one per key that actually had something discarded. A key whose
+  // blocks all agreed is not a reconciliation and must not be printed as one, or the
+  // note becomes always-on and therefore carries no information.
+  const reviews = distinct("Human-Review");
+  const evidence = distinct("Human-Review-Evidence");
+  if (reviews.length >= 2 || evidence.length >= 2) {
+    const pair = reconcileReviewPair(reviews, evidence);
+    if (pair !== null) {
+      if (reviews.length >= 2) {
+        out.push({ key: "Human-Review", resolved: pair.review, from: reviews });
+      }
+      if (evidence.length >= 2) {
+        out.push({ key: "Human-Review-Evidence", resolved: pair.evidence, from: evidence });
       }
     }
   }
@@ -803,8 +953,14 @@ export function detectBlockDisagreement(text: string): BlockDisagreement | null 
   if (blocks.length < 2) return null;
   const keys: string[] = [];
   const details: string[] = [];
-  const anchor = accountabilityAnchor(blocks);
   const reviewValues = [...new Set(blocks.map((b) => blockValue(b.join("\n"), "Human-Review")))];
+  const evidenceValues = [
+    ...new Set(blocks.map((b) => blockValue(b.join("\n"), "Human-Review-Evidence"))),
+  ];
+  // Computed ONCE, for both review keys, from the same function the reconciliation
+  // report uses. Deciding the two keys separately here is what would let the report
+  // and the gate disagree about the same squash.
+  const reviewPair = reconcileReviewPair(reviewValues, evidenceValues);
   for (const key of GOVERNANCE_KEYS) {
     let values = [...new Set(blocks.map((b) => blockValue(b.join("\n"), key)))];
     // SILENCE IS NOT A COMPETING CLAIM — for the accountability keys only, and for
@@ -818,14 +974,7 @@ export function detectBlockDisagreement(text: string): BlockDisagreement | null 
     // `Authority-Basis` is still an error, and each reconciler itself refuses the
     // sets that would manufacture a claim.
     if (key === "Action-Mode" && reconcileActionMode(values) !== null) continue;
-    if (anchor !== null && key === "Human-Review" && reconcileHumanReview(values) !== null) {
-      continue;
-    }
-    if (
-      anchor !== null &&
-      key === "Human-Review-Evidence" &&
-      reconcileReviewEvidence(reviewValues, values) !== null
-    ) {
+    if ((key === "Human-Review" || key === "Human-Review-Evidence") && reviewPair !== null) {
       continue;
     }
     keys.push(key);
@@ -969,7 +1118,8 @@ export interface TextVerdict {
   /** How many complete blocks the text carried. */
   readonly blockCount: number;
   /**
-   * Governance keys resolved rather than refused (today: `Action-Mode` only).
+   * Governance keys resolved rather than refused (`Action-Mode`, `Human-Review`,
+   * `Human-Review-Evidence` — the three that describe how one COMMIT was made).
    *
    * Carried on the verdict, not left to each caller to recompute, because the
    * authoritative BLOCK still literally contains whatever the last commit wrote.

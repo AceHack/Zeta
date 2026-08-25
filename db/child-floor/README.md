@@ -8,7 +8,7 @@ Aaron 2026-08-24:
 > *"the fixed moral floor is always protect children and disagree on their age around 16-21."*
 
 Two different kinds of thing, and separating them is the whole design. The predicate is not a
-competing morality submitted to the Multi-Oracle Principle (`manifesto-13-specifications.md`
+competing morality submitted to the Multi-Oracle Principle (`.claude/rules/manifesto-13-specifications.md`
 §11) — it is the floor every oracle stands on, which §11's own text carves out as the *default*
 oracle for morally-relevant entities. The threshold is jurisdictional, and disagreement about
 it is expected and legitimate.

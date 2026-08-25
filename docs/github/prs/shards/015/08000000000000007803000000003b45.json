@@ -1,0 +1,12 @@
+{
+  "pr_number": 15173,
+  "archive_path": "docs/history/pr-reviews/PR-15173-fix-arc-the-environment-advertised-no-legal-actions-and-the-lane-now-has-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T03:40:18.445Z",
+  "schema_version": "v1",
+  "commit_sha": "4c83d204b3a9637da5d128d8df80d69f53ce2866",
+  "title": "fix(arc): the environment advertised no legal actions — and the lane now has CI",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T03:39:30Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}

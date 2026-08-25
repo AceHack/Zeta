@@ -25,6 +25,7 @@ export const Category = {
   ContentAddress: 9, // internal content address (truncated BLAKE3 payload)
   InventoryAsset: 10, // physical asset register (git-as-database inventory, inventory/items/)
   Channel: 11, // multiplexed four-corner duplex channel over one transport (ZetaId-keyed; Aaron 2026-07-04)
+  Agenda: 12, // a declarer's voluntary agenda declaration (agendas/<zetaid>-<slug>.md) — one file per declaration so no shared document has to be agreed on (081M0R3WHTH087G0R0015CH5PV; Aaron 2026-08-23)
   Extended: 15, // reserved escape marker for wider extension categories
 } as const;
 export type Category = (typeof Category)[keyof typeof Category];

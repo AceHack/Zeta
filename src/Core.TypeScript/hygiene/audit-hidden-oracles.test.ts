@@ -18,6 +18,7 @@ import { readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 import {
+  escapeRegExp,
   ATTRIBUTION_MARKERS,
   attributionWindow,
   BUDGET_WORDS,
@@ -319,5 +320,28 @@ describe("MUTATION — measured over the whole repo, both directions", () => {
       `  CORPUS: ${report.candidatesSeen} gating constants, ${report.findings.length} unattributed, ` +
         `${report.attributedPasses.length} attributed\n`,
     );
+  });
+});
+
+// CodeQL `js/incomplete-sanitization`: both regex builders escaped `$` and nothing else.
+// `findGating` is exported and takes `name: string`, so the alphabet the file's own two
+// declaration regexes happen to produce is not a guarantee anyone can rely on.
+describe("escapeRegExp — a name is a LITERAL in the pattern, never a pattern", () => {
+  test("every metacharacter survives as itself", () => {
+    for (const ch of ".*+?^${}()|[]\\") {
+      expect(new RegExp(escapeRegExp(ch)).test(ch)).toBe(true);
+    }
+  });
+
+  test("a `.` in a name does not match any other character", () => {
+    // The direction that matters for an AUDIT: `Budget.Max` as a raw pattern also matches
+    // `BudgetXMax`, so a constant would be credited with gating evidence it never had.
+    expect(findGating(["if (BudgetXMax > n) {"], "Budget.Max")).toEqual([]);
+    expect(findGating(["if (Budget.Max > n) {"], "Budget.Max").length).toBe(1);
+  });
+
+  test("a name full of metacharacters does not throw or match everything", () => {
+    expect(() => findGating(["if (x > 1) {"], "a[(")).not.toThrow();
+    expect(findGating(["if (x > 1) {"], "a[(")).toEqual([]);
   });
 });

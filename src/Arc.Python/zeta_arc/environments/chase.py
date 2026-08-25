@@ -53,8 +53,10 @@ _STARTS: tuple[tuple[tuple[int, int], tuple[int, int]], ...] = (
     ((1, 1), (6, 6)),
 )
 
-#: ARC action ids we consume, mapped to a cell delta.
-_MOVES: dict[int, tuple[int, int]] = {
+#: ARC action ids we consume, mapped to a cell delta. Keyed by `GameAction`
+#: because `self.action.id` IS one — the previous `dict[int, ...]` annotation
+#: described neither the keys nor the lookup.
+_MOVES: dict[GameAction, tuple[int, int]] = {
     GameAction.ACTION1: (0, -1),  # up
     GameAction.ACTION2: (0, 1),  # down
     GameAction.ACTION3: (-1, 0),  # left
@@ -105,12 +107,14 @@ class ZetaChase(ARCBaseGame):
             game_id="zeta-chase",
             levels=[_build_level(i) for i in range(len(_WALLS))],
             win_score=len(_WALLS),
-            available_actions=[
-                GameAction.ACTION1,
-                GameAction.ACTION2,
-                GameAction.ACTION3,
-                GameAction.ACTION4,
-            ],
+            # PLAIN INTS, not GameAction members, and the distinction is not
+            # cosmetic. `GameAction` is a plain `Enum` (NOT an `IntEnum`), so
+            # `GameAction.ACTION1 == 1` is False, and the engine dispatches this
+            # list through `match action: case 1 | 2 | 3 | 4 | 5:` — literal
+            # patterns, compared by `==`. Passing members made every case fall
+            # through, so `_get_valid_actions()` returned [] and this environment
+            # advertised NO legal actions at all. Measured before the fix: [].
+            available_actions=[a.value for a in _MOVES],
             seed=seed,
         )
 

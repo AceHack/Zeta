@@ -27,7 +27,10 @@ import argparse
 import json
 from collections import deque
 
-from arc_agi import Arcade, OperationMode
+# `arc_agi` ships no py.typed marker, so mypy cannot see into it. Ignoring the
+# import is honest here — the alternative is inventing stubs for a dependency
+# whose types we do not control.
+from arc_agi import Arcade, OperationMode  # type: ignore[import-untyped]
 from arcengine import GameAction
 
 from zeta_arc.agent import PixelAgent

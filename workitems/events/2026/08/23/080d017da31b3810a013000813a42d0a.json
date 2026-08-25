@@ -1,0 +1,14 @@
+{
+  "id": "080d017da31b3810a013000813a42d0a",
+  "at": "2026-08-23T17:39:06.215Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0QV8RV6087G0R003NV8J3G",
+    "type": "task",
+    "title": "Detector: main gate-verdict drought (cancelled is not a verdict)",
+    "slug": "detector-main-gate-verdict-drought-cancelled-is-not-a-verdic",
+    "priority": "P2",
+    "filename": "081M0QV8RV6087G0R003NV8J3G-detector-main-gate-verdict-drought-cancelled-is-not-a-verdic.md"
+  }
+}

@@ -61,7 +61,12 @@ function expandSurfaces(patterns: string[]): string[] {
       }
     } else if (pattern.includes("*")) {
       const dir = join(repoRoot, pattern.split("/").slice(0, -1).join("/"));
-      const suffix = pattern.split("/").pop()!.replace("*", "");
+      // `replaceAll`, not `replace`: a string first argument replaces only the FIRST
+      // occurrence (CodeQL `js/incomplete-sanitization`). No pattern in the roster above
+      // has two stars today, so this fixes no live miss -- it removes the failure MODE,
+      // which is that a two-star leaf would keep a literal `*` in the suffix, match
+      // nothing under `endsWith`, and leave a surface unaudited while reading as clean.
+      const suffix = pattern.split("/").pop()!.replaceAll("*", "");
       if (existsSync(dir)) {
         for (const entry of readdirSync(dir, { withFileTypes: true })) {
           if (entry.isFile() && entry.name.endsWith(suffix)) {

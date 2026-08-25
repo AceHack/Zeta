@@ -37,6 +37,7 @@ type Category =
     | ContentAddress = 9uy // internal content address (truncated BLAKE3 payload)
     | InventoryAsset = 10uy // physical asset register (git-as-database inventory, inventory/items/) — backfill 2026-07-04, was TS/registry-only
     | Channel = 11uy   // multiplexed four-corner duplex channel over one transport (ZetaId-keyed; Aaron 2026-07-04)
+    | Agenda = 12uy    // a declarer's voluntary agenda declaration (agendas/<zetaid>-<slug>.md) — 081M0R3WHTH087G0R0015CH5PV, Aaron 2026-08-23
     | Extended = 15uy   // reserved escape marker for wider extension categories
 
 /// Persona field — 8 bits. Mirrors `src/Core.CSharp.ZetaId/Persona.cs`.

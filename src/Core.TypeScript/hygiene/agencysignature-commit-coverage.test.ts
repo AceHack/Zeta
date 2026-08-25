@@ -186,15 +186,22 @@ describe("resolveCoverageFacts — which lane am I?", () => {
 // lands. The proposal is invalid; the prefix looks perfect.
 // ---------------------------------------------------------------------------
 //
-// THE DIVERGING FIELD IS `Human-Review`, and it was changed from `Action-Mode`
-// on 2026-08-23. `Action-Mode` stopped being a valid carrier for this mutation
-// when it became reconcilable (a mixed `human-directed` / `autonomous-*` squash
-// now resolves to the weakest claim instead of erroring — see
-// `agencysignature-block.ts` §THE THIRD CASE: RECONCILABLE). Keeping it here
-// would have made the FULL list textually clean, so the mutation would have
-// stopped mutating and this suite would have measured only itself. `Human-Review`
-// carries the property the mutation is actually about: a cross-commit violation
-// that is REAL, unresolvable by any parser, and invisible behind the ceiling.
+// THE DIVERGING FIELD IS `Credential-Mode`, and it has now moved TWICE — from
+// `Action-Mode` (2026-08-23) to `Human-Review` (same day) to here (2026-08-24).
+// Both predecessors became RECONCILABLE: a squash mixing `human-directed` with
+// `autonomous-*`, or `explicit` with `not-implied-by-credential`, now resolves to
+// the weakest claim instead of erroring (`agencysignature-block.ts` §THE THIRD
+// CASE: RECONCILABLE and §GENERALISATION). A reconcilable field makes the FULL
+// list textually clean, so the mutation stops mutating and this suite measures
+// only itself — the vacuity class, reached by a change in a different file.
+//
+// THE LESSON, since twice is a pattern: this fixture needs a field that is
+// governance-critical AND STRUCTURALLY UNRESOLVABLE, not one that merely happens
+// to be loud today. `Credential-Mode` qualifies for a stated reason rather than by
+// elimination — it says WHOSE CREDENTIAL ACTED, which is not a per-commit causal
+// fact about how the work was made, and its values carry no ordering by human
+// backing, so there is no weakest to take and no direction in which a resolution
+// could be safe. `agencysignature-block.test.ts` §SCOPE pins that from both sides.
 function block(reviewDiverges: boolean, n: number): string {
   return [
     `metrics: append tick frame ${String(n)}`,
@@ -204,9 +211,9 @@ function block(reviewDiverges: boolean, n: number): string {
     "Agent-Runtime: Claude Code",
     "Agent-Model: claude-opus-5",
     "Credential-Identity: acehack00@gmail.com",
-    "Credential-Mode: shared",
-    reviewDiverges ? "Human-Review: explicit" : "Human-Review: not-implied-by-credential",
-    reviewDiverges ? "Human-Review-Evidence: chat" : "Human-Review-Evidence: none",
+    reviewDiverges ? "Credential-Mode: dedicated-agent" : "Credential-Mode: shared",
+    "Human-Review: not-implied-by-credential",
+    "Human-Review-Evidence: none",
     "Action-Mode: autonomous-fail-closed",
     "Task: agencysignature-250-commit-underscan",
   ].join("\n");

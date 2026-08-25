@@ -1,0 +1,12 @@
+{
+  "pr_number": 15185,
+  "archive_path": "docs/history/pr-reviews/PR-15185-fix-hygiene-repair-current-main-path-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T03:56:59.248Z",
+  "schema_version": "v1",
+  "commit_sha": "25222c775ba593c8a6569802b575ef9df12d15bf",
+  "title": "fix(hygiene): repair current-main path references",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T03:56:12Z",
+  "head_ref": "claim/task-auto-vivify-reference-drift-20260825"
+}

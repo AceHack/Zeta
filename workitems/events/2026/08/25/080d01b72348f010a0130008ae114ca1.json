@@ -1,0 +1,14 @@
+{
+  "id": "080d01b72348f010a0130008ae114ca1",
+  "at": "2026-08-25T03:08:53.918Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0VE8T8X087G0R003FYC0WF",
+    "type": "bug",
+    "title": "panicmedic telemetry/timestamps cross-check returns false on live data: the two NVRAM variables differ by exactly 1,000,000 us",
+    "slug": "panicmedic-telemetry-timestamps-cross-check-returns-false-on",
+    "priority": "P2",
+    "filename": "081M0VE8T8X087G0R003FYC0WF-panicmedic-telemetry-timestamps-cross-check-returns-false-on.md"
+  }
+}

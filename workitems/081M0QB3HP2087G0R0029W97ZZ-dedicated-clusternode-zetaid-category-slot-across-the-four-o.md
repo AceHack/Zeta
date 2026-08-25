@@ -35,8 +35,9 @@ property.
 
 A new slot is a **four-oracle byte-lock change**, which is the entire cost:
 
-- `src/Core.TypeScript/zeta-id/types.ts` — the slot (12 is free; 15 is the
-  reserved `Extended` escape).
+- `src/Core.TypeScript/zeta-id/types.ts` — the slot (**correction 2026-08-23: 12 is
+  no longer free** — `Agenda` took it under 081M0R3WHTH087G0R0015CH5PV; **13 and 14**
+  are, and 15 is the reserved `Extended` escape).
 - `src/Core.CSharp.ZetaId/` and `src/Core.FSharp.ZetaId/` — both already **lag**
   `InventoryAsset = 10` (noted in
   `src/Core.TypeScript/model-backend/multiplexed-duplex-transport.ts`),
