@@ -1,3 +1,42 @@
+# zetadb-scheduled-node — fold newly admitted journal events into the durable
+# ZetaDB checkpoint.
+#
+# HOW IT LANDS (changed 2026-08-22 — it previously could not land at all)
+# ----------------------------------------------------------------------
+# This lane used to end in `git push origin HEAD:main`, wrapped in a five-attempt
+# rebase/re-fold/amend retry loop. No attempt could ever have succeeded: ruleset
+# "CI Gate" (16134995) makes `gate (required)` a required status check on `main`, and
+# a required check is evaluated at PUSH time against the pushed tip, so a commit that
+# has never been through a check run is rejected before any check could start:
+#
+#     remote: - Required status check "gate (required)" is expected.
+#
+# The lane was nonetheless GREEN on every run, because it exits early with
+# "No new database events to checkpoint." and never reached the push. It was green
+# for never doing its work — the vacuity class — and the retry loop made it worse,
+# not better: five identical rejections would have been read as "sustained
+# contention" (081KZM0FTJM) when the true cause is a ruleset that no amount of
+# re-deriving can satisfy.
+#
+# It now lands the way `tick-metrics`, `society` and the three cadences fixed in
+# #13808 do: `flush-via-staging.ts` parks the checkpoint on
+# `heartbeat/zetadb-scheduled-node` and opens a PR with squash auto-merge armed;
+# `gate` runs on the PR and GitHub squashes it onto main.
+#
+# WHAT HAPPENED TO THE CONVERGENCE LOOP (081KZM0FTJM). Its property is preserved and
+# its mechanism is gone, which is the right trade. The property was: never fail on a
+# lost push race, RE-DERIVE from whatever main now holds rather than replaying a stale
+# diff. `flush-via-staging` gives that structurally — `prepare` resets to `origin/main`
+# and unions in anything still parked on the lane's staging branch, the fold below then
+# re-derives against exactly that tree, and the staging push is
+# `--force-with-lease` onto `heartbeat/*`, a ref no other writer touches. There is no
+# compare-and-swap left to lose, so there is no race to retry. It is still convergence
+# and still not a distributed lock (§1 scale-free, #6 idempotency).
+#
+# The flush commit deliberately carries NO `[skip ci]`: on this route it would
+# suppress the `pull_request` run of `gate`, the required check would never report,
+# and the PR would be unmergeable forever. `flush-via-staging.ts` refuses it outright.
+
 name: zetadb-scheduled-node
 
 on:
@@ -21,11 +60,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
-      contents: write
+      contents: write # pushes the heartbeat/zetadb-scheduled-node staging branch
+      pull-requests: write # opens the flush PR that carries the checkpoint onto main
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # THIS CHECKOUT'S CREDENTIAL IS THE ONE THAT PUSHES `heartbeat/zetadb-scheduled-node`.
+          # ROLE: BRANCH-PUSH. One role, one secret —
+          # docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md
+          # assigns ZETA_TELEMETRY_FLUSH_TOKEN this role and only this role. Same shape as
+          # `lockfile-healer.yml`, which is the lane this one is being brought into line with.
+          token: ${{ secrets.ZETA_TELEMETRY_FLUSH_TOKEN }}
           fetch-depth: 0
 
       - name: Install Bun
@@ -33,75 +79,45 @@ jobs:
         with:
           bun-version: 1.3.13
 
+      # Reset to `origin/main` and union in anything still parked on
+      # `heartbeat/zetadb-scheduled-node` from a previous flush whose PR has not landed
+      # yet, so the fold below re-derives against the true pending state rather than
+      # force-pushing over a checkpoint that is still in flight.
+      - name: Prepare staging working tree
+        run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane zetadb-scheduled-node
+
       - name: Fold scheduled database journal
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
         run: bun run run:zetadb-node
 
-      - name: Commit checkpoint if changed
+      # No hand-rolled `git diff` gate and no hand-echoed AgencySignature block:
+      # `flush` stages the path and returns a clean no-op when the fold produced
+      # nothing (idempotency, #6), and it signs at the shared choke point so this lane's
+      # block cannot drift from the other lanes'. The signature also reaches `main`,
+      # because the flush PR's BODY carries it and squash-merge builds the landed commit
+      # message from the body.
+      - name: Flush checkpoint to main via staging branch + PR
         env:
-          RUN_ID: ${{ github.run_id }}
+          # The enterprise forbids the Actions identity from creating pull requests, so
+          # a fine-grained PAT is required to OPEN the PR. Without one the checkpoint
+          # still parks safely on the staging branch and the step reports why it could
+          # go no further — the fold is never lost, only delayed.
+          #
+          # ROLE: PR-CREATE. One role, one secret. A `||` chain stood here and collapsed
+          # three roles into one variable: `||` selects on the left secret being EMPTY, so
+          # an absent ZETA_TELEMETRY_FLUSH_TOKEN would have been silently replaced by a
+          # credential with DIFFERENT authority, and the `secrets.GITHUB_TOKEN` rung would
+          # additionally have parked the flush PR's `gate (required)` behind GitHub's
+          # recursion guard — a checkpoint that looks flushed and can never merge.
+          # `audit-workflow-credential-role-separation.ts` (cross-verify floor) refuses it.
+          # Absence is a NAMED refusal, not a substitution: `openMergePR` refuses an empty
+          # GH_TOKEN and names the secret and the scope.
+          GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
         run: |
-          set -euo pipefail
-          if git diff --quiet data/zetadb/checkpoint.json; then
-            echo "No new database events to checkpoint."
-            exit 0
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/zetadb/checkpoint.json
-          {
-            echo "db(zetadb): fold scheduled journal [skip ci]"
-            echo
-            echo "The scheduled executor folded newly admitted events into the"
-            echo "durable ZetaDB checkpoint during Actions run $RUN_ID."
-            echo
-            echo "Agency-Signature-Version: 1"
-            echo "Agent: zetadb-scheduled-node"
-            echo "Agent-Runtime: GitHub Actions"
-            echo "Agent-Model: deterministic TypeScript kernel"
-            echo "Credential-Identity: github-actions[bot]"
-            echo "Credential-Mode: dedicated-agent"
-            echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: none"
-            echo "Action-Mode: autonomous-fail-closed"
-            echo "Task: task-browser-zetadb-node"
-            echo "Co-Authored-By: Codex <noreply@openai.com>"
-          } | git commit --file=-
-
-          # 081KZM0FTJM — CONVERGE on a lost push race, do not fail.
-          #
-          # The fold is already convergent in shape: after rebasing we RE-DERIVE the
-          # checkpoint (re-run the fold) instead of replaying a stale precomputed diff,
-          # so two folds of the same journal agree. What was missing is what happens
-          # when another writer lands BETWEEN our rebase and our push: `git push` is a
-          # compare-and-swap, the loser is rejected, and with `set -e` the run simply
-          # died. That was tolerable while GitHub Actions was the only writer — the
-          # Actions-scoped `concurrency:` group serialised us with ourselves — but the
-          # dogfooding target is runners AND local hardware AND browser cells at once,
-          # and that group cannot see any of them.
-          #
-          # The fix is convergence, NOT a distributed lock: a lock would be a central
-          # point of coordination (§1 scale-free) and would not survive a browser tab
-          # going offline. Retry the rebase→re-fold→amend→push cycle; each attempt
-          # re-derives from whatever main now holds, so the result converges regardless
-          # of arrival order (#6 idempotency + commutativity).
-          push_ok=0
-          for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main
-            bun run run:zetadb-node
-            git add data/zetadb/checkpoint.json
-            git -c core.editor=true commit --amend --no-edit
-            if git push origin HEAD:main; then
-              push_ok=1
-              [ "$attempt" -gt 1 ] && echo "[zetadb] converged on attempt $attempt/5 (lost $((attempt-1)) push race(s))"
-              break
-            fi
-            echo "[zetadb] push race lost on attempt $attempt/5 — another writer landed; re-deriving from new main"
-            sleep $((attempt * 3))
-          done
-          if [ "$push_ok" -ne 1 ]; then
-            echo "::error::[zetadb] failed to converge after 5 attempts — sustained contention on data/zetadb/checkpoint.json (081KZM0FTJM)" >&2
-            exit 1
-          fi
+          bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
+            --lane zetadb-scheduled-node \
+            --paths data/zetadb/checkpoint.json \
+            --message "db(zetadb): fold scheduled journal"

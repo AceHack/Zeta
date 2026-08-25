@@ -1886,6 +1886,17 @@ jobs:
       - name: Tsirelson-caveat guard unit tests (a check that cannot fail is not a check)
         run: bun test src/Core.TypeScript/hygiene/lint-tsirelson-constant-caveat.test.ts
 
+      # NOTE (2026-08-25): a `lint-no-direct-push-to-main` (PM001) check was wired in here
+      # and has been withdrawn. Not because the defect it found was unreal — three lanes on
+      # this branch are fixed BECAUSE of it — but because a check named "no direct push to
+      # main" states a doctrine this repo has since decided against: #15313 designs the
+      # heartbeat lane to push to `main` DIRECTLY, with a content-bound attestation and a
+      # post-hoc audit instead of a gate. The surviving rule is "no UNATTESTED direct push",
+      # which is `audit-heartbeat-lane-attestations.ts` in the `cross-verify` floor, not a
+      # blanket ban. Its one mechanical finding that neither AH001 nor AH002 could see —
+      # a skip token BUILT by `echo` into `git commit --file=-` — was folded into AH002
+      # itself rather than shipped as a third overlapping check.
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a

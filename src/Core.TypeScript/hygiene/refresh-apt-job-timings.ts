@@ -193,6 +193,33 @@ function samplesFor(job: InstallerJob, root: string): Sample[] {
   return out;
 }
 
+/**
+ * The text a demotion carries until a human investigates it.
+ *
+ * WHY IT IS AN EXPLICIT SENTINEL RATHER THAN JUST A STRING. This generator can see THAT
+ * a job could not be measured; only a human can say WHY. The honest interim value is a
+ * marker — but a marker that reaches the committed artifact is the vacuity class in one
+ * of its purest forms: a `reason` field that says nothing while looking filled in, and
+ * reads to every later reviewer as an investigated, documented decision. Every downstream
+ * consumer of this file treats `unmeasured[].reason` as evidence; the placeholder is
+ * evidence-shaped and carries none.
+ *
+ * So the sentinel exists to be REFUSED, not to be shipped. `main` will not write the file
+ * — not even under `--dry-run` — while any demotion still carries it.
+ */
+export function placeholderReason(): string {
+  return `no successful run in the last ${String(RUNS)} carried an apt phase in its log — WRITE THE REAL REASON HERE BY HAND`;
+}
+
+/**
+ * Recognise the placeholder in a reason that may have been lightly edited around it.
+ * Substring, not equality: a human who prepends context but leaves the shout intact has
+ * not supplied a reason, and equality would let that through.
+ */
+export function isPlaceholderReason(reason: string): boolean {
+  return reason.includes("WRITE THE REAL REASON HERE BY HAND");
+}
+
 export function main(argv: string[]): number {
   const root = resolve(process.env["REPO_ROOT"] ?? process.cwd());
   const governed = auditRepo(root, { skipAdjudication: true }).jobs;
@@ -219,11 +246,13 @@ export function main(argv: string[]): number {
     const key = `${j.workflow}:${j.job}`;
     const s = samplesFor(j, root);
     if (s.length === 0) {
+      const carried = priorReason.get(key);
       unmeasured.push({
         key,
-        reason:
-          priorReason.get(key) ??
-          `no successful run in the last ${String(RUNS)} carried an apt phase in its log — WRITE THE REAL REASON HERE BY HAND`,
+        // A prior reason that IS the placeholder is not a reason; treat it as absent so
+        // a placeholder that somehow reached the file cannot launder itself into a
+        // "hand-written reason survives a refresh" on the next run.
+        reason: carried !== undefined && !isPlaceholderReason(carried) ? carried : placeholderReason(),
       });
       process.stderr.write(`${key}: UNMEASURED\n`);
       continue;
@@ -242,6 +271,20 @@ export function main(argv: string[]): number {
   }
   if (measured.length === 0) {
     process.stderr.write("measured nothing — refusing to write a file that would make the audit vacuous\n");
+    return 1;
+  }
+  // REFUSE TO SHIP THE PLACEHOLDER. See `placeholderReason` for why this is a refusal
+  // and not a warning. The refusal comes BEFORE the write and covers `--dry-run` too:
+  // a dry run that printed the document and exited 0 would let a caller read success
+  // from a document that must not be committed.
+  const stillPlaceholder = unmeasured.filter((u) => isPlaceholderReason(u.reason)).map((u) => u.key);
+  if (stillPlaceholder.length > 0) {
+    process.stderr.write(
+      `refusing to emit ${String(stillPlaceholder.length)} demotion(s) whose reason is still the placeholder:\n` +
+        stillPlaceholder.map((k) => `  ${k}\n`).join("") +
+        `Investigate each, then write the real reason into the \`unmeasured\` entry in ${TIMINGS_PATH}\n` +
+        "and re-run. A generated file is not written until every demotion says something true.\n",
+    );
     return 1;
   }
   // The prose header is hand-written and explains what the numbers mean; a refresh
