@@ -1,0 +1,10 @@
+{
+  "tick": 577,
+  "at": "2026-08-25T04:51:31.195Z",
+  "findings": [
+    {
+      "path": "docs/PRIOR-ART-LIST.md",
+      "rule": "MD049"
+    }
+  ]
+}
