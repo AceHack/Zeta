@@ -39,7 +39,7 @@ from collections import deque
 # import is honest here — the alternative is inventing stubs for a dependency
 # whose types we do not control.
 from arc_agi import Arcade, OperationMode  # type: ignore[import-untyped]
-from arcengine import GameAction
+from arcengine import ARCBaseGame, GameAction, GameState
 
 from zeta_arc.agent import PixelAgent
 from zeta_arc.driver import advance, reset
@@ -159,8 +159,45 @@ def open_arcade() -> tuple[Arcade, str]:
         ), "OFFLINE (degraded from NORMAL)"
 
 
+#: Per-level action ceiling. 300 was chosen against ZetaChase, whose levels are
+#: BFS-optimal at 7-10 actions. It is TOO SMALL for the hosted environments:
+#: their own `baseline_actions` run to 578 (DC22), 500 (M0R0) and 442 (WA30), so
+#: a 300 ceiling would cut off levels a REFERENCE PLAYER needs more than 300
+#: actions for — scoring an agent as failed on a level nobody clears that fast.
+#: Read off the live roster (run 32812742904), not assumed.
+MAX_ACTIONS_PER_LEVEL = 800
+
+
+def level_cleared(game: ARCBaseGame, previous_index: int) -> bool:
+    """Did the level just end? Works on the LAST level, and on any environment.
+
+    Two traps, both measured rather than reasoned about:
+
+    1. `level_index` does not advance on the final level. `next_level()` in
+       `arcengine/base_game.py:412` increments the score and then, if this is
+       the last level, calls `win()` instead of advancing. So a loop that waits
+       for `level_index` to reach the level count waits forever.
+
+    2. The previous check for that case was `agent cell == goal cell`, which is
+       true for ZetaChase and FALSE IN GENERAL. ZetaDiscovery's win is not
+       standing on the `goal` — its level 1 goal is a decoy that ends nothing —
+       so that proxy would silently mis-score it, and would mis-score any hosted
+       environment whose win condition is not "occupy the goal sprite".
+
+    `GameState.WIN` is what the engine actually sets, so it is what this reads.
+
+    Typed `ARCBaseGame`, not `ZetaChase`, and mypy is why: the first version
+    said `ZetaChase` and so contradicted the entire point of the change. A
+    clear-check that only accepts the one environment it was written against is
+    the defect being fixed, restated in the signature.
+    """
+    return game.level_index != previous_index or game._state == GameState.WIN
+
+
 def play(
-    agent: str = "greedy", seed: int = 0, max_actions_per_level: int = 300
+    agent: str = "greedy",
+    seed: int = 0,
+    max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
 ) -> dict:
     """One full episode. Returns per-level and aggregate scores."""
     arcade, mode = open_arcade()
@@ -191,9 +228,7 @@ def play(
         frame = advance(game, choose(agent, game, rng_state, pixel, grid))
         actions += 1
 
-        solved_this_level = game.level_index != level_index or (
-            _cell_of(game, "agent") == _cell_of(game, "goal")
-        )
+        solved_this_level = level_cleared(game, level_index)
         if solved_this_level:
             best = optimal_actions(level_index)
             levels.append(

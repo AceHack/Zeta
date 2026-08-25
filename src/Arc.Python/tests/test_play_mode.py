@@ -18,7 +18,13 @@ import pytest
 # Same reason as play.py: arc_agi ships no py.typed marker.
 from arc_agi import OperationMode  # type: ignore[import-untyped]
 
-from zeta_arc.play import list_environments, open_arcade, operation_mode_for, play
+from zeta_arc.play import (
+    level_cleared,
+    list_environments,
+    open_arcade,
+    operation_mode_for,
+    play,
+)
 
 
 @pytest.mark.parametrize("blank", ["", "   ", "\t\n", None])
@@ -123,3 +129,87 @@ def test_the_roster_never_reports_private_tags() -> None:
     assert "private_tags" not in body, (
         "list_environments emits private_tags — that field is not ours to publish"
     )
+
+
+def test_the_action_ceiling_clears_the_largest_reference_count_we_have_seen() -> None:
+    """300 was sized against ZetaChase, whose levels are optimal at 7-10 actions.
+
+    The hosted environments report their own reference counts in
+    `baseline_actions`, and they run to 578 (DC22), 500 (M0R0), 442 (WA30) —
+    read off the live roster, run 32812742904. A 300 ceiling would cut off
+    levels that a REFERENCE PLAYER needs more than 300 actions for, scoring the
+    agent as failed on a level nobody clears that fast.
+
+    Non-vacuous: lower the constant back toward 300 and this fails, naming the
+    environment it would have truncated.
+    """
+    from zeta_arc.play import MAX_ACTIONS_PER_LEVEL
+
+    largest_measured_baseline = 578  # DC22, level 6
+    assert MAX_ACTIONS_PER_LEVEL > largest_measured_baseline, (
+        f"the ceiling {MAX_ACTIONS_PER_LEVEL} is below DC22's own reference count "
+        f"{largest_measured_baseline} — levels would be truncated, not failed"
+    )
+
+
+def test_the_clear_check_is_not_the_zetachase_specific_proxy() -> None:
+    """`level_cleared` must read the engine's state, not "agent is on the goal".
+
+    THE OLD CHECK WAS `agent cell == goal cell`, true for ZetaChase and false in
+    general. ZetaDiscovery is the counter-example, and it is not hypothetical:
+    its level 1 `goal` is a DECOY that ends nothing, so standing on it means the
+    level has NOT been cleared. The old proxy says cleared; the engine says not.
+
+    Non-vacuous by construction — it drives the agent onto the decoy and asserts
+    both halves: the position that would have fooled the proxy, and the state
+    that is actually true.
+    """
+    from arcengine import GameAction, GameState
+
+    from zeta_arc.driver import advance, reset
+    from zeta_arc.environments.chase import CELL
+    from zeta_arc.environments.discovery import _LAYOUT, ZetaDiscovery
+
+    game = ZetaDiscovery(seed=4)
+    reset(game)
+    # Clear level 0 properly (key, then goal) to reach the decoy level.
+    for target in (_LAYOUT[0][2], _LAYOUT[0][1]):
+        for _ in range(40):
+            if game.level_index != 0:
+                break
+            a = game.current_level.get_sprites_by_tag("agent")[0]
+            ax, ay = a.x // CELL, a.y // CELL
+            if (ax, ay) == target:
+                break
+            advance(
+                game,
+                GameAction.ACTION4
+                if target[0] > ax
+                else GameAction.ACTION3
+                if target[0] < ax
+                else (GameAction.ACTION2 if target[1] > ay else GameAction.ACTION1),
+            )
+    assert game.level_index == 1
+
+    decoy = game.current_level.get_sprites_by_tag("goal")[0]
+    target = (decoy.x // CELL, decoy.y // CELL)
+    for _ in range(40):
+        a = game.current_level.get_sprites_by_tag("agent")[0]
+        ax, ay = a.x // CELL, a.y // CELL
+        if (ax, ay) == target:
+            break
+        advance(
+            game,
+            GameAction.ACTION4
+            if target[0] > ax
+            else GameAction.ACTION3
+            if target[0] < ax
+            else (GameAction.ACTION2 if target[1] > ay else GameAction.ACTION1),
+        )
+
+    agent_sprite = game.current_level.get_sprites_by_tag("agent")[0]
+    on_the_goal = (agent_sprite.x, agent_sprite.y) == (decoy.x, decoy.y)
+    assert on_the_goal, "the walk did not reach the decoy — the test proves nothing"
+    assert game._state != GameState.WIN, "the decoy ended the level — it is not a decoy"
+    # The proxy would have said "cleared" here. The real check must not.
+    assert not level_cleared(game, previous_index=1)
