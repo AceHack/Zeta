@@ -1,0 +1,12 @@
+{
+  "pr_number": 15278,
+  "archive_path": "docs/history/pr-reviews/PR-15278-docs-document-zeta-workflow-dispatch-token-for-cloud-agents.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T06:57:31.834Z",
+  "schema_version": "v1",
+  "commit_sha": "95a6f6ad57eac78c3cc325361a946d7c0a9f57af",
+  "title": "docs: document ZETA_WORKFLOW_DISPATCH_TOKEN for cloud agents",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T06:56:42Z",
+  "head_ref": "cursor/cloud-agent-dispatch-token-c9c8"
+}
