@@ -69,6 +69,16 @@ type ColumnZSetArrow =
     /// column's bytes — no per-element append. `nullCount = 0`, so the
     /// validity buffer is empty.
     static member private ColumnToArray(column: ReadOnlySpan<int64>) : IArrowArray =
+        // `MemoryMarshal.AsBytes` reinterprets in NATIVE byte order, while the
+        // Arrow IPC format mandates little-endian buffers. On every platform
+        // Zeta targets (arm64, x64) those coincide, which is exactly why this
+        // would be a silent corruption rather than a failure on a big-endian
+        // host: the bytes would be emitted byte-reversed and Arrow, being told
+        // they are little-endian, would read wrong values back without error.
+        // Fail closed instead of emitting a malformed batch.
+        if not BitConverter.IsLittleEndian then
+            raise (PlatformNotSupportedException
+                "ColumnZSetArrow writes Arrow buffers by reinterpreting native-endian                  bytes and requires a little-endian host; the Arrow IPC format is                  little-endian by specification.")
         let bytes = MemoryMarshal.AsBytes(column).ToArray()
         let data =
             new ArrayData(
@@ -88,23 +98,43 @@ type ColumnZSetArrow =
     /// Arrow `RecordBatch` → `ColumnZSet`. Copies straight out of each
     /// column's `Values` span; no builder, no per-element accessor.
     ///
-    /// The batch must carry two non-null `Int64Array` columns in `key`,
-    /// `weight` order; anything else is a schema the caller did not get from
-    /// `ToRecordBatch`, and is refused rather than silently coerced.
+    /// **Everything the Z-set invariant needs is checked here**, because this
+    /// is the boundary where untrusted bytes become a `ColumnZSet` whose
+    /// constructor documents that *the caller* owns the invariant. Skipping
+    /// these would let crafted IPC produce an unsorted column, and `toZSet`
+    /// would then hand the engine a `ZSet` whose binary search silently
+    /// returns wrong answers — the exact silent-corruption class the checked
+    /// arithmetic elsewhere in this file exists to avoid.
     static member OfRecordBatch(batch: RecordBatch) : ColumnZSet =
         if isNull (box batch) then ColumnZSet.Empty
-        elif batch.ColumnCount < 2 then
-            invalidArg "batch" "ColumnZSet expects two int64 columns (key, weight)"
+        elif batch.ColumnCount <> 2 then
+            invalidArg "batch"
+                $"ColumnZSet expects exactly two int64 columns (key, weight); got {batch.ColumnCount}"
         else
             match batch.Column 0, batch.Column 1 with
             | (:? Int64Array as keyArr), (:? Int64Array as weightArr) ->
+                // A null slot reads back as 0 from `.Values`, which would
+                // become a zero-weight entry — illegal in a Z-set — with no
+                // error anywhere. Refuse instead.
+                if keyArr.NullCount <> 0 || weightArr.NullCount <> 0 then
+                    invalidArg "batch"
+                        "ColumnZSet requires non-nullable columns; a null slot would read back as 0"
                 let n = batch.Length
                 if n = 0 then ColumnZSet.Empty
                 else
+                    if keyArr.Length < n || weightArr.Length < n then
+                        invalidArg "batch" "ColumnZSet column shorter than the batch length"
                     let keys = Pool.AllocateExact<int64> n
                     let weights = Pool.AllocateExact<int64> n
                     keyArr.Values.Slice(0, n).CopyTo(Span<int64> keys)
                     weightArr.Values.Slice(0, n).CopyTo(Span<int64> weights)
+                    // Z-set invariants: strictly ascending keys, no zero weights.
+                    for i in 0 .. n - 1 do
+                        if weights.[i] = 0L then
+                            invalidArg "batch" $"ColumnZSet weight at row {i} is zero; a Z-set drops zero weights"
+                        if i > 0 && keys.[i] <= keys.[i - 1] then
+                            invalidArg "batch"
+                                $"ColumnZSet keys must be strictly ascending; row {i} ({keys.[i]}) <= row {i - 1} ({keys.[i - 1]})"
                     ColumnZSet(Pool.Freeze keys, Pool.Freeze weights)
             | _ ->
                 invalidArg "batch" "ColumnZSet expects two int64 columns (key, weight)"
@@ -125,17 +155,37 @@ type ColumnZSetArrow =
         framed
 
     /// Inverse of `WriteIpc`.
+    ///
+    /// **Malformed input raises; it does not quietly return the empty Z-set.**
+    /// An empty input span means "nothing was written" and is the one benign
+    /// case. Truncated, garbage or non-Arrow bytes are a decode failure, and
+    /// returning `Empty` for them would make a corrupt checkpoint
+    /// indistinguishable from a legitimately empty one — a silent failure that
+    /// reads as success.
     static member ReadIpc(bytes: ReadOnlySpan<byte>) : ColumnZSet =
-        if bytes.Length < 4 then ColumnZSet.Empty
+        if not BitConverter.IsLittleEndian then
+            raise (PlatformNotSupportedException
+                "ColumnZSetArrow requires a little-endian host; the Arrow IPC format is \
+                 little-endian by specification.")
+        if bytes.IsEmpty then ColumnZSet.Empty
+        elif bytes.Length < 4 then
+            raise (InvalidDataException
+                $"ColumnZSet Arrow frame truncated: {bytes.Length} bytes, need at least the 4-byte length header")
         else
             let len = BinaryPrimitives.ReadInt32LittleEndian(bytes.Slice(0, 4))
-            if len <= 0 || bytes.Length < 4 + len then ColumnZSet.Empty
+            if len = 0 then ColumnZSet.Empty
+            elif len < 0 then
+                raise (InvalidDataException $"ColumnZSet Arrow frame declares a negative payload length ({len})")
+            elif bytes.Length < 4 + len then
+                raise (InvalidDataException
+                    $"ColumnZSet Arrow frame truncated: declares {len} payload bytes, {bytes.Length - 4} present")
             else
                 let payload = bytes.Slice(4, len).ToArray()
                 use ms = new MemoryStream(payload)
                 use reader = new ArrowStreamReader(ms)
                 let batch = reader.ReadNextRecordBatch()
-                if isNull (box batch) then ColumnZSet.Empty
+                if isNull (box batch) then
+                    raise (InvalidDataException "ColumnZSet Arrow payload contained no record batch")
                 else
                     use b = batch
                     ColumnZSetArrow.OfRecordBatch b
