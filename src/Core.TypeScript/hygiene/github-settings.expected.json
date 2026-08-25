@@ -13,7 +13,7 @@
     "description": "F# implementation of DBSP for .NET 10",
     "disabled": false,
     "has_discussions": true,
-    "has_downloads": true,
+    "has_downloads": false,
     "has_issues": true,
     "has_pages": true,
     "has_projects": true,
@@ -59,6 +59,7 @@
   "topics": [],
   "rulesets": [
     {
+      "bypass_actors": [],
       "conditions": {
         "ref_name": {
           "exclude": [],
@@ -74,6 +75,13 @@
       "target": "branch"
     },
     {
+      "bypass_actors": [
+        {
+          "actor_id": 5,
+          "actor_type": "RepositoryRole",
+          "bypass_mode": "pull_request"
+        }
+      ],
       "conditions": {
         "ref_name": {
           "exclude": [],
@@ -82,7 +90,7 @@
           ]
         }
       },
-      "enforcement": "disabled",
+      "enforcement": "active",
       "id": 16134995,
       "name": "CI Gate",
       "rules": [
@@ -91,23 +99,7 @@
             "do_not_enforce_on_create": false,
             "required_status_checks": [
               {
-                "context": "build-and-test (ubuntu-24.04)",
-                "integration_id": 15368
-              },
-              {
-                "context": "lint (actionlint)",
-                "integration_id": 15368
-              },
-              {
-                "context": "lint (markdownlint)",
-                "integration_id": 15368
-              },
-              {
-                "context": "lint (semgrep)",
-                "integration_id": 15368
-              },
-              {
-                "context": "lint (shellcheck)",
+                "context": "gate (required)",
                 "integration_id": 15368
               }
             ],
@@ -119,6 +111,7 @@
       "target": "branch"
     },
     {
+      "bypass_actors": [],
       "conditions": {
         "ref_name": {
           "exclude": [],
@@ -138,15 +131,12 @@
         {
           "parameters": null,
           "type": "non_fast_forward"
-        },
-        {
-          "parameters": null,
-          "type": "required_linear_history"
         }
       ],
       "target": "branch"
     },
     {
+      "bypass_actors": [],
       "conditions": {
         "ref_name": {
           "exclude": [
@@ -164,10 +154,30 @@
         {
           "parameters": null,
           "type": "deletion"
-        },
+        }
+      ],
+      "target": "branch"
+    },
+    {
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "~DEFAULT_BRANCH"
+          ]
+        }
+      },
+      "enforcement": "disabled",
+      "id": 19490341,
+      "name": "Code Quality Copilot review for default branch",
+      "rules": [
         {
-          "parameters": null,
-          "type": "non_fast_forward"
+          "parameters": {
+            "review_draft_pull_requests": true,
+            "review_on_push": true
+          },
+          "type": "copilot_code_review"
         }
       ],
       "target": "branch"
@@ -201,8 +211,63 @@
   ],
   "workflows": [
     {
+      "name": "Agent proposal to gated review branch",
+      "path": ".github/workflows/agent-proposal-gated-commit.yml",
+      "state": "active"
+    },
+    {
+      "name": "Automatic Dependency Submission",
+      "path": "dynamic/dependency-graph/auto-submission",
+      "state": "active"
+    },
+    {
       "name": "CodeQL",
       "path": ".github/workflows/codeql.yml",
+      "state": "active"
+    },
+    {
+      "name": "CodeQL",
+      "path": "dynamic/github-code-scanning/codeql",
+      "state": "active"
+    },
+    {
+      "name": "Copilot",
+      "path": "dynamic/agents/copilot-pull-request-reviewer",
+      "state": "active"
+    },
+    {
+      "name": "Copilot cloud agent",
+      "path": "dynamic/copilot-swe-agent/copilot",
+      "state": "active"
+    },
+    {
+      "name": "Copilot code review",
+      "path": "dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer",
+      "state": "active"
+    },
+    {
+      "name": "Dependabot Updates",
+      "path": "dynamic/dependabot/dependabot-updates",
+      "state": "active"
+    },
+    {
+      "name": "Dependency Graph",
+      "path": "dynamic/dependabot/update-graph",
+      "state": "active"
+    },
+    {
+      "name": "Deploy to GitHub Pages",
+      "path": ".github/workflows/pages-deploy.yml",
+      "state": "active"
+    },
+    {
+      "name": "Passkey proposal → gated commit",
+      "path": ".github/workflows/passkey-proposal-gated-commit.yml",
+      "state": "active"
+    },
+    {
+      "name": "Substrate Claim Checker",
+      "path": ".github/workflows/substrate-claim-checker.yml",
       "state": "active"
     },
     {
@@ -213,6 +278,31 @@
     {
       "name": "accelerator-move-next",
       "path": ".github/workflows/accelerator-move-next.yml",
+      "state": "active"
+    },
+    {
+      "name": "agencysignature-enforcement",
+      "path": ".github/workflows/agencysignature-enforcement.yml",
+      "state": "active"
+    },
+    {
+      "name": "agent-heartbeat",
+      "path": ".github/workflows/agent-heartbeat.yml",
+      "state": "active"
+    },
+    {
+      "name": "agent-reviewer",
+      "path": ".github/workflows/agent-reviewer.yml",
+      "state": "active"
+    },
+    {
+      "name": "arc-lane",
+      "path": ".github/workflows/arc-lane.yml",
+      "state": "active"
+    },
+    {
+      "name": "arc-swarm-fanout",
+      "path": ".github/workflows/arc-swarm-fanout.yml",
       "state": "active"
     },
     {
@@ -233,6 +323,16 @@
     {
       "name": "build-platform-images",
       "path": ".github/workflows/build-platform-images.yml",
+      "state": "active"
+    },
+    {
+      "name": "bytelock",
+      "path": ".github/workflows/bytelock.yml",
+      "state": "active"
+    },
+    {
+      "name": "chart-version-refresh",
+      "path": ".github/workflows/chart-version-refresh.yml",
       "state": "active"
     },
     {
@@ -266,6 +366,16 @@
       "state": "active"
     },
     {
+      "name": "drift-dashboard-cadence",
+      "path": ".github/workflows/drift-dashboard-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "drift-sweep",
+      "path": ".github/workflows/drift-sweep.yml",
+      "state": "active"
+    },
+    {
       "name": "factory-hygiene-audit-cadence",
       "path": ".github/workflows/factory-hygiene-audit-cadence.yml",
       "state": "active"
@@ -291,6 +401,41 @@
       "state": "active"
     },
     {
+      "name": "heartbeat-liveness",
+      "path": ".github/workflows/heartbeat-liveness.yml",
+      "state": "active"
+    },
+    {
+      "name": "helm-validate",
+      "path": ".github/workflows/helm-validate.yml",
+      "state": "active"
+    },
+    {
+      "name": "image-pull-measurement",
+      "path": ".github/workflows/image-pull-measurement.yml",
+      "state": "active"
+    },
+    {
+      "name": "installer-repair-mode-existing-install",
+      "path": ".github/workflows/installer-repair-mode-existing-install.yml",
+      "state": "active"
+    },
+    {
+      "name": "installer-unit-tests",
+      "path": ".github/workflows/installer-unit-tests.yml",
+      "state": "active"
+    },
+    {
+      "name": "inventory-hardening-check",
+      "path": ".github/workflows/inventory-hardening-check.yml",
+      "state": "active"
+    },
+    {
+      "name": "inventory-heartbeat",
+      "path": ".github/workflows/inventory-heartbeat.yml",
+      "state": "active"
+    },
+    {
       "name": "inventory-phase5-proof",
       "path": ".github/workflows/inventory-phase5-proof.yml",
       "state": "active"
@@ -298,6 +443,11 @@
     {
       "name": "k8s-argocd-health-test",
       "path": ".github/workflows/k8s-argocd-health-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "k8s-lane-partition",
+      "path": ".github/workflows/k8s-lane-partition.yml",
       "state": "active"
     },
     {
@@ -318,6 +468,11 @@
     {
       "name": "lint-autofix-apply",
       "path": ".github/workflows/lint-autofix-apply.yml",
+      "state": "active"
+    },
+    {
+      "name": "lockfile-healer",
+      "path": ".github/workflows/lockfile-healer.yml",
       "state": "active"
     },
     {
@@ -349,6 +504,161 @@
       "name": "memory-index-integrity",
       "path": ".github/workflows/memory-index-integrity.yml",
       "state": "active"
+    },
+    {
+      "name": "memory-reference-existence-lint",
+      "path": ".github/workflows/memory-reference-existence-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "mirror-to-fork",
+      "path": ".github/workflows/mirror-to-fork.yml",
+      "state": "active"
+    },
+    {
+      "name": "multiboot-qemu-uefi-smoke",
+      "path": ".github/workflows/multiboot-qemu-uefi-smoke.yml",
+      "state": "active"
+    },
+    {
+      "name": "mux-swarm-tick",
+      "path": ".github/workflows/mux-swarm-tick.yml",
+      "state": "active"
+    },
+    {
+      "name": "pages-build-deployment",
+      "path": "dynamic/pages/pages-build-deployment",
+      "state": "active"
+    },
+    {
+      "name": "pr-archive-on-merge",
+      "path": ".github/workflows/pr-archive-on-merge.yml",
+      "state": "active"
+    },
+    {
+      "name": "pr-gate-presence",
+      "path": ".github/workflows/pr-gate-presence.yml",
+      "state": "active"
+    },
+    {
+      "name": "pr-manifest-integrity",
+      "path": ".github/workflows/pr-manifest-integrity.yml",
+      "state": "active"
+    },
+    {
+      "name": "proof-closure-drift",
+      "path": ".github/workflows/proof-closure-drift.yml",
+      "state": "active"
+    },
+    {
+      "name": "razor-cadence",
+      "path": ".github/workflows/razor-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "rerun-cancelled-gate",
+      "path": ".github/workflows/rerun-cancelled-gate.yml",
+      "state": "active"
+    },
+    {
+      "name": "resume-diff",
+      "path": ".github/workflows/resume-diff.yml",
+      "state": "active"
+    },
+    {
+      "name": "role-ref-current-state-surfaces-lint",
+      "path": ".github/workflows/role-ref-current-state-surfaces-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "ruleset-apply",
+      "path": ".github/workflows/ruleset-apply.yml",
+      "state": "active"
+    },
+    {
+      "name": "scaffold-stage1-create-repos",
+      "path": ".github/workflows/scaffold-stage1-create-repos.yml",
+      "state": "active"
+    },
+    {
+      "name": "scorecard",
+      "path": ".github/workflows/scorecard.yml",
+      "state": "active"
+    },
+    {
+      "name": "search-index-cadence",
+      "path": ".github/workflows/search-index-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "skill-description-lint",
+      "path": ".github/workflows/skill-description-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "society-heartbeat",
+      "path": ".github/workflows/society-heartbeat.yml",
+      "state": "active"
+    },
+    {
+      "name": "soraya-formal-coverage-cadence",
+      "path": ".github/workflows/soraya-formal-coverage-cadence.yml",
+      "state": "active"
+    },
+    {
+      "name": "spanserializer-windows-repro",
+      "path": ".github/workflows/spanserializer-windows-repro.yml",
+      "state": "active"
+    },
+    {
+      "name": "stryker-mutation",
+      "path": ".github/workflows/stryker-mutation.yml",
+      "state": "active"
+    },
+    {
+      "name": "tick-metrics",
+      "path": ".github/workflows/tick-metrics.yml",
+      "state": "active"
+    },
+    {
+      "name": "tlaps-proof",
+      "path": ".github/workflows/tlaps-proof.yml",
+      "state": "active"
+    },
+    {
+      "name": "udp-lossy-tests",
+      "path": ".github/workflows/udp-lossy-tests.yml",
+      "state": "active"
+    },
+    {
+      "name": "verify-ollama-pin",
+      "path": ".github/workflows/verify-ollama-pin.yml",
+      "state": "active"
+    },
+    {
+      "name": "vocab hygiene",
+      "path": ".github/workflows/vocab-hygiene.yml",
+      "state": "active"
+    },
+    {
+      "name": "wsl-install-sh-test",
+      "path": ".github/workflows/wsl-install-sh-test.yml",
+      "state": "active"
+    },
+    {
+      "name": "zetadb-scheduled-node",
+      "path": ".github/workflows/zetadb-scheduled-node.yml",
+      "state": "active"
+    },
+    {
+      "name": "zflash-harness-lint",
+      "path": ".github/workflows/zflash-harness-lint.yml",
+      "state": "active"
+    },
+    {
+      "name": "zz-rustup-cache-probe",
+      "path": ".github/workflows/zz-rustup-cache-probe.yml",
+      "state": "active"
     }
   ],
   "environments": [
@@ -364,7 +674,7 @@
     }
   ],
   "pages": {
-    "build_type": "legacy",
+    "build_type": "workflow",
     "https_enforced": true,
     "public": true,
     "source": {
@@ -375,6 +685,7 @@
   "codeql_default_setup": {
     "languages": [
       "actions",
+      "c-cpp",
       "csharp",
       "go",
       "java-kotlin",
@@ -402,7 +713,7 @@
   "counts": {
     "webhooks": 0,
     "deploy_keys": 0,
-    "actions_secrets": 10,
+    "actions_secrets": 15,
     "dependabot_secrets": 0
   }
 }

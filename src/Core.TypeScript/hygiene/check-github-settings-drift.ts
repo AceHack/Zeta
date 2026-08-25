@@ -12,16 +12,57 @@
 // Defaults:
 //   --repo        $GH_REPO, else `gh repo view --json nameWithOwner`
 //   --expected    src/Core.TypeScript/hygiene/github-settings.expected.json (next to this script)
+//   --live-from   PATH to a previously captured snapshot, used INSTEAD of a
+//                 live `gh api` read. Offline replay (manifesto §7 DST): the
+//                 comparison is a pure function of two files, so every branch
+//                 of this tool — including the zero-readable INDETERMINATE
+//                 exit — can be exercised and shown failing without minting a
+//                 deliberately-underpowered credential to prove it. A branch
+//                 that can only be reached by holding a weak token is a
+//                 branch nobody ever demonstrates.
 //
 // Exit codes:
-//   0   — no drift
+//   0   — no drift, and at least one field was actually compared
 //   1   — drift detected (diff printed to stdout)
 //   2   — tooling / input error
+//   3   — INDETERMINATE: the credential could read NOTHING, so nothing was
+//         compared. Distinguished from 0 because a scan that compared zero
+//         fields did not pass, it did not run — and the two must never share
+//         an exit code. (#14914's lesson, applied to this detector.)
+//
+// WHAT "NO DRIFT" DOES AND DOES NOT MEAN
+//
+// Fields the running credential cannot read arrive as
+// `{"_skipped":"insufficient-token-scope"}` on the live side. They are
+// dropped from BOTH sides before the diff — there is no honest way to
+// compare a value you could not read — which means a green result covers
+// only the fields that were readable. Under `GITHUB_TOKEN` that excludes
+// `default_branch_protection`, `actions_permissions`, `codeql_default_setup`,
+// `repo.security_and_analysis` and the whole merge-settings group: they are
+// RECORDED IN-TREE AND NOT CHECKED.
+//
+// So every run now prints that set — count, names, and the endpoint each one
+// came from — on STDOUT next to the verdict, not on stderr where an advisory
+// job's log buries it. The number is the honest denominator of the check, and
+// a check that will not state its own denominator is not reporting a result.
+//
+// The refused "fix" for all of this, recorded so nobody reaches for it: do
+// NOT re-snapshot with the same weak token. That would replace 21 recorded
+// values with 21 sentinels, delete them from the comparison, and turn the
+// check green — converting "recorded and unchecked" into "absent and
+// unchecked" while manufacturing the appearance of success. The expected
+// file in this repo is generated with an admin credential ON PURPOSE.
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { snapshot } from "./snapshot-github-settings.ts";
+import {
+  ADMIN_READ_CREDENTIAL_NOTE,
+  FIELD_SOURCE_ENDPOINT,
+  isSkippedSentinel,
+  ordinal,
+  snapshot,
+} from "./snapshot-github-settings.ts";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -45,18 +86,133 @@ async function runCmd(cmd: readonly string[]): Promise<SpawnResult> {
   return { stdout, stderr, exitCode };
 }
 
-interface Args {
+export interface Args {
   readonly repo: string;
   readonly expected: string;
+  readonly liveFrom: string | null;
 }
 
-type ParseResult =
+export type ParseResult =
   | { readonly kind: "args"; readonly args: Args }
   | { readonly kind: "error"; readonly message: string };
+
+/**
+ * How many values actually survived to be compared.
+ *
+ * Arrays count as one leaf: the question this answers is "did the comparison
+ * have any subject at all", not "how many bytes". Zero is the case that must
+ * never be reported as success.
+ */
+export function countLeaves(v: unknown): number {
+  if (v === null || typeof v !== "object") return 1;
+  if (Array.isArray(v)) return 1;
+  let n = 0;
+  for (const key of Object.keys(v as Record<string, unknown>)) {
+    n += countLeaves((v as Record<string, unknown>)[key]);
+  }
+  return n;
+}
+
+export interface ReadabilityPartition {
+  /** Paths the LIVE read could not reach — recorded in-tree, not verified. */
+  readonly unreadableLive: readonly string[];
+  /** Paths the RECORD itself carries as a sentinel — never recorded at all. */
+  readonly unreadableExpected: readonly string[];
+  /** Leaves remaining on the live side after stripping. 0 ⇒ nothing ran. */
+  readonly comparedLeaves: number;
+}
+
+/**
+ * Drop every field either side could not read, and report what was dropped.
+ *
+ * MUTATES both arguments — the caller re-serialises them for the diff.
+ *
+ * Both directions matter and they mean different things:
+ *   - unreadable on the LIVE side  ⇒ the record holds a value this run could
+ *     not verify. The record is fine; the credential is short.
+ *   - unreadable on the EXPECTED side ⇒ the record itself never captured the
+ *     field. A stronger credential now cannot help, because there is nothing
+ *     to compare against. That is the worse of the two and it was previously
+ *     invisible: the old strip walked `Object.keys(live)` only, so a sentinel
+ *     sitting in the committed file was silently diffed against a real value
+ *     and reported as ordinary drift.
+ */
+export function partitionByReadability(
+  live: Record<string, unknown>,
+  exp: Record<string, unknown>,
+): ReadabilityPartition {
+  const unreadableLive: string[] = [];
+  const unreadableExpected: string[] = [];
+
+  function walk(l: Record<string, unknown>, e: Record<string, unknown>, prefix: string): void {
+    for (const key of [...new Set([...Object.keys(l), ...Object.keys(e)])].sort(ordinal)) {
+      const path = prefix.length > 0 ? `${prefix}.${key}` : key;
+      const lv = l[key];
+      const ev = e[key];
+      const lSkip = isSkippedSentinel(lv);
+      const eSkip = isSkippedSentinel(ev);
+      if (lSkip || eSkip) {
+        if (lSkip) unreadableLive.push(path);
+        if (eSkip) unreadableExpected.push(path);
+        delete l[key];
+        delete e[key];
+        continue;
+      }
+      if (
+        lv !== null &&
+        typeof lv === "object" &&
+        !Array.isArray(lv) &&
+        ev !== null &&
+        typeof ev === "object" &&
+        !Array.isArray(ev)
+      ) {
+        walk(lv as Record<string, unknown>, ev as Record<string, unknown>, path);
+      }
+    }
+  }
+
+  walk(live, exp, "");
+  return { unreadableLive, unreadableExpected, comparedLeaves: countLeaves(live) };
+}
+
+/**
+ * The human-readable "what this run did not check" block.
+ *
+ * Returned as lines rather than printed so it is testable without capturing
+ * stdout — the same reason `partitionByReadability` is pure.
+ */
+export function formatReadabilityReport(part: ReadabilityPartition, repo: string): string[] {
+  const lines: string[] = [];
+  if (part.unreadableLive.length > 0) {
+    lines.push(
+      `github-settings-drift: RECORDED BUT NOT CHECKED — ${part.unreadableLive.length} field(s) this credential could not read:`,
+    );
+    for (const path of part.unreadableLive) {
+      const src =
+        FIELD_SOURCE_ENDPOINT[path] ?? FIELD_SOURCE_ENDPOINT[path.split(".")[0] ?? ""] ?? "(endpoint unmapped)";
+      lines.push(`    ${path}  <-  ${src.replace("{repo}", repo)}`);
+    }
+  }
+  if (part.unreadableExpected.length > 0) {
+    lines.push(
+      `github-settings-drift: NOT RECORDED AT ALL — ${part.unreadableExpected.length} field(s) the committed snapshot never captured:`,
+    );
+    for (const path of part.unreadableExpected) lines.push(`    ${path}`);
+    lines.push("    A stronger credential cannot verify these: there is no recorded value to compare against.");
+    lines.push("    Re-snapshot with an admin credential to give them one.");
+  }
+  if (lines.length > 0) lines.push(ADMIN_READ_CREDENTIAL_NOTE);
+  lines.push(
+    `github-settings-drift: compared ${part.comparedLeaves} readable leaf value(s); ` +
+      `${part.unreadableLive.length} recorded-but-unverified, ${part.unreadableExpected.length} unrecorded.`,
+  );
+  return lines;
+}
 
 export async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
   let repo = "";
   let expected = resolve(SCRIPT_DIR, "github-settings.expected.json");
+  let liveFrom: string | null = null;
   let i = 0;
 
   while (i < argv.length) {
@@ -75,6 +231,13 @@ export async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
       }
       expected = value;
       i += 2;
+    } else if (arg === "--live-from") {
+      const value = argv[i + 1];
+      if (value === undefined) {
+        return { kind: "error", message: "error: --live-from requires PATH argument" };
+      }
+      liveFrom = value;
+      i += 2;
     } else {
       return { kind: "error", message: `error: unknown arg: ${String(arg)}` };
     }
@@ -91,11 +254,11 @@ export async function parseArgs(argv: readonly string[]): Promise<ParseResult> {
     }
   }
 
-  if (repo.length === 0) {
+  if (repo.length === 0 && liveFrom === null) {
     return { kind: "error", message: "error: cannot determine repo; pass --repo OWNER/NAME or set GH_REPO" };
   }
 
-  return { kind: "args", args: { repo, expected } };
+  return { kind: "args", args: { repo: repo.length > 0 ? repo : "(replay)", expected, liveFrom } };
 }
 
 export async function main(argv: readonly string[]): Promise<number> {
@@ -105,7 +268,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  const { repo, expected } = parsed.args;
+  const { repo, expected, liveFrom } = parsed.args;
 
   // Verify expected snapshot exists
   let expectedContent: string;
@@ -116,19 +279,29 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  // Generate live snapshot
+  // Generate live snapshot — or replay a captured one.
   let liveContent: string;
-  try {
-    liveContent = await snapshot(repo);
-  } catch (err: unknown) {
-    process.stderr.write(`error: snapshot failed: ${err instanceof Error ? err.message : String(err)}\n`);
-    return 2;
+  if (liveFrom !== null) {
+    try {
+      liveContent = readFileSync(liveFrom, "utf8");
+    } catch {
+      process.stderr.write(`error: --live-from snapshot not found: ${liveFrom}\n`);
+      return 2;
+    }
+    process.stdout.write(`github-settings-drift: REPLAY — live side read from ${liveFrom}, not from gh api\n`);
+  } else {
+    try {
+      liveContent = await snapshot(repo);
+    } catch (err: unknown) {
+      process.stderr.write(`error: snapshot failed: ${err instanceof Error ? err.message : String(err)}\n`);
+      return 2;
+    }
   }
 
-  // Strip scope-limited fields: when the live snapshot emits {_skipped: "insufficient-token-scope"}
-  // for a field (e.g. actions/permissions requires admin token, not available in CI), drop that
-  // field from both sides so a missing-scope field doesn't register as false drift.
-  // Stripping is recursive so nested fields (e.g. counts.webhooks) are also handled.
+  // Drop every field either side could not read, and SAY SO. The dropping is
+  // unavoidable — you cannot diff a value you were never shown — but the
+  // silence was not: this report used to go to stderr in an advisory job,
+  // which is a place results go to be unread.
   let liveObj: Record<string, unknown>;
   let expectedObj: Record<string, unknown>;
   try {
@@ -139,55 +312,33 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 2;
   }
 
-  function isSkipped(v: unknown): boolean {
-    return (
-      v !== null &&
-      typeof v === "object" &&
-      "_skipped" in (v as Record<string, unknown>) &&
-      (v as Record<string, unknown>)._skipped === "insufficient-token-scope"
+  const part = partitionByReadability(liveObj, expectedObj);
+  const reportLines = formatReadabilityReport(part, repo);
+  for (const line of reportLines) process.stdout.write(`${line}\n`);
+  if (part.unreadableLive.length > 0 || part.unreadableExpected.length > 0) {
+    // A GitHub annotation as well as the log line: an advisory job's log is
+    // read by whoever went looking, an annotation is read by whoever did not.
+    process.stdout.write(
+      `::warning title=github-settings-drift coverage::${part.unreadableLive.length} recorded field(s) were NOT verified ` +
+        `and ${part.unreadableExpected.length} are not recorded at all; ${part.comparedLeaves} leaf value(s) were compared. ` +
+        "See the job log for the field list and the credential that would read them.\n",
     );
   }
 
-  function stripSkippedSentinels(
-    live: Record<string, unknown>,
-    exp: Record<string, unknown>,
-    pathPrefix: string,
-    report: string[],
-  ): void {
-    for (const key of Object.keys(live)) {
-      const val = live[key];
-      if (isSkipped(val)) {
-        report.push(pathPrefix.length > 0 ? `${pathPrefix}.${key}` : key);
-        delete live[key];
-        delete exp[key];
-      } else if (
-        val !== null &&
-        typeof val === "object" &&
-        !Array.isArray(val) &&
-        exp[key] !== null &&
-        typeof exp[key] === "object" &&
-        !Array.isArray(exp[key])
-      ) {
-        stripSkippedSentinels(
-          val as Record<string, unknown>,
-          exp[key] as Record<string, unknown>,
-          pathPrefix.length > 0 ? `${pathPrefix}.${key}` : key,
-          report,
-        );
-      }
-    }
-  }
-
-  const skippedPaths: string[] = [];
-  stripSkippedSentinels(liveObj, expectedObj, "", skippedPaths);
-
-  if (skippedPaths.length > 0) {
+  // A scan that compared nothing did not pass. Refuse to spend exit 0 on it.
+  if (part.comparedLeaves === 0) {
+    process.stdout.write(
+      "::error title=github-settings-drift INDETERMINATE::this credential could read NO settings at all, " +
+        "so ZERO fields were compared. This check DID NOT RUN; it did not pass.\n",
+    );
     process.stderr.write(
-      `github-settings-drift: skipping ${skippedPaths.length} field(s) not readable with current token: ${skippedPaths.join(", ")}\n`,
+      `github-settings-drift: INDETERMINATE (repo=${repo}) — 0 fields readable, 0 compared. Exit 3.\n`,
     );
-    liveContent = JSON.stringify(liveObj, null, 2);
-    expectedContent = JSON.stringify(expectedObj, null, 2);
+    return 3;
   }
+
+  liveContent = JSON.stringify(liveObj, null, 2);
+  expectedContent = JSON.stringify(expectedObj, null, 2);
 
   if (!liveContent.endsWith("\n")) liveContent += "\n";
   if (!expectedContent.endsWith("\n")) expectedContent += "\n";
@@ -205,6 +356,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     const diffResult = await runCmd(["diff", "-u", "--label", expected, "--label", "(live from gh api)", tmpExp, tmpLive]);
 
     if (diffResult.exitCode === 0) {
+      // Deliberately not the word "clean": this covers the readable fields
+      // only, and the count above is the scope of the claim.
+      process.stdout.write(
+        `github-settings-drift: no drift across the ${part.comparedLeaves} compared leaf value(s) (repo=${repo})\n`,
+      );
       process.stderr.write(`github-settings-drift: no drift (repo=${repo})\n`);
       return 0;
     } else if (diffResult.exitCode >= 2) {

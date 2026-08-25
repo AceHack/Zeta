@@ -45,11 +45,56 @@ is now additive and MEASURED; a CA leaves the set only through `--finalize` on c
 evidence. Proofs: `tools/setup/persona-keys/rotate-ca-closing-bound.test.ts` CB-1..CB-8, plus the
 inverted pins in `rotate-refusals.test.ts` RR-4/RR-5/RR-6.)
 
-**No open P0.**
+### Repository admins can merge past `gate (required)` — and nothing in-tree said so
+
+- **Site:** live ruleset `16134995` "CI Gate", `bypass_actors`; recorded at
+  `src/Core.TypeScript/hygiene/github-settings.expected.json` as of this entry
+- **Found:** 2026-08-25 by Nazar (security-operations), from PR #15349's audit note
+- **Severity:** P0 (security)
+- **Symptom:** on 2026-08-13T21:50:54Z the CI Gate ruleset gained
+  `{actor_type: RepositoryRole, actor_id: 5, bypass_mode: pull_request}`, so any
+  account with repository-admin permission can merge a pull request into `main`
+  with `gate (required)` failing or absent. The settings snapshot did not capture
+  `bypass_actors` at all, so for the 12 days after the change the committed record
+  showed a gate with no exceptions — the field that says *who may merge past the
+  rule* was the one field the detector could not see.
+- **Blast radius:** every account holding admin on `Lucent-Financial-Group/Zeta`
+  (verified: an admin account's `GET /rulesets/16134995` returns
+  `current_user_can_bypass: "pull_requests_only"`; the same call on ruleset 16189060,
+  which has no bypass actors, returns `"never"`). What a consumer of `main` observes:
+  nothing — a bypassed merge is indistinguishable in the log from a gated one. What
+  they should do: nothing; there is no evidence the bypass has been exercised, and
+  this entry is about the capability, not an incident.
+- **Fix:** operator decision, not an agent's. Either (a) remove the bypass actor so
+  the gate has no exceptions, matching ruleset 16189060; or (b) keep it and record
+  the reason in `docs/GITHUB-SETTINGS.md`, because a deliberate break-glass path is
+  defensible and an undocumented one is not. Detection is already fixed: the field
+  is captured, and `snapshot-github-settings.test.ts` fails if any ruleset in the
+  record lacks `bypass_actors`.
+- **Who:** human maintainer (settings change) with Kenji (architect) on the
+  disposition. Nazar cannot and did not change live settings.
 
 ---
 
 ## P1 — serious
+
+### Branch Safety ruleset lost `required_linear_history`; only the legacy guard still carries it
+
+- **Site:** live ruleset `16189060` "Branch Safety"
+- **Found:** 2026-08-25 by Nazar (security-operations)
+- **Severity:** P1
+- **Symptom:** `required_linear_history` was removed from the ruleset at
+  2026-08-01T16:17:01Z. The committed record still listed it, so the drift check
+  would have caught this on 2026-08-02 had anyone read an advisory job's log.
+- **Blast radius:** none today, and saying so is the point of the entry rather than
+  a reason to close it. Classic branch protection on `main` still has
+  `required_linear_history: true` (verified live 2026-08-25), so merge commits are
+  still refused. The exposure is that two guards became one, and the surviving one
+  is the legacy surface GitHub is steering repos away from — a single API call from
+  removing the property with nothing left behind it.
+- **Fix:** operator decision — re-add the `required_linear_history` rule to ruleset
+  16189060, or record why the classic guard alone is sufficient.
+- **Who:** human maintainer (settings change); Kenji on the disposition.
 
 (The `rotate()` per-port dispatch entry — `planPort`/`rotatePort` falling through to `device-cert`,
 so an unrecognised port rotated the CERT while the biometric prompt named the port REQUESTED, found

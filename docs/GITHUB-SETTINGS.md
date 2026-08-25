@@ -8,7 +8,7 @@ here. What *is* tracked here: click-ops toggles that live inside
 GitHub's UI or require API calls to change.
 
 The machine-readable companion is
-[`src/Core.TypeScript/hygiene/github-settings.expected.json`](../tools/hygiene/github-settings.expected.json).
+[`src/Core.TypeScript/hygiene/github-settings.expected.json`](../src/Core.TypeScript/hygiene/github-settings.expected.json).
 That JSON file is **authoritative** — if this markdown ever
 disagrees with it, the JSON wins and this file gets updated.
 
@@ -48,6 +48,100 @@ That silent drift is exactly what this system detects.
 
 See `docs/FACTORY-HYGIENE.md` row #40 for the full cadence /
 owner / scope specification.
+
+## Reconciliation of 2026-08-25 — timeline first
+
+The record below (`github-settings.expected.json`) was last
+fully refreshed in PR #8073. Between then and 2026-08-25 the
+live settings moved and the record did not, and the drift
+workflow that would have said so is `continue-on-error: true`,
+so it said it into a log nobody read. Three of the
+differences were in the **permissive** direction: the record
+understated what protects `main`.
+
+Timeline of the live changes, from the ruleset version-history
+API (`GET /repos/{repo}/rulesets/{id}/history`). All times UTC;
+every edit was made by user id 578953 except where noted.
+
+| when (UTC) | ruleset | change |
+|---|---|---|
+| 2026-05-08T11:14:55Z | 16134995 CI Gate | active, 7 required contexts, no bypass actors |
+| 2026-05-10T09:25:02Z | 16189060 Branch Safety | active: `deletion` + `non_fast_forward` + `required_linear_history` |
+| 2026-05-27T14:15:45Z | 16934633 Heartbeat | active: `deletion` + `non_fast_forward` |
+| 2026-06-01T09:54:41Z | 16134995 CI Gate | drops `build-and-test (ubuntu-24.04-arm)` |
+| 2026-06-01T09:56:49Z | 16134995 CI Gate | drops `build-and-test (macos-26)` -> the 5 contexts the record still listed |
+| 2026-06-04T17:28:52Z | 16134995 CI Gate | **enforcement -> `disabled`** (this is the last state the record was right about) |
+| 2026-07-21T22:40:44Z | 19490341 Copilot review | created, active (user id 10137) |
+| 2026-08-01T16:15:04Z | 16934633 Heartbeat | **`non_fast_forward` REMOVED** |
+| 2026-08-01T16:17:01Z | 16189060 Branch Safety | **`required_linear_history` REMOVED** |
+| 2026-08-01T16:17:01Z | 19490341 Copilot review | enforcement -> `disabled` |
+| 2026-08-13T15:57:29Z | 16134995 CI Gate | **enforcement -> `active`**, required contexts replaced by the single `gate (required)` |
+| 2026-08-13T21:50:54Z | 16134995 CI Gate | **`bypass_actors` gains `{RepositoryRole 5, bypass_mode: pull_request}`** |
+| 2026-08-25T13:21:25Z | 16934633 Heartbeat | `conditions` edit, reconciled in-tree by PR #15359 |
+
+So the record has been wrong about whether the CI gate is on
+for **11 days**, and has never at any point been able to say
+whether anyone could bypass it, because the snapshot did not
+capture `bypass_actors` at all.
+
+## Adjudication — is LIVE right, or is the RECORD right?
+
+Reconciling a record to a bad live state is laundering, so
+each difference gets a verdict rather than a re-snapshot.
+Recording a value here is **not** endorsement of it: this
+file is a raw vault — a single version of the facts. Intent
+lives in `docs/operations/rulesets/` (the reconciler's
+desired state) and in `docs/BUGS.md` for the contested rows.
+
+| # | field | recorded was | live is | verdict |
+|---|---|---|---|---|
+| 1 | `repo.has_downloads` | `true` | `false` | **live is right.** The legacy downloads API is deprecated and unused here; off is the narrower setting. Record it. |
+| 2 | `rulesets[16134995].enforcement` | `disabled` | `active` | **live is right, and the record was wrong in the permissive direction.** `CLAUDE.md` §Ship and the heartbeat-lane design both depend on this gate being on. Record it. |
+| 3 | `rulesets[16134995]` required contexts | 5 named jobs | `gate (required)` | **live is right.** `gate.yml` aggregates the legs into one required check; the 5 named contexts no longer exist under those names. A record naming contexts that cannot report is worse than no record. |
+| 4 | `rulesets[16134995].bypass_actors` | *not captured* | `RepositoryRole 5 (admin), pull_request` | **CONTESTED — recorded as fact, not endorsed.** Repository admins can merge a PR to `main` without `gate (required)` passing. Verified empirically, not read off a table: `GET /rulesets/16134995` returns `current_user_can_bypass: "pull_requests_only"` for an account whose `permissions.admin` is `true`, and `"never"` for ruleset 16189060 which has no bypass actors. Filed P0-security in `docs/BUGS.md`. |
+| 5 | `rulesets[16189060]` Branch Safety | had `required_linear_history` | removed 2026-08-01 | **CONTESTED — recorded as fact, not endorsed.** Effective coverage is unchanged *today* because classic branch protection on `main` still carries `required_linear_history: true` (verified live). But the ruleset is the durable surface and classic protection is the legacy one, so the repo is now relying on the weaker of its two guards. Filed P1 in `docs/BUGS.md`. |
+| 6 | `rulesets[16934633]` Heartbeat | had `non_fast_forward` | removed 2026-08-01 | **live matches the committed desired state**, so the record follows it — but note the order of events honestly: the removal happened 2026-08-01 and the desired-state file that contains only `deletion` landed 2026-08-25 in PR #15349. The file ratified an existing live state rather than causing it. Force-push to `heartbeat/*` is currently permitted. Raised for the operator, not filed as a bug: the heartbeat lanes are machine-written and re-derivable. |
+| 7 | ruleset 19490341 "Code Quality Copilot review" | **absent from the record entirely** | present, `enforcement: disabled` | **live is right.** A whole ruleset existed for a month with nothing in-tree naming it. This is the same invisibility as #4 at a coarser grain. Recorded. |
+| 8 | `workflows` | 30 entries | 90 exist | **NEITHER — this was a tool defect.** `/actions/workflows` pages at 30 and the snapshot read one page with `--jq`, which suppresses `--paginate`. Two thirds of the inventory, every one of which can be `disabled_manually`, was outside the detector's field of view. Fixed; all 90 recorded. |
+| 9 | `pages.build_type` | `legacy` | `workflow` | **live is right.** Pages deploys from a workflow now. Record it. |
+| 10 | `codeql_default_setup.languages` | 7 languages | +`c-cpp` | **live is right** and it is a tightening. Record it. |
+| 11 | `counts.actions_secrets` | `10` | `15` | **live is right.** Stated limit: this row is a COUNT, not a name list, so it can only witness "no secret was added or removed" — it cannot distinguish a rotation from a substitution. |
+
+### Fields this record still cannot see
+
+`bypass_actors` is captured as of this PR. Two limits remain
+and are recorded rather than closed:
+
+- **Under `GITHUB_TOKEN` the check verifies about 21 fewer
+  fields than the record contains** — branch protection,
+  Actions permissions, CodeQL default setup,
+  `security_and_analysis`, and the merge-settings group are
+  *recorded in-tree and not checked*. The drift tool now
+  prints that set by name on every run with the endpoint each
+  field came from. The fix is a credential
+  (`DRIFT_DETECTOR_PAT`), and configuring it is the
+  operator's call.
+- **The refused shortcut**, written down so nobody reaches
+  for it: re-snapshotting with the CI token would replace
+  those ~21 recorded values with `_skipped` sentinels, the
+  checker drops sentinels from both sides, and the run goes
+  green. That converts *recorded and unchecked* into *absent
+  and unchecked* while manufacturing the appearance of
+  success. `snapshot-github-settings.test.ts` now fails if
+  any sentinel appears in the committed record, so this
+  cannot land by accident.
+
+> **Sections below this line are PROSE and several are stale.**
+> They describe a single ruleset with six rules, five named
+> required status checks, zero Actions secrets, and five
+> workflows. Live as of 2026-08-25: five rulesets, one required
+> check named `gate (required)`, 15 Actions secrets, 90
+> workflows, and `enforce_admins: true`. The JSON is
+> authoritative, as the top of this file already says; the
+> prose has not been rewritten here because doing it in the
+> same change as the record reconciliation would make both
+> harder to review. Tracked as work-item
+> `081M0WSF2X2087G0R003F18DDJ`.
 
 ## What's captured
 
