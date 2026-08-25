@@ -29,45 +29,54 @@ open System.Runtime.CompilerServices
 /// is precisely what `Vector<int64>` wants. So the column store and the
 /// vectorised kernel are one change, not two.
 ///
-/// ## What was measured (Apple M2 Ultra, arm64/NEON, `Vector<int64>.Count = 2`)
+/// ## What was measured
 ///
-/// The honest headline is that **one number does not exist**, because a scalar
-/// predicate scan costs whatever its *branch predictor* costs. The same kernel
-/// over the same element count measures ~6x apart depending only on whether
-/// the column is sorted:
+/// Source: `bench/Benchmarks/ColumnZSetBench.fs` (BenchmarkDotNet, ShortRun),
+/// Apple M2 Ultra, arm64/NEON, `Vector<int64>.Count = 2`, .NET 10. Ratios are
+/// vector-vs-its-own-scalar-twin at n = 1 048 576 unless stated. **None of
+/// these is a portable constant** — a 4-lane AVX2 or 8-lane AVX-512 host will
+/// differ, and the sorted/shuffled split below matters more than lane count.
 ///
-/// | operation, n = 1 000 000 | scalar | vector | ratio |
+/// | operation | scalar | vector | ratio |
 /// |---|---|---|---|
-/// | range count, **shuffled** column | 3 387 µs | 341 µs | **9.9x** |
-/// | range count, **sorted** column | 594 µs | 341 µs | **1.75x** |
-/// | weight sum, in cache (n = 4 096) | 1 055 ns | 1 549 ns | **0.68x — slower** |
-/// | weight sum, out of cache | 166 µs | 248 µs | **0.67x — slower** |
+/// | range count, **shuffled** keys | 3 399 µs | 331 µs | **10.3x** |
+/// | range count, **sorted** keys | 421 µs | 321 µs | **1.31x** |
+/// | ranged weight sum, **shuffled** | 3 728 µs | 530 µs | **7.03x** |
+/// | ranged weight sum, **sorted** | 582 µs | 584 µs | **1.00x — no win** |
+/// | weight sum (unpredicated) | 563 µs | 396 µs | **1.42x** |
 ///
-/// Note the vector column: **341 µs either way.** The branchless kernel does
-/// not care how the data is ordered; only the scalar twin does. That is the
-/// actual claim, and it is why the ratio moves.
+/// **The dominant variable is branch predictability, not vector width.** A
+/// scalar predicate scan costs whatever its branch predictor costs; the
+/// branchless vector kernel costs the same regardless of key order (331 µs
+/// shuffled vs 321 µs sorted). So the ratio moves because the *scalar* side
+/// moves by ~8x, not because the vector side gets faster.
 ///
-/// Which regime applies matters, so it is stated rather than averaged away:
+/// Which regime applies is a property of the column, so it is stated rather
+/// than averaged away:
 ///
 /// - A `ColumnZSet` **key** column is **sorted by construction** (a Z-set is a
-///   sorted run), so a range predicate on it is highly predictable and the
-///   realistic win there is ~1.75x. And on a sorted column you would not
-///   linear-scan at all — you would binary-search the two boundaries. **The
-///   vectorised scan earns its keep on columns that are not the sort key**:
-///   weight predicates, and key columns after an order-destroying projection.
-/// - **Unpredicated `SumWeights` is bandwidth-bound** out of cache (8 MB at
-///   n = 1 000 000). Wider instructions buy nothing when the loop waits on
-///   memory, so `SumWeights` dispatches to **scalar**. This refutes the
-///   starting hypothesis that SoA would unlock a fast `weightedCount` via
-///   `MemoryMarshal.Cast` + `TensorPrimitives.Sum`: `TensorPrimitives.Sum`
-///   measured 0.84x against the scalar twin at n = 1 000 000. The vector
-///   version is kept and benchmarked because the measurement is the result.
+///   sorted run). Range predicates on it are highly predictable, so the
+///   realistic win is ~1.3x for count and **nothing at all** for the ranged
+///   sum. And on a sorted column you would not linear-scan — you would binary
+///   search the two boundaries. **The vectorised scan earns its keep on
+///   columns that are not the sort key**: weight predicates, and key columns
+///   after an order-destroying projection.
+/// - **Layout and execution pay in different regimes, and both are real.**
+///   AoS→SoA on the *sorted* scan: 538 µs → 421 µs (**1.28x**, from touching 8
+///   bytes per element instead of 16 — a bandwidth win). On the *shuffled*
+///   scan the layout change is worth nothing, because branch misprediction
+///   dominates and no amount of locality helps. Vectorising then buys 10.3x
+///   there and 1.31x on the sorted column. This is Abadi et al. 2013's claim
+///   with the nuance intact: column storage without column *execution* buys
+///   little **where the loop is branch-bound**, though it still buys the
+///   bandwidth where the loop is not.
 ///
-/// **The layout change alone bought nothing.** AoS-vs-SoA *scalar* range count
-/// at n = 1 000 000 measured 3 228 µs vs 3 387 µs — inside noise. Vectorising
-/// it bought ~10x. That is Abadi et al. 2013's central claim reproduced in
-/// miniature (column storage without column *execution* buys little), and it
-/// is why the column store and the vectorised kernel are one piece of work.
+/// **Honest cost of exactness.** `ZSet.weightedCount` (AoS, `Checked`, 4-way
+/// unrolled) measures 351 µs against this type's 563 µs scalar / 396 µs vector
+/// — because it is doing a *different, weaker* job: its overflow behaviour
+/// depends on element position, while these kernels are exact. The columnar
+/// sum is not "1.6x slower than the row store"; it is exact, and exactness
+/// costs a test per element that the vector path amortises.
 ///
 /// Register: `metered` for the three kernels below. Correctness has a real
 /// falsifier — each kernel's scalar twin must agree with it on every input,
@@ -209,9 +218,9 @@ type ColumnKernel =
     /// Result and raise-behaviour are identical to `SumWeightsScalar` on every
     /// input and every vector width.
     ///
-    /// **Measured slower than the scalar twin out of cache** (see the table on
-    /// `ColumnZSet`); `SumWeights` does not call it. It is kept, tested and
-    /// benchmarked because the measurement is the deliverable.
+    /// Measured **faster than the scalar twin at every size** once overflow was
+    /// made exact (1.36x-1.42x); `SumWeights` dispatches here. Before that fix
+    /// it was a loss out of cache — the reversal is recorded on `SumWeights`.
     static member SumWeightsVectorized(weights: ReadOnlySpan<int64>) : int64 =
         let width = Vector<int64>.Count
         let mutable total = Int128.Zero
@@ -245,11 +254,20 @@ type ColumnKernel =
         ColumnKernel.Narrow(total, "weight sum")
 
     /// Sum of all weights — the columnar twin of `ZSet.weightedCount`.
-    /// **Scalar on purpose**: the vector path is a measured loss on
-    /// out-of-cache columns, and dispatching on a cache-size threshold would
-    /// be an invented constant tuned to one machine.
+    ///
+    /// **Vectorised, and this reverses an earlier decision in this file.**
+    /// Before overflow was made exact, the vector path lost out of cache
+    /// (0.67x) and this dispatched to scalar. Exactness changed the balance:
+    /// detecting a real wrap costs the *scalar* loop an extra test per
+    /// element, while the vector loop amortises the same work across lanes and
+    /// pays it once per chunk. Measured after the fix, the vector path is
+    /// faster at **every** size — 1.36x / 1.36x / 1.42x at n = 4 096 / 65 536 /
+    /// 1 048 576 — so there is no cache-size threshold to invent.
     static member SumWeights(weights: ReadOnlySpan<int64>) : int64 =
-        ColumnKernel.SumWeightsScalar weights
+        if Vector.IsHardwareAccelerated && weights.Length >= Vector<int64>.Count then
+            ColumnKernel.SumWeightsVectorized weights
+        else
+            ColumnKernel.SumWeightsScalar weights
 
     // ──────────────────── predicated scan: count in range ────────────────────
 

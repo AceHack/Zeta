@@ -111,6 +111,18 @@ type ColumnZSetOps() =
     // ── predicated scan, SHUFFLED column (a non-key column) ────────────
 
     [<Benchmark>]
+    member this.AosRangeCountShuffled() =
+        // AoS over shuffled keys completes the 2x2 (layout x predictability),
+        // so the layout effect can be read off in both regimes rather than
+        // inferred from the sorted case alone.
+        let k = this.shuffledKeys
+        let w = this.shuffledWeights
+        let mutable c = 0
+        for i in 0 .. k.Length - 1 do
+            if k.[i] >= this.lo && k.[i] < this.hi && w.[i] <> 0L then c <- c + 1
+        c
+
+    [<Benchmark>]
     member this.SoaScalarRangeCountShuffled() =
         ColumnKernel.CountWhereKeyInRangeScalar(ReadOnlySpan this.shuffledKeys, this.lo, this.hi)
 
@@ -148,8 +160,8 @@ type ColumnZSetOps() =
     [<Benchmark>]
     member this.StitchColumnToRow() = ColumnZSet.toZSet this.sortedCol
 
-    /// Reported so a reader can tell whether a run came off a 2-lane (NEON),
-    /// 4-lane (AVX2) or 8-lane (AVX-512) machine — none of these ratios is a
-    /// portable constant.
-    [<Benchmark>]
-    member _.VectorWidth() = Vector<int64>.Count
+    // NOTE: there is deliberately no `VectorWidth()` benchmark. Timing a
+    // method that returns a constant measures nothing, and BenchmarkDotNet
+    // spends longer on it than on every real case combined (it escalates to
+    // ~5e8 ops trying to resolve a sub-nanosecond call). The lane count is
+    // read from `ColumnKernel.VectorWidth` instead.
