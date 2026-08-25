@@ -1,0 +1,12 @@
+{
+  "pr_number": 15293,
+  "archive_path": "docs/history/pr-reviews/PR-15293-chore-branches-round-two-0-deleted-and-round-one-s-pr-archive-finding-is-false.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:14:55.049Z",
+  "schema_version": "v1",
+  "commit_sha": "bee5afcb2cc2e0c956eff3efadf18e7e1a3de174",
+  "title": "chore(branches): round two — 0 deleted, and round one's pr-archive finding is false",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:14:06Z",
+  "head_ref": "otto/branch-cleanup-round-2-2026-08-25"
+}
