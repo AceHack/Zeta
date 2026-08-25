@@ -1,0 +1,14 @@
+{
+  "id": "080d01d5d72b1010a0130008ca05785d",
+  "at": "2026-08-25T21:02:02.082Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XBNSB0087G0R000A2QDN2",
+    "type": "task",
+    "title": "Semantics is a quotient of syntax only where there is no junk: homoiconicity is that condition, and plurality of representation is the congruence lattice",
+    "slug": "semantics-is-a-quotient-of-syntax-only-where-there-is-no-jun",
+    "priority": "P2",
+    "filename": "081M0XBNSB0087G0R000A2QDN2-semantics-is-a-quotient-of-syntax-only-where-there-is-no-jun.md"
+  }
+}
