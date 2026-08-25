@@ -1,0 +1,14 @@
+{
+  "id": "080d01ccec554010a0130008155058b7",
+  "at": "2026-08-25T15:50:21.096Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WSV2N7087G0R002EV0GVV",
+    "type": "task",
+    "title": "Inventory the 248 branches remaining on origin after the pr-archive and heartbeat-snapshot cleanups",
+    "slug": "inventory-the-248-branches-remaining-on-origin-after-the-pr",
+    "priority": "P2",
+    "filename": "081M0WSV2N7087G0R002EV0GVV-inventory-the-248-branches-remaining-on-origin-after-the-pr.md"
+  }
+}
