@@ -1,0 +1,14 @@
+{
+  "id": "080d01cf54cd3010a0130008012c6e07",
+  "at": "2026-08-25T17:14:31.206Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WYN6D6087G0R002F8MW6X",
+    "type": "task",
+    "title": "Promote the hermetic TypeScript suite into the required floor",
+    "slug": "promote-the-hermetic-typescript-suite-into-the-required-floo",
+    "priority": "P1",
+    "filename": "081M0WYN6D6087G0R002F8MW6X-promote-the-hermetic-typescript-suite-into-the-required-floo.md"
+  }
+}

@@ -5,10 +5,12 @@ description: |
   docs/DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-
   reconciliation-at-ai-speed.md, item 5). Everything NOT in this registry
   converges via drift detection + certified healers; only these classes may
-  block pre-merge. Derivation: the floor is the ERASURE class — violations
+  block pre-merge. The default derivation is the ERASURE class — violations
   that break T-reconstructibility of the ledger (deterministic-agreed-time
-  ferry, 2026-07-09). Detectors, hooks, and humans read THIS file; additions
-  require the treaty-amendment consent path, removals likewise.
+  ferry, 2026-07-09). An explicitly consented adjacent functional-break entry
+  must say that it is NOT erasure-class and record the measured reason for the
+  exception. Detectors, hooks, and humans read THIS file; additions require
+  the treaty-amendment consent path, removals likewise.
 entries:
   - id: secret-exposure
     description: "Secret / key material committed or logged — cannot be unpublished; the adversary's ledger cannot be erased"
@@ -71,3 +73,25 @@ entries:
       two-PR semantic collision that prompted the amendment (both 2026-08-17 PRs were individually
       green; the duplicate import existed only in the merged tree). That class needs a merge queue.
       This entry closes the single-PR case only.
+  - id: typescript-hermetic-behavior-break
+    description: >-
+      Functional failures in the dependency-closed, whole-tree TypeScript behavior suite. Admitted
+      2026-08-25 on Aaron's explicit consent ("lets try to get your hermetic suite in and if we need
+      to update drift policies do so") after a measured probationary period. PR #15352 merged while
+      `test (TS hermetic)` was red and `gate (required)` was green; the failure was a real repository
+      defect in the generated-code execution budget, not an unavailable service or developer-machine
+      dependency. PR #15358 fixed the defect but merged before the suite finished, proving that a
+      non-blocking run cannot establish a pre-merge behavior floor. PR #15395 supplied a second
+      post-repair green run before merge.
+    detector: >-
+      gate test-typescript-hermetic (`bun --config=bunfig.hermetic.toml test`); structurally pinned in
+      src/Core.TypeScript/ci/gate-scope-summary.test.ts. The separate test-typescript-environment job
+      remains a non-blocking drift check.
+    rationale: >-
+      NOT erasure-class. Admitted on the adjacent scoped-build-test-break rationale because the
+      dependency-closed suite covers executable behavior that downstream lanes consume this tick.
+      This is a deliberate narrow exception to the ADR's diff-scoped default: the bare whole-tree
+      invocation prevents new TypeScript test directories from silently escaping CI, which a path
+      allowlist or diff filter would reintroduce. The accepted cost is that existing hermetic drift
+      can temporarily block an unrelated PR until healed. Environment-dependent failures do not gain
+      blocking authority from this entry.

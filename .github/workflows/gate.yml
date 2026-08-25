@@ -2928,11 +2928,13 @@ jobs:
   test-typescript-hermetic:
     # ══ TIER 1 OF 2: HERMETIC ═══════════════════════════════════════════════════════════
     #
-    # A RED X HERE MEANS A REAL REGRESSION. That is the entire claim of this job, and it is
-    # the property the tier split was built to establish. Nothing below depends on a venv,
-    # a cluster, a container, a physical device, an attached ISO, or the invoking user's
-    # home directory. Toolchain comes from install.sh, which is the same script a laptop and
-    # a devcontainer run (GOVERNANCE §24), so a developer reproduces this verdict exactly.
+    # A RED X HERE MEANS THE CHECKED-OUT SOURCE OR ITS DECLARED TOOLCHAIN BASELINE IS BROKEN.
+    # That is the property the tier split was built to establish. Nothing below depends on a
+    # venv, a cluster, a container, a physical device, an attached ISO, or the invoking user's
+    # home directory. CI declares ubuntu-24.04, pinned Bun, the frozen lockfile, and pinned SMT
+    # binaries below; developers realize the broader supported baseline through install.sh.
+    # "Hermetic" here is a failure-attribution boundary, not a bit-identical runner image --
+    # hosted-image drift remains possible and must be named if it is ever the cause.
     #
     # WHY THE SPLIT. MEASURED 2026-08-16 across the 53 most recent completed `gate` runs:
     # the old undivided `test (TS suite)` was red in 17 of them (32%), and in 15 of those the
@@ -2959,10 +2961,10 @@ jobs:
     # tier while nothing else runs it would be a deletion wearing a split's face; that is the
     # condition the checker exists to make unlandable.
     #
-    # PROMOTION. This job is STILL absent from the `gate-required` needs list -- branch
-    # protection is a treaty amendment, not a workflow edit. It is now the tier that is
-    # eligible: adding `- test-typescript-hermetic` to `gate-required.needs` is the one-line
-    # change, once the maintainer consents.
+    # PROMOTED 2026-08-25. This job is in the `gate-required` needs list under explicit
+    # maintainer consent. The promotion is a floor amendment, not just a dependency edit;
+    # registry/uncompensatable-floor.yaml and the drift-and-heal ADR record its rationale
+    # and its narrow whole-tree exception to the usual diff-scoped rule.
     #
     # THE GAP THIS CLOSES. Before this job, CI executed roughly 130 of the repo's 900-plus
     # `*.test.ts` files. Whole directories -- discovery/, planning/, browser-node/,
@@ -3005,13 +3007,14 @@ jobs:
     # at roughly 250 gate runs per month that is on the order of 2,250 runner-minutes added.
     # It buys execution of ~770 files and ~9,000 assertions that today execute nowhere.
     #
-    # RUNS, DOES NOT BLOCK. Deliberately absent from the `gate-required` needs list. The
-    # 2026-08-01 drift-and-heal ADR narrowed the blocking floor to
-    # registry/uncompensatable-floor.yaml after a priority-inversion incident; making ~770
-    # long-unrun files blocking on day one would be that inversion again. Running them IS the
-    # drift signal. Promotion to the floor is a separate treaty amendment, once this job has
-    # a track record. The blocking subset is unchanged: build-and-test, cross-verify,
-    # full-verify and lint (semgrep) keep their existing named steps and their floor status.
+    # RUNS AND BLOCKS. The probation period produced the evidence the original split asked
+    # for. PR #15352 merged with this job FAILURE beside a successful required rollup: a cold
+    # Go compiler invocation exceeded a shared 15-second generated-code timeout, while the
+    # durable outputs were never written. PR #15358 repaired that real repository defect,
+    # but merged five minutes BEFORE this job reported success because the rollup did not
+    # depend on it. PR #15395 then supplied a second post-repair green run before merge.
+    # The environment-dependent tier remains non-blocking; only this dependency-closed,
+    # reproducible behavior suite enters the floor.
     name: test (TS hermetic)
     timeout-minutes: 20
     runs-on: ubuntu-24.04
@@ -3356,10 +3359,12 @@ jobs:
       nonblocking-failures: ${{ steps.scope.outputs.nonblocking-failures }}
     # ── THE FLIP (drift-and-heal ADR, Aaron 2026-08-01): blocking gates are
     # corporate mode; drift checks are sovereign mode. The gate now rolls up
-    # ONLY the uncompensatable floor (registry/uncompensatable-floor.yaml):
-    #   - build-and-test        (functional build/test breaks)
-    #   - cross-verify/full-verify (treaty byte-lock golden vectors)
-    #   - lint [semgrep]        (workflow supply-chain / script-injection)
+    # ONLY the recorded floor (registry/uncompensatable-floor.yaml):
+    #   - build-and-test             (functional build/test breaks)
+    #   - test-typescript-hermetic   (dependency-closed TypeScript behavior breaks)
+    #   - cross-verify/full-verify   (treaty byte-lock golden vectors)
+    #   - lint [semgrep]             (workflow supply-chain / script-injection)
+    #   - lint-typescript            (TypeScript type breaks)
     # Every hygiene/style lint below STILL RUNS on every PR and every main
     # push — that is the drift detection — it just no longer blocks unrelated
     # lanes (the 2026-07-08 priority inversion / 2026-08-01 six-rebuild race).
@@ -3381,6 +3386,14 @@ jobs:
     # matrix, which is exactly why the `Emit scope` step below exists: it names any
     # leg that failed non-blockingly, so a green here still says which green it is.
     # registry/uncompensatable-floor.yaml records the narrowed coverage in data.
+    #
+    # ── AMENDMENT 2026-08-25 (Aaron, explicit: "lets try to get your hermetic
+    # suite in and if we need to update drift policies do so").
+    # `test-typescript-hermetic` enters the required floor after its probationary
+    # non-blocking period. This is intentionally a narrow whole-tree exception to
+    # the diff-scoped default: the suite is dependency-closed and reproducible, and
+    # its bare `bun test` invocation is what prevents new test directories from
+    # falling outside CI. The environment-dependent tier remains drift-only.
     #
     # The evidence is this job's own header, twenty lines up from its `name:`:
     # it was created because "Slice 9 (PR #882) shipped a real TS2322 to main",
@@ -3428,6 +3441,7 @@ jobs:
       - lint-typescript
       - cross-verify
       - full-verify
+      - test-typescript-hermetic
     steps:
       # Sparse: two paths, no blobs, one commit. The full checkout other jobs take
       # measures ~11 s here; this one has no reason to pay for 36k files.

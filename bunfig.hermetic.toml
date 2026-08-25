@@ -1,29 +1,37 @@
 # bunfig.hermetic.toml — the HERMETIC TIER of the TypeScript suite.
 #
-# WHAT THIS FILE BUYS. `bun --config=bunfig.hermetic.toml test` is red IF AND ONLY IF the code is
-# broken. Not if you have never run `uv sync`. Not if you have no .NET SDK. Not if macOS
-# refuses your process access to ~/Downloads. That biconditional is the whole point: a red
-# hermetic check means a real regression, so nobody has to ask "is this one real?".
+# WHAT THIS FILE BUYS. `bun --config=bunfig.hermetic.toml test` is red when the checked-out
+# source or its declared toolchain baseline is broken. Not if you have never run `uv sync`.
+# Not if you have no .NET SDK. Not if macOS refuses your process access to ~/Downloads. The
+# failure-attribution boundary is the whole point: a red hermetic check is actionable without
+# first provisioning an external service, device, or user-owned file.
 #
 # WHY IT WAS NEEDED. MEASURED 2026-08-16 over the 53 most recent completed `gate` runs:
 # `test (TS suite)` was red in 17 (32%), and in 15 of those the entire cause was ONE
 # deterministic test — a real regression that rode along for sixteen merges. MEASURED the
 # same day on a fresh clone of main (macOS, `bun install` only): the same `bun test` gave
 # 4 failures + 1 unhandled error, and not one of them was a code defect. So the same command
-# was red-for-environment where people work and red-for-regression where it mattered, with
+# was red-for-environment where people work and red-for-source/toolchain where it mattered, with
 # nothing in either output telling them apart. The prior "this suite is always red" is
 # learned on the laptop and spent on the pull request.
 #
-# WHERE THE LINE IS DRAWN, EXACTLY. Hermetic means: reproducible from a fresh checkout plus
+# WHERE THE LINE IS DRAWN, EXACTLY. For a developer, hermetic means reproducible from a fresh
+# checkout plus
 #
 #     ./tools/setup/install.sh   &&   bun install --frozen-lockfile
 #
-# and nothing else. That is not an arbitrary choice — install.sh is the repo's three-way
-# parity contract (GOVERNANCE §24): the same script provisions a laptop, a devcontainer and a
-# runner, so it is the one baseline a developer and CI are guaranteed to share. Anything a
-# test needs BEYOND it — a `uv sync` venv, a cluster, a container, an attached device, a file
-# in the user's home directory — makes that test's verdict a fact about the host, and belongs
-# in the tier named for that.
+# and nothing else. CI realizes the narrower inputs this suite actually consumes directly in
+# `.github/workflows/gate.yml`: ubuntu-24.04, pinned Bun, the frozen lockfile, and pinned SMT
+# binaries. It deliberately stopped running the full workstation installer in PR #13836 after
+# that bootstrap repeatedly exhausted the job budget before any assertion ran. `install.sh`
+# remains the repo's supported developer baseline (GOVERNANCE §24), while the workflow is the
+# CI baseline. Anything a test needs BEYOND those baselines — a `uv sync` venv, a cluster, a
+# container, an attached device, a file in the user's home directory — makes that test's
+# verdict a fact about the host, and belongs in the tier named for that.
+#
+# LIMIT: "hermetic" here names failure attribution, not an immutable runner image or
+# bit-reproducible build. GitHub can revise the software preinstalled on `ubuntu-24.04`; if
+# that changes a verdict, the failure is declared-toolchain drift and must be reported as such.
 #
 # THE LINE WAS MEASURED, NOT ASSUMED. 2026-08-16, same fresh clone, `bun test` run twice:
 #   - with the machine's ordinary PATH (an install.sh-shaped environment):  5 failures,

@@ -70,7 +70,14 @@ test("gate.yml parse -- every floor job id resolves to a declared display name",
   expect(names.get("build-and-test")).toBe("build-and-test (${{ matrix.os }})");
   expect(names.get("lint")).toBe("lint (semgrep)");
   expect(names.get("lint-typescript")).toBe("lint (TS)");
+  expect(names.get("test-typescript-hermetic")).toBe("test (TS hermetic)");
   expect(names.get("gate-required")).toBe("gate (required)");
+});
+
+test("the hermetic TypeScript suite blocks while the environment-dependent tier remains drift", () => {
+  const floor = declaredFloor(gateYml);
+  expect(floor).toContain("test-typescript-hermetic");
+  expect(floor).not.toContain("test-typescript-environment");
 });
 
 test("matchJobs -- exact for literal names, prefix only for matrix names", () => {

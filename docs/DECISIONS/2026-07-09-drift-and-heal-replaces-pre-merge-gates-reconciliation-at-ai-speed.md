@@ -1,7 +1,7 @@
 # ADR: Drift-and-Heal Replaces Pre-Merge Gates — Reconciliation at AI Speed
 
 Date: 2026-07-09
-Status: Accepted (ratified 2026-08-08 — operator + 5 persona signatures below)
+Status: Accepted (ratified 2026-08-08; amended 2026-08-25 with explicit operator consent)
 Authors: Aaron (operator — "gates are a thing of the past, only drift works with
 the speed of AI, we are a rocketship running on explosions") + Otto (cowork cell;
 drafted from the night the gate lost the race)
@@ -96,14 +96,27 @@ pre-merge blocking is the exception, reserved for uncompensatable effects.**
    the reindexer in the same commit). Agents on heal duty carry heals inside
    feature PRs — proven effective; it out-raced the dedicated-heal-PR loop.
 
-4. **PR checks scope to the diff.** A PR reports drift only in files it
-   touches. Whole-repo state never blocks an unrelated lane again. A PR that
-   heals adjacent drift is celebrated, not required.
+4. **PR checks scope to the diff by default.** A PR reports drift only in files
+   it touches. Whole-repo state normally does not block an unrelated lane. A
+   PR that heals adjacent drift is celebrated, not required.
 
-5. **The floor that remains gated — the uncompensatable class.** The
-   smart-cascading-teardown design (2026-06-21) already names it: the
-   genuinely-G-set residual, effects no saga can compensate. Pre-merge (or
-   pre-push, in the sovereign lane's client hook) blocking remains ONLY for:
+   **Narrow whole-tree functional exception (amended 2026-08-25):** a suite may
+   enter the required floor only through the treaty-amendment consent path when
+   it has a declared toolchain baseline, depends on no external service, device,
+   or user-owned file, checks executable behavior, and cannot be diff-scoped
+   without losing automatic coverage of newly added tests. The suite's current
+   main verdict must be green when promoted, and the workflow dependency must be
+   pinned by a structural test. This exception accepts one explicit cost:
+   existing real source or declared-toolchain drift in that suite can
+   temporarily block an unrelated PR until healed. Environment-dependent suites
+   remain drift signals and cannot use this exception.
+
+5. **The floor that remains gated — erasure plus explicitly consented functional
+   breaks.** The smart-cascading-teardown design (2026-06-21) supplies the
+   default: the genuinely-G-set residual, effects no saga can compensate.
+   Measured functional-break exceptions must be recorded as NOT erasure-class
+   in the floor registry. Pre-merge (or pre-push, in the sovereign lane's client
+   hook) blocking remains ONLY for:
    - secret / key material exposure (cannot be unpublished),
    - treaty byte-lock floor violations — the golden-vector cross-oracle
      contracts (identity, ZetaId, IR) that other lanes build on THIS tick,
@@ -123,11 +136,16 @@ pre-merge blocking is the exception, reserved for uncompensatable effects.**
      license to drop it. Scoping still applies: a PR is blocked by breaking
      what it builds/touches, never by pre-existing whole-repo build drift
      (that drift gets a detector + auto-revert healer, not a lock on
-     unrelated lanes).
+     unrelated lanes), except for a separately consented whole-tree functional
+     suite satisfying item 4's narrow criteria,
+   - **the hermetic TypeScript behavior suite** — amendment 2026-08-25: its
+     bare whole-tree invocation is the mechanism that covers a new test
+     directory without a second allowlist. The environment-dependent
+     TypeScript suite remains outside the floor.
 
-   This is the flight termination system. It is small, it is fast (no full
-   toolchain bootstrap — seconds, not minutes), and it is the only check
-   allowed to say "no" instead of "converging."
+   This is the fail-closed floor. Most entries remain seconds-fast; the hermetic
+   TypeScript behavior suite is the recorded exception at roughly nine minutes.
+   These are the only checks allowed to say "no" instead of "converging."
 
 6. **Drift gets an SLO instead of a moral.** Red/green on main is replaced by
    MTTH (mean time to heal) per drift class, published on the dashboard.
@@ -160,7 +178,8 @@ pre-merge blocking is the exception, reserved for uncompensatable effects.**
 - **Positive:** lanes decouple (no more priority inversion); heal latency is
   measured instead of assumed; the sovereign lane's speed advantage stops
   being punished; the gate's compute cost (full bootstrap per PR wave)
-  collapses to one continuous detector plus a seconds-fast floor check;
+  collapses to one continuous detector plus a bounded floor (normally seconds,
+  with the recorded hermetic TypeScript exception at roughly nine minutes);
   "carrying heals in feature PRs" becomes a normal, recognized contribution.
 - **Costs / open work:** scoped-diff lint runner; drift-event schema + Grafana
   panel (MTTH per class); healer idempotence + closure test harness (a healer
@@ -172,6 +191,28 @@ pre-merge blocking is the exception, reserved for uncompensatable effects.**
   access); the uncompensatable floor list will be contested at the edges —
   keeping it small is a discipline, and additions to it should require the
   same consent path as treaty amendment.
+
+## Amendment — hermetic TypeScript behavior floor (2026-08-25)
+
+Aaron explicitly authorized promoting `test (TS hermetic)` and updating this
+policy when the original diff-scoped rule did not fit the measured behavior.
+The amendment is intentionally narrower than "tests block":
+
+- PR #15352 merged at 14:39:15Z while `test (TS hermetic)` had concluded
+  `failure` at 14:32:29Z and `gate (required)` concluded `success` at
+  14:38:22Z. The failing generated-code test shared one 15-second budget
+  across a cold Go compiler invocation and execution, so no durable output was
+  written. That was a repository defect, not an unavailable external service.
+- PR #15358 repaired the budget but merged at 15:01:33Z, five minutes before
+  the hermetic suite reported `success` at 15:06:58Z. A job that runs but is
+  not a rollup dependency cannot establish a pre-merge behavior verdict.
+- PR #15395 supplied a second post-repair success before its 17:07:37Z merge.
+
+Therefore `test-typescript-hermetic` is now a dependency of `gate-required`.
+`test-typescript-environment` remains non-blocking. A structural unit test
+asserts both sides of that classification so future floor changes must be
+deliberate. This amendment does not promote style, machine-specific, service,
+or hardware drift into the floor.
 
 ## Ratification
 
