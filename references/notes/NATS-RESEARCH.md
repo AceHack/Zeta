@@ -1,7 +1,7 @@
 # NATS + JetStream — Research Notes
 
 Authored synthesis for the `nats` and `nats-jetstream`
-upstreams in `reference-sources.json`. Focus: what Zeta.Core
+reference sources in `reference-sources.json`. Focus: what Zeta.Core
 borrows, what it does not, and where the ideas land in our
 code.
 

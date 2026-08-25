@@ -52,7 +52,7 @@ Composes with `monad-propagation-pattern-cross-language-substrate-shape.md` cros
 - `.claude/rules/dep-pin-search-first-authority.md` — discipline for impl-time library-version assertion
 - `.claude/rules/verify-existing-substrate-before-authoring.md` — prior-art before parallel-authoring
 - `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — Kleisli IS instance of monad-propagation pattern
-- `.claude/rules/references-prior-art-not-our-code-search-excludes.md` — this notes file lives in `references/notes/` per the curated-upstream pattern
+- `.claude/rules/references-prior-art-not-our-code-search-excludes.md` — this notes file lives in `references/notes/` per the curated-reference-source pattern
 
 ## Substrate-honest framing
 

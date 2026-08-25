@@ -3,14 +3,26 @@
 External material we study to keep Zeta.Core honest. Two kinds:
 
 1. **Authored notes** under `references/notes/` — our own
-   write-ups synthesising what matters from each upstream.
+   write-ups synthesising what matters from each reference source.
 2. **Disposable mirror state** under `references/prior-art/` —
-   cloned upstream repositories used as read-only references.
+   cloned third-party repositories used as read-only prior art.
    **Gitignored; regeneratable via script; never hand-edited.**
-3. **Per-upstream package notes** under `references/<name>/` —
+3. **Per-source package notes** under `references/<name>/` —
    legacy imports (currently `tla-book/`) that came from other
    projects with their own file layouts. These will be rationalised
    into `references/notes/` as we cite them.
+
+> **Not "upstream."** These projects are **prior art Zeta reads**, not
+> projects Zeta forks from — nothing here is a parent of our tree, and
+> we take no code across the wall. "Upstream" asserts a *derivation*
+> relationship, which is exactly the lineage
+> [`.claude/rules/cleanroom-two-team-separation.md`](../.claude/rules/cleanroom-two-team-separation.md)
+> exists to prevent (whoever LOOKED may not BUILD; a spec crossing the
+> wall carries requirements, never expression). The register is
+> **reference source** / **prior art**. `GOVERNANCE.md` §23/§25 keep
+> the word "upstream" and are correct to — there it means contributing
+> patches *back* to a project Zeta genuinely depends on, which is a
+> real derivation relationship.
 
 See `docs/PRIOR-ART-LIST.md` for the curated watchlist + category
 index; see `docs/TECH-RADAR.md` for our own Adopt/Trial/Assess/
@@ -25,7 +37,7 @@ references/
 ├── notes/                         (authored synthesis; commit these)
 │   ├── RESEARCH-NOTES.md
 │   └── ...
-├── upstreams/                     (GITIGNORED; sync-script-managed)
+├── prior-art/                     (GITIGNORED; sync-script-managed)
 │   ├── feldera/
 │   ├── slatedb/
 │   └── ...
@@ -36,20 +48,21 @@ references/
 
 - **Never hand-edit `references/prior-art/<name>/`.** It is
   disposable. If it's wrong, fix the sync script or the
-  upstream URL in `reference-sources.json`, then re-sync.
+  source URL in `reference-sources.json`, then re-sync.
 - **Authored notes only in `references/notes/`.** One `.md` per
   topic, named `<TOPIC>-NOTES.md` in SCREAMING-KEBAB-CASE.
-- **Every upstream in `reference-sources.json` has a
+- **Every reference source in `reference-sources.json` has a
   one-sentence "why this matters."** Kept in sync with the
   prose in this README.
 - **Adding a source:** append a row to
   `reference-sources.json`, add a one-liner below in the
-  **Upstreams** section, run the sync script (when it exists).
+  **Reference sources** section, then run
+  `tools/setup/common/sync-prior-art.sh`.
 - **Removing a source:** remove the row + the prose line; the
-  sync script, next invocation, is authorised to delete the
-  now-orphan `upstreams/<name>/` mirror.
+  sync script, run next with `--prune`, is authorised to delete
+  the now-orphan `prior-art/<name>/` mirror.
 
-## Upstreams
+## Reference sources
 
 ### Streaming / IVM
 
@@ -147,10 +160,28 @@ references/
 
 - `references/tla-book/` — Lamport's *Specifying Systems* PDF.
 
-## Sync script (pending)
+## Sync script
 
-A `scripts/references/sync.sh` / `sync.ps1` pair is planned to
-populate `references/prior-art/` from `reference-sources.json`.
-Until it lands, an upstream that needs to be cloned is cloned
-manually once under `references/prior-art/` (gitignore already
-excludes it).
+[`tools/setup/common/sync-prior-art.sh`](../tools/setup/common/sync-prior-art.sh)
+populates `references/prior-art/` from `reference-sources.json`. It is
+**not** part of `tools/setup/install.sh` — run it on demand, when you
+actually need a mirror to read:
+
+```bash
+tools/setup/common/sync-prior-art.sh                 # refresh all
+tools/setup/common/sync-prior-art.sh --name foo,bar  # subset
+tools/setup/common/sync-prior-art.sh --prune         # drop orphans
+```
+
+Everything it writes lands under `references/prior-art/<name>/`, which
+`.gitignore` excludes (`references/prior-art/*`, plus a nested
+`references/prior-art/.gitignore` of `*`). Nothing mirrored is
+committable.
+
+The script is bash and is item 26 on the bash-retirement inventory
+(`docs/SHELL-DEPRECATION-SEQUENCE.md`,
+`src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts`).
+A TypeScript port is in flight as separate work (see `docs/DEBT.md`);
+when it lands, the invocation path above changes and this section
+should be updated with it. The naming register does not: whatever the
+runtime, these are **reference sources**, never "upstreams".

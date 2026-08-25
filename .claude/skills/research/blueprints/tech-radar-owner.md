@@ -39,11 +39,11 @@ set of research reports under `docs/research/`.
 5. **Audit coherence.** If `src/Core/BloomFilter.fs` ships
    but the radar still says "Bloom filters: Assess", that's a
    drift to fix.
-6. **Sync with `docs/PRIOR-ART-LIST.md`.** Upstream list is the
-   broader catalogue; the tech radar is our opinion on what's
-   worth adopting. A row can live on the upstream list without
+6. **Sync with `docs/PRIOR-ART-LIST.md`.** The prior-art list is
+   the broader catalogue; the tech radar is our opinion on what's
+   worth adopting. A row can live on the prior-art list without
    a radar entry (Assess-not-yet), but everything in Trial or
-   Adopt should have an upstream-list entry.
+   Adopt should have a prior-art-list entry.
 
 ## Decision triggers
 

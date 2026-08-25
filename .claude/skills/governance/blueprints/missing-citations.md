@@ -48,7 +48,7 @@ clean.
 - **Choosing which paper to cite** when several candidates
   exist → the relevant field-of-knowledge expert (algebra,
   physics, probability, category theory).
-- **Adding a new upstream entry** to `docs/PRIOR-ART-LIST.md` →
+- **Adding a new prior-art entry** to `docs/PRIOR-ART-LIST.md` →
   `tech-radar-owner` / the field-of-knowledge owner.
 
 ## The six claim smells that trigger a flag
@@ -95,7 +95,7 @@ Every flag lands in one of four categories:
 - **P2 — candidate citation missing from PRIOR-ART-LIST.**
   A source *exists* in the draft but is not in
   `docs/PRIOR-ART-LIST.md`. Blocks next release. Fix: add the
-  upstream entry.
+  prior-art entry.
 - **P3 — suggested cross-reference.** A Zeta document makes a
   claim that another Zeta document has cited; cross-reference
   the internal doc. Non-blocking; improves traceability.
@@ -225,5 +225,5 @@ cadence.
   algebra claims.
 - `.claude/skills/formal-methods/blueprints/formal-verification-expert.md` —
   tool-portfolio routing.
-- `.claude/skills/research/blueprints/tech-radar-owner.md` — upstream list
+- `.claude/skills/research/blueprints/tech-radar-owner.md` — prior-art list
   curation.

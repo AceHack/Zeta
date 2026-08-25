@@ -1,4 +1,4 @@
-# Upstream Reference List
+# Prior-Art Reference List
 
 Curated list of external repos / projects / papers we study to keep
 `Zeta.Core` honest.
@@ -833,7 +833,7 @@ ship with green CI.
 ## Ground rules
 
 - Never copy code without an explicit license review. Pattern ≠ code.
-- Always cite upstreams in the paper when we use their protocol.
+- Always cite reference sources in the paper when we use their protocol.
 - When we find a bug upstream, file it — `μένω` includes
   good citizenship.
 - When we invent something new, make the proof + benchmark tight

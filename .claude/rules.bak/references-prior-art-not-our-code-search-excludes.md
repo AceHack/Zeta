@@ -7,7 +7,7 @@ Carved sentence:
 > Any search operation that walks the file tree (`find`, `grep -r`,
 > `xargs grep`, recursive-file-walk scripts) MUST exclude
 > `references/prior-art/` — otherwise scans run for hours, surface
-> false-positives from unrelated upstream code, and pollute results
+> false-positives from unrelated third-party code, and pollute results
 > with patterns that match in protobuf docs, gRPC tests, Redis
 > manifests, etc. **Default to ripgrep** (`rg`) which respects
 > `.gitignore` automatically. For plain `grep -r`, use
@@ -21,8 +21,12 @@ Carved sentence:
 Per `references/README.md`:
 
 - `references/prior-art/` is "Disposable mirror state — cloned
-  upstream repositories used as read-only references. **Gitignored;
+  third-party repositories used as read-only prior art. **Gitignored;
   regeneratable via script; never hand-edited.**"
+  (These are **reference sources**, not "upstreams" — nothing here is
+  a parent of Zeta's tree, and calling it upstream would assert the
+  derivation relationship `cleanroom-two-team-separation.md` exists to
+  prevent.)
 - `.gitignore` line: `references/prior-art/*` (with carve-outs for
   the directory's own `.gitignore` + `README.md`)
 - The mirror state regenerates from `references/reference-sources.json`
@@ -41,14 +45,14 @@ find . -type f -name "*.md" 2>/dev/null | xargs grep -l \
   "lock.free.*weight.free\|weight.free.*lock.free\|scale.free.*lock.free\|DV2.0\|5 always.active\|root discipline" 2>/dev/null
 ```
 
-`find` quickly listed all `.md` files including the upstream tree.
-`xargs grep` then recursed through gigabytes of upstream content
+`find` quickly listed all `.md` files including the mirror tree.
+`xargs grep` then recursed through gigabytes of third-party content
 (protobuf docs, gRPC tests, Redis manifests, etc.). The process was
 still running 2+ hours later when the human maintainer noticed "11
 shells running is impressive otto" — the shell count surfaced the
 runaway grep.
 
-Result: no useful output (the patterns don't appear in upstream code),
+Result: no useful output (the patterns don't appear in third-party code),
 hours of CPU and IO wasted, multiple monitor processes lingering,
 genuine pollution of the agent's working state.
 
@@ -98,7 +102,7 @@ and `references/prior-art/*` is already gitignored.
 The `find` step is fast and listful; the `xargs grep` step inherits
 the listful tree and recurses. Even with `-l` (list-only), grep
 opens each file and scans until first match — and on a tree of
-gigabytes of upstream content, that's hours.
+gigabytes of third-party content, that's hours.
 
 Fix: filter the `find` output BEFORE passing to xargs:
 
@@ -147,7 +151,7 @@ cutting edge and some are tried and true been around for years."*
 `references/prior-art/` is the curated **prior-art surface** —
 humans who've solved similar problems, mirrored as read-only
 references. When starting a backlog item, consulting the relevant
-upstream(s) is encouraged and composes with
+reference source(s) is encouraged and composes with
 `.claude/rules/backlog-item-start-gate.md` (prior-art-search step).
 
 **The two modes are not in tension:**
@@ -160,16 +164,16 @@ upstream(s) is encouraged and composes with
 
 Other legitimate explicit-target reasons:
 
-- Verifying that an upstream actually contains a feature we
+- Verifying that a reference source actually contains a feature we
   attribute to it (e.g., "does Spanner actually do X?")
 - Auditing for license-text or attribution requirements when
-  taking an upstream excerpt into `references/notes/`
+  taking an excerpt into `references/notes/`
 
-**Discovery surfaces for upstream prior-art:**
+**Discovery surfaces for prior art:**
 
 - `docs/PRIOR-ART-LIST.md` — curated watchlist + category index
 - `references/notes/` — synthesis notes ("what matters from each
-  upstream"); start here before grepping the mirror
+  reference source"); start here before grepping the mirror
 - `references/reference-sources.json` — full source list
 
 **Refresh the mirror on demand:**
@@ -181,7 +185,7 @@ tools/setup/common/sync-prior-art.sh --prune     # drop stale
 ```
 
 The script reads `references/reference-sources.json`, shallow-clones
-or fast-fetches each upstream into `references/prior-art/<name>/`,
+or fast-fetches each reference source into `references/prior-art/<name>/`,
 and resets-hard to match `origin/<branch>` byte-for-byte. Safe to
 re-run; `ls-remote` short-circuits when local HEAD already matches.
 
@@ -228,8 +232,8 @@ hygiene knowledge needs wake-time landing. Without this rule:
 
 - `references/README.md` — canonical definition of what
   `references/prior-art/` is
-- `references/reference-sources.json` — the upstream watchlist
-  the mirror tree regenerates from
+- `references/reference-sources.json` — the reference-source
+  watchlist the mirror tree regenerates from
 - `.gitignore` — line `references/prior-art/*` is the existing
   git-level enforcement
 - The substrate-honest failure-mode anchor: the 2-hour-grep
@@ -258,13 +262,15 @@ mechanization lands.
 The human maintainer 2026-05-15T~15:25Z, after observing the
 runaway grep process: *"references/prior-art/ in code we ignore
 this folder everywhere casue its not our code but other githubs
-we reference for ideas"*
+we reference for ideas"* — which is also why the register is
+**reference source**, never "upstream": we read them, we do not
+descend from them.
 
 The 2-hour-grep evidence trail:
 
 1. An agent authored a manifesto-search bash one-liner using
    `find | xargs grep -l` with no exclusion of `references/prior-art/`
-2. find quickly returned all matching paths (including the upstream
+2. find quickly returned all matching paths (including the mirror
    tree); xargs grep recursed
 3. The grep was still running 2 hours later when the human
    maintainer's "11 shells running" observation surfaced it

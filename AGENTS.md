@@ -212,8 +212,8 @@ These apply to any AI harness.
   (Claude-Code-native; other harnesses may consume
   the markdown directly even without skill machinery).
 - **Pull latest cutting-edge research.** When
-  reviewing upstream projects, treat them as
-  inspiration, not gospel. If a donor project's
+  reviewing reference-source projects, treat them
+  as inspiration, not gospel. If a donor project's
   event log is SQLite-shaped because it bootstrapped
   from SQLite, reimplement against FASTER's HybridLog
   / TigerBeetle grid blocks / SlateDB's writer-epoch
@@ -699,8 +699,8 @@ coordination, pull-before-push discipline.
   review, tick narration, memory curation, and
   maintainer chat.
 - `docs/category-theory/README.md` — category-theory
-  foundations the operator algebra rests on. Upstream
-  CTFP sources (Milewski + the .NET port) live under
+  foundations the operator algebra rests on. The CTFP
+  reference sources (Milewski + the .NET port) live under
   `references/prior-art/` after
   `tools/setup/common/sync-prior-art.sh` runs.
 - `GOVERNANCE.md` — the numbered repo-wide rules

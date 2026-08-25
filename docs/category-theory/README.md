@@ -7,11 +7,11 @@ hard — the operator algebra (D, I, z⁻¹, H) literally is a
 category-theoretic abstraction over streaming IVM.
 
 Round 34 moved both CTFP references from in-repo copies to
-upstream clones under `references/prior-art/` per the
+reference-source clones under `references/prior-art/` per the
 `references/reference-sources.json` manifest. Run
 `tools/setup/common/sync-prior-art.sh` to populate them.
 
-## Upstreams to read
+## Reference sources to read
 
 - **[`hmemcpy/milewski-ctfp-pdf`](https://github.com/hmemcpy/milewski-ctfp-pdf)**
   — Bartosz Milewski, *Category Theory for Programmers*. The
