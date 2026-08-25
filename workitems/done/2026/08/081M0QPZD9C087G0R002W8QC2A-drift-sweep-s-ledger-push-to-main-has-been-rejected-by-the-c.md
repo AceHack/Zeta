@@ -1,11 +1,12 @@
 ---
 id: 081M0QPZD9C087G0R002W8QC2A
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: drift-sweep-s-ledger-push-to-main-has-been-rejected-by-the-c
 title: "drift-sweep's ledger push to main has been rejected by the CI Gate ruleset since 2026-08-13 — 1,597 green runs, zero ticks recorded"
 created: 2026-08-23T16:24:05.164Z
+completed: 2026-08-25T20:54:00.481Z
 depends_on: []
 composes_with: []
 ---
@@ -75,3 +76,28 @@ never migrated.
   precedent for the flush lane.
 - `CLAUDE.md` "Heartbeat-via-commit" — why pushes to `main` from a telemetry lane stopped
   working, and where the lanes went instead.
+
+## Resolution
+
+The sweep now stages generated ledger data on `heartbeat/drift-sweep` and lands it
+through an ordinary gated pull request. PR #15276 first restored publication; PR
+#15404 independently repeated the route and merged as
+`9dcca8fd10c44965829e05dc9c0d694fc52eb855`.
+
+That second flush advanced `main` through `docs/drift-events/000710.json` and
+published `data/platform-drift.json` with `asOf: 2026-08-25T20:06:16Z`. On its
+fixed head `369094609ce46f78f0e7ce160391a81d1e082da6`, both `gate (required)` and
+the unchanged `drift (loud)` check passed in run `32893905221`; the loud job
+completed at `2026-08-25T20:24:40Z`.
+
+The next scheduled cadence run, `32897330085`, then opened PR #15430 from the
+same heartbeat lane. That proves the route is repeatable rather than a one-time
+manual payload merge. No bypass actor or `--admin` merge was introduced.
+
+## Verification
+
+- `git merge-base --is-ancestor 9dcca8fd10c44965829e05dc9c0d694fc52eb855 origin/main` - pass.
+- PR #15404 `gate (required)` - pass.
+- PR #15404 `drift (loud)` - pass, with the freshness detector unchanged.
+- `origin/main` event ledger - advanced from `000247` to `000710`.
+- Post-merge scheduled run `32897330085` - opened follow-on flush PR #15430.

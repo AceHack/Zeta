@@ -28,7 +28,7 @@ Adjudication doc + probe. Landed together; this row exists so the commit and PR 
    AJM/Hyland-Ong 2000, Kuroda 1964, Post/Markov 1947, Newman 1942, Knuth-Bendix 1970,
    Birkhoff 1935, GTWW 1977, Doran et al. 2008 are **cited from standing knowledge and not
    page-checked**. Until checked they keep the anchored claims at `toy` per
-   `anchor-to-human-prior-art.md` (anchors must be *checked*, not cited).
+   `.claude/rules/anchor-to-human-prior-art.md` (anchors must be *checked*, not cited).
 2. **Sweep the tree for junk.** "Zeta's representations stay in the no-junk regime" is an
    `unmetered` design invariant: no audit of in-tree representations was performed. The
    falsifier is any representation with junk that is nonetheless treated as a quotient.
