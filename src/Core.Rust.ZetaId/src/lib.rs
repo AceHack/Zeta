@@ -66,6 +66,20 @@ pub mod category {
     pub const SPAWN: u8 = 7;
     /// Planning umbrella (tasks + bugs; B-xxxxx → ZetaId migration).
     pub const WORK_ITEM: u8 = 8;
+    /// Internal content address (truncated BLAKE3 payload). Backfilled 2026-08-23 — this
+    /// oracle had stopped at 8 while TS/C#/F# carried 9..11, so the "all four oracles carry
+    /// the same category set" claim in `registry/categories.yaml` was false for Rust.
+    pub const CONTENT_ADDRESS: u8 = 9;
+    /// Physical asset register (git-as-database inventory, `inventory/items/`). Backfill 2026-08-23.
+    pub const INVENTORY_ASSET: u8 = 10;
+    /// Multiplexed four-corner duplex channel over one transport (Aaron 2026-07-04). Backfill 2026-08-23.
+    pub const CHANNEL: u8 = 11;
+    /// A declarer's voluntary agenda declaration (`agendas/<zetaid>-<slug>.md`) — one file per
+    /// declaration, so no shared document has to be agreed on (081M0R3WHTH087G0R0015CH5PV; Aaron 2026-08-23).
+    pub const AGENDA: u8 = 12;
+    /// Reserved escape marker for wider extension categories. Slots 13 and 14 remain free;
+    /// beyond 14 the escape is the path, not a renumbering.
+    pub const EXTENDED: u8 = 15;
 }
 
 /// Named Persona vocabulary (8-bit field; any byte 0..=255 is valid).

@@ -30,5 +30,18 @@ entries:
   # the "little program" self-describing channel key so the far side decodes it as a channel. Aaron 2026-07-04.
   # Byte-lock CLOSED 2026-07-04: Channel=11 + InventoryAsset=10 backfilled into Core.CSharp.ZetaId,
   # Core.FSharp.ZetaId, and the compiled types.js — all oracles now carry the same category set.
+  # CORRECTION 2026-08-23: that last clause was false when written. `src/Core.Rust.ZetaId`
+  # stopped at WORK_ITEM = 8 and carried neither 9, 10, 11 nor Extended = 15 — three oracles
+  # agreed and the fourth was never checked, because nothing checked. Backfilled and now
+  # enforced by `src/Core.TypeScript/zeta-id/category-vocabulary-agreement.test.ts`, which
+  # reads all four oracle sources plus this file and fails on any disagreement.
   - id: 11
     name: Channel
+  # Agenda — a declarer's voluntary agenda declaration, one file per declaration
+  # (agendas/<zetaid>-<slug>.md) so no shared document has to be agreed on. Removes the
+  # hidden consensus source that a single docs/AGENDA.md is. Allocated 2026-08-23 by
+  # 081M0R3WHTH087G0R0015CH5PV under Aaron's authorization; design in
+  # docs/DECISIONS/2026-08-23-zetaid-keyed-agenda-declarations.md.
+  # Slots 13 and 14 remain free; Extended = 15 is the escape beyond 14, not a renumbering.
+  - id: 12
+    name: Agenda

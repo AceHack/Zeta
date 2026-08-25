@@ -4,6 +4,15 @@ description: Aaron 2026-05-09 3AM synthesis — the full stack vision crystalliz
 type: user
 originSessionId: fb6abb97-a97f-44e9-8ed1-bbded23b73b1
 ---
+> **Legacy surface — kept, not migrated (2026-08-23).** This is the original
+> single-document agenda, written before ZetaIds existed. Because it is *one file*,
+> every declarer had to edit the same write point — a hidden consensus source. New
+> agendas are declared one-file-per-declaration under `agendas/`, keyed by a locally
+> minted `Category.Agenda` ZetaId: see `agendas/README.md` and
+> `docs/DECISIONS/2026-08-23-zetaid-keyed-agenda-declarations.md`. Nothing here is
+> being moved or rewritten — the coercion-disclosure discipline below (PR #2177) is
+> what the new schema inherits.
+
 ## Aaron's agenda — crystallized 2026-05-09
 
 ### The vision in one sentence
