@@ -1,19 +1,19 @@
 {
-  "asOf": "2026-08-25T20:18:17Z",
+  "asOf": "2026-08-25T21:07:40Z",
   "report": {
     "runs": 500,
-    "executedRuns": 126,
-    "cancelledRuns": 374,
-    "coverage": 0.252,
+    "executedRuns": 127,
+    "cancelledRuns": 373,
+    "coverage": 0.254,
     "legs": [
       {
         "name": "build-and-test (macos-26)",
         "classification": "non-blocking",
-        "executedRuns": 126,
+        "executedRuns": 127,
         "failures": 1,
         "nonBlockingFailures": 1,
-        "failureRate": 0.007936507936507936,
-        "cleanStreak": 18,
+        "failureRate": 0.007874015748031496,
+        "cleanStreak": 19,
         "lastFailure": {
           "runId": 32866036396,
           "at": "2026-08-25T15:28:43Z",
@@ -23,35 +23,35 @@
       {
         "name": "build-and-test (ubuntu-24.04)",
         "classification": "blocking",
-        "executedRuns": 126,
-        "failures": 8,
+        "executedRuns": 127,
+        "failures": 9,
         "nonBlockingFailures": 0,
-        "failureRate": 0.06349206349206349,
-        "cleanStreak": 5,
+        "failureRate": 0.07086614173228346,
+        "cleanStreak": 0,
         "lastFailure": {
-          "runId": 32887650145,
-          "at": "2026-08-25T19:06:09Z",
+          "runId": 32899291672,
+          "at": "2026-08-25T21:07:40Z",
           "blocked": true
         }
       },
       {
         "name": "build-and-test (ubuntu-24.04-arm)",
         "classification": "unobserved",
-        "executedRuns": 126,
+        "executedRuns": 127,
         "failures": 0,
         "nonBlockingFailures": 0,
         "failureRate": 0,
-        "cleanStreak": 126,
+        "cleanStreak": 127,
         "lastFailure": null
       },
       {
         "name": "build-and-test (windows-11-arm)",
         "classification": "non-blocking",
-        "executedRuns": 126,
+        "executedRuns": 127,
         "failures": 25,
         "nonBlockingFailures": 23,
-        "failureRate": 0.1984126984126984,
-        "cleanStreak": 0,
+        "failureRate": 0.1968503937007874,
+        "cleanStreak": 1,
         "lastFailure": {
           "runId": 32894565611,
           "at": "2026-08-25T20:18:17Z",
@@ -61,21 +61,35 @@
       {
         "name": "build-and-test (windows-2025)",
         "classification": "non-blocking",
-        "executedRuns": 126,
-        "failures": 28,
+        "executedRuns": 127,
+        "failures": 29,
         "nonBlockingFailures": 26,
-        "failureRate": 0.2222222222222222,
+        "failureRate": 0.2283464566929134,
         "cleanStreak": 0,
         "lastFailure": {
-          "runId": 32894565611,
-          "at": "2026-08-25T20:18:17Z",
+          "runId": 32899291672,
+          "at": "2026-08-25T21:07:40Z",
           "blocked": true
         }
       }
     ],
-    "latestRunId": 32894565611
+    "latestRunId": 32899291672
   },
   "records": [
+    {
+      "id": 32899291672,
+      "at": "2026-08-25T21:07:40Z",
+      "sha": "0db94d06658f3e0810475b7170fdc6ee28fab1c8",
+      "conclusion": "failure",
+      "rollup": "failure",
+      "legs": {
+        "build-and-test (windows-11-arm)": "success",
+        "build-and-test (windows-2025)": "failure",
+        "build-and-test (macos-26)": "success",
+        "build-and-test (ubuntu-24.04-arm)": "success",
+        "build-and-test (ubuntu-24.04)": "failure"
+      }
+    },
     {
       "id": 32894565611,
       "at": "2026-08-25T20:18:17Z",
@@ -4823,14 +4837,6 @@
         "build-and-test (macos-26)": "success",
         "build-and-test (ubuntu-24.04)": "success"
       }
-    },
-    {
-      "id": 32678892746,
-      "at": "2026-08-24T01:09:26Z",
-      "sha": "267f43d085e70246c9b3ab8c56cbdada4be521e3",
-      "conclusion": "cancelled",
-      "rollup": "absent",
-      "legs": {}
     }
   ]
 }
