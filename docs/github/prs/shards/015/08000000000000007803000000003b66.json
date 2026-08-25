@@ -1,0 +1,12 @@
+{
+  "pr_number": 15206,
+  "archive_path": "docs/history/pr-reviews/PR-15206-fix-archive-remove-the-second-corrupt-path-from-the-same-commit.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T04:18:00.916Z",
+  "schema_version": "v1",
+  "commit_sha": "6cec0e2723903b94e7fe76a049c3cef002d67da2",
+  "title": "fix(archive): remove the second corrupt path from the same commit",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:17:13Z",
+  "head_ref": "fix/second-corrupt-shard-path"
+}
