@@ -81,12 +81,12 @@
 #   `kubectl -n longhorn-system get nodes.longhorn.io <host> -o jsonpath='{.spec.disks}'`,
 #   which must list one entry per formatted partition.
 #
-#   One reachability edge is explicitly NOT proven here and belongs to #12175:
-#   on main, longhorn-disks.nix is imported only by hosts/worker-template, so
-#   this derivation has teeth on that host today and on control-plane -- the
-#   host the USB actually installs -- only once #12175's common.nix import edge
-#   lands. The edge count is MEASURED below rather than assumed, so it is a
-#   fact in the build log either way instead of a hope in a comment.
+#   The always-on import edge (common.nix -> longhorn-disks.nix) is now
+#   ASSERTED, not merely measured: this PR is the landing of that edge.
+#   Whether the SHIPPING control-plane config actually resolves the default
+#   single-disk list through that import is
+#   tests/longhorn-common-default-disk-eval-test.nix -- this file still
+#   resolves the module in isolation via stubs.
 
 { lib, pkgs }:
 
@@ -166,6 +166,15 @@ let
         services.k3s.extraFlags = lib.mkOption {
           type = lib.types.listOf lib.types.str;
           default = [ ];
+        };
+        # PR #12175's annotator oneshot. Without this stub, `resolve` throws
+        # "undefined option systemd.services" the moment longhorn-disks.nix
+        # writes the unit -- which is exactly the mkIf path the default
+        # single-disk host must take. Attrset-of-anything: we read `.script`
+        # and presence, not the full NixOS systemd submodule.
+        systemd.services = lib.mkOption {
+          type = lib.types.attrsOf lib.types.anything;
+          default = { };
         };
         environment.etc = lib.mkOption {
           type = lib.types.attrsOf (
@@ -462,6 +471,21 @@ let
       c.zeta.longhorn.dataDisks == oldFixedDefault
       && builtins.elem "--node-label=zeta.io/longhorn-disks=1" c.services.k3s.extraFlags
     ))
+    (check "the default single-disk list fires mkIf: create-default-disk label + annotator" (
+      # This is the control-plane placeholder path: no Longhorn filesystem,
+      # dataDisks falls back to [ "/var/lib/longhorn" ], and the three-part
+      # mechanism must still arm. An empty default would drop the label and
+      # silently starve the node once createDefaultDiskLabeledNodes=true.
+      let
+        c = resolve { fileSystems = noLonghorn; };
+        unit = c.systemd.services.zeta-longhorn-node-disks or null;
+      in
+      builtins.elem "--node-label=node.longhorn.io/create-default-disk=config" c.services.k3s.extraFlags
+      && unit != null
+      && builtins.isString (unit.script or "")
+      && lib.hasInfix "/var/lib/longhorn" (unit.script or "")
+      && lib.hasInfix "default-disks-config" (unit.script or "")
+    ))
 
     # -- P6 reachability, measured rather than assumed -----------------------
     (check "hosts/worker-template imports the disks module (the edge that exists today)" (
@@ -474,14 +498,12 @@ let
       # for the hardware-configuration hosts that had nothing at all.
       shapeSetsDataDisks
     ))
-    (check "the always-on import edge count is 0 or 1, and is reported either way" (
-      # 0 on main: only worker-template gets this derivation.
-      # 1 after #12175: every node does, which is when control-plane -- the
-      # host the USB installs -- starts using its own disks. Asserting a fixed
-      # value here would make this test red on one side of that merge or the
-      # other; asserting the RANGE and printing the value in `status` keeps it
-      # a fact in the build log rather than a hope in a comment.
-      alwaysOnEdges == 0 || alwaysOnEdges == 1
+    (check "common.nix imports longhorn-disks.nix (the always-on edge #12175 owns)" (
+      # Was measured as 0-or-1 so this file stayed green on either side of
+      # the merge. This PR is that merge: the edge is now required. Dropping
+      # it re-starves every host that only imports common.nix -- including
+      # control-plane, the host the USB installs.
+      alwaysOnEdges == 1
     ))
   ];
 
@@ -500,8 +522,7 @@ in
       + "(the fixed literal registered ${toString (builtins.length oldFixedDefault)}), "
       + "single-disk registers ${toString (builtins.length (dataDisksDefaultFor singleDisk))}, "
       + "no-Longhorn host falls back to ${toString (builtins.length (dataDisksDefaultFor noLonghorn))}; "
-      + "always-on import edges to longhorn-disks.nix = ${toString alwaysOnEdges} "
-      + "(0 = disko hosts only, 1 = every node once PR #12175 lands)"
+      + "always-on import edges to longhorn-disks.nix = ${toString alwaysOnEdges}"
     else
       throw (
         "longhorn disk registration: ${toString (builtins.length failures)} of "

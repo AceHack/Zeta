@@ -60,7 +60,34 @@ pkgs.testers.nixosTest {
     imports = [
       ../modules/k3s-server.nix
       ../modules/longhorn-prereqs.nix
+      ../modules/longhorn-disks.nix
     ];
+
+    # TWO data disks, so the multi-disk path is exercised rather than
+    # assumed. Backed by real extra virtual drives below; a bind-mount or
+    # a bare directory would let Longhorn register a "disk" that is
+    # secretly the root filesystem, which is the vacuous version of this
+    # test.
+    zeta.longhorn.dataDisks = [ "/var/lib/longhorn-disk1" "/var/lib/longhorn-disk2" ];
+
+    virtualisation.emptyDiskImages = [ 4096 4096 ];
+    # virtualisation.fileSystems, NOT plain fileSystems. The qemu-vm module
+    # owns the test VM's mount set, so plain `fileSystems` entries are dropped
+    # silently -- measured: no mount unit was generated at all, not even a
+    # failing one, so both paths simply did not exist and Longhorn registered
+    # `disks: {}`.
+    virtualisation.fileSystems = {
+      "/var/lib/longhorn-disk1" = {
+        device = "/dev/vdb";
+        fsType = "ext4";
+        autoFormat = true;
+      };
+      "/var/lib/longhorn-disk2" = {
+        device = "/dev/vdc";
+        fsType = "ext4";
+        autoFormat = true;
+      };
+    };
 
     # NAT internet via the qemu user-mode NIC.
     networking.useDHCP = lib.mkForce true;
@@ -95,6 +122,12 @@ pkgs.testers.nixosTest {
               jobEnabled: false
             defaultSettings:
               defaultDataPath: /var/lib/longhorn
+              # Required for Longhorn to read the per-node disks annotation at
+              # all. Omitting it here is what made the first run of the
+              # multi-disk assertion fail: the annotation and label were both
+              # correct on the node, and Longhorn ignored them, registering only
+              # defaultDataPath. Keep in step with the prod Application.
+              createDefaultDiskLabeledNodes: true
               defaultReplicaCount: 1
             persistence:
               defaultClass: false
@@ -165,6 +198,49 @@ pkgs.testers.nixosTest {
         f"--no-headers 2>/dev/null | grep -q .",
         timeout=900,
     )
+
+    # Diagnostics BEFORE the multi-disk assertion. A wait_until_succeeds that
+    # times out prints nothing about why, and the post-mortem block at the end
+    # is unreachable once it fails -- so surface the inputs here, where they are
+    # still readable in the build log.
+    print("=== annotator unit ===")
+    print(server.succeed("systemctl status zeta-longhorn-node-disks.service --no-pager || true"))
+    print(server.succeed("journalctl -u zeta-longhorn-node-disks.service --no-pager | tail -n 30 || true"))
+    print("=== node labels/annotations ===")
+    print(server.succeed(f"{kc} get node server -o jsonpath='{{.metadata.labels}}' || true"))
+    print(server.succeed(f"{kc} get node server -o jsonpath='{{.metadata.annotations}}' || true"))
+    print("=== longhorn setting + node CR ===")
+    print(server.succeed(
+        f"{kc} -n longhorn-system get settings.longhorn.io create-default-disk-labeled-nodes "
+        f"-o jsonpath='{{.value}}' || true"))
+    print(server.succeed(f"{kc} -n longhorn-system get nodes.longhorn.io -o yaml | head -n 60 || true"))
+    print(server.succeed("mount | grep longhorn-disk || true"))
+
+    # ── LINK 2b: BOTH data disks are registered on the Node CR ───────────
+    # The multi-disk path used to be a file nothing read: longhorn-disks.nix
+    # wrote /etc/longhorn/node-disks.yaml as kind: NodeDiskCatalog, which is
+    # not a real CRD, and no consumer ever existed. Longhorn silently used
+    # defaultDataPath alone, so on a 2-NVMe box the second drive sat idle.
+    #
+    # Assert the COUNT, not merely that a disk exists -- one disk is what the
+    # broken version produced, so "has disks" would have passed against the bug.
+    server.wait_until_succeeds(
+        f"{kc} -n longhorn-system get nodes.longhorn.io server "
+        f"-o jsonpath='{{.spec.disks}}' 2>/dev/null | grep -q longhorn-disk2",
+        timeout=300,
+    )
+    disks = server.succeed(
+        f"{kc} -n longhorn-system get nodes.longhorn.io server "
+        f"-o jsonpath='{{.spec.disks}}'"
+    )
+    for want in ["/var/lib/longhorn-disk1", "/var/lib/longhorn-disk2"]:
+        assert want in disks, f"Longhorn Node CR missing {want}; got: {disks}"
+
+    # ...and they are genuinely separate block devices, not the root fs. A
+    # bind-mount would satisfy the assertion above while giving no extra
+    # capacity at all.
+    server.succeed("mountpoint -q /var/lib/longhorn-disk1")
+    server.succeed("mountpoint -q /var/lib/longhorn-disk2")
 
     # ── LINK 3: the StorageClass exists ──────────────────────────────────
     # Prod symptom, verbatim from the PVC events, 107992 times over 18 days:
