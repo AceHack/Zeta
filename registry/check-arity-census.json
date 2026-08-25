@@ -53,6 +53,7 @@
     "tests/Tests.FSharp/Formal/MetaspaceMap.Tests.fs": 1,
     "tests/Tests.FSharp/Formal/NftCommitBinding.Tests.fs": 1,
     "tests/Tests.FSharp/ForwardMomentum.Tests.fs": 1,
+    "tests/Tests.FSharp/FreeTimeAllocation.Tests.fs": 1,
     "tests/Tests.FSharp/GameFingerprint.Tests.fs": 1,
     "tests/Tests.FSharp/GeneratorRegistry.Tests.fs": 1,
     "tests/Tests.FSharp/HierarchicalPlanning.Tests.fs": 2,

@@ -1,0 +1,14 @@
+{
+  "id": "080d01d78b1a8810a0130008683bb5ae",
+  "at": "2026-08-25T22:01:33.265Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XF2RTG087G0R002DRKG39",
+    "type": "bug",
+    "title": "check-arity is RED on main: FTA-5's determinism self-comparison was never declared in the census",
+    "slug": "check-arity-is-red-on-main-fta-5-s-determinism-self-comparis",
+    "priority": "P2",
+    "filename": "081M0XF2RTG087G0R002DRKG39-check-arity-is-red-on-main-fta-5-s-determinism-self-comparis.md"
+  }
+}
