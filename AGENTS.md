@@ -431,6 +431,16 @@ These apply to any AI harness.
   thread counts. Cross-harness rule: applies to all
   harnesses, not just Claude Code; the watched-list
   registry is harness-agnostic.
+- **Cloud Agent dispatch token — `docs/cloud-agent-workflow-dispatch-token.md`.**
+  Cursor Cloud Agents' default `gh` is the read-only `cursor` App
+  installation token and cannot `workflow_dispatch`. The
+  `ZETA_WORKFLOW_DISPATCH_TOKEN` Cursor Secret (fine-grained PAT,
+  Actions: read+write) is injected into every Cloud VM; use
+  `GH_TOKEN="$ZETA_WORKFLOW_DISPATCH_TOKEN" gh workflow run … --ref main`
+  (or the REST dispatches API) to kick off `build-ai-cluster-iso.yml`
+  and other manual workflows, and only when the concurrency group is
+  idle. Primarily relevant to Cursor Cloud Agents; host-loop harnesses
+  already have their own gh write path.
 
 ## Build and test gate
 
