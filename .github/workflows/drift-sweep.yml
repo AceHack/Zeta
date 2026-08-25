@@ -85,6 +85,7 @@ on:
 
 permissions:
   contents: write # commits the tick event back to docs/drift-events/
+  actions: read # GET /actions/workflows/gate.yml/runs — the gate-verdict drought step below
 
 concurrency:
   group: drift-sweep
@@ -448,3 +449,52 @@ jobs:
               data/drift-mtth.json data/drift-genome.json data/drift-evolution.json \
               data/drift-proposal.json data/platform-drift.json \
             --message "drift: record sweep tick + certified heals"
+
+      # ══════════════════════════════════════════════════════════════════════════
+      # main's gate-verdict drought — reported HERE because this lane SURVIVES it
+      # ══════════════════════════════════════════════════════════════════════════
+      #
+      # THE CONDITION. `gate.yml` cancels its in-flight run on every merge to main
+      # (per-ref concurrency, `cancel-in-progress`). When merges arrive faster than the
+      # gate finishes, main accumulates commits whose only signal is `cancelled` — which
+      # is neither a pass nor a fail, so every surface that folds gate outcomes finds
+      # nothing and renders green. Measured 2026-08-23T17:35Z: last SUCCESS 10fbd9a4 at
+      # 16:43:22Z (~52 min and ~20 commits earlier), last 8 runs = 6 cancelled + 2
+      # running + 0 success, gate duration ~14 min, and three merges inside 24 seconds.
+      #
+      # WHY IT RUNS IN THIS WORKFLOW AND NOT ONLY IN `gate`. The same reporter runs in
+      # gate.yml's `drift (loud)` job, and that copy is cancelled by exactly the
+      # condition it reports — a detector living only inside `gate` is silent precisely
+      # when it matters. This workflow has its own concurrency group with
+      # `cancel-in-progress: false` and fires on every push to main, so it SURVIVES the
+      # storm: measured during the one above, drift-sweep concluded `success` at
+      # 17:30:37 → 17:34:32 while four consecutive gate runs were being cancelled.
+      # One detector, two hosts with different concurrency groups. If both ever go
+      # quiet the condition is invisible again — that limit is real and is stated in
+      # src/Core.TypeScript/ci/verdict-drought.ts rather than papered over.
+      #
+      # `--report-only` — LOUD, AND THIS HOST NEVER GOES RED. drift-dashboard's roster
+      # folds the latest run per workflow and fails when any is red, so failing this job
+      # would cascade into a lane whose semantics are not this change's to alter. The
+      # `::error::` annotation and the step summary are the signal here; the `drift
+      # (loud)` host takes the non-zero exit, where a red X beside a green required
+      # check is the established, reviewed pattern (#14283).
+      #
+      # It publishes NOTHING — no commit, no push, no artifact, and it does not go through
+      # the flush lane above either. Loud lives in the RUN, where nothing has to land for
+      # it to be seen. (When this step was written, the bookkeeping above was a raw
+      # `git push origin main` that the "CI Gate" ruleset had been rejecting since
+      # 2026-08-13 while the workflow reported green; main has since routed it through
+      # `flush-via-staging.ts`. That fix is why the sentence changed — the reason for
+      # publishing nothing did not: a drought reading is a fact about NOW, and parking it
+      # for a later flush would add a staleness window to the one measurement whose whole
+      # subject is staleness.)
+      - name: main gate-verdict drought (loud, never red here)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          bun src/Core.TypeScript/ci/verdict-drought.ts \
+            --repo "$REPO" --window 60 --report-only
+

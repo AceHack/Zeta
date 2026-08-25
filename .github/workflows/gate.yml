@@ -3238,6 +3238,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             src/Core.TypeScript/ci/drift-loud.ts
+            src/Core.TypeScript/ci/verdict-drought.ts
             data/platform-drift.json
           sparse-checkout-cone-mode: false
 
@@ -3264,3 +3265,35 @@ jobs:
           bun src/Core.TypeScript/ci/drift-loud.ts \
             --repo "$REPO" --run-id "$RUN_ID" --window 60 \
             --ledger data/platform-drift.json
+
+      # THE SECOND HALF OF THE SAME QUESTION, and the half that had no detector at all.
+      #
+      # `drift-loud` above asks "which failures were absorbed?" -- a question about runs
+      # that EXECUTED. It is silent, by construction, about a `main` on which nothing
+      # executed: hand it a window of 60 cancelled runs and `subjects` is empty,
+      # `sustained` is empty, and it prints `EXIT 0 -- no sustained drift`. It is not
+      # wrong; it is reporting on a measurement that never happened.
+      #
+      # Measured 2026-08-23T17:35Z: the last SUCCESS on main was 10fbd9a4, 16:29:06Z ->
+      # 16:43:22Z, ~52 minutes and ~20 commits earlier; of the last 8 gate runs, 6 were
+      # cancelled and 2 were still running. `gate.yml`'s concurrency group cancels the
+      # in-flight run on every merge, three merges landed inside 24 seconds, and a full
+      # gate takes ~14 min -- so merges outran the gate by roughly an order of magnitude
+      # and the commits in between carry NO verdict at all. `cancelled` reads as neither
+      # pass nor fail, so nothing anywhere reported it.
+      #
+      # NOTHING ABOUT THE POLICY IS CHANGED HERE. The concurrency group, a merge queue,
+      # and the flush cadences are the three options on the table and choosing between
+      # them is a human call. This step makes the condition measurable so whichever is
+      # chosen can be verified afterwards -- the same number, before and after.
+      #
+      # `if: always()` because the step above exits non-zero whenever ITS signal is loud,
+      # and one loud detector must never mute the other.
+      - name: Report main's gate-verdict drought, loudly
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          bun src/Core.TypeScript/ci/verdict-drought.ts \
+            --repo "$REPO" --window 60
