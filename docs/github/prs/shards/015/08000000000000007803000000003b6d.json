@@ -1,0 +1,12 @@
+{
+  "pr_number": 15213,
+  "archive_path": "docs/history/pr-reviews/PR-15213-research-query-opt-two-physical-joins-one-indistinguishable-cost-and-five-tests-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T04:47:02.854Z",
+  "schema_version": "v1",
+  "commit_sha": "5898fb409deef825893cac35f3311048bfe08e69",
+  "title": "research(query-opt): two physical joins, one indistinguishable cost — and five tests named after formulas they never assert",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T04:46:15Z",
+  "head_ref": "query-optimization-anchor-lineage"
+}
