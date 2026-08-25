@@ -7,8 +7,9 @@
  * across independent language implementations.
  */
 import { describe, test, expect } from "bun:test";
-import { execSync } from "node:child_process";
-import { writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 // Cl(3,0): 8 basis blades. The geo_product uses bitmask XOR with sign from reordering.
@@ -93,72 +94,95 @@ func main() {
     fmt.Fprintf(os.Stdout,"%s",string(b))
 }`;
 
-function runScript(lang: string, code: string, tmpDir: string): Record<string, string> | null {
-  const ext = lang === "ts" ? "ts" : lang === "py" ? "py" : "go";
-  const file = join(tmpDir, `clifford.${ext}`);
+type ScriptLanguage = "ts" | "py" | "go";
+
+function invocation(
+  lang: ScriptLanguage,
+  file: string,
+): { readonly command: string; readonly args: readonly string[] } {
+  switch (lang) {
+    case "ts":
+      return { command: "bun", args: [file] };
+    case "py":
+      return { command: "python3", args: [file] };
+    case "go":
+      return { command: "go", args: ["run", file] };
+  }
+}
+
+function parseOutput(lang: ScriptLanguage, text: string): Record<string, string> {
+  const value = JSON.parse(text) as unknown;
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`${lang} Clifford cross-check returned a non-object JSON value.`);
+  }
+  const entries = Object.entries(value);
+  if (!entries.every(([, entry]) => typeof entry === "string")) {
+    throw new Error(`${lang} Clifford cross-check returned a non-string operation value.`);
+  }
+  return Object.fromEntries(entries);
+}
+
+function runScript(lang: ScriptLanguage, code: string, tmpDir: string): Record<string, string> {
+  const file = join(tmpDir, `clifford.${lang}`);
   writeFileSync(file, code);
+  const { command, args } = invocation(lang, file);
+  const timeout = lang === "go" ? 60_000 : 15_000;
   try {
-    const cmd = lang === "ts" ? `bun ${file}` : lang === "py" ? `python3 ${file}` : `go run ${file}`;
-    const out = execSync(cmd, { encoding: "utf-8", timeout: 15000 });
-    return JSON.parse(out);
-  } catch {
-    return null;
+    const out = execFileSync(command, args, { encoding: "utf-8", timeout });
+    return parseOutput(lang, out);
+  } catch (error) {
+    throw new Error(`${lang} Clifford cross-check failed within ${String(timeout)} ms: ${String(error)}`, {
+      cause: error,
+    });
   }
 }
 
 describe("Clifford cross-language verification (Cl(3,0) byte-lock)", () => {
-  const tmpDir = join("/tmp", `clifford-xverify-${Date.now()}`);
-
   test("geo_product produces identical results across TS, Python, Go", () => {
-    mkdirSync(tmpDir, { recursive: true });
-    const ts = runScript("ts", TS_CLIFFORD, tmpDir);
-    const py = runScript("py", PY_CLIFFORD, tmpDir);
-    const go = runScript("go", GO_CLIFFORD, tmpDir);
+    const tmpDir = mkdtempSync(join(tmpdir(), "clifford-xverify-"));
     try {
-      rmSync(tmpDir, { recursive: true });
-    } catch {}
+      const ts = runScript("ts", TS_CLIFFORD, tmpDir);
+      const py = runScript("py", PY_CLIFFORD, tmpDir);
+      const go = runScript("go", GO_CLIFFORD, tmpDir);
 
-    expect(ts).not.toBeNull();
-    expect(py).not.toBeNull();
-    expect(go).not.toBeNull();
-
-    if (ts === null || py === null || go === null) {
-      throw new Error("Clifford cross-verify script failed; see stderr above");
-    }
-
-    // All three must agree on every operation (compare parsed arrays, not string formatting)
-    for (const key of Object.keys(ts)) {
-      const tsText = ts[key];
-      const pyText = py[key];
-      const goText = go[key];
-      if (tsText === undefined || pyText === undefined || goText === undefined) {
-        throw new Error(`missing Clifford output for ${key}`);
+      // All three must agree on every operation (compare parsed arrays, not string formatting)
+      for (const key of Object.keys(ts)) {
+        const tsText = ts[key];
+        const pyText = py[key];
+        const goText = go[key];
+        if (tsText === undefined || pyText === undefined || goText === undefined) {
+          throw new Error(`missing Clifford output for ${key}`);
+        }
+        const tsVal = JSON.parse(tsText) as unknown;
+        const pyVal = JSON.parse(pyText) as unknown;
+        const goVal = JSON.parse(goText) as unknown;
+        expect(tsVal).toEqual(pyVal);
+        expect(tsVal).toEqual(goVal);
       }
-      const tsVal = JSON.parse(tsText);
-      const pyVal = JSON.parse(pyText);
-      const goVal = JSON.parse(goText);
-      expect(tsVal).toEqual(pyVal);
-      expect(tsVal).toEqual(goVal);
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true });
     }
-  }, 30000);
+  }, 90_000);
 
   test("e1*e1 = scalar 1 (Euclidean signature)", () => {
-    mkdirSync(tmpDir, { recursive: true });
-    const ts = runScript("ts", TS_CLIFFORD, tmpDir);
+    const tmpDir = mkdtempSync(join(tmpdir(), "clifford-xverify-"));
     try {
-      rmSync(tmpDir, { recursive: true });
-    } catch {}
-    // e1*e1 should be [1,0,0,0,0,0,0,0] (scalar 1, Euclidean)
-    expect(ts!["e1*e1"]).toBe("[1,0,0,0,0,0,0,0]");
+      const ts = runScript("ts", TS_CLIFFORD, tmpDir);
+      // e1*e1 should be [1,0,0,0,0,0,0,0] (scalar 1, Euclidean)
+      expect(ts["e1*e1"]).toBe("[1,0,0,0,0,0,0,0]");
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 
   test("e1*e2 = e12 (bivector)", () => {
-    mkdirSync(tmpDir, { recursive: true });
-    const ts = runScript("ts", TS_CLIFFORD, tmpDir);
+    const tmpDir = mkdtempSync(join(tmpdir(), "clifford-xverify-"));
     try {
-      rmSync(tmpDir, { recursive: true });
-    } catch {}
-    // e1*e2: mask = 1^2 = 3 (e12), sign = +1 (no reordering needed)
-    expect(ts!["e1*e2"]).toBe("[0,0,0,1,0,0,0,0]");
+      const ts = runScript("ts", TS_CLIFFORD, tmpDir);
+      // e1*e2: mask = 1^2 = 3 (e12), sign = +1 (no reordering needed)
+      expect(ts["e1*e2"]).toBe("[0,0,0,1,0,0,0,0]");
+    } finally {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 });

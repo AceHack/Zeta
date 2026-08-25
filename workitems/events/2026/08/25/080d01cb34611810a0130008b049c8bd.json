@@ -1,0 +1,14 @@
+{
+  "id": "080d01cb34611810a0130008b049c8bd",
+  "at": "2026-08-25T14:50:16.995Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WPD312087G0R0006DXEJG",
+    "type": "bug",
+    "title": "Clifford cross-verify fails on cold Go compilation",
+    "slug": "clifford-cross-verify-fails-on-cold-go-compilation",
+    "priority": "P1",
+    "filename": "081M0WPD312087G0R0006DXEJG-clifford-cross-verify-fails-on-cold-go-compilation.md"
+  }
+}
