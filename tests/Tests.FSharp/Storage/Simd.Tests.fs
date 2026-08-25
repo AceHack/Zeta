@@ -8,12 +8,13 @@ open Zeta.Core
 
 
 // ═══════════════════════════════════════════════════════════════════
-// ═ SimdMerge correctness (moved from NestedAndRuntimeTests / CoverageTests)
+// ═ ScalarMerge correctness (was SimdMerge — the name asserted vector
+// ═ instructions the file never contained; see ScalarMerge.fs header)
 // ═══════════════════════════════════════════════════════════════════
 
 
 [<Fact>]
-let ``SimdMerge produces the same result as scalar merge`` () =
+let ``ScalarMerge blockwise produces the same result as two-pointer merge`` () =
     let rng = Random 42
     for trial in 1 .. 20 do
         let n = rng.Next(100, 500)
@@ -24,26 +25,26 @@ let ``SimdMerge produces the same result as scalar merge`` () =
         let b = bKeys |> Array.map (fun k -> ZEntry(k, 1L))
         let aS = ReadOnlySpan a
         let bS = ReadOnlySpan b
-        let simdBuf = Array.zeroCreate<ZEntry<int64>> (a.Length + b.Length)
-        let scalarBuf = Array.zeroCreate<ZEntry<int64>> (a.Length + b.Length)
-        let simdCount = SimdMerge.Merge(aS, bS, Span simdBuf)
-        let scalarCount = SimdMerge.MergeScalar(aS, bS, Span scalarBuf)
-        simdCount |> should equal scalarCount
-        for i in 0 .. simdCount - 1 do
-            simdBuf.[i].Key |> should equal scalarBuf.[i].Key
-            simdBuf.[i].Weight |> should equal scalarBuf.[i].Weight
+        let blockBuf = Array.zeroCreate<ZEntry<int64>> (a.Length + b.Length)
+        let twoPtrBuf = Array.zeroCreate<ZEntry<int64>> (a.Length + b.Length)
+        let blockCount = ScalarMerge.MergeBlockwise(aS, bS, Span blockBuf)
+        let twoPtrCount = ScalarMerge.MergeTwoPointer(aS, bS, Span twoPtrBuf)
+        blockCount |> should equal twoPtrCount
+        for i in 0 .. blockCount - 1 do
+            blockBuf.[i].Key |> should equal twoPtrBuf.[i].Key
+            blockBuf.[i].Weight |> should equal twoPtrBuf.[i].Weight
         let _ = trial
         ()
 
 
-// ─── SimdMerge scalar branch (moved from CoverageTests) ────────
+// ─── ScalarMerge short-input fallback (moved from CoverageTests) ───
 
 [<Fact>]
-let ``SimdMerge tiny inputs`` () =
+let ``ScalarMerge blockwise handles tiny inputs`` () =
     let a = [| ZEntry(1L, 1L) ; ZEntry(3L, 1L) |]
     let b = [| ZEntry(2L, 1L) |]
     let output = Array.zeroCreate<ZEntry<int64>> 5
-    let n = SimdMerge.Merge(ReadOnlySpan a, ReadOnlySpan b, Span output)
+    let n = ScalarMerge.MergeBlockwise(ReadOnlySpan a, ReadOnlySpan b, Span output)
     n |> should equal 3
     output.[0].Key |> should equal 1L
     output.[1].Key |> should equal 2L
@@ -51,9 +52,9 @@ let ``SimdMerge tiny inputs`` () =
 
 
 [<Fact>]
-let ``SimdMerge with zero-weight cancellation`` () =
+let ``ScalarMerge cancels equal-and-opposite weights`` () =
     let a = [| ZEntry(1L, 5L) |]
     let b = [| ZEntry(1L, -5L) |]
     let output = Array.zeroCreate<ZEntry<int64>> 2
-    let n = SimdMerge.MergeScalar(ReadOnlySpan a, ReadOnlySpan b, Span output)
+    let n = ScalarMerge.MergeTwoPointer(ReadOnlySpan a, ReadOnlySpan b, Span output)
     n |> should equal 0   // cancellation

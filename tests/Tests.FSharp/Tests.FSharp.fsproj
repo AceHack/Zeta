@@ -576,6 +576,7 @@
     <Compile Include="Storage/FastCdc.Tests.fs" />
     <Compile Include="Storage/ClosureTable.Tests.fs" />
     <Compile Include="Storage/Simd.Tests.fs" />
+    <Compile Include="Storage/ColumnZSet.Tests.fs" />
     <Compile Include="Storage/Durability.Tests.fs" />
     <Compile Include="Storage/ArrowSerializer.Tests.fs" />
     <Compile Include="Storage/SpanSerializer.Tests.fs" />
