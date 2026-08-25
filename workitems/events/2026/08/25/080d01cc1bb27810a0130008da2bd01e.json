@@ -1,0 +1,14 @@
+{
+  "id": "080d01cc1bb27810a0130008da2bd01e",
+  "at": "2026-08-25T15:21:51.951Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WR6XJE087G0R001BY4XWG",
+    "type": "bug",
+    "title": "the mirror gate named a variable that never existed, so the only off-site copy silently stopped being a copy",
+    "slug": "the-mirror-gate-named-a-variable-that-never-existed-so-the-o",
+    "priority": "P2",
+    "filename": "081M0WR6XJE087G0R001BY4XWG-the-mirror-gate-named-a-variable-that-never-existed-so-the-o.md"
+  }
+}

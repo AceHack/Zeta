@@ -4,8 +4,10 @@
 # WHY: acehack/Zeta is a *pure mirror* (no unique content of its own — that is
 # the standing contract; see the 2026-06-13 mirror reconciliation). Without a
 # sync job it drifts the moment origin advances (every merge pushes a fresh
-# automation/pr-archive-* branch). This workflow re-establishes the mirror on
-# every push, on branch deletions, and on a 6-hourly safety-net schedule.
+# automation/pr-archive-* branch). This workflow re-establishes the mirror on a
+# 6-hourly schedule, which bounds worst-case staleness at 6h. It deliberately
+# does NOT run per-push: a backup is a periodic artefact, not a synchronous
+# write path, and this repo produces hundreds of ref events a day.
 #
 # DESTRUCTIVE BY DESIGN: the push uses --prune, so any ref on the fork that is
 # absent on origin is DELETED on the fork. This is correct for a pure mirror.
@@ -13,16 +15,28 @@
 # one-time reconciliation that established that contract preserved every prior
 # fork-unique tip under origin tags `archive/2026-06-13-acehack/*`.
 #
+# THE CONTRACT WAS BROKEN FOR TEN WEEKS AND NOTHING SAID SO. On 2026-08-25 the
+# mirror was found diverged since 2026-06-13: origin 8,107 commits ahead, the
+# fork 73 ahead across 1,084 branches carrying 2,191 commits origin could not
+# reach. Cause: this job's `vars.ACEHACK_MIRROR_ENABLED` gate named a variable
+# that never existed, so it had reported `skipped` on every event since the file
+# was written — and a skipped job is not a failed one. Compounding it, the fork
+# had Actions ENABLED and was independently running this repo's cadence
+# workflows, writing its own data into the thing whose job is to hold a copy.
+# The resync preserved the fork's tip as `archive/2026-08-25-acehack/*` and
+# Actions were disabled on the fork, which is what makes the mirror contract
+# self-holding rather than merely asserted.
+#
 # SECRET REQUIRED (maintainer/Dejan to provision before enabling):
 #   ACEHACK_MIRROR_TOKEN — a fine-grained PAT scoped to AceHack/Zeta ONLY,
 #   with Contents: read+write and Workflows: read+write. NOT the default
 #   GITHUB_TOKEN (that cannot push to a different repository). Rotate per the
 #   HSM/secret-rotation cadence.
 #
-# ENABLEMENT REQUIRED:
-#   Set repository variable ACEHACK_MIRROR_ENABLED=true only after the token has
-#   the workflow scope above. Without that explicit enablement, the job is a
-#   no-op so ordinary PRs do not fail on an unprovisioned side-effect.
+# NO ENABLEMENT VARIABLE. There used to be one and it is what broke this job for
+# ten weeks (see above). A missing credential now fails LOUDLY in the push step
+# rather than gating the whole job into a silent skip — an unprovisioned
+# side-effect should be a red run somebody sees, not a green one nobody does.
 #
 # GATED: workflow + secret handling. Requires Dejan (devops) review + human
 # sign-off before merge/enable (GOVERNANCE.md §23). Drafted by Otto (shadow)
@@ -31,12 +45,14 @@
 name: mirror-to-fork
 
 on:
-  push:
-    branches: ["**"]
-    tags: ["**"]
-  delete: {}
+  # SCHEDULE ONLY, deliberately. This used to fire on every `push` to every branch
+  # and on every `delete` — which on this repo is hundreds of events a day, each
+  # queuing a full-history mirror push behind a serial concurrency group. The
+  # maintainer's call (2026-08-25): "i don't think we should mirror everytime."
+  # A backup is a periodic artefact, not a synchronous write path; the 6-hourly
+  # cadence bounds worst-case staleness at 6h, which is what a backup is for.
   schedule:
-    - cron: "13 */6 * * *" # safety net every 6h (off-peak minute, not :00)
+    - cron: "13 */6 * * *" # every 6h (off-peak minute, not :00)
   workflow_dispatch: {}
 
 permissions:
@@ -49,8 +65,26 @@ concurrency:
 jobs:
   mirror:
     # Only the canonical repo mirrors outward; a fork running this is a no-op.
-    if: github.repository == 'Lucent-Financial-Group/Zeta' && vars.ACEHACK_MIRROR_ENABLED == 'true'
-    # Timeout basis: no completed runs (gated on ACEHACK_MIRROR_ENABLED); full-history mirror push, deliberately generous.
+    #
+    # `vars.ACEHACK_MIRROR_ENABLED == 'true'` WAS ALSO HERE, AND THE VARIABLE HAS
+    # NEVER EXISTED. The repo carries exactly two variables and that is not one of
+    # them, so the condition was false on every evaluation since this file was
+    # written: the job reported `skipped`, the run reported success, and the mirror
+    # never ran once. A skipped job is not a failed one, so nothing ever went red
+    # while the only off-site copy of this repository silently stopped being a copy.
+    #
+    # Measured when it was found (2026-08-25): the mirror had diverged from origin
+    # on 2026-06-13 — origin 8,107 commits ahead, the fork 73 ahead — and the fork
+    # was independently running this repo's cadence workflows, writing its own data.
+    # Its own timeout comment recorded the symptom without anyone reading it as one:
+    # "no completed runs (gated on ACEHACK_MIRROR_ENABLED)".
+    #
+    # A kill switch nobody can see the state of is worse than no kill switch. If one
+    # is wanted again, it belongs in a place a reader can check — and its absence
+    # must fail loudly, not skip quietly.
+    if: github.repository == 'Lucent-Financial-Group/Zeta'
+    # Timeout basis: full-history mirror push over ~250 branches and ~325 tags,
+    # deliberately generous. The first real run took well under this.
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
