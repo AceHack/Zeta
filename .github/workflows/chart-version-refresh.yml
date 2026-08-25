@@ -103,6 +103,15 @@ jobs:
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         env:
+          # TIER DECLARED, not detected (081M0K36K69087G0R003BYSCF8 applied beyond gate.yml).
+          # Every payload step in this job is bun/git/gh only -- it touches no agda, ghc,
+          # emscripten, llvm, pandoc, r-base, podman, qemu or opam. On a hosted ubuntu runner
+          # the undeclared path is not adaptation: 16 GB always detects `full`, i.e. the whole
+          # 388-package / 713.0 MiB apt manifest. slim is 149 packages / 139.7 MiB.
+          # This is a RELIABILITY fix before it is a cost one: the mirror stalls land on the
+          # biggest archives (pandoc 26.9 MB, r-base-core 27.1 MB), so fetch fewer and fewer
+          # runs die at exit 124 inside the 420s apt budget.
+          ZETA_HOST_TIER: slim
           # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh

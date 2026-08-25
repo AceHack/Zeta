@@ -144,6 +144,60 @@
 // the class-C branch of `censusOfRun` and this goes red on the next run.
 //
 // ---------------------------------------------------------------------------
+// TWO WAYS THIS REPORTER USED TO REPORT GREEN WITHOUT LOOKING (closed 2026-08-25)
+// ---------------------------------------------------------------------------
+//
+// The canary above is sound and was VERIFIED LIVE while these were written -- gate run
+// 32864087075, job 97862170100, 15:31:42Z:
+//
+//     Detector liveness: OK -- detector live: the canary's swallowed step was observed
+//     in run 32864087075 via the annotation channel (Process completed with exit code 1.)
+//
+// The canary had not gone quiet. Two OTHER paths through this file, however, reached
+// green without ever consulting it, and both are this file's own carved sentence turned
+// against itself:
+//
+//   1. NO CREDENTIAL, NO REPO -> `return 0`. `main()` printed one line to stderr and
+//      exited GREEN when `GH_TOKEN`/`repo` were empty: no window, no census, no
+//      `assertDetectorLive`, no staleness check. Reproduced on the unfixed file:
+//
+//        $ bun src/Core.TypeScript/ci/drift-loud.ts --repo "" --ledger data/platform-drift.json
+//        [drift-loud] no token or repo and no --records: nothing to fold.
+//        EXIT=0
+//
+//      A secret that silently stops being delivered -- rotated, unset, scoped away -- is
+//      exactly how a reporter goes quiet in practice, and this path made that outcome
+//      indistinguishable from a clean run. It now returns 2 and says which input is
+//      missing. Two, not one: this is a configuration error, not a drift finding, and
+//      collapsing those is how `exit 2` gets misread as a failing check.
+//
+//   2. UNREADABLE LEDGER -> "publication landing". `publishedWatermark` answered 0 for
+//      a file that was absent, truncated, or simply not in the job's sparse-checkout,
+//      and `publicationIsStale` reads 0 as "nothing published yet" -- a real and
+//      different state that must not fire on day one. So a MISSING ledger printed the
+//      affirmative claim `EXIT 0 -- ... publication landing.` Reproduced on the unfixed
+//      file with the ledger path pointed at a file that does not exist:
+//
+//        $ bun ...drift-loud.ts --records fixture.json --run-id 900 --ledger /nope.json
+//        EXIT 0 -- no sustained drift, detector live, publication landing.
+//        EXIT=0
+//
+//      That is not a silent skip; it is a false statement about a file it never opened.
+//      The three states are now distinguished -- `absent` (never published, or not
+//      checked out) is LOUD and red; `empty` (published, watermark 0) stays quiet; a
+//      real watermark is compared as before. `gate.yml` sparse-checks exactly one data
+//      file for this job, so dropping that one line from the checkout list is a one-token
+//      edit that used to buy a permanent green.
+//
+// GAP 3, STATED HONESTLY. The publication staleness this reporter exists to catch is
+// LIVE and was ALREADY LOUD when this was written -- `data/platform-drift.json` is pinned
+// at run 32816944713 and the same job printed
+// `::error title=drift publication not landing::` and exited 1. The root cause is not in
+// this file: flush PR #15276 has been open since 06:37Z with `gate (required)` red on it,
+// so every later tick parks on `heartbeat/drift-sweep-buffer` and main's ledger stays
+// frozen. What was fixable HERE is the case above, where the alarm cannot fire at all.
+//
+// ---------------------------------------------------------------------------
 // DISCIPLINES
 // ---------------------------------------------------------------------------
 //
@@ -774,14 +828,39 @@ function flagValue(argv: readonly string[], flag: string, fallback: string): str
   return i >= 0 ? (argv[i + 1] ?? fallback) : fallback;
 }
 
-/** Watermark of the published platform-drift ledger, or 0 when absent/unreadable. */
-function publishedWatermark(path: string): number {
+/**
+ * What the published drift ledger says, as THREE states rather than two.
+ *
+ * `absent` is the one that matters and the one that used to be missing: a ledger that
+ * could not be read is NOT a ledger reporting zero. Collapsing them let a file this job
+ * never opened -- deleted, truncated, or simply left out of the sparse-checkout -- read
+ * as "publication landing". See the header, item 2.
+ */
+export type LedgerRead =
+  | { readonly kind: "absent"; readonly why: string }
+  | { readonly kind: "watermark"; readonly runId: number };
+
+export function readPublishedWatermark(
+  path: string,
+  read: (p: string) => string = (p) => readFileSync(p, "utf8"),
+): LedgerRead {
+  let raw: string;
   try {
-    const parsed = JSON.parse(readFileSync(path, "utf8")) as { readonly report?: { readonly latestRunId?: number } };
-    return parsed.report?.latestRunId ?? 0;
-  } catch {
-    return 0;
+    raw = read(path);
+  } catch (e) {
+    return { kind: "absent", why: `cannot be read (${e instanceof Error ? e.message : String(e)})` };
   }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    return { kind: "absent", why: `is not valid JSON (${e instanceof Error ? e.message : String(e)})` };
+  }
+  const runId = (parsed as { report?: { latestRunId?: unknown } } | null)?.report?.latestRunId;
+  if (typeof runId !== "number" || !Number.isFinite(runId)) {
+    return { kind: "absent", why: "carries no numeric report.latestRunId" };
+  }
+  return { kind: "watermark", runId };
 }
 
 async function main(): Promise<number> {
@@ -801,8 +880,24 @@ async function main(): Promise<number> {
   } else if (!offline) {
     const token = process.env["GH_TOKEN"] ?? process.env["GITHUB_TOKEN"] ?? "";
     if (token.length === 0 || repo.length === 0) {
-      console.error("[drift-loud] no token or repo and no --records: nothing to fold.");
-      return 0;
+      // EXIT 2, NOT 0. This used to return 0 -- green, silently, having folded nothing.
+      // A reporter that cannot prove it is looking must not report green, and that
+      // sentence is enforced two lines below by assertDetectorLive on every OTHER path;
+      // this one skipped past it entirely. 2 rather than 1 because this is a
+      // CONFIGURATION error (a missing input) and not a drift finding: a reader must not
+      // read it as "the detector looked and found something".
+      const missing = [
+        token.length === 0 ? "GH_TOKEN/GITHUB_TOKEN" : null,
+        repo.length === 0 ? "--repo (or GITHUB_REPOSITORY)" : null,
+      ].filter((x): x is string => x !== null);
+      console.error(
+        `[drift-loud] CANNOT LOOK: missing ${missing.join(" and ")}, and no --records was given. ` +
+          "Nothing was folded, the canary was never consulted, and the publication watermark was " +
+          "never compared -- so there is no green to report. Supply the credential, or pass " +
+          "--records/--offline to fold a captured window.",
+      );
+      console.log("::error title=drift reporter cannot look::" + `missing ${missing.join(" and ")}; no window was folded`);
+      return 2;
     }
     // The window: recent completed `gate` runs on main, plus THIS run when given, so a
     // PR sees its own canary and its own absorbed failures rather than only main's.
@@ -825,12 +920,18 @@ async function main(): Promise<number> {
   const report = foldAbsorption(records, thresholds);
   const currentRun = thisRunId > 0 ? (records.find((r) => r.id === thisRunId) ?? null) : null;
   const liveness = assertDetectorLive(currentRun);
-  const watermark = publishedWatermark(ledgerPath);
-  const stale = publicationIsStale(watermark, oldestRunId(records, thresholds.windowRuns))
-    ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${watermark}, older than every one of the ` +
-      `${report.runs} runs in this window (newest ${report.latestRunId}). The tick computes and then throws ` +
-      "the result away -- the dashboard is showing stale numbers from behind a green check."
-    : null;
+  const ledger = readPublishedWatermark(ledgerPath);
+  const stale =
+    ledger.kind === "absent"
+      ? `LEDGER NOT READABLE: \`${ledgerPath}\` ${ledger.why}. This check compares the published ` +
+        "watermark against the folded window; with no watermark it has not run, and a check that did " +
+        "not run must not read as one that passed. If the file is genuinely new, publish it once; if " +
+        "this job stopped checking it out, restore it to the sparse-checkout list."
+      : publicationIsStale(ledger.runId, oldestRunId(records, thresholds.windowRuns))
+        ? `PUBLICATION NOT LANDING: \`${ledgerPath}\` is pinned at run ${ledger.runId}, older than every one of the ` +
+          `${report.runs} runs in this window (newest ${report.latestRunId}). The tick computes and then throws ` +
+          "the result away -- the dashboard is showing stale numbers from behind a green check."
+        : null;
 
   const markdown = renderMarkdown(report, liveness, stale);
   console.log(markdown);

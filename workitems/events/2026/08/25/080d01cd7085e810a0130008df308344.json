@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd7085e810a0130008df308344",
+  "at": "2026-08-25T16:08:23.997Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WTW45W087G0R003J173FD",
+    "type": "task",
+    "title": "four unowned CI gaps: a suite in no workflow, an undeclared apt payload, a frozen ledger, and a reporter that could go green without looking",
+    "slug": "four-unowned-ci-gaps-a-suite-in-no-workflow-an-undeclared-ap",
+    "priority": "P2",
+    "filename": "081M0WTW45W087G0R003J173FD-four-unowned-ci-gaps-a-suite-in-no-workflow-an-undeclared-ap.md"
+  }
+}

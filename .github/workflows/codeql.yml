@@ -648,6 +648,12 @@ jobs:
 
       - name: Install toolchain (three-way-parity script)
         if: matrix.language == 'csharp' && steps.src.outputs.has_source == 'true'
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # CodeQL extraction builds the csharp database; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       # ---- CodeQL init + query selection ---------------------

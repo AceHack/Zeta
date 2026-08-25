@@ -78,6 +78,12 @@ jobs:
           key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # uv/python plus the ARC lane's own project sync; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do

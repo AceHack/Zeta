@@ -1,0 +1,122 @@
+name: agentic-organization-integration
+
+# INT1 -- run the env-gated integration tests GREEN against real Cockroach + NATS.
+# These are the in-process twins of the in-cluster deploy/run-*.ts proofs; here they
+# EXECUTE (skipped: 0) instead of skipping. Cockroach + NATS run as real containers and
+# the two AGENTIC_ORG_*_INTEGRATION_* env vars point the tests at them.
+#
+# WHY THIS FILE MOVED. It lived at `agentic-organization/.github/workflows/integration.yml`
+# and had therefore never run: GitHub Actions reads workflows only from the repository
+# ROOT `.github/workflows/`. It was a check-shaped file that constrained nothing.
+#
+# WHY IT IS `workflow_dispatch` ONLY. The original declared `push: [main]` + `pull_request`,
+# which at root would be a NEW recurring cost -- two container pulls (cockroachdb ~500 MB,
+# nats ~20 MB) plus a bounded readiness wait on every touch of this tree. That cost has not
+# been measured and nobody asked for it, so this lane is on-demand: 0 CI minutes/month
+# until someone dispatches it. Promoting it to a cadence is a separate, priced decision.
+# The deterministic suite that DOES run per-PR is `agentic-organization-tests.yml`.
+#
+# ONE DEFECT WAS FIXED IN THE MOVE, not carried. The original ran
+#     npm run test:integration 2>&1 | tee /tmp/itest.log
+# with no `pipefail`, so the step's status was `tee`'s -- always 0. A failing integration
+# test would have been read only through the grep for skips, i.e. a red suite could pass.
+# `set -o pipefail` below makes the exit status the test runner's again.
+#
+# Safe-pattern compliance:
+#   - SHA-pinned actions/checkout; no new third-party action (node comes from mise)
+#   - explicit least-privilege permissions: contents: read
+#   - pinned runs-on + timeout-minutes + concurrency group
+#   - container image tags are version-pinned as the original had them
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agentic-organization-integration-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  integration:
+    name: agentic-organization (integration vs real Cockroach + NATS)
+    runs-on: ubuntu-24.04
+    # 25 minutes: two container pulls plus a 120s Cockroach readiness ceiling plus
+    # install.sh's apt budget. A runaway cap, not a budget.
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+          # TIER DECLARED, not detected. node/npm come from the mise pin; the container
+          # runtime is the runner's own docker, not an apt package from the manifest.
+          ZETA_HOST_TIER: slim
+        run: ./tools/setup/install.sh
+
+      - name: Install workspace dependencies
+        working-directory: agentic-organization
+        run: |
+          set -euo pipefail
+          if ! npm ci; then
+            echo "::warning title=stale lockfile::npm ci failed; falling back to npm install."
+            npm install
+          fi
+
+      - name: Start CockroachDB (single-node insecure)
+        run: docker run -d --name crdb -p 26257:26257 cockroachdb/cockroach:v24.1.5 start-single-node --insecure
+
+      - name: Start NATS (JetStream)
+        run: docker run -d --name nats -p 4222:4222 nats:2.10 -js
+
+      - name: Wait for Cockroach SQL
+        run: |
+          set -euo pipefail
+          for _ in $(seq 1 60); do
+            if docker exec crdb ./cockroach sql --insecure -e "SELECT 1" >/dev/null 2>&1; then
+              echo "cockroach ready"
+              break
+            fi
+            sleep 2
+          done
+          # Unconditional final probe: the loop above can exhaust without succeeding, and
+          # a readiness wait that gives up quietly is a check that did not run.
+          docker exec crdb ./cockroach sql --insecure -e "SELECT 1"
+
+      - name: Wait for NATS
+        run: |
+          set -euo pipefail
+          for _ in $(seq 1 30); do
+            if nc -z localhost 4222; then
+              echo "nats ready"
+              break
+            fi
+            sleep 1
+          done
+          nc -z localhost 4222
+
+      - name: Run the env-gated integration tests (must EXECUTE, not skip)
+        working-directory: agentic-organization
+        env:
+          AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL: postgresql://root@localhost:26257/defaultdb?sslmode=disable
+          AGENTIC_ORG_NATS_INTEGRATION_SERVERS: nats://localhost:4222
+        run: |
+          set -euo pipefail
+          # pipefail is load-bearing: without it this step's status is tee's, which is
+          # always 0, and a failing integration suite would report green.
+          npm run test:integration 2>&1 | tee /tmp/itest.log
+          # A skip here means the env wiring did not take -- the whole point of this lane
+          # is that these tests EXECUTE. A skipped test is a check that did not run.
+          if grep -qE '# SKIP|skipped [1-9]' /tmp/itest.log; then
+            echo "::error title=integration test skipped::an integration test SKIPPED - the env wiring did not take"
+            exit 1
+          fi
+
+      - name: Teardown
+        if: always()
+        run: docker rm -f crdb nats || true

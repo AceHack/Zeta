@@ -110,6 +110,11 @@ jobs:
         # SMT backend, declared in manifests) + opam. from-opam-git.ts is
         # idempotent — a warm ~/.opam cache makes it a fast no-op.
         env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # opam is tier=standard in tools/setup/manifests/apt and tlapm is source-built from it.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: standard
           # mise release-metadata calls authenticate (1000/hr) instead of anonymous (60/hr 403 flake)
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
