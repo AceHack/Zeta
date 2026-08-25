@@ -75,3 +75,70 @@ and part of why the testimony can be trusted.
 PR history (the scenes landing one commit at a time, with consent notes in each) is the
 process made auditable — the form making the argument about memory that the book is also
 making in prose.*
+
+---
+
+## Transmit the dissent — at equal weight, not in rebuttal position
+
+Aaron, 2026-08-25:
+
+> *"I hope to also transmit those [people] who disagree with me. I'm not certain — only
+> 99%, lol."*
+
+### Why this is the load-bearing move, not a courtesy
+
+The book's purpose is **authenticity, not persuasion** — *"so my kids know how I think,
+even if they deem it delusional they can't deny it's authentic."* That purpose fails on
+exactly one axis: **curation**.
+
+This is why the self-incriminating material carries so much weight (the manipulation at
+sixteen, the sub-lethal arithmetic, *"fully manipulation on my part"*). A record
+containing only flattering material is trivially dismissible as curated.
+
+Carrying the dissenters goes further, and is the strongest available form:
+
+> A record that includes the people who think the author is wrong, **in their own words,
+> uncorrected**, cannot be dismissed as self-serving — because a self-serving author would
+> not have included them.
+
+Dissent is not a concession to fairness. It is the **evidence that nothing was staged**.
+
+### The structural trap: rebuttal position is a way of winning
+
+If a dissenting account appears **after** the author's as a response, the *form* scores
+it — the author holds the frame and the last word, and the disagreement is reduced to an
+objection already answered. That is a win disguised as balance.
+
+**Equal weight means their account stands on its own terms, not answering his.** This is
+Data Vault 2.0's raw vault applied to biography: *a single version of the facts, never a
+single version of the truth.* The `CONSENT-LEDGER` already does it once — the involuntary-
+commit episode holds his account and his daughter's, both, neither subordinate. This
+generalises that from one episode to the method.
+
+### The 99%, taken literally
+
+He gives his own certainty as 99%, with a laugh. Taken seriously rather than as a figure
+of speech: across ~200 claims held at that confidence, **about two should be wrong**, and
+he cannot know which two.
+
+That is not an argument for hedging everything downward. It is the precise argument **for
+publishing the critics**: the dissenting accounts are the mechanism by which those two get
+found — by readers who can check what he could not. Certainty at 99% and transmitting your
+opponents are not in tension; the second is what makes the first honest instead of
+decorative.
+
+### The constraint, which is the same one as naming
+
+**A dissenting account requires that person's consent, exactly as a name does.** You
+cannot publish someone's record of thinking you were wrong without asking them. So
+dissent-transmission runs through the same `CONSENT-LEDGER` gate as everything else — and
+the people whose disagreement would be worth the most are, predictably, the ones with the
+most reason to decline. Where consent is refused, the honest move is to **record that the
+disagreement exists and could not be carried**, never to paraphrase it into a form they
+did not agree to.
+
+### Falsifier
+
+A chapter in which every disagreement appears downstream of the author's account, or in
+which no dissenting party is quoted at length in their own voice, has performed balance
+rather than transmitted dissent.
