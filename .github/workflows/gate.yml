@@ -2476,6 +2476,18 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # THE VACUITY CLASS, INVERTED — a step that can never SUCCEED.
+      #
+      # `${{ steps.X.outputs.Y }}` with no writer interpolates to the empty string silently.
+      # A step guarding on that value fails every run forever, and its error names the
+      # PRODUCER, so the fault reads as a defect in that step. Live instance the day this
+      # landed: `agent-heartbeat.yml`'s flush returned success on two paths without declaring
+      # `skip`, so every backpressured tick — a HEALTHY outcome — reported as a broken flush.
+      # Three agents diagnosed it as an auto-merge token-scope fault; that call was never
+      # reached. The second of the two paths was found by this check, not by hand.
+      - name: Step outputs have writers (a step that cannot succeed)
+        run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
+
       # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
       #
       # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every

@@ -1666,9 +1666,62 @@ jobs:
 
           OPEN_FLUSH_PR=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
             --head "$SNAPSHOT_REF" --base main --json number --jq '.[0].number // empty' 2>/dev/null || true)
+
+          # BACKPRESSURE NEEDS AN ESCAPE, OR IT IS A DEADLOCK.
+          #
+          # Waiting for the open flush PR is correct only while that PR can still merge. A
+          # CONFLICTED one never can: `mergeStateStatus: DIRTY` means there is no computable
+          # merge ref, and nothing upstream ever rebases a flush snapshot. So the lane waits
+          # on an event that cannot occur, and the retirement pass that would clear it lives
+          # BELOW this early return and is never reached. Measured 2026-08-25: soraya blocked
+          # behind DIRTY #15319 since 07:50 and alexa behind #15326, both lanes dead with the
+          # tick still reporting healthy.
+          #
+          # Closing it loses nothing, for the reason stated above: the LANE holds unlanded
+          # work, not the ref. `heartbeat/$AGENT` still carries every unflushed commit, so the
+          # next flush re-cuts the snapshot from the current lane head over current main —
+          # which is also what resolves the conflict.
+          #
+          # Scoped deliberately to DIRTY. A gate-FAILING PR is not retired here: re-cutting on
+          # every tick would relaunch the same failing checks forever and turn a real, visible
+          # failure into an invisible retry loop. That case gets a loud warning below instead,
+          # because a stuck lane a human can see beats a stuck lane that hides itself.
+          if [ -n "$OPEN_FLUSH_PR" ]; then
+            BLOCKER_STATE=$(gh pr view "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
+              --json mergeStateStatus --jq '.mergeStateStatus' 2>/dev/null || echo UNKNOWN)
+            if [ "$BLOCKER_STATE" = "DIRTY" ]; then
+              echo "::warning title=Heartbeat flush blocker retired::$AGENT: PR #$OPEN_FLUSH_PR is CONFLICTED (DIRTY) and can never merge; closing it so the lane can re-cut. No events are lost — heartbeat/$AGENT still carries them."
+              gh pr close "$OPEN_FLUSH_PR" --repo "$GITHUB_REPOSITORY" \
+                --comment "Retired by the flush lane: mergeStateStatus was DIRTY, so this snapshot could never merge. The lane (heartbeat/$AGENT) still holds every unflushed event; the next flush re-cuts from the current lane head over current main, which also resolves the conflict." >/dev/null 2>&1 || true
+              OPEN_FLUSH_PR=""
+            fi
+          fi
+
           if [ -n "$OPEN_FLUSH_PR" ]; then
             echo "::notice title=Heartbeat flush backpressured::$AGENT: PR #$OPEN_FLUSH_PR is still testing $SNAPSHOT_REF; leaving the head alone. The lane keeps accumulating and the next flush carries this tick too."
             echo "[flush] $AGENT: backpressured behind PR #$OPEN_FLUSH_PR — nothing lost"
+            # A blocker that is not DIRTY is presumed to still be making progress, which is
+            # true for a PR under test and false for one whose checks have settled red. Age is
+            # the discriminator available here without re-deciding the merge: past the
+            # threshold, say so at warning level so a wedged lane is visible in the run summary
+            # rather than reported only as a routine notice nobody reads.
+            BLOCKER_AGE_MIN=$(( ( $(date -u +%s) - $(date -u -d "$(gh pr view "$OPEN_FLUSH_PR" \
+              --repo "$GITHUB_REPOSITORY" --json createdAt --jq .createdAt 2>/dev/null)" +%s 2>/dev/null || date -u +%s) ) / 60 ))
+            if [ "$BLOCKER_AGE_MIN" -ge 90 ]; then
+              echo "::warning title=Heartbeat lane wedged::$AGENT: PR #$OPEN_FLUSH_PR has blocked this lane for ${BLOCKER_AGE_MIN}m in state $BLOCKER_STATE. It is not DIRTY, so the lane will not retire it automatically — its checks need a look. Events are accumulating on heartbeat/$AGENT and are not lost."
+            fi
+            # Declare the no-op to the steps that follow. Backpressure is a HEALTHY outcome
+            # — the lane keeps the delta and the next flush carries it — but this branch
+            # returns before `merge-heartbeats-to-main.ts` runs, so `pr_number` is never
+            # written. Without this line the arming step's `steps.flush.outputs.skip` reads
+            # as empty, its `!= 'true'` guard passes, and it hard-fails on a blank PR number
+            # with "snapshot produced no PR number". That names the FLUSH step, so a healthy
+            # backpressured tick reports as a broken flush. Measured before the fix: 12
+            # consecutive runs, `failure` for every lane holding work and `skipped` for every
+            # lane without — the arming step had never once concluded `success`, and three
+            # separate agents read the red as an auto-merge token-scope fault. The auto-merge
+            # call was never reached on any of those runs.
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -1757,6 +1810,12 @@ jobs:
           # 4 = "main already contains this branch" — an ordinary no-op, not a failure.
           if [ "$RC" -eq 4 ]; then
             echo "[flush] $AGENT: already on main — nothing to land (no-op)"
+            # Same declaration the backpressure branch makes, and for the same reason: this
+            # path returns before any PR exists, so the arming step must not run. Found by
+            # `audit-workflow-step-output-has-writer.ts`, not by hand — the backpressure fix
+            # alone left this second success-without-write path live, and it would have kept
+            # producing the identical misleading red on every "already on main" tick.
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           if [ "$RC" -ne 0 ]; then

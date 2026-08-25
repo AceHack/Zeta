@@ -1,0 +1,14 @@
+{
+  "id": "080d01c9734cd810a01300082ee29d77",
+  "at": "2026-08-25T13:48:58.139Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WJWTCT087G0R002A845TP",
+    "type": "bug",
+    "title": "heartbeat flush: a healthy backpressured tick reports as a broken flush, and backpressure has no escape from an unmergeable blocker",
+    "slug": "heartbeat-flush-a-healthy-backpressured-tick-reports-as-a-br",
+    "priority": "P2",
+    "filename": "081M0WJWTCT087G0R002A845TP-heartbeat-flush-a-healthy-backpressured-tick-reports-as-a-br.md"
+  }
+}
