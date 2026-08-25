@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd6ff55010a0130008f4decaf7",
+  "at": "2026-08-25T16:08:19.370Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WTVZNA087G0R0024Z5QZR",
+    "type": "bug",
+    "title": "agentic-organization npm run typecheck fails: 6 TS2532 errors in the env-gated integration tests",
+    "slug": "agentic-organization-npm-run-typecheck-fails-6-ts2532-errors",
+    "priority": "P2",
+    "filename": "081M0WTVZNA087G0R0024Z5QZR-agentic-organization-npm-run-typecheck-fails-6-ts2532-errors.md"
+  }
+}

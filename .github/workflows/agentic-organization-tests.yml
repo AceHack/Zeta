@@ -1,0 +1,106 @@
+name: agentic-organization-tests
+
+# The 1,595-test `node --test` suite under `agentic-organization/` ran in NO workflow.
+#
+# WHAT WAS MEASURED (2026-08-25). The suite is invoked by exactly one thing in the repo:
+# the `test` script in `agentic-organization/package.json`. Nothing under the ROOT
+# `.github/workflows/` referenced it -- `gate.yml` names `agentic-organization` three
+# times and all three are `yamllint`/`find` over `agentic-organization/deploy`, i.e. the
+# k8s manifests, never the code.
+#
+# There WAS a workflow. It sat at `agentic-organization/.github/workflows/ci.yml`, and
+# GitHub Actions only reads workflows from the repository ROOT `.github/workflows/`, so
+# it had never executed -- a file that looks exactly like a check and is not one. This
+# workflow is that file, moved to where it runs. `lint-no-nested-workflow-dirs.ts` now
+# refuses the shape so it cannot recur.
+#
+# WHAT IS WIRED, AND WHAT IS NOT. `npm test` is wired: measured locally on node v24.16.0,
+# it is 1595 tests / 93 suites / 1588 pass / 0 fail / 0 cancelled / 7 skipped / 0 todo,
+# exit 0. The 7 skips are the env-gated integration tests announcing their own gate
+# (AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL / AGENTIC_ORG_NATS_INTEGRATION_SERVERS
+# unset), which is the designed behaviour, not a silenced failure.
+#
+# `npm run typecheck` is deliberately NOT wired, and this is the one thing to read before
+# adding it. It FAILS today -- exit 2, six `TS2532: Object is possibly 'undefined'` errors,
+# all in the five env-gated integration test files. Wiring it would either paint this lane
+# red on arrival or require silencing real errors to get a green, and neither is a check.
+# The failure is recorded as its own work item rather than absorbed here.
+#
+# COST. Path-filtered to `agentic-organization/**`, which took 8 commits in the last 30
+# days: roughly 8 PR runs + 8 push runs = ~16 runs/month. At ~3.5 min/run (install.sh at
+# slim tier, warm cache, plus a 5-second suite) that is ~56 CI minutes/month.
+#
+# Safe-pattern compliance:
+#   - SHA-pinned actions/checkout; no new third-party action is introduced (node comes
+#     from mise via the parity installer, per GOVERNANCE §24, not from setup-node)
+#   - explicit least-privilege permissions: contents: read
+#   - no user-authored context reaches a shell
+#   - concurrency group + pinned runs-on + timeout-minutes
+
+on:
+  pull_request:
+    paths:
+      - "agentic-organization/**"
+      - ".github/workflows/agentic-organization-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - "agentic-organization/**"
+      - ".github/workflows/agentic-organization-tests.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agentic-organization-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  unit:
+    name: agentic-organization (unit + contract suite)
+    runs-on: ubuntu-24.04
+    # 12 minutes: this job runs tools/setup/install.sh, so its timeout is the ceiling on
+    # the installer's apt wall budget (audit-apt-budget-fits-job-timeout.ts). The suite
+    # itself measures 5 seconds; a timeout is a cap, not a reservation.
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # node + npm come from the mise pin in .mise.toml, so this lane has the same
+        # runtime a laptop and a devcontainer get. shellenv.sh wires BASH_ENV so the
+        # later run: steps auto-source the managed shellenv.
+        env:
+          # mise release-metadata calls authenticate (1000/hr) instead of anonymous
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+          # TIER DECLARED, not detected (081M0K36K69087G0R003BYSCF8 applied beyond gate.yml).
+          # Every payload step in this job is node/npm only -- it touches no agda, ghc,
+          # emscripten, llvm, pandoc, r-base, podman, qemu or opam. On a hosted ubuntu runner
+          # the undeclared path is not adaptation: 16 GB always detects `full`, i.e. the whole
+          # 388-package / 713.0 MiB apt manifest. slim is 149 packages / 139.7 MiB.
+          ZETA_HOST_TIER: slim
+        run: ./tools/setup/install.sh
+
+      - name: Install workspace dependencies
+        working-directory: agentic-organization
+        # `npm ci` is the reproducible form and is what should run; the fallback exists
+        # because package-lock.json here predates some workspace additions. If `ci`
+        # fails the lockfile is stale, and that is worth seeing in the log rather than
+        # hiding -- so the fallback is announced.
+        run: |
+          set -euo pipefail
+          if ! npm ci; then
+            echo "::warning title=stale lockfile::npm ci failed; falling back to npm install. agentic-organization/package-lock.json needs regenerating."
+            npm install
+          fi
+
+      - name: Unit + contract suite (deterministic, no network)
+        working-directory: agentic-organization
+        # NO continue-on-error. A failure here is a failure.
+        # Measured on main at the time this lane was written: 1595 tests, 1588 pass,
+        # 0 fail, 7 skipped (the env-gated integration tests, by design).
+        run: npm test

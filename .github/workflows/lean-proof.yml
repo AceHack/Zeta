@@ -103,6 +103,12 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth for toolchain state. Installs elan
         # which provides lake + lean. Same pattern as gate.yml.
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # elan/lake plus the Mathlib olean fetch; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: ./tools/setup/install.sh
 
       - name: Fetch Mathlib pre-built oleans

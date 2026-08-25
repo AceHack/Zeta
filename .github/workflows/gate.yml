@@ -1813,6 +1813,31 @@ jobs:
       - name: Run lint-drift-publication-lands (stale-behind-green guard)
         run: bun src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts
 
+      # A workflow file GitHub will never read is not a check -- and it is worse than a
+      # missing one, because a missing check is visibly missing. Live instance 2026-08-25:
+      # agentic-organization/.github/workflows/ci.yml ran a 1,595-test suite and had never
+      # executed once, because Actions reads only the ROOT .github/workflows/. The two
+      # scaffold templates under src/Core.TypeScript/scaffold are exempt and SAID SO on
+      # every run -- the exemption is derived from create-repo.ts sitting beside them, so
+      # deleting that tool expires it rather than leaving an allowlist behind.
+      - name: Run lint-no-nested-workflow-dirs (a workflow that never runs is not a check)
+        run: bun src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.ts
+
+      # An ubuntu runner always has 16 GB, so an UNDECLARED host tier is not adaptation --
+      # it is the constant `full`, i.e. 388 apt packages / 713.0 MiB on every run. Measured
+      # 2026-08-25: ci-cache-paths-lint failed 5 of its last 20 runs, all five inside the
+      # install step (exit 124, stalled on pandoc 26.9 MB and r-base-core 27.1 MB), while
+      # the check NAMED "audit actions/cache paths vs git ls-files" never reached its audit.
+      # This refuses SILENCE, never a particular tier: declaring `full` is a fine answer.
+      - name: Run audit-install-tier-declared (undeclared apt payload guard)
+        run: bun src/Core.TypeScript/hygiene/audit-install-tier-declared.ts
+
+      - name: Workflow-shape guard falsifiers (a check that cannot fail is not a check)
+        run: |
+          bun test \
+            src/Core.TypeScript/hygiene/lint-no-nested-workflow-dirs.test.ts \
+            src/Core.TypeScript/hygiene/audit-install-tier-declared.test.ts
+
       # A privilege elevator resolved by NAME is substitutable by any writable directory
       # earlier on PATH, and planting one leaves NO GIT DIFF -- so review, AgencySignature
       # and byte-lock, all of which watch the repo, cannot see it. That was live on main as
@@ -3055,6 +3080,12 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Same retry rationale as every other install.sh step in this file
         # (Aaron 2026-04-28 PR #23 mise+bun-1.3.13 502).
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # environment-dependent tests are gated on the wide toolchain by design; the payload has not been measured down.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do
@@ -3134,6 +3165,12 @@ jobs:
           key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
       - name: Install toolchain (all 7 languages + E-prover)
+        env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # the 7-language oracle: emscripten and llvm are tier=standard, and .mise.full.toml carries the k8s/WASM set that only tier=full merges.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5; do

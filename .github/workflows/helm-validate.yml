@@ -145,6 +145,11 @@ jobs:
 
       - name: Install toolchain via three-way-parity script
         env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # helm + kubeconform ship in .mise.full.toml, which only tier=full merges.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
           MISE_GITHUB_TOKEN: ${{ github.token }}
         run: ./tools/setup/install.sh
 

@@ -29,6 +29,7 @@ import {
   oldestRunId,
   orderNewestFirst,
   publicationIsStale,
+  readPublishedWatermark,
   renderMarkdown,
   ROLLUP_JOB_NAME,
   isInstrument,
@@ -402,5 +403,70 @@ describe("the reporter must not report itself -- the self-amplifying latch", () 
     expect(lines).toHaveLength(1);
     expect(lines[0]).toContain("::error ");
     expect(lines[0]).toContain(WIN);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE REPORTER'S OWN WAY OF REPORTING GREEN WITHOUT LOOKING
+// ---------------------------------------------------------------------------
+//
+// Live on 2026-08-25, and it is this file's carved sentence -- "a reporter that cannot
+// prove it is looking must not report green" -- turned against itself. The canary was
+// NOT the defect: it was verified live (gate run 32864087075, job 97862170100, 15:31:42Z)
+// reporting `detector live` while this was being written.
+//
+// What DID report green without looking: `publishedWatermark` answered 0 for a ledger it
+// could not read, and `publicationIsStale` reads 0 as "nothing published yet" -- a real
+// and different state that must stay quiet. So a MISSING ledger produced the affirmative
+// claim `EXIT 0 -- ... publication landing.` about a file never opened. Reproduced on the
+// unfixed file at `--ledger /tmp/DOES-NOT-EXIST.json`, exit 0.
+//
+// These are falsifiers, not decoration: collapse `readPublishedWatermark` back to a
+// number and the first three tests below go red.
+
+describe("an unreadable ledger is not a ledger reporting zero", () => {
+  const throwing = (): string => {
+    throw new Error("ENOENT: no such file or directory");
+  };
+
+  test("a ledger that cannot be read is `absent`, and says why", () => {
+    const r = readPublishedWatermark("/nope.json", throwing);
+    expect(r.kind).toBe("absent");
+    if (r.kind !== "absent") return;
+    expect(r.why).toContain("cannot be read");
+    expect(r.why).toContain("ENOENT");
+  });
+
+  test("a ledger that is not JSON is `absent`, not zero", () => {
+    expect(readPublishedWatermark("/x.json", () => "<html>404</html>").kind).toBe("absent");
+  });
+
+  test("a ledger with no numeric report.latestRunId is `absent`, not zero", () => {
+    expect(readPublishedWatermark("/x.json", () => "{}").kind).toBe("absent");
+    expect(readPublishedWatermark("/x.json", () => '{"report":{}}').kind).toBe("absent");
+    expect(readPublishedWatermark("/x.json", () => '{"report":{"latestRunId":"32816944713"}}').kind).toBe("absent");
+  });
+
+  test("a real watermark still reads as a watermark -- including the honest 0", () => {
+    // 0 is the DIFFERENT claim the staleness check must stay quiet about: a publication
+    // that has genuinely never landed is NEW, not stopped. Conflating it with `absent`
+    // would make this fire on day one of any new artifact -- the cry-wolf failure the
+    // whole banding design exists to avoid.
+    expect(readPublishedWatermark("/x.json", () => '{"report":{"latestRunId":0}}')).toEqual({
+      kind: "watermark",
+      runId: 0,
+    });
+    expect(readPublishedWatermark("/x.json", () => '{"report":{"latestRunId":32816944713}}')).toEqual({
+      kind: "watermark",
+      runId: 32816944713,
+    });
+    expect(publicationIsStale(0, 32818935566)).toBe(false);
+  });
+
+  test("the live condition it was built for still fires: watermark older than the window", () => {
+    // Measured 2026-08-25T15:31Z. data/platform-drift.json carried latestRunId
+    // 32816944713 while the oldest of the 60 folded gate runs on main was 32818935566,
+    // and `drift (loud)` printed `::error title=drift publication not landing::`.
+    expect(publicationIsStale(32816944713, 32818935566)).toBe(true);
   });
 });

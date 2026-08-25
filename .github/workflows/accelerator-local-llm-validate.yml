@@ -46,6 +46,11 @@ jobs:
 
       - name: Run install.sh (the entropy lever — bare runner → substrate)
         env:
+          # TIER DECLARED, not detected. This job genuinely needs the wider payload:
+          # its SUBJECT is that a bare runner plus install.sh yields the whole substrate.
+          # Recorded explicitly so the next reader sees a decision rather than a default;
+          # audit-install-tier-declared.ts refuses silence, never a particular tier.
+          ZETA_HOST_TIER: full
           # Authenticated mise (per the mise.sh fix) so the toolchain install
           # doesn't hit the unauthenticated GitHub rate limit.
           MISE_GITHUB_TOKEN: ${{ github.token }}
