@@ -28,14 +28,14 @@ import {
   registryPath,
   bundledRegistryPath,
   registriesPath,
-  
   type AcePackage,
-} from "./store";
-import { storage } from "./storage/index.ts";
-import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "../common/crypto/signing.ts";
+} from "./store.ts";
+import { storage, setStorage } from "./storage/index.ts";
+import { ZetaStorage } from "./storage/ZetaStorage.ts";
+import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "./signing.ts";
 import { verifyIndexSignature, signIndex } from "./index-signature.ts";
 import { authorizedCapabilities, capabilityPermitted, validateCapabilities, INSTALL_TIME_VS_RUNTIME } from "./capability-manifest.ts";
-import type { RevocationMap } from "../common/crypto/signing.ts";
+import type { RevocationMap } from "./signing.ts";
 import type { IndexSignableContent } from "./index-signature.ts";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
 import { resolve } from "./resolve.ts";
@@ -74,7 +74,7 @@ import {
   generateMigrationRunbook,
   type AppDependencyGraphSpec,
   type UpgradeScheduleSpec,
-} from "../common/deps-graph/deps.ts";
+} from "./deps.ts";
 
 interface ListArgs {
   readonly command: "list";
@@ -712,7 +712,7 @@ async function checkLockedMarks(
   let revoked: RevocationMap;
   let quarantined: RevocationMap;
   try {
-    const loaded = await await loadRegistries({ trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()), offline });
+    const loaded = await loadRegistries({ trustStore: await storage.loadTrustStore(bundledTrustPath(), trustStorePath()), offline });
     revoked = loaded.revoked;
     quarantined = loaded.quarantined;
   } catch {
@@ -734,12 +734,8 @@ async function checkLockedMarks(
   return null;
 }
 
-import { setStorage } from "./storage/index.ts";
-import { ZetaStorage } from "./storage/ZetaStorage.ts";
-
-
 export async function main(argv: readonly string[]): Promise<number> {
-    const parsed = parseArgs(argv);
+  const parsed = parseArgs(argv);
 
   if ("error" in parsed) {
     console.error(`ace: ${parsed.error}`);
