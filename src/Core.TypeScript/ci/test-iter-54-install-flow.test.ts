@@ -255,6 +255,18 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(ITER_595_BLOCK).toContain("[ ! -t 0 ]");
   });
 
+  test("6.95-picker persist sudo-installs onto ESP (zeta uid cannot write /mnt/boot)", () => {
+    // Run 32804383505: --defer-all worked; persist EACCES on
+    // /mnt/boot/zeta-creds.enc. Keyfile already writes /tmp then sudo cp.
+    expect(ITER_595_BLOCK).toContain("PICKER_TMP=/tmp/zeta-creds.enc");
+    expect(ITER_595_BLOCK).toContain("--output $PICKER_TMP");
+    expect(ITER_595_BLOCK).not.toContain("--output /mnt/boot/zeta-creds.enc");
+    expect(ITER_595_BLOCK).toContain('sudo install -m 0600 "$PICKER_TMP" /mnt/boot/zeta-creds.enc');
+    expect(ITER_595_BLOCK).toContain(
+      'sudo install -m 0600 "$PICKER_TMP_FACTOR" /mnt/boot/zeta-creds.factor',
+    );
+  });
+
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-bun-global");
     expect(ITER_595_BLOCK).toContain("tools/setup/manifests/from-installer");

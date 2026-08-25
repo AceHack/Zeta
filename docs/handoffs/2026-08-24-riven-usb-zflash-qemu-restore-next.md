@@ -102,8 +102,10 @@ passes it when stdin is not a TTY or `QEMU_PP_FILE` is set. Empty bake
 still writes a decryptable `/mnt/boot/zeta-creds.enc` bound to the
 keyfile (`wrote 0 creds` still matches the restore `wrotePrefix`).
 
-Live QEMU proof is still pending a dispatch on idle `main` (push events
-do **not** run restore).
+Live QEMU ([run 32804383505](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32804383505)):
+`--defer-all` worked (no readline hang). Persist then died
+`EACCES` writing `/mnt/boot/zeta-creds.enc` as zeta uid. Next slice:
+write `/tmp` then `sudo install` onto ESP (same as keyfile).
 
 Success contract (`assertUefiKeyfileRestoreContract`):
 

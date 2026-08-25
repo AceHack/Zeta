@@ -299,10 +299,11 @@ const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
     name: "cred-blob-path-producer-vs-consumer",
     producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
     consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
-    // Producer: extract --output path from picker invocation
+    // Producer: ESP landing path after sudo install (bun --output is /tmp;
+    // zeta uid cannot write VFAT /mnt/boot — run 32804383505 EACCES).
     producerExtract: (content) => {
-      const m = content.match(/--output\s+(\S+\/zeta-creds\.enc)/);
-      return m?.[1] ?? null;
+      const m = content.match(/sudo install -m 0600 .+ \/mnt\/boot\/zeta-creds\.enc/);
+      return m ? "/mnt/boot/zeta-creds.enc" : null;
     },
     // Consumer: extract blobPath default literal
     consumerExtract: (content) => {
@@ -335,9 +336,8 @@ const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
     producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
     consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
     producerExtract: (content) => {
-      const m = content.match(/--output\s+(\S+\/zeta-creds\.enc)/);
-      if (!m?.[1]) return null;
-      return m[1].replace(/\.enc$/u, ".factor");
+      const m = content.match(/sudo install -m 0600 .+ \/mnt\/boot\/zeta-creds\.factor/);
+      return m ? "/mnt/boot/zeta-creds.factor" : null;
     },
     consumerExtract: (content) => {
       const m = content.match(/factorPath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\S+\/zeta-creds\.factor)"/);
@@ -350,7 +350,7 @@ const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
       return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
     },
     rationale:
-      "Persist writes zeta-creds.factor next to the blob so restore does not guess the KDF factor. Install --output /mnt/boot/zeta-creds.enc ⇒ sidecar /mnt/boot/zeta-creds.factor; restore default factorPath must be /boot/zeta-creds.factor. Drift = iSerial persist + UUID restore = lockout.",
+      "Persist writes zeta-creds.factor next to the blob so restore does not guess the KDF factor. Install sudo-installs /mnt/boot/zeta-creds.enc + .factor (bun --output is /tmp; zeta uid cannot write VFAT). Restore default factorPath must be /boot/zeta-creds.factor. Drift = iSerial persist + UUID restore = lockout.",
   },
   {
     name: "cred-iserial-material-producer-vs-consumer",

@@ -3431,24 +3431,34 @@ if [ -d "$ZETA_HOME" ]; then
     # bind, run 32647553460). HOME-local trust does not survive
     # /mnt/home/zeta → post-reboot $HOME.
     #
-    # Output path: write the cred-blob to the TARGET ESP mount during
-    # install. The target ESP is mounted at /mnt/boot by Step 5
-    # ('sudo mount "$ESP_PART" /mnt/boot'). After reboot into the
-    # installed system, disko re-mounts the SAME ESP partition at
-    # /boot — so the file persists across the install-vs-installed
-    # boundary as the same physical file at two mount paths
-    # (/mnt/boot during install → /boot post-reboot). The restore
-    # service (zeta-creds-restore.nix) reads from /boot/zeta-creds.enc
-    # at boot-time.
+    # Output path: bun persist runs as zeta uid (`sudo -u`). VFAT
+    # /mnt/boot is root-write. Measured run 32804383505: --defer-all
+    # worked, then EACCES on /mnt/boot/zeta-creds.enc, so phase-2
+    # had no blob and restore markers never fired. Same shape as
+    # UEFI keyfile: write /tmp, sudo install onto the target ESP.
+    # After reboot, disko remounts that ESP at /boot; restore reads
+    # /boot/zeta-creds.enc (zeta-creds-restore.nix).
     #
     # Env-var passing: inline-set ZETA_CREDS_PASSPHRASE only into the
     # sudo subprocess (not exported in the parent installer shell).
     # See SECURITY block above for full lifecycle.
+    PICKER_TMP=/tmp/zeta-creds.enc
+    PICKER_TMP_FACTOR=/tmp/zeta-creds.factor
+    rm -f "$PICKER_TMP" "$PICKER_TMP_FACTOR"
     ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
       MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE $PICKER_DEFER" || \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output $PICKER_TMP --passphrase-env ZETA_CREDS_PASSPHRASE $PICKER_DEFER" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
+    if [ -f "$PICKER_TMP" ]; then
+      sudo install -m 0600 "$PICKER_TMP" /mnt/boot/zeta-creds.enc
+      if [ -f "$PICKER_TMP_FACTOR" ]; then
+        sudo install -m 0600 "$PICKER_TMP_FACTOR" /mnt/boot/zeta-creds.factor
+      else
+        echo "[iter-5.5.0]   WARN: picker blob written but factor sidecar missing"
+      fi
+      rm -f "$PICKER_TMP" "$PICKER_TMP_FACTOR"
+    fi
   else
     echo "[iter-5.5.0]   SKIP 6.95-picker: $PICKER_SKIP_REASON"
   fi
