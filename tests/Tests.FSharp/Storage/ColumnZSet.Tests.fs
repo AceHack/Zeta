@@ -164,6 +164,28 @@ let ``ColumnZSet sums still raise when the TRUE sum exceeds int64`` () =
         |> should throw typeof<OverflowException>
 
 
+/// The exact witness for the chunk-narrowing bug: two 4 096-element chunks
+/// that individually blow past int64 in opposite directions, whose true sum is
+/// 0. Any implementation that narrows per chunk raises here.
+[<Fact>]
+let ``ColumnZSet ranged sum spanning chunks is exact when chunks individually overflow`` () =
+    let half = 4096
+    let big = Int64.MaxValue / 2L
+    let n = half * 2
+    let keys = Array.init n int64
+    let weights = Array.init n (fun i -> if i < half then big else -big)
+    let expected = 0L
+    ColumnKernel.SumWeightsWhereKeyInRangeScalar(
+        ReadOnlySpan keys, ReadOnlySpan weights, 0L, int64 n)
+    |> should equal expected
+    ColumnKernel.SumWeightsWhereKeyInRangeVectorized(
+        ReadOnlySpan keys, ReadOnlySpan weights, 0L, int64 n)
+    |> should equal expected
+    // Same shape for the unpredicated sum.
+    ColumnKernel.SumWeightsScalar(ReadOnlySpan weights) |> should equal expected
+    ColumnKernel.SumWeightsVectorized(ReadOnlySpan weights) |> should equal expected
+
+
 [<Fact>]
 let ``ColumnZSet ranged sums are exact and raise identically`` () =
     let mx = Int64.MaxValue
@@ -190,6 +212,12 @@ let ``ColumnZSet ranged sums are exact and raise identically`` () =
 /// tiny, MaxValue/k} so that partial sums wrap constantly — that is the only
 /// region where the two paths could disagree, and the contract says they never
 /// do, on either the value or the raise.
+///
+/// `n` deliberately spans the 4 096-element CHUNK boundary of the vectorised
+/// kernels. An earlier version of this test capped n at 40 — one chunk — and
+/// therefore could not see a real bug where the wrapping-lane fallback
+/// narrowed each chunk to int64 and raised whenever a single chunk exceeded
+/// int64, even though the whole sum fit. Multi-chunk coverage is the point.
 [<Fact>]
 let ``ColumnZSet scalar and vector sums agree under extreme magnitudes`` () =
     let mx = Int64.MaxValue
@@ -197,8 +225,9 @@ let ``ColumnZSet scalar and vector sums agree under extreme magnitudes`` () =
     let rng = Random 99
     let run (f: unit -> int64) = try Ok(f ()) with :? OverflowException -> Error "overflow"
     let mutable disagreements = 0
-    for _ in 1 .. 5000 do
-        let n = rng.Next(0, 40)
+    for trial in 1 .. 5000 do
+        // Mostly small, but every 50th trial straddles the chunk boundary.
+        let n = if trial % 50 = 0 then rng.Next(4000, 9000) else rng.Next(0, 40)
         let weights =
             Array.init n (fun _ ->
                 match rng.Next 4 with

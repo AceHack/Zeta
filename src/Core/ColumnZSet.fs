@@ -31,38 +31,56 @@ open System.Runtime.CompilerServices
 ///
 /// ## What was measured (Apple M2 Ultra, arm64/NEON, `Vector<int64>.Count = 2`)
 ///
-/// The result is **not** uniformly "SIMD is faster", and the parts that lose
-/// are stated first:
+/// The honest headline is that **one number does not exist**, because a scalar
+/// predicate scan costs whatever its *branch predictor* costs. The same kernel
+/// over the same element count measures ~6x apart depending only on whether
+/// the column is sorted:
 ///
-/// | operation | scalar | vector | verdict |
+/// | operation, n = 1 000 000 | scalar | vector | ratio |
 /// |---|---|---|---|
-/// | `SumWeights`, n = 8 192 (in L1/L2) | 9 760 ns | 3 124 ns | vector **3.1× faster** |
-/// | `SumWeights`, n = 1 000 000 (8 MB, out of cache) | 257 µs | 386 µs | vector **0.67× — slower** |
-/// | `CountWhereKeyInRange`, n = 256 | 181 ns | 85 ns | vector **2.1× faster** |
-/// | `CountWhereKeyInRange`, n = 1 000 000 | 3 175 µs | 295 µs | vector **10.8× faster** |
-/// | `SumWeightsWhereKeyInRange`, n = 1 000 000 | 3 329 µs | 574 µs | vector **5.8× faster** |
+/// | range count, **shuffled** column | 3 387 µs | 341 µs | **9.9x** |
+/// | range count, **sorted** column | 594 µs | 341 µs | **1.75x** |
+/// | weight sum, in cache (n = 4 096) | 1 055 ns | 1 549 ns | **0.68x — slower** |
+/// | weight sum, out of cache | 166 µs | 248 µs | **0.67x — slower** |
 ///
-/// Two different regimes, and the difference is *not* the vector width:
+/// Note the vector column: **341 µs either way.** The branchless kernel does
+/// not care how the data is ordered; only the scalar twin does. That is the
+/// actual claim, and it is why the ratio moves.
 ///
-/// - **Unpredicated `SumWeights` is bandwidth-bound** once the column leaves
-///   cache. At 1 M × 8 B = 8 MB the loop is waiting on memory, so issuing
-///   fewer, wider instructions buys nothing and the extra signed-overflow
-///   bookkeeping (3 vector ops per add, below) makes it a net loss. `Sum` is
-///   therefore **scalar by default** here — see `SumWeights`.
-/// - **Predicated scans are branch-bound.** The scalar form has a
-///   data-dependent branch per element; on keys the predictor cannot memorise
-///   that costs ~11 cycles/element. The vector form is branchless
-///   (compare → mask → `ConditionalSelect`), so it wins ~9–10× — far more
-///   than the 2 lanes NEON gives. This is why the predicated kernels **are**
-///   vectorised by default: the win comes from removing branches, not from
-///   width, so it does not depend on a wide ISA.
+/// Which regime applies matters, so it is stated rather than averaged away:
 ///
-/// Register: `metered` for the three kernels below — each has a scalar twin
-/// checked for equality by property tests, and `ColumnZSetBench` is the
-/// falsifier for the speed claim (`ColumnZSet vectorised predicate scan beats
-/// the scalar scan` fails if the vector path is bypassed). The cache/branch
-/// *explanations* above are `unmetered`: the timings are measured, the causal
-/// account of them is inference from standard architecture, not from counters.
+/// - A `ColumnZSet` **key** column is **sorted by construction** (a Z-set is a
+///   sorted run), so a range predicate on it is highly predictable and the
+///   realistic win there is ~1.75x. And on a sorted column you would not
+///   linear-scan at all — you would binary-search the two boundaries. **The
+///   vectorised scan earns its keep on columns that are not the sort key**:
+///   weight predicates, and key columns after an order-destroying projection.
+/// - **Unpredicated `SumWeights` is bandwidth-bound** out of cache (8 MB at
+///   n = 1 000 000). Wider instructions buy nothing when the loop waits on
+///   memory, so `SumWeights` dispatches to **scalar**. This refutes the
+///   starting hypothesis that SoA would unlock a fast `weightedCount` via
+///   `MemoryMarshal.Cast` + `TensorPrimitives.Sum`: `TensorPrimitives.Sum`
+///   measured 0.84x against the scalar twin at n = 1 000 000. The vector
+///   version is kept and benchmarked because the measurement is the result.
+///
+/// **The layout change alone bought nothing.** AoS-vs-SoA *scalar* range count
+/// at n = 1 000 000 measured 3 228 µs vs 3 387 µs — inside noise. Vectorising
+/// it bought ~10x. That is Abadi et al. 2013's central claim reproduced in
+/// miniature (column storage without column *execution* buys little), and it
+/// is why the column store and the vectorised kernel are one piece of work.
+///
+/// Register: `metered` for the three kernels below. Correctness has a real
+/// falsifier — each kernel's scalar twin must agree with it on every input,
+/// including the overflow class, checked by a 5 000-trial extreme-magnitude
+/// differential test. The *speed* claim has one too: the 1.5x gate in
+/// `ColumnZSet.Tests.fs`, which was mutation-checked (replacing the vector body
+/// with the scalar loop drops it to 0.94x and fails) — while all correctness
+/// tests still pass, which is precisely why the timing gate has to exist.
+/// `ColumnZSetBench` reports both data regimes.
+///
+/// The cache/branch *explanations* above are `unmetered`: the timings are
+/// measured, the causal account of them is inference from standard computer
+/// architecture, not from performance counters.
 ///
 /// Anchors (Beacon): Abadi, Boncz & Harizopoulos, *The Design and
 /// Implementation of Modern Column-Oriented Database Systems* (FnT Databases
@@ -290,8 +308,8 @@ type ColumnKernel =
 
     /// `SELECT sum(weight) WHERE key >= lo AND key < hi`, scalar. Exact;
     /// raises iff the true sum exceeds `int64`.
-    static member SumWeightsWhereKeyInRangeScalar
-        (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : int64 =
+    static member private WideSumWhereKeyInRange
+        (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : Int128 =
         let mutable total = Int128.Zero
         let mutable acc = 0L
         for i in 0 .. keys.Length - 1 do
@@ -304,7 +322,12 @@ type ColumnKernel =
                     acc <- v
                 else
                     acc <- s
-        ColumnKernel.Narrow(total + ColumnKernel.Widen acc, "ranged weight sum")
+        total + ColumnKernel.Widen acc
+
+    static member SumWeightsWhereKeyInRangeScalar
+        (keys: ReadOnlySpan<int64>, weights: ReadOnlySpan<int64>, lo: int64, hi: int64) : int64 =
+        ColumnKernel.Narrow(
+            ColumnKernel.WideSumWhereKeyInRange(keys, weights, lo, hi), "ranged weight sum")
 
     /// `SELECT sum(weight) WHERE key >= lo AND key < hi`, fused and
     /// branchless: the range mask selects the weight lane or zero via
@@ -338,11 +361,15 @@ type ColumnKernel =
             for lane in 0 .. width - 1 do
                 if ovf.[lane] < 0L then wrapped <- true
             if wrapped then
+                // WIDE, never `SumWeightsWhereKeyInRangeScalar`: narrowing here
+                // would raise whenever a single 4096-element chunk exceeds
+                // int64, even when the whole sum fits comfortably. That was a
+                // real divergence, invisible to any test whose n fits in one
+                // chunk.
                 total <-
                     total
-                    + ColumnKernel.Widen(
-                        ColumnKernel.SumWeightsWhereKeyInRangeScalar(
-                            keys.Slice(i, j), weights.Slice(i, j), lo, hi))
+                    + ColumnKernel.WideSumWhereKeyInRange(
+                        keys.Slice(i, j), weights.Slice(i, j), lo, hi)
             else
                 for lane in 0 .. width - 1 do
                     total <- total + ColumnKernel.Widen acc.[lane]
