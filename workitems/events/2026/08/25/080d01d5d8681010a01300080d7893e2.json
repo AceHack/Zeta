@@ -1,0 +1,14 @@
+{
+  "id": "080d01d5d8681010a01300080d7893e2",
+  "at": "2026-08-25T21:02:12.226Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0XBP381087G0R001C2Q9W7",
+    "type": "task",
+    "title": "Construct the so(16)+half-spinor bracket and verify Jacobi: the second E8 route is arithmetic, not a construction",
+    "slug": "construct-the-so-16-half-spinor-bracket-and-verify-jacobi-th",
+    "priority": "P2",
+    "filename": "081M0XBP381087G0R001C2Q9W7-construct-the-so-16-half-spinor-bracket-and-verify-jacobi-th.md"
+  }
+}
