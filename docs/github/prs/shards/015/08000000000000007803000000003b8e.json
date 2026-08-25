@@ -1,0 +1,12 @@
+{
+  "pr_number": 15246,
+  "archive_path": "docs/history/pr-reviews/PR-15246-feat-query-exec-vectorised-columnar-zset-and-simdmerge-renamed-because-it-never-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T05:54:26.457Z",
+  "schema_version": "v1",
+  "commit_sha": "c8f11824e498e6f5a42594e015b6ad16bf7720f9",
+  "title": "feat(query-exec): vectorised columnar ZSet — and SimdMerge renamed because it never was",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T05:53:37Z",
+  "head_ref": "feat/columnar-zset-vectorized-scan-v2"
+}
