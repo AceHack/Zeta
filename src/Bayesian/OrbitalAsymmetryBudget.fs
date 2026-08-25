@@ -8,11 +8,12 @@ namespace Zeta.Bayesian
 /// asymmetric paths (caveat (b), 2026-08-02).
 ///
 /// **Model:**
-///   Two-body Kepler orbit: r(θ) = a(1-e²) / (1 + e·cos θ)
-///   Distance between bodies: d(t) = |r_A(t) - r_B(t)| (vector, 3D ecliptic)
-///   One-way light travel: τ = d / c
-///   Asymmetry budget: δ = |τ(A→B) - τ(B→A)| ≈ v_B · RTT / c
-///     where v_B is the component of B's velocity along the A→B direction.
+///   The Earth–Mars consumer default is an epoch-free endpoint-speed envelope. It
+///   bounds rectilinear light-time asymmetry using only a maximum separation and
+///   endpoint speed norms, then adds a named Kepler-curvature residual. It does
+///   not use a velocity projection, so it cannot cancel at a projection zero.
+///   Other pairs retain their explicitly assumption-grade diagnostic estimate
+///   until they receive their own pair-specific envelope.
 ///
 /// **Accuracy:**
 ///   Pure Keplerian (no perturbations). Accurate to ~1% for inner planets, ~3% for
@@ -27,6 +28,27 @@ module OrbitalAsymmetryBudget =
     // ── Physical constants ──────────────────────────────────────────────────────────────────────────
     /// Speed of light in km/s.
     let private C_KM_S = 299_792.458
+
+    /// Exact endpoint-speed envelope (ms) for rectilinear one-way light-time
+    /// asymmetry. The two branches correspond to the two possible signs of the
+    /// directional asymmetry; taking their maximum is required by the theorem in
+    /// `LightTimeAsymmetry.lean` and the paired Z3 certificate.
+    let endpointSpeedEnvelopeMs (rangeKm: float) (speedAkmS: float) (speedBkmS: float) : float =
+        if rangeKm < 0.0 then invalidArg (nameof rangeKm) "range must be non-negative"
+        if speedAkmS < 0.0 || speedBkmS < 0.0 || speedAkmS >= C_KM_S || speedBkmS >= C_KM_S then
+            invalidArg "speedAkmS/speedBkmS" "endpoint speeds must be non-negative and subluminal"
+        if rangeKm = 0.0 then 0.0
+        else
+            let aToB = rangeKm / (C_KM_S - speedBkmS) - rangeKm / (C_KM_S + speedAkmS)
+            let bToA = rangeKm / (C_KM_S - speedAkmS) - rangeKm / (C_KM_S + speedBkmS)
+            max aToB bToA * 1000.0
+
+    // Earth–Mars all-epoch values from the endpoint-speed-envelope derivation:
+    // R_max = Earth aphelion + Mars aphelion, and endpoint speed bounds are their
+    // perihelion speeds. The speed term is rounded upward; curvature is additive,
+    // not a multiplicative "safety margin".
+    let private earthMarsSpeedEnvelopeMs = 253.5731
+    let private earthMarsCurvatureResidualMs = 0.0277
 
     // ── Orbital elements (J2000.0 epoch) ───────────────────────────────────────────────────────────
     /// Orbital elements: (semi-major axis km, eccentricity, mean motion rad/day, mean anomaly at J2000 rad)
@@ -118,8 +140,13 @@ module OrbitalAsymmetryBudget =
     /// arrives at B's FUTURE position (A→B), but B's reply travels back to A's PAST position
     /// (B→A).
     ///
-    /// **Register: `Assumption`, and that is the finding, not an oversight.** The shipped
-    /// expression below is `|v_B·û| · RTT / c · 1.2`, and neither factor is derived:
+    /// **Earth–Mars register: `Derivation`.** Its endpoint-speed envelope is
+    /// machine-checked under fixed-frame rectilinear motion, and the named curvature
+    /// residual is an additive Kepler-model contribution. The result is epoch-free,
+    /// so the known phase/finite-difference defects cannot enter `BusRegime`.
+    ///
+    /// **Other-pair register: `Assumption`, and that is the finding, not an oversight.** The legacy
+    /// expression is `|v_B·û| · RTT / c · 1.2`, and neither factor is derived:
     ///
     /// - the projection `v_B·û` passes through **zero** while the true asymmetry does not, so
     ///   the ratio true/shipped is unbounded near the zero crossing — it is an *estimator*,
@@ -130,41 +157,47 @@ module OrbitalAsymmetryBudget =
     ///   is nothing left for a margin to cover, and the residuals that *are* uncovered are
     ///   additive rather than multiplicative.
     ///
-    /// **The value is unchanged by this typing.** Replacing it is
-    /// `081KZYK0Q8Z087G0R0010Z2Z2Q`, not this change; moving a number while retyping it would
-    /// hide the retyping. What changed is that the register is now in the code instead of in a
-    /// review document, and that a future margin cannot be added as a silent multiplier —
-    /// `BoundJustification.Bound` has no multiply, so widening costs a named term and a reason.
     let internal deltaMaxBound (bodyA: string) (bodyB: string) (jd: float) : BoundJustification.Bound =
-        let ax, ay, az = helioPos bodyA jd
-        let bx, by, bz = helioPos bodyB jd
-        let dx, dy, dz = bx - ax, by - ay, bz - az
-        let dist = sqrt (dx*dx + dy*dy + dz*dz)
-
-        let shippedMs =
-            if dist < 1.0 then 0.0 // same body
-            else
-                // Unit vector A→B
-                let ux, uy, uz = dx / dist, dy / dist, dz / dist
-                // Velocity of B (km/s)
-                let vx, vy, vz = helioVel bodyB jd
-                // Component of B's velocity along A→B
-                let vProj = vx * ux + vy * uy + vz * uz
-                // RTT in seconds
-                let rttS = 2.0 * dist / C_KM_S
-                // Asymmetry in ms, with 20% conservative margin
-                abs vProj * rttS / C_KM_S * 1000.0 * 1.2
-
-        BoundJustification.Bound.ofTerms
-            [ { Name = "delta_speed_projection_x1.2 (shipped)"
-                Value = shippedMs
-                Why =
-                  BoundJustification.Assumption
-                      ("Velocity-projection estimator times an underived 1.2. The projection is not a bound "
-                       + "(it vanishes at the zero crossing while the true asymmetry does not), and the 1.2 "
-                       + "covers nothing the sharp envelope can produce. Replacement is filed as "
-                       + "081KZYK0Q8Z087G0R0010Z2Z2Q; see docs/research/"
-                       + "2026-08-13-soraya-light-time-asymmetry-envelope-routing-and-proof.md.") } ]
+        match bodyA, bodyB with
+        | a, b when a = b -> BoundJustification.Bound.ofTerms []
+        | ("earth", "mars")
+        | ("mars", "earth") ->
+            BoundJustification.Bound.ofTerms
+                [ { Name = "delta_speed_endpoint_envelope (Earth–Mars, all epochs)"
+                    Value = earthMarsSpeedEnvelopeMs
+                    Why =
+                      BoundJustification.Derivation
+                          ("Endpoint-speed norm envelope; maximum of both directional branches under "
+                           + "rectilinear subluminal motion, rounded upward.",
+                           "src/Core.Lean4/Lean4/LightTimeAsymmetry.lean; tools/Z3Verify/light-time-endpoint-speed-envelope.smt2") }
+                  { Name = "delta_model_curvature (Earth–Mars Kepler two-body)"
+                    Value = earthMarsCurvatureResidualMs
+                    Why =
+                      BoundJustification.Derivation
+                          ("Additive curvature residual over one light-time interval; deliberately not a multiplier.",
+                           "docs/research/2026-08-13-soraya-light-time-asymmetry-envelope-routing-and-proof.md") } ]
+        | _ ->
+            let ax, ay, az = helioPos bodyA jd
+            let bx, by, bz = helioPos bodyB jd
+            let dx, dy, dz = bx - ax, by - ay, bz - az
+            let dist = sqrt (dx*dx + dy*dy + dz*dz)
+            let shippedMs =
+                if dist < 1.0 then 0.0
+                else
+                    let ux, uy, uz = dx / dist, dy / dist, dz / dist
+                    let vx, vy, vz = helioVel bodyB jd
+                    let vProj = vx * ux + vy * uy + vz * uz
+                    let rttS = 2.0 * dist / C_KM_S
+                    abs vProj * rttS / C_KM_S * 1000.0 * 1.2
+            BoundJustification.Bound.ofTerms
+                [ { Name = "delta_speed_projection_x1.2 (legacy diagnostic)"
+                    Value = shippedMs
+                    Why =
+                      BoundJustification.Assumption
+                          ("Velocity-projection estimator times an underived 1.2. The projection is not a bound "
+                           + "(it vanishes at the zero crossing while the true asymmetry does not); this pair has no "
+                           + "endpoint-speed envelope yet. See docs/research/"
+                           + "2026-08-13-soraya-light-time-asymmetry-envelope-routing-and-proof.md.") } ]
 
     /// Conservative asymmetry budget δ_max (ms) for the A↔B link at Julian Date jd.
     ///

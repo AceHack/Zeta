@@ -3008,6 +3008,12 @@ jobs:
         # ~/.local/bin. No-op when PATH already meets the floor.
         run: bun src/Core.TypeScript/ace/setup-realizers/install-pinned-smt.ts
 
+      - name: Verify light-time endpoint-speed envelope certificates
+        # The Lean module is reached by the F# build. This companion TypeScript test
+        # executes the Z3 outcome sequence and the independent ephemeris fault control;
+        # neither may be a documentation-only proof artifact.
+        run: bun test src/Core.TypeScript/planning/light-time-endpoint-speed-envelope.test.ts src/Core.TypeScript/planning/orbital-independent-check.test.ts
+
       - name: Tier manifest (what the hermetic tier deliberately does not run, and why)
         # Printed BEFORE the suite, pass or fail, so the log states the tier's own boundary
         # instead of leaving a reader to infer it from an absence. It also exits non-zero on
