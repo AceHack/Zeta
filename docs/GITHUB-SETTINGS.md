@@ -84,7 +84,7 @@ for **11 days**, and has never at any point been able to say
 whether anyone could bypass it, because the snapshot did not
 capture `bypass_actors` at all.
 
-## Adjudication — is LIVE right, or is the RECORD right?
+## Adjudication — is LIVE right, or is the RECORD right
 
 Reconciling a record to a bad live state is laundering, so
 each difference gets a verdict rather than a re-snapshot.
