@@ -1,0 +1,12 @@
+{
+  "pr_number": 15251,
+  "archive_path": "docs/history/pr-reviews/PR-15251-feat-zetadb-add-canonical-retention-policy-port.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T06:07:26.099Z",
+  "schema_version": "v1",
+  "commit_sha": "91730e3c75842f40d99c32c19b544cb6a4e76008",
+  "title": "feat(zetadb): add canonical retention policy port",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T06:06:38Z",
+  "head_ref": "claim/081M0Q8TY1B-canonical-retention"
+}
