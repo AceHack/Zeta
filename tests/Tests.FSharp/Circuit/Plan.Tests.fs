@@ -31,7 +31,8 @@ let ``Plan.compute produces a cost per operator`` () =
     let doubled = c.Map(input.Stream, Func<_, _>(fun x -> x * 2))
     c.Output doubled |> ignore
     let costs = Plan.compute c
-    costs.Count |> should be (greaterThan 0)
+    // "a cost per operator" — one entry per op, none missing.
+    costs.Count |> should equal c.OperatorCount
 
 
 [<Fact>]
@@ -51,7 +52,7 @@ let ``Circuit.Costs exposes the cost dictionary`` () =
     let input = c.ZSetInput<int>()
     c.Output input.Stream |> ignore
     let costs = c.Costs()
-    costs.Count |> should be (greaterThan 0)
+    costs.Count |> should equal c.OperatorCount
 
 
 // ─── Plan / Explain branch coverage (moved from Round8Tests) ──────
@@ -68,7 +69,14 @@ let ``Plan estimates every operator kind`` () =
     c.Output cnt |> ignore
     c.Build()
     let costs = Plan.compute c
-    costs.Count |> should be (greaterThan 0)
+    // "every operator kind" — every op in the chain got an estimate, and the chain's
+    // cardinalities follow the per-kind formulas rather than being copied through.
+    costs.Count |> should equal c.OperatorCount
+    costs.[filtered.Op.Id].EstimatedRows |> should equal (costs.[input.Stream.Op.Id].EstimatedRows / 2L)
+    costs.[mapped.Op.Id].EstimatedRows |> should equal costs.[filtered.Op.Id].EstimatedRows
+    costs.[integ.Op.Id].EstimatedRows |> should equal (costs.[mapped.Op.Id].EstimatedRows * 2L)
+    costs.[diff.Op.Id].EstimatedRows |> should equal costs.[integ.Op.Id].EstimatedRows
+    costs.[cnt.Op.Id].EstimatedRows |> should equal 1L
     let explain = c.Explain()
     explain.Contains "scalarCount" |> should be True
 
@@ -86,6 +94,7 @@ let ``Plan.Explain emits a plan tree with per-operator cost estimates`` () =
     explain |> should haveSubstring "map"
     explain |> should haveSubstring "filter"
     explain |> should haveSubstring "rows≈"
+    explain |> should haveSubstring "ndv≈"
     explain |> should haveSubstring "ns≈"
 
 

@@ -536,6 +536,7 @@
     <Compile Include="Circuit/NestedCircuit.Tests.fs" />
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />
+    <Compile Include="Circuit/Plan.CostModel.Tests.fs" />
     <Compile Include="Circuit/SinkTerminality.Tests.fs" />
     <Compile Include="Circuit/IncrementalAuto.Tests.fs" />
 
