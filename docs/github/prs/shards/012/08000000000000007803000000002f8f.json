@@ -1,0 +1,12 @@
+{
+  "pr_number": 12175,
+  "archive_path": "docs/history/pr-reviews/PR-12175-fix-longhorn-use-the-real-multi-disk-mechanism-the-old-one-wrote-a-file-nothing-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:05:34.250Z",
+  "schema_version": "v1",
+  "commit_sha": "9b4ad49ec2c2e730479db69b2ddfa36e6844563d",
+  "title": "fix(longhorn): use the real multi-disk mechanism — the old one wrote a file nothing read",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T13:48:39Z",
+  "head_ref": "fix/longhorn-multi-disk-real-mechanism"
+}
