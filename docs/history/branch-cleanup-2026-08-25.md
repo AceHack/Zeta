@@ -746,3 +746,263 @@ Human-Review: not-implied-by-credential
 Human-Review-Evidence: none  
 Action-Mode: autonomous-fail-closed  
 Task: none
+
+---
+
+# Round two — 2026-08-25
+
+**Zero branches deleted this round.** Both candidate populations turned out to be
+blocked, and one of them is blocked because the section above is **wrong**. This
+round is an inventory and a correction, not a cleanup.
+
+Live remote at time of measurement: **3,100** branches
+(`heartbeat/*` 1,631 · `automation/pr-archive-*` 1,285 · everything else 184).
+
+## 1. The `heartbeat/*` namespace does split into two populations — confirmed
+
+Round one excluded the whole namespace as "live telemetry lanes". That is too
+coarse, and the split is clean and machine-checkable:
+
+| population | pattern | count | disposition |
+|---|---|---:|---|
+| live lane + buffer refs | `heartbeat/<lane>` · `heartbeat/<lane>-buffer` | **21** | **never delete** |
+| transient flush snapshots | `heartbeat/<persona>-flush-<sha40>` | **1,610** | disposable in principle |
+
+The 21 live refs, enumerated (not pattern-guessed):
+
+```
+heartbeat/alexa                              heartbeat/otto
+heartbeat/budget-snapshot                    heartbeat/red-state
+heartbeat/context-cost-trend                 heartbeat/red-state-buffer
+heartbeat/context-cost-trend-buffer          heartbeat/search-index
+heartbeat/drift-dashboard                    heartbeat/search-index-buffer
+heartbeat/drift-dashboard-buffer             heartbeat/society
+heartbeat/drift-sweep                        heartbeat/society-buffer
+heartbeat/drift-sweep-buffer                 heartbeat/soraya
+heartbeat/lockfile-healer-probe              heartbeat/tick-metrics
+heartbeat/manifesto-citation-snapshot        heartbeat/tick-metrics-buffer
+heartbeat/manifesto-citation-snapshot-buffer
+```
+
+**Correction to the shape as briefed.** The transient refs are **not**
+`-flush-<timestamp>-<hash>`; there is no timestamp component. They are
+`heartbeat/<persona>-flush-<sha40>`, where the suffix is the source commit the
+snapshot was taken from — exactly what `parseFlushRef` in
+`src/Core.TypeScript/agent-heartbeats/retire-superseded-flush-prs.ts` parses
+(`/^[0-9a-f]{7,40}$/`). Only **three** lanes mint them: `alexa` 564, `otto` 532,
+`soraya` 514. The telemetry lanes (`drift-sweep`, `red-state`, `tick-metrics`, …)
+mint none — they stage through their `-buffer` ref instead.
+
+### Classification of the 1,610 transient refs
+
+| PR state of the flush ref | count |
+|---|---:|
+| `MERGED` | 822 |
+| `CLOSED` (never merged) | 762 |
+| no PR at all | 24 |
+| `OPEN` | 2 |
+
+1,585 of the 1,586 with a PR have `tip == headRefOid` (one has advanced).
+
+## 2. Why none of them were deleted: ruleset 16934633 forbids it, with no bypass
+
+```
+$ gh api repos/Lucent-Financial-Group/Zeta/rulesets/16934633
+  name: "Heartbeat Branch Protection"   enforcement: active
+  conditions.ref_name.include: ["refs/heads/heartbeat/*"]   exclude: []
+  rules: [ deletion ]                    bypass_actors: []
+```
+
+`heartbeat/*` is an fnmatch that does **not** stop at `-flush-`, so the rule
+covers all 1,631 refs — snapshots as well as lanes — and `bypass_actors` is
+empty, so repository admins do not bypass it either.
+
+This was verified by attempting a deletion rather than by reading the config, on
+a branch that had already passed all four parts of round one's test
+(`heartbeat/alexa-flush-0036f0cfdb1aa4e7e405aaf68cd91e36bcf8130a`, PR #14059
+MERGED, tip == `headRefOid`, merge commit an ancestor of `main`, patch-id
+`148e7d1d…` identical on both sides):
+
+```
+HTTP 422 — Repository rule violations found: Cannot delete this branch
+```
+
+**No `heartbeat/*` branch can be deleted until a human narrows that ruleset.**
+The narrow, sufficient change is to add an exclude for the snapshot pattern and
+leave the lanes protected:
+
+```
+conditions.ref_name.exclude: ["refs/heads/*-flush-*"]
+```
+
+Editing a protection ruleset is a gated class, so it is left to the maintainer.
+
+### The flush lanes have NOT been losing observations
+
+The interesting question about the 762 closed-unmerged snapshots is whether they
+strand telemetry that never reached `main`. **They do not.** 45 branches sampled
+stratified across all three lanes (15 each), **843 files** compared against
+`origin/main`:
+
+- **0 files absent from `main`.**
+- 723 byte-identical; 84 differ with the branch's content a strict subset of
+  `main`'s; 36 carry lines `main` does not have.
+- Every one of those 36 is a **mutable state file** — `data/vault-state.json`
+  (rolling snapshot: timestamps, epsilons) and `docs/observe-events/.rs-buffer-*.json`
+  (a one-line JSON ring buffer whose `seq` has simply moved on). **Not one is an
+  observation record.** The content-addressed `docs/agent-heartbeats/**` event
+  files were present on `main` in every case.
+
+This is the lane re-accumulation argument in `retire-superseded-flush-prs.ts`
+holding up under measurement: an unlanded flush's payload is re-accumulated into
+the next tick's snapshot, so closing a superseded flush PR loses nothing.
+
+## 3. The correction: round one's `automation/pr-archive-*` finding is FALSE
+
+The section above says of the 1,265 `automation/pr-archive-*` branches:
+
+> *"Each of those branches adds a `docs/history/pr-reviews/PR-NNNN-*.md` file …
+> that **is not on `main`** — sampled and confirmed missing for every branch
+> checked. … Deleting them would destroy the PR review history they exist to
+> preserve."*
+
+**That is not true, and acting on it would preserve 1,235 branches that preserve
+nothing.** Every one of the 1,285 such branches now on the remote was checked —
+not sampled — by fetching its tip and comparing the **blob hash** of the review
+file it adds against `origin/main`:
+
+| verdict | count | meaning |
+|---|---:|---|
+| `IDENTICAL` | **1,235** | the review file is on `main`, **byte-identical**. The branch preserves nothing. |
+| `DIFFERENT-BLOB` | 44 | on `main`, but content differs — see below |
+| `ABSENT-ON-MAIN` | 6 | genuinely stranded |
+
+Two independent methods agree on the six: a path-existence sweep of all 10,337
+review files on `main` against the 1,285 branch PR numbers, and the blob
+comparison above, both return exactly `{14346, 14882, 15186, 15260, 15262, 15278}`
+— all recent, i.e. archives still in flight rather than lost.
+
+**How the archive actually landed.** The review files reached `main` in commit
+`07e9530c4`, the revert of #13973 (*"it deleted 1,063,105 lines and half the CI
+substrate"*, #13980), which restored **3,184** `docs/history/pr-reviews/` files in
+one commit. The backlog was not stranded; it was landed as collateral of a revert.
+
+**The 44 that differ are not counter-evidence — `main` holds the better copy.**
+Spot-checked, they are stale captures: `main` has 130 lines where the branch has
+55 (`| Total threads | 2 |` on `main` vs `| 0 |` on the branch), or the branch
+carries transient *"Dependabot is rebasing this PR"* noise that `main` correctly
+lacks. They are still listed as **do not delete** below, because "probably worse"
+is not "verified redundant".
+
+### Why round one got the opposite answer
+
+Not established with certainty, but a likely mechanism is worth recording because
+it bit **this** round too: `git rev-parse origin/main:<path>` **echoes its own
+argument on stdout** when the path is missing, and exits non-zero. Testing the
+captured output for emptiness therefore reports "present" for every absent file —
+or, with the comparison inverted, "absent" for files that are present. This round
+initially reported `ABSENT-ON-MAIN = 0` for exactly that reason; it was caught
+only because an independent path-existence sweep disagreed, and the fix is
+`git rev-parse --verify -q`. A second self-inflicted bug in the same session —
+`comm` over one numerically-sorted and one lexically-sorted list — produced a
+bogus "381 missing" before being caught by a control.
+
+Both were caught by cross-checking two methods rather than by re-reading the
+code. Neither number below rests on a single method.
+
+## 4. The 184 non-heartbeat, non-pr-archive branches: nothing newly deletable
+
+| PR state | count |
+|---|---:|
+| `CLOSED` (never merged) | 64 |
+| `MERGED` | 63 |
+| no PR | 29 |
+| `OPEN` | 28 |
+
+**Zero** pass round one's four-part test. All 63 merged ones have a tip that has
+advanced past the `headRefOid` that was merged — they are round one's
+`MERGED_BUT_TIP_NEWER` class, carrying post-merge commits, and they still need a
+human. Round one already took every clean one in this population.
+
+## 5. What a round three should do, in order
+
+1. **Human**: narrow ruleset 16934633 with `exclude: ["refs/heads/*-flush-*"]`.
+   Then 1,584 heartbeat snapshots (822 merged + 762 closed-unmerged, minus the 2
+   open and 24 no-PR) become deletable — the closed-unmerged ones on the evidence
+   in §2, the merged ones on round one's four-part test.
+2. **Human**: authorise deletion of the **1,235** `automation/pr-archive-*`
+   branches listed in `branch-cleanup-2026-08-25-pr-archive-redundant.md`. Round
+   one's prohibition on this namespace was written on a false premise; reversing
+   an explicit "do not touch" is not a call an agent should make on its own
+   re-analysis, which is why they are still standing.
+3. **Leave standing regardless**: the 6 `ABSENT-ON-MAIN` branches (they are the
+   only copy), the 44 `DIFFERENT-BLOB` branches, the 21 live heartbeat refs, the
+   28 open PRs, and the 63 merged-but-tip-newer branches.
+
+Potential reduction once 1 and 2 are authorised: **3,100 → ~280**.
+
+## The 6 `automation/pr-archive-*` branches that ARE the only copy
+
+| branch | tip SHA | file absent from `main` |
+|---|---|---|
+| `automation/pr-archive-14346-run-32807762899-attempt-1` | `c3062689d1c8dce447c9b2065c60f5dcce5430f6` | `docs/history/pr-reviews/PR-14346-feat-ci-detect-main-s-gate-verdict-drought-cancelled-is-not-a-verdict.md` |
+| `automation/pr-archive-14882-run-32758806825-attempt-1` | `207e45ddf4986e3ecc282591750f33090ef2f731` | `docs/history/pr-reviews/PR-14882-ferry-ksk-is-the-kinetic-rung-and-zeta-already-built-four-of-its-parts.md` |
+| `automation/pr-archive-15186-run-32807558167-attempt-1` | `5682435a3e6b8af300007991182678b62caff508` | `docs/history/pr-reviews/PR-15186-skip-review-telemetry-flush-metrics-append-tick-frame.md` |
+| `automation/pr-archive-15260-run-32816566562-attempt-1` | `45df78aa2717c9b46c4e1de000ec0fbc03acc70e` | `docs/history/pr-reviews/PR-15260-fix-columnar-columnzset-overflow-was-host-isa-dependent-the-advertised-falsifier.md` |
+| `automation/pr-archive-15262-run-32815995734-attempt-1` | `2fa4d43c9febcf3464228bf361df29191dcb6f5f` | `docs/history/pr-reviews/PR-15262-docs-research-mark-the-memory-role-restructure-plan-superseded-do-not-execute.md` |
+| `automation/pr-archive-15278-run-32819220704-attempt-1` | `c37c28e5169b9680c4c35242b88bc1038ede957a` | `docs/history/pr-reviews/PR-15278-docs-document-zeta-workflow-dispatch-token-for-cloud-agents.md` |
+
+## The 44 `automation/pr-archive-*` branches whose copy differs from `main`
+
+`main`'s copy is the newer/more complete capture in every case spot-checked, but
+these are held back rather than deleted.
+
+| branch | tip SHA | file that differs |
+|---|---|---|
+| `automation/pr-archive-9028-run-28550161842-attempt-1` | `3a0eda6bd3fe647bc9471beb7e22148362180d66` | `docs/history/pr-reviews/PR-9028-deps-bump-the-dotnet-runtime-group-with-2-updates.md` |
+| `automation/pr-archive-9029-run-28550147090-attempt-1` | `b40006e51148b827451c5f50d6ffa11cbb6d76a6` | `docs/history/pr-reviews/PR-9029-deps-bump-the-fsharp-and-tooling-group-with-1-update.md` |
+| `automation/pr-archive-9065-run-28552871278-attempt-1` | `1f1cba9e0ef144a7fa49f5a7c2556e7ea7a98ec3` | `docs/history/pr-reviews/PR-9065-docs-backlog-close-zsetw-superseded-file-zset-unification-base-atom-work-item-sh.md` |
+| `automation/pr-archive-9069-run-28553381093-attempt-1` | `85a916c9e6f062c677c074e76784780472f263fa` | `docs/history/pr-reviews/PR-9069-docs-research-design-note-polymorphic-zset-base-atom-open-generics-schema-as-eve.md` |
+| `automation/pr-archive-9100-run-28561163983-attempt-1` | `0c8f74a7f869cfae28ab299a384c80cbdbe6f475` | `docs/history/pr-reviews/PR-9100-docs-bank-soraya-kira-verdicts-file-intervalring-double-lie-froth-on-the-wave-to.md` |
+| `automation/pr-archive-9101-run-28561506929-attempt-1` | `13b233a9ec2f97f59c72ede98f9e0ac134a12291` | `docs/history/pr-reviews/PR-9101-docs-backlog-bank-ilyana-s-approve-with-conditions-all-three-iring-split-gates-g.md` |
+| `automation/pr-archive-9103-run-28562045275-attempt-1` | `527aa31ce37729051114fe6659398ba78304a1cc` | `docs/history/pr-reviews/PR-9103-test-formal-semiring-ring-law-pack-the-lies-witnessed-before-the-split-pr-a-shad.md` |
+| `automation/pr-archive-9104-run-28562129688-attempt-1` | `77169121ab2b38c75f694a41d798bfb986767e49` | `docs/history/pr-reviews/PR-9104-docs-test-addendum-4-bell-harness-is-the-sybil-detector-beacon-verified-shadow.md` |
+| `automation/pr-archive-9105-run-28563130451-attempt-1` | `0be015a4f0d9e746d2cc62bbaa0fb42fb97b73c8` | `docs/history/pr-reviews/PR-9105-feat-algebra-the-iring-isemiring-split-atomic-across-six-oracles-the-ir-treaty-s.md` |
+| `automation/pr-archive-9106-run-28563163097-attempt-1` | `ca5d15f41b84831bce2af32bfdf8ac2b770b61c8` | `docs/history/pr-reviews/PR-9106-docs-backlog-close-081kwg9jq9h-081kwga0c7-the-split-shipped-shadow.md` |
+| `automation/pr-archive-9107-run-28564279745-attempt-1` | `2b9a2c22c74f086bfbf11d2a9ee2944be47dcae8` | `docs/history/pr-reviews/PR-9107-feat-core-tropicalpaths-incremental-shortest-paths-the-novelmath-payoff-cashed-s.md` |
+| `automation/pr-archive-9109-run-28564918424-attempt-1` | `e2e032029eb555a40418d9e1613932effe80f1d7` | `docs/history/pr-reviews/PR-9109-test-fsharp-harden-the-bloom-arrow-phantom-flake-proven-not-an-input-defect-shad.md` |
+| `automation/pr-archive-9110-run-28565020301-attempt-1` | `2438edfd1e0d8b120f41b2911e38f90584dc665f` | `docs/history/pr-reviews/PR-9110-docs-backlog-supersede-the-may-zsetw-phase-2-plan-reconciled-to-what-shipped-sha.md` |
+| `automation/pr-archive-9111-run-28565481754-attempt-1` | `3790c3ac59809b874babf321ab113f6f270b0709` | `docs/history/pr-reviews/PR-9111-feat-algebra-ikleenealgebra-tropical-kleene-star-all-pairs-shortest-paths-shadow.md` |
+| `automation/pr-archive-9112-run-28565727573-attempt-1` | `e5b8b377d9b7723d98738e0e5c6d0bb864ac5eb8` | `docs/history/pr-reviews/PR-9112-docs-backlog-gate-ikleenealgebra-oracle-mirror-on-the-first-cross-language-consu.md` |
+| `automation/pr-archive-9113-run-28565721017-attempt-1` | `ed2c36f1999fba82f49d65f82290511f0b404e6c` | `docs/history/pr-reviews/PR-9113-research-test-geographic-superdeterminism-s-distance-the-radius-of-the-conductor.md` |
+| `automation/pr-archive-9115-run-28566287491-attempt-1` | `a8887cbeb6fdbe0e9f20094ffacb4bde6b200d3f` | `docs/history/pr-reviews/PR-9115-feat-core-booleankleene-generic-kleeneclosure-transitive-closure-one-algorithm-b.md` |
+| `automation/pr-archive-9116-run-28566428113-attempt-1` | `2071b63ed1631950d4f3bcc082adfbbed21ea3fe` | `docs/history/pr-reviews/PR-9116-docs-research-cell-scheduler-design-cells-on-the-deterministic-soft-loop-dop-1-n.md` |
+| `automation/pr-archive-9117-run-28566554984-attempt-1` | `f11c05827a69b172c4d290f6456b0d387a3451a9` | `docs/history/pr-reviews/PR-9117-feat-anti-sybil-the-chsh-identity-oracle-shadow.md` |
+| `automation/pr-archive-9118-run-28567095112-attempt-1` | `dbc503b8e7241fb1d68b7b01aa37027ccdfb6233` | `docs/history/pr-reviews/PR-9118-feat-core-cellscheduler-slice-1-dop-1-deterministic-cell-multiplexer.md` |
+| `automation/pr-archive-9129-run-28590694006-attempt-1` | `097af9d6683378933da19e4b9665c6cabf39d88b` | `docs/history/pr-reviews/PR-9129-feat-core-dbspcellgraph-dbsp-dataflow-as-a-cell-society-first-cellscheduler-cons.md` |
+| `automation/pr-archive-9130-run-28591028312-attempt-1` | `98982496fee196617b9fd39b09426ade58e53423` | `docs/history/pr-reviews/PR-9130-feat-shapes-shape-refraction-the-membrane-crossing-drawn-shadow.md` |
+| `automation/pr-archive-9131-run-28591102956-attempt-1` | `e3865254723c6fd8ee90c1469d3e8e94e28d2a0d` | `docs/history/pr-reviews/PR-9131-test-core-cellscheduler-scale-probe-measure-the-o-n-before-refactoring.md` |
+| `automation/pr-archive-9132-run-28591216568-attempt-1` | `89b51a2058df16eeaf909ba1a366763b0c3e0e88` | `docs/history/pr-reviews/PR-9132-feat-darkhall-s-lanes-the-coordination-board-in-the-room-ui-shadow.md` |
+| `automation/pr-archive-9133-run-28591396113-attempt-1` | `f624dc7c21ac6989233a9d7fffc49f9b136c3d58` | `docs/history/pr-reviews/PR-9133-feat-core-dbspcellgraph-distinct-a-non-linear-stateful-operator-through-the-sche.md` |
+| `automation/pr-archive-9134-run-28596346690-attempt-1` | `4a3a595ce40b0807f494a8cc1d4af4b4e580b8fc` | `docs/history/pr-reviews/PR-9134-fix-anti-sybil-finite-sample-honesty-for-chshsybil-soraya-s-finding-locked-shado.md` |
+| `automation/pr-archive-9137-run-28597770908-attempt-1` | `44ddd8b568b8ce5c01810d2266424aecdb021a54` | `docs/history/pr-reviews/PR-9137-feat-cross-verify-mirror-the-dbsp-operator-set-to-the-six-oracle-treaty.md` |
+| `automation/pr-archive-9138-run-28598041293-attempt-1` | `223a7da9e8b67b24bd07832a07a90bddb1fb7f05` | `docs/history/pr-reviews/PR-9138-feat-cross-verify-mirror-ikleenealgebra-to-the-six-oracle-treaty-close-081kwghqw.md` |
+| `automation/pr-archive-9140-run-28599473750-attempt-1` | `28f3184cf5f8c3678709f67aac82028972657876` | `docs/history/pr-reviews/PR-9140-ci-algebra-mirror-the-semiring-ring-kleene-tower-drift-check-to-ci.md` |
+| `automation/pr-archive-9141-run-28599949128-attempt-1` | `cda93a925665486cd9d1cd886a34ff603c765848` | `docs/history/pr-reviews/PR-9141-fix-cross-verify-register-idbspoperators-ikleenealgebra-iring-in-the-interface-o.md` |
+| `automation/pr-archive-9143-run-28601238036-attempt-1` | `e1fd61865ea419845a3f5b5d972df42181df74bb` | `docs/history/pr-reviews/PR-9143-docs-handoffs-session-resume-checkpoint-design-language-identity-arc-shadow.md` |
+| `automation/pr-archive-9144-run-28601588908-attempt-1` | `e8ea49a4d3f4c8e121ae53e48602d0294d54d5dc` | `docs/history/pr-reviews/PR-9144-feat-lean-oracle-mirror-the-dbsp-operator-set-to-lean-machine-checked-laws.md` |
+| `automation/pr-archive-9146-run-28602784041-attempt-1` | `56b428664aa3821c093871cf6eaa0f293b37c304` | `docs/history/pr-reviews/PR-9146-research-test-zeta-over-prime-shapes-the-euler-product-over-the-braided-catalog-.md` |
+| `automation/pr-archive-9147-run-28604095472-attempt-1` | `61bc3d41ee4750519acd579d1249a40d196287ed` | `docs/history/pr-reviews/PR-9147-feat-anti-sybil-s-spectrum-soft-rainbow-forgery-as-refraction-dual-use-neutral-s.md` |
+| `automation/pr-archive-9170-run-28609871940-attempt-1` | `ced9ff954cb61698b108c7b45c1a4bf8b4adecc4` | `docs/history/pr-reviews/PR-9170-test-leibniz-to-anti-sybil-pinned-to-antisybil-fs-cpt-invariance-of-identity.md` |
+| `automation/pr-archive-9172-run-28610654873-attempt-1` | `53dff363943bdbe10dc381fb0e82b439fb5cdaa4` | `docs/history/pr-reviews/PR-9172-feat-core-schedulerzeta-wire-the-dynamical-zeta-into-the-soft-scheduler-self-pre.md` |
+| `automation/pr-archive-9173-run-28610775109-attempt-1` | `7bf73cf434827ddad4fabd6b32f12c8c701cda21` | `docs/history/pr-reviews/PR-9173-research-the-bus-nats-jetstream-over-reticulum-ws-discovery-bootstrap-linked-clo.md` |
+| `automation/pr-archive-9174-run-28611305494-attempt-1` | `082e7c0f3e439b6d110a56cd6cb78688d36a8f27` | `docs/history/pr-reviews/PR-9174-feat-discovery-the-udp-discovery-beacon-transport-agnostic-protocol-core-shadow.md` |
+| `automation/pr-archive-9175-run-28611969155-attempt-1` | `87f3e92847cde8a1b83195c7ebf50e517ff367de` | `docs/history/pr-reviews/PR-9175-feat-core-schedulerzeta-runtohorizon-the-recurrence-prediction-made-load-bearing.md` |
+| `automation/pr-archive-9177-run-28612181524-attempt-1` | `19dc36a9a4057e4108c7c7223d6e9c79939c7120` | `docs/history/pr-reviews/PR-9177-research-there-are-no-strangers-mesh-merge-is-the-travelers-vocabulary-in-code-s.md` |
+| `automation/pr-archive-9178-run-28612874823-attempt-1` | `0a6ad122b833111f8526210bb9fe0208b226a613` | `docs/history/pr-reviews/PR-9178-docs-security-red-team-as-valued-no-strangers-includes-adversaries-anti-sybil-is.md` |
+| `automation/pr-archive-9179-run-28613043125-attempt-1` | `c9c469ecd099afd27b081596c7900ae647193ab5` | `docs/history/pr-reviews/PR-9179-docs-handoff-otto-iris-daya-cross-cultural-metaphor-doors-anti-appropriation-as-.md` |
+| `automation/pr-archive-9181-run-28613523229-attempt-1` | `ea86d175c14cbacdcc6aba1cce90c5c4c769d5fd` | `docs/history/pr-reviews/PR-9181-feat-core-schedulerzeta-weak-fixed-point-table-orbits-dynamically-loaded-unloade.md` |
+| `automation/pr-archive-9182-run-28613544848-attempt-1` | `e27a5c9e066d12af2cbf8c0685fd4182b5491e23` | `docs/history/pr-reviews/PR-9182-feat-llmtv-reticulum-broadcast-wiring-the-society-s-minds-on-the-mesh-one-way-sh.md` |
+
+The 1,235 verified-redundant branches are listed separately in
+[`branch-cleanup-2026-08-25-pr-archive-redundant.md`](branch-cleanup-2026-08-25-pr-archive-redundant.md).
