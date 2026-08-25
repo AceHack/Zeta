@@ -1940,8 +1940,55 @@ jobs:
             exit 1
           fi
 
+          # PRE-MERGE `main` SO GITHUB IS NEVER ASKED TO APPLY A MERGE DRIVER.
+          #
+          # GitHub does NOT apply `.gitattributes` merge drivers when it creates a PR's
+          # merge commit. Several files this lane touches carry `merge=union` precisely
+          # because both `main` and the lane APPEND to them — `data/ci-runs.jsonl`,
+          # `db/mutation-findings/*.jsonl`, `docs/github/prs/manifest.jsonl`,
+          # `data/rs-blocks.jsonl`. Locally `git` unions them and merges clean; on
+          # GitHub the same pair is a conflict.
+          #
+          # So whether a flush lands has been down to timing: if `main` happens not to
+          # have touched a co-modified append since the lane branched, it merges; if it
+          # has, the PR is born CONFLICTING and the lane wedges. Measured 2026-08-25:
+          # soraya's #15361 merged while alexa's #15366 — same files, twenty minutes
+          # apart — reported `mergeable: CONFLICTING`, and `gh pr merge` answered "the
+          # merge commit cannot be cleanly created" while `git merge-tree` on the exact
+          # same base and head returned rc=0 with zero conflicts.
+          #
+          # `.gitattributes` records this being rediscovered at least SEVEN times, each
+          # entry added after a lane wedged (see its comments dated 2026-08-17 and
+          # 2026-08-22). Adding another union line after the next wedge treats the
+          # symptom; the driver was never the missing part. The missing part is that
+          # the merge has to happen HERE, where the driver is honoured.
+          #
+          # After this, GitHub only ever fast-forwards, and the squash-merge onto `main`
+          # is a single commit exactly as `required_linear_history` demands.
+          #
+          # The immutable park above is untouched: `$SOURCE_SHA` was already pushed and
+          # VERIFIED before this runs, so the "no events lost" guarantee does not depend
+          # on the merge succeeding.
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin main --quiet
+          PREMERGE_RC=0
+          git merge --no-edit origin/main >/tmp/premerge.log 2>&1 || PREMERGE_RC=$?
+          if [ "$PREMERGE_RC" -ne 0 ]; then
+            echo "::warning title=Heartbeat pre-merge hit a REAL conflict::$AGENT: merging origin/main into $SNAPSHOT_REF failed even with this repo's merge drivers applied, so this is a genuine content conflict rather than the GitHub driver gap. Leaving the snapshot at the parked SHA and letting the PR report it. No events lost."
+            sed 's/^/[flush] premerge: /' /tmp/premerge.log | head -20 || true
+            git merge --abort 2>/dev/null || true
+          else
+            MERGED_SHA=$(git rev-parse HEAD)
+            if [ "$MERGED_SHA" != "$SOURCE_SHA" ]; then
+              git push --force-with-lease="refs/heads/$SNAPSHOT_REF:$SOURCE_SHA" \
+                origin "HEAD:refs/heads/$SNAPSHOT_REF"
+              echo "[flush] $AGENT: pre-merged origin/main into $SNAPSHOT_REF ($SOURCE_SHA -> $MERGED_SHA); GitHub now only fast-forwards."
+            else
+              echo "[flush] $AGENT: $SNAPSHOT_REF already contains origin/main; no pre-merge needed."
+            fi
+          fi
 
           # SQUASH, NOT MERGE — main forbids merge commits.
           #

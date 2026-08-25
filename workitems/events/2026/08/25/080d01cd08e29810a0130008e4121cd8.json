@@ -1,0 +1,14 @@
+{
+  "id": "080d01cd08e29810a0130008e4121cd8",
+  "at": "2026-08-25T15:54:14.995Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WT272H087G0R0016PKYF9",
+    "type": "bug",
+    "title": "GitHub does not apply .gitattributes merge drivers, so whether a flush lands is down to timing",
+    "slug": "github-does-not-apply-gitattributes-merge-drivers-so-whether",
+    "priority": "P2",
+    "filename": "081M0WT272H087G0R0016PKYF9-github-does-not-apply-gitattributes-merge-drivers-so-whether.md"
+  }
+}
