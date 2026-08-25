@@ -1,0 +1,12 @@
+{
+  "pr_number": 15296,
+  "archive_path": "docs/history/pr-reviews/PR-15296-deps-ui-calendar-classnames-table-month-grid-unblocks-react-day-picker-v10.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:30:47.424Z",
+  "schema_version": "v1",
+  "commit_sha": "62568a03775e15f9a95d12aaa10dba2d72cc4b93",
+  "title": "deps(ui): calendar classNames `table` -> `month_grid` (unblocks react-day-picker v10)",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T07:29:59Z",
+  "head_ref": "deps/day-picker-v10-month-grid-classname"
+}
