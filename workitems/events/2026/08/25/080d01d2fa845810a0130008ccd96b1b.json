@@ -1,0 +1,14 @@
+{
+  "id": "080d01d2fa845810a0130008ccd96b1b",
+  "at": "2026-08-25T19:22:00.203Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X5YM4A087G0R0026E4DAR",
+    "type": "task",
+    "title": "Book: Holly Hill is not the Cantor episode; third-party consent row needed before her name can print",
+    "slug": "book-holly-hill-is-not-the-cantor-episode-third-party-consen",
+    "priority": "P2",
+    "filename": "081M0X5YM4A087G0R0026E4DAR-book-holly-hill-is-not-the-cantor-episode-third-party-consen.md"
+  }
+}
