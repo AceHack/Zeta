@@ -255,11 +255,23 @@ def list_environments() -> dict:
                 "game_id": env.game_id,
                 "title": env.title,
                 "tags": env.tags or [],
-                # How many actions the environment declares it accepts — the
-                # first thing a generic agent needs and the first thing that
-                # could differ from ZetaChase's four.
+                # CORRECTION, from reading the live roster rather than the
+                # field name. This is NOT the set of actions the environment
+                # accepts, which is what I first wrote here. It is a REFERENCE
+                # ACTION COUNT PER LEVEL: SB26 reports [18, 28, 18, 19, 31, 23,
+                # 58, 18] — eight levels, eighteen actions for the first.
+                #
+                # That matters more than the correction does. ARC's level score
+                # is `min(1, h/a)**2`, and `h` is the reference we do not have
+                # offline — `play.py` substitutes BFS-optimal and says so. For
+                # hosted environments `h` appears to be RIGHT HERE, so it does
+                # not need inventing.
                 "baseline_actions": env.baseline_actions or [],
-                "levels": len(env.level_tags or []),
+                # `level_tags` is empty on every hosted environment (all report
+                # 0), so it is useless as a level count. The length of
+                # `baseline_actions` is the real one: 6 to 10 levels each.
+                "level_tags_count": len(env.level_tags or []),
+                "levels_from_baselines": len(env.baseline_actions or []),
             }
             for env in sorted(found, key=lambda e: e.game_id)
         ],
