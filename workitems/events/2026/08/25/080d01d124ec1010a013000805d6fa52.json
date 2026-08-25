@@ -1,0 +1,14 @@
+{
+  "id": "080d01d124ec1010a013000805d6fa52",
+  "at": "2026-08-25T18:17:53.282Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X297C1087G0R000HG6ZK2",
+    "type": "task",
+    "title": "Stage-0 shell floor: adversarial review of the 'fewest independent .sh files' minimization premise",
+    "slug": "stage-0-shell-floor-adversarial-review-of-the-fewest-indepen",
+    "priority": "P2",
+    "filename": "081M0X297C1087G0R000HG6ZK2-stage-0-shell-floor-adversarial-review-of-the-fewest-indepen.md"
+  }
+}
