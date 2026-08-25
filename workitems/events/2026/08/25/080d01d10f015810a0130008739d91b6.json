@@ -1,0 +1,14 @@
+{
+  "id": "080d01d10f015810a0130008739d91b6",
+  "at": "2026-08-25T18:14:53.739Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X23R19087G0R003XHGB2B",
+    "type": "task",
+    "title": "Privacy budget and frost: wire earning to spending, and make defrost owner-only (audit 2026-08-25)",
+    "slug": "privacy-budget-and-frost-wire-earning-to-spending-and-make-d",
+    "priority": "P2",
+    "filename": "081M0X23R19087G0R003XHGB2B-privacy-budget-and-frost-wire-earning-to-spending-and-make-d.md"
+  }
+}
