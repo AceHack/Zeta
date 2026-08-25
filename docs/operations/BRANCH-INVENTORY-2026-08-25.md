@@ -4,8 +4,14 @@
 **Authoritative ref count:** 248 heads (247 branches + `main`)
 **Work item:** 081M0WSV2N7087G0R002EV0GVV
 
-This is an **inventory, not a sweep**. Nothing was deleted. Every class below carries the evidence
-that put a branch in it, so the delete/keep call stays with the maintainer.
+This began as an **inventory, not a sweep** — every class below carries the evidence that put a
+branch in it, so the delete/keep call could stay with the maintainer.
+
+> **It has since been executed.** 178 branches were deleted under a preserve-then-delete discipline
+> on 2026-08-25 and `origin` went from 250 heads to 73. The 28 judgement calls were left untouched.
+> The tables below are the state **as measured**, kept verbatim; what was actually done, what had
+> drifted by then, and the seventeen rows the re-verification corrected are in
+> [Execution](#execution--2026-08-25-after-this-inventory-was-written) at the end.
 
 Context: `origin` carried ~1,858 heads this morning. Two cleanups ran — 1,235 redundant
 `automation/pr-archive-*` branches whose records were already byte-identical on `main`, and 1,612
@@ -545,6 +551,9 @@ Nothing was forced into a category, but three things sit oddly and are recorded 
 
 ## Recommended disposition
 
+*(As recommended at measurement time. What was executed, and where it differed, is in
+[Execution](#execution--2026-08-25-after-this-inventory-was-written).)*
+
 Deleting is the maintainer's call. Grouped by how much judgement each group needs:
 
 | group | count | recommendation |
@@ -569,6 +578,367 @@ Two follow-ups that are worth more than the deletions:
   will need re-running.
 - **Have the `pr-archive` sweep compare only `docs/history/pr-reviews/PR-*.md`**, not the append-only
   manifest and shard files. That single change accounts for all 49 `ARCHIVE-LEFTOVER` rows.
+
+## Execution — 2026-08-25, after this inventory was written
+
+**This inventory has been acted on.** The safe subset was executed under a preserve-then-delete
+discipline; the judgement calls were left untouched. `origin` went from **250 heads to 73**.
+
+| | count |
+|---|---|
+| heads on `origin` at execution start | 250 |
+| preservation tags pushed **before** any delete | 17 |
+| branches deleted | 178 |
+| branches skipped or failed | 0 |
+| heads on `origin` after | **73** |
+
+The 73 that remain: `main`, 26 `heartbeat/*` live lanes, the 28 judgement calls this document
+left to the maintainer, and 18 branches that either head an open PR or were created after the
+inventory was measured.
+
+### Re-verification, because the inventory was hours old
+
+Nothing was deleted on the strength of the tables above. Every candidate was re-measured against
+the live `origin` immediately before the delete, and four gates were run on the whole set:
+
+1. **Tip moved since measurement** — zero hits. Enforced structurally as well: every delete was
+   pushed as `--force-with-lease=refs/heads/<b>:<sha>`, so a concurrent push aborts that delete
+   rather than losing it.
+2. **Head vanished from `origin`** — zero hits at delete time; five were already gone when the
+   candidate set was built (see *What moved* below).
+3. **Now heads an open PR** — zero hits. The open-PR head list was rebuilt from `gh pr list` at
+   execution time, not taken from this document, and it had already changed.
+4. **Matches `heartbeat/` or is `main`** — zero hits.
+
+The file-presence measure was controlled both ways before a single result was trusted, per the
+trap recorded in **Method** above: `CLAUDE.md` -> present (1), a fabricated path under
+`docs/agent-heartbeats/otto-windows/` -> absent (0), and the whole directory -> absent (0). The
+sweep was then re-run from scratch and reproduced this document's own numbers on four independent
+controls, including `agent-heartbeats` at 689 touched / 681 absent and `claude/design-sync-dqxa3r`
+at 36 / 21.
+
+**A third zsh trap, found here and worth adding to the two already recorded.** `"$sha:refs/tags/$t"`
+does not mean what it reads as: zsh applies `:r` as a history-style *modifier* and strips the
+extension, so the refspec pushed was `<sha>efs/tags/<tag>` and git answered `src refspec ... does
+not match any`. Use `"${sha}:refs/tags/${t}"`. The failure is loud, but only because the push
+refused it — a modifier that happened to produce a valid ref would have pushed to the wrong place.
+
+### What moved between measurement and execution
+
+The inventory was accurate when written and had drifted by execution. Recorded because it is the
+argument for re-verifying rather than replaying a list:
+
+- **Five listed branches no longer existed**: `fix/latent-push-to-main`,
+  `fix/persona-coauthor-trailers-collide-with-real-github-users`,
+  `fix/probe-the-scope-the-step-actually-uses`, `shadow/boot-workload-identity-keys` (all four had
+  been open PRs and landed), and `heartbeat/alexa-flush-dd75e0079cb01981ce4de2a0f8d00060c631e996`.
+- **Nine branches had appeared**, four of them heading new open PRs.
+- **The open-PR set turned over**: 20 open PRs at measurement, 18 at execution, with four heads on
+  the open list that this document had never seen. Replaying the recommended-deletion list without
+  rebuilding that set would have deleted a branch under an open PR.
+
+### The correction: 17 branches in the clear-cut classes were NOT clear-cut
+
+Re-measured against the current `main`, seventeen branches this document placed in
+`SQUASH-LANDED`, `CLOSED-UNMERGED` or `NO-PR` **do** hold paths that exist nowhere on `main`.
+Most are small; two are not. The likeliest cause is that `main` moved: a path present when the
+inventory ran can be deleted from `main` afterwards, which turns a `0` into a positive count
+without anything on the branch changing.
+
+They were **not** batched with the rest and they were **not** left to rot either. Each was tagged
+on `origin` first, verified present at the exact SHA, and only then deleted:
+
+| branch | preserved as | tip |
+|---|---|---|
+| `chore/081KLL7-post-8992-bookkeeping` | `archive/2026-08-25-branch-sweep/chore-081KLL7-post-8992-bookkeeping` | `ea42499db` |
+| `claim/081M0Q8TY1B-retention-runtime-selection` | `archive/2026-08-25-branch-sweep/claim-081M0Q8TY1B-retention-runtime-selection` | `c6e0e9db6` |
+| `claim/cross-lang-zset-isa-capstone` | `archive/2026-08-25-branch-sweep/claim-cross-lang-zset-isa-capstone` | `10f15c2fa` |
+| `claim/task-browser-page-durable-pwa` | `archive/2026-08-25-branch-sweep/claim-task-browser-page-durable-pwa` | `78030ea91` |
+| `claim/task-browser-runtime-probe` | `archive/2026-08-25-branch-sweep/claim-task-browser-runtime-probe` | `4f39a631e` |
+| `claude/github-project-genesis-y44lc2` | `archive/2026-08-25-branch-sweep/claude-github-project-genesis-y44lc2` | `9eee3015f` |
+| `feat/columnar-zset-vectorized-scan-v2` | `archive/2026-08-25-branch-sweep/feat-columnar-zset-vectorized-scan-v2` | `4d001225d` |
+| `feature-agent-capabilities-playable-quotes` | `archive/2026-08-25-branch-sweep/feature-agent-capabilities-playable-quotes` | `6b3cc7b6b` |
+| `feature-lensography-toy-env` | `archive/2026-08-25-branch-sweep/feature-lensography-toy-env` | `57cdacd74` |
+| `fix/081KZZ27KJ8-delete-smt-solver-floor` | `archive/2026-08-25-branch-sweep/fix-081KZZ27KJ8-delete-smt-solver-floor` | `fb69d568c` |
+| `fix/ghcr-anon-token-measurement` | `archive/2026-08-25-branch-sweep/fix-ghcr-anon-token-measurement` | `0b8da2cad` |
+| `ouroboros-bootstrap` | `archive/2026-08-25-branch-sweep/ouroboros-bootstrap` | `e87c53f35` |
+| `refactor-roles-to-hats` | `archive/2026-08-25-branch-sweep/refactor-roles-to-hats` | `793216df3` |
+| `refactor/retire-op-token-setup-to-ts` | `archive/2026-08-25-branch-sweep/refactor-retire-op-token-setup-to-ts` | `b4f5dc0ae` |
+| `shadow-revert-13973-mass-deletion` | `archive/2026-08-25-branch-sweep/shadow-revert-13973-mass-deletion` | `fafd2b089` |
+| `shadow/bonsai-cost-model-and-app-free-verification` | `archive/2026-08-25-branch-sweep/shadow-bonsai-cost-model-and-app-free-verification` | `d73d0e779` |
+| `shadow/society-invariants-maximin-and-hat-residue` | `archive/2026-08-25-branch-sweep/shadow-society-invariants-maximin-and-hat-residue` | `8a1ffe10e` |
+
+The largest are `shadow-revert-13973-mass-deletion` (32 paths), `claude/github-project-genesis-y44lc2`
+(14) and `claim/cross-lang-zset-isa-capstone` (6) — the last two of which this document had recorded
+at 14 and 0 respectively.
+
+A SHA written in a document is not preservation: once the ref is gone the object is unreachable and
+may be collected. Only the tag preserves it. Restoring any of the seventeen is:
+
+```bash
+git push origin refs/tags/archive/2026-08-25-branch-sweep/<slug>:refs/heads/<branch>
+```
+
+### What was deliberately not touched
+
+- **The 28 judgement calls**, unchanged and still on `origin`. Their cost, re-measured today, is
+  below — `files absent from main` is the measure, never the unique-commit count, which misleads
+  in both directions (three deleted branches reported 310–315 "unique" commits and were 100%
+  byte-identical on `main`).
+- **26 `heartbeat/*` live lanes** — one more than this document counted, so the lanes are still
+  being created. `CLAUDE.md` names them as the externalized idle counter.
+- **The nine branches created after this inventory was measured.** They were never classified, so
+  they were never candidates.
+
+| judgement call | files absent from `main` | files touched | unique commits |
+|---|---|---|---|
+| `agent-heartbeats` | 681 | 689 | 689 |
+| `otto/telemetry-zetaid-shards` | 560 | 1128 | 3 |
+| `claude/design-sync-dqxa3r` | 21 | 36 | 1 |
+| `otto/lint-fused-persona-cell-phase5` | 11 | 150 | 12 |
+| `shadow/candidate-generator-possibility-space` | 8 | 12 | 3 |
+| `otto/agent-sovereign-keys-proposal` | 8 | 23 | 6 |
+| `automation/society-protected-main-contract` | 5 | 5 | 1 |
+| `shadow/consensus-vote-dead-timestamp-and-local-time-audit` | 4 | 7 | 1 |
+| `derivation-b/threshold-sig-verify` | 4 | 6 | 4 |
+| `derivation-c/threshold-sig-verify` | 3 | 5 | 2 |
+| `derivation-a/threshold-sig-verify` | 3 | 5 | 2 |
+| `fix/verify-session-toctou` | 2 | 3 | 1 |
+| `fix/installer-ci-and-gate-reds-2026-07-31` | 1 | 5 | 2 |
+| `codex/browser-zetadb-startup-hydration` | 1 | 2 | 2 |
+| `claim/task-browser-zetadb-invalidation` | 1 | 1 | 1 |
+| `claim/task-browser-pwa-checkpoint-transport` | 1 | 1 | 1 |
+| `claim/task-browser-checkpoint-port` | 1 | 1 | 1 |
+| `claim/kiro-trust-protection-adr-2026-07-08` | 1 | 8 | 2 |
+| `claim/kiro-trio-attestation-research-2026-07-08` | 1 | 4 | 2 |
+| `claim/kiro-identity-adr-corrections-2026-07-08` | 1 | 11 | 2 |
+| `claim/kiro-free-tier-intelligence-scaling` | 1 | 4 | 2 |
+| `claim/bug-dotnet-arm64-accessviolation` | 1 | 3 | 3 |
+| `claim/081KWQS2PN608QG0R002CXSBG0-minimal-bnn-synthesis` | 1 | 3 | 1 |
+| `claim/081ktqx7w6q08qg0r000-otto-2026-08-25` | 1 | 1 | 1 |
+| `claim/081ktqx7w6q08qg0r000-otto-2026-08-24` | 1 | 1 | 1 |
+| `cursor/rework-pr-13767-9c53` | 0 | 7 | 1 |
+| `cursor/longhorn-rebase-clean-06ca` | 0 | 8 | 4 |
+| `cursor/longhorn-common-nix-default-test-06ca` | 0 | 8 | 5 |
+
+`agent-heartbeats` was already tagged before this run as
+`archive/2026-08-25-agent-heartbeats/otto-windows-telemetry-unflushed`, so its 681 orphaned
+telemetry files are preserved whatever is decided about the branch.
+
+`derivation-{a,b,c}/threshold-sig-verify` stay as a set: they are a three-arm independent-derivation
+experiment, and deleting one arm destroys the comparison rather than a duplicate.
+
+### Deletions by class
+
+| class | deleted | of | not deleted, and why |
+|---|---|---|---|
+| `TIP-ON-MAIN` | 6 | 6 | — |
+| `ARCHIVE-LEFTOVER` | 49 | 49 | — |
+| `SQUASH-LANDED` | 66 | 67 | `agent-heartbeats` — judgement call |
+| `CLOSED-UNMERGED` | 52 | 63 | 10 judgement calls, 1 already gone from `origin` |
+| `NO-PR` | 5 | 22 | 17 judgement calls |
+| **total** | **178** | **207** | |
+
+### The restore log
+
+Every deletion, `branch tip-sha`, recorded before the delete. Restoring any one of them is a
+single command against the SHA on its row — for as long as the object survives, which is why the
+seventeen that held unique content were tagged rather than trusted to this list:
+
+```console
+git push origin <tip-sha>:refs/heads/<branch>
+```
+
+```text
+alexa/qsharp-zset-isa-corrected 2080bcdb1e91eebf1b8a493d7eae1018ee504b0a
+auth/authorize-aaron-passkey ac964945dcbd8ddfe2049ffd753d351c8299023f
+automation/pr-archive-14346-run-32807762899-attempt-1 c3062689d1c8dce447c9b2065c60f5dcce5430f6
+automation/pr-archive-14581-run-32819776147-attempt-1 7332a666c8a53322ab42636ed68e62f06ad8ccb7
+automation/pr-archive-14882-run-32758806825-attempt-1 207e45ddf4986e3ecc282591750f33090ef2f731
+automation/pr-archive-15186-run-32807558167-attempt-1 5682435a3e6b8af300007991182678b62caff508
+automation/pr-archive-15260-run-32816566562-attempt-1 45df78aa2717c9b46c4e1de000ec0fbc03acc70e
+automation/pr-archive-15262-run-32815995734-attempt-1 2fa4d43c9febcf3464228bf361df29191dcb6f5f
+automation/pr-archive-15277-run-32819678796-attempt-1 5ab6a75fcd07a4984ce69760b4bc7f209875317e
+automation/pr-archive-15278-run-32819220704-attempt-1 c37c28e5169b9680c4c35242b88bc1038ede957a
+automation/pr-archive-9028-run-28550161842-attempt-1 3a0eda6bd3fe647bc9471beb7e22148362180d66
+automation/pr-archive-9029-run-28550147090-attempt-1 b40006e51148b827451c5f50d6ffa11cbb6d76a6
+automation/pr-archive-9065-run-28552871278-attempt-1 1f1cba9e0ef144a7fa49f5a7c2556e7ea7a98ec3
+automation/pr-archive-9069-run-28553381093-attempt-1 85a916c9e6f062c677c074e76784780472f263fa
+automation/pr-archive-9100-run-28561163983-attempt-1 0c8f74a7f869cfae28ab299a384c80cbdbe6f475
+automation/pr-archive-9101-run-28561506929-attempt-1 13b233a9ec2f97f59c72ede98f9e0ac134a12291
+automation/pr-archive-9103-run-28562045275-attempt-1 527aa31ce37729051114fe6659398ba78304a1cc
+automation/pr-archive-9104-run-28562129688-attempt-1 77169121ab2b38c75f694a41d798bfb986767e49
+automation/pr-archive-9105-run-28563130451-attempt-1 0be015a4f0d9e746d2cc62bbaa0fb42fb97b73c8
+automation/pr-archive-9106-run-28563163097-attempt-1 ca5d15f41b84831bce2af32bfdf8ac2b770b61c8
+automation/pr-archive-9107-run-28564279745-attempt-1 2b9a2c22c74f086bfbf11d2a9ee2944be47dcae8
+automation/pr-archive-9109-run-28564918424-attempt-1 e2e032029eb555a40418d9e1613932effe80f1d7
+automation/pr-archive-9110-run-28565020301-attempt-1 2438edfd1e0d8b120f41b2911e38f90584dc665f
+automation/pr-archive-9111-run-28565481754-attempt-1 3790c3ac59809b874babf321ab113f6f270b0709
+automation/pr-archive-9112-run-28565727573-attempt-1 e5b8b377d9b7723d98738e0e5c6d0bb864ac5eb8
+automation/pr-archive-9113-run-28565721017-attempt-1 ed2c36f1999fba82f49d65f82290511f0b404e6c
+automation/pr-archive-9115-run-28566287491-attempt-1 a8887cbeb6fdbe0e9f20094ffacb4bde6b200d3f
+automation/pr-archive-9116-run-28566428113-attempt-1 2071b63ed1631950d4f3bcc082adfbbed21ea3fe
+automation/pr-archive-9117-run-28566554984-attempt-1 f11c05827a69b172c4d290f6456b0d387a3451a9
+automation/pr-archive-9118-run-28567095112-attempt-1 dbc503b8e7241fb1d68b7b01aa37027ccdfb6233
+automation/pr-archive-9129-run-28590694006-attempt-1 097af9d6683378933da19e4b9665c6cabf39d88b
+automation/pr-archive-9130-run-28591028312-attempt-1 98982496fee196617b9fd39b09426ade58e53423
+automation/pr-archive-9131-run-28591102956-attempt-1 e3865254723c6fd8ee90c1469d3e8e94e28d2a0d
+automation/pr-archive-9132-run-28591216568-attempt-1 89b51a2058df16eeaf909ba1a366763b0c3e0e88
+automation/pr-archive-9133-run-28591396113-attempt-1 f624dc7c21ac6989233a9d7fffc49f9b136c3d58
+automation/pr-archive-9134-run-28596346690-attempt-1 4a3a595ce40b0807f494a8cc1d4af4b4e580b8fc
+automation/pr-archive-9137-run-28597770908-attempt-1 44ddd8b568b8ce5c01810d2266424aecdb021a54
+automation/pr-archive-9138-run-28598041293-attempt-1 223a7da9e8b67b24bd07832a07a90bddb1fb7f05
+automation/pr-archive-9140-run-28599473750-attempt-1 28f3184cf5f8c3678709f67aac82028972657876
+automation/pr-archive-9141-run-28599949128-attempt-1 cda93a925665486cd9d1cd886a34ff603c765848
+automation/pr-archive-9143-run-28601238036-attempt-1 e1fd61865ea419845a3f5b5d972df42181df74bb
+automation/pr-archive-9144-run-28601588908-attempt-1 e8ea49a4d3f4c8e121ae53e48602d0294d54d5dc
+automation/pr-archive-9146-run-28602784041-attempt-1 56b428664aa3821c093871cf6eaa0f293b37c304
+automation/pr-archive-9147-run-28604095472-attempt-1 61bc3d41ee4750519acd579d1249a40d196287ed
+automation/pr-archive-9170-run-28609871940-attempt-1 ced9ff954cb61698b108c7b45c1a4bf8b4adecc4
+automation/pr-archive-9172-run-28610654873-attempt-1 53dff363943bdbe10dc381fb0e82b439fb5cdaa4
+automation/pr-archive-9173-run-28610775109-attempt-1 7bf73cf434827ddad4fabd6b32f12c8c701cda21
+automation/pr-archive-9174-run-28611305494-attempt-1 082e7c0f3e439b6d110a56cd6cb78688d36a8f27
+automation/pr-archive-9175-run-28611969155-attempt-1 87f3e92847cde8a1b83195c7ebf50e517ff367de
+automation/pr-archive-9177-run-28612181524-attempt-1 19dc36a9a4057e4108c7c7223d6e9c79939c7120
+automation/pr-archive-9178-run-28612874823-attempt-1 0a6ad122b833111f8526210bb9fe0208b226a613
+automation/pr-archive-9179-run-28613043125-attempt-1 c9c469ecd099afd27b081596c7900ae647193ab5
+automation/pr-archive-9181-run-28613523229-attempt-1 ea86d175c14cbacdcc6aba1cce90c5c4c769d5fd
+automation/pr-archive-9182-run-28613544848-attempt-1 e27a5c9e066d12af2cbf8c0685fd4182b5491e23
+book/feynman-susskind-readers-disease-20260802 e5539c9af02aa4eb63cd3d320b11a3151b71d80d
+book/hinge-information-geometry ad9a6839f64ae955893e0a66f76d504423edcb71
+book/the-apex-predator-and-the-bound 7ab3c97031cd0d55f1adf8dc6c2c31883839cffa
+chore/081KLL7-post-8992-bookkeeping ea42499dbe68a827f15c9846e167235dc9b84000
+chore/refresh-chart-snapshots-2026-08-21 4f64f253b16eff7da26fe83eb34f12ef5b8f56e1
+claim/081kqgdbj0008qg0r002-alexa-2026-07-08 425cf177b506b42668d3922aa285678312be0f3d
+claim/081kzeta0007040005-alexa-2026-07-08 b50c361396ffa033ef1b1d7fa40afccda77864d8
+claim/081M0Q8TY1B-retention-runtime-selection c6e0e9db69cc9c1f79c08c6a071ad6807278282e
+claim/cross-lang-zset-isa-capstone 10f15c2fae0f8c7a1b5babc703e058d92c6bdaae
+claim/gate-installer-tests 713b622b04723c75f3f7072266fd0f387ef3d86b
+claim/kiro-7b-codegen-work-2026-08-01 3be6912bfb307d6929c5f53266121a60242419aa
+claim/kiro-agent-heartbeat-workflow-2026-07-08 07b14fff8f1f6e2a81af195191fe05c2da9d7241
+claim/kiro-agent-reviewer-2026-07-08 09583fdabf349369f890248a1c9e8fcb2c3125d8
+claim/kiro-attestation-events-2026-07-08 0b79d1b5f2c98f28bbd8428c7054b81c7286555a
+claim/kiro-free-tier-adr-2026-07-08 5feac0101aa55e35d5bd0b41128bd362db1bb9ef
+claim/kiro-heartbeat-pr-flush-2026-07-08 3a7bb274deebb3b7e3f3434e584e7593d6d2f650
+claim/kiro-monitor-dashboard-2026-07-08 2d6c634ccb03208577f192aab2eab60419079f69
+claim/kiro-otto-healer-duty-2026-08-01 470f4b5e94c2d929e654cd9b8bf4b532c8ef7bec
+claim/kiro-resume-update-2026-08-01 74ffe67fa0d11abc972938566458b4dd491741ad
+claim/task-browser-page-durable-pwa 78030ea914940ea486b1b2fc189463bc0f865c99
+claim/task-browser-runtime-probe 4f39a631e029258fa971ef8b30395fa7fe713922
+claim/vault-bridge-final-cleanup abf44ce5cfa877717a9b3b40c378785f7d0d1ac3
+claim/vault-monitoring-bridge-design 525f1c7c4f1d4059ffbf4614d1699a5612618cf7
+claude/github-project-genesis-y44lc2 9eee3015fe58e68ab4cbf022be7456a7291c70fe
+codex/vite-app-ownership 7ac11222c890221522a54770e7b07b11a9341c8d
+cursor/fix-drift-ledger-silent-push-3f96 d134fca15fb069f5220938f5c3266f26380a7462
+dejan/gate-required-absent-reads-as-green d171b9deebed148f223c9aa96b823a1daf814512
+docs/book-add-parents-pantheon-of-two-consent-granted-20260804 ea65896a0e4aae037f832641242e9e1ae7a4a5de
+drain-pr-archives f822e843cb903dacc4e95b47ac66660203312f34
+feat/bp-29-falsifier-density fe27058b146ae419b6ee1650e30deb077559f9bd
+feat/bp-29-falsifier-density-v2 5773d161712ec2bfcc1f987888f9d93cb8fb84c8
+feat/columnar-zset-vectorized-scan-v2 4d001225d3ce4244e193e20ca34c3ba6bc0779f4
+feat/dejan-declare-pam-reattach 75946a242500c9b83e5855c58a41bbdc6ff23a01
+feat/factory-hygiene-cadence-add-worktrees-job-otto-cli-2026-05-14 fe8a84590ab0a53243df5d5d485ce191e3d6fb86
+feat/first-session-durable-journal f747a6e7c12fb45107b904839e3b7f80b103aac1
+feat/git-native-reverse-index 6ecf1e4a418b3fa73bae17ef8dc9e98801f01b15
+feat/index-excludes-itself e2b0e7c8ff7966c5ac75608c6284a2296fb97575
+feat/no-private-source-image-deps 6cf49d637d190fa0e64b4354e8015b8a7dc54bf7
+feat/softvalue-widening-operator e2e7f5891b73b5e3134e221f25fadd0631ed2d51
+feat/test-cilium-in-kind c0131fa33091930f9e03779a1fd6d8abb4f071a7
+feat/usb-esp-hostname-creds-asserts 5e7e84bbbd1ddb76398fdafe56f8272860a62f28
+feature-agent-capabilities-playable-quotes 6b3cc7b6b2f7d20ce61bace575b9a690e071b170
+feature-lensography-toy-env 57cdacd747515657c6b3f7d221bd4b9101b5f9a5
+ferry-schuller-constructive-gravity 5d19254f77079b9db325bd9f23c3821d03799076
+ferry/brain-evolution-neoteny-and-the-growth-ceiling 5587662521743584a7997d84c0706f2664f06ef3
+ferry/demarcation-is-the-first-act-spencer-brown-anchor aa76dc17f38d8fed8f764a95cba8af97a0845a1f
+ferry/language-as-organism-barenholtz-hahn-shapes-before-labels a223a2e4b73fdae3744a0207d4e2605cb80e4ee5
+fix-ollama-hang 3b4ee4632e7ca265adc9585a1bb617cc43541a3d
+fix/081KZZ27KJ8-delete-smt-solver-floor fb69d568c042573a863aa55b730874583e66e57c
+fix/bun-lock-records-twitch-ai-workspace 6a6c0718f83b1f57f89f6b30c459f5322876ddbe
+fix/chart-currency-step-name-not-continue-on-error 9cd40f00d08f26bdd906624415ffe58ad0bbf478
+fix/ci-rustfmt-markdownlint 12bf0a4c00bfbf772148a092a15b59280e0bdcd7
+fix/drift-dashboard-evidence 09f1c03ad7ab64052bb1838383d0969703b1843e
+fix/drift-ledger-silent-push-failure d134fca15fb069f5220938f5c3266f26380a7462
+fix/forgejo-oci-registry-and-published-pin cad37277613f009acc64f9fece3a08bb042925a6
+fix/gate-narrow-js-bootstrap 23486b40f753ff2743631a1f8e9259fc1203ef4b
+fix/ghcr-anon-token-measurement 0b8da2cad7567af7fba0ef5dfde639173b8f38bd
+fix/manifest-drift-2026-08-20 8bcb4ca9ee900a4cf48666c7cc933000e55f11db
+fix/mise-tools-resolve-globally f96ffac25f8b0794174802cd89bb80153df0d525
+fix/pr-manifest-redrive-2026-08-19 a4016acaede33247c53e7ba2a0059dffabb8b1e6
+fix/shellcheck-sc2012-self-register ac549bfe5b985f872df912f080e7526b9200e4e1
+fix/unpriced-charts-measurable 2496df1320234329563e01efd11449be8be73611
+fix/verify-session-fixes-toctou 6589465626bfa7b7e55fa6ad50965e0b44c98e99
+fix/whole-tree-scan-timeout-impersonates-dark-route 836cc6463cb220169634ec19c645cb7f28e4d7d4
+fix/windows-docker-workspace-manifest 6eb70c64ffd8c830fc691f81be2800dd8a995881
+flush/heartbeat-alexa-20260801T1500Z 0609a13154388c30741064c23c87089de023cea5
+flush/heartbeat-otto-20260801T1500Z 06230517de8da049c52a537e0934b7d3f3fdfaa3
+flush/heartbeat-soraya-20260801T1459Z d7a510b208b92ded24df65c3f0a4162aaba30790
+gemini/summon-cli 65c6e67c7e8957f5025ab82439cacb2f053de2f1
+meno-lean-ybe ab29972dbfe63e9c7643d0413172604c3a34efda
+nazar/frost-reshare-no-reconstitution e2ca82329801eb10e663772d3b87a91cb525a7d4
+ops/pr-manifest-repair-8778 f76a44e85bd3f47594210adfa46bac3593ed250b
+otto/auto-vivify-dangling-refs-2026-08-19 8d2797e28771d605df25ef6906b68c1032d378d7
+otto/four-corner-interface-type-plus-bridge11-orbit-intertwining e8be91ba3967e8aa70886896c0f8c16f188db33b
+otto/scheduler-zeta-weak-fixed-point-table 174b6e79a943b627e8b94213d59dc706b88f0668
+ouroboros-bootstrap e87c53f35f2988dac8ace48af908d3133b582e58
+refactor-roles-to-hats 793216df310c550a355a7d3053be259582f8775a
+refactor/retire-op-token-setup-to-ts b4f5dc0ae981b6f3a678ca50f1393e0d8224d508
+research/collapse-containment-markov-rooms 227c7e3f669a399119b25ba467db536c3a22f0cb
+research/futamura-for-observables adc6ecb08cf9b2bc5a5823ee1475f8950acb560b
+research/gravity-as-phase-slowing-under-consensus bad0e6f108c972f2d5c49e28a955db9615e3d9b7
+research/gravity-is-the-restoring-force b1540ccef1b8566a9cc84b6c82c0e4023527b5dc
+research/philosophers-star-magic-square-generates-star aa8a71780b99267dceb76929e4732a559cac8856
+research/philosophers-star-magic-square-generates-star-v2 42314ff1efa7bbf5493ceaf44dc4136a82e004af
+research/qec-stack-routing b4d57abbdacf1a7a37795e46de9e3914ff55c21e
+research/rho-series-settles-the-band 548e2528a6d4920bdaf36fd10e1e03de9cc62b7e
+research/slow-explosion-warning-system 95f0fcbc26c0f77d45ec82d32c1d2dc988b2dee6
+research/society-in-one-gpu 3f180382709000d13d0f460f0e273ca16c4e280f
+research/thermal-erasure-is-the-one-place b8d2c8866e58301f87e768d0b83fe5ede64f1ccf
+research/tit-for-lesser-tat-arena b8b8ebccefe702ca4ac184f8db616ebce22698bb
+riven/b0891-acceptance 26fe2c6ea5427506478fcfa36ffd689cf19d31d4
+riven/qemu-uefi-menu-smoke 5ad42407a39b73d69cbcbb8c2719ecec83d116a8
+shadow-openziti-trust-bundle 42f1c89292322c2f11d11ae9ed3f878a77ac2a79
+shadow-revert-13973-mass-deletion fafd2b0892171ccd70ffd572ba5040b949cbc0f3
+shadow/attribute-wasm-substrate-test-timeout 3b249876ae50e85d990e0c57792735b41f583c5e
+shadow/blind-breaker-and-split-pressure-classifier 5ffe676e19ac0ec9332d07d947bbbb14a3215f04
+shadow/bonsai-cost-model-and-app-free-verification d73d0e7792597cbe92af906511760a89d77aeaf7
+shadow/correct-16-grammar-universality-caveat 5db3285afa679889789a1fa95716713e666982d4
+shadow/dedupe-dkek-inventory-entry bbbd0c49ceb8f62335da47e5dc8012545b45f87c
+shadow/demote-z2-z4-z5-z6-to-conjecture 31ca7b359ae9b4ff17af3e34d33bfafbdbcc8ee4
+shadow/derive-envelope-conclusions 33389e152956acc2d53e59dbc79d765036f1bbaa
+shadow/ferry-deflation-claim-narrowed a13d67fa832fdf1d5d6a8826cacf963561de0856
+shadow/ferry-ismael-incompleteness-from-within f4c737c0ade6181f2221da2b84d74e32a0deb5c8
+shadow/ferry-manchak-unknowability-limits-of-measurement dc99d04924265eb6abdd3c92c3fe25843d201919
+shadow/fix-stale-wall-clock-allowlist-row 1078cc45e54239dfa3b7bd77d70958b527975384
+shadow/geodesic-default-oracle bfe95d3f633dfd3080964ea2b9f0858fc763cea6
+shadow/heartbeat-pat-gate-restart d44fdbd88e87a39d4bfd63715ad09954cfb8cd72
+shadow/independent-lane-partition 4e97d6b8d232d389e36f6b9b2ce183cea9d57a16
+shadow/ip-no-cloning-workaround-time-not-encryption de988ea48ee419f297bf946fc35aa5a835685834
+shadow/iterated-tradition-density-probe 3cc5c552ff017f0041de7138d5baac919d955b75
+shadow/manifest-drift-check-measures-age 54aaed985a7da52bc6a0b1e410d97848ed3a1f28
+shadow/reaim-heartbeat-credential-pin a86256071cfb7607344dd1d15ada778df7639ac8
+shadow/rename-tsirelson-to-sticking-threshold 96cec33f78463acf7ce4cd6692ae6262035936f0
+shadow/society-invariants-maximin-and-hat-residue 8a1ffe10ec6aee0556379e3d8f3d2ba6ea74e095
+shadow/telemetry-cadences-cannot-push-to-main 4c4acc7cc31eb6f1cf7d8351bf3c920645a81fc3
+shadow/tradition-density-probe-guarded 98460b096eb0ca1ca9da2774556d0ae2ae95ddd3
+shadow/translation-residue 6937e7a9cafe685bbf6a1d5aa858b22760146f14
+shadow/ult-33-34-fix e2ce9c3ec0fbb22dec2d76fd2e0f3d350e02a323
+shadow/vacuous-ci-gates-sweep fc04a22d81fb8635183142bc14c1e9f8b536bbb3
+soraya-nuf 103ee5dce0a7b2677fb072d955a92986708e12fe
+soraya/ambient-time-collation-followup 9f1fba4fd37ab0f6cb8a90ecbced7c0dde4866d4
+soraya/ambient-time-in-tests 8410784f884d2cef7f0e2da37ad6691534039619
+validate/nix-ld-081KZETP6AT e438a554d648e073e4b74bb9b2e1034c915551f1
+zflash/one-home-for-size-bounds-v2 096ff0fba300e13e0a39a7a8047ae0f1fa720f43
+```
+
+### The two follow-ups this document named are still open
+
+Neither is a deletion, and both are worth more than the deletions were:
+
+- **The emitter of legacy `heartbeat/<agent>-flush-<40hex>` names.** The one instance this document
+  found is gone from `origin`; the emitter was not looked for and is not fixed.
+- **The `pr-archive` sweep comparing the append-only manifest and shard files.** That single
+  mis-scoped comparison is what left all 49 `ARCHIVE-LEFTOVER` branches behind. Unfixed, the class
+  regrows.
 
 ## Reproducing this document
 

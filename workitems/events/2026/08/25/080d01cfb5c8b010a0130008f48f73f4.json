@@ -1,0 +1,14 @@
+{
+  "id": "080d01cfb5c8b010a0130008f48f73f4",
+  "at": "2026-08-25T17:27:45.686Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0WZDE8P087G0R0038ND41Q",
+    "type": "task",
+    "title": "Execute the safe subset of the 2026-08-25 branch inventory: preserve-then-delete 178 heads",
+    "slug": "execute-the-safe-subset-of-the-2026-08-25-branch-inventory-p",
+    "priority": "P2",
+    "filename": "081M0WZDE8P087G0R0038ND41Q-execute-the-safe-subset-of-the-2026-08-25-branch-inventory-p.md"
+  }
+}
