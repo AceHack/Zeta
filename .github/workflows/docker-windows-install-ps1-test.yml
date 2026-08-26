@@ -17,6 +17,56 @@
 name: docker-windows-install-ps1-test
 
 on:
+  # ── THE TIME-DRIVEN ARM (added 2026-08-26). ──────────────────────────────────
+  #
+  # The triggers below this comment and the one above it catch DIFFERENT FAILURE
+  # CLASSES, and that is why both exist. This is DV2.0 change-rate partitioning
+  # applied to CI triggers: two causes with different arrival processes get two
+  # triggers, not one compromise.
+  #
+  #   path filter (`pull_request` / `push`)  <-  OUR CHANGES. Event-driven: it
+  #     fires the moment someone edits the installer, which is the fastest
+  #     possible feedback and is tied directly to the cause.
+  #
+  #   `schedule:`  <-  UPSTREAM DRIFT. Time-driven, and NOTHING ELSE CAN CATCH
+  #     IT. the Windows package sources install.ps1 reaches for all move with no commit in this repo, so a
+  #     path filter never fires: there is nothing to filter on. Before this
+  #     block, the only checks that prove the installer works from a bare
+  #     machine ran solely when somebody happened to edit the installer.
+  #
+  # WHY THIS WORKFLOW AND NOT THE OTHERS. The rule applied was: schedule a check
+  # iff its outcome can change WITH NO COMMIT -- i.e. it reaches outside the
+  # repo. `installer-unit-tests` and `installer-repair-mode-existing-install` are
+  # deliberately NOT scheduled: their inputs are all committed, so a cron would
+  # re-run the same computation on the same bytes and could only ever report what
+  # the last push already reported.
+  #
+  # WHY DAILY. The drift this catches is a mirror, a channel, or a runner image
+  # moving -- a days-scale process, not an hours-scale one. Daily is the coarsest
+  # cadence that still surfaces it inside one work-window, which is the stated
+  # basis `factory-hygiene-audit-cadence.yml` already uses. (`mirror-to-fork.yml`
+  # runs 6-hourly for a different reason -- it bounds staleness of a BACKUP -- so
+  # its number is not the one to copy here, only its principle: a periodic
+  # artefact, with the cadence chosen from what it is protecting against.)
+  #
+  # WHY THE MINUTE IS ODD. Off-the-hour and distinct per lane so the fleet's
+  # scheduled runs do not pile onto one minute and get dropped together under
+  # GitHub scheduler load. Avoids :00/:15/:30/:45 (heartbeat), :07/:37
+  # (drift-sweep) and the */6 lanes at :13/:23/:41.
+  #
+  # THIS IS NON-BLOCKING AND STILL LOUD, and the loudness needs no wiring here.
+  # `drift-dashboard-cadence.yml` enumerates every active workflow and derives its
+  # expectation from this `on:` block: `expectationFromWorkflow`
+  # (src/Core.TypeScript/forge-host/github/workflow-triggers.ts) turns a `cron:`
+  # into `{{ kind: "periodic", periodSeconds }}` -- and it treats a workflow that is
+  # BOTH scheduled and PR-triggered as `periodic`, "because the clock is the
+  # stronger claim". `fold.ts` then reddens on FAILURE, on SILENCE
+  # (age > 3x period, fold.ts:335), and on "declared to run every N and has NEVER
+  # produced a verdict" (fold.ts:301). So a scheduled shield that quietly stops
+  # running goes red -- which is the whole point, since a cron nobody reads is the
+  # vacuity class wearing a schedule.
+  schedule:
+    - cron: "9 4 * * *"
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
