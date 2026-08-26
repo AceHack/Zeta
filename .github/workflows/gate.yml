@@ -1294,6 +1294,22 @@ jobs:
         # roster already costs. It scales with `.md` count, not with rule count.
         run: bun run hygiene:linter-coverage
 
+      - name: Consent sign-off ledger is truthful (docs/books/you-born-at-the-hinge/CONSENT-SIGNOFF-DESIGN.md)
+        # REPO TIER, not the publish gate. This run fails only on FALSE CLAIMS in the consent
+        # ledger -- a cited pull-request review that does not exist, is not APPROVED, or was
+        # authored by someone other than the person the row names; a passage marked
+        # de-identified that still carries the name; a subject with no roster entry. It does
+        # NOT fail on stale or missing consent: those are publication-tier findings and are
+        # gated in pages-deploy.yml with `--publish`, because the maintainer draws the hard
+        # line at the distributable book rather than at a disclosed public draft.
+        #
+        # `gh` is on the runner and GITHUB_TOKEN reads public repos, so the review fetch is
+        # real here. Exit 3 (UNCHECKED) is a failure by design: a review that was not fetched
+        # must never be reported as a review that passed.
+        run: bun run hygiene:consent-signoff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: No culture-sensitive collation in TypeScript (.claude/rules/culture-invariant-by-default.md)
         # THE CHECK EXISTED AND DID NOT RUN. This is the mechanical enforcement of a carved
         # rule, it has had a baseline file since it landed, and until this step no workflow

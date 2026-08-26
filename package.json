@@ -53,6 +53,7 @@
     "hygiene:check-arity-nonequality": "bun ./src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts",
     "hygiene:scan-floor-routes": "bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts",
     "hygiene:linter-coverage": "bun ./src/Core.TypeScript/hygiene/audit-linter-coverage-vs-invocation.ts",
+    "hygiene:consent-signoff": "bun ./src/Core.TypeScript/hygiene/audit-consent-signoff.ts",
     "hygiene:tech-radar-claims": "bun ./src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts",
     "hygiene:book-named-index": "bun ./src/Core.TypeScript/hygiene/audit-book-named-index.ts",
     "inventory:items": "bun ./src/Core.TypeScript/inventory/generate-items-json.ts",

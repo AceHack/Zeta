@@ -107,6 +107,18 @@ jobs:
           mkdir -p dist/books/you-born-at-the-hinge/english
           printf '<!doctype html><meta charset="utf-8"><title>Redirecting</title><meta http-equiv="refresh" content="0; url=../en/"><link rel="canonical" href="../en/"><p>Redirecting to <a href="../en/">../en/</a>.</p>\n' \
             > dist/books/you-born-at-the-hinge/english/index.html
+      # THE PUBLISH GATE. Runs immediately before the distributable book files are
+      # produced, because that artifact is the hard demarcation: a name whose consent folds
+      # to REVOKED, a passage that drifted from the text its subject approved, or a named
+      # passage with no consent on file stops the build here rather than shipping. Repo
+      # drafts run under the lighter check in gate.yml -- see
+      # docs/books/you-born-at-the-hinge/CONSENT-SIGNOFF-DESIGN.md section 5 for why the two
+      # tiers differ. Move this step above the site copy if the rendered site is ever to be
+      # gated as strictly as the ebooks; it is one line and deliberately reversible.
+      - name: Consent publish gate (refuse to publish an unconsented or revoked name)
+        run: bun src/Core.TypeScript/hygiene/audit-consent-signoff.ts --publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate eBooks
         run: bun run docs/books/you-born-at-the-hinge/scripts/build_ebooks.ts
       # Runs AFTER the book copy on purpose: the language pages only sit at their served
