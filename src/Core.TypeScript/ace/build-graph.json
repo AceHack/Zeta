@@ -2869,6 +2869,23 @@
       }
     },
     {
+      "id": "ts:src/Renderers/website",
+      "kind": "typescript",
+      "sources": ["src/Renderers/website/**"],
+      "dependsOn": [],
+      "legs": ["gate/lint-website"],
+      "origin": "declared",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:typescript"],
+        "evidence": []
+      }
+    },
+    {
       "id": "unit:agda",
       "kind": "agda",
       "sources": ["src/Core.Agda/**"],
