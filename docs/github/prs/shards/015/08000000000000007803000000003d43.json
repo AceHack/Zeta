@@ -1,0 +1,12 @@
+{
+  "pr_number": 15683,
+  "archive_path": "docs/history/pr-reviews/PR-15683-rule-rest-is-the-default-transport-graphql-is-the-one-contested-budget.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:58:00.786Z",
+  "schema_version": "v1",
+  "commit_sha": "c3addd47439593f77864deeaf924330fdd49b06f",
+  "title": "rule: REST is the default transport; GraphQL is the one contested budget",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:57:23Z",
+  "head_ref": "shadow/graphql-transport-rule"
+}

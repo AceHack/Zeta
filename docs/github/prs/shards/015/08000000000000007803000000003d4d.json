@@ -1,0 +1,12 @@
+{
+  "pr_number": 15693,
+  "archive_path": "docs/history/pr-reviews/PR-15693-docs-ci-verdicts-about-main-are-now-produced-and-still-not-consumed-the-design-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T22:45:57.071Z",
+  "schema_version": "v1",
+  "commit_sha": "147268d509843c00a6369b40ddf9f646a24a9ad1",
+  "title": "docs(ci): verdicts about main are now produced and still not consumed — the design for acting on a late one",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T22:45:20Z",
+  "head_ref": "shadow/acting-on-late-verdicts-consumption-design"
+}

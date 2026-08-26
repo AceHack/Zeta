@@ -1,0 +1,12 @@
+{
+  "pr_number": 15680,
+  "archive_path": "docs/history/pr-reviews/PR-15680-research-adinkra-measure-representation-defect-spectrum.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:48:24.750Z",
+  "schema_version": "v1",
+  "commit_sha": "0565a10d792602afbbc5c25cbc2abe97e0e25014",
+  "title": "research(adinkra): measure representation defect spectrum",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:47:43Z",
+  "head_ref": "research/adinkra-representation-defect-spectrum"
+}

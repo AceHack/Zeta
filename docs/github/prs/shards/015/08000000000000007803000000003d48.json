@@ -1,0 +1,12 @@
+{
+  "pr_number": 15688,
+  "archive_path": "docs/history/pr-reviews/PR-15688-feat-identity-dla-expose-evidence-seam-room.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T22:25:07.008Z",
+  "schema_version": "v1",
+  "commit_sha": "b6758bb04ee91e629327942a325208ed4aaeb3d6",
+  "title": "feat(identity-dla): expose evidence seam room",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T22:24:27Z",
+  "head_ref": "feat/evidence-seam-room"
+}

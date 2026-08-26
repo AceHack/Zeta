@@ -1,0 +1,12 @@
+{
+  "pr_number": 15682,
+  "archive_path": "docs/history/pr-reviews/PR-15682-ci-gate-fetch-only-the-two-commits-path-filter-diffs-not-every-ref.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:52:10.830Z",
+  "schema_version": "v1",
+  "commit_sha": "adf4c0fdac190b6b24c230e754f0ad9c28b37cd8",
+  "title": "ci(gate): fetch only the two commits path-filter diffs, not every ref",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:49:13Z",
+  "head_ref": "shadow/path-filter-narrow-fetch"
+}

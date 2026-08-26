@@ -1,0 +1,12 @@
+{
+  "pr_number": 15692,
+  "archive_path": "docs/history/pr-reviews/PR-15692-fix-ci-the-windows-install-chain-declared-three-package-sources-and-could-only-e.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T22:35:26.819Z",
+  "schema_version": "v1",
+  "commit_sha": "1ba2939d73176714707c23565957c9821384b2d8",
+  "title": "fix(ci): the Windows install chain declared three package sources and could only ever try one",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T22:34:49Z",
+  "head_ref": "shadow/windows-package-source-fallback-and-toolchain-free-reporter"
+}

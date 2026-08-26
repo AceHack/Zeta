@@ -1,0 +1,12 @@
+{
+  "pr_number": 15585,
+  "archive_path": "docs/history/pr-reviews/PR-15585-build-nix-root-flake-off-eol-nixpkgs-nix-darwin-24-11-26-05.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T23:12:16.863Z",
+  "schema_version": "v1",
+  "commit_sha": "5ca191b6b20c6f7c044c4a625593b3c925de1b83",
+  "title": "build(nix): root flake off EOL — nixpkgs + nix-darwin 24.11 -> 26.05",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T23:11:40Z",
+  "head_ref": "shadow/root-flake-eol-nixpkgs-2605"
+}

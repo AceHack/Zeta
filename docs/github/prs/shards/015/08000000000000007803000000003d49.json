@@ -1,0 +1,12 @@
+{
+  "pr_number": 15689,
+  "archive_path": "docs/history/pr-reviews/PR-15689-fix-installer-the-repair-mode-flake-is-bun-s-5s-hook-timeout-not-sfdisk.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T22:30:45.507Z",
+  "schema_version": "v1",
+  "commit_sha": "3ae233c72db3f88d55d4c04bf85ede4319d7045f",
+  "title": "fix(installer): the repair-mode flake is bun's 5s hook timeout, not sfdisk",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T22:30:08Z",
+  "head_ref": "shadow/installer-repair-hook-timeout"
+}

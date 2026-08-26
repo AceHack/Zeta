@@ -1,0 +1,17 @@
+{
+  "pr_number": 15613,
+  "archive_path": "docs/history/pr-reviews/PR-15613-research-decorrelation-hat-choice-axis-measured-not-supported-24-hatted-agents-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7mOZjP",
+    "comment:PRRC_kwDOSF9kNM7mb-WT",
+    "thread:PRRT_kwDOSF9kNM6ccwfH",
+    "thread:PRRT_kwDOSF9kNM6cl2Id"
+  ],
+  "fetched_at": "2026-08-26T20:54:23.836Z",
+  "schema_version": "v1",
+  "commit_sha": "e757ff9ffe255afd8060059809001f9b4b35c674",
+  "title": "research(decorrelation): hat-CHOICE axis measured — not supported; 24 hatted agents are ~1.2 witnesses",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T20:47:51Z",
+  "head_ref": "shadow/hat-choice-decorrelation-axis"
+}

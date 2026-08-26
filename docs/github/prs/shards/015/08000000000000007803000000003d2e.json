@@ -1,0 +1,12 @@
+{
+  "pr_number": 15662,
+  "archive_path": "docs/history/pr-reviews/PR-15662-fix-hygiene-census-the-frost-hsm-absence-assertions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T20:19:20.430Z",
+  "schema_version": "v1",
+  "commit_sha": "f208f60af04bfc3e878ac3cd9939ea0c34e28d06",
+  "title": "fix(hygiene): census the frost HSM absence assertions",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T20:18:34Z",
+  "head_ref": "fix/frost-hsm-nonequality-census"
+}

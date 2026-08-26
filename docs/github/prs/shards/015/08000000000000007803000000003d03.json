@@ -1,0 +1,12 @@
+{
+  "pr_number": 15619,
+  "archive_path": "docs/history/pr-reviews/PR-15619-book-consent-github-review-sign-off-the-ledger-row-cites-an-artifact-the-person-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T20:51:17.864Z",
+  "schema_version": "v1",
+  "commit_sha": "f44997541e5dd1de680855657d2d803d4204ee53",
+  "title": "book(consent): GitHub-review sign-off — the ledger row cites an artifact the person authored",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T20:50:43Z",
+  "head_ref": "consent-github-signoff"
+}

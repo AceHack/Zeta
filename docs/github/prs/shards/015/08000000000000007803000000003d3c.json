@@ -1,0 +1,12 @@
+{
+  "pr_number": 15676,
+  "archive_path": "docs/history/pr-reviews/PR-15676-bug-agencysignature-i-landed-an-invalid-unverifiable-human-review-claim-on-main-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:24:54.935Z",
+  "schema_version": "v1",
+  "commit_sha": "f159bf083f89a26c39df90bda0668084f7eebcc1",
+  "title": "bug(agencysignature): I landed an invalid, unverifiable Human-Review claim on main — and the door that let me",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:24:16Z",
+  "head_ref": "shadow/agencysignature-squash-preimage-bypass"
+}

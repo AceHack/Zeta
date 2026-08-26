@@ -1,0 +1,12 @@
+{
+  "pr_number": 15674,
+  "archive_path": "docs/history/pr-reviews/PR-15674-fix-hygiene-retraction-actuator-s-task-trailer-was-a-truncated-zetaid.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:18:15.827Z",
+  "schema_version": "v1",
+  "commit_sha": "8567300eb85a0c53bb8ee8aed753d46620b96137",
+  "title": "fix(hygiene): retraction actuator's Task trailer was a TRUNCATED ZetaId",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:17:39Z",
+  "head_ref": "shadow/retraction-actuator-truncated-task-id"
+}

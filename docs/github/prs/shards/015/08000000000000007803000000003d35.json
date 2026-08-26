@@ -1,0 +1,12 @@
+{
+  "pr_number": 15669,
+  "archive_path": "docs/history/pr-reviews/PR-15669-feat-audit-persist-room-evidence-genesis-authority.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:13:41.258Z",
+  "schema_version": "v1",
+  "commit_sha": "0a66a1b80bb2780e3bf92630832001f1138b2263",
+  "title": "feat(audit): persist room evidence genesis authority",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:13:06Z",
+  "head_ref": "feat/durable-room-genesis-authority"
+}

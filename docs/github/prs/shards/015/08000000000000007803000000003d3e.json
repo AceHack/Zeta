@@ -1,0 +1,12 @@
+{
+  "pr_number": 15678,
+  "archive_path": "docs/history/pr-reviews/PR-15678-ci-gate-raise-path-filter-cap-5-15-min-the-cap-was-killing-the-job.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:32:31.330Z",
+  "schema_version": "v1",
+  "commit_sha": "6c73d924dbdacfada2cc0a6a07844d8326611148",
+  "title": "ci(gate): raise path-filter cap 5->15 min — the cap was killing the job",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:31:50Z",
+  "head_ref": "shadow/path-filter-timeout-cap"
+}
