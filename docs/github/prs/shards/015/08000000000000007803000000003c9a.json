@@ -1,0 +1,12 @@
+{
+  "pr_number": 15514,
+  "archive_path": "docs/history/pr-reviews/PR-15514-docs-promote-manifesto-md-to-full-lock.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:21:20.579Z",
+  "schema_version": "v1",
+  "commit_sha": "aec9c72a798144ec044c9efc66231d51c3afe705",
+  "title": "docs: promote MANIFESTO.md to full lock",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:20:40Z",
+  "head_ref": "feat/manifesto-full-lock"
+}

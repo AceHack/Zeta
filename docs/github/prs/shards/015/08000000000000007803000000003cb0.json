@@ -1,0 +1,12 @@
+{
+  "pr_number": 15536,
+  "archive_path": "docs/history/pr-reviews/PR-15536-data-f2-90-catch-rate-produce-verify-pipeline-works.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:33:33.391Z",
+  "schema_version": "v1",
+  "commit_sha": "c11d08dcff86ebec9c12086c7d738f3f3a53cee8",
+  "title": "data(F2): 90% catch rate — produce→verify pipeline WORKS",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:32:55Z",
+  "head_ref": "alexa/f2-producer-verifier"
+}

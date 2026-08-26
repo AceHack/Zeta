@@ -1,0 +1,12 @@
+{
+  "pr_number": 15304,
+  "archive_path": "docs/history/pr-reviews/PR-15304-deps-bump-the-npm-minor-patch-group-across-4-directories-with-9-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:38:40.211Z",
+  "schema_version": "v1",
+  "commit_sha": "dfbbbc1a38e622bc49cb5db33843e06d8a53cc8f",
+  "title": "deps: bump the npm-minor-patch group across 4 directories with 9 updates",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:38:04Z",
+  "head_ref": "dependabot/npm_and_yarn/agentic-organization/npm-minor-patch-218b9a2e63"
+}

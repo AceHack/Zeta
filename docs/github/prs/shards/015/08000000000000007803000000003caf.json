@@ -1,0 +1,12 @@
+{
+  "pr_number": 15535,
+  "archive_path": "docs/history/pr-reviews/PR-15535-fix-persona-keys-the-yubihsm-lane-ran-and-ckm-aes-cbc-pad-was-0x10d-so-hardware-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:42:40.752Z",
+  "schema_version": "v1",
+  "commit_sha": "d8a55190bfadecf5cc78970a25275bd82dc01ef1",
+  "title": "fix(persona-keys): the YubiHSM lane ran — and CKM_AES_CBC_PAD was 0x10d, so hardware-pkcs11 could never have sealed",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:41:59Z",
+  "head_ref": "shadow/yubihsm-h3-measured"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15544,
+  "archive_path": "docs/history/pr-reviews/PR-15544-research-branches-every-branch-classified-16-recovery-tags-created-0-deletions-b.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:23:41.348Z",
+  "schema_version": "v1",
+  "commit_sha": "ee4330e23a4326c116667aae7e402d67af630289",
+  "title": "research(branches): every branch classified — 16 recovery tags created, 0 deletions, because the off-site copy still does not exist",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:23:06Z",
+  "head_ref": "shadow/branch-sweep-classification-2026-08-26"
+}

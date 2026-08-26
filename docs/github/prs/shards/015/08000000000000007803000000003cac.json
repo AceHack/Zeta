@@ -1,0 +1,12 @@
+{
+  "pr_number": 15532,
+  "archive_path": "docs/history/pr-reviews/PR-15532-fix-heartbeat-the-flush-pre-merged-main-into-main-so-every-lane-reported-a-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:20:48.383Z",
+  "schema_version": "v1",
+  "commit_sha": "c65b3bb26f6e94d709b610339c22cc524f68d344",
+  "title": "fix(heartbeat): the flush pre-merged main into main, so every lane reported a green no-op and nothing landed",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:20:13Z",
+  "head_ref": "fix/manifest-repair-lands"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15538,
+  "archive_path": "docs/history/pr-reviews/PR-15538-research-ci-the-actions-cache-is-a-measured-sawtooth-23-gib-evicted-in-61s-80-ne.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:24:39.692Z",
+  "schema_version": "v1",
+  "commit_sha": "bfd24f7ae090b03d00bbd2338fb32ef6c38275f7",
+  "title": "research(ci): the Actions cache is a measured sawtooth — 23 GiB evicted in 61s, 80% never read",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:24:00Z",
+  "head_ref": "shadow/actions-cache-measurement"
+}

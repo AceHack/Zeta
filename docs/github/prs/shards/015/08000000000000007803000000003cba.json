@@ -1,0 +1,12 @@
+{
+  "pr_number": 15546,
+  "archive_path": "docs/history/pr-reviews/PR-15546-fix-observe-f2-computed-a-false-negative-rate-and-threw-it-away.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:00:05.477Z",
+  "schema_version": "v1",
+  "commit_sha": "ba78e1dbd2ca53948b4cee9a03c785bb86bc6e23",
+  "title": "fix(observe): F2 computed a false-negative rate and threw it away",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:59:21Z",
+  "head_ref": "fix/f2-dropped-false-negative-rate"
+}

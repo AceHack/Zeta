@@ -1,0 +1,12 @@
+{
+  "pr_number": 14571,
+  "archive_path": "docs/history/pr-reviews/PR-14571-deps-bump-react-dom-and-types-react-dom-in-full-ai-cluster-portal-web.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:12:03.650Z",
+  "schema_version": "v1",
+  "commit_sha": "7c367ee6fdf7f1a19c4a249d48686b314402aa0b",
+  "title": "deps: Bump react-dom and @types/react-dom in /full-ai-cluster/portal/web",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:11:26Z",
+  "head_ref": "dependabot/bun/full-ai-cluster/portal/web/multi-d8ec5a502f"
+}

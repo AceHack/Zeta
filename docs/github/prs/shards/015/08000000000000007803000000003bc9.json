@@ -1,0 +1,12 @@
+{
+  "pr_number": 15305,
+  "archive_path": "docs/history/pr-reviews/PR-15305-deps-bump-the-bun-minor-patch-group-across-4-directories-with-28-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:01:56.277Z",
+  "schema_version": "v1",
+  "commit_sha": "83ec419c00ddffe278c1c464e72d4c702b1b7df7",
+  "title": "deps: bump the bun-minor-patch group across 4 directories with 28 updates",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:01:09Z",
+  "head_ref": "dependabot/bun/bun-minor-patch-315bd842cf"
+}

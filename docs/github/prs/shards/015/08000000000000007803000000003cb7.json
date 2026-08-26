@@ -1,0 +1,12 @@
+{
+  "pr_number": 15543,
+  "archive_path": "docs/history/pr-reviews/PR-15543-fix-audit-bind-logical-event-counters-into-predecessor-chains.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:23:19.616Z",
+  "schema_version": "v1",
+  "commit_sha": "f96f92718c14daf859fedabad12d545fedcbd3e2",
+  "title": "fix(audit): bind logical event counters into predecessor chains",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:22:30Z",
+  "head_ref": "fix/zero-crossing-hash-chain"
+}
