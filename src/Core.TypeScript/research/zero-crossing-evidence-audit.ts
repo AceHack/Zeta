@@ -18,8 +18,17 @@ import {
 } from "../z-set/z-set";
 
 export interface SignedEvidenceDelta {
-  /** Stable append-only identity. A correction has its own identity. */
-  readonly deltaId: string;
+  /**
+   * Stable event identity minted at emission time. A redelivery repeats it;
+   * a later same-content emission gets a distinct identity.
+   */
+  readonly eventId: string;
+  /** Emitter namespace from which this event identity was minted. */
+  readonly emitterId: string;
+  /** Strictly nonnegative monotone event sequence within the emitter namespace. */
+  readonly emitterSeq: number;
+  /** Content recognizer for integrity/equality, never the event name. */
+  readonly contentFingerprint: string;
   /** The evidence key whose net ZSet weight changes. */
   readonly key: string;
   /** A nonzero safe integer; + asserts and − retracts. */
@@ -41,8 +50,16 @@ export interface ZeroCrossingAuditView {
 const encoder = new TextEncoder();
 
 function assertDelta(delta: SignedEvidenceDelta): void {
-  if (delta.deltaId.length === 0 || delta.key.length === 0) {
-    throw new RangeError("deltaId and key must be nonempty");
+  if (
+    delta.eventId.length === 0
+    || delta.emitterId.length === 0
+    || delta.contentFingerprint.length === 0
+    || delta.key.length === 0
+  ) {
+    throw new RangeError("event identity, emitter, content fingerprint, and key must be nonempty");
+  }
+  if (!Number.isSafeInteger(delta.emitterSeq) || delta.emitterSeq < 0) {
+    throw new RangeError("emitterSeq must be a nonnegative safe integer");
   }
   if (!Number.isSafeInteger(delta.weight) || delta.weight === 0) {
     throw new RangeError("weight must be a nonzero safe integer");
@@ -55,7 +72,10 @@ function assertDelta(delta: SignedEvidenceDelta): void {
 function canonicalAuditKey(delta: SignedEvidenceDelta): string {
   assertDelta(delta);
   return JSON.stringify([
-    delta.deltaId,
+    delta.eventId,
+    delta.emitterId,
+    delta.emitterSeq,
+    delta.contentFingerprint,
     delta.key,
     delta.weight,
     delta.meanPpm,
@@ -64,7 +84,7 @@ function canonicalAuditKey(delta: SignedEvidenceDelta): string {
 }
 
 /**
- * The evidence atom is G-set-like at its delivery identity: retransmitting the
+ * The evidence atom is G-set-like at its event identity: retransmitting the
  * exact same atom is harmless, while reusing an identity for different signed
  * content is an equivocation and must not be folded.
  */
@@ -72,14 +92,25 @@ function uniqueDeltas(deltas: readonly SignedEvidenceDelta[]): SignedEvidenceDel
   const byId = new Map<string, { readonly atom: string; readonly delta: SignedEvidenceDelta }>();
   for (const delta of deltas) {
     const atom = canonicalAuditKey(delta);
-    const prior = byId.get(delta.deltaId);
+    const prior = byId.get(delta.eventId);
     if (prior === undefined) {
-      byId.set(delta.deltaId, { atom, delta });
+      byId.set(delta.eventId, { atom, delta });
     } else if (prior.atom !== atom) {
-      throw new RangeError(`deltaId ${delta.deltaId} was reused with conflicting evidence`);
+      throw new RangeError(`eventId ${delta.eventId} was reused with conflicting evidence`);
     }
   }
   return [...byId.values()].map((entry) => entry.delta);
+}
+
+/**
+ * Deterministic identity shape for a single emitter stream. Production code may
+ * hash/sign this tuple, but content recognition must never replace event minting.
+ */
+export function mintEventId(emitterId: string, emitterSeq: number): string {
+  if (emitterId.length === 0 || !Number.isSafeInteger(emitterSeq) || emitterSeq < 0) {
+    throw new RangeError("event identity requires a nonempty emitter and nonnegative safe sequence");
+  }
+  return `${emitterId}:${emitterSeq}`;
 }
 
 function hashText(value: string): string {
