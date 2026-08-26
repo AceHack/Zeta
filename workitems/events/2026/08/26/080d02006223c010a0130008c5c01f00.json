@@ -1,0 +1,14 @@
+{
+  "id": "080d02006223c010a0130008c5c01f00",
+  "at": "2026-08-26T21:49:00.920Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M100RH3Q087G0R0018X4RSJ",
+    "type": "task",
+    "title": "Closed model tools: Ace verbs for deps, Zeta verbs for git/fs/forge, never bash/gh/git",
+    "slug": "closed-model-tools-ace-verbs-for-deps-zeta-verbs-for-git-fs",
+    "priority": "P1",
+    "filename": "081M100RH3Q087G0R0018X4RSJ-closed-model-tools-ace-verbs-for-deps-zeta-verbs-for-git-fs.md"
+  }
+}

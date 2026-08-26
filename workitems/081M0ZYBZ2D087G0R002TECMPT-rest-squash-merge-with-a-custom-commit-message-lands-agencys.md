@@ -46,7 +46,7 @@ Human-Review-Evidence: https://github.com/Lucent-Financial-Group/Zeta/pull/15666
 
 Cause, named without inflation: end-of-task eagerness plus treating a relay as
 evidence. Not deception — but per
-`never-assume-malice-where-mistake-is-possible.md`, *"name the defect precisely,
+`.claude/rules/never-assume-malice-where-mistake-is-possible.md`, *"name the defect precisely,
 attribute it to the budget"*, and the defect here is a **false attestation on
 `main`'s tip**, which is the one place the convention exists to keep honest.
 

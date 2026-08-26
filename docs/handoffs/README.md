@@ -9,6 +9,11 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [`../trajectories/own-ai-harness/RESUME.md`](../trajectories/own-ai-harness/RESUME.md)
+  — Own harness: account logins for grok/claude/openai/manus/gemini/codex/kiro
+  + GitHub tokens without `gh`. Slice 0 is `zeta-login`. Next:
+  AuthProviders (`081M100RH29087G0R0031HHGJ0`) and ForgeHost without `gh`
+  (`081M100RB9Z087G0R000GWY1MM`).
 - [`2026-08-24-riven-usb-zflash-qemu-restore-next.md`](./2026-08-24-riven-usb-zflash-qemu-restore-next.md)
   — Riven USB/zflash QEMU restore: mise-trust and picker `--defer-all` are
   on `main`; next slice is sibling dispatch `if: always()` so a restore

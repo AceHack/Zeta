@@ -1,0 +1,14 @@
+{
+  "id": "080d020062230810a01300089d99bca6",
+  "at": "2026-08-26T21:49:00.897Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M100RH30087G0R003YXHQ12",
+    "type": "task",
+    "title": "loop-tick default harness type mux-duplex: paid cells summon through our tool loop not vendor CLIs",
+    "slug": "loop-tick-default-harness-type-mux-duplex-paid-cells-summon",
+    "priority": "P1",
+    "filename": "081M100RH30087G0R003YXHQ12-loop-tick-default-harness-type-mux-duplex-paid-cells-summon.md"
+  }
+}

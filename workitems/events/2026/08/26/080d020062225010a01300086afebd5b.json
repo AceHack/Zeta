@@ -1,0 +1,14 @@
+{
+  "id": "080d020062225010a01300086afebd5b",
+  "at": "2026-08-26T21:49:00.874Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M100RH29087G0R0031HHGJ0",
+    "type": "task",
+    "title": "AuthProvider implementations for claude, grok, gemini, kiro, manus account login",
+    "slug": "authprovider-implementations-for-claude-grok-gemini-kiro-man",
+    "priority": "P1",
+    "filename": "081M100RH29087G0R0031HHGJ0-authprovider-implementations-for-claude-grok-gemini-kiro-man.md"
+  }
+}

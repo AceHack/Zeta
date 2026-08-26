@@ -1,0 +1,14 @@
+{
+  "id": "080d0200616a0010a01300080713d9eb",
+  "at": "2026-08-26T21:48:54.976Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M100RB9Z087G0R000GWY1MM",
+    "type": "task",
+    "title": "ForgeHost GitHub adapter: native stored token plus REST/GraphQL, stop spawnSync gh",
+    "slug": "forgehost-github-adapter-native-stored-token-plus-rest-graph",
+    "priority": "P1",
+    "filename": "081M100RB9Z087G0R000GWY1MM-forgehost-github-adapter-native-stored-token-plus-rest-graph.md"
+  }
+}

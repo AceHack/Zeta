@@ -1,8 +1,8 @@
 # Dogfooding the whole stack — running Zeta on Zeta
 
 Status: ACTIVE — declared the next big trajectory by the human maintainer 2026-08-09
-Last refreshed: 2026-08-25
-Current blocker: **NONE for the society runtime — cleared 2026-08-25.** The lanes flush again.
+Last refreshed: 2026-08-26
+Current blocker: **NONE for the society runtime — cleared 2026-08-25.** The lanes flush again. Paid-agent harness (Tier 0 below) is a **separate** blocker: vendor CLIs, not our login.
 The blocker recorded here (PAT lacking `contents: write` since #10850) was only HALF the story,
 and the recorded half had already been fixed: `git push` on the flush token works. What kept the
 lanes down afterwards was a DIFFERENT scope on a DIFFERENT credential — `gh pr create` returned
@@ -48,6 +48,21 @@ No document in the repo contained the word **"dogfood"** before this one.
 Every row: what we depend on **today**, the Zeta thing meant to replace it, and honest
 state. `✅ dogfooded` = we run our own thing in earnest. `◐ partial` = runs, but not as
 the real dependency. `○ not started` = no surface in-tree.
+
+### Tier 0 — paid agents on OUR harness (added 2026-08-26)
+
+The society runtime (Tier 1) dogfoods **free Ollama + vendor CLIs**. This
+tier is the paid-account path Aaron named 2026-08-26: grok, claude, openai,
+manus, gemini, codex, kiro on our harness, account logins, Ace + Zeta CLIs
+only. Live pointer: [`own-ai-harness/RESUME.md`](../own-ai-harness/RESUME.md).
+Umbrella `081M100RB97087G0R0008EAAY7`.
+
+| # | Layer | Running on our own thing? | Evidence |
+|---|---|---|---|
+| 0a | **Account-login roster + `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. `zeta-login import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. |
+| 0b | **Paid cells summon through our tool loop** | ○ **not started** | `loop-tick` still spawnSyncs `claude`/`codex`/`kiro-cli`/`agy`/`cursor-agent`. `summon()` is a library proven on ChatGPT (2026-07-04), not the fleet. `081M100RH30087G0R003YXHQ12` |
+| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours (`github-auth.ts`). PRs/checks/rest-push still `spawnSync("gh")`. `081M100RB9Z087G0R000GWY1MM` |
+| 0d | **Tools = Ace + Zeta CLIs only** | ○ **not started** | Closed `fs_*`/`db_*` is in-memory DagFs. Fleet tools are vendor bash/git/gh. `081M100RH3Q087G0R0018X4RSJ` |
 
 ### Tier 1 — the society runtime (this is where we actually are)
 
