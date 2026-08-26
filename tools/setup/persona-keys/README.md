@@ -1,5 +1,13 @@
 # Zeta keyrings — one seed phrase, every key type, type-separated
 
+> **Building a privileged operation that needs a human?** Do not hand-roll the prompt,
+> the credential read, or the refusal. Call `runGatedCeremony` from
+> [`ceremony-handoff.ts`](ceremony-handoff.ts); the protocol and a worked walkthrough are in
+> [`docs/protocols/ai-human-secure-handoff.md`](../../../docs/protocols/ai-human-secure-handoff.md).
+> The ceremony surfaces in this directory are `ceremony-gate.ts` (is a human needed?),
+> `ceremony-brief.ts` (what they are told), `ceremony-handoff.ts` (the protocol around the
+> gate) and `biometric.ts` (the fail-closed door).
+
 Each **traveler** (persona or human maintainer) has **one BIP-39 seed phrase**
 from which **every key type is derived on its own path** — so key types never
 bleed into each other (best practice for a shared seed). One phrase recovers the
