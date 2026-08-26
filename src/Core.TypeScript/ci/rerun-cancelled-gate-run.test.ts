@@ -1,7 +1,13 @@
 import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { decideRerun, isSuperseded, type WorkflowRun } from "./rerun-cancelled-gate-run.ts";
+import {
+  classifyRerunRefusal,
+  decideRerun,
+  isSuperseded,
+  REFUSAL_REASON,
+  type WorkflowRun,
+} from "./rerun-cancelled-gate-run.ts";
 
 // The fixture is REAL captured data (100 `gate` runs, 2026-08-14), not synthetic: 37
 // cancelled, 2 failure, 44 success, 17 action_required. Testing the policy against the
@@ -168,5 +174,69 @@ describe("determinism", () => {
     for (const r of RUNS) {
       expect(decide(r)).toEqual(decide(r));
     }
+  });
+});
+
+// ── REFUSAL CLASSIFICATION ────────────────────────────────────────────────────────────────
+//
+// The pure half of the 2026-08-26 fix. GitHub declines reruns in ordinary, unactionable
+// cases, and the CLI used to treat every non-2xx identically — so a normal refusal reddened
+// the lane. The classifier decides which is which, and its ONLY safe failure direction is
+// "call a refusal genuine": that costs one look at a red run. The other direction — calling
+// a genuine error a refusal — makes the tool structurally unable to report breakage.
+//
+// The table is therefore built from the messages, never the status: both refusals AND the
+// rate limit AND the permission error all arrive as 403.
+describe("classifyRerunRefusal — the allowlist is closed", () => {
+  test("recognises the forge's two refusal sentences", () => {
+    expect(classifyRerunRefusal(403, "This workflow run cannot be retried.")).toBe("not-retriable");
+    expect(classifyRerunRefusal(403, "This workflow is already running.")).toBe("already-running");
+  });
+
+  test("tolerates the punctuation and casing GitHub varies between endpoints", () => {
+    expect(classifyRerunRefusal(403, "this workflow run cannot be retried")).toBe("not-retriable");
+    expect(classifyRerunRefusal(409, "This workflow is already running")).toBe("already-running");
+  });
+
+  // THE LOAD-BEARING ROW. Same status as both refusals, opposite verdict. A mutant that
+  // classifies on `status === 403` passes every other test in this block and fails here.
+  test("a 403 rate limit is GENUINE, not a refusal", () => {
+    expect(classifyRerunRefusal(403, "API rate limit exceeded for user ID 1.")).toBeNull();
+    expect(classifyRerunRefusal(403, "You have exceeded a secondary rate limit.")).toBeNull();
+  });
+
+  test("a 403 permission error is GENUINE", () => {
+    expect(classifyRerunRefusal(403, "Resource not accessible by integration")).toBeNull();
+    expect(classifyRerunRefusal(401, "Bad credentials")).toBeNull();
+  });
+
+  // "Please wait and retry" contains 'retr'. The phrase must stay specific enough that a
+  // message telling you to retry LATER is not read as one telling you never to retry.
+  test("a message merely mentioning retrying is not a refusal", () => {
+    expect(classifyRerunRefusal(403, "Please wait a few minutes and retry your request.")).toBeNull();
+    expect(classifyRerunRefusal(403, "retried")).toBeNull();
+  });
+
+  test("5xx is an outage, never a refusal — even carrying a refusal phrase verbatim", () => {
+    expect(classifyRerunRefusal(500, "This workflow run cannot be retried.")).toBeNull();
+    expect(classifyRerunRefusal(502, "This workflow is already running.")).toBeNull();
+    expect(classifyRerunRefusal(503, "")).toBeNull();
+  });
+
+  test("a 2xx is never a refusal, and a nonsense status is not either", () => {
+    expect(classifyRerunRefusal(200, "This workflow run cannot be retried.")).toBeNull();
+    expect(classifyRerunRefusal(Number.NaN, "This workflow run cannot be retried.")).toBeNull();
+  });
+
+  test("every refusal class maps to its own distinct log reason", () => {
+    const reasons = Object.values(REFUSAL_REASON);
+    expect(new Set(reasons).size).toBe(reasons.length);
+    for (const r of reasons) expect(r.startsWith("refused-")).toBe(true);
+  });
+
+  test("pure — same inputs, same verdict", () => {
+    expect(classifyRerunRefusal(403, "This workflow is already running.")).toBe(
+      classifyRerunRefusal(403, "This workflow is already running."),
+    );
   });
 });

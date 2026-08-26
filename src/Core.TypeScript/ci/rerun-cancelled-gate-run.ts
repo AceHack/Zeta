@@ -42,8 +42,82 @@ export type RerunAction = "rerun" | "skip";
 export interface RerunDecision {
   action: RerunAction;
   /** Stable machine-readable reason; also the log key a rerun-rate alert would group on. */
-  reason: "cancelled-orphan" | "not-cancelled" | "already-retried" | "superseded" | "stale" | "still-running";
+  reason:
+    | "cancelled-orphan"
+    | "not-cancelled"
+    | "already-retried"
+    | "superseded"
+    | "stale"
+    | "still-running"
+    | "refused-not-retriable"
+    | "refused-already-running";
   detail: string;
+}
+
+/**
+ * GitHub's ORDINARY REFUSALS to re-run a run — not failures of this tool.
+ *
+ * THE DEFECT THIS EXISTS FOR (measured 2026-08-26T08:06, `rerun-cancelled-gate` red on
+ * `main`). The CLI's `api()` threw on any non-2xx, so a refusal the forge issues in normal
+ * operation presented as a crash — and the annotation carried only a stack trace, with
+ * neither the status code nor the API's own sentence in it. A tool whose entire job is
+ * re-running cancelled runs meets these constantly:
+ *
+ *   "This workflow run cannot be retried"  — the run is structurally non-retriable. The
+ *       observed producer is CodeQL default setup, whose runs carry `event: dynamic`; the
+ *       Actions API refuses `rerun-failed-jobs` on them. Nothing this tool can do changes
+ *       that, and nothing SHOULD — there is no work to re-run.
+ *   "This workflow is already running"     — jobs from the run are still in flight, so a
+ *       rerun would collide with work already happening. The in-flight attempt IS the rerun.
+ *
+ * WHY AN ALLOWLIST OF PHRASES AND NOT A STATUS CODE. Both refusals arrive as HTTP 403 — and
+ * so do permission errors, the primary rate limit, and the secondary rate limit. Keying on
+ * `403` would convert every genuine breakage this tool can suffer into a silent, cheerful
+ * skip: a check that cannot fail, which is the exact defect class the rest of this
+ * repository is built to refuse. Only these sentences are recognised; everything else,
+ * including any other 403, falls through to a loud failure. That is the safe direction — a
+ * false loud failure costs a human one look, a false silent skip costs the guarantee.
+ *
+ * The 4xx band is required as well as the phrase: a 5xx is a forge outage, never a refusal,
+ * whatever prose it carries.
+ *
+ * Anchor for the shape: `.github/workflows/heartbeat-liveness.yml` draws this same line
+ * around `gh label create` — "Only 'already exists' is benign. Permission and rate-limit
+ * failures must surface, not be swallowed into a silent no-op."
+ */
+export type RerunRefusal = "not-retriable" | "already-running";
+
+/**
+ * The recognised refusal sentences, in the forge's own words.
+ *
+ * Matched case-insensitively and as substrings because GitHub varies the trailing
+ * punctuation between endpoints ("...cannot be retried" vs "...cannot be retried."). It is
+ * deliberately not loosened further: "retried" alone would also match a rate-limit message
+ * telling you to retry later, which is the opposite verdict.
+ */
+const REFUSAL_PHRASES: readonly (readonly [RerunRefusal, RegExp])[] = [
+  ["not-retriable", /workflow run cannot be retried/iu],
+  ["already-running", /workflow is already running/iu],
+];
+
+/** The log key each refusal groups under. Distinct per class — the two have different causes. */
+export const REFUSAL_REASON: Readonly<Record<RerunRefusal, RerunDecision["reason"]>> = {
+  "not-retriable": "refused-not-retriable",
+  "already-running": "refused-already-running",
+};
+
+/**
+ * Is this API failure an ordinary, unactionable refusal — or a genuine error?
+ *
+ * `null` means GENUINE: auth, rate limit, 5xx, or anything unrecognised. Pure — a function
+ * of (status, message) with no clock, network, or environment, so every branch replays.
+ */
+export function classifyRerunRefusal(status: number, apiMessage: string): RerunRefusal | null {
+  if (!Number.isInteger(status) || status < 400 || status >= 500) return null;
+  for (const [refusal, phrase] of REFUSAL_PHRASES) {
+    if (phrase.test(apiMessage)) return refusal;
+  }
+  return null;
 }
 
 export interface RerunPolicyOptions {
