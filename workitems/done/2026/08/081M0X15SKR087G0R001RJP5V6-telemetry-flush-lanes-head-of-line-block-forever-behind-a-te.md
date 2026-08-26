@@ -1,11 +1,12 @@
 ---
 id: 081M0X15SKR087G0R001RJP5V6
 type: bug
-state: backlog
+state: done
 priority: P1
 slug: telemetry-flush-lanes-head-of-line-block-forever-behind-a-te
 title: "telemetry-flush lanes head-of-line block forever behind a terminally-red immutable PR head"
 created: 2026-08-25T17:58:32.312Z
+completed: 2026-08-26T06:20:09.314Z
 depends_on: []
 composes_with: []
 ---
@@ -82,3 +83,40 @@ packages* when the shared 420s budget killed it: earlier attempts had consumed a
 That is a real question -- whether a retry ladder should starve the attempt most likely to
 succeed -- but raising `ZETA_APT_BUDGET_SECONDS` or `timeout-minutes` is a cost decision
 that needs a sign-off and a measurement, not a reflex. Sibling item; do not fold it in.
+
+## Resolution (2026-08-26)
+
+PR #15405 landed the terminal-head supersession at commit
+`0e9da9718e463142d2cc2f8e9898cfd83f0adf58`. The repair preserves the immutable head
+while its latest-per-name checks are pending or successful, and supersedes it only after a
+terminal non-success conclusion. Supersession moves the existing PR head to a fresh
+aggregate, so every required check runs again; no check is waived or widened.
+
+Live GitHub check-run evidence exercised the shipped `probeHeadVerdict` rather than a test
+double. Terminal-red head `4fd4811d67058fd5ab38c22457c3916f2c4c06f5` classified
+`dead`. Head `481ce659d26ea65223635ff1403c5f8362b77914`, whose earlier CodeQL run failed
+and whose later rerun succeeded, classified `under-test`. The API's default latest-run
+projection omitted the obsolete failed run, matching the implementation's latest-per-name
+rule.
+
+All four telemetry lanes published after the repair landed at 2026-08-25T19:04:10Z:
+
+| lane | merged flush PRs | latest observed merge |
+|---|---:|---|
+| `heartbeat/drift-sweep` | 19 | #15498 |
+| `heartbeat/tick-metrics` | 20 | #15497 |
+| `heartbeat/society` | 14 | #15496 |
+| `heartbeat/pr-archive` | 1 | #15473 |
+
+That is 54 merged flushes after the fix. The separately named apt retry-budget policy
+remains out of scope.
+
+## Verification
+
+- `git merge-base --is-ancestor 0e9da9718e463142d2cc2f8e9898cfd83f0adf58 origin/main`
+- `bun test src/Core.TypeScript/forge-host/github/flush-via-staging.test.ts` -- 49 pass,
+  0 fail, including real-git buffering and supersession coverage
+- live `probeHeadVerdict` calls against the two GitHub heads above -- `dead` and
+  `under-test`, respectively
+- PR #15405 -- required gate, TS hermetic test, all platform builds, and full verification
+  succeeded
