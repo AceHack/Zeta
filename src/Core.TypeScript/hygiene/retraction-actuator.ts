@@ -263,7 +263,16 @@ export function retractionCommitMessage(breakSha: string, episodeId: string, ope
     "Human-Review: not-implied-by-credential",
     "Human-Review-Evidence: none",
     "Action-Mode: autonomous-fail-closed",
-    "Task: 081KZHGP45V",
+    // FULL 26-char ZetaId. This read `081KZHGP45V` — the first 11 characters of
+    // `081KZHGP45V08QG0R001C0NFFS` (workitems/done/2026/08/...auto-revert-healer...).
+    // A TRUNCATED id is worse than a wrong one, because it falls between the two
+    // checks instead of into either: `agencysignature-block.ts` TASK_RE requires the
+    // full width and REJECTS it, so every commit this actuator writes would fail the
+    // signature gate at the moment it is needed most (main red, auto-revert firing);
+    // while AH006 `audit-task-zetaid-resolves.ts` extracts only well-SHAPED ids, so a
+    // prefix contributes zero ids and the audit reports "no Task ids" with rc=0. Loud
+    // in the lane that runs during an incident, silent in the audit built to catch it.
+    "Task: 081KZHGP45V08QG0R001C0NFFS",
     "Co-authored-by: github-actions[bot] <github-actions[bot]@users.noreply.github.com>",
   ].join("\n");
 }

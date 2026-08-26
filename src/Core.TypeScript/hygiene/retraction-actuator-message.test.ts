@@ -11,10 +11,12 @@
 // the change that introduced it rather than implied to be covered.
 
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 import { describe, expect, test } from "bun:test";
 
 import { isFullCommitSha, normalizeFullCommitSha, retractionCommitMessage } from "./retraction-actuator.ts";
+import { indexWorkItems } from "./audit-task-zetaid-resolves.ts";
 
 const SHA = "0123456789abcdef0123456789abcdef01234567";
 const msg = retractionCommitMessage(SHA, "ep-012345678", 3);
@@ -48,6 +50,32 @@ describe("retractionCommitMessage", () => {
     ]) {
       expect(msg).toContain(`${key}: `);
     }
+  });
+
+  // The ten-keys test above asserts every key is PRESENT. Presence is not a value:
+  // this block's `Task:` read `081KZHGP45V` — a TRUNCATED ZetaId — and passed it,
+  // because `toContain("Task: ")` cannot see what follows the colon. That is the
+  // vacuity class in a test rather than in the code it guards.
+  test("Task carries a FULL ZetaId the shape gate accepts — a prefix is not an id", () => {
+    const task = /^Task: (.+)$/m.exec(msg)?.[1];
+    expect(task).toBeDefined();
+    // Same construction as agencysignature-block.ts TASK_RE. Written out rather than
+    // imported so a change there cannot silently relax this assertion too.
+    expect(String(task)).toMatch(/^[0-9][0-9A-HJKMNP-TV-Z]{25}$/);
+    expect(String(task)).toBe("081KZHGP45V08QG0R001C0NFFS");
+  });
+
+  test("the Task id resolves to a committed work-item (AH006, locally)", () => {
+    // AH006 runs this in CI against a PR BODY. This actuator writes a COMMIT
+    // message at incident time, which that step never reads — so without this the
+    // id is unchecked by anything until the lane fires. Worse, AH006 would not
+    // have caught the truncation anyway: its extractor keeps only well-shaped ids,
+    // so a prefix yields zero ids and exits 0.
+    const known = indexWorkItems(join(import.meta.dir, "..", "..", ".."));
+    expect(known.size).toBeGreaterThan(100);
+    expect(known.has("081KZHGP45V08QG0R001C0NFFS")).toBe(true);
+    // The falsifier for the falsifier: the truncated form must NOT resolve.
+    expect(known.has("081KZHGP45V")).toBe(false);
   });
 
   test("Credential-Mode is a member of the enum — `none` is not a value", () => {
