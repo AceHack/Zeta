@@ -641,10 +641,27 @@ jobs:
             ~/.nuget/packages
             ~/.local/share/NuGet
           # Keys on Directory.Packages.props - same as gate.yml.
+          #
+          # `runner.arch` ADDED 2026-08-26: the sentence above was FALSE when
+          # written. gate.yml's key is
+          # `nuget-${{ runner.os }}-${{ runner.arch }}-<hash>`; this one omitted
+          # `runner.arch`, so "same as gate.yml" named a parity the code did not
+          # have and this job restored from a namespace gate.yml never writes.
+          # Measured 2026-08-26T09:0xZ on the itemised `actions/caches` endpoint:
+          # the SAME `Directory.Packages.props` digest was charged twice, as
+          # `nuget-Linux-c922cac0...` (357 MB) and `nuget-Linux-ARM64-c922cac0...`
+          # (358 MB). This job runs on ubuntu-24.04 (Linux/X64), the same image and
+          # the same `full` tier as gate.yml's ubuntu-24.04 leg, so it is a
+          # legitimate CO-WRITER of the unified key and stays read-write --
+          # unlike low-memory.yml's ubuntu-slim lane, which writes a reduced-tier
+          # SUBSET and is restore-only for exactly that reason.
+          #
           # No restore-keys: a partial hit on a different lock
           # restores against different resolved versions, which
           # would drift the CodeQL database from what we ship.
-          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+          # (An EXACT-key hit is by construction the same lock, so joining
+          # gate.yml's namespace does not weaken that guarantee.)
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is

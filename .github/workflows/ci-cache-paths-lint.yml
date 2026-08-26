@@ -32,6 +32,7 @@ on:
       - ".github/workflows/**"
       - ".github/actions/**"
       - "src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts"
+      - "src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts"
       - "src/Core.TypeScript/ci/apt-archive-cache.ts"
       - "src/Core.TypeScript/ci/apt-archive-cache.test.ts"
   push:
@@ -40,6 +41,7 @@ on:
       - ".github/workflows/**"
       - ".github/actions/**"
       - "src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts"
+      - "src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts"
       - "src/Core.TypeScript/ci/apt-archive-cache.ts"
       - "src/Core.TypeScript/ci/apt-archive-cache.test.ts"
   workflow_dispatch: {}
@@ -110,6 +112,27 @@ jobs:
         run: |
           set -euo pipefail
           bun src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts
+
+      - name: Run audit-cache-key-namespace-parity
+        # The THIRD member of this job's family, and the same defect class stated at
+        # the KEY rather than the PATH: an actions/cache step that is present and not
+        # doing what its name says. This one refuses two key EXPRESSIONS sharing one
+        # literal prefix -- two namespaces for one cache, neither able to restore what
+        # the other saved.
+        #
+        # It went RED on `main` when written: `nuget` and `elan` were each split
+        # between an arch-qualified expression (gate.yml, lean-proof.yml) and an
+        # arch-less one (low-memory.yml, codeql.yml). Measured cost of the `nuget`
+        # split alone: the same Directory.Packages.props digest charged twice in the
+        # live cache (357 MB + 358 MB), and 5 of 7 slim-lane restores missing while
+        # gate.yml's copy sat there under the other name.
+        #
+        # No allowlist by construction: a key family used in exactly one workflow
+        # cannot disagree with anything, so single-use families need no exemption.
+        shell: bash
+        run: |
+          set -euo pipefail
+          bun src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts
 
       - name: Run apt-archive-cache (every Linux install.sh job restores the archives)
         # The sibling discipline to the audit above, and the reason this job is its home:
