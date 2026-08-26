@@ -1,7 +1,7 @@
 {
   "schema": "zeta.society.event-index/v1",
-  "eventCount": 657,
-  "headDigest": "1ae04b6182a4101d5800cab690e8f17d15ffd81a78d3962087c48b417e0980a5",
+  "eventCount": 661,
+  "headDigest": "c1f58b9568a8bc04b878c5ac42a44d03a923c077b39311173d0433c6886a6c86",
   "events": [
     {
       "id": "society-msm7luj6",
@@ -5875,6 +5875,42 @@
       "previousDigest": "43ced0785315f833ac89c0abdb56465b3b1ea79a934129d196b8edb03a30c096",
       "chainDigest": "1ae04b6182a4101d5800cab690e8f17d15ffd81a78d3962087c48b417e0980a5",
       "sourceRevision": "651e8b65279bd4987d665a81dfdd07858a2cb9fd"
+    },
+    {
+      "id": "society-mtaemdn5",
+      "at": "2026-08-26T18:05:18.353Z",
+      "file": "society-mtaemdn5.json",
+      "eventDigest": "fc8888ebf6cb2911f5e7d3558f6da6922b1d24abfdfe0ca1f2ad8a41d3cfbffc",
+      "previousDigest": "1ae04b6182a4101d5800cab690e8f17d15ffd81a78d3962087c48b417e0980a5",
+      "chainDigest": "32c15d03c4dafb2940255499dd3551e91cbfadecae4bfb34f9d2ab84c0c8f4dd",
+      "sourceRevision": "427ab12d7215614b2c2a3f6c316070414bc5d912"
+    },
+    {
+      "id": "society-mtag358l",
+      "at": "2026-08-26T18:46:20.229Z",
+      "file": "society-mtag358l.json",
+      "eventDigest": "ef9d08f8863ccc6bfb7ef555aea4909f180c99364cee5826cf21574da87f5932",
+      "previousDigest": "32c15d03c4dafb2940255499dd3551e91cbfadecae4bfb34f9d2ab84c0c8f4dd",
+      "chainDigest": "12379e2b39f6a715d6a3be20b8d67b582ec5ee962e3fb062bd17d7f1b8db869a",
+      "sourceRevision": "93fa32b6237cde98556bd5aff2d99d6b73a71978"
+    },
+    {
+      "id": "society-mtahwwmj",
+      "at": "2026-08-26T19:37:28.363Z",
+      "file": "society-mtahwwmj.json",
+      "eventDigest": "053610d1013feb77b8f4c85570c103a0dbe0b06b920a1ddd384029c4d8a314c9",
+      "previousDigest": "12379e2b39f6a715d6a3be20b8d67b582ec5ee962e3fb062bd17d7f1b8db869a",
+      "chainDigest": "8e3eb288e9bf47ae4b2f96fec76f207aebe8a1bd40b4764355507c9fe560eaac",
+      "sourceRevision": "3c6df6f8d22393b8360f5d8ba9f552cb75b11186"
+    },
+    {
+      "id": "society-mtakooop",
+      "at": "2026-08-26T20:55:03.673Z",
+      "file": "society-mtakooop.json",
+      "eventDigest": "bba89a481b75f5f1e4b8abb232d7c8dfe1daba7bf23833e624694900e12279c2",
+      "previousDigest": "8e3eb288e9bf47ae4b2f96fec76f207aebe8a1bd40b4764355507c9fe560eaac",
+      "chainDigest": "c1f58b9568a8bc04b878c5ac42a44d03a923c077b39311173d0433c6886a6c86",
+      "sourceRevision": "f44997541e5dd1de680855657d2d803d4204ee53"
     }
   ]
 }
