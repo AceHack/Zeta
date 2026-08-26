@@ -23,14 +23,14 @@ import {
 describe("the closed set", () => {
   it("the registry covers every variant exactly once", () => {
     expect(new Set(RESOURCE_CLASSES).size).toBe(RESOURCE_CLASSES.length);
-    expect(RESOURCE_CLASSES.length).toBe(4);
+    expect(RESOURCE_CLASSES).toHaveLength(4);
   });
 
   it("every class has a register row", () => {
     for (const c of RESOURCE_CLASSES) {
       expect(RESOURCE_REGISTER[c]).toBeDefined();
     }
-    expect(Object.keys(RESOURCE_REGISTER).length).toBe(RESOURCE_CLASSES.length);
+    expect(Object.keys(RESOURCE_REGISTER)).toHaveLength(RESOURCE_CLASSES.length);
   });
 
   it("assertNever throws rather than returning a wrong answer", () => {

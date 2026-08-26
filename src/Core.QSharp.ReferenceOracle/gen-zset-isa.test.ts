@@ -95,7 +95,7 @@ describe("gen(gen)===gen — Q# ZSetISA fixpoint (Face 3)", () => {
 
   test("invariant: unitary operators are marked Adj + Ctl", () => {
     const unitaries = ir.operators.filter((o) => o.kind === "unitary");
-    expect(unitaries.length).toBe(4); // Emit, Retract, Branch, Join
+    expect(unitaries).toHaveLength(4); // Emit, Retract, Branch, Join
     // All have gate references
     for (const op of unitaries) {
       expect(op.gate).not.toBeNull();

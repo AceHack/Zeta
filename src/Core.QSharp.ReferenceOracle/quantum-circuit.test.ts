@@ -450,9 +450,9 @@ describe("quantum-circuit simulator (second observable oracle)", () => {
       const expectedMatrix = normalizeMatrix(expectedMatrixRaw);
       const actualMatrix = circuitMatrix(makeGateCircuit(gateName));
 
-      expect(actualMatrix.length).toBe(expectedMatrix.length);
+      expect(actualMatrix).toHaveLength(expectedMatrix.length);
       for (let row = 0; row < expectedMatrix.length; row++) {
-        expect(matrixRow(actualMatrix, row).length).toBe(matrixRow(expectedMatrix, row).length);
+        expect(matrixRow(actualMatrix, row)).toHaveLength(matrixRow(expectedMatrix, row).length);
 
         for (let col = 0; col < matrixRow(expectedMatrix, row).length; col++) {
           closeComplexTo(matrixAt(actualMatrix, row, col), matrixAt(expectedMatrix, row, col), qsharpDumpTolerance);

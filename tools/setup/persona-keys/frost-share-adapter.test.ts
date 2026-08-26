@@ -1058,6 +1058,140 @@ describe("parseCkTokenInfoIdentity: the struct offsets", () => {
   });
 });
 
+// ============================================================================
+// THE MECHANISM ACTUALLY SENT TO THE TOKEN
+// ============================================================================
+//
+// Found 2026-08-26 by running the hardware lane against a real YubiHSM 2. The adapter's
+// CKM_AES_CBC_PAD read 0x0000010d -- not CKM_AES_CBC_PAD (0x00001085), and not any
+// defined PKCS#11 mechanism at all. Sealing on a real token would have returned
+// CKR_MECHANISM_INVALID, so the hardware-pkcs11 tier was broken from the day it was
+// written.
+//
+// Nothing caught it because mockToken's C_EncryptInit is `() => 0n`: it never reads the
+// mechanism, so it accepts every value. That is the vacuity class stated precisely -- a
+// fake that cannot reject a wrong mechanism cannot falsify a wrong mechanism constant,
+// and the whole suite was green while this value was arbitrary.
+//
+// So these two tests do NOT go through the tolerant mock. They read the bytes the adapter
+// puts on the wire and check them against the constant a conforming module publishes in
+// C_GetMechanismList. Both fail if the constant regresses to 0x10d.
+
+/** CKM_AES_CBC_PAD per PKCS#11 v2.40/v3.1. Confirmed against Yubico's pkcs11t.h:1019,
+ *  NSS's pkcs11t.h:1219, and a YubiHSM 2's own C_GetMechanismList (2026-08-26). */
+const CKM_AES_CBC_PAD_SPEC = 0x00001085n;
+
+/** A token that RECORDS the mechanism instead of ignoring it, and refuses one it does not
+ *  implement -- which is what a real module does and what the tolerant mock does not. */
+function mechanismRecordingToken(supported: readonly bigint[]): Pkcs11Lib & {
+  readonly seen: bigint[];
+} {
+  const seen: bigint[] = [];
+  const base = mockToken();
+  /** CKR_MECHANISM_INVALID: what a conforming module returns for an unsupported CKM. */
+  const CKR_MECHANISM_INVALID = 0x70n;
+  const record = (pMechanism: unknown): bigint => {
+    const buf = pMechanism as Uint8Array;
+    const ckm = new DataView(buf.buffer, buf.byteOffset, buf.byteLength).getBigUint64(0, true);
+    seen.push(ckm);
+    return supported.includes(ckm) ? 0n : CKR_MECHANISM_INVALID;
+  };
+  return {
+    ...base,
+    seen,
+    C_EncryptInit: (_s, pMechanism) => record(pMechanism),
+    C_DecryptInit: (_s, pMechanism) => record(pMechanism),
+  };
+}
+
+describe("FrostShareAdapter: the PKCS#11 mechanism the adapter actually sends", () => {
+  const pkcs11Adapter = (lib: Pkcs11Lib) => {
+    const { fx, root } = sandboxFx();
+    return createPkcs11ShareAdapter(fx, root, "ca", {
+      libraryPath: "/x.so",
+      pin: "p",
+      slotId: 0,
+      keyLabel: "zeta-frost-wrap",
+      ffiLoader: () => lib,
+      pointerOf: stubPointerOf,
+    });
+  };
+
+  test("FSA-32: the CKM in the mechanism struct is CKM_AES_CBC_PAD (0x1085), byte for byte", () => {
+    // The literal the file declares must equal the literal the spec assigns. Asserting on
+    // the WIRE bytes and not on the imported constant is deliberate: importing the
+    // constant would compare the value to itself, which cannot fail.
+    const lib = mechanismRecordingToken([CKM_AES_CBC_PAD_SPEC]);
+    pkcs11Adapter(lib).storeShare(REC, "ca");
+    expect(lib.seen.length).toBeGreaterThan(0);
+    for (const ckm of lib.seen) expect(ckm).toBe(CKM_AES_CBC_PAD_SPEC);
+  });
+
+  test("FSA-33: a token that does not implement the sent mechanism makes sealing FAIL", () => {
+    // The other half, and the one that indicts the old mock: a module is allowed to
+    // refuse a mechanism, and the adapter must surface that refusal rather than sail on.
+    // Against a token supporting only AES-ECB, sealing must throw -- if it does not, then
+    // C_EncryptInit's return value is being discarded somewhere.
+    const CKM_AES_ECB = 0x00001081n;
+    const lib = mechanismRecordingToken([CKM_AES_ECB]);
+    expect(() => pkcs11Adapter(lib).storeShare(REC, "ca")).toThrow(/C_EncryptInit failed/u);
+    // And it must have been the CBC_PAD mechanism that got refused, not some other CKM.
+    expect(lib.seen).toContain(CKM_AES_CBC_PAD_SPEC);
+  });
+});
+
+// ============================================================================
+// C_Initialize's RETURN VALUE
+// ============================================================================
+//
+// Also found 2026-08-26, and it is what cost the diagnosis time above. Every call site
+// was a bare `lib.C_Initialize(0n)` with the rv discarded. Against a YubiHSM whose
+// module had no connector configured, initialisation failed and the FIRST VISIBLE error
+// was `C_GetSlotList (count) failed: 400` -- 400 being 0x190, CKR_CRYPTOKI_NOT_INITIALIZED.
+// The message named the wrong call and read as an absent or faulty token, when the token
+// was attached and healthy and the module was merely unconfigured.
+
+describe("FrostShareAdapter: C_Initialize failures are reported, not swallowed", () => {
+  /** CKR_CRYPTOKI_NOT_INITIALIZED, what every later call returns once init has failed. */
+  const CKR_CRYPTOKI_NOT_INITIALIZED = 0x190n;
+  /** CKR_GENERAL_ERROR, as an unconfigured module reports at C_Initialize. */
+  const CKR_GENERAL_ERROR = 0x05n;
+
+  const uninitialisableModule = (): Pkcs11Lib => ({
+    ...mockToken(),
+    C_Initialize: () => CKR_GENERAL_ERROR,
+    C_GetSlotList: () => CKR_CRYPTOKI_NOT_INITIALIZED,
+    C_GetTokenInfo: () => CKR_CRYPTOKI_NOT_INITIALIZED,
+  });
+
+  test("FSA-34: discovery names C_Initialize, not the innocent call downstream of it", () => {
+    // Before the fix this threw "C_GetSlotList (count) failed: 400", which sends the
+    // operator to look at the token. The failing call must name itself.
+    expect(() =>
+      describeAttachedPkcs11Tokens({ libraryPath: "/x.so", ffiLoader: () => uninitialisableModule() }),
+    ).toThrow(/C_Initialize failed/u);
+  });
+
+  test("FSA-35: the refusal points at module configuration, which is the actual cause", () => {
+    // A correct error that gives no route forward is only half a fix. The measured cause
+    // was a missing connector config, so the message has to say so.
+    expect(() =>
+      describeAttachedPkcs11Tokens({ libraryPath: "/x.so", ffiLoader: () => uninitialisableModule() }),
+    ).toThrow(/YUBIHSM_PKCS11_CONF/u);
+  });
+
+  test("FSA-36: CKR_CRYPTOKI_ALREADY_INITIALIZED is NOT a failure", () => {
+    // The guard must not break the legal case. A second C_Initialize in one process
+    // returns 0x191 and means "already fine" -- rejecting it would turn a working
+    // multi-adapter session into a spurious hard failure.
+    const CKR_CRYPTOKI_ALREADY_INITIALIZED = 0x191n;
+    const lib: Pkcs11Lib = { ...mockToken(), C_Initialize: () => CKR_CRYPTOKI_ALREADY_INITIALIZED };
+    expect(describeAttachedPkcs11Tokens({ libraryPath: "/x.so", ffiLoader: () => lib })).toHaveLength(
+      0,
+    );
+  });
+});
+
 function parseCkTokenIdentityFixture(label: string, serial: string): string {
   return parseCkTokenInfoIdentity(mockCkTokenInfo(label, serial));
 }

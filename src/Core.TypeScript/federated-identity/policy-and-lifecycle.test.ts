@@ -441,7 +441,7 @@ describe("verdict vault (DV2.0 raw vault)", () => {
   );
 
   test("two observers disagreeing are BOTH retained — no reconciliation happens", () => {
-    expect(vault.length).toBe(2);
+    expect(vault).toHaveLength(2);
     expect(observersOf(vault, "node-c.zeta.local")).toEqual(["node-a.zeta.local", "node-b.zeta.local"]);
     const d = decorrelation(vault, "node-c.zeta.local");
     expect(d.divergent).toBe(true);
@@ -455,13 +455,13 @@ describe("verdict vault (DV2.0 raw vault)", () => {
 
   test("a changed mind is history, not an overwrite", () => {
     const v2 = loadVerdict(vault, row("node-a.zeta.local", "reject", 200));
-    expect(v2.length).toBe(3); // the earlier accept survives
+    expect(v2).toHaveLength(3); // the earlier accept survives
     expect(decorrelation(v2, "node-c.zeta.local").byObserver.get("node-a.zeta.local")?.verdict).toBe("reject");
   });
 
   test("idempotent load: an exact duplicate row adds nothing; a differing one does", () => {
-    expect(loadVerdict(vault, row("node-a.zeta.local", "accept", 100)).length).toBe(2);
-    expect(loadVerdict(vault, row("node-a.zeta.local", "accept", 100, "via-gossip")).length).toBe(3);
+    expect(loadVerdict(vault, row("node-a.zeta.local", "accept", 100))).toHaveLength(2);
+    expect(loadVerdict(vault, row("node-a.zeta.local", "accept", 100, "via-gossip"))).toHaveLength(3);
   });
 
   test("DERIVED VIEW: the same vault yields DIFFERENT actions under different local policies", () => {
@@ -484,7 +484,7 @@ describe("verdict vault (DV2.0 raw vault)", () => {
     expect(cautious.act).toBe(false);
 
     // and the vault is untouched by either derivation
-    expect(vault.length).toBe(2);
+    expect(vault).toHaveLength(2);
   });
 
   test("NEGATIVE: a node with no verdict of its own does not act on someone else's", () => {

@@ -386,12 +386,21 @@ Two caveats that cut in opposite directions, and both matter:
 |---|---|---|
 | **H1** | **Answer R8 with one word: `node` / `stick` / `both`.** | Unblocks the brief's entire §4 mechanically. On the brief's own analysis `node` (`tpmSeal`) wins: its unbuilt work is *decisions with known shapes*, iSerial's is *a product question with no good answer* ("must the stick be present at every boot?"). **This is the highest-leverage keystroke available.** |
 | **H2** | **Confirm the surviving cluster tree** — and answer the NixOS sub-question (a)/(b)/(c). | M6 says the coupling nearly doubled in nine days. Every week of delay enlarges the migration. |
-| **H3** | **Run the hardware lane once, with the device PIN.** `bun --config=bunfig.hardware-lane.toml test tools/setup/persona-keys/frost-share-adapter.hardware.test.ts` | Converts `hardware-pkcs11` from *probed-available* to *exercised*. **`--config` must precede `test`** or it is silently ignored and rc=1 means "never ran", indistinguishable from "no token". |
+| ~~**H3**~~ | ~~**Run the hardware lane once, with the device PIN.**~~ **DONE 2026-08-26 — and it found a bug.** The lane ran (2 pass / 1 fail / 10 skip, rc=1); login with `0001password` works. It failed on the **prerequisite**, not the credential: the device is factory-empty, so there is no `zeta-frost-wrap` key. → **H3′** below. | The run found `CKM_AES_CBC_PAD` hardcoded as `0x0000010d`, which is not a defined mechanism — **the `hardware-pkcs11` tier could not have sealed on any conforming token.** Fixed to `0x00001085` with mutation-checked falsifiers. Full measurement: [`…-h3-measured-the-yubihsm-login-works-…`](2026-08-26-h3-measured-the-yubihsm-login-works-the-lane-ran-and-the-pkcs11-mechanism-constant-was-wrong.md). |
+| **H3′** | **Provision one AES-256 key labelled `zeta-frost-wrap` on the YubiHSM** (`generate-symmetric-key`, `-c encrypt-cbc,decrypt-cbc`, `-A aes256`). | The only remaining blocker on exercising `hardware-pkcs11` end-to-end. It is a **device-state change**, so it needs a human with provisioning authorization — the 2026-08-26 session was authorized to authenticate and read, not to write. |
 | **H4** | **Authorize the YubiHSM-backed SSH-CA ceremony** (`081M0DGENQM…`, P1). | Blocked on authorization + one metered probe, **not on hardware**. Highest-value thing the single device can do. |
 
-> **Why no agent ran H3:** an authenticated PKCS#11 login with an unknown PIN risks an
+> ~~**Why no agent ran H3:** an authenticated PKCS#11 login with an unknown PIN risks an
 > auth-key lockout counter. Aaron has **one** YubiHSM; a lockout is repeated-irreversible
-> harm to the only device. Deliberately not attempted.
+> harm to the only device. Deliberately not attempted.~~
+>
+> **Superseded 2026-08-26.** Aaron tested the default password himself and authorized its use,
+> so the PIN is no longer unknown and the caution's premise is gone. Separately: `get-object-info`
+> on the auth key exposes **no attempts-remaining field** — the field PIV *does* expose — and
+> `yubihsm.h` has no blocked/locked error code. That is *consistent with* no lockout, not proof;
+> proving it would mean deliberately failing authentication, which was not done. The original
+> caution looks generalised from PIV/smartcard semantics, and declining to touch the only HSM on
+> an unverified risk was the right call on the information then available.
 
 ### Agent-doable now — no hardware, no approval
 
@@ -431,7 +440,10 @@ amount of code retires.**
 ## 7. What was NOT checked — stated, not glossed
 
 - **No device was touched, no HSM session opened, no stick flashed, no machine booted, no PIN
-  or secret read.** H3 was deliberately not attempted (see the note above).
+  or secret read.** H3 was deliberately not attempted (see the note above). **Still true of
+  *this* document's measurements.** A later, separately-authorized session on 2026-08-26 did
+  open an HSM session and did run H3 — read-only, no device state changed; see
+  [`…-h3-measured-…`](2026-08-26-h3-measured-the-yubihsm-login-works-the-lane-ran-and-the-pkcs11-mechanism-constant-was-wrong.md).
 - **`k8s-argocd-health-test`, `k8s-lane-partition` and `build-ai-cluster-iso` were not run**
   (no Docker/kind/nix locally). Their red-capability is code-reading plus observed CI
   failures — **VERIFIED-BY-CI-HISTORY, a weaker grade** than helm-validate's mutation proof.

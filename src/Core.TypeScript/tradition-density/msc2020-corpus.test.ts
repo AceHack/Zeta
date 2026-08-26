@@ -6,7 +6,7 @@ describe("MSC2020 corpus — vendored whole, not curated", () => {
   // an edit that quietly drops a class (the exact selection bias this probe exists to defeat)
   // fails here rather than in the distribution.
   test("carries all 63 published top-level classes", () => {
-    expect(MSC2020_TOP_LEVEL.length).toBe(63);
+    expect(MSC2020_TOP_LEVEL).toHaveLength(63);
   });
 
   test("codes are unique", () => {

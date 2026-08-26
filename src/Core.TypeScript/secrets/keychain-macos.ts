@@ -109,6 +109,30 @@ interface Bound {
 type Pointer = import("bun:ffi").Pointer;
 const asPointer = (n: number): Pointer => n as unknown as Pointer;
 
+/**
+ * `@types/bun` 1.4.0 widened the return type of a `FFIType.ptr` symbol from
+ * `Pointer | null` to `Pointer | bigint | null`, because a 64-bit address can
+ * exceed `Number.MAX_SAFE_INTEGER` and bun will hand back a `bigint` when it
+ * does. This binding models pointers as numbers throughout — `asPointer` above,
+ * and the `BigUint64Array` packing in `lookup` — so every returned address is
+ * funnelled through this one narrowing.
+ *
+ * It REFUSES an address it cannot represent exactly rather than truncating one.
+ * macOS user-space addresses are 47-bit, so the refusal is not expected to fire;
+ * if it ever does, that is a real finding about the address space and must not
+ * be hidden behind a silent `Number()` that would return a wrong pointer. `null`
+ * is passed through unchanged — callers already treat it as "the symbol is not
+ * there", which is a degrade, not an error.
+ */
+const toPointer = (p: Pointer | bigint | null): Pointer | null => {
+  if (p === null) return null;
+  if (typeof p !== "bigint") return p;
+  if (p > BigInt(Number.MAX_SAFE_INTEGER)) {
+    throw new Error(`bun:ffi returned address ${p.toString()}, which exceeds Number.MAX_SAFE_INTEGER`);
+  }
+  return asPointer(Number(p));
+};
+
 let bound: Bound | null | undefined;
 
 function bind(): Bound | null {
@@ -137,12 +161,12 @@ function bind(): Bound | null {
       dlsym: { args: [FFIType.ptr, FFIType.ptr], returns: FFIType.ptr },
     });
     const RTLD_NOW = 2;
-    const hSec = libc.symbols.dlopen(ptr(cstr(SEC)), RTLD_NOW);
-    const hCF = libc.symbols.dlopen(ptr(cstr(CF)), RTLD_NOW);
+    const hSec = toPointer(libc.symbols.dlopen(ptr(cstr(SEC)), RTLD_NOW));
+    const hCF = toPointer(libc.symbols.dlopen(ptr(cstr(CF)), RTLD_NOW));
     if (!hSec || !hCF) return bound;
 
     const sym = (h: Pointer, name: string): Pointer => {
-      const p = libc.symbols.dlsym(h, ptr(cstr(name)));
+      const p = toPointer(libc.symbols.dlsym(h, ptr(cstr(name))));
       if (!p) throw new Error(`dlsym: ${name}`);
       return p;
     };
@@ -180,7 +204,7 @@ function bind(): Bound | null {
     const big = (n: number): bigint => BigInt(n);
 
     const lookup = (service: string): { status: number; length: number; secret: string | null } => {
-      const svc = cf.symbols.CFStringCreateWithCString(null, ptr(cstr(service)), kCFStringEncodingUTF8);
+      const svc = toPointer(cf.symbols.CFStringCreateWithCString(null, ptr(cstr(service)), kCFStringEncodingUTF8));
       if (!svc) return { status: errSecAuthFailed, length: 0, secret: null };
       const keys = new BigUint64Array([big(kSecClass), big(kSecAttrService), big(kSecReturnData), big(kSecMatchLimit)]);
       const vals = new BigUint64Array([big(kSecClassGenericPassword), big(svc), big(kCFBooleanTrue), big(kSecMatchLimitOne)]);

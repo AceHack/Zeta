@@ -221,7 +221,7 @@ describe("shared invariants", () => {
       return `auth include ${svc}x\n`;
     };
     const a = analyzePamAuthChain(read, { targetModule: "pam_tid.so", maxDepth: 3 });
-    expect(a.unresolvedIncludes.length).toBe(1);
+    expect(a.unresolvedIncludes).toHaveLength(1);
     expect(a.targetIsOnlySatisfier).toBe(false);
   });
 
