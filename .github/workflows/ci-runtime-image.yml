@@ -404,16 +404,24 @@ jobs:
           set -euo pipefail
           printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
 
+      # The repo's own `lint-no-decide-by-grep` caught the first version of this step, and it
+      # was right: `docker image ls | grep -q` decides on grep's status and DISCARDS docker's.
+      # If `docker image ls` died on a signal it prints nothing, the grep matches nothing, and
+      # this assertion PASSES having checked nothing -- which would let a warm runner report a
+      # fast pull. Producer status is checked first (no pipeline, so `set -e` sees it), then
+      # grep reads a file.
       - name: Prove the runner is cold before timing anything
         run: |
           set -euo pipefail
+          docker image ls --format '{{.Repository}}:{{.Tag}}' > /tmp/images-before.txt
           echo "=== images already present on this runner ==="
-          docker image ls --format '{{.Repository}}:{{.Tag}}'
+          cat /tmp/images-before.txt
           echo "A line matching zeta-ci-runtime here would make the timing below meaningless."
-          if docker image ls --format '{{.Repository}}' | grep -q 'zeta-ci-runtime'; then
+          if grep -q 'zeta-ci-runtime' /tmp/images-before.txt; then
             echo "::error title=warm runner::the image is already present; this leg would not measure a cold pull"
             exit 1
           fi
+          echo "runner is cold: the timing below is a genuine first pull."
 
       - name: Cold pull, timed
         id: pull

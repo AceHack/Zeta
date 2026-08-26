@@ -337,6 +337,8 @@ A 0/105 sample does not exclude a tail event that the tree records happening. **
 
 `speculative` until publish — **wall-clock pull time of our own digest.** The artifact is not in a registry until this lands on `main`, so the honest answer today is that it has not been measured. What ships with this change is the instrument: a `pull-measure` job that fires on publish, runs **three legs on three fresh runners**, asserts each runner is cold before timing anything (a warm runner fails the leg rather than reporting a fast pull), and reports every leg so the **worst** is visible. Three samples is not a distribution, but it is the difference between "40 s" and "40 s, 41 s, 380 s", which is the whole question.
 
+**And the cold-runner assertion was itself vacuous when first written — caught by the repo, not by me.** `lint-no-decide-by-grep` refused `docker image ls --format '{{.Repository}}' | grep -q 'zeta-ci-runtime'`: a pipeline's status is the LAST command's, so if `docker image ls` died on a signal it would print nothing, the grep would match nothing, and the "this runner is cold" assertion would **pass having checked nothing** — letting a warm runner report a fast pull into the very measurement this section depends on. Fixed by checking the producer's status first and grepping a file. Worth recording plainly: the measurement built to price the tail nearly shipped with a guard that could not fail, and the thing that caught it was one of this repo's own falsifiers.
+
 Two things that remain structurally true regardless of how the pull times land:
 
 - **Cache-budget relief** (§6.3) — an image pull writes nothing to the Actions cache.
