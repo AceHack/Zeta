@@ -93,7 +93,17 @@ describe("decimal money is integer arithmetic", () => {
       return n;
     };
     expect(minor("0.1") + minor("0.2")).toBe(minor("0.3"));
-    expect(0.1 + 0.2).not.toBe(0.3); // the float version, for contrast
+    // The contrast line, and sonarjs is RIGHT about it on both counts: both
+    // operands are literals, so this assertion cannot fail on any conforming
+    // engine, and it is an exact float comparison. Both are the point — the line
+    // pins a property of IEEE-754 doubles, not a property of our code, and it is
+    // what the line above is being contrasted against. It is documentation that
+    // executes, not a check, so it is suppressed and labelled rather than left
+    // to read as a check that constrains something. The real assertion is the
+    // one above it; delete THAT and this test still passes, which is exactly why
+    // this line must not be mistaken for coverage.
+    // eslint-disable-next-line sonarjs/no-trivial-assertions, sonarjs/no-floating-point-equality
+    expect(0.1 + 0.2).not.toBe(0.3);
   });
 });
 

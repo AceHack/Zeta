@@ -153,7 +153,7 @@ describe("DST — arrival order cannot reach the plan", () => {
   it("folding a duplicate runId does not inflate the sample count", () => {
     const one = lane("d/dup", 3, 7, 9);
     const st = observeAll(EMPTY_STATE, [...one, ...one, ...one]);
-    expect(only(st).runs.length).toBe(3);
+    expect(only(st).runs).toHaveLength(3);
   });
 
   /**
@@ -258,7 +258,7 @@ describe("plan disjointness and safety", () => {
       ...lane("b/two", 4, 312, 203),
     ]);
     const p = plan(st);
-    expect(p.admissions.length).toBe(st.lanes.length);
+    expect(p.admissions).toHaveLength(st.lanes.length);
     const keys = p.admissions.map((a: Admission) => laneKey(a.lane));
     expect(new Set(keys).size).toBe(keys.length);
   });
@@ -326,7 +326,7 @@ describe("median", () => {
 describe("observeRun", () => {
   it("creates a lane it has not seen", () => {
     const st = observeRun(EMPTY_STATE, at(lane("fresh/lane", 1, 1, 1), 0));
-    expect(st.lanes.length).toBe(1);
+    expect(st.lanes).toHaveLength(1);
   });
   it("does not mutate the input state", () => {
     const before = JSON.stringify(EMPTY_STATE);

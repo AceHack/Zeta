@@ -105,7 +105,12 @@ import { chacha20poly1305 } from "@noble/ciphers/chacha.js";
 import { hkdf } from "@noble/hashes/hkdf.js";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, hexToBytes, utf8ToBytes } from "@noble/hashes/utils.js";
-import { XWing } from "@noble/post-quantum/hybrid.js";
+// `@noble/post-quantum` 0.7.0 dropped the legacy `XWing` alias; `ml_kem768_x25519`
+// is the canonical export and, in 0.6.1, was the very object the alias pointed at.
+// The preset definition is byte-identical across the two releases, so this rename
+// changes no bytes on the wire. The local name stays `XWing` — it is the name in
+// the X-Wing draft cited in this file's Beacon anchors above.
+import { ml_kem768_x25519 as XWing } from "@noble/post-quantum/hybrid.js";
 import { randomBytes as nodeRandomBytes } from "node:crypto";
 
 import {

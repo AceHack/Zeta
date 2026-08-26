@@ -44,7 +44,15 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import { hkdf } from "@noble/hashes/hkdf.js";
 import { randomBytes } from "@noble/hashes/utils.js";
 import { chacha20poly1305 } from "@noble/ciphers/chacha.js";
-import { XWing } from "@noble/post-quantum/hybrid.js";
+// `@noble/post-quantum` 0.7.0 dropped the legacy `XWing` alias; the canonical
+// export is `ml_kem768_x25519`. In 0.6.1 the alias was literally
+// `export const XWing = ml_kem768_x25519`, and the preset's own definition is
+// byte-identical between the two releases (only `combineKEMS` changed, gaining
+// argument validation), so this rename moves no wire bytes and invalidates no
+// golden vector. The local name stays `XWing` because that is the IETF draft's
+// name for this hybrid KEM (draft-connolly-cfrg-xwing-kem) and the vocabulary
+// this module, its types, and its documentation are written in.
+import { ml_kem768_x25519 as XWing } from "@noble/post-quantum/hybrid.js";
 import { ml_dsa65 } from "@noble/post-quantum/ml-dsa.js";
 import { encode as cborEncode, decode as cborDecode } from "cborg";
 
