@@ -473,6 +473,40 @@ of re-deriving it. That is currently a **hope, not a measurement**. What would m
   `src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts`. **Not written.** Named here
   so the gap is legible rather than implied closed.
 
+### First data point on that count — 2026-08-26, `frost-hsm-provision.ts`
+
+The first gated operation to ship after the protocol landed did **not** hand-roll its own
+prompt-and-refuse logic, which is the outcome the metric above was written to detect. It
+split, and the split is the useful part of the datum:
+
+| verb | what it uses | why |
+|---|---|---|
+| `rehearse` | **`runGatedCeremony`** — the composed entry point | no ladder and no idempotency question, so the protocol's body *is* the whole act |
+| `apply` | the **parts** — `resolveSecret`, `Secret`, `refusal`/`renderRefusal` | it needs two refusals the entry point cannot express |
+
+Those two refusals are exactly §7 Step 4's "what you still have to think about yourself":
+**already provisioned ⇒ no-op and do NOT prompt** (re-prompting for a completed act trains an
+operator to approve things they already approved) and **device unreachable ⇒ refuse WITHOUT
+prompting** (the unevaluable prompt). `runGatedCeremony` always reaches its gate once past
+`dryRun`, so a caller with a ladder in front of the gate composes the parts. That is the
+documented shape working, not a miss — but it means the adoption metric must count
+*"re-derived the protocol"*, never *"did not import one symbol"*.
+
+**What the adoption paid for, concretely.** The credential moved from
+`export ZETA_YUBIHSM_PASSWORD=<secret>` on the operator's command line to a `SecretRequirement`
+resolved from the OS keystore, and §3.4's remedy is what made that a one-step fix for the
+operator rather than a dead end. The refusal was **run against an empty store on a live host**
+and printed the three `secret-clip.sh` steps; the operator followed them and the next run
+authenticated to the device.
+
+**And one thing §3.5 caught that nothing else would have.** The rehearsal's `probe` is a real
+device read, and running it against the live YubiHSM with no credential showed the ladder
+reporting `reachable-unprovisioned` — the rung whose own docstring says it is reached *"ONLY
+by getting all the way through login"*. It had skipped `C_Login` entirely, and an
+unauthenticated `C_FindObjects` returns nothing whether or not the key exists. A check that
+could not run was wearing the answer of one that ran and said no. Fixed in the same change,
+with a falsifier that fails when the fix is reverted.
+
 ### The discoverability hole — named, partly open
 
 The protocol is worthless if the next agent never finds it, and **that, not the wording of

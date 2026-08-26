@@ -17,7 +17,13 @@ import type { Pkcs11Lib } from "./frost-share-adapter.ts";
 import {
   applyWrapKeyProvisioning,
   classifyWrapKeyReadiness,
+  discoverPkcs11Module,
+  ensureConnectorConfig,
   FROST_WRAP_KEY_LABEL,
+  moduleNotFoundRefusal,
+  needsConfigHandoff,
+  PKCS11_MODULE_CANDIDATES,
+  resolveDeviceCredential,
   isMissingPrerequisite,
   type MechanismCheck,
   mechanismSatisfiesAdapter,
@@ -31,9 +37,28 @@ import {
   type WrapKeyReadiness,
 } from "./frost-hsm-provision.ts";
 import { renderCeremonyBrief } from "./ceremony-brief.ts";
+import { frostHsmSecretSource } from "./frost-hsm-secrets.ts";
+import { readFileSync } from "node:fs";
 
 const PASSWORD = "not-a-real-password";
 const LIB_PATH = "/fake/pkcs11.dylib";
+
+/** The two names the ceremony used to take from the environment. Retired: the store is the
+ *  only source, and these must not appear in the module's executable text. */
+const RETIRED_CREDENTIAL_VARS: readonly string[] = ["ZETA_YUBIHSM_PASSWORD", "ZETA_FROST_PKCS11_PIN"];
+
+/** Drop comment lines so a scan checks CODE, never the prose that documents the property.
+ *  Duplicated in `frost-hsm-secrets.test.ts` rather than imported: importing one test module
+ *  from another re-runs its suites, and a helper is cheaper than a double count. */
+function stripComments(source: string): string {
+  return source
+    .split("\n")
+    .filter((line) => {
+      const t = line.trimStart();
+      return !(t.startsWith("//") || t.startsWith("*") || t.startsWith("/*"));
+    })
+    .join("\n");
+}
 
 /** CK_TOKEN_INFO layout the adapter's `parseCkTokenInfoIdentity` reads: 32-byte label,
  *  32-byte manufacturer, 16-byte model, 16-byte serial, at offsets 0/32/64/80. */
@@ -544,5 +569,187 @@ describe("HSMP: the readout is actionable", () => {
   test("HSMP-38: usage documents all four exit codes", () => {
     const u = usage();
     for (const code of ["rc 0", "rc 3", "rc 1", "rc 2"]) expect(u).toContain(code);
+  });
+});
+
+// ============================================================================
+// NO SECRET IS EVER AN ARGUMENT — the invocation shape
+// ============================================================================
+
+describe("HSMP: the credential comes from the store and from nowhere else", () => {
+  const emptyStore = frostHsmSecretSource(() => undefined);
+  const fullStore = frostHsmSecretSource(() => PASSWORD);
+
+  test("HSMP-39: a present credential yields the password AND the derived PIN", () => {
+    const r = resolveDeviceCredential(fullStore, 1);
+    expect(r.ok).toBe(true);
+    if (!r.ok) throw new Error("unreachable");
+    expect(r.password.reveal()).toBe(PASSWORD);
+    expect(r.pin.reveal()).toBe(`0001${PASSWORD}`);
+  });
+
+  test("HSMP-40: an absent credential REFUSES, and the refusal renders its remedy", () => {
+    const r = resolveDeviceCredential(emptyStore, 1);
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error("unreachable");
+    expect(r.code).toBe("secret-absent");
+    expect(r.rendered).toContain("TO PROCEED:");
+    expect(r.rendered).toContain("secret-clip.sh set zeta-yubihsm-password");
+  });
+
+  test("HSMP-41: THE ENVIRONMENT CANNOT SATISFY IT — the CLI names no credential variable", () => {
+    // Removing the documentation for a variable that is still read would leave the export
+    // working and nobody the wiser, so the claim is checked against the module's executable
+    // text. A source scan rather than an env-mutation test because setting a credential in
+    // this process hoists it into every child's environment —
+    // `lint-no-ambient-credential-hoist.ts` refuses that, and it refused this test's first
+    // draft. Comments are stripped: the header names both variables in order to say it does
+    // not read them.
+    //
+    // `process.env` itself is NOT forbidden here (unlike in frost-hsm-secrets.ts): this
+    // module reads the non-secret overrides — module path, slot, label, connector, auth key
+    // id — from it, and none of those is a credential.
+    const code = stripComments(readFileSync(new URL("./frost-hsm-provision.ts", import.meta.url), "utf8"));
+    expect(RETIRED_CREDENTIAL_VARS.filter((name) => code.includes(name))).toEqual([]);
+  });
+
+  test("HSMP-42: a bad auth key id refuses with a remedy, never with a raw throw", () => {
+    // A `Pkcs11PinError` escaping to the terminal would be a stack trace where a refusal
+    // belongs — technically informative, and with nothing for the reader to do next.
+    const r = resolveDeviceCredential(fullStore, 0);
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error("unreachable");
+    expect(r.rendered).toContain("TO PROCEED:");
+    expect(r.rendered).toContain("ZETA_YUBIHSM_AUTHKEY=1");
+  });
+
+  test("HSMP-43: usage says out loud that no verb takes a credential", () => {
+    const u = usage();
+    expect(u).toContain("NO VERB TAKES A CREDENTIAL");
+    expect(u).toContain("zeta-yubihsm-password");
+    expect(u).toContain("rehearse");
+  });
+});
+
+// ============================================================================
+// DISCOVERY — an input the tool can find is an input the operator cannot get wrong
+// ============================================================================
+
+describe("HSMP: discovery replaces the exports zflash never needed", () => {
+  test("HSMP-44: an explicit override wins and is reported AS an override", () => {
+    const d = discoverPkcs11Module(() => true, "/some/where/else.dylib");
+    expect(d.found).toBe(true);
+    if (!d.found) throw new Error("unreachable");
+    expect(d.path).toBe("/some/where/else.dylib");
+    expect(d.via).toBe("override");
+  });
+
+  test("HSMP-45: discovery picks the first candidate THAT EXISTS, not the first candidate", () => {
+    // Picking a path that is not there would turn "none installed" into a misleading
+    // "the first one is broken" two rungs later.
+    const present = PKCS11_MODULE_CANDIDATES[2] ?? "";
+    const d = discoverPkcs11Module((p) => p === present);
+    expect(d.found).toBe(true);
+    if (!d.found) throw new Error("unreachable");
+    expect(d.path).toBe(present);
+    expect(d.via).toBe("discovered");
+  });
+
+  test("HSMP-46: nothing found reports WHERE it looked — a not-found with no search is a dead end", () => {
+    const d = discoverPkcs11Module(() => false);
+    expect(d.found).toBe(false);
+    if (d.found) throw new Error("unreachable");
+    expect(d.searched).toEqual(PKCS11_MODULE_CANDIDATES);
+    const rendered = moduleNotFoundRefusal(d.searched);
+    expect(rendered).toContain("TO PROCEED:");
+    for (const c of PKCS11_MODULE_CANDIDATES) expect(rendered).toContain(c);
+  });
+
+  test("HSMP-47: an existing config is NEVER second-guessed — env first, then the real files", () => {
+    const wrote: string[] = [];
+    const fx = {
+      exists: () => true,
+      write: (p: string) => wrote.push(p),
+      home: "/home/x",
+      tmpDir: "/tmp",
+    };
+    expect(ensureConnectorConfig(fx, "http://c", "/env/path.conf")).toEqual({
+      kind: "from-env",
+      path: "/env/path.conf",
+    });
+    expect(ensureConnectorConfig(fx, "http://c", undefined)).toEqual({
+      kind: "found",
+      path: "/home/x/.yubihsm_pkcs11.conf",
+    });
+    expect(wrote).toEqual([]); // a configured host is left alone
+  });
+
+  test("HSMP-48: with no config anywhere it writes ONE line, naming the connector and no secret", () => {
+    const wrote: Array<[string, string]> = [];
+    const r = ensureConnectorConfig(
+      { exists: () => false, write: (p, c) => wrote.push([p, c]), home: "/home/x", tmpDir: "/tmp" },
+      "http://127.0.0.1:12345",
+      undefined,
+    );
+    expect(r).toEqual({ kind: "written", path: "/tmp/zeta-yubihsm-pkcs11.conf", connector: "http://127.0.0.1:12345" });
+    expect(wrote).toHaveLength(1);
+    expect(wrote[0]?.[1]).toBe("connector = http://127.0.0.1:12345\n");
+    // It goes to the process temp dir, never into $HOME or /etc: this writes a file on
+    // someone's machine, and the blast radius of doing so should be as small as it can be.
+    expect(wrote[0]?.[0]).toBe("/tmp/zeta-yubihsm-pkcs11.conf");
+  });
+
+  test("HSMP-53: ONLY a freshly-written config needs a new process — the handoff is one level deep", () => {
+    // MEASURED 2026-08-26: the dlopen'd PKCS#11 module reads YUBIHSM_PKCS11_CONF with
+    // getenv(3), and an in-process `process.env` assignment does not reach it. Same conf
+    // file: set in the parent environment -> reachable-unprovisioned, token
+    // YubiHSM#39160506; assigned in-process -> C_Initialize returned 7 (CKR_ARGUMENTS_BAD).
+    //
+    // What this asserts is the TERMINATION argument, which is the part that could be wrong:
+    // the child of a handoff sees the variable set and therefore takes `from-env`, and
+    // `from-env` does not hand off. If this predicate were ever true for `from-env`, the
+    // CLI would fork itself forever.
+    expect(needsConfigHandoff({ kind: "written", path: "/tmp/c", connector: "http://c" })).toBe(true);
+    expect(needsConfigHandoff({ kind: "from-env", path: "/tmp/c" })).toBe(false);
+    expect(needsConfigHandoff({ kind: "found", path: "/tmp/c" })).toBe(false);
+  });
+
+  test("HSMP-49: an empty override is not an override — it falls through to discovery", () => {
+    const d = discoverPkcs11Module((p) => p === PKCS11_MODULE_CANDIDATES[0], "");
+    expect(d.found).toBe(true);
+    if (!d.found) throw new Error("unreachable");
+    expect(d.via).toBe("discovered");
+  });
+});
+
+// ============================================================================
+// THE VACUITY THAT WAS FOUND BY RUNNING IT — no PIN is not "no key"
+// ============================================================================
+
+describe("HSMP: a search that could not run never wears the answer of one that did", () => {
+  test("HSMP-50: an EMPTY PIN is login-refused, NOT reachable-unprovisioned", () => {
+    // MEASURED 2026-08-26 against the live device (serial 39160506): the shipped `status`
+    // with no credential printed `reachable-unprovisioned` and rc 3 — the rung whose own
+    // docstring says it is reached "ONLY by getting all the way through login". It was not.
+    // C_Login was skipped, and an unauthenticated C_FindObjects on a YubiHSM returns nothing
+    // whether or not the key is there, so "no such key" and "no session that may see any
+    // key" produced one answer. That is the exact conflation this module exists to remove.
+    const r = classifyWrapKeyReadiness({ libraryPath: LIB_PATH, pin: "" }, fx(refusingLib({ keyPresent: true })));
+    if (r.kind !== "unreachable") throw new Error(`expected unreachable, got ${r.kind}`);
+    expect(r.stage).toBe("login-refused");
+    expect(r.detail).toContain("never attempted");
+  });
+
+  test("HSMP-51: the key being PRESENT does not rescue an empty PIN either", () => {
+    // The mutant that would survive a weaker test: reporting `provisioned` when the search
+    // happens to succeed. A result the session was never authorised to see is not a result.
+    const r = classifyWrapKeyReadiness({ libraryPath: LIB_PATH, pin: "" }, fx(refusingLib({ keyPresent: true })));
+    expect(r.kind).not.toBe("provisioned");
+    expect(readinessExitCode(r)).toBe(1);
+  });
+
+  test("HSMP-52: a NON-empty PIN still reaches the search — the guard did not swallow the good path", () => {
+    const r = classifyWrapKeyReadiness({ libraryPath: LIB_PATH, pin: "0001pw" }, fx(refusingLib({ keyPresent: true })));
+    expect(r.kind).toBe("provisioned");
   });
 });

@@ -74,24 +74,42 @@
  * briefs, not folded into this one so that approving a wrap key silently approves a
  * password change.
  *
- * USAGE
+ * ============================================================================
+ * NO SECRET IS EVER AN ARGUMENT — the invocation shape, adopted from zflash
+ * ============================================================================
  *
- *   bun tools/setup/persona-keys/frost-hsm-provision.ts status
- *   bun tools/setup/persona-keys/frost-hsm-provision.ts plan
- *   bun tools/setup/persona-keys/frost-hsm-provision.ts apply --apply
+ * Every verb below takes NO credential of any kind. The one credential this ceremony needs
+ * is read from the OS keystore under the name `zeta-yubihsm-password`, and the PKCS#11 PIN
+ * is DERIVED from it — see `frost-hsm-secrets.ts`, which carries the reasoning, the
+ * comparison against zflash, and the honest note about what zflash has not shipped.
  *
- *   Environment (the same names the hardware lane already uses):
- *     ZETA_FROST_PKCS11_LIB    path to the PKCS#11 module (.dylib/.so)
- *     ZETA_FROST_PKCS11_PIN    PKCS#11 PIN. For a YubiHSM this is <4-hex-authkey><password>
+ * The module path and the connector config are DISCOVERED rather than exported, for the same
+ * reason zflash discovers the newest ISO and the newest removable device: an input the tool
+ * can find is an input the operator cannot get wrong. Environment variables still override
+ * every discovered value — none of them is a secret.
+ *
+ * USAGE — one command, no exports, nothing sensitive typed
+ *
+ *   bun tools/setup/persona-keys/frost-hsm-provision.ts status     # read-only; rc 0/3/1
+ *   bun tools/setup/persona-keys/frost-hsm-provision.ts plan       # + the exact command, redacted
+ *   bun tools/setup/persona-keys/frost-hsm-provision.ts rehearse --apply   # gate, NO device write
+ *   bun tools/setup/persona-keys/frost-hsm-provision.ts apply --apply      # the real act
+ *
+ *   `rehearse --apply` runs the WHOLE chain — classify, resolve the credential from the
+ *   keystore, fully specify, read the device, brief, and open the Touch ID door — against an
+ *   act that does nothing. It exists because an untested gate is the failure this repo keeps
+ *   finding, and because the ceremony should be exercised once before it is trusted with a
+ *   device write.
+ *
+ *   Environment — NON-SECRET overrides only. There is deliberately no environment variable
+ *   for the password or the PIN; they are not accepted from the environment at all.
+ *     ZETA_FROST_PKCS11_LIB    path to the PKCS#11 module (default: discovered)
  *     ZETA_FROST_PKCS11_SLOT   slot index (default 0)
  *     ZETA_FROST_PKCS11_LABEL  wrap-key label (default zeta-frost-wrap)
- *     ZETA_YUBIHSM_CONNECTOR   connector URL for `apply` (default http://127.0.0.1:12345)
- *     ZETA_YUBIHSM_AUTHKEY     auth key id for `apply` (default 1)
- *     ZETA_YUBIHSM_PASSWORD    the yubihsm-shell password for `apply`. NOT the PKCS#11
- *                              PIN: `yubihsm-shell` takes `--authkey 1 -p <password>`
- *                              where PKCS#11 takes the two concatenated. Measured
- *                              2026-08-26: `-p 0001password` and `--authkey 1 -p password`
- *                              are not interchangeable spellings of one thing.
+ *     YUBIHSM_PKCS11_CONF      the module's own config file (default: discovered, else written
+ *                              to a temp file naming the connector — config, never a secret)
+ *     ZETA_YUBIHSM_CONNECTOR   connector URL (default http://127.0.0.1:12345)
+ *     ZETA_YUBIHSM_AUTHKEY     auth key id (default 1)
  */
 
 import { spawnSync } from "node:child_process";
@@ -114,6 +132,24 @@ import {
   requestedBy,
 } from "./ceremony-brief.ts";
 import { type BiometricAuth, requireBiometric } from "./biometric.ts";
+import {
+  HANDOFF_REFUSAL_CODES,
+  namedEscape,
+  refusal,
+  renderRefusal,
+  resolveSecret,
+  runGatedCeremony,
+  type Secret,
+  type SecretSource,
+} from "./ceremony-handoff.ts";
+import {
+  FROST_HSM_PASSWORD_REF,
+  FROST_HSM_PASSWORD_REQUIREMENT,
+  frostHsmSecretSource,
+  pinHexCaseIsObservable,
+  pkcs11PinFor,
+  realKeystoreRead,
+} from "./frost-hsm-secrets.ts";
 
 /** The label the adapter looks for. Single source; the plan and the probe share it. */
 export const FROST_WRAP_KEY_LABEL = "zeta-frost-wrap";
@@ -357,7 +393,27 @@ export function classifyWrapKeyReadiness(
     const hSession = phSession[0] ?? 0n;
     let loggedIn = false;
     try {
-      if (opts.pin.length > 0) {
+      // NO PIN ⇒ login-refused, NOT a cheerful search. Found 2026-08-26 by running the
+      // shipped `status` against the live device with no credential: it printed
+      // `reachable-unprovisioned` (rc 3) — the rung whose own docstring says it is
+      // "reachable ONLY by getting all the way through login". It was not. The old
+      // `if (opts.pin.length > 0)` skipped C_Login entirely, and an UNAUTHENTICATED
+      // C_FindObjects on a YubiHSM sees no objects, so "no key with that label" and "no
+      // session that may see any key" produced the identical answer. That is the exact
+      // conflation this whole module exists to remove, one rung further down, and it is the
+      // vacuity class in its purest form: a check that cannot fail wearing the result of one
+      // that ran. It matters more now that the CLI refuses an absent credential up front —
+      // an empty PIN can now only arrive from a caller that built one by hand.
+      if (opts.pin.length === 0) {
+        return nope(
+          "login-refused",
+          "no PKCS#11 PIN was supplied, so C_Login was never attempted. An unauthenticated " +
+            "C_FindObjects returns nothing whether or not the key exists, so this is reported as a " +
+            "login that did not happen rather than as a key that is not there.",
+          tokenIdentity,
+        );
+      }
+      {
         const pinBytes = new TextEncoder().encode(opts.pin);
         const lrv = lib.C_Login(hSession, CKU_USER, pinBytes, BigInt(pinBytes.length));
         if (!rvOk(lrv) && BigInt(lrv) !== CKR_USER_ALREADY_LOGGED_IN) {
@@ -669,6 +725,202 @@ export async function applyWrapKeyProvisioning(args: {
 }
 
 // ============================================================================
+// DISCOVERY — an input the tool can find is an input the operator cannot get wrong
+// ============================================================================
+//
+// This is the half of zflash's shape that transfers directly (see `frost-hsm-secrets.ts` for
+// the full comparison). `zeta flash usb` takes no arguments because it finds the newest ISO
+// and the newest removable device and SHOWS them. Neither of the two values below is a
+// secret; both were previously required exports, and every required export is a line an
+// operator has to get right in a terminal.
+
+/** Where a YubiHSM PKCS#11 module lands, in the order the search tries them. Homebrew's
+ *  arm64 prefix first because that is the modern Mac, then the Intel/pkg prefix this fleet's
+ *  device actually uses, then the Linux paths for the lane that is not macOS-only. */
+export const PKCS11_MODULE_CANDIDATES: readonly string[] = [
+  "/opt/homebrew/lib/pkcs11/yubihsm_pkcs11.dylib",
+  "/usr/local/lib/pkcs11/yubihsm_pkcs11.dylib",
+  "/usr/local/lib/pkcs11/yubihsm_pkcs11.so",
+  "/usr/lib/x86_64-linux-gnu/pkcs11/yubihsm_pkcs11.so",
+];
+
+/** Discovery result. `searched` travels with the miss so the refusal can list what was
+ *  looked at — "not found" without "where I looked" is a dead end wearing a diagnosis. */
+export type ModuleDiscovery =
+  | { readonly found: true; readonly path: string; readonly via: "override" | "discovered" }
+  | { readonly found: false; readonly searched: readonly string[] };
+
+/** Resolve the PKCS#11 module path. An explicit override wins and is NOT existence-checked
+ *  here — `classifyWrapKeyReadiness` already reports `module-absent` for a path that is not
+ *  there, and checking twice would make the two disagree about which message the reader
+ *  sees. Discovery, by contrast, must check: picking a candidate that is not present would
+ *  turn a "none installed" into a misleading "the first one is broken". */
+export function discoverPkcs11Module(exists: (p: string) => boolean, override?: string): ModuleDiscovery {
+  if (override !== undefined && override.trim() !== "") {
+    return { found: true, path: override, via: "override" };
+  }
+  for (const candidate of PKCS11_MODULE_CANDIDATES) {
+    if (exists(candidate)) return { found: true, path: candidate, via: "discovered" };
+  }
+  return { found: false, searched: PKCS11_MODULE_CANDIDATES };
+}
+
+/** Where the YubiHSM PKCS#11 module looks for its own config, in `yubihsm-pkcs11`'s
+ *  documented order. Home first: a per-user file is the one an operator can write without
+ *  root, which is the one they will actually have. */
+export function connectorConfigCandidates(home: string): readonly string[] {
+  return [`${home}/.yubihsm_pkcs11.conf`, "/etc/yubihsm_pkcs11.conf", "/usr/local/etc/yubihsm_pkcs11.conf"];
+}
+
+/** What the config step did, for the readout. `written` is reported rather than silent
+ *  because writing a file on someone's machine is not a thing to do quietly, even when the
+ *  file holds no secret. */
+export interface WrittenConnectorConfig {
+  readonly kind: "written";
+  readonly path: string;
+  /** The URL the written file names. Config, never a credential. */
+  readonly connector: string;
+}
+
+export type ConnectorConfig =
+  | { readonly kind: "from-env"; readonly path: string }
+  | { readonly kind: "found"; readonly path: string }
+  | WrittenConnectorConfig;
+
+/**
+ * Whether a freshly-written config has to be handed to a NEW PROCESS to be seen.
+ *
+ * ── MEASURED, NOT ASSUMED (2026-08-26, this host) ────────────────────────────────────
+ *
+ * The vendor's PKCS#11 module is `dlopen`ed and reads `YUBIHSM_PKCS11_CONF` with `getenv(3)`
+ * inside `C_Initialize`. Assigning `process.env["YUBIHSM_PKCS11_CONF"]` in the running
+ * process does NOT reach it. The A/B, same file, same bytes, same device:
+ *
+ *   set in the parent environment    -> reachable-unprovisioned, token YubiHSM#39160506
+ *   assigned in-process before load  -> C_Initialize returned 7 (CKR_ARGUMENTS_BAD)
+ *
+ * So the config crosses on the one channel a `dlopen`ed library certainly reads: a fresh
+ * process's environment. This predicate is the decision, kept out of the process wiring so
+ * it is testable — and note it is FALSE for every branch except `written`, which is what
+ * bounds the handoff to exactly one level: the child sees the variable set, takes the
+ * `from-env` branch, writes nothing and hands off to nobody.
+ */
+export function needsConfigHandoff(conf: ConnectorConfig): conf is WrittenConnectorConfig {
+  return conf.kind === "written";
+}
+
+/** The doors the config step touches. Injected (§13 noninterference) so a test can describe
+ *  any host — one with the env set, one with a file, one with neither — without a filesystem. */
+export interface ConnectorConfigEffects {
+  readonly exists: (path: string) => boolean;
+  readonly write: (path: string, contents: string) => void;
+  readonly home: string;
+  readonly tmpDir: string;
+}
+
+/**
+ * Make sure the module can find its connector, and SAY which way it got there.
+ *
+ * The YubiHSM PKCS#11 module reads a config file to learn the connector URL, and with no
+ * config it fails at `C_Initialize` — the `module-init-failed` rung, whose remedy told the
+ * operator to go and export `YUBIHSM_PKCS11_CONF`. That remedy is correct and it is another
+ * export, so this writes the two-line config itself when there is none.
+ *
+ * WHAT IS AND IS NOT WRITTEN, because writing anything at all deserves a plain statement:
+ * the file contains `connector = <url>` and nothing else. It holds no credential, it is
+ * written under the process temp directory rather than into the operator's home or /etc, and
+ * it is never written when the env var is set or when a real config already exists — a host
+ * that has been configured is never second-guessed.
+ */
+export function ensureConnectorConfig(
+  fx: ConnectorConfigEffects,
+  connector: string,
+  envValue: string | undefined,
+): ConnectorConfig {
+  if (envValue !== undefined && envValue.trim() !== "") return { kind: "from-env", path: envValue };
+  for (const candidate of connectorConfigCandidates(fx.home)) {
+    if (fx.exists(candidate)) return { kind: "found", path: candidate };
+  }
+  const path = `${fx.tmpDir}/zeta-yubihsm-pkcs11.conf`;
+  fx.write(path, `connector = ${connector}\n`);
+  return { kind: "written", path, connector };
+}
+
+// ============================================================================
+// CREDENTIAL RESOLUTION — the store is the ONLY source, and that is structural
+// ============================================================================
+
+/**
+ * Resolve the one credential this ceremony needs, and derive the PIN from it.
+ *
+ * ── WHY THIS TAKES A `SecretSource` AND READS NO ENVIRONMENT ─────────────────────────
+ *
+ * The defect being removed was an operator typing `export ZETA_YUBIHSM_PASSWORD=…`. A fix
+ * that merely stopped DOCUMENTING that variable would leave the read in place, and the next
+ * person to hit a refusal would find the export still works and use it. So the environment
+ * is not consulted here at all: the store arrives as a parameter, and a caller holding a
+ * source that returns nothing gets a refusal no ambient value can satisfy.
+ *
+ * That is a property a test can falsify rather than a promise — see
+ * `frost-hsm-provision.test.ts` §"the store is the only source", which sets both retired
+ * variables in `process.env` and asserts the refusal still fires.
+ */
+export type CredentialResolution =
+  | { readonly ok: true; readonly password: Secret; readonly pin: Secret }
+  | { readonly ok: false; readonly code: string; readonly rendered: string };
+
+export function resolveDeviceCredential(source: SecretSource, authKeyId: number): CredentialResolution {
+  const r = resolveSecret(FROST_HSM_PASSWORD_REQUIREMENT, source);
+  if (!r.ok) return { ok: false, code: r.refusal.code, rendered: renderRefusal(r.refusal) };
+  try {
+    return { ok: true, password: r.secret, pin: pkcs11PinFor(r.secret, authKeyId) };
+  } catch (err) {
+    const ref = refusal({
+      code: HANDOFF_REFUSAL_CODES.underspecified,
+      what: "refusing to build a PKCS#11 PIN from the stored credential",
+      why: messageOf(err),
+      remedy: [
+        {
+          why: "set the auth key id to a real YubiHSM object id (the factory key is 1)",
+          command: "ZETA_YUBIHSM_AUTHKEY=1 bun tools/setup/persona-keys/frost-hsm-provision.ts status",
+        },
+        {
+          why: "or re-store the device password if what came back from the keystore was blank",
+          command: `tools/setup/secret-clip.sh set ${FROST_HSM_PASSWORD_REF} --clipboard --clear-clipboard`,
+        },
+      ],
+    });
+    return { ok: false, code: ref.code, rendered: renderRefusal(ref) };
+  }
+}
+
+/** The refusal for "no PKCS#11 module anywhere". Built here rather than left to the
+ *  `module-absent` rung because discovery knows WHERE IT LOOKED, and a not-found that cannot
+ *  say what it searched is the dead end invariant 4 exists to abolish. */
+export function moduleNotFoundRefusal(searched: readonly string[]): string {
+  return renderRefusal(
+    refusal({
+      code: "pkcs11-module-absent",
+      what: "refusing to run: no YubiHSM PKCS#11 module was found",
+      why:
+        "the ceremony talks to the device through the vendor's PKCS#11 module, and none of the paths " +
+        `it knows about exists on this host: ${searched.join(", ")}.`,
+      remedy: [
+        {
+          why: "install the YubiHSM SDK (it ships the module and yubihsm-shell together)",
+          note: "macOS: the YubiHSM2 SDK package from Yubico, or `brew install yubihsm-shell`. Linux: the yubihsm2-sdk package.",
+        },
+        {
+          why: "or point at an existing module directly",
+          command:
+            "ZETA_FROST_PKCS11_LIB=/path/to/yubihsm_pkcs11.dylib bun tools/setup/persona-keys/frost-hsm-provision.ts status",
+        },
+      ],
+    }),
+  );
+}
+
+// ============================================================================
 // CLI
 // ============================================================================
 
@@ -677,24 +929,197 @@ export function usage(): string {
     "usage:",
     "  bun tools/setup/persona-keys/frost-hsm-provision.ts status   # read-only ladder; rc 0/3/1",
     "  bun tools/setup/persona-keys/frost-hsm-provision.ts plan     # + the exact command, redacted",
-    "  bun tools/setup/persona-keys/frost-hsm-provision.ts apply --apply   # operator-approved",
+    "  bun tools/setup/persona-keys/frost-hsm-provision.ts rehearse --apply  # the gate, no device write",
+    "  bun tools/setup/persona-keys/frost-hsm-provision.ts apply --apply     # operator-approved",
+    "",
+    "  NO VERB TAKES A CREDENTIAL. The device password is read from the OS keystore item",
+    `  '${FROST_HSM_PASSWORD_REF}'; the PKCS#11 PIN is derived from it. There is no`,
+    "  environment variable for either, and neither is ever an argument.",
     "",
     "  rc 0 = provisioned   rc 3 = reachable but NOT provisioned (expected; one command away)",
-    "  rc 1 = unreachable   rc 2 = usage",
+    "  rc 1 = unreachable   rc 2 = usage, or a refusal (which names its remedy)",
     "",
   ].join("\n");
 }
 
 /* c8 ignore start -- process wiring; the logic above is what the tests drive */
 if (import.meta.main) {
+  const { writeFileSync } = await import("node:fs");
+  const { homedir, tmpdir } = await import("node:os");
+
   const argv = process.argv.slice(2);
   const verb = argv[0] ?? "";
-  const probe: WrapKeyProbeOptions = {
-    libraryPath: process.env["ZETA_FROST_PKCS11_LIB"] ?? "",
-    pin: process.env["ZETA_FROST_PKCS11_PIN"] ?? "",
-    slotId: Number(process.env["ZETA_FROST_PKCS11_SLOT"] ?? "0"),
-    label: process.env["ZETA_FROST_PKCS11_LABEL"] ?? FROST_WRAP_KEY_LABEL,
-  };
+  if (verb !== "status" && verb !== "plan" && verb !== "apply" && verb !== "rehearse") {
+    process.stderr.write(usage());
+    process.exit(2);
+  }
+
+  const authKeyId = Number(process.env["ZETA_YUBIHSM_AUTHKEY"] ?? "1");
+  const connector = process.env["ZETA_YUBIHSM_CONNECTOR"] ?? "http://127.0.0.1:12345";
+  const label = process.env["ZETA_FROST_PKCS11_LABEL"] ?? FROST_WRAP_KEY_LABEL;
+  const slotId = Number(process.env["ZETA_FROST_PKCS11_SLOT"] ?? "0");
+
+  // ── DISCOVERY, then PROVENANCE. Every value the act depends on is shown with WHERE it
+  //    came from, before anything is decided — the operator should never have to guess
+  //    which module or which connector an approval covers.
+  const discovery = discoverPkcs11Module(existsSync, process.env["ZETA_FROST_PKCS11_LIB"]);
+  if (!discovery.found) {
+    process.stderr.write(moduleNotFoundRefusal(discovery.searched));
+    process.exit(2);
+  }
+  const conf = ensureConnectorConfig(
+    {
+      exists: existsSync,
+      write: (p, c) => writeFileSync(p, c, { mode: 0o600 }),
+      home: homedir(),
+      tmpDir: tmpdir(),
+    },
+    connector,
+    process.env["YUBIHSM_PKCS11_CONF"],
+  );
+  // Hand the freshly-written config over in a new process's environment — see
+  // `needsConfigHandoff` for the measurement that makes this necessary rather than tidy.
+  // Bounded to one level by construction: the child takes the `from-env` branch.
+  if (needsConfigHandoff(conf)) {
+    process.stderr.write(
+      `  CONFIG      wrote ${conf.path} (connector = ${conf.connector}) and re-running so the\n` +
+        "              PKCS#11 module can read it — a dlopen'd library sees getenv, not process.env.\n",
+    );
+    const handoff = spawnSync(process.execPath, [import.meta.path, ...argv], {
+      env: { ...process.env, YUBIHSM_PKCS11_CONF: conf.path },
+      stdio: "inherit",
+    });
+    process.exit(handoff.status ?? 1);
+  }
+
+  process.stdout.write(
+    [
+      `  MODULE      ${discovery.path} (${discovery.via})`,
+      // `written` cannot reach here: `needsConfigHandoff` above narrows it away by exiting.
+      `  CONFIG      ${conf.path} (${conf.kind})`,
+      `  CREDENTIAL  OS keystore item '${FROST_HSM_PASSWORD_REF}' — never an argument, never an export`,
+      `  PIN         derived from that item + auth key ${String(authKeyId)}`,
+      ...(pinHexCaseIsObservable(authKeyId)
+        ? [
+            `  NOTE        auth key ${String(authKeyId)} puts a letter in the PIN's hex prefix; this emits it`,
+            "              LOWERCASE, which is documented-but-unmeasured on this module (frost-hsm-secrets.ts).",
+          ]
+        : []),
+      "",
+    ].join("\n"),
+  );
+
+  const source = frostHsmSecretSource(realKeystoreRead());
+  const withoutCredential = argv.includes("--without-credential");
+  const cred = resolveDeviceCredential(source, authKeyId);
+
+  // ── REHEARSE: the whole chain, against an act that does nothing ──────────────────────
+  //
+  // This is the verb that makes the gate testable. It runs `runGatedCeremony` — the protocol
+  // entry point whose BODY is the ordering, so approval cannot precede authentication — with
+  // an `act` that touches no device and no file. Two things get exercised that nothing else
+  // exercises until the real ceremony: the credential's path out of the keystore, and the
+  // Touch ID door itself. An untested gate is a check nobody has watched fail.
+  //
+  // The keystore is read TWICE on this path, deliberately: once here so the probe has a
+  // session to read the device with, and once inside `runGatedCeremony`, whose resolution
+  // step is part of what is under rehearsal. Reading it once and handing the value in would
+  // rehearse a different sequence than `apply` performs.
+  if (verb === "rehearse") {
+    if (!cred.ok && !withoutCredential) {
+      process.stderr.write(cred.rendered);
+      process.stderr.write(
+        "  The biometric door was NOT opened: the rehearsal stopped before it, which is the\n" +
+          "  ordering it exists to demonstrate. Store the credential and run this again — or add\n" +
+          "  --without-credential to rehearse the gate alone (it lifts exactly the secret-absent\n" +
+          "  refusal, and only because a rehearsal's act writes nothing).\n\n",
+      );
+      process.exit(2);
+    }
+    const probeOpts: WrapKeyProbeOptions = {
+      libraryPath: discovery.path,
+      pin: cred.ok ? cred.pin.reveal() : "",
+      slotId,
+      label,
+    };
+    const { realBriefEffects } = await import("./ceremony-brief.ts");
+    const { realBiometric } = await import("./biometric.ts");
+    const outcome = await runGatedCeremony<string, string>({
+      operation: "provision-or-reconfigure-hardware-token",
+      summary: "REHEARSAL — exercise the approval gate end to end against an act that does NOTHING",
+      subjects: [
+        { label: "what will run", value: "nothing. This act writes no object and no file." },
+        { label: "device readout", value: "taken before and after, and compared" },
+        { label: "connector", value: connector },
+        { label: "module", value: discovery.path },
+        {
+          label: "credential",
+          value: `OS keystore '${FROST_HSM_PASSWORD_REF}'${cred.ok ? "" : " (ESCAPED — absent)"}`,
+        },
+        { label: "real ceremony", value: "bun tools/setup/persona-keys/frost-hsm-provision.ts apply --apply" },
+      ],
+      ifDeclined:
+        "nothing at all happens, which is also what happens if you approve — a rehearsal's act is a " +
+        "no-op either way. Declining here is the safe way to check that declining works.",
+      requires: [FROST_HSM_PASSWORD_REQUIREMENT],
+      source,
+      escapes: withoutCredential
+        ? [
+            namedEscape({
+              liftsCode: HANDOFF_REFUSAL_CODES.secretAbsent,
+              reason:
+                "a rehearsal's act performs no device command, so it needs no device credential. This " +
+                "lifts ONLY secret-absent and only on this verb; `apply` has no such escape and cannot " +
+                "acquire one without a code change that shows in a diff.",
+              authorizedBy: "the operator, by typing --without-credential on this rehearsal",
+            }),
+          ]
+        : [],
+      probe: () => classifyWrapKeyReadiness(probeOpts).kind,
+      act: () => "no-op: the rehearsal act deliberately does nothing",
+      dryRun: !argv.includes("--apply"),
+      biometricAuth: realBiometric(),
+      briefFx: realBriefEffects(),
+    });
+
+    switch (outcome.kind) {
+      case "refused":
+        process.stderr.write(renderRefusal(outcome.refusal));
+        process.exit(2);
+        break;
+      case "dry-run":
+        process.stdout.write(
+          `  DEVICE      ${outcome.before}\n` +
+            `  WOULD ASK   ${outcome.promptLine}\n` +
+            "  (dry run — the biometric door was NOT opened. Add --apply to rehearse the touch.)\n\n",
+        );
+        process.exit(0);
+        break;
+      case "declined":
+        process.stdout.write(
+          `  DEVICE      ${outcome.before}\n  DECLINED    ${outcome.reason}\n` +
+            "  The gate refused, which is the outcome it must be able to produce. Nothing ran.\n\n",
+        );
+        process.exit(1);
+        break;
+      case "performed":
+        process.stdout.write(
+          `  APPROVED    the gate opened and the no-op act ran\n` +
+            `  DEVICE      ${outcome.measured.before} -> ${outcome.measured.after}` +
+            ` (${outcome.measured.changed ? "CHANGED — investigate, a rehearsal must not" : "unchanged, as read"})\n` +
+            "  The whole chain is exercised. `apply --apply` performs the same sequence with a real act.\n\n",
+        );
+        process.exit(outcome.measured.changed ? 1 : 0);
+        break;
+    }
+  }
+
+  if (!cred.ok) {
+    process.stderr.write(cred.rendered);
+    process.exit(2);
+  }
+
+  const probe: WrapKeyProbeOptions = { libraryPath: discovery.path, pin: cred.pin.reveal(), slotId, label };
 
   if (verb === "status") {
     const r = classifyWrapKeyReadiness(probe);
@@ -702,40 +1127,35 @@ if (import.meta.main) {
     process.exit(readinessExitCode(r));
   }
 
-  if (verb === "plan" || verb === "apply") {
-    let plan: WrapKeyProvisioningPlan;
-    try {
-      plan = planWrapKeyProvisioning({
-        connector: process.env["ZETA_YUBIHSM_CONNECTOR"] ?? "http://127.0.0.1:12345",
-        authKeyId: Number(process.env["ZETA_YUBIHSM_AUTHKEY"] ?? "1"),
-        password: process.env["ZETA_YUBIHSM_PASSWORD"] ?? "",
-        label: probe.label ?? FROST_WRAP_KEY_LABEL,
-      });
-    } catch (err) {
-      process.stderr.write(`${messageOf(err)}\n`);
-      process.exit(2);
-    }
-    const dryRun = verb === "plan" || !argv.includes("--apply");
-    const { realBriefEffects } = await import("./ceremony-brief.ts");
-    const { realBiometric } = await import("./biometric.ts");
-    const outcome = await applyWrapKeyProvisioning({
-      probe,
-      plan,
-      dryRun,
-      ...(dryRun ? {} : { biometricAuth: realBiometric() }),
-      briefFx: realBriefEffects(),
+  let plan: WrapKeyProvisioningPlan;
+  try {
+    plan = planWrapKeyProvisioning({
+      connector,
+      authKeyId,
+      password: cred.password.reveal(),
+      label: probe.label ?? FROST_WRAP_KEY_LABEL,
     });
-    process.stdout.write(renderReadiness(outcome.readiness));
-    process.stdout.write(`  ACTION      ${outcome.action}\n`);
-    if (outcome.detail !== undefined) process.stdout.write(`  DETAIL      ${outcome.detail}\n`);
-    if (dryRun) {
-      process.stdout.write(`  WOULD RUN   ${plan.program} ${plan.displayArgv.join(" ")}\n`);
-      process.stdout.write("  (dry run — the biometric door was never opened and the device is untouched)\n");
-    }
-    process.exit(outcome.action === "provisioned" ? 0 : readinessExitCode(outcome.readiness));
+  } catch (err) {
+    process.stderr.write(`${messageOf(err)}\n`);
+    process.exit(2);
   }
-
-  process.stderr.write(usage());
-  process.exit(2);
+  const dryRun = verb === "plan" || !argv.includes("--apply");
+  const { realBriefEffects } = await import("./ceremony-brief.ts");
+  const { realBiometric } = await import("./biometric.ts");
+  const outcome = await applyWrapKeyProvisioning({
+    probe,
+    plan,
+    dryRun,
+    ...(dryRun ? {} : { biometricAuth: realBiometric() }),
+    briefFx: realBriefEffects(),
+  });
+  process.stdout.write(renderReadiness(outcome.readiness));
+  process.stdout.write(`  ACTION      ${outcome.action}\n`);
+  if (outcome.detail !== undefined) process.stdout.write(`  DETAIL      ${outcome.detail}\n`);
+  if (dryRun) {
+    process.stdout.write(`  WOULD RUN   ${plan.program} ${plan.displayArgv.join(" ")}\n`);
+    process.stdout.write("  (dry run — the biometric door was never opened and the device is untouched)\n");
+  }
+  process.exit(outcome.action === "provisioned" ? 0 : readinessExitCode(outcome.readiness));
 }
 /* c8 ignore stop */
