@@ -35,17 +35,27 @@ export function qemuUsbSerialError(serial: string): string | null {
 export function qemuUsbStorageDeviceArg(
   driveId: string,
   serial?: string,
+  /**
+   * Firmware boot order. Default 1 (the only stick). A SECOND attached stick
+   * needs a distinct index, otherwise QEMU refuses the whole command line with
+   * "Two devices with same boot index" — which is how the two-stick
+   * enumeration smoke would otherwise fail for a reason unrelated to USB.
+   */
+  bootIndex = 1,
 ): { readonly ok: true; readonly device: string; readonly serial: string } | { readonly ok: false; readonly error: string } {
   const resolvedSerial = serial ?? QEMU_USB_TEST_SERIAL;
   if (driveId.length === 0) return { ok: false, error: "usb-storage drive id is required" };
   if (driveId.includes(",") || driveId.includes("=")) {
     return { ok: false, error: "usb-storage drive id must not contain comma or equals" };
   }
+  if (!Number.isSafeInteger(bootIndex) || bootIndex < 1) {
+    return { ok: false, error: "usb-storage bootIndex must be a safe integer >= 1" };
+  }
   const serialErr = qemuUsbSerialError(resolvedSerial);
   if (serialErr !== null) return { ok: false, error: serialErr };
   return {
     ok: true,
     serial: resolvedSerial,
-    device: `usb-storage,bus=xhci.0,drive=${driveId},bootindex=1,serial=${resolvedSerial}`,
+    device: `usb-storage,bus=xhci.0,drive=${driveId},bootindex=${String(bootIndex)},serial=${resolvedSerial}`,
   };
 }

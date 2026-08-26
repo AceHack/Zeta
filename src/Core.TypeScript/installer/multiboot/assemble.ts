@@ -115,6 +115,19 @@ export function planQemuUeFiBootArgs(input: {
   readonly media?: "virtio" | "usb" | "vfat-dir";
   /** Guest-visible USB iSerial. Ignored unless media is usb. Default QEMU_USB_TEST_SERIAL. */
   readonly usbSerial?: string;
+  /**
+   * FURTHER attached usb-storage sticks, in addition to `outputImagePath`.
+   * Only meaningful when media is "usb". Exists so a lane can ask the question
+   * MAN-USB-02 asks — do two attached sticks enumerate as two devices, or does
+   * something upstream collapse them into one? — without a second machine.
+   * Empty by default, so every existing caller's argv is byte-identical.
+   */
+  readonly additionalUsbImages?:
+    | readonly {
+        readonly imagePath: string;
+        readonly serial: string;
+      }[]
+    | undefined;
 }): { readonly ok: true; readonly args: readonly string[] } | { readonly ok: false; readonly error: string } {
   if (input.outputImagePath.trim().length === 0) {
     return { ok: false, error: "outputImagePath is required" };
@@ -126,10 +139,42 @@ export function planQemuUeFiBootArgs(input: {
   if (media === "vfat-dir" && input.outputImagePath.includes(",")) {
     return { ok: false, error: "vfat-dir path must not contain a comma (QEMU fat: parser)" };
   }
+  const additional = input.additionalUsbImages ?? [];
+  if (additional.length > 0 && media !== "usb") {
+    // Fail rather than drop them: silently ignoring extra sticks would make a
+    // one-stick run look like the two-stick run it was asked for.
+    return { ok: false, error: "additionalUsbImages requires media \"usb\"" };
+  }
   let disk: readonly string[];
   if (media === "usb") {
     const usb = qemuUsbStorageDeviceArg("stick", input.usbSerial);
     if (!usb.ok) return { ok: false, error: usb.error };
+    const extraArgs: string[] = [];
+    const seenSerials = new Set<string>([usb.serial]);
+    for (let i = 0; i < additional.length; i++) {
+      const entry = additional[i]!;
+      if (entry.imagePath.trim().length === 0) {
+        return { ok: false, error: `additionalUsbImages[${String(i)}].imagePath is required` };
+      }
+      if (seenSerials.has(entry.serial)) {
+        // Two sticks reporting one iSerial is the collapse MAN-USB-02 fears,
+        // manufactured by the test harness instead of found by it.
+        return {
+          ok: false,
+          error: `additionalUsbImages[${String(i)}] reuses iSerial ${entry.serial}`,
+        };
+      }
+      const driveId = `stick${String(i + 2)}`;
+      const extra = qemuUsbStorageDeviceArg(driveId, entry.serial, i + 2);
+      if (!extra.ok) return { ok: false, error: extra.error };
+      seenSerials.add(extra.serial);
+      extraArgs.push(
+        "-device",
+        extra.device,
+        "-drive",
+        `if=none,id=${driveId},file=${entry.imagePath},format=raw`,
+      );
+    }
     disk = [
       "-device",
       "qemu-xhci,id=xhci",
@@ -137,6 +182,7 @@ export function planQemuUeFiBootArgs(input: {
       usb.device,
       "-drive",
       `if=none,id=stick,file=${input.outputImagePath},format=raw`,
+      ...extraArgs,
     ];
   } else if (media === "vfat-dir") {
     disk = [

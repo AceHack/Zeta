@@ -85,9 +85,14 @@ const INSTALLER_STICK: readonly ManualCheck[] = [
       "two-element array in a test.",
     needsHardwareBecause:
       "selectUsbTarget() is proven on arrays. What is not proven without hardware is that " +
-      "TWO plugged-in sticks actually produce two enumerated candidates -- a hub or a " +
-      "card reader that presents one node for two devices would defeat the rail upstream " +
-      "of the function the test covers.",
+      "TWO plugged-in sticks actually produce two enumerated candidates in DISKUTIL -- a " +
+      "hub or a card reader that presents one node for two devices would defeat the rail " +
+      "upstream of the function the test covers. NOTE, 2026-08-26: the premise now holds " +
+      "at the FIRMWARE layer, measured rather than assumed -- two emulated usb-storage " +
+      "devices with distinct iSerials enumerate as two disks ([hd0 hd1]) against a " +
+      "one-stick control ([hd0]) in gpt-esp-usb-boot-smoke.ts. The macOS enumeration path " +
+      "is what remains, and the hub / card-reader cases are emulable too (see the COSTED " +
+      "section of the 2026-08-26 research doc); they are unbuilt, not impossible.",
     command:
       "Plug in TWO USB sticks, then: bun src/Core.TypeScript/zflash/flash-usb.ts <iso-path>",
     expected:
@@ -139,11 +144,18 @@ const INSTALLER_STICK: readonly ManualCheck[] = [
   {
     id: "MAN-USB-05",
     path: "installer-stick",
-    proves: "The flashed stick actually boots the target machine via UEFI.",
+    proves: "The flashed stick actually boots the TARGET MACHINE's firmware via UEFI.",
     needsHardwareBecause:
-      "This is firmware behaviour on the destination host. Nothing in this repository can " +
-      "observe a UEFI boot; the whole chain being green up to here still permits a stick " +
-      "that no firmware will select.",
+      "This is firmware behaviour on the destination host: its NVRAM boot order, its USB " +
+      "controller's enumeration timing, and vendor quirks in how removable media are " +
+      "ranked. None of those exist in an emulator, because the emulator is not that " +
+      "machine. NOTE, 2026-08-26: this entry used to read 'nothing in this repository can " +
+      "observe a UEFI boot', which is no longer true -- gpt-esp-usb-boot-smoke.ts boots " +
+      "the assembled GPT/ESP image under OVMF over -device usb-storage on every run, with " +
+      "a loader-removed negative control. What survives is the sentence above, plus one " +
+      "measured question: OVMF boots a FAT partition REGARDLESS of its type GUID (run " +
+      "32977813494), so whether the target firmware requires " +
+      "c12a7328-f81f-11d2-ba4b-00a0c93ec93b is unknown until a real machine is asked.",
     command: "Boot the target node from the stick (firmware boot menu).",
     expected: "The Zeta installer reaches its first serial marker.",
     onMismatch:

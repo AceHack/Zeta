@@ -116,8 +116,16 @@ use manual flow: sudo dd if=<iso> of=/dev/rdiskN bs=4m
 
 **Why it cannot be automated.** `selectUsbTarget()` is proven on arrays. What is
 unproven without hardware is that two plugged-in sticks actually produce two
-enumerated candidates — a hub or a card reader presenting one node for two
-devices would defeat the rail *upstream* of the tested function.
+enumerated candidates *in `diskutil`* — a hub or a card reader presenting one
+node for two devices would defeat the rail *upstream* of the tested function.
+
+> **Narrowed 2026-08-26.** The premise now holds at the **firmware** layer, and
+> it was measured rather than assumed: two emulated `usb-storage` devices with
+> distinct iSerials enumerate as two disks (`[hd0 hd1]`), against a one-stick
+> control that enumerates one (`[hd0]`). The hub and card-reader collapse cases
+> are also emulable and simply are not built yet — see the COSTED section of
+> `docs/research/2026-08-26-usb-boot-verification-in-qemu-*.md`. What you are
+> checking below is the **macOS** enumeration path.
 
 **On mismatch.** If it selects one and prompts: **stop, do not answer the
 challenge.** Enumeration is collapsing two devices into one candidate. That is a
@@ -196,12 +204,30 @@ Non-destructive to the stick; boots the target node.
 the Zeta installer's first serial marker.
 
 **Why it cannot be automated.** This is firmware behaviour on the destination
-host. Nothing in this repository can observe a UEFI boot, and every check above
-can be green while firmware still declines to select the stick.
+host: its NVRAM boot order, its USB controller's enumeration timing, and vendor
+quirks in how removable media are ranked. None of those exist in an emulator,
+because the emulator is not that machine.
 
-**On mismatch.** If firmware does not offer the stick, the ESP is not being
-recognised. Check the partition type GUID
-(`c12a7328-f81f-11d2-ba4b-00a0c93ec93b`) before re-flashing.
+> **Narrowed 2026-08-26.** This section used to say *"nothing in this repository
+> can observe a UEFI boot."* That is no longer true.
+> `src/Core.TypeScript/installer/multiboot/gpt-esp-usb-boot-smoke.ts` assembles
+> the image, wraps it in a real GPT with an ESP at LBA 2048, attaches it as
+> `-device usb-storage`, and boots it under OVMF on every run — with a
+> loader-removed negative control that must **fail** to boot, or the run is
+> reported as vacuous. So the *partition-table-and-loader* half is now checked
+> on every change. What is left is the sentence above.
+
+**On mismatch.** If firmware does not offer the stick, the ESP is likely not
+being recognised — but note what is already known before you touch anything:
+the GPT is well-formed (three independent parsers agree: `sfdisk`, macOS
+`diskutil`, and OVMF's own partition driver), the type GUID *is*
+`c12a7328-f81f-11d2-ba4b-00a0c93ec93b`, and a UEFI firmware does boot it. So a
+refusal here isolates to **this** firmware's policy. Record exactly what it did.
+
+One measured caveat that makes this worth recording: **OVMF boots a FAT
+partition regardless of its type GUID** (run `32977813494` — retyping the entry
+to Microsoft Basic Data changed nothing). Real firmware may be stricter. Whether
+yours is, is one of the things this step is for.
 
 ---
 
@@ -352,6 +378,9 @@ manual step into an automatable one.
 ## Pointers
 
 - `src/Core.TypeScript/zflash/usb-hardware-manual-lane.ts` — the register these ids come from
+- `src/Core.TypeScript/installer/multiboot/gpt-esp-usb-boot-smoke.ts` — the pre-hardware UEFI boot lane that narrowed `MAN-USB-05` and `MAN-USB-02`
+- `docs/research/2026-08-26-usb-boot-verification-in-qemu-what-moved-what-is-costed-and-the-irreducible-hardware-remainder.md`
+  — the step-by-step classification, the costed-but-unbuilt lanes, and the ordered physical session this document's steps belong to
 - `src/Core.TypeScript/zflash/flash-usb.test.ts` — the automated half for the macOS arm
 - `tools/setup/persona-keys/frost-share-adapter.hardware.test.ts` — the token hardware lane
 - `registry/unexecuted-test-files.json` — why the token lane is out of the whole-suite gate

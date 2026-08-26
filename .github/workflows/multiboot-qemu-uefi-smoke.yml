@@ -1,7 +1,12 @@
 # Optional QEMU UEFI menu-boot smoke — USB-IDENTITY-THREAT-MODEL §8.2.
 #
-# Assembles a tiny FAT multiboot image with a real grub-mkimage EFI and
-# boots it under OVMF. Looks for ZETA-MULTIBOOT-UEFI-MENU on serial.
+# Two lanes in one job, deliberately not merged:
+#   1. vvfat menu smoke  -> ZETA-MULTIBOOT-UEFI-MENU (loader + grub.cfg are right)
+#   2. GPT+ESP USB boot  -> ZETA-GPT-ESP-USB-BOOT    (the ASSEMBLED IMAGE boots)
+# (1) proves an artifact was built correctly; (2) proves it boots off a real
+# partition table via -device usb-storage, and also asserts that two attached
+# sticks enumerate as two disks (the MAN-USB-02 premise). Both are drift
+# checks: loud, non-blocking, NOT in `gate (required)`'s needs.
 # Separate workflow (THE FLIP): not on gate (required). Path-filtered.
 #
 # SECURITY: only SHA-pinned checkout; no attacker-controlled PR
@@ -15,13 +20,29 @@ on:
     types: [opened, reopened, synchronize, ready_for_review]
     paths:
       - "src/Core.TypeScript/installer/multiboot/**"
+      - "src/Core.TypeScript/installer/qemu-usb-storage.ts"
       - ".github/workflows/multiboot-qemu-uefi-smoke.yml"
   push:
     branches: [main]
     paths:
       - "src/Core.TypeScript/installer/multiboot/**"
+      - "src/Core.TypeScript/installer/qemu-usb-storage.ts"
       - ".github/workflows/multiboot-qemu-uefi-smoke.yml"
   workflow_dispatch:
+    inputs:
+      gpt_esp_mutate:
+        description: >-
+          Corrupt the GPT+ESP image to demonstrate the check can fail. Every
+          value only CORRUPTS; none bypasses a check, so this can only turn the
+          lane red.
+        required: false
+        default: "none"
+        type: choice
+        options:
+          - "none"
+          - "esp-type-guid"
+          - "remove-loader"
+          - "zero-gpt"
 
 permissions:
   contents: read
@@ -34,7 +55,7 @@ jobs:
   uefi-menu-smoke:
     name: multiboot QEMU UEFI menu smoke
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -44,8 +65,19 @@ jobs:
         with:
           bun-version: 1.3
 
+      # util-linux (sfdisk) is already present on ubuntu-24.04; it is the
+      # INDEPENDENT GPT reader the smoke cross-checks its own writer against.
       - name: Install QEMU + OVMF + grub-mkimage + mtools
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools ovmf grub-efi-amd64-bin
+
+      - name: Show tool versions (a check that did not run must not look like one that passed)
+        run: |
+          set -euo pipefail
+          qemu-system-x86_64 --version | head -1
+          mformat -V | head -1
+          sfdisk --version
+          grub-mkimage --version | head -1
+          ls -l /usr/share/OVMF/
 
       # The mtools FAT-assembly smoke in multiboot.test.ts used to leave itself as a bare
       # `return` when mtools was absent, which bun reports as a PASS — and nothing
@@ -63,3 +95,12 @@ jobs:
         env:
           MULTIBOOT_UEFI_SMOKE_REQUIRED: "1"
         run: bun src/Core.TypeScript/installer/multiboot/qemu-uefi-menu-smoke.ts
+
+      # THE SECOND LANE. Boots the assembled image itself off a real GPT via
+      # usb-storage, and refuses to report green unless the loader-less
+      # negative control FAILED to boot.
+      - name: Run GPT+ESP USB boot smoke
+        env:
+          MULTIBOOT_UEFI_SMOKE_REQUIRED: "1"
+          ZETA_GPT_ESP_SMOKE_MUTATE: ${{ inputs.gpt_esp_mutate || 'none' }}
+        run: bun src/Core.TypeScript/installer/multiboot/gpt-esp-usb-boot-smoke.ts
