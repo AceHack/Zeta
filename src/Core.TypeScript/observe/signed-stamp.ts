@@ -121,6 +121,16 @@ export interface SignedStamp {
   readonly signature: Uint8Array;
 }
 
+/** A domain-separated assertion verified by the same local roster as phase stamps. */
+export interface SignedAssertion {
+  readonly domain: string;
+  readonly scope: string;
+  readonly payload: Uint8Array;
+  readonly signer: string;
+  readonly scheme: string;
+  readonly signature: Uint8Array;
+}
+
 /**
  * Neutral facts again — never `Authentic` / `Forged`. The mechanism reports what it
  * checked; reunion, impersonation and misconfiguration are readings the caller's oracle
@@ -131,6 +141,22 @@ export type StampAuthVerdict =
   | { readonly kind: "signature-invalid"; readonly signer: string; readonly scheme: string }
   | { readonly kind: "signer-not-on-roster"; readonly signer: string }
   | { readonly kind: "scheme-not-accepted"; readonly scheme: string };
+
+/** Verify arbitrary canonical bytes against this verifier's local scheme and roster view. */
+export function verifySignedAssertion(
+  schemes: readonly SignatureScheme[],
+  roster: readonly RosterEntry[],
+  signed: SignedAssertion,
+): StampAuthVerdict {
+  const scheme = schemes.find((candidate) => candidate.id === signed.scheme);
+  if (!scheme) return { kind: "scheme-not-accepted", scheme: signed.scheme };
+  const entry = roster.find((candidate) => candidate.signer === signed.signer && candidate.scheme === signed.scheme);
+  if (!entry) return { kind: "signer-not-on-roster", signer: signed.signer };
+  const message = canonicalBytes(signed.domain, signed.scope, signed.payload);
+  return scheme.verify(entry.publicKey, message, signed.signature)
+    ? { kind: "signature-verified", signer: signed.signer, scheme: signed.scheme }
+    : { kind: "signature-invalid", signer: signed.signer, scheme: signed.scheme };
+}
 
 /**
  * Verify a signed stamp against **this verifier's own roster**.
@@ -147,16 +173,13 @@ export function verifySignedStamp(
   roster: readonly RosterEntry[],
   signed: SignedStamp,
 ): StampAuthVerdict {
-  const scheme = schemes.find((s) => s.id === signed.scheme);
-  if (!scheme) return { kind: "scheme-not-accepted", scheme: signed.scheme };
-
-  // An unknown signer is reported as such rather than as an invalid signature: counting a
-  // fabricated identity as "merely failed to verify" would blur forgery into noise.
-  const entry = roster.find((r) => r.signer === signed.signer && r.scheme === signed.scheme);
-  if (!entry) return { kind: "signer-not-on-roster", signer: signed.signer };
-
-  const message = stampSigningBytes(signed.subject, signed.stamp);
-  return scheme.verify(entry.publicKey, message, signed.signature)
-    ? { kind: "signature-verified", signer: signed.signer, scheme: signed.scheme }
-    : { kind: "signature-invalid", signer: signed.signer, scheme: signed.scheme };
+  const payload = concat([u32be(signed.stamp.phase), u32be(signed.stamp.seed >>> 0)]);
+  return verifySignedAssertion(schemes, roster, {
+    domain: PHASE_STAMP_DOMAIN,
+    scope: signed.subject,
+    payload,
+    signer: signed.signer,
+    scheme: signed.scheme,
+    signature: signed.signature,
+  });
 }
