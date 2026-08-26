@@ -1,0 +1,164 @@
+# archive-strand-alarm — AH003's home now that it is off the pre-merge floor.
+#
+# WHAT MOVED, AND WHY IT HAD TO. `audit-orphaned-archive-refs.ts` measures a REPO-WIDE,
+# TIME-VARYING condition read from `git ls-remote` against the live remote: "N archive
+# records are stranded on refs and absent from main past the grace window". It ran inside
+# `cross-verify`, which is in `gate-required.needs`, so that number could block any pull
+# request. On 2026-08-25 it blocked PR #15308 — a vectorisation change adding only new
+# files — because FOUR REFS WERE STRANDED REPO-WIDE. The PR re-ran green with zero code
+# change. It failed inside the job whose headline step is the four-language byte-lock, so it
+# READ as "the vectorisation broke the oracles", and two agents independently reported it
+# that way.
+#
+# The blocking placement was not buying enforcement. The only remedy available to that
+# author was "press re-run until it passes", which is the reflex that lets a genuine red be
+# clicked away. A check that clears itself on re-run has already become flake.
+#
+# WHY THIS IS NOT A DEMOTION TO A TOLERATED WARNING. The audit's own header says it, and it
+# is right: "A lane that leaked because one failure was tolerated does not get its falsifier
+# installed as another tolerated failure." So this workflow FAILS. The audit's exit code is
+# the job's exit code — no `continue-on-error`, no `|| true`, no `2>&1 | tee` swallowing the
+# status. On failure it raises or refreshes ONE deduplicated tracking issue, because a red
+# run in a repo with 80+ workflows is easy to miss. That is the same two-surface alarm
+# `heartbeat-liveness.yml` uses for the same reason, and this file follows its shape
+# deliberately rather than inventing a second one.
+#
+# WHAT STOPS BEING CAUGHT, STATED PLAINLY. A newly stranded record is no longer detected at
+# the next unrelated PR's `cross-verify`; it is detected at the next run of this workflow.
+# Detection latency becomes at most the cadence below (30 minutes) instead of "the next pull
+# request anyone opens". Against the audit's own 120-minute grace window that is not a
+# material loss — and it is a GAIN in the common case, because pull requests do not arrive
+# on a schedule at 03:00. What is genuinely given up is that a merge can now land while a
+# record is stranded. That was already true in practice: the strand was being cleared by
+# re-running the PR, not by landing the record.
+#
+# NO `pull_request` TRIGGER, ON PURPOSE. The audit's falsifiers
+# (`audit-orphaned-archive-refs.test.ts`) already run BLOCKING on every PR inside
+# `test-typescript-hermetic`, offline and deterministically — so the tool cannot regress
+# unnoticed. Adding a live-remote PR lane here would recreate exactly the coupling this
+# change removes, on the same tool, one file over.
+#
+# DISCIPLINE (mirrors gate.yml's header):
+#   - Runner pinned to an explicit version, not -latest.
+#   - Third-party actions SHA-pinned by full 40-char commit SHA.
+#   - permissions: `contents: read` + `issues: write` — the issue is the alarm's second
+#     surface and nothing here may modify code.
+#   - Every job carries timeout-minutes.
+#   - No `${{ }}` interpolation of any untrusted value into a `run:` block; the repository
+#     name and run URL cross as env vars.
+
+name: archive-strand-alarm
+
+on:
+  schedule:
+    # Twice hourly, off-the-hour to avoid the GHA cron thundering herd. Well inside the
+    # audit's 120-minute grace window, so a settled strand is seen long before it ages.
+    - cron: "13,43 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: archive-strand-alarm
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: archive records reached main (AH003)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        # FULL history is not needed, but the whole tree is: the audit indexes
+        # docs/history/pr-reviews/ to decide which records are on main, and it REFUSES a
+        # verdict when that index is empty rather than reporting every ref as stranded.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: latest
+
+      - name: Audit archive refs against main
+        id: audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZETA_AGENT_REPO: ${{ github.repository }}
+        # The exit code of this step IS the alarm. `tee` would hand the job `tee`'s status
+        # instead of the audit's, which is the "check that did not run looking like one that
+        # passed" failure this repository keeps finding — so the output is redirected, then
+        # replayed, and the audit's own rc decides.
+        run: |
+          set -euo pipefail
+          rc=0
+          bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts --list-stranded \
+            > audit.txt 2> audit.err || rc=$?
+          cat audit.txt
+          cat audit.err >&2
+          {
+            echo "### archive-strand-alarm"
+            echo
+            echo '```'
+            cat audit.txt audit.err
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$rc"
+
+      - name: Raise or refresh the tracking issue
+        # `failure()` scoped to the audit step's own outcome, so a checkout or Bun-setup
+        # failure is not reported to humans as an archive-lane outage.
+        if: failure() && steps.audit.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          summary="$(grep -E '^\[archive-refs\]' audit.txt | head -n 1 || echo '[archive-refs] audit failed')"
+          stranded="$(grep -E '^  STRANDED' audit.txt || true)"
+          title="archive-strand-alarm: a record is stranded on a ref and absent from main"
+
+          if ! gh label create archive-strand \
+            --repo "$REPO" \
+            --description "Raised by archive-strand-alarm.yml when an archive record has not reached main" \
+            --color "B60205" 2> label_err.txt; then
+            # Only "already exists" is benign. Permission and rate-limit failures must
+            # surface, not be swallowed into a silent no-op.
+            grep -q "already exists" label_err.txt || { cat label_err.txt >&2; exit 1; }
+          fi
+
+          existing="$(gh issue list --repo "$REPO" --label archive-strand --state open --limit 1 --json number --jq '.[0].number // empty')"
+          # Heredoc rather than printf: the body carries markdown code fences, and backticks
+          # inside a single-quoted printf format read to shellcheck as a command substitution
+          # that will not expand (SC2016). Escaped here, they are plainly literal.
+          body="$(cat <<EOF
+          $summary
+
+          \`\`\`
+          $stranded
+          \`\`\`
+
+          Alarm run: $RUN_URL
+
+          DO NOT DELETE THESE REFS. A stranded ref holds the ONLY copy of its record;
+          deleting it destroys the record rather than landing it, and the audit will still
+          count the missing record afterwards. LAND them: re-run pr-archive-on-merge.yml for
+          the named PR, or let the --all-merged backfill in agent-heartbeat.yml pick them up.
+          Then lower STRANDED_BASELINE in
+          src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts.
+
+          This issue does not auto-close. Close it once the audit is passing again.
+          EOF
+          )"
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body" --label archive-strand
+          fi
