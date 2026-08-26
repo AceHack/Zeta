@@ -218,10 +218,13 @@ jobs:
     # by an already-stuck job; the low cap was paid for by every
     # slow-but-healthy run.
     #
-    # Expiry: this repo adds ~170 commits/day and the fetch this cap
-    # covers grows with the ref count (81 heads + 359 tags today), so
-    # 15 min will be outgrown too. The real fix is to stop over-fetching
-    # — see the `fetch-depth` comment on the Checkout step below.
+    # The over-fetch this cap was sized around is now GONE — the Checkout
+    # step below is shallow and `detect` fetches just the two commits it
+    # diffs (see those comments). So the headroom here is no longer
+    # covering a 297MB all-refs fetch; it is covering a genuine hang,
+    # which is what a timeout should do. Kept at 15 rather than lowered
+    # back: the tail above was measured against the OLD fetch, so there
+    # is no measured tail for the new one yet. Re-measure before tightening.
     timeout-minutes: 15
     outputs:
       code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
@@ -244,10 +247,25 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Need both PR base and head shas for git diff. fetch-depth: 0
-          # gets full history; the 5-minute job timeout above is sized
-          # for this on slow runners.
-          fetch-depth: 0
+          # Shallow. The `detect` step below fetches the two commits it
+          # needs explicitly — see the fetch there for why two is enough.
+          #
+          # This was `fetch-depth: 0`, which is over-fetching for the
+          # stated need. Full depth makes checkout run:
+          #   git fetch --no-tags --prune origin \
+          #     +refs/heads/*:refs/remotes/origin/* \
+          #     +refs/tags/*:refs/tags/* \
+          #     +<sha>:refs/remotes/pull/N/merge
+          # i.e. EVERY branch and EVERY tag at full depth — 81 heads and
+          # 359 tags today, 297MB — to compute a diff between two commits
+          # that needs 162MB. The over-fetch also grows with the ref
+          # count, so it gets worse over time; a shallow fetch does not.
+          #
+          # Every other job in this workflow already checks out shallow
+          # and completes in ~9s with no hangs across hundreds of samples.
+          # path-filter was the only `fetch-depth: 0` job in the file and
+          # the only one whose checkout was being killed at the timeout.
+          fetch-depth: 1
 
       - id: detect
         if: github.event_name == 'pull_request'
@@ -257,6 +275,31 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
+
+          # Fetch exactly the two commits the diff below needs, and
+          # nothing else. The checkout above is shallow, so neither sha
+          # is guaranteed present yet.
+          #
+          # Why TWO COMMITS is provably enough: the diff below is
+          # TWO-DOT (`git diff A B`), which is a direct tree-to-tree
+          # comparison. It does not walk ancestry and does not need a
+          # merge base — verified against two commits with NO common
+          # history at all, where `git merge-base` fails and the
+          # three-dot `git diff A...B` dies with "no merge base", while
+          # two-dot `git diff A B` still returns the correct file list.
+          # So PR shape is irrelevant here: a long-lived branch, a
+          # force-push, and merge commits in the range all diff the same,
+          # because none of them are traversed. This is what makes a
+          # bounded `fetch-depth: N` the wrong shape of fix — N would be
+          # a guess about branch length, and this is not a guess.
+          #
+          # Fail-closed, which is the property that matters most: if
+          # either object were missing, `git diff` exits 128 with
+          # "fatal: bad object" and `set -e` aborts the step. A missing
+          # object therefore CANNOT produce a wrong changed-file set and
+          # silently skip jobs that should have run — it fails the job
+          # loudly instead. Verified, not assumed.
+          git fetch --no-tags --depth=1 origin "${PR_BASE_SHA}" "${PR_HEAD_SHA}"
 
           # Diff base..head of the PR to enumerate changed files.
           CHANGED=$(git diff --name-only "${PR_BASE_SHA}" "${PR_HEAD_SHA}")
