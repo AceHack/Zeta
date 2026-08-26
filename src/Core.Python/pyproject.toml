@@ -16,11 +16,34 @@ packages = ["src/zeta"]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+# There is no `[tool.ruff]` section here, so this project's lint contract is
+# whatever ruff's DEFAULT rule set happens to be — which means the contract is
+# set by the lockfile, not by anything anyone wrote down. ruff 0.16 widened that
+# default from 59 rules to 413, and `src/Core.Python` measures 65 findings under
+# the new set while measuring 0 under the old one. Both numbers are from this
+# tree with no source change: `uvx ruff@0.15.17 check` -> "All checks passed!",
+# `uv run ruff check` on 0.16.4 -> "Found 65 errors."
+#
+# The 65 are not junk — 54 are auto-fixable modernisations (UP006/UP007/UP035/
+# UP045/I001), and of the 15 that remain, 8 are UP046 (rewrite `Generic[A, B]`
+# to PEP 695 type parameters) in `algebra/interfaces.py`, 2 are PLC0105 TypeVar
+# variance renames in the same file, and 2 are TRY004, which changes an exception
+# TYPE and so is a behaviour change. Adopting them is real work with a real
+# review surface: a variance-semantics change to the algebra interfaces and two
+# raised-type changes do not belong inside a lockfile bump, where nobody would be
+# looking for them.
+#
+# So the bound is here, loud, instead of the flip being silent. `src/Arc.Python`
+# already runs 0.16.4 clean and its manifest says defaults are the repo's
+# standard; this bound is the admission that Core.Python is not there yet, and it
+# is what a future Dependabot PR has to argue with rather than quietly step over.
+# Remove it in the change that lands the 65 — not before, and not as a side
+# effect of something else.
 [dependency-groups]
 dev = [
     "mypy>=2.1.0",
     "pytest>=9.1.0",
-    "ruff>=0.9.0",
+    "ruff>=0.9.0,<0.16",
     "types-pyyaml>=6.0.12.20260518",
     "sympy>=1.13",
     "mpmath>=1.3",
