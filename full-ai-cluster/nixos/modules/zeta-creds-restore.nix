@@ -179,7 +179,16 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         User = "root";  # needs root to read /run passphrase + drop to zeta user via sudo
-        WorkingDirectory = cfg.repoRoot;
+        # 081M0WTB5MN: WorkingDirectory was cfg.repoRoot (the cloned repo). If that
+        # directory is not present when the unit fires (After=local-fs.target is
+        # early), systemd fails the unit at chdir — BEFORE ExecStart — so none of
+        # the ExecStart logging below runs and the unit is SILENT. That is exactly
+        # what run 32873212247 showed: zero zeta-creds-restore lines in phase-2
+        # even with the in-ExecStart precondition gate. ExecStart uses absolute
+        # paths only, so cwd is irrelevant; "/" always exists and never fails the
+        # chdir. Repo/script presence is still checked (and NAMED) by the
+        # precondition gate inside ExecStart.
+        WorkingDirectory = "/";
         Environment = [
           "HOME=${cfg.home}"
           "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
@@ -214,6 +223,13 @@ in
               echo "$1" >> "$_serial" || true
             fi
           }
+
+          # 081M0WTB5MN: unconditional FIRST line, before any gate. Its presence
+          # proves ExecStart ran at all; its ABSENCE means the unit failed before
+          # ExecStart (WorkingDirectory chdir, User, Environment) — a distinction
+          # the precondition gate below cannot make, because a pre-ExecStart
+          # failure never reaches it.
+          log_restore "zeta-creds-restore: ExecStart entered"
 
           # 081M0WTB5MN: precondition gate, moved here from
           # unitConfig.ConditionPathExists so a missing path is NAMED on serial

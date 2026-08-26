@@ -230,6 +230,14 @@ export const UEFI_KEYFILE_RESTORE_SERIAL = {
   missingKeyfile: "zeta-creds-restore: uefiKeyfile recorded but ESP keyfile missing",
   uuidBinding: "zeta-creds-restore: binding-factor usbUuid (default)",
   /**
+   * Unconditional FIRST line of the unit's ExecStart (081M0WTB5MN). Its presence
+   * proves ExecStart ran at all; its ABSENCE on the phase-2 slice means the unit
+   * failed BEFORE ExecStart (WorkingDirectory chdir / User / Environment), which
+   * no in-ExecStart logging can catch. Distinguishes a pre-ExecStart start
+   * failure from a precondition exit.
+   */
+  execStartEntered: "zeta-creds-restore: ExecStart entered",
+  /**
    * Emitted once per absent precondition by the unit's ExecStart (081M0WTB5MN),
    * naming the exact missing path — the ESP blob, /etc/zeta/usb-uuid, the cloned
    * restore CLI, or the mise bun shim — instead of skipping the unit silently.

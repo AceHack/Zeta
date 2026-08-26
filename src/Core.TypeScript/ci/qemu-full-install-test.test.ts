@@ -946,4 +946,18 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     expect(nix).toContain('bunShimPath = "${cfg.home}/.local/share/mise/shims/bun"');
     expect(nix).toContain("installer/zeta-creds-restore.ts");
   });
+
+  it("the restore unit cannot fail its chdir before ExecStart (081M0WTB5MN)", () => {
+    // WorkingDirectory must be a path that always exists, or systemd fails the
+    // unit before ExecStart and the whole diagnosability layer is mute. It was
+    // cfg.repoRoot (the cloned repo), which is absent on early boots.
+    const nix = readFileSync(
+      resolve(import.meta.dir, "../../../full-ai-cluster/nixos/modules/zeta-creds-restore.nix"),
+      "utf8",
+    );
+    expect(nix).toContain('WorkingDirectory = "/"');
+    expect(nix).not.toContain("WorkingDirectory = cfg.repoRoot");
+    // The unconditional first-line marker proves ExecStart ran (vs a pre-exec fail).
+    expect(nix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.execStartEntered);
+  });
 });

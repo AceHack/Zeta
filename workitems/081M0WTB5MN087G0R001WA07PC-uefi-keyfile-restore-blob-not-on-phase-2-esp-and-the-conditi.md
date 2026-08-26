@@ -86,3 +86,32 @@ bug, and it does not touch the blob path). Land the Layer-1 change coordinated
 with or after #15370 to avoid churn (GOVERNANCE §35). Already landed:
 #15346 (skip-diagnosis test-side + ENOSPC), #15222 (EACCES persist → /tmp).
 
+## Update 2026-08-26 — Layer-1 landed, root cause corrected, Layer-2 fix
+
+Layer-1 landed (#15374). A `workflow_dispatch` verification run
+([32873212247](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/32873212247),
+built from the fix commit) then **corrected the diagnosis**: phase-2 carried
+**zero** `zeta-creds-restore` runtime lines — not even the new
+`MISSING precondition` logging — so the unit was not skipping on a precondition,
+it was **failing before `ExecStart` ran at all**. The service is enabled by
+default (`common.nix`: `zeta.credsRestore.enable = lib.mkDefault true`), so the
+only remaining pre-`ExecStart` filesystem dependency is
+`serviceConfig.WorkingDirectory = cfg.repoRoot` (the cloned repo). When that
+directory is absent as the unit fires (`After = local-fs.target`, early), systemd
+fails the unit at chdir before `ExecStart`, and every log line — including the
+precondition gate — is unreachable. This is NOT the blob-delivery bug the title
+hypothesised; that hypothesis was one layer too shallow.
+
+Fix (Layer-2): `WorkingDirectory = "/"` (the `ExecStart` uses absolute paths, so
+cwd is irrelevant and `/` never fails the chdir), plus an unconditional
+first-line marker `zeta-creds-restore: ExecStart entered` so a pre-`ExecStart`
+failure is distinguishable from a precondition exit on the serial. Repo/script
+presence is still named by the precondition gate once `ExecStart` runs.
+Falsifiers added in `qemu-full-install-test.test.ts`
+(`execStartEntered` marker + `WorkingDirectory = "/"` drift guards).
+
+Next verification: dispatch and confirm the phase-2 serial now shows
+`ExecStart entered` — then either restore completes, or the precondition gate
+NAMES the next missing path (e.g. `/boot/zeta-creds.enc` if blob delivery is the
+next layer). #15370 has since MERGED, so there is no longer a coordination hold.
+
