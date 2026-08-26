@@ -40,7 +40,7 @@ score=0.0`). A policy that never engaged the level and one that died a step from
 winning are indistinguishable, and they call for opposite fixes. The natural
 instrument is the engine's own score. It is **not reachable**:
 
-- `arcengine/base_game.py` holds `_score`/`_win_score` and passes
+- the upstream `arcengine.base_game` module holds `_score`/`_win_score` and passes
   `score=`/`win_score=` when constructing the frame;
 - but neither `FrameData` nor `FrameDataRaw` (`arcengine/enums.py:131,149`)
   **declares** those fields, and pydantic drops unknown kwargs silently;
@@ -51,7 +51,7 @@ The engine measures intra-level progress and never transmits it. A `game_score`
 field on `LevelResult` was written, run, and **reverted**: it read `None` in
 production and in every test, which is a progress record that constrains
 nothing. The reasoning is recorded at the `GameState.GAME_OVER` branch in
-`zeta_arc/hosted.py` so the next reader does not re-derive it.
+`src/Arc.Python/zeta_arc/hosted.py` so the next reader does not re-derive it.
 
 Related, checked while confirming the above: `GAME_OVER` has exactly **one**
 assignment site in the engine, `lose()` at `base_game.py:303`. There is no

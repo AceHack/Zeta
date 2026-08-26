@@ -41,7 +41,7 @@ to be **inferred from the grids we are handed**.
 
 ## What shipped
 
-`zeta_arc/progress.py` — `LevelProbe`, two counts per level:
+`src/Arc.Python/zeta_arc/progress.py` — `LevelProbe`, two counts per level:
 
 - `distinct_grids` — how many DIFFERENT world states the level showed. A policy
   hammering an illegal action sees one grid forever. Separates *engaged* from

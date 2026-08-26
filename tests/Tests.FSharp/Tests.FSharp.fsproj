@@ -333,6 +333,7 @@
     <Compile Include="Cart.Tests.fs" />
     <Compile Include="MetaCart.Tests.fs" />
     <Compile Include="Chip8SelfSim.Tests.fs" />
+    <Compile Include="RoomConsultation.Tests.fs" />
     <Compile Include="Chip8CrossRunStore.Tests.fs" />
     <Compile Include="Chip8ConsultCensus.Tests.fs" />
     <Compile Include="SoftChip8Scheduler.Tests.fs" />

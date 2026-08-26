@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "contract": "room-consultation",
+  "transition": "integer-successor",
+  "costPolicy": {
+    "lookupBytesPerAttempt": 2,
+    "computeBytesPerUnit": 10,
+    "attribution": "golden-vectors-room-consultation.json: exact fixture costs"
+  },
+  "cases": [
+    {
+      "id": "all-hit",
+      "initialState": 0,
+      "requestedUnits": 3,
+      "boundaryAtState": null,
+      "hitStates": [0, 1, 2],
+      "expected": {
+        "finalState": 3,
+        "reusedUnits": 3,
+        "computedUnits": 0,
+        "lookupAttempts": 3,
+        "stopReason": "completed",
+        "projectedLookupBytes": 6,
+        "projectedComputeBytes": 0,
+        "projectedAvoidedComputeBytes": 30,
+        "projectedNetSavedBytes": 24
+      }
+    },
+    {
+      "id": "all-miss",
+      "initialState": 0,
+      "requestedUnits": 3,
+      "boundaryAtState": null,
+      "hitStates": [],
+      "expected": {
+        "finalState": 3,
+        "reusedUnits": 0,
+        "computedUnits": 3,
+        "lookupAttempts": 3,
+        "stopReason": "completed",
+        "projectedLookupBytes": 6,
+        "projectedComputeBytes": 30,
+        "projectedAvoidedComputeBytes": 0,
+        "projectedNetSavedBytes": -6
+      }
+    },
+    {
+      "id": "mixed-before-boundary",
+      "initialState": 0,
+      "requestedUnits": 5,
+      "boundaryAtState": 3,
+      "hitStates": [0, 2],
+      "expected": {
+        "finalState": 3,
+        "reusedUnits": 2,
+        "computedUnits": 1,
+        "lookupAttempts": 3,
+        "stopReason": "boundary",
+        "projectedLookupBytes": 6,
+        "projectedComputeBytes": 10,
+        "projectedAvoidedComputeBytes": 20,
+        "projectedNetSavedBytes": 14
+      }
+    }
+  ]
+}

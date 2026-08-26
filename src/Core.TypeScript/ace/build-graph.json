@@ -245,7 +245,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-construction-a-theta.json",
-            "count": 3,
+            "count": 4,
             "holder": "dotnet:src/Core"
           },
           {
@@ -284,7 +284,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-construction-a-theta.json",
-            "count": 3,
+            "count": 4,
             "holder": "dotnet:src/Core"
           },
           {
@@ -1169,7 +1169,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-construction-a-theta.json",
-            "count": 3,
+            "count": 4,
             "holder": "dotnet:src/Core"
           },
           {
@@ -1225,7 +1225,7 @@
             "rule": "golden-vectors",
             "kind": "golden-vector",
             "witness": "src/Core/golden-vectors-construction-a-theta.json",
-            "count": 3,
+            "count": 4,
             "holder": "dotnet:src/Core"
           },
           {
