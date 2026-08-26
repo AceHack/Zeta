@@ -242,21 +242,50 @@ foreach ($raw in Get-Content $manifest) {
   $optional = $parts -contains 'optional'             # best-effort: warn, never throw
   $wid = if ($winget) { $winget } else { $scoopId }   # if/else (5.1-safe; NOT the 7+ ?: ternary)
   $cid = if ($choco) { $choco } else { $scoopId }
-  # Pick the first available source's command + label (scoop -> winget -> choco).
-  $cmd = $null; $what = $null
-  if     ($(Have scoop))  { $cmd = { scoop install $scoopId }; $what = "scoop install $scoopId" }
-  elseif ($(Have winget)) { $cmd = { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements }; $what = "winget install $wid" }
-  elseif ($(Have choco))  { $cmd = { choco install $cid -y }; $what = "choco install $cid" }
+  # Build the WHOLE chain (scoop -> winget -> choco), then try each in order until one succeeds.
+  #
+  # This used to be an if/elseif that picked the FIRST AVAILABLE source and ran only that one --
+  # so the "scoop -> winget -> choco" in the label and in step 1b's comment ("the THIRD resolver
+  # source") described a fallback that could never fire: scoop is bootstrapped a few lines above,
+  # so `Have scoop` was always true and winget/choco were never consulted. A fallback that cannot
+  # execute is the vacuity class -- it reads as resilience and supplies none.
+  #
+  # It cost a main-branch outage on 2026-08-26: `www.gnupg.org:443` stopped answering, scoop's
+  # `main/gnupg` manifest downloads the installer from that single origin, and BOTH windows-2025
+  # and windows-11-arm failed the toolchain step on every commit ("URL https://www.gnupg.org/... is
+  # not valid" -> "scoop install gnupg failed (exit 1)"). `choco: 2.7.3` was on the same runner,
+  # ships its own gnupg package, and was never asked. One unreachable upstream host took the lane
+  # down because three declared resolvers were structurally one.
+  #
+  # Falling THROUGH on a non-zero exit (not merely on a missing CLI) is what makes the sources
+  # independent: distinct package sources fetch from distinct origins, so a dead mirror, an expired
+  # cert, or a rate-limited CDN on one is survivable. Cost is honest and bounded: a genuinely
+  # broken package now burns one attempt per available source before it reports, and the report
+  # names every attempt instead of only the first.
+  $candidates = @()
+  if ($(Have scoop))  { $candidates += @{ Cmd = { scoop install $scoopId }; What = "scoop install $scoopId" } }
+  if ($(Have winget)) { $candidates += @{ Cmd = { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements }; What = "winget install $wid" } }
+  if ($(Have choco))  { $candidates += @{ Cmd = { choco install $cid -y }; What = "choco install $cid" } }
   Write-Host "down $scoopId (scoop -> winget -> choco)$(if ($optional) { ' [optional/best-effort]' } else { '' })"
-  if ($null -eq $cmd) {
+  if ($candidates.Count -eq 0) {
     if ($optional) { Write-Host "warn: no package source (scoop/winget/choco) for optional '$scoopId'; skipping (best-effort)"; continue }
     throw "no package source (scoop/winget/choco) available for $scoopId"
   }
-  if ($optional) {
-    $code = Invoke-ToolSoft $cmd
-    if ($code -ne 0) { Write-Host "warn: optional '$scoopId' install failed (exit $code); continuing (best-effort substrate -- e.g. disk-constrained CI; real desktops have room)" }
-  } else {
-    Invoke-Tool $cmd $what
+  $installed = $false
+  $attempts = @()
+  foreach ($candidate in $candidates) {
+    $code = Invoke-ToolSoft $candidate.Cmd
+    if ($code -eq 0) { $installed = $true; break }
+    $attempts += "$($candidate.What) exit $code"
+    Write-Host "warn: $($candidate.What) failed (exit $code); falling through to the next package source"
+  }
+  if (-not $installed) {
+    $detail = ($attempts -join '; ')
+    if ($optional) {
+      Write-Host "warn: optional '$scoopId' install failed on EVERY package source ($detail); continuing (best-effort substrate -- e.g. disk-constrained CI; real desktops have room)"
+    } else {
+      throw "$scoopId failed on every available package source: $detail"
+    }
   }
 }
 

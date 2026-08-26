@@ -631,6 +631,7 @@ jobs:
           tier: full
 
       - name: Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)
+        id: install_unix
         # Single source of truth for Unix toolchain state. Installs:
         # .NET SDK (per global.json, via Microsoft's dotnet-install.sh
         # — round-32 refactor out of mise), python (mise-pinned),
@@ -642,6 +643,7 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)
+        id: install_windows
         # PowerShell does not execute the Git Bash dispatcher reliably when a workflow `run:` step
         # names install.sh directly. Call the native entrypoint so it can publish mise runtime bins
         # to GITHUB_PATH for the later bun/dotnet steps. CI must not register a desktop loop task.
@@ -650,6 +652,7 @@ jobs:
         run: ./tools/setup/install.ps1 -SkipLoopRegister
 
       - name: Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057, #9774 regression)
+        id: roslyn_guard
         # Fast pre-build backstop: a Microsoft.CodeAnalysis.* pin newer than the SDK's own
         # Roslyn makes generators unloadable (CS9057) — which reached main via #9774. Reads the
         # SDK's ACTUAL csc version (no heuristic), so it self-updates when the SDK is bumped.
@@ -657,6 +660,7 @@ jobs:
         run: bun src/Core.TypeScript/hygiene/audit-codeanalysis-sdk-match.ts
 
       - name: Build (0 Warning(s) / 0 Error(s) required)
+        id: build
         # BASH_ENV (set by shellenv.sh during the install step) has
         # already pointed this shell at the managed shellenv file;
         # no explicit source needed.
@@ -664,6 +668,9 @@ jobs:
         run: dotnet build Zeta.sln -c Release
 
       - name: Test
+        # `id:` is load-bearing — the blame-printer below keys off THIS step's
+        # outcome, not off the job's. See the note there.
+        id: test
         if: needs.path-filter.outputs.code == 'true'
         # --blame-crash / --blame-hang-timeout: when the test host crashes or
         # hangs (the silent "MSB4181: VSTestTask returned false but did not log
@@ -671,11 +678,48 @@ jobs:
         # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
 
+      - name: Name the failing step (toolchain-free; survives a broken toolchain)
+        # THE ONLY DIAGNOSTIC THAT MAY NOT DEPEND ON THE TOOLCHAIN.
+        #
+        # Every other reporter in this job runs `bun` or `dotnet` — which the install
+        # step above is responsible for providing. So in the one failure mode where a
+        # diagnostic matters most (the toolchain itself did not install) every reporter
+        # is guaranteed to be missing its interpreter. That is a bootstrap defect: the
+        # reporter goes silent in exactly the case it exists for. Measured on main
+        # 2026-08-26 (c3addd47, 4ca7cc9b, both windows legs): the check-run's ONLY two
+        # annotations were `Process completed with exit code 1` twice, one from the real
+        # failure and one from the reporter that could not run — neither naming a step.
+        #
+        # This step uses `echo` and nothing else. `echo` is a builtin in bash AND an
+        # alias for Write-Output in pwsh, so it needs no `shell:` key and no installed
+        # program: it works on all five legs whatever survived the install. It emits a
+        # workflow-command annotation, so the answer appears in the check-run summary
+        # where `Process completed with exit code 1` currently sits alone.
+        #
+        # `if: failure()` is correct HERE (unlike the blame printer below) precisely
+        # because this step has no prerequisite that could also have failed.
+        if: failure()
+        run: |
+          echo "::error title=build-and-test: which step failed::install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
+          echo "[step-outcomes] install-unix=${{ steps.install_unix.outcome }} install-windows=${{ steps.install_windows.outcome }} roslyn-guard=${{ steps.roslyn_guard.outcome }} build=${{ steps.build.outcome }} test=${{ steps.test.outcome }}"
+          echo "[step-outcomes] a failing install means the toolchain never provisioned; read that step's log, not the reporters below."
+
       - name: Name the crashed/hung test (on failure)
         # Surface the blame Sequence_*.xml into the CI log so a host crash/hang
         # is diagnosable without artifact plumbing — turns "VSTestTask returned
         # false" into "test X was running when the host died". Cross-platform (bun).
-        if: failure() && needs.path-filter.outputs.code == 'true'
+        #
+        # Gated on `steps.test.outcome`, NOT on bare `failure()`. Under `failure()`
+        # this ran after ANY earlier step failed — including the toolchain-install
+        # step, which is the one step whose job is to put `bun` on PATH. So when
+        # install failed, this fired without a `bun` to run and died with
+        # "The term 'bun' is not recognized", adding a second red step and a second
+        # `Process completed with exit code 1` annotation that said nothing about
+        # either failure. A failure reporter that fails is worse than no reporter:
+        # it buries the real annotation under its own. print-blame-sequences.ts is
+        # exit-0-always by contract, so gating on the Test step's own outcome makes
+        # a non-zero exit here mean what it should — a defect in the reporter.
+        if: failure() && steps.test.outcome == 'failure'
         run: bun src/Core.TypeScript/ci/print-blame-sequences.ts
 
       - name: Skipped (docs-only PR)

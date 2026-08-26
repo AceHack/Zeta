@@ -11,6 +11,7 @@ import {
   type WorkflowRun,
 } from "./toolchain-install-stall.ts";
 import { GATE_YML_PATH, parseBlockingFloor } from "./gate-blocking-floor.ts";
+import { parse as parseYaml } from "yaml";
 
 // REAL captured production data (2026-08-25), not hand-made examples. A policy that only
 // passes on synthetic inputs has not been shown to survive the traffic it will actually see.
@@ -445,5 +446,151 @@ describe("guard 5 — a red that cannot block is not a real red here", () => {
       const d = decideRerun(c.run, c.jobs, logsOf(c), [], { now: NOW, blockingFloor: FLOOR });
       expect(`${c.run.id} ${d.action}/${d.reason}`).toBe(`${c.run.id} ${c.expect}/${c.expect_reason}`);
     }
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// guard 6 — the Windows package-source chain must actually FALL THROUGH.
+//
+// Measured outage, 2026-08-26 (main, commits c3addd47 and 4ca7cc9b, both
+// windows-2025 and windows-11-arm): `www.gnupg.org:443` stopped answering, and
+// scoop's `main/gnupg` manifest fetches its installer from that one origin.
+//
+//   A connection attempt failed because the connected party did not properly
+//   respond ... [::ffff:5.9.17.227]:443 (www.gnupg.org:443)
+//   URL https://www.gnupg.org/ftp/gcrypt/binary/gnupg-w32-2.5.21_...exe is not valid
+//   scoop install gnupg failed (exit 1)
+//
+// The same runner printed `choco: 2.7.3` seventy seconds earlier, and
+// manifests/windows carries `choco=gnupg`. The third resolver was installed,
+// declared, and never asked: the loop picked the FIRST AVAILABLE source with an
+// if/elseif and ran only that one, so with scoop always bootstrapped, winget and
+// choco could not be reached by any input. The "scoop -> winget -> choco" in the
+// label and in step 1b's comment described a fallback that could not fire.
+//
+// These assertions are structural on purpose. The property is not "the words
+// scoop/winget/choco appear" — it is "a non-zero exit from one source reaches
+// the next", and the if/elseif shape is precisely what makes that impossible.
+describe("guard 6 — install.ps1's scoop -> winget -> choco chain is a real fallback", () => {
+  const installPs1 = readFileSync(join(import.meta.dir, "..", "..", "..", "tools", "setup", "install.ps1"), "utf8");
+  // The manifest-driven install loop only; step 1b's bootstrap above it is a different concern.
+  const start = installPs1.indexOf("# 2. system CLI tools from manifests/windows");
+  const end = installPs1.indexOf("# 2b. Windows long-path enablement");
+  const loop = installPs1.slice(start, end);
+
+  test("the region under test was actually found (no vacuous slice)", () => {
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    expect(loop).toContain("manifests\\windows");
+  });
+
+  test("all three sources are offered ADDITIVELY — never as elseif branches", () => {
+    // `elseif ($(Have winget))` is the exact shape that made choco unreachable.
+    expect(loop).not.toMatch(/elseif\s*\(\$\(Have\s+(scoop|winget|choco)\)\)/);
+    for (const source of ["scoop", "winget", "choco"]) {
+      expect(loop).toMatch(new RegExp(`(?<!else)if\\s*\\(\\$\\(Have\\s+${source}\\)\\)\\s*\\{\\s*\\$candidates\\s*\\+=`));
+    }
+  });
+
+  test("a non-zero exit from one source advances to the next, and only the LAST one throws", () => {
+    const iterates = loop.indexOf("foreach ($candidate in $candidates)");
+    expect(iterates).toBeGreaterThan(-1);
+    // Success short-circuits (so a healthy scoop still costs exactly one attempt) ...
+    expect(loop.slice(iterates)).toMatch(/if\s*\(\$code\s+-eq\s+0\)\s*\{\s*\$installed\s*=\s*\$true;\s*break\s*\}/);
+    // ... and the required-tool `throw` is reached only after every candidate has been tried.
+    const exhausted = loop.indexOf("if (-not $installed)");
+    expect(exhausted).toBeGreaterThan(iterates);
+    expect(loop.indexOf("failed on every available package source")).toBeGreaterThan(exhausted);
+    // Nothing INSIDE the loop body may throw — a throw there re-breaks fall-through, which is
+    // exactly the defect (`Invoke-Tool` threw on scoop's exit 1 and choco was never reached).
+    expect(loop.slice(iterates, exhausted)).not.toContain("throw");
+    expect(loop.slice(iterates, exhausted)).not.toContain("Invoke-Tool ");
+  });
+
+  test("`optional` tools still warn instead of throwing when every source fails", () => {
+    expect(loop).toContain("failed on EVERY package source");
+    expect(loop).toContain("best-effort substrate");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// guard 7 — the failure REPORTER must not be able to fail.
+//
+// Same two runs: after the install step died, `Name the crashed/hung test (on
+// failure)` fired under a bare `failure()` and ran `bun ...` — with no `bun`,
+// because installing it is the job of the step that had just failed:
+//
+//   The term 'bun' is not recognized as a name of a cmdlet, function, script
+//   file, or executable program.
+//   ##[error]Process completed with exit code 1.
+//
+// Both annotations on the check-run then read `Process completed with exit code
+// 1` and neither named gnupg. print-blame-sequences.ts is exit-0-always by
+// contract, so a non-zero exit there can only ever mean the step ran somewhere
+// it does not belong.
+describe("guard 7 — the blame printer runs only after the TEST step failed", () => {
+  const gate = readFileSync(GATE_YML_PATH, "utf8");
+  const workflow = parseYaml(gate) as {
+    jobs: Record<string, { steps?: { name?: string; id?: string; if?: string; run?: string }[] }>;
+  };
+  const steps = workflow.jobs["build-and-test"]?.steps ?? [];
+  const testStep = steps.findIndex((s) => s.name === "Test");
+  const blameStep = steps.findIndex((s) => (s.run ?? "").includes("print-blame-sequences.ts"));
+
+  test("both steps still exist in build-and-test (no vacuous lookup)", () => {
+    expect(testStep).toBeGreaterThan(-1);
+    expect(blameStep).toBeGreaterThan(testStep);
+  });
+
+  test("the Test step keeps the `id` the reporter's condition depends on", () => {
+    expect(steps[testStep]?.id).toBe("test");
+  });
+
+  test("the reporter is gated on that step's OUTCOME, not on bare failure()", () => {
+    const cond = steps[blameStep]?.if ?? "";
+    expect(cond).toContain("steps.test.outcome == 'failure'");
+    // The regression shape: `failure()` with no step-scoped clause fires after ANY
+    // earlier step — including the one that installs the `bun` this step invokes.
+    expect(cond.replace(/steps\.test\.outcome\s*==\s*'failure'/, "").includes("steps.")).toBe(false);
+  });
+
+  // The GENERAL form of the defect, stated once so the class cannot come back under a new name.
+  // A step that runs on failure() and shells out to an installed program is betting that the
+  // toolchain survived — a bet that is lost precisely when the install step is what failed.
+  test("every failure()-gated reporter either needs no toolchain or names the step it reports on", () => {
+    const TOOLCHAIN_FREE = /^\s*(#|echo\b|:\s*$|$)/; // `echo` is a bash builtin AND a pwsh alias
+    const offenders: string[] = [];
+    for (const step of steps) {
+      const cond = step.if ?? "";
+      if (!cond.includes("failure()")) continue;
+      if (/steps\.[A-Za-z0-9_]+\.(outcome|conclusion)/.test(cond)) continue; // scoped to a step
+      const body = (step.run ?? "").split(/\r?\n/);
+      const nonBuiltin = body.filter((l) => l.trim().length > 0 && !TOOLCHAIN_FREE.test(l));
+      if (nonBuiltin.length > 0) offenders.push(`${step.name}: ${nonBuiltin[0]?.trim()}`);
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  test("the toolchain-free reporter exists, is unscoped on purpose, and pins no shell", () => {
+    const free = steps.find((s) => (s.name ?? "").startsWith("Name the failing step"));
+    expect(free).toBeDefined();
+    expect(free?.if).toBe("failure()");
+    // No `shell:` key => bash on Linux/macOS, pwsh on Windows; `echo` is valid in both, so the
+    // step cannot be broken by whichever interpreter the failed install left behind.
+    expect((free as { shell?: string } | undefined)?.shell).toBeUndefined();
+    // It must actually name the steps, or it is a reporter that reports nothing.
+    for (const id of ["install_unix", "install_windows", "roslyn_guard", "build", "test"]) {
+      expect(free?.run ?? "").toContain(`steps.${id}.outcome`);
+    }
+    // And it must land in the check-run annotations, which is where the useless
+    // `Process completed with exit code 1` pair showed up with nothing beside it.
+    expect(free?.run ?? "").toContain("::error title=");
+  });
+
+  test("the reporter it guards is genuinely exit-0-always (the contract it relies on)", () => {
+    const printer = readFileSync(join(import.meta.dir, "print-blame-sequences.ts"), "utf8");
+    expect(printer).toContain("Exit 0 always");
+    expect(printer).not.toContain("process.exit(1)");
+    expect(printer).not.toContain("throw new Error");
   });
 });
