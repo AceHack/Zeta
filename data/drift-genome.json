@@ -1,8 +1,8 @@
 {
   "genomeHex": "#53010d",
   "generation": 0,
-  "tick": 841,
-  "fitness": 6.175,
+  "tick": 847,
+  "fitness": 6.405,
   "phenotype": {
     "adaptiveMultiplier": 2.59375,
     "adaptiveMinHeals": 1,
