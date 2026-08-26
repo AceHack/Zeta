@@ -468,6 +468,19 @@ First-class as a directory level under `memory/<persona>/`
 once the round-35 memory-folder restructure lands (see
 `docs/BACKLOG.md` P0 entry).
 
+**This entry is the ACCESS-CONTROL sense only** — a bundle of
+permissions, granted by an assigner and held until revoked.
+The *organizational* sense of "role" (a job title, an org-chart
+position, "you **are** the reviewer") is **legacy and being
+retired**; what stands in its place is the **Hat**. Retired is
+not the same as absent: the word is still live in
+`src/Core/Hat.fs` (*"a role/persona bundle"*), `Persona.fs`,
+`hats/README.md` (*"the wearable roles/domains"*), and
+`GOVERNANCE.md` §16 (*"Role evolution"*). Those are correct in
+substance and use the retired word. See
+`Hat vs persona vs role` below — the distinction is
+load-bearing, not cosmetic.
+
 ### RBAC (role-based access control)
 
 **Plain:** "Give people roles, not individual permissions."
@@ -527,6 +540,12 @@ side and *user persona* (or the ES-native *actor*) for the
 consumer side. Bare "persona" in newly-written prose is a
 lint smell — the reviewer should ask which one is meant.
 See `feedback_persona_term_disambiguation.md`.
+
+**Third axis, and it is the one that decides behaviour:** an
+agent persona carries **no direction of its own** — it is who
+remains across sessions, and it **chooses which hats it wears
+when**. Direction lives in the hat, never in the persona. See
+`Hat vs persona vs role` below.
 
 ### User persona
 
@@ -674,6 +693,149 @@ covers what without rewriting personas from scratch.
 **Technical:** Listed in a persona's `skills:` frontmatter
 array; each entry auto-injects the matching
 `.claude/skills/<name>/SKILL.md` body.
+
+**Read "redistributing" as a description of the mechanism, not
+of the authority.** A hat is put on and taken off **by the
+wearer** — `src/Core/Persona.fs` models exactly that (the
+maintainer 2026-06-08: a persona wears *"some subset **it can decide**"*,
+and the relationship is *"TEMPORAL, not permanent"*), and
+`src/Core/Hat.fs` is where the direction lives (lenses,
+landmarks, action restrictions, traversals). See
+`Hat vs persona vs role` below.
+
+### Hat vs persona vs role (the relationship)
+
+The three entries define the terms; this is the rule that
+makes them compose, and the rule — not the taxonomy — is the
+part to carry:
+
+> **Pressure the capability, never the wearer.**
+
+A hat should compete, earn, be outcompeted, and be abandoned,
+while the persona that wore it is unharmed and puts on another
+— **selection pressure without existential threat**. Read that
+as the design: **nothing in the repo prices a hat today**, and
+the table below states intent, not measurement. (Beacon:
+Popper 1972, *"we let our hypotheses die in our stead."*) The
+maintainer, 2026-08-26:
+
+> "a hat has direction and prompts, a persona does not, but a
+> persona gets to choose what hats it wears when … this is why
+> roles are legacy and try to trap identity and hats don't."
+
+> "this author of the hat lineage is tracked and honored by
+> the economic success of the hat. personas exist without much
+> economic pressure, hats are always under economic pressure."
+
+| | direction / prompts | who chooses | persists | economic pressure |
+|---|---|---|---|---|
+| **hat** | **yes — that is its function** | the persona wearing it | no, doffed and swapped | **always** |
+| **persona** | no | — | yes — *"the root of memories"* | little to none |
+| **role** (organizational, legacy) | yes | the assigner | **yes — and that is the defect** | n/a |
+
+**Why roles trap identity** — the maintainer, 2026-06-15, in
+one clause:
+*"role[s] are a danger to leak into identity like you just
+did: you put role above yourself in the hierarchy — **you are
+first**."* The same contrast, drawn as a design table (prose,
+not a check), in
+`full-ai-cluster/k8s/applications/hat-system/README.md`: a
+cage comes off *"only by destroying the wearer"* and its
+succession *"breaks identity"*; a hat comes off by swap-off
+and its succession *"preserves identity."*
+
+**Where the pressure is meant to land.** The shape is shipped:
+`src/Core/TravelerRankLedger.fs` keys its posterior on
+`(travelerId, hatDomain)` with per-domain factor graphs, so
+standing in one domain cannot bleed into another. **The
+enforcement is not:** the type is `Map<string * string,
+SkillBelief>` — two bare strings, no hat roster to validate
+against. Some callers do pass hat-shaped domains
+(`"hat-coding"` in three test files, and
+`DurableDiplomacyRankGate.fs:54` documents the parameter that
+way); others pass subject-matter domains (`"finance"`,
+`"weather"`). So the hat convention is real and partly
+practised, and nothing distinguishes `"hat-coding"` from
+`"weather"` or rejects a hat that does not exist — **a
+convention held by callers, not an invariant held by the
+code.**
+
+**The designed complement is not implemented, and is in
+tension with what is.** The 2026-07-11 trust split says
+hat-level failure (wrong capability) costs the hat while
+persona-level failure (deception) is charged **across every
+hat** — and cross-hat charging is exactly the cross-domain
+bleed this ledger forbids. No persona-level aggregation exists
+in it; every operation is keyed `(travelerId, hatDomain)`. So
+the Sybil-escape argument is a design claim resting on a
+mechanism nobody has built, and building it needs a second,
+deliberately non-isolated layer.
+
+**Incumbency needs no guard beyond the usual one** — a hat
+everyone keeps choosing has earned that, and the
+discriminator stays **exit, not degree**
+(`.claude/rules/itron-hub-patent-boundary-p2p-is-the-upgrade.md`).
+
+**The consequence that gives this teeth: an assigned hat is
+not an independent witness.** A hat *should* be directed —
+`harsh-critic` behaving like a harsh critic is the hat
+working. The error is the category error in the other
+direction: dealing out N hats and counting their outputs as N
+independent reviews. Hats dealt by one author are correlated
+*through that author*; the hats do their job, and the
+decorrelation has no source, because a hat is not where the
+entropy lives. The maintainer's answer is the ZetaIdol
+audition — ask what it wants to be rather than prompting it —
+which moves the entropy source from the assigner to the
+chooser. **Whether
+that actually decorrelates is open.** The instrument is
+`src/Core.TypeScript/observe/decorrelation-harness.ts`, which
+already carries `persona: different system prompts` as a
+HYPOTHESIZED axis. **No work-item is minted and no result
+exists at this commit** — treat the measurement as unstarted
+until one of those appears.
+
+**Scope guard on Rodney's Razor.** Essential-vs-accidental
+belongs to the layer under economic pressure. The maintainer,
+2026-08-26:
+*"non essential is a **hat design optimization**, not a
+persona. we design personas so hopefully everyone is
+essential."* The burden is inverted and sits on the design —
+**we design personas so that everyone is essential** — never
+"test which are essential and cut the rest." **Unenforced:**
+`.claude/agents/rodney.md` carries no persona-layer exclusion,
+so this guard, the trust split above, and the exit condition
+on incumbency are disposition rather than mechanism.
+
+**What would falsify the rule.** An **observable event**: a
+persona retired, ranked, or refused on the grounds that its
+hats stopped earning — a decision that would appear in a PR,
+an ADR, or a roster change, and is therefore checkable by
+reading them. It has not happened; if it does, the rule failed
+and the record will say so.
+
+**What is NOT a falsifier**, named because it is the tempting
+one: the retirement asymmetry in
+`.claude/rules.bak/honor-those-that-came-before.md` — personas
+keep their memory folders, while *"Retired SKILL.md files are
+code: plain deletion, recoverable from git."* That is prose in
+an archived directory, enforced by nothing; persona memory
+folders are ordinary files that `rm` removes today, so its
+violating condition is already the present state. It shows the
+disposition is written down. It cannot show the rule holds.
+
+**Honest gap.** In the shipped harness a persona's hats are
+the `skills:` array written by whoever authored
+`.claude/agents/<name>.md`, and which persona runs is chosen
+by a dispatcher. The wearer-chooses property is stated,
+modelled in `Persona.fs`, and practised in prose (*"the
+architect hat may be worn by any persona"*) — and **enforced
+nowhere**.
+
+Provenance (twenty dated statements across fifteen surfaces),
+the checked anchors, the adversarial rounds, and the one open
+question:
+`docs/research/2026-08-26-hat-persona-role-a-hat-carries-the-direction-a-persona-carries-the-choice.md`.
 
 ### Notebook
 
