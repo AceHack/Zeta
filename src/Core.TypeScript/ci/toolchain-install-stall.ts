@@ -17,9 +17,10 @@
  * One infrastructure failure wearing six names. Each one costs a human or an agent a
  * manual `gh run rerun --failed`, and that is the toil this removes.
  *
- * WHAT THE FAILURE ACTUALLY IS — and it is NOT what the log calls it. `tools/setup/linux.sh`
- * prints "stalled archive mirror, not a package error". Read against job 97946436709 the
- * word "stalled" is wrong and the correction matters, because it decides which fix works:
+ * WHAT THE FAILURE ACTUALLY IS — and it is NOT what the log called it. Until 2026-08-26
+ * `tools/setup/linux.sh` printed "stalled archive mirror, not a package error". Read against
+ * job 97946436709 the word "stalled" was wrong, and the correction matters because it
+ * decides which fix works:
  *
  *   attempt 1  247s slice  103 packages fetched, killed inside emscripten (93.2 MB)
  *   attempt 2   89s slice  emscripten completed in 86s (~1.08 MB/s), 8 more, killed
@@ -32,6 +33,13 @@
  * download alone; the budget is 420s. So the job did not hang and it did not hit a package
  * error — it ran out of wall clock while succeeding slowly, which is a check that NEVER RAN
  * presented as one that ran and failed.
+ *
+ * That banner is now fixed at its source: `linux.sh` measures the archive directory across
+ * each attempt and reports the observed throughput, saying WEDGED only when the delta really
+ * is zero. NOTHING BELOW DEPENDS ON THE CHANGED TEXT — `APT_BUDGET_EXHAUSTED` matches the
+ * final `✗ apt-get install did not succeed within the …` sentence, which is unchanged. The
+ * fetch itself is removed by `.github/actions/apt-archive-cache`; see
+ * docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
  *
  * WHY A RERUN AND NOT MORE IN-STEP RETRY. The in-step retry already exists and is already
  * exhausted: three attempts, all progressing, all killed by the SHARED 420s deadline. A

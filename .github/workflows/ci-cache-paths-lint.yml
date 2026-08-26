@@ -30,12 +30,18 @@ on:
   pull_request:
     paths:
       - ".github/workflows/**"
+      - ".github/actions/**"
       - "src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts"
+      - "src/Core.TypeScript/ci/apt-archive-cache.ts"
+      - "src/Core.TypeScript/ci/apt-archive-cache.test.ts"
   push:
     branches: [main]
     paths:
       - ".github/workflows/**"
+      - ".github/actions/**"
       - "src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts"
+      - "src/Core.TypeScript/ci/apt-archive-cache.ts"
+      - "src/Core.TypeScript/ci/apt-archive-cache.test.ts"
   workflow_dispatch: {}
 
 permissions:
@@ -64,6 +70,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
+        # ~510s of download inside a 420s budget, which is why this step's install
+        # died at exit 124 under six different job names. This restores the archives
+        # and exports ZETA_APT_ARCHIVES_DIR, so the install below is unchanged.
+        # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: slim
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Provides bun via mise's pin in .mise.toml. Same pattern as
@@ -94,3 +110,29 @@ jobs:
         run: |
           set -euo pipefail
           bun src/Core.TypeScript/hygiene/audit-ci-cache-paths.ts
+
+      - name: Run apt-archive-cache (every Linux install.sh job restores the archives)
+        # The sibling discipline to the audit above, and the reason this job is its home:
+        # that one refuses cache paths that OVERLAP tracked files, this one refuses a
+        # Linux install.sh job with NO apt archive cache, or one whose cache key names a
+        # different tier than its install step declares. Both are ways an actions/cache
+        # step is present and not doing what its name says.
+        #
+        # `.github/actions/**` is in this workflow's path filter for the same reason: the
+        # composite action the audit points every offender at now lives there, and a
+        # trigger that cannot see it would be a check that never runs on the change most
+        # likely to break it.
+        shell: bash
+        run: |
+          set -euo pipefail
+          bun src/Core.TypeScript/ci/apt-archive-cache.ts
+
+      - name: apt-archive-cache falsifiers (a check that cannot fail is not a check)
+        # The audit above judges 48 jobs and reports OK. That sentence is worth exactly
+        # as much as the audit's ability to say something else — so the mutants (absent
+        # step, miskeyed tier, restore-after-install, a commented-out step, a matrix
+        # runner dropped from scope) are pinned here.
+        shell: bash
+        run: |
+          set -euo pipefail
+          bun test src/Core.TypeScript/ci/apt-archive-cache.test.ts

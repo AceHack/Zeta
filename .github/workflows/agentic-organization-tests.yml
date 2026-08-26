@@ -70,6 +70,16 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
+        # ~510s of download inside a 420s budget, which is why this step's install
+        # died at exit 124 under six different job names. This restores the archives
+        # and exports ZETA_APT_ARCHIVES_DIR, so the install below is unchanged.
+        # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: slim
+
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # node + npm come from the mise pin in .mise.toml, so this lane has the same
         # runtime a laptop and a devcontainer get. shellenv.sh wires BASH_ENV so the

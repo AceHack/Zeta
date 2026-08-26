@@ -100,14 +100,18 @@ describe("linux.sh apt phase — a stalled mirror must not outlive the budget", 
       expect(code).not.toBe(0);
       // 3. `apt-get update` is bounded too (it was not, before 2026-08-18): reaching
       //    the install loop at all proves the update stall was cut short.
-      expect(stderr).toContain("apt-get update exceeded its");
+      // The wording changed 2026-08-26 ("stalled mirror" -> "ran out of wall clock"):
+      // `timeout` firing says the SLICE expired and says nothing about whether the
+      // mirror was wedged or merely slow, and the measurement usually does not support
+      // "stalled". The assertion still pins the same observable event.
+      expect(stderr).toContain("apt-get update ran out of wall clock");
       // 4. Each install attempt draws a SLICE of the shared deadline...
-      expect(stderr).toContain("apt-get install exceeded its");
+      expect(stderr).toContain("apt-get install ran out of wall clock");
       // 5. ALL THREE attempts are reachable inside the budget. A budget the sleeps
       //    drain before the last attempt is the retry loop going decorative again,
       //    which is the whole defect wearing another costume. (`slices[0]` is
       //    `apt-get update`; the rest are the install attempts.)
-      const slices = [...stderr.matchAll(/exceeded its (\d+)s slice/g)].map((m) => Number.parseInt(m[1] ?? "0", 10));
+      const slices = [...stderr.matchAll(/its (\d+)s slice of the/g)].map((m) => Number.parseInt(m[1] ?? "0", 10));
       expect(slices.length).toBe(4);
       // 6. THE SHARED DEADLINE, stated arithmetically: update plus every attempt draw
       //    from ONE budget. Under the pre-2026-08-18 per-attempt timeout this sum was

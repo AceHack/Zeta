@@ -220,6 +220,86 @@ elif [ -f "$APT_MANIFEST" ]; then
     }
     echo "↻ apt phase budget: ${apt_budget}s (override: ZETA_APT_BUDGET_SECONDS)"
 
+    # ── THE ARCHIVE CACHE — the root fix for the wall-budget class ─────
+    #
+    # `ZETA_APT_ARCHIVES_DIR`, when set, relocates apt's `.deb` archive
+    # directory (`Dir::Cache::archives`) to a caller-owned path. In CI that
+    # path is restored by `.github/actions/apt-archive-cache` before this
+    # script runs and saved after it, so the mirror is asked for the bytes
+    # ONCE per (distro, arch, tier, package set, week) instead of once per job.
+    #
+    # The failure this addresses, measured: 561 MB fetched on every ubuntu job
+    # against a mirror whose rate decayed to ~1.1 MB/s — ~510s of download
+    # inside a 420s budget. Every attempt made forward progress; the job ran
+    # out of WALL CLOCK while succeeding slowly. More retry cannot fix that
+    # (three attempts already share one deadline) and the budget cannot absorb
+    # it (the tightest fitting job has 18s of margin). Removing the fetch is
+    # the only lever left that costs less rather than more. Full derivation:
+    # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+    #
+    # WHY A STALE CACHE CANNOT INSTALL THE WRONG PACKAGE. `apt-get update`
+    # still runs on every invocation, so version RESOLUTION always comes from
+    # a freshly-fetched index. apt then asks the archive directory for ONE
+    # exact filename per package — `<name>_<version>_<arch>.deb` — so a
+    # superseded `.deb` is not "used instead": it is never asked for.
+    # Measured against ubuntu:24.04 — a planted `jq_0.0.1-1_*.deb` and a
+    # wrong-arch file were both ignored entirely while the real version
+    # installed from cache (`Need to get 0 B`).
+    #
+    # AND THE HALF THAT DID NOT HOLD, recorded because the first draft of this
+    # comment asserted it. apt does NOT re-hash a file that is already in the
+    # archive directory; it accepts it on FILENAME AND SIZE. A truncated
+    # `.deb` is caught (wrong size ⇒ re-download, measured). A SAME-SIZE
+    # tampered `.deb` is not — apt hands it to dpkg, and what refuses it is
+    # dpkg's decompressor checksum: "zstd error: Restored data doesn't match
+    # checksum", rc=100, loudly. So the property is "cannot install silently",
+    # not "apt verifies the cache". The containment that makes that acceptable
+    # is GitHub's, not apt's: a cache entry is scoped to the branch that wrote
+    # it, so a pull request cannot write bytes that `main` or another pull
+    # request will read. Transcripts: §3 of the doc above.
+    #
+    # Unset (dev laptop, devcontainer, bare Linux): every line below behaves
+    # exactly as it did — apt uses its own /var/cache/apt/archives, and the
+    # only new work is a `du` per attempt to measure throughput.
+    # Expanded below as `${apt_archives_opts[@]+"${apt_archives_opts[@]}"}`, NOT as
+    # `"${apt_archives_opts[@]}"`. Under `set -u` an EMPTY array is an unbound
+    # variable in bash 3.2 (macOS `/bin/bash`), which is where
+    # `apt-phase-wall-budget.test.ts` executes this file — it caught exactly that,
+    # four lines after the first draft claimed bash 5 was guaranteed here.
+    apt_archives_opts=()
+    if [ -n "${ZETA_APT_ARCHIVES_DIR:-}" ]; then
+      apt_archives_dir="$ZETA_APT_ARCHIVES_DIR"
+      case "$apt_archives_dir" in
+        /*) : ;;
+        *)
+          echo "error: ZETA_APT_ARCHIVES_DIR must be an absolute path (got '$apt_archives_dir')" >&2
+          echo "  apt resolves Dir::Cache::archives against Dir::, not against \$PWD." >&2
+          exit 1
+          ;;
+      esac
+      # apt writes in-flight downloads to `partial/` under this dir and takes a
+      # `lock` beside them; both must exist and be writable by the apt process.
+      mkdir -p "$apt_archives_dir/partial"
+      apt_archives_opts=( -o "Dir::Cache::archives=$apt_archives_dir" )
+      apt_restored_debs="$(find "$apt_archives_dir" -maxdepth 1 -name '*.deb' 2>/dev/null | wc -l | tr -d ' ')"
+      echo "↻ apt archive cache: $apt_archives_dir (${apt_restored_debs} .deb present before install)"
+    else
+      apt_archives_dir=/var/cache/apt/archives
+    fi
+
+    # Kilobytes currently in the archive directory. Used to MEASURE each
+    # attempt's throughput, so the budget-exhaustion banner can report what
+    # happened instead of asserting a cause. An unmeasurable directory yields
+    # 0 and the banner then says "throughput not measurable" rather than
+    # printing a false 0 MB/s.
+    apt_archive_kb() {
+      local _kb=""
+      # shellcheck disable=SC2086
+      _kb="$($SUDO du -sk "$apt_archives_dir" 2>/dev/null | awk 'NR==1{print $1}')" || _kb=""
+      case "$_kb" in ''|*[!0-9]*) _kb=0 ;; esac
+      printf '%s' "$_kb"
+    }
+
     # `apt-get update` refreshes EVERY configured source, including any
     # third-party PPAs the host image shipped that we don't control. Under
     # `set -euo pipefail` a single unreachable source (e.g. a launchpad PPA
@@ -261,8 +341,14 @@ elif [ -f "$APT_MANIFEST" ]; then
     if timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_update_slice" \
          $SUDO env DEBIAN_FRONTEND=noninteractive apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
     if [ "$apt_update_rc" -eq 124 ]; then
-      echo "⚠ apt-get update exceeded its ${apt_update_slice}s slice of the" >&2
-      echo "  ${apt_budget}s apt budget — stalled mirror. Continuing to install;" >&2
+      # NOT "stalled mirror": `timeout` firing says the slice expired, and says
+      # nothing about whether the mirror was wedged or merely slow. Naming the
+      # observable (the slice ran out) keeps the reader pointed at the two real
+      # remedies — fewer bytes, or a warm cache — instead of at a hang that the
+      # measurement usually does not support. Same correction as the install
+      # banner below, which carries the throughput number.
+      echo "⚠ apt-get update ran out of wall clock: its ${apt_update_slice}s slice of the" >&2
+      echo "  ${apt_budget}s apt budget expired. Continuing to install;" >&2
       echo "  the install below still asserts the packages we need are present." >&2
     elif [ "$apt_update_rc" -ne 0 ] \
        || grep -qiE 'Failed to fetch|Some index files failed to download|^Err:' "$apt_log"; then
@@ -299,6 +385,8 @@ elif [ -f "$APT_MANIFEST" ]; then
       fi
       if [ "$apt_slice" -lt 1 ]; then apt_slice=1; fi
       apt_install_rc=0
+      apt_kb_before="$(apt_archive_kb)"
+      apt_t_before="$(date +%s)"
       # shellcheck disable=SC2086
       # DEBIAN_FRONTEND=noninteractive + confdef/confold keep dpkg from stalling
       # on a conffile prompt (e.g. fuse3's fuse.conf) when this runs headless —
@@ -307,6 +395,7 @@ elif [ -f "$APT_MANIFEST" ]; then
       # install dies with "end of file on stdin at conffile prompt" (rc=100).
       timeout --signal=TERM --kill-after="${apt_kill_after}s" "$apt_slice" \
         $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+          ${apt_archives_opts[@]+"${apt_archives_opts[@]}"} \
           -o Dpkg::Options::=--force-confdef \
           -o Dpkg::Options::=--force-confold \
           -o Acquire::Retries=3 \
@@ -314,11 +403,45 @@ elif [ -f "$APT_MANIFEST" ]; then
           -o Acquire::https::Timeout=30 \
           $PKGS || apt_install_rc=$?
       [ "$apt_install_rc" -eq 0 ] && break
-      # 124 = `timeout` fired (the stall case); anything else is a real apt error.
+      # 124 = `timeout` fired; anything else is a real apt error.
       if [ "$apt_install_rc" -eq 124 ]; then
-        echo "⚠ apt-get install exceeded its ${apt_slice}s slice of the ${apt_budget}s" >&2
-        echo "  budget (attempt ${apt_attempt}/${apt_attempts}) — stalled archive mirror," >&2
-        echo "  not a package error." >&2
+        # THE BANNER SAYS WHAT WAS MEASURED, NOT WHAT IT ASSUMES.
+        #
+        # This used to read "stalled archive mirror, not a package error." The
+        # first half is usually FALSE and it sent every reader at the wrong
+        # fix. Measured on job 97946436709 (2026-08-25): all three attempts
+        # made continuous forward progress and apt's archive cache carried
+        # completed downloads across them — 561 MB wanted, ~1.1 MB/s delivered
+        # against the ~14 MB/s the 420s budget was sized from. A mirror at
+        # 1.1 MB/s is SLOW, not stalled, and the remedy for slow is fewer bytes
+        # (a tier) or no bytes (a warm archive cache) — never a longer wait,
+        # because 561 MB at 1.1 MB/s is ~510s and the budget has 18s of margin
+        # fleet-wide.
+        #
+        # So: print the observable (the slice expired), print the MEASURED
+        # throughput for this attempt, and let the number distinguish the two
+        # causes instead of the banner guessing between them. Near-zero bytes
+        # in a full slice IS the wedged case and now says so on evidence.
+        apt_kb_after="$(apt_archive_kb)"
+        apt_elapsed=$(( $(date +%s) - apt_t_before ))
+        [ "$apt_elapsed" -ge 1 ] || apt_elapsed=1
+        apt_kb_delta=$(( apt_kb_after - apt_kb_before ))
+        echo "⚠ apt-get install ran out of wall clock: its ${apt_slice}s slice of the" >&2
+        echo "  ${apt_budget}s apt budget expired (attempt ${apt_attempt}/${apt_attempts}, rc=124)." >&2
+        if [ "$apt_kb_delta" -gt 0 ]; then
+          echo "  MEASURED this attempt: $(( apt_kb_delta / 1024 )) MB into the archive cache in" >&2
+          echo "  ${apt_elapsed}s = $(( apt_kb_delta / apt_elapsed )) kB/s. Bytes were still arriving, so this is a" >&2
+          echo "  SLOW mirror against a fixed budget — not a hang and not a package error." >&2
+          echo "  The fix is fewer bytes (ZETA_HOST_TIER) or none (a warm archive cache)," >&2
+          echo "  not a longer budget: see docs/research/2026-08-26-caching-var-cache-apt-" >&2
+          echo "  archives-is-the-root-fix-for-the-apt-wall-budget-class.md" >&2
+        elif [ "$apt_kb_after" -eq 0 ] && [ "$apt_kb_before" -eq 0 ]; then
+          echo "  Throughput not measurable (could not size ${apt_archives_dir})." >&2
+        else
+          echo "  MEASURED this attempt: NO bytes reached the archive cache in ${apt_elapsed}s." >&2
+          echo "  That is the WEDGED case — a mirror holding the socket open and sending" >&2
+          echo "  nothing — which is what this timeout exists to convert into an exit." >&2
+        fi
       else
         echo "⚠ apt-get install failed rc=${apt_install_rc} (attempt ${apt_attempt}/${apt_attempts})" >&2
       fi
@@ -407,6 +530,43 @@ elif [ -f "$APT_MANIFEST" ]; then
       if [ "$apt_backoff" -gt "$apt_backoff_cap" ]; then apt_backoff="$apt_backoff_cap"; fi
       if [ "$apt_backoff" -gt 0 ]; then sleep "$apt_backoff"; fi
     done
+
+    # ── HAND THE ARCHIVE DIRECTORY BACK, whatever the outcome ──────────
+    #
+    # Runs BEFORE the strict-exit below on purpose. apt wrote these files as
+    # root; the CI step that saves them (`actions/cache`, a post step) tars
+    # them as the unprivileged runner user, and `partial/` is mode 0700 root,
+    # so without this the save fails with permission-denied — on the FAILURE
+    # path, which is precisely the run whose partial download is worth
+    # keeping. A cleanup that only runs on success would be the retry loop's
+    # old bug in a new place.
+    #
+    # `autoclean` (not `clean`) drops exactly the `.deb`s that the freshly
+    # updated index no longer offers — superseded versions — and keeps every
+    # current one. Without it the directory accumulates one file per version
+    # per week and the cache grows without bound; with it, the steady-state
+    # size is the size of ONE resolved package set. `clean` would empty it and
+    # defeat the whole mechanism.
+    if [ -n "${ZETA_APT_ARCHIVES_DIR:-}" ]; then
+      apt_autoclean_rc=0
+      # shellcheck disable=SC2086
+      $SUDO env DEBIAN_FRONTEND=noninteractive apt-get autoclean -y \
+        "${apt_archives_opts[@]}" >/dev/null 2>&1 || apt_autoclean_rc=$?
+      if [ "$apt_autoclean_rc" -ne 0 ]; then
+        # Loud, never fatal: a cache that keeps a stale file is slightly larger,
+        # which is not worth failing an install over — but a silent failure here
+        # would show up months later as an unexplained cache-size climb.
+        echo "⚠ apt-get autoclean rc=${apt_autoclean_rc} on ${apt_archives_dir};" >&2
+        echo "  superseded .deb files were not pruned (cache will be larger than needed)." >&2
+      fi
+      $SUDO rm -rf "$apt_archives_dir/partial" "$apt_archives_dir/lock"
+      if [ "$(id -u)" -ne 0 ]; then
+        $SUDO chown -R "$(id -u):$(id -g)" "$apt_archives_dir"
+      fi
+      echo "✓ apt archive cache: $(find "$apt_archives_dir" -maxdepth 1 -name '*.deb' | wc -l | tr -d ' ') .deb," \
+           "$(du -sh "$apt_archives_dir" 2>/dev/null | awk 'NR==1{print $1}') in $apt_archives_dir"
+    fi
+
     # STRICT on exhaustion: the assert is preserved (see the update-vs-install
     # split above) — a package we actually need being unavailable still fails
     # loudly rather than degrading to a false-green. Failing HERE, inside the
@@ -415,9 +575,15 @@ elif [ -f "$APT_MANIFEST" ]; then
     if [ "$apt_install_rc" -ne 0 ]; then
       echo "✗ apt-get install did not succeed within the ${apt_budget}s apt budget" >&2
       echo "  (${apt_attempts} attempts, rc=${apt_install_rc})." >&2
-      echo "  On a slow link this is a budget, not a package problem: re-run with" >&2
-      echo "  ZETA_APT_BUDGET_SECONDS=<larger> — but in CI the budget is sized to" >&2
-      echo "  fit inside the job's timeout-minutes, so raise that first." >&2
+      echo "  Read the per-attempt throughput above before reaching for a knob:" >&2
+      echo "    bytes still arriving  → a SLOW mirror. Fetch fewer bytes" >&2
+      echo "      (ZETA_HOST_TIER=slim) or none (ZETA_APT_ARCHIVES_DIR + a warm" >&2
+      echo "      cache). In CI the budget is NOT the lever — it is sized to fit" >&2
+      echo "      inside every job's timeout-minutes with 18s of fleet-wide margin." >&2
+      echo "    no bytes arriving     → a WEDGED mirror, or a package genuinely" >&2
+      echo "      unavailable. rc=100 above would name the package." >&2
+      echo "  On a laptop, ZETA_APT_BUDGET_SECONDS=<larger> is the right override;" >&2
+      echo "  there is no outer job timeout to collide with." >&2
       exit "$apt_install_rc"
     fi
   else

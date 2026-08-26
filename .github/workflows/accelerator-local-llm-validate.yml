@@ -44,6 +44,21 @@ jobs:
       - name: Setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
 
+      - name: Restore apt archives (root fix for the exit-124 install-step class)
+        # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
+        # ~510s of download inside a 420s budget, which is why this step's install
+        # died at exit 124 under six different job names. This restores the archives
+        # and exports ZETA_APT_ARCHIVES_DIR, so the install below is unchanged.
+        # docs/research/2026-08-26-caching-var-cache-apt-archives-is-the-root-fix-for-the-apt-wall-budget-class.md
+        uses: ./.github/actions/apt-archive-cache
+        with:
+          tier: full
+          # DISABLED, deliberately. This lane's SUBJECT is "a BARE runner +
+          # install.sh yields the substrate". A warm archive cache would replace
+          # the thing under test with a constant, which is the vacuity class:
+          # the shield would still be green and would no longer be a shield.
+          enabled: "false"
+
       - name: Run install.sh (the entropy lever — bare runner → substrate)
         env:
           # TIER DECLARED, not detected. This job genuinely needs the wider payload:
