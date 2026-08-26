@@ -826,6 +826,244 @@
       "expect": "skip",
       "why": "gate: a genuine tsc type error and the derived roll-up. No install step failed at all.",
       "expect_reason": "no-install-stall"
+    },
+    {
+      "run": {
+        "id": 32886176743,
+        "name": "gate",
+        "head_branch": "docs/zero-crossing-brief-lumen",
+        "status": "completed",
+        "conclusion": "failure",
+        "created_at": "2026-08-25T18:51:11Z",
+        "updated_at": "2026-08-25T19:07:10Z",
+        "run_attempt": 1
+      },
+      "total_jobs": 35,
+      "jobs": [
+        {
+          "id": 97927182073,
+          "name": "build-and-test (ubuntu-24.04)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Enable git long paths (Windows; pre-checkout)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 3,
+              "name": "Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Path-filter result (081KQGDBJ0008QG0R001MK4YPC)",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Cache .NET SDK",
+              "conclusion": "success"
+            },
+            {
+              "number": 6,
+              "name": "Cache mise runtimes (python only post round 32)",
+              "conclusion": "success"
+            },
+            {
+              "number": 7,
+              "name": "Cache elan (Lean 4 toolchain)",
+              "conclusion": "success"
+            },
+            {
+              "number": 8,
+              "name": "Cache NuGet packages",
+              "conclusion": "success"
+            },
+            {
+              "number": 9,
+              "name": "Install toolchain via three-way-parity script (Unix; GOVERNANCE §24)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 10,
+              "name": "Install toolchain via three-way-parity script (Windows; GOVERNANCE §24)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 11,
+              "name": "Guard — CodeAnalysis pins ≤ SDK Roslyn (CS9057,",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 12,
+              "name": "Build (0 Warning(s) / 0 Error(s) required)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 13,
+              "name": "Test",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 14,
+              "name": "Name the crashed/hung test (on failure)",
+              "conclusion": "failure"
+            },
+            {
+              "number": 15,
+              "name": "Skipped (docs-only PR)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 26,
+              "name": "Post Cache NuGet packages",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 27,
+              "name": "Post Cache elan (Lean 4 toolchain)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 28,
+              "name": "Post Cache mise runtimes (python only post round 32)",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 29,
+              "name": "Post Cache .NET SDK",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 30,
+              "name": "Post Checkout",
+              "conclusion": "success"
+            },
+            {
+              "number": 31,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97931717400,
+          "name": "gate (required)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout (summary script + this workflow only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Emit scope -- which floor jobs actually ran",
+              "conclusion": "success"
+            },
+            {
+              "number": 5,
+              "name": "Check all gate jobs",
+              "conclusion": "failure"
+            },
+            {
+              "number": 9,
+              "name": "Post Setup Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 10,
+              "name": "Post Checkout (summary script + this workflow only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 11,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        },
+        {
+          "id": 97931785867,
+          "name": "drift (loud)",
+          "conclusion": "failure",
+          "steps": [
+            {
+              "number": 1,
+              "name": "Set up job",
+              "conclusion": "success"
+            },
+            {
+              "number": 2,
+              "name": "Checkout (reporter + ledger only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 3,
+              "name": "Setup Bun",
+              "conclusion": "success"
+            },
+            {
+              "number": 4,
+              "name": "Report drift, loudly",
+              "conclusion": "failure"
+            },
+            {
+              "number": 5,
+              "name": "Report main's gate-verdict drought, loudly",
+              "conclusion": "success"
+            },
+            {
+              "number": 9,
+              "name": "Post Setup Bun",
+              "conclusion": "skipped"
+            },
+            {
+              "number": 10,
+              "name": "Post Checkout (reporter + ledger only)",
+              "conclusion": "success"
+            },
+            {
+              "number": 11,
+              "name": "Complete job",
+              "conclusion": "success"
+            }
+          ]
+        }
+      ],
+      "logExcerpts": {
+        "97927182073": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97927182073/logs (92816 bytes, 970 lines)",
+          "excerpt": "32: 2026-08-25T18:51:39.7377858Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n210: 2026-08-25T18:51:48.9012558Z ##[group]Run if [ \"${CODE_PATH}\" = \"true\" ]; then\n222: 2026-08-25T18:51:48.9850656Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n239: 2026-08-25T18:51:50.2835658Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n253: 2026-08-25T18:51:50.7510423Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n271: 2026-08-25T18:51:52.7353530Z ##[group]Run actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9\n293: 2026-08-25T18:51:58.1567380Z ##[group]Run ./tools/setup/install.sh\n923: 2026-08-25T18:58:58.9839234Z ✗ apt-get install did not succeed within the 420s apt budget\n928: 2026-08-25T18:58:58.9856627Z ##[error]Process completed with exit code 124.\n929: 2026-08-25T18:58:58.9958173Z ##[group]Run bun src/Core.TypeScript/ci/print-blame-sequences.ts\n935: 2026-08-25T18:58:59.0070994Z /home/runner/work/_temp/90026f1c-4844-46c9-8108-f48271c72b32.sh: line 1: bun: command not found\n936: 2026-08-25T18:58:59.0079377Z ##[error]Process completed with exit code 127."
+        },
+        "97931717400": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97931717400/logs (22406 bytes, 316 lines)",
+          "excerpt": "33: 2026-08-25T19:06:04.5158847Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n140: 2026-08-25T19:06:09.7189782Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n151: 2026-08-25T19:06:10.9534655Z ##[group]Run set -euo pipefail\n211: 2026-08-25T19:06:12.2111412Z ##[group]Run # A job result is one of: success, failure, cancelled, skipped.\n279: 2026-08-25T19:06:12.2250273Z ##[error]Process completed with exit code 1."
+        },
+        "97931785867": {
+          "source": "GET /repos/Lucent-Financial-Group/Zeta/actions/jobs/97931785867/logs (22582 bytes, 264 lines)",
+          "excerpt": "33: 2026-08-25T19:06:17.6261178Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1\n145: 2026-08-25T19:06:26.0224033Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6\n156: 2026-08-25T19:06:27.4063553Z ##[group]Run bun src/Core.TypeScript/ci/drift-loud.ts \\\n182: 2026-08-25T19:07:05.6789581Z Detector liveness: OK -- detector live: the canary's swallowed step was observed in run 32886176743 via the annotation channel (Process completed with exit code 1.)\n187: 2026-08-25T19:07:05.6826553Z ##[error]Process completed with exit code 1.\n188: 2026-08-25T19:07:05.6885829Z ##[group]Run bun src/Core.TypeScript/ci/verdict-drought.ts \\"
+        }
+      },
+      "expect": "rerun",
+      "expect_reason": "toolchain-install-stall",
+      "why": "THE DEFECT THIS FIXTURE EXISTS FOR (PR #15410, stranded ~11 hours). A genuine apt-budget install stall in build-and-test (ubuntu-24.04), the derived gate (required) roll-up, and a red `drift (loud)`. `drift (loud)` is deliberately NOT in the `gate (required)` needs: floor -- gate.yml says so in its own comment -- so its red blocks nothing and nothing about it can ever be resolved by a human either. The policy answered skip/mixed-failure and the run could only ever strand. With the floor derived from gate.yml it answers rerun, and the drift red is named in the detail rather than swallowed. Captured from GET /actions/runs/32886176743/attempts/1 because the run was manually re-run on 2026-08-26 before the fix existed."
     }
   ],
   "note": [
@@ -840,6 +1078,7 @@
     "one that drops them correctly fails to match.",
     "",
     "Cases were chosen to include the NEGATIVES, because the negatives are the safety property:",
-    "one run mixing an install stall with genuine reds, and one run with only genuine reds."
+    "one run mixing an install stall with genuine reds, and one run with only genuine reds.",
+    "APPENDED 2026-08-26: case 32886176743, captured from the runs/<id>/attempts/1 endpoint. It is the run whose skip/mixed-failure verdict is the defect that `non-blocking` closes; the other five cases are untouched, so every earlier assertion still measures what it measured."
   ]
 }

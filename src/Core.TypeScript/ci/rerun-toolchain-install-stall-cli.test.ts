@@ -1,8 +1,8 @@
 import { test, expect, describe } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { worthFetchingLogs, toJob } from "./rerun-toolchain-install-stall-cli.ts";
-import type { Job } from "./toolchain-install-stall.ts";
+import { worthFetchingLogs, toJob, main } from "./rerun-toolchain-install-stall-cli.ts";
+import type { Job, WorkflowRun } from "./toolchain-install-stall.ts";
 
 const fixture = JSON.parse(
   readFileSync(join(import.meta.dir, "fixtures", "toolchain-install-stall-2026-08-25.json"), "utf8"),
@@ -90,5 +90,99 @@ describe("the module writes no files — the taint sink is gone, not sanitised",
     const src = readFileSync(join(import.meta.dir, "rerun-toolchain-install-stall-cli.ts"), "utf8");
     expect(src.length).toBeGreaterThan(4000);
     expect(src).toContain("toolchain-install-stall-decision");
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────────────────
+// THE WIRING IS ITS OWN FALSIFIER (2026-08-26).
+//
+// The `non-blocking` demotion lives in `toolchain-install-stall.ts` and is exercised there,
+// but the sweep only benefits if this CLI actually LOADS the floor and HANDS it to the
+// policy. That wiring is one spread in one call, and a mutation run confirmed it: deleting
+// `blockingFloor` from the `decideRerun` call left all 80 unit tests green. So `main` is
+// driven end to end here over a stubbed `fetch`, with no network and no mock of the policy —
+// the fixture data goes in, the decision line comes out.
+// ─────────────────────────────────────────────────────────────────────────────────────────
+describe("main — the sweep, driven end to end over a stubbed GitHub API", () => {
+  interface FullCase {
+    run: WorkflowRun & { workflow_id?: number };
+    jobs: Job[];
+    logExcerpts: Record<string, { excerpt: string }>;
+  }
+  const full = JSON.parse(
+    readFileSync(join(import.meta.dir, "fixtures", "toolchain-install-stall-2026-08-25.json"), "utf8"),
+  ) as { cases: FullCase[] };
+  const caseOf = (id: number) => full.cases.find((c) => c.run.id === id)!;
+
+  /** Serve one fixture case; anything unexpected 404s, so a missed route cannot pass quietly. */
+  async function runMain(id: number): Promise<Array<Record<string, unknown>>> {
+    const c = caseOf(id);
+    const realFetch = globalThis.fetch;
+    const lines: Array<Record<string, unknown>> = [];
+    const realLog = console.log;
+    // The staleness limit is not what is under test here, and the fixture runs are days old by
+    // now. Derived from the run's own timestamp rather than guessed, so it cannot rot.
+    const ageMinutes = Math.ceil((Date.now() - Date.parse(c.run.updated_at)) / 60_000) + 60;
+    try {
+      globalThis.fetch = (async (input: RequestInfo | URL) => {
+        const url = String(input);
+        const body = (v: unknown) => new Response(JSON.stringify(v), { status: 200 });
+        if (url.endsWith(`/actions/runs/${id}`)) return body(c.run);
+        if (url.includes(`/actions/runs/${id}/jobs`)) return body({ jobs: c.jobs });
+        const log = url.match(/\/actions\/jobs\/(\d+)\/logs$/);
+        if (log) return new Response(c.logExcerpts[log[1]!]?.excerpt ?? "", { status: 200 });
+        if (url.includes("/actions/workflows/")) return body({ workflow_runs: [] });
+        return new Response("not found", { status: 404 });
+      }) as typeof fetch;
+      console.log = (line: string) => void lines.push(JSON.parse(line) as Record<string, unknown>);
+      const rc = await main(["--run-id", String(id), "--max-age-minutes", String(ageMinutes)]);
+      if (rc !== 0) throw new Error(`main exited ${rc}`);
+    } finally {
+      globalThis.fetch = realFetch;
+      console.log = realLog;
+    }
+    return lines;
+  }
+
+  test("the floor is loaded from gate.yml and announced", async () => {
+    const lines = await runMain(32886176743);
+    const floor = lines.find((l) => l.kind === "toolchain-install-stall-floor")!;
+    expect(floor.status).toBe("ok");
+    expect(floor.workflow).toBe("gate");
+    expect(floor.blocking).toContain("lint (TS)");
+    expect(floor.blocking).not.toContain("drift (loud)");
+  });
+
+  test("THE WIRING: the stranded run reaches `rerun` through the real CLI path", async () => {
+    // This is the test that dies if the CLI stops handing the floor to the policy.
+    const lines = await runMain(32886176743);
+    const decision = lines.find((l) => l.kind === "toolchain-install-stall-decision")!;
+    expect(decision.action).toBe("rerun");
+    expect(decision.reason).toBe("toolchain-install-stall");
+    expect(decision.applied).toBe(false); // dry run by default: nothing was POSTed
+    expect(decision.detail).toContain("drift (loud)");
+  });
+
+  test("and the run mixing a stall with REAL reds still declines through the same path", async () => {
+    const lines = await runMain(32896165119);
+    const decision = lines.find((l) => l.kind === "toolchain-install-stall-decision")!;
+    expect(decision.action).toBe("skip");
+    expect(decision.reason).toBe("mixed-failure");
+  });
+});
+
+describe("argument handling for the replay flags", () => {
+  test("--attempt without --run-id is refused", async () => {
+    expect(await main(["--attempt", "1"])).toBe(2);
+  });
+
+  test("--attempt with --apply is refused (a verdict from an old attempt must not act)", async () => {
+    // `rerun-failed-jobs` acts on the LATEST attempt, so applying a decision computed from an
+    // earlier one would be a decision about data that is no longer the run's state.
+    expect(await main(["--run-id", "1", "--attempt", "1", "--apply"])).toBe(2);
+  });
+
+  test("a non-numeric --attempt is refused", async () => {
+    expect(await main(["--run-id", "1", "--attempt", "zero"])).toBe(2);
   });
 });

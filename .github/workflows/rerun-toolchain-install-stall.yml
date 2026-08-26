@@ -28,10 +28,21 @@
 # that is causally incapable of being about a pull request's content: the job's FIRST failing
 # step is the toolchain installer AND its log carries linux.sh's own budget-exhaustion banner
 # together with exit 124. A test failure, a lint finding, a type error, a build break: never.
-# A run holding BOTH a stall and a real red is refused outright and reaches a human.
-# `src/Core.TypeScript/ci/toolchain-install-stall.test.ts` pins that against real captured
-# runs; six mutations of the predicate (including widening it to bare `failure`) each turn a
-# test red.
+# A run holding BOTH a stall and a red that COULD BLOCK is refused outright and reaches a
+# human. `src/Core.TypeScript/ci/toolchain-install-stall.test.ts` pins that against real
+# captured runs; widening the predicate to bare `failure` turns 25 tests red.
+#
+# THE AMENDMENT (2026-08-26) — "COULD BLOCK" IS DERIVED, NOT ASSUMED. That refusal used to
+# read "a real red", which was wrong for a job whose failure cannot block anything. Gate run
+# 32886176743 (PR #15410) carried a genuine install stall beside a red `drift (loud)` — a job
+# gate.yml deliberately keeps OUT of the `gate (required)` needs: floor so it can be loud and
+# block nothing. The sweep answered `skip / mixed-failure`, no human intervention could have
+# resolved it, and the PR sat ~11 hours. `drift (loud)` goes red often, so the class was not
+# rare. The blocking set is now DERIVED from gate.yml's own `gate-required.needs:` list,
+# closed transitively (src/Core.TypeScript/ci/gate-blocking-floor.ts) — never a hand-written
+# roster of harmless names, which would drift silently in the permissive direction. A red
+# anywhere inside that floor still refuses the rerun; a demoted red is re-run along with
+# everything else, stays red if it is real, and is NAMED in the decision line.
 #
 # WHY A SWEEP RATHER THAN A `workflow_run` WATCHER — cost. `gate` alone failed 117 times in
 # the measured 5h15m window (~535/day extrapolated); a per-run watcher at ~40s per evaluation
@@ -120,11 +131,19 @@ jobs:
     steps:
       - name: Checkout (default branch — never a pull request head; see header)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        # `gate.yml` is in the sparse set because the policy derives WHICH GATE JOBS CAN
+        # BLOCK from that file's own `gate-required.needs:` list — so a red `drift (loud)`,
+        # deliberately outside the floor, stops stranding an install stall beside it. It is
+        # read from THIS checkout (the default branch) and never from a pull request head,
+        # which is what stops a contributor declaring their own failing job harmless. If the
+        # path stops matching, the policy reverts to refusing every mixed run (fail-closed)
+        # and says so on a `toolchain-install-stall-floor` line.
         with:
           persist-credentials: false
           sparse-checkout: |
             src/Core.TypeScript/ci
             package.json
+            .github/workflows/gate.yml
           sparse-checkout-cone-mode: false
 
       - name: Setup bun

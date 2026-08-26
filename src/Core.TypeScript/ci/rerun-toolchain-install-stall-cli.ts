@@ -39,8 +39,18 @@
  * UNTRUSTED INPUT (BP-11). Branch names, run titles and job names are attacker-influenceable
  * — anyone may open a pull request. Nothing here is interpolated into a shell; the token is
  * read from the environment and never logged.
+ *
+ * THE BLOCKING FLOOR IS READ FROM DISK, NOT FROM THE API, AND THAT IS THE SECURITY CHOICE.
+ * The policy needs to know which of a gate run's jobs could block a merge, and it derives that
+ * from `gate.yml`'s own `gate-required.needs:` list. The copy it reads is the one in THIS
+ * process's checkout — the scheduled sweep checks out the DEFAULT BRANCH and never a pull
+ * request head — so a pull request cannot edit its own workflow file to declare its own
+ * failing job harmless. Fetching `gate.yml` at the run's head SHA would hand exactly that
+ * ability to any contributor. If the file is missing or unparseable the floor is `undefined`
+ * and the policy reverts to refusing every mixed run, which is the fail-closed direction.
  */
 
+import { loadBlockingFloor } from "./gate-blocking-floor.ts";
 import {
   decideRerun,
   INSTALL_STEP_NAME,
@@ -183,22 +193,56 @@ export async function main(argv: string[]): Promise<number> {
   const apply = argv.includes("--apply");
   const sinceMinutes = numArg("--since-minutes", DEFAULT_SINCE_MINUTES);
   const maxReruns = numArg("--max-reruns", DEFAULT_MAX_RERUNS);
+  // Exposed for replay: a historical run is `stale` by the 120-minute default no matter what
+  // else is true of it, which would mask every other verdict when checking the policy against
+  // a run from yesterday. The sweep itself never passes it.
+  const maxAgeMinutes = argv.includes("--max-age-minutes") ? numArg("--max-age-minutes", 0) : undefined;
   const onlyRunId = argv.includes("--run-id") ? Number(argv[argv.indexOf("--run-id") + 1]) : undefined;
+  // REPLAY ONLY. `--attempt N` evaluates the run AS IT WAS on attempt N, which is the only way
+  // to check the policy against a stranded run that has since been re-run by hand — and the
+  // only way this change could be verified live at all, because the run that motivated it
+  // (32886176743) was manually re-run before the fix existed. It is refused together with
+  // `--apply`: `rerun-failed-jobs` acts on the LATEST attempt, so applying a verdict computed
+  // from an older one would be a decision about data that is no longer the run's state.
+  const attempt = argv.includes("--attempt") ? Number(argv[argv.indexOf("--attempt") + 1]) : undefined;
+  const USAGE =
+    "usage: rerun-toolchain-install-stall-cli.ts [--since-minutes N] [--max-reruns N] " +
+    "[--max-age-minutes N] [--run-id ID [--attempt N]] [--apply]";
   if (argv.includes("--run-id") && !Number.isFinite(onlyRunId)) {
-    console.error("usage: rerun-toolchain-install-stall-cli.ts [--since-minutes N] [--max-reruns N] [--run-id ID] [--apply]");
+    console.error(USAGE);
     return 2;
   }
+  if (attempt !== undefined && (!Number.isInteger(attempt) || attempt < 1 || onlyRunId === undefined || apply)) {
+    console.error(`${USAGE}\n--attempt is a positive integer, requires --run-id, and is incompatible with --apply.`);
+    return 2;
+  }
+  const attemptPath = attempt !== undefined ? `/attempts/${attempt}` : "";
 
   const candidates: RunListItem[] = onlyRunId
-    ? [await api<RunListItem>(`/repos/${REPO}/actions/runs/${onlyRunId}`)]
+    ? [await api<RunListItem>(`/repos/${REPO}/actions/runs/${onlyRunId}${attemptPath}`)]
     : await listRecentFailedRuns(sinceMinutes);
+
+  // The blocking floor, announced whichever way it went. A policy that quietly reverted to
+  // refusing everything would look exactly like a policy with nothing to do.
+  const floorLoad = loadBlockingFloor();
+  const blockingFloor = floorLoad.floor;
+  emit({
+    kind: "toolchain-install-stall-floor",
+    status: floorLoad.status,
+    path: floorLoad.path,
+    ...(floorLoad.floor
+      ? { workflow: floorLoad.floor.workflow, rollup: floorLoad.floor.rollupJobName, blocking: floorLoad.floor.blocking }
+      : { effect: "no demotion — every mixed run is refused, as before this policy read gate.yml" }),
+  });
 
   const byReason = new Map<string, number>();
   let rerun = 0;
   let capHit = false;
 
   for (const run of candidates) {
-    const jobsRaw = await api<{ jobs: ApiJob[] }>(`/repos/${REPO}/actions/runs/${run.id}/jobs?per_page=100`);
+    const jobsRaw = await api<{ jobs: ApiJob[] }>(
+      `/repos/${REPO}/actions/runs/${run.id}${attemptPath}/jobs?per_page=100`,
+    );
     const jobs = (jobsRaw.jobs ?? []).map(toJob);
 
     const logs = new Map<number, string>();
@@ -209,7 +253,10 @@ export async function main(argv: string[]): Promise<number> {
       }
     }
     const siblings = logs.size > 0 ? await fetchSiblings(run) : [];
-    const decision = decideRerun(run, jobs, logs, siblings);
+    const decision = decideRerun(run, jobs, logs, siblings, {
+      ...(blockingFloor !== undefined ? { blockingFloor } : {}),
+      ...(maxAgeMinutes !== undefined ? { maxAgeMinutes } : {}),
+    });
 
     byReason.set(decision.reason, (byReason.get(decision.reason) ?? 0) + 1);
 

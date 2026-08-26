@@ -55,10 +55,32 @@
  *   NEVER      anything else. A test failure, a lint finding, a type error, a build break.
  *              Exit 1 is a verdict. 124 in an install step is a check that never ran.
  *
- * Pure by construction: every input is explicit, including the clock (§13 noninterference),
- * so the policy replays deterministically against captured production runs — which is how
- * `toolchain-install-stall.test.ts` tests it.
+ * THE AMENDMENT (2026-08-26) — A RED THAT CANNOT BLOCK IS NOT A RED FOR THIS DECISION.
+ * The `mixed-failure` refusal above was correct about failures that BLOCK and wrong about
+ * failures that CANNOT. Measured live: gate run 32886176743 (PR #15410) carried a genuine
+ * install stall beside a red `drift (loud)` — a job gate.yml deliberately keeps OUT of the
+ * `gate (required)` floor so it can be loud and block nothing — and the policy answered
+ * `skip / mixed-failure`. Nothing could ever resolve it, so the pull request stranded for
+ * ~11 hours, and because `drift (loud)` goes red often the class was not rare.
+ *
+ * So `unexplained` is now demoted to `non-blocking` for a job that is PROVABLY outside the
+ * required floor, where "provably" means derived from `gate.yml`'s own `gate-required.needs:`
+ * closure by `gate-blocking-floor.ts` — never a hand-written roster of harmless names, which
+ * would drift silently in the permissive direction. The demotion applies only to
+ * `unexplained`, only when the floor was parsed from a trusted checkout, and only when the
+ * floor's workflow matches the run's; every other path is unchanged, and a red anywhere
+ * inside the floor still declines the rerun. The falsifier that keeps that true is
+ * `toolchain-install-stall.test.ts`'s mutation suite: deleting the workflow check, dropping
+ * the closure to non-transitive, or letting an undeclared job name demote each turn tests red.
+ *
+ * Pure by construction: every input is explicit, including the clock (§13 noninterference)
+ * and now the workflow's blocking floor, so the policy replays deterministically against
+ * captured production runs — which is how `toolchain-install-stall.test.ts` tests it.
  */
+
+import { isNonBlockingJob, type BlockingFloor } from "./gate-blocking-floor.ts";
+
+export type { BlockingFloor };
 
 /** Subset of GitHub's workflow-run object the policy reads. */
 export interface WorkflowRun {
@@ -141,6 +163,7 @@ export const ROLLUP_JOBS: ReadonlyArray<{ job: string; step: string }> = [
 export type JobVerdict =
   | "install-stall" /** first failure is the install step, on the apt wall budget */
   | "derived" /** a roll-up job reporting someone else's failure */
+  | "non-blocking" /** a real red in a job whose failure provably cannot block anything */
   | "unexplained" /** anything else — a real red, or a stall we cannot prove */
   | "not-failed";
 
@@ -165,8 +188,38 @@ function isRollup(job: Job, steps: readonly JobStep[]): boolean {
  * `log` is the job's raw log (or, in tests, a line-numbered excerpt of it — the checks are
  * substring/line tests, so an excerpt that preserves the signature lines is a faithful
  * stand-in, and one that drops them correctly fails to match).
+ *
+ * `floor`, when supplied, must be the blocking floor OF THIS JOB'S OWN WORKFLOW — the caller
+ * owns that pairing (`decideRerun` checks `run.name === floor.workflow`). It is used for
+ * exactly one thing, applied AFTER the verdict below is computed and only to `unexplained`:
+ *
+ *   A JOB WHOSE FAILURE CANNOT BLOCK ANYTHING IS NOT A "REAL RED" FOR THIS DECISION.
+ *
+ * Why that is safe, stated as the property rather than as a preference. The `mixed-failure`
+ * refusal exists because re-running a real red re-runs it until it flakes green, laundering a
+ * genuine failure into a pass. A job outside the required floor has no pass to launder: it
+ * blocked nothing when it was red, and it blocks nothing when it is green. The rerun re-runs
+ * it (`rerun-failed-jobs` re-runs every failed job), it fails again if it is genuinely
+ * broken, and its red X stays exactly where it was — which is the whole design of a drift
+ * check. What changes is only that its presence stops STRANDING the install stall beside it.
+ *
+ * Why it is narrow. The demotion applies to `unexplained` only, so an install stall is still
+ * an install stall and a roll-up is still derived; a red anywhere inside the floor still
+ * declines the rerun; a job the workflow does not declare still declines the rerun; and with
+ * no floor supplied the behaviour is byte-for-byte what it was. `gate-blocking-floor.ts`
+ * carries the derivation and its honest limits.
  */
-export function classifyFailedJob(job: Job, log: string): JobClassification {
+export function classifyFailedJob(job: Job, log: string, floor?: BlockingFloor): JobClassification {
+  const verdict = classifyFailedJobIgnoringFloor(job, log);
+  if (verdict.verdict !== "unexplained" || !isNonBlockingJob(job.name, floor)) return verdict;
+  return {
+    ...verdict,
+    verdict: "non-blocking",
+    detail: `${verdict.detail}; outside the ${floor!.rollupJobName} floor, so this red blocks nothing`,
+  };
+}
+
+function classifyFailedJobIgnoringFloor(job: Job, log: string): JobClassification {
   const base = { jobId: job.id, jobName: job.name };
   if (job.conclusion !== "failure") {
     return { ...base, verdict: "not-failed", detail: `conclusion=${job.conclusion ?? "null"}` };
@@ -242,6 +295,13 @@ export interface PolicyOptions {
   supersedeGraceSeconds?: number;
   /** Injected clock — never read the wall clock ambiently (§13 noninterference). */
   now?: Date;
+  /**
+   * The blocking floor derived from a TRUSTED checkout of the workflow file (never a pull
+   * request head — see `gate-blocking-floor.ts`). Applied only when `floor.workflow` equals
+   * the run's own workflow name; omitted or mismatched means no demotion happens at all,
+   * which is the fail-closed default.
+   */
+  blockingFloor?: BlockingFloor;
 }
 
 const DEFAULTS = {
@@ -308,8 +368,13 @@ export function decideRerun(
     };
   }
 
+  // A floor derived from some OTHER workflow's file says nothing about this run's jobs, so it
+  // is dropped rather than applied by name collision. `gate.yml`'s floor is only ever used on
+  // `gate` runs; a CodeQL or helm-validate run gets no demotion and the original behaviour.
+  const floor = options.blockingFloor?.workflow === run.name ? options.blockingFloor : undefined;
+
   const failedJobs = jobs.filter((j) => j.conclusion === "failure");
-  const classifications = failedJobs.map((j) => classifyFailedJob(j, logsByJobId.get(j.id) ?? ""));
+  const classifications = failedJobs.map((j) => classifyFailedJob(j, logsByJobId.get(j.id) ?? "", floor));
   const stalls = classifications.filter((c) => c.verdict === "install-stall");
   const unexplained = classifications.filter((c) => c.verdict === "unexplained");
 
@@ -361,12 +426,23 @@ export function decideRerun(
     };
   }
 
+  // NAME WHAT WAS CARRIED PAST, ALWAYS. A demoted red is not a swallowed one: the rerun
+  // re-runs it, its own red X stays, and the reason it did not block THIS decision is
+  // recorded in the same line the sweep emits. A demotion nobody can see would be the
+  // laundering this policy exists to refuse.
+  const carried = classifications.filter((c) => c.verdict === "non-blocking");
   return {
     action: "rerun",
     reason: "toolchain-install-stall",
-    detail: `${stalls.length} job(s) died on the apt wall budget before their named work began: ${stalls
-      .map((c) => c.jobName)
-      .join(", ")}`,
+    detail:
+      `${stalls.length} job(s) died on the apt wall budget before their named work began: ${stalls
+        .map((c) => c.jobName)
+        .join(", ")}` +
+      (carried.length > 0
+        ? `; carried past ${carried.length} non-blocking red(s) (re-run too, still red if real): ${carried
+            .map((c) => c.jobName)
+            .join(", ")}`
+        : ""),
     classifications,
   };
 }
