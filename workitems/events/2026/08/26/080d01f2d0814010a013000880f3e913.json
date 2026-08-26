@@ -1,0 +1,14 @@
+{
+  "id": "080d01f2d0814010a013000880f3e913",
+  "at": "2026-08-26T13:54:44.904Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0Z5M416087G0R003XGWM5T",
+    "type": "bug",
+    "title": "full-ai-cluster/k8s/applications/ddns/ has no Application.yaml -- the DDNS CronJob is applied by nothing",
+    "slug": "full-ai-cluster-k8s-applications-ddns-has-no-application-yam",
+    "priority": "P2",
+    "filename": "081M0Z5M416087G0R003XGWM5T-full-ai-cluster-k8s-applications-ddns-has-no-application-yam.md"
+  }
+}

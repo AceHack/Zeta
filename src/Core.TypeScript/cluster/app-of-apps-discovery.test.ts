@@ -1,15 +1,18 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   DISCOVERED_BUT_UNASSERTED_REASONS,
+  ORPHANED_SUPPORTING_REASONS,
   argocdGlobMatches,
   auditAppOfAppsDiscovery,
+  discoverGitDirectorySources,
   compileArgocdGlob,
   discoverAppOfAppsRoots,
   formatDiscoveryDrift,
   listApplicationManifests,
+  listSupportingManifests,
 } from "./app-of-apps-discovery.ts";
 
 const ROOT_INCLUDE = "{*/Application.yaml,Application.yaml}";
@@ -130,6 +133,8 @@ describe("discovery drift audit", () => {
     expect(drift.neverDiscovered).toEqual([]);
     expect(drift.unexplained).toEqual([]);
     expect(drift.stale).toEqual([]);
+    expect(drift.orphanedSupporting).toEqual([]);
+    expect(drift.staleOrphans).toEqual([]);
   });
 
   test("every registered reason is non-empty — an entry without a why is a mute button", () => {
@@ -192,6 +197,192 @@ describe("discovery drift audit", () => {
       const drift = auditAppOfAppsDiscovery(repoRoot);
       expect(drift.stale).toEqual([...DISCOVERED_BUT_UNASSERTED_REASONS.keys()].sort());
       expect(formatDiscoveryDrift(drift)).toContain("STALE");
+    });
+  });
+});
+
+/** An Application whose ONLY source is a remote chart — the arc-runner-set shape. */
+function writeChartApplication(repoRoot: string, relPath: string, name: string): void {
+  const path = join(repoRoot, "full-ai-cluster/k8s/applications", relPath);
+  mkdirSync(join(path, ".."), { recursive: true });
+  writeFileSync(
+    path,
+    "apiVersion: argoproj.io/v1alpha1\nkind: Application\n" +
+      `metadata:\n  name: ${name}\n  namespace: argocd\n` +
+      "spec:\n  source:\n    repoURL: ghcr.io/example/charts\n" +
+      "    chart: some-chart\n    targetRevision: 1.0.0\n",
+  );
+}
+
+/** An Application with a git source that filters what it reconciles. */
+function writeFilteringApplication(
+  repoRoot: string,
+  relPath: string,
+  name: string,
+  include: string,
+  recurse: boolean,
+): void {
+  const path = join(repoRoot, "full-ai-cluster/k8s/applications", relPath);
+  mkdirSync(join(path, ".."), { recursive: true });
+  const dir = relPath.replace(/\/Application\.yaml$/, "");
+  writeFileSync(
+    path,
+    "apiVersion: argoproj.io/v1alpha1\nkind: Application\n" +
+      `metadata:\n  name: ${name}\n  namespace: argocd\n` +
+      "spec:\n  source:\n    repoURL: https://github.com/Lucent-Financial-Group/Zeta\n" +
+      `    path: full-ai-cluster/k8s/applications/${dir}\n` +
+      `    directory:\n      recurse: ${recurse}\n` +
+      (include.length > 0 ? `      include: '${include}'\n` : ""),
+  );
+}
+
+/** A plain supporting manifest — not an Application. */
+function writeSupporting(repoRoot: string, relPath: string, kind: string, name: string): void {
+  const path = join(repoRoot, "full-ai-cluster/k8s/applications", relPath);
+  mkdirSync(join(path, ".."), { recursive: true });
+  writeFileSync(path, `apiVersion: v1\nkind: ${kind}\nmetadata:\n  name: ${name}\n`);
+}
+
+describe("orphaned supporting manifests (direction C)", () => {
+  test("every registered orphan reason is non-empty — an entry without a why is a mute button", () => {
+    expect(ORPHANED_SUPPORTING_REASONS.size).toBeGreaterThan(0);
+    for (const [relPath, reason] of ORPHANED_SUPPORTING_REASONS) {
+      expect(reason.trim().length, `reason for ${relPath}`).toBeGreaterThan(0);
+    }
+  });
+
+  test("the live tree really does carry supporting manifests, so direction C is not vacuous", () => {
+    // Guards the check against silently measuring an empty set: if this ever
+    // returns [], `orphanedSupporting: []` would be green for the wrong reason.
+    expect(listSupportingManifests().length).toBeGreaterThan(10);
+  });
+
+  test("every registered orphan is a file that actually exists", () => {
+    for (const relPath of ORPHANED_SUPPORTING_REASONS.keys()) {
+      expect(
+        existsSync(join(process.cwd(), "full-ai-cluster/k8s/applications", relPath)),
+        `registered orphan ${relPath} must exist`,
+      ).toBe(true);
+    }
+  });
+
+  /**
+   * The unit behind the arc-runner-set finding, asserted DIRECTLY.
+   *
+   * The end-to-end orphan tests below cannot pin this on their own: a remote
+   * chart source carries no `path`, so the empty-path skip masks the chart skip
+   * and a mutant that deletes the chart handling still passes them. Measured --
+   * removing it left all end-to-end cases green. So the exclusion is asserted
+   * here against the LIVE manifest that motivated the whole check.
+   */
+  test("a remote-chart Application contributes NO git-directory source", () => {
+    const fromArc = discoverGitDirectorySources().filter((source) => source.app === "arc-runner-set");
+    expect(fromArc).toEqual([]);
+  });
+
+  test("a chart source is excluded even when it also carries a path", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      const path = join(repoRoot, "full-ai-cluster/k8s/applications/hybrid/Application.yaml");
+      mkdirSync(join(path, ".."), { recursive: true });
+      writeFileSync(
+        path,
+        "apiVersion: argoproj.io/v1alpha1\nkind: Application\n" +
+          "metadata:\n  name: hybrid\n  namespace: argocd\n" +
+          "spec:\n  source:\n    repoURL: ghcr.io/example/charts\n" +
+          "    chart: some-chart\n    targetRevision: 1.0.0\n" +
+          "    path: full-ai-cluster/k8s/applications/hybrid\n",
+      );
+      expect(discoverGitDirectorySources(repoRoot).filter((s) => s.app === "hybrid")).toEqual([]);
+    });
+  });
+
+  /**
+   * RED CASE, and it is the arc-runner-set shape exactly: an Application that
+   * sources a REMOTE CHART cannot reconcile the sibling manifest sitting beside
+   * it, however much the sibling's header comment claims otherwise.
+   */
+  test("a supporting manifest beside a remote-chart Application is reported as ORPHANED", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeChartApplication(repoRoot, "charty/Application.yaml", "charty");
+      writeSupporting(repoRoot, "charty/pvc.yaml", "PersistentVolumeClaim", "cache");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.orphanedSupporting).toContain("charty/pvc.yaml");
+      expect(formatDiscoveryDrift(drift)).toContain("ORPHANED");
+    });
+  });
+
+  /** RED CASE, the ddns shape: a workload directory with no Application at all. */
+  test("a supporting manifest in a directory with NO Application is reported as ORPHANED", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeSupporting(repoRoot, "lonely/cronjob.yaml", "CronJob", "lonely");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.orphanedSupporting).toContain("lonely/cronjob.yaml");
+    });
+  });
+
+  /** GREEN CASE: named by its owner's include glob, so something applies it. */
+  test("a supporting manifest inside its Application's include glob is NOT an orphan", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeFilteringApplication(repoRoot, "owned/Application.yaml", "owned", "{pvc,namespace}.yaml", false);
+      writeSupporting(repoRoot, "owned/pvc.yaml", "PersistentVolumeClaim", "cache");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.orphanedSupporting).toEqual([]);
+    });
+  });
+
+  /** The include glob is a REAL filter: a manifest it omits is still an orphan. */
+  test("a supporting manifest its Application's include glob omits is reported as ORPHANED", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeFilteringApplication(repoRoot, "partial/Application.yaml", "partial", "{namespace}.yaml", false);
+      writeSupporting(repoRoot, "partial/namespace.yaml", "Namespace", "partial");
+      writeSupporting(repoRoot, "partial/pvc.yaml", "PersistentVolumeClaim", "cache");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.orphanedSupporting).toEqual(["partial/pvc.yaml"]);
+    });
+  });
+
+  /** `recurse: false` is the platform/examples shape — depth 2 is not applied. */
+  test("recurse:false leaves a nested supporting manifest orphaned", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeFilteringApplication(repoRoot, "shallow/Application.yaml", "shallow", "", false);
+      writeSupporting(repoRoot, "shallow/examples/sample.yaml", "ConfigMap", "sample");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.orphanedSupporting).toEqual(["shallow/examples/sample.yaml"]);
+    });
+  });
+
+  /**
+   * THE INVERTED EMPTY-INCLUDE CASE. An ABSENT `directory.include` is no filter
+   * at all, so everything under the path is reconciled — the opposite of what
+   * `argocdGlobMatches("")` returns for a root. Collapsing the two would report
+   * every supporting manifest in the tree as an orphan.
+   */
+  test("an Application with no include glob reconciles its whole subtree", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      writeFilteringApplication(repoRoot, "deep/Application.yaml", "deep", "", true);
+      writeSupporting(repoRoot, "deep/nested/further/thing.yaml", "ConfigMap", "thing");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.orphanedSupporting).toEqual([]);
+    });
+  });
+
+  /** RED CASE: a registered orphan that something now reconciles. */
+  test("a registered orphan that is reconciled again is reported as STALE-ORPHAN", () => {
+    withTempRepo((repoRoot) => {
+      writeRoot(repoRoot, ROOT_INCLUDE, "");
+      // A depth-1 Application so the applications tree exists and the roster
+      // has something to read; none of the registered orphans live here.
+      writeApplication(repoRoot, "newcomer/Application.yaml", "newcomer");
+      const drift = auditAppOfAppsDiscovery(repoRoot);
+      expect(drift.staleOrphans).toEqual([...ORPHANED_SUPPORTING_REASONS.keys()].sort());
+      expect(formatDiscoveryDrift(drift)).toContain("STALE-ORPHAN");
     });
   });
 });

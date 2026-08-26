@@ -63,6 +63,15 @@
  *      not. Refused outright -- there is no registry, because a file nothing
  *      can ever apply is not a deferral, it is dead YAML.
  *
+ *   C. ORPHANED SUPPORTING MANIFEST. A NON-Application manifest under the
+ *      applications tree that no Application's git source reconciles and no
+ *      root glob matches -- a PVC, CronJob or CR that looks deployed and is
+ *      applied by nothing. Directions A and B only ever looked at
+ *      `kind: Application` files, so this half of the tree (57 manifests) was
+ *      never checked at all. Found three on the day it was added, one of them a
+ *      whole workload directory with no Application in it. Registry-backed for
+ *      the same reason B is: `platform/examples/` is deliberately unapplied.
+ *
  *   B. DISCOVERED-BUT-UNASSERTED. A manifest the dev/CI root DOES apply
  *      (include matches, exclude does not) that is absent from the harness
  *      roster, so no lane ever asserts anything about it. Legitimate to defer
@@ -272,6 +281,121 @@ export function listApplicationManifests(repoRoot = REPO_ROOT): readonly string[
 }
 
 // ---------------------------------------------------------------------------
+// Direction C: the SUPPORTING manifests, and whether anything reconciles them
+// ---------------------------------------------------------------------------
+
+/**
+ * A source that reconciles PLAIN MANIFESTS OUT OF THIS GIT REPO.
+ *
+ * Directions A and B ask which `Application` manifests a root reaches. That
+ * leaves the other half of the tree unexamined: the 57 supporting manifests
+ * (PVCs, CronJobs, namespaces, CRs) sitting beside those Applications. The root
+ * glob deliberately does NOT match them -- `app-of-apps-discovery.test.ts`
+ * already pins that -- because each is supposed to be reconciled by ITS OWN
+ * Application's git source. Nothing has ever checked that such an Application
+ * exists.
+ *
+ * `chart` sources are excluded: a remote OCI/Helm-repo chart reconciles nothing
+ * out of this repository, which is precisely how a manifest ends up orphaned
+ * next to an Application that looks like it owns it.
+ */
+export interface GitDirectorySource {
+  readonly app: string;
+  /** Where the Application manifest lives, repo-relative. */
+  readonly origin: string;
+  /** `spec.source.path`, repo-relative, no trailing slash. */
+  readonly path: string;
+  readonly include: string;
+  readonly exclude: string;
+  readonly recurse: boolean;
+  /** Helm-rendered from git: `directory` filters do not apply to it. */
+  readonly rendersAsChart: boolean;
+}
+
+function gitDirectorySourcesInDoc(doc: Record<string, unknown>, origin: string): readonly GitDirectorySource[] {
+  const spec = recordAt(doc, "spec");
+  const single = recordAt(spec, "source");
+  const multi = Array.isArray(spec?.["sources"]) ? (spec["sources"] as unknown[]).filter(isRecord) : [];
+  const found: GitDirectorySource[] = [];
+  for (const source of [...(single === undefined ? [] : [single]), ...multi]) {
+    // A `chart` source is a remote Helm chart: it reconciles nothing from git.
+    if (stringAt(source, "chart").length > 0) continue;
+    const path = stringAt(source, "path").replace(/\/+$/, "");
+    if (path.length === 0) continue;
+    const directory = recordAt(source, "directory");
+    found.push({
+      app: stringAt(recordAt(doc, "metadata"), "name"),
+      origin,
+      path,
+      include: stringAt(directory, "include"),
+      exclude: stringAt(directory, "exclude"),
+      recurse: directory?.["recurse"] === true,
+      rendersAsChart: recordAt(source, "helm") !== undefined,
+    });
+  }
+  return found;
+}
+
+/**
+ * Every git-directory source declared anywhere in the cluster tree, including
+ * the app-of-apps roots themselves and the generated dev catalog.
+ *
+ * The roots are deliberately NOT special-cased here: a root is just a source
+ * with a very restrictive include glob, so one coverage rule answers "does
+ * anything apply this file" for roots and leaf apps alike.
+ */
+export function discoverGitDirectorySources(repoRoot = REPO_ROOT): readonly GitDirectorySource[] {
+  const sources: GitDirectorySource[] = [];
+  for (const file of listYamlFiles(resolve(repoRoot, CLUSTER_TREE))) {
+    const origin = relative(repoRoot, file);
+    for (const doc of argoApplicationDocs(readFileSync(file, "utf8"))) {
+      sources.push(...gitDirectorySourcesInDoc(doc, origin));
+    }
+  }
+  for (const doc of argoApplicationDocs(buildRootDevCatalogManifest(DEFAULT_ROOT_DEV_CATALOG))) {
+    sources.push(...gitDirectorySourcesInDoc(doc, "src/Core.TypeScript/cluster/ports.ts (buildRootDevCatalogManifest)"));
+  }
+  return sources;
+}
+
+/**
+ * Would `source` apply the repo-relative file `repoRelPath`?
+ *
+ * THE EMPTY-INCLUDE CASE IS INVERTED RELATIVE TO `argocdGlobMatches`, and the
+ * inversion is real ArgoCD semantics rather than a convenience. An absent
+ * `directory.include` is NO FILTER -- every file under the path is applied. But
+ * an app-of-apps root that declares an EMPTY include string matches nothing,
+ * which is what `argocdGlobMatches("")` returns and what Direction A wants.
+ * Same empty string, opposite meaning, because one is "field absent" and the
+ * other is "field present and empty". Collapsing them would make every
+ * unfiltered app look like it applies nothing, and every supporting manifest
+ * would be reported as an orphan.
+ */
+export function sourceReconciles(source: GitDirectorySource, repoRelPath: string): boolean {
+  if (repoRelPath !== source.path && !repoRelPath.startsWith(`${source.path}/`)) return false;
+  // Helm-from-git renders the whole chart directory; `directory` filters are
+  // ignored by ArgoCD for such a source, so treat the subtree as consumed.
+  if (source.rendersAsChart) return true;
+  const withinPath = relative(source.path, repoRelPath);
+  if (!source.recurse && withinPath.includes("/")) return false;
+  if (source.include.length > 0 && !argocdGlobMatches(source.include, withinPath)) return false;
+  if (source.exclude.length > 0 && argocdGlobMatches(source.exclude, withinPath)) return false;
+  return true;
+}
+
+/**
+ * Every NON-Application manifest under the applications tree, relative to that
+ * tree -- the complement of `listApplicationManifests`.
+ */
+export function listSupportingManifests(repoRoot = REPO_ROOT): readonly string[] {
+  const appsDir = resolve(repoRoot, APPLICATIONS_TREE);
+  return listYamlFiles(appsDir)
+    .filter((file) => argoApplicationDocs(readFileSync(file, "utf8")).length === 0)
+    .map((file) => relative(appsDir, file))
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+}
+
+// ---------------------------------------------------------------------------
 // The registry + the audit
 // ---------------------------------------------------------------------------
 
@@ -297,6 +421,44 @@ export const DISCOVERED_BUT_UNASSERTED_REASONS: ReadonlyMap<string, string> = ne
   ],
 ]);
 
+/**
+ * Supporting manifests that NO Application reconciles, kept visible on purpose.
+ *
+ * Same contract as the map above: a reason is mandatory, because an entry with
+ * no why is a mute button. An orphan is dead YAML -- it looks deployed and is
+ * applied by nothing -- so an entry here is an admission, never an exemption.
+ */
+export const ORPHANED_SUPPORTING_REASONS: ReadonlyMap<string, string> = new Map([
+  [
+    "arc-runner-set/model-cache-pvc.yaml",
+    "LIVE DEFECT, open as 081M0JM6SSG087G0R0029X3F6Z (P2). arc-runner-set/Application.yaml sources a REMOTE OCI " +
+      "chart (ghcr.io/actions/actions-runner-controller-charts), so it has no git path and cannot reconcile its " +
+      "own sibling; the root glob wants the basename `Application.yaml`, which this is not. Registered rather " +
+      "than fixed here because the two candidate fixes differ in WHO OWNS THE VOLUME LIFECYCLE -- a separate " +
+      "Application (the 12-app idiom in this tree) versus converting this Application to `spec.sources` " +
+      "(no other Application here uses multi-source, and ~10 tests in arc-runner-manifests.test.ts read " +
+      "`spec.source.*`). That is a product call, and neither shape can be confirmed off-cluster: the metal k8s " +
+      "layer has never been reconciled (applications/vault/TOPOLOGY.md: 'Nothing has been applied to any " +
+      "cluster'), and the kind lane excludes arc-runner-set outright (argocd-health-test.ts: no GitHub App " +
+      "credential to bind, and ReadWriteMany is unservable by rancher.io/local-path).",
+  ],
+  [
+    "ddns/cronjob.yaml",
+    "LIVE DEFECT, open as 081M0Z5M416087G0R003XGWM5T (P2). `full-ai-cluster/k8s/applications/ddns/` holds this " +
+      "CronJob and NOTHING ELSE -- there is no Application.yaml in the directory at all, so no root glob and no " +
+      "app source reaches it. Landed unreconciled in #7432 alongside zeta-gateway and the Let's Encrypt issuer. " +
+      "Not fixed here: authoring the missing Application is a deployment change to a workload outside this " +
+      "change's scope, and the Namecheap DDNS credential it would need is not one this repo can mint.",
+  ],
+  [
+    "platform/examples/gmod-server.yaml",
+    "INTENTIONAL, not a defect. Three `kind: Deployable` CRs used as documentation of the platform CRD surface. " +
+      "applications/platform/Application.yaml sets recurse:false and an explicit include list of the 15 " +
+      "manifests it owns, so `examples/` is excluded by construction rather than by accident. Applying these " +
+      "would create real game-server workloads from a doc sample.",
+  ],
+]);
+
 export interface DiscoveryDrift {
   /** Matched by no root's include glob: looks deployed, never is. */
   readonly neverDiscovered: readonly string[];
@@ -304,6 +466,10 @@ export interface DiscoveryDrift {
   readonly unexplained: readonly string[];
   /** Registered, but no longer in the gap. */
   readonly stale: readonly string[];
+  /** Non-Application manifests no Application reconciles, unregistered. */
+  readonly orphanedSupporting: readonly string[];
+  /** Registered as orphaned, but something reconciles them now. */
+  readonly staleOrphans: readonly string[];
 }
 
 export function auditAppOfAppsDiscovery(repoRoot = REPO_ROOT): DiscoveryDrift {
@@ -333,11 +499,24 @@ export function auditAppOfAppsDiscovery(repoRoot = REPO_ROOT): DiscoveryDrift {
   const gap = applied.filter((relPath) => !roster.has(relPath));
   const gapSet = new Set(gap);
 
+  // Direction C. Judged against EVERY git-directory source in the tree, not just
+  // the roots: a supporting manifest is reconciled if anything at all applies
+  // it, and which Application does so is not this check's business.
+  const gitSources = discoverGitDirectorySources(repoRoot);
+  const orphans = listSupportingManifests(repoRoot).filter(
+    (relPath) => !gitSources.some((source) => sourceReconciles(source, `${APPLICATIONS_TREE}/${relPath}`)),
+  );
+  const orphanSet = new Set(orphans);
+
   return {
     neverDiscovered,
     unexplained: gap.filter((relPath) => !DISCOVERED_BUT_UNASSERTED_REASONS.has(relPath)),
     stale: [...DISCOVERED_BUT_UNASSERTED_REASONS.keys()]
       .filter((relPath) => !gapSet.has(relPath))
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+    orphanedSupporting: orphans.filter((relPath) => !ORPHANED_SUPPORTING_REASONS.has(relPath)),
+    staleOrphans: [...ORPHANED_SUPPORTING_REASONS.keys()]
+      .filter((relPath) => !orphanSet.has(relPath))
       .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
   };
 }
@@ -363,6 +542,19 @@ export function formatDiscoveryDrift(drift: DiscoveryDrift): string {
         "gap. Delete the entry.",
     );
   }
+  for (const relPath of drift.orphanedSupporting) {
+    lines.push(
+      `ORPHANED ${APPLICATIONS_TREE}/${relPath}: no Application's git source reconciles it and no root glob ` +
+        "matches it, so nothing applies this manifest. Give it an owning Application, bring it under an existing " +
+        "one's include glob, or register it with a reason in ORPHANED_SUPPORTING_REASONS.",
+    );
+  }
+  for (const relPath of drift.staleOrphans) {
+    lines.push(
+      `STALE-ORPHAN ${APPLICATIONS_TREE}/${relPath}: registered in ORPHANED_SUPPORTING_REASONS but something ` +
+        "reconciles it now. Delete the entry.",
+    );
+  }
   return lines.join("\n");
 }
 
@@ -376,12 +568,20 @@ function main(): void {
     );
     process.exit(2);
   }
-  const total = drift.neverDiscovered.length + drift.unexplained.length + drift.stale.length;
+  const total =
+    drift.neverDiscovered.length +
+    drift.unexplained.length +
+    drift.stale.length +
+    drift.orphanedSupporting.length +
+    drift.staleOrphans.length;
   if (total === 0) {
     const manifests = listApplicationManifests();
+    const supporting = listSupportingManifests();
     console.log(
       `app-of-apps discovery: ${manifests.length} Application manifests, ` +
-        `${DISCOVERED_BUT_UNASSERTED_REASONS.size} registered as applied-but-unasserted, 0 drift.`,
+        `${DISCOVERED_BUT_UNASSERTED_REASONS.size} registered as applied-but-unasserted, ` +
+        `${supporting.length} supporting manifests, ` +
+        `${ORPHANED_SUPPORTING_REASONS.size} registered as orphaned, 0 drift.`,
     );
     process.exit(0);
   }

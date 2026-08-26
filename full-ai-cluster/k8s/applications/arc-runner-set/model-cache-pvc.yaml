@@ -1,7 +1,32 @@
 # PVC backing the runner model cache.
 #
-# Reconciled by the arc-runner-set Application, not by the root App-of-Apps
-# (the root includes only */Application.yaml).
+# NOTHING APPLIES THIS FILE. Open as 081M0JM6SSG087G0R0029X3F6Z (P2).
+#
+# The line that used to sit here read "Reconciled by the arc-runner-set
+# Application, not by the root App-of-Apps", and it was false in both halves.
+# The root is correctly described -- its include glob is
+# `{*/Application.yaml,Application.yaml}` and this file is not named
+# `Application.yaml` -- but the arc-runner-set Application does not reconcile it
+# either: that Application's only source is a REMOTE OCI chart
+# (`repoURL: ghcr.io/actions/actions-runner-controller-charts`,
+# `chart: gha-runner-scale-set`). A chart source carries no git path, so it can
+# apply nothing whatsoever out of this repository, including the sibling file
+# sitting next to it.
+#
+# So the 100Gi below is DECLARED capacity that has never been provisioned, and
+# `arc-model-cache` does not exist in any cluster. The runner pod spec in
+# Application.yaml mounts it, and a pod mounting a missing PVC does not start --
+# which is a latent blocker rather than the current cause of "no runner
+# registered", because the metal k8s layer has never been reconciled at all
+# (see applications/vault/TOPOLOGY.md) and the kind lane excludes arc-runner-set
+# outright (argocd-health-test.ts: no GitHub App credential to bind, and
+# ReadWriteMany is unservable by rancher.io/local-path).
+#
+# The comment is corrected rather than the wiring because the two candidate
+# fixes differ in who owns the volume's lifecycle, and neither can be confirmed
+# off-cluster. The claim is now enforced instead of asserted: direction C of
+# `src/Core.TypeScript/cluster/app-of-apps-discovery.ts` fails if this file ever
+# stops being registered as a known orphan -- in either direction.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
