@@ -1,0 +1,12 @@
+{
+  "pr_number": 15610,
+  "archive_path": "docs/history/pr-reviews/PR-15610-research-hygiene-separate-ah006-s-failure-classes-the-real-remainder-is-four-ids.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T23:16:34.479Z",
+  "schema_version": "v1",
+  "commit_sha": "90fc2e41b3503e095837e19e42b36d22a358a862",
+  "title": "research(hygiene): separate AH006's failure classes — the real remainder is four ids, not 64% of the corpus",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T23:15:53Z",
+  "head_ref": "shadow/zetaid-mistake-resolution"
+}
