@@ -5,7 +5,11 @@
 // the repo + reports staleness against upstream-current versions.
 //
 // Scope (this initial implementation; sub-target 2+ will extend):
-//   1. full-ai-cluster/flake.nix → nixpkgs.url + nix-darwin.url
+//   1. EVERY tracked flake.nix in the repo → its `inputs` block
+//      (both the `name.url = "..."` form and the attrset form
+//      `name = { url = "..."; ... };`). Flakes are DISCOVERED via
+//      `git ls-files -- '*flake.nix'`, never hardcoded — see
+//      `trackedFlakeFiles` below for why.
 //   2. ArgoCD Application files under full-ai-cluster/k8s/applications/
 //      → spec.source.targetRevision + spec.source.helm.chart
 //   3. Container image tags referenced in NixOS modules + K8s manifests
@@ -36,7 +40,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { spawnSync } from "node:child_process";
 
-interface DepPin {
+export interface DepPin {
   category: "nix-input" | "argocd-target" | "argocd-helm-chart" | "image-tag" | "mise-runtime";
   file: string;
   line: number;
@@ -112,27 +116,126 @@ function walkFiles(dir: string, ext: readonly string[], skip: readonly string[])
   return out;
 }
 
-// (1) Scan flake.nix for nix inputs (nixpkgs.url, nix-darwin.url, etc.)
-function scanFlakeInputs(repoRoot: string): DepPin[] {
+// (1) Scan every tracked flake.nix for nix inputs.
+//
+// DISCOVERY, NOT A PATH LIST. This function used to read exactly one
+// hardcoded path — `full-ai-cluster/flake.nix` — which made the repo's
+// OTHER flake, the 239-line root `flake.nix` and its four inputs,
+// invisible to the whole dep-currency apparatus. A second hardcoded
+// entry would be the same defect with a longer list: it diverges again
+// the next time somebody adds a flake. So the roster is derived from
+// `git ls-files`, exactly as `hygiene/mise-pin-parity.ts` already does
+// for the same class of question — a newly added flake is covered the
+// moment it is tracked.
+
+/**
+ * Tracked `flake.nix` paths, repo-relative, ordinal-sorted.
+ *
+ * Same discovery mechanism as `hygiene/mise-pin-parity.ts:trackedFlakes`.
+ * Throws rather than returning `[]` when git fails: a scan that silently
+ * finds zero flake inputs is indistinguishable from a clean pass, which
+ * is the vacuity class this audit exists to avoid.
+ */
+export function trackedFlakeFiles(repoRoot: string): string[] {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", ["ls-files", "-z", "--", "*flake.nix"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+  if (result.status !== 0) {
+    throw new Error(`git ls-files failed (exit ${String(result.status)}): ${result.stderr ?? ""}`);
+  }
+  return result.stdout
+    .split("\0")
+    .filter((p) => p.length > 0 && p.split("/").at(-1) === "flake.nix")
+    .sort();
+}
+
+// `inputs = {` opens the block we care about; anything outside it (the
+// `outputs` function, `let` bindings, module attrsets) is not an input
+// declaration and must not be reported as one.
+const INPUTS_OPEN_RE = /^\s*inputs\s*=\s*\{/;
+// Direct form: `nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";`
+// Bounded lengths per the repo's regex-safety guidance (no unbounded
+// alternation, so no quadratic-backtracking risk).
+const DIRECT_URL_RE = /^\s*(\w[\w-]{0,63})\.url\s*=\s*"([^"]{1,256})"/;
+// Attrset form, line 1: `nix-darwin = {`
+const ATTRSET_OPEN_RE = /^\s*(\w[\w-]{0,63})\s*=\s*\{\s*$/;
+// Attrset form, line 2: `  url = "github:nix-darwin/nix-darwin/...";`
+const BARE_URL_RE = /^\s*url\s*=\s*"([^"]{1,256})"/;
+
+/**
+ * Parse the `inputs` block of one flake's text into pins.
+ *
+ * Exported so the falsifier can drive it from fixtures without a repo.
+ * Handles BOTH declaration forms — the attrset form is not cosmetic:
+ * the root flake declares `nix-darwin` that way, and so do
+ * `full-ai-cluster`'s `nix-darwin` and `disko`, all four of which the
+ * previous `name.url` -only regex silently dropped.
+ */
+export function parseFlakeInputs(text: string, file: string): DepPin[] {
   const pins: DepPin[] = [];
-  const flakePath = join(repoRoot, "full-ai-cluster", "flake.nix");
-  if (!existsSync(flakePath)) return pins;
-  const lines = readFileSync(flakePath, "utf8").split("\n");
-  // Match `inputName.url = "github:owner/repo/ref";`
-  // Limit alternation members to a moderate length (≤64 chars each) to
-  // avoid quadratic-blowup risk per the standard regex-safety guidance.
-  const urlRe = /^\s*(\w[\w-]{0,63})\.url\s*=\s*"([^"]{1,256})"/;
+  const lines = text.split("\n");
+  let depth = 0; // brace depth inside the `inputs` block; 0 = outside
+  let pendingInput: string | null = null; // attrset-form input being read
   for (let i = 0; i < lines.length; i++) {
-    const m = urlRe.exec(lines[i]!);
-    if (m) {
+    const line = lines[i]!;
+    if (depth === 0) {
+      if (INPUTS_OPEN_RE.test(line)) depth = 1;
+      continue;
+    }
+    const direct = DIRECT_URL_RE.exec(line);
+    if (direct) {
       pins.push({
         category: "nix-input",
-        file: relative(repoRoot, flakePath),
+        file,
         line: i + 1,
-        name: m[1]!,
-        currentPin: m[2]!,
+        name: direct[1]!,
+        currentPin: direct[2]!,
       });
+    } else {
+      const open = ATTRSET_OPEN_RE.exec(line);
+      if (open) {
+        pendingInput = open[1]!;
+      } else if (pendingInput !== null) {
+        const bare = BARE_URL_RE.exec(line);
+        if (bare) {
+          pins.push({
+            category: "nix-input",
+            file,
+            line: i + 1,
+            name: pendingInput,
+            currentPin: bare[1]!,
+          });
+          pendingInput = null;
+        }
+      }
     }
+    // Track braces AFTER matching, so the `name = {` line counts once.
+    for (const ch of line) {
+      if (ch === "{") depth++;
+      else if (ch === "}") depth--;
+    }
+    if (depth <= 0) {
+      depth = 0;
+      pendingInput = null;
+    }
+  }
+  return pins;
+}
+
+function scanFlakeInputs(repoRoot: string): DepPin[] {
+  const pins: DepPin[] = [];
+  for (const rel of trackedFlakeFiles(repoRoot)) {
+    let text: string;
+    try {
+      text = readFileSync(join(repoRoot, rel), "utf8");
+    } catch {
+      // Tracked but unreadable (sparse checkout, permissions). Skipping is
+      // the honest move; a fabricated pin would be worse than a missing one.
+      continue;
+    }
+    pins.push(...parseFlakeInputs(text, rel));
   }
   return pins;
 }
@@ -264,6 +367,16 @@ function renderTable(pins: readonly DepPin[]): string {
   return out.join("\n");
 }
 
+/** Every pin the audit knows about, for one repo. Exported for the falsifier. */
+export function collectPins(repoRoot: string): DepPin[] {
+  return [
+    ...scanFlakeInputs(repoRoot),
+    ...scanArgocdApps(repoRoot),
+    ...scanImageTags(repoRoot),
+    ...scanMiseRuntimes(repoRoot),
+  ];
+}
+
 function main(): number {
   const parsed = parseArgs(process.argv.slice(2));
   if ("error" in parsed) {
@@ -271,12 +384,7 @@ function main(): number {
     return 1;
   }
   const { jsonOutput, repoRoot } = parsed;
-  const pins: DepPin[] = [
-    ...scanFlakeInputs(repoRoot),
-    ...scanArgocdApps(repoRoot),
-    ...scanImageTags(repoRoot),
-    ...scanMiseRuntimes(repoRoot),
-  ];
+  const pins: DepPin[] = collectPins(repoRoot);
   if (jsonOutput) {
     process.stdout.write(JSON.stringify({ count: pins.length, pins }, null, 2) + "\n");
   } else {
@@ -285,4 +393,8 @@ function main(): number {
   return 0;
 }
 
-process.exit(main());
+// Guarded so the falsifier can import `parseFlakeInputs` / `collectPins`
+// without the module body running the audit and calling `process.exit`.
+if (import.meta.main) {
+  process.exit(main());
+}

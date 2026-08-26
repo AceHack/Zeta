@@ -23,7 +23,6 @@
   "check-then-use src/Core.TypeScript/alignment/audit_external_anchors.ts existsSync(abs)->readFileSync(abs)",
   "check-then-use src/Core.TypeScript/alignment/concept_registry.ts existsSync(abs)->readFileSync(abs)",
   "check-then-use src/Core.TypeScript/alignment/filter_gate_log.ts existsSync(path)->readFileSync(path)",
-  "check-then-use src/Core.TypeScript/audit/audit-dep-currency.ts existsSync(flakePath)->readFileSync(flakePath)",
   "check-then-use src/Core.TypeScript/audit/audit-dep-currency.ts existsSync(misePath)->readFileSync(misePath)",
   "check-then-use src/Core.TypeScript/authorization/pace-extractor.ts existsSync(filePath)->readFileSync(filePath)",
   "check-then-use src/Core.TypeScript/authorization/pace-extractor.ts existsSync(memoryDir)->readdirSync(memoryDir)",

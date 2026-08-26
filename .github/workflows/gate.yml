@@ -1364,6 +1364,26 @@ jobs:
         # are CI-safe. This is what would have caught #8216's stale snapshot.
         run: bun test src/Core.TypeScript/hygiene/
 
+      - name: Audit unit-test suite (src/Core.TypeScript/audit/ ran in NO workflow)
+        # The sibling hole to the step above. `src/Core.TypeScript/hygiene/*.test.ts`
+        # has run per-PR since #8216; `src/Core.TypeScript/audit/` had no test file
+        # AND no invocation -- `grep -rn "Core.TypeScript/audit" .github/workflows/`
+        # returned nothing. So a falsifier written next to an audit tool would have
+        # been a test that never ran, which is the vacuity class exactly: it looks
+        # like coverage and constrains nothing.
+        #
+        # Added with `audit-dep-currency.test.ts`, which pins that the dep-pin
+        # inventory discovers EVERY tracked flake.nix rather than one hardcoded
+        # path -- the root flake and its four inputs were invisible to it.
+        #
+        # NOT measured on the runner (this step has never run there). LAPTOP
+        # figure, stated as such so it is not mistaken for a runner number:
+        # 0.49-0.55 s warm over three runs, 1.54 s cold, dominated by bun
+        # start-up plus two `git ls-files` calls. A laptop figure is not
+        # conservative in either direction -- replace it with the runner figure
+        # once a run exists.
+        run: bun test src/Core.TypeScript/audit/
+
       - name: Hardware-inventory cross-surface reconciliation (drift)
         # 081M00R59KS087G0R001W3837V. Hardware inventory lives on several surfaces
         # with different provenance (a ZetaId register, a human audit snapshot, an
