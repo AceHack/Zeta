@@ -52,7 +52,11 @@ on:
   # A backup is a periodic artefact, not a synchronous write path; the 6-hourly
   # cadence bounds worst-case staleness at 6h, which is what a backup is for.
   schedule:
-    - cron: "13 */6 * * *" # every 6h (off-peak minute, not :00)
+    # DAILY, not 6-hourly. Aaron 2026-08-26: "maybe once a day we could run it,
+    # everytime might be too much still." A backup is a periodic artefact; the
+    # cadence sets worst-case staleness and 24h is the accepted bound. Minute 13
+    # / hour 08 UTC is deliberately off-peak and not :00.
+    - cron: "13 8 * * *" # daily at 08:13 UTC
   workflow_dispatch: {}
 
 permissions:
@@ -114,7 +118,18 @@ jobs:
           # checked-out branch. Tags fetch into refs/tags/* (no conflict).
           git fetch --prune origin "+refs/heads/*:refs/remotes/origin/*"
           git fetch --prune --tags origin
-          git update-ref -d refs/remotes/origin/HEAD || true
+          # `--no-deref` IS LOAD-BEARING, and its absence broke every mirror run.
+          # `refs/remotes/origin/HEAD` is a SYMBOLIC ref pointing at
+          # `refs/remotes/origin/main`, and `update-ref -d` DEREFERENCES symrefs by
+          # default -- so without this flag the line deletes the tracking ref for
+          # `main` rather than the HEAD pointer. `--prune` in the push below then
+          # finds no source for `refs/heads/main` and asks GitHub to DELETE the
+          # fork's default branch, which it refuses:
+          #     ! [remote rejected] main (refusing to delete the current branch)
+          # and the whole mirror fails. Reproduced in a scratch clone: plain `-d`
+          # removes origin/main; `--no-deref -d` removes only origin/HEAD and leaves
+          # origin/main intact -- which is exactly what this line wants.
+          git update-ref --no-deref -d refs/remotes/origin/HEAD || true
 
           # Token is interpolated into the URL only at runtime; never logged.
           git remote add mirror \
@@ -123,8 +138,21 @@ jobs:
           # Push the remote-tracking refs to the fork's heads. --prune makes
           # the fork MATCH origin (deletes fork refs absent here); '+' forces
           # divergent same-name refs to origin's tip.
+          # THE TWO PUSHES ARE INDEPENDENT, and that is a correctness fix, not tidying.
+          # Under `set -e` a failing heads push ABORTS THE SCRIPT, so the tags push below
+          # never ran -- which is how the fork came to hold all 76 branches while MISSING
+          # 18 `archive/*` recovery tags (343 on origin vs 325 on the fork, measured
+          # 2026-08-26). Those tags are the whole point of this backup: they are the only
+          # copy of abandoned branches. So each push is attempted on its own, and the job
+          # still fails LOUDLY if either did -- rather than letting the first failure
+          # decide that the second never happens.
+          heads_rc=0; tags_rc=0
           echo "Mirroring heads…"
-          git push --prune --force mirror "+refs/remotes/origin/*:refs/heads/*"
+          git push --prune --force mirror "+refs/remotes/origin/*:refs/heads/*" || heads_rc=$?
           echo "Mirroring tags…"
-          git push --prune --force mirror "+refs/tags/*:refs/tags/*"
+          git push --prune --force mirror "+refs/tags/*:refs/tags/*" || tags_rc=$?
+          if [ "$heads_rc" -ne 0 ] || [ "$tags_rc" -ne 0 ]; then
+            echo "::error::mirror incomplete — heads rc=${heads_rc}, tags rc=${tags_rc}" >&2
+            exit 1
+          fi
           echo "Mirror sync complete."
