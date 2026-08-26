@@ -1,0 +1,12 @@
+{
+  "pr_number": 15392,
+  "archive_path": "docs/history/pr-reviews/PR-15392-feat-bayesian-pre-register-rho-reseed-threshold-sweep-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:58:13.876Z",
+  "schema_version": "v1",
+  "commit_sha": "73c9f2969f2b39c40c14d84ba5484e99b29b29a3",
+  "title": "feat(bayesian): pre-register rho reseed threshold sweep contract",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:57:36Z",
+  "head_ref": "feat/rho-threshold-preregistration"
+}

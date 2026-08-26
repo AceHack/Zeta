@@ -1,0 +1,12 @@
+{
+  "pr_number": 15356,
+  "archive_path": "docs/history/pr-reviews/PR-15356-docs-workitem-the-flush-token-s-contents-half-is-fixed-pull-requests-is-now-the-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:56:52.959Z",
+  "schema_version": "v1",
+  "commit_sha": "9de05b3d6a31ba28335d4dc1cfd09f1add07f96d",
+  "title": "docs(workitem): the flush token's `contents` half is fixed; `pull requests` is now the blocker",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T14:56:15Z",
+  "head_ref": "docs/flush-token-pull-requests-scope"
+}

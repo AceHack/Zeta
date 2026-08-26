@@ -1,0 +1,12 @@
+{
+  "pr_number": 15389,
+  "archive_path": "docs/history/pr-reviews/PR-15389-bug-ci-2-of-the-last-40-merges-landed-without-a-passing-gate-the-only-required-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:23:08.742Z",
+  "schema_version": "v1",
+  "commit_sha": "8d841ac86e265002f7991824cb6fa40b686c9601",
+  "title": "bug(ci): 2 of the last 40 merges landed without a passing gate — the only required check has an admin bypass every agent inherits",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:22:32Z",
+  "head_ref": "fix/gate-bypass-audit"
+}

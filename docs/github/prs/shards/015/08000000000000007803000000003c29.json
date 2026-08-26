@@ -1,0 +1,12 @@
+{
+  "pr_number": 15401,
+  "archive_path": "docs/history/pr-reviews/PR-15401-feat-room-persist-uncertain-signed-room-evidence-over-zetadb.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T18:38:18.854Z",
+  "schema_version": "v1",
+  "commit_sha": "107f6f3fdfaf7513087f8866835884d8738ce01f",
+  "title": "feat(room): persist uncertain signed room evidence over ZetaDB",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T18:36:32Z",
+  "head_ref": "feat/durable-uncertain-room-evidence"
+}

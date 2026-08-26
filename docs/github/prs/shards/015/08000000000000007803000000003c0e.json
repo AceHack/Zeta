@@ -1,0 +1,12 @@
+{
+  "pr_number": 15374,
+  "archive_path": "docs/history/pr-reviews/PR-15374-fix-installer-zeta-creds-restore-skip-now-names-its-missing-path-081m0wtb5mn.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:42:35.513Z",
+  "schema_version": "v1",
+  "commit_sha": "b034ca026d4189277c7f640b059ccfc520f38de4",
+  "title": "fix(installer): zeta-creds-restore skip now names its missing path (081M0WTB5MN)",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:42:01Z",
+  "head_ref": "cursor/restore-blob-diagnosability-c9c8"
+}

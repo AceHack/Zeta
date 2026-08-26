@@ -1,0 +1,12 @@
+{
+  "pr_number": 15332,
+  "archive_path": "docs/history/pr-reviews/PR-15332-feat-zetadb-add-exact-checkpoint-byte-retention.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:55:59.062Z",
+  "schema_version": "v1",
+  "commit_sha": "ae9f2f1de3cc372f5a8c8ec80185b7bc613af6c1",
+  "title": "feat(zetadb): add exact checkpoint-byte retention",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T09:55:09Z",
+  "head_ref": "claim/081M0Q8TY1B-byte-retention"
+}

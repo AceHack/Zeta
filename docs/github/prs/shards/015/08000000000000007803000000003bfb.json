@@ -1,0 +1,12 @@
+{
+  "pr_number": 15355,
+  "archive_path": "docs/history/pr-reviews/PR-15355-deps-dotnet-sdk-10-0-303-10-0-400-and-the-roslyn-ceiling-moves-with-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:36:54.093Z",
+  "schema_version": "v1",
+  "commit_sha": "b6443f33324e7e17f1728e6eb6d743481fb37b04",
+  "title": "deps(dotnet): SDK 10.0.303 -> 10.0.400, and the Roslyn ceiling moves with it",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T14:36:20Z",
+  "head_ref": "deps/dotnet-sdk-10.0.400-feature-band-roll"
+}

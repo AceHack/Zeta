@@ -1,0 +1,12 @@
+{
+  "pr_number": 15383,
+  "archive_path": "docs/history/pr-reviews/PR-15383-feat-interp-activation-access-declared-through-ace-as-a-locked-opt-in-uv-project.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:13:06.861Z",
+  "schema_version": "v1",
+  "commit_sha": "a65cfb816ffd02330b8d2746cc4ef27a83243f91",
+  "title": "feat(interp): activation access declared through ace as a locked opt-in uv project, with a falsifier that proves the aperture opens",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:12:27Z",
+  "head_ref": "feat/activation-access-toolchain"
+}

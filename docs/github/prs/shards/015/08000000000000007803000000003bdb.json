@@ -1,0 +1,12 @@
+{
+  "pr_number": 15323,
+  "archive_path": "docs/history/pr-reviews/PR-15323-feat-zetadb-execute-retained-set-policy-in-node-ticks.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:26:04.746Z",
+  "schema_version": "v1",
+  "commit_sha": "55a1c023357f6a1ca412ab70e7087c686863c54f",
+  "title": "feat(zetadb): execute retained-set policy in node ticks",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T08:25:12Z",
+  "head_ref": "claim/081M0Q8TY1B-retention-kernel"
+}

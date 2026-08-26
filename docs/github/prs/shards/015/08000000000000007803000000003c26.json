@@ -1,0 +1,12 @@
+{
+  "pr_number": 15398,
+  "archive_path": "docs/history/pr-reviews/PR-15398-ci-gate-require-the-hermetic-typescript-behavior-suite.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:52:33.036Z",
+  "schema_version": "v1",
+  "commit_sha": "07aa44b3f1545c18c4dd9df29d8ba411f56d5485",
+  "title": "ci(gate): require the hermetic TypeScript behavior suite",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:51:55Z",
+  "head_ref": "claim/081M0WYN6D6-typescript-hermetic-required-floor"
+}

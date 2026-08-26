@@ -1,0 +1,12 @@
+{
+  "pr_number": 15370,
+  "archive_path": "docs/history/pr-reviews/PR-15370-fix-installer-the-cancel-window-was-real-and-its-default-still-destroyed-the-sec.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:05:09.886Z",
+  "schema_version": "v1",
+  "commit_sha": "ca9ff956c8dd4501c73d0f7e68f7f429ab52a8c9",
+  "title": "fix(installer): the cancel window was real and its default still destroyed the second disk",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:59:31Z",
+  "head_ref": "fix/first-boot-destroys-disks-with-no-window"
+}

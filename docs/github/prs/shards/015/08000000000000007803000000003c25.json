@@ -1,0 +1,12 @@
+{
+  "pr_number": 15397,
+  "archive_path": "docs/history/pr-reviews/PR-15397-ops-branches-the-inventory-is-executed-178-heads-deleted-preserve-first-250-to-7.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:37:26.832Z",
+  "schema_version": "v1",
+  "commit_sha": "34adbce56d04620b5ae56709fe45c186c0244d51",
+  "title": "ops(branches): the inventory is executed -- 178 heads deleted preserve-first, 250 to 73, and 17 rows the re-verification corrected",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:36:47Z",
+  "head_ref": "ops/execute-branch-inventory-safe-subset"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15381,
+  "archive_path": "docs/history/pr-reviews/PR-15381-fix-hygiene-absent-read-as-empty-inside-the-fix-for-absent-reading-as-empty-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:46:32.650Z",
+  "schema_version": "v1",
+  "commit_sha": "c289c4e9025e438f0eb3cf0407dadb060ace4309",
+  "title": "fix(hygiene): absent read as EMPTY inside the fix for absent reading as empty, and rc=$? was dead code",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:45:46Z",
+  "head_ref": "fix/absent-read-as-empty-inside-the-fix"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15358,
+  "archive_path": "docs/history/pr-reviews/PR-15358-fix-cross-verify-allow-cold-go-compilation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:02:13.820Z",
+  "schema_version": "v1",
+  "commit_sha": "ef221b1904a46d9cc301ec67dd4058e13bfcc5aa",
+  "title": "fix(cross-verify): allow cold Go compilation",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:01:33Z",
+  "head_ref": "codex/cross-verify-cold-go-timeout"
+}

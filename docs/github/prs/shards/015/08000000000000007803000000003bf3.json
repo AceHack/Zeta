@@ -1,0 +1,12 @@
+{
+  "pr_number": 15347,
+  "archive_path": "docs/history/pr-reviews/PR-15347-test-k8s-the-apply-set-a-usb-node-runs-had-no-cross-manifest-check-and-kubectl-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T13:40:48.671Z",
+  "schema_version": "v1",
+  "commit_sha": "43aaa4369d3a9405b508a760befd42be444ab1c5",
+  "title": "test(k8s): the apply set a USB node runs had no cross-manifest check — and kubectl was applying the example secret",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T13:36:15Z",
+  "head_ref": "otto/k8s-apply-set-cross-manifest-audit"
+}

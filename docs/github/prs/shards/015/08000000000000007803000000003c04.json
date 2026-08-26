@@ -1,0 +1,12 @@
+{
+  "pr_number": 15364,
+  "archive_path": "docs/history/pr-reviews/PR-15364-fix-heartbeat-the-credential-probe-tested-a-scope-the-step-does-not-use.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:48:07.669Z",
+  "schema_version": "v1",
+  "commit_sha": "97b45246903e50a8cb5e43ded06de06bd5809aae",
+  "title": "fix(heartbeat): the credential probe tested a scope the step does not use",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:46:47Z",
+  "head_ref": "fix/probe-the-scope-the-step-actually-uses"
+}

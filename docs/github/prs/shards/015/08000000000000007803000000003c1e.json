@@ -1,0 +1,12 @@
+{
+  "pr_number": 15390,
+  "archive_path": "docs/history/pr-reviews/PR-15390-fix-backlog-repair-auto-vivify-reference-drift.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:47:17.900Z",
+  "schema_version": "v1",
+  "commit_sha": "7a2bb2a7e4f629d115bfeac2cc1eeff6c8776ee5",
+  "title": "fix(backlog): repair auto-vivify reference drift",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:46:33Z",
+  "head_ref": "claim/081M0WTW45W-auto-vivify-dangling-paths"
+}

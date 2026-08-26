@@ -1,0 +1,12 @@
+{
+  "pr_number": 15344,
+  "archive_path": "docs/history/pr-reviews/PR-15344-fix-ci-the-merge-step-never-read-the-pat-so-nothing-it-merged-was-ever-archived.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T13:02:10.333Z",
+  "schema_version": "v1",
+  "commit_sha": "fe8535c730a7c18df7fc84e432c642459cf98e1a",
+  "title": "fix(ci): the merge step never read the PAT — so nothing it merged was ever archived",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T13:01:19Z",
+  "head_ref": "fix/merge-token-archive-collapse"
+}

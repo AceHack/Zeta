@@ -1,0 +1,12 @@
+{
+  "pr_number": 15337,
+  "archive_path": "docs/history/pr-reviews/PR-15337-fix-hygiene-report-the-commit-actually-audited.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T11:13:06.766Z",
+  "schema_version": "v1",
+  "commit_sha": "97b73b1e3b502d93d28f7569147b3d7de7e45644",
+  "title": "fix(hygiene): report the commit actually audited",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T11:12:14Z",
+  "head_ref": "claim/081M0W8DF0F-audit-target-rev"
+}

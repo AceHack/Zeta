@@ -1,0 +1,12 @@
+{
+  "pr_number": 15350,
+  "archive_path": "docs/history/pr-reviews/PR-15350-docs-operations-findings-register-fourteen-defects-in-one-session-ten-of-them-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:21:49.996Z",
+  "schema_version": "v1",
+  "commit_sha": "58acc19115b1ef071d664745a2d2f5e743ead843",
+  "title": "docs(operations): findings register — fourteen defects in one session, ten of them the same shape",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T14:20:52Z",
+  "head_ref": "docs/findings-register-2026-08-25"
+}

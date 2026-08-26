@@ -1,0 +1,12 @@
+{
+  "pr_number": 15354,
+  "archive_path": "docs/history/pr-reviews/PR-15354-fix-ci-the-flush-batch-verifier-could-never-fire-and-the-test-named-for-that-agr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:28:30.235Z",
+  "schema_version": "v1",
+  "commit_sha": "533753cc1f2e02209da40819d6a0c6676e9ee482",
+  "title": "fix(ci): the flush-batch verifier could never fire, and the test named for that agreement pinned the stale form",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T14:27:51Z",
+  "head_ref": "fix/flush-verify-trigger-can-never-fire"
+}

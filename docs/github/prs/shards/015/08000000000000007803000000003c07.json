@@ -1,0 +1,12 @@
+{
+  "pr_number": 15367,
+  "archive_path": "docs/history/pr-reviews/PR-15367-fix-heartbeat-my-dirty-escape-assumed-re-cutting-fixes-it-when-it-doesn-t-it-chu.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:55:37.832Z",
+  "schema_version": "v1",
+  "commit_sha": "1cfc2d01ea7eb817deae88bc873d2be8aa0d1a04",
+  "title": "fix(heartbeat): my DIRTY escape assumed re-cutting fixes it — when it doesn't, it churns forever",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:54:53Z",
+  "head_ref": "fix/dirty-escape-must-not-loop"
+}

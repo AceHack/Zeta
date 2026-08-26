@@ -1,0 +1,12 @@
+{
+  "pr_number": 15360,
+  "archive_path": "docs/history/pr-reviews/PR-15360-fix-heartbeat-a-denied-credential-in-the-backpressure-query-read-as-a-clear-runw.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:17:14.450Z",
+  "schema_version": "v1",
+  "commit_sha": "33a5de6a384c0558edfbcb51dcb2e28d854fcdc1",
+  "title": "fix(heartbeat): a denied credential in the backpressure query read as a CLEAR RUNWAY",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:16:36Z",
+  "head_ref": "fix/denied-credential-reads-as-clear-runway"
+}

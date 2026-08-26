@@ -1,0 +1,12 @@
+{
+  "pr_number": 15384,
+  "archive_path": "docs/history/pr-reviews/PR-15384-feat-observe-model-benchmark-harness-real-measurements.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:30:37.087Z",
+  "schema_version": "v1",
+  "commit_sha": "d01dbb02880db6369e5acdad41d54e56fd6132da",
+  "title": "feat(observe): model-benchmark harness — real measurements",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:28:57Z",
+  "head_ref": "alexa/model-benchmark"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15359,
+  "archive_path": "docs/history/pr-reviews/PR-15359-fix-hygiene-record-the-heartbeat-ruleset-s-live-conditions-i-changed-the-ruleset.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:25:55.556Z",
+  "schema_version": "v1",
+  "commit_sha": "161270fd5a9f67b81e1ba38f835025e756f5b2f1",
+  "title": "fix(hygiene): record the heartbeat ruleset's live conditions — I changed the ruleset and never declared it",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:24:44Z",
+  "head_ref": "fix/record-heartbeat-ruleset-exclude-in-expected-snapshot"
+}

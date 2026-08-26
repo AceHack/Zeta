@@ -1,0 +1,12 @@
+{
+  "pr_number": 15399,
+  "archive_path": "docs/history/pr-reviews/PR-15399-fix-ci-a-pinned-action-sha-nobody-chose-4-actions-invisible-upload-artifact-ran-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:48:52.073Z",
+  "schema_version": "v1",
+  "commit_sha": "4a5b107645ca16b87b1d25f6486d27824fb2bea2",
+  "title": "fix(ci): a pinned action SHA nobody chose — 4 actions invisible, upload-artifact ran two versions for a day (AH007)",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:48:14Z",
+  "head_ref": "fix/action-sha-roster"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15395,
+  "archive_path": "docs/history/pr-reviews/PR-15395-fix-backlog-close-the-measured-clifford-timeout.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:08:26.209Z",
+  "schema_version": "v1",
+  "commit_sha": "e056c282c8ca8aa56d7c53e79f60cdcd99d96e6e",
+  "title": "fix(backlog): close the measured Clifford timeout",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:07:37Z",
+  "head_ref": "claim/081M0SKWS1B-close-clifford-timeout"
+}

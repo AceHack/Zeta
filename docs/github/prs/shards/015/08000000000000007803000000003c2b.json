@@ -1,0 +1,12 @@
+{
+  "pr_number": 15403,
+  "archive_path": "docs/history/pr-reviews/PR-15403-feat-setup-host-tier-helper-records-the-measured-capability-vector-beside-the-ti.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T18:17:10.540Z",
+  "schema_version": "v1",
+  "commit_sha": "6112a3920507e24d4a703b6ff6998b2bdf4bf629",
+  "title": "feat(setup): host-tier helper records the measured capability vector beside the tier it chose (081M0X0C932087G0R001SWQQVQ)",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T18:08:36Z",
+  "head_ref": "feat/host-capability-vector-emitter"
+}

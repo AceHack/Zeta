@@ -1,0 +1,12 @@
+{
+  "pr_number": 15363,
+  "archive_path": "docs/history/pr-reviews/PR-15363-fix-ci-the-mirror-s-kill-switch-named-a-variable-that-never-existed-ten-weeks-wi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:29:14.329Z",
+  "schema_version": "v1",
+  "commit_sha": "ba92c403734ccbc5381115a0446bef61b190025f",
+  "title": "fix(ci): the mirror's kill switch named a variable that never existed — ten weeks with no off-site copy",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:28:39Z",
+  "head_ref": "fix/mirror-gate-that-never-fired"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15408,
+  "archive_path": "docs/history/pr-reviews/PR-15408-research-physics-the-landauer-floor-does-not-ground-the-encryption-budget-and-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:04:49.162Z",
+  "schema_version": "v1",
+  "commit_sha": "ff783f842b4e5f7b9cd76505776b262e636ff9cb",
+  "title": "research(physics): the Landauer floor does not ground the encryption budget — and the zero-crossing is not the unique irreversible op",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:04:12Z",
+  "head_ref": "lumen/erasure-thermodynamics-audit"
+}

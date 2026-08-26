@@ -1,0 +1,12 @@
+{
+  "pr_number": 15351,
+  "archive_path": "docs/history/pr-reviews/PR-15351-fix-ci-25-credential-chains-collapsed-three-token-roles-into-one-variable.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T15:10:37.945Z",
+  "schema_version": "v1",
+  "commit_sha": "620022100f75433fa23556ddabe2c87c066784bf",
+  "title": "fix(ci): 25 `||` credential chains collapsed three token roles into one variable",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:09:58Z",
+  "head_ref": "fix/workflow-credential-role-separation"
+}

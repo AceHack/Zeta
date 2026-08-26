@@ -1,0 +1,12 @@
+{
+  "pr_number": 11501,
+  "archive_path": "docs/history/pr-reviews/PR-11501-feat-zflash-the-constitutional-rail-was-prose-make-the-content-class-a-type.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:09:09.475Z",
+  "schema_version": "v1",
+  "commit_sha": "c7f64dfea4082b008634a6e32aac672299570950",
+  "title": "feat(zflash): the constitutional rail was prose — make the content class a type",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:08:10Z",
+  "head_ref": "shadow/boot-workload-identity-keys"
+}

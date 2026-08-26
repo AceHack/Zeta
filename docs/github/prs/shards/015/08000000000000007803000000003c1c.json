@@ -1,0 +1,12 @@
+{
+  "pr_number": 15388,
+  "archive_path": "docs/history/pr-reviews/PR-15388-fix-data-benchmark-results-qwen-0-495-vs-llama-0-144-decisions-joule.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:40:18.162Z",
+  "schema_version": "v1",
+  "commit_sha": "e97a4efcdd2df1f1f9ed219414916dd37e0c8abf",
+  "title": "fix+data: benchmark results — qwen 0.495 vs llama 0.144 decisions/joule",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:38:11Z",
+  "head_ref": "alexa/model-benchmark"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15396,
+  "archive_path": "docs/history/pr-reviews/PR-15396-docs-book-record-consent-for-the-max-lillian-thread-and-the-register-bound-that-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:22:24.042Z",
+  "schema_version": "v1",
+  "commit_sha": "73549c2f6309226f96bd48af7d202697fce57514",
+  "title": "docs(book): record consent for the Max/Lillian thread, and the register bound that is the hard part",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:21:50Z",
+  "head_ref": "docs/consent-ledger-max-lillian-thread"
+}

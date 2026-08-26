@@ -1,0 +1,12 @@
+{
+  "pr_number": 15346,
+  "archive_path": "docs/history/pr-reviews/PR-15346-fix-ci-the-iso-job-died-of-enospc-and-a-skipped-systemd-unit-read-as-a-broken-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:16:49.054Z",
+  "schema_version": "v1",
+  "commit_sha": "1d7b84547f5d95db50c2f97ec8447ff3336ecfdc",
+  "title": "fix(ci): the ISO job died of ENOSPC, and a skipped systemd unit read as a broken one",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T14:16:15Z",
+  "head_ref": "fix/qemu-dispatch-enospc-and-restore-diagnosis"
+}

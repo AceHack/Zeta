@@ -1,0 +1,12 @@
+{
+  "pr_number": 15316,
+  "archive_path": "docs/history/pr-reviews/PR-15316-fix-pr-archive-coverage-is-65-because-github-token-merges-fire-no-event-and-noth.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:45:48.361Z",
+  "schema_version": "v1",
+  "commit_sha": "acc0df55d69391af0533cbf80ed746882400a31c",
+  "title": "fix(pr-archive): coverage is 65% because GITHUB_TOKEN merges fire no event — and nothing measured it",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T08:44:57Z",
+  "head_ref": "otto/pr-archive-coverage-audit"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15416,
+  "archive_path": "docs/history/pr-reviews/PR-15416-test-adinkra-separate-ecc-recovery-from-representation-homoiconicity.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:01:14.514Z",
+  "schema_version": "v1",
+  "commit_sha": "54e83431e32896d8d6c207066bde9a6f70d2a404",
+  "title": "test(adinkra): separate ECC recovery from representation homoiconicity",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T18:59:09Z",
+  "head_ref": "research/adinkra-homoiconicity-transport-seam"
+}

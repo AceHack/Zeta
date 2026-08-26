@@ -1,0 +1,12 @@
+{
+  "pr_number": 15377,
+  "archive_path": "docs/history/pr-reviews/PR-15377-fix-hygiene-a-fabricated-task-zetaid-passes-the-gate-because-only-its-shape-is-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:01:14.994Z",
+  "schema_version": "v1",
+  "commit_sha": "7929db94522f42e2e35368c77ea3470242d268dd",
+  "title": "fix(hygiene): a fabricated Task ZetaId passes the gate, because only its shape is checked",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:58:14Z",
+  "head_ref": "fix/task-zetaid-must-resolve"
+}

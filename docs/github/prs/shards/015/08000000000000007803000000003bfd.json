@@ -1,0 +1,15 @@
+{
+  "pr_number": 15357,
+  "archive_path": "docs/history/pr-reviews/PR-15357-fix-hygiene-the-plain-username-github-noreply-form-renders-two-strangers-in-our-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7lwEXY",
+    "thread:PRRT_kwDOSF9kNM6cIrWH"
+  ],
+  "fetched_at": "2026-08-25T16:21:52.215Z",
+  "schema_version": "v1",
+  "commit_sha": "4753ffad49fa6090d9ff51f8285fa694392857bf",
+  "title": "fix(hygiene): the plain-username GitHub noreply form renders two strangers in our Contributors sidebar",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:20:55Z",
+  "head_ref": "fix/persona-coauthor-trailers-collide-with-real-github-users"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15402,
+  "archive_path": "docs/history/pr-reviews/PR-15402-fix-lanes-34-of-56-worktrees-were-outside-the-pinned-toolchain-closure-and-repor.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T18:06:54.155Z",
+  "schema_version": "v1",
+  "commit_sha": "8d4ac423393d0d17a3316f0729938cb66f069a32",
+  "title": "fix(lanes): 34 of 56 worktrees were outside the pinned toolchain closure and reported it as a parse error",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T18:06:16Z",
+  "head_ref": "fix/worktree-mise-trust"
+}

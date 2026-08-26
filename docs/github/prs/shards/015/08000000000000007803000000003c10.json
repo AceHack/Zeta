@@ -1,0 +1,12 @@
+{
+  "pr_number": 15376,
+  "archive_path": "docs/history/pr-reviews/PR-15376-feat-bus-replace-earth-mars-projection-budget-with-endpoint-speed-envelope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:37:03.087Z",
+  "schema_version": "v1",
+  "commit_sha": "5ee57dc4b934e8674e6a0fde6f3dd02035e55fef",
+  "title": "feat(bus): replace Earth–Mars projection budget with endpoint-speed envelope",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:36:28Z",
+  "head_ref": "feat/earth-mars-endpoint-envelope"
+}

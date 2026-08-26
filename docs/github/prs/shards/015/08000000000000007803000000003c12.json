@@ -1,0 +1,12 @@
+{
+  "pr_number": 15378,
+  "archive_path": "docs/history/pr-reviews/PR-15378-fix-ci-a-1-595-test-suite-in-no-workflow-a-check-that-installed-713-mib-to-run-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:26:12.064Z",
+  "schema_version": "v1",
+  "commit_sha": "5c5a5da5e2ed9f81e7e7a4dada5bca4be939f893",
+  "title": "fix(ci): a 1,595-test suite in no workflow, a check that installed 713 MiB to run one bun script, and a reporter that went green without looking",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:25:32Z",
+  "head_ref": "fix/four-unowned-ci-gaps"
+}

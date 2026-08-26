@@ -1,0 +1,12 @@
+{
+  "pr_number": 15349,
+  "archive_path": "docs/history/pr-reviews/PR-15349-feat-operations-ruleset-as-code-reconciliation-desired-state-in-tree-widening-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T14:07:11.990Z",
+  "schema_version": "v1",
+  "commit_sha": "eb10d4d0804fa6ae95c0979863b2a1be909c4f30",
+  "title": "feat(operations): ruleset-as-code reconciliation — desired state in-tree, widening refused without a content-hashed approval",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T14:06:31Z",
+  "head_ref": "otto/ruleset-as-code-reconciliation"
+}

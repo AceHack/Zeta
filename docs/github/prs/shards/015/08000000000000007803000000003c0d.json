@@ -1,0 +1,12 @@
+{
+  "pr_number": 15373,
+  "archive_path": "docs/history/pr-reviews/PR-15373-ops-branches-inventory-the-248-heads-left-after-today-s-two-sweeps.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T16:12:29.224Z",
+  "schema_version": "v1",
+  "commit_sha": "e831dd411ae72b9f1c5681490cedf6399480fa1c",
+  "title": "ops(branches): inventory the 248 heads left after today's two sweeps",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:11:55Z",
+  "head_ref": "ops/branch-inventory-2026-08-25"
+}

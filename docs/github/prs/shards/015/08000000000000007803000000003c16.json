@@ -1,0 +1,12 @@
+{
+  "pr_number": 15382,
+  "archive_path": "docs/history/pr-reviews/PR-15382-docs-vision-the-ladder-that-replaces-a-human-looked-at-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T17:07:28.748Z",
+  "schema_version": "v1",
+  "commit_sha": "0387b0d4a28f2a8fc22262bcafab21a4906cdeeb",
+  "title": "docs(vision): the ladder that replaces \"a human looked at it\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:05:36Z",
+  "head_ref": "docs/vision-the-trust-ladder"
+}

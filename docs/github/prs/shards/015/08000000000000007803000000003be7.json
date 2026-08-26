@@ -1,0 +1,12 @@
+{
+  "pr_number": 15335,
+  "archive_path": "docs/history/pr-reviews/PR-15335-docs-workitems-close-settled-squash-layout-investigation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T10:44:09.931Z",
+  "schema_version": "v1",
+  "commit_sha": "b0bded9329d31f6aabb38532842ff8866acd1e76",
+  "title": "docs(workitems): close settled squash-layout investigation",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T10:43:18Z",
+  "head_ref": "claim/081M062MG4M-signed-squash"
+}
