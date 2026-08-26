@@ -50,6 +50,9 @@ it, systemd doesn't; it's a deployment property of a cell. So `Geode` stays atta
 replication concept** (a cell IS a geode — full-within/partial-across), and HA needs no separate coinage.
 Four named layers: **Ace · Zeta · Nucleus · Loom** (a cell = a Geode within Zeta). Public/glossary
 anchoring still goes through the naming-expert + Ilyana pass before any external use.
+**Harny** (Aaron 2026-08-26) is the custom agent harness Ace will install — a
+product on Ace + Zeta, not a fifth layer. Trajectory:
+[`docs/trajectories/own-ai-harness/RESUME.md`](trajectories/own-ai-harness/RESUME.md).
 
 ### ZetaID — the universal cross-layer pointer
 
@@ -187,6 +190,24 @@ using DynamicValue's byte-locked per-format serializer:
    declarative dep files — the file-type plugin model applied to dependency manifests; the first real
    *second application* on the substrate (forces a clean cell-injection API). Composes 081KSGS9H0008QG0R0031PBNGA
    (package-manager-of-package-managers) + the Ace seed `081KTFKQGZP`.
+   Ace is the **bootstrap**. Two legal ways in, both required forever
+   (`.claude/rules/clone-at-tag-stays-sufficient.md`): a published Ace
+   binary + pinned one-liner, **or** a pre-bootstrap (the smallest
+   toolchain that can build Ace from source). Ace must never become the
+   only path. Later, inside Ace: Futamura compiler-compiler (`Cogen.fs`
+   / `MixCogen.fs`) so Ace stops needing a host compiler — third
+   bootstrap, still ASPIRATION for machine-code (`docs/VISION.md`
+   §compiler ladder). Workitem `081M102M6X5087G0R001VWNYS2`.
+8b. **Harny — custom agent harness, first extract.** Dogfood in this
+    monorepo (account login, closed Ace+Zeta tools, inverted-index
+    search, no vendor CLIs), then split as an isolated published
+    package Ace can install. Peer repos (Zeta / Forge / Ace / Harny),
+    not submodules. Minimize toolchain per package to cut the monorepo
+    cache tax. Manus is a remote-only adapter (account API key, no
+    extra per-call billing) and may never fit the full local loop.
+    Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
+    Umbrella `081M100RB97087G0R0008EAAY7`; extract
+    `081M102M6Y2087G0R000407SW3`.
 9. **BFT Quorum Transition (Wallet Prerequisite)** — transition the BFT consensus from the fixed `Members`
    configuration to a rolling, window-based estimate of distinct sources derived dynamically from the stream
    correlation matrix. **This must precede and gate any Web3 wallet / transactional ledger integration.**
@@ -385,3 +406,7 @@ These don't wait for a single round:
   code as-is.
 - Keep the gap between implementation and spec small; drift is a bug,
   not an eventual cleanup.
+- Dogfood **Harny** (custom agent harness) on paid accounts, then
+  extract it as the first isolated published package. Ace pre-bootstrap
+  stays two-path (published binary **or** from-source seed). See
+  `docs/trajectories/own-ai-harness/RESUME.md`.

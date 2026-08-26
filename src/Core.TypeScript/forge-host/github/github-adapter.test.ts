@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { GitHubAdapter } from "./github-adapter";
 import { classifyGhError } from "./classify-error";
-import { forgeError } from "../result";
+import { forgeError, ok } from "../result";
+import type { GithubRest } from "./github-pr-rest.ts";
 
 describe("GitHubAdapter", () => {
   test("forgeName is github", () => {
@@ -62,25 +63,64 @@ describe("GitHubAdapter", () => {
     expect(classifyGhError(null, "").kind).toBe("internal");
   });
 
+  test("listOpenPullRequests and createPullRequest use injected REST — no gh", async () => {
+    const calls: { method: string; path: string; body: unknown }[] = [];
+    const pull = {
+      number: 7,
+      title: "rest",
+      html_url: "https://github.com/o/r/pull/7",
+      updated_at: "2026-08-26T00:00:00Z",
+      draft: false,
+      state: "open",
+      merged_at: null,
+      user: { login: "ace" },
+      head: { ref: "feat" },
+      base: { ref: "main" },
+    };
+    const rest: GithubRest = {
+      request: (method, path, body) => {
+        calls.push({ method, path, body });
+        if (method === "GET") return Promise.resolve(ok(JSON.stringify([pull])));
+        return Promise.resolve(ok(JSON.stringify({ ...pull, number: 8, html_url: "https://github.com/o/r/pull/8" })));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const listed = await adapter.listOpenPullRequests({ limit: 10 });
+    expect(listed.ok).toBe(true);
+    if (listed.ok) {
+      expect(listed.value).toHaveLength(1);
+      expect(listed.value[0]?.number).toBe(7);
+    }
+    const created = await adapter.createPullRequest({ title: "t", body: "b", head: "feat", base: "main" });
+    expect(created.ok).toBe(true);
+    if (created.ok) expect(created.value.number).toBe(8);
+    expect(calls.some((c) => c.method === "GET" && c.path.startsWith("repos/o/r/pulls"))).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/pulls")).toBe(true);
+  });
+
+  test("createPullRequest without a token is auth-failure, not a gh spawn", async () => {
+    const adapter = new GitHubAdapter("o", "r", {
+      rest: { request: () => Promise.resolve({ ok: false, error: forgeError("auth-failure", "no token") }) },
+    });
+    const result = await adapter.createPullRequest({ title: "t", body: "b", head: "h", base: "main" });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.kind).toBe("auth-failure");
+  });
+
   test("resolveThreadsBatch maintains arithmetic invariant", async () => {
-    const adapter = new GitHubAdapter("org", "repo");
-    // This will fail (no gh available in test) but the batch logic is testable
-    // by mocking — for now verify the structure
+    const adapter = new GitHubAdapter("org", "repo", {
+      porcelain: () => ({ ok: false, error: forgeError("internal", "injected miss") }),
+    });
     const threads = [
       { threadId: "t1", body: "ack" },
       { threadId: "t2", body: "ack" },
     ];
     const result = await adapter.resolveThreadsBatch(threads);
-    // ASSERT IN BOTH BRANCHES. This used to assert only inside `if (result.ok)`, and with no
-    // `gh` present the call fails -- so the test ran ZERO assertions and passed by not
-    // checking anything. A test that passes by asserting nothing is the vacuity class.
+    expect(result.ok).toBe(true);
     if (result.ok) {
+      expect(result.value.resolved).toBe(0);
+      expect(result.value.failed.length).toBe(threads.length);
       expect(result.value.resolved + result.value.failed.length).toBe(threads.length);
-    } else {
-      // The failure path must still be a classified ForgeError, never a thrown exception
-      // and never the not-supported stub -- resolveThreadsBatch IS implemented.
-      expect(result.error.kind).not.toBe("not-supported");
-      expect(typeof result.error.message).toBe("string");
     }
   });
 });

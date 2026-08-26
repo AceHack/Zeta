@@ -5,6 +5,9 @@ audit; the live pointer is
 [`docs/trajectories/own-ai-harness/RESUME.md`](../trajectories/own-ai-harness/RESUME.md).
 GOVERNANCE.md §33.*
 
+The harness is named **Harny** (Aaron 2026-08-26). Separate from Ace;
+Ace will install it. In-tree CLI: `src/Core.TypeScript/harny/harny.ts`.
+
 Aaron 2026-08-26 asked for an account of the harness that is supposed to
 do full-duplex streaming and CLI/tooling **only by calling our CLIs**,
 never platform CLIs; an overarching plan to run all paid agents on it
@@ -71,7 +74,7 @@ Live for **ChatGPT subscription** (summon + closed `fs_*`/`db_*`,
 | grok | none | vendor / Cursor | vendor | this session |
 | gemini | none | vendor | vendor | Lior (`agy`) |
 | kiro | none | vendor | `--trust-all-tools` | Alexa |
-| manus | API key only | async task | Manus skills, not Zeta tools | not in loop registry |
+| manus | wired account API key (`harny login manus --from-file`) | async remote task | Manus **cloud** skills — no local Ace/Zeta tools | remote-only adapter; not in `loop-tick` |
 
 Installer already **declares** some vendor cred paths
 (`zeta-creds-manifest.ts`: gh-cli, claude, gemini, codex) so USB restore
@@ -114,7 +117,7 @@ mid-token, until a provider's wire can carry the feedback corners.
 ## Gaps (ranked)
 
 1. Production loops do not call `summon` / `runToolLoop`.
-2. Five LLM providers have no `AuthProvider`.
+2. Four local LLM providers have no native `AuthProvider` (claude / grok / gemini / kiro). Manus is wired as an **account API key** (no extra per-call billing) but is **remote-only** — it may never fit the full local tool loop.
 3. GitHub **login** is ours; GitHub **work** is still `gh`.
 4. Closed tool surface is not Ace+Zeta and is not what the fleet uses.
 5. Token store is per-provider, not per-persona (manifest says
@@ -131,14 +134,20 @@ Umbrella `081M100RB97087G0R0008EAAY7`.
 
 | Phase | Workitem | Dogfood signal |
 |---|---|---|
-| 0 | roster + `zeta-login` CLI (this change) | `zeta-login list --json` is the declared set |
-| 1 | AuthProviders for claude/grok/gemini/kiro/manus | `081M100RH29087G0R0031HHGJ0` |
+| 0 | roster + `zeta-login` / `harny` CLI (this change) | `harny list --json` is the declared set |
+| 0b | Manus account API key, remote-only | `harny login manus --from-file`; no local tools |
+| 1 | AuthProviders for claude/grok/gemini/kiro | `081M100RH29087G0R0031HHGJ0` |
 | 1b | ForgeHost HTTP + stored token, no `gh` | `081M100RB9Z087G0R000GWY1MM` |
 | 2 | Closed tools = Ace + Zeta verbs | `081M100RH3Q087G0R0018X4RSJ` |
-| 3 | `loop-tick` default `mux-duplex` | `081M100RH30087G0R003YXHQ12` |
+| 3 | `loop-tick` default `mux-duplex` (local vendors) | `081M100RH30087G0R003YXHQ12` |
+| B5 | Ace pre-bootstrap (published binary **or** from-source seed) | `081M102M6X5087G0R001VWNYS2` |
+| B6 | Extract **Harny** as first isolated published package | `081M102M6Y2087G0R000407SW3` |
 
-API keys stay a **secondary** path (Manus Keychain today). Account
-login is the primary for every row that can do OAuth.
+Account login is primary for every local vendor that can do OAuth.
+Manus is the honest exception: their account login **is** an API key
+with no extra per-call cost, and the agent always runs on their cloud.
+Do not pretend that is a local Harny loop. API keys stay secondary for
+everyone else (`XAI_API_KEY`, Gemini headless docs).
 
 ## Login ladder (remote / no-local-browser first)
 
@@ -152,7 +161,7 @@ without browsers; a browser **on the agent machine** is last-resort.
 | 1 | `paste-code` | no | PKCE/auth-code; user opens URL on any device and pastes the code back. Claude Code `--no-browser`. Anthropic has **no** RFC 8628 yet (claude-code#22992). |
 | 2 | `vendor-cli-import` | no | Run **their** CLI login once, then `zeta-login import`. Used when we do not have (or should not mint) their client_id. |
 | 3 | `pkce-localhost` | **yes** | Loopback callback. Gemini CLI default; Grok default `grok login`. Harder on SSH/VMs. |
-| 4 | `api-key` | no | Secondary. Manus public API; Gemini headless docs; `XAI_API_KEY`. |
+| 4 | `api-key` | no | Secondary for local vendors (`XAI_API_KEY`, Gemini headless). **Primary** for Manus: account login *is* the key, no extra per-call billing, remote-only. |
 
 ## Vendor-CLI import (no reverse engineering)
 
@@ -176,6 +185,48 @@ OAuth; **OpenCode** plugins do Codex/Gemini OAuth or device-code;
 ## Slice 0 (landed with this absorb)
 
 `src/Core.TypeScript/model-backend/provider-roster.ts` is the data.
-Adding a provider is a roster edit, not a new CLI. `zeta-login` runs
-device flow for `github` and `openai`/`codex`; anything else fails
-closed with `{ error: "no-auth-provider", next: "081M100RH29087G0R0031HHGJ0" }`.
+Adding a provider is a roster edit, not a new CLI. `harny` /
+`zeta-login` run device flow for `github` and `openai`/`codex`; Manus
+stores an account key from `--from-file` and never prints it; anything
+else fails closed with `{ error: "no-auth-provider", try: "zeta-login import <id>", next: "081M100RH29087G0R0031HHGJ0" }`.
+
+## Manus is remote-only (may never fit the full loop)
+
+Aaron 2026-08-26: Manus always runs **on their cloud**, never as a local
+process on the agent machine. So Harny can hold the account key and
+create remote tasks (`manus-task.ts`), but it cannot give Manus Ace or
+Zeta verbs, cannot index the local tree for it, and cannot make it a
+`loop-tick` cell. If the integration cannot be tight, Manus stays an
+adapter, not a Harny-resident agent. That is a fit question, not a
+login-gap.
+
+## Indexing is a harness verb (not a full-tree grep)
+
+`harny search` dispatches to `src/Core.TypeScript/search/inverted/` —
+the git-native inverted index. An index that is stale **refuses**
+rather than claiming absence. This is how Harny avoids the monorepo
+full-search tax even before the extract.
+
+## Phase B — published artifacts, after Phase A dogfood
+
+Ace is the bootstrap. Harny is an Ace package, not Ace itself.
+
+1. **Pre-bootstrap** (`081M102M6X5087G0R001VWNYS2`): a published Ace
+   binary + pinned one-liner, **or** the smallest toolchain that can
+   build Ace from source. `git clone` at a tag still builds without Ace
+   on PATH (`.claude/rules/clone-at-tag-stays-sufficient.md`). Ace must
+   never become an appointed hub.
+2. **Harny extract** (`081M102M6Y2087G0R000407SW3`): first isolated
+   published package. Ace installs it. Harny *references* Ace/Zeta as
+   packages instead of copying `src/Core.TypeScript/**`. Peer repos
+   (Zeta / Forge / Ace / Harny), not submodules — the 2026-04-22 ADR
+   cycle cannot be a DAG. Minimize toolchain (Harny: bun/node only) so
+   CI cache is per-package, not the whole monorepo.
+3. **Later, inside Ace:** Futamura compiler-compiler (`Cogen.fs` /
+   `MixCogen.fs` already in-tree). Third bootstrap: Ace stops needing a
+   host compiler. Vision register: `docs/VISION.md` §compiler ladder;
+   still an **ASPIRATION** for machine-code, **SHIPPED** as mix/cogen
+   in F#. Beacon: Futamura 1971, 3rd projection.
+
+This Phase B *is* the start of dogfooding the repo-split design: extract
+the thing we are already running, do not invent a fourth factory.

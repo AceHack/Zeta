@@ -53,15 +53,15 @@ the real dependency. `○ not started` = no surface in-tree.
 
 The society runtime (Tier 1) dogfoods **free Ollama + vendor CLIs**. This
 tier is the paid-account path Aaron named 2026-08-26: grok, claude, openai,
-manus, gemini, codex, kiro on our harness, account logins, Ace + Zeta CLIs
+manus, gemini, codex, kiro on **Harny**, account logins, Ace + Zeta CLIs
 only. Live pointer: [`own-ai-harness/RESUME.md`](../own-ai-harness/RESUME.md).
 Umbrella `081M100RB97087G0R0008EAAY7`.
 
 | # | Layer | Running on our own thing? | Evidence |
 |---|---|---|---|
-| 0a | **Account-login roster + `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. `zeta-login import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. |
+| 0a | **Account-login roster + `harny` / `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. Manus is a **wired account API key** (`harny login manus --from-file`) — no extra per-call billing, **remote-only** (never a local tool loop). `harny import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. `harny search` is inverted-index, not full-tree grep. |
 | 0b | **Paid cells summon through our tool loop** | ○ **not started** | `loop-tick` still spawnSyncs `claude`/`codex`/`kiro-cli`/`agy`/`cursor-agent`. `summon()` is a library proven on ChatGPT (2026-07-04), not the fleet. `081M100RH30087G0R003YXHQ12` |
-| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours (`github-auth.ts`). PRs/checks/rest-push still `spawnSync("gh")`. `081M100RB9Z087G0R000GWY1MM` |
+| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours. Token resolver is store then env, never `gh auth token`. `GitHubAdapter` list/get/create PR is REST. Gate/threads/git-data/rest-push still `spawnSync("gh")`. `081M100RB9Z087G0R000GWY1MM` |
 | 0d | **Tools = Ace + Zeta CLIs only** | ○ **not started** | Closed `fs_*`/`db_*` is in-memory DagFs. Fleet tools are vendor bash/git/gh. `081M100RH3Q087G0R0018X4RSJ` |
 
 ### Tier 1 — the society runtime (this is where we actually are)

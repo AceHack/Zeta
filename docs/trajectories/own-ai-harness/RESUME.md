@@ -1,4 +1,4 @@
-# Trajectory — Custom agent harness (account logins, Ace + Zeta CLIs, no platform CLIs)
+# Trajectory — Harny (custom agent harness)
 
 Status: active — workstream (current-focus)
 Last refreshed: 2026-08-26
@@ -29,48 +29,81 @@ The harness **library** is real. The fleet **runtime** is still vendor CLIs.
 |---|---|---|
 | Hexagonal `AuthProvider` | port complete | `auth-provider.ts` — device-code + PKCE + refresh |
 | OpenAI / Codex account | ✅ wired | `openai-auth.ts`, live summon 2026-07-04 |
-| GitHub account | ✅ wired | `github-auth.ts` + `github-login-cli.ts` (PRs #9549–#9551) |
+| GitHub account | ✅ wired | `github-auth.ts` + `github-login-cli.ts` (PRs #9549–#9551). Token for forge work: store then env, never `gh auth token`. `GitHubAdapter` list/get/create PR is REST. |
 | Claude / Grok / Gemini / Kiro | ○ declared | roster only; no AuthProvider |
-| Manus | ◐ api-key | `manus-task.ts` Keychain key; create + listMessages |
+| Manus | ✅ account API key, remote-only | `harny login manus --from-file` → store; `manus-task.ts` still Keychain at the edge until it reads the store |
 | Full-duplex four-corner | ◐ library | `duplex-transport.ts` + WS mux; vendor APIs still SSE/HTTP |
 | Closed tools | ◐ library | `ZETA_TOOLS` = `fs_*`/`db_*` in-memory; fleet uses bash/gh/git |
 | Ace (deps) | ◐ dogfooded for setup | `ace.ts` + `setup-realize.ts`; agents still call bun/mise/brew |
 | Zeta CLI (sc/fs) | ◐ library | LibGit2Sharp `zeta` exe + MCP; factory still `git`/`gh` |
+| Indexing | ◐ in-tree | `harny search` → `search/inverted` (refuses on stale empty) |
 | loop-tick | ○ vendor default | `persona-registry.ts` harness.command = claude/codex/kiro-cli/agy/cursor-agent |
 
 Login ladder (remote-first): `device-code` > `paste-code` > `vendor-cli-import`
 > `pkce-localhost` > `api-key`. Encoded in `login-ladder.ts`.
 
-Slice 0: roster + `zeta-login list|status|login|token`. Wired native device
-login: `github`, `openai`/`codex`.
+Slice 0: roster + `harny list|status|login|token|search` (`zeta-login` is
+the same login surface). Wired native device login: `github`,
+`openai`/`codex`. Wired account API key: `manus` (`--from-file`, remote-only).
 
-Slice 0b: `zeta-login import <provider>` copies a session the **vendor CLI**
+Slice 0b: `harny import <provider>` copies a session the **vendor CLI**
 already minted (`~/.grok/auth.json`, `~/.codex/auth.json`, Claude creds,
 Gemini `oauth_creds.json`, gh `hosts.yml`, Kiro SSO cache). No reverse
 engineering of their OAuth client_id.
 
 ```text
-bun src/Core.TypeScript/model-backend/zeta-login-cli.ts list --json
-bun src/Core.TypeScript/model-backend/zeta-login-cli.ts login github
-bun src/Core.TypeScript/model-backend/zeta-login-cli.ts login openai
+bun src/Core.TypeScript/harny/harny.ts list --json
+bun src/Core.TypeScript/harny/harny.ts login github
+bun src/Core.TypeScript/harny/harny.ts login openai
+bun src/Core.TypeScript/harny/harny.ts login manus --from-file ./manus.key
+bun src/Core.TypeScript/harny/harny.ts search landauer
 # remote box, vendor already logged in:
 grok login --device-auth          # their CLI, phone-approve
-bun .../zeta-login-cli.ts import grok
+bun src/Core.TypeScript/harny/harny.ts import grok
 ```
 
-## Roadmap (children of the umbrella)
+## Roadmap
 
-1. **Account OAuth for the five unwired LLMs** — `081M100RH29087G0R0031HHGJ0`
+### Phase A — dogfood Harny in this monorepo (now)
+
+1. **Native device/OAuth for remaining local vendors** — `081M100RH29087G0R0031HHGJ0`
 2. **ForgeHost without `gh`** — `081M100RB9Z087G0R000GWY1MM`
 3. **Closed tools = Ace + Zeta verbs** — `081M100RH3Q087G0R0018X4RSJ`
-4. **loop-tick default `mux-duplex`** — `081M100RH30087G0R003YXHQ12`
+4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
 
-Done when a Riven/Otto/Vera cell completes a tool-using turn on our
-harness with a stored account token, no vendor CLI, no `gh`.
+Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
+turn on Harny with a stored account token, no vendor CLI, no `gh`.
+Manus is a **remote-only** adapter (`harny login manus --from-file`):
+account API key with no extra per-call billing, but no local Ace/Zeta
+tools — it may never fit the full loop.
+
+### Phase B — split into published artifacts (after A)
+
+Ace is the bootstrap. Harny is an Ace package, not Ace itself.
+
+1. **Ace pre-bootstrap** — `081M102M6X5087G0R001VWNYS2`
+   - published Ace binary + pinned one-line installer, **or**
+   - pre-bootstrap (minimal toolchain to build Ace from source)
+   - `git clone` at a tag still builds without Ace on PATH
+   - later: Futamura compiler-compiler *inside Ace* (`Cogen.fs` /
+     `MixCogen.fs`) as a third bootstrap so Ace stops needing a host
+     compiler
+2. **Harny as the first extract** — `081M102M6Y2087G0R000407SW3`
+   - isolated package, small CI, indexing included (`search/inverted`)
+   - Ace *installs* Harny; Harny *references* Ace/Zeta as packages
+   - peer repos (Zeta / Forge / Ace / Harny), not submodules — the
+     2026-04-22 ADR cycle cannot be a DAG
+   - minimize toolchain per package (Harny: bun/node only)
+   - cuts the monorepo cache tax
+
+Phase B dogfoods the repo-split design by extracting the thing we are
+already running, not by inventing a fourth factory.
 
 ## Pointers
 
 - Research absorb: `docs/research/2026-08-26-own-harness-account-logins-ace-zeta-clis-not-platform.md`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
-- Replacement roadmap: `docs/ZETA-ARCHITECTURE-UNIFIED.md`
-- Shell deprecation: `docs/SHELL-DEPRECATION-SEQUENCE.md`
+- Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+- Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`
+- Index: `src/Core.TypeScript/search/inverted/`
+- CLI: `src/Core.TypeScript/harny/harny.ts`

@@ -47,6 +47,7 @@ export type StatusRow = {
   readonly loginKind: ProviderEntry["loginKind"];
   readonly storeAs: string;
   readonly loggedIn: boolean;
+  readonly execution: ProviderEntry["execution"];
 };
 
 export async function statusRows(store: TokenStore): Promise<readonly StatusRow[]> {
@@ -60,6 +61,7 @@ export async function statusRows(store: TokenStore): Promise<readonly StatusRow[
       loginKind: p.loginKind,
       storeAs: p.storeAs,
       loggedIn: stored !== null,
+      execution: p.execution,
     });
   }
   return rows;
@@ -89,16 +91,61 @@ export async function runStatus(store: TokenStore, io: CliIo, json: boolean): Pr
   return 0;
 }
 
+export async function runApiKeyLogin(
+  entry: ProviderEntry,
+  store: TokenStore,
+  io: CliIo,
+  deps: { readonly fromFile: string | undefined; readonly readFile: (path: string) => Promise<string>; readonly now: () => string },
+): Promise<number> {
+  if (deps.fromFile === undefined || deps.fromFile.length === 0) {
+    io.err(
+      JSON.stringify({
+        ok: false,
+        error: "api-key-file-required",
+        provider: entry.id,
+        execution: entry.execution,
+        hint: `harny login ${entry.id} --from-file <path-to-key>`,
+      }),
+    );
+    return 2;
+  }
+  let raw: string;
+  try {
+    raw = (await deps.readFile(deps.fromFile)).trim();
+  } catch {
+    io.err(`${entry.id} login failed: cannot read --from-file`);
+    return 1;
+  }
+  if (raw.length === 0) {
+    io.err(`${entry.id} login failed: empty key file`);
+    return 1;
+  }
+  await store.save({ provider: entry.storeAs, tokens: { accessToken: raw, refreshToken: "" }, lastRefresh: deps.now() });
+  io.out(`Logged in — ${entry.id} account key stored (remote-only agent; no local Ace/Zeta tools).`);
+  return 0;
+}
+
 export async function runLogin(
   rawId: string,
   store: TokenStore,
   io: CliIo,
-  deps?: Partial<LoginDeps> & { readonly providers?: (entry: ProviderEntry) => AuthProvider | null },
+  deps?: Partial<LoginDeps> & {
+    readonly providers?: (entry: ProviderEntry) => AuthProvider | null;
+    readonly fromFile?: string;
+    readonly readFile?: (path: string) => Promise<string>;
+  },
 ): Promise<number> {
   const entry = resolveProvider(rawId);
   if (!entry) {
     io.err(`unknown provider: ${rawId}`);
     return 2;
+  }
+  if (entry.loginKind === "account-api-key") {
+    return runApiKeyLogin(entry, store, io, {
+      fromFile: deps?.fromFile,
+      readFile: deps?.readFile ?? ((path) => readFile(path, "utf8")),
+      now: deps?.now ?? (() => new Date().toISOString()),
+    });
   }
   const resolve = deps?.providers ?? authProviderFor;
   const provider = resolve(entry);
@@ -189,6 +236,20 @@ function takeFlag(argv: readonly string[], flag: string): { readonly rest: reado
   return { rest: argv.filter((a) => a !== flag), present: argv.includes(flag) };
 }
 
+function takeOption(argv: readonly string[], flag: string): { readonly rest: readonly string[]; readonly value: string | undefined } {
+  const rest: string[] = [];
+  let value: string | undefined;
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === flag) {
+      value = argv[i + 1];
+      i += 1;
+      continue;
+    }
+    rest.push(argv[i]!);
+  }
+  return { rest, value };
+}
+
 export async function main(
   argv: readonly string[],
   store: TokenStore,
@@ -197,10 +258,12 @@ export async function main(
     readonly transport?: HttpTransport;
     readonly providers?: (entry: ProviderEntry) => AuthProvider | null;
     readonly importDeps?: ImportDeps;
+    readonly readFile?: (path: string) => Promise<string>;
   },
 ): Promise<number> {
   const jsoned = takeFlag(argv, "--json");
-  const [cmd = "", ...rest] = jsoned.rest;
+  const fromFile = takeOption(jsoned.rest, "--from-file");
+  const [cmd = "", ...rest] = fromFile.rest;
   switch (cmd) {
     case "list":
       return runList(io, jsoned.present);
@@ -208,10 +271,14 @@ export async function main(
       return runStatus(store, io, jsoned.present);
     case "login":
       if (rest[0] === undefined || rest[0].length === 0) {
-        io.err("usage: zeta-login-cli.ts login <provider>");
+        io.err("usage: zeta-login-cli.ts login <provider> [--from-file <path>]");
         return 2;
       }
-      return runLogin(rest[0], store, io, extra);
+      return runLogin(rest[0], store, io, {
+        ...extra,
+        ...(fromFile.value !== undefined ? { fromFile: fromFile.value } : {}),
+        ...(extra?.readFile !== undefined ? { readFile: extra.readFile } : {}),
+      });
     case "import":
       if (rest[0] === undefined || rest[0].length === 0) {
         io.err("usage: zeta-login-cli.ts import <provider>");

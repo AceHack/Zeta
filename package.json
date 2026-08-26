@@ -67,6 +67,7 @@
   },
   "bin": {
     "ace": "src/Core.TypeScript/ace/ace.ts",
+    "harny": "src/Core.TypeScript/harny/harny.ts",
     "zeta-login": "src/Core.TypeScript/model-backend/zeta-login-cli.ts",
     "zeta-shadow": "src/Core.TypeScript/shadow/zeta-shadow.ts"
   },

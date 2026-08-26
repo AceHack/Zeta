@@ -19,7 +19,7 @@ import {
   withSuperseding,
   type GhRun,
 } from "./check-observations.ts";
-import { isPlainApiGet, resetGitHubTokenForTest, resolveGitHubToken } from "./gh-cli.ts";
+import { isPlainApiGet, resolveGitHubToken } from "./gh-cli.ts";
 
 function run(over: Partial<GhRun>): GhRun {
   return { id: 1, status: "completed", conclusion: "success", created_at: "2026-08-22T00:00:00Z", updated_at: "2026-08-22T00:00:00Z", ...over };
@@ -297,40 +297,22 @@ describe("the transport is spawn-free for plain reads, and narrowly so", () => {
   // `hygiene/lint-no-ambient-credential-hoist.ts`, and it was right to: reading the
   // ambient environment is fine, writing a credential into it is not.
 
-  it("prefers an already-present token over spawning anything", () => {
-    resetGitHubTokenForTest();
-    try {
-      expect(resolveGitHubToken({ GH_TOKEN: "token-from-env" })).toBe("token-from-env");
-    } finally {
-      resetGitHubTokenForTest();
-    }
+  it("prefers the store over env, and never spawns gh", () => {
+    expect(resolveGitHubToken({ GH_TOKEN: "token-from-env" }, () => "gho_store")).toBe("gho_store");
   });
 
-  it("falls back to GITHUB_TOKEN, and treats an empty value as absent", () => {
-    resetGitHubTokenForTest();
-    try {
-      expect(resolveGitHubToken({ GITHUB_TOKEN: "from-github-token" })).toBe("from-github-token");
-    } finally {
-      resetGitHubTokenForTest();
-    }
-    // OBSERVED WHILE WRITING THIS, and recorded rather than changed: an EMPTY
-    // `GH_TOKEN` does not fall back to `GITHUB_TOKEN`. `??` only falls through on
-    // null/undefined, so `""` is selected, then the `!== ""` guard rejects it and the
-    // function goes to `gh auth token` — skipping a `GITHUB_TOKEN` that is sitting
-    // right there. Whether that is wrong depends on whether an empty `GH_TOKEN` should
-    // mean "no token" or "unset", which is a call for whoever owns this resolver; it is
-    // not part of removing an ambient credential write, so it is named here and left
-    // alone. It is not asserted either way because the branch it takes ends in a real
-    // `gh` subprocess, which does not belong in the hermetic tier.
+  it("falls back to GH_TOKEN, then GITHUB_TOKEN; empty GH_TOKEN is absent", () => {
+    expect(resolveGitHubToken({ GH_TOKEN: "token-from-env" }, () => null)).toBe("token-from-env");
+    expect(resolveGitHubToken({ GITHUB_TOKEN: "from-github-token" }, () => null)).toBe("from-github-token");
+    expect(resolveGitHubToken({ GH_TOKEN: "  ", GITHUB_TOKEN: "from-github-token" }, () => null)).toBe("from-github-token");
   });
 
-  it("memoises, so N requests cost at most ONE token resolution", () => {
-    resetGitHubTokenForTest();
-    try {
-      expect(resolveGitHubToken({ GH_TOKEN: "t1" })).toBe("t1");
-      expect(resolveGitHubToken({ GH_TOKEN: "t2" })).toBe("t1"); // memoised, not re-read
-    } finally {
-      resetGitHubTokenForTest();
-    }
+  it("null when store and env are empty — does not spawn gh auth token", () => {
+    expect(resolveGitHubToken({}, () => null)).toBeNull();
+  });
+
+  it("is a pure function of (env, readStore) — no process memo to reset", () => {
+    expect(resolveGitHubToken({ GH_TOKEN: "t1" }, () => null)).toBe("t1");
+    expect(resolveGitHubToken({ GH_TOKEN: "t2" }, () => null)).toBe("t2");
   });
 });

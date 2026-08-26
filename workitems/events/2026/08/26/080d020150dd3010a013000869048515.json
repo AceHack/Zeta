@@ -1,0 +1,14 @@
+{
+  "id": "080d020150dd3010a013000869048515",
+  "at": "2026-08-26T22:21:36.550Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M102M6X5087G0R001VWNYS2",
+    "type": "task",
+    "title": "Ace pre-bootstrap: published binary one-liner or minimal from-source seed that never requires Ace to exist",
+    "slug": "ace-pre-bootstrap-published-binary-one-liner-or-minimal-from",
+    "priority": "P1",
+    "filename": "081M102M6X5087G0R001VWNYS2-ace-pre-bootstrap-published-binary-one-liner-or-minimal-from.md"
+  }
+}

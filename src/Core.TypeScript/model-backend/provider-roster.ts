@@ -6,10 +6,11 @@
 
 import { preferredFlow, type LoginFlow } from "./login-ladder.ts";
 
-export type LoginKind = "account-oauth" | "account-cli-session" | "api-key-secondary";
+export type LoginKind = "account-oauth" | "account-cli-session" | "account-api-key" | "api-key-secondary";
 
-/// How far the harness has actually taken this provider. `wired` means an AuthProvider
-/// exists AND `zeta-login-cli` can run its device flow into ~/.config/zeta/auth.
+/// How far the harness has actually taken this provider. `wired` means
+/// `harny login <id>` actually persists a session (native device flow, or
+/// Manus account API key from --from-file) into ~/.config/zeta/auth.
 export type ProviderStatus = "wired" | "declared" | "api-key-only";
 
 export interface ProviderEntry {
@@ -27,6 +28,8 @@ export interface ProviderEntry {
   readonly vendorCredPaths: readonly string[];
   /// Flows the vendor is known to offer, ranked by login-ladder.ts.
   readonly flows: readonly LoginFlow[];
+  /// Manus (and similar) run on the vendor's cloud — local Ace/Zeta tools do not apply.
+  readonly execution: "local" | "remote-only";
   readonly notes: string;
 }
 
@@ -42,6 +45,7 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: "gh",
     vendorCredPaths: ["~/.config/gh/hosts.yml"],
     flows: ["device-code", "vendor-cli-import"],
+    execution: "local",
     notes: "RFC 8628 device flow live. Import from gh hosts.yml if they already ran `gh auth login`.",
   },
   {
@@ -55,6 +59,7 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: null,
     vendorCredPaths: ["~/.codex/auth.json"],
     flows: ["device-code", "paste-code", "vendor-cli-import", "pkce-localhost"],
+    execution: "local",
     notes: "Device + PKCE live (openai-auth.ts). Codex CLI session is importable as a fallback.",
   },
   {
@@ -68,6 +73,7 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: "codex",
     vendorCredPaths: ["~/.codex/auth.json"],
     flows: ["device-code", "paste-code", "vendor-cli-import", "pkce-localhost"],
+    execution: "local",
     notes: "Same ChatGPT account as openai. `codex login` then `zeta-login import codex` is the no-reverse-engineer path.",
   },
   {
@@ -81,6 +87,7 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: "claude",
     vendorCredPaths: ["~/.config/claude/credentials.json", "~/.claude/.credentials.json"],
     flows: ["paste-code", "vendor-cli-import", "pkce-localhost", "api-key"],
+    execution: "local",
     notes: "No RFC 8628 (Claude Code issue 22992). --no-browser paste-code on their CLI; we import the session until we wire paste-code ourselves.",
   },
   {
@@ -94,6 +101,7 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: "grok",
     vendorCredPaths: ["~/.grok/auth.json"],
     flows: ["device-code", "vendor-cli-import", "pkce-localhost", "api-key"],
+    execution: "local",
     notes: "auth.x.ai advertises device_authorization_endpoint (OIDC). We lack a public client_id, so today: `grok login --device-auth` then import ~/.grok/auth.json.",
   },
   {
@@ -107,6 +115,7 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: "agy",
     vendorCredPaths: ["~/.gemini/oauth_creds.json"],
     flows: ["vendor-cli-import", "pkce-localhost", "api-key"],
+    execution: "local",
     notes: "Gemini CLI is localhost PKCE; Google device-code exists but not for Code Assist scopes. Import oauth_creds.json after `gemini`/`agy` login. Headless they document as API key.",
   },
   {
@@ -120,20 +129,22 @@ export const PROVIDER_ROSTER: readonly ProviderEntry[] = [
     vendorCli: "kiro-cli",
     vendorCredPaths: ["~/.aws/sso/cache/kiro-auth-token.json"],
     flows: ["device-code", "vendor-cli-import", "pkce-localhost", "api-key"],
+    execution: "local",
     notes: "kiro-cli login --use-device-flow is documented for SSH. Import their cache until we own Builder ID / IdC device endpoints.",
   },
   {
     id: "manus",
     displayName: "Manus",
-    loginKind: "api-key-secondary",
-    status: "api-key-only",
+    loginKind: "account-api-key",
+    status: "wired",
     storeAs: "manus",
     aliases: [],
     personaScoped: false,
     vendorCli: null,
     vendorCredPaths: [],
     flows: ["api-key"],
-    notes: "Public API is API key or Team-only Open App OAuth. No personal device grant. API key stays secondary until they ship a user device/OAuth grant.",
+    execution: "remote-only",
+    notes: "Account login IS their API key (no extra per-call billing). Always runs on Manus cloud — Harny cannot give it local Ace/Zeta tools. `harny login manus --from-file`.",
   },
 ];
 

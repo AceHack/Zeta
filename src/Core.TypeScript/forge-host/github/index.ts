@@ -9,7 +9,8 @@ import { GitHubAdapter } from "./github-adapter";
 
 export { GitHubAdapter } from "./github-adapter";
 export { classifyGhError } from "./classify-error";
-export { runGh, runGhJson, runGhGraphQL } from "./gh-cli";
+export { runGh, runGhJson, runGhGraphQL, githubRestRequest, resolveGitHubToken } from "./gh-cli";
+export type { GithubRest } from "./github-pr-rest";
 
 /** Register the GitHub adapter for github.com and self-hosted GitHub instances. */
 registerAdapter(/github/, (owner, repo) => new GitHubAdapter(owner, repo));

@@ -22,19 +22,21 @@ describe("provider roster", () => {
     expect(resolveProvider("openai")?.storeAs).toBe("openai");
   });
 
-  test("wired set is exactly github + the ChatGPT account (openai and its codex alias)", () => {
+  test("wired set is github + ChatGPT/codex + manus api-key", () => {
     const wired = wiredProviders().map((p) => p.id);
-    expect(wired).toEqual(["github", "openai", "codex"]);
+    expect(wired).toEqual(["github", "openai", "codex", "manus"]);
   });
 
   test("uniqueStoreKeys collapses the openai/codex pair", () => {
     expect(uniqueStoreKeys()).toEqual(["github", "openai", "claude", "grok", "gemini", "kiro", "manus"]);
   });
 
-  test("manus is api-key-secondary, not the primary account path", () => {
+  test("manus is an account API key, remote-only — not a local tool loop", () => {
     const m = resolveProvider("manus");
-    expect(m?.loginKind).toBe("api-key-secondary");
-    expect(m?.status).toBe("api-key-only");
+    expect(m?.loginKind).toBe("account-api-key");
+    expect(m?.status).toBe("wired");
+    expect(m?.execution).toBe("remote-only");
+    expect(m?.flows).toEqual(["api-key"]);
   });
 
   test("a missing AuthProvider cannot hide as wired — declared providers stay declared", () => {

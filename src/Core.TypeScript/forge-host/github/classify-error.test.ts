@@ -2,6 +2,12 @@ import { describe, expect, test } from "bun:test";
 import { classifyGhError } from "./classify-error";
 
 describe("classifyGhError", () => {
+  test("HTTP status 401 with a body that does not say 401 is still auth-failure", () => {
+    const classified = classifyGhError(401, "Bad credentials");
+    expect(classified.kind).toBe("auth-failure");
+    expect(classified.retryable).toBe(false);
+  });
+
   test("401 → auth-failure (not retryable)", () => {
     const err = classifyGhError(2, "HTTP 401: Bad credentials");
     expect(err.kind).toBe("auth-failure");

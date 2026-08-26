@@ -97,6 +97,50 @@ describe("zeta-login-cli status / token", () => {
   });
 });
 
+describe("zeta-login-cli manus api-key", () => {
+  test("refuses without --from-file", async () => {
+    const store = memoryTokenStore();
+    const { io, err } = collectIo();
+    expect(await main(["login", "manus"], store, io)).toBe(2);
+    expect(JSON.parse(err.join("\n")).error).toBe("api-key-file-required");
+    expect(await store.load("manus")).toBeNull();
+  });
+
+  test("stores the key and never prints it", async () => {
+    const store = memoryTokenStore();
+    const { io, out } = collectIo();
+    const files = new Map([["/tmp/manus.key", "msk_secret\n"]]);
+    expect(
+      await main(["login", "manus", "--from-file", "/tmp/manus.key"], store, io, {
+        readFile: (p) => {
+          const v = files.get(p);
+          if (v === undefined) return Promise.reject(new Error("missing"));
+          return Promise.resolve(v);
+        },
+      }),
+    ).toBe(0);
+    expect((await store.load("manus"))?.tokens.accessToken).toBe("msk_secret");
+    expect(out.join("\n").includes("msk_secret")).toBe(false);
+  });
+
+  test("status --json marks manus remote-only even after login", async () => {
+    const store = memoryTokenStore();
+    const files = new Map([["/k", "msk_secret"]]);
+    const { io, out } = collectIo();
+    expect(
+      await main(["login", "manus", "--from-file", "/k"], store, io, {
+        readFile: (p) => Promise.resolve(files.get(p) ?? ""),
+      }),
+    ).toBe(0);
+    out.length = 0;
+    expect(await main(["status", "--json"], store, io)).toBe(0);
+    const parsed = JSON.parse(out.join("\n")) as { status: { id: string; loggedIn: boolean; execution: string }[] };
+    const manus = parsed.status.find((r) => r.id === "manus");
+    expect(manus?.loggedIn).toBe(true);
+    expect(manus?.execution).toBe("remote-only");
+  });
+});
+
 describe("zeta-login-cli import", () => {
   test("copies a grok CLI session into our store without an AuthProvider", async () => {
     const store = memoryTokenStore();

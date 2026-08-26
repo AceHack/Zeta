@@ -6,9 +6,13 @@
  */
 
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { homedir } from "node:os";
 import type { Result, ForgeError } from "../types";
 import { ok, err, forgeError } from "../result";
 import { classifyGhError } from "./classify-error";
+import { defaultStoreDir } from "../../model-backend/login-runner.ts";
+import { asGithubAccessToken, parseStoredAccessToken } from "../../model-backend/resolve-stored-token.ts";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 const DEFAULT_TIMEOUT = 30_000; // 30s
@@ -190,58 +194,49 @@ export async function runGhJsonAsync<T>(
 // That host is not an outlier to design around later. It is the one the first user of
 // this tool has, and a guard slower than the unsafe path selects for the unsafe path.
 //
-// So: resolve the token ONCE (one spawn, or zero when `GH_TOKEN`/`GITHUB_TOKEN` is
-// already set, as in CI) and issue the requests with `fetch`. 88 spawns become at most
-// 2. Same credential, same endpoint, same auth semantics — `gh auth token` is exactly
-// what `gh api` would have used.
-//
-// Falls back to the subprocess path whenever a token cannot be resolved, so nothing
-// that works today stops working; the fast path is an optimisation, never a new
-// requirement.
+// Token order (081M100RB9Z087G0R000GWY1MM): OUR store first
+// (`~/.config/zeta/auth/github.json`), then `GH_TOKEN`/`GITHUB_TOKEN`. `gh auth token`
+// is no longer a resolver — that spawn was the thing that made "no gh on PATH" a
+// factory outage. Import a vendor session with `harny import github` if they already
+// ran `gh auth login`.
 
 const GITHUB_API = "https://api.github.com";
 
-let tokenResolved = false;
-let cachedToken: string | null = null;
-
 /**
- * The token `gh api` would use: env first (CI supplies it), then ONE `gh auth token`.
+ * Token for GitHub REST: OUR store first, then env. Never `gh auth token`.
  *
- * `env` IS A SEAM, AND IT EXISTS FOR A REAL REASON, not for tidiness. Before it, the
- * only way to exercise this function was to ASSIGN into `process.env` and restore it
- * in a `finally`. That is a genuine hazard rather than a lint technicality: `process.env`
- * is inherited by every child this process spawns, including the `Bun.spawnSync(["gh",
- * "auth", "token"])` twelve lines below and any other test in the same run that shells
- * out to `gh` — so a test setting `GH_TOKEN = "t1"` hands a fake credential to real
- * subprocesses for as long as the assignment stands, and a crash between the assignment
- * and the `finally` leaves it standing for the rest of the run.
+ * Pure in (env, readStore). No process-lifetime memo — that was ambient state a
+ * later test (or a later env snapshot) could not replay. GitHubAdapter caches
+ * per instance, which is actor state, not a hidden global.
  *
- * Reading the ambient environment is fine and is what CI relies on; WRITING a credential
- * into it is what `hygiene/lint-no-ambient-credential-hoist.ts` refuses. Passing the
- * environment in lets a caller test the resolution order without ever writing one.
+ * `env` and `readStore` are seams so tests never assign into `process.env` (refused
+ * by `hygiene/lint-no-ambient-credential-hoist.ts`) and never hit the real
+ * `~/.config/zeta/auth/github.json`. Empty `GH_TOKEN` is absent — it falls through
+ * to `GITHUB_TOKEN` rather than claiming a token that is not there.
  */
-export function resolveGitHubToken(env: Readonly<Record<string, string | undefined>> = process.env): string | null {
-  if (tokenResolved) return cachedToken;
-  tokenResolved = true;
-  const fromEnv = env["GH_TOKEN"] ?? env["GITHUB_TOKEN"];
-  if (fromEnv !== undefined && fromEnv !== "") {
-    cachedToken = fromEnv;
-    return cachedToken;
+export function resolveGitHubToken(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+  readStore: () => string | null = readGithubStoreToken,
+): string | null {
+  const fromStore = readStore();
+  if (fromStore !== null && fromStore.length > 0) return fromStore;
+  for (const key of ["GH_TOKEN", "GITHUB_TOKEN"] as const) {
+    const raw = env[key];
+    if (typeof raw !== "string") continue;
+    const trimmed = raw.trim();
+    if (trimmed.length > 0) return trimmed;
   }
-  try {
-    const proc = Bun.spawnSync(["gh", "auth", "token"], { stdout: "pipe", stderr: "pipe" });
-    const out = new TextDecoder().decode(proc.stdout).trim();
-    cachedToken = proc.exitCode === 0 && out !== "" ? out : null;
-  } catch {
-    cachedToken = null;
-  }
-  return cachedToken;
+  return null;
 }
 
-/** Reset the memoised token. Tests only — the resolution is process-lifetime otherwise. */
-export function resetGitHubTokenForTest(): void {
-  tokenResolved = false;
-  cachedToken = null;
+/** Sync read of `~/.config/zeta/auth/github.json`. Absent / garbage is null. */
+export function readGithubStoreToken(): string | null {
+  try {
+    const raw = readFileSync(`${defaultStoreDir(homedir())}/github.json`, "utf8");
+    return parseStoredAccessToken(raw);
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -255,26 +250,87 @@ export function isPlainApiGet(args: readonly string[]): boolean {
   return args.length === 2 && args[0] === "api" && typeof args[1] === "string" && !args[1].startsWith("-");
 }
 
-/** `gh api <path>` over `fetch`. `null` ⇒ caller should use the subprocess path. */
-async function fetchGhApi(path: string, timeout: number): Promise<Result<string, ForgeError> | null> {
-  const token = resolveGitHubToken();
-  if (token === null) return null;
-  const url = path.startsWith("http") ? path : `${GITHUB_API}/${path.replace(/^\/+/, "")}`;
+export type GithubFetch = (url: string, init?: RequestInit) => Promise<Response>;
+
+export type GithubRestDoors = {
+  readonly token?: string | null;
+  readonly fetch?: GithubFetch;
+  readonly timeoutMs?: number;
+  /// `null` = no timer (DST tests). omitted = production AbortSignal.timeout.
+  readonly signal?: AbortSignal | null;
+};
+
+/// Relative GitHub REST path → `https://api.github.com/...`. Absolute URLs,
+/// `..`, and backslashes are refused so a token cannot ride to another host
+/// (the CWE-200 shape CodeQL flagged: file-sourced credential + attacker URL).
+export function githubRestUrl(path: string): string | null {
+  if (path.includes("://") || path.includes("\\") || path.includes("..")) return null;
+  const rel = path.replace(/^\/+/, "");
+  if (rel.length === 0 || rel.length > 2048) return null;
+  if (!/^[A-Za-z0-9._~/?#@[\]!$&'()*+,;=%-]+$/.test(rel)) return null;
+  const url = new URL(rel, `${GITHUB_API}/`);
+  if (url.origin !== GITHUB_API) return null;
+  return url.toString();
+}
+
+/**
+ * GitHub REST over `fetch` + our token. No `gh`. Missing token is auth-failure,
+ * not a spawn. Inject `token` / `fetch` in tests so CI's `GITHUB_TOKEN` cannot
+ * leak a real socket into the hermetic tier.
+ */
+export async function githubRestRequest(
+  method: string,
+  path: string,
+  body?: unknown,
+  doors: GithubRestDoors = {},
+): Promise<Result<string, ForgeError>> {
+  const rawToken = doors.token !== undefined ? doors.token : resolveGitHubToken();
+  const token = rawToken === null ? null : asGithubAccessToken(rawToken);
+  if (token === null || token.length === 0) {
+    return err(
+      forgeError(
+        "auth-failure",
+        "no GitHub token in ~/.config/zeta/auth/github.json or GH_TOKEN/GITHUB_TOKEN — run `harny login github` (gh CLI is not a fallback)",
+      ),
+    );
+  }
+  const url = githubRestUrl(path);
+  if (url === null) {
+    return err(forgeError("internal", "refusing a GitHub REST path that is not under https://api.github.com"));
+  }
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  headers.set("Accept", "application/vnd.github+json");
+  headers.set("X-GitHub-Api-Version", "2022-11-28");
+  headers.set("User-Agent", "zeta-forge-host");
+  const init: RequestInit = { method, headers };
+  if (body !== undefined) {
+    headers.set("Content-Type", "application/json");
+    init.body = JSON.stringify(body);
+  }
+  if (doors.signal === null) {
+    /* DST tests: no AbortSignal.timeout */
+  } else if (doors.signal !== undefined) {
+    init.signal = doors.signal;
+  } else {
+    init.signal = AbortSignal.timeout(doors.timeoutMs ?? DEFAULT_TIMEOUT);
+  }
+  const fetchImpl = doors.fetch ?? fetch;
   try {
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "zeta-drift-dashboard",
-      },
-      signal: AbortSignal.timeout(timeout),
-    });
-    const body = await res.text();
-    if (!res.ok) return err(classifyGhError(res.status, body));
-    return ok(body);
+    const res = await fetchImpl(url, init);
+    const text = await res.text();
+    if (!res.ok) return err(classifyGhError(res.status, text));
+    return ok(text);
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return err(forgeError("network", `fetch ${url}: ${msg}`));
   }
+}
+
+/** `gh api <path>` over `fetch`. `null` ⇒ caller should use the subprocess path. */
+async function fetchGhApi(path: string, timeout: number): Promise<Result<string, ForgeError> | null> {
+  const token = resolveGitHubToken();
+  if (token === null) return null;
+  const result = await githubRestRequest("GET", path, undefined, { token, timeoutMs: timeout });
+  return result;
 }
