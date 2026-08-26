@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-26
 **Author:** shadow (autonomous tick)
-**Status:** one job proven, fleet not migrated, nothing demoted
+**Status:** one job proven **green in CI** (run 32956629464, §5.0), fleet not migrated, nothing demoted
 **Register:** every claim below is labelled `metered` (measured here, with the query stated), `consistent with` (observed, not isolated), or `speculative` (a projection nobody has run).
 
 ---
@@ -197,6 +197,30 @@ The one real loss, stated plainly: **a containerized job no longer proves that `
 
 **Why the payload runs via `docker run` rather than a job-level `container:`.** A job-level `container:` needs a registry-resolvable image *before the job starts*, and no image is published yet — the first publish happens when this lands on `main`. Making the proof depend on that would be a check that cannot run on the PR that introduces it. `docker run` with the workspace mounted is operationally identical to what `container:` does (image carries the toolchain, job carries the source), so the proof transfers to the cutover without changing shape.
 
+### 5.0 IT RAN, AND HERE IS WHAT IT SAID
+
+`metered` — run **32956629464**, job `ci-runtime image (build + one-job proof + toolchain drift)`, **conclusion `success`**, 2026-08-26T10:07:54Z → 10:11:06Z:
+
+| step | outcome | wall |
+|---|---|---|
+| negative control | `control: bun is absent from the bare runner, as required.` then `control: the payload failed on the bare runner.` | 1 s |
+| image build, **cold and uncached** | success | **181 s** |
+| the payload, inside the image, no install step | `proof: the payload is green inside the image and red outside it.` | **~1 s** |
+| toolchain drift | `EXIT 0 — every one of the 18 mise-managed pins is satisfied by this runtime.` | <1 s |
+| the checker's own 16 falsifiers, inside the image | success | <1 s |
+
+So the claim in the title of this section is not a design intention: the same command that **fails on a bare runner** **passes inside the image**, on the same commit, in the same job, ninety seconds apart. The negative control was not vacuous — `bun` is genuinely absent from `ubuntu-24.04`.
+
+**And the number that matters most is the uncomfortable one.** `docker image inspect .Size` on the built image:
+
+```
+extracted_bytes = 6,253,608,609        (6.25 GB extracted)
+```
+
+That is the **slim** tier. It is not a small image, and it is exactly the figure §6.4 says is missing from the pull-cost arithmetic — except it is the *extracted* size, and what crosses the wire is the *compressed* size, which is still unmeasured because nothing has been pushed. **Do not divide 6.25 GB by a guessed compression ratio and call it a pull time.** This repo already has a doc-length note (`image-pull-measurement.yml`) about exactly that error: an aggregate ratio standing in for the decisive number. The first `main` publish produces the real one.
+
+What 181 s of cold build does establish: rebuilding the image is cheap enough that a per-`main`-push rebuild on the input paths is not a cost worth optimising, and the drift check therefore runs against a genuinely fresh materialization rather than a stale one.
+
 ### 5.1 The cutover, for when a digest exists
 
 Once `main` has published one, `memory-reference-existence-lint.yml` becomes:
@@ -262,7 +286,7 @@ So the time arithmetic is honestly:
 saving per job  =  install_seconds  −  pull_seconds
 ```
 
-and `pull_seconds` is **unmeasured** until the image publishes. `speculative`: a slim image is likely in the low single-digit GB compressed and GHCR-to-Azure throughput is high, so the pull plausibly lands well under the 115 s mean install — but that is a projection, not a result. The workflow prints extracted size, layer count, and post-build disk on every run specifically so the first `main` build replaces this paragraph with a number. `image-pull-measurement.yml` already exists in this repo for exactly this kind of question and is the right instrument to point at the published digest.
+and `pull_seconds` is **unmeasured** until the image publishes. `speculative`: a slim image is likely in the low single-digit GB compressed and GHCR-to-Azure throughput is high, so the pull plausibly lands well under the 115 s mean install — but that is a projection, not a result. The workflow prints extracted size, layer count, and post-build disk on every run specifically so the first `main` build replaces this paragraph with a number — the extracted half has already arrived (**6.25 GB**, §5.0) and it is large enough that the compressed figure is now the single most decision-relevant unknown in this document. `image-pull-measurement.yml` already exists in this repo for exactly this kind of question and is the right instrument to point at the published digest.
 
 What is **not** speculative, and is the stronger part of the case:
 
@@ -293,6 +317,8 @@ flake.lock   ABSENT
 
 `grep -n "dockerTools\|streamLayeredImage\|buildLayeredImage" flake.nix` → **no matches** (exit 1).
 
+**Already being fixed, independently, by someone else** — PR **#15573**, *"build(nix): commit a flake.lock for the root flake — four of six inputs were floating"*, open at the time of writing. That is a better outcome than this document proposing it: two agents reached the same gap from opposite directions on the same day, which is the kind of independent corroboration the repo's decorrelation argument is actually about. **Recorded, not claimed.** The paragraph below stands as the reasoning; the action is theirs.
+
 **`flake.lock` being absent is the highest-leverage reproducibility gap in the repo, and it has nothing to do with containers.** Without a lock, the flake resolves `nixpkgs` at evaluation time, so the dev shell it produces is a function of *when you ran it*. That is the same mutable-upstream problem `apt` has, in the one part of the tree that exists to not have it. `flake.nix` is referenced by `gate.yml` and `build-ai-cluster-iso.yml`, so this is not a dormant file.
 
 Committing a lock is a small, self-contained change that improves determinism whether or not anything is ever containerized. I did not do it here — it belongs in its own PR with its own evaluation, not smuggled into a container change.
@@ -317,8 +343,19 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 2. **`slim` only, or `full` too?** Recommendation: slim only until the pull cost is measured. `full` serves seven low-frequency lanes and would be a much larger artifact.
 3. **§4.1 — put the install shields on a schedule?** This is the half that pays for containerizing the portable jobs. Without it, the incidental "install.sh still works on a fresh runner" coverage that 48 install steps provide today goes away with nothing replacing it.
 4. **Is `ubuntu-slim` container-capable?** `low-memory` is the highest-value single target measured (298 s mean install against a 15-minute cap, and it deliberately never saves a toolchain cache). Someone with access needs to run `docker version` on that runner class.
-5. **`flake.lock` (§7.1).** Independent of everything else here, small, and it closes a real determinism gap in a file CI already references.
-6. **The `lint-clone-at-tag-is-sufficient.ts` collision.** Its `RESOLVER_INVOCATION` regex matches `ace\s+bootstrap`, and `-` is a word boundary — so the phrase **"pre-ace bootstrap"**, which is now the repo's own name for the seed layer, reads as a resolver invocation on any non-comment line of a bootstrap surface. I hit this and worked around it by rewording a step name rather than weakening the lint. The vocabulary and the guard now collide; that is worth a decision rather than a series of quiet reworsings.
+5. **`flake.lock` (§7.1)** — already in flight as **#15573**. Nothing to decide unless you want it prioritised.
+6. **The `lint-clone-at-tag-is-sufficient.ts` collision.** Its `RESOLVER_INVOCATION` regex matches `ace\s+bootstrap`, and `-` is a word boundary — so the phrase **"pre-ace bootstrap"**, which is now the repo's own name for the seed layer, reads as a resolver invocation on any non-comment line of a bootstrap surface. I hit this and worked around it by rewording a step name rather than weakening the lint. The vocabulary and the guard now collide; that is worth a decision rather than a series of quiet rewordings.
+7. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
+
+   | audit | how it decided this job was in scope | verdict |
+   |---|---|---|
+   | `apt-archive-cache.ts` | any line of the job body containing `tools/setup/install.sh` — **step names included** | false positive |
+   | `audit-install-tier-declared.ts` | same | false positive |
+   | `audit-apt-budget-fits-job-timeout.ts` | follows the `dockerfiles/*/Dockerfile` reference in the `run:` block, **reads the Dockerfile**, finds the installer inside it, and correctly sets `kind = "local"` because `docker build` passes no `GITHUB_ACTIONS` into the container | **correct** |
+
+   The third one is a genuinely good detector and it was right about this job, so it got the sanctioned treatment: an entry in `apt-job-timings.measured.json`'s `unmeasured` list carrying the real measurement (181 s cold build against a 2700 s cap).
+
+   The first two matched a **step name**. Their own header says the regex is applied to `run:` invocations; it is applied to the whole job body. The correct fix here was a step name that does not restate a path this step never invokes — **not** an inert cache step (the runner's apt archives are invisible to a `docker build`; restoring them would be the vacuity class exactly) and **not** a lint exemption. But as more jobs become containerized, "mentions the installer" and "runs the installer on this runner" diverge further, and the third audit already shows what the right predicate looks like. Not fixed here — it is the cache lane's file and I stayed off it.
 
 ---
 
@@ -327,7 +364,7 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 Stated so a green here is not read as coverage it does not have:
 
 - **The exit-124 reports.** Not reproduced in my window (§6.2). `consistent with` the in-tree record; not `metered` by me.
-- **Pull time and image size.** Unmeasured. No image has been built — there is no Docker daemon on this host, so the Dockerfile has never executed anywhere. **The first CI run of `ci-runtime-image.yml` is the first time it is exercised at all**, and it may well need iteration.
+- **Pull time.** Still unmeasured, and it is the number the whole time-saving argument turns on. The image now has a measured **extracted** size — 6.25 GB, §5.0 — but nothing has been pushed, so the **compressed** size that actually crosses the wire is unknown and must not be derived from a compression ratio (`image-pull-measurement.yml` exists because that error was made before). ~~No image has been built~~ — superseded: it built and ran green in CI on this PR; see §5.0.
 - **Whether `ubuntu-slim` has a container runtime.**
 - **Whether CodeQL's action tolerates a job-level `container:`.**
 - **The "~69 GiB/hour of writes against a 9.31 GiB ceiling, 23 GiB evicted in 61-second sweeps, 80% of evicted bytes never read" cache figures** I was handed. I measured the *standing* number instead (22.34 GB active across 40 caches, §6.3). The rate figures are another agent's lane and I did not re-derive them.

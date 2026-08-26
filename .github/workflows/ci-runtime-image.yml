@@ -118,12 +118,24 @@ jobs:
           fi
           echo "control: the payload failed on the bare runner. The image is what will make it pass."
 
-      # The step NAME deliberately avoids the phrase this repo now uses for the seed layer:
-      # `lint-clone-at-tag-is-sufficient.ts`'s RESOLVER_INVOCATION regex matches
-      # `ace\s+bootstrap`, and `-` is a word boundary, so "pre-ace bootstrap" reads as a
-      # resolver call on any non-comment line. Reported in the design doc rather than
-      # worked around by weakening the lint.
-      - name: Build the CI runtime image (seed layer + tools/setup/install.sh)
+      # TWO NAMING CONSTRAINTS MEET ON THIS ONE LINE, and both are real rather than
+      # cosmetic — recorded here so a later edit does not reintroduce either.
+      #
+      # 1. `lint-clone-at-tag-is-sufficient.ts`'s RESOLVER_INVOCATION matches
+      #    `ace\s+bootstrap`, and `-` is a word boundary, so the phrase this repo now
+      #    uses for the seed layer reads as a resolver call on any non-comment line.
+      # 2. `apt-archive-cache.ts` and `audit-install-tier-declared.ts` put a job IN SCOPE
+      #    when ANY line of its body contains the installer's path — step names included,
+      #    not just `run:` invocations. This job does NOT run the installer on the runner;
+      #    `docker build` runs it inside the image, where the runner's apt archive cache
+      #    and `ZETA_HOST_TIER` are both invisible (the container has its own filesystem,
+      #    and the tier is declared as `ENV ZETA_HOST_TIER=slim` in the Dockerfile).
+      #    Adding a cache step here would restore archives nothing can read — the vacuity
+      #    class exactly. So the correct fix is a step name that does not restate a path
+      #    this step does not invoke, NOT an inert cache step and NOT a lint exemption.
+      #    The over-broad predicate is reported in the design doc for the cache lane's
+      #    owner; it is not worked around by weakening either audit.
+      - name: Build the CI runtime image (the installer runs inside the build)
         env:
           # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN so release-metadata lookups
           # authenticate (1000/hr) instead of 403-ing anonymously (60/hr). Passed as a

@@ -1317,7 +1317,7 @@
     },
     {
       "key": "arc-lane.yml:arc-tests",
-      "reason": "MEASURED 2026-08-25: this workflow is INTRODUCED in the same change that adds this row, so it has run zero times and there is no history to sample. Falls back to the weak pre-apt bound: 420 (ci apt budget) + 10 (apt_kill_after) + 120 (PRE_APT_RESERVE_SECONDS) = 550s, which its 900s (`timeout-minutes: 15`) satisfies with room. UNLIKE THE OTHER TWO ROWS HERE, THIS ONE IS TEMPORARY AND SHOULD NOT SURVIVE. scaffold-stage1-create-repos is `workflow_dispatch:`-only and tlaps-proof has not been green in weeks, so neither will accumulate samples on its own; this job runs on every PR touching `src/Arc.Python/**` and on pushes to main, so it starts producing successful runs immediately. Refresh it into `jobs` with `bun src/Core.TypeScript/hygiene/refresh-apt-job-timings.ts` once it has history, and delete this row \u2014 leaving it would be an unmeasured hole kept open by nothing but inertia."
+      "reason": "MEASURED 2026-08-25: this workflow is INTRODUCED in the same change that adds this row, so it has run zero times and there is no history to sample. Falls back to the weak pre-apt bound: 420 (ci apt budget) + 10 (apt_kill_after) + 120 (PRE_APT_RESERVE_SECONDS) = 550s, which its 900s (`timeout-minutes: 15`) satisfies with room. UNLIKE THE OTHER TWO ROWS HERE, THIS ONE IS TEMPORARY AND SHOULD NOT SURVIVE. scaffold-stage1-create-repos is `workflow_dispatch:`-only and tlaps-proof has not been green in weeks, so neither will accumulate samples on its own; this job runs on every PR touching `src/Arc.Python/**` and on pushes to main, so it starts producing successful runs immediately. Refresh it into `jobs` with `bun src/Core.TypeScript/hygiene/refresh-apt-job-timings.ts` once it has history, and delete this row — leaving it would be an unmeasured hole kept open by nothing but inertia."
     },
     {
       "key": "interp-lane.yml:interp-tests",
@@ -1330,6 +1330,10 @@
     {
       "key": "tlaps-proof.yml:prove",
       "reason": "MEASURED 2026-08-22: the last 40 runs are 33 `cancelled` + 7 `failure`; the most recent SUCCESS is run 28550177205 on 2026-07-01, outside the sampling window. Measuring a cancelled run would measure the kill, not the work. That the lane has not been green in seven weeks is a separate finding and is NOT what this audit is for; recorded here so it is not lost. Falls back to the weak pre-apt bound, which its 3600s timeout satisfies with room."
+    },
+    {
+      "key": "ci-runtime-image.yml:image",
+      "reason": "MEASURED 2026-08-26, and the measurement is of the FIRST run rather than a sample: this job was introduced in the change that adds this row, so there is no history to fold. The audit classifies it correctly and structurally -- it follows the Dockerfile reference and sees `tools/setup/install.sh` inside it, so `kind = local` (1800s budget, because `docker build` passes no GITHUB_ACTIONS into the container). Run 32956629464, job `ci-runtime image (build + one-job proof + toolchain drift)`: the whole cold, uncached `docker build` -- seed apt layer plus the entire slim install -- measured 181s wall (10:08:03Z -> 10:11:04Z) against `timeout-minutes: 45` (2700s), i.e. ~15x headroom, and the apt phase is a fraction of that 181s. The 45 minutes is a RUNAWAY CAP priced off the sibling docker-ubuntu-install-sh-test lane, not an expectation. Replace this row with a sampled entry via `refresh-apt-job-timings.ts` once the job has run enough times to fold."
     }
   ]
 }
