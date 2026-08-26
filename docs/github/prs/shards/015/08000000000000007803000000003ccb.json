@@ -1,0 +1,12 @@
+{
+  "pr_number": 15563,
+  "archive_path": "docs/history/pr-reviews/PR-15563-research-ci-instrument-the-restore-side-84-hit-a-poisoned-entry-hit-6-of-6-runs-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:49:38.162Z",
+  "schema_version": "v1",
+  "commit_sha": "a6ad1bed1b183894a70fe9175296b40f8ba7829f",
+  "title": "research(ci): instrument the RESTORE side — 84% hit, a poisoned entry hit 6 of 6 runs, and a cold-key stampede",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:49:05Z",
+  "head_ref": "shadow/actions-cache-restore-side-instrumented"
+}

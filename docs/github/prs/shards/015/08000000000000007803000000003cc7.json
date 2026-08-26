@@ -1,0 +1,12 @@
+{
+  "pr_number": 15559,
+  "archive_path": "docs/history/pr-reviews/PR-15559-fix-ci-finish-the-two-writers-one-key-fix-net-sdk-cache-goes-restore-only-in-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:43:50.696Z",
+  "schema_version": "v1",
+  "commit_sha": "d9035608c836b10c19e09732c4d35f4cab40e012",
+  "title": "fix(ci): finish the two-writers-one-key fix — .NET SDK cache goes restore-only in the slim lane",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:43:13Z",
+  "head_ref": "shadow/dotnet-cache-restore-only-slim-lane-v2"
+}
