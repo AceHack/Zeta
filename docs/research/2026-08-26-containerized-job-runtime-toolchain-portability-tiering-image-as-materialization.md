@@ -329,6 +329,33 @@ Any one of those and the proposal should shrink to the lanes where reliability a
 
 A 0/105 sample does not exclude a tail event that the tree records happening. **Both belong here.** The install is not usually broken; it is occasionally, expensively, and unpredictably broken — which is precisely a variance problem and precisely what a single mean would hide.
 
+#### The strongest evidence for the variance thesis arrived by accident
+
+While landing this work, a **YAML-only change** — seven `schedule:` keys added to install shields, not one line of code — went red on `build-and-test (ubuntu-24.04)`, which is in the `gate (required)` floor. The failing assertion:
+
+```
+Zeta.Tests.Storage.ColumnLinearOpsTests.ColumnLinear vectorized filter is measurably faster on unpredictable data [FAIL]
+  vectorised filter should be >= 1.5x the scalar filter on 1000000 unpredictable keys at 50%
+  selectivity, measured 0.93x (scalar 6.960 ms, vector 7.463 ms, Vector<int64>.Count = 4).
+```
+
+That is a **wall-clock ratio assertion inside the one blocking check**. Two things make it worth recording here rather than shrugging off as a flake:
+
+**1. It is outside its author's own flake model.** The test's comment anticipates flaking and says where: *"the DEBUG margin is thinner … If this flakes on a loaded runner it will flake in Debug first, and the fix is to skip it in Debug rather than to lower it further — a gate below ~1.05 could not tell a vector path from a scalar one and would be a check that cannot fail."* This failed in **Release**, at **0.93x**, against a stated normal of 3.45x and a bypassed-path signature of ~1.02x. So the observation is neither "healthy" nor "vector path bypassed" — it is off the map the test was designed around, and **the test cannot distinguish a contended runner from a real regression.** A re-run is the only discriminator, which is the definition of a non-deterministic gate.
+
+**2. The blocking leg is the noisiest thing in CI, and it is measured.** `data/platform-drift.json`, as of 2026-08-26T10:05Z, over 500 push runs (134 executed, 366 cancelled — 26.8% coverage):
+
+| leg | classification | failures / executed | rate | last failure blocked a merge? |
+|---|---|---|---|---|
+| **`build-and-test (ubuntu-24.04)`** | **blocking** | **17 / 134** | **12.7%** | **yes** |
+| `build-and-test (macos-26)` | non-blocking | 1 / 134 | 0.75% | no |
+
+**The leg that blocks merges fails at roughly 17× the rate of the leg that was demoted for being "a quiet leg holding gate authority."** That inversion is the tiering rule's own argument turned on the floor: portability decided which jobs *may* be gates, and nobody has since asked whether the surviving gate is *reliable enough to be one*.
+
+This is `consistent with` — not proof of — the thesis in this section: the expensive failures in this repo are variance, not means, and they land in the places that block. It is included because it is a measurement I did not go looking for, on a change that could not have caused it.
+
+**Out of scope here, and named rather than fixed:** the timing assertion is not mine, `ColumnLinearOps.Tests.fs` is not touched by either PR, and re-running was the correct response to an unrelated red. Whether a wall-clock ratio belongs in the blocking floor at all is a floor question — §8.
+
 #### What is now measured, and what still is not
 
 `metered` — the **wire size** is no longer a guess. `image-wire-size.ts` pushes the built image to a throwaway local `registry:2` and reads the manifest the registry itself produces, summing `config.size + layers[].size`. That is the exact byte count a `docker pull` moves. It is not the 6.25 GB extracted figure divided by a ratio, and the script **refuses** an OCI index rather than summing it to zero — the repo has been bitten before by an aggregate compression ratio standing in for the decisive number (`image-pull-measurement.yml`'s own header says so).
@@ -459,7 +486,8 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 5. **`flake.lock` (§7.1)** — already in flight as **#15573**. Nothing to decide unless you want it prioritised.
 6. **The `lint-clone-at-tag-is-sufficient.ts` collision.** Its `RESOLVER_INVOCATION` regex matches `ace\s+bootstrap`, and `-` is a word boundary — so the phrase **"pre-ace bootstrap"**, which is now the repo's own name for the seed layer, reads as a resolver invocation on any non-comment line of a bootstrap surface. I hit this and worked around it by rewording a step name rather than weakening the lint. The vocabulary and the guard now collide; that is worth a decision rather than a series of quiet rewordings.
 7. **The ARC runner scale set is declared and has never run** (§6.4a). `zeta-self-hosted` is org-wide, self-healing, `minRunners: 1` — and **0 runners are registered with GitHub**, blocked by an already-filed P2 (`081M0JM6SSG087G0R0029X3F6Z`: the runner pod mounts a PVC nothing applies). Separately, as declared it would **not** give a warm layer cache: `containerMode: dind` with no persistent docker data root means every job still pays a full pull. Whether to fix and adopt it is infrastructure and yours; nothing here touches it.
-8. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
+8. **A wall-clock ratio assertion sits in the blocking floor** (§6.4). `build-and-test (ubuntu-24.04)` fails at **12.7%** (17/134 executed runs) — **17× the demoted macOS leg's 0.75%** — and at least one contributor is a SIMD speedup test that asserts `>= 1.5x` measured wall time. It went red on a YAML-only change during this work. Options: skip it under contention, move it to a benchmark lane, or accept the rate. Not fixed here; not my file.
+9. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
 
    | audit | how it decided this job was in scope | verdict |
    |---|---|---|
