@@ -60,10 +60,27 @@ const SRC = readFileSync(INSTALL_SH, "utf8");
 const REQUIRED = process.env.ZETA_REPAIR_LOOPBACK_REQUIRED === "1";
 
 /** Run a command and return status + output. Never through a pipe: `$?` after
- *  a pipe is the LAST command's status, which is how a failure reads as a pass. */
+ *  a pipe is the LAST command's status, which is how a failure reads as a pass.
+ *
+ *  A child that was KILLED, or that never spawned, comes back from `spawnSync`
+ *  with `status === null` and — because it never got to run — an EMPTY stderr.
+ *  Collapsing that to `-1` and reporting `stderr` verbatim is how the message
+ *  `sfdisk failed: ` reached CI fifteen times: a failure naming no cause, which
+ *  is a report that did not report. `describeSpawn` puts the signal or the spawn
+ *  error back, so the next reader gets a diagnosis instead of a blank. */
+function describeSpawn(cmd: string, r: ReturnType<typeof spawnSync>): string | null {
+  if (r.status !== null && r.status !== undefined) return null;
+  if (r.signal) return `${cmd} was killed by ${r.signal} (it produced no exit status)`;
+  if (r.error) return `${cmd} could not be spawned: ${r.error.message}`;
+  return `${cmd} returned no exit status and no signal`;
+}
+
 function run(cmd: string, args: readonly string[], opts: { input?: string } = {}) {
   const r = spawnSync(cmd, [...args], { encoding: "utf8", input: opts.input });
-  return { status: r.status ?? -1, stdout: String(r.stdout ?? ""), stderr: String(r.stderr ?? "") };
+  const spawnFailure = describeSpawn(cmd, r);
+  const raw = String(r.stderr ?? "");
+  const stderr = spawnFailure === null ? raw : raw === "" ? `<${spawnFailure}>` : `${raw}\n<${spawnFailure}>`;
+  return { status: r.status ?? -1, stdout: String(r.stdout ?? ""), stderr };
 }
 
 function have(tool: string): boolean {
@@ -208,12 +225,46 @@ function sha256OfPartition(): string {
   return r.stdout.trim().split(/\s+/)[0]!;
 }
 
+/** Why this hook carries an explicit timeout, and why the number is this one.
+ *
+ *  MEASURED, not guessed. Across the 90 `installer-unit-tests` runs between
+ *  2026-08-24T10:58Z and 2026-08-26T22:01Z in which this file actually
+ *  executed, `beforeAll` took:
+ *
+ *      75 runs that PASSED   min 0.76s   median 2.61s   max 4.94s
+ *      15 runs that FAILED   min 5.08s   median 6.90s   max 7.69s
+ *
+ *  There is no overlap. The cut sits at exactly 5.00s, which is bun's DEFAULT
+ *  hook timeout — so every one of those 15 reds was this hook being killed
+ *  mid-`sfdisk`, not a defect in the installer. Bun said so itself in each log
+ *  ("killed 1 dangling process", "a beforeEach/afterEach hook timed out"), but
+ *  the kill landed inside a `spawnSync`, so what the reader SAW was
+ *  `error: sfdisk failed:` with an empty reason — which is why this cost four
+ *  sessions before anyone looked at the timestamps. 15/90 = 16.7% of runs, and
+ *  the slowest PASSING run cleared the default by 60ms.
+ *
+ *  The work here is genuinely slow and genuinely I/O-bound on a shared runner:
+ *  a GPT write, TWO `mkfs.ext4`, four mounts, several `tee`s and a `sync`. It
+ *  is not 5 seconds of computation that regressed; it is 2-5 seconds of disk
+ *  that occasionally waits on a noisy neighbour. So the default is simply the
+ *  wrong bound for it.
+ *
+ *  120s is chosen to be far above the observed 7.69s worst case — this is a
+ *  HANG detector, not a performance budget, and a bound that merely doubles the
+ *  worst case would buy back the same flake at a lower rate. The job's own
+ *  `timeout-minutes: 12` remains the real ceiling; this bound exists so that a
+ *  true hang still fails HERE, naming this hook, rather than as an unattributed
+ *  job-level kill. The nine legs below are left on the default deliberately:
+ *  the slowest ever observed is 948ms, so they have 5x headroom already and
+ *  raising them would only hide a real hang. */
+const DISK_SETUP_TIMEOUT_MS = 120_000;
+
 beforeAll(() => {
   if (!CAN_RUN) return;
   workdir = mkdtempSync(join(tmpdir(), "zeta-repair-"));
   writeFileSync(join(workdir, "installer-blocks.sh"), extractBlocks(), "utf8");
   buildExistingInstall();
-});
+}, DISK_SETUP_TIMEOUT_MS);
 
 afterAll(() => {
   if (loopDev !== "") run("sudo", ["losetup", "-d", loopDev]);
@@ -224,7 +275,7 @@ afterAll(() => {
       /* the loop image may be root-owned; the runner is ephemeral */
     }
   }
-});
+}, DISK_SETUP_TIMEOUT_MS);
 
 describe("environment", () => {
   test("the loopback path is not silently skipped in CI", () => {
@@ -241,6 +292,37 @@ describe("environment", () => {
       );
     }
     expect(true).toBe(true);
+  });
+
+  // ── the falsifiers for `run`'s spawn-level reporting ───────────────────
+  // These are deliberately OUTSIDE the CAN_RUN gate: they need no loop device,
+  // no root and no Linux, so they run on the maintainer's mac too. Each one
+  // fails against the pre-2026-08-26 `run`, which reported both cases as an
+  // empty string.
+
+  test("a KILLED child names its signal instead of reporting an empty reason", () => {
+    // Exactly the CI shape: bun's hook timeout kills the in-flight child, so
+    // spawnSync returns status===null with nothing on stderr. The old helper
+    // turned that into `<cmd> failed: ` — a failure naming no cause.
+    const r = run("sh", ["-c", "kill -9 $$"]);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain("SIGKILL");
+    expect(r.stderr).not.toBe("");
+  });
+
+  test("an UNSPAWNABLE command names the spawn error instead of an empty reason", () => {
+    const r = run("zeta-no-such-binary-should-ever-exist", []);
+    expect(r.status).not.toBe(0);
+    expect(r.stderr).toContain("could not be spawned");
+    expect(r.stderr).not.toBe("");
+  });
+
+  test("an ordinary non-zero exit is left ALONE — the annotation is only for status-less children", () => {
+    // Guard against the fix over-reaching: a command that really ran and really
+    // failed must keep its own stderr, unannotated.
+    const r = run("sh", ["-c", "echo real-message >&2; exit 3"]);
+    expect(r.status).toBe(3);
+    expect(r.stderr.trim()).toBe("real-message");
   });
 });
 
