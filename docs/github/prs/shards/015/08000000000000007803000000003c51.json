@@ -1,0 +1,12 @@
+{
+  "pr_number": 15441,
+  "archive_path": "docs/history/pr-reviews/PR-15441-feat-free-time-allocation-is-a-residual-uncertainty-not-a-constant-and-the-10-wa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:46:50.468Z",
+  "schema_version": "v1",
+  "commit_sha": "b66e5e791d951b9e3e2eaa57c92ebf3ad429c2b9",
+  "title": "feat(free-time): allocation is a residual uncertainty, not a constant — and the 10% was only ever a TLA constant nothing reads",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:41:02Z",
+  "head_ref": "free-time-allocation-uncertainty"
+}

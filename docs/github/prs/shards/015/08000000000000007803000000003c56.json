@@ -1,0 +1,12 @@
+{
+  "pr_number": 15446,
+  "archive_path": "docs/history/pr-reviews/PR-15446-fix-free-time-fta-5-was-the-vacuity-class-an-ambient-clock-passed-it-measured-no.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T22:11:12.955Z",
+  "schema_version": "v1",
+  "commit_sha": "d65a8f85c7ea08637e8c57de9c86380bd79654e9",
+  "title": "fix(free-time): FTA-5 was the vacuity class — an ambient clock passed it, measured not argued",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T22:10:38Z",
+  "head_ref": "fix-fta5-vacuous-self-comparison"
+}

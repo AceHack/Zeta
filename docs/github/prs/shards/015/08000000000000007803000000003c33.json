@@ -1,0 +1,12 @@
+{
+  "pr_number": 15411,
+  "archive_path": "docs/history/pr-reviews/PR-15411-feat-security-launchd-control-behind-a-port-path-resolved-launchctl-was-forgeabl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:42:21.939Z",
+  "schema_version": "v1",
+  "commit_sha": "d26ac5663d286d03378b5df938f8879b1947c69d",
+  "title": "feat(security): launchd control behind a port — PATH-resolved `launchctl` was forgeable at 10 sites",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:41:42Z",
+  "head_ref": "path-resolver-privileged"
+}

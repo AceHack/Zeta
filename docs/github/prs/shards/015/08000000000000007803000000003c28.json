@@ -1,0 +1,19 @@
+{
+  "pr_number": 15400,
+  "archive_path": "docs/history/pr-reviews/PR-15400-feat-heartbeat-a-second-tick-source-on-non-github-compute-and-the-watchdog-that-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7l0Mse",
+    "comment:PRRC_kwDOSF9kNM7l0q0D",
+    "comment:PRRC_kwDOSF9kNM7l0qzr",
+    "thread:PRRT_kwDOSF9kNM6cLa-H",
+    "thread:PRRT_kwDOSF9kNM6cLvD9",
+    "thread:PRRT_kwDOSF9kNM6cLvDu"
+  ],
+  "fetched_at": "2026-08-25T19:35:30.876Z",
+  "schema_version": "v1",
+  "commit_sha": "24b5fe9fb66270bc3d04119253ef70c9b23e3e1f",
+  "title": "feat(heartbeat): a second tick source on non-GitHub compute, and the watchdog that could not see one",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:33:38Z",
+  "head_ref": "feat/second-tick-source-off-github"
+}

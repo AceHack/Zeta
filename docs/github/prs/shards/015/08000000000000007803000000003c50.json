@@ -1,0 +1,15 @@
+{
+  "pr_number": 15440,
+  "archive_path": "docs/history/pr-reviews/PR-15440-fix-ci-one-apt-wall-budget-failure-wore-six-job-names-auto-rerun-that-signature-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7l7x6k",
+    "thread:PRRT_kwDOSF9kNM6cQaHc"
+  ],
+  "fetched_at": "2026-08-25T22:41:34.826Z",
+  "schema_version": "v1",
+  "commit_sha": "45eec005636326dbd11591d54665dc0235a0d345",
+  "title": "fix(ci): one apt wall-budget failure wore six job names — auto-rerun that signature and nothing else",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T22:40:58Z",
+  "head_ref": "claim/081M0XC0CYN087G0R002DXY5SV-rerun-toolchain-install-stall"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15448,
+  "archive_path": "docs/history/pr-reviews/PR-15448-close-drift-record-publication-recovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T22:42:14.878Z",
+  "schema_version": "v1",
+  "commit_sha": "ea15c4469df896600ee78f87d0f4c5f7b20c6500",
+  "title": "close(drift): record publication recovery",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T22:41:40Z",
+  "head_ref": "claim/081M0QPZ-drift-publication-closeout"
+}

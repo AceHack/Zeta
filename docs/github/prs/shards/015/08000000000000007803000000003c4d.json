@@ -1,0 +1,12 @@
+{
+  "pr_number": 15437,
+  "archive_path": "docs/history/pr-reviews/PR-15437-research-math-the-second-e8-route-is-a-count-not-a-construction-route-table-for-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:28:38.705Z",
+  "schema_version": "v1",
+  "commit_sha": "2adfc78556e2607c47c8237d82fe74bf71ef051b",
+  "title": "research(math): the second E8 route is a count, not a construction — route table for six in-tree roads to E8",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:27:56Z",
+  "head_ref": "soraya/e8-route-table-triage"
+}

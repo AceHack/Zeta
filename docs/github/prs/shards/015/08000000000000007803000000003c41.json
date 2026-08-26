@@ -1,0 +1,12 @@
+{
+  "pr_number": 15425,
+  "archive_path": "docs/history/pr-reviews/PR-15425-fix-ci-my-audit-froze-the-drift-dashboard-for-13-hours-no-ids-is-not-no-input.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T20:06:47.543Z",
+  "schema_version": "v1",
+  "commit_sha": "c1c14ed3fc5d7a574b59b5e520f1cd4eae58b9cc",
+  "title": "fix(ci): my audit froze the drift dashboard for 13 hours — \"no ids\" is not \"no input\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T20:06:13Z",
+  "head_ref": "fix/ah006-empty-vs-no-ids"
+}

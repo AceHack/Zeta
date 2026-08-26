@@ -1,0 +1,12 @@
+{
+  "pr_number": 15422,
+  "archive_path": "docs/history/pr-reviews/PR-15422-book-thread-there-were-5-6-involuntary-commitments-not-one-and-the-first-was-cau.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T22:03:27.319Z",
+  "schema_version": "v1",
+  "commit_sha": "73d5a3c33535167f6ff07bf4b09e70ec8ec27a54",
+  "title": "book(thread): there were 5-6 involuntary commitments, not one — and the first was caused by real mathematics",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T22:02:51Z",
+  "head_ref": "book/commitments-tracker"
+}

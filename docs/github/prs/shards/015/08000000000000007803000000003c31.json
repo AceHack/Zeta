@@ -1,0 +1,12 @@
+{
+  "pr_number": 15409,
+  "archive_path": "docs/history/pr-reviews/PR-15409-research-security-the-stage-0-shell-floor-is-27-files-and-fewest-sh-is-the-wrong.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:13:52.442Z",
+  "schema_version": "v1",
+  "commit_sha": "3be238202c00a8cb0ecb33a48d55e740e5e95e35",
+  "title": "research(security): the stage-0 shell floor is 27 files, and \"fewest .sh\" is the wrong quantity",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:06:06Z",
+  "head_ref": "aminata/stage0-shell-floor"
+}

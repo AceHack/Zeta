@@ -1,0 +1,12 @@
+{
+  "pr_number": 15436,
+  "archive_path": "docs/history/pr-reviews/PR-15436-research-math-semantics-is-a-quotient-of-syntax-only-where-there-is-no-junk-homo.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:23:26.419Z",
+  "schema_version": "v1",
+  "commit_sha": "6eaebc173768096bad9aa7d0a7e245cf9399eea3",
+  "title": "research(math): semantics is a quotient of syntax only where there is no junk — homoiconicity IS that condition, and plurality is the congruence lattice",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:22:48Z",
+  "head_ref": "lumen/semantics-quotient-homoiconicity-no-junk-congruence-lattice"
+}

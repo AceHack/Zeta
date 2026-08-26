@@ -1,0 +1,12 @@
+{
+  "pr_number": 15458,
+  "archive_path": "docs/history/pr-reviews/PR-15458-chore-hygiene-re-snapshot-github-settings-for-three-workflows-that-already-lande.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T23:22:12.958Z",
+  "schema_version": "v1",
+  "commit_sha": "b0e38967ca6fd4851a2a65528b0fd8858b2b07e9",
+  "title": "chore(hygiene): re-snapshot github-settings for three workflows that already landed",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T23:21:35Z",
+  "head_ref": "chore/resnapshot-github-settings-three-workflows"
+}

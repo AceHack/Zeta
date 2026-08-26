@@ -1,0 +1,12 @@
+{
+  "pr_number": 15429,
+  "archive_path": "docs/history/pr-reviews/PR-15429-data-n-200-benchmark-single-model-beats-ensemble-otto-validated.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T20:19:40.686Z",
+  "schema_version": "v1",
+  "commit_sha": "9df7a3f0b594b22d3994c662d368a6edc9eb60c4",
+  "title": "data: N=200 benchmark — single model beats ensemble (Otto validated)",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T20:18:14Z",
+  "head_ref": "alexa/benchmark-scale"
+}

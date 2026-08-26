@@ -1,0 +1,12 @@
+{
+  "pr_number": 15424,
+  "archive_path": "docs/history/pr-reviews/PR-15424-research-lattices-rank-16-is-where-the-e8-routes-disagree-the-rank-8-agreement-w.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:53:13.726Z",
+  "schema_version": "v1",
+  "commit_sha": "3d7b741ef25c80e0fad08c42b41e76a147c8dee5",
+  "title": "research(lattices): rank 16 is where the E8 routes disagree — the rank-8 agreement was forced",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:52:33Z",
+  "head_ref": "soraya/rank-16-discriminating-test"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15407,
+  "archive_path": "docs/history/pr-reviews/PR-15407-audit-privacy-frost-earning-spending-and-withholding-all-exist-no-call-edge-join.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:05:33.576Z",
+  "schema_version": "v1",
+  "commit_sha": "a5d66d290597ff3889af21e61c97e1aaeff215be",
+  "title": "audit(privacy-frost): earning, spending and withholding all exist; no call edge joins them — and the sovereignty RESUME was 3 months stale",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:04:57Z",
+  "head_ref": "mateo/privacy-budget-frost-audit"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15420,
+  "archive_path": "docs/history/pr-reviews/PR-15420-feat-privacy-frost-an-agent-can-now-actually-frost-something-budget-derived-from.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:40:24.188Z",
+  "schema_version": "v1",
+  "commit_sha": "b5b34230e9e41d0775529ea75ef287a45b4d4f6c",
+  "title": "feat(privacy-frost): an agent can now actually frost something — budget derived from the ledger, defrost owner-only, frost is a receipt (and a passing test was deliberately changed)",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:39:46Z",
+  "head_ref": "frost-wire-081M0X23R19087G0R003XHGB2B"
+}

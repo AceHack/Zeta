@@ -1,0 +1,12 @@
+{
+  "pr_number": 15433,
+  "archive_path": "docs/history/pr-reviews/PR-15433-fix-backlog-canonicalize-source-owned-references.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:48:53.745Z",
+  "schema_version": "v1",
+  "commit_sha": "85b936630e3c50d17762f6c0533a7492e14172e8",
+  "title": "fix(backlog): canonicalize source-owned references",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:48:13Z",
+  "head_ref": "claim/081M0X9PVZF-auto-vivify-source-paths"
+}

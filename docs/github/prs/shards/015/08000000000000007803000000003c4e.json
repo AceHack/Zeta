@@ -1,0 +1,12 @@
+{
+  "pr_number": 15438,
+  "archive_path": "docs/history/pr-reviews/PR-15438-docs-adinkra-preserve-plural-representation-lanes-and-bound-q-linkage.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:30:57.305Z",
+  "schema_version": "v1",
+  "commit_sha": "d5f02efebce10b9329c8b19f87b26deea079785e",
+  "title": "docs(adinkra): preserve plural representation lanes and bound Q# linkage",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:30:14Z",
+  "head_ref": "docs/adinkra-plurality-boundary"
+}

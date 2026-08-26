@@ -1,0 +1,12 @@
+{
+  "pr_number": 15471,
+  "archive_path": "docs/history/pr-reviews/PR-15471-chore-archive-regenerate-the-derived-pr-manifest-52-shards-had-no-index-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T00:54:17.982Z",
+  "schema_version": "v1",
+  "commit_sha": "849db704aec0d4884b744aff5e70314b40913b32",
+  "title": "chore(archive): regenerate the derived PR manifest — 52 shards had no index row",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T00:53:44Z",
+  "head_ref": "chore/repair-pr-manifest-index"
+}

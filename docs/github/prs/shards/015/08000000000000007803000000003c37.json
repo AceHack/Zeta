@@ -1,0 +1,12 @@
+{
+  "pr_number": 15415,
+  "archive_path": "docs/history/pr-reviews/PR-15415-research-adversarial-the-lattice-cd-adinkra-hexagon-synthesis-is-eight-objects-s.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:17:10.513Z",
+  "schema_version": "v1",
+  "commit_sha": "747d8f6c82ca3ee3b59d301be4fc1dfdfe86e45d",
+  "title": "research(adversarial): the lattice/CD/adinkra/hexagon synthesis is eight objects sharing an index and a word",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:15:50Z",
+  "head_ref": "kira/adversary-lattice-synth"
+}

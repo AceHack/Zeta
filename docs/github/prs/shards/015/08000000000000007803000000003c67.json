@@ -1,0 +1,12 @@
+{
+  "pr_number": 15463,
+  "archive_path": "docs/history/pr-reviews/PR-15463-fix-ci-a-finished-gate-run-that-never-published-the-check-read-as-merely-slow.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T23:51:19.395Z",
+  "schema_version": "v1",
+  "commit_sha": "66fd904a17c7d60ec799e5ba5835f671063956cc",
+  "title": "fix(ci): a FINISHED gate run that never published the check read as \"merely slow\"",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T23:50:17Z",
+  "head_ref": "fix/required-check-terminal-run-is-stalled"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15414,
+  "archive_path": "docs/history/pr-reviews/PR-15414-docs-eve-protocol-pre-declared-bias-surrendering-a-home-field-advantage-you-woul.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:21:25.311Z",
+  "schema_version": "v1",
+  "commit_sha": "a26ee77f39a84c647eefdaae255e1ce421a0b515",
+  "title": "docs(eve-protocol): pre-declared bias — surrendering a home-field advantage you would otherwise keep silently",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:20:43Z",
+  "head_ref": "docs/eve-protocol-bias-disclosure"
+}

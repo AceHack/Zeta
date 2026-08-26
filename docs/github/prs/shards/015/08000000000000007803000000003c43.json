@@ -1,0 +1,12 @@
+{
+  "pr_number": 15427,
+  "archive_path": "docs/history/pr-reviews/PR-15427-book-method-transmit-the-dissent-at-equal-weight-never-in-rebuttal-position.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T20:11:20.260Z",
+  "schema_version": "v1",
+  "commit_sha": "627309211f607942fb528e6a0822744bd6764a8f",
+  "title": "book(method): transmit the dissent — at equal weight, never in rebuttal position",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T20:10:41Z",
+  "head_ref": "book/transmit-the-dissent"
+}

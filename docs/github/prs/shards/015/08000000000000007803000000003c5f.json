@@ -1,0 +1,12 @@
+{
+  "pr_number": 15455,
+  "archive_path": "docs/history/pr-reviews/PR-15455-docs-ci-the-sweep-measured-17s-not-the-45s-i-estimated-correct-the-number-that-j.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T23:03:55.260Z",
+  "schema_version": "v1",
+  "commit_sha": "584dcca60b39876dc07d287afe786c2e5438fc57",
+  "title": "docs(ci): the sweep measured 17s, not the ~45s I estimated — correct the number that justified it",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T23:03:13Z",
+  "head_ref": "claim/081M0XC0CYN-measured-cost"
+}

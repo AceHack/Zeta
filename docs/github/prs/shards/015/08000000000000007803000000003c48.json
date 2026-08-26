@@ -1,0 +1,12 @@
+{
+  "pr_number": 15432,
+  "archive_path": "docs/history/pr-reviews/PR-15432-research-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-a-floor-an-all-ll.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:26:01.467Z",
+  "schema_version": "v1",
+  "commit_sha": "51a231214f9415415e7eb54f8b2d649767bc3942",
+  "title": "research(rho): ρ is a layer stack, not a scalar — and the trainset is a floor an all-LLM society cannot get below",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:25:24Z",
+  "head_ref": "docs/rho-layer-stack"
+}

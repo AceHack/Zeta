@@ -1,0 +1,12 @@
+{
+  "pr_number": 15421,
+  "archive_path": "docs/history/pr-reviews/PR-15421-fix-ci-my-own-vacuity-guard-was-the-flapping-red-ah006-exits-2-on-every-push-to-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:28:56.482Z",
+  "schema_version": "v1",
+  "commit_sha": "1a7fe330a11482a6054ad785f6ccda0a0b55b441",
+  "title": "fix(ci): my own vacuity guard was the flapping red — AH006 exits 2 on every push to main",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:28:22Z",
+  "head_ref": "fix/ah006-push-context"
+}

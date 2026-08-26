@@ -1,0 +1,12 @@
+{
+  "pr_number": 15434,
+  "archive_path": "docs/history/pr-reviews/PR-15434-fix-ts-main-is-red-on-tsc-two-unused-bindings-block-every-pr-based-on-current-ma.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T21:08:13.668Z",
+  "schema_version": "v1",
+  "commit_sha": "0db94d06658f3e0810475b7170fdc6ee28fab1c8",
+  "title": "fix(ts): main is red on tsc — two unused bindings block every PR based on current main",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T21:07:37Z",
+  "head_ref": "fix/tsc-unused-benchmark-scale"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15426,
+  "archive_path": "docs/history/pr-reviews/PR-15426-feat-eve-protocol-the-declared-stance-posterior-track-the-outcome-record-never-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T20:02:48.129Z",
+  "schema_version": "v1",
+  "commit_sha": "e2b64cb1ac1db76c4f9010e5fdeb036e2f24d9ff",
+  "title": "feat(eve-protocol): the declared-stance posterior — track the outcome record, never the inner state",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T20:02:14Z",
+  "head_ref": "eve-declared-stance-posterior"
+}
