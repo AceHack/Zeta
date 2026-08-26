@@ -1,0 +1,17 @@
+{
+  "pr_number": 696,
+  "archive_path": "docs/history/pr-reviews/PR-696-ci-theme-a-ubuntu-22-04-ubuntu-24-04-gate-yml-resume-diff-yml-0-0-0-reconciliati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68MzF8",
+    "comment:PRRC_kwDOSF9kNM68MzGc",
+    "thread:PRRT_kwDOSF9kNM5-Rony",
+    "thread:PRRT_kwDOSF9kNM5-RooI"
+  ],
+  "fetched_at": "2026-08-25T08:21:42.960Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci(theme-a): ubuntu-22.04 → ubuntu-24.04 (gate.yml + resume-diff.yml) — 0/0/0 reconciliation",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T22:06:38Z",
+  "head_ref": "ops/theme-a-ubuntu-24-04-bump-forward-sync-2026-04-28"
+}

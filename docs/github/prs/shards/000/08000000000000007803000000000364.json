@@ -1,0 +1,25 @@
+{
+  "pr_number": 868,
+  "archive_path": "docs/history/pr-reviews/PR-868-ts-b-0086-port-3-hygiene-audit-scripts-sh-ts-slice-2-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68qBA5",
+    "comment:PRRC_kwDOSF9kNM68qBBG",
+    "comment:PRRC_kwDOSF9kNM68qBBR",
+    "comment:PRRC_kwDOSF9kNM68qBBX",
+    "comment:PRRC_kwDOSF9kNM68qBBi",
+    "comment:PRRC_kwDOSF9kNM68qBBr",
+    "thread:PRRT_kwDOSF9kNM5-nEX5",
+    "thread:PRRT_kwDOSF9kNM5-nEXu",
+    "thread:PRRT_kwDOSF9kNM5-nEYC",
+    "thread:PRRT_kwDOSF9kNM5-nEYH",
+    "thread:PRRT_kwDOSF9kNM5-nEYN",
+    "thread:PRRT_kwDOSF9kNM5-nEYS"
+  ],
+  "fetched_at": "2026-08-25T08:28:10.290Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 3 hygiene audit scripts (.sh→.ts) — slice 2 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T01:13:15Z",
+  "head_ref": "lane-b/ts-bun-slice-2-hygiene-audits-2026-04-30"
+}

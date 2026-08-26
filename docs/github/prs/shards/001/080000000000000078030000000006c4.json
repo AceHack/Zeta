@@ -1,0 +1,17 @@
+{
+  "pr_number": 1732,
+  "archive_path": "docs/history/pr-reviews/PR-1732-backlog-decompose-b-0003-alignment-rewrite-into-child-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-jZbE",
+    "comment:PRRC_kwDOSF9kNM6-jaex",
+    "thread:PRRT_kwDOSF9kNM6AGwmX",
+    "thread:PRRT_kwDOSF9kNM6AGxaP"
+  ],
+  "fetched_at": "2026-08-25T09:03:32.680Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: decompose B-0003 alignment rewrite into child rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T19:38:01Z",
+  "head_ref": "claim/task-b0003-alignment-decomposition"
+}

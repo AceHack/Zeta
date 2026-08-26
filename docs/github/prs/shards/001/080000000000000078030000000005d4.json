@@ -1,0 +1,23 @@
+{
+  "pr_number": 1492,
+  "archive_path": "docs/history/pr-reviews/PR-1492-research-stainback-preserve-stainback-family-genealogy-drop-folder-cleanup-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69sEGy",
+    "comment:PRRC_kwDOSF9kNM69sEHa",
+    "comment:PRRC_kwDOSF9kNM69sEHr",
+    "comment:PRRC_kwDOSF9kNM69sEI0",
+    "comment:PRRC_kwDOSF9kNM69sEID",
+    "thread:PRRT_kwDOSF9kNM5_YjBi",
+    "thread:PRRT_kwDOSF9kNM5_YjCC",
+    "thread:PRRT_kwDOSF9kNM5_YjCR",
+    "thread:PRRT_kwDOSF9kNM5_YjCk",
+    "thread:PRRT_kwDOSF9kNM5_YjDL"
+  ],
+  "fetched_at": "2026-08-25T08:53:46.932Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(stainback): preserve Stainback family genealogy + drop-folder cleanup (Aaron-forwarded 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:54:26Z",
+  "head_ref": "research/stainback-genealogy-archive-and-drop-cleanup-2026-05-04"
+}

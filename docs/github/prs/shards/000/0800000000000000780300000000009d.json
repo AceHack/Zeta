@@ -1,0 +1,22 @@
+{
+  "pr_number": 157,
+  "archive_path": "docs/history/pr-reviews/PR-157-memory-migrate-signal-in-signal-out-discipline-in-repo-autodream-overlay-a-first.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66sTCR",
+    "comment:PRRC_kwDOSF9kNM66sTD-",
+    "comment:PRRC_kwDOSF9kNM66sTDA",
+    "comment:PRRC_kwDOSF9kNM66sTDg",
+    "comment:PRRC_kwDOSF9kNM66uDKQ",
+    "thread:PRRT_kwDOSF9kNM59JrVo",
+    "thread:PRRT_kwDOSF9kNM59JrW7",
+    "thread:PRRT_kwDOSF9kNM59JrWN",
+    "thread:PRRT_kwDOSF9kNM59JrWj"
+  ],
+  "fetched_at": "2026-08-25T07:57:41.671Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: migrate signal-in-signal-out discipline in-repo (AutoDream Overlay A first execution)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:36:50Z",
+  "head_ref": "refactor/overlay-a-migrate-signal-in-signal-out"
+}

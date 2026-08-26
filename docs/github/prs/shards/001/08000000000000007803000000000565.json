@@ -1,0 +1,12 @@
+{
+  "pr_number": 1381,
+  "archive_path": "docs/history/pr-reviews/PR-1381-hygiene-tick-history-2026-05-03t11-10z-gate-yml-3-job-sh-ts-conversion-1380-1378.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:20.626Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T11:10Z — gate.yml 3-job sh→ts conversion (#1380) + #1378 reviewer fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:14:36Z",
+  "head_ref": "hygiene/tick-1110Z-gate-conversion"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1029,
+  "archive_path": "docs/history/pr-reviews/PR-1029-hygiene-tick-history-shard-0513z-multi-tick-drain-consolidation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69E6ln",
+    "comment:PRRC_kwDOSF9kNM69E6lt",
+    "thread:PRRT_kwDOSF9kNM5-67Os",
+    "thread:PRRT_kwDOSF9kNM5-67Ow"
+  ],
+  "fetched_at": "2026-08-25T08:35:05.129Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0513Z — multi-tick drain consolidation",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:45:26Z",
+  "head_ref": "hygiene/tick-history-0513Z-2026-05-01"
+}

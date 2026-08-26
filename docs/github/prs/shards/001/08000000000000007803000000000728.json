@@ -1,0 +1,12 @@
+{
+  "pr_number": 1832,
+  "archive_path": "docs/history/pr-reviews/PR-1832-ci-restrict-archive-skip-to-local-repair-branches.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:05:31.877Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci: restrict archive skip to local repair branches",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T07:53:31Z",
+  "head_ref": "claim/restrict-archive-skip-local-branches"
+}

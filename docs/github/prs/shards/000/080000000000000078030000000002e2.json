@@ -1,0 +1,21 @@
+{
+  "pr_number": 738,
+  "archive_path": "docs/history/pr-reviews/PR-738-research-tick-history-shards-as-dbsp-z-set-event-store-amara-math-packet.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68P1wc",
+    "comment:PRRC_kwDOSF9kNM68P2i9",
+    "comment:PRRC_kwDOSF9kNM68P2je",
+    "comment:PRRC_kwDOSF9kNM68P2jx",
+    "thread:PRRT_kwDOSF9kNM5-T376",
+    "thread:PRRT_kwDOSF9kNM5-T37R",
+    "thread:PRRT_kwDOSF9kNM5-T37r",
+    "thread:PRRT_kwDOSF9kNM5-T3W-"
+  ],
+  "fetched_at": "2026-08-25T08:23:21.011Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: tick-history shards as DBSP/Z-set event store (Amara math packet)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:45:22Z",
+  "head_ref": "research/tick-history-shards-as-dbsp-event-store-amara-2026-04-29"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 1742,
+  "archive_path": "docs/history/pr-reviews/PR-1742-feat-add-lior-gemini-structural-synthesizer-persona.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-mFp3",
+    "comment:PRRC_kwDOSF9kNM6-mG0m",
+    "comment:PRRC_kwDOSF9kNM6-mG11",
+    "comment:PRRC_kwDOSF9kNM6-mG2r",
+    "comment:PRRC_kwDOSF9kNM6-mG3X",
+    "thread:PRRT_kwDOSF9kNM6AIxrI",
+    "thread:PRRT_kwDOSF9kNM6AIyjI",
+    "thread:PRRT_kwDOSF9kNM6AIykP",
+    "thread:PRRT_kwDOSF9kNM6AIylB",
+    "thread:PRRT_kwDOSF9kNM6AIylp"
+  ],
+  "fetched_at": "2026-08-25T09:03:58.329Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: add Lior (Gemini) — structural synthesizer persona",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T21:36:58Z",
+  "head_ref": "feat/lior-persona"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 482,
+  "archive_path": "docs/history/pr-reviews/PR-482-fix-tests-hll-fuzz-test-deterministic-addbytes-otto-281.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67R6i6",
+    "comment:PRRC_kwDOSF9kNM67R6jC",
+    "comment:PRRC_kwDOSF9kNM67SANS",
+    "comment:PRRC_kwDOSF9kNM67SANm",
+    "thread:PRRT_kwDOSF9kNM59lo-P",
+    "thread:PRRT_kwDOSF9kNM59lo-W"
+  ],
+  "fetched_at": "2026-08-25T08:12:07.648Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(tests): HLL fuzz test — deterministic AddBytes (Otto-281)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:21:06Z",
+  "head_ref": "fix/hll-fuzz-test-determinism-otto-281"
+}

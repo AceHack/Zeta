@@ -1,0 +1,19 @@
+{
+  "pr_number": 1279,
+  "archive_path": "docs/history/pr-reviews/PR-1279-free-memory-init-architectural-intent-guesses-first-in-the-moment-guess-on-b-017.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZVMG",
+    "comment:PRRC_kwDOSF9kNM69ZVML",
+    "comment:PRRC_kwDOSF9kNM69ZVMN",
+    "thread:PRRT_kwDOSF9kNM5_KK8c",
+    "thread:PRRT_kwDOSF9kNM5_KK8g",
+    "thread:PRRT_kwDOSF9kNM5_KK8i"
+  ],
+  "fetched_at": "2026-08-25T08:45:31.877Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: init architectural-intent-guesses/ + first in-the-moment guess on B-0173 (Otto 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:47:24Z",
+  "head_ref": "free-memory/architectural-intent-guesses-init-with-first-in-the-moment-guess-otto-2026-05-03"
+}

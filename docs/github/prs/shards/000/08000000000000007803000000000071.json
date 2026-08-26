@@ -1,0 +1,17 @@
+{
+  "pr_number": 113,
+  "archive_path": "docs/history/pr-reviews/PR-113-round-44-auto-loop-16-tick-history-row-stale-stacked-base-rule-refinement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66Hl2f",
+    "comment:PRRC_kwDOSF9kNM66Hl3K",
+    "thread:PRRT_kwDOSF9kNM58uR-K",
+    "thread:PRRT_kwDOSF9kNM58uR9t"
+  ],
+  "fetched_at": "2026-08-25T07:54:45.567Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-16: tick-history row + stale-stacked-base rule refinement",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T08:24:58Z",
+  "head_ref": "land-autoloop-16-tick-history"
+}

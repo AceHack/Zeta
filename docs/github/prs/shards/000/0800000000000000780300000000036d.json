@@ -1,0 +1,17 @@
+{
+  "pr_number": 877,
+  "archive_path": "docs/history/pr-reviews/PR-877-trajectory-ts-bun-resume-slice-6-merged-closure-cluster-refactor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68q1L9",
+    "comment:PRRC_kwDOSF9kNM68q1MO",
+    "thread:PRRT_kwDOSF9kNM5-nqwC",
+    "thread:PRRT_kwDOSF9kNM5-nqwR"
+  ],
+  "fetched_at": "2026-08-25T08:28:35.599Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "trajectory(ts-bun): RESUME slice-6-merged closure + cluster refactor",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T02:49:49Z",
+  "head_ref": "lane-b/ts-bun-slice-6-closure-2026-04-30"
+}

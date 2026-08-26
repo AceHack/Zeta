@@ -1,0 +1,15 @@
+{
+  "pr_number": 1582,
+  "archive_path": "docs/history/pr-reviews/PR-1582-research-claude-ai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-unificati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695zHP",
+    "thread:PRRT_kwDOSF9kNM5_iofi"
+  ],
+  "fetched_at": "2026-08-25T08:57:32.638Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(claude-ai): falsifiability-catch + BP EP kernel + MDL two-part code unification (2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:30:54Z",
+  "head_ref": "research/claudeai-falsifiability-catch-bp-ep-kernel-mdl-two-part-code-aaron-2026-05-05"
+}

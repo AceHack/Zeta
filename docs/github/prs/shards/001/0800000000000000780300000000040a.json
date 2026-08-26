@@ -1,0 +1,16 @@
+{
+  "pr_number": 1034,
+  "archive_path": "docs/history/pr-reviews/PR-1034-hygiene-tick-history-shard-0651z-pr-1030-pr-986-drain-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69FoGP",
+    "comment:PRRC_kwDOSF9kNM69G8xN",
+    "thread:PRRT_kwDOSF9kNM5-7dA5"
+  ],
+  "fetched_at": "2026-08-25T08:35:21.844Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0651Z — PR #1030 + PR #986 drain tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:17:43Z",
+  "head_ref": "hygiene/tick-history-shard-0651Z-pr1030-986-drain"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 916,
+  "archive_path": "docs/history/pr-reviews/PR-916-memory-no-copy-no-copy-only-learning-discipline-for-sibling-repos-aaron-2026-04-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM682Wki",
+    "comment:PRRC_kwDOSF9kNM682YrQ",
+    "comment:PRRC_kwDOSF9kNM683NdW",
+    "comment:PRRC_kwDOSF9kNM683YAf",
+    "comment:PRRC_kwDOSF9kNM683YBt",
+    "thread:PRRT_kwDOSF9kNM5-w-7F",
+    "thread:PRRT_kwDOSF9kNM5-w-8H",
+    "thread:PRRT_kwDOSF9kNM5-w3Fh",
+    "thread:PRRT_kwDOSF9kNM5-wORu",
+    "thread:PRRT_kwDOSF9kNM5-wPz1"
+  ],
+  "fetched_at": "2026-08-25T08:30:15.474Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(no-copy): no-copy-only-learning discipline for sibling repos (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T14:40:10Z",
+  "head_ref": "ops/memory-no-copy-only-learning-discipline-2026-04-30"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 583,
+  "archive_path": "docs/history/pr-reviews/PR-583-backlog-b-0006-partial-1-compress-3-longest-memory-md-entries-surface-line-count.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67W3nZ",
+    "thread:PRRT_kwDOSF9kNM59pmaQ"
+  ],
+  "fetched_at": "2026-08-25T08:17:39.881Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0006 partial-1): compress 3 longest MEMORY.md entries + surface line-count criterion calibration",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:21:50Z",
+  "head_ref": "backlog/B-0006-partial-1-memory-md-compression"
+}

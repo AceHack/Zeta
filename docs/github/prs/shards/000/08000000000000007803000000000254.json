@@ -1,0 +1,25 @@
+{
+  "pr_number": 596,
+  "archive_path": "docs/history/pr-reviews/PR-596-docs-harness-surfaces-2026-04-26-roster-expansion-gemini-cli-copilot-cli-chatgpt.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67XgRI",
+    "comment:PRRC_kwDOSF9kNM67XgRT",
+    "comment:PRRC_kwDOSF9kNM67XgRZ",
+    "comment:PRRC_kwDOSF9kNM67XjSn",
+    "comment:PRRC_kwDOSF9kNM67XjSt",
+    "comment:PRRC_kwDOSF9kNM67XjSw",
+    "thread:PRRT_kwDOSF9kNM59qHIC",
+    "thread:PRRT_kwDOSF9kNM59qHIK",
+    "thread:PRRT_kwDOSF9kNM59qHIP",
+    "thread:PRRT_kwDOSF9kNM59qJf0",
+    "thread:PRRT_kwDOSF9kNM59qJf3",
+    "thread:PRRT_kwDOSF9kNM59qJf5"
+  ],
+  "fetched_at": "2026-08-25T08:18:12.602Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(harness-surfaces): 2026-04-26 roster expansion — Gemini CLI + Copilot CLI + ChatGPT",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T14:47:25Z",
+  "head_ref": "docs/harness-surfaces-roster-2026-04-26"
+}

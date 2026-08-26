@@ -1,0 +1,15 @@
+{
+  "pr_number": 1916,
+  "archive_path": "docs/history/pr-reviews/PR-1916-research-riemann-critical-line-shadow-catches-as-zeros-kashmir.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-72KA",
+    "thread:PRRT_kwDOSF9kNM6AY7_g"
+  ],
+  "fetched_at": "2026-08-25T09:07:36.112Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Riemann ζ critical line — shadow catches as zeros (Kashmir)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:14:44Z",
+  "head_ref": "otto/research-riemann-kashmir"
+}

@@ -1,0 +1,33 @@
+{
+  "pr_number": 1263,
+  "archive_path": "docs/history/pr-reviews/PR-1263-research-decision-archaeology-worked-example-2-mathematics-expert-when-to-defer-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZHDM",
+    "comment:PRRC_kwDOSF9kNM69ZHDP",
+    "comment:PRRC_kwDOSF9kNM69ZHDS",
+    "comment:PRRC_kwDOSF9kNM69ZHDX",
+    "comment:PRRC_kwDOSF9kNM69ZHDZ",
+    "comment:PRRC_kwDOSF9kNM69ZHDd",
+    "comment:PRRC_kwDOSF9kNM69ZHDh",
+    "comment:PRRC_kwDOSF9kNM69ZHDk",
+    "comment:PRRC_kwDOSF9kNM69ZHDl",
+    "comment:PRRC_kwDOSF9kNM69ZHDm",
+    "thread:PRRT_kwDOSF9kNM5_KABG",
+    "thread:PRRT_kwDOSF9kNM5_KABH",
+    "thread:PRRT_kwDOSF9kNM5_KABK",
+    "thread:PRRT_kwDOSF9kNM5_KABO",
+    "thread:PRRT_kwDOSF9kNM5_KABP",
+    "thread:PRRT_kwDOSF9kNM5_KABT",
+    "thread:PRRT_kwDOSF9kNM5_KABW",
+    "thread:PRRT_kwDOSF9kNM5_KABY",
+    "thread:PRRT_kwDOSF9kNM5_KABZ",
+    "thread:PRRT_kwDOSF9kNM5_KABa"
+  ],
+  "fetched_at": "2026-08-25T08:44:45.188Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(decision-archaeology): worked example #2 — mathematics-expert 'When to defer' pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T01:45:15Z",
+  "head_ref": "research/decision-archaeology-worked-example-2-mathematics-expert-when-to-defer-aaron-2026-05-03"
+}

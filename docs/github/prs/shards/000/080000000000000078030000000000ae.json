@@ -1,0 +1,19 @@
+{
+  "pr_number": 174,
+  "archive_path": "docs/history/pr-reviews/PR-174-docs-contributor-conflicts-md-durable-log-for-cross-contributor-differences.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66uQTh",
+    "comment:PRRC_kwDOSF9kNM66uQU5",
+    "comment:PRRC_kwDOSF9kNM66uQUL",
+    "thread:PRRT_kwDOSF9kNM59LHLI",
+    "thread:PRRT_kwDOSF9kNM59LHLm",
+    "thread:PRRT_kwDOSF9kNM59LHMG"
+  ],
+  "fetched_at": "2026-08-25T07:58:45.084Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "docs: CONTRIBUTOR-CONFLICTS.md — durable log for cross-contributor differences",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:42:25Z",
+  "head_ref": "docs/contributor-conflicts-log"
+}

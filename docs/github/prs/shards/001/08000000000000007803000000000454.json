@@ -1,0 +1,23 @@
+{
+  "pr_number": 1108,
+  "archive_path": "docs/history/pr-reviews/PR-1108-research-10th-14th-ferries-memory-wwjd-trust-architecture-addison-cognitive-traj.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69IQm6",
+    "comment:PRRC_kwDOSF9kNM69IQmh",
+    "comment:PRRC_kwDOSF9kNM69IQmu",
+    "comment:PRRC_kwDOSF9kNM69IQnC",
+    "comment:PRRC_kwDOSF9kNM69IQnJ",
+    "thread:PRRT_kwDOSF9kNM5-9b55",
+    "thread:PRRT_kwDOSF9kNM5-9b6B",
+    "thread:PRRT_kwDOSF9kNM5-9b6L",
+    "thread:PRRT_kwDOSF9kNM5-9b6P",
+    "thread:PRRT_kwDOSF9kNM5-9b6U"
+  ],
+  "fetched_at": "2026-08-25T08:38:19.165Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(10th-14th ferries) + memory(wwjd-trust-architecture): Addison cognitive-trajectory + cogAT 99th-percentile + WWJD family-grader + engineered-gullable persona (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T11:49:29Z",
+  "head_ref": "research/claudeai-tenth-through-fourteenth-ferries-addison-cognitive-trajectory-wwjd-trust-architecture-2026-05-01"
+}

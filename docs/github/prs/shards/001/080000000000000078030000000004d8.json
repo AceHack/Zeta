@@ -1,0 +1,17 @@
+{
+  "pr_number": 1240,
+  "archive_path": "docs/history/pr-reviews/PR-1240-hygiene-tick-history-2026-05-02t22-55z-architectural-protection-cycle-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Ylkb",
+    "comment:PRRC_kwDOSF9kNM69Ylkk",
+    "thread:PRRT_kwDOSF9kNM5_JlZa",
+    "thread:PRRT_kwDOSF9kNM5_JlZh"
+  ],
+  "fetched_at": "2026-08-25T08:43:44.830Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-02T22:55Z architectural-protection cycle complete",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T22:58:42Z",
+  "head_ref": "hygiene/tick-history-2255z-architectural-protection-cycle-2026-05-02"
+}

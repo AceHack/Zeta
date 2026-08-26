@@ -1,0 +1,12 @@
+{
+  "pr_number": 1443,
+  "archive_path": "docs/history/pr-reviews/PR-1443-hygiene-tick-history-2026-05-04t04-10z-15min-cadence-shard-rhythm-self-stabilize.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:51:50.916Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-04T04:10Z 15min cadence shard (rhythm self-stabilized)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T04:12:50Z",
+  "head_ref": "tick/2026-05-04-0410Z-shard"
+}

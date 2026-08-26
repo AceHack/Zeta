@@ -1,0 +1,23 @@
+{
+  "pr_number": 1892,
+  "archive_path": "docs/history/pr-reviews/PR-1892-docs-tick-1502z-shard-issue-lineage-health-monitor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-4gsL",
+    "comment:PRRC_kwDOSF9kNM6-4nDS",
+    "comment:PRRC_kwDOSF9kNM6-4nEi",
+    "comment:PRRC_kwDOSF9kNM6-4nFH",
+    "comment:PRRC_kwDOSF9kNM6-4nGK",
+    "thread:PRRT_kwDOSF9kNM6AWg-2",
+    "thread:PRRT_kwDOSF9kNM6AWlfC",
+    "thread:PRRT_kwDOSF9kNM6AWlgC",
+    "thread:PRRT_kwDOSF9kNM6AWlge",
+    "thread:PRRT_kwDOSF9kNM6AWlhI"
+  ],
+  "fetched_at": "2026-08-25T09:06:44.454Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(tick): 1502Z shard — issue lineage + health monitor",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:13:27Z",
+  "head_ref": "otto/tick-shard-1502z-health-monitor"
+}

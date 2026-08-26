@@ -1,0 +1,17 @@
+{
+  "pr_number": 631,
+  "archive_path": "docs/history/pr-reviews/PR-631-research-drain-log-beacon-origin-disclosure-quantum-belief-beacon-612-drain-log.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67YwI9",
+    "comment:PRRC_kwDOSF9kNM67YwIy",
+    "thread:PRRT_kwDOSF9kNM59rGW2",
+    "thread:PRRT_kwDOSF9kNM59rGWv"
+  ],
+  "fetched_at": "2026-08-25T08:19:08.290Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research+drain-log: Beacon origin disclosure (Quantum Belief Beacon) + #612 drain-log",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T17:01:20Z",
+  "head_ref": "docs/pr-preservation-612-drain-log"
+}

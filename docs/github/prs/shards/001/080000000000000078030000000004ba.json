@@ -1,0 +1,19 @@
+{
+  "pr_number": 1210,
+  "archive_path": "docs/history/pr-reviews/PR-1210-hygiene-tick-history-tick-87-shard-7-review-bugs-caught-fixed-pre-merge-across-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XNez",
+    "comment:PRRC_kwDOSF9kNM69XNfC",
+    "comment:PRRC_kwDOSF9kNM69XNfK",
+    "thread:PRRT_kwDOSF9kNM5_IgPH",
+    "thread:PRRT_kwDOSF9kNM5_IgPP",
+    "thread:PRRT_kwDOSF9kNM5_IgPT"
+  ],
+  "fetched_at": "2026-08-25T08:42:23.423Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): Tick-87 shard — 7 review-bugs caught + fixed pre-merge across 3 PRs",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T17:48:05Z",
+  "head_ref": "hygiene/tick-history-1728z-tick-87"
+}

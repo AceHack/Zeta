@@ -1,0 +1,28 @@
+{
+  "pr_number": 1336,
+  "archive_path": "docs/history/pr-reviews/PR-1336-claude-md-razor-discipline-carved-sentence-promotion-aaron-claude-ai-2026-05-03-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aNI-",
+    "comment:PRRC_kwDOSF9kNM69aNJK",
+    "comment:PRRC_kwDOSF9kNM69aNJT",
+    "comment:PRRC_kwDOSF9kNM69aNJX",
+    "comment:PRRC_kwDOSF9kNM69aNJe",
+    "comment:PRRC_kwDOSF9kNM69aOD3",
+    "comment:PRRC_kwDOSF9kNM69aODm",
+    "comment:PRRC_kwDOSF9kNM69aOE8",
+    "comment:PRRC_kwDOSF9kNM69aOEW",
+    "comment:PRRC_kwDOSF9kNM69aOFF",
+    "thread:PRRT_kwDOSF9kNM5_K3c_",
+    "thread:PRRT_kwDOSF9kNM5_K3dK",
+    "thread:PRRT_kwDOSF9kNM5_K3dS",
+    "thread:PRRT_kwDOSF9kNM5_K3dV",
+    "thread:PRRT_kwDOSF9kNM5_K3db"
+  ],
+  "fetched_at": "2026-08-25T08:47:37.327Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "CLAUDE.md: razor-discipline carved-sentence promotion (Aaron + Claude.ai 2026-05-03; layer-3 landing of high-violation-rate rule)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:06:10Z",
+  "head_ref": "claude-md/razor-discipline-rodney-canonical-bullet-aaron-claudeai-2026-05-03"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 127,
+  "archive_path": "docs/history/pr-reviews/PR-127-auto-loop-28-tick-history-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66K0Fx",
+    "comment:PRRC_kwDOSF9kNM66K0Gt",
+    "comment:PRRC_kwDOSF9kNM66KyCH",
+    "thread:PRRT_kwDOSF9kNM58wpdf",
+    "thread:PRRT_kwDOSF9kNM58wrCb",
+    "thread:PRRT_kwDOSF9kNM58wrDI"
+  ],
+  "fetched_at": "2026-08-25T07:55:31.663Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Auto-loop-28 tick-history row",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T10:51:23Z",
+  "head_ref": "tick-close-autoloop-28"
+}

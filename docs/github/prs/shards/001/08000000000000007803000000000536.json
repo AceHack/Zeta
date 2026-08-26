@@ -1,0 +1,16 @@
+{
+  "pr_number": 1334,
+  "archive_path": "docs/history/pr-reviews/PR-1334-hygiene-tick-history-2026-05-03t06-51z-substantive-doctrine-landing-tick-3-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aKVx",
+    "comment:PRRC_kwDOSF9kNM69aLJq",
+    "thread:PRRT_kwDOSF9kNM5_K1PA"
+  ],
+  "fetched_at": "2026-08-25T08:47:31.764Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T06:51Z — substantive doctrine-landing tick (3 PRs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T06:59:01Z",
+  "head_ref": "hygiene/tick-2026-05-03-0651Z-substantive-doctrine-landing"
+}

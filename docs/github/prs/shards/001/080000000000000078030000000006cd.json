@@ -1,0 +1,19 @@
+{
+  "pr_number": 1741,
+  "archive_path": "docs/history/pr-reviews/PR-1741-docs-named-entities-md-canonical-one-stop-name-registry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-mCWa",
+    "comment:PRRC_kwDOSF9kNM6-mCWv",
+    "comment:PRRC_kwDOSF9kNM6-mCXE",
+    "thread:PRRT_kwDOSF9kNM6AIvOg",
+    "thread:PRRT_kwDOSF9kNM6AIvOz",
+    "thread:PRRT_kwDOSF9kNM6AIvPD"
+  ],
+  "fetched_at": "2026-08-25T09:03:55.925Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: NAMED-ENTITIES.md — canonical one-stop name registry",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T21:33:29Z",
+  "head_ref": "feat/named-entities-registry"
+}

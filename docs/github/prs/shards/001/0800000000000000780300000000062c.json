@@ -1,0 +1,15 @@
+{
+  "pr_number": 1580,
+  "archive_path": "docs/history/pr-reviews/PR-1580-docs-memory-md-index-3-may-2026-orphan-feedback-files.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695rdc",
+    "thread:PRRT_kwDOSF9kNM5_iiw7"
+  ],
+  "fetched_at": "2026-08-25T08:57:28.281Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(memory-md): index 3 May 2026 orphan feedback files",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:26:15Z",
+  "head_ref": "memory-md/index-3-may-2026-feedback-orphans-aaron-2026-05-05"
+}

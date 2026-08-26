@@ -1,0 +1,25 @@
+{
+  "pr_number": 894,
+  "archive_path": "docs/history/pr-reviews/PR-894-ts-b-0086-port-1-budget-script-sh-ts-slice-14-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68s1N4",
+    "comment:PRRC_kwDOSF9kNM68s1NM",
+    "comment:PRRC_kwDOSF9kNM68s1Nb",
+    "comment:PRRC_kwDOSF9kNM68s1Nq",
+    "comment:PRRC_kwDOSF9kNM68s1Ny",
+    "comment:PRRC_kwDOSF9kNM68s1OM",
+    "thread:PRRT_kwDOSF9kNM5-pHlU",
+    "thread:PRRT_kwDOSF9kNM5-pHl_",
+    "thread:PRRT_kwDOSF9kNM5-pHlg",
+    "thread:PRRT_kwDOSF9kNM5-pHlq",
+    "thread:PRRT_kwDOSF9kNM5-pHlu",
+    "thread:PRRT_kwDOSF9kNM5-pHlx"
+  ],
+  "fetched_at": "2026-08-25T08:29:19.499Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 budget script (.sh→.ts) — slice 14 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:43:44Z",
+  "head_ref": "lane-b/ts-bun-slice-14-snapshot-burn-2026-04-30"
+}

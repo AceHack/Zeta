@@ -1,0 +1,15 @@
+{
+  "pr_number": 1204,
+  "archive_path": "docs/history/pr-reviews/PR-1204-free-memory-training-distribution-mismatch-firing-in-real-time-tick-61-self-grad.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69W_8D",
+    "thread:PRRT_kwDOSF9kNM5_IVz-"
+  ],
+  "fetched_at": "2026-08-25T08:42:10.131Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: training-distribution-mismatch firing in real-time (Tick-61 self-grading)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T16:49:42Z",
+  "head_ref": "memory/training-distribution-mismatch-firing-in-real-time-tick61"
+}

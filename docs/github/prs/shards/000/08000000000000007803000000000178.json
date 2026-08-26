@@ -1,0 +1,28 @@
+{
+  "pr_number": 376,
+  "archive_path": "docs/history/pr-reviews/PR-376-ci-net-10-server-gc-crash-workaround-on-apple-silicon-otto-248.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67ICZ0",
+    "comment:PRRC_kwDOSF9kNM67ICZV",
+    "comment:PRRC_kwDOSF9kNM67ICaE",
+    "comment:PRRC_kwDOSF9kNM67JGE7",
+    "comment:PRRC_kwDOSF9kNM67JGMN",
+    "comment:PRRC_kwDOSF9kNM67JGRa",
+    "comment:PRRC_kwDOSF9kNM67JJ1z",
+    "comment:PRRC_kwDOSF9kNM67JJ2q",
+    "comment:PRRC_kwDOSF9kNM67JJ3B",
+    "thread:PRRT_kwDOSF9kNM59eNUw",
+    "thread:PRRT_kwDOSF9kNM59eNVH",
+    "thread:PRRT_kwDOSF9kNM59eNVV",
+    "thread:PRRT_kwDOSF9kNM59fDTv",
+    "thread:PRRT_kwDOSF9kNM59fDUd",
+    "thread:PRRT_kwDOSF9kNM59fDUv"
+  ],
+  "fetched_at": "2026-08-25T08:07:24.974Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci: .NET 10 Server GC crash workaround on Apple Silicon (Otto-248)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T18:57:54Z",
+  "head_ref": "ci/dotnet-server-gc-workaround-apple-silicon-otto-248"
+}

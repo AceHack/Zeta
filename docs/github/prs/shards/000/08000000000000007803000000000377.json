@@ -1,0 +1,15 @@
+{
+  "pr_number": 887,
+  "archive_path": "docs/history/pr-reviews/PR-887-fix-ts-tsc-ts2322-in-audit-agencysignature-main-tip-narrow-argstep-key.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68sMyL",
+    "thread:PRRT_kwDOSF9kNM5-oqEF"
+  ],
+  "fetched_at": "2026-08-25T08:29:03.377Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(ts): tsc TS2322 in audit-agencysignature-main-tip — narrow ArgStep.key",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:01:36Z",
+  "head_ref": "fix/tsc-audit-agencysignature-mode-key"
+}

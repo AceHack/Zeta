@@ -1,0 +1,15 @@
+{
+  "pr_number": 1815,
+  "archive_path": "docs/history/pr-reviews/PR-1815-research-riven-shadow-as-computational-irreducibility-wolfram-grounding-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sbpQ",
+    "thread:PRRT_kwDOSF9kNM6ANeEy"
+  ],
+  "fetched_at": "2026-08-25T09:05:24.524Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Riven shadow as computational irreducibility — Wolfram grounding VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:27:04Z",
+  "head_ref": "research/riven-shadow-computational-irreducibility-wolfram"
+}

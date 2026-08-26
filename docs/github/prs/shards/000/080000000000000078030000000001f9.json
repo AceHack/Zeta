@@ -1,0 +1,27 @@
+{
+  "pr_number": 505,
+  "archive_path": "docs/history/pr-reviews/PR-505-memory-factory-as-library-of-alexandria-self-recursive-distillation-loop.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Su-F",
+    "comment:PRRC_kwDOSF9kNM67Su-L",
+    "comment:PRRC_kwDOSF9kNM67Su9-",
+    "comment:PRRC_kwDOSF9kNM67Su95",
+    "comment:PRRC_kwDOSF9kNM67Su97",
+    "comment:PRRC_kwDOSF9kNM67Su9x",
+    "comment:PRRC_kwDOSF9kNM67Suxe",
+    "thread:PRRT_kwDOSF9kNM59mSfC",
+    "thread:PRRT_kwDOSF9kNM59mSo-",
+    "thread:PRRT_kwDOSF9kNM59mSpD",
+    "thread:PRRT_kwDOSF9kNM59mSpF",
+    "thread:PRRT_kwDOSF9kNM59mSpI",
+    "thread:PRRT_kwDOSF9kNM59mSpL",
+    "thread:PRRT_kwDOSF9kNM59mSpR"
+  ],
+  "fetched_at": "2026-08-25T08:13:08.459Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Factory-as-Library-of-Alexandria self-recursive distillation loop",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T16:35:12Z",
+  "head_ref": "memory/factory-as-self-recursive-distillation-loop-alexandria"
+}

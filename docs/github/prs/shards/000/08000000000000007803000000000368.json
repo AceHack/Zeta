@@ -1,0 +1,33 @@
+{
+  "pr_number": 872,
+  "archive_path": "docs/history/pr-reviews/PR-872-ts-b-0086-port-2-alignment-tail-audit-scripts-sh-ts-slice-4-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68qgQm",
+    "comment:PRRC_kwDOSF9kNM68qgR5",
+    "comment:PRRC_kwDOSF9kNM68qgRA",
+    "comment:PRRC_kwDOSF9kNM68qgRK",
+    "comment:PRRC_kwDOSF9kNM68qgRT",
+    "comment:PRRC_kwDOSF9kNM68qgRd",
+    "comment:PRRC_kwDOSF9kNM68qgRl",
+    "comment:PRRC_kwDOSF9kNM68qgRq",
+    "comment:PRRC_kwDOSF9kNM68qgt6",
+    "comment:PRRC_kwDOSF9kNM68qgt7",
+    "thread:PRRT_kwDOSF9kNM5-nbT_",
+    "thread:PRRT_kwDOSF9kNM5-nbU5",
+    "thread:PRRT_kwDOSF9kNM5-nbUS",
+    "thread:PRRT_kwDOSF9kNM5-nbUZ",
+    "thread:PRRT_kwDOSF9kNM5-nbUf",
+    "thread:PRRT_kwDOSF9kNM5-nbUm",
+    "thread:PRRT_kwDOSF9kNM5-nbUu",
+    "thread:PRRT_kwDOSF9kNM5-nbUx",
+    "thread:PRRT_kwDOSF9kNM5-nbot",
+    "thread:PRRT_kwDOSF9kNM5-nbou"
+  ],
+  "fetched_at": "2026-08-25T08:28:22.150Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 2 alignment-tail audit scripts (.sh→.ts) — slice 4 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T02:07:09Z",
+  "head_ref": "lane-b/ts-bun-slice-4-alignment-tail-2026-04-30"
+}

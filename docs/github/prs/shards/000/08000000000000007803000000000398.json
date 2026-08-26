@@ -1,0 +1,17 @@
+{
+  "pr_number": 920,
+  "archive_path": "docs/history/pr-reviews/PR-920-git-memory-add-union-merge-driver-for-memory-md-kill-rebase-tax.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM684G6X",
+    "comment:PRRC_kwDOSF9kNM684GO2",
+    "thread:PRRT_kwDOSF9kNM5-xhJG",
+    "thread:PRRT_kwDOSF9kNM5-xhqU"
+  ],
+  "fetched_at": "2026-08-25T08:30:26.019Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "git(memory): add union merge driver for MEMORY.md (kill rebase tax)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T14:53:58Z",
+  "head_ref": "ops/gitattributes-memory-md-merge-union-driver-2026-04-30"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 805,
+  "archive_path": "docs/history/pr-reviews/PR-805-tick-history-2026-04-29t05-50z-drain-aaron-mid-tick-durable-retry-correction-804.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68SQ6k",
+    "thread:PRRT_kwDOSF9kNM5-VpYk"
+  ],
+  "fetched_at": "2026-08-25T08:26:03.076Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:50Z — drain + Aaron mid-tick durable-retry correction (#804)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T06:10:05Z",
+  "head_ref": "tick-history/2026-04-29-tick-0550Z-shard"
+}

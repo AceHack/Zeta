@@ -1,0 +1,12 @@
+{
+  "pr_number": 43,
+  "archive_path": "docs/history/pr-reviews/PR-43-deps-bump-actions-setup-node-from-6-0-0-to-6-4-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:52:26.265Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "deps: bump actions/setup-node from 6.0.0 to 6.4.0",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T14:27:12Z",
+  "head_ref": "dependabot/github_actions/actions/setup-node-6.4.0"
+}

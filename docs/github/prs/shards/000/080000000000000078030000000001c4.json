@@ -1,0 +1,15 @@
+{
+  "pr_number": 452,
+  "archive_path": "docs/history/pr-reviews/PR-452-hygiene-268-pr-preservation-drain-log-for-423-codeql-xref-governance-24.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QZac",
+    "thread:PRRT_kwDOSF9kNM59kafq"
+  ],
+  "fetched_at": "2026-08-25T08:10:55.160Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #423 (CodeQL xref + GOVERNANCE §24)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:16:50Z",
+  "head_ref": "drain/423-pr-preservation-log"
+}

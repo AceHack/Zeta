@@ -1,0 +1,21 @@
+{
+  "pr_number": 1390,
+  "archive_path": "docs/history/pr-reviews/PR-1390-docs-research-substrate-discovery-reference-existing-git-ui-architectural-commit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bZQ7",
+    "comment:PRRC_kwDOSF9kNM69bZQz",
+    "comment:PRRC_kwDOSF9kNM69bZTJ",
+    "comment:PRRC_kwDOSF9kNM69bZTK",
+    "thread:PRRT_kwDOSF9kNM5_LzOa",
+    "thread:PRRT_kwDOSF9kNM5_LzOg",
+    "thread:PRRT_kwDOSF9kNM5_LzP-",
+    "thread:PRRT_kwDOSF9kNM5_LzP9"
+  ],
+  "fetched_at": "2026-08-25T08:49:39.490Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(research): substrate-discovery — reference existing git + UI architectural commitments (search-first)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:58:01Z",
+  "head_ref": "research/substrate-discovery-search-first-corrections-2026-05-03"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 212,
+  "archive_path": "docs/history/pr-reviews/PR-212-backlog-git-native-hygiene-cadences-otto-54-backlog-split-current-cadence-git-ho.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6607D4",
+    "comment:PRRC_kwDOSF9kNM6607E2",
+    "comment:PRRC_kwDOSF9kNM6607EQ",
+    "comment:PRRC_kwDOSF9kNM6607Ei",
+    "comment:PRRC_kwDOSF9kNM6607FE",
+    "thread:PRRT_kwDOSF9kNM59P--J",
+    "thread:PRRT_kwDOSF9kNM59P--R",
+    "thread:PRRT_kwDOSF9kNM59P-95",
+    "thread:PRRT_kwDOSF9kNM59P-9c",
+    "thread:PRRT_kwDOSF9kNM59P-9s"
+  ],
+  "fetched_at": "2026-08-25T08:01:12.145Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: git-native hygiene cadences (Otto-54 — BACKLOG split + CURRENT cadence + git-hotspots)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T23:02:57Z",
+  "head_ref": "backlog/git-native-hygiene-cadences-otto-54"
+}

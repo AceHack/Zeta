@@ -1,0 +1,23 @@
+{
+  "pr_number": 811,
+  "archive_path": "docs/history/pr-reviews/PR-811-absorb-multi-ai-feedback-deepseek-amara-4-p3-backlog-rows-tick-0558z-re-open-of-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68S5sW",
+    "comment:PRRC_kwDOSF9kNM68Sm2k",
+    "comment:PRRC_kwDOSF9kNM68Sm3F",
+    "comment:PRRC_kwDOSF9kNM68SvOe",
+    "comment:PRRC_kwDOSF9kNM68THAg",
+    "thread:PRRT_kwDOSF9kNM5-V5r7",
+    "thread:PRRT_kwDOSF9kNM5-V5sS",
+    "thread:PRRT_kwDOSF9kNM5-WAEU",
+    "thread:PRRT_kwDOSF9kNM5-WHxt",
+    "thread:PRRT_kwDOSF9kNM5-WR2_"
+  ],
+  "fetched_at": "2026-08-25T08:26:16.128Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "absorb: multi-AI feedback (Deepseek + Amara) + 4 P3 backlog rows + tick 0558Z (re-open of #806)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T06:57:14Z",
+  "head_ref": "tick-history/2026-04-29-tick-0558Z-packet-absorb"
+}

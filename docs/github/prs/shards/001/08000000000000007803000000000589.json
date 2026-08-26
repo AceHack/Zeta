@@ -1,0 +1,23 @@
+{
+  "pr_number": 1417,
+  "archive_path": "docs/history/pr-reviews/PR-1417-feat-b3-stryker-net-mutation-testing-in-ci-closes-b3-a-last-math-proofs-p0.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cTKa",
+    "comment:PRRC_kwDOSF9kNM69cTKf",
+    "comment:PRRC_kwDOSF9kNM69cTKh",
+    "comment:PRRC_kwDOSF9kNM69cTKn",
+    "comment:PRRC_kwDOSF9kNM69cTKs",
+    "thread:PRRT_kwDOSF9kNM5_Mhca",
+    "thread:PRRT_kwDOSF9kNM5_Mhcd",
+    "thread:PRRT_kwDOSF9kNM5_Mhcf",
+    "thread:PRRT_kwDOSF9kNM5_Mhck",
+    "thread:PRRT_kwDOSF9kNM5_Mhcp"
+  ],
+  "fetched_at": "2026-08-25T08:50:46.745Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B3): Stryker.NET mutation testing in CI (closes B3 -> A; last math-proofs P0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:13:52Z",
+  "head_ref": "otto/b3-stryker-mutation-ci-workflow-2026-05-03"
+}

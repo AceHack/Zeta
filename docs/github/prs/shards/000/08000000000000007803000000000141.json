@@ -1,0 +1,23 @@
+{
+  "pr_number": 321,
+  "archive_path": "docs/history/pr-reviews/PR-321-core-graph-largesteigenvalue-via-power-iteration-10th-graduation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM667hkd",
+    "comment:PRRC_kwDOSF9kNM667hl0",
+    "comment:PRRC_kwDOSF9kNM667hlB",
+    "comment:PRRC_kwDOSF9kNM667hlO",
+    "comment:PRRC_kwDOSF9kNM667hlh",
+    "thread:PRRT_kwDOSF9kNM59U2X8",
+    "thread:PRRT_kwDOSF9kNM59U2XP",
+    "thread:PRRT_kwDOSF9kNM59U2Xn",
+    "thread:PRRT_kwDOSF9kNM59U2Xw",
+    "thread:PRRT_kwDOSF9kNM59U2YJ"
+  ],
+  "fetched_at": "2026-08-25T08:04:52.319Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: Graph.largestEigenvalue via power iteration — 10th graduation",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T07:35:49Z",
+  "head_ref": "feat/graph-largest-eigenvalue-power-iteration"
+}

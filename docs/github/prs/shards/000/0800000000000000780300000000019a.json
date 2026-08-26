@@ -1,0 +1,12 @@
+{
+  "pr_number": 410,
+  "archive_path": "docs/history/pr-reviews/PR-410-backlog-agent-peer-review-alone-is-enough-to-graduate-collapse-three-state-ladde.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:09:05.650Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: agent peer review alone is enough to graduate (collapse three-state ladder)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T02:40:53Z",
+  "head_ref": "backlog/agent-peer-review-sufficient-to-graduate"
+}

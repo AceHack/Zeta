@@ -1,0 +1,27 @@
+{
+  "pr_number": 1129,
+  "archive_path": "docs/history/pr-reviews/PR-1129-backlog-b-0156-memory-ts-standardization-for-non-install-scripts-prefer-ts-over-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69NILK",
+    "comment:PRRC_kwDOSF9kNM69NILO",
+    "comment:PRRC_kwDOSF9kNM69NIZ0",
+    "comment:PRRC_kwDOSF9kNM69NIZT",
+    "comment:PRRC_kwDOSF9kNM69NIaK",
+    "comment:PRRC_kwDOSF9kNM69NIaY",
+    "comment:PRRC_kwDOSF9kNM69NIav",
+    "thread:PRRT_kwDOSF9kNM5_BBOa",
+    "thread:PRRT_kwDOSF9kNM5_BBOe",
+    "thread:PRRT_kwDOSF9kNM5_BBYY",
+    "thread:PRRT_kwDOSF9kNM5_BBYv",
+    "thread:PRRT_kwDOSF9kNM5_BBZA",
+    "thread:PRRT_kwDOSF9kNM5_BBZJ",
+    "thread:PRRT_kwDOSF9kNM5_BBZb"
+  ],
+  "fetched_at": "2026-08-25T08:39:10.381Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0156) + memory: TS standardization for non-install scripts + prefer-TS-over-dynamic-bash discipline (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T17:28:00Z",
+  "head_ref": "backlog/b0156-typescript-standardization-non-install-scripts-aaron-2026-05-01"
+}

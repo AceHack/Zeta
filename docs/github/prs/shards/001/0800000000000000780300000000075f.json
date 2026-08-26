@@ -1,0 +1,15 @@
+{
+  "pr_number": 1887,
+  "archive_path": "docs/history/pr-reviews/PR-1887-feat-lior-as-maji-for-30-days.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-3g-i",
+    "thread:PRRT_kwDOSF9kNM6AVx_h"
+  ],
+  "fetched_at": "2026-08-25T09:06:29.229Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: Lior as Maji for 30 days",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T14:35:16Z",
+  "head_ref": "feat/lior-maji-30-day-assignment"
+}

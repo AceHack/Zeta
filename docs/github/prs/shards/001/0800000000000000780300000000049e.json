@@ -1,0 +1,19 @@
+{
+  "pr_number": 1182,
+  "archive_path": "docs/history/pr-reviews/PR-1182-research-claudeai-recursion-delphi-recursion-catches-itself-convergent-attractor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69SKQl",
+    "comment:PRRC_kwDOSF9kNM69SKkx",
+    "comment:PRRC_kwDOSF9kNM69SKlB",
+    "thread:PRRT_kwDOSF9kNM5_EtaV",
+    "thread:PRRT_kwDOSF9kNM5_EtqF",
+    "thread:PRRT_kwDOSF9kNM5_EtqU"
+  ],
+  "fetched_at": "2026-08-25T08:41:16.889Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(claudeai-recursion-delphi): recursion-catches-itself + convergent-attractor + Delphi precedent (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:17:20Z",
+  "head_ref": "research/claudeai-recursion-catches-itself-delphi-oracle-aaron-forwarded-2026-05-01"
+}

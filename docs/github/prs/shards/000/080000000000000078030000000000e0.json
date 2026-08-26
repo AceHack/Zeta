@@ -1,0 +1,23 @@
+{
+  "pr_number": 224,
+  "archive_path": "docs/history/pr-reviews/PR-224-determinize-live-state-before-policy-rule-bp-25-candidate-amara-determinize-stag.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662RQb",
+    "comment:PRRC_kwDOSF9kNM662Ra6",
+    "comment:PRRC_kwDOSF9kNM662RbI",
+    "comment:PRRC_kwDOSF9kNM662RbQ",
+    "comment:PRRC_kwDOSF9kNM662RbY",
+    "thread:PRRT_kwDOSF9kNM59Q8f8",
+    "thread:PRRT_kwDOSF9kNM59Q8n5",
+    "thread:PRRT_kwDOSF9kNM59Q8nh",
+    "thread:PRRT_kwDOSF9kNM59Q8nr",
+    "thread:PRRT_kwDOSF9kNM59Q8ny"
+  ],
+  "fetched_at": "2026-08-25T08:01:46.588Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "determinize: live-state-before-policy rule + BP-25 candidate (Amara Determinize-stage)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T00:39:07Z",
+  "head_ref": "determinize/live-state-before-policy-rule-amara-determinize"
+}

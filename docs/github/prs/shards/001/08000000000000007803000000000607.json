@@ -1,0 +1,23 @@
+{
+  "pr_number": 1543,
+  "archive_path": "docs/history/pr-reviews/PR-1543-fix-memory-md-compress-25-entries-in-401-500-char-tier-b-0006-tier-33.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM692hmz",
+    "comment:PRRC_kwDOSF9kNM692hnC",
+    "comment:PRRC_kwDOSF9kNM692hnO",
+    "comment:PRRC_kwDOSF9kNM692hne",
+    "comment:PRRC_kwDOSF9kNM692hnv",
+    "thread:PRRT_kwDOSF9kNM5_gOh2",
+    "thread:PRRT_kwDOSF9kNM5_gOhK",
+    "thread:PRRT_kwDOSF9kNM5_gOhS",
+    "thread:PRRT_kwDOSF9kNM5_gOhe",
+    "thread:PRRT_kwDOSF9kNM5_gOhq"
+  ],
+  "fetched_at": "2026-08-25T08:55:52.667Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): compress 25 entries in 401-500 char tier — B-0006 tier-33",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T23:43:30Z",
+  "head_ref": "fix/memory-md-tier-33-aaron-2026-05-04"
+}

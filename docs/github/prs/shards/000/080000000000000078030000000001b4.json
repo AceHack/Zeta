@@ -1,0 +1,23 @@
+{
+  "pr_number": 436,
+  "archive_path": "docs/history/pr-reviews/PR-436-drain-tick-history-append-135-235-drain-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QC9k",
+    "comment:PRRC_kwDOSF9kNM67QCvW",
+    "comment:PRRC_kwDOSF9kNM67QExR",
+    "comment:PRRC_kwDOSF9kNM67QFl8",
+    "comment:PRRC_kwDOSF9kNM67QqOP",
+    "comment:PRRC_kwDOSF9kNM67QqfV",
+    "thread:PRRT_kwDOSF9kNM59kI8d",
+    "thread:PRRT_kwDOSF9kNM59kIxH",
+    "thread:PRRT_kwDOSF9kNM59koBT",
+    "thread:PRRT_kwDOSF9kNM59koOp"
+  ],
+  "fetched_at": "2026-08-25T08:10:13.802Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(tick-history): append #135 + #235 drain row",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:30:15Z",
+  "head_ref": "drain/tick-history-135-235"
+}

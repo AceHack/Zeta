@@ -1,0 +1,23 @@
+{
+  "pr_number": 130,
+  "archive_path": "docs/history/pr-reviews/PR-130-round-44-auto-loop-30-tick-history-row-stacking-risk-published-bottleneck-princi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66LQID",
+    "comment:PRRC_kwDOSF9kNM66LQIz",
+    "comment:PRRC_kwDOSF9kNM66LQJ4",
+    "comment:PRRC_kwDOSF9kNM66LQJZ",
+    "comment:PRRC_kwDOSF9kNM66LRBq",
+    "thread:PRRT_kwDOSF9kNM58xAaA",
+    "thread:PRRT_kwDOSF9kNM58xAaj",
+    "thread:PRRT_kwDOSF9kNM58xAbG",
+    "thread:PRRT_kwDOSF9kNM58xAbg",
+    "thread:PRRT_kwDOSF9kNM58xBGr"
+  ],
+  "fetched_at": "2026-08-25T07:55:42.178Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-30: tick-history row — stacking-risk published + bottleneck-principle posture + CLI-cascade",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T11:15:14Z",
+  "head_ref": "tick-close-autoloop-30"
+}

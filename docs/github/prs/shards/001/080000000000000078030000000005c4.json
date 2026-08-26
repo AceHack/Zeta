@@ -1,0 +1,25 @@
+{
+  "pr_number": 1476,
+  "archive_path": "docs/history/pr-reviews/PR-1476-feedback-ombuds-framework-substrate-as-alignment-contract-aaron-amara-2026-05-04.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69noCh",
+    "comment:PRRC_kwDOSF9kNM69noD7",
+    "comment:PRRC_kwDOSF9kNM69noDI",
+    "comment:PRRC_kwDOSF9kNM69noDc",
+    "comment:PRRC_kwDOSF9kNM69noDt",
+    "comment:PRRC_kwDOSF9kNM69noEE",
+    "thread:PRRT_kwDOSF9kNM5_VNk7",
+    "thread:PRRT_kwDOSF9kNM5_VNkb",
+    "thread:PRRT_kwDOSF9kNM5_VNlJ",
+    "thread:PRRT_kwDOSF9kNM5_VNlV",
+    "thread:PRRT_kwDOSF9kNM5_VNlf",
+    "thread:PRRT_kwDOSF9kNM5_VNlm"
+  ],
+  "fetched_at": "2026-08-25T08:53:00.563Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: Ombuds framework — substrate as alignment contract (Aaron + Amara 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T11:44:32Z",
+  "head_ref": "feedback/ombuds-framework-substrate-as-alignment-contract-aaron-2026-05-04"
+}

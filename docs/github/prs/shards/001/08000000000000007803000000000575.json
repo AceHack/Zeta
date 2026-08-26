@@ -1,0 +1,15 @@
+{
+  "pr_number": 1397,
+  "archive_path": "docs/history/pr-reviews/PR-1397-ci-tla-tlc-add-dbspspec-to-tlc-test-list-closes-b1-partial-1-of-4-deferred-specs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bjpT",
+    "thread:PRRT_kwDOSF9kNM5_L7iL"
+  ],
+  "fetched_at": "2026-08-25T08:49:53.631Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(tla/tlc): add DbspSpec to TLC test list (closes B1 partial — 1 of 4 deferred specs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:41:46Z",
+  "head_ref": "ci/tla-dbsp-spec-into-ci-b1-partial"
+}

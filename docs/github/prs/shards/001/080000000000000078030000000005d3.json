@@ -1,0 +1,12 @@
+{
+  "pr_number": 1491,
+  "archive_path": "docs/history/pr-reviews/PR-1491-hygiene-memory-md-add-orphan-entry-for-middle-path-manifestation-memory-file.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:53:44.555Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(MEMORY.md): add orphan entry for middle-path-manifestation memory file",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:39:18Z",
+  "head_ref": "hygiene/memory-md-add-middle-path-manifestation-orphan-fix-2026-05-04"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 1127,
+  "archive_path": "docs/history/pr-reviews/PR-1127-backlog-b-0155-github-settings-refactor-ruleset-split-git-native-preferred-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69MwxZ",
+    "comment:PRRC_kwDOSF9kNM69Mwxw",
+    "comment:PRRC_kwDOSF9kNM69MwyB",
+    "comment:PRRC_kwDOSF9kNM69MwyP",
+    "comment:PRRC_kwDOSF9kNM69Mwyd",
+    "comment:PRRC_kwDOSF9kNM69NYI1",
+    "comment:PRRC_kwDOSF9kNM69NYIh",
+    "comment:PRRC_kwDOSF9kNM69NYJE",
+    "comment:PRRC_kwDOSF9kNM69NYJP",
+    "thread:PRRT_kwDOSF9kNM5_Awkw",
+    "thread:PRRT_kwDOSF9kNM5_AwlC",
+    "thread:PRRT_kwDOSF9kNM5_AwlS",
+    "thread:PRRT_kwDOSF9kNM5_Awlb",
+    "thread:PRRT_kwDOSF9kNM5_Awlo",
+    "thread:PRRT_kwDOSF9kNM5_BMy9",
+    "thread:PRRT_kwDOSF9kNM5_BMzL",
+    "thread:PRRT_kwDOSF9kNM5_BMzU",
+    "thread:PRRT_kwDOSF9kNM5_BMzY"
+  ],
+  "fetched_at": "2026-08-25T08:39:04.937Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0155): GitHub settings refactor — ruleset split + git-native preferred (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T17:45:29Z",
+  "head_ref": "backlog/b0155-github-settings-ruleset-split-git-native-preferred-aaron-2026-05-01"
+}

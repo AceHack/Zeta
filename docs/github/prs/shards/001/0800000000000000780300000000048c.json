@@ -1,0 +1,15 @@
+{
+  "pr_number": 1164,
+  "archive_path": "docs/history/pr-reviews/PR-1164-claude-md-loading-taxonomy-three-mechanisms-multi-harness-reframe-canary-gated.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Qti7",
+    "thread:PRRT_kwDOSF9kNM5_Dnv-"
+  ],
+  "fetched_at": "2026-08-25T08:40:31.328Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "claude.md(loading-taxonomy): three mechanisms; multi-harness reframe; canary-gated",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T21:22:25Z",
+  "head_ref": "otto/loading-taxonomy-rebased-2026-05-01"
+}

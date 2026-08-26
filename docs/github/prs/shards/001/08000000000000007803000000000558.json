@@ -1,0 +1,19 @@
+{
+  "pr_number": 1368,
+  "archive_path": "docs/history/pr-reviews/PR-1368-hygiene-tick-history-2026-05-03t09-38z-step-0a-fired-20-min-gap-segment-summary.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69a0VF",
+    "comment:PRRC_kwDOSF9kNM69a0VH",
+    "comment:PRRC_kwDOSF9kNM69a0VT",
+    "thread:PRRT_kwDOSF9kNM5_LWMS",
+    "thread:PRRT_kwDOSF9kNM5_LWMU",
+    "thread:PRRT_kwDOSF9kNM5_LWMe"
+  ],
+  "fetched_at": "2026-08-25T08:48:49.701Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T09:38Z — Step 0a fired (20 min gap) + segment summary",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T09:41:38Z",
+  "head_ref": "hygiene/tick-2026-05-03-0938Z-mechanical-check-fired-cadence-gap-closed"
+}

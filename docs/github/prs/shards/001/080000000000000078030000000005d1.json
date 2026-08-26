@@ -1,0 +1,23 @@
+{
+  "pr_number": 1489,
+  "archive_path": "docs/history/pr-reviews/PR-1489-feedback-aaron-s-cost-receipts-foundation-tile-recognition-short-horizon-long-ho.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69rNlT",
+    "comment:PRRC_kwDOSF9kNM69rNmd",
+    "comment:PRRC_kwDOSF9kNM69rNnN",
+    "comment:PRRC_kwDOSF9kNM69rNnv",
+    "comment:PRRC_kwDOSF9kNM69rNoX",
+    "thread:PRRT_kwDOSF9kNM5_X6sk",
+    "thread:PRRT_kwDOSF9kNM5_X6t8",
+    "thread:PRRT_kwDOSF9kNM5_X6tb",
+    "thread:PRRT_kwDOSF9kNM5_X6uU",
+    "thread:PRRT_kwDOSF9kNM5_X6uq"
+  ],
+  "fetched_at": "2026-08-25T08:53:39.702Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: Aaron's cost-receipts + foundation-tile recognition + short-horizon-long-horizon friction (Aaron + Claude.ai 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:20:26Z",
+  "head_ref": "feedback/aaron-cost-receipts-anchor-self-recognition-pirate-with-anchor-he-didnt-know-he-had-aaron-claudeai-2026-05-04"
+}

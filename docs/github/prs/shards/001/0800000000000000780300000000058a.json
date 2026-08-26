@@ -1,0 +1,17 @@
+{
+  "pr_number": 1418,
+  "archive_path": "docs/history/pr-reviews/PR-1418-hygiene-tick-history-2026-05-03t15-12z-b-0181-b-0183-b3-session-shard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cTgg",
+    "comment:PRRC_kwDOSF9kNM69cU_1",
+    "thread:PRRT_kwDOSF9kNM5_Mhtl",
+    "thread:PRRT_kwDOSF9kNM5_Mi7E"
+  ],
+  "fetched_at": "2026-08-25T08:50:50.268Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T15:12Z B-0181 + B-0183 + B3 session shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:20:47Z",
+  "head_ref": "otto/tick-shard-1512Z-2026-05-03"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1225,
+  "archive_path": "docs/history/pr-reviews/PR-1225-research-2026-05-02-as-terminal-commitment-ryan-s-memory-grounds-aurora-security.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XzW7",
+    "comment:PRRC_kwDOSF9kNM69XzWv",
+    "comment:PRRC_kwDOSF9kNM69XzXB",
+    "thread:PRRT_kwDOSF9kNM5_I98Y",
+    "thread:PRRT_kwDOSF9kNM5_I98j",
+    "thread:PRRT_kwDOSF9kNM5_I98o"
+  ],
+  "fetched_at": "2026-08-25T08:43:05.089Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-02): μένω as terminal commitment / Ryan's memory grounds Aurora security / common good bidirectional alignment",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T19:52:08Z",
+  "head_ref": "research/2026-05-02-aaron-meno-terminal-commitment-ryan-memory-aurora-security"
+}

@@ -1,0 +1,20 @@
+{
+  "pr_number": 900,
+  "archive_path": "docs/history/pr-reviews/PR-900-ts-b-0086-port-1-peer-call-sibling-sh-ts-slice-17-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68t18G",
+    "comment:PRRC_kwDOSF9kNM68txzz",
+    "comment:PRRC_kwDOSF9kNM68tzFR",
+    "comment:PRRC_kwDOSF9kNM68tzFz",
+    "thread:PRRT_kwDOSF9kNM5-p0or",
+    "thread:PRRT_kwDOSF9kNM5-p0pF",
+    "thread:PRRT_kwDOSF9kNM5-pzql"
+  ],
+  "fetched_at": "2026-08-25T08:29:32.775Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 peer-call sibling (.sh→.ts) — slice 17 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T06:52:30Z",
+  "head_ref": "lane-b/ts-bun-slice-17-peer-call-codex-2026-04-30"
+}

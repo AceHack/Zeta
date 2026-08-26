@@ -1,0 +1,15 @@
+{
+  "pr_number": 387,
+  "archive_path": "docs/history/pr-reviews/PR-387-backlog-btw-evangelism-durable-queue-gap-fix-aaron-2026-04-24.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67L-zU",
+    "thread:PRRT_kwDOSF9kNM59hKUO"
+  ],
+  "fetched_at": "2026-08-25T08:07:56.860Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: /btw evangelism + durable-queue gap fix (Aaron 2026-04-24)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T21:49:59Z",
+  "head_ref": "backlog/btw-evangelism-plus-durable-queue-fix"
+}

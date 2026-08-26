@@ -1,0 +1,15 @@
+{
+  "pr_number": 970,
+  "archive_path": "docs/history/pr-reviews/PR-970-hygiene-tick-history-shard-2312z-rediscoverable-from-main-invariant-936-stale-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69BqWS",
+    "thread:PRRT_kwDOSF9kNM5-4j7X"
+  ],
+  "fetched_at": "2026-08-25T08:32:32.453Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2312Z — rediscoverable-from-main invariant + #936 stale-PR fix",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:15:52Z",
+  "head_ref": "hygiene/tick-history-2026-04-30T2312Z-936-fix-plus-invariant"
+}

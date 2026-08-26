@@ -1,0 +1,15 @@
+{
+  "pr_number": 1726,
+  "archive_path": "docs/history/pr-reviews/PR-1726-backlog-b-0209-background-only-mutual-monitoring.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-iuX0",
+    "thread:PRRT_kwDOSF9kNM6AGOZt"
+  ],
+  "fetched_at": "2026-08-25T09:03:16.925Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0209): background-only mutual monitoring",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T19:06:38Z",
+  "head_ref": "claim/task-background-only-mutual-monitoring-note"
+}

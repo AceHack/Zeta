@@ -1,0 +1,22 @@
+{
+  "pr_number": 861,
+  "archive_path": "docs/history/pr-reviews/PR-861-receipt-host-mutation-ruleset-15256879-code-quality-rule-removed-aaron-auth-2026.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68mhQK",
+    "comment:PRRC_kwDOSF9kNM68mjo6",
+    "comment:PRRC_kwDOSF9kNM68mjxM",
+    "comment:PRRC_kwDOSF9kNM68mjyG",
+    "comment:PRRC_kwDOSF9kNM68mkIb",
+    "thread:PRRT_kwDOSF9kNM5-kjBY",
+    "thread:PRRT_kwDOSF9kNM5-kk5W",
+    "thread:PRRT_kwDOSF9kNM5-kk6H",
+    "thread:PRRT_kwDOSF9kNM5-kkzc"
+  ],
+  "fetched_at": "2026-08-25T08:27:53.130Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "receipt(host-mutation): ruleset 15256879 / code_quality rule removed (Aaron-auth 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T21:24:48Z",
+  "head_ref": "receipt/host-mutation-ruleset-15256879-code-quality-removed-2026-04-29"
+}

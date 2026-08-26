@@ -1,0 +1,21 @@
+{
+  "pr_number": 1617,
+  "archive_path": "docs/history/pr-reviews/PR-1617-backlog-p3-b-0204-linguistic-seed-kernel-substrate-4-claim-synthesis-collapse-aa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-AH1D",
+    "comment:PRRC_kwDOSF9kNM6-AH1h",
+    "comment:PRRC_kwDOSF9kNM6-AH1y",
+    "comment:PRRC_kwDOSF9kNM6-AH2I",
+    "thread:PRRT_kwDOSF9kNM5_nVC9",
+    "thread:PRRT_kwDOSF9kNM5_nVCo",
+    "thread:PRRT_kwDOSF9kNM5_nVDJ",
+    "thread:PRRT_kwDOSF9kNM5_nVDZ"
+  ],
+  "fetched_at": "2026-08-25T08:58:59.736Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P3): B-0204 linguistic seed kernel substrate -- 4-claim synthesis collapse (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:24:03Z",
+  "head_ref": "backlog/B-0204-linguistic-seed-kernel-substrate-aaron-2026-05-05"
+}

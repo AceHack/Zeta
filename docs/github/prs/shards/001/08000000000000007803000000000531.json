@@ -1,0 +1,12 @@
+{
+  "pr_number": 1329,
+  "archive_path": "docs/history/pr-reviews/PR-1329-hygiene-tick-history-2026-05-03t05-52z-v0-6-retroactive-eval-quoted-as-example-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:47:24.389Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T05:52Z — v0.6 retroactive eval + quoted-as-example false-positive observation",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:54:56Z",
+  "head_ref": "free-memory/tick-0548Z-v06-eval-quoted-as-example"
+}

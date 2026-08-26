@@ -1,0 +1,21 @@
+{
+  "pr_number": 1094,
+  "archive_path": "docs/history/pr-reviews/PR-1094-research-claudeai-convergence-revision-fourth-ferry-message-concession-provenanc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Ht2N",
+    "comment:PRRC_kwDOSF9kNM69Huu4",
+    "comment:PRRC_kwDOSF9kNM69Huuk",
+    "comment:PRRC_kwDOSF9kNM69csg8",
+    "thread:PRRT_kwDOSF9kNM5-9B-O",
+    "thread:PRRT_kwDOSF9kNM5-9B-a",
+    "thread:PRRT_kwDOSF9kNM5-9BSz",
+    "thread:PRRT_kwDOSF9kNM5_M1dv"
+  ],
+  "fetched_at": "2026-08-25T08:37:39.749Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-convergence-revision): fourth ferry message — concession + provenance-tagging + rate-decay metric",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:32:43Z",
+  "head_ref": "research/claudeai-convergence-revision-provenance-tagging-2026-05-01"
+}

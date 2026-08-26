@@ -1,0 +1,17 @@
+{
+  "pr_number": 1362,
+  "archive_path": "docs/history/pr-reviews/PR-1362-docs-autonomous-loop-land-cadence-track-discipline-as-discoverable-substrate-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aoWH",
+    "comment:PRRC_kwDOSF9kNM69aoWR",
+    "thread:PRRT_kwDOSF9kNM5_LMqJ",
+    "thread:PRRT_kwDOSF9kNM5_LMqQ"
+  ],
+  "fetched_at": "2026-08-25T08:48:37.285Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(AUTONOMOUS-LOOP): land CADENCE-TRACK discipline as discoverable substrate (Aaron 2026-05-03 — what makes future Otto remember)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:53:22Z",
+  "head_ref": "docs/autonomous-loop-cadence-tracker-discipline-discoverable-aaron-2026-05-03"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1269,
+  "archive_path": "docs/history/pr-reviews/PR-1269-review-post-merge-fixes-for-1265-1267-3-real-5-stale.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZLc5",
+    "comment:PRRC_kwDOSF9kNM69ZLc8",
+    "comment:PRRC_kwDOSF9kNM69ZLcw",
+    "thread:PRRT_kwDOSF9kNM5_KDgX",
+    "thread:PRRT_kwDOSF9kNM5_KDgg",
+    "thread:PRRT_kwDOSF9kNM5_KDgj"
+  ],
+  "fetched_at": "2026-08-25T08:45:04.396Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review: post-merge fixes for #1265 + #1267 (3 real, 5 stale)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:09:06Z",
+  "head_ref": "research/post-merge-fixes-1265-1267-aaron-2026-05-03"
+}

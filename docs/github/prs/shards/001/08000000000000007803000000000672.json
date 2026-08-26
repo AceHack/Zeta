@@ -1,0 +1,15 @@
+{
+  "pr_number": 1650,
+  "archive_path": "docs/history/pr-reviews/PR-1650-fix-post-1648-redact-third-party-email-pii-p0-copilot-catch-acknowledge-phantom-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-ElJR",
+    "thread:PRRT_kwDOSF9kNM5_qszq"
+  ],
+  "fetched_at": "2026-08-25T09:00:14.299Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1648): redact third-party email PII (P0 Copilot catch) + acknowledge phantom table-format threads",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:39:48Z",
+  "head_ref": "fixup/1648-third-party-pii-redaction-plus-table-format-2026-05-05"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 1419,
+  "archive_path": "docs/history/pr-reviews/PR-1419-feat-c1-partial-chaosenvdeterminism-cfg-atomize-splitmix-advancetime-critical-se.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cUz5",
+    "comment:PRRC_kwDOSF9kNM69cUzZ",
+    "comment:PRRC_kwDOSF9kNM69cUzm",
+    "comment:PRRC_kwDOSF9kNM69cUzv",
+    "thread:PRRT_kwDOSF9kNM5_Miw4",
+    "thread:PRRT_kwDOSF9kNM5_Miw_",
+    "thread:PRRT_kwDOSF9kNM5_Miwl",
+    "thread:PRRT_kwDOSF9kNM5_Miwx"
+  ],
+  "fetched_at": "2026-08-25T08:50:52.984Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(C1 partial): ChaosEnvDeterminism cfg + atomize splitMix+AdvanceTime critical section",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:20:30Z",
+  "head_ref": "otto/c1-chaos-env-determinism-cfg-atomize-2026-05-03"
+}

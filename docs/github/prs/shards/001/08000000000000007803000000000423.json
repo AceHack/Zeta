@@ -1,0 +1,32 @@
+{
+  "pr_number": 1059,
+  "archive_path": "docs/history/pr-reviews/PR-1059-research-claudeai-formalization-followup-2-binary-wire-compat-four-tool-verifica.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69G1k7",
+    "comment:PRRC_kwDOSF9kNM69G3ko",
+    "comment:PRRC_kwDOSF9kNM69G3lB",
+    "comment:PRRC_kwDOSF9kNM69G3lM",
+    "comment:PRRC_kwDOSF9kNM69GmAQ",
+    "comment:PRRC_kwDOSF9kNM69GnT-",
+    "comment:PRRC_kwDOSF9kNM69GnT1",
+    "comment:PRRC_kwDOSF9kNM69GnTV",
+    "comment:PRRC_kwDOSF9kNM69GnUG",
+    "comment:PRRC_kwDOSF9kNM69Goz7",
+    "thread:PRRT_kwDOSF9kNM5-8LhY",
+    "thread:PRRT_kwDOSF9kNM5-8Mex",
+    "thread:PRRT_kwDOSF9kNM5-8MfH",
+    "thread:PRRT_kwDOSF9kNM5-8MfN",
+    "thread:PRRT_kwDOSF9kNM5-8MfV",
+    "thread:PRRT_kwDOSF9kNM5-8Nn2",
+    "thread:PRRT_kwDOSF9kNM5-8YXt",
+    "thread:PRRT_kwDOSF9kNM5-8YYA",
+    "thread:PRRT_kwDOSF9kNM5-8YYI"
+  ],
+  "fetched_at": "2026-08-25T08:36:21.159Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-formalization-followup-2): binary-wire-compat + four-tool verification stack (Lean+Z3+TLA+FsCheck) — existing proofs verified (Aaron forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:07:29Z",
+  "head_ref": "research/claudeai-formalization-followup-2-verification-stack-aaron-2026-05-01"
+}

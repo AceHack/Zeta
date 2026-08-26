@@ -1,0 +1,12 @@
+{
+  "pr_number": 1479,
+  "archive_path": "docs/history/pr-reviews/PR-1479-backlog-b-0187-close-scope-error-per-claude-ai-peer-review-family-as-research-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:53:10.805Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0187): close — scope-error per Claude.ai peer-review (family-as-research-subject was over-reach)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T12:33:05Z",
+  "head_ref": "close/b-0187-dialectical-friction-research-row-2026-05-04"
+}

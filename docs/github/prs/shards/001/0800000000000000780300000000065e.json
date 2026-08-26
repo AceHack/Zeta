@@ -1,0 +1,21 @@
+{
+  "pr_number": 1630,
+  "archive_path": "docs/history/pr-reviews/PR-1630-shard-2026-05-05t11-25z-empirical-falsifier-scaffold-complete-b-0205-b-0196-scal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-BaLK",
+    "comment:PRRC_kwDOSF9kNM6-Bce9",
+    "comment:PRRC_kwDOSF9kNM6-BcgA",
+    "comment:PRRC_kwDOSF9kNM6-Bcgb",
+    "thread:PRRT_kwDOSF9kNM5_oTfs",
+    "thread:PRRT_kwDOSF9kNM5_oVH2",
+    "thread:PRRT_kwDOSF9kNM5_oVIq",
+    "thread:PRRT_kwDOSF9kNM5_oVJB"
+  ],
+  "fetched_at": "2026-08-25T08:59:28.458Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T11:25Z): empirical-falsifier scaffold complete -- B-0205 + B-0196 scale-free-in-time + B-0201 paper-search consolidation",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:44:53Z",
+  "head_ref": "shard/2026-05-05-1125Z"
+}

@@ -1,0 +1,33 @@
+{
+  "pr_number": 602,
+  "archive_path": "docs/history/pr-reviews/PR-602-research-aurora-round-3-5-share-cross-ai-chain-absorb-standardization-doc-bindin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67XrKN",
+    "comment:PRRC_kwDOSF9kNM67Xrf5",
+    "comment:PRRC_kwDOSF9kNM67Xrf_",
+    "comment:PRRC_kwDOSF9kNM67Xrfi",
+    "comment:PRRC_kwDOSF9kNM67Xrfs",
+    "comment:PRRC_kwDOSF9kNM67Xrfy",
+    "comment:PRRC_kwDOSF9kNM67Xybb",
+    "comment:PRRC_kwDOSF9kNM67Xybk",
+    "comment:PRRC_kwDOSF9kNM67Xybn",
+    "comment:PRRC_kwDOSF9kNM67YGlj",
+    "thread:PRRT_kwDOSF9kNM59qP--",
+    "thread:PRRT_kwDOSF9kNM59qP-1",
+    "thread:PRRT_kwDOSF9kNM59qP-5",
+    "thread:PRRT_kwDOSF9kNM59qP-r",
+    "thread:PRRT_kwDOSF9kNM59qP_E",
+    "thread:PRRT_kwDOSF9kNM59qPuc",
+    "thread:PRRT_kwDOSF9kNM59qVeJ",
+    "thread:PRRT_kwDOSF9kNM59qVeS",
+    "thread:PRRT_kwDOSF9kNM59qVeV",
+    "thread:PRRT_kwDOSF9kNM59qlUc"
+  ],
+  "fetched_at": "2026-08-25T08:18:19.963Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(aurora) Round-3+: 5-share cross-AI chain absorb + standardization doc binding refinements",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:34:02Z",
+  "head_ref": "research/aurora-math-round-3-native-inference"
+}

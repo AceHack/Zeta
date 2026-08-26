@@ -1,0 +1,19 @@
+{
+  "pr_number": 584,
+  "archive_path": "docs/history/pr-reviews/PR-584-docs-adr-otto-283-reflection-partial-migration-finding-on-scope-vs-tags-task-270.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67W4Kb",
+    "comment:PRRC_kwDOSF9kNM67W4Ok",
+    "comment:PRRC_kwDOSF9kNM67W8b5",
+    "comment:PRRC_kwDOSF9kNM67W8cI",
+    "thread:PRRT_kwDOSF9kNM59pm2x",
+    "thread:PRRT_kwDOSF9kNM59pm56"
+  ],
+  "fetched_at": "2026-08-25T08:17:42.764Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(adr): Otto-283 reflection — partial-migration finding on scope-vs-tags (task #270)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:43:23Z",
+  "head_ref": "backlog/otto-283-reflection-partial-migration-finding"
+}

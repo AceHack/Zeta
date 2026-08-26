@@ -1,0 +1,31 @@
+{
+  "pr_number": 560,
+  "archive_path": "docs/history/pr-reviews/PR-560-research-maji-amara-second-correction-maji-messiah-separation-9b-messiahscore.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V4y4",
+    "comment:PRRC_kwDOSF9kNM67V5Bw",
+    "comment:PRRC_kwDOSF9kNM67WDBz",
+    "comment:PRRC_kwDOSF9kNM67WDCF",
+    "comment:PRRC_kwDOSF9kNM67WDXm",
+    "comment:PRRC_kwDOSF9kNM67WID-",
+    "comment:PRRC_kwDOSF9kNM67WIgN",
+    "comment:PRRC_kwDOSF9kNM67WIgR",
+    "comment:PRRC_kwDOSF9kNM67WIgV",
+    "comment:PRRC_kwDOSF9kNM67WKc0",
+    "comment:PRRC_kwDOSF9kNM67WKcS",
+    "comment:PRRC_kwDOSF9kNM67WKdW",
+    "thread:PRRT_kwDOSF9kNM59o0fU",
+    "thread:PRRT_kwDOSF9kNM59o0qz",
+    "thread:PRRT_kwDOSF9kNM59o83C",
+    "thread:PRRT_kwDOSF9kNM59pA5h",
+    "thread:PRRT_kwDOSF9kNM59pA5l",
+    "thread:PRRT_kwDOSF9kNM59pA5n"
+  ],
+  "fetched_at": "2026-08-25T08:16:31.315Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(maji): Amara second correction — Maji ≠ Messiah separation (§9b + MessiahScore)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:30:44Z",
+  "head_ref": "research/maji-vs-messiah-amara-second-correction-2026-04-26"
+}

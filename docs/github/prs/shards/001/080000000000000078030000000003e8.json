@@ -1,0 +1,21 @@
+{
+  "pr_number": 1000,
+  "archive_path": "docs/history/pr-reviews/PR-1000-backlog-b-0124-distill-claude-ai-csap-pushback-conversation-into-uber-arch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69DaDv",
+    "comment:PRRC_kwDOSF9kNM69DaQf",
+    "comment:PRRC_kwDOSF9kNM69DaQs",
+    "comment:PRRC_kwDOSF9kNM69DaQx",
+    "thread:PRRT_kwDOSF9kNM5-51MD",
+    "thread:PRRT_kwDOSF9kNM5-51Wa",
+    "thread:PRRT_kwDOSF9kNM5-51Wl",
+    "thread:PRRT_kwDOSF9kNM5-51Wo"
+  ],
+  "fetched_at": "2026-08-25T08:33:45.378Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0124): distill claude.ai CSAP-pushback conversation into uber-arch",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T02:21:28Z",
+  "head_ref": "backlog/B-0124-claudeai-csap-conversation-distill-uber-arch-2026-05-01"
+}

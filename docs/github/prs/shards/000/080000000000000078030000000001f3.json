@@ -1,0 +1,17 @@
+{
+  "pr_number": 499,
+  "archive_path": "docs/history/pr-reviews/PR-499-memory-recalc-dimension-revealing-splits-maji-role-precision.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SifW",
+    "comment:PRRC_kwDOSF9kNM67SifX",
+    "thread:PRRT_kwDOSF9kNM59mInw",
+    "thread:PRRT_kwDOSF9kNM59mInx"
+  ],
+  "fetched_at": "2026-08-25T08:12:52.945Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(recalc): dimension-revealing splits + Maji role precision",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T15:54:25Z",
+  "head_ref": "memory/aaron-recalc-dimension-shift-extreme-case"
+}

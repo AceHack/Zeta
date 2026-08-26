@@ -1,0 +1,16 @@
+{
+  "pr_number": 706,
+  "archive_path": "docs/history/pr-reviews/PR-706-hygiene-tick-history-session-consolidated-row-11-prs-12-memories-5-beacon-gradua.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68O54p",
+    "comment:PRRC_kwDOSF9kNM68PBHf",
+    "thread:PRRT_kwDOSF9kNM5-TKww"
+  ],
+  "fetched_at": "2026-08-25T08:22:05.887Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): session consolidated row — 11 PRs + 12 memories + 5 Beacon graduations + 1 bead promoted",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T00:52:32Z",
+  "head_ref": "tick-history/2026-04-29-autonomous-loop-session-substrate-cluster"
+}

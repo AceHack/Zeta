@@ -1,0 +1,21 @@
+{
+  "pr_number": 1268,
+  "archive_path": "docs/history/pr-reviews/PR-1268-research-worked-example-2-vibe-coded-reframe-substrate-content-author-commit-aut.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZKrb",
+    "comment:PRRC_kwDOSF9kNM69ZMx-",
+    "comment:PRRC_kwDOSF9kNM69ZMx6",
+    "comment:PRRC_kwDOSF9kNM69ZMxq",
+    "thread:PRRT_kwDOSF9kNM5_KC33",
+    "thread:PRRT_kwDOSF9kNM5_KEe5",
+    "thread:PRRT_kwDOSF9kNM5_KEe8",
+    "thread:PRRT_kwDOSF9kNM5_KEeu"
+  ],
+  "fetched_at": "2026-08-25T08:45:00.695Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: worked example #2 vibe-coded reframe — substrate-content-author ≠ commit-author",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:21:22Z",
+  "head_ref": "research/worked-example-2-vibe-coded-reframe-aaron-2026-05-03"
+}

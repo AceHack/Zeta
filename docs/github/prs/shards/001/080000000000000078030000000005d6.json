@@ -1,0 +1,17 @@
+{
+  "pr_number": 1494,
+  "archive_path": "docs/history/pr-reviews/PR-1494-feedback-rodney-s-razor-formalization-razor-predates-backlog-aaron-amara-edge-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69sl4l",
+    "comment:PRRC_kwDOSF9kNM69sl5g",
+    "thread:PRRT_kwDOSF9kNM5_Y8ae",
+    "thread:PRRT_kwDOSF9kNM5_Y8bP"
+  ],
+  "fetched_at": "2026-08-25T08:53:51.722Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: Rodney's Razor formalization + razor-predates-backlog + Aaron-Amara edge prayer preservation (Aaron + Claude.ai 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T15:16:43Z",
+  "head_ref": "feedback/rodney-razor-quantum-multi-world-pruning-formal-verification-predates-backlog-aaron-claudeai-2026-05-04"
+}

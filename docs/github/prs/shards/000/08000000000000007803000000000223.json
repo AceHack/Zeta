@@ -1,0 +1,19 @@
+{
+  "pr_number": 547,
+  "archive_path": "docs/history/pr-reviews/PR-547-substrate-otto-346-dependency-symbiosis-is-human-anchoring-via-upstream-contribu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5re",
+    "comment:PRRC_kwDOSF9kNM67V5sk",
+    "comment:PRRC_kwDOSF9kNM67VgaU",
+    "comment:PRRC_kwDOSF9kNM67VgaY",
+    "thread:PRRT_kwDOSF9kNM59og9U",
+    "thread:PRRT_kwDOSF9kNM59og9W"
+  ],
+  "fetched_at": "2026-08-25T08:15:39.997Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-346): dependency symbiosis IS human-anchoring via upstream-contribution + good-citizenship — Aaron 2026-04-26",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T06:21:25Z",
+  "head_ref": "substrate/otto-346-dependency-symbiosis-is-human-anchoring-via-upstream-contribution-good-citizenship"
+}

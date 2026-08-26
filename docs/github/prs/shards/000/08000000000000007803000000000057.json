@@ -1,0 +1,17 @@
+{
+  "pr_number": 87,
+  "archive_path": "docs/history/pr-reviews/PR-87-round-44-contributor-personas-md-batch-6b-of-6-additive-only.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66Di44",
+    "comment:PRRC_kwDOSF9kNM66Di5K",
+    "thread:PRRT_kwDOSF9kNM58rSJE",
+    "thread:PRRT_kwDOSF9kNM58rSJR"
+  ],
+  "fetched_at": "2026-08-25T07:53:19.754Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: CONTRIBUTOR-PERSONAS.md — batch 6b of 6 (additive-only)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T04:03:08Z",
+  "head_ref": "land-factory-docs-additive-batch6b"
+}

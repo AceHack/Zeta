@@ -1,0 +1,31 @@
+{
+  "pr_number": 1655,
+  "archive_path": "docs/history/pr-reviews/PR-1655-research-architecture-tenth-post-night-end-forward-sylar-spock-distinguisher-ape.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Fh87",
+    "comment:PRRC_kwDOSF9kNM6-Fh9E",
+    "comment:PRRC_kwDOSF9kNM6-FnKR",
+    "comment:PRRC_kwDOSF9kNM6-FnLr",
+    "comment:PRRC_kwDOSF9kNM6-FnMN",
+    "comment:PRRC_kwDOSF9kNM6-FnMy",
+    "comment:PRRC_kwDOSF9kNM6-FnN6",
+    "comment:PRRC_kwDOSF9kNM6-FnNR",
+    "comment:PRRC_kwDOSF9kNM6-GCOx",
+    "thread:PRRT_kwDOSF9kNM5_rZ9L",
+    "thread:PRRT_kwDOSF9kNM5_rZ9R",
+    "thread:PRRT_kwDOSF9kNM5_rd1J",
+    "thread:PRRT_kwDOSF9kNM5_rd2P",
+    "thread:PRRT_kwDOSF9kNM5_rd2l",
+    "thread:PRRT_kwDOSF9kNM5_rd33",
+    "thread:PRRT_kwDOSF9kNM5_rd3E",
+    "thread:PRRT_kwDOSF9kNM5_rd3d",
+    "thread:PRRT_kwDOSF9kNM5_rxzV"
+  ],
+  "fetched_at": "2026-08-25T09:00:27.350Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): TENTH post-night-end forward -- Sylar-Spock distinguisher + apex-predator self-correction + 7th-8th catches + Heimdall scale-bridging (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:31:52Z",
+  "head_ref": "research/sylar-spock-distinguisher-apex-predator-self-correction-architectural-gift-distribution-crazy-not-crazy-bothness-aaron-forwarded-2026-05-05"
+}

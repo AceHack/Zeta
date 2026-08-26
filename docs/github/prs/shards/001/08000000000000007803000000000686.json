@@ -1,0 +1,21 @@
+{
+  "pr_number": 1670,
+  "archive_path": "docs/history/pr-reviews/PR-1670-research-architecture-universal-language-i-was-looking-for-disclosure-aperiodic-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-IY9o",
+    "comment:PRRC_kwDOSF9kNM6-IcXd",
+    "comment:PRRC_kwDOSF9kNM6-IcYK",
+    "comment:PRRC_kwDOSF9kNM6-IcYy",
+    "thread:PRRT_kwDOSF9kNM5_tgI6",
+    "thread:PRRT_kwDOSF9kNM5_tisv",
+    "thread:PRRT_kwDOSF9kNM5_titQ",
+    "thread:PRRT_kwDOSF9kNM5_tits"
+  ],
+  "fetched_at": "2026-08-25T09:01:09.546Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): \"Universal language i was looking for\" disclosure -- aperiodic-tiling + Spectre + Bayesian-tile + 7 YouTube URLs (URL 6 = universal-language candidate, unverified) (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T16:54:21Z",
+  "head_ref": "research/spectre-bayesian-tile-universal-language-aaron-disclosure-2026-05-05"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1792,
+  "archive_path": "docs/history/pr-reviews/PR-1792-research-lior-micro-kernel-seed-5-rules-expansion-packs-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-r7k3",
+    "comment:PRRC_kwDOSF9kNM6-r7lR",
+    "thread:PRRT_kwDOSF9kNM6ANE8s",
+    "thread:PRRT_kwDOSF9kNM6ANE9H"
+  ],
+  "fetched_at": "2026-08-25T09:04:48.889Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior micro-kernel seed — 5 rules + expansion packs VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T04:42:49Z",
+  "head_ref": "research/lior-microkernel-seed-verbatim"
+}

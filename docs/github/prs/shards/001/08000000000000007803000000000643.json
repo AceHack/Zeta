@@ -1,0 +1,15 @@
+{
+  "pr_number": 1603,
+  "archive_path": "docs/history/pr-reviews/PR-1603-research-discipline-embodiment-log-two-recursion-observations-engagement-gate-at.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM699-qq",
+    "thread:PRRT_kwDOSF9kNM5_lvee"
+  ],
+  "fetched_at": "2026-08-25T08:58:24.852Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(discipline): embodiment-log + two recursion observations (engagement-gate at claim-level + search-first at method-level) -- Aaron-forwarded 2026-05-05",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:05:01Z",
+  "head_ref": "research/embodiment-thread-recursion-claudeai-aaron-forwarded-2026-05-05"
+}

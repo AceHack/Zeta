@@ -1,0 +1,12 @@
+{
+  "pr_number": 1647,
+  "archive_path": "docs/history/pr-reviews/PR-1647-fix-memory-index-post-1645-shorten-entry-use-sharpened-link-text-2-reviewer-thre.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:00:07.119Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-index post-#1645): shorten entry + use sharpened link text (2 reviewer threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:24:42Z",
+  "head_ref": "chore/memory-index-shorten-anti-ossification-2026-05-05"
+}

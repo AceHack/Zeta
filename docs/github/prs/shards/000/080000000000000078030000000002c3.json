@@ -1,0 +1,25 @@
+{
+  "pr_number": 707,
+  "archive_path": "docs/history/pr-reviews/PR-707-research-aurora-immune-governance-bridge-minimal-first-artifact-three-immune-tra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68O_U6",
+    "comment:PRRC_kwDOSF9kNM68O_VM",
+    "comment:PRRC_kwDOSF9kNM68O_VR",
+    "comment:PRRC_kwDOSF9kNM68O_Va",
+    "comment:PRRC_kwDOSF9kNM68O_Vo",
+    "comment:PRRC_kwDOSF9kNM68PFvf",
+    "thread:PRRT_kwDOSF9kNM5-TOxN",
+    "thread:PRRT_kwDOSF9kNM5-TOxb",
+    "thread:PRRT_kwDOSF9kNM5-TOxf",
+    "thread:PRRT_kwDOSF9kNM5-TOxn",
+    "thread:PRRT_kwDOSF9kNM5-TOxz",
+    "thread:PRRT_kwDOSF9kNM5-TTnD"
+  ],
+  "fetched_at": "2026-08-25T08:22:09.581Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(aurora-immune-governance-bridge): minimal first artifact — three immune translations + falsifier + prototype (Aurora converged + Ani falsifier-first + multi-AI consensus 2026-04-28)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T00:59:23Z",
+  "head_ref": "research/aurora-immune-governance-bridge-minimal-2026-04-28"
+}

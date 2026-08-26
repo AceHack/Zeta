@@ -1,0 +1,15 @@
+{
+  "pr_number": 1411,
+  "archive_path": "docs/history/pr-reviews/PR-1411-fix-b-0179-spineasyncprotocol-add-check-deadlock-false-not-a-real-counterexample.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69b3co",
+    "thread:PRRT_kwDOSF9kNM5_MLZa"
+  ],
+  "fetched_at": "2026-08-25T08:50:30.200Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(B-0179): SpineAsyncProtocol — add CHECK_DEADLOCK FALSE (not a real counterexample)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T13:51:58Z",
+  "head_ref": "fix/b0179-spineasyncprotocol-add-check-deadlock-false"
+}

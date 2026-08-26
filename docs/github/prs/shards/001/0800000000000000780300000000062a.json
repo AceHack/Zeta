@@ -1,0 +1,17 @@
+{
+  "pr_number": 1578,
+  "archive_path": "docs/history/pr-reviews/PR-1578-shard-hygiene-2026-05-05t04-00z-substrate-cluster-razor-extension.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695kG5",
+    "comment:PRRC_kwDOSF9kNM695kHI",
+    "thread:PRRT_kwDOSF9kNM5_idN3",
+    "thread:PRRT_kwDOSF9kNM5_idOE"
+  ],
+  "fetched_at": "2026-08-25T08:57:21.823Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(hygiene): 2026-05-05T04:00Z -- substrate cluster + razor extension",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:05:49Z",
+  "head_ref": "shard/2026-05-05-0400Z-substrate-cluster-and-razor-extension"
+}

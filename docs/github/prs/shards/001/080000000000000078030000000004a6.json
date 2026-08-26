@@ -1,0 +1,29 @@
+{
+  "pr_number": 1190,
+  "archive_path": "docs/history/pr-reviews/PR-1190-tools-lanes-allocator-scripts-for-doc-code-lane-dispatch-b-0144.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Sm77",
+    "comment:PRRC_kwDOSF9kNM69Sm8B",
+    "comment:PRRC_kwDOSF9kNM69Sm8I",
+    "comment:PRRC_kwDOSF9kNM69Sm8R",
+    "comment:PRRC_kwDOSF9kNM69Sm8Y",
+    "comment:PRRC_kwDOSF9kNM69Sm8g",
+    "comment:PRRC_kwDOSF9kNM69Sm8k",
+    "comment:PRRC_kwDOSF9kNM69Sm8o",
+    "thread:PRRT_kwDOSF9kNM5_FCY2",
+    "thread:PRRT_kwDOSF9kNM5_FCY8",
+    "thread:PRRT_kwDOSF9kNM5_FCYm",
+    "thread:PRRT_kwDOSF9kNM5_FCYq",
+    "thread:PRRT_kwDOSF9kNM5_FCYv",
+    "thread:PRRT_kwDOSF9kNM5_FCZD",
+    "thread:PRRT_kwDOSF9kNM5_FCZG",
+    "thread:PRRT_kwDOSF9kNM5_FCZJ"
+  ],
+  "fetched_at": "2026-08-25T08:41:38.978Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "tools(lanes): allocator scripts for doc/code lane dispatch (B-0144)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T01:12:41Z",
+  "head_ref": "tools/lane-allocator-scripts-b-0144-2026-05-02"
+}

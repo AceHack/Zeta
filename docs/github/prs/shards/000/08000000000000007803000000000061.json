@@ -1,0 +1,18 @@
+{
+  "pr_number": 97,
+  "archive_path": "docs/history/pr-reviews/PR-97-auto-loop-7-tick-history-row-bootstrap-precursor-absorb-taxonomy-provenance-reca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66ESJt",
+    "comment:PRRC_kwDOSF9kNM66ESKh",
+    "comment:PRRC_kwDOSF9kNM66EgMM",
+    "thread:PRRT_kwDOSF9kNM58r1P0",
+    "thread:PRRT_kwDOSF9kNM58r1PJ"
+  ],
+  "fetched_at": "2026-08-25T07:53:54.647Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "auto-loop-7 tick-history row — bootstrap-precursor absorb + taxonomy provenance recalibration",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:31:57Z",
+  "head_ref": "land-tick-history-autoloop-bootstrap-precursor-absorb"
+}

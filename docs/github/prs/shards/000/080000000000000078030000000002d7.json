@@ -1,0 +1,15 @@
+{
+  "pr_number": 727,
+  "archive_path": "docs/history/pr-reviews/PR-727-hygiene-tick-history-shard-0240z-third-shard-transport-stable.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Pqhl",
+    "thread:PRRT_kwDOSF9kNM5-Tu_Y"
+  ],
+  "fetched_at": "2026-08-25T08:22:52.481Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0240Z — third shard, transport stable",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:07:02Z",
+  "head_ref": "tick-history/2026-04-29-tick-0240Z-shard"
+}

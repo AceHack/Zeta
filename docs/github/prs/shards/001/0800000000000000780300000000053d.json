@@ -1,0 +1,19 @@
+{
+  "pr_number": 1341,
+  "archive_path": "docs/history/pr-reviews/PR-1341-backlog-b-0176-substrate-claim-checker-v0-7-context-aware-suppression-for-hypoth.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aReO",
+    "comment:PRRC_kwDOSF9kNM69aReU",
+    "comment:PRRC_kwDOSF9kNM69aRx9",
+    "comment:PRRC_kwDOSF9kNM69aRyU",
+    "thread:PRRT_kwDOSF9kNM5_K621",
+    "thread:PRRT_kwDOSF9kNM5_K62v"
+  ],
+  "fetched_at": "2026-08-25T08:47:50.355Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0176): substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name false-positives (Otto 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:25:34Z",
+  "head_ref": "backlog/B-0176-substrate-claim-checker-v07-context-aware-suppression"
+}

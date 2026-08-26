@@ -1,0 +1,17 @@
+{
+  "pr_number": 972,
+  "archive_path": "docs/history/pr-reviews/PR-972-hygiene-tick-history-shard-2320z-stale-pr-drain-15-shard-col1-schema-cleanup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Bva-",
+    "comment:PRRC_kwDOSF9kNM69Bvam",
+    "thread:PRRT_kwDOSF9kNM5-4nxV",
+    "thread:PRRT_kwDOSF9kNM5-4nxk"
+  ],
+  "fetched_at": "2026-08-25T08:32:37.466Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2320Z — stale-PR drain + 15-shard col1 schema cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:23:27Z",
+  "head_ref": "hygiene/tick-history-2026-04-30T2320Z-shard-schema-cleanup"
+}

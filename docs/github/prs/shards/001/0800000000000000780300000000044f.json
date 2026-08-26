@@ -1,0 +1,15 @@
+{
+  "pr_number": 1103,
+  "archive_path": "docs/history/pr-reviews/PR-1103-hygiene-tick-history-2026-05-01t11-11z-1101-merged-995-rebased-655-deferred-exis.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69H-AQ",
+    "thread:PRRT_kwDOSF9kNM5-9Np5"
+  ],
+  "fetched_at": "2026-08-25T08:38:01.596Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T11:11Z — #1101 merged + #995 rebased + #655 deferred (existing class only)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T22:25:21Z",
+  "head_ref": "hygiene/tick-history-1111Z-2026-05-01"
+}

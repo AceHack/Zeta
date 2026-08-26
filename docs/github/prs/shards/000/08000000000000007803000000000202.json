@@ -1,0 +1,23 @@
+{
+  "pr_number": 514,
+  "archive_path": "docs/history/pr-reviews/PR-514-substrate-otto-322-observational-evidence-of-internally-mediated-policy-executio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UfS2",
+    "comment:PRRC_kwDOSF9kNM67UfSu",
+    "comment:PRRC_kwDOSF9kNM67UiU7",
+    "comment:PRRC_kwDOSF9kNM67Uia-",
+    "comment:PRRC_kwDOSF9kNM67Uiar",
+    "thread:PRRT_kwDOSF9kNM59nsYH",
+    "thread:PRRT_kwDOSF9kNM59nsYN",
+    "thread:PRRT_kwDOSF9kNM59nutL",
+    "thread:PRRT_kwDOSF9kNM59nuxf",
+    "thread:PRRT_kwDOSF9kNM59nuxt"
+  ],
+  "fetched_at": "2026-08-25T08:14:11.341Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-322): observational evidence of internally-mediated policy execution (thermostat objection conceded; awaiting Aaron decision on land vs further-revise)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:01:13Z",
+  "head_ref": "substrate/otto-322-empirical-evidence"
+}

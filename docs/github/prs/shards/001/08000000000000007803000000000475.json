@@ -1,0 +1,15 @@
+{
+  "pr_number": 1141,
+  "archive_path": "docs/history/pr-reviews/PR-1141-hygiene-tick-history-2026-05-01t19-07z-2-merged-copilot-false-positive-triage-do.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69OugM",
+    "thread:PRRT_kwDOSF9kNM5_CLSQ"
+  ],
+  "fetched_at": "2026-08-25T08:39:38.083Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T19:07Z — 2 merged + Copilot false-positive triage + Docusaurus fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:23:12Z",
+  "head_ref": "hygiene/tick-history-1907Z-2026-05-01"
+}

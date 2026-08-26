@@ -1,0 +1,17 @@
+{
+  "pr_number": 899,
+  "archive_path": "docs/history/pr-reviews/PR-899-fix-peer-call-grok-backport-codex-p1-p2-from-898-head-only-file-read-pipe-throug.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68tWIm",
+    "comment:PRRC_kwDOSF9kNM68tWTs",
+    "thread:PRRT_kwDOSF9kNM5-pfo0",
+    "thread:PRRT_kwDOSF9kNM5-pfxX"
+  ],
+  "fetched_at": "2026-08-25T08:29:30.277Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(peer-call/grok): backport Codex P1+P2 from #898 — head-only file read + pipe-through-head context-cmd",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T06:26:43Z",
+  "head_ref": "fix/peer-call-grok-codex-p1-p2-backport-2026-04-30"
+}

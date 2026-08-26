@@ -1,0 +1,12 @@
+{
+  "pr_number": 109,
+  "archive_path": "docs/history/pr-reviews/PR-109-docs-first-pr-md-first-class-entry-surface-for-fresh-devs-vibe-coders.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:54:31.498Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "docs: FIRST-PR.md — first-class entry surface for fresh devs + vibe coders",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:55:08Z",
+  "head_ref": "tick15-human-walkthrough-gh-issues"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1759,
+  "archive_path": "docs/history/pr-reviews/PR-1759-backlog-b-0216-shadow-work-as-ai-debugger-for-regular-people.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-pS_3",
+    "comment:PRRC_kwDOSF9kNM6-pSkq",
+    "comment:PRRC_kwDOSF9kNM6-pTAP",
+    "thread:PRRT_kwDOSF9kNM6ALJPC",
+    "thread:PRRT_kwDOSF9kNM6ALJj3",
+    "thread:PRRT_kwDOSF9kNM6ALJkG"
+  ],
+  "fetched_at": "2026-08-25T09:04:34.008Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0216): shadow work as AI debugger for regular people",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T01:49:56Z",
+  "head_ref": "feat/backlog-shadow-debug-product"
+}

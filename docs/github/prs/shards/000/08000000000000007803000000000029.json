@@ -1,0 +1,23 @@
+{
+  "pr_number": 41,
+  "archive_path": "docs/history/pr-reviews/PR-41-ci-listen-on-merge-group-document-merge-queue-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM650D08",
+    "comment:PRRC_kwDOSF9kNM650D15",
+    "comment:PRRC_kwDOSF9kNM650D1m",
+    "comment:PRRC_kwDOSF9kNM650D26",
+    "comment:PRRC_kwDOSF9kNM650D2Y",
+    "thread:PRRT_kwDOSF9kNM58fsH6",
+    "thread:PRRT_kwDOSF9kNM58fsIW",
+    "thread:PRRT_kwDOSF9kNM58fsIm",
+    "thread:PRRT_kwDOSF9kNM58fsJA",
+    "thread:PRRT_kwDOSF9kNM58fsJd"
+  ],
+  "fetched_at": "2026-08-25T07:52:19.219Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "ci: listen on merge_group + document merge-queue plan",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T12:37:06Z",
+  "head_ref": "enable-merge-queue-prereq"
+}

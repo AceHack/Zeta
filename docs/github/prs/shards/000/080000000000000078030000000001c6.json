@@ -1,0 +1,12 @@
+{
+  "pr_number": 454,
+  "archive_path": "docs/history/pr-reviews/PR-454-deps-bump-fsharp-core-from-10-1-202-to-10-1-203.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:10:59.300Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "deps: Bump FSharp.Core from 10.1.202 to 10.1.203",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:32:56Z",
+  "head_ref": "dependabot/nuget/FSharp.Core-10.1.203"
+}

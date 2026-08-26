@@ -1,0 +1,19 @@
+{
+  "pr_number": 647,
+  "archive_path": "docs/history/pr-reviews/PR-647-sync-acehack-49-substrate-cluster-0-diff-is-start-lfg-as-master-strategic-refram.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67sEm8",
+    "comment:PRRC_kwDOSF9kNM67sEmC",
+    "comment:PRRC_kwDOSF9kNM67sEnT",
+    "thread:PRRT_kwDOSF9kNM595nXf",
+    "thread:PRRT_kwDOSF9kNM595nYC",
+    "thread:PRRT_kwDOSF9kNM595nYR"
+  ],
+  "fetched_at": "2026-08-25T08:19:53.466Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync: AceHack #49 substrate cluster — 0-diff-is-start + LFG-as-master strategic reframe",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T16:48:24Z",
+  "head_ref": "lfg/sync-acehack-49-substrate-cluster"
+}

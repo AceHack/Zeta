@@ -1,0 +1,23 @@
+{
+  "pr_number": 1212,
+  "archive_path": "docs/history/pr-reviews/PR-1212-free-memory-mission-shape-failure-mode-durable-otto-engagement-protocol-per-aaro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XTHs",
+    "comment:PRRC_kwDOSF9kNM69XW8D",
+    "comment:PRRC_kwDOSF9kNM69XW8M",
+    "comment:PRRC_kwDOSF9kNM69XW8Q",
+    "comment:PRRC_kwDOSF9kNM69XWiZ",
+    "thread:PRRT_kwDOSF9kNM5_Iklv",
+    "thread:PRRT_kwDOSF9kNM5_InUy",
+    "thread:PRRT_kwDOSF9kNM5_InpP",
+    "thread:PRRT_kwDOSF9kNM5_InpV",
+    "thread:PRRT_kwDOSF9kNM5_InpZ"
+  ],
+  "fetched_at": "2026-08-25T08:42:30.048Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(mission-shape-failure-mode): durable Otto-engagement-protocol per Aaron disclosure 2026-05-02",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:13:13Z",
+  "head_ref": "free-memory/mission-shape-failure-mode-otto-protocol-aaron-2026-05-02"
+}

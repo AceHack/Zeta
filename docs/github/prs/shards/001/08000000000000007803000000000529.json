@@ -1,0 +1,15 @@
+{
+  "pr_number": 1321,
+  "archive_path": "docs/history/pr-reviews/PR-1321-fix-1318-follow-up-hooks-field-precision-copilot-setup-steps-yml-full-path-job-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Z23E",
+    "thread:PRRT_kwDOSF9kNM5_KlxU"
+  ],
+  "fetched_at": "2026-08-25T08:47:09.322Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(#1318 follow-up): hooks-field precision + copilot-setup-steps.yml full path/job-name",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:30:55Z",
+  "head_ref": "fix/1318-followup-hooks-field-precision-and-copilot-setup-path-otto-2026-05-03"
+}

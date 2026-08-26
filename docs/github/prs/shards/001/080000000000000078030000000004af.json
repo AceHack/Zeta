@@ -1,0 +1,29 @@
+{
+  "pr_number": 1199,
+  "archive_path": "docs/history/pr-reviews/PR-1199-docs-codex-loop-handoff-md-gpt-5-5-overnight-loop-substrate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69V-v5",
+    "comment:PRRC_kwDOSF9kNM69V5qT",
+    "comment:PRRC_kwDOSF9kNM69V6A4",
+    "comment:PRRC_kwDOSF9kNM69V6A_",
+    "comment:PRRC_kwDOSF9kNM69V6BB",
+    "comment:PRRC_kwDOSF9kNM69V6BH",
+    "comment:PRRC_kwDOSF9kNM69V6BO",
+    "comment:PRRC_kwDOSF9kNM69V6BT",
+    "thread:PRRT_kwDOSF9kNM5_Hfcy",
+    "thread:PRRT_kwDOSF9kNM5_Hft3",
+    "thread:PRRT_kwDOSF9kNM5_Hft5",
+    "thread:PRRT_kwDOSF9kNM5_Hft_",
+    "thread:PRRT_kwDOSF9kNM5_Hfty",
+    "thread:PRRT_kwDOSF9kNM5_HfuE",
+    "thread:PRRT_kwDOSF9kNM5_HfuK",
+    "thread:PRRT_kwDOSF9kNM5_HjPA"
+  ],
+  "fetched_at": "2026-08-25T08:41:56.595Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: CODEX-LOOP-HANDOFF.md — GPT-5.5 overnight loop substrate",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:13:03Z",
+  "head_ref": "docs/codex-loop-handoff-2026-05-02"
+}

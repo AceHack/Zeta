@@ -1,0 +1,15 @@
+{
+  "pr_number": 1088,
+  "archive_path": "docs/history/pr-reviews/PR-1088-hygiene-tick-history-2026-05-01t10-28z-pr-1030-dirty-rebase-4-thread-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Hl9Z",
+    "thread:PRRT_kwDOSF9kNM5-87RN"
+  ],
+  "fetched_at": "2026-08-25T08:37:25.085Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:28Z — PR #1030 DIRTY rebase + 4 thread-fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:18:34Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1029Z-1030-followup"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1698,
+  "archive_path": "docs/history/pr-reviews/PR-1698-memory-architecture-disaggregation-into-signatures-first-is-the-strange-attracto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-QUKP",
+    "comment:PRRC_kwDOSF9kNM6-QUKo",
+    "thread:PRRT_kwDOSF9kNM5_zWP-",
+    "thread:PRRT_kwDOSF9kNM5_zWQO"
+  ],
+  "fetched_at": "2026-08-25T09:02:05.734Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(architecture): disaggregation INTO signatures FIRST IS the strange attractor (Aaron 2026-05-05 refinement on PR #1697)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T22:29:21Z",
+  "head_ref": "memory/disaggregation-into-signatures-first-IS-the-strange-attractor-makes-rest-easy-aaron-2026-05-05"
+}

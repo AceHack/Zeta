@@ -1,0 +1,31 @@
+{
+  "pr_number": 162,
+  "archive_path": "docs/history/pr-reviews/PR-162-memory-migrate-external-signal-confirms-internal-insight-discipline-overlay-a-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66sqes",
+    "comment:PRRC_kwDOSF9kNM66sqf5",
+    "comment:PRRC_kwDOSF9kNM66sqfa",
+    "comment:PRRC_kwDOSF9kNM66sqfr",
+    "comment:PRRC_kwDOSF9kNM66sqgI",
+    "comment:PRRC_kwDOSF9kNM66sqgT",
+    "comment:PRRC_kwDOSF9kNM67EQY2",
+    "comment:PRRC_kwDOSF9kNM67EQYE",
+    "comment:PRRC_kwDOSF9kNM67EQZI",
+    "thread:PRRT_kwDOSF9kNM59J85p",
+    "thread:PRRT_kwDOSF9kNM59J86K",
+    "thread:PRRT_kwDOSF9kNM59J86V",
+    "thread:PRRT_kwDOSF9kNM59J86e",
+    "thread:PRRT_kwDOSF9kNM59J86r",
+    "thread:PRRT_kwDOSF9kNM59J86z",
+    "thread:PRRT_kwDOSF9kNM59baDV",
+    "thread:PRRT_kwDOSF9kNM59baDz",
+    "thread:PRRT_kwDOSF9kNM59baEA"
+  ],
+  "fetched_at": "2026-08-25T07:58:00.734Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: migrate external-signal-confirms-internal-insight discipline (Overlay A #4)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:44:21Z",
+  "head_ref": "refactor/overlay-a-migrate-external-signal-confirms-internal"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1507,
+  "archive_path": "docs/history/pr-reviews/PR-1507-feature-skills-create-q-sharp-skill-for-quantum-operator-algebra-reasoning-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69w68N",
+    "comment:PRRC_kwDOSF9kNM69xHM4",
+    "comment:PRRC_kwDOSF9kNM69xHMQ",
+    "thread:PRRT_kwDOSF9kNM5_cIWn",
+    "thread:PRRT_kwDOSF9kNM5_cRFJ",
+    "thread:PRRT_kwDOSF9kNM5_cRFn"
+  ],
+  "fetched_at": "2026-08-25T08:54:22.520Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feature(skills): create q-sharp skill for quantum operator-algebra reasoning (Aaron 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T18:50:00Z",
+  "head_ref": "feature/q-sharp-skill-creation-aaron-2026-05-04"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 951,
+  "archive_path": "docs/history/pr-reviews/PR-951-memory-current-aaron-44-aaron-is-rodney-razor-not-immune-no-self-exception-aaron.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:31:45.233Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(CURRENT-aaron §44): Aaron-is-Rodney + razor-not-immune + no-self-exception (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:29:52Z",
+  "head_ref": "memory/current-aaron-refresh-section-44-aaron-is-rodney-no-self-exception-2026-04-30"
+}

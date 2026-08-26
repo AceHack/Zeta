@@ -1,0 +1,17 @@
+{
+  "pr_number": 96,
+  "archive_path": "docs/history/pr-reviews/PR-96-research-bootstrap-precursor-drift-taxonomy-absorb-idea-scope-4-hallucinations-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66EPfx",
+    "comment:PRRC_kwDOSF9kNM66EPgQ",
+    "thread:PRRT_kwDOSF9kNM58rzW0",
+    "thread:PRRT_kwDOSF9kNM58rzXL"
+  ],
+  "fetched_at": "2026-08-25T07:53:49.912Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "research: bootstrap-precursor drift-taxonomy absorb (idea-scope, 4 hallucinations flagged)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:08:28Z",
+  "head_ref": "land-research-drift-taxonomy-bootstrap-precursor"
+}

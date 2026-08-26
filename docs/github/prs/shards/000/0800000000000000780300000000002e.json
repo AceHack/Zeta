@@ -1,0 +1,20 @@
+{
+  "pr_number": 46,
+  "archive_path": "docs/history/pr-reviews/PR-46-gate-split-macos-leg-to-forks-only-drop-macos-14-from-lfg-required-checks.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM653dsA",
+    "comment:PRRC_kwDOSF9kNM653dsp",
+    "comment:PRRC_kwDOSF9kNM654bpQ",
+    "comment:PRRC_kwDOSF9kNM66E6W6",
+    "thread:PRRT_kwDOSF9kNM58i9RG",
+    "thread:PRRT_kwDOSF9kNM58iPj6",
+    "thread:PRRT_kwDOSF9kNM58iPkX"
+  ],
+  "fetched_at": "2026-08-25T07:52:40.565Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "gate: split macOS leg to forks only; drop (macos-14) from LFG required checks",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:56:18Z",
+  "head_ref": "split-matrix-linux-lfg-fork-full"
+}

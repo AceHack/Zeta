@@ -1,0 +1,19 @@
+{
+  "pr_number": 1914,
+  "archive_path": "docs/history/pr-reviews/PR-1914-research-claude-ai-holographic-shadow-analysis-susskind-riemann-boundary.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-71Gy",
+    "comment:PRRC_kwDOSF9kNM6-71Hx",
+    "comment:PRRC_kwDOSF9kNM6-71IR",
+    "thread:PRRT_kwDOSF9kNM6AY7O1",
+    "thread:PRRT_kwDOSF9kNM6AY7P7",
+    "thread:PRRT_kwDOSF9kNM6AY7Ph"
+  ],
+  "fetched_at": "2026-08-25T09:07:31.429Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Claude.ai holographic shadow analysis — Susskind + Riemann boundary",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:11:55Z",
+  "head_ref": "otto/research-holographic-unpacking"
+}

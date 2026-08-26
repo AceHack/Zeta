@@ -1,0 +1,12 @@
+{
+  "pr_number": 1400,
+  "archive_path": "docs/history/pr-reviews/PR-1400-fix-backlog-generate-index-ts-close-ts-sh-parity-bug-squash-miss-from-1399.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:50:00.778Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(backlog/generate-index.ts): close .ts/.sh parity bug (squash-miss from #1399)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:55:27Z",
+  "head_ref": "fix/backlog-generate-index-ts-sh-parity-bug-redux"
+}

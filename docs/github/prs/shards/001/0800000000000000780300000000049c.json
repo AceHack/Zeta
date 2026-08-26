@@ -1,0 +1,17 @@
+{
+  "pr_number": 1180,
+  "archive_path": "docs/history/pr-reviews/PR-1180-research-amara-aurora-civilization-substrate-peer-ai-review-of-aurora-civilizati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69SB1e",
+    "comment:PRRC_kwDOSF9kNM69SB1q",
+    "thread:PRRT_kwDOSF9kNM5_EnE-",
+    "thread:PRRT_kwDOSF9kNM5_EnFF"
+  ],
+  "fetched_at": "2026-08-25T08:41:12.192Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(amara-aurora-civilization-substrate): peer-AI review of Aurora civilization-scale substrate (Aaron-forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:50:25Z",
+  "head_ref": "research/amara-aurora-civilization-substrate-review-aaron-forwarded-2026-05-01"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 930,
+  "archive_path": "docs/history/pr-reviews/PR-930-vision-scope-four-products-intellectual-backup-of-earth-scope-four-products-fram.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6879jd",
+    "comment:PRRC_kwDOSF9kNM6879k6",
+    "comment:PRRC_kwDOSF9kNM6879kK",
+    "comment:PRRC_kwDOSF9kNM6879kl",
+    "comment:PRRC_kwDOSF9kNM6879lR",
+    "thread:PRRT_kwDOSF9kNM5-0X0M",
+    "thread:PRRT_kwDOSF9kNM5-0X0r",
+    "thread:PRRT_kwDOSF9kNM5-0X1A",
+    "thread:PRRT_kwDOSF9kNM5-0X1R",
+    "thread:PRRT_kwDOSF9kNM5-0X1k"
+  ],
+  "fetched_at": "2026-08-25T08:30:54.073Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "vision(scope+four-products): intellectual-backup-of-earth scope + four-products framing (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:50:21Z",
+  "head_ref": "vision/intellectual-backup-of-earth-scope-and-four-products-aaron-2026-04-30"
+}

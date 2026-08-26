@@ -1,0 +1,23 @@
+{
+  "pr_number": 917,
+  "archive_path": "docs/history/pr-reviews/PR-917-memory-feedback-internal-direction-from-project-survival-meta-framing-aaron-2026.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM682-ea",
+    "comment:PRRC_kwDOSF9kNM683E17",
+    "comment:PRRC_kwDOSF9kNM683E2-",
+    "comment:PRRC_kwDOSF9kNM683E3d",
+    "comment:PRRC_kwDOSF9kNM683Txw",
+    "thread:PRRT_kwDOSF9kNM5-w7v6",
+    "thread:PRRT_kwDOSF9kNM5-wrvl",
+    "thread:PRRT_kwDOSF9kNM5-wwq5",
+    "thread:PRRT_kwDOSF9kNM5-wwrs",
+    "thread:PRRT_kwDOSF9kNM5-wwsC"
+  ],
+  "fetched_at": "2026-08-25T08:30:18.174Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(feedback): internal direction from project survival — meta-framing (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T14:34:41Z",
+  "head_ref": "ops/memory-internal-direction-from-project-survival-2026-04-30"
+}

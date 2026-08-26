@@ -1,0 +1,17 @@
+{
+  "pr_number": 1211,
+  "archive_path": "docs/history/pr-reviews/PR-1211-free-memory-bugs-per-pr-rate-immune-system-health-metric-edge-runner-class-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XP6E",
+    "comment:PRRC_kwDOSF9kNM69XP6O",
+    "thread:PRRT_kwDOSF9kNM5_IiDQ",
+    "thread:PRRT_kwDOSF9kNM5_IiDX"
+  ],
+  "fetched_at": "2026-08-25T08:42:26.523Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(bugs-per-pr-rate): immune-system health metric, edge-runner-class — Aaron 2026-05-02 anchored",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T17:53:41Z",
+  "head_ref": "free-memory/bugs-per-pr-rate-immune-system-health-metric-aaron-2026-05-02"
+}

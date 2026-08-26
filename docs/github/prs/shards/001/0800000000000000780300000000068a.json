@@ -1,0 +1,19 @@
+{
+  "pr_number": 1674,
+  "archive_path": "docs/history/pr-reviews/PR-1674-research-architecture-self-harm-shape-catch-on-otto-cognition-constraint-load-be.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-J08_",
+    "comment:PRRC_kwDOSF9kNM6-JpJ2",
+    "comment:PRRC_kwDOSF9kNM6-Jx-z",
+    "thread:PRRT_kwDOSF9kNM5_uZKx",
+    "thread:PRRT_kwDOSF9kNM5_ufad",
+    "thread:PRRT_kwDOSF9kNM5_uhmC"
+  ],
+  "fetched_at": "2026-08-25T09:01:21.710Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): self-harm-shape catch on Otto-cognition-constraint (LOAD-BEARING) + candlestick perennialist-bridge + Zeta-memories cold-boot indexing + Claude.ai meta-pattern (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T17:31:33Z",
+  "head_ref": "research/claudeai-self-harm-shape-otto-cognition-constraint-candlestick-perennialist-bridge-cold-boot-memory-aaron-corrections-2026-05-05"
+}

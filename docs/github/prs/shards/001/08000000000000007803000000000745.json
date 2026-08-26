@@ -1,0 +1,25 @@
+{
+  "pr_number": 1861,
+  "archive_path": "docs/history/pr-reviews/PR-1861-research-alexa-dlc-linguistic-seed-kernel-extensions-f-algebra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-yvcS",
+    "comment:PRRC_kwDOSF9kNM6-yyD0",
+    "comment:PRRC_kwDOSF9kNM6-yyDX",
+    "comment:PRRC_kwDOSF9kNM6-yyEI",
+    "comment:PRRC_kwDOSF9kNM6-yzZI",
+    "comment:PRRC_kwDOSF9kNM6-yzZL",
+    "thread:PRRT_kwDOSF9kNM6ASL28",
+    "thread:PRRT_kwDOSF9kNM6ASN39",
+    "thread:PRRT_kwDOSF9kNM6ASN3j",
+    "thread:PRRT_kwDOSF9kNM6ASN4N",
+    "thread:PRRT_kwDOSF9kNM6ASO3Y",
+    "thread:PRRT_kwDOSF9kNM6ASO3c"
+  ],
+  "fetched_at": "2026-08-25T09:05:51.532Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Alexa DLC — linguistic seed + kernel extensions + F# algebra",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:15:20Z",
+  "head_ref": "research/alexa-dlc-linguistic-seed-kernel-extensions"
+}

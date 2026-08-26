@@ -1,0 +1,21 @@
+{
+  "pr_number": 327,
+  "archive_path": "docs/history/pr-reviews/PR-327-backlog-p2-sharderinfotheoretictests-uniform-flake-seed-lock-dst-aaron-otto-132.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6679n8",
+    "comment:PRRC_kwDOSF9kNM6679om",
+    "comment:PRRC_kwDOSF9kNM67B_HI",
+    "comment:PRRC_kwDOSF9kNM67B_LI",
+    "comment:PRRC_kwDOSF9kNM67CB9W",
+    "thread:PRRT_kwDOSF9kNM59VLQ2",
+    "thread:PRRT_kwDOSF9kNM59VLRU",
+    "thread:PRRT_kwDOSF9kNM59ZuVG"
+  ],
+  "fetched_at": "2026-08-25T08:05:05.112Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P2 SharderInfoTheoreticTests.Uniform flake — seed-lock + DST (Aaron Otto-132)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:05:17Z",
+  "head_ref": "backlog/sharder-info-theoretic-flaky-test-seed-lock-dst"
+}

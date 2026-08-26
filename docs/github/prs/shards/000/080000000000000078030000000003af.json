@@ -1,0 +1,17 @@
+{
+  "pr_number": 943,
+  "archive_path": "docs/history/pr-reviews/PR-943-memory-canonical-definition-canonical-what-remains-after-lineage-ontology-rodney.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68-WA3",
+    "comment:PRRC_kwDOSF9kNM68-WBy",
+    "thread:PRRT_kwDOSF9kNM5-2HZe",
+    "thread:PRRT_kwDOSF9kNM5-2HaG"
+  ],
+  "fetched_at": "2026-08-25T08:31:26.719Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(canonical-definition): canonical = what remains after lineage + ontology + Rodney's Razor; by definition anti-fragile (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T19:47:14Z",
+  "head_ref": "memory/canonical-definition-lineage-ontology-rodney-razor-antifragile-aaron-2026-04-30"
+}

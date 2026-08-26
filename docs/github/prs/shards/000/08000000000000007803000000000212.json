@@ -1,0 +1,12 @@
+{
+  "pr_number": 530,
+  "archive_path": "docs/history/pr-reviews/PR-530-chore-loop-tick-history-append-2026-04-26t02-28-32z-otto-340-b-0026-tick-row.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:15:00.115Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): append 2026-04-26T02:28:32Z — Otto-340 + B-0026 tick row",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T02:32:02Z",
+  "head_ref": "chore/tick-history-2026-04-26-otto-340-b0026"
+}

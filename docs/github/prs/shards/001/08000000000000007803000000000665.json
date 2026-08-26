@@ -1,0 +1,17 @@
+{
+  "pr_number": 1637,
+  "archive_path": "docs/history/pr-reviews/PR-1637-fix-post-1635-33-archive-header-format-frontmatter-shape-4-reviewer-threads-on-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Cb5Z",
+    "comment:PRRC_kwDOSF9kNM6-Cb6D",
+    "thread:PRRT_kwDOSF9kNM5_pFZF",
+    "thread:PRRT_kwDOSF9kNM5_pFZh"
+  ],
+  "fetched_at": "2026-08-25T08:59:45.122Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1635): §33 archive header format + frontmatter shape (4 reviewer threads on merged research-doc)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:13:54Z",
+  "head_ref": "fixup/1635-section-33-archive-header-format-aaron-2026-05-05"
+}

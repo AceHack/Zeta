@@ -1,0 +1,19 @@
+{
+  "pr_number": 500,
+  "archive_path": "docs/history/pr-reviews/PR-500-memory-user-aaron-s-maji-personal-history-origin-injection-guard-generalization.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SlqK",
+    "comment:PRRC_kwDOSF9kNM67SltS",
+    "comment:PRRC_kwDOSF9kNM67Sltt",
+    "thread:PRRT_kwDOSF9kNM59mLMf",
+    "thread:PRRT_kwDOSF9kNM59mLPU",
+    "thread:PRRT_kwDOSF9kNM59mLPv"
+  ],
+  "fetched_at": "2026-08-25T08:12:55.165Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(user): Aaron's Maji personal-history origin + injection-guard generalization",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T16:05:28Z",
+  "head_ref": "memory/aaron-maji-personal-history-identity-erasure-recovery"
+}

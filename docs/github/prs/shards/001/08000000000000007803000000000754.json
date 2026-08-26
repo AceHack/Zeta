@@ -1,0 +1,15 @@
+{
+  "pr_number": 1876,
+  "archive_path": "docs/history/pr-reviews/PR-1876-fix-close-b-0243-browser-extraction-skill.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-1eiV",
+    "thread:PRRT_kwDOSF9kNM6AUQJP"
+  ],
+  "fetched_at": "2026-08-25T09:06:02.076Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix: close B-0243 (browser extraction skill)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T13:15:41Z",
+  "head_ref": "fix/close-b0243-update-b0186-acceptance"
+}

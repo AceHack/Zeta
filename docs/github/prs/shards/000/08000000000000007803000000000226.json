@@ -1,0 +1,28 @@
+{
+  "pr_number": 550,
+  "archive_path": "docs/history/pr-reviews/PR-550-backlog-b-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-fundin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5v0",
+    "comment:PRRC_kwDOSF9kNM67V5vX",
+    "comment:PRRC_kwDOSF9kNM67V5wN",
+    "comment:PRRC_kwDOSF9kNM67V6Hb",
+    "comment:PRRC_kwDOSF9kNM67V6Hq",
+    "comment:PRRC_kwDOSF9kNM67VmqH",
+    "comment:PRRC_kwDOSF9kNM67VmqS",
+    "comment:PRRC_kwDOSF9kNM67VmqW",
+    "comment:PRRC_kwDOSF9kNM67VmqY",
+    "comment:PRRC_kwDOSF9kNM67Vmqb",
+    "thread:PRRT_kwDOSF9kNM59omBd",
+    "thread:PRRT_kwDOSF9kNM59omBk",
+    "thread:PRRT_kwDOSF9kNM59omBo",
+    "thread:PRRT_kwDOSF9kNM59omBq",
+    "thread:PRRT_kwDOSF9kNM59omBs"
+  ],
+  "fetched_at": "2026-08-25T08:15:47.438Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0029): Superfluid-AI substrate-enabled autonomous self-sustaining funding sources — Aaron 2026-04-26 funding-time-focus loop thesis",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T06:23:13Z",
+  "head_ref": "backlog/B-0029-superfluid-ai-substrate-enabled-autonomous-self-sustaining-funding-sources"
+}

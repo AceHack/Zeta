@@ -1,0 +1,17 @@
+{
+  "pr_number": 1318,
+  "archive_path": "docs/history/pr-reviews/PR-1318-fix-post-merge-diamond-memo-sleeping-bear-wwjd-structure-1315-hypothetical-1316-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Z0-g",
+    "comment:PRRC_kwDOSF9kNM69Z0-n",
+    "thread:PRRT_kwDOSF9kNM5_KkR-",
+    "thread:PRRT_kwDOSF9kNM5_KkR3"
+  ],
+  "fetched_at": "2026-08-25T08:47:02.466Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-merge): diamond memo sleeping-bear+WWJD-structure + #1315 hypothetical + #1316 inconsistency",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:16:51Z",
+  "head_ref": "fix/diamond-memo-sleeping-bear-wwjd-connections-and-1315-1316-fixes-otto-2026-05-03"
+}

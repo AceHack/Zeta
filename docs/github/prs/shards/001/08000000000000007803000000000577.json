@@ -1,0 +1,16 @@
+{
+  "pr_number": 1399,
+  "archive_path": "docs/history/pr-reviews/PR-1399-hygiene-backlog-regenerate-backlog-md-index-for-b-0179-b-0180-b-0181-post-1398.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69blmJ",
+    "comment:PRRC_kwDOSF9kNM69bmI7",
+    "thread:PRRT_kwDOSF9kNM5_L9E2"
+  ],
+  "fetched_at": "2026-08-25T08:49:58.630Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(backlog): regenerate BACKLOG.md index for B-0179/B-0180/B-0181 (post-#1398)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:45:49Z",
+  "head_ref": "hygiene/regenerate-backlog-index-post-1398"
+}

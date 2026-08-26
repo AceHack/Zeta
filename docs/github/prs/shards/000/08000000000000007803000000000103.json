@@ -1,0 +1,25 @@
+{
+  "pr_number": 259,
+  "archive_path": "docs/history/pr-reviews/PR-259-aurora-absorb-amara-s-7th-courier-ferry-aurora-aligned-ksk-design.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663svk",
+    "comment:PRRC_kwDOSF9kNM663uA3",
+    "comment:PRRC_kwDOSF9kNM663uAV",
+    "comment:PRRC_kwDOSF9kNM663uBA",
+    "comment:PRRC_kwDOSF9kNM663uBI",
+    "comment:PRRC_kwDOSF9kNM663uBL",
+    "thread:PRRT_kwDOSF9kNM59SACx",
+    "thread:PRRT_kwDOSF9kNM59SA_1",
+    "thread:PRRT_kwDOSF9kNM59SBAQ",
+    "thread:PRRT_kwDOSF9kNM59SBAa",
+    "thread:PRRT_kwDOSF9kNM59SBAg",
+    "thread:PRRT_kwDOSF9kNM59SBAi"
+  ],
+  "fetched_at": "2026-08-25T08:02:53.598Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "aurora: absorb Amara's 7th courier ferry — Aurora-Aligned KSK Design",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:47:18Z",
+  "head_ref": "aurora/absorb-amara-7th-ferry-aurora-aligned-ksk-design"
+}

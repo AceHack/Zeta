@@ -1,0 +1,25 @@
+{
+  "pr_number": 1040,
+  "archive_path": "docs/history/pr-reviews/PR-1040-backlog-b-0130-p2-mechanized-auditor-for-verify-before-state-claim-companion-to-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69F0kt",
+    "comment:PRRC_kwDOSF9kNM69F1ux",
+    "comment:PRRC_kwDOSF9kNM69F1vC",
+    "comment:PRRC_kwDOSF9kNM69F1vK",
+    "comment:PRRC_kwDOSF9kNM69HIl7",
+    "comment:PRRC_kwDOSF9kNM69HIlw",
+    "thread:PRRT_kwDOSF9kNM5-7mTg",
+    "thread:PRRT_kwDOSF9kNM5-7nLD",
+    "thread:PRRT_kwDOSF9kNM5-7nLT",
+    "thread:PRRT_kwDOSF9kNM5-7nLZ",
+    "thread:PRRT_kwDOSF9kNM5-8lEg",
+    "thread:PRRT_kwDOSF9kNM5-8lEm"
+  ],
+  "fetched_at": "2026-08-25T08:35:36.122Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0130): P2 — mechanized auditor for verify-before-state-claim (companion to task #350)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:11:10Z",
+  "head_ref": "backlog/B-0130-verify-before-state-claim-mechanized-auditor-2026-05-01"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 712,
+  "archive_path": "docs/history/pr-reviews/PR-712-docs-agent-best-practices-land-session-closure-rule-as-small-operational-artifac.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PMlx",
+    "comment:PRRC_kwDOSF9kNM68PN5I",
+    "comment:PRRC_kwDOSF9kNM68PN5P",
+    "thread:PRRT_kwDOSF9kNM5-TYmU",
+    "thread:PRRT_kwDOSF9kNM5-TZdo",
+    "thread:PRRT_kwDOSF9kNM5-TZdu"
+  ],
+  "fetched_at": "2026-08-25T08:22:24.867Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(AGENT-BEST-PRACTICES): land session-closure rule as small operational artifact (cross-AI converged stance)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T01:27:57Z",
+  "head_ref": "memory/session-closure-rule-operational-artifact"
+}

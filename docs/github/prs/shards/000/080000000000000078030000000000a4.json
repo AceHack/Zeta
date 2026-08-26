@@ -1,0 +1,27 @@
+{
+  "pr_number": 164,
+  "archive_path": "docs/history/pr-reviews/PR-164-memory-migrate-semiring-parameterized-zeta-regime-change-overlay-a-5-queue-close.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66ssTo",
+    "comment:PRRC_kwDOSF9kNM66ssTu",
+    "comment:PRRC_kwDOSF9kNM66suQ2",
+    "comment:PRRC_kwDOSF9kNM66suR6",
+    "comment:PRRC_kwDOSF9kNM66suRj",
+    "comment:PRRC_kwDOSF9kNM66suSK",
+    "comment:PRRC_kwDOSF9kNM66suSa",
+    "thread:PRRT_kwDOSF9kNM59J-QG",
+    "thread:PRRT_kwDOSF9kNM59J-QK",
+    "thread:PRRT_kwDOSF9kNM59J_rg",
+    "thread:PRRT_kwDOSF9kNM59J_sC",
+    "thread:PRRT_kwDOSF9kNM59J_sU",
+    "thread:PRRT_kwDOSF9kNM59J_sh",
+    "thread:PRRT_kwDOSF9kNM59J_sv"
+  ],
+  "fetched_at": "2026-08-25T07:58:08.492Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: migrate semiring-parameterized-zeta regime-change (Overlay A #5, queue close)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:23:56Z",
+  "head_ref": "refactor/overlay-a-migrate-semiring-parameterized-zeta"
+}

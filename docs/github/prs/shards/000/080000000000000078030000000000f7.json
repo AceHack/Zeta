@@ -1,0 +1,28 @@
+{
+  "pr_number": 247,
+  "archive_path": "docs/history/pr-reviews/PR-247-govern-33-archive-header-requirement-amara-5th-ferry-artifact-aaron-approved-ott.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663Wd-",
+    "comment:PRRC_kwDOSF9kNM663WeA",
+    "comment:PRRC_kwDOSF9kNM663XZ3",
+    "comment:PRRC_kwDOSF9kNM663XZW",
+    "comment:PRRC_kwDOSF9kNM663XaO",
+    "comment:PRRC_kwDOSF9kNM67Nf1J",
+    "comment:PRRC_kwDOSF9kNM67Nf_8",
+    "comment:PRRC_kwDOSF9kNM67Nfqd",
+    "comment:PRRC_kwDOSF9kNM67NfyP",
+    "comment:PRRC_kwDOSF9kNM67NgDw",
+    "thread:PRRT_kwDOSF9kNM59Rvm-",
+    "thread:PRRT_kwDOSF9kNM59Rvm9",
+    "thread:PRRT_kwDOSF9kNM59RwSx",
+    "thread:PRRT_kwDOSF9kNM59RwTP",
+    "thread:PRRT_kwDOSF9kNM59RwTj"
+  ],
+  "fetched_at": "2026-08-25T08:02:35.948Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "govern: §33 archive-header requirement (Amara 5th-ferry Artifact, Aaron-approved Otto-82)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T00:10:12Z",
+  "head_ref": "govern/section-33-archive-headers-amara-artifact"
+}

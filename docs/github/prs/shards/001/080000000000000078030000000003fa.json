@@ -1,0 +1,25 @@
+{
+  "pr_number": 1018,
+  "archive_path": "docs/history/pr-reviews/PR-1018-hygiene-backlog-generator-warn-on-row-files-missing-yaml-frontmatter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Efeh",
+    "comment:PRRC_kwDOSF9kNM69FvW8",
+    "comment:PRRC_kwDOSF9kNM69FvWs",
+    "comment:PRRC_kwDOSF9kNM69H4gJ",
+    "comment:PRRC_kwDOSF9kNM69HAXG",
+    "comment:PRRC_kwDOSF9kNM69HAXk",
+    "thread:PRRT_kwDOSF9kNM5-6nX_",
+    "thread:PRRT_kwDOSF9kNM5-7iUG",
+    "thread:PRRT_kwDOSF9kNM5-7iUP",
+    "thread:PRRT_kwDOSF9kNM5-8fB3",
+    "thread:PRRT_kwDOSF9kNM5-8fCR",
+    "thread:PRRT_kwDOSF9kNM5-9Jb5"
+  ],
+  "fetched_at": "2026-08-25T08:34:35.383Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(backlog-generator): warn on row files missing YAML frontmatter",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T11:05:26Z",
+  "head_ref": "hygiene/backlog-generator-warn-missing-frontmatter-2026-05-01"
+}

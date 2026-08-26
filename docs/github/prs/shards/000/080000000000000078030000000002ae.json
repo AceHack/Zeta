@@ -1,0 +1,21 @@
+{
+  "pr_number": 686,
+  "archive_path": "docs/history/pr-reviews/PR-686-backlog-b-0087-p1-github-settings-drift-yml-broken-since-pr-45-invalid-gha-permi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Km5r",
+    "comment:PRRC_kwDOSF9kNM68Km61",
+    "comment:PRRC_kwDOSF9kNM68Km6Z",
+    "comment:PRRC_kwDOSF9kNM68Km7P",
+    "thread:PRRT_kwDOSF9kNM5-QDs5",
+    "thread:PRRT_kwDOSF9kNM5-QDt7",
+    "thread:PRRT_kwDOSF9kNM5-QDtW",
+    "thread:PRRT_kwDOSF9kNM5-QDtt"
+  ],
+  "fetched_at": "2026-08-25T08:21:19.524Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0087 P1): github-settings-drift.yml broken since PR #45 — invalid GHA permission",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:12:19Z",
+  "head_ref": "backlog/B-0087-github-settings-drift-broken-invalid-permission-otto-2026-04-28"
+}

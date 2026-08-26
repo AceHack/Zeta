@@ -1,0 +1,28 @@
+{
+  "pr_number": 562,
+  "archive_path": "docs/history/pr-reviews/PR-562-research-maji-spectre-amara-third-clarification-spectre-monotile-aaron-s-harmoni.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V7J5",
+    "comment:PRRC_kwDOSF9kNM67V7Ks",
+    "comment:PRRC_kwDOSF9kNM67V7Kv",
+    "comment:PRRC_kwDOSF9kNM67V7Kw",
+    "comment:PRRC_kwDOSF9kNM67V7Kx",
+    "comment:PRRC_kwDOSF9kNM67WCo6",
+    "comment:PRRC_kwDOSF9kNM67WCoe",
+    "comment:PRRC_kwDOSF9kNM67WCpV",
+    "comment:PRRC_kwDOSF9kNM67WCqF",
+    "comment:PRRC_kwDOSF9kNM67WCqe",
+    "thread:PRRT_kwDOSF9kNM59o2Yo",
+    "thread:PRRT_kwDOSF9kNM59o2ZV",
+    "thread:PRRT_kwDOSF9kNM59o2ZY",
+    "thread:PRRT_kwDOSF9kNM59o2ZZ",
+    "thread:PRRT_kwDOSF9kNM59o2Za"
+  ],
+  "fetched_at": "2026-08-25T08:16:38.050Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(maji-spectre): Amara third clarification — Spectre/monotile + Aaron's Harmonious-Division self-identification",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:00:28Z",
+  "head_ref": "research/maji-messiah-spectre-aperiodic-monotile-amara-third-correction-2026-04-26"
+}

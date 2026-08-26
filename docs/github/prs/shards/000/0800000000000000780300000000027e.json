@@ -1,0 +1,15 @@
+{
+  "pr_number": 638,
+  "archive_path": "docs/history/pr-reviews/PR-638-sync-acehack-lfg-substrate-otto-351-beacon-lineage-rigor-sibling-of-acehack-34.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67ftVT",
+    "thread:PRRT_kwDOSF9kNM59wWI6"
+  ],
+  "fetched_at": "2026-08-25T08:19:26.928Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg): substrate(otto-351) BEACON lineage + rigor (sibling of AceHack #34)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T07:47:45Z",
+  "head_ref": "sync/acehack-to-lfg-otto-351-beacon-lineage"
+}

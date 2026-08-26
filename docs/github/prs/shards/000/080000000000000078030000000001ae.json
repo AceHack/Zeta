@@ -1,0 +1,19 @@
+{
+  "pr_number": 430,
+  "archive_path": "docs/history/pr-reviews/PR-430-drain-221-follow-up-codex-terminology-count-alignment-verbatim-claim-soften.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Psen",
+    "comment:PRRC_kwDOSF9kNM67Psex",
+    "comment:PRRC_kwDOSF9kNM67PuWC",
+    "comment:PRRC_kwDOSF9kNM67PuWK",
+    "thread:PRRT_kwDOSF9kNM59j3OG",
+    "thread:PRRT_kwDOSF9kNM59j3OL"
+  ],
+  "fetched_at": "2026-08-25T08:09:57.454Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#221 follow-up Codex): terminology + count alignment + verbatim claim soften",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:49:12Z",
+  "head_ref": "drain/221-followup-2-terminology-and-counts"
+}

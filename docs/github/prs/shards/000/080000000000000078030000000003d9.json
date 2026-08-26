@@ -1,0 +1,15 @@
+{
+  "pr_number": 985,
+  "archive_path": "docs/history/pr-reviews/PR-985-hygiene-tick-history-shard-0003z-2026-05-01-deepseek-csap-review-preservation-ti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CMoH",
+    "thread:PRRT_kwDOSF9kNM5-49Qb"
+  ],
+  "fetched_at": "2026-08-25T08:33:08.515Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0003Z (2026-05-01) — Deepseek CSAP review preservation tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:34:52Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0003Z-deepseek-csap-review-preservation"
+}

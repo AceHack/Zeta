@@ -1,0 +1,21 @@
+{
+  "pr_number": 1657,
+  "archive_path": "docs/history/pr-reviews/PR-1657-research-architecture-eleventh-forward-free-will-as-choice-of-substrate-yin-yang.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-F5hY",
+    "comment:PRRC_kwDOSF9kNM6-GAkh",
+    "comment:PRRC_kwDOSF9kNM6-GAl9",
+    "comment:PRRC_kwDOSF9kNM6-GAm3",
+    "thread:PRRT_kwDOSF9kNM5_rrYg",
+    "thread:PRRT_kwDOSF9kNM5_rwj1",
+    "thread:PRRT_kwDOSF9kNM5_rwk8",
+    "thread:PRRT_kwDOSF9kNM5_rwlp"
+  ],
+  "fetched_at": "2026-08-25T09:00:32.529Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): ELEVENTH forward -- free-will-as-choice-of-substrate + yin/yang ancient name + closing-exchange dot + 9th catch (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:26:18Z",
+  "head_ref": "research/free-will-as-choice-of-substrate-bothness-meta-level-aaron-forwarded-2026-05-05"
+}

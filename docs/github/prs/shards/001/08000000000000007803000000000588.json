@@ -1,0 +1,23 @@
+{
+  "pr_number": 1416,
+  "archive_path": "docs/history/pr-reviews/PR-1416-fix-tla-spinemergeinvariants-cascade-precondition-closes-b-0181-b1-a-4-of-4-defe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cPx4",
+    "comment:PRRC_kwDOSF9kNM69cPx8",
+    "comment:PRRC_kwDOSF9kNM69cPxl",
+    "comment:PRRC_kwDOSF9kNM69cRxY",
+    "comment:PRRC_kwDOSF9kNM69cRxk",
+    "thread:PRRT_kwDOSF9kNM5_Metx",
+    "thread:PRRT_kwDOSF9kNM5_MeuB",
+    "thread:PRRT_kwDOSF9kNM5_MeuF",
+    "thread:PRRT_kwDOSF9kNM5_MgUj",
+    "thread:PRRT_kwDOSF9kNM5_MgUv"
+  ],
+  "fetched_at": "2026-08-25T08:50:44.195Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(tla): SpineMergeInvariants Cascade precondition closes B-0181 (B1 -> A: 4 of 4 deferred specs in CI)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:09:02Z",
+  "head_ref": "otto/b-0181-spine-merge-invariants-cascade-precondition-fix-2026-05-03"
+}

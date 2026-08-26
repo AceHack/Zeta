@@ -1,0 +1,21 @@
+{
+  "pr_number": 858,
+  "archive_path": "docs/history/pr-reviews/PR-858-doctrine-acehack-mirror-force-with-lease-remote-topology-cleanup-multi-remote-sc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68lopt",
+    "comment:PRRC_kwDOSF9kNM68loq8",
+    "comment:PRRC_kwDOSF9kNM68loqc",
+    "comment:PRRC_kwDOSF9kNM68lord",
+    "thread:PRRT_kwDOSF9kNM5-j5h6",
+    "thread:PRRT_kwDOSF9kNM5-j5i9",
+    "thread:PRRT_kwDOSF9kNM5-j5ih",
+    "thread:PRRT_kwDOSF9kNM5-j5jT"
+  ],
+  "fetched_at": "2026-08-25T08:27:46.655Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "doctrine(acehack-mirror): force-with-lease + remote-topology cleanup + multi-remote-script-design",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T20:41:25Z",
+  "head_ref": "doctrine/acehack-mirror-not-peer-force-sync-2026-04-29"
+}

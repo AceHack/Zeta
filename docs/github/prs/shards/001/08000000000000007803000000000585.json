@@ -1,0 +1,23 @@
+{
+  "pr_number": 1413,
+  "archive_path": "docs/history/pr-reviews/PR-1413-feat-b-0183-phase-1-sibling-ts-wrapper-for-alloy-fix-alloyrunner-java-api-latent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69b8kN",
+    "comment:PRRC_kwDOSF9kNM69b9BU",
+    "comment:PRRC_kwDOSF9kNM69b9BV",
+    "comment:PRRC_kwDOSF9kNM69b9Gi",
+    "comment:PRRC_kwDOSF9kNM69b9Gs",
+    "thread:PRRT_kwDOSF9kNM5_MP33",
+    "thread:PRRT_kwDOSF9kNM5_MP3_",
+    "thread:PRRT_kwDOSF9kNM5_MPca",
+    "thread:PRRT_kwDOSF9kNM5_MPzp",
+    "thread:PRRT_kwDOSF9kNM5_MPzq"
+  ],
+  "fetched_at": "2026-08-25T08:50:35.772Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B-0183 Phase 1 sibling): TS wrapper for Alloy + fix AlloyRunner.java API (latent silent-no-op fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:07:42Z",
+  "head_ref": "feat/b0183-phase1-alloy-ts-wrapper"
+}

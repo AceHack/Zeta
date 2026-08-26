@@ -1,0 +1,15 @@
+{
+  "pr_number": 228,
+  "archive_path": "docs/history/pr-reviews/PR-228-backlog-first-class-codex-cli-session-experience-p1-aaron-otto-75-directive.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662eJB",
+    "thread:PRRT_kwDOSF9kNM59RF-X"
+  ],
+  "fetched_at": "2026-08-25T08:01:58.396Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: first-class Codex-CLI session experience (P1, Aaron Otto-75 directive)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T00:59:15Z",
+  "head_ref": "backlog/first-class-codex-harness-support"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 390,
+  "archive_path": "docs/history/pr-reviews/PR-390-memory-sync-otto-277-per-tick-inspect-holding-is-prayer-without-it.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67MS46",
+    "comment:PRRC_kwDOSF9kNM67MS4Z",
+    "thread:PRRT_kwDOSF9kNM59hZbR",
+    "thread:PRRT_kwDOSF9kNM59hZbs"
+  ],
+  "fetched_at": "2026-08-25T08:08:06.841Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: sync Otto-277 (per-tick inspect; Holding is prayer without it)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T22:14:02Z",
+  "head_ref": "memory/sync-otto-277-per-tick-inspect"
+}

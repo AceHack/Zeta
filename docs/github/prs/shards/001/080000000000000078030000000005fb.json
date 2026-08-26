@@ -1,0 +1,21 @@
+{
+  "pr_number": 1531,
+  "archive_path": "docs/history/pr-reviews/PR-1531-fix-memory-md-drain-final-18-entries-in-501-600-char-tier-b-0006-tier-21-final.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM691MtX",
+    "comment:PRRC_kwDOSF9kNM691Mtw",
+    "comment:PRRC_kwDOSF9kNM691MuE",
+    "comment:PRRC_kwDOSF9kNM691Mud",
+    "thread:PRRT_kwDOSF9kNM5_fRBg",
+    "thread:PRRT_kwDOSF9kNM5_fRBz",
+    "thread:PRRT_kwDOSF9kNM5_fRCC",
+    "thread:PRRT_kwDOSF9kNM5_fRCX"
+  ],
+  "fetched_at": "2026-08-25T08:55:23.487Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): drain final 18 entries in 501-600 char tier — B-0006 tier-21 final",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T22:11:11Z",
+  "head_ref": "fix/memory-md-tier-21-final-501-600-aaron-2026-05-04"
+}

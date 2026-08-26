@@ -1,0 +1,12 @@
+{
+  "pr_number": 531,
+  "archive_path": "docs/history/pr-reviews/PR-531-chore-loop-tick-history-append-2026-04-26t02-34-47z-drain-unblock-lint-fix-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:15:02.203Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): append 2026-04-26T02:34:47Z — drain-unblock lint-fix tick",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T02:39:50Z",
+  "head_ref": "chore/tick-history-2026-04-26-otto-340-b0026"
+}

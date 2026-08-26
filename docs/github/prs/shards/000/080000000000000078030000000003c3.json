@@ -1,0 +1,19 @@
+{
+  "pr_number": 963,
+  "archive_path": "docs/history/pr-reviews/PR-963-memory-acid-leaning-cluster-non-durable-does-not-exist-multi-dim-backlog-flow-ve.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69BS4D",
+    "comment:PRRC_kwDOSF9kNM69BS4Y",
+    "comment:PRRC_kwDOSF9kNM69BS4m",
+    "thread:PRRT_kwDOSF9kNM5-4S8G",
+    "thread:PRRT_kwDOSF9kNM5-4S8T",
+    "thread:PRRT_kwDOSF9kNM5-4S8e"
+  ],
+  "fetched_at": "2026-08-25T08:32:16.546Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(ACID-leaning cluster): non-durable=does-not-exist + multi-dim backlog-flow + vendor-alignment multi-signal + input→file + B-0119/B-0120 (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T22:44:32Z",
+  "head_ref": "memory/acid-leaning-cluster-meta-rules-plus-backlog-rows-aaron-2026-04-30"
+}

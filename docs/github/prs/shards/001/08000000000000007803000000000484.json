@@ -1,0 +1,12 @@
+{
+  "pr_number": 1156,
+  "archive_path": "docs/history/pr-reviews/PR-1156-hygiene-tick-history-2026-05-01t20-35z-substrate-densification-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:40:15.152Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T20:35Z — substrate-densification tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T20:39:51Z",
+  "head_ref": "otto/tick-history-2035Z-2026-05-01"
+}

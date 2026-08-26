@@ -1,0 +1,23 @@
+{
+  "pr_number": 978,
+  "archive_path": "docs/history/pr-reviews/PR-978-memory-aic-3-otto-341-hardest-mid-loop-when-mechanical-is-working-aaron-validate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69B7QC",
+    "comment:PRRC_kwDOSF9kNM69B7QM",
+    "comment:PRRC_kwDOSF9kNM69B7QV",
+    "comment:PRRC_kwDOSF9kNM69B7Qb",
+    "comment:PRRC_kwDOSF9kNM69B7Ql",
+    "thread:PRRT_kwDOSF9kNM5-4wnB",
+    "thread:PRRT_kwDOSF9kNM5-4wnJ",
+    "thread:PRRT_kwDOSF9kNM5-4wnQ",
+    "thread:PRRT_kwDOSF9kNM5-4wnU",
+    "thread:PRRT_kwDOSF9kNM5-4wnb"
+  ],
+  "fetched_at": "2026-08-25T08:32:53.466Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(AIC #3): Otto-341 hardest mid-loop when mechanical is working — Aaron-validated 2x",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:40:49Z",
+  "head_ref": "memory/aic-3-structural-fix-mid-loop-difficulty-aaron-2026-04-30"
+}

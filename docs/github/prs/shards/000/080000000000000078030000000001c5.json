@@ -1,0 +1,19 @@
+{
+  "pr_number": 453,
+  "archive_path": "docs/history/pr-reviews/PR-453-hygiene-268-pr-preservation-drain-log-for-424-4-parent-cascade.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QZ_-",
+    "comment:PRRC_kwDOSF9kNM67QaAG",
+    "comment:PRRC_kwDOSF9kNM67QaAP",
+    "thread:PRRT_kwDOSF9kNM59ka-N",
+    "thread:PRRT_kwDOSF9kNM59ka-U",
+    "thread:PRRT_kwDOSF9kNM59ka-d"
+  ],
+  "fetched_at": "2026-08-25T08:10:57.206Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #424 (4-parent cascade)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:18:37Z",
+  "head_ref": "drain/424-pr-preservation-log"
+}

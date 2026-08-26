@@ -1,0 +1,17 @@
+{
+  "pr_number": 764,
+  "archive_path": "docs/history/pr-reviews/PR-764-tick-history-2026-04-29t04-08z-over-eager-substrate-creation-lesson-consolidatio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Q164",
+    "comment:PRRC_kwDOSF9kNM68Q17a",
+    "thread:PRRT_kwDOSF9kNM5-Um-0",
+    "thread:PRRT_kwDOSF9kNM5-Um-d"
+  ],
+  "fetched_at": "2026-08-25T08:24:26.157Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:08Z — over-eager-substrate-creation lesson + consolidation",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:26:04Z",
+  "head_ref": "tick-history/2026-04-29-tick-0408Z-shard"
+}

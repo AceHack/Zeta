@@ -1,0 +1,12 @@
+{
+  "pr_number": 1720,
+  "archive_path": "docs/history/pr-reviews/PR-1720-backlog-b-0208-launchd-forward-tick-reliability.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:02:58.110Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0208): launchd forward-tick reliability",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:57:45Z",
+  "head_ref": "feat/backlog-b0208"
+}

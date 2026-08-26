@@ -1,0 +1,15 @@
+{
+  "pr_number": 976,
+  "archive_path": "docs/history/pr-reviews/PR-976-hygiene-tick-history-shard-2330z-schema-check-tool-landed-in-dormant-mode.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69B264",
+    "thread:PRRT_kwDOSF9kNM5-4tb7"
+  ],
+  "fetched_at": "2026-08-25T08:32:48.366Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2330Z — schema-check tool landed in DORMANT mode",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:33:56Z",
+  "head_ref": "hygiene/tick-history-2026-04-30T2330Z-schema-check-tool"
+}

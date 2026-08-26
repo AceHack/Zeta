@@ -1,0 +1,15 @@
+{
+  "pr_number": 1785,
+  "archive_path": "docs/history/pr-reviews/PR-1785-research-fix-riven-verdict-archive-header.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-qvCG",
+    "thread:PRRT_kwDOSF9kNM6AMMp-"
+  ],
+  "fetched_at": "2026-08-25T09:04:44.141Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: fix Riven verdict archive header",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T03:56:56Z",
+  "head_ref": "claim/fix-pr1783-research-header"
+}

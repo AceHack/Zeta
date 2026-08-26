@@ -1,0 +1,26 @@
+{
+  "pr_number": 434,
+  "archive_path": "docs/history/pr-reviews/PR-434-drain-226-follow-up-2-cc-log-schema-populated-state-alignment.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67P72D",
+    "comment:PRRC_kwDOSF9kNM67P72O",
+    "comment:PRRC_kwDOSF9kNM67P72X",
+    "comment:PRRC_kwDOSF9kNM67QE-Q",
+    "comment:PRRC_kwDOSF9kNM67QE-U",
+    "comment:PRRC_kwDOSF9kNM67QEVH",
+    "comment:PRRC_kwDOSF9kNM67QEVw",
+    "comment:PRRC_kwDOSF9kNM67QEWM",
+    "thread:PRRT_kwDOSF9kNM59kDUM",
+    "thread:PRRT_kwDOSF9kNM59kDUX",
+    "thread:PRRT_kwDOSF9kNM59kDUg",
+    "thread:PRRT_kwDOSF9kNM59kKlB",
+    "thread:PRRT_kwDOSF9kNM59kKlE"
+  ],
+  "fetched_at": "2026-08-25T08:10:08.116Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#226 follow-up 2): CC log schema + populated-state alignment",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T06:06:42Z",
+  "head_ref": "drain/226-followup-2-cc-schema-alignment"
+}

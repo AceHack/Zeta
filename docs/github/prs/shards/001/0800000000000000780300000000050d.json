@@ -1,0 +1,15 @@
+{
+  "pr_number": 1293,
+  "archive_path": "docs/history/pr-reviews/PR-1293-hygiene-tick-history-2026-05-03t03-20z-memory-md-trim-cycle.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZcG1",
+    "thread:PRRT_kwDOSF9kNM5_KQmS"
+  ],
+  "fetched_at": "2026-08-25T08:46:06.169Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T03:20Z — MEMORY.md trim cycle",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:35:58Z",
+  "head_ref": "free-memory/tick-0322Z-trim-cycle-and-cross-disciplinary-rebased"
+}

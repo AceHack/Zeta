@@ -1,0 +1,12 @@
+{
+  "pr_number": 1909,
+  "archive_path": "docs/history/pr-reviews/PR-1909-backlog-b-0240-arc-4-self-play-extension-adversarial-structure-recognition.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:07:19.557Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0240): ARC-4 self-play extension — adversarial structure recognition",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T16:58:30Z",
+  "head_ref": "otto/b0240-arc4-selfplay"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 230,
+  "archive_path": "docs/history/pr-reviews/PR-230-backlog-p3-multi-account-access-design-safety-first-aaron-otto-76-low-priority.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662gtR",
+    "comment:PRRC_kwDOSF9kNM662iuS",
+    "comment:PRRC_kwDOSF9kNM662ium",
+    "comment:PRRC_kwDOSF9kNM67D79g",
+    "comment:PRRC_kwDOSF9kNM67D8EE",
+    "comment:PRRC_kwDOSF9kNM67D8Gu",
+    "thread:PRRT_kwDOSF9kNM59RH40",
+    "thread:PRRT_kwDOSF9kNM59RJYO",
+    "thread:PRRT_kwDOSF9kNM59RJYc"
+  ],
+  "fetched_at": "2026-08-25T08:02:04.987Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P3 multi-account access design — safety-first (Aaron Otto-76, low-priority)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:33:01Z",
+  "head_ref": "backlog/multi-account-access-design-low-priority"
+}

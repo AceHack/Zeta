@@ -1,0 +1,19 @@
+{
+  "pr_number": 1613,
+  "archive_path": "docs/history/pr-reviews/PR-1613-research-architecture-sakana-nca-digital-ecosystems-identity-preservation-strang.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69_Ub_",
+    "comment:PRRC_kwDOSF9kNM69_Wt2",
+    "comment:PRRC_kwDOSF9kNM69_Wuf",
+    "thread:PRRT_kwDOSF9kNM5_mupy",
+    "thread:PRRT_kwDOSF9kNM5_mwQ2",
+    "thread:PRRT_kwDOSF9kNM5_mwRT"
+  ],
+  "fetched_at": "2026-08-25T08:58:50.657Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): Sakana NCA Digital Ecosystems + identity preservation + strange attractors + same-tick corrections (tinygrad-not-paper-id, 13-months-arithmetic-fix) -- Aaron-forwarded 2026-05-05",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:46:00Z",
+  "head_ref": "research/sakana-nca-digital-ecosystems-identity-strange-attractors-claudeai-aaron-forwarded-2026-05-05"
+}

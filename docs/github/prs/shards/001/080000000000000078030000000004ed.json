@@ -1,0 +1,21 @@
+{
+  "pr_number": 1261,
+  "archive_path": "docs/history/pr-reviews/PR-1261-backlog-3-follow-up-rows-from-pr-1253-b-0171-openspec-b-0172-plugin-b-0173-hooks.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZDbC",
+    "comment:PRRC_kwDOSF9kNM69ZDbG",
+    "comment:PRRC_kwDOSF9kNM69ZDbH",
+    "comment:PRRC_kwDOSF9kNM69ZDbM",
+    "thread:PRRT_kwDOSF9kNM5_J9Ka",
+    "thread:PRRT_kwDOSF9kNM5_J9Kc",
+    "thread:PRRT_kwDOSF9kNM5_J9Kd",
+    "thread:PRRT_kwDOSF9kNM5_J9Ki"
+  ],
+  "fetched_at": "2026-08-25T08:44:40.259Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: 3 follow-up rows from PR #1253 (B-0171 OpenSpec + B-0172 plugin + B-0173 hooks)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T01:26:14Z",
+  "head_ref": "backlog/follow-up-rows-from-pr-1253-openspec-plugin-hooks-aaron-2026-05-03"
+}

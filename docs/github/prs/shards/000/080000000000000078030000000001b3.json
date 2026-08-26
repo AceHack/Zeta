@@ -1,0 +1,22 @@
+{
+  "pr_number": 435,
+  "archive_path": "docs/history/pr-reviews/PR-435-drain-148-follow-up-cadenced-live-lock-grammar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QABs",
+    "comment:PRRC_kwDOSF9kNM67QAOA",
+    "comment:PRRC_kwDOSF9kNM67QD81",
+    "comment:PRRC_kwDOSF9kNM67QD9Q",
+    "comment:PRRC_kwDOSF9kNM67QEeY",
+    "comment:PRRC_kwDOSF9kNM67QFk7",
+    "thread:PRRT_kwDOSF9kNM59kG0t",
+    "thread:PRRT_kwDOSF9kNM59kGrg",
+    "thread:PRRT_kwDOSF9kNM59kKLD"
+  ],
+  "fetched_at": "2026-08-25T08:10:11.152Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#148 follow-up): cadenced live-lock + grammar",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T06:11:48Z",
+  "head_ref": "drain/148-followup-cadenced-livelock-and-grammar"
+}

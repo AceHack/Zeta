@@ -1,0 +1,15 @@
+{
+  "pr_number": 685,
+  "archive_path": "docs/history/pr-reviews/PR-685-memory-backlog-typescript-default-3-amara-named-classes-b-0086-port-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68KeUq",
+    "thread:PRRT_kwDOSF9kNM5-P9Ug"
+  ],
+  "fetched_at": "2026-08-25T08:21:17.157Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory + backlog: TypeScript-default + 3 Amara-named classes + B-0086 port row",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:05:17Z",
+  "head_ref": "memory/typescript-default-plus-amara-classes-aaron-2026-04-28"
+}

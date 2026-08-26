@@ -1,0 +1,12 @@
+{
+  "pr_number": 668,
+  "archive_path": "docs/history/pr-reviews/PR-668-memory-fix-otto-352-otto-358-cross-ref-apply-resolved-mechanism-codex-p2-follow-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:20:38.664Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: fix Otto-352→Otto-358 cross-ref + apply resolved-mechanism (Codex P2 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T16:34:23Z",
+  "head_ref": "memory/speculation-cross-refs-resolved-mechanism-2026-04-28"
+}

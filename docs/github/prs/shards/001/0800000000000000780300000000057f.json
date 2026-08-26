@@ -1,0 +1,12 @@
+{
+  "pr_number": 1407,
+  "archive_path": "docs/history/pr-reviews/PR-1407-memory-cache-paths-mutually-exclusive-with-git-ls-files-discipline-silent-clobbe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:50:20.201Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: cache-paths-mutually-exclusive-with-git-ls-files discipline (silent-clobber bug class)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T13:32:40Z",
+  "head_ref": "memory/cache-paths-mutually-exclusive-with-git-ls-files-discipline"
+}

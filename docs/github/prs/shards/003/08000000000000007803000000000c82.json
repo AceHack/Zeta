@@ -1,0 +1,25 @@
+{
+  "pr_number": 3202,
+  "archive_path": "docs/history/pr-reviews/PR-3202-feat-hygiene-mechanize-razor-cadence-item-4-audit-rule-cross-refs-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BV-Xu",
+    "comment:PRRC_kwDOSF9kNM7BV-fj",
+    "comment:PRRC_kwDOSF9kNM7BWD72",
+    "comment:PRRC_kwDOSF9kNM7BWD7L",
+    "comment:PRRC_kwDOSF9kNM7BWORc",
+    "comment:PRRC_kwDOSF9kNM7BWZWn",
+    "thread:PRRT_kwDOSF9kNM6CK371",
+    "thread:PRRT_kwDOSF9kNM6CK_9O",
+    "thread:PRRT_kwDOSF9kNM6CKsiI",
+    "thread:PRRT_kwDOSF9kNM6CKsnp",
+    "thread:PRRT_kwDOSF9kNM6CKweH",
+    "thread:PRRT_kwDOSF9kNM6CKweq"
+  ],
+  "fetched_at": "2026-08-25T09:08:14.865Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(hygiene): mechanize razor-cadence item 4 — audit-rule-cross-refs.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:44:21Z",
+  "head_ref": "feat/audit-rule-cross-refs-mechanization-otto-cli-2026-05-14"
+}

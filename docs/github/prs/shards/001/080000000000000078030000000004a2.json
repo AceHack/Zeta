@@ -1,0 +1,17 @@
+{
+  "pr_number": 1186,
+  "archive_path": "docs/history/pr-reviews/PR-1186-research-gate-yml-immune-system-preserve-aaron-s-recognition-claude-ai-engagemen.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Sfy_",
+    "comment:PRRC_kwDOSF9kNM69SfzE",
+    "thread:PRRT_kwDOSF9kNM5_E9Ik",
+    "thread:PRRT_kwDOSF9kNM5_E9In"
+  ],
+  "fetched_at": "2026-08-25T08:41:27.608Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(gate-yml=immune-system): preserve Aaron's recognition + Claude.ai engagement (2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T00:56:31Z",
+  "head_ref": "research/gate-yml-is-immune-system-aaron-claudeai-2026-05-02"
+}

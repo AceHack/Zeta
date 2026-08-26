@@ -1,0 +1,12 @@
+{
+  "pr_number": 1530,
+  "archive_path": "docs/history/pr-reviews/PR-1530-fix-memory-md-compress-25-entries-in-501-600-char-tier-b-0006-tier-20.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:55:21.258Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): compress 25 entries in 501-600 char tier — B-0006 tier-20",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T22:04:46Z",
+  "head_ref": "fix/memory-md-tier-20-aaron-2026-05-04"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1078,
+  "archive_path": "docs/history/pr-reviews/PR-1078-hygiene-tick-history-2026-05-01t10-03z-originsessionid-strip-wave.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HZu_",
+    "comment:PRRC_kwDOSF9kNM69HZuo",
+    "comment:PRRC_kwDOSF9kNM69HZuw",
+    "thread:PRRT_kwDOSF9kNM5-8x81",
+    "thread:PRRT_kwDOSF9kNM5-8x8_",
+    "thread:PRRT_kwDOSF9kNM5-8x8u"
+  ],
+  "fetched_at": "2026-08-25T08:37:03.588Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:03Z — originSessionId-strip wave",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:06:24Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1004Z-originSessionId-cleanup"
+}

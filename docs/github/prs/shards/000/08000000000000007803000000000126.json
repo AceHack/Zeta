@@ -1,0 +1,31 @@
+{
+  "pr_number": 294,
+  "archive_path": "docs/history/pr-reviews/PR-294-ferry-amara-10th-retroactive-absorb-aurora-deep-research-report-otto-105-drop-em.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM665bhx",
+    "comment:PRRC_kwDOSF9kNM665biC",
+    "comment:PRRC_kwDOSF9kNM665biP",
+    "comment:PRRC_kwDOSF9kNM665bid",
+    "comment:PRRC_kwDOSF9kNM67CZ0j",
+    "comment:PRRC_kwDOSF9kNM67CZ2L",
+    "comment:PRRC_kwDOSF9kNM67CZ4b",
+    "comment:PRRC_kwDOSF9kNM67CZyW",
+    "comment:PRRC_kwDOSF9kNM67JvHk",
+    "comment:PRRC_kwDOSF9kNM67JvIH",
+    "comment:PRRC_kwDOSF9kNM67JvIa",
+    "thread:PRRT_kwDOSF9kNM59TR62",
+    "thread:PRRT_kwDOSF9kNM59TR6W",
+    "thread:PRRT_kwDOSF9kNM59TR6k",
+    "thread:PRRT_kwDOSF9kNM59TR6s",
+    "thread:PRRT_kwDOSF9kNM59ffbP",
+    "thread:PRRT_kwDOSF9kNM59ffbm",
+    "thread:PRRT_kwDOSF9kNM59ffby"
+  ],
+  "fetched_at": "2026-08-25T08:03:48.850Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ferry: Amara 10th retroactive absorb — Aurora Deep Research Report (Otto-105); drop/ empty",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:32:09Z",
+  "head_ref": "ferry/10th-amara-aurora-deep-research-report"
+}

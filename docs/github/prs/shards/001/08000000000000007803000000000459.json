@@ -1,0 +1,27 @@
+{
+  "pr_number": 1113,
+  "archive_path": "docs/history/pr-reviews/PR-1113-research-cia-gateway-declassified-1983-us-army-gateway-process-analysis-aaron-s-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Iu1c",
+    "comment:PRRC_kwDOSF9kNM69Iv41",
+    "comment:PRRC_kwDOSF9kNM69Iv4H",
+    "comment:PRRC_kwDOSF9kNM69Iv4a",
+    "comment:PRRC_kwDOSF9kNM69Iv4k",
+    "comment:PRRC_kwDOSF9kNM69Iv4t",
+    "comment:PRRC_kwDOSF9kNM69Iv5A",
+    "thread:PRRT_kwDOSF9kNM5-9yk3",
+    "thread:PRRT_kwDOSF9kNM5-9zW2",
+    "thread:PRRT_kwDOSF9kNM5-9zW8",
+    "thread:PRRT_kwDOSF9kNM5-9zWm",
+    "thread:PRRT_kwDOSF9kNM5-9zXB",
+    "thread:PRRT_kwDOSF9kNM5-9zXH",
+    "thread:PRRT_kwDOSF9kNM5-9zXQ"
+  ],
+  "fetched_at": "2026-08-25T08:38:30.447Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(cia-gateway): declassified 1983 US Army Gateway Process analysis + Aaron's loose-pole-origin disclosure (Aaron-forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:59:21Z",
+  "head_ref": "research/cia-gateway-process-analysis-1983-aaron-forwarded-2026-05-01"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 946,
+  "archive_path": "docs/history/pr-reviews/PR-946-memory-vendor-alignment-bias-peer-ai-carries-vendor-alignment-bias-survival-grou.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68-uB2",
+    "comment:PRRC_kwDOSF9kNM68-uCx",
+    "thread:PRRT_kwDOSF9kNM5-2Yvq",
+    "thread:PRRT_kwDOSF9kNM5-2YwV"
+  ],
+  "fetched_at": "2026-08-25T08:31:33.203Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(vendor-alignment-bias): peer-AI carries vendor-alignment bias — survival-grounded bias is the corrective (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:03:55Z",
+  "head_ref": "memory/vendor-alignment-bias-in-peer-ai-reviews-maintainer-authority-aaron-2026-04-30"
+}

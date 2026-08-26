@@ -1,0 +1,17 @@
+{
+  "pr_number": 1915,
+  "archive_path": "docs/history/pr-reviews/PR-1915-docs-tick-1610z-full-session-arc-23-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-70Kl",
+    "comment:PRRC_kwDOSF9kNM6-72nD",
+    "thread:PRRT_kwDOSF9kNM6AY6iW",
+    "thread:PRRT_kwDOSF9kNM6AY8Vo"
+  ],
+  "fetched_at": "2026-08-25T09:07:33.932Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(tick): 1610Z — full session arc (23 PRs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:18:16Z",
+  "head_ref": "otto/tick-1610z-session-arc"
+}

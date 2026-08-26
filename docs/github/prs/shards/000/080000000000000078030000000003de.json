@@ -1,0 +1,17 @@
+{
+  "pr_number": 990,
+  "archive_path": "docs/history/pr-reviews/PR-990-hygiene-tick-history-shard-0028z-queue-draining-observation-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CemT",
+    "comment:PRRC_kwDOSF9kNM69Cemn",
+    "thread:PRRT_kwDOSF9kNM5-5Jsf",
+    "thread:PRRT_kwDOSF9kNM5-5Jss"
+  ],
+  "fetched_at": "2026-08-25T08:33:23.399Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0028Z — queue-draining observation tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:30:49Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0030Z-queue-draining-cron-healthy"
+}

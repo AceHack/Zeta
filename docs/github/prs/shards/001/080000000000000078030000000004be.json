@@ -1,0 +1,25 @@
+{
+  "pr_number": 1214,
+  "archive_path": "docs/history/pr-reviews/PR-1214-backlog-b-0166-chat-input-as-acid-durable-dbsp-event-vision-aaron-2026-05-02-p2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XVf0",
+    "comment:PRRC_kwDOSF9kNM69XWC4",
+    "comment:PRRC_kwDOSF9kNM69XWC9",
+    "comment:PRRC_kwDOSF9kNM69XWC_",
+    "comment:PRRC_kwDOSF9kNM69XaFZ",
+    "comment:PRRC_kwDOSF9kNM69XaFg",
+    "thread:PRRT_kwDOSF9kNM5_Im73",
+    "thread:PRRT_kwDOSF9kNM5_Im76",
+    "thread:PRRT_kwDOSF9kNM5_Im7z",
+    "thread:PRRT_kwDOSF9kNM5_ImgA",
+    "thread:PRRT_kwDOSF9kNM5_IqGU",
+    "thread:PRRT_kwDOSF9kNM5_IqGZ"
+  ],
+  "fetched_at": "2026-08-25T08:42:36.023Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0166): chat-input-as-ACID-durable-DBSP-event vision (Aaron 2026-05-02 P2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:18:14Z",
+  "head_ref": "backlog/B-0166-chat-as-dbsp-event-aaron-vision-2026-05-02"
+}

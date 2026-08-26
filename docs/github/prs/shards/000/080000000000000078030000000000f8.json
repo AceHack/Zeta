@@ -1,0 +1,21 @@
+{
+  "pr_number": 248,
+  "archive_path": "docs/history/pr-reviews/PR-248-agents-edit-1-external-conversation-absorbs-land-research-grade-not-operational-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663YI1",
+    "comment:PRRC_kwDOSF9kNM663ZLy",
+    "comment:PRRC_kwDOSF9kNM663ZMJ",
+    "comment:PRRC_kwDOSF9kNM663ZMS",
+    "thread:PRRT_kwDOSF9kNM59Rw2V",
+    "thread:PRRT_kwDOSF9kNM59RxmQ",
+    "thread:PRRT_kwDOSF9kNM59Rxmi",
+    "thread:PRRT_kwDOSF9kNM59Rxmo"
+  ],
+  "fetched_at": "2026-08-25T08:02:38.172Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "agents: Edit 1 — external-conversation absorbs land research-grade, not operational (Amara 5th-ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:15:12Z",
+  "head_ref": "agents/edit-1-absorbs-staged-not-ratified"
+}

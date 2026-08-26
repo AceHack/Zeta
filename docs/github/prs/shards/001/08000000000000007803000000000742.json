@@ -1,0 +1,12 @@
+{
+  "pr_number": 1858,
+  "archive_path": "docs/history/pr-reviews/PR-1858-backlog-b-0244-concordance-ai-on-local-gpus-ties-everything-together.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:05:43.034Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0244): concordance AI on local GPUs — ties everything together",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T10:59:21Z",
+  "head_ref": "backlog/b0244-concordance-ai-gpu-structure-recognizer-language"
+}

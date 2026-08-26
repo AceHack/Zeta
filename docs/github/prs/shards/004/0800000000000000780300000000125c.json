@@ -1,0 +1,21 @@
+{
+  "pr_number": 4700,
+  "archive_path": "docs/history/pr-reviews/PR-4700-feat-memory-add-new-feedback-memory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7EMqHz",
+    "comment:PRRC_kwDOSF9kNM7EMqIC",
+    "comment:PRRC_kwDOSF9kNM7EMqIH",
+    "comment:PRRC_kwDOSF9kNM7EMqIO",
+    "thread:PRRT_kwDOSF9kNM6EQGD7",
+    "thread:PRRT_kwDOSF9kNM6EQGD_",
+    "thread:PRRT_kwDOSF9kNM6EQGDw",
+    "thread:PRRT_kwDOSF9kNM6EQGEF"
+  ],
+  "fetched_at": "2026-08-25T09:08:23.499Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(memory): add new feedback memory",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T13:31:23Z",
+  "head_ref": "lior-feedback-memory-4698"
+}

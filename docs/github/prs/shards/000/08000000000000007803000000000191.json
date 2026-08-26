@@ -1,0 +1,16 @@
+{
+  "pr_number": 401,
+  "archive_path": "docs/history/pr-reviews/PR-401-chore-references-upstreams-sentinel-pair-parity-with-drop-roms.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67OHZm",
+    "comment:PRRC_kwDOSF9kNM67OXbh",
+    "thread:PRRT_kwDOSF9kNM59ivb1"
+  ],
+  "fetched_at": "2026-08-25T08:08:40.826Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore: references/upstreams/ sentinel pair — parity with drop/ + roms/",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T01:59:15Z",
+  "head_ref": "chore/upstreams-sentinel-parity"
+}

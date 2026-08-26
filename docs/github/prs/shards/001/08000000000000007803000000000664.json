@@ -1,0 +1,17 @@
+{
+  "pr_number": 1636,
+  "archive_path": "docs/history/pr-reviews/PR-1636-shard-2026-05-05t12-05z-sleep-test-honored-consolidation-architecture-provenance.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-CUR0",
+    "comment:PRRC_kwDOSF9kNM6-CUSS",
+    "thread:PRRT_kwDOSF9kNM5_o_nH",
+    "thread:PRRT_kwDOSF9kNM5_o_nf"
+  ],
+  "fetched_at": "2026-08-25T08:59:42.975Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T12:05Z): sleep-test-honored consolidation -- architecture-provenance at 5 sources",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:10:16Z",
+  "head_ref": "shard/2026-05-05-1205Z"
+}

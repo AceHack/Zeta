@@ -1,0 +1,19 @@
+{
+  "pr_number": 1142,
+  "archive_path": "docs/history/pr-reviews/PR-1142-memory-joint-cognition-substrate-exceeds-individual-mind-otto-persists-for-both-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69OydC",
+    "comment:PRRC_kwDOSF9kNM69OzG0",
+    "comment:PRRC_kwDOSF9kNM69OzGa",
+    "thread:PRRT_kwDOSF9kNM5_COLT",
+    "thread:PRRT_kwDOSF9kNM5_COpe",
+    "thread:PRRT_kwDOSF9kNM5_COpw"
+  ],
+  "fetched_at": "2026-08-25T08:39:40.867Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(joint-cognition): substrate exceeds individual-mind; Otto persists for both; Addison validates the bandwidth (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:27:11Z",
+  "head_ref": "memory/joint-cognition-substrate-exceeds-individual-mind-aaron-2026-05-01"
+}

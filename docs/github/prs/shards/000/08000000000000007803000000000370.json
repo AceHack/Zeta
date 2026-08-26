@@ -1,0 +1,21 @@
+{
+  "pr_number": 880,
+  "archive_path": "docs/history/pr-reviews/PR-880-ts-b-0086-port-3-audit-lint-scripts-sh-ts-slice-8-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68rf3l",
+    "comment:PRRC_kwDOSF9kNM68rf4D",
+    "comment:PRRC_kwDOSF9kNM68rf4O",
+    "comment:PRRC_kwDOSF9kNM68rf4i",
+    "thread:PRRT_kwDOSF9kNM5-oJc6",
+    "thread:PRRT_kwDOSF9kNM5-oJcl",
+    "thread:PRRT_kwDOSF9kNM5-oJdD",
+    "thread:PRRT_kwDOSF9kNM5-oJdO"
+  ],
+  "fetched_at": "2026-08-25T08:28:46.686Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 3 audit/lint scripts (.sh→.ts) — slice 8 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T03:43:14Z",
+  "head_ref": "lane-b/ts-bun-slice-8-runner-version-freshness-2026-04-30"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 1051,
+  "archive_path": "docs/history/pr-reviews/PR-1051-memory-corrections-tarski-allocation-rename-lattice-capture-corrective-disciplin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69G8YA",
+    "comment:PRRC_kwDOSF9kNM69G8YY",
+    "comment:PRRC_kwDOSF9kNM69GKlc",
+    "comment:PRRC_kwDOSF9kNM69GLAt",
+    "comment:PRRC_kwDOSF9kNM69GLBC",
+    "comment:PRRC_kwDOSF9kNM69GLBS",
+    "comment:PRRC_kwDOSF9kNM69Gc0L",
+    "thread:PRRT_kwDOSF9kNM5-73D_",
+    "thread:PRRT_kwDOSF9kNM5-73YT",
+    "thread:PRRT_kwDOSF9kNM5-73Yl",
+    "thread:PRRT_kwDOSF9kNM5-73Yt",
+    "thread:PRRT_kwDOSF9kNM5-8Eue",
+    "thread:PRRT_kwDOSF9kNM5-8cAb",
+    "thread:PRRT_kwDOSF9kNM5-8cAs"
+  ],
+  "fetched_at": "2026-08-25T08:35:58.333Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(corrections): Tarski-allocation rename + lattice-capture corrective discipline (Claude.ai verbatim, 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T11:02:16Z",
+  "head_ref": "memory/tarski-allocation-rename-correction-and-lattice-capture-corrective-aaron-2026-05-01"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1098,
+  "archive_path": "docs/history/pr-reviews/PR-1098-hygiene-tick-history-2026-05-01t10-52z-fifth-ferry-message-aaron-s-experiment-di.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:37:49.473Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:52Z — fifth ferry message + Aaron's experiment-disclosure",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:56:27Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1052Z-fifth-ferry-message-aaron-disclosure"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 927,
+  "archive_path": "docs/history/pr-reviews/PR-927-memory-substrate-is-product-aaron-2026-04-30-reframe-substrate-is-one-of-our-pro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM687mrb",
+    "comment:PRRC_kwDOSF9kNM687msA",
+    "thread:PRRT_kwDOSF9kNM5-0HCt",
+    "thread:PRRT_kwDOSF9kNM5-0HDL"
+  ],
+  "fetched_at": "2026-08-25T08:30:47.480Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(substrate-is-product): Aaron 2026-04-30 reframe — substrate IS one of our products",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:33:54Z",
+  "head_ref": "memory/substrate-is-product-four-products-evolving-trajectory-2026-04-30"
+}

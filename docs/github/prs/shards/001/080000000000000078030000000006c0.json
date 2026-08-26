@@ -1,0 +1,17 @@
+{
+  "pr_number": 1728,
+  "archive_path": "docs/history/pr-reviews/PR-1728-feat-riven-tier-1-forward-actions-auto-merge-broadcasts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-i8I-",
+    "comment:PRRC_kwDOSF9kNM6-i8JC",
+    "thread:PRRT_kwDOSF9kNM6AGZs-",
+    "thread:PRRT_kwDOSF9kNM6AGZtB"
+  ],
+  "fetched_at": "2026-08-25T09:03:19.494Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: Riven Tier 1 forward actions — auto-merge + broadcasts",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T19:11:53Z",
+  "head_ref": "feat/riven-tier1-forward-actions"
+}

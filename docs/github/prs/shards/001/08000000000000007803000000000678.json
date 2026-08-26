@@ -1,0 +1,25 @@
+{
+  "pr_number": 1656,
+  "archive_path": "docs/history/pr-reviews/PR-1656-fix-section33-audit-batch-add-hint-phrases-fix-2-audit-failures-silent-skip-disc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Fx-H",
+    "comment:PRRC_kwDOSF9kNM6-Fx_8",
+    "comment:PRRC_kwDOSF9kNM6-FyAY",
+    "comment:PRRC_kwDOSF9kNM6-FyBX",
+    "comment:PRRC_kwDOSF9kNM6-FyCM",
+    "comment:PRRC_kwDOSF9kNM6-FyCv",
+    "thread:PRRT_kwDOSF9kNM5_rl4c",
+    "thread:PRRT_kwDOSF9kNM5_rl55",
+    "thread:PRRT_kwDOSF9kNM5_rl5p",
+    "thread:PRRT_kwDOSF9kNM5_rl6c",
+    "thread:PRRT_kwDOSF9kNM5_rl7E",
+    "thread:PRRT_kwDOSF9kNM5_rl7c"
+  ],
+  "fetched_at": "2026-08-25T09:00:30.029Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(section33-audit-batch): add hint phrases + fix 2 audit-failures (silent-skip discovery via Copilot #1653 review)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:21:38Z",
+  "head_ref": "fixup/section33-audit-hint-phrases-2026-05-05-batch"
+}

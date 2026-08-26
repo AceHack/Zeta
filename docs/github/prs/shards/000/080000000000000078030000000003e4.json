@@ -1,0 +1,16 @@
+{
+  "pr_number": 996,
+  "archive_path": "docs/history/pr-reviews/PR-996-hygiene-tick-history-shard-0054z-playwright-engagement-2-pr-thread-fix-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CseY",
+    "comment:PRRC_kwDOSF9kNM69HMOS",
+    "thread:PRRT_kwDOSF9kNM5-5UDJ"
+  ],
+  "fetched_at": "2026-08-25T08:33:38.081Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0054Z — Playwright-engagement + 2-PR thread-fix tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:43:09Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0100Z-playwright-engagement-thread-fixes-993-995"
+}

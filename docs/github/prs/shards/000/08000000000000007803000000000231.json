@@ -1,0 +1,28 @@
+{
+  "pr_number": 561,
+  "archive_path": "docs/history/pr-reviews/PR-561-substrate-otto-348-maji-messiah-finder-vs-anchor-messiahscore-as-map-estimator-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V6PB",
+    "comment:PRRC_kwDOSF9kNM67V6PI",
+    "comment:PRRC_kwDOSF9kNM67V6PN",
+    "comment:PRRC_kwDOSF9kNM67WDXO",
+    "comment:PRRC_kwDOSF9kNM67WDXq",
+    "comment:PRRC_kwDOSF9kNM67WDYK",
+    "comment:PRRC_kwDOSF9kNM67WEeC",
+    "comment:PRRC_kwDOSF9kNM67WEeP",
+    "comment:PRRC_kwDOSF9kNM67WEeU",
+    "thread:PRRT_kwDOSF9kNM59o1ph",
+    "thread:PRRT_kwDOSF9kNM59o1pl",
+    "thread:PRRT_kwDOSF9kNM59o1pp",
+    "thread:PRRT_kwDOSF9kNM59o9tQ",
+    "thread:PRRT_kwDOSF9kNM59o9td",
+    "thread:PRRT_kwDOSF9kNM59o9th"
+  ],
+  "fetched_at": "2026-08-25T08:16:34.075Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-348): Maji ≠ Messiah — finder vs anchor; MessiahScore as MAP-estimator (Amara correction)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:03:07Z",
+  "head_ref": "substrate/otto-348-maji-vs-messiah-separation-amara-second-correction-2026-04-26"
+}

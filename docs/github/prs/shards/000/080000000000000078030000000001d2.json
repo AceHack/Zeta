@@ -1,0 +1,27 @@
+{
+  "pr_number": 466,
+  "archive_path": "docs/history/pr-reviews/PR-466-drain-448-follow-up-resolve-patterns-md-surface-class-contradiction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Qdrg",
+    "comment:PRRC_kwDOSF9kNM67Qdro",
+    "comment:PRRC_kwDOSF9kNM67Qdrs",
+    "comment:PRRC_kwDOSF9kNM67Qdrz",
+    "comment:PRRC_kwDOSF9kNM67Qf5B",
+    "comment:PRRC_kwDOSF9kNM67QfbP",
+    "comment:PRRC_kwDOSF9kNM67Qfba",
+    "comment:PRRC_kwDOSF9kNM67Qfbs",
+    "comment:PRRC_kwDOSF9kNM67QfcD",
+    "thread:PRRT_kwDOSF9kNM59keAD",
+    "thread:PRRT_kwDOSF9kNM59keAH",
+    "thread:PRRT_kwDOSF9kNM59keAJ",
+    "thread:PRRT_kwDOSF9kNM59keAQ",
+    "thread:PRRT_kwDOSF9kNM59kfvJ"
+  ],
+  "fetched_at": "2026-08-25T08:11:27.099Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#448 follow-up): resolve _patterns.md surface-class contradiction",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:46:00Z",
+  "head_ref": "drain/448-followup-surface-class-clarification"
+}

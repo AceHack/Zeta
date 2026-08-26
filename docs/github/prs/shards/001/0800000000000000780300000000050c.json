@@ -1,0 +1,17 @@
+{
+  "pr_number": 1292,
+  "archive_path": "docs/history/pr-reviews/PR-1292-fix-memory-md-trim-verbose-entries-per-150-char-convention-5-entries-shortened.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zb8H",
+    "comment:PRRC_kwDOSF9kNM69Zb8K",
+    "thread:PRRT_kwDOSF9kNM5_KQc2",
+    "thread:PRRT_kwDOSF9kNM5_KQc5"
+  ],
+  "fetched_at": "2026-08-25T08:46:03.570Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(MEMORY.md): trim verbose entries per ~150-char convention (5 entries shortened)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:20:27Z",
+  "head_ref": "fix/memory-md-entries-too-verbose-trim-recent-additions-otto-2026-05-03"
+}

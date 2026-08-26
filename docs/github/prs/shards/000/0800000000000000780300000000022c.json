@@ -1,0 +1,29 @@
+{
+  "pr_number": 556,
+  "archive_path": "docs/history/pr-reviews/PR-556-backlog-b-0033-otto-discipline-hooks-system-claude-code-plugin-substrate-as-mech.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5w3",
+    "comment:PRRC_kwDOSF9kNM67V5wi",
+    "comment:PRRC_kwDOSF9kNM67V5xL",
+    "comment:PRRC_kwDOSF9kNM67V6IR",
+    "comment:PRRC_kwDOSF9kNM67Vtem",
+    "comment:PRRC_kwDOSF9kNM67Vtes",
+    "comment:PRRC_kwDOSF9kNM67Vtet",
+    "comment:PRRC_kwDOSF9kNM67Vtev",
+    "comment:PRRC_kwDOSF9kNM67WPE9",
+    "comment:PRRC_kwDOSF9kNM67WPOz",
+    "thread:PRRT_kwDOSF9kNM59orZh",
+    "thread:PRRT_kwDOSF9kNM59orZj",
+    "thread:PRRT_kwDOSF9kNM59orZk",
+    "thread:PRRT_kwDOSF9kNM59orZm",
+    "thread:PRRT_kwDOSF9kNM59pGEC",
+    "thread:PRRT_kwDOSF9kNM59pGMI"
+  ],
+  "fetched_at": "2026-08-25T08:16:02.639Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0033): Otto-discipline hooks system + Claude Code plugin — substrate-as-mechanism per Aaron 2026-04-26",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:46:28Z",
+  "head_ref": "backlog/B-0033-otto-discipline-hooks-system-substrate-as-mechanism-claude-code-plugin-aaron-2026-04-26"
+}

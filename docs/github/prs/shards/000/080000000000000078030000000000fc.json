@@ -1,0 +1,17 @@
+{
+  "pr_number": 252,
+  "archive_path": "docs/history/pr-reviews/PR-252-alignment-sd-9-agreement-is-signal-not-proof-amara-5th-ferry-edit-2-aminata-watc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663d58",
+    "comment:PRRC_kwDOSF9kNM663d6R",
+    "thread:PRRT_kwDOSF9kNM59R0_6",
+    "thread:PRRT_kwDOSF9kNM59R1AM"
+  ],
+  "fetched_at": "2026-08-25T08:02:42.655Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "alignment: SD-9 agreement is signal, not proof (Amara 5th-ferry Edit 2; Aminata WATCH concerns integrated)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:22:52Z",
+  "head_ref": "alignment/edit-2-sd-9-agreement-is-signal-not-proof"
+}

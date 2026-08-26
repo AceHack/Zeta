@@ -1,0 +1,16 @@
+{
+  "pr_number": 582,
+  "archive_path": "docs/history/pr-reviews/PR-582-backlog-b-0025-rename-schema-field-directive-ask-per-otto-293.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67W8ri",
+    "comment:PRRC_kwDOSF9kNM67Wrid",
+    "thread:PRRT_kwDOSF9kNM59pc0z"
+  ],
+  "fetched_at": "2026-08-25T08:17:37.391Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0025): rename schema field directive: → ask: per Otto-293",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:45:07Z",
+  "head_ref": "backlog/B-0025-rename-directive-to-ask-yaml-schema"
+}

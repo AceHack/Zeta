@@ -1,0 +1,17 @@
+{
+  "pr_number": 1011,
+  "archive_path": "docs/history/pr-reviews/PR-1011-backlog-b-0126-p1-port-the-4-layer-meta-learning-pattern-from-stcrm-to-zeta.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ENP2",
+    "comment:PRRC_kwDOSF9kNM69ENQH",
+    "thread:PRRT_kwDOSF9kNM5-6Z1G",
+    "thread:PRRT_kwDOSF9kNM5-6Z1R"
+  ],
+  "fetched_at": "2026-08-25T08:34:10.800Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0126): P1 — port the 4-layer meta-learning pattern from STCRM to Zeta",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T03:51:02Z",
+  "head_ref": "backlog/B-0126-port-meta-learning-4-layer-pattern-from-stcrm-aaron-2026-05-01"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 379,
+  "archive_path": "docs/history/pr-reviews/PR-379-docs-file-actual-hb-005-acehack-fork-settings-mirror-lfg-un-phantomize-377-refer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67I0Y_",
+    "comment:PRRC_kwDOSF9kNM67I0Z9",
+    "comment:PRRC_kwDOSF9kNM67I0Zp",
+    "thread:PRRT_kwDOSF9kNM59ezO3",
+    "thread:PRRT_kwDOSF9kNM59ezPT",
+    "thread:PRRT_kwDOSF9kNM59ezPh"
+  ],
+  "fetched_at": "2026-08-25T08:07:36.769Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: file actual HB-005 — AceHack fork settings mirror LFG (un-phantomize #377 reference)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T18:37:43Z",
+  "head_ref": "hb/hb-005-acehack-mirror-lfg-settings-sync"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 298,
+  "archive_path": "docs/history/pr-reviews/PR-298-core-phaselockingvalue-3rd-amara-graduation-firefly-sync-signature-11th-ferry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM665wpW",
+    "comment:PRRC_kwDOSF9kNM665xR0",
+    "comment:PRRC_kwDOSF9kNM665xRf",
+    "comment:PRRC_kwDOSF9kNM665xSD",
+    "thread:PRRT_kwDOSF9kNM59ThuT",
+    "thread:PRRT_kwDOSF9kNM59TiMw",
+    "thread:PRRT_kwDOSF9kNM59TiNE",
+    "thread:PRRT_kwDOSF9kNM59TiNP"
+  ],
+  "fetched_at": "2026-08-25T08:03:58.896Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: phaseLockingValue — 3rd Amara graduation (firefly-sync signature, 11th ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T06:22:04Z",
+  "head_ref": "feat/phase-locking-value-amara-graduation-3"
+}

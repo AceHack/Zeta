@@ -1,0 +1,17 @@
+{
+  "pr_number": 1430,
+  "archive_path": "docs/history/pr-reviews/PR-1430-feat-b-0067-git-hotspot-cadence-script-bug-fix-latent-silent-zero-window-60d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ckj1",
+    "comment:PRRC_kwDOSF9kNM69ckju",
+    "thread:PRRT_kwDOSF9kNM5_MvIm",
+    "thread:PRRT_kwDOSF9kNM5_MvIs"
+  ],
+  "fetched_at": "2026-08-25T08:51:18.311Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B-0067): git-hotspot cadence + script-bug fix (latent silent-zero --window 60d)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:08:33Z",
+  "head_ref": "otto/b-0067-git-hotspots-detector-2026-05-03"
+}

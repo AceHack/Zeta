@@ -1,0 +1,12 @@
+{
+  "pr_number": 1787,
+  "archive_path": "docs/history/pr-reviews/PR-1787-research-claude-ai-riff-pressure-pipeline-bft-lectio-divina-rodney-s-razor-verba.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:04:46.446Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Claude.ai riff-pressure-pipeline + BFT + lectio divina + Rodney's Razor VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T04:09:31Z",
+  "head_ref": "research/claudeai-riff-pressure-pipeline-verbatim"
+}

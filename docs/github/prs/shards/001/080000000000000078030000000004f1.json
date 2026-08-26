@@ -1,0 +1,33 @@
+{
+  "pr_number": 1265,
+  "archive_path": "docs/history/pr-reviews/PR-1265-free-memory-decision-graph-emerges-from-archaeologies-flywheel-aaron-2026-05-03-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZH41",
+    "comment:PRRC_kwDOSF9kNM69ZIIO",
+    "comment:PRRC_kwDOSF9kNM69ZIIo",
+    "comment:PRRC_kwDOSF9kNM69ZIIq",
+    "comment:PRRC_kwDOSF9kNM69ZKCT",
+    "comment:PRRC_kwDOSF9kNM69ZKCb",
+    "comment:PRRC_kwDOSF9kNM69ZKCf",
+    "comment:PRRC_kwDOSF9kNM69ZKCh",
+    "comment:PRRC_kwDOSF9kNM69ZKCj",
+    "comment:PRRC_kwDOSF9kNM69ZKCp",
+    "thread:PRRT_kwDOSF9kNM5_KA4P",
+    "thread:PRRT_kwDOSF9kNM5_KA4k",
+    "thread:PRRT_kwDOSF9kNM5_KA4l",
+    "thread:PRRT_kwDOSF9kNM5_KArb",
+    "thread:PRRT_kwDOSF9kNM5_KCX9",
+    "thread:PRRT_kwDOSF9kNM5_KCYE",
+    "thread:PRRT_kwDOSF9kNM5_KCYH",
+    "thread:PRRT_kwDOSF9kNM5_KCYJ",
+    "thread:PRRT_kwDOSF9kNM5_KCYK",
+    "thread:PRRT_kwDOSF9kNM5_KCYQ"
+  ],
+  "fetched_at": "2026-08-25T08:44:51.562Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: decision graph emerges from archaeologies + flywheel (Aaron 2026-05-03 architectural observation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T01:59:45Z",
+  "head_ref": "free-memory/decision-graph-emergent-from-archaeologies-and-flywheel-aaron-2026-05-03"
+}

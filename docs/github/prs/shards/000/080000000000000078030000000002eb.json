@@ -1,0 +1,19 @@
+{
+  "pr_number": 747,
+  "archive_path": "docs/history/pr-reviews/PR-747-hygiene-tick-history-shard-0420z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68P6eO",
+    "comment:PRRC_kwDOSF9kNM68P6ns",
+    "comment:PRRC_kwDOSF9kNM69HTJZ",
+    "comment:PRRC_kwDOSF9kNM69HTgV",
+    "thread:PRRT_kwDOSF9kNM5-T64v",
+    "thread:PRRT_kwDOSF9kNM5-T7AG"
+  ],
+  "fetched_at": "2026-08-25T08:23:40.346Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0420Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:55:54Z",
+  "head_ref": "tick-history/2026-04-29-tick-0420Z-shard"
+}

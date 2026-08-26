@@ -1,0 +1,19 @@
+{
+  "pr_number": 241,
+  "archive_path": "docs/history/pr-reviews/PR-241-research-aminata-threat-model-pass-on-amara-5th-ferry-governance-edit-proposals-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663Ju4",
+    "comment:PRRC_kwDOSF9kNM663JuO",
+    "comment:PRRC_kwDOSF9kNM663Juv",
+    "thread:PRRT_kwDOSF9kNM59RmM3",
+    "thread:PRRT_kwDOSF9kNM59RmMa",
+    "thread:PRRT_kwDOSF9kNM59RmMw"
+  ],
+  "fetched_at": "2026-08-25T08:02:26.976Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: Aminata threat-model pass on Amara 5th-ferry governance-edit proposals (advisory)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T01:53:18Z",
+  "head_ref": "research/aminata-threat-model-5th-ferry-governance-edits"
+}

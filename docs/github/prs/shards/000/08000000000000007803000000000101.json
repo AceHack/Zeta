@@ -1,0 +1,21 @@
+{
+  "pr_number": 257,
+  "archive_path": "docs/history/pr-reviews/PR-257-aurora-readme-integration-doc-artifact-d-of-5th-ferry-inventory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663m6j",
+    "comment:PRRC_kwDOSF9kNM663m6r",
+    "comment:PRRC_kwDOSF9kNM663m6z",
+    "comment:PRRC_kwDOSF9kNM663mD1",
+    "thread:PRRT_kwDOSF9kNM59R7F0",
+    "thread:PRRT_kwDOSF9kNM59R7te",
+    "thread:PRRT_kwDOSF9kNM59R7tm",
+    "thread:PRRT_kwDOSF9kNM59R7tr"
+  ],
+  "fetched_at": "2026-08-25T08:02:50.587Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "aurora: README integration doc — Artifact D of 5th-ferry inventory",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:35:58Z",
+  "head_ref": "aurora/readme-artifact-d-integration-doc"
+}

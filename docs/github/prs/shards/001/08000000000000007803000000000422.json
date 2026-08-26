@@ -1,0 +1,23 @@
+{
+  "pr_number": 1058,
+  "archive_path": "docs/history/pr-reviews/PR-1058-research-claudeai-formalization-followup-fsharp-as-spec-f-as-spec-benchmark-comp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69GkW6",
+    "comment:PRRC_kwDOSF9kNM69GkXF",
+    "comment:PRRC_kwDOSF9kNM69GkXQ",
+    "comment:PRRC_kwDOSF9kNM69GkXZ",
+    "comment:PRRC_kwDOSF9kNM69GkXi",
+    "thread:PRRT_kwDOSF9kNM5-8KQ7",
+    "thread:PRRT_kwDOSF9kNM5-8KQs",
+    "thread:PRRT_kwDOSF9kNM5-8KQz",
+    "thread:PRRT_kwDOSF9kNM5-8KRD",
+    "thread:PRRT_kwDOSF9kNM5-8KRK"
+  ],
+  "fetched_at": "2026-08-25T08:36:18.354Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-formalization-followup-fsharp-as-spec): F#-as-spec + benchmark-competition + recommended sequencing (Aaron forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T08:33:37Z",
+  "head_ref": "research/claudeai-formalization-followup-fsharp-as-spec-aaron-2026-05-01"
+}

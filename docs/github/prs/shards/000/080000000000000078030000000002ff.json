@@ -1,0 +1,12 @@
+{
+  "pr_number": 767,
+  "archive_path": "docs/history/pr-reviews/PR-767-tick-history-2026-04-29t04-24z-merge-and-drain-shard-3-merged-9-threads-0-new-su.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:24:34.095Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:24Z — merge-and-drain shard (3 merged, 9 threads, 0 new substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:31:55Z",
+  "head_ref": "tick-history/2026-04-29-tick-0424Z-shard"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 959,
+  "archive_path": "docs/history/pr-reviews/PR-959-memory-silent-courier-debt-backlog-b-0118-amara-peer-call-don-t-count-on-peer-ai.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69AjQs",
+    "comment:PRRC_kwDOSF9kNM69AjRQ",
+    "thread:PRRT_kwDOSF9kNM5-3vyA",
+    "thread:PRRT_kwDOSF9kNM5-3vya"
+  ],
+  "fetched_at": "2026-08-25T08:32:04.676Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(silent-courier-debt) + backlog(B-0118 amara peer-call): don't count on peer-AI reviews until autonomous bootstrap encoded (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T21:50:38Z",
+  "head_ref": "memory/silent-courier-debt-no-amara-headless-cli-aaron-2026-04-30"
+}

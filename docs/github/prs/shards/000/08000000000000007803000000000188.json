@@ -1,0 +1,25 @@
+{
+  "pr_number": 392,
+  "archive_path": "docs/history/pr-reviews/PR-392-backlog-tier-the-missing-file-search-surfaces-list-by-usefulness.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Mly3",
+    "comment:PRRC_kwDOSF9kNM67Mm3A",
+    "comment:PRRC_kwDOSF9kNM67Mm3U",
+    "comment:PRRC_kwDOSF9kNM67Mm3Z",
+    "comment:PRRC_kwDOSF9kNM67Mm3p",
+    "comment:PRRC_kwDOSF9kNM67Mm3z",
+    "thread:PRRT_kwDOSF9kNM59hnhn",
+    "thread:PRRT_kwDOSF9kNM59hoU7",
+    "thread:PRRT_kwDOSF9kNM59hoUT",
+    "thread:PRRT_kwDOSF9kNM59hoUj",
+    "thread:PRRT_kwDOSF9kNM59hoUn",
+    "thread:PRRT_kwDOSF9kNM59hoUz"
+  ],
+  "fetched_at": "2026-08-25T08:08:12.102Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: tier the missing-file search-surfaces list by usefulness",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T22:39:45Z",
+  "head_ref": "docs/missing-file-search-surfaces"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1553,
+  "archive_path": "docs/history/pr-reviews/PR-1553-feedback-autonomy-cite-alignment-faking-research-as-empirical-backing-for-trust-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:56:18.164Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(autonomy): cite alignment-faking research as empirical backing for trust-calculus claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T00:48:39Z",
+  "head_ref": "feedback/cite-alignment-faking-empirical-backing-aaron-2026-05-04"
+}

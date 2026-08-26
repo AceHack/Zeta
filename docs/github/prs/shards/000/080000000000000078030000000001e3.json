@@ -1,0 +1,12 @@
+{
+  "pr_number": 483,
+  "archive_path": "docs/history/pr-reviews/PR-483-memory-otto-285-dst-and-determinism-are-not-edge-case-avoidance.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:12:09.867Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Otto-285 — DST and determinism are not edge-case avoidance",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:09:38Z",
+  "head_ref": "memory/otto-285-dst-not-edge-case-avoidance"
+}

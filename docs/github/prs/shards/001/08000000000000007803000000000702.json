@@ -1,0 +1,17 @@
+{
+  "pr_number": 1794,
+  "archive_path": "docs/history/pr-reviews/PR-1794-research-lior-micro-kernel-claude-code-cli-mapping-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-r9s9",
+    "comment:PRRC_kwDOSF9kNM6-r9tU",
+    "thread:PRRT_kwDOSF9kNM6ANGoH",
+    "thread:PRRT_kwDOSF9kNM6ANGoa"
+  ],
+  "fetched_at": "2026-08-25T09:04:51.823Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior micro-kernel → Claude Code CLI mapping VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T04:49:05Z",
+  "head_ref": "research/lior-claude-cli-kernel-mapping-verbatim"
+}

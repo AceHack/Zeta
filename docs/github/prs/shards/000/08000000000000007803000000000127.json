@@ -1,0 +1,23 @@
+{
+  "pr_number": 295,
+  "archive_path": "docs/history/pr-reviews/PR-295-core-robuststats-first-amara-graduation-10th-ferry-median-mad-robustaggregate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM665ggt",
+    "comment:PRRC_kwDOSF9kNM665ggw",
+    "comment:PRRC_kwDOSF9kNM665hO9",
+    "comment:PRRC_kwDOSF9kNM665hOy",
+    "comment:PRRC_kwDOSF9kNM665hPC",
+    "thread:PRRT_kwDOSF9kNM59TVqH",
+    "thread:PRRT_kwDOSF9kNM59TVqK",
+    "thread:PRRT_kwDOSF9kNM59TWNQ",
+    "thread:PRRT_kwDOSF9kNM59TWNX",
+    "thread:PRRT_kwDOSF9kNM59TWNc"
+  ],
+  "fetched_at": "2026-08-25T08:03:51.284Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: RobustStats — first Amara-graduation (10th-ferry median+MAD robustAggregate)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T05:24:37Z",
+  "head_ref": "feat/robust-stats-median-mad-amara-graduation-1"
+}

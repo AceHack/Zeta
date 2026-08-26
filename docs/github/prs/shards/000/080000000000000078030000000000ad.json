@@ -1,0 +1,21 @@
+{
+  "pr_number": 173,
+  "archive_path": "docs/history/pr-reviews/PR-173-backlog-p3-is-uml-modelling-useful-for-the-factory-what-tools-to-map.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66uCeh",
+    "comment:PRRC_kwDOSF9kNM66uCf8",
+    "comment:PRRC_kwDOSF9kNM66uCfW",
+    "comment:PRRC_kwDOSF9kNM66uCgq",
+    "thread:PRRT_kwDOSF9kNM59K9cg",
+    "thread:PRRT_kwDOSF9kNM59K9d9",
+    "thread:PRRT_kwDOSF9kNM59K9dH",
+    "thread:PRRT_kwDOSF9kNM59K9dg"
+  ],
+  "fetched_at": "2026-08-25T07:58:41.891Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "backlog: P3 — is UML modelling useful for the factory + what tools to map?",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:09:13Z",
+  "head_ref": "backlog/uml-modeling-utility-research"
+}

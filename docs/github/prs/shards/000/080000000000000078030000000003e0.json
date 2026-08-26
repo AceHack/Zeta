@@ -1,0 +1,12 @@
+{
+  "pr_number": 992,
+  "archive_path": "docs/history/pr-reviews/PR-992-hygiene-tick-history-shard-0036z-thread-investigation-981-969-6-fixes-6-resoluti.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:33:27.990Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0036Z — thread-investigation #981 + #969 (6 fixes + 6 resolutions)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:42:13Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0040Z-thread-fixes-981-969"
+}

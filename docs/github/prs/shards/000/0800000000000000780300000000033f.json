@@ -1,0 +1,23 @@
+{
+  "pr_number": 831,
+  "archive_path": "docs/history/pr-reviews/PR-831-absorb-multi-ai-roundup-on-no-directives-otto-prose-round-12-13-close-verbatim-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68VaBC",
+    "comment:PRRC_kwDOSF9kNM68VbNy",
+    "comment:PRRC_kwDOSF9kNM68VbOj",
+    "comment:PRRC_kwDOSF9kNM68VbPO",
+    "comment:PRRC_kwDOSF9kNM68Vmbs",
+    "thread:PRRT_kwDOSF9kNM5-X_pD",
+    "thread:PRRT_kwDOSF9kNM5-YAi_",
+    "thread:PRRT_kwDOSF9kNM5-YAjl",
+    "thread:PRRT_kwDOSF9kNM5-YAkH",
+    "thread:PRRT_kwDOSF9kNM5-YJFH"
+  ],
+  "fetched_at": "2026-08-25T08:27:05.536Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "absorb: multi-AI roundup on no-directives-otto-prose round-12+13 close (verbatim archive / non-normative)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T09:13:14Z",
+  "head_ref": "multi-ai-roundup-no-directives-2026-04-29"
+}

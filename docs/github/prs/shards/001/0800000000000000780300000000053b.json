@@ -1,0 +1,19 @@
+{
+  "pr_number": 1339,
+  "archive_path": "docs/history/pr-reviews/PR-1339-hygiene-tick-history-2026-05-03t07-11z-1336-post-merge-precision-fix-1338.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aPd1",
+    "comment:PRRC_kwDOSF9kNM69aPd3",
+    "comment:PRRC_kwDOSF9kNM69aQB1",
+    "comment:PRRC_kwDOSF9kNM69aQBj",
+    "thread:PRRT_kwDOSF9kNM5_K5SX",
+    "thread:PRRT_kwDOSF9kNM5_K5SZ"
+  ],
+  "fetched_at": "2026-08-25T08:47:45.238Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T07:11Z — #1336 post-merge precision fix (#1338)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:17:32Z",
+  "head_ref": "hygiene/tick-2026-05-03-0711Z-1336-post-merge-fix"
+}

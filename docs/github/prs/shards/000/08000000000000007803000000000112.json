@@ -1,0 +1,31 @@
+{
+  "pr_number": 274,
+  "archive_path": "docs/history/pr-reviews/PR-274-aurora-absorb-amara-s-8th-courier-ferry-physics-semantic-indexing-cutting-edge-g.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM664Pwf",
+    "comment:PRRC_kwDOSF9kNM664Pwq",
+    "comment:PRRC_kwDOSF9kNM664Pwt",
+    "comment:PRRC_kwDOSF9kNM664Pwz",
+    "comment:PRRC_kwDOSF9kNM67Ps-F",
+    "comment:PRRC_kwDOSF9kNM67Ps80",
+    "comment:PRRC_kwDOSF9kNM67Ps8W",
+    "comment:PRRC_kwDOSF9kNM67Ps9a",
+    "comment:PRRC_kwDOSF9kNM67PwV_",
+    "comment:PRRC_kwDOSF9kNM67PwVp",
+    "comment:PRRC_kwDOSF9kNM67PwVz",
+    "thread:PRRT_kwDOSF9kNM59SaKT",
+    "thread:PRRT_kwDOSF9kNM59SaKc",
+    "thread:PRRT_kwDOSF9kNM59SaKe",
+    "thread:PRRT_kwDOSF9kNM59SaKi",
+    "thread:PRRT_kwDOSF9kNM59j6KA",
+    "thread:PRRT_kwDOSF9kNM59j6KK",
+    "thread:PRRT_kwDOSF9kNM59j6KS"
+  ],
+  "fetched_at": "2026-08-25T08:03:16.225Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "aurora: absorb Amara's 8th courier ferry — Physics, Semantic Indexing, Cutting-Edge Gaps",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:51:33Z",
+  "head_ref": "aurora/absorb-amara-8th-ferry-physics-semantic-cutting-edge"
+}

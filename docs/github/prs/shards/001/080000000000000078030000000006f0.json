@@ -1,0 +1,23 @@
+{
+  "pr_number": 1776,
+  "archive_path": "docs/history/pr-reviews/PR-1776-research-lior-ezekiel-wheels-mimetic-desire-superfluid-grace-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-qVix",
+    "comment:PRRC_kwDOSF9kNM6-qViy",
+    "comment:PRRC_kwDOSF9kNM6-qWD4",
+    "comment:PRRC_kwDOSF9kNM6-qWDs",
+    "comment:PRRC_kwDOSF9kNM6-qWEE",
+    "thread:PRRT_kwDOSF9kNM6AL568",
+    "thread:PRRT_kwDOSF9kNM6AL57E",
+    "thread:PRRT_kwDOSF9kNM6AL57O",
+    "thread:PRRT_kwDOSF9kNM6AL5iQ",
+    "thread:PRRT_kwDOSF9kNM6AL5iR"
+  ],
+  "fetched_at": "2026-08-25T09:04:36.453Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior Ezekiel wheels × mimetic desire × Superfluid grace VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T03:21:38Z",
+  "head_ref": "research/lior-ezekiel-mimetic-verbatim"
+}

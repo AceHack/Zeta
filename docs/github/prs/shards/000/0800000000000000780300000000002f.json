@@ -1,0 +1,21 @@
+{
+  "pr_number": 47,
+  "archive_path": "docs/history/pr-reviews/PR-47-add-fork-pr-workflow-skill-factory-portable-fork-upstream-contribution-flow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM653f5h",
+    "comment:PRRC_kwDOSF9kNM653f6f",
+    "comment:PRRC_kwDOSF9kNM653f7R",
+    "comment:PRRC_kwDOSF9kNM653f8V",
+    "thread:PRRT_kwDOSF9kNM58iRMj",
+    "thread:PRRT_kwDOSF9kNM58iRN9",
+    "thread:PRRT_kwDOSF9kNM58iRNY",
+    "thread:PRRT_kwDOSF9kNM58iROt"
+  ],
+  "fetched_at": "2026-08-25T07:52:44.075Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "add fork-pr-workflow skill — factory-portable fork→upstream contribution flow",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T14:52:33Z",
+  "head_ref": "add-fork-pr-workflow-skill"
+}

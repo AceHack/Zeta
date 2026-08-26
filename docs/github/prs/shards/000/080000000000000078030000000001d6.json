@@ -1,0 +1,22 @@
+{
+  "pr_number": 470,
+  "archive_path": "docs/history/pr-reviews/PR-470-hygiene-patterns-md-line-leading-list-marker-confusion-as-recurring-class.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Q2N7",
+    "comment:PRRC_kwDOSF9kNM67Q2O8",
+    "comment:PRRC_kwDOSF9kNM67Q2Ok",
+    "comment:PRRC_kwDOSF9kNM67QwJ0",
+    "comment:PRRC_kwDOSF9kNM67QwJ8",
+    "comment:PRRC_kwDOSF9kNM67QwJ9",
+    "thread:PRRT_kwDOSF9kNM59ks0A",
+    "thread:PRRT_kwDOSF9kNM59ks0B",
+    "thread:PRRT_kwDOSF9kNM59ksz6"
+  ],
+  "fetched_at": "2026-08-25T08:11:36.178Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(_patterns.md): line-leading list-marker confusion as recurring class",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:53:30Z",
+  "head_ref": "drain/patterns-line-leading-list-marker"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1091,
+  "archive_path": "docs/history/pr-reviews/PR-1091-research-claudeai-category-theory-lever-third-message-in-taxonomy-grounding-ferr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Hqv8",
+    "comment:PRRC_kwDOSF9kNM69Hr5F",
+    "comment:PRRC_kwDOSF9kNM69Hr5U",
+    "thread:PRRT_kwDOSF9kNM5-8-6M",
+    "thread:PRRT_kwDOSF9kNM5-8_zj",
+    "thread:PRRT_kwDOSF9kNM5-8_zu"
+  ],
+  "fetched_at": "2026-08-25T08:37:32.266Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-category-theory-lever): third message in taxonomy-grounding ferry (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:30:08Z",
+  "head_ref": "research/claudeai-category-theory-lever-taxonomy-grounding-2026-05-01"
+}

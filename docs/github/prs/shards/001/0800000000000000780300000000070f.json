@@ -1,0 +1,19 @@
+{
+  "pr_number": 1807,
+  "archive_path": "docs/history/pr-reviews/PR-1807-docs-git-native-agile-mapping-in-glossary-vera.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sAxa",
+    "comment:PRRC_kwDOSF9kNM6-sAyE",
+    "comment:PRRC_kwDOSF9kNM6-sAyW",
+    "thread:PRRT_kwDOSF9kNM6ANJEz",
+    "thread:PRRT_kwDOSF9kNM6ANJFW",
+    "thread:PRRT_kwDOSF9kNM6ANJFn"
+  ],
+  "fetched_at": "2026-08-25T09:05:11.754Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: git-native Agile mapping in glossary (Vera)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:00:32Z",
+  "head_ref": "feat/glossary-agile-git-mapping"
+}

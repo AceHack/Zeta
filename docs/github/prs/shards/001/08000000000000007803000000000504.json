@@ -1,0 +1,15 @@
+{
+  "pr_number": 1284,
+  "archive_path": "docs/history/pr-reviews/PR-1284-hygiene-tick-history-2026-05-03t02-57z-second-calibration-data-point-context-dep.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZXbj",
+    "thread:PRRT_kwDOSF9kNM5_KM08"
+  ],
+  "fetched_at": "2026-08-25T08:45:42.658Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T02:57Z — second calibration data point + context-dependent finding",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:58:56Z",
+  "head_ref": "free-memory/tick-0303Z-second-calibration-data-point"
+}

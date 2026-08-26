@@ -1,0 +1,22 @@
+{
+  "pr_number": 1357,
+  "archive_path": "docs/history/pr-reviews/PR-1357-fix-1350-post-merge-b-0157-architecture-correction-yml-extension-partial-pre-exi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ad0B",
+    "comment:PRRC_kwDOSF9kNM69ad0L",
+    "comment:PRRC_kwDOSF9kNM69ad0T",
+    "comment:PRRC_kwDOSF9kNM69af3T",
+    "comment:PRRC_kwDOSF9kNM69af3k",
+    "comment:PRRC_kwDOSF9kNM69af4C",
+    "thread:PRRT_kwDOSF9kNM5_LEe-",
+    "thread:PRRT_kwDOSF9kNM5_LEfE",
+    "thread:PRRT_kwDOSF9kNM5_LEfM"
+  ],
+  "fetched_at": "2026-08-25T08:48:25.187Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(#1350 post-merge): B-0157 architecture correction + .yml extension + partial pre-existence (4 substantive findings + 3 merge-ordering false positives)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:15:06Z",
+  "head_ref": "backlog/B-0157-followup-yml-extension-and-stale-problem-statement"
+}

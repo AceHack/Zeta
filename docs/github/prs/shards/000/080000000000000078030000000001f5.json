@@ -1,0 +1,19 @@
+{
+  "pr_number": 501,
+  "archive_path": "docs/history/pr-reviews/PR-501-memory-otto-291-kernel-extension-deployment-discipline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SnKC",
+    "comment:PRRC_kwDOSF9kNM67SnKH",
+    "comment:PRRC_kwDOSF9kNM67SnKK",
+    "thread:PRRT_kwDOSF9kNM59mMc-",
+    "thread:PRRT_kwDOSF9kNM59mMdB",
+    "thread:PRRT_kwDOSF9kNM59mMdD"
+  ],
+  "fetched_at": "2026-08-25T08:12:57.569Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Otto-291 — kernel-extension deployment discipline",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T16:11:03Z",
+  "head_ref": "memory/otto-291-kernel-extension-deployment-discipline"
+}

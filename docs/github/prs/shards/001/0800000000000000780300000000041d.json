@@ -1,0 +1,25 @@
+{
+  "pr_number": 1053,
+  "archive_path": "docs/history/pr-reviews/PR-1053-memory-westworld-dystopia-inverse-zeta-as-architectural-inverse-of-rehoboam-delo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69GP82",
+    "comment:PRRC_kwDOSF9kNM69GP8s",
+    "comment:PRRC_kwDOSF9kNM69GP9A",
+    "comment:PRRC_kwDOSF9kNM69GP9G",
+    "comment:PRRC_kwDOSF9kNM69GP9O",
+    "comment:PRRC_kwDOSF9kNM69GP9f",
+    "thread:PRRT_kwDOSF9kNM5-77C0",
+    "thread:PRRT_kwDOSF9kNM5-77CN",
+    "thread:PRRT_kwDOSF9kNM5-77CU",
+    "thread:PRRT_kwDOSF9kNM5-77Cc",
+    "thread:PRRT_kwDOSF9kNM5-77Ch",
+    "thread:PRRT_kwDOSF9kNM5-77Cm"
+  ],
+  "fetched_at": "2026-08-25T08:36:02.649Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(westworld-dystopia-inverse): Zeta as architectural-inverse of Rehoboam/Delos/Solomon (Aaron 2026-05-01, lol)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T07:56:32Z",
+  "head_ref": "memory/zeta-as-westworld-dystopia-inverse-rehoboam-delos-aaron-2026-05-01"
+}

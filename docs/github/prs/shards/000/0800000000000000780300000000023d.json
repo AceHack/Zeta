@@ -1,0 +1,19 @@
+{
+  "pr_number": 573,
+  "archive_path": "docs/history/pr-reviews/PR-573-backfill-b-0036-partial-2-bold-strip-33-labels-on-6-shape-a-pre-existing-docs-li.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67WZp2",
+    "comment:PRRC_kwDOSF9kNM67WZp6",
+    "comment:PRRC_kwDOSF9kNM67Wamo",
+    "comment:PRRC_kwDOSF9kNM67WanM",
+    "thread:PRRT_kwDOSF9kNM59pOdU",
+    "thread:PRRT_kwDOSF9kNM59pOdX"
+  ],
+  "fetched_at": "2026-08-25T08:17:13.430Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backfill(B-0036 partial-2): bold-strip §33 labels on 6 Shape A pre-existing docs + line-20 calibration finding",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:34:30Z",
+  "head_ref": "backfill/section33-headers-pre-existing-courier-ferry-docs"
+}

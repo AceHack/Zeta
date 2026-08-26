@@ -1,0 +1,23 @@
+{
+  "pr_number": 865,
+  "archive_path": "docs/history/pr-reviews/PR-865-lane-b-resume-corrections-count-clarification-polite-waiting-counts-before-perce.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68o0ip",
+    "comment:PRRC_kwDOSF9kNM68o0jL",
+    "comment:PRRC_kwDOSF9kNM68otK4",
+    "comment:PRRC_kwDOSF9kNM68ouTp",
+    "comment:PRRC_kwDOSF9kNM68ouUZ",
+    "thread:PRRT_kwDOSF9kNM5-mH-G",
+    "thread:PRRT_kwDOSF9kNM5-mI0N",
+    "thread:PRRT_kwDOSF9kNM5-mIzl",
+    "thread:PRRT_kwDOSF9kNM5-mNcX",
+    "thread:PRRT_kwDOSF9kNM5-mNcy"
+  ],
+  "fetched_at": "2026-08-25T08:28:04.682Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "lane-b: RESUME corrections — count clarification + polite-waiting + counts-before-percentages + factual-closure",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T23:43:34Z",
+  "head_ref": "lane-b/ts-bun-migration-resume-corrections-2026-04-29"
+}

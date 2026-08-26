@@ -1,0 +1,21 @@
+{
+  "pr_number": 106,
+  "archive_path": "docs/history/pr-reviews/PR-106-docs-research-copilot-rejection-grounds-catalog-autonomous-loop-md-step-0-citati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66FQYF",
+    "comment:PRRC_kwDOSF9kNM66FQYH",
+    "comment:PRRC_kwDOSF9kNM66FQ_b",
+    "comment:PRRC_kwDOSF9kNM66FRAF",
+    "thread:PRRT_kwDOSF9kNM58si_g",
+    "thread:PRRT_kwDOSF9kNM58sih_",
+    "thread:PRRT_kwDOSF9kNM58siiB",
+    "thread:PRRT_kwDOSF9kNM58sjAJ"
+  ],
+  "fetched_at": "2026-08-25T07:54:21.395Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "docs/research: copilot-rejection-grounds-catalog + AUTONOMOUS-LOOP.md Step 0 citation",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T06:18:43Z",
+  "head_ref": "land-copilot-rejection-grounds-catalog"
+}

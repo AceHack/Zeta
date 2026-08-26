@@ -1,0 +1,12 @@
+{
+  "pr_number": 394,
+  "archive_path": "docs/history/pr-reviews/PR-394-backlog-memory-blockchain-ingest-btc-eth-sol-first-class-db-support.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:08:17.098Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog+memory: blockchain ingest BTC/ETH/SOL first-class DB support",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T23:46:06Z",
+  "head_ref": "backlog/blockchain-ingest-btc-eth-sol"
+}

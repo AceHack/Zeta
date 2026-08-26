@@ -1,0 +1,23 @@
+{
+  "pr_number": 918,
+  "archive_path": "docs/history/pr-reviews/PR-918-research-identity-of-the-project-and-the-agent-under-multi-repo-sibling-fork-com.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM683RD0",
+    "comment:PRRC_kwDOSF9kNM683RDG",
+    "comment:PRRC_kwDOSF9kNM683RE9",
+    "comment:PRRC_kwDOSF9kNM683RES",
+    "comment:PRRC_kwDOSF9kNM683RFl",
+    "thread:PRRT_kwDOSF9kNM5-w5st",
+    "thread:PRRT_kwDOSF9kNM5-w5tR",
+    "thread:PRRT_kwDOSF9kNM5-w5tj",
+    "thread:PRRT_kwDOSF9kNM5-w5uE",
+    "thread:PRRT_kwDOSF9kNM5-w5uj"
+  ],
+  "fetched_at": "2026-08-25T08:30:20.471Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: identity of \"the project\" and \"the agent\" under multi-repo / sibling / fork / competition / multi-agent topology (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T14:17:37Z",
+  "head_ref": "research/identity-of-project-and-agent-under-multi-repo-fork-competition-2026-04-30"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 710,
+  "archive_path": "docs/history/pr-reviews/PR-710-hygiene-tick-history-per-tick-row-restraint-under-amara-girard-wanting-flywheel-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PGJ3",
+    "thread:PRRT_kwDOSF9kNM5-TT59"
+  ],
+  "fetched_at": "2026-08-25T08:22:18.093Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): per-tick row — restraint under Amara Girard/Wanting/flywheel packet temptation + 6 thread fixes",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T01:07:33Z",
+  "head_ref": "tick-history/2026-04-29-tick-amara-girard-wanting-deferred-thread-fixes"
+}

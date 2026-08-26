@@ -1,0 +1,15 @@
+{
+  "pr_number": 1104,
+  "archive_path": "docs/history/pr-reviews/PR-1104-hygiene-tick-history-2026-05-01t11-15z-1100-merged-1043-fifth-dedup-re-applicati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69H_Lv",
+    "thread:PRRT_kwDOSF9kNM5-9Oiu"
+  ],
+  "fetched_at": "2026-08-25T08:38:04.064Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T11:15Z — #1100 merged + #1043 fifth dedup re-application (class #18)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T22:24:50Z",
+  "head_ref": "hygiene/tick-history-1115Z-2026-05-01"
+}

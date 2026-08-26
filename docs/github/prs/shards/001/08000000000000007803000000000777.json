@@ -1,0 +1,12 @@
+{
+  "pr_number": 1911,
+  "archive_path": "docs/history/pr-reviews/PR-1911-backlog-b-0252-b-0253-arc-4-self-play-orleans-real-time-messaging.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:07:23.687Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0252, B-0253): ARC-4 self-play + Orleans real-time messaging",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:01:31Z",
+  "head_ref": "otto/rpg-backlog-b0252-b0253"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 771,
+  "archive_path": "docs/history/pr-reviews/PR-771-tick-history-2026-04-29t04-35z-fourth-merge-wave-amara-meta-packet-preserved.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68RKDi",
+    "comment:PRRC_kwDOSF9kNM68RKDw",
+    "thread:PRRT_kwDOSF9kNM5-U11c",
+    "thread:PRRT_kwDOSF9kNM5-U11n"
+  ],
+  "fetched_at": "2026-08-25T08:24:45.764Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:35Z — fourth merge wave + Amara meta-packet preserved",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:47:12Z",
+  "head_ref": "tick-history/2026-04-29-tick-0436Z-shard"
+}

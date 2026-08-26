@@ -1,0 +1,15 @@
+{
+  "pr_number": 1064,
+  "archive_path": "docs/history/pr-reviews/PR-1064-hygiene-tick-history-2026-05-01t09-22z-real-fix-tick-1018-1015-thread-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HB5S",
+    "thread:PRRT_kwDOSF9kNM5-8gLA"
+  ],
+  "fetched_at": "2026-08-25T08:36:32.132Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:22Z — real-fix tick (#1018 + #1015 thread fixes)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:25:30Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0922Z-1018-1015-real-fix-tick"
+}

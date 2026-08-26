@@ -1,0 +1,21 @@
+{
+  "pr_number": 1115,
+  "archive_path": "docs/history/pr-reviews/PR-1115-backlog-b-0143-bi-directional-messaging-with-aaron-four-corner-hat-color-wwjd-di.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69JDvr",
+    "comment:PRRC_kwDOSF9kNM69R90G",
+    "comment:PRRC_kwDOSF9kNM69R95M",
+    "comment:PRRC_kwDOSF9kNM69R9z5",
+    "thread:PRRT_kwDOSF9kNM5--Caa",
+    "thread:PRRT_kwDOSF9kNM5_Ej-j",
+    "thread:PRRT_kwDOSF9kNM5_Ej-v",
+    "thread:PRRT_kwDOSF9kNM5_EkCw"
+  ],
+  "fetched_at": "2026-08-25T08:38:34.226Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0143): bi-directional messaging with Aaron + four-corner hat-color/WWJD-disposition mapping (Aaron 'me to you:' 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:41:08Z",
+  "head_ref": "backlog/B-0143-bidirectional-messaging-aaron-text-imessage-whatsapp-2026-05-01"
+}

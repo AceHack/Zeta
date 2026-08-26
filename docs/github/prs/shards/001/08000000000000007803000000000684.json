@@ -1,0 +1,23 @@
+{
+  "pr_number": 1668,
+  "archive_path": "docs/history/pr-reviews/PR-1668-memory-feedback-strike-discipline-extends-to-aaron-s-own-statements-bulk-alignme.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-H-XN",
+    "comment:PRRC_kwDOSF9kNM6-ICll",
+    "comment:PRRC_kwDOSF9kNM6-ICm3",
+    "comment:PRRC_kwDOSF9kNM6-ICnX",
+    "comment:PRRC_kwDOSF9kNM6-ICns",
+    "thread:PRRT_kwDOSF9kNM5_tMYQ",
+    "thread:PRRT_kwDOSF9kNM5_tPh_",
+    "thread:PRRT_kwDOSF9kNM5_tPi3",
+    "thread:PRRT_kwDOSF9kNM5_tPjL",
+    "thread:PRRT_kwDOSF9kNM5_tPjZ"
+  ],
+  "fetched_at": "2026-08-25T09:01:03.668Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): strike-discipline extends to Aaron's own statements -- bulk alignment in reverse / syncing with AI (Aaron 2026-05-05 explicit permission + preference)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T16:12:15Z",
+  "head_ref": "memory/strike-discipline-extends-to-aaron-language-bulk-alignment-in-reverse-2026-05-05"
+}

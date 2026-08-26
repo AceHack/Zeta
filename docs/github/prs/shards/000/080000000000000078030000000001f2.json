@@ -1,0 +1,15 @@
+{
+  "pr_number": 498,
+  "archive_path": "docs/history/pr-reviews/PR-498-memory-user-aaron-s-razor-split-recalculation-cost-entanglement-symmetry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SgXR",
+    "thread:PRRT_kwDOSF9kNM59mG3A"
+  ],
+  "fetched_at": "2026-08-25T08:12:50.338Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(user): Aaron's razor-split recalculation cost + entanglement + symmetry",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T15:46:30Z",
+  "head_ref": "memory/aaron-razor-split-recalculation-cost"
+}

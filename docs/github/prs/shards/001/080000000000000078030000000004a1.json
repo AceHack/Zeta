@@ -1,0 +1,19 @@
+{
+  "pr_number": 1185,
+  "archive_path": "docs/history/pr-reviews/PR-1185-ci-gate-skip-f-dotnet-build-steps-on-docs-only-prs-b-0125-path-filter-immune-sys.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Sed6",
+    "comment:PRRC_kwDOSF9kNM69Sedi",
+    "comment:PRRC_kwDOSF9kNM69Sedy",
+    "thread:PRRT_kwDOSF9kNM5_E8M9",
+    "thread:PRRT_kwDOSF9kNM5_E8NH",
+    "thread:PRRT_kwDOSF9kNM5_E8NO"
+  ],
+  "fetched_at": "2026-08-25T08:41:25.009Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(gate): skip F#/dotnet build steps on docs-only PRs (B-0125 path-filter — immune-system tuning)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T00:58:17Z",
+  "head_ref": "ci/build-and-test-skip-on-docs-only-prs-2026-05-02"
+}

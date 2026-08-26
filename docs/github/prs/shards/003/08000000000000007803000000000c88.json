@@ -1,0 +1,21 @@
+{
+  "pr_number": 3208,
+  "archive_path": "docs/history/pr-reviews/PR-3208-feat-b-0517-mechanize-memory-md-bloat-audit-audit-user-scope-memory-index-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BWUPu",
+    "comment:PRRC_kwDOSF9kNM7BWUQT",
+    "comment:PRRC_kwDOSF9kNM7BWUQu",
+    "comment:PRRC_kwDOSF9kNM7BWURG",
+    "thread:PRRT_kwDOSF9kNM6CK8Q4",
+    "thread:PRRT_kwDOSF9kNM6CK8Qe",
+    "thread:PRRT_kwDOSF9kNM6CK8RN",
+    "thread:PRRT_kwDOSF9kNM6CK8Rh"
+  ],
+  "fetched_at": "2026-08-25T09:08:17.053Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B-0517): mechanize MEMORY.md bloat audit — audit-user-scope-memory-index.ts",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:42:14Z",
+  "head_ref": "feat/b-0517-audit-user-scope-memory-index-otto-cli-2026-05-14"
+}

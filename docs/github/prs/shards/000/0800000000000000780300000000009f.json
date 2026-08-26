@@ -1,0 +1,31 @@
+{
+  "pr_number": 159,
+  "archive_path": "docs/history/pr-reviews/PR-159-memory-migrate-deletions-over-insertions-discipline-overlay-a-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66sYl1",
+    "comment:PRRC_kwDOSF9kNM66sYma",
+    "comment:PRRC_kwDOSF9kNM66sYmr",
+    "comment:PRRC_kwDOSF9kNM66sYnC",
+    "comment:PRRC_kwDOSF9kNM66uWQD",
+    "comment:PRRC_kwDOSF9kNM66uwaO",
+    "comment:PRRC_kwDOSF9kNM66uxP2",
+    "comment:PRRC_kwDOSF9kNM66uxPA",
+    "comment:PRRC_kwDOSF9kNM66uxPi",
+    "thread:PRRT_kwDOSF9kNM59Jve4",
+    "thread:PRRT_kwDOSF9kNM59JveI",
+    "thread:PRRT_kwDOSF9kNM59Jveb",
+    "thread:PRRT_kwDOSF9kNM59Jvem",
+    "thread:PRRT_kwDOSF9kNM59LLl5",
+    "thread:PRRT_kwDOSF9kNM59LfIr",
+    "thread:PRRT_kwDOSF9kNM59LfwU",
+    "thread:PRRT_kwDOSF9kNM59Lfw_",
+    "thread:PRRT_kwDOSF9kNM59Lfwv"
+  ],
+  "fetched_at": "2026-08-25T07:57:49.142Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: migrate deletions-over-insertions discipline (Overlay A #3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:02:47Z",
+  "head_ref": "refactor/overlay-a-migrate-deletions-over-insertions"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 6,
+  "archive_path": "docs/history/pr-reviews/PR-6-round-30-threat-model-elevation-nation-state-supply-chain.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:48:31.430Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 30 — threat-model elevation (nation-state + supply-chain)",
+  "state": "MERGED",
+  "merged_at": "2026-04-18T23:22:54Z",
+  "head_ref": "round-30"
+}

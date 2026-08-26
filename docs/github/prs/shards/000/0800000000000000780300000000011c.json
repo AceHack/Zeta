@@ -1,0 +1,23 @@
+{
+  "pr_number": 284,
+  "archive_path": "docs/history/pr-reviews/PR-284-research-aminata-4th-pass-on-bullshit-detector-design-3-critical-4-important-3-w.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM664eo9",
+    "comment:PRRC_kwDOSF9kNM664fR3",
+    "comment:PRRC_kwDOSF9kNM664fRW",
+    "comment:PRRC_kwDOSF9kNM664fRf",
+    "comment:PRRC_kwDOSF9kNM664fRr",
+    "thread:PRRT_kwDOSF9kNM59Sl30",
+    "thread:PRRT_kwDOSF9kNM59Sl38",
+    "thread:PRRT_kwDOSF9kNM59Sl4H",
+    "thread:PRRT_kwDOSF9kNM59Sl4Q",
+    "thread:PRRT_kwDOSF9kNM59SlYW"
+  ],
+  "fetched_at": "2026-08-25T08:03:30.080Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: Aminata 4th pass on bullshit-detector design (3 CRITICAL + 4 IMPORTANT + 3 WATCH)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T04:05:22Z",
+  "head_ref": "research/aminata-pass-on-bullshit-detector-design"
+}

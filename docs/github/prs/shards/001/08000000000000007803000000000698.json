@@ -1,0 +1,24 @@
+{
+  "pr_number": 1688,
+  "archive_path": "docs/history/pr-reviews/PR-1688-memory-discipline-yes-and-improv-of-backlogs-accept-offers-add-by-composing-aaro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-M8uR",
+    "comment:PRRC_kwDOSF9kNM6-NCNp",
+    "comment:PRRC_kwDOSF9kNM6-NgW8",
+    "comment:PRRC_kwDOSF9kNM6-NgWW",
+    "comment:PRRC_kwDOSF9kNM6-NgXR",
+    "comment:PRRC_kwDOSF9kNM6-NgXl",
+    "thread:PRRT_kwDOSF9kNM5_w1pX",
+    "thread:PRRT_kwDOSF9kNM5_xPh9",
+    "thread:PRRT_kwDOSF9kNM5_xPhB",
+    "thread:PRRT_kwDOSF9kNM5_xPhc",
+    "thread:PRRT_kwDOSF9kNM5_xPhs"
+  ],
+  "fetched_at": "2026-08-25T09:01:47.352Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(discipline): yes-and improv of backlogs -- accept offers + add by composing (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T19:56:30Z",
+  "head_ref": "memory/yes-and-improv-of-backlogs-accept-offers-add-never-block-aaron-2026-05-05"
+}

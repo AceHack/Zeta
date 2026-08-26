@@ -1,0 +1,16 @@
+{
+  "pr_number": 670,
+  "archive_path": "docs/history/pr-reviews/PR-670-fix-memory-index-refresh-fast-path-marker-tighten-threading-entry-copilot-p1-on-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Gv6c",
+    "comment:PRRC_kwDOSF9kNM68GvC3",
+    "thread:PRRT_kwDOSF9kNM5-NMpf"
+  ],
+  "fetched_at": "2026-08-25T08:20:43.782Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(memory-index): refresh Fast-path marker + tighten threading entry — Copilot P1 on PR #669",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T17:03:52Z",
+  "head_ref": "fix/memory-md-header-refresh-marker-and-terser-threading-entry-2026-04-28"
+}

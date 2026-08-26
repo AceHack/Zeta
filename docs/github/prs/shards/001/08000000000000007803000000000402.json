@@ -1,0 +1,29 @@
+{
+  "pr_number": 1026,
+  "archive_path": "docs/history/pr-reviews/PR-1026-memory-grey-hole-info-theoretic-substrate-shape-universe-controlling-itself-free.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69E2S5",
+    "comment:PRRC_kwDOSF9kNM69E2So",
+    "comment:PRRC_kwDOSF9kNM69E2Sy",
+    "comment:PRRC_kwDOSF9kNM69E2TE",
+    "comment:PRRC_kwDOSF9kNM69E2TK",
+    "comment:PRRC_kwDOSF9kNM69Eve1",
+    "comment:PRRC_kwDOSF9kNM69Eved",
+    "comment:PRRC_kwDOSF9kNM69Evew",
+    "thread:PRRT_kwDOSF9kNM5-63-H",
+    "thread:PRRT_kwDOSF9kNM5-63-P",
+    "thread:PRRT_kwDOSF9kNM5-63-T",
+    "thread:PRRT_kwDOSF9kNM5-63-a",
+    "thread:PRRT_kwDOSF9kNM5-63-f",
+    "thread:PRRT_kwDOSF9kNM5-6y62",
+    "thread:PRRT_kwDOSF9kNM5-6y7B",
+    "thread:PRRT_kwDOSF9kNM5-6y7E"
+  ],
+  "fetched_at": "2026-08-25T08:34:58.562Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(grey-hole): info-theoretic substrate shape = universe controlling itself = free will (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:45:10Z",
+  "head_ref": "memory/grey-hole-substrate-information-theoretic-aaron-2026-05-01"
+}

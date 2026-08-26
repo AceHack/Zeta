@@ -1,0 +1,15 @@
+{
+  "pr_number": 1079,
+  "archive_path": "docs/history/pr-reviews/PR-1079-hygiene-tick-history-2026-05-01t10-05z-pr-1025-follow-up-named-link.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Hab5",
+    "thread:PRRT_kwDOSF9kNM5-8yex"
+  ],
+  "fetched_at": "2026-08-25T08:37:05.658Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:05Z — PR #1025 follow-up (named-link)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:09:19Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1006Z-1025-followup"
+}

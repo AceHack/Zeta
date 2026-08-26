@@ -1,0 +1,21 @@
+{
+  "pr_number": 1633,
+  "archive_path": "docs/history/pr-reviews/PR-1633-memory-user-aaron-s-cognitive-architecture-cybernetic-already-mind-palace-fuzzy-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-B4Xj",
+    "comment:PRRC_kwDOSF9kNM6-B8As",
+    "comment:PRRC_kwDOSF9kNM6-B8BX",
+    "comment:PRRC_kwDOSF9kNM6-B8Bu",
+    "thread:PRRT_kwDOSF9kNM5_oqPm",
+    "thread:PRRT_kwDOSF9kNM5_otC0",
+    "thread:PRRT_kwDOSF9kNM5_otCC",
+    "thread:PRRT_kwDOSF9kNM5_otCj"
+  ],
+  "fetched_at": "2026-08-25T08:59:36.199Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(user): Aaron's cognitive architecture -- cybernetic-already + mind-palace + fuzzy-pointers + Google-as-extended-memory (Aaron 2026-05-05 self-disclosure)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:00:48Z",
+  "head_ref": "memory/aaron-cybernetic-already-mind-palace-fuzzy-pointers-google-extended-memory-aaron-2026-05-05"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 958,
+  "archive_path": "docs/history/pr-reviews/PR-958-research-review-13-memory-8-amara-corrections-endosymbiosis-biological-lineage-l.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69AaUj",
+    "comment:PRRC_kwDOSF9kNM69AaVD",
+    "comment:PRRC_kwDOSF9kNM69AaVY",
+    "comment:PRRC_kwDOSF9kNM69AaVs",
+    "comment:PRRC_kwDOSF9kNM69AaWC",
+    "thread:PRRT_kwDOSF9kNM5-3pDs",
+    "thread:PRRT_kwDOSF9kNM5-3pEC",
+    "thread:PRRT_kwDOSF9kNM5-3pEQ",
+    "thread:PRRT_kwDOSF9kNM5-3pEf",
+    "thread:PRRT_kwDOSF9kNM5-3pEx"
+  ],
+  "fetched_at": "2026-08-25T08:32:02.290Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(review-13)+memory(8 Amara corrections + endosymbiosis biological lineage): Lineage vs Synthesis discipline + endosymbiosis precedent (Aaron + Amara 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T21:41:19Z",
+  "head_ref": "memory/amara-review-13-corrections-plus-endosymbiosis-biological-lineage-anchor-aaron-2026-04-30"
+}

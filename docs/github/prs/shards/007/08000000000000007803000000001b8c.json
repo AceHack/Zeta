@@ -1,0 +1,12 @@
+{
+  "pr_number": 7052,
+  "archive_path": "docs/history/pr-reviews/PR-7052-feat-core-forgerrace-forger-progress-per-tick-entropy-endurance-anti-sybil-certi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:46.915Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(core): ForgerRace — forger progress per tick + entropy-endurance anti-Sybil certificate",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:51:40Z",
+  "head_ref": "otto/forger-race-entropy-endurance-anti-sybil-certificate"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 477,
+  "archive_path": "docs/history/pr-reviews/PR-477-ci-openssf-scorecard-factory-resume-diff-workflows-split-from-52-part-3-of-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Rm04",
+    "comment:PRRC_kwDOSF9kNM67Rm0i",
+    "comment:PRRC_kwDOSF9kNM67Rm0x",
+    "comment:PRRC_kwDOSF9kNM67Rm1F",
+    "comment:PRRC_kwDOSF9kNM67Rm1K",
+    "comment:PRRC_kwDOSF9kNM67Rm1U",
+    "comment:PRRC_kwDOSF9kNM67Rm1d",
+    "comment:PRRC_kwDOSF9kNM67RmYA",
+    "comment:PRRC_kwDOSF9kNM67RmYD",
+    "thread:PRRT_kwDOSF9kNM59lYts",
+    "thread:PRRT_kwDOSF9kNM59lYtv",
+    "thread:PRRT_kwDOSF9kNM59lZE_",
+    "thread:PRRT_kwDOSF9kNM59lZFM",
+    "thread:PRRT_kwDOSF9kNM59lZFR",
+    "thread:PRRT_kwDOSF9kNM59lZFc",
+    "thread:PRRT_kwDOSF9kNM59lZFf",
+    "thread:PRRT_kwDOSF9kNM59lZFn",
+    "thread:PRRT_kwDOSF9kNM59lZFu"
+  ],
+  "fetched_at": "2026-08-25T08:11:54.896Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci: OpenSSF Scorecard + FACTORY-RESUME diff workflows (split from #52, part 3 of 3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:48:35Z",
+  "head_ref": "security/scorecard-and-resume-diff-workflows"
+}

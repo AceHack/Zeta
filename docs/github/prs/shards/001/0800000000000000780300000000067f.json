@@ -1,0 +1,19 @@
+{
+  "pr_number": 1663,
+  "archive_path": "docs/history/pr-reviews/PR-1663-fix-post-1662-replace-wildcard-amara-path-grammar-typo-4-threads.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-GkmH",
+    "comment:PRRC_kwDOSF9kNM6-GknF",
+    "comment:PRRC_kwDOSF9kNM6-Gknr",
+    "thread:PRRT_kwDOSF9kNM5_sLNe",
+    "thread:PRRT_kwDOSF9kNM5_sLOL",
+    "thread:PRRT_kwDOSF9kNM5_sLOh"
+  ],
+  "fetched_at": "2026-08-25T09:00:48.324Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1662): replace wildcard amara path + grammar typo (4 threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:50:20Z",
+  "head_ref": "fixup/1662-amara-wildcard-paths-and-grammar"
+}

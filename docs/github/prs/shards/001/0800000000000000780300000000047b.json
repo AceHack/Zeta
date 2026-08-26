@@ -1,0 +1,12 @@
+{
+  "pr_number": 1147,
+  "archive_path": "docs/history/pr-reviews/PR-1147-hygiene-tick-history-2026-05-01t19-29z-4-merged-aaron-validated-pre-author-grep-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:39:51.017Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T19:29Z — 4 MERGED + Aaron-validated pre-author-grep + #1143 SSG list",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:40:23Z",
+  "head_ref": "hygiene/tick-history-1929Z-2026-05-01"
+}

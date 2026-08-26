@@ -1,0 +1,17 @@
+{
+  "pr_number": 869,
+  "archive_path": "docs/history/pr-reviews/PR-869-trajectory-ts-bun-resume-slice-2-merged-closure.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68qBdA",
+    "comment:PRRC_kwDOSF9kNM68qBdJ",
+    "thread:PRRT_kwDOSF9kNM5-nEsA",
+    "thread:PRRT_kwDOSF9kNM5-nEsF"
+  ],
+  "fetched_at": "2026-08-25T08:28:13.098Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "trajectory(ts-bun): RESUME slice-2-merged closure",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T01:22:19Z",
+  "head_ref": "lane-b/ts-bun-slice-2-closure-2026-04-30"
+}

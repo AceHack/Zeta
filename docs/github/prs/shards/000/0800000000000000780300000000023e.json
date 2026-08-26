@@ -1,0 +1,12 @@
+{
+  "pr_number": 574,
+  "archive_path": "docs/history/pr-reviews/PR-574-chore-loop-tick-history-post-framework-convergence-drain-complete-generative-piv.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:17:15.594Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): post-framework-convergence drain-complete + generative-pivot tick",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:40:18Z",
+  "head_ref": "chore/heartbeat-batch-2026-04-26-post-framework-drain-complete-tick"
+}

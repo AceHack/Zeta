@@ -1,0 +1,17 @@
+{
+  "pr_number": 1592,
+  "archive_path": "docs/history/pr-reviews/PR-1592-backlog-p2-b-0195-dbsp-chain-rule-formal-verification-finding-cross-check-writeu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM697Vy7",
+    "comment:PRRC_kwDOSF9kNM697Vyd",
+    "thread:PRRT_kwDOSF9kNM5_jxk1",
+    "thread:PRRT_kwDOSF9kNM5_jxlH"
+  ],
+  "fetched_at": "2026-08-25T08:57:55.720Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P2): B-0195 DBSP chain rule formal-verification finding -- cross-check + writeup decision",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T06:31:06Z",
+  "head_ref": "worktree-agent-ad601161e64d2894d"
+}

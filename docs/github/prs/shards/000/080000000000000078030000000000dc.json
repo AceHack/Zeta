@@ -1,0 +1,23 @@
+{
+  "pr_number": 220,
+  "archive_path": "docs/history/pr-reviews/PR-220-ci-memory-index-integrity-workflow-factory-hygiene-58-amara-action-item-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM661gD7",
+    "comment:PRRC_kwDOSF9kNM661gDF",
+    "comment:PRRC_kwDOSF9kNM661gDo",
+    "comment:PRRC_kwDOSF9kNM661gEO",
+    "comment:PRRC_kwDOSF9kNM661gEe",
+    "thread:PRRT_kwDOSF9kNM59QZuM",
+    "thread:PRRT_kwDOSF9kNM59QZud",
+    "thread:PRRT_kwDOSF9kNM59QZum",
+    "thread:PRRT_kwDOSF9kNM59QZut",
+    "thread:PRRT_kwDOSF9kNM59QZuz"
+  ],
+  "fetched_at": "2026-08-25T08:01:35.761Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci: memory-index-integrity workflow + FACTORY-HYGIENE #58 (Amara action item #1)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T23:41:18Z",
+  "head_ref": "ci/memory-index-integrity-check-amara-top-rank"
+}

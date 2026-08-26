@@ -1,0 +1,31 @@
+{
+  "pr_number": 330,
+  "archive_path": "docs/history/pr-reviews/PR-330-ferry-amara-17th-absorb-cartel-lab-5-5-verification-8-corrections-tracked-3-alre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM668L-8",
+    "comment:PRRC_kwDOSF9kNM668L-k",
+    "comment:PRRC_kwDOSF9kNM668L83",
+    "comment:PRRC_kwDOSF9kNM668L9X",
+    "comment:PRRC_kwDOSF9kNM668L9_",
+    "comment:PRRC_kwDOSF9kNM668L_6",
+    "comment:PRRC_kwDOSF9kNM668L_Z",
+    "comment:PRRC_kwDOSF9kNM668L_n",
+    "comment:PRRC_kwDOSF9kNM668MAT",
+    "thread:PRRT_kwDOSF9kNM59VWH1",
+    "thread:PRRT_kwDOSF9kNM59VWIN",
+    "thread:PRRT_kwDOSF9kNM59VWIv",
+    "thread:PRRT_kwDOSF9kNM59VWJ2",
+    "thread:PRRT_kwDOSF9kNM59VWJN",
+    "thread:PRRT_kwDOSF9kNM59VWJg",
+    "thread:PRRT_kwDOSF9kNM59VWKD",
+    "thread:PRRT_kwDOSF9kNM59VWKP",
+    "thread:PRRT_kwDOSF9kNM59VWKi"
+  ],
+  "fetched_at": "2026-08-25T08:05:11.436Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ferry: Amara 17th absorb — Cartel-Lab + 5.5 Verification (8 corrections tracked; 3 already shipped)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T08:08:45Z",
+  "head_ref": "ferry/17th-amara-cartel-lab-implementation-closure-verification"
+}

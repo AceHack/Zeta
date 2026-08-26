@@ -1,0 +1,23 @@
+{
+  "pr_number": 555,
+  "archive_path": "docs/history/pr-reviews/PR-555-research-maji-formal-operational-model-amara-via-aaron-courier-ferry-2026-04-26.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Vs_6",
+    "comment:PRRC_kwDOSF9kNM67VtAF",
+    "comment:PRRC_kwDOSF9kNM67VtAM",
+    "comment:PRRC_kwDOSF9kNM67VtAT",
+    "comment:PRRC_kwDOSF9kNM67VtAY",
+    "thread:PRRT_kwDOSF9kNM59orDF",
+    "thread:PRRT_kwDOSF9kNM59orDM",
+    "thread:PRRT_kwDOSF9kNM59orDQ",
+    "thread:PRRT_kwDOSF9kNM59orDS",
+    "thread:PRRT_kwDOSF9kNM59orDX"
+  ],
+  "fetched_at": "2026-08-25T08:15:59.292Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: Maji formal operational model — Amara via Aaron courier-ferry 2026-04-26",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T05:24:28Z",
+  "head_ref": "research/maji-formal-operational-model-amara-courier-ferry-2026-04-26"
+}

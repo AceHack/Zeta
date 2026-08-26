@@ -1,0 +1,19 @@
+{
+  "pr_number": 1233,
+  "archive_path": "docs/history/pr-reviews/PR-1233-free-memory-zeta-5-layer-register-quick-reference-card-wake-time-fast-path-looku.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YSN6",
+    "comment:PRRC_kwDOSF9kNM69YSNg",
+    "comment:PRRC_kwDOSF9kNM69YSNu",
+    "thread:PRRT_kwDOSF9kNM5_JWE9",
+    "thread:PRRT_kwDOSF9kNM5_JWEz",
+    "thread:PRRT_kwDOSF9kNM5_JWFG"
+  ],
+  "fetched_at": "2026-08-25T08:43:28.699Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(zeta-5-layer-register-quick-reference-card): wake-time fast-path lookup per B-0168 acceptance",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T21:36:40Z",
+  "head_ref": "free-memory/zeta-5-layer-register-quick-reference-card-aaron-2026-05-02"
+}

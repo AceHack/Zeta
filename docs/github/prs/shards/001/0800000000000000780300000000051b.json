@@ -1,0 +1,19 @@
+{
+  "pr_number": 1307,
+  "archive_path": "docs/history/pr-reviews/PR-1307-free-memory-alignment-frontier-first-threshold-crossing-worked-example-architect.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zqh0",
+    "comment:PRRC_kwDOSF9kNM69Zqh7",
+    "comment:PRRC_kwDOSF9kNM69ZqiC",
+    "thread:PRRT_kwDOSF9kNM5_Kb4D",
+    "thread:PRRT_kwDOSF9kNM5_Kb4K",
+    "thread:PRRT_kwDOSF9kNM5_Kb4P"
+  ],
+  "fetched_at": "2026-08-25T08:46:38.249Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: alignment-frontier first threshold-crossing worked example [architectural-intent-emergence]",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T04:21:50Z",
+  "head_ref": "free-memory/alignment-frontier-first-threshold-crossing-worked-example-otto-2026-05-03"
+}

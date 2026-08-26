@@ -1,0 +1,17 @@
+{
+  "pr_number": 628,
+  "archive_path": "docs/history/pr-reviews/PR-628-docs-pr-preservation-drain-log-for-607-verified-equivalent-composes-with-618-625.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67YqFI",
+    "comment:PRRC_kwDOSF9kNM67YqFM",
+    "thread:PRRT_kwDOSF9kNM59rBcJ",
+    "thread:PRRT_kwDOSF9kNM59rBcN"
+  ],
+  "fetched_at": "2026-08-25T08:19:00.956Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(pr-preservation): drain-log for #607 (verified equivalent; composes with #618/#625 substrate-loss-recovery story)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:50:24Z",
+  "head_ref": "docs/pr-preservation-607-drain-log"
+}

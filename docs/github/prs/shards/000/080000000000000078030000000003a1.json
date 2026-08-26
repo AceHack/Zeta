@@ -1,0 +1,19 @@
+{
+  "pr_number": 929,
+  "archive_path": "docs/history/pr-reviews/PR-929-memory-harness-vendor-resilience-aaron-2026-04-30-vendor-limitations-are-not-abs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6875Kd",
+    "comment:PRRC_kwDOSF9kNM6875L9",
+    "comment:PRRC_kwDOSF9kNM6875La",
+    "thread:PRRT_kwDOSF9kNM5-0Up2",
+    "thread:PRRT_kwDOSF9kNM5-0UpK",
+    "thread:PRRT_kwDOSF9kNM5-0UqQ"
+  ],
+  "fetched_at": "2026-08-25T08:30:51.850Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(harness-vendor-resilience): Aaron 2026-04-30 — vendor limitations are not absolute, two paths",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:46:53Z",
+  "head_ref": "memory/harness-vendor-resilience-two-paths-aaron-2026-04-30-v2"
+}

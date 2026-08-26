@@ -1,0 +1,19 @@
+{
+  "pr_number": 1160,
+  "archive_path": "docs/history/pr-reviews/PR-1160-claude-md-meta-rule-wake-time-substrate-or-it-didn-t-land-biggest-failure-mode-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69QXAH",
+    "comment:PRRC_kwDOSF9kNM69QY3Y",
+    "comment:PRRC_kwDOSF9kNM69QY3x",
+    "thread:PRRT_kwDOSF9kNM5_DXC6",
+    "thread:PRRT_kwDOSF9kNM5_DYbX",
+    "thread:PRRT_kwDOSF9kNM5_DYbj"
+  ],
+  "fetched_at": "2026-08-25T08:40:24.515Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "claude.md(meta-rule): wake-time substrate or it didn't land — biggest failure mode named",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T21:07:07Z",
+  "head_ref": "otto/learnings-must-land-in-claude-md-2026-05-01"
+}

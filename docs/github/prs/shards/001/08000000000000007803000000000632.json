@@ -1,0 +1,23 @@
+{
+  "pr_number": 1586,
+  "archive_path": "docs/history/pr-reviews/PR-1586-feat-claude-hooks-verify-branch-pretooluse-ts-wrapper-opt-in-readme-b-0191-2-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM696TNS",
+    "comment:PRRC_kwDOSF9kNM696UT-",
+    "comment:PRRC_kwDOSF9kNM696UTa",
+    "comment:PRRC_kwDOSF9kNM696UTq",
+    "comment:PRRC_kwDOSF9kNM696UTz",
+    "thread:PRRT_kwDOSF9kNM5_jA3K",
+    "thread:PRRT_kwDOSF9kNM5_jA3U",
+    "thread:PRRT_kwDOSF9kNM5_jA3c",
+    "thread:PRRT_kwDOSF9kNM5_jA3j",
+    "thread:PRRT_kwDOSF9kNM5_jADW"
+  ],
+  "fetched_at": "2026-08-25T08:57:42.902Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(claude-hooks): verify-branch-pretooluse.ts wrapper + opt-in README (B-0191 #2 + #3)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T05:16:05Z",
+  "head_ref": "feat/orchestrator-checks-pretooluse-wrapper-b-0191-aaron-2026-05-05"
+}

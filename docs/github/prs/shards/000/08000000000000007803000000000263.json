@@ -1,0 +1,23 @@
+{
+  "pr_number": 611,
+  "archive_path": "docs/history/pr-reviews/PR-611-tools-budget-daily-cost-report-sh-wrapper-visibility-surface-scaffold-for-task-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67X0C0",
+    "comment:PRRC_kwDOSF9kNM67X0Cq",
+    "comment:PRRC_kwDOSF9kNM67X0Ct",
+    "comment:PRRC_kwDOSF9kNM67X0Cx",
+    "comment:PRRC_kwDOSF9kNM67Xzrp",
+    "thread:PRRT_kwDOSF9kNM59qWeZ",
+    "thread:PRRT_kwDOSF9kNM59qWx2",
+    "thread:PRRT_kwDOSF9kNM59qWxu",
+    "thread:PRRT_kwDOSF9kNM59qWxx",
+    "thread:PRRT_kwDOSF9kNM59qWxz"
+  ],
+  "fetched_at": "2026-08-25T08:18:29.900Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tools(budget): daily-cost-report.sh wrapper — visibility surface scaffold for task #287",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T13:54:29Z",
+  "head_ref": "tools/budget-daily-cost-report"
+}

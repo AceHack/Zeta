@@ -1,0 +1,17 @@
+{
+  "pr_number": 516,
+  "archive_path": "docs/history/pr-reviews/PR-516-substrate-otto-327-b-0018-ambitious-claim-merge-discipline-agency-evidence-stres.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UkLN",
+    "comment:PRRC_kwDOSF9kNM67UkLU",
+    "thread:PRRT_kwDOSF9kNM59nwGS",
+    "thread:PRRT_kwDOSF9kNM59nwGX"
+  ],
+  "fetched_at": "2026-08-25T08:14:16.187Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-327 + B-0018): ambitious-claim merge-discipline + agency-evidence stress-test BACKLOG row",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T23:33:53Z",
+  "head_ref": "substrate/otto-327-ambitious-claim-merge-discipline"
+}

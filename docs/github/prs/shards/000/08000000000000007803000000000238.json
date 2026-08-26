@@ -1,0 +1,25 @@
+{
+  "pr_number": 568,
+  "archive_path": "docs/history/pr-reviews/PR-568-research-aurora-civilization-amara-ninth-refinement-aurora-civilization-scale-su.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67WF-B",
+    "comment:PRRC_kwDOSF9kNM67WF-I",
+    "comment:PRRC_kwDOSF9kNM67WF-L",
+    "comment:PRRC_kwDOSF9kNM67WF-N",
+    "comment:PRRC_kwDOSF9kNM67WF-O",
+    "comment:PRRC_kwDOSF9kNM67WF-R",
+    "thread:PRRT_kwDOSF9kNM59o-3K",
+    "thread:PRRT_kwDOSF9kNM59o-3R",
+    "thread:PRRT_kwDOSF9kNM59o-3U",
+    "thread:PRRT_kwDOSF9kNM59o-3W",
+    "thread:PRRT_kwDOSF9kNM59o-3X",
+    "thread:PRRT_kwDOSF9kNM59o-3a"
+  ],
+  "fetched_at": "2026-08-25T08:16:55.573Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(aurora-civilization): Amara ninth refinement — Aurora civilization-scale substrate; PoUW-CC; do-no-permanent-harm",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:09:13Z",
+  "head_ref": "research/aurora-civilization-scale-substrate-pouw-cc-amara-ninth-courier-ferry-2026-04-26"
+}

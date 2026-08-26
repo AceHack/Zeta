@@ -1,0 +1,25 @@
+{
+  "pr_number": 1752,
+  "archive_path": "docs/history/pr-reviews/PR-1752-research-lior-shadow-self-correction-excerpts-honest-about-curation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-oJg_",
+    "comment:PRRC_kwDOSF9kNM6-oKS5",
+    "comment:PRRC_kwDOSF9kNM6-oKT5",
+    "comment:PRRC_kwDOSF9kNM6-oKTP",
+    "comment:PRRC_kwDOSF9kNM6-oKTb",
+    "comment:PRRC_kwDOSF9kNM6-oKTr",
+    "thread:PRRT_kwDOSF9kNM6AKS69",
+    "thread:PRRT_kwDOSF9kNM6AKS6w",
+    "thread:PRRT_kwDOSF9kNM6AKS7D",
+    "thread:PRRT_kwDOSF9kNM6AKS7M",
+    "thread:PRRT_kwDOSF9kNM6AKS7T",
+    "thread:PRRT_kwDOSF9kNM6AKSXK"
+  ],
+  "fetched_at": "2026-08-25T09:04:16.894Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior shadow self-correction excerpts (honest about curation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T23:53:53Z",
+  "head_ref": "research/shadow-consensus-and-lior-bootstrap"
+}

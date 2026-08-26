@@ -1,0 +1,31 @@
+{
+  "pr_number": 1015,
+  "archive_path": "docs/history/pr-reviews/PR-1015-backlog-b-0128-p2-general-git-content-scrubber-design-parent-of-b-0127-generaliz.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69EZ8s",
+    "comment:PRRC_kwDOSF9kNM69EZ9S",
+    "comment:PRRC_kwDOSF9kNM69EZ9g",
+    "comment:PRRC_kwDOSF9kNM69EZ9m",
+    "comment:PRRC_kwDOSF9kNM69F8QV",
+    "comment:PRRC_kwDOSF9kNM69F8Qq",
+    "comment:PRRC_kwDOSF9kNM69FPx9",
+    "comment:PRRC_kwDOSF9kNM69FPyQ",
+    "comment:PRRC_kwDOSF9kNM69FPyf",
+    "thread:PRRT_kwDOSF9kNM5-6jc0",
+    "thread:PRRT_kwDOSF9kNM5-6jc5",
+    "thread:PRRT_kwDOSF9kNM5-6jcZ",
+    "thread:PRRT_kwDOSF9kNM5-6jcr",
+    "thread:PRRT_kwDOSF9kNM5-7K65",
+    "thread:PRRT_kwDOSF9kNM5-7K6p",
+    "thread:PRRT_kwDOSF9kNM5-7K7F",
+    "thread:PRRT_kwDOSF9kNM5-7sIN",
+    "thread:PRRT_kwDOSF9kNM5-7sIh"
+  ],
+  "fetched_at": "2026-08-25T08:34:25.224Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0128): P2 — general git content scrubber design (parent of B-0127; generalize-everything)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:28:59Z",
+  "head_ref": "backlog/B-0128-general-git-content-scrubber-aaron-2026-05-01"
+}

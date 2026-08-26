@@ -1,0 +1,15 @@
+{
+  "pr_number": 1628,
+  "archive_path": "docs/history/pr-reviews/PR-1628-backlog-b-0196-extend-scale-free-axis-to-include-temporal-scale-invariance-spati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-BRZg",
+    "thread:PRRT_kwDOSF9kNM5_oM0D"
+  ],
+  "fetched_at": "2026-08-25T08:59:23.671Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0196): extend Scale-free axis to include temporal scale-invariance (spatial + temporal both load-bearing) (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:21:22Z",
+  "head_ref": "backlog/B-0196-scale-free-in-time-axis-extension-aaron-2026-05-05"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 171,
+  "archive_path": "docs/history/pr-reviews/PR-171-human-backlog-hb-004-decide-if-submit-nuget-should-be-required-check.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66tKS9",
+    "comment:PRRC_kwDOSF9kNM66tTB4",
+    "comment:PRRC_kwDOSF9kNM66tTCm",
+    "thread:PRRT_kwDOSF9kNM59KUjc",
+    "thread:PRRT_kwDOSF9kNM59KbJV",
+    "thread:PRRT_kwDOSF9kNM59KbJy"
+  ],
+  "fetched_at": "2026-08-25T07:58:33.242Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "human-backlog: HB-004 — decide if submit-nuget should be required check",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:25:04Z",
+  "head_ref": "hygiene/hb-submit-nuget-investigation"
+}

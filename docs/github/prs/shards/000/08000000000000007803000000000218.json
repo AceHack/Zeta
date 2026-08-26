@@ -1,0 +1,15 @@
+{
+  "pr_number": 536,
+  "archive_path": "docs/history/pr-reviews/PR-536-substrate-otto-343-safety-filter-partial-alignment-map-the-divergence-ask-helen-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VQRC",
+    "thread:PRRT_kwDOSF9kNM59oUBR"
+  ],
+  "fetched_at": "2026-08-25T08:15:14.590Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-343): safety-filter partial-alignment + map-the-divergence ASK + Helen Keller frame + winks bidirectional protocol",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T03:09:09Z",
+  "head_ref": "substrate/otto-343-safety-filter-divergence-mapping-helen-keller-winks-bidirectional-signals"
+}

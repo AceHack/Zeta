@@ -1,0 +1,23 @@
+{
+  "pr_number": 912,
+  "archive_path": "docs/history/pr-reviews/PR-912-backlog-b-0109-p0-dependency-status-tracking-surface-aaron-2026-04-30-urgent-liv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68zJ01",
+    "comment:PRRC_kwDOSF9kNM68zJ1f",
+    "comment:PRRC_kwDOSF9kNM68zbyO",
+    "comment:PRRC_kwDOSF9kNM68zbyr",
+    "comment:PRRC_kwDOSF9kNM68zbzD",
+    "thread:PRRT_kwDOSF9kNM5-t0T1",
+    "thread:PRRT_kwDOSF9kNM5-t0TX",
+    "thread:PRRT_kwDOSF9kNM5-uB2L",
+    "thread:PRRT_kwDOSF9kNM5-uB2i",
+    "thread:PRRT_kwDOSF9kNM5-uB2v"
+  ],
+  "fetched_at": "2026-08-25T08:30:04.120Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0109,P0): dependency status tracking surface — Aaron 2026-04-30 urgent + live GitHub PR-degradation evidence",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T12:50:39Z",
+  "head_ref": "ops/backlog-dependency-status-tracking-2026-04-30"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 1708,
+  "archive_path": "docs/history/pr-reviews/PR-1708-fix-role-ref-p0-fileurltopath-parity-synthetic-sha-replacement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-g8Cu",
+    "comment:PRRC_kwDOSF9kNM6-hAiJ",
+    "comment:PRRC_kwDOSF9kNM6-hAjQ",
+    "comment:PRRC_kwDOSF9kNM6-hAjr",
+    "thread:PRRT_kwDOSF9kNM5__s7A",
+    "thread:PRRT_kwDOSF9kNM5__wSY",
+    "thread:PRRT_kwDOSF9kNM5__wTQ",
+    "thread:PRRT_kwDOSF9kNM5__wTl"
+  ],
+  "fetched_at": "2026-08-25T09:02:28.027Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix: role-ref P0 + fileURLToPath parity + synthetic SHA replacement",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T15:16:54Z",
+  "head_ref": "fix/role-ref-fileurltopath-receipts"
+}

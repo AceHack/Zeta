@@ -1,0 +1,23 @@
+{
+  "pr_number": 539,
+  "archive_path": "docs/history/pr-reviews/PR-539-feat-hygiene-lint-check-for-git-merge-conflict-markers-in-committed-files-aaron-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VVt0",
+    "comment:PRRC_kwDOSF9kNM67VVt5",
+    "comment:PRRC_kwDOSF9kNM67VVt9",
+    "comment:PRRC_kwDOSF9kNM67VVtw",
+    "comment:PRRC_kwDOSF9kNM67VVuA",
+    "thread:PRRT_kwDOSF9kNM59oYc-",
+    "thread:PRRT_kwDOSF9kNM59oYc1",
+    "thread:PRRT_kwDOSF9kNM59oYc4",
+    "thread:PRRT_kwDOSF9kNM59oYc7",
+    "thread:PRRT_kwDOSF9kNM59oYcy"
+  ],
+  "fetched_at": "2026-08-25T08:15:19.353Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "feat(hygiene): lint check for git merge-conflict markers in committed files — Aaron 2026-04-26 ask",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T03:36:34Z",
+  "head_ref": "feat/lint-no-conflict-markers-prevent-botched-merge-leakage"
+}

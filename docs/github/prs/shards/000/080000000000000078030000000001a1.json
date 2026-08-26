@@ -1,0 +1,22 @@
+{
+  "pr_number": 417,
+  "archive_path": "docs/history/pr-reviews/PR-417-hygiene-268-pr-preservation-drain-log-for-404-clean-room-bios-7-threads-3-person.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PA9f",
+    "comment:PRRC_kwDOSF9kNM67PA9q",
+    "comment:PRRC_kwDOSF9kNM67PAe3",
+    "comment:PRRC_kwDOSF9kNM67PD4j",
+    "comment:PRRC_kwDOSF9kNM67PD5K",
+    "comment:PRRC_kwDOSF9kNM67PD6V",
+    "thread:PRRT_kwDOSF9kNM59jW47",
+    "thread:PRRT_kwDOSF9kNM59jXNr",
+    "thread:PRRT_kwDOSF9kNM59jXNx"
+  ],
+  "fetched_at": "2026-08-25T08:09:24.733Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #404 (clean-room BIOS, 7 threads + 3-persona evolution)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:19:07Z",
+  "head_ref": "hygiene/pr-preservation-404-drain-log"
+}

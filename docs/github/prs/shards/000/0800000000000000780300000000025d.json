@@ -1,0 +1,15 @@
+{
+  "pr_number": 605,
+  "archive_path": "docs/history/pr-reviews/PR-605-tick-history-consolidate-7-dirty-tick-rows-12-23z-13-00z-before-13-12z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Xtm5",
+    "thread:PRRT_kwDOSF9kNM59qRoT"
+  ],
+  "fetched_at": "2026-08-25T08:18:25.227Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: consolidate 7 DIRTY tick rows (12:23Z..13:00Z) before 13:12Z",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T13:34:36Z",
+  "head_ref": "tick-history/consolidated-12-23-to-13-00-Z"
+}

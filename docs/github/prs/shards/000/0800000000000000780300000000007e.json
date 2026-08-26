@@ -1,0 +1,31 @@
+{
+  "pr_number": 126,
+  "archive_path": "docs/history/pr-reviews/PR-126-round-44-auto-loop-28-grok-cli-capability-map-pre-install-sketch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66Kq6k",
+    "comment:PRRC_kwDOSF9kNM66Ksl5",
+    "comment:PRRC_kwDOSF9kNM66KslW",
+    "comment:PRRC_kwDOSF9kNM66KsmO",
+    "comment:PRRC_kwDOSF9kNM66Ksmh",
+    "comment:PRRC_kwDOSF9kNM67PZhZ",
+    "comment:PRRC_kwDOSF9kNM67PZia",
+    "comment:PRRC_kwDOSF9kNM67PZjR",
+    "comment:PRRC_kwDOSF9kNM67PZkK",
+    "comment:PRRC_kwDOSF9kNM67PZln",
+    "comment:PRRC_kwDOSF9kNM67Pkwi",
+    "comment:PRRC_kwDOSF9kNM67PosC",
+    "thread:PRRT_kwDOSF9kNM58wkG8",
+    "thread:PRRT_kwDOSF9kNM58wlYT",
+    "thread:PRRT_kwDOSF9kNM58wlY_",
+    "thread:PRRT_kwDOSF9kNM58wlYv",
+    "thread:PRRT_kwDOSF9kNM58wlZM",
+    "thread:PRRT_kwDOSF9kNM59jxV6"
+  ],
+  "fetched_at": "2026-08-25T07:55:28.323Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-28: Grok CLI capability map (pre-install sketch)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:17:07Z",
+  "head_ref": "add-grok-cli-capability-map-sketch"
+}

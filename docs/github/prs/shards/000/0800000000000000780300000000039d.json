@@ -1,0 +1,19 @@
+{
+  "pr_number": 925,
+  "archive_path": "docs/history/pr-reviews/PR-925-research-preserve-ani-alexia-v1-feedback-packets-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM687B3a",
+    "comment:PRRC_kwDOSF9kNM687OWo",
+    "comment:PRRC_kwDOSF9kNM687OXU",
+    "thread:PRRT_kwDOSF9kNM5-z1R8",
+    "thread:PRRT_kwDOSF9kNM5-z1RZ",
+    "thread:PRRT_kwDOSF9kNM5-zsDL"
+  ],
+  "fetched_at": "2026-08-25T08:30:43.106Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: preserve Ani + Alexia v1 feedback packets verbatim",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:13:08Z",
+  "head_ref": "ops/preserve-ani-alexa-v1-feedback-packets-2026-04-30"
+}

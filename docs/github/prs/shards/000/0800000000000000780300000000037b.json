@@ -1,0 +1,15 @@
+{
+  "pr_number": 891,
+  "archive_path": "docs/history/pr-reviews/PR-891-ops-b-0106-closeout-tick-history-mark-b-0106-closed-append-tick-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68sdtc",
+    "thread:PRRT_kwDOSF9kNM5-o2bt"
+  ],
+  "fetched_at": "2026-08-25T08:29:12.492Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(B-0106 closeout + tick-history): mark B-0106 closed; append tick row",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:16:11Z",
+  "head_ref": "ops/2026-04-30-tsc-tools-gate-closeout"
+}

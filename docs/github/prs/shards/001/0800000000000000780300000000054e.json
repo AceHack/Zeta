@@ -1,0 +1,12 @@
+{
+  "pr_number": 1358,
+  "archive_path": "docs/history/pr-reviews/PR-1358-fix-1353-post-merge-b-0141-inline-code-memo-path-vs-code-spelling.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:48:27.476Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(#1353 post-merge): B-0141 inline-code memo path + VS Code spelling",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:17:08Z",
+  "head_ref": "backlog/B-0141-followup-vscode-spelling-and-inline-code-format"
+}

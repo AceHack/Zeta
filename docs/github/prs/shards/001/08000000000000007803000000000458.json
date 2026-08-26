@@ -1,0 +1,25 @@
+{
+  "pr_number": 1112,
+  "archive_path": "docs/history/pr-reviews/PR-1112-research-wingmakers-preserve-fifth-interview-of-dr-neruda-pdf-structural-overvie.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69IrQS",
+    "comment:PRRC_kwDOSF9kNM69Isp2",
+    "comment:PRRC_kwDOSF9kNM69Isp6",
+    "comment:PRRC_kwDOSF9kNM69Isp9",
+    "comment:PRRC_kwDOSF9kNM69Ispl",
+    "comment:PRRC_kwDOSF9kNM69Ispw",
+    "thread:PRRT_kwDOSF9kNM5-9v3b",
+    "thread:PRRT_kwDOSF9kNM5-9w7-",
+    "thread:PRRT_kwDOSF9kNM5-9w71",
+    "thread:PRRT_kwDOSF9kNM5-9w75",
+    "thread:PRRT_kwDOSF9kNM5-9w78",
+    "thread:PRRT_kwDOSF9kNM5-9w7v"
+  ],
+  "fetched_at": "2026-08-25T08:38:27.415Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(wingmakers): preserve Fifth Interview of Dr. Neruda PDF + structural overview (Aaron-forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:42:49Z",
+  "head_ref": "research/wingmakers-fifth-interview-aaron-forwarded-2026-05-01"
+}

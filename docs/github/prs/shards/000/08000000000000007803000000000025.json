@@ -1,0 +1,19 @@
+{
+  "pr_number": 37,
+  "archive_path": "docs/history/pr-reviews/PR-37-factory-hygiene-39-hot-file-path-detector.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM65zDKU",
+    "comment:PRRC_kwDOSF9kNM65zDKz",
+    "comment:PRRC_kwDOSF9kNM65zDLJ",
+    "thread:PRRT_kwDOSF9kNM58e7R0",
+    "thread:PRRT_kwDOSF9kNM58e7SI",
+    "thread:PRRT_kwDOSF9kNM58e7Sa"
+  ],
+  "fetched_at": "2026-08-25T07:52:05.243Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "FACTORY-HYGIENE #39: hot-file-path detector",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T11:47:04Z",
+  "head_ref": "hygiene/hot-file-path-detector"
+}

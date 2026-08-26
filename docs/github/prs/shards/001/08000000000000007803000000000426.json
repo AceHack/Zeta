@@ -1,0 +1,17 @@
+{
+  "pr_number": 1062,
+  "archive_path": "docs/history/pr-reviews/PR-1062-hygiene-tick-history-2026-05-01t09-14z-two-pr-drain-tick-1054-merged-1051-thread.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69G9i1",
+    "comment:PRRC_kwDOSF9kNM69G9jA",
+    "thread:PRRT_kwDOSF9kNM5-8c3L",
+    "thread:PRRT_kwDOSF9kNM5-8c3U"
+  ],
+  "fetched_at": "2026-08-25T08:36:27.776Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:14Z — two-PR drain tick (#1054 merged + #1051 thread-fixed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:18:54Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0914Z-1054-1051-thread-fixes"
+}

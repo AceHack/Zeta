@@ -1,0 +1,17 @@
+{
+  "pr_number": 1697,
+  "archive_path": "docs/history/pr-reviews/PR-1697-memory-provenance-frank-frisbee-taught-dst-over-retractible-surfaces-before-dbsp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-QO6w",
+    "comment:PRRC_kwDOSF9kNM6-QO7K",
+    "thread:PRRT_kwDOSF9kNM5_zSZV",
+    "thread:PRRT_kwDOSF9kNM5_zSZk"
+  ],
+  "fetched_at": "2026-08-25T09:02:03.383Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(provenance): Frank Frisbee taught DST-over-retractible-surfaces before DBSP had a name (Aaron 2026-05-05 substrate-or-it-didn't-happen catch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T22:22:27Z",
+  "head_ref": "memory/frank-frisbee-dbsp-source-and-duplicate-yourself-mentor-lineage-southern-redneck-register-provenance-aaron-2026-05-05"
+}

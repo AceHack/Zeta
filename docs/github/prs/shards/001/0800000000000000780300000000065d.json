@@ -1,0 +1,21 @@
+{
+  "pr_number": 1629,
+  "archive_path": "docs/history/pr-reviews/PR-1629-fixup-b-0201-reference-memory-paper-search-eliminated-candidates-table-source-se.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-BXSc",
+    "comment:PRRC_kwDOSF9kNM6-BYX6",
+    "comment:PRRC_kwDOSF9kNM6-BYXO",
+    "comment:PRRC_kwDOSF9kNM6-BuH3",
+    "thread:PRRT_kwDOSF9kNM5_oRTC",
+    "thread:PRRT_kwDOSF9kNM5_oSIg",
+    "thread:PRRT_kwDOSF9kNM5_oSJA",
+    "thread:PRRT_kwDOSF9kNM5_oimd"
+  ],
+  "fetched_at": "2026-08-25T08:59:26.183Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fixup(B-0201 + reference-memory): paper-search eliminated-candidates table + source-set extension (Alex Ziskind + George Hotz / tinybox + Sakana YouTube)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:42:37Z",
+  "head_ref": "fixup/b0201-paper-search-eliminated-candidates-and-source-set-extension-aaron-2026-05-05"
+}

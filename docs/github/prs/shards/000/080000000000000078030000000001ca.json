@@ -1,0 +1,12 @@
+{
+  "pr_number": 458,
+  "archive_path": "docs/history/pr-reviews/PR-458-deps-bump-system-numerics-tensors-from-10-0-6-to-10-0-7.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:11:07.993Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "deps: Bump System.Numerics.Tensors from 10.0.6 to 10.0.7",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:32:40Z",
+  "head_ref": "dependabot/nuget/System.Numerics.Tensors-10.0.7"
+}

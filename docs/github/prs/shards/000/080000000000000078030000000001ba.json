@@ -1,0 +1,19 @@
+{
+  "pr_number": 442,
+  "archive_path": "docs/history/pr-reviews/PR-442-hygiene-268-pr-preservation-drain-log-for-219-amara-3rd-ferry-absorb.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QU1B",
+    "comment:PRRC_kwDOSF9kNM67QU1F",
+    "comment:PRRC_kwDOSF9kNM67QevM",
+    "comment:PRRC_kwDOSF9kNM67QkwN",
+    "thread:PRRT_kwDOSF9kNM59kW2L",
+    "thread:PRRT_kwDOSF9kNM59kW2P"
+  ],
+  "fetched_at": "2026-08-25T08:10:30.383Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #219 (Amara 3rd-ferry absorb)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:08:41Z",
+  "head_ref": "drain/219-pr-preservation-log"
+}

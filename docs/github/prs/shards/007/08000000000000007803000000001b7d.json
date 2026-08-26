@@ -1,0 +1,12 @@
+{
+  "pr_number": 7037,
+  "archive_path": "docs/history/pr-reviews/PR-7037-docs-the-cost-of-being-unique-is-maxwell-s-demon-s-cost-two-demons-7095.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:40.734Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: the cost of being unique IS Maxwell's demon's cost — two demons (#7095)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:17:19Z",
+  "head_ref": "otto/cost-of-being-unique-is-maxwell-demon-two-demons"
+}

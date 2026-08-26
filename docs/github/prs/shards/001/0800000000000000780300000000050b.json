@@ -1,0 +1,21 @@
+{
+  "pr_number": 1291,
+  "archive_path": "docs/history/pr-reviews/PR-1291-free-memory-cross-disciplinary-pattern-adoption-aaron-s-architectural-thinking-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZbIG",
+    "comment:PRRC_kwDOSF9kNM69ZbIQ",
+    "comment:PRRC_kwDOSF9kNM69ZcPY",
+    "comment:PRRC_kwDOSF9kNM69ZcdO",
+    "thread:PRRT_kwDOSF9kNM5_KPz1",
+    "thread:PRRT_kwDOSF9kNM5_KPz8",
+    "thread:PRRT_kwDOSF9kNM5_KQ4O",
+    "thread:PRRT_kwDOSF9kNM5_KQtX"
+  ],
+  "fetched_at": "2026-08-25T08:46:00.569Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: cross-disciplinary pattern adoption — Aaron's architectural thinking style (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:35:19Z",
+  "head_ref": "free-memory/cross-disciplinary-pattern-adoption-aaron-thinking-style-2026-05-03"
+}

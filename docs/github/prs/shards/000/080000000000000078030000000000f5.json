@@ -1,0 +1,21 @@
+{
+  "pr_number": 245,
+  "archive_path": "docs/history/pr-reviews/PR-245-aurora-absorb-amara-s-6th-courier-ferry-muratori-pattern-mapping-validation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663TbB",
+    "comment:PRRC_kwDOSF9kNM663TbO",
+    "comment:PRRC_kwDOSF9kNM663Tbc",
+    "comment:PRRC_kwDOSF9kNM663Tbs",
+    "thread:PRRT_kwDOSF9kNM59RtbF",
+    "thread:PRRT_kwDOSF9kNM59RtbQ",
+    "thread:PRRT_kwDOSF9kNM59Rtbb",
+    "thread:PRRT_kwDOSF9kNM59Rtbo"
+  ],
+  "fetched_at": "2026-08-25T08:02:33.129Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "aurora: absorb Amara's 6th courier ferry — Muratori pattern mapping validation",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:06:30Z",
+  "head_ref": "aurora/absorb-amara-6th-ferry-muratori-pattern-mapping"
+}

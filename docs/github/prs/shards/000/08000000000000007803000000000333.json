@@ -1,0 +1,25 @@
+{
+  "pr_number": 819,
+  "archive_path": "docs/history/pr-reviews/PR-819-absorb-round-4-amara-review-of-pr-818-b-0105-consolidation-pass-no-new-conceptua.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68S-DT",
+    "comment:PRRC_kwDOSF9kNM68TAIj",
+    "comment:PRRC_kwDOSF9kNM68TAJW",
+    "comment:PRRC_kwDOSF9kNM68TAJn",
+    "comment:PRRC_kwDOSF9kNM68TOdp",
+    "comment:PRRC_kwDOSF9kNM68TOee",
+    "thread:PRRT_kwDOSF9kNM5-WLFU",
+    "thread:PRRT_kwDOSF9kNM5-WMqz",
+    "thread:PRRT_kwDOSF9kNM5-WMrg",
+    "thread:PRRT_kwDOSF9kNM5-WMrw",
+    "thread:PRRT_kwDOSF9kNM5-WXd9",
+    "thread:PRRT_kwDOSF9kNM5-WXem"
+  ],
+  "fetched_at": "2026-08-25T08:26:32.462Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "absorb round-4: Amara review of PR #818 + B-0105 consolidation pass (no new conceptual substrate until consolidation lands)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T07:41:24Z",
+  "head_ref": "absorb/multi-ai-2026-04-29-round4-amara-on-pr818"
+}

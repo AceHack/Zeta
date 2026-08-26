@@ -1,0 +1,12 @@
+{
+  "pr_number": 1146,
+  "archive_path": "docs/history/pr-reviews/PR-1146-hygiene-tick-history-2026-05-01t19-25z-2-merged-blazor-extension.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:39:48.945Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T19:25Z — 2 MERGED + Blazor extension",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:40:19Z",
+  "head_ref": "hygiene/tick-history-1925Z-2026-05-01"
+}

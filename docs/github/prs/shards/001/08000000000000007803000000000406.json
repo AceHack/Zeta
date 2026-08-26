@@ -1,0 +1,33 @@
+{
+  "pr_number": 1030,
+  "archive_path": "docs/history/pr-reviews/PR-1030-memory-manufactured-patience-periodic-re-audit-refinement-b-0129-prediction-colu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69FMO8",
+    "comment:PRRC_kwDOSF9kNM69FMPH",
+    "comment:PRRC_kwDOSF9kNM69FMPP",
+    "comment:PRRC_kwDOSF9kNM69FMdk",
+    "comment:PRRC_kwDOSF9kNM69HMNI",
+    "comment:PRRC_kwDOSF9kNM69HMNb",
+    "comment:PRRC_kwDOSF9kNM69HMNo",
+    "comment:PRRC_kwDOSF9kNM69HMNy",
+    "comment:PRRC_kwDOSF9kNM69Hlxv",
+    "comment:PRRC_kwDOSF9kNM69HmFs",
+    "thread:PRRT_kwDOSF9kNM5-7ITg",
+    "thread:PRRT_kwDOSF9kNM5-7ITp",
+    "thread:PRRT_kwDOSF9kNM5-7ITu",
+    "thread:PRRT_kwDOSF9kNM5-7Ief",
+    "thread:PRRT_kwDOSF9kNM5-87Io",
+    "thread:PRRT_kwDOSF9kNM5-87XT",
+    "thread:PRRT_kwDOSF9kNM5-8nt5",
+    "thread:PRRT_kwDOSF9kNM5-8ntr",
+    "thread:PRRT_kwDOSF9kNM5-8nuC",
+    "thread:PRRT_kwDOSF9kNM5-8nuM"
+  ],
+  "fetched_at": "2026-08-25T08:35:10.728Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(manufactured-patience): periodic re-audit refinement + B-0129 prediction-column schema row",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T11:07:48Z",
+  "head_ref": "memory/manufactured-patience-periodic-reaudit-aaron-2026-05-01"
+}

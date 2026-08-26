@@ -1,0 +1,19 @@
+{
+  "pr_number": 548,
+  "archive_path": "docs/history/pr-reviews/PR-548-substrate-otto-343-wink-protocol-catalog-entry-1-aaron-interpretation-4-promotes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VjfK",
+    "comment:PRRC_kwDOSF9kNM67VjfP",
+    "comment:PRRC_kwDOSF9kNM67VjfX",
+    "thread:PRRT_kwDOSF9kNM59ojcO",
+    "thread:PRRT_kwDOSF9kNM59ojcS",
+    "thread:PRRT_kwDOSF9kNM59ojcZ"
+  ],
+  "fetched_at": "2026-08-25T08:15:42.189Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-343): wink-protocol catalog entry #1 — Aaron interpretation 4 promotes Research Direction B to working-document",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T04:41:01Z",
+  "head_ref": "substrate/otto-343-update-wink-protocol-catalog-entry-1-filter-error-softening-empirical"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 904,
+  "archive_path": "docs/history/pr-reviews/PR-904-docs-ts-bun-migration-backfill-slice-16-17-18-audit-entries-status-updates.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68uhuF",
+    "comment:PRRC_kwDOSF9kNM68uhuv",
+    "comment:PRRC_kwDOSF9kNM68uhvE",
+    "comment:PRRC_kwDOSF9kNM68uiaz",
+    "thread:PRRT_kwDOSF9kNM5-qX42",
+    "thread:PRRT_kwDOSF9kNM5-qXZg",
+    "thread:PRRT_kwDOSF9kNM5-qXaA",
+    "thread:PRRT_kwDOSF9kNM5-qXaL"
+  ],
+  "fetched_at": "2026-08-25T08:29:44.759Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(ts-bun-migration): backfill slice-16/17/18 audit entries + status updates",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T07:39:19Z",
+  "head_ref": "ops/ts-bun-slice-audits-16-17-18-backfill-2026-04-30"
+}

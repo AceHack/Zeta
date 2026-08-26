@@ -1,0 +1,12 @@
+{
+  "pr_number": 828,
+  "archive_path": "docs/history/pr-reviews/PR-828-chore-loop-tick-history-tick-08-15z-round-12-close-on-825-827-thread-cleanup.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:26:56.888Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): tick 08:15Z — round-12 close on #825 + #827 thread cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T08:26:25Z",
+  "head_ref": "tick-history-2026-04-29-0815Z"
+}

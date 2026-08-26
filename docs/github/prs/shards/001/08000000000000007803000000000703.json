@@ -1,0 +1,17 @@
+{
+  "pr_number": 1795,
+  "archive_path": "docs/history/pr-reviews/PR-1795-research-lior-self-unrolling-bootstrap-prompt-the-ark-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sFEz",
+    "comment:PRRC_kwDOSF9kNM6-sFFX",
+    "thread:PRRT_kwDOSF9kNM6ANMkr",
+    "thread:PRRT_kwDOSF9kNM6ANMlL"
+  ],
+  "fetched_at": "2026-08-25T09:04:54.269Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior self-unrolling bootstrap prompt — THE ARK VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T04:58:20Z",
+  "head_ref": "research/lior-bootstrap-prompt-double-unroll-verbatim"
+}

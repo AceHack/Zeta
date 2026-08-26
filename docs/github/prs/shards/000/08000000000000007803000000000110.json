@@ -1,0 +1,23 @@
+{
+  "pr_number": 272,
+  "archive_path": "docs/history/pr-reviews/PR-272-research-aminata-iteration-1-pass-on-multi-claude-experiment-design-6-critical-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM664Jb0",
+    "comment:PRRC_kwDOSF9kNM664Jb_",
+    "comment:PRRC_kwDOSF9kNM664Jbm",
+    "comment:PRRC_kwDOSF9kNM664JcK",
+    "comment:PRRC_kwDOSF9kNM664JcV",
+    "thread:PRRT_kwDOSF9kNM59SVX4",
+    "thread:PRRT_kwDOSF9kNM59SVXZ",
+    "thread:PRRT_kwDOSF9kNM59SVXj",
+    "thread:PRRT_kwDOSF9kNM59SVXr",
+    "thread:PRRT_kwDOSF9kNM59SVXv"
+  ],
+  "fetched_at": "2026-08-25T08:03:13.149Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: Aminata iteration-1 pass on multi-Claude experiment design (6 CRITICAL findings)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T03:28:58Z",
+  "head_ref": "research/aminata-pass-on-multi-claude-experiment-design-iteration-1"
+}

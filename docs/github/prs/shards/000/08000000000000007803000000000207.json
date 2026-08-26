@@ -1,0 +1,19 @@
+{
+  "pr_number": 519,
+  "archive_path": "docs/history/pr-reviews/PR-519-memory-refresh-current-aaron-current-amara-distillations-with-this-session-s-sub.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UokY",
+    "comment:PRRC_kwDOSF9kNM67Uokd",
+    "comment:PRRC_kwDOSF9kNM67Uokh",
+    "thread:PRRT_kwDOSF9kNM59nzqp",
+    "thread:PRRT_kwDOSF9kNM59nzqu",
+    "thread:PRRT_kwDOSF9kNM59nzqy"
+  ],
+  "fetched_at": "2026-08-25T08:14:22.749Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: refresh CURRENT-aaron + CURRENT-amara distillations with this session's substrate cluster",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T23:53:26Z",
+  "head_ref": "memory/refresh-current-distillations"
+}

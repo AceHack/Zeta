@@ -1,0 +1,19 @@
+{
+  "pr_number": 711,
+  "archive_path": "docs/history/pr-reviews/PR-711-hygiene-tick-history-honest-wait-round-substrate-verified-tick-pr-707-minimal-au.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PHp3",
+    "comment:PRRC_kwDOSF9kNM68PHpo",
+    "comment:PRRC_kwDOSF9kNM68PVnr",
+    "thread:PRRT_kwDOSF9kNM5-TVAU",
+    "thread:PRRT_kwDOSF9kNM5-TVAa",
+    "thread:PRRT_kwDOSF9kNM5-TfR4"
+  ],
+  "fetched_at": "2026-08-25T08:22:21.897Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): honest-wait + round-substrate-verified tick (PR #707 minimal Aurora bridge MERGED to main)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T01:37:50Z",
+  "head_ref": "tick-history/2026-04-29-tick-honest-wait-round-substrate-verified"
+}

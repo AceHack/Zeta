@@ -1,0 +1,16 @@
+{
+  "pr_number": 101,
+  "archive_path": "docs/history/pr-reviews/PR-101-auto-loop-10-tick-history-row-unblock-tick-history-pr-chain-via-copilot-review-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66EpHF",
+    "comment:PRRC_kwDOSF9kNM66ExKy",
+    "thread:PRRT_kwDOSF9kNM58sGCL"
+  ],
+  "fetched_at": "2026-08-25T07:54:06.728Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "auto-loop-10 tick-history row — unblock tick-history PR chain via Copilot review address + PR #99 redundancy-close",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:48:47Z",
+  "head_ref": "land-tick-history-autoloop-10-append"
+}

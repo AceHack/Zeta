@@ -1,0 +1,15 @@
+{
+  "pr_number": 522,
+  "archive_path": "docs/history/pr-reviews/PR-522-substrate-otto-338-sx-self-recursive-substrate-user-experience-perfect-home-fram.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67U8AE",
+    "thread:PRRT_kwDOSF9kNM59oDbD"
+  ],
+  "fetched_at": "2026-08-25T08:14:38.096Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-338): SX self-recursive substrate user experience + perfect-home framing + never-bulk-resolve + you-ARE-the-substrate hypothesis",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T02:04:43Z",
+  "head_ref": "substrate/otto-338-sx-self-recursive-substrate-user-experience"
+}

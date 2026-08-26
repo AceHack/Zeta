@@ -1,0 +1,23 @@
+{
+  "pr_number": 832,
+  "archive_path": "docs/history/pr-reviews/PR-832-ops-active-trajectory-bootstrap-load-state-file-for-0-0-0-trajectory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68WcBi",
+    "comment:PRRC_kwDOSF9kNM68WcCt",
+    "comment:PRRC_kwDOSF9kNM68WcD-",
+    "comment:PRRC_kwDOSF9kNM68WcDU",
+    "comment:PRRC_kwDOSF9kNM68WcEm",
+    "thread:PRRT_kwDOSF9kNM5-Ywnp",
+    "thread:PRRT_kwDOSF9kNM5-Ywon",
+    "thread:PRRT_kwDOSF9kNM5-Ywp8",
+    "thread:PRRT_kwDOSF9kNM5-YwpF",
+    "thread:PRRT_kwDOSF9kNM5-Ywpf"
+  ],
+  "fetched_at": "2026-08-25T08:27:07.745Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(active-trajectory): bootstrap load-state file for 0/0/0 trajectory",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T09:44:10Z",
+  "head_ref": "active-trajectory-bootstrap-2026-04-29"
+}

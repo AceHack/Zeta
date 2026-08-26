@@ -1,0 +1,22 @@
+{
+  "pr_number": 1598,
+  "archive_path": "docs/history/pr-reviews/PR-1598-shard-hygiene-2026-05-05t08-00z-bigint-uom-cluster-crash-recovery.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM699A4v",
+    "comment:PRRC_kwDOSF9kNM699DMS",
+    "comment:PRRC_kwDOSF9kNM699DMx",
+    "comment:PRRC_kwDOSF9kNM699DNL",
+    "comment:PRRC_kwDOSF9kNM699Hj8",
+    "thread:PRRT_kwDOSF9kNM5_lBW1",
+    "thread:PRRT_kwDOSF9kNM5_lDH7",
+    "thread:PRRT_kwDOSF9kNM5_lDIU",
+    "thread:PRRT_kwDOSF9kNM5_lDIn"
+  ],
+  "fetched_at": "2026-08-25T08:58:12.557Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(hygiene): 2026-05-05T08:00Z -- BigInt/UoM cluster + crash recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T08:18:31Z",
+  "head_ref": "shard/2026-05-05-0800Z-bigint-uom-cluster-and-crash-recovery"
+}

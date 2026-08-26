@@ -1,0 +1,24 @@
+{
+  "pr_number": 160,
+  "archive_path": "docs/history/pr-reviews/PR-160-docs-protocols-amara-s-cross-agent-communication-courier-protocol.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66sVQv",
+    "comment:PRRC_kwDOSF9kNM66sXMJ",
+    "comment:PRRC_kwDOSF9kNM66sXM_",
+    "comment:PRRC_kwDOSF9kNM66sXMr",
+    "comment:PRRC_kwDOSF9kNM66ubh8",
+    "comment:PRRC_kwDOSF9kNM66uhEI",
+    "thread:PRRT_kwDOSF9kNM59Js9y",
+    "thread:PRRT_kwDOSF9kNM59Jub4",
+    "thread:PRRT_kwDOSF9kNM59Juba",
+    "thread:PRRT_kwDOSF9kNM59JucE",
+    "thread:PRRT_kwDOSF9kNM59LTkY"
+  ],
+  "fetched_at": "2026-08-25T07:57:52.815Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "docs(protocols): Amara's cross-agent communication courier protocol",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:53:05Z",
+  "head_ref": "docs/protocols-cross-agent-communication"
+}

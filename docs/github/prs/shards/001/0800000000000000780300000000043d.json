@@ -1,0 +1,23 @@
+{
+  "pr_number": 1085,
+  "archive_path": "docs/history/pr-reviews/PR-1085-memory-claudeai-endorsement-second-peer-ai-reception-of-taxonomy-v2-substantive-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Hics",
+    "comment:PRRC_kwDOSF9kNM69HjV2",
+    "comment:PRRC_kwDOSF9kNM69HjWP",
+    "comment:PRRC_kwDOSF9kNM69IjgK",
+    "comment:PRRC_kwDOSF9kNM69cvrT",
+    "thread:PRRT_kwDOSF9kNM5-84jc",
+    "thread:PRRT_kwDOSF9kNM5-85QY",
+    "thread:PRRT_kwDOSF9kNM5-85Qu",
+    "thread:PRRT_kwDOSF9kNM5-9p_R",
+    "thread:PRRT_kwDOSF9kNM5_M4BU"
+  ],
+  "fetched_at": "2026-08-25T08:37:18.619Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(claudeai-endorsement): second peer-AI reception of taxonomy v2 — substantive endorsement of class #15",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:43:41Z",
+  "head_ref": "memory/claudeai-endorsement-taxonomy-v2-class-15-2026-05-01"
+}

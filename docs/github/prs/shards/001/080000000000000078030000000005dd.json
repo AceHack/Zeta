@@ -1,0 +1,15 @@
+{
+  "pr_number": 1501,
+  "archive_path": "docs/history/pr-reviews/PR-1501-fix-memory-md-compress-top-6-longest-entries-over-2000-chars-b-0006-narrow-pass-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69vTNf",
+    "thread:PRRT_kwDOSF9kNM5_a8AZ"
+  ],
+  "fetched_at": "2026-08-25T08:54:08.673Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): compress top-6 longest entries (over 2000 chars) — B-0006 narrow pass (2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T17:28:42Z",
+  "head_ref": "fix/memory-md-top-6-compression-b-0006-narrow-2026-05-04"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1001,
+  "archive_path": "docs/history/pr-reviews/PR-1001-memory-authority-backlog-prioritization-delegated-to-otto-aaron-2026-05-01.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Ddn-",
+    "comment:PRRC_kwDOSF9kNM69Ddn1",
+    "thread:PRRT_kwDOSF9kNM5-53o5",
+    "thread:PRRT_kwDOSF9kNM5-53oy"
+  ],
+  "fetched_at": "2026-08-25T08:33:48.054Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(authority): backlog prioritization delegated to Otto — Aaron 2026-05-01",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T02:28:15Z",
+  "head_ref": "memory/aaron-backlog-prioritization-authority-delegated-2026-05-01"
+}

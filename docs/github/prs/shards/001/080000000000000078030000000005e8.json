@@ -1,0 +1,15 @@
+{
+  "pr_number": 1512,
+  "archive_path": "docs/history/pr-reviews/PR-1512-hygiene-tick-history-1852z-shard-6-prs-landed-concurrency-recovery.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69xMYU",
+    "thread:PRRT_kwDOSF9kNM5_cU5d"
+  ],
+  "fetched_at": "2026-08-25T08:54:37.596Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 1852Z shard — 6 PRs landed + concurrency recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T18:55:51Z",
+  "head_ref": "hygiene/tick-shard-1852Z-aaron-2026-05-04"
+}

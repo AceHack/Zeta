@@ -1,0 +1,17 @@
+{
+  "pr_number": 1253,
+  "archive_path": "docs/history/pr-reviews/PR-1253-free-memory-skill-design-hub-satellite-no-dynamic-commands-plugin-hook-packaging.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Y23W",
+    "comment:PRRC_kwDOSF9kNM69Y23a",
+    "thread:PRRT_kwDOSF9kNM5_JzHg",
+    "thread:PRRT_kwDOSF9kNM5_JzHk"
+  ],
+  "fetched_at": "2026-08-25T08:44:20.942Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: skill design — hub-satellite + no dynamic commands + plugin/hook packaging + OpenSpec catch-up (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T00:22:36Z",
+  "head_ref": "free-memory/skills-as-carved-sentences-knowledge-in-docs-datavault-pattern-aaron-2026-05-03"
+}

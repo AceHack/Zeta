@@ -1,0 +1,27 @@
+{
+  "pr_number": 211,
+  "archive_path": "docs/history/pr-reviews/PR-211-aurora-absorb-amara-s-zset-semantics-operator-algebra-report-2026-04-23-ferry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6602UX",
+    "comment:PRRC_kwDOSF9kNM6603N7",
+    "comment:PRRC_kwDOSF9kNM6603O7",
+    "comment:PRRC_kwDOSF9kNM6603OX",
+    "comment:PRRC_kwDOSF9kNM6603On",
+    "comment:PRRC_kwDOSF9kNM6603PM",
+    "comment:PRRC_kwDOSF9kNM6603Pf",
+    "thread:PRRT_kwDOSF9kNM59P7aH",
+    "thread:PRRT_kwDOSF9kNM59P8D9",
+    "thread:PRRT_kwDOSF9kNM59P8E6",
+    "thread:PRRT_kwDOSF9kNM59P8ER",
+    "thread:PRRT_kwDOSF9kNM59P8EX",
+    "thread:PRRT_kwDOSF9kNM59P8Er",
+    "thread:PRRT_kwDOSF9kNM59P8FE"
+  ],
+  "fetched_at": "2026-08-25T08:01:09.185Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "aurora: absorb Amara's ZSet semantics + operator algebra report (2026-04-23 ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T22:59:15Z",
+  "head_ref": "aurora/amara-zset-semantics-operator-algebra-absorb"
+}

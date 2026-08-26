@@ -1,0 +1,21 @@
+{
+  "pr_number": 443,
+  "archive_path": "docs/history/pr-reviews/PR-443-hygiene-268-pr-preservation-drain-log-for-206-semiring-basics-craft-module.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QVOX",
+    "comment:PRRC_kwDOSF9kNM67QVg1",
+    "comment:PRRC_kwDOSF9kNM67QVg_",
+    "comment:PRRC_kwDOSF9kNM67QVhE",
+    "thread:PRRT_kwDOSF9kNM59kXKs",
+    "thread:PRRT_kwDOSF9kNM59kXZ5",
+    "thread:PRRT_kwDOSF9kNM59kXZ_",
+    "thread:PRRT_kwDOSF9kNM59kXaE"
+  ],
+  "fetched_at": "2026-08-25T08:10:32.727Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #206 (semiring-basics craft module)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T06:59:55Z",
+  "head_ref": "drain/206-pr-preservation-log"
+}

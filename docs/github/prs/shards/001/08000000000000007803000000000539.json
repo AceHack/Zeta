@@ -1,0 +1,12 @@
+{
+  "pr_number": 1337,
+  "archive_path": "docs/history/pr-reviews/PR-1337-hygiene-tick-history-2026-05-03t07-05z-razor-discipline-carved-sentence-promotio.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:47:39.770Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T07:05Z — razor-discipline carved-sentence promotion to CLAUDE.md (#1336 layer-3 landing)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:07:51Z",
+  "head_ref": "hygiene/tick-2026-05-03-0705Z-razor-discipline-claude-md-promotion"
+}

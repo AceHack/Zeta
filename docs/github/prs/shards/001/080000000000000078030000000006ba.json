@@ -1,0 +1,15 @@
+{
+  "pr_number": 1722,
+  "archive_path": "docs/history/pr-reviews/PR-1722-feat-review-agents-cursor-add-riven-as-adversarial-truth-axis-reviewer-3rd-cron-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-iF8j",
+    "thread:PRRT_kwDOSF9kNM6AFetV"
+  ],
+  "fetched_at": "2026-08-25T09:03:03.835Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(review-agents, cursor): add Riven as adversarial-truth-axis reviewer + 3rd cron ownership",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T18:22:12Z",
+  "head_ref": "riven/3rd-cron-ownership-and-reviewer-surface"
+}

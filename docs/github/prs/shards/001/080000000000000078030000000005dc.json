@@ -1,0 +1,19 @@
+{
+  "pr_number": 1500,
+  "archive_path": "docs/history/pr-reviews/PR-1500-ci-role-ref-lint-wire-check-role-ref-on-current-state-surfaces-sh-into-ci-as-sof.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69u5m9",
+    "comment:PRRC_kwDOSF9kNM69u7Vv",
+    "comment:PRRC_kwDOSF9kNM69u7Wd",
+    "thread:PRRT_kwDOSF9kNM5_apQI",
+    "thread:PRRT_kwDOSF9kNM5_aqg5",
+    "thread:PRRT_kwDOSF9kNM5_aqhd"
+  ],
+  "fetched_at": "2026-08-25T08:54:06.490Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(role-ref-lint): wire check-role-ref-on-current-state-surfaces.sh into CI as soft-launch lint (B-0162)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T17:17:08Z",
+  "head_ref": "feature/role-ref-current-state-surfaces-lint-ci-wire-b-0162-2026-05-04"
+}

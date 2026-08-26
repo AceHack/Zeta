@@ -1,0 +1,19 @@
+{
+  "pr_number": 979,
+  "archive_path": "docs/history/pr-reviews/PR-979-backlog-b-0123-memory-carved-sentence-two-same-tick-landings-of-non-durable-arti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69B-_3",
+    "comment:PRRC_kwDOSF9kNM69B-_j",
+    "comment:PRRC_kwDOSF9kNM69B_AI",
+    "thread:PRRT_kwDOSF9kNM5-4za5",
+    "thread:PRRT_kwDOSF9kNM5-4zbI",
+    "thread:PRRT_kwDOSF9kNM5-4zbV"
+  ],
+  "fetched_at": "2026-08-25T08:32:56.125Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0123) + memory(carved-sentence): two same-tick landings of non-durable artifacts (2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:46:43Z",
+  "head_ref": "backlog/B-0123-stacked-pr-create-tooling-gh-fallback-aaron-2026-04-30"
+}

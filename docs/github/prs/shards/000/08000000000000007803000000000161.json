@@ -1,0 +1,25 @@
+{
+  "pr_number": 353,
+  "archive_path": "docs/history/pr-reviews/PR-353-docs-backlog-md-split-design-phase-0-aaron-otto-181-3rd-ask-pr-213-hot-file-dete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66-9u5",
+    "comment:PRRC_kwDOSF9kNM66-9vO",
+    "comment:PRRC_kwDOSF9kNM66-9vZ",
+    "comment:PRRC_kwDOSF9kNM66-9vs",
+    "comment:PRRC_kwDOSF9kNM66-9wB",
+    "comment:PRRC_kwDOSF9kNM66-9wW",
+    "thread:PRRT_kwDOSF9kNM59XZ42",
+    "thread:PRRT_kwDOSF9kNM59XZ4B",
+    "thread:PRRT_kwDOSF9kNM59XZ4S",
+    "thread:PRRT_kwDOSF9kNM59XZ4c",
+    "thread:PRRT_kwDOSF9kNM59XZ4p",
+    "thread:PRRT_kwDOSF9kNM59XZ5F"
+  ],
+  "fetched_at": "2026-08-25T08:06:14.245Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: BACKLOG.md split design — Phase 0 (Aaron Otto-181, 3rd ask; PR #213 hot-file detector referenced)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T10:24:02Z",
+  "head_ref": "docs/backlog-split-design-otto-181"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 182,
+  "archive_path": "docs/history/pr-reviews/PR-182-nsa-test-history-nsa-003-persona-roster-test-otto-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66wql8",
+    "comment:PRRC_kwDOSF9kNM66wtCx",
+    "comment:PRRC_kwDOSF9kNM66wtDI",
+    "comment:PRRC_kwDOSF9kNM66wtDb",
+    "comment:PRRC_kwDOSF9kNM67EZc_",
+    "comment:PRRC_kwDOSF9kNM67EZru",
+    "comment:PRRC_kwDOSF9kNM67EaBk",
+    "comment:PRRC_kwDOSF9kNM67Eanx",
+    "thread:PRRT_kwDOSF9kNM59M5pu",
+    "thread:PRRT_kwDOSF9kNM59M7f8",
+    "thread:PRRT_kwDOSF9kNM59M7gL",
+    "thread:PRRT_kwDOSF9kNM59M7ga"
+  ],
+  "fetched_at": "2026-08-25T07:59:11.540Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "nsa-test-history: NSA-003 — persona roster test (Otto PASS)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:53:57Z",
+  "head_ref": "hygiene/nsa-003-cadenced-test"
+}

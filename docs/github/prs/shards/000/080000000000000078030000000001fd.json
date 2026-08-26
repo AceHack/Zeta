@@ -1,0 +1,29 @@
+{
+  "pr_number": 509,
+  "archive_path": "docs/history/pr-reviews/PR-509-substrate-otto-321-force-push-rule-clarification-edge-runner-judgment-for-clear-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67USCv",
+    "comment:PRRC_kwDOSF9kNM67USRi",
+    "comment:PRRC_kwDOSF9kNM67USRs",
+    "comment:PRRC_kwDOSF9kNM67USRt",
+    "comment:PRRC_kwDOSF9kNM67UV7n",
+    "comment:PRRC_kwDOSF9kNM67UWAZ",
+    "comment:PRRC_kwDOSF9kNM67UYp-",
+    "comment:PRRC_kwDOSF9kNM67UYqC",
+    "thread:PRRT_kwDOSF9kNM59nh03",
+    "thread:PRRT_kwDOSF9kNM59nh04",
+    "thread:PRRT_kwDOSF9kNM59nh0w",
+    "thread:PRRT_kwDOSF9kNM59nhof",
+    "thread:PRRT_kwDOSF9kNM59nk3o",
+    "thread:PRRT_kwDOSF9kNM59nkz-",
+    "thread:PRRT_kwDOSF9kNM59nnCr",
+    "thread:PRRT_kwDOSF9kNM59nnCu"
+  ],
+  "fetched_at": "2026-08-25T08:13:58.350Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-321): force-push rule clarification (Edge runner judgment for clear-rightness cases)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T22:45:58Z",
+  "head_ref": "substrate/otto-321-force-push-rule-clarification"
+}

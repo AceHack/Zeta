@@ -1,0 +1,21 @@
+{
+  "pr_number": 1672,
+  "archive_path": "docs/history/pr-reviews/PR-1672-research-architecture-fourteenth-otto-mirror-no-1984-junk-three-layer-governance.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-JBC_",
+    "comment:PRRC_kwDOSF9kNM6-JEJh",
+    "comment:PRRC_kwDOSF9kNM6-JEK3",
+    "comment:PRRC_kwDOSF9kNM6-JEKa",
+    "thread:PRRT_kwDOSF9kNM5_t9mY",
+    "thread:PRRT_kwDOSF9kNM5_t_2D",
+    "thread:PRRT_kwDOSF9kNM5_t_2v",
+    "thread:PRRT_kwDOSF9kNM5_t_3C"
+  ],
+  "fetched_at": "2026-08-25T09:01:14.568Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): FOURTEENTH -- Otto mirror no 1984 junk + three-layer governance + runtime-coherence-via-English + verifications + cadence-daily (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T16:41:08Z",
+  "head_ref": "research/claudeai-otto-mirror-no-1984-junk-three-layer-governance-runtime-coherence-english-cadence-daily-aaron-forwarded-2026-05-05"
+}

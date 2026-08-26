@@ -1,0 +1,21 @@
+{
+  "pr_number": 723,
+  "archive_path": "docs/history/pr-reviews/PR-723-docs-glossary-candidate-count-goodhart-entry-batched-minimal-tick-row-durable-ho.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM688Zme",
+    "comment:PRRC_kwDOSF9kNM688ZnN",
+    "comment:PRRC_kwDOSF9kNM688Znr",
+    "comment:PRRC_kwDOSF9kNM68Pmzx",
+    "thread:PRRT_kwDOSF9kNM5-0r-K",
+    "thread:PRRT_kwDOSF9kNM5-0r-v",
+    "thread:PRRT_kwDOSF9kNM5-0r_G",
+    "thread:PRRT_kwDOSF9kNM5-TsPn"
+  ],
+  "fetched_at": "2026-08-25T08:22:42.460Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(GLOSSARY): Candidate-count Goodhart entry + batched minimal tick row (durable-home for already-named rule)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T18:10:16Z",
+  "head_ref": "docs/glossary-candidate-count-goodhart-plus-minimal-tick-row"
+}

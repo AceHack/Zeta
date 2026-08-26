@@ -1,0 +1,19 @@
+{
+  "pr_number": 1907,
+  "archive_path": "docs/history/pr-reviews/PR-1907-fix-spec-reconcile-stale-open-question-refs-in-wallet-v0-spec-b-0062.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-7StV",
+    "comment:PRRC_kwDOSF9kNM6-7U8-",
+    "comment:PRRC_kwDOSF9kNM6-7U8P",
+    "thread:PRRT_kwDOSF9kNM6AYi3w",
+    "thread:PRRT_kwDOSF9kNM6AYkex",
+    "thread:PRRT_kwDOSF9kNM6AYkfS"
+  ],
+  "fetched_at": "2026-08-25T09:07:15.327Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(spec): reconcile stale open-question refs in wallet v0 spec (B-0062)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T16:54:09Z",
+  "head_ref": "otto/b0062-resolve-open-questions"
+}

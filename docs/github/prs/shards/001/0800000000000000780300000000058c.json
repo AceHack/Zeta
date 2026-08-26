@@ -1,0 +1,19 @@
+{
+  "pr_number": 1420,
+  "archive_path": "docs/history/pr-reviews/PR-1420-feat-c3-partial-pn-counter-semilattice-property-tests-3-of-15.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cVqc",
+    "comment:PRRC_kwDOSF9kNM69cVqf",
+    "comment:PRRC_kwDOSF9kNM69cVqi",
+    "thread:PRRT_kwDOSF9kNM5_MjdF",
+    "thread:PRRT_kwDOSF9kNM5_MjdI",
+    "thread:PRRT_kwDOSF9kNM5_MjdK"
+  ],
+  "fetched_at": "2026-08-25T08:50:55.461Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(C3 partial): PN-Counter semilattice property tests (3 of 15)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:23:48Z",
+  "head_ref": "otto/c3-pn-counter-semilattice-properties-2026-05-03"
+}

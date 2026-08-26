@@ -1,0 +1,15 @@
+{
+  "pr_number": 1757,
+  "archive_path": "docs/history/pr-reviews/PR-1757-research-riven-genesis-block-superfluid-isolation-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-pNRf",
+    "thread:PRRT_kwDOSF9kNM6ALFTC"
+  ],
+  "fetched_at": "2026-08-25T09:04:31.559Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Riven Genesis block + Superfluid isolation VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T01:41:40Z",
+  "head_ref": "research/genesis-block-and-riven-verbatim"
+}

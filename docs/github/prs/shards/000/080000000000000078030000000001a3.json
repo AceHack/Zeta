@@ -1,0 +1,21 @@
+{
+  "pr_number": 419,
+  "archive_path": "docs/history/pr-reviews/PR-419-skill-counterweight-audit-phase-2-skill-md-wrapping-the-counterweight-audit-tool.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PGwT",
+    "comment:PRRC_kwDOSF9kNM67PGwh",
+    "comment:PRRC_kwDOSF9kNM67PGwo",
+    "comment:PRRC_kwDOSF9kNM67PGwy",
+    "thread:PRRT_kwDOSF9kNM59jbV2",
+    "thread:PRRT_kwDOSF9kNM59jbV_",
+    "thread:PRRT_kwDOSF9kNM59jbWD",
+    "thread:PRRT_kwDOSF9kNM59jbWH"
+  ],
+  "fetched_at": "2026-08-25T08:09:29.065Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "skill(counterweight-audit): Phase 2 — SKILL.md wrapping the counterweight-audit tool (Otto-278, task #269)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:21:34Z",
+  "head_ref": "skill/counterweight-audit"
+}

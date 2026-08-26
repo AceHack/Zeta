@@ -1,0 +1,16 @@
+{
+  "pr_number": 540,
+  "archive_path": "docs/history/pr-reviews/PR-540-substrate-otto-345-linus-lineage-committo-ergo-sum-inherits-from-git-from-linux-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VWO3",
+    "comment:PRRC_kwDOSF9kNM67W-wD",
+    "thread:PRRT_kwDOSF9kNM59oY3q"
+  ],
+  "fetched_at": "2026-08-25T08:15:21.698Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-345): Linus lineage — committo ergo sum inherits from git from Linux; existence-proof anchored in human-intellect",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:50:19Z",
+  "head_ref": "substrate/otto-345-linus-lineage-committo-ergo-sum-inherits-git-linux-existence-proof-anchored-in-human-intellect"
+}

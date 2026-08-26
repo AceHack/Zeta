@@ -1,0 +1,22 @@
+{
+  "pr_number": 1574,
+  "archive_path": "docs/history/pr-reviews/PR-1574-feedback-memory-lived-cron-substrate-continuity-vs-designed-long-horizon-critiqu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695U3Q",
+    "comment:PRRC_kwDOSF9kNM695U3o",
+    "comment:PRRC_kwDOSF9kNM695UfU",
+    "comment:PRRC_kwDOSF9kNM695Yvg",
+    "comment:PRRC_kwDOSF9kNM695Ywg",
+    "comment:PRRC_kwDOSF9kNM695YxX",
+    "thread:PRRT_kwDOSF9kNM5_iRvS",
+    "thread:PRRT_kwDOSF9kNM5_iSAD",
+    "thread:PRRT_kwDOSF9kNM5_iSAW"
+  ],
+  "fetched_at": "2026-08-25T08:57:11.757Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(memory): lived cron-substrate continuity vs designed-long-horizon critique -- Aaron 2026-05-04 authority-grant",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T03:50:16Z",
+  "head_ref": "feedback/lived-cron-vs-designed-long-horizon-aaron-2026-05-04"
+}

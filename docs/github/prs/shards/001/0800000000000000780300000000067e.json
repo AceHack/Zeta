@@ -1,0 +1,21 @@
+{
+  "pr_number": 1662,
+  "archive_path": "docs/history/pr-reviews/PR-1662-memory-feedback-ombuds-bridges-legal-via-english-executable-dsl-contracts-aaron-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-GZ5H",
+    "comment:PRRC_kwDOSF9kNM6-GZ6T",
+    "comment:PRRC_kwDOSF9kNM6-GZ7A",
+    "comment:PRRC_kwDOSF9kNM6-GZ7d",
+    "thread:PRRT_kwDOSF9kNM5_sDZe",
+    "thread:PRRT_kwDOSF9kNM5_sDaU",
+    "thread:PRRT_kwDOSF9kNM5_sDay",
+    "thread:PRRT_kwDOSF9kNM5_sDbG"
+  ],
+  "fetched_at": "2026-08-25T09:00:46.004Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): Ombuds bridges legal via English-executable DSL/contracts (Aaron 2026-05-05; recent Claude.ai extension recovered from split-brain)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:43:22Z",
+  "head_ref": "memory/ombuds-bridges-legal-english-executable-dsl-contracts-aaron-2026-05-05"
+}

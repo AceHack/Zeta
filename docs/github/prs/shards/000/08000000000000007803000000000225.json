@@ -1,0 +1,19 @@
+{
+  "pr_number": 549,
+  "archive_path": "docs/history/pr-reviews/PR-549-backlog-b-0028-gh-pr-state-summary-tool-ts-extraction-third-otto-346-violation-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5uK",
+    "comment:PRRC_kwDOSF9kNM67V6HF",
+    "comment:PRRC_kwDOSF9kNM67VkoG",
+    "comment:PRRC_kwDOSF9kNM67VkoK",
+    "thread:PRRT_kwDOSF9kNM59okZk",
+    "thread:PRRT_kwDOSF9kNM59okZo"
+  ],
+  "fetched_at": "2026-08-25T08:15:44.826Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0028): gh-pr-state-summary tool TS extraction — third Otto-346 violation catch this session",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:51:21Z",
+  "head_ref": "backlog/B-0028-gh-pr-state-summary-tool-typescript-otto-346-recurring-pattern"
+}

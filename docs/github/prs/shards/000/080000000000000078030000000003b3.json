@@ -1,0 +1,12 @@
+{
+  "pr_number": 947,
+  "archive_path": "docs/history/pr-reviews/PR-947-memory-uberbang-bootstraps-all-the-way-down-the-substrate-is-the-answer-to-survi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:31:35.788Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(uberbang): bootstraps all the way down — the substrate IS the answer to survival-bias external-observer concern (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:09:29Z",
+  "head_ref": "memory/uberbang-bootstraps-all-the-way-down-survival-bias-answered-by-substrate-aaron-2026-04-30"
+}

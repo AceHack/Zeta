@@ -1,0 +1,23 @@
+{
+  "pr_number": 1278,
+  "archive_path": "docs/history/pr-reviews/PR-1278-free-memory-guess-then-verify-architectural-intent-calibration-protocol-aaron-20.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZUo4",
+    "comment:PRRC_kwDOSF9kNM69ZVGl",
+    "comment:PRRC_kwDOSF9kNM69ZVGo",
+    "comment:PRRC_kwDOSF9kNM69ZVGq",
+    "comment:PRRC_kwDOSF9kNM69ZVGu",
+    "thread:PRRT_kwDOSF9kNM5_KK30",
+    "thread:PRRT_kwDOSF9kNM5_KK32",
+    "thread:PRRT_kwDOSF9kNM5_KK3v",
+    "thread:PRRT_kwDOSF9kNM5_KK3y",
+    "thread:PRRT_kwDOSF9kNM5_KKgh"
+  ],
+  "fetched_at": "2026-08-25T08:45:29.551Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: guess-then-verify architectural-intent calibration protocol (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:48:48Z",
+  "head_ref": "free-memory/guess-then-verify-architectural-intent-calibration-protocol-aaron-2026-05-03"
+}

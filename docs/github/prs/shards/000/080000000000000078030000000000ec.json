@@ -1,0 +1,19 @@
+{
+  "pr_number": 236,
+  "archive_path": "docs/history/pr-reviews/PR-236-backlog-codex-first-class-row-otto-78-refinement-parallel-design-primary-switch-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6625p-",
+    "comment:PRRC_kwDOSF9kNM6625pg",
+    "comment:PRRC_kwDOSF9kNM6625px",
+    "thread:PRRT_kwDOSF9kNM59Rad5",
+    "thread:PRRT_kwDOSF9kNM59RaeB",
+    "thread:PRRT_kwDOSF9kNM59RaeK"
+  ],
+  "fetched_at": "2026-08-25T08:02:19.522Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Codex-first-class row — Otto-78 refinement (parallel-design + primary-switch + symmetric-parity)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T01:32:55Z",
+  "head_ref": "backlog/codex-parallel-design-primary-switch-harness-parity"
+}

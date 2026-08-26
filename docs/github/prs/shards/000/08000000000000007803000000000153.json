@@ -1,0 +1,29 @@
+{
+  "pr_number": 339,
+  "archive_path": "docs/history/pr-reviews/PR-339-docs-test-classification-taxonomy-amara-18th-ferry-c-operationalized.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM669Mot",
+    "comment:PRRC_kwDOSF9kNM669Mp9",
+    "comment:PRRC_kwDOSF9kNM669MpS",
+    "comment:PRRC_kwDOSF9kNM669Mpk",
+    "comment:PRRC_kwDOSF9kNM669MqL",
+    "comment:PRRC_kwDOSF9kNM669MqX",
+    "comment:PRRC_kwDOSF9kNM669Mqr",
+    "comment:PRRC_kwDOSF9kNM669MrD",
+    "thread:PRRT_kwDOSF9kNM59WGQF",
+    "thread:PRRT_kwDOSF9kNM59WGQe",
+    "thread:PRRT_kwDOSF9kNM59WGQt",
+    "thread:PRRT_kwDOSF9kNM59WGR0",
+    "thread:PRRT_kwDOSF9kNM59WGRD",
+    "thread:PRRT_kwDOSF9kNM59WGRO",
+    "thread:PRRT_kwDOSF9kNM59WGRY",
+    "thread:PRRT_kwDOSF9kNM59WGRl"
+  ],
+  "fetched_at": "2026-08-25T08:05:37.470Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: test-classification taxonomy — Amara 18th-ferry §C operationalized",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T09:02:05Z",
+  "head_ref": "docs/test-classification-amara-18th-ferry"
+}

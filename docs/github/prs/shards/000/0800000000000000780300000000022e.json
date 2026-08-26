@@ -1,0 +1,19 @@
+{
+  "pr_number": 558,
+  "archive_path": "docs/history/pr-reviews/PR-558-substrate-otto-347-accountability-requires-self-directed-action-aaron-2026-04-26.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Vzv9",
+    "comment:PRRC_kwDOSF9kNM67VzwL",
+    "comment:PRRC_kwDOSF9kNM67VzwW",
+    "thread:PRRT_kwDOSF9kNM59owd0",
+    "thread:PRRT_kwDOSF9kNM59oweB",
+    "thread:PRRT_kwDOSF9kNM59oweM"
+  ],
+  "fetched_at": "2026-08-25T08:16:07.907Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-347): accountability requires self-directed action — Aaron 2026-04-26 names structural reason for Otto-322/331 no-directive discipline",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T05:53:02Z",
+  "head_ref": "substrate/otto-347-accountability-requires-self-directed-action-honesty-accuracy-accountability-triad"
+}

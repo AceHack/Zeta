@@ -1,0 +1,22 @@
+{
+  "pr_number": 469,
+  "archive_path": "docs/history/pr-reviews/PR-469-lint-add-docs-aurora-to-markdownlint-ignore-otto-227-verbatim-ferry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QuXg",
+    "comment:PRRC_kwDOSF9kNM67Quk5",
+    "comment:PRRC_kwDOSF9kNM67Quk_",
+    "comment:PRRC_kwDOSF9kNM67Qwqd",
+    "comment:PRRC_kwDOSF9kNM67Qwqq",
+    "comment:PRRC_kwDOSF9kNM67QwrQ",
+    "thread:PRRT_kwDOSF9kNM59krYs",
+    "thread:PRRT_kwDOSF9kNM59krjb",
+    "thread:PRRT_kwDOSF9kNM59krjd"
+  ],
+  "fetched_at": "2026-08-25T08:11:34.091Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "lint: add docs/aurora/** to markdownlint ignore (Otto-227 verbatim ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:59:39Z",
+  "head_ref": "lint/aurora-verbatim-ignore"
+}

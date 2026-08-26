@@ -1,0 +1,17 @@
+{
+  "pr_number": 1179,
+  "archive_path": "docs/history/pr-reviews/PR-1179-research-amara-aurora-immune-spec-peer-ai-review-of-aurora-immune-system-math-aa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69R_wd",
+    "comment:PRRC_kwDOSF9kNM69SAP8",
+    "thread:PRRT_kwDOSF9kNM5_El2n",
+    "thread:PRRT_kwDOSF9kNM5_ElfX"
+  ],
+  "fetched_at": "2026-08-25T08:41:09.825Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(amara-aurora-immune-spec): peer-AI review of Aurora Immune-System Math (Aaron-forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:18:48Z",
+  "head_ref": "research/amara-aurora-immune-system-spec-review-aaron-forwarded-2026-05-01"
+}

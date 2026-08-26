@@ -1,0 +1,21 @@
+{
+  "pr_number": 1609,
+  "archive_path": "docs/history/pr-reviews/PR-1609-backlog-p3-b-0200-f-codeact-bridge-engineering-four-candidate-architectures-aaro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69-pY7",
+    "comment:PRRC_kwDOSF9kNM69-plf",
+    "comment:PRRC_kwDOSF9kNM69-pmG",
+    "comment:PRRC_kwDOSF9kNM69-pmb",
+    "thread:PRRT_kwDOSF9kNM5_mO11",
+    "thread:PRRT_kwDOSF9kNM5_mO1K",
+    "thread:PRRT_kwDOSF9kNM5_mO1l",
+    "thread:PRRT_kwDOSF9kNM5_mOrx"
+  ],
+  "fetched_at": "2026-08-25T08:58:38.908Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P3): B-0200 F# <-> CodeAct bridge engineering -- four candidate architectures (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:18:41Z",
+  "head_ref": "backlog/B-0200-fsharp-codeact-bridge-aaron-2026-05-05"
+}

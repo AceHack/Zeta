@@ -1,0 +1,15 @@
+{
+  "pr_number": 781,
+  "archive_path": "docs/history/pr-reviews/PR-781-tick-history-2026-04-29t05-06z-bare-main-multi-ai-synthesis-additions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Ri02",
+    "thread:PRRT_kwDOSF9kNM5-VH7S"
+  ],
+  "fetched_at": "2026-08-25T08:25:10.112Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:06Z — bare-main multi-AI synthesis additions",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T05:13:06Z",
+  "head_ref": "tick-history/2026-04-29-tick-0504Z-shard"
+}

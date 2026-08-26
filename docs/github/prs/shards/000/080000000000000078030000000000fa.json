@@ -1,0 +1,19 @@
+{
+  "pr_number": 250,
+  "archive_path": "docs/history/pr-reviews/PR-250-claude-edit-4-pointer-only-archive-header-requirement-cites-governance-33-aminat.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663atj",
+    "comment:PRRC_kwDOSF9kNM663bji",
+    "comment:PRRC_kwDOSF9kNM663bkD",
+    "thread:PRRT_kwDOSF9kNM59RyqV",
+    "thread:PRRT_kwDOSF9kNM59RzQE",
+    "thread:PRRT_kwDOSF9kNM59RzQc"
+  ],
+  "fetched_at": "2026-08-25T08:02:40.390Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "claude: Edit 4 pointer-only — archive-header requirement cites GOVERNANCE §33 (Aminata-demotion applied)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:18:37Z",
+  "head_ref": "claude/edit-4-pointer-to-section-33"
+}

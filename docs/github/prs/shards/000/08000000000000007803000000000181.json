@@ -1,0 +1,15 @@
+{
+  "pr_number": 385,
+  "archive_path": "docs/history/pr-reviews/PR-385-docs-rule-of-balance-md-primary-doc-for-otto-264.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67LzNY",
+    "thread:PRRT_kwDOSF9kNM59hCCm"
+  ],
+  "fetched_at": "2026-08-25T08:07:52.180Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: RULE-OF-BALANCE.md primary doc for Otto-264",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T22:05:59Z",
+  "head_ref": "docs/rule-of-balance-primary-doc-otto-264"
+}

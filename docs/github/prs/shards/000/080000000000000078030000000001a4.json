@@ -1,0 +1,17 @@
+{
+  "pr_number": 420,
+  "archive_path": "docs/history/pr-reviews/PR-420-drain-418-post-merge-eval-removal-arg-validation-doc-code-alignment-role-ref-swe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PIGX",
+    "comment:PRRC_kwDOSF9kNM67PIGg",
+    "thread:PRRT_kwDOSF9kNM59jcTA",
+    "thread:PRRT_kwDOSF9kNM59jcTE"
+  ],
+  "fetched_at": "2026-08-25T08:09:31.287Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#418 post-merge): eval-removal + arg-validation + doc/code alignment + role-ref sweep",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:25:35Z",
+  "head_ref": "tools/counterweight-audit-drain-fixes"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 587,
+  "archive_path": "docs/history/pr-reviews/PR-587-backlog-b-0006-partial-3-compress-5-more-long-memory-md-entries.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67W7jm",
+    "thread:PRRT_kwDOSF9kNM59pphE"
+  ],
+  "fetched_at": "2026-08-25T08:17:50.509Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0006 partial-3): compress 5 more long MEMORY.md entries",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:37:58Z",
+  "head_ref": "backlog/B-0006-partial-3-memory-md-compression"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 479,
+  "archive_path": "docs/history/pr-reviews/PR-479-fix-audit-comprehensive-hashcode-combine-sweep-splitmix64-refactor-otto-281-foll.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67RtMG",
+    "comment:PRRC_kwDOSF9kNM67RtMM",
+    "comment:PRRC_kwDOSF9kNM67RtMR",
+    "comment:PRRC_kwDOSF9kNM67RtMV",
+    "comment:PRRC_kwDOSF9kNM67RtMf",
+    "comment:PRRC_kwDOSF9kNM67RtMh",
+    "comment:PRRC_kwDOSF9kNM67RtMl",
+    "comment:PRRC_kwDOSF9kNM67RtMr",
+    "thread:PRRT_kwDOSF9kNM59leRE",
+    "thread:PRRT_kwDOSF9kNM59leRI",
+    "thread:PRRT_kwDOSF9kNM59leRM",
+    "thread:PRRT_kwDOSF9kNM59leRO",
+    "thread:PRRT_kwDOSF9kNM59leRX",
+    "thread:PRRT_kwDOSF9kNM59leRZ",
+    "thread:PRRT_kwDOSF9kNM59leRc",
+    "thread:PRRT_kwDOSF9kNM59leRg"
+  ],
+  "fetched_at": "2026-08-25T08:11:59.212Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(audit): comprehensive HashCode.Combine sweep + SplitMix64 refactor (Otto-281 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T13:13:06Z",
+  "head_ref": "fix/hashcode-combine-audit-otto-281-followup"
+}

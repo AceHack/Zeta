@@ -1,0 +1,19 @@
+{
+  "pr_number": 414,
+  "archive_path": "docs/history/pr-reviews/PR-414-hygiene-268-pr-preservation-drain-log-for-282-14-threads-2-waves.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67O8Qx",
+    "comment:PRRC_kwDOSF9kNM67PDjr",
+    "comment:PRRC_kwDOSF9kNM67PEd4",
+    "comment:PRRC_kwDOSF9kNM67PRnj",
+    "thread:PRRT_kwDOSF9kNM59jT7g",
+    "thread:PRRT_kwDOSF9kNM59jZu8"
+  ],
+  "fetched_at": "2026-08-25T08:09:17.445Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #282 (14 threads, 2 waves)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:47:23Z",
+  "head_ref": "hygiene/pr-preservation-282-drain-log"
+}

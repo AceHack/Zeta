@@ -1,0 +1,17 @@
+{
+  "pr_number": 688,
+  "archive_path": "docs/history/pr-reviews/PR-688-memory-current-aaron-30-typescript-bun-default-discipline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68KsP1",
+    "comment:PRRC_kwDOSF9kNM68KsQd",
+    "thread:PRRT_kwDOSF9kNM5-QHh_",
+    "thread:PRRT_kwDOSF9kNM5-QHhk"
+  ],
+  "fetched_at": "2026-08-25T08:21:25.217Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(CURRENT-aaron §30): TypeScript/Bun default discipline",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:38:18Z",
+  "head_ref": "memory/current-aaron-section-30-typescript-bun-default-2026-04-28"
+}

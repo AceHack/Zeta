@@ -1,0 +1,16 @@
+{
+  "pr_number": 1378,
+  "archive_path": "docs/history/pr-reviews/PR-1378-ci-memory-reference-existence-lint-switch-from-sh-to-ts-via-bun-same-pattern-as-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bIWY",
+    "comment:PRRC_kwDOSF9kNM69bKD5",
+    "thread:PRRT_kwDOSF9kNM5_LmJW"
+  ],
+  "fetched_at": "2026-08-25T08:49:14.116Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(memory-reference-existence-lint): switch from .sh to .ts via bun (same pattern as #1377)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:10:56Z",
+  "head_ref": "ci/memory-reference-existence-lint-bun-ts"
+}

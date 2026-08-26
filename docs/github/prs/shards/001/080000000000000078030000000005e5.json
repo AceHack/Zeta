@@ -1,0 +1,17 @@
+{
+  "pr_number": 1509,
+  "archive_path": "docs/history/pr-reviews/PR-1509-feedback-extension-team-not-idle-vs-orchestrator-not-idle-the-human-maintainer-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69xB0I",
+    "comment:PRRC_kwDOSF9kNM69xBzh",
+    "thread:PRRT_kwDOSF9kNM5_cNQS",
+    "thread:PRRT_kwDOSF9kNM5_cNQw"
+  ],
+  "fetched_at": "2026-08-25T08:54:31.271Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(extension): team-not-idle vs orchestrator-not-idle (the human maintainer 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T18:48:46Z",
+  "head_ref": "feedback/team-vs-orchestrator-not-idle-distinction-aaron-2026-05-04-v2"
+}

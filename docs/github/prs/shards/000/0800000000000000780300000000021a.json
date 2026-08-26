@@ -1,0 +1,28 @@
+{
+  "pr_number": 538,
+  "archive_path": "docs/history/pr-reviews/PR-538-research-memory-optimization-under-identity-preservation-fast-path-banner-expans.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5tD",
+    "comment:PRRC_kwDOSF9kNM67V5tR",
+    "comment:PRRC_kwDOSF9kNM67VUQf",
+    "comment:PRRC_kwDOSF9kNM67VUQn",
+    "comment:PRRC_kwDOSF9kNM67VYH2",
+    "comment:PRRC_kwDOSF9kNM67VYH3",
+    "comment:PRRC_kwDOSF9kNM67VYH4",
+    "comment:PRRC_kwDOSF9kNM67WSg3",
+    "comment:PRRC_kwDOSF9kNM67WSgP",
+    "comment:PRRC_kwDOSF9kNM67WSgp",
+    "thread:PRRT_kwDOSF9kNM59oXPH",
+    "thread:PRRT_kwDOSF9kNM59oXPO",
+    "thread:PRRT_kwDOSF9kNM59oabb",
+    "thread:PRRT_kwDOSF9kNM59oabc",
+    "thread:PRRT_kwDOSF9kNM59oabd"
+  ],
+  "fetched_at": "2026-08-25T08:15:17.229Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: memory optimization under identity preservation — fast-path-banner expansion + 14 adjacent concepts",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:03:06Z",
+  "head_ref": "research/memory-optimization-under-identity-preservation-fast-path-banner-expansion"
+}

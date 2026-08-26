@@ -1,0 +1,19 @@
+{
+  "pr_number": 308,
+  "archive_path": "docs/history/pr-reviews/PR-308-backlog-2-p2-rows-git-native-pr-conversation-preservation-ongoing-memory-sync.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM666fQq",
+    "comment:PRRC_kwDOSF9kNM666fRV",
+    "comment:PRRC_kwDOSF9kNM666fRn",
+    "thread:PRRT_kwDOSF9kNM59UEpH",
+    "thread:PRRT_kwDOSF9kNM59UEpl",
+    "thread:PRRT_kwDOSF9kNM59UEpy"
+  ],
+  "fetched_at": "2026-08-25T08:04:27.035Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: 2 P2 rows — git-native PR-conversation preservation + ongoing memory-sync",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T06:35:06Z",
+  "head_ref": "backlog/git-native-preservation-memory-sync-mechanisms"
+}

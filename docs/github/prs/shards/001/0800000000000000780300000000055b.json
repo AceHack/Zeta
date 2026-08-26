@@ -1,0 +1,17 @@
+{
+  "pr_number": 1371,
+  "archive_path": "docs/history/pr-reviews/PR-1371-tools-hygiene-docs-cleanup-13-zero-ref-sh-siblings-post-install-aaron-fully-conv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69a8WQ",
+    "comment:PRRC_kwDOSF9kNM69a8WT",
+    "thread:PRRT_kwDOSF9kNM5_LcpM",
+    "thread:PRRT_kwDOSF9kNM5_LcpO"
+  ],
+  "fetched_at": "2026-08-25T08:48:56.910Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "tools(hygiene)+docs: cleanup 13 zero-ref .sh siblings (post-install; Aaron 'fully converted')",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T10:13:50Z",
+  "head_ref": "tools/hygiene-sh-cleanup-13-zero-ref-pairs"
+}

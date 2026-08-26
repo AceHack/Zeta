@@ -1,0 +1,12 @@
+{
+  "pr_number": 945,
+  "archive_path": "docs/history/pr-reviews/PR-945-research-review-8-preserve-alexa-second-review-verbatim-audit-trail-value-aaron-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:31:30.920Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(review-8): preserve Alexa second review verbatim — audit-trail value (Aaron-channel rule)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T19:52:17Z",
+  "head_ref": "research/preserve-alexa-second-review-2026-04-30"
+}

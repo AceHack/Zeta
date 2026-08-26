@@ -1,0 +1,23 @@
+{
+  "pr_number": 761,
+  "archive_path": "docs/history/pr-reviews/PR-761-chore-gitattributes-suppress-diffs-on-lost-substrate-artifacts-multi-ai-synthesi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Q7N0",
+    "comment:PRRC_kwDOSF9kNM68QsW2",
+    "comment:PRRC_kwDOSF9kNM68QsWh",
+    "comment:PRRC_kwDOSF9kNM68RCFA",
+    "comment:PRRC_kwDOSF9kNM68RCFR",
+    "thread:PRRT_kwDOSF9kNM5-Uf42",
+    "thread:PRRT_kwDOSF9kNM5-Uf5I",
+    "thread:PRRT_kwDOSF9kNM5-Uq8K",
+    "thread:PRRT_kwDOSF9kNM5-UwBd",
+    "thread:PRRT_kwDOSF9kNM5-UwBt"
+  ],
+  "fetched_at": "2026-08-25T08:24:16.510Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(.gitattributes): suppress diffs on lost-substrate/artifacts/** (multi-AI synthesis 1/6)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:31:51Z",
+  "head_ref": "chore/gitattributes-artifact-diff-suppression-2026-04-29"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 975,
+  "archive_path": "docs/history/pr-reviews/PR-975-tooling-hygiene-check-tick-history-shard-schema-sh-catch-col1-drift-at-write-tim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69B161",
+    "comment:PRRC_kwDOSF9kNM69B167",
+    "comment:PRRC_kwDOSF9kNM69B2c2",
+    "comment:PRRC_kwDOSF9kNM69B2c6",
+    "comment:PRRC_kwDOSF9kNM69B2cq",
+    "comment:PRRC_kwDOSF9kNM69B2dH",
+    "comment:PRRC_kwDOSF9kNM69B2dT",
+    "thread:PRRT_kwDOSF9kNM5-4sr3",
+    "thread:PRRT_kwDOSF9kNM5-4srz",
+    "thread:PRRT_kwDOSF9kNM5-4tF5",
+    "thread:PRRT_kwDOSF9kNM5-4tFb",
+    "thread:PRRT_kwDOSF9kNM5-4tFh",
+    "thread:PRRT_kwDOSF9kNM5-4tFm",
+    "thread:PRRT_kwDOSF9kNM5-4tFu"
+  ],
+  "fetched_at": "2026-08-25T08:32:46.065Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tooling(hygiene): check-tick-history-shard-schema.sh — catch col1 drift at write-time",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:33:23Z",
+  "head_ref": "tooling/check-tick-history-shard-schema-prevent-col1-drift-2026-04-30"
+}

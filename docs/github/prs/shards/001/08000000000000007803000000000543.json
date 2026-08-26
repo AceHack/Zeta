@@ -1,0 +1,19 @@
+{
+  "pr_number": 1347,
+  "archive_path": "docs/history/pr-reviews/PR-1347-backlog-b-0141-brittle-pointer-auto-rewriter-section-number-to-anchor-link-stabl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aU3E",
+    "comment:PRRC_kwDOSF9kNM69aU3O",
+    "comment:PRRC_kwDOSF9kNM69aVh4",
+    "comment:PRRC_kwDOSF9kNM69aVhr",
+    "thread:PRRT_kwDOSF9kNM5_K9hm",
+    "thread:PRRT_kwDOSF9kNM5_K9hw"
+  ],
+  "fetched_at": "2026-08-25T08:48:05.404Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0141): brittle-pointer auto-rewriter — section-number to anchor-link / stable-ID (Aaron 2026-05-01; ID reserved 2 days ago, never filed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:40:30Z",
+  "head_ref": "backlog/B-0141-brittle-pointer-anchor-link-auto-rewriter-aaron-2026-05-01"
+}

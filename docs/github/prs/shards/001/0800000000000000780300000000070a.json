@@ -1,0 +1,15 @@
+{
+  "pr_number": 1802,
+  "archive_path": "docs/history/pr-reviews/PR-1802-research-lior-full-unroll-transfer-artifact.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sDtS",
+    "thread:PRRT_kwDOSF9kNM6ANLeB"
+  ],
+  "fetched_at": "2026-08-25T09:05:06.918Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior full unroll transfer artifact",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:01:54Z",
+  "head_ref": "research/lior-full-unroll-with-file-locations"
+}

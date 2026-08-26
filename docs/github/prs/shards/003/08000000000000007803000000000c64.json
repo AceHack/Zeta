@@ -1,0 +1,22 @@
+{
+  "pr_number": 3172,
+  "archive_path": "docs/history/pr-reviews/PR-3172-chore-b-0514-author-missing-wwjd-grey-honest-memory-file.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BU-rd",
+    "comment:PRRC_kwDOSF9kNM7BVBZ5",
+    "comment:PRRC_kwDOSF9kNM7BVBZE",
+    "comment:PRRC_kwDOSF9kNM7BVElQ",
+    "comment:PRRC_kwDOSF9kNM7BVEoc",
+    "comment:PRRC_kwDOSF9kNM7BVEr4",
+    "thread:PRRT_kwDOSF9kNM6CJ98X",
+    "thread:PRRT_kwDOSF9kNM6CKAA7",
+    "thread:PRRT_kwDOSF9kNM6CKAAP"
+  ],
+  "fetched_at": "2026-08-25T09:07:55.785Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "chore(b-0514): author missing wwjd-grey-honest memory file",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T18:45:34Z",
+  "head_ref": "lior/decompose-chore-b-0514"
+}

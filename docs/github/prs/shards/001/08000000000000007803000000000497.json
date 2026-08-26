@@ -1,0 +1,25 @@
+{
+  "pr_number": 1175,
+  "archive_path": "docs/history/pr-reviews/PR-1175-research-karpathy-verifiability-anchor-beacon-external-anchor-aaron-framing-2026.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Rhb4",
+    "comment:PRRC_kwDOSF9kNM69Rhb8",
+    "comment:PRRC_kwDOSF9kNM69Rih_",
+    "comment:PRRC_kwDOSF9kNM69Rihl",
+    "comment:PRRC_kwDOSF9kNM69RiiQ",
+    "comment:PRRC_kwDOSF9kNM69Riil",
+    "thread:PRRT_kwDOSF9kNM5_EO7L",
+    "thread:PRRT_kwDOSF9kNM5_EO7P",
+    "thread:PRRT_kwDOSF9kNM5_EPuc",
+    "thread:PRRT_kwDOSF9kNM5_EPuy",
+    "thread:PRRT_kwDOSF9kNM5_EPvB",
+    "thread:PRRT_kwDOSF9kNM5_EPvS"
+  ],
+  "fetched_at": "2026-08-25T08:40:57.862Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(karpathy-verifiability-anchor): Beacon external anchor + Aaron framing 2026-05-01",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:00:49Z",
+  "head_ref": "research/karpathy-verifiability-anchor-aaron-2026-05-01"
+}

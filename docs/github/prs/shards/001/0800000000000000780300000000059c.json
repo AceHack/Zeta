@@ -1,0 +1,19 @@
+{
+  "pr_number": 1436,
+  "archive_path": "docs/history/pr-reviews/PR-1436-backlog-b-0186-budget-snapshot-cadence-jq-argjson-failure-2026-05-03-diagnosis-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69dGne",
+    "comment:PRRC_kwDOSF9kNM69dGnj",
+    "comment:PRRC_kwDOSF9kNM69dGnm",
+    "thread:PRRT_kwDOSF9kNM5_NJvp",
+    "thread:PRRT_kwDOSF9kNM5_NJvu",
+    "thread:PRRT_kwDOSF9kNM5_NJvw"
+  ],
+  "fetched_at": "2026-08-25T08:51:34.834Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0186): budget-snapshot-cadence jq --argjson failure 2026-05-03 — diagnosis + proposed defensive fix (maintainer-gated)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T17:56:47Z",
+  "head_ref": "backlog/B-budget-snapshot-jq-argjson-failure-2026-05-03"
+}

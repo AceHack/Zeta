@@ -1,0 +1,17 @@
+{
+  "pr_number": 613,
+  "archive_path": "docs/history/pr-reviews/PR-613-tick-history-consolidated-backfill-13-41z-13-48z-cleanup-608-610.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67X05l",
+    "comment:PRRC_kwDOSF9kNM67X05v",
+    "thread:PRRT_kwDOSF9kNM59qXd7",
+    "thread:PRRT_kwDOSF9kNM59qXdz"
+  ],
+  "fetched_at": "2026-08-25T08:18:32.290Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: consolidated-backfill 13:41Z + 13:48Z (cleanup #608 + #610)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T13:57:31Z",
+  "head_ref": "tick-history/consolidated-13-41-13-48-Z"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1544,
+  "archive_path": "docs/history/pr-reviews/PR-1544-fix-memory-md-drain-final-21-entries-in-401-500-char-tier-b-0006-tier-34-final.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM692nF2",
+    "comment:PRRC_kwDOSF9kNM692nFS",
+    "thread:PRRT_kwDOSF9kNM5_gShs",
+    "thread:PRRT_kwDOSF9kNM5_gSiJ"
+  ],
+  "fetched_at": "2026-08-25T08:55:55.197Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): drain final 21 entries in 401-500 char tier — B-0006 tier-34 final",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T23:50:58Z",
+  "head_ref": "fix/memory-md-tier-34-final-401-500-aaron-2026-05-04"
+}

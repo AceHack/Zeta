@@ -1,0 +1,17 @@
+{
+  "pr_number": 1004,
+  "archive_path": "docs/history/pr-reviews/PR-1004-backlog-b-0125-p1-skip-analyze-csharp-on-docs-only-prs-without-tripping-code-qua.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Dmhe",
+    "comment:PRRC_kwDOSF9kNM69Dmhs",
+    "thread:PRRT_kwDOSF9kNM5-5-QD",
+    "thread:PRRT_kwDOSF9kNM5-5-QP"
+  ],
+  "fetched_at": "2026-08-25T08:33:55.094Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0125): P1 — skip Analyze (csharp) on docs-only PRs without tripping code_quality severity:all",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T02:45:53Z",
+  "head_ref": "backlog/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01"
+}

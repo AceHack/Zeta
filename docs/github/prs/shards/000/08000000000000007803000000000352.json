@@ -1,0 +1,17 @@
+{
+  "pr_number": 850,
+  "archive_path": "docs/history/pr-reviews/PR-850-doctrine-parallel-agents-need-isolated-worktrees-best-practices-evidence-lineage.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68gnga",
+    "comment:PRRC_kwDOSF9kNM68gnhE",
+    "thread:PRRT_kwDOSF9kNM5-gORk",
+    "thread:PRRT_kwDOSF9kNM5-gOSH"
+  ],
+  "fetched_at": "2026-08-25T08:27:35.037Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "doctrine: parallel-agents-need-isolated-worktrees + best-practices-evidence-lineage (Aaron + Amara 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T16:39:35Z",
+  "head_ref": "doctrine-aaron-amara-substrate-2026-04-29"
+}

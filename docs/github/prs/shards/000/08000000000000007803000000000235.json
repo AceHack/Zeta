@@ -1,0 +1,25 @@
+{
+  "pr_number": 565,
+  "archive_path": "docs/history/pr-reviews/PR-565-research-superfluid-ai-github-amara-seventh-refinement-github-environment-fundin.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V_t6",
+    "comment:PRRC_kwDOSF9kNM67V_tv",
+    "comment:PRRC_kwDOSF9kNM67V_uB",
+    "comment:PRRC_kwDOSF9kNM67V_uG",
+    "comment:PRRC_kwDOSF9kNM67V_uL",
+    "comment:PRRC_kwDOSF9kNM67V_uO",
+    "thread:PRRT_kwDOSF9kNM59o5_H",
+    "thread:PRRT_kwDOSF9kNM59o5_Q",
+    "thread:PRRT_kwDOSF9kNM59o5_W",
+    "thread:PRRT_kwDOSF9kNM59o5_a",
+    "thread:PRRT_kwDOSF9kNM59o5_c",
+    "thread:PRRT_kwDOSF9kNM59o5_e"
+  ],
+  "fetched_at": "2026-08-25T08:16:46.195Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(superfluid-ai-github): Amara seventh refinement — GitHub environment + funding survival + Bayesian belief propagation",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T06:45:44Z",
+  "head_ref": "research/superfluid-ai-github-funding-survival-bayesian-amara-seventh-courier-ferry-2026-04-26"
+}

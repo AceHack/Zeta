@@ -1,0 +1,29 @@
+{
+  "pr_number": 703,
+  "archive_path": "docs/history/pr-reviews/PR-703-fix-hygiene-md032-auto-fixer-skips-yaml-frontmatter-don-t-break-composes-with-li.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Oe-2",
+    "comment:PRRC_kwDOSF9kNM68OeMM",
+    "comment:PRRC_kwDOSF9kNM68Oe_I",
+    "comment:PRRC_kwDOSF9kNM68OkWG",
+    "comment:PRRC_kwDOSF9kNM68Or5H",
+    "comment:PRRC_kwDOSF9kNM68OrNg",
+    "comment:PRRC_kwDOSF9kNM68OsVP",
+    "comment:PRRC_kwDOSF9kNM68Ozps",
+    "thread:PRRT_kwDOSF9kNM5-S3KH",
+    "thread:PRRT_kwDOSF9kNM5-S3u1",
+    "thread:PRRT_kwDOSF9kNM5-S3vF",
+    "thread:PRRT_kwDOSF9kNM5-S7qT",
+    "thread:PRRT_kwDOSF9kNM5-TAoL",
+    "thread:PRRT_kwDOSF9kNM5-TBJk",
+    "thread:PRRT_kwDOSF9kNM5-TBe9",
+    "thread:PRRT_kwDOSF9kNM5-TGYA"
+  ],
+  "fetched_at": "2026-08-25T08:21:58.289Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(hygiene): MD032 auto-fixer skips YAML frontmatter (don't break composes_with: lists)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T00:30:45Z",
+  "head_ref": "fix/md032-tool-skip-yaml-frontmatter"
+}

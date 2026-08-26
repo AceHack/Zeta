@@ -1,0 +1,15 @@
+{
+  "pr_number": 369,
+  "archive_path": "docs/history/pr-reviews/PR-369-backlog-p2-git-github-best-practices-audit-trunk-based-github-flow-branch-deploy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67D0zc",
+    "thread:PRRT_kwDOSF9kNM59bFMZ"
+  ],
+  "fetched_at": "2026-08-25T08:07:01.851Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P2 — git/github best-practices audit (trunk-based + GitHub Flow + branch-deploy)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:25:26Z",
+  "head_ref": "backlog/git-github-best-practices-research-otto-233"
+}

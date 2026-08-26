@@ -1,0 +1,15 @@
+{
+  "pr_number": 1084,
+  "archive_path": "docs/history/pr-reviews/PR-1084-hygiene-tick-history-2026-05-01t10-18z-gemini-review-absorption-tick-taxonomy-v2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HhZ9",
+    "thread:PRRT_kwDOSF9kNM5-83vB"
+  ],
+  "fetched_at": "2026-08-25T08:37:15.915Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:18Z — Gemini-review absorption tick (taxonomy-v2 first test)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T22:37:13Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1018Z-gemini-absorption"
+}

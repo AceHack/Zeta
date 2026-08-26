@@ -1,0 +1,12 @@
+{
+  "pr_number": 1351,
+  "archive_path": "docs/history/pr-reviews/PR-1351-hygiene-tick-history-2026-05-03t07-53z-b-0177-audit-pattern-3-of-3-hits-in-30-mi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:48:10.156Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T07:53Z — B-0177 audit pattern: 3-of-3 hits in 30 min (B-0141 + B-0142 + B-0157)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:55:51Z",
+  "head_ref": "hygiene/tick-2026-05-03-0753Z-audit-pattern-3-of-3-hits"
+}

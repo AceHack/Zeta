@@ -1,0 +1,12 @@
+{
+  "pr_number": 1382,
+  "archive_path": "docs/history/pr-reviews/PR-1382-cleanup-tools-hygiene-remove-5-deferred-sh-files-closes-1371-sh-ts-loop.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:22.726Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "cleanup(tools/hygiene): remove 5 deferred .sh files (closes #1371 .sh→.ts loop)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:26:42Z",
+  "head_ref": "cleanup/remove-deferred-sh-files-after-ts-conversion"
+}

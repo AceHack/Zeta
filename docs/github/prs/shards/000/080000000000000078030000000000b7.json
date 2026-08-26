@@ -1,0 +1,21 @@
+{
+  "pr_number": 183,
+  "archive_path": "docs/history/pr-reviews/PR-183-frontier-readiness-gap-5-audit-conflict-resolution-md-both-coupled.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66wwX8",
+    "comment:PRRC_kwDOSF9kNM66wwY2",
+    "comment:PRRC_kwDOSF9kNM66wwYi",
+    "comment:PRRC_kwDOSF9kNM66wwZh",
+    "thread:PRRT_kwDOSF9kNM59M98m",
+    "thread:PRRT_kwDOSF9kNM59M99B",
+    "thread:PRRT_kwDOSF9kNM59M99R",
+    "thread:PRRT_kwDOSF9kNM59M99u"
+  ],
+  "fetched_at": "2026-08-25T07:59:14.750Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "frontier-readiness: gap #5 audit — CONFLICT-RESOLUTION.md (both-coupled)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T19:37:40Z",
+  "head_ref": "frontier-readiness/audit-conflict-resolution-md"
+}

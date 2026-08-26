@@ -1,0 +1,15 @@
+{
+  "pr_number": 682,
+  "archive_path": "docs/history/pr-reviews/PR-682-tick-history-2026-04-28t19-41z-eleven-pr-landing-arc-post-674.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68KERL",
+    "thread:PRRT_kwDOSF9kNM5-Pp66"
+  ],
+  "fetched_at": "2026-08-25T08:21:09.612Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-28T19:41Z eleven-PR landing-arc post-#674",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T19:45:08Z",
+  "head_ref": "tick-history/2026-04-28T19-40-eleven-pr-landing-arc"
+}

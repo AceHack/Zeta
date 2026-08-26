@@ -1,0 +1,17 @@
+{
+  "pr_number": 1402,
+  "archive_path": "docs/history/pr-reviews/PR-1402-docs-math-proofs-assessment-update-outstanding-work-matrix-with-2026-05-03-eod-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bq6d",
+    "comment:PRRC_kwDOSF9kNM69bqgc",
+    "thread:PRRT_kwDOSF9kNM5_MA9q",
+    "thread:PRRT_kwDOSF9kNM5_MBS6"
+  ],
+  "fetched_at": "2026-08-25T08:50:06.105Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(math-proofs-assessment): update outstanding-work matrix with 2026-05-03 EOD progress",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T13:00:29Z",
+  "head_ref": "docs/math-proofs-assessment-progress-update-2026-05-03"
+}

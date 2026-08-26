@@ -1,0 +1,24 @@
+{
+  "pr_number": 168,
+  "archive_path": "docs/history/pr-reviews/PR-168-hygiene-first-backlog-refactor-fire-knowledge-absorb-on-autodream-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66s5Dv",
+    "comment:PRRC_kwDOSF9kNM66s6Ps",
+    "comment:PRRC_kwDOSF9kNM66s6Qf",
+    "comment:PRRC_kwDOSF9kNM66s6RL",
+    "comment:PRRC_kwDOSF9kNM66uHyH",
+    "comment:PRRC_kwDOSF9kNM66uMVJ",
+    "thread:PRRT_kwDOSF9kNM59KHu9",
+    "thread:PRRT_kwDOSF9kNM59KInB",
+    "thread:PRRT_kwDOSF9kNM59KInl",
+    "thread:PRRT_kwDOSF9kNM59KIoL",
+    "thread:PRRT_kwDOSF9kNM59LEOH"
+  ],
+  "fetched_at": "2026-08-25T07:58:19.887Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "hygiene: first backlog-refactor fire (knowledge-absorb on AutoDream row)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:39:16Z",
+  "head_ref": "hygiene/backlog-refactor-fire-01-autodream-cross-refs"
+}

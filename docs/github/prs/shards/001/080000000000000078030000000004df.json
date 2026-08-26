@@ -1,0 +1,17 @@
+{
+  "pr_number": 1247,
+  "archive_path": "docs/history/pr-reviews/PR-1247-free-memory-depends-on-backlog-search-discipline-at-creation-and-at-pickup-2337z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YvNJ",
+    "comment:PRRC_kwDOSF9kNM69YvNP",
+    "thread:PRRT_kwDOSF9kNM5_JtFf",
+    "thread:PRRT_kwDOSF9kNM5_JtFk"
+  ],
+  "fetched_at": "2026-08-25T08:44:03.131Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: depends_on backlog-search discipline (at creation AND at pickup) + 2337Z shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T23:43:05Z",
+  "head_ref": "free-memory/at-pickup-time-prereq-check-discipline-aaron-2026-05-02"
+}

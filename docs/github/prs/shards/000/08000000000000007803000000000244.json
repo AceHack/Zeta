@@ -1,0 +1,16 @@
+{
+  "pr_number": 580,
+  "archive_path": "docs/history/pr-reviews/PR-580-feat-gate-yml-wire-check-archive-header-section33-sh-as-enforcing-ci-lint-b-0036.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Wi9f",
+    "comment:PRRC_kwDOSF9kNM67XGWV",
+    "thread:PRRT_kwDOSF9kNM59pV5B"
+  ],
+  "fetched_at": "2026-08-25T08:17:31.077Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "feat(gate.yml): wire check-archive-header-section33.sh as enforcing CI lint (B-0036 Sub-task 2)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T11:19:43Z",
+  "head_ref": "feat/gate-yml-wire-section33-archive-header-lint-b0036-sub2"
+}

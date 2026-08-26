@@ -1,0 +1,22 @@
+{
+  "pr_number": 523,
+  "archive_path": "docs/history/pr-reviews/PR-523-backlog-b-0021-aurora-econ-foundation-austrian-school-candidate-anti-deception-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67U-D3",
+    "comment:PRRC_kwDOSF9kNM67U-Dr",
+    "comment:PRRC_kwDOSF9kNM67U-Dw",
+    "comment:PRRC_kwDOSF9kNM67V6OA",
+    "comment:PRRC_kwDOSF9kNM67VJIu",
+    "thread:PRRT_kwDOSF9kNM59oFGW",
+    "thread:PRRT_kwDOSF9kNM59oFGb",
+    "thread:PRRT_kwDOSF9kNM59oFGi",
+    "thread:PRRT_kwDOSF9kNM59oOLt"
+  ],
+  "fetched_at": "2026-08-25T08:14:41.651Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0021): Aurora econ-foundation — Austrian-school candidate, anti-deception, investigate-don't-accept",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T06:23:52Z",
+  "head_ref": "backlog/aurora-austrian-school-economic-foundation"
+}

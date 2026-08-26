@@ -1,0 +1,25 @@
+{
+  "pr_number": 1644,
+  "archive_path": "docs/history/pr-reviews/PR-1644-shard-2026-05-05t13-00z-fifth-sixth-post-night-end-forwards-absorbed-1643-in-fli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-DktO",
+    "comment:PRRC_kwDOSF9kNM6-Dm_Q",
+    "comment:PRRC_kwDOSF9kNM6-DnAJ",
+    "comment:PRRC_kwDOSF9kNM6-DnAv",
+    "comment:PRRC_kwDOSF9kNM6-DvqO",
+    "comment:PRRC_kwDOSF9kNM6-DvrQ",
+    "thread:PRRT_kwDOSF9kNM5_p8JE",
+    "thread:PRRT_kwDOSF9kNM5_p93e",
+    "thread:PRRT_kwDOSF9kNM5_p94N",
+    "thread:PRRT_kwDOSF9kNM5_p94u",
+    "thread:PRRT_kwDOSF9kNM5_qEgu",
+    "thread:PRRT_kwDOSF9kNM5_qEhj"
+  ],
+  "fetched_at": "2026-08-25T08:59:58.897Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T13:00Z): FIFTH-SIXTH post-night-end forwards absorbed (#1643 in-flight)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:09:27Z",
+  "head_ref": "shard/2026-05-05T1300Z"
+}

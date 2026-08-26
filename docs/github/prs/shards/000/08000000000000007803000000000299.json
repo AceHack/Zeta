@@ -1,0 +1,25 @@
+{
+  "pr_number": 665,
+  "archive_path": "docs/history/pr-reviews/PR-665-memory-speculation-discipline-primary-source-rule-evidence-based-labeling-curren.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68FNR_",
+    "comment:PRRC_kwDOSF9kNM68FNSG",
+    "comment:PRRC_kwDOSF9kNM68FV-i",
+    "comment:PRRC_kwDOSF9kNM68FV6E",
+    "comment:PRRC_kwDOSF9kNM68GAS3",
+    "comment:PRRC_kwDOSF9kNM68GATC",
+    "comment:PRRC_kwDOSF9kNM68GEkB",
+    "comment:PRRC_kwDOSF9kNM68GEm0",
+    "thread:PRRT_kwDOSF9kNM5-MEkp",
+    "thread:PRRT_kwDOSF9kNM5-MEku",
+    "thread:PRRT_kwDOSF9kNM5-MqDI",
+    "thread:PRRT_kwDOSF9kNM5-MqDS"
+  ],
+  "fetched_at": "2026-08-25T08:20:31.251Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(speculation-discipline): primary-source rule + EVIDENCE-BASED labeling + CURRENT-aaron §§26-28",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T16:26:15Z",
+  "head_ref": "memory/speculation-discipline-substrate-2026-04-28"
+}

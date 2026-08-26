@@ -1,0 +1,17 @@
+{
+  "pr_number": 103,
+  "archive_path": "docs/history/pr-reviews/PR-103-auto-loop-12-tick-history-row-pr-46-refresh-copilot-thread-resolution-persistent.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66FBh8",
+    "comment:PRRC_kwDOSF9kNM66FBij",
+    "thread:PRRT_kwDOSF9kNM58sXdu",
+    "thread:PRRT_kwDOSF9kNM58sXeH"
+  ],
+  "fetched_at": "2026-08-25T07:54:11.955Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "auto-loop-12 tick-history row — PR #46 refresh + Copilot thread resolution + persistent-fork-list correction",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T06:01:21Z",
+  "head_ref": "land-tick-history-autoloop-12-append"
+}

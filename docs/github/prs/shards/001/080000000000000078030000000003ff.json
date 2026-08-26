@@ -1,0 +1,15 @@
+{
+  "pr_number": 1023,
+  "archive_path": "docs/history/pr-reviews/PR-1023-hygiene-tick-history-shard-0440z-1006-follow-up-drain-1010-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Em7T",
+    "thread:PRRT_kwDOSF9kNM5-6swv"
+  ],
+  "fetched_at": "2026-08-25T08:34:49.380Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0440Z — #1006 follow-up drain + #1010 merged",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:45:00Z",
+  "head_ref": "hygiene/tick-history-0440Z-2026-05-01"
+}

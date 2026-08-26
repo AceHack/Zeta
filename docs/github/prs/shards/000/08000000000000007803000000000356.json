@@ -1,0 +1,19 @@
+{
+  "pr_number": 854,
+  "archive_path": "docs/history/pr-reviews/PR-854-factory-meta-otto-362-doctrine-memory-expansion-refreshes-stale-statements-in-sa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68iCZG",
+    "comment:PRRC_kwDOSF9kNM68iEZJ",
+    "comment:PRRC_kwDOSF9kNM68iIT0",
+    "comment:PRRC_kwDOSF9kNM68iIXe",
+    "thread:PRRT_kwDOSF9kNM5-hSBt",
+    "thread:PRRT_kwDOSF9kNM5-hTcM"
+  ],
+  "fetched_at": "2026-08-25T08:27:37.647Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "factory(meta): Otto-362 — doctrine memory expansion refreshes stale statements in SAME edit (2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T17:53:07Z",
+  "head_ref": "otto-362-doctrine-memory-expansion-refresh-stale-2026-04-29"
+}

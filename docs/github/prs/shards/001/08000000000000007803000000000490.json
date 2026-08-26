@@ -1,0 +1,21 @@
+{
+  "pr_number": 1168,
+  "archive_path": "docs/history/pr-reviews/PR-1168-memory-copilot-false-positive-tick-history-schema-diff-line-numbers-misread-otto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Q-W2",
+    "comment:PRRC_kwDOSF9kNM69Q7Ja",
+    "comment:PRRC_kwDOSF9kNM69Q7w3",
+    "comment:PRRC_kwDOSF9kNM69Q7xL",
+    "thread:PRRT_kwDOSF9kNM5_D0fl",
+    "thread:PRRT_kwDOSF9kNM5_DyCz",
+    "thread:PRRT_kwDOSF9kNM5_Dyh6",
+    "thread:PRRT_kwDOSF9kNM5_Dyhn"
+  ],
+  "fetched_at": "2026-08-25T08:40:42.393Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(copilot-false-positive): tick-history schema diff-line-numbers misread (Otto 2026-05-01, 2x-confirmed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T21:52:11Z",
+  "head_ref": "otto/copilot-tick-history-false-positive-class-2026-05-01"
+}

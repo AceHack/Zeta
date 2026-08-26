@@ -1,0 +1,15 @@
+{
+  "pr_number": 1810,
+  "archive_path": "docs/history/pr-reviews/PR-1810-fix-backlog-resolve-duplicate-ids-b-0215-and-b-0216.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sIx9",
+    "thread:PRRT_kwDOSF9kNM6ANPbE"
+  ],
+  "fetched_at": "2026-08-25T09:05:16.690Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(backlog): resolve duplicate IDs B-0215 and B-0216",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:06:17Z",
+  "head_ref": "fix/backlog-duplicate-ids-b0215-b0216"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 635,
+  "archive_path": "docs/history/pr-reviews/PR-635-sync-acehack-lfg-batch-4-appcontext-basedirectory-curl-bash-self-contradiction-f.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67ZAa0",
+    "comment:PRRC_kwDOSF9kNM67ZAd-",
+    "comment:PRRC_kwDOSF9kNM67ZAeJ",
+    "thread:PRRT_kwDOSF9kNM59rTap",
+    "thread:PRRT_kwDOSF9kNM59rTdP",
+    "thread:PRRT_kwDOSF9kNM59rTda"
+  ],
+  "fetched_at": "2026-08-25T08:19:19.602Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg) batch-4: AppContext.BaseDirectory + curl|bash self-contradiction fix (option-c)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T17:55:42Z",
+  "head_ref": "sync/acehack-to-lfg-batch-4-code-fixes-AppContext-curlbash"
+}

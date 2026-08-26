@@ -1,0 +1,31 @@
+{
+  "pr_number": 3183,
+  "archive_path": "docs/history/pr-reviews/PR-3183-chore-b-0367-decompose-first-class-uncertainty-into-4-atomic-slices.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BVQJG",
+    "comment:PRRC_kwDOSF9kNM7BVRam",
+    "comment:PRRC_kwDOSF9kNM7BVRbT",
+    "comment:PRRC_kwDOSF9kNM7BVRbs",
+    "comment:PRRC_kwDOSF9kNM7BVRcB",
+    "comment:PRRC_kwDOSF9kNM7BVRcp",
+    "comment:PRRC_kwDOSF9kNM7BVpmw",
+    "comment:PRRC_kwDOSF9kNM7BVppm",
+    "comment:PRRC_kwDOSF9kNM7BVpso",
+    "comment:PRRC_kwDOSF9kNM7BVpvf",
+    "comment:PRRC_kwDOSF9kNM7BVpyO",
+    "comment:PRRC_kwDOSF9kNM7BWROT",
+    "thread:PRRT_kwDOSF9kNM6CKKvd",
+    "thread:PRRT_kwDOSF9kNM6CKLt8",
+    "thread:PRRT_kwDOSF9kNM6CKLtD",
+    "thread:PRRT_kwDOSF9kNM6CKLto",
+    "thread:PRRT_kwDOSF9kNM6CKLuM",
+    "thread:PRRT_kwDOSF9kNM6CKLuu"
+  ],
+  "fetched_at": "2026-08-25T09:08:00.901Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "chore(b-0367): decompose first-class uncertainty into 4 atomic slices",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:54:26Z",
+  "head_ref": "lior-decompose-367"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 814,
+  "archive_path": "docs/history/pr-reviews/PR-814-tick-history-2026-04-29t06-25z-811-auto-merge-armed-avoid-force-push-trap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:26:22.277Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T06:25Z — #811 auto-merge armed (avoid force-push trap)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T06:32:46Z",
+  "head_ref": "tick-history/2026-04-29-tick-0625Z-shard"
+}

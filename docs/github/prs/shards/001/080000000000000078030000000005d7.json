@@ -1,0 +1,15 @@
+{
+  "pr_number": 1495,
+  "archive_path": "docs/history/pr-reviews/PR-1495-feedback-extension-channel-convention-as-bidirectional-alignment-marker-aaron-20.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69stC1",
+    "thread:PRRT_kwDOSF9kNM5_ZBv9"
+  ],
+  "fetched_at": "2026-08-25T08:53:54.117Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(extension): 🤝 channel-convention as bidirectional-alignment marker (Aaron 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T15:22:51Z",
+  "head_ref": "feedback/aaron-handshake-emoji-channel-convention-secret-society-handshake-aaron-2026-05-04"
+}

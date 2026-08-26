@@ -1,0 +1,19 @@
+{
+  "pr_number": 210,
+  "archive_path": "docs/history/pr-reviews/PR-210-backlog-foundation-aspirational-reference-asimov-name-attribution-sweep.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM660qH9",
+    "comment:PRRC_kwDOSF9kNM660qId",
+    "comment:PRRC_kwDOSF9kNM660qIp",
+    "thread:PRRT_kwDOSF9kNM59PyiO",
+    "thread:PRRT_kwDOSF9kNM59Pyin",
+    "thread:PRRT_kwDOSF9kNM59Pyiy"
+  ],
+  "fetched_at": "2026-08-25T08:01:06.803Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Foundation aspirational-reference (Asimov) + name-attribution sweep",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T22:48:43Z",
+  "head_ref": "backlog/foundation-aspirational-ref-plus-name-attribution-sweep"
+}

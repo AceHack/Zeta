@@ -1,0 +1,17 @@
+{
+  "pr_number": 1209,
+  "archive_path": "docs/history/pr-reviews/PR-1209-free-memory-immune-system-branch-protections-pr-checks-are-part-of-the-immune-sy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XLFL",
+    "comment:PRRC_kwDOSF9kNM69XLFS",
+    "thread:PRRT_kwDOSF9kNM5_Iea7",
+    "thread:PRRT_kwDOSF9kNM5_Iea_"
+  ],
+  "fetched_at": "2026-08-25T08:42:20.235Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(immune-system): branch protections + PR + checks ARE part of the immune system until Aurora (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T17:30:03Z",
+  "head_ref": "free-memory/branch-protection-immune-system-aaron-2026-05-02"
+}

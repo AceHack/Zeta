@@ -1,0 +1,27 @@
+{
+  "pr_number": 714,
+  "archive_path": "docs/history/pr-reviews/PR-714-escrow-correction-move-to-canonical-home-docs-research-escrowed-add-4-cross-ai-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PTY0",
+    "comment:PRRC_kwDOSF9kNM68PTY1",
+    "comment:PRRC_kwDOSF9kNM68PTqa",
+    "comment:PRRC_kwDOSF9kNM68PTqp",
+    "comment:PRRC_kwDOSF9kNM68PXPE",
+    "comment:PRRC_kwDOSF9kNM68PZe2",
+    "comment:PRRC_kwDOSF9kNM68PZfK",
+    "thread:PRRT_kwDOSF9kNM5-TdlD",
+    "thread:PRRT_kwDOSF9kNM5-TdlE",
+    "thread:PRRT_kwDOSF9kNM5-TdyI",
+    "thread:PRRT_kwDOSF9kNM5-TdyR",
+    "thread:PRRT_kwDOSF9kNM5-Tggx",
+    "thread:PRRT_kwDOSF9kNM5-TiOd",
+    "thread:PRRT_kwDOSF9kNM5-TiOr"
+  ],
+  "fetched_at": "2026-08-25T08:22:30.678Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "escrow(correction): move to canonical home docs/research/escrowed/ + add 4 cross-AI converged refinements (expiration / one-test gate / no-multi-reviewer / schema)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:48:17Z",
+  "head_ref": "escrow/correct-canonical-home-and-add-refinements"
+}

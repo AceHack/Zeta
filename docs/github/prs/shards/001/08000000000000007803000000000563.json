@@ -1,0 +1,12 @@
+{
+  "pr_number": 1379,
+  "archive_path": "docs/history/pr-reviews/PR-1379-fix-check-no-conflict-markers-ts-allowlist-parity-with-sh-gate-yml-prerequisite.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:16.196Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(check-no-conflict-markers.ts): allowlist parity with .sh (gate.yml prerequisite)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:04:25Z",
+  "head_ref": "fix/check-no-conflict-markers-ts-allowlist-parity"
+}

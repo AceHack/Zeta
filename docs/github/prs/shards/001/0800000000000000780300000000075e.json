@@ -1,0 +1,12 @@
+{
+  "pr_number": 1886,
+  "archive_path": "docs/history/pr-reviews/PR-1886-archive-pr-reviews-preserve-pr-1884-review-output.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:06:26.796Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "archive(pr-reviews): preserve PR 1884 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T14:30:29Z",
+  "head_ref": "codex/archive-pr-1884-review-substrate"
+}

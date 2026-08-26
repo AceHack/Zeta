@@ -1,0 +1,22 @@
+{
+  "pr_number": 575,
+  "archive_path": "docs/history/pr-reviews/PR-575-feat-check-archive-header-section33-validate-operational-status-enum-value-codex.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Wdn5",
+    "comment:PRRC_kwDOSF9kNM67Wdn9",
+    "comment:PRRC_kwDOSF9kNM67Wdnz",
+    "comment:PRRC_kwDOSF9kNM67Wel5",
+    "comment:PRRC_kwDOSF9kNM67WemQ",
+    "comment:PRRC_kwDOSF9kNM67Wemf",
+    "thread:PRRT_kwDOSF9kNM59pRp3",
+    "thread:PRRT_kwDOSF9kNM59pRp9",
+    "thread:PRRT_kwDOSF9kNM59pRqA"
+  ],
+  "fetched_at": "2026-08-25T08:17:18.517Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "feat(check-archive-header-section33): validate Operational-status enum value (Codex P2 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:49:53Z",
+  "head_ref": "feat/check-archive-header-section33-validate-operational-status-enum"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7335,
+  "archive_path": "docs/history/pr-reviews/PR-7335-docs-research-self-driving-recursive-dst-loop-on-free-github-advance-tick-merges.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:53.128Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(research): self-driving recursive DST loop on free GitHub — advance-tick merges to main + push (the recursion trigger); verified skip-ci flags; stuck→hot + alerts",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T16:44:21Z",
+  "head_ref": "otto/self-driving-recursive-dst-loop-merge-to-main-push-triggers-recursion-skip-ci-flag-stuck-hot-alerts"
+}

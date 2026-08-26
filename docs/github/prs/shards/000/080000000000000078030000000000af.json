@@ -1,0 +1,17 @@
+{
+  "pr_number": 175,
+  "archive_path": "docs/history/pr-reviews/PR-175-backlog-p1-hll-property-test-flakiness-investigate-before-retry-per-dst.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66uoc7",
+    "comment:PRRC_kwDOSF9kNM66uocB",
+    "thread:PRRT_kwDOSF9kNM59LZM5",
+    "thread:PRRT_kwDOSF9kNM59LZMF"
+  ],
+  "fetched_at": "2026-08-25T07:58:48.482Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "backlog: P1 — HLL property-test flakiness (investigate before retry per DST)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:56:33Z",
+  "head_ref": "backlog/hll-property-test-flakiness-investigation"
+}

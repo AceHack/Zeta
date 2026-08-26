@@ -1,0 +1,22 @@
+{
+  "pr_number": 426,
+  "archive_path": "docs/history/pr-reviews/PR-426-hygiene-tick-history-drain-wave-2026-04-25t04-15-00z-28-threads-6-prs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PeRz",
+    "comment:PRRC_kwDOSF9kNM67PfCf",
+    "comment:PRRC_kwDOSF9kNM67Pl4t",
+    "comment:PRRC_kwDOSF9kNM67Pl6R",
+    "comment:PRRC_kwDOSF9kNM67Pq2g",
+    "comment:PRRC_kwDOSF9kNM67Prms",
+    "thread:PRRT_kwDOSF9kNM59j17F",
+    "thread:PRRT_kwDOSF9kNM59js7h",
+    "thread:PRRT_kwDOSF9kNM59jsUM"
+  ],
+  "fetched_at": "2026-08-25T08:09:47.243Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): drain wave 2026-04-25T04:15:00Z (28 threads / 6 PRs)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:40:18Z",
+  "head_ref": "hygiene/tick-history-2026-04-25-04-15-drain-wave"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 709,
+  "archive_path": "docs/history/pr-reviews/PR-709-hygiene-tick-history-per-tick-row-for-close-the-round-arc-post-aurora-unificatio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PDnb",
+    "thread:PRRT_kwDOSF9kNM5-TSCk"
+  ],
+  "fetched_at": "2026-08-25T08:22:15.371Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): per-tick row for close-the-round arc post-Aurora-unification (PRs #706/#707/#708)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T00:56:35Z",
+  "head_ref": "tick-history/2026-04-29-tick-after-aurora-bridge-pr-fixes"
+}

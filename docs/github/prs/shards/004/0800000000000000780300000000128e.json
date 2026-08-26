@@ -1,0 +1,21 @@
+{
+  "pr_number": 4750,
+  "archive_path": "docs/history/pr-reviews/PR-4750-feat-b-0707-manifesto-citation-time-series-snapshot-delta-modes-first-snapshot-l.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ETA9R",
+    "comment:PRRC_kwDOSF9kNM7ETA9W",
+    "comment:PRRC_kwDOSF9kNM7ETA9Z",
+    "comment:PRRC_kwDOSF9kNM7ETBAM",
+    "thread:PRRT_kwDOSF9kNM6EU9Hg",
+    "thread:PRRT_kwDOSF9kNM6EU9Hk",
+    "thread:PRRT_kwDOSF9kNM6EU9Hm",
+    "thread:PRRT_kwDOSF9kNM6EU9Jr"
+  ],
+  "fetched_at": "2026-08-25T09:08:27.902Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B-0707): manifesto citation time-series — --snapshot + --delta modes; first snapshot landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-23T18:50:20Z",
+  "head_ref": "otto/cli-b0707-citation-time-series-2026-05-23"
+}

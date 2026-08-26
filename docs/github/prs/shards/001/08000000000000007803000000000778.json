@@ -1,0 +1,25 @@
+{
+  "pr_number": 1912,
+  "archive_path": "docs/history/pr-reviews/PR-1912-craft-zeta-fusion-equation-module-campfire-anchor-shadow-physics.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-7qCn",
+    "comment:PRRC_kwDOSF9kNM6-7qeV",
+    "comment:PRRC_kwDOSF9kNM6-7qfC",
+    "comment:PRRC_kwDOSF9kNM6-7qfl",
+    "comment:PRRC_kwDOSF9kNM6-7qg8",
+    "comment:PRRC_kwDOSF9kNM6-7qgO",
+    "thread:PRRT_kwDOSF9kNM6AYzMy",
+    "thread:PRRT_kwDOSF9kNM6AYzgy",
+    "thread:PRRT_kwDOSF9kNM6AYzhQ",
+    "thread:PRRT_kwDOSF9kNM6AYzhu",
+    "thread:PRRT_kwDOSF9kNM6AYziE",
+    "thread:PRRT_kwDOSF9kNM6AYzik"
+  ],
+  "fetched_at": "2026-08-25T09:07:25.836Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "craft(zeta): fusion equation module — campfire anchor + shadow physics",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:04:50Z",
+  "head_ref": "otto/craft-fusion-equation-module"
+}

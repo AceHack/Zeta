@@ -1,0 +1,16 @@
+{
+  "pr_number": 229,
+  "archive_path": "docs/history/pr-reviews/PR-229-history-otto-75-tick-close-row-govern-stage-backfill-codex-first-class-directive.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662gN1",
+    "comment:PRRC_kwDOSF9kNM67DN1O",
+    "thread:PRRT_kwDOSF9kNM59RHhQ"
+  ],
+  "fetched_at": "2026-08-25T08:02:00.931Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "history: Otto-75 tick-close row — Govern-stage backfill + Codex-first-class directive absorbed",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:00:12Z",
+  "head_ref": "history/otto-75-tick-close"
+}

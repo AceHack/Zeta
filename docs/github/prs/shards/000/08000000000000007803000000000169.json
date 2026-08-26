@@ -1,0 +1,22 @@
+{
+  "pr_number": 361,
+  "archive_path": "docs/history/pr-reviews/PR-361-fix-strip-history-log-commentary-from-temporalcoordinationdetection.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67BDeq",
+    "comment:PRRC_kwDOSF9kNM67BEIz",
+    "comment:PRRC_kwDOSF9kNM67BEJr",
+    "comment:PRRC_kwDOSF9kNM67BTqv",
+    "comment:PRRC_kwDOSF9kNM67BTsk",
+    "comment:PRRC_kwDOSF9kNM67BTuc",
+    "thread:PRRT_kwDOSF9kNM59Y_Np",
+    "thread:PRRT_kwDOSF9kNM59Y_st",
+    "thread:PRRT_kwDOSF9kNM59Y_tT"
+  ],
+  "fetched_at": "2026-08-25T08:06:38.970Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix: strip history-log commentary from TemporalCoordinationDetection",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T12:37:12Z",
+  "head_ref": "fix/history-log-commentary-stripped-tcd"
+}

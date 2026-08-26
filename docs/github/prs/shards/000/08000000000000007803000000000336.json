@@ -1,0 +1,17 @@
+{
+  "pr_number": 822,
+  "archive_path": "docs/history/pr-reviews/PR-822-tick-history-2026-04-29t07-01z-round-5-reviewer-corrections-5-real-defects-on-81.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68TQDs",
+    "comment:PRRC_kwDOSF9kNM68TRiv",
+    "thread:PRRT_kwDOSF9kNM5-WYrF",
+    "thread:PRRT_kwDOSF9kNM5-WZyX"
+  ],
+  "fetched_at": "2026-08-25T08:26:39.751Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T07:01Z — round-5 reviewer corrections (5 REAL_DEFECTs on #815)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T07:23:47Z",
+  "head_ref": "tick-history/2026-04-29-tick-0701Z-shard"
+}

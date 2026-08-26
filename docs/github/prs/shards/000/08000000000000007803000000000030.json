@@ -1,0 +1,19 @@
+{
+  "pr_number": 48,
+  "archive_path": "docs/history/pr-reviews/PR-48-cleanup-update-4-outdated-acehack-zeta-urls-to-lucent-financial-group-zeta.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM653pVg",
+    "comment:PRRC_kwDOSF9kNM653pWt",
+    "comment:PRRC_kwDOSF9kNM653pXU",
+    "thread:PRRT_kwDOSF9kNM58iYS7",
+    "thread:PRRT_kwDOSF9kNM58iYTy",
+    "thread:PRRT_kwDOSF9kNM58iYUT"
+  ],
+  "fetched_at": "2026-08-25T07:52:49.587Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "cleanup: update 4 outdated AceHack/Zeta URLs to Lucent-Financial-Group/Zeta",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T03:34:08Z",
+  "head_ref": "cleanup-outdated-acehack-urls"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1591,
+  "archive_path": "docs/history/pr-reviews/PR-1591-research-fsharp-rfc-pre-draft-existential-quantification-in-type-test-patterns-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM697K2A",
+    "comment:PRRC_kwDOSF9kNM697K2X",
+    "comment:PRRC_kwDOSF9kNM697K2c",
+    "thread:PRRT_kwDOSF9kNM5_jpQ0",
+    "thread:PRRT_kwDOSF9kNM5_jpRB",
+    "thread:PRRT_kwDOSF9kNM5_jpRE"
+  ],
+  "fetched_at": "2026-08-25T08:57:53.593Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(fsharp): RFC pre-draft -- existential quantification in type-test patterns (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T06:18:15Z",
+  "head_ref": "research/fsharp-rfc-existential-quantification-pre-draft-aaron-2026-05-05"
+}

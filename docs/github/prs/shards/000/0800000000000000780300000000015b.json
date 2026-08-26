@@ -1,0 +1,29 @@
+{
+  "pr_number": 347,
+  "archive_path": "docs/history/pr-reviews/PR-347-docs-dst-accepted-boundaries-registry-push-with-retry-sh-classification-amara-19.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6699Q9",
+    "comment:PRRC_kwDOSF9kNM6699SH",
+    "comment:PRRC_kwDOSF9kNM6699Sa",
+    "comment:PRRC_kwDOSF9kNM6699Sw",
+    "comment:PRRC_kwDOSF9kNM67B-Lb",
+    "comment:PRRC_kwDOSF9kNM67B-Nf",
+    "comment:PRRC_kwDOSF9kNM67B-PD",
+    "comment:PRRC_kwDOSF9kNM67B-Qk",
+    "comment:PRRC_kwDOSF9kNM67CClF",
+    "comment:PRRC_kwDOSF9kNM67CCmA",
+    "thread:PRRT_kwDOSF9kNM59Wql1",
+    "thread:PRRT_kwDOSF9kNM59Wqm8",
+    "thread:PRRT_kwDOSF9kNM59Wqmv",
+    "thread:PRRT_kwDOSF9kNM59WqnP",
+    "thread:PRRT_kwDOSF9kNM59Zu0-",
+    "thread:PRRT_kwDOSF9kNM59Zu0N"
+  ],
+  "fetched_at": "2026-08-25T08:05:56.492Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: DST accepted-boundaries registry + push-with-retry.sh classification (Amara 19th #3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:04:30Z",
+  "head_ref": "docs/dst-accepted-boundaries-stub-plus-script-link"
+}

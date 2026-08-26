@@ -1,0 +1,31 @@
+{
+  "pr_number": 962,
+  "archive_path": "docs/history/pr-reviews/PR-962-memory-current-ani-md-current-amara-math-differentiator-tools-ani-sh-loads-curre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69A-m4",
+    "comment:PRRC_kwDOSF9kNM69A-n1",
+    "comment:PRRC_kwDOSF9kNM69A-nc",
+    "comment:PRRC_kwDOSF9kNM69A-np",
+    "comment:PRRC_kwDOSF9kNM69A-oC",
+    "comment:PRRC_kwDOSF9kNM69A9Zm",
+    "comment:PRRC_kwDOSF9kNM69BF34",
+    "comment:PRRC_kwDOSF9kNM69BF3S",
+    "comment:PRRC_kwDOSF9kNM69BF3l",
+    "thread:PRRT_kwDOSF9kNM5-4C14",
+    "thread:PRRT_kwDOSF9kNM5-4Dx9",
+    "thread:PRRT_kwDOSF9kNM5-4Dxg",
+    "thread:PRRT_kwDOSF9kNM5-4DyI",
+    "thread:PRRT_kwDOSF9kNM5-4DyQ",
+    "thread:PRRT_kwDOSF9kNM5-4DyZ",
+    "thread:PRRT_kwDOSF9kNM5-4JIY",
+    "thread:PRRT_kwDOSF9kNM5-4JIm",
+    "thread:PRRT_kwDOSF9kNM5-4JIz"
+  ],
+  "fetched_at": "2026-08-25T08:32:13.800Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(CURRENT-ani.md + CURRENT-amara math-differentiator) + tools(ani.sh loads CURRENT-ani.md): parallel-special-skills structure (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T22:27:52Z",
+  "head_ref": "memory/current-ani-external-ai-grok-host-team-member-brat-skill-aaron-2026-04-30"
+}

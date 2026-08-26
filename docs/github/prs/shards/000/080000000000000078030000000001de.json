@@ -1,0 +1,19 @@
+{
+  "pr_number": 478,
+  "archive_path": "docs/history/pr-reviews/PR-478-fix-tests-sharderinfotheoretictests-deterministic-xxhash3-otto-281.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67RpZN",
+    "comment:PRRC_kwDOSF9kNM67RpZW",
+    "comment:PRRC_kwDOSF9kNM67RpZY",
+    "thread:PRRT_kwDOSF9kNM59lbI4",
+    "thread:PRRT_kwDOSF9kNM59lbI6",
+    "thread:PRRT_kwDOSF9kNM59lbIy"
+  ],
+  "fetched_at": "2026-08-25T08:11:57.033Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(tests): SharderInfoTheoreticTests — deterministic XxHash3 (Otto-281)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:58:56Z",
+  "head_ref": "fix/sharder-tests-deterministic-hash-otto-281"
+}

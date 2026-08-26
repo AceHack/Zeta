@@ -1,0 +1,28 @@
+{
+  "pr_number": 559,
+  "archive_path": "docs/history/pr-reviews/PR-559-chore-loop-tick-history-hour-05z-bundle-38-rows-57-min-densest-substantive-hour-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V13g",
+    "comment:PRRC_kwDOSF9kNM67V13o",
+    "comment:PRRC_kwDOSF9kNM67V13t",
+    "comment:PRRC_kwDOSF9kNM67V13v",
+    "comment:PRRC_kwDOSF9kNM67V1sy",
+    "comment:PRRC_kwDOSF9kNM67V4sx",
+    "comment:PRRC_kwDOSF9kNM67V4t9",
+    "comment:PRRC_kwDOSF9kNM67V4tI",
+    "comment:PRRC_kwDOSF9kNM67V4th",
+    "comment:PRRC_kwDOSF9kNM67V4xN",
+    "thread:PRRT_kwDOSF9kNM59oyBY",
+    "thread:PRRT_kwDOSF9kNM59oyKT",
+    "thread:PRRT_kwDOSF9kNM59oyKY",
+    "thread:PRRT_kwDOSF9kNM59oyKc",
+    "thread:PRRT_kwDOSF9kNM59oyKe"
+  ],
+  "fetched_at": "2026-08-25T08:16:27.759Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): hour-05Z bundle (38 rows, ~57 min) — densest substantive hour of session: Otto-346/343/347 + Maji formal + B-0028..B-0034 + wisdom-of-Solomon + Geneva preference",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T06:17:26Z",
+  "head_ref": "chore/heartbeat-batch-2026-04-26-hour-05Z"
+}

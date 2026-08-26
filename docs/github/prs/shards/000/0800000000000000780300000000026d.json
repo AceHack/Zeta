@@ -1,0 +1,17 @@
+{
+  "pr_number": 621,
+  "archive_path": "docs/history/pr-reviews/PR-621-tick-history-14-51z-consolidated-burst-row-5-prs-merged-602-thread-sweep.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67YH2K",
+    "comment:PRRC_kwDOSF9kNM67YHh-",
+    "thread:PRRT_kwDOSF9kNM59qmGB",
+    "thread:PRRT_kwDOSF9kNM59qmWa"
+  ],
+  "fetched_at": "2026-08-25T08:18:45.589Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 14:51Z consolidated burst row (5 PRs merged + #602 thread sweep)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T15:01:03Z",
+  "head_ref": "tick-history/2026-04-26T14-51Z"
+}

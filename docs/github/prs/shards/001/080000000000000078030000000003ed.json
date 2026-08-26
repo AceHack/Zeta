@@ -1,0 +1,17 @@
+{
+  "pr_number": 1005,
+  "archive_path": "docs/history/pr-reviews/PR-1005-backlog-b-0125-add-multi-ruleset-design-path-aaron-s-per-row-host-mutation-autho.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69DoPW",
+    "comment:PRRC_kwDOSF9kNM69DoPf",
+    "thread:PRRT_kwDOSF9kNM5-5_hq",
+    "thread:PRRT_kwDOSF9kNM5-5_hw"
+  ],
+  "fetched_at": "2026-08-25T08:33:57.471Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0125): add multi-ruleset design path + Aaron's per-row host-mutation authorization",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T02:49:52Z",
+  "head_ref": "backlog/B-0125-multi-ruleset-design-path-update-2026-05-01"
+}

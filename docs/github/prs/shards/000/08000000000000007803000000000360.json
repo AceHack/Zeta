@@ -1,0 +1,19 @@
+{
+  "pr_number": 864,
+  "archive_path": "docs/history/pr-reviews/PR-864-lane-b-ts-bun-migration-trajectory-resume-md-inventory-classification-next-slice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68orRE",
+    "comment:PRRC_kwDOSF9kNM68orRV",
+    "comment:PRRC_kwDOSF9kNM68orRc",
+    "thread:PRRT_kwDOSF9kNM5-mGl_",
+    "thread:PRRT_kwDOSF9kNM5-mGmK",
+    "thread:PRRT_kwDOSF9kNM5-mGmN"
+  ],
+  "fetched_at": "2026-08-25T08:28:00.910Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "lane-b: TS/Bun migration trajectory RESUME.md — inventory + classification + next slice",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T23:26:56Z",
+  "head_ref": "lane-b/ts-bun-migration-trajectory-resume-2026-04-29"
+}

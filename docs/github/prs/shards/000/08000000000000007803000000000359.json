@@ -1,0 +1,31 @@
+{
+  "pr_number": 857,
+  "archive_path": "docs/history/pr-reviews/PR-857-fix-codeql-per-language-source-presence-gate-amara-option-b-structural-fix.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68lIM8",
+    "comment:PRRC_kwDOSF9kNM68lO-x",
+    "comment:PRRC_kwDOSF9kNM68lO_7",
+    "comment:PRRC_kwDOSF9kNM68lO_n",
+    "comment:PRRC_kwDOSF9kNM68lPA8",
+    "comment:PRRC_kwDOSF9kNM68lPAk",
+    "comment:PRRC_kwDOSF9kNM68lPBd",
+    "comment:PRRC_kwDOSF9kNM68lRFl",
+    "comment:PRRC_kwDOSF9kNM68ld3u",
+    "thread:PRRT_kwDOSF9kNM5-jh27",
+    "thread:PRRT_kwDOSF9kNM5-jmwV",
+    "thread:PRRT_kwDOSF9kNM5-jmw_",
+    "thread:PRRT_kwDOSF9kNM5-jmxR",
+    "thread:PRRT_kwDOSF9kNM5-jmxx",
+    "thread:PRRT_kwDOSF9kNM5-jmyD",
+    "thread:PRRT_kwDOSF9kNM5-jmyd",
+    "thread:PRRT_kwDOSF9kNM5-joTv",
+    "thread:PRRT_kwDOSF9kNM5-jxej"
+  ],
+  "fetched_at": "2026-08-25T08:27:43.785Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(codeql): per-language source-presence gate — Amara Option B structural fix",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T20:39:50Z",
+  "head_ref": "fix/codeql-no-source-baseline-2026-04-29"
+}

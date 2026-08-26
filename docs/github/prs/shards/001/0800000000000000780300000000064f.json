@@ -1,0 +1,25 @@
+{
+  "pr_number": 1615,
+  "archive_path": "docs/history/pr-reviews/PR-1615-research-architecture-social-memes-as-mercer-closed-meta-cognitive-instrument-va.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69_v-5",
+    "comment:PRRC_kwDOSF9kNM69_yGC",
+    "comment:PRRC_kwDOSF9kNM69_yGj",
+    "comment:PRRC_kwDOSF9kNM69_yHF",
+    "comment:PRRC_kwDOSF9kNM69_yHe",
+    "comment:PRRC_kwDOSF9kNM69_yHy",
+    "thread:PRRT_kwDOSF9kNM5_nDBU",
+    "thread:PRRT_kwDOSF9kNM5_nEoZ",
+    "thread:PRRT_kwDOSF9kNM5_nEow",
+    "thread:PRRT_kwDOSF9kNM5_nEpM",
+    "thread:PRRT_kwDOSF9kNM5_nEpe",
+    "thread:PRRT_kwDOSF9kNM5_nEpv"
+  ],
+  "fetched_at": "2026-08-25T08:58:54.967Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): social memes as Mercer-closed + meta-cognitive instrument + value-neutrality + mom-skill apprenticeship-by-formal-model (Aaron-forwarded 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:05:36Z",
+  "head_ref": "research/social-memes-precision-narrative-mom-skill-apprenticeship-aaron-forwarded-2026-05-05"
+}

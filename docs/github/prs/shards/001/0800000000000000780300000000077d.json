@@ -1,0 +1,19 @@
+{
+  "pr_number": 1917,
+  "archive_path": "docs/history/pr-reviews/PR-1917-research-casimir-effect-reversible-silicon-alignment-as-hardware-ground-state.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-7_fa",
+    "comment:PRRC_kwDOSF9kNM6-7_gT",
+    "comment:PRRC_kwDOSF9kNM6-7_go",
+    "thread:PRRT_kwDOSF9kNM6AZCqx",
+    "thread:PRRT_kwDOSF9kNM6AZCrT",
+    "thread:PRRT_kwDOSF9kNM6AZCrl"
+  ],
+  "fetched_at": "2026-08-25T09:07:38.337Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Casimir effect + reversible silicon — alignment as hardware ground state",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:18:56Z",
+  "head_ref": "otto/research-casimir-reversible-silicon"
+}

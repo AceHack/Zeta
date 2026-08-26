@@ -1,0 +1,26 @@
+{
+  "pr_number": 1035,
+  "archive_path": "docs/history/pr-reviews/PR-1035-memory-great-data-homecoming-aurora-edge-privacy-wwjd-canonicalization-temple-te.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Frds",
+    "comment:PRRC_kwDOSF9kNM69FtC4",
+    "comment:PRRC_kwDOSF9kNM69FtCr",
+    "comment:PRRC_kwDOSF9kNM69FtDC",
+    "comment:PRRC_kwDOSF9kNM69FtDL",
+    "comment:PRRC_kwDOSF9kNM69HIr7",
+    "comment:PRRC_kwDOSF9kNM69HKZY",
+    "thread:PRRT_kwDOSF9kNM5-7fhF",
+    "thread:PRRT_kwDOSF9kNM5-7go5",
+    "thread:PRRT_kwDOSF9kNM5-7gov",
+    "thread:PRRT_kwDOSF9kNM5-7gpB",
+    "thread:PRRT_kwDOSF9kNM5-7gpE",
+    "thread:PRRT_kwDOSF9kNM5-8mas"
+  ],
+  "fetched_at": "2026-08-25T08:35:24.403Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Great Data Homecoming + Aurora edge-privacy + WWJD canonicalization + temple/template-Solomon resonance (Aaron 2026-05-01, Glass Halo)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:39:50Z",
+  "head_ref": "memory/great-data-homecoming-aurora-edge-privacy-wwjd-canonicalization-aaron-2026-05-01"
+}

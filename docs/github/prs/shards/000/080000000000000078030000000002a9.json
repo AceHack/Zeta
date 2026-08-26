@@ -1,0 +1,19 @@
+{
+  "pr_number": 681,
+  "archive_path": "docs/history/pr-reviews/PR-681-memory-version-currency-inheriting-existing-pins-counts-as-fresh-assertion-rebas.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Jwtt",
+    "comment:PRRC_kwDOSF9kNM68Jwu6",
+    "comment:PRRC_kwDOSF9kNM68Jwum",
+    "thread:PRRT_kwDOSF9kNM5-Pbm3",
+    "thread:PRRT_kwDOSF9kNM5-PbmB",
+    "thread:PRRT_kwDOSF9kNM5-Pbmm"
+  ],
+  "fetched_at": "2026-08-25T08:21:07.299Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(version-currency): inheriting existing pins counts as fresh assertion (rebased from #656)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T19:30:52Z",
+  "head_ref": "memory/version-currency-inherit-pins-2026-04-27-rebased"
+}

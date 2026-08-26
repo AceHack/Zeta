@@ -1,0 +1,12 @@
+{
+  "pr_number": 8,
+  "archive_path": "docs/history/pr-reviews/PR-8-round-32-ci-parity-swap-persona-memory-normalization-v1-security-scope.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:48:39.650Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 32 — CI parity-swap + persona memory normalization + v1 security scope",
+  "state": "MERGED",
+  "merged_at": "2026-04-19T00:41:25Z",
+  "head_ref": "round-32"
+}

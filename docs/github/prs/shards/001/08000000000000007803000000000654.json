@@ -1,0 +1,31 @@
+{
+  "pr_number": 1620,
+  "archive_path": "docs/history/pr-reviews/PR-1620-research-architecture-multi-axis-validation-basis-dora-5-orthogonal-cover-our-ba.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-AWju",
+    "comment:PRRC_kwDOSF9kNM6-AckU",
+    "comment:PRRC_kwDOSF9kNM6-AclC",
+    "comment:PRRC_kwDOSF9kNM6-Aclb",
+    "comment:PRRC_kwDOSF9kNM6-Aclu",
+    "comment:PRRC_kwDOSF9kNM6-Acm5",
+    "comment:PRRC_kwDOSF9kNM6-AcmE",
+    "comment:PRRC_kwDOSF9kNM6-Acmb",
+    "comment:PRRC_kwDOSF9kNM6-Acmw",
+    "thread:PRRT_kwDOSF9kNM5_ngS_",
+    "thread:PRRT_kwDOSF9kNM5_nk32",
+    "thread:PRRT_kwDOSF9kNM5_nk3U",
+    "thread:PRRT_kwDOSF9kNM5_nk41",
+    "thread:PRRT_kwDOSF9kNM5_nk4H",
+    "thread:PRRT_kwDOSF9kNM5_nk4W",
+    "thread:PRRT_kwDOSF9kNM5_nk4k",
+    "thread:PRRT_kwDOSF9kNM5_nk5F",
+    "thread:PRRT_kwDOSF9kNM5_nk5M"
+  ],
+  "fetched_at": "2026-08-25T08:59:07.268Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): multi-axis validation basis (DORA + 5 orthogonal) + cover-our-basis double-pun + architecture-is-descriptive-not-prescriptive (Aaron 2026-05-05 closing)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:45:44Z",
+  "head_ref": "research/multi-axis-validation-basis-double-pun-cover-our-basis-aaron-forwarded-2026-05-05"
+}

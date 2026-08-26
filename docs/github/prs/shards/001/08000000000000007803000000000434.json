@@ -1,0 +1,15 @@
+{
+  "pr_number": 1076,
+  "archive_path": "docs/history/pr-reviews/PR-1076-hygiene-tick-history-2026-05-01t09-59z-pr-1018-follow-up-intra-file-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HXxF",
+    "thread:PRRT_kwDOSF9kNM5-8wcP"
+  ],
+  "fetched_at": "2026-08-25T08:36:57.620Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:59Z — PR #1018 follow-up (intra-file drift)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:02:56Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0959Z-1018-follow-up-fixes"
+}

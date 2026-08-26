@@ -1,0 +1,19 @@
+{
+  "pr_number": 973,
+  "archive_path": "docs/history/pr-reviews/PR-973-memory-tick-history-prefab-file-codex-finding-on-14-shards-claiming-future-tick-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69BymD",
+    "comment:PRRC_kwDOSF9kNM69BymN",
+    "comment:PRRC_kwDOSF9kNM69BymU",
+    "thread:PRRT_kwDOSF9kNM5-4qLc",
+    "thread:PRRT_kwDOSF9kNM5-4qLe",
+    "thread:PRRT_kwDOSF9kNM5-4qLh"
+  ],
+  "fetched_at": "2026-08-25T08:32:40.887Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(tick-history-prefab): file Codex finding on 14+ shards claiming future tick-times",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:28:10Z",
+  "head_ref": "memory/tick-history-prefabricated-shards-codex-finding-2026-04-30"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 933,
+  "archive_path": "docs/history/pr-reviews/PR-933-hygiene-backlog-regenerate-index-after-b-0096-landing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:31:00.729Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(BACKLOG): regenerate index after B-0096 landing",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T18:24:11Z",
+  "head_ref": "hygiene/regen-backlog-index-with-b-0096-2026-04-30"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 104,
+  "archive_path": "docs/history/pr-reviews/PR-104-docs-autonomous-loop-md-add-step-0-open-pr-hygiene-first-to-priority-ladder.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66FEAe",
+    "thread:PRRT_kwDOSF9kNM58sZQP"
+  ],
+  "fetched_at": "2026-08-25T07:54:14.888Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "docs/AUTONOMOUS-LOOP.md: add step 0 'Open-PR hygiene first' to priority ladder",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T06:05:33Z",
+  "head_ref": "land-autonomous-loop-pr-audit-priority"
+}

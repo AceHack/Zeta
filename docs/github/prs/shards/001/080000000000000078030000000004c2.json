@@ -1,0 +1,12 @@
+{
+  "pr_number": 1218,
+  "archive_path": "docs/history/pr-reviews/PR-1218-free-memory-wellness-app-filter-calibration-4-layer-design-pattern-aaron-2026-05.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:42:46.741Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(wellness-app-filter-calibration): 4-layer design pattern (Aaron 2026-05-02 via Claude.ai)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:24:35Z",
+  "head_ref": "free-memory/wellness-app-filter-calibration-aaron-2026-05-02"
+}

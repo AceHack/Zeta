@@ -1,0 +1,12 @@
+{
+  "pr_number": 7048,
+  "archive_path": "docs/history/pr-reviews/PR-7048-feat-core-sybilbftprotocol-wire-protocol-over-the-distinct-source-quorum.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:42.770Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(core): SybilBftProtocol — wire protocol over the distinct-source quorum",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:22:25Z",
+  "head_ref": "otto/sybil-bft-wire-protocol-state-machine"
+}

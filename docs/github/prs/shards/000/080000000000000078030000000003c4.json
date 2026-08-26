@@ -1,0 +1,15 @@
+{
+  "pr_number": 964,
+  "archive_path": "docs/history/pr-reviews/PR-964-backlog-b-0121-otto-kenji-as-externally-callable-peers-via-claude-cli-aaron-2026.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69BWlU",
+    "thread:PRRT_kwDOSF9kNM5-4Vno"
+  ],
+  "fetched_at": "2026-08-25T08:32:19.235Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0121): Otto + Kenji as externally-callable peers via claude-cli (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:02:07Z",
+  "head_ref": "backlog/B-0121-otto-kenji-peer-call-cross-harness-claude-cli-aaron-2026-04-30"
+}

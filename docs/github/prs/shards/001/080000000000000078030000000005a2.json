@@ -1,0 +1,12 @@
+{
+  "pr_number": 1442,
+  "archive_path": "docs/history/pr-reviews/PR-1442-hygiene-tick-history-2026-05-04t03-55z-natural-cadence-recovery-15min-cadence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:51:48.560Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-04T03:55Z natural-cadence-recovery + 15min cadence",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T03:58:00Z",
+  "head_ref": "tick/2026-05-04-0355Z-shard"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 697,
+  "archive_path": "docs/history/pr-reviews/PR-697-tick-history-theme-b-forward-sync-2-acehack-only-rows-0-0-0-reconciliation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:21:45.145Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history(theme-b): forward-sync 2 AceHack-only rows — 0/0/0 reconciliation",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T22:01:04Z",
+  "head_ref": "ops/theme-b-tick-history-continuity-forward-sync-2026-04-28"
+}

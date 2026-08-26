@@ -1,0 +1,12 @@
+{
+  "pr_number": 1718,
+  "archive_path": "docs/history/pr-reviews/PR-1718-feat-broadcasts-gitignore-local-multi-loop-coordination-bus.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:02:52.142Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: .broadcasts/ gitignore — local multi-loop coordination bus",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:44:01Z",
+  "head_ref": "feat/broadcasts-bus"
+}

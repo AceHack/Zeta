@@ -1,0 +1,19 @@
+{
+  "pr_number": 325,
+  "archive_path": "docs/history/pr-reviews/PR-325-backlog-resurrect-3-backlog-rows-consolidated-supersedes-313-314-320.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6670sX",
+    "comment:PRRC_kwDOSF9kNM6670tB",
+    "comment:PRRC_kwDOSF9kNM67CSb5",
+    "comment:PRRC_kwDOSF9kNM67CSsS",
+    "thread:PRRT_kwDOSF9kNM59VEsR",
+    "thread:PRRT_kwDOSF9kNM59VEsy"
+  ],
+  "fetched_at": "2026-08-25T08:05:00.293Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: resurrect 3 BACKLOG rows consolidated (supersedes #313 #314 #320)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:48:36Z",
+  "head_ref": "backlog/consolidated-resurrect-sanitizer-claude-agent-flag-schema-as-graph"
+}

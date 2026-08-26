@@ -1,0 +1,12 @@
+{
+  "pr_number": 773,
+  "archive_path": "docs/history/pr-reviews/PR-773-tick-history-2026-04-29t04-41z-sixth-thread-drain-tick-3-threads-2-new-failure-m.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:24:50.501Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:41Z — sixth thread-drain tick (3 threads, 2 new failure-mode classes)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:47:19Z",
+  "head_ref": "tick-history/2026-04-29-tick-0441Z-shard"
+}

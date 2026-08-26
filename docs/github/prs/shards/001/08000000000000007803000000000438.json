@@ -1,0 +1,16 @@
+{
+  "pr_number": 1080,
+  "archive_path": "docs/history/pr-reviews/PR-1080-hygiene-tick-history-2026-05-01t10-07z-pr-1040-follow-up-structural-pattern-forw.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Hb2c",
+    "comment:PRRC_kwDOSF9kNM69JGt-",
+    "thread:PRRT_kwDOSF9kNM5-8zgn"
+  ],
+  "fetched_at": "2026-08-25T08:37:08.236Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:07Z — PR #1040 follow-up (structural-pattern + forward-ref position)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:24:04Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1008Z-1040-followup"
+}

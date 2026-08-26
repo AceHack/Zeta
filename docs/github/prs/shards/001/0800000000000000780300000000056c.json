@@ -1,0 +1,15 @@
+{
+  "pr_number": 1388,
+  "archive_path": "docs/history/pr-reviews/PR-1388-docs-research-memory-substrate-discovery-scoping-epistemic-corrections-chat-as-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bW7d",
+    "thread:PRRT_kwDOSF9kNM5_LxYy"
+  ],
+  "fetched_at": "2026-08-25T08:49:37.163Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(research)+memory: substrate-discovery scoping epistemic-corrections + chat-as-assertion-channel discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:53:44Z",
+  "head_ref": "research/substrate-discovery-hybrid-correction-2026-05-03"
+}

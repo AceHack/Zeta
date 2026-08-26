@@ -1,0 +1,12 @@
+{
+  "pr_number": 578,
+  "archive_path": "docs/history/pr-reviews/PR-578-backfill-b-0036-partial-5-bold-strip-enum-strict-on-aminata-threat-model-5th-fer.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:17:25.731Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backfill(B-0036 partial-5): bold-strip + enum-strict on aminata-threat-model-5th-ferry doc",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:57:37Z",
+  "head_ref": "backfill/section33-aminata-threat-model-5th-ferry-bold-strip-and-enum-strict"
+}

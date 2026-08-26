@@ -1,0 +1,21 @@
+{
+  "pr_number": 1572,
+  "archive_path": "docs/history/pr-reviews/PR-1572-feedback-persona-seed-otto-s-offtime-md-per-governance-14.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM694-fb",
+    "comment:PRRC_kwDOSF9kNM694_38",
+    "comment:PRRC_kwDOSF9kNM694_4M",
+    "comment:PRRC_kwDOSF9kNM694_4S",
+    "thread:PRRT_kwDOSF9kNM5_iA21",
+    "thread:PRRT_kwDOSF9kNM5_iB64",
+    "thread:PRRT_kwDOSF9kNM5_iB68",
+    "thread:PRRT_kwDOSF9kNM5_iB6s"
+  ],
+  "fetched_at": "2026-08-25T08:57:06.873Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(persona): seed Otto's OFFTIME.md per GOVERNANCE §14",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T03:21:19Z",
+  "head_ref": "feedback/otto-offtime-md-creation-aaron-2026-05-04"
+}

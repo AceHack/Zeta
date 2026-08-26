@@ -1,0 +1,21 @@
+{
+  "pr_number": 34,
+  "archive_path": "docs/history/pr-reviews/PR-34-round-44-dbt-deep-integration-research-first-draft-cartographer-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM65x3a-",
+    "comment:PRRC_kwDOSF9kNM65x3bx",
+    "comment:PRRC_kwDOSF9kNM65x3cS",
+    "comment:PRRC_kwDOSF9kNM65x3cp",
+    "thread:PRRT_kwDOSF9kNM58eBkI",
+    "thread:PRRT_kwDOSF9kNM58eBkp",
+    "thread:PRRT_kwDOSF9kNM58eBlA",
+    "thread:PRRT_kwDOSF9kNM58eBlS"
+  ],
+  "fetched_at": "2026-08-25T07:51:55.370Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: dbt deep-integration research — first-draft cartographer pass",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T10:45:07Z",
+  "head_ref": "research/dbt-integration"
+}

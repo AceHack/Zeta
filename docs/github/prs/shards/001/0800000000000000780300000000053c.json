@@ -1,0 +1,15 @@
+{
+  "pr_number": 1340,
+  "archive_path": "docs/history/pr-reviews/PR-1340-hygiene-tick-history-2026-05-03t07-17z-1339-lint-fix-md038-self-reflexive-substr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aQUa",
+    "thread:PRRT_kwDOSF9kNM5_K5_I"
+  ],
+  "fetched_at": "2026-08-25T08:47:47.824Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T07:17Z — #1339 lint-fix (MD038) — self-reflexive substrate-quality",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:21:00Z",
+  "head_ref": "hygiene/tick-2026-05-03-0717Z-1339-lint-fix"
+}

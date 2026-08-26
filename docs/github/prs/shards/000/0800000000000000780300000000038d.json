@@ -1,0 +1,21 @@
+{
+  "pr_number": 909,
+  "archive_path": "docs/history/pr-reviews/PR-909-ops-ts-bun-migration-bucket-b-closeout-porting-phase-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68vS3C",
+    "comment:PRRC_kwDOSF9kNM68vTHK",
+    "comment:PRRC_kwDOSF9kNM68vTHp",
+    "comment:PRRC_kwDOSF9kNM68vTIB",
+    "thread:PRRT_kwDOSF9kNM5-q7-u",
+    "thread:PRRT_kwDOSF9kNM5-q8K4",
+    "thread:PRRT_kwDOSF9kNM5-q8LS",
+    "thread:PRRT_kwDOSF9kNM5-q8Lj"
+  ],
+  "fetched_at": "2026-08-25T08:29:57.267Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(ts-bun-migration): Bucket B closeout — porting phase complete",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T08:19:18Z",
+  "head_ref": "ops/ts-bun-bucket-b-empty-closeout-2026-04-30"
+}

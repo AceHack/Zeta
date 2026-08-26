@@ -1,0 +1,22 @@
+{
+  "pr_number": 406,
+  "archive_path": "docs/history/pr-reviews/PR-406-backlog-local-db-shortlist-for-factory-indexing-search-p3-research-lane.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67OgtN",
+    "comment:PRRC_kwDOSF9kNM67Ogtl",
+    "comment:PRRC_kwDOSF9kNM67Ogtv",
+    "comment:PRRC_kwDOSF9kNM67PLa1",
+    "comment:PRRC_kwDOSF9kNM67PLc5",
+    "comment:PRRC_kwDOSF9kNM67PLcR",
+    "thread:PRRT_kwDOSF9kNM59jAxC",
+    "thread:PRRT_kwDOSF9kNM59jAxV",
+    "thread:PRRT_kwDOSF9kNM59jAxd"
+  ],
+  "fetched_at": "2026-08-25T08:08:56.382Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: local-DB shortlist for factory indexing / search (P3 research-lane)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T02:13:12Z",
+  "head_ref": "backlog/local-db-indexing-research"
+}

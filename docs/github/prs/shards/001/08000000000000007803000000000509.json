@@ -1,0 +1,15 @@
+{
+  "pr_number": 1289,
+  "archive_path": "docs/history/pr-reviews/PR-1289-free-memory-consent-driven-ux-trend-architect-vs-ux-class-inference-failure-aaro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZaUL",
+    "thread:PRRT_kwDOSF9kNM5_KPK2"
+  ],
+  "fetched_at": "2026-08-25T08:45:55.620Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: consent-driven UX trend + architect-vs-UX class inference failure (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:12:33Z",
+  "head_ref": "free-memory/consent-driven-ux-trend-aaron-architect-plus-ux-rare-combination-2026-05-03"
+}

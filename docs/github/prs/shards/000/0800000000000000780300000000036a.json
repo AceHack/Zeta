@@ -1,0 +1,33 @@
+{
+  "pr_number": 874,
+  "archive_path": "docs/history/pr-reviews/PR-874-ts-b-0086-port-3-hygiene-audit-scripts-sh-ts-slice-5-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68qqq0",
+    "comment:PRRC_kwDOSF9kNM68qqq8",
+    "comment:PRRC_kwDOSF9kNM68qqqf",
+    "comment:PRRC_kwDOSF9kNM68qqqq",
+    "comment:PRRC_kwDOSF9kNM68qqrC",
+    "comment:PRRC_kwDOSF9kNM68qqrH",
+    "comment:PRRC_kwDOSF9kNM68qqrN",
+    "comment:PRRC_kwDOSF9kNM68qqrW",
+    "comment:PRRC_kwDOSF9kNM68qqrj",
+    "comment:PRRC_kwDOSF9kNM68qqrv",
+    "thread:PRRT_kwDOSF9kNM5-ni77",
+    "thread:PRRT_kwDOSF9kNM5-ni87",
+    "thread:PRRT_kwDOSF9kNM5-ni8D",
+    "thread:PRRT_kwDOSF9kNM5-ni8K",
+    "thread:PRRT_kwDOSF9kNM5-ni8Q",
+    "thread:PRRT_kwDOSF9kNM5-ni8U",
+    "thread:PRRT_kwDOSF9kNM5-ni8Y",
+    "thread:PRRT_kwDOSF9kNM5-ni8e",
+    "thread:PRRT_kwDOSF9kNM5-ni8l",
+    "thread:PRRT_kwDOSF9kNM5-ni8x"
+  ],
+  "fetched_at": "2026-08-25T08:28:28.060Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 3 hygiene audit scripts (.sh→.ts) — slice 5 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T02:25:15Z",
+  "head_ref": "lane-b/ts-bun-slice-5-hygiene-audits-2026-04-30"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1600,
+  "archive_path": "docs/history/pr-reviews/PR-1600-research-architecture-db-category-synthesis-hickey-lineage-aaron-forwarded-prese.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM699xQk",
+    "comment:PRRC_kwDOSF9kNM699xRI",
+    "comment:PRRC_kwDOSF9kNM699xRa",
+    "thread:PRRT_kwDOSF9kNM5_llYB",
+    "thread:PRRT_kwDOSF9kNM5_llYY",
+    "thread:PRRT_kwDOSF9kNM5_llYm"
+  ],
+  "fetched_at": "2026-08-25T08:58:17.942Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): DB-category synthesis + Hickey lineage (Aaron-forwarded preservation 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T08:41:04Z",
+  "head_ref": "research/db-category-synthesis-hickey-lineage-aaron-2026-05-05"
+}

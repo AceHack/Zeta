@@ -1,0 +1,23 @@
+{
+  "pr_number": 1057,
+  "archive_path": "docs/history/pr-reviews/PR-1057-research-claudeai-formalization-path-verbatim-claude-ai-letter-on-the-four-forma.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Gb-3",
+    "comment:PRRC_kwDOSF9kNM69Gb-P",
+    "comment:PRRC_kwDOSF9kNM69Gb-d",
+    "comment:PRRC_kwDOSF9kNM69Gb-n",
+    "comment:PRRC_kwDOSF9kNM69Gb-u",
+    "thread:PRRT_kwDOSF9kNM5-8EGR",
+    "thread:PRRT_kwDOSF9kNM5-8EGY",
+    "thread:PRRT_kwDOSF9kNM5-8EGh",
+    "thread:PRRT_kwDOSF9kNM5-8EGo",
+    "thread:PRRT_kwDOSF9kNM5-8EGu"
+  ],
+  "fetched_at": "2026-08-25T08:36:13.233Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-formalization-path): verbatim Claude.ai letter on the four formal-system prerequisites (Aaron forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T08:15:58Z",
+  "head_ref": "research/claudeai-formalization-path-letter-aaron-2026-05-01"
+}

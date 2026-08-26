@@ -1,0 +1,19 @@
+{
+  "pr_number": 1830,
+  "archive_path": "docs/history/pr-reviews/PR-1830-ci-stop-recursive-pr-archive-cascade.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-uCFn",
+    "comment:PRRC_kwDOSF9kNM6-uD3w",
+    "comment:PRRC_kwDOSF9kNM6-uD42",
+    "thread:PRRT_kwDOSF9kNM6AOrPq",
+    "thread:PRRT_kwDOSF9kNM6AOsi9",
+    "thread:PRRT_kwDOSF9kNM6AOsj0"
+  ],
+  "fetched_at": "2026-08-25T09:05:29.621Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci: stop recursive PR archive cascade",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T07:48:32Z",
+  "head_ref": "claim/stop-pr-archive-cascade"
+}

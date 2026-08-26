@@ -1,0 +1,31 @@
+{
+  "pr_number": 1576,
+  "archive_path": "docs/history/pr-reviews/PR-1576-docs-memory-md-index-6-recent-feedback-files-substrate-encoding-cluster-2026-05-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695ZYZ",
+    "comment:PRRC_kwDOSF9kNM695ab8",
+    "comment:PRRC_kwDOSF9kNM695abe",
+    "comment:PRRC_kwDOSF9kNM695abo",
+    "comment:PRRC_kwDOSF9kNM695abz",
+    "comment:PRRC_kwDOSF9kNM695acD",
+    "comment:PRRC_kwDOSF9kNM695acT",
+    "comment:PRRC_kwDOSF9kNM695jI6",
+    "comment:PRRC_kwDOSF9kNM695jIx",
+    "thread:PRRT_kwDOSF9kNM5_iVVU",
+    "thread:PRRT_kwDOSF9kNM5_iWI6",
+    "thread:PRRT_kwDOSF9kNM5_iWIs",
+    "thread:PRRT_kwDOSF9kNM5_iWIz",
+    "thread:PRRT_kwDOSF9kNM5_iWJB",
+    "thread:PRRT_kwDOSF9kNM5_iWJH",
+    "thread:PRRT_kwDOSF9kNM5_iWJU",
+    "thread:PRRT_kwDOSF9kNM5_icfm",
+    "thread:PRRT_kwDOSF9kNM5_icfs"
+  ],
+  "fetched_at": "2026-08-25T08:57:17.155Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(memory-md): index 6 recent feedback files -- substrate-encoding cluster (2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:03:46Z",
+  "head_ref": "memory-md/index-recent-feedback-files-batch-aaron-2026-05-04"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 129,
+  "archive_path": "docs/history/pr-reviews/PR-129-round-44-auto-loop-30-stacking-risk-decision-framework-first-pass-research.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66LL7v",
+    "comment:PRRC_kwDOSF9kNM66LL8Y",
+    "comment:PRRC_kwDOSF9kNM66LL8v",
+    "comment:PRRC_kwDOSF9kNM66LL9A",
+    "thread:PRRT_kwDOSF9kNM58w9M-",
+    "thread:PRRT_kwDOSF9kNM58w9Mg",
+    "thread:PRRT_kwDOSF9kNM58w9NP",
+    "thread:PRRT_kwDOSF9kNM58w9Nc"
+  ],
+  "fetched_at": "2026-08-25T07:55:38.670Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-30: stacking-risk decision framework (first-pass research)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T11:11:11Z",
+  "head_ref": "land-stacking-risk-decision-framework"
+}

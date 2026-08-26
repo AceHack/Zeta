@@ -1,0 +1,17 @@
+{
+  "pr_number": 1167,
+  "archive_path": "docs/history/pr-reviews/PR-1167-memory-harness-engineering-osmani-b-ckeler-external-anchors-validate-substrate-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Qzqz",
+    "comment:PRRC_kwDOSF9kNM69QzrG",
+    "thread:PRRT_kwDOSF9kNM5_DsX3",
+    "thread:PRRT_kwDOSF9kNM5_DsYF"
+  ],
+  "fetched_at": "2026-08-25T08:40:39.317Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(harness-engineering): Osmani + Böckeler external anchors validate substrate discipline",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T21:38:33Z",
+  "head_ref": "otto/harness-engineering-external-anchors-2026-05-01"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1860,
+  "archive_path": "docs/history/pr-reviews/PR-1860-backlog-b-0245-connect-coherence-ai-to-data-homecoming.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-ymp6",
+    "comment:PRRC_kwDOSF9kNM6-yoPF",
+    "thread:PRRT_kwDOSF9kNM6ASFDT",
+    "thread:PRRT_kwDOSF9kNM6ASGRK"
+  ],
+  "fetched_at": "2026-08-25T09:05:48.489Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0245): connect coherence AI to data homecoming",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:08:07Z",
+  "head_ref": "codex/b0245-coherence-homecoming-guardians"
+}

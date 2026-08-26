@@ -1,0 +1,12 @@
+{
+  "pr_number": 698,
+  "archive_path": "docs/history/pr-reviews/PR-698-ops-theme-c-add-build-and-test-macos-26-to-expected-required-status-checks-0-0-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:21:47.215Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(theme-c): add build-and-test (macos-26) to expected required_status_checks — 0/0/0 reconciliation",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T22:01:50Z",
+  "head_ref": "ops/theme-c-expected-snapshot-macos-26-forward-sync-2026-04-28"
+}

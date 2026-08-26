@@ -1,0 +1,23 @@
+{
+  "pr_number": 1634,
+  "archive_path": "docs/history/pr-reviews/PR-1634-shard-2026-05-05t11-50z-consolidation-cybernetic-already-self-disclosure-adds-4t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-B-yG",
+    "comment:PRRC_kwDOSF9kNM6-CBDE",
+    "comment:PRRC_kwDOSF9kNM6-CBD_",
+    "comment:PRRC_kwDOSF9kNM6-CBDk",
+    "comment:PRRC_kwDOSF9kNM6-CBEe",
+    "thread:PRRT_kwDOSF9kNM5_ovKY",
+    "thread:PRRT_kwDOSF9kNM5_ow7V",
+    "thread:PRRT_kwDOSF9kNM5_ow7u",
+    "thread:PRRT_kwDOSF9kNM5_ow8D",
+    "thread:PRRT_kwDOSF9kNM5_ow8a"
+  ],
+  "fetched_at": "2026-08-25T08:59:38.445Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T11:50Z): consolidation + cybernetic-already self-disclosure adds 4th source to architecture-provenance",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:54:37Z",
+  "head_ref": "shard/2026-05-05-1150Z"
+}

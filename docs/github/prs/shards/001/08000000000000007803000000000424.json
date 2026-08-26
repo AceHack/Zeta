@@ -1,0 +1,17 @@
+{
+  "pr_number": 1060,
+  "archive_path": "docs/history/pr-reviews/PR-1060-hygiene-tick-history-2026-05-01t09-04z-pr-1059-thread-fix-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69G4bS",
+    "comment:PRRC_kwDOSF9kNM69G4be",
+    "thread:PRRT_kwDOSF9kNM5-8ZA1",
+    "thread:PRRT_kwDOSF9kNM5-8ZAr"
+  ],
+  "fetched_at": "2026-08-25T08:36:23.420Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:04Z — PR #1059 thread-fix tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:08:44Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0904Z-1059-thread-fixes"
+}

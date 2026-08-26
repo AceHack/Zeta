@@ -1,0 +1,15 @@
+{
+  "pr_number": 1640,
+  "archive_path": "docs/history/pr-reviews/PR-1640-fix-post-1638-33-literal-labels-enum-strict-status-numeric-inconsistencies-4-rev.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-C4xi",
+    "thread:PRRT_kwDOSF9kNM5_pbJM"
+  ],
+  "fetched_at": "2026-08-25T08:59:51.717Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1638): §33 literal labels + enum-strict status + numeric inconsistencies (4 review threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:34:43Z",
+  "head_ref": "fixup/1638-section-33-literal-labels-and-numeric-fixes-aaron-2026-05-05"
+}

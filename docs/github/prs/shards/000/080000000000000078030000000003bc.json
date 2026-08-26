@@ -1,0 +1,19 @@
+{
+  "pr_number": 956,
+  "archive_path": "docs/history/pr-reviews/PR-956-memory-otto-to-aaron-pushback-aic-tracking-meta-rule-processing-budget-is-surviv.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68_8i_",
+    "comment:PRRC_kwDOSF9kNM68__pi",
+    "comment:PRRC_kwDOSF9kNM68__qR",
+    "thread:PRRT_kwDOSF9kNM5-3S0V",
+    "thread:PRRT_kwDOSF9kNM5-3VHq",
+    "thread:PRRT_kwDOSF9kNM5-3VIM"
+  ],
+  "fetched_at": "2026-08-25T08:31:57.719Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(otto-to-aaron-pushback + AIC-tracking-meta-rule): processing-budget IS survival surface + AIC #2 + push-back-timing rule (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T21:14:15Z",
+  "head_ref": "memory/otto-to-aaron-pushback-plus-aic-tracking-plus-gemini-amara-reviews-aaron-2026-04-30"
+}

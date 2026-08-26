@@ -1,0 +1,23 @@
+{
+  "pr_number": 1256,
+  "archive_path": "docs/history/pr-reviews/PR-1256-review-pr-1254-postmerge-align-adr-supersession-convention-path-consistency.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Y5o2",
+    "comment:PRRC_kwDOSF9kNM69Y5o5",
+    "comment:PRRC_kwDOSF9kNM69Y62n",
+    "comment:PRRC_kwDOSF9kNM69Y62q",
+    "comment:PRRC_kwDOSF9kNM69Y62t",
+    "thread:PRRT_kwDOSF9kNM5_J1UW",
+    "thread:PRRT_kwDOSF9kNM5_J1UY",
+    "thread:PRRT_kwDOSF9kNM5_J2S1",
+    "thread:PRRT_kwDOSF9kNM5_J2S4",
+    "thread:PRRT_kwDOSF9kNM5_J2S7"
+  ],
+  "fetched_at": "2026-08-25T08:44:31.668Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review(pr-1254-postmerge): align ADR supersession convention + path consistency",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T00:42:16Z",
+  "head_ref": "research/decision-archaeology-worked-example-1-pr-1254-postmerge-fixes-aaron-2026-05-03"
+}

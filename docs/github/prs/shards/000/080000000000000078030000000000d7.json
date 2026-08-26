@@ -1,0 +1,21 @@
+{
+  "pr_number": 215,
+  "archive_path": "docs/history/pr-reviews/PR-215-backlog-git-native-pr-review-archive-otto-57-preservation-reviewer-tuning-substr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM661OVS",
+    "comment:PRRC_kwDOSF9kNM661PG0",
+    "comment:PRRC_kwDOSF9kNM661PGL",
+    "comment:PRRC_kwDOSF9kNM661PGk",
+    "thread:PRRT_kwDOSF9kNM59QNJz",
+    "thread:PRRT_kwDOSF9kNM59QNt4",
+    "thread:PRRT_kwDOSF9kNM59QNtX",
+    "thread:PRRT_kwDOSF9kNM59QNtt"
+  ],
+  "fetched_at": "2026-08-25T08:01:21.008Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: git-native PR-review archive (Otto-57 — preservation + reviewer-tuning substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T23:23:44Z",
+  "head_ref": "backlog/git-native-pr-review-archive-reviewer-tuning-substrate"
+}

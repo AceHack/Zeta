@@ -1,0 +1,17 @@
+{
+  "pr_number": 1069,
+  "archive_path": "docs/history/pr-reviews/PR-1069-hygiene-tick-history-2026-05-01t09-37z-pr-1035-thread-drain-5-threads.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HLlx",
+    "comment:PRRC_kwDOSF9kNM69HLmA",
+    "thread:PRRT_kwDOSF9kNM5-8nSM",
+    "thread:PRRT_kwDOSF9kNM5-8nSW"
+  ],
+  "fetched_at": "2026-08-25T08:36:43.618Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:37Z — PR #1035 thread-drain (5 threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:40:39Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0937Z-1035-thread-fixes"
+}

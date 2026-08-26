@@ -1,0 +1,12 @@
+{
+  "pr_number": 579,
+  "archive_path": "docs/history/pr-reviews/PR-579-backfill-b-0036-partial-6-resolve-line-20-calibration-via-33-block-compression-o.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:17:28.285Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backfill(B-0036 partial-6): resolve line-20 calibration via §33 block compression on 3 docs",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T09:01:43Z",
+  "head_ref": "backfill/section33-compress-3-calibration-tension-docs"
+}

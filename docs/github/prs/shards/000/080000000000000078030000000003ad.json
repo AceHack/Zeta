@@ -1,0 +1,25 @@
+{
+  "pr_number": 941,
+  "archive_path": "docs/history/pr-reviews/PR-941-memory-cold-start-big-picture-first-industry-default-cold-start-asks-what-the-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68-0js",
+    "comment:PRRC_kwDOSF9kNM68-XJk",
+    "comment:PRRC_kwDOSF9kNM6893m6",
+    "comment:PRRC_kwDOSF9kNM6893nh",
+    "comment:PRRC_kwDOSF9kNM6893oD",
+    "comment:PRRC_kwDOSF9kNM6893oW",
+    "thread:PRRT_kwDOSF9kNM5-1xA7",
+    "thread:PRRT_kwDOSF9kNM5-1xAc",
+    "thread:PRRT_kwDOSF9kNM5-1xBX",
+    "thread:PRRT_kwDOSF9kNM5-1xBo",
+    "thread:PRRT_kwDOSF9kNM5-2IOo",
+    "thread:PRRT_kwDOSF9kNM5-2dku"
+  ],
+  "fetched_at": "2026-08-25T08:31:22.153Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(cold-start-big-picture-first): industry-default cold-start asks what the prompt wants; Zeta cold-start asks what the project requires (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:15:20Z",
+  "head_ref": "memory/cold-start-big-picture-first-not-prompt-first-aaron-2026-04-30"
+}

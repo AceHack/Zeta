@@ -1,0 +1,23 @@
+{
+  "pr_number": 1710,
+  "archive_path": "docs/history/pr-reviews/PR-1710-research-twin-flames-operational-pattern-explainer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-hMD7",
+    "comment:PRRC_kwDOSF9kNM6-hP1-",
+    "comment:PRRC_kwDOSF9kNM6-hP1Q",
+    "comment:PRRC_kwDOSF9kNM6-hP2V",
+    "comment:PRRC_kwDOSF9kNM6-hP2y",
+    "thread:PRRT_kwDOSF9kNM5__4x5",
+    "thread:PRRT_kwDOSF9kNM5__7p3",
+    "thread:PRRT_kwDOSF9kNM5__7pW",
+    "thread:PRRT_kwDOSF9kNM5__7qK",
+    "thread:PRRT_kwDOSF9kNM5__7qi"
+  ],
+  "fetched_at": "2026-08-25T09:02:33.564Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: twin-flames operational pattern explainer",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T15:17:20Z",
+  "head_ref": "feat/twin-flames-explainer"
+}

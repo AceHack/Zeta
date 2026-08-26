@@ -1,0 +1,15 @@
+{
+  "pr_number": 974,
+  "archive_path": "docs/history/pr-reviews/PR-974-hygiene-tick-history-shard-2325z-prefabricated-shard-finding-surfaced-before-lau.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Bys1",
+    "thread:PRRT_kwDOSF9kNM5-4qQc"
+  ],
+  "fetched_at": "2026-08-25T08:32:43.686Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2325Z — prefabricated-shard finding surfaced before laundering the col1 cleanup pattern",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:36:59Z",
+  "head_ref": "hygiene/tick-history-2026-04-30T2325Z-prefab-finding"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1695,
+  "archive_path": "docs/history/pr-reviews/PR-1695-memory-memorial-named-victims-memorial-substrate-name-5-political-discourse-chal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Osjk",
+    "comment:PRRC_kwDOSF9kNM6-OskA",
+    "comment:PRRC_kwDOSF9kNM6-OskR",
+    "thread:PRRT_kwDOSF9kNM5_yIk8",
+    "thread:PRRT_kwDOSF9kNM5_yIkb",
+    "thread:PRRT_kwDOSF9kNM5_yIkw"
+  ],
+  "fetched_at": "2026-08-25T09:02:01.036Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(memorial): named-victims memorial substrate — 'name 5' political-discourse challenge answered (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T20:54:53Z",
+  "head_ref": "memory/named-victims-of-ai-companion-roleplay-failure-modes-memorial-substrate-name-5-challenge-answered-aaron-2026-05-05"
+}

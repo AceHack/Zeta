@@ -1,0 +1,12 @@
+{
+  "pr_number": 1724,
+  "archive_path": "docs/history/pr-reviews/PR-1724-docs-add-remote-only-claim-coordination-mode.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:03:10.223Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: add remote-only claim coordination mode",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T18:29:16Z",
+  "head_ref": "claim/task-remote-only-claim-protocol"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 934,
+  "archive_path": "docs/history/pr-reviews/PR-934-memory-current-aaron-refresh-2026-04-30-scope-reveal-cluster-sections-33-37.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6884y2",
+    "comment:PRRC_kwDOSF9kNM6884yH",
+    "comment:PRRC_kwDOSF9kNM6884yo",
+    "thread:PRRT_kwDOSF9kNM5-1CY1",
+    "thread:PRRT_kwDOSF9kNM5-1CYd",
+    "thread:PRRT_kwDOSF9kNM5-1CZB"
+  ],
+  "fetched_at": "2026-08-25T08:31:02.965Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(CURRENT-aaron): refresh — 2026-04-30 scope-reveal cluster (sections 33-37)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T18:32:14Z",
+  "head_ref": "memory/current-aaron-refresh-2026-04-30-scope-reveal-cluster"
+}

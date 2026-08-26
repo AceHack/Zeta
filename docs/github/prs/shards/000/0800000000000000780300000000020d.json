@@ -1,0 +1,22 @@
+{
+  "pr_number": 525,
+  "archive_path": "docs/history/pr-reviews/PR-525-backlog-b-0019-btw-durability-gap-context-add-corrections-aren-t-gitnative-persi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5Ol",
+    "comment:PRRC_kwDOSF9kNM67V5yk",
+    "comment:PRRC_kwDOSF9kNM67V6Me",
+    "comment:PRRC_kwDOSF9kNM67VDqd",
+    "comment:PRRC_kwDOSF9kNM67VDqf",
+    "comment:PRRC_kwDOSF9kNM67VDqi",
+    "thread:PRRT_kwDOSF9kNM59oJt1",
+    "thread:PRRT_kwDOSF9kNM59oJtx",
+    "thread:PRRT_kwDOSF9kNM59oJty"
+  ],
+  "fetched_at": "2026-08-25T08:14:47.826Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0019): /btw durability gap — context-add + corrections aren't gitnative-persisted",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T06:23:36Z",
+  "head_ref": "backlog/btw-durability-gap-context-add-asides"
+}

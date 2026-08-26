@@ -1,0 +1,29 @@
+{
+  "pr_number": 1566,
+  "archive_path": "docs/history/pr-reviews/PR-1566-backlog-b-0190-memory-substrate-engineering-trajectory-multi-row-plan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6941O_",
+    "comment:PRRC_kwDOSF9kNM6941P2",
+    "comment:PRRC_kwDOSF9kNM6941PP",
+    "comment:PRRC_kwDOSF9kNM6941Pa",
+    "comment:PRRC_kwDOSF9kNM6941Pm",
+    "comment:PRRC_kwDOSF9kNM696GyP",
+    "comment:PRRC_kwDOSF9kNM696Gye",
+    "comment:PRRC_kwDOSF9kNM696Gym",
+    "thread:PRRT_kwDOSF9kNM5_h6CD",
+    "thread:PRRT_kwDOSF9kNM5_h6CQ",
+    "thread:PRRT_kwDOSF9kNM5_h6CZ",
+    "thread:PRRT_kwDOSF9kNM5_h6Ck",
+    "thread:PRRT_kwDOSF9kNM5_h6Cv",
+    "thread:PRRT_kwDOSF9kNM5_i22-",
+    "thread:PRRT_kwDOSF9kNM5_i222",
+    "thread:PRRT_kwDOSF9kNM5_i23F"
+  ],
+  "fetched_at": "2026-08-25T08:56:50.789Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0190): memory substrate-engineering trajectory — multi-row plan",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:56:04Z",
+  "head_ref": "backlog/B-0190-memory-substrate-engineering-trajectory-aaron-2026-05-04"
+}

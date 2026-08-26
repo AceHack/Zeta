@@ -1,0 +1,31 @@
+{
+  "pr_number": 885,
+  "archive_path": "docs/history/pr-reviews/PR-885-ts-b-0086-port-1-backlog-script-sh-ts-slice-12-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68sLLi",
+    "comment:PRRC_kwDOSF9kNM68sLLn",
+    "comment:PRRC_kwDOSF9kNM68sLns",
+    "comment:PRRC_kwDOSF9kNM68sLo9",
+    "comment:PRRC_kwDOSF9kNM68sLoH",
+    "comment:PRRC_kwDOSF9kNM68sLoR",
+    "comment:PRRC_kwDOSF9kNM68sLod",
+    "comment:PRRC_kwDOSF9kNM68sLou",
+    "comment:PRRC_kwDOSF9kNM68sLpO",
+    "thread:PRRT_kwDOSF9kNM5-oo4i",
+    "thread:PRRT_kwDOSF9kNM5-oo4m",
+    "thread:PRRT_kwDOSF9kNM5-opN8",
+    "thread:PRRT_kwDOSF9kNM5-opNL",
+    "thread:PRRT_kwDOSF9kNM5-opNf",
+    "thread:PRRT_kwDOSF9kNM5-opNl",
+    "thread:PRRT_kwDOSF9kNM5-opNs",
+    "thread:PRRT_kwDOSF9kNM5-opOJ",
+    "thread:PRRT_kwDOSF9kNM5-opOX"
+  ],
+  "fetched_at": "2026-08-25T08:28:58.200Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 backlog script (.sh→.ts) — slice 12 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T04:49:00Z",
+  "head_ref": "lane-b/ts-bun-slice-12-backlog-generate-index-2026-04-30"
+}

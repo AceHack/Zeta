@@ -1,0 +1,17 @@
+{
+  "pr_number": 1320,
+  "archive_path": "docs/history/pr-reviews/PR-1320-fix-tick-0516z-aaron-2026-05-03-world-model-affirmation-permanence-note-post-131.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Z2iq",
+    "comment:PRRC_kwDOSF9kNM69Z2iy",
+    "thread:PRRT_kwDOSF9kNM5_KlhZ",
+    "thread:PRRT_kwDOSF9kNM5_Klhf"
+  ],
+  "fetched_at": "2026-08-25T08:47:07.102Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(tick-0516Z): Aaron 2026-05-03 world-model affirmation + permanence note (post-#1319)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:24:03Z",
+  "head_ref": "fix/tick-0516z-world-model-affirmation-and-permanence-aaron-2026-05-03"
+}

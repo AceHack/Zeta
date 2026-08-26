@@ -1,0 +1,21 @@
+{
+  "pr_number": 1813,
+  "archive_path": "docs/history/pr-reviews/PR-1813-research-lior-genesis-seed-final-diamond-orthogonal-dials-zero-anthropomorphism-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sT5-",
+    "comment:PRRC_kwDOSF9kNM6-sT5N",
+    "comment:PRRC_kwDOSF9kNM6-sT63",
+    "comment:PRRC_kwDOSF9kNM6-sT6i",
+    "thread:PRRT_kwDOSF9kNM6ANYJc",
+    "thread:PRRT_kwDOSF9kNM6ANYKF",
+    "thread:PRRT_kwDOSF9kNM6ANYKj",
+    "thread:PRRT_kwDOSF9kNM6ANYKy"
+  ],
+  "fetched_at": "2026-08-25T09:05:22.394Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior Genesis Seed final diamond — orthogonal dials, zero anthropomorphism VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:21:26Z",
+  "head_ref": "research/lior-genesis-seed-final-flash-ready-diamond"
+}

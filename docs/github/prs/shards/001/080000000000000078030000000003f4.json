@@ -1,0 +1,31 @@
+{
+  "pr_number": 1012,
+  "archive_path": "docs/history/pr-reviews/PR-1012-backlog-b-0127-p2-sibling-repo-leak-scrub-process-design-when-scrubbing-matters.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69E4ZX",
+    "comment:PRRC_kwDOSF9kNM69ES2-",
+    "comment:PRRC_kwDOSF9kNM69EUJM",
+    "comment:PRRC_kwDOSF9kNM69EUJQ",
+    "comment:PRRC_kwDOSF9kNM69EUJT",
+    "comment:PRRC_kwDOSF9kNM69EUJX",
+    "comment:PRRC_kwDOSF9kNM69F0T3",
+    "comment:PRRC_kwDOSF9kNM69F0TT",
+    "comment:PRRC_kwDOSF9kNM69F0Ts",
+    "thread:PRRT_kwDOSF9kNM5-65jq",
+    "thread:PRRT_kwDOSF9kNM5-6eD4",
+    "thread:PRRT_kwDOSF9kNM5-6fBG",
+    "thread:PRRT_kwDOSF9kNM5-6fBJ",
+    "thread:PRRT_kwDOSF9kNM5-6fBL",
+    "thread:PRRT_kwDOSF9kNM5-6fBO",
+    "thread:PRRT_kwDOSF9kNM5-7mGx",
+    "thread:PRRT_kwDOSF9kNM5-7mHG",
+    "thread:PRRT_kwDOSF9kNM5-7mHR"
+  ],
+  "fetched_at": "2026-08-25T08:34:13.925Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0127): P2 — sibling-repo leak scrub-process design (when scrubbing matters)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T07:03:24Z",
+  "head_ref": "backlog/B-0127-sibling-repo-leak-scrub-process-aaron-2026-05-01"
+}

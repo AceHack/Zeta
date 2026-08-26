@@ -1,0 +1,21 @@
+{
+  "pr_number": 957,
+  "archive_path": "docs/history/pr-reviews/PR-957-research-reviews-11-12-preserve-gemini-amara-older-reviews-verbatim-with-stale-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69AMI1",
+    "comment:PRRC_kwDOSF9kNM69AMIT",
+    "comment:PRRC_kwDOSF9kNM69AMI_",
+    "comment:PRRC_kwDOSF9kNM69AMJV",
+    "thread:PRRT_kwDOSF9kNM5-3ee7",
+    "thread:PRRT_kwDOSF9kNM5-3eeM",
+    "thread:PRRT_kwDOSF9kNM5-3eej",
+    "thread:PRRT_kwDOSF9kNM5-3eer"
+  ],
+  "fetched_at": "2026-08-25T08:31:59.945Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(reviews-11-12): preserve Gemini + Amara older reviews verbatim with stale-context flag (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T21:26:31Z",
+  "head_ref": "research/gemini-amara-older-reviews-verbatim-preservation-stale-context-2026-04-30"
+}

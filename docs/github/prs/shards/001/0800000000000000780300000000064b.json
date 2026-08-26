@@ -1,0 +1,23 @@
+{
+  "pr_number": 1611,
+  "archive_path": "docs/history/pr-reviews/PR-1611-backlog-p3-b-0203-deepseek-v4-csa-hca-composability-with-zeta-s-z-set-algebra-aa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69_H08",
+    "comment:PRRC_kwDOSF9kNM69_H1B",
+    "comment:PRRC_kwDOSF9kNM69_Hi4",
+    "comment:PRRC_kwDOSF9kNM69_Hjm",
+    "comment:PRRC_kwDOSF9kNM69_HkD",
+    "thread:PRRT_kwDOSF9kNM5_mlN-",
+    "thread:PRRT_kwDOSF9kNM5_mlNK",
+    "thread:PRRT_kwDOSF9kNM5_mlNs",
+    "thread:PRRT_kwDOSF9kNM5_mla6",
+    "thread:PRRT_kwDOSF9kNM5_mla_"
+  ],
+  "fetched_at": "2026-08-25T08:58:44.743Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P3): B-0203 DeepSeek V4 CSA+HCA composability with Zeta's Z-set algebra (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:37:28Z",
+  "head_ref": "backlog/B-0203-deepseek-v4-csa-hca-zset-composability-aaron-2026-05-05"
+}

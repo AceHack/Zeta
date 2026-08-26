@@ -1,0 +1,17 @@
+{
+  "pr_number": 263,
+  "archive_path": "docs/history/pr-reviews/PR-263-research-aminata-threat-model-pass-on-7th-ferry-aurora-ksk-design-advisory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6630q9",
+    "comment:PRRC_kwDOSF9kNM6630rJ",
+    "thread:PRRT_kwDOSF9kNM59SF1a",
+    "thread:PRRT_kwDOSF9kNM59SF1j"
+  ],
+  "fetched_at": "2026-08-25T08:02:58.077Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: Aminata threat-model pass on 7th-ferry Aurora-KSK design (advisory)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:59:02Z",
+  "head_ref": "research/aminata-threat-model-7th-ferry-oracle-rules"
+}

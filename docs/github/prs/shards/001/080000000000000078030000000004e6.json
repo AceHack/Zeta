@@ -1,0 +1,19 @@
+{
+  "pr_number": 1254,
+  "archive_path": "docs/history/pr-reviews/PR-1254-review-pr-1250-postmerge-correct-layer-7-adr-finding-relevant-adr-exists-needs-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Y4BR",
+    "comment:PRRC_kwDOSF9kNM69Y4BU",
+    "comment:PRRC_kwDOSF9kNM69Y4BZ",
+    "thread:PRRT_kwDOSF9kNM5_J0C0",
+    "thread:PRRT_kwDOSF9kNM5_J0C4",
+    "thread:PRRT_kwDOSF9kNM5_J0Cy"
+  ],
+  "fetched_at": "2026-08-25T08:44:23.618Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review(pr-1250-postmerge): correct Layer-7 ADR finding — relevant ADR exists, needs supersession marker",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T00:28:29Z",
+  "head_ref": "research/decision-archaeology-worked-example-1-layer-7-adr-fix-aaron-2026-05-03"
+}

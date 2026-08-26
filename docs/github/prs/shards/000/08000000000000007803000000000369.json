@@ -1,0 +1,19 @@
+{
+  "pr_number": 873,
+  "archive_path": "docs/history/pr-reviews/PR-873-trajectory-ts-bun-resume-slice-4-merged-closure-cluster-b-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68qh47",
+    "comment:PRRC_kwDOSF9kNM68qh4i",
+    "comment:PRRC_kwDOSF9kNM68qhiy",
+    "thread:PRRT_kwDOSF9kNM5-ncPt",
+    "thread:PRRT_kwDOSF9kNM5-ncfs",
+    "thread:PRRT_kwDOSF9kNM5-ncgF"
+  ],
+  "fetched_at": "2026-08-25T08:28:24.812Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "trajectory(ts-bun): RESUME slice-4-merged closure + Cluster B complete",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T02:15:50Z",
+  "head_ref": "lane-b/ts-bun-slice-4-closure-2026-04-30"
+}

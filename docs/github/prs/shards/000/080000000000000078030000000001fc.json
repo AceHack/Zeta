@@ -1,0 +1,12 @@
+{
+  "pr_number": 508,
+  "archive_path": "docs/history/pr-reviews/PR-508-fix-post-507-nvidia-thor-dedup-usb4-class-otto-293-mutual-alignment-language.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:13:54.176Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(post-#507): NVIDIA Thor dedup + USB4-class + Otto-293 mutual-alignment language",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T22:09:41Z",
+  "head_ref": "fix/post-507-cleanup-nvidia-dedup-usb4-mutual-alignment"
+}

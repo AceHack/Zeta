@@ -1,0 +1,12 @@
+{
+  "pr_number": 1344,
+  "archive_path": "docs/history/pr-reviews/PR-1344-hygiene-tick-history-2026-05-03t07-28z-1341-post-merge-title-casing-fix-1343-con.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:47:57.794Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T07:28Z — #1341 post-merge title-casing fix (#1343) — convention-drift detection class",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:30:11Z",
+  "head_ref": "hygiene/tick-2026-05-03-0728Z-1341-casing-fix"
+}

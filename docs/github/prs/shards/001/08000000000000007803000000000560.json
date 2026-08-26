@@ -1,0 +1,15 @@
+{
+  "pr_number": 1376,
+  "archive_path": "docs/history/pr-reviews/PR-1376-hygiene-tick-history-2026-05-03t10-51z-deferred-5-ci-ref-d-sh-investigation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bGX4",
+    "thread:PRRT_kwDOSF9kNM5_Lkmp"
+  ],
+  "fetched_at": "2026-08-25T08:49:09.252Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T10:51Z — deferred-5-CI-ref'd-sh investigation",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T10:53:10Z",
+  "head_ref": "hygiene/tick-2026-05-03-1051Z-ci-bun-investigation"
+}

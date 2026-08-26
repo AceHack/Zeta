@@ -1,0 +1,12 @@
+{
+  "pr_number": 1593,
+  "archive_path": "docs/history/pr-reviews/PR-1593-research-dbsp-cross-check-dbsp-chain-rule-findings-against-arxiv-2203-16684-prop.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:57:57.806Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(dbsp): cross-check DBSP chain rule findings against arXiv:2203.16684 Prop 3.5 (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T06:41:14Z",
+  "head_ref": "research/dbsp-chain-rule-cross-check-prop-3-5-aaron-2026-05-05"
+}

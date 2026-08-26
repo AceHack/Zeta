@@ -1,0 +1,17 @@
+{
+  "pr_number": 998,
+  "archive_path": "docs/history/pr-reviews/PR-998-hygiene-tick-history-shard-0128z-claude-ai-csap-pushback-chunked-import-complete.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69C-nE",
+    "comment:PRRC_kwDOSF9kNM69C-nX",
+    "thread:PRRT_kwDOSF9kNM5-5hb7",
+    "thread:PRRT_kwDOSF9kNM5-5hbs"
+  ],
+  "fetched_at": "2026-08-25T08:33:40.405Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0128Z — Claude.ai CSAP-pushback chunked-import-complete tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T01:32:29Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0128Z-claudeai-csap-import-complete"
+}

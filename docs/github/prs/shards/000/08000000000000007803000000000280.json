@@ -1,0 +1,19 @@
+{
+  "pr_number": 640,
+  "archive_path": "docs/history/pr-reviews/PR-640-sync-acehack-lfg-substrate-otto-358-live-lock-narrow-sibling-of-acehack-38.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67oh5j",
+    "comment:PRRC_kwDOSF9kNM67oh61",
+    "comment:PRRC_kwDOSF9kNM67oh7S",
+    "thread:PRRT_kwDOSF9kNM5929Rz",
+    "thread:PRRT_kwDOSF9kNM5929Su",
+    "thread:PRRT_kwDOSF9kNM5929TG"
+  ],
+  "fetched_at": "2026-08-25T08:19:31.904Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg): substrate(otto-358) live-lock narrow (sibling of AceHack #38)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T14:19:06Z",
+  "head_ref": "sync/acehack-to-lfg-otto-358-live-lock-narrow"
+}

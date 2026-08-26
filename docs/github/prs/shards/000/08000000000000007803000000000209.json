@@ -1,0 +1,23 @@
+{
+  "pr_number": 521,
+  "archive_path": "docs/history/pr-reviews/PR-521-tools-hygiene-lost-files-common-locations-catalog-otto-329-phase-8.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UtzI",
+    "comment:PRRC_kwDOSF9kNM67UuFW",
+    "comment:PRRC_kwDOSF9kNM67UuFg",
+    "comment:PRRC_kwDOSF9kNM67UuFl",
+    "comment:PRRC_kwDOSF9kNM67UuFm",
+    "thread:PRRT_kwDOSF9kNM59n39Z",
+    "thread:PRRT_kwDOSF9kNM59n4K5",
+    "thread:PRRT_kwDOSF9kNM59n4K8",
+    "thread:PRRT_kwDOSF9kNM59n4K9",
+    "thread:PRRT_kwDOSF9kNM59n4Kx"
+  ],
+  "fetched_at": "2026-08-25T08:14:35.478Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tools(hygiene): lost-files common-locations catalog (Otto-329 Phase 8)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T01:18:42Z",
+  "head_ref": "tools/lost-files-locations-list"
+}

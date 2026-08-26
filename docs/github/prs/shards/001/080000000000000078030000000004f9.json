@@ -1,0 +1,15 @@
+{
+  "pr_number": 1273,
+  "archive_path": "docs/history/pr-reviews/PR-1273-hygiene-tick-history-2026-05-03t02-23z-same-tick-agents-md-backport.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZQpf",
+    "thread:PRRT_kwDOSF9kNM5_KHP3"
+  ],
+  "fetched_at": "2026-08-25T08:45:17.275Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T02:23Z — same-tick AGENTS.md backport",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:25:16Z",
+  "head_ref": "free-memory/tick-0223Z-agents-md-backport-claude-scope"
+}

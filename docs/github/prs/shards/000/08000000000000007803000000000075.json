@@ -1,0 +1,15 @@
+{
+  "pr_number": 117,
+  "archive_path": "docs/history/pr-reviews/PR-117-round-44-auto-loop-19-backlog-p2-row-compoundings-per-tick-audit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66IElP",
+    "thread:PRRT_kwDOSF9kNM58uoxM"
+  ],
+  "fetched_at": "2026-08-25T07:55:01.174Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-19: BACKLOG P2 row — compoundings-per-tick audit",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T08:47:49Z",
+  "head_ref": "auto-loop-19-compoundings-per-tick"
+}

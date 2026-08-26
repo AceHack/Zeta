@@ -1,0 +1,30 @@
+{
+  "pr_number": 187,
+  "archive_path": "docs/history/pr-reviews/PR-187-nsa-test-history-nsa-004-memory-recall-test-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66w9cY",
+    "comment:PRRC_kwDOSF9kNM66w9ci",
+    "comment:PRRC_kwDOSF9kNM66w_N6",
+    "comment:PRRC_kwDOSF9kNM66w_NW",
+    "comment:PRRC_kwDOSF9kNM66w_OF",
+    "comment:PRRC_kwDOSF9kNM67EkMe",
+    "comment:PRRC_kwDOSF9kNM67EkPW",
+    "comment:PRRC_kwDOSF9kNM67EkSh",
+    "comment:PRRC_kwDOSF9kNM67EkWF",
+    "comment:PRRC_kwDOSF9kNM67EkZF",
+    "comment:PRRC_kwDOSF9kNM67EnQl",
+    "thread:PRRT_kwDOSF9kNM59NHj-",
+    "thread:PRRT_kwDOSF9kNM59NHj2",
+    "thread:PRRT_kwDOSF9kNM59NI0P",
+    "thread:PRRT_kwDOSF9kNM59NI0r",
+    "thread:PRRT_kwDOSF9kNM59NI0y",
+    "thread:PRRT_kwDOSF9kNM59brRq"
+  ],
+  "fetched_at": "2026-08-25T07:59:28.421Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "nsa-test-history: NSA-004 — memory recall test (PASS)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T15:01:14Z",
+  "head_ref": "hygiene/nsa-004-cadenced-test"
+}

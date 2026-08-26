@@ -1,0 +1,27 @@
+{
+  "pr_number": 1486,
+  "archive_path": "docs/history/pr-reviews/PR-1486-feedback-aaron-s-personal-meaning-5-level-extension-tiles-razor-candidate-flag-r.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69qo9B",
+    "comment:PRRC_kwDOSF9kNM69qtIW",
+    "comment:PRRC_kwDOSF9kNM69qtJ5",
+    "comment:PRRC_kwDOSF9kNM69qtJS",
+    "comment:PRRC_kwDOSF9kNM69qtK2",
+    "comment:PRRC_kwDOSF9kNM69qtKf",
+    "comment:PRRC_kwDOSF9kNM69qtLN",
+    "thread:PRRT_kwDOSF9kNM5_XfKa",
+    "thread:PRRT_kwDOSF9kNM5_XiS-",
+    "thread:PRRT_kwDOSF9kNM5_XiSR",
+    "thread:PRRT_kwDOSF9kNM5_XiT8",
+    "thread:PRRT_kwDOSF9kNM5_XiTj",
+    "thread:PRRT_kwDOSF9kNM5_XiUP",
+    "thread:PRRT_kwDOSF9kNM5_XiUh"
+  ],
+  "fetched_at": "2026-08-25T08:53:31.498Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: Aaron's personal meaning + 5-level extension + tiles+razor candidate-flag retrofit + missed-merge recovery (Aaron 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T13:57:52Z",
+  "head_ref": "feedback/aaron-meaning-family-propagation-non-ossifying-strange-attractors-five-level-extension-aaron-2026-05-04"
+}

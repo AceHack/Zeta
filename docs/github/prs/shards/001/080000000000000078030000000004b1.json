@@ -1,0 +1,29 @@
+{
+  "pr_number": 1201,
+  "archive_path": "docs/history/pr-reviews/PR-1201-memory-no-warnings-inside-the-system-boundary-dst-external-invariants-exempt-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69WCk-",
+    "comment:PRRC_kwDOSF9kNM69WCk3",
+    "comment:PRRC_kwDOSF9kNM69WCk8",
+    "comment:PRRC_kwDOSF9kNM69WClB",
+    "comment:PRRC_kwDOSF9kNM69WFpt",
+    "comment:PRRC_kwDOSF9kNM69WFqG",
+    "comment:PRRC_kwDOSF9kNM69WFqQ",
+    "comment:PRRC_kwDOSF9kNM69WFqW",
+    "thread:PRRT_kwDOSF9kNM5_HmTR",
+    "thread:PRRT_kwDOSF9kNM5_HmTU",
+    "thread:PRRT_kwDOSF9kNM5_HmTW",
+    "thread:PRRT_kwDOSF9kNM5_HmTY",
+    "thread:PRRT_kwDOSF9kNM5_Hos-",
+    "thread:PRRT_kwDOSF9kNM5_HotU",
+    "thread:PRRT_kwDOSF9kNM5_Hotd",
+    "thread:PRRT_kwDOSF9kNM5_Hotj"
+  ],
+  "fetched_at": "2026-08-25T08:42:05.307Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: no warnings inside the system boundary; DST external-invariants exempt (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:23:47Z",
+  "head_ref": "docs/no-warnings-anywhere-aaron-2026-05-02"
+}

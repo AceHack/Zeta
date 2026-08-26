@@ -1,0 +1,23 @@
+{
+  "pr_number": 1310,
+  "archive_path": "docs/history/pr-reviews/PR-1310-fix-post-merge-current-aaron-53-threshold-crossing-distillation-trailing-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZsUC",
+    "comment:PRRC_kwDOSF9kNM69ZsjD",
+    "comment:PRRC_kwDOSF9kNM69ZsjI",
+    "comment:PRRC_kwDOSF9kNM69ZsjL",
+    "comment:PRRC_kwDOSF9kNM69ZtZM",
+    "thread:PRRT_kwDOSF9kNM5_KdS0",
+    "thread:PRRT_kwDOSF9kNM5_Kde1",
+    "thread:PRRT_kwDOSF9kNM5_Kde4",
+    "thread:PRRT_kwDOSF9kNM5_Kdex",
+    "thread:PRRT_kwDOSF9kNM5_KeJy"
+  ],
+  "fetched_at": "2026-08-25T08:46:44.878Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-merge): CURRENT-aaron §53 threshold-crossing distillation + trailing fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T04:38:02Z",
+  "head_ref": "fix/threshold-crossing-current-aaron-53-and-trailing-fixes-otto-2026-05-03"
+}

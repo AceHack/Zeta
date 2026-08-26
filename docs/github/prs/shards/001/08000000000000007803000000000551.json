@@ -1,0 +1,15 @@
+{
+  "pr_number": 1361,
+  "archive_path": "docs/history/pr-reviews/PR-1361-hygiene-tick-history-2026-05-03t08-46z-tick-shard-as-cadence-tracker-first-appli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69anQX",
+    "thread:PRRT_kwDOSF9kNM5_LLxz"
+  ],
+  "fetched_at": "2026-08-25T08:48:34.955Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T08:46Z — tick-shard-as-cadence-tracker first application + harness-integration cluster acknowledgment",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:48:57Z",
+  "head_ref": "hygiene/tick-2026-05-03-0846Z-cadence-tracker-first-application"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 953,
+  "archive_path": "docs/history/pr-reviews/PR-953-memory-canon-zero-doctrine-user-aaron-anchor-free-zero-doctrine-extension-anchor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68_lBk",
+    "thread:PRRT_kwDOSF9kNM5-3BI8"
+  ],
+  "fetched_at": "2026-08-25T08:31:49.628Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(canon-zero-doctrine + user-aaron-anchor-free): zero doctrine extension + anchor-free cognitive architecture + default-distrust on doctrine label (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:49:17Z",
+  "head_ref": "memory/canon-zero-doctrine-aaron-anchor-free-pirate-in-life-2026-04-30"
+}

@@ -1,0 +1,26 @@
+{
+  "pr_number": 431,
+  "archive_path": "docs/history/pr-reviews/PR-431-drain-268-follow-up-codex-issuance-epoch-field-amara-attribution-parameter-file-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PuZn",
+    "comment:PRRC_kwDOSF9kNM67Pur_",
+    "comment:PRRC_kwDOSF9kNM67PusF",
+    "comment:PRRC_kwDOSF9kNM67Pv7F",
+    "comment:PRRC_kwDOSF9kNM67Pv7p",
+    "comment:PRRC_kwDOSF9kNM67Pvd-",
+    "comment:PRRC_kwDOSF9kNM67Pwnr",
+    "comment:PRRC_kwDOSF9kNM67Pwnu",
+    "thread:PRRT_kwDOSF9kNM59j47c",
+    "thread:PRRT_kwDOSF9kNM59j47h",
+    "thread:PRRT_kwDOSF9kNM59j4sE",
+    "thread:PRRT_kwDOSF9kNM59j6YP",
+    "thread:PRRT_kwDOSF9kNM59j6YQ"
+  ],
+  "fetched_at": "2026-08-25T08:10:00.518Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#268 follow-up Codex): issuance_epoch field + Amara attribution + parameter_file_sha algo",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:53:49Z",
+  "head_ref": "drain/268-followup-issuance-epoch-and-attribution"
+}

@@ -1,0 +1,28 @@
+{
+  "pr_number": 642,
+  "archive_path": "docs/history/pr-reviews/PR-642-substrate-laptop-only-source-integration-high-priority-backlog-lfg-sibling-of-ac.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67p-mN",
+    "comment:PRRC_kwDOSF9kNM67qBGn",
+    "comment:PRRC_kwDOSF9kNM67qBH2",
+    "comment:PRRC_kwDOSF9kNM67qBIp",
+    "comment:PRRC_kwDOSF9kNM67qBJM",
+    "comment:PRRC_kwDOSF9kNM67qaMt",
+    "comment:PRRC_kwDOSF9kNM67qaPp",
+    "comment:PRRC_kwDOSF9kNM67qaTI",
+    "comment:PRRC_kwDOSF9kNM67qaXW",
+    "comment:PRRC_kwDOSF9kNM67qaa-",
+    "thread:PRRT_kwDOSF9kNM594C4C",
+    "thread:PRRT_kwDOSF9kNM594Eu9",
+    "thread:PRRT_kwDOSF9kNM594EuB",
+    "thread:PRRT_kwDOSF9kNM594Evs",
+    "thread:PRRT_kwDOSF9kNM594EwK"
+  ],
+  "fetched_at": "2026-08-25T08:19:37.973Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate: laptop-only source integration HIGH PRIORITY backlog — LFG sibling of AceHack #41",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T15:36:30Z",
+  "head_ref": "lfg/sibling-pr-41-laptop-source-integration"
+}

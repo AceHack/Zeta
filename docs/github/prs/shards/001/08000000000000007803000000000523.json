@@ -1,0 +1,15 @@
+{
+  "pr_number": 1315,
+  "archive_path": "docs/history/pr-reviews/PR-1315-free-memory-persona-table-expansion-named-agents-vs-end-user-pr-copilot-first-cl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZyIT",
+    "thread:PRRT_kwDOSF9kNM5_KiA3"
+  ],
+  "fetched_at": "2026-08-25T08:46:55.538Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: persona-table expansion — named-agents vs end-user + PR Copilot first-class (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:01:56Z",
+  "head_ref": "free-memory/persona-table-named-agents-vs-end-user-and-pr-copilot-aaron-2026-05-03"
+}

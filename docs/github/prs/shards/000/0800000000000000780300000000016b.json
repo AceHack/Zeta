@@ -1,0 +1,22 @@
+{
+  "pr_number": 363,
+  "archive_path": "docs/history/pr-reviews/PR-363-tools-doc-comment-history-audit-lint-structural-enforcement-for-otto-220.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67BU99",
+    "comment:PRRC_kwDOSF9kNM67BU9D",
+    "comment:PRRC_kwDOSF9kNM67BVCD",
+    "comment:PRRC_kwDOSF9kNM67By_l",
+    "comment:PRRC_kwDOSF9kNM67BzJf",
+    "comment:PRRC_kwDOSF9kNM67BzUd",
+    "thread:PRRT_kwDOSF9kNM59ZMZ-",
+    "thread:PRRT_kwDOSF9kNM59ZMau",
+    "thread:PRRT_kwDOSF9kNM59ZMd5"
+  ],
+  "fetched_at": "2026-08-25T08:06:44.758Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tools: doc-comment history-audit lint — structural enforcement for Otto-220",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T12:56:36Z",
+  "head_ref": "tools/doc-comment-history-audit-lint-otto-222"
+}

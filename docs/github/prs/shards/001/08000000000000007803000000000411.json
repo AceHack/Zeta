@@ -1,0 +1,12 @@
+{
+  "pr_number": 1041,
+  "archive_path": "docs/history/pr-reviews/PR-1041-hygiene-tick-history-shard-0759z-generative-factory-tick-b-0130-filed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:35:38.143Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0759Z — generative factory tick (B-0130 filed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T07:08:44Z",
+  "head_ref": "hygiene/tick-history-shard-0759Z-b0130-mechanization-backlog"
+}

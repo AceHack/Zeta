@@ -1,0 +1,21 @@
+{
+  "pr_number": 1042,
+  "archive_path": "docs/history/pr-reviews/PR-1042-research-candidate-e8-vs-crdt-lattice-bft-propagation-hypothesis-aaron-s-questio.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69F4D2",
+    "comment:PRRC_kwDOSF9kNM69F4Da",
+    "comment:PRRC_kwDOSF9kNM69F4Dq",
+    "comment:PRRC_kwDOSF9kNM69F4EE",
+    "thread:PRRT_kwDOSF9kNM5-7o8_",
+    "thread:PRRT_kwDOSF9kNM5-7o9P",
+    "thread:PRRT_kwDOSF9kNM5-7o9Y",
+    "thread:PRRT_kwDOSF9kNM5-7o9l"
+  ],
+  "fetched_at": "2026-08-25T08:35:40.642Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(candidate): E8 vs CRDT-lattice BFT-propagation hypothesis (Aaron's question + Claude.ai pushback + Otto refinement, 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:34:00Z",
+  "head_ref": "research/e8-vs-crdt-lattice-bft-propagation-candidate-2026-05-01"
+}

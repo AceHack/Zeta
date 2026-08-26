@@ -1,0 +1,21 @@
+{
+  "pr_number": 1893,
+  "archive_path": "docs/history/pr-reviews/PR-1893-docs-tick-1515z-shard-lost-files-resume-rx-fs.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-49VT",
+    "comment:PRRC_kwDOSF9kNM6-49Wp",
+    "comment:PRRC_kwDOSF9kNM6-49XD",
+    "comment:PRRC_kwDOSF9kNM6-49Xa",
+    "thread:PRRT_kwDOSF9kNM6AW1I5",
+    "thread:PRRT_kwDOSF9kNM6AW1J9",
+    "thread:PRRT_kwDOSF9kNM6AW1KP",
+    "thread:PRRT_kwDOSF9kNM6AW1Km"
+  ],
+  "fetched_at": "2026-08-25T09:06:46.655Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(tick): 1515Z shard — lost-files + resume + Rx.fs",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:17:58Z",
+  "head_ref": "otto/tick-shard-1515z"
+}

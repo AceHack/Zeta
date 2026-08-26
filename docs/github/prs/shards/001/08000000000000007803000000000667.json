@@ -1,0 +1,17 @@
+{
+  "pr_number": 1639,
+  "archive_path": "docs/history/pr-reviews/PR-1639-fix-post-1635-round-2-33-literal-line-start-tokens-no-bold-prose-enum-strict-ope.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Cvs6",
+    "comment:PRRC_kwDOSF9kNM6-CvsQ",
+    "thread:PRRT_kwDOSF9kNM5_pUUN",
+    "thread:PRRT_kwDOSF9kNM5_pUUs"
+  ],
+  "fetched_at": "2026-08-25T08:59:49.547Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1635 round-2): §33 literal line-start tokens (no bold-prose) + enum-strict Operational status + Qubic-Monero correction note",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:29:44Z",
+  "head_ref": "fixup/1635-section-33-literal-line-start-tokens-aaron-2026-05-05"
+}

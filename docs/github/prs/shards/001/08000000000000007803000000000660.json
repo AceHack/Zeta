@@ -1,0 +1,21 @@
+{
+  "pr_number": 1632,
+  "archive_path": "docs/history/pr-reviews/PR-1632-memory-feedback-red-team-work-knaves-at-round-table-dual-use-weaponization-discl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Bl_D",
+    "comment:PRRC_kwDOSF9kNM6-BrGT",
+    "comment:PRRC_kwDOSF9kNM6-BrHB",
+    "comment:PRRC_kwDOSF9kNM6-BrHf",
+    "thread:PRRT_kwDOSF9kNM5_ocbA",
+    "thread:PRRT_kwDOSF9kNM5_ogQ2",
+    "thread:PRRT_kwDOSF9kNM5_ogQR",
+    "thread:PRRT_kwDOSF9kNM5_ogRP"
+  ],
+  "fetched_at": "2026-08-25T08:59:33.255Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): red-team work + knaves-at-round-table + dual-use weaponization disclosure are same architectural move at three levels (Aaron 2026-05-05 night-close)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:53:45Z",
+  "head_ref": "memory/red-team-knaves-dual-use-three-level-architectural-composition-aaron-2026-05-05"
+}

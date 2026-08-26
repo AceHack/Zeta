@@ -1,0 +1,25 @@
+{
+  "pr_number": 553,
+  "archive_path": "docs/history/pr-reviews/PR-553-research-agent-wallet-protocol-stack-x402-eip-3009-eip-7702-erc-8004-acp-mpp-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5t1",
+    "comment:PRRC_kwDOSF9kNM67V6LF",
+    "comment:PRRC_kwDOSF9kNM67VoJF",
+    "comment:PRRC_kwDOSF9kNM67VoQq",
+    "comment:PRRC_kwDOSF9kNM67WPei",
+    "comment:PRRC_kwDOSF9kNM67WRlC",
+    "comment:PRRC_kwDOSF9kNM67WRxl",
+    "comment:PRRC_kwDOSF9kNM67WTGz",
+    "thread:PRRT_kwDOSF9kNM59onN5",
+    "thread:PRRT_kwDOSF9kNM59onUC",
+    "thread:PRRT_kwDOSF9kNM59pGZW",
+    "thread:PRRT_kwDOSF9kNM59pIOm"
+  ],
+  "fetched_at": "2026-08-25T08:15:56.997Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: agent wallet protocol stack — x402 + EIP-3009 + EIP-7702 + ERC-8004 + ACP/MPP — Aaron 2026-04-26 substrate brief",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:05:59Z",
+  "head_ref": "research/agent-wallet-protocol-stack-x402-eip7702-erc8004-aaron-2026-04-26-share"
+}

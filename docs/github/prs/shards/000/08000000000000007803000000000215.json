@@ -1,0 +1,15 @@
+{
+  "pr_number": 533,
+  "archive_path": "docs/history/pr-reviews/PR-533-chore-loop-tick-history-append-2026-04-26t02-42-54z-prevention-shipped.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VLQx",
+    "thread:PRRT_kwDOSF9kNM59oP7k"
+  ],
+  "fetched_at": "2026-08-25T08:15:06.604Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): append 2026-04-26T02:42:54Z — prevention shipped",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T02:45:35Z",
+  "head_ref": "chore/tick-history-2026-04-26-prevention-shipped"
+}

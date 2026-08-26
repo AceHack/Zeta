@@ -1,0 +1,15 @@
+{
+  "pr_number": 105,
+  "archive_path": "docs/history/pr-reviews/PR-105-auto-loop-13-tick-history-row-generative-factory-improvement-stale-stacked-base-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66FLWc",
+    "thread:PRRT_kwDOSF9kNM58sewN"
+  ],
+  "fetched_at": "2026-08-25T07:54:18.097Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "auto-loop-13 tick-history row — generative factory improvement + stale-stacked-base hazard + PR #102 close",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T06:12:35Z",
+  "head_ref": "land-tick-history-autoloop-13-append"
+}

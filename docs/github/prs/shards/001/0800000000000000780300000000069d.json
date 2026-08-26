@@ -1,0 +1,17 @@
+{
+  "pr_number": 1693,
+  "archive_path": "docs/history/pr-reviews/PR-1693-memory-architecture-architecture-built-for-smugglers-pre-qualification-is-witch-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-N7f6",
+    "comment:PRRC_kwDOSF9kNM6-N7fF",
+    "thread:PRRT_kwDOSF9kNM5_xj05",
+    "thread:PRRT_kwDOSF9kNM5_xj0M"
+  ],
+  "fetched_at": "2026-08-25T09:01:56.691Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(architecture): architecture built FOR smugglers; pre-qualification IS witch-trial; refusal is not yes-and (Aaron + Claude.ai 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T20:18:29Z",
+  "head_ref": "memory/architecture-built-FOR-smugglers-bothness-as-honest-smuggling-not-pretending-aaron-2026-05-05"
+}

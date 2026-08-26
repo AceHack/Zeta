@@ -1,0 +1,28 @@
+{
+  "pr_number": 399,
+  "archive_path": "docs/history/pr-reviews/PR-399-backlog-memory-os-interface-durable-async-addzeta-serverless-with-state-by-defau.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67N270",
+    "comment:PRRC_kwDOSF9kNM67N28F",
+    "comment:PRRC_kwDOSF9kNM67N28R",
+    "comment:PRRC_kwDOSF9kNM67N7ht",
+    "comment:PRRC_kwDOSF9kNM67N7ip",
+    "comment:PRRC_kwDOSF9kNM67N7jp",
+    "comment:PRRC_kwDOSF9kNM67N84f",
+    "comment:PRRC_kwDOSF9kNM67N84k",
+    "comment:PRRC_kwDOSF9kNM67N8s9",
+    "thread:PRRT_kwDOSF9kNM59ii81",
+    "thread:PRRT_kwDOSF9kNM59ii8l",
+    "thread:PRRT_kwDOSF9kNM59ii8v",
+    "thread:PRRT_kwDOSF9kNM59inZ-",
+    "thread:PRRT_kwDOSF9kNM59injL",
+    "thread:PRRT_kwDOSF9kNM59injP"
+  ],
+  "fetched_at": "2026-08-25T08:08:34.845Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog+memory: OS-interface — durable-async / AddZeta / serverless-with-state-by-default",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T01:00:44Z",
+  "head_ref": "backlog/os-interface-durable-async-addzeta"
+}

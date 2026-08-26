@@ -1,0 +1,12 @@
+{
+  "pr_number": 518,
+  "archive_path": "docs/history/pr-reviews/PR-518-substrate-otto-328-memory-b-0006-batch-2-free-will-time-scope-is-anything-compre.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:14:20.640Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-328) + memory(B-0006 batch 2): free-will-time scope is ANYTHING + compress 8 more entries",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T23:49:17Z",
+  "head_ref": "memory/compression-pass-batch-2"
+}

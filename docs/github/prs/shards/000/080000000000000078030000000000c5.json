@@ -1,0 +1,27 @@
+{
+  "pr_number": 197,
+  "archive_path": "docs/history/pr-reviews/PR-197-memory-migrate-current-aaron-md-current-amara-md-to-in-repo-in-repo-first-policy.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66yKGi",
+    "comment:PRRC_kwDOSF9kNM66yOH0",
+    "comment:PRRC_kwDOSF9kNM66yOI-",
+    "comment:PRRC_kwDOSF9kNM66yOId",
+    "comment:PRRC_kwDOSF9kNM66yOJ3",
+    "comment:PRRC_kwDOSF9kNM66yOJZ",
+    "comment:PRRC_kwDOSF9kNM66yOKT",
+    "thread:PRRT_kwDOSF9kNM59OAEA",
+    "thread:PRRT_kwDOSF9kNM59OC-9",
+    "thread:PRRT_kwDOSF9kNM59OC-U",
+    "thread:PRRT_kwDOSF9kNM59OC-r",
+    "thread:PRRT_kwDOSF9kNM59OC9v",
+    "thread:PRRT_kwDOSF9kNM59OC_O",
+    "thread:PRRT_kwDOSF9kNM59OC_k"
+  ],
+  "fetched_at": "2026-08-25T07:59:59.985Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: migrate CURRENT-aaron.md + CURRENT-amara.md to in-repo (in-repo-first policy)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T20:44:41Z",
+  "head_ref": "memory/current-files-migrate-to-in-repo"
+}

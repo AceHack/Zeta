@@ -1,0 +1,23 @@
+{
+  "pr_number": 1878,
+  "archive_path": "docs/history/pr-reviews/PR-1878-feat-trajectory-prefer-trajectory-pickup-before-backlog-fallback.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-2D_8",
+    "comment:PRRC_kwDOSF9kNM6-2D_Y",
+    "comment:PRRC_kwDOSF9kNM6-2EAS",
+    "comment:PRRC_kwDOSF9kNM6-2EkK",
+    "comment:PRRC_kwDOSF9kNM6-2EkO",
+    "thread:PRRT_kwDOSF9kNM6AUsKo",
+    "thread:PRRT_kwDOSF9kNM6AUsLD",
+    "thread:PRRT_kwDOSF9kNM6AUsLT",
+    "thread:PRRT_kwDOSF9kNM6AUslX",
+    "thread:PRRT_kwDOSF9kNM6AUslZ"
+  ],
+  "fetched_at": "2026-08-25T09:06:08.531Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(trajectory): prefer trajectory pickup before backlog fallback",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T13:38:13Z",
+  "head_ref": "codex/trajectory-tier1-picker"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 932,
+  "archive_path": "docs/history/pr-reviews/PR-932-hygiene-conflict-markers-allowlist-rerere-cache-dividend-memory-file.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM688o2W",
+    "thread:PRRT_kwDOSF9kNM5-0290"
+  ],
+  "fetched_at": "2026-08-25T08:30:58.743Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(conflict-markers): allowlist rerere-cache-dividend memory file",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T18:25:15Z",
+  "head_ref": "hygiene/conflict-markers-allowlist-rerere-file-2026-04-30"
+}

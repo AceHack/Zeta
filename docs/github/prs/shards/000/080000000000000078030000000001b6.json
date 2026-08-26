@@ -1,0 +1,17 @@
+{
+  "pr_number": 438,
+  "archive_path": "docs/history/pr-reviews/PR-438-hygiene-268-pr-preservation-drain-log-for-235-amara-5th-ferry-absorb.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QTer",
+    "comment:PRRC_kwDOSF9kNM67QTeu",
+    "thread:PRRT_kwDOSF9kNM59kVun",
+    "thread:PRRT_kwDOSF9kNM59kVuq"
+  ],
+  "fetched_at": "2026-08-25T08:10:18.830Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #235 (Amara 5th-ferry absorb)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T06:49:53Z",
+  "head_ref": "drain/235-pr-preservation-log"
+}

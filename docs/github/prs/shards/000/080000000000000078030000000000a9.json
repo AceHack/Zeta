@@ -1,0 +1,29 @@
+{
+  "pr_number": 169,
+  "archive_path": "docs/history/pr-reviews/PR-169-tools-git-push-with-retry-sh-dst-decided-retry-for-genuinely-external-github-5xx.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66s8zW",
+    "comment:PRRC_kwDOSF9kNM66s_rm",
+    "comment:PRRC_kwDOSF9kNM66s_s4",
+    "comment:PRRC_kwDOSF9kNM66s_sM",
+    "comment:PRRC_kwDOSF9kNM66s_sa",
+    "comment:PRRC_kwDOSF9kNM66s_sn",
+    "comment:PRRC_kwDOSF9kNM66s_tJ",
+    "comment:PRRC_kwDOSF9kNM66vTjq",
+    "thread:PRRT_kwDOSF9kNM59KKe9",
+    "thread:PRRT_kwDOSF9kNM59KMp6",
+    "thread:PRRT_kwDOSF9kNM59KMpQ",
+    "thread:PRRT_kwDOSF9kNM59KMpu",
+    "thread:PRRT_kwDOSF9kNM59KMqC",
+    "thread:PRRT_kwDOSF9kNM59KMqN",
+    "thread:PRRT_kwDOSF9kNM59KMqZ",
+    "thread:PRRT_kwDOSF9kNM59L5VM"
+  ],
+  "fetched_at": "2026-08-25T07:58:24.155Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "tools(git): push-with-retry.sh — DST-decided retry for genuinely external GitHub 5xx",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:30:33Z",
+  "head_ref": "tools/git-push-with-retry"
+}

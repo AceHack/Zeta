@@ -1,0 +1,23 @@
+{
+  "pr_number": 700,
+  "archive_path": "docs/history/pr-reviews/PR-700-ci-forward-sync-acehack-prs-80-81-comprehensive-install-cache-retry-3-5-aaron-20.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68NdB3",
+    "comment:PRRC_kwDOSF9kNM68NdBX",
+    "comment:PRRC_kwDOSF9kNM68NdCH",
+    "comment:PRRC_kwDOSF9kNM68NdCY",
+    "comment:PRRC_kwDOSF9kNM68NdCq",
+    "thread:PRRT_kwDOSF9kNM5-SH06",
+    "thread:PRRT_kwDOSF9kNM5-SH0g",
+    "thread:PRRT_kwDOSF9kNM5-SH1H",
+    "thread:PRRT_kwDOSF9kNM5-SH1V",
+    "thread:PRRT_kwDOSF9kNM5-SH1n"
+  ],
+  "fetched_at": "2026-08-25T08:21:50.309Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci: forward-sync AceHack PRs #80 + #81 — comprehensive install cache + retry 3→5 (Aaron 2026-04-28)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T22:58:05Z",
+  "head_ref": "forward-sync/install-cache-retry-from-acehack-pr-80-81-2026-04-28"
+}

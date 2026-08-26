@@ -1,0 +1,19 @@
+{
+  "pr_number": 1654,
+  "archive_path": "docs/history/pr-reviews/PR-1654-shard-2026-05-05t14-00z-forwards-7-9-absorbed-4-preservations-6-bootstrap-razor-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-FTJd",
+    "comment:PRRC_kwDOSF9kNM6-FTK3",
+    "comment:PRRC_kwDOSF9kNM6-FTKS",
+    "thread:PRRT_kwDOSF9kNM5_rPEG",
+    "thread:PRRT_kwDOSF9kNM5_rPEw",
+    "thread:PRRT_kwDOSF9kNM5_rPFK"
+  ],
+  "fetched_at": "2026-08-25T09:00:24.537Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T14:00Z): forwards 7-9 absorbed -- 4 preservations + 6 bootstrap-razor catches + architecture-as-immune-response 3-reading synthesis",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:03:46Z",
+  "head_ref": "shard/2026-05-05T1400Z"
+}

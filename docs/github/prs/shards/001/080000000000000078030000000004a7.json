@@ -1,0 +1,25 @@
+{
+  "pr_number": 1191,
+  "archive_path": "docs/history/pr-reviews/PR-1191-backlog-close-b-0125-b-0070-b-0117-b-0144-overnight-session-2026-05-02.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Smps",
+    "comment:PRRC_kwDOSF9kNM69SnC7",
+    "comment:PRRC_kwDOSF9kNM69SnDB",
+    "comment:PRRC_kwDOSF9kNM69SnDG",
+    "comment:PRRC_kwDOSF9kNM69SnDP",
+    "comment:PRRC_kwDOSF9kNM69SnDZ",
+    "thread:PRRT_kwDOSF9kNM5_FCMc",
+    "thread:PRRT_kwDOSF9kNM5_FCeR",
+    "thread:PRRT_kwDOSF9kNM5_FCeU",
+    "thread:PRRT_kwDOSF9kNM5_FCeX",
+    "thread:PRRT_kwDOSF9kNM5_FCee",
+    "thread:PRRT_kwDOSF9kNM5_FCem"
+  ],
+  "fetched_at": "2026-08-25T08:41:41.751Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: close B-0125 + B-0070 + B-0117 + B-0144 (overnight session 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T01:25:22Z",
+  "head_ref": "backlog/close-rows-landed-2026-05-02"
+}

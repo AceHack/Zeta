@@ -1,0 +1,16 @@
+{
+  "pr_number": 1045,
+  "archive_path": "docs/history/pr-reviews/PR-1045-hygiene-tick-history-shard-0830z-holding-tick-with-clearing-work-pivot.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69F8Uq",
+    "comment:PRRC_kwDOSF9kNM69G8Vs",
+    "thread:PRRT_kwDOSF9kNM5-7sL6"
+  ],
+  "fetched_at": "2026-08-25T08:35:44.778Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0830Z — holding-tick with clearing-work pivot",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:16:58Z",
+  "head_ref": "hygiene/tick-history-shard-0830Z-holding-tick-rebase-clearing"
+}

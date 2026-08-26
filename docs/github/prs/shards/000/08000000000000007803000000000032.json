@@ -1,0 +1,15 @@
+{
+  "pr_number": 50,
+  "archive_path": "docs/history/pr-reviews/PR-50-factory-hygiene-row-41-orthogonal-axes-audit-fork-pr-workflow-1-gotcha.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM654Ly-",
+    "thread:PRRT_kwDOSF9kNM58ixgV"
+  ],
+  "fetched_at": "2026-08-25T07:52:56.340Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "factory-hygiene row 41 (orthogonal-axes audit) + fork-pr-workflow -1 gotcha",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T15:18:14Z",
+  "head_ref": "orthogonal-axes-hygiene-plus-fork-pr-gotcha"
+}

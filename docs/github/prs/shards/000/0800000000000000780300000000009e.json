@@ -1,0 +1,18 @@
+{
+  "pr_number": 158,
+  "archive_path": "docs/history/pr-reviews/PR-158-memory-migrate-outcomes-over-vanity-metrics-autodream-overlay-a-pr-157-pattern.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66sQFO",
+    "comment:PRRC_kwDOSF9kNM66ti_P",
+    "comment:PRRC_kwDOSF9kNM66tm5e",
+    "thread:PRRT_kwDOSF9kNM59JpIi",
+    "thread:PRRT_kwDOSF9kNM59KphB"
+  ],
+  "fetched_at": "2026-08-25T07:57:44.997Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: migrate outcomes-over-vanity-metrics (AutoDream Overlay A, PR #157 pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:17:32Z",
+  "head_ref": "refactor/overlay-a-migrate-outcomes-over-vanity"
+}

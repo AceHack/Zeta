@@ -1,0 +1,27 @@
+{
+  "pr_number": 177,
+  "archive_path": "docs/history/pr-reviews/PR-177-hygiene-nsa-test-history-bootstrap-gap-3-of-frontier-readiness-closed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66wBme",
+    "comment:PRRC_kwDOSF9kNM66wBnh",
+    "comment:PRRC_kwDOSF9kNM66wBo1",
+    "comment:PRRC_kwDOSF9kNM66wBoA",
+    "comment:PRRC_kwDOSF9kNM66wBoa",
+    "comment:PRRC_kwDOSF9kNM66wBpO",
+    "comment:PRRC_kwDOSF9kNM66wBpw",
+    "thread:PRRT_kwDOSF9kNM59Mbly",
+    "thread:PRRT_kwDOSF9kNM59Mbmn",
+    "thread:PRRT_kwDOSF9kNM59MbnD",
+    "thread:PRRT_kwDOSF9kNM59MbnX",
+    "thread:PRRT_kwDOSF9kNM59Mbns",
+    "thread:PRRT_kwDOSF9kNM59MboC",
+    "thread:PRRT_kwDOSF9kNM59Mboe"
+  ],
+  "fetched_at": "2026-08-25T07:58:55.407Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "hygiene: NSA test history bootstrap — gap #3 of Frontier readiness closed",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T19:02:14Z",
+  "head_ref": "hygiene/nsa-test-history-bootstrap"
+}

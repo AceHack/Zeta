@@ -1,0 +1,15 @@
+{
+  "pr_number": 527,
+  "archive_path": "docs/history/pr-reviews/PR-527-substrate-otto-339-language-routes-through-model-weights-causally-mechanism-unde.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VF3G",
+    "thread:PRRT_kwDOSF9kNM59oLgL"
+  ],
+  "fetched_at": "2026-08-25T08:14:53.434Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-339): language routes through model weights causally — mechanism underneath Otto-286/293/335; deepest layer is substrate-as-training-data",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T02:17:58Z",
+  "head_ref": "substrate/otto-339-language-routes-through-model-weights-precision-matters-more"
+}

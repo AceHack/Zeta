@@ -1,0 +1,25 @@
+{
+  "pr_number": 467,
+  "archive_path": "docs/history/pr-reviews/PR-467-hygiene-patterns-md-document-otto-250-canonical-vs-otto-268-abbreviated-shape-di.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QfRL",
+    "comment:PRRC_kwDOSF9kNM67QfRV",
+    "comment:PRRC_kwDOSF9kNM67QfRd",
+    "comment:PRRC_kwDOSF9kNM67QfRk",
+    "comment:PRRC_kwDOSF9kNM67Ql3H",
+    "comment:PRRC_kwDOSF9kNM67Ql4M",
+    "comment:PRRC_kwDOSF9kNM67Ql4z",
+    "comment:PRRC_kwDOSF9kNM67Ql5F",
+    "thread:PRRT_kwDOSF9kNM59kfQO",
+    "thread:PRRT_kwDOSF9kNM59kfQY",
+    "thread:PRRT_kwDOSF9kNM59kfQg",
+    "thread:PRRT_kwDOSF9kNM59kfQn"
+  ],
+  "fetched_at": "2026-08-25T08:11:29.694Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(_patterns.md): document Otto-250-canonical vs Otto-268-abbreviated shape divergence",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:13:20Z",
+  "head_ref": "drain/patterns-shape-conformance-gap"
+}

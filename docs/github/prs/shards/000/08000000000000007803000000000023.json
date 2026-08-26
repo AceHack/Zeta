@@ -1,0 +1,27 @@
+{
+  "pr_number": 35,
+  "archive_path": "docs/history/pr-reviews/PR-35-round-44-parallel-worktree-safety-cartographer-research.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM65x-RM",
+    "comment:PRRC_kwDOSF9kNM65x-S-",
+    "comment:PRRC_kwDOSF9kNM65x-SJ",
+    "comment:PRRC_kwDOSF9kNM65x-Sf",
+    "comment:PRRC_kwDOSF9kNM65x-T3",
+    "comment:PRRC_kwDOSF9kNM65x-Ta",
+    "comment:PRRC_kwDOSF9kNM65x-UX",
+    "thread:PRRT_kwDOSF9kNM58eG0D",
+    "thread:PRRT_kwDOSF9kNM58eG0W",
+    "thread:PRRT_kwDOSF9kNM58eG0s",
+    "thread:PRRT_kwDOSF9kNM58eG1F",
+    "thread:PRRT_kwDOSF9kNM58eG1a",
+    "thread:PRRT_kwDOSF9kNM58eG1y",
+    "thread:PRRT_kwDOSF9kNM58eGzR"
+  ],
+  "fetched_at": "2026-08-25T07:51:58.563Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: parallel-worktree-safety cartographer research",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T10:48:54Z",
+  "head_ref": "research/parallel-worktree-safety"
+}

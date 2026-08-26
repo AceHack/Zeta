@@ -1,0 +1,23 @@
+{
+  "pr_number": 924,
+  "archive_path": "docs/history/pr-reviews/PR-924-tools-github-check-github-status-ts-pre-flight-gatekeeper-gemini-v1-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM686_MB",
+    "comment:PRRC_kwDOSF9kNM686_Mu",
+    "comment:PRRC_kwDOSF9kNM686_NB",
+    "comment:PRRC_kwDOSF9kNM686_NO",
+    "comment:PRRC_kwDOSF9kNM686_Nc",
+    "thread:PRRT_kwDOSF9kNM5-zqD8",
+    "thread:PRRT_kwDOSF9kNM5-zqDN",
+    "thread:PRRT_kwDOSF9kNM5-zqDv",
+    "thread:PRRT_kwDOSF9kNM5-zqEF",
+    "thread:PRRT_kwDOSF9kNM5-zqER"
+  ],
+  "fetched_at": "2026-08-25T08:30:40.130Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tools(github): check-github-status.ts — pre-flight gatekeeper (Gemini v1 #2)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:09:00Z",
+  "head_ref": "ops/check-github-status-tool-2026-04-30"
+}

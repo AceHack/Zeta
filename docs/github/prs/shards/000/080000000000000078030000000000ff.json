@@ -1,0 +1,22 @@
+{
+  "pr_number": 255,
+  "archive_path": "docs/history/pr-reviews/PR-255-backlog-codex-parallel-otto-86-refinement-4-stage-progression-test-mode-bounding.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663jgD",
+    "comment:PRRC_kwDOSF9kNM663jgW",
+    "comment:PRRC_kwDOSF9kNM663jgg",
+    "comment:PRRC_kwDOSF9kNM67D9c3",
+    "comment:PRRC_kwDOSF9kNM67D9hu",
+    "comment:PRRC_kwDOSF9kNM67D9lh",
+    "thread:PRRT_kwDOSF9kNM59R5L8",
+    "thread:PRRT_kwDOSF9kNM59R5Ly",
+    "thread:PRRT_kwDOSF9kNM59R5MD"
+  ],
+  "fetched_at": "2026-08-25T08:02:48.104Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Codex-parallel Otto-86 refinement — 4-stage progression + test-mode bounding + Windows-support use case",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:34:03Z",
+  "head_ref": "backlog/otto-86-refine-codex-parallel-with-multi-claude-intermediate"
+}

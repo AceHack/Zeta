@@ -1,0 +1,29 @@
+{
+  "pr_number": 1508,
+  "archive_path": "docs/history/pr-reviews/PR-1508-fix-b-0162-role-ref-on-current-state-surfaces-violation-cleanup-pass-2026-05-04.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69xCVv",
+    "comment:PRRC_kwDOSF9kNM69xCWp",
+    "comment:PRRC_kwDOSF9kNM69xCXN",
+    "comment:PRRC_kwDOSF9kNM69xCXp",
+    "comment:PRRC_kwDOSF9kNM69xCYA",
+    "comment:PRRC_kwDOSF9kNM69xCYX",
+    "comment:PRRC_kwDOSF9kNM69xCYr",
+    "comment:PRRC_kwDOSF9kNM69xCZE",
+    "thread:PRRT_kwDOSF9kNM5_cNoz",
+    "thread:PRRT_kwDOSF9kNM5_cNp6",
+    "thread:PRRT_kwDOSF9kNM5_cNpe",
+    "thread:PRRT_kwDOSF9kNM5_cNqO",
+    "thread:PRRT_kwDOSF9kNM5_cNqg",
+    "thread:PRRT_kwDOSF9kNM5_cNqw",
+    "thread:PRRT_kwDOSF9kNM5_cNrA",
+    "thread:PRRT_kwDOSF9kNM5_cNrT"
+  ],
+  "fetched_at": "2026-08-25T08:54:28.764Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(B-0162): role-ref-on-current-state-surfaces violation cleanup pass (2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T18:44:51Z",
+  "head_ref": "fix/b-0162-role-ref-violation-cleanup-2026-05-04"
+}

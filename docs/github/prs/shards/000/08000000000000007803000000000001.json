@@ -1,0 +1,12 @@
+{
+  "pr_number": 1,
+  "archive_path": "docs/history/pr-reviews/PR-1-deps-bump-fsunit-xunit-from-7-1-0-to-7-1-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:48:03.096Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "deps: Bump FsUnit.xUnit from 7.1.0 to 7.1.1",
+  "state": "MERGED",
+  "merged_at": "2026-04-18T09:41:40Z",
+  "head_ref": "dependabot/nuget/FsUnit.xUnit-7.1.1"
+}

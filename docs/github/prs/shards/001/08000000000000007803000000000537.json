@@ -1,0 +1,24 @@
+{
+  "pr_number": 1335,
+  "archive_path": "docs/history/pr-reviews/PR-1335-memory-current-aaron-54-doctrine-cluster-mirror-vs-beacon-safe-carved-sentence-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aLKW",
+    "comment:PRRC_kwDOSF9kNM69aLRy",
+    "comment:PRRC_kwDOSF9kNM69aLv7",
+    "comment:PRRC_kwDOSF9kNM69aLvi",
+    "comment:PRRC_kwDOSF9kNM69aLvo",
+    "comment:PRRC_kwDOSF9kNM69aLvu",
+    "thread:PRRT_kwDOSF9kNM5_K152",
+    "thread:PRRT_kwDOSF9kNM5_K2W_",
+    "thread:PRRT_kwDOSF9kNM5_K2Wo",
+    "thread:PRRT_kwDOSF9kNM5_K2Wt",
+    "thread:PRRT_kwDOSF9kNM5_K2Wy"
+  ],
+  "fetched_at": "2026-08-25T08:47:34.389Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(CURRENT-aaron §54): doctrine cluster — mirror-vs-beacon-safe + carved-sentence-plus-index + razor-discipline / Rodney's Razor canonical (2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T06:59:36Z",
+  "head_ref": "current-aaron/section-54-doctrine-cluster-mirror-beacon-razor-rodney-2026-05-03"
+}

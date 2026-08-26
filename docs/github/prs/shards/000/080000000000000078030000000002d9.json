@@ -1,0 +1,17 @@
+{
+  "pr_number": 729,
+  "archive_path": "docs/history/pr-reviews/PR-729-hygiene-tick-history-shard-0250z-minimal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PrMa",
+    "comment:PRRC_kwDOSF9kNM69HTMA",
+    "comment:PRRC_kwDOSF9kNM69HTio",
+    "thread:PRRT_kwDOSF9kNM5-TvfF"
+  ],
+  "fetched_at": "2026-08-25T08:22:57.220Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0250Z — minimal",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:56:37Z",
+  "head_ref": "tick-history/2026-04-29-tick-0250Z-shard"
+}

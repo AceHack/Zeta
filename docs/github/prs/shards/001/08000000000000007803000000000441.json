@@ -1,0 +1,17 @@
+{
+  "pr_number": 1089,
+  "archive_path": "docs/history/pr-reviews/PR-1089-research-claudeai-taxonomy-grounding-haskell-prelude-vs-f-bcl-mirror-beacon-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HpZ3",
+    "comment:PRRC_kwDOSF9kNM69HpaR",
+    "thread:PRRT_kwDOSF9kNM5-895W",
+    "thread:PRRT_kwDOSF9kNM5-895q"
+  ],
+  "fetched_at": "2026-08-25T08:37:27.557Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-taxonomy-grounding): Haskell-prelude vs F#/BCL + Mirror→Beacon gate (Aaron 2026-05-01, reverse-order ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:28:53Z",
+  "head_ref": "research/claudeai-haskell-prelude-vs-fsharp-bcl-grounding-2026-05-01"
+}

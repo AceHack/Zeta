@@ -1,0 +1,29 @@
+{
+  "pr_number": 201,
+  "archive_path": "docs/history/pr-reviews/PR-201-craft-second-module-retraction-intuition-undo-button-anchor-applied-theoretical.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66zW0q",
+    "comment:PRRC_kwDOSF9kNM66zW0t",
+    "comment:PRRC_kwDOSF9kNM66zZl3",
+    "comment:PRRC_kwDOSF9kNM66zZlL",
+    "comment:PRRC_kwDOSF9kNM66zZm4",
+    "comment:PRRC_kwDOSF9kNM66zZmQ",
+    "comment:PRRC_kwDOSF9kNM66zZmm",
+    "comment:PRRC_kwDOSF9kNM66zZna",
+    "thread:PRRT_kwDOSF9kNM59O1eA",
+    "thread:PRRT_kwDOSF9kNM59O1eD",
+    "thread:PRRT_kwDOSF9kNM59O3ce",
+    "thread:PRRT_kwDOSF9kNM59O3d5",
+    "thread:PRRT_kwDOSF9kNM59O3dB",
+    "thread:PRRT_kwDOSF9kNM59O3dW",
+    "thread:PRRT_kwDOSF9kNM59O3dp",
+    "thread:PRRT_kwDOSF9kNM59O3eT"
+  ],
+  "fetched_at": "2026-08-25T08:00:26.461Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "craft: second module — retraction-intuition (undo-button anchor; applied + theoretical)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T21:35:39Z",
+  "head_ref": "craft/second-module-retraction-intuition"
+}

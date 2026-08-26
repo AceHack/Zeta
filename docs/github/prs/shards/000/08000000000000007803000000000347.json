@@ -1,0 +1,23 @@
+{
+  "pr_number": 839,
+  "archive_path": "docs/history/pr-reviews/PR-839-ops-0-0-0-option-c-migration-9-acehack-only-legacy-tick-rows-per-tick-shards.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68aRr2",
+    "comment:PRRC_kwDOSF9kNM68aRrs",
+    "comment:PRRC_kwDOSF9kNM68aXaW",
+    "comment:PRRC_kwDOSF9kNM68aXbX",
+    "comment:PRRC_kwDOSF9kNM68aXcC",
+    "thread:PRRT_kwDOSF9kNM5-blOc",
+    "thread:PRRT_kwDOSF9kNM5-blOi",
+    "thread:PRRT_kwDOSF9kNM5-bpPs",
+    "thread:PRRT_kwDOSF9kNM5-bpQe",
+    "thread:PRRT_kwDOSF9kNM5-bpRE"
+  ],
+  "fetched_at": "2026-08-25T08:27:20.335Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(0-0-0): option-(c) migration — 9 AceHack-only legacy tick rows → per-tick shards",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T12:46:29Z",
+  "head_ref": "migrate-acehack-tick-rows-to-shards-2026-04-29"
+}

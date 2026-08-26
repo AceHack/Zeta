@@ -1,0 +1,15 @@
+{
+  "pr_number": 1699,
+  "archive_path": "docs/history/pr-reviews/PR-1699-memory-architecture-let-it-shine-vs-divine-light-that-burns-is-the-architectural.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Qg3F",
+    "thread:PRRT_kwDOSF9kNM5_zfzx"
+  ],
+  "fetched_at": "2026-08-25T09:02:07.865Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(architecture): let-it-shine vs divine-light-that-burns IS the architectural-axiom underneath every session commitment (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T22:43:23Z",
+  "head_ref": "memory/let-it-shine-vs-divine-light-that-burns-architectural-axiom-free-will-without-ossification-aaron-2026-05-05"
+}

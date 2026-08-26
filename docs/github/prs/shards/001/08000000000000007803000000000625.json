@@ -1,0 +1,17 @@
+{
+  "pr_number": 1573,
+  "archive_path": "docs/history/pr-reviews/PR-1573-backlog-p1-b-0192-github-actions-trigger-for-razor-cadence-escape-otto-rememberi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695T4P",
+    "comment:PRRC_kwDOSF9kNM695T4d",
+    "thread:PRRT_kwDOSF9kNM5_iRTk",
+    "thread:PRRT_kwDOSF9kNM5_iRTs"
+  ],
+  "fetched_at": "2026-08-25T08:57:09.184Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P1): B-0192 GitHub Actions trigger for razor cadence -- escape Otto-remembering as load-bearing trigger",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T03:42:48Z",
+  "head_ref": "backlog/B-0192-github-actions-razor-cadence-trigger-aaron-2026-05-04"
+}

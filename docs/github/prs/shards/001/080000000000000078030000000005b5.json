@@ -1,0 +1,12 @@
+{
+  "pr_number": 1461,
+  "archive_path": "docs/history/pr-reviews/PR-1461-hygiene-tick-history-2026-05-04t08-40z-15min-cadence-shard-6h-milestone.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:52:29.204Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-04T08:40Z 15min cadence shard (6h milestone)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T08:43:00Z",
+  "head_ref": "tick/2026-05-04-0840Z-shard"
+}

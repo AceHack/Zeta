@@ -1,0 +1,12 @@
+{
+  "pr_number": 765,
+  "archive_path": "docs/history/pr-reviews/PR-765-tick-history-2026-04-29t04-11z-narrow-lint-fix-shard-per-amara-priority.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:24:28.960Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:11Z — narrow lint-fix shard per Amara priority",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:20:44Z",
+  "head_ref": "tick-history/2026-04-29-tick-0411Z-shard"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 261,
+  "archive_path": "docs/history/pr-reviews/PR-261-aurora-readme-branding-section-expand-shortlist-with-7th-ferry-candidates-beacon.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663ush",
+    "comment:PRRC_kwDOSF9kNM663v1-",
+    "comment:PRRC_kwDOSF9kNM663v1o",
+    "thread:PRRT_kwDOSF9kNM59SBhU",
+    "thread:PRRT_kwDOSF9kNM59SCYW",
+    "thread:PRRT_kwDOSF9kNM59SCYq"
+  ],
+  "fetched_at": "2026-08-25T08:02:55.890Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "aurora: README branding section — expand shortlist with 7th-ferry candidates (Beacon/Lattice/Harbor/Mantle/Northstar)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:51:12Z",
+  "head_ref": "aurora/readme-branding-shortlist-expand-7th-ferry"
+}

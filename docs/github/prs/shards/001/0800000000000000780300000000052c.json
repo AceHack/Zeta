@@ -1,0 +1,12 @@
+{
+  "pr_number": 1324,
+  "archive_path": "docs/history/pr-reviews/PR-1324-hygiene-tick-history-2026-05-03t05-30z-three-bounded-post-merge-fixes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:47:15.995Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T05:30Z — three bounded post-merge fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:33:49Z",
+  "head_ref": "free-memory/tick-0530Z-three-followup-fixes"
+}

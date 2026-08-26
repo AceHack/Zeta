@@ -1,0 +1,19 @@
+{
+  "pr_number": 178,
+  "archive_path": "docs/history/pr-reviews/PR-178-nsa-test-history-nsa-002-first-cadenced-test-prompt-1-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66wTN1",
+    "comment:PRRC_kwDOSF9kNM66wVT5",
+    "comment:PRRC_kwDOSF9kNM67D28M",
+    "comment:PRRC_kwDOSF9kNM67D2p0",
+    "thread:PRRT_kwDOSF9kNM59Mol0",
+    "thread:PRRT_kwDOSF9kNM59MqJ-"
+  ],
+  "fetched_at": "2026-08-25T07:58:58.950Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "nsa-test-history: NSA-002 — first cadenced test (prompt 1, pass)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:29:49Z",
+  "head_ref": "hygiene/nsa-002-cadenced-test"
+}

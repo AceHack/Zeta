@@ -1,0 +1,29 @@
+{
+  "pr_number": 496,
+  "archive_path": "docs/history/pr-reviews/PR-496-memory-otto-289-hypothesis-stored-irreducibility-wolfram-as-unifying-primitive.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Sbsh",
+    "comment:PRRC_kwDOSF9kNM67Sbsr",
+    "comment:PRRC_kwDOSF9kNM67Sbsz",
+    "comment:PRRC_kwDOSF9kNM67SinS",
+    "comment:PRRC_kwDOSF9kNM67Sinp",
+    "comment:PRRC_kwDOSF9kNM67SioG",
+    "comment:PRRC_kwDOSF9kNM67SjKC",
+    "comment:PRRC_kwDOSF9kNM67SokG",
+    "comment:PRRC_kwDOSF9kNM67Spcf",
+    "comment:PRRC_kwDOSF9kNM67Spcq",
+    "thread:PRRT_kwDOSF9kNM59mDC0",
+    "thread:PRRT_kwDOSF9kNM59mDC6",
+    "thread:PRRT_kwDOSF9kNM59mDCs",
+    "thread:PRRT_kwDOSF9kNM59mJKJ",
+    "thread:PRRT_kwDOSF9kNM59mOUK",
+    "thread:PRRT_kwDOSF9kNM59mOUU"
+  ],
+  "fetched_at": "2026-08-25T08:12:44.698Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Otto-289 hypothesis — stored irreducibility (Wolfram) as unifying primitive",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T16:18:35Z",
+  "head_ref": "memory/otto-289-stored-irreducibility-wolfram"
+}

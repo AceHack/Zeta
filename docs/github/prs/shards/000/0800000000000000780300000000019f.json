@@ -1,0 +1,19 @@
+{
+  "pr_number": 415,
+  "archive_path": "docs/history/pr-reviews/PR-415-hygiene-268-pr-preservation-drain-log-for-408-peer-review-disclosure-refinement-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67O-e3",
+    "comment:PRRC_kwDOSF9kNM67O-e9",
+    "comment:PRRC_kwDOSF9kNM67PNij",
+    "comment:PRRC_kwDOSF9kNM67PNjf",
+    "thread:PRRT_kwDOSF9kNM59jVej",
+    "thread:PRRT_kwDOSF9kNM59jVel"
+  ],
+  "fetched_at": "2026-08-25T08:09:19.938Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #408 (peer-review-DISCLOSURE refinement, 5 threads)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:03:26Z",
+  "head_ref": "hygiene/pr-preservation-408-drain-log"
+}

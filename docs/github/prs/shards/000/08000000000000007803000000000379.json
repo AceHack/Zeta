@@ -1,0 +1,12 @@
+{
+  "pr_number": 889,
+  "archive_path": "docs/history/pr-reviews/PR-889-ops-tick-history-autonomous-loop-tick-2026-04-30t05-01-00z-arc-close-4-prs-lande.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:29:07.909Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(tick-history): autonomous-loop tick 2026-04-30T05:01:00Z — arc close (4 PRs landed; tsc clean verified)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:06:24Z",
+  "head_ref": "ops/tick-history-2026-04-30-arc-close"
+}

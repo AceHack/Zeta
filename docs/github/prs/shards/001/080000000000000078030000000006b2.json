@@ -1,0 +1,12 @@
+{
+  "pr_number": 1714,
+  "archive_path": "docs/history/pr-reviews/PR-1714-feat-multi-loop-commit-attribution-shared-branch-coordination.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:02:42.413Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: multi-loop commit attribution + shared-branch coordination",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:18:49Z",
+  "head_ref": "feat/multi-loop-commit-attribution"
+}

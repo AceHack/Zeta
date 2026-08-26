@@ -1,0 +1,15 @@
+{
+  "pr_number": 463,
+  "archive_path": "docs/history/pr-reviews/PR-463-hygiene-268-pr-preservation-drain-log-for-433-226-first-cascade.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QcO4",
+    "thread:PRRT_kwDOSF9kNM59kc0C"
+  ],
+  "fetched_at": "2026-08-25T08:11:19.526Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #433 (#226 first cascade)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:29:42Z",
+  "head_ref": "drain/433-pr-preservation-log"
+}

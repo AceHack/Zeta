@@ -1,0 +1,23 @@
+{
+  "pr_number": 1569,
+  "archive_path": "docs/history/pr-reviews/PR-1569-research-ts-quality-tools-ts-quality-sweep-typecheck-imports-patterns.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6945Cg",
+    "comment:PRRC_kwDOSF9kNM6945Cl",
+    "comment:PRRC_kwDOSF9kNM6947BD",
+    "comment:PRRC_kwDOSF9kNM6947BW",
+    "comment:PRRC_kwDOSF9kNM6947Bf",
+    "thread:PRRT_kwDOSF9kNM5_h-Pa",
+    "thread:PRRT_kwDOSF9kNM5_h-Pm",
+    "thread:PRRT_kwDOSF9kNM5_h-Pu",
+    "thread:PRRT_kwDOSF9kNM5_h8wX",
+    "thread:PRRT_kwDOSF9kNM5_h8wa"
+  ],
+  "fetched_at": "2026-08-25T08:56:57.921Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(ts-quality): tools/ TS quality sweep — typecheck + imports + patterns",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T03:01:47Z",
+  "head_ref": "research/ts-quality-sweep-tools-directory-aaron-2026-05-04"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 427,
+  "archive_path": "docs/history/pr-reviews/PR-427-drain-133-follow-up-bash-quoting-sc2086-status-banner-truth-update.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Po1n",
+    "comment:PRRC_kwDOSF9kNM67Po1s",
+    "comment:PRRC_kwDOSF9kNM67PqoR",
+    "comment:PRRC_kwDOSF9kNM67Pqod",
+    "thread:PRRT_kwDOSF9kNM59j0R_",
+    "thread:PRRT_kwDOSF9kNM59j0SD"
+  ],
+  "fetched_at": "2026-08-25T08:09:49.717Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#133 follow-up): bash quoting (SC2086) + status-banner truth-update",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:35:27Z",
+  "head_ref": "drain/133-followup-bash-quoting-status-banner"
+}

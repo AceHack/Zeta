@@ -1,0 +1,15 @@
+{
+  "pr_number": 1222,
+  "archive_path": "docs/history/pr-reviews/PR-1222-update-current-aaron-50-session-2026-05-02-substrate-cluster-pointer-section-wak.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Xmui",
+    "thread:PRRT_kwDOSF9kNM5_Iz1N"
+  ],
+  "fetched_at": "2026-08-25T08:42:56.752Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "update(CURRENT-aaron): §50 session 2026-05-02 substrate cluster pointer-section (wake-time fast-path)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:57:37Z",
+  "head_ref": "update/current-aaron-session-2026-05-02-substrate-cluster"
+}

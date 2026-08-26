@@ -1,0 +1,22 @@
+{
+  "pr_number": 93,
+  "archive_path": "docs/history/pr-reviews/PR-93-round-44-absorb-copilot-products-split-arc-into-round-history.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66D4CZ",
+    "comment:PRRC_kwDOSF9kNM66D91x",
+    "comment:PRRC_kwDOSF9kNM66ETv6",
+    "comment:PRRC_kwDOSF9kNM66EvwR",
+    "comment:PRRC_kwDOSF9kNM66EwPq",
+    "comment:PRRC_kwDOSF9kNM66EwcC",
+    "thread:PRRT_kwDOSF9kNM58r2Z4",
+    "thread:PRRT_kwDOSF9kNM58riBN",
+    "thread:PRRT_kwDOSF9kNM58rmXB"
+  ],
+  "fetched_at": "2026-08-25T07:53:40.028Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: absorb Copilot-products-split arc into ROUND-HISTORY",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:46:14Z",
+  "head_ref": "land-round-history-copilot-split-arc"
+}

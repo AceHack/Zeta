@@ -1,0 +1,17 @@
+{
+  "pr_number": 1581,
+  "archive_path": "docs/history/pr-reviews/PR-1581-docs-claude-md-razor-cadence-tracking-issue-pointer-b-0192-acceptance-criterion-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695tD3",
+    "comment:PRRC_kwDOSF9kNM695tDy",
+    "thread:PRRT_kwDOSF9kNM5_ij92",
+    "thread:PRRT_kwDOSF9kNM5_ij9y"
+  ],
+  "fetched_at": "2026-08-25T08:57:30.407Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(claude-md): razor-cadence tracking-issue pointer -- B-0192 acceptance criterion #3",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:21:39Z",
+  "head_ref": "docs/claude-md-razor-cadence-pointer-b-0192-criterion-3-aaron-2026-05-05"
+}

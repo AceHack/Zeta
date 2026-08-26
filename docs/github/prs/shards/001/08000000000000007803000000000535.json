@@ -1,0 +1,25 @@
+{
+  "pr_number": 1333,
+  "archive_path": "docs/history/pr-reviews/PR-1333-research-2026-05-03-bidirectional-alignment-razor-discipline-rodney-s-razor-term.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69aGZ0",
+    "comment:PRRC_kwDOSF9kNM69aGZq",
+    "comment:PRRC_kwDOSF9kNM69aGZu",
+    "comment:PRRC_kwDOSF9kNM69aGZx",
+    "comment:PRRC_kwDOSF9kNM69aHsC",
+    "comment:PRRC_kwDOSF9kNM69aHsX",
+    "comment:PRRC_kwDOSF9kNM69aHtA",
+    "comment:PRRC_kwDOSF9kNM69aHtk",
+    "thread:PRRT_kwDOSF9kNM5_KyJi",
+    "thread:PRRT_kwDOSF9kNM5_KyJm",
+    "thread:PRRT_kwDOSF9kNM5_KyJp",
+    "thread:PRRT_kwDOSF9kNM5_KyJr"
+  ],
+  "fetched_at": "2026-08-25T08:47:29.389Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-03): bidirectional-alignment razor-discipline + Rodney's Razor terminology correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T06:46:11Z",
+  "head_ref": "research/2026-05-03-claudeai-razor-discipline-rodney-aaron-correction"
+}

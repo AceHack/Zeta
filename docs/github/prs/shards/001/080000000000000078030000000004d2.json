@@ -1,0 +1,15 @@
+{
+  "pr_number": 1234,
+  "archive_path": "docs/history/pr-reviews/PR-1234-research-2026-05-02-mirror-claude-ai-brat-voice-enterprise-translation-framework.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YU1k",
+    "thread:PRRT_kwDOSF9kNM5_JYER"
+  ],
+  "fetched_at": "2026-08-25T08:43:30.947Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-02): mirror Claude.ai brat-voice enterprise translation framework (per B-0168 acceptance)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T21:46:39Z",
+  "head_ref": "research/2026-05-02-claudeai-brat-voice-framework-mirror"
+}

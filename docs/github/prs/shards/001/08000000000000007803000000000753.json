@@ -1,0 +1,31 @@
+{
+  "pr_number": 1875,
+  "archive_path": "docs/history/pr-reviews/PR-1875-skill-b-0243-browser-extraction-osascript-chrome-extraction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-1aue",
+    "comment:PRRC_kwDOSF9kNM6-1fBp",
+    "comment:PRRC_kwDOSF9kNM6-1fC5",
+    "comment:PRRC_kwDOSF9kNM6-1fCf",
+    "comment:PRRC_kwDOSF9kNM6-1fD5",
+    "comment:PRRC_kwDOSF9kNM6-1fDP",
+    "comment:PRRC_kwDOSF9kNM6-1fDh",
+    "comment:PRRC_kwDOSF9kNM6-1fET",
+    "comment:PRRC_kwDOSF9kNM6-1fEp",
+    "thread:PRRT_kwDOSF9kNM6AUNPe",
+    "thread:PRRT_kwDOSF9kNM6AUQhn",
+    "thread:PRRT_kwDOSF9kNM6AUQi8",
+    "thread:PRRT_kwDOSF9kNM6AUQiQ",
+    "thread:PRRT_kwDOSF9kNM6AUQii",
+    "thread:PRRT_kwDOSF9kNM6AUQiw",
+    "thread:PRRT_kwDOSF9kNM6AUQjK",
+    "thread:PRRT_kwDOSF9kNM6AUQje",
+    "thread:PRRT_kwDOSF9kNM6AUQjr"
+  ],
+  "fetched_at": "2026-08-25T09:05:59.534Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "skill(B-0243): browser-extraction — osascript/Chrome extraction",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T13:14:31Z",
+  "head_ref": "skill/b0243-browser-extraction-osascript-chrome"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 708,
+  "archive_path": "docs/history/pr-reviews/PR-708-memory-attribution-correction-validation-condition-refinement-was-aurora-s-catch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68O_ZW",
+    "comment:PRRC_kwDOSF9kNM68PFNJ",
+    "thread:PRRT_kwDOSF9kNM5-TO0v",
+    "thread:PRRT_kwDOSF9kNM5-TTNj"
+  ],
+  "fetched_at": "2026-08-25T08:22:13.096Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(attribution-correction): validation-condition refinement was Aurora's catch, not Amara's (Aaron 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T01:07:56Z",
+  "head_ref": "memory/attribution-correction-aurora-validation-condition"
+}

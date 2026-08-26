@@ -1,0 +1,25 @@
+{
+  "pr_number": 977,
+  "archive_path": "docs/history/pr-reviews/PR-977-tooling-hygiene-files-arg-on-check-tick-history-shard-schema-sh-pre-push-compat-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69B5_P",
+    "comment:PRRC_kwDOSF9kNM69B5_a",
+    "comment:PRRC_kwDOSF9kNM69B5_m",
+    "comment:PRRC_kwDOSF9kNM69B5of",
+    "comment:PRRC_kwDOSF9kNM69B5oj",
+    "comment:PRRC_kwDOSF9kNM69CD3c",
+    "thread:PRRT_kwDOSF9kNM5-43B3",
+    "thread:PRRT_kwDOSF9kNM5-4vY0",
+    "thread:PRRT_kwDOSF9kNM5-4vY4",
+    "thread:PRRT_kwDOSF9kNM5-4vp4",
+    "thread:PRRT_kwDOSF9kNM5-4vpx",
+    "thread:PRRT_kwDOSF9kNM5-4vqA"
+  ],
+  "fetched_at": "2026-08-25T08:32:51.065Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tooling(hygiene): --files arg on check-tick-history-shard-schema.sh — pre-push compat (stacked on #975)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:53:52Z",
+  "head_ref": "tooling/check-tick-history-shard-schema-files-arg-stacked"
+}

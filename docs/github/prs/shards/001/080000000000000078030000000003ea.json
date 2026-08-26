@@ -1,0 +1,12 @@
+{
+  "pr_number": 1002,
+  "archive_path": "docs/history/pr-reviews/PR-1002-memory-post-merge-fixes-originsessionid-memory-md-index-entry-for-1001.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:33:50.147Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(post-merge fixes): originSessionId + MEMORY.md index entry for #1001",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T02:34:20Z",
+  "head_ref": "memory/post-merge-fixes-frontmatter-and-index-1001"
+}

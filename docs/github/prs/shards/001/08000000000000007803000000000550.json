@@ -1,0 +1,22 @@
+{
+  "pr_number": 1360,
+  "archive_path": "docs/history/pr-reviews/PR-1360-memory-feedback-substrate-quality-is-lidar-not-autopilot-aaron-2026-05-03.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69afaW",
+    "comment:PRRC_kwDOSF9kNM69afak",
+    "comment:PRRC_kwDOSF9kNM69afam",
+    "comment:PRRC_kwDOSF9kNM69ageT",
+    "comment:PRRC_kwDOSF9kNM69ageu",
+    "comment:PRRC_kwDOSF9kNM69agfF",
+    "thread:PRRT_kwDOSF9kNM5_LFrg",
+    "thread:PRRT_kwDOSF9kNM5_LFrr",
+    "thread:PRRT_kwDOSF9kNM5_LFrt"
+  ],
+  "fetched_at": "2026-08-25T08:48:32.578Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): substrate-quality is lidar, not autopilot (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:19:36Z",
+  "head_ref": "memory/lidar-not-autopilot-substrate-quality-framing-aaron-2026-05-03"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 1283,
+  "archive_path": "docs/history/pr-reviews/PR-1283-ground-truth-recovery-b-0172-calibration-delta-65-context-dependent-pattern-refi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZXav",
+    "comment:PRRC_kwDOSF9kNM69ZXoc",
+    "comment:PRRC_kwDOSF9kNM69ZXok",
+    "comment:PRRC_kwDOSF9kNM69ZXoo",
+    "comment:PRRC_kwDOSF9kNM69ZXot",
+    "comment:PRRC_kwDOSF9kNM69ZXov",
+    "thread:PRRT_kwDOSF9kNM5_KM0X",
+    "thread:PRRT_kwDOSF9kNM5_KM_c",
+    "thread:PRRT_kwDOSF9kNM5_KM_j",
+    "thread:PRRT_kwDOSF9kNM5_KM_l",
+    "thread:PRRT_kwDOSF9kNM5_KM_p",
+    "thread:PRRT_kwDOSF9kNM5_KM_q"
+  ],
+  "fetched_at": "2026-08-25T08:45:39.980Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "GROUND-TRUTH-RECOVERY: B-0172 calibration delta (65%) — context-dependent pattern refinement",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:58:48Z",
+  "head_ref": "free-memory/guess-002-b-0172-with-recovery-2026-05-03"
+}

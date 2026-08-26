@@ -1,0 +1,29 @@
+{
+  "pr_number": 939,
+  "archive_path": "docs/history/pr-reviews/PR-939-memory-slow-deliberate-decisions-acid-deferral-never-valid-universal-scope-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68-WIl",
+    "comment:PRRC_kwDOSF9kNM68-XU6",
+    "comment:PRRC_kwDOSF9kNM68-XVT",
+    "comment:PRRC_kwDOSF9kNM68-XVo",
+    "comment:PRRC_kwDOSF9kNM689sQl",
+    "comment:PRRC_kwDOSF9kNM689sR0",
+    "comment:PRRC_kwDOSF9kNM689sRe",
+    "comment:PRRC_kwDOSF9kNM689sSN",
+    "thread:PRRT_kwDOSF9kNM5-1omk",
+    "thread:PRRT_kwDOSF9kNM5-1onO",
+    "thread:PRRT_kwDOSF9kNM5-1one",
+    "thread:PRRT_kwDOSF9kNM5-1onu",
+    "thread:PRRT_kwDOSF9kNM5-2HfU",
+    "thread:PRRT_kwDOSF9kNM5-2IWw",
+    "thread:PRRT_kwDOSF9kNM5-2IXC",
+    "thread:PRRT_kwDOSF9kNM5-2IXQ"
+  ],
+  "fetched_at": "2026-08-25T08:31:16.733Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: slow+deliberate decisions + ACID-deferral-never-valid + universal scope (Aaron 2026-04-30 calibration cluster)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:07:32Z",
+  "head_ref": "memory/slow-deliberate-decisions-amortized-velocity-aaron-2026-04-30"
+}

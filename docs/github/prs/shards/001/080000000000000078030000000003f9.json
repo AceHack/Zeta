@@ -1,0 +1,15 @@
+{
+  "pr_number": 1017,
+  "archive_path": "docs/history/pr-reviews/PR-1017-hygiene-tick-history-shard-0420z-ci-blocker-fix-tick-backlog-md-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69EelC",
+    "thread:PRRT_kwDOSF9kNM5-6muy"
+  ],
+  "fetched_at": "2026-08-25T08:34:31.121Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0420Z — CI-blocker fix tick (BACKLOG.md drift)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:44:32Z",
+  "head_ref": "hygiene/tick-history-0420Z-2026-05-01"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 1588,
+  "archive_path": "docs/history/pr-reviews/PR-1588-research-claude-ai-knights-knaves-round-table-harmonious-division-bootstrap-razo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM696eI_",
+    "comment:PRRC_kwDOSF9kNM696f6U",
+    "comment:PRRC_kwDOSF9kNM696f6k",
+    "comment:PRRC_kwDOSF9kNM696f6r",
+    "thread:PRRT_kwDOSF9kNM5_jIM9",
+    "thread:PRRT_kwDOSF9kNM5_jJc4",
+    "thread:PRRT_kwDOSF9kNM5_jJc9",
+    "thread:PRRT_kwDOSF9kNM5_jJcq"
+  ],
+  "fetched_at": "2026-08-25T08:57:49.184Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(claude-ai): knights/knaves + round table + Harmonious Division + bootstrap razor preservation (2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T05:40:26Z",
+  "head_ref": "research/claudeai-knights-knaves-round-table-harmonious-division-bootstrap-razor-aaron-2026-05-05"
+}

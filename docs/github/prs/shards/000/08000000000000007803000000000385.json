@@ -1,0 +1,23 @@
+{
+  "pr_number": 901,
+  "archive_path": "docs/history/pr-reviews/PR-901-ts-b-0086-port-1-budget-script-sh-ts-slice-18-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68t74W",
+    "comment:PRRC_kwDOSF9kNM68t9Cr",
+    "comment:PRRC_kwDOSF9kNM68t9DR",
+    "comment:PRRC_kwDOSF9kNM68t9Dg",
+    "comment:PRRC_kwDOSF9kNM68uIth",
+    "thread:PRRT_kwDOSF9kNM5-p76y",
+    "thread:PRRT_kwDOSF9kNM5-p77N",
+    "thread:PRRT_kwDOSF9kNM5-p77Z",
+    "thread:PRRT_kwDOSF9kNM5-p7GZ",
+    "thread:PRRT_kwDOSF9kNM5-qEtF"
+  ],
+  "fetched_at": "2026-08-25T08:29:37.668Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 budget script (.sh→.ts) — slice 18 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T07:16:13Z",
+  "head_ref": "lane-b/ts-bun-slice-18-daily-cost-report-2026-04-30"
+}

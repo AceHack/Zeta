@@ -1,0 +1,12 @@
+{
+  "pr_number": 455,
+  "archive_path": "docs/history/pr-reviews/PR-455-deps-bump-meziantou-analyzer-from-3-0-50-to-3-0-54.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:11:01.236Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "deps: Bump Meziantou.Analyzer from 3.0.50 to 3.0.54",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:30:06Z",
+  "head_ref": "dependabot/nuget/Meziantou.Analyzer-3.0.54"
+}

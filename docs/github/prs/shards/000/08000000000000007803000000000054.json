@@ -1,0 +1,31 @@
+{
+  "pr_number": 84,
+  "archive_path": "docs/history/pr-reviews/PR-84-round-44-batch-4-of-6-github-surfaces-agent-issue-workflow.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66DdZ7",
+    "comment:PRRC_kwDOSF9kNM66DdZG",
+    "comment:PRRC_kwDOSF9kNM66DdZd",
+    "comment:PRRC_kwDOSF9kNM66DdZn",
+    "comment:PRRC_kwDOSF9kNM66DdZy",
+    "comment:PRRC_kwDOSF9kNM66DdaE",
+    "comment:PRRC_kwDOSF9kNM66DdaO",
+    "comment:PRRC_kwDOSF9kNM66DdaV",
+    "comment:PRRC_kwDOSF9kNM66Ddag",
+    "thread:PRRT_kwDOSF9kNM58rOC4",
+    "thread:PRRT_kwDOSF9kNM58rOC9",
+    "thread:PRRT_kwDOSF9kNM58rOCZ",
+    "thread:PRRT_kwDOSF9kNM58rOCq",
+    "thread:PRRT_kwDOSF9kNM58rOCw",
+    "thread:PRRT_kwDOSF9kNM58rODE",
+    "thread:PRRT_kwDOSF9kNM58rODK",
+    "thread:PRRT_kwDOSF9kNM58rODR",
+    "thread:PRRT_kwDOSF9kNM58rODb"
+  ],
+  "fetched_at": "2026-08-25T07:53:11.952Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 batch 4 of 6: GitHub surfaces + agent issue workflow",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T03:52:37Z",
+  "head_ref": "land-github-surfaces-batch4"
+}

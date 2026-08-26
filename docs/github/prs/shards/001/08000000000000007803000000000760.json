@@ -1,0 +1,17 @@
+{
+  "pr_number": 1888,
+  "archive_path": "docs/history/pr-reviews/PR-1888-backlog-b-0250-coincidence-detection-as-rx-join-dora-mechanism.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-30cz",
+    "comment:PRRC_kwDOSF9kNM6-30dn",
+    "thread:PRRT_kwDOSF9kNM6AWAmv",
+    "thread:PRRT_kwDOSF9kNM6AWAnW"
+  ],
+  "fetched_at": "2026-08-25T09:06:31.376Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0250): coincidence detection as Rx join — DORA mechanism",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T14:42:07Z",
+  "head_ref": "backlog/b0250-coincidence-detection-rx-join-dora"
+}

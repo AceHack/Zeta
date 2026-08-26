@@ -1,0 +1,12 @@
+{
+  "pr_number": 790,
+  "archive_path": "docs/history/pr-reviews/PR-790-tick-history-2026-04-29t05-24z-pr-787-merged-transient-ci-flake-recovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:25:28.803Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:24Z — PR #787 merged + transient-CI-flake recovery",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T05:28:30Z",
+  "head_ref": "tick-history/2026-04-29-tick-0524Z-shard"
+}

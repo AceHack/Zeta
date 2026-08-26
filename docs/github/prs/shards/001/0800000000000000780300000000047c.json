@@ -1,0 +1,12 @@
+{
+  "pr_number": 1148,
+  "archive_path": "docs/history/pr-reviews/PR-1148-hygiene-tick-history-2026-05-01t19-33z-goldfish-ontology-double-failure-lesson.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:39:53.103Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T19:33Z — goldfish-ontology double-failure lesson",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:40:39Z",
+  "head_ref": "hygiene/tick-history-1933Z-2026-05-01"
+}

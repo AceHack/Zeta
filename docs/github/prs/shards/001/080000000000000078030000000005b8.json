@@ -1,0 +1,15 @@
+{
+  "pr_number": 1464,
+  "archive_path": "docs/history/pr-reviews/PR-1464-hygiene-tick-history-2026-05-04t09-25z-15min-cadence-shard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69k4AB",
+    "thread:PRRT_kwDOSF9kNM5_TIc6"
+  ],
+  "fetched_at": "2026-08-25T08:52:35.563Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-04T09:25Z 15min cadence shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T09:26:28Z",
+  "head_ref": "tick/2026-05-04-0925Z-shard"
+}

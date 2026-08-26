@@ -1,0 +1,15 @@
+{
+  "pr_number": 1490,
+  "archive_path": "docs/history/pr-reviews/PR-1490-hygiene-tick-history-2026-05-04t14-20z-foundation-tile-recognition-shard-deepest.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69rVbJ",
+    "thread:PRRT_kwDOSF9kNM5_YAhK"
+  ],
+  "fetched_at": "2026-08-25T08:53:42.222Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-04T14:20Z — foundation-tile recognition shard (deepest substrate of the day)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:23:38Z",
+  "head_ref": "hygiene/tick-history-2026-05-04T14-20"
+}

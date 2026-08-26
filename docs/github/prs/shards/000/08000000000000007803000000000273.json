@@ -1,0 +1,17 @@
+{
+  "pr_number": 627,
+  "archive_path": "docs/history/pr-reviews/PR-627-docs-pr-preservation-drain-log-for-618-partial-loss-recovered-via-625.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Yo6c",
+    "comment:PRRC_kwDOSF9kNM67Yo6i",
+    "thread:PRRT_kwDOSF9kNM59rAgV",
+    "thread:PRRT_kwDOSF9kNM59rAgZ"
+  ],
+  "fetched_at": "2026-08-25T08:18:58.251Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(pr-preservation): drain-log for #618 (PARTIAL LOSS recovered via #625)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:38:37Z",
+  "head_ref": "docs/pr-preservation-618-drain-log"
+}

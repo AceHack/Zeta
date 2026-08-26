@@ -1,0 +1,12 @@
+{
+  "pr_number": 1641,
+  "archive_path": "docs/history/pr-reviews/PR-1641-fix-post-1635-round-3-33-compact-labels-within-first-20-lines-non-fusion-disclai.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:59:53.828Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1635 round-3): §33 compact labels within first 20 lines + Non-fusion disclaimer Qubic-Monero correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:38:27Z",
+  "head_ref": "fixup/1635-section-33-compact-labels-within-20-lines-aaron-2026-05-05"
+}

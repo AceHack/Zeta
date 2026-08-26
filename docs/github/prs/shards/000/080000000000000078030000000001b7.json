@@ -1,0 +1,16 @@
+{
+  "pr_number": 439,
+  "archive_path": "docs/history/pr-reviews/PR-439-hygiene-268-pr-preservation-drain-log-for-432-runner-version-shell-portability.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QTfY",
+    "comment:PRRC_kwDOSF9kNM67QiDs",
+    "thread:PRRT_kwDOSF9kNM59kVvJ"
+  ],
+  "fetched_at": "2026-08-25T08:10:21.560Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #432 (runner-version shell portability)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:54:35Z",
+  "head_ref": "drain/432-pr-preservation-log"
+}

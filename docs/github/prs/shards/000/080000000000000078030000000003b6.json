@@ -1,0 +1,12 @@
+{
+  "pr_number": 950,
+  "archive_path": "docs/history/pr-reviews/PR-950-hygiene-tick-history-shard-2026-04-30t20-18z-calibration-cluster-final-landings-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:31:43.022Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2026-04-30T20:18Z — calibration-cluster final landings + Aaron-is-Rodney",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:21:40Z",
+  "head_ref": "tick-history/2026-04-30-tick-2018Z-shard"
+}

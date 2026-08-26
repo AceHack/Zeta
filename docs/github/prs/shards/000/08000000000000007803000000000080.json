@@ -1,0 +1,21 @@
+{
+  "pr_number": 128,
+  "archive_path": "docs/history/pr-reviews/PR-128-round-44-auto-loop-29-tick-icedrive-pcloud-grant-stacking-risk-named-edge-is-gre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66LB1k",
+    "comment:PRRC_kwDOSF9kNM66LElH",
+    "comment:PRRC_kwDOSF9kNM66LEl_",
+    "comment:PRRC_kwDOSF9kNM66LElr",
+    "thread:PRRT_kwDOSF9kNM58w1hW",
+    "thread:PRRT_kwDOSF9kNM58w3jJ",
+    "thread:PRRT_kwDOSF9kNM58w3ji",
+    "thread:PRRT_kwDOSF9kNM58w3jv"
+  ],
+  "fetched_at": "2026-08-25T07:55:35.265Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: auto-loop-29 tick — IceDrive/pCloud grant, stacking-risk named, edge-is-grey override",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T11:03:58Z",
+  "head_ref": "tick-close-autoloop-29"
+}

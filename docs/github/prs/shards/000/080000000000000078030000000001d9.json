@@ -1,0 +1,22 @@
+{
+  "pr_number": 473,
+  "archive_path": "docs/history/pr-reviews/PR-473-ci-dependabot-group-updates-per-aaron-otto-280.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67R3Xm",
+    "comment:PRRC_kwDOSF9kNM67RjN-",
+    "comment:PRRC_kwDOSF9kNM67RjOG",
+    "comment:PRRC_kwDOSF9kNM67Rxk5",
+    "comment:PRRC_kwDOSF9kNM67Rxko",
+    "comment:PRRC_kwDOSF9kNM67RymW",
+    "thread:PRRT_kwDOSF9kNM59lWKN",
+    "thread:PRRT_kwDOSF9kNM59lWKR",
+    "thread:PRRT_kwDOSF9kNM59liop"
+  ],
+  "fetched_at": "2026-08-25T08:11:43.748Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci(dependabot): group updates per Aaron Otto-280",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T13:50:09Z",
+  "head_ref": "ci/dependabot-grouped-updates"
+}

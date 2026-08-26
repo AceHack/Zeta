@@ -1,0 +1,21 @@
+{
+  "pr_number": 382,
+  "archive_path": "docs/history/pr-reviews/PR-382-memory-sync-otto-253-269-in-repo-mirror-17-files.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Kqh6",
+    "comment:PRRC_kwDOSF9kNM67Krl3",
+    "comment:PRRC_kwDOSF9kNM67Krlc",
+    "comment:PRRC_kwDOSF9kNM67KrmG",
+    "thread:PRRT_kwDOSF9kNM59gM40",
+    "thread:PRRT_kwDOSF9kNM59gM4T",
+    "thread:PRRT_kwDOSF9kNM59gM4o",
+    "thread:PRRT_kwDOSF9kNM59gMD2"
+  ],
+  "fetched_at": "2026-08-25T08:07:44.435Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: sync Otto-253..269 in-repo mirror (17 files)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T20:27:48Z",
+  "head_ref": "memory/sync-otto-253-269-2026-04-24"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1649,
+  "archive_path": "docs/history/pr-reviews/PR-1649-fix-post-1646-six-core-prs-nine-prs-to-date-with-role-decomposition-copilot-revi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:00:11.854Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1646): \"six core PRs\" -> \"nine PRs to date with role decomposition\" (Copilot review)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:34:37Z",
+  "head_ref": "fixup/1646-six-vs-nine-pr-count-2026-05-05"
+}

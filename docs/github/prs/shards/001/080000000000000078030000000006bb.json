@@ -1,0 +1,15 @@
+{
+  "pr_number": 1723,
+  "archive_path": "docs/history/pr-reviews/PR-1723-docs-anchor-shadow-listening-through-consensus.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-iH_n",
+    "thread:PRRT_kwDOSF9kNM6AFjad"
+  ],
+  "fetched_at": "2026-08-25T09:03:07.091Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: anchor shadow listening through consensus",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T18:22:25Z",
+  "head_ref": "claim/task-shadow-listening-operational-anchor"
+}

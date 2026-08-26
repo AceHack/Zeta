@@ -1,0 +1,12 @@
+{
+  "pr_number": 393,
+  "archive_path": "docs/history/pr-reviews/PR-393-backlog-memory-rename-starboard-farm-carpentry-seed-extension-kernels.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:08:14.509Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog+memory: rename Starboard → farm+carpentry seed-extension kernels",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T23:00:23Z",
+  "head_ref": "backlog/rename-starboard-farm-carpentry"
+}

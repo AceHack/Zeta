@@ -1,0 +1,21 @@
+{
+  "pr_number": 176,
+  "archive_path": "docs/history/pr-reviews/PR-176-backlog-p3-language-concepts-age-classification-skill.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66u6L4",
+    "comment:PRRC_kwDOSF9kNM66u6LV",
+    "comment:PRRC_kwDOSF9kNM66u6MN",
+    "comment:PRRC_kwDOSF9kNM66u6Mh",
+    "thread:PRRT_kwDOSF9kNM59Lme5",
+    "thread:PRRT_kwDOSF9kNM59Lmf7",
+    "thread:PRRT_kwDOSF9kNM59LmfV",
+    "thread:PRRT_kwDOSF9kNM59Lmfo"
+  ],
+  "fetched_at": "2026-08-25T07:58:52.425Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "backlog: P3 — language + concepts age-classification skill",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:16:33Z",
+  "head_ref": "backlog/language-age-classification-skill"
+}

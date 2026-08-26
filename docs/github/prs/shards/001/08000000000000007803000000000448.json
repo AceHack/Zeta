@@ -1,0 +1,17 @@
+{
+  "pr_number": 1096,
+  "archive_path": "docs/history/pr-reviews/PR-1096-research-claudeai-pause-class-discovery-critique-fifth-ferry-substantive-critiqu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HyAB",
+    "comment:PRRC_kwDOSF9kNM69HyAU",
+    "thread:PRRT_kwDOSF9kNM5-9EfF",
+    "thread:PRRT_kwDOSF9kNM5-9EfR"
+  ],
+  "fetched_at": "2026-08-25T08:37:44.398Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-pause-class-discovery-critique): fifth ferry — substantive critique + Aaron's care-as-delivery-architecture correction",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:35:01Z",
+  "head_ref": "research/claudeai-pause-class-discovery-critique-2026-05-01"
+}

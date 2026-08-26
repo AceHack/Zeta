@@ -1,0 +1,17 @@
+{
+  "pr_number": 772,
+  "archive_path": "docs/history/pr-reviews/PR-772-tick-history-2026-04-29t04-38z-fifth-merge-wave-paired-edit-arithmetic-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68RMvA",
+    "comment:PRRC_kwDOSF9kNM68RMvW",
+    "thread:PRRT_kwDOSF9kNM5-U3vb",
+    "thread:PRRT_kwDOSF9kNM5-U3vn"
+  ],
+  "fetched_at": "2026-08-25T08:24:48.422Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:38Z — fifth merge wave + paired-edit + arithmetic fixes",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:52:47Z",
+  "head_ref": "tick-history/2026-04-29-tick-0438Z-shard"
+}

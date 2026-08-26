@@ -1,0 +1,12 @@
+{
+  "pr_number": 1373,
+  "archive_path": "docs/history/pr-reviews/PR-1373-memory-update-6-stale-sh-refs-to-ts-post-1371-cleanup-aaron-fully-converted-foll.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:01.986Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: update 6 stale .sh refs to .ts post-#1371 cleanup (Aaron 'fully converted' follow-through)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T10:29:19Z",
+  "head_ref": "memory/sh-to-ts-stale-refs-1371-followup"
+}

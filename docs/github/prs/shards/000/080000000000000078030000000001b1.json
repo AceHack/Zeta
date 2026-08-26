@@ -1,0 +1,21 @@
+{
+  "pr_number": 433,
+  "archive_path": "docs/history/pr-reviews/PR-433-drain-226-follow-up-priority-tie-break-strip-paired-delimiters-dedup-by-source-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67P62K",
+    "comment:PRRC_kwDOSF9kNM67P62L",
+    "comment:PRRC_kwDOSF9kNM67P63d",
+    "comment:PRRC_kwDOSF9kNM67P63l",
+    "thread:PRRT_kwDOSF9kNM59kCgx",
+    "thread:PRRT_kwDOSF9kNM59kCgy",
+    "thread:PRRT_kwDOSF9kNM59kCh2",
+    "thread:PRRT_kwDOSF9kNM59kCh9"
+  ],
+  "fetched_at": "2026-08-25T08:10:05.506Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#226 follow-up): priority tie-break + strip-paired-delimiters + dedup-by-source_path",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T05:25:53Z",
+  "head_ref": "drain/226-followup-priority-tiebreak-and-strip-and-dedup"
+}

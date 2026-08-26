@@ -1,0 +1,19 @@
+{
+  "pr_number": 552,
+  "archive_path": "docs/history/pr-reviews/PR-552-backlog-b-0032-heartbeat-file-integrity-threat-model-aminata-adversarial-review-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5uy",
+    "comment:PRRC_kwDOSF9kNM67V5vJ",
+    "comment:PRRC_kwDOSF9kNM67Vnw0",
+    "comment:PRRC_kwDOSF9kNM67Vnw5",
+    "thread:PRRT_kwDOSF9kNM59om6B",
+    "thread:PRRT_kwDOSF9kNM59om6G"
+  ],
+  "fetched_at": "2026-08-25T08:15:53.367Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0032): heartbeat-file integrity threat-model + Aminata adversarial review (P2) — Aaron 2026-04-26 direct-to-main attack surface",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:49:34Z",
+  "head_ref": "backlog/B-0032-heartbeat-file-integrity-threat-model-aminata-review-from-aaron-2026-04-26-direct-to-main-attack-surface"
+}

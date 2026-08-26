@@ -1,0 +1,17 @@
+{
+  "pr_number": 766,
+  "archive_path": "docs/history/pr-reviews/PR-766-tick-history-2026-04-29t04-18z-review-thread-drain-shard-12-threads-6-prs-0-new-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Q8Rt",
+    "comment:PRRC_kwDOSF9kNM68Q9md",
+    "thread:PRRT_kwDOSF9kNM5-Urt7",
+    "thread:PRRT_kwDOSF9kNM5-Usvz"
+  ],
+  "fetched_at": "2026-08-25T08:24:31.811Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:18Z — review-thread-drain shard (12 threads, 6 PRs, 0 new substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:33:39Z",
+  "head_ref": "tick-history/2026-04-29-tick-0418Z-shard"
+}

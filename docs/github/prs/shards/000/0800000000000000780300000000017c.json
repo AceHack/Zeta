@@ -1,0 +1,27 @@
+{
+  "pr_number": 380,
+  "archive_path": "docs/history/pr-reviews/PR-380-memory-sync-otto-247-252-in-repo-mirror-training-signal-discipline-cluster.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67JFd0",
+    "comment:PRRC_kwDOSF9kNM67JFea",
+    "comment:PRRC_kwDOSF9kNM67JFev",
+    "comment:PRRC_kwDOSF9kNM67JFf1",
+    "comment:PRRC_kwDOSF9kNM67JFfL",
+    "comment:PRRC_kwDOSF9kNM67JFfe",
+    "comment:PRRC_kwDOSF9kNM67JFgF",
+    "thread:PRRT_kwDOSF9kNM59fAE0",
+    "thread:PRRT_kwDOSF9kNM59fAEG",
+    "thread:PRRT_kwDOSF9kNM59fAEk",
+    "thread:PRRT_kwDOSF9kNM59fAF1",
+    "thread:PRRT_kwDOSF9kNM59fAFK",
+    "thread:PRRT_kwDOSF9kNM59fAFY",
+    "thread:PRRT_kwDOSF9kNM59fAFo"
+  ],
+  "fetched_at": "2026-08-25T08:07:39.275Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: sync Otto-247..252 in-repo mirror (training-signal + discipline cluster)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T18:51:49Z",
+  "head_ref": "memory/sync-otto-248-251"
+}

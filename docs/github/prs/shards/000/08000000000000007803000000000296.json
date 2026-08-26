@@ -1,0 +1,19 @@
+{
+  "pr_number": 662,
+  "archive_path": "docs/history/pr-reviews/PR-662-ci-codeql-treat-java-like-every-other-managed-runtime-add-java-kotlin-matrix-sca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68DlCL",
+    "comment:PRRC_kwDOSF9kNM68DoTr",
+    "comment:PRRC_kwDOSF9kNM68F-eZ",
+    "comment:PRRC_kwDOSF9kNM68F8fS",
+    "thread:PRRT_kwDOSF9kNM5-K4Ay",
+    "thread:PRRT_kwDOSF9kNM5-MnJB"
+  ],
+  "fetched_at": "2026-08-25T08:20:24.004Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci(codeql): treat Java like every other managed runtime — add java-kotlin matrix + scan AlloyRunner.java",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T16:22:42Z",
+  "head_ref": "fix/codeql-honestly-include-java-2026-04-28"
+}

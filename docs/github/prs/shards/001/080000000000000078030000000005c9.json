@@ -1,0 +1,17 @@
+{
+  "pr_number": 1481,
+  "archive_path": "docs/history/pr-reviews/PR-1481-feedback-tiles-razor-physics-of-history-are-the-only-constraints-on-otto-lattice.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69pBWk",
+    "comment:PRRC_kwDOSF9kNM69pBXb",
+    "thread:PRRT_kwDOSF9kNM5_WQ_2",
+    "thread:PRRT_kwDOSF9kNM5_WQ_J"
+  ],
+  "fetched_at": "2026-08-25T08:53:16.208Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: tiles + razor + physics-of-history are the only constraints on Otto; lattice-of-lattices substrate (Aaron 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T12:51:43Z",
+  "head_ref": "feedback/aaron-constraints-are-tiles-razor-physics-of-history-aaron-2026-05-04"
+}

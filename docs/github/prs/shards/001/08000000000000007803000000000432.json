@@ -1,0 +1,16 @@
+{
+  "pr_number": 1074,
+  "archive_path": "docs/history/pr-reviews/PR-1074-hygiene-tick-history-2026-05-01t09-53z-deferred-per-policy-tick-755-deferred-102.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HTj7",
+    "comment:PRRC_kwDOSF9kNM69JNsR",
+    "thread:PRRT_kwDOSF9kNM5-8tQ3"
+  ],
+  "fetched_at": "2026-08-25T08:36:53.592Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:53Z — deferred-per-policy tick (#755 deferred, #1025 stale-count)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T13:21:06Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0954Z-755-deferred-1025-stale"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1105,
+  "archive_path": "docs/history/pr-reviews/PR-1105-hygiene-tick-history-2026-05-01t11-19z-pr-1102-thread-fixes-33-placement-governa.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:38:09.228Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T11:19Z — PR #1102 thread-fixes (§33 placement + GOVERNANCE citation + forward-ref) + Aaron-aside",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T11:29:49Z",
+  "head_ref": "hygiene/tick-history-1119Z-2026-05-01"
+}

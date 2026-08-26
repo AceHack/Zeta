@@ -1,0 +1,19 @@
+{
+  "pr_number": 713,
+  "archive_path": "docs/history/pr-reviews/PR-713-escrow-aurora-autonomous-flywheel-thesis-defined-home-expiration-one-test-gate-n.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PO44",
+    "comment:PRRC_kwDOSF9kNM68PO4q",
+    "comment:PRRC_kwDOSF9kNM68PO5G",
+    "thread:PRRT_kwDOSF9kNM5-TaO6",
+    "thread:PRRT_kwDOSF9kNM5-TaOx",
+    "thread:PRRT_kwDOSF9kNM5-TaPI"
+  ],
+  "fetched_at": "2026-08-25T08:22:27.184Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "escrow: Aurora autonomous flywheel thesis — defined home + expiration + one-test gate + no-multi-reviewer rule (cross-AI converged refinement, Aaron 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T01:16:49Z",
+  "head_ref": "backlog/B-0094-escrow-aurora-flywheel-thesis-aaron-2026-04-29"
+}

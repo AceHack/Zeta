@@ -1,0 +1,12 @@
+{
+  "pr_number": 1905,
+  "archive_path": "docs/history/pr-reviews/PR-1905-docs-well-definitions-shadow-observer-isomorphism.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:07:11.112Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(well-definitions): shadow ≅ observer isomorphism",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T16:22:22Z",
+  "head_ref": "otto/well-def-shadow-isomorphism"
+}

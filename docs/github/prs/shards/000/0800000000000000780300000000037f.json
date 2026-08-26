@@ -1,0 +1,17 @@
+{
+  "pr_number": 895,
+  "archive_path": "docs/history/pr-reviews/PR-895-ops-tick-history-autonomous-loop-tick-2026-04-30t05-43-00z-slice-14-merged-10-pr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68s22B",
+    "comment:PRRC_kwDOSF9kNM68s3D9",
+    "thread:PRRT_kwDOSF9kNM5-pI8n",
+    "thread:PRRT_kwDOSF9kNM5-pIyL"
+  ],
+  "fetched_at": "2026-08-25T08:29:22.152Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(tick-history): autonomous-loop tick 2026-04-30T05:43:00Z — slice-14 merged (10 PRs in session arc)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:52:50Z",
+  "head_ref": "ops/tick-history-2026-04-30-slice-14-merged"
+}

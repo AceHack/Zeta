@@ -1,0 +1,12 @@
+{
+  "pr_number": 1386,
+  "archive_path": "docs/history/pr-reviews/PR-1386-hygiene-tick-history-2026-05-03t11-37z-substrate-discovery-zeta-native-aot-scopi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:31.280Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T11:37Z — substrate-discovery Zeta-native-AOT scoping decision (#1385)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:40:02Z",
+  "head_ref": "hygiene/tick-1137Z-substrate-discovery-scoping"
+}

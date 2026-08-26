@@ -1,0 +1,23 @@
+{
+  "pr_number": 356,
+  "archive_path": "docs/history/pr-reviews/PR-356-backlog-otto-204-pr-resolve-loop-skill-close-the-pr-cycle-automation-active-mana.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66_wn4",
+    "comment:PRRC_kwDOSF9kNM66_wo9",
+    "comment:PRRC_kwDOSF9kNM66_wou",
+    "comment:PRRC_kwDOSF9kNM66_wpW",
+    "comment:PRRC_kwDOSF9kNM66_wpp",
+    "thread:PRRT_kwDOSF9kNM59YAYw",
+    "thread:PRRT_kwDOSF9kNM59YAZ0",
+    "thread:PRRT_kwDOSF9kNM59YAZX",
+    "thread:PRRT_kwDOSF9kNM59YAZj",
+    "thread:PRRT_kwDOSF9kNM59YAaB"
+  ],
+  "fetched_at": "2026-08-25T08:06:23.300Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Otto-204 PR-resolve-loop skill — close-the-PR cycle automation (active management > ship-and-pray)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T11:07:45Z",
+  "head_ref": "backlog/otto-204-pr-resolve-loop-skill"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 863,
+  "archive_path": "docs/history/pr-reviews/PR-863-lane-a-849-probe-complete-sticky-analyze-python-is-non-blocking-pr-849-is-mergea.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68ofS9",
+    "comment:PRRC_kwDOSF9kNM68ofSu",
+    "comment:PRRC_kwDOSF9kNM68ofTI",
+    "comment:PRRC_kwDOSF9kNM68ofTV",
+    "comment:PRRC_kwDOSF9kNM68ofxi",
+    "comment:PRRC_kwDOSF9kNM68ofxk",
+    "comment:PRRC_kwDOSF9kNM68omfq",
+    "comment:PRRC_kwDOSF9kNM68omgL",
+    "thread:PRRT_kwDOSF9kNM5-l-NZ",
+    "thread:PRRT_kwDOSF9kNM5-l-Na",
+    "thread:PRRT_kwDOSF9kNM5-l92B",
+    "thread:PRRT_kwDOSF9kNM5-l92N",
+    "thread:PRRT_kwDOSF9kNM5-l92T",
+    "thread:PRRT_kwDOSF9kNM5-l92e",
+    "thread:PRRT_kwDOSF9kNM5-mDFI",
+    "thread:PRRT_kwDOSF9kNM5-mDFf"
+  ],
+  "fetched_at": "2026-08-25T08:27:58.790Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "lane-a(849): probe complete — sticky Analyze (python) is non-blocking; PR #849 is mergeable",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T23:20:35Z",
+  "head_ref": "lane-a/849-codeql-host-ownership-probe-2026-04-29"
+}

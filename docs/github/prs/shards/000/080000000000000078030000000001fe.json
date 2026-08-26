@@ -1,0 +1,19 @@
+{
+  "pr_number": 510,
+  "archive_path": "docs/history/pr-reviews/PR-510-substrate-otto-323-backlog-b-0016-symbiotic-deps-discipline-just-bash-lineage-re.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UXJZ",
+    "comment:PRRC_kwDOSF9kNM67UXJe",
+    "comment:PRRC_kwDOSF9kNM67UXJg",
+    "thread:PRRT_kwDOSF9kNM59nlzp",
+    "thread:PRRT_kwDOSF9kNM59nlzt",
+    "thread:PRRT_kwDOSF9kNM59nlzu"
+  ],
+  "fetched_at": "2026-08-25T08:14:01.572Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-323) + backlog(B-0016): symbiotic-deps discipline + just-bash lineage research candidate",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T22:38:10Z",
+  "head_ref": "substrate/otto-323-symbiotic-deps-just-bash-lineage"
+}

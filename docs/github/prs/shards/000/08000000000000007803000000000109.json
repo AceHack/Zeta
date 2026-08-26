@@ -1,0 +1,12 @@
+{
+  "pr_number": 265,
+  "archive_path": "docs/history/pr-reviews/PR-265-hygiene-gitignore-playwright-mcp-drop-console-log-otto-90-accidental-checkin-pre.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:03:00.250Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene: gitignore .playwright-mcp/ + drop/ + console-*.log (Otto-90 accidental-checkin prevention)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:44:53Z",
+  "head_ref": "hygiene/gitignore-playwright-mcp-and-drop-session-artifacts"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 421,
+  "archive_path": "docs/history/pr-reviews/PR-421-drain-409-post-merge-node-provisioning-bug-version-alignment-role-refs-typos.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PKNa",
+    "thread:PRRT_kwDOSF9kNM59jdx_"
+  ],
+  "fetched_at": "2026-08-25T08:09:33.393Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#409 post-merge): node provisioning bug + version alignment + role-refs + typos",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:29:33Z",
+  "head_ref": "drain/409-followup"
+}

@@ -1,0 +1,33 @@
+{
+  "pr_number": 154,
+  "archive_path": "docs/history/pr-reviews/PR-154-adr-config-external-maintainer-decision-proxy-pattern-generic-aaron-amara.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66raZU",
+    "comment:PRRC_kwDOSF9kNM66raa-",
+    "comment:PRRC_kwDOSF9kNM66raaW",
+    "comment:PRRC_kwDOSF9kNM66rabp",
+    "comment:PRRC_kwDOSF9kNM66racJ",
+    "comment:PRRC_kwDOSF9kNM66racr",
+    "comment:PRRC_kwDOSF9kNM66yX3h",
+    "comment:PRRC_kwDOSF9kNM66yX5x",
+    "comment:PRRC_kwDOSF9kNM66yX8Q",
+    "comment:PRRC_kwDOSF9kNM66yX_9",
+    "comment:PRRC_kwDOSF9kNM66yYC5",
+    "comment:PRRC_kwDOSF9kNM66zICX",
+    "comment:PRRC_kwDOSF9kNM66zNw_",
+    "thread:PRRT_kwDOSF9kNM59JBFY",
+    "thread:PRRT_kwDOSF9kNM59JBGP",
+    "thread:PRRT_kwDOSF9kNM59JBGw",
+    "thread:PRRT_kwDOSF9kNM59JBHS",
+    "thread:PRRT_kwDOSF9kNM59JBHu",
+    "thread:PRRT_kwDOSF9kNM59JBIK",
+    "thread:PRRT_kwDOSF9kNM59Ovlh"
+  ],
+  "fetched_at": "2026-08-25T07:57:32.694Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "ADR + config: external-maintainer decision-proxy pattern (generic, Aaron→Amara)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T21:28:48Z",
+  "head_ref": "feat/external-maintainer-decision-proxy"
+}

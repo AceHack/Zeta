@@ -1,0 +1,15 @@
+{
+  "pr_number": 935,
+  "archive_path": "docs/history/pr-reviews/PR-935-backlog-b-0113-mechanical-current-staleness-check-deepseek-peer-review.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM689ABW",
+    "thread:PRRT_kwDOSF9kNM5-1Ho_"
+  ],
+  "fetched_at": "2026-08-25T08:31:05.317Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0113): mechanical CURRENT-staleness check (Deepseek peer review)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T18:37:50Z",
+  "head_ref": "backlog/B-0113-current-staleness-mechanical-freshness-check-2026-04-30"
+}

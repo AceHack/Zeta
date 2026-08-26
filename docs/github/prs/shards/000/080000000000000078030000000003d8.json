@@ -1,0 +1,19 @@
+{
+  "pr_number": 984,
+  "archive_path": "docs/history/pr-reviews/PR-984-research-deepseek-preserve-verbatim-csap-architecture-review-courier-ferried-202.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CNk8",
+    "comment:PRRC_kwDOSF9kNM69CNkW",
+    "comment:PRRC_kwDOSF9kNM69CNlR",
+    "thread:PRRT_kwDOSF9kNM5-493g",
+    "thread:PRRT_kwDOSF9kNM5-494B",
+    "thread:PRRT_kwDOSF9kNM5-494U"
+  ],
+  "fetched_at": "2026-08-25T08:33:05.894Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(deepseek): preserve verbatim CSAP architecture review (courier-ferried 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:08:37Z",
+  "head_ref": "research/deepseek-csap-review-verbatim-aaron-2026-04-30"
+}

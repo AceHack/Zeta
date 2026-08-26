@@ -1,0 +1,17 @@
+{
+  "pr_number": 1921,
+  "archive_path": "docs/history/pr-reviews/PR-1921-research-deepseek-correction-satoshi-target-pouw-cc-immune-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-8dxK",
+    "comment:PRRC_kwDOSF9kNM6-8dyK",
+    "thread:PRRT_kwDOSF9kNM6AZYe6",
+    "thread:PRRT_kwDOSF9kNM6AZYfh"
+  ],
+  "fetched_at": "2026-08-25T09:07:44.970Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: DeepSeek correction — Satoshi target + PoUW-CC immune gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:38:11Z",
+  "head_ref": "otto/research-deepseek-correction-service-mesh"
+}

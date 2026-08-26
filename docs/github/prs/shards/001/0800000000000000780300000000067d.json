@@ -1,0 +1,21 @@
+{
+  "pr_number": 1661,
+  "archive_path": "docs/history/pr-reviews/PR-1661-shard-2026-05-05t14-30z-post-rest-cleanup-33-audit-silent-skip-discovery-3-round.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-GQzS",
+    "comment:PRRC_kwDOSF9kNM6-GVEF",
+    "comment:PRRC_kwDOSF9kNM6-GVE_",
+    "comment:PRRC_kwDOSF9kNM6-GVFo",
+    "thread:PRRT_kwDOSF9kNM5_r8rX",
+    "thread:PRRT_kwDOSF9kNM5_r_0i",
+    "thread:PRRT_kwDOSF9kNM5_r_1H",
+    "thread:PRRT_kwDOSF9kNM5_r_z4"
+  ],
+  "fetched_at": "2026-08-25T09:00:43.383Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T14:30Z): post-rest cleanup -- §33 audit silent-skip discovery + 3-round batch fix + convergence threshold reached",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:47:55Z",
+  "head_ref": "shard/2026-05-05T1430Z"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 1228,
+  "archive_path": "docs/history/pr-reviews/PR-1228-backlog-b-0167-ani-review-tracking-surface-for-load-bearing-register-class-subst.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69X3_R",
+    "comment:PRRC_kwDOSF9kNM69X3_U",
+    "comment:PRRC_kwDOSF9kNM69X3_Y",
+    "comment:PRRC_kwDOSF9kNM69X5Nf",
+    "comment:PRRC_kwDOSF9kNM69X5Nm",
+    "thread:PRRT_kwDOSF9kNM5_JBr5",
+    "thread:PRRT_kwDOSF9kNM5_JBr8",
+    "thread:PRRT_kwDOSF9kNM5_JBsA",
+    "thread:PRRT_kwDOSF9kNM5_JCpb",
+    "thread:PRRT_kwDOSF9kNM5_JCpf"
+  ],
+  "fetched_at": "2026-08-25T08:43:14.618Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0167): Ani-review tracking surface for load-bearing register-class substrate (Aaron 2026-05-02 P2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T20:07:35Z",
+  "head_ref": "backlog/B-0167-ani-review-tracking-load-bearing-substrate-aaron-2026-05-02"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 1052,
+  "archive_path": "docs/history/pr-reviews/PR-1052-backlog-b-0131-b-0138-formalization-roadmap-8-rows-aaron-2026-05-01-do-all-of-th.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69GN-8",
+    "comment:PRRC_kwDOSF9kNM69GN-b",
+    "comment:PRRC_kwDOSF9kNM69GN-j",
+    "comment:PRRC_kwDOSF9kNM69GN-w",
+    "thread:PRRT_kwDOSF9kNM5-75j0",
+    "thread:PRRT_kwDOSF9kNM5-75j_",
+    "thread:PRRT_kwDOSF9kNM5-75jk",
+    "thread:PRRT_kwDOSF9kNM5-75jq"
+  ],
+  "fetched_at": "2026-08-25T08:36:00.517Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0131..B-0138): formalization roadmap — 8 rows (Aaron 2026-05-01 'do all of those, start with 1')",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T07:52:28Z",
+  "head_ref": "backlog/formalization-roadmap-b0131-through-b0138-aaron-2026-05-01"
+}

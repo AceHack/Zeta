@@ -1,0 +1,24 @@
+{
+  "pr_number": 266,
+  "archive_path": "docs/history/pr-reviews/PR-266-research-oracle-scoring-v0-design-addressing-aminata-s-critical-findings-on-7th-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66378R",
+    "comment:PRRC_kwDOSF9kNM66378j",
+    "comment:PRRC_kwDOSF9kNM66378s",
+    "comment:PRRC_kwDOSF9kNM67D-Y8",
+    "comment:PRRC_kwDOSF9kNM67D-bH",
+    "comment:PRRC_kwDOSF9kNM67D-em",
+    "comment:PRRC_kwDOSF9kNM67JyKc",
+    "thread:PRRT_kwDOSF9kNM59SLLX",
+    "thread:PRRT_kwDOSF9kNM59SLLj",
+    "thread:PRRT_kwDOSF9kNM59SLLq",
+    "thread:PRRT_kwDOSF9kNM59fhu8"
+  ],
+  "fetched_at": "2026-08-25T08:03:03.105Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: oracle-scoring v0 design addressing Aminata's CRITICAL findings on 7th-ferry V/S",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:35:30Z",
+  "head_ref": "research/oracle-scoring-v0-design-addressing-aminata-critical"
+}

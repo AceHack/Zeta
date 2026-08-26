@@ -1,0 +1,17 @@
+{
+  "pr_number": 118,
+  "archive_path": "docs/history/pr-reviews/PR-118-round-44-auto-loop-20-backlog-p1-row-dep-cadence-doc-refresh-trigger.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66IWHv",
+    "comment:PRRC_kwDOSF9kNM66IWIv",
+    "thread:PRRT_kwDOSF9kNM58u0-g",
+    "thread:PRRT_kwDOSF9kNM58u095"
+  ],
+  "fetched_at": "2026-08-25T07:55:04.345Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-20: BACKLOG P1 row — dep-cadence → doc-refresh trigger",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T08:56:49Z",
+  "head_ref": "land-dep-cadence-audit-backlog"
+}

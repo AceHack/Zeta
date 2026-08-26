@@ -1,0 +1,12 @@
+{
+  "pr_number": 971,
+  "archive_path": "docs/history/pr-reviews/PR-971-cleanup-tick-history-batch-fix-col1-schema-violations-across-15-shards.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:32:35.073Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "cleanup(tick-history): batch-fix col1 schema violations across 15 shards",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:22:08Z",
+  "head_ref": "cleanup/tick-history-shard-col1-schema-violations-batch-fix-2026-04-30"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 543,
+  "archive_path": "docs/history/pr-reviews/PR-543-backlog-b-0027-b-0015-markdown-table-fix-tool-follow-up-ts-migration-p3-p2-prior.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V5xa",
+    "comment:PRRC_kwDOSF9kNM67V6I6",
+    "comment:PRRC_kwDOSF9kNM67V6Ic",
+    "comment:PRRC_kwDOSF9kNM67V6JM",
+    "comment:PRRC_kwDOSF9kNM67V6Jl",
+    "comment:PRRC_kwDOSF9kNM67VaLi",
+    "comment:PRRC_kwDOSF9kNM67VaMO",
+    "comment:PRRC_kwDOSF9kNM67VaMz",
+    "comment:PRRC_kwDOSF9kNM67VaNA",
+    "comment:PRRC_kwDOSF9kNM67VaNN",
+    "comment:PRRC_kwDOSF9kNM67VaNZ",
+    "comment:PRRC_kwDOSF9kNM67WMyh",
+    "thread:PRRT_kwDOSF9kNM59ocE4",
+    "thread:PRRT_kwDOSF9kNM59ocF4",
+    "thread:PRRT_kwDOSF9kNM59ocFY",
+    "thread:PRRT_kwDOSF9kNM59ocGC",
+    "thread:PRRT_kwDOSF9kNM59ocGL",
+    "thread:PRRT_kwDOSF9kNM59ocGT"
+  ],
+  "fetched_at": "2026-08-25T08:15:32.462Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0027 + B-0015): markdown-table fix tool follow-up + TS-migration P3→P2 priority bump (Aaron 2026-04-26)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:52:16Z",
+  "head_ref": "backlog/B-0027-fix-markdown-table-cell-count-tool-otto-346-followup"
+}

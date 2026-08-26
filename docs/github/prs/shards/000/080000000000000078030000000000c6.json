@@ -1,0 +1,25 @@
+{
+  "pr_number": 198,
+  "archive_path": "docs/history/pr-reviews/PR-198-hygiene-machine-specific-content-scrubber-factory-hygiene-row-55-cadenced.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66yRW3",
+    "comment:PRRC_kwDOSF9kNM66yRXW",
+    "comment:PRRC_kwDOSF9kNM66yRXs",
+    "comment:PRRC_kwDOSF9kNM66yRYL",
+    "comment:PRRC_kwDOSF9kNM66yRYv",
+    "comment:PRRC_kwDOSF9kNM66yRZA",
+    "thread:PRRT_kwDOSF9kNM59OFUv",
+    "thread:PRRT_kwDOSF9kNM59OFVD",
+    "thread:PRRT_kwDOSF9kNM59OFVV",
+    "thread:PRRT_kwDOSF9kNM59OFVv",
+    "thread:PRRT_kwDOSF9kNM59OFWN",
+    "thread:PRRT_kwDOSF9kNM59OFWc"
+  ],
+  "fetched_at": "2026-08-25T08:00:04.224Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "hygiene: machine-specific content scrubber (FACTORY-HYGIENE row #55; cadenced)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T20:50:16Z",
+  "head_ref": "hygiene/machine-specific-content-scrubber-cadenced"
+}

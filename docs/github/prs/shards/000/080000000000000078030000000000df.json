@@ -1,0 +1,25 @@
+{
+  "pr_number": 223,
+  "archive_path": "docs/history/pr-reviews/PR-223-stabilize-snapshot-pinning-scaffolding-amara-action-2-completes-stabilize-stage.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662Lo6",
+    "comment:PRRC_kwDOSF9kNM662Log",
+    "comment:PRRC_kwDOSF9kNM662LpN",
+    "comment:PRRC_kwDOSF9kNM662LpZ",
+    "comment:PRRC_kwDOSF9kNM662Lpl",
+    "comment:PRRC_kwDOSF9kNM662MSg",
+    "thread:PRRT_kwDOSF9kNM59Q4UF",
+    "thread:PRRT_kwDOSF9kNM59Q4UU",
+    "thread:PRRT_kwDOSF9kNM59Q4Ui",
+    "thread:PRRT_kwDOSF9kNM59Q4Up",
+    "thread:PRRT_kwDOSF9kNM59Q4Ux",
+    "thread:PRRT_kwDOSF9kNM59Q4vz"
+  ],
+  "fetched_at": "2026-08-25T08:01:44.164Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "stabilize: snapshot-pinning scaffolding (Amara action #2 — completes Stabilize stage)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T00:31:48Z",
+  "head_ref": "stabilize/snapshot-pinning-tick-history-amara-action-2"
+}

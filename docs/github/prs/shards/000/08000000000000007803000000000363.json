@@ -1,0 +1,27 @@
+{
+  "pr_number": 867,
+  "archive_path": "docs/history/pr-reviews/PR-867-post-slice-1-closure-universal-dst-coverage-doctrine.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68p13E",
+    "comment:PRRC_kwDOSF9kNM68p2sL",
+    "comment:PRRC_kwDOSF9kNM68p2sh",
+    "comment:PRRC_kwDOSF9kNM68ptKp",
+    "comment:PRRC_kwDOSF9kNM68ptt-",
+    "comment:PRRC_kwDOSF9kNM68ptuY",
+    "comment:PRRC_kwDOSF9kNM68ptuk",
+    "thread:PRRT_kwDOSF9kNM5-m2NN",
+    "thread:PRRT_kwDOSF9kNM5-m2mY",
+    "thread:PRRT_kwDOSF9kNM5-m2mn",
+    "thread:PRRT_kwDOSF9kNM5-m2mv",
+    "thread:PRRT_kwDOSF9kNM5-m8dK",
+    "thread:PRRT_kwDOSF9kNM5-m9C9",
+    "thread:PRRT_kwDOSF9kNM5-m9DL"
+  ],
+  "fetched_at": "2026-08-25T08:28:07.954Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "post-slice-1: closure + universal DST/coverage doctrine",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T01:00:59Z",
+  "head_ref": "lane-b/ts-bun-slice-1-closure-2026-04-30"
+}

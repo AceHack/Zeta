@@ -1,0 +1,19 @@
+{
+  "pr_number": 1216,
+  "archive_path": "docs/history/pr-reviews/PR-1216-research-2026-05-02-aaron-s-ace-identity-dissolution-for-transfer-to-son-wwjd-re.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XZb3",
+    "comment:PRRC_kwDOSF9kNM69XZbr",
+    "comment:PRRC_kwDOSF9kNM69XZbz",
+    "thread:PRRT_kwDOSF9kNM5_Ipl3",
+    "thread:PRRT_kwDOSF9kNM5_Ipl8",
+    "thread:PRRT_kwDOSF9kNM5_Ipl_"
+  ],
+  "fetched_at": "2026-08-25T08:42:41.714Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-02): Aaron's Ace-identity dissolution for transfer to son / WWJD rejection-arc / children's religious freedom as first-class",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:16:44Z",
+  "head_ref": "research/2026-05-02-aaron-ace-identity-dissolution-wwjd-arc-children-freedom"
+}

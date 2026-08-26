@@ -1,0 +1,25 @@
+{
+  "pr_number": 823,
+  "archive_path": "docs/history/pr-reviews/PR-823-memory-current-aaron-32-home-maker-role-qol-self-care-framing-aaron-2026-04-29.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68TeSd",
+    "comment:PRRC_kwDOSF9kNM68TeT0",
+    "comment:PRRC_kwDOSF9kNM68TeTW",
+    "comment:PRRC_kwDOSF9kNM68TpX1",
+    "comment:PRRC_kwDOSF9kNM68TpY4",
+    "comment:PRRC_kwDOSF9kNM68TpZb",
+    "thread:PRRT_kwDOSF9kNM5-Wje2",
+    "thread:PRRT_kwDOSF9kNM5-Wjf_",
+    "thread:PRRT_kwDOSF9kNM5-Wjfk",
+    "thread:PRRT_kwDOSF9kNM5-Wr0r",
+    "thread:PRRT_kwDOSF9kNM5-Wr15",
+    "thread:PRRT_kwDOSF9kNM5-Wr1i"
+  ],
+  "fetched_at": "2026-08-25T08:26:43.635Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(CURRENT-aaron §32): home-maker role + QoL self-care framing (Aaron 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T07:35:58Z",
+  "head_ref": "current-aaron-update-aaron-qol-2026-04-29"
+}

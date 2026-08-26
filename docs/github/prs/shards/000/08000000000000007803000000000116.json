@@ -1,0 +1,21 @@
+{
+  "pr_number": 278,
+  "archive_path": "docs/history/pr-reviews/PR-278-research-quantum-sensing-low-snr-detection-software-analogy-boundaries-8th-ferry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM664UTu",
+    "comment:PRRC_kwDOSF9kNM664UUB",
+    "comment:PRRC_kwDOSF9kNM664UUE",
+    "comment:PRRC_kwDOSF9kNM664UUS",
+    "thread:PRRT_kwDOSF9kNM59SdkU",
+    "thread:PRRT_kwDOSF9kNM59Sdkh",
+    "thread:PRRT_kwDOSF9kNM59Sdkk",
+    "thread:PRRT_kwDOSF9kNM59Sdkw"
+  ],
+  "fetched_at": "2026-08-25T08:03:20.389Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: quantum-sensing low-SNR detection + software-analogy boundaries (8th-ferry candidate #1)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T03:47:20Z",
+  "head_ref": "research/quantum-sensing-low-snr-detection-analogy-boundaries"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1280,
+  "archive_path": "docs/history/pr-reviews/PR-1280-ground-truth-recovery-b-0173-calibration-delta-otto-s-first-in-the-moment-guess-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZWZ3",
+    "comment:PRRC_kwDOSF9kNM69ZWZ9",
+    "thread:PRRT_kwDOSF9kNM5_KL-N",
+    "thread:PRRT_kwDOSF9kNM5_KL-S"
+  ],
+  "fetched_at": "2026-08-25T08:45:34.339Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "GROUND-TRUTH-RECOVERY: B-0173 calibration delta — Otto's first in-the-moment guess (mixed accuracy across layers)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:52:50Z",
+  "head_ref": "free-memory/ground-truth-recovery-b-0173-hook-authoring-calibration-otto-2026-05-03"
+}

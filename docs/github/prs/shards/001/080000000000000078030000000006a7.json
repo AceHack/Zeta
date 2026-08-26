@@ -1,0 +1,12 @@
+{
+  "pr_number": 1703,
+  "archive_path": "docs/history/pr-reviews/PR-1703-peer-call-shared-input-firewall-for-five-wrappers.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:02:11.107Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "peer-call: shared input firewall for five wrappers",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:15:50Z",
+  "head_ref": "claim/task-peer-call-firewall-parity"
+}

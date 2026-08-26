@@ -1,0 +1,17 @@
+{
+  "pr_number": 983,
+  "archive_path": "docs/history/pr-reviews/PR-983-memory-aic-4-pipeline-diagram-synthesizing-8-layer-carved-sentence-theory-multi-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CJEz",
+    "comment:PRRC_kwDOSF9kNM69CJFC",
+    "thread:PRRT_kwDOSF9kNM5-460B",
+    "thread:PRRT_kwDOSF9kNM5-460I"
+  ],
+  "fetched_at": "2026-08-25T08:33:03.537Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(AIC #4): pipeline diagram synthesizing 8-layer carved-sentence theory + multi-AI convergence (Aaron 'fucking excellent!!')",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:03:57Z",
+  "head_ref": "memory/aic-4-pipeline-diagram-synthesis-aaron-validated-2026-04-30"
+}

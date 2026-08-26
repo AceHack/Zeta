@@ -1,0 +1,19 @@
+{
+  "pr_number": 511,
+  "archive_path": "docs/history/pr-reviews/PR-511-backlog-b-0017-operational-resonance-dashboard-frontier-s-bulk-alignment-ui-with.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Ubk2",
+    "comment:PRRC_kwDOSF9kNM67Ubkq",
+    "comment:PRRC_kwDOSF9kNM67Ubkv",
+    "thread:PRRT_kwDOSF9kNM59npaZ",
+    "thread:PRRT_kwDOSF9kNM59npac",
+    "thread:PRRT_kwDOSF9kNM59npag"
+  ],
+  "fetched_at": "2026-08-25T08:14:03.768Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0017): operational resonance dashboard — Frontier's bulk-alignment UI with continuous UX research + meta-recursive research-on-research",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T22:58:11Z",
+  "head_ref": "backlog/b-0017-operational-resonance-dashboard"
+}

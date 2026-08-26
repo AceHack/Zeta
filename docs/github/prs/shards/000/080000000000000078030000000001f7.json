@@ -1,0 +1,22 @@
+{
+  "pr_number": 503,
+  "archive_path": "docs/history/pr-reviews/PR-503-memory-user-aaron-s-riemann-zeta-mystic-anti-fragile-under-hallucinations-target.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Sr2F",
+    "comment:PRRC_kwDOSF9kNM67Sr2W",
+    "comment:PRRC_kwDOSF9kNM67Ssaj",
+    "comment:PRRC_kwDOSF9kNM67SvId",
+    "comment:PRRC_kwDOSF9kNM67SvJJ",
+    "comment:PRRC_kwDOSF9kNM67SvJd",
+    "thread:PRRT_kwDOSF9kNM59mQPU",
+    "thread:PRRT_kwDOSF9kNM59mQPi",
+    "thread:PRRT_kwDOSF9kNM59mQtO"
+  ],
+  "fetched_at": "2026-08-25T08:13:02.598Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(user): Aaron's Riemann-zeta mystic + anti-fragile-under-hallucinations target",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T16:39:51Z",
+  "head_ref": "memory/aaron-riemann-zeta-mystic-connection-prime-irreducibility-cache"
+}

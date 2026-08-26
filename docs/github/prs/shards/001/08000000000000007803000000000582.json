@@ -1,0 +1,15 @@
+{
+  "pr_number": 1410,
+  "archive_path": "docs/history/pr-reviews/PR-1410-backlog-file-b-0183-tla-alloy-runners-as-ts-wrappers-aaron-2026-05-03-architectu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69b2Ky",
+    "thread:PRRT_kwDOSF9kNM5_MKWx"
+  ],
+  "fetched_at": "2026-08-25T08:50:27.562Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: file B-0183 — TLA+/Alloy runners as TS wrappers (Aaron 2026-05-03 architectural observation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T13:40:44Z",
+  "head_ref": "backlog/b0183-tla-alloy-runners-as-ts-wrappers-aaron-2026-05-03"
+}

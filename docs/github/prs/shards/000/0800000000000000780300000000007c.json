@@ -1,0 +1,32 @@
+{
+  "pr_number": 124,
+  "archive_path": "docs/history/pr-reviews/PR-124-auto-loop-27-backlog-p2-wink-validation-pattern-watch-row.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66KVqi",
+    "comment:PRRC_kwDOSF9kNM66KYg1",
+    "comment:PRRC_kwDOSF9kNM66KYgF",
+    "comment:PRRC_kwDOSF9kNM66KYhK",
+    "comment:PRRC_kwDOSF9kNM66KYhh",
+    "comment:PRRC_kwDOSF9kNM67EkBn",
+    "comment:PRRC_kwDOSF9kNM67EkPP",
+    "comment:PRRC_kwDOSF9kNM67EkeX",
+    "comment:PRRC_kwDOSF9kNM67Eksq",
+    "comment:PRRC_kwDOSF9kNM67ElDI",
+    "comment:PRRC_kwDOSF9kNM67EnxW",
+    "comment:PRRC_kwDOSF9kNM67EnyI",
+    "thread:PRRT_kwDOSF9kNM58wT3Z",
+    "thread:PRRT_kwDOSF9kNM58wWA9",
+    "thread:PRRT_kwDOSF9kNM58wWAc",
+    "thread:PRRT_kwDOSF9kNM58wWBM",
+    "thread:PRRT_kwDOSF9kNM58wWBY",
+    "thread:PRRT_kwDOSF9kNM59brp1",
+    "thread:PRRT_kwDOSF9kNM59brpT"
+  ],
+  "fetched_at": "2026-08-25T07:55:21.243Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Auto-loop-27: BACKLOG P2 — wink-validation pattern-watch row",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T15:01:09Z",
+  "head_ref": "backlog-add-wink-validation-watch-row"
+}

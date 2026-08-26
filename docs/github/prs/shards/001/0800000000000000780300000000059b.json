@@ -1,0 +1,12 @@
+{
+  "pr_number": 1435,
+  "archive_path": "docs/history/pr-reviews/PR-1435-hygiene-tick-history-2026-05-03t16-57z-dependabot-pair-merged-cumulative-10-pr-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:51:31.572Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T16:57Z dependabot pair merged; cumulative 10-PR autonomous session",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T17:00:48Z",
+  "head_ref": "tick/2026-05-03-1657Z-dependabot-clear"
+}

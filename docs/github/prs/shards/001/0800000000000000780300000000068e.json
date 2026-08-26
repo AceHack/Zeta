@@ -1,0 +1,16 @@
+{
+  "pr_number": 1678,
+  "archive_path": "docs/history/pr-reviews/PR-1678-memory-zeta-substrate-aot-or-jit-self-contained-binary-makes-project-state-searc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-LHpQ",
+    "comment:PRRC_kwDOSF9kNM6-LInd",
+    "thread:PRRT_kwDOSF9kNM5_vfEA"
+  ],
+  "fetched_at": "2026-08-25T09:01:28.862Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(zeta-substrate): AOT-or-JIT self-contained binary makes project-state-search substrate-grade",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T18:09:52Z",
+  "head_ref": "memory/zeta-aot-or-jit-self-contained-binary-makes-project-state-search-substrate-grade-aaron-2026-05-05"
+}

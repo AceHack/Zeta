@@ -1,0 +1,12 @@
+{
+  "pr_number": 862,
+  "archive_path": "docs/history/pr-reviews/PR-862-hygiene-tick-history-shard-2215z-ds-round-3-close-auditor-scope-gap-surfaced.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:27:55.444Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2215Z — DS round-3 close + auditor scope-gap surfaced",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T22:42:18Z",
+  "head_ref": "hygiene/tick-2215z-2026-04-29"
+}

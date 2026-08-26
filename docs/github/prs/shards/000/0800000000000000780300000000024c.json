@@ -1,0 +1,12 @@
+{
+  "pr_number": 588,
+  "archive_path": "docs/history/pr-reviews/PR-588-backlog-b-0006-partial-4-compress-5-more-long-memory-md-entries-otto-282-285-ide.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:17:52.663Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0006 partial-4): compress 5 more long MEMORY.md entries (Otto-282..285 + identity cluster)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T11:21:44Z",
+  "head_ref": "backlog/B-0006-partial-4-memory-md-compression"
+}

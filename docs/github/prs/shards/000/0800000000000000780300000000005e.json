@@ -1,0 +1,15 @@
+{
+  "pr_number": 94,
+  "archive_path": "docs/history/pr-reviews/PR-94-round-44-tick-history-row-for-auto-loop-5-tick-copilot-split-arc-pr-93.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66D5B8",
+    "thread:PRRT_kwDOSF9kNM58riwe"
+  ],
+  "fetched_at": "2026-08-25T07:53:43.467Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: tick-history row for auto-loop-5 tick (Copilot-split arc PR #93)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T04:39:02Z",
+  "head_ref": "land-tick-history-autoloop-5-append"
+}

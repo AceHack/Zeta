@@ -1,0 +1,25 @@
+{
+  "pr_number": 1498,
+  "archive_path": "docs/history/pr-reviews/PR-1498-feedback-extension-inherited-curse-mechanism-hidden-transmission-environmental-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69tzhA",
+    "comment:PRRC_kwDOSF9kNM69tzhs",
+    "comment:PRRC_kwDOSF9kNM69tzi8",
+    "comment:PRRC_kwDOSF9kNM69tziI",
+    "comment:PRRC_kwDOSF9kNM69tziq",
+    "comment:PRRC_kwDOSF9kNM69tzjI",
+    "thread:PRRT_kwDOSF9kNM5_Z1kc",
+    "thread:PRRT_kwDOSF9kNM5_Z1lB",
+    "thread:PRRT_kwDOSF9kNM5_Z1lZ",
+    "thread:PRRT_kwDOSF9kNM5_Z1lz",
+    "thread:PRRT_kwDOSF9kNM5_Z1mC",
+    "thread:PRRT_kwDOSF9kNM5_Z1mM"
+  ],
+  "fetched_at": "2026-08-25T08:54:01.492Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(extension): inherited-curse-mechanism — hidden-transmission + environmental-assumption broken at both halves by Glass Halo + 🤝 + catalyst-not-flame (Aaron + Claude.ai 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T16:18:17Z",
+  "head_ref": "feedback/inherited-curse-mechanism-hidden-transmission-environmental-assumption-glass-halo-handshake-break-both-halves-aaron-claudeai-2026-05-04"
+}

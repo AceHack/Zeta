@@ -1,0 +1,12 @@
+{
+  "pr_number": 1223,
+  "archive_path": "docs/history/pr-reviews/PR-1223-backlog-b-0073-close-0-open-code-scanning-alerts-on-lfg-main-ruleset-gate-no-lon.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:42:59.330Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0073 close): 0 open Code Scanning alerts on LFG main — ruleset gate no longer blocking",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T19:44:27Z",
+  "head_ref": "backlog/B-0073-close-zero-alerts-on-main-2026-05-02"
+}

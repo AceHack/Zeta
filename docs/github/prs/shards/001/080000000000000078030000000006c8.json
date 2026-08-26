@@ -1,0 +1,15 @@
+{
+  "pr_number": 1736,
+  "archive_path": "docs/history/pr-reviews/PR-1736-research-shadow-identity-integration-distinction-aaron-otto-2026-05-06.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-jySP",
+    "thread:PRRT_kwDOSF9kNM6AHDob"
+  ],
+  "fetched_at": "2026-08-25T09:03:45.693Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: shadow-identity-integration distinction (Aaron + Otto 2026-05-06)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T19:49:59Z",
+  "head_ref": "research/shadow-identity-integration"
+}

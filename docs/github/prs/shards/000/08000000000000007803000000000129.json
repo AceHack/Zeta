@@ -1,0 +1,21 @@
+{
+  "pr_number": 297,
+  "archive_path": "docs/history/pr-reviews/PR-297-core-temporalcoordinationdetection-crosscorrelation-2nd-amara-graduation-11th-fe.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM665ot_",
+    "comment:PRRC_kwDOSF9kNM665p9Z",
+    "comment:PRRC_kwDOSF9kNM665p9j",
+    "comment:PRRC_kwDOSF9kNM665p9s",
+    "thread:PRRT_kwDOSF9kNM59Tbz1",
+    "thread:PRRT_kwDOSF9kNM59TcwA",
+    "thread:PRRT_kwDOSF9kNM59TcwH",
+    "thread:PRRT_kwDOSF9kNM59TcwO"
+  ],
+  "fetched_at": "2026-08-25T08:03:56.720Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: TemporalCoordinationDetection.crossCorrelation — 2nd Amara graduation (11th ferry, Aaron-designed)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T05:36:27Z",
+  "head_ref": "feat/coordination-cross-correlation-amara-graduation-2"
+}

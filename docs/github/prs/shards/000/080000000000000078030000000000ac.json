@@ -1,0 +1,26 @@
+{
+  "pr_number": 172,
+  "archive_path": "docs/history/pr-reviews/PR-172-backlog-p2-factory-status-ui-on-github-pages-git-native-post-repo-split.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66t29M",
+    "comment:PRRC_kwDOSF9kNM66tupx",
+    "comment:PRRC_kwDOSF9kNM66tuqy",
+    "comment:PRRC_kwDOSF9kNM66u0Z9",
+    "comment:PRRC_kwDOSF9kNM66u0at",
+    "comment:PRRC_kwDOSF9kNM66u0bK",
+    "comment:PRRC_kwDOSF9kNM66uwlN",
+    "thread:PRRT_kwDOSF9kNM59K1Kr",
+    "thread:PRRT_kwDOSF9kNM59KvN-",
+    "thread:PRRT_kwDOSF9kNM59KvNJ",
+    "thread:PRRT_kwDOSF9kNM59LiHL",
+    "thread:PRRT_kwDOSF9kNM59LiHy",
+    "thread:PRRT_kwDOSF9kNM59LiIK"
+  ],
+  "fetched_at": "2026-08-25T07:58:38.759Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "backlog: P2 — factory status UI on GitHub Pages (git-native, post-repo-split)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:05:42Z",
+  "head_ref": "backlog/factory-status-ui-github-pages"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 993,
+  "archive_path": "docs/history/pr-reviews/PR-993-hygiene-tick-history-shard-0042z-queue-progress-observation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Ckcl",
+    "comment:PRRC_kwDOSF9kNM69HM6i",
+    "thread:PRRT_kwDOSF9kNM5-5OD8"
+  ],
+  "fetched_at": "2026-08-25T08:33:31.151Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0042Z — queue-progress observation",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:44:21Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0042Z-queue-progress"
+}

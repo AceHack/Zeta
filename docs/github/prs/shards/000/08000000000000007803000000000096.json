@@ -1,0 +1,29 @@
+{
+  "pr_number": 150,
+  "archive_path": "docs/history/pr-reviews/PR-150-research-multi-repo-refactor-5-candidate-shapes-recommended-3-phase-sequencing-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66qGb8",
+    "comment:PRRC_kwDOSF9kNM66qcx2",
+    "comment:PRRC_kwDOSF9kNM66qcyz",
+    "comment:PRRC_kwDOSF9kNM66qczU",
+    "comment:PRRC_kwDOSF9kNM67L1Vh",
+    "comment:PRRC_kwDOSF9kNM67L1YW",
+    "comment:PRRC_kwDOSF9kNM67L1cT",
+    "comment:PRRC_kwDOSF9kNM67L1hQ",
+    "comment:PRRC_kwDOSF9kNM67L5NH",
+    "comment:PRRC_kwDOSF9kNM67L5NU",
+    "thread:PRRT_kwDOSF9kNM59IBts",
+    "thread:PRRT_kwDOSF9kNM59IRe3",
+    "thread:PRRT_kwDOSF9kNM59IRf7",
+    "thread:PRRT_kwDOSF9kNM59IRff",
+    "thread:PRRT_kwDOSF9kNM59hGMD",
+    "thread:PRRT_kwDOSF9kNM59hGMM"
+  ],
+  "fetched_at": "2026-08-25T07:57:15.938Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "research: multi-repo refactor — 5 candidate shapes + recommended 3-phase sequencing (D→A→E)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T21:42:55Z",
+  "head_ref": "research/multi-repo-refactor-shapes"
+}

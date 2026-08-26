@@ -1,0 +1,15 @@
+{
+  "pr_number": 1309,
+  "archive_path": "docs/history/pr-reviews/PR-1309-fix-b-0174-move-to-p2-backlog-index-b-0xxxx-placeholder-fix-1306-post-merge.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZsAW",
+    "thread:PRRT_kwDOSF9kNM5_KdDM"
+  ],
+  "fetched_at": "2026-08-25T08:46:42.581Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(B-0174): move to P2 + BACKLOG index + B-0XXXX placeholder fix (#1306 post-merge)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T04:38:24Z",
+  "head_ref": "fix/b-0174-placeholder-and-priority-otto-2026-05-03"
+}

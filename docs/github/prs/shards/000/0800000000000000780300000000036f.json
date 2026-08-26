@@ -1,0 +1,15 @@
+{
+  "pr_number": 879,
+  "archive_path": "docs/history/pr-reviews/PR-879-ops-tick-history-autonomous-loop-tick-2026-04-30t03-06-00z-ts-bun-slice-7-progre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68rEvK",
+    "thread:PRRT_kwDOSF9kNM5-n2ST"
+  ],
+  "fetched_at": "2026-08-25T08:28:43.409Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(tick-history): autonomous-loop tick 2026-04-30T03:06:00Z — TS+Bun slice 7 progress",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T03:19:20Z",
+  "head_ref": "ops/tick-history-2026-04-30-slice-7-progress"
+}

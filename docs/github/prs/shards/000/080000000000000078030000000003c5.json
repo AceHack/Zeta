@@ -1,0 +1,15 @@
+{
+  "pr_number": 965,
+  "archive_path": "docs/history/pr-reviews/PR-965-cleanup-b-0119-peer-call-scripts-role-ref-discipline-2026-04-30.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Bd5Q",
+    "thread:PRRT_kwDOSF9kNM5-4avP"
+  ],
+  "fetched_at": "2026-08-25T08:32:21.477Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "cleanup(B-0119): peer-call scripts role-ref discipline (2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T22:58:12Z",
+  "head_ref": "cleanup/B-0119-peer-call-scripts-role-ref-discipline-2026-04-30"
+}

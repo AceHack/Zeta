@@ -1,0 +1,15 @@
+{
+  "pr_number": 1174,
+  "archive_path": "docs/history/pr-reviews/PR-1174-hygiene-tick-history-2026-05-01t22-24z-drain-tick-1916z-orphan-backfill.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69RX74",
+    "thread:PRRT_kwDOSF9kNM5_EHuS"
+  ],
+  "fetched_at": "2026-08-25T08:40:55.173Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T22:24Z drain tick + 1916Z orphan backfill",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T22:28:44Z",
+  "head_ref": "hygiene/tick-history-2224Z-1916Z-backfill-2026-05-01"
+}

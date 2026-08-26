@@ -1,0 +1,29 @@
+{
+  "pr_number": 648,
+  "archive_path": "docs/history/pr-reviews/PR-648-sync-acehack-lfg-additive-substrate-bulk-5346-lines-16-files-no-merge-needed.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67sM2f",
+    "comment:PRRC_kwDOSF9kNM67sM3F",
+    "comment:PRRC_kwDOSF9kNM67sM3f",
+    "comment:PRRC_kwDOSF9kNM67sM43",
+    "comment:PRRC_kwDOSF9kNM67sM4B",
+    "comment:PRRC_kwDOSF9kNM67sM4d",
+    "comment:PRRC_kwDOSF9kNM67sM5U",
+    "comment:PRRC_kwDOSF9kNM67sM5j",
+    "thread:PRRT_kwDOSF9kNM595tn7",
+    "thread:PRRT_kwDOSF9kNM595tnL",
+    "thread:PRRT_kwDOSF9kNM595tno",
+    "thread:PRRT_kwDOSF9kNM595toY",
+    "thread:PRRT_kwDOSF9kNM595tov",
+    "thread:PRRT_kwDOSF9kNM595tpH",
+    "thread:PRRT_kwDOSF9kNM595tpe",
+    "thread:PRRT_kwDOSF9kNM595tpq"
+  ],
+  "fetched_at": "2026-08-25T08:19:56.155Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync: AceHack→LFG additive substrate bulk (~5346 lines, 16 files, no merge needed)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T16:51:27Z",
+  "head_ref": "lfg/sync-acehack-additive-substrate-bulk"
+}

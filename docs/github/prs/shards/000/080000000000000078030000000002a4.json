@@ -1,0 +1,12 @@
+{
+  "pr_number": 676,
+  "archive_path": "docs/history/pr-reviews/PR-676-fix-memorial-elisabeth-elizabeth-in-all-in-prose-mentions-aaron-2026-04-28.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:20:56.263Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(memorial): Elisabeth → Elizabeth in all in-prose mentions (Aaron 2026-04-28)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T18:29:53Z",
+  "head_ref": "fix/elizabeth-canonical-spelling-in-prose-aaron-2026-04-28"
+}

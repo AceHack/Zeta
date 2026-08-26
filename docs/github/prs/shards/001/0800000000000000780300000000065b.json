@@ -1,0 +1,15 @@
+{
+  "pr_number": 1627,
+  "archive_path": "docs/history/pr-reviews/PR-1627-backlog-p3-b-0205-multi-trajectory-longitudinal-validation-basis-6-orthogonal-ax.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-BI6U",
+    "thread:PRRT_kwDOSF9kNM5_oGVT"
+  ],
+  "fetched_at": "2026-08-25T08:59:21.496Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P3): B-0205 multi-trajectory longitudinal validation basis -- 6 orthogonal axes instrumentation (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:13:46Z",
+  "head_ref": "backlog/B-0205-multi-trajectory-validation-basis-aaron-2026-05-05"
+}

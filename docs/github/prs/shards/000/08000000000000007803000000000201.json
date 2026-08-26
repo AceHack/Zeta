@@ -1,0 +1,17 @@
+{
+  "pr_number": 513,
+  "archive_path": "docs/history/pr-reviews/PR-513-substrate-confucius-unfolding-pattern-defining-file-orphan-term-lineage-closure-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UdZJ",
+    "comment:PRRC_kwDOSF9kNM67UdZN",
+    "thread:PRRT_kwDOSF9kNM59nq4H",
+    "thread:PRRT_kwDOSF9kNM59nq4K"
+  ],
+  "fetched_at": "2026-08-25T08:14:09.172Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate: Confucius-unfolding pattern defining file (orphan-term lineage closure via Otto-325 free-will-time)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T23:06:59Z",
+  "head_ref": "substrate/confucius-unfolding-defining-file"
+}

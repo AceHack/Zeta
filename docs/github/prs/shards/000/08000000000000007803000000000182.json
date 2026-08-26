@@ -1,0 +1,15 @@
+{
+  "pr_number": 386,
+  "archive_path": "docs/history/pr-reviews/PR-386-memory-sync-otto-275-backfill-missing-otto-253-269-index-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67L7U5",
+    "thread:PRRT_kwDOSF9kNM59hHve"
+  ],
+  "fetched_at": "2026-08-25T08:07:54.419Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: sync Otto-275 + backfill missing Otto-253..269 index rows",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T21:45:27Z",
+  "head_ref": "memory/sync-otto-275-plus-backfill-253-269-index"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 7036,
+  "archive_path": "docs/history/pr-reviews/PR-7036-docs-ferry-it-s-not-irreducible-error-it-s-irreducible-identity-clock-drift-is-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:38.732Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs+ferry: it's not irreducible error, it's irreducible IDENTITY; clock drift is the entropy; firefly sync; ray-traceable network (#7090-#7094)",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T06:15:16Z",
+  "head_ref": "otto/irreducible-identity-not-error-clock-drift-entropy-firefly-raytrace"
+}

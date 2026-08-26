@@ -1,0 +1,33 @@
+{
+  "pr_number": 152,
+  "archive_path": "docs/history/pr-reviews/PR-152-adr-per-maintainer-current-name-md-memory-distillation-pattern.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66qyfX",
+    "comment:PRRC_kwDOSF9kNM66qygO",
+    "comment:PRRC_kwDOSF9kNM66qyhI",
+    "comment:PRRC_kwDOSF9kNM67D-wL",
+    "comment:PRRC_kwDOSF9kNM67D_Jr",
+    "comment:PRRC_kwDOSF9kNM67D_MZ",
+    "comment:PRRC_kwDOSF9kNM67EC58",
+    "comment:PRRC_kwDOSF9kNM67EGv2",
+    "comment:PRRC_kwDOSF9kNM67EKq6",
+    "comment:PRRC_kwDOSF9kNM67EKqQ",
+    "comment:PRRC_kwDOSF9kNM67L0vu",
+    "comment:PRRC_kwDOSF9kNM67L1Ay",
+    "comment:PRRC_kwDOSF9kNM67L3iz",
+    "thread:PRRT_kwDOSF9kNM59Ih30",
+    "thread:PRRT_kwDOSF9kNM59Ih4h",
+    "thread:PRRT_kwDOSF9kNM59Ih5O",
+    "thread:PRRT_kwDOSF9kNM59bP2r",
+    "thread:PRRT_kwDOSF9kNM59bVuM",
+    "thread:PRRT_kwDOSF9kNM59bVuv",
+    "thread:PRRT_kwDOSF9kNM59hFE5"
+  ],
+  "fetched_at": "2026-08-25T07:57:23.228Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "ADR: per-maintainer CURRENT-<name>.md memory distillation pattern",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T21:42:19Z",
+  "head_ref": "docs/adr-per-maintainer-current-memory"
+}

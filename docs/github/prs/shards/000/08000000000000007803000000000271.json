@@ -1,0 +1,12 @@
+{
+  "pr_number": 625,
+  "archive_path": "docs/history/pr-reviews/PR-625-tick-history-recovery-restore-13-38-50z-13-52-34z-rows-lost-in-618-620-supersess.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:18:53.047Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: recovery — restore 13:38:50Z + 13:52:34Z rows lost in #618→#620 supersession",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:17:14Z",
+  "head_ref": "tick-history/recovery-13-38-13-52-Z"
+}

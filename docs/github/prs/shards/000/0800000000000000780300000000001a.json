@@ -1,0 +1,12 @@
+{
+  "pr_number": 26,
+  "archive_path": "docs/history/pr-reviews/PR-26-round-33-hotfix-2-last-4-line-start-plus-markdown-findings.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:49:37.679Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 33 hotfix 2 — last 4 line-start-plus markdown findings",
+  "state": "MERGED",
+  "merged_at": "2026-04-19T03:08:09Z",
+  "head_ref": "round-33-main-fix-2"
+}

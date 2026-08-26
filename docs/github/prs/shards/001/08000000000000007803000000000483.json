@@ -1,0 +1,25 @@
+{
+  "pr_number": 1155,
+  "archive_path": "docs/history/pr-reviews/PR-1155-memory-ts-pattern-sqlsharp-external-anchor-super-strongly-typed-bun-ts-di-patter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69QEVs",
+    "comment:PRRC_kwDOSF9kNM69QGhe",
+    "comment:PRRC_kwDOSF9kNM69QGiB",
+    "comment:PRRC_kwDOSF9kNM69QuEC",
+    "comment:PRRC_kwDOSF9kNM69QuEZ",
+    "comment:PRRC_kwDOSF9kNM69QuEo",
+    "thread:PRRT_kwDOSF9kNM5_DJpX",
+    "thread:PRRT_kwDOSF9kNM5_DLK1",
+    "thread:PRRT_kwDOSF9kNM5_DLLM",
+    "thread:PRRT_kwDOSF9kNM5_DoJ0",
+    "thread:PRRT_kwDOSF9kNM5_DoJW",
+    "thread:PRRT_kwDOSF9kNM5_DoJn"
+  ],
+  "fetched_at": "2026-08-25T08:40:12.954Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(ts-pattern): SQLSharp external anchor — super-strongly-typed bun/ts DI pattern (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T21:40:06Z",
+  "head_ref": "otto/sqlsharp-bun-ts-pattern-anchor-2026-05-01"
+}

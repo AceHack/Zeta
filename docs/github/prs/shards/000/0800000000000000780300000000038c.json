@@ -1,0 +1,21 @@
+{
+  "pr_number": 908,
+  "archive_path": "docs/history/pr-reviews/PR-908-ts-b-0086-port-1-pr-preservation-script-sh-ts-slice-21-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68vGrm",
+    "comment:PRRC_kwDOSF9kNM68vGsG",
+    "comment:PRRC_kwDOSF9kNM68vGsa",
+    "comment:PRRC_kwDOSF9kNM68vGsv",
+    "thread:PRRT_kwDOSF9kNM5-qzB6",
+    "thread:PRRT_kwDOSF9kNM5-qzBH",
+    "thread:PRRT_kwDOSF9kNM5-qzBb",
+    "thread:PRRT_kwDOSF9kNM5-qzBq"
+  ],
+  "fetched_at": "2026-08-25T08:29:54.644Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 pr-preservation script (.sh→.ts) — slice 21 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T08:07:32Z",
+  "head_ref": "lane-b/ts-bun-slice-21-archive-pr-2026-04-30"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1267,
+  "archive_path": "docs/history/pr-reviews/PR-1267-review-pr-1266-postmerge-scrub-remaining-adr-elevation-drift-ls-ls-1-sort-ask-no.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZKSz",
+    "comment:PRRC_kwDOSF9kNM69ZKWI",
+    "thread:PRRT_kwDOSF9kNM5_KCkx",
+    "thread:PRRT_kwDOSF9kNM5_KCm_"
+  ],
+  "fetched_at": "2026-08-25T08:44:57.044Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review(pr-1266-postmerge): scrub remaining ADR-elevation drift + ls→ls -1|sort + ask-not-infer",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:02:28Z",
+  "head_ref": "research/worked-example-2-rewrite-followup-aaron-2026-05-03"
+}

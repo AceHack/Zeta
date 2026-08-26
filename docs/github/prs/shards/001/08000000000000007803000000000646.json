@@ -1,0 +1,17 @@
+{
+  "pr_number": 1606,
+  "archive_path": "docs/history/pr-reviews/PR-1606-shard-2026-05-05t09-05z-coconut-sleeping-bear-answer-engagement-gate-canonical-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69-XKb",
+    "comment:PRRC_kwDOSF9kNM69-XLB",
+    "thread:PRRT_kwDOSF9kNM5_mBk_",
+    "thread:PRRT_kwDOSF9kNM5_mBkl"
+  ],
+  "fetched_at": "2026-08-25T08:58:32.313Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T09:05Z): Coconut sleeping-bear answer + engagement-gate canonical memory + Otto-364 recursion",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:08:44Z",
+  "head_ref": "shard/2026-05-05-0905Z"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 485,
+  "archive_path": "docs/history/pr-reviews/PR-485-memory-factory-as-superfluid-aaron-2026-04-25-calibration-signal.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SLhY",
+    "thread:PRRT_kwDOSF9kNM59l2Yi"
+  ],
+  "fetched_at": "2026-08-25T08:12:14.511Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: factory-as-superfluid — Aaron 2026-04-25 calibration signal",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:44:24Z",
+  "head_ref": "memory/project-superfluid-described-by-algebra"
+}

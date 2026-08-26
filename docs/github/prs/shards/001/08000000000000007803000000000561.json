@@ -1,0 +1,12 @@
+{
+  "pr_number": 1377,
+  "archive_path": "docs/history/pr-reviews/PR-1377-ci-memory-index-duplicate-lint-switch-from-sh-to-ts-via-bun-lowest-risk-first-pe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:11.398Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(memory-index-duplicate-lint): switch from .sh to .ts via bun (lowest-risk first per #1376)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T10:58:09Z",
+  "head_ref": "ci/memory-index-duplicate-lint-bun-ts"
+}

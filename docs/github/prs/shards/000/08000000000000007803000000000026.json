@@ -1,0 +1,19 @@
+{
+  "pr_number": 38,
+  "archive_path": "docs/history/pr-reviews/PR-38-research-decision-git-crypt-deep-dive-rejected-2026-04-21.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM65zJee",
+    "comment:PRRC_kwDOSF9kNM65zJfC",
+    "comment:PRRC_kwDOSF9kNM65zJfe",
+    "thread:PRRT_kwDOSF9kNM58fAH6",
+    "thread:PRRT_kwDOSF9kNM58fAHC",
+    "thread:PRRT_kwDOSF9kNM58fAHg"
+  ],
+  "fetched_at": "2026-08-25T07:52:09.265Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "research+decision: git-crypt deep-dive → REJECTED 2026-04-21",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T11:57:23Z",
+  "head_ref": "research/git-crypt-deep-dive"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 1906,
+  "archive_path": "docs/history/pr-reviews/PR-1906-feat-core-fusion-equation-learninggain-t-t-with-fscheck-properties.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-6-AO",
+    "comment:PRRC_kwDOSF9kNM6-6-B9",
+    "comment:PRRC_kwDOSF9kNM6-6-BR",
+    "comment:PRRC_kwDOSF9kNM6-6-Cf",
+    "comment:PRRC_kwDOSF9kNM6-65o8",
+    "comment:PRRC_kwDOSF9kNM6-65pH",
+    "thread:PRRT_kwDOSF9kNM6AYQpo",
+    "thread:PRRT_kwDOSF9kNM6AYQpv",
+    "thread:PRRT_kwDOSF9kNM6AYT0I",
+    "thread:PRRT_kwDOSF9kNM6AYT16",
+    "thread:PRRT_kwDOSF9kNM6AYT1B",
+    "thread:PRRT_kwDOSF9kNM6AYT1i"
+  ],
+  "fetched_at": "2026-08-25T09:07:13.194Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(core): Fusion equation — η·LearningGain(Δ_t) > ξ_t with FsCheck properties",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T16:39:47Z",
+  "head_ref": "otto/fusion-equation-b0251"
+}

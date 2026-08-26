@@ -1,0 +1,33 @@
+{
+  "pr_number": 480,
+  "archive_path": "docs/history/pr-reviews/PR-480-memory-index-pair-otto-281-otto-282-entries-to-in-repo-memory-md.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67R14N",
+    "comment:PRRC_kwDOSF9kNM67R15R",
+    "comment:PRRC_kwDOSF9kNM67R16Q",
+    "comment:PRRC_kwDOSF9kNM67R2Fe",
+    "comment:PRRC_kwDOSF9kNM67R2gE",
+    "comment:PRRC_kwDOSF9kNM67R2hG",
+    "comment:PRRC_kwDOSF9kNM67R6P7",
+    "comment:PRRC_kwDOSF9kNM67R6QB",
+    "comment:PRRC_kwDOSF9kNM67R6QC",
+    "comment:PRRC_kwDOSF9kNM67Rv8j",
+    "comment:PRRC_kwDOSF9kNM67Rv8y",
+    "comment:PRRC_kwDOSF9kNM67Rvje",
+    "comment:PRRC_kwDOSF9kNM67Rzdl",
+    "thread:PRRT_kwDOSF9kNM59lgMW",
+    "thread:PRRT_kwDOSF9kNM59lgg9",
+    "thread:PRRT_kwDOSF9kNM59lggu",
+    "thread:PRRT_kwDOSF9kNM59ljUp",
+    "thread:PRRT_kwDOSF9kNM59lotr",
+    "thread:PRRT_kwDOSF9kNM59lotw",
+    "thread:PRRT_kwDOSF9kNM59lotx"
+  ],
+  "fetched_at": "2026-08-25T08:12:03.042Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(index): pair Otto-281 + Otto-282 entries to in-repo MEMORY.md",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T13:59:05Z",
+  "head_ref": "memory/index-update-otto-281-282"
+}

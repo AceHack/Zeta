@@ -1,0 +1,31 @@
+{
+  "pr_number": 412,
+  "archive_path": "docs/history/pr-reviews/PR-412-hygiene-266-refresh-current-aaron-md-5-new-sections-for-2026-04-24-25-session-cl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67O4h7",
+    "comment:PRRC_kwDOSF9kNM67O4hc",
+    "comment:PRRC_kwDOSF9kNM67O4hu",
+    "comment:PRRC_kwDOSF9kNM67O4iB",
+    "comment:PRRC_kwDOSF9kNM67O4iG",
+    "comment:PRRC_kwDOSF9kNM67O4iP",
+    "comment:PRRC_kwDOSF9kNM67PCo2",
+    "comment:PRRC_kwDOSF9kNM67PCoN",
+    "comment:PRRC_kwDOSF9kNM67PCp6",
+    "comment:PRRC_kwDOSF9kNM67PCqm",
+    "comment:PRRC_kwDOSF9kNM67PCrn",
+    "comment:PRRC_kwDOSF9kNM67PCsU",
+    "thread:PRRT_kwDOSF9kNM59jRO_",
+    "thread:PRRT_kwDOSF9kNM59jROx",
+    "thread:PRRT_kwDOSF9kNM59jRPK",
+    "thread:PRRT_kwDOSF9kNM59jRPO",
+    "thread:PRRT_kwDOSF9kNM59jRPT",
+    "thread:PRRT_kwDOSF9kNM59jRPX"
+  ],
+  "fetched_at": "2026-08-25T08:09:11.150Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#266): refresh CURRENT-aaron.md — 5 new sections for 2026-04-24/25 session cluster",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:15:59Z",
+  "head_ref": "hygiene/current-aaron-refresh-2026-04-25"
+}

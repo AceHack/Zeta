@@ -1,0 +1,19 @@
+{
+  "pr_number": 649,
+  "archive_path": "docs/history/pr-reviews/PR-649-sync-acehack-lfg-merge-needed-batch-33-files-500-lines-excludes-in-flight-50-fil.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67sXJO",
+    "comment:PRRC_kwDOSF9kNM67sYwH",
+    "comment:PRRC_kwDOSF9kNM67sjI3",
+    "comment:PRRC_kwDOSF9kNM67sjLC",
+    "thread:PRRT_kwDOSF9kNM5951Wh",
+    "thread:PRRT_kwDOSF9kNM5952lH"
+  ],
+  "fetched_at": "2026-08-25T08:19:59.181Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync: AceHack→LFG merge-needed batch (~33 files, ~500 lines; excludes in-flight-#50 files)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T17:16:51Z",
+  "head_ref": "lfg/sync-acehack-merge-needed-batch"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 411,
+  "archive_path": "docs/history/pr-reviews/PR-411-ci-gate-expose-github-token-so-mise-aqua-backend-hits-authenticated-rate-limit-5.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67O2ib",
+    "comment:PRRC_kwDOSF9kNM67O2oW",
+    "comment:PRRC_kwDOSF9kNM67PNg0",
+    "comment:PRRC_kwDOSF9kNM67PNgC",
+    "thread:PRRT_kwDOSF9kNM59jP5B",
+    "thread:PRRT_kwDOSF9kNM59jP88"
+  ],
+  "fetched_at": "2026-08-25T08:09:07.777Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci(gate): expose GITHUB_TOKEN so mise aqua backend hits authenticated rate limit (5000/hr)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T02:47:01Z",
+  "head_ref": "chore/ci-mise-github-token"
+}

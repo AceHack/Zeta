@@ -1,0 +1,21 @@
+{
+  "pr_number": 1682,
+  "archive_path": "docs/history/pr-reviews/PR-1682-research-architecture-itron-riva-nilm-aurora-2007-verified-spectre-strictly-chir.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-MB-H",
+    "comment:PRRC_kwDOSF9kNM6-MB8l",
+    "comment:PRRC_kwDOSF9kNM6-MB9H",
+    "comment:PRRC_kwDOSF9kNM6-MB9k",
+    "thread:PRRT_kwDOSF9kNM5_wKVx",
+    "thread:PRRT_kwDOSF9kNM5_wKW7",
+    "thread:PRRT_kwDOSF9kNM5_wKWK",
+    "thread:PRRT_kwDOSF9kNM5_wKWk"
+  ],
+  "fetched_at": "2026-08-25T09:01:35.499Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): Itron-Riva-NILM + Aurora-2007 verified + Spectre strictly-chiral + Sakana NCA loose-strict-loose composition (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T18:51:24Z",
+  "head_ref": "research/claudeai-itron-riva-nilm-aurora-spectre-tile-strictly-chiral-sakana-nca-loose-strict-loose-architectural-composition-aaron-2026-05-05"
+}

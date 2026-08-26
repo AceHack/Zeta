@@ -1,0 +1,15 @@
+{
+  "pr_number": 634,
+  "archive_path": "docs/history/pr-reviews/PR-634-sync-acehack-lfg-batch-3-upstream-rhythm-three-surfaces-terminology-option-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Y-iT",
+    "thread:PRRT_kwDOSF9kNM59rR5_"
+  ],
+  "fetched_at": "2026-08-25T08:19:16.817Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg) batch-3: UPSTREAM-RHYTHM three-surfaces terminology (option-c)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T18:15:49Z",
+  "head_ref": "sync/acehack-to-lfg-batch-3-upstream-rhythm-three-surfaces"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 292,
+  "archive_path": "docs/history/pr-reviews/PR-292-backlog-p2-frontier-plugin-inventory-in-source-discipline-aaron-otto-103.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM665Jlz",
+    "comment:PRRC_kwDOSF9kNM665Jm3",
+    "comment:PRRC_kwDOSF9kNM665Jma",
+    "comment:PRRC_kwDOSF9kNM665Jmn",
+    "thread:PRRT_kwDOSF9kNM59TEw0",
+    "thread:PRRT_kwDOSF9kNM59TEwC",
+    "thread:PRRT_kwDOSF9kNM59TEwd",
+    "thread:PRRT_kwDOSF9kNM59TEwm"
+  ],
+  "fetched_at": "2026-08-25T08:03:42.602Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P2 frontier plugin inventory + in-source discipline (Aaron Otto-103)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T04:57:38Z",
+  "head_ref": "backlog/frontier-plugins-needed-in-source-not-sandbox"
+}

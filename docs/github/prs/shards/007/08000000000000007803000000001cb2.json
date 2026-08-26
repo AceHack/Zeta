@@ -1,0 +1,12 @@
+{
+  "pr_number": 7346,
+  "archive_path": "docs/history/pr-reviews/PR-7346-docs-research-test-driven-development-on-autopilot-driven-by-the-universal-4x4-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:55.197Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(research): test-Driven development on autopilot — driven by the universal 4x4 controller/grammar, itself homoiconic and a 4x4 treaty of its own",
+  "state": "MERGED",
+  "merged_at": "2026-06-09T17:15:10Z",
+  "head_ref": "otto/tdd-on-autopilot-universal-4x4-controller-grammar-homoiconic-its-own-4x4-treaty"
+}

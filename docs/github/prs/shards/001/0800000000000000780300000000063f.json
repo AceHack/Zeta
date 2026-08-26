@@ -1,0 +1,33 @@
+{
+  "pr_number": 1599,
+  "archive_path": "docs/history/pr-reviews/PR-1599-backlog-p3-b-0199-rom-publication-scout-catalog-legally-clear-roms-aaron-2026-05.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM699N9k",
+    "comment:PRRC_kwDOSF9kNM699NIa",
+    "comment:PRRC_kwDOSF9kNM699bwo",
+    "comment:PRRC_kwDOSF9kNM699bwt",
+    "comment:PRRC_kwDOSF9kNM699rkd",
+    "comment:PRRC_kwDOSF9kNM699rki",
+    "comment:PRRC_kwDOSF9kNM699sEz",
+    "comment:PRRC_kwDOSF9kNM699sF6",
+    "comment:PRRC_kwDOSF9kNM699sG7",
+    "comment:PRRC_kwDOSF9kNM699sGW",
+    "thread:PRRT_kwDOSF9kNM5_lKno",
+    "thread:PRRT_kwDOSF9kNM5_lLQr",
+    "thread:PRRT_kwDOSF9kNM5_lVdW",
+    "thread:PRRT_kwDOSF9kNM5_lVdb",
+    "thread:PRRT_kwDOSF9kNM5_lhSl",
+    "thread:PRRT_kwDOSF9kNM5_lhSp",
+    "thread:PRRT_kwDOSF9kNM5_lhmR",
+    "thread:PRRT_kwDOSF9kNM5_lhn0",
+    "thread:PRRT_kwDOSF9kNM5_lhnF",
+    "thread:PRRT_kwDOSF9kNM5_lhnb"
+  ],
+  "fetched_at": "2026-08-25T08:58:15.639Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P3): B-0199 ROM publication -- scout + catalog legally-clear ROMs (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T08:38:36Z",
+  "head_ref": "backlog/B-0199-rom-publication-public-domain-scouting-aaron-2026-05-05"
+}

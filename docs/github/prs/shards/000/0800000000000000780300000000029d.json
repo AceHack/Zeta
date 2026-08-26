@@ -1,0 +1,19 @@
+{
+  "pr_number": 669,
+  "archive_path": "docs/history/pr-reviews/PR-669-memory-threading-code-follows-albahari-toub-fowler-human-lineage-never-gut-insti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68GpWg",
+    "comment:PRRC_kwDOSF9kNM68GpXM",
+    "comment:PRRC_kwDOSF9kNM68Gr48",
+    "comment:PRRC_kwDOSF9kNM68GsOA",
+    "thread:PRRT_kwDOSF9kNM5-NIjk",
+    "thread:PRRT_kwDOSF9kNM5-NIkC"
+  ],
+  "fetched_at": "2026-08-25T08:20:40.995Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: threading code follows Albahari + Toub + Fowler human lineage — never gut-instinct (Aaron 2026-04-28)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T16:56:04Z",
+  "head_ref": "memory/threading-lineage-albahari-toub-fowler-2026-04-28"
+}

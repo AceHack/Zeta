@@ -1,0 +1,27 @@
+{
+  "pr_number": 1583,
+  "archive_path": "docs/history/pr-reviews/PR-1583-fix-memory-md-compress-36-entries-b-0006-tier-49-2026-05-05.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6956m6",
+    "comment:PRRC_kwDOSF9kNM6956mF",
+    "comment:PRRC_kwDOSF9kNM6956mT",
+    "comment:PRRC_kwDOSF9kNM6956ma",
+    "comment:PRRC_kwDOSF9kNM6956mg",
+    "comment:PRRC_kwDOSF9kNM6956mp",
+    "comment:PRRC_kwDOSF9kNM6956nF",
+    "thread:PRRT_kwDOSF9kNM5_iuI2",
+    "thread:PRRT_kwDOSF9kNM5_iuI_",
+    "thread:PRRT_kwDOSF9kNM5_iuJF",
+    "thread:PRRT_kwDOSF9kNM5_iuJJ",
+    "thread:PRRT_kwDOSF9kNM5_iuJQ",
+    "thread:PRRT_kwDOSF9kNM5_iuJa",
+    "thread:PRRT_kwDOSF9kNM5_iuJk"
+  ],
+  "fetched_at": "2026-08-25T08:57:34.889Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): compress 36 entries — B-0006 tier-49 (2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:40:49Z",
+  "head_ref": "fix/memory-md-tier-49-aaron-2026-05-05"
+}

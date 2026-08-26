@@ -1,0 +1,21 @@
+{
+  "pr_number": 910,
+  "archive_path": "docs/history/pr-reviews/PR-910-backlog-b-0108-immune-system-upgrades-research-absorb-aaron-2026-04-30.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68yoW-",
+    "comment:PRRC_kwDOSF9kNM68ypo-",
+    "comment:PRRC_kwDOSF9kNM68ypog",
+    "comment:PRRC_kwDOSF9kNM68yppS",
+    "thread:PRRT_kwDOSF9kNM5-tbPF",
+    "thread:PRRT_kwDOSF9kNM5-tcN9",
+    "thread:PRRT_kwDOSF9kNM5-tcNb",
+    "thread:PRRT_kwDOSF9kNM5-tcNt"
+  ],
+  "fetched_at": "2026-08-25T08:29:59.947Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0108): immune system upgrades — research absorb (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T11:11:40Z",
+  "head_ref": "ops/backlog-immune-system-upgrades-2026-04-30"
+}

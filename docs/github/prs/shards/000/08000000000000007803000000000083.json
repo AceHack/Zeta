@@ -1,0 +1,25 @@
+{
+  "pr_number": 131,
+  "archive_path": "docs/history/pr-reviews/PR-131-round-44-auto-loop-32-emulator-substrate-research-first-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66LdlV",
+    "comment:PRRC_kwDOSF9kNM66Lel5",
+    "comment:PRRC_kwDOSF9kNM66Lem2",
+    "comment:PRRC_kwDOSF9kNM66LenK",
+    "comment:PRRC_kwDOSF9kNM66Len_",
+    "comment:PRRC_kwDOSF9kNM66Leno",
+    "thread:PRRT_kwDOSF9kNM58xKsw",
+    "thread:PRRT_kwDOSF9kNM58xLcD",
+    "thread:PRRT_kwDOSF9kNM58xLcy",
+    "thread:PRRT_kwDOSF9kNM58xLdA",
+    "thread:PRRT_kwDOSF9kNM58xLdZ",
+    "thread:PRRT_kwDOSF9kNM58xLdv"
+  ],
+  "fetched_at": "2026-08-25T07:55:45.910Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-32: emulator substrate research first-pass",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T11:23:19Z",
+  "head_ref": "land-emulator-substrate-research"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 371,
+  "archive_path": "docs/history/pr-reviews/PR-371-backlog-p2-swim-lane-stream-split-by-file-isolation-otto-239.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Fq_p",
+    "comment:PRRC_kwDOSF9kNM67FrAV",
+    "thread:PRRT_kwDOSF9kNM59cd6h",
+    "thread:PRRT_kwDOSF9kNM59cd7H"
+  ],
+  "fetched_at": "2026-08-25T08:07:06.491Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P2 — swim-lane / stream split by file isolation (Otto-239)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T15:51:17Z",
+  "head_ref": "backlog/swim-lane-file-isolation-otto-239"
+}

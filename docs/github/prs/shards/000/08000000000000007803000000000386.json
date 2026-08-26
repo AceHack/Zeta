@@ -1,0 +1,21 @@
+{
+  "pr_number": 902,
+  "archive_path": "docs/history/pr-reviews/PR-902-ts-b-0086-port-1-budget-script-sh-ts-slice-19-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68ub1j",
+    "comment:PRRC_kwDOSF9kNM68ub2K",
+    "comment:PRRC_kwDOSF9kNM68ub2X",
+    "comment:PRRC_kwDOSF9kNM68uh5m",
+    "thread:PRRT_kwDOSF9kNM5-qS-U",
+    "thread:PRRT_kwDOSF9kNM5-qS-d",
+    "thread:PRRT_kwDOSF9kNM5-qS92",
+    "thread:PRRT_kwDOSF9kNM5-qXhH"
+  ],
+  "fetched_at": "2026-08-25T08:29:39.907Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 budget script (.sh→.ts) — slice 19 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T07:24:35Z",
+  "head_ref": "lane-b/ts-bun-slice-19-project-runway-2026-04-30"
+}

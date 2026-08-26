@@ -1,0 +1,19 @@
+{
+  "pr_number": 735,
+  "archive_path": "docs/history/pr-reviews/PR-735-hygiene-readme-hardening-cqrs-content-hash-shard-0320z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68P0Q-",
+    "comment:PRRC_kwDOSF9kNM68P0Qw",
+    "comment:PRRC_kwDOSF9kNM68P0RK",
+    "thread:PRRT_kwDOSF9kNM5-T2ND",
+    "thread:PRRT_kwDOSF9kNM5-T2NP",
+    "thread:PRRT_kwDOSF9kNM5-T2NY"
+  ],
+  "fetched_at": "2026-08-25T08:23:13.582Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene: README hardening (CQRS + content-hash) + shard 0320Z",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:20:22Z",
+  "head_ref": "refinement/multi-ai-synthesis-shard-readme-fpq-update"
+}

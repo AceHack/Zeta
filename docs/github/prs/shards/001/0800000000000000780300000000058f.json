@@ -1,0 +1,21 @@
+{
+  "pr_number": 1423,
+  "archive_path": "docs/history/pr-reviews/PR-1423-feat-c3-partial-or-set-semilattice-property-tests-3-more.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cXET",
+    "comment:PRRC_kwDOSF9kNM69cXEb",
+    "comment:PRRC_kwDOSF9kNM69cZWt",
+    "comment:PRRC_kwDOSF9kNM69cZWz",
+    "thread:PRRT_kwDOSF9kNM5_MklT",
+    "thread:PRRT_kwDOSF9kNM5_MklV",
+    "thread:PRRT_kwDOSF9kNM5_MmTN",
+    "thread:PRRT_kwDOSF9kNM5_MmTS"
+  ],
+  "fetched_at": "2026-08-25T08:51:03.361Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(C3 partial): OR-Set semilattice property tests (3 more)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:33:47Z",
+  "head_ref": "otto/c3-orset-semilattice-properties-2026-05-03"
+}

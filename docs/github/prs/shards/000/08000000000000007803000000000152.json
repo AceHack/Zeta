@@ -1,0 +1,15 @@
+{
+  "pr_number": 338,
+  "archive_path": "docs/history/pr-reviews/PR-338-backlog-otto-160-parser-tech-directive-fparsec-first-antlr-fallback.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM669EL_",
+    "thread:PRRT_kwDOSF9kNM59V_6t"
+  ],
+  "fetched_at": "2026-08-25T08:05:34.485Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Otto-160 parser-tech directive — FParsec first, ANTLR fallback",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T08:53:49Z",
+  "head_ref": "backlog/otto-160-parser-tech-fparsec-first-antlr-fallback"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 194,
+  "archive_path": "docs/history/pr-reviews/PR-194-frontier-readiness-linguistic-seed-substrate-skeleton-gap-2.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66xr_y",
+    "comment:PRRC_kwDOSF9kNM66xsA1",
+    "comment:PRRC_kwDOSF9kNM66xsAe",
+    "comment:PRRC_kwDOSF9kNM66xsBL",
+    "comment:PRRC_kwDOSF9kNM66xsBo",
+    "comment:PRRC_kwDOSF9kNM66xsCA",
+    "thread:PRRT_kwDOSF9kNM59Np07",
+    "thread:PRRT_kwDOSF9kNM59Np0A",
+    "thread:PRRT_kwDOSF9kNM59Np0R",
+    "thread:PRRT_kwDOSF9kNM59Np0n",
+    "thread:PRRT_kwDOSF9kNM59NpzT",
+    "thread:PRRT_kwDOSF9kNM59Npzx"
+  ],
+  "fetched_at": "2026-08-25T07:59:47.199Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "frontier-readiness: linguistic-seed substrate skeleton (gap #2)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T20:18:58Z",
+  "head_ref": "frontier-readiness/linguistic-seed-substrate-skeleton"
+}

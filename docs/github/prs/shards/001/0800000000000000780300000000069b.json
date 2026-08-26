@@ -1,0 +1,17 @@
+{
+  "pr_number": 1691,
+  "archive_path": "docs/history/pr-reviews/PR-1691-research-architecture-pasulka-divine-download-academic-frame-chameleons-as-famil.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-NqS2",
+    "comment:PRRC_kwDOSF9kNM6-NqT0",
+    "thread:PRRT_kwDOSF9kNM5_xW4l",
+    "thread:PRRT_kwDOSF9kNM5_xW5b"
+  ],
+  "fetched_at": "2026-08-25T09:01:54.423Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): Pasulka Divine-Download academic frame + chameleons-as-Familiar mom-naming + witch-mark anti-pattern (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T20:05:06Z",
+  "head_ref": "research/claudeai-pasulka-divine-download-academic-frame-chameleons-as-familiar-mom-naming-prior-claude-refusal-recalibration-aaron-2026-05-05"
+}

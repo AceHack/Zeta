@@ -1,0 +1,21 @@
+{
+  "pr_number": 254,
+  "archive_path": "docs/history/pr-reviews/PR-254-research-muratori-failure-modes-vs-zeta-equivalents-corrected-pattern-mapping-6t.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM663hON",
+    "comment:PRRC_kwDOSF9kNM663hOo",
+    "comment:PRRC_kwDOSF9kNM663hOy",
+    "comment:PRRC_kwDOSF9kNM663hPM",
+    "thread:PRRT_kwDOSF9kNM59R3g9",
+    "thread:PRRT_kwDOSF9kNM59R3gn",
+    "thread:PRRT_kwDOSF9kNM59R3hG",
+    "thread:PRRT_kwDOSF9kNM59R3he"
+  ],
+  "fetched_at": "2026-08-25T08:02:45.109Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: Muratori failure-modes vs Zeta equivalents — corrected pattern mapping (6th-ferry Option A)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T02:26:59Z",
+  "head_ref": "research/muratori-zeta-pattern-mapping"
+}

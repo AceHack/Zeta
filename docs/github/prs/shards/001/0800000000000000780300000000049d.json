@@ -1,0 +1,19 @@
+{
+  "pr_number": 1181,
+  "archive_path": "docs/history/pr-reviews/PR-1181-research-claudeai-bft-succession-bft-multi-source-as-succession-answer-layered-d.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69SIQJ",
+    "comment:PRRC_kwDOSF9kNM69SIQS",
+    "comment:PRRC_kwDOSF9kNM69SIQW",
+    "thread:PRRT_kwDOSF9kNM5_Er3R",
+    "thread:PRRT_kwDOSF9kNM5_Er3Z",
+    "thread:PRRT_kwDOSF9kNM5_Er3c"
+  ],
+  "fetched_at": "2026-08-25T08:41:14.487Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(claudeai-bft-succession): BFT-multi-source as succession answer + layered defense + grading-bottleneck disposition (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:20:41Z",
+  "head_ref": "research/claudeai-bft-multi-source-succession-aaron-forwarded-2026-05-01"
+}

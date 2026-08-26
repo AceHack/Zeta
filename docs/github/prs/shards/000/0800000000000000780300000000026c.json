@@ -1,0 +1,12 @@
+{
+  "pr_number": 620,
+  "archive_path": "docs/history/pr-reviews/PR-620-tick-history-clean-reapply-3-rows-13-33z-13-55z-13-58z-supersedes-618.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:18:42.619Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: clean-reapply 3 rows (13:33Z + 13:55Z + 13:58Z) — supersedes #618",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T14:44:03Z",
+  "head_ref": "tick-history/clean-reapply-13-33-55-58-Z"
+}

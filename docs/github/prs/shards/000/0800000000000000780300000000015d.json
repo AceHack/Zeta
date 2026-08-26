@@ -1,0 +1,25 @@
+{
+  "pr_number": 349,
+  "archive_path": "docs/history/pr-reviews/PR-349-docs-frontier-rename-candidate-analysis-advisory-otto-170.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66-KQS",
+    "comment:PRRC_kwDOSF9kNM66-KRF",
+    "comment:PRRC_kwDOSF9kNM66-KRd",
+    "comment:PRRC_kwDOSF9kNM66-KRu",
+    "comment:PRRC_kwDOSF9kNM66-KSC",
+    "comment:PRRC_kwDOSF9kNM66-KSa",
+    "thread:PRRT_kwDOSF9kNM59W0Wf",
+    "thread:PRRT_kwDOSF9kNM59W0X6",
+    "thread:PRRT_kwDOSF9kNM59W0XK",
+    "thread:PRRT_kwDOSF9kNM59W0Xb",
+    "thread:PRRT_kwDOSF9kNM59W0Xr",
+    "thread:PRRT_kwDOSF9kNM59W0YN"
+  ],
+  "fetched_at": "2026-08-25T08:06:02.824Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: Frontier rename candidate analysis — advisory (Otto-170)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T09:46:03Z",
+  "head_ref": "docs/frontier-rename-analysis-otto-170"
+}

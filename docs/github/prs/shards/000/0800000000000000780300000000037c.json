@@ -1,0 +1,25 @@
+{
+  "pr_number": 892,
+  "archive_path": "docs/history/pr-reviews/PR-892-ts-b-0086-port-1-git-script-sh-ts-slice-13-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68ske8",
+    "comment:PRRC_kwDOSF9kNM68slC7",
+    "comment:PRRC_kwDOSF9kNM68slCh",
+    "comment:PRRC_kwDOSF9kNM68slDI",
+    "comment:PRRC_kwDOSF9kNM68slDc",
+    "comment:PRRC_kwDOSF9kNM68sqjF",
+    "thread:PRRT_kwDOSF9kNM5-o7Rm",
+    "thread:PRRT_kwDOSF9kNM5-o7q8",
+    "thread:PRRT_kwDOSF9kNM5-o7rP",
+    "thread:PRRT_kwDOSF9kNM5-o7rY",
+    "thread:PRRT_kwDOSF9kNM5-o7ro",
+    "thread:PRRT_kwDOSF9kNM5-o_p2"
+  ],
+  "fetched_at": "2026-08-25T08:29:15.101Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 git script (.sh→.ts) — slice 13 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:31:00Z",
+  "head_ref": "lane-b/ts-bun-slice-13-push-with-retry-2026-04-30"
+}

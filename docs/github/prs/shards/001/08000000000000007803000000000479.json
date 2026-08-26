@@ -1,0 +1,23 @@
+{
+  "pr_number": 1145,
+  "archive_path": "docs/history/pr-reviews/PR-1145-memory-ui-canonical-reference-blazor-ssg-tooling-extension-aaron-2026-05-01-pond.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69O-LB",
+    "comment:PRRC_kwDOSF9kNM69O-La",
+    "comment:PRRC_kwDOSF9kNM69PMPq",
+    "comment:PRRC_kwDOSF9kNM69PMQW",
+    "comment:PRRC_kwDOSF9kNM69PMQv",
+    "thread:PRRT_kwDOSF9kNM5_CW1y",
+    "thread:PRRT_kwDOSF9kNM5_CW2B",
+    "thread:PRRT_kwDOSF9kNM5_ChS7",
+    "thread:PRRT_kwDOSF9kNM5_ChSA",
+    "thread:PRRT_kwDOSF9kNM5_ChSk"
+  ],
+  "fetched_at": "2026-08-25T08:39:46.818Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(ui-canonical-reference): Blazor SSG tooling extension (Aaron 2026-05-01 ponder-for-future)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:53:21Z",
+  "head_ref": "memory/blazor-ssg-tooling-extension-aaron-2026-05-01"
+}

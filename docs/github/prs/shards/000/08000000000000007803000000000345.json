@@ -1,0 +1,31 @@
+{
+  "pr_number": 837,
+  "archive_path": "docs/history/pr-reviews/PR-837-ops-0-0-0-batch-1-7-files-promoted-to-safe-to-reset-lfg-supersedes-37-lines.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Y-b3",
+    "comment:PRRC_kwDOSF9kNM68Y-bT",
+    "comment:PRRC_kwDOSF9kNM68Y-ci",
+    "comment:PRRC_kwDOSF9kNM68Y77c",
+    "comment:PRRC_kwDOSF9kNM68ZKph",
+    "comment:PRRC_kwDOSF9kNM68ZVN8",
+    "comment:PRRC_kwDOSF9kNM68ZVNX",
+    "comment:PRRC_kwDOSF9kNM68ZVOT",
+    "comment:PRRC_kwDOSF9kNM68ZVOn",
+    "thread:PRRT_kwDOSF9kNM5-a4Ss",
+    "thread:PRRT_kwDOSF9kNM5-a4TE",
+    "thread:PRRT_kwDOSF9kNM5-a4TV",
+    "thread:PRRT_kwDOSF9kNM5-a4Tl",
+    "thread:PRRT_kwDOSF9kNM5-alq-",
+    "thread:PRRT_kwDOSF9kNM5-anhs",
+    "thread:PRRT_kwDOSF9kNM5-aniK",
+    "thread:PRRT_kwDOSF9kNM5-aniu",
+    "thread:PRRT_kwDOSF9kNM5-awhs"
+  ],
+  "fetched_at": "2026-08-25T08:27:13.416Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(0-0-0): batch 1 — 7 files promoted to SAFE_TO_RESET_LFG_SUPERSEDES (37 lines)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T11:53:43Z",
+  "head_ref": "classify-heuristic-files-batch-1-2026-04-29"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 460,
+  "archive_path": "docs/history/pr-reviews/PR-460-hygiene-268-pr-preservation-drain-log-for-428-126-gemini-xref.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QasX",
+    "comment:PRRC_kwDOSF9kNM67QbPN",
+    "comment:PRRC_kwDOSF9kNM67QbPY",
+    "comment:PRRC_kwDOSF9kNM67QjA2",
+    "comment:PRRC_kwDOSF9kNM67QjBI",
+    "comment:PRRC_kwDOSF9kNM67QjBa",
+    "thread:PRRT_kwDOSF9kNM59kb_4",
+    "thread:PRRT_kwDOSF9kNM59kb_t",
+    "thread:PRRT_kwDOSF9kNM59kbiu"
+  ],
+  "fetched_at": "2026-08-25T08:11:12.609Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #428 (#126 Gemini xref)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:00:34Z",
+  "head_ref": "drain/428-pr-preservation-log"
+}

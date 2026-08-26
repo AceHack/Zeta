@@ -1,0 +1,21 @@
+{
+  "pr_number": 218,
+  "archive_path": "docs/history/pr-reviews/PR-218-fix-readme-dbsp-core-zeta-core-amara-p2-broken-quick-tour-snippets.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM661WXc",
+    "comment:PRRC_kwDOSF9kNM661WXw",
+    "comment:PRRC_kwDOSF9kNM67D22L",
+    "comment:PRRC_kwDOSF9kNM67D2zr",
+    "comment:PRRC_kwDOSF9kNM67D5Kb",
+    "thread:PRRT_kwDOSF9kNM59QS9U",
+    "thread:PRRT_kwDOSF9kNM59QS9g",
+    "thread:PRRT_kwDOSF9kNM59bIey"
+  ],
+  "fetched_at": "2026-08-25T08:01:29.098Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(README): Dbsp.Core → Zeta.Core (Amara P2 — broken quick-tour snippets)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T14:29:14Z",
+  "head_ref": "fix/readme-namespace-dbsp-to-zeta-amara-p2"
+}

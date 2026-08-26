@@ -1,0 +1,12 @@
+{
+  "pr_number": 1895,
+  "archive_path": "docs/history/pr-reviews/PR-1895-docs-tick-1530z-shard-b-0251-temporal-sdk-study.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:06:51.657Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(tick): 1530Z shard — B-0251 + Temporal SDK study",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:26:24Z",
+  "head_ref": "otto/tick-1530z-b0251-temporal"
+}

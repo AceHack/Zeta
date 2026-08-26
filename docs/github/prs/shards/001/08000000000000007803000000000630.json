@@ -1,0 +1,17 @@
+{
+  "pr_number": 1584,
+  "archive_path": "docs/history/pr-reviews/PR-1584-shard-hygiene-2026-05-05t04-45z-falsifiability-catch-mechanization-cleanup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM696CY4",
+    "comment:PRRC_kwDOSF9kNM696CZN",
+    "thread:PRRT_kwDOSF9kNM5_izvP",
+    "thread:PRRT_kwDOSF9kNM5_izvd"
+  ],
+  "fetched_at": "2026-08-25T08:57:38.555Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(hygiene): 2026-05-05T04:45Z -- falsifiability-catch + mechanization cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:52:39Z",
+  "head_ref": "shard/2026-05-05-0445Z-falsifiability-catch-and-mechanization-cleanup"
+}

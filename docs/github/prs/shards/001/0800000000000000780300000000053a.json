@@ -1,0 +1,12 @@
+{
+  "pr_number": 1338,
+  "archive_path": "docs/history/pr-reviews/PR-1338-fix-1336-post-merge-role-ref-attribution-line-start-plus-removal-in-razor-discip.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:47:42.172Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(#1336 post-merge): role-ref attribution + line-start-plus removal in razor-discipline bullet",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T07:12:17Z",
+  "head_ref": "claude-md/razor-discipline-bullet-precision-fixes-line-start-plus-and-role-refs"
+}

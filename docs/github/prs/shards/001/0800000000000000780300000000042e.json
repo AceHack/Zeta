@@ -1,0 +1,15 @@
+{
+  "pr_number": 1070,
+  "archive_path": "docs/history/pr-reviews/PR-1070-hygiene-tick-history-2026-05-01t09-41z-pr-1030-thread-drain-dirty-rebase.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HMuu",
+    "thread:PRRT_kwDOSF9kNM5-8oGp"
+  ],
+  "fetched_at": "2026-08-25T08:36:45.705Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:41Z — PR #1030 thread-drain + DIRTY rebase",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:43:25Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0941Z-1030-thread-fixes-rebase"
+}

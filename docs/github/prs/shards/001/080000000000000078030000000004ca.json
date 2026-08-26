@@ -1,0 +1,15 @@
+{
+  "pr_number": 1226,
+  "archive_path": "docs/history/pr-reviews/PR-1226-backlog-b-0085-close-option-c-empirical-supersession-deadline-window-passed-with.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Xz3R",
+    "thread:PRRT_kwDOSF9kNM5_I-Wx"
+  ],
+  "fetched_at": "2026-08-25T08:43:08.004Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0085 close): option-C empirical supersession — deadline window passed without intervention",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T19:52:56Z",
+  "head_ref": "backlog/B-0085-close-deadline-window-empirically-passed-2026-05-02"
+}

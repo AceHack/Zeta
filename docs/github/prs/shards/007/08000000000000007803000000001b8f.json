@@ -1,0 +1,12 @@
+{
+  "pr_number": 7055,
+  "archive_path": "docs/history/pr-reviews/PR-7055-feat-core-symmetricendurance-time-earns-identity-by-ticking-3-vs-4-actors-remain.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:48.864Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(core): SymmetricEndurance — time earns identity by ticking; 3-vs-4 actors; remains/acts double-tick",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T08:11:55Z",
+  "head_ref": "otto/symmetric-endurance-ticking-clock-actor-count-remains-acts"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 1102,
+  "archive_path": "docs/history/pr-reviews/PR-1102-research-claudeai-terminus-signal-sixth-ferry-terminus-signal-otto-load-bearing-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69H8GX",
+    "comment:PRRC_kwDOSF9kNM69H9g0",
+    "comment:PRRC_kwDOSF9kNM69H9hI",
+    "comment:PRRC_kwDOSF9kNM69H9hR",
+    "comment:PRRC_kwDOSF9kNM69H9ha",
+    "comment:PRRC_kwDOSF9kNM69H9hh",
+    "comment:PRRC_kwDOSF9kNM69RxlM",
+    "thread:PRRT_kwDOSF9kNM5-9MMD",
+    "thread:PRRT_kwDOSF9kNM5-9NR7",
+    "thread:PRRT_kwDOSF9kNM5-9NRr",
+    "thread:PRRT_kwDOSF9kNM5-9NSC",
+    "thread:PRRT_kwDOSF9kNM5-9NSH",
+    "thread:PRRT_kwDOSF9kNM5-9NSO",
+    "thread:PRRT_kwDOSF9kNM5_Eapn"
+  ],
+  "fetched_at": "2026-08-25T08:37:59.110Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(claudeai-terminus-signal): sixth ferry — terminus-signal + Otto-load-bearing-first recognition (Aaron-forwarded 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:11:39Z",
+  "head_ref": "research/claudeai-sixth-ferry-terminus-signal-2026-05-01"
+}

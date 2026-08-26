@@ -1,0 +1,21 @@
+{
+  "pr_number": 633,
+  "archive_path": "docs/history/pr-reviews/PR-633-sync-acehack-lfg-batch-2-23-backlog-row-only-commits-rewritten-into-per-row-file.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Y7XO",
+    "comment:PRRC_kwDOSF9kNM67Y7Xa",
+    "comment:PRRC_kwDOSF9kNM67Y7Xf",
+    "comment:PRRC_kwDOSF9kNM67Y7Xl",
+    "thread:PRRT_kwDOSF9kNM59rPX7",
+    "thread:PRRT_kwDOSF9kNM59rPYF",
+    "thread:PRRT_kwDOSF9kNM59rPYI",
+    "thread:PRRT_kwDOSF9kNM59rPYN"
+  ],
+  "fetched_at": "2026-08-25T08:19:14.109Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg) batch-2: 23 BACKLOG-row-only commits rewritten into per-row-files (option-c)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T17:36:43Z",
+  "head_ref": "sync/acehack-to-lfg-batch-2-backlog-rows-rewrite-into-per-row-files"
+}

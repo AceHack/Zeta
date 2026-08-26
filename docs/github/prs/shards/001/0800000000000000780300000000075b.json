@@ -1,0 +1,15 @@
+{
+  "pr_number": 1883,
+  "archive_path": "docs/history/pr-reviews/PR-1883-docs-trajectory-add-alignment-measurement-child-packet.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-3AqR",
+    "thread:PRRT_kwDOSF9kNM6AVZpn"
+  ],
+  "fetched_at": "2026-08-25T09:06:22.442Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(trajectory): add alignment measurement child packet",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T14:12:09Z",
+  "head_ref": "codex/trajectory-alignment-measurement-packet"
+}

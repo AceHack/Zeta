@@ -1,0 +1,23 @@
+{
+  "pr_number": 923,
+  "archive_path": "docs/history/pr-reviews/PR-923-tools-github-poll-pr-gate-v1-required-vs-non-required-check-classification-amara.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM686sWi",
+    "comment:PRRC_kwDOSF9kNM686vJm",
+    "comment:PRRC_kwDOSF9kNM686vK0",
+    "comment:PRRC_kwDOSF9kNM686vKT",
+    "comment:PRRC_kwDOSF9kNM686vKm",
+    "thread:PRRT_kwDOSF9kNM5-zcKH",
+    "thread:PRRT_kwDOSF9kNM5-zeNP",
+    "thread:PRRT_kwDOSF9kNM5-zeN_",
+    "thread:PRRT_kwDOSF9kNM5-zeNx",
+    "thread:PRRT_kwDOSF9kNM5-zeOK"
+  ],
+  "fetched_at": "2026-08-25T08:30:37.530Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tools(github): poll-pr-gate v1 — required-vs-non-required check classification (Amara hardening)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T16:55:31Z",
+  "head_ref": "ops/poll-pr-gate-v1-required-check-classification-2026-04-30"
+}

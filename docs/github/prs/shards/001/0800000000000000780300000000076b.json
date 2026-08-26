@@ -1,0 +1,17 @@
+{
+  "pr_number": 1899,
+  "archive_path": "docs/history/pr-reviews/PR-1899-docs-tick-1540z-shard-session-summary.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-5d57",
+    "comment:PRRC_kwDOSF9kNM6-5d66",
+    "thread:PRRT_kwDOSF9kNM6AXNdM",
+    "thread:PRRT_kwDOSF9kNM6AXNdz"
+  ],
+  "fetched_at": "2026-08-25T09:06:58.171Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(tick): 1540Z shard — session summary",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:38:38Z",
+  "head_ref": "otto/tick-1540z-session-summary"
+}

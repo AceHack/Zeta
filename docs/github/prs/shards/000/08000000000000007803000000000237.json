@@ -1,0 +1,19 @@
+{
+  "pr_number": 567,
+  "archive_path": "docs/history/pr-reviews/PR-567-chore-loop-tick-history-framework-convergence-tick-8-amara-refinements-6-prs-2-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67WBtE",
+    "comment:PRRC_kwDOSF9kNM67WBxO",
+    "comment:PRRC_kwDOSF9kNM67WIIT",
+    "comment:PRRC_kwDOSF9kNM67WIIz",
+    "thread:PRRT_kwDOSF9kNM59o7iz",
+    "thread:PRRT_kwDOSF9kNM59o7l5"
+  ],
+  "fetched_at": "2026-08-25T08:16:52.885Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): framework-convergence tick — 8 Amara refinements + 6 PRs + 2 code fixes + 64-thread drain",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:19:24Z",
+  "head_ref": "chore/heartbeat-batch-2026-04-26-framework-convergence-tick"
+}

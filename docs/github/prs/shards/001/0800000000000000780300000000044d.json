@@ -1,0 +1,12 @@
+{
+  "pr_number": 1101,
+  "archive_path": "docs/history/pr-reviews/PR-1101-hygiene-tick-history-2026-05-01t11-05z-2-prs-merged-1-unblocked-class-18.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:37:55.712Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T11:05Z — 2 PRs merged + 1 unblocked (class #18)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T11:11:25Z",
+  "head_ref": "hygiene/tick-history-1105Z-2026-05-01"
+}

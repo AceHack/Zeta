@@ -1,0 +1,12 @@
+{
+  "pr_number": 577,
+  "archive_path": "docs/history/pr-reviews/PR-577-backfill-b-0036-partial-4-full-33-headers-on-6-shape-b-pre-existing-courier-ferr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:17:23.615Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backfill(B-0036 partial-4): full §33 headers on 6 Shape B pre-existing courier-ferry docs (lint 9 → 3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T08:54:46Z",
+  "head_ref": "backfill/section33-headers-shape-b-pre-existing-courier-ferry-docs"
+}

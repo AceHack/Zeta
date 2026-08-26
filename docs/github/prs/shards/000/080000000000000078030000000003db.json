@@ -1,0 +1,15 @@
+{
+  "pr_number": 987,
+  "archive_path": "docs/history/pr-reviews/PR-987-hygiene-tick-history-shard-0013z-csap-absorption-chains-and-resource-agent-auton.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CUNW",
+    "thread:PRRT_kwDOSF9kNM5-5CXa"
+  ],
+  "fetched_at": "2026-08-25T08:33:15.508Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0013Z — CSAP absorption + chains-and-resource agent-autonomy",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:16:34Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0019Z-csap-absorption-chains-autonomy"
+}

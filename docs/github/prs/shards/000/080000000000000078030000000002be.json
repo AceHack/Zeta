@@ -1,0 +1,12 @@
+{
+  "pr_number": 702,
+  "archive_path": "docs/history/pr-reviews/PR-702-ci-codeql-config-xunit-xunit-capitalization-copilot-follow-up-to-pr-701.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:21:54.758Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci(codeql-config): xunit → xUnit capitalization (Copilot follow-up to PR #701)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T23:40:12Z",
+  "head_ref": "fix/codeql-config-xunit-capitalization-2026-04-28"
+}

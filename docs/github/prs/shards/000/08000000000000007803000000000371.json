@@ -1,0 +1,15 @@
+{
+  "pr_number": 881,
+  "archive_path": "docs/history/pr-reviews/PR-881-ops-tick-history-autonomous-loop-tick-2026-04-30t03-41-00z-consolidated-post-879.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68re2p",
+    "thread:PRRT_kwDOSF9kNM5-oIuE"
+  ],
+  "fetched_at": "2026-08-25T08:28:48.957Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(tick-history): autonomous-loop tick 2026-04-30T03:41:00Z — consolidated post-#879 session row",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T03:47:37Z",
+  "head_ref": "ops/tick-history-2026-04-30-0341-slice-8-progress"
+}

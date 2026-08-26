@@ -1,0 +1,12 @@
+{
+  "pr_number": 585,
+  "archive_path": "docs/history/pr-reviews/PR-585-backlog-b-0006-partial-2-compress-5-long-otto-281-287-cluster-entries.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:17:45.073Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0006 partial-2): compress 5 long Otto-281..287 cluster entries",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:31:35Z",
+  "head_ref": "backlog/B-0006-partial-2-memory-md-compression"
+}

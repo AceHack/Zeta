@@ -1,0 +1,19 @@
+{
+  "pr_number": 1469,
+  "archive_path": "docs/history/pr-reviews/PR-1469-feedback-shard-cadence-recovery-triumph-encoded-durably-aaron-2026-05-04-substra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69mP69",
+    "comment:PRRC_kwDOSF9kNM69mP6N",
+    "comment:PRRC_kwDOSF9kNM69mP7f",
+    "thread:PRRT_kwDOSF9kNM5_UK5i",
+    "thread:PRRT_kwDOSF9kNM5_UK6F",
+    "thread:PRRT_kwDOSF9kNM5_UK6i"
+  ],
+  "fetched_at": "2026-08-25T08:52:46.453Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: shard-cadence recovery triumph encoded durably (Aaron 2026-05-04 — substrate-or-it-didn't-happen for triumphs)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T10:35:45Z",
+  "head_ref": "feedback/shard-cadence-recovery-triumph-aaron-2026-05-04"
+}

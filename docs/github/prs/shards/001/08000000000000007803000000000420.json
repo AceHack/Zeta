@@ -1,0 +1,17 @@
+{
+  "pr_number": 1056,
+  "archive_path": "docs/history/pr-reviews/PR-1056-backlog-b-0125-b-0140-b-0132-two-tracks-build-split-bash-ts-migration-completion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69GYsX",
+    "comment:PRRC_kwDOSF9kNM69GYsj",
+    "thread:PRRT_kwDOSF9kNM5-8Bq-",
+    "thread:PRRT_kwDOSF9kNM5-8Bq0"
+  ],
+  "fetched_at": "2026-08-25T08:36:10.884Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0125 + B-0140 + B-0132): two-tracks build split + bash→TS migration completion as B-0132 prerequisites (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T08:11:03Z",
+  "head_ref": "backlog/b0125-two-tracks-framing-aaron-2026-05-01"
+}

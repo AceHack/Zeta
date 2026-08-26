@@ -1,0 +1,19 @@
+{
+  "pr_number": 1514,
+  "archive_path": "docs/history/pr-reviews/PR-1514-fix-tick-shard-1852z-convert-to-canonical-6-column-schema-closes-1512-p0-thread.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69xgwX",
+    "comment:PRRC_kwDOSF9kNM69xgxO",
+    "comment:PRRC_kwDOSF9kNM69xgxp",
+    "thread:PRRT_kwDOSF9kNM5_cj6X",
+    "thread:PRRT_kwDOSF9kNM5_cj6_",
+    "thread:PRRT_kwDOSF9kNM5_cj7T"
+  ],
+  "fetched_at": "2026-08-25T08:54:41.993Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(tick-shard-1852Z): convert to canonical 6-column schema (closes #1512 P0 thread)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T19:08:19Z",
+  "head_ref": "fix/tick-shard-1852Z-schema-aaron-2026-05-04"
+}

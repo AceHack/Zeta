@@ -1,0 +1,15 @@
+{
+  "pr_number": 1365,
+  "archive_path": "docs/history/pr-reviews/PR-1365-hygiene-tick-history-2026-05-03t09-18z-1363-merged-shard-on-change-calibration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69avgv",
+    "thread:PRRT_kwDOSF9kNM5_LSWj"
+  ],
+  "fetched_at": "2026-08-25T08:48:44.243Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T09:18Z — #1363 merged + shard-on-change calibration",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T09:23:07Z",
+  "head_ref": "hygiene/tick-2026-05-03-0918Z-shard-on-change"
+}

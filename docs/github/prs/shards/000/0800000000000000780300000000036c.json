@@ -1,0 +1,27 @@
+{
+  "pr_number": 876,
+  "archive_path": "docs/history/pr-reviews/PR-876-ts-b-0086-port-3-check-only-hygiene-scripts-sh-ts-slice-6-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68qzS7",
+    "comment:PRRC_kwDOSF9kNM68qzSe",
+    "comment:PRRC_kwDOSF9kNM68qzT5",
+    "comment:PRRC_kwDOSF9kNM68qzTN",
+    "comment:PRRC_kwDOSF9kNM68qzTY",
+    "comment:PRRC_kwDOSF9kNM68qzTj",
+    "comment:PRRC_kwDOSF9kNM68qzTp",
+    "thread:PRRT_kwDOSF9kNM5-npVs",
+    "thread:PRRT_kwDOSF9kNM5-npWA",
+    "thread:PRRT_kwDOSF9kNM5-npWN",
+    "thread:PRRT_kwDOSF9kNM5-npWU",
+    "thread:PRRT_kwDOSF9kNM5-npWc",
+    "thread:PRRT_kwDOSF9kNM5-npWh",
+    "thread:PRRT_kwDOSF9kNM5-npWs"
+  ],
+  "fetched_at": "2026-08-25T08:28:32.809Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 3 check-only hygiene scripts (.sh→.ts) — slice 6 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T02:38:39Z",
+  "head_ref": "lane-b/ts-bun-slice-6-check-scripts-2026-04-30"
+}

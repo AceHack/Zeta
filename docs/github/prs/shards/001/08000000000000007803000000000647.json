@@ -1,0 +1,23 @@
+{
+  "pr_number": 1607,
+  "archive_path": "docs/history/pr-reviews/PR-1607-memory-reference-aaron-s-weekly-ai-news-source-set-wes-roth-matthew-berman-ai-ex.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69-qtW",
+    "comment:PRRC_kwDOSF9kNM69-qtt",
+    "comment:PRRC_kwDOSF9kNM69-quB",
+    "comment:PRRC_kwDOSF9kNM69-quW",
+    "comment:PRRC_kwDOSF9kNM69-qup",
+    "thread:PRRT_kwDOSF9kNM5_mPs9",
+    "thread:PRRT_kwDOSF9kNM5_mPsp",
+    "thread:PRRT_kwDOSF9kNM5_mPtK",
+    "thread:PRRT_kwDOSF9kNM5_mPtb",
+    "thread:PRRT_kwDOSF9kNM5_mPtq"
+  ],
+  "fetched_at": "2026-08-25T08:58:34.401Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(reference): Aaron's weekly-AI-news source-set -- Wes Roth + Matthew Berman + AI Explained (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:19:11Z",
+  "head_ref": "memory/reference-aaron-ai-news-source-set-2026-05-05"
+}

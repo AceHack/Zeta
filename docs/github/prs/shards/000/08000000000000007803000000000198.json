@@ -1,0 +1,28 @@
+{
+  "pr_number": 408,
+  "archive_path": "docs/history/pr-reviews/PR-408-backlog-refine-peer-review-row-disclosure-not-gate-per-autonomous-loop-clarifica.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Oo-s",
+    "comment:PRRC_kwDOSF9kNM67Oo-w",
+    "comment:PRRC_kwDOSF9kNM67Oqk6",
+    "comment:PRRC_kwDOSF9kNM67OqlH",
+    "comment:PRRC_kwDOSF9kNM67OqlY",
+    "comment:PRRC_kwDOSF9kNM67OupN",
+    "comment:PRRC_kwDOSF9kNM67Ouq3",
+    "comment:PRRC_kwDOSF9kNM67OuqB",
+    "comment:PRRC_kwDOSF9kNM67Ourr",
+    "comment:PRRC_kwDOSF9kNM67Ousa",
+    "thread:PRRT_kwDOSF9kNM59jHEZ",
+    "thread:PRRT_kwDOSF9kNM59jHEc",
+    "thread:PRRT_kwDOSF9kNM59jIHB",
+    "thread:PRRT_kwDOSF9kNM59jIHI",
+    "thread:PRRT_kwDOSF9kNM59jIHM"
+  ],
+  "fetched_at": "2026-08-25T08:09:01.409Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: refine peer-review row — DISCLOSURE (not gate) per autonomous-loop clarifications",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T02:36:35Z",
+  "head_ref": "backlog/peer-review-tentative-canonical-refinement"
+}

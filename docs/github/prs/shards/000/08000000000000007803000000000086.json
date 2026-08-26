@@ -1,0 +1,21 @@
+{
+  "pr_number": 134,
+  "archive_path": "docs/history/pr-reviews/PR-134-round-44-auto-loop-34-backlog-p1-row-secret-handoff-protocol.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66L2tV",
+    "comment:PRRC_kwDOSF9kNM66L3g6",
+    "comment:PRRC_kwDOSF9kNM66L3h5",
+    "comment:PRRC_kwDOSF9kNM66L3hm",
+    "thread:PRRT_kwDOSF9kNM58xeEG",
+    "thread:PRRT_kwDOSF9kNM58xerc",
+    "thread:PRRT_kwDOSF9kNM58xesF",
+    "thread:PRRT_kwDOSF9kNM58xesV"
+  ],
+  "fetched_at": "2026-08-25T07:55:53.561Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-34: BACKLOG P1 row — secret-handoff protocol",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T11:43:49Z",
+  "head_ref": "auto-loop-34-tick"
+}

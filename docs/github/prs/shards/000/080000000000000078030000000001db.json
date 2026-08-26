@@ -1,0 +1,29 @@
+{
+  "pr_number": 475,
+  "archive_path": "docs/history/pr-reviews/PR-475-docs-security-safe-patterns-docs-trivy-teampcp-incident-addition-split-from-52.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Rlh-",
+    "comment:PRRC_kwDOSF9kNM67Rlh0",
+    "comment:PRRC_kwDOSF9kNM67RliD",
+    "comment:PRRC_kwDOSF9kNM67RliI",
+    "comment:PRRC_kwDOSF9kNM67RliO",
+    "comment:PRRC_kwDOSF9kNM67RliV",
+    "comment:PRRC_kwDOSF9kNM67Rlic",
+    "comment:PRRC_kwDOSF9kNM67Rlig",
+    "thread:PRRT_kwDOSF9kNM59lYB1",
+    "thread:PRRT_kwDOSF9kNM59lYB5",
+    "thread:PRRT_kwDOSF9kNM59lYB9",
+    "thread:PRRT_kwDOSF9kNM59lYBo",
+    "thread:PRRT_kwDOSF9kNM59lYBw",
+    "thread:PRRT_kwDOSF9kNM59lYCE",
+    "thread:PRRT_kwDOSF9kNM59lYCL",
+    "thread:PRRT_kwDOSF9kNM59lYCN"
+  ],
+  "fetched_at": "2026-08-25T08:11:50.571Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(security): safe-patterns docs + Trivy TeamPCP incident addition (split from #52)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:43:22Z",
+  "head_ref": "security/safe-patterns-docs-fresh"
+}

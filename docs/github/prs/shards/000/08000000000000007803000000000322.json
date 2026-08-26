@@ -1,0 +1,12 @@
+{
+  "pr_number": 802,
+  "archive_path": "docs/history/pr-reviews/PR-802-tick-history-2026-04-29t05-45z-drain-pr-799-merged.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:25:55.532Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:45Z — drain, PR #799 merged",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T05:51:22Z",
+  "head_ref": "tick-history/2026-04-29-tick-0544Z-shard"
+}

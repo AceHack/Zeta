@@ -1,0 +1,12 @@
+{
+  "pr_number": 875,
+  "archive_path": "docs/history/pr-reviews/PR-875-trajectory-ts-bun-resume-slice-5-merged-closure-cluster-e-complete.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:28:30.191Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "trajectory(ts-bun): RESUME slice-5-merged closure + Cluster E complete",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T02:29:57Z",
+  "head_ref": "lane-b/ts-bun-slice-5-closure-2026-04-30"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 907,
+  "archive_path": "docs/history/pr-reviews/PR-907-ts-b-0086-port-1-git-script-sh-ts-slice-20-of-ts-bun-migration.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68u58t",
+    "comment:PRRC_kwDOSF9kNM68u6-Q",
+    "comment:PRRC_kwDOSF9kNM68u68r",
+    "comment:PRRC_kwDOSF9kNM68u69H",
+    "comment:PRRC_kwDOSF9kNM68u69V",
+    "comment:PRRC_kwDOSF9kNM68u69z",
+    "thread:PRRT_kwDOSF9kNM5-qpj6",
+    "thread:PRRT_kwDOSF9kNM5-qqUR",
+    "thread:PRRT_kwDOSF9kNM5-qqU_",
+    "thread:PRRT_kwDOSF9kNM5-qqUj",
+    "thread:PRRT_kwDOSF9kNM5-qqUs",
+    "thread:PRRT_kwDOSF9kNM5-qqVY"
+  ],
+  "fetched_at": "2026-08-25T08:29:51.666Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ts(B-0086): port 1 git script (.sh→.ts) — slice 20 of TS/Bun migration",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T07:49:38Z",
+  "head_ref": "lane-b/ts-bun-slice-20-batch-resolve-pr-threads-2026-04-30"
+}

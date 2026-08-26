@@ -1,0 +1,22 @@
+{
+  "pr_number": 1356,
+  "archive_path": "docs/history/pr-reviews/PR-1356-fix-1349-post-merge-b-0142-migration-concerns-scope-clarification-4-review-threa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ac_K",
+    "comment:PRRC_kwDOSF9kNM69adDi",
+    "comment:PRRC_kwDOSF9kNM69adDr",
+    "comment:PRRC_kwDOSF9kNM69afPf",
+    "comment:PRRC_kwDOSF9kNM69afPv",
+    "comment:PRRC_kwDOSF9kNM69afQD",
+    "thread:PRRT_kwDOSF9kNM5_LD2T",
+    "thread:PRRT_kwDOSF9kNM5_LD55",
+    "thread:PRRT_kwDOSF9kNM5_LD5z"
+  ],
+  "fetched_at": "2026-08-25T08:48:22.806Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(#1349 post-merge): B-0142 migration concerns + scope clarification (4 review threads absorbed)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:22:27Z",
+  "head_ref": "backlog/B-0142-followup-migration-concerns-warnings-as-errors"
+}

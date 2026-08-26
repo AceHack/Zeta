@@ -1,0 +1,21 @@
+{
+  "pr_number": 1744,
+  "archive_path": "docs/history/pr-reviews/PR-1744-backlog-b-0215-harness-parity-audit-for-riven-learning.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-nN7K",
+    "comment:PRRC_kwDOSF9kNM6-nQg8",
+    "comment:PRRC_kwDOSF9kNM6-nQhQ",
+    "comment:PRRC_kwDOSF9kNM6-nQhY",
+    "thread:PRRT_kwDOSF9kNM6AJmKa",
+    "thread:PRRT_kwDOSF9kNM6AJoIY",
+    "thread:PRRT_kwDOSF9kNM6AJoIn",
+    "thread:PRRT_kwDOSF9kNM6AJoIr"
+  ],
+  "fetched_at": "2026-08-25T09:04:05.273Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0215): harness parity audit for Riven learning",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T22:46:09Z",
+  "head_ref": "feat/backlog-harness-parity"
+}

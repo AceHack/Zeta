@@ -1,0 +1,15 @@
+{
+  "pr_number": 938,
+  "archive_path": "docs/history/pr-reviews/PR-938-memory-amara-rerere-lease-corrections-aaron-acid-channel-durability-rule-2026-04.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM689kXt",
+    "thread:PRRT_kwDOSF9kNM5-1iur"
+  ],
+  "fetched_at": "2026-08-25T08:31:12.918Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Amara rerere+lease corrections + Aaron ACID-channel-durability rule (2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T19:06:30Z",
+  "head_ref": "memory/amara-rerere-and-lease-corrections-plus-aaron-acid-channel-rule-2026-04-30"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1913,
+  "archive_path": "docs/history/pr-reviews/PR-1913-docs-well-definitions-holographic-shadow-2d-boundary-encodes-3d-bulk.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-7qMK",
+    "comment:PRRC_kwDOSF9kNM6-7rlx",
+    "comment:PRRC_kwDOSF9kNM6-7rmh",
+    "thread:PRRT_kwDOSF9kNM6AY0T_",
+    "thread:PRRT_kwDOSF9kNM6AY0Ug",
+    "thread:PRRT_kwDOSF9kNM6AYzTs"
+  ],
+  "fetched_at": "2026-08-25T09:07:29.220Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(well-definitions): holographic shadow — 2D boundary encodes 3D bulk",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T17:08:58Z",
+  "head_ref": "otto/well-def-holographic-shadow"
+}

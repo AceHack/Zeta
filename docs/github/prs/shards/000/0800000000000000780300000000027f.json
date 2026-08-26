@@ -1,0 +1,21 @@
+{
+  "pr_number": 639,
+  "archive_path": "docs/history/pr-reviews/PR-639-sync-acehack-lfg-substrate-otto-357-no-directives-sibling-of-acehack-37.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67oSTW",
+    "comment:PRRC_kwDOSF9kNM67oSUz",
+    "comment:PRRC_kwDOSF9kNM67oSWc",
+    "comment:PRRC_kwDOSF9kNM67oSXe",
+    "thread:PRRT_kwDOSF9kNM592xei",
+    "thread:PRRT_kwDOSF9kNM592xfk",
+    "thread:PRRT_kwDOSF9kNM592xgw",
+    "thread:PRRT_kwDOSF9kNM592xho"
+  ],
+  "fetched_at": "2026-08-25T08:19:29.421Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg): substrate(otto-357) NO DIRECTIVES (sibling of AceHack #37)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T14:07:22Z",
+  "head_ref": "sync/acehack-to-lfg-otto-357-no-directives"
+}

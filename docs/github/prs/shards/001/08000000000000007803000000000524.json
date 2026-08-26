@@ -1,0 +1,17 @@
+{
+  "pr_number": 1316,
+  "archive_path": "docs/history/pr-reviews/PR-1316-fix-b-0173-recovery-correct-to-harness-hooks-only-per-dst-harness-hooks-memo-ott.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zyqr",
+    "comment:PRRC_kwDOSF9kNM69Zyqy",
+    "thread:PRRT_kwDOSF9kNM5_KicK",
+    "thread:PRRT_kwDOSF9kNM5_KicP"
+  ],
+  "fetched_at": "2026-08-25T08:46:57.811Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(B-0173 recovery): correct to harness-hooks-only per DST/harness-hooks memo (Otto 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:05:34Z",
+  "head_ref": "fix/b-0173-recovery-section-harness-hooks-only-otto-2026-05-03"
+}

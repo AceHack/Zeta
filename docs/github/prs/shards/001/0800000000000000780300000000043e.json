@@ -1,0 +1,12 @@
+{
+  "pr_number": 1086,
+  "archive_path": "docs/history/pr-reviews/PR-1086-hygiene-tick-history-2026-05-01t10-23z-claude-ai-endorsement-absorption-dirty-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:37:20.851Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:23Z — Claude.ai endorsement absorption + DIRTY rebases",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:25:46Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1023Z-claudeai-endorsement"
+}

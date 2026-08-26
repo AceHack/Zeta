@@ -1,0 +1,12 @@
+{
+  "pr_number": 1048,
+  "archive_path": "docs/history/pr-reviews/PR-1048-hygiene-tick-history-shard-0905z-g-del-allocation-refinement-pr-1046.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:35:50.968Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0905Z — Gödel-allocation refinement (PR #1046)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T07:36:46Z",
+  "head_ref": "hygiene/tick-history-shard-0905Z-godel-allocation-refinement"
+}

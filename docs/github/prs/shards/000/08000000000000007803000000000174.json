@@ -1,0 +1,15 @@
+{
+  "pr_number": 372,
+  "archive_path": "docs/history/pr-reviews/PR-372-backlog-otto-241-three-rows-session-id-scrub-peer-claude-parity-claude-w-default.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67F9VO",
+    "thread:PRRT_kwDOSF9kNM59cq2z"
+  ],
+  "fetched_at": "2026-08-25T08:07:08.770Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Otto-241 three rows — session-id scrub + peer-Claude parity + `claude -w` default",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T16:02:02Z",
+  "head_ref": "backlog/session-id-scrub-plus-peer-claude-parity-plus-worktree-launch-otto-241"
+}

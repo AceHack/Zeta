@@ -1,0 +1,25 @@
+{
+  "pr_number": 3193,
+  "archive_path": "docs/history/pr-reviews/PR-3193-chore-b-0058-decompose-retractibility-gate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BV4nh",
+    "comment:PRRC_kwDOSF9kNM7BV4oW",
+    "comment:PRRC_kwDOSF9kNM7BVnEc",
+    "comment:PRRC_kwDOSF9kNM7BVnEj",
+    "comment:PRRC_kwDOSF9kNM7BWVLo",
+    "comment:PRRC_kwDOSF9kNM7BWVNw",
+    "comment:PRRC_kwDOSF9kNM7BWVQF",
+    "comment:PRRC_kwDOSF9kNM7BWVR-",
+    "thread:PRRT_kwDOSF9kNM6CKbcF",
+    "thread:PRRT_kwDOSF9kNM6CKbcN",
+    "thread:PRRT_kwDOSF9kNM6CKoSr",
+    "thread:PRRT_kwDOSF9kNM6CKoTV"
+  ],
+  "fetched_at": "2026-08-25T09:08:06.180Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "chore(b-0058): decompose retractibility gate",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:54:27Z",
+  "head_ref": "lior-decompose-b0058"
+}

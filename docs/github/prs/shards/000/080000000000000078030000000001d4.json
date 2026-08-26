@@ -1,0 +1,12 @@
+{
+  "pr_number": 468,
+  "archive_path": "docs/history/pr-reviews/PR-468-tick-history-post-summary-cascade-drain-across-8-drain-log-prs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:11:31.591Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: post-summary cascade drain across 8 drain-log PRs",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:20:43Z",
+  "head_ref": "tick-history-post-summary-cascade-drain"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 678,
+  "archive_path": "docs/history/pr-reviews/PR-678-fix-memorial-elisabeth-elizabeth-carve-out-for-sister-name-aaron-2026-04-28t18-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68I5yh",
+    "comment:PRRC_kwDOSF9kNM68I7Wn",
+    "comment:PRRC_kwDOSF9kNM68I7XC",
+    "comment:PRRC_kwDOSF9kNM68I7XT",
+    "comment:PRRC_kwDOSF9kNM68I_5Z",
+    "thread:PRRT_kwDOSF9kNM5-O0DB",
+    "thread:PRRT_kwDOSF9kNM5-O0DY",
+    "thread:PRRT_kwDOSF9kNM5-O0Dn",
+    "thread:PRRT_kwDOSF9kNM5-O3Y1",
+    "thread:PRRT_kwDOSF9kNM5-Oy61"
+  ],
+  "fetched_at": "2026-08-25T08:21:03.009Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(memorial): Elisabeth → Elizabeth carve-out for sister-name (Aaron 2026-04-28T18:42Z)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T18:56:15Z",
+  "head_ref": "fix/elizabeth-tick-history-exception-aaron-2026-04-28"
+}

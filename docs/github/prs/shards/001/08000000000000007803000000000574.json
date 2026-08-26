@@ -1,0 +1,17 @@
+{
+  "pr_number": 1396,
+  "archive_path": "docs/history/pr-reviews/PR-1396-fix-tests-alloy-correct-stale-spec-path-so-alloy-tests-actually-validate-closes-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bin3",
+    "comment:PRRC_kwDOSF9kNM69bins",
+    "thread:PRRT_kwDOSF9kNM5_L6vF",
+    "thread:PRRT_kwDOSF9kNM5_L6vO"
+  ],
+  "fetched_at": "2026-08-25T08:49:51.054Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(tests/alloy): correct stale spec path so Alloy tests actually validate (closes B2 → A)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:31:33Z",
+  "head_ref": "fix/alloy-runner-spec-path-bug"
+}

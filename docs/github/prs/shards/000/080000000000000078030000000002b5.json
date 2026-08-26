@@ -1,0 +1,23 @@
+{
+  "pr_number": 693,
+  "archive_path": "docs/history/pr-reviews/PR-693-memory-class-pair-prediction-bearing-class-reuse-amara-names-positive-complement.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68LXQO",
+    "comment:PRRC_kwDOSF9kNM68LXQo",
+    "comment:PRRC_kwDOSF9kNM68LcTL",
+    "comment:PRRC_kwDOSF9kNM68LrR1",
+    "comment:PRRC_kwDOSF9kNM68LrRA",
+    "thread:PRRT_kwDOSF9kNM5-Q0-J",
+    "thread:PRRT_kwDOSF9kNM5-Q0-z",
+    "thread:PRRT_kwDOSF9kNM5-QmqW",
+    "thread:PRRT_kwDOSF9kNM5-Qmqn",
+    "thread:PRRT_kwDOSF9kNM5-QqRA"
+  ],
+  "fetched_at": "2026-08-25T08:21:36.997Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(class-pair): Prediction-Bearing Class Reuse — Amara names positive complement of Class-Count Validity Drift",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T21:01:42Z",
+  "head_ref": "memory/amara-class-prediction-bearing-class-reuse-2026-04-28"
+}

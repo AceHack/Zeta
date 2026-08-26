@@ -1,0 +1,17 @@
+{
+  "pr_number": 604,
+  "archive_path": "docs/history/pr-reviews/PR-604-tick-history-13-25z-round-3-absorb-13-28z-rebase-replace-pattern.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67XsfW",
+    "comment:PRRC_kwDOSF9kNM67Xsfb",
+    "thread:PRRT_kwDOSF9kNM59qQwu",
+    "thread:PRRT_kwDOSF9kNM59qQwy"
+  ],
+  "fetched_at": "2026-08-25T08:18:22.708Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 13:25Z (Round-3+ absorb) + 13:28Z (rebase-replace pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T13:31:24Z",
+  "head_ref": "tick-history/2026-04-26T13-30Z"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 495,
+  "archive_path": "docs/history/pr-reviews/PR-495-memory-otto-288-rigor-without-alternative-disclosure-is-manipulation-anti-cult-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SaWb",
+    "comment:PRRC_kwDOSF9kNM67SaWh",
+    "comment:PRRC_kwDOSF9kNM67SaWl",
+    "comment:PRRC_kwDOSF9kNM67SaWq",
+    "comment:PRRC_kwDOSF9kNM67Sjj8",
+    "comment:PRRC_kwDOSF9kNM67SjjT",
+    "comment:PRRC_kwDOSF9kNM67Sjjm",
+    "comment:PRRC_kwDOSF9kNM67SjlI",
+    "comment:PRRC_kwDOSF9kNM67SkcV",
+    "comment:PRRC_kwDOSF9kNM67Skcg",
+    "thread:PRRT_kwDOSF9kNM59mB91",
+    "thread:PRRT_kwDOSF9kNM59mB9q",
+    "thread:PRRT_kwDOSF9kNM59mB9t",
+    "thread:PRRT_kwDOSF9kNM59mB9x",
+    "thread:PRRT_kwDOSF9kNM59mKM7",
+    "thread:PRRT_kwDOSF9kNM59mKMz"
+  ],
+  "fetched_at": "2026-08-25T08:12:41.652Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Otto-288 — rigor without alternative-disclosure is manipulation (anti-cult co-rule)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T15:59:36Z",
+  "head_ref": "memory/otto-288-rigor-without-disclosure-is-manipulation"
+}

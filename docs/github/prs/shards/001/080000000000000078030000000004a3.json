@@ -1,0 +1,23 @@
+{
+  "pr_number": 1187,
+  "archive_path": "docs/history/pr-reviews/PR-1187-tools-hygiene-orphan-role-ref-un-stripped-name-attribution-lint-b-0070.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69SiYZ",
+    "comment:PRRC_kwDOSF9kNM69SiYi",
+    "comment:PRRC_kwDOSF9kNM69SiYn",
+    "comment:PRRC_kwDOSF9kNM69SiYr",
+    "comment:PRRC_kwDOSF9kNM69SiYt",
+    "thread:PRRT_kwDOSF9kNM5_E_Ej",
+    "thread:PRRT_kwDOSF9kNM5_E_Ep",
+    "thread:PRRT_kwDOSF9kNM5_E_Et",
+    "thread:PRRT_kwDOSF9kNM5_E_Ex",
+    "thread:PRRT_kwDOSF9kNM5_E_Ez"
+  ],
+  "fetched_at": "2026-08-25T08:41:30.045Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "tools(hygiene): orphan role-ref + un-stripped name-attribution lint (B-0070)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T01:02:53Z",
+  "head_ref": "tools/audit-orphan-role-refs-b-0070-2026-05-02"
+}

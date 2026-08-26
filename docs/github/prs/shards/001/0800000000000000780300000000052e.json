@@ -1,0 +1,12 @@
+{
+  "pr_number": 1326,
+  "archive_path": "docs/history/pr-reviews/PR-1326-hygiene-tick-history-2026-05-03t05-34z-1322-stale-vs-current-within-same-pr-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:47:20.247Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T05:34Z — #1322 stale-vs-current-within-same-PR fix",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T05:36:42Z",
+  "head_ref": "free-memory/tick-0535Z-1322-followup"
+}

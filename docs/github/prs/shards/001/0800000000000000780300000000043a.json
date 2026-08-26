@@ -1,0 +1,12 @@
+{
+  "pr_number": 1082,
+  "archive_path": "docs/history/pr-reviews/PR-1082-hygiene-tick-history-2026-05-01t10-14z-taxonomy-v2-consolidation-pr-1043-follow-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:37:13.038Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:14Z — taxonomy v2 consolidation + PR #1043 follow-up",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:17:44Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1014Z-taxonomy-v2"
+}

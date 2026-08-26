@@ -1,0 +1,29 @@
+{
+  "pr_number": 966,
+  "archive_path": "docs/history/pr-reviews/PR-966-backlog-b-0122-peer-call-scripts-typescript-migration-post-install-cutover-2026-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Beo5",
+    "comment:PRRC_kwDOSF9kNM69Beo7",
+    "comment:PRRC_kwDOSF9kNM69Bf12",
+    "comment:PRRC_kwDOSF9kNM69Bf2H",
+    "comment:PRRC_kwDOSF9kNM69Bf2X",
+    "comment:PRRC_kwDOSF9kNM69Bf2n",
+    "comment:PRRC_kwDOSF9kNM69HSg6",
+    "comment:PRRC_kwDOSF9kNM69HSgs",
+    "thread:PRRT_kwDOSF9kNM5-4bT3",
+    "thread:PRRT_kwDOSF9kNM5-4bT4",
+    "thread:PRRT_kwDOSF9kNM5-4cNH",
+    "thread:PRRT_kwDOSF9kNM5-4cNU",
+    "thread:PRRT_kwDOSF9kNM5-4cNf",
+    "thread:PRRT_kwDOSF9kNM5-4cNq",
+    "thread:PRRT_kwDOSF9kNM5-8sdK",
+    "thread:PRRT_kwDOSF9kNM5-8sdW"
+  ],
+  "fetched_at": "2026-08-25T08:32:24.089Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0122): peer-call scripts TypeScript migration — post-install cutover (2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:53:53Z",
+  "head_ref": "backlog/B-0122-peer-call-typescript-migration-cutover-2026-04-30"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 374,
+  "archive_path": "docs/history/pr-reviews/PR-374-rule-version-currency-search-first-claude-md-ground-rule-otto-247.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67HOPK",
+    "comment:PRRC_kwDOSF9kNM67HOP_",
+    "comment:PRRC_kwDOSF9kNM67HOPq",
+    "comment:PRRC_kwDOSF9kNM67HOQc",
+    "comment:PRRC_kwDOSF9kNM67HOQu",
+    "comment:PRRC_kwDOSF9kNM67HOqf",
+    "thread:PRRT_kwDOSF9kNM59dmQY",
+    "thread:PRRT_kwDOSF9kNM59dmQw",
+    "thread:PRRT_kwDOSF9kNM59dmRC",
+    "thread:PRRT_kwDOSF9kNM59dmRW",
+    "thread:PRRT_kwDOSF9kNM59dmRj",
+    "thread:PRRT_kwDOSF9kNM59dmkt"
+  ],
+  "fetched_at": "2026-08-25T08:07:14.145Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "rule: version-currency search-first — CLAUDE.md ground rule (Otto-247)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T17:08:21Z",
+  "head_ref": "rule/version-currency-search-first-otto-247"
+}

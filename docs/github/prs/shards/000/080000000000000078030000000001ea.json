@@ -1,0 +1,25 @@
+{
+  "pr_number": 490,
+  "archive_path": "docs/history/pr-reviews/PR-490-research-backlog-otto-287-noether-style-formalization-p3-l.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SFfA",
+    "comment:PRRC_kwDOSF9kNM67SGj8",
+    "comment:PRRC_kwDOSF9kNM67SGjl",
+    "comment:PRRC_kwDOSF9kNM67SGjv",
+    "comment:PRRC_kwDOSF9kNM67SGjz",
+    "comment:PRRC_kwDOSF9kNM67SGkC",
+    "thread:PRRT_kwDOSF9kNM59lxjO",
+    "thread:PRRT_kwDOSF9kNM59lyX3",
+    "thread:PRRT_kwDOSF9kNM59lyX9",
+    "thread:PRRT_kwDOSF9kNM59lyX_",
+    "thread:PRRT_kwDOSF9kNM59lyYG",
+    "thread:PRRT_kwDOSF9kNM59lyYM"
+  ],
+  "fetched_at": "2026-08-25T08:12:28.384Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: backlog Otto-287 Noether-style formalization (P3, L)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:34:53Z",
+  "head_ref": "research/otto-287-noether-formalization-backlog"
+}

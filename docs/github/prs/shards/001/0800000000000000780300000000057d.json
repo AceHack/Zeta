@@ -1,0 +1,17 @@
+{
+  "pr_number": 1405,
+  "archive_path": "docs/history/pr-reviews/PR-1405-backlog-file-b-0182-filter-formal-verification-to-linux-only-aaron-2026-05-03.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bwd1",
+    "comment:PRRC_kwDOSF9kNM69bwd5",
+    "thread:PRRT_kwDOSF9kNM5_MFzh",
+    "thread:PRRT_kwDOSF9kNM5_MFzj"
+  ],
+  "fetched_at": "2026-08-25T08:50:14.855Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: file B-0182 — filter formal verification to Linux only (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T13:25:05Z",
+  "head_ref": "backlog/b0182-linux-only-formal-verification-tests-aaron-2026-05-03"
+}

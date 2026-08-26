@@ -1,0 +1,19 @@
+{
+  "pr_number": 1257,
+  "archive_path": "docs/history/pr-reviews/PR-1257-review-pr-1255-postmerge-row-7-prose-form-fix-drift-catalogue-extended-to-15-ins.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Y7c3",
+    "comment:PRRC_kwDOSF9kNM69Y7cq",
+    "comment:PRRC_kwDOSF9kNM69Y7cz",
+    "thread:PRRT_kwDOSF9kNM5_J2v6",
+    "thread:PRRT_kwDOSF9kNM5_J2wC",
+    "thread:PRRT_kwDOSF9kNM5_J2wF"
+  ],
+  "fetched_at": "2026-08-25T08:44:34.490Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review(pr-1255-postmerge): row-7 prose-form fix + drift catalogue extended to 15 instances",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T00:45:44Z",
+  "head_ref": "free-memory/skill-design-memo-table-row-7-prose-fix-aaron-2026-05-03"
+}

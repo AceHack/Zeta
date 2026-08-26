@@ -1,0 +1,23 @@
+{
+  "pr_number": 1622,
+  "archive_path": "docs/history/pr-reviews/PR-1622-shard-2026-05-05t10-35z-convergence-girard-lineage-zeta-closes-thiel-hsieh-dora-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Age8",
+    "comment:PRRC_kwDOSF9kNM6-AgeN",
+    "comment:PRRC_kwDOSF9kNM6-Agf-",
+    "comment:PRRC_kwDOSF9kNM6-AgfR",
+    "comment:PRRC_kwDOSF9kNM6-Agfl",
+    "thread:PRRT_kwDOSF9kNM5_nn0m",
+    "thread:PRRT_kwDOSF9kNM5_nn1C",
+    "thread:PRRT_kwDOSF9kNM5_nn1S",
+    "thread:PRRT_kwDOSF9kNM5_nn1g",
+    "thread:PRRT_kwDOSF9kNM5_nn1y"
+  ],
+  "fetched_at": "2026-08-25T08:59:12.475Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T10:35Z): convergence -- Girard lineage + Zeta-closes-Thiel-Hsieh + DORA-to-multi-axis-basis + strike-don't-annotate + architecture-provenance",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:42:29Z",
+  "head_ref": "shard/2026-05-05-1035Z"
+}

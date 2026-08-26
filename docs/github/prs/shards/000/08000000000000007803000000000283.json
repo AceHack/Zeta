@@ -1,0 +1,19 @@
+{
+  "pr_number": 643,
+  "archive_path": "docs/history/pr-reviews/PR-643-substrate-clarify-sqlsharp-also-good-typescript-post-install-reference-lfg-sibli.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67q9Xo",
+    "comment:PRRC_kwDOSF9kNM67q9mb",
+    "comment:PRRC_kwDOSF9kNM67qLcX",
+    "comment:PRRC_kwDOSF9kNM67qkf9",
+    "thread:PRRT_kwDOSF9kNM594MhA",
+    "thread:PRRT_kwDOSF9kNM594fmQ"
+  ],
+  "fetched_at": "2026-08-25T08:19:41.240Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate: clarify ../SQLSharp also good TypeScript-post-install reference — LFG sibling of AceHack #42",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T16:04:58Z",
+  "head_ref": "lfg/sibling-pr-42-sqlsharp-ts-clarification"
+}

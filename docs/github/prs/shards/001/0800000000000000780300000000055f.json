@@ -1,0 +1,12 @@
+{
+  "pr_number": 1375,
+  "archive_path": "docs/history/pr-reviews/PR-1375-hygiene-tick-history-2026-05-03t10-38z-1372-merged-1374-wait-ci-comprehensive-re.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:49:06.891Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T10:38Z — #1372 merged + #1374 wait-ci + comprehensive ref-check lesson",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T10:40:57Z",
+  "head_ref": "hygiene/tick-2026-05-03-1038Z-1374-stale-refs-wait-ci"
+}

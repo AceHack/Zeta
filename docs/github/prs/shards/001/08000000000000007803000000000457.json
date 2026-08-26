@@ -1,0 +1,17 @@
+{
+  "pr_number": 1111,
+  "archive_path": "docs/history/pr-reviews/PR-1111-memory-carved-sentences-six-carved-sentence-architectural-claims-from-ferries-15.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Iicv",
+    "comment:PRRC_kwDOSF9kNM69IynS",
+    "thread:PRRT_kwDOSF9kNM5-91dK",
+    "thread:PRRT_kwDOSF9kNM5-9pNY"
+  ],
+  "fetched_at": "2026-08-25T08:38:24.585Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(carved-sentences): six carved-sentence architectural claims from ferries 15-25+ (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T23:32:29Z",
+  "head_ref": "memory/carved-sentences-trust-then-verify-cc-wwjd-immune-system-pre-post-buddhist-2026-05-01"
+}

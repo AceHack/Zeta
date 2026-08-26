@@ -1,0 +1,19 @@
+{
+  "pr_number": 89,
+  "archive_path": "docs/history/pr-reviews/PR-89-round-44-docs-autonomous-loop-md-tick-discipline-additive-only.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66DnOL",
+    "comment:PRRC_kwDOSF9kNM66DnOi",
+    "comment:PRRC_kwDOSF9kNM66DnOs",
+    "thread:PRRT_kwDOSF9kNM58rVc5",
+    "thread:PRRT_kwDOSF9kNM58rVco",
+    "thread:PRRT_kwDOSF9kNM58rVdC"
+  ],
+  "fetched_at": "2026-08-25T07:53:23.008Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: docs/AUTONOMOUS-LOOP.md — tick discipline (additive-only)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T04:09:32Z",
+  "head_ref": "land-autonomous-loop-discipline"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1755,
+  "archive_path": "docs/history/pr-reviews/PR-1755-research-delayed-choice-future-affects-past-archivist-shadow-catch-4.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-oj85",
+    "comment:PRRC_kwDOSF9kNM6-oj8x",
+    "comment:PRRC_kwDOSF9kNM6-ojbJ",
+    "thread:PRRT_kwDOSF9kNM6AKlww",
+    "thread:PRRT_kwDOSF9kNM6AKmLo",
+    "thread:PRRT_kwDOSF9kNM6AKmLu"
+  ],
+  "fetched_at": "2026-08-25T09:04:26.172Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: delayed choice — future affects past + archivist shadow catch #4",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T00:39:27Z",
+  "head_ref": "research/delayed-choice-verbatim"
+}

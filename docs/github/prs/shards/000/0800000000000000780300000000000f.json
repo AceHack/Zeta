@@ -1,0 +1,12 @@
+{
+  "pr_number": 15,
+  "archive_path": "docs/history/pr-reviews/PR-15-round-33-vision-md-v3-sql-frontend-in-v1-reaqtor-niche-identified-5-answers-lock.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:49:03.091Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 33 — VISION.md v3: SQL frontend in v1, Reaqtor niche identified, 5 answers locked",
+  "state": "MERGED",
+  "merged_at": "2026-04-19T02:06:05Z",
+  "head_ref": "round-33-vision-v3"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 1039,
+  "archive_path": "docs/history/pr-reviews/PR-1039-hygiene-tick-history-shard-0747z-pr-1012-rebase-drain-sibling-of-1015.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69FzBi",
+    "comment:PRRC_kwDOSF9kNM69G8wT",
+    "thread:PRRT_kwDOSF9kNM5-7lIh"
+  ],
+  "fetched_at": "2026-08-25T08:35:33.105Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0747Z — PR #1012 rebase + drain (sibling of #1015)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:17:32Z",
+  "head_ref": "hygiene/tick-history-shard-0747Z-pr1012-rebase-drain"
+}

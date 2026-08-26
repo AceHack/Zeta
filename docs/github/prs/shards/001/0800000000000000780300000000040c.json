@@ -1,0 +1,12 @@
+{
+  "pr_number": 1036,
+  "archive_path": "docs/history/pr-reviews/PR-1036-hygiene-tick-history-shard-0710z-pr-1025-drain-pr-1035-substrate-landing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:35:26.548Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0710Z — PR #1025 drain + PR #1035 substrate landing",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T06:53:17Z",
+  "head_ref": "hygiene/tick-history-shard-0710Z-pr1025-drain-pr1035-substrate"
+}

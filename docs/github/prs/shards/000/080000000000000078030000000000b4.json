@@ -1,0 +1,21 @@
+{
+  "pr_number": 180,
+  "archive_path": "docs/history/pr-reviews/PR-180-frontier-readiness-gap-5-audit-agents-md-classified-both-coupled.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66wgq3",
+    "comment:PRRC_kwDOSF9kNM66wiSV",
+    "comment:PRRC_kwDOSF9kNM66wiTE",
+    "comment:PRRC_kwDOSF9kNM66wiTe",
+    "thread:PRRT_kwDOSF9kNM59MyiU",
+    "thread:PRRT_kwDOSF9kNM59Mzu3",
+    "thread:PRRT_kwDOSF9kNM59Mzvb",
+    "thread:PRRT_kwDOSF9kNM59Mzvq"
+  ],
+  "fetched_at": "2026-08-25T07:59:05.097Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "frontier-readiness: gap #5 audit — AGENTS.md classified (both-coupled)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T19:28:06Z",
+  "head_ref": "frontier-readiness/audit-agents-md"
+}

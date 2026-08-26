@@ -1,0 +1,15 @@
+{
+  "pr_number": 491,
+  "archive_path": "docs/history/pr-reviews/PR-491-memory-aaron-s-turtles-all-the-way-down-epistemic-methodology.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SGyT",
+    "thread:PRRT_kwDOSF9kNM59lyjB"
+  ],
+  "fetched_at": "2026-08-25T08:12:30.486Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Aaron's turtles-all-the-way-down epistemic methodology",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:37:21Z",
+  "head_ref": "memory/user-turtles-all-the-way-down-methodology"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 1250,
+  "archive_path": "docs/history/pr-reviews/PR-1250-research-decision-archaeology-worked-example-1-double-hop-abandonment-2026-05-02.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Y1pu",
+    "comment:PRRC_kwDOSF9kNM69Y1um",
+    "comment:PRRC_kwDOSF9kNM69YzQ7",
+    "comment:PRRC_kwDOSF9kNM69YzQ9",
+    "comment:PRRC_kwDOSF9kNM69YzYA",
+    "comment:PRRC_kwDOSF9kNM69YzYG",
+    "comment:PRRC_kwDOSF9kNM69YzYJ",
+    "comment:PRRC_kwDOSF9kNM69YzYM",
+    "comment:PRRC_kwDOSF9kNM69YzYN",
+    "thread:PRRT_kwDOSF9kNM5_JwOx",
+    "thread:PRRT_kwDOSF9kNM5_JwOy",
+    "thread:PRRT_kwDOSF9kNM5_JwUH",
+    "thread:PRRT_kwDOSF9kNM5_JwUL",
+    "thread:PRRT_kwDOSF9kNM5_JwUN",
+    "thread:PRRT_kwDOSF9kNM5_JwUQ",
+    "thread:PRRT_kwDOSF9kNM5_JwUR",
+    "thread:PRRT_kwDOSF9kNM5_JyJs",
+    "thread:PRRT_kwDOSF9kNM5_JyNh"
+  ],
+  "fetched_at": "2026-08-25T08:44:12.262Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(decision-archaeology): worked example #1 — double-hop abandonment 2026-05-02",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T00:15:23Z",
+  "head_ref": "research/decision-archaeology-worked-example-1-double-hop-abandonment-aaron-2026-05-02"
+}

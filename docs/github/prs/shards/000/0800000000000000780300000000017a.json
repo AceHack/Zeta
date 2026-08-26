@@ -1,0 +1,22 @@
+{
+  "pr_number": 378,
+  "archive_path": "docs/history/pr-reviews/PR-378-recover-three-repo-split-adr-zeta-forge-ace-from-closed-pr-54.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67IibC",
+    "comment:PRRC_kwDOSF9kNM67Iibp",
+    "comment:PRRC_kwDOSF9kNM67IicJ",
+    "comment:PRRC_kwDOSF9kNM67Iick",
+    "comment:PRRC_kwDOSF9kNM67JlG1",
+    "thread:PRRT_kwDOSF9kNM59elv7",
+    "thread:PRRT_kwDOSF9kNM59elvb",
+    "thread:PRRT_kwDOSF9kNM59elwW",
+    "thread:PRRT_kwDOSF9kNM59elws"
+  ],
+  "fetched_at": "2026-08-25T08:07:33.730Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "recover: three-repo-split ADR (Zeta + Forge + ace) from closed PR #54",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:24:18Z",
+  "head_ref": "recover/three-repo-split-adr-from-pr54"
+}

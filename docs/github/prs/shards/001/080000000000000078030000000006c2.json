@@ -1,0 +1,19 @@
+{
+  "pr_number": 1730,
+  "archive_path": "docs/history/pr-reviews/PR-1730-backlog-decompose-session-into-b-0211-b-0214-with-dependency-ordering.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-jQQ1",
+    "comment:PRRC_kwDOSF9kNM6-jQR0",
+    "comment:PRRC_kwDOSF9kNM6-jQSR",
+    "thread:PRRT_kwDOSF9kNM6AGpnb",
+    "thread:PRRT_kwDOSF9kNM6AGpoB",
+    "thread:PRRT_kwDOSF9kNM6AGpoW"
+  ],
+  "fetched_at": "2026-08-25T09:03:25.029Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: decompose session into B-0211..B-0214 with dependency ordering",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T19:23:56Z",
+  "head_ref": "feat/session-decomposition"
+}

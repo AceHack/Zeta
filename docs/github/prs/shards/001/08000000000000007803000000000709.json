@@ -1,0 +1,19 @@
+{
+  "pr_number": 1801,
+  "archive_path": "docs/history/pr-reviews/PR-1801-feat-current-lior-md-antigravity-transfer-file.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sBS5",
+    "comment:PRRC_kwDOSF9kNM6-sBTR",
+    "comment:PRRC_kwDOSF9kNM6-sBTj",
+    "thread:PRRT_kwDOSF9kNM6ANJfv",
+    "thread:PRRT_kwDOSF9kNM6ANJgA",
+    "thread:PRRT_kwDOSF9kNM6ANJgQ"
+  ],
+  "fetched_at": "2026-08-25T09:05:04.465Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: CURRENT-lior.md — Antigravity transfer file",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:04:35Z",
+  "head_ref": "feat/current-lior"
+}

@@ -1,0 +1,28 @@
+{
+  "pr_number": 673,
+  "archive_path": "docs/history/pr-reviews/PR-673-substrate-threading-lineage-ms-learn-advanced-net-docs-as-primary-source-lock-wo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68H0Ku",
+    "comment:PRRC_kwDOSF9kNM68HoR9",
+    "comment:PRRC_kwDOSF9kNM68HoSE",
+    "comment:PRRC_kwDOSF9kNM68HotW",
+    "comment:PRRC_kwDOSF9kNM68HtR0",
+    "comment:PRRC_kwDOSF9kNM68Htpz",
+    "comment:PRRC_kwDOSF9kNM68HttC",
+    "comment:PRRC_kwDOSF9kNM68HzaP",
+    "comment:PRRC_kwDOSF9kNM68Hzb0",
+    "thread:PRRT_kwDOSF9kNM5-N-1I",
+    "thread:PRRT_kwDOSF9kNM5-N-2V",
+    "thread:PRRT_kwDOSF9kNM5-N25y",
+    "thread:PRRT_kwDOSF9kNM5-N2lY",
+    "thread:PRRT_kwDOSF9kNM5-N2lf",
+    "thread:PRRT_kwDOSF9kNM5-N_XU"
+  ],
+  "fetched_at": "2026-08-25T08:20:46.728Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(threading-lineage): MS Learn advanced .NET docs as primary source + Lock worked example (Aaron 2026-04-28)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T17:49:22Z",
+  "head_ref": "substrate/threading-lineage-msearn-addendum-2026-04-28"
+}

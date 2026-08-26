@@ -1,0 +1,19 @@
+{
+  "pr_number": 123,
+  "archive_path": "docs/history/pr-reviews/PR-123-round-44-auto-loop-26-tick-history-row-gemini-map-wink-validation-budget-discipl.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66KG3A",
+    "comment:PRRC_kwDOSF9kNM66KIko",
+    "comment:PRRC_kwDOSF9kNM66KIlP",
+    "thread:PRRT_kwDOSF9kNM58wIlL",
+    "thread:PRRT_kwDOSF9kNM58wJ4_",
+    "thread:PRRT_kwDOSF9kNM58wJ5Z"
+  ],
+  "fetched_at": "2026-08-25T07:55:17.692Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-26: tick-history row (Gemini map + wink-validation + budget-discipline)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T10:17:43Z",
+  "head_ref": "tick-close-autoloop-26"
+}

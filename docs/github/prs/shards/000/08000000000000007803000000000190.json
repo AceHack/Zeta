@@ -1,0 +1,19 @@
+{
+  "pr_number": 400,
+  "archive_path": "docs/history/pr-reviews/PR-400-backlog-memory-roms-emulators-on-os-interface-rewindable-retractable-safe-rom-su.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67N7Z_",
+    "comment:PRRC_kwDOSF9kNM67N7Zx",
+    "comment:PRRC_kwDOSF9kNM67N7aE",
+    "thread:PRRT_kwDOSF9kNM59imZ4",
+    "thread:PRRT_kwDOSF9kNM59imaB",
+    "thread:PRRT_kwDOSF9kNM59imaE"
+  ],
+  "fetched_at": "2026-08-25T08:08:38.283Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog+memory+roms: emulators on OS-interface + rewindable/retractable + safe-ROM substrate",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T00:55:41Z",
+  "head_ref": "backlog/emulators-on-os-interface"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 1612,
+  "archive_path": "docs/history/pr-reviews/PR-1612-backlog-p3-b-0202-tinygrad-uop-ir-as-kernel-layer-model-for-zeta-s-emulator-disp.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69_Dt4",
+    "comment:PRRC_kwDOSF9kNM69_H-F",
+    "comment:PRRC_kwDOSF9kNM69_H-V",
+    "comment:PRRC_kwDOSF9kNM69_H-x",
+    "comment:PRRC_kwDOSF9kNM69_H9T",
+    "comment:PRRC_kwDOSF9kNM69_H_N",
+    "comment:PRRC_kwDOSF9kNM69_H_i",
+    "comment:PRRC_kwDOSF9kNM69_IAA",
+    "comment:PRRC_kwDOSF9kNM69_iva",
+    "thread:PRRT_kwDOSF9kNM5_m4-v",
+    "thread:PRRT_kwDOSF9kNM5_miaI",
+    "thread:PRRT_kwDOSF9kNM5_mlhz",
+    "thread:PRRT_kwDOSF9kNM5_mli6",
+    "thread:PRRT_kwDOSF9kNM5_mliX",
+    "thread:PRRT_kwDOSF9kNM5_mlij",
+    "thread:PRRT_kwDOSF9kNM5_mlj7",
+    "thread:PRRT_kwDOSF9kNM5_mljQ",
+    "thread:PRRT_kwDOSF9kNM5_mljh"
+  ],
+  "fetched_at": "2026-08-25T08:58:48.313Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P3): B-0202 Tinygrad UOp IR as kernel-layer model for Zeta's emulator dispatch + retract semantics (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:54:39Z",
+  "head_ref": "backlog/B-0202-tinygrad-uop-ir-kernel-layer-aaron-2026-05-05"
+}

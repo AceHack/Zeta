@@ -1,0 +1,29 @@
+{
+  "pr_number": 344,
+  "archive_path": "docs/history/pr-reviews/PR-344-ferry-amara-19th-absorb-dst-audit-5-5-corrections-10-tracked-4-aligned-with-ship.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM669xuF",
+    "comment:PRRC_kwDOSF9kNM669xv1",
+    "comment:PRRC_kwDOSF9kNM669xvB",
+    "comment:PRRC_kwDOSF9kNM669xvY",
+    "comment:PRRC_kwDOSF9kNM669xwH",
+    "comment:PRRC_kwDOSF9kNM669xwb",
+    "comment:PRRC_kwDOSF9kNM669xwz",
+    "comment:PRRC_kwDOSF9kNM669xxK",
+    "thread:PRRT_kwDOSF9kNM59Wh3r",
+    "thread:PRRT_kwDOSF9kNM59Wh4Y",
+    "thread:PRRT_kwDOSF9kNM59Wh4q",
+    "thread:PRRT_kwDOSF9kNM59Wh50",
+    "thread:PRRT_kwDOSF9kNM59Wh5D",
+    "thread:PRRT_kwDOSF9kNM59Wh5R",
+    "thread:PRRT_kwDOSF9kNM59Wh5h",
+    "thread:PRRT_kwDOSF9kNM59Wh6I"
+  ],
+  "fetched_at": "2026-08-25T08:05:48.858Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ferry: Amara 19th absorb — DST Audit + 5.5 Corrections (10 tracked; 4 aligned with shipped; 7 queued)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T09:26:25Z",
+  "head_ref": "ferry/amara-19th-dst-audit-absorb"
+}

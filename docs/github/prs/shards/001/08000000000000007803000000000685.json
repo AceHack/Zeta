@@ -1,0 +1,25 @@
+{
+  "pr_number": 1669,
+  "archive_path": "docs/history/pr-reviews/PR-1669-memory-feedback-dbsp-z-tables-multi-algebra-plugins-aperiodic-tile-structure-sto.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-IIGt",
+    "comment:PRRC_kwDOSF9kNM6-IORH",
+    "comment:PRRC_kwDOSF9kNM6-IOSN",
+    "comment:PRRC_kwDOSF9kNM6-IOT-",
+    "comment:PRRC_kwDOSF9kNM6-IOTa",
+    "comment:PRRC_kwDOSF9kNM6-IOTr",
+    "thread:PRRT_kwDOSF9kNM5_tTrN",
+    "thread:PRRT_kwDOSF9kNM5_tYSt",
+    "thread:PRRT_kwDOSF9kNM5_tYTi",
+    "thread:PRRT_kwDOSF9kNM5_tYUV",
+    "thread:PRRT_kwDOSF9kNM5_tYUg",
+    "thread:PRRT_kwDOSF9kNM5_tYUr"
+  ],
+  "fetched_at": "2026-08-25T09:01:06.490Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): DBSP Z-tables + multi-algebra plugins = aperiodic-tile structure (stops infinite-recursion-into-monad/monk; not infinity-stones; mirror-not-beacon multi-register fluency) (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T16:12:00Z",
+  "head_ref": "memory/dbsp-zsets-multi-algebra-aperiodic-tile-not-infinity-stones-mirror-beacon-multi-register-fluency-aaron-2026-05-05"
+}

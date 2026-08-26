@@ -1,0 +1,25 @@
+{
+  "pr_number": 403,
+  "archive_path": "docs/history/pr-reviews/PR-403-hygiene-tick-history-row-roms-hierarchy-282-398-401-drain-close.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67OT-M",
+    "comment:PRRC_kwDOSF9kNM67OT-U",
+    "comment:PRRC_kwDOSF9kNM67OT-a",
+    "comment:PRRC_kwDOSF9kNM67OT-m",
+    "comment:PRRC_kwDOSF9kNM67PJnb",
+    "comment:PRRC_kwDOSF9kNM67PJoY",
+    "comment:PRRC_kwDOSF9kNM67PJpJ",
+    "comment:PRRC_kwDOSF9kNM67PJqK",
+    "thread:PRRT_kwDOSF9kNM59i4bB",
+    "thread:PRRT_kwDOSF9kNM59i4bG",
+    "thread:PRRT_kwDOSF9kNM59i4bM",
+    "thread:PRRT_kwDOSF9kNM59i4bW"
+  ],
+  "fetched_at": "2026-08-25T08:08:46.346Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene: tick-history row — roms/ hierarchy + #282/#398/#401 drain close",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T01:51:25Z",
+  "head_ref": "hygiene/tick-history-roms-282-398-401"
+}

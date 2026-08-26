@@ -1,0 +1,15 @@
+{
+  "pr_number": 1519,
+  "archive_path": "docs/history/pr-reviews/PR-1519-hygiene-tick-history-1951z-shard-8-substrate-prs-landed-via-worktree-isolated-ca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ydSi",
+    "thread:PRRT_kwDOSF9kNM5_dQx-"
+  ],
+  "fetched_at": "2026-08-25T08:54:54.138Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 1951Z shard — 8 substrate PRs landed via worktree-isolated cadence",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T19:53:39Z",
+  "head_ref": "hygiene/tick-shard-1951Z-aaron-2026-05-04"
+}

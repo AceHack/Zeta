@@ -1,0 +1,17 @@
+{
+  "pr_number": 1604,
+  "archive_path": "docs/history/pr-reviews/PR-1604-memory-otto-364-recursion-search-first-at-verification-method-level-b-0199-p2-ca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69-AeP",
+    "comment:PRRC_kwDOSF9kNM69-AfP",
+    "thread:PRRT_kwDOSF9kNM5_lw0o",
+    "thread:PRRT_kwDOSF9kNM5_lwz-"
+  ],
+  "fetched_at": "2026-08-25T08:58:27.263Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(otto-364): Recursion -- search-first at verification-method level (B-0199 P2 catch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T08:52:56Z",
+  "head_ref": "memory/otto-364-recursion-verification-method-level-2026-05-05"
+}

@@ -1,0 +1,28 @@
+{
+  "pr_number": 397,
+  "archive_path": "docs/history/pr-reviews/PR-397-backlog-cross-dsl-composability-git-sql-operator-algebra-linq-hit-indexes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67NdNV",
+    "comment:PRRC_kwDOSF9kNM67NeF9",
+    "comment:PRRC_kwDOSF9kNM67NeGY",
+    "comment:PRRC_kwDOSF9kNM67NeGn",
+    "comment:PRRC_kwDOSF9kNM67NeHB",
+    "comment:PRRC_kwDOSF9kNM67Ns-t",
+    "comment:PRRC_kwDOSF9kNM67Ns2L",
+    "comment:PRRC_kwDOSF9kNM67Ns9O",
+    "comment:PRRC_kwDOSF9kNM67Ns9x",
+    "comment:PRRC_kwDOSF9kNM67Ns_8",
+    "thread:PRRT_kwDOSF9kNM59iQrr",
+    "thread:PRRT_kwDOSF9kNM59iRT1",
+    "thread:PRRT_kwDOSF9kNM59iRT8",
+    "thread:PRRT_kwDOSF9kNM59iRTm",
+    "thread:PRRT_kwDOSF9kNM59iRUJ"
+  ],
+  "fetched_at": "2026-08-25T08:08:27.558Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: cross-DSL composability — git/SQL/operator-algebra/LINQ hit indexes",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T00:28:17Z",
+  "head_ref": "backlog/cross-dsl-composability"
+}

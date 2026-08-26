@@ -1,0 +1,19 @@
+{
+  "pr_number": 326,
+  "archive_path": "docs/history/pr-reviews/PR-326-core-graph-labelpropagation-13th-graduation-community-detector.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6679Ap",
+    "comment:PRRC_kwDOSF9kNM6679BJ",
+    "comment:PRRC_kwDOSF9kNM6679BT",
+    "thread:PRRT_kwDOSF9kNM59VK0H",
+    "thread:PRRT_kwDOSF9kNM59VK0c",
+    "thread:PRRT_kwDOSF9kNM59VK0j"
+  ],
+  "fetched_at": "2026-08-25T08:05:02.791Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: Graph.labelPropagation — 13th graduation (community detector)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T07:55:53Z",
+  "head_ref": "feat/graph-label-propagation-community-detector"
+}

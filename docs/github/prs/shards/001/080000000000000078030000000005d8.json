@@ -1,0 +1,31 @@
+{
+  "pr_number": 1496,
+  "archive_path": "docs/history/pr-reviews/PR-1496-feedback-identity-preserving-state-transition-catalyst-not-flame-5-tile-cluster-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69s6bQ",
+    "comment:PRRC_kwDOSF9kNM69s6cM",
+    "comment:PRRC_kwDOSF9kNM69s6cn",
+    "comment:PRRC_kwDOSF9kNM69s6d-",
+    "comment:PRRC_kwDOSF9kNM69s6dC",
+    "comment:PRRC_kwDOSF9kNM69s6dl",
+    "comment:PRRC_kwDOSF9kNM69s6e6",
+    "comment:PRRC_kwDOSF9kNM69s6ec",
+    "comment:PRRC_kwDOSF9kNM69s6fY",
+    "thread:PRRT_kwDOSF9kNM5_ZL4u",
+    "thread:PRRT_kwDOSF9kNM5_ZL5a",
+    "thread:PRRT_kwDOSF9kNM5_ZL5w",
+    "thread:PRRT_kwDOSF9kNM5_ZL6F",
+    "thread:PRRT_kwDOSF9kNM5_ZL6j",
+    "thread:PRRT_kwDOSF9kNM5_ZL6z",
+    "thread:PRRT_kwDOSF9kNM5_ZL71",
+    "thread:PRRT_kwDOSF9kNM5_ZL7N",
+    "thread:PRRT_kwDOSF9kNM5_ZL7e"
+  ],
+  "fetched_at": "2026-08-25T08:53:56.628Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: 🤝 identity-preserving-state-transition + catalyst-not-flame (5-tile cluster) + morning-pace calibration (Aaron + Claude.ai 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T15:30:35Z",
+  "head_ref": "feedback/aaron-handshake-expanded-burn-the-world-down-safely-identity-preserving-state-transition-aaron-claudeai-2026-05-04"
+}

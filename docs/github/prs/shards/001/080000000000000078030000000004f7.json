@@ -1,0 +1,15 @@
+{
+  "pr_number": 1271,
+  "archive_path": "docs/history/pr-reviews/PR-1271-hygiene-tick-history-2026-05-03t02-20z-post-compaction-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZQaw",
+    "thread:PRRT_kwDOSF9kNM5_KHDi"
+  ],
+  "fetched_at": "2026-08-25T08:45:09.282Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T02:20Z post-compaction tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:23:41Z",
+  "head_ref": "free-memory/tick-0220Z-alignment-frontier-substrate-1268-fixes"
+}

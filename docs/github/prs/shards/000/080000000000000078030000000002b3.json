@@ -1,0 +1,15 @@
+{
+  "pr_number": 691,
+  "archive_path": "docs/history/pr-reviews/PR-691-memory-backlog-advisory-enforcement-workflow-gap-class-class-naming-ferry-protoc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68LBg5",
+    "thread:PRRT_kwDOSF9kNM5-QXCL"
+  ],
+  "fetched_at": "2026-08-25T08:21:29.671Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory + backlog: Advisory Enforcement Workflow Gap class + Class-Naming Ferry Protocol with SD-9 + B-0088",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:31:08Z",
+  "head_ref": "backlog-and-memory/B-0088-advisory-enforcement-gap-plus-class-naming-protocol-2026-04-28"
+}

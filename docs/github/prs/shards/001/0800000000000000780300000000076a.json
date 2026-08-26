@@ -1,0 +1,19 @@
+{
+  "pr_number": 1898,
+  "archive_path": "docs/history/pr-reviews/PR-1898-test-core-checkpointstore-roundtrip-tests-b-0251.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-5c1V",
+    "comment:PRRC_kwDOSF9kNM6-5c20",
+    "comment:PRRC_kwDOSF9kNM6-5c3z",
+    "thread:PRRT_kwDOSF9kNM6AXMsB",
+    "thread:PRRT_kwDOSF9kNM6AXMt2",
+    "thread:PRRT_kwDOSF9kNM6AXMtM"
+  ],
+  "fetched_at": "2026-08-25T09:06:56.101Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "test(core): CheckpointStore roundtrip tests (B-0251)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:39:49Z",
+  "head_ref": "otto/checkpoint-store-tests"
+}

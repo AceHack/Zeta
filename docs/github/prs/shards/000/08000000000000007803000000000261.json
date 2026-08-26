@@ -1,0 +1,15 @@
+{
+  "pr_number": 609,
+  "archive_path": "docs/history/pr-reviews/PR-609-tick-history-13-45z-otto-348-verify-substrate-exists-memory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Xx8O",
+    "thread:PRRT_kwDOSF9kNM59qVFI"
+  ],
+  "fetched_at": "2026-08-25T08:18:27.724Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 13:45Z — Otto-348 verify-substrate-exists memory",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T13:48:14Z",
+  "head_ref": "tick-history/2026-04-26T13-46Z"
+}

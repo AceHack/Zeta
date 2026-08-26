@@ -1,0 +1,12 @@
+{
+  "pr_number": 637,
+  "archive_path": "docs/history/pr-reviews/PR-637-sync-acehack-lfg-substrate-otto-354-zetaspace-per-decision-recompute-sibling-of-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:19:24.683Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync(acehack→lfg): substrate(otto-354) ZETASPACE per-decision recompute (sibling of AceHack #33)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T07:35:59Z",
+  "head_ref": "sync/acehack-to-lfg-otto-354-zetaspace"
+}

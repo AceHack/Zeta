@@ -1,0 +1,19 @@
+{
+  "pr_number": 715,
+  "archive_path": "docs/history/pr-reviews/PR-715-backlog-b-0095-escrow-rules-naming-collision-vendor-sense-deferred-research-migr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PX_f",
+    "comment:PRRC_kwDOSF9kNM68PZIU",
+    "comment:PRRC_kwDOSF9kNM68PZIl",
+    "thread:PRRT_kwDOSF9kNM5-Th99",
+    "thread:PRRT_kwDOSF9kNM5-Th9u",
+    "thread:PRRT_kwDOSF9kNM5-ThGe"
+  ],
+  "fetched_at": "2026-08-25T08:22:33.419Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0095): escrow rules + naming-collision (vendor sense) + deferred-research migration (Aaron 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T01:42:51Z",
+  "head_ref": "backlog/B-0095-escrow-rules-and-naming-collision-aaron-2026-04-29"
+}

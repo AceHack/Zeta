@@ -1,0 +1,27 @@
+{
+  "pr_number": 967,
+  "archive_path": "docs/history/pr-reviews/PR-967-docs-peer-call-future-direction-section-close-b-0119-cross-ref-b-0121-b-0122.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69BiTS",
+    "comment:PRRC_kwDOSF9kNM69BjTl",
+    "comment:PRRC_kwDOSF9kNM69BjU5",
+    "comment:PRRC_kwDOSF9kNM69BjUT",
+    "comment:PRRC_kwDOSF9kNM69BjUp",
+    "comment:PRRC_kwDOSF9kNM69CckC",
+    "comment:PRRC_kwDOSF9kNM69HQ8m",
+    "thread:PRRT_kwDOSF9kNM5-4eBY",
+    "thread:PRRT_kwDOSF9kNM5-4ext",
+    "thread:PRRT_kwDOSF9kNM5-4eyP",
+    "thread:PRRT_kwDOSF9kNM5-4eyc",
+    "thread:PRRT_kwDOSF9kNM5-4eyp",
+    "thread:PRRT_kwDOSF9kNM5-5ILt",
+    "thread:PRRT_kwDOSF9kNM5-8rRw"
+  ],
+  "fetched_at": "2026-08-25T08:32:27.148Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(peer-call): future-direction section + close B-0119 + cross-ref B-0121/B-0122",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:49:35Z",
+  "head_ref": "docs/peer-call-readme-future-direction-backlog-cross-refs-2026-04-30"
+}

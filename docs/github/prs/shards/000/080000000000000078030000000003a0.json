@@ -1,0 +1,12 @@
+{
+  "pr_number": 928,
+  "archive_path": "docs/history/pr-reviews/PR-928-memory-scope-disposition-intellectual-backup-of-earth-scope-paused-work-default-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:30:49.688Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(scope+disposition): intellectual-backup-of-earth scope + paused-work-default-is-reevaluate",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:42:29Z",
+  "head_ref": "memory/default-disposition-paused-work-reeval-later-not-close-2026-04-30"
+}

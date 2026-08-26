@@ -1,0 +1,23 @@
+{
+  "pr_number": 346,
+  "archive_path": "docs/history/pr-reviews/PR-346-docs-dst-compliance-criteria-dst-held-foundationdb-grade-bars-amara-19th-ferry-6.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6694pU",
+    "comment:PRRC_kwDOSF9kNM6694q5",
+    "comment:PRRC_kwDOSF9kNM6694qS",
+    "comment:PRRC_kwDOSF9kNM6694qh",
+    "comment:PRRC_kwDOSF9kNM6694rS",
+    "thread:PRRT_kwDOSF9kNM59WnE8",
+    "thread:PRRT_kwDOSF9kNM59WnEL",
+    "thread:PRRT_kwDOSF9kNM59WnFI",
+    "thread:PRRT_kwDOSF9kNM59WnFX",
+    "thread:PRRT_kwDOSF9kNM59WnFo"
+  ],
+  "fetched_at": "2026-08-25T08:05:53.912Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: DST compliance criteria — DST-held + FoundationDB-grade bars (Amara 19th-ferry #6)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T09:32:26Z",
+  "head_ref": "docs/dst-compliance-criteria"
+}

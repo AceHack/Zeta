@@ -1,0 +1,12 @@
+{
+  "pr_number": 630,
+  "archive_path": "docs/history/pr-reviews/PR-630-fix-drain-log-607-explicit-thread-count-625-ref-consistency-followup-to-628.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:19:05.991Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(drain-log): #607 — explicit thread count + #625 ref consistency (followup to #628)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:54:01Z",
+  "head_ref": "docs/pr-preservation-607-followup-fixes"
+}

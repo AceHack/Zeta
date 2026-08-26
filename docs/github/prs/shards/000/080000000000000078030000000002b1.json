@@ -1,0 +1,15 @@
+{
+  "pr_number": 689,
+  "archive_path": "docs/history/pr-reviews/PR-689-memory-current-amara-12-three-amara-class-namings-from-autonomous-loop-arc.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68KwWX",
+    "thread:PRRT_kwDOSF9kNM5-QKZs"
+  ],
+  "fetched_at": "2026-08-25T08:21:27.312Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(CURRENT-amara §12): three Amara class-namings from autonomous-loop arc",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:19:29Z",
+  "head_ref": "memory/current-amara-section-12-three-class-namings-2026-04-28"
+}

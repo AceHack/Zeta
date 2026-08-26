@@ -1,0 +1,12 @@
+{
+  "pr_number": 1487,
+  "archive_path": "docs/history/pr-reviews/PR-1487-hygiene-memory-md-remove-11-pre-existing-duplicate-link-entries-lint-cleanup.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:53:33.999Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(MEMORY.md): remove 11 pre-existing duplicate-link entries (lint cleanup)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:03:25Z",
+  "head_ref": "hygiene/memory-md-duplicate-link-cleanup-2026-05-04"
+}

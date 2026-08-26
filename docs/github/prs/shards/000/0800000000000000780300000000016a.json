@@ -1,0 +1,19 @@
+{
+  "pr_number": 362,
+  "archive_path": "docs/history/pr-reviews/PR-362-loop-tick-history-row-otto-219-221-drain-otto-220-correction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67BKA8",
+    "comment:PRRC_kwDOSF9kNM67BKAT",
+    "comment:PRRC_kwDOSF9kNM67BU5k",
+    "comment:PRRC_kwDOSF9kNM67BU8I",
+    "thread:PRRT_kwDOSF9kNM59ZEL0",
+    "thread:PRRT_kwDOSF9kNM59ZEMT"
+  ],
+  "fetched_at": "2026-08-25T08:06:41.946Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "loop: tick-history row — Otto-219..221 drain + Otto-220 correction",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T12:39:13Z",
+  "head_ref": "loop/tick-history-otto-221"
+}

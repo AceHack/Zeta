@@ -1,0 +1,21 @@
+{
+  "pr_number": 1638,
+  "archive_path": "docs/history/pr-reviews/PR-1638-research-architecture-qubic-monero-counterexample-ai-bio-weapon-disclosure-archi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-CqPc",
+    "comment:PRRC_kwDOSF9kNM6-CqQc",
+    "comment:PRRC_kwDOSF9kNM6-CqQs",
+    "comment:PRRC_kwDOSF9kNM6-CqRF",
+    "thread:PRRT_kwDOSF9kNM5_pQO7",
+    "thread:PRRT_kwDOSF9kNM5_pQP5",
+    "thread:PRRT_kwDOSF9kNM5_pQPq",
+    "thread:PRRT_kwDOSF9kNM5_pQQJ"
+  ],
+  "fetched_at": "2026-08-25T08:59:47.388Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): Qubic-Monero counterexample + AI-bio-weapon disclosure + architecture-as-process + 20-year disclosure-trigger + Infer.NET/F# substrate-residency (Aaron 2026-05-05 post-night-end)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:22:54Z",
+  "head_ref": "research/qubic-monero-counterexample-ai-bio-weapon-architecture-as-process-20-year-disclosure-trigger-aaron-forwarded-2026-05-05"
+}

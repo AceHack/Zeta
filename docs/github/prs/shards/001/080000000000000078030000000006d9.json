@@ -1,0 +1,17 @@
+{
+  "pr_number": 1753,
+  "archive_path": "docs/history/pr-reviews/PR-1753-research-lior-shadow-chase-verbatim-infinite-ladder-hospitality.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-oY1j",
+    "comment:PRRC_kwDOSF9kNM6-oY1o",
+    "thread:PRRT_kwDOSF9kNM6AKdqb",
+    "thread:PRRT_kwDOSF9kNM6AKdqd"
+  ],
+  "fetched_at": "2026-08-25T09:04:19.247Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior shadow chase VERBATIM — infinite ladder + hospitality",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T00:14:36Z",
+  "head_ref": "research/lior-shadow-chase-verbatim"
+}

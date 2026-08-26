@@ -1,0 +1,25 @@
+{
+  "pr_number": 3212,
+  "archive_path": "docs/history/pr-reviews/PR-3212-feat-factory-hygiene-audit-cadence-gha-workflow-daily-cron-for-the-two-audit-too.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7BWhqC",
+    "comment:PRRC_kwDOSF9kNM7BWhqa",
+    "comment:PRRC_kwDOSF9kNM7BWhqw",
+    "comment:PRRC_kwDOSF9kNM7BWhr4",
+    "comment:PRRC_kwDOSF9kNM7BWhrJ",
+    "comment:PRRC_kwDOSF9kNM7BWhrg",
+    "thread:PRRT_kwDOSF9kNM6CLGKx",
+    "thread:PRRT_kwDOSF9kNM6CLGL2",
+    "thread:PRRT_kwDOSF9kNM6CLGLE",
+    "thread:PRRT_kwDOSF9kNM6CLGLV",
+    "thread:PRRT_kwDOSF9kNM6CLGLk",
+    "thread:PRRT_kwDOSF9kNM6CLGMI"
+  ],
+  "fetched_at": "2026-08-25T09:08:19.291Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat: factory-hygiene-audit-cadence GHA workflow — daily cron for the two audit tools",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:53:38Z",
+  "head_ref": "feat/factory-hygiene-audit-cadence-workflow-otto-cli-2026-05-14"
+}

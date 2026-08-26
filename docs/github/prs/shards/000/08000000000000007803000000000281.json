@@ -1,0 +1,17 @@
+{
+  "pr_number": 641,
+  "archive_path": "docs/history/pr-reviews/PR-641-substrate-install-strategy-pre-install-bash-powershell-post-install-typescript-p.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67p9wG",
+    "comment:PRRC_kwDOSF9kNM67p9w_",
+    "thread:PRRT_kwDOSF9kNM594COY",
+    "thread:PRRT_kwDOSF9kNM594CPI"
+  ],
+  "fetched_at": "2026-08-25T08:19:34.925Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(install-strategy): pre-install bash+PowerShell / post-install TypeScript / Python for AI-ML — LFG sibling of AceHack #40",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T15:15:35Z",
+  "head_ref": "lfg/sibling-pr-40-install-strategy"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 629,
+  "archive_path": "docs/history/pr-reviews/PR-629-research-amara-bootstrap-recovery-external-anchor-lineage-runtime-class-discover.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Ysvp",
+    "comment:PRRC_kwDOSF9kNM67Ysvt",
+    "thread:PRRT_kwDOSF9kNM59rDo2",
+    "thread:PRRT_kwDOSF9kNM59rDo6"
+  ],
+  "fetched_at": "2026-08-25T08:19:03.472Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(amara): bootstrap-recovery + external-anchor-lineage runtime class discovery refinement (2026-04-26 ferry)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:49:57Z",
+  "head_ref": "research/amara-bootstrap-recovery-runtime-class-discovery-2026-04-26"
+}

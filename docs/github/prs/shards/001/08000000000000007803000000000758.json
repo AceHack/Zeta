@@ -1,0 +1,17 @@
+{
+  "pr_number": 1880,
+  "archive_path": "docs/history/pr-reviews/PR-1880-docs-trajectory-add-anomaly-escalation-ladder.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-2Jsv",
+    "comment:PRRC_kwDOSF9kNM6-2Jth",
+    "thread:PRRT_kwDOSF9kNM6AUwYJ",
+    "thread:PRRT_kwDOSF9kNM6AUwYo"
+  ],
+  "fetched_at": "2026-08-25T09:06:14.912Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(trajectory): add anomaly escalation ladder",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T13:41:55Z",
+  "head_ref": "codex/trajectory-anomaly-escalation"
+}

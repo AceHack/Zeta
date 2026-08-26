@@ -1,0 +1,19 @@
+{
+  "pr_number": 1122,
+  "archive_path": "docs/history/pr-reviews/PR-1122-memory-meta-learning-unbounded-without-grounding-sre-category-theory-haskell-pre.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69LDlv",
+    "comment:PRRC_kwDOSF9kNM69LDxe",
+    "comment:PRRC_kwDOSF9kNM69LDyD",
+    "thread:PRRT_kwDOSF9kNM5-_gfw",
+    "thread:PRRT_kwDOSF9kNM5-_goy",
+    "thread:PRRT_kwDOSF9kNM5-_gpK"
+  ],
+  "fetched_at": "2026-08-25T08:38:53.505Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: meta-learning UNBOUNDED without grounding — SRE + category theory + Haskell Prelude + F# idioms (Aaron 2026-05-01 critical correction)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T15:50:00Z",
+  "head_ref": "substrate-meta-learning-grounding-class-encoding-converges-only-with-foundations-aaron-2026-05-01"
+}

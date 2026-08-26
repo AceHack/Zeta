@@ -1,0 +1,16 @@
+{
+  "pr_number": 636,
+  "archive_path": "docs/history/pr-reviews/PR-636-tick-history-18-02z-sync-option-c-complete-substrate-work-transition.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67ZDjb",
+    "comment:PRRC_kwDOSF9kNM67rSgz",
+    "thread:PRRT_kwDOSF9kNM59rV9s"
+  ],
+  "fetched_at": "2026-08-25T08:19:22.490Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 18:02Z sync option-c COMPLETE + substrate-work transition",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T16:14:20Z",
+  "head_ref": "tick-history/2026-04-26T18-02Z"
+}

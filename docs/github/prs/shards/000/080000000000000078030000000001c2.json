@@ -1,0 +1,21 @@
+{
+  "pr_number": 450,
+  "archive_path": "docs/history/pr-reviews/PR-450-hygiene-268-pr-preservation-drain-log-for-429-270-follow-up.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QYxS",
+    "comment:PRRC_kwDOSF9kNM67QYxc",
+    "comment:PRRC_kwDOSF9kNM67QYxg",
+    "comment:PRRC_kwDOSF9kNM67QYxn",
+    "thread:PRRT_kwDOSF9kNM59kaBB",
+    "thread:PRRT_kwDOSF9kNM59kaBJ",
+    "thread:PRRT_kwDOSF9kNM59kaBK",
+    "thread:PRRT_kwDOSF9kNM59kaBQ"
+  ],
+  "fetched_at": "2026-08-25T08:10:50.455Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #429 (#270 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:13:58Z",
+  "head_ref": "drain/429-pr-preservation-log"
+}

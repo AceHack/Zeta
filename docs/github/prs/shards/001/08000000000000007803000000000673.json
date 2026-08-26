@@ -1,0 +1,19 @@
+{
+  "pr_number": 1651,
+  "archive_path": "docs/history/pr-reviews/PR-1651-research-architecture-eighth-post-night-end-forward-zellar-family-kaching-parall.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Eymk",
+    "comment:PRRC_kwDOSF9kNM6-Eynp",
+    "comment:PRRC_kwDOSF9kNM6-EyoX",
+    "thread:PRRT_kwDOSF9kNM5_q2wQ",
+    "thread:PRRT_kwDOSF9kNM5_q2xB",
+    "thread:PRRT_kwDOSF9kNM5_q2xg"
+  ],
+  "fetched_at": "2026-08-25T09:00:16.975Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): EIGHTH post-night-end forward -- Zellar family + KaChing parallel + FunctionalTree economics + Addison fairness + 4 startups + architecture-as-immune-response (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:46:39Z",
+  "head_ref": "research/zellar-family-kaching-parallel-functional-tree-roles-preferred-stock-lesson-addisons-fairness-spreadsheet-four-startup-attempts-architecture-as-immune-response-aaron-forwarded-2026-05-05"
+}

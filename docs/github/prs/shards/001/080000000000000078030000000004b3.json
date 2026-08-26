@@ -1,0 +1,12 @@
+{
+  "pr_number": 1203,
+  "archive_path": "docs/history/pr-reviews/PR-1203-tick-history-1627z-shard-1202-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:42:07.433Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "tick-history: 1627Z shard — #1202 landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T16:30:43Z",
+  "head_ref": "tick-history/1627Z-1202-landed-shard"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 342,
+  "archive_path": "docs/history/pr-reviews/PR-342-docs-calibration-harness-stage-2-design-amara-18th-ferry-b-f-corrections-2-7-9.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM669XZ4",
+    "comment:PRRC_kwDOSF9kNM669Xa-",
+    "comment:PRRC_kwDOSF9kNM669Xal",
+    "comment:PRRC_kwDOSF9kNM669Xaw",
+    "comment:PRRC_kwDOSF9kNM669XbR",
+    "thread:PRRT_kwDOSF9kNM59WOQl",
+    "thread:PRRT_kwDOSF9kNM59WORI",
+    "thread:PRRT_kwDOSF9kNM59WORR",
+    "thread:PRRT_kwDOSF9kNM59WORb",
+    "thread:PRRT_kwDOSF9kNM59WORs"
+  ],
+  "fetched_at": "2026-08-25T08:05:46.437Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: calibration-harness Stage-2 design — Amara 18th-ferry §B/§F + corrections #2/#7/#9",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T09:08:53Z",
+  "head_ref": "docs/calibration-harness-stage2-design"
+}

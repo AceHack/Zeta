@@ -1,0 +1,17 @@
+{
+  "pr_number": 940,
+  "archive_path": "docs/history/pr-reviews/PR-940-memory-long-road-by-default-foundational-why-for-the-substrate-corrects-industry.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM689z0c",
+    "comment:PRRC_kwDOSF9kNM689z1I",
+    "thread:PRRT_kwDOSF9kNM5-1uLM",
+    "thread:PRRT_kwDOSF9kNM5-1uLt"
+  ],
+  "fetched_at": "2026-08-25T08:31:19.167Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(long-road-by-default): foundational why for the substrate — corrects industry per-decision-speed default (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T19:41:13Z",
+  "head_ref": "memory/long-road-by-default-substrate-corrects-shortcut-default-aaron-2026-04-30"
+}

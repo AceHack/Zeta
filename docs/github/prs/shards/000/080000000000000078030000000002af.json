@@ -1,0 +1,15 @@
+{
+  "pr_number": 687,
+  "archive_path": "docs/history/pr-reviews/PR-687-memory-outdated-review-thread-merge-gate-residue-amara-class-name.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68KoFs",
+    "thread:PRRT_kwDOSF9kNM5-QEjM"
+  ],
+  "fetched_at": "2026-08-25T08:21:21.930Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Outdated Review-Thread Merge Gate Residue — Amara class name",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:13:13Z",
+  "head_ref": "memory/amara-class-name-outdated-review-thread-merge-gate-residue-2026-04-28"
+}

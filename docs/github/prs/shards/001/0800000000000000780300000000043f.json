@@ -1,0 +1,12 @@
+{
+  "pr_number": 1087,
+  "archive_path": "docs/history/pr-reviews/PR-1087-hygiene-tick-history-2026-05-01t10-25z-pr-1031-rebase-and-fix-rebase-drop-with-c.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:37:22.945Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:25Z — PR #1031 rebase-and-fix (rebase-drop-with-content-resurface)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:28:49Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1026Z-1031-rebase-and-fix"
+}

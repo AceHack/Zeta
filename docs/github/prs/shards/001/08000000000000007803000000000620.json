@@ -1,0 +1,32 @@
+{
+  "pr_number": 1568,
+  "archive_path": "docs/history/pr-reviews/PR-1568-feedback-autonomy-orchestrator-pre-commit-verify-branch-rule.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6942V6",
+    "comment:PRRC_kwDOSF9kNM6946C_",
+    "comment:PRRC_kwDOSF9kNM6946D7",
+    "comment:PRRC_kwDOSF9kNM6946Dd",
+    "comment:PRRC_kwDOSF9kNM6946Do",
+    "comment:PRRC_kwDOSF9kNM6946Dy",
+    "comment:PRRC_kwDOSF9kNM6946ED",
+    "comment:PRRC_kwDOSF9kNM6946EY",
+    "comment:PRRC_kwDOSF9kNM6946Et",
+    "comment:PRRC_kwDOSF9kNM695ZOB",
+    "thread:PRRT_kwDOSF9kNM5_h6za",
+    "thread:PRRT_kwDOSF9kNM5_h9g3",
+    "thread:PRRT_kwDOSF9kNM5_h9g_",
+    "thread:PRRT_kwDOSF9kNM5_h9gd",
+    "thread:PRRT_kwDOSF9kNM5_h9h1",
+    "thread:PRRT_kwDOSF9kNM5_h9hF",
+    "thread:PRRT_kwDOSF9kNM5_h9hP",
+    "thread:PRRT_kwDOSF9kNM5_h9hV",
+    "thread:PRRT_kwDOSF9kNM5_h9hn"
+  ],
+  "fetched_at": "2026-08-25T08:56:55.620Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(autonomy): orchestrator pre-commit verify-branch rule",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T03:58:26Z",
+  "head_ref": "feedback/orchestrator-pre-commit-verify-branch-rule-aaron-2026-05-04"
+}

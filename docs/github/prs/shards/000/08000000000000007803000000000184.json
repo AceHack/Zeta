@@ -1,0 +1,19 @@
+{
+  "pr_number": 388,
+  "archive_path": "docs/history/pr-reviews/PR-388-skill-btw-escalate-directive-queued-to-backlog-memory-for-cross-session-durabili.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67MBuV",
+    "comment:PRRC_kwDOSF9kNM67MBug",
+    "comment:PRRC_kwDOSF9kNM67MBv8",
+    "thread:PRRT_kwDOSF9kNM59hMjH",
+    "thread:PRRT_kwDOSF9kNM59hMjQ",
+    "thread:PRRT_kwDOSF9kNM59hMkX"
+  ],
+  "fetched_at": "2026-08-25T08:07:59.865Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "skill(/btw): escalate directive-queued to BACKLOG/memory for cross-session durability",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T22:06:24Z",
+  "head_ref": "skill/btw-escalate-to-backlog-durability-fix"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 10,
+  "archive_path": "docs/history/pr-reviews/PR-10-round-33-followup-bash-is-unix-only-cross-platform-automation-typescript-bun.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:48:47.169Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 33 followup — bash is Unix-only; cross-platform automation = TypeScript/Bun",
+  "state": "MERGED",
+  "merged_at": "2026-04-19T01:24:31Z",
+  "head_ref": "round-33-followup"
+}

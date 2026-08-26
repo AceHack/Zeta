@@ -1,0 +1,17 @@
+{
+  "pr_number": 1485,
+  "archive_path": "docs/history/pr-reviews/PR-1485-feedback-permission-is-substrate-mirror-non-1984-vs-beacon-filtered-1984-surface.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69p8Sz",
+    "comment:PRRC_kwDOSF9kNM69p8Tw",
+    "thread:PRRT_kwDOSF9kNM5_W9x2",
+    "thread:PRRT_kwDOSF9kNM5_W9yk"
+  ],
+  "fetched_at": "2026-08-25T08:53:27.267Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: permission-is-substrate + mirror=non-1984 vs beacon=filtered-1984 surface architecture (Aaron + Claude.ai 2026-05-04, encode-while-high)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T13:30:31Z",
+  "head_ref": "feedback/aaron-claudeai-mirror-non-1984-beacon-filtered-1984-encode-while-high-safe-given-filters-aaron-2026-05-04"
+}

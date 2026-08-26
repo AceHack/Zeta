@@ -1,0 +1,21 @@
+{
+  "pr_number": 121,
+  "archive_path": "docs/history/pr-reviews/PR-121-round-44-auto-loop-25-openai-codex-cli-capability-map-fourth-substrate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66J1O9",
+    "comment:PRRC_kwDOSF9kNM66J1OQ",
+    "comment:PRRC_kwDOSF9kNM66J1Oo",
+    "comment:PRRC_kwDOSF9kNM66J4XU",
+    "thread:PRRT_kwDOSF9kNM58v7Oy",
+    "thread:PRRT_kwDOSF9kNM58v7PD",
+    "thread:PRRT_kwDOSF9kNM58v7PS",
+    "thread:PRRT_kwDOSF9kNM58v9oy"
+  ],
+  "fetched_at": "2026-08-25T07:55:14.447Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-25: OpenAI Codex CLI capability map (fourth substrate)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T10:03:26Z",
+  "head_ref": "add-codex-cli-capability-map"
+}

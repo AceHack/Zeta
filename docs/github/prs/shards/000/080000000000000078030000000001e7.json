@@ -1,0 +1,22 @@
+{
+  "pr_number": 487,
+  "archive_path": "docs/history/pr-reviews/PR-487-memory-otto-286-definitional-precision-changes-the-future-without-war.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SB72",
+    "comment:PRRC_kwDOSF9kNM67SB8F",
+    "comment:PRRC_kwDOSF9kNM67SMfY",
+    "comment:PRRC_kwDOSF9kNM67SRPV",
+    "comment:PRRC_kwDOSF9kNM67SRPz",
+    "comment:PRRC_kwDOSF9kNM67SRQi",
+    "thread:PRRT_kwDOSF9kNM59l3Og",
+    "thread:PRRT_kwDOSF9kNM59lu0r",
+    "thread:PRRT_kwDOSF9kNM59lu0z"
+  ],
+  "fetched_at": "2026-08-25T08:12:20.617Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Otto-286 — definitional precision changes the future without war",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:56:59Z",
+  "head_ref": "memory/otto-286-definitional-precision"
+}

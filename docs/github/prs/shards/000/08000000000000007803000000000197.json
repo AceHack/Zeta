@@ -1,0 +1,22 @@
+{
+  "pr_number": 407,
+  "archive_path": "docs/history/pr-reviews/PR-407-backlog-four-way-parity-naming-correction-peer-review-gates-canonical-discipline.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Om6w",
+    "comment:PRRC_kwDOSF9kNM67Om7a",
+    "comment:PRRC_kwDOSF9kNM67Om7t",
+    "comment:PRRC_kwDOSF9kNM67PLdu",
+    "comment:PRRC_kwDOSF9kNM67PLea",
+    "comment:PRRC_kwDOSF9kNM67PLey",
+    "thread:PRRT_kwDOSF9kNM59jFh-",
+    "thread:PRRT_kwDOSF9kNM59jFhG",
+    "thread:PRRT_kwDOSF9kNM59jFht"
+  ],
+  "fetched_at": "2026-08-25T08:08:58.799Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: four-way-parity naming correction + peer-review-gates-canonical discipline (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T02:20:29Z",
+  "head_ref": "backlog/four-way-parity-naming-correction"
+}

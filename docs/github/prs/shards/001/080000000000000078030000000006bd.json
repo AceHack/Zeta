@@ -1,0 +1,17 @@
+{
+  "pr_number": 1725,
+  "archive_path": "docs/history/pr-reviews/PR-1725-docs-safe-autonomous-actions-md-shared-3-loop-convergence-list.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-iR2k",
+    "comment:PRRC_kwDOSF9kNM6-iR2o",
+    "thread:PRRT_kwDOSF9kNM6AFz0r",
+    "thread:PRRT_kwDOSF9kNM6AFz0w"
+  ],
+  "fetched_at": "2026-08-25T09:03:13.277Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs: SAFE-AUTONOMOUS-ACTIONS.md — shared 3-loop convergence list",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T18:37:09Z",
+  "head_ref": "feat/safe-autonomous-actions"
+}

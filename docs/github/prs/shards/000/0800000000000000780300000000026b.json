@@ -1,0 +1,12 @@
+{
+  "pr_number": 619,
+  "archive_path": "docs/history/pr-reviews/PR-619-substrate-otto-344-maji-confirmed-clean-re-apply-closes-537.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:18:40.457Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-344): Maji confirmed — clean re-apply (closes #537)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T14:21:07Z",
+  "head_ref": "substrate/otto-344-clean-reapply"
+}

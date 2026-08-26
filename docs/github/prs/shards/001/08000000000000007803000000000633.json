@@ -1,0 +1,33 @@
+{
+  "pr_number": 1587,
+  "archive_path": "docs/history/pr-reviews/PR-1587-backlog-p1-b-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM696Yy4",
+    "comment:PRRC_kwDOSF9kNM696YyT",
+    "comment:PRRC_kwDOSF9kNM696Yyi",
+    "comment:PRRC_kwDOSF9kNM696Yyt",
+    "comment:PRRC_kwDOSF9kNM696l_-",
+    "comment:PRRC_kwDOSF9kNM696l_1",
+    "comment:PRRC_kwDOSF9kNM696l_a",
+    "comment:PRRC_kwDOSF9kNM696l_r",
+    "comment:PRRC_kwDOSF9kNM696mAF",
+    "comment:PRRC_kwDOSF9kNM696mAM",
+    "thread:PRRT_kwDOSF9kNM5_jEP5",
+    "thread:PRRT_kwDOSF9kNM5_jEPs",
+    "thread:PRRT_kwDOSF9kNM5_jEQD",
+    "thread:PRRT_kwDOSF9kNM5_jEQM",
+    "thread:PRRT_kwDOSF9kNM5_jOC6",
+    "thread:PRRT_kwDOSF9kNM5_jOC_",
+    "thread:PRRT_kwDOSF9kNM5_jOCf",
+    "thread:PRRT_kwDOSF9kNM5_jOCs",
+    "thread:PRRT_kwDOSF9kNM5_jOCz",
+    "thread:PRRT_kwDOSF9kNM5_jODF"
+  ],
+  "fetched_at": "2026-08-25T08:57:46.476Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(P1): B-0193 bootstrap razor + 23-hour recreation test (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T05:36:52Z",
+  "head_ref": "backlog/B-0193-bootstrap-razor-23-hour-recreation-test-aaron-2026-05-05"
+}

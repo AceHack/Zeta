@@ -1,0 +1,19 @@
+{
+  "pr_number": 381,
+  "archive_path": "docs/history/pr-reviews/PR-381-backlog-dotnet-gc-upstream-investigation-dst-marker-convention-otto-248-followup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67JbGm",
+    "comment:PRRC_kwDOSF9kNM67JbHC",
+    "comment:PRRC_kwDOSF9kNM67JbHc",
+    "thread:PRRT_kwDOSF9kNM59fQU9",
+    "thread:PRRT_kwDOSF9kNM59fQVR",
+    "thread:PRRT_kwDOSF9kNM59fQVl"
+  ],
+  "fetched_at": "2026-08-25T08:07:41.818Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: dotnet GC upstream investigation + DST-marker convention (Otto-248 followup)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:12:47Z",
+  "head_ref": "backlog/dotnet-gc-upstream-investigation-otto-248-followup"
+}

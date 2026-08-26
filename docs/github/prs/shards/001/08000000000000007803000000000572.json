@@ -1,0 +1,19 @@
+{
+  "pr_number": 1394,
+  "archive_path": "docs/history/pr-reviews/PR-1394-ci-lean-proof-add-ci-gate-for-dbspchainrule-lean-type-check-closes-a1-a2-a-with-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bfb3",
+    "comment:PRRC_kwDOSF9kNM69bfbu",
+    "comment:PRRC_kwDOSF9kNM69bff3",
+    "thread:PRRT_kwDOSF9kNM5_L4Mf",
+    "thread:PRRT_kwDOSF9kNM5_L4Mo",
+    "thread:PRRT_kwDOSF9kNM5_L4QA"
+  ],
+  "fetched_at": "2026-08-25T08:49:46.657Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(lean-proof): add CI gate for DbspChainRule.lean type-check (closes A1+A2 → A-with-CI)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:26:57Z",
+  "head_ref": "ci/lean-proof-build-job-2026-05-03"
+}

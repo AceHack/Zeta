@@ -1,0 +1,17 @@
+{
+  "pr_number": 100,
+  "archive_path": "docs/history/pr-reviews/PR-100-auto-loop-9-tick-history-row-three-non-fork-pr-refreshes-after-pr-98-merged-pure.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66Ec4G",
+    "comment:PRRC_kwDOSF9kNM66Ec4Z",
+    "thread:PRRT_kwDOSF9kNM58r9Dg",
+    "thread:PRRT_kwDOSF9kNM58r9Du"
+  ],
+  "fetched_at": "2026-08-25T07:54:02.784Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "auto-loop-9 tick-history row — three non-fork PR refreshes after PR #98 merged; pure-refresh tick",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:24:52Z",
+  "head_ref": "land-tick-history-autoloop-9-append"
+}

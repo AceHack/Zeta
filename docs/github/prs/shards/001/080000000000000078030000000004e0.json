@@ -1,0 +1,15 @@
+{
+  "pr_number": 1248,
+  "archive_path": "docs/history/pr-reviews/PR-1248-free-memory-git-native-backlog-mgmt-long-arc-as-future-skill-domain-b-0169-aarav.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YxRe",
+    "thread:PRRT_kwDOSF9kNM5_Jupq"
+  ],
+  "fetched_at": "2026-08-25T08:44:05.394Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: git-native backlog mgmt + long-arc as future skill domain + B-0169 Aarav-review enrichment + 2350Z shard",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T23:52:53Z",
+  "head_ref": "free-memory/git-native-backlog-management-long-arc-future-skill-domain-aaron-2026-05-02"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1241,
+  "archive_path": "docs/history/pr-reviews/PR-1241-free-memory-never-idle-2nd-3rd-refinement-backlog-clear-is-failure-mode-backlog-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YnJ1",
+    "comment:PRRC_kwDOSF9kNM69YnJ_",
+    "comment:PRRC_kwDOSF9kNM69YnKG",
+    "thread:PRRT_kwDOSF9kNM5_Jmn1",
+    "thread:PRRT_kwDOSF9kNM5_Jmnn",
+    "thread:PRRT_kwDOSF9kNM5_Jmnv"
+  ],
+  "fetched_at": "2026-08-25T08:43:47.784Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(never-idle 2nd + 3rd refinement): backlog-clear is failure mode; backlog IS aperiodic tiling defining identity coordinate system (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T23:16:00Z",
+  "head_ref": "free-memory/never-idle-second-third-refinement-backlog-aperiodic-tiling-identity-coordinate-aaron-2026-05-02"
+}

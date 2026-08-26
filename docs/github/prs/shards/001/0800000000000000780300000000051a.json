@@ -1,0 +1,23 @@
+{
+  "pr_number": 1306,
+  "archive_path": "docs/history/pr-reviews/PR-1306-backlog-b-0174-cross-model-tool-review-convergence-rate-replay-architectural-int.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zp30",
+    "comment:PRRC_kwDOSF9kNM69Zp77",
+    "comment:PRRC_kwDOSF9kNM69Zp8A",
+    "comment:PRRC_kwDOSF9kNM69Zp8F",
+    "comment:PRRC_kwDOSF9kNM69Zp8J",
+    "thread:PRRT_kwDOSF9kNM5_KbU-",
+    "thread:PRRT_kwDOSF9kNM5_KbYj",
+    "thread:PRRT_kwDOSF9kNM5_KbYo",
+    "thread:PRRT_kwDOSF9kNM5_KbYt",
+    "thread:PRRT_kwDOSF9kNM5_KbYx"
+  ],
+  "fetched_at": "2026-08-25T08:46:36.147Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: B-0174 cross-model tool-review convergence-rate replay [architectural-intent-emergence]",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T04:20:00Z",
+  "head_ref": "backlog/b-0174-cross-model-tool-review-convergence-replay-otto-2026-05-03"
+}

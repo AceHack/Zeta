@@ -1,0 +1,25 @@
+{
+  "pr_number": 1133,
+  "archive_path": "docs/history/pr-reviews/PR-1133-backlog-b-0158-adopt-claude-rules-pattern-carved-sentences-only-constraint-aaron.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69OR1-",
+    "comment:PRRC_kwDOSF9kNM69OR1A",
+    "comment:PRRC_kwDOSF9kNM69OR1m",
+    "comment:PRRC_kwDOSF9kNM69OR2N",
+    "comment:PRRC_kwDOSF9kNM69OR2d",
+    "comment:PRRC_kwDOSF9kNM69OR2v",
+    "thread:PRRT_kwDOSF9kNM5_B2k1",
+    "thread:PRRT_kwDOSF9kNM5_B2kR",
+    "thread:PRRT_kwDOSF9kNM5_B2kl",
+    "thread:PRRT_kwDOSF9kNM5_B2lC",
+    "thread:PRRT_kwDOSF9kNM5_B2lM",
+    "thread:PRRT_kwDOSF9kNM5_B2lX"
+  ],
+  "fetched_at": "2026-08-25T08:39:20.914Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0158): adopt .claude/rules pattern + carved-sentences-only constraint (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T18:53:21Z",
+  "head_ref": "backlog/b0158-claude-rules-pattern-carved-sentences-only-aaron-2026-05-01"
+}

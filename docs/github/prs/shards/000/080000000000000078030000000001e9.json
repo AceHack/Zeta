@@ -1,0 +1,19 @@
+{
+  "pr_number": 489,
+  "archive_path": "docs/history/pr-reviews/PR-489-memory-precision-dictionary-product-vision-aaron-2026-04-25.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SFMR",
+    "comment:PRRC_kwDOSF9kNM67SFMg",
+    "comment:PRRC_kwDOSF9kNM67SFMt",
+    "thread:PRRT_kwDOSF9kNM59lxU7",
+    "thread:PRRT_kwDOSF9kNM59lxVF",
+    "thread:PRRT_kwDOSF9kNM59lxVQ"
+  ],
+  "fetched_at": "2026-08-25T08:12:26.000Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: precision-dictionary product vision (Aaron 2026-04-25)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:32:14Z",
+  "head_ref": "memory/precision-dictionary-product-vision"
+}

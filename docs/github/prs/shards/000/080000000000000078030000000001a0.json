@@ -1,0 +1,12 @@
+{
+  "pr_number": 416,
+  "archive_path": "docs/history/pr-reviews/PR-416-docs-roms-sweep-26-leaf-readmes-to-match-tightened-gitignore-rule.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:09:22.054Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(roms): sweep 26 leaf READMEs to match tightened gitignore rule",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:05:39Z",
+  "head_ref": "research/roms-readme-gitignore-pattern-sweep"
+}

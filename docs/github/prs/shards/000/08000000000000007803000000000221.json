@@ -1,0 +1,23 @@
+{
+  "pr_number": 545,
+  "archive_path": "docs/history/pr-reviews/PR-545-chore-loop-tick-history-bundle-2-5-heartbeat-rows-2026-04-26t03-59-06z-04-02-40z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Vc-O",
+    "comment:PRRC_kwDOSF9kNM67Vc-S",
+    "comment:PRRC_kwDOSF9kNM67Vc-X",
+    "comment:PRRC_kwDOSF9kNM67Vc-b",
+    "comment:PRRC_kwDOSF9kNM67Vct6",
+    "thread:PRRT_kwDOSF9kNM59oeC1",
+    "thread:PRRT_kwDOSF9kNM59oePI",
+    "thread:PRRT_kwDOSF9kNM59oePM",
+    "thread:PRRT_kwDOSF9kNM59oePR",
+    "thread:PRRT_kwDOSF9kNM59oePV"
+  ],
+  "fetched_at": "2026-08-25T08:15:36.543Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): bundle 2 — 5 heartbeat rows 2026-04-26T03:59:06Z..04:02:40Z + sort fix",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T04:06:02Z",
+  "head_ref": "chore/heartbeat-batch-2026-04-26-bundle-2"
+}

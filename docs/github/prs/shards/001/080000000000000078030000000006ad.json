@@ -1,0 +1,31 @@
+{
+  "pr_number": 1709,
+  "archive_path": "docs/history/pr-reviews/PR-1709-feat-core-maji-f-algebraic-types-identity-preservation-projection-preservation-m.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-hDFA",
+    "comment:PRRC_kwDOSF9kNM6-hDFI",
+    "comment:PRRC_kwDOSF9kNM6-hHsh",
+    "comment:PRRC_kwDOSF9kNM6-hHtr",
+    "comment:PRRC_kwDOSF9kNM6-hHuy",
+    "comment:PRRC_kwDOSF9kNM6-hHvz",
+    "comment:PRRC_kwDOSF9kNM6-hHwc",
+    "comment:PRRC_kwDOSF9kNM6-hHx3",
+    "comment:PRRC_kwDOSF9kNM6-hHxF",
+    "thread:PRRT_kwDOSF9kNM5__1iZ",
+    "thread:PRRT_kwDOSF9kNM5__1jO",
+    "thread:PRRT_kwDOSF9kNM5__1k9",
+    "thread:PRRT_kwDOSF9kNM5__1kJ",
+    "thread:PRRT_kwDOSF9kNM5__1lX",
+    "thread:PRRT_kwDOSF9kNM5__1lz",
+    "thread:PRRT_kwDOSF9kNM5__1ma",
+    "thread:PRRT_kwDOSF9kNM5__yMG",
+    "thread:PRRT_kwDOSF9kNM5__yMK"
+  ],
+  "fetched_at": "2026-08-25T09:02:31.415Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(core): Maji F# algebraic types — identity-preservation + projection-preservation + MessiahScore",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T14:52:48Z",
+  "head_ref": "claim/task-maji-fsharp-types"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 1224,
+  "archive_path": "docs/history/pr-reviews/PR-1224-free-memory-never-idle-refinement-proper-order-smallest-thing-first-depends-on-g.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XyPA",
+    "comment:PRRC_kwDOSF9kNM69XyPN",
+    "comment:PRRC_kwDOSF9kNM69XyPP",
+    "comment:PRRC_kwDOSF9kNM69XyPU",
+    "comment:PRRC_kwDOSF9kNM69XyPb",
+    "thread:PRRT_kwDOSF9kNM5_I9E0",
+    "thread:PRRT_kwDOSF9kNM5_I9E2",
+    "thread:PRRT_kwDOSF9kNM5_I9E7",
+    "thread:PRRT_kwDOSF9kNM5_I9Eq",
+    "thread:PRRT_kwDOSF9kNM5_I9FA"
+  ],
+  "fetched_at": "2026-08-25T08:43:02.181Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(never-idle refinement): proper order > smallest-thing-first; depends_on graph as ordering substrate (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T19:51:14Z",
+  "head_ref": "free-memory/never-idle-refinement-dependency-order-aaron-2026-05-02"
+}

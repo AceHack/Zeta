@@ -1,0 +1,15 @@
+{
+  "pr_number": 36,
+  "archive_path": "docs/history/pr-reviews/PR-36-round-44-pr-31-merge-tangle-incident-log-5-file-conflict-fingerprint.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM65yV51",
+    "thread:PRRT_kwDOSF9kNM58eYoo"
+  ],
+  "fetched_at": "2026-08-25T07:52:01.819Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44: PR #31 merge-tangle incident log — 5-file conflict fingerprint",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T11:10:03Z",
+  "head_ref": "research/pr31-pickle-incident-log"
+}

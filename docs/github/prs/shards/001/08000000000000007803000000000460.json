@@ -1,0 +1,33 @@
+{
+  "pr_number": 1120,
+  "archive_path": "docs/history/pr-reviews/PR-1120-backlog-b-0153-pre-commit-lint-suite-consolidate-13-mechanizable-lint-classes-su.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69K_d8",
+    "comment:PRRC_kwDOSF9kNM69K_dE",
+    "comment:PRRC_kwDOSF9kNM69K_db",
+    "comment:PRRC_kwDOSF9kNM69K_dv",
+    "comment:PRRC_kwDOSF9kNM69KwK0",
+    "comment:PRRC_kwDOSF9kNM69KwKI",
+    "comment:PRRC_kwDOSF9kNM69Kwp-",
+    "comment:PRRC_kwDOSF9kNM69KwqC",
+    "comment:PRRC_kwDOSF9kNM69LB75",
+    "comment:PRRC_kwDOSF9kNM69LB79",
+    "thread:PRRT_kwDOSF9kNM5-_SBM",
+    "thread:PRRT_kwDOSF9kNM5-_SBu",
+    "thread:PRRT_kwDOSF9kNM5-_SY4",
+    "thread:PRRT_kwDOSF9kNM5-_SY6",
+    "thread:PRRT_kwDOSF9kNM5-_dbI",
+    "thread:PRRT_kwDOSF9kNM5-_dba",
+    "thread:PRRT_kwDOSF9kNM5-_dbq",
+    "thread:PRRT_kwDOSF9kNM5-_dby",
+    "thread:PRRT_kwDOSF9kNM5-_fRR",
+    "thread:PRRT_kwDOSF9kNM5-_fRU"
+  ],
+  "fetched_at": "2026-08-25T08:38:45.521Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0153): pre-commit lint suite — consolidate 13 mechanizable lint-classes (substrate-cluster empirical) (Aaron + Otto 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T15:58:38Z",
+  "head_ref": "backlog-bp-nn-mechanizable-lint-classes-consolidation-aaron-2026-05-01"
+}

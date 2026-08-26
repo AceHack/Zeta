@@ -1,0 +1,15 @@
+{
+  "pr_number": 1272,
+  "archive_path": "docs/history/pr-reviews/PR-1272-docs-agents-md-backport-claude-into-vibe-coded-hypothesis-scope-aaron-2026-05-03.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZQZo",
+    "thread:PRRT_kwDOSF9kNM5_KHCq"
+  ],
+  "fetched_at": "2026-08-25T08:45:14.865Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(agents-md): backport .claude/** into vibe-coded hypothesis scope (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:24:08Z",
+  "head_ref": "docs/agents-md-backport-claude-skills-vibe-coded-scope-aaron-2026-05-03"
+}

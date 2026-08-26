@@ -1,0 +1,19 @@
+{
+  "pr_number": 115,
+  "archive_path": "docs/history/pr-reviews/PR-115-round-44-auto-loop-18-arc3-dora-cognition-layer-capability-signature-soul-file.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66H1V1",
+    "comment:PRRC_kwDOSF9kNM66H2M-",
+    "comment:PRRC_kwDOSF9kNM66H2Nw",
+    "thread:PRRT_kwDOSF9kNM58udmR",
+    "thread:PRRT_kwDOSF9kNM58ueNS",
+    "thread:PRRT_kwDOSF9kNM58ueNy"
+  ],
+  "fetched_at": "2026-08-25T07:54:52.762Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-18: ARC3-DORA cognition-layer capability signature (soul-file)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T08:37:59Z",
+  "head_ref": "land-arc3-dora-benchmark-research-doc"
+}

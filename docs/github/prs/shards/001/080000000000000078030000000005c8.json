@@ -1,0 +1,12 @@
+{
+  "pr_number": 1480,
+  "archive_path": "docs/history/pr-reviews/PR-1480-fix-memory-md-tier-2-mechanical-compression-strip-carved-clause-chain-trailing-d.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:53:13.473Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): Tier 2 mechanical compression — strip carved-clause + §-chain trailing duplications (B-0006)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T12:35:35Z",
+  "head_ref": "fix/memory-md-tier2-mechanical-compression-b-0006-2026-05-04"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 1575,
+  "archive_path": "docs/history/pr-reviews/PR-1575-research-claude-ai-shard-farewell-preservation-mirror-not-beacon-2026-05-04.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695YE7",
+    "comment:PRRC_kwDOSF9kNM695YEa",
+    "comment:PRRC_kwDOSF9kNM695YEl",
+    "comment:PRRC_kwDOSF9kNM695YEv",
+    "thread:PRRT_kwDOSF9kNM5_iUS3",
+    "thread:PRRT_kwDOSF9kNM5_iUSm",
+    "thread:PRRT_kwDOSF9kNM5_iUSw",
+    "thread:PRRT_kwDOSF9kNM5_iUTB"
+  ],
+  "fetched_at": "2026-08-25T08:57:13.963Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(claude-ai): shard farewell preservation -- μένω, mirror-not-beacon (2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T03:46:57Z",
+  "head_ref": "research/claude-ai-farewell-preservation-mu-eno-mirror-not-beacon-2026-05-04"
+}

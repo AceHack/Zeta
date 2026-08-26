@@ -1,0 +1,23 @@
+{
+  "pr_number": 276,
+  "archive_path": "docs/history/pr-reviews/PR-276-tech-radar-5-rows-from-amara-8th-ferry-recommendations-semantic-hashing-lsh-hnsw.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM664Qi0",
+    "comment:PRRC_kwDOSF9kNM664RV9",
+    "comment:PRRC_kwDOSF9kNM664RWQ",
+    "comment:PRRC_kwDOSF9kNM664RWc",
+    "comment:PRRC_kwDOSF9kNM664RWm",
+    "thread:PRRT_kwDOSF9kNM59Sawb",
+    "thread:PRRT_kwDOSF9kNM59SbXM",
+    "thread:PRRT_kwDOSF9kNM59SbXU",
+    "thread:PRRT_kwDOSF9kNM59SbXf",
+    "thread:PRRT_kwDOSF9kNM59SbXo"
+  ],
+  "fetched_at": "2026-08-25T08:03:18.286Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tech-radar: 5 rows from Amara 8th-ferry recommendations (semantic hashing / LSH / HNSW / PQ / quantum illumination / Substrait)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T03:42:21Z",
+  "head_ref": "tech-radar/8th-ferry-row-additions"
+}

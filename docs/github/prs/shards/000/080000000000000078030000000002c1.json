@@ -1,0 +1,17 @@
+{
+  "pr_number": 705,
+  "archive_path": "docs/history/pr-reviews/PR-705-memory-pr-boundary-restraint-validation-bead-promoted-beacon-promotion-pattern-b.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68OvDV",
+    "comment:PRRC_kwDOSF9kNM68OvDl",
+    "thread:PRRT_kwDOSF9kNM5-TDej",
+    "thread:PRRT_kwDOSF9kNM5-TDes"
+  ],
+  "fetched_at": "2026-08-25T08:22:03.318Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: PR-boundary restraint validation bead PROMOTED + Beacon-promotion pattern (B-0093 #14 + #8)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T00:27:25Z",
+  "head_ref": "memory/restraint-bead-promoted-and-beacon-promotion-pattern-2026-04-29"
+}

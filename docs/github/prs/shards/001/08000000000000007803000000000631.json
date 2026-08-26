@@ -1,0 +1,21 @@
+{
+  "pr_number": 1585,
+  "archive_path": "docs/history/pr-reviews/PR-1585-feat-orchestrator-checks-verify-branch-ts-harness-hook-b-0191-implementation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM696OMv",
+    "comment:PRRC_kwDOSF9kNM696ONF",
+    "comment:PRRC_kwDOSF9kNM696ONZ",
+    "comment:PRRC_kwDOSF9kNM696ONk",
+    "thread:PRRT_kwDOSF9kNM5_i8ZF",
+    "thread:PRRT_kwDOSF9kNM5_i8ZY",
+    "thread:PRRT_kwDOSF9kNM5_i8Zo",
+    "thread:PRRT_kwDOSF9kNM5_i8Zx"
+  ],
+  "fetched_at": "2026-08-25T08:57:40.745Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(orchestrator-checks): verify-branch.ts harness hook (B-0191 implementation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T05:09:42Z",
+  "head_ref": "feat/orchestrator-checks-verify-branch-b-0191-aaron-2026-05-05"
+}

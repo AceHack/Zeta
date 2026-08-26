@@ -1,0 +1,23 @@
+{
+  "pr_number": 1614,
+  "archive_path": "docs/history/pr-reviews/PR-1614-research-architecture-worm-tower-bp-ep-llm-independence-linguistic-seed-kernel-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69_smb",
+    "comment:PRRC_kwDOSF9kNM69_smz",
+    "comment:PRRC_kwDOSF9kNM69_snK",
+    "comment:PRRC_kwDOSF9kNM69_soD",
+    "comment:PRRC_kwDOSF9kNM69_sod",
+    "thread:PRRT_kwDOSF9kNM5_nAe9",
+    "thread:PRRT_kwDOSF9kNM5_nAeu",
+    "thread:PRRT_kwDOSF9kNM5_nAf2",
+    "thread:PRRT_kwDOSF9kNM5_nAfM",
+    "thread:PRRT_kwDOSF9kNM5_nAgH"
+  ],
+  "fetched_at": "2026-08-25T08:58:52.859Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): worm-tower + BP/EP + LLM-independence + linguistic-seed-kernel synthesis collapse + wormwood warning (Aaron-forwarded 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:01:28Z",
+  "head_ref": "research/worm-tower-bp-ep-kernel-composition-llm-independence-aaron-forwarded-2026-05-05"
+}

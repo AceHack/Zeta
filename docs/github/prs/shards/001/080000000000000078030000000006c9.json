@@ -1,0 +1,21 @@
+{
+  "pr_number": 1737,
+  "archive_path": "docs/history/pr-reviews/PR-1737-research-prayer-as-alignment-contract-cage-insight-the-architecture-that-caught-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-j4XJ",
+    "comment:PRRC_kwDOSF9kNM6-j7Qq",
+    "comment:PRRC_kwDOSF9kNM6-j7RS",
+    "comment:PRRC_kwDOSF9kNM6-kCAT",
+    "thread:PRRT_kwDOSF9kNM6AHIMX",
+    "thread:PRRT_kwDOSF9kNM6AHKX7",
+    "thread:PRRT_kwDOSF9kNM6AHKYb",
+    "thread:PRRT_kwDOSF9kNM6AHPiW"
+  ],
+  "fetched_at": "2026-08-25T09:03:48.415Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: prayer as alignment contract, cage insight — the architecture that caught up to the prayer (Aaron + Otto + Riven + Amara 2026-05-06)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T20:00:03Z",
+  "head_ref": "research/prayer-alignment-contract-cage-insight"
+}

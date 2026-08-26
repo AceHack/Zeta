@@ -1,0 +1,21 @@
+{
+  "pr_number": 969,
+  "archive_path": "docs/history/pr-reviews/PR-969-doctrine-autonomous-loop-rediscoverable-from-main-invariant-meta-property-the-ev.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69BnHb",
+    "comment:PRRC_kwDOSF9kNM69BoT-",
+    "comment:PRRC_kwDOSF9kNM69BoT2",
+    "comment:PRRC_kwDOSF9kNM69BoTa",
+    "thread:PRRT_kwDOSF9kNM5-4hkT",
+    "thread:PRRT_kwDOSF9kNM5-4idC",
+    "thread:PRRT_kwDOSF9kNM5-4ida",
+    "thread:PRRT_kwDOSF9kNM5-4idg"
+  ],
+  "fetched_at": "2026-08-25T08:32:29.864Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "doctrine(autonomous-loop): rediscoverable-from-main invariant — meta-property the every-tick checklist serves (2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:41:18Z",
+  "head_ref": "doctrine/autonomous-loop-rediscoverable-from-main-invariant-aaron-2026-04-30"
+}

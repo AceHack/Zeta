@@ -1,0 +1,12 @@
+{
+  "pr_number": 1093,
+  "archive_path": "docs/history/pr-reviews/PR-1093-hygiene-tick-history-2026-05-01t10-41z-pr-1077-duplicate-link-fix-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:37:36.566Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:41Z — PR #1077 duplicate-link-fix tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:45:58Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1041Z-1077-duplicate-link-fix"
+}

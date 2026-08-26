@@ -1,0 +1,12 @@
+{
+  "pr_number": 797,
+  "archive_path": "docs/history/pr-reviews/PR-797-tick-history-2026-04-29t05-37z-post-recovery-tick-single-pr-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:25:45.119Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:37Z — post-recovery tick, single PR merge",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T05:41:56Z",
+  "head_ref": "tick-history/2026-04-29-tick-0537Z-shard"
+}

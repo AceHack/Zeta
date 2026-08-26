@@ -1,0 +1,17 @@
+{
+  "pr_number": 517,
+  "archive_path": "docs/history/pr-reviews/PR-517-memory-b-0006-compression-pass-batch-1-top-18-entries-reduced-30-50-in-byte-size.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UloR",
+    "comment:PRRC_kwDOSF9kNM67UloX",
+    "thread:PRRT_kwDOSF9kNM59nxRI",
+    "thread:PRRT_kwDOSF9kNM59nxRO"
+  ],
+  "fetched_at": "2026-08-25T08:14:18.655Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(B-0006): compression pass batch 1 — top 18 entries reduced 30-50% in byte size; mechanical + reversible",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T01:17:22Z",
+  "head_ref": "memory/compression-pass-batch-1"
+}

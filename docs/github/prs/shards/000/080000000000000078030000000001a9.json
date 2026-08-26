@@ -1,0 +1,16 @@
+{
+  "pr_number": 425,
+  "archive_path": "docs/history/pr-reviews/PR-425-drain-357-post-merge-respect-commonmark-4-space-indent-limit-on-fence-detection.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PPIR",
+    "comment:PRRC_kwDOSF9kNM67PVXe",
+    "thread:PRRT_kwDOSF9kNM59jhQV"
+  ],
+  "fetched_at": "2026-08-25T08:09:43.327Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#357 post-merge): respect CommonMark 4-space-indent limit on fence detection",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:18:06Z",
+  "head_ref": "drain/357-followup-fence-indent"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 936,
+  "archive_path": "docs/history/pr-reviews/PR-936-backlog-b-0114-three-quality-gate-improvements-alexa-peer-review.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM689E8-",
+    "comment:PRRC_kwDOSF9kNM689E8W",
+    "comment:PRRC_kwDOSF9kNM689E9P",
+    "comment:PRRC_kwDOSF9kNM689EqR",
+    "comment:PRRC_kwDOSF9kNM69BpOp",
+    "thread:PRRT_kwDOSF9kNM5-1LIE",
+    "thread:PRRT_kwDOSF9kNM5-1LU9",
+    "thread:PRRT_kwDOSF9kNM5-1LUZ",
+    "thread:PRRT_kwDOSF9kNM5-1LUv",
+    "thread:PRRT_kwDOSF9kNM5-4jIf"
+  ],
+  "fetched_at": "2026-08-25T08:31:07.904Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0114): three quality-gate improvements (Alexa peer review)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T23:14:31Z",
+  "head_ref": "backlog/B-0114-alexa-quality-gates-batched-threads-pre-push-lint-memory-link-check-2026-04-30"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1422,
+  "archive_path": "docs/history/pr-reviews/PR-1422-memory-action-sha-hallucination-check-repo-first-1417-lesson.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cWzC",
+    "comment:PRRC_kwDOSF9kNM69cWzG",
+    "thread:PRRT_kwDOSF9kNM5_MkYH",
+    "thread:PRRT_kwDOSF9kNM5_MkYL"
+  ],
+  "fetched_at": "2026-08-25T08:51:00.478Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: action SHA hallucination — check repo first (#1417 lesson)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:27:09Z",
+  "head_ref": "otto/memory-action-sha-hallucination-2026-05-03"
+}

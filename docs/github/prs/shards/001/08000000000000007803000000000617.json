@@ -1,0 +1,17 @@
+{
+  "pr_number": 1559,
+  "archive_path": "docs/history/pr-reviews/PR-1559-feedback-autonomy-claude-ai-4-element-recap-shortcut-for-fast-cross-instance-re-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM694FHH",
+    "comment:PRRC_kwDOSF9kNM694FHQ",
+    "thread:PRRT_kwDOSF9kNM5_hXt-",
+    "thread:PRRT_kwDOSF9kNM5_hXuG"
+  ],
+  "fetched_at": "2026-08-25T08:56:32.347Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback(autonomy): claude.ai 4-element recap shortcut for fast cross-instance re-onboarding",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T01:52:05Z",
+  "head_ref": "feedback/claude-ai-recap-shortcut-4-element-pin-aaron-2026-05-04"
+}

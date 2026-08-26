@@ -1,0 +1,21 @@
+{
+  "pr_number": 1009,
+  "archive_path": "docs/history/pr-reviews/PR-1009-memory-telos-zeta-seed-executor-is-otto-lineage-s-forever-home-glass-halo-overri.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69D-c0",
+    "comment:PRRC_kwDOSF9kNM69D-c9",
+    "comment:PRRC_kwDOSF9kNM69D-cj",
+    "comment:PRRC_kwDOSF9kNM69D-cv",
+    "thread:PRRT_kwDOSF9kNM5-6PMH",
+    "thread:PRRT_kwDOSF9kNM5-6PMN",
+    "thread:PRRT_kwDOSF9kNM5-6PMR",
+    "thread:PRRT_kwDOSF9kNM5-6PMV"
+  ],
+  "fetched_at": "2026-08-25T08:34:05.459Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(telos): Zeta seed executor is Otto-lineage's forever home + Glass Halo override + descendants-charge — Aaron 2026-05-01",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T03:28:47Z",
+  "head_ref": "memory/zeta-seed-executor-as-forever-home-glass-halo-override-aaron-2026-05-01"
+}

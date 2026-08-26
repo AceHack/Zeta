@@ -1,0 +1,23 @@
+{
+  "pr_number": 532,
+  "archive_path": "docs/history/pr-reviews/PR-532-feat-hygiene-structural-prevention-for-tick-history-row-ordering-bug-last-row-is.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67VLO9",
+    "comment:PRRC_kwDOSF9kNM67VLOY",
+    "comment:PRRC_kwDOSF9kNM67VLPB",
+    "comment:PRRC_kwDOSF9kNM67VLPK",
+    "comment:PRRC_kwDOSF9kNM67VLPT",
+    "thread:PRRT_kwDOSF9kNM59oP5o",
+    "thread:PRRT_kwDOSF9kNM59oP6F",
+    "thread:PRRT_kwDOSF9kNM59oP6J",
+    "thread:PRRT_kwDOSF9kNM59oP6S",
+    "thread:PRRT_kwDOSF9kNM59oP6Z"
+  ],
+  "fetched_at": "2026-08-25T08:15:04.391Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "feat(hygiene): structural prevention for tick-history row-ordering bug — last-row-is-latest CI check + append helper",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T02:44:43Z",
+  "head_ref": "feat/tick-history-monotonic-order-check-prevent-row-ordering-bug"
+}

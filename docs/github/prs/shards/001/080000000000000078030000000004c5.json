@@ -1,0 +1,17 @@
+{
+  "pr_number": 1221,
+  "archive_path": "docs/history/pr-reviews/PR-1221-free-memory-god-structures-shorthand-mirror-layer-engineering-shorthand-aaron-20.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Xjed",
+    "comment:PRRC_kwDOSF9kNM69Xjer",
+    "thread:PRRT_kwDOSF9kNM5_IxXY",
+    "thread:PRRT_kwDOSF9kNM5_IxXk"
+  ],
+  "fetched_at": "2026-08-25T08:42:54.376Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(god-structures-shorthand): mirror-layer engineering shorthand (Aaron 2026-05-02 via Claude.ai)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:47:35Z",
+  "head_ref": "free-memory/god-structures-multi-oracle-bft-shorthand-aaron-2026-05-02"
+}

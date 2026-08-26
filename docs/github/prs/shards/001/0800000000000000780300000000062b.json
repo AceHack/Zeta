@@ -1,0 +1,27 @@
+{
+  "pr_number": 1579,
+  "archive_path": "docs/history/pr-reviews/PR-1579-feat-workflows-razor-cadence-trigger-daily-mechanization-of-razor-discipline-b-0.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM695mOP",
+    "comment:PRRC_kwDOSF9kNM695mOa",
+    "comment:PRRC_kwDOSF9kNM695mOf",
+    "comment:PRRC_kwDOSF9kNM695mOk",
+    "comment:PRRC_kwDOSF9kNM695qZd",
+    "comment:PRRC_kwDOSF9kNM695qZv",
+    "comment:PRRC_kwDOSF9kNM695qaC",
+    "thread:PRRT_kwDOSF9kNM5_iey0",
+    "thread:PRRT_kwDOSF9kNM5_iey4",
+    "thread:PRRT_kwDOSF9kNM5_ieyo",
+    "thread:PRRT_kwDOSF9kNM5_ieyw",
+    "thread:PRRT_kwDOSF9kNM5_ih85",
+    "thread:PRRT_kwDOSF9kNM5_ih9F",
+    "thread:PRRT_kwDOSF9kNM5_ih9W"
+  ],
+  "fetched_at": "2026-08-25T08:57:25.438Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(workflows): razor-cadence trigger -- daily mechanization of razor-discipline (B-0192)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T04:17:43Z",
+  "head_ref": "feature/razor-cadence-workflow-stub-b-0192-aaron-2026-05-05"
+}

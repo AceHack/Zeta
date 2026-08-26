@@ -1,0 +1,17 @@
+{
+  "pr_number": 725,
+  "archive_path": "docs/history/pr-reviews/PR-725-hygiene-tick-history-first-per-tick-shard-file-option-b-transport-pr-724-depende.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PoUA",
+    "comment:PRRC_kwDOSF9kNM69HTMh",
+    "comment:PRRC_kwDOSF9kNM69HTjQ",
+    "thread:PRRT_kwDOSF9kNM5-TtaU"
+  ],
+  "fetched_at": "2026-08-25T08:22:47.412Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): first per-tick shard file (Option B transport, PR #724 dependency)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:56:20Z",
+  "head_ref": "tick-history/2026-04-29-tick-option-B-shard-pattern-first-shard"
+}

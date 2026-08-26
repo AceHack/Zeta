@@ -1,0 +1,17 @@
+{
+  "pr_number": 1237,
+  "archive_path": "docs/history/pr-reviews/PR-1237-research-2026-05-02-mirror-otto-s-drive-bridge-critique-into-docs-research-close.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Yd6L",
+    "comment:PRRC_kwDOSF9kNM69Yd6S",
+    "thread:PRRT_kwDOSF9kNM5_JfNJ",
+    "thread:PRRT_kwDOSF9kNM5_JfNN"
+  ],
+  "fetched_at": "2026-08-25T08:43:38.192Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-02): mirror Otto's Drive-bridge critique into docs/research/ — closes 3-artifact bridge loop",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T22:24:38Z",
+  "head_ref": "research/2026-05-02-otto-critique-mirror-drive-bridge"
+}

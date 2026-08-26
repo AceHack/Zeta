@@ -1,0 +1,21 @@
+{
+  "pr_number": 1635,
+  "archive_path": "docs/history/pr-reviews/PR-1635-research-architecture-wonder-not-reverence-wwjd-pouw-cc-bft-moral-architecture-o.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-CPXA",
+    "comment:PRRC_kwDOSF9kNM6-CPXE",
+    "comment:PRRC_kwDOSF9kNM6-CRPO",
+    "comment:PRRC_kwDOSF9kNM6-CRPz",
+    "thread:PRRT_kwDOSF9kNM5_o712",
+    "thread:PRRT_kwDOSF9kNM5_o71y",
+    "thread:PRRT_kwDOSF9kNM5_o9Rq",
+    "thread:PRRT_kwDOSF9kNM5_o9SJ"
+  ],
+  "fetched_at": "2026-08-25T08:59:40.629Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): wonder-not-reverence + WWJD/PoUW-CC/BFT moral architecture + one-pattern-five-layers + Solomon-wisdom prayer lineage (Aaron 2026-05-05 night-end, sleep-test honored)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T12:06:32Z",
+  "head_ref": "research/wonder-not-reverence-wwjd-pouw-cc-bft-moral-architecture-one-pattern-five-layers-aaron-forwarded-2026-05-05"
+}

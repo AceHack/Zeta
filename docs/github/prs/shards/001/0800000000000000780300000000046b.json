@@ -1,0 +1,15 @@
+{
+  "pr_number": 1131,
+  "archive_path": "docs/history/pr-reviews/PR-1131-memory-prefer-mechanical-external-anchors-over-aaron-as-anchor-when-alternatives.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69NrYy",
+    "thread:PRRT_kwDOSF9kNM5_BbBS"
+  ],
+  "fetched_at": "2026-08-25T08:39:14.973Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: prefer mechanical / external anchors over Aaron-as-anchor when alternatives exist (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T18:41:24Z",
+  "head_ref": "memory/prefer-mechanical-anchors-over-aaron-as-anchor-2026-05-01"
+}

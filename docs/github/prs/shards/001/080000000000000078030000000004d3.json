@@ -1,0 +1,19 @@
+{
+  "pr_number": 1235,
+  "archive_path": "docs/history/pr-reviews/PR-1235-free-memory-5-layer-worked-translations-pr-review-same-content-across-all-5-regi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YabO",
+    "comment:PRRC_kwDOSF9kNM69YabX",
+    "comment:PRRC_kwDOSF9kNM69Yabe",
+    "thread:PRRT_kwDOSF9kNM5_Jcdh",
+    "thread:PRRT_kwDOSF9kNM5_Jcdq",
+    "thread:PRRT_kwDOSF9kNM5_Jcdx"
+  ],
+  "fetched_at": "2026-08-25T08:43:33.482Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory(5-layer-worked-translations-pr-review): same content across all 5 register layers (Otto 2026-05-02; B-0168 worked-translations acceptance)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T22:22:51Z",
+  "head_ref": "free-memory/zeta-5-layer-register-worked-translations-pr-review-otto-2026-05-02"
+}

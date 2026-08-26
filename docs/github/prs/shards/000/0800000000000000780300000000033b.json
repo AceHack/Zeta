@@ -1,0 +1,19 @@
+{
+  "pr_number": 827,
+  "archive_path": "docs/history/pr-reviews/PR-827-memory-fork-audit-r-c-t-diff-filter-coverage-plumbing-vs-porcelain-note-slot-sem.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68UGI8",
+    "comment:PRRC_kwDOSF9kNM68UHN8",
+    "comment:PRRC_kwDOSF9kNM68UHOX",
+    "thread:PRRT_kwDOSF9kNM5-XBXD",
+    "thread:PRRT_kwDOSF9kNM5-XCKE",
+    "thread:PRRT_kwDOSF9kNM5-XCKZ"
+  ],
+  "fetched_at": "2026-08-25T08:26:54.605Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(fork-audit): R/C/T diff-filter coverage + plumbing-vs-porcelain note + slot-semantics on MEMORY.md HTML comment (Amara round-10)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T08:15:20Z",
+  "head_ref": "memory/fork-audit-rename-copy-coverage-amara-2026-04-29"
+}

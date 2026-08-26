@@ -1,0 +1,21 @@
+{
+  "pr_number": 1900,
+  "archive_path": "docs/history/pr-reviews/PR-1900-docs-well-definitions-d-i-adjunction-yoneda-characterization.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-5bOX",
+    "comment:PRRC_kwDOSF9kNM6-5eQy",
+    "comment:PRRC_kwDOSF9kNM6-5eRm",
+    "comment:PRRC_kwDOSF9kNM6-5eSM",
+    "thread:PRRT_kwDOSF9kNM6AXLe9",
+    "thread:PRRT_kwDOSF9kNM6AXNt-",
+    "thread:PRRT_kwDOSF9kNM6AXNul",
+    "thread:PRRT_kwDOSF9kNM6AXNvE"
+  ],
+  "fetched_at": "2026-08-25T09:07:00.377Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(well-definitions): D⊣I adjunction + Yoneda characterization",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:40:19Z",
+  "head_ref": "otto/well-definitions-adjunction-yoneda"
+}

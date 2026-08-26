@@ -1,0 +1,23 @@
+{
+  "pr_number": 1625,
+  "archive_path": "docs/history/pr-reviews/PR-1625-memory-feedback-anti-ossification-discipline-kernels-are-candidate-almost-author.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-A6Eq",
+    "comment:PRRC_kwDOSF9kNM6-A6FQ",
+    "comment:PRRC_kwDOSF9kNM6-A6Fu",
+    "comment:PRRC_kwDOSF9kNM6-A6GD",
+    "comment:PRRC_kwDOSF9kNM6-A6Gh",
+    "thread:PRRT_kwDOSF9kNM5_n7Ho",
+    "thread:PRRT_kwDOSF9kNM5_n7IH",
+    "thread:PRRT_kwDOSF9kNM5_n7Ig",
+    "thread:PRRT_kwDOSF9kNM5_n7Ix",
+    "thread:PRRT_kwDOSF9kNM5_n7JK"
+  ],
+  "fetched_at": "2026-08-25T08:59:17.205Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): anti-ossification discipline -- kernels are candidate-almost-authority + respected-not-reverenced (Aaron 2026-05-05 sharpening)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:01:09Z",
+  "head_ref": "memory/anti-ossification-discipline-kernels-candidate-not-authority-recursive-application-aaron-2026-05-05"
+}

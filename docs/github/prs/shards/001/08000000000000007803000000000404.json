@@ -1,0 +1,12 @@
+{
+  "pr_number": 1028,
+  "archive_path": "docs/history/pr-reviews/PR-1028-hygiene-tick-history-shard-0500z-drain-on-pr-1025-8-0.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:35:02.632Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0500Z — drain on PR #1025 (8→0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:45:21Z",
+  "head_ref": "hygiene/tick-history-0500Z-2026-05-01"
+}

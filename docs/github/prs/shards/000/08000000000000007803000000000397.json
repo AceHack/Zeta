@@ -1,0 +1,15 @@
+{
+  "pr_number": 919,
+  "archive_path": "docs/history/pr-reviews/PR-919-backlog-b-0061-regenerate-index-close-17097-line-monolith-per-row-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM684Bt3",
+    "thread:PRRT_kwDOSF9kNM5-xdyt"
+  ],
+  "fetched_at": "2026-08-25T08:30:23.683Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0061): regenerate index — close 17097-line monolith→per-row drift",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T14:57:21Z",
+  "head_ref": "ops/backlog-regenerate-monolith-cleanup-2026-04-30"
+}

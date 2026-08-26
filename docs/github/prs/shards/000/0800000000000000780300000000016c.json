@@ -1,0 +1,22 @@
+{
+  "pr_number": 364,
+  "archive_path": "docs/history/pr-reviews/PR-364-loop-tick-history-row-otto-222.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67BVK1",
+    "comment:PRRC_kwDOSF9kNM67BVLs",
+    "comment:PRRC_kwDOSF9kNM67CVjt",
+    "comment:PRRC_kwDOSF9kNM67CVx2",
+    "comment:PRRC_kwDOSF9kNM67CX0_",
+    "comment:PRRC_kwDOSF9kNM67CeNP",
+    "thread:PRRT_kwDOSF9kNM59Z-5O",
+    "thread:PRRT_kwDOSF9kNM59ZMk-",
+    "thread:PRRT_kwDOSF9kNM59ZMkP"
+  ],
+  "fetched_at": "2026-08-25T08:06:47.532Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "loop: tick-history row — Otto-222",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:22:11Z",
+  "head_ref": "loop/tick-history-otto-222"
+}

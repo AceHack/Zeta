@@ -1,0 +1,27 @@
+{
+  "pr_number": 1124,
+  "archive_path": "docs/history/pr-reviews/PR-1124-memory-assumed-state-vs-actual-state-audit-horizon-check-aaron-2026-05-01-somati.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69L-xk",
+    "comment:PRRC_kwDOSF9kNM69L1hr",
+    "comment:PRRC_kwDOSF9kNM69L1i2",
+    "comment:PRRC_kwDOSF9kNM69L1iH",
+    "comment:PRRC_kwDOSF9kNM69L1iS",
+    "comment:PRRC_kwDOSF9kNM69L1ii",
+    "comment:PRRC_kwDOSF9kNM69MEJo",
+    "thread:PRRT_kwDOSF9kNM5_AE29",
+    "thread:PRRT_kwDOSF9kNM5_AE3Q",
+    "thread:PRRT_kwDOSF9kNM5_AE3a",
+    "thread:PRRT_kwDOSF9kNM5_AE3n",
+    "thread:PRRT_kwDOSF9kNM5_AE3z",
+    "thread:PRRT_kwDOSF9kNM5_ALot",
+    "thread:PRRT_kwDOSF9kNM5_APpa"
+  ],
+  "fetched_at": "2026-08-25T08:38:58.902Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: assumed-state vs actual-state — audit horizon check (Aaron 2026-05-01 somatic confirmation)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T16:24:03Z",
+  "head_ref": "substrate-assumed-state-vs-actual-state-audit-horizon-aaron-2026-05-01"
+}

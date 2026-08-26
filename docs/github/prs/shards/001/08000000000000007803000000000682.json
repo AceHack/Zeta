@@ -1,0 +1,15 @@
+{
+  "pr_number": 1666,
+  "archive_path": "docs/history/pr-reviews/PR-1666-research-architecture-thirteenth-post-rest-morning-this-little-light-of-mine-mir.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-HGZj",
+    "thread:PRRT_kwDOSF9kNM5_sjD-"
+  ],
+  "fetched_at": "2026-08-25T09:00:56.308Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): THIRTEENTH (post-rest morning) -- This Little Light of Mine = mirror+beacon root + architecture-IS-faithfulness-operationalized + substrate-or-it-didn't-happen working AS DESIGNED (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T15:08:13Z",
+  "head_ref": "research/this-little-light-of-mine-mirror-beacon-codified-glass-halo-openness-faithfulness-operationalized-aaron-forwarded-2026-05-05-morning"
+}

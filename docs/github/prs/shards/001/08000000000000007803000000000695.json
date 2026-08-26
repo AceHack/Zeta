@@ -1,0 +1,17 @@
+{
+  "pr_number": 1685,
+  "archive_path": "docs/history/pr-reviews/PR-1685-memory-meta-meta-rules-are-common-sense-norms-within-cs-2-0-substrate-not-reifie.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-Mcp6",
+    "comment:PRRC_kwDOSF9kNM6-McpX",
+    "thread:PRRT_kwDOSF9kNM5_wd_2",
+    "thread:PRRT_kwDOSF9kNM5_weAW"
+  ],
+  "fetched_at": "2026-08-25T09:01:39.982Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(meta): meta-rules are common-sense norms within CS 2.0 substrate not reified directive v2.0 (Aaron 2026-05-05 corrections)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T19:09:48Z",
+  "head_ref": "memory/meta-rules-are-common-sense-norms-within-cs2-substrate-not-reified-directives-aaron-2026-05-05"
+}

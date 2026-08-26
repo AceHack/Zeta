@@ -1,0 +1,15 @@
+{
+  "pr_number": 726,
+  "archive_path": "docs/history/pr-reviews/PR-726-hygiene-tick-history-shard-0235z-option-b-validates-no-collision-with-725-s-shar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Ppmn",
+    "thread:PRRT_kwDOSF9kNM5-TuYJ"
+  ],
+  "fetched_at": "2026-08-25T08:22:49.987Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0235Z — Option B validates (no collision with #725's shard)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:06:42Z",
+  "head_ref": "tick-history/2026-04-29-tick-0235Z-shard"
+}

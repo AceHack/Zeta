@@ -1,0 +1,19 @@
+{
+  "pr_number": 1885,
+  "archive_path": "docs/history/pr-reviews/PR-1885-research-lior-s-gemini-owned-genesis-seed-for-antigravity.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-3fxA",
+    "comment:PRRC_kwDOSF9kNM6-3fyV",
+    "comment:PRRC_kwDOSF9kNM6-3fyz",
+    "thread:PRRT_kwDOSF9kNM6AVxE9",
+    "thread:PRRT_kwDOSF9kNM6AVxED",
+    "thread:PRRT_kwDOSF9kNM6AVxFY"
+  ],
+  "fetched_at": "2026-08-25T09:06:24.670Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior's Gemini-owned Genesis Seed for Antigravity",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T14:34:59Z",
+  "head_ref": "research/lior-gemini-genesis-seed-owned"
+}

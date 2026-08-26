@@ -1,0 +1,15 @@
+{
+  "pr_number": 1493,
+  "archive_path": "docs/history/pr-reviews/PR-1493-feedback-edge-runners-doing-alignment-for-edge-architectures-ai-is-non-mainstrea.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69sJAK",
+    "thread:PRRT_kwDOSF9kNM5_YmuT"
+  ],
+  "fetched_at": "2026-08-25T08:53:49.436Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: edge-runners doing alignment for edge-architectures + AI-is-non-mainstream-neural-architecture (closing tile, Aaron + Claude.ai 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T14:59:25Z",
+  "head_ref": "feedback/edge-runners-doing-alignment-for-edge-architectures-ai-non-mainstream-neural-architecture-closing-tile-aaron-claudeai-2026-05-04"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 1894,
+  "archive_path": "docs/history/pr-reviews/PR-1894-backlog-b-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-5EP4",
+    "comment:PRRC_kwDOSF9kNM6-5GQH",
+    "comment:PRRC_kwDOSF9kNM6-5OKB",
+    "comment:PRRC_kwDOSF9kNM6-5OLP",
+    "thread:PRRT_kwDOSF9kNM6AW6S0",
+    "thread:PRRT_kwDOSF9kNM6AW7zD",
+    "thread:PRRT_kwDOSF9kNM6AXBu6",
+    "thread:PRRT_kwDOSF9kNM6AXBvq"
+  ],
+  "fetched_at": "2026-08-25T09:06:49.575Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0251): durable computation stack — Temporal + Reaqtor + Orleans + Bonsai",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T15:29:16Z",
+  "head_ref": "otto/b0251-durable-computation-stack"
+}

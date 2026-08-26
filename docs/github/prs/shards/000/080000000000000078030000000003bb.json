@@ -1,0 +1,21 @@
+{
+  "pr_number": 955,
+  "archive_path": "docs/history/pr-reviews/PR-955-research-review-10-backlog-b-0115-b-0116-b-0117-deepseek-review-10-verbatim-3-ba.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68_0AB",
+    "comment:PRRC_kwDOSF9kNM68_18p",
+    "comment:PRRC_kwDOSF9kNM69ACpA",
+    "comment:PRRC_kwDOSF9kNM69ACpk",
+    "thread:PRRT_kwDOSF9kNM5-3MU6",
+    "thread:PRRT_kwDOSF9kNM5-3NzC",
+    "thread:PRRT_kwDOSF9kNM5-3XYC",
+    "thread:PRRT_kwDOSF9kNM5-3XYg"
+  ],
+  "fetched_at": "2026-08-25T08:31:55.470Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(review-10)+backlog(B-0115/B-0116/B-0117): Deepseek Review 10 verbatim + 3 backlog rows closing deferred-skill anti-pattern (Deepseek 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T21:16:47Z",
+  "head_ref": "research/deepseek-review-10-preservation-plus-backlog-rows-for-deferred-items-2026-04-30"
+}

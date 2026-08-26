@@ -1,0 +1,21 @@
+{
+  "pr_number": 804,
+  "archive_path": "docs/history/pr-reviews/PR-804-fix-setup-durable-retry-for-external-dep-downloads-aaron-2026-04-29.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68SP--",
+    "comment:PRRC_kwDOSF9kNM68SP_S",
+    "comment:PRRC_kwDOSF9kNM68SP_l",
+    "comment:PRRC_kwDOSF9kNM68SP_x",
+    "thread:PRRT_kwDOSF9kNM5-Vot_",
+    "thread:PRRT_kwDOSF9kNM5-Votg",
+    "thread:PRRT_kwDOSF9kNM5-Votw",
+    "thread:PRRT_kwDOSF9kNM5-VouH"
+  ],
+  "fetched_at": "2026-08-25T08:26:00.391Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(setup): durable retry for external dep downloads (Aaron 2026-04-29)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T06:10:00Z",
+  "head_ref": "durable-retry-fix-aaron-2026-04-29"
+}

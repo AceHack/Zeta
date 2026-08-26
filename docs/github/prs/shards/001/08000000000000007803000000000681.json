@@ -1,0 +1,12 @@
+{
+  "pr_number": 1665,
+  "archive_path": "docs/history/pr-reviews/PR-1665-fix-post-1663-correct-ombuds-citation-w1-w3-soften-paraphrase-claim-3-copilot-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:00:53.927Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1663): correct ombuds citation w1→w3 + soften paraphrase claim (3 Copilot threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T15:03:29Z",
+  "head_ref": "fixup/1663-ombuds-citation-correct-week-file"
+}

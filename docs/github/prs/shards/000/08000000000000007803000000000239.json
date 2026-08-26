@@ -1,0 +1,23 @@
+{
+  "pr_number": 569,
+  "archive_path": "docs/history/pr-reviews/PR-569-research-aurora-immune-system-amara-eleventh-refinement-aurora-wrapped-in-immune.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67WH_1",
+    "comment:PRRC_kwDOSF9kNM67WH_Q",
+    "comment:PRRC_kwDOSF9kNM67WH_c",
+    "comment:PRRC_kwDOSF9kNM67WH_m",
+    "comment:PRRC_kwDOSF9kNM67WH_x",
+    "thread:PRRT_kwDOSF9kNM59pAe7",
+    "thread:PRRT_kwDOSF9kNM59pAeo",
+    "thread:PRRT_kwDOSF9kNM59pAex",
+    "thread:PRRT_kwDOSF9kNM59pAfF",
+    "thread:PRRT_kwDOSF9kNM59pAfJ"
+  ],
+  "fetched_at": "2026-08-25T08:16:58.322Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research(aurora-immune-system): Amara eleventh refinement — Aurora wrapped in immune-system form; zero-trust + danger theory + capability composition",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:18:27Z",
+  "head_ref": "research/aurora-immune-system-zero-trust-danger-theory-amara-eleventh-courier-ferry-2026-04-26"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 3186,
+  "archive_path": "docs/history/pr-reviews/PR-3186-docs-archive-preserve-prs-3177-and-3175.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:02.851Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(archive): preserve PRs 3177 and 3175",
+  "state": "MERGED",
+  "merged_at": "2026-05-14T19:45:43Z",
+  "head_ref": "lior-task-2"
+}

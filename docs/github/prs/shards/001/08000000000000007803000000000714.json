@@ -1,0 +1,25 @@
+{
+  "pr_number": 1812,
+  "archive_path": "docs/history/pr-reviews/PR-1812-research-lior-orthogonal-dials-hate-friction-bp-structural-correction-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sKMT",
+    "comment:PRRC_kwDOSF9kNM6-sMEP",
+    "comment:PRRC_kwDOSF9kNM6-sNO9",
+    "comment:PRRC_kwDOSF9kNM6-sNPd",
+    "comment:PRRC_kwDOSF9kNM6-sNPt",
+    "comment:PRRC_kwDOSF9kNM6-sPe4",
+    "comment:PRRC_kwDOSF9kNM6-sPgT",
+    "comment:PRRC_kwDOSF9kNM6-sPiU",
+    "thread:PRRT_kwDOSF9kNM6ANQiO",
+    "thread:PRRT_kwDOSF9kNM6ANS4J",
+    "thread:PRRT_kwDOSF9kNM6ANS4h",
+    "thread:PRRT_kwDOSF9kNM6ANS4s"
+  ],
+  "fetched_at": "2026-08-25T09:05:19.852Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior orthogonal dials — Hate→Friction BP structural correction VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:21:38Z",
+  "head_ref": "research/lior-orthogonal-dials-hate-to-friction-correction"
+}

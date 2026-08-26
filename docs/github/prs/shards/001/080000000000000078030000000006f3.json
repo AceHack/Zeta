@@ -1,0 +1,21 @@
+{
+  "pr_number": 1779,
+  "archive_path": "docs/history/pr-reviews/PR-1779-research-lior-air-gapped-pockets-ancient-bft-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-qc1N",
+    "comment:PRRC_kwDOSF9kNM6-qc1P",
+    "comment:PRRC_kwDOSF9kNM6-qdLP",
+    "comment:PRRC_kwDOSF9kNM6-qdLd",
+    "thread:PRRT_kwDOSF9kNM6AL_Jh",
+    "thread:PRRT_kwDOSF9kNM6AL_Jj",
+    "thread:PRRT_kwDOSF9kNM6AL_aV",
+    "thread:PRRT_kwDOSF9kNM6AL_af"
+  ],
+  "fetched_at": "2026-08-25T09:04:38.689Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior air-gapped pockets × ancient BFT VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T03:33:56Z",
+  "head_ref": "research/lior-air-gapped-pockets-verbatim"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1065,
+  "archive_path": "docs/history/pr-reviews/PR-1065-hygiene-tick-history-2026-05-01t09-26z-ci-failure-diagnosis-dirty-rebase-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HEjl",
+    "thread:PRRT_kwDOSF9kNM5-8iJE"
+  ],
+  "fetched_at": "2026-08-25T08:36:34.598Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:26Z — CI-failure diagnosis + DIRTY-rebase tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:30:35Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0926Z-1031-lint-fix-1015-rebase"
+}

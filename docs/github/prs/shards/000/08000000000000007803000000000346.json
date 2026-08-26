@@ -1,0 +1,21 @@
+{
+  "pr_number": 838,
+  "archive_path": "docs/history/pr-reviews/PR-838-ops-0-0-0-batch-2-8-files-safe-81-lines-1-needs-human-decision-12-lines.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Z1x0",
+    "comment:PRRC_kwDOSF9kNM68Z94M",
+    "comment:PRRC_kwDOSF9kNM68ZsD7",
+    "comment:PRRC_kwDOSF9kNM68ZsEw",
+    "thread:PRRT_kwDOSF9kNM5-bJPM",
+    "thread:PRRT_kwDOSF9kNM5-bJPu",
+    "thread:PRRT_kwDOSF9kNM5-bQh7",
+    "thread:PRRT_kwDOSF9kNM5-bWgw"
+  ],
+  "fetched_at": "2026-08-25T08:27:17.249Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(0-0-0): batch 2 — 8 files SAFE (81 lines) + 1 NEEDS_HUMAN_DECISION (12 lines)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T12:28:55Z",
+  "head_ref": "classify-heuristic-files-batch-2-2026-04-29"
+}

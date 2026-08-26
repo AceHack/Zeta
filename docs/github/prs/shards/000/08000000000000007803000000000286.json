@@ -1,0 +1,31 @@
+{
+  "pr_number": 646,
+  "archive_path": "docs/history/pr-reviews/PR-646-sync-forward-port-acehack-correctness-perf-fixes-graph-fs-gershgorin-robuststats.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67r_R_",
+    "comment:PRRC_kwDOSF9kNM67sCU5",
+    "comment:PRRC_kwDOSF9kNM67sCUA",
+    "comment:PRRC_kwDOSF9kNM67sCUn",
+    "comment:PRRC_kwDOSF9kNM67sCVj",
+    "comment:PRRC_kwDOSF9kNM67sCWA",
+    "comment:PRRC_kwDOSF9kNM67sCWT",
+    "comment:PRRC_kwDOSF9kNM67sCWj",
+    "comment:PRRC_kwDOSF9kNM67sCXJ",
+    "thread:PRRT_kwDOSF9kNM595jnQ",
+    "thread:PRRT_kwDOSF9kNM595luO",
+    "thread:PRRT_kwDOSF9kNM595lul",
+    "thread:PRRT_kwDOSF9kNM595lux",
+    "thread:PRRT_kwDOSF9kNM595lv9",
+    "thread:PRRT_kwDOSF9kNM595lvO",
+    "thread:PRRT_kwDOSF9kNM595lvh",
+    "thread:PRRT_kwDOSF9kNM595lvw",
+    "thread:PRRT_kwDOSF9kNM595lwX"
+  ],
+  "fetched_at": "2026-08-25T08:19:51.032Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "sync: forward-port AceHack correctness/perf fixes (Graph.fs Gershgorin + RobustStats NaN guard + TemporalCoordination helper)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T16:45:09Z",
+  "head_ref": "lfg/sync-acehack-correctness-fixes"
+}

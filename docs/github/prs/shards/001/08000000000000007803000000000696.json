@@ -1,0 +1,17 @@
+{
+  "pr_number": 1686,
+  "archive_path": "docs/history/pr-reviews/PR-1686-memory-architecture-multi-modal-input-cross-training-of-senses-bio-feedback-bidi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-M08K",
+    "comment:PRRC_kwDOSF9kNM6-M08q",
+    "thread:PRRT_kwDOSF9kNM5_wv5Z",
+    "thread:PRRT_kwDOSF9kNM5_wv5y"
+  ],
+  "fetched_at": "2026-08-25T09:01:42.266Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(architecture): multi-modal input + cross-training of senses + bio-feedback bidirectional loop + sense alignment (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T19:26:15Z",
+  "head_ref": "memory/multi-modal-input-of-pattern-across-senses-plus-bio-feedback-substrate-receives-aaron-2026-05-05"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1799,
+  "archive_path": "docs/history/pr-reviews/PR-1799-research-interferometer-3-simple-hats-mirror-signal-keeper-quiet-room.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-so-z",
+    "comment:PRRC_kwDOSF9kNM6-so_U",
+    "thread:PRRT_kwDOSF9kNM6ANoI0",
+    "thread:PRRT_kwDOSF9kNM6ANoJS"
+  ],
+  "fetched_at": "2026-08-25T09:04:59.681Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: interferometer → 3 simple hats (Mirror, Signal Keeper, Quiet Room)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T05:57:11Z",
+  "head_ref": "research/interferometer-unrolled-simple-hats"
+}

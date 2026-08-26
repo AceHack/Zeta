@@ -1,0 +1,31 @@
+{
+  "pr_number": 214,
+  "archive_path": "docs/history/pr-reviews/PR-214-tests-recursiveseminaive-boundary-amara-p0-executably-document-monotone-only-ret.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM661HgW",
+    "comment:PRRC_kwDOSF9kNM661HgY",
+    "comment:PRRC_kwDOSF9kNM661Je_",
+    "comment:PRRC_kwDOSF9kNM661Jf3",
+    "comment:PRRC_kwDOSF9kNM661JfN",
+    "comment:PRRC_kwDOSF9kNM661JfZ",
+    "comment:PRRC_kwDOSF9kNM661Jfj",
+    "comment:PRRC_kwDOSF9kNM661Jfs",
+    "comment:PRRC_kwDOSF9kNM661JgG",
+    "thread:PRRT_kwDOSF9kNM59QIR6",
+    "thread:PRRT_kwDOSF9kNM59QIR7",
+    "thread:PRRT_kwDOSF9kNM59QJp6",
+    "thread:PRRT_kwDOSF9kNM59QJpj",
+    "thread:PRRT_kwDOSF9kNM59QJpw",
+    "thread:PRRT_kwDOSF9kNM59QJqA",
+    "thread:PRRT_kwDOSF9kNM59QJqH",
+    "thread:PRRT_kwDOSF9kNM59QJqS",
+    "thread:PRRT_kwDOSF9kNM59QJqd"
+  ],
+  "fetched_at": "2026-08-25T08:01:18.716Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tests: RecursiveSemiNaive boundary (Amara P0 — executably document monotone-only + retraction-leak scenarios)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T23:15:00Z",
+  "head_ref": "tests/recursive-seminaive-boundary-docs-spec-scenario"
+}

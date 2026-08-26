@@ -1,0 +1,18 @@
+{
+  "pr_number": 755,
+  "archive_path": "docs/history/pr-reviews/PR-755-hygiene-tick-history-shard-0500z.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68P_4i",
+    "comment:PRRC_kwDOSF9kNM68P_c0",
+    "comment:PRRC_kwDOSF9kNM69HR76",
+    "thread:PRRT_kwDOSF9kNM5-T-57",
+    "thread:PRRT_kwDOSF9kNM5-T-l9"
+  ],
+  "fetched_at": "2026-08-25T08:23:57.024Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0500Z",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:53:30Z",
+  "head_ref": "tick-history/2026-04-29-tick-0500Z-shard"
+}

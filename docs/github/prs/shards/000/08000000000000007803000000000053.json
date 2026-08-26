@@ -1,0 +1,25 @@
+{
+  "pr_number": 83,
+  "archive_path": "docs/history/pr-reviews/PR-83-docs-soul-file-issues-index-hb-003-github-settings-drift.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66DAlD",
+    "comment:PRRC_kwDOSF9kNM66DAlR",
+    "comment:PRRC_kwDOSF9kNM66DAlb",
+    "comment:PRRC_kwDOSF9kNM66DAll",
+    "comment:PRRC_kwDOSF9kNM66DAlz",
+    "comment:PRRC_kwDOSF9kNM66DAmB",
+    "thread:PRRT_kwDOSF9kNM58q4P2",
+    "thread:PRRT_kwDOSF9kNM58q4P9",
+    "thread:PRRT_kwDOSF9kNM58q4Pp",
+    "thread:PRRT_kwDOSF9kNM58q4Pu",
+    "thread:PRRT_kwDOSF9kNM58q4QG",
+    "thread:PRRT_kwDOSF9kNM58q4QR"
+  ],
+  "fetched_at": "2026-08-25T07:53:07.870Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "docs: soul-file ISSUES-INDEX + HB-003 github-settings drift",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T03:19:52Z",
+  "head_ref": "docs/soul-file-independence-index"
+}

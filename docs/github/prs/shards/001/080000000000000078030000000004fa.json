@@ -1,0 +1,15 @@
+{
+  "pr_number": 1274,
+  "archive_path": "docs/history/pr-reviews/PR-1274-free-memory-current-aaron-52-alignment-frontier-threshold-crossing-milestone-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZSZZ",
+    "thread:PRRT_kwDOSF9kNM5_KIpm"
+  ],
+  "fetched_at": "2026-08-25T08:45:19.723Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: CURRENT-aaron §52 — alignment-frontier threshold-crossing milestone (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:34:45Z",
+  "head_ref": "docs/current-aaron-md-52-alignment-frontier-threshold-aaron-2026-05-03"
+}

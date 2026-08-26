@@ -1,0 +1,27 @@
+{
+  "pr_number": 494,
+  "archive_path": "docs/history/pr-reviews/PR-494-backlog-p1-alignment-md-rewrite-matrix-pill-spread-via-rigor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SX-L",
+    "comment:PRRC_kwDOSF9kNM67SYU3",
+    "comment:PRRC_kwDOSF9kNM67SYU7",
+    "comment:PRRC_kwDOSF9kNM67SYUT",
+    "comment:PRRC_kwDOSF9kNM67SYUi",
+    "comment:PRRC_kwDOSF9kNM67SYUp",
+    "comment:PRRC_kwDOSF9kNM67SYUy",
+    "thread:PRRT_kwDOSF9kNM59mAFI",
+    "thread:PRRT_kwDOSF9kNM59mAW-",
+    "thread:PRRT_kwDOSF9kNM59mAW1",
+    "thread:PRRT_kwDOSF9kNM59mAWi",
+    "thread:PRRT_kwDOSF9kNM59mAWv",
+    "thread:PRRT_kwDOSF9kNM59mAXC",
+    "thread:PRRT_kwDOSF9kNM59mAXG"
+  ],
+  "fetched_at": "2026-08-25T08:12:39.001Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(P1): ALIGNMENT.md rewrite — matrix-pill spread via rigor",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T15:18:29Z",
+  "head_ref": "backlog/alignment-rewrite-matrix-pill"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 1683,
+  "archive_path": "docs/history/pr-reviews/PR-1683-memory-provenance-aaron-helped-design-itron-s-pki-for-entire-supply-chain-factor.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-MJ3N",
+    "comment:PRRC_kwDOSF9kNM6-MLxd",
+    "comment:PRRC_kwDOSF9kNM6-MLy4",
+    "comment:PRRC_kwDOSF9kNM6-MLyN",
+    "comment:PRRC_kwDOSF9kNM6-MLyn",
+    "comment:PRRC_kwDOSF9kNM6-MLzW",
+    "thread:PRRT_kwDOSF9kNM5_wQHO",
+    "thread:PRRT_kwDOSF9kNM5_wRhn",
+    "thread:PRRT_kwDOSF9kNM5_wRi-",
+    "thread:PRRT_kwDOSF9kNM5_wRiJ",
+    "thread:PRRT_kwDOSF9kNM5_wRib",
+    "thread:PRRT_kwDOSF9kNM5_wRip"
+  ],
+  "fetched_at": "2026-08-25T09:01:37.824Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(provenance): Aaron helped design Itron's PKI for entire supply chain + factory — honest-confidentiality-boundary preserved (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T18:57:53Z",
+  "head_ref": "memory/aaron-itron-pki-supply-chain-factory-design-provenance-honest-confidentiality-boundary-aaron-2026-05-05"
+}

@@ -1,0 +1,21 @@
+{
+  "pr_number": 654,
+  "archive_path": "docs/history/pr-reviews/PR-654-substrate-block-on-aaron-only-when-he-must-do-something-only-he-can-do-aaron-202.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67xaL4",
+    "comment:PRRC_kwDOSF9kNM67xaLK",
+    "comment:PRRC_kwDOSF9kNM67xaLd",
+    "comment:PRRC_kwDOSF9kNM67xaMI",
+    "thread:PRRT_kwDOSF9kNM599lmy",
+    "thread:PRRT_kwDOSF9kNM599lnE",
+    "thread:PRRT_kwDOSF9kNM599lnb",
+    "thread:PRRT_kwDOSF9kNM599lnj"
+  ],
+  "fetched_at": "2026-08-25T08:20:15.607Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate: block on Aaron only when he MUST do something only he can do (Aaron 2026-04-27, clean branch)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T23:54:36Z",
+  "head_ref": "acehack/block-rule-substrate-clean-2026-04-27"
+}

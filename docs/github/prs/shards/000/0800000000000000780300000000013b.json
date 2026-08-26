@@ -1,0 +1,23 @@
+{
+  "pr_number": 315,
+  "archive_path": "docs/history/pr-reviews/PR-315-core-veridicality-canonicalkey-groupbycanonical-7th-graduation-semantic-canonica.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM667Aw8",
+    "comment:PRRC_kwDOSF9kNM667Awc",
+    "comment:PRRC_kwDOSF9kNM667W4C",
+    "comment:PRRC_kwDOSF9kNM667W4_",
+    "comment:PRRC_kwDOSF9kNM667W4w",
+    "thread:PRRT_kwDOSF9kNM59Ud0Y",
+    "thread:PRRT_kwDOSF9kNM59Ud0x",
+    "thread:PRRT_kwDOSF9kNM59UuT8",
+    "thread:PRRT_kwDOSF9kNM59UuTK",
+    "thread:PRRT_kwDOSF9kNM59UuTu"
+  ],
+  "fetched_at": "2026-08-25T08:04:41.242Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: Veridicality.canonicalKey + groupByCanonical — 7th graduation (semantic canonicalization)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T12:39:37Z",
+  "head_ref": "feat/semantic-canonicalization-amara-graduation-7"
+}

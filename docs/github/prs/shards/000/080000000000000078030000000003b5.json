@@ -1,0 +1,19 @@
+{
+  "pr_number": 949,
+  "archive_path": "docs/history/pr-reviews/PR-949-memory-aaron-is-rodney-identity-disclosure-razor-not-immune-to-canonicalization-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68_C89",
+    "comment:PRRC_kwDOSF9kNM68_C8T",
+    "comment:PRRC_kwDOSF9kNM68_C8w",
+    "thread:PRRT_kwDOSF9kNM5-2oB2",
+    "thread:PRRT_kwDOSF9kNM5-2oBk",
+    "thread:PRRT_kwDOSF9kNM5-2oCC"
+  ],
+  "fetched_at": "2026-08-25T08:31:40.911Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(aaron-is-rodney): identity disclosure + razor-not-immune-to-canonicalization (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T20:25:07Z",
+  "head_ref": "memory/aaron-is-rodney-razor-not-immune-to-canonicalization-aaron-2026-04-30"
+}

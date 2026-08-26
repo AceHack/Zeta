@@ -1,0 +1,27 @@
+{
+  "pr_number": 1658,
+  "archive_path": "docs/history/pr-reviews/PR-1658-fix-post-1656-33-explicit-boundary-statement-to-6-preservations-copilot-batch-re.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-F-Xh",
+    "comment:PRRC_kwDOSF9kNM6-F-Y1",
+    "comment:PRRC_kwDOSF9kNM6-F-Zf",
+    "comment:PRRC_kwDOSF9kNM6-F-aU",
+    "comment:PRRC_kwDOSF9kNM6-F-bO",
+    "comment:PRRC_kwDOSF9kNM6-F-c5",
+    "comment:PRRC_kwDOSF9kNM6-F-cD",
+    "thread:PRRT_kwDOSF9kNM5_ru-j",
+    "thread:PRRT_kwDOSF9kNM5_ru8W",
+    "thread:PRRT_kwDOSF9kNM5_ru95",
+    "thread:PRRT_kwDOSF9kNM5_ru9c",
+    "thread:PRRT_kwDOSF9kNM5_ru_3",
+    "thread:PRRT_kwDOSF9kNM5_ru_S",
+    "thread:PRRT_kwDOSF9kNM5_rvAh"
+  ],
+  "fetched_at": "2026-08-25T09:00:35.893Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1656): §33 explicit boundary statement to 6 preservations (Copilot batch review)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:28:33Z",
+  "head_ref": "fixup/1656-non-fusion-boundary-statement-batch-2026-05-05"
+}

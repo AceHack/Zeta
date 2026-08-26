@@ -1,0 +1,23 @@
+{
+  "pr_number": 116,
+  "archive_path": "docs/history/pr-reviews/PR-116-round-44-auto-loop-18-tick-history-row-arc3-dora-soul-file-promotion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66H4la",
+    "comment:PRRC_kwDOSF9kNM66H70B",
+    "comment:PRRC_kwDOSF9kNM66H70q",
+    "comment:PRRC_kwDOSF9kNM66H71B",
+    "comment:PRRC_kwDOSF9kNM66H7zV",
+    "thread:PRRT_kwDOSF9kNM58uf_e",
+    "thread:PRRT_kwDOSF9kNM58uid7",
+    "thread:PRRT_kwDOSF9kNM58uidW",
+    "thread:PRRT_kwDOSF9kNM58uieX",
+    "thread:PRRT_kwDOSF9kNM58uieq"
+  ],
+  "fetched_at": "2026-08-25T07:54:58.049Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 auto-loop-18: tick-history row (ARC3-DORA soul-file promotion)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T09:17:05Z",
+  "head_ref": "land-autoloop-18-tick-history"
+}

@@ -1,0 +1,22 @@
+{
+  "pr_number": 465,
+  "archive_path": "docs/history/pr-reviews/PR-465-backlog-p2-doc-lint-suite-from-drain-log-corpus-patterns.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QdJP",
+    "comment:PRRC_kwDOSF9kNM67QdJS",
+    "comment:PRRC_kwDOSF9kNM67QdJV",
+    "comment:PRRC_kwDOSF9kNM67Qlhk",
+    "comment:PRRC_kwDOSF9kNM67QliP",
+    "comment:PRRC_kwDOSF9kNM67Qlir",
+    "thread:PRRT_kwDOSF9kNM59kdkp",
+    "thread:PRRT_kwDOSF9kNM59kdks",
+    "thread:PRRT_kwDOSF9kNM59kdkt"
+  ],
+  "fetched_at": "2026-08-25T08:11:24.646Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P2 doc-lint suite from drain-log corpus patterns",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:12:36Z",
+  "head_ref": "backlog/doc-lint-suite-from-corpus"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 462,
+  "archive_path": "docs/history/pr-reviews/PR-462-hygiene-268-pr-preservation-drain-log-for-431-blake3-receipt-hashing-follow-up.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Qb8T",
+    "thread:PRRT_kwDOSF9kNM59kckh"
+  ],
+  "fetched_at": "2026-08-25T08:11:17.499Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #431 (BLAKE3 receipt-hashing follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:27:15Z",
+  "head_ref": "drain/431-pr-preservation-log"
+}

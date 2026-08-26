@@ -1,0 +1,19 @@
+{
+  "pr_number": 1499,
+  "archive_path": "docs/history/pr-reviews/PR-1499-feedback-omnibus-contract-substrate-meta-tile-bp-ep-classical-execution-many-tru.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69uHw1",
+    "comment:PRRC_kwDOSF9kNM69uHwY",
+    "comment:PRRC_kwDOSF9kNM69uHxH",
+    "thread:PRRT_kwDOSF9kNM5_aE-O",
+    "thread:PRRT_kwDOSF9kNM5_aE-X",
+    "thread:PRRT_kwDOSF9kNM5_aE91"
+  ],
+  "fetched_at": "2026-08-25T08:54:03.930Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: omnibus-contract-substrate META-TILE + BP/EP-classical-execution + many-truths-held + Bell-careful-reframe + quantum-supremacy-narrowing (Aaron + Claude.ai 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T16:34:50Z",
+  "head_ref": "feedback/omnibus-contract-substrate-meta-tile-multiplicative-composition-recursive-pattern-aaron-claudeai-2026-05-04"
+}

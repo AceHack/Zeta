@@ -1,0 +1,17 @@
+{
+  "pr_number": 675,
+  "archive_path": "docs/history/pr-reviews/PR-675-memory-pull-queue-scope-broadening-recurrence-note-aaron-2026-04-28.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68ITC8",
+    "comment:PRRC_kwDOSF9kNM68ITDy",
+    "thread:PRRT_kwDOSF9kNM5-OV_3",
+    "thread:PRRT_kwDOSF9kNM5-OV_S"
+  ],
+  "fetched_at": "2026-08-25T08:20:53.795Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(pull-queue): scope-broadening + recurrence note (Aaron 2026-04-28)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T18:30:49Z",
+  "head_ref": "memory/pull-queue-recurrence-scope-broadening-2026-04-28"
+}

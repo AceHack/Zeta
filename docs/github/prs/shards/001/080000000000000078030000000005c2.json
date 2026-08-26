@@ -1,0 +1,15 @@
+{
+  "pr_number": 1474,
+  "archive_path": "docs/history/pr-reviews/PR-1474-feedback-superfluid-target-is-middle-path-becoming-easy-path-aaron-2026-05-04.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69nMHy",
+    "thread:PRRT_kwDOSF9kNM5_U46U"
+  ],
+  "fetched_at": "2026-08-25T08:52:56.209Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feedback: Superfluid target IS middle-path-becoming-easy-path (Aaron 2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T11:24:25Z",
+  "head_ref": "feedback/superfluid-target-middle-path-becomes-easy-path-aaron-2026-05-04"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 770,
+  "archive_path": "docs/history/pr-reviews/PR-770-memory-verbatim-preservation-append-amara-scaffolded-agency-packet-verbatim-only.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68RI7O",
+    "comment:PRRC_kwDOSF9kNM68RPB1",
+    "comment:PRRC_kwDOSF9kNM68RPBN",
+    "comment:PRRC_kwDOSF9kNM68RPBf",
+    "comment:PRRC_kwDOSF9kNM68RZmh",
+    "thread:PRRT_kwDOSF9kNM5-U1A3",
+    "thread:PRRT_kwDOSF9kNM5-U5X6",
+    "thread:PRRT_kwDOSF9kNM5-U5Xs",
+    "thread:PRRT_kwDOSF9kNM5-U5YF",
+    "thread:PRRT_kwDOSF9kNM5-VBFo"
+  ],
+  "fetched_at": "2026-08-25T08:24:43.224Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(verbatim-preservation): append Amara scaffolded-agency packet (verbatim only, no synthesis)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T04:04:36Z",
+  "head_ref": "memory/amara-scaffolded-agency-vs-base-model-emergence-packet-verbatim-2026-04-29"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1296,
+  "archive_path": "docs/history/pr-reviews/PR-1296-free-memory-guess-003-ground-truth-recovery-b-0166-chat-as-dbsp-event-44-read-st.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZeZU",
+    "thread:PRRT_kwDOSF9kNM5_KSXO"
+  ],
+  "fetched_at": "2026-08-25T08:46:14.569Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: guess #003 + GROUND-TRUTH-RECOVERY — B-0166 chat-as-DBSP-event (44%, read-state-ceiling pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:32:38Z",
+  "head_ref": "free-memory/guess-003-b-0166-chat-input-as-acid-durable-dbsp-event-otto-2026-05-03"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 944,
+  "archive_path": "docs/history/pr-reviews/PR-944-review-fix-942-correct-pr-cluster-reference-calibration-cluster-is-938-941-not-p.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:31:28.744Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "review-fix(#942): correct PR-cluster reference — calibration cluster is #938-#941, not 'post-PR-934'",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T19:49:01Z",
+  "head_ref": "research/fix-pr-number-typo-942-2026-04-30"
+}

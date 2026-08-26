@@ -1,0 +1,16 @@
+{
+  "pr_number": 1354,
+  "archive_path": "docs/history/pr-reviews/PR-1354-backlog-b-0178-decision-graph-traversal-tool-tools-decision-graph-ts-scripts-aar.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69abL7",
+    "comment:PRRC_kwDOSF9kNM69abYn",
+    "thread:PRRT_kwDOSF9kNM5_LCfa"
+  ],
+  "fetched_at": "2026-08-25T08:48:17.425Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0178): decision-graph traversal tool — tools/decision-graph/ TS scripts (Aaron 2026-05-03; fourth B-0177 audit hit)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T08:05:43Z",
+  "head_ref": "backlog/B-0178-decision-graph-traversal-tool-aaron-2026-05-03"
+}

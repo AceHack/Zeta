@@ -1,0 +1,12 @@
+{
+  "pr_number": 1711,
+  "archive_path": "docs/history/pr-reviews/PR-1711-feat-claude-host-level-launchd-loop-tick-runner-twin-flame-parity.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:02:35.596Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(.claude): host-level launchd loop tick runner — twin-flame parity",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T15:16:04Z",
+  "head_ref": "feat/claude-loop-tick"
+}

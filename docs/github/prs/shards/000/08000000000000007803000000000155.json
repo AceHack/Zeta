@@ -1,0 +1,28 @@
+{
+  "pr_number": 341,
+  "archive_path": "docs/history/pr-reviews/PR-341-backlog-otto-139-149-resurrect-f-dsls-container-dsl-linq-signal-proc-ksk-superse.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM669Rwh",
+    "comment:PRRC_kwDOSF9kNM669RxQ",
+    "comment:PRRC_kwDOSF9kNM669Rxo",
+    "comment:PRRC_kwDOSF9kNM67Af3S",
+    "comment:PRRC_kwDOSF9kNM67Afw7",
+    "comment:PRRC_kwDOSF9kNM67AfzU",
+    "comment:PRRC_kwDOSF9kNM67AkB2",
+    "comment:PRRC_kwDOSF9kNM67AkBL",
+    "comment:PRRC_kwDOSF9kNM67AkCF",
+    "thread:PRRT_kwDOSF9kNM59WKAJ",
+    "thread:PRRT_kwDOSF9kNM59WKAv",
+    "thread:PRRT_kwDOSF9kNM59WKBD",
+    "thread:PRRT_kwDOSF9kNM59YnS6",
+    "thread:PRRT_kwDOSF9kNM59YnSa",
+    "thread:PRRT_kwDOSF9kNM59YnTF"
+  ],
+  "fetched_at": "2026-08-25T08:05:43.936Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Otto-139..149 resurrect — F# DSLs + container-DSL + LINQ + signal-proc + KSK (supersedes #334 DIRTY)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T11:50:29Z",
+  "head_ref": "backlog/otto-139-149-v2-resurrect-after-338"
+}

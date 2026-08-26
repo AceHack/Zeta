@@ -1,0 +1,15 @@
+{
+  "pr_number": 701,
+  "archive_path": "docs/history/pr-reviews/PR-701-fix-codeql-forward-sync-acehack-pr-96-exclude-obj-and-bin-build-artifacts-b-0073.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Nzym",
+    "thread:PRRT_kwDOSF9kNM5-SYio"
+  ],
+  "fetched_at": "2026-08-25T08:21:52.690Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(codeql): forward-sync AceHack PR #96 — exclude obj/ and bin/ build artifacts (B-0073) — #97 already-covered",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T23:36:23Z",
+  "head_ref": "forward-sync/codeql-obj-bin-excludes-and-csharp-test-cast-cleanup-acehack-pr-96-97-2026-04-28"
+}

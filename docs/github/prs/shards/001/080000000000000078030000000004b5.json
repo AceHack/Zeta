@@ -1,0 +1,23 @@
+{
+  "pr_number": 1205,
+  "archive_path": "docs/history/pr-reviews/PR-1205-tools-hygiene-b-0162-role-ref-check-soft-launch.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XDeS",
+    "comment:PRRC_kwDOSF9kNM69XDeX",
+    "comment:PRRC_kwDOSF9kNM69XDea",
+    "comment:PRRC_kwDOSF9kNM69XDec",
+    "comment:PRRC_kwDOSF9kNM69XDef",
+    "thread:PRRT_kwDOSF9kNM5_IYmf",
+    "thread:PRRT_kwDOSF9kNM5_IYmj",
+    "thread:PRRT_kwDOSF9kNM5_IYmk",
+    "thread:PRRT_kwDOSF9kNM5_IYmm",
+    "thread:PRRT_kwDOSF9kNM5_IYmo"
+  ],
+  "fetched_at": "2026-08-25T08:42:12.322Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "tools(hygiene): B-0162 — role-ref check (soft-launch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T16:56:52Z",
+  "head_ref": "mechanize-b-0162-role-ref-check"
+}

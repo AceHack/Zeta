@@ -1,0 +1,12 @@
+{
+  "pr_number": 1277,
+  "archive_path": "docs/history/pr-reviews/PR-1277-hygiene-tick-history-2026-05-03t02-39z-same-tick-recursion-memo-landed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:45:27.136Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T02:39Z — same-tick-recursion memo landed",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T02:41:51Z",
+  "head_ref": "free-memory/tick-0239Z-same-tick-recursion-memo"
+}

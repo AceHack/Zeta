@@ -1,0 +1,23 @@
+{
+  "pr_number": 1183,
+  "archive_path": "docs/history/pr-reviews/PR-1183-memory-aurora-dual-oracle-is-dual-of-gate-precisely-self-dual-disposition-aaron-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69SO5F",
+    "comment:PRRC_kwDOSF9kNM69SPa7",
+    "comment:PRRC_kwDOSF9kNM69SPaz",
+    "comment:PRRC_kwDOSF9kNM69SPbD",
+    "comment:PRRC_kwDOSF9kNM69SPx2",
+    "thread:PRRT_kwDOSF9kNM5_EwyV",
+    "thread:PRRT_kwDOSF9kNM5_ExMd",
+    "thread:PRRT_kwDOSF9kNM5_ExMj",
+    "thread:PRRT_kwDOSF9kNM5_ExMp",
+    "thread:PRRT_kwDOSF9kNM5_Exd7"
+  ],
+  "fetched_at": "2026-08-25T08:41:19.662Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(aurora-dual): oracle is dual of gate (precisely); self-dual disposition (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-06T17:17:34Z",
+  "head_ref": "memory/aurora-dual-chain-no-walls-self-dual-disposition-aaron-2026-05-02"
+}

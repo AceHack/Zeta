@@ -1,0 +1,22 @@
+{
+  "pr_number": 323,
+  "archive_path": "docs/history/pr-reviews/PR-323-test-toy-cartel-detector-amara-otto-122-validation-bar-cleared.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM667uh9",
+    "comment:PRRC_kwDOSF9kNM667uia",
+    "comment:PRRC_kwDOSF9kNM667uio",
+    "comment:PRRC_kwDOSF9kNM67B_3H",
+    "comment:PRRC_kwDOSF9kNM67CAJ8",
+    "comment:PRRC_kwDOSF9kNM67CAMP",
+    "thread:PRRT_kwDOSF9kNM59VAI2",
+    "thread:PRRT_kwDOSF9kNM59VAIi",
+    "thread:PRRT_kwDOSF9kNM59VAJB"
+  ],
+  "fetched_at": "2026-08-25T08:04:55.101Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "test: toy cartel detector — Amara Otto-122 validation bar CLEARED",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:05:50Z",
+  "head_ref": "feat/toy-cartel-detector-eigenvalue-signal"
+}

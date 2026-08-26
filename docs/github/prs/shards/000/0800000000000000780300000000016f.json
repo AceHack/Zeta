@@ -1,0 +1,19 @@
+{
+  "pr_number": 367,
+  "archive_path": "docs/history/pr-reviews/PR-367-doc-cross-harness-skill-discovery-verified-behaviour-data-split.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67CLPB",
+    "comment:PRRC_kwDOSF9kNM67CMSL",
+    "comment:PRRC_kwDOSF9kNM67CMTQ",
+    "thread:PRRT_kwDOSF9kNM59Z1ct",
+    "thread:PRRT_kwDOSF9kNM59Z2Oj",
+    "thread:PRRT_kwDOSF9kNM59Z2PY"
+  ],
+  "fetched_at": "2026-08-25T08:06:56.356Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "doc: cross-harness skill-discovery verified + behaviour/data split",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:12:05Z",
+  "head_ref": "docs/cross-harness-skill-discovery-verified"
+}

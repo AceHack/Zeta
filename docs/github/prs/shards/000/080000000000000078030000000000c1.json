@@ -1,0 +1,31 @@
+{
+  "pr_number": 193,
+  "archive_path": "docs/history/pr-reviews/PR-193-nsa-test-history-nsa-005-common-sense-2-0-property-recall-pass.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM660R9P",
+    "comment:PRRC_kwDOSF9kNM660RGi",
+    "comment:PRRC_kwDOSF9kNM661Brc",
+    "comment:PRRC_kwDOSF9kNM66xYF_",
+    "comment:PRRC_kwDOSF9kNM66xZh9",
+    "comment:PRRC_kwDOSF9kNM66xZir",
+    "comment:PRRC_kwDOSF9kNM67E8Iw",
+    "comment:PRRC_kwDOSF9kNM67E8PM",
+    "comment:PRRC_kwDOSF9kNM67E8Sr",
+    "comment:PRRC_kwDOSF9kNM67E8VE",
+    "comment:PRRC_kwDOSF9kNM67E8bF",
+    "comment:PRRC_kwDOSF9kNM67E8dj",
+    "thread:PRRT_kwDOSF9kNM59NbIo",
+    "thread:PRRT_kwDOSF9kNM59NcMv",
+    "thread:PRRT_kwDOSF9kNM59NcNa",
+    "thread:PRRT_kwDOSF9kNM59Pgb6",
+    "thread:PRRT_kwDOSF9kNM59PhD5",
+    "thread:PRRT_kwDOSF9kNM59QEFM"
+  ],
+  "fetched_at": "2026-08-25T07:59:43.650Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "nsa-test-history: NSA-005 — Common Sense 2.0 property recall (PASS)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T15:18:27Z",
+  "head_ref": "hygiene/nsa-005-cadenced-test"
+}

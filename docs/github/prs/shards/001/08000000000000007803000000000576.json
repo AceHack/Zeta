@@ -1,0 +1,23 @@
+{
+  "pr_number": 1398,
+  "archive_path": "docs/history/pr-reviews/PR-1398-backlog-file-b-0179-b-0180-b-0181-3-broken-tla-specs-from-1397-verify-then-claim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bli6",
+    "comment:PRRC_kwDOSF9kNM69bli_",
+    "comment:PRRC_kwDOSF9kNM69blim",
+    "comment:PRRC_kwDOSF9kNM69blix",
+    "comment:PRRC_kwDOSF9kNM69bljD",
+    "thread:PRRT_kwDOSF9kNM5_L9B6",
+    "thread:PRRT_kwDOSF9kNM5_L9CC",
+    "thread:PRRT_kwDOSF9kNM5_L9CI",
+    "thread:PRRT_kwDOSF9kNM5_L9CM",
+    "thread:PRRT_kwDOSF9kNM5_L9CQ"
+  ],
+  "fetched_at": "2026-08-25T08:49:55.959Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: file B-0179 + B-0180 + B-0181 — 3 broken TLA+ specs from #1397 verify-then-claim sweep",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T12:38:30Z",
+  "head_ref": "backlog/three-broken-tla-specs-from-1397-verify-then-claim-2026-05-03"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 515,
+  "archive_path": "docs/history/pr-reviews/PR-515-substrate-otto-326-cohort-self-discipline-pivot-when-blocked-on-external-is-aaro.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67UgZk",
+    "thread:PRRT_kwDOSF9kNM59ntPJ"
+  ],
+  "fetched_at": "2026-08-25T08:14:13.701Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-326): cohort self-discipline — pivot-when-blocked-on-external is Aaron's pattern too",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T23:21:20Z",
+  "head_ref": "substrate/otto-326-cohort-self-discipline-pivot-when-blocked"
+}

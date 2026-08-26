@@ -1,0 +1,31 @@
+{
+  "pr_number": 486,
+  "archive_path": "docs/history/pr-reviews/PR-486-docs-memory-refresh-current-aaron-md-with-otto-281-285-superfluid.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67R_-4",
+    "comment:PRRC_kwDOSF9kNM67SAQ0",
+    "comment:PRRC_kwDOSF9kNM67SAQx",
+    "comment:PRRC_kwDOSF9kNM67SLiU",
+    "comment:PRRC_kwDOSF9kNM67SLjw",
+    "comment:PRRC_kwDOSF9kNM67SLk0",
+    "comment:PRRC_kwDOSF9kNM67SMpi",
+    "comment:PRRC_kwDOSF9kNM67SNP9",
+    "comment:PRRC_kwDOSF9kNM67SNPx",
+    "comment:PRRC_kwDOSF9kNM67SP5f",
+    "comment:PRRC_kwDOSF9kNM67SP7U",
+    "comment:PRRC_kwDOSF9kNM67SP8G",
+    "thread:PRRT_kwDOSF9kNM59l332",
+    "thread:PRRT_kwDOSF9kNM59l33u",
+    "thread:PRRT_kwDOSF9kNM59l3Xd",
+    "thread:PRRT_kwDOSF9kNM59ltN4",
+    "thread:PRRT_kwDOSF9kNM59ltcp",
+    "thread:PRRT_kwDOSF9kNM59ltcr"
+  ],
+  "fetched_at": "2026-08-25T08:12:17.922Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(memory): refresh CURRENT-aaron.md with Otto-281..285 + superfluid",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:53:32Z",
+  "head_ref": "docs/current-aaron-refresh-otto-281-285"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1302,
+  "archive_path": "docs/history/pr-reviews/PR-1302-fix-tick-shard-0354z-typo-ottos-s-otto-s-1301-p2.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:46:27.207Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(tick-shard-0354Z): typo Ottos's → Otto's (#1301 P2)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T04:03:26Z",
+  "head_ref": "fix/tick-shard-0354z-typo-otto-2026-05-03"
+}

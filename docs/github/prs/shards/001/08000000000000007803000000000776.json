@@ -1,0 +1,15 @@
+{
+  "pr_number": 1910,
+  "archive_path": "docs/history/pr-reviews/PR-1910-fix-spec-phase-1-roadmap-0-reconciled-with-12-resolutions-b-0062.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-7eXe",
+    "thread:PRRT_kwDOSF9kNM6AYrDn"
+  ],
+  "fetched_at": "2026-08-25T09:07:21.628Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(spec): Phase 1 roadmap + §0 reconciled with §12 resolutions (B-0062)",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T16:59:37Z",
+  "head_ref": "otto/b0062-phase1-monitor-reconcile"
+}

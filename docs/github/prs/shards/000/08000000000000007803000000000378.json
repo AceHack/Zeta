@@ -1,0 +1,19 @@
+{
+  "pr_number": 888,
+  "archive_path": "docs/history/pr-reviews/PR-888-backlog-b-0106-add-p2-row-tsc-noemit-gate-job-for-tools-ts.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68sP3L",
+    "comment:PRRC_kwDOSF9kNM68sP3e",
+    "comment:PRRC_kwDOSF9kNM68sP3l",
+    "thread:PRRT_kwDOSF9kNM5-osR-",
+    "thread:PRRT_kwDOSF9kNM5-osR4",
+    "thread:PRRT_kwDOSF9kNM5-osRq"
+  ],
+  "fetched_at": "2026-08-25T08:29:05.605Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0106): add P2 row — tsc --noEmit gate job for tools/**.ts",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T04:56:25Z",
+  "head_ref": "backlog/B-0106-tsc-noemit-gate-job-2026-04-30"
+}

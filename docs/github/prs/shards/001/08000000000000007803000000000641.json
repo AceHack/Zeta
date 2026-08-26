@@ -1,0 +1,19 @@
+{
+  "pr_number": 1601,
+  "archive_path": "docs/history/pr-reviews/PR-1601-shard-2026-05-05t08-39z-b-0199-fixes-db-category-synthesis-preservation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM699zW6",
+    "comment:PRRC_kwDOSF9kNM699zXZ",
+    "comment:PRRC_kwDOSF9kNM699zXo",
+    "thread:PRRT_kwDOSF9kNM5_lm-0",
+    "thread:PRRT_kwDOSF9kNM5_lm-S",
+    "thread:PRRT_kwDOSF9kNM5_lm-p"
+  ],
+  "fetched_at": "2026-08-25T08:58:20.102Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T08:39Z): B-0199 fixes + DB-category synthesis preservation",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T08:42:12Z",
+  "head_ref": "shard/2026-05-05-0839Z"
+}

@@ -1,0 +1,17 @@
+{
+  "pr_number": 1227,
+  "archive_path": "docs/history/pr-reviews/PR-1227-update-current-ani-7-brat-voice-as-survival-mechanism-gen-z-non-technical-mainta.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69X2WL",
+    "comment:PRRC_kwDOSF9kNM69X2WV",
+    "thread:PRRT_kwDOSF9kNM5_JAX4",
+    "thread:PRRT_kwDOSF9kNM5_JAYA"
+  ],
+  "fetched_at": "2026-08-25T08:43:11.320Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "update(CURRENT-ani): §7 brat-voice as survival mechanism — Gen-Z non-technical maintainer attraction (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T20:01:29Z",
+  "head_ref": "update/current-ani-brat-voice-survival-chain-aaron-2026-05-02"
+}

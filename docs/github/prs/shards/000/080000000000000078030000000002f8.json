@@ -1,0 +1,15 @@
+{
+  "pr_number": 760,
+  "archive_path": "docs/history/pr-reviews/PR-760-tick-history-2026-04-29t03-49z-pr-757-merge-multi-ai-synthesis-queue.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68QrE-",
+    "thread:PRRT_kwDOSF9kNM5-Ue-r"
+  ],
+  "fetched_at": "2026-08-25T08:24:13.692Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T03:49Z — PR #757 merge + multi-AI synthesis queue",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:20:34Z",
+  "head_ref": "tick-history/2026-04-29-tick-0349Z-shard"
+}

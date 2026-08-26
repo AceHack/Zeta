@@ -1,0 +1,12 @@
+{
+  "pr_number": 40,
+  "archive_path": "docs/history/pr-reviews/PR-40-hygiene-gitignore-claude-worktrees-parallel-research-scratch.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:52:15.717Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "hygiene: gitignore .claude/worktrees/ — parallel-research scratch",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T12:25:19Z",
+  "head_ref": "hygiene/gitignore-claude-worktrees"
+}

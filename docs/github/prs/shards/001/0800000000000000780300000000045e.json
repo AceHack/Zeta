@@ -1,0 +1,23 @@
+{
+  "pr_number": 1118,
+  "archive_path": "docs/history/pr-reviews/PR-1118-memory-backlog-topological-quantum-emulation-via-bayesian-inference-majorana-zer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69KC7r",
+    "comment:PRRC_kwDOSF9kNM69KC82",
+    "comment:PRRC_kwDOSF9kNM69KC8r",
+    "comment:PRRC_kwDOSF9kNM69KC9M",
+    "comment:PRRC_kwDOSF9kNM69KC9j",
+    "thread:PRRT_kwDOSF9kNM5--w_2",
+    "thread:PRRT_kwDOSF9kNM5--xA0",
+    "thread:PRRT_kwDOSF9kNM5--xAt",
+    "thread:PRRT_kwDOSF9kNM5--xBF",
+    "thread:PRRT_kwDOSF9kNM5--xBX"
+  ],
+  "fetched_at": "2026-08-25T08:38:37.093Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory + backlog: topological-quantum emulation via Bayesian inference + Majorana Zero Modes + Beacon protocol three-layer stack (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T14:29:34Z",
+  "head_ref": "substrate-topological-quantum-emulation-bayesian-inference-majorana-beacon-2026-05-01"
+}

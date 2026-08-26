@@ -1,0 +1,17 @@
+{
+  "pr_number": 484,
+  "archive_path": "docs/history/pr-reviews/PR-484-fix-setup-retry-verifier-jar-download-on-transient-5xx-otto-285.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67R-W0",
+    "comment:PRRC_kwDOSF9kNM67R-XA",
+    "thread:PRRT_kwDOSF9kNM59lr92",
+    "thread:PRRT_kwDOSF9kNM59lr98"
+  ],
+  "fetched_at": "2026-08-25T08:12:12.289Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(setup): retry verifier-jar download on transient 5xx (Otto-285)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T14:10:08Z",
+  "head_ref": "fix/install-script-retry-on-transient-502"
+}

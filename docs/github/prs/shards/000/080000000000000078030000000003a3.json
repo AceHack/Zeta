@@ -1,0 +1,12 @@
+{
+  "pr_number": 931,
+  "archive_path": "docs/history/pr-reviews/PR-931-memory-authority-team-survival-two-ask-aaron-items-team-responsibility-survival-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:30:56.146Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(authority+team+survival): two ask-Aaron items + team-responsibility + survival stake (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T17:58:54Z",
+  "head_ref": "memory/only-two-explicit-ask-aaron-items-aaron-2026-04-30"
+}

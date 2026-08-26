@@ -1,0 +1,19 @@
+{
+  "pr_number": 167,
+  "archive_path": "docs/history/pr-reviews/PR-167-memory-author-template-for-absorb-time-lint-hygiene.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66s6cJ",
+    "comment:PRRC_kwDOSF9kNM66s9qa",
+    "comment:PRRC_kwDOSF9kNM66s9rQ",
+    "thread:PRRT_kwDOSF9kNM59KIwa",
+    "thread:PRRT_kwDOSF9kNM59KLIH",
+    "thread:PRRT_kwDOSF9kNM59KLIx"
+  ],
+  "fetched_at": "2026-08-25T07:58:16.260Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "memory: author template for absorb-time lint hygiene",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:11:56Z",
+  "head_ref": "docs/memory-author-template-absorb-time-lint-classes"
+}

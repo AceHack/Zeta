@@ -1,0 +1,22 @@
+{
+  "pr_number": 413,
+  "archive_path": "docs/history/pr-reviews/PR-413-backlog-exempt-memory-current-md-from-memory-index-integrity-paired-edit-trigger.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67O57_",
+    "comment:PRRC_kwDOSF9kNM67O58h",
+    "comment:PRRC_kwDOSF9kNM67PDKi",
+    "comment:PRRC_kwDOSF9kNM67PDLS",
+    "comment:PRRC_kwDOSF9kNM67PERZ",
+    "comment:PRRC_kwDOSF9kNM67PNhd",
+    "thread:PRRT_kwDOSF9kNM59jSO6",
+    "thread:PRRT_kwDOSF9kNM59jSPS",
+    "thread:PRRT_kwDOSF9kNM59jZmS"
+  ],
+  "fetched_at": "2026-08-25T08:09:14.526Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: exempt memory/CURRENT-*.md from memory-index-integrity paired-edit trigger (P3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:16:55Z",
+  "head_ref": "backlog/memory-index-integrity-exempt-current-projections"
+}

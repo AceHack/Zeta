@@ -1,0 +1,19 @@
+{
+  "pr_number": 695,
+  "archive_path": "docs/history/pr-reviews/PR-695-ops-0-0-0-file-level-classification-doc-calibration-batch-5-23.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Mgeb",
+    "comment:PRRC_kwDOSF9kNM68MgfI",
+    "comment:PRRC_kwDOSF9kNM68Mh8C",
+    "thread:PRRT_kwDOSF9kNM5-RbC1",
+    "thread:PRRT_kwDOSF9kNM5-RbDa",
+    "thread:PRRT_kwDOSF9kNM5-RcK1"
+  ],
+  "fetched_at": "2026-08-25T08:21:39.848Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(0-0-0): file-level classification doc + calibration batch (5/23)",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T21:41:49Z",
+  "head_ref": "ops/0-0-0-readiness-classification-calibration-2026-04-28"
+}

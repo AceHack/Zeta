@@ -1,0 +1,27 @@
+{
+  "pr_number": 653,
+  "archive_path": "docs/history/pr-reviews/PR-653-ci-route-lint-semgrep-through-install-sh-uv-managed-pipx-semgrep-three-way-parit.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67w9E-",
+    "comment:PRRC_kwDOSF9kNM67xHKT",
+    "comment:PRRC_kwDOSF9kNM67xRU-",
+    "comment:PRRC_kwDOSF9kNM67xRVr",
+    "comment:PRRC_kwDOSF9kNM67xRW4",
+    "comment:PRRC_kwDOSF9kNM67xRWH",
+    "comment:PRRC_kwDOSF9kNM67xRWl",
+    "thread:PRRT_kwDOSF9kNM599P-C",
+    "thread:PRRT_kwDOSF9kNM599XYV",
+    "thread:PRRT_kwDOSF9kNM599e_l",
+    "thread:PRRT_kwDOSF9kNM599fA6",
+    "thread:PRRT_kwDOSF9kNM599fAK",
+    "thread:PRRT_kwDOSF9kNM599fAm",
+    "thread:PRRT_kwDOSF9kNM599fBL"
+  ],
+  "fetched_at": "2026-08-25T08:20:12.905Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci: route lint-semgrep through install.sh + uv-managed pipx:semgrep (three-way-parity per Aaron 2026-04-27)",
+  "state": "MERGED",
+  "merged_at": "2026-04-27T21:27:23Z",
+  "head_ref": "acehack/scorecard-pin-semgrep-docker-2026-04-27"
+}

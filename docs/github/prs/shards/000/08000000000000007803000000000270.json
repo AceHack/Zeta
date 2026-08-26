@@ -1,0 +1,17 @@
+{
+  "pr_number": 624,
+  "archive_path": "docs/history/pr-reviews/PR-624-docs-pr-preservation-drain-log-for-622-closed-not-merged-superseded-by-623.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Ygsn",
+    "comment:PRRC_kwDOSF9kNM67Ygsr",
+    "thread:PRRT_kwDOSF9kNM59q58g",
+    "thread:PRRT_kwDOSF9kNM59q58i"
+  ],
+  "fetched_at": "2026-08-25T08:18:50.756Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(pr-preservation): drain-log for #622 (closed-not-merged, superseded by #623)",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:11:43Z",
+  "head_ref": "docs/pr-preservation-622-drain-log"
+}

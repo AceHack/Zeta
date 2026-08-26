@@ -1,0 +1,23 @@
+{
+  "pr_number": 227,
+  "archive_path": "docs/history/pr-reviews/PR-227-govern-contributor-conflicts-backfill-3-resolved-session-observed-rows-amara-gov.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662c-G",
+    "comment:PRRC_kwDOSF9kNM662c-k",
+    "comment:PRRC_kwDOSF9kNM67D16Y",
+    "comment:PRRC_kwDOSF9kNM67D2Ai",
+    "comment:PRRC_kwDOSF9kNM67JzIo",
+    "comment:PRRC_kwDOSF9kNM67JzJP",
+    "thread:PRRT_kwDOSF9kNM59RFIx",
+    "thread:PRRT_kwDOSF9kNM59RFJE",
+    "thread:PRRT_kwDOSF9kNM59fidR",
+    "thread:PRRT_kwDOSF9kNM59fidw"
+  ],
+  "fetched_at": "2026-08-25T08:01:55.783Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "govern: CONTRIBUTOR-CONFLICTS backfill — 3 resolved session-observed rows (Amara Govern 1/2)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:35:32Z",
+  "head_ref": "govern/contributor-conflicts-backfill-amara-govern"
+}

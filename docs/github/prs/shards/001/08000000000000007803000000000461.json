@@ -1,0 +1,27 @@
+{
+  "pr_number": 1121,
+  "archive_path": "docs/history/pr-reviews/PR-1121-memory-dst-grade-a-dependency-source-inspection-enforcement-not-just-flag-aaron-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69K6rJ",
+    "comment:PRRC_kwDOSF9kNM69K8Q0",
+    "comment:PRRC_kwDOSF9kNM69K8R1",
+    "comment:PRRC_kwDOSF9kNM69K8RS",
+    "comment:PRRC_kwDOSF9kNM69K8Rn",
+    "comment:PRRC_kwDOSF9kNM69LnBH",
+    "comment:PRRC_kwDOSF9kNM69LnBr",
+    "thread:PRRT_kwDOSF9kNM5-_6Dx",
+    "thread:PRRT_kwDOSF9kNM5-_6EE",
+    "thread:PRRT_kwDOSF9kNM5-_Z2Y",
+    "thread:PRRT_kwDOSF9kNM5-_bC_",
+    "thread:PRRT_kwDOSF9kNM5-_bCa",
+    "thread:PRRT_kwDOSF9kNM5-_bCv",
+    "thread:PRRT_kwDOSF9kNM5-_bDI"
+  ],
+  "fetched_at": "2026-08-25T08:38:50.075Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: DST grade-A — dependency-source inspection + enforcement-not-just-flag (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T15:55:42Z",
+  "head_ref": "substrate-dst-grade-a-dependency-source-inspection-aaron-2026-05-01"
+}

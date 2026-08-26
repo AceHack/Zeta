@@ -1,0 +1,27 @@
+{
+  "pr_number": 1643,
+  "archive_path": "docs/history/pr-reviews/PR-1643-research-architecture-ifs-shadow-af-pilot-ops-awareness-5-layer-cockroach-safe-s.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-DqLG",
+    "comment:PRRC_kwDOSF9kNM6-DqM7",
+    "comment:PRRC_kwDOSF9kNM6-DqMZ",
+    "comment:PRRC_kwDOSF9kNM6-DqNe",
+    "comment:PRRC_kwDOSF9kNM6-DqOA",
+    "comment:PRRC_kwDOSF9kNM6-DqOs",
+    "comment:PRRC_kwDOSF9kNM6-DqPb",
+    "thread:PRRT_kwDOSF9kNM5_qATL",
+    "thread:PRRT_kwDOSF9kNM5_qAUR",
+    "thread:PRRT_kwDOSF9kNM5_qAUw",
+    "thread:PRRT_kwDOSF9kNM5_qAVL",
+    "thread:PRRT_kwDOSF9kNM5_qAVk",
+    "thread:PRRT_kwDOSF9kNM5_qAWH",
+    "thread:PRRT_kwDOSF9kNM5_qAWv"
+  ],
+  "fetched_at": "2026-08-25T08:59:56.004Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): IFS+shadow+AF+pilot ops-awareness+5-layer cockroach-safe stack+ε-bounded PoUW-CC+Claude.ai self-inventory+grandparent lineage (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:01:08Z",
+  "head_ref": "research/ifs-shadow-air-force-pilot-ops-awareness-long-horizon-inversion-5-layer-cockroach-safe-stack-epsilon-bounded-aaron-forwarded-2026-05-05"
+}

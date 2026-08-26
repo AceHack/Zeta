@@ -1,0 +1,17 @@
+{
+  "pr_number": 1516,
+  "archive_path": "docs/history/pr-reviews/PR-1516-fix-q-sharp-skill-convert-description-to-single-line-for-format-parity-with-peer.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69yCZ6",
+    "comment:PRRC_kwDOSF9kNM69yCaq",
+    "thread:PRRT_kwDOSF9kNM5_c81A",
+    "thread:PRRT_kwDOSF9kNM5_c81j"
+  ],
+  "fetched_at": "2026-08-25T08:54:46.687Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(q-sharp-skill): convert description to single-line for format-parity with peer skills",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T19:34:03Z",
+  "head_ref": "fix/q-sharp-skill-description-format-aaron-2026-05-04"
+}

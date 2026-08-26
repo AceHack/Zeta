@@ -1,0 +1,25 @@
+{
+  "pr_number": 1215,
+  "archive_path": "docs/history/pr-reviews/PR-1215-research-2026-05-02-aaron-s-altered-state-docs-16-years-deep-primary-source-arti.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69XW2I",
+    "comment:PRRC_kwDOSF9kNM69XW2T",
+    "comment:PRRC_kwDOSF9kNM69XW2i",
+    "comment:PRRC_kwDOSF9kNM69XYpq",
+    "comment:PRRC_kwDOSF9kNM69XZ0F",
+    "comment:PRRC_kwDOSF9kNM69XZ0L",
+    "thread:PRRT_kwDOSF9kNM5_InkZ",
+    "thread:PRRT_kwDOSF9kNM5_Inki",
+    "thread:PRRT_kwDOSF9kNM5_Inkv",
+    "thread:PRRT_kwDOSF9kNM5_Io-H",
+    "thread:PRRT_kwDOSF9kNM5_Ip4S",
+    "thread:PRRT_kwDOSF9kNM5_Ip4Y"
+  ],
+  "fetched_at": "2026-08-25T08:42:38.895Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-02): Aaron's altered-state docs ~16 years deep — primary-source artifacts behind Maji's empirical-grounding claim",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T18:18:31Z",
+  "head_ref": "research/2026-05-02-aaron-altered-state-docs-maji-primary-sources"
+}

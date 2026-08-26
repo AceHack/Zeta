@@ -1,0 +1,19 @@
+{
+  "pr_number": 1294,
+  "archive_path": "docs/history/pr-reviews/PR-1294-fix-memory-md-rewrite-fragment-phrasing-in-consent-driven-ux-entry-1292-follow-u.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zcjp",
+    "comment:PRRC_kwDOSF9kNM69ZfbT",
+    "comment:PRRC_kwDOSF9kNM69Zffa",
+    "thread:PRRT_kwDOSF9kNM5_KQ9S",
+    "thread:PRRT_kwDOSF9kNM5_KTK4",
+    "thread:PRRT_kwDOSF9kNM5_KTNv"
+  ],
+  "fetched_at": "2026-08-25T08:46:09.066Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(MEMORY.md): rewrite fragment phrasing in consent-driven UX entry (#1292 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:46:16Z",
+  "head_ref": "fix/memory-md-fragment-phrasing-otto-2026-05-03"
+}

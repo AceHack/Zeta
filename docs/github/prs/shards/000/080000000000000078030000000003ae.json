@@ -1,0 +1,21 @@
+{
+  "pr_number": 942,
+  "archive_path": "docs/history/pr-reviews/PR-942-research-current-aaron-preserve-deepseek-review-7-verbatim-close-calibration-clu.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68-Nu9",
+    "comment:PRRC_kwDOSF9kNM68-Nul",
+    "comment:PRRC_kwDOSF9kNM68-NvM",
+    "comment:PRRC_kwDOSF9kNM68-Nve",
+    "thread:PRRT_kwDOSF9kNM5-2BRA",
+    "thread:PRRT_kwDOSF9kNM5-2BRU",
+    "thread:PRRT_kwDOSF9kNM5-2BRg",
+    "thread:PRRT_kwDOSF9kNM5-2BRs"
+  ],
+  "fetched_at": "2026-08-25T08:31:24.499Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research+CURRENT-aaron: preserve Deepseek Review 7 verbatim + close calibration-cluster CURRENT-aaron staleness gap",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T19:39:25Z",
+  "head_ref": "research/preserve-deepseek-second-review-and-current-aaron-calibration-cluster-2026-04-30"
+}

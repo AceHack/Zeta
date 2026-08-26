@@ -1,0 +1,17 @@
+{
+  "pr_number": 728,
+  "archive_path": "docs/history/pr-reviews/PR-728-hygiene-tick-history-shard-0245z-option-b-canonical-pr-724-merged.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Pq20",
+    "comment:PRRC_kwDOSF9kNM69HTN1",
+    "comment:PRRC_kwDOSF9kNM69HTkW",
+    "thread:PRRT_kwDOSF9kNM5-TvOs"
+  ],
+  "fetched_at": "2026-08-25T08:22:54.841Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0245Z — Option B canonical (PR #724 merged)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:56:13Z",
+  "head_ref": "tick-history/2026-04-29-tick-0245Z-shard"
+}

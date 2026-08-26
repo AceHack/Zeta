@@ -1,0 +1,19 @@
+{
+  "pr_number": 674,
+  "archive_path": "docs/history/pr-reviews/PR-674-tick-history-2026-04-27t23-58z-2026-04-28t14-43z-2026-04-28t17-47z-autonomous-lo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68H4ai",
+    "comment:PRRC_kwDOSF9kNM68H6aJ",
+    "comment:PRRC_kwDOSF9kNM68H_0T",
+    "comment:PRRC_kwDOSF9kNM68H_v4",
+    "thread:PRRT_kwDOSF9kNM5-OCdk",
+    "thread:PRRT_kwDOSF9kNM5-OD9k"
+  ],
+  "fetched_at": "2026-08-25T08:20:49.738Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-27T23:58Z + 2026-04-28T14:43Z + 2026-04-28T17:47Z autonomous-loop ticks",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T17:59:26Z",
+  "head_ref": "tick-history/2026-04-28T17-47Z-three-pr-landing-arc"
+}

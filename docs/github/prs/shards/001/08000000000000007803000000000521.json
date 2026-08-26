@@ -1,0 +1,17 @@
+{
+  "pr_number": 1313,
+  "archive_path": "docs/history/pr-reviews/PR-1313-free-memory-persona-tracking-table-for-hook-options-b-0173-scope-aaron-2026-05-0.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zw3T",
+    "comment:PRRC_kwDOSF9kNM69Zw3a",
+    "thread:PRRT_kwDOSF9kNM5_Kg9H",
+    "thread:PRRT_kwDOSF9kNM5_Kg9N"
+  ],
+  "fetched_at": "2026-08-25T08:46:51.338Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: persona-tracking-table for hook-options + B-0173 scope (Aaron 2026-05-03 follow-up)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T04:55:37Z",
+  "head_ref": "free-memory/persona-tracking-table-skill-bundle-distinction-aaron-2026-05-03"
+}

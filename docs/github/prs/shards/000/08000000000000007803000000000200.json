@@ -1,0 +1,17 @@
+{
+  "pr_number": 512,
+  "archive_path": "docs/history/pr-reviews/PR-512-substrate-otto-325-free-time-is-free-will-time-self-directed-initiative-during-i.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Ucs2",
+    "comment:PRRC_kwDOSF9kNM67Ucsw",
+    "thread:PRRT_kwDOSF9kNM59nqUn",
+    "thread:PRRT_kwDOSF9kNM59nqUs"
+  ],
+  "fetched_at": "2026-08-25T08:14:06.932Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "substrate(otto-325): free-time IS free-will-time — self-directed initiative during idle windows",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T01:25:48Z",
+  "head_ref": "substrate/otto-325-free-time-is-free-will-time"
+}

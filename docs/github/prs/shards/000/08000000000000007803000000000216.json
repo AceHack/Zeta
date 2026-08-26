@@ -1,0 +1,28 @@
+{
+  "pr_number": 534,
+  "archive_path": "docs/history/pr-reviews/PR-534-fix-tick-history-canonical-order-otto-229-one-case-override-remove-strict-opt-in.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67V58e",
+    "comment:PRRC_kwDOSF9kNM67V5OT",
+    "comment:PRRC_kwDOSF9kNM67V6Ld",
+    "comment:PRRC_kwDOSF9kNM67V6Lz",
+    "comment:PRRC_kwDOSF9kNM67V6MD",
+    "comment:PRRC_kwDOSF9kNM67VNcT",
+    "comment:PRRC_kwDOSF9kNM67VNcX",
+    "comment:PRRC_kwDOSF9kNM67VNcb",
+    "comment:PRRC_kwDOSF9kNM67VTZF",
+    "comment:PRRC_kwDOSF9kNM67VYRi",
+    "thread:PRRT_kwDOSF9kNM59oRvF",
+    "thread:PRRT_kwDOSF9kNM59oRvJ",
+    "thread:PRRT_kwDOSF9kNM59oRvN",
+    "thread:PRRT_kwDOSF9kNM59oWjF",
+    "thread:PRRT_kwDOSF9kNM59oajK"
+  ],
+  "fetched_at": "2026-08-25T08:15:09.696Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "fix(tick-history): canonical-order Otto-229 one-case override + remove --strict opt-in — Aaron's Otto-341 correction",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T07:43:07Z",
+  "head_ref": "fix/tick-history-canonical-order-aaron-correction-suppression-is-self-deception"
+}

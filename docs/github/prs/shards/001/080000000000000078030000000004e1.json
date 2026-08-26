@@ -1,0 +1,23 @@
+{
+  "pr_number": 1249,
+  "archive_path": "docs/history/pr-reviews/PR-1249-review-pr-1247-followup-rename-file-to-reflect-both-triggers-fix-bare-grep-place.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YyrW",
+    "comment:PRRC_kwDOSF9kNM69YyrZ",
+    "comment:PRRC_kwDOSF9kNM69Yyre",
+    "comment:PRRC_kwDOSF9kNM69Yyrh",
+    "comment:PRRC_kwDOSF9kNM69Yyrk",
+    "thread:PRRT_kwDOSF9kNM5_Jvxi",
+    "thread:PRRT_kwDOSF9kNM5_Jvxk",
+    "thread:PRRT_kwDOSF9kNM5_Jvxn",
+    "thread:PRRT_kwDOSF9kNM5_Jvxq",
+    "thread:PRRT_kwDOSF9kNM5_Jvxt"
+  ],
+  "fetched_at": "2026-08-25T08:44:08.910Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review(pr-1247-followup): rename file to reflect both triggers + fix bare-grep placeholder",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T23:59:34Z",
+  "head_ref": "free-memory/depends-on-search-discipline-rename-and-grep-fix-aaron-2026-05-02"
+}

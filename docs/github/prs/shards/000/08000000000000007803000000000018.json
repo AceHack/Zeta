@@ -1,0 +1,12 @@
+{
+  "pr_number": 24,
+  "archive_path": "docs/history/pr-reviews/PR-24-round-33-close-round-history-narrative-current-round-34-wins-cascade.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:49:31.556Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 33 close — ROUND-HISTORY narrative, CURRENT-ROUND → 34, WINS cascade",
+  "state": "MERGED",
+  "merged_at": "2026-04-19T02:56:34Z",
+  "head_ref": "round-33-close"
+}

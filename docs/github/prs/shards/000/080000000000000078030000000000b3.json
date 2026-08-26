@@ -1,0 +1,29 @@
+{
+  "pr_number": 179,
+  "archive_path": "docs/history/pr-reviews/PR-179-frontier-readiness-factory-vs-zeta-separation-audit-seed-gap-5-opened.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66wZQM",
+    "comment:PRRC_kwDOSF9kNM66wZQQ",
+    "comment:PRRC_kwDOSF9kNM66wd7Z",
+    "comment:PRRC_kwDOSF9kNM66wd8D",
+    "comment:PRRC_kwDOSF9kNM66wd8l",
+    "comment:PRRC_kwDOSF9kNM66wd93",
+    "comment:PRRC_kwDOSF9kNM66wd9C",
+    "comment:PRRC_kwDOSF9kNM66wd9e",
+    "thread:PRRT_kwDOSF9kNM59MtGV",
+    "thread:PRRT_kwDOSF9kNM59MtGY",
+    "thread:PRRT_kwDOSF9kNM59Mwh_",
+    "thread:PRRT_kwDOSF9kNM59Mwhe",
+    "thread:PRRT_kwDOSF9kNM59Mwic",
+    "thread:PRRT_kwDOSF9kNM59Mwiz",
+    "thread:PRRT_kwDOSF9kNM59MwjD",
+    "thread:PRRT_kwDOSF9kNM59MwjV"
+  ],
+  "fetched_at": "2026-08-25T07:59:02.016Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "frontier-readiness: factory-vs-Zeta separation audit seed (gap #5 opened)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T19:22:40Z",
+  "head_ref": "frontier-readiness/factory-vs-zeta-separation-audit-seed"
+}

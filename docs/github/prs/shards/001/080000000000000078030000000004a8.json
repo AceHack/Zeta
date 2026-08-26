@@ -1,0 +1,15 @@
+{
+  "pr_number": 1192,
+  "archive_path": "docs/history/pr-reviews/PR-1192-hygiene-tick-history-2026-05-02t01-12z-session-summary-8-prs-through-aaron-s-res.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69SnlR",
+    "thread:PRRT_kwDOSF9kNM5_FC4j"
+  ],
+  "fetched_at": "2026-08-25T08:41:44.017Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-02T01:12Z session-summary — 8 PRs through Aaron's rest period",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T01:15:29Z",
+  "head_ref": "hygiene/tick-history-2026-05-02-session-summary"
+}

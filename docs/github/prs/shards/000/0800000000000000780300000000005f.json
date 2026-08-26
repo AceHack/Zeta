@@ -1,0 +1,12 @@
+{
+  "pr_number": 95,
+  "archive_path": "docs/history/pr-reviews/PR-95-round-44-tick-history-auto-loop-6-row-cross-substrate-absorb-pr-93-review.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T07:53:46.770Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "Round 44 tick-history: auto-loop-6 row (cross-substrate absorb + PR #93 review)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T04:53:05Z",
+  "head_ref": "land-tick-history-autoloop-6-append"
+}

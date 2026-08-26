@@ -1,0 +1,20 @@
+{
+  "pr_number": 166,
+  "archive_path": "docs/history/pr-reviews/PR-166-hygiene-row-54-backlog-refactor-cadenced-audit-aaron-2026-04-23.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66s2c3",
+    "comment:PRRC_kwDOSF9kNM66s2d9",
+    "comment:PRRC_kwDOSF9kNM66s2eb",
+    "comment:PRRC_kwDOSF9kNM66tnV7",
+    "thread:PRRT_kwDOSF9kNM59KFx9",
+    "thread:PRRT_kwDOSF9kNM59KFy0",
+    "thread:PRRT_kwDOSF9kNM59KFzP"
+  ],
+  "fetched_at": "2026-08-25T07:58:12.002Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "hygiene: row #54 — backlog-refactor cadenced audit (Aaron 2026-04-23)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:19:38Z",
+  "head_ref": "hygiene/backlog-refactor-cadenced-audit"
+}

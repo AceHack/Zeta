@@ -1,0 +1,25 @@
+{
+  "pr_number": 317,
+  "archive_path": "docs/history/pr-reviews/PR-317-core-graph-substrate-skeleton-zset-backed-retraction-native-8th-graduation.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM667Y-N",
+    "comment:PRRC_kwDOSF9kNM667Y86",
+    "comment:PRRC_kwDOSF9kNM667Y96",
+    "comment:PRRC_kwDOSF9kNM667Y9O",
+    "comment:PRRC_kwDOSF9kNM667Y9h",
+    "comment:PRRC_kwDOSF9kNM667Y9r",
+    "thread:PRRT_kwDOSF9kNM59Uv15",
+    "thread:PRRT_kwDOSF9kNM59Uv1H",
+    "thread:PRRT_kwDOSF9kNM59Uv1V",
+    "thread:PRRT_kwDOSF9kNM59Uv1f",
+    "thread:PRRT_kwDOSF9kNM59Uv1l",
+    "thread:PRRT_kwDOSF9kNM59Uv1s"
+  ],
+  "fetched_at": "2026-08-25T08:04:46.296Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "core: Graph substrate skeleton — ZSet-backed retraction-native (8th graduation)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T07:24:34Z",
+  "head_ref": "feat/graph-substrate-skeleton-adr-implementation"
+}

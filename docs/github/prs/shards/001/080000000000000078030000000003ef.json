@@ -1,0 +1,12 @@
+{
+  "pr_number": 1007,
+  "archive_path": "docs/history/pr-reviews/PR-1007-hygiene-tick-history-shard-0258z-greenfield-foundations-putlog-framing-tick.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:33:59.751Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0258Z — greenfield-foundations + putlog-framing tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T03:01:36Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0258Z-greenfield-and-putlog-framing-tick"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 1099,
+  "archive_path": "docs/history/pr-reviews/PR-1099-hygiene-tick-history-2026-05-01t10-55z-pause-discipline-operating-existing-class.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69H1Fk",
+    "thread:PRRT_kwDOSF9kNM5-9G2N"
+  ],
+  "fetched_at": "2026-08-25T08:37:51.709Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T10:55Z — pause-discipline operating (existing classes only)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:58:18Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T1055Z-1077-phantom-1043-dedup"
+}

@@ -1,0 +1,25 @@
+{
+  "pr_number": 447,
+  "archive_path": "docs/history/pr-reviews/PR-447-hygiene-268-pr-preservation-drain-log-for-435-live-lock-cadence-reword.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QW_2",
+    "comment:PRRC_kwDOSF9kNM67QXS4",
+    "comment:PRRC_kwDOSF9kNM67QXS5",
+    "comment:PRRC_kwDOSF9kNM67QXSx",
+    "comment:PRRC_kwDOSF9kNM67QjdD",
+    "comment:PRRC_kwDOSF9kNM67QjdX",
+    "comment:PRRC_kwDOSF9kNM67Qjdr",
+    "comment:PRRC_kwDOSF9kNM67QjeI",
+    "thread:PRRT_kwDOSF9kNM59kY2c",
+    "thread:PRRT_kwDOSF9kNM59kY2g",
+    "thread:PRRT_kwDOSF9kNM59kY2h",
+    "thread:PRRT_kwDOSF9kNM59kYnZ"
+  ],
+  "fetched_at": "2026-08-25T08:10:43.395Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #435 (live-lock cadence reword)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:12:54Z",
+  "head_ref": "drain/435-pr-preservation-log"
+}

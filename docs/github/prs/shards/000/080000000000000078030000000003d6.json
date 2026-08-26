@@ -1,0 +1,15 @@
+{
+  "pr_number": 982,
+  "archive_path": "docs/history/pr-reviews/PR-982-hygiene-tick-history-shard-2356z-eight-layer-carved-sentence-soul-executor-archi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69CIom",
+    "thread:PRRT_kwDOSF9kNM5-46gg"
+  ],
+  "fetched_at": "2026-08-25T08:33:01.110Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 2356Z — eight-layer carved-sentence + soul-executor architecture tick",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T00:01:47Z",
+  "head_ref": "hygiene/tick-history-2026-04-30T2356Z-six-layer-carved-sentence-architecture"
+}

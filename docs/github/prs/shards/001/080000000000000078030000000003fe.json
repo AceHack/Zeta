@@ -1,0 +1,17 @@
+{
+  "pr_number": 1022,
+  "archive_path": "docs/history/pr-reviews/PR-1022-hygiene-tick-history-shard-0436z-major-thread-drain-on-pr-1008-9-0.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69El9E",
+    "comment:PRRC_kwDOSF9kNM69El9Y",
+    "thread:PRRT_kwDOSF9kNM5-6sD4",
+    "thread:PRRT_kwDOSF9kNM5-6sEJ"
+  ],
+  "fetched_at": "2026-08-25T08:34:46.706Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0436Z — major thread-drain on PR #1008 (9→0)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:44:55Z",
+  "head_ref": "hygiene/tick-history-0436Z-2026-05-01"
+}

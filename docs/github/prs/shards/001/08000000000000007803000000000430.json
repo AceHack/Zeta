@@ -1,0 +1,12 @@
+{
+  "pr_number": 1072,
+  "archive_path": "docs/history/pr-reviews/PR-1072-hygiene-tick-history-2026-05-01t09-47z-pr-967-thread-drain-6-threads.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:36:49.629Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): 2026-05-01T09:47Z — PR #967 thread-drain (6 threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:50:57Z",
+  "head_ref": "hygiene/tick-history-2026-05-01T0947Z-967-thread-fixes"
+}

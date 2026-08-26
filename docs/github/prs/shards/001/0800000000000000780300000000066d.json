@@ -1,0 +1,17 @@
+{
+  "pr_number": 1645,
+  "archive_path": "docs/history/pr-reviews/PR-1645-chore-memory-index-anti-ossification-memory-in-memory-md-razor-cadence-step-5-ca.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-D3VX",
+    "comment:PRRC_kwDOSF9kNM6-D3WS",
+    "thread:PRRT_kwDOSF9kNM5_qKU5",
+    "thread:PRRT_kwDOSF9kNM5_qKUM"
+  ],
+  "fetched_at": "2026-08-25T09:00:02.169Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "chore(memory): index anti-ossification memory in MEMORY.md (razor-cadence Step 5 catch)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T13:14:50Z",
+  "head_ref": "chore/memory-index-anti-ossification-2026-05-05"
+}

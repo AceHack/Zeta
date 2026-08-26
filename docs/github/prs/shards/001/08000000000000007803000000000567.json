@@ -1,0 +1,23 @@
+{
+  "pr_number": 1383,
+  "archive_path": "docs/history/pr-reviews/PR-1383-docs-research-math-proofs-honest-assessment-2026-05-03-peer-review-readiness-map.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bRs2",
+    "comment:PRRC_kwDOSF9kNM69bRs8",
+    "comment:PRRC_kwDOSF9kNM69bRsc",
+    "comment:PRRC_kwDOSF9kNM69bRsj",
+    "comment:PRRC_kwDOSF9kNM69bRsu",
+    "thread:PRRT_kwDOSF9kNM5_LtVN",
+    "thread:PRRT_kwDOSF9kNM5_LtVS",
+    "thread:PRRT_kwDOSF9kNM5_LtVb",
+    "thread:PRRT_kwDOSF9kNM5_LtVh",
+    "thread:PRRT_kwDOSF9kNM5_LtVm"
+  ],
+  "fetched_at": "2026-08-25T08:49:24.927Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(research): math-proofs honest assessment 2026-05-03 (peer-review readiness map)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:31:54Z",
+  "head_ref": "research/math-proofs-honest-assessment-2026-05-03"
+}

@@ -1,0 +1,27 @@
+{
+  "pr_number": 1242,
+  "archive_path": "docs/history/pr-reviews/PR-1242-backlog-depends-on-batch-2-backfill-depends-on-on-5-p1-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Yn9R",
+    "comment:PRRC_kwDOSF9kNM69Yn9W",
+    "comment:PRRC_kwDOSF9kNM69Yn9b",
+    "comment:PRRC_kwDOSF9kNM69Yn9f",
+    "comment:PRRC_kwDOSF9kNM69Yn9n",
+    "comment:PRRC_kwDOSF9kNM69Yn9u",
+    "comment:PRRC_kwDOSF9kNM69YpKx",
+    "thread:PRRT_kwDOSF9kNM5_JnR5",
+    "thread:PRRT_kwDOSF9kNM5_JnR_",
+    "thread:PRRT_kwDOSF9kNM5_JnRn",
+    "thread:PRRT_kwDOSF9kNM5_JnRs",
+    "thread:PRRT_kwDOSF9kNM5_JnRv",
+    "thread:PRRT_kwDOSF9kNM5_JnRy",
+    "thread:PRRT_kwDOSF9kNM5_JoN7"
+  ],
+  "fetched_at": "2026-08-25T08:43:50.817Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(depends-on): batch 2 — backfill depends_on:[] on 5 P1 rows",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T23:15:40Z",
+  "head_ref": "backlog/depends-on-backfill-batch-2-aaron-2026-05-02"
+}

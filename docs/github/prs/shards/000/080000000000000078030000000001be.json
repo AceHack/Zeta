@@ -1,0 +1,19 @@
+{
+  "pr_number": 446,
+  "archive_path": "docs/history/pr-reviews/PR-446-hygiene-268-pr-preservation-drain-log-for-85-per-row-file-adr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QWql",
+    "comment:PRRC_kwDOSF9kNM67QWqn",
+    "comment:PRRC_kwDOSF9kNM67Qev8",
+    "comment:PRRC_kwDOSF9kNM67Qewf",
+    "thread:PRRT_kwDOSF9kNM59kYWP",
+    "thread:PRRT_kwDOSF9kNM59kYWR"
+  ],
+  "fetched_at": "2026-08-25T08:10:40.857Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268): pr-preservation drain-log for #85 (per-row-file ADR)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T08:21:15Z",
+  "head_ref": "drain/85-pr-preservation-log"
+}

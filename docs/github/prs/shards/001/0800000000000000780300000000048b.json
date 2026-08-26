@@ -1,0 +1,23 @@
+{
+  "pr_number": 1163,
+  "archive_path": "docs/history/pr-reviews/PR-1163-test-claude-rules-canary-for-harness-native-auto-load-empirical-test.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Qn36",
+    "comment:PRRC_kwDOSF9kNM69Qn40",
+    "comment:PRRC_kwDOSF9kNM69Qn4K",
+    "comment:PRRC_kwDOSF9kNM69Qn4T",
+    "comment:PRRC_kwDOSF9kNM69Qn4i",
+    "thread:PRRT_kwDOSF9kNM5_Djk3",
+    "thread:PRRT_kwDOSF9kNM5_Djkg",
+    "thread:PRRT_kwDOSF9kNM5_Djku",
+    "thread:PRRT_kwDOSF9kNM5_DjlC",
+    "thread:PRRT_kwDOSF9kNM5_DjlS"
+  ],
+  "fetched_at": "2026-08-25T08:40:29.045Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "test(.claude/rules): canary for harness-native auto-load empirical test",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T21:35:02Z",
+  "head_ref": "otto/claude-rules-canary-test-2026-05-01"
+}

@@ -1,0 +1,16 @@
+{
+  "pr_number": 1077,
+  "archive_path": "docs/history/pr-reviews/PR-1077-memory-great-data-homecoming-strip-session-ephemeral-originsessionid-pr-1035-fol.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HY33",
+    "comment:PRRC_kwDOSF9kNM69Hyoc",
+    "thread:PRRT_kwDOSF9kNM5-8xS7"
+  ],
+  "fetched_at": "2026-08-25T08:37:01.038Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(great-data-homecoming): strip session-ephemeral originSessionId (PR #1035 follow-up cleanup)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T10:54:49Z",
+  "head_ref": "memory/great-data-homecoming-aurora-edge-privacy-wwjd-canonicalization-aaron-2026-05-01"
+}

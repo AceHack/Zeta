@@ -1,0 +1,19 @@
+{
+  "pr_number": 163,
+  "archive_path": "docs/history/pr-reviews/PR-163-backlog-p1-fresh-session-quality-research-aaron-2026-04-23.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66sqKY",
+    "comment:PRRC_kwDOSF9kNM66sqLG",
+    "comment:PRRC_kwDOSF9kNM66sqLV",
+    "thread:PRRT_kwDOSF9kNM59J8qj",
+    "thread:PRRT_kwDOSF9kNM59J8rA",
+    "thread:PRRT_kwDOSF9kNM59J8rO"
+  ],
+  "fetched_at": "2026-08-25T07:58:04.332Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "backlog: P1 — fresh-session quality research (Aaron 2026-04-23)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T17:31:02Z",
+  "head_ref": "backlog/fresh-session-quality-research"
+}

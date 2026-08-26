@@ -1,0 +1,23 @@
+{
+  "pr_number": 1679,
+  "archive_path": "docs/history/pr-reviews/PR-1679-research-architecture-loss-primitive-for-zeta-economics-spectral-residue-interna.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-LdXI",
+    "comment:PRRC_kwDOSF9kNM6-LdYJ",
+    "comment:PRRC_kwDOSF9kNM6-LdYo",
+    "comment:PRRC_kwDOSF9kNM6-LdZ3",
+    "comment:PRRC_kwDOSF9kNM6-LdZS",
+    "thread:PRRT_kwDOSF9kNM5_vvRs",
+    "thread:PRRT_kwDOSF9kNM5_vvSl",
+    "thread:PRRT_kwDOSF9kNM5_vvTA",
+    "thread:PRRT_kwDOSF9kNM5_vvTl",
+    "thread:PRRT_kwDOSF9kNM5_vvUF"
+  ],
+  "fetched_at": "2026-08-25T09:01:31.083Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): loss primitive for Zeta economics + spectral-residue internal chaos + Itron nation-state provenance (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T18:23:27Z",
+  "head_ref": "research/claudeai-loss-primitive-zeta-economics-spectral-residue-itron-nation-state-provenance-aaron-2026-05-05"
+}

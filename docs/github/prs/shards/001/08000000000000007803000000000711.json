@@ -1,0 +1,12 @@
+{
+  "pr_number": 1809,
+  "archive_path": "docs/history/pr-reviews/PR-1809-fix-memory-remove-2-broken-memory-md-refs-to-pre-redaction-filenames.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:05:14.328Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory): remove 2 broken MEMORY.md refs to pre-redaction filenames",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:03:51Z",
+  "head_ref": "fix/memory-md-broken-refs-naming-consent"
+}

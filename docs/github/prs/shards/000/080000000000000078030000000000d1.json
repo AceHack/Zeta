@@ -1,0 +1,19 @@
+{
+  "pr_number": 209,
+  "archive_path": "docs/history/pr-reviews/PR-209-bench-checked-vs-unchecked-measurement-harness-module-companion.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM660J43",
+    "comment:PRRC_kwDOSF9kNM660KOZ",
+    "comment:PRRC_kwDOSF9kNM660KOz",
+    "thread:PRRT_kwDOSF9kNM59PbOb",
+    "thread:PRRT_kwDOSF9kNM59Pbdg",
+    "thread:PRRT_kwDOSF9kNM59Pbdx"
+  ],
+  "fetched_at": "2026-08-25T08:01:04.028Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "bench: checked-vs-unchecked measurement harness (module companion)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T22:19:24Z",
+  "head_ref": "bench/checked-vs-unchecked-harness"
+}

@@ -1,0 +1,19 @@
+{
+  "pr_number": 1262,
+  "archive_path": "docs/history/pr-reviews/PR-1262-backlog-pr-1261-post-merge-fixes-b-0172-plugin-paths-b-0173-hook-paths.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZFB2",
+    "comment:PRRC_kwDOSF9kNM69ZFB4",
+    "comment:PRRC_kwDOSF9kNM69ZFB7",
+    "thread:PRRT_kwDOSF9kNM5_J-cp",
+    "thread:PRRT_kwDOSF9kNM5_J-cr",
+    "thread:PRRT_kwDOSF9kNM5_J-cu"
+  ],
+  "fetched_at": "2026-08-25T08:44:42.452Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog: PR #1261 post-merge fixes (B-0172 plugin paths + B-0173 hook paths)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T01:33:27Z",
+  "head_ref": "backlog/pr-1261-postmerge-canonical-plugin-hook-paths-aaron-2026-05-03"
+}

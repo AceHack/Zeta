@@ -1,0 +1,12 @@
+{
+  "pr_number": 826,
+  "archive_path": "docs/history/pr-reviews/PR-826-memory-lfg-acehack-fork-hard-reset-safety-addendum-content-equivalence-audit-rul.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:26:51.790Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(lfg-acehack-fork): hard-reset safety addendum + content-equivalence audit rule (round-9 peer-harness save)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T07:48:16Z",
+  "head_ref": "memory/lfg-acehack-content-equivalence-amara-2026-04-29"
+}

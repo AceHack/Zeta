@@ -1,0 +1,12 @@
+{
+  "pr_number": 1502,
+  "archive_path": "docs/history/pr-reviews/PR-1502-fix-memory-md-compress-25-entries-in-1500-2000-char-tier-b-0006-narrow-pass-tier.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:54:10.819Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(memory-md): compress 25 entries in 1500-2000 char tier — B-0006 narrow pass tier-2 (2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T17:44:10Z",
+  "head_ref": "fix/memory-md-tier-1500-2000-compression-b-0006-2026-05-04"
+}

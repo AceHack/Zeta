@@ -1,0 +1,28 @@
+{
+  "pr_number": 288,
+  "archive_path": "docs/history/pr-reviews/PR-288-codex-land-openai-skill-creator-sample-skill-idea-spark-codex-substrate-entry-po.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM664qaK",
+    "comment:PRRC_kwDOSF9kNM664rS_",
+    "comment:PRRC_kwDOSF9kNM664rSw",
+    "comment:PRRC_kwDOSF9kNM67Cjm4",
+    "comment:PRRC_kwDOSF9kNM67CjpZ",
+    "comment:PRRC_kwDOSF9kNM67Cjt_",
+    "comment:PRRC_kwDOSF9kNM67Juj-",
+    "comment:PRRC_kwDOSF9kNM67JujM",
+    "comment:PRRC_kwDOSF9kNM67Jujo",
+    "thread:PRRT_kwDOSF9kNM59St4r",
+    "thread:PRRT_kwDOSF9kNM59Suk5",
+    "thread:PRRT_kwDOSF9kNM59SulH",
+    "thread:PRRT_kwDOSF9kNM59fe_7",
+    "thread:PRRT_kwDOSF9kNM59ffAR",
+    "thread:PRRT_kwDOSF9kNM59ffAh"
+  ],
+  "fetched_at": "2026-08-25T08:03:36.666Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "codex: land OpenAI Skill Creator sample skill (idea-spark) + .codex/ substrate entry-point",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:31:38Z",
+  "head_ref": "research/multi-claude-experiment-v1-delta-aminata-iteration-1"
+}

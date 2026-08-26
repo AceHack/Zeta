@@ -1,0 +1,12 @@
+{
+  "pr_number": 7050,
+  "archive_path": "docs/history/pr-reviews/PR-7050-feat-core-crypto-noun-hexagonal-crypto-interface-ssh-windows-cng-backends.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:44.821Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(core): Crypto noun — hexagonal crypto interface, SSH + Windows-CNG backends",
+  "state": "MERGED",
+  "merged_at": "2026-06-08T07:34:05Z",
+  "head_ref": "otto/crypto-noun-hexagonal-ssh-windows-cng"
+}

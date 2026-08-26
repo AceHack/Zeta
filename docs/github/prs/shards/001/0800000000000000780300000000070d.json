@@ -1,0 +1,17 @@
+{
+  "pr_number": 1805,
+  "archive_path": "docs/history/pr-reviews/PR-1805-research-lior-si-boot-iteration-shadow-wiring-corrections-verbatim.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-sXSo",
+    "comment:PRRC_kwDOSF9kNM6-sXTE",
+    "thread:PRRT_kwDOSF9kNM6ANazI",
+    "thread:PRRT_kwDOSF9kNM6ANaze"
+  ],
+  "fetched_at": "2026-08-25T09:05:09.322Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: Lior SI Boot iteration — shadow wiring corrections VERBATIM",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T06:00:19Z",
+  "head_ref": "research/lior-si-boot-iteration-verbatim"
+}

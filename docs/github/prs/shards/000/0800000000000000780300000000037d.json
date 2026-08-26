@@ -1,0 +1,12 @@
+{
+  "pr_number": 893,
+  "archive_path": "docs/history/pr-reviews/PR-893-ops-tick-history-autonomous-loop-tick-2026-04-30t05-31-00z-slice-13-merged-sessi.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:29:17.270Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(tick-history): autonomous-loop tick 2026-04-30T05:31:00Z — slice-13 merged + session-arc closure",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T05:34:31Z",
+  "head_ref": "ops/tick-history-2026-04-30-slice-13-merged"
+}

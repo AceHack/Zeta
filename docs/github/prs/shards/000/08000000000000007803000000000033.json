@@ -1,0 +1,23 @@
+{
+  "pr_number": 51,
+  "archive_path": "docs/history/pr-reviews/PR-51-complete-github-surface-map-org-teams-enterprise-platform-3-p1-backlog-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM654ciC",
+    "comment:PRRC_kwDOSF9kNM654ciw",
+    "comment:PRRC_kwDOSF9kNM654cjl",
+    "comment:PRRC_kwDOSF9kNM654ck3",
+    "comment:PRRC_kwDOSF9kNM654ckL",
+    "thread:PRRT_kwDOSF9kNM58i97I",
+    "thread:PRRT_kwDOSF9kNM58i97w",
+    "thread:PRRT_kwDOSF9kNM58i982",
+    "thread:PRRT_kwDOSF9kNM58i98Z",
+    "thread:PRRT_kwDOSF9kNM58i99S"
+  ],
+  "fetched_at": "2026-08-25T07:52:59.829Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "complete GitHub surface map: org/teams/enterprise/platform + 3 P1 backlog rows",
+  "state": "MERGED",
+  "merged_at": "2026-04-21T15:27:08Z",
+  "head_ref": "github-surface-map-complete"
+}

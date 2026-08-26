@@ -1,0 +1,25 @@
+{
+  "pr_number": 937,
+  "archive_path": "docs/history/pr-reviews/PR-937-research-preserve-2026-04-30-session-end-peer-ai-reviews-verbatim-deepseek-alexa.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM689WID",
+    "comment:PRRC_kwDOSF9kNM689Y30",
+    "comment:PRRC_kwDOSF9kNM689Y4m",
+    "comment:PRRC_kwDOSF9kNM689Y59",
+    "comment:PRRC_kwDOSF9kNM689Y5E",
+    "comment:PRRC_kwDOSF9kNM689Y5l",
+    "thread:PRRT_kwDOSF9kNM5-1YGn",
+    "thread:PRRT_kwDOSF9kNM5-1aI2",
+    "thread:PRRT_kwDOSF9kNM5-1aIV",
+    "thread:PRRT_kwDOSF9kNM5-1aJ6",
+    "thread:PRRT_kwDOSF9kNM5-1aJL",
+    "thread:PRRT_kwDOSF9kNM5-1aJo"
+  ],
+  "fetched_at": "2026-08-25T08:31:10.451Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "research: preserve 2026-04-30 session-end peer-AI reviews verbatim (Deepseek+Alexa+Claude.ai+Ani+Gemini)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T18:55:07Z",
+  "head_ref": "research/preserve-2026-04-30-session-end-peer-ai-reviews-verbatim"
+}

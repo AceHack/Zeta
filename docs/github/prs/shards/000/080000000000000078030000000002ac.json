@@ -1,0 +1,15 @@
+{
+  "pr_number": 684,
+  "archive_path": "docs/history/pr-reviews/PR-684-tick-history-2026-04-28t19-50z-b-0085-budget-cadence-gap-discovery-generator-clo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68KS-l",
+    "thread:PRRT_kwDOSF9kNM5-P040"
+  ],
+  "fetched_at": "2026-08-25T08:21:14.666Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-28T19:50Z — B-0085 budget-cadence-gap discovery + generator-clobber catch",
+  "state": "MERGED",
+  "merged_at": "2026-04-28T20:03:55Z",
+  "head_ref": "tick-history/2026-04-28T19-50-b0085-budget-cadence-gap-discovery"
+}

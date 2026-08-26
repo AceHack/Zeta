@@ -1,0 +1,17 @@
+{
+  "pr_number": 1236,
+  "archive_path": "docs/history/pr-reviews/PR-1236-research-2026-05-02-preserve-claude-ai-s-response-to-otto-s-critique-drive-bridg.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YcFT",
+    "comment:PRRC_kwDOSF9kNM69YcFc",
+    "thread:PRRT_kwDOSF9kNM5_Jdwt",
+    "thread:PRRT_kwDOSF9kNM5_Jdwz"
+  ],
+  "fetched_at": "2026-08-25T08:43:36.067Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(2026-05-02): preserve Claude.ai's response to Otto's critique — Drive-bridge AI-to-AI peer review (multi-AI BFT working)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T22:22:54Z",
+  "head_ref": "research/2026-05-02-claudeai-response-to-otto-critique-drive-bridge-ai-to-ai-peer-review"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1659,
+  "archive_path": "docs/history/pr-reviews/PR-1659-fix-post-1658-non-fusion-disclaimer-capitalization-verbatim-boundary-7-copilot-t.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:00:38.107Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1658): non-fusion disclaimer capitalization + verbatim boundary (7 Copilot threads)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:35:19Z",
+  "head_ref": "fixup/1658-non-fusion-disclaimer-capitalization-and-verbatim-2026-05-05"
+}

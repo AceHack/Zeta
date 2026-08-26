@@ -1,0 +1,17 @@
+{
+  "pr_number": 1616,
+  "archive_path": "docs/history/pr-reviews/PR-1616-shard-2026-05-05t10-10z-worm-tower-bp-ep-social-memes-mom-skill-tinygrad-not-pap.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69_5Sf",
+    "comment:PRRC_kwDOSF9kNM69_5TD",
+    "thread:PRRT_kwDOSF9kNM5_nKI6",
+    "thread:PRRT_kwDOSF9kNM5_nKIf"
+  ],
+  "fetched_at": "2026-08-25T08:58:57.183Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T10:10Z): worm-tower/BP-EP + social-memes/mom-skill + tinygrad-not-paper-id correction (#1611-#1615 merged, #1610 in-flight)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:12:13Z",
+  "head_ref": "shard/2026-05-05-1010Z"
+}

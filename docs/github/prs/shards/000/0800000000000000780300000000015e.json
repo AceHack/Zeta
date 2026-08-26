@@ -1,0 +1,21 @@
+{
+  "pr_number": 350,
+  "archive_path": "docs/history/pr-reviews/PR-350-docs-frontier-rename-pass-2-hindu-ff7-egyptian-greek-norse-scientology-research-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66-hlk",
+    "comment:PRRC_kwDOSF9kNM66-kti",
+    "comment:PRRC_kwDOSF9kNM66-kuG",
+    "comment:PRRC_kwDOSF9kNM66-kui",
+    "thread:PRRT_kwDOSF9kNM59XFuW",
+    "thread:PRRT_kwDOSF9kNM59XH-T",
+    "thread:PRRT_kwDOSF9kNM59XH9-",
+    "thread:PRRT_kwDOSF9kNM59XH9j"
+  ],
+  "fetched_at": "2026-08-25T08:06:05.632Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs: Frontier rename pass-2 (Hindu/FF7/Egyptian/Greek/Norse) + Scientology research BACKLOG (Otto-175)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T10:05:31Z",
+  "head_ref": "docs/frontier-rename-pass-2-plus-scientology-backlog"
+}

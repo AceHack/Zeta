@@ -1,0 +1,19 @@
+{
+  "pr_number": 423,
+  "archive_path": "docs/history/pr-reviews/PR-423-drain-406-407-post-merge-codeql-xref-governance-24-truth-downstream-typo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PM8T",
+    "comment:PRRC_kwDOSF9kNM67PM8i",
+    "comment:PRRC_kwDOSF9kNM67PTLt",
+    "comment:PRRC_kwDOSF9kNM67PTM0",
+    "thread:PRRT_kwDOSF9kNM59jfqQ",
+    "thread:PRRT_kwDOSF9kNM59jfqY"
+  ],
+  "fetched_at": "2026-08-25T08:09:38.875Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#406 + #407 post-merge): CodeQL xref + GOVERNANCE §24 truth + downstream typo",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T03:50:31Z",
+  "head_ref": "drain/406-407-followup"
+}

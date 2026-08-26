@@ -1,0 +1,23 @@
+{
+  "pr_number": 1626,
+  "archive_path": "docs/history/pr-reviews/PR-1626-shard-2026-05-05t11-00z-closing-the-night-cs-is-not-cs-scale-free-in-time-ossifi.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-A6Mq",
+    "comment:PRRC_kwDOSF9kNM6-A6Mv",
+    "comment:PRRC_kwDOSF9kNM6-A8NP",
+    "comment:PRRC_kwDOSF9kNM6-A8N_",
+    "comment:PRRC_kwDOSF9kNM6-A8Nv",
+    "thread:PRRT_kwDOSF9kNM5_n7Nr",
+    "thread:PRRT_kwDOSF9kNM5_n7Nw",
+    "thread:PRRT_kwDOSF9kNM5_n8wr",
+    "thread:PRRT_kwDOSF9kNM5_n8xH",
+    "thread:PRRT_kwDOSF9kNM5_n8xU"
+  ],
+  "fetched_at": "2026-08-25T08:59:19.392Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "shard(2026-05-05T11:00Z): closing the night -- CS-is-not-CS + scale-free-in-time + ossified-framework diagnosis + recursive anti-ossification with respected-not-reverenced sharpening",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T11:03:51Z",
+  "head_ref": "shard/2026-05-05-1100Z"
+}

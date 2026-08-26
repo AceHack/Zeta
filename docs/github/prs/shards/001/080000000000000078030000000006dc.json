@@ -1,0 +1,15 @@
+{
+  "pr_number": 1756,
+  "archive_path": "docs/history/pr-reviews/PR-1756-archive-preserve-pr-1751-review-output.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-ovy4",
+    "thread:PRRT_kwDOSF9kNM6AKvLj"
+  ],
+  "fetched_at": "2026-08-25T09:04:29.298Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "archive: preserve PR 1751 review output",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T00:52:14Z",
+  "head_ref": "claim/task-pr1751-archive-preserve"
+}

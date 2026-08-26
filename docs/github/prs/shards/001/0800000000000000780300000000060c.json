@@ -1,0 +1,21 @@
+{
+  "pr_number": 1548,
+  "archive_path": "docs/history/pr-reviews/PR-1548-research-triage-audit-of-8-stale-open-prs-1500-recommended-dispositions.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6921_5",
+    "comment:PRRC_kwDOSF9kNM6921_K",
+    "comment:PRRC_kwDOSF9kNM6922AY",
+    "comment:PRRC_kwDOSF9kNM6922Az",
+    "thread:PRRT_kwDOSF9kNM5_gdiB",
+    "thread:PRRT_kwDOSF9kNM5_gdir",
+    "thread:PRRT_kwDOSF9kNM5_gdjC",
+    "thread:PRRT_kwDOSF9kNM5_gdja"
+  ],
+  "fetched_at": "2026-08-25T08:56:04.613Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(triage): audit of 8 stale open PRs (<1500) — recommended dispositions",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T00:13:19Z",
+  "head_ref": "research/old-pr-triage-audit-aaron-2026-05-04"
+}

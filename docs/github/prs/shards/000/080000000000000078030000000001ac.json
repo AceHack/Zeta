@@ -1,0 +1,19 @@
+{
+  "pr_number": 428,
+  "archive_path": "docs/history/pr-reviews/PR-428-drain-126-follow-up-gemini-capability-map-xref-truth-update.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67PpCe",
+    "comment:PRRC_kwDOSF9kNM67PpCi",
+    "comment:PRRC_kwDOSF9kNM67Pq0y",
+    "comment:PRRC_kwDOSF9kNM67Pq1F",
+    "thread:PRRT_kwDOSF9kNM59j0cs",
+    "thread:PRRT_kwDOSF9kNM59j0cv"
+  ],
+  "fetched_at": "2026-08-25T08:09:52.412Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "drain(#126 follow-up): Gemini capability map xref truth-update",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T04:36:19Z",
+  "head_ref": "drain/126-followup-gemini-xref"
+}

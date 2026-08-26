@@ -1,0 +1,12 @@
+{
+  "pr_number": 457,
+  "archive_path": "docs/history/pr-reviews/PR-457-deps-bump-system-io-hashing-from-10-0-6-to-10-0-7.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:11:05.937Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "deps: Bump System.IO.Hashing from 10.0.6 to 10.0.7",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:30:10Z",
+  "head_ref": "dependabot/nuget/System.IO.Hashing-10.0.7"
+}

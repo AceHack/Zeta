@@ -1,0 +1,17 @@
+{
+  "pr_number": 897,
+  "archive_path": "docs/history/pr-reviews/PR-897-backlog-b-0107-add-p3-row-codeql-dismiss-pattern-for-peer-call-siblings.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68tITc",
+    "comment:PRRC_kwDOSF9kNM68tITt",
+    "thread:PRRT_kwDOSF9kNM5-pVd4",
+    "thread:PRRT_kwDOSF9kNM5-pVdt"
+  ],
+  "fetched_at": "2026-08-25T08:29:27.646Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog(B-0107): add P3 row — CodeQL dismiss pattern for peer-call siblings",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T06:12:52Z",
+  "head_ref": "backlog/B-0107-codeql-peer-call-dismiss-pattern-2026-04-30"
+}

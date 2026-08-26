@@ -1,0 +1,19 @@
+{
+  "pr_number": 300,
+  "archive_path": "docs/history/pr-reviews/PR-300-backlog-p3-chatgpt-conversation-download-skill-on-demand-no-cadence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6650eG",
+    "comment:PRRC_kwDOSF9kNM6650eT",
+    "comment:PRRC_kwDOSF9kNM67CTj8",
+    "comment:PRRC_kwDOSF9kNM67CTwW",
+    "thread:PRRT_kwDOSF9kNM59TkiY",
+    "thread:PRRT_kwDOSF9kNM59Tkii"
+  ],
+  "fetched_at": "2026-08-25T08:04:03.261Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: P3 ChatGPT conversation-download skill (on-demand, no cadence)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T13:21:02Z",
+  "head_ref": "backlog/chatgpt-conversation-download-skill"
+}

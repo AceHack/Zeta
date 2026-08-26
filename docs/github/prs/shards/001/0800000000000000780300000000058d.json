@@ -1,0 +1,12 @@
+{
+  "pr_number": 1421,
+  "archive_path": "docs/history/pr-reviews/PR-1421-fix-stryker-ci-use-real-actions-upload-artifact-sha-v7-0-1-fix-1417-hallucinated.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:50:57.786Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(stryker-ci): use real actions/upload-artifact SHA (v7.0.1) — fix #1417 hallucinated SHA",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T15:25:54Z",
+  "head_ref": "otto/fix-stryker-upload-artifact-sha-2026-05-03"
+}

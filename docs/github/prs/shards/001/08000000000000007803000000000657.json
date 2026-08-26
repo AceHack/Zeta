@@ -1,0 +1,21 @@
+{
+  "pr_number": 1623,
+  "archive_path": "docs/history/pr-reviews/PR-1623-research-architecture-cs-is-not-cs-reframe-start-of-evolved-over-centuries-scale.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-AvnH",
+    "comment:PRRC_kwDOSF9kNM6-Aybp",
+    "comment:PRRC_kwDOSF9kNM6-AycH",
+    "comment:PRRC_kwDOSF9kNM6-Aycf",
+    "thread:PRRT_kwDOSF9kNM5_n1ZD",
+    "thread:PRRT_kwDOSF9kNM5_n1Za",
+    "thread:PRRT_kwDOSF9kNM5_n1Zq",
+    "thread:PRRT_kwDOSF9kNM5_nzOL"
+  ],
+  "fetched_at": "2026-08-25T08:59:14.930Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): CS-is-not-CS reframe + start-of-evolved-over-centuries + scale-free-in-time + ossified-framework diagnosis (Aaron-forwarded 2026-05-05 night-close)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T10:54:45Z",
+  "head_ref": "research/cs-is-not-cs-scale-free-in-time-ossified-framework-diagnosis-aaron-forwarded-2026-05-05"
+}

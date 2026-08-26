@@ -1,0 +1,21 @@
+{
+  "pr_number": 98,
+  "archive_path": "docs/history/pr-reviews/PR-98-p2-backlog-cross-substrate-accuracy-carrier-channel-refinement-from-auto-loop-7.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66EVw1",
+    "comment:PRRC_kwDOSF9kNM66EVxO",
+    "comment:PRRC_kwDOSF9kNM66EVxe",
+    "comment:PRRC_kwDOSF9kNM66EVxr",
+    "thread:PRRT_kwDOSF9kNM58r358",
+    "thread:PRRT_kwDOSF9kNM58r36O",
+    "thread:PRRT_kwDOSF9kNM58r36Y",
+    "thread:PRRT_kwDOSF9kNM58r36f"
+  ],
+  "fetched_at": "2026-08-25T07:53:58.064Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "P2 BACKLOG — cross-substrate-accuracy carrier-channel refinement (from auto-loop-7)",
+  "state": "MERGED",
+  "merged_at": "2026-04-22T05:15:54Z",
+  "head_ref": "backlog-cross-substrate-carrier-channel-refinement"
+}

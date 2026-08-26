@@ -1,0 +1,21 @@
+{
+  "pr_number": 1046,
+  "archive_path": "docs/history/pr-reviews/PR-1046-memory-pirate-not-priest-expand-prune-godel-protection-pedagogical-framework-rec.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69GDFK",
+    "comment:PRRC_kwDOSF9kNM69GDFY",
+    "comment:PRRC_kwDOSF9kNM69GDFe",
+    "comment:PRRC_kwDOSF9kNM69GDFm",
+    "thread:PRRT_kwDOSF9kNM5-7xd1",
+    "thread:PRRT_kwDOSF9kNM5-7xd6",
+    "thread:PRRT_kwDOSF9kNM5-7xdl",
+    "thread:PRRT_kwDOSF9kNM5-7xdw"
+  ],
+  "fetched_at": "2026-08-25T08:35:46.892Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(pirate-not-priest + expand-prune + godel-protection): pedagogical framework + recursive-self-application discipline (Aaron 2026-05-01, Glass Halo)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T07:32:09Z",
+  "head_ref": "memory/pirate-not-priest-expand-prune-godel-protection-aaron-2026-05-01"
+}

@@ -1,0 +1,23 @@
+{
+  "pr_number": 724,
+  "archive_path": "docs/history/pr-reviews/PR-724-feat-tick-history-option-b-per-tick-shard-file-transport-task-276-aaron-delegate.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68PonP",
+    "comment:PRRC_kwDOSF9kNM68PonR",
+    "comment:PRRC_kwDOSF9kNM68PopQ",
+    "comment:PRRC_kwDOSF9kNM68Poph",
+    "comment:PRRC_kwDOSF9kNM68Popo",
+    "thread:PRRT_kwDOSF9kNM5-Ttow",
+    "thread:PRRT_kwDOSF9kNM5-Ttoy",
+    "thread:PRRT_kwDOSF9kNM5-Ttqc",
+    "thread:PRRT_kwDOSF9kNM5-Ttqo",
+    "thread:PRRT_kwDOSF9kNM5-Ttqt"
+  ],
+  "fetched_at": "2026-08-25T08:22:45.052Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "feat(tick-history): Option B per-tick shard-file transport (task #276 — Aaron-delegated)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:04:39Z",
+  "head_ref": "feat/tick-history-shard-files-option-B-task-276"
+}

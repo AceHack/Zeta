@@ -1,0 +1,17 @@
+{
+  "pr_number": 1414,
+  "archive_path": "docs/history/pr-reviews/PR-1414-memory-pr-review-meta-classes-six-author-time-disciplines-aaron-2026-05-03.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69cA3r",
+    "comment:PRRC_kwDOSF9kNM69cA3y",
+    "thread:PRRT_kwDOSF9kNM5_MS42",
+    "thread:PRRT_kwDOSF9kNM5_MS45"
+  ],
+  "fetched_at": "2026-08-25T08:50:38.090Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory: PR-review meta-classes — six author-time disciplines (Aaron 2026-05-03)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T14:15:30Z",
+  "head_ref": "memory/pr-review-meta-classes-pre-push-discipline-2026-05-03"
+}

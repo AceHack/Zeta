@@ -1,0 +1,17 @@
+{
+  "pr_number": 581,
+  "archive_path": "docs/history/pr-reviews/PR-581-chore-loop-tick-history-33-substrate-primitive-zero-violations-milestone-tick.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67W_8u",
+    "comment:PRRC_kwDOSF9kNM67WjkH",
+    "comment:PRRC_kwDOSF9kNM67XAGy",
+    "thread:PRRT_kwDOSF9kNM59pWY8"
+  ],
+  "fetched_at": "2026-08-25T08:17:33.867Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "chore(loop-tick-history): §33 substrate-primitive zero-violations milestone tick",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T10:54:55Z",
+  "head_ref": "chore/heartbeat-batch-2026-04-26-section33-substrate-primitive-zero-violations"
+}

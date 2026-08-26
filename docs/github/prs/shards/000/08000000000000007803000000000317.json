@@ -1,0 +1,15 @@
+{
+  "pr_number": 791,
+  "archive_path": "docs/history/pr-reviews/PR-791-tick-history-2026-04-29t05-26z-transient-flake-recovery-success-30-prs-total.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68R2G_",
+    "thread:PRRT_kwDOSF9kNM5-VVwj"
+  ],
+  "fetched_at": "2026-08-25T08:25:31.883Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:26Z — transient-flake recovery success (30 PRs total)",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T05:38:31Z",
+  "head_ref": "tick-history/2026-04-29-tick-0526Z-shard"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 293,
+  "archive_path": "docs/history/pr-reviews/PR-293-ferry-amara-9th-retroactive-absorb-aurora-transfer-report-otto-104.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM665PR5",
+    "comment:PRRC_kwDOSF9kNM665PRY",
+    "comment:PRRC_kwDOSF9kNM665PRv",
+    "comment:PRRC_kwDOSF9kNM665PSC",
+    "comment:PRRC_kwDOSF9kNM67CocJ",
+    "comment:PRRC_kwDOSF9kNM67Cod7",
+    "comment:PRRC_kwDOSF9kNM67CofJ",
+    "comment:PRRC_kwDOSF9kNM67Cog_",
+    "comment:PRRC_kwDOSF9kNM67JwT3",
+    "comment:PRRC_kwDOSF9kNM67JwTU",
+    "comment:PRRC_kwDOSF9kNM67JwpQ",
+    "thread:PRRT_kwDOSF9kNM59TI7V",
+    "thread:PRRT_kwDOSF9kNM59TI7k",
+    "thread:PRRT_kwDOSF9kNM59TI7r",
+    "thread:PRRT_kwDOSF9kNM59TI7x",
+    "thread:PRRT_kwDOSF9kNM59fgU1",
+    "thread:PRRT_kwDOSF9kNM59fgVQ",
+    "thread:PRRT_kwDOSF9kNM59fglt"
+  ],
+  "fetched_at": "2026-08-25T08:03:45.753Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ferry: Amara 9th retroactive absorb — Aurora Transfer Report (Otto-104)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T19:33:17Z",
+  "head_ref": "ferry/9th-amara-aurora-initial-integration-points"
+}

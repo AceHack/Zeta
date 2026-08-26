@@ -1,0 +1,21 @@
+{
+  "pr_number": 1547,
+  "archive_path": "docs/history/pr-reviews/PR-1547-research-b-0140-bash-to-ts-migration-audit-table-acceptance-criterion-1.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM692yT5",
+    "comment:PRRC_kwDOSF9kNM692yTi",
+    "comment:PRRC_kwDOSF9kNM692yUG",
+    "comment:PRRC_kwDOSF9kNM692yUX",
+    "thread:PRRT_kwDOSF9kNM5_gaw3",
+    "thread:PRRT_kwDOSF9kNM5_gawb",
+    "thread:PRRT_kwDOSF9kNM5_gawt",
+    "thread:PRRT_kwDOSF9kNM5_gaxC"
+  ],
+  "fetched_at": "2026-08-25T08:56:02.298Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(B-0140): bash to TS migration audit table — acceptance criterion #1",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T00:07:14Z",
+  "head_ref": "research/b-0140-audit-table-aaron-2026-05-04"
+}

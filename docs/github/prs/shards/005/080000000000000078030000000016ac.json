@@ -1,0 +1,12 @@
+{
+  "pr_number": 5804,
+  "archive_path": "docs/history/pr-reviews/PR-5804-feat-b-0867-15-per-host-adapter-batch-giteaworld-bitbucketworld-codebergworld-so.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T09:08:30.438Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B-0867.15): per-host adapter batch — GiteaWorld + BitbucketWorld + CodebergWorld + SourcehutWorld; 30 tests pass (substantively completes per-host adapters scope)",
+  "state": "MERGED",
+  "merged_at": "2026-05-28T13:03:45Z",
+  "head_ref": "otto-cli/b-0867-15-gitea-bitbucket-codeberg-sourcehut-per-host-adapters-batch-extending-gitlabworld-pattern-aaron-2026-05-28"
+}

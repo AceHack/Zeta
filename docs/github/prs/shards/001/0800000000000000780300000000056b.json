@@ -1,0 +1,17 @@
+{
+  "pr_number": 1387,
+  "archive_path": "docs/history/pr-reviews/PR-1387-docs-research-peer-review-outreach-email-template-recipient-ranking-2026-05-03.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69bUcn",
+    "comment:PRRC_kwDOSF9kNM69bUcs",
+    "thread:PRRT_kwDOSF9kNM5_Lvau",
+    "thread:PRRT_kwDOSF9kNM5_Lvay"
+  ],
+  "fetched_at": "2026-08-25T08:49:33.900Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "docs(research): peer-review outreach email template + recipient ranking 2026-05-03",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T11:51:55Z",
+  "head_ref": "research/peer-review-outreach-template-2026-05-03"
+}

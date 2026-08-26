@@ -1,0 +1,17 @@
+{
+  "pr_number": 1754,
+  "archive_path": "docs/history/pr-reviews/PR-1754-research-preserve-otto-shadow-fishy-distinction.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-oewS",
+    "comment:PRRC_kwDOSF9kNM6-oewm",
+    "thread:PRRT_kwDOSF9kNM6AKiLx",
+    "thread:PRRT_kwDOSF9kNM6AKiMA"
+  ],
+  "fetched_at": "2026-08-25T09:04:23.333Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research: preserve Otto shadow fishy distinction",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T00:32:27Z",
+  "head_ref": "codex/preserve-otto-shadow-fishy-2026-05-06"
+}

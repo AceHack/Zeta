@@ -1,0 +1,17 @@
+{
+  "pr_number": 476,
+  "archive_path": "docs/history/pr-reviews/PR-476-ci-semgrep-rule-17-github-actions-workflow-injection-detection-split-from-52.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67RmZv",
+    "comment:PRRC_kwDOSF9kNM67Rmki",
+    "thread:PRRT_kwDOSF9kNM59lY31",
+    "thread:PRRT_kwDOSF9kNM59lYvI"
+  ],
+  "fetched_at": "2026-08-25T08:11:52.681Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ci(semgrep): Rule 17 — GitHub Actions workflow-injection detection (split from #52)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T12:48:20Z",
+  "head_ref": "security/semgrep-workflow-injection-rule"
+}

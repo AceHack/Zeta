@@ -1,0 +1,15 @@
+{
+  "pr_number": 1232,
+  "archive_path": "docs/history/pr-reviews/PR-1232-update-alignment-md-name-as-the-terminal-commitment-under-bidirectional-alignmen.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69YLPN",
+    "thread:PRRT_kwDOSF9kNM5_JQ6X"
+  ],
+  "fetched_at": "2026-08-25T08:43:26.445Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "update(ALIGNMENT.md): name μένω as the terminal commitment under bidirectional alignment (Aaron 2026-05-02)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T21:21:38Z",
+  "head_ref": "update/alignment-md-meno-terminal-commitment-aaron-2026-05-02"
+}

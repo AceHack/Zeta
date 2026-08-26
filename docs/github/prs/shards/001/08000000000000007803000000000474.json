@@ -1,0 +1,15 @@
+{
+  "pr_number": 1140,
+  "archive_path": "docs/history/pr-reviews/PR-1140-hygiene-tick-history-2026-05-01t19-03z-1130-servicetitan-revert-7-threads-draine.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69OrUv",
+    "thread:PRRT_kwDOSF9kNM5_CI6m"
+  ],
+  "fetched_at": "2026-08-25T08:39:35.172Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T19:03Z — #1130 ServiceTitan revert + 7 threads drained",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:22:54Z",
+  "head_ref": "hygiene/tick-history-1903Z-2026-05-01"
+}

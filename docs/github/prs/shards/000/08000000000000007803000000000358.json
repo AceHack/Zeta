@@ -1,0 +1,23 @@
+{
+  "pr_number": 856,
+  "archive_path": "docs/history/pr-reviews/PR-856-factory-meta-otto-364-search-first-authority-generalises-otto-247-post-855-vocab.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68khqc",
+    "comment:PRRC_kwDOSF9kNM68kkQx",
+    "comment:PRRC_kwDOSF9kNM68kkRx",
+    "comment:PRRC_kwDOSF9kNM68kkST",
+    "comment:PRRC_kwDOSF9kNM68o9SR",
+    "thread:PRRT_kwDOSF9kNM5-jFWb",
+    "thread:PRRT_kwDOSF9kNM5-jHTf",
+    "thread:PRRT_kwDOSF9kNM5-jHUT",
+    "thread:PRRT_kwDOSF9kNM5-jHUt",
+    "thread:PRRT_kwDOSF9kNM5-mTyN"
+  ],
+  "fetched_at": "2026-08-25T08:27:40.152Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "factory(meta): Otto-364 — search-first authority (generalises Otto-247) + post-#855 vocabulary disjointness fix",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T19:52:41Z",
+  "head_ref": "otto-364-search-first-authority-2026-04-29"
+}

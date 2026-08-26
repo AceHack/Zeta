@@ -1,0 +1,15 @@
+{
+  "pr_number": 1862,
+  "archive_path": "docs/history/pr-reviews/PR-1862-backlog-b-0246-b-0247-green-lantern-ring-ace-dlc-packs-product-vs-arc-agi-3-priz.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-y4mX",
+    "thread:PRRT_kwDOSF9kNM6ASS1R"
+  ],
+  "fetched_at": "2026-08-25T09:05:54.197Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "backlog(B-0246, B-0247): Green Lantern ring + Ace DLC packs — product vs ARC-AGI-3 prize",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T11:18:43Z",
+  "head_ref": "backlog/b0246-b0247-ring-device-dlc-packs-vs-arc3-prize"
+}

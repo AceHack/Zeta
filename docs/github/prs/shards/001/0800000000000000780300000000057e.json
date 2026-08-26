@@ -1,0 +1,19 @@
+{
+  "pr_number": 1406,
+  "archive_path": "docs/history/pr-reviews/PR-1406-ci-audit-wire-audit-ci-cache-paths-ts-as-lint-job-closes-1404-follow-up.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69by-2",
+    "comment:PRRC_kwDOSF9kNM69by-6",
+    "comment:PRRC_kwDOSF9kNM69by_A",
+    "thread:PRRT_kwDOSF9kNM5_MHzi",
+    "thread:PRRT_kwDOSF9kNM5_MHzm",
+    "thread:PRRT_kwDOSF9kNM5_MHzq"
+  ],
+  "fetched_at": "2026-08-25T08:50:17.316Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "ci(audit): wire audit-ci-cache-paths.ts as lint job — closes #1404 follow-up",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T13:27:58Z",
+  "head_ref": "ci/wire-audit-ci-cache-paths-lint-job"
+}

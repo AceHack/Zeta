@@ -1,0 +1,17 @@
+{
+  "pr_number": 1134,
+  "archive_path": "docs/history/pr-reviews/PR-1134-hygiene-tick-history-2026-05-01t18-35z-long-lesson-cluster-tick-otto-buddy-b-015.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69OSvb",
+    "comment:PRRC_kwDOSF9kNM69OSwY",
+    "thread:PRRT_kwDOSF9kNM5_B3MQ",
+    "thread:PRRT_kwDOSF9kNM5_B3NG"
+  ],
+  "fetched_at": "2026-08-25T08:39:23.430Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T18:35Z — long lesson-cluster tick (otto-buddy + B-0158 + 28 threads resolved)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T19:04:32Z",
+  "head_ref": "hygiene/tick-history-1835Z-2026-05-01"
+}

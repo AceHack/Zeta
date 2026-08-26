@@ -1,0 +1,21 @@
+{
+  "pr_number": 840,
+  "archive_path": "docs/history/pr-reviews/PR-840-ops-0-0-0-batch-3a-classify-project-laptop-only-md-safe-post-839-cleanup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68av2h",
+    "comment:PRRC_kwDOSF9kNM68av3N",
+    "comment:PRRC_kwDOSF9kNM68av4D",
+    "comment:PRRC_kwDOSF9kNM68av4r",
+    "thread:PRRT_kwDOSF9kNM5-b7IT",
+    "thread:PRRT_kwDOSF9kNM5-b7Ix",
+    "thread:PRRT_kwDOSF9kNM5-b7J7",
+    "thread:PRRT_kwDOSF9kNM5-b7JX"
+  ],
+  "fetched_at": "2026-08-25T08:27:22.411Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "ops(0-0-0): batch 3a — classify project_laptop_only_*.md SAFE + post-#839 cleanup",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T12:54:53Z",
+  "head_ref": "classify-batch-3a-project-laptop-only-2026-04-29"
+}

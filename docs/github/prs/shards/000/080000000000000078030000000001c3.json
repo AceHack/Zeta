@@ -1,0 +1,19 @@
+{
+  "pr_number": 451,
+  "archive_path": "docs/history/pr-reviews/PR-451-hygiene-268-pr-preservation-drain-log-for-422-correction-row-pattern.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67QZR3",
+    "comment:PRRC_kwDOSF9kNM67QZR8",
+    "comment:PRRC_kwDOSF9kNM67QZSA",
+    "thread:PRRT_kwDOSF9kNM59kaZa",
+    "thread:PRRT_kwDOSF9kNM59kaZe",
+    "thread:PRRT_kwDOSF9kNM59kaZi"
+  ],
+  "fetched_at": "2026-08-25T08:10:53.040Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(#268+): pr-preservation drain-log for #422 (correction-row pattern)",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T07:15:07Z",
+  "head_ref": "drain/422-pr-preservation-log"
+}

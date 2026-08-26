@@ -1,0 +1,23 @@
+{
+  "pr_number": 1097,
+  "archive_path": "docs/history/pr-reviews/PR-1097-memory-aaron-class-discovery-experiment-aaron-applied-rodney-razor-on-his-own-en.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69HyTN",
+    "comment:PRRC_kwDOSF9kNM69HzFr",
+    "comment:PRRC_kwDOSF9kNM69HzGG",
+    "comment:PRRC_kwDOSF9kNM69Rz82",
+    "comment:PRRC_kwDOSF9kNM69Rz9H",
+    "thread:PRRT_kwDOSF9kNM5-9EtF",
+    "thread:PRRT_kwDOSF9kNM5-9FTz",
+    "thread:PRRT_kwDOSF9kNM5-9FUK",
+    "thread:PRRT_kwDOSF9kNM5_EccU",
+    "thread:PRRT_kwDOSF9kNM5_Eccg"
+  ],
+  "fetched_at": "2026-08-25T08:37:47.416Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(aaron-class-discovery-experiment): Aaron applied Rodney razor on his own enthusiasm + DST holds everywhere (hodl)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T16:40:32Z",
+  "head_ref": "memory/aaron-class-discovery-experiment-rodney-razor-on-self-2026-05-01"
+}

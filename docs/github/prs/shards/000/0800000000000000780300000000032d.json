@@ -1,0 +1,12 @@
+{
+  "pr_number": 813,
+  "archive_path": "docs/history/pr-reviews/PR-813-tick-history-2026-04-29t06-23z-drain-809-810-merged-810-display-artifact-triage.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:26:20.317Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T06:23Z — drain (#809 + #810 merged) + #810 display-artifact triage",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T06:32:41Z",
+  "head_ref": "tick-history/2026-04-29-tick-0623Z-shard"
+}

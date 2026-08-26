@@ -1,0 +1,17 @@
+{
+  "pr_number": 1506,
+  "archive_path": "docs/history/pr-reviews/PR-1506-research-b-0189-literature-survey-for-q-bayesian-bp-ep-runtime-acceleration-acce.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69w0Rw",
+    "comment:PRRC_kwDOSF9kNM69wzW3",
+    "thread:PRRT_kwDOSF9kNM5_cCu6",
+    "thread:PRRT_kwDOSF9kNM5_cDaC"
+  ],
+  "fetched_at": "2026-08-25T08:54:18.963Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(B-0189): literature survey for Q# Bayesian BP/EP runtime acceleration — acceptance-criterion #1 kickoff (2026-05-04)",
+  "state": "MERGED",
+  "merged_at": "2026-05-04T18:38:40Z",
+  "head_ref": "research/b-0189-bayesian-bp-ep-q-sharp-literature-survey-2026-05-04"
+}

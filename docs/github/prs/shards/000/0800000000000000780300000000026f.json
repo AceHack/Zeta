@@ -1,0 +1,15 @@
+{
+  "pr_number": 623,
+  "archive_path": "docs/history/pr-reviews/PR-623-tick-history-15-55z-clean-reapply-supersedes-622-manufactured-patience-live-lock.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67YdHk",
+    "thread:PRRT_kwDOSF9kNM59q3Fg"
+  ],
+  "fetched_at": "2026-08-25T08:18:48.052Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 15:55Z clean-reapply (supersedes #622) — manufactured-patience live-lock + #290 #291 done",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T16:16:29Z",
+  "head_ref": "tick-history/2026-04-26T15-55Z-v2"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 1251,
+  "archive_path": "docs/history/pr-reviews/PR-1251-review-pr-1249-postmerge-fix-line-35-stale-ref-correct-memory-md-counts-12-13-5-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T08:44:14.477Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "review(pr-1249-postmerge): fix line-35 stale ref + correct MEMORY.md counts (12→13, 5→6)",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T00:07:33Z",
+  "head_ref": "free-memory/post-merge-corrections-counts-and-stale-ref-aaron-2026-05-03"
+}

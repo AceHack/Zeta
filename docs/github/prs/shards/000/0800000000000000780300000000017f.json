@@ -1,0 +1,19 @@
+{
+  "pr_number": 383,
+  "archive_path": "docs/history/pr-reviews/PR-383-backlog-otto-254-270-counterweight-discipline-bundle-17-rows.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67K1L-",
+    "comment:PRRC_kwDOSF9kNM67K1LO",
+    "comment:PRRC_kwDOSF9kNM67K1Lu",
+    "thread:PRRT_kwDOSF9kNM59gUKO",
+    "thread:PRRT_kwDOSF9kNM59gUKm",
+    "thread:PRRT_kwDOSF9kNM59gUKx"
+  ],
+  "fetched_at": "2026-08-25T08:07:46.807Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "backlog: Otto-254..270 counterweight-discipline bundle (17 rows)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T20:37:39Z",
+  "head_ref": "backlog/otto-257-269-counterweight-discipline-bundle"
+}

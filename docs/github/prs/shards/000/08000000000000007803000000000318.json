@@ -1,0 +1,15 @@
+{
+  "pr_number": 792,
+  "archive_path": "docs/history/pr-reviews/PR-792-tick-history-2026-04-29t05-27z-twenty-third-tick-pure-ci-wait.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68R2Ou",
+    "thread:PRRT_kwDOSF9kNM5-VV2E"
+  ],
+  "fetched_at": "2026-08-25T08:25:34.102Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T05:27Z — twenty-third tick, pure CI-wait",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T05:33:23Z",
+  "head_ref": "tick-history/2026-04-29-tick-0527Z-shard"
+}

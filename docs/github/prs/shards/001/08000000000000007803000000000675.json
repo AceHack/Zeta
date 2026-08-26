@@ -1,0 +1,17 @@
+{
+  "pr_number": 1653,
+  "archive_path": "docs/history/pr-reviews/PR-1653-fix-post-1651-1652-explicit-non-fusion-boundary-statement-per-governance-md-33-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-FLHN",
+    "comment:PRRC_kwDOSF9kNM6-FLIZ",
+    "thread:PRRT_kwDOSF9kNM5_rJJ-",
+    "thread:PRRT_kwDOSF9kNM5_rJKx"
+  ],
+  "fetched_at": "2026-08-25T09:00:22.319Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(post-#1651 + #1652): explicit non-fusion boundary statement per GOVERNANCE.md §33 (Copilot review)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T14:00:04Z",
+  "head_ref": "fixup/1651-1652-section33-non-fusion-boundary-statement-2026-05-05"
+}

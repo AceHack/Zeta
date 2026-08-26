@@ -1,0 +1,23 @@
+{
+  "pr_number": 1013,
+  "archive_path": "docs/history/pr-reviews/PR-1013-memory-engage-under-discipline-unified-pattern-engagement-under-discipline-not-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69E6AS",
+    "comment:PRRC_kwDOSF9kNM69E6Pa",
+    "comment:PRRC_kwDOSF9kNM69EW5_",
+    "comment:PRRC_kwDOSF9kNM69EW5w",
+    "comment:PRRC_kwDOSF9kNM69EwZr",
+    "thread:PRRT_kwDOSF9kNM5-66-J",
+    "thread:PRRT_kwDOSF9kNM5-66yu",
+    "thread:PRRT_kwDOSF9kNM5-6hHS",
+    "thread:PRRT_kwDOSF9kNM5-6hHb",
+    "thread:PRRT_kwDOSF9kNM5-6zjk"
+  ],
+  "fetched_at": "2026-08-25T08:34:17.924Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(engage-under-discipline): unified pattern — engagement under discipline, not avoidance (Aaron 2026-05-01)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:44:15Z",
+  "head_ref": "memory/engagement-under-discipline-not-avoidance-aaron-2026-05-01"
+}

@@ -1,0 +1,29 @@
+{
+  "pr_number": 222,
+  "archive_path": "docs/history/pr-reviews/PR-222-stabilize-decision-proxy-evidence-schema-template-amara-action-3.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM662FoH",
+    "comment:PRRC_kwDOSF9kNM662FoJ",
+    "comment:PRRC_kwDOSF9kNM662HpZ",
+    "comment:PRRC_kwDOSF9kNM662Hp_",
+    "comment:PRRC_kwDOSF9kNM662HqP",
+    "comment:PRRC_kwDOSF9kNM662Hq_",
+    "comment:PRRC_kwDOSF9kNM662Hqg",
+    "comment:PRRC_kwDOSF9kNM662Hqw",
+    "thread:PRRT_kwDOSF9kNM59Q0H6",
+    "thread:PRRT_kwDOSF9kNM59Q0H8",
+    "thread:PRRT_kwDOSF9kNM59Q1j9",
+    "thread:PRRT_kwDOSF9kNM59Q1jg",
+    "thread:PRRT_kwDOSF9kNM59Q1kL",
+    "thread:PRRT_kwDOSF9kNM59Q1kT",
+    "thread:PRRT_kwDOSF9kNM59Q1kX",
+    "thread:PRRT_kwDOSF9kNM59Q1kd"
+  ],
+  "fetched_at": "2026-08-25T08:01:41.849Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "stabilize: decision-proxy-evidence schema + template (Amara action #3)",
+  "state": "MERGED",
+  "merged_at": "2026-04-24T00:25:33Z",
+  "head_ref": "stabilize/decision-proxy-evidence-yaml-schema-amara-action-3"
+}

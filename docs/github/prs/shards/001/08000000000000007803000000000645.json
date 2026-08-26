@@ -1,0 +1,23 @@
+{
+  "pr_number": 1605,
+  "archive_path": "docs/history/pr-reviews/PR-1605-research-architecture-coconut-latent-reasoning-sleeping-bear-hypothesis-answer-c.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69-MjE",
+    "comment:PRRC_kwDOSF9kNM69-QWh",
+    "comment:PRRC_kwDOSF9kNM69-QXL",
+    "comment:PRRC_kwDOSF9kNM69-QXl",
+    "comment:PRRC_kwDOSF9kNM69-ZBY",
+    "thread:PRRT_kwDOSF9kNM5_l5o6",
+    "thread:PRRT_kwDOSF9kNM5_l8cy",
+    "thread:PRRT_kwDOSF9kNM5_l8dV",
+    "thread:PRRT_kwDOSF9kNM5_l8dq",
+    "thread:PRRT_kwDOSF9kNM5_mC5n"
+  ],
+  "fetched_at": "2026-08-25T08:58:30.180Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): Coconut latent reasoning = sleeping-bear hypothesis answer + CodeAct/bridge + trust-calculus-in-action meta-observation (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T09:10:08Z",
+  "head_ref": "research/codeact-fsharp-bridge-claudeai-aaron-forwarded-2026-05-05"
+}

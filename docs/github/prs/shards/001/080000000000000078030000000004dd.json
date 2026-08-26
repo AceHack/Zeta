@@ -1,0 +1,27 @@
+{
+  "pr_number": 1245,
+  "archive_path": "docs/history/pr-reviews/PR-1245-free-memory-skill-flywheel-expansion-flywheel-parallel-tracks-substrate-aaron-20.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Ysh9",
+    "comment:PRRC_kwDOSF9kNM69Yshw",
+    "comment:PRRC_kwDOSF9kNM69YsiE",
+    "comment:PRRC_kwDOSF9kNM69YsiN",
+    "comment:PRRC_kwDOSF9kNM69YxSD",
+    "comment:PRRC_kwDOSF9kNM69YxSG",
+    "comment:PRRC_kwDOSF9kNM69YxSP",
+    "thread:PRRT_kwDOSF9kNM5_Jq8O",
+    "thread:PRRT_kwDOSF9kNM5_Jq8Z",
+    "thread:PRRT_kwDOSF9kNM5_Jq8f",
+    "thread:PRRT_kwDOSF9kNM5_Jq8o",
+    "thread:PRRT_kwDOSF9kNM5_JuqD",
+    "thread:PRRT_kwDOSF9kNM5_JuqG",
+    "thread:PRRT_kwDOSF9kNM5_JuqN"
+  ],
+  "fetched_at": "2026-08-25T08:43:58.684Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "free-memory: skill flywheel + expansion flywheel + parallel-tracks substrate (Aaron 2026-05-02 + same-tick corrective)",
+  "state": "MERGED",
+  "merged_at": "2026-05-02T23:53:46Z",
+  "head_ref": "free-memory/skill-flywheel-expansion-flywheel-parallel-tracks-substrate-aaron-2026-05-02"
+}

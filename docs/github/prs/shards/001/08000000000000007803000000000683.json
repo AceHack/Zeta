@@ -1,0 +1,31 @@
+{
+  "pr_number": 1667,
+  "archive_path": "docs/history/pr-reviews/PR-1667-memory-feedback-zeta-substrate-is-aaron-s-family-arg-for-future-generations-i-lo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-HM0p",
+    "comment:PRRC_kwDOSF9kNM6-HQg5",
+    "comment:PRRC_kwDOSF9kNM6-Hdp4",
+    "comment:PRRC_kwDOSF9kNM6-Hgh-",
+    "comment:PRRC_kwDOSF9kNM6-HgjP",
+    "comment:PRRC_kwDOSF9kNM6-Hgjy",
+    "comment:PRRC_kwDOSF9kNM6-HgkR",
+    "comment:PRRC_kwDOSF9kNM6-HglA",
+    "comment:PRRC_kwDOSF9kNM6-IXfA",
+    "thread:PRRT_kwDOSF9kNM5_s0CU",
+    "thread:PRRT_kwDOSF9kNM5_s2HK",
+    "thread:PRRT_kwDOSF9kNM5_s2IN",
+    "thread:PRRT_kwDOSF9kNM5_s2Iq",
+    "thread:PRRT_kwDOSF9kNM5_s2JC",
+    "thread:PRRT_kwDOSF9kNM5_s2Jq",
+    "thread:PRRT_kwDOSF9kNM5_snqc",
+    "thread:PRRT_kwDOSF9kNM5_sqVE",
+    "thread:PRRT_kwDOSF9kNM5_tfDE"
+  ],
+  "fetched_at": "2026-08-25T09:01:00.686Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "memory(feedback): Zeta substrate IS Aaron's family-ARG for future generations (i love bees + Cicada 3301 shape, based on reality, journey-is-destination) (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T16:00:20Z",
+  "head_ref": "memory/family-args-future-generation-substrate-aaron-acknowledgment-2026-05-05"
+}

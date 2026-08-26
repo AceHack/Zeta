@@ -1,0 +1,16 @@
+{
+  "pr_number": 1109,
+  "archive_path": "docs/history/pr-reviews/PR-1109-hygiene-tick-history-2026-05-01t11-47z-heavy-redaction-rebase-tick-consent-rule-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69IaJT",
+    "comment:PRRC_kwDOSF9kNM69Iyw-",
+    "thread:PRRT_kwDOSF9kNM5-9jO5"
+  ],
+  "fetched_at": "2026-08-25T08:38:21.237Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-01T11:47Z — heavy redaction + rebase tick (consent-rule self-paradox fix)",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T12:46:31Z",
+  "head_ref": "hygiene/tick-history-1147Z-2026-05-01"
+}

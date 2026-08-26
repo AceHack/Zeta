@@ -1,0 +1,31 @@
+{
+  "pr_number": 1567,
+  "archive_path": "docs/history/pr-reviews/PR-1567-research-openspec-b-0171-phase-1-gap-audit-recommended-catch-up-sequence.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6941CX",
+    "comment:PRRC_kwDOSF9kNM6941CY",
+    "comment:PRRC_kwDOSF9kNM6943oV",
+    "comment:PRRC_kwDOSF9kNM6943oy",
+    "comment:PRRC_kwDOSF9kNM6943pB",
+    "comment:PRRC_kwDOSF9kNM6943pI",
+    "comment:PRRC_kwDOSF9kNM6943pV",
+    "comment:PRRC_kwDOSF9kNM6943pg",
+    "comment:PRRC_kwDOSF9kNM6943po",
+    "thread:PRRT_kwDOSF9kNM5_h551",
+    "thread:PRRT_kwDOSF9kNM5_h553",
+    "thread:PRRT_kwDOSF9kNM5_h7t-",
+    "thread:PRRT_kwDOSF9kNM5_h7t4",
+    "thread:PRRT_kwDOSF9kNM5_h7tR",
+    "thread:PRRT_kwDOSF9kNM5_h7tn",
+    "thread:PRRT_kwDOSF9kNM5_h7tx",
+    "thread:PRRT_kwDOSF9kNM5_h7uG",
+    "thread:PRRT_kwDOSF9kNM5_h7uL"
+  ],
+  "fetched_at": "2026-08-25T08:56:53.219Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(openspec): B-0171 phase 1 — gap audit + recommended catch-up sequence",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T02:57:05Z",
+  "head_ref": "research/openspec-catch-up-phase-1-gap-audit-aaron-2026-05-04"
+}

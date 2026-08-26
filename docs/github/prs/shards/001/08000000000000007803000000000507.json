@@ -1,0 +1,17 @@
+{
+  "pr_number": 1287,
+  "archive_path": "docs/history/pr-reviews/PR-1287-fix-1283-follow-up-provenance-drift-grammar-in-b-0172-calibration-recovery.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69ZZKm",
+    "comment:PRRC_kwDOSF9kNM69ZZKs",
+    "thread:PRRT_kwDOSF9kNM5_KOQj",
+    "thread:PRRT_kwDOSF9kNM5_KOQo"
+  ],
+  "fetched_at": "2026-08-25T08:45:50.589Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "fix(#1283 follow-up): provenance drift + grammar in B-0172 calibration recovery",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:07:33Z",
+  "head_ref": "fix/b-0172-recovery-provenance-drift-and-grammar-otto-2026-05-03"
+}

@@ -1,0 +1,20 @@
+{
+  "pr_number": 1038,
+  "archive_path": "docs/history/pr-reviews/PR-1038-hygiene-tick-history-shard-0738z-pr-1018-rebase-pr-1015-drain.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Fy0p",
+    "comment:PRRC_kwDOSF9kNM69Fyr7",
+    "comment:PRRC_kwDOSF9kNM69Fyrs",
+    "comment:PRRC_kwDOSF9kNM69G9Nm",
+    "thread:PRRT_kwDOSF9kNM5-7k4P",
+    "thread:PRRT_kwDOSF9kNM5-7k4b",
+    "thread:PRRT_kwDOSF9kNM5-7k_B"
+  ],
+  "fetched_at": "2026-08-25T08:35:30.876Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(tick-history): shard 0738Z — PR #1018 rebase + PR #1015 drain",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T09:18:24Z",
+  "head_ref": "hygiene/tick-history-shard-0738Z-pr1018-rebase-pr1015-drain"
+}

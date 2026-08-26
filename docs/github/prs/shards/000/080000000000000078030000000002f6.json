@@ -1,0 +1,17 @@
+{
+  "pr_number": 758,
+  "archive_path": "docs/history/pr-reviews/PR-758-tick-history-2026-04-29t03-40z-corruption-triage-closure-shard.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68Qmg9",
+    "comment:PRRC_kwDOSF9kNM68Qmgl",
+    "thread:PRRT_kwDOSF9kNM5-UbhZ",
+    "thread:PRRT_kwDOSF9kNM5-Ubhu"
+  ],
+  "fetched_at": "2026-08-25T08:24:08.414Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T03:40Z — corruption-triage closure shard",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T03:53:51Z",
+  "head_ref": "tick-history/2026-04-29-tick-0340Z-shard-corruption-closure"
+}

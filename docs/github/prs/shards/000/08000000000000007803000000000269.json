@@ -1,0 +1,15 @@
+{
+  "pr_number": 617,
+  "archive_path": "docs/history/pr-reviews/PR-617-tick-history-14-10z-otto-275-yet-default-copilot-taxonomy-verified.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67X6WS",
+    "thread:PRRT_kwDOSF9kNM59qbzV"
+  ],
+  "fetched_at": "2026-08-25T08:18:37.886Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 14:10Z — Otto-275-YET default + Copilot taxonomy verified",
+  "state": "MERGED",
+  "merged_at": "2026-04-26T14:38:09Z",
+  "head_ref": "tick-history/2026-04-26T14-12Z"
+}

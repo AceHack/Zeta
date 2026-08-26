@@ -1,0 +1,21 @@
+{
+  "pr_number": 1664,
+  "archive_path": "docs/history/pr-reviews/PR-1664-research-architecture-twelfth-post-rest-morning-forward-hilbert-beacons-leanstra.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-G8-o",
+    "comment:PRRC_kwDOSF9kNM6-G8_q",
+    "comment:PRRC_kwDOSF9kNM6-G9AY",
+    "comment:PRRC_kwDOSF9kNM6-G9BA",
+    "thread:PRRT_kwDOSF9kNM5_scXC",
+    "thread:PRRT_kwDOSF9kNM5_scXy",
+    "thread:PRRT_kwDOSF9kNM5_scYP",
+    "thread:PRRT_kwDOSF9kNM5_scYu"
+  ],
+  "fetched_at": "2026-08-25T09:00:51.782Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "research(architecture): TWELFTH (post-rest morning) forward -- Hilbert + BEACONS + Leanstral convergence VALIDATES Zeta pattern + 10th-11th catches + beacon+mirror DEEP PROVENANCE since PR#1 (Aaron 2026-05-05)",
+  "state": "MERGED",
+  "merged_at": "2026-05-05T15:39:53Z",
+  "head_ref": "research/hilbert-beacons-leanstral-structural-convergence-validates-zeta-pattern-aaron-forwarded-2026-05-05-morning"
+}

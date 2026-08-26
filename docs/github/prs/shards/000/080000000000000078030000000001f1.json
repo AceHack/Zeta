@@ -1,0 +1,25 @@
+{
+  "pr_number": 497,
+  "archive_path": "docs/history/pr-reviews/PR-497-memory-otto-290-hypothesis-turtles-all-the-way-up-induction-factory.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67Seb0",
+    "comment:PRRC_kwDOSF9kNM67Sjpa",
+    "comment:PRRC_kwDOSF9kNM67SmR1",
+    "comment:PRRC_kwDOSF9kNM67Spi5",
+    "comment:PRRC_kwDOSF9kNM67Sr9a",
+    "comment:PRRC_kwDOSF9kNM67SsSQ",
+    "comment:PRRC_kwDOSF9kNM67Suq3",
+    "comment:PRRC_kwDOSF9kNM67SurH",
+    "thread:PRRT_kwDOSF9kNM59mFS6",
+    "thread:PRRT_kwDOSF9kNM59mLuH",
+    "thread:PRRT_kwDOSF9kNM59mQVN",
+    "thread:PRRT_kwDOSF9kNM59mQmS"
+  ],
+  "fetched_at": "2026-08-25T08:12:47.810Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: Otto-290 hypothesis — turtles-all-the-way-UP induction factory",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T16:36:55Z",
+  "head_ref": "memory/otto-290-turtles-up-induction-factory"
+}

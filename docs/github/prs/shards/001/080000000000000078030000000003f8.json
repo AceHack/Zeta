@@ -1,0 +1,19 @@
+{
+  "pr_number": 1016,
+  "archive_path": "docs/history/pr-reviews/PR-1016-hygiene-backlog-index-backfill-frontmatter-on-b-0124-b-0125-b-0126-regenerate-ag.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Ed_7",
+    "comment:PRRC_kwDOSF9kNM69EeA3",
+    "comment:PRRC_kwDOSF9kNM69EeAf",
+    "thread:PRRT_kwDOSF9kNM5-6mV3",
+    "thread:PRRT_kwDOSF9kNM5-6mVR",
+    "thread:PRRT_kwDOSF9kNM5-6mVo"
+  ],
+  "fetched_at": "2026-08-25T08:34:28.206Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "hygiene(backlog-index): backfill frontmatter on B-0124/B-0125/B-0126 + regenerate aggregate",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T05:44:26Z",
+  "head_ref": "hygiene/backlog-index-frontmatter-backfill-2026-05-01"
+}

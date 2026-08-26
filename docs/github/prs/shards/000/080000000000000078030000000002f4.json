@@ -1,0 +1,21 @@
+{
+  "pr_number": 756,
+  "archive_path": "docs/history/pr-reviews/PR-756-docs-lost-substrate-inventory-ledger-2026-04-29-read-only-audit-prerequisite.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68QGgN",
+    "comment:PRRC_kwDOSF9kNM68QGkT",
+    "comment:PRRC_kwDOSF9kNM68QGkj",
+    "comment:PRRC_kwDOSF9kNM68QGkv",
+    "thread:PRRT_kwDOSF9kNM5-UD0C",
+    "thread:PRRT_kwDOSF9kNM5-UD0O",
+    "thread:PRRT_kwDOSF9kNM5-UD0X",
+    "thread:PRRT_kwDOSF9kNM5-UDww"
+  ],
+  "fetched_at": "2026-08-25T08:23:59.482Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "docs(lost-substrate): inventory ledger 2026-04-29 — read-only audit prerequisite",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T02:52:26Z",
+  "head_ref": "lost-substrate/inventory-ledger-2026-04-29"
+}

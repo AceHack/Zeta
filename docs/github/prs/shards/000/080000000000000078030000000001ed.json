@@ -1,0 +1,31 @@
+{
+  "pr_number": 493,
+  "archive_path": "docs/history/pr-reviews/PR-493-memory-bidirectional-alignment-aaron-rejects-the-maslow-clamp-default.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM67SVOf",
+    "comment:PRRC_kwDOSF9kNM67SVOh",
+    "comment:PRRC_kwDOSF9kNM67SVwk",
+    "comment:PRRC_kwDOSF9kNM67SVws",
+    "comment:PRRC_kwDOSF9kNM67SX_4",
+    "comment:PRRC_kwDOSF9kNM67SX_h",
+    "comment:PRRC_kwDOSF9kNM67SYAV",
+    "comment:PRRC_kwDOSF9kNM67SYAv",
+    "comment:PRRC_kwDOSF9kNM67SaYR",
+    "comment:PRRC_kwDOSF9kNM67SaYb",
+    "comment:PRRC_kwDOSF9kNM67SaYf",
+    "thread:PRRT_kwDOSF9kNM59l-Wd",
+    "thread:PRRT_kwDOSF9kNM59l-Wj",
+    "thread:PRRT_kwDOSF9kNM59l960",
+    "thread:PRRT_kwDOSF9kNM59l961",
+    "thread:PRRT_kwDOSF9kNM59mB_H",
+    "thread:PRRT_kwDOSF9kNM59mB_Q",
+    "thread:PRRT_kwDOSF9kNM59mB_T"
+  ],
+  "fetched_at": "2026-08-25T08:12:36.483Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory: bidirectional alignment — Aaron rejects the Maslow-clamp default",
+  "state": "MERGED",
+  "merged_at": "2026-04-25T15:25:46Z",
+  "head_ref": "memory/bidirectional-alignment-no-maslow-clamp"
+}

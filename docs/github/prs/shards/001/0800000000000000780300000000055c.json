@@ -1,0 +1,19 @@
+{
+  "pr_number": 1372,
+  "archive_path": "docs/history/pr-reviews/PR-1372-hygiene-tick-history-2026-05-03t10-20z-1371-wait-ci-deferred-4-ref-d-sh-investig.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69a-Wj",
+    "comment:PRRC_kwDOSF9kNM69a-kr",
+    "comment:PRRC_kwDOSF9kNM69bAds",
+    "comment:PRRC_kwDOSF9kNM69bAeF",
+    "thread:PRRT_kwDOSF9kNM5_LePE",
+    "thread:PRRT_kwDOSF9kNM5_LeaW"
+  ],
+  "fetched_at": "2026-08-25T08:48:59.598Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T10:20Z — #1371 wait-ci + deferred 4 ref'd .sh investigation",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T10:32:14Z",
+  "head_ref": "hygiene/tick-2026-05-03-1020Z-1371-deferred-investigation"
+}

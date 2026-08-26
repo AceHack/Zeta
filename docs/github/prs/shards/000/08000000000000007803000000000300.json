@@ -1,0 +1,17 @@
+{
+  "pr_number": 768,
+  "archive_path": "docs/history/pr-reviews/PR-768-tick-history-2026-04-29t04-30z-second-merge-wave-3-prs-merged-3-threads-0-new-su.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM68RFHH",
+    "comment:PRRC_kwDOSF9kNM68RFHe",
+    "thread:PRRT_kwDOSF9kNM5-UyT6",
+    "thread:PRRT_kwDOSF9kNM5-UyUK"
+  ],
+  "fetched_at": "2026-08-25T08:24:36.757Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "tick-history: 2026-04-29T04:30Z (second merge wave) — 3 PRs merged + 3 threads + 0 new substrate",
+  "state": "MERGED",
+  "merged_at": "2026-04-29T04:43:35Z",
+  "head_ref": "tick-history/2026-04-29-tick-0430Z-shard-second-merge-wave"
+}

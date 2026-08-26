@@ -1,0 +1,15 @@
+{
+  "pr_number": 1158,
+  "archive_path": "docs/history/pr-reviews/PR-1158-test-poll-pr-gate-fixture-driven-dst-coverage-closes-task-355-with-fixtures-gap.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69QSwH",
+    "thread:PRRT_kwDOSF9kNM5_DULU"
+  ],
+  "fetched_at": "2026-08-25T08:40:19.583Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "test(poll-pr-gate): fixture-driven DST coverage — closes task #355 with-fixtures gap",
+  "state": "MERGED",
+  "merged_at": "2026-05-01T20:49:05Z",
+  "head_ref": "otto/poll-pr-gate-fixture-tests-2026-05-01"
+}

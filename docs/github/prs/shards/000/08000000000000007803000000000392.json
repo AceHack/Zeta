@@ -1,0 +1,33 @@
+{
+  "pr_number": 914,
+  "archive_path": "docs/history/pr-reviews/PR-914-memory-canon-canon-star-wars-sense-three-load-bearing-purposes-aaron-2026-04-30.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM680YBn",
+    "comment:PRRC_kwDOSF9kNM680YCt",
+    "comment:PRRC_kwDOSF9kNM680win",
+    "comment:PRRC_kwDOSF9kNM680wj5",
+    "comment:PRRC_kwDOSF9kNM680wjX",
+    "comment:PRRC_kwDOSF9kNM680wk-",
+    "comment:PRRC_kwDOSF9kNM680wkd",
+    "comment:PRRC_kwDOSF9kNM680wlp",
+    "comment:PRRC_kwDOSF9kNM681RIx",
+    "comment:PRRC_kwDOSF9kNM681RJg",
+    "thread:PRRT_kwDOSF9kNM5-uvys",
+    "thread:PRRT_kwDOSF9kNM5-uvzh",
+    "thread:PRRT_kwDOSF9kNM5-vCK8",
+    "thread:PRRT_kwDOSF9kNM5-vCKb",
+    "thread:PRRT_kwDOSF9kNM5-vCLY",
+    "thread:PRRT_kwDOSF9kNM5-vCLy",
+    "thread:PRRT_kwDOSF9kNM5-vCMO",
+    "thread:PRRT_kwDOSF9kNM5-vCMw",
+    "thread:PRRT_kwDOSF9kNM5-vagM",
+    "thread:PRRT_kwDOSF9kNM5-vagw"
+  ],
+  "fetched_at": "2026-08-25T08:30:11.916Z",
+  "schema_version": "v1",
+  "commit_sha": "1a4965664e3da12a75dccab5e261cbd972311149",
+  "title": "memory(canon): canon (Star Wars sense) — three load-bearing purposes (Aaron 2026-04-30)",
+  "state": "MERGED",
+  "merged_at": "2026-04-30T13:00:19Z",
+  "head_ref": "ops/canon-not-doctrine-star-wars-framing-2026-04-30"
+}

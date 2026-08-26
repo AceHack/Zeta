@@ -1,0 +1,33 @@
+{
+  "pr_number": 156,
+  "archive_path": "docs/history/pr-reviews/PR-156-research-soulfile-staged-absorption-model-dsl-as-substrate-compile-distribution-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM66r-GG",
+    "comment:PRRC_kwDOSF9kNM66r-HD",
+    "comment:PRRC_kwDOSF9kNM66r-Hi",
+    "comment:PRRC_kwDOSF9kNM66r-IA",
+    "comment:PRRC_kwDOSF9kNM66r6nh",
+    "comment:PRRC_kwDOSF9kNM66sE0J",
+    "comment:PRRC_kwDOSF9kNM66vF0Q",
+    "comment:PRRC_kwDOSF9kNM66vFye",
+    "comment:PRRC_kwDOSF9kNM66vFz2",
+    "comment:PRRC_kwDOSF9kNM66vFzX",
+    "thread:PRRT_kwDOSF9kNM59JZP7",
+    "thread:PRRT_kwDOSF9kNM59Jb3g",
+    "thread:PRRT_kwDOSF9kNM59Jb49",
+    "thread:PRRT_kwDOSF9kNM59Jb4N",
+    "thread:PRRT_kwDOSF9kNM59Jb4o",
+    "thread:PRRT_kwDOSF9kNM59Jg22",
+    "thread:PRRT_kwDOSF9kNM59LvNN",
+    "thread:PRRT_kwDOSF9kNM59LvNy",
+    "thread:PRRT_kwDOSF9kNM59LvOG",
+    "thread:PRRT_kwDOSF9kNM59LvOc"
+  ],
+  "fetched_at": "2026-08-25T07:57:37.504Z",
+  "schema_version": "v1",
+  "commit_sha": "389e60ee2a424f45e6b2d760a18270c3d422ae75",
+  "title": "research: soulfile staged absorption model (DSL-as-substrate, compile/distribution/runtime)",
+  "state": "MERGED",
+  "merged_at": "2026-04-23T18:19:20Z",
+  "head_ref": "research/soulfile-staged-absorption-model"
+}

@@ -1,0 +1,31 @@
+{
+  "pr_number": 1877,
+  "archive_path": "docs/history/pr-reviews/PR-1877-feat-b-0249-add-tier-1-autonomous-backlog-runner.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM6-110j",
+    "comment:PRRC_kwDOSF9kNM6-111M",
+    "comment:PRRC_kwDOSF9kNM6-111v",
+    "comment:PRRC_kwDOSF9kNM6-112S",
+    "comment:PRRC_kwDOSF9kNM6-11yq",
+    "comment:PRRC_kwDOSF9kNM6-11z7",
+    "comment:PRRC_kwDOSF9kNM6-11zg",
+    "comment:PRRC_kwDOSF9kNM6-1zUj",
+    "comment:PRRC_kwDOSF9kNM6-1zUo",
+    "thread:PRRT_kwDOSF9kNM6AUf4R",
+    "thread:PRRT_kwDOSF9kNM6AUf4W",
+    "thread:PRRT_kwDOSF9kNM6AUhty",
+    "thread:PRRT_kwDOSF9kNM6AUhu0",
+    "thread:PRRT_kwDOSF9kNM6AUhud",
+    "thread:PRRT_kwDOSF9kNM6AUhvN",
+    "thread:PRRT_kwDOSF9kNM6AUhvv",
+    "thread:PRRT_kwDOSF9kNM6AUhwO",
+    "thread:PRRT_kwDOSF9kNM6AUhwn"
+  ],
+  "fetched_at": "2026-08-25T09:06:05.583Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "feat(B-0249): add Tier 1 autonomous backlog runner",
+  "state": "MERGED",
+  "merged_at": "2026-05-07T13:28:31Z",
+  "head_ref": "codex/b0249-tier1-backlog-runner"
+}

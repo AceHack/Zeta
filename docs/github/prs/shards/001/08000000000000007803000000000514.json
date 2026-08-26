@@ -1,0 +1,19 @@
+{
+  "pr_number": 1300,
+  "archive_path": "docs/history/pr-reviews/PR-1300-hygiene-tick-history-2026-05-03t03-49z-v0-5-retroactive-eval-2-thread-fixes.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM69Zi6I",
+    "comment:PRRC_kwDOSF9kNM69Zi6N",
+    "comment:PRRC_kwDOSF9kNM69Ziqo",
+    "thread:PRRT_kwDOSF9kNM5_KV1L",
+    "thread:PRRT_kwDOSF9kNM5_KV1N",
+    "thread:PRRT_kwDOSF9kNM5_KVnr"
+  ],
+  "fetched_at": "2026-08-25T08:46:22.352Z",
+  "schema_version": "v1",
+  "commit_sha": "26afa6150e186053829c51b88a91181c4a9d42f0",
+  "title": "hygiene(tick-history): 2026-05-03T03:49Z — v0.5 retroactive eval + 2 thread fixes",
+  "state": "MERGED",
+  "merged_at": "2026-05-03T03:58:29Z",
+  "head_ref": "free-memory/tick-0345Z-existence-drift-v05-eval"
+}
