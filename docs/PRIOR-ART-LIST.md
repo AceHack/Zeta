@@ -2075,3 +2075,84 @@ brief that commissioned this work described the entry as a misattribution.
 and `docs/research/2026-08-25-rx-query-planner-joins-stage-2-two-stream-statistics.md` —
 the statistics layer, whose §8.8 asked whether these anchor repairs were wanted. This
 section is the first of them.
+
+### Vectorised execution in a managed runtime — the .NET-idiom half
+
+- **Cysharp — ZLinq** (`Cysharp/ZLinq`, **MIT**, <https://github.com/Cysharp/ZLinq>) —
+  _"Zero allocation LINQ with LINQ to Span, LINQ to SIMD, and LINQ to Tree."_ Named by
+  Aaron 2026-08-25 while asking for `Where`/`Select` in SIMD batches: _"i think this
+  library does similar and we can add it to our prior art references too."_ It does, and
+  the _specific_ ways it does **not** turned out to be the more useful half.
+
+  **Licence checked first** (`.claude/rules/cleanroom-two-team-separation.md`): MIT, so
+  reading the source would be permitted. It was nonetheless **not read** — the findings
+  below come from ZLinq's published README and its generated documentation, and are cited
+  as prior art rather than transcribed. Requirements were taken; no expression was. Zeta's
+  kernels are named, shaped and specified differently, and the one primitive that
+  coincides (the two's-complement add-overflow test) is a textbook identity that predates
+  both projects.
+
+  **What is transferable, and was taken:**
+
+  1. **Vectorisation is gated on layout, not on the operator.** ZLinq applies SIMD only
+     when its enumerator's `TryGetSpan` succeeds — i.e. only when the source is physically
+     contiguous — and silently walks the scalar path otherwise. That is the same claim as
+     Abadi et al. 2013 (_column storage without column execution buys little_, and its
+     converse: column _execution_ needs column _storage_ underneath), arrived at from the
+     LINQ side rather than the database side. It is the independent confirmation that
+     `ColumnZSet` had to exist before `Where`/`Select` could be vectorised at all, and it
+     is why the `ColumnLinearKernel` API takes spans rather than sequences.
+  2. **Checked and unchecked arithmetic are two contracts, and the honest move is to name
+     both.** ZLinq ships `Sum` _and_ `SumUnchecked`, documenting that overflow checking
+     inside a SIMD reduction is a real cost (its published benchmark: 721 ns vs 1 351 ns on
+     16 K `int[]`, ~2x). Zeta's PR #15246 paid that cost in a different currency — a P0
+     where the checked path partitioned differently in the two twins — and resolved it by
+     making the _exact_ semantics the only contract. ZLinq's split is the evidence that
+     this was a genuine trade rather than a free lunch, and that a future
+     `SumWeightsUnchecked` would be a legitimate second contract rather than a corner cut,
+     **provided it is named.**
+  3. **An arbitrary `Select` lambda cannot be auto-vectorised, and ZLinq does not pretend
+     otherwise.** Its vectorised `Select`/`Zip`/`Aggregate`/`All`/`Any`/`Count` live behind
+     an explicit `AsVectorizable()` where the caller supplies **two** functions — one over
+     `Vector<T>` and one over `T` for the remainder. Zeta reaches the same conclusion by a
+     different route: rather than a dual-lambda API, `ColumnLinearOps.fs` ships _named_
+     projections (`MapAdd`, `MapScale`, `CopyColumn`) whose vector form is written once.
+     The design point taken from ZLinq is the honest one underneath both choices — the
+     vector form has to come from somewhere, and a library that claims to vectorise
+     `Select(f)` for arbitrary `f` on a managed runtime is claiming something it cannot do.
+  4. **`Where` is not in ZLinq's SIMD set at all.** Its vectorised operators are aggregates
+     (`Sum`, `Average`, `Min`, `Max`, `Contains`, `SequenceEqual`) and elementwise maps;
+     filtering is absent. This is a _negative_ result from a mature, benchmark-driven
+     library, and Zeta's own measurements explain it: portable .NET has no compaction
+     instruction (`vpcompressq` is AVX-512, `compact` is SVE, neither is reachable through
+     `System.Numerics.Vector<T>`), and once the compare is branchless the remaining cost is
+     the scalar stores. Zeta vectorises `Where` anyway and measures **3.45x on
+     unpredictable keys but 0.69x–1.12x everywhere else** — which is a narrow enough win
+     that ZLinq's decision to skip it is defensible rather than an oversight.
+
+  **What is .NET-idiom-specific and deliberately not taken:** the `IValueEnumerator`
+  struct-enumerator tower (`TryGetNext`/`TryGetNonEnumeratedCount`/`TryCopyTo`), the
+  `allows ref struct` generic plumbing, and drop-in `System.Linq` source compatibility.
+  Those solve _"make LINQ allocation-free without changing user code"_, which is not
+  Zeta's problem — Zeta's operators are Z-set-valued and its zero-allocation discipline is
+  enforced at the kernel signature (caller-supplied `Span<int64>` destinations, BCL
+  `Filter`-returns-count idiom) rather than recovered behind an enumerable façade.
+
+  **Contributors named** (anchor-to-human-prior-art): Cysharp, with
+  [@Akeit0](https://github.com/Akeit0) credited in the README for the fundamental interface
+  revisions and [@filzrev](https://github.com/filzrev) for test and benchmark
+  infrastructure. Lineage note: ZLinq subsumes Cysharp's earlier **SimdLinq**
+  (`Cysharp/SimdLinq`), a drop-in SIMD replacement for LINQ aggregations.
+
+- **Peter Boncz, Marcin Zukowski & Niels Nes — "MonetDB/X100: Hyper-Pipelining Query
+  Execution" (CIDR 2005)** ⭐ — the human anchor _under_ ZLinq's engineering: vectorised
+  execution over column batches sized to fit cache, which is where the
+  selection-vector-versus-bitmask question was first posed. Pairs with **Abadi, Boncz &
+  Harizopoulos**, _The Design and Implementation of Modern Column-Oriented Database
+  Systems_ (FnT Databases 5(3), 2013) §4 on late materialisation. Both are cited in
+  `src/Core/ColumnZSet.fs` and `src/Core/ColumnLinearOps.fs`; listed here so the reading
+  list carries them too.
+
+**Cross-reference:** `src/Core/ColumnLinearOps.fs` — the kernels these anchors informed,
+including two written-in-advance predictions that the measurements **refuted** and the
+corrected accounts that replaced them.

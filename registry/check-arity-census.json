@@ -91,6 +91,7 @@
     "tests/Tests.FSharp/SpectralPivot.Tests.fs": 3,
     "tests/Tests.FSharp/StateSpace.Tests.fs": 1,
     "tests/Tests.FSharp/Storage/ClosureTable.Tests.fs": 1,
+    "tests/Tests.FSharp/Storage/ColumnLinearOps.Tests.fs": 4,
     "tests/Tests.FSharp/Storage/Merkle.Tests.fs": 1,
     "tests/Tests.FSharp/SwarmBoardAnsi.Tests.fs": 1,
     "tests/Tests.FSharp/SybilBft.Tests.fs": 1,

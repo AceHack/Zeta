@@ -833,5 +833,13 @@
     "path": "references/prior-art/cslib",
     "categories": ["formal-verification", "lean4", "computer-science-library"],
     "notes": "Official leanprover 'Mathlib for computer science' (Barrett et al.; arXiv:2602.04846). Real modules: Computability/Distributed/FLP, Automata(Büchi), MachineLearning/PACLearning (VC dimension, version space), Probability/PMF, Crypto, Logics, CombinatoryLogic. PACLearning + Probability are candidate Lean substrate for the ΔU-aggregation proof (workitem 081KV6B1MBM); FLP anchors consensus. CAVEAT: the Boole sub-language is a PLACEHOLDER ('Placeholder for the Boole language') — the Rust/C++→Lean auto-verification is a VISION, not shipping. Addable as a Lean dep (lakefile.toml require cslib scope leanprover); study + potential dependency."
+  },
+  {
+    "name": "zlinq",
+    "url": "https://github.com/Cysharp/ZLinq.git",
+    "branch": "main",
+    "path": "references/prior-art/zlinq",
+    "categories": ["simd", "vectorized-execution", "zero-allocation", "dotnet"],
+    "notes": "Cysharp's zero-allocation LINQ with SIMD paths (MIT). Named by Aaron 2026-08-25 as prior art for vectorising the linear relational operators. Studied from its PUBLISHED DOCUMENTATION only, not its source, per .claude/rules/cleanroom-two-team-separation.md -- the licence permits reading, the wall is kept anyway. Three transferable findings: SIMD is gated on layout (TryGetSpan) rather than on the operator; checked and unchecked aggregation are two NAMED contracts (Sum / SumUnchecked, ~2x apart) rather than one silent choice; an arbitrary Select lambda cannot be auto-vectorised on a managed runtime, so its vector form is supplied explicitly. Notable NEGATIVE result: ZLinq does not vectorise Where at all. Full entry: docs/PRIOR-ART-LIST.md."
   }
 ]

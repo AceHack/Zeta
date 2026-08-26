@@ -20,6 +20,7 @@
     <Compile Include="CheckedVsUncheckedBench.fs" />
     <Compile Include="ZSetWBench.fs" />
     <Compile Include="ColumnZSetBench.fs" />
+    <Compile Include="ColumnLinearOpsBench.fs" />
     <Compile Include="BonsaiBench.fs" />
     <Compile Include="GitBench.fs" />
     <Compile Include="DurabilityBench.fs" />

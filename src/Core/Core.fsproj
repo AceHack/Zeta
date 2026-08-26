@@ -221,6 +221,7 @@
     <Compile Include="SpineSelector.fs" />
     <Compile Include="ScalarMerge.fs" />
     <Compile Include="ColumnZSet.fs" />
+    <Compile Include="ColumnLinearOps.fs" />
     <Compile Include="TimeSeries.fs" />
     <Compile Include="Upsert.fs" />
     <Compile Include="Transaction.fs" />
