@@ -182,6 +182,50 @@ let ``erasure classifier refuses masks outside the eight-coordinate domain`` () 
     Assert.Throws<System.ArgumentException>(fun () -> AK.classifyErasureMask 256 |> ignore)
     |> ignore
 
+// ── Independent representation-defect spectrum oracle ─────────────────────────────────────────
+
+[<Fact>]
+let ``full coded colour algebra has defect sixteen from independent code dimensions`` () =
+    Assert.Equal(256, AK.fullOperatorDimension)
+    Assert.Equal(16, AK.adinkraNodes)
+    Assert.Equal(16, AK.homoiconicityDefect)
+    Assert.Equal(AK.allCodewords.Length, AK.homoiconicityDefect)
+
+[<Fact>]
+let ``four-colour residue has fifty-six working subsets and no canonical colour`` () =
+    let candidates, working, failing = AK.colourResidueCensus
+    Assert.Equal(70, candidates)
+    Assert.Equal(56, working)
+    Assert.Equal(14, failing)
+    Assert.Equal<int list>([ 28; 28; 28; 28; 28; 28; 28; 28 ], AK.colourResidueInclusionCounts)
+
+[<Fact>]
+let ``weight-four codeword supports are exactly the failing residue subsets`` () =
+    let failingMasks =
+        AK.colourResidueClassifications
+        |> List.filter (fun row -> not row.FreeRankOne)
+        |> List.map (fun row -> row.ColourMask)
+        |> Set.ofList
+
+    let weightFourSupports =
+        AK.allCodewords
+        |> List.filter (fun word -> AK.weight word = 4)
+        |> List.map (fun word ->
+            word
+            |> Array.mapi (fun index bit -> if bit = 0 then 0 else 1 <<< index)
+            |> Array.fold (|||) 0)
+        |> Set.ofList
+
+    Assert.Equal<Set<int>>(weightFourSupports, failingMasks)
+
+[<Fact>]
+let ``spinor lane refuses a numerical defect without an operator carrier map`` () =
+    match AK.bivectorSpinorRegularity with
+    | AK.Unmeasured witnesses ->
+        Assert.Equal(4, witnesses.Length)
+        Assert.Contains("declared carrier module", witnesses)
+    | AK.Measured _ -> failwith "spinor lane must remain unmeasured without a carrier map"
+
 // ── MacWilliams fixed-point: gen(gen)=gen at the weight-enumerator level ─────────────────────────
 // The MacWilliams transform maps W_C to W_{C⊥}. For a self-dual code (C = C⊥), the transform is
 // a fixed point: W_C = MacWilliams(W_C). This is the algebraic statement of gen(gen)=gen at the

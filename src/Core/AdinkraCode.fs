@@ -243,6 +243,80 @@ module AdinkraCode =
             rows |> List.filter (fun row -> row.Status = Identifiable) |> List.length,
             rows.Length)
 
+    // ── Representation-defect spectrum: independent combinatorial oracle ───────────────────────
+
+    /// A numerical regular-module defect requires both an operator algebra and a carrier module.
+    /// The spinorial `120 + 128 = 248` decomposition supplies neither a carrier action nor a
+    /// rank-one map, so it remains explicitly unmeasured instead of receiving a fabricated ratio.
+    type RegularityStatus =
+        | Measured of carrierDimension: int * operatorDimension: int
+        | Unmeasured of missingWitnesses: string list
+
+    type ColourResidueClassification =
+        { Colours: int list
+          ColourMask: int
+          ContainsCodewordSupport: bool
+          FreeRankOne: bool }
+
+    /// `dim A / dim M = 2^N / 2^(N-k) = 2^k = |C|` for the full coded colour algebra.
+    /// The TypeScript matrix route measures `dim A`; this independent F# route derives the other
+    /// side from the code object itself and can therefore disagree with the matrix measurement.
+    let fullOperatorDimension = 1 <<< length
+    let homoiconicityDefect = fullOperatorDimension / adinkraNodes
+
+    let private choose (count: int) (values: int list) : int list list =
+        let rec walk remaining rest =
+            match remaining, rest with
+            | 0, _ -> [ [] ]
+            | _, [] -> []
+            | n, head :: tail ->
+                (walk (n - 1) tail |> List.map (fun picked -> head :: picked)) @ walk n tail
+        walk count values
+
+    let private colourMask (colours: int list) : int =
+        colours |> List.fold (fun mask colour -> mask ||| (1 <<< colour)) 0
+
+    let private nonZeroCodewordSupportMasks : int list =
+        allCodewords
+        |> List.map supportMask
+        |> List.filter (fun support -> support <> 0)
+
+    /// The four-colour residue is free of rank one exactly when the selected coordinates contain
+    /// no support of a non-zero codeword. The result is a family, not a canonical colour choice.
+    let colourResidueClassifications : ColourResidueClassification list =
+        choose (length - dimension) [ 0 .. length - 1 ]
+        |> List.map (fun colours ->
+            let mask = colourMask colours
+            let containsCodewordSupport =
+                nonZeroCodewordSupportMasks
+                |> List.exists (fun support -> (support &&& mask) = support)
+            { Colours = colours
+              ColourMask = mask
+              ContainsCodewordSupport = containsCodewordSupport
+              FreeRankOne = not containsCodewordSupport })
+
+    let colourResidueCensus : int * int * int =
+        let candidates = colourResidueClassifications.Length
+        let working =
+            colourResidueClassifications
+            |> List.filter (fun row -> row.FreeRankOne)
+            |> List.length
+        candidates, working, candidates - working
+
+    let colourResidueInclusionCounts : int list =
+        [ 0 .. length - 1 ]
+        |> List.map (fun colour ->
+            colourResidueClassifications
+            |> List.filter (fun row -> row.FreeRankOne && List.contains colour row.Colours)
+            |> List.length)
+
+    let bivectorSpinorRegularity =
+        Unmeasured
+            [ "implemented finite Lie bracket"
+              "declared carrier module"
+              "operator action on that carrier"
+              "injectivity and rank-one-freeness test" ]
+
     // ── Weight enumerator and MacWilliams fixed-point (gen(gen)=gen Face 1 discharge) ─────────────
     //
     // The **weight enumerator** of a binary code C is W_C(x,y) = Σ_{c∈C} x^{n-wt(c)} y^{wt(c)}.
