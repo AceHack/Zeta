@@ -24,6 +24,8 @@ export interface SignedEvidenceDelta {
   readonly emitterId: string;
   /** Logical counter only. Wall-clock time never enters the shared evidence fold. */
   readonly emitterSeq: number;
+  /** Required only at sequence zero; binds the chain origin to a local identity/witness lane. */
+  readonly genesisBinding?: AuditGenesisBinding;
   /** Previous event identity in this emitter's hash chain; genesis is explicit. */
   readonly previousEventHash: string;
   /** Content recognizer for integrity/equality, never an event identifier. */
@@ -37,6 +39,24 @@ export interface SignedEvidenceDelta {
   readonly precisionPpm: number;
 }
 
+/** Public description of the identity material that anchors one emitter's sequence-zero event. */
+export interface AuditGenesisBinding {
+  readonly emitterId: string;
+  readonly signer: string;
+  readonly scheme: string;
+  readonly keyFingerprint: string;
+  /** Content-addressed record or externally verified witness reference; never a wall-clock value. */
+  readonly witnessRef: string;
+}
+
+/** A local verifier decides only what it can witness; it cannot make a partition disappear. */
+export type GenesisWitnessVerdict = "witnessed" | "unresolved" | "disputed";
+
+/** Hexagonal port for identity/key verification. The audit holds no private key material. */
+export interface AuditGenesisAuthority {
+  assessGenesis(binding: AuditGenesisBinding): GenesisWitnessVerdict;
+}
+
 export interface EmitterChainContinuity {
   /** True only if every atom has its expected predecessor locally available. */
   readonly complete: boolean;
@@ -44,6 +64,19 @@ export interface EmitterChainContinuity {
   readonly missingPredecessors: readonly string[];
   /** Locally visible chain links that point outside their emitter namespace. */
   readonly invalidPredecessorLinks: readonly string[];
+}
+
+/** Independent registers: evidence, payload integrity, causal continuity, and genesis authority. */
+export interface FourRegisterAuditStatus {
+  readonly assertedEventIds: readonly string[];
+  readonly retractedEventIds: readonly string[];
+  readonly boundContentEventIds: readonly string[];
+  readonly settledCausalEventIds: readonly string[];
+  readonly unresolvedCausalEventIds: readonly string[];
+  readonly invalidCausalEventIds: readonly string[];
+  readonly witnessedGenesisEmitters: readonly string[];
+  readonly unresolvedGenesisEmitters: readonly string[];
+  readonly disputedGenesisEmitters: readonly string[];
 }
 
 export interface ZeroCrossingAuditView {
@@ -55,6 +88,8 @@ export interface ZeroCrossingAuditView {
   readonly auditCount: number;
   /** Out-of-order chains remain admissible; missing predecessors stay observable. */
   readonly chainContinuity: EmitterChainContinuity;
+  /** Do not collapse assertion, integrity, causality, and genesis authority into one verdict. */
+  readonly registers: FourRegisterAuditStatus;
 }
 
 const encoder = new TextEncoder();
@@ -64,12 +99,29 @@ function digestText(value: string): string {
   return `${digest.hi.toString(16).padStart(16, "0")}${digest.lo.toString(16).padStart(16, "0")}`;
 }
 
-/** Shared, deterministic origin of one emitter's logical event chain. */
-export function genesisEventHash(emitterId: string): string {
-  if (emitterId.length === 0) {
-    throw new RangeError("genesis requires a nonempty emitter");
+function assertGenesisBinding(binding: AuditGenesisBinding): void {
+  if (
+    binding.emitterId.length === 0
+    || binding.signer.length === 0
+    || binding.scheme.length === 0
+    || binding.keyFingerprint.length === 0
+    || binding.witnessRef.length === 0
+  ) {
+    throw new RangeError("genesis binding requires emitter, signer, scheme, key fingerprint, and witness reference");
   }
-  return digestText(JSON.stringify(["zero-crossing-audit/genesis/v1", emitterId]));
+}
+
+/** Canonical identity-bound anchor for one emitter's logical event chain. */
+export function genesisEventHash(binding: AuditGenesisBinding): string {
+  assertGenesisBinding(binding);
+  return digestText(JSON.stringify([
+    "zero-crossing-audit/genesis/v2",
+    binding.emitterId,
+    binding.signer,
+    binding.scheme,
+    binding.keyFingerprint,
+    binding.witnessRef,
+  ]));
 }
 
 /** Canonical content recognizer for the current evidence payload schema. */
@@ -142,8 +194,19 @@ function assertDelta(delta: SignedEvidenceDelta): void {
   if (delta.eventId !== expectedEventId) {
     throw new RangeError("eventId does not bind the logical counter, predecessor, and content fingerprint");
   }
-  if (delta.emitterSeq === 0 && delta.previousEventHash !== genesisEventHash(delta.emitterId)) {
-    throw new RangeError("logical sequence zero must reference its emitter genesis hash");
+  if (delta.emitterSeq === 0) {
+    if (delta.genesisBinding === undefined) {
+      throw new RangeError("logical sequence zero requires an identity-bound genesis binding");
+    }
+    assertGenesisBinding(delta.genesisBinding);
+    if (delta.genesisBinding.emitterId !== delta.emitterId) {
+      throw new RangeError("genesis binding emitter must match the event emitter");
+    }
+    if (delta.previousEventHash !== genesisEventHash(delta.genesisBinding)) {
+      throw new RangeError("logical sequence zero must reference its witnessed genesis hash");
+    }
+  } else if (delta.genesisBinding !== undefined) {
+    throw new RangeError("only logical sequence zero may carry a genesis binding");
   }
 }
 
@@ -153,6 +216,7 @@ function canonicalAuditKey(delta: SignedEvidenceDelta): string {
     delta.eventId,
     delta.emitterId,
     delta.emitterSeq,
+    delta.genesisBinding ?? null,
     delta.previousEventHash,
     delta.contentFingerprint,
     delta.key,
@@ -215,6 +279,56 @@ export function inspectEmitterChains(deltas: readonly SignedEvidenceDelta[]): Em
   };
 }
 
+/**
+ * Four-register diagnosis. Unknown predecessor or unknown genesis is retained as
+ * unresolved evidence; it is neither discarded nor promoted to a settled fact.
+ */
+export function inspectFourRegisters(
+  deltas: readonly SignedEvidenceDelta[],
+  authority?: AuditGenesisAuthority,
+): FourRegisterAuditStatus {
+  const unique = uniqueDeltas(deltas);
+  const continuity = inspectEmitterChains(unique);
+  const missing = new Set(continuity.missingPredecessors);
+  const invalid = new Set(continuity.invalidPredecessorLinks);
+  const asserted: string[] = [];
+  const retracted: string[] = [];
+  const bound: string[] = [];
+  const settled: string[] = [];
+  const unresolved: string[] = [];
+  const invalidEvents: string[] = [];
+  const witnessed = new Set<string>();
+  const unresolvedGenesis = new Set<string>();
+  const disputedGenesis = new Set<string>();
+
+  for (const delta of unique) {
+    bound.push(delta.eventId);
+    (delta.weight > 0 ? asserted : retracted).push(delta.eventId);
+    if (invalid.has(delta.eventId)) invalidEvents.push(delta.eventId);
+    else if (missing.has(delta.eventId)) unresolved.push(delta.eventId);
+    else settled.push(delta.eventId);
+
+    if (delta.emitterSeq === 0) {
+      const verdict = authority?.assessGenesis(delta.genesisBinding!) ?? "unresolved";
+      if (verdict === "witnessed") witnessed.add(delta.emitterId);
+      else if (verdict === "disputed") disputedGenesis.add(delta.emitterId);
+      else unresolvedGenesis.add(delta.emitterId);
+    }
+  }
+
+  return {
+    assertedEventIds: asserted.sort(),
+    retractedEventIds: retracted.sort(),
+    boundContentEventIds: bound.sort(),
+    settledCausalEventIds: settled.sort(),
+    unresolvedCausalEventIds: unresolved.sort(),
+    invalidCausalEventIds: invalidEvents.sort(),
+    witnessedGenesisEmitters: [...witnessed].sort(),
+    unresolvedGenesisEmitters: [...unresolvedGenesis].sort(),
+    disputedGenesisEmitters: [...disputedGenesis].sort(),
+  };
+}
+
 /** Fold signed evidence to the canonical net ZSet view. */
 export function canonicalNet(deltas: readonly SignedEvidenceDelta[]): ZSet<string> {
   const unique = uniqueDeltas(deltas);
@@ -229,7 +343,10 @@ export function canonicalNet(deltas: readonly SignedEvidenceDelta[]): ZSet<strin
  * audit identity is order-independent, preserves intended multiplicity, and
  * distinguishes cancelled history from never-observed absence.
  */
-export function auditView(deltas: readonly SignedEvidenceDelta[]): ZeroCrossingAuditView {
+export function auditView(
+  deltas: readonly SignedEvidenceDelta[],
+  authority?: AuditGenesisAuthority,
+): ZeroCrossingAuditView {
   const unique = uniqueDeltas(deltas);
   const audit = ofEntries(
     stringCompare,
@@ -241,6 +358,7 @@ export function auditView(deltas: readonly SignedEvidenceDelta[]): ZeroCrossingA
     auditRoot: `${auditRoot.hi.toString(16).padStart(16, "0")}${auditRoot.lo.toString(16).padStart(16, "0")}`,
     auditCount: audit.length,
     chainContinuity: inspectEmitterChains(unique),
+    registers: inspectFourRegisters(unique, authority),
   };
 }
 

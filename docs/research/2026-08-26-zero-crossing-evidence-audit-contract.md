@@ -18,6 +18,30 @@ An audit must distinguish an **event identity** from a **content recognizer**. T
 
 The sequence is a logical counter, never a wall-clock timestamp. Local time may govern retransmission and UI freshness, but it must not affect the shared evidence fold. The predecessor hash makes two visible uses of the same `(emitterId, emitterSeq)` structurally detectable as a chain fork. Under partition, a receiver holding only one branch cannot infer that another branch exists; after unioning retained evidence, the conflicting logical position fails closed.
 
+## Four-register causal discipline and witnessed genesis
+
+An atom whose predecessor is absent is neither rejected nor treated as causally settled. The audit keeps four independent registers:
+
+| Register | Values | Meaning |
+|---|---|---|
+| Evidence | asserted / retracted | The signed Z-set weight is positive or negative. |
+| Content integrity | bound / rejected | The content fingerprint either matches all payload fields or is malformed/tampered. |
+| Causal continuity | settled / unresolved | A predecessor is locally present and valid, or has not yet arrived. |
+| Genesis authority | witnessed / unresolved / disputed | The emitter's sequence-zero anchor matches a locally accepted identity binding, is not locally known, or conflicts with an accepted binding. |
+
+The registers must not be collapsed. In particular, **unresolved is not invalid**, and an observed fact with an unresolved predecessor remains retained for a later union operation. This is the operational form of the four-register discipline: unknown causal context remains unknown rather than being discarded, guessed, or reclassified as a false state.
+
+Sequence zero is not an anonymous fresh start. An emitter has a deterministic genesis anchor derived from an `AuditGenesisBinding` containing the emitter namespace, signer/key fingerprint, scheme, and witness reference. The local `AuditGenesisAuthority` is a hexagonal verifier port: it can attest a matching binding, report no local binding, or report an observed mismatch. The audit itself does not hold keys and does not claim a global identity roster.
+
+The binding is intentionally local and partition-safe. A partition that lacks a binding reports genesis **unresolved** rather than accepting an invented restart or declaring a forged history. A visible competing binding for the same emitter reports **disputed**. Only unioning retained evidence and bindings can expose a remote competing genesis; no implementation may claim omniscience during a partition.
+
+### Genesis falsifiers
+
+1. A sequence-zero atom whose anchor differs from a locally accepted binding must not fold as witnessed genesis.
+2. An unknown binding must remain retained but unresolved; it must not be rejected merely for being unknown.
+3. Two accepted genesis bindings for one emitter must surface a dispute rather than silently selecting one.
+4. A child of an unresolved genesis remains causally unresolved until its genesis binding and predecessor chain arrive.
+
 ## Hypotheses
 
 | ID | Statement | Result that would falsify it |

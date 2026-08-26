@@ -5,29 +5,47 @@ import {
   genesisEventHash,
   gSetDuplicateCount,
   inspectEmitterChains,
+  inspectFourRegisters,
   mintContentFingerprint,
   mintEventId,
   noEvidence,
   restoresExactly,
+  type AuditGenesisAuthority,
+  type AuditGenesisBinding,
   type SignedEvidenceDelta,
 } from "./zero-crossing-evidence-audit";
 import { ofEntries, stringCompare } from "../z-set/z-set";
+
+const nodeABinding: AuditGenesisBinding = {
+  emitterId: "node-a",
+  signer: "node-a-key-1",
+  scheme: "test-ed25519",
+  keyFingerprint: "key/node-a/1",
+  witnessRef: "witness/node-a/1",
+};
+
+const witnessedAuthority: AuditGenesisAuthority = {
+  assessGenesis: () => "witnessed",
+};
 
 function delta(
   emitterId: string,
   emitterSeq: number,
   key: string,
   weight: number,
-  previousEventHash = genesisEventHash(emitterId),
+  previousEventHash?: string,
   meanPpm = 500_000,
   precisionPpm = 100_000,
 ): SignedEvidenceDelta {
   const fingerprint = mintContentFingerprint(key, weight, meanPpm, precisionPpm);
+  const genesisBinding = emitterSeq === 0 ? { ...nodeABinding, emitterId } : undefined;
+  const predecessor = previousEventHash ?? (genesisBinding === undefined ? "" : genesisEventHash(genesisBinding));
   return {
-    eventId: mintEventId(emitterId, emitterSeq, previousEventHash, fingerprint),
+    eventId: mintEventId(emitterId, emitterSeq, predecessor, fingerprint),
     emitterId,
     emitterSeq,
-    previousEventHash,
+    ...(genesisBinding === undefined ? {} : { genesisBinding }),
+    previousEventHash: predecessor,
     contentFingerprint: fingerprint,
     key,
     weight,
@@ -66,6 +84,7 @@ describe("zero-crossing evidence audit", () => {
     expect(cancelled.auditRoot).not.toBe(neverObserved.auditRoot);
     expect(cancelled.auditCount).toBe(2);
     expect(cancelled.chainContinuity.complete).toBe(true);
+    expect(cancelled.registers.unresolvedGenesisEmitters).toEqual(["node-a"]);
   });
 
   it("deduplicates an exact retransmission by event identity", () => {
@@ -97,6 +116,48 @@ describe("zero-crossing evidence audit", () => {
     expect(partial.complete).toBe(false);
     expect(partial.missingPredecessors).toEqual([child.eventId]);
     expect(inspectEmitterChains([child, first]).complete).toBe(true);
+  });
+
+  it("keeps unknown witnessed genesis unresolved instead of inventing a restart", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const view = auditView([first]);
+    expect(view.registers.unresolvedGenesisEmitters).toEqual(["node-a"]);
+    expect(view.registers.witnessedGenesisEmitters).toEqual([]);
+  });
+
+  it("marks a locally accepted genesis binding as witnessed without using wall-clock time", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const view = auditView([first], witnessedAuthority);
+    expect(view.registers.witnessedGenesisEmitters).toEqual(["node-a"]);
+    expect(view.registers.unresolvedGenesisEmitters).toEqual([]);
+    expect(view.registers.settledCausalEventIds).toEqual([first.eventId]);
+  });
+
+  it("marks a conflicting local genesis authority as disputed rather than selecting a fresh restart", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const disputed: AuditGenesisAuthority = { assessGenesis: () => "disputed" };
+    expect(inspectFourRegisters([first], disputed).disputedGenesisEmitters).toEqual(["node-a"]);
+  });
+
+  it("rejects a sequence-zero event whose binding is absent or whose genesis anchor was substituted", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const missingBinding: SignedEvidenceDelta = {
+      eventId: first.eventId,
+      emitterId: first.emitterId,
+      emitterSeq: first.emitterSeq,
+      previousEventHash: first.previousEventHash,
+      contentFingerprint: first.contentFingerprint,
+      key: first.key,
+      weight: first.weight,
+      meanPpm: first.meanPpm,
+      precisionPpm: first.precisionPpm,
+    };
+    const substituted: SignedEvidenceDelta = {
+      ...first,
+      genesisBinding: { ...nodeABinding, witnessRef: "witness/node-a/restart" },
+    };
+    expect(() => auditView([missingBinding])).toThrow("requires an identity-bound genesis binding");
+    expect(() => auditView([substituted])).toThrow("witnessed genesis hash");
   });
 
   it("negative control: an in-flight retraction remains canonical evidence, not absence", () => {
