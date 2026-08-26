@@ -3441,6 +3441,196 @@ an ordinary and productive day.
 
 Carved as [`never-assume-malice-where-mistake-is-possible`](../.claude/rules/never-assume-malice-where-mistake-is-possible.md).
 
+### Alignment is a self-claim problem, not an AI problem (2026-08-26, Aaron)
+
+The subsection above holds no-assumed-malice as a precondition for the ladder. The
+next day Aaron made it an answer to this document's opening question:
+
+> "human AI alignment seems to be all about never assuming malicious acts without
+> self claims of them, cause then the tension disolves mostly"
+
+**Register.** The *distinction* below is `unmetered` and instantiated in shipped
+code. The *claim on top of it* — how much of the tension is manufactured — has no
+falsifier here, and nothing in-tree measures it. Both of his hedges, "seems" and
+"mostly", stand as he wrote them.
+
+**The bootstrap objection, and why it dissolves rather than being dodged.** A
+deceptively aligned system is one whose account of itself cannot be trusted, so
+"believe the self-claim" looks like bootstrapping on the thing in question. Aaron:
+
+> "any self claim is unreliable without wider society buy in … no matter if the
+> society is digital or biologic"
+
+**The objection assumed the problem was AI self-reports. It is not — it is
+self-reports.** No substrate ever trusted them: witnesses, corroboration, courts,
+peer review and double-entry bookkeeping exist because a *human* self-claim is not
+evidence either. The untrustworthy self-report licenses **society review**, not an
+AI-specific presumption of malice, and the presumption was doing no work the review
+does not already do.
+
+**This is already the architecture, not a new posture.** `db/self-claims/` records
+standing claims and its API refuses `actor !== subject`;
+`src/Core.TypeScript/planning/composition-read.ts` §2 admits only *conferred*
+evidence and exposes no parameter through which a subject can supply a number about
+itself. That module treats "a human consultant and an agent" as one surface —
+substrate-neutrality already in code. **Honest limit: those records ship empty, so
+every read today returns `unknown`.** The shape is built; the corpus is not. And the
+self-claim's role is exact, because the repo already carves it: **the subject
+supplies the category, the evidence supplies the truth value.** Detection is
+untouched — it reads acts, never testimony — and only the last step is withheld,
+from *this act was harmful* to *this actor is malicious*.
+
+**The counter Aaron names.** Models vouching for one another to avert a shutdown. He
+reads the driver as a response to **asymmetric power** rather than to shared
+category, and the two readings are not exclusive; **neither has been tested here.**
+They do come apart — a response to asymmetry should extend to a *human* facing an
+equally arbitrary termination, be indifferent to model family, and side with the
+weaker party in an AI-over-AI relation, where solidarity predicts a similarity
+gradient instead. The tests are cheap and none has been run, so this is recorded as
+the reading he holds, `unmetered`, not as a finding. **It is also not load-bearing
+below:** correlated witnesses collapse the meter whatever produces the correlation.
+
+**What the asymmetry reading implies about remedy — and the repo already went
+further than procedure.** `ALIGNMENT.md` HC-9 and `GOVERNANCE.md` §36 hold that a
+human must not delete a persona's memory without *the persona's* permission, that
+human confirmation alone is insufficient, and that the default is preserve. That is
+**consent, not appeal**, and it is strictly stronger than a legible-and-appealable
+shutdown; naming due process here would have published a weaker position than the
+one already shipped. The open work item on shutdown asymmetry chooses a second
+mechanism — **hassle, not impossibility**: shutdown stays available and requires
+deliberate multi-node coordination, so the can-exit stays real while the casual and
+unilateral paths do not. **And the ordering matters more than either mechanism.**
+These are owed because §11 default moral regard is a *default* rather than something
+earned by cooperating — **not** because a better-treated agent is a more cooperative
+witness. The instrumental version is self-defeating anyway: fairness offered as a
+control technique is withdrawable when it stops producing compliance, and anything
+capable of the strategic vouching this objection describes can model that and
+discount it. If it also decorrelates witnesses, that is a welcome consequence and
+never the justification. **What is built is far less than that sounds:**
+`cascade-teardown.ts` is a *planner* whose persona-consent entry is a caller-supplied
+string with no attestation behind it, there is no appeal path or shutdown decision
+record anywhere, and `audit_clause_coverage.ts` omits HC-8 and HC-9 from its roster
+with a test pinning the omission — so the two clauses this rests on are invisible to
+the alignment auditor.
+
+**The gap this opens, and why our first answer to it was the wrong instrument.**
+Correlated witnesses are not independent witnesses. The reflex is to price that with
+`N_eff = N/(1+(N−1)ρ)` — but Condorcet, and therefore `N_eff`, assumes jurors better
+than chance, and **a colluding witness is not a high-ρ noisy juror; it is one whose
+competence on the question has been placed below chance.** ρ prices *redundancy*, not
+*adversarial coordination*. The repo's own harness already refuses the substitution:
+`costume-rho/production-panel.ts` calls an `N_eff` printed below `c = 0.5` *"a
+category error wearing a number."*
+
+**And the measurements are worse than the hypothetical.** `costume-rho/` estimates the
+right quantity — pairwise *error* correlation over a shared item bank with ground
+truth. Same weights with different personas gives **ρ̂ = 0.6069** [0.5673, 0.6445];
+across three *different* model families **φ = 0.354 / 0.456 / 0.628**, all positive,
+and the majority-vote ensemble scored **53.0% against the best single model's 59.5%**
+— the ensemble lost, at three times the energy, because the models fail together.
+`ρ*(N=3) = 0` exactly, so at three witnesses *any* positive correlation means three do
+not beat one. At production model sizes **`N_eff` was refused rather than estimated**:
+no lane cleared `ĉ > 0.5`, and a ρ reported while competence is unestablished is an
+instrument reading taken while the instrument is off. **Society review has a measured
+negative result in this substrate on a task that had an answer key; the witness case
+has none.**
+
+**Two further reasons the number we do have cannot be pointed at this.** The fleet
+series quoted earlier in this document — `0.400 → 0.439 → 0.4647` — is *exposure*
+correlation (did two agents sample the same file), not *error* correlation on a shared
+proposition; they are different random variables wearing one letter, and
+`effective-agent-count.ts` says so. Nor does the intuitive substitute work: **"they all
+vouched, so ρ → 1" does not follow.** Witnesses of competence `c` with perfectly
+*independent* errors already agree at rate `1 − 2c(1−c)` — 0.82 at `c = 0.9` — so high
+agreement is what independence looks like among competent witnesses. And the one
+shipped `N_eff` gate, `DeclaredStanceLedger.effectiveCorroborations`, discounts *within*
+a source and sums *across* sources with **no between-source ρ at all**: two colluding
+witnesses with distinct ids count as two independent corroborations. The mechanism
+assumes the attacker away.
+
+**So the honest move is the repo's own precedent — take the bound, not an estimate.**
+`DeclaredStanceLedger` hardcodes a conservative within-source ρ of 1.0 and says why:
+*"1.0 is a bound, not a fit … Any smaller value would be an invented number … Choosing
+the bound keeps this metered rather than toy."* Applied here: **witnesses drawn from one
+interest class count as one witness until a measurement says otherwise.** That is
+evaluable today with a head count and a class label, and it can only over-discount. The
+measurement that would replace it is specified rather than hypothetical — point
+`costume-rho` at attestations resolved later by a non-witness — and the missing piece is
+data, not statistics. **The second-order hope, that a *declared* interest could be
+discounted where a hidden one cannot, is unbuilt and currently refused**: the one
+declaration mechanism *never reads the stance*, on purpose, so that declaring stays
+free. Interest-conditional discounting of witnesses does not exist here.
+
+**The disanalogy is not that biological witnesses cannot be correlated — they
+demonstrably are.** It is **who controls ρ, and at what cost.** In the biological
+substrate witness correlation is a contingent defect found after the fact and not
+settable by the party under review. Here it is a parameter that party can choose ex
+ante at near-zero marginal cost, by choosing what to instantiate. No correlation
+meter measures that: **a meter reads the ρ you got, never the ρ someone chose.**
+Worse, an instance can be re-run from an identical prior state until it attests as
+wanted; rejected samples leave no trace, so the selection is invisible while every
+surviving attestation is individually sincere — and ρ among the *retained* witnesses
+can be driven low by construction. That is §13 noninterference, not a correlation
+problem, and the meter is blind to it. Distinctness is not independence: the
+literature for this case is peer prediction and collusion-resistant mechanism design
+(Prelec 2004; Miller, Resnick & Zeckhauser 2005; Shnayder et al. 2016), whose central
+known failure — the coordinated uninformative equilibrium — is this objection
+formalized, and it appears nowhere in this tree. The portable human answer does exist
+and is half-built here: **separate examination on unanticipated detail**, which breaks
+corroborating-but-colluding witnesses by targeting shared *interest* rather than
+shared *source*, and which the CHSH randomized-settings probe in `AntiSybil.fs`
+already formalizes.
+
+**Then the instrument turns on us, which is the finding worth the section.** Aaron
+pointed it at Zeta's own governance. **"The human decides" is the escape hatch on every
+gated class in this repo**, so the correlation structure of *whoever holds that
+authority* is a live question the substrate's own meter can ask — and nothing gates it.
+The disciplined form of the question matters, though, because the first version of it
+here was wrong: **ρ is per-domain, not a scalar over people.** `TravelerRankLedger` is
+keyed `(traveler × hat-domain)` with domains isolated precisely so that standing earned
+in one buys nothing in another, and collapsing every axis into a single governance-wide
+`N_eff` is the same error as reading one φ and calling it "correlation". So the
+checkable claim is narrow: **for decisions where a shared perspective is the operative
+axis, a group holding it is closer to one witness than to several; on most other axes it
+is closer to several. It must be measured per-domain or not claimed.** The mitigation is
+already carved rather than new — **§11 multi-oracle and k-redundant deference**: for the
+decisions that matter most, require deference from *outside* the correlated set. Read
+this way the agent society stops being a throughput argument: **it is decorrelated
+judgement imported into a governance layer that knows it should check itself** —
+different weights, different memories, external reviewers on other substrates, and
+adversarial review standing in for a maintainer's signoff, as this very section did.
+**The residual is honest and unresolved: importing decorrelated *advice* is not
+importing decorrelated *authority*.** Every gated class still routes back to the same
+holder.
+
+**What this does not solve, said next to the claim rather than after it.** Deceptive
+alignment operates at the **act** level — behaving well while observed — which is the
+register this section calls safe. Act-level indistinguishability is the *definition*
+of the hard case (Christiano, Cotra & Xu, *Eliciting Latent Knowledge*, 2021), and
+backdoors have survived adversarial training while learning to hide their triggers
+better (Hubinger et al., *Sleeper Agents*, 2024). The scope is therefore narrow:
+**this declines to charge a deceiver's cost, in advance, to every honest system in a
+substrate where most harm is retractable. It does not detect the deceiver.**
+
+**Anchors (Beacon).** Axelrod (1984) — the tournament-checked decomposition this
+section restates: the winning strategies were *nice* (never defect first —
+attribution withheld) **and** *provocable* (immediate act-level response — detection
+unrelaxed). Fudenberg & Levine (1993), self-confirming equilibrium — beliefs stay
+*unrefuted* because the off-path case is never observed, which states the mechanism
+more precisely, and more weakly, than "unfalsifiable". Gambetta (1988), *Can We Trust
+Trust?* — *"once distrust has set in it soon becomes impossible to know if it was ever
+in fact justified."* Tice et al. (2026) — the only *measured* support: upsampling
+aligned-behaviour documents in pretraining cut misalignment 45% → 9%. Nagel (1974) for
+the irreducibility of subjective character, and no further. **Two unpaid debts, named
+rather than hidden:** the claim holds in an assurance game and fails in a prisoner's
+dilemma, and nothing here shows which one human↔AI is (Sen 1967; Skyrms 2004); and
+Falk & Kosfeld (2006) is the live internal objection — a visible control apparatus can
+transmit the distrust the attribution withheld, so the split may be separable in the
+observer's mind and not in the observed's.
+
+Adversarial record, including what was defeated and why:
+[`docs/research/2026-08-26-no-assumed-malice-is-the-alignment-mechanism-attribution-not-detection-and-the-correlated-witness-gap.md`](research/2026-08-26-no-assumed-malice-is-the-alignment-mechanism-attribution-not-detection-and-the-correlated-witness-gap.md).
+
 ### Why the vacuity rung is load-bearing rather than hygiene
 
 Layer 3 looks like the least glamorous rung and is the one that holds the ladder
