@@ -153,6 +153,11 @@ export function keyText(k: RunKey): string {
   ].join("|");
 }
 
+/** The immutable artifact filename used by the F# writer and every independent reader. */
+export async function artifactFileName(k: RunKey): Promise<string> {
+  return `${(await sha256Hex(keyText(k))).slice(0, 16)}.orbit.json`;
+}
+
 function verdictText(v: Verdict): string {
   return v.kind === "closed"
     ? ["closed", String(v.mu), String(v.lambda), v.terminal].join(",")

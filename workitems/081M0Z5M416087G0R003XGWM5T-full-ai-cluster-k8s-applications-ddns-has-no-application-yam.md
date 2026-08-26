@@ -20,13 +20,14 @@ composes_with: []
 
 `full-ai-cluster/k8s/applications/ddns/` contains exactly one file:
 
-    ddns/cronjob.yaml   [kind: CronJob]
+    full-ai-cluster/k8s/applications/ddns/cronjob.yaml   [kind: CronJob]
 
 There is **no `Application.yaml` in the directory at all**. Nothing else names
 it either:
 
 - the app-of-apps roots (`zeta-root`, `zeta-root-dev`) include only
-  `{*/Application.yaml,Application.yaml}`, and `ddns/cronjob.yaml` is not named
+  `{*/Application.yaml,Application.yaml}`, and
+  `full-ai-cluster/k8s/applications/ddns/cronjob.yaml` is not named
   `Application.yaml`;
 - no other Application declares a git source whose `path` covers `ddns/` --
   checked against all 13 git-directory sources in the cluster tree.
@@ -61,7 +62,7 @@ Two reasons, and the second is the harder one:
 2. The CronJob needs a **Namecheap DDNS credential**. This repo cannot mint one,
    and the secret machinery it would hang off (external-secrets ← Vault) is
    itself unavailable: Vault "has never been initialised on metal"
-   (`applications/vault/TOPOLOGY.md` §2). Writing the Application without
+   (`full-ai-cluster/k8s/applications/vault/TOPOLOGY.md` §2). Writing the Application without
    naming that dependency would produce an app that syncs and then fails at
    runtime -- a different flavour of the same "looks deployed" defect.
 

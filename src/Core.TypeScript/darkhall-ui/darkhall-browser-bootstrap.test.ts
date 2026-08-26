@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test } from "bun:test";
 import { yieldTurns } from "../testing/deterministic-async";
 import type { BrowserLifecycleEventType } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabChannel, BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
+import { emptyCrossRunReader, type CrossRunReader } from "../chip9/chip8-cross-run-store";
 import {
   DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA,
   startNativeDarkHallBrowser,
@@ -143,6 +144,7 @@ describe("native Dark Hall browser bootstrap", () => {
 
     expect(runtime.schema).toBe(DARK_HALL_BROWSER_BOOTSTRAP_SCHEMA);
     expect(runtime.channelName).toBe("zeta-darkhall-tabs");
+    expect(runtime.crossRunReader).toBe(emptyCrossRunReader);
     expect(runtime.transport).toMatchObject({
       selected: "broadcast-channel",
       attempts: [
@@ -194,6 +196,7 @@ describe("native Dark Hall browser bootstrap", () => {
     const mount = { innerHTML: "" };
     const messages: BrowserTabChannelMessage[] = [];
     let closed = false;
+    const crossRunReader: CrossRunReader = { tryGet: () => null };
     const channel: BrowserTabChannel = {
       publish: (message) => {
         messages.push(message);
@@ -206,8 +209,9 @@ describe("native Dark Hall browser bootstrap", () => {
       },
     };
 
-    const runtime = unwrap(startNativeDarkHallBrowser({ ...options(root, mount), channel }));
+    const runtime = unwrap(startNativeDarkHallBrowser({ ...options(root, mount), channel, crossRunReader }));
     expect(runtime.transport.selected).toBe("injected");
+    expect(runtime.crossRunReader).toBe(crossRunReader);
     expect(mount.innerHTML).toContain('data-browser-transport="injected"');
     expect(messages.map((message) => message.kind)).toEqual(["probe", "presence"]);
     expect(runtime.host.stop().ok).toBe(true);

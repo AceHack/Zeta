@@ -21,6 +21,7 @@ import type {
 } from "../browser-node/browser-database-receipt-sync-runtime";
 import { BROWSER_TAB_COORDINATOR_SCHEMA, type BrowserTabChannelMessage } from "../browser-node/browser-tab-coordinator";
 import { SLOT } from "../observe/grammar-16";
+import type { CrossRunReader } from "../chip9/chip8-cross-run-store";
 import type { ZetaDbTickReadout, ZetaDbTickRequest } from "../zetadb/zeta-db-node";
 import {
   DARK_HALL_BROWSER_PAGE_SCHEMA,
@@ -535,8 +536,10 @@ describe("Dark Hall active browser page", () => {
   test("hydrates before live, publishes bounded writes, and projects the database readout", async () => {
     const root = new NativeBrowserRoot();
     const requests: ZetaDbTickRequest[] = [];
+    const crossRunReader: CrossRunReader = { tryGet: () => null };
     const started = await startNativeDarkHallBrowserPage({
       root,
+      crossRunReader,
       databaseIntentOutbox: databaseIntentOutbox(),
       databaseReceiptArchive: databaseReceiptArchive(),
       databaseExecutor: (request) => {
@@ -547,6 +550,7 @@ describe("Dark Hall active browser page", () => {
 
     expect(started.ok).toBe(true);
     if (!started.ok) return;
+    expect(started.value.crossRunReader).toBe(crossRunReader);
     expect(started.value.read()).toMatchObject({
       schema: DARK_HALL_BROWSER_PAGE_SCHEMA,
       status: "live",

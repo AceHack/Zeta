@@ -6,12 +6,28 @@
 // Run: bun test tools/alignment/audit_retractibility.test.ts
 
 import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   auditRetractibility,
   countInboundRefs,
   main,
   parseArgs,
 } from "./audit_retractibility.ts";
+
+function runGit(root: string, args: readonly string[]): void {
+  const result = spawnSync("git", [...args], {
+    cwd: root,
+    encoding: "utf8",
+    stdio: ["pipe", "pipe", "pipe"],
+  });
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    throw new Error(`git ${args.join(" ")} failed: ${(result.stderr ?? "").trim()}`);
+  }
+}
 
 describe("parseArgs", () => {
   test("returns help for -h", () => {
@@ -102,6 +118,38 @@ describe("countInboundRefs", () => {
     expect(result.count).toBe(0);
     expect(result.from).toEqual([]);
   }, 30000);
+
+  test("overlays tracked working-tree edits and staged additions onto HEAD", () => {
+    const root = mkdtempSync(join(tmpdir(), "audit-retractibility-"));
+    try {
+      runGit(root, ["init", "-q"]);
+      mkdirSync(join(root, "docs"));
+      mkdirSync(join(root, "src"));
+      writeFileSync(join(root, "docs/target.md"), "target\n");
+      writeFileSync(join(root, "src/ref.txt"), "docs/target.md\n");
+      runGit(root, ["add", "."]);
+      runGit(root, [
+        "-c",
+        "user.name=Zeta Test",
+        "-c",
+        "user.email=zeta-test@example.invalid",
+        "commit",
+        "-qm",
+        "seed",
+      ]);
+
+      expect(countInboundRefs("docs/target.md", root).from).toEqual(["src/ref.txt"]);
+
+      writeFileSync(join(root, "src/ref.txt"), "reference removed\n");
+      expect(countInboundRefs("docs/target.md", root).from).toEqual([]);
+
+      writeFileSync(join(root, "src/staged.txt"), "docs/target.md\n");
+      runGit(root, ["add", "src/staged.txt"]);
+      expect(countInboundRefs("docs/target.md", root).from).toEqual(["src/staged.txt"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("auditRetractibility", () => {

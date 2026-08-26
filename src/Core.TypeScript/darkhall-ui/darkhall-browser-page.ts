@@ -1,5 +1,6 @@
 import { probeBrowserRuntime, type BrowserRuntimeProbeReadout } from "../browser-node/browser-runtime-probe";
 import { ContentHash256 } from "../blake3/blake3";
+import type { CrossRunReader } from "../chip9/chip8-cross-run-store";
 import type { BrowserCheckpointPort } from "../browser-node/browser-checkpoint-port";
 import type { BrowserLifecycleHostReadout, BrowserReadoutSinkResult } from "../browser-node/browser-lifecycle-host";
 import type { BrowserServiceWorkerRegistrationReadout } from "../browser-node/browser-service-worker-registration";
@@ -171,6 +172,7 @@ export interface DarkHallBrowserPageReadout {
 }
 
 export interface DarkHallBrowserPageRuntime {
+  readonly crossRunReader: CrossRunReader;
   read(): DarkHallBrowserPageReadout;
   dispatchController(
     command: DarkHallBrowserDatabaseCommand,
@@ -238,6 +240,7 @@ export interface NativeDarkHallBrowserPageOptions {
   readonly rowCommandEditorMountId?: string;
   readonly maxRowCommandPayloadBytes?: number;
   readonly controllerCommandResolver?: DarkHallBrowserControllerCommandResolver;
+  readonly crossRunReader?: CrossRunReader;
 }
 
 interface NativePageMount {
@@ -271,6 +274,7 @@ type PagePwaOperationResult =
 
 interface PagePwaRuntime {
   readonly registration: BrowserServiceWorkerRegistrationReadout;
+  readonly crossRunReader: CrossRunReader;
   transport(): BrowserTabTransportReadout;
   host(): BrowserLifecycleHostReadout;
   transcript(): RoomRunTranscript;
@@ -491,6 +495,7 @@ function legacyPagePwa(runtime: DarkHallBrowserPwaRuntime, initialTranscript: Ro
   let transcript = initialTranscript;
   return {
     registration: runtime.registration,
+    crossRunReader: runtime.browser.crossRunReader,
     transport: () => runtime.browser.transport,
     host: () => runtime.browser.host.read(),
     transcript: () => transcript,
@@ -569,6 +574,7 @@ function legacyPagePwa(runtime: DarkHallBrowserPwaRuntime, initialTranscript: Ro
 function durablePagePwa(runtime: DarkHallBrowserDurablePwaRuntime): PagePwaRuntime {
   return {
     registration: runtime.registration,
+    crossRunReader: runtime.browser.crossRunReader,
     transport: () => runtime.browser.read().transport,
     host: () => runtime.browser.read().host,
     transcript: () => runtime.browser.transcript(),
@@ -613,6 +619,7 @@ function pwaOptions(
     onDatabaseInvalidated,
     onDatabaseExecutionReceipt,
     onTabReadout,
+    ...(options.crossRunReader === undefined ? {} : { crossRunReader: options.crossRunReader }),
     serviceWorker: {
       scriptUrl: options.serviceWorkerScriptUrl ?? "./sw.js",
       scope,
@@ -1827,6 +1834,7 @@ export async function startNativeDarkHallBrowserPage(
   if (receiptSync !== null) void receiptSync.pollAcceptance("startup");
 
   return succeeded({
+    crossRunReader: pwa.crossRunReader,
     read,
     dispatchController: (command) => controller.dispatch(command),
     dispatchControllerInput: (cell, source) => input.dispatchCell(cell, source),

@@ -52,6 +52,7 @@ import {
 import { DARK_HALL_DATABASE_READOUT_SCHEMA, type DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
 import { monotoneLastWriterWinsRevisionPolicy } from "../persistence/revision-policy";
+import { emptyCrossRunReader } from "../chip9/chip8-cross-run-store";
 
 const initialTranscript: RoomRunTranscript = {
   schema: "zeta.darkhall.room-ui.v1",
@@ -274,6 +275,7 @@ function createStarter(
       attempts: [{ kind: "injected", status: "selected" }],
     },
     host,
+    crossRunReader: emptyCrossRunReader,
     updateTranscript: (transcript) => {
       updates.push(transcript);
       return updateFailure ? { ok: false, detail: "injected render failure" } : { ok: true, value: null };

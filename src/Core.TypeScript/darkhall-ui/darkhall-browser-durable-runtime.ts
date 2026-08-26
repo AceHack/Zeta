@@ -20,6 +20,7 @@ import {
 import type { BrowserLifecycleHostFeedback, BrowserLifecycleHostReadout } from "../browser-node/browser-lifecycle-host";
 import type { BrowserTabTransportReadout } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserCheckpoint } from "../browser-node/browser-node";
+import type { CrossRunReader } from "../chip9/chip8-cross-run-store";
 import {
   browserCausalCorrectionCheckpointNodeId,
   decodeBrowserCausalCorrectionCheckpoint,
@@ -172,6 +173,7 @@ export interface DarkHallBrowserDurableReadout {
 }
 
 export interface DarkHallBrowserDurableRuntime {
+  readonly crossRunReader: CrossRunReader;
   read(): DarkHallBrowserDurableReadout;
   transcript(): DurableRoomRunTranscript;
   renderTranscript(transcript: RoomRunTranscript): DarkHallBrowserDurableResult<DarkHallBrowserDurableReadout>;
@@ -402,6 +404,7 @@ function bootstrapOptions(
     mount: options.mount,
     channelName: options.channelName,
     ...(options.channel === undefined ? {} : { channel: options.channel }),
+    ...(options.crossRunReader === undefined ? {} : { crossRunReader: options.crossRunReader }),
     nodeId: options.nodeId,
     tabId: options.tabId,
     initialSequence: options.initialSequence,
@@ -1195,6 +1198,7 @@ export async function startDurableDarkHallBrowser(
   if (startupInvalidation !== null) receiveCheckpointInvalidation(startupInvalidation);
 
   return succeeded({
+    crossRunReader: browserRuntime.crossRunReader,
     read,
     transcript: () => currentTranscript,
     renderTranscript: (nextTranscript) => {

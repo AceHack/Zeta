@@ -115,13 +115,19 @@ export function parseArgs(argv: readonly string[]): ParseResult {
   return { kind: "args", args: state };
 }
 
-function isGitTracked(filePath: string): boolean {
+function gitTrackedMany(filePaths: readonly string[], root: string): ReadonlySet<string> {
+  if (filePaths.length === 0) return new Set();
+
   const result = spawnSync(
     "git", // eslint-disable-line sonarjs/no-os-command-from-path
-    ["ls-files", "--error-unmatch", filePath],
-    { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
+    ["ls-files", "-z", "--", ...filePaths],
+    { cwd: root, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
   );
-  return result.status === 0;
+  if (result.error) throw new Error(`git ls-files failed: ${result.error.message}`);
+  if (result.status !== 0) {
+    throw new Error(`git ls-files exited with status ${String(result.status)}`);
+  }
+  return new Set((result.stdout ?? "").split("\0").filter((path) => path.length > 0));
 }
 
 export function countInboundRefs(filePath: string, root: string): { count: number; from: readonly string[] } {
@@ -147,11 +153,54 @@ function countInboundRefsMany(
 
   const result = spawnSync(
     "git", // eslint-disable-line sonarjs/no-os-command-from-path
-    grepArgs,
-    { cwd: root, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
+    [...grepArgs, "HEAD"],
+    {
+      cwd: root,
+      encoding: "utf8",
+      maxBuffer: 64 * 1024 * 1024,
+      stdio: ["pipe", "pipe", "pipe"],
+    },
+  );
+  if (result.error) throw new Error(`git grep failed: ${result.error.message}`);
+  if (result.status !== 0 && result.status !== 1) {
+    throw new Error(`git grep exited with status ${String(result.status)}`);
+  }
+
+  const headPrefix = "HEAD:";
+  const matchedFiles = new Set(
+    (result.stdout ?? "")
+      .split("\0")
+      .filter((path) => path.length > 0)
+      .map((path) => (path.startsWith(headPrefix) ? path.slice(headPrefix.length) : path)),
   );
 
-  const matchedFiles = (result.stdout ?? "").split("\0").filter((path) => path.length > 0);
+  // Git's object database is dramatically faster than walking a large working
+  // tree on APFS. Overlay only paths changed from HEAD so the answer still
+  // reflects staged additions, edits, deletions, and renames exactly.
+  const changedResult = spawnSync(
+    "git", // eslint-disable-line sonarjs/no-os-command-from-path
+    ["diff", "--name-only", "--no-renames", "-z", "HEAD", "--"],
+    { cwd: root, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] },
+  );
+  if (changedResult.error) throw new Error(`git diff failed: ${changedResult.error.message}`);
+  if (changedResult.status !== 0) {
+    throw new Error(`git diff exited with status ${String(changedResult.status)}`);
+  }
+
+  const changedFiles = (changedResult.stdout ?? "").split("\0").filter((path) => path.length > 0);
+
+  for (const changedFile of changedFiles) {
+    matchedFiles.delete(changedFile);
+    let content: string;
+    try {
+      content = readFileSync(join(root, changedFile), "utf8");
+    } catch {
+      continue;
+    }
+    if ([...relPaths.values()].some((relPath) => content.includes(relPath))) {
+      matchedFiles.add(changedFile);
+    }
+  }
 
   for (const matchedFile of matchedFiles) {
     let content: string;
@@ -246,7 +295,8 @@ function nameFromPath(p: string): string {
 export function auditRetractibility(paths: readonly string[]): RetractResult {
   const root = process.cwd();
   const surfaces: SurfaceRetract[] = [];
-  const trackedPaths = paths.filter(isGitTracked);
+  const tracked = gitTrackedMany(paths, root);
+  const trackedPaths = paths.filter((path) => tracked.has(path));
   const inboundRefs = countInboundRefsMany(trackedPaths, root);
 
   for (const p of paths) {

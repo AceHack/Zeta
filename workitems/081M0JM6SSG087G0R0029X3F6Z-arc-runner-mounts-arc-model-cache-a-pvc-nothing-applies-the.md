@@ -26,7 +26,8 @@ composes_with: []
     :51   minRunners: 1
     :72   claimName: arc-model-cache
 
-and the PVC it names lives at `arc-runner-set/model-cache-pvc.yaml:8`, a
+and the PVC it names lives at
+`full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml:8`, a
 **sibling file in the same directory**.
 
 The Application sources a REMOTE Helm chart, not this git path, so it cannot
@@ -82,7 +83,8 @@ claims around it need correcting, and one of them matters more than the bug.
 ### Confirmed: nothing applies the PVC
 
 Checked against all 13 git-directory sources declared anywhere in
-`full-ai-cluster/k8s`. No root glob matches `arc-runner-set/model-cache-pvc.yaml`,
+`full-ai-cluster/k8s`. No root glob matches
+`full-ai-cluster/k8s/applications/arc-runner-set/model-cache-pvc.yaml`,
 and no Application's git source covers it, because `arc-runner-set` declares no
 git source at all — its only source is a remote OCI chart, which can reconcile
 nothing out of this repository.
@@ -100,7 +102,8 @@ whenever the runner set is synced."* The conditional is right and the framing is
 wrong: **the runner set has never been synced anywhere**, so the missing PVC has
 never blocked a pod.
 
-- Metal: the k8s layer has never been reconciled. `applications/vault/TOPOLOGY.md`
+- Metal: the k8s layer has never been reconciled.
+  `full-ai-cluster/k8s/applications/vault/TOPOLOGY.md`
   is categorical — *"Nothing has been applied to any cluster."* (NixOS itself did
   provision four physical nodes in June 2026; the layer above them did not come up.)
 - CI: `argocd-health-test.ts` excludes `arc-runner-set` from the kind lane

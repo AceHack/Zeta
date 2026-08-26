@@ -1,11 +1,12 @@
 ---
 id: 081M089ZPAY087G0R001MYXM7N
 type: task
-state: in-progress
+state: done
 priority: P2
 slug: chip-8-cross-run-store-room-loop-auto-consult-io-adapter-and
 title: "CHIP-8 cross-run store: room-loop auto-consult, IO adapter, and Dark Hall browser injection"
 created: 2026-08-17T16:48:26.462Z
+completed: 2026-08-26T14:58:15.035Z
 depends_on: []
 composes_with: []
 ---
@@ -79,8 +80,18 @@ tree needs the input sequence in the key — a different hub, not an extension o
 - `src/Core/golden-vectors-room-consultation.json` pins game-neutral hit, miss, mixed, boundary, and
   cost-accounting observables. It is the independent-language treaty for an ARC3 port; ARC3 does not
   depend on the F# assembly or CHIP-8 frame type.
+- `Chip8CrossRunStoreIO` loads immutable artifacts through injected `IFileSystem` async byte reads,
+  strict UTF-8, canonical filename and digest verification, ordinal ordering, and duplicate-run-key
+  refusal. It publishes no reader until the complete directory has been accepted and reports
+  cancellation and IO failures as typed feedback.
+- `chip8-cross-run-artifact-port.ts` owns the browser byte-fetch port. Construction performs no IO;
+  callers explicitly supply locations, and the all-or-nothing loader applies the same strict UTF-8,
+  canonical filename, digest, ordering, and duplicate identity rules before publishing a reader.
+- Dark Hall bootstrap, durable runtime, PWA, and active page forward an optional injected
+  `CrossRunReader`. The default is `emptyCrossRunReader`; there is no IndexedDB coupling, ambient
+  fetch, or implicit network access.
 
-The IO adapter and browser injection remain open under sections 2 and 3. A future ARC3 adapter should
-implement this same treaty around its own `(grid, action, environment version, seed)` run identity and
-must stop before any action or environment observation absent from that identity. No ARC3 Python was
-changed in this slice because that lane is concurrently owned.
+A future ARC3 adapter should implement the room-consultation treaty around its own
+`(grid, action, environment version, seed)` run identity and must stop before any action or environment
+observation absent from that identity. A full TypeScript CHIP-8 writer and input-branch memoization
+remain separate decisions under sections 4 and 5, not unfinished parts of this workitem.

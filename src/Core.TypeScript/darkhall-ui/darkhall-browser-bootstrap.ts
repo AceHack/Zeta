@@ -15,6 +15,7 @@ import {
   type BrowserTabTransportReadout,
 } from "../browser-node/browser-tab-channel-selector";
 import type { BrowserTabChannel, BrowserTabCoordinatorReadout } from "../browser-node/browser-tab-coordinator";
+import { emptyCrossRunReader, type CrossRunReader } from "../chip9/chip8-cross-run-store";
 import { createDarkHallBrowserTabSink, createNativeDarkHallRoomMount } from "./darkhall-browser-tab-sink";
 import type { DarkHallDatabaseReadout } from "./darkhall-database-readout";
 import type { RoomRunTranscript } from "./darkhall-room";
@@ -45,6 +46,7 @@ export interface DarkHallBrowserBootstrapOptions extends Omit<BrowserLifecycleHo
   readonly mount: unknown;
   readonly root?: unknown;
   readonly onTabReadout?: (readout: BrowserTabCoordinatorReadout) => BrowserReadoutSinkResult<null>;
+  readonly crossRunReader?: CrossRunReader;
 }
 
 export interface DarkHallBrowserRuntime {
@@ -52,6 +54,7 @@ export interface DarkHallBrowserRuntime {
   readonly channelName: string;
   readonly transport: BrowserTabTransportReadout;
   readonly host: BrowserLifecycleHost;
+  readonly crossRunReader: CrossRunReader;
   updateTranscript(transcript: RoomRunTranscript): BrowserReadoutSinkResult<null>;
   updateDatabaseReadout(readout: DarkHallDatabaseReadout): BrowserReadoutSinkResult<null>;
 }
@@ -86,6 +89,7 @@ export function startNativeDarkHallBrowser(
     channel: suppliedChannel,
     transcript,
     onTabReadout,
+    crossRunReader = emptyCrossRunReader,
     ...hostOptions
   } = options;
   const root = suppliedRoot === undefined ? globalThis : suppliedRoot;
@@ -164,6 +168,7 @@ export function startNativeDarkHallBrowser(
     channelName,
     transport: channel.readout,
     host: host.value,
+    crossRunReader,
     updateTranscript: (nextTranscript) => sink.updateTranscript(nextTranscript),
     updateDatabaseReadout: (readout) => sink.updateDatabaseReadout(readout),
   });
