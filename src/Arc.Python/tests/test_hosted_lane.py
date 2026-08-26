@@ -420,7 +420,7 @@ def test_environment_score_denominator_is_declared_levels_not_played_levels() ->
     """Otherwise quitting after level 1 is the highest-scoring strategy available."""
     from zeta_arc.hosted import LevelResult
 
-    cleared_one = [LevelResult(0, 10, 10, True, 1.0, "cleared")]
+    cleared_one = [LevelResult(0, 10, 10, True, 1.0, "cleared", 7, 40)]
     assert environment_score(cleared_one, total_levels=1) == 1.0
     assert environment_score(cleared_one, total_levels=8) < 0.05
 
@@ -755,7 +755,55 @@ def test_the_hosted_loop_records_a_zero_rather_than_inventing_progress() -> None
             "solved": False,
             "score": 0.0,
             "ended": "level-budget",
+            # ENGAGED, AND STILL LOST — the distinction the old row could not
+            # draw. 17 distinct worlds and 15,360 changed cells is not a policy
+            # sitting inert on an illegal action; it is one playing and failing.
+            # Before these two fields this row was byte-identical to a run that
+            # never moved anything, and the two call for opposite fixes.
+            "distinct_grids": 17,
+            "cells_changed": 15360,
         }
     ]
     assert result["ended_breakdown"] == {"level-budget": 1}
     assert result["environment_score"] == 0.0
+
+
+# THE DISCRIMINATION PROOF. Two counts that never differ are two counts nobody
+# needs, and "22 rows are byte-identical" was the ORIGINAL defect — so a proxy
+# that also collapses would have reproduced the bug in a new field.
+#
+# The pair is what makes this falsifiable: one policy is handed a frozen world,
+# the other a changing one, and the SAME probe must separate them. Hardwire
+# either count to a constant and one half fails.
+def test_the_probe_separates_an_INERT_level_from_an_ENGAGED_one() -> None:
+    from zeta_arc.progress import LevelProbe, hamming
+
+    frozen = [[0, 0], [0, 0]]
+
+    inert = LevelProbe()
+    for _ in range(20):
+        inert.observe(frozen)
+
+    engaged = LevelProbe()
+    for i in range(20):
+        engaged.observe([[i % 3, 0], [0, (i + 1) % 2]])
+
+    # The inert world was OBSERVED (1, never 0) but never MOVED.
+    assert inert.distinct_grids == 1, "a still world is one world, not zero"
+    assert inert.cells_changed == 0
+
+    assert engaged.distinct_grids > 1, "a changing world must not read as inert"
+    assert engaged.cells_changed > 0
+
+    # And the separation is the point, stated as the comparison itself so that
+    # equalising the two — by any means — fails here.
+    assert engaged.distinct_grids > inert.distinct_grids
+    assert engaged.cells_changed > inert.cells_changed
+
+    # A RESIZED grid is a full-grid difference, never a silent overlap compare.
+    # Zipping ragged rows would under-report exactly when the world changed most.
+    assert hamming([[1, 1]], [[1, 1], [1, 1]]) == 4
+
+    # reset() must not carry one level's engagement into the next.
+    engaged.reset()
+    assert engaged.distinct_grids == 0 and engaged.cells_changed == 0

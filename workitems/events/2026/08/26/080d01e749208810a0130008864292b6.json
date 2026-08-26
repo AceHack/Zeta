@@ -1,0 +1,14 @@
+{
+  "id": "080d01e749208810a0130008864292b6",
+  "at": "2026-08-26T07:11:47.217Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YEJ90B087G0R002DPZDVZ",
+    "type": "task",
+    "title": "ARC hosted sweep cannot tell an inert level from an engaged one - infer intra-level progress from the grid",
+    "slug": "arc-hosted-sweep-cannot-tell-an-inert-level-from-an-engaged",
+    "priority": "P2",
+    "filename": "081M0YEJ90B087G0R002DPZDVZ-arc-hosted-sweep-cannot-tell-an-inert-level-from-an-engaged.md"
+  }
+}

@@ -41,7 +41,9 @@ from typing import Any, Protocol
 
 from arcengine import GameAction, GameState
 
+from zeta_arc.frames import grid_of
 from zeta_arc.layered import LayeredAgent
+from zeta_arc.progress import LevelProbe
 
 #: Per-level ceiling. Deliberately generous against the published references —
 #: the largest `baseline_actions` entry on the live roster is 578 (DC22), and a
@@ -89,6 +91,14 @@ class LevelResult:
     #: the asymmetry that produced this field: "this is divergence worth
     #: tracking in our base BNNs."
     ended: str
+    #: GRID-DERIVED ENGAGEMENT, and the reason the two `game-over` rows below
+    #: are no longer byte-identical. NOT the engine's score — that field is not
+    #: transmitted at all (see the GAME_OVER comment in `play_environment`), so
+    #: this is inferred by our own perception. `distinct_grids == 1` means the
+    #: policy never moved the world; a large count means it did and still lost.
+    #: Those call for opposite fixes and used to record identically.
+    distinct_grids: int
+    cells_changed: int
 
 
 def score_level(actions: int, reference: int | None) -> float:
@@ -157,6 +167,12 @@ def play_environment(
     level = int(getattr(frame, "levels_completed", 0) or 0)
     actions_this_level = 0
     actions_total = 0
+    # ENGAGEMENT, per level. Seeded with the reset frame so a policy that never
+    # acts still records the one world it was shown — `distinct_grids == 1`
+    # rather than 0, which would read as "never observed" instead of "never
+    # moved it". Those are different failures.
+    probe = LevelProbe()
+    probe.observe(grid_of(frame))
     # NOT A FALLBACK, and the distinction is the whole point of this line.
     #
     # Every `break` below assigns `terminated` before it leaves, so this value is
@@ -197,6 +213,8 @@ def play_environment(
                         False,
                         0.0,
                         "episode-budget",
+                        probe.distinct_grids,
+                        probe.cells_changed,
                     )
                 )
             break
@@ -209,6 +227,8 @@ def play_environment(
                     False,
                     0.0,
                     "level-budget",
+                    probe.distinct_grids,
+                    probe.cells_changed,
                 )
             )
             terminated = "level-budget"
@@ -222,6 +242,7 @@ def play_environment(
             terminated = "step-failed"
             break
 
+        probe.observe(grid_of(frame))
         completed = int(getattr(frame, "levels_completed", 0) or 0)
         state = getattr(frame, "state", None)
         if completed > level or state == GameState.WIN:
@@ -234,6 +255,8 @@ def play_environment(
                     True,
                     score_level(actions_this_level, reference),
                     "cleared",
+                    probe.distinct_grids,
+                    probe.cells_changed,
                 )
             )
             if state == GameState.WIN:
@@ -241,10 +264,35 @@ def play_environment(
                 break
             level = completed
             actions_this_level = 0
+            probe.reset()
+            probe.observe(grid_of(frame))
             if declared and len(results) >= declared:
                 terminated = "all-levels"
                 break
         elif state == GameState.GAME_OVER:
+            # WHAT THIS ROW CANNOT SAY, recorded because the obvious fix does
+            # not exist and the next reader will reach for it.
+            #
+            # After the first hosted sweep (2026-08-25) 22 of 25 environments
+            # ended here on level 0, and every one of those rows is
+            # byte-identical: `solved=False, score=0.0`. A policy that never
+            # engaged the level and one that died a step from winning produce
+            # the same record, and they call for opposite fixes. The natural
+            # instrument is the engine's own score, so: it is NOT reachable.
+            #
+            # `arcengine.base_game` does hold `_score`/`_win_score` and does
+            # pass `score=`/`win_score=` when it builds the frame — but neither
+            # `FrameData` nor `FrameDataRaw` (`arcengine/enums.py:131,149`)
+            # DECLARES those fields, and pydantic drops unknown kwargs silently.
+            # The frame an agent receives carries `levels_completed` and
+            # `win_levels` and nothing finer. So the engine measures intra-level
+            # progress and never transmits it, and a `game_score` field added
+            # here would read `None` in production and in every test forever —
+            # a progress record that constrains nothing.
+            #
+            # Intra-level progress therefore has to be INFERRED from the grid by
+            # our own perception, not read from the API. That is a real piece of
+            # work, not a field.
             results.append(
                 LevelResult(
                     level,
@@ -253,6 +301,8 @@ def play_environment(
                     False,
                     0.0,
                     "game-over",
+                    probe.distinct_grids,
+                    probe.cells_changed,
                 )
             )
             terminated = "game-over"
@@ -268,6 +318,14 @@ def play_environment(
         # runs off before the levels ever got a fair attempt, and raising the
         # per-level budget would do nothing at all.
         "ended_breakdown": _tally(entry.ended for entry in results),
+        # ENGAGEMENT, ROLLED UP. `inert_levels` is the one number that would
+        # have made the first sweep readable: levels where the world never
+        # changed at all. A high count means the policy is not playing — an
+        # illegal-action or perception failure — and no per-level budget rise
+        # would help. A low count with zero cleared means it IS playing and
+        # losing, which is a different problem entirely.
+        "inert_levels": sum(1 for entry in results if entry.distinct_grids <= 1),
+        "cells_changed_total": sum(entry.cells_changed for entry in results),
         "levels_cleared": sum(1 for entry in results if entry.solved),
         "levels_declared": declared,
         "actions_total": actions_total,

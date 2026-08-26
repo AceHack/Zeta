@@ -1,0 +1,14 @@
+{
+  "id": "080d01d48f8a3010a0130008777ca3ac",
+  "at": "2026-08-25T20:17:18.150Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X93WA4087G0R0034C1A5Q",
+    "type": "bug",
+    "title": "pr-archive lane fails ~27 percent of merges - non-fast-forward buffer fetch, silent under --quiet, retry defeated by set -e",
+    "slug": "pr-archive-lane-fails-27-percent-of-merges-non-fast-forward",
+    "priority": "P2",
+    "filename": "081M0X93WA4087G0R0034C1A5Q-pr-archive-lane-fails-27-percent-of-merges-non-fast-forward.md"
+  }
+}

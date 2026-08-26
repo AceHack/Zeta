@@ -366,9 +366,32 @@ export function prepare(lane: string): number {
       process.stderr.write(`flush-via-staging: could not inspect ${candidate}: ${probe.stderr || probe.stdout}\n`);
       return 3;
     }
-    const fetched = git("fetch", "origin", `${candidate}:refs/remotes/origin/${candidate}`, "--quiet");
+    // THE LEADING `+` IS LOAD-BEARING, and its absence was a live defect.
+    //
+    // A lane buffer is a DISPOSABLE AGGREGATE (see `bufferRef`): every flush does
+    // `checkout -B staging-<lane> origin/main` and republishes, so the ref is
+    // routinely REWRITTEN rather than advanced. `fetch-depth: 0` in the calling
+    // workflows means `refs/remotes/origin/<candidate>` already exists locally from
+    // checkout. Without `+`, git refuses a non-fast-forward update to that
+    // remote-tracking ref and exits non-zero — so this lane failed whenever the
+    // buffer was rewritten between checkout and here, i.e. whenever another PR's
+    // archive flushed in that window. Measured on 2026-08-25: 8 of 30 runs (~27%).
+    //
+    // Forcing is CORRECT here rather than a workaround: a remote-tracking ref exists
+    // to mirror the remote, rewrites included. `CLAUDE.md` already documents the
+    // heartbeat fetch in exactly this form (`+refs/heads/heartbeat/*:...`); this call
+    // was the one that did not follow it.
+    //
+    // `--quiet` is GONE for the same incident. It suppresses git's ref-update report,
+    // which is the only place the `! [rejected] (non-fast-forward)` line appears — so
+    // the failure printed `failed: ` with an empty reason and stayed undiagnosed
+    // across all 8 occurrences. A fetch that can fail must not be quiet about it.
+    const fetched = git("fetch", "origin", `+${candidate}:refs/remotes/origin/${candidate}`);
     if (fetched.status !== 0) {
-      process.stderr.write(`flush-via-staging: fetch ${candidate} failed: ${fetched.stderr || fetched.stdout}\n`);
+      const detail = fetched.stderr || fetched.stdout || "(no output from git)";
+      process.stderr.write(
+        `flush-via-staging: fetch ${candidate} failed (exit ${String(fetched.status)}): ${detail}\n`,
+      );
       return 3;
     }
     ref = candidate;

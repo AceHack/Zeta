@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -327,6 +327,93 @@ describe("the flush lane buffers without invalidating an active PR (real git)", 
 // These lanes used to emit UNSIGNED commits, which the post-merge auditor could
 // only pass via the explicit MACHINE-LANE-EXEMPT roster entry (#10573). Signing
 // them makes them CORRECT instead of exempt, shrinking the exemption surface.
+// THE REGRESSION FALSIFIER for the ~27% `pr-archive-on-merge` failure rate measured
+// on 2026-08-25 (8 of 30 runs). A lane buffer is a DISPOSABLE AGGREGATE: every flush
+// resets from `origin/main` and republishes, so the ref is REWRITTEN, not advanced.
+// The calling workflows check out with `fetch-depth: 0`, so the remote-tracking ref
+// is already populated when `prepare` runs. Fetching without a leading `+` then
+// refuses the non-fast-forward update and `prepare` returns 3.
+//
+// Reproduced standalone before this test was written: `git fetch origin
+// buf:refs/remotes/origin/buf --quiet` against a rewritten upstream exits 1 with
+// EMPTY stdout and stderr -- byte-identical to the CI symptom, where `--quiet`
+// suppressed the one report line naming the rejection.
+//
+// Drop the `+` in `flush-via-staging.ts` and this test goes red.
+describe("prepare survives a REWRITTEN lane buffer (non-fast-forward)", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-flush-nff-"));
+  afterAll(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  const g = (cwd: string, ...args: readonly string[]): string => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
+    if (r.status !== 0) {
+      throw new Error(`git ${args.join(" ")} failed: ${r.stderr || r.stdout}`);
+    }
+    return r.stdout.trim();
+  };
+
+  test("a force-updated buffer is adopted rather than rejected", () => {
+    const originDir = join(tmp, "origin.git");
+    const workDir = join(tmp, "work");
+    const seedDir = join(tmp, "seed");
+    const lane = "nff";
+    const buffer = bufferRef(lane);
+
+    g(tmp, "init", "--quiet", "--bare", originDir);
+    g(tmp, "init", "--quiet", seedDir);
+    g(seedDir, "config", "user.email", "lane@zeta.local");
+    g(seedDir, "config", "user.name", "lane");
+    writeFileSync(join(seedDir, "base.txt"), "base\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "base");
+    g(seedDir, "branch", "-M", "main");
+    g(seedDir, "push", "--quiet", originDir, "main");
+
+    // Generation 1 of the buffer.
+    g(seedDir, "checkout", "--quiet", "-B", "buf", "main");
+    writeFileSync(join(seedDir, "buf.txt"), "gen1\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "buffer gen 1");
+    g(seedDir, "push", "--quiet", originDir, `buf:${buffer}`);
+
+    // A FULL clone -- this is what `fetch-depth: 0` produces, and it is what makes
+    // the local remote-tracking ref exist before the rewrite. Without this line the
+    // defect is unreachable and the test would pass either way.
+    g(tmp, "clone", "--quiet", originDir, workDir);
+    g(workDir, "config", "user.email", "lane@zeta.local");
+    g(workDir, "config", "user.name", "lane");
+    const before = g(workDir, "rev-parse", `refs/remotes/origin/${buffer}`);
+
+    // THE REWRITE: the next flush resets from main, so generation 2 is NOT a
+    // descendant of what this clone already holds.
+    g(seedDir, "checkout", "--quiet", "-B", "buf", "main");
+    writeFileSync(join(seedDir, "buf.txt"), "gen2\n");
+    g(seedDir, "add", "-A");
+    g(seedDir, "commit", "--quiet", "-m", "buffer gen 2");
+    g(seedDir, "push", "--quiet", "--force", originDir, `buf:${buffer}`);
+
+    const cwd = process.cwd();
+    let prepared: number;
+    try {
+      process.chdir(workDir);
+      prepared = prepare(lane);
+    } finally {
+      process.chdir(cwd);
+    }
+
+    expect(prepared).toBe(0);
+
+    // Not merely "did not fail": it adopted the NEW generation. Asserting only the
+    // exit code would still pass if the fetch were dropped entirely.
+    const after = g(workDir, "rev-parse", `refs/remotes/origin/${buffer}`);
+    expect(after).not.toBe(before);
+    expect(readFileSync(join(workDir, "buf.txt"), "utf8")).toBe("gen2\n");
+  });
+});
+
 describe("AgencySignature on telemetry flushes", () => {
   test.each([...LANES])("%s: the block carries every required key", (lane) => {
     const block = agencySignatureBlock(lane);
@@ -588,4 +675,98 @@ describe("telemetry-lane push credential (the held-gate cure)", () => {
       expect(yaml).not.toContain("- name: Preflight the push credential");
     });
   }
+});
+
+/**
+ * The archive step's `run:` block, sliced out of the raw workflow text with node
+ * builtins only. Anchored on `max_attempts`, which appears in exactly one step,
+ * then widened to the enclosing block by INDENTATION -- the same rule the YAML
+ * reader would apply, without the dependency. Only the backoff is neutralised;
+ * the control flow under test is untouched.
+ */
+function archiveRunBlock(text: string): string {
+  const lines = text.split("\n");
+  const anchor = lines.findIndex((l) => l.includes("max_attempts=5"));
+  if (anchor < 0) return "";
+  let start = anchor;
+  while (start > 0 && !/^\s*run:\s*\|/.test(lines[start] ?? "")) start -= 1;
+  const indent = (lines[start] ?? "").search(/\S/);
+  const body: string[] = [];
+  for (let i = start + 1; i < lines.length; i += 1) {
+    const line = lines[i] ?? "";
+    if (line.trim() !== "" && line.search(/\S/) <= indent) break;
+    body.push(line.replace(/^(\s*)sleep .*$/, "$1:"));
+  }
+  return body.join("\n");
+}
+
+// THE RETRY LOOP MUST ACTUALLY RETRY -- the falsifier for the third defect in
+// 081M0X93WA4087G0R0034C1A5Q.
+//
+// `pr-archive-on-merge` announces five attempts. It got ONE. The step runs under
+// `set -euo pipefail`; `flush` was guarded with `set +e`/`rc=$?`/`set -e` but
+// `prepare` was not, so a non-zero `prepare` aborted the whole script on attempt 1
+// and the backoff, the ::error annotation and its operator guidance were all
+// unreachable. Observed on PR #15394 (twice) and PR #15428.
+//
+// This runs the WORKFLOW'S OWN SCRIPT -- extracted from the yaml, not retyped --
+// against stubs where `prepare` always fails, so it cannot drift from what CI does.
+// Remove the `set +e` around `prepare` and this test sees exactly one attempt.
+describe("the pr-archive retry loop retries (the workflow's own script, real bash)", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-retry-"));
+  afterAll(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+  test("a failing prepare retries to exhaustion instead of aborting on attempt 1", () => {
+    // NO YAML PARSER HERE, and that is not a style choice. `pr-manifest-integrity.yml`
+    // runs `bun test` over this directory with NO `bun install`, and says so:
+    // "these tests import node builtins and repo-local modules only." A
+    // devDependency import is therefore not a missing package, it is a broken
+    // invariant -- and it fails in the worst possible shape. An earlier version of
+    // this test imported `yaml` and produced
+    // `error: Cannot find package 'yaml' from '...flush-via-staging.test.ts'`,
+    // which drops EVERY test in this file from the run instead of failing one.
+    // The suite reported 289 tests where it should have reported 331, and a
+    // shrinking pass count reads like a green run.
+    const script = archiveRunBlock(workflow("pr-archive-on-merge.yml"));
+
+    // The extraction must be checked, or a bad slice yields an empty script that
+    // runs, prints nothing, and passes nothing -- the vacuity this test exists to
+    // catch, reintroduced in the harness.
+    expect(script).toContain("max_attempts");
+    expect(script).toContain("[archive] attempt");
+    const scriptPath = join(tmp, "step.sh");
+    writeFileSync(scriptPath, script);
+
+    // `bun` fails exactly the way the lane failed in CI: exit 3 from `prepare`.
+    const bin = join(tmp, "bin");
+    mkdirSync(bin, { recursive: true });
+    const mkbin = (name: string, body: string): void => {
+      const f = join(bin, name);
+      writeFileSync(f, body);
+      chmodSync(f, 0o755);
+    };
+    mkbin("bun", '#!/usr/bin/env bash\nfor a in "$@"; do [ "$a" = "prepare" ] && exit 3; done\nexit 0\n');
+    mkbin("git", "#!/usr/bin/env bash\nexit 0\n");
+
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const r = spawnSync("bash", [scriptPath], {
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PATH: `${bin}:${process.env["PATH"] ?? ""}`,
+        PR_NUMBER: "15394",
+        GITHUB_SHA_OVERRIDE: "deadbeef",
+      },
+    });
+    const out = `${r.stdout}${r.stderr}`;
+
+    // All five attempts happen. Without the guard only the first line appears.
+    for (const n of [1, 2, 3, 4, 5]) {
+      expect(out).toContain(`attempt ${String(n)}/5`);
+    }
+    // And the operator guidance -- previously unreachable -- actually fires.
+    expect(out).toContain("::error title=Archive record could not be delivered");
+  });
 });

@@ -1,0 +1,14 @@
+{
+  "id": "080d01e883285010a0130008ca8d7333",
+  "at": "2026-08-26T07:54:39.754Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YH0S80087G0R001KCAMJS",
+    "type": "bug",
+    "title": "PixelAgent bootstrap trap - escaping a block needs step-size calibration that only a successful move provides",
+    "slug": "pixelagent-bootstrap-trap-escaping-a-block-needs-step-size-c",
+    "priority": "P2",
+    "filename": "081M0YH0S80087G0R001KCAMJS-pixelagent-bootstrap-trap-escaping-a-block-needs-step-size-c.md"
+  }
+}

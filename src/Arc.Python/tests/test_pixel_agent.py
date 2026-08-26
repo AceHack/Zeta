@@ -6,7 +6,7 @@ touches it; that is the whole point of the file.
 
 from __future__ import annotations
 
-from zeta_arc.agent import PixelAgent
+from zeta_arc.agent import ACTION_VECTORS, PixelAgent
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import CELL, ZetaChase
 from zeta_arc.perception import background_colour, components
@@ -336,4 +336,81 @@ def test_the_environment_advertises_the_actions_it_actually_accepts() -> None:
     )
     assert GameAction.ACTION1 != 1, (
         "GameAction became an IntEnum; this test's premise is stale"
+    )
+
+
+# ---------------------------------------------------------------------------
+# THE BOOTSTRAP TRAP: escaping a block required calibration, calibration
+# required a successful move, and a successful move required not being blocked.
+# ---------------------------------------------------------------------------
+
+
+def _unresponsive_world() -> list[list[int]]:
+    """A grid that never answers — exactly what a blocked move looks like from
+    the agent's side, and what a level whose mechanic the agent has not found
+    looks like for the whole episode."""
+    grid = [[0] * 10 for _ in range(10)]
+    grid[5][5] = 3  # the body
+    grid[2][8] = 4  # something to head toward, up-and-right
+    return grid
+
+
+def test_a_world_that_never_answers_does_not_get_the_same_action_forever():
+    """MEASURED BEFORE THE FIX: 1 distinct action over 40 ticks (ACTION1 x40),
+    `_step_px` None, `blocked` empty.
+
+    That is not a slow agent, it is a stuck one, and it burns the entire episode
+    budget on a single move. It is also the exact signature 22 of 25 hosted
+    environments returned on 2026-08-25: dead on level 0 with the budget spent.
+
+    The assertion is `> 1`, deliberately weak: the claim under test is only that
+    the agent STOPS REPEATING ITSELF, not that it plays well. A stronger number
+    here would pin the current cycling order, which is not the property that
+    matters and would go red on any future improvement to it.
+    """
+    agent = PixelAgent()
+    grid = _unresponsive_world()
+    actions = [agent.act([row[:] for row in grid]) for _ in range(40)]
+
+    assert len(set(actions)) > 1, (
+        "the agent issued one action for 40 ticks against a world that never "
+        "responded — the bootstrap trap is back"
+    )
+
+
+def test_the_weak_instrument_stands_down_once_the_strong_one_can_boot():
+    """The inert-action memory must not survive calibration.
+
+    It is the paired half of the test above, and it is the one that actually
+    failed when this mechanism was first written without a gate: diverting after
+    a SINGLE unanswered move means the agent never bumps the same wall twice,
+    so `blocked` never fills and the wall model never forms. Four wall tests in
+    this file went red exactly that way.
+
+    So the property is not "the agent varies its actions" — it is "the weak
+    instrument yields to the strong one". Remove the `_step_px is None` gate in
+    `act` and this goes red while the test above stays green, which is what
+    makes the pair discriminating rather than duplicative.
+    """
+    agent = PixelAgent()
+    grid = _unresponsive_world()
+    agent.act([row[:] for row in grid])
+    agent.act([row[:] for row in grid])
+    assert agent._inert, "an unanswered action should have been recorded"
+
+    # Once the body has actually moved, the step size is known and the stronger
+    # cell-level instrument is available.
+    agent._step_px = 1.0
+    refused_before = {k: set(v) for k, v in agent._inert.items()}
+    agent.act([row[:] for row in grid])
+
+    assert agent._inert.keys() >= refused_before.keys(), (
+        "the record itself is not discarded — only its influence on choice is"
+    )
+    # The gate is what is under test: with calibration present, a refused action
+    # is once again eligible, because `_note_blocked_cell` now owns this job.
+    key = agent._grid_key(grid)
+    moves_all = set(ACTION_VECTORS)
+    assert agent._inert.get(key, set()) & moves_all, (
+        "precondition: something was refused from this exact state"
     )

@@ -1,0 +1,14 @@
+{
+  "id": "080d01d3dec86010a0130008cfdec765",
+  "at": "2026-08-25T19:53:10.156Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X7QP8B087G0R000EDEH84",
+    "type": "task",
+    "title": "ARC frames expose no intra-level score - infer progress from the grid instead",
+    "slug": "arc-frames-expose-no-intra-level-score-infer-progress-from-t",
+    "priority": "P2",
+    "filename": "081M0X7QP8B087G0R000EDEH84-arc-frames-expose-no-intra-level-score-infer-progress-from-t.md"
+  }
+}

@@ -76,11 +76,59 @@ class PixelAgent:
     #: Measured on level 2: a clean two-cycle, 300 actions, unsolved. Committing
     #: to a route until something contradicts it is what breaks the tie.
     _plan: list[GameAction] = field(default_factory=list)
+    #: Actions the world did not answer, keyed by the EXACT grid they were
+    #: issued from. See `_note_inert_action` for why this exists alongside
+    #: `blocked` rather than inside it.
+    _inert: dict[tuple[tuple[int, ...], ...], set[GameAction]] = field(
+        default_factory=dict
+    )
+    _last_grid_key: tuple[tuple[int, ...], ...] | None = None
 
     def _cell_of(self, c: Component) -> tuple[int, int]:
         """Component centroid in grid cells, using the learned step size."""
         step = self._step_px or 1.0
         return (round((c.cx - step / 2) / step), round((c.cy - step / 2) / step))
+
+    @staticmethod
+    def _grid_key(grid: Grid) -> tuple[tuple[int, ...], ...]:
+        """A hashable snapshot. Tuples rather than a joined string: a join needs
+        a separator, and a separator is a collision waiting for a cell value
+        that contains it."""
+        return tuple(tuple(row) for row in grid)
+
+    def _note_inert_action(self, key: tuple[tuple[int, ...], ...]) -> None:
+        """An action the world did not answer AT ALL, recorded against the exact
+        state it was issued from.
+
+        WHY THIS EXISTS WHEN `blocked` ALREADY DOES. `_note_blocked_cell` is the
+        better instrument — it names the *cell* that stopped you, which routes —
+        but it cannot fire until `_step_px` is known, and `_step_px` is learned
+        only from a move that actually displaced the body. That is a bootstrap
+        trap, and it is not hypothetical:
+
+            PixelAgent(), 40 ticks, a world that returns the same grid
+            -> 1 distinct action (ACTION1 x40), _step_px None, blocked empty
+
+        Escaping a block required calibration; calibration required a successful
+        move; a successful move required not being blocked. An agent that starts
+        facing a wall in its greedy heading spends the ENTIRE episode budget on
+        one action and dies on level 0 — which is the exact signature 22 of 25
+        hosted environments returned on 2026-08-25.
+
+        This mechanism needs no calibration, because "the grid is byte-identical
+        after I acted" is readable on the very first frame. It is deliberately
+        WEAKER than `blocked`: it says only "not this action from this state",
+        never "there is a wall at (x,y)". It cannot route, and it is not meant
+        to — it exists so the agent keeps trying things until the stronger
+        instrument can boot.
+
+        Keyed by the exact grid, never globally: an action that does nothing HERE
+        is routinely the correct action one cell over, and a global ban would
+        turn a stuck agent into a crippled one.
+        """
+        if self._last_action is None:
+            return
+        self._inert.setdefault(key, set()).add(self._last_action)
 
     def _note_blocked_cell(self, me: Component) -> None:
         """A commanded move that produced NO displacement means something is in
@@ -267,6 +315,40 @@ class PixelAgent:
             for a in sorted(ACTION_VECTORS, key=lambda a: a.value)
             if legal is None or a in legal
         )
+
+        # THE WORLD DID NOT ANSWER — record it before choosing anything.
+        # A grid byte-identical to the one the last action was issued from means
+        # that action did nothing HERE. This is checked before `components()`
+        # because it needs no perception, no body election and no calibration:
+        # it is the one signal available on the very first frame of a level.
+        key = self._grid_key(grid)
+        if self._last_grid_key is not None and key == self._last_grid_key:
+            self._note_inert_action(key)
+        self._last_grid_key = key
+
+        # Drop what this exact state has already refused. Never let the set go
+        # empty: with every move refused the honest state is "nothing works from
+        # here", and returning no action is not available — so the refusals are
+        # forgotten for this state and the agent tries again rather than
+        # deadlocking on its own bookkeeping.
+        # ONLY WHILE THE STRONGER INSTRUMENT CANNOT BOOT. Once `_step_px` is
+        # known, `_note_blocked_cell` names the offending CELL, which routes;
+        # this only names an action, which does not. Leaving both on is not
+        # merely redundant, it is HARMFUL and was measured to be: diverting
+        # after a single bump means the agent never bumps the same wall twice,
+        # `blocked` never fills, and the wall model never forms — four
+        # `test_pixel_agent` wall tests went red exactly that way. The weak
+        # instrument exists to get the strong one started, then stands down.
+        refused: frozenset[GameAction] | set[GameAction] = (
+            self._inert.get(key, frozenset()) if self._step_px is None else frozenset()
+        )
+        if refused:
+            surviving = tuple(a for a in moves if a not in refused)
+            if surviving:
+                moves = surviving
+            else:
+                self._inert.pop(key, None)
+
         if not moves:
             # The caller routed here with no direction on offer. Nothing this
             # agent models applies; say so by returning the lowest-id legal

@@ -269,23 +269,45 @@ jobs:
 
             # Resets the tree to origin/main and unions in whatever is parked on the lane
             # buffer. This is what makes the retry correct rather than merely repeated.
-            bun "$FLUSH" prepare --lane pr-archive
-
-            bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts "$PR_NUMBER"
-
-            # The DERIVED manifest is never carried by this lane (081KZYP7MNV087G0R002X0E3V9):
-            # it is an index over the shard store, and appending to it from concurrent runs is
-            # what made archive PRs conflict pairwise. `--paths` below already excludes it;
-            # the restore keeps the worktree clean so the next `prepare` checkout cannot trip
-            # over a local modification.
-            git restore docs/github/prs/manifest.jsonl 2>/dev/null || true
-
+            #
+            # GUARDED, and the guard is the whole point. `set -e` is in force for this
+            # step, so an unguarded non-zero here ABORTED THE SCRIPT on attempt 1 -- the
+            # announced "attempt 1/5" was the only attempt that ever ran, and the loop's
+            # backoff, its ::error annotation and its operator guidance were all
+            # unreachable. Observed on PR #15394, on both the original run and the manual
+            # re-run: `attempt 1/5`, then `exit code 3`, and nothing else.
+            #
+            # A failing `prepare` is exactly the contended-lane case the retry exists for,
+            # so it feeds the SAME rc path as a failing `flush` below rather than getting
+            # its own exit.
+            #
+            # This is the only lane with a retry loop; the other eleven call `prepare` as a
+            # standalone step where a hard failure is the correct outcome.
             set +e
-            bun "$FLUSH" flush --lane pr-archive \
-              --paths docs/history/pr-reviews docs/github/prs/shards \
-              --message "archive(pr-reviews): PR #${PR_NUMBER} on merge"
+            bun "$FLUSH" prepare --lane pr-archive
             rc=$?
             set -e
+
+            if [ "$rc" -eq 0 ]; then
+              # Left UNGUARDED deliberately: the generator is not a contention failure and
+              # has never been observed failing here. If that changes it wants the same
+              # treatment, not a bare abort.
+              bun src/Core.TypeScript/forge-host/github/archive-pr-reviews.ts "$PR_NUMBER"
+
+              # The DERIVED manifest is never carried by this lane (081KZYP7MNV087G0R002X0E3V9):
+              # it is an index over the shard store, and appending to it from concurrent runs is
+              # what made archive PRs conflict pairwise. `--paths` below already excludes it;
+              # the restore keeps the worktree clean so the next `prepare` checkout cannot trip
+              # over a local modification.
+              git restore docs/github/prs/manifest.jsonl 2>/dev/null || true
+
+              set +e
+              bun "$FLUSH" flush --lane pr-archive \
+                --paths docs/history/pr-reviews docs/github/prs/shards \
+                --message "archive(pr-reviews): PR #${PR_NUMBER} on merge"
+              rc=$?
+              set -e
+            fi
 
             if [ "$rc" -eq 0 ]; then
               echo "[archive] PR #${PR_NUMBER} landed on the pr-archive lane"
