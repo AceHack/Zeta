@@ -1,16 +1,9 @@
 {
-  "latestTick": 742,
-  "streak": 0,
+  "latestTick": 743,
+  "streak": 1,
   "fires": false,
   "winnerHex": null,
   "perTick": [
-    {
-      "tick": 737,
-      "currentFitness": -190.375,
-      "bestFitness": -190.375,
-      "bestHex": "#53010d",
-      "loses": false
-    },
     {
       "tick": 738,
       "currentFitness": -190.375,
@@ -45,6 +38,13 @@
       "bestFitness": -190.375,
       "bestHex": "#53010d",
       "loses": false
+    },
+    {
+      "tick": 743,
+      "currentFitness": -190.375,
+      "bestFitness": -184.625,
+      "bestHex": "#3e000b",
+      "loses": true
     }
   ]
 }
