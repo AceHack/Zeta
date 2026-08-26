@@ -102,11 +102,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache .NET SDK
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # RESTORE-ONLY, for the same reason the mise cache below is — this is the
+      # second half of a fix that only ever landed on its first half.
+      #
+      # `gate.yml:build-and-test` writes the BYTE-IDENTICAL key (same `path:`, same
+      # `hashFiles('global.json')`, same runner.os/arch) on the same `push: [main]`
+      # trigger, from a 4-vCPU host. Two writers, one key — exactly the condition the
+      # mise comment below describes, and it was left read-write here.
+      #
+      # MEASURED CONSEQUENCE (docs/research/2026-08-26-the-actions-cache-is-a-measured-
+      # sawtooth-*.md): on 2026-08-26 the `dotnet-Linux-X64-<hash>` entry on
+      # `refs/heads/main` held **172,367 bytes** while a copy of THE SAME KEY on a PR
+      # ref held **429,822,343 bytes** — a 2,500x content divergence under one key.
+      # A 172 KB `~/.dotnet` still returns `cache-hit: true`, which SUPPRESSES the
+      # save on every later job that matches it, so the bad entry is self-preserving
+      # until LRU removes it.
+      #
+      # Which lane wrote the 172 KB copy is NOT established — I did not identify the
+      # writing run, and this note deliberately does not guess. What is established is
+      # that two lanes on two different runner images write one key, and that the key
+      # currently holds two irreconcilable contents. Restore-only removes this lane as
+      # a writer, which is the same remedy, for the same reason, as the step below.
+      - name: Restore .NET SDK (never saved from this lane — see above)
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.dotnet
-          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json') }}
 
       # RESTORE-ONLY, deliberately — this lane READS the mise cache and never WRITES it.
       #
