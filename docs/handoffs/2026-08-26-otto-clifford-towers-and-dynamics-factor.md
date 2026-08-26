@@ -12,6 +12,7 @@ time — it is the list of things that bit me.
 ## 1. What landed
 
 ### PR #15517 — the pr-archive lane
+
 `pr-archive-on-merge` was failing **8 of 30 runs (~27%)**, each a silently undelivered archive
 record. Three defects in one path, all in `prepare`, which **all twelve telemetry lanes** call:
 
@@ -178,6 +179,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
 ## 6. Gotchas — the list that will save you time
 
 **Trailer / CI:**
+
 - `Human-Review-Evidence` is an **enum** (`chat | pr-review | pr-comment | signed-policy | none`).
   I wrote free prose into 13 commits. `validateBlock` catches it instantly.
 - `Accountable-Party` and `Authority-Basis` **do not reconcile** — they must be unanimous across
@@ -192,6 +194,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
   `gromov-hyperbolicity`, `belief-manifold-curvature-sybil`, `causal-order-minkowski-embedding`.
 
 **Git:**
+
 - `if git push ... | tail -2; then` tests **tail's** exit status, not git's — a check that cannot
   fail. Use `git push ...; rc=$?`.
 - **A rebase drops merge commits — including fixes made *in* them.** A ruff repair I made during
@@ -201,6 +204,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
   refuses with "stale info" — correctly. `git fetch --prune` first.
 
 **Toolchain:**
+
 - `bash tools/setup/install.sh` gives dotnet 10.0.400 at
   `/root/.local/share/mise/dotnet-root` (set `DOTNET_ROOT` and PATH).
 - `CliffordPeriodicity.fs` is self-contained under `dotnet fsi`; **`Cl3.fs` is not**
@@ -212,6 +216,7 @@ multivectors, i.e. the Clifford **group**. That lands exactly where the literatu
   synchronously. A green you cannot attribute to a known source is not evidence.
 
 **Process:**
+
 - **Mint work-item ids before writing them anywhere.** I wrote a well-formed ZetaId into a doc
   before minting it — a key that passes a shape check and identifies nothing, which is the exact
   failure `.claude/rules/never-assume-malice-where-mistake-is-possible.md` documents.
