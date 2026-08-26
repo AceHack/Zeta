@@ -4,6 +4,7 @@ import {
   AdinkraRoomEvidenceBridge,
   DurableRoomEvidenceLedger,
   foldRoomEvidence,
+  ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES,
   ROOM_EVIDENCE_RECEIPT_SCHEMA,
   type RoomEvidenceDatagramPort,
   type RoomEvidenceReceipt,
@@ -37,17 +38,25 @@ function negate(value: RoomEvidenceReceipt): RoomEvidenceReceipt {
 }
 
 function makeLedger(): DurableRoomEvidenceLedger {
-  return new DurableRoomEvidenceLedger(new ZetaStorageCell({ primary: new InMemoryStoragePort(), nodeId: "room-test" }));
+  return new DurableRoomEvidenceLedger(
+    new ZetaStorageCell({ primary: new InMemoryStoragePort(), nodeId: "room-test" }),
+  );
 }
 
 class LoopbackAdinkraPort implements RoomEvidenceDatagramPort {
   readonly sent: Uint8Array[] = [];
   private readonly handlers: Array<(payload: Uint8Array) => void> = [];
 
-  send(payload: Uint8Array): void { this.sent.push(payload); }
-  onData(handler: (payload: Uint8Array) => void): void { this.handlers.push(handler); }
+  send(payload: Uint8Array): void {
+    this.sent.push(payload);
+  }
+  onData(handler: (payload: Uint8Array) => void): void {
+    this.handlers.push(handler);
+  }
   flush(): void {}
-  deliver(payload: Uint8Array): void { for (const handler of this.handlers) handler(payload); }
+  deliver(payload: Uint8Array): void {
+    for (const handler of this.handlers) handler(payload);
+  }
 }
 
 describe("durable-room-evidence", () => {
@@ -70,8 +79,18 @@ describe("durable-room-evidence", () => {
   });
 
   test("DRE-3: correction preserves the old atom and resolves to the replacement fact", () => {
-    const old = receipt({ factId: "fact-old", solved: false, actionCount: 20, uncertainty: { meanPpm: 200_000, precisionPpm: 10 } });
-    const replacement = receipt({ factId: "fact-new", solved: true, actionCount: 8, uncertainty: { meanPpm: 800_000, precisionPpm: 40 } });
+    const old = receipt({
+      factId: "fact-old",
+      solved: false,
+      actionCount: 20,
+      uncertainty: { meanPpm: 200_000, precisionPpm: 10 },
+    });
+    const replacement = receipt({
+      factId: "fact-new",
+      solved: true,
+      actionCount: 8,
+      uncertainty: { meanPpm: 800_000, precisionPpm: 40 },
+    });
     const result = foldRoomEvidence([old, negate(old), replacement]);
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -139,7 +158,11 @@ describe("durable-room-evidence", () => {
 
   test("DRE-8: malformed transport payload is refused before persistence", async () => {
     const bridge = new AdinkraRoomEvidenceBridge(new LoopbackAdinkraPort(), makeLedger());
-    const result = await bridge.receive(new TextEncoder().encode("not-json"));
+    const invalidJson = new TextEncoder().encode("not-json");
+    const framed = new Uint8Array(ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES + invalidJson.length);
+    new DataView(framed.buffer).setUint32(0, invalidJson.length, false);
+    framed.set(invalidJson, ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES);
+    const result = await bridge.receive(framed);
     expect(result).toEqual({ ok: false, reason: "receipt payload is not valid JSON" });
   });
 });

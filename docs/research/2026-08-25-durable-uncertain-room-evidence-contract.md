@@ -38,7 +38,7 @@ If total precision is positive, the derived mean is `naturalMean / precision`; o
 
 Atoms are persisted before they become fold input. The persistence API returns the Merkle key; replay reads stored atoms and repeats the same order-independent fold. Existing peer receipt exchange already authenticates a batch’s *content hash* and accepts bounded receipt batches over a transport-agnostic request/reply port.[3]
 
-The Adinkra adapter is deliberately thinner: it serializes one atom, sends it through `LossyUdpChannel`, and accepts only CRC-valid/recovered payloads from the existing `[8,4,4]` channel. The channel corrects erasures; it does not mint a room result, prove identity, or infer missing semantic evidence. An unrecoverable block produces a missing atom, and anti-entropy/peer exchange may later supply it.
+The Adinkra adapter is deliberately thinner: it length-frames one canonical atom, sends it through `LossyUdpChannel`, and accepts only CRC-valid/recovered payloads from the existing `[8,4,4]` channel. The explicit length removes zero padding introduced when four unequal data symbols share one block. The channel corrects identifiable erasures; it does not mint a room result, prove identity, or infer missing semantic evidence. An unrecoverable block produces no atom, and anti-entropy/peer exchange may later supply it. The exhaustive 256-pattern durable-root theorem and its fault controls are recorded in the companion seam contract.[4]
 
 ## Required conformance checks
 
@@ -50,7 +50,7 @@ The implementation must prove by executable tests that:
 4. Different spectrum or signature-split labels never cancel each other.
 5. A negative precision total produces `unresolved`, not a numeric posterior.
 6. Persist/replay retains the Merkle address and produces the same canonical root.
-7. A receipt framed through the existing Adinkra channel reaches the same persistence/fold boundary after recovery; malformed payloads are refused.
+7. Every algebraically identifiable `[8,4,4]` erasure pattern reaches the same persistence/fold root through the real channel for both receipt signs; ambiguous patterns deliver no atom, and malformed length-framed payloads are refused.[4]
 
 ## Honest boundary
 
@@ -63,3 +63,5 @@ The v1 contract is a durable commutative **evidence** foundation. It does not ye
 [2] [`z-set.ts`](../../src/Core.TypeScript/z-set/z-set.ts)
 
 [3] [`browser-database-receipt-peer-exchange.ts`](../../src/Core.TypeScript/browser-node/browser-database-receipt-peer-exchange.ts)
+
+[4] [`2026-08-26-adinkra-durable-evidence-seam-contract.md`](./2026-08-26-adinkra-durable-evidence-seam-contract.md)

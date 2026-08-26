@@ -122,6 +122,66 @@ let ``single-error correction recovers every codeword (generation = correction)`
     // a clean codeword corrects to itself
     Assert.Equal<int[]>(AK.allCodewords.[3], (AK.correct AK.allCodewords.[3]).Value)
 
+// ── Erasure identifiability: independent oracle for the UDP durable-evidence seam ─────────────
+
+[<Fact>]
+let ``all 256 erasure masks have the independent 844 identifiability census`` () =
+    Assert.Equal<(int * int * int) list>(
+        [ 0, 1, 1
+          1, 8, 8
+          2, 28, 28
+          3, 56, 56
+          4, 56, 70
+          5, 0, 56
+          6, 0, 28
+          7, 0, 8
+          8, 0, 1 ],
+        AK.erasureCensus)
+
+[<Fact>]
+let ``the fourteen ambiguous four-erasure masks are exactly nonzero weight-four codeword supports`` () =
+    let weightFourSupports =
+        AK.allCodewords
+        |> List.filter (fun word -> AK.weight word = 4)
+        |> List.map (fun word ->
+            word
+            |> Array.mapi (fun index bit -> if bit = 0 then 0 else 1 <<< index)
+            |> Array.fold (|||) 0)
+        |> Set.ofList
+
+    let classifiedAmbiguous =
+        [ 0 .. 255 ]
+        |> List.filter (fun mask ->
+            let result = AK.classifyErasureMask mask
+            result.Status = AK.AmbiguousCodewordSupport)
+        |> Set.ofList
+
+    Assert.Equal(14, weightFourSupports.Count)
+    Assert.Equal<Set<int>>(weightFourSupports, classifiedAmbiguous)
+
+[<Fact>]
+let ``ambiguity witness: two distinct codewords agree on every survivor of a codeword-support erasure`` () =
+    let zero = AK.allCodewords |> List.find (fun word -> AK.weight word = 0)
+    let alternative = AK.allCodewords |> List.find (fun word -> AK.weight word = 4)
+    let erasedMask =
+        alternative
+        |> Array.mapi (fun index bit -> if bit = 0 then 0 else 1 <<< index)
+        |> Array.fold (|||) 0
+
+    let result = AK.classifyErasureMask erasedMask
+    Assert.Equal(AK.AmbiguousCodewordSupport, result.Status)
+    Assert.NotEqual<int[]>(zero, alternative)
+    for position in 0 .. AK.length - 1 do
+        if (erasedMask &&& (1 <<< position)) = 0 then
+            Assert.Equal(zero.[position], alternative.[position])
+
+[<Fact>]
+let ``erasure classifier refuses masks outside the eight-coordinate domain`` () =
+    Assert.Throws<System.ArgumentException>(fun () -> AK.classifyErasureMask -1 |> ignore)
+    |> ignore
+    Assert.Throws<System.ArgumentException>(fun () -> AK.classifyErasureMask 256 |> ignore)
+    |> ignore
+
 // ── MacWilliams fixed-point: gen(gen)=gen at the weight-enumerator level ─────────────────────────
 // The MacWilliams transform maps W_C to W_{C⊥}. For a self-dual code (C = C⊥), the transform is
 // a fixed point: W_C = MacWilliams(W_C). This is the algebraic statement of gen(gen)=gen at the

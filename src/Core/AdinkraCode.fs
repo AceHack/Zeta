@@ -189,6 +189,60 @@ module AdinkraCode =
             | [ y ] -> Some y
             | _ -> None
 
+    // ── Coordinate-erasure identifiability ────────────────────────────────────────────────────
+
+    /// Finite classification of a known coordinate-erasure pattern. This is a codeword-set
+    /// oracle, not an implementation of the TypeScript UDP decoder.
+    type ErasureStatus =
+        | Identifiable
+        | AmbiguousCodewordSupport
+        | Underdetermined
+
+    type ErasureClassification =
+        { Mask: int
+          ErasedCount: int
+          Status: ErasureStatus }
+
+    let private supportMask (word: int[]) : int =
+        word
+        |> Array.mapi (fun index bit -> if bit = 0 then 0 else 1 <<< index)
+        |> Array.fold (|||) 0
+
+    /// A coordinate-erasure pattern is uniquely decodable exactly when it contains no support of
+    /// a non-zero codeword: otherwise the zero codeword and that codeword agree on every survivor.
+    /// For this code, the minimum-distance guarantee covers all masks of size at most three; the
+    /// exhaustive classifier additionally distinguishes the 56 identifiable four-erasure masks
+    /// from the fourteen weight-four codeword supports.
+    let classifyErasureMask (mask: int) : ErasureClassification =
+        if mask < 0 || mask >= (1 <<< length) then
+            invalidArg (nameof mask) $"erasure mask must be in [0, {(1 <<< length) - 1}]"
+
+        let erasedCount = System.Numerics.BitOperations.PopCount(uint32 mask) |> int
+        let containsNonZeroSupport =
+            allCodewords
+            |> List.map supportMask
+            |> List.exists (fun support -> support <> 0 && (support &&& mask) = support)
+
+        let status =
+            if not containsNonZeroSupport then Identifiable
+            elif erasedCount = 4 then AmbiguousCodewordSupport
+            else Underdetermined
+
+        { Mask = mask
+          ErasedCount = erasedCount
+          Status = status }
+
+    /// Readable exhaustive census, indexed by the number of erased coordinates.
+    let erasureCensus : (int * int * int) list =
+        [ 0 .. (1 <<< length) - 1 ]
+        |> List.map classifyErasureMask
+        |> List.groupBy (fun row -> row.ErasedCount)
+        |> List.sortBy fst
+        |> List.map (fun (count, rows) ->
+            count,
+            rows |> List.filter (fun row -> row.Status = Identifiable) |> List.length,
+            rows.Length)
+
     // ── Weight enumerator and MacWilliams fixed-point (gen(gen)=gen Face 1 discharge) ─────────────
     //
     // The **weight enumerator** of a binary code C is W_C(x,y) = Σ_{c∈C} x^{n-wt(c)} y^{wt(c)}.

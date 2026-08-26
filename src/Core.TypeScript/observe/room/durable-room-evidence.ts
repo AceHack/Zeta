@@ -17,6 +17,7 @@ import { root as zSetMerkleRoot } from "../../z-set-merkle/z-set-merkle";
 import { ofEntries, stringCompare, type ZSet } from "../../z-set/z-set";
 
 export const ROOM_EVIDENCE_RECEIPT_SCHEMA = "zeta.room-evidence-receipt.v1" as const;
+export const ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES = 4;
 
 const PPM_MAX = 1_000_000;
 const KEY_SEPARATOR = "\u001f";
@@ -229,6 +230,39 @@ export function decodeRoomEvidenceReceipt(payload: string): RoomEvidenceResult<R
   }
 }
 
+/**
+ * Frame one canonical receipt for a variable-width datagram lane.
+ *
+ * `LossyUdpChannel` pads all four data symbols in one `[8,4,4]` block to the
+ * longest symbol. Without an explicit length, a shorter JSON receipt acquires
+ * trailing NUL bytes and is no longer valid JSON after recovery. The unsigned
+ * 32-bit prefix preserves the semantic payload length; any remaining bytes must
+ * be zero padding produced by the block builder.
+ */
+export function encodeRoomEvidenceDatagram(receipt: RoomEvidenceReceipt): Uint8Array {
+  const payload = textEncoder.encode(encodeRoomEvidenceReceipt(receipt));
+  const framed = new Uint8Array(ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES + payload.length);
+  new DataView(framed.buffer).setUint32(0, payload.length, false);
+  framed.set(payload, ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES);
+  return framed;
+}
+
+export function decodeRoomEvidenceDatagram(payload: Uint8Array): RoomEvidenceResult<RoomEvidenceReceipt> {
+  if (payload.length < ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES) {
+    return failed("receipt datagram is shorter than its length header");
+  }
+  const declaredLength = new DataView(payload.buffer, payload.byteOffset, payload.byteLength).getUint32(0, false);
+  if (declaredLength === 0) return failed("receipt datagram payload length must be positive");
+  const payloadEnd = ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES + declaredLength;
+  if (payloadEnd > payload.length) return failed("receipt datagram is truncated");
+  for (let index = payloadEnd; index < payload.length; index++) {
+    if (payload[index] !== 0) return failed("receipt datagram has non-zero bytes after its declared payload");
+  }
+  return decodeRoomEvidenceReceipt(
+    textDecoder.decode(payload.subarray(ROOM_EVIDENCE_DATAGRAM_HEADER_BYTES, payloadEnd)),
+  );
+}
+
 /** Identity of the exact assertion/retraction pair; the weight is intentionally excluded. */
 export function roomEvidenceAtomKey(receipt: RoomEvidenceReceipt): string {
   return [
@@ -417,7 +451,7 @@ export class AdinkraRoomEvidenceBridge {
     if (!receipt.ok) return receipt;
     const persisted = await this.ledger.append(receipt.value);
     if (!persisted.ok) return persisted;
-    this.channel.send(textEncoder.encode(encodeRoomEvidenceReceipt(receipt.value)));
+    this.channel.send(encodeRoomEvidenceDatagram(receipt.value));
     return persisted;
   }
 
@@ -426,7 +460,7 @@ export class AdinkraRoomEvidenceBridge {
   }
 
   async receive(payload: Uint8Array): Promise<RoomEvidenceResult<StoredRoomEvidence>> {
-    const receipt = decodeRoomEvidenceReceipt(textDecoder.decode(payload));
+    const receipt = decodeRoomEvidenceDatagram(payload);
     if (!receipt.ok) return receipt;
     return this.ledger.append(receipt.value);
   }
