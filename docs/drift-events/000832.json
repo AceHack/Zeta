@@ -1,0 +1,14 @@
+{
+  "tick": 832,
+  "at": "2026-08-26T12:40:41.056Z",
+  "findings": [
+    {
+      "path": "docs/handoffs/2026-08-26-otto-clifford-towers-and-dynamics-factor.md",
+      "rule": "MD022"
+    },
+    {
+      "path": "docs/handoffs/2026-08-26-otto-clifford-towers-and-dynamics-factor.md",
+      "rule": "MD032"
+    }
+  ]
+}
