@@ -735,6 +735,16 @@ export interface Pkcs11Lib {
   readonly C_GetSlotList: (tokenPresent: number, pSlotList: unknown, pulCount: unknown) => number | bigint;
   /** Fills a 1024-byte CK_TOKEN_INFO. The source of the token identity we bind shares to. */
   readonly C_GetTokenInfo: (slotID: number | bigint, pInfo: unknown) => number | bigint;
+  /**
+   * Fills a CK_MECHANISM_INFO (three CK_ULONGs: min key size, max key size, flags).
+   *
+   * OPTIONAL on purpose. Every mock in this package's tests is an object literal, and a
+   * REQUIRED field here would break all of them for a read-only capability query — a
+   * readiness probe is not permitted to cost a security package its test suite. Callers
+   * that need it must handle `undefined` as "the check DID NOT RUN", never as a pass;
+   * `frost-hsm-provision.ts` reports exactly that (`MechanismCheck.checked === false`).
+   */
+  readonly C_GetMechanismInfo?: (slotID: number | bigint, type: number | bigint, pInfo: unknown) => number | bigint;
   readonly C_OpenSession: (
     slotID: number | bigint,
     flags: number | bigint,
@@ -824,6 +834,12 @@ export const defaultFfiLoader = (libPath: string): Pkcs11Lib => {
     C_Finalize: { args: [t.ptr], returns: t.u64 },
     C_GetSlotList: { args: [t.u8, t.ptr, t.ptr], returns: t.u64 },
     C_GetTokenInfo: { args: [t.u64, t.ptr], returns: t.u64 },
+    // Read-only capability query. Measured 2026-08-26 against the YubiHSM 2's own module:
+    // C_GetMechanismInfo(slot 0, 0x1085) -> rv 0, min 16, max 32, flags 0x301
+    // (CKF_HW|CKF_ENCRYPT|CKF_DECRYPT); the same call for the pre-fix 0x10d returns 112
+    // (CKR_MECHANISM_INVALID). That is a hardware falsification of the old constant that
+    // creates no object on the device, which is why the symbol is loaded here.
+    C_GetMechanismInfo: { args: [t.u64, t.u64, t.ptr], returns: t.u64 },
     C_OpenSession: { args: [t.u64, t.u64, t.ptr, t.ptr, t.ptr], returns: t.u64 },
     C_CloseSession: { args: [t.u64], returns: t.u64 },
     C_Login: { args: [t.u64, t.u64, t.ptr, t.u64], returns: t.u64 },
@@ -1149,7 +1165,29 @@ export function resolveSlotForTokenIdentity(
   return only.slotId;
 }
 
-function findKey(lib: Pkcs11Lib, hSession: bigint | number, keyLabel: string, pointerOf: Pkcs11PointerOf): bigint {
+/**
+ * The search itself, WITHOUT the throw. Returns the handle, or `null` for "the token
+ * answered and holds no such key".
+ *
+ * Split out 2026-08-26 so `frost-hsm-provision.ts` can ask the same question without
+ * catching an exception and parsing its message to learn which of two very different
+ * things happened. "The key is absent" and "the search failed" were previously ONE
+ * `throw`, so a caller could not separate a device that is merely UNPROVISIONED
+ * (expected, one approved command away) from one that is BROKEN. There is exactly one
+ * implementation of the attribute template — here — because a second one is a second
+ * thing to get wrong on a surface no software test can falsify.
+ *
+ * Note the other half of the split: a non-OK `C_FindObjects` now THROWS instead of being
+ * folded into the same "absent" answer. It previously shared a branch with count==0, and
+ * a failed search reporting "no such key" is a check that could not run wearing the answer
+ * of a check that ran and said no.
+ */
+export function findKeyByLabel(
+  lib: Pkcs11Lib,
+  hSession: bigint | number,
+  keyLabel: string,
+  pointerOf: Pkcs11PointerOf,
+): bigint | null {
   const held = buildFindKeyTemplate(keyLabel, pointerOf);
   let rv = lib.C_FindObjectsInit(hSession, held.template, 2n);
   if (!rvOk(rv)) throw new Error(`C_FindObjectsInit failed: ${rv}`);
@@ -1157,12 +1195,23 @@ function findKey(lib: Pkcs11Lib, hSession: bigint | number, keyLabel: string, po
   const pulObjectCount = new BigUint64Array(1);
   rv = lib.C_FindObjects(hSession, phObject, 1n, pulObjectCount);
   lib.C_FindObjectsFinal(hSession);
-  if (!rvOk(rv) || (pulObjectCount[0] ?? 0n) === 0n) {
-    throw new Error(`frost-share-adapter: no PKCS#11 key labelled ${keyLabel} in the token`);
-  }
+  if (!rvOk(rv)) throw new Error(`C_FindObjects failed: ${rv}`);
   void held.classVal;
   void held.labelBytes;
+  if ((pulObjectCount[0] ?? 0n) === 0n) return null;
   return phObject[0] ?? 0n;
+}
+
+function findKey(lib: Pkcs11Lib, hSession: bigint | number, keyLabel: string, pointerOf: Pkcs11PointerOf): bigint {
+  const handle = findKeyByLabel(lib, hSession, keyLabel, pointerOf);
+  if (handle === null) {
+    throw new Error(
+      `frost-share-adapter: no PKCS#11 key labelled ${keyLabel} in the token. This is the ` +
+        "UNPROVISIONED state, not a broken device — `bun tools/setup/persona-keys/" +
+        "frost-hsm-provision.ts status` reports it as exit 3 and names the one command that fixes it.",
+    );
+  }
+  return handle;
 }
 
 export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostShareSealEffects {

@@ -211,6 +211,29 @@ These steps do **not** replace `frost-share-adapter.hardware.test.ts` — they
 point at it. That lane already has the property that matters: opting in asserts
 hardware is attached, so opting in **without** hardware fails rather than skips.
 
+> **Prerequisite — provision the wrapping key first, and check before you assume.**
+> Every step below needs an AES-256 key labelled `zeta-frost-wrap` on the token.
+> A factory device does not have one, and until 2026-08-26 that state was
+> indistinguishable from a broken device: both exited 1. It now has its own exit
+> code, so **read it before debugging hardware**:
+>
+> ```bash
+> bun tools/setup/persona-keys/frost-hsm-provision.ts status
+> # rc 0 = provisioned · rc 3 = reachable but NOT provisioned (expected; one command away)
+> # rc 1 = unreachable — a REAL failure, and the STAGE line names which of eight
+> ```
+>
+> On rc 3, `… frost-hsm-provision.ts plan` prints the exact command with the
+> password redacted and touches nothing; `… apply --apply` raises the ceremony
+> brief and the biometric prompt. Declining leaves the device byte-for-byte as it
+> was. This is **not** a manual step and is deliberately absent from the register
+> below — it is committed, tested code behind `ceremony-gate.ts`'s
+> `provision-or-reconfigure-hardware-token`, not a snippet to retype.
+>
+> For **MAN-TOK-02** specifically, run it once per token: each device needs its
+> **own, distinct** wrapping key. Provisioning the same key on every token is the
+> silent 1-of-N collapse that step exists to catch.
+
 ### MAN-TOK-01 — a token is attached and reports a stable identity
 
 ```bash

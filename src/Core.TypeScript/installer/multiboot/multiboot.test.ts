@@ -373,14 +373,47 @@ describe("resolveLatestPins + bindResolvedArtifacts", () => {
   });
 });
 
+// ============================================================================
+// THE mtools SMOKE — a LOUD skip, with an escape hatch that makes it required
+// ============================================================================
+//
+// This block used to open with a bare `return` when `qemu-img` or `mformat` were absent.
+// A bare return from a test body reports the test as PASSED, so on every runner without
+// mtools — which was every CI runner, because nothing installed it — the suite counted a
+// green result for a check that never ran. That is the repo's named worst defect class,
+// and it was live here.
+//
+// Two changes, and the second is the one that matters:
+//
+//   1. The skip is a REAL skip with its reason IN THE TITLE. bun's non-TTY reporter prints
+//      the COUNT of skips and not their names, so a reason living only in a comment is
+//      invisible in a log. Same treatment `zflash/esp-inject.test.ts` gives its skip.
+//   2. `MULTIBOOT_MTOOLS_SMOKE_REQUIRED=1` turns absence into a FAILURE, and
+//      `multiboot-qemu-uefi-smoke.yml` — the one job that installs mtools — now sets it and
+//      runs this file. Without that second half the skip would be honest and would still
+//      never be exercised anywhere, which is only half a fix. Same shape as
+//      `MULTIBOOT_UEFI_SMOKE_REQUIRED` in `qemu-uefi-menu-smoke.ts` and
+//      `ZETA_REPAIR_LOOPBACK_REQUIRED` in `../repair-mode-existing-install.test.ts`.
+const MTOOLS_SMOKE_REQUIRED = process.env["MULTIBOOT_MTOOLS_SMOKE_REQUIRED"] === "1";
+
+function mtoolsSmokeSkipReason(): string | null {
+  const missing: string[] = [];
+  if (spawnSync("qemu-img", ["--version"], { encoding: "utf8" }).status !== 0) missing.push("qemu-img");
+  if (spawnSync("mformat", ["-V"], { encoding: "utf8" }).status !== 0) missing.push("mformat");
+  return missing.length === 0 ? null : `missing tooling: ${missing.join(", ")}`;
+}
+
+const MTOOLS_SKIP_REASON = mtoolsSmokeSkipReason();
+
 describe("executeAssembleFatImage mtools smoke", () => {
-  it("assembles a tiny FAT image and lists /boot + /payloads", () => {
-    const qemu = spawnSync("qemu-img", ["--version"], { encoding: "utf8" });
-    const mformat = spawnSync("mformat", ["-V"], { encoding: "utf8" });
-    if (qemu.status !== 0 || mformat.status !== 0) {
-      // Toolchain absent (CI without mtools) — skip, do not fail the suite.
-      return;
-    }
+  // With REQUIRED set this runs unconditionally and asserts the tooling is present, so the
+  // opt-in can never be satisfied by a skip.
+  const runner = MTOOLS_SKIP_REASON !== null && !MTOOLS_SMOKE_REQUIRED ? it.skip : it;
+  const suffix = MTOOLS_SKIP_REASON === null ? "" : ` — SKIPPED (${MTOOLS_SKIP_REASON})`;
+  runner(`assembles a tiny FAT image and lists /boot + /payloads${suffix}`, () => {
+    // Opting in asserts the toolchain is installed. If it is not, that is a broken job
+    // definition and must fail, never quietly degrade to a green no-op.
+    if (MTOOLS_SMOKE_REQUIRED) expect(MTOOLS_SKIP_REASON).toBeNull();
 
     const tmpRoot = mkdtempSync(join(tmpdir(), "multiboot-assemble-"));
     const isoPath = join(tmpRoot, "zeta.iso");

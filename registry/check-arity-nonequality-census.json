@@ -46,6 +46,7 @@
     "tools/setup/persona-keys/biometric.test.ts": 2,
     "tools/setup/persona-keys/ca.test.ts": 2,
     "tools/setup/persona-keys/frost-hardware-probe.test.ts": 2,
+    "tools/setup/persona-keys/frost-hsm-provision.test.ts": 5,
     "tools/setup/persona-keys/frost-share-adapter.hardware.test.ts": 4,
     "tools/setup/persona-keys/frost-share-adapter.test.ts": 1,
     "tools/setup/persona-keys/github-trust.test.ts": 1,

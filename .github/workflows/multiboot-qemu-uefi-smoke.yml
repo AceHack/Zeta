@@ -47,6 +47,18 @@ jobs:
       - name: Install QEMU + OVMF + grub-mkimage + mtools
         run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils mtools ovmf grub-efi-amd64-bin
 
+      # The mtools FAT-assembly smoke in multiboot.test.ts used to leave itself as a bare
+      # `return` when mtools was absent, which bun reports as a PASS — and nothing
+      # installed mtools, so it had never run anywhere in CI. It is now a loud skip, and
+      # this is the one job that HAS the toolchain, so here the skip is refused: with
+      # MULTIBOOT_MTOOLS_SMOKE_REQUIRED=1 a missing tool fails the step instead of
+      # producing a green no-op. Without this step the loud skip would still be honest and
+      # would still never be exercised, which is only half the fix.
+      - name: Run mtools FAT-assembly smoke (skip refused here)
+        env:
+          MULTIBOOT_MTOOLS_SMOKE_REQUIRED: "1"
+        run: bun test src/Core.TypeScript/installer/multiboot/multiboot.test.ts
+
       - name: Run UEFI menu smoke
         env:
           MULTIBOOT_UEFI_SMOKE_REQUIRED: "1"
