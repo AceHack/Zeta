@@ -3,8 +3,9 @@
 > **Staged for the book, 2026-08-02, at Aaron's "we should save that for the book."** Aaron's own
 > account, consented. **Chris King** is named as the coiner of "reader's disease" (positive
 > attribution only, per Aaron's direction). He is a **private individual** — tracked in
-> `CONSENT-LEDGER.md`: **confirm his consent to be named before publish; otherwise de-identify to
-> "a friend"** (coinage credit does not require a legal name). The shadow stages; the prose is Aaron's.
+> `CONSENT-LEDGER.md`, where the gate is now **CLOSED: consent GRANTED (Aaron confirmed 2026-08-02),
+> reaffirmed 2026-08-26 with the note that Chris is reading drafts.** Scope remains the positive
+> coinage credit and nothing wider. The shadow stages; the prose is Aaron's.
 
 ## The lineage: imagination first, then depth
 
@@ -41,6 +42,11 @@ already gone somewhere on his own that no one had walked him to.
 
 ## Ties
 
+- **`THE-BAND-MISMATCH-readers-disease-and-the-locally-calibrated-instrument.md` — the second half,
+  placed here at Aaron's own instruction (2026-08-26).** Reader's disease is the *fun* version of a
+  band mismatch: the receiver reads it as a mismatch and teaches you, and the exchange builds the
+  connection. The same failure with the receiver reading *threat* instead is the version that ends
+  in an involuntary commitment. The pair is the teaching; this file is the on-ramp.
 - The **reader** thread (`RAW-2026-07-11-the-reader-reading-people-and-the-honest-edge.md`) and the
   yearbook material — same text-first, reads-ahead-of-the-room trait, one more facet.
 - The **reindexer** (`RAW-2026-08-02-the-reindexer-*.md`) — a mind that lives in text and rebuilds
