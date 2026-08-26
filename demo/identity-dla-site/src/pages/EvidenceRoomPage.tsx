@@ -3,6 +3,7 @@
  * Hard-edged mono layout; amber facts, teal unknowns, red only for visible faults.
  */
 import EvidenceSeamPanel from "@/components/EvidenceSeamPanel";
+import LiveRoomEvidenceFeed from "@/components/LiveRoomEvidenceFeed";
 
 export default function EvidenceRoomPage() {
   const observatoryHref = typeof window !== "undefined" && window.location.hash ? "#/observatory" : "/";
@@ -23,6 +24,7 @@ export default function EvidenceRoomPage() {
           <span style={{ color: "var(--muted-foreground)" }}>ZETA IDENTITY SPACE · PROOF ENGINE · finite boundary, no physics overclaim</span>
         </nav>
         <EvidenceSeamPanel />
+        <LiveRoomEvidenceFeed />
       </div>
     </main>
   );

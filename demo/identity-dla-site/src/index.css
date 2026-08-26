@@ -117,7 +117,10 @@
 .heat-bar-critical { animation: heat-bar-critical 0.8s ease-in-out; }
 
 /* Evidence seam room — hard-edged instrument layout, stacked without decorative softening. */
-@media (max-width: 760px) {
+@media (max-width: 700px) {
+  .evidence-feed-grid {
+    grid-template-columns: 1fr !important;
+  }
   .evidence-seam-layout {
     grid-template-columns: 1fr !important;
   }
