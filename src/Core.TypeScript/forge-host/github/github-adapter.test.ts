@@ -107,6 +107,41 @@ describe("GitHubAdapter", () => {
     if (!result.ok) expect(result.error.kind).toBe("auth-failure");
   });
 
+  test("git-data verbs POST/PATCH/GET through injected rest — no spawnSync gh", async () => {
+    const calls: { method: string; path: string; body: unknown }[] = [];
+    const rest: GithubRest = {
+      request: (method, path, body) => {
+        calls.push({ method, path, body });
+        if (method === "GET" && path.includes("/git/ref/")) {
+          return Promise.resolve(ok(JSON.stringify({ ref: "refs/heads/main", object: { sha: "abc" } })));
+        }
+        if (method === "GET" && path.includes("/git/commits/")) {
+          return Promise.resolve(ok(JSON.stringify({ sha: "c1", tree: { sha: "t1" }, message: "m", parents: [{ sha: "p1" }] })));
+        }
+        return Promise.resolve(ok(JSON.stringify({ sha: "deadbeef" })));
+      },
+    };
+    const adapter = new GitHubAdapter("o", "r", { rest });
+    const blob = await adapter.createBlob("hello");
+    expect(blob.ok).toBe(true);
+    if (blob.ok) expect(blob.value).toBe("deadbeef");
+    const tree = await adapter.createTree([{ path: "a", mode: "100644", type: "blob", sha: "x" }], "base");
+    expect(tree.ok).toBe(true);
+    const commit = await adapter.createCommit({ message: "m", tree: "t", parents: ["p"] });
+    expect(commit.ok).toBe(true);
+    expect((await adapter.updateRef("heads/main", "deadbeef")).ok).toBe(true);
+    const ref = await adapter.getRef("heads/main");
+    expect(ref.ok).toBe(true);
+    if (ref.ok) expect(ref.value.sha).toBe("abc");
+    const got = await adapter.getCommit("c1");
+    expect(got.ok).toBe(true);
+    if (got.ok) expect(got.value.parents).toEqual(["p1"]);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/git/blobs")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/git/trees")).toBe(true);
+    expect(calls.some((c) => c.method === "POST" && c.path === "repos/o/r/git/commits")).toBe(true);
+    expect(calls.some((c) => c.method === "PATCH" && c.path === "repos/o/r/git/refs/heads/main")).toBe(true);
+  });
+
   test("resolveThreadsBatch maintains arithmetic invariant", async () => {
     const adapter = new GitHubAdapter("org", "repo", {
       porcelain: () => ({ ok: false, error: forgeError("internal", "injected miss") }),

@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 /**
  * forge-host/github/github-adapter.ts — GitHub implementation of ForgeHost.
  *
@@ -36,7 +35,6 @@ import type {
 } from "../types";
 import { ok, err, forgeError } from "../result";
 import { githubRestRequest, resolveGitHubToken, runGh, runGhJson } from "./gh-cli";
-import { classifyGhError } from "./classify-error";
 import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
 import { restCreatePull, restGetPull, restListPulls, restPullToPr, type GithubRest } from "./github-pr-rest.ts";
 
@@ -349,51 +347,63 @@ export class GitHubAdapter implements ForgeHost {
     return err(forgeError("not-supported", "getBranchProtection: not yet implemented for GitHub adapter"));
   }
 
-  // ─── Git data API ──────────────────────────────────────────────────────
+  // ─── Git data API (REST via injected `rest`, no `gh`) ───────────────────
 
   async createBlob(content: string, encoding?: "utf-8" | "base64"): Promise<Result<string, ForgeError>> {
-    const body = JSON.stringify({ content, encoding: encoding ?? "utf-8" });
-    const result = spawnSync("gh", ["api", "-X", "POST", `repos/${this.nwo}/git/blobs`, "--input", "-"], { input: body, encoding: "utf8", maxBuffer: 64*1024*1024, timeout: 30000 });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
-    try { return ok((JSON.parse(result.stdout) as { sha: string }).sha); }
-    catch (e) { return err(forgeError("parse-failure", `createBlob: ${e instanceof Error ? e.message : String(e)}`)); }
+    return this.restSha("POST", `repos/${this.nwo}/git/blobs`, { content, encoding: encoding ?? "utf-8" }, "createBlob");
   }
 
   async createTree(tree: readonly TreeEntry[], baseTree?: string): Promise<Result<string, ForgeError>> {
-    const body = JSON.stringify({ base_tree: baseTree, tree });
-    const result = spawnSync("gh", ["api", "-X", "POST", `repos/${this.nwo}/git/trees`, "--input", "-"], { input: body, encoding: "utf8", maxBuffer: 64*1024*1024, timeout: 30000 });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
-    try { return ok((JSON.parse(result.stdout) as { sha: string }).sha); }
-    catch (e) { return err(forgeError("parse-failure", `createTree: ${e instanceof Error ? e.message : String(e)}`)); }
+    return this.restSha("POST", `repos/${this.nwo}/git/trees`, { base_tree: baseTree, tree }, "createTree");
   }
 
   async createCommit(opts: CreateCommitOpts): Promise<Result<string, ForgeError>> {
-    const body = JSON.stringify({ message: opts.message, tree: opts.tree, parents: opts.parents });
-    const result = spawnSync("gh", ["api", "-X", "POST", `repos/${this.nwo}/git/commits`, "--input", "-"], { input: body, encoding: "utf8", maxBuffer: 64*1024*1024, timeout: 30000 });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
-    try { return ok((JSON.parse(result.stdout) as { sha: string }).sha); }
-    catch (e) { return err(forgeError("parse-failure", `createCommit: ${e instanceof Error ? e.message : String(e)}`)); }
+    return this.restSha("POST", `repos/${this.nwo}/git/commits`, { message: opts.message, tree: opts.tree, parents: opts.parents }, "createCommit");
   }
 
   async updateRef(ref: string, sha: string, force?: boolean): Promise<Result<void, ForgeError>> {
-    const body = JSON.stringify({ sha, force: force ?? false });
-    const result = spawnSync("gh", ["api", "-X", "PATCH", `repos/${this.nwo}/git/refs/${ref}`, "--input", "-"], {
-      input: body, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 30000,
-    });
-    if (result.status !== 0) return err(classifyGhError(result.status, result.stderr ?? ""));
+    const result = await this.rest.request("PATCH", `repos/${this.nwo}/git/refs/${ref}`, { sha, force: force ?? false });
+    if (!result.ok) return result;
     return ok(undefined);
   }
 
   async getRef(ref: string): Promise<Result<import("../types").GitRef, ForgeError>> {
-    const r = runGhJson<{ ref: string; object: { sha: string } }>(["api", `repos/${this.nwo}/git/ref/${ref}`]);
+    const r = await this.rest.request("GET", `repos/${this.nwo}/git/ref/${ref}`);
     if (!r.ok) return r;
-    return ok({ ref: r.value.ref, sha: r.value.object.sha });
+    const parsed = parseJsonObject(r.value, "getRef");
+    if (!parsed.ok) return parsed;
+    const obj = parsed.value as { ref?: unknown; object?: { sha?: unknown } };
+    if (typeof obj.ref !== "string" || typeof obj.object?.sha !== "string") {
+      return err(forgeError("parse-failure", "getRef: unexpected shape"));
+    }
+    return ok({ ref: obj.ref, sha: obj.object.sha });
   }
 
   async getCommit(sha: string): Promise<Result<import("../types").GitCommitInfo, ForgeError>> {
-    const r = runGhJson<{ sha: string; tree: { sha: string }; message: string; parents: { sha: string }[] }>(["api", `repos/${this.nwo}/git/commits/${sha}`]);
+    const r = await this.rest.request("GET", `repos/${this.nwo}/git/commits/${sha}`);
     if (!r.ok) return r;
-    return ok({ sha: r.value.sha, treeSha: r.value.tree.sha, message: r.value.message, parents: r.value.parents.map(p => p.sha) });
+    const parsed = parseJsonObject(r.value, "getCommit");
+    if (!parsed.ok) return parsed;
+    const obj = parsed.value as { sha?: unknown; tree?: { sha?: unknown }; message?: unknown; parents?: unknown };
+    if (typeof obj.sha !== "string" || typeof obj.tree?.sha !== "string" || typeof obj.message !== "string" || !Array.isArray(obj.parents)) {
+      return err(forgeError("parse-failure", "getCommit: unexpected shape"));
+    }
+    return ok({
+      sha: obj.sha,
+      treeSha: obj.tree.sha,
+      message: obj.message,
+      parents: obj.parents.map((p) => (typeof p === "object" && p !== null && typeof (p as { sha?: unknown }).sha === "string" ? (p as { sha: string }).sha : "")).filter((s) => s.length > 0),
+    });
+  }
+
+  private async restSha(method: string, path: string, body: unknown, label: string): Promise<Result<string, ForgeError>> {
+    const r = await this.rest.request(method, path, body);
+    if (!r.ok) return r;
+    const parsed = parseJsonObject(r.value, label);
+    if (!parsed.ok) return parsed;
+    const sha = (parsed.value as { sha?: unknown }).sha;
+    if (typeof sha !== "string" || sha.length === 0) return err(forgeError("parse-failure", `${label}: missing sha`));
+    return ok(sha);
   }
 
   async searchPullRequests(opts: import("../types").SearchPrOpts): Promise<Result<readonly import("../types").SearchPrResult[], ForgeError>> {
@@ -413,6 +423,18 @@ export class GitHubAdapter implements ForgeHost {
 }
 
 // ─── Mapping helpers ────────────────────────────────────────────────────────
+
+function parseJsonObject(text: string, label: string): Result<Record<string, unknown>, ForgeError> {
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+      return err(forgeError("parse-failure", `${label}: expected object`));
+    }
+    return ok(parsed as Record<string, unknown>);
+  } catch (e) {
+    return err(forgeError("parse-failure", `${label}: ${e instanceof Error ? e.message : String(e)}`));
+  }
+}
 
 function mapPrState(state: string): "open" | "merged" | "closed" {
   const lower = state.toLowerCase();
