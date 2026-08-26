@@ -1376,12 +1376,13 @@ jobs:
         # inventory discovers EVERY tracked flake.nix rather than one hardcoded
         # path -- the root flake and its four inputs were invisible to it.
         #
-        # NOT measured on the runner (this step has never run there). LAPTOP
-        # figure, stated as such so it is not mistaken for a runner number:
-        # 0.49-0.55 s warm over three runs, 1.54 s cold, dominated by bun
-        # start-up plus two `git ls-files` calls. A laptop figure is not
-        # conservative in either direction -- replace it with the runner figure
-        # once a run exists.
+        # Cost: UNDER 1 s MEASURED ON THE RUNNER (job 98147055470, the step
+        # opened and closed inside the same second, 10:37:12Z -> 10:37:12Z).
+        # GitHub reports step boundaries at one-second resolution, so the
+        # honest reading is "< 1 s" and NOT "0 s" -- the step ran and passed,
+        # the clock simply cannot resolve it. The laptop figure this comment
+        # carried when the step landed (0.49-0.55 s warm, 1.54 s cold) is
+        # consistent with that and is retired here, as it asked to be.
         run: bun test src/Core.TypeScript/audit/
 
       - name: Hardware-inventory cross-surface reconciliation (drift)
