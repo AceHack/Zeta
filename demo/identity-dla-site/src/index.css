@@ -115,3 +115,20 @@
 .heat-bar-shrink  { animation: heat-bar-shrink  0.4s ease-out; }
 .heat-bar-recover { animation: heat-bar-recover 0.6s ease-out; }
 .heat-bar-critical { animation: heat-bar-critical 0.8s ease-in-out; }
+
+/* Evidence seam room — hard-edged instrument layout, stacked without decorative softening. */
+@media (max-width: 760px) {
+  .evidence-seam-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .evidence-seam-layout > :first-child {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+@media (max-width: 460px) {
+  .evidence-register-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

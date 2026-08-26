@@ -39,6 +39,7 @@ import LoewnerEntropyPanel from "@/components/LoewnerEntropyPanel";
 import Z3DischargePanel from "@/components/Z3DischargePanel";
 import KappaPhaseDiagram from "@/components/KappaPhaseDiagram";
 import { LiveOracleFeed } from "@/components/LiveOracleFeed";
+import EvidenceSeamPanel from "@/components/EvidenceSeamPanel";
 
 const FIXED_SEED = 42;
 const W = 100, H = 100, N = 1200;
@@ -841,6 +842,10 @@ export default function Home() {
       {/* ── Multi-Oracle Race Mode ── */}
       <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
         <OracleRaceMode />
+      </div>
+      {/* ── Durable evidence seam room ── */}
+      <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>
+        <EvidenceSeamPanel />
       </div>
       {/* ── Z-3 Discharge Panel ── */}
       <div style={{ maxWidth: 1040, margin: "0.75rem auto 0" }}>

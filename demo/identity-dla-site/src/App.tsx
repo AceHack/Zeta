@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 
 const AuthorizePage = lazy(() => import("./pages/AuthorizePage"));
 const ObservatoryPage = lazy(() => import("./pages/ObservatoryPage"));
+const EvidenceRoomPage = lazy(() => import("./pages/EvidenceRoomPage"));
 const WasmLabPage = lazy(() => import("./pages/WasmLabPage"));
 
 function RouteLoader() {
@@ -29,6 +30,7 @@ function Router() {
       <Route path={"/authorize"}><Suspense fallback={<RouteLoader />}><AuthorizePage /></Suspense></Route>
       <Route path={"/passkey-proposal"} component={LegacyPasskeyRedirect} />
       <Route path={"/observatory"}><Suspense fallback={<RouteLoader />}><ObservatoryPage /></Suspense></Route>
+      <Route path={"/evidence-seam"}><Suspense fallback={<RouteLoader />}><EvidenceRoomPage /></Suspense></Route>
       <Route path={"/wasm-lab"}><Suspense fallback={<RouteLoader />}><WasmLabPage /></Suspense></Route>
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />

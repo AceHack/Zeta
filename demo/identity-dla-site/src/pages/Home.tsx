@@ -28,6 +28,10 @@ export default function Home() {
             <strong style={{ color: "var(--amber)", display: "block", marginBottom: "0.7rem" }}>Observatory</strong>
             <span style={{ color: "var(--muted-foreground)", fontSize: "0.78rem", lineHeight: 1.6 }}>Canvas, SVG, quantum, biological, society, and research visualizations.</span>
           </Link>
+          <Link href="/evidence-seam" style={cardStyle}>
+            <strong style={{ color: "oklch(0.72 0.14 190)", display: "block", marginBottom: "0.7rem" }}>Evidence seam room</strong>
+            <span style={{ color: "var(--muted-foreground)", fontSize: "0.78rem", lineHeight: 1.6 }}>Inject Adinkra erasures, inspect durable-root outcomes, and keep causal and genesis unknowns visible.</span>
+          </Link>
           <Link href="/wasm-lab" style={cardStyle}>
             <strong style={{ color: "oklch(0.72 0.18 195)", display: "block", marginBottom: "0.7rem" }}>Compiler laboratory</strong>
             <span style={{ color: "var(--muted-foreground)", fontSize: "0.78rem", lineHeight: 1.6 }}>Six repository-owned compiler modules. They run only after an explicit start request.</span>
