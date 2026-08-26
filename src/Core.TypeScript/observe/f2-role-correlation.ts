@@ -27,8 +27,6 @@
  * Violates is an unfalsifiable check (Otto's companion falsifier).
  */
 
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
 
 // ═══ Scenario generation (same as F1, hard/adversarial only) ═══════════════════
 
@@ -161,6 +159,7 @@ async function main(): Promise<void> {
     console.log(`    When producer WRONG:   verifier catches ${verifierRejectsWrong}/${producerWrong} (${(catchRate*100).toFixed(1)}%), rubber-stamps ${verifierApprovesWrong} (${(rubberStampRate*100).toFixed(1)}%)`);
     console.log(`    φ(producer_correct, verifier_approves) = ${phi.toFixed(3)}`);
     console.log(`    CATCH RATE: ${(catchRate*100).toFixed(1)}% — ${catchRate > 0.3 ? "VERIFICATION ADDS VALUE" : catchRate > 0.1 ? "marginal" : "DEGENERATE (vote in disguise)"}`);
+    console.log(`    FALSE-NEGATIVE RATE: ${(falseNegativeRate*100).toFixed(1)}% — verifier rejects CORRECT producer work. A verifier that rejects everything scores a perfect catch rate; this is the number that excludes it.`);
     console.log(`    Rejection-rate law: ${(verifierRejectsWrong + verifierRejectsCorrect) > 0 ? "PASSES (verifier rejects sometimes)" : "FAILS (never rejects)"}`);
   }
 

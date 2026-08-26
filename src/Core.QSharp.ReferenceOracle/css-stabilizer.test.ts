@@ -260,7 +260,7 @@ describe("CSS stabilizer treaty — second oracle (TypeScript re-derivation)", (
     ];
     for (const [name, n, code] of cases) {
       const committed = must(treaty.classicalCodes[name], `classicalCodes.${name}`);
-      expect(committed.length).toBe(n);
+      expect(committed).toHaveLength(n);
       expect(committed.dimension).toBe(dimension(code));
       expect(committed.doublyEven).toBe(isDoublyEven(code));
       expect(committed.selfOrthogonal).toBe(isSelfOrthogonal(code));
