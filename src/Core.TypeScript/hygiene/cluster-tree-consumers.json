@@ -145,6 +145,12 @@
       "migrateTo": "full-ai-cluster/k8s/applications/${chart}, plus an assertion in deps.test.ts so the path can go red."
     },
     {
+      "path": "src/Core.TypeScript/ci/cross-verify-roster.ts",
+      "disposition": "prose",
+      "note": "One line of the `image-source-provenance` rationale, carried verbatim from the gate.yml step this roster replaced (2026-08-26): it lists infra/k8s among the directories that audit scans. Prose only \u2014 no COMMAND in the roster names the stale tree.",
+      "migrateTo": "drop `infra/k8s` from that sentence in the deletion commit; the audit itself scans every tracked YAML and needs no edit."
+    },
+    {
       "path": "src/Core.TypeScript/cluster/argocd-health-test.ts",
       "disposition": "prose",
       "note": "Comment crediting a regex to infra/k8s/tests/validate-applications.ts.",

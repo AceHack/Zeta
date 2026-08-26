@@ -2647,34 +2647,125 @@ jobs:
       - name: Run Rust Lint Script
         run: bun src/Core.TypeScript/lint/lint-rust.ts
 
+  # ═══════════════════════════════════════════════════════════════════
+  # cross-verify — 31 audits, 31 NAMED check-runs
+  # ═══════════════════════════════════════════════════════════════════
+  #
+  # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
+  # package-manager suite, plus the offline hygiene audits that belong on a pre-merge
+  # floor. This is the ENFORCEMENT half of the canonical-primitive gate (proof +
+  # 4-language byte-lock); the proof half is the formal-coverage / lean-proof lane.
+  #
+  # UNTIL 2026-08-26 THIS WAS ONE JOB RUNNING 31 STEPS UNDER ONE CHECK NAME, and when it
+  # went red it named none of them. Finding the convicting audit meant opening the job
+  # log and scrolling. Worse, a false positive in the cheapest audit held the whole floor
+  # closed — measured live: `task-zetaid-resolves` convicting on a work-item filed under
+  # `docs/backlog/P1/` while that audit indexes only `workitems/`. One red standing for
+  # 31 audits is the same defect class as a log that does not name its failing step,
+  # moved into the gate's structure.
+  #
+  # Aaron 2026-08-26: "if it's a shared gate we want to reduce those to smaller
+  # individual ones rather than widening one that's monolithic already, we are trying to
+  # split our monolith bit by bit."
+  #
+  # PRICED BEFORE IT WAS BUILT, and the price is why THIS job was the one split first.
+  # `docs/research/2026-08-26-three-verdict-loss-mechanisms-on-main-*.md` §6.2 measures
+  # three setup classes; `cross-verify` is class 0 — Bun only, no `install.sh`, no
+  # `actions/cache` step, so no cache WRITES at all. Measured on job 98146180438
+  # (run 32958750366): set-up 1 s + checkout 10 s + setup-bun 1 s + `bun install` 1 s =
+  # 13 s of setup for 44 s of audits, 58 s total, and 29 of the 31 audits take <= 2 s.
+  #
+  # MEASURED AFTER, on two runs of the split rather than on the estimate this comment
+  # first carried: runs 32963212370 and 32964267573 cost 572 and 597 runner-seconds,
+  # mean 584, i.e. +526 s ≈ +8.8 runner-min ≈ +9.3% of a 94-runner-min push run. The
+  # pre-land estimate here said +413 s / +7.3%, priced off a single job's 13 s setup; the
+  # legs measure 8-20 s each (mean 19 s) because checkout and job start-up both slow down
+  # when 31 jobs schedule at once. The number is corrected rather than left as the guess.
+  # ZERO new cache writes on both runs — no leg has an `actions/cache` step and
+  # `Post Setup pinned Bun` measured 0 s (key hit, no upload). WALL-CLOCK IS FLAT to
+  # slightly better (53 s / 61 s against 58 s): the legs run in parallel and the longest
+  # (`ace-suite`, 46 s) finishes around when the old serial job did.
+  #
+  # The rule from that doc, and the reason this split is affordable and a different one
+  # would not be: A JOB MAY BE SPLIT FOR FREE ALONG A SETUP BOUNDARY IT DOES NOT CROSS.
+  #
+  # NOTHING HERE CHANGES WHAT BLOCKS, and the shape is what guarantees that rather than a
+  # promise. `gate-required.needs:` still names `cross-verify` and is BYTE-IDENTICAL to
+  # what it was — because the job keeping that id is the matrix job itself. GitHub
+  # collapses a whole matrix into ONE `needs.<job>.result`, which is `success` only when
+  # every leg succeeded, so "any audit red ⇒ the gate red" survives the split by
+  # construction, with no roll-up job to get wrong. (A roll-up job was written first and
+  # then deleted: it cost a job, it changed the declared name the floor resolves through,
+  # and it added a second place the aggregate could be made to fail open.)
+  #
+  # The job declares NO job-level `if:`, which is also load-bearing: `gate-skip-verdict.ts`
+  # refuses a `skipped` floor job that has no licence to skip, so even the state where this
+  # job never runs blocks the gate. `cross-verify-roster.test.ts` §"the floor is not
+  # weakened" runs that verdict logic against the real gate.yml for every result GitHub can
+  # produce, rather than asserting it here in prose.
+  #
+  # No name here is promoted into `required_status_checks` — that is a ruleset edit and
+  # Aaron's call, and the exact strings are listed in `docs/ci/CROSS-VERIFY-CHECK-NAMES.md`
+  # for whoever makes it.
   cross-verify:
-    # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
-    # package-manager suite. Previously only `lint (TS)` type-checked these, so a
-    # regression to a committed golden vector, or a 4-language disagreement, could merge green.
-    # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
-    # oracle via src/Core.TypeScript/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
-    # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
-    # TS golden-vector oracle) plus `bun test src/Core.TypeScript/ace/` and the Q# source-oracle tests. The
-    # ORACLES assert COMMITTED outputs (no dotnet/rust/QDK toolchain needed); the ace suite installs
-    # npm deps (z3-solver) + uses the runner node for its solver Z3 differential. This is the
-    # ENFORCEMENT half of the canonical-primitive gate (proof + 4-language byte-lock); the proof half
-    # is the formal-coverage cadence / lean-proof lane.
-    #
-    # THIS JOB IS IN THE REQUIRED FLOOR. It is named in `gate-required.needs` below, and
-    # `CI Gate` requires `gate (required)`, so a red here does block a merge. The note that
-    # stood here until 2026-08-24 said the opposite — "promoting this to a REQUIRED check is
-    # a separate operator/devops step ... it does not block auto-merge" — and it was false
-    # for long enough to be believed: it was read on 2026-08-24 as evidence that the ace
-    # drift gate was ungated, when a sabotage control proved the opposite. Adding a
-    # `ProjectReference` to `clis/Zeta.Clis.fsproj` without regenerating
-    # `src/Core.TypeScript/ace/build-graph.json` takes `bun test src/Core.TypeScript/ace/`
-    # from 703 pass / 0 fail to 701 / 2, rc=1, and the two failures are the DRIFT GATE pair
-    # — inside this job, inside the floor. A comment claiming a gate does not gate is the
-    # same defect class as a gate that does not run, pointed the other way, so it is
-    # corrected rather than left as folklore (081M0TK8DE8087G0R0001HSKHF).
-    name: cross-verify (trust-core oracles + ace suite)
+    # The check-run name is exactly `cross-verify (<id>)` — a stable string a required-
+    # check rule can reference, and the string `gate-scope-summary.ts` prefix-matches to
+    # report every leg. Setting `name:` explicitly (rather than letting Actions append the
+    # matrix value) is what makes it exact.
+    name: cross-verify (${{ matrix.audit }})
     timeout-minutes: 12
     runs-on: ubuntu-24.04
+    strategy:
+      # LOAD-BEARING. With fail-fast the first red leg cancels the other 30, and the
+      # split's entire product — a red that names EVERY defect, not the first one — is
+      # thrown away. A cancelled leg is also a check that did not run wearing a check
+      # that failed.
+      fail-fast: false
+      matrix:
+        # ONE HALF OF A TWO-VIEW LIST. The other is `CROSS_VERIFY_AUDITS` in
+        # src/Core.TypeScript/ci/cross-verify-roster.ts, and they cannot drift: every leg
+        # runs `--run <id>`, which asserts the two lists are equal AS SEQUENCES before it
+        # runs its own audit. Add an id here with no roster entry and this leg goes red
+        # naming it; add a roster entry with no id here and all 31 legs go red naming the
+        # missing leg.
+        #
+        # Kept STATIC on purpose. A dynamic matrix (`fromJSON` of a roster job's output)
+        # would remove this list — and would mean these check names do not exist until a
+        # roster job succeeds. Once any of them is a required context, a name that never
+        # reports does not fail a PR, it WEDGES it. A static list cannot do that, and it
+        # keeps the names greppable in this file for the ruleset promotion.
+        audit:
+          - ace-suite
+          - qsharp-oracles
+          - byte-lock-oracles
+          - proof-lineage-binaries
+          - stage0-independence
+          - step-output-writers
+          - action-sha-roster
+          - task-zetaid-resolves
+          - credential-role-separation
+          - coauthor-identity-collision
+          - write-token-consistency
+          - heartbeat-lane-attestations
+          - heartbeat-lane-audit-tests
+          - push-without-rebase
+          - skip-token-cannot-land
+          - orphaned-archive-refs
+          - dotnet-pin-parity
+          - mise-toolchain-couplings
+          - flash-entrypoint-parity
+          - chart-target-revisions
+          - image-source-provenance
+          - image-source-provenance-tests
+          - reason-truth
+          - no-raw-nul-in-source
+          - concept-registry-drift
+          - tech-radar-claims
+          - tech-radar-audit-tests
+          - check-then-use-races
+          - mumps-zeta-id
+          - zeta-id-gen-layout-drift
+          - algebra-tower-drift
 
     steps:
       - name: Checkout
@@ -2684,7 +2775,8 @@ jobs:
       # intentionally do not execute the F#/Rust/QDK toolchains. Their actual
       # dependency graph is Bun plus the repository lockfile (including
       # z3-solver), so use that declared narrow graph instead of the full apt
-      # workstation/cluster installation.
+      # workstation/cluster installation. This is what makes the job class 0 and
+      # therefore what makes the split affordable.
       - name: Setup pinned Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
@@ -2694,471 +2786,24 @@ jobs:
         # The ace suite's solver.z3.test.ts spawns node to require('z3-solver') (assert-dont-skip:
         # it FAILS rather than skips if the dep is absent). --frozen-lockfile fails if the lockfile
         # is stale vs package.json (same discipline as lint-typescript).
+        #
+        # Kept in EVERY leg rather than only in `ace-suite`, deliberately: it measured 1 s,
+        # and dropping it from the other legs would make each leg's environment differ from
+        # the one its audit was proven against — a cheaper leg that is no longer the same
+        # experiment. It also keeps the lockfile-staleness refusal on every leg.
         run: bun install --frozen-lockfile
 
-      - name: Ace package-manager suite
-        run: bun test src/Core.TypeScript/ace/
-
-      - name: Q# source-owned reference oracles
-        run: |
-          bun test \
-            src/Core.QSharp.ReferenceOracle/qsharp-golden.test.ts \
-            src/Core.QSharp.ReferenceOracle/quantum-circuit.test.ts \
-            src/Core.QSharp.ReferenceOracle/dbsp-operators.test.ts \
-            src/Core.QSharp.ReferenceOracle/heat-signals.test.ts
-
-      - name: Cross-language byte-lock + golden-vector oracles
-        run: bun src/Core.TypeScript/ci/cross-verify-all.ts
-
-      # The `.claude/rules/no-binary-in-proof-lineage.md` exception, enforced rather than
-      # asserted. `src/wasm-dla/bytelock/` holds six committed `.wasm` substrate modules; they
-      # are the artifact UNDER TEST, not golden vectors, and the rule now says so — but a
-      # documented exception with no scope is a licence. This derives the allowed set from the
-      # byte-lock runner's own roster and the build script's own declared outputs, so a new
-      # binary in that directory is red until it is wired into both.
-      #
-      # Two of its checks are here rather than in `bytelock.yml` on purpose. That workflow is
-      # `push: main` — POST-MERGE by construction — so the malformed-artefact guard that would
-      # have caught `dla-canonical-zig.wasm` shipping as an `ar` archive could only ever fire
-      # after the fact, and it did, for two weeks. The header check and the golden-vector text
-      # check need no toolchain, so they belong on the pre-merge floor.
-      - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
-        run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
-
-      # Stage-0 minimization ratchet (081M0X2553J087G0R001VH0K64). `mise` installs `bun`, so
-      # whatever installs `mise` cannot be written in `bun` — stage-0 shell is ESSENTIAL and
-      # this check never argues with it. What it prices is the number of DOORS: shell files
-      # that something outside the shell graph has to name. Internal helpers cost zero, so the
-      # metric creates no pressure to merge scripts that split for a bootstrap-ordering reason.
-      #
-      # It is HERE and not in `lint (bash retirement inventory ...)` deliberately. That job is
-      # not in `gate-required.needs`, so everything it runs blocks nothing — the existing shell
-      # allowlist has been advisory the whole time it has been read as a guard. A ratchet that
-      # cannot fail a merge is a number, not a ratchet, so it goes on the floor.
-      - name: Stage-0 independence ratchet (doors, not file count)
-        run: bun run hygiene:stage0-independence
-
-      # THE VACUITY CLASS, INVERTED — a step that can never SUCCEED.
-      #
-      # `${{ steps.X.outputs.Y }}` with no writer interpolates to the empty string silently.
-      # A step guarding on that value fails every run forever, and its error names the
-      # PRODUCER, so the fault reads as a defect in that step. Live instance the day this
-      # landed: `agent-heartbeat.yml`'s flush returned success on two paths without declaring
-      # `skip`, so every backpressured tick — a HEALTHY outcome — reported as a broken flush.
-      # Three agents diagnosed it as an auto-merge token-scope fault; that call was never
-      # reached. The second of the two paths was found by this check, not by hand.
-      - name: Step outputs have writers (a step that cannot succeed)
-        run: bun src/Core.TypeScript/hygiene/audit-workflow-step-output-has-writer.ts
-
-      # A REAL SHA THAT NOBODY CHOSE.
-      #
-      # Every third-party action is pinned to a SHA, which reads as supply-chain discipline
-      # until you ask who checked the SHA. A 40-hex string is indistinguishable from a
-      # fabricated one by shape, and two sites can pin one action at two SHAs indefinitely
-      # while every review of either looks clean. Both happened here on 2026-08-25: an agent
-      # nearly shipped an invented SHA for an action this repo does not use, and
-      # `ruleset-apply.yml` landed `actions/upload-artifact` at a SHA a YEAR older than the
-      # ten other sites. The roster makes the pin a value someone committed, not remembered.
-      - name: Third-party actions match the SHA roster (AH007)
-        run: bun src/Core.TypeScript/hygiene/audit-action-sha-roster.ts
-
-      # A TASK ID THAT IS WELL-FORMED AND IDENTIFIES NOTHING.
-      #
-      # The AgencySignature gate validates `Task:` for placeholder-ness and SHAPE, never
-      # existence — so an invented-but-well-formed ZetaId passes silently, and it is harder
-      # to spot than a placeholder because it looks exactly right. The legacy `B-NNNN`
-      # scheme has had this guard since `b-ref-resolve.ts`; the ZetaId scheme that REPLACED
-      # it never got one, so the newer mandatory key was the less-checked one.
-      #
-      # Live instance the day this landed: `Task: 081M0X0JQGY087G0R000EBCPQ3`, written by
-      # hand instead of minted, caught only because its author re-read his own trailer.
-      - name: Task ZetaIds resolve to work-items (AH006)
-        # PULL-REQUEST ONLY, and the `if:` is load-bearing rather than cosmetic.
-        # `github.event.pull_request.body` is EMPTY on a push to `main`, and this audit
-        # deliberately exits 2 on empty input ("NO INPUT — This is NOT a pass") so that a
-        # check with nothing to check can never read as a check that passed. That refusal is
-        # correct; wiring it into a job that also runs on push was not. The result was a
-        # cross-verify red on every push to main whose exit code (2, not 1) said plainly it
-        # was a check that never ran — and it was read as a pre-existing failure for hours.
-        # A push has no PR body to validate; the commit trailer is validated separately.
-        if: github.event_name == 'pull_request'
+      - name: Run the audit
+        # The id arrives as an ENV VALUE, never interpolated into the script. `${{ }}` inside
+        # a `run:` block is the template-injection shape `lint (semgrep)` exists to refuse, and
+        # a 31-leg split is not a reason to introduce 31 instances of it.
         env:
+          ZETA_CROSS_VERIFY_AUDIT: ${{ matrix.audit }}
           # The PR body carries the AgencySignature block, and unlike `git log` it is present
-          # on a SHALLOW checkout. The first wiring of this step piped `git log -50`, CI checks
-          # out depth 1, and the audit passed having examined ZERO ids — the exact vacuity it
-          # was written to catch, in its own wiring. It now exits 2 on empty input, so a
-          # regression here goes red instead of green.
+          # on a SHALLOW checkout. `task-zetaid-resolves` reads it from stdin; it is empty on
+          # push, which is why that audit declares `events: ["pull_request"]` in the roster.
           PR_BODY: ${{ github.event.pull_request.body }}
-        run: |
-          printf '%s' "$PR_BODY" | bun src/Core.TypeScript/hygiene/audit-task-zetaid-resolves.ts --stdin
-
-      # THE FALSIFIER FOR CREDENTIAL-ROLE COLLAPSE (AH003, 2026-08-25).
-      #
-      # `docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md`
-      # names THREE credential roles with three secrets: dispatch, branch-push, PR-create. A
-      # `${{ secrets.A || secrets.B || secrets.GITHUB_TOKEN }}` expression erases that table at
-      # the point of use -- `||` selects on the left secret being EMPTY, so an absent scoped
-      # credential is silently replaced by one with DIFFERENT authority and the step then fails
-      # somewhere downstream naming the wrong subject. 25 such chains across 12 workflows had
-      # accumulated behind per-step comments that described the ladder as the SAFE half.
-      #
-      # It is the SILENT selection this refuses, never the degradation itself: a probe + an
-      # explicit `::warning` naming the secret and scope inside a `run:` block is good design
-      # and is untouched (agent-heartbeat.yml keeps three of them).
-      #
-      # Distinct from `audit-workflow-write-token-consistency.ts` above, which asks whether a
-      # forge-write step reaches A PAT. This asks whether it reaches THE RIGHT ONE, and only
-      # that one. A step can satisfy that audit and still be a role collapse -- all 25 sites
-      # did, which is why one check does not subsume the other.
-      #
-      # Offline (reads only committed workflow text, no sockets), so it belongs on the
-      # pre-merge floor rather than post-merge.
-      - name: Workflow credential role separation (one role, one secret)
-        run: bun src/Core.TypeScript/hygiene/audit-workflow-credential-role-separation.ts
-
-      # AH005 — a committed identity that GitHub resolves to somebody who is not us.
-      #
-      # `<username>@users.noreply.github.com` is the LEGACY plain noreply form and GitHub
-      # resolves it DIRECTLY to whoever owns that username today. Two of our personas
-      # shipped under it (15 commits and 2 commits), and both local-parts are live accounts
-      # belonging to uninvolved private individuals. They are rendered in this repository's
-      # Contributors sidebar, which aggregates trailer co-authors — note the REST
-      # `/contributors` endpoint does NOT, which is why an earlier check of that endpoint
-      # came back clean and under-reported the problem.
-      #
-      # The audit scans the SOURCES THAT GENERATE identities, never git history. The
-      # offending commits are on `main` and correcting them would mean force-pushing the
-      # default branch, so they stay. An audit pointed at history would be permanently red
-      # over commits nobody may fix, and a check that can never go green gets disabled.
-      #
-      # HERE on the cross-verify floor because it is offline (reads only committed text, no
-      # sockets, no DNS — the fabricated-namespace list is a closed enumeration rather than
-      # a resolver for exactly that reason). Measured: ~1.4 s warm over 2,028 generator
-      # files. Proven able to fail before it was wired: run against the pre-fix contents of
-      # the same seven files it reports 7 findings and exits 1.
-      - name: Co-author identity collision (AH005 — plain-username GitHub noreply form)
-        run: bun src/Core.TypeScript/hygiene/audit-coauthor-identity-collides.ts
-
-      # THE FALSIFIER FOR THE PR-ARCHIVE COVERAGE COLLAPSE (2026-08-25).
-      #
-      # `agent-heartbeat.yml`'s auto-merge steps hardcoded `secrets.GITHUB_TOKEN` while every
-      # other credentialed step in that file used the PAT fallback chain. A merge armed with
-      # GITHUB_TOKEN lands as `github-actions[bot]`; GitHub suppresses workflow triggers for
-      # GITHUB_TOKEN-driven events, so `pull_request: closed` never fires and
-      # pr-archive-on-merge.yml never runs — with NO failure anywhere, which is why it was
-      # misdiagnosed as a credential problem several times. Measured 2026-08-21..25: 747 of
-      # 765 (97.6%) eligible unarchived PRs were bot-merged; 530 of 539 (98.3%) archived ones
-      # were user-merged.
-      #
-      # The defect is the INCONSISTENCY, not the instance — one step out of nine disagreeing
-      # with its neighbours, which prose cannot hold. Offline (reads only committed workflow
-      # text, no sockets), so it belongs on the pre-merge floor rather than post-merge.
-      - name: Workflow write-token consistency (forge writes must reach the PAT)
-        run: bun src/Core.TypeScript/hygiene/audit-workflow-write-token-consistency.ts
-
-      # The falsifier for the PR-free heartbeat lane. Design:
-      # docs/research/2026-08-25-pr-free-heartbeat-lane-attestation-instead-of-gate.md
-      #
-      # The lane's proposal is that a bypass actor on ruleset `CI Gate` (16134995) pushes
-      # telemetry straight to `main`, skipping `gate (required)`, and that the lane verifies
-      # ITSELF. A bypass actor is a permanent hole, so that self-verification has to be a
-      # checkable fact rather than a claim -- this is the check. For every commit the lane
-      # produced it requires a content-bound attestation (`Verification-Subject` is the
-      # commit's own tree sha, so a COPIED attestation fails), a path allowlist, and a
-      # change-mode check in which `append-only` means the pre-image is a byte PREFIX of the
-      # post-image -- NOT `deletions == 0`, which `docs/github/prs/manifest.jsonl` satisfies
-      # 13 times in 40 while inserting its rows in sorted order.
-      #
-      # HERE on the cross-verify floor because it is offline (no sockets, reads only committed
-      # git objects) and because a bypass-lane guard must run on exactly the lane a path filter
-      # would exclude. Collection is two-phase for CORRECTNESS, not speed: this job checks out
-      # at fetch-depth 1, where the tip has no parent, so `git show --name-status` would report
-      # the entire 45k-file tree as added and `<sha>^` would not resolve. Metadata alone decides
-      # NOT-LANE, so a commit the audit does not judge never enters that path -- and where the
-      # parent genuinely is unreachable it exits 2 rather than reading a missing object as a
-      # violation. Measured on a full clone: 6.9 s for a 300-commit metadata-only window.
-      #
-      # HONEST STATE, so nobody quotes a green run as evidence: `cutoverIso` in the registry
-      # is 2099-01-01 and the lane identity does not exist yet, so TODAY this returns clean
-      # over 300 commits with all 300 classified NOT-LANE -- armed, and vacuous until step 4
-      # of the design doc's section 12. It was proven able to fail against real history
-      # first: with the cutover moved back and the current flush identity registered it
-      # reports 290 violations of 300. The unit tests below are what keep it non-vacuous in
-      # the meantime.
-      - name: PR-free heartbeat lane attestations (armed; vacuous until the lane exists)
-        run: bun src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.ts --max 300
-
-      - name: Heartbeat-lane audit unit tests (a check that cannot fail is not a check)
-        run: bun test src/Core.TypeScript/hygiene/audit-heartbeat-lane-attestations.test.ts
-
-      # Two commit-back-lane audits, both of which existed as code and NEITHER of which any
-      # workflow invoked. `audit-push-without-rebase.ts` (AH001) shipped 2026-08-10 with a
-      # named live instance and zero callers — the guard against a lane erasing its own
-      # commit had never once executed in CI. An audit nothing runs is the vacuity class in
-      # its purest form: it reads as protection and constrains nothing, which is exactly the
-      # property both of these audits exist to refuse in other people's code.
-      #
-      # AH002 is the newer half. The `[skip ci]` refusal already lived inside
-      # `flush-via-staging.ts`, where it protects every lane that ALREADY adopted the safe
-      # route and is invisible to every lane that did not — so `lockfile-healer` pushed a
-      # skip-token commit at `main` for eleven days while reporting 40/40 green, because its
-      # `Commit and push` step is gated on drift being detected and no drift occurred. The
-      # load-bearing path had never run under ruleset "CI Gate".
-      - name: Commit-back lane can re-express its work (AH001)
-        run: bun src/Core.TypeScript/hygiene/audit-push-without-rebase.ts
-
-      - name: Commit-back lane can actually land (AH002)
-        run: bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts
-
-      # AH003 — the archive lane's record actually reached `main`.
-      #
-      # The third instance of the same class as the two above, and the most expensive to date.
-      # `pr-archive-on-merge.yml` was changed SEVENTEEN times; its recent runs read 12 success
-      # / 8 skipped / 0 failures — green, while 1,290 `automation/pr-archive-*` refs sat on the
-      # remote. Every check it had asked a PROXY question ("did the tool run", "did I create a
-      # PR"), and its sibling `audit-archive-pr-lane.ts` takes `gh pr list` as its input, so it
-      # is structurally blind to a ref that never had a PR at all — which is what these were.
-      #
-      # This one takes REFS as input and asks the only question that is the point: is the
-      # record ON MAIN? It runs HERE, on the pre-merge floor and fatal, rather than as the
-      # non-fatal warning its sibling gets inside the heartbeat tick. A lane that leaked
-      # because one failure was tolerated does not get its falsifier installed as another
-      # tolerated failure.
-      #
-      # It gates on a high-water mark that may only be lowered, so the pre-existing backlog
-      # cannot hold the floor red while any NEW strand fails immediately. Deleting a stranded
-      # ref does not make it pass — the record is still absent from main.
-      - name: Archive lane record reached main (AH003)
-        run: bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts
-
-      # The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
-      # that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like
-      # automatic security uptake and is not — it only selects among ALREADY-INSTALLED SDKs)
-      # while `.mise.toml`, the file that actually acquires the SDK, pinned it exactly. A
-      # reader of one believed a property only the other could grant. `.mise.toml` is now the
-      # single declared source and `global.json` a checked restatement, so the two can no
-      # longer disagree silently. Text-only and offline — it runs where no SDK is installed,
-      # unlike its runtime sibling `audit-codeanalysis-sdk-match.ts`, which reads the SDK's
-      # own `csc -version` in the build job.
-      - name: .NET SDK pin declared once (.mise.toml canonical, global.json restates)
-        run: bun src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts
-
-      # The `.mise.toml` pins that OTHER files silently depend on. Two couplings, both of
-      # which fail by being quiet: a stale `~/.rustup/toolchains/<v>-*` cache glob degrades
-      # the offline path to a CDN fetch, a stale `.mise.full.toml` gives full-tier hosts a
-      # different compiler from slim ones, and a zig bump leaves the COMMITTED byte-lock
-      # `.wasm` unchanged — so the byte-lock still passes while the artifact stops being
-      # reproducible from the pinned toolchain. Neither is reachable by a Dependabot
-      # `ignore:`: `.mise.toml` is a manifest of no supported ecosystem, so an `ignore:`
-      # naming them would suppress nothing while reading as protection. The site list is
-      # discovered from the operative surfaces, so a new workflow with a stale glob is
-      # caught the day it lands.
-      - name: mise toolchain couplings (rust restatements · zig byte-lock provenance)
-        run: bun src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts
-
-      # Every zflash host arm must reach the ISO integrity gate before it writes to a block
-      # device. Measured on main 2026-08-21: the manifest check existed in the macOS arm and
-      # NOWHERE ELSE, so flash-usb-linux.ts and flash-usb-windows.ts wrote an image with no
-      # integrity verification at all (081M0HG7X7B087G0R002A05DAP). A missing check is
-      # invisible to a test suite — the arms that have one stay green, and the arms that lack
-      # one have nothing to test — so only something that reads the call sites can see it.
-      #
-      # HERE rather than in build-ai-cluster-iso.yml on purpose, and this is the placement
-      # that workflow's own note asked for. The ISO lane runs on a subset of pushes, and when
-      # this step lived there and referenced a script that did not exist it silently killed
-      # ISO production for every run (#13102). On the cross-verify floor it blocks every PR,
-      # beside the other audits whose subject is "a check that did not run must never look
-      # like a check that passed".
-      - name: zflash host-arm parity (every arm verifies the ISO before writing)
-        run: bun src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.ts
-
-      # Every ArgoCD `targetRevision` must name a chart version upstream actually published.
-      # Measured on main 2026-08-20: applications/oz pins ziti-controller at 1.4.5, a version
-      # OpenZiti never shipped (their 1.x line ends at 1.3.4), so that Application can never
-      # sync — invisible because `oz` is one of 26 of 45 Applications no CI lane exercises, so
-      # nothing ever asked the registry for the chart (081M0JVD5YG087G0R002QDFR9H, #13313).
-      #
-      # OFFLINE. It resolves every coordinate against the checked-in snapshot
-      # `published-chart-versions.json` and opens no socket, so this step cannot redden a PR
-      # because a third-party registry is down — which is the only reason a resolvability
-      # check survives past its first outage. The network half is `--refresh`, and it runs on
-      # a schedule in chart-version-refresh.yml where it is allowed to fail loudly.
-      - name: ArgoCD chart targetRevisions resolve (offline, against the committed snapshot)
-        run: bun src/Core.TypeScript/hygiene/audit-chart-target-revisions.ts
-
-      # NO MANIFEST IN THE PUBLIC TREE MAY REFERENCE AN IMAGE NOBODY OUTSIDE CAN PULL.
-      # `applications/platform/blueprints-flowdent.yaml` shipped here for months naming
-      # ghcr.io/flowdent/cloudservice and ghcr.io/flowdent/fd-webclient -- images out of
-      # Flowdent/fd-core (private) and Flowdent/fd-webclient (internal), in an org with
-      # public_repos: 0. An agent wrote to the wrong repository in a multi-repo setup and
-      # nothing caught it; it took months and a partitioner that could not MEASURE the images
-      # to surface it, and a human to remove it (#14250). This is that accident as a red check.
-      #
-      # Aaron 2026-08-23: "zeta should not have any private repo dependencies." The invariant is
-      # ONE-WAY: Flowdent (closed) may depend on Zeta (open); Zeta may never depend on Flowdent.
-      #
-      # HERE, on the floor that runs on EVERY PR, rather than in k8s-lane-partition.yml: that
-      # workflow's path filter watches full-ai-cluster/k8s only, and this check's scope is every
-      # tracked YAML outside docs/references/.github -- infra/k8s, agentic-organization/deploy,
-      # samples/, and whatever directory the next multi-repo accident lands in. A path filter is
-      # exactly the wrong shape for a check whose whole job is to notice a manifest somewhere
-      # nobody declared.
-      #
-      # OFFLINE. It resolves every reference against the committed measurement
-      # `full-ai-cluster/k8s/image-source-provenance.json` and opens no socket; the network half
-      # is `--refresh` and it runs weekly in chart-version-refresh.yml. MEASURED 2026-08-23:
-      # 0.43s, 49 files parsed of 209 scanned.
-      - name: No private-source image dependencies (offline, against the committed provenance)
-        run: bun src/Core.TypeScript/cluster/image-source-provenance.ts
-
-      # The check above is only worth its slot if it can go red. The suite reconstructs the two
-      # FlowDent Blueprints in a throwaway git tree and asserts they are refused with the REMOVE
-      # remedy, asserts bitnami/weaviate/ich777/postgres/kubevirt are NOT tripped, and asserts an
-      # unresolvable package with no source label is refused rather than admitted. 35 cases;
-      # 16 targeted mutants applied and byte-`cmp` verified before reading each result -- 15
-      # landed and were all killed, and the 16th reported PATTERN NOT FOUND rather than a
-      # result, which is the discipline working.
-      - name: Private-source image dependencies — falsifiers (proves it goes red)
-        run: bun test src/Core.TypeScript/cluster/image-source-provenance.test.ts
-
-      # ARE THE DEFERRAL REASONS STILL TRUE? Every reasoned-exclusion registry in the cluster
-      # tree was audited for a reason being PRESENT and naming a lift condition, and by nothing
-      # for the reason being TRUE. Measured twice on 2026-08-21: `temporal`'s reason cited a
-      # baseline acknowledgement that had been deleted forty minutes earlier (#13472 -> #13483),
-      # and `oz`'s cited a chart pin the tree had already corrected (#13313 -> #13471). Both
-      # audits stayed green through both, because a false sentence with a `LIFTS WHEN:` clause
-      # has every mechanical property those checks look for.
-      #
-      # HERE rather than in k8s-argocd-health-test.yml, and the placement is the point: this
-      # checker resolves citations into `.github/workflows/` (a CI job a reason names) and into
-      # the chart roster, so a PR that renames a job would never trigger a path-filtered cluster
-      # workflow and would silently strand the reason that cites it. The cross-verify floor runs
-      # on every PR. OFFLINE, ~1s, no sockets -- it reads the committed baseline, the committed
-      # render snapshot and the committed roster.
-      - name: ArgoCD deferral reasons — every cited anchor still holds (offline)
-        run: bun src/Core.TypeScript/cluster/reason-truth.ts
-
-      # A tracked source file holding a raw 0x00 byte reads as BINARY to grep/rg, so every
-      # text audit silently skips it -- a check that did not run, looking exactly like one
-      # that passed. `rg 'foldChain' key-epoch-ledger.ts` printed "binary file matches" and
-      # exit 0 while ten real matches were invisible, in the revocation ledger of all files.
-      # The \u0000 escape is byte-identical at runtime and keeps the file searchable, so the
-      # rule is total and needs no allowlist. Ten tracked files failed this when written.
-      - name: No raw NUL in tracked source (an audit must be able to read the file)
-        run: bun src/Core.TypeScript/hygiene/audit-no-raw-nul-in-source.ts
-
-      # Addison Cooper's Genesis concept vocabulary is published as a static page that is
-      # hand-copied into a DIFFERENT repository (lucent-financial-group.github.io) — no build
-      # step, no CI, nothing connecting it back here. It drifted exactly as you would expect:
-      # four society-identity terms landed in docs/GLOSSARY.md on 2026-07-31 and never reached
-      # the page, and nobody found out until Aaron asked.
-      #
-      # docs/CONCEPT-REGISTRY.md is now the single list. This step is what keeps it honest —
-      # it fails when the registry and the page disagree in EITHER direction, including a
-      # silently reworded definition, which is the case a term-name-only check would miss.
-      - name: Concept registry vs published page (docs/CONCEPT-REGISTRY.md)
-        run: bun src/Core.TypeScript/hygiene/audit-concept-registry-drift.ts
-
-      # docs/TECH-RADAR.md is 100+ rows of PROSE asserting facts about this repo, and prose
-      # rots silently -- which is the whole reason it drifted. Soraya found two on 2026-08-22
-      # and both were the same defect: a row asserted something, the repo moved, nothing could
-      # notice. `fast-check` was pinned and imported by five test files with NO ROW AT ALL, so
-      # the only property-testing row ("FsCheck 3 | Adopt") -- which is .NET -- silently stood
-      # in for a TypeScript tool at a different maturity. And two rows cited paths that had
-      # moved (tools/alloy/alloy.jar, tools/invariant-substrates/tally.ts).
-      #
-      # Two mechanically-decidable subclasses, both derived rather than hand-listed:
-      #   A. every backticked repo path the radar cites must exist (`(planned)` opts a
-      #      proposed artifact out);
-      #   B. every root package.json devDependency statically imported by a tracked
-      #      *.test.ts must be named in the radar. devDependencies is the MANIFEST's own
-      #      declaration of "tooling not product"; "imported by a test" is the proxy for
-      #      "part of how we verify". Runtime `dependencies` are deliberately out of scope --
-      #      the radar is an evaluation register, not an SBOM, and a check that demanded a row
-      #      for `pg` is one somebody disables.
-      #
-      # HERE on the cross-verify floor because it is offline (~1s, no sockets, reads only
-      # committed files) and because the radar is edited by every lane -- a path-filtered
-      # workflow would miss the PR that moves the file a row cites. Went red on main when
-      # written -- 7 findings: 4 dead paths (specs/Spine.als, tools/alloy/alloy.jar,
-      # docs/research/scratch-zeta-parity.md, tools/invariant-substrates/tally.ts) and 3
-      # unringed devDependencies (fast-check, quantum-circuit, semver). Green after the
-      # corrections, so no baseline file exists (AUDIT-LIFECYCLE.md's cleanup-to-zero path
-      # -- the surface is a mutable markdown doc, so the residue was editable).
-      #
-      # STATED LIMIT: neither check can tell you a RING is wrong. TLA+ sat at Adopt with a
-      # dark lane for seven weeks and this audit would have stayed green throughout. Lane
-      # liveness is a different measurement.
-      - name: Tech radar claims the repo can still support (paths resolve, in-use tools ringed)
-        run: bun src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts
-
-      - name: Tech-radar audit unit tests (a check that cannot fail is not a check)
-        run: bun test src/Core.TypeScript/hygiene/audit-tech-radar-claims.test.ts
-
-      # A filesystem EXISTENCE test whose result gates a later operation on the same
-      # path. Check-then-use; TOCTOU; CWE-367. THREE instances landed on 2026-08-20, in
-      # one day, from three INDEPENDENT agents, all in code that had already been
-      # written and reviewed: cluster/restricted-namespace-workloads.test.ts
-      # (readdir + statSync().isDirectory() + readFileSync),
-      # cluster/storage-profiles.ts (existsSync -> readFileSync), and
-      # hygiene/audit-chart-target-revisions.ts (three sites in one file). Each was
-      # found by CodeQL one at a time, AFTER merge, because nothing in the tree looked
-      # for the shape. The pattern READS as defensive and prevents nothing.
-      #
-      # HERE rather than in codeql.yml on purpose. CodeQL runs on a schedule and
-      # reports into the security tab, so its verdict arrives after the merge that
-      # caused it -- which is how all three shipped. This step is offline, needs no
-      # database build, and blocks the PR.
-      #
-      # --baseline grandfathers the 288 pre-existing instances measured on main when
-      # this landed (AUDIT-LIFECYCLE.md step 5: the gate has to be landable without a
-      # 288-file cleanup first). NEW instances fail, and so does an edit that renames
-      # the path expression at a grandfathered site. --min-files is the scan floor: an
-      # audit that inspected nothing must not report success.
-      - name: No check-then-use filesystem races (TOCTOU, CWE-367)
-        run: |
-          bun src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts \
-            src/Core.TypeScript \
-            --min-files 1500 \
-            --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json
-
-      # Executes mumps_zeta_id.m (subset interpreter). compare.ts already pins
-      # the committed JSON; this step runs the routine so a layout edit in the
-      # .m file cannot hide behind a stale mumps-output.json.
-      - name: Execute MUMPS zeta-id packer
-        working-directory: tests/cross-verification/zeta-id
-        run: bun run-mumps.ts
-
-      # The six GENERATED bit-layout files vs docs/zeta-id-v1-layout.yaml, which the
-      # zeta-id README named as an open hole: "There is no CI gate verifying the .gen
-      # files match the YAML, so an edit without regeneration fails nowhere until a
-      # codec stops compiling."
-      #
-      # The oracles above do not close it. compare.ts pins each oracle's COMMITTED
-      # output to vectors.yaml, and CI independently re-executes five of the seven
-      # (TS `bun test`, F#/C# `dotnet test`, Python `pytest`, MUMPS the step above).
-      # Go and Rust are re-executed NOWHERE — this workflow runs only
-      # `go test ./algebra/` and `cargo test … Core.Rust.Observe`. So a wrong constant
-      # in zeta_id.gen.go or bit_layout.gen.rs sat behind a stale-but-agreeing output
-      # JSON with every job green. This step is the independent reproduction for that
-      # pair, and for the other four at no extra cost.
-      - name: zeta-id generated layouts vs the layout YAML
-        run: bun tests/cross-verification/zeta-id/gen-layout-drift.ts
-
-      # Algebra-tower drift-check: the generated law-property tests must be
-      # regenerable-identical from their IRs (codegen-law-drift), and the
-      # generated laws must hold against the TS oracle instances. Covers the
-      # semiring → ring → kleene tower (+ the orthogonal star-ring branch).
-      # Pure bun/arithmetic — no go/python spawns (the cross-language law
-      # cross-verify is a separate, local/toolchain-heavy lane).
-      - name: Algebra-tower drift-check (semiring→ring→kleene + star-ring)
-        run: |
-          bun test \
-            tests/cross-verification/_harness/codegen-law-drift.test.ts \
-            tests/cross-verification/_harness/generated-semiring-laws.test.ts \
-            tests/cross-verification/_harness/generated-ring-laws.test.ts \
-            tests/cross-verification/_harness/generated-star-ring-laws.test.ts \
-            tests/cross-verification/_harness/generated-kleene-laws.test.ts
+        run: bun src/Core.TypeScript/ci/cross-verify-roster.ts --run "$ZETA_CROSS_VERIFY_AUDIT"
 
   test-typescript-hermetic:
     # ══ TIER 1 OF 2: HERMETIC ═══════════════════════════════════════════════════════════

@@ -2848,7 +2848,7 @@
             "rule": "cross-oracle-bytelock",
             "kind": "cross-oracle",
             "witness": "src/Core.TypeScript/blake3/cross-verify.ts",
-            "count": 10,
+            "count": 12,
             "holder": "ts:repo"
           },
           {

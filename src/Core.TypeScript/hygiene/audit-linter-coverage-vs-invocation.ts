@@ -86,6 +86,7 @@
 
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { CROSS_VERIFY_AUDITS, CROSS_VERIFY_ROSTER_PATH } from "../ci/cross-verify-roster.ts";
 import { join } from "node:path";
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -438,16 +439,19 @@ export function discoverByScriptBinary(scripts: Readonly<Record<string, string>>
  */
 export function discoverByDevDependency(names: readonly string[]): string[] {
   return names
-    .filter((n) => /(^|[/@-])(lint|linter|prettier|format(ter)?|stylelint|cspell|semgrep|oxlint|biome|dprint)([-/]|$)/i.test(n))
+    .filter((n) =>
+      /(^|[/@-])(lint|linter|prettier|format(ter)?|stylelint|cspell|semgrep|oxlint|biome|dprint)([-/]|$)/i.test(n),
+    )
     .sort();
 }
 
 /** Root-level file names that look like a lint configuration. Route C. */
 export function discoverByConfigFile(rootEntries: readonly string[]): string[] {
   return rootEntries
-    .filter((f) =>
-      /^\.?(eslint|prettier|stylelint|markdownlint|semgrep|cspell|oxlint|biome|dprint|editorconfig)/i.test(f) ||
-      /^tsconfig(\..+)?\.json$/.test(f),
+    .filter(
+      (f) =>
+        /^\.?(eslint|prettier|stylelint|markdownlint|semgrep|cspell|oxlint|biome|dprint|editorconfig)/i.test(f) ||
+        /^tsconfig(\..+)?\.json$/.test(f),
     )
     .sort();
 }
@@ -567,10 +571,7 @@ export function checkScriptParity(
 }
 
 /** CHECK 3. An invocation that examined nothing must not look like one that examined many. */
-export function checkCorpusFloors(
-  tools: readonly ToolRow[],
-  measured: ReadonlyMap<string, number>,
-): Finding[] {
+export function checkCorpusFloors(tools: readonly ToolRow[], measured: ReadonlyMap<string, number>): Finding[] {
   const out: Finding[] = [];
   for (const t of tools) {
     if (!t.corpus) continue;
@@ -593,7 +594,11 @@ export function checkCorpusFloors(
           `from a clean run unless something asserts this number. Something now does.`,
       });
     } else {
-      out.push({ ok: true, check: "corpus-floor", message: `${t.id.padEnd(18)} corpus ${String(n).padStart(6)} >= floor ${t.corpus.floor} (${t.corpus.how})` });
+      out.push({
+        ok: true,
+        check: "corpus-floor",
+        message: `${t.id.padEnd(18)} corpus ${String(n).padStart(6)} >= floor ${t.corpus.floor} (${t.corpus.how})`,
+      });
     }
   }
   return out;
@@ -608,7 +613,10 @@ export function checkCorpusFloors(
  * agree, and six false positives are how a parity check gets switched off.
  */
 export function canonicalizeExclude(pattern: string): string {
-  return pattern.replace(/^\*\*\//, "").replace(/\/\*\*$/, "").replace(/\/+$/, "");
+  return pattern
+    .replace(/^\*\*\//, "")
+    .replace(/\/\*\*$/, "")
+    .replace(/\/+$/, "");
 }
 
 /** CHECK 4. Two lists of one fact, maintained separately, must agree -- or declare the gap. */
@@ -776,7 +784,23 @@ async function main(): Promise<void> {
     devDependencies?: Record<string, string>;
   };
   const bodies = workflowBodies(join(root, ".github", "workflows"));
-  const allBodies = [...bodies.values()].join("\n");
+
+  // A `run:` body is no longer the only place a gated check is invoked from. Since the
+  // 2026-08-26 `cross-verify` split, that job is a 31-leg matrix whose legs all run
+  // `cross-verify-roster.ts --run <id>` and take the actual command from the roster -- so
+  // for five audits the roster IS the invocation surface, and reading only workflow text
+  // reported them as wired to nothing. That report would have been exactly backwards:
+  // they run on the required floor of every PR.
+  //
+  // Only the COMMAND strings join the corpus, never the roster's prose. That is the same
+  // rule `dropComments` enforces for workflows -- a tool named in a comment has not run --
+  // and it matters more here, because the roster carries every replaced step's rationale
+  // verbatim and those paragraphs name plenty of scripts they do not invoke.
+  //
+  // `bodies` itself is left alone so the `workflows` route floor keeps counting workflows.
+  const invocationSurfaces = new Map(bodies);
+  invocationSurfaces.set(CROSS_VERIFY_ROSTER_PATH, CROSS_VERIFY_AUDITS.map((a) => a.command).join("\n"));
+  const allBodies = [...invocationSurfaces.values()].join("\n");
 
   // ── discovery ────────────────────────────────────────────────────────────────
   const rootEntries = readdirSync(root);
@@ -797,12 +821,15 @@ async function main(): Promise<void> {
   const invocations = new Map<string, readonly string[]>();
   for (const t of TOOLS) {
     const where: string[] = [];
-    for (const [file, body] of bodies) if (t.invokedBy.some((r) => body.includes(r))) where.push(file);
+    for (const [file, body] of invocationSurfaces) if (t.invokedBy.some((r) => body.includes(r))) where.push(file);
     invocations.set(t.id, where.sort());
   }
 
   // ── corpus measurement ───────────────────────────────────────────────────────
-  const rosterPaths = (pkg.scripts["lint:eslint"] ?? "").split(/\s+/).slice(1).filter((p) => p.length > 0 && !p.startsWith("-"));
+  const rosterPaths = (pkg.scripts["lint:eslint"] ?? "")
+    .split(/\s+/)
+    .slice(1)
+    .filter((p) => p.length > 0 && !p.startsWith("-"));
   const allTs = tracked(root, "*.ts");
   const tsconfig = JSON.parse(stripJsonc(readFileSync(join(root, "tsconfig.json"), "utf8"))) as { exclude: string[] };
   const excluded = (f: string): boolean =>
@@ -875,7 +902,9 @@ async function main(): Promise<void> {
     console.error(`[linter-coverage] ✗ ${failed.length} divergence(s) between configured coverage and CI invocation.`);
     process.exit(3);
   }
-  console.log(`[linter-coverage] ✓ ${TOOLS.length} tools, ${scripts.length} scripts: coverage and invocation agree with the ledger.`);
+  console.log(
+    `[linter-coverage] ✓ ${TOOLS.length} tools, ${scripts.length} scripts: coverage and invocation agree with the ledger.`,
+  );
 }
 
 if (import.meta.main) await main();

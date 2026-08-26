@@ -52,7 +52,12 @@ describe("the derived floor is the floor gate.yml actually declares", () => {
       "build-and-test (${{ matrix.os }})",
       "lint (semgrep)",
       "lint (TS)",
-      "cross-verify (trust-core oracles + ace suite)",
+      // 2026-08-26: `cross-verify` split into 31 named matrix legs. The JOB ID is unchanged
+      // — `gate-required.needs:` still names `cross-verify` — so this is a rename of the
+      // floor's declared name, not a treaty amendment: the same 31 audits block, via the
+      // matrix result GitHub collapses to `success` only when every leg succeeded.
+      // `cross-verify-roster.test.ts` §"the floor is not weakened" is the falsifier.
+      "cross-verify (${{ matrix.audit }})",
       "full-verify (7-lang oracle + cost + proofs)",
       "test (TS hermetic)",
       "gate (required)",
