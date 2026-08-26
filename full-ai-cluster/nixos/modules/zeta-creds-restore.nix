@@ -192,6 +192,11 @@ in
         Environment = [
           "HOME=${cfg.home}"
           "PATH=${cfg.home}/.local/share/mise/shims:${cfg.home}/.bun/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+          # 081M0WTB5MN: trust the repo's .mise.toml so the `bun` shim can resolve
+          # its pinned version. The shim reads the version from the nearest
+          # trusted .mise.toml; without a trusted config it errors
+          # "No version is set for shim: bun" and restore never runs.
+          "MISE_TRUSTED_CONFIG_PATHS=${cfg.repoRoot}"
         ];
         ExecStart = pkgs.writeShellScript "zeta-creds-restore-start" ''
           set -euo pipefail
@@ -245,6 +250,12 @@ in
             fi
           done
           if [ -n "$_missing" ]; then
+            # 081M0WTB5MN Layer-3: when a precondition is missing (typically the
+            # ESP blob), NAME what /boot actually is and what it holds — so CI can
+            # tell "blob never delivered" from "phase-2 mounts a different /boot
+            # than the installer wrote to".
+            log_restore "zeta-creds-restore: /boot mount: $(grep ' /boot ' /proc/mounts 2>/dev/null | head -1 || echo none)"
+            log_restore "zeta-creds-restore: /boot listing: $(ls -1 /boot 2>/dev/null | tr '\n' ' ' || echo none)"
             exit 0
           fi
 
@@ -377,15 +388,37 @@ in
           # ownership for ${cfg.home} paths so user-facing creds end
           # up zeta-owned not root-owned.
           # Tee CLI stdout/stderr so "already-present" / "wrote N" hit serial.
+          #
+          # 081M0WTB5MN: run from the repo so the mise `bun` shim resolves its
+          # version from the repo's .mise.toml. WorkingDirectory stays "/" (so the
+          # unit never fails its chdir before ExecStart); the repo is guaranteed
+          # present here because the precondition gate above already verified
+          # ${cfg.scriptPath} exists. Without this cd the shim errors
+          # "No version is set for shim: bun" and restore never runs (run
+          # 32952620895: blob delivered + read, then died on the bun shim).
+          cd "${cfg.repoRoot}"
+          # 081M0WTB5MN: resolve the REAL bun binary from mise's install dir and
+          # invoke it directly, so the restore never depends on mise config/trust
+          # resolution. Run 32970963143 died on `mise ERROR No version is set for
+          # shim: bun` even with cd + MISE_TRUSTED_CONFIG_PATHS — the shim's
+          # config resolution behaved differently under systemd-as-root than it
+          # does interactively (verified locally: the direct binary resolves from
+          # any cwd, as root, with no trust). The shim is the fallback only when
+          # no install is present; the precondition gate already proved it exists.
+          BUN_BIN="$(ls -1 ${cfg.home}/.local/share/mise/installs/bun/*/bin/bun 2>/dev/null | sort -V | tail -1 || true)"
+          if [ -z "$BUN_BIN" ] || [ ! -x "$BUN_BIN" ]; then
+            BUN_BIN="${bunShimPath}"
+          fi
+          log_restore "zeta-creds-restore: bun binary $BUN_BIN (cwd $(pwd))"
           if [ -n "$_serial" ]; then
-            ${bunShimPath} ${cfg.scriptPath} \
+            "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \
               --target-root / \
               $PERSONA_ARGS 2>&1 | ${pkgs.coreutils}/bin/tee -a "$_serial"
           else
-            ${bunShimPath} ${cfg.scriptPath} \
+            "$BUN_BIN" ${cfg.scriptPath} \
               "$BIND_FLAG" "$BIND_VALUE" \
               --input ${cfg.blobPath} \
               --passphrase-file "$PASSPHRASE_PATH" \

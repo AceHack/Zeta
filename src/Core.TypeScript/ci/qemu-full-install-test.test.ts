@@ -959,5 +959,14 @@ describe("restoreServiceNeverRan / restore contract diagnosis", () => {
     expect(nix).not.toContain("WorkingDirectory = cfg.repoRoot");
     // The unconditional first-line marker proves ExecStart ran (vs a pre-exec fail).
     expect(nix).toContain(UEFI_KEYFILE_RESTORE_SERIAL.execStartEntered);
+    // The bun shim needs its mise context inside ExecStart (cd repo + trusted
+    // config) or it errors "No version is set for shim: bun" (081M0WTB5MN).
+    expect(nix).toContain('cd "${cfg.repoRoot}"');
+    expect(nix).toContain("MISE_TRUSTED_CONFIG_PATHS=${cfg.repoRoot}");
+    // Belt-and-suspenders: the restore invokes the REAL bun binary directly from
+    // mise's install dir, so it never depends on config/trust resolution
+    // (systemd-as-root resolved the shim differently — run 32970963143).
+    expect(nix).toContain("installs/bun/");
+    expect(nix).toContain('"$BUN_BIN"');
   });
 });
