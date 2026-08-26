@@ -116,12 +116,39 @@ export function extractTaskIds(text: string): string[] {
   const out = new Set<string>();
   TASK_LINE_RE.lastIndex = 0;
   let m: RegExpExecArray | null;
+  // Whether the text DECLARES a task at all, separately from whether that
+  // declaration parsed as an id. `Task: none` declares one and names no id.
+  let sawTaskLine = false;
   while ((m = TASK_LINE_RE.exec(text)) !== null) {
+    sawTaskLine = true;
     const v = m[1];
     if (v !== undefined && /^081[0-9A-Z]{23}$/.test(v)) out.add(v);
   }
-  // A bare list of ids (the CLI form) has no `Task:` prefix.
-  if (out.size === 0) {
+  // A bare list of ids (the CLI form) has no `Task:` prefix, so when NO `Task:`
+  // line exists at all we scan the whole text and treat every id as declared.
+  //
+  // THE GUARD IS `sawTaskLine`, AND IT IS THE WHOLE FIX. The condition used to
+  // be `out.size === 0`, which cannot distinguish "no task declared anywhere"
+  // from "a task declared as `none`" — and `Task: none` is the single most
+  // common value in this repo, carried by essentially every autonomous PR body.
+  // So the fallback fired on nearly every PR, scanned the ENTIRE body, and
+  // promoted any ZetaId CITED IN PROSE into a Task declaration. Citing a
+  // backlog row by id while explaining a change is normal practice here and is
+  // what `anchor-to-human-prior-art` asks for; `workitems-mint-with-zetaid`
+  // already draws exactly this line — "naming an existing legacy id in prose is
+  // not minting". This audit was collapsing MENTION into DECLARATION.
+  //
+  // Live instance: PR #15573's body said `Task: none` and mentioned
+  // `081KSGS9H0008QG0R001EKTS5A` in a sentence about an existing backlog row.
+  // `cross-verify` went red on a required floor, on all three of that branch's
+  // revisions, for a citation.
+  //
+  // A `Task:` line whose value is not a well-formed id (`none`, a placeholder,
+  // a typo) therefore yields ZERO ids and no fallback. That is deliberate and
+  // consistent with this file's own division of labour: SHAPE of the Task value
+  // is the AgencySignature check's job, and RESOLUTION of ids that are present
+  // is this one's.
+  if (!sawTaskLine) {
     ZETAID_RE.lastIndex = 0;
     let z: RegExpExecArray | null;
     while ((z = ZETAID_RE.exec(text)) !== null) {

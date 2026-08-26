@@ -57,6 +57,50 @@ describe("extractTaskIds", () => {
   test("deduplicates a repeated id", () => {
     expect(extractTaskIds(`Task: ${REAL}\nTask: ${REAL}`)).toEqual([REAL]);
   });
+
+  // MENTION IS NOT DECLARATION (2026-08-26).
+  //
+  // The bare-list fallback used to be guarded by `out.size === 0`, which cannot
+  // tell "no task declared anywhere" from "a task declared as `none`". Since
+  // `Task: none` is the value essentially every autonomous PR body carries, the
+  // fallback fired on nearly all of them, scanned the WHOLE body, and promoted
+  // any ZetaId cited in prose into a Task declaration.
+  //
+  // Live instance: PR #15573 said `Task: none` and mentioned an existing
+  // backlog row's id in a sentence. `cross-verify` — a REQUIRED floor — went red
+  // on all three of that branch's revisions, for a citation. Citing prior work
+  // by id is what `anchor-to-human-prior-art` asks for, and
+  // `workitems-mint-with-zetaid` already draws this exact line: "naming an
+  // existing legacy id in prose is not minting."
+  test("`Task: none` plus an id in PROSE declares NO task — the citation is not a Task id", () => {
+    const body = [
+      `Background: there is already a P1 row, \`${FAKE}\`, covering this.`,
+      "",
+      "Agency-Signature-Version: 1",
+      "Agent: shadow",
+      "Task: none",
+      "Co-authored-by: Claude Opus 5 <noreply@anthropic.com>",
+    ].join("\n");
+    expect(extractTaskIds(body)).toEqual([]);
+  });
+
+  test("`Task: none` does not suppress a REAL Task id declared elsewhere in the same text", () => {
+    // Guards the fix from over-reaching into "a Task line silences everything".
+    const body = [`Task: none`, `Task: ${REAL}`].join("\n");
+    expect(extractTaskIds(body)).toEqual([REAL]);
+  });
+
+  test("the bare-list fallback still fires when there is genuinely no Task: line", () => {
+    // The behaviour the fallback exists for must survive the guard.
+    expect(extractTaskIds(`prose around ${REAL} and ${FAKE}`).sort()).toEqual([FAKE, REAL].sort());
+  });
+
+  test("an unresolvable id in prose under `Task: none` produces NO finding", () => {
+    // The end-to-end statement of the bug, at the level the gate step reads:
+    // this is exactly what reddened #15573.
+    const body = `See \`${FAKE}\` for context.\n\nTask: none\n`;
+    expect(auditIds(extractTaskIds(body), new Set([REAL]))).toEqual([]);
+  });
 });
 
 describe("indexWorkItems", () => {
