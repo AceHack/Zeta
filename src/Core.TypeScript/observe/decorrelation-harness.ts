@@ -45,7 +45,7 @@
  * energy doubles and accuracy doesn't double, the axis costs more than it earns.
  */
 
-import { writeFileSync, appendFileSync, mkdirSync } from "node:fs";
+import { appendFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 
 // ═══ Types ════════════════════════════════════════════════════════════════════
