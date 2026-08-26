@@ -845,9 +845,56 @@ const CKU_USER = 1n;
 const CKO_SECRET_KEY = 4n;
 const CKA_CLASS = 0x00000000n;
 const CKA_LABEL = 0x00000003n;
-const CKM_AES_CBC_PAD = 0x0000010dn;
+/**
+ * CKM_AES_CBC_PAD. PKCS#11 v2.40 / v3.1: the AES block runs 0x00001080..0x00001085 and
+ * CBC_PAD is the last of them.
+ *
+ * MEASURED 2026-08-26 on a YubiHSM 2 (firmware 2.4.1, serial 39160506). This constant
+ * read 0x0000010d from the day the file was written, which is not CKM_AES_CBC_PAD and is
+ * not any defined mechanism at all -- 0x106..0x10f is the unassigned gap between the RC2
+ * block (0x100..0x105) and RC4 (0x110). C_EncryptInit with an undefined mechanism returns
+ * CKR_MECHANISM_INVALID, so the hardware-pkcs11 tier could not have sealed a share on ANY
+ * conforming token.
+ *
+ * Why nothing caught it: every software test drives this backend through a fake whose
+ * C_EncryptInit is `() => 0n`. It never looks at the mechanism, so it accepts any value
+ * for it -- and a fake that cannot reject a wrong mechanism cannot falsify a wrong
+ * mechanism constant. The tests passed and constrained nothing here. FSA-32/FSA-33 are
+ * the falsifiers that close it; both fail against 0x10d.
+ *
+ * Checked, not cited -- three independent sources agree on 0x1085:
+ *   - Yubico's own /usr/local/include/pkcs11/pkcs11t.h:1019
+ *   - NSS's independently-maintained pkcs11t.h:1219
+ *   - the device's own C_GetMechanismList, which reports 0x1085 present and 0x10d absent
+ */
+const CKM_AES_CBC_PAD = 0x00001085n;
 const CKR_OK = 0n;
 const CKR_USER_ALREADY_LOGGED_IN = 0x100n;
+/** Not an error: a second C_Initialize in one process is legal and must not throw. */
+const CKR_CRYPTOKI_ALREADY_INITIALIZED = 0x191n;
+
+/**
+ * C_Initialize, with its return value actually READ.
+ *
+ * MEASURED 2026-08-26: every call site used to be a bare `lib.C_Initialize(0n)` whose rv
+ * was discarded. On a YubiHSM whose module had no connector configured, initialisation
+ * failed silently and the next call surfaced as `C_GetSlotList (count) failed: 400`.
+ * 400 is 0x190, CKR_CRYPTOKI_NOT_INITIALIZED -- so the error named the wrong call and
+ * read as a token or slot fault when it was neither. A discarded rv is a check that did
+ * not run; this makes it one.
+ */
+function initializePkcs11(lib: Pkcs11Lib): void {
+  const rv = lib.C_Initialize(0n);
+  if (rvOk(rv) || BigInt(rv) === CKR_CRYPTOKI_ALREADY_INITIALIZED) return;
+  throw new Error(
+    `frost-share-adapter: C_Initialize failed: ${rv}. The module loaded but would not ` +
+      "initialise, which is usually module CONFIGURATION rather than hardware. For the " +
+      "YubiHSM PKCS#11 module: point YUBIHSM_PKCS11_CONF at a file containing " +
+      "`connector = http://127.0.0.1:12345`, with yubihsm-connector running. Without " +
+      "that, every later call returns 400 (CKR_CRYPTOKI_NOT_INITIALIZED) and the failure " +
+      "reads as an absent token when the token is present.",
+  );
+}
 
 export const PKCS11_SEAL_ALG = "PKCS11:AES-256-CBC-PAD";
 
@@ -1154,7 +1201,7 @@ export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostSh
   /** Open a logged-in session, run body, always tear down. */
   const withSession = <T>(body: (lib: Pkcs11Lib, hSession: bigint) => T): T => {
     const lib = getLib();
-    lib.C_Initialize(0n);
+    initializePkcs11(lib);
     let slotId: number;
     try {
       slotId = currentSlot(lib);
@@ -1221,7 +1268,7 @@ export function createPkcs11SealEffects(opts: Pkcs11SealEffectsOptions): FrostSh
      */
     tokenIdentity(): string {
       const lib = getLib();
-      lib.C_Initialize(0n);
+      initializePkcs11(lib);
       try {
         const slotId = currentSlot(lib);
         const reported = identityInSlot(lib, slotId);
@@ -1372,7 +1419,7 @@ export function describeAttachedPkcs11Tokens(
   opts: Pick<Pkcs11SealEffectsOptions, "libraryPath" | "ffiLoader">,
 ): readonly Pkcs11AttachedToken[] {
   const lib = (opts.ffiLoader ?? defaultFfiLoader)(opts.libraryPath);
-  lib.C_Initialize(0n);
+  initializePkcs11(lib);
   try {
     return enumeratePkcs11Tokens(lib);
   } finally {
