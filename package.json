@@ -47,6 +47,7 @@
     "hygiene:no-ambient-credential-hoist": "bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts",
     "hygiene:no-culture-sensitive-collation": "bun ./src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts",
     "hygiene:no-decide-by-grep": "bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts",
+    "hygiene:no-graphql-transport-in-scripts": "bun ./src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts src/Core.TypeScript .github/workflows tools .claude --min-files 2000 --baseline src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.baseline.json",
     "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts src/Core.TypeScript --min-files 1500 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
     "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",

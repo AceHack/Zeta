@@ -1223,6 +1223,30 @@ jobs:
         # regression cannot report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-decide-by-grep
 
+      - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)
+        # Refuses `gh pr view|list|checks` and `gh run view` in COMMITTED scripts,
+        # workflows and agent loops. Those four are GraphQL; `gh api repos/...` is REST;
+        # the two have separate 5000/hour budgets and only GraphQL is contended here
+        # (measured 2026-08-14: GraphQL 1147/5000 vs REST 33/5000; measured 2026-08-25/26:
+        # agent polling hit 0/5000 within a minute of an hourly reset, twice, and a
+        # runaway loop drained the quota for ~40 min because its stop condition was read
+        # over the same transport it was saturating).
+        #
+        # NOT a ban on `gh`. Interactive use by a human is not the target, and
+        # `gh pr merge --auto` is explicitly permitted -- enablePullRequestAutoMerge is
+        # GraphQL-ONLY, so it is the one call with no REST form.
+        #
+        # DRIFT TIER, deliberately: this job is not in `gate (required)`'s needs, so a
+        # finding paints a red X here and blocks nothing. Promotion to the floor is the
+        # maintainer's call (AUDIT-LIFECYCLE.md step 6 -- a new gate stays informational
+        # until it has been quiet for some calendar time).
+        #
+        # 39 pre-existing sites in 19 files are grandfathered in the baseline; the
+        # baseline counts per (rule, file, route), so a NEW call in an already-listed
+        # file still goes red. Exits 1 below --min-files, so a scope regression cannot
+        # report success the way `lint:markdown` did (#10712).
+        run: bun run hygiene:no-graphql-transport-in-scripts
+
       - name: Scan-floor route audit (the floors are themselves enumerable)
         # Inventories every scan floor in the repo through four INDEPENDENT
         # recognizers and requires each to contribute at least one site. An
