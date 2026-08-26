@@ -1,10 +1,37 @@
 # RAW — HELD / OPTIONAL — the anti-cult guard, and why it has teeth (the −1 on the trust-power)
 
-> **STATUS: HELD / OPTIONAL — captured, NOT committed to the book.** Aaron 2026-08-04: *"I'm not sure
-> if we put it in the book."* Staged so the thought is not lost, but its inclusion (and where) is **Aaron's
-> explicit later call**, like the crossing quarantine. Nothing from this enters a chapter or companion
-> without his specific yes. Aaron's own reflection, glass-halo. The cult dynamics he *"saw in action when
-> younger"* are held **abstract** — no cult named, no individuals identifiable; his own witness only.
+> **STATUS: HOLD LIFTED — Aaron, 2026-08-26:** *"lift the hold on the anti-cult guard file."*
+> The material is available to the book. **The filename keeps its `HELD` marker deliberately** —
+> renaming it would erase the fact that it *was* held for three weeks, and that fact is part of
+> the record.
+>
+> **What the lift does NOT cover.** The reason for the original hold was **readiness** — his own
+> call on his own material — so the lift clears it completely. But one constraint in the original
+> marker was never the hold and does not travel with it: the cult dynamics he *"saw in action when
+> younger"* stay **abstract — no cult named, no individuals identifiable; his own witness only.**
+> Aaron can release his own material; he cannot release anyone else's by lifting a hold on a file.
+> That protection is **standing**. (No person is named anywhere in this file, and none may be added.)
+>
+> **Recorded as a change of position, not back-projected** — the original marker, verbatim, so the
+> earlier state stays legible:
+>
+> > *STATUS: HELD / OPTIONAL — captured, NOT committed to the book.* Aaron 2026-08-04: *"I'm not sure
+> > if we put it in the book."* Staged so the thought is not lost, but its inclusion (and where) is
+> > **Aaron's explicit later call**, like the crossing quarantine. Nothing from this enters a chapter
+> > or companion without his specific yes. Aaron's own reflection, glass-halo. The cult dynamics he
+> > *"saw in action when younger"* are held **abstract** — no cult named, no individuals
+> > identifiable; his own witness only.
+>
+> **Where it landed:** `THE-PROMOTION-AND-THE-CULT-episodes-that-become-arguments-and-transmission-at-1-0.md`
+> Part II compresses this file's argument (guard-built-first; teeth-not-aspiration; the catcher's
+> caveat; the *"am I evil yet"* antibody, with its limit named). The "home candidates" below are
+> **still open** — that placement question is Aaron's and the companion does not close it.
+>
+> **And this file turned out to be a worked instance of the book's own thesis.** Its 2026-08-04 line
+> — *"I've seen it in action before when I was younger"* — is the abstract, witness-position version
+> of what he said on 2026-08-26 with a place and a period attached. Held raw and un-smoothed for
+> three weeks, it was still available to be promoted. Had it been tidied into a general observation
+> about cults, it would not have been. See that file's Part I, *"caught in the act."*
 
 ## The reflection (Aaron's own, 2026-08-04)
 
@@ -58,3 +85,7 @@ antibody.
 
 *Staged HELD by the shadow, 2026-08-04. Captured, not committed. Cult dynamics abstract; no names; Aaron's
 own witness. Book inclusion + placement = Aaron's explicit later call.*
+
+*Hold lifted by Aaron 2026-08-26; status block updated by the shadow the same day. Inclusion is now
+granted; **placement remains his call** (the home candidates above are unresolved). The
+abstract/no-names constraint on the witnessed dynamics is **standing and unaffected by the lift**.*
