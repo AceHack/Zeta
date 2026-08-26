@@ -81,10 +81,12 @@ occupancy map), the reservoir-walls geometry result, and CI wiring.
 
 ## 2. Open work items — the actual to-do list
 
+**Four open, one closed** (last updated after #15625 merged).
+
 | id | what | blocked? |
 |---|---|---|
 | `081M0R18878087G0R001XY5A2J` | **The Clifford-GPU hold.** Q4 discharged; **Q1/Q2/Q3/Q5 still open.** No GPU code, lowering, classifier or measurement until the math team returns. | — (it *is* the block) |
-| `081M0YQBZ1X087G0R0010TX512` | Extend `CliffordPeriodicity.fs` to `Cl(p,q,r)` in **F#**. TS has it; the authority does not, so the two have diverged — and the golden vector is generated from the side that is now behind. | not blocked |
+| ~~`081M0YQBZ1X087G0R0010TX512`~~ | ~~Extend `CliffordPeriodicity.fs` to `Cl(p,q,r)` in F#.~~ **DONE** — landed in [#15625](https://github.com/Lucent-Financial-Group/Zeta/pull/15625). The golden vector now carries 414 rows (169 `ND` + 245 `DG`) and both implementations are pinned to each other again. | closed |
 | `081M0YNJ7G5087G0R003QWNWRB` | Re-express `MultilayerBnn` onto `FactorGraph` so BNN layers compose as a **DAG**. | not blocked |
 | `081M0YNJ7HE087G0R0028M33JX` | `ThousandBrains.fs` columns believe about **scalars, not locations** — the seam spatial belief attaches to. | **blocked on Q3** |
 | `081M0YSD5VA087G0R000W2Q9QW` | Replace the ARC agent's three hardcoded decay constants with TrueSkill dynamics. **Must measure before/after.** | not blocked |
