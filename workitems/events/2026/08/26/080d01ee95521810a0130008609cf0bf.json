@@ -1,0 +1,14 @@
+{
+  "id": "080d01ee95521810a0130008609cf0bf",
+  "at": "2026-08-26T11:26:51.459Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YX5AJ2087G0R003MXF9NW",
+    "type": "bug",
+    "title": "the hermetic TypeScript tier is not hermetic: github-adapter.test.ts spawns gh and hits the network",
+    "slug": "the-hermetic-typescript-tier-is-not-hermetic-github-adapter",
+    "priority": "P2",
+    "filename": "081M0YX5AJ2087G0R003MXF9NW-the-hermetic-typescript-tier-is-not-hermetic-github-adapter.md"
+  }
+}

@@ -329,6 +329,89 @@ Any one of those and the proposal should shrink to the lanes where reliability a
 
 A 0/105 sample does not exclude a tail event that the tree records happening. **Both belong here.** The install is not usually broken; it is occasionally, expensively, and unpredictably broken — which is precisely a variance problem and precisely what a single mean would hide.
 
+#### THE PULL IS MEASURED. The thesis survives its own falsifiers.
+
+`metered` — the image published on the merge of #15575 (run **32961107426**), and the `pull-measure` legs ran. This replaces every `speculative` in this section.
+
+| quantity | measured |
+|---|---|
+| **wire size** (what a registry serves) | **2,148,269,386 B = 2.00 GiB**, 8 layers |
+| extracted size | 6,253,608,609 B — so the real ratio is **2.91×** |
+| **cold pull, 3 fresh runners** | **92 s · 92 s · 109 s** |
+
+And the comparison the whole document was built to make:
+
+| | mean | worst | **spread** |
+|---|---|---|---|
+| **toolchain install** (n=88) | 115 s | **465 s** | **4.04×** |
+| **cold image pull** (n=3) | **97.7 s** | **109 s** | **1.18×** |
+
+**The three falsifiers I wrote down before measuring, and what happened to each:**
+
+1. *"a cold pull whose p95 is comparable to the install's p95 (~465 s)"* — **not observed.** Worst of three is 109 s, under the install's *mean*.
+2. *"a registry failure class of similar frequency"* — **not observed.** 3 of 3 legs pulled cleanly, each after asserting its runner was cold.
+3. *"a pull whose mean is materially worse than the install's mean"* — **not observed.** 97.7 s against 115 s: the pull is faster on the mean *as well as* tighter.
+
+So the claim stands as stated, and it stands in its strong form: **the pull is both faster and dramatically less variable.** Aaron's *"much more reliable … and usually much faster"* is now the measured result, not the prior. Note which half is the larger win — a 15% mean improvement is pleasant; **4.04× → 1.18× spread is the thing that removes the tail**, and the tail is what costs a lane its budget.
+
+**Honest limits on these three numbers, because three is not a distribution:**
+
+- The three legs ran **concurrently on three runners at the same instant**, so they share whatever load the fleet had at 11:08Z. They are three samples of *one moment*, not three moments — a correlated sample, and it cannot see time-of-day or incident-driven variance. A real p95 needs sampling across days; `image-pull-measurement.yml` is the instrument.
+- 109 s is a *worst of three*, not a p95, and it is quoted as such.
+- The pull time excludes nothing the install included: both figures are wall-clock for "job has its toolchain".
+
+**One methodological note worth keeping.** I refused to derive the wire size by applying the repo's aggregate 2.67× compression ratio to the extracted figure. Measured, the ratio for this image is **2.91×** — so the guess would have been **~8% low** (1.97 GiB vs 2.00 GiB actual). The refusal was right on principle and would have been nearly harmless in fact, and both halves of that are worth saying: the discipline is not vindicated by the error being large, it is vindicated by not having had to know in advance whether it would be.
+
+#### The strongest evidence for the variance thesis arrived by accident
+
+While landing this work, a **YAML-only change** — seven `schedule:` keys added to install shields, not one line of code — went red on `build-and-test (ubuntu-24.04)`, which is in the `gate (required)` floor. The failing assertion:
+
+```
+Zeta.Tests.Storage.ColumnLinearOpsTests.ColumnLinear vectorized filter is measurably faster on unpredictable data [FAIL]
+  vectorised filter should be >= 1.5x the scalar filter on 1000000 unpredictable keys at 50%
+  selectivity, measured 0.93x (scalar 6.960 ms, vector 7.463 ms, Vector<int64>.Count = 4).
+```
+
+That is a **wall-clock ratio assertion inside the one blocking check**. Two things make it worth recording here rather than shrugging off as a flake:
+
+**1. It is outside its author's own flake model.** The test's comment anticipates flaking and says where: *"the DEBUG margin is thinner … If this flakes on a loaded runner it will flake in Debug first, and the fix is to skip it in Debug rather than to lower it further — a gate below ~1.05 could not tell a vector path from a scalar one and would be a check that cannot fail."* This failed in **Release**, at **0.93x**, against a stated normal of 3.45x and a bypassed-path signature of ~1.02x. So the observation is neither "healthy" nor "vector path bypassed" — it is off the map the test was designed around, and **the test cannot distinguish a contended runner from a real regression.** A re-run is the only discriminator, which is the definition of a non-deterministic gate.
+
+**And the re-run was run, so this is now a measurement rather than an argument.** Same run, same commit, no change to the tree:
+
+| attempt | conclusion |
+|---|---|
+| 1 | **failure** — `measured 0.93x` |
+| 2 | **success** |
+
+`metered`, run **32959787630**, job `build-and-test (ubuntu-24.04)`, attempts 1 and 2 of the identical SHA. **The same code produced both verdicts.** That settles the discriminating question in favour of runner contention — there is no evidence of a real vector-path regression — and it demonstrates the property directly: a check whose verdict on fixed inputs depends on what else the machine was doing is not a gate, it is a coin weighted by load. Note what that also means for the 12.7% below: an unknown share of those 17 failures may be the same class, and nobody has triaged them.
+
+**2. The blocking leg is the noisiest thing in CI, and it is measured.** `data/platform-drift.json`, as of 2026-08-26T10:05Z, over 500 push runs (134 executed, 366 cancelled — 26.8% coverage):
+
+| leg | classification | failures / executed | rate | last failure blocked a merge? |
+|---|---|---|---|---|
+| **`build-and-test (ubuntu-24.04)`** | **blocking** | **17 / 134** | **12.7%** | **yes** |
+| `build-and-test (macos-26)` | non-blocking | 1 / 134 | 0.75% | no |
+
+**The leg that blocks merges fails at roughly 17× the rate of the leg that was demoted for being "a quiet leg holding gate authority."** That inversion is the tiering rule's own argument turned on the floor: portability decided which jobs *may* be gates, and nobody has since asked whether the surviving gate is *reliable enough to be one*.
+
+This is `consistent with` — not proof of — the thesis in this section: the expensive failures in this repo are variance, not means, and they land in the places that block. It is included because it is a measurement I did not go looking for, on a change that could not have caused it.
+
+**A second floor member is non-deterministic too, found the same way.** The doc-only PR carrying this section then went red on `test (TS hermetic)` — the floor's *newest* member, promoted on 2026-08-25 with the stated justification that the suite **"is dependency-closed and reproducible"**. One test in 18,337 failed:
+
+```
+killed 1 dangling process
+(fail) GitHubAdapter > resolveThreadsBatch maintains arithmetic invariant [7129.69ms]
+  ^ this test timed out after 5000ms.
+```
+
+`github-adapter.ts` calls `spawnSync("gh", …)`, and the test constructs a real `GitHubAdapter("org", "repo")`. Its own comment says *"no gh available in test"* — **which is false on a GitHub-hosted runner, where `gh` is preinstalled.** So the call does not fail fast on ENOENT; it launches `gh`, which makes a live HTTPS request to `api.github.com`. Two independent tells confirm it: **7.1 s** (an absent binary fails in milliseconds) and the **dangling process** the runner had to kill.
+
+So **the tier named hermetic is not hermetic**, and the floor amendment's justification is false for at least one of its members. Filed as `081M0YX5AJ2087G0R003MXF9NW`.
+
+Taken with the timing assertion above, **two of the floor's members can go red for reasons unrelated to the tree under test** — and both were found by changes that could not have caused them (seven YAML keys; one markdown file). That is the same shape as everything else in this document: the interesting failures are not wrong answers, they are answers that do not depend on the question.
+
+**Out of scope here, and named rather than fixed:** the timing assertion is not mine, `ColumnLinearOps.Tests.fs` is not touched by either PR, and re-running was the correct response to an unrelated red. Whether a wall-clock ratio belongs in the blocking floor at all is a floor question — §8.
+
 #### What is now measured, and what still is not
 
 `metered` — the **wire size** is no longer a guess. `image-wire-size.ts` pushes the built image to a throwaway local `registry:2` and reads the manifest the registry itself produces, summing `config.size + layers[].size`. That is the exact byte count a `docker pull` moves. It is not the 6.25 GB extracted figure divided by a ratio, and the script **refuses** an OCI index rather than summing it to zero — the repo has been bitten before by an aggregate compression ratio standing in for the decisive number (`image-pull-measurement.yml`'s own header says so).
@@ -459,7 +542,9 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 5. **`flake.lock` (§7.1)** — already in flight as **#15573**. Nothing to decide unless you want it prioritised.
 6. **The `lint-clone-at-tag-is-sufficient.ts` collision.** Its `RESOLVER_INVOCATION` regex matches `ace\s+bootstrap`, and `-` is a word boundary — so the phrase **"pre-ace bootstrap"**, which is now the repo's own name for the seed layer, reads as a resolver invocation on any non-comment line of a bootstrap surface. I hit this and worked around it by rewording a step name rather than weakening the lint. The vocabulary and the guard now collide; that is worth a decision rather than a series of quiet rewordings.
 7. **The ARC runner scale set is declared and has never run** (§6.4a). `zeta-self-hosted` is org-wide, self-healing, `minRunners: 1` — and **0 runners are registered with GitHub**, blocked by an already-filed P2 (`081M0JM6SSG087G0R0029X3F6Z`: the runner pod mounts a PVC nothing applies). Separately, as declared it would **not** give a warm layer cache: `containerMode: dind` with no persistent docker data root means every job still pays a full pull. Whether to fix and adopt it is infrastructure and yours; nothing here touches it.
-8. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
+8. **A wall-clock ratio assertion sits in the blocking floor** (§6.4). `build-and-test (ubuntu-24.04)` fails at **12.7%** (17/134 executed runs) — **17× the demoted macOS leg's 0.75%** — and at least one contributor is a SIMD speedup test that asserts `>= 1.5x` measured wall time. It went red on a YAML-only change during this work. Options: skip it under contention, move it to a benchmark lane, or accept the rate. Not fixed here; not my file.
+9. **`test (TS hermetic)` is not hermetic** (§6.4, `081M0YX5AJ2087G0R003MXF9NW`). It joined the floor on 2026-08-25 *because* it was "dependency-closed and reproducible"; `github-adapter.test.ts` spawns `gh` and hits `api.github.com`, and timed out on a markdown-only PR. Either inject the process runner or move the test out of the tier — the tier's name and the floor's justification should not disagree with its contents.
+10. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
 
    | audit | how it decided this job was in scope | verdict |
    |---|---|---|
@@ -478,7 +563,7 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 Stated so a green here is not read as coverage it does not have:
 
 - **The exit-124 reports.** Not reproduced in my 105-step sample (§6.2), and the tree records 17 such deaths in one window on 2026-08-25 (`apt-archive-cache.ts`). Both facts are kept in §6.4; neither cancels the other, and the 0/105 does **not** exclude the tail.
-- **Wall-clock pull of our own digest.** Not measurable before publish — the artifact is not in a registry yet. What is now measured: the **exact wire size** (local-registry manifest, not a ratio) and **GHCR-to-runner throughput** on a real cold pull (§6.4). What ships: `pull-measure`, three cold legs on three fresh runners against the published digest, each asserting the runner is cold before timing. `speculative` until it fires; the worst leg is what gets quoted.
+- **Wall-clock pull of our own digest.** Not measurable before publish — the artifact is not in a registry yet. What is now measured: the **exact wire size** (local-registry manifest, not a ratio) and **GHCR-to-runner throughput** on a real cold pull (§6.4). What ships: `pull-measure`, three cold legs on three fresh runners against the published digest, each asserting the runner is cold before timing. **It fired** — see the measured table above (92/92/109 s). The worst leg is what is quoted.
 - **Variance of the pull.** Three legs is not a distribution. It distinguishes "40 s every time" from "40 s, 41 s, 380 s", which is the question, but it will not give a real p95. If the pull turns out to matter, `image-pull-measurement.yml` is the instrument for a proper sample.
 - **Whether `ubuntu-slim` has a container runtime.**
 - **Whether CodeQL's action tolerates a job-level `container:`.**
