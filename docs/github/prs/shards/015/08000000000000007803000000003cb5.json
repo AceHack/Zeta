@@ -1,0 +1,12 @@
+{
+  "pr_number": 15541,
+  "archive_path": "docs/history/pr-reviews/PR-15541-fix-website-make-src-renderers-website-installable-from-a-clean-clone-and-give-i.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:32:30.170Z",
+  "schema_version": "v1",
+  "commit_sha": "783a07e106be7cfadff301c0c3ddbe567aa7b68d",
+  "title": "fix(website): make src/Renderers/website installable from a clean clone and give it a CI job",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:31:33Z",
+  "head_ref": "fix/website-ci-and-installable"
+}
