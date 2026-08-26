@@ -1,0 +1,14 @@
+{
+  "id": "080d01ff2fe27010a01300084fe34ce7",
+  "at": "2026-08-26T21:07:12.078Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0ZYBZ2D087G0R002TECMPT",
+    "type": "bug",
+    "title": "REST squash merge with a custom commit_message lands AgencySignature trailer text no check validated",
+    "slug": "rest-squash-merge-with-a-custom-commit-message-lands-agencys",
+    "priority": "P2",
+    "filename": "081M0ZYBZ2D087G0R002TECMPT-rest-squash-merge-with-a-custom-commit-message-lands-agencys.md"
+  }
+}
