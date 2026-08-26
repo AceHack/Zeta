@@ -1,0 +1,14 @@
+{
+  "id": "080d01d14d044810a01300083d60b6fa",
+  "at": "2026-08-25T18:23:21.737Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X2K848087G0R001BC9S3C",
+    "type": "task",
+    "title": "Zero-crossing brief for external physics review (Lumen handoff)",
+    "slug": "zero-crossing-brief-for-external-physics-review-lumen-handof",
+    "priority": "P2",
+    "filename": "081M0X2K848087G0R001BC9S3C-zero-crossing-brief-for-external-physics-review-lumen-handof.md"
+  }
+}
