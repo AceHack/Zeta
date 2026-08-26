@@ -88,6 +88,19 @@ RUN --mount=type=secret,id=github_token \
     GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)" \
     ./tools/setup/install.sh
 
+# The image asserts its own usefulness at build time. If install.sh "succeeded" but
+# left no bun on PATH, the build fails here rather than at some consumer's job three
+# days later. Cheap, and it cannot pass vacuously: it runs the binaries.
+#
+# ORDER IS LOAD-BEARING: this runs while /zeta still holds the tree, because mise
+# SHIMS RESOLVE A VERSION FROM THE NEAREST CONFIG walking up from the cwd. Run this
+# from an empty directory with no `.mise.toml` above it and the shim has no version
+# to select — a failure about the cwd, not about the toolchain, which would read as
+# a broken image. Same reason `dotnet --version` needs `global.json` in scope. It is
+# also why a consuming job must run from its checked-out workspace, which is exactly
+# what a job-level `container:` does.
+RUN bun --version && mise --version && dotnet --version
+
 # The build context is a snapshot of the repo AT IMAGE BUILD TIME, and a job that
 # read it would be reading a stale tree that looks exactly like a fresh one. That
 # is the quiet failure this line exists to prevent: remove it, so a job that
@@ -98,10 +111,5 @@ RUN --mount=type=secret,id=github_token \
 # is the point: this is a correctness measure, not a size one. Narrowing the
 # build context to just the install inputs is a measured follow-up, not done here.
 RUN rm -rf /zeta && mkdir -p /zeta
-
-# The image asserts its own usefulness at build time. If install.sh "succeeded"
-# but left no bun on PATH, the build fails here rather than at some consumer's
-# job three days later. Cheap, and it cannot pass vacuously: it runs the binary.
-RUN bun --version && mise --version && dotnet --version
 
 WORKDIR /zeta
