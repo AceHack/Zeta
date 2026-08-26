@@ -89,6 +89,11 @@ jobs:
       # GitHub offers; nothing on the PR path uses either.
       packages: write
       id-token: write
+    # Carried to `pull-measure`, which is the only thing that can time a REAL cold pull of
+    # the artifact we actually publish. Empty on PR runs (nothing is pushed), and that job
+    # is gated on it being non-empty rather than silently measuring nothing.
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -195,6 +200,96 @@ jobs:
             zeta-ci-runtime:build \
             bun test src/Core.TypeScript/ci/toolchain-manifest.test.ts
 
+      # ── THE TRANSFER SIZE, MEASURED EXACTLY. NOT a ratio applied to the extracted size.
+      #
+      # `docker image inspect .Size` is the EXTRACTED total; what a pull actually moves is the
+      # COMPRESSED total the registry serves. This repo has already been bitten by standing one
+      # in for the other -- `image-pull-measurement.yml` exists because on-disk figures were
+      # being derived through "an aggregate ratio measured by gunzipping four unrelated images".
+      # So push to a throwaway local registry and read what the registry says. Exact, no network.
+      - name: Wire size -- what a registry would actually serve (exact compressed bytes)
+        id: wire
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --rm -p 5000:5000 --name zeta-localreg \
+            registry:2@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373 >/dev/null
+          for _ in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:5000/v2/ >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:5000/v2/ >/dev/null
+          docker tag zeta-ci-runtime:build 127.0.0.1:5000/zeta-ci-runtime:wire
+          docker push 127.0.0.1:5000/zeta-ci-runtime:wire >/dev/null
+          curl -fsS \
+            -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+            http://127.0.0.1:5000/v2/zeta-ci-runtime/manifests/wire > /tmp/wire-manifest.json
+          docker rm -f zeta-localreg >/dev/null 2>&1 || true
+          docker run --rm -v "$PWD":/w -w /w -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            -v /tmp/wire-manifest.json:/tmp/wire-manifest.json:ro \
+            zeta-ci-runtime:build \
+            bun src/Core.TypeScript/ci/image-wire-size.ts /tmp/wire-manifest.json
+          bytes=$(docker run --rm -v "$PWD":/w -w /w -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            -v /tmp/wire-manifest.json:/tmp/wire-manifest.json:ro \
+            zeta-ci-runtime:build \
+            bun src/Core.TypeScript/ci/image-wire-size.ts /tmp/wire-manifest.json --json | jq -r .totalBytes)
+          echo "wire_bytes=${bytes}" >> "$GITHUB_OUTPUT"
+
+      # ── GHCR -> HOSTED-RUNNER THROUGHPUT, measured on a REAL cold pull.
+      #
+      # Our own image is not in a registry until this lands on `main`, so the wall-clock pull of
+      # the actual artifact is measured by the `pull-measure` job below, on publish. What CAN be
+      # measured here is the other factor: how fast GHCR feeds a hosted runner. `zeta-portal` is
+      # an existing image in this org and is anonymously readable (verified 2026-08-26), and this
+      # runner has never pulled it -- fresh VM, no layer cache -- so this is a genuine cold pull.
+      #
+      # The estimate printed at the end multiplies TWO MEASURED NUMBERS and guesses neither. It
+      # is still a derivation, and it is labelled as one: a different image has a different layer
+      # count and parallelism profile, so treat it as an order-of-magnitude check, not a result.
+      - name: GHCR throughput -- a real cold pull, measured (not a guessed ratio)
+        if: always()
+        shell: bash
+        env:
+          WIRE_BYTES: ${{ steps.wire.outputs.wire_bytes }}
+        run: |
+          set -uo pipefail
+          REPO_PATH=lucent-financial-group/zeta-portal
+          TOK=$(curl -sS "https://ghcr.io/token?service=ghcr.io&scope=repository:${REPO_PATH}:pull" | jq -r '.token // empty')
+          if [ -z "$TOK" ]; then
+            echo "NOT MEASURED: could not obtain an anonymous GHCR token. No throughput figure this run."
+            echo "This is a measurement that did not happen, and it is NOT a pass."
+            exit 0
+          fi
+          if ! curl -fsS -H "Authorization: Bearer $TOK" \
+                -H 'Accept: application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json' \
+                "https://ghcr.io/v2/${REPO_PATH}/manifests/latest" > /tmp/probe-manifest.json; then
+            echo "NOT MEASURED: could not read the probe manifest."
+            exit 0
+          fi
+          probe_bytes=$(jq -r '(.config.size // 0) + ([.layers[]?.size] | add // 0)' /tmp/probe-manifest.json)
+          if [ -z "$probe_bytes" ] || [ "$probe_bytes" -le 0 ] 2>/dev/null; then
+            echo "NOT MEASURED: probe manifest carried no layer sizes (an index, or an unexpected shape)."
+            exit 0
+          fi
+          START=$(date +%s)
+          if ! docker pull "ghcr.io/${REPO_PATH}:latest" >/dev/null 2>&1; then
+            echo "NOT MEASURED: the probe pull failed. That is itself a data point about pull reliability."
+            exit 0
+          fi
+          ELAPSED=$(( $(date +%s) - START ))
+          [ "$ELAPSED" -lt 1 ] && ELAPSED=1
+          echo "probe image:        ghcr.io/${REPO_PATH}:latest"
+          echo "probe wire bytes:   ${probe_bytes}   (MEASURED from the GHCR manifest)"
+          echo "probe pull seconds: ${ELAPSED}       (MEASURED, cold, fresh runner)"
+          echo "throughput:         $(( probe_bytes / ELAPSED / 1024 / 1024 )) MiB/s"
+          if [ -n "${WIRE_BYTES:-}" ]; then
+            echo ""
+            echo "DERIVED (two measured numbers, no guessed ratio -- still a derivation, not a result):"
+            echo "  ci-runtime wire bytes ${WIRE_BYTES} at the throughput above"
+            echo "  => ~$(( WIRE_BYTES * ELAPSED / probe_bytes )) s to pull, before extraction."
+            echo "  The REAL figure for our own digest comes from the pull-measure job on publish."
+          fi
+
       - name: What the image cost, measured rather than estimated
         if: always()
         shell: bash
@@ -275,3 +370,71 @@ jobs:
         run: |
           set -euo pipefail
           cosign sign --yes "$DIGEST"
+
+  # ── THE NUMBER THE WHOLE TIME-ARGUMENT TURNS ON, measured on the real artifact.
+  #
+  # Everything above measures the image. This measures the PULL: a fresh hosted runner, no
+  # layer cache, pulling the digest we just published, timed. Three legs rather than one,
+  # because the claim being tested is about VARIANCE, not about a mean -- a single sample
+  # cannot distinguish "reliably 40 s" from "usually 40 s, sometimes 400 s", and the second
+  # is exactly what a multi-mirror apt install already does (measured install spread on this
+  # repo: mean 115 s, max 465 s). Reporting the WORST of three is deliberate: the tail is the
+  # thing being bought, so the tail is what gets quoted.
+  #
+  # NOT run on pull_request -- nothing is published there, so there is no digest to pull and
+  # a leg that silently measured nothing would be worse than a leg that does not run.
+  pull-measure:
+    name: cold pull of the published digest (leg ${{ matrix.leg }})
+    needs: image
+    if: github.event_name != 'pull_request' && needs.image.outputs.digest != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        leg: [1, 2, 3]
+    steps:
+      - name: Log in to GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+
+      - name: Prove the runner is cold before timing anything
+        run: |
+          set -euo pipefail
+          echo "=== images already present on this runner ==="
+          docker image ls --format '{{.Repository}}:{{.Tag}}'
+          echo "A line matching zeta-ci-runtime here would make the timing below meaningless."
+          if docker image ls --format '{{.Repository}}' | grep -q 'zeta-ci-runtime'; then
+            echo "::error title=warm runner::the image is already present; this leg would not measure a cold pull"
+            exit 1
+          fi
+
+      - name: Cold pull, timed
+        id: pull
+        env:
+          DIGEST: ${{ needs.image.outputs.digest }}
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          docker pull "$DIGEST"
+          ELAPSED=$(( $(date +%s) - START ))
+          echo "pull_seconds=${ELAPSED}" >> "$GITHUB_OUTPUT"
+          {
+            echo "### cold pull leg ${{ matrix.leg }}"
+            echo ""
+            echo "| field | value |"
+            echo "|---|---|"
+            echo "| digest | \`${DIGEST}\` |"
+            echo "| **pull seconds (cold, fresh runner)** | **${ELAPSED}** |"
+            echo ""
+            echo "Compare against the measured install-step distribution this replaces:"
+            echo "mean 115 s, max 465 s over 88 samples (gate, main, 2026-08-26)."
+            echo "The claim under test is the SPREAD, not the mean."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "leg ${{ matrix.leg }}: ${ELAPSED}s"

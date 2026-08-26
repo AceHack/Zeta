@@ -181,7 +181,23 @@ Priced and declined already (`workitems/081M0BVAV2H087G0R000VXRYRQ-…`): ~355 P
 
 Moving a portable job into an image does **not** demote it. It stays blocking, stays per-PR, and checks the same thing.
 
-The one real loss, stated plainly: **a containerized job no longer proves that `tools/setup/install.sh` works on a fresh hosted runner.** Today, 48 install steps re-prove that incidentally on every run. That coverage is not free to give up — but it is *already* the explicit subject of `docker-ubuntu-install-sh-test`, `macos-install-sh-test`, `wsl-install-sh-test` and friends, i.e. the jobs §4.1 proposes to put on a cadence. **The two halves of this document are load-bearing on each other:** containerize the portable jobs *and* give the install shields a real cadence, or the incidental coverage disappears with nothing replacing it.
+The one real loss, stated plainly: **a containerized job no longer proves that `tools/setup/install.sh` works on a fresh hosted runner.**
+
+**But that coverage was weaker than I first wrote, and the correction matters more than the original claim.** I said "48 install steps re-prove that incidentally on every run." `metered`, by parsing every install-carrying job on `main` at `f886e5af16`:
+
+| | count |
+|---|---|
+| install steps total | 48 |
+| **behind a restored toolchain cache** (`actions/cache` for mise runtimes / apt archives / the .NET SDK, in the same job, before the install step) | **33** |
+| with no cache restore in the job | 15 |
+
+**On a cache hit, a warm install step does not exercise the download path at all** — that is the entire purpose of the cache, and `apt-archive-cache.ts` exists precisely to make those hits reliable. So 33 of the 48 are not proving the fetch path on most runs; they are proving that a restored toolchain still works.
+
+And the 15 "cold" ones are only cold relative to *our* caches. They still run on a hosted runner image that ships node, Python, Go, Java and .NET preinstalled, with a warm apt mirror inside the same datacentre. **None of the 48 is a bare-machine proof.**
+
+The genuinely-bare-machine path — an empty `ubuntu:24.04` plus `install.sh` and nothing else — is proven by exactly one family: the `docker-*-install-sh-test` lanes, plus `macos-install-sh-test`, `wsl-install-sh-test` and `gitbash-install-routing-test` for their platforms. **And `metered`: none of those nine workflows has a `schedule:` trigger.** All are path-filtered `pull_request` + `push` only.
+
+So the pre-existing gap is larger than the one containerization would open, and it exists today: the only checks that prove the installer works from bare metal fire **only when someone edits the installer**, and upstream drift never edits the installer. That is §4.1, and it is now a defect to close rather than a cost to pre-pay.
 
 ---
 
@@ -276,25 +292,55 @@ active_caches_count:         40
 
 An image pull does **not** consume the Actions cache. Every containerized job is one fewer writer to that budget. The cache-key architecture is another agent's lane and I have deliberately touched no cache key expression; this number is stated as context, not as a proposal about caching.
 
-### 6.4 NOT measured — and a correction to a premise I was handed
+### 6.4 The case is VARIANCE, not mean time — and one premise corrected
 
-I was told an image pull is "layer-cached on the runner". **On GitHub-hosted runners that is false, and it matters.** Each job gets a fresh VM; there is no layer cache carried between jobs or runs. Every containerized job pays a **full pull**.
+**The correction first.** I was told an image pull is "layer-cached on the runner". **On GitHub-hosted runners that is false.** Each job gets a fresh VM; no layer cache is carried between jobs or runs. Every containerized job pays a **full pull**. That stands.
 
-So the time arithmetic is honestly:
+**But I then over-corrected**, and the over-correction was the more damaging error. I wrote that the saving is `install − pull`, that `pull` is unmeasured, and therefore that the case rests on structural wins. That framing treats install-time and pull-time as **symmetric unknowns**. They are not, and Aaron's push-back is the correction — *"docker pulls are much more reliable to os or package manger installs and usually much faster."*
 
-```
-saving per job  =  install_seconds  −  pull_seconds
-```
+The asymmetry is structural and my own measurements show it:
 
-and `pull_seconds` is **unmeasured** until the image publishes. `speculative`: a slim image is likely in the low single-digit GB compressed and GHCR-to-Azure throughput is high, so the pull plausibly lands well under the 115 s mean install — but that is a projection, not a result. The workflow prints extracted size, layer count, and post-build disk on every run specifically so the first `main` build replaces this paragraph with a number — the extracted half has already arrived (**6.25 GB**, §5.0) and it is large enough that the compressed figure is now the single most decision-relevant unknown in this document. `image-pull-measurement.yml` already exists in this repo for exactly this kind of question and is the right instrument to point at the published digest.
+| | a pull | an install |
+|---|---|---|
+| artifacts fetched | **one**, content-addressed | ~149 apt packages + the whole mise tool graph |
+| origins | **one** registry, same infrastructure as the runner | a dozen upstreams: Ubuntu mirrors, GitHub releases, PyPI, npm, crates, CDNs |
+| result of a repeat | **byte-identical**, by digest | whatever the mirror resolves to today |
+| failure surface | registry down | any mirror slow, stale, rate-limited, moved, or down |
+| measured spread here | **unknown** (§5.0 gives bytes, not seconds) | **mean 115 s, max 465 s — a 4× spread** |
 
-What is **not** speculative, and is the stronger part of the case:
+So the claim this design is making is **not** "a pull is faster on average". It is:
 
-- **Cache-budget relief** is structural, not a projection (§6.3).
-- **Failure-mode change** is structural: one large sequential pull from a single registry replaces ~149 apt fetches plus the whole mise tool graph from a dozen upstreams. The exit-124 class is a mirror-stall class; it does not exist on the pull path.
-- **The pull is deterministic where the install is not.** A digest resolves to the same bytes forever; `apt-get install` resolves against a mirror that moves.
+> **A pull has a tighter distribution and a smaller failure surface than a multi-mirror package install. Eliminating the tail and the timeout class is the prize. Mean-time parity would already be a win.**
 
-If the measured pull time turns out to be *worse* than the install, that is a real result and this proposal should be scoped down to the lanes where reliability alone justifies it (`low-memory`, and anything under a hard cap). Say so; do not defend the design.
+That is a sharper claim than the one I made, and — importantly — a falsifiable one.
+
+**What would falsify it**, stated before the measurement rather than after:
+
+1. a cold pull whose **p95 is comparable to the install's p95** (~465 s here) — i.e. the pull has a fat tail too;
+2. a **registry failure class of similar frequency** to the mirror-stall class — GHCR outages, rate limits, or digest-resolution failures showing up at anything like the rate exit-124 does;
+3. a pull whose **mean is materially worse** than the install's mean, which would mean the tail is being bought at a price the median pays every run.
+
+Any one of those and the proposal should shrink to the lanes where reliability alone justifies it (`low-memory`, and anything under a hard cap). **If the measurement comes back bad it lands as loudly as if it came back good.** The instruments below are deliberately built to report the *worst* of several samples, not the best.
+
+#### The two facts about install failures, neither cancelling the other
+
+- `metered`: **0 failures in my 105-step sample** (§6.2). Real, and it means install failures are not constant.
+- `consistent with` the in-tree record: the exit-124 mirror-stall class is documented at length in `low-memory.yml`, `gate.yml`, and `apt-archive-cache.ts`, the last of which records **"17 jobs died at exit 124 in the install step under six different job names"** in one five-hour window on 2026-08-25.
+
+A 0/105 sample does not exclude a tail event that the tree records happening. **Both belong here.** The install is not usually broken; it is occasionally, expensively, and unpredictably broken — which is precisely a variance problem and precisely what a single mean would hide.
+
+#### What is now measured, and what still is not
+
+`metered` — the **wire size** is no longer a guess. `image-wire-size.ts` pushes the built image to a throwaway local `registry:2` and reads the manifest the registry itself produces, summing `config.size + layers[].size`. That is the exact byte count a `docker pull` moves. It is not the 6.25 GB extracted figure divided by a ratio, and the script **refuses** an OCI index rather than summing it to zero — the repo has been bitten before by an aggregate compression ratio standing in for the decisive number (`image-pull-measurement.yml`'s own header says so).
+
+`metered` — **GHCR-to-hosted-runner throughput** is measured on a genuinely cold pull of `ghcr.io/lucent-financial-group/zeta-portal`, an image this org already publishes and this runner has never seen. Its wire size is read from the GHCR manifest, the pull is timed, and the two give MiB/s. The workflow then prints an estimate for our own image that multiplies **two measured numbers and guesses neither** — still a derivation, and labelled as one, because a different image has a different layer count and parallelism profile.
+
+`speculative` until publish — **wall-clock pull time of our own digest.** The artifact is not in a registry until this lands on `main`, so the honest answer today is that it has not been measured. What ships with this change is the instrument: a `pull-measure` job that fires on publish, runs **three legs on three fresh runners**, asserts each runner is cold before timing anything (a warm runner fails the leg rather than reporting a fast pull), and reports every leg so the **worst** is visible. Three samples is not a distribution, but it is the difference between "40 s" and "40 s, 41 s, 380 s", which is the whole question.
+
+Two things that remain structurally true regardless of how the pull times land:
+
+- **Cache-budget relief** (§6.3) — an image pull writes nothing to the Actions cache.
+- **Determinism** — a digest resolves to the same bytes forever; `apt-get install` resolves against a mirror that moves under you.
 
 ### 6.5 A cost this change accepts and states
 
@@ -363,8 +409,9 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 
 Stated so a green here is not read as coverage it does not have:
 
-- **The exit-124 reports.** Not reproduced in my window (§6.2). `consistent with` the in-tree record; not `metered` by me.
-- **Pull time.** Still unmeasured, and it is the number the whole time-saving argument turns on. The image now has a measured **extracted** size — 6.25 GB, §5.0 — but nothing has been pushed, so the **compressed** size that actually crosses the wire is unknown and must not be derived from a compression ratio (`image-pull-measurement.yml` exists because that error was made before). ~~No image has been built~~ — superseded: it built and ran green in CI on this PR; see §5.0.
+- **The exit-124 reports.** Not reproduced in my 105-step sample (§6.2), and the tree records 17 such deaths in one window on 2026-08-25 (`apt-archive-cache.ts`). Both facts are kept in §6.4; neither cancels the other, and the 0/105 does **not** exclude the tail.
+- **Wall-clock pull of our own digest.** Not measurable before publish — the artifact is not in a registry yet. What is now measured: the **exact wire size** (local-registry manifest, not a ratio) and **GHCR-to-runner throughput** on a real cold pull (§6.4). What ships: `pull-measure`, three cold legs on three fresh runners against the published digest, each asserting the runner is cold before timing. `speculative` until it fires; the worst leg is what gets quoted.
+- **Variance of the pull.** Three legs is not a distribution. It distinguishes "40 s every time" from "40 s, 41 s, 380 s", which is the question, but it will not give a real p95. If the pull turns out to matter, `image-pull-measurement.yml` is the instrument for a proper sample.
 - **Whether `ubuntu-slim` has a container runtime.**
 - **Whether CodeQL's action tolerates a job-level `container:`.**
 - **The "~69 GiB/hour of writes against a 9.31 GiB ceiling, 23 GiB evicted in 61-second sweeps, 80% of evicted bytes never read" cache figures** I was handed. I measured the *standing* number instead (22.34 GB active across 40 caches, §6.3). The rate figures are another agent's lane and I did not re-derive them.
