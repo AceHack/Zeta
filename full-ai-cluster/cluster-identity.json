@@ -1,0 +1,25 @@
+{
+  "_comment": [
+    "THE identity of the cluster this tree builds. One value, one place.",
+    "",
+    "Everything network-shaped about the cluster is DERIVED from `clusterName`:",
+    "the k3s --cluster-cidr and --service-cidr (nixos/modules/cluster-network.nix),",
+    "and Cilium's ClusterMesh cluster.name / cluster.id (k8s/bootstrap/cilium-install.yaml",
+    "and k8s/applications/cilium/Application.yaml). The derivation is",
+    "src/Core.TypeScript/cluster/cluster-cidr.ts, with a byte-locked Nix twin.",
+    "",
+    "A SECOND, FEDERATABLE CLUSTER is a second checkout of this tree with a",
+    "different clusterName here. There is no allocator and no registry to ask:",
+    "distinct names derive distinct CIDRs and distinct cluster ids, which is what",
+    "Cilium ClusterMesh requires. See the module docstring for the collision bound",
+    "-- Cilium's cluster-id is 8 bits, so the derivation is collision-RESISTANT and",
+    "never collision-free, and the mitigation is detection plus renaming.",
+    "",
+    "DELIBERATELY NOT INJECTABLE FROM THE FLASH MEDIUM. The Cilium values live in",
+    "checked-in YAML that ArgoCD reconciles from git; a per-USB cluster name could",
+    "not move them, so an injected name would put the CNI and the control plane on",
+    "different networks with nothing to say so. Changing the cluster identity is a",
+    "repo edit that `lint-cluster-cidr-agreement.ts` re-checks across all surfaces."
+  ],
+  "clusterName": "zeta"
+}

@@ -247,6 +247,37 @@ populated path, the NetworkManager keyfile pickup, MAC-based NIC selection, and
 reachability of 6443 across the segment are **UNVERIFIED**. See `JoinBlocker`
 in `src/Core.TypeScript/zflash/test-harness/scenarios.ts`.
 
+### 5c. Server-side join — the branch that decides FOUND vs JOIN
+
+| Property                | Value                                                                                                                                                                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage**               | reuses point 5's `zeta-firstboot.conf` and point 6's `zeta-join-token`; **no new ESP file**                                                                                                                                                              |
+| **Content class**       | one public identifier (the join endpoint) + one secret (the token, already covered by point 6's recorded exception)                                                                                                                                      |
+| **Backed by files**     | `/etc/zeta/cluster-join-server-url` **and** `/etc/zeta/k3s-join-token` (0600) — both staged by `zeta-install.sh` and symlinked so Nix evaluation sees what the installed system will see                                                                 |
+| **NixOS reader module** | `nixos/modules/injected-server-join.nix`                                                                                                                                                                                                                 |
+| **Validation**          | ALL-OR-NONE. Both present ⇒ `clusterInit := false`, `serverAddr := <url>`, `tokenFile := /etc/zeta/k3s-join-token`. Exactly one present ⇒ **assertion failure at Nix evaluation**, naming which half is missing. Neither ⇒ founding, byte-for-byte unchanged |
+| **Runtime guard**       | `nixos/modules/k3s-datastore-preflight.nix` — refuses to start k3s when a node provisioned to join already holds a datastore, because k3s IGNORES every one of the options above in that state                                                            |
+| **Checked by**          | `nixos/tests/k3s-server-join-eval-test.nix` (5 scenarios) · `src/Core.TypeScript/hygiene/lint-k3s-datastore-preflight.test.ts` (executes the guard over fixtures)                                                                                        |
+
+**Why it exists:** point 5 provisioned a role, and `injected-join-server.nix`
+guards itself to `services.k3s.role == "agent"`. So a WORKER could be told to
+join and a CONTROL PLANE could not — every machine built from the
+`control-plane` flake host called `--cluster-init` and founded its own cluster
+whatever the medium said. The signature of that defect is two k3s CAs on one
+LAN with founding epochs twelve days apart.
+
+**Why the token is NOT at `/var/lib/rancher/k3s/server/token`:** k3s manages and
+writes that path itself. Pre-seeding it conflates "the credential I present to
+join" with "the credential I hand out". `/etc/zeta/k3s-join-token` is neither.
+
+**Only its PRESENCE is read at evaluation time.** A NixOS module evaluates into
+the world-readable Nix store, so `builtins.readFile` on a cluster credential
+would copy it there. The `K10<64 hex>::…` content check stays in
+`zeta-install.sh`, on the machine, where the bytes already are.
+
+**UNEXERCISED on hardware.** Every branch is pinned at Nix evaluation and the
+runtime guard is executed over fixtures in CI; nothing here has been booted.
+
 ### 6. k3s node-token (joiner) — plaintext on ESP, opt-in
 
 | Property                  | Value                                                                                                                                                                  |

@@ -1,0 +1,9 @@
+NOT A CREDENTIAL. This file exists so that `builtins.pathExists` returns true
+for `nixos/tests/k3s-server-join-eval-test.nix`'s "token is present" branch.
+
+`nixos/modules/injected-server-join.nix` reads only the PRESENCE of its
+tokenFile, never its contents -- a NixOS module evaluates into the
+world-readable Nix store, so reading a cluster credential there would copy it
+into the store. That design choice is what lets this fixture be an empty
+placeholder instead of a real k3s token, and it is why there is no secret in
+this directory to leak.

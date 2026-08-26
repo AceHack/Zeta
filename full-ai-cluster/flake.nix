@@ -237,6 +237,57 @@
               echo "$status" | tee "$out"
             '';
 
+          # The cluster-CIDR derivation: pod/service CIDRs and the Cilium
+          # ClusterMesh cluster-id, derived from `cluster-identity.json` rather
+          # than hardcoded 10.42/10.43 on every node ever flashed.
+          #
+          # NOT a VM test and NOT a boot test. It replays the golden vectors in
+          # `nixos/tests/cluster-cidr-golden-vectors.json` through the SHIPPED
+          # Nix derivation (`nixos/lib/cluster-cidr.nix`) -- the same file
+          # `modules/cluster-network.nix` calls -- and throws on the first
+          # disagreement, naming the field. The TypeScript twin replays the same
+          # vectors from the other side, so the file is a cross-language
+          # byte-lock rather than a snapshot of one implementation.
+          #
+          # READ THIS BEFORE COUNTING IT AS COVERAGE: no workflow in this
+          # repository runs `nix flake check` on this flake. The CI-executed
+          # falsifier for the same derivation is
+          # `src/Core.TypeScript/hygiene/lint-cluster-cidr-agreement.test.ts`,
+          # which the gate does run.
+          cluster-cidr-derivation =
+            let
+              report = import ./nixos/tests/cluster-cidr-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "cluster-cidr-derivation" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
+          # ONE NODE FOUNDS; EVERY OTHER ONE JOINS -- the option values
+          # `modules/injected-server-join.nix` produces, in all five states.
+          #
+          # NOT a VM test and NOT a boot test; it says nothing about whether k3s
+          # joins (that is `k3s-agent-join` below, and `k3s-join-observer.nix`
+          # on hardware). What it pins is the thing nothing evaluated before:
+          # that a control plane carrying a join endpoint and a token stops
+          # calling `--cluster-init`. Without that, every machine built from the
+          # `control-plane` config founded its OWN cluster whatever the medium
+          # said -- the defect whose signature is two k3s CAs on one LAN with
+          # founding epochs twelve days apart.
+          #
+          # Costs no VM (it stubs the four `services.k3s` options rather than
+          # importing nixpkgs' k3s module) and runs on every system.
+          k3s-server-join-model =
+            let
+              report = import ./nixos/tests/k3s-server-join-eval-test.nix {
+                inherit (nixpkgs) lib;
+              };
+            in
+            pkgs.runCommand "k3s-server-join-model" { inherit (report) status; } ''
+              echo "$status" | tee "$out"
+            '';
+
           # Properties of the TPM-SEAL desired-state model — the module that
           # answers "what can the nix installer pre-stage for a hardware-backed
           # auto-unseal", and the gate that stops it from deciding seal-key

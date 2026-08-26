@@ -1,5 +1,7 @@
 {
   "independent": 18,
   "bytes": 453975,
-  "exceptions": []
+  "exceptions": [
+    "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh — systemd ExecStartPre for k3s.service, not a shell-spawned child. The refusal it implements (a surviving server datastore on a box being re-flashed as a worker) must run BEFORE k3s starts, in a unit ordered ahead of it, so no stage-0 shell script can be its parent: `k3s-datastore-preflight.nix` sets ExecStart = bash ${preflightScript}. Routing it behind an existing door would mean running it after the thing it exists to gate. Kept a standalone .sh rather than inlined into the Nix string so its logic is EXECUTABLE against fixture disks in a unit test (see the module docstring) — a door admitted so the falsifier can reach it."
+  ]
 }

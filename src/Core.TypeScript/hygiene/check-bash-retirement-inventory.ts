@@ -76,6 +76,7 @@ const INACTIVE_SHELL_INVENTORY_PREFIXES: readonly string[] = ["db/", "docs/recov
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
+  "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "githooks/pre-push",
@@ -119,6 +120,15 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
+  // A systemd `ExecStart` on a NixOS cluster node, ordered before k3s.service:
+  // it refuses to let k3s start when a node provisioned to JOIN already holds a
+  // datastore (k3s silently IGNORES every join argument in that state). The
+  // retained-shell edge is the boot path itself -- the node's closure carries
+  // no bun, and an ExecStart cannot wait for one. Kept as a tracked `.sh`
+  // rather than an inline Nix string on purpose: an inline string would drop
+  // off this inventory while still being bash, and it could not be EXECUTED by
+  // `lint-k3s-datastore-preflight.test.ts`, which runs every branch of it in CI.
+  "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message

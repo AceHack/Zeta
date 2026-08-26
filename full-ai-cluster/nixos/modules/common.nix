@@ -25,6 +25,25 @@
     # /etc/hosts entry that `k3s-server.nix` calls "the robust path". No-op on
     # hosts with no /etc/zeta/cluster-segment-* files — they keep DHCP.
     ./injected-cluster-address.nix
+    # ONE NODE FOUNDS; EVERY OTHER ONE JOINS. `injected-join-server.nix` above
+    # covers AGENTS only (it guards itself to `role == "agent"`), so a machine
+    # flashed from the `control-plane` config founded its OWN cluster no matter
+    # what the medium said -- the defect whose signature is two k3s CAs on one
+    # LAN with founding epochs twelve days apart. This module is the server
+    # half: endpoint + token present => join; either absent => refuse at eval;
+    # both absent => byte-identical to today's sovereign-by-default founding.
+    ./injected-server-join.nix
+    # The runtime half of the same story. k3s IGNORES --cluster-init/--server/
+    # --token-file when a datastore already exists on disk, so a declarative
+    # join is a SILENT no-op on a re-flash that did not wipe. This unit refuses
+    # to let k3s start in that state, prints why on console and serial, and
+    # deletes nothing. No-op on a from-scratch flash, which is the normal case.
+    ./k3s-datastore-preflight.nix
+    # The cluster's pod/service CIDRs, DERIVED from `cluster-identity.json`
+    # instead of hardcoded 10.42/10.43 on every node ever flashed. Contributes
+    # options plus three assertions (name shape; the two Cilium manifests agree
+    # with the derived pod CIDR) -- no service, no unit, no boot-path change.
+    ./cluster-network.nix
     # 081KSE6WT0008QG0R000CV98PV (R3 of the USB design document): the PUBLISHER
     # half of bootstrap-or-join. A control plane advertises `_zeta-k3s._tcp`
     # so a booting node can tell "there is already a cluster here" from "there

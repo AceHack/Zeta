@@ -22,12 +22,26 @@ spec:
       releaseName: cilium
       valuesObject:
         kubeProxyReplacement: true
+        # Cluster identity for ClusterMesh, derived from the same `clusterName`
+        # as the CIDR. Must match the bootstrap manifest or the two reconcilers
+        # disagree about who this cluster IS.
+        cluster:
+          name: zeta
+          id: 31
         k8sServiceHost: control-plane
         k8sServicePort: 6443
+        # POD CIDR IS DERIVED. It must equal k3s' `--cluster-cidr`, which
+        # `nixos/modules/k3s-server.nix` takes from `zeta.cluster.podCidr`, a
+        # pure function of `clusterName` in `full-ai-cluster/cluster-identity.json`
+        # (currently "zeta" -> 10.143.0.0/17). THIS FILE IS THE ONE THAT BITES: ArgoCD
+        # reconciles it from git with selfHeal, so a stale value here is not a
+        # disagreement, it is re-applied over the bootstrap manifest on every
+        # sync. `nixos/modules/cluster-network.nix` asserts this file mentions
+        # the derived value.
         ipam:
           mode: cluster-pool
           operator:
-            clusterPoolIPv4PodCIDRList: [ "10.42.0.0/16" ]
+            clusterPoolIPv4PodCIDRList: [ "10.143.0.0/17" ]
 
         # BPF MASQUERADE (required by the spec).
         bpf:
@@ -36,7 +50,7 @@ spec:
         # Routing: native routing is faster than VXLAN encapsulation
         # when the underlying network supports it.
         routingMode: native
-        ipv4NativeRoutingCIDR: "10.42.0.0/16"
+        ipv4NativeRoutingCIDR: "10.143.0.0/17"
         autoDirectNodeRoutes: true
 
         # L2 announcements: ARP-advertise LoadBalancer/externalIP addresses on the

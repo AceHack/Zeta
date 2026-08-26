@@ -1,0 +1,76 @@
+{
+  "_comment": [
+    "GOLDEN VECTORS for the cluster-CIDR derivation. TEXT, diffable, replayable",
+    "(.claude/rules/no-binary-in-proof-lineage.md).",
+    "",
+    "Two independent implementations must reproduce every row: the TypeScript",
+    "src/Core.TypeScript/cluster/cluster-cidr.ts (checked by",
+    "src/Core.TypeScript/hygiene/lint-cluster-cidr-agreement.test.ts) and the Nix",
+    "twin full-ai-cluster/nixos/modules/cluster-network.nix (checked by",
+    "full-ai-cluster/nixos/tests/cluster-cidr-eval-test.nix). Nix cannot import",
+    "TypeScript, so this file IS the coupling; edit one implementation alone and",
+    "one of the two goes red.",
+    "",
+    "hash16 is the first four hex digits of sha256(clusterName) as a decimal",
+    "integer. It is pinned separately from clusterId so a hash disagreement reads",
+    "as a hash disagreement rather than as a mysterious CIDR difference."
+  ],
+  "vectors": [
+    {
+      "clusterName": "zeta",
+      "hash16": 23745,
+      "clusterId": 31,
+      "podCidr": "10.143.0.0/17",
+      "serviceCidr": "10.99.192.0/19"
+    },
+    {
+      "clusterName": "zeta-home",
+      "hash16": 57066,
+      "clusterId": 202,
+      "podCidr": "10.228.128.0/17",
+      "serviceCidr": "10.121.32.0/19"
+    },
+    {
+      "clusterName": "zeta-lab",
+      "hash16": 47228,
+      "clusterId": 54,
+      "podCidr": "10.154.128.0/17",
+      "serviceCidr": "10.102.160.0/19"
+    },
+    {
+      "clusterName": "zeta-ci",
+      "hash16": 7966,
+      "clusterId": 62,
+      "podCidr": "10.158.128.0/17",
+      "serviceCidr": "10.103.160.0/19"
+    },
+    {
+      "clusterName": "a",
+      "hash16": 51863,
+      "clusterId": 99,
+      "podCidr": "10.177.0.0/17",
+      "serviceCidr": "10.108.64.0/19"
+    },
+    {
+      "clusterName": "z9",
+      "hash16": 37141,
+      "clusterId": 167,
+      "podCidr": "10.211.0.0/17",
+      "serviceCidr": "10.116.192.0/19"
+    },
+    {
+      "clusterName": "node-115f93",
+      "hash16": 32464,
+      "clusterId": 80,
+      "podCidr": "10.167.128.0/17",
+      "serviceCidr": "10.105.224.0/19"
+    },
+    {
+      "clusterName": "abcdefghijklmnopqrstuvwxyz012345",
+      "hash16": 25915,
+      "clusterId": 161,
+      "podCidr": "10.208.0.0/17",
+      "serviceCidr": "10.116.0.0/19"
+    }
+  ]
+}

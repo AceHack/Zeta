@@ -169,7 +169,14 @@ describe("buildInventoryReport", () => {
       },
       {
         category: "host-service wrappers",
-        files: [".gemini/service/install-lior-service.sh", ".gemini/service/lior-loop.sh"],
+        files: [
+          ".gemini/service/install-lior-service.sh",
+          ".gemini/service/lior-loop.sh",
+          // systemd ExecStart on a NixOS cluster node, ordered before
+          // k3s.service. The node's closure carries no bun, so the boot path
+          // is a retained-shell edge.
+          "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
+        ],
       },
       {
         category: "nixos installer",
@@ -299,7 +306,7 @@ describe("renderReport", () => {
       report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
     expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- git hooks: 4");
-    expect(renderReport(report)).toContain("- host-service wrappers: 2");
+    expect(renderReport(report)).toContain("- host-service wrappers: 3");
   });
 
   test("renders drift sections", () => {

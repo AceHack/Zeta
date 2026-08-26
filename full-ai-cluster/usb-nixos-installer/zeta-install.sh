@@ -2069,6 +2069,23 @@ if [ -n "$PUBKEY_FILE" ]; then
          | grep -Eq '^K10[0-9a-f]{64}::.+$'; then
       sudo install -D -m 0600 "$BOOT_USB_JOIN_TOKEN" /mnt/var/lib/rancher/k3s/agent/token
       echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   installed k3s node-token → /mnt/var/lib/rancher/k3s/agent/token"
+      # ...and the SERVER copy, for a joining CONTROL PLANE.
+      #
+      # The line above is the AGENT path (`k3s-agent.nix` points `tokenFile`
+      # there). A joining SERVER needs its own, and it must NOT be
+      # /var/lib/rancher/k3s/server/token: that path is managed and written by
+      # k3s itself, so pre-seeding it conflates "the credential I present to
+      # join" with "the credential I hand out". `/etc/zeta/k3s-join-token` is
+      # neither, which is why `nixos/modules/injected-server-join.nix` points
+      # `tokenFile` there.
+      #
+      # WHY BOTH, unconditionally, rather than picking by role: this script
+      # does not know which flake host it is installing at this point, and a
+      # copy on the unused path costs one 0600 file. Guessing wrong costs a
+      # node that boots, runs, and never joins -- the failure mode with no
+      # symptom, which is the one this whole change exists to remove.
+      sudo install -D -m 0600 "$BOOT_USB_JOIN_TOKEN" /mnt/etc/zeta/k3s-join-token
+      echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   installed k3s join token   → /mnt/etc/zeta/k3s-join-token (server-join path)"
     elif sudo test -s "$BOOT_USB_JOIN_TOKEN"; then
       echo "[081KSNY2Z0008QG0R0008PN7RQ-role]   REFUSED: zeta-join-token carries no cluster CA hash" >&2
       echo "[081KSNY2Z0008QG0R0008PN7RQ-role]           (expected K10<64 hex>::<creds> — use the founder's" >&2
@@ -3048,6 +3065,13 @@ maybe_symlink /mnt/etc/zeta/operator-authorized-keys /etc/zeta/operator-authoriz
 # without this symlink a joiner's serverAddr would silently stay at the
 # k3s-agent.nix default and the node would dial the wrong host.
 maybe_symlink /mnt/etc/zeta/cluster-join-server-url /etc/zeta/cluster-join-server-url
+# Same bug class again, and this one decides whether a control plane FOUNDS or
+# JOINS. `injected-server-join.nix` overrides `clusterInit` to false only when
+# BOTH the endpoint above and this token are visible at evaluation time; with
+# the token invisible it takes the half-provisioned branch and REFUSES, which
+# is loud but is not the install anyone wanted. Symlinked so evaluation sees
+# what the installed system will see.
+maybe_symlink /mnt/etc/zeta/k3s-join-token /etc/zeta/k3s-join-token
 
 # 081KSNY2Z0008QG0R0008PN7RQ QEMU phase-3: non-interactive CI installs enable boot-time first-session
 # demo (systemd oneshot tees markers to ttyS0; qemu-full-install-test asserts them).

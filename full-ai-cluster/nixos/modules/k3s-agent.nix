@@ -12,6 +12,15 @@
     # server joins nothing, and a witness on it would announce a join that
     # never happened.
     ./k3s-join-observer.nix
+
+    # The module that DEFINES `zeta.k3sDatastorePreflight`, whose `enable` this
+    # file sets below. Setting an option without importing its definer makes
+    # this module evaluable ONLY through `common.nix` (which imports both) and
+    # a hard evaluation error everywhere else — including every NixOS VM test,
+    # all of which import the role module directly and by design. Imported here
+    # for the same reason `k3s-join-observer.nix` is: this file owns the
+    # option's value, so it owns the import.
+    ./k3s-datastore-preflight.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
@@ -20,6 +29,13 @@
   # console and on serial, so 081KSNY2Z0008QG0R0008PN7RQ scenario 5 has
   # something real to watch. `lib.mkDefault` so a host can switch it off.
   zeta.k3sJoinObserver.enable = lib.mkDefault true;
+
+  # A worker normally has no `/var/lib/rancher/k3s/server/db/etcd` at all, so
+  # this passes and changes nothing. It is enabled anyway because the case it
+  # catches is precisely the one nobody expects: a box that was a control plane
+  # once, re-flashed as a worker onto a disk whose server datastore survived.
+  # k3s would then ignore the join arguments and resume being a server.
+  zeta.k3sDatastorePreflight.enable = lib.mkDefault true;
 
   services.k3s = {
     enable = true;
