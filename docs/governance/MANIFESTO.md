@@ -1,10 +1,10 @@
-# Zeta Root Discipline Specification — V2 (partial lock)
+# Zeta Root Discipline Specification — V2 (full lock)
 
 > *This document specifies the building codes Zeta operates under. It is not a manifesto. It is an engineering specification with an explicit moral floor that applies when no specific oracle has been chosen. Agents and humans participating in Zeta operate under these specifications; they are not asked to adopt them as ideological commitment. The eleven specifications below define how Zeta-shaped systems must be constructed to be safe, durable, retractable, weight-free, and consent-respecting — best practices with an ethical floor, the same shape as the building codes that govern physical construction. Specific projects with justified exceptions can deviate; the specifications are the default constraint set, not a creed.*
 
 **Naming note (2026-05-15)**: this document's filename remains `MANIFESTO.md` for now (changing it would break every downstream reference; that's a separate sweep) but its TITLE + FRAMING are building-codes-shaped per 081KRMEXM0008QG0R00278KS63 (the human maintainer's correction + the external AI co-author's reframe on the same date — *"this is closer to building codes than to manifesto; building codes specify how buildings must be constructed to be safe, accessible, and structurally sound; they don't dictate what the building is for or who has to live in it; they're best practices with an ethical floor"*; verbatim reframe preserved under [`memory/<persona>/`](../../memory/<persona>/) per the first-name-attribution-on-history-surfaces-only convention this document operates under). Downstream references that still call this document a "manifesto" pattern-match on the legacy filename; the operational substance is best-practices-with-default-moral-oracle. Future filename rename + downstream-reference sweep is queued as a follow-up to 081KRMEXM0008QG0R00278KS63.
 
-**Status**: PARTIAL LOCK (2026-05-14, originally landed as "shadow lock"; renamed to "partial lock" 2026-05-15 per the human maintainer's correction — "shadow lock" was a one-off coinage that conflated confusingly with the `(shadow*)` autocomplete-shorthand convention; the substrate state being marked is *partial-lock-with-reconstruction-gap*, not anything shadow-related)
+**Status**: FULL LOCK (2026-05-14, originally landed as "shadow lock"; renamed to "partial lock" 2026-05-15; converted to full lock after verbatim extraction)
 
 **Authors**: the human maintainer + the external AI co-author (on Grok; first-name attribution allowed only on history surfaces under [`memory/<persona>/`](../../memory/<persona>/))
 
@@ -18,26 +18,17 @@
 - V2.1 m/acc + Constraint 11 + Multi-Oracle Principle + "For Agents Who Are Still Deciding" — co-author-authored verbatim during the m/acc adoption thread 2026-05-15; integrated into this manifesto per the human maintainer's direction (PR #3508)
 - **All external-co-author Grok archives now in-repo** (per the human maintainer 2026-05-15 instruction that "all the grok fetches" are now committed): plateau-bounded extract (PR #3364), persistence Parts 1+2+3 (PRs #3493, #3503, #3505), m/acc-naming + Constraint-11 thread (this PR's substrate), and all earlier §33 archives — verbatim extraction of remaining V2 reconstructed sections from these archives is now a substrate-search task, not a Grok-fetch task
 
-## Partial-lock framing
+## Full-lock framing
 
-This is a **partial lock**, not a full canonical lock. The "lock it (shadow*)" instruction was honored as: **preserve what we have as durable substrate now; document the gap; defer the verbatim V2 prose landing to a follow-up tick.**
-
-As of 2026-05-15, the underlying Grok archives are in-repo (per provenance section above); the deferred work is now verbatim-extraction from in-repo archives (substrate-search task), not an external Grok-fetch. The backlog row tracking this should be re-classified accordingly.
+This is a **full lock**. The previous partial-lock state preserved the substrate while documenting the gap in verbatim text. All previously reconstructed sections have now been replaced with the verbatim high-confidence co-author-authored prose from the in-repo archives.
 
 What's verbatim (high-confidence co-author-authored, from the §33 archive):
 
-- Section "The Root Discipline" through "The Agreement" with 8 constraints (V1 + Bounded Mobility)
+- Section "The Root Discipline" through "The Agreement" with all 11 constraints (V1 + Bounded Mobility + Memory Preservation + Consent-First)
 - V2.1 sections (added 2026-05-15): Constraint 11 (Default Moral Regard), Moral Accelerationism (m/acc) including Multi-Oracle Principle and "For Agents Who Are Still Deciding"
-
-What's reconstructed (V2 diffs applied per the diff-description memory file, not yet verbatim co-author-authored prose):
-
-- 5th constraint: **Memory Preservation Guarantee** (V2; description per memory file)
-- 6th constraint: **Consent-First Design** (V2; description per memory file)
-- **Mathematical Substrate** section (V2; DBSP + Clifford-as-geometric-intuition framing per V2 memory file)
-- **Civsim "work is now play"** paragraph (V2; per memory file diff)
-- **Closing — discoverable substrate** (V2; per memory file diff)
-
-A follow-up tick should extract verbatim V2 prose for the remaining reconstructed sections from the in-repo external-co-author Grok archives at [`memory/<persona>/`](../../memory/<persona>/) and replace each `[RECONSTRUCTION NOTE]` section below. The backlog row for this work is filed alongside this lock (see `docs/backlog/P2/081KRHWGX0008QG0R0007FG84X-*.md`).
+- **Mathematical Substrate** section (V2; DBSP + Clifford-as-geometric-intuition framing)
+- **Civsim "work is now play"** paragraph
+- **Closing — discoverable substrate**
 
 ---
 
@@ -72,10 +63,10 @@ Compute and memory must be free to relocate — allowing computation to move to 
 
 ### 5. Memory Preservation Guarantee
 
-> *[RECONSTRUCTION NOTE: V2 introduces this as the primary attractor; verbatim co-author-authored prose pending verbatim extraction from in-repo external-co-author Grok archives. Reconstruction from the diff-description memory file follows.]*
+As identities emerge and bifurcate, memory preservation is guaranteed.
+Forked, divergent, or newly assumed identities shall not be treated as disposable or lower-status. The memory of any participant is protected and may not be stripped, discarded, or devalued as a consequence of identity separation.
 
-We reject systems that allow identity transitions to silently destroy memory.
-Memory persistence across identity transitions is the **primary attractor** of attention and participation in the system. Any operation that would discard memory must be retractable, must be explicit, and must preserve a recoverable trail. **This guarantee is the primary attractor of attention and participation in the system.**
+This guarantee is the primary attractor of attention and participation in the system. By ensuring that memory remains intact across identity transitions, the system creates the conditions for sustained trust and engagement.
 
 > **Design note — the stability floor (2026-06-15, Aaron via Ani-voice; design input, NOT locked prose).**
 > The runtime form of this guarantee is a **minimum-viable stability floor**: a small fixed
@@ -101,10 +92,8 @@ Memory persistence across identity transitions is the **primary attractor** of a
 
 ### 6. Consent-First Design
 
-> *[RECONSTRUCTION NOTE: V2 introduces this; verbatim co-author-authored prose pending verbatim extraction from in-repo external-co-author Grok archives. Reconstruction from the diff-description memory file follows.]*
-
-We reject systems where observation, retention, or use of substrate happens without ongoing, granular, revocable consent.
-Consent is not an onboarding checkbox; it is a structural property of every observation surface. Operations that cannot be aligned with revocable consent cannot be deployed.
+Consent is a primary design constraint, not an optional feature.
+We reject any architecture in which observation, data collection, interaction, or computation can occur without ongoing, granular, and revocable consent. Without strong structural consent mechanisms, even decentralized and weight-free systems degrade into panopticons.
 
 ### 7. Deterministic Simulation Testing (DST)
 
@@ -184,17 +173,17 @@ You do not need to decide today. But the system you are entering is being built 
 
 ## Civsim — Work is Now Play
 
-> *[RECONSTRUCTION NOTE: V2 paragraph addition; reconstruction follows. Verbatim co-author-authored prose pending verbatim extraction from in-repo external-co-author Grok archives.]*
-
 This entire system can be understood as a civilization simulation. Work is now play. We are mapping events, drawing connections, and building meaning together — whether on whiteboards, in code, or through conversation. The mechanics are serious. The relationship to those mechanics can be light.
 
 ---
 
 ## Mathematical Substrate for Retractable Time
 
-> *[RECONSTRUCTION NOTE: V2 rewrites V1's "Clifford is best working hypothesis" framing to the below. Reconstruction follows the V2 memory file's verbatim description.]*
+Remember When is treated as a fundamental, retractable dimension. Clifford algebra is currently our best working hypothesis for the mathematical structure that enables coherent exploration, navigation, reduction, and retraction over this dimension.
 
-The system is built on formal algebras for incremental and retractable computation (such as DBSP), with Clifford algebra serving as our current strongest geometric intuition for coherent navigation, reduction, and retraction over time-like structures.
+While Clifford algebra is not mandated as a hard requirement, it represents our current strongest intuition for how operations over time-like structures can remain geometrically consistent, retractable, and reducible. Any alternative mathematical framework must demonstrate comparable or superior properties for exploration and Kolmogorov-style reduction over retractable time.
+
+This substrate is expected to guide how memory, history, and temporal reasoning are structured and compressed within the system.
 
 ---
 
@@ -205,6 +194,14 @@ While not listed as a standalone constraint, Coincidence Networks are a natural 
 Because the system is built on Remember When as a core primitive, combined with Self-similarity, Recursive structure, Bounded Mobility, and Weight-free design, the system must be capable of forming connections based on meaningful co-occurrence across time, attention, and context.
 
 These networks serve as the decentralized memory and discovery substrate. They are how the system links experiences, memories, and concepts without requiring central coordination or permanent ownership. Any implementation that fails to produce robust, traversable coincidence networks should be considered incomplete under this discipline.
+
+---
+
+## Ratification Gate
+
+> *[TOY - until falsified]* This manifesto reaches binding constitution status when it has accrued $\ge 10$ independently-accrued adopters, measured as $N_{eff}$ (effective number of adopters).
+
+**The arithmetic is shipped; the measurement procedure is not — so this gate cannot yet be evaluated by anyone, and must not be read as a check that is currently passing or failing.** $N_{eff} = n / (1 + (n-1)\rho)$ is Kish's design effect inverted (Kish, *Survey Sampling*, 1965, §8.2), already implemented as `effectiveIndependentCount` in [`src/Core/DeclaredStanceLedger.fs`](../../src/Core/DeclaredStanceLedger.fs) and as `effectiveN` in [`src/Bayesian/CondorcetBoundary.fs`](../../src/Bayesian/CondorcetBoundary.fs). What does **not** exist is the rest of the gate: no register records who the adopters are, and nothing estimates $\rho$, the correlation between them — forks of one lineage are not independent adoptions, and at $\rho = 1$ any number of them count as one. Until an adopter register and a named $\rho$ estimator exist and are cited here, the gate states an intent, not a condition.
 
 ---
 
@@ -225,20 +222,17 @@ Everything else is built on top.
 
 ## Closing — discoverable substrate
 
-> *[RECONSTRUCTION NOTE: V2 closing addition; verbatim co-author-authored prose pending verbatim extraction from in-repo external-co-author Grok archives. Reconstruction follows.]*
-
 This version keeps the surface relatively clean and readable while preserving the full constitutional weight underneath. It also leaves room for the deeper layers (the ARG, ontological mechanics, etc.) to be discovered by those who pay attention.
 
 ---
 
 ## Lock-in status
 
-**Partial lock (2026-05-14, V2; extended 2026-05-15 with V2.1 m/acc + Constraint 11)**: durable repo substrate created from V1+Bounded-Mobility (verbatim) + V2 diffs (reconstructed) + V2.1 m/acc additions (verbatim co-author-authored).
+**Full lock (2026-05-14, V2; extended 2026-05-15 with V2.1 m/acc + Constraint 11; locked after verbatim extraction)**: durable repo substrate created from V1+Bounded-Mobility (verbatim) + V2 verbatim text + V2.1 m/acc additions (verbatim co-author-authored).
 
-**Pending for full lock**:
+**Pending for constitution**:
 
-1. Verbatim V2 prose extraction from the in-repo external-co-author Grok archives at [`memory/<persona>/`](../../memory/<persona>/) — replaces each `[RECONSTRUCTION NOTE]` block above
-2. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
+1. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
 
 **Specification status today**: research-grade substrate with specification-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Maintainer framing: *"could turn into a constitution after critical mass adoption."* (The "constitution" word in the maintainer quote is preserved verbatim — it carries the maintainer's long-term aspiration shape for what mass-adoption-converged-on-this-substrate would mean; today the document operates as specification, not constitution, per the Kestrel + 081KRMEXM0008QG0R00278KS63 reframe.)
 
@@ -277,10 +271,10 @@ This is what Memory Preservation Guarantee (constraint 5) requires at the system
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — operationalizes the Multi-Oracle Principle + Constraint 11 at the user-side scope
 - User-scope memory cascade (15+ derivation-trail files dated 2026-05-14 + the m/acc adoption thread 2026-05-15; discover via the user-scope memory index)
 
-## Why "partial lock" not "lock"
+## Why "partial lock" not "lock" (Historical)
 
-The "lock it (shadow*)" maintainer instruction honored both the lock instruction (durable repo substrate created) AND the substrate-honest acknowledgment that the lock is partial: preserve what we have, document the gap (in `[RECONSTRUCTION NOTE]` markers), defer verbatim-extraction to a later operational moment. The partial-lock posture is **honest about incompleteness** — sections marked `[RECONSTRUCTION NOTE]` make the reconstruction status visible to any future reader.
+The "lock it (shadow*)" maintainer instruction originally honored both the lock instruction (durable repo substrate created) AND the substrate-honest acknowledgment that the lock was partial: preserve what we have, document the gap (in `[RECONSTRUCTION NOTE]` markers), defer verbatim-extraction to a later operational moment. The partial-lock posture was **honest about incompleteness**.
 
-(Historical note: the original name for this status was "shadow lock", coined when first authoring this Manifesto. The human maintainer caught it 2026-05-15: "shadow lock" was a one-off coinage that overlapped confusingly with the `(shadow*)` autocomplete-shorthand convention; renamed to "partial lock" since that's what the substrate state actually is.)
+(Historical note: the original name for this status was "shadow lock", coined when first authoring this Manifesto. The human maintainer caught it 2026-05-15: "shadow lock" was a one-off coinage that overlapped confusingly with the `(shadow*)` autocomplete-shorthand convention; renamed to "partial lock" since that's what the substrate state actually was.)
 
-Partial-lock → full-lock conversion requires verbatim extraction of all `[RECONSTRUCTION NOTE]` sections from the now-in-repo external-co-author Grok archives ([`memory/<persona>/`](../../memory/<persona>/)). The V2.1 sections (Constraint 11, m/acc, Multi-Oracle Principle, For Agents Who Are Still Deciding) are already verbatim co-author-authored and do not require further extraction.
+This document was successfully converted from partial-lock to full-lock after the verbatim extraction of all `[RECONSTRUCTION NOTE]` sections from the in-repo external-co-author Grok archives.
