@@ -1,0 +1,12 @@
+{
+  "pr_number": 15592,
+  "archive_path": "docs/history/pr-reviews/PR-15592-k8s-close-two-silent-coverage-defects-in-the-application-render-lane-and-census-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T23:42:39.445Z",
+  "schema_version": "v1",
+  "commit_sha": "bf35d05963ed27c85f2f60b6f7e42aa83286f75b",
+  "title": "k8s: close two silent-coverage defects in the Application render lane, and census what every pre-hardware lane actually covers",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T23:42:02Z",
+  "head_ref": "k8s-prehardware-verify"
+}

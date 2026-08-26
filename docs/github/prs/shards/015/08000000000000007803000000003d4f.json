@@ -1,0 +1,12 @@
+{
+  "pr_number": 15695,
+  "archive_path": "docs/history/pr-reviews/PR-15695-feat-room-publish-truthful-durable-evidence-discovery.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T23:36:56.522Z",
+  "schema_version": "v1",
+  "commit_sha": "acef9c0b94d1a35ecc72adcb17f28dd4d5d19112",
+  "title": "feat(room): publish truthful durable evidence discovery",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T23:36:06Z",
+  "head_ref": "feat/live-room-evidence-feed"
+}
