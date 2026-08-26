@@ -1,0 +1,12 @@
+{
+  "pr_number": 15560,
+  "archive_path": "docs/history/pr-reviews/PR-15560-fix-ci-one-cache-key-family-one-key-expression-nuget-and-elan-were-split-across-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:53:54.265Z",
+  "schema_version": "v1",
+  "commit_sha": "d1f79297952739cbfd48bef27cb863d7be3702b3",
+  "title": "fix(ci): one cache key family, one key expression — nuget and elan were split across two namespaces",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:53:20Z",
+  "head_ref": "shadow/cache-key-arch-parity-slim-codeql"
+}

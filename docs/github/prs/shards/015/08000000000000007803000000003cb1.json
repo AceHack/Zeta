@@ -1,0 +1,12 @@
+{
+  "pr_number": 15537,
+  "archive_path": "docs/history/pr-reviews/PR-15537-feat-chip8-consult-verified-cross-run-transitions.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:44:06.754Z",
+  "schema_version": "v1",
+  "commit_sha": "dc639504453a907117db8bbf262e12acb7a5de08",
+  "title": "feat(chip8): consult verified cross-run transitions",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:43:20Z",
+  "head_ref": "claim/081M089ZPAY-chip8-cross-run-room-consult"
+}
