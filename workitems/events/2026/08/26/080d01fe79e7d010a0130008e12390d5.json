@@ -1,0 +1,14 @@
+{
+  "id": "080d01fe79e7d010a0130008e12390d5",
+  "at": "2026-08-26T20:42:21.306Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0ZWYF7R087G0R002RXA889",
+    "type": "task",
+    "title": "Agent-heartbeat batch-merge lane: flush heartbeat/* branches to main under one squash per cycle",
+    "slug": "agent-heartbeat-batch-merge-lane-flush-heartbeat-branches-to",
+    "priority": "P1",
+    "filename": "081M0ZWYF7R087G0R002RXA889-agent-heartbeat-batch-merge-lane-flush-heartbeat-branches-to.md"
+  }
+}

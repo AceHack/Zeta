@@ -213,6 +213,32 @@ function gh(args: string[], input?: string): { status: number; stdout: string; s
 // .github/workflows/` → pr-archive-on-merge.yml (fixed in #10764, deliberately
 // untouched here) and agent-heartbeat.yml, whose PR call is this file.
 
+/**
+ * THE LANE'S WORK-ITEM KEY — a minted ZetaId, not a shape that looks like one.
+ *
+ * `workitems/081M0ZWYF7R087G0R002RXA889-agent-heartbeat-batch-merge-lane-*.md`.
+ *
+ * It is a named constant rather than a literal inside the body array because the
+ * body array is where it was WRONG for as long as it was wrong: until 2026-08-26
+ * this trailer read `Task: 081KSKBP80008QG0R001KK9WV6`, which is a real key in the
+ * LEGACY `docs/backlog/` id space and no key at all in the one AH006 resolves
+ * (`src/Core.TypeScript/hygiene/audit-task-zetaid-resolves.ts` indexes `workitems/`
+ * only). Well-formed, mis-scoped, and therefore unresolvable — and because it lived
+ * in the GENERATOR it reddened `cross-verify` step 12 on every flush PR this lane
+ * ever opened, not on one of them. #15605 and #15551 were blocked on exactly this.
+ *
+ * Not deceit — a budget/context artifact: the id named the row that DESIGNED this
+ * lane, reached for at the moment the newer scheme's mint command was the thing that
+ * needed running. `.claude/rules/workitems-mint-with-zetaid.md` draws the line this
+ * crossed: a legacy id may be MENTIONED in prose (the body still does, as lineage)
+ * and may not be used as a KEY.
+ *
+ * The falsifier that would have caught it at authoring time now lives in
+ * `merge-heartbeats-to-main.test.ts` — it resolves this constant against the same
+ * index AH006 uses, in this file's own unit suite.
+ */
+export const HEARTBEAT_LANE_TASK_ID = "081M0ZWYF7R087G0R002RXA889";
+
 /** The lane's own credential, MEASURED not asserted — `unknown` when it cannot be read. */
 function credentialLogin(): string {
   const result = gh(["api", "user", "--jq", ".login"]);
@@ -253,7 +279,8 @@ export function heartbeatMergePrBody(base: string, ts: string, credential: strin
   // applied the divider rule to a stored commit message — but this lane's
   // liveness should not depend on a parser flag staying set.
   return [
-    "Mechanically-opened agent-tick batch merge per 081KSKBP80008QG0R001KK9WV6.4.",
+    "Mechanically-opened agent-tick batch merge. Lane design: legacy backlog row 081KSKBP80008QG0R001KK9WV6.4;",
+    `work-item key: ${HEARTBEAT_LANE_TASK_ID}.`,
     "Apply normal review policy: a tick may carry generated events, archives, repairs, or source changes.",
     "",
     "***",
@@ -274,7 +301,7 @@ export function heartbeatMergePrBody(base: string, ts: string, credential: strin
     "Human-Review: not-implied-by-credential",
     "Human-Review-Evidence: none",
     "Action-Mode: autonomous-fail-open",
-    "Task: 081KSKBP80008QG0R001KK9WV6",
+    `Task: ${HEARTBEAT_LANE_TASK_ID}`,
   ].join("\n");
 }
 

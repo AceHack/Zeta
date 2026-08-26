@@ -14,7 +14,9 @@ import {
   openMergePR,
   parseArgs,
   PR_CREATE_CREDENTIAL_ABSENT,
+  HEARTBEAT_LANE_TASK_ID,
 } from "./merge-heartbeats-to-main";
+import { extractTaskIds, indexWorkItems } from "../hygiene/audit-task-zetaid-resolves";
 import { main as validateAgencySignature } from "../hygiene/validate-agencysignature-pr-body";
 
 const TEST_ENV = {} as NodeJS.ProcessEnv;
@@ -500,5 +502,61 @@ describe("PR-CREATE credential — absence is a named refusal, never a substitut
   it("agent-heartbeat.yml carries NO multi-secret chain in any expression", () => {
     // The workflow-side half, pinned in the file that already reads this workflow.
     expect(HEARTBEAT_WORKFLOW).not.toMatch(/\$\{\{[^}]*\bsecrets\.[A-Za-z_][A-Za-z0-9_]*[^}]*\|\|[^}]*\bsecrets\./);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// THE `Task:` TRAILER NAMES A WORK-ITEM THAT EXISTS (AH006, at authoring time)
+// ---------------------------------------------------------------------------
+//
+// AH006 already checks this — in `cross-verify` step 12, against the PR BODY, once
+// per PR. That is the right backstop and the wrong feedback loop for a GENERATOR:
+// the id lives in this file, so a wrong one is not a defect in one PR, it is a
+// defect in every PR this lane will ever open. Until 2026-08-26 it was exactly
+// that: `081KSKBP80008QG0R001KK9WV6`, a real key in the LEGACY `docs/backlog/` id
+// space and no key at all in the one AH006 resolves, reddening cross-verify on
+// every flush cycle (#15605, #15551 among them).
+//
+// So the same index AH006 uses is run here, in the generator's own unit suite,
+// where it fails in seconds on the machine that wrote the constant.
+describe("the `Task:` trailer names a work-item that exists (AH006, locally)", () => {
+  const REPO_ROOT = join(import.meta.dir, "..", "..", "..");
+  const KNOWN = indexWorkItems(REPO_ROOT);
+
+  it("indexes a non-empty work-item set — an empty index would make this vacuous", () => {
+    // Without this, a broken walk makes every id below "unresolvable" and the
+    // suite goes red for the wrong reason — or, if the assertions were inverted,
+    // green over nothing. AH006's own runner exits 2 on a zero index for the same
+    // reason; this is that refusal, stated as a test.
+    expect(KNOWN.size).toBeGreaterThan(100);
+  });
+
+  it("the PR-body trailer's id resolves", () => {
+    const ids = extractTaskIds(heartbeatMergePrBody("main", "t", "AceHack"));
+    expect(ids).toEqual([HEARTBEAT_LANE_TASK_ID]);
+    expect(KNOWN.has(HEARTBEAT_LANE_TASK_ID)).toBe(true);
+  });
+
+  it("every `Task:` trailer in agent-heartbeat.yml resolves too", () => {
+    // The generator was not the only site. The tick commit and the drift-rate
+    // commit in the workflow carried the same mis-scoped id, and a fix that
+    // repaired only this file would have left two writers of unresolvable
+    // trailers behind.
+    // Split-then-trim rather than one multiline regex: `^\s*Task:\s*(\S+)\s*$`
+    // is super-linear under backtracking (sonarjs flags it), and a lint rule
+    // suppressed inside a falsifier is how a falsifier stops being maintained.
+    const ids = HEARTBEAT_WORKFLOW.split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.startsWith("Task:"))
+      .map((line) => line.slice("Task:".length).trim());
+    expect(ids.length).toBeGreaterThan(0);
+    for (const id of ids) expect(KNOWN.has(id)).toBe(true);
+  });
+
+  it("REFUSES the id this replaced — the falsifier for the falsifier", () => {
+    // Proves the index discriminates rather than accepting any well-shaped
+    // string. Point the constant back at this value and the two tests above go
+    // red; that is the whole point of writing them.
+    expect(KNOWN.has("081KSKBP80008QG0R001KK9WV6")).toBe(false);
   });
 });

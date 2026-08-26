@@ -366,7 +366,7 @@ jobs:
           Human-Review: not-implied-by-credential
           Human-Review-Evidence: none
           Action-Mode: autonomous-fail-open
-          Task: 081KSKBP80008QG0R001KK9WV6
+          Task: 081M0ZWYF7R087G0R002RXA889
           Co-authored-by: Kiro <noreply@kiro.dev>"
           fi
 
@@ -1420,7 +1420,7 @@ jobs:
           Human-Review: not-implied-by-credential
           Human-Review-Evidence: none
           Action-Mode: autonomous-fail-open
-          Task: 081KSKBP80008QG0R001KK9WV6
+          Task: 081M0ZWYF7R087G0R002RXA889
           Co-authored-by: Kiro <noreply@kiro.dev>"
               echo "[drift-rate] committed ci-runs.jsonl"
             fi
