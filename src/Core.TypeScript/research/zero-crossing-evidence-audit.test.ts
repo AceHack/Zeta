@@ -2,7 +2,10 @@ import { describe, expect, it } from "bun:test";
 import {
   auditView,
   canonicalNet,
+  genesisEventHash,
   gSetDuplicateCount,
+  inspectEmitterChains,
+  mintContentFingerprint,
   mintEventId,
   noEvidence,
   restoresExactly,
@@ -15,14 +18,17 @@ function delta(
   emitterSeq: number,
   key: string,
   weight: number,
+  previousEventHash = genesisEventHash(emitterId),
   meanPpm = 500_000,
   precisionPpm = 100_000,
 ): SignedEvidenceDelta {
+  const fingerprint = mintContentFingerprint(key, weight, meanPpm, precisionPpm);
   return {
-    eventId: mintEventId(emitterId, emitterSeq),
+    eventId: mintEventId(emitterId, emitterSeq, previousEventHash, fingerprint),
     emitterId,
     emitterSeq,
-    contentFingerprint: `content:${key}:${weight}:${meanPpm}:${precisionPpm}`,
+    previousEventHash,
+    contentFingerprint: fingerprint,
     key,
     weight,
     meanPpm,
@@ -37,52 +43,60 @@ describe("zero-crossing evidence audit", () => {
     expect(restoresExactly(initial, retraction)).toBe(true);
   });
 
-  it("ZA-2: canonical net state cannot distinguish absence from exact cancellation", () => {
+  it("ZA-2 implementation control: zero-weight keys are absent after exact canonical cancellation", () => {
+    const asserted = delta("node-a", 0, "receipt/a", 1);
+    const retracted = delta("node-a", 1, "receipt/a", -1, asserted.eventId);
     const neverObserved = auditView([]);
-    const cancelled = auditView([
-      delta("node-a", 0, "receipt/a", 1),
-      delta("node-a", 1, "receipt/a", -1),
-    ]);
+    const cancelled = auditView([asserted, retracted]);
     expect(canonicalNet([])).toEqual(noEvidence());
     expect(cancelled.net).toEqual(neverObserved.net);
     expect(cancelled.net).toEqual([]);
+    expect(cancelled.net.find((entry) => entry.e === "receipt/a")).toBeUndefined();
   });
 
-  it("ZA-3: retained signed delta audit distinguishes cancelled history and is order-independent", () => {
-    const forward = [delta("node-a", 0, "receipt/a", 1), delta("node-a", 1, "receipt/a", -1)];
-    const reverse = [...forward].reverse();
+  it("ZA-3: retained signed audit distinguishes cancelled history and is order-independent", () => {
+    const asserted = delta("node-a", 0, "receipt/a", 1);
+    const retracted = delta("node-a", 1, "receipt/a", -1, asserted.eventId);
+    const forward = [asserted, retracted];
     const cancelled = auditView(forward);
-    const reordered = auditView(reverse);
+    const reordered = auditView([...forward].reverse());
     const neverObserved = auditView([]);
     expect(cancelled.net).toEqual([]);
     expect(cancelled.auditRoot).toBe(reordered.auditRoot);
     expect(cancelled.auditRoot).not.toBe(neverObserved.auditRoot);
     expect(cancelled.auditCount).toBe(2);
+    expect(cancelled.chainContinuity.complete).toBe(true);
   });
 
-  it("deduplicates an exact retransmission by delta identity", () => {
+  it("deduplicates an exact retransmission by event identity", () => {
     const atom = delta("node-a", 0, "receipt/a", 1);
-    const once = auditView([atom]);
-    const deliveredTwice = auditView([atom, atom]);
-    expect(deliveredTwice).toEqual(once);
+    expect(auditView([atom, atom])).toEqual(auditView([atom]));
   });
 
-  it("preserves multiplicity for same-content separate emissions from one emitter", () => {
-    const once = auditView([delta("node-a", 0, "receipt/a", 1)]);
-    const twice = auditView([
-      delta("node-a", 0, "receipt/a", 1),
-      delta("node-a", 1, "receipt/a", 1),
-    ]);
+  it("ZA-5: same-content separate emissions preserve multiplicity", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const second = delta("node-a", 1, "receipt/a", 1, first.eventId);
+    const once = auditView([first]);
+    const twice = auditView([first, second]);
     expect(twice.net).toEqual([{ e: "receipt/a", w: 2 }]);
     expect(twice.auditRoot).not.toBe(once.auditRoot);
     expect(twice.auditCount).toBe(2);
   });
 
-  it("rejects conflicting reuse of an event identity", () => {
-    expect(() => auditView([
-      delta("node-a", 0, "receipt/a", 1),
-      delta("node-a", 0, "receipt/a", -1),
-    ])).toThrow("conflicting evidence");
+  it("detects a known same-counter chain fork instead of treating it as one event", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const forkA = delta("node-a", 1, "receipt/a", 1, first.eventId);
+    const forkB = delta("node-a", 1, "receipt/b", 1, first.eventId);
+    expect(() => auditView([first, forkA, forkB])).toThrow("conflicting chain branches");
+  });
+
+  it("keeps a valid out-of-order child unresolved until its predecessor arrives", () => {
+    const first = delta("node-a", 0, "receipt/a", 1);
+    const child = delta("node-a", 1, "receipt/b", 1, first.eventId);
+    const partial = inspectEmitterChains([child]);
+    expect(partial.complete).toBe(false);
+    expect(partial.missingPredecessors).toEqual([child.eventId]);
+    expect(inspectEmitterChains([child, first]).complete).toBe(true);
   });
 
   it("negative control: an in-flight retraction remains canonical evidence, not absence", () => {
@@ -91,15 +105,14 @@ describe("zero-crossing evidence audit", () => {
     expect(pending.auditCount).toBe(1);
   });
 
-  it("negative control: tampering uncertainty changes the retained audit identity", () => {
-    const original = auditView([delta("node-a", 0, "receipt/a", 1, 500_000, 100_000)]);
-    const tampered = auditView([delta("node-a", 0, "receipt/a", 1, 500_000, 99_999)]);
-    expect(original.net).toEqual(tampered.net);
-    expect(original.auditRoot).not.toBe(tampered.auditRoot);
+  it("negative control: tampering payload uncertainty invalidates its hash-minted event identity", () => {
+    const original = delta("node-a", 0, "receipt/a", 1);
+    const tampered: SignedEvidenceDelta = { ...original, precisionPpm: 99_999 };
+    expect(() => auditView([tampered])).toThrow("does not bind");
   });
 
   it("ZA-4: GSet duplicate identity compacts multiplicity and is not an audit ledger", () => {
-    expect(gSetDuplicateCount("delta/assert-1")).toBe(1);
+    expect(gSetDuplicateCount("event/node-a/0")).toBe(1);
   });
 
   it("refuses a zero-weight audit atom rather than silently fabricating a retained event", () => {

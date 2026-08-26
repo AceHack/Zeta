@@ -27,7 +27,6 @@
  * Violates is an unfalsifiable check (Otto's companion falsifier).
  */
 
-
 // ═══ Scenario generation (same as F1, hard/adversarial only) ═══════════════════
 
 interface Scenario {
@@ -155,7 +154,7 @@ async function main(): Promise<void> {
     const phi = ((a * d) - (b * c)) / Math.sqrt(((a+b) * (c+d) * (a+c) * (b+d)) || 1);
 
     console.log(`    N=${total} (producer correct=${producerCorrect}, wrong=${producerWrong})`);
-    console.log(`    When producer CORRECT: verifier approves ${verifierApprovesCorrect}/${producerCorrect} (${(verifierApprovesCorrect/Math.max(1,producerCorrect)*100).toFixed(0)}%), rejects ${verifierRejectsCorrect}`);
+    console.log(`    When producer CORRECT: verifier approves ${verifierApprovesCorrect}/${producerCorrect} (${(verifierApprovesCorrect/Math.max(1,producerCorrect)*100).toFixed(0)}%), rejects ${verifierRejectsCorrect} (false-negative ${(falseNegativeRate * 100).toFixed(1)}%)`);
     console.log(`    When producer WRONG:   verifier catches ${verifierRejectsWrong}/${producerWrong} (${(catchRate*100).toFixed(1)}%), rubber-stamps ${verifierApprovesWrong} (${(rubberStampRate*100).toFixed(1)}%)`);
     console.log(`    φ(producer_correct, verifier_approves) = ${phi.toFixed(3)}`);
     console.log(`    CATCH RATE: ${(catchRate*100).toFixed(1)}% — ${catchRate > 0.3 ? "VERIFICATION ADDS VALUE" : catchRate > 0.1 ? "marginal" : "DEGENERATE (vote in disguise)"}`);
