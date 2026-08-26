@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * f2-role-correlation.ts — does role separation actually decorrelate errors?
+ * f2-role-correlation.ts — does hat separation actually decorrelate errors?
  *
  * Otto's F2: If ρ(producer, verifier) > ~0.5, the pipeline inherits the same
  * N_eff collapse that killed majority vote. Dead.
@@ -20,7 +20,7 @@
  *   does the verifier ALSO fail (approves the wrong answer)?
  *
  * If ρ is high: verifier rubber-stamps producer errors → pipeline is vote in disguise
- * If ρ is low: verifier catches producer errors → role separation works
+ * If ρ is low: verifier catches producer errors → hat separation works
  *
  * Also measures: the rejection-rate law. A verifier MUST reject sometimes.
  * Verdict = Satisfies | Violates | Undecided — a model that never emits
@@ -163,7 +163,7 @@ async function main(): Promise<void> {
   }
 
   console.log("\n" + "─".repeat(60));
-  console.log("F2 VERDICT: if catch rate > 30%, role separation adds value beyond vote.");
+  console.log("F2 VERDICT: if catch rate > 30%, hat separation adds value beyond vote.");
   console.log("If φ < 0.5, the pipeline does NOT inherit the N_eff collapse.");
 }
 
