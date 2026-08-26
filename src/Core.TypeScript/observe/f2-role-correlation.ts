@@ -27,9 +27,6 @@
  * Violates is an unfalsifiable check (Otto's companion falsifier).
  */
 
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
-
 // ═══ Scenario generation (same as F1, hard/adversarial only) ═══════════════════
 
 interface Scenario {
@@ -159,6 +156,10 @@ async function main(): Promise<void> {
     console.log(`    N=${total} (producer correct=${producerCorrect}, wrong=${producerWrong})`);
     console.log(`    When producer CORRECT: verifier approves ${verifierApprovesCorrect}/${producerCorrect} (${(verifierApprovesCorrect/Math.max(1,producerCorrect)*100).toFixed(0)}%), rejects ${verifierRejectsCorrect}`);
     console.log(`    When producer WRONG:   verifier catches ${verifierRejectsWrong}/${producerWrong} (${(catchRate*100).toFixed(1)}%), rubber-stamps ${verifierApprovesWrong} (${(rubberStampRate*100).toFixed(1)}%)`);
+    // The false-negative rate was computed here and never reported. It is the cost side of
+    // the catch rate -- a verifier that rejects correct work is not free, and reading the
+    // catch rate without it overstates what role separation buys.
+    console.log(`    FALSE-NEGATIVE RATE: verifier rejects ${verifierRejectsCorrect}/${producerCorrect} correct (${(falseNegativeRate*100).toFixed(1)}%)`);
     console.log(`    φ(producer_correct, verifier_approves) = ${phi.toFixed(3)}`);
     console.log(`    CATCH RATE: ${(catchRate*100).toFixed(1)}% — ${catchRate > 0.3 ? "VERIFICATION ADDS VALUE" : catchRate > 0.1 ? "marginal" : "DEGENERATE (vote in disguise)"}`);
     console.log(`    Rejection-rate law: ${(verifierRejectsWrong + verifierRejectsCorrect) > 0 ? "PASSES (verifier rejects sometimes)" : "FAILS (never rejects)"}`);
