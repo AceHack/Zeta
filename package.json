@@ -40,6 +40,7 @@
     "hygiene:fix-markdown": "bun ./src/Core.TypeScript/hygiene/fix-markdown-md032-md026.ts",
     "hygiene:check-bash-retirement-inventory": "bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce",
     "hygiene:measure-shell-key-exposure": "bun ./src/Core.TypeScript/hygiene/measure-shell-key-exposure.ts",
+    "hygiene:stage0-independence": "bun ./src/Core.TypeScript/hygiene/measure-stage0-independence.ts --enforce",
     "hygiene:mise-pin-parity": "bun ./src/Core.TypeScript/hygiene/mise-pin-parity.ts",
     "hygiene:dotnet-pin-parity": "bun ./src/Core.TypeScript/hygiene/audit-dotnet-pin-parity.ts",
     "hygiene:mise-toolchain-couplings": "bun ./src/Core.TypeScript/hygiene/audit-mise-toolchain-couplings.ts",

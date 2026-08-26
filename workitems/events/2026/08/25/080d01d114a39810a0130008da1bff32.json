@@ -1,0 +1,14 @@
+{
+  "id": "080d01d114a39810a0130008da1bff32",
+  "at": "2026-08-25T18:15:39.891Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0X2553J087G0R001VH0K64",
+    "type": "task",
+    "title": "Ongoing stage-0 minimization function: ratchet the count of INDEPENDENT shell entry points (graph roots, not file count), with a byte-guard that refuses concatenation cheats",
+    "slug": "ongoing-stage-0-minimization-function-ratchet-the-count-of-i",
+    "priority": "P2",
+    "filename": "081M0X2553J087G0R001VH0K64-ongoing-stage-0-minimization-function-ratchet-the-count-of-i.md"
+  }
+}

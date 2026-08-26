@@ -2512,6 +2512,19 @@ jobs:
       - name: Proof-lineage binary exception (no-binary-in-proof-lineage.md)
         run: bun src/Core.TypeScript/hygiene/audit-proof-lineage-binaries.ts
 
+      # Stage-0 minimization ratchet (081M0X2553J087G0R001VH0K64). `mise` installs `bun`, so
+      # whatever installs `mise` cannot be written in `bun` — stage-0 shell is ESSENTIAL and
+      # this check never argues with it. What it prices is the number of DOORS: shell files
+      # that something outside the shell graph has to name. Internal helpers cost zero, so the
+      # metric creates no pressure to merge scripts that split for a bootstrap-ordering reason.
+      #
+      # It is HERE and not in `lint (bash retirement inventory ...)` deliberately. That job is
+      # not in `gate-required.needs`, so everything it runs blocks nothing — the existing shell
+      # allowlist has been advisory the whole time it has been read as a guard. A ratchet that
+      # cannot fail a merge is a number, not a ratchet, so it goes on the floor.
+      - name: Stage-0 independence ratchet (doors, not file count)
+        run: bun run hygiene:stage0-independence
+
       # THE VACUITY CLASS, INVERTED — a step that can never SUCCEED.
       #
       # `${{ steps.X.outputs.Y }}` with no writer interpolates to the empty string silently.

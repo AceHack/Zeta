@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 #
 # tools/setup/install.sh — the one install script consumed three ways
+#
+# zeta-stage0-entrypoint: the repo's primary documented cold-clone door (README,
+#   CONTRIBUTING, every install-test Dockerfile, and the nix modules all name it).
+#   zeta-install.sh re-enters it on the NixOS live-USB path, so pure graph
+#   reachability would file it as "internal"; this marker is the declaration that
+#   it is a door. Declaring RAISES the ratcheted count in
+#   src/Core.TypeScript/hygiene/measure-stage0-independence.ts, never lowers it.
 # (dev laptops, CI runners, devcontainer images) per GOVERNANCE.md §24,
 # plus iter-081KDWYPGV008QG0R00072K2NH: NixOS-aware routing for cluster nodes.
 #
