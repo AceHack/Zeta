@@ -1,0 +1,36 @@
+{
+  "package": "react-resizable-panels",
+  "version": "4.12.3",
+  "tarballIntegrity": "sha512-GHMJWnDXui/3RX4bT+cgBP+N3N2nkwcoZATr/2xLFpqQQe7TlBrE0cGM0dUa9ceT7A90tUrSRsiqgRG+g0/2AA==",
+  "entryPoints": [
+    {
+      "subpath": ".",
+      "declarationFile": "dist/react-resizable-panels.d.ts",
+      "names": [
+        "Group",
+        "GroupImperativeHandle",
+        "GroupProps",
+        "Layout",
+        "LayoutChangedMeta",
+        "LayoutStorage",
+        "OnGroupLayoutChange",
+        "OnPanelResize",
+        "Orientation",
+        "Panel",
+        "PanelImperativeHandle",
+        "PanelProps",
+        "PanelSize",
+        "Separator",
+        "SeparatorProps",
+        "SizeUnit",
+        "isCoarsePointer",
+        "useDefaultLayout",
+        "useGroupCallbackRef",
+        "useGroupRef",
+        "usePanelCallbackRef",
+        "usePanelRef"
+      ],
+      "unresolvedStarReexports": []
+    }
+  ]
+}

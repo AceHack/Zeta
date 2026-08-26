@@ -1,0 +1,46 @@
+{
+  "package": "react-resizable-panels",
+  "version": "3.0.6",
+  "tarballIntegrity": "sha512-b3qKHQ3MLqOgSS+FRYKapNkJZf5EQzuf6+RLiq1/IlTHw99YrZ2NJZLk4hQIzTnnIkRg2LUqyVinu6YWWpUYew==",
+  "entryPoints": [
+    {
+      "subpath": ".",
+      "declarationFile": "dist/react-resizable-panels.d.ts",
+      "names": [
+        "CustomCursorStyleConfig",
+        "DATA_ATTRIBUTES",
+        "ImperativePanelGroupHandle",
+        "ImperativePanelHandle",
+        "Panel",
+        "PanelGroup",
+        "PanelGroupOnLayout",
+        "PanelGroupProps",
+        "PanelGroupStorage",
+        "PanelOnCollapse",
+        "PanelOnExpand",
+        "PanelOnResize",
+        "PanelProps",
+        "PanelResizeHandle",
+        "PanelResizeHandleOnDragging",
+        "PanelResizeHandleProps",
+        "PointerHitAreaMargins",
+        "assert",
+        "customizeGlobalCursorStyles",
+        "disableGlobalCursorStyles",
+        "enableGlobalCursorStyles",
+        "getIntersectingRectangle",
+        "getPanelElement",
+        "getPanelElementsForGroup",
+        "getPanelGroupElement",
+        "getResizeHandleElement",
+        "getResizeHandleElementIndex",
+        "getResizeHandleElementsForGroup",
+        "getResizeHandlePanelIds",
+        "intersects",
+        "setNonce",
+        "usePanelGroupContext"
+      ],
+      "unresolvedStarReexports": []
+    }
+  ]
+}

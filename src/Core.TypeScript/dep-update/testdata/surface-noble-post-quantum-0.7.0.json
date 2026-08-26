@@ -1,0 +1,133 @@
+{
+  "package": "@noble/post-quantum",
+  "version": "0.7.0",
+  "tarballIntegrity": "sha512-IH2tpuGV4vBMdpCCua2BN7EuUICtmGp6DlBMNBYAYcL6QQ7eHt85GjLyD7ZT6Qx/xgIPIMqsSLDGvYqOm8Vqag==",
+  "entryPoints": [
+    {
+      "subpath": ".",
+      "declarationFile": "index.d.ts",
+      "names": [],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./_crystals.js",
+      "declarationFile": "_crystals.d.ts",
+      "names": ["CrystalOpts", "TypedCons", "XOF", "XOF128", "XOF256", "genCrystals"],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./falcon.js",
+      "declarationFile": "falcon.d.ts",
+      "names": [
+        "Falcon",
+        "FalconAttached",
+        "__tests",
+        "falcon1024",
+        "falcon1024padded",
+        "falcon512",
+        "falcon512padded"
+      ],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./hybrid.js",
+      "declarationFile": "hybrid.d.ts",
+      "names": [
+        "Combiner",
+        "ExpandSeed",
+        "KitchenSink_ml_kem768_x25519",
+        "QSF",
+        "QSF_ml_kem1024_p384",
+        "QSF_ml_kem768_p256",
+        "combineKEMS",
+        "combineSigners",
+        "createKitchenSink",
+        "ecSigner",
+        "ecdhKem",
+        "expandSeedXof",
+        "ml_kem1024_p384",
+        "ml_kem768_p256",
+        "ml_kem768_x25519"
+      ],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./ml-dsa.js",
+      "declarationFile": "ml-dsa.d.ts",
+      "names": ["DSA", "DSAInternal", "DSAInternalOpts", "DSAParam", "PARAMS", "ml_dsa44", "ml_dsa65", "ml_dsa87"],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./ml-kem.js",
+      "declarationFile": "ml-kem.d.ts",
+      "names": ["KEMParam", "KEMPrepared", "MLKEM", "PARAMS", "__tests", "ml_kem1024", "ml_kem512", "ml_kem768"],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./slh-dsa.js",
+      "declarationFile": "slh-dsa.d.ts",
+      "names": [
+        "ADRS",
+        "Context",
+        "GetContext",
+        "PARAMS",
+        "SphincsHashOpts",
+        "SphincsOpts",
+        "SphincsSigner",
+        "slh_dsa_sha2_128f",
+        "slh_dsa_sha2_128s",
+        "slh_dsa_sha2_192f",
+        "slh_dsa_sha2_192s",
+        "slh_dsa_sha2_256f",
+        "slh_dsa_sha2_256s",
+        "slh_dsa_shake_128f",
+        "slh_dsa_shake_128s",
+        "slh_dsa_shake_192f",
+        "slh_dsa_shake_192s",
+        "slh_dsa_shake_256f",
+        "slh_dsa_shake_256s"
+      ],
+      "unresolvedStarReexports": []
+    },
+    {
+      "subpath": "./utils.js",
+      "declarationFile": "utils.d.ts",
+      "names": [
+        "BytesCoder",
+        "BytesCoderLen",
+        "Coder",
+        "CryptoKeys",
+        "EMPTY",
+        "KEM",
+        "SigOpts",
+        "Signer",
+        "TArg",
+        "TRet",
+        "TypedArg",
+        "TypedRet",
+        "VerOpts",
+        "aarray",
+        "abytes",
+        "aobject",
+        "astring",
+        "baswap64If",
+        "byteSwap64",
+        "checkHash",
+        "cleanBytes",
+        "concatBytes",
+        "copyBytes",
+        "equalBytes",
+        "getMask",
+        "getMessage",
+        "getMessagePrehash",
+        "randomBytes",
+        "splitCoder",
+        "validateOpts",
+        "validateSigOpts",
+        "validateVerOpts",
+        "vecCoder"
+      ],
+      "unresolvedStarReexports": []
+    }
+  ]
+}
