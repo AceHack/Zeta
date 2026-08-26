@@ -1,11 +1,12 @@
 ---
 id: 081M0YQBZ1X087G0R0010TX512
 type: task
-state: backlog
+state: done
 priority: P2
 slug: pga-is-degenerate-so-the-abs-clock-cannot-classify-it-extend
 title: "PGA is degenerate so the ABS clock cannot classify it -- extend CliffordPeriodicity.fs to Cl(p,q,r) in F#"
 created: 2026-08-26T09:45:37.597Z
+completed: 2026-08-26T13:05:03.212Z
 depends_on: []
 composes_with: []
 ---
@@ -75,3 +76,36 @@ product, measurement. This is algebra *classification* -- the same category as t
 - `docs/research/2026-08-26-all-three-geometric-algebra-towers-reduce-to-the-in-tree-cl30-*.md` -- the derivation and the tower table
 - `src/Core.TypeScript/research/conformal-embedding-and-curvature-budget.ts` SS6 -- the reference implementation to port
 - `src/Core.TypeScript/research/testdata/dump-clifford-grid.fsx` -- the generator that must grow degenerate rows
+
+## DONE 2026-08-26 — every acceptance criterion met
+
+| criterion | result |
+|---|---|
+| `r = 0` reproduces `classify p q` exactly | checked on all 169 signatures; the existing golden rows are unchanged |
+| `dim Cl(3,0,1) = 16` | **16**, radical 8, quotient M2(C) — emitted by the F# module independently |
+| negative control: `Cl(3,1)` vs `Cl(3,0,1)` | both dim 16; radicals **0 vs 8**; and ignoring `r` gives a third wrong answer (8) |
+| golden vector regenerated, TS consumes it | 414 rows — 169 `ND` + 245 `DG`; both sections cross-verified |
+| refuses negative `r` | `Error(NegativeSignature)`, plus negative `p` and `q` |
+
+**Break-red, six mutations, each on a clean tree:**
+
+```
+F1  radical 2^r-1 -> 2^r                    -> 4 F# tests failed
+F2  r folded into q (the naive extension)   -> 1 F# test failed
+F3  negative-r guard removed                -> 1 F# test failed
+G1  corrupt the PGA row's radical            -> 1 TS test failed
+G2  corrupt an ND row                        -> 1 TS test failed
+G3  drop the entire DG section               -> 1 TS test failed
+baseline restored                            -> 33 F# / 30 TS, byte-identical
+```
+
+G3 is the one worth naming: without the per-section row-count guard, deleting all 245
+degenerate rows would have left the test passing over the remaining 169 — a golden vector
+half-erased and still green.
+
+**Gates:** `dotnet test tests/Tests.FSharp` **5801 passed / 0 failed / 6 skipped**,
+`dotnet build -c Release` **0 warnings**, `tsc` clean.
+
+`classify` was deliberately left untouched — the whole point is that ABS is inapplicable to
+`r > 0`, so extending it would have produced a confident wrong answer instead of a refusal.
+

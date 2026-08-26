@@ -269,3 +269,82 @@ module CliffordPeriodicity =
     /// evenly rather than into an unbalanced pair. Naming it here does NOT endorse GU; it makes
     /// the arithmetic checkable independently of the theory that motivated looking.
     let geometricUnitySignature = (7, 7)
+
+    // ── Degenerate signatures `Cl(p,q,r)` — where the clock does NOT reach ─────────────────────────
+    //
+    // Added 2026-08-26. The most-cited geometric-algebra architecture, Qualcomm's GATr,
+    // represents its inputs in a **16-dimensional projective** geometric algebra — PGA(3D) =
+    // `Cl(3,0,1)`, which has a generator squaring to ZERO. Everything above takes `(p, q)`;
+    // there is no `r`, so this module had no coverage of it at all.
+    //
+    // WHY THAT IS NOT AN OVERSIGHT, AND WHY THE FIX IS A SEPARATE FUNCTION. A degenerate
+    // Clifford algebra is **not semisimple**: the null generators are nilpotent and generate a
+    // Jacobson radical. Atiyah–Bott–Shapiro classifies semisimple algebras up to Morita type
+    // over a division ring, so the clock is **inapplicable** here — not merely unimplemented.
+    // Threading an `r` through `classify` would return a well-typed, confident, WRONG answer:
+    // the vacuity class in its most dangerous form, an instrument that judges an input it
+    // cannot judge. So `classify` is left alone and this states what IS true:
+    //
+    //     Cl(p,q,r)        ≅  Cl(p,q) ⊗ Λ(R^r)        Λ = the exterior algebra on r generators
+    //     dim_R                =  2^(p+q+r)
+    //     Cl(p,q,r) / rad  ≅  Cl(p,q)                 the quotient IS semisimple — the clock sees it
+    //     dim rad              =  2^(p+q) · (2^r − 1)
+    //
+    // THE PAYOFF: all three live geometric-algebra towers are built over the SAME in-tree
+    // algebra, by two different constructions —
+    //
+    //     VGA(3D) = Cl(3,0)                 the algebra itself            dim  8
+    //     PGA(3D) = Cl(3,0) ⊗ Λ(R^1)        tensor an exterior algebra    dim 16   ← GATr's 16
+    //     CGA(3D) = M₂(Cl(3,0))             2×2 matrices over it          dim 32
+    //
+    // so `Cl3.fs` is upstream of all of them and the tower choice is not a bet on one.
+    //
+    // HONEST LIMIT: `Cl(3,0)` being PGA's semisimple quotient does NOT mean PGA computations
+    // reduce to `Cl(3,0)` computations. The radical is precisely where PGA's translations live;
+    // quotienting it away throws the geometry out. Shared foundation, not reducibility of work.
+
+    /// A degenerate Clifford algebra `Cl(p,q,r)` — `r` generators square to zero.
+    ///
+    /// `SemisimpleQuotient` is the part the ABS clock can classify; `RadicalDimension` is the
+    /// nilpotent part it cannot see. `IsDegenerate` is `r > 0`, i.e. exactly when the clock is
+    /// inapplicable to the algebra itself.
+    [<Struct>]
+    type DegenerateCliffordType =
+        { RealDimension: int
+          RadicalDimension: int
+          SemisimpleQuotient: CliffordType
+          IsDegenerate: bool }
+
+    /// Classify `Cl(p,q,r)` as far as is honest: total dimension, radical dimension, and the
+    /// semisimple quotient.
+    ///
+    /// `r = 0` reduces to the ordinary case exactly — empty radical, quotient is the algebra
+    /// itself — so this is a strict generalisation rather than a parallel code path, and the
+    /// existing golden vector still passes unchanged.
+    ///
+    /// Errors are values (Result-over-exception), and a negative `r` is REFUSED rather than
+    /// clamped: a negative count of null generators is not a smaller algebra, it is a
+    /// malformed question.
+    let classifyDegenerate (p: int) (q: int) (r: int) : Result<DegenerateCliffordType, PeriodicityError> =
+        if p < 0 || q < 0 || r < 0 then
+            Error(NegativeSignature(p, q))
+        else
+            match classify p q with
+            | Error e -> Error e
+            | Ok quotient ->
+                // rad(Cl(p,q) ⊗ Λ(R^r)) = Cl(p,q) ⊗ rad(Λ(R^r)); dim rad(Λ) = 2^r − 1.
+                Ok
+                    { RealDimension = pown 2 (p + q + r)
+                      RadicalDimension = (pown 2 (p + q)) * ((pown 2 r) - 1)
+                      SemisimpleQuotient = quotient
+                      IsDegenerate = r > 0 }
+
+    /// PGA(3D) = `Cl(3,0,1)` — the 16-dimensional projective algebra GATr is built on.
+    ///
+    /// Named because the number is a CHECK, not a coincidence: `dim = 2^(3+0+1) = 16` is
+    /// predicted by the structure theorem above, and Qualcomm reports 16 independently.
+    let pga3dSignature = (3, 0, 1)
+
+    /// CGA(3D) = `Cl(4,1)` — conformal, `≅ M₂(Cl(3,0))` by the suspension isomorphism
+    /// `Cl(p+1,q+1) ≅ M₂(Cl(p,q))`. One step above the in-tree algebra, same clock position.
+    let cga3dSignature = (4, 1)

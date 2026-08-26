@@ -314,3 +314,82 @@ let ``the two E8 routes meet at 248 -- Cartan+roots and so(16)+half-spin are one
     // the two decompositions are genuinely different -- not the same numbers rearranged
     Assert.NotEqual(cartan, CP.bivectorDim n)
     Assert.NotEqual(roots, CP.halfSpinorDim n)
+
+// ── Degenerate signatures Cl(p,q,r) ────────────────────────────────────────────────────────────
+//
+// The pair that matters is `r = 0 reproduces classify exactly` (so this is a generalisation,
+// not a second code path) and the Cl(3,1)-vs-Cl(3,0,1) negative control (so a matching
+// dimension is not mistaken for a matching algebra). Either alone passes on a wrong
+// implementation.
+
+let private okd r =
+    match r with
+    | Ok v -> v
+    | Error e -> failwithf "unexpected Error: %A" e
+
+[<Fact>]
+let ``r = 0 reproduces classify exactly on every existing signature`` () =
+    // If this ever fails, the existing golden vector is invalidated too — which is the point:
+    // the generalisation must not move a single previously-classified row.
+    for p in 0..12 do
+        for q in 0..12 do
+            let d = okd (CP.classifyDegenerate p q 0)
+            Assert.Equal(okd (CP.classify p q |> Result.map id), d.SemisimpleQuotient)
+            Assert.Equal(CP.realDimension p q, d.RealDimension)
+            Assert.Equal(0, d.RadicalDimension)
+            Assert.False(d.IsDegenerate)
+
+[<Fact>]
+let ``dim Cl(p,q,r) = 2^(p+q+r) and the quotient throws away exactly the radical`` () =
+    for p in 0..6 do
+        for q in 0..6 do
+            for r in 0..4 do
+                let d = okd (CP.classifyDegenerate p q r)
+                Assert.Equal(pown 2 (p + q + r), d.RealDimension)
+                // what survives the quotient is precisely dim Cl(p,q)
+                Assert.Equal(pown 2 (p + q), d.RealDimension - d.RadicalDimension)
+                Assert.Equal(r > 0, d.IsDegenerate)
+
+[<Fact>]
+let ``PGA(3D) = Cl(3,0,1) is 16-dimensional -- GATr's published multivector space`` () =
+    // An EXTERNAL check on the structure theorem: 8 x 2 = 16 is predicted here, and Qualcomm
+    // reports 16 independently. Not a fitted constant.
+    let (p, q, r) = CP.pga3dSignature
+    let pga = okd (CP.classifyDegenerate p q r)
+    Assert.Equal(16, pga.RealDimension)
+    Assert.True(pga.IsDegenerate)
+    Assert.Equal(8, pga.RadicalDimension)                 // half of it is nilpotent
+    Assert.Equal(8, pga.RealDimension - pga.RadicalDimension)  // = dim Cl(3,0)
+
+[<Fact>]
+let ``all three towers reduce to the in-tree Cl(3,0)`` () =
+    let inTree = okd (CP.classify 3 0 |> Result.map id)
+    // VGA: the algebra itself.
+    Assert.Equal(inTree, (okd (CP.classifyDegenerate 3 0 0)).SemisimpleQuotient)
+    // PGA: tensor an exterior algebra — same semisimple quotient.
+    Assert.Equal(inTree, (okd (CP.classifyDegenerate 3 0 1)).SemisimpleQuotient)
+    // CGA: 2x2 matrices over it — one suspension step, same ground, double the matrix dim.
+    let (cp, cq) = CP.cga3dSignature
+    let cga = okd (CP.classify cp cq |> Result.map id)
+    Assert.Equal(inTree.Ground, cga.Ground)
+    Assert.Equal(2 * inTree.MatrixDim, cga.MatrixDim)
+
+[<Fact>]
+let ``NEGATIVE CONTROL Cl(3,1) and Cl(3,0,1) share a dimension and are different algebras`` () =
+    // Matching cardinality is not identification (.claude/rules/numerology-vs-number-theory.md).
+    // Both are 16-dimensional; one has an EMPTY radical, the other is half nilpotent.
+    let nonDegenerate = okd (CP.classifyDegenerate 3 1 0)
+    let degenerate = okd (CP.classifyDegenerate 3 0 1)
+    Assert.Equal(nonDegenerate.RealDimension, degenerate.RealDimension)  // both 16
+    Assert.Equal(16, degenerate.RealDimension)
+    Assert.Equal(0, nonDegenerate.RadicalDimension)
+    Assert.Equal(8, degenerate.RadicalDimension)
+    Assert.NotEqual(nonDegenerate.IsDegenerate, degenerate.IsDegenerate)
+    // And ignoring r entirely gives a THIRD wrong answer — too small, not just mislabelled.
+    Assert.Equal(8, (okd (CP.classifyDegenerate 3 0 0)).RealDimension)
+
+[<Fact>]
+let ``classifyDegenerate REFUSES a negative r rather than clamping it`` () =
+    Assert.True(match CP.classifyDegenerate 3 0 -1 with Error _ -> true | Ok _ -> false)
+    Assert.True(match CP.classifyDegenerate -1 0 1 with Error _ -> true | Ok _ -> false)
+    Assert.True(match CP.classifyDegenerate 3 -1 1 with Error _ -> true | Ok _ -> false)

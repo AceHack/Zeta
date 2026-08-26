@@ -256,10 +256,14 @@ it("alpha* exceeds the Kabatianskii-Levenshtein 1978 exponent -- but barely", ()
 
 // ===== CROSS-ORACLE: the transcription vs the F# authority ==============================
 
-it("agrees with Zeta.Core.CliffordPeriodicity on all 169 signatures (F#-generated golden)", async () => {
+it("CROSS-ORACLE: agrees with Zeta.Core.CliffordPeriodicity on every row, ND and DG", async () => {
   // The strongest available check on the transcription: the golden vector is emitted BY THE
   // F# MODULE (`testdata/dump-clifford-grid.fsx`), never by this TypeScript, so agreement is
   // evidence rather than self-consistency. Text, not binary -- no-binary-in-proof-lineage.
+  //
+  // Two row kinds. `ND` pins the ABS clock; `DG` pins `classifyDegenerate`, which exists
+  // because the clock is INAPPLICABLE to a degenerate signature rather than merely
+  // unimplemented. Both must agree or the two implementations have drifted.
   const text = await Bun.file(
     new URL("./testdata/clifford-periodicity-grid.golden.txt", import.meta.url),
   ).text();
@@ -268,30 +272,58 @@ it("agrees with Zeta.Core.CliffordPeriodicity on all 169 signatures (F#-generate
     .map((l) => l.trim())
     .filter((l) => l !== "" && !l.startsWith("#"));
 
-  // If the golden file were empty or all-comments, every assertion below would vacuously
-  // pass. Pin the row count first.
-  expect(rows.length).toBe(169);
+  const nd = rows.filter((r) => r.startsWith("ND "));
+  const dg = rows.filter((r) => r.startsWith("DG "));
+  // If the golden file were empty, truncated, or lost a whole section, every assertion below
+  // would vacuously pass. Pin both counts first.
+  expect(nd.length).toBe(169);
+  expect(dg.length).toBe(245);
+  expect(nd.length + dg.length).toBe(rows.length); // no unrecognised row kind slipped in
 
   const divergences: string[] = [];
-  for (const row of rows) {
-    const [p, q, s, ground, dim, split] = row.split(/\s+/);
+
+  for (const row of nd) {
+    const [, p, q, s, ground, dim, split] = row.split(/\s+/);
     const P = Number(p);
     const Q = Number(q);
-    const ts = classify(P, Q);
-    const tsSplit = ts.isSplit ? "True" : "False"; // F# `bool` prints capitalised
+    const t = classify(P, Q);
+    const tsSplit = t.isSplit ? "True" : "False"; // F# `bool` prints capitalised
     if (
       String(signatureClass(P, Q)) !== s ||
-      ts.ground !== ground ||
-      String(ts.matrixDim) !== dim ||
+      t.ground !== ground ||
+      String(t.matrixDim) !== dim ||
       tsSplit !== split
     ) {
       divergences.push(
-        `Cl(${p},${q}) F#: s=${s} ${ground} dim=${dim} split=${split} | ` +
-          `TS: s=${signatureClass(P, Q)} ${ts.ground} dim=${ts.matrixDim} split=${tsSplit}`,
+        `ND Cl(${p},${q}) F#: s=${s} ${ground} dim=${dim} split=${split} | ` +
+          `TS: s=${signatureClass(P, Q)} ${t.ground} dim=${t.matrixDim} split=${tsSplit}`,
       );
     }
   }
+
+  for (const row of dg) {
+    const [, p, q, r, dim, radical, qGround, qDim, qSplit] = row.split(/\s+/);
+    const d = classifyDegenerate(Number(p), Number(q), Number(r));
+    const tsQSplit = d.semisimpleQuotient.isSplit ? "True" : "False";
+    if (
+      String(d.realDimension) !== dim ||
+      String(d.radicalDimension) !== radical ||
+      d.semisimpleQuotient.ground !== qGround ||
+      String(d.semisimpleQuotient.matrixDim) !== qDim ||
+      tsQSplit !== qSplit
+    ) {
+      divergences.push(
+        `DG Cl(${p},${q},${r}) F#: dim=${dim} rad=${radical} ${qGround} qdim=${qDim} qsplit=${qSplit} | ` +
+          `TS: dim=${d.realDimension} rad=${d.radicalDimension} ${d.semisimpleQuotient.ground} ` +
+          `qdim=${d.semisimpleQuotient.matrixDim} qsplit=${tsQSplit}`,
+      );
+    }
+  }
+
   expect(divergences).toEqual([]);
+
+  // And the row the whole tower argument rests on is present, not merely consistent.
+  expect(dg).toContain("DG 3 0 1 16 8 C 2 False"); // PGA(3D) — GATr's 16
 });
 
 // ===== DEGENERATE SIGNATURES: where the clock does not reach ============================
