@@ -35,12 +35,13 @@ const RUN_ID = 424242;
  * few hours after it was written — a test that passes for the wrong reason. This reads the
  * clock but awaits no timer, so no verdict depends on elapsed time.
  */
-function cancelledOrphan(): WorkflowRun {
+function cancelledOrphan(branch = "some/branch"): WorkflowRun {
   const now = Date.now();
   return {
     id: RUN_ID,
-    head_branch: "some/branch",
-    event: "pull_request",
+    head_branch: branch,
+    head_sha: "0123456789abcdef0123456789abcdef01234567",
+    event: branch === "main" ? "push" : "pull_request",
     status: "completed",
     conclusion: "cancelled",
     created_at: new Date(now - 15 * 60_000).toISOString(),
@@ -50,9 +51,25 @@ function cancelledOrphan(): WorkflowRun {
 }
 
 interface StubOptions {
-  /** Status + body returned for the `rerun-failed-jobs` POST. 202 means the rerun was accepted. */
+  /** Status + body returned for the rerun POST. 201/202 mean the rerun was accepted. */
   readonly rerunStatus: number;
   readonly rerunBody?: string;
+  /**
+   * How many jobs the run created. The DEFAULT IS NON-ZERO on purpose: the pre-2026-08-26
+   * population this file was written against is timed-out PR jobs, and defaulting to 0 would
+   * quietly move every existing test onto the whole-run endpoint.
+   */
+  readonly jobCount?: number;
+  /** Branch of the run under test — `main` exercises the default-branch carve-out. */
+  readonly branch?: string;
+  /**
+   * A newer sibling run on the same branch. Without one guard 3 CANNOT fire, so every test
+   * that leaves this empty is silent about whether the CLI threads the measured default
+   * branch into the policy at all — which is exactly the gap the mutation run found.
+   */
+  readonly newerSiblingSha?: string;
+  /** What `GET /repos/{owner}/{repo}` reports. */
+  readonly defaultBranch?: string;
 }
 
 interface Recorded {
@@ -67,17 +84,46 @@ const realError = console.error;
 let recorded: Recorded;
 
 function installStub(options: StubOptions): void {
-  const run = cancelledOrphan();
+  const run = cancelledOrphan(options.branch);
+  const jobCount = options.jobCount ?? 28;
   globalThis.fetch = ((input: string | URL, init?: RequestInit): Promise<Response> => {
     const url = typeof input === "string" ? input : input.href;
     const method = init?.method ?? "GET";
-    if (method === "POST" && url.includes("/rerun-failed-jobs")) {
+    // BOTH endpoints are recorded, and the recorded value is the full URL, so a test can
+    // assert WHICH call was made. Matching only `/rerun-failed-jobs` here would let a
+    // regression that always posts `/rerun` fall through to the 200-with-a-run-body branch
+    // below and read as a success — the stub itself would have become a check that cannot
+    // fail.
+    if (method === "POST" && (url.endsWith("/rerun-failed-jobs") || url.endsWith("/rerun"))) {
       recorded.posts.push(url);
       return Promise.resolve(new Response(options.rerunBody ?? "", { status: options.rerunStatus }));
     }
+    if (url.includes("/jobs")) {
+      return Promise.resolve(new Response(JSON.stringify({ total_count: jobCount, jobs: [] }), { status: 200 }));
+    }
     if (url.includes("/actions/workflows/")) {
-      // Siblings: none, so the supersession guard cannot fire.
-      return Promise.resolve(new Response(JSON.stringify({ workflow_runs: [] }), { status: 200 }));
+      // Siblings. Empty by default, so the supersession guard cannot fire unless a test
+      // asks for it.
+      const siblings: WorkflowRun[] =
+        options.newerSiblingSha === undefined
+          ? []
+          : [
+              run,
+              {
+                ...run,
+                id: run.id + 1,
+                head_sha: options.newerSiblingSha,
+                created_at: new Date(Date.parse(run.created_at) + 60_000).toISOString(),
+                updated_at: new Date(Date.parse(run.created_at) + 60_000).toISOString(),
+              },
+            ];
+      return Promise.resolve(new Response(JSON.stringify({ workflow_runs: siblings }), { status: 200 }));
+    }
+    if (!url.includes("/actions/")) {
+      // `GET /repos/{owner}/{repo}` — the measured default branch guard 3 is scoped by.
+      return Promise.resolve(
+        new Response(JSON.stringify({ default_branch: options.defaultBranch ?? "main" }), { status: 200 }),
+      );
     }
     return Promise.resolve(new Response(JSON.stringify({ ...run, workflow_id: 7 }), { status: 200 }));
   }) as unknown as typeof fetch;
@@ -113,11 +159,19 @@ afterEach(() => {
   console.error = realError;
 });
 
+interface DecisionLine {
+  action: string;
+  reason: string;
+  detail: string;
+  applied: boolean;
+  endpoint: string | null;
+}
+
 /** The one structured decision line the CLI emits per evaluation. */
-function decisionLine(): { action: string; reason: string; detail: string; applied: boolean } {
+function decisionLine(): DecisionLine {
   const line = recorded.logs.find((l) => l.includes("gate-rerun-decision"));
   expect(line).toBeDefined();
-  return JSON.parse(line ?? "{}") as { action: string; reason: string; detail: string; applied: boolean };
+  return JSON.parse(line ?? "{}") as DecisionLine;
 }
 
 describe("unactionable refusals — skip, say so, exit 0", () => {
@@ -270,5 +324,89 @@ describe("the happy path is unchanged", () => {
   test("a missing --run-id is a usage error (exit 2), not a crash", async () => {
     installStub({ rerunStatus: 201 });
     expect(await main([])).toBe(2);
+  });
+});
+
+// ── THE 2026-08-26 RECOVERY PATH, END TO END ──────────────────────────────────────────────
+//
+// Two changes had to land together or the fix is a no-op wearing a correct classification:
+//
+//   1. Guard 3 stops writing off displaced `main` runs (they differ in `head_sha`).
+//   2. The POST goes to `/rerun`, because a displaced run has ZERO jobs and the forge
+//      answers `/rerun-failed-jobs` with 403 "This workflow run cannot be retried" —
+//      measured against run 32952848390, whose `/rerun` succeeded and created 35 jobs.
+//
+// Ship (1) alone and the tool selects every displaced run, meets that 403, classifies it as
+// an ordinary refusal, and logs a cheerful skip. Ship (2) alone and nothing is ever selected
+// on `main`. These tests fail if either half is reverted.
+describe("displaced runs on the default branch are recovered, not written off", () => {
+  test("a zero-job cancelled run on `main` posts /rerun and is applied", async () => {
+    installStub({ rerunStatus: 201, jobCount: 0, branch: "main" });
+    expect(await main(["--run-id", String(RUN_ID), "--apply"])).toBe(0);
+    expect(recorded.posts).toHaveLength(1);
+    expect(recorded.posts[0]?.endsWith("/rerun")).toBe(true);
+    const d = decisionLine();
+    expect(d.action).toBe("rerun");
+    expect(d.reason).toBe("cancelled-orphan");
+    expect(d.applied).toBe(true);
+    expect(d.endpoint).toBe("rerun");
+  });
+
+  // The control for the test above: same run, same branch, jobs present. The endpoint must
+  // move back, which is what shows the choice depends on the job count and not on the branch.
+  test("a cancelled run WITH jobs still posts /rerun-failed-jobs (cost discipline kept)", async () => {
+    installStub({ rerunStatus: 201, jobCount: 28, branch: "main" });
+    expect(await main(["--run-id", String(RUN_ID), "--apply"])).toBe(0);
+    expect(recorded.posts[0]?.endsWith("/rerun-failed-jobs")).toBe(true);
+    expect(decisionLine().endpoint).toBe("rerun-failed-jobs");
+  });
+
+  // The measured 403. If the endpoint choice regresses, THIS is what production would do:
+  // exit 0, log a skip, recover nothing. Pinning it means the no-op has a name.
+  test("[regression pin] the old endpoint on a zero-job run is the silent no-op", async () => {
+    installStub({
+      rerunStatus: 403,
+      rerunBody: JSON.stringify({ message: "This workflow run cannot be retried" }),
+      jobCount: 0,
+      branch: "main",
+    });
+    expect(await main(["--run-id", String(RUN_ID), "--apply"])).toBe(0);
+    const d = decisionLine();
+    expect(d.action).toBe("skip");
+    expect(d.reason).toBe("refused-not-retriable");
+    expect(d.applied).toBe(false);
+  });
+
+  test("the dry-run names the endpoint it would have used", async () => {
+    installStub({ rerunStatus: 201, jobCount: 0, branch: "main" });
+    expect(await main(["--run-id", String(RUN_ID)])).toBe(0);
+    expect(recorded.posts).toHaveLength(0);
+    expect(decisionLine().endpoint).toBe("rerun");
+  });
+
+  // ADDED AFTER A SURVIVING MUTANT. Replacing `decideRerun(run, siblings, { defaultBranch })`
+  // with a hardcoded wrong branch left every other test in this file green, because none of
+  // them supplied a sibling — so guard 3 could not fire and the CLI's plumbing of the
+  // MEASURED default branch was never exercised. These two supply one.
+  test("the MEASURED default branch reaches the policy — a newer main run does not write it off", async () => {
+    installStub({ rerunStatus: 201, jobCount: 0, branch: "main", newerSiblingSha: "ffffffff".repeat(5) });
+    expect(await main(["--run-id", String(RUN_ID), "--apply"])).toBe(0);
+    const d = decisionLine();
+    expect(d.action).toBe("rerun");
+    expect(d.reason).toBe("cancelled-orphan");
+  });
+
+  // The control, and the reason the carve-out is scoped rather than global: on a branch that
+  // is NOT the default, the very same newer-sibling shape is still a genuine supersession.
+  test("off the default branch the same shape is still superseded", async () => {
+    installStub({
+      rerunStatus: 201,
+      jobCount: 0,
+      branch: "heartbeat/tick-metrics",
+      newerSiblingSha: "ffffffff".repeat(5),
+    });
+    expect(await main(["--run-id", String(RUN_ID), "--apply"])).toBe(0);
+    expect(decisionLine().reason).toBe("superseded");
+    expect(recorded.posts).toHaveLength(0);
   });
 });

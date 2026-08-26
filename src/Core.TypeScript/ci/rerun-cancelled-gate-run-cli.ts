@@ -8,10 +8,14 @@
  * evaluated against production history without touching anything (which is how the
  * evidence in docs/research/2026-08-14-cancelled-gate-runs-are-apt-stalls-hitting-job-timeouts-not-concurrency-cancels.md was produced).
  *
- * The re-run uses `rerun-failed-jobs`, NOT `rerun`. Cost discipline: the observed orphan
- * runs had 26-28 jobs already green and 1-2 cancelled, so re-running the whole run would
- * burn ~28x the minutes needed and discard good results. This is also exactly what the
- * manual fix was (`gh run rerun <id> --failed`).
+ * THE ENDPOINT IS CHOSEN, NOT FIXED (2026-08-26). It used to be `rerun-failed-jobs`
+ * unconditionally, on cost discipline: the observed orphan runs had 26-28 jobs already green
+ * and 1-2 cancelled, so re-running the whole run would burn ~28x the minutes needed and
+ * discard good results. That reasoning is right and is kept — but it silently assumed the
+ * run HAS jobs. A run displaced from a saturated concurrency queue has zero, and measured
+ * against run 32952848390 the forge answers `rerun-failed-jobs` with
+ * `403 "This workflow run cannot be retried"` while `rerun` succeeds and creates 35 jobs.
+ * So the job count decides; see `chooseRerunEndpoint`.
  *
  * Untrusted input: branch names and run titles are attacker-influenceable (anyone can open
  * a PR). Nothing here interpolates them into a shell; the GitHub token is read from the
@@ -19,6 +23,7 @@
  */
 
 import {
+  chooseRerunEndpoint,
   classifyRerunRefusal,
   decideRerun,
   REFUSAL_REASON,
@@ -122,7 +127,32 @@ export async function fetchSiblings(runId: number): Promise<WorkflowRun[]> {
   return out.workflow_runs;
 }
 
-function log(runId: number, d: RerunDecision, applied: boolean): void {
+/**
+ * The repository's real default branch — MEASURED, not assumed to be `"main"`.
+ *
+ * Guard 3's carve-out hangs off this value, so hardcoding it would mean a branch rename
+ * silently restored the write-off behaviour with every test still green. The runs API does
+ * not carry it (`repository.default_branch` is `null` on the minimal repository object it
+ * embeds — checked), hence the separate read.
+ */
+export async function fetchDefaultBranch(): Promise<string> {
+  const repo = await api<{ default_branch: string }>(`/repos/${REPO}`);
+  return repo.default_branch;
+}
+
+/**
+ * How many jobs this run ever created — the input `chooseRerunEndpoint` decides on.
+ *
+ * `total_count` is the count of jobs that EXIST, not of jobs that finished, so a run
+ * displaced from the concurrency queue before it started answers 0 and a run whose jobs
+ * timed out answers 26-28. `per_page=1` because only the count is read.
+ */
+export async function fetchJobCount(runId: number): Promise<number> {
+  const out = await api<{ total_count: number }>(`/repos/${REPO}/actions/runs/${runId}/jobs?per_page=1`);
+  return out.total_count;
+}
+
+function log(runId: number, d: RerunDecision, applied: boolean, endpoint?: string): void {
   // One structured line per evaluation. This is the visibility requirement: a RISING RERUN
   // RATE must be observable, because the auto-rerun treats the residual and must never
   // quietly absorb a returning root cause. Group on `reason` to get that rate.
@@ -134,6 +164,9 @@ function log(runId: number, d: RerunDecision, applied: boolean): void {
       reason: d.reason,
       detail: d.detail,
       applied,
+      // Which call was made. Without it the log cannot distinguish "recovered a displaced
+      // run" from "re-ran a few timed-out jobs", and those have very different costs.
+      endpoint: endpoint ?? null,
       at: new Date().toISOString(),
     }),
   );
@@ -150,15 +183,18 @@ export async function main(argv: string[]): Promise<number> {
 
   const run = await fetchRun(runId);
   const siblings = await fetchSiblings(runId);
-  const decision = decideRerun(run, siblings);
+  const defaultBranch = await fetchDefaultBranch();
+  const decision = decideRerun(run, siblings, { defaultBranch });
 
   if (decision.action !== "rerun") {
     log(runId, decision, false);
     return 0;
   }
+  // Read AFTER the decision, so the extra call is paid only on the ~small selected set.
+  const endpoint = chooseRerunEndpoint(await fetchJobCount(runId));
   if (!apply) {
-    log(runId, decision, false);
-    console.error(`[dry-run] would rerun failed/cancelled jobs of run ${runId}; pass --apply to do it`);
+    log(runId, decision, false, endpoint);
+    console.error(`[dry-run] would POST ${endpoint} for run ${runId}; pass --apply to do it`);
     return 0;
   }
   // THE REFUSAL BOUNDARY IS EXACTLY THIS ONE CALL, and the narrowness is the point.
@@ -167,7 +203,7 @@ export async function main(argv: string[]): Promise<number> {
   // this fix exists to avoid. Only the mutation the forge is entitled to decline is
   // classified, and only against the phrase allowlist in the policy module.
   try {
-    await api(`/repos/${REPO}/actions/runs/${runId}/rerun-failed-jobs`, { method: "POST" });
+    await api(`/repos/${REPO}/actions/runs/${runId}/${endpoint}`, { method: "POST" });
   } catch (err) {
     const refusal = err instanceof GitHubApiError ? classifyRerunRefusal(err.status, err.apiMessage) : null;
     // Not a recognised refusal ⇒ auth, rate limit, 5xx, or something new. It goes up, loud.
@@ -180,10 +216,11 @@ export async function main(argv: string[]): Promise<number> {
         detail: `${String((err as GitHubApiError).status)} ${(err as GitHubApiError).apiMessage} — the forge declined; nothing to do`,
       },
       false,
+      endpoint,
     );
     return 0;
   }
-  log(runId, decision, true);
+  log(runId, decision, true, endpoint);
   return 0;
 }
 

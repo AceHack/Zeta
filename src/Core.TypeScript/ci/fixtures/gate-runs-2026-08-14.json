@@ -1,11 +1,12 @@
 {
-  "_comment": "Real `gate` workflow runs captured from the Zeta repo on 2026-08-14 via `gh api repos/:owner/:repo/actions/workflows/gate.yml/runs`. This is the observed population the rerun policy was derived from and is tested against \u2014 not synthetic data.",
+  "_comment": "Real `gate` workflow runs captured from the Zeta repo on 2026-08-14 via `gh api repos/:owner/:repo/actions/workflows/gate.yml/runs`. This is the observed population the rerun policy was derived from and is tested against — not synthetic data. `head_sha` was back-filled per run id on 2026-08-26 from the same API when the supersession guard started depending on it; six archived `action_required` PR runs (31829166110, 31833911936, 31835764631, 31836936535, 31837046498, 31838321560) now answer 404 and carry no `head_sha`. That is recorded as an ABSENT FIELD rather than invented: guard 1 declines every `action_required` run before guard 3 is reached, so the gap changes no decision, and the policy treats an unknown SHA on the default branch as `cannot establish supersession` (i.e. re-run) rather than as a match.",
   "captured_at": "2026-08-14T20:32:05Z",
   "workflow": "gate.yml",
   "runs": [
     {
       "id": 31827721951,
       "head_branch": "main",
+      "head_sha": "113dc6bccc124842c070bd2ca3fa617feef8489b",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -16,6 +17,7 @@
     {
       "id": 31827724403,
       "head_branch": "main",
+      "head_sha": "84b13f3c427a190231bfe0005fd24e8965eefd9e",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -26,6 +28,7 @@
     {
       "id": 31827726351,
       "head_branch": "main",
+      "head_sha": "fb6058ec8e4e237ef8bfeb0d825acf5fa1613207",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -36,6 +39,7 @@
     {
       "id": 31827735557,
       "head_branch": "main",
+      "head_sha": "d27840e22bae5b5353e48fa1fa9f44f376af0903",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -46,6 +50,7 @@
     {
       "id": 31827738708,
       "head_branch": "main",
+      "head_sha": "01a5a8a6120c4b6cb33f7cfe6c20eca4bcc07656",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -56,6 +61,7 @@
     {
       "id": 31827761900,
       "head_branch": "main",
+      "head_sha": "d9d69df20b68fb892dded62d733194c315e2a427",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -66,6 +72,7 @@
     {
       "id": 31827782906,
       "head_branch": "main",
+      "head_sha": "ec52a8db44b69d52e5720b53d696c640761de4fc",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -76,6 +83,7 @@
     {
       "id": 31827786301,
       "head_branch": "main",
+      "head_sha": "f30835d62397d91d85b86a916a7a514523c8135f",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -86,6 +94,7 @@
     {
       "id": 31827822179,
       "head_branch": "main",
+      "head_sha": "0a87a892d321dcfa9d3a63b04d53710a334b036c",
       "event": "push",
       "status": "completed",
       "conclusion": "success",
@@ -96,6 +105,7 @@
     {
       "id": 31827901083,
       "head_branch": "automation/pr-archive-10663-run-31827825952-attempt-1",
+      "head_sha": "a4ea2dab0fa6e8eb92e83e4d984488680bcd95fb",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -106,6 +116,7 @@
     {
       "id": 31828002489,
       "head_branch": "otto/binding-dependencies-what-a-full-rewrite-cannot-remove",
+      "head_sha": "0bb9ad1f21a19b721f669a91d549cb329d5aa194",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -116,6 +127,7 @@
     {
       "id": 31828041787,
       "head_branch": "feat/ace-capability-manifest",
+      "head_sha": "28f6b424bc96f68b05c857120315c29aee5b50eb",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -126,6 +138,7 @@
     {
       "id": 31828291573,
       "head_branch": "nazar/frost-slot-token-addressing",
+      "head_sha": "cec92f9a3f5b685210ec754886e80c8b47da804b",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -136,6 +149,7 @@
     {
       "id": 31828300185,
       "head_branch": "nazar/subshare-transport-contract",
+      "head_sha": "58c67f2b7445ec7c11fede96f50dd74c49dfcd77",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -146,6 +160,7 @@
     {
       "id": 31828303818,
       "head_branch": "ferry/intel-smm-seam-hidden-modes",
+      "head_sha": "a3f34d8a00530ffaf9c269eaf88828b928145d5c",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -156,6 +171,7 @@
     {
       "id": 31828395043,
       "head_branch": "workitem/inventory-reconciliation",
+      "head_sha": "327e4cbb60f0dfac0ca24644ac6f125b282b5ce3",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -166,6 +182,7 @@
     {
       "id": 31828446213,
       "head_branch": "heartbeat/otto",
+      "head_sha": "6ac28edff777f2a41bdae4239651a2330f1a999b",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -176,6 +193,7 @@
     {
       "id": 31828456724,
       "head_branch": "heartbeat/alexa",
+      "head_sha": "e49de89da4336ece9409a1eb97efc153365d55c2",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -186,6 +204,7 @@
     {
       "id": 31828511535,
       "head_branch": "heartbeat/soraya",
+      "head_sha": "1997b9b0e46530cff75cf9a765738d480b377a8a",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -196,6 +215,7 @@
     {
       "id": 31828567683,
       "head_branch": "otto/derive-erasure-bits",
+      "head_sha": "57ab0ec5fbbeb8cfbc81c3f8036c9a6742dafc98",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -216,6 +236,7 @@
     {
       "id": 31829619889,
       "head_branch": "heartbeat/red-state",
+      "head_sha": "134c6d28d808bde34a5d6c0c7ca08937575c68d0",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -226,6 +247,7 @@
     {
       "id": 31829982444,
       "head_branch": "otto/ace-universal-zetaid-resolver-scoping",
+      "head_sha": "f7ccec450f03dd8354d86d1a3b4ec4bb1e0d6b91",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -236,6 +258,7 @@
     {
       "id": 31830003049,
       "head_branch": "nazar/enforcement-substrate-survey",
+      "head_sha": "03b1f826e40f6f1d8a359ab17aa396aa196ab6f6",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -246,6 +269,7 @@
     {
       "id": 31830204832,
       "head_branch": "main",
+      "head_sha": "7d5ea62162e6cb5228b65c7bf578babf22218001",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -256,6 +280,7 @@
     {
       "id": 31830257631,
       "head_branch": "automation/pr-archive-10640-run-31830205063-attempt-1",
+      "head_sha": "6b8ec9c94b93231def491c9d9750f0a3f9b72907",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -266,6 +291,7 @@
     {
       "id": 31830636268,
       "head_branch": "heartbeat/alexa",
+      "head_sha": "fb7d8bc3e3521d20474282f26d312de3798927f1",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -276,6 +302,7 @@
     {
       "id": 31830637954,
       "head_branch": "heartbeat/soraya",
+      "head_sha": "d4048c2f6505da52f19987bc65b09c67f0c70f54",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -286,6 +313,7 @@
     {
       "id": 31830752429,
       "head_branch": "shadow/name-the-vendor-root-in-attestation-claims",
+      "head_sha": "9005455c07db4f9b2d2ccbfc61aa0dcbbf66cc16",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -296,6 +324,7 @@
     {
       "id": 31830757508,
       "head_branch": "heartbeat/otto",
+      "head_sha": "acd52128bb7e2ddda10a5606aeb83cbec2df82ab",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -306,6 +335,7 @@
     {
       "id": 31830999695,
       "head_branch": "main",
+      "head_sha": "33e04e02dbfaa0dc2f1f3c8a0099102290b56619",
       "event": "push",
       "status": "completed",
       "conclusion": "success",
@@ -316,6 +346,7 @@
     {
       "id": 31831062171,
       "head_branch": "automation/pr-archive-10644-run-31830999235-attempt-1",
+      "head_sha": "434946c658a9a074b16f3ec0c6428857cdf65428",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -326,6 +357,7 @@
     {
       "id": 31831199120,
       "head_branch": "otto/time-crystal-pointer-synthesis",
+      "head_sha": "e3b184cf97229adf6c39e0a7aca883b3a284c734",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -336,6 +368,7 @@
     {
       "id": 31831575871,
       "head_branch": "main",
+      "head_sha": "646c31279c8f80b96149a4f635c2e1d9d4080c2f",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -346,6 +379,7 @@
     {
       "id": 31831580456,
       "head_branch": "main",
+      "head_sha": "fd02d1ee1fc58b4e745d47949a0ddbc7974cbcce",
       "event": "push",
       "status": "completed",
       "conclusion": "success",
@@ -356,6 +390,7 @@
     {
       "id": 31831628499,
       "head_branch": "automation/pr-archive-10679-run-31831580213-attempt-1",
+      "head_sha": "fa240504fd4ac78f6d9d99be360d96b7f1d0295d",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -366,6 +401,7 @@
     {
       "id": 31831632267,
       "head_branch": "automation/pr-archive-10682-run-31831575874-attempt-1",
+      "head_sha": "2ad78c6d63c5db2830c0568463f1c7176e11e1dc",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -376,6 +412,7 @@
     {
       "id": 31831794385,
       "head_branch": "heartbeat/tick-metrics",
+      "head_sha": "256f7d59ae021d9fe692f6cab9a6a9083890712e",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -386,6 +423,7 @@
     {
       "id": 31831841122,
       "head_branch": "otto/zetaid-universal-pointer-version-guard",
+      "head_sha": "747e6a1136c8824ab59a8fd225b9786b0c0a6cbf",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -396,6 +434,7 @@
     {
       "id": 31831887563,
       "head_branch": "otto/zetaid-universal-pointer-version-guard",
+      "head_sha": "96f8b930e6254f23ca08512fc76794bcd52f08ec",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -406,6 +445,7 @@
     {
       "id": 31832169123,
       "head_branch": "main",
+      "head_sha": "42b72785921c12c4509649789801ec4880dafd46",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -416,6 +456,7 @@
     {
       "id": 31832196084,
       "head_branch": "aarav/skill-seed-rigidity-study",
+      "head_sha": "8576d53ecbbbac072424b5866fff87ca52b189fb",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -426,6 +467,7 @@
     {
       "id": 31832216323,
       "head_branch": "automation/pr-archive-10687-run-31832169260-attempt-1",
+      "head_sha": "abdd8fbb9cfcbd90797acd217757dc0a29905008",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -436,6 +478,7 @@
     {
       "id": 31832249052,
       "head_branch": "main",
+      "head_sha": "ae16373f647a9730c6faa855d9c8efd99e605c8e",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -446,6 +489,7 @@
     {
       "id": 31832252945,
       "head_branch": "main",
+      "head_sha": "f6a1e65ca20771eac7fac008a7f36dd76650ad10",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -456,6 +500,7 @@
     {
       "id": 31832276784,
       "head_branch": "otto/backpressure-algebra-bandwidth-isolation-decorrelation",
+      "head_sha": "b5c30045e8e0b318736ad8308ef537faa8d773e1",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -466,6 +511,7 @@
     {
       "id": 31832341667,
       "head_branch": "shadow/name-the-vendor-root-in-attestation-claims",
+      "head_sha": "92c23be87e38b65d8f81a857910a96832431adc1",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -476,6 +522,7 @@
     {
       "id": 31832457733,
       "head_branch": "otto/backpressure-algebra-bandwidth-isolation-decorrelation",
+      "head_sha": "e2d4095bbf155c409d956913346cff5154d02470",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -486,6 +533,7 @@
     {
       "id": 31832568600,
       "head_branch": "otto/seed-vocabulary-discipline-and-spec-counts",
+      "head_sha": "cf41423c7eab9c2832fe26cb5ba68e9e2702ffa3",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -496,6 +544,7 @@
     {
       "id": 31832668524,
       "head_branch": "shadow/branch-free-visual-encoding-is-the-meaning-junction",
+      "head_sha": "a23b4fa790d23df6d7363617325eaa061e2bca36",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -506,6 +555,7 @@
     {
       "id": 31832770751,
       "head_branch": "main",
+      "head_sha": "46eacdcb6f8586fb08896fc75b04959f439f913d",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -516,6 +566,7 @@
     {
       "id": 31832830432,
       "head_branch": "main",
+      "head_sha": "26af0d626dbe5da532e1490ce7a737ecb2bc500d",
       "event": "push",
       "status": "completed",
       "conclusion": "success",
@@ -526,6 +577,7 @@
     {
       "id": 31832877793,
       "head_branch": "automation/pr-archive-10694-run-31832830448-attempt-1",
+      "head_sha": "bf063ed63b928144ce39a9e7935bec3107b88860",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -536,6 +588,7 @@
     {
       "id": 31832914310,
       "head_branch": "nazar/frost-slot-token-addressing",
+      "head_sha": "daf5fe91f9f4fcb91776a4dfe0cbed385ebf2dc4",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -546,6 +599,7 @@
     {
       "id": 31832956810,
       "head_branch": "ferry/intel-smm-seam-hidden-modes",
+      "head_sha": "09b58b25304637318c6e9ab001e032a1d479cbc3",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -556,6 +610,7 @@
     {
       "id": 31833046292,
       "head_branch": "shadow/pre-linguistic-bootstrap-icons-before-symbols",
+      "head_sha": "c06f1c7efaabede7777817aa708eb1eaedbacf0e",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -566,6 +621,7 @@
     {
       "id": 31833060125,
       "head_branch": "heartbeat/society",
+      "head_sha": "1f0a067861b5f4b4e581556c2ba29d6cfd993678",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -576,6 +632,7 @@
     {
       "id": 31833118071,
       "head_branch": "heartbeat/soraya",
+      "head_sha": "c2cac46c86ed3ffabaed884710135f5881d1e323",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -586,6 +643,7 @@
     {
       "id": 31833120940,
       "head_branch": "heartbeat/alexa",
+      "head_sha": "12869bbe7ad92bff920f803880e01ddae08ea3db",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -596,6 +654,7 @@
     {
       "id": 31833151426,
       "head_branch": "shadow/sh-deprecation-sequenced-by-key-exposure",
+      "head_sha": "8f3124794f2596b10b2074fb0fbeabab336d5d1c",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -606,6 +665,7 @@
     {
       "id": 31833222168,
       "head_branch": "heartbeat/otto",
+      "head_sha": "d9d29b1e01ce0f76d6aa747d608fa89d78a446a7",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -616,6 +676,7 @@
     {
       "id": 31833316336,
       "head_branch": "main",
+      "head_sha": "a619ee9bd11772452f9ed907bab9ac66b101b988",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -626,6 +687,7 @@
     {
       "id": 31833329625,
       "head_branch": "shadow/sh-deprecation-sequenced-by-key-exposure",
+      "head_sha": "8de35776ac397b4d51f14b5174f4634100182532",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -636,6 +698,7 @@
     {
       "id": 31833360986,
       "head_branch": "automation/pr-archive-10685-run-31833316317-attempt-1",
+      "head_sha": "d2e433cf7f538d74c6ad00eda52ce519ec50a548",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -646,6 +709,7 @@
     {
       "id": 31833388660,
       "head_branch": "main",
+      "head_sha": "3c5add0d5e539c0a71924f8b2cebee4f157ff145",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -656,6 +720,7 @@
     {
       "id": 31833438504,
       "head_branch": "automation/pr-archive-10637-run-31833388883-attempt-1",
+      "head_sha": "6fc13b4d09b526ab9da7881759a7293a8766b154",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "failure",
@@ -666,6 +731,7 @@
     {
       "id": 31833546727,
       "head_branch": "main",
+      "head_sha": "125204a27938cb164ce94fe8a54a08d61055e3f2",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -676,6 +742,7 @@
     {
       "id": 31833550419,
       "head_branch": "shadow/open-source-hsm-and-fido-fabricable-survey",
+      "head_sha": "589158140caa48c0cde4ebed2d78ec80ef9e3a8c",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -686,6 +753,7 @@
     {
       "id": 31833598872,
       "head_branch": "automation/pr-archive-10674-run-31833547975-attempt-1",
+      "head_sha": "1f87b1659537de6cdc89f71031c97f0f240b028e",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -696,6 +764,7 @@
     {
       "id": 31833735570,
       "head_branch": "shadow/branch-free-visual-encoding-is-the-meaning-junction",
+      "head_sha": "19da3af8377c88e5bb23b6a8815a0ef8e2d9c440",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -716,6 +785,7 @@
     {
       "id": 31834048560,
       "head_branch": "main",
+      "head_sha": "80bd00f8b2f7c42da444bc19a86f68f63423ac76",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -726,6 +796,7 @@
     {
       "id": 31834099034,
       "head_branch": "automation/pr-archive-10697-run-31834048319-attempt-1",
+      "head_sha": "dd44b099aa5b53720967e8963ea8684d43bc9e00",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -736,6 +807,7 @@
     {
       "id": 31834274326,
       "head_branch": "lumen/adinkra-minimal-homoiconicity-and-the-homoclinic-obstruction",
+      "head_sha": "a9c1bf601abf16e25fe44edddc2cbd8329bbd5f3",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -746,6 +818,7 @@
     {
       "id": 31834284317,
       "head_branch": "main",
+      "head_sha": "984bbdfe0bcfd9ff415f9d762f25d702f622894d",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -756,6 +829,7 @@
     {
       "id": 31834338110,
       "head_branch": "automation/pr-archive-10698-run-31834284060-attempt-1",
+      "head_sha": "de6ece1e11c427435f54cfe5d3440ad0e7e2f501",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -766,6 +840,7 @@
     {
       "id": 31834403405,
       "head_branch": "shadow/open-source-hsm-and-fido-fabricable-survey",
+      "head_sha": "5424c6d6e9d9c81bc6750a2cd499e106eee48c63",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -776,6 +851,7 @@
     {
       "id": 31834505896,
       "head_branch": "main",
+      "head_sha": "9ffb412fe53a280f9a3e5f6373f3ce286827cc8c",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -786,6 +862,7 @@
     {
       "id": 31834537334,
       "head_branch": "main",
+      "head_sha": "f683775b01c852fc96ae9cc697ebab722906765e",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -796,6 +873,7 @@
     {
       "id": 31834552940,
       "head_branch": "main",
+      "head_sha": "a8f78a1faf4898f6251cc33c2f3a9303d22e01db",
       "event": "push",
       "status": "completed",
       "conclusion": "cancelled",
@@ -806,6 +884,7 @@
     {
       "id": 31834562587,
       "head_branch": "automation/pr-archive-10678-run-31834507422-attempt-1",
+      "head_sha": "17d1bc27ca7658aa240b7b154c87237d6f7557f8",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -816,6 +895,7 @@
     {
       "id": 31834726229,
       "head_branch": "main",
+      "head_sha": "38258c2ea4dc3eee99c9b261985a77e754e4a3b8",
       "event": "push",
       "status": "completed",
       "conclusion": "success",
@@ -826,6 +906,7 @@
     {
       "id": 31834778786,
       "head_branch": "automation/pr-archive-10695-run-31834726994-attempt-1",
+      "head_sha": "a7c4d8357ce86bf02cbdd35f5687bead2f5b1e34",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -836,6 +917,7 @@
     {
       "id": 31835015649,
       "head_branch": "heartbeat/society",
+      "head_sha": "2c7dd0306c8f1e8dc3429094a47ba414d917f318",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -846,6 +928,7 @@
     {
       "id": 31835303139,
       "head_branch": "heartbeat/soraya",
+      "head_sha": "df97c965cd13be91b9f3ab8d78551fcd9fbaec66",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -856,6 +939,7 @@
     {
       "id": 31835308075,
       "head_branch": "heartbeat/alexa",
+      "head_sha": "50208830d744fce1e18556bdab70c4e7f1de07f4",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "cancelled",
@@ -866,6 +950,7 @@
     {
       "id": 31835308695,
       "head_branch": "heartbeat/otto",
+      "head_sha": "9d0411a96cd2e432423b0e7e36741dfabdc5823d",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -876,6 +961,7 @@
     {
       "id": 31835549852,
       "head_branch": "otto/zetaid-universal-pointer-version-guard",
+      "head_sha": "bf48d73c256f5313260b8b8ad868c24748034af0",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -886,6 +972,7 @@
     {
       "id": 31835625695,
       "head_branch": "otto/lint-markdown-script-lints-zero-files",
+      "head_sha": "024e6dc6e110668785e6548f4e02db250bdee4cf",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "success",
@@ -906,6 +993,7 @@
     {
       "id": 31836916969,
       "head_branch": "main",
+      "head_sha": "4b8a6c505ce4285ce191d407736d2d59a3471e7d",
       "event": "push",
       "status": "completed",
       "conclusion": "success",
@@ -926,6 +1014,7 @@
     {
       "id": 31836964165,
       "head_branch": "heartbeat/alexa",
+      "head_sha": "ad63ffb261b3520e9d65689ad110fe12b9f28c21",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -936,6 +1025,7 @@
     {
       "id": 31836978023,
       "head_branch": "automation/pr-archive-10712-run-31836917981-attempt-1",
+      "head_sha": "d75e6e8d9a018faaf8fd8f618760a22c1cb8e57f",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "failure",
@@ -946,6 +1036,7 @@
     {
       "id": 31837023359,
       "head_branch": "heartbeat/soraya",
+      "head_sha": "509a978c6202309b49bec2ff604548a9707de513",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -966,6 +1057,7 @@
     {
       "id": 31837047610,
       "head_branch": "heartbeat/otto",
+      "head_sha": "4196a3dd3e6afd63a68bda7956aefa7b9ebcc993",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -976,6 +1068,7 @@
     {
       "id": 31838281249,
       "head_branch": "heartbeat/otto",
+      "head_sha": "df792bd53d8762d046f696957141954637086c61",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
@@ -996,6 +1089,7 @@
     {
       "id": 31838341254,
       "head_branch": "heartbeat/alexa",
+      "head_sha": "18e592185ac5a8a3e4edacb66f54836df8e52028",
       "event": "pull_request",
       "status": "completed",
       "conclusion": "action_required",
