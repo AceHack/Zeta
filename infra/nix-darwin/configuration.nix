@@ -11,7 +11,7 @@
 # walkthrough including prerequisites in
 # infra/nix-darwin/README.md (this directory).
 #
-#   nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
+#   nix run nix-darwin/nix-darwin-26.05#darwin-rebuild -- switch \
 #     --flake /path/to/Zeta#zeta-mac
 #
 # After the first switch, the canonical AI-cluster ISO builds from
@@ -82,9 +82,18 @@
   # Standard nix-darwin housekeeping
   # ---------------------------------------------------------------------------
 
-  # Use the determinate-nixd daemon if Determinate was the installer
-  # path. Harmless if vanilla Nix is installed instead.
-  nix.useDaemon = true;
+  # `nix.useDaemon = true;` used to live here, with the note "use the
+  # determinate-nixd daemon if Determinate was the installer path".
+  # REMOVED for nix-darwin-26.05, which asserts on it at eval time:
+  #
+  #   The option definition `nix.useDaemon' ... no longer has any effect;
+  #   please remove it. nix-darwin now only supports managing multi-user
+  #   daemon installations of Nix.
+  #
+  # So the behaviour the option asked for is now the ONLY behaviour, and
+  # the option is gone rather than defaulted. Deleting it is the whole
+  # migration — there is no replacement setting to carry the intent to.
+  # This is the single eval break the 24.11 -> 26.05 jump produced.
 
   # nixpkgs the system uses for its own modules. Stays separate from
   # whatever individual flakes pull in.

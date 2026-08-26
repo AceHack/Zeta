@@ -23,15 +23,42 @@
   description = "Zeta — declarative desired state for the AI cluster (NixOS + K3S + ArgoCD + Orleans)";
 
   inputs = {
-    # Pin nixpkgs to the stable channel.
-    # (Canonical AI-cluster installer at full-ai-cluster/usb-nixos-installer/
-    # uses nixos-25.11 independently; this root flake stays on 24.11 for
-    # the per-host nixosConfigurations until those are bumped as a
-    # separate substrate landing.)
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # Pin nixpkgs to the CURRENT SUPPORTED stable release.
+    #
+    # Was `nixos-24.11`, which went end-of-life 2025-06-30 — over a year
+    # before this bump. Worth naming the irony: 24.11 and nix-darwin-24.11
+    # were the only two inputs of the six here that resolved to a STABLE
+    # value across `nix flake update`, and they were stable BECAUSE THE
+    # RELEASE IS DEAD, not because anyone pinned them deliberately. A dead
+    # branch stops moving; that is not the same property as a pinned one.
+    #
+    # Per WebSearch 2026-08-26:
+    #   https://nixos.org/blog/announcements/2026/nixos-2605/ — NixOS 26.05
+    #   "Yarara" released 2026-05-30; current stable, supported through
+    #   2026-12-31.
+    #   https://endoflife.date/nixos — 25.11 "Xantusia" EOL 2026-06-30;
+    #   24.11 EOL 2025-06-30.
+    # So 26.05 is the ONLY release under support as of this commit, which
+    # is why this goes to 26.05 rather than to the intermediate 25.11 that
+    # full-ai-cluster/flake.nix still carries (that one is itself now two
+    # months past EOL and is a separate landing — see the PR body).
+    #
+    # Aaron's standing direction: "anything that's EOL we need to replace
+    # and not depend on."
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     # Hardware-specific NixOS modules (e.g. common-cpu-amd, common-gpu-nvidia)
     # for the per-host configs.
+    #
+    # NOT TOUCHED BY THIS COMMIT, and the reason is worth writing down so
+    # nobody folds it in later by reflex. `@master` is a DIFFERENT defect
+    # from an EOL pin: it is not dead, it is UNPINNED BY DECLARATION. The
+    # lock committed in #15573 pins it to a rev today, but the next
+    # `nix flake update` jumps it arbitrarily again — and the same is true
+    # of the `nixos-unstable` CHANNEL URL it drags in transitively as the
+    # lock's `nixpkgs` node. Changing a declared ref is a decision about
+    # what this flake tracks; replacing an EOL dependency is not. They get
+    # separate commits so each can be reviewed on its own terms.
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     # flake-utils so the devShell + packages outputs are auto-generated
@@ -40,15 +67,17 @@
 
     # nix-darwin — module system for maintainer macOS workstations.
     # MUST be pinned to a release branch matching the nixpkgs release
-    # we use (nixos-24.11 above → nix-darwin-24.11). nix-darwin
+    # we use (nixos-26.05 above → nix-darwin-26.05). nix-darwin
     # asserts the branches match at eval time:
     #   "nix-darwin and Nixpkgs branches in use must match"
-    # Bump this branch in lockstep with the nixpkgs.url release above.
+    # Bump this branch in lockstep with the nixpkgs.url release above —
+    # this is not a style preference, it is an eval-time assertion, which
+    # is why the two move in ONE commit and never separately.
     #
     # Powers `darwinConfigurations.zeta-mac` which activates the
     # linux-builder VM for local x86_64-linux ISO builds.
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -139,7 +168,7 @@
       # Parallels / Lima / remote builders.
       #
       # Apply with:
-      #   nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch --flake .#zeta-mac
+      #   nix run nix-darwin/nix-darwin-26.05#darwin-rebuild -- switch --flake .#zeta-mac
       darwinConfigurations.zeta-mac = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = { inherit inputs; };
