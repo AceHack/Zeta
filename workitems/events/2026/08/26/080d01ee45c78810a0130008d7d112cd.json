@@ -1,0 +1,14 @@
+{
+  "id": "080d01ee45c78810a0130008d7d112cd",
+  "at": "2026-08-26T11:15:59.857Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YWHE7G087G0R001PSGEH5",
+    "type": "bug",
+    "title": "ZETA_PR_ARCHIVE_TOKEN is refused enablePullRequestAutoMerge, so every heartbeat merge lands with no gate verdict",
+    "slug": "zeta-pr-archive-token-is-refused-enablepullrequestautomerge",
+    "priority": "P1",
+    "filename": "081M0YWHE7G087G0R001PSGEH5-zeta-pr-archive-token-is-refused-enablepullrequestautomerge.md"
+  }
+}

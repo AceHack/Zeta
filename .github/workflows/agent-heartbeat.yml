@@ -829,7 +829,7 @@ jobs:
           ARM_MODE=pat
           if [ -z "${GH_TOKEN:-}" ]; then
             ARM_MODE=workflow-token-only
-            echo "::warning title=Auto-merge arming has no PR-CREATE credential::ZETA_PR_ARCHIVE_TOKEN is absent, so PRs are armed by GITHUB_TOKEN and their merges do NOT trigger pr-archive-on-merge.yml — archive coverage then rests on the backfill sweep alone. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
+            echo "::warning title=Auto-merge arming has no PR-CREATE credential::ZETA_PR_ARCHIVE_TOKEN is absent, so PRs are armed by GITHUB_TOKEN and their merges raise no events at all: no 'gate' push run and therefore no post-merge verdict on the merged commit, and no pr-archive-on-merge.yml run either (archive coverage then rests on the backfill sweep alone; the verdict has no backfill). FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write' + 'Metadata: read'. Role table: docs/security/2026-08-17-society-heartbeat-token-boundary-and-gate-start-failure.md"
             export GH_TOKEN="$FALLBACK_GH_TOKEN"
           fi
 
@@ -847,9 +847,21 @@ jobs:
             # keep arming. A credential fault must not stall the queue, and it
             # must not be silent either — the silence is what this whole change
             # set is repairing.
+            #
+            # THE CONSEQUENCE NAMED HERE WAS TOO SMALL (corrected 2026-08-26,
+            # 081M0YWHE7G087G0R001PSGEH5). It said only that pr-archive-on-merge.yml
+            # would not fire. True, and it is the lesser half. The suppressed event also
+            # means NO `gate` PUSH RUN, so the merged commit carries no post-merge
+            # verdict at all — and since `CI Gate` has
+            # `strict_required_status_checks_policy: false`, that run is the only cover
+            # for "two PRs green alone, red together". Measured over a full population,
+            # `main` 06:00Z..11:10Z on 2026-08-26: 89 commits, total separation —
+            # AceHack-merged 63/63 got a push run, github-actions[bot]-merged 26/26 got
+            # none, and all 26 were `heartbeat/*`. A warning that under-states its own
+            # blast radius gets triaged at the wrong priority, which is how this one sat.
             if [ "$MERGE_RC" -ne 0 ] && [ "$ARM_MODE" = "pat" ] \
                && printf '%s' "$MERGE_OUT" | grep -q "not accessible by personal access token"; then
-              echo "::warning title=Auto-merge arming PAT lacks enablePullRequestAutoMerge::ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so arming falls back to GITHUB_TOKEN and pr-archive-on-merge.yml will not fire for these merges. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+              echo "::warning title=Auto-merge arming PAT lacks enablePullRequestAutoMerge::ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so arming falls back to GITHUB_TOKEN. GitHub's recursion guard then suppresses every event that merge would raise: these commits land on main with NO 'gate' push run and therefore NO post-merge verdict (measured 2026-08-26: 26 of 26 bot-merged main commits had zero gate push runs, against 63 of 63 for PAT-merged), and pr-archive-on-merge.yml does not fire for them either. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. This is a DIFFERENT scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA; the blocker itself is tracked by 081M0YWHE7G087G0R001PSGEH5."
               ARM_MODE=degraded-to-workflow-token
               export GH_TOKEN="$FALLBACK_GH_TOKEN"
               MERGE_OUT=$(gh pr merge "$PR" --squash --auto --delete-branch 2>&1)
@@ -2312,7 +2324,7 @@ jobs:
           # where no log line could ever mention it. The degradation itself is deliberate and
           # kept — an unarmed flush PR is a queue delay, not lost telemetry.
           if [ -z "${GH_TOKEN:-}" ]; then
-            echo "::warning title=Heartbeat arming has no PR-CREATE credential::$AGENT: ZETA_PR_ARCHIVE_TOKEN is absent, so PR #$PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write'."
+            echo "::warning title=Heartbeat arming has no PR-CREATE credential::$AGENT: ZETA_PR_ARCHIVE_TOKEN is absent, so PR #$PR is armed by GITHUB_TOKEN and its merge raises no events: no 'gate' push run on the merged commit (so no post-merge verdict) and no pr-archive-on-merge.yml run. FIX: set repository secret ZETA_PR_ARCHIVE_TOKEN on Lucent-Financial-Group/Zeta to a fine-grained PAT with 'Pull requests: read and write'."
             export GH_TOKEN="$FALLBACK_GH_TOKEN"
           fi
           set +e
@@ -2320,7 +2332,7 @@ jobs:
           ARM_RC=$?
           if [ "$ARM_RC" -ne 0 ] && [ "$GH_TOKEN" != "$FALLBACK_GH_TOKEN" ] \
              && printf '%s' "$ARM_OUT" | grep -q "not accessible by personal access token"; then
-            echo "::warning title=Heartbeat arming PAT lacks enablePullRequestAutoMerge::$AGENT: ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so this PR is armed by GITHUB_TOKEN and its merge will not trigger pr-archive-on-merge.yml. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. Different scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA."
+            echo "::warning title=Heartbeat arming PAT lacks enablePullRequestAutoMerge::$AGENT: ZETA_PR_ARCHIVE_TOKEN (the PR-create role credential) was refused the GraphQL mutation, so this PR is armed by GITHUB_TOKEN and its merge raises no events: no 'gate' push run on the merged commit (so no post-merge verdict, the largest measured verdict-loss class on main) and no pr-archive-on-merge.yml run. FIX: grant that fine-grained PAT 'Pull requests: read and write' on Lucent-Financial-Group/Zeta. Different scope from the 'Contents: read and write' denial tracked by 081M05G8D36087G0R0034D3QPA; the blocker itself is tracked by 081M0YWHE7G087G0R001PSGEH5."
             export GH_TOKEN="$FALLBACK_GH_TOKEN"
             ARM_OUT=$(gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --squash --auto --delete-branch 2>&1)
             ARM_RC=$?
