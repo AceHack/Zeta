@@ -344,6 +344,71 @@ Two things that remain structurally true regardless of how the pull times land:
 - **Cache-budget relief** (§6.3) — an image pull writes nothing to the Actions cache.
 - **Determinism** — a digest resolves to the same bytes forever; `apt-get install` resolves against a mirror that moves under you.
 
+### 6.4a Costed on BOTH runner types — and the second runner type does not currently exist
+
+Everything above prices containerization against **GitHub-hosted** runners. That is the *worse* of the two runner types this org has declared, and the better one is sitting in the tree unused. I was asked to cost both. Checking it first changed the answer twice, so the corrections lead.
+
+#### What is declared
+
+`metered` — `full-ai-cluster/k8s/applications/arc-runner-set/Application.yaml` exists and declares an org-wide Actions Runner Controller scale set:
+
+```
+chart: gha-runner-scale-set   targetRevision: 0.12.1
+githubConfigUrl: https://github.com/Lucent-Financial-Group
+runnerScaleSetName: zeta-self-hosted
+minRunners: 1   maxRunners: 6
+containerMode: { type: dind }
+syncPolicy.automated: { prune: false, selfHeal: true }
+```
+
+`metered` — and **nothing routes to it**: 0 workflows name `zeta-self-hosted`, 0 name `self-hosted` at all, across 132 `runs-on` declarations. Control, so the null is real: 75 workflows match `ubuntu-24.04`.
+
+#### CORRECTION 1 — it is not running, and has never run
+
+The framing I was handed was that a warm ARC runner is idling with jobs never routed to it. **It is not idling. It is not there.**
+
+`metered`, GitHub REST API:
+
+```
+GET /orgs/Lucent-Financial-Group/actions/runners            -> total_count: 0
+GET /orgs/.../actions/runner-groups/1/runners               -> total_count: 0
+GET /orgs/.../actions/runner-groups/3/runners               -> total_count: 0
+```
+
+**Permission control, because a zero from an endpoint you cannot read is not a zero:** the same token returns `GET /orgs/.../actions/runner-groups -> total_count: 2` and carries `admin:org`. The endpoint works; the zero is real.
+
+`minRunners: 1` means a runner should be **registered and idle at all times** — the manifest's own comment says it exists so "the cadence measurement is not re-imported as cold-start latency". No such runner is visible to GitHub.
+
+**And the reason is already filed.** Open P2 bug `081M0JM6SSG087G0R0029X3F6Z` (2026-08-21) reports that the runner pod mounts PVC `arc-model-cache`, which **nothing applies**: the Application sources a *remote OCI Helm chart*, not its own git directory, so it cannot apply its sibling `model-cache-pvc.yaml`, and the root app-of-apps glob `{*/Application.yaml,Application.yaml}` does not match a bare `model-cache-pvc.yaml` either. Its own words: *"A pod mounting a PVC that does not exist does not start. This is not a future risk; it is the current state whenever the runner set is synced."* `infra/k8s/tests/FULL-AI-CLUSTER-FAILURE-BASELINE.md` separately records `arc-runner-set` among Applications that would not *render* at all until fixes landed on 2026-08-22.
+
+So the three unverified items I was asked to state come back: the app is declared, `selfHeal: true` would keep re-applying it, and **it still is not registered** — which is consistent with the filed defect and is *not* deliberate staging. I cannot see the cluster; I can see that GitHub has no runner.
+
+#### CORRECTION 2 — even running, this manifest would not give a warm layer cache
+
+The premise for costing ARC favourably is that the container layer cache survives between jobs on a persistent node. **That does not follow from this configuration.**
+
+`containerMode: { type: dind }` runs Docker-in-Docker: each runner pod gets its **own dind daemon with its own ephemeral image store**. The layer cache lives in that daemon's data root, and `metered` — the manifest declares exactly **one** volume, `model-cache` at `/home/runner/.cache/models`; there is no `dindVolumeClaimTemplate` and nothing mounted at `/var/lib/docker` (grep count: 0).
+
+So with ARC as declared, **every job would still pay a full pull**, exactly like a hosted runner. Getting the warm-cache benefit needs an additional persistent volume for the dind data root — a change nobody has made, with its own concurrency questions (six runners sharing one image store is not free).
+
+`containerMode: dind` **does** answer the third unverified item favourably: the scale set is *configured* to support job-level `container:` and `docker build`. Configured, not demonstrated — it has never run.
+
+#### The comparison, with each number's provenance
+
+| | GitHub-hosted | ARC `zeta-self-hosted` |
+|---|---|---|
+| available today | **yes** — every number in §6 measured here | **no** — 0 runners registered, open P2 blocker |
+| layer cache between jobs | **no**, fresh VM (`metered`) | **no**, as declared — ephemeral dind store (`metered` from the manifest) |
+| can run `container:` jobs | **yes** (`metered` — the proof job ran) | configured for it (`dind`), never exercised |
+| Actions cache ceiling | a **GitHub product limit**, not physical | would not apply; needs an in-cluster cache backend that does not exist yet |
+| pull source | GHCR over WAN | GHCR over WAN today; an in-cluster registry would change this, and none is deployed |
+
+**The honest conclusion is narrower than the question implied.** Containerization should be costed against hosted runners, because that is the only runner type that exists. The ARC path *could* dominate it — same-cluster registry, persistent dind store, no Actions-cache ceiling — but each of those is a change nobody has made on top of a deployment that is not running.
+
+**And the finding is worth more than the section**, which is why it is written this way: **a declared, self-healing, org-wide runner scale set has been in the tree since at least 2026-08-22 and has never registered a single runner.** Nothing was going to notice, because the thing that would have noticed — a workflow routed to it — does not exist either. That is the `mirror-to-fork.yml` lesson recorded in this same repo, in new clothes: *"an unprovisioned side-effect should be a red run somebody sees, not a green one nobody does."* Here there is no run at all.
+
+**Explicitly out of scope and not done:** migrating any workflow to `zeta-self-hosted`, fixing the PVC, or touching the cluster. That is infrastructure and it is Aaron's call; the blocker already has a work item.
+
 ### 6.5 A cost this change accepts and states
 
 The image `COPY . /zeta`s the build context so `install.sh` has the repo it needs, then removes it. That does not shrink the image — the layer remains — and the `rm` is a **correctness** measure, not a size one: without it, a job that forgot to check out would silently read a stale tree that looks exactly like a fresh one. Narrowing the build context to just the install inputs is a measured follow-up, not done here.
@@ -393,7 +458,8 @@ Ordering, if it is ever pursued: (1) commit `flake.lock`; (2) measure what fract
 4. **Is `ubuntu-slim` container-capable?** `low-memory` is the highest-value single target measured (298 s mean install against a 15-minute cap, and it deliberately never saves a toolchain cache). Someone with access needs to run `docker version` on that runner class.
 5. **`flake.lock` (§7.1)** — already in flight as **#15573**. Nothing to decide unless you want it prioritised.
 6. **The `lint-clone-at-tag-is-sufficient.ts` collision.** Its `RESOLVER_INVOCATION` regex matches `ace\s+bootstrap`, and `-` is a word boundary — so the phrase **"pre-ace bootstrap"**, which is now the repo's own name for the seed layer, reads as a resolver invocation on any non-comment line of a bootstrap surface. I hit this and worked around it by rewording a step name rather than weakening the lint. The vocabulary and the guard now collide; that is worth a decision rather than a series of quiet rewordings.
-7. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
+7. **The ARC runner scale set is declared and has never run** (§6.4a). `zeta-self-hosted` is org-wide, self-healing, `minRunners: 1` — and **0 runners are registered with GitHub**, blocked by an already-filed P2 (`081M0JM6SSG087G0R0029X3F6Z`: the runner pod mounts a PVC nothing applies). Separately, as declared it would **not** give a warm layer cache: `containerMode: dind` with no persistent docker data root means every job still pays a full pull. Whether to fix and adopt it is infrastructure and yours; nothing here touches it.
+8. **Two apt audits classify by string, one by structure — for the cache lane's owner.** Adding this workflow turned three audits red, and the three behaved differently in a way worth recording:
 
    | audit | how it decided this job was in scope | verdict |
    |---|---|---|
@@ -416,6 +482,8 @@ Stated so a green here is not read as coverage it does not have:
 - **Variance of the pull.** Three legs is not a distribution. It distinguishes "40 s every time" from "40 s, 41 s, 380 s", which is the question, but it will not give a real p95. If the pull turns out to matter, `image-pull-measurement.yml` is the instrument for a proper sample.
 - **Whether `ubuntu-slim` has a container runtime.**
 - **Whether CodeQL's action tolerates a job-level `container:`.**
+- **The state of the cluster itself.** I can see that GitHub has **no registered runner** and that a P2 explains why; I cannot see whether the cluster is up, whether ArgoCD reports the app healthy, or whether `selfHeal` is looping. An `Application.yaml` in the tree is not proof of a deployment, and my zero is evidence about *GitHub's* view, not about Kubernetes'.
+- **That ARC could host `container:` jobs in practice.** `containerMode: dind` is the right configuration for it; it has never executed a job, so this is configured-not-demonstrated.
 - **The "~69 GiB/hour of writes against a 9.31 GiB ceiling, 23 GiB evicted in 61-second sweeps, 80% of evicted bytes never read" cache figures** I was handed. I measured the *standing* number instead (22.34 GB active across 40 caches, §6.3). The rate figures are another agent's lane and I did not re-derive them.
 - **The covered fraction of `flake.nix`** (§7.2). No Nix on this host.
 - **`markdownlint` on this file.** `.markdownlint-cli2.jsonc` excludes `docs/research/2026-*-*.md`, so an rc=0 from it here would be a check that did not run, and is not quoted as a pass.
