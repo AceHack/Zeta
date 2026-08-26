@@ -200,10 +200,29 @@ jobs:
   path-filter:
     name: path filter
     runs-on: ubuntu-24.04
-    # 5 min covers the full-history checkout (`fetch-depth: 0`) on
-    # slow runners. The non-PR fast path runs in ~5 sec without any
-    # checkout, well under the cap.
-    timeout-minutes: 5
+    # STOPGAP with a known expiry — not a fix. Raised 5 -> 15 min on
+    # 2026-08-26 because the 5-minute cap was KILLING this job rather
+    # than bounding it. Measured over 287 `Checkout` steps (REST jobs
+    # API across 390 recent gate runs): 12 were cancelled at exactly
+    # 298-300s — at the cap, not near it. path-filter gates both
+    # build-and-test and full-verify, so every kill red-lined the whole
+    # gate as `gate scope=reduced: 6/8 floor jobs ran`.
+    #
+    # Basis for 15 min, from that sample (successful checkouts only):
+    #   p50=22s  p75=23s  p90=36s  p95=70s  p99=201s  max=262s
+    # A tight core (236/273 land in 15-29s) with a genuinely heavy tail
+    # reaching 262s — so the 5-minute cap sat *inside* the tail and
+    # truncated it. 15 min is ~3.4x the slowest observed success and
+    # ~41x the median: far enough out that it fires only on a true
+    # hang, which is what a timeout is for. A high cap is paid for only
+    # by an already-stuck job; the low cap was paid for by every
+    # slow-but-healthy run.
+    #
+    # Expiry: this repo adds ~170 commits/day and the fetch this cap
+    # covers grows with the ref count (81 heads + 359 tags today), so
+    # 15 min will be outgrown too. The real fix is to stop over-fetching
+    # — see the `fetch-depth` comment on the Checkout step below.
+    timeout-minutes: 15
     outputs:
       code: ${{ steps.detect.outputs.code || steps.nonpr.outputs.code }}
     steps:
