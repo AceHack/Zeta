@@ -1,0 +1,12 @@
+{
+  "pr_number": 15518,
+  "archive_path": "docs/history/pr-reviews/PR-15518-data-f1-asymmetry-exists-gemma-verifies-what-it-cannot-produce.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T07:08:33.960Z",
+  "schema_version": "v1",
+  "commit_sha": "2df0a6ccdf08d47dd366e7edbc284661fd89c24b",
+  "title": "data(F1): asymmetry EXISTS — gemma verifies what it cannot produce",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T07:07:55Z",
+  "head_ref": "alexa/f1-verify-asymmetry"
+}

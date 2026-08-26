@@ -1,0 +1,12 @@
+{
+  "pr_number": 15519,
+  "archive_path": "docs/history/pr-reviews/PR-15519-fix-f1-drop-two-unused-imports-main-s-lint-ts-was-red-on-the-f1-landing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T07:29:06.970Z",
+  "schema_version": "v1",
+  "commit_sha": "01bd090ed32c088053218ae1272c4e368c99bab3",
+  "title": "fix(f1): drop two unused imports — main's `lint (TS)` was red on the F1 landing",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T07:28:29Z",
+  "head_ref": "fix/f1-unused-imports"
+}
