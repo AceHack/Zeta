@@ -118,7 +118,7 @@
     {
       "path": "flake.nix",
       "disposition": "blocking",
-      "note": "nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} import ./infra/nixos/hosts/*/configuration.nix and nixosModules.{common,k3s-server,k3s-agent,gpu} ARE ./infra/nixos/modules/*.nix. VERIFIED 2026-08-17: `nix flake check --no-build` at the repo root evaluates all three hosts today, so deleting infra/nixos/ breaks it. NOT verified by CI \u2014 the only `nix flake check` in .github/workflows/build-ai-cluster-iso.yml runs with working-directory: full-ai-cluster. There is also no root flake.lock, so this flake's inputs are unpinned.",
+      "note": "nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} import ./infra/nixos/hosts/*/configuration.nix and nixosModules.{common,k3s-server,k3s-agent,gpu} ARE ./infra/nixos/modules/*.nix. VERIFIED 2026-08-17: `nix flake check --no-build` at the repo root evaluates all three hosts today, so deleting infra/nixos/ breaks it. NOT verified by CI \u2014 the only `nix flake check` in .github/workflows/build-ai-cluster-iso.yml runs with working-directory: full-ai-cluster. A root flake.lock landed 2026-08-26 (was absent until then); `nix flake check --no-build` still evaluates all three hosts against it. The lock pins nixos-hardware@master, which was the one genuinely floating input.",
       "migrateTo": "UNDECIDED \u2014 full-ai-cluster/flake.nix already declares control-plane and worker-gpu, on nixpkgs 25.11 against the root flake's 24.11. Repointing crosses a nixpkgs major; dropping the outputs breaks any off-repo machine tracking .#control-plane. Maintainer decision."
     },
     {
