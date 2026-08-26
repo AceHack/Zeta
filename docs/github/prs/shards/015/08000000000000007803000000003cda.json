@@ -1,0 +1,12 @@
+{
+  "pr_number": 15578,
+  "archive_path": "docs/history/pr-reviews/PR-15578-fix-ts-drop-unused-writefilesync-import-main-tip-fails-tsc-blocking-every-pr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T10:28:46.972Z",
+  "schema_version": "v1",
+  "commit_sha": "6ae2bc9ac1a29ffca55975939b910fd5efbbb05b",
+  "title": "fix(ts): drop unused writeFileSync import — main tip fails tsc, blocking every PR",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T10:28:09Z",
+  "head_ref": "shadow/fix-tsc-unused-writefilesync"
+}

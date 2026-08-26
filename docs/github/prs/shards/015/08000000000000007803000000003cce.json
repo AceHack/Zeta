@@ -1,0 +1,12 @@
+{
+  "pr_number": 15566,
+  "archive_path": "docs/history/pr-reviews/PR-15566-fix-ci-main-gate-runs-share-one-concurrency-group-so-commits-lose-verdicts.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:55:38.070Z",
+  "schema_version": "v1",
+  "commit_sha": "d492415d4b4319318f62a21ddd1a3418aacb492a",
+  "title": "fix(ci): main gate runs share one concurrency group, so commits lose verdicts",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:55:04Z",
+  "head_ref": "fix/main-gate-per-sha-concurrency"
+}
