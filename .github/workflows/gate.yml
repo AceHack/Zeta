@@ -2687,7 +2687,7 @@ jobs:
         run: bun src/Core.TypeScript/lint/lint-rust.ts
 
   # ═══════════════════════════════════════════════════════════════════
-  # cross-verify — 31 audits, 31 NAMED check-runs
+  # cross-verify — 30 audits, 30 NAMED check-runs
   # ═══════════════════════════════════════════════════════════════════
   #
   # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
@@ -2765,7 +2765,7 @@ jobs:
         # src/Core.TypeScript/ci/cross-verify-roster.ts, and they cannot drift: every leg
         # runs `--run <id>`, which asserts the two lists are equal AS SEQUENCES before it
         # runs its own audit. Add an id here with no roster entry and this leg goes red
-        # naming it; add a roster entry with no id here and all 31 legs go red naming the
+        # naming it; add a roster entry with no id here and every leg goes red naming the
         # missing leg.
         #
         # Kept STATIC on purpose. A dynamic matrix (`fromJSON` of a roster job's output)
@@ -2773,6 +2773,16 @@ jobs:
         # roster job succeeds. Once any of them is a required context, a name that never
         # reports does not fail a PR, it WEDGES it. A static list cannot do that, and it
         # keeps the names greppable in this file for the ruleset promotion.
+        #
+        # ONE ID IS DELIBERATELY ABSENT: `orphaned-archive-refs` (AH003). It now runs on a
+        # schedule, and still fatal, in `.github/workflows/archive-strand-alarm.yml`,
+        # because its verdict is a repo-wide TIME-VARYING number read from `git ls-remote`.
+        # On 2026-08-25 it blocked PR #15308 — a change that added only new files — over
+        # four refs stranded repo-wide, and that PR re-ran green with zero code change. A
+        # pre-merge leg's verdict must be a function of the CANDIDATE. The full reasoning,
+        # and what replaces the blocking placement, is at the removed roster entry in
+        # `src/Core.TypeScript/ci/cross-verify-roster.ts`; the guard that stops this class
+        # returning is `src/Core.TypeScript/ci/floor-live-remote-queries.ts`.
         audit:
           - ace-suite
           - qsharp-oracles
@@ -2789,7 +2799,6 @@ jobs:
           - heartbeat-lane-audit-tests
           - push-without-rebase
           - skip-token-cannot-land
-          - orphaned-archive-refs
           - dotnet-pin-parity
           - mise-toolchain-couplings
           - flash-entrypoint-parity

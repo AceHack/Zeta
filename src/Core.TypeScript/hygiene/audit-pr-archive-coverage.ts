@@ -81,7 +81,10 @@
 //
 // WHY THIS IS NOT AH003, AND WHY BOTH ARE NEEDED
 // ----------------------------------------------
-// `audit-orphaned-archive-refs.ts` (AH003, fatal on the gate.yml floor) asks:
+// `audit-orphaned-archive-refs.ts` (AH003, fatal on its own schedule in
+// `.github/workflows/archive-strand-alarm.yml` since 2026-08-26 — it was on the
+// gate.yml floor until then, and moved because its verdict is repo-wide and
+// time-varying, not because it stopped mattering) asks:
 // for every `automation/pr-archive-*` REF that exists, did its record reach
 // main? That is the right question for a lane that pushed a branch and then
 // failed to land it, and it caught a real 1,290-ref accumulation.

@@ -29,7 +29,7 @@
 // allowlist drifted from its runner). So there are two lists here BY CONSTRUCTION —
 // the ids in `gate.yml`'s matrix, and the entries below — and `assertGateParity` makes
 // them un-divergeable: **every leg checks the parity before it runs its own audit**.
-// Add an entry here without a matrix id and all 31 legs go red naming the missing leg;
+// Add an entry here without a matrix id and every leg goes red naming the missing leg;
 // add a matrix id without an entry and that leg goes red naming the unknown id.
 //
 // A DYNAMIC matrix (`fromJSON` of a roster job's output) would have removed the second
@@ -344,29 +344,44 @@ export const CROSS_VERIFY_AUDITS: readonly CrossVerifyAudit[] = [
     command: "bun src/Core.TypeScript/hygiene/audit-skip-token-cannot-land.ts",
   },
 
-  // AH003 — the archive lane's record actually reached `main`.
+  // AH003 — the archive lane's record actually reached `main` — USED TO BE AN ENTRY HERE.
+  // It now runs in `.github/workflows/archive-strand-alarm.yml`, and this note is the
+  // record of why, because the reasoning it replaces was good and is still true.
   //
-  // The third instance of the same class as the two above, and the most expensive to date.
-  // `pr-archive-on-merge.yml` was changed SEVENTEEN times; its recent runs read 12 success
-  // / 8 skipped / 0 failures — green, while 1,290 `automation/pr-archive-*` refs sat on the
-  // remote. Every check it had asked a PROXY question ("did the tool run", "did I create a
-  // PR"), and its sibling `audit-archive-pr-lane.ts` takes `gh pr list` as its input, so it
-  // is structurally blind to a ref that never had a PR at all — which is what these were.
+  // WHAT IT IS, UNCHANGED. `audit-orphaned-archive-refs.ts` takes REFS as input and asks
+  // the only question that is the point: is the record ON MAIN? Its sibling
+  // `audit-archive-pr-lane.ts` takes `gh pr list` as input and is structurally blind to a
+  // ref that never had a PR at all — which is what 1,290 `automation/pr-archive-*` refs
+  // were. The audit is real, valuable, and still fatal where it now lives.
   //
-  // This one takes REFS as input and asks the only question that is the point: is the
-  // record ON MAIN? It runs HERE, on the pre-merge floor and fatal, rather than as the
-  // non-fatal warning its sibling gets inside the heartbeat tick. A lane that leaked
-  // because one failure was tolerated does not get its falsifier installed as another
-  // tolerated failure.
+  // WHY IT CANNOT BE FATAL *HERE*. Its verdict is a repo-wide, time-varying number read
+  // from `git ls-remote` against the live remote. On 2026-08-25 it blocked PR #15308 — a
+  // vectorisation change adding only new files — because FOUR REFS WERE STRANDED
+  // REPO-WIDE. That PR re-ran green with zero code change. And the blocking placement was
+  // not buying enforcement: the only remedy available to that author was "press re-run
+  // until it passes", the exact reflex that lets a genuine red be clicked away. A check
+  // that clears itself on re-run is already flake.
   //
-  // It gates on a high-water mark that may only be lowered, so the pre-existing backlog
-  // cannot hold the floor red while any NEW strand fails immediately. Deleting a stranded
-  // ref does not make it pass — the record is still absent from main.
-  {
-    id: "orphaned-archive-refs",
-    title: "Archive lane record reached main (AH003)",
-    command: "bun src/Core.TypeScript/hygiene/audit-orphaned-archive-refs.ts",
-  },
+  // This is not a new policy. `registry/uncompensatable-floor.yaml` already says the floor
+  // "never blocks on pre-existing whole-repo drift (Vera review, #9601 P1)", and `gate.yml`
+  // already states the principle for a neighbouring case in its own words — the ArgoCD
+  // chart check is OFFLINE against a committed snapshot, "which is the only reason a
+  // resolvability check survives past its first outage." AH003 was never admitted to that
+  // registry; it arrived as an extra step inside a floor job and became a leg in the split.
+  //
+  // NOT DEMOTED TO A TOLERATED WARNING. The comment this replaces was right that "a lane
+  // that leaked because one failure was tolerated does not get its falsifier installed as
+  // another tolerated failure". The alarm workflow FAILS on the audit's own exit code and
+  // raises a deduplicated tracking issue — the two-surface pattern heartbeat-liveness.yml
+  // uses. What blocks a PR here instead is the audit's OWN falsifiers
+  // (`audit-orphaned-archive-refs.test.ts`), which run offline and deterministically in
+  // `test-typescript-hermetic` on every PR, so the tool cannot regress unnoticed.
+  //
+  // The guard against this recurring is `src/Core.TypeScript/ci/floor-live-remote-queries.ts`,
+  // whose falsifier runs in the same hermetic suite: it derives `gate-required`'s closure
+  // and refuses any live POPULATION query (ls-remote / `gh pr list` / `gh run list`) inside
+  // it. It resolves THROUGH this file — the split put a dispatcher between `gate.yml` and
+  // the audits, and a one-hop guard would see nothing.
 
   // The .NET SDK version is declared in TWO files and, until 2026-08-23, nothing checked
   // that they agreed: `global.json` carried `rollForward: latestPatch` (which reads like

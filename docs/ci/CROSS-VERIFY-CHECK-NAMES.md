@@ -52,7 +52,6 @@ test goes red, so the list below cannot silently go stale.
 | `cross-verify (heartbeat-lane-audit-tests)`    | Heartbeat-lane audit unit tests (a check that cannot fail is not a check)         |
 | `cross-verify (push-without-rebase)`           | Commit-back lane can re-express its work (AH001)                                  |
 | `cross-verify (skip-token-cannot-land)`        | Commit-back lane can actually land (AH002)                                        |
-| `cross-verify (orphaned-archive-refs)`         | Archive lane record reached main (AH003)                                          |
 | `cross-verify (dotnet-pin-parity)`             | .NET SDK pin declared once (.mise.toml canonical, global.json restates)           |
 | `cross-verify (mise-toolchain-couplings)`      | mise toolchain couplings (rust restatements · zig byte-lock provenance)           |
 | `cross-verify (flash-entrypoint-parity)`       | zflash host-arm parity (every arm verifies the ISO before writing)                |
@@ -69,8 +68,19 @@ test goes red, so the list below cannot silently go stale.
 | `cross-verify (zeta-id-gen-layout-drift)`      | zeta-id generated layouts vs the layout YAML                                      |
 | `cross-verify (algebra-tower-drift)`           | Algebra-tower drift-check (semiring→ring→kleene + star-ring)                      |
 
-All 31 are legs of the single job id `cross-verify`, which is what `gate (required)`
+All 30 are legs of the single job id `cross-verify`, which is what `gate (required)`
 consumes today.
+
+**One name that existed on 2026-08-26 and no longer does:**
+`cross-verify (orphaned-archive-refs)` (Archive lane record reached main, AH003). It was
+removed from the matrix the same day, because its verdict is a repo-wide, **time-varying**
+number read from `git ls-remote` — so a pull request with a clean diff could be, and on
+2026-08-25 was, held closed by refs it never touched. The audit still runs and is still
+fatal: `.github/workflows/archive-strand-alarm.yml`, on a `13,43 * * * *` schedule, with
+its exit code as the job's. **Do not promote this string** — it names a check that no
+longer reports, and a required context that never reports does not fail a PR, it wedges
+it. The reasoning is kept at the removed roster entry in
+`src/Core.TypeScript/ci/cross-verify-roster.ts`.
 
 ## Measured cost of the split
 

@@ -221,10 +221,17 @@ describe("the floor is not weakened", () => {
     expect(runs.every((r) => !r.includes("${{"))).toBe(true); // no template-injection surface
   });
 
-  test("every audit that ran before the split still has a leg", () => {
+  test("every audit that ran before the split still has a leg, minus the one deliberately removed", () => {
     // The migration's own falsifier: the pre-split job ran 31 audit steps, and losing one
     // in the move would be invisible — the checks list would simply be one name shorter.
-    expect(ROSTER_IDS).toHaveLength(31);
+    //
+    // It is 30 as of 2026-08-26: `orphaned-archive-refs` (AH003) was removed from the floor
+    // ON PURPOSE and now runs, still fatal, on a schedule in
+    // `.github/workflows/archive-strand-alarm.yml`. This assertion is what made that a
+    // DECISION rather than a disappearance — it went red on the removal, which is the whole
+    // reason the number is written down. Lower it only alongside the two lines below.
+    expect(ROSTER_IDS).toHaveLength(30);
+    expect(ROSTER_IDS).not.toContain("orphaned-archive-refs");
   });
 });
 
