@@ -1,0 +1,12 @@
+{
+  "pr_number": 15324,
+  "archive_path": "docs/history/pr-reviews/PR-15324-archive-pr-reviews-backfill-the-pre-lane-history-89-of-it-carries-real-review-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T06:09:43.406Z",
+  "schema_version": "v1",
+  "commit_sha": "8f5480f56ccc9435249b5a4dd97bee1a4008ed73",
+  "title": "archive(pr-reviews): backfill the pre-lane history — 89% of it carries real review threads",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T06:08:58Z",
+  "head_ref": "otto/pr-archive-backfill-1"
+}

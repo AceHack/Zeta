@@ -1,0 +1,12 @@
+{
+  "pr_number": 15504,
+  "archive_path": "docs/history/pr-reviews/PR-15504-fix-ci-a-red-that-cannot-block-is-not-a-real-red-the-stall-sweeper-stopped-stran.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T06:29:04.190Z",
+  "schema_version": "v1",
+  "commit_sha": "fc0909c7a9dae2de4d218513163d699e5fa2b581",
+  "title": "fix(ci): a red that cannot block is not a \"real red\" — the stall sweeper stopped stranding PRs beside `drift (loud)`",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T06:28:25Z",
+  "head_ref": "fix/toolchain-install-stall-nonblocking"
+}
