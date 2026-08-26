@@ -1,0 +1,12 @@
+{
+  "pr_number": 15606,
+  "archive_path": "docs/history/pr-reviews/PR-15606-glossary-pressure-the-capability-never-the-wearer-hat-vs-persona-vs-role.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T12:01:12.282Z",
+  "schema_version": "v1",
+  "commit_sha": "99dd152f0b032369abdf261b4c125e6c940b1d26",
+  "title": "glossary: pressure the capability, never the wearer — hat vs persona vs role",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T12:00:35Z",
+  "head_ref": "docs/hat-persona-role-distinction"
+}

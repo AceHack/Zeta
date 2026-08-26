@@ -1,0 +1,12 @@
+{
+  "pr_number": 15575,
+  "archive_path": "docs/history/pr-reviews/PR-15575-ci-containerized-job-runtime-image-as-materialization-one-job-proven.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:00:57.308Z",
+  "schema_version": "v1",
+  "commit_sha": "3f3cb6d6030a3f2aa2e0ba9b5345647f5efbd8f4",
+  "title": "ci: containerized job runtime — image as materialization, one job proven",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:00:17Z",
+  "head_ref": "shadow/containerized-job-runtime-toolchain-portability-tiering"
+}

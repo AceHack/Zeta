@@ -1,0 +1,12 @@
+{
+  "pr_number": 15625,
+  "archive_path": "docs/history/pr-reviews/PR-15625-feat-clifford-the-f-authority-can-classify-degenerate-signatures-too.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T13:22:10.726Z",
+  "schema_version": "v1",
+  "commit_sha": "dd5fd8bffca0951957db1a46fc4f8cf980c9286f",
+  "title": "feat(clifford): the F# authority can classify degenerate signatures too",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T13:21:34Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}

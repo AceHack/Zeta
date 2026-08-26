@@ -1,0 +1,12 @@
+{
+  "pr_number": 15565,
+  "archive_path": "docs/history/pr-reviews/PR-15565-geometric-algebra-towers-reduce-to-the-in-tree-cl-3-0-q4-answered-and-the-ledger.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T10:49:08.781Z",
+  "schema_version": "v1",
+  "commit_sha": "68666ec6637cb16a271d1763aaf9302f97efc7e9",
+  "title": "Geometric-algebra towers reduce to the in-tree Cl(3,0) — Q4 answered — and the ledger gets a dynamics factor",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T10:48:24Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}

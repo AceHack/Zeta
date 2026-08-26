@@ -1,0 +1,12 @@
+{
+  "pr_number": 15638,
+  "archive_path": "docs/history/pr-reviews/PR-15638-feat-evidence-prove-adinkra-recovery-preserves-durable-roots.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T14:34:34.060Z",
+  "schema_version": "v1",
+  "commit_sha": "7c0d46278e74a1459f16040c9c59f93bb3334a04",
+  "title": "feat(evidence): prove Adinkra recovery preserves durable roots",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T14:28:32Z",
+  "head_ref": "feat/adinkra-durable-evidence-seam"
+}

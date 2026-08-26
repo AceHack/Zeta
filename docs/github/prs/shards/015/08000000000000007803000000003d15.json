@@ -1,0 +1,12 @@
+{
+  "pr_number": 15637,
+  "archive_path": "docs/history/pr-reviews/PR-15637-cluster-audit-the-57-supporting-manifests-nothing-ever-checked-3-orphans-and-the.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T14:38:54.171Z",
+  "schema_version": "v1",
+  "commit_sha": "6a80fa7417782ddfc9f2ad00662b002127184256",
+  "title": "cluster: audit the 57 supporting manifests nothing ever checked — 3 orphans, and the runners API cannot see a scale set",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T14:32:26Z",
+  "head_ref": "arc-runner-registration-observer"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15617,
+  "archive_path": "docs/history/pr-reviews/PR-15617-book-the-band-mismatch-reader-s-disease-beside-the-locally-calibrated-instrument.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T19:50:50.663Z",
+  "schema_version": "v1",
+  "commit_sha": "a4ba27712fdff68402e3d1ca8ddaf57176163ce3",
+  "title": "book: the band mismatch — reader's disease beside the locally calibrated instrument",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T19:50:09Z",
+  "head_ref": "book/readers-disease-locally-calibrated-instrument"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15612,
+  "archive_path": "docs/history/pr-reviews/PR-15612-vision-non-fit-is-a-rate-not-a-refusal-and-the-razor-has-a-domain.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T12:11:53.355Z",
+  "schema_version": "v1",
+  "commit_sha": "210fa472166aa4066e565182ba89f6abbd2f93ec",
+  "title": "vision: non-fit is a rate, not a refusal — and the razor has a domain",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T12:11:20Z",
+  "head_ref": "vision/persona-rate-not-refusal"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15600,
+  "archive_path": "docs/history/pr-reviews/PR-15600-fix-ci-name-the-real-cost-of-the-heartbeat-merge-credential-no-gate-verdict-not-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:33:27.614Z",
+  "schema_version": "v1",
+  "commit_sha": "e38c4676f396ca238941f08ddb234556ee6b5c8e",
+  "title": "fix(ci): name the real cost of the heartbeat merge credential — no gate verdict, not just no archive run",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:32:10Z",
+  "head_ref": "ci/heartbeat-merge-credential-blocker"
+}

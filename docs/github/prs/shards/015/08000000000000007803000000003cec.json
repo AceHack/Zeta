@@ -1,0 +1,12 @@
+{
+  "pr_number": 15596,
+  "archive_path": "docs/history/pr-reviews/PR-15596-fix-ci-the-rerun-lane-wrote-off-every-displaced-main-verdict-then-could-not-have.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:17:16.512Z",
+  "schema_version": "v1",
+  "commit_sha": "e3c12806fed71e8c8728bf1950fc651626dbd0fc",
+  "title": "fix(ci): the rerun lane wrote off every displaced `main` verdict, then could not have recovered one anyway",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:16:40Z",
+  "head_ref": "ci/verdict-recovery-supersession"
+}

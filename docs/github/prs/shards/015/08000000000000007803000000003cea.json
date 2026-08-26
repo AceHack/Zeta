@@ -1,0 +1,12 @@
+{
+  "pr_number": 15594,
+  "archive_path": "docs/history/pr-reviews/PR-15594-docs-ci-retire-a-laptop-cost-figure-the-runner-has-now-measured.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:17:29.169Z",
+  "schema_version": "v1",
+  "commit_sha": "630337218a1fb6708d3e510ed301f917cb402bff",
+  "title": "docs(ci): retire a laptop cost figure the runner has now measured",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:16:52Z",
+  "head_ref": "shadow/audit-test-step-runner-figure"
+}

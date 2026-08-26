@@ -1,0 +1,12 @@
+{
+  "pr_number": 15586,
+  "archive_path": "docs/history/pr-reviews/PR-15586-ci-shields-give-the-bare-machine-install-proofs-a-time-driven-arm.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:12:14.014Z",
+  "schema_version": "v1",
+  "commit_sha": "2af478389618c743a83f4757ba7dc85601edb33d",
+  "title": "ci(shields): give the bare-machine install proofs a time-driven arm",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:11:40Z",
+  "head_ref": "shadow/install-shields-time-driven-arm"
+}

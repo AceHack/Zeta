@@ -1,0 +1,12 @@
+{
+  "pr_number": 15614,
+  "archive_path": "docs/history/pr-reviews/PR-15614-fix-hooks-install-via-core-hookspath-a-worktree-install-no-longer-disarms-the-cl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T12:40:53.458Z",
+  "schema_version": "v1",
+  "commit_sha": "2ee5214ece39c866912f3c39b8cfda4cfaaf879e",
+  "title": "fix(hooks): install via core.hooksPath — a worktree install no longer disarms the clone",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T12:39:25Z",
+  "head_ref": "shadow/hook-install-worktree-safe"
+}

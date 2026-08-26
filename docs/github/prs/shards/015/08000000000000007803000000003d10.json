@@ -1,0 +1,12 @@
+{
+  "pr_number": 15632,
+  "archive_path": "docs/history/pr-reviews/PR-15632-research-rehearse-the-repo-split-in-reverse-s7-downgrades-to-reversible-s6-partl.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T14:01:37.579Z",
+  "schema_version": "v1",
+  "commit_sha": "9b38204163ed93c98b7cbba101c7e9532e4de5d8",
+  "title": "research: rehearse the repo split in reverse — S7 downgrades to reversible, S6 partly, S9 holds",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T14:00:55Z",
+  "head_ref": "shadow/repo-split-reversal-rehearsal"
+}

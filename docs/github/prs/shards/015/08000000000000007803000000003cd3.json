@@ -1,0 +1,12 @@
+{
+  "pr_number": 15571,
+  "archive_path": "docs/history/pr-reviews/PR-15571-fix-audit-bind-genesis-to-witnessed-emitter-identity.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T10:47:03.902Z",
+  "schema_version": "v1",
+  "commit_sha": "84256bd4374284e546ae1b1482febde8b763f83d",
+  "title": "fix(audit): bind genesis to witnessed emitter identity",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T10:46:29Z",
+  "head_ref": "fix/audit-witnessed-genesis"
+}

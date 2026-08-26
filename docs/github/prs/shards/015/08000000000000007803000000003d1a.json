@@ -1,0 +1,12 @@
+{
+  "pr_number": 15642,
+  "archive_path": "docs/history/pr-reviews/PR-15642-frost-hsm-the-ceremony-reads-its-credential-from-the-keystore-never-from-a-comma.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T14:52:10.679Z",
+  "schema_version": "v1",
+  "commit_sha": "880690e686c02e6980a2d026f8dba5685301661d",
+  "title": "frost(hsm): the ceremony reads its credential from the keystore, never from a command line",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T14:51:20Z",
+  "head_ref": "shadow/frost-ceremony-store-resolved-invocation"
+}

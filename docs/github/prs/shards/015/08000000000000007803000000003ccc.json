@@ -1,0 +1,25 @@
+{
+  "pr_number": 15564,
+  "archive_path": "docs/history/pr-reviews/PR-15564-feat-hardware-the-lane-can-tell-unprovisioned-from-broken-and-the-mechanism-fix-.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7mKZy1",
+    "comment:PRRC_kwDOSF9kNM7mKZzH",
+    "comment:PRRC_kwDOSF9kNM7mKZzU",
+    "comment:PRRC_kwDOSF9kNM7mKZze",
+    "comment:PRRC_kwDOSF9kNM7mLktU",
+    "comment:PRRC_kwDOSF9kNM7mLkvv",
+    "comment:PRRC_kwDOSF9kNM7mLlAQ",
+    "comment:PRRC_kwDOSF9kNM7mLlCu",
+    "thread:PRRT_kwDOSF9kNM6caEVI",
+    "thread:PRRT_kwDOSF9kNM6caEVR",
+    "thread:PRRT_kwDOSF9kNM6caEVa",
+    "thread:PRRT_kwDOSF9kNM6caEVh"
+  ],
+  "fetched_at": "2026-08-26T11:11:56.274Z",
+  "schema_version": "v1",
+  "commit_sha": "517adb9eab02e3cc8272fcb4f7a82e3bee7c57ca",
+  "title": "feat(hardware): the lane can tell UNPROVISIONED from BROKEN, and the mechanism fix is measured on the chip",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:11:15Z",
+  "head_ref": "hw-lane-provisioning"
+}

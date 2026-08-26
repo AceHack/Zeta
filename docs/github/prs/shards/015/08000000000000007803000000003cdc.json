@@ -1,0 +1,12 @@
+{
+  "pr_number": 15580,
+  "archive_path": "docs/history/pr-reviews/PR-15580-fix-ts-drop-an-unused-import-that-has-lint-ts-red-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T10:32:03.147Z",
+  "schema_version": "v1",
+  "commit_sha": "89c8a23c400f6ab4dcc490327b44120f660650a6",
+  "title": "fix(ts): drop an unused import that has `lint (TS)` red on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T10:29:52Z",
+  "head_ref": "shadow/unblock-lint-ts-unused-import"
+}

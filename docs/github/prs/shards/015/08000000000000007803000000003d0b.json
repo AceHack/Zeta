@@ -1,0 +1,12 @@
+{
+  "pr_number": 15627,
+  "archive_path": "docs/history/pr-reviews/PR-15627-decision-the-multi-repo-hat-credential-cutover-sequence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T13:48:08.793Z",
+  "schema_version": "v1",
+  "commit_sha": "695f20afab4a0be303eac4eb84db39d0cac6ac31",
+  "title": "decision: the multi-repo + hat-credential cutover sequence",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T13:41:31Z",
+  "head_ref": "shadow/multi-repo-and-hat-credential-cutover"
+}

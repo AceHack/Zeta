@@ -1,0 +1,12 @@
+{
+  "pr_number": 15573,
+  "archive_path": "docs/history/pr-reviews/PR-15573-build-nix-commit-a-flake-lock-for-the-root-flake-four-of-six-inputs-were-floatin.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T12:16:57.411Z",
+  "schema_version": "v1",
+  "commit_sha": "d8f202cc8e97ca5af3f1a062e8f81ebc4e8cb3b8",
+  "title": "build(nix): commit a flake.lock for the root flake — four of six inputs were floating",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T12:16:18Z",
+  "head_ref": "shadow/root-flake-lock"
+}

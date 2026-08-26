@@ -1,0 +1,12 @@
+{
+  "pr_number": 15620,
+  "archive_path": "docs/history/pr-reviews/PR-15620-docs-handoff-blank-lines-around-a-heading-and-four-lists-markdownlint-on-main.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T12:53:08.291Z",
+  "schema_version": "v1",
+  "commit_sha": "d3396ab838e96172367d82ec7b6f44f6550bf381",
+  "title": "docs(handoff): blank lines around a heading and four lists — markdownlint on main",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T12:52:31Z",
+  "head_ref": "otto/markdownlint-handoff-blanks"
+}

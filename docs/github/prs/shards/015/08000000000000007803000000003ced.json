@@ -1,0 +1,12 @@
+{
+  "pr_number": 15597,
+  "archive_path": "docs/history/pr-reviews/PR-15597-feat-ceremony-extract-the-ai-human-secure-handoff-protocol-as-a-reusable-module.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:26:22.511Z",
+  "schema_version": "v1",
+  "commit_sha": "a573aa324377143cd75a665239429667bfbd80e0",
+  "title": "feat(ceremony): extract the AI↔human secure-handoff protocol as a reusable module",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:25:41Z",
+  "head_ref": "handoff-protocol-extraction"
+}
