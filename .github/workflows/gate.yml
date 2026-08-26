@@ -675,7 +675,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -760,7 +760,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1019,7 +1019,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1508,7 +1508,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1577,7 +1577,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -1643,7 +1643,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -2302,7 +2302,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2359,7 +2359,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2416,7 +2416,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2473,7 +2473,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -2530,7 +2530,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
         # ~510s of download inside a 420s budget, which is why this step's install
@@ -3281,7 +3281,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: install-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
@@ -3378,7 +3378,7 @@ jobs:
             ~/.rustup/update-hashes
             ~/.cargo
             ~/.cache/zeta/from-autotools-tarball/*.tgz
-          key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+          key: full-verify-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json', '!tools/setup/persona-keys/**', '!tools/setup/op-token-setup.*', '!tools/setup/secret-clip.sh', '!tools/setup/manus-smoke-test.ts', '!tools/setup/build-lumen-persona-package.ts') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is
