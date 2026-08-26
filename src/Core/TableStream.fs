@@ -77,6 +77,43 @@ module TableStream =
         |> List.sortWith (fun (a, _) (b, _) -> System.String.CompareOrdinal(a, b))
         |> List.map Upsert
 
+    /// **The shared base interface with the Z-set `I`/`D` duality** —
+    /// `IStreamTableDuality` (`StreamTableDuality.fs`).
+    ///
+    /// This module and `Circuit.IntegrateZSet`/`DifferentiateZSet` were
+    /// written independently and implement the same NOUN PAIR over
+    /// different algebras. They are deliberately NOT merged: read the
+    /// header of `StreamTableDuality.fs` for the two measured differences
+    /// and the reason a merge would have to lie about one of them.
+    ///
+    /// The one flag that discriminates them is `FoldIsCommutative`, and
+    /// this instance answers **false**, which is a real constraint on how
+    /// `toTable` may be used rather than a wart:
+    ///
+    /// ```
+    /// toTable [ Upsert("k", v); Retract "k" ]  =  {}         // empty
+    /// toTable [ Retract "k"; Upsert("k", v) ]  =  {k -> v}   // not empty
+    /// ```
+    ///
+    /// So this fold reads receive order. It is correct as a LOCAL
+    /// materialization of a stream a node already holds in order, and it
+    /// must not be used as a shared conclusion over deltas that reached
+    /// different nodes in different orders —
+    /// `.claude/rules/local-time-never-enters-the-shared-fold.md`.
+    /// `StreamTableDuality.Tests.fs` measures both flags against both
+    /// instances, so neither declaration can drift from its behaviour.
+    let duality: IStreamTableDuality<Stream, Table> =
+        { new IStreamTableDuality<Stream, Table> with
+            member _.DualityName = "tablestream-lww"
+            member _.ToTable s = toTable s
+            member _.ToStream t = toStream t
+            // Last-writer-wins over an ordered fold — see the worked
+            // counter-example above.
+            member _.FoldIsCommutative = false
+            // `toTable` collapses the history to a snapshot; `toStream`
+            // can only re-emit one canonical `Upsert` per surviving key.
+            member _.TableDeterminesStream = false }
+
     [<Literal>]
     let StreamSeamName = "stream"
 

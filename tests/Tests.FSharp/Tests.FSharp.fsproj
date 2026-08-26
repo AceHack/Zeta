@@ -705,6 +705,7 @@
     <Compile Include="AppFreeFragment.Tests.fs" />
     <Compile Include="ClaimLane.Tests.fs" />
     <Compile Include="QuerySurface.Equivalence.Tests.fs" />
+    <Compile Include="StreamTableDuality.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

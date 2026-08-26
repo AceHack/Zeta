@@ -12,16 +12,35 @@ open System.Threading
 open System.Threading.Tasks
 
 
-/// Rx (System.Reactive) integration: `OutputHandle<'T>` → `IObservable<'T>`
-/// and a minimal `IQbservable<'T>` skeleton for expression-tree-based
-/// query composition.
+/// Rx (System.Reactive) integration: `OutputHandle<'T>` → `IObservable<'T>`,
+/// plus the `RxJoin` combinators. **`IObservable` only — there is no
+/// `IQbservable` in this file.**
+///
+/// This header used to advertise "a minimal `IQbservable<'T>` skeleton for
+/// expression-tree-based query composition". No such type was ever defined
+/// here — the word appeared only in this comment. A header asserting a
+/// surface that does not exist is the vacuity class in its documentation
+/// form: a reader looking for the expression-tree entry point finds a
+/// promise, greps, finds nothing, and cannot tell whether the type was
+/// removed or never written.
+///
+/// **Where the real `IQbservable` lives** (PR #15249, 2026-08-25):
+/// `src/Core.CSharp/Linq/ZetaQbservable.cs` — `ZetaQbservable<'T> :
+/// IQbservable<'T>`, with `ZetaQbservableProvider`, `QbservableOperators`,
+/// and `PlanTranslator` translating the expression tree into the shared
+/// `Zeta.Core.QuerySurface.ToyPlan`. Its pull twin is `ZetaQueryable<'T> :
+/// IQueryable<'T>` beside it, and both canonicalize to the same plan text
+/// as the F# `zquery` CE — pinned by `tests/_golden/query-surface-plans.json`.
+/// It is C# rather than F# because expression-tree LINQ providers are a C#
+/// surface; nothing about it belongs in this file.
 ///
 /// Bart De Smet's duality thesis (*Observations on IQbservable*, Channel 9):
 /// `IObservable<'T>` is the push-dual of `IEnumerable<'T>`, and
 /// `IQbservable<'T>` is its LINQ-expression-tree queryable form — the
 /// dual of `IQueryable<'T>`. DBSP's `Stream<ZSet<'T>>` is morally
 /// equivalent to `IObservable<ChangeSet<'T>>`; this file exposes that
-/// equivalence without taking on all of Rx as a semantic model.
+/// equivalence at the `IObservable` corner only, without taking on all of
+/// Rx as a semantic model.
 ///
 /// References:
 ///   - Meijer. "Subject/Observer is Dual to Iterator". PLDI FIT 2010.

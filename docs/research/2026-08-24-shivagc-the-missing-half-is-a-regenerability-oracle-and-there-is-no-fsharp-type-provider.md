@@ -121,6 +121,11 @@ Asked as posed, and as meant.
 - Assembly attributes in `src/`: only `InternalsVisibleTo`. No `TypeProviderAssembly`.
 - Directories matching `*provider*`: exactly two, both C# — `src/Core.CSharp.TypeProvider/` and
   `tests/Tests.CSharp.TypeProvider/`.
+  > **[CORRECTED 2026-08-25]** True as stated, and it under-counted the thing §7 then tabulated.
+  > `src/Zeta.Generators/` is a Roslyn `IIncrementalGenerator` too and does not match `*provider*`.
+  > The name pattern was the wrong probe for "how many Roslyn generators are there" — the probe that
+  > answers it is `grep -rl Microsoft.CodeAnalysis --include='*.csproj'`, which returns **two**.
+  > See the correction on the §7 table.
 
 **What `src/Core.CSharp.TypeProvider/` actually is.** Four files. `SchemaSourceGenerator.cs` is
 `[Generator(LanguageNames.CSharp)] public sealed class SchemaSourceGenerator : IIncrementalGenerator`,
@@ -330,6 +335,27 @@ audit said so, and it still holds:
 | `Cogen.compile` | grammar text | a serialized parser **value** | yes — `gen(gen)==gen` byte-locked |
 | `GeneratorIrRegistry.byZetaId` | FNV id, 9 hardcoded rows | an IR **document** | within those 9 |
 | `SchemaSourceGenerator` (Roslyn) | `.zetaschema.json` | a **type** | n/a |
+| `ZSetWRingGenerator` (Roslyn) | **nothing** — four ring types hardcoded in `RegisterPostInitializationOutput` | four C# **static wrapper classes** | yes, over those four |
+
+> **[CORRECTED 2026-08-25]** The row above was missing when this table was written, and its absence
+> made the table read as "the repo has one Roslyn artifact". It has two, and the second is the more
+> relevant one for the regenerability question this section is about:
+> `src/Zeta.Generators/ZSetWRingGenerator.cs` (92 lines) is the **only Roslyn artifact in the repo
+> that talks to F#** — it emits `ZSetW_{IntegerRing,IntervalRing,TropicalSemiring,RationalRing}.g.cs`,
+> each wrapping the F# `ZSetWModule.*By` SRTP struct-witness generics with `default(TRing)` as the
+> witness and `ValueTuple`→`System.Tuple` conversion at the boundary. It is the C#↔F# generic-math
+> bridge. It takes **no** syntax or semantic input, which is why its `total?` column can say yes:
+> the domain is a four-element literal list in the generator's own source.
+>
+> Consumed by `tests/Tests.CSharp/Tests.CSharp.csproj` (`OutputItemType="Analyzer"`); no production
+> project references it — the same test-only status as `SchemaSourceGenerator`. Emits no diagnostics
+> (`SchemaSourceGenerator` declares `ZTP001`).
+>
+> The correction was first written up in
+> `docs/research/2026-08-25-shivagc-connection-analysis-zetadb-reified-type-providers-roslyn.md` §4.1,
+> and `docs/research/2026-08-15-the-type-system-as-a-virtualized-runtime-collection-at-alc-granularity-and-epochs-as-gits-object-ref-split-lifted-to-types.md`
+> had already listed both. This note lands it in the table that was wrong, because a reader who finds
+> *this* table has no reason to go looking for a later doc that disagrees with it.
 
 The gap is one signature: **`gen : Address → Value`, total.** Content addressing gives
 `hash : Value → Id`, which is **one-way** — it lets you *verify* a value you already hold and can never

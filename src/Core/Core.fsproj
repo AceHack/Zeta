@@ -303,6 +303,7 @@
     <Compile Include="Crypto.fs" />
     <Compile Include="AesGcmCryptoProvider.fs" />
     <Compile Include="File.fs" />
+    <Compile Include="StreamTableDuality.fs" />
     <Compile Include="TableStream.fs" />
     <Compile Include="Catalog.fs" />
     <Compile Include="StoredProc.fs" />
