@@ -1,0 +1,12 @@
+{
+  "pr_number": 15510,
+  "archive_path": "docs/history/pr-reviews/PR-15510-fix-backlog-close-telemetry-flush-dead-head-p1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T06:51:55.705Z",
+  "schema_version": "v1",
+  "commit_sha": "18b91d20834f3957cff2d65461803b2d7bb76306",
+  "title": "fix(backlog): close telemetry flush dead-head P1",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T06:51:15Z",
+  "head_ref": "claim/081M0X15-telemetry-flush-dead-head-closeout"
+}

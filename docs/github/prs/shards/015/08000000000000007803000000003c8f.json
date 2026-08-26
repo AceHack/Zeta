@@ -1,0 +1,12 @@
+{
+  "pr_number": 15503,
+  "archive_path": "docs/history/pr-reviews/PR-15503-design-society-vote-was-the-wrong-operator-condorcetboundary-fs-predicted-the-n-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T06:48:21.968Z",
+  "schema_version": "v1",
+  "commit_sha": "4946d2685bdf368eeb1245d2d1fbb0d47a7d3fcb",
+  "title": "design(society): vote was the wrong operator — CondorcetBoundary.fs predicted the N=200 result",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T06:47:42Z",
+  "head_ref": "design/tiny-society-free-runners"
+}
