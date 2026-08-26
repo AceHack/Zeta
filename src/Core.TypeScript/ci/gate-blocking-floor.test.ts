@@ -61,10 +61,18 @@ describe("the derived floor is the floor gate.yml actually declares", () => {
     }
   });
 
-  test("the closure is TRANSITIVE — a floor job's own prerequisites block too", () => {
-    // `matrix-setup` and `path-filter` are not in `gate-required.needs:`; `build-and-test`
-    // needs them. A non-transitive closure would call them non-blocking, which is the
-    // permissive direction and therefore the wrong one.
+  test("a floor job's own prerequisites block too", () => {
+    // HONEST NOTE, 2026-08-26: these two used to be the transitivity witness — they were
+    // reached only via `build-and-test`. They are now DIRECT entries in
+    // `gate-required.needs:` (the skipped-floor-job fix: the roll-up cannot tell "the path
+    // filter said docs-only" from "the path filter is dead" unless it can see the path
+    // filter's own result). So this assertion no longer exercises transitivity against the
+    // real gate.yml, and saying so matters more than keeping the old sentence: an
+    // assertion that passes for a different reason than its name claims is the vacuity
+    // class. The synthetic-workflow block at the bottom of this file is what pins
+    // transitivity now, and it does so on purpose rather than by accident of the floor's
+    // current shape. What this test still checks — and what would go red if either job
+    // left the floor — is that both are inside it.
     expect(floor.blocking).toContain("matrix setup");
     expect(floor.blocking).toContain("path filter");
   });

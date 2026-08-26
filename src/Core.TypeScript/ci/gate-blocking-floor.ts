@@ -180,6 +180,75 @@ export function gateYmlJobNeeds(yamlText: string): ReadonlyMap<string, readonly 
   return needs;
 }
 
+/**
+ * Every job id declared under `jobs:`, in declaration order.
+ *
+ * `gateYmlJobNames` cannot answer this: it only returns jobs that declare a `name:`, and
+ * `gate.yml` has one that does not (`drift-canary`). A consumer asking "does this workflow
+ * declare a job called X" must not read that absence as "no such job".
+ */
+export function gateYmlJobIds(yamlText: string): readonly string[] {
+  const ids: string[] = [];
+  let inJobs = false;
+  for (const rawLine of yamlText.split("\n")) {
+    const line = rawLine.replace(/\r$/, "");
+    if (line.trimEnd() === "jobs:") {
+      inJobs = true;
+      continue;
+    }
+    if (!inJobs) continue;
+    if (/^\S/.test(line)) break;
+    const jobId = jobIdOf(line);
+    if (jobId !== null) ids.push(jobId);
+  }
+  return ids;
+}
+
+/**
+ * `jobs:` -> job id -> its JOB-LEVEL `if:` expression, for the jobs that declare one.
+ *
+ * WHY A SEPARATE SCANNER AND NOT A FLAG ON `gateYmlJobNeeds`. The two answer different
+ * questions and one consumer (`gate-skip-verdict.ts`) needs the expression TEXT, not a
+ * boolean: when it refuses a skip it prints the condition the job declared, so the
+ * reader can see what was and was not consulted.
+ *
+ * ONLY FOUR-SPACE `if:` IS A JOB'S. A step's `if:` sits at eight spaces under a
+ * `      - name:` sequence item, and `gate.yml` has many of those; reading one as the
+ * job's would make every job with a conditional step look legitimately skippable, which
+ * is the permissive direction. `if:` at exactly four spaces is the job-level spelling
+ * GitHub's schema requires, and `gate-skip-verdict.test.ts` pins the count against the
+ * real `gate.yml`.
+ */
+export function gateYmlJobIfs(yamlText: string): ReadonlyMap<string, string> {
+  const ifs = new Map<string, string>();
+  let inJobs = false;
+  let current: string | null = null;
+
+  for (const rawLine of yamlText.split("\n")) {
+    const line = rawLine.replace(/\r$/, "");
+    if (line.trimEnd() === "jobs:") {
+      inJobs = true;
+      continue;
+    }
+    if (!inJobs) continue;
+    if (/^\S/.test(line)) break;
+
+    const jobId = jobIdOf(line);
+    if (jobId !== null) {
+      current = jobId;
+      continue;
+    }
+    if (current === null) continue;
+
+    const prefix = "    if:";
+    if (!line.startsWith(prefix)) continue;
+    const expr = stripQuotes(line.slice(prefix.length).trim());
+    // First `if:` wins, matching `gateYmlJobNames`. A job cannot legally declare two.
+    if (expr.length > 0 && !ifs.has(current)) ifs.set(current, expr);
+  }
+  return ifs;
+}
+
 /** The workflow's top-level `name:` (column 0), or null. */
 export function workflowName(yamlText: string): string | null {
   for (const rawLine of yamlText.split("\n")) {

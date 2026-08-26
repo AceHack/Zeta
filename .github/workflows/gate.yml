@@ -3469,7 +3469,37 @@ jobs:
     # failed non-blockingly -- to the step summary, to a warning/notice annotation, and
     # to this job's outputs. Skipping stays legitimate and nothing new blocks; the
     # green now carries its own scope.
+    #
+    # ── A SKIPPED FLOOR JOB IS TWO DIFFERENT FACTS (2026-08-26) ───────────────────
+    # The verdict step below used to be one grep for `failure|cancelled`, which made
+    # `skipped` count as success. That is right for the path filter and wrong for the
+    # OTHER thing that produces the same word: GitHub marks a job `skipped` when a job
+    # it `needs:` did not succeed. So a red `path-filter` skipped BOTH `build-and-test`
+    # and `full-verify`, and this check -- the sole required status, the one branch
+    # protection consults -- reported SUCCESS with its two heaviest subjects never run.
+    # Exactly the vacuity class this job's own header names, at the most expensive
+    # possible place for it to sit.
+    #
+    # `matrix-setup` and `path-filter` join the list below for that reason, and only
+    # that reason: `gate-skip-verdict.ts` cannot tell "the path filter said docs-only"
+    # from "the path filter is dead" unless the roll-up can see the path filter's own
+    # result, and `needs:` is the only channel that carries it.
+    #
+    # SAY PLAINLY WHAT THIS COSTS, because it is a change to what blocks. Since #15504
+    # `gate-blocking-floor.ts` has DERIVED these two as inside the floor (transitively,
+    # via `build-and-test`) -- but that derivation described the intent, not the
+    # runtime, and the runtime disagreed: a red `path-filter` produced a GREEN gate.
+    # So this is not merely making a fact visible. A red `matrix-setup` or `path-filter`
+    # now blocks, where it previously did not. That is the fix, stated as an addition
+    # rather than smuggled in as a clarification.
+    #
+    # What is NOT changed: no hygiene lint, no drift job, and no `continue-on-error`
+    # leg gains blocking power. The uncompensatable floor above is untouched, and its
+    # treaty-amendment consent path is not being used here -- these two jobs are the
+    # floor's own prerequisites, not new members of it.
     needs:
+      - matrix-setup
+      - path-filter
       - build-and-test
       - lint
       - lint-typescript
@@ -3486,6 +3516,8 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             src/Core.TypeScript/ci/gate-scope-summary.ts
+            src/Core.TypeScript/ci/gate-blocking-floor.ts
+            src/Core.TypeScript/ci/gate-skip-verdict.ts
             .github/workflows/gate.yml
           sparse-checkout-cone-mode: false
 
@@ -3522,20 +3554,22 @@ jobs:
           # and what made it unreadable.
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
+          set -euo pipefail
           # A job result is one of: success, failure, cancelled, skipped.
-          # Skipped is acceptable (path-filter gated); failure/cancelled are not.
-          echo "Floor job results (by name):"
-          echo "${NEEDS_JSON}" | jq -r 'to_entries[] | "  \(.key): \(.value.result)"' \
-            || echo "${NEEDS_JSON}"
-          results='${{ toJSON(needs.*.result) }}'
-          echo "Job results: $results"
-          if echo "$results" | grep -qE '"(failure|cancelled)"'; then
-            echo "::error::One or more gate jobs failed or were cancelled."
-            exit 1
-          fi
-          echo "All gate jobs passed or were skipped (docs-only). ✓"
-          echo "Scope of this green: see the \"gate (required)\" step summary --"
-          echo "a skipped floor job means this green covers less than a full-scope green."
+          #
+          # `failure` and `cancelled` block, exactly as they always have. `skipped` is
+          # the two-valued one, and the verdict script separates its two producers by
+          # reading gate.yml: a skip is acceptable ONLY when the job declares a
+          # job-level `if:` (a licence to skip -- `full-verify`'s path filter) AND
+          # every job it `needs:` reported success. A `skipped` with a dead prerequisite
+          # behind it now fails, which is the hole this closes.
+          #
+          # NOT a shell one-liner, deliberately: the rule needs gate.yml's own `needs:`
+          # and `if:` declarations, and the alternative is a hand-written roster of
+          # "jobs allowed to skip" that drifts silently in the permissive direction.
+          # Falsifiers, including the mutation cases, live in gate-skip-verdict.test.ts.
+          bun src/Core.TypeScript/ci/gate-skip-verdict.ts \
+            --gate-yml .github/workflows/gate.yml
 
   # ═══════════════════════════════════════════════════════════════════
   # Drift, made LOUD — and still blocking nothing
