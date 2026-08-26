@@ -163,19 +163,55 @@ jobs:
             ~/.cache/mise
           key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', '.mise.full.toml') }}
 
-      - name: Cache elan (Lean 4 toolchain)
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      # RESTORE-ONLY + `runner.arch` ADDED, for the same reason as the two steps
+      # above. These two keys OMITTED `runner.arch` while gate.yml's byte-identical
+      # steps include it, which put them in a DIFFERENT KEY NAMESPACE from the lane
+      # that actually maintains them:
+      #
+      #   gate.yml       nuget-${{ runner.os }}-${{ runner.arch }}-<hash>  ->  nuget-Linux-X64-<hash>
+      #   here (before)  nuget-${{ runner.os }}-<hash>                     ->  nuget-Linux-<hash>
+      #
+      # A save whose restore key never matches is a save that does nothing, and both
+      # halves of that are MEASURED, not inferred:
+      #
+      #   * The SAME `hashFiles('Directory.Packages.props')` digest exists twice in the
+      #     live cache under two namespaces -- `nuget-Linux-c922cac0...` (357 MB) and
+      #     `nuget-Linux-ARM64-c922cac0...` (358 MB), read 2026-08-26T09:0xZ from the
+      #     itemised `actions/caches` endpoint. Same content, charged twice.
+      #   * This lane's own restore logs across 7 consecutive `main` runs
+      #     (2026-08-26T08:31Z..09:01Z): `nuget-Linux-<hash>` MISSED 5 of 7 and
+      #     `elan-Linux-<hash>` MISSED 5 of 7, while gate.yml's copies of the same
+      #     content sat in the cache under the arch-qualified key the whole time.
+      #
+      # gate.yml's own comment already states the convention and names THIS runner:
+      # "Cache keys include `runner.arch` ... so Linux x64 (ubuntu-24.04, ubuntu-slim)
+      # and Linux arm64 (ubuntu-24.04-arm) do not share entries". `ubuntu-slim` is this
+      # lane. The convention was written to cover it; these two steps missed it.
+      #
+      # RESTORE-ONLY rather than merely re-keyed, because unifying the namespace
+      # WITHOUT it would create the two-writers-one-key condition that poisoned the
+      # dotnet key (172 KB under a key that should hold ~410 MB). The slim lane builds
+      # and tests core only, so the `~/.nuget/packages` it would write is a SUBSET of
+      # gate.yml's full-tier superset -- the exact "replaces a superset with a subset"
+      # failure the mise comment above describes. gate.yml stays the sole writer.
+      #
+      # COST: none of the usual one-time cold rebuild. gate.yml's key expression is
+      # UNCHANGED, so its entries stay valid and this lane starts reading entries that
+      # already exist. What is retired is the `*-Linux-<hash>` namespace, whose entries
+      # age out under LRU without ever being rewritten.
+      - name: Restore elan (Lean 4 toolchain; never saved from this lane — see above)
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('src/Core.TypeScript/ace/setup-realizers/from-elan.ts', 'tools/setup/manifests/from-elan') }}
+          key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('src/Core.TypeScript/ace/setup-realizers/from-elan.ts', 'tools/setup/manifests/from-elan') }}
 
-      - name: Cache NuGet packages
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Restore NuGet packages (never saved from this lane — see above)
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ~/.nuget/packages
             ~/.local/share/NuGet
-          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Restore apt archives (root fix for the exit-124 install-step class)
         # 561 MB of .deb per ubuntu job against a mirror measured at ~1.1 MB/s is

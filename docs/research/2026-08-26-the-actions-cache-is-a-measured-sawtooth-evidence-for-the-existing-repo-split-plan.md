@@ -40,7 +40,16 @@ from the eviction's own behaviour rather than from a settings page.
 3. **80% of the evicted bytes had never been read.** Of the 41 entries deleted, **28 (18.39
    GiB) had `last_accessed_at == created_at`** — written, never restored, deleted. That is not
    a cache; it is an upload tax.
-4. **The partition arithmetic does not close, and that is the finding.** Under round 3 §7's
+4. **The restore side is instrumented (§9), and it changes two readings.** 500 restore
+   attempts across 212 gate jobs: **84% hit, 75% excluding the two caches this repo does
+   not key itself**. Two findings only the logs could reach, because a miss and a lost
+   save-reservation create no cache entry and are invisible to the id-diffing above:
+   the poisoned 172 KB `dotnet-Linux-X64` entry is restored on **6 of 6** gate runs
+   (§6.3 saw two samples), and a cold `install-v2` key costs **12 simultaneous
+   installs and ~11 wasted uploads**, not one rewrite (§9.4). A third, `nuget`/`elan`
+   split across two key namespaces, is a genuine save-whose-restore-key-never-matches
+   (§9.2) — the case §4.4's argument does not reach, because it is between workflows.
+5. **The partition arithmetic does not close, and that is the finding.** Under round 3 §7's
    own candidate list, **`Zeta-core` alone measured 11.17 GiB charged at peak — over the
    ceiling by itself**, before it is given any share of the two union blobs. The split as drawn
    does not bring every partition under 10 GB. Reported for Aaron; no alternative cut proposed
@@ -532,6 +541,208 @@ remain open questions for Aaron and are deliberately not acted on here.
 
 ---
 
+## 9. The RESTORE side, instrumented — the ingredient §8 lacked, and what it does NOT settle
+
+§8 listed as unverified: *"Whether a specific CI job failed because of a cache miss …
+joining the two requires per-job `cache-hit` outputs, which this note did not
+collect."* **The per-job outputs are collected here. The causal join is still not
+made**, and this section does not claim it: knowing a restore missed does not
+establish that any job then failed *because* it missed, which would need the miss
+timed against that job's budget and its failure mode. What follows is the missing
+ingredient, not the conclusion it was wanted for — §8's bullet stays open. Every figure below comes from **job logs**
+(`gh api …/actions/jobs/<id>/logs`, ANSI-stripped), counting the four lines
+`actions/cache` emits: `Cache restored from key`, `Cache not found for input keys`,
+`Cache saved with key`, `Failed to save: Unable to reserve cache`.
+
+This instrument sees a class the §2–§4 sampler **structurally cannot**. Diffing the
+itemised endpoint by cache `id` can only observe entries that *exist*; a restore that
+misses and a save that loses a reservation race both create **no entry and no id**, so
+they are invisible to it at any sampling rate. §4.4's conclusions are not wrong — they
+are blind to this half, and §9.3 is what that blindness was hiding.
+
+### 9.1 gate.yml — 84% hit, and the number is less comfortable than it looks
+
+6 completed `gate.yml` runs, **212 jobs, 0 skipped for missing logs**, 2026-08-26
+08:42Z–08:56Z. 176 jobs had cache activity; the 36 without are the 6 non-installing
+jobs × 6 runs.
+
+| family | hit | miss | saved | hit rate |
+|---|---:|---:|---:|---:|
+| `apt-archives-v1` | 158 | 17 | 6 | 90.3% |
+| `bun` (setup-bun's own) | 72 | 0 | 0 | 100.0% |
+| `mise` | 36 | 2 | 0 | 94.7% |
+| `dotnet` | 28 | 6 | 6 | 82.4% |
+| `elan` | 26 | 7 | 5 | 78.8% |
+| `nuget` | 26 | 7 | 7 | 78.8% |
+| `install-v2` | 72 | 36 | 5 | 66.7% |
+| `full-verify-v2` | 2 | 5 | 5 | 28.6% |
+| **total** | **420** | **80** | **34** | **84.0%** |
+
+Excluding `apt-archives`: **80.6%**. Excluding `apt-archives` *and* `bun` — i.e. the
+caches this repo actually keys itself — **75.1%** (190/253).
+
+`full-verify-v2`'s 28.6% is a 7-attempt sample and must not be read as a steady-state
+rate; it is reported because it is the same shape as `install-v2` at n=1 per run.
+
+### 9.2 The slim lane is far worse, and the cause is a key-namespace split
+
+Same method, 7 consecutive `low-memory.yml` runs on `main`, 08:31Z–09:01Z:
+
+| key | hit | miss |
+|---|---:|---:|
+| `apt-archives-v1-…-slim-…-2026-w35` | 7 | 0 |
+| `dotnet-Linux-X64-<hash>` | 3 | 4 |
+| `mise-Linux-X64-<hash>` | 1 | 6 |
+| `nuget-Linux-<hash>` | **2** | **5** |
+| `elan-Linux-<hash>` | **2** | **5** |
+
+**`nuget` and `elan` hit 28.6% here against 78.8% in gate.yml — the same content, the
+same hash inputs, half the hit rate.** The cause is not churn: the
+`hashFiles('Directory.Packages.props')` digest was **constant at `c922cac0…` for the
+whole window**. It is that the two lanes were writing into **different key
+namespaces**:
+
+```
+gate.yml / lean-proof.yml   nuget-${{ runner.os }}-${{ runner.arch }}-<hash>   ->  nuget-Linux-X64-<hash>
+low-memory.yml / codeql.yml nuget-${{ runner.os }}-<hash>                      ->  nuget-Linux-<hash>
+```
+
+Confirmed on the storage side in the same window — the **same digest charged twice**:
+
+```
+357 MB  nuget-Linux-c922cac0…        refs/pull/15541/merge, refs/pull/15552/merge
+358 MB  nuget-Linux-ARM64-c922cac0…  refs/heads/main
+```
+
+**This is the mechanism the brief called "a save whose restore key never matches", and
+it is a genuine instance** — but note it is *not* a counter-example to §4.4. §4.4
+asked whether `actions/cache/restore` and `.../save` were split within a step with
+divergent keys, and correctly answered no. The divergence is **between workflows**:
+the combined action guarantees save-key ≡ restore-key *within one job*, and a cache
+only ever pays off *across* jobs. §4.4's argument does not reach that case.
+
+Fixed by making the two lanes join gate.yml's namespace, restore-only where the
+runner tier differs — and by a falsifier,
+`src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts`, which refuses a key
+family carrying two expressions. **It goes red on the `origin/main` this document
+measured**, naming exactly `nuget` and `elan`.
+
+### 9.3 The poisoned `dotnet-Linux-X64` entry is being restored on EVERY gate run
+
+§6.3 reported this as a two-sample curiosity ("reported, not fixed"). Instrumented, it
+is worse: the 172 KB entry was **restored in 6 of 6 sampled gate runs**, every time on
+`build-and-test (ubuntu-24.04)`.
+
+```
+Cache Size: ~0 MB (172876 B)     dotnet-Linux-X64-4cf67312…
+                429,688,927 B    dotnet-Linux-ARM64-4cf67312…   <- same hash, other arch
+              1,948,464,753 B    dotnet-macOS-ARM64-4cf67312…   <- same hash, other arch
+```
+
+Every one of those jobs also logs `Cache hit occurred on the primary key … not saving
+cache`, so `actions/cache` will never overwrite it. **`~/.dotnet` is being
+re-installed by `tools/setup/install.sh` on every ubuntu-24.04 gate run while the
+cache reports a hit.** That is the vacuity class in its purest operational form — a
+green `cache-hit: true` in front of a cache that contains nothing — and it is the
+defect the restore-only change ships against.
+
+*Register:* **metered** for the restore and the sizes; the **writer is still not
+identified** (§6.3's honest limit stands — that needs the run that originally saved
+it, outside this window).
+
+### 9.4 `install-v2` is a cold-key STAMPEDE, not a thrash loop — refining §4.4
+
+§4.4 falsified *"the save fires when a hit should have prevented it"* by showing the
+two cache ids never coexist, and that holds. But it left the multiplication
+unexplained, and the logs give it directly:
+
+| run (08:xxZ) | hit | miss | saved | **lost the reservation race** |
+|---|---:|---:|---:|---:|
+| 32949103222 (42, main) | 0 | 12 | 1 | **11** |
+| 32949466257 (46) | 0 | 12 | 2 | **10** |
+| 32949544401 (47) | 0 | 12 | 2 | **10** |
+| 32949777673 (49) | 12 | 0 | 0 | 0 |
+| 32950041429 (52) | 12 | 0 | 0 | 0 |
+| 32950340877 (56) | 12 | 0 | 0 | 0 |
+
+```
+31×  Failed to save: Unable to reserve cache with key install-v2-Linux-X64-5dc85527…,
+     another job may be creating this cache.
+```
+
+The key hash is **identical across all six runs and all six branches**, so this is a
+**time boundary, not a content difference** — `main` saved `install-v2` at 08:51:26 and
+every run starting after it hits. And the pattern is **all-or-nothing per run**: the
+same 12 jobs (the ten `lint (…)` legs, `test (TS environment-dependent)`) miss
+together, all 12 then attempt to upload the same ~1.19 GB blob, and 10–11 lose the
+race.
+
+So the cost of one cold `install-v2` key is **12 simultaneous full toolchain installs
+plus ~11 wasted upload attempts**, not one rewrite. That reframes the fix: the lever is
+**how often the key goes cold**, which is exactly what the `persona-keys` narrowing
+addresses (§6.1) — and it explains why §4.3's 69 GiB/hour write volume is a lower
+bound in a second, larger way than §4.3 states, since a lost reservation transfers
+bytes and stores nothing.
+
+*Register:* **metered** for the counts. **Not established:** whether the cold window is
+GitHub's branch-scoped cache visibility (feature branches read own ref + default branch
+only). The timing is consistent with it; scope was not independently confirmed.
+
+### 9.5 The union-blob prerequisite (§7 item 2) — CONFIRMED, on a new axis
+
+§7 item 2 argued the per-leg install subset is a **prerequisite** for the split's cache
+goal rather than a follow-up, from the install script's shape (`mise install --yes`
+provisions everything `.mise.toml` declares; the only subsetting that exists is the
+slim/full tier merge). This measurement confirms it **operationally**, which is a
+different kind of evidence than the source reading:
+
+**Twelve job definitions inside a single workflow independently raced to write the same
+`install-v2` tar.** Not twelve jobs *reading* a shared cache — twelve jobs that each
+determined they needed it, missed, and each began uploading ~1.19 GB of *every*
+toolchain. Those twelve are ten `lint (…)` legs plus `test (TS environment-dependent)`:
+work that, under round 3 §7's candidate list, would **not all live in the same
+repository**. The union blob is not an accounting artifact of how the cache is grouped;
+it is a single physical artifact that 23 job definitions genuinely share, and the
+reservation conflicts are that sharing made visible.
+
+A repo boundary drawn today therefore **relocates** this blob into whichever repo keeps
+the install script, and every other repo still provisions the same tar because its size
+is a function of `.mise.toml`, not of the repository. **The per-leg install subset has
+to land with the split, not after it.**
+
+**Stated precisely, and NOT more than was measured:** this confirms the *union-blob*
+half of §7 item 2. It does **not** re-measure the `Zeta-core` = 11.17 GiB figure or the
+59% union share from §5 — those remain as §5 reported them, at their own register
+(`bounded, not predicted`). Nothing here contradicts them; nothing here independently
+re-derives them either.
+
+### 9.6 Two smaller findings, named and not acted on
+
+- **`apt-archives-v1-…-slim-…-2026-w35` restored three different payload sizes under
+  one key** — 38,897,504 / 38,897,547 / 40,706,971 B. Not poisoned (all plausible), but
+  **the key does not determine the content**, which is the same class as §6.3 one
+  severity lower. Named for the owner of that composite action; not changed here.
+- **`Linux-nuget-<hash>`** (5 entries, 308 MB, 3 never-hit) is written by GitHub's
+  managed `dynamic/dependency-graph/auto-submission` workflow, which is **not in the
+  repo**. Same permanent-never-hit class as the `codeql-trap-*` SHA-suffixed keys in
+  §4.4(3): named because it holds ~3% of the ceiling, not because it is ours to change.
+
+### 9.7 Register for this section
+
+| claim | register |
+|---|---|
+| all hit/miss/save/reserve counts, sizes, run and job ids | **metered** — job logs, 212 + 49 jobs, 0 skipped |
+| `nuget`/`elan` namespace split, and the same digest charged twice | **metered** — key expressions in-tree + itemised endpoint |
+| the split *causes* the slim lane's 28.6% hit rate | **metered for the churn alternative being excluded** (digest constant at `c922cac0…` all window); the causal step is otherwise `consistent with` |
+| poisoned `dotnet-Linux-X64` restored on every gate run | **metered** — 6 of 6 runs, job ids recorded |
+| the writer of the poisoned entry | **not established** — outside the sampled window |
+| `install-v2` cold-key stampede | **metered** — 31 reservation failures, per-run breakdown |
+| cause of the cold window (branch-scoped visibility) | **consistent with** — timing only, scope not confirmed |
+| union blob is a prerequisite for the split's cache goal | **metered for the sharing mechanism** (12 concurrent writers of one tar); §5's GiB figures unchanged and not re-derived |
+| Windows steady-state (`mise`/`elan` never saved on Windows legs) | **n=1, not established** — Windows legs appear in one sampled run only |
+
+---
+
 ## Pointers
 
 - `docs/research/2026-08-19-repo-split-round-3-the-union-is-the-bottleneck-*.md` — §5.3 (the
@@ -548,7 +759,10 @@ remain open questions for Aaron and are deliberately not acted on here.
   `full-verify-v2` at ~3381) and the per-toolchain blocks at ~526-558.
 - `.claude/rules/dv2-data-split-discipline-activated.md` — §6.1 is change-rate partitioning
   violated inside a cache key.
-- `.claude/rules/toy-is-free-metered-must-be-earned.md` — the register table in §8.
+- `.claude/rules/toy-is-free-metered-must-be-earned.md` — the register tables in §8 and §9.7.
+- `src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts` — the falsifier for
+  §9.2, wired into `ci-cache-paths-lint.yml`. It goes RED on the `origin/main` this
+  document measured, naming exactly the `nuget` and `elan` families.
 - **Anchors (Beacon).** GitHub Actions dependency-caching reference (read 2026-08-26) — the
   10 GB default, the raise-by-admin clause, LRU-by-last-access eviction, the 7-day unused
   retention, and GitHub's own term *cache thrashing*. Denning, *The Working Set Model for

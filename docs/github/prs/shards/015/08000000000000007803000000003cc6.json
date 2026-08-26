@@ -1,0 +1,12 @@
+{
+  "pr_number": 15558,
+  "archive_path": "docs/history/pr-reviews/PR-15558-fix-ci-drop-persona-keys-from-the-toolchain-cache-key-40-of-invalidations-instal.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:43:04.752Z",
+  "schema_version": "v1",
+  "commit_sha": "4b2b41bd59a752a83e6aa783eaca20c5ae5c7165",
+  "title": "fix(ci): drop persona-keys from the toolchain cache key — 40% of invalidations installed nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:42:30Z",
+  "head_ref": "shadow/cache-key-narrow-toolchain-inputs-v2"
+}

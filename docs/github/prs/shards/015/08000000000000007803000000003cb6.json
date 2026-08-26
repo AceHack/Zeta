@@ -1,0 +1,12 @@
+{
+  "pr_number": 15542,
+  "archive_path": "docs/history/pr-reviews/PR-15542-fix-ci-the-rerun-tool-read-github-s-ordinary-refusals-as-failures-and-printed-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:26:42.022Z",
+  "schema_version": "v1",
+  "commit_sha": "41414176915171efbbd97a6fc5293001e9d2bb30",
+  "title": "fix(ci): the rerun tool read GitHub's ordinary refusals as failures, and printed only a stack trace",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:26:06Z",
+  "head_ref": "shadow/rerun-refusals-are-legible"
+}

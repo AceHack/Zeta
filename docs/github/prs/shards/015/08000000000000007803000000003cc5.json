@@ -1,0 +1,12 @@
+{
+  "pr_number": 15557,
+  "archive_path": "docs/history/pr-reviews/PR-15557-fix-terminology-hats-not-roles.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T09:27:45.911Z",
+  "schema_version": "v1",
+  "commit_sha": "81d333fc253ef154b96c9a654d66cbef0b399fa7",
+  "title": "fix(terminology): hats not roles",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T09:27:08Z",
+  "head_ref": "alexa/hats-not-roles"
+}
