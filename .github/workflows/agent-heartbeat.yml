@@ -1067,11 +1067,31 @@ jobs:
           #
           # STALENESS BOUND, stated because a knowingly-stale index is fine and a silently-stale
           # one is not: the shards are authoritative the moment an archive PR merges; the derived
-          # index lags them by at most one landed flush. flush-to-main gates on
-          # MIN_INTERVAL_SECONDS=3000, so the bound is ~1 hour plus GitHub scheduled-run delay.
-          # Readers wanting the current set must read docs/github/prs/shards/, or run
-          # derive-pr-manifest.ts themselves. pr-manifest-integrity.yml fails loudly if this
-          # cadence stops repairing at all.
+          # index lags them by at most one landed flush.
+          #
+          # THE BOUND IS MEASURED, NOT DERIVED FROM MIN_INTERVAL_SECONDS. This comment used to
+          # say "flush-to-main gates on MIN_INTERVAL_SECONDS=3000, so the bound is ~1 hour plus
+          # GitHub scheduled-run delay". That is the gate's PERIOD, not the index's LAG, and
+          # quoting it as a bound was a guarantee nothing enforced. Measured on `main` over the
+          # 14 days to 2026-08-26, across 303 landings of docs/github/prs/manifest.jsonl:
+          #     p50 27.4 min · p90 81.6 min · p95 158.5 min · max 2799.5 min (46.7 h)
+          #     14 of 302 gaps (4.6%) exceeded 180 min
+          # So ~1 hour is roughly p75, not a ceiling, and the honest statement is: the ENFORCED
+          # bound is the 180 minutes pr-manifest-integrity.yml goes red on, which is ~2.2x the
+          # measured p90 and is exceeded by ~5% of gaps. Readers wanting the current set must
+          # read docs/github/prs/shards/, or run derive-pr-manifest.ts themselves.
+          #
+          # THE `|| echo` IS DELIBERATE AND STAYS. A transient derive failure must not take down
+          # a tick that also archives PRs, reconciles review threads, audits the lane, runs the
+          # healers and the mutation probe, and carries the codegen output — the shards are the
+          # ledger and the index is rebuilt from scratch next tick (idempotent, #6). What it must
+          # NOT do is stand in for a liveness check, and it never could: this step is the WRITER,
+          # and the two ways the repair silently stops are the writer not running (caught by the
+          # 180-minute bound in pr-manifest-integrity.yml, measured from the oldest unreconciled
+          # shard's fetched_at) and the writer's commit not LANDING (caught since 2026-08-26 by
+          # the rc=4 guard in the flush job below, which refuses to report a no-op while `main`
+          # does not contain the tip this tick parked). Both of those were reached in the sixteen
+          # hours to 2026-08-26T07:00Z, and only the first one reported.
           bun src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts --write             || echo "::warning::[archive] manifest derive failed (non-fatal; shards are the ledger)"
 
           # WATCHDOG FOR STRANDED ARCHIVE PRs (added 2026-08-22).
@@ -1774,6 +1794,11 @@ jobs:
           # superseded, and the lane — not the ref — is what holds unlanded work.
           SOURCE_SHA=$(git rev-parse "origin/heartbeat/$AGENT")
           SNAPSHOT_REF="heartbeat/$AGENT-flush"
+          # SOURCE_SHA is REASSIGNED by the pre-merge below; LANE_SHA is not. The rc=4
+          # ("main already contains this branch") branch at the end of this step needs the
+          # immutable lane tip to tell an honest no-op from a silent stall, and reading a
+          # variable the pre-merge has since moved is how it would fail to notice.
+          LANE_SHA="$SOURCE_SHA"
 
           # A DENIED CREDENTIAL MUST NOT READ AS A CLEAR RUNWAY.
           #
@@ -1969,21 +1994,72 @@ jobs:
           # The immutable park above is untouched: `$SOURCE_SHA` was already pushed and
           # VERIFIED before this runs, so the "no events lost" guarantee does not depend
           # on the merge succeeding.
+          #
+          # ─────────────────────────────────────────────────────────────────────────────
+          # IT MUST MERGE ONTO THE LANE. IT USED TO MERGE ONTO `main`, AND THAT KILLED THE
+          # WHOLE FLUSH PATH FOR SIXTEEN HOURS WHILE EVERY LANE REPORTED GREEN.
+          #
+          # The four lines that used to sit here were:
+          #     git fetch origin main --quiet
+          #     git merge --no-edit origin/main || PREMERGE_RC=$?
+          #     MERGED_SHA=$(git rev-parse HEAD)
+          #     git push --force-with-lease=... origin "HEAD:refs/heads/$SNAPSHOT_REF"
+          # This job checks out `main` (`ref: main`, above) and never leaves it, so that
+          # merge fast-forwarded main onto main and the push wrote **main itself** over
+          # `$SNAPSHOT_REF`, deleting the parked lane payload from the ref that the PR is
+          # cut from. `merge-heartbeats-to-main.ts` then compared main to a copy of main,
+          # answered rc=4 "already contains", and the rc=4 branch below — written for a
+          # genuine no-op — exited 0. The step CREATED the condition that made its own
+          # success branch true, which is the vacuity class exactly.
+          #
+          # Measured on the live lanes 2026-08-26 before this fix:
+          #   - `heartbeat/soraya-flush` and `heartbeat/alexa-flush` both pointed at
+          #     precisely `origin/main`;
+          #   - run 32942319401 logged "4 heartbeat commits to flush", then
+          #     "+ e0daddeaf...dc15f463d (forced update)", where dc15f463d is an ordinary
+          #     SINGLE-PARENT main commit — a real pre-merge cannot produce a commit that
+          #     does not have the lane as a parent;
+          #   - `[heartbeat-batch-merge]` last landed 2026-08-25T16:08:11Z, four minutes
+          #     before #15372 shipped the block above. Nothing has landed since.
+          # The stale `docs/github/prs/manifest.jsonl` that was repaired by hand twice
+          # (#15471, #15511) is one visible symptom of this; the lost telemetry is the rest.
+          #
+          # The logic is now `premerge-flush-ref.ts` so it can be run against a scratch git
+          # repo from a working tree checked out on `main` — the condition this job supplies
+          # — and asserted to still contain the lane. It refuses to push its own result;
+          # it only computes the commit and verifies containment of BOTH the lane tip and
+          # the base. `premerge-flush-ref.test.ts` carries the falsifier, including the old
+          # behaviour reproduced as an explicit control.
+          # ─────────────────────────────────────────────────────────────────────────────
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git fetch origin main --quiet
-          PREMERGE_RC=0
-          git merge --no-edit origin/main >/tmp/premerge.log 2>&1 || PREMERGE_RC=$?
-          if [ "$PREMERGE_RC" -ne 0 ]; then
-            echo "::warning title=Heartbeat pre-merge hit a REAL conflict::$AGENT: merging origin/main into $SNAPSHOT_REF failed even with this repo's merge drivers applied, so this is a genuine content conflict rather than the GitHub driver gap. Leaving the snapshot at the parked SHA and letting the PR report it. No events lost."
-            sed 's/^/[flush] premerge: /' /tmp/premerge.log | head -20 || true
-            git merge --abort 2>/dev/null || true
+          set +e
+          bun src/Core.TypeScript/agent-heartbeats/premerge-flush-ref.ts \
+            --lane-sha "$SOURCE_SHA" --base main >/tmp/premerge.log 2>&1
+          PREMERGE_RC=$?
+          set -e
+          sed 's/^/[flush] premerge: /' /tmp/premerge.log | head -20 || true
+          if [ "$PREMERGE_RC" -eq 3 ]; then
+            echo "::warning title=Heartbeat pre-merge hit a REAL conflict::$AGENT: merging origin/main into the lane failed even with this repo's merge drivers applied, so this is a genuine content conflict rather than the GitHub driver gap. Leaving the snapshot at the parked SHA and letting the PR report it. No events lost."
+          elif [ "$PREMERGE_RC" -ne 0 ]; then
+            # NOT a warning, and that is the change. The old block treated every non-zero as
+            # "conflict, carry on", so a pre-merge that produced the WRONG COMMIT was
+            # indistinguishable from one that produced none. The tool now separates the two:
+            # 3 is a content conflict (above, still non-fatal); anything else means it could
+            # not verify that the result carries the lane, and a flush that cannot prove it
+            # is carrying the payload must not proceed to open a PR claiming it does.
+            echo "::error title=Heartbeat pre-merge refused::$AGENT: premerge-flush-ref.ts exited $PREMERGE_RC. NO EVENTS LOST — $LANE_SHA is parked on $SNAPSHOT_REF and the lane keeps accumulating. See the log above."
+            exit 1
           else
-            MERGED_SHA=$(git rev-parse HEAD)
+            MERGED_SHA=$(sed -n 's/^merged-sha=//p' /tmp/premerge.log | tail -1)
+            if [ -z "$MERGED_SHA" ]; then
+              echo "::error title=Heartbeat pre-merge produced no SHA::$AGENT: premerge-flush-ref.ts exited 0 without printing merged-sha=. Refusing to guess."
+              exit 1
+            fi
             if [ "$MERGED_SHA" != "$SOURCE_SHA" ]; then
               git push --force-with-lease="refs/heads/$SNAPSHOT_REF:$SOURCE_SHA" \
-                origin "HEAD:refs/heads/$SNAPSHOT_REF"
+                origin "$MERGED_SHA:refs/heads/$SNAPSHOT_REF"
               echo "[flush] $AGENT: pre-merged origin/main into $SNAPSHOT_REF ($SOURCE_SHA -> $MERGED_SHA); GitHub now only fast-forwards."
               # THE SNAPSHOT REF IS NOW THE MERGED COMMIT, SO THAT IS THE SOURCE.
               #
@@ -1991,9 +2067,16 @@ jobs:
               # refuses when the ref does not point at it — "snapshot ref collision". The
               # pre-merge moves the ref, so leaving SOURCE_SHA at the pre-merge value makes
               # the verification fail BY CONSTRUCTION, and only on the ticks where the
-              # pre-merge actually did something. Measured: alexa failed rc=3 at 16:23 while
-              # soraya passed, because soraya's lane already contained main and its pre-merge
-              # was a no-op. The fix bit exactly when it was working.
+              # pre-merge actually did something.
+              #
+              # CORRECTING THE RECORD THAT USED TO BE HERE: this note read "alexa failed
+              # rc=3 at 16:23 while soraya passed, because soraya's lane already contained
+              # main and its pre-merge was a no-op." The second clause was never true. The
+              # merge ran on `main`, not on the lane, so it could not be a no-op for that
+              # reason — soraya "passed" because the ref had been overwritten with `main`
+              # and the tool then agreed main contained it. A reason nobody can check is
+              # how the wrong thing gets carried forward, and this one was carried forward
+              # into a diagnosis of a lane that had already stopped landing.
               #
               # Safe to reassign here: the immutable park is upstream of this point —
               # $SOURCE_SHA was pushed AND verified against the ref before the merge ran — so
@@ -2065,7 +2148,32 @@ jobs:
           set -e
 
           # 4 = "main already contains this branch" — an ordinary no-op, not a failure.
+          #
+          # AND THIS IS THE ONE PLACE A DEAD LANE CAN HIDE, SO IT IS CHECKED RATHER THAN
+          # BELIEVED. rc=4 is a claim about a REF; the thing that matters is whether the
+          # PAYLOAD landed. When the pre-merge defect above overwrote $SNAPSHOT_REF with
+          # `main`, rc=4 became true on every tick — truthfully, about a ref that no longer
+          # carried anything — and this branch reported a green no-op for sixteen hours
+          # while three lanes accumulated unlanded work. Nothing else in the pipeline could
+          # have noticed: the step exits 0, the job is green, the arming step is skipped,
+          # and `pr-manifest-integrity.yml` sees only the downstream staleness three hours
+          # later without being able to say why.
+          #
+          # So the no-op must AGREE WITH THE LANE. $LANE_SHA is the immutable tip this tick
+          # parked, captured before the pre-merge could move $SOURCE_SHA. If `main` really
+          # contains it, the no-op is honest and nothing is outstanding. If it does not,
+          # the flush is reporting success over unlanded work, and that is the failure this
+          # whole step exists to make impossible.
+          #
+          # It cannot pass vacuously and it cannot false-positive on a racing tick: the
+          # lane advancing after $LANE_SHA was taken does not affect the question, because
+          # the question is about $LANE_SHA and not about the lane's current tip.
           if [ "$RC" -eq 4 ]; then
+            git fetch origin main --quiet
+            if ! git merge-base --is-ancestor "$LANE_SHA" origin/main; then
+              echo "::error title=Heartbeat flush claimed a no-op over unlanded work::$AGENT: merge-heartbeats-to-main.ts reported main already contains $SNAPSHOT_REF, but main does NOT contain the lane tip this tick parked ($LANE_SHA). The snapshot ref is not carrying the payload — the usual cause is something overwriting $SNAPSHOT_REF with main. NO EVENTS LOST: heartbeat/$AGENT still holds them and the flush is idempotent."
+              exit 1
+            fi
             echo "[flush] $AGENT: already on main — nothing to land (no-op)"
             # Same declaration the backpressure branch makes, and for the same reason: this
             # path returns before any PR exists, so the arming step must not run. Found by
