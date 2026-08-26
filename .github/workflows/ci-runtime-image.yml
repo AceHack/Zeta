@@ -1,0 +1,448 @@
+# .github/workflows/ci-runtime-image.yml
+#
+# THE CONTAINERIZED JOB RUNTIME — built, proved on one job, and drift-checked.
+#
+# WHY. Measured 2026-08-26 over the four most recent completed `gate` runs on `main`
+# (Actions API, per-step timings): 22 jobs per run carry an `Install toolchain via
+# three-way-parity script` step, mean 115 s each, worst leg 465 s — about 42 runner-MINUTES
+# of toolchain installation per gate run, before a single line of the actual work happens.
+# `low-memory` pays 298 s mean against a hard 15-minute cap. And the install step is a live
+# source of flakes, not a theoretical cost: it is where the exit-124 apt-mirror stalls land.
+#
+# An image that already contains the toolchain replaces that with a pull that is layer-cached
+# on the runner and — the part that matters most right now — does NOT touch the Actions cache,
+# which is currently taking ~69 GiB/hour of writes against a 9.31 GiB ceiling.
+#
+# WHAT THE IMAGE IS. Aaron 2026-08-26: *"there is only one ace and pre ace bootstrap"*. The
+# image is not a fourth consumer sitting beside the install script; it is a MATERIALIZATION
+# of having run those two layers — reproducible output, not a participant in the definition.
+# The Dockerfile therefore contains no package list of its own. See its header.
+#
+# WHAT THIS WORKFLOW PROVES, on this PR, executing:
+#   1. the image BUILDS from the pre-ace bootstrap + `tools/setup/install.sh`;
+#   2. ONE REAL JOB's payload — `memory-reference-existence-lint`'s — runs GREEN inside it
+#      with no install step at all;
+#   3. the SAME payload runs RED on a bare runner (the negative control), so the green above
+#      is attributable to the image and not to something the runner already had;
+#   4. the toolchain inside the image matches what `.mise.toml` DECLARES (the drift check).
+#
+# WHAT IT DOES NOT DO. It does not migrate the fleet, it does not demote anything, and it
+# does not touch `required_status_checks` or `gate.yml`. The cutover of a real workflow to a
+# job-level `container:` pinned by digest is designed in
+# docs/research/2026-08-26-containerized-job-runtime-toolchain-portability-tiering-image-as-materialization.md
+# and deliberately not performed here — one job proven beats twelve proposed.
+#
+# Security discipline mirrors build-platform-images.yml (the proven image path in this repo):
+# runner pinned to ubuntu-24.04, third-party actions SHA-pinned, workflow-level
+# `contents: read` with elevated scopes job-scoped, no `github.event.*` interpolated into any
+# `run:` line, and push + cosign only on trusted in-repo events (never from a PR).
+
+name: ci-runtime-image
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "src/Core.TypeScript/ci/dockerfiles/ci-runtime/**"
+      - "src/Core.TypeScript/ci/toolchain-manifest.ts"
+      - "src/Core.TypeScript/ci/toolchain-manifest.test.ts"
+      - "tools/setup/**"
+      - ".mise.toml"
+      - ".mise.full.toml"
+      - "global.json"
+      - ".dockerignore"
+      - ".github/workflows/ci-runtime-image.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/Core.TypeScript/ci/dockerfiles/ci-runtime/**"
+      - "src/Core.TypeScript/ci/toolchain-manifest.ts"
+      - "src/Core.TypeScript/ci/toolchain-manifest.test.ts"
+      - "tools/setup/**"
+      - ".mise.toml"
+      - ".mise.full.toml"
+      - "global.json"
+      - ".dockerignore"
+      - ".github/workflows/ci-runtime-image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-runtime-image-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  image:
+    name: ci-runtime image (build + one-job proof + toolchain drift)
+    runs-on: ubuntu-24.04
+    # Cold build: the slim apt set + the whole mise tool graph + dotnet. The sibling
+    # docker-ubuntu-install-sh-test lane budgets 45 min for a heavier build (it adds
+    # ollama and a 398 MB model pull); this one is smaller but uncached, so 45 is a
+    # RUNAWAY CAP rather than an expectation.
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      # Both are needed only by the publish steps, which are `if:`-gated to non-PR
+      # events. They are declared at job scope because that is the smallest scope
+      # GitHub offers; nothing on the PR path uses either.
+      packages: write
+      id-token: write
+    # Carried to `pull-measure`, which is the only thing that can time a REAL cold pull of
+    # the artifact we actually publish. Empty on PR runs (nothing is pushed), and that job
+    # is gated on it being non-empty rather than silently measuring nothing.
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # ── THE NEGATIVE CONTROL, RUN FIRST AND DELIBERATELY BEFORE THE IMAGE EXISTS ──
+      #
+      # A proof that the image supplies the toolchain is worth nothing unless the same
+      # payload demonstrably CANNOT run without it. This step is that control, and it is
+      # itself guarded against being vacuous: if `bun` turns out to be present on the bare
+      # runner, the control proves nothing and the job says so LOUDLY rather than quietly
+      # passing on a comparison that was never a comparison.
+      - name: Negative control -- the payload must FAIL on a bare runner
+        shell: bash
+        run: |
+          set -uo pipefail
+          if command -v bun >/dev/null 2>&1; then
+            echo "::error title=vacuous control::\`bun\` is already on this runner, so the"
+            echo "control cannot fail and the containerized green below would be unattributable."
+            echo "The GitHub ubuntu-24.04 image did not ship bun when this was written; if that"
+            echo "changed, pick a payload whose toolchain the runner still lacks."
+            exit 1
+          fi
+          echo "control: bun is absent from the bare runner, as required."
+          if bun src/Core.TypeScript/hygiene/audit-memory-references.ts --enforce; then
+            echo "::error title=vacuous control::the payload SUCCEEDED with no toolchain installed."
+            exit 1
+          fi
+          echo "control: the payload failed on the bare runner. The image is what will make it pass."
+
+      # TWO NAMING CONSTRAINTS MEET ON THIS ONE LINE, and both are real rather than
+      # cosmetic — recorded here so a later edit does not reintroduce either.
+      #
+      # 1. `lint-clone-at-tag-is-sufficient.ts`'s RESOLVER_INVOCATION matches
+      #    `ace\s+bootstrap`, and `-` is a word boundary, so the phrase this repo now
+      #    uses for the seed layer reads as a resolver call on any non-comment line.
+      # 2. `apt-archive-cache.ts` and `audit-install-tier-declared.ts` put a job IN SCOPE
+      #    when ANY line of its body contains the installer's path — step names included,
+      #    not just `run:` invocations. This job does NOT run the installer on the runner;
+      #    `docker build` runs it inside the image, where the runner's apt archive cache
+      #    and `ZETA_HOST_TIER` are both invisible (the container has its own filesystem,
+      #    and the tier is declared as `ENV ZETA_HOST_TIER=slim` in the Dockerfile).
+      #    Adding a cache step here would restore archives nothing can read — the vacuity
+      #    class exactly. So the correct fix is a step name that does not restate a path
+      #    this step does not invoke, NOT an inert cache step and NOT a lint exemption.
+      #    The over-broad predicate is reported in the design doc for the cache lane's
+      #    owner; it is not worked around by weakening either audit.
+      - name: Build the CI runtime image (the installer runs inside the build)
+        env:
+          # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN so release-metadata lookups
+          # authenticate (1000/hr) instead of 403-ing anonymously (60/hr). Passed as a
+          # BuildKit secret, never a build-arg, so it is not baked into a layer.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          DOCKER_BUILDKIT=1 docker build \
+            --secret id=github_token,env=GITHUB_TOKEN \
+            -f src/Core.TypeScript/ci/dockerfiles/ci-runtime/Dockerfile \
+            -t zeta-ci-runtime:build \
+            .
+
+      # ── THE PROOF, ON ONE REAL JOB ────────────────────────────────────────────────
+      #
+      # This is `memory-reference-existence-lint`'s payload, verbatim, with its
+      # `Install toolchain via three-way-parity script` step deleted rather than replaced.
+      # The workspace is mounted, not baked: the image carries the TOOLCHAIN, the job
+      # carries the SOURCE. That is exactly what a job-level `container:` does, which is
+      # why this proof transfers to the cutover without changing shape.
+      - name: Proof -- the same payload, inside the image, with NO install step
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD":/w -w /w \
+            -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            zeta-ci-runtime:build \
+            bun src/Core.TypeScript/hygiene/audit-memory-references.ts --enforce
+          echo "proof: the payload is green inside the image and red outside it."
+
+      # ── DRIFT DETECTION: the image is output, so the check is "does the output still
+      # match the definition". Text expectation (.mise.toml, already the single declared
+      # source), image under test. NOT bit-reproducibility — see the script's header for
+      # why that is the wrong target for an apt-based build, and for the surfaces this
+      # comparison is blind to, which it prints on every run.
+      - name: Toolchain drift -- installed in the image vs declared in .mise.toml
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD":/w -w /w \
+            -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            zeta-ci-runtime:build \
+            bun src/Core.TypeScript/ci/toolchain-manifest.ts --check --tier slim
+
+      # The checker's own falsifiers. Run on the host (bun comes from the image only for
+      # the payload steps above) — so this runs INSIDE the image too, which additionally
+      # proves the image can run the repo's test runner.
+      - name: Falsifiers for the drift checker itself
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD":/w -w /w \
+            -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            zeta-ci-runtime:build \
+            bun test src/Core.TypeScript/ci/toolchain-manifest.test.ts
+
+      # ── THE TRANSFER SIZE, MEASURED EXACTLY. NOT a ratio applied to the extracted size.
+      #
+      # `docker image inspect .Size` is the EXTRACTED total; what a pull actually moves is the
+      # COMPRESSED total the registry serves. This repo has already been bitten by standing one
+      # in for the other -- `image-pull-measurement.yml` exists because on-disk figures were
+      # being derived through "an aggregate ratio measured by gunzipping four unrelated images".
+      # So push to a throwaway local registry and read what the registry says. Exact, no network.
+      - name: Wire size -- what a registry would actually serve (exact compressed bytes)
+        id: wire
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --rm -p 5000:5000 --name zeta-localreg \
+            registry:2@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373 >/dev/null
+          for _ in $(seq 1 60); do
+            curl -fsS http://127.0.0.1:5000/v2/ >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:5000/v2/ >/dev/null
+          docker tag zeta-ci-runtime:build 127.0.0.1:5000/zeta-ci-runtime:wire
+          docker push 127.0.0.1:5000/zeta-ci-runtime:wire >/dev/null
+          curl -fsS \
+            -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+            http://127.0.0.1:5000/v2/zeta-ci-runtime/manifests/wire > /tmp/wire-manifest.json
+          docker rm -f zeta-localreg >/dev/null 2>&1 || true
+          docker run --rm -v "$PWD":/w -w /w -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            -v /tmp/wire-manifest.json:/tmp/wire-manifest.json:ro \
+            zeta-ci-runtime:build \
+            bun src/Core.TypeScript/ci/image-wire-size.ts /tmp/wire-manifest.json
+          bytes=$(docker run --rm -v "$PWD":/w -w /w -e MISE_TRUSTED_CONFIG_PATHS=/w \
+            -v /tmp/wire-manifest.json:/tmp/wire-manifest.json:ro \
+            zeta-ci-runtime:build \
+            bun src/Core.TypeScript/ci/image-wire-size.ts /tmp/wire-manifest.json --json | jq -r .totalBytes)
+          echo "wire_bytes=${bytes}" >> "$GITHUB_OUTPUT"
+
+      # ── GHCR -> HOSTED-RUNNER THROUGHPUT, measured on a REAL cold pull.
+      #
+      # Our own image is not in a registry until this lands on `main`, so the wall-clock pull of
+      # the actual artifact is measured by the `pull-measure` job below, on publish. What CAN be
+      # measured here is the other factor: how fast GHCR feeds a hosted runner. `zeta-portal` is
+      # an existing image in this org and is anonymously readable (verified 2026-08-26), and this
+      # runner has never pulled it -- fresh VM, no layer cache -- so this is a genuine cold pull.
+      #
+      # The estimate printed at the end multiplies TWO MEASURED NUMBERS and guesses neither. It
+      # is still a derivation, and it is labelled as one: a different image has a different layer
+      # count and parallelism profile, so treat it as an order-of-magnitude check, not a result.
+      - name: GHCR throughput -- a real cold pull, measured (not a guessed ratio)
+        if: always()
+        shell: bash
+        env:
+          WIRE_BYTES: ${{ steps.wire.outputs.wire_bytes }}
+        run: |
+          set -uo pipefail
+          REPO_PATH=lucent-financial-group/zeta-portal
+          TOK=$(curl -sS "https://ghcr.io/token?service=ghcr.io&scope=repository:${REPO_PATH}:pull" | jq -r '.token // empty')
+          if [ -z "$TOK" ]; then
+            echo "NOT MEASURED: could not obtain an anonymous GHCR token. No throughput figure this run."
+            echo "This is a measurement that did not happen, and it is NOT a pass."
+            exit 0
+          fi
+          if ! curl -fsS -H "Authorization: Bearer $TOK" \
+                -H 'Accept: application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json' \
+                "https://ghcr.io/v2/${REPO_PATH}/manifests/latest" > /tmp/probe-manifest.json; then
+            echo "NOT MEASURED: could not read the probe manifest."
+            exit 0
+          fi
+          probe_bytes=$(jq -r '(.config.size // 0) + ([.layers[]?.size] | add // 0)' /tmp/probe-manifest.json)
+          if [ -z "$probe_bytes" ] || [ "$probe_bytes" -le 0 ] 2>/dev/null; then
+            echo "NOT MEASURED: probe manifest carried no layer sizes (an index, or an unexpected shape)."
+            exit 0
+          fi
+          START=$(date +%s)
+          if ! docker pull "ghcr.io/${REPO_PATH}:latest" >/dev/null 2>&1; then
+            echo "NOT MEASURED: the probe pull failed. That is itself a data point about pull reliability."
+            exit 0
+          fi
+          ELAPSED=$(( $(date +%s) - START ))
+          [ "$ELAPSED" -lt 1 ] && ELAPSED=1
+          echo "probe image:        ghcr.io/${REPO_PATH}:latest"
+          echo "probe wire bytes:   ${probe_bytes}   (MEASURED from the GHCR manifest)"
+          echo "probe pull seconds: ${ELAPSED}       (MEASURED, cold, fresh runner)"
+          echo "throughput:         $(( probe_bytes / ELAPSED / 1024 / 1024 )) MiB/s"
+          if [ -n "${WIRE_BYTES:-}" ]; then
+            echo ""
+            echo "DERIVED (two measured numbers, no guessed ratio -- still a derivation, not a result):"
+            echo "  ci-runtime wire bytes ${WIRE_BYTES} at the throughput above"
+            echo "  => ~$(( WIRE_BYTES * ELAPSED / probe_bytes )) s to pull, before extraction."
+            echo "  The REAL figure for our own digest comes from the pull-measure job on publish."
+          fi
+
+      - name: What the image cost, measured rather than estimated
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "=== extracted size docker reports ==="
+          docker image inspect zeta-ci-runtime:build --format 'extracted_bytes={{.Size}}' || true
+          echo "=== layer count ==="
+          docker image inspect zeta-ci-runtime:build --format '{{len .RootFS.Layers}}' || true
+          echo "=== disk after the build ==="
+          df -kP /
+
+      # ── PUBLISH. Trusted in-repo events only; a PR (including from a fork) never gets
+      # registry write. Same shape as build-platform-images.yml, reused rather than
+      # reinvented. The `sha-<12>` tag is immutable; `slim` is the moving convenience tag.
+      # CONSUMERS MUST PIN THE DIGEST, NOT EITHER TAG — a mutable tag in a build path is an
+      # unpinned dependency, which is the supply-chain shape this repo refuses elsewhere.
+      - name: Compute image ref + tags
+        if: github.event_name != 'pull_request'
+        id: meta
+        env:
+          OWNER: ${{ github.repository_owner }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          owner_lc=$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')
+          ref="ghcr.io/${owner_lc}/zeta-ci-runtime"
+          short="${SHA:0:12}"
+          {
+            echo "ref=${ref}"
+            echo "tag_sha=${ref}:sha-${short}"
+            echo "tag_slim=${ref}:slim"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+
+      - name: Push image
+        if: github.event_name != 'pull_request'
+        id: push
+        env:
+          TAG_SHA: ${{ steps.meta.outputs.tag_sha }}
+          TAG_SLIM: ${{ steps.meta.outputs.tag_slim }}
+          REF: ${{ steps.meta.outputs.ref }}
+        run: |
+          set -euo pipefail
+          docker tag zeta-ci-runtime:build "$TAG_SHA"
+          docker tag zeta-ci-runtime:build "$TAG_SLIM"
+          docker push "$TAG_SHA"
+          docker push "$TAG_SLIM"
+          digest=$(docker inspect --format '{{ index .RepoDigests 0 }}' "$TAG_SHA" | cut -d@ -f2)
+          echo "digest=${REF}@${digest}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## ci-runtime published"
+            echo ""
+            echo "| field | value |"
+            echo "|---|---|"
+            echo "| sha tag | \`${TAG_SHA}\` |"
+            echo "| moving tag | \`${TAG_SLIM}\` |"
+            echo "| **digest (pin THIS)** | \`${REF}@${digest}\` |"
+            echo ""
+            echo "A consumer job pins the digest line above, never a tag."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Install cosign
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign image (keyless OIDC + Fulcio + Rekor)
+        if: github.event_name != 'pull_request'
+        env:
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: |
+          set -euo pipefail
+          cosign sign --yes "$DIGEST"
+
+  # ── THE NUMBER THE WHOLE TIME-ARGUMENT TURNS ON, measured on the real artifact.
+  #
+  # Everything above measures the image. This measures the PULL: a fresh hosted runner, no
+  # layer cache, pulling the digest we just published, timed. Three legs rather than one,
+  # because the claim being tested is about VARIANCE, not about a mean -- a single sample
+  # cannot distinguish "reliably 40 s" from "usually 40 s, sometimes 400 s", and the second
+  # is exactly what a multi-mirror apt install already does (measured install spread on this
+  # repo: mean 115 s, max 465 s). Reporting the WORST of three is deliberate: the tail is the
+  # thing being bought, so the tail is what gets quoted.
+  #
+  # NOT run on pull_request -- nothing is published there, so there is no digest to pull and
+  # a leg that silently measured nothing would be worse than a leg that does not run.
+  pull-measure:
+    name: cold pull of the published digest (leg ${{ matrix.leg }})
+    needs: image
+    if: github.event_name != 'pull_request' && needs.image.outputs.digest != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        leg: [1, 2, 3]
+    steps:
+      - name: Log in to GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${GITHUB_ACTOR}" --password-stdin
+
+      # The repo's own `lint-no-decide-by-grep` caught the first version of this step, and it
+      # was right: `docker image ls | grep -q` decides on grep's status and DISCARDS docker's.
+      # If `docker image ls` died on a signal it prints nothing, the grep matches nothing, and
+      # this assertion PASSES having checked nothing -- which would let a warm runner report a
+      # fast pull. Producer status is checked first (no pipeline, so `set -e` sees it), then
+      # grep reads a file.
+      - name: Prove the runner is cold before timing anything
+        run: |
+          set -euo pipefail
+          docker image ls --format '{{.Repository}}:{{.Tag}}' > /tmp/images-before.txt
+          echo "=== images already present on this runner ==="
+          cat /tmp/images-before.txt
+          echo "A line matching zeta-ci-runtime here would make the timing below meaningless."
+          if grep -q 'zeta-ci-runtime' /tmp/images-before.txt; then
+            echo "::error title=warm runner::the image is already present; this leg would not measure a cold pull"
+            exit 1
+          fi
+          echo "runner is cold: the timing below is a genuine first pull."
+
+      - name: Cold pull, timed
+        id: pull
+        env:
+          DIGEST: ${{ needs.image.outputs.digest }}
+        run: |
+          set -euo pipefail
+          START=$(date +%s)
+          docker pull "$DIGEST"
+          ELAPSED=$(( $(date +%s) - START ))
+          echo "pull_seconds=${ELAPSED}" >> "$GITHUB_OUTPUT"
+          {
+            echo "### cold pull leg ${{ matrix.leg }}"
+            echo ""
+            echo "| field | value |"
+            echo "|---|---|"
+            echo "| digest | \`${DIGEST}\` |"
+            echo "| **pull seconds (cold, fresh runner)** | **${ELAPSED}** |"
+            echo ""
+            echo "Compare against the measured install-step distribution this replaces:"
+            echo "mean 115 s, max 465 s over 88 samples (gate, main, 2026-08-26)."
+            echo "The claim under test is the SPREAD, not the mean."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "leg ${{ matrix.leg }}: ${ELAPSED}s"
