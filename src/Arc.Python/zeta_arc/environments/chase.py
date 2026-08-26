@@ -102,10 +102,19 @@ def _build_level(index: int) -> Level:
 class ZetaChase(ARCBaseGame):
     """Reach the goal. Four moves, walls block, each level adds structure."""
 
+    #: How this environment builds each level. A HOOK, not a call, because
+    #: `ARCBaseGame.__init__` clones its levels into `_clean_levels` and
+    #: `handle_reset` restores from those — so a sprite added after construction
+    #: is silently discarded, and a subclass has to influence level construction
+    #: from INSIDE `__init__` or not at all. A staticmethod slot does that
+    #: without monkeypatching a module global, which the first attempt tried and
+    #: which made the wrapper call itself and recurse 1000 deep.
+    _level_builder = staticmethod(_build_level)
+
     def __init__(self, seed: int = 0) -> None:
         super().__init__(
             game_id="zeta-chase",
-            levels=[_build_level(i) for i in range(len(_WALLS))],
+            levels=[type(self)._level_builder(i) for i in range(len(_WALLS))],
             win_score=len(_WALLS),
             # PLAIN INTS, not GameAction members, and the distinction is not
             # cosmetic. `GameAction` is a plain `Enum` (NOT an `IntEnum`), so
@@ -168,3 +177,85 @@ class ZetaChase(ARCBaseGame):
                 break
 
         self.complete_action()
+
+
+# ─── ZetaChaseDecoy: the same levels, plus a competitor ──────────────────────
+#
+# WHY A SECOND ENVIRONMENT RATHER THAN A CHANGE TO THE FIRST. Measured
+# 2026-08-26: across 40 ticks of `ZetaChase` seed 4 the pixel agent perceives 4
+# distinct components and exactly ONE that ever moves. The body election
+# therefore has no competitor, and twelve mutations to the agent's decision
+# machinery — disabling the ageing, the commit gate in both directions, the
+# conservative ranking, the Kalman gain, the inert-suppression release — leave
+# the environment score at EXACTLY 0.354. Only one of the twelve moves it.
+#
+# That makes `ZetaChase` a fine regression guard and a useless discriminator, so
+# it is kept unchanged and this is added ALONGSIDE it. Nothing about the 0.354
+# pin moves; agent work simply gains an instrument that can see it.
+#
+# Full measurement, both tables, and the defect it exposed in the dynamics-factor
+# ageing: `docs/research/2026-08-26-zetachase-cannot-see-the-agent-*.md`.
+
+#: Free in this palette — goal 4, background 5, agent 9, wall 2.
+COLOR_DECOY = 7
+
+#: The decoy's route: fixed, seed-independent, and therefore DST-replayable. It
+#: is deliberately NOT a function of the commanded action — a decoy that moved
+#: WITH the command would be a second body and would make the task ambiguous
+#: rather than harder.
+_DECOY_CYCLE: tuple[tuple[int, int], ...] = ((1, 0), (1, 0), (-1, 0), (-1, 0))
+
+
+def _build_level_with_decoy(index: int) -> Level:
+    """Level `index`, plus one decoy in the first free cell.
+
+    `collidable=False` is load-bearing, not incidental: a collidable decoy would
+    wander into the agent's path and change which levels are solvable in how
+    many actions, so the two environments would no longer share
+    `optimal_actions` and their scores would stop being comparable. The decoy is
+    a PERCEPTUAL competitor and nothing else.
+    """
+    level = _build_level(index)
+    occupied = {(s.x // CELL, s.y // CELL) for s in level.get_sprites()}
+    for cy in range(GRID - 1, -1, -1):
+        for cx in range(GRID):
+            if (cx, cy) not in occupied:
+                level.add_sprite(
+                    Sprite(
+                        pixels=_block(COLOR_DECOY),
+                        name="decoy",
+                        x=cx * CELL,
+                        y=cy * CELL,
+                        tags=["decoy"],
+                        collidable=False,
+                    )
+                )
+                return level
+    return level
+
+
+class ZetaChaseDecoy(ZetaChase):
+    """`ZetaChase` with one independently-moving distractor.
+
+    Same walls, same starts, same win condition, same `optimal_actions` — so a
+    score here is comparable to a score there, and the only difference is that
+    the body election now has something to get wrong.
+    """
+
+    _level_builder = staticmethod(_build_level_with_decoy)
+
+    def __init__(self, seed: int = 0) -> None:
+        super().__init__(seed=seed)
+        self._decoy_tick = 0
+
+    def step(self) -> None:
+        super().step()
+        decoys = self.current_level.get_sprites_by_tag("decoy")
+        if not decoys:
+            return
+        decoy = decoys[0]
+        dx, dy = _DECOY_CYCLE[self._decoy_tick % len(_DECOY_CYCLE)]
+        self._decoy_tick += 1
+        nx, ny = decoy.x + dx * CELL, decoy.y + dy * CELL
+        if 0 <= nx <= (GRID - 1) * CELL and 0 <= ny <= (GRID - 1) * CELL:
+            self.try_move_sprite(decoy, dx * CELL, dy * CELL)

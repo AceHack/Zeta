@@ -83,9 +83,36 @@ module MultilayerBnn =
     /// `Sequential` = each layer feeds the next (default).
     /// `SkipConnection from to` = layer `from` also feeds layer `to` directly
     ///   (residual connection — the source beliefs are SUMMED at `to`).
+    /// `Dag parents` = `parents.[i]` is the full set of layers feeding layer `i`;
+    /// the general case, of which the other two are special forms.
+    ///
+    /// ALL THREE ARE READ THROUGH `parentsOf` AND NOWHERE ELSE. A topology case
+    /// that one sweep interprets and another ignores is how `SkipConnections`
+    /// became a first-order approximation: the forward sweep honoured the skips
+    /// and the backward sweep did not. One interpreter means a new case cannot
+    /// silently miss a code path — and the compiler proved that immediately, by
+    /// refusing to build until `toJsonString` handled `Dag` too.
     type Topology =
         | Sequential
         | SkipConnections of (int * int) list
+        | Dag of int list array
+
+    /// The layers feeding layer `i`, for any topology. The single place a
+    /// topology is interpreted.
+    ///
+    /// ORDER IS LOAD-BEARING: the sequential predecessor comes first, then the
+    /// skips in declaration order, because the sweeps fold over this list and
+    /// Gaussian convolution — associative in exact arithmetic — is NOT
+    /// bit-associative in floating point. Reordering moves the last ulp of the
+    /// numbers this module's bit-identity tests pin.
+    let parentsOf (topology: Topology) (i: int) : int list =
+        match topology with
+        | Sequential -> if i <= 0 then [] else [ i - 1 ]
+        | SkipConnections pairs ->
+            let skips =
+                pairs |> List.choose (fun (from, ``to``) -> if ``to`` = i then Some from else None)
+            (if i <= 0 then [] else [ i - 1 ]) @ skips
+        | Dag parents -> if i >= 0 && i < parents.Length then parents.[i] else []
 
     /// An N-layer Bayesian network.
     type Network =
@@ -151,13 +178,18 @@ module MultilayerBnn =
 
     // -- Skip-connection helpers ---------------------------------------------------
 
-    /// The extra sources that layer `i` receives from skip connections
-    /// (in addition to the sequential feed from layer i-1).
-    let private skipSourcesFor (topology: Topology) (i: int) : int list =
-        match topology with
-        | Sequential -> []
-        | SkipConnections pairs ->
-            pairs |> List.choose (fun (from, ``to``) -> if ``to`` = i then Some from else None)
+    /// Remove the FIRST occurrence of `x`, not all of them. A topology may
+    /// legitimately name the same parent twice (a skip from `i-1` to `i`
+    /// alongside the sequential feed), and that duplicate means the source is
+    /// summed in twice. Dropping both would silently change the model rather
+    /// than preserve it.
+    let private removeFirst (x: int) (xs: int list) : int list =
+        let rec go acc =
+            function
+            | [] -> List.rev acc
+            | y :: rest when y = x -> List.rev acc @ rest
+            | y :: rest -> go (y :: acc) rest
+        go [] xs
 
     // -- Gaussian message primitives -----------------------------------------------
 
@@ -234,10 +266,25 @@ module MultilayerBnn =
             // message that layer i sent DOWN divided out: the sum-product
             // variable rule, i.e. the EP cavity (Minka 2001). Without this
             // division the chain re-absorbs its own evidence every sweep.
-            let cavityBelow = Gaussian.divide (localBelief (i - 1)) down.[i - 1]
+            // ONE PARENT IS THE CAVITY PARENT; THE REST ARE CONVOLVED RAW, and the
+            // asymmetry is a limitation of the representation rather than a choice.
+            // `down` is indexed BY LAYER, so it holds one downward message per
+            // NODE — exactly right for a chain, where a layer has at most one
+            // child, and unable to express the per-EDGE message a DAG needs. The
+            // sequential predecessor's entry genuinely is the message this layer
+            // sent down, so dividing it out is the correct sum-product cavity
+            // (Minka 2001). A skip source's entry is the message IT received from
+            // ITS own sequential child — a different edge — so dividing that out
+            // would remove the wrong evidence, hence raw. `FactorGraph`'s
+            // `FactorToVar : Map<factor, Map<var, 'M>>` is per-edge, and is where
+            // this stops being approximate.
+            let parents = parentsOf net.Topology i |> List.filter (fun src -> src < i)
+            let hasSequentialParent = List.contains (i - 1) parents
+            let cavityBelow =
+                if hasSequentialParent then Gaussian.divide (localBelief (i - 1)) down.[i - 1]
+                else Gaussian.One
             let sumBelief =
-                skipSourcesFor net.Topology i
-                |> List.filter (fun src -> src < i)
+                (if hasSequentialParent then removeFirst (i - 1) parents else parents)
                 |> List.fold (fun acc src -> convolve acc (localBelief src)) cavityBelow
             up.[i] <- throughChannel net.ObservationVariances.[i] sumBelief
             let updated = localBelief i
@@ -272,9 +319,35 @@ module MultilayerBnn =
     /// that came up from this layer — push it back through the link, and store
     /// it as the message arriving from above.
     ///
-    /// On a `Sequential` chain, forward-then-backward gives the EXACT marginals.
-    /// The sweep is idempotent: `down.[i]` is computed from quantities that do
-    /// not contain `down.[i]`.
+    /// On a `Sequential` chain, forward-then-backward gives the EXACT marginals,
+    /// and the sweep is idempotent: `down.[i]` is computed from quantities that
+    /// do not contain `down.[i]`.
+    ///
+    /// THAT IDEMPOTENCY CLAIM IS FALSE FOR ANY MULTI-PARENT TOPOLOGY, and it was
+    /// stated here without the qualifier until 2026-08-26. The sum-removal fold
+    /// below deconvolves `localBelief src` for each other addend, and
+    /// `localBelief` reads `down.[src]` — which THIS sweep has already
+    /// overwritten, because `i` descends. So the second run sees different inputs
+    /// and lands somewhere else.
+    ///
+    /// MEASURED, worst per-layer drift between two consecutive backward runs on a
+    /// 5-layer net (`MLBNN-34`):
+    ///
+    ///     Sequential  0        Dag-chain  0
+    ///     Dag-skip    0.66     SkipConnections  0.66
+    ///
+    /// It is PRE-EXISTING, not a consequence of the `Dag` generalisation: the
+    /// `SkipConnections` row drifts identically and always did. `MLBNN-16` could
+    /// not see it because it exercises only `Sequential` and compares through
+    /// `toJsonString`, whose `%.12g` hides anything below the twelfth digit.
+    ///
+    /// NOT FIXED HERE, deliberately. The sweeps' multi-parent answer is already
+    /// known to be the wrong one — `MLBNN-33` measures its mean error at 2.07
+    /// against an exact solve, where `tryMarginalsViaFactorGraph` scores 4e-14 —
+    /// so replacing one approximation with a differently-wrong idempotent
+    /// approximation is not obviously progress, and the correct path already
+    /// exists and IS idempotent (`MLBNN-35`). Use the factor graph for anything
+    /// that is not a chain.
     let backward (net: Network) : Result<Network, string> =
         let n = net.Layers.Length
         let up = net.UpwardMessages
@@ -296,8 +369,19 @@ module MultilayerBnn =
                 let toSum = throughChannel net.ObservationVariances.[i + 1] cavityAbove
                 // If layer i+1 was fed by a SUM, remove the other addends. The
                 // target itself is never removed from its own message.
+                //
+                // Swapping `skipSourcesFor` for `parentsOf` changes nothing here:
+                // the only element `parentsOf` adds is the sequential parent of
+                // `i+1`, which IS `i`, and the filter already excluded it.
+                //
+                // STILL A CHAIN WALK, which is this sweep's honest limit. `i`
+                // descends `n-2 .. 0` taking its downward message from `i+1`
+                // alone, so a layer whose real consumer is a higher non-adjacent
+                // node never receives that node's evidence. Under `Dag` that is an
+                // approximation of exactly the kind `SkipConnections` already was.
+                // Fixing it needs per-edge messages, not a better traversal order.
                 down.[i] <-
-                    skipSourcesFor net.Topology (i + 1)
+                    parentsOf net.Topology (i + 1)
                     |> List.filter (fun src -> src < i + 1 && src <> i)
                     |> List.fold (fun acc src -> deconvolve acc (localBelief src)) toSum
             let updated = localBelief i
@@ -309,6 +393,109 @@ module MultilayerBnn =
         match error with
         | Some e -> Error e
         | None -> Ok { net with DownwardMessages = down }
+
+    // -- Factor-graph inference: the per-edge upgrade --------------------------------
+    //
+    // WHY THIS EXISTS ALONGSIDE THE SWEEPS RATHER THAN REPLACING THEM. The two
+    // sweeps store one upward and one downward message PER LAYER, which is exact
+    // for a chain — where a layer has at most one parent and one child — and
+    // cannot represent the per-EDGE messages a DAG needs. `FactorGraph` keys its
+    // messages `factor -> variable`, so every edge carries its own, and loopy
+    // topologies get sum-product to a fixed point instead of one forward and one
+    // backward pass.
+    //
+    // BIT-IDENTITY IS THE WRONG BAR HERE, and the row that asked for it was
+    // asking for the right thing about the wrong stage. Re-spelling `Sequential`
+    // as a `Dag` runs the SAME arithmetic in the same order, so bits must match
+    // and MLBNN-23/24 pin that. A fixpoint iteration is a DIFFERENT algorithm
+    // computing the same mathematical quantity; it agrees to machine precision,
+    // not to the last ulp, and demanding bits would only pin an accident of the
+    // schedule. The honest falsifier is the INDEPENDENT one the test file already
+    // carries: `exactChainMarginals` inverts the joint precision matrix by
+    // Gauss-Jordan, and sum-product on a tree must agree with it.
+
+    /// A factor asserting `child = sum(parents) + noise`, as a sum-product factor
+    /// over `parents @ [child]`.
+    ///
+    /// DUPLICATE PARENTS ARE NOT EXPRESSIBLE HERE and are rejected by
+    /// `tryToFactorGraph` rather than silently collapsed. `Factor` keys its
+    /// outgoing messages by VARIABLE id, so naming a parent twice would write one
+    /// map entry and quietly halve the contribution the sweeps do deliver
+    /// (MLBNN-27 pins that they deliver it twice). A refusal is honest; a silent
+    /// disagreement between two inference paths on the same network is not.
+    let private sumLinkFactor
+        (noiseVariance: float)
+        (parents: int list)
+        (child: int)
+        : Factor<Gaussian> =
+        { Neighbors = parents @ [ child ]
+          ComputeMessages =
+            fun incoming ->
+                let msg v = incoming |> Map.tryFind v |> Option.defaultValue Gaussian.One
+                let combine vs =
+                    match vs with
+                    | [] -> Gaussian.One
+                    | v0 :: rest -> rest |> List.fold (fun acc v -> convolve acc (msg v)) (msg v0)
+                let toChild = throughChannel noiseVariance (combine parents)
+                let toParent p =
+                    // The child's belief pushed back through the link, with the
+                    // OTHER addends removed. Means subtract, variances still add —
+                    // `deconvolve`, never `divide`: uncertainty does not cancel.
+                    removeFirst p parents
+                    |> List.fold (fun acc o -> deconvolve acc (msg o)) (throughChannel noiseVariance (msg child))
+                (parents |> List.map (fun p -> p, toParent p)) @ [ child, toChild ]
+                |> Map.ofList }
+
+    /// Build the factor graph for a network: one prior factor per layer, and one
+    /// sum-link factor per layer that has parents.
+    ///
+    /// Layer 0's prior factor carries the ABSORBED DATA, not the original prior —
+    /// `Layers.[0].Posterior` is the conjugate accumulation, so the evidence
+    /// enters once, as a leaf, exactly as it does in the sweeps.
+    let tryToFactorGraph (net: Network) : Result<FactorGraph<Gaussian>, string> =
+        let n = net.Layers.Length
+        let parentsFor i = parentsOf net.Topology i |> List.filter (fun p -> p >= 0 && p < n)
+        let offenders =
+            [ 0 .. n - 1 ]
+            |> List.filter (fun i ->
+                let ps = parentsFor i
+                List.length ps <> List.length (List.distinct ps))
+        if not (List.isEmpty offenders) then
+            let names = offenders |> List.map string |> String.concat ", "
+            Error(
+                $"layers {names} name a parent more than once; the factor-graph path "
+                + "keys messages by variable and cannot express a repeated addend")
+        else
+            let withPriors =
+                [ 0 .. n - 1 ]
+                |> List.fold
+                    (fun g i -> FactorGraph.addFactor i (Factor.prior i net.Layers.[i].Posterior) g)
+                    (FactorGraph.empty Gaussian.algebra)
+            [ 0 .. n - 1 ]
+            |> List.fold
+                (fun g i ->
+                    match parentsFor i with
+                    | [] -> g
+                    | ps -> FactorGraph.addFactor (n + i) (sumLinkFactor net.ObservationVariances.[i] ps i) g)
+                withPriors
+            |> Ok
+
+    /// Per-layer marginals by sum-product to a fixed point, plus the rounds run
+    /// and whether it converged before the cap.
+    ///
+    /// The caller is told `converged` rather than having a non-convergence
+    /// swallowed: on a loopy graph BP may oscillate forever (Weiss & Freeman
+    /// 2001), and a silent cap would report an arbitrary iterate as an answer.
+    let tryMarginalsViaFactorGraph
+        (tol: float)
+        (maxRounds: int)
+        (net: Network)
+        : Result<Gaussian array * int * bool, string> =
+        tryToFactorGraph net
+        |> Result.map (fun g ->
+            let settled, rounds, converged =
+                FactorGraph.runToFixpoint Gaussian.distance tol maxRounds g
+            Array.init net.Layers.Length (fun i -> FactorGraph.marginal i settled), rounds, converged)
 
     // -- Combined forward+backward ---------------------------------------------------
 
@@ -367,4 +554,15 @@ module MultilayerBnn =
                 let pairJsons =
                     pairs |> List.map (fun (f, t) -> sprintf "[%d,%d]" f t) |> String.concat ","
                 sprintf "{\"skipConnections\":[%s]}" pairJsons
+            // Serialised from the CASE, not normalised through `parentsOf`: this
+            // JSON is the round-trip generator, so it has to record which topology
+            // was DECLARED. Normalising here would round-trip `Sequential` back as
+            // a `Dag` and lose that.
+            | Dag parents ->
+                let parentJsons =
+                    parents
+                    |> Array.map (fun ps ->
+                        ps |> List.map (sprintf "%d") |> String.concat "," |> sprintf "[%s]")
+                    |> String.concat ","
+                sprintf "{\"dag\":[%s]}" parentJsons
         sprintf "{\"layers\":[%s],\"topology\":%s}" layerJsons topologyJson

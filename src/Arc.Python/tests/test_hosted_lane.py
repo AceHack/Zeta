@@ -28,6 +28,7 @@ from arcengine import GameAction, GameState
 from zeta_arc.agent import PixelAgent
 from zeta_arc.click import MAX_COORD, SWEEP_STRIDES, ClickPolicy
 from zeta_arc.driver import advance, reset
+from zeta_arc.dynamics import conservative
 from zeta_arc.environments.chase import ZetaChase
 from zeta_arc.environments.discovery import ZetaDiscovery
 from zeta_arc.frames import grid_of, is_click, offered_actions
@@ -244,7 +245,7 @@ def test_both_layers_are_tried_before_either_is_trusted() -> None:
     grid = _two_object_grid()
     for _ in range(3):
         agent.act(FakeFrame(grid, available=[1, 2, 3, 4, 6]))
-    assert {KEYBOARD, CLICK} <= set(agent.evidence)
+    assert {KEYBOARD, CLICK} <= set(agent.beliefs)
 
 
 @pytest.mark.parametrize("responsive", [CLICK, KEYBOARD])
@@ -280,10 +281,67 @@ def test_the_layer_that_moves_the_world_wins(responsive: str) -> None:
         assert tail == [expected] * 4, chosen
     else:
         assert all(a != GameAction.ACTION6 for a in tail), chosen
-    assert (
-        agent.evidence[responsive]
-        > agent.evidence[KEYBOARD if responsive == CLICK else CLICK]
-    ), agent.evidence
+    assert conservative(agent.beliefs[responsive]) > conservative(
+        agent.beliefs[KEYBOARD if responsive == CLICK else CLICK]
+    ), agent.beliefs
+
+
+def test_a_single_quiet_frame_does_not_flip_the_modality() -> None:
+    """THE JOB `LAYER_LATCH_MARGIN = 2.0` WAS DOING, AND NOTHING ELSE TESTED IT.
+
+    That constant existed to stop the modality thrashing on one frame where
+    nothing happened to move. When it was removed in favour of ranking by
+    `mu - 3*sigma`, all 47 tests in this file stayed green — which proved
+    nothing, because not one of them exercised a quiet frame against an
+    established incumbent. "The tests still pass" is not evidence about a
+    mechanism no test covers, so this is that test, written to fail against the
+    thing being claimed.
+
+    A click-responsive world, run long enough for CLICK to establish itself, then
+    one frame where the world does not move. The modality must survive it.
+    """
+    agent = LayeredAgent()
+    grid = [row[:] for row in _two_object_grid()]
+    quiet_at = 12
+    chosen: list[GameAction] = []
+    for tick in range(20):
+        action, _ = agent.act(FakeFrame(grid, available=[1, 2, 3, 4, 6]))
+        chosen.append(action)
+        acted_click = action == GameAction.ACTION6
+        if acted_click and tick != quiet_at:
+            grid[tick % 10][(tick * 3) % 10] ^= 5
+
+    assert chosen[quiet_at] == GameAction.ACTION6, "precondition: CLICK held the wheel"
+    assert chosen[quiet_at + 1] == GameAction.ACTION6, (
+        f"one quiet frame flipped the modality: {chosen}"
+    )
+
+
+def test_an_unexercised_layer_loses_its_grip_without_being_punished() -> None:
+    """The dynamics factor's own claim, which a decay constant cannot make.
+
+    A layer that stopped being tried keeps its ESTIMATE and loses its
+    CONFIDENCE. Under `LAYER_DECAY` the estimate itself shrank, so "was very
+    sure a while ago" and "slightly sure now" landed on the same number.
+    """
+    agent = LayeredAgent()
+    grid = [row[:] for row in _two_object_grid()]
+    for tick in range(8):
+        action, _ = agent.act(FakeFrame(grid, available=[1, 2, 3, 4, 6]))
+        if action == GameAction.ACTION6:
+            grid[tick % 10][(tick * 3) % 10] ^= 5
+
+    idle = KEYBOARD if agent._held == CLICK else CLICK
+    before = agent.beliefs[idle]
+    for tick in range(8, 20):
+        action, _ = agent.act(FakeFrame(grid, available=[1, 2, 3, 4, 6]))
+        if action == GameAction.ACTION6:
+            grid[tick % 10][(tick * 3) % 10] ^= 5
+    after = agent.beliefs[idle]
+
+    assert after.mu == before.mu, "an unexercised layer is not punished"
+    assert after.sigma2 > before.sigma2, "it does lose confidence"
+    assert conservative(after) < conservative(before), "so its grip weakens"
 
 
 @pytest.mark.parametrize(

@@ -18,7 +18,13 @@ import pytest
 # Same reason as play.py: arc_agi ships no py.typed marker.
 from arc_agi import OperationMode  # type: ignore[import-untyped]
 
+from zeta_arc.agent import PixelAgent
+from zeta_arc.driver import advance, reset
+from zeta_arc.environments.chase import COLOR_DECOY
+from zeta_arc.perception import Component, components
 from zeta_arc.play import (
+    ENVIRONMENTS,
+    choose,
     level_cleared,
     list_environments,
     open_arcade,
@@ -223,3 +229,111 @@ def test_the_clear_check_is_not_the_zetachase_specific_proxy() -> None:
     assert game._state != GameState.WIN, "the decoy ended the level — it is not a decoy"
     # The proxy would have said "cleared" here. The real check must not.
     assert not level_cleared(game, previous_index=1)
+
+
+# ─── the decoy environment: an instrument that can see the agent ─────────────
+
+
+def test_the_default_environment_is_unchanged_by_the_decoy_variant() -> None:
+    """ADDITIVE, and this is the test that says so.
+
+    `ZetaChaseDecoy` was added rather than folded into `ZetaChase` because the
+    existing environment is a good regression guard and a useless discriminator,
+    and losing the first to gain the second would be a bad trade. `play()`
+    therefore defaults to "chase" and every pinned score stays exactly where it
+    was. If this ever goes red, the variant has stopped being additive.
+    """
+    assert play(agent="pixel", seed=4)["environment_score"] == 0.354
+    assert play(agent="pixel", seed=4) == play(
+        agent="pixel", seed=4, environment="chase"
+    )
+
+
+def test_the_decoy_environment_has_a_competitor_where_chase_has_none() -> None:
+    """THE PROPERTY THE WHOLE VARIANT EXISTS FOR, stated comparatively.
+
+    Measured 2026-08-26: across 40 ticks of `chase` seed 4 the agent perceives
+    4 components and exactly ONE that ever moves, so the body election has
+    nothing to get wrong and twelve mutations to the agent's decision machinery
+    leave the score at exactly 0.354. A single-environment assertion cannot
+    carry that claim — it is the DIFFERENCE between the two rows that does.
+    """
+    movers = {}
+    for env in ("chase", "chase-decoy"):
+        game = ENVIRONMENTS[env](seed=4)
+        pixel = PixelAgent()
+        frame = reset(game)
+        rng_state = [5]
+        previous: dict[int, Component] = {}
+        moved: set[int] = set()
+        for _ in range(40):
+            grid = frame.frame[0] if frame.frame else []
+            current = {pixel._key(c): c for c in components(grid)}
+            for key, comp in current.items():
+                was = previous.get(key)
+                if was is not None and comp.distance_to(was) > 1e-9:
+                    moved.add(key)
+            previous = current
+            frame = advance(game, choose("pixel", game, rng_state, pixel, grid))
+        movers[env] = len(moved)
+
+    assert movers["chase"] == 1, movers
+    assert movers["chase-decoy"] == 2, movers
+
+
+def test_the_decoy_is_actually_mistaken_for_the_body_sometimes() -> None:
+    """A competitor the agent never confuses itself with is not a competitor.
+
+    The variant is only a discriminating instrument if the election is genuinely
+    contested — if the decoy were trivially rejected every frame, the score would
+    be as blind as `chase`'s. This is the weaker but load-bearing check that it
+    is not decoration.
+    """
+    game = ENVIRONMENTS["chase-decoy"](seed=4)
+    pixel = PixelAgent()
+    frame = reset(game)
+    rng_state = [5]
+    held_decoy = 0
+    for _ in range(60):
+        grid = frame.frame[0] if frame.frame else []
+        frame = advance(game, choose("pixel", game, rng_state, pixel, grid))
+        key = pixel._self_key
+        if key is not None and key // 100003 == COLOR_DECOY:
+            held_decoy += 1
+    assert held_decoy > 0, "the decoy never competed — it is not an instrument"
+
+
+def test_the_decoy_score_is_pinned() -> None:
+    """A regression guard on the new instrument, exactly as 0.354 is on the old.
+
+    Pinned at the CURRENT value, which is known to be improvable: the
+    dynamics-factor ageing costs score here (removing it scores 0.2659), and the
+    obvious repair reintroduces the welded-on defect it was added to fix. See
+    `docs/research/2026-08-26-zetachase-cannot-see-the-agent-*.md`. Pinning a
+    number we already know is not optimal is the point of a regression guard —
+    it is not a claim that the number is good.
+    """
+    result = play(agent="pixel", seed=4, environment="chase-decoy")
+    assert result["environment_score"] == 0.2659
+    assert result["levels_cleared"] == 3
+
+
+def test_the_decoy_does_not_change_what_is_solvable() -> None:
+    """Same walls, same starts, so `optimal_actions` is valid for both and the
+    two scores are comparable. The decoy is `collidable=False` precisely so it
+    cannot wander into a path and quietly make a level harder in a way the
+    reference count does not know about — which would make the comparison a lie.
+    """
+    plain = play(agent="pixel", seed=4, environment="chase")
+    decoy = play(agent="pixel", seed=4, environment="chase-decoy")
+    assert [level["optimal"] for level in plain["levels"]] == [
+        level["optimal"] for level in decoy["levels"]
+    ]
+    assert plain["levels_cleared"] == decoy["levels_cleared"] == 3
+
+
+def test_an_unknown_environment_is_refused_by_name() -> None:
+    """Not silently defaulted. A typo that quietly scores `chase` would report a
+    decoy result that never ran one."""
+    with pytest.raises(ValueError, match="unknown environment"):
+        play(agent="pixel", seed=4, environment="chase-decoi")

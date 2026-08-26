@@ -63,6 +63,37 @@ lane, or the twitch-ai arena). That establishes whether spatial belief helps *at
 before any geometric machinery is committed to -- and if it does not, the Clifford question
 is moot for this use case.
 
+## Progress 2026-08-26 — the startable half is DONE, and the answer is negative
+
+`SpatialColumn` / `FrameBelief` landed in `src/Bayesian/ThousandBrains.fs`: a column
+can now believe about a location in a named reference frame, one Gaussian per axis,
+added alongside the scalar `Column` rather than replacing it (four modules consume the
+scalar type).
+
+**The question this row asked to settle first is settled, and it did not need a task
+benchmark.** The row proposed measuring vector voting against scalar voting on the ARC
+lane or the arena. It decomposes analytically instead, which is stronger than one
+benchmark: with independent per-axis Gaussians the IV-weighted pool separates exactly,
+so running N scalar pools and stacking the answers is **bit-identical** to running one
+N-axis pool (`TB-8`). Believing about a vector rather than a number buys nothing on its
+own.
+
+**What does buy something is the FRAME**, and that needs no geometric algebra at all.
+`spatialConsensus` refuses to pool across reference frames (`TB-9`), across dimensions
+(`TB-10`), and refuses an observation in the wrong frame (`TB-11`) — a location in a
+cup's frame and a location in the table's frame are different quantities, and a
+plausible-looking average of them is the silent wrong answer the tag exists to prevent.
+
+So the Clifford question is **narrowed, not answered**. The payoff would have to come
+from something a per-axis array cannot carry — correlation between axes — or from the
+frame discipline, which is already here and is cheap. Q3 remains the blocker for the
+algebra half, and this row stays open for it.
+
+Also recorded because it cost a fix: `spatialConsensus` first took the leading vote's
+frame as canonical, so a pool of `[table; cup; cup]` blamed the majority and list order
+decided who was wrong. It reports which frames are present now, per
+`.claude/rules/dual-use-detection-is-neutral-oracle-decides.md`.
+
 ## Pointers
 
 - `src/Bayesian/ThousandBrains.fs` -- the seam

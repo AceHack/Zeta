@@ -6,12 +6,20 @@ touches it; that is the whole point of the file.
 
 from __future__ import annotations
 
+import math
+
 from arcengine import GameAction
 
-from zeta_arc.agent import ACTION_VECTORS, PixelAgent
+from zeta_arc.agent import (
+    ACTION_VECTORS,
+    INERT_PRIOR_SIGMA2,
+    INERT_STALENESS_HORIZON,
+    PixelAgent,
+)
 from zeta_arc.driver import advance, reset
+from zeta_arc.dynamics import Belief, observe
 from zeta_arc.environments.chase import CELL, ZetaChase
-from zeta_arc.perception import background_colour, components
+from zeta_arc.perception import Component, background_colour, components
 from zeta_arc.play import play
 
 
@@ -112,7 +120,7 @@ def test_the_probe_costs_exactly_one_blind_action() -> None:
 
     agent.act(_grid(game, frame))
     assert agent._self_key is not None
-    assert max(agent.evidence.values()) > 0
+    assert max(b.mu for b in agent.beliefs.values()) > 0
 
 
 def test_the_wall_level_is_cleared_and_the_wall_is_learned_by_bumping() -> None:
@@ -437,7 +445,7 @@ def test_suppression_expires_because_games_upgrade_their_actions():
     action that is still dead SHOULD stay suppressed. Expiry is only visible for
     an action that is not being re-refused, which is what is set up below.
 
-    Set `INERT_DECAY = 1.0` and this goes red while the bootstrap test stays
+    Set `INERT_TAU = 0.0` and this goes red while the bootstrap test stays
     green: suppression still works, it just never expires.
     """
     agent = PixelAgent()
@@ -447,20 +455,191 @@ def test_suppression_expires_because_games_upgrade_their_actions():
     # One action stands suppressed; a DIFFERENT one is what the agent last
     # issued, so the suppressed one is not re-refused on these revisits.
     suppressed = GameAction.ACTION3
-    agent._inert[key] = {suppressed: 1.0}
+    agent._inert[key] = {suppressed: observe(Belief(0.0, INERT_PRIOR_SIGMA2), 1.0, 1.0)}
     agent._last_action = GameAction.ACTION1
 
-    weight_before = agent._inert[key][suppressed]
+    before = agent._inert[key][suppressed]
 
     # Bounded, because an unbounded loop would pass by exhausting the test
-    # rather than by decaying. At 0.75 per revisit, 1.0 crosses the 0.5 floor
-    # on the third — six is headroom, not a fudge.
+    # rather than by going stale. One refusal leaves variance at 0.5, which
+    # needs two revisits to reach the prior — six is headroom, not a fudge.
     for _ in range(6):
         agent.act([row[:] for row in grid])
 
-    weight_after = agent._inert.get(key, {}).get(suppressed, 0.0)
-    assert weight_after < weight_before, "suppression did not decay at all"
+    after = agent._inert.get(key, {}).get(suppressed)
+    assert after is None or after.sigma2 > before.sigma2, (
+        "suppression did not go stale at all"
+    )
     assert suppressed not in agent._inert.get(key, {}), (
         "the suppressed action never became eligible again — an action that "
         "upgrades mid-episode could never be rediscovered"
+    )
+
+
+def test_suppression_can_never_outlast_the_horizon() -> None:
+    """THE PROPERTY THE OLD MODEL DID NOT HAVE, and the reason this site was
+    converted rather than left alone.
+
+    `INERT_DECAY = 0.75` decayed an ACCUMULATING weight, so suppression time grew
+    without bound in the number of refusals: about three revisits after one
+    refusal, seven after three, eleven after ten. An action refused often enough
+    early stayed suppressed for arbitrarily long — the permanent refusal the
+    design forbids, arriving by degrees rather than by decree.
+
+    A variance saturates where a sum does not. However many times an action has
+    been refused, its belief starts under the prior and needs at most
+    `INERT_STALENESS_HORIZON` revisits of ageing to reach it. The bound is the
+    guarantee, and it is checked here against a deliberately extreme history.
+    """
+    ceiling = math.ceil(INERT_STALENESS_HORIZON)
+    for refusals in (1, 3, 10, 50):
+        agent = PixelAgent()
+        grid = _unresponsive_world()
+        key = agent._grid_key(grid)
+
+        belief = Belief(0.0, INERT_PRIOR_SIGMA2)
+        for _ in range(refusals):
+            belief = observe(belief, 1.0, 1.0)
+        suppressed = GameAction.ACTION3
+        agent._inert[key] = {suppressed: belief}
+        agent._last_action = GameAction.ACTION1
+
+        released_at = None
+        for revisit in range(ceiling):
+            agent.act([row[:] for row in grid])
+            if suppressed not in agent._inert.get(key, {}):
+                released_at = revisit + 1
+                break
+
+        assert released_at is not None, (
+            f"{refusals} refusals outlasted the {ceiling}-revisit horizon"
+        )
+
+
+# ─── the decoy world: what ZetaChase cannot ask ──────────────────────────────
+#
+# MEASURED FIRST, because the tests below only exist because of the measurement.
+# Across 40 ticks of ZetaChase seed 4 the agent sees 4 distinct components and
+# exactly ONE of them ever moves. The body election therefore has no competitor,
+# and no ranking rule can be told apart from any other on that workload: removing
+# the ageing entirely, or ranking by the mean instead of the conservative score,
+# leaves all 118 tests green AND the environment score byte-identical at 0.354.
+#
+# So the falsifier has to be a world with a DECOY that also moves. These build
+# one directly out of `Component`s rather than pixels, because the property under
+# test is the election, and routing it through a grid would only add a renderer
+# that could fail for unrelated reasons.
+
+
+def _c(colour: int, cx: float, cy: float) -> Component:
+    """A component at a position. `area` is fixed so `_key` tracks identity by
+    colour alone — two distinct colours are two distinct candidates."""
+    return Component(colour=colour, area=9, cx=cx, cy=cy)
+
+
+def _drive(agent: PixelAgent, before: list[Component], after: list[Component]) -> None:
+    """One frame: the agent commanded ACTION4 (+x) and this is what happened."""
+    agent._previous = before
+    agent._last_action = GameAction.ACTION4
+    agent._update_evidence(after)
+
+
+def test_a_body_that_stops_moving_loses_the_election_to_one_that_is_moving() -> None:
+    """THE FAILURE `EVIDENCE_DECAY` COULD NOT PREVENT, and the reason this
+    conversion is not cosmetic.
+
+    Read the old update again: the decay sits INSIDE the loop that skips a
+    component which did not move. So a component that stopped moving had its
+    score FROZEN, not decayed — it was never contradicted, so it was never
+    demoted, and it held the body until a challenger out-accumulated it from
+    zero. That is the "welded on" failure the module docstring warns about,
+    written into the mechanism meant to prevent it.
+
+    Ageing demotes it without pretending to have observed anything. Here the
+    decoy earns the body over six clean frames, goes still, and a second
+    component starts moving in agreement. The decoy must lose.
+    """
+    decoy, real = 3, 7
+    agent = PixelAgent()
+
+    for step in range(6):
+        _drive(
+            agent,
+            [_c(decoy, step, 0.0), _c(real, 0.0, 5.0)],
+            [_c(decoy, step + 1.0, 0.0), _c(real, 0.0, 5.0)],
+        )
+    held = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, 0.0, 5.0)])
+    # `_elect_self` returns None on an empty frame. It cannot here — two
+    # components are always present — but asserting it says so out loud rather
+    # than leaning on a precondition a reader has to reconstruct.
+    assert held is not None
+    assert held.colour == decoy
+
+    took_over_at = None
+    for step in range(8):
+        _drive(
+            agent,
+            [_c(decoy, 6.0, 0.0), _c(real, step, 5.0)],
+            [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)],
+        )
+        elected = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)])
+        assert elected is not None
+        if elected.colour == real and took_over_at is None:
+            took_over_at = step + 1
+
+    assert took_over_at is not None, "the still decoy was welded on"
+    assert took_over_at <= 4, f"took {took_over_at} frames to release a still body"
+
+
+def test_the_dynamics_factor_releases_a_still_body_sooner_than_decay_does() -> None:
+    """The comparison the whole change rests on, run on ONE observation sequence.
+
+    A test that only exercised the new model would show it works, never that it
+    is better than what it replaced. So the old rule — `score * 0.9 + agreement`,
+    applied only to components that moved, argmax with `LATCH_MARGIN = 1.0` — is
+    reimplemented here and driven with the identical frames. The claim is the
+    DIFFERENCE between the two columns, which neither column can state alone.
+    """
+    decoy, real = 3, 7
+    agent = PixelAgent()
+    old: dict[int, float] = {}
+    old_held: int | None = None
+
+    def old_step(moved: int) -> int | None:
+        nonlocal old_held
+        old[moved] = old.get(moved, 0.0) * 0.9 + 1.0  # only the mover updates
+        best = max(old, key=lambda k: old[k])
+        if old_held is not None and old[best] < old[old_held] + 1.0:
+            return old_held
+        if old[best] > 0:
+            old_held = best
+        return best
+
+    for step in range(6):
+        _drive(
+            agent,
+            [_c(decoy, step, 0.0), _c(real, 0.0, 5.0)],
+            [_c(decoy, step + 1.0, 0.0), _c(real, 0.0, 5.0)],
+        )
+        old_step(decoy)
+
+    new_release = old_release = None
+    for step in range(12):
+        _drive(
+            agent,
+            [_c(decoy, 6.0, 0.0), _c(real, step, 5.0)],
+            [_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)],
+        )
+        elected = agent._elect_self([_c(decoy, 6.0, 0.0), _c(real, step + 1.0, 5.0)])
+        assert elected is not None
+        if new_release is None and elected.colour == real:
+            new_release = step + 1
+        if old_release is None and old_step(real) == real:
+            old_release = step + 1
+
+    assert new_release is not None, "dynamics never released the still body"
+    assert old_release is not None, "decay never released it either — check the setup"
+    assert new_release < old_release, (
+        f"dynamics released at {new_release}, decay at {old_release} — "
+        "the conversion bought nothing on this sequence"
     )

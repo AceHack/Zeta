@@ -1,11 +1,12 @@
 ---
 id: 081M0YSD5VA087G0R000W2Q9QW
 type: task
-state: backlog
+state: done
 priority: P2
 slug: replace-the-arc-agent-s-three-hardcoded-decay-constants-with
 title: "Replace the ARC agent's three hardcoded decay constants with TrueSkill dynamics (measure before/after)"
 created: 2026-08-26T10:21:14.474Z
+completed: 2026-08-26T14:04:08.110Z
 depends_on: []
 composes_with: []
 ---

@@ -126,7 +126,7 @@ jobs:
           # makes the unbound variable exit non-zero, so the check cannot be
           # removed by accident without the job going red. (Measured: with the
           # variable unset the step exits 1.)
-          ARC_MIN_TESTS: "88"
+          ARC_MIN_TESTS: "127"
         run: |
           set -euo pipefail
           uv run --project src/Arc.Python pytest src/Arc.Python/tests -q --junitxml=/tmp/arc-junit.xml

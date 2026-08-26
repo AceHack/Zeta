@@ -33,6 +33,14 @@ from dataclasses import dataclass, field
 
 from arcengine import GameAction
 
+from zeta_arc.dynamics import (
+    Belief,
+    age,
+    conservative,
+    observe,
+    outranks,
+    tau_for_horizon,
+)
 from zeta_arc.perception import Component, Grid, components
 
 #: Direction each action moves the agent, in grid cells. Mirrors chase.py's
@@ -45,18 +53,70 @@ ACTION_VECTORS: dict[GameAction, tuple[int, int]] = {
     GameAction.ACTION4: (1, 0),
 }
 
-#: Evidence leaks, so a wrong body decays out instead of being welded on.
-EVIDENCE_DECAY = 0.9
-#: A challenger must beat the held body by this margin to take it (hysteresis,
-#: same Schmitt-trigger idiom as the arena's mode latch — motor smoothing).
-LATCH_MARGIN = 1.0
+#: Displacement agreement is a cosine, so it lands in [-1, 1] and a variance of
+#: 1.0 spans the range: the honest prior for a component nothing is known about.
+BODY_PRIOR_SIGMA2 = 1.0
+
+#: What one frame of agreement is worth. A component can move for reasons that
+#: have nothing to do with my command, so a single frame is worth about as much
+#: as the prior rather than settling the question.
+BODY_OBS_SIGMA2 = 1.0
+
+#: WHEN A BODY BELIEF GOES BACK UP FOR GRABS, as a claim about the world rather
+#: than a rate: about seven frames of a component neither moving nor being seen
+#: and it is fully contestable again. Short enough that a body swapped out at a
+#: level boundary is re-elected rather than welded on, long enough to survive a
+#: stretch where nothing moves.
+#:
+#: SEVEN IS WHAT `EVIDENCE_DECAY = 0.9` WAS ALREADY ASSERTING and could not say:
+#: `decay_half_life(0.9) == 6.58` observations. Starting from the horizon the
+#: old constant implied makes this a re-parameterisation whose behaviour can be
+#: compared against a baseline, not a re-tune whose result cannot.
+BODY_STALENESS_HORIZON = 6.58
+
+#: Derived, never named directly.
+BODY_TAU = tau_for_horizon(BODY_PRIOR_SIGMA2, BODY_STALENESS_HORIZON)
+
+#: "This action is inert from this exact state" lives on [0, 1], so 1.0 is the
+#: uninformative prior — and it doubles as the RELEASE TEST: a belief whose
+#: variance has grown back to the prior carries no information, and an action we
+#: know nothing about is one we are willing to try again.
+INERT_PRIOR_SIGMA2 = 1.0
+
+#: What one refusal is worth. "The grid was byte-identical after I acted" is a
+#: clean reading, but it says the action did nothing HERE AND NOW, not that it is
+#: dead — so one refusal is worth about as much as the prior.
+INERT_OBS_SIGMA2 = 1.0
+
+#: THE MAXIMUM a suppression can last, in revisits to the same grid — stated,
+#: bounded, and checked by `test_suppression_can_never_outlast_the_horizon`.
+#: 2.41 is what `INERT_DECAY = 0.75` was asserting for a single refusal:
+#: `decay_half_life(0.75) == 2.41`.
+INERT_STALENESS_HORIZON = 2.41
+
+INERT_TAU = tau_for_horizon(INERT_PRIOR_SIGMA2, INERT_STALENESS_HORIZON)
+
+#: NOTE ON THE COMMIT GATE, which is `mu > 0` and deliberately NOT a conservative
+#: bound. Requiring one sigma of confidence was tried first and is wrong here:
+#: after a single clean frame `mu = 0.5` with `sigma = 0.707`, so a 1-sigma gate
+#: refuses to commit, and `test_the_probe_costs_exactly_one_blind_action` goes
+#: red — correctly, because the probe costing exactly one action is a stated
+#: property of this agent and actions are the budget. (Found by that test, not
+#: derived beforehand.)
+#:
+#: The mean is the right gate BECAUSE of the ageing above it. A premature commit
+#: used to be the expensive mistake — `EVIDENCE_DECAY` never demoted a component
+#: that stopped moving, so a wrong body welded on. Now an unconfirmed body loses
+#: confidence every frame and a challenger takes it on the conservative score,
+#: which makes committing early cheap to undo. The gate could be strict when
+#: being wrong was permanent; it does not need to be now.
 
 
 @dataclass
 class PixelAgent:
     """Chooses actions from the rendered frame alone."""
 
-    evidence: dict[int, float] = field(default_factory=dict)
+    beliefs: dict[int, Belief] = field(default_factory=dict)
     #: Cells discovered to be impassable — learned by BUMPING, never read from
     #: the environment's wall table. See `_note_blocked_cell`.
     blocked: set[tuple[int, int]] = field(default_factory=set)
@@ -79,7 +139,7 @@ class PixelAgent:
     #: Actions the world did not answer, keyed by the EXACT grid they were
     #: issued from. See `_note_inert_action` for why this exists alongside
     #: `blocked` rather than inside it.
-    _inert: dict[tuple[tuple[int, ...], ...], dict[GameAction, float]] = field(
+    _inert: dict[tuple[tuple[int, ...], ...], dict[GameAction, Belief]] = field(
         default_factory=dict
     )
     _last_grid_key: tuple[tuple[int, ...], ...] | None = None
@@ -96,20 +156,30 @@ class PixelAgent:
         that contains it."""
         return tuple(tuple(row) for row in grid)
 
-    #: How fast an unanswered action becomes worth retrying. NOT a ban: many
-    #: games UPGRADE their actions, so a move that does nothing early is
+    #: An action is suppressed while there is INFORMATION that it is inert, and
+    #: becomes eligible the moment that information has gone stale. NOT a ban:
+    #: many games UPGRADE their actions, so a move that does nothing early is
     #: routinely live later once something unlocks — and the grid can return to
     #: a byte-identical state with the agent's capabilities changed underneath
     #: it, which is precisely the case a permanent refusal makes unreachable.
     #: Aaron 2026-08-26: *"should not set the actions to completely 0 cause in
     #: many games actions get upgraded over time ... not some games, not all of
-    #: them."* So suppression LEAKS, on the same principle as `LAYER_DECAY` and
-    #: the body-evidence leak: nothing here is allowed to be permanent.
-    INERT_DECAY = 0.75
-    #: Below this a suppressed action is eligible again. One refusal costs about
-    #: three revisits; a persistently dead action accumulates and stays down
-    #: longer, so the cost self-tunes to how dead the action actually is.
-    INERT_FLOOR = 0.5
+    #: them."*
+    #:
+    #: THE HORIZON IS NOW A CEILING, WHICH IS THE REAL GAIN HERE. Under
+    #: `INERT_DECAY = 0.75` with `INERT_FLOOR = 0.5`, weight ACCUMULATED without
+    #: bound: one refusal cost about three revisits, three refusals cost seven,
+    #: ten refusals cost eleven. An action refused often enough early could stay
+    #: suppressed for arbitrarily long — which is the permanent refusal the
+    #: design forbids, arriving by degrees instead of by decree. Variance
+    #: saturates where a sum does not, so suppression here can never outlast
+    #: `INERT_STALENESS_HORIZON` revisits no matter how dead the action looked.
+    #: The stated bound IS the guarantee the comment above always wanted.
+    #:
+    #: Some self-tuning survives and it is honestly weaker: a well-established
+    #: refusal starts from a smaller variance and so takes marginally longer to
+    #: go stale (2 revisits after one refusal, 3 after ten). Trading an unbounded
+    #: spread for a bounded one is the point, not a side effect.
 
     def _note_inert_action(self, key: tuple[tuple[int, ...], ...]) -> None:
         """An action the world did not answer AT ALL, recorded against the exact
@@ -143,8 +213,11 @@ class PixelAgent:
         """
         if self._last_action is None:
             return
-        weights = self._inert.setdefault(key, {})
-        weights[self._last_action] = weights.get(self._last_action, 0.0) + 1.0
+        beliefs = self._inert.setdefault(key, {})
+        prior = beliefs.get(
+            self._last_action, Belief(mu=0.0, sigma2=INERT_PRIOR_SIGMA2)
+        )
+        beliefs[self._last_action] = observe(prior, 1.0, INERT_OBS_SIGMA2)
 
     def _note_blocked_cell(self, me: Component) -> None:
         """A commanded move that produced NO displacement means something is in
@@ -296,6 +369,35 @@ class PixelAgent:
             return
         dx_cmd, dy_cmd = ACTION_VECTORS[self._last_action]
         before = {self._key(c): c for c in self._previous}
+
+        # PREDICT. A frame passed, so EVERY body belief is one frame staler —
+        # including the components that did not move and the ones that left the
+        # frame entirely. Under `EVIDENCE_DECAY` a component that stopped moving
+        # kept its score frozen at whatever it last earned, which is how a body
+        # gets welded on: it was never contradicted, so it was never demoted.
+        # Ageing demotes it without pretending to have observed anything.
+        #
+        # STATED LIMIT: THIS DICT IS NEVER PRUNED. Every key ever seen is aged
+        # every frame, so the per-frame cost tracks keys-EVER-SEEN where the old
+        # update tracked movers-THIS-FRAME. On ZetaChase it maxes at 1 entry over
+        # 200 frames, so it is not a problem here — but that is the same
+        # one-mover degeneracy that makes this whole file's election untestable
+        # on that environment, so it is not evidence about a hosted run with many
+        # components. Unmeasured, because no key reaches this container.
+        #
+        # AND PRUNING IS NOT THE FREE FIX IT LOOKS LIKE. The obvious rule — drop
+        # a belief once its variance reaches the prior, as `_note_inert_action`
+        # does — would destroy the property this conversion exists to provide. A
+        # stale belief with positive `mu` still outranks a never-seen component,
+        # because `mu` is preserved and only confidence was lost; dropping it
+        # replaces that memory with the ignorant default and throws away exactly
+        # what distinguishes this from a decay constant. A correct prune has to
+        # bound the dict without discarding a `mu` that can still win, and that
+        # is a design question with a measurement in front of it, not a cleanup.
+        for key in self.beliefs:
+            self.beliefs[key] = age(self.beliefs[key], BODY_TAU, 1.0)
+
+        # UPDATE. Only components that actually moved have anything to say.
         for c in now:
             key = self._key(c)
             was = before.get(key)
@@ -306,25 +408,32 @@ class PixelAgent:
             if magnitude < 1e-9:
                 continue  # did not move: unreadable (a wall may have blocked me)
             agreement = (dx * dx_cmd + dy * dy_cmd) / magnitude
-            self.evidence[key] = (
-                self.evidence.get(key, 0.0) * EVIDENCE_DECAY + agreement
-            )
+            prior = self.beliefs.get(key, Belief(mu=0.0, sigma2=BODY_PRIOR_SIGMA2))
+            self.beliefs[key] = observe(prior, agreement, BODY_OBS_SIGMA2)
 
     def _elect_self(self, now: list[Component]) -> Component | None:
         """The body is whichever component the probe best supports."""
         if not now:
             return None
-        scored = sorted(now, key=lambda c: -self.evidence.get(self._key(c), 0.0))
+        unknown = Belief(mu=0.0, sigma2=BODY_PRIOR_SIGMA2)
+        scored = sorted(
+            now, key=lambda c: -conservative(self.beliefs.get(self._key(c), unknown))
+        )
         best = scored[0]
         held = next((c for c in now if self._key(c) == self._self_key), None)
-        if held is not None:
-            best_score = self.evidence.get(self._key(best), 0.0)
-            held_score = self.evidence.get(self._key(held), 0.0)
-            if best_score < held_score + LATCH_MARGIN:
-                return held
-        # Commit only once the probe has actually spoken. Before that the pick
-        # is provisional and re-run every frame.
-        if self.evidence.get(self._key(best), 0.0) > 0:
+        # The hysteresis `LATCH_MARGIN = 1.0` was providing is no longer a
+        # number: a challenger takes the body by outranking the incumbent on the
+        # conservative score, which a newcomer's own width prevents it from doing
+        # on one lucky frame.
+        if held is not None and not outranks(
+            self.beliefs.get(self._key(best), unknown),
+            self.beliefs.get(self._key(held), unknown),
+        ):
+            return held
+        # Commit only once the probe has actually spoken, and now that means
+        # something checkable: positive at `BODY_COMMIT_K` sigma, rather than a
+        # running sum that happens to be above zero.
+        if self.beliefs.get(self._key(best), unknown).mu > 0:
             self._self_key = self._key(best)
         return best
 
@@ -388,9 +497,9 @@ class PixelAgent:
         weights = self._inert.get(key)
         if weights is not None and self._step_px is None:
             for action in list(weights):
-                weights[action] *= self.INERT_DECAY
-                if weights[action] < self.INERT_FLOOR:
-                    del weights[action]
+                weights[action] = age(weights[action], INERT_TAU, 1.0)
+                if weights[action].sigma2 >= INERT_PRIOR_SIGMA2:
+                    del weights[action]  # back to knowing nothing: try it again
             if not weights:
                 del self._inert[key]
             else:

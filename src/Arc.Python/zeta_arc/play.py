@@ -43,7 +43,15 @@ from arcengine import ARCBaseGame, GameAction, GameState
 
 from zeta_arc.agent import PixelAgent
 from zeta_arc.driver import advance, reset
-from zeta_arc.environments.chase import _MOVES, _STARTS, _WALLS, CELL, GRID, ZetaChase
+from zeta_arc.environments.chase import (
+    _MOVES,
+    _STARTS,
+    _WALLS,
+    CELL,
+    GRID,
+    ZetaChase,
+    ZetaChaseDecoy,
+)
 from zeta_arc.hosted import (
     MAX_ACTIONS_PER_LEVEL as HOSTED_MAX_ACTIONS_PER_LEVEL,
 )
@@ -198,14 +206,35 @@ def level_cleared(game: ARCBaseGame, previous_index: int) -> bool:
     return game.level_index != previous_index or game._state == GameState.WIN
 
 
+#: The environments this scorer can drive, by name. `ZetaChaseDecoy` shares
+#: walls, starts and win condition with `ZetaChase`, so `optimal_actions` is
+#: valid for both and the two scores are directly comparable — the only
+#: difference is that the decoy gives the body election a competitor.
+ENVIRONMENTS: dict[str, type[ZetaChase]] = {
+    "chase": ZetaChase,
+    "chase-decoy": ZetaChaseDecoy,
+}
+
+
 def play(
     agent: str = "greedy",
     seed: int = 0,
     max_actions_per_level: int = MAX_ACTIONS_PER_LEVEL,
+    environment: str = "chase",
 ) -> dict:
-    """One full episode. Returns per-level and aggregate scores."""
+    """One full episode. Returns per-level and aggregate scores.
+
+    `environment` DEFAULTS TO "chase" so every existing caller and every pinned
+    score is untouched. The decoy variant is additive: `ZetaChase` stays exactly
+    as it was and keeps working as a regression guard, while "chase-decoy"
+    supplies the discrimination it structurally cannot.
+    """
+    if environment not in ENVIRONMENTS:
+        raise ValueError(
+            f"play: unknown environment {environment!r}; known: {sorted(ENVIRONMENTS)}"
+        )
     arcade, mode = open_arcade()
-    game = ZetaChase(seed=seed)
+    game = ENVIRONMENTS[environment](seed=seed)
 
     pixel = PixelAgent()
     frame = reset(game)

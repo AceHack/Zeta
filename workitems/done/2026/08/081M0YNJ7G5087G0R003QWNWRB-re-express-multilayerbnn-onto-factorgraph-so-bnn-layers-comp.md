@@ -1,11 +1,12 @@
 ---
 id: 081M0YNJ7G5087G0R003QWNWRB
 type: task
-state: backlog
+state: done
 priority: P2
 slug: re-express-multilayerbnn-onto-factorgraph-so-bnn-layers-comp
 title: "Re-express MultilayerBnn onto FactorGraph so BNN layers compose as a DAG, not a chain"
 created: 2026-08-26T09:14:05.701Z
+completed: 2026-08-26T16:15:36.376Z
 depends_on: []
 composes_with: []
 ---
