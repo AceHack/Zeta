@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "_readme": "Byte-locks for the consent-marker vocabulary shared by book-consent-spans.ts and audit-consent-signoff.ts (PR #15619). TEXT ONLY, hex-in-JSON, per .claude/rules/no-binary-in-proof-lineage.md — every byte-lock here is diffable in a git diff. Regenerate deliberately, never to make a test pass: a changed hash means the canonical form changed, which means every consent already given against the old form is now stale.",
+  "canonicalization": [
+    "CRLF -> LF",
+    "trailing spaces and tabs stripped per line",
+    "leading and trailing blank lines stripped",
+    "exactly one trailing newline"
+  ],
+  "vectors": [
+    {
+      "name": "consent-signoff-design-section-4-example",
+      "why": "The EXACT example printed in CONSENT-SIGNOFF-DESIGN.md section 4. It is the one vector both implementations can derive independently from published text, so it is the cross-implementation anchor.",
+      "markdownUtf8Hex": "3c212d2d20636f6e73656e743a626567696e2069643d63687269732d726561646572732d6469736561736520706572736f6e3d224368726973204b696e6722202d2d3e0a4368726973204b696e67206e616d6564206974202a726561646572277320646973656173652a20e2809420746865206861626974206f66206d697374616b696e670a686176696e6720726561642061207468696e6720666f7220686176696e6720756e64657273746f6f642069742e0a3c212d2d20636f6e73656e743a656e642069643d63687269732d726561646572732d64697365617365202d2d3e0a",
+      "spans": [
+        {
+          "spanId": "chris-readers-disease",
+          "person": "Chris King",
+          "mode": "named",
+          "beginLine": 1,
+          "endLine": 4,
+          "canonicalUtf8Hex": "4368726973204b696e67206e616d6564206974202a726561646572277320646973656173652a20e2809420746865206861626974206f66206d697374616b696e670a686176696e6720726561642061207468696e6720666f7220686176696e6720756e64657273746f6f642069742e0a",
+          "sha256": "e3c53482e300d1acc2cf70ea48883b97c867c8fb7acf3d5891f9b3259a23292a"
+        }
+      ]
+    },
+    {
+      "name": "crlf-and-trailing-whitespace-are-noise",
+      "why": "Canonicalization is deliberately minimal: CRLF -> LF, trailing whitespace per line, surrounding blank lines. Nothing else. If a fifth normalization is ever added, this vector breaks and the addition has to be argued for.",
+      "markdownUtf8Hex": "3c212d2d20636f6e73656e743a626567696e2069643d6a6f7264616e2d6e6f69736520706572736f6e3d224a6f7264616e2052697665726122202d2d3e0d0a0d0a20204a6f7264616e205269766572612068656c642074686520646f6f722e2020200d0a090d0a2020416e64207468656e206c657420697420636c6f73652e090d0a0d0a3c212d2d20636f6e73656e743a656e642069643d6a6f7264616e2d6e6f697365202d2d3e0d0a",
+      "spans": [
+        {
+          "spanId": "jordan-noise",
+          "person": "Jordan Rivera",
+          "mode": "named",
+          "beginLine": 1,
+          "endLine": 7,
+          "canonicalUtf8Hex": "20204a6f7264616e205269766572612068656c642074686520646f6f722e0a0a2020416e64207468656e206c657420697420636c6f73652e0a",
+          "sha256": "f19215cc261a178ae276af803bc8ae2270e4e953032f1c062f8185bc79805866"
+        }
+      ]
+    },
+    {
+      "name": "one-character-edit-changes-the-hash",
+      "why": "Same passage as above with a single comma added. Consent binds to TEXT: a one-character edit must produce a different sha256 or the staleness detection is theatre.",
+      "markdownUtf8Hex": "3c212d2d20636f6e73656e743a626567696e2069643d6a6f7264616e2d6e6f69736520706572736f6e3d224a6f7264616e2052697665726122202d2d3e0a4a6f7264616e205269766572612068656c642074686520646f6f722c0a416e64207468656e206c657420697420636c6f73652e0a3c212d2d20636f6e73656e743a656e642069643d6a6f7264616e2d6e6f697365202d2d3e0a",
+      "spans": [
+        {
+          "spanId": "jordan-noise",
+          "person": "Jordan Rivera",
+          "mode": "named",
+          "beginLine": 1,
+          "endLine": 4,
+          "canonicalUtf8Hex": "4a6f7264616e205269766572612068656c642074686520646f6f722c0a416e64207468656e206c657420697420636c6f73652e0a",
+          "sha256": "7dc80ca8eecf05b8f16816ab71ec264a404c836a336a34ebd82bd77963a348e7"
+        }
+      ]
+    },
+    {
+      "name": "fenced-example-is-not-an-assertion",
+      "why": "A marker inside a code fence must produce NO span. Without this the design docs would register live consent spans about real people.",
+      "markdownUtf8Hex": "536f6d652070726f73652e0a0a606060746578740a3c212d2d20636f6e73656e743a626567696e2069643d66656e6365642d6578616d706c6520706572736f6e3d224a6f7264616e2052697665726122202d2d3e0a6e6f742061207265616c207370616e0a3c212d2d20636f6e73656e743a656e642069643d66656e6365642d6578616d706c65202d2d3e0a6060600a0a4d6f72652070726f73652e0a",
+      "spans": []
+    },
+    {
+      "name": "deidentified-mode-is-carried",
+      "why": "mode=deidentified is first-class and travels with the span; the index shows it and #15619 gates on it.",
+      "markdownUtf8Hex": "3c212d2d20636f6e73656e743a626567696e2069643d636f6c6c65616775652d656c696369746174696f6e20706572736f6e3d2241205072697661746520496e646976696475616c22206d6f64653d64656964656e746966696564202d2d3e0a4120636f6c6c6561677565206f66206d696e652c206174207468652074696d652c20746175676874206d6520746f2061736b20726174686572207468616e20696e6665722e0a3c212d2d20636f6e73656e743a656e642069643d636f6c6c65616775652d656c696369746174696f6e202d2d3e0a",
+      "spans": [
+        {
+          "spanId": "colleague-elicitation",
+          "person": "A Private Individual",
+          "mode": "deidentified",
+          "beginLine": 1,
+          "endLine": 3,
+          "canonicalUtf8Hex": "4120636f6c6c6561677565206f66206d696e652c206174207468652074696d652c20746175676874206d6520746f2061736b20726174686572207468616e20696e6665722e0a",
+          "sha256": "524ac39c091c129697e0fb88749430870517b5855f8274c63a17d781a49a6387"
+        }
+      ]
+    }
+  ],
+  "footprintFold": {
+    "why": "footprintOf folds the ordered (spanId, sha256) pairs, ordinal by spanId, into one value. This is what consent binds to when a person consents to their WHOLE portrayal rather than to one passage.",
+    "emptyFootprintSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "twoMemberFootprint": {
+      "members": [
+        [
+          "alpha-span",
+          "0000000000000000000000000000000000000000000000000000000000000000"
+        ],
+        [
+          "beta-span",
+          "1111111111111111111111111111111111111111111111111111111111111111"
+        ]
+      ],
+      "sha256": "ade767d92545753c655f443abde412f3014ec5a618946b9ab87c2851b9fd505a"
+    },
+    "orderIsOrdinalNotInsertion": {
+      "why": "the same two members supplied in the other order must fold to the SAME value, or the hash is machine-dependent",
+      "sha256": "ade767d92545753c655f443abde412f3014ec5a618946b9ab87c2851b9fd505a"
+    }
+  }
+}

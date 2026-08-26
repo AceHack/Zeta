@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "_readme": "DERIVED — do not hand-edit. Regenerate with `bun src/Core.TypeScript/hygiene/book-named-index.ts --write`; `--check` fails when this file disagrees with the corpus. person -> every marked appearance, with a footprint hash over the whole entry. The roster and the consent events live in consent-events.json; this file holds only what is computed from the prose. Carries no timestamp on purpose, so the bytes are reproducible on any machine.",
+  "corpus": [
+    "docs/books/you-born-at-the-hinge"
+  ],
+  "roster": "docs/books/you-born-at-the-hinge/consent-events.json",
+  "people": []
+}

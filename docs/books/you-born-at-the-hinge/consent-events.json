@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "_readme": "Machine-checkable consent event log for 'You, Born at the Hinge'. The PROSE ledger (CONSENT-LEDGER.md) stays the source of truth for scope, conditions, reasoning and history; this file is the checkable half, and it holds only what a machine can verify. Schema, workflow and the reason each field exists: CONSENT-SIGNOFF-DESIGN.md. Verified by src/Core.TypeScript/hygiene/audit-consent-signoff.ts. Both arrays are empty because nothing has been collected through this mechanism yet — that is a count, not a clearance, and the audit says so out loud.",
+  "people": [],
+  "events": []
+}

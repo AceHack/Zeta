@@ -1415,6 +1415,29 @@ jobs:
         # can fail, and is wired to nothing reads exactly like a check that passed.
         run: bun run inventory:items-check
 
+      - name: Book named index is derived and COMPLETE (docs/books/you-born-at-the-hinge/NAMED-INDEX-DESIGN.md)
+        # Fourth instance of the class the three steps above name, and the first one
+        # whose failure costs a NAMED THIRD PARTY rather than CI. `NAMED-INDEX.md` is
+        # a committed projection of the `consent:begin` markers in the prose, and it
+        # is what a subject is shown when asked "is this everywhere you appear?".
+        #
+        # Two ways it can lie, both checked here:
+        #   INDEX_STALE          the committed projection drifted from the prose
+        #   UNMARKED_APPEARANCE  a roster subject is in the prose with no marker, so
+        #                        the index omits them and still reads as complete
+        #
+        # REPO TIER. This run fails on FALSE CLAIMS -- the index asserting a
+        # completeness it does not have, or a `role-only` / `pending` subject named in
+        # the text. Insufficient-consent findings (`REVOKED_APPEARANCE`) are advisory
+        # here and fail under `--publish`, matching the split
+        # audit-consent-signoff.ts draws for the same reason.
+        #
+        # Offline and network-free: it reads the tree and nothing else. The falsifiers
+        # run in the hygiene unit-test suite step above (`bun test
+        # src/Core.TypeScript/hygiene/`), which is what proves this step can fail --
+        # today the roster is empty, so the audit reports a COUNT, not a clearance.
+        run: bun run hygiene:book-named-index
+
       - name: Inventory unit tests
         # These existed (generate-items-json.test.ts) and NO workflow ran them —
         # found while wiring the reconciliation check. Same shape as the #8216 gap
