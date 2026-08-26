@@ -16,9 +16,6 @@
  * If verify ≈ produce: no asymmetry, the design dies for one benchmark's cost
  */
 
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
-
 // ═══ The hard/adversarial scenarios (from benchmark-scale, where gemma = 0%) ═══
 
 interface VerifyScenario {
