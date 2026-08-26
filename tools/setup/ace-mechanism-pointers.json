@@ -191,7 +191,7 @@
   },
   {
     "schema": "zeta.ace.package-manager-pointers.v1",
-    "purpose": "Cubical Agda proof lane — pinned agda/cubical release clone (pin-pair vs installed Agda) + user-library registration (081KX1VE4G808QG0R003DCK3GV)",
+    "purpose": "Cubical Agda proof lane — pinned agda/cubical release clone (pin-pair vs installed Agda) - user-library registration (081KX1VE4G808QG0R003DCK3GV)",
     "realizer": "src/Core.TypeScript/ace/setup-realizers/from-agda-cubical.ts",
     "manifest": "tools/setup/manifests/from-agda-cubical",
     "dependencies": [
