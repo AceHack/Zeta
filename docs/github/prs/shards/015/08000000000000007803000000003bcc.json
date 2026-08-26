@@ -1,0 +1,12 @@
+{
+  "pr_number": 15308,
+  "archive_path": "docs/history/pr-reviews/PR-15308-feat-query-exec-vectorise-the-linear-operators-where-select-over-columnzset-and-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T07:37:56.665Z",
+  "schema_version": "v1",
+  "commit_sha": "f8b875e3585a8afb963379db2a3e5be48e380761",
+  "title": "feat(query-exec): vectorise the linear operators (Where/Select) over ColumnZSet -- and two predictions the measurements refuted",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T07:37:15Z",
+  "head_ref": "otto/simd-linear-column-ops"
+}

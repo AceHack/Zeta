@@ -1,0 +1,12 @@
+{
+  "pr_number": 15531,
+  "archive_path": "docs/history/pr-reviews/PR-15531-research-ci-the-actions-surface-as-a-set-one-required-check-81-advisories-and-va.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:10:44.047Z",
+  "schema_version": "v1",
+  "commit_sha": "785ec83ff91126e81531a2503b44f4f117583265",
+  "title": "research(ci): the Actions surface as a SET — one required check, 81 advisories, and vacuity its own detectors already documented",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:10:09Z",
+  "head_ref": "audit/actions-surface"
+}

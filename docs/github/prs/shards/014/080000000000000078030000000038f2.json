@@ -1,0 +1,12 @@
+{
+  "pr_number": 14578,
+  "archive_path": "docs/history/pr-reviews/PR-14578-deps-bump-react-day-picker-from-9-14-0-to-10-0-1-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:00:14.673Z",
+  "schema_version": "v1",
+  "commit_sha": "1d98953fa4aeadab16127bba63d5a1565fd3c72e",
+  "title": "deps: Bump react-day-picker from 9.14.0 to 10.0.1 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T07:59:40Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/react-day-picker-10.0.1"
+}

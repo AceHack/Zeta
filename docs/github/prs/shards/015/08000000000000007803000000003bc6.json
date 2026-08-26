@@ -1,0 +1,12 @@
+{
+  "pr_number": 15302,
+  "archive_path": "docs/history/pr-reviews/PR-15302-fix-query-surface-four-duplicate-implementations-two-combined-one-gets-a-base-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:04:14.960Z",
+  "schema_version": "v1",
+  "commit_sha": "42eb0db47dfc1a2f16ed1a28b9c4ef1387ff6b4f",
+  "title": "fix(query-surface): four duplicate implementations — two combined, one gets a base interface because a merge would have had to lie",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:03:29Z",
+  "head_ref": "fix/unify-duplicate-query-surfaces"
+}
