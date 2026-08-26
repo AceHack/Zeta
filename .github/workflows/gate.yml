@@ -2823,19 +2823,7 @@ jobs:
       # that failed.
       fail-fast: false
       matrix:
-        # ONE HALF OF A TWO-VIEW LIST. The other is `CROSS_VERIFY_AUDITS` in
-        # src/Core.TypeScript/ci/cross-verify-roster.ts, and they cannot drift: every leg
-        # runs `--run <id>`, which asserts the two lists are equal AS SEQUENCES before it
-        # runs its own audit. Add an id here with no roster entry and this leg goes red
-        # naming it; add a roster entry with no id here and every leg goes red naming the
-        # missing leg.
-        #
-        # Kept STATIC on purpose. A dynamic matrix (`fromJSON` of a roster job's output)
-        # would remove this list — and would mean these check names do not exist until a
-        # roster job succeeds. Once any of them is a required context, a name that never
-        # reports does not fail a PR, it WEDGES it. A static list cannot do that, and it
-        # keeps the names greppable in this file for the ruleset promotion.
-        #
+        # A NOTE THAT IS NOT DERIVED, so it lives OUTSIDE the generated region below:
         # ONE ID IS DELIBERATELY ABSENT: `orphaned-archive-refs` (AH003). It now runs on a
         # schedule, and still fatal, in `.github/workflows/archive-strand-alarm.yml`,
         # because its verdict is a repo-wide TIME-VARYING number read from `git ls-remote`.
@@ -2845,6 +2833,25 @@ jobs:
         # and what replaces the blocking placement, is at the removed roster entry in
         # `src/Core.TypeScript/ci/cross-verify-roster.ts`; the guard that stops this class
         # returning is `src/Core.TypeScript/ci/floor-live-remote-queries.ts`.
+        #
+        # ── BEGIN GENERATED · cross-verify matrix legs · do not hand-edit ──
+        # DERIVED from `CROSS_VERIFY_AUDITS` in src/Core.TypeScript/ci/cross-verify-roster.ts.
+        #
+        # One command is BOTH the check and the fix, so the two cannot disagree:
+        #
+        #   bun src/Core.TypeScript/ci/cross-verify-roster.ts --derive           # exits 1 on drift, naming it
+        #   bun src/Core.TypeScript/ci/cross-verify-roster.ts --derive --write   # rewrites this region
+        #
+        # Every matrix leg runs the check before its own audit, so a hand-edit here survives
+        # at most one CI run. Adding or removing an audit is a roster edit plus that one
+        # command — never an edit to this list.
+        #
+        # Still STATIC on purpose, and generation is what makes a static list affordable. A
+        # DYNAMIC matrix (`fromJSON` of a roster job's output) would delete this list — and
+        # would mean these check names do not exist until that job succeeds. Once any of them
+        # is a required context, a name that never reports does not FAIL a pull request, it
+        # WEDGES it, silently and forever. A generated static list cannot do that, and it
+        # keeps the names greppable in this file for the ruleset promotion.
         audit:
           - ace-suite
           - qsharp-oracles
@@ -2876,6 +2883,7 @@ jobs:
           - mumps-zeta-id
           - zeta-id-gen-layout-drift
           - algebra-tower-drift
+        # ── END GENERATED · cross-verify matrix legs ──
 
     steps:
       - name: Checkout

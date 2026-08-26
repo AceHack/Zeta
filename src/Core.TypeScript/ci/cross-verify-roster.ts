@@ -26,19 +26,32 @@
 // hand-written in one place and consumed in another diverges the moment somebody adds
 // an audit — that exact defect shipped twice in this repo (`audit-dep-currency.ts`'s
 // single hardcoded path hid a root flake for months; the proof-lineage binary audit's
-// allowlist drifted from its runner). So there are two lists here BY CONSTRUCTION —
-// the ids in `gate.yml`'s matrix, and the entries below — and `assertGateParity` makes
-// them un-divergeable: **every leg checks the parity before it runs its own audit**.
-// Add an entry here without a matrix id and every leg goes red naming the missing leg;
-// add a matrix id without an entry and that leg goes red naming the unknown id.
+// allowlist drifted from its runner).
+//
+// The first version of this file answered that with TWO hand-maintained lists and a
+// parity check between them. That was the wrong answer, and Aaron named it while
+// reviewing the first change that had to edit both (#15666): *"this design seems a bit
+// flakey, are we going to be fixing this all the time, can we automate this fix … or
+// redesign this so it's different and less brittle?"* Automating the repair of two
+// hand-maintained lists keeps the brittleness and adds machinery to it. Two lists that
+// must agree IS the defect.
+//
+// So there is now ONE list — the entries below — and `gate.yml`'s matrix is a GENERATED
+// REGION emitted from it (`--derive [--write]`, the shape `ace/build-graph.ts` already
+// uses). The same command is the check and the fix, so the two cannot disagree with each
+// other; adding or removing an audit is a roster edit plus one command. Every leg runs
+// `--derive` before its own audit, so a hand-edit inside the generated region survives at
+// most one CI run.
 //
 // A DYNAMIC matrix (`fromJSON` of a roster job's output) would have removed the second
-// list entirely, and it was rejected on purpose: the leg names would then not exist
+// file entirely, and it is still rejected on purpose: the leg names would then not exist
 // until a roster job succeeded, so a hiccup in that job produces ZERO legs — and once
 // any of these names is promoted into `required_status_checks`, a required context that
 // never reports does not fail the PR, it WEDGES it, silently and forever. A static
 // matrix cannot do that. The names are also greppable in `gate.yml`, which is what the
-// ruleset promotion and the merge-queue coverage lint both need.
+// ruleset promotion and the merge-queue coverage lint both need. Generation is what
+// makes a static list affordable: it is static in the workflow and derived at edit time,
+// which is the combination that has neither failure mode.
 //
 // ── WHAT IS DELIBERATELY UNCHANGED ────────────────────────────────────────────────
 //
@@ -59,14 +72,15 @@
 //
 //   bun cross-verify-roster.ts --list            # ids, one per line
 //   bun cross-verify-roster.ts --json            # the roster as JSON
-//   bun cross-verify-roster.ts --check-parity    # roster vs gate.yml's matrix
-//   bun cross-verify-roster.ts --run <id>        # parity, then that one audit
+//   bun cross-verify-roster.ts --derive          # gate.yml matches the roster? exit 1 on drift
+//   bun cross-verify-roster.ts --derive --write  # ...and this is the fix for that exit 1
+//   bun cross-verify-roster.ts --run <id>        # --derive, then that one audit
 //
 // `--run` is what every matrix leg invokes. It takes the id from `$1` rather than
 // interpolating `${{ matrix.audit }}` into a `run:` block, so the split adds no
 // template-injection surface.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 /** One audit: one matrix leg, one check-run named `cross-verify (<id>)`. */
 export interface CrossVerifyAudit {
@@ -92,8 +106,12 @@ export interface CrossVerifyAudit {
 }
 
 /**
- * The roster. Order is the order the matrix declares and the order the checks list
- * renders. Each entry carries, verbatim, the comment the step it replaced carried —
+ * The roster — the single source of truth for the `cross-verify` legs.
+ *
+ * Order here is the order `gate.yml`'s matrix declares and the order the checks list
+ * renders, because the matrix is generated from this array in this order. It is grouped
+ * rather than sorted on purpose (see `renderMatrixRegion`). Each entry carries, verbatim,
+ * the comment the step it replaced carried —
  * that prose is the only record of why several of these audits sit on the floor at all,
  * and moving the step without moving the reason would have been the expensive half of
  * this change.
@@ -722,6 +740,196 @@ export function parseMatrixAudits(yamlText: string): string[] | null {
   return ids.length === 0 ? null : ids;
 }
 
+// ── THE GENERATOR — every other view of this list is DERIVED, never maintained ────
+//
+// Until 2026-08-26 the ids lived in THREE hand-maintained places — `gate.yml`'s matrix,
+// the check-name table in `docs/ci/CROSS-VERIFY-CHECK-NAMES.md`, and a `toHaveLength(31)`
+// in the test file — with a parity check between the first two. That is the brittleness
+// Aaron named while reviewing the first change that had to edit them (#15666): *"this
+// design seems a bit flakey, are we going to be fixing this all the time, can we automate
+// this fix … or redesign this so it's different and less brittle?"*
+//
+// Automating the REPAIR of hand-maintained duplicates keeps the brittleness and adds
+// machinery to it. Duplicate lists that must agree IS the defect, so the duplicates stop
+// being maintained: each is a delimited GENERATED REGION emitted from the roster above,
+// and one command is both the drift check and the fix — which is why the two cannot
+// disagree with each other. Same shape as `ace/build-graph.ts derive [--write]`.
+
+/**
+ * One derived view of the roster: a delimited region inside an otherwise hand-maintained
+ * file.
+ *
+ * A separate generated FILE was the obvious alternative and does not work here. GitHub
+ * cannot read a matrix out of a file: the only way to feed one from elsewhere is
+ * `fromJSON` of a job output, which is the DYNAMIC matrix rejected below — so for
+ * `gate.yml` the region has to live in the workflow, and once one target works that way
+ * the doc uses the same mechanism rather than a second one. It also diffs better: a
+ * reviewer sees `- an-audit` appear in the workflow they already read, not a line in a
+ * generated artifact plus a claim about what consumes it.
+ */
+export interface GeneratedRegion {
+  /** Path from the repo root. */
+  readonly path: string;
+  /** The line that opens the region, matched TRIMMED so indentation is read from the file. */
+  readonly begin: string;
+  /** The line that closes it. */
+  readonly end: string;
+  /** The whole region including both marker lines, at the indentation the begin line had. */
+  render(audits: readonly CrossVerifyAudit[], indent: string): string;
+}
+
+export const GENERATED_BEGIN = "# ── BEGIN GENERATED · cross-verify matrix legs · do not hand-edit ──";
+export const GENERATED_END = "# ── END GENERATED · cross-verify matrix legs ──";
+export const DOC_GENERATED_BEGIN = "<!-- BEGIN GENERATED · cross-verify check names · do not hand-edit -->";
+export const DOC_GENERATED_END = "<!-- END GENERATED · cross-verify check names -->";
+
+/** The gate.yml the matrix region lives in. */
+export const GATE_YML_PATH = ".github/workflows/gate.yml";
+
+/** The ruleset-promotion doc whose table lists the exact check-run strings. */
+export const CHECK_NAMES_DOC_PATH = "docs/ci/CROSS-VERIFY-CHECK-NAMES.md";
+
+/** Exits 1 on drift, naming it. What every matrix leg runs before its own audit. */
+export const DERIVE_CHECK_COMMAND = `bun ${CROSS_VERIFY_ROSTER_PATH} --derive`;
+
+/** The one line every drift message must carry: the fix, runnable as printed. */
+export const DERIVE_FIX_COMMAND = `${DERIVE_CHECK_COMMAND} --write`;
+
+/**
+ * The `audit:` matrix region of `gate.yml`.
+ *
+ * ORDER: the roster's declaration order, not sorted. Order is incidental to
+ * CORRECTNESS — `fail-fast: false`, and every leg is independent, so no leg's result
+ * depends on any other's position — but it is load-bearing for READING: the roster groups
+ * related audits adjacently (`image-source-provenance` beside its `-tests`, the two
+ * heartbeat-lane audits, the two tech-radar ones), and sorting would scatter every pair
+ * for no gain. Source order is exactly as deterministic as sorted order, which is the
+ * property a generator actually needs.
+ */
+export const GATE_MATRIX_REGION: GeneratedRegion = {
+  path: GATE_YML_PATH,
+  begin: GENERATED_BEGIN,
+  end: GENERATED_END,
+  render(audits, indent) {
+    const c = (s: string): string => (s === "" ? `${indent}#` : `${indent}# ${s}`);
+    return [
+      `${indent}${GENERATED_BEGIN}`,
+      c(`DERIVED from \`CROSS_VERIFY_AUDITS\` in ${CROSS_VERIFY_ROSTER_PATH}.`),
+      c(""),
+      c("One command is BOTH the check and the fix, so the two cannot disagree:"),
+      c(""),
+      c(`  ${DERIVE_CHECK_COMMAND}           # exits 1 on drift, naming it`),
+      c(`  ${DERIVE_FIX_COMMAND}   # rewrites this region`),
+      c(""),
+      c("Every matrix leg runs the check before its own audit, so a hand-edit here survives"),
+      c("at most one CI run. Adding or removing an audit is a roster edit plus that one"),
+      c("command — never an edit to this list."),
+      c(""),
+      c("Still STATIC on purpose, and generation is what makes a static list affordable. A"),
+      c("DYNAMIC matrix (`fromJSON` of a roster job's output) would delete this list — and"),
+      c("would mean these check names do not exist until that job succeeds. Once any of them"),
+      c("is a required context, a name that never reports does not FAIL a pull request, it"),
+      c("WEDGES it, silently and forever. A generated static list cannot do that, and it"),
+      c("keeps the names greppable in this file for the ruleset promotion."),
+      `${indent}audit:`,
+      ...audits.map((a) => `${indent}  - ${a.id}`),
+      `${indent}${GENERATED_END}`,
+    ].join("\n");
+  },
+};
+
+/**
+ * The check-name table in the ruleset-promotion doc.
+ *
+ * Cell padding reproduces prettier's markdown table rule (every cell padded to the
+ * column's widest) rather than fighting it. `format:check` runs over this file, so a
+ * generator that emitted a differently-padded table would put the FORMATTER and the
+ * GENERATOR in a permanent fight — the failure `.prettierignore` names in its own
+ * comments. The falsifier is `prettier --check` on the generated file, which CI runs.
+ */
+export const CHECK_NAMES_DOC_REGION: GeneratedRegion = {
+  path: CHECK_NAMES_DOC_PATH,
+  begin: DOC_GENERATED_BEGIN,
+  end: DOC_GENERATED_END,
+  render(audits, indent) {
+    const rows: string[][] = [
+      ["check-run name", "what it audits"],
+      ...audits.map((a) => [`\`${checkName(a.id)}\``, a.title]),
+    ];
+    const widths = [0, 1].map((col) => Math.max(...rows.map((r) => (r[col] ?? "").length)));
+    const line = (cells: readonly string[]): string =>
+      `${indent}| ${cells.map((cell, i) => cell.padEnd(widths[i] ?? 0)).join(" | ")} |`;
+    const [header, ...body] = rows;
+    return [
+      `${indent}${DOC_GENERATED_BEGIN}`,
+      "",
+      line(header ?? []),
+      `${indent}| ${widths.map((w) => "-".repeat(w)).join(" | ")} |`,
+      ...body.map(line),
+      "",
+      `${indent}${DOC_GENERATED_END}`,
+    ].join("\n");
+  },
+};
+
+/** Every derived view. A new one is added here and nowhere else. */
+export const GENERATED_REGIONS: readonly GeneratedRegion[] = [GATE_MATRIX_REGION, CHECK_NAMES_DOC_REGION];
+
+/**
+ * What a file should contain, given the roster.
+ *
+ * `ok: false` means the region could not be LOCATED — the fail-closed answer. It never
+ * means "in sync"; drift is `next !== <the text you passed in>`, which keeps the check a
+ * byte comparison rather than a second opinion about equality.
+ */
+export type DeriveResult =
+  { readonly ok: true; readonly next: string } | { readonly ok: false; readonly problems: readonly string[] };
+
+/** Re-emit one region into the text that carries it. */
+export function deriveRegion(
+  region: GeneratedRegion,
+  text: string,
+  audits: readonly CrossVerifyAudit[] = CROSS_VERIFY_AUDITS,
+): DeriveResult {
+  const lines = text.split("\n");
+  const beginAts: number[] = [];
+  const endAts: number[] = [];
+  for (const [i, l] of lines.entries()) {
+    if (l.trim() === region.begin) beginAts.push(i);
+    if (l.trim() === region.end) endAts.push(i);
+  }
+  // Exactly one of each, or refuse. Zero means somebody deleted the markers along with
+  // the guard they carry; two means a copy-paste produced a region the generator would
+  // silently pick one half of. Neither may read as "no drift".
+  if (beginAts.length !== 1 || endAts.length !== 1) {
+    return {
+      ok: false,
+      problems: [
+        `${region.path}: expected exactly one generated region and found ` +
+          `${String(beginAts.length)} begin marker(s) and ${String(endAts.length)} end marker(s). ` +
+          "The markers are the only thing that tells the generator what it owns, so this is " +
+          `refused rather than guessed at. Begin marker: ${region.begin}`,
+      ],
+    };
+  }
+  const beginAt = beginAts[0] ?? 0;
+  const endAt = endAts[0] ?? 0;
+  if (endAt <= beginAt) {
+    return { ok: false, problems: [`${region.path}: the end marker precedes the begin marker`] };
+  }
+  const indent = /^(\s*)/.exec(lines[beginAt] ?? "")?.[1] ?? "";
+  const rendered = region.render(audits, indent).split("\n");
+  return { ok: true, next: [...lines.slice(0, beginAt), ...rendered, ...lines.slice(endAt + 1)].join("\n") };
+}
+
+/** The gate.yml the roster implies. Named because it is the one every leg checks. */
+export function deriveGateYml(
+  yamlText: string,
+  audits: readonly CrossVerifyAudit[] = CROSS_VERIFY_AUDITS,
+): DeriveResult {
+  return deriveRegion(GATE_MATRIX_REGION, yamlText, audits);
+}
+
 export interface ParityResult {
   readonly ok: boolean;
   /** One line per problem. Empty exactly when `ok`. */
@@ -730,6 +938,14 @@ export interface ParityResult {
 
 /**
  * Roster ids vs the matrix ids, as SEQUENCES.
+ *
+ * DIAGNOSIS ONLY, since the matrix became generated. The enforcement is
+ * `deriveGateYml` + a byte comparison, which subsumes membership, duplication AND order
+ * in one test that cannot hold a different opinion from the generator. This function
+ * survives because a byte mismatch is not a legible message: it re-reads the workflow
+ * with an INDEPENDENT parser and turns "the region's bytes differ" into "leg `x` has no
+ * roster entry". It is deliberately never authoritative — nothing passes because this
+ * returned `ok`.
  *
  * Order is compared, not just membership, so the workflow reads in the same order as
  * this file and a review diff of one is a review diff of the other.
@@ -772,7 +988,7 @@ export function compareRosterToMatrix(rosterIds: readonly string[], matrixIds: r
   return { ok: problems.length === 0, problems };
 }
 
-const DEFAULT_GATE_YML = ".github/workflows/gate.yml";
+const DEFAULT_GATE_YML = GATE_YML_PATH;
 
 function readGateYml(path: string): string | null {
   try {
@@ -782,26 +998,66 @@ function readGateYml(path: string): string | null {
   }
 }
 
-/** Parity, or a printed refusal and exit 1. */
-function assertGateParity(gateYmlPath: string): boolean {
-  const text = readGateYml(gateYmlPath);
-  if (text === null) {
-    console.log(`::error title=cross-verify roster::could not read ${gateYmlPath}; roster parity is unverifiable.`);
-    return false;
-  }
-  const result = compareRosterToMatrix(
-    CROSS_VERIFY_AUDITS.map((a) => a.id),
-    parseMatrixAudits(text),
-  );
-  if (result.ok) return true;
-  for (const p of result.problems) {
-    console.log(`::error title=cross-verify roster drift::${p}`);
+/**
+ * The drift report, at the level a human can act on.
+ *
+ * Called only after a byte comparison has already failed, so it never decides anything.
+ * If the independent id-level parse finds nothing wrong, it says so rather than implying
+ * the file is fine — the bytes differ, and comment or indentation drift is a real cause.
+ */
+function reportDrift(path: string, text: string): void {
+  // `parseMatrixAudits` only understands the workflow's list; for any other region the
+  // honest report is that the bytes differ and the fix is the same one command.
+  const problems =
+    parseMatrixAudits(text) === null
+      ? []
+      : compareRosterToMatrix(
+          CROSS_VERIFY_AUDITS.map((a) => a.id),
+          parseMatrixAudits(text),
+        ).problems;
+  if (problems.length === 0) {
+    console.log(
+      `::error title=cross-verify derived region drift::${path}'s generated region does not match the ` +
+        "generator's output byte for byte. Either its content was hand-edited, or the roster changed " +
+        "and this region was not regenerated.",
+    );
+  } else {
+    for (const p of problems) console.log(`::error title=cross-verify derived region drift::${p}`);
   }
   console.log(
-    "\nThe roster in src/Core.TypeScript/ci/cross-verify-roster.ts and the `audit:` matrix in\n" +
-      "gate.yml are two views of one list. Every leg checks them BEFORE running its own audit,\n" +
-      "so they can only disagree for a single CI run.",
+    `\nThe generated region in ${path} is DERIVED from \`CROSS_VERIFY_AUDITS\` in\n` +
+      `${CROSS_VERIFY_ROSTER_PATH}. Edit the roster, never the region, then run:\n\n` +
+      `  ${DERIVE_FIX_COMMAND}\n\n` +
+      "The same command is the check and the fix, so they cannot disagree. Every matrix leg\n" +
+      "runs the check before its own audit, so a hand-edit survives at most one CI run.",
   );
+}
+
+/**
+ * The workflow matches what the roster generates, or a printed refusal and exit 1.
+ *
+ * Deliberately NARROWER than `--derive`: a matrix leg checks the region that decides
+ * whether it exists at all, and nothing else. Widening it to the check-names doc would
+ * turn a stale table into 31 red legs — re-widening the blast radius the 31-way split was
+ * built to shrink. The doc's region is checked by `--derive` and by the test suite, both
+ * of which run on every pull request.
+ */
+function assertGateDerived(gateYmlPath: string): boolean {
+  const text = readGateYml(gateYmlPath);
+  if (text === null) {
+    console.log(
+      `::error title=cross-verify matrix::could not read ${gateYmlPath}; the matrix cannot be shown ` +
+        "to be derived from a file that could not be read.",
+    );
+    return false;
+  }
+  const derived = deriveGateYml(text);
+  if (!derived.ok) {
+    for (const p of derived.problems) console.log(`::error title=cross-verify matrix::${p}`);
+    return false;
+  }
+  if (derived.next === text) return true;
+  reportDrift(gateYmlPath, text);
   return false;
 }
 
@@ -813,7 +1069,7 @@ function flagValue(argv: readonly string[], flag: string, fallback: string): str
 }
 
 async function runAudit(id: string, gateYmlPath: string): Promise<number> {
-  if (!assertGateParity(gateYmlPath)) return 1;
+  if (!assertGateDerived(gateYmlPath)) return 1;
 
   const audit = CROSS_VERIFY_AUDITS.find((a) => a.id === id);
   if (audit === undefined) {
@@ -849,6 +1105,51 @@ async function runAudit(id: string, gateYmlPath: string): Promise<number> {
   return await proc.exited;
 }
 
+/**
+ * The drift gate and its own fix, in one function, over every derived region.
+ *
+ * `--derive` exits 1 on drift; `--derive --write` rewrites the regions. They share the
+ * generator, so "what CI demands" and "what the fix produces" are the same bytes by
+ * construction rather than by anyone keeping them aligned. Modelled on
+ * `ace/build-graph.ts derive [--write]`, including the refusal to rewrite a file that is
+ * already current — a no-op write still churns mtimes and invites a spurious diff.
+ *
+ * Every region is visited even after one drifts, so a single run names all of them.
+ */
+function runDerive(gateYmlPath: string, write: boolean): number {
+  let worst = 0;
+  const n = String(CROSS_VERIFY_AUDITS.length);
+  for (const region of GENERATED_REGIONS) {
+    // `--gate-yml` redirects only the workflow, which is what the tests need to point at
+    // a copy. Every other region keeps its own declared path.
+    const path = region === GATE_MATRIX_REGION ? gateYmlPath : region.path;
+    const text = readGateYml(path);
+    if (text === null) {
+      console.log(`::error title=cross-verify derived regions::could not read ${path}.`);
+      worst = 1;
+      continue;
+    }
+    const derived = deriveRegion(region, text);
+    if (!derived.ok) {
+      for (const p of derived.problems) console.log(`::error title=cross-verify derived regions::${p}`);
+      worst = 1;
+      continue;
+    }
+    if (derived.next === text) {
+      console.log(`${path} is derived from the roster's ${n} audits. ✓`);
+      continue;
+    }
+    if (write) {
+      writeFileSync(path, derived.next);
+      console.log(`${path} updated from the roster (${n} audits).`);
+      continue;
+    }
+    reportDrift(path, text);
+    worst = 1;
+  }
+  return worst;
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const gateYmlPath = flagValue(argv, "--gate-yml", DEFAULT_GATE_YML);
@@ -861,12 +1162,8 @@ async function main(): Promise<void> {
     console.log(JSON.stringify(CROSS_VERIFY_AUDITS, null, 2));
     return;
   }
-  if (argv.includes("--check-parity")) {
-    if (!assertGateParity(gateYmlPath)) {
-      process.exitCode = 1;
-      return;
-    }
-    console.log(`roster and gate.yml agree on ${CROSS_VERIFY_AUDITS.length} audits. ✓`);
+  if (argv.includes("--derive")) {
+    process.exitCode = runDerive(gateYmlPath, argv.includes("--write"));
     return;
   }
   const runAt = argv.indexOf("--run");
@@ -876,7 +1173,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  console.log("usage: cross-verify-roster.ts [--list | --json | --check-parity | --run <id>] [--gate-yml <path>]");
+  console.log("usage: cross-verify-roster.ts [--list | --json | --derive [--write] | --run <id>] [--gate-yml <path>]");
   process.exitCode = 2;
 }
 

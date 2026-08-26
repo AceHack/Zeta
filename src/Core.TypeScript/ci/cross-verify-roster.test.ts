@@ -2,9 +2,12 @@
 //
 // Two things have to be true for the split to be an improvement rather than a hole:
 //
-//   1. THE ROSTER AND THE MATRIX CANNOT DIVERGE. Two views of one list is fine only if
-//      something refuses the moment they disagree. §"parity" mutates each direction and
-//      requires a named refusal for each.
+//   1. THE ROSTER AND THE MATRIX CANNOT DIVERGE. As of 2026-08-26 the matrix is not a
+//      second list at all: it is GENERATED from the roster into a delimited region of
+//      `gate.yml`, and the same command is the drift check and the fix. §"generation"
+//      proves the round trip is byte-identical, that a hand-edit is caught and named,
+//      that one command moves both views, and — the mutation — that a generator reading
+//      an EMPTY roster cannot pass. §"parity" keeps the id-level diagnosis honest.
 //   2. THE FLOOR IS NOT WEAKENED. A decomposition that quietly makes 31 audits
 //      non-blocking is a silent floor removal — the worst available outcome and the
 //      easiest to reach by accident. §"the floor is not weakened" runs the aggregate
@@ -15,7 +18,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, rmSync, writeFileSync } from "node:fs";
 import { parse } from "yaml";
 import { classifyFloorResult, parseDecls } from "./gate-skip-verdict.ts";
 import {
@@ -23,6 +26,15 @@ import {
   CROSS_VERIFY_ROSTER_PATH,
   checkName,
   compareRosterToMatrix,
+  CHECK_NAMES_DOC_PATH,
+  CHECK_NAMES_DOC_REGION,
+  deriveGateYml,
+  deriveRegion,
+  DERIVE_FIX_COMMAND,
+  GATE_MATRIX_REGION,
+  GENERATED_BEGIN,
+  GENERATED_END,
+  GENERATED_REGIONS,
   MATRIX_JOB_ID,
   parseMatrixAudits,
 } from "./cross-verify-roster.ts";
@@ -103,7 +115,7 @@ describe("parity — the roster and gate.yml are two views of one list", () => {
     expect(r.ok).toBe(false);
   });
 
-  test("every leg checks parity before running its own audit", () => {
+  test("every leg checks that the matrix is derived before running its own audit", () => {
     // Not a claim about intent: `--run` with a good id but a gate.yml whose matrix has
     // been mutated must fail, and it must fail for the PARITY reason rather than because
     // the audit itself broke.
@@ -123,9 +135,118 @@ describe("parity — the roster and gate.yml are two views of one list", () => {
     expect(`${out.stdout}${out.stderr}`).toContain("unknown audit id");
   });
 
-  test("--check-parity passes against the real gate.yml", () => {
-    const out = spawnSync("bun", [ROSTER_SCRIPT, "--check-parity"], { encoding: "utf8" });
+  test("--derive passes against the real gate.yml", () => {
+    const out = spawnSync("bun", [ROSTER_SCRIPT, "--derive"], { encoding: "utf8" });
     expect(out.status).toBe(0);
+  });
+});
+
+describe("generation — gate.yml's matrix is DERIVED, so there is nothing to keep in sync", () => {
+  // The redesign Aaron asked for on #15666, and its falsifiers. Every assertion below
+  // reads the committed `gate.yml`; none takes the generator's word for anything.
+
+  const derivedNow = deriveGateYml(GATE_YML);
+
+  test("the committed workflow IS what the roster generates, byte for byte", () => {
+    // The round trip. If this ever fails the generator is not deterministic, and nothing
+    // else in this section means anything.
+    expect(derivedNow.ok).toBe(true);
+    if (derivedNow.ok) expect(derivedNow.next).toBe(GATE_YML);
+  });
+
+  test("generating twice is generating once — the region is a fixed point", () => {
+    expect(derivedNow.ok).toBe(true);
+    if (!derivedNow.ok) return;
+    const twice = deriveGateYml(derivedNow.next);
+    expect(twice.ok).toBe(true);
+    if (twice.ok) expect(twice.next).toBe(derivedNow.next);
+  });
+
+  test("a hand-edit inside the region is caught, and the drift is NAMED", () => {
+    // The whole point: the region stays hand-editable — it is a text file — so the guard
+    // has to be a check rather than an impossibility. Deleting a leg by hand must not
+    // read as agreement.
+    const mutated = GATE_YML.replace("          - ace-suite\n", "");
+    expect(mutated).not.toBe(GATE_YML);
+    const d = deriveGateYml(mutated);
+    expect(d.ok).toBe(true);
+    if (d.ok) expect(d.next).not.toBe(mutated);
+    // ...and the id-level diagnosis says which one, rather than "the bytes differ".
+    const diag = compareRosterToMatrix(ROSTER_IDS, parseMatrixAudits(mutated));
+    expect(diag.ok).toBe(false);
+    expect(diag.problems.join("\n")).toContain("ace-suite");
+  });
+
+  test("ONE command moves both views — adding an audit", () => {
+    const added = [...CROSS_VERIFY_AUDITS, { id: "a-brand-new-audit", title: "t", command: "true" }];
+    const d = deriveGateYml(GATE_YML, added);
+    expect(d.ok).toBe(true);
+    if (!d.ok) return;
+    expect(parseMatrixAudits(d.next)).toEqual([...ROSTER_IDS, "a-brand-new-audit"]);
+    // Nothing outside the region moved.
+    expect(d.next.split("\n").length).toBe(GATE_YML.split("\n").length + 1);
+  });
+
+  test("ONE command moves both views — removing an audit", () => {
+    const removed = CROSS_VERIFY_AUDITS.filter((a) => a.id !== "ace-suite");
+    const d = deriveGateYml(GATE_YML, removed);
+    expect(d.ok).toBe(true);
+    if (!d.ok) return;
+    expect(parseMatrixAudits(d.next)).not.toContain("ace-suite");
+    expect(parseMatrixAudits(d.next)).toEqual(ROSTER_IDS.filter((i) => i !== "ace-suite"));
+  });
+
+  test("MUTATION — a generator that reads an empty roster cannot pass", () => {
+    // The vacuity control. If `renderMatrixRegion` were broken to emit nothing, an
+    // equality-only test could still pass by comparing two empty lists. It cannot pass
+    // this one: the empty render must differ from the committed workflow.
+    const d = deriveGateYml(GATE_YML, []);
+    expect(d.ok).toBe(true);
+    if (d.ok) {
+      expect(d.next).not.toBe(GATE_YML);
+      expect(parseMatrixAudits(d.next)).toBeNull();
+    }
+    expect(GATE_MATRIX_REGION.render([], "        ")).not.toContain("- ace-suite");
+    expect(GATE_MATRIX_REGION.render(CROSS_VERIFY_AUDITS, "        ")).toContain("- ace-suite");
+  });
+
+  test("missing or duplicated markers FAIL CLOSED rather than deriving nothing", () => {
+    // The markers are the only thing that tells the generator what it owns. Deleting them
+    // must not read as "no drift"; duplicating them must not let it silently pick one.
+    for (const broken of [
+      GATE_YML.replace(GENERATED_BEGIN, "# gone"),
+      GATE_YML.replace(GENERATED_END, "# gone"),
+      GATE_YML.replace(GENERATED_BEGIN, `${GENERATED_BEGIN}\n        ${GENERATED_BEGIN}`),
+    ]) {
+      const d = deriveGateYml(broken);
+      expect(d.ok).toBe(false);
+      if (!d.ok) expect(d.problems.join("\n")).toContain("marker");
+    }
+  });
+
+  test("the region carries its own fix, runnable as printed", () => {
+    // A drift gate whose message does not name the fix is a drift gate people work around.
+    expect(GATE_YML).toContain(DERIVE_FIX_COMMAND);
+    expect(DERIVE_FIX_COMMAND).toBe(`bun ${CROSS_VERIFY_ROSTER_PATH} --derive --write`);
+  });
+
+  test("--derive reports drift with rc=1 and --write clears it, on a real file", () => {
+    // End to end, through the CLI, on a copy — the ergonomic claim measured rather than
+    // asserted: check says 1, fix says 0, check then says 0.
+    const tmp = `${process.env.TMPDIR ?? "/tmp"}/cross-verify-derive-${process.pid}.yml`;
+    writeFileSync(tmp, GATE_YML.replace("          - mumps-zeta-id\n", ""));
+
+    const before = spawnSync("bun", [ROSTER_SCRIPT, "--derive", "--gate-yml", tmp], { encoding: "utf8" });
+    expect(before.status).toBe(1);
+    expect(`${before.stdout}${before.stderr}`).toContain("mumps-zeta-id");
+
+    const fix = spawnSync("bun", [ROSTER_SCRIPT, "--derive", "--write", "--gate-yml", tmp], { encoding: "utf8" });
+    expect(fix.status).toBe(0);
+
+    const after = spawnSync("bun", [ROSTER_SCRIPT, "--derive", "--gate-yml", tmp], { encoding: "utf8" });
+    expect(after.status).toBe(0);
+    expect(readFileSync(tmp, "utf8")).toBe(GATE_YML);
+    rmSync(tmp, { force: true });
   });
 });
 
@@ -221,16 +342,25 @@ describe("the floor is not weakened", () => {
     expect(runs.every((r) => !r.includes("${{"))).toBe(true); // no template-injection surface
   });
 
-  test("every audit that ran before the split still has a leg, minus the one deliberately removed", () => {
-    // The migration's own falsifier: the pre-split job ran 31 audit steps, and losing one
-    // in the move would be invisible — the checks list would simply be one name shorter.
+  test("the floor is non-vacuous, every audit on it has a leg, and a removal stays a DECISION", () => {
+    // This was `expect(ROSTER_IDS).toHaveLength(31)`, then `toHaveLength(30)` — a THIRD
+    // place encoding the count, which went red on #15666's legitimate removal of one audit.
+    // #15666's argument for keeping a number is real and is kept here: that red is what
+    // made the removal a DECISION rather than a disappearance. But the number is not what
+    // records the decision — the NAME is. `not.toContain` pins exactly the claim ("that
+    // audit is deliberately absent") and costs nothing on every unrelated add, whereas the
+    // count is a falsifier for "nobody changed the number", a different and much weaker
+    // claim that goes stale on every routine add.
     //
-    // It is 30 as of 2026-08-26: `orphaned-archive-refs` (AH003) was removed from the floor
-    // ON PURPOSE and now runs, still fatal, on a schedule in
-    // `.github/workflows/archive-strand-alarm.yml`. This assertion is what made that a
-    // DECISION rather than a disappearance — it went red on the removal, which is the whole
-    // reason the number is written down. Lower it only alongside the two lines below.
-    expect(ROSTER_IDS).toHaveLength(30);
+    // What actually has to hold is DERIVED here: every roster entry has a leg (the
+    // `parseMatrixAudits` equality, read independently of the generator), and the floor is
+    // not empty. The bound is a NON-VACUITY FLOOR, not a count: it exists so a roster that
+    // read as `[]` cannot satisfy this section, and it needs revisiting only if the floor
+    // genuinely shrinks by a third — which is a decision, not a routine add.
+    expect(ROSTER_IDS.length).toBeGreaterThanOrEqual(20);
+    expect(parseMatrixAudits(GATE_YML)).toEqual(ROSTER_IDS);
+    // Removed from the floor ON PURPOSE (AH003); it now runs, still fatal, on a schedule in
+    // `.github/workflows/archive-strand-alarm.yml`. Naming it is the decision record.
     expect(ROSTER_IDS).not.toContain("orphaned-archive-refs");
   });
 });
@@ -280,12 +410,65 @@ describe("the roster is a CI invocation surface, and other audits must see it as
 });
 
 describe("the promotion doc lists the exact strings", () => {
-  test("docs/ci/CROSS-VERIFY-CHECK-NAMES.md names every check", () => {
-    // Whoever performs the ruleset promotion copies strings out of that doc. A doc that
-    // silently stops covering the roster is how a promotion drops a context.
-    const doc = readFileSync("docs/ci/CROSS-VERIFY-CHECK-NAMES.md", "utf8");
+  // Whoever performs the ruleset promotion copies strings out of that doc, so a doc that
+  // stops covering the roster is how a promotion drops a context. It used to be a third
+  // hand-maintained copy of the same list, kept honest by the containment test below; the
+  // table is now a generated region, so it cannot go stale in the first place. Both are
+  // kept: containment is what the promoter actually needs, derivation is what makes it
+  // free.
+  const DOC = readFileSync(CHECK_NAMES_DOC_PATH, "utf8");
+
+  test("it names every check", () => {
     for (const id of ROSTER_IDS) {
-      expect(doc).toContain(checkName(id));
+      expect(DOC).toContain(checkName(id));
+    }
+  });
+
+  test("its table IS what the roster generates, byte for byte", () => {
+    const d = deriveRegion(CHECK_NAMES_DOC_REGION, DOC);
+    expect(d.ok).toBe(true);
+    if (d.ok) expect(d.next).toBe(DOC);
+  });
+
+  test("a hand-edited cell is caught rather than absorbed", () => {
+    const mutated = DOC.replace("Ace package-manager suite", "something else entirely");
+    expect(mutated).not.toBe(DOC);
+    const d = deriveRegion(CHECK_NAMES_DOC_REGION, mutated);
+    expect(d.ok).toBe(true);
+    if (d.ok) expect(d.next).toBe(DOC); // regeneration restores it exactly
+  });
+
+  test("removing an audit moves the table too — one command, every view", () => {
+    const removed = CROSS_VERIFY_AUDITS.filter((a) => a.id !== "ace-suite");
+    const d = deriveRegion(CHECK_NAMES_DOC_REGION, DOC, removed);
+    expect(d.ok).toBe(true);
+    if (d.ok) {
+      // Scoped to the REGION, not the whole document: `cross-verify (ace-suite)` also
+      // appears in the prose recounting a real failure, and a whole-file containment
+      // assertion would have been testing that prose instead of the generator.
+      const table = d.next.slice(
+        d.next.indexOf(CHECK_NAMES_DOC_REGION.begin),
+        d.next.indexOf(CHECK_NAMES_DOC_REGION.end),
+      );
+      expect(table).not.toContain(checkName("ace-suite"));
+      for (const id of ROSTER_IDS.filter((i) => i !== "ace-suite")) expect(table).toContain(checkName(id));
+    }
+  });
+
+  test("every derived view is reachable from one roster, and each one is in sync", () => {
+    // The roster of rosters. A new generated region added to `GENERATED_REGIONS` is
+    // checked here without anyone remembering to write a test for it; a region added
+    // anywhere ELSE is exactly the duplicate this change removed.
+    expect(GENERATED_REGIONS.length).toBeGreaterThanOrEqual(2);
+    for (const region of GENERATED_REGIONS) {
+      const text = readFileSync(region.path, "utf8");
+      const d = deriveRegion(region, text);
+      expect(d.ok).toBe(true);
+      if (d.ok) expect(d.next).toBe(text);
+      // ...and it is not vacuously in sync: an empty roster must NOT reproduce it.
+      const empty = deriveRegion(region, text, []);
+      expect(empty.ok).toBe(true);
+      if (empty.ok) expect(empty.next).not.toBe(text);
     }
   });
 });

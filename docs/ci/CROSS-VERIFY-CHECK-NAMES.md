@@ -17,6 +17,14 @@ named none of them when it went red. It is now:
 
 **31 matrix legs**, one per audit, each publishing `cross-verify (<id>)`.
 
+Later the same day, the split's own maintenance cost was removed: the matrix and the table
+in this document stopped being hand-maintained copies of the roster and became **generated
+regions** derived from it. Aaron, on the first change that had to edit two of them: _"this
+design seems a bit flakey, are we going to be fixing this all the time, can we automate
+this fix in our small free github runners agent society? or redesign this so it's different
+and less brittle?"_ Automating the repair of hand-maintained duplicates keeps the
+brittleness; the duplicates stopped being maintained instead.
+
 There is no roll-up job, deliberately. The matrix job KEEPS the id `cross-verify`, and
 GitHub collapses a whole matrix into one `needs.<job>.result` that is `success` only when
 every leg succeeded — so `gate-required.needs:` is byte-identical to what it was and the
@@ -31,9 +39,22 @@ excuse.
 
 ## The strings
 
-Produced by `bun src/Core.TypeScript/ci/cross-verify-roster.ts --list` and pinned by the
-last test in `cross-verify-roster.test.ts` — if this table stops covering the roster, that
-test goes red, so the list below cannot silently go stale.
+**GENERATED — do not hand-edit the table below.** It is emitted from `CROSS_VERIFY_AUDITS`
+in `src/Core.TypeScript/ci/cross-verify-roster.ts`, which is also where `gate.yml`'s
+`audit:` matrix comes from. One command is both the drift check and the fix, which is why
+the two cannot disagree:
+
+```bash
+bun src/Core.TypeScript/ci/cross-verify-roster.ts --derive          # exits 1 on drift, naming it
+bun src/Core.TypeScript/ci/cross-verify-roster.ts --derive --write  # rewrites every generated region
+```
+
+Adding or removing an audit is a roster edit plus that one command — it touches no list
+here and none in `gate.yml`. The falsifiers are in `cross-verify-roster.test.ts`
+§"generation": the round trip is byte-identical, a hand-edit is caught and named, and a
+generator that read an EMPTY roster cannot pass.
+
+<!-- BEGIN GENERATED · cross-verify check names · do not hand-edit -->
 
 | check-run name                                 | what it audits                                                                    |
 | ---------------------------------------------- | --------------------------------------------------------------------------------- |
@@ -67,6 +88,8 @@ test goes red, so the list below cannot silently go stale.
 | `cross-verify (mumps-zeta-id)`                 | Execute MUMPS zeta-id packer                                                      |
 | `cross-verify (zeta-id-gen-layout-drift)`      | zeta-id generated layouts vs the layout YAML                                      |
 | `cross-verify (algebra-tower-drift)`           | Algebra-tower drift-check (semiring→ring→kleene + star-ring)                      |
+
+<!-- END GENERATED · cross-verify check names -->
 
 All 30 are legs of the single job id `cross-verify`, which is what `gate (required)`
 consumes today.
@@ -173,7 +196,8 @@ handful whose false-positive cost is highest. Nothing here requires all-or-nothi
 
 - `src/Core.TypeScript/ci/cross-verify-roster.ts` — the roster; the comment on each entry
   is the one the step it replaced carried.
-- `.github/workflows/gate.yml` — `cross-verify-audit` (the matrix) and `cross-verify` (the
-  roll-up).
+- `.github/workflows/gate.yml` — the job `cross-verify`, whose `audit:` matrix is a
+  generated region emitted from that roster. There is no roll-up job; the matrix job keeps
+  the floor's id and GitHub collapses the legs into one `needs.cross-verify.result`.
 - `docs/research/2026-08-26-three-verdict-loss-mechanisms-on-main-only-one-is-concurrency-and-the-largest-is-invisible-to-both-designs.md`
   §6 — the decomposition frontier and the setup-class pricing this split was chosen from.
