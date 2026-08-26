@@ -6,6 +6,8 @@ touches it; that is the whole point of the file.
 
 from __future__ import annotations
 
+from arcengine import GameAction
+
 from zeta_arc.agent import ACTION_VECTORS, PixelAgent
 from zeta_arc.driver import advance, reset
 from zeta_arc.environments.chase import CELL, ZetaChase
@@ -410,7 +412,55 @@ def test_the_weak_instrument_stands_down_once_the_strong_one_can_boot():
     # The gate is what is under test: with calibration present, a refused action
     # is once again eligible, because `_note_blocked_cell` now owns this job.
     key = agent._grid_key(grid)
-    moves_all = set(ACTION_VECTORS)
-    assert agent._inert.get(key, set()) & moves_all, (
+    assert set(agent._inert.get(key, {})) & set(ACTION_VECTORS), (
         "precondition: something was refused from this exact state"
+    )
+
+
+def test_suppression_expires_because_games_upgrade_their_actions():
+    """A suppressed action must become eligible again on its own.
+
+    Aaron 2026-08-26: *"should not set the actions to completely 0 cause in many
+    games actions get upgraded over time where previous actions did nothing in
+    the start over time they turn into actions that do stuff ... not some games,
+    not all of them."*
+
+    That is fatal to a permanent refusal, and the case is not exotic: the grid
+    can return to a BYTE-IDENTICAL state with the agent's capabilities changed
+    underneath it, so the very key we suppress under is the one that comes back
+    live. Suppression therefore leaks, like `LAYER_DECAY` and the body-evidence
+    leak — nothing in this agent is permanent.
+
+    WHAT THIS DOES *NOT* TEST, because the first version of it did and was
+    wrong: expiry is not observable in a world that never answers. There, every
+    retry re-refuses the action and the weight nets up, which is correct — an
+    action that is still dead SHOULD stay suppressed. Expiry is only visible for
+    an action that is not being re-refused, which is what is set up below.
+
+    Set `INERT_DECAY = 1.0` and this goes red while the bootstrap test stays
+    green: suppression still works, it just never expires.
+    """
+    agent = PixelAgent()
+    grid = _unresponsive_world()
+    key = agent._grid_key(grid)
+
+    # One action stands suppressed; a DIFFERENT one is what the agent last
+    # issued, so the suppressed one is not re-refused on these revisits.
+    suppressed = GameAction.ACTION3
+    agent._inert[key] = {suppressed: 1.0}
+    agent._last_action = GameAction.ACTION1
+
+    weight_before = agent._inert[key][suppressed]
+
+    # Bounded, because an unbounded loop would pass by exhausting the test
+    # rather than by decaying. At 0.75 per revisit, 1.0 crosses the 0.5 floor
+    # on the third — six is headroom, not a fudge.
+    for _ in range(6):
+        agent.act([row[:] for row in grid])
+
+    weight_after = agent._inert.get(key, {}).get(suppressed, 0.0)
+    assert weight_after < weight_before, "suppression did not decay at all"
+    assert suppressed not in agent._inert.get(key, {}), (
+        "the suppressed action never became eligible again — an action that "
+        "upgrades mid-episode could never be rediscovered"
     )

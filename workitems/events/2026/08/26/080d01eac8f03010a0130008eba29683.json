@@ -1,0 +1,14 @@
+{
+  "id": "080d01eac8f03010a0130008eba29683",
+  "at": "2026-08-26T09:14:05.702Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YNJ7G5087G0R003QWNWRB",
+    "type": "task",
+    "title": "Re-express MultilayerBnn onto FactorGraph so BNN layers compose as a DAG, not a chain",
+    "slug": "re-express-multilayerbnn-onto-factorgraph-so-bnn-layers-comp",
+    "priority": "P2",
+    "filename": "081M0YNJ7G5087G0R003QWNWRB-re-express-multilayerbnn-onto-factorgraph-so-bnn-layers-comp.md"
+  }
+}

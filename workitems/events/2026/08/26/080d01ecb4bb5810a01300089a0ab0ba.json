@@ -1,0 +1,14 @@
+{
+  "id": "080d01ecb4bb5810a01300089a0ab0ba",
+  "at": "2026-08-26T10:21:14.475Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YSD5VA087G0R000W2Q9QW",
+    "type": "task",
+    "title": "Replace the ARC agent's three hardcoded decay constants with TrueSkill dynamics (measure before/after)",
+    "slug": "replace-the-arc-agent-s-three-hardcoded-decay-constants-with",
+    "priority": "P2",
+    "filename": "081M0YSD5VA087G0R000W2Q9QW-replace-the-arc-agent-s-three-hardcoded-decay-constants-with.md"
+  }
+}

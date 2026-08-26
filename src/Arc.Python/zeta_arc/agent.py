@@ -79,7 +79,7 @@ class PixelAgent:
     #: Actions the world did not answer, keyed by the EXACT grid they were
     #: issued from. See `_note_inert_action` for why this exists alongside
     #: `blocked` rather than inside it.
-    _inert: dict[tuple[tuple[int, ...], ...], set[GameAction]] = field(
+    _inert: dict[tuple[tuple[int, ...], ...], dict[GameAction, float]] = field(
         default_factory=dict
     )
     _last_grid_key: tuple[tuple[int, ...], ...] | None = None
@@ -95,6 +95,21 @@ class PixelAgent:
         a separator, and a separator is a collision waiting for a cell value
         that contains it."""
         return tuple(tuple(row) for row in grid)
+
+    #: How fast an unanswered action becomes worth retrying. NOT a ban: many
+    #: games UPGRADE their actions, so a move that does nothing early is
+    #: routinely live later once something unlocks — and the grid can return to
+    #: a byte-identical state with the agent's capabilities changed underneath
+    #: it, which is precisely the case a permanent refusal makes unreachable.
+    #: Aaron 2026-08-26: *"should not set the actions to completely 0 cause in
+    #: many games actions get upgraded over time ... not some games, not all of
+    #: them."* So suppression LEAKS, on the same principle as `LAYER_DECAY` and
+    #: the body-evidence leak: nothing here is allowed to be permanent.
+    INERT_DECAY = 0.75
+    #: Below this a suppressed action is eligible again. One refusal costs about
+    #: three revisits; a persistently dead action accumulates and stays down
+    #: longer, so the cost self-tunes to how dead the action actually is.
+    INERT_FLOOR = 0.5
 
     def _note_inert_action(self, key: tuple[tuple[int, ...], ...]) -> None:
         """An action the world did not answer AT ALL, recorded against the exact
@@ -128,7 +143,8 @@ class PixelAgent:
         """
         if self._last_action is None:
             return
-        self._inert.setdefault(key, set()).add(self._last_action)
+        weights = self._inert.setdefault(key, {})
+        weights[self._last_action] = weights.get(self._last_action, 0.0) + 1.0
 
     def _note_blocked_cell(self, me: Component) -> None:
         """A commanded move that produced NO displacement means something is in
@@ -205,6 +221,34 @@ class PixelAgent:
         cols, rows = int(width / self._step_px), int(height / self._step_px)
         start = self._cell_of(me)
         goals = {self._cell_of(t) for t in targets} - self.blocked
+        if not goals and self.blocked:
+            # A MAP THAT SAYS NOWHERE IS REACHABLE IS REFUTING ITSELF.
+            #
+            # Every candidate target believed solid cannot be true of a world
+            # the agent is standing in and being scored on, so the belief is
+            # what gives way — not the world. Dropping it costs a few bumps to
+            # rebuild, which is the price this agent already pays for not being
+            # handed the map.
+            #
+            # THE CASE THAT FORCED IT, measured on `ZetaPocket` level 1: the
+            # cell (1,6) is a WALL on level 0 and the GOAL on level 1. The
+            # occupancy map is meant to be cleared on a level change by
+            # `_world_changed_under_me`, which fires when the body moves more
+            # than one cell in a tick — but level 0's goal (6,1) and level 1's
+            # start (7,1) are ADJACENT, so the transition is indistinguishable
+            # from one legal move and the detector stays silent. The agent
+            # entered level 1 believing its own goal was a wall, the router
+            # returned nothing every tick, and greedy oscillated for the rest
+            # of the episode.
+            #
+            # Note this repairs the CONSEQUENCE rather than the detector. The
+            # detector is genuinely unreliable — one cell of displacement is
+            # not enough to distinguish "I moved" from "I was placed" — and a
+            # frame-level signal (`levels_completed`) exists but is not passed
+            # to this agent, which sees only a grid. Named here rather than
+            # silently worked around.
+            self.blocked.clear()
+            goals = {self._cell_of(t) for t in targets}
         if not goals:
             return []
 
@@ -326,11 +370,13 @@ class PixelAgent:
             self._note_inert_action(key)
         self._last_grid_key = key
 
-        # Drop what this exact state has already refused. Never let the set go
-        # empty: with every move refused the honest state is "nothing works from
-        # here", and returning no action is not available — so the refusals are
-        # forgotten for this state and the agent tries again rather than
-        # deadlocking on its own bookkeeping.
+        # SUPPRESS, THEN LET IT LEAK BACK. Every revisit to this exact state
+        # decays what that state has refused, so suppression is temporary by
+        # construction: an action that does nothing now is retried later, which
+        # is required for any game that upgrades its actions mid-episode. A
+        # permanent exclusion would make the upgraded action unreachable
+        # precisely when it started working.
+        #
         # ONLY WHILE THE STRONGER INSTRUMENT CANNOT BOOT. Once `_step_px` is
         # known, `_note_blocked_cell` names the offending CELL, which routes;
         # this only names an action, which does not. Leaving both on is not
@@ -339,15 +385,22 @@ class PixelAgent:
         # `blocked` never fills, and the wall model never forms — four
         # `test_pixel_agent` wall tests went red exactly that way. The weak
         # instrument exists to get the strong one started, then stands down.
-        refused: frozenset[GameAction] | set[GameAction] = (
-            self._inert.get(key, frozenset()) if self._step_px is None else frozenset()
-        )
-        if refused:
-            surviving = tuple(a for a in moves if a not in refused)
-            if surviving:
-                moves = surviving
+        weights = self._inert.get(key)
+        if weights is not None and self._step_px is None:
+            for action in list(weights):
+                weights[action] *= self.INERT_DECAY
+                if weights[action] < self.INERT_FLOOR:
+                    del weights[action]
+            if not weights:
+                del self._inert[key]
             else:
-                self._inert.pop(key, None)
+                # Never let the candidate set go empty: with every move
+                # suppressed the honest state is "nothing works from here", and
+                # returning no action is not available. Fall through to the full
+                # set rather than deadlocking on our own bookkeeping.
+                surviving = tuple(a for a in moves if a not in weights)
+                if surviving:
+                    moves = surviving
 
         if not moves:
             # The caller routed here with no direction on offer. Nothing this
@@ -430,6 +483,38 @@ class PixelAgent:
             # element, so a tie (the target is orthogonal to every legal move)
             # resolves the same way on every replay. Determinism here is not
             # decoration: an episode that cannot be replayed cannot be debugged.
+            # GREEDY MUST CONSULT WHAT BUMPING ALREADY TAUGHT US. Without
+            # this, `blocked` is written by `_note_blocked_cell` and read only
+            # by `_route_plan` — so whenever the router returns no plan, the
+            # fallback happily re-issues a move into a cell it KNOWS is solid,
+            # and re-issues it forever because the heading never changes.
+            #
+            # Measured on `ZetaPocket` level 1, at cell (7,1) with the correct
+            # walls already learned:
+            #
+            #   blocked = [(6,1), (7,2)]   plan = 0   -> ACTION3 x382 of 400
+            #
+            # The agent knew both obstacles and walked into one of them for the
+            # rest of the episode. The way out (up) scores lower on the heading
+            # and so was never reachable by argmax alone.
+            #
+            # Falls through to the unfiltered set when every move is believed
+            # blocked: the belief may simply be wrong, and refusing to act on a
+            # bad map is worse than testing it.
+            here = self._cell_of(me) if self._step_px else None
+            if here is not None and self.blocked:
+                open_moves = tuple(
+                    a
+                    for a in moves
+                    if (
+                        here[0] + ACTION_VECTORS[a][0],
+                        here[1] + ACTION_VECTORS[a][1],
+                    )
+                    not in self.blocked
+                )
+                if open_moves:
+                    moves = open_moves
+
             target = min(targets, key=me.distance_to)
             dx, dy = target.cx - me.cx, target.cy - me.cy
             action = max(

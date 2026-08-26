@@ -84,3 +84,49 @@ engaging — `unmetered` per `.claude/rules/toy-is-free-metered-must-be-earned.m
 Whether it raises any hosted score is unknown until a sweep runs; the honest
 prediction is that it converts some `inert` level-0 deaths into engaged ones,
 which is a change in `distinct_grids`, not necessarily in `score`.
+
+## Correction: suppression must EXPIRE, not ban
+
+The first version excluded a refused action from that state permanently (a
+`set`). Aaron 2026-08-26:
+
+> *"should not set the actions to completely 0 cause in many games actions get
+> upgraded over time where previous actions did nothing in the start over time
+> they turn into actions that do stuff, no some games, not all of them."*
+
+He is right, and the case is not exotic. Exact-grid keying only partly covers
+it: a grid can return **byte-identical** while the agent's capabilities changed
+underneath it, so the very key we suppress under is the one that comes back
+live. A permanent exclusion makes the upgraded action unreachable exactly when
+it starts working.
+
+The mechanism is now a decaying weight, matching this codebase's existing idiom
+(`LAYER_DECAY`, the body-evidence leak) rather than inventing a new one:
+
+| | |
+|---|---|
+| `INERT_DECAY` | `0.75` per revisit to that state |
+| `INERT_FLOOR` | `0.5` — below this the action is eligible again |
+| recording | `+= 1.0`, so a persistently dead action stays down longer |
+
+One refusal costs about three revisits. Repeated refusals accumulate, so the
+suppression self-tunes to how dead the action actually is, and nothing is
+permanent.
+
+**A wrong test, kept as the lesson.** The first expiry test drove an
+unresponsive world and asserted the weight fell. It failed — correctly. There,
+every retry re-refuses the action and the weight nets *up*, which is the right
+behaviour: an action that is still dead should stay suppressed. Expiry is only
+observable for an action that is **not** being re-refused, and the test now sets
+that up explicitly.
+
+## Three mutations, three distinct failure sets
+
+| mutation | what fails |
+|---|---|
+| `INERT_FLOOR = 99.0` (never suppress) | the bootstrap test + the stand-down test |
+| `INERT_DECAY = 1.0` (suppress forever) | the expiry test |
+| gate removed (`if True`) | the four wall tests |
+
+Each knob is independently falsified. A knob whose mutation fails nothing is a
+knob nobody is testing.

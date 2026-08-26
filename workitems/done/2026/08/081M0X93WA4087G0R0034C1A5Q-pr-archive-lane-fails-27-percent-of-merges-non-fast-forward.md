@@ -1,11 +1,12 @@
 ---
 id: 081M0X93WA4087G0R0034C1A5Q
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: pr-archive-lane-fails-27-percent-of-merges-non-fast-forward
 title: "pr-archive lane fails ~27 percent of merges - non-fast-forward buffer fetch, silent under --quiet, retry defeated by set -e"
 created: 2026-08-25T20:17:18.148Z
+completed: 2026-08-26T09:24:22.090Z
 depends_on: []
 composes_with: []
 ---
@@ -167,3 +168,34 @@ an empty script that runs, prints nothing, and passes nothing.
 Verified: every import in `src/Core.TypeScript/forge-host/github/*.test.ts` is
 now `bun:test` or `node:*`, and the workflow's own two commands give 339 + 120
 pass, 0 fail. Break-red on the retry guard still fails as designed.
+
+## POST-MERGE VERIFICATION 2026-08-26T09:25Z -- the fix holds
+
+PR #15517 merged to `main` at 08:10:23Z. Measured `pr-archive-on-merge` runs since:
+
+| window | completed runs | failures | rate |
+|---|---|---|---|
+| before the merge (same listing) | 10 | 1 | 10% |
+| **after the merge** | **18** | **0** | **0%** |
+| originally reported | 30 | 8 | 27% |
+
+**The window covers the failing condition, which is the part that matters.** The defect
+needed another lane flush to land between this job's checkout and its fetch, so a quiet
+window would prove nothing. Nine of the eighteen runs started within 120 s of the previous
+one and the tightest gap was **3 seconds** -- tighter than the 29 s spacing (19:39:19 vs
+19:39:48) that produced the originally-observed failure. The contention was present and no
+run failed.
+
+`P(18 consecutive successes | 27% failure rate) = 0.73^18 = 0.0038`, so this is not a quiet
+patch.
+
+**Honest limits.** Eighteen runs is not a season, and several are `[telemetry-flush]` ticks
+whose contention profile may differ from a human PR merge. The stronger evidence is not
+this count at all -- it is that the mechanism was identified (a rewritten ref refused
+without `+`), reproduced standalone before any fix was written, and pinned by a falsifier
+that fails with the exact CI exit code when the `+` is removed. The run counts corroborate
+a diagnosis; they did not produce it.
+
+**Not repaired by this row, and still true:** records lost before the fix stay lost until
+the `--all-merged --limit 15` backfill reaches them. Whether that backfill drains faster
+than it fills remains open.

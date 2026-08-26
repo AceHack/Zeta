@@ -427,3 +427,95 @@ module TravelerRankLedgerTests =
         Assert.True(tbA > 0.9, sprintf "Expected tbA > 0.9, got %.4f" tbA)
         // Domain B should still be at the fresh prior (0.5) — no cross-domain bleed
         Assert.InRange(tbB, 0.4999, 0.5001)
+
+    // ── TRL-34..41: the dynamics factor (staleness) ───────────────────────────────────────────────
+    //
+    // These pin the property that separates uncertainty-inflation from a decay constant. Under
+    // decay, silence ERASES a record; under dynamics, silence makes it UNCERTAIN while leaving
+    // its direction intact. TRL-36 and TRL-37 are the pair that would both pass under a wrong
+    // implementation if only one were present.
+
+    let private ok r = match r with | Ok v -> v | Error e -> failwithf "unexpected Error: %s" e
+
+    [<Fact>]
+    let ``TRL-34 age is identity at zero elapsed`` () =
+        let b = [ for _ in 1..5 -> true ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let aged = ok (TravelerRankLedger.age 0.1 0.0 b)
+        Assert.Equal(b.Mu, aged.Mu, 12)
+        Assert.Equal(b.Sigma2, aged.Sigma2, 12)
+
+    [<Fact>]
+    let ``TRL-35 age widens sigma2 strictly, and update still narrows it`` () =
+        let b = [ for _ in 1..5 -> true ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let aged = ok (TravelerRankLedger.age 0.1 10.0 b)
+        Assert.True(aged.Sigma2 > b.Sigma2, sprintf "aging must widen: %f -> %f" b.Sigma2 aged.Sigma2)
+        // The existing invariant is untouched: observing still concentrates.
+        let observed = TravelerRankLedger.update true aged
+        Assert.True(observed.Sigma2 < aged.Sigma2, sprintf "update must narrow: %f -> %f" aged.Sigma2 observed.Sigma2)
+
+    [<Fact>]
+    let ``TRL-36 aging leaves MU untouched — this is what decay would not do`` () =
+        // The load-bearing difference. A decay constant drags the estimate toward neutral, which
+        // FORGIVES a bad record. Aging must not move mu at all, in either direction.
+        let good = [ for _ in 1..8 -> true ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let bad = [ for _ in 1..8 -> false ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        Assert.Equal(good.Mu, (ok (TravelerRankLedger.age 0.5 100.0 good)).Mu, 12)
+        Assert.Equal(bad.Mu, (ok (TravelerRankLedger.age 0.5 100.0 bad)).Mu, 12)
+        Assert.True(bad.Mu < 0.0, sprintf "expected a negative mu for a bad record, got %f" bad.Mu)
+
+    [<Fact>]
+    let ``TRL-37 aging drives trustBand toward 0.5 FROM BOTH SIDES`` () =
+        // Uncertainty is not forgiveness and not condemnation: a stale good record and a stale
+        // bad record both converge on "no opinion", neither crossing to the other side.
+        let good = [ for _ in 1..8 -> true ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let bad = [ for _ in 1..8 -> false ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let tbGood = TravelerRankLedger.trustBand good
+        let tbBad = TravelerRankLedger.trustBand bad
+        let tbGoodAged = TravelerRankLedger.trustBand (ok (TravelerRankLedger.age 1.0 5000.0 good))
+        let tbBadAged = TravelerRankLedger.trustBand (ok (TravelerRankLedger.age 1.0 5000.0 bad))
+        Assert.True(tbGood > 0.9, sprintf "setup: expected a confident good record, got %f" tbGood)
+        Assert.True(tbBad < 0.1, sprintf "setup: expected a confident bad record, got %f" tbBad)
+        Assert.True(abs (tbGoodAged - 0.5) < abs (tbGood - 0.5), "stale good record must lose confidence")
+        Assert.True(abs (tbBadAged - 0.5) < abs (tbBad - 0.5), "stale bad record must lose confidence")
+        // Never crosses: a stale good record does not become distrusted, nor vice versa.
+        Assert.True(tbGoodAged >= 0.5, sprintf "stale good crossed below neutral: %f" tbGoodAged)
+        Assert.True(tbBadAged <= 0.5, sprintf "stale bad crossed above neutral: %f" tbBadAged)
+
+    [<Fact>]
+    let ``TRL-38 one observation after long silence restores the direction`` () =
+        // The practical payoff over decay: because mu survived, evidence is not re-learned from
+        // scratch after a gap.
+        let bad = [ for _ in 1..8 -> false ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let stale = ok (TravelerRankLedger.age 1.0 5000.0 bad)
+        let confirmed = TravelerRankLedger.update false stale
+        Assert.True(TravelerRankLedger.trustBand confirmed < TravelerRankLedger.trustBand stale,
+                    "one confirming miss after silence must re-sharpen distrust")
+
+    [<Fact>]
+    let ``TRL-39 aging composes additively in elapsed time`` () =
+        let b = [ for _ in 1..4 -> true ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let twoSteps = ok (TravelerRankLedger.age 0.3 7.0 (ok (TravelerRankLedger.age 0.3 3.0 b)))
+        let oneStep = ok (TravelerRankLedger.age 0.3 10.0 b)
+        Assert.Equal(oneStep.Sigma2, twoSteps.Sigma2, 12)
+
+    [<Fact>]
+    let ``TRL-40 age REFUSES negative tau or elapsed rather than sharpening`` () =
+        let b = TravelerRankLedger.freshBelief
+        Assert.True((match TravelerRankLedger.age -1.0 5.0 b with Error _ -> true | Ok _ -> false), "negative tau must be refused")
+        Assert.True((match TravelerRankLedger.age 1.0 -5.0 b with Error _ -> true | Ok _ -> false), "negative elapsed must be refused")
+
+    [<Fact>]
+    let ``TRL-41 ticksUntilUninformative agrees with actually aging that long`` () =
+        // The readout has to be checkable against the thing it predicts, or it is decoration.
+        let b = [ for _ in 1..10 -> true ] |> List.fold (fun x h -> TravelerRankLedger.update h x) TravelerRankLedger.freshBelief
+        let tau, eps = 0.2, 0.05
+        let t = ok (TravelerRankLedger.ticksUntilUninformative tau eps b)
+        Assert.True(t > 0.0, sprintf "a confident belief should need positive time, got %f" t)
+        let atT = abs (TravelerRankLedger.trustBand (ok (TravelerRankLedger.age tau t b)) - 0.5)
+        Assert.True(atT <= eps + 1e-6, sprintf "at the predicted horizon the band should be within eps: %f > %f" atT eps)
+        // And strictly not there yet just before — so the answer is the boundary, not any upper bound.
+        let justBefore = abs (TravelerRankLedger.trustBand (ok (TravelerRankLedger.age tau (t * 0.5) b)) - 0.5)
+        Assert.True(justBefore > eps, sprintf "half the horizon should not already be uninformative: %f" justBefore)
+        // tau = 0 never gets there, and that is an Error rather than a large number.
+        Assert.True((match TravelerRankLedger.ticksUntilUninformative 0.0 eps b with Error _ -> true | Ok _ -> false),
+                    "tau = 0 must refuse rather than return a duration")

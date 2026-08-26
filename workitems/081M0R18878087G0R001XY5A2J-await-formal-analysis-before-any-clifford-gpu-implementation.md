@@ -58,6 +58,48 @@ you to), §4 (the clock commitment Aaron already settled -- meter the crossing, 
 model keyed by machine identity so firmware drift makes a stale row structurally absent), and §5
 (honest CGA-versus-matrix costing) are engineering reconnaissance and stand on their own.
 
+## Q4 DISCHARGED 2026-08-26 -- the hold REMAINS in force for Q1/Q2/Q3/Q5
+
+**Q4 asked:** does CGA compose with the in-tree Clifford substrate, or are they distinct
+algebras sharing a name?
+
+**Answer: they are the same tower, one suspension apart.**
+
+> **CGA(3D) = Cl(4,1) ~= M_2(Cl(3,0))**
+
+Both sit at Atiyah-Bott-Shapiro clock position `s = 3`, over ground field **C**, neither
+split; and the suspension isomorphism `Cl(p+1,q+1) ~= M_2(Cl(p,q))` holds on every
+signature checked. dim_R: 32 = 4 x 8, and M_2(M_2(C)) = M_4(C). **The in-tree `Cl3` is not a
+rival to CGA -- it is the entry type of the matrix CGA is built from.** The two extra
+generators CGA needs are exactly the null pair `n_0`, `n_inf` of the conformal embedding.
+
+**The one real cost, and it is structural:** the rotor path does NOT inherit.
+`Cl^0(4,1) ~= Cl(4,0)` lands on `s = 4`, which is **quaternionic** (M_2(H)), while
+`Cl(3,0)`'s own rotors are complex. Conformal rotors are new arithmetic, not a reuse. That
+belongs in any implementation estimate.
+
+**Refutation condition addressed:** the answer is wrong if the suspension isomorphism fails
+or the ABS transcription is wrong. Both are checked, and the checks are committed:
+`src/Core.TypeScript/research/conformal-embedding-and-curvature-budget.{ts,test.ts}` --
+20 falsifiers, including a **cross-oracle** check against `CliffordPeriodicity.fs` itself
+(golden vector emitted by the F# module, consumed by the TypeScript; zero divergence over
+169 signatures) and seven break-red mutations that each turn it red.
+
+**Independent external convergence** (not a substitute for the remaining questions):
+*Euclidean, Projective, Conformal: Choosing a Geometric Algebra for Equivariant
+Transformers* (arXiv:2311.04744) reaches the same tower choice empirically -- Euclidean GA
+*"has a smaller symmetry group and is not as sample-efficient"*, projective *"not
+sufficiently expressive"*, conformal and an improved projective *"define powerful,
+performant architectures."* Read from the abstract only.
+
+**Still open, and the hold still applies to them:** Q1 (compact closure of
+`WeightedSet`), Q2 (does dual flatness entail the vector-addition update), Q3 (Normal-Gamma
+posterior as a region under a named metric with a stated error), Q5 (Gardenfors convexity
+on a buildable embedding). **Q3 is the one that gates spatial belief in a BNN column** --
+without an error budget, embedding a belief as a point is unfalsifiable.
+
+Full derivation: `docs/research/2026-08-26-cga-is-m2-of-the-in-tree-clifford-q4-answered-and-the-lp-ceiling-that-prices-a-reservoir.md`
+
 ## Exit condition
 
 The math team returns on Q1-Q5. Each answer lands with its refutation condition addressed. Only then

@@ -3540,6 +3540,20 @@ jobs:
       - name: Clifford cross-verify (Cl(3,0) geometric algebra)
         run: bun test tests/cross-verification/_harness/codegen-clifford.test.ts
 
+      # Q4 of the Clifford-GPU hold (081M0R18878087G0R001XY5A2J): CGA(3D) = Cl(4,1) is
+      # M_2(Cl(3,0)), one suspension step above the in-tree algebra -- plus the conformal
+      # distance identity and the curvature budget the reservoir thread turns on. Wired here
+      # for the same reason the CD order ladder below is: an unrun test reads exactly like a
+      # passing one (#14914), and this file's whole point is that the research document's
+      # numbers are falsifiable rather than asserted.
+      #
+      # The load-bearing case is CROSS-ORACLE: testdata/clifford-periodicity-grid.golden.txt
+      # is emitted BY src/Core/CliffordPeriodicity.fs (regenerate with the .fsx beside it) and
+      # consumed by the TypeScript, so agreement is evidence rather than self-consistency.
+      # Needs no dotnet -- the golden vector is committed text, per no-binary-in-proof-lineage.
+      - name: Conformal embedding + curvature budget (Q4 falsifiers)
+        run: bun test src/Core.TypeScript/research/conformal-embedding-and-curvature-budget.test.ts
+
       # The Cayley-Dickson -> maximal-order ladder (A2 / D4 / E8). Wired HERE, and not left
       # sitting in src/ as an unrun file, because #14914 measured that a test nothing invokes
       # reads exactly like a passing one. Two prior reviews of this material (#15415, #15417)

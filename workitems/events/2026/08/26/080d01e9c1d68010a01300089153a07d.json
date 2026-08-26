@@ -1,0 +1,14 @@
+{
+  "id": "080d01e9c1d68010a01300089153a07d",
+  "at": "2026-08-26T08:38:10.384Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YKGEP8087G0R002Q0ATY1",
+    "type": "bug",
+    "title": "greedy fallback ignores the blocked map that bumping already built - 382 of 400 actions into a known wall",
+    "slug": "greedy-fallback-ignores-the-blocked-map-that-bumping-already",
+    "priority": "P2",
+    "filename": "081M0YKGEP8087G0R002Q0ATY1-greedy-fallback-ignores-the-blocked-map-that-bumping-already.md"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d01ebafe1f010a01300085c4988fa",
+  "at": "2026-08-26T09:45:37.598Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YQBZ1X087G0R0010TX512",
+    "type": "task",
+    "title": "PGA is degenerate so the ABS clock cannot classify it -- extend CliffordPeriodicity.fs to Cl(p,q,r) in F#",
+    "slug": "pga-is-degenerate-so-the-abs-clock-cannot-classify-it-extend",
+    "priority": "P2",
+    "filename": "081M0YQBZ1X087G0R0010TX512-pga-is-degenerate-so-the-abs-clock-cannot-classify-it-extend.md"
+  }
+}

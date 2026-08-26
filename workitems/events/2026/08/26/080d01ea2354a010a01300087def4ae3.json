@@ -1,0 +1,14 @@
+{
+  "id": "080d01ea2354a010a01300087def4ae3",
+  "at": "2026-08-26T08:51:29.044Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M0YM8TMB087G0R002JDQGAQ",
+    "type": "task",
+    "title": "hexagonal reservoir walls close into a torus not a sphere - Euler forces exactly twelve pentagons",
+    "slug": "hexagonal-reservoir-walls-close-into-a-torus-not-a-sphere-eu",
+    "priority": "P2",
+    "filename": "081M0YM8TMB087G0R002JDQGAQ-hexagonal-reservoir-walls-close-into-a-torus-not-a-sphere-eu.md"
+  }
+}

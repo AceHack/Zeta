@@ -79,7 +79,17 @@ def test_a_key_that_cannot_reach_the_api_still_produces_a_scored_episode(
     assert result["mode"] == "NORMAL"  # it really did leave OFFLINE
     assert result["arcade_environments_discovered"] == 0  # ...and got nothing back
     assert result["levels_cleared"] == 3  # ...and the episode is unharmed
-    assert result["environment_score"] == 0.3375
+    # 0.3375 -> 0.354 on 2026-08-26, and the pin moved because the agent got
+    # BETTER, not because the guard got weaker. `_route_plan` now drops an
+    # occupancy map that believes every target is solid — a map saying nowhere
+    # is reachable is refuting itself — which saves two actions on level 2:
+    #
+    #   level 2   before: 24 actions, 0.1736      after: 22 actions, 0.2066
+    #
+    # Levels 0 and 1 are byte-identical and all three still solve. A pinned
+    # score is a real guard, so it is updated with the reason rather than
+    # loosened to an inequality that would stop noticing regressions at all.
+    assert result["environment_score"] == 0.354
 
 
 def test_the_reported_mode_is_the_one_actually_obtained(

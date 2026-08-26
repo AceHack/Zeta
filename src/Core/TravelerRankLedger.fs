@@ -115,6 +115,102 @@ module TravelerRankLedger =
           Sigma2 = sigma2New
           ObsCount = b.ObsCount + 1 }
 
+    // ── Dynamics factor (staleness) ────────────────────────────────────────────────────────────────
+    //
+    // WHAT WAS MISSING, AND WHY IT MATTERS BEYOND THIS MODULE.
+    //
+    // `update` above concentrates: its own docstring states that "σ² is strictly decreasing with
+    // each observation", and a falsifier pins that. Nothing widened it again. So a belief built
+    // from observations that stopped arriving became **permanently confident**: a traveler who
+    // performed well and then went silent stayed maximally trusted forever, and no amount of
+    // elapsed time could move them. That is a real defect in a ledger meant to be long-lived,
+    // and it is the reason TrueSkill carries a dynamics factor at all (Herbrich et al. 2006 §2,
+    // the τ term) — a rating is a belief about a moving quantity, and beliefs about moving
+    // quantities must lose confidence when unobserved.
+    //
+    // THE GENERAL POINT, which is why this lives here rather than at one call site:
+    //
+    //     Decay multiplies the ESTIMATE toward the prior.   value <- value * k
+    //     Dynamics widens the UNCERTAINTY.                  σ²    <- σ² + τ²·Δt
+    //
+    // They are not two spellings of the same idea. Decay says the world reverted; dynamics says
+    // *I stopped watching*. Only the second is true of an unobserved quantity, and only the
+    // second preserves the DIRECTION of old evidence — μ is untouched, so a fresh observation
+    // still lands against what was learned before rather than against a value that has been
+    // quietly dragged toward neutral. Under decay, enough silence erases a bad record; under
+    // dynamics, silence makes it uncertain, and one confirming observation brings it straight
+    // back.
+    //
+    // ON THE FREE PARAMETER, honestly. This does NOT eliminate the constant — τ is still chosen.
+    // What it does is move the constant somewhere it can be argued about: τ carries units
+    // (skill-σ per unit time) and answers a question about the world ("how fast can this
+    // quantity actually change?"), whereas a bare multiplier answers nothing and can only be
+    // tuned until the output looks right. `ticksUntilUninformative` below exists so a chosen τ
+    // can be CHECKED against what it implies, rather than asserted.
+
+    /// Inflate a belief's uncertainty for `elapsed` units of time with no observation.
+    ///
+    ///     σ² ← σ² + τ²·Δt        (μ unchanged — this is the whole distinction from decay)
+    ///
+    /// `tau` is the per-unit-time drift of the latent quantity. It is an explicit argument
+    /// rather than a module constant on purpose: a hidden default here would be exactly the
+    /// unjustifiable magic number this function exists to replace.
+    ///
+    /// Returns the belief unchanged for `elapsed = 0`. Refuses negative `elapsed` or `tau`
+    /// (`Error`) rather than silently sharpening the belief, which is what a negative value
+    /// would do — uncertainty running backwards is not a staleness model.
+    let age (tau: float) (elapsed: float) (b: SkillBelief) : Result<SkillBelief, string> =
+        if System.Double.IsNaN tau || System.Double.IsNaN elapsed then
+            Error "age: tau and elapsed must be numbers"
+        elif tau < 0.0 then Error $"age: tau must be non-negative, got {tau}"
+        elif elapsed < 0.0 then Error $"age: elapsed must be non-negative, got {elapsed}"
+        else Ok { b with Sigma2 = b.Sigma2 + tau * tau * elapsed }
+
+    /// How long until this belief carries essentially no opinion — `trustBand` within `epsilon`
+    /// of 0.5 — given a drift of `tau`.
+    ///
+    /// This is the READOUT that makes `tau` auditable. Choosing τ directly is guessing; choosing
+    /// it and then asking "so how many ticks until a confident belief goes neutral?" is a claim
+    /// somebody can disagree with. Solves the same algebra `trustBand` uses:
+    ///
+    ///     Φ(μ / √(σ² + τ²·Δt + β²)) = 0.5 + ε   ⇒   Δt = ((μ/z)² − σ² − β²) / τ²
+    ///
+    /// where `z = Φ⁻¹(0.5 + ε)`. Returns `Ok 0.0` when the belief is already that uninformative,
+    /// and `Error` when it never gets there (`tau = 0`), because "never" is a fact the caller
+    /// must handle rather than a large number it might treat as a duration.
+    let ticksUntilUninformative
+        (tau: float)
+        (epsilon: float)
+        (b: SkillBelief)
+        : Result<float, string> =
+        if epsilon <= 0.0 || epsilon >= 0.5 then
+            Error $"ticksUntilUninformative: epsilon must be in (0, 0.5), got {epsilon}"
+        elif tau < 0.0 then Error $"ticksUntilUninformative: tau must be non-negative, got {tau}"
+        else
+            let current = abs (trustBand b - 0.5)
+            if current <= epsilon then Ok 0.0
+            elif tau = 0.0 then
+                Error "ticksUntilUninformative: tau = 0 — this belief never becomes uninformative"
+            else
+                // Invert Φ by bisection on the monotone map Δt ↦ |trustBand(aged) − 0.5|.
+                // Bisection rather than a Φ⁻¹ approximation so the answer is consistent with
+                // THIS module's `bigPhi` rather than with a second, differently-approximated one.
+                let bandAfter (dt: float) =
+                    abs (trustBand { b with Sigma2 = b.Sigma2 + tau * tau * dt } - 0.5)
+                let mutable hi = 1.0
+                let mutable guard = 0
+                while bandAfter hi > epsilon && guard < 200 do
+                    hi <- hi * 2.0
+                    guard <- guard + 1
+                if guard >= 200 then
+                    Error "ticksUntilUninformative: no finite horizon found (numerical limit)"
+                else
+                    let mutable lo = 0.0
+                    for _ in 1..80 do
+                        let mid = 0.5 * (lo + hi)
+                        if bandAfter mid > epsilon then lo <- mid else hi <- mid
+                    Ok hi
+
     // ── Ledger ─────────────────────────────────────────────────────────────────────────────────────
     /// A domain-partitioned ledger of skill beliefs: Map<(travelerId, hatDomain), SkillBelief>.
     type Ledger = Map<string * string, SkillBelief>
