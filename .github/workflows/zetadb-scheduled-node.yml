@@ -113,6 +113,13 @@ jobs:
           # `audit-workflow-credential-role-separation.ts` (cross-verify floor) refuses it.
           # Absence is a NAMED refusal, not a substitution: `openMergePR` refuses an empty
           # GH_TOKEN and names the secret and the scope.
+
+          # ARM AUTO-MERGE ON THE FLUSH PR. Opt-in flag read by `armingEnabled`
+          # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). Turned on
+          # 2026-08-26 after Aaron rotated ZETA_PR_ARCHIVE_TOKEN at 19:54Z to carry
+          # `enablePullRequestAutoMerge`; the docstring there records the decision. Scoped to
+          # THIS step so it cannot reach an unrelated one.
+          ZETA_FLUSH_ARM_AUTOMERGE: "1"
           GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"

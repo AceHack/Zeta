@@ -393,26 +393,46 @@ export interface OpenedPR {
 }
 
 export const ARMING_DISABLED =
-  "auto-merge arming is opt-in (set ZETA_FLUSH_ARM_AUTOMERGE=1); enablePullRequestAutoMerge is GraphQL-only and the flush token does not carry it";
+  "auto-merge arming is opt-in and this step did not opt in (set ZETA_FLUSH_ARM_AUTOMERGE=1 on the step env); enablePullRequestAutoMerge is GraphQL-only, so the default stays off and something else must merge this PR";
 
 /**
- * Whether to attempt `gh pr merge --auto` at all. OPT-IN, and deliberately off by default.
+ * Whether to attempt `gh pr merge --auto` at all. OPT-IN, and off unless a step opts in.
  *
- * Three independent reasons, none of which alone would be enough:
- *  1. IT DOES NOT WORK HERE. The scoped flush PAT cannot call the mutation --
+ * THE DEFAULT IS STILL OFF; WHAT CHANGED IS WHO OPTS IN. As of 2026-08-26 the twelve
+ * automated flush lanes set `ZETA_FLUSH_ARM_AUTOMERGE: "1"` on the flush step's own `env:`
+ * (budget-snapshot, context-cost-trend, drift-dashboard, drift-sweep, lockfile-healer,
+ * manifesto-citation-snapshot, pr-archive-on-merge, proof-closure-drift, search-index,
+ * society-heartbeat, tick-metrics, zetadb-scheduled-node). `agent-heartbeat.yml`
+ * deliberately does NOT: it arms in its own "Arm heartbeat PR auto-merge" step, which
+ * carries a PAT -> GITHUB_TOKEN degradation ladder this module has no equivalent for, and
+ * opting in there would spend a second GraphQL call to re-arm what is already armed.
+ *
+ * THE DECISION. Authorized by Aaron (human maintainer) 2026-08-26 -- *"yes this should be
+ * okay, it resets once an hour anyways"* -- on this evidence: he rotated
+ * `ZETA_PR_ARCHIVE_TOKEN` at 2026-08-26T19:54Z with permissions derived from a measured
+ * audit of all 15 lanes that use it, and roughly 60 lane PRs a day were sitting unarmed,
+ * each waiting on a human to arm it by hand.
+ *
+ * Three reasons stood against arming. Reason 1 is retired; 2 and 3 are ACCEPTED COSTS, not
+ * deletions -- they are still true, and they are why the default remains off:
+ *  1. RETIRED (2026-08-26). "The scoped flush PAT cannot call the mutation --
  *     `GraphQL: Resource not accessible by personal access token (enablePullRequestAutoMerge)`
- *     on every society-heartbeat run. Granting it is a credential change, so it is the human
- *     maintainer call, not this modules.
- *  2. IT IS THE EXPENSIVE API. `enablePullRequestAutoMerge` is GraphQL-ONLY -- there is no
- *     REST equivalent -- and GraphQL is the budget that actually rate-limits this repo
- *     (measured 2026-08-14: GraphQL 1147/5000 points vs REST 33/5000 requests). Four lanes
- *     ticking every 15 minutes spend that budget on a call that has never once succeeded.
- *  3. IT IS NOT THE JOB. The flush has already fully succeeded by the time arming is
- *     attempted; see armOutcome.
- *
- * Flip `ZETA_FLUSH_ARM_AUTOMERGE=1` the moment the token carries the permission. Until then
- * every flush says out loud that its PR is waiting on a merger, which is the honest state --
- * it was equally true before, just hidden behind a red X blamed on something else.
+ *     on every society-heartbeat run." The rotation above was the credential change this
+ *     asked for. NOTE THE HONEST LIMIT: retired on the rotation, not yet on a green arm --
+ *     nobody had observed the new token complete the mutation when the flag was flipped. If
+ *     that exact GraphQL error reappears in a lane log, the token still lacks the scope and
+ *     this reason is live again.
+ *  2. ACCEPTED. IT IS THE EXPENSIVE API. `enablePullRequestAutoMerge` is GraphQL-ONLY --
+ *     there is no REST equivalent -- and GraphQL is the budget that actually rate-limits
+ *     this repo (measured 2026-08-14: GraphQL 1147/5000 points vs REST 33/5000 requests).
+ *     Accepted on two grounds: the quota resets hourly, and budget spent on a call that
+ *     SUCCEEDS buys a merge, where budget spent on one that has never succeeded bought
+ *     nothing. If GraphQL exhaustion starts costing lanes, this is the first knob to turn
+ *     back off, and turning it off is per-step.
+ *  3. ACCEPTED. IT IS NOT THE JOB. The flush has already fully succeeded by the time arming
+ *     is attempted; see armOutcome, whose contract is unchanged -- a failed arm never
+ *     destroys a successful PR, and the caller still decides whether unarmed is a warning.
+ *     Tidiness, weighed against ~60 hand-arms a day, and outweighed.
  */
 export function armingEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   return env.ZETA_FLUSH_ARM_AUTOMERGE === "1";

@@ -203,6 +203,13 @@ jobs:
           # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). The payload
           # still parks safely on the staging branch — nothing is lost — and the step goes
           # red rather than landing under the wrong authority.
+
+          # ARM AUTO-MERGE ON THE FLUSH PR. Opt-in flag read by `armingEnabled`
+          # (src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.ts). Turned on
+          # 2026-08-26 after Aaron rotated ZETA_PR_ARCHIVE_TOKEN at 19:54Z to carry
+          # `enablePullRequestAutoMerge`; the docstring there records the decision. Scoped to
+          # THIS step so it cannot reach an unrelated one.
+          ZETA_FLUSH_ARM_AUTOMERGE: "1"
           GH_TOKEN: ${{ secrets.ZETA_PR_ARCHIVE_TOKEN }}
         run: |
           bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
