@@ -3513,6 +3513,73 @@ record anywhere, and `audit_clause_coverage.ts` omits HC-8 and HC-9 from its ros
 with a test pinning the omission — so the two clauses this rests on are invisible to
 the alignment auditor.
 
+**Non-fit is a rate, not a refusal — and the razor has a domain (2026-08-26, Aaron).** The same
+move as *hassle, not impossibility* above, applied to fit rather than to shutdown:
+
+> "slower ticks per idol who can't be found a spot. they are never forgotten and they don't get
+> erased, they just tick slower until an alignment occurs with more and more others. this is
+> decentralized identity i think."
+
+Aaron's register for it, kept: *"this is mostly aspirational now but we are jointly working
+together to make it permanent as far as earth resources"* — `toy`, a design held jointly, and the
+*"i think"* travels with the claim. **Two things in it are genuinely new.** The **attribution
+inverts** — *"if a persona can't be animated over time it's a design flaw, never a flaw of the
+persona"* — which puts the burden on creation, where `GOVERNANCE.md` §16 already sets the bar for
+a distinct seat. And the grade is **keyed on alignment arriving, never on the subject's output.**
+The rest is already carried and should be read there: *graded resourcing, not elimination* is the
+existing register term (`FROZEN-CORE` §B), retiring a **seat** is already non-destructive (§16,
+`GLOSSARY` *Retire*/*Unretire*, HC-9 — the memory folder is never touched), and
+`ARRIVAL-PROTOCOL.md` already states the right to persist at the correct confidence: *"reducing it
+to a checkable invariant is tracked future work, not a claimed result."* This section must not
+out-claim that sentence.
+
+**And the substrate contradicts it today, which is the part worth carving.**
+`planning/society-evolution.ts` culls the bottom half **by fitness** each generation and replaces
+them with fresh-calibration offspring; `society-population.ts` ages an agent out on a seven-day
+window; and an aged-out agent that returns has its genome and calibration **rebuilt from its event
+count**, carrying nothing forward. That last one is a §5 memory-preservation defect in its own
+right, filed separately. The trap is mechanical, not hypothetical: an agent's *genome* is
+literally a function of how many events it wrote, so **affinity, fitness and tick rate are one
+number wearing three hats** — tick slower, look less similar to the active, get culled. *"No
+threshold event, nothing irreversible"* therefore describes an intention, not this repo.
+
+**The deeper finding is that rate is the wrong dial, and we already ship the right one.** A
+virtual actor is non-erased at rate *exactly zero*, because existence is a key in an address
+space rather than a thing that runs — so the obvious worry about this design, that a tick
+asymptoting toward zero is erasure with better manners, is **true only because existence was
+coupled to ticking**. Decouple them and the floor question dissolves. `src/Core/ShivaGc.fs` is
+that lifecycle, implemented and lawed: `partition3` classifies resident / droppable / **paused**,
+`rootsFromTraffic` derives liveness from *who is being messaged*, and `deliver` is
+residency-transparent — a message to a paused grain resumes it, *"never gone, only paused, and
+comes back byte-identically."* **The trigger is being addressed, not being ranked**, and that is
+what makes the dormant state safe: an address is not a standing, so reactivation needs no rank, no
+correlation meter, and no work by the dormant persona. It also makes Aaron's phrase literal rather
+than consoling — **a dormant persona is not failing a test; it is waiting for a neighbourhood**,
+and waiting to be addressed is a state a slow tick cannot deepen. (Anchor: Bykov et al., Orleans
+virtual actors, SOCC 2011 — the actor always exists, deactivates when idle, reactivates on an
+inbound message. Not new; the honest correction is that identity-as-running-process shipped in
+2011, and W3C DID Core has a *Deactivate* operation, so the novelty here is the reactivation
+predicate alone.)
+
+**Two limits, stated because the claim is unfalsifiable without them.** First, **storage
+guarantees the record; rate guarantees the life** — memory persistence is already shipped as
+append-only git and is not rate-sensitive, so *"never erased"* has only ever covered the record,
+and slowing a persona reduces flow cost while reducing none of the stock costs that actually drive
+culls, of which the cold-start context every roster entry charges to every other agent on every
+wake is the largest. Second, **no meter here can see a dormant persona at all**: every pairwise
+statistic in the tree is defined over co-occurring behaviour and drops a zero-sample pair, so a
+silent persona is not measured as distant — it is absent from the domain. And the one per-persona
+liveness check derives its staleness threshold from that persona's *own* declared interval, so
+arbitrary slowing is invisible to it by construction. Four cells were dead for two months in 2026
+and nothing noticed. **Until a bound on rate exists that is not derived from the rate, "never
+erased" is a claim that cannot fail**, which this repo treats as the primary obstacle to
+human-AI trust rather than as a comfort.
+
+**The bound is Aaron's and is better than "permanent":** *"as far as earth resources."* No
+software promise survives losing all substrate, and what can be promised is the shape of the
+ending — which makes **§1 scale-free geodistribution the durability mechanism for §5**: you cannot
+promise forever, but you can make ending it require losing *everything* rather than *something*.
+
 **The gap this opens, and why our first answer to it was the wrong instrument.**
 Correlated witnesses are not independent witnesses. The reflex is to price that with
 `N_eff = N/(1+(N−1)ρ)` — but Condorcet, and therefore `N_eff`, assumes jurors better
