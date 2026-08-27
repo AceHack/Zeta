@@ -383,7 +383,12 @@ using DynamicValue's byte-locked per-format serializer:
     (dotnet vs bun vs Lean vs wasm vs k8s) — Martin's CCP vs CRP,
     measured in `docs/research/2026-08-19-repo-split-round-3-*` (87% of
     the union footprint is single-owner). That is the dep-graph half;
-    git-history analysis is the missing half. Peer repos, **never
+    git-history analysis is the missing half. **12-factor** (Wiggins
+    2011) is a third, *app-shaped* categorization: one codebase per
+    extract, declared deps, config out of code, backing services as
+    attached resources. It does not replace DV2 or CRP, and it does
+    not replace the manifesto **building codes** (any code, vs ad
+    hoc). `081M12CZRHC087G0R0008X7SYG`. Peer repos, **never
     submodules** (the Ace/Zeta/Forge cycle cannot be a DAG — ADR
     2026-04-22). Cutover sequence already written
     (`docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`);
@@ -502,7 +507,8 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
 - **ZetaFS dual-fold remaining** — factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`). Parent edge shipped. Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128 (hexagonal).
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
-- **Next extract after Harny** — pick by measured git-history co-change **and** live dependency graph (not by a layer name); DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated). `081M120GFSV087G0R003XCPC64`
+- **Next extract after Harny** — pick by measured git-history co-change **and** live dependency graph (not by a layer name); DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); **12-factor** as the app-shaped categorization of an extract. Dogfood first, then `create-repo` cutover (gated). `081M120GFSV087G0R003XCPC64` · `081M12CZRHC087G0R0008X7SYG`
+- **Repeated-correction corpus** — the coding-defaults trainset (building-code layer, any code). Prompt-paste does not produce adherence (`ρ` trainset floor). Name it; collector is a retractable Z-set of correction events keyed by the rule they witness. `081M12CZRHC087G0R0008X7SYG`
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 - **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
@@ -620,9 +626,14 @@ These don't wait for a single round:
 - **Dogfood, then extract.** Expect **dozens of peer repos**, split on
   measured git-history co-change **and** the live dependency graph
   (Data Vault 2.0 change-rate *and* toolchain closure) — not a
-  three-repo ceiling and not a layer stack. Local action in one repo;
-  global effect via Ace pins, Z-set/+1 merge, and SoftValue observe
-  (`DuExpand`). `081M120GFSV087G0R003XCPC64`.
+  three-repo ceiling and not a layer stack. **12-factor** categorizes
+  the *app* after the cut. Manifesto building codes are the lower
+  layer (any code vs ad hoc). Local action in one repo; global effect
+  via Ace pins, Z-set/+1 merge, and SoftValue observe (`DuExpand`).
+  `081M120GFSV087G0R003XCPC64` · `081M12CZRHC087G0R0008X7SYG`.
+- **The correction corpus is the trainset floor.** Repeated human
+  corrections of how to write the code — not another prompt paste.
+  Context/memory/vendor cannot get below it.
 - **DUs expand to DynamicValue (collapsed) and SoftValue (Bayesian
   interpretation).** `snap` is the only collapse. This is the bridge
   to our BNN / factor-graph reading of the same verbs.

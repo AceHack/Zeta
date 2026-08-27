@@ -1,0 +1,14 @@
+{
+  "id": "080d02267f118010a01300081c76b6b2",
+  "at": "2026-08-27T20:01:09.680Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M12CZRHC087G0R0008X7SYG",
+    "type": "task",
+    "title": "12-factor as repo-split lens; repeated-correction corpus is the trainset floor",
+    "slug": "12-factor-as-repo-split-lens-repeated-correction-corpus-is-t",
+    "priority": "P2",
+    "filename": "081M12CZRHC087G0R0008X7SYG-12-factor-as-repo-split-lens-repeated-correction-corpus-is-t.md"
+  }
+}

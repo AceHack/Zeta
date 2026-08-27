@@ -131,6 +131,11 @@ with a ⭐ below and add a row there.
   closure-table-style `Hierarchy.fs`.
 - **XTDB 2** ⭐ — Arrow bitemporal indexes; temporal-query
   inspiration.
+- **Twelve-Factor App** ⭐ — **Adam Wiggins**, Heroku, 2011, [12factor.net](https://12factor.net/).
+  Categorization for SaaS/deploy _extracts_ (one codebase, declared deps, config in env,
+  backing services as attached resources). Repo-split _app_ lens; not a substitute for
+  manifesto building codes (any code vs ad hoc) nor for DV2/CRP measurement.
+  `081M12CZRHC087G0R0008X7SYG`.
 - **CloudEvents** ⭐ — CNCF event-envelope standard (v1.0); to be the bus
   envelope over Zeta's busses. See `docs/research/2026-06-07-cloudevents-bus-envelope-and-debezium-cdc-as-zset-delta-anchor-aaron.md`.
 - **Debezium / CDC** ⭐ — Red Hat; the `before/after/op/source/ts_ms` change-event
