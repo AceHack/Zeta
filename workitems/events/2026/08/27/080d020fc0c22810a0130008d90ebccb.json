@@ -1,0 +1,14 @@
+{
+  "id": "080d020fc0c22810a0130008d90ebccb",
+  "at": "2026-08-27T06:46:13.317Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10ZG624087G0R003JW3K8E",
+    "type": "bug",
+    "title": "k3s-server.nix pins no --node-ip, so a multi-homed control plane can advertise etcd on an interface its peers do not share",
+    "slug": "k3s-server-nix-pins-no-node-ip-so-a-multi-homed-control-plan",
+    "priority": "P2",
+    "filename": "081M10ZG624087G0R003JW3K8E-k3s-server-nix-pins-no-node-ip-so-a-multi-homed-control-plan.md"
+  }
+}

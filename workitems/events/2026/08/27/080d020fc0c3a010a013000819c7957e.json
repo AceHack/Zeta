@@ -1,0 +1,14 @@
+{
+  "id": "080d020fc0c3a010a013000819c7957e",
+  "at": "2026-08-27T06:46:13.364Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10ZG63M087G0R000SG5KV6",
+    "type": "task",
+    "title": "Refuse harness network posture that exceeds the product: a nixosTest may not open a port the shipped module closes",
+    "slug": "refuse-harness-network-posture-that-exceeds-the-product-a-ni",
+    "priority": "P2",
+    "filename": "081M10ZG63M087G0R000SG5KV6-refuse-harness-network-posture-that-exceeds-the-product-a-ni.md"
+  }
+}

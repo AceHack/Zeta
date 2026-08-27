@@ -1,0 +1,14 @@
+{
+  "id": "080d020fc0c2e810a0130008cf9d745b",
+  "at": "2026-08-27T06:46:13.341Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10ZG62W087G0R002X76P1D",
+    "type": "task",
+    "title": "No SECOND control-plane host exists: the multi-server path has never been expressed in the product",
+    "slug": "no-second-control-plane-host-exists-the-multi-server-path-ha",
+    "priority": "P2",
+    "filename": "081M10ZG62W087G0R002X76P1D-no-second-control-plane-host-exists-the-multi-server-path-ha.md"
+  }
+}

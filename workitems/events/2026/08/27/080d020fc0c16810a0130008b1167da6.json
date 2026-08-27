@@ -1,0 +1,14 @@
+{
+  "id": "080d020fc0c16810a0130008b1167da6",
+  "at": "2026-08-27T06:46:13.293Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10ZG61D087G0R001A70F0P",
+    "type": "bug",
+    "title": "Two-node control-plane join is a FALSE GREEN: etcd 2379/2380 open only in the test harness, closed in the product",
+    "slug": "two-node-control-plane-join-is-a-false-green-etcd-2379-2380",
+    "priority": "P1",
+    "filename": "081M10ZG61D087G0R001A70F0P-two-node-control-plane-join-is-a-false-green-etcd-2379-2380.md"
+  }
+}

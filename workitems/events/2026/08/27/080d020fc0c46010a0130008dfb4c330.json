@@ -1,0 +1,14 @@
+{
+  "id": "080d020fc0c46010a0130008dfb4c330",
+  "at": "2026-08-27T06:46:13.388Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10ZG64B087G0R00173PFC0",
+    "type": "bug",
+    "title": "longhorn-common-default-disk asserts on an argv k3s erases, in a flake check no workflow invokes (doubly dead)",
+    "slug": "longhorn-common-default-disk-asserts-on-an-argv-k3s-erases-i",
+    "priority": "P3",
+    "filename": "081M10ZG64B087G0R00173PFC0-longhorn-common-default-disk-asserts-on-an-argv-k3s-erases-i.md"
+  }
+}
