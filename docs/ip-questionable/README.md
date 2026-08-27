@@ -54,3 +54,10 @@ promptly in good faith.
   only** — our analysis is in
   `docs/research/2026-08-27-the-swarms-worst-behaviour-was-a-scarcity-artifact-named-agents-with-guaranteed-ticks-remove-its-preconditions.md`,
   which restates every fact it needs and survives this file being deleted.
+- `2026-08-27-level1techs-switchyard-data-flywheel-model-routing-transcript.md` — verbatim
+  auto-transcript of the Level1Techs (Wendell Wilson) video on NVIDIA Switchyard, Nemotron 3.5
+  Lightning, and the data flywheel. Ferried at Aaron's observation that a flywheel is structurally
+  a discriminated union with a *learned discriminator*, and that our own corpus (PR archives,
+  shadow logs, decorrelation records) is disagreement-shaped where most training data is not.
+  Analysis that cites it:
+  `docs/research/2026-08-27-the-data-flywheel-is-a-du-with-a-learned-discriminator-and-our-corpus-is-disagreement-shaped.md`.
