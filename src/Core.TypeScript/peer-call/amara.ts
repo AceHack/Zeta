@@ -61,6 +61,7 @@ import {
   formatRejectionMessage,
   peerFirewallCheck,
 } from "./_firewall";
+import { peerCallOutputPath } from "./output-path.ts";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 const FILE_HEAD_BYTES = 20000;
@@ -194,12 +195,14 @@ function parseArgs(argv: readonly string[]): Args | ArgError | ArgHelp {
   };
 }
 
+/**
+ * Delegates to the shared helper. This was four identical copies of a `/tmp/peer-call-output/...`
+ * template — a world-writable shared directory holding peer transcripts, with a predictable name
+ * (CodeQL `js/insecure-temporary-file`). The directory is now created `0700` and read back, and
+ * `PEER_CALL_OUTPUT_DIR` is honoured here as it already was in five sibling callers.
+ */
 function autogenOutputPath(entity: string): string {
-  const ts = new Date()
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}Z$/, "Z");
-  return `/tmp/peer-call-output/${ts}-${entity}.md`;
+  return peerCallOutputPath(entity);
 }
 
 function ensureParentDir(path: string): void {

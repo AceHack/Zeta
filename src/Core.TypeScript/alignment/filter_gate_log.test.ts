@@ -5,7 +5,7 @@
 //
 // Run: bun test src/Core.TypeScript/alignment/filter_gate_log.test.ts
 
-import { describe, expect, test } from "bun:test";
+import { afterAll, describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -16,6 +16,26 @@ import {
   parseArgs,
   readLog,
 } from "./filter_gate_log.ts";
+
+/**
+ * A fresh 0700 directory per call.
+ *
+ * These paths were hardcoded `/tmp/filter-gate-test-*.jsonl` — fixed names in a world-writable
+ * shared directory (CodeQL `js/insecure-temporary-file`). Two concurrent runs of this suite would
+ * write the same file, and any local user could pre-create it as a symlink and redirect the write.
+ * `mkdtempSync` is atomic and unique by construction, so neither is possible.
+ */
+function tmpDir(): string {
+  const dir = mkdtempSync(join(tmpdir(), "zeta-filter-gate-"));
+  createdDirs.push(dir);
+  return dir;
+}
+
+const createdDirs: string[] = [];
+afterAll(() => {
+  for (const d of createdDirs) rmSync(d, { recursive: true, force: true });
+});
+
 
 describe("parseArgs", () => {
   test("returns help for -h", () => {
@@ -173,18 +193,18 @@ describe("parseArgs", () => {
 
 describe("readLog", () => {
   test("returns empty array for nonexistent file", () => {
-    expect(readLog("/tmp/definitely-does-not-exist-filter-gate.jsonl")).toEqual([]);
+    expect(readLog(join(tmpDir(), "definitely-does-not-exist-file.jsonl"))).toEqual([]);
   });
 
   test("returns empty array for empty file", () => {
-    const path = "/tmp/filter-gate-test-empty.jsonl";
+    const path = join(tmpDir(), "empty.jsonl");
     writeFileSync(path, "");
     expect(readLog(path)).toEqual([]);
     rmSync(path, { force: true });
   });
 
   test("parses valid JSONL entries", () => {
-    const path = "/tmp/filter-gate-test-parse.jsonl";
+    const path = join(tmpDir(), "parse.jsonl");
     const entry: FilterGateEntry = {
       schema: "filter-gate-v1",
       timestamp: "2026-05-08T00:00:00.000Z",
@@ -204,7 +224,7 @@ describe("readLog", () => {
   });
 
   test("skips malformed lines", () => {
-    const path = "/tmp/filter-gate-test-malformed.jsonl";
+    const path = join(tmpDir(), "malformed.jsonl");
     const good: FilterGateEntry = {
       schema: "filter-gate-v1",
       timestamp: "2026-05-08T00:00:00.000Z",

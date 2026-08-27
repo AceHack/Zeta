@@ -26,6 +26,7 @@ import { openAiCompatBackend } from "../model-backend/backend";
 import { multiplexedDuplexTransport } from "../model-backend/multiplexed-duplex-transport";
 import { platformWebSocket, webSocketEndpoint } from "../model-backend/web-socket-endpoint";
 import { askPersona, awaitHello, openPersona, type PersonaFrame, type PersonaCtl } from "../model-backend/persona-transport";
+import { peerCallOutputPath } from "./output-path.ts";
 
 const FILE_HEAD_BYTES = 20000;
 const CTX_HEAD_BYTES = 20000;
@@ -205,9 +206,10 @@ export class PersonaSummoner implements ISummon {
       fullPrompt += `\n\n---\n\nContext command: ${options.contextCmd}\nOutput:\n\`\`\`\n${cmdOutput}\n\`\`\``;
     }
 
-    // Resolve output path
-    const ts = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
-    const outputFile = options.outputFile ?? `/tmp/peer-call-output/${ts}-${personaConfig.name}.md`;
+    // Resolve output path. The default went to a world-writable `/tmp/peer-call-output` under a
+    // predictable name (CodeQL `js/insecure-temporary-file`); `peerCallOutputPath` creates the
+    // directory 0700, reads the mode back, and honours PEER_CALL_OUTPUT_DIR.
+    const outputFile = options.outputFile ?? peerCallOutputPath(personaConfig.name);
     ensureParentDir(outputFile);
 
     // ─── Local-LLM path ──────

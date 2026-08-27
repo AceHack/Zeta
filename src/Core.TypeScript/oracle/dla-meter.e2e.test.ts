@@ -17,7 +17,7 @@
  *   - The JSON schema of OracleReading changes incompatibly
  */
 import { describe, it, expect, afterEach } from "bun:test";
-import { mkdirSync, writeFileSync, rmSync } from "fs";
+import { mkdirSync, writeFileSync, rmSync, mkdtempSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import {
@@ -66,7 +66,11 @@ function writeReading(
 // Track temp dirs for cleanup
 const tempDirs: string[] = [];
 function makeTempDir(): string {
-  const dir = join(tmpdir(), `zeta-e2e-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  // `mkdtempSync` CREATES the directory atomically at 0700. The previous shape computed a name and
+  // left creation to a later `mkdirSync`, which is a window: between the two the path can be
+  // created by someone else, and `Math.random()` is not a security primitive (CodeQL
+  // `js/insecure-temporary-file`).
+  const dir = mkdtempSync(join(tmpdir(), "zeta-e2e-"));
   tempDirs.push(dir);
   return dir;
 }

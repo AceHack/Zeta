@@ -9,7 +9,7 @@
  * travels with every OracleReading.
  */
 import { describe, it, expect } from "bun:test";
-import { mkdirSync, writeFileSync, rmSync } from "fs";
+import { mkdirSync, writeFileSync, rmSync, mkdtempSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import {
@@ -229,7 +229,11 @@ describe("DMP-9: loadPriorReadings", () => {
   });
 
   it("directory with valid JSON files → reads oracleIndex and fractalDim", () => {
-    const tmpRoot = join(tmpdir(), `zeta-dla-test-${Date.now()}`);
+    // `mkdtempSync`, not a computed name: `Date.now()` alone is millisecond-resolution, so the two
+    // tests in this file collide whenever they land in the same millisecond, and the name was
+    // predictable in a world-writable directory (CodeQL `js/insecure-temporary-file`). mkdtemp is
+    // atomic and 0700 by construction.
+    const tmpRoot = mkdtempSync(join(tmpdir(), "zeta-dla-test-"));
     const agentDir = join(tmpRoot, "docs", "oracle-readings", "test-agent", "2026", "08", "08");
     mkdirSync(agentDir, { recursive: true });
     writeFileSync(join(agentDir, "oracle-0-aabbccdd.json"), JSON.stringify({
@@ -251,7 +255,11 @@ describe("DMP-9: loadPriorReadings", () => {
   });
 
   it("malformed JSON files are skipped gracefully", () => {
-    const tmpRoot = join(tmpdir(), `zeta-dla-test-${Date.now()}`);
+    // `mkdtempSync`, not a computed name: `Date.now()` alone is millisecond-resolution, so the two
+    // tests in this file collide whenever they land in the same millisecond, and the name was
+    // predictable in a world-writable directory (CodeQL `js/insecure-temporary-file`). mkdtemp is
+    // atomic and 0700 by construction.
+    const tmpRoot = mkdtempSync(join(tmpdir(), "zeta-dla-test-"));
     const agentDir = join(tmpRoot, "docs", "oracle-readings", "test-agent", "2026", "08", "08");
     mkdirSync(agentDir, { recursive: true });
     writeFileSync(join(agentDir, "good.json"), JSON.stringify({ oracleIndex: 0, fractalDim: 1.3 }));
