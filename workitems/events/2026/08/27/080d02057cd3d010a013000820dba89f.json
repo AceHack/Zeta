@@ -1,0 +1,14 @@
+{
+  "id": "080d02057cd3d010a013000820dba89f",
+  "at": "2026-08-27T00:47:25.306Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10AZ6KS087G0R0000SSFMH",
+    "type": "task",
+    "title": "No-app needle: FourCornerTrace closes value; Kleisli ISR closes interrupts so we can self-predict",
+    "slug": "no-app-needle-fourcornertrace-closes-value-kleisli-isr-close",
+    "priority": "P1",
+    "filename": "081M10AZ6KS087G0R0000SSFMH-no-app-needle-fourcornertrace-closes-value-kleisli-isr-close.md"
+  }
+}

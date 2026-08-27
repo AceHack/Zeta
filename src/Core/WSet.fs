@@ -123,6 +123,15 @@ module WSet =
 /// *reading* — and therefore the downstream conclusion — is corrected. Any stronger reading (the future
 /// literally acting on the past) is not claimed and is not what this code does.
 ///
+/// **HONESTY — the ISR Kleisli is a sibling, not this trace.** Closing over interrupts uses
+/// `ISR` (`IntrCtx.fs`): Kleisli `>=>` with genuine interrupts in `Result`'s **error** slot.
+/// Four corners flow in the **value** slot (`IsrLift` / `FourCornerFusion.Tests`). We avoid
+/// Hughes `ArrowApply.app` so structure stays inspectable — that is how
+/// `SchedulerZeta.predict` / `Chip8Observer.predict` run-ahead on the DoP=1 ferry
+/// (`FerryThrottlerConfig.deterministic`) and predict our own behaviour. Same *shape*
+/// as this trace (feedback without rewriting the log). Not the same object: this module
+/// needs an additive inverse (`IStarRing`); `InterruptFeedback` has none.
+///
 /// **HONESTY — "the quantum corner" is the ℂ-amplitude RING, an algebraic bridge only.** `'W = ℂ` gives
 /// interference and a Born boundary, and `−1 = i²` places the retraction corner and the amplitude corner on
 /// one C₄ phase `{1, i, −1, −i}` — that is an identity in the *ring*, matching `FourCorner`'s 2×2 compass.

@@ -90,6 +90,10 @@ bun src/Core.TypeScript/harny/harny.ts import grok
    Full −1 of the view is **erasing**; `SoftValue.widen` is **non-erasing**
    of support; negate alone is Bennett-free (`081M10BD9BM087G0R001SGDRXT`).
 4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
+   Self-prediction of the tick uses the no-`app` Kleisli close:
+   `FourCornerTrace` on VALUE, ISR `>=>` on interrupts, DoP=1 ferry,
+   `SchedulerZeta.predict` / `Chip8Observer.predict`. Consistent-with,
+   not one type. `081M10AZ6KS087G0R0000SSFMH`.
 
 Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
 turn on Harny with a stored account token, no vendor CLI, no `gh`.
@@ -131,6 +135,7 @@ already running, not by inventing a fourth factory. The concert is
 - Research absorb: `docs/research/2026-08-26-own-harness-account-logins-ace-zeta-clis-not-platform.md`
 - ZetaFS dual fold: `docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md` · `src/Core/ZetaFsDualFold.fs`
 - Erasing vs widen: `docs/research/2026-08-26-full-minus-erasing-widen-nonerasing.md` · `src/Core/RetractionReading.fs`
+- No-`app` needle: `docs/research/2026-08-26-no-app-kleisli-isr-fourcornertrace-self-predict.md` · `IntrCtx.fs` · `IsrLift.fs` · `SchedulerZeta.fs`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
 - Cutover sequence: `docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`

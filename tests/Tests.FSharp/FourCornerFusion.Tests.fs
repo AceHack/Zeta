@@ -84,6 +84,27 @@ let ``interrupts stay in the ERROR channel (sum), corners in the VALUE channel (
     }
 
 [<Fact>]
+let ``no ArrowApply app: SchedulerZeta predicts the VALUE-channel period; interrupts are not in that map`` () =
+    // Thin needle. The map is corners only — a DoP=1 ferry / soft IScheduler tick.
+    // Structure is this function, not a value-arriving-as-an-arrow (Hughes app).
+    // An interrupt in the ERROR channel does not change the predicted orbit.
+    let step (o: Corners) : Corners =
+        match o.TOut with
+        | Some "a" -> FourCorner.withOut "b" o
+        | _ -> FourCorner.withOut "a" o
+
+    let start = FourCorner.ofIn "in" |> FourCorner.withOut "a"
+    let key (o: Corners) = defaultArg o.TOut ""
+    let r = SchedulerZeta.predict key step start
+    Assert.Equal(2, r.Period)
+    Assert.Equal(0, r.Transient)
+    Assert.Equal(2, r.Reachable)
+    let _interrupt = Interrupted SentinelMissing
+    let r2 = SchedulerZeta.predict key step start
+    Assert.Equal(r.Period, r2.Period)
+    Assert.Equal(1, FerryThrottlerConfig.deterministic.MaxDegreeOfParallelism)
+
+[<Fact>]
 let ``DST: the fused arrow replays identically (same seed, budget => same corners)`` () =
     task {
         let fill: SoftScheduler.Handler<Corners> =

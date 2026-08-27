@@ -123,6 +123,20 @@ Z-set folds over our own Merkle DAG (`DagFs` / `ContentStore` / `ZetaFsDeltaLog`
 edges so truncate is reversible like git, BLAKE3 as the tamper-evident default, factory
 path stops execing `git`/`gh`. Workitem `081M108RYNT087G0R001JSRNZE`.
 
+**Thin needle (consistent-with, not identified by count).** `FourCornerTrace` is
+the VALUE-channel close (WSet +1/−1, generator reread; `−1 = i²` on ℂ is a
+**ring** identity). We close over **interrupts** with the **Kleisli** ISR
+(`IntrCtx.fs` `>=>`), not by stuffing `InterruptFeedback` into the trace
+(Rodney: sum vs product). Avoid Hughes `ArrowApply.app` so structure is
+knowable independently of values — that is how `SchedulerZeta.predict` and
+`Chip8Observer.predict` run-ahead on the DoP=1 ferry
+(`FerryThrottlerConfig.deterministic`, soft `IScheduler`) and predict our
+own CHIP-8/9 / scheduler behaviour (GGPO/rollback). Clifford generators
+square to ±1: same C₄ *compass*, not an identification. `MinimalBnn` /
+factor graphs / Student-t ADF are the online +1 absorb; EP re-normalisation
+is **not** Z-set minus (inverse-free corners do not get the trace).
+Workitem `081M10AZ6KS087G0R0000SSFMH`.
+
 - **Done-test (the bright line):** a full work-cycle (land a change, branch, query history, update
   backlog) with **zero `git` CLI calls** and **zero LibGit2Sharp**.
 - **git-reach = the gap detector:** every fallback to `git` *names a missing DB primitive (or
@@ -249,7 +263,10 @@ using DynamicValue's byte-locked per-format serializer:
     (NO GIT CLI / ZetaFS) is the source-control bootstrap Harny's
     sc/fs tools ride — dual Z-set folds over DagFs Merkle
     (`ZetaFsDualFold` / `081M108RYNT087G0R001JSRNZE`), not
-    LibGit2Sharp-as-the-store.
+    LibGit2Sharp-as-the-store. Self-prediction of Harny/CHIP-8 ticks
+    uses the same no-`app` Kleisli close (`SoftScheduler` / `SchedulerZeta`
+    / `Chip8Observer`) — consistent with `FourCornerTrace`, not the same
+    type (`081M10AZ6KS087G0R0000SSFMH`).
     Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
     Umbrella `081M100RB97087G0R0008EAAY7`; extract
     `081M102M6Y2087G0R000407SW3`; DU verbs
@@ -376,6 +393,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Zeta.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
+- **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
 - **ZetaFS dual-fold remaining** — parent edge on `ZetaFsDeltaLog` (truncate reversible), BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`)
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
@@ -494,3 +512,7 @@ These don't wait for a single round:
 - Full −1 retraction of the **view** is **erasing**; `SoftValue.widen` is
   **non-erasing** of support; `ZSet.neg` alone is Bennett-free. Same
   reversible-computing vocabulary as `ErasureClass` (`081M10BD9BM087G0R001SGDRXT`).
+- Keep the **no-`app` needle**: FourCornerTrace closes the VALUE
+  channel; Kleisli ISR closes interrupts; DoP=1 ferry +
+  `SchedulerZeta.predict` / `Chip8Observer.predict` run-ahead. Same
+  shape, not one type. `081M10AZ6KS087G0R0000SSFMH`.

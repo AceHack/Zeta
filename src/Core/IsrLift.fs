@@ -17,6 +17,15 @@ open System.Threading.Tasks
 /// semantics are *correct*. Zero structural change; `IntrCtx.fs`, `SoftScheduler.fs`, CHIP-8 untouched.
 /// The instantiation is *proven* in `tests/Tests.FSharp/FourCornerFusion.Tests.fs`.
 ///
+/// **Thin needle (consistent-with, not identified by count).** `FourCornerTrace` is how we
+/// close the VALUE channel (WSet ping-return / generator reread). The **Kleisli** ISR
+/// (`A → Task<Result<B, InterruptFeedback>>`, `>=>`) is how we close over **interrupts**
+/// without Hughes `ArrowApply.app`. `no app` ⇒ structure is knowable independently of
+/// values ⇒ `SchedulerZeta.predict` and `Chip8Observer.predict` can run-ahead (GGPO /
+/// rollback). FerryThrottler DoP=1 is the cooperative loop that map runs on. These share
+/// a *shape* (static structure, values flow). They are not one type. EP/ADF re-normalisation
+/// is not Z-set minus; Clifford ±1 is the same C₄ *compass*, not an identification.
+///
 /// This file adds the one genuinely missing piece: **lifts into the arrow.**
 [<RequireQualifiedAccess>]
 module IsrLift =
