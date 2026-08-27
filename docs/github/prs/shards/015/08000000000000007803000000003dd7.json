@@ -1,0 +1,12 @@
+{
+  "pr_number": 15831,
+  "archive_path": "docs/history/pr-reviews/PR-15831-fix-ci-a-drought-window-that-cannot-see-its-own-run-is-stale-not-a-drought.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T14:56:49.666Z",
+  "schema_version": "v1",
+  "commit_sha": "4b4f4e935ef61c47864bdac76664d5b733148e70",
+  "title": "fix(ci): a drought window that cannot see its own run is STALE, not a drought",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T14:56:10Z",
+  "head_ref": "shadow/drought-detector-must-see-its-own-run"
+}
