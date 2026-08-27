@@ -1,0 +1,12 @@
+{
+  "pr_number": 15904,
+  "archive_path": "docs/history/pr-reviews/PR-15904-fix-heartbeat-reconcile-monotone-adjudication-pointers.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T21:26:27.244Z",
+  "schema_version": "v1",
+  "commit_sha": "ccf3e837388c26b06224e118b660812617a6152c",
+  "title": "fix(heartbeat): reconcile monotone adjudication pointers",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T20:59:11Z",
+  "head_ref": "fix/heartbeat-manifest-adjudication-carry"
+}

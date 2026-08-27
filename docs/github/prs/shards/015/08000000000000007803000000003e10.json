@@ -1,0 +1,12 @@
+{
+  "pr_number": 15888,
+  "archive_path": "docs/history/pr-reviews/PR-15888-docs-difference-list-holes-vacuous-error-is-heat-dumb-stored-procs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T20:29:24.295Z",
+  "schema_version": "v1",
+  "commit_sha": "3da454031181e87ca3ef8428c283c9f85c89bf70",
+  "title": "docs: difference-list holes; vacuous error is heat; dumb stored procs",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T19:17:12Z",
+  "head_ref": "feat/control-plane-vs-data-plane"
+}

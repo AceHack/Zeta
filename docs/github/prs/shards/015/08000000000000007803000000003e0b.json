@@ -1,0 +1,12 @@
+{
+  "pr_number": 15883,
+  "archive_path": "docs/history/pr-reviews/PR-15883-feat-evidence-meter-local-adjudication-availability.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T20:29:13.717Z",
+  "schema_version": "v1",
+  "commit_sha": "3da454031181e87ca3ef8428c283c9f85c89bf70",
+  "title": "feat(evidence): meter local adjudication availability",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:45:54Z",
+  "head_ref": "feat/evidence-adjudication-availability"
+}

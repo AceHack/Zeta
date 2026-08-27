@@ -1,0 +1,16 @@
+{
+  "pr_number": 15889,
+  "archive_path": "docs/history/pr-reviews/PR-15889-feat-hygiene-teach-the-race-linter-the-stat-then-use-shape.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7m-HOH",
+    "comment:PRRC_kwDOSF9kNM7m-N4j",
+    "thread:PRRT_kwDOSF9kNM6c8oGc"
+  ],
+  "fetched_at": "2026-08-27T20:29:26.731Z",
+  "schema_version": "v1",
+  "commit_sha": "3da454031181e87ca3ef8428c283c9f85c89bf70",
+  "title": "feat(hygiene): teach the race linter the stat-then-use shape",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T19:23:57Z",
+  "head_ref": "shadow/lint-stat-then-use"
+}

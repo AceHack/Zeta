@@ -1,0 +1,12 @@
+{
+  "pr_number": 15912,
+  "archive_path": "docs/history/pr-reviews/PR-15912-feat-installer-bake-a-qemu-restore-probe-cred-so-restore-writes-1.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T23:40:30.658Z",
+  "schema_version": "v1",
+  "commit_sha": "559a47d737fbd8202a91eac0c2a6d9f3cae81296",
+  "title": "feat(installer): bake a QEMU restore probe cred so restore writes >= 1",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T21:55:38Z",
+  "head_ref": "cursor/uefi-restore-nonzero-write-27c5"
+}

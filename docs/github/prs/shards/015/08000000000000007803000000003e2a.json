@@ -1,0 +1,12 @@
+{
+  "pr_number": 15914,
+  "archive_path": "docs/history/pr-reviews/PR-15914-docs-automux-names-usage-shaped-mux-batch-not-a-replacement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T23:40:39.654Z",
+  "schema_version": "v1",
+  "commit_sha": "559a47d737fbd8202a91eac0c2a6d9f3cae81296",
+  "title": "docs: AutoMUX names usage-shaped mux+batch, not a replacement",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T22:22:59Z",
+  "head_ref": "feat/automux-usage-shaped-mux-batch"
+}

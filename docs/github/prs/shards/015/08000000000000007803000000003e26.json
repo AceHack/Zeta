@@ -1,0 +1,12 @@
+{
+  "pr_number": 15910,
+  "archive_path": "docs/history/pr-reviews/PR-15910-hygiene-oscillation-registry-classify-healer-pairs-fail-only-on-defects.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T23:40:26.247Z",
+  "schema_version": "v1",
+  "commit_sha": "559a47d737fbd8202a91eac0c2a6d9f3cae81296",
+  "title": "hygiene: oscillation registry — classify healer pairs, fail only on defects",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T21:44:06Z",
+  "head_ref": "shadow/oscillation-registry"
+}

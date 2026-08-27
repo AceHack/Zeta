@@ -1,0 +1,16 @@
+{
+  "pr_number": 15885,
+  "archive_path": "docs/history/pr-reviews/PR-15885-fix-fs-race-one-handle-for-both-facts-in-the-two-places-it-changes-behaviour.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7m9YKM",
+    "comment:PRRC_kwDOSF9kNM7m9zxG",
+    "thread:PRRT_kwDOSF9kNM6c8Iu-"
+  ],
+  "fetched_at": "2026-08-27T20:29:17.867Z",
+  "schema_version": "v1",
+  "commit_sha": "3da454031181e87ca3ef8428c283c9f85c89bf70",
+  "title": "fix(fs-race): one handle for both facts, in the two places it changes behaviour",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T19:16:52Z",
+  "head_ref": "shadow/codeql-fs-race-reconcile"
+}

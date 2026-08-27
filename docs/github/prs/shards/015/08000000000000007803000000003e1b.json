@@ -1,0 +1,12 @@
+{
+  "pr_number": 15899,
+  "archive_path": "docs/history/pr-reviews/PR-15899-docs-lint-fix-census-is-the-correction-corpus-seed.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T23:40:14.471Z",
+  "schema_version": "v1",
+  "commit_sha": "559a47d737fbd8202a91eac0c2a6d9f3cae81296",
+  "title": "docs: lint FIX census is the correction-corpus seed",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T21:46:39Z",
+  "head_ref": "feat/lint-fix-census-is-the-trainset-seed"
+}

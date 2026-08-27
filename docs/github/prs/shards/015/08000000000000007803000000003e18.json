@@ -1,0 +1,12 @@
+{
+  "pr_number": 15896,
+  "archive_path": "docs/history/pr-reviews/PR-15896-installer-give-hardware-only-facts-a-cli-so-the-module-can-actually-run.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T21:26:17.937Z",
+  "schema_version": "v1",
+  "commit_sha": "ccf3e837388c26b06224e118b660812617a6152c",
+  "title": "installer: give hardware-only-facts a CLI, so the module can actually run",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T20:30:16Z",
+  "head_ref": "shadow/wire-hardware-first-boot"
+}

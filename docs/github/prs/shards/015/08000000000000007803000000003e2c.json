@@ -1,0 +1,12 @@
+{
+  "pr_number": 15916,
+  "archive_path": "docs/history/pr-reviews/PR-15916-zflash-wire-the-join-endpoint-san-classifier-into-flash-time-validation.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T23:40:44.826Z",
+  "schema_version": "v1",
+  "commit_sha": "559a47d737fbd8202a91eac0c2a6d9f3cae81296",
+  "title": "zflash: wire the join-endpoint SAN classifier into flash-time validation",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T22:01:16Z",
+  "head_ref": "shadow/wire-san-coverage"
+}
