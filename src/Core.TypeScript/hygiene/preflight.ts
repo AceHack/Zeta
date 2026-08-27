@@ -62,6 +62,22 @@ const CHECKS: readonly Check[] = [
   // property that matters for a check nobody is forced to run. Added after three
   // PRs failed the CI drift gate on 2026-08-14 for the identical reason.
   { label: "ace build-graph drift", cmd: ["bun", "src/Core.TypeScript/ace/build-graph.ts", "drift-check"] },
+  // Same self-scoping shape, same reason, and a measured history behind it. The two check-arity
+  // censuses are hand-maintained ratchets whose row must be raised by whatever change adds an
+  // assertion. On 2026-08-26 that coupling red-lined `main` in three episodes across the two
+  // audits — one of them 5h27m, cured by a one-line registry edit five hours after the commit that
+  // caused it — because the job reporting them is `lint-bash-retirement-inventory`, which is NOT in
+  // `gate (required)`'s `needs`, so nothing forced anyone to look. These entries are what let a
+  // laptop find it first. They derive NOTHING unless the change touches a scanned test file, the
+  // census, or the audit itself.
+  {
+    label: "check-arity census drift",
+    cmd: ["bun", "src/Core.TypeScript/hygiene/audit-check-arity.ts", "--drift-check"],
+  },
+  {
+    label: "check-arity census drift (non-equality)",
+    cmd: ["bun", "src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts", "--drift-check"],
+  },
   {
     label: "inventory items.json current",
     cmd: ["bun", "src/Core.TypeScript/inventory/generate-items-json.ts", "--check"],

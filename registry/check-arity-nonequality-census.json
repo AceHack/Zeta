@@ -47,7 +47,6 @@
     "tools/setup/persona-keys/ca.test.ts": 2,
     "tools/setup/persona-keys/ceremony-handoff.test.ts": 6,
     "tools/setup/persona-keys/frost-hardware-probe.test.ts": 2,
-    "tools/setup/persona-keys/frost-hsm-secrets.test.ts": 3,
     "tools/setup/persona-keys/frost-hsm-provision.test.ts": 5,
     "tools/setup/persona-keys/frost-hsm-secrets.test.ts": 3,
     "tools/setup/persona-keys/frost-share-adapter.hardware.test.ts": 4,

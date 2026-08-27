@@ -8,7 +8,12 @@
 import { describe, expect, test } from "bun:test";
 import {
   type Site,
+  AUDIT_PATH,
   auditSources,
+  CENSUS_ACCEPT_COMMAND,
+  CENSUS_FIX_COMMAND,
+  isCorpusPath,
+  OWN_PATHS,
   findAbsenceUnderClaim,
   findTautologies,
   isAbsenceAssertion,
@@ -171,5 +176,55 @@ describe("the scanner does not narrow silently", () => {
 
   test("the census path is the byte-locked artefact the ratchet reads", () => {
     expect(NONEQ_CENSUS_PATH).toBe("registry/check-arity-nonequality-census.json");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The coupling guard (2026-08-26). Pinned here because prose rots and a fix command that drifts
+// from the code path it names is worse than no fix command: it sends a reader to a command that
+// does not clear the check.
+// ---------------------------------------------------------------------------
+
+describe("the failure names a fix that is the same code path as the check", () => {
+  test("the cheap fix command is exact and runnable as printed", () => {
+    expect(CENSUS_FIX_COMMAND).toBe("bun src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts --write");
+  });
+
+  test("ACCEPTING a raise is a SEPARATE, deliberately-spelled command", () => {
+    // The whole guard. If these two were the same string, the cheap fix would silence findings and
+    // the census -- which has only ever been added to -- would become a suppression list outright.
+    expect(CENSUS_ACCEPT_COMMAND).toBe(`${CENSUS_FIX_COMMAND} --accept-raises`);
+    expect(CENSUS_ACCEPT_COMMAND).not.toBe(CENSUS_FIX_COMMAND);
+  });
+
+  test("the fix command names THIS audit, not a sibling", () => {
+    expect(CENSUS_FIX_COMMAND).toContain(AUDIT_PATH);
+    expect(AUDIT_PATH).toBe("src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts");
+  });
+});
+
+describe("drift-check scoping is the SAME predicate the walk uses", () => {
+  test("a scanned *.test.ts anywhere under a SCAN_DIR is in the corpus", () => {
+    expect(isCorpusPath("src/Core.TypeScript/zflash/lib.test.ts")).toBe(true);
+    expect(isCorpusPath("tools/setup/persona-keys/machine.test.ts")).toBe(true);
+    expect(isCorpusPath("tests/Tests.FSharp/SchemaEvolution.Tests.fs")).toBe(true);
+  });
+
+  test("F# counts ONLY under tests/ -- matching collect(), which is where the 6,078 F# sites live", () => {
+    expect(isCorpusPath("src/Core/ZSet.fs")).toBe(false);
+  });
+
+  test("a non-test source, and a path outside every SCAN_DIR, are not corpus", () => {
+    expect(isCorpusPath("src/Core.TypeScript/zflash/lib.ts")).toBe(false);
+    expect(isCorpusPath("docs/research/a.test.ts")).toBe(false);
+    expect(isCorpusPath("README.md")).toBe(false);
+  });
+
+  test("the SELF_EXCLUDED files are not corpus here either -- one predicate, not two", () => {
+    for (const p of SELF_EXCLUDED) expect(isCorpusPath(p)).toBe(false);
+  });
+
+  test("the census and the audit are OWN_PATHS: editing the deriver must re-check, not skip", () => {
+    expect([...OWN_PATHS].sort()).toEqual([NONEQ_CENSUS_PATH, AUDIT_PATH].sort());
   });
 });

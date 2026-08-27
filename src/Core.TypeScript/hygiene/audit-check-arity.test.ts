@@ -7,7 +7,13 @@
 
 import { describe, expect, it } from "bun:test";
 import {
+  AUDIT_PATH,
   auditSources,
+  CENSUS_ACCEPT_COMMAND,
+  CENSUS_FIX_COMMAND,
+  CENSUS_PATH,
+  isCorpusPath,
+  OWN_PATHS,
   declaresTwoSafety,
   findOrphanTestSources,
   norm,
@@ -71,12 +77,23 @@ describe("R0 -- the detector finds all three forms of the class", () => {
   });
 
   it("finds an equality buried in a boolean conjunct", () => {
-    const src = ["[<Property>]", "let ``p`` (p: int) =", "    let c1 = color p", "    let c2 = color p", "    c1 = c2 && c1 >= 0"].join("\n");
+    const src = [
+      "[<Property>]",
+      "let ``p`` (p: int) =",
+      "    let c1 = color p",
+      "    let c2 = color p",
+      "    c1 = c2 && c1 >= 0",
+    ].join("\n");
     expect(scanFsharp("t.fs", src).length).toBe(1);
   });
 
   it("does NOT fire on a record literal: `Payload = Payload` is field syntax, not a comparison", () => {
-    const src = ["let private request subs =", "    { Scope = Scope", "      Payload = Payload", "      Submissions = subs }"].join("\n");
+    const src = [
+      "let private request subs =",
+      "    { Scope = Scope",
+      "      Payload = Payload",
+      "      Submissions = subs }",
+    ].join("\n");
     expect(scanFsharp("t.fs", src).length).toBe(0);
   });
 
@@ -136,7 +153,11 @@ describe("R1 -- a 2-safety NAME over a 1-arity body", () => {
   it("CONTROL: an honestly-named determinism check is NOT an R1 violation", () => {
     // `f x = f x` evaluated twice IS two executions, so its arity matches its claim. Rounding these
     // up to "vacuous" is the same error in the opposite direction and this test pins the refusal.
-    const src = ["[<Property>]", "let ``run is deterministic (same seed,n => same timeline)`` (s: int) =", "    Scheduler.run s = Scheduler.run s"].join("\n");
+    const src = [
+      "[<Property>]",
+      "let ``run is deterministic (same seed,n => same timeline)`` (s: int) =",
+      "    Scheduler.run s = Scheduler.run s",
+    ].join("\n");
     const r = auditSources([{ path: "t.fs", text: src }], { counts: { "t.fs": 1 } });
     expect(r.comparisons.length).toBe(1);
     expect(r.twoSafetyViolations.length).toBe(0);
@@ -180,5 +201,51 @@ describe("R3 -- an F# test source no project compiles", () => {
 
   it("CONTROL: a compiled file is not reported", () => {
     expect(findOrphanTestSources(["tests/T/Properties/PolicyRelocation.Tests.fs"], [proj])).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The coupling guard (2026-08-26). This half of the class red-lined `main` twice on 2026-08-25/27,
+// and the second episode was still open when these were written. Prose rots; a fix command that
+// drifts from the code path it names sends a reader to a command that does not clear the check.
+// ---------------------------------------------------------------------------
+
+describe("the failure names a fix that is the same code path as the check", () => {
+  it("the cheap fix command is exact and runnable as printed", () => {
+    expect(CENSUS_FIX_COMMAND).toBe("bun src/Core.TypeScript/hygiene/audit-check-arity.ts --write");
+  });
+
+  it("ACCEPTING a raise is a SEPARATE, deliberately-spelled command", () => {
+    // The whole guard: if these were one string, the cheap fix would silence findings, and the
+    // measured history of this census -- ten edits, ten raises, zero lowerings -- says which way
+    // that pressure runs.
+    expect(CENSUS_ACCEPT_COMMAND).toBe(`${CENSUS_FIX_COMMAND} --accept-raises`);
+    expect(CENSUS_ACCEPT_COMMAND).not.toBe(CENSUS_FIX_COMMAND);
+  });
+
+  it("the fix command names THIS audit, not its non-equality sibling", () => {
+    expect(CENSUS_FIX_COMMAND).toContain(AUDIT_PATH);
+    expect(AUDIT_PATH).toBe("src/Core.TypeScript/hygiene/audit-check-arity.ts");
+    expect(CENSUS_FIX_COMMAND).not.toContain("nonequality");
+  });
+});
+
+describe("drift-check scoping is the SAME predicate the walk uses", () => {
+  it("SCAN_ROOTS is tests/ only, so only tests/ paths are corpus", () => {
+    expect(isCorpusPath("tests/Tests.FSharp/ZetaFsDualFold.Tests.fs")).toBe(true);
+    expect(isCorpusPath("tests/Tests.TypeScript/a.test.ts")).toBe(true);
+    // 97% of the tree's *.test.ts live outside tests/ and are the SIBLING audit's corpus, not this
+    // one's. Widening this predicate without widening SCAN_ROOTS would make the guard skip changes
+    // the check then fails on -- two notions of scope disagreeing, which is what it exists to avoid.
+    expect(isCorpusPath("src/Core.TypeScript/zflash/lib.test.ts")).toBe(false);
+  });
+
+  it("a non-test file under tests/ is not corpus", () => {
+    expect(isCorpusPath("tests/Tests.FSharp/Tests.FSharp.fsproj")).toBe(false);
+    expect(isCorpusPath("README.md")).toBe(false);
+  });
+
+  it("the census and the audit are OWN_PATHS: editing the deriver must re-check, not skip", () => {
+    expect([...OWN_PATHS].sort()).toEqual([CENSUS_PATH, AUDIT_PATH].sort());
   });
 });

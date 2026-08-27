@@ -1224,6 +1224,7 @@ jobs:
 
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # This job executes lockfile-managed JavaScript plus tracked hygiene
@@ -1231,17 +1232,21 @@ jobs:
       # live heartbeat PR before this guard ran; setup-bun + bun.lock is the
       # declared minimal boundary, while full setup remains for toolchain jobs.
       - name: Setup pinned Bun
+        id: setup_bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: "1.3.13"
 
       - name: Install JavaScript dependencies from the locked graph
+        id: install_deps
         run: bun install --frozen-lockfile
 
       - name: Run bash-retirement inventory guard
+        id: bash_retirement
         run: bun run hygiene:check-bash-retirement-inventory
 
       - name: Ambient-credential-hoist guard
+        id: cred_hoist
         # Refuses any tracked executable surface that puts a credential into a
         # shell environment. An env var crosses `exec` regardless of the child's
         # code identity, so this is the one exposure no signature, keychain ACL,
@@ -1254,6 +1259,7 @@ jobs:
         run: bun run hygiene:no-ambient-credential-hoist
 
       - name: Decide-by-grep guard (a crash must not read as a pass)
+        id: decide_by_grep
         # Refuses `if TOOL ... | grep -q PAT; then fail; fi` in a workflow. A
         # pipeline's exit status is the LAST command's, so TOOL's status is
         # discarded; when TOOL dies on a signal (139 = 128+11 SIGSEGV, 134 =
@@ -1268,6 +1274,7 @@ jobs:
         run: bun run hygiene:no-decide-by-grep
 
       - name: GraphQL-transport guard (REST is the default; GraphQL is the contested budget)
+        id: graphql_transport
         # Refuses `gh pr view|list|checks` and `gh run view` in COMMITTED scripts,
         # workflows and agent loops. Those four are GraphQL; `gh api repos/...` is REST;
         # the two have separate 5000/hour budgets and only GraphQL is contended here
@@ -1292,6 +1299,7 @@ jobs:
         run: bun run hygiene:no-graphql-transport-in-scripts
 
       - name: Scan-floor route audit (the floors are themselves enumerable)
+        id: scan_floor
         # Inventories every scan floor in the repo through four INDEPENDENT
         # recognizers and requires each to contribute at least one site. An
         # enumerating check is exactly the shape that goes blind — a rename or a
@@ -1301,6 +1309,7 @@ jobs:
         run: bun run hygiene:scan-floor-routes
 
       - name: Ambient-time-in-tests guard (no test verdict may depend on wall-clock)
+        id: ambient_time
         # A test that sleeps 10ms and then asserts is asserting that 10ms was enough on THIS
         # runner. MEASURED 2026-08-16: poll-pr-gate-batch.test.ts, 14 pure in-memory tests with
         # injected fakes and no I/O, ran 1366ms idle and 5.46s under load on the same machine
@@ -1325,6 +1334,7 @@ jobs:
         # in both ratchet directions.
         run: bun run hygiene:no-ambient-time-in-tests
       - name: A check may not claim a property of higher arity than it tests
+        id: arity_equality
         # 081M0RAX8AC087G0R003NQM7P9. Noninterference is a HYPERPROPERTY -- a predicate over PAIRS
         # of executions, and 2-safety (Clarkson & Schneider, CSF 2008 / JCS 18(6):1157). No
         # single-run check can decide one; that is a theorem, not a coverage gap. Manifesto s13 IS
@@ -1354,6 +1364,7 @@ jobs:
         run: bun run hygiene:check-arity
 
       - name: Check arity -- the NON-EQUALITY half (a taint claim is not a string search)
+        id: arity_nonequality
         # The step above inspects EQUALITY only. Its own PR named the gap and declined to size
         # it: "Non-equality checks are entirely outside the detector ... Largest unsearched
         # region, unsized." It is now sized -- 24,805 non-equality assertion sites across 1,928
@@ -1391,6 +1402,7 @@ jobs:
         run: bun run hygiene:check-arity-nonequality
 
       - name: Linter coverage vs CI invocation (a configured linter must be an invoked one)
+        id: linter_coverage
         # THE CLASS: a linter is present, configured, believed to be checking a file, and does
         # not examine it -- while the invocation exits 0. Every instance produces a check that
         # did not run and looks like a check that passed. Three were found by hand on
@@ -1425,6 +1437,7 @@ jobs:
         run: bun run hygiene:linter-coverage
 
       - name: Consent sign-off ledger is truthful (docs/books/you-born-at-the-hinge/CONSENT-SIGNOFF-DESIGN.md)
+        id: consent_signoff
         # REPO TIER, not the publish gate. This run fails only on FALSE CLAIMS in the consent
         # ledger -- a cited pull-request review that does not exist, is not APPROVED, or was
         # authored by someone other than the person the row names; a passage marked
@@ -1441,6 +1454,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: No culture-sensitive collation in TypeScript (.claude/rules/culture-invariant-by-default.md)
+        id: collation
         # THE CHECK EXISTED AND DID NOT RUN. This is the mechanical enforcement of a carved
         # rule, it has had a baseline file since it landed, and until this step no workflow
         # invoked it -- neither by script name nor by path. My own linter-coverage audit
@@ -1484,6 +1498,7 @@ jobs:
         run: bun run hygiene:no-culture-sensitive-collation
 
       - name: mise pin parity (GOVERNANCE §24 three-way parity)
+        id: mise_parity
         # The second hole the linter-coverage audit named and declined to close. A pin audit
         # that ran in no workflow: work-item 081KZKS9A6B08QG0R0008EG72M shipped an installer
         # ISO carrying nixpkgs' mise 2025.11.7 where CI carried the pinned 2026.6.12, because
@@ -1505,12 +1520,14 @@ jobs:
         run: bun run hygiene:mise-pin-parity
 
       - name: Hygiene unit-test suite (closes the per-PR coverage gap)
+        id: hygiene_tests
         # Runs every src/Core.TypeScript/hygiene/*.test.ts. These are
         # fixture/in-memory tests (no MEMORY.md / user-scope deps), so they
         # are CI-safe. This is what would have caught #8216's stale snapshot.
         run: bun test src/Core.TypeScript/hygiene/
 
       - name: Audit unit-test suite (src/Core.TypeScript/audit/ ran in NO workflow)
+        id: audit_tests
         # The sibling hole to the step above. `src/Core.TypeScript/hygiene/*.test.ts`
         # has run per-PR since #8216; `src/Core.TypeScript/audit/` had no test file
         # AND no invocation -- `grep -rn "Core.TypeScript/audit" .github/workflows/`
@@ -1532,6 +1549,7 @@ jobs:
         run: bun test src/Core.TypeScript/audit/
 
       - name: Hardware-inventory cross-surface reconciliation (drift)
+        id: hw_inventory
         # 081M00R59KS087G0R001W3837V. Hardware inventory lives on several surfaces
         # with different provenance (a ZetaId register, a human audit snapshot, an
         # operator declaration, machine self-registrations, SSH host keys) and
@@ -1549,6 +1567,7 @@ jobs:
         run: bun run inventory:reconcile
 
       - name: Inventory read-model is derived, not drifted (081M00R59KS087G0R001W3837V)
+        id: inventory_readmodel
         # `inventory/items.json` is a COMMITTED PROJECTION of `inventory/items/*.md`,
         # and it is the only inventory surface a reader actually sees — the Pages
         # viewer fetches it and never opens an item file. It has always had a
@@ -1562,6 +1581,7 @@ jobs:
         run: bun run inventory:items-check
 
       - name: Book named index is derived and COMPLETE (docs/books/you-born-at-the-hinge/NAMED-INDEX-DESIGN.md)
+        id: book_index
         # Fourth instance of the class the three steps above name, and the first one
         # whose failure costs a NAMED THIRD PARTY rather than CI. `NAMED-INDEX.md` is
         # a committed projection of the `consent:begin` markers in the prose, and it
@@ -1585,10 +1605,33 @@ jobs:
         run: bun run hygiene:book-named-index
 
       - name: Inventory unit tests
+        id: inventory_tests
         # These existed (generate-items-json.test.ts) and NO workflow ran them —
         # found while wiring the reconciliation check. Same shape as the #8216 gap
         # the hygiene step above closes, one directory over.
         run: bun test src/Core.TypeScript/inventory/
+
+      - name: Name the failing step (toolchain-free; survives a broken toolchain)
+        # THE ANNOTATION PROBLEM, one job over from where #15692 fixed it.
+        #
+        # This job runs TWENTY-ONE checks and carried ZERO step ids, so every failure reached the
+        # check-run as the single annotation `Process completed with exit code 1` with an empty
+        # title -- measured on all three 2026-08-26 episodes of the check-arity censuses. The only
+        # machine-readable discriminator between two different failing checks was the annotation's
+        # `start_line` (16 vs 18), which is a line number in a workflow file, not a finding.
+        #
+        # `echo` and nothing else: a builtin in bash AND an alias for Write-Output in pwsh, so it
+        # needs no `shell:` key and no installed program and still speaks if the Bun install above
+        # was what broke. `if: failure()` is correct here because this step has no prerequisite that
+        # could also have failed.
+        #
+        # The audits themselves now emit `::error file=,line=,title=` for their own findings, which
+        # is strictly better than a step name. This step covers the other nineteen, which do not.
+        if: failure()
+        run: |
+          echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=${{ steps.install_deps.outcome }} bash-retirement=${{ steps.bash_retirement.outcome }} cred-hoist=${{ steps.cred_hoist.outcome }} decide-by-grep=${{ steps.decide_by_grep.outcome }} graphql=${{ steps.graphql_transport.outcome }} scan-floor=${{ steps.scan_floor.outcome }} ambient-time=${{ steps.ambient_time.outcome }} arity-equality=${{ steps.arity_equality.outcome }} arity-nonequality=${{ steps.arity_nonequality.outcome }} linter-coverage=${{ steps.linter_coverage.outcome }} consent-signoff=${{ steps.consent_signoff.outcome }} collation=${{ steps.collation.outcome }} mise-parity=${{ steps.mise_parity.outcome }} hygiene-tests=${{ steps.hygiene_tests.outcome }} audit-tests=${{ steps.audit_tests.outcome }} hw-inventory=${{ steps.hw_inventory.outcome }} inventory-readmodel=${{ steps.inventory_readmodel.outcome }} book-index=${{ steps.book_index.outcome }} inventory-tests=${{ steps.inventory_tests.outcome }}"
+          echo "[step-outcomes] a failing install means bun never provisioned; read that step's log."
+          echo "[step-outcomes] arity-equality / arity-nonequality failures carry their own ::error annotations naming file and line."
 
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown

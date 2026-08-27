@@ -70,11 +70,36 @@
 //   Denning & Denning, Certification of programs for secure information flow, CACM 20(7) 1977
 //     -- taint as an information-flow lattice; a string search is not a lattice join.
 
-import { type Dirent, readdirSync, readFileSync } from "node:fs";
+import { type Dirent, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { argsOf, balanced, declaresTwoSafety, norm, stripComments } from "./audit-check-arity.ts";
+import {
+  annotation,
+  type Census,
+  censusNote,
+  changedAgainst,
+  corpusTouched,
+  planWrite,
+  readCensusText,
+  serializeCensus,
+  tally,
+} from "./check-arity-census.ts";
 
 export const NONEQ_CENSUS_PATH = "registry/check-arity-nonequality-census.json";
+export const AUDIT_PATH = "src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts";
+
+/**
+ * The fix, runnable as printed. Every failure message names it verbatim, and it drives the SAME
+ * code path as the check, so the two cannot disagree -- the property `build-graph.ts derive --write`
+ * and `cross-verify-roster.ts --derive --write` already have, and the one this ratchet lacked while
+ * it red-lined `main` on 2026-08-26.
+ *
+ * It deliberately CANNOT raise a count. See `check-arity-census.ts`: a frictionless way to record
+ * "this new finding is fine" is a silencer, and this census has only ever been added to.
+ */
+export const CENSUS_FIX_COMMAND = `bun ${AUDIT_PATH} --write`;
+/** The deliberate, separately-spelled second half: record an ADJUDICATION that a new site is correct. */
+export const CENSUS_ACCEPT_COMMAND = `bun ${AUDIT_PATH} --write --accept-raises`;
 
 /**
  * Excluded from the corpus.
@@ -289,10 +314,12 @@ export function findAbsenceUnderClaim(sites: readonly Site[]): Site[] {
 // audit
 // ---------------------------------------------------------------------------
 
-export interface Census {
-  readonly note?: string;
-  readonly counts: Record<string, number>;
-}
+/**
+ * Re-exported rather than redeclared. Two structurally-identical interfaces for one artefact are two
+ * declarations of one fact that can drift apart -- and one already had, differing from the shared
+ * one by the `| undefined` that `exactOptionalPropertyTypes` makes load-bearing.
+ */
+export type { Census };
 
 export interface AuditResult {
   readonly scannedFiles: number;
@@ -389,21 +416,123 @@ function collect(repoRoot: string): { path: string; text: string }[] {
   return out;
 }
 
+/**
+ * The corpus predicate, exported so `--drift-check`'s scoping is the SAME rule `collect` walks by
+ * rather than a second, approximate one that can disagree with it. The falsifier suite pins that.
+ */
+export function isCorpusPath(rel: string): boolean {
+  if (SELF_EXCLUDED.includes(rel)) return false;
+  if (!SCAN_DIRS.some((d) => rel === d || rel.startsWith(`${d}/`))) return false;
+  const isFs = /\.fsx?$/.test(rel) && rel.startsWith("tests/");
+  const isTs = /\.(?:test|spec)\.(?:ts|tsx|mts)$/.test(rel);
+  return isFs || isTs;
+}
+
+/** The paths whose change can move THIS census, beyond the corpus itself. */
+export const OWN_PATHS: readonly string[] = [NONEQ_CENSUS_PATH, AUDIT_PATH];
+
+/** One line per site, so a count becomes an adjudication a reader can do at a glance. */
+function describeSites(sites: readonly Site[]): string {
+  return sites
+    .map(
+      (s) =>
+        `      ${s.path}:${s.line}  ${s.verb}(${s.subject.slice(0, 70)}${s.matcherArg ? `) -> (${s.matcherArg.slice(0, 40)}` : ""})\n` +
+        `          in test: ${s.unit}`,
+    )
+    .join("\n");
+}
+
 export function main(argv: readonly string[]): number {
   const repoRoot = process.cwd();
-  const sources = collect(repoRoot);
 
-  if (argv.includes("--emit-census")) {
+  // SELF-SCOPING, and it must come BEFORE `collect` -- the whole value of a preflight guard is that
+  // it costs ~0.05 s on a change that cannot possibly move the census. Walking 2,058 files first
+  // and then deciding to skip would be a check nobody keeps.
+  if (argv.includes("--drift-check")) {
+    const i = argv.indexOf("--base");
+    const base = i >= 0 ? (argv[i + 1] ?? "origin/main") : "origin/main";
+    const changed = changedAgainst(repoRoot, base);
+    if (changed !== undefined) {
+      const touched = corpusTouched(changed, isCorpusPath, OWN_PATHS);
+      if (touched.length === 0) {
+        console.log(
+          `check-arity-nonequality drift-check: no scanned test file in ${changed.length} changed path(s) — skipped.`,
+        );
+        return 0;
+      }
+      console.log(`check-arity-nonequality drift-check: ${touched.length} corpus file(s) touched, e.g.`);
+      for (const p of touched.slice(0, 3)) console.log(`  ${p}`);
+    } else {
+      // Unresolvable base. CHECK rather than skip: a guard that goes quiet because it could not
+      // work out its own scope is the skipped-check-wearing-a-passed-check's-face failure that this
+      // very audit exists to refuse. Same decision `build-graph.ts drift-check` makes.
+      console.log(`check-arity-nonequality drift-check: cannot scope against '${base}' — checking anyway.`);
+    }
+  }
+
+  const sources = collect(repoRoot);
+  const derivedCounts = (): Record<string, number> => {
     const sites: Site[] = [];
     for (const s of sources) sites.push(...scanNonEquality(s.path, s.text));
-    const counts: Record<string, number> = {};
-    for (const s of findAbsenceUnderClaim(sites)) counts[s.path] = (counts[s.path] ?? 0) + 1;
-    const ordered: Record<string, number> = {};
-    // Default Array.sort compares by UTF-16 code unit, i.e. ordinal -- what the census needs.
-    for (const k of Object.keys(counts).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))) ordered[k] = counts[k]!;
-    console.log(
-      JSON.stringify({ note: "generated by audit-check-arity-nonequality.ts --emit-census", counts: ordered }, null, 2),
-    );
+    return tally(findAbsenceUnderClaim(sites));
+  };
+
+  if (argv.includes("--emit-census") && !argv.includes("--write")) {
+    console.log(serializeCensus(censusNote("audit-check-arity-nonequality.ts"), derivedCounts()).trimEnd());
+    return 0;
+  }
+
+  if (argv.includes("--write")) {
+    const acceptRaises = argv.includes("--accept-raises");
+    const path = join(repoRoot, NONEQ_CENSUS_PATH);
+    const read = readCensusText(readFileSync(path, "utf8"));
+    if (!read.ok) {
+      console.error(`FAIL: ${NONEQ_CENSUS_PATH} ${read.error}`);
+      return 1;
+    }
+    const now = derivedCounts();
+    const plan = planWrite(read.census.counts, now, acceptRaises);
+    const next = serializeCensus(censusNote("audit-check-arity-nonequality.ts"), plan.next);
+    const sitesByPath = new Map<string, Site[]>();
+    {
+      const sites: Site[] = [];
+      for (const s of sources) sites.push(...scanNonEquality(s.path, s.text));
+      for (const s of findAbsenceUnderClaim(sites)) {
+        const bucket = sitesByPath.get(s.path);
+        if (bucket === undefined) sitesByPath.set(s.path, [s]);
+        else bucket.push(s);
+      }
+    }
+
+    for (const d of plan.applied) {
+      console.log(`  lowered ${d.path}: ${d.was} -> ${d.now}${d.now === 0 ? " (row removed)" : ""}`);
+    }
+    for (const d of plan.accepted) {
+      console.log(
+        `  ACCEPTED ${d.path}: ${d.was} -> ${d.now} — recorded as ADJUDICATED CORRECT.\n` +
+          describeSites(sitesByPath.get(d.path) ?? []),
+      );
+    }
+    if (next === readFileSync(path, "utf8")) console.log(`${NONEQ_CENSUS_PATH} already current.`);
+    else {
+      writeFileSync(path, next);
+      console.log(`${NONEQ_CENSUS_PATH} updated.`);
+    }
+
+    if (plan.refused.length > 0) {
+      console.error(
+        `\nREFUSED ${plan.refused.length} count raise(s). A raise is an ADJUDICATION, not a formatting fix,\n` +
+          `and this census has only ever been added to — so the cheap command may not perform one.\n` +
+          `Two remedies, and the FIRST is usually the right one:\n` +
+          `  1. STRENGTHEN the test so the claim is carried by a check that can fail.\n` +
+          `  2. If the site is genuinely correct — an exact-equality pin or a positive assertion carries\n` +
+          `     the claim beside it — record that judgement: ${CENSUS_ACCEPT_COMMAND}\n`,
+      );
+      for (const d of plan.refused) {
+        console.error(`  ${d.path}: ${d.was} -> ${d.now}\n${describeSites(sitesByPath.get(d.path) ?? [])}`);
+      }
+      return 1;
+    }
     return 0;
   }
 
@@ -419,11 +548,32 @@ export function main(argv: readonly string[]): number {
     return 0;
   }
 
-  let census: Census;
+  let censusText: string;
   try {
-    census = JSON.parse(readFileSync(join(repoRoot, NONEQ_CENSUS_PATH), "utf8")) as Census;
+    censusText = readFileSync(join(repoRoot, NONEQ_CENSUS_PATH), "utf8");
   } catch (e) {
     console.error(`FAIL: cannot read ${NONEQ_CENSUS_PATH}: ${String(e)}`);
+    return 1;
+  }
+  const read = readCensusText(censusText);
+  if (!read.ok) {
+    console.error(annotation({ file: NONEQ_CENSUS_PATH, title: "census is unreadable", message: read.error }));
+    console.error(`FAIL: ${NONEQ_CENSUS_PATH} ${read.error}`);
+    return 1;
+  }
+  const census: Census = read.census;
+
+  // FORM, not content. `JSON.parse` keeps the LAST of a duplicated key and discards the rest without
+  // a word, so an audit that only reads the parsed census can never see a duplicated row -- which is
+  // exactly how `tools/setup/persona-keys/frost-hsm-secrets.test.ts` came to appear twice in this
+  // file, inserted by two hand-edits hours apart, while every run reported OK. Round-tripping is the
+  // cheapest sound detector, and it also catches hand-inserted rows out of ordinal order.
+  if (!read.canonical) {
+    const msg =
+      `${NONEQ_CENSUS_PATH} is not the canonical rendering of its own content. A duplicated key, a ` +
+      `row inserted out of ordinal order, or formatting drift — all invisible to JSON.parse. Run: ${CENSUS_FIX_COMMAND}`;
+    console.error(annotation({ file: NONEQ_CENSUS_PATH, title: "census is not canonical", message: msg }));
+    console.error(`FAIL: ${msg}`);
     return 1;
   }
 
@@ -438,8 +588,27 @@ export function main(argv: readonly string[]): number {
 
   const r = auditSources(sources, census);
   const problems: string[] = [];
+  // Workflow commands, written alongside the human-readable text. Without them the check-run's only
+  // annotation is `Process completed with exit code 1` -- measured on all three 2026-08-26 episodes
+  // of this job, where the finding existed solely in the step log. Same defect #15692 fixed for
+  // `build-and-test`, one job over.
+  const annotations: string[] = [];
+  const absenceByPath = new Map<string, Site[]>();
+  for (const s of findAbsenceUnderClaim(r.sites)) {
+    const bucket = absenceByPath.get(s.path);
+    if (bucket === undefined) absenceByPath.set(s.path, [s]);
+    else bucket.push(s);
+  }
 
   for (const t of r.tautologies) {
+    annotations.push(
+      annotation({
+        file: t.site.path,
+        line: t.site.line,
+        title: "R4: this assertion cannot fail on its input",
+        message: `${t.site.unit}: ${t.site.verb}(${t.site.subject.slice(0, 160)}) — ${t.why}`,
+      }),
+    );
     problems.push(
       `${t.site.path}:${t.site.line}: R4 -- this assertion cannot fail on its input.\n` +
         `    test : ${t.site.unit}\n` +
@@ -450,23 +619,49 @@ export function main(argv: readonly string[]): number {
     );
   }
   for (const d of r.censusRose) {
+    const sites = absenceByPath.get(d.path) ?? [];
+    const first = sites[0];
+    annotations.push(
+      annotation({
+        file: d.path,
+        line: first?.line,
+        title: `R5: ${d.now - d.was} unadjudicated absence-under-a-taint-claim assertion(s)`,
+        message:
+          `count rose ${d.was} -> ${d.now}. An absence assertion witnesses ONE RENDERING of a leak, never its ` +
+          `absence. Strengthen the test, or — if a positive/exact-equality assertion already carries the claim — ` +
+          `record that judgement with: ${CENSUS_ACCEPT_COMMAND}`,
+      }),
+    );
     problems.push(
       `${d.path}: R5 -- absence-under-a-taint-claim count rose ${d.was} -> ${d.now}.\n` +
         `    An absence assertion discharging a taint / 2-safety claim witnesses ONE RENDERING of a\n` +
-        `    leak, never its absence. Adjudicate it (vacuous / near-vacuous / correct); if correct --\n` +
-        `    typically because an exact-equality pin or a positive assertion carries the claim beside\n` +
-        `    it -- raise the count in ${NONEQ_CENSUS_PATH} in the SAME commit.`,
+        `    leak, never its absence. The sites, so the adjudication is one glance and not a hunt:\n` +
+        `${describeSites(sites)}\n` +
+        `    Two remedies, and the FIRST is usually right:\n` +
+        `      1. STRENGTHEN the test so the claim rides on a check that can fail.\n` +
+        `      2. If the site is genuinely correct -- an exact-equality pin on the whole output, or a\n` +
+        `         positive capability assertion, carries the claim beside it -- record that judgement:\n` +
+        `         ${CENSUS_ACCEPT_COMMAND}`,
     );
   }
   for (const d of r.censusFell) {
+    annotations.push(
+      annotation({
+        file: NONEQ_CENSUS_PATH,
+        title: "R5: a stale census row constrains nothing",
+        message: `${d.path}: count fell ${d.was} -> ${d.now}. Run: ${CENSUS_FIX_COMMAND}`,
+      }),
+    );
     problems.push(
       `${d.path}: R5 -- absence-under-a-taint-claim count fell ${d.was} -> ${d.now}.\n` +
-        `    Good news that must be recorded: lower the count in ${NONEQ_CENSUS_PATH} so the row keeps\n` +
-        `    constraining.`,
+        `    Good news that must be recorded: a row nobody lowers stops constraining and the census\n` +
+        `    converges on a suppression list. Lowering carries no judgement, so the cheap fix does it:\n` +
+        `      ${CENSUS_FIX_COMMAND}`,
     );
   }
 
   if (problems.length > 0) {
+    for (const a of annotations) console.error(a);
     console.error(`FAIL: ${problems.length} problem(s) across ${r.scannedFiles} scanned test files.\n`);
     for (const p of problems) console.error(p + "\n");
     console.error(`Rule anchors: ${RULE_ANCHORS.join(" | ")}`);
