@@ -122,15 +122,53 @@ export function run(opts: CliOptions): { status: number; report: string } {
     opts.write ? `wrote ${outputs.length} artifacts in ${((Date.now() - t0) / 1000).toFixed(1)}s` : '(dry run — pass --write to emit)',
   ];
 
-  // A leaking pipeline invalidates everything else, so it is a FAILING exit,
-  // not a warning printed under a green check.
-  const nullMax = Math.max(...study.nulls.map((n) => n.accuracy));
-  if (nullMax > study.baseline.majorityClassAccuracy + 0.05) {
+  // A null model that beats the floor is a FAILING exit, not a warning printed under a green
+  // check. What it MEANS, though, depends on how many nulls beat it — and the earlier version of
+  // this guard collapsed that distinction, which made its own error message false.
+  //
+  // MEASURED 2026-08-27, the run that motivated this: NULL random forest 5.3%, NULL BNN 22.9%,
+  // floor 3.9%. The guard took `max` over the nulls, saw 22.9%, and reported "the feature
+  // pipeline is leaking the label and every reported number is void".
+  //
+  // Both nulls are trained on the SAME `Xtrain`/`Xtest` and the SAME shuffled labels. A feature
+  // that carried the label would be visible to both. The forest sat at the floor. So the features
+  // were exonerated by the guard's own output, and the message accused them anyway — while
+  // voiding the forest's 74.5%, which no evidence implicated.
+  //
+  // The distinction this now draws:
+  //
+  //   EVERY null leaks  -> the FEATURES carry the label. Shared cause, and every number is void.
+  //   SOME nulls leak   -> that MODEL's inductive bias, not the pipeline. The clean null is
+  //                        positive evidence for the features; the affected model's numbers are
+  //                        void and the others are not.
+  //
+  // Both still exit non-zero: an unexplained null above the floor blocks publication either way.
+  // What changes is that the message names what the evidence supports, and a reader is not sent
+  // to audit a feature pipeline that a clean null has already cleared.
+  const FLOOR = study.baseline.majorityClassAccuracy;
+  const MARGIN = 0.05;
+  const leaked = study.nulls.filter((n) => n.accuracy > FLOOR + MARGIN);
+  if (leaked.length > 0) {
+    const all = leaked.length === study.nulls.length;
+    const names = leaked.map((n) => `${n.name} ${(n.accuracy * 100).toFixed(1)}%`).join(', ');
+    const clean = study.nulls
+      .filter((n) => n.accuracy <= FLOOR + MARGIN)
+      .map((n) => `${n.name} ${(n.accuracy * 100).toFixed(1)}%`)
+      .join(', ');
     lines.push(
-      `::error title=PR-categorization label-shuffle null leaked::` +
-        `null accuracy ${(nullMax * 100).toFixed(1)}% exceeds the majority-class floor ` +
-        `${(study.baseline.majorityClassAccuracy * 100).toFixed(1)}% by more than 5pp — ` +
-        `the feature pipeline is leaking the label and every reported number is void`,
+      all
+        ? `::error title=PR-categorization: EVERY label-shuffle null beat the floor::` +
+            `${names} vs majority-class floor ${(FLOOR * 100).toFixed(1)}% (+${(MARGIN * 100).toFixed(0)}pp allowed) — ` +
+            `every null sees the same features and every one of them leaked, so the FEATURE PIPELINE ` +
+            `is carrying the label and every reported number is void`
+        : `::error title=PR-categorization: one label-shuffle null beat the floor::` +
+            `${names} vs majority-class floor ${(FLOOR * 100).toFixed(1)}% (+${(MARGIN * 100).toFixed(0)}pp allowed), ` +
+            `while ${clean} stayed at the floor on the SAME features and the SAME shuffled labels. ` +
+            `That exonerates the feature pipeline and implicates the affected model: its numbers are ` +
+            `void, the others are not. Under the temporal split the test-majority oracle is ` +
+            `${(study.baseline.testMajorityOracleAccuracy * 100).toFixed(1)}% ` +
+            `(area '${study.baseline.testMajorityArea}'), so a model whose shuffled-label predictions ` +
+            `collapse onto one frequent class will score near that without any leak`,
     );
     return { status: 4, report: lines.join('\n') + '\n' };
   }
