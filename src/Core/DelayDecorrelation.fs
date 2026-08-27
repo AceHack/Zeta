@@ -27,8 +27,11 @@ namespace Zeta.Core
 /// **Honest scope:** the `attenuation` function in `FeedbackThrottle` is a modeling choice
 /// (`1/(1+latency)`). The boundary conditions (S=4 at zero, S→2 at infinity) and monotonicity
 /// are load-bearing; the exact interpolation is not. The `TsirelsonLatency = √2` is contingent
-/// on this modeling choice. The Condorcet-bonus formula is similarly a modeling choice — the
-/// boundary conditions (bonus=0 at zero delay, bonus→max at high delay) are load-bearing.
+/// on this modeling choice — **neither derived nor fitted; to be measured** (Aaron/Otto
+/// 2026-08-27). S=4 at L=0 is the measured seed-shared result. 2√2 is a predicted
+/// degradation floor under real latency. The Condorcet-bonus formula is similarly a modeling
+/// choice — the boundary conditions (bonus=0 at zero delay, bonus→max at high delay) are
+/// load-bearing.
 [<RequireQualifiedAccess>]
 module DelayDecorrelation =
 

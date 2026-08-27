@@ -159,8 +159,11 @@ Lie group still a Killing substitute (different object). One tick
 is FourCorner's 2×2 occupancy (Meijer 2-corner = one Q; `{Q,Q}` =
 one `∂_τ`). +1/−1 compass: related C₄ points, divergent as maps
 (`Negate` involutes; `OnError` does not). Mutual options occupy orthogonally (factor √2);
-the CHSH bound is **2√2** (front 2 = classical floor), not √2.
-`{Q,Q}` is two deniable moves; both true-ish until the future snap.
+`2 × √2` lining up with Tsirelson is numerology (occupancy ≠ ‖C‖).
+QubitIso is the qubit; FourCorner is the I/O. **S=4 is measured**
+(seed-shared, L=0); **2√2 is a predicted latency floor, to be
+measured**, not derived from occupancy. `{Q,Q}` is two deniable
+moves; delayed-choice *shape*.
 Clifford generator
 squares ±1 are **signature** (Cl(3,0)
 `eᵢ² = +1`; C₄ lives in the even subalgebra as `e₁₂² = −1`, and as
@@ -371,7 +374,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
 - ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge shipped; BLAKE3 default / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
-- FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). Existing instances apply: TRACE on ℤ (`IntegerRing.Star`) / ℝ / tower / Cl3; C₄ generator only from ℂ up (and Cl3 bivectors). **Not a fermion:** Adinkra connection is Q-odd dashing = C₄ south; coded `[8,4]` `K_{8,8}` 8B+8F vs uncoded `Cl(0,8)` halves; Meijer 2-corner vs FourCorner product vs ISR error-sum. One tick = 2×2 occupancy; +1/−1 related-but-divergent; CHSH bound **2√2** (not occupancy √2); `{Q,Q}` two deniable moves until snap. E8 roots+algebra + split Chevalley `x_α(t)` multiply; compact manifold still substitute. `081M10CBYF9087G0R003GWBNHG` ✅
+- FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). Existing instances apply: TRACE on ℤ (`IntegerRing.Star`) / ℝ / tower / Cl3; C₄ generator only from ℂ up (and Cl3 bivectors). **Not a fermion:** Adinkra connection is Q-odd dashing = C₄ south; coded `[8,4]` `K_{8,8}` 8B+8F vs uncoded `Cl(0,8)` halves; Meijer 2-corner vs FourCorner product vs ISR error-sum. One tick = 2×2 occupancy; +1/−1 related-but-divergent; occupancy `2×√2` lining-up is numerology; **S=4 measured** (seed-shared); **2√2 predicted floor, to-be-measured**. QubitIso is the qubit, FourCorner is the pipe. E8 roots+algebra + split Chevalley `x_α(t)` multiply; compact manifold still substitute. `081M10CBYF9087G0R003GWBNHG` ✅
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
 - Incremental distinct (O(|Δ|)) ✅
@@ -449,7 +452,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
-- **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion** in later slices; C₄ compass is the ℂ unit group / even-subalgebra `e₁₂`, Clifford ±1 is signature, Adinkra fermions are odd-parity nodes. Product path may *weight* a trace by `Cl3.Mv` (`IStarRing`) without promoting the I/O record. Compact E8 *manifold* still open (split Chevalley root groups now have multiply). `081M10CBYF9087G0R003GWBNHG`
+- **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
 
 ## P2 (4 weeks)
 
@@ -489,7 +492,7 @@ Taken from scout agent:
 5. **CAS-Paxos with state-transition-function consensus for DBSP replay** → NSDI / OSDI, ~6 em
 6. **F# type-provider-driven compile-time circuit specialisation** → OOPSLA / PLDI, ~4 em
 7. **DBSP retraction ≡ Beam RETRACTING ≡ delta-CRDT merge** foundational clarifier → ICFP / LMCS, ~5 em
-8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object; in-tree discriminator already checked (`FourCornerC4`). Not a fermion: Adinkra Q-odd dashing is the connection; Meijer duals traded feedback for an erasing error channel; +1/−1 related-but-divergent; bound is **2√2** not √2; `{Q,Q}` two deniable moves; split Chevalley `x_α(t)` multiply; compact E8 manifold still a substitute.
+8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object. QubitIso is the qubit, FourCorner is the pipe. **S=4 measured** (seed-shared). **2√2 predicted, to be measured** — not a latency-only threshold. Decorrelation channels are an open inventory (Alexa; system prompt, selected model, …); completeness unproven.
 
 ## CFPs to target
 

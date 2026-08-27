@@ -386,23 +386,18 @@ let ``K: one tick fills four corners; Meijer 2-corner is one Q of {Q,Q}`` () =
     s2.DTauOrder |> should equal 1
 
 [<Fact>]
-let ``K: the bound is 2√2, not √2 — front 2 is the classical floor`` () =
+let ``K: 2 × occupancy-√2 lines up with 2√2 — coincidence, not a measurement`` () =
     FC.classicalChshFloor |> should equal 2
     FC.classicalSSquared |> should equal 4
     FC.tsirelsonSSquared |> should equal 8
-    // occupancy factor of two declared axes is √2 — the *extra* factor
     abs (FC.mutualOptionOccupancyNorm true true - sqrt 2.0) < 1e-12
     |> should equal true
-    // THE CORRECTION: bound = 2 × √2 = 2√2, not the factor alone
-    abs (FC.tsirelsonBoundFromMutualOptions - 2.0 * sqrt 2.0) < 1e-12
-    |> should equal true
-    abs (FC.tsirelsonBoundFromMutualOptions - BellTest.TsirelsonBound) < 1e-12
+    // numbers line up — that is the coincidence Otto named
+    abs (FC.toyOccupancyTimesClassicalFloor - BellTest.TsirelsonBound) < 1e-12
     |> should equal true
     BellTest.ClassicalBound |> should equal (float FC.classicalChshFloor)
-    // integer lock: S² = 8 is (2√2)²; commuting control is S² = 4
     FC.tsirelsonSSquared
     |> should equal (FC.classicalChshFloor * FC.classicalChshFloor * 2)
-    // Tsirelson.fs: C⁴ = 8·C²; commuting A′=A gives C² = 4I (classical)
     let eqM (a: Tsirelson.M) (b: Tsirelson.M) =
         Seq.forall2 (fun (r1: int[]) (r2: int[]) -> r1 = r2) a b
     let c2 = Tsirelson.mul Tsirelson.C Tsirelson.C
@@ -414,11 +409,22 @@ let ``K: the bound is 2√2, not √2 — front 2 is the classical floor`` () =
         (Tsirelson.mul classicalC classicalC)
         (Tsirelson.scale FC.classicalSSquared Tsirelson.identity)
     |> should equal true
-    // occupancy factor √2 can equal TsirelsonLatency as a number (model
-    // artifact) — the *bound* is 2√2, not that latency
-    abs (FC.tsirelsonBoundFromMutualOptions - FeedbackThrottle.TsirelsonLatency)
-    > 1.0
-    |> should equal true
+    // WHAT IS MEASURED at L=0 / seed-shared is S=4, not 2√2
+    match FeedbackThrottle.measuredSeedSharedS4 with
+    | FeedbackThrottle.Measured(s, _) ->
+        s |> should equal BellTest.AlgebraicMax
+        s = BellTest.TsirelsonBound |> should equal false
+    | other -> failwithf "expected Measured S=4, got %A" other
+    FeedbackThrottle.maxChsh 0.0 |> should equal BellTest.AlgebraicMax
+    BellTest.chshOf 1.0 -1.0 1.0 1.0 |> should equal BellTest.AlgebraicMax
+    // 2√2 is the predicted floor — unmeasured as a network result
+    match FeedbackThrottle.tsirelsonFloorToBeMeasured with
+    | FeedbackThrottle.UnmeasuredPredictedFloor(s, reason) ->
+        abs (s - BellTest.TsirelsonBound) < 1e-12 |> should equal true
+        reason.IndexOf("not occupancy", System.StringComparison.Ordinal)
+        >= 0
+        |> should equal true
+    | other -> failwithf "expected UnmeasuredPredictedFloor, got %A" other
     let both = FC.oneTick 7 8 "fb" "ack"
     FC.feedbackKeepsInput 7 both |> should equal true
 

@@ -29,8 +29,13 @@ let ``2√2 is crossed at a finite latency — a real transport drops below the 
     Assert.True(FeedbackThrottle.maxChsh 10.0 < FeedbackThrottle.Tsirelson)
 
 [<Fact>]
-let ``deterministic / replayable (DST)`` () =
-    Assert.Equal(FeedbackThrottle.maxChsh 1.5, FeedbackThrottle.maxChsh 1.5, 12)
+let ``maxChsh is ClassicalBound plus twice attenuation (two expressions, not X = X)`` () =
+    // R2: `maxChsh 1.5 = maxChsh 1.5` is one expression twice, a check that
+    // cannot fail. The composition identity can fail if the formula drifts.
+    let l = 1.5
+    let viaMax = FeedbackThrottle.maxChsh l
+    let viaAttn = FeedbackThrottle.ClassicalBound + 2.0 * FeedbackThrottle.attenuation l
+    Assert.Equal(viaMax, viaAttn, 12)
 
 [<Fact>]
 let ``TsirelsonLatency = sqrt 2 and it sets maxChsh to exactly 2 root 2`` () =
@@ -55,3 +60,66 @@ let ``regimeOf classifies channels by latency (git-slow=Classical, instant=Signa
     Assert.Equal(FeedbackThrottle.Signalling, FeedbackThrottle.regimeOf 0.0) // instant feedback: S=4
     Assert.Equal(FeedbackThrottle.Quantum, FeedbackThrottle.regimeOf (sqrt 2.0)) // exactly at 2√2 -> Quantum band
     Assert.Equal(FeedbackThrottle.Quantum, FeedbackThrottle.regimeOf 2.0) // slower than √2, still > classical
+
+[<Fact>]
+let ``S=4 is measured seed-shared; 2√2 is an unmeasured predicted floor; TsirelsonLatency is toy`` () =
+    match FeedbackThrottle.measuredSeedSharedS4 with
+    | FeedbackThrottle.Measured(s, cond) ->
+        Assert.Equal(FeedbackThrottle.AlgebraicMax, s)
+        Assert.Equal(BellTest.AlgebraicMax, s)
+        Assert.Contains("seed", cond, System.StringComparison.Ordinal)
+    | other -> failwithf "expected Measured, got %A" other
+    match FeedbackThrottle.toyAt 0.0 with
+    | FeedbackThrottle.ToyModel(s, lat) ->
+        Assert.Equal(0.0, lat)
+        Assert.Equal(4.0, s)
+    | other -> failwithf "expected ToyModel, got %A" other
+    match FeedbackThrottle.tsirelsonFloorToBeMeasured with
+    | FeedbackThrottle.UnmeasuredPredictedFloor(s, reason) ->
+        Assert.Equal(FeedbackThrottle.Tsirelson, s, 12)
+        Assert.True(
+            reason.IndexOf("underpowered", System.StringComparison.Ordinal)
+            >= 0
+        )
+    | other -> failwithf "expected UnmeasuredPredictedFloor, got %A" other
+    // toy curve identity still holds — that is not a network measurement
+    Assert.Equal(FeedbackThrottle.Tsirelson, FeedbackThrottle.maxChsh FeedbackThrottle.TsirelsonLatency, 9)
+
+[<Fact>]
+let ``jitter is dual-use — degrades S and is captured into frost; neither reading is the verdict`` () =
+    Assert.Equal(2, List.length FeedbackThrottle.jitterDualReadings)
+    Assert.Contains(
+        FeedbackThrottle.CorrelationDegradation,
+        FeedbackThrottle.jitterDualReadings
+    )
+    Assert.Contains(
+        FeedbackThrottle.FrostUniquenessCapture,
+        FeedbackThrottle.jitterDualReadings
+    )
+    // the fact does not name a verdict
+    let fact = FeedbackThrottle.JitterPresent
+    Assert.Equal(FeedbackThrottle.JitterPresent, fact)
+
+[<Fact>]
+let ``a latency-only sweep is underpowered — the channel inventory is open and non-exhaustive`` () =
+    Assert.False FeedbackThrottle.inventoryClaimsExhaustiveness
+    Assert.True(FeedbackThrottle.hasKnownChannel "system-prompt")
+    Assert.True(FeedbackThrottle.hasKnownChannel "selected-model")
+    Assert.True(FeedbackThrottle.hasKnownChannel "model-family")
+    Assert.True(FeedbackThrottle.hasKnownChannel "prompt-frame")
+    Assert.True(FeedbackThrottle.hasKnownChannel "network-latency-jitter")
+    Assert.True(FeedbackThrottle.hasKnownChannel "hat-producer-vs-verifier")
+    Assert.True(
+        FeedbackThrottle.sweepIsUnderpowered [ "network-latency-jitter" ]
+    )
+    // covering today's snapshot still does not claim completeness
+    Assert.False(
+        FeedbackThrottle.sweepIsUnderpowered FeedbackThrottle.knownChannelNames
+    )
+    Assert.False FeedbackThrottle.inventoryClaimsExhaustiveness
+    Assert.True(List.length FeedbackThrottle.knownDecorrelationChannels > 6)
+    // default string collation is binary / codepoint, not ambient culture
+    Assert.Equal("binary", Collation.defaultName)
+    Assert.Same(Collation.binary, Collation.byNameOrDefault Collation.defaultName)
+    Assert.NotSame(System.StringComparer.InvariantCulture, Collation.binary)
+    Assert.NotSame(System.StringComparer.CurrentCulture, Collation.binary)

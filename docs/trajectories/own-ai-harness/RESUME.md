@@ -146,7 +146,7 @@ already running, not by inventing a fourth factory. The concert is
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
 - Cutover sequence: `docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`
 - DU expand / local→global: `docs/research/2026-08-26-du-expand-dynamicvalue-softvalue-granular-repo-splits.md` · `src/Core/DuExpand.fs`
-- FourCorner C₄ / IStarRing / not Cl(p,q) / not a fermion (one tick = 2×2; bound **2√2** not √2; `{Q,Q}` deniable until snap): `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md` · `src/Core/FourCornerC4.fs` · `src/Core/E8ChevalleyGroup.fs` · `081M10CBYF9087G0R003GWBNHG`
+- FourCorner C₄ / IStarRing / not Cl(p,q) / not a fermion or qubit (pipe ≠ QubitIso; S=4 measured; 2√2 predicted, not a latency-only threshold; jitter dual-use frost): `docs/research/2026-08-26-fourcorner-c4-istarring-not-clpq.md` · `src/Core/FeedbackThrottle.fs` · `081M10CBYF9087G0R003GWBNHG`
 - Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`
 - Index: `src/Core.TypeScript/search/inverted/`
 - CLI: `src/Core.TypeScript/harny/harny.ts`

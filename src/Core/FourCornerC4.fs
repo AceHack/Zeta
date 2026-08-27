@@ -323,17 +323,18 @@ module FourCornerC4 =
     /// Two Q-moves per `{Q,Q}` tick (`AdinkraClock.step` twice).
     let adinkraQMovesPerTick = 2
 
-    // ── Mutual options, noninterference, bound 2√2 not √2 ────────────
+    // ── Mutual options, noninterference; 2×√2 is a coincidence ───────
     // TOut and feedback are *mutual options*: both may be occupied
     // (product) without erasing TIn. Two declared unit axes, orthogonal
     // by noninterference (§13). Their Pythagorean factor is √2.
-    // Aaron 2026-08-27: the CHSH / quantum number is **2√2**, not √2 —
-    // missing the front 2. The front 2 is the classical / Meijer
-    // 2-corner floor (BellTest.ClassicalBound; Tsirelson C²=4I when
-    // the pair commutes). Bound = 2 × √2 = 2√2. Integer lock:
-    // S² = 8 = (2√2)²; the irrational is readout only (`Tsirelson.fs`).
-    // Do not identify occupancy-√2 with FeedbackThrottle.TsirelsonLatency
-    // (that √2 is a model-contingent *latency*, not the bound).
+    // Classical floor 2 × that factor equals 2√2 *as a number*.
+    // Otto 2026-08-27: that lining-up is numerology, not identification.
+    // CHSH 2√2 is ‖C‖ on ℂ²⊗ℂ² and spends anticommutation. One occupancy
+    // record has nothing to spend. QubitIso is the qubit; FourCorner is
+    // the I/O pipe. Two agents with a FourCorner throttle approaching
+    // 2√2 is an assumption, not a measure. What is measured at L=0 /
+    // shared seed is S=4 (`FeedbackThrottle.measuredSeedSharedS4`).
+    // 2√2 is a predicted latency-degradation floor — to be measured.
 
     let mutualOptionOccupancyNorm (dataOut: bool) (feedback: bool) : float =
         let d = if dataOut then 1.0 else 0.0
@@ -352,9 +353,13 @@ module FourCornerC4 =
     [<Literal>]
     let classicalSSquared = 4
 
-    /// The bound: front 2 × occupancy factor √2 = 2√2. Not √2 alone.
-    let tsirelsonBoundFromMutualOptions : float =
+    /// Coincidence: 2 × occupancy-√2 equals 2√2 numerically. Not a
+    /// measurement of Tsirelson (`numerology-vs-number-theory`).
+    let toyOccupancyTimesClassicalFloor : float =
         float classicalChshFloor * mutualOptionOccupancyNorm true true
+
+    /// Kept so older call sites fail loudly if they meant a measurement.
+    let tsirelsonBoundFromMutualOptions : float = toyOccupancyTimesClassicalFloor
 
     // ── Quantum from {Q,Q}: two deniable moves, future snap ──────────
     // Each Q is a 2-corner (in/out). Either move is *plausibly deniable*
@@ -363,8 +368,9 @@ module FourCornerC4 =
     // support, not snapped). The pair `{Q,Q}` is the tick; that close is
     // the collapse. SoftValue.snap is the only sanctioned collapse
     // (`DuExpand`: snap is the only collapse). Not "FourCorner is a
-    // qubit" — derivation of where the 2×2 occupancy can carry two
-    // live options until the future tick.
+    // qubit" — the 2×2 occupancy can carry two live options until the
+    // future tick. Rhyme with delayed choice; QubitIso is the qubit;
+    // FourCorner is the I/O. Complementarity ≠ mutual occupancy.
 
     // ── +1 and −1 compass: related, divergent ────────────────────────
     // +1 = north = genuineDelta = VALUE product = Reversible (involution).

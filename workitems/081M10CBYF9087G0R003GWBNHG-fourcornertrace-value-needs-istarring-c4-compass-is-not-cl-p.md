@@ -46,3 +46,14 @@ are related; they are **not** “it is Cl(p,q)”.
   compact manifold
 - Bound is **2√2** (front 2 = classical), not occupancy √2; `{Q,Q}`
   two deniable moves, snap is the collapse
+- **Measure, don't model:** S=4 is the seed-shared measure; 2√2 is a
+  predicted floor (unmeasured); occupancy `2×√2` lining up with
+  Tsirelson is numerology; QubitIso is the qubit, FourCorner is
+  the pipe
+- Jitter is dual-use (degrades S *and* frost uniqueness); a
+  latency-only sweep is underpowered
+- Decorrelation channels are an **open inventory** (Alexa:
+  system prompt, selected model, hat, prompt frame, …);
+  `inventoryClaimsExhaustiveness = false`
+- String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint),
+  never ambient culture
