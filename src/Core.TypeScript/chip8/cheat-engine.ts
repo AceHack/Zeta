@@ -1,40 +1,152 @@
 import type { Frame } from "./chip8";
+import {
+  meterCrossingRange,
+  meterCrossings,
+  type ChannelGrant,
+  type ChannelGrantFeedback,
+  type ChannelMeterSnapshot,
+} from "./channel-grant";
 
 export interface CheatTable {
-  frozenAddresses: Map<number, number>; // address -> fixed byte value
+  readonly frozenAddresses: Map<number, number>;
+}
+
+export type CheatEngineFeedbackCode = "invalid-address" | "invalid-byte-value" | "invalid-hex";
+
+export interface CheatEngineFeedback {
+  readonly code: CheatEngineFeedbackCode;
+  readonly detail: string;
+}
+
+export type CheatEngineResult<T> =
+  | { readonly ok: true; readonly value: T }
+  | { readonly ok: false; readonly feedback: CheatEngineFeedback | ChannelGrantFeedback };
+
+export interface RamRead {
+  readonly byte: number;
+  readonly meter: ChannelMeterSnapshot;
+}
+
+export interface RamRangeRead {
+  readonly bytes: Uint8Array;
+  readonly meter: ChannelMeterSnapshot;
+}
+
+export interface CodeInjectionReceipt {
+  readonly bytesWritten: number;
+  readonly meter: ChannelMeterSnapshot;
+}
+
+const MAX_ADDRESS = 0xfff;
+
+const fail = <T>(code: CheatEngineFeedbackCode, detail: string): CheatEngineResult<T> => ({
+  ok: false,
+  feedback: { code, detail },
+});
+
+function validAddress(address: number): boolean {
+  return Number.isInteger(address) && address >= 0 && address <= MAX_ADDRESS;
 }
 
 export function createCheatTable(): CheatTable {
-  return {
-    frozenAddresses: new Map(),
-  };
+  return { frozenAddresses: new Map() };
 }
 
-export function applyCheatTable(frame: Frame, table: CheatTable): void {
-  for (const [address, value] of table.frozenAddresses.entries()) {
-    // If the emulator attempts to change this address, the cheat engine will force it back
-    // to the frozen value at the start of every cycle.
+/** Apply every freeze only after the complete write set is admitted and counted. */
+export function applyCheatTable(
+  grant: ChannelGrant,
+  frame: Frame,
+  table: CheatTable,
+): CheatEngineResult<ChannelMeterSnapshot> {
+  const writes = [...table.frozenAddresses.entries()];
+  for (const [address, value] of writes) {
+    if (!validAddress(address)) return fail("invalid-address", String(address));
+    if (!Number.isInteger(value) || !Number.isFinite(value)) {
+      return fail("invalid-byte-value", `${String(address)}=${String(value)}`);
+    }
+  }
+
+  const metered = meterCrossings(
+    grant,
+    writes.map(([address]) => ({ channel: "ram", direction: "write", address })),
+  );
+  if (!metered.ok) return metered;
+
+  for (const [address, value] of writes) {
     frame.mem.set(address, value & 0xff);
-    
-    // Also mark as causally modified by the cheat engine so the orbit detector sees it
     frame.causalMask[address] = true;
   }
+  return metered;
 }
 
-/**
- * Injects raw hex code into memory at the specified address.
- * Hex string should be in the format "1220AABB..." (no 0x prefix, even length)
- */
-export function injectCode(frame: Frame, address: number, hexString: string): void {
-  // Clean up input from LLM
-  hexString = hexString.replace(/^0x/i, "");
-  if (hexString.length % 2 !== 0) {
-    hexString = "0" + hexString;
+/** The only typed path for a non-display memory read. */
+export function readRam(grant: ChannelGrant, frame: Frame, address: number): CheatEngineResult<RamRead> {
+  if (!validAddress(address)) return fail("invalid-address", String(address));
+  const metered = meterCrossings(grant, [{ channel: "ram", direction: "read", address }]);
+  if (!metered.ok) return metered;
+  return { ok: true, value: { byte: frame.mem.get(address) ?? 0, meter: metered.value } };
+}
+
+/** Batch form for an inclusive contiguous range; still counts one crossing per address. */
+export function readRamRange(
+  grant: ChannelGrant,
+  frame: Frame,
+  startAddress: number,
+  endAddress: number,
+): CheatEngineResult<RamRangeRead> {
+  if (!validAddress(startAddress) || !validAddress(endAddress) || startAddress > endAddress) {
+    return fail("invalid-address", `${String(startAddress)}-${String(endAddress)}`);
   }
-  
-  for (let i = 0; i < hexString.length; i += 2) {
-    const byte = parseInt(hexString.substring(i, i + 2), 16);
-    frame.mem.set(address + (i / 2), byte);
-    frame.causalMask[address + (i / 2)] = true;
+  const metered = meterCrossingRange(grant, {
+    channel: "ram",
+    direction: "read",
+    startAddress,
+    endAddress,
+  });
+  if (!metered.ok) return metered;
+
+  const bytes = new Uint8Array(endAddress - startAddress + 1);
+  for (const [address, value] of frame.mem) {
+    if (address >= startAddress && address <= endAddress) {
+      bytes[address - startAddress] = value & 0xff;
+    }
   }
+  return { ok: true, value: { bytes, meter: metered.value } };
+}
+
+/** Inject raw hex only after every target byte is admitted and counted. */
+export function injectCode(
+  grant: ChannelGrant,
+  frame: Frame,
+  address: number,
+  hexString: string,
+): CheatEngineResult<CodeInjectionReceipt> {
+  if (!validAddress(address)) return fail("invalid-address", String(address));
+  let normalized = hexString.replace(/^0x/i, "");
+  if (normalized.length === 0 || !/^[0-9a-f]+$/i.test(normalized)) {
+    return fail("invalid-hex", hexString);
+  }
+  if (normalized.length % 2 !== 0) normalized = `0${normalized}`;
+
+  const bytesWritten = normalized.length / 2;
+  const endAddress = address + bytesWritten - 1;
+  if (!validAddress(endAddress)) {
+    return fail("invalid-address", `${String(address)}-${String(endAddress)}`);
+  }
+
+  const metered = meterCrossingRange(grant, {
+    channel: "ram",
+    direction: "write",
+    startAddress: address,
+    endAddress,
+  });
+  if (!metered.ok) return metered;
+
+  for (let index = 0; index < bytesWritten; index += 1) {
+    const target = address + index;
+    const byte = Number.parseInt(normalized.slice(index * 2, index * 2 + 2), 16);
+    frame.mem.set(target, byte);
+    frame.causalMask[target] = true;
+  }
+  return { ok: true, value: { bytesWritten, meter: metered.value } };
 }

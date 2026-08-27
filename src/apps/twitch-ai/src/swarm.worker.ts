@@ -24,12 +24,14 @@ import {
 } from "../../../Core.TypeScript/chip8/chip8";
 
 import { buildMutualSimRom } from "../../../Core.TypeScript/chip8/games/mutual-sim";
-import { createCheatTable, applyCheatTable } from "../../../Core.TypeScript/chip8/cheat-engine";
+import { createCheatTable, applyCheatTable, readRamRange } from "../../../Core.TypeScript/chip8/cheat-engine";
 import {
-  buildPriorsRegistry,
-  priorsForRom,
-  romFingerprint,
-} from "../../../Core.TypeScript/chip8/game-priors";
+  FULL_RAM_TAS_CHANNELS,
+  issueChip8ChannelGrant,
+  type ChannelGrant,
+} from "../../../Core.TypeScript/chip8/channel-grant";
+import { COMMON_SEED } from "../../../Core.TypeScript/observe/phase-clock";
+import { buildPriorsRegistry, priorsForRom, romFingerprint } from "../../../Core.TypeScript/chip8/game-priors";
 import { mutualSimPriors } from "../../../Core.TypeScript/chip8/priors/mutual-sim.priors";
 import { singleMoverPriors } from "../../../Core.TypeScript/chip8/priors/single-mover.priors";
 import { modeFlipPriors } from "../../../Core.TypeScript/chip8/priors/mode-flip.priors";
@@ -47,6 +49,7 @@ let swarm: SwarmController | null = null;
 let world: World;
 let frame: ReturnType<typeof initFrame>;
 let cheatTable: ReturnType<typeof createCheatTable>;
+let channelGrant: ChannelGrant;
 let currentRomRef: Uint8Array;
 let cycle = 0;
 let isRunning = false;
@@ -67,26 +70,39 @@ const postToMain = (message: WorkerToMainMessage, transfer: ArrayBuffer[] = []):
   workerScope.postMessage(message, transfer);
 };
 
+function warnIgnoredLlmSettings(apiKey: string | null, baseUrl: string | null): void {
+  if (apiKey !== null || baseUrl !== null) {
+    console.warn(
+      "[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController " +
+        "resolves host and model from persona-registry and exposes no override.",
+    );
+  }
+}
+
 async function handleMessage(message: MainToWorkerMessage): Promise<void> {
   switch (message.type) {
     case "INIT": {
-      console.log(
-        "[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).",
-      );
+      console.log("[SwarmWorker] Initializing swarm (LLM host/model come from persona-registry).");
 
       console.log("[SwarmWorker] About to instantiate SwarmController");
       swarm = new SwarmController();
-      if (message.payload.apiKey !== null || message.payload.baseUrl !== null) {
-        console.warn(
-          "[SwarmWorker] Ignoring the LLM settings in this INIT payload — SwarmController " +
-            "resolves host and model from persona-registry and exposes no override.",
-        );
-      }
+      warnIgnoredLlmSettings(message.payload.apiKey, message.payload.baseUrl);
       console.log("[SwarmWorker] About to call swarm.init()");
       await swarm.init();
       console.log("[SwarmWorker] swarm.init() finished");
 
       cheatTable = createCheatTable();
+      const grantResult = await issueChip8ChannelGrant(
+        "twitch-ai-worker-harness",
+        activeRom,
+        FULL_RAM_TAS_CHANNELS,
+        COMMON_SEED,
+      );
+      if (!grantResult.ok) {
+        console.error(`[ChannelGrant] Refused run: ${grantResult.feedback.code}: ${grantResult.feedback.detail}`);
+        return;
+      }
+      channelGrant = grantResult.value;
       world = {
         backlog: [{ id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
         history: [],
@@ -113,10 +129,21 @@ async function handleMessage(message: MainToWorkerMessage): Promise<void> {
     }
     case "INJECT_EPIGENETIC_MATERIAL": {
       const uploadedRom = new Uint8Array(message.payload.buffer);
-      const fingerprint = romFingerprint(uploadedRom);
-      console.log(
-        `[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`,
+      const grantResult = await issueChip8ChannelGrant(
+        "twitch-ai-worker-harness",
+        uploadedRom,
+        FULL_RAM_TAS_CHANNELS,
+        COMMON_SEED,
       );
+      if (!grantResult.ok) {
+        console.error(
+          `[ChannelGrant] Refused cart switch: ${grantResult.feedback.code}: ${grantResult.feedback.detail}`,
+        );
+        return;
+      }
+      channelGrant = grantResult.value;
+      const fingerprint = romFingerprint(uploadedRom);
+      console.log(`[SwarmWorker] 🧬 Received Epigenetic Material. Spectral Fingerprint: ${fingerprint}`);
       console.log("[SwarmWorker] Integrating Epigenetic Material into the Soft Value Regime...");
 
       // Game switching stays inside the soft regime: a known fingerprint
@@ -227,9 +254,7 @@ function rebootIfCartSwitched(): void {
   cycle = 0;
   world = {
     ...world,
-    backlog: [
-      { id: "chip8-play-1", title: "Play Custom CHIP-8 Game", ready: true, ambiguous: false },
-    ],
+    backlog: [{ id: "chip8-play-1", title: "Play Custom CHIP-8 Game", ready: true, ambiguous: false }],
   };
 }
 
@@ -280,29 +305,39 @@ async function loop(): Promise<void> {
   rebootIfCartSwitched();
 
   clearCausalMask(frame);
-  applyCheatTable(frame, cheatTable);
+  const freezeResult = applyCheatTable(channelGrant, frame, cheatTable);
+  if (!freezeResult.ok) {
+    isRunning = false;
+    console.error(`[ChannelGrant] Refused run: ${freezeResult.feedback.code}: ${freezeResult.feedback.detail}`);
+    return;
+  }
 
   const displayArray = simulateTick();
 
-  const memArray = new Uint8Array(4096);
-  for (const [addr, val] of frame.mem.entries()) {
-    if (addr < 4096) memArray[addr] = val;
+  const memoryResult = readRamRange(channelGrant, frame, 0, 0xfff);
+  if (!memoryResult.ok) {
+    isRunning = false;
+    console.error(`[ChannelGrant] Refused run: ${memoryResult.feedback.code}: ${memoryResult.feedback.detail}`);
+    return;
   }
+  const memArray = memoryResult.value.bytes;
   const memorySectors = [memArray];
   const causalMask = Array.from(frame.causalMask);
 
   world = {
     ...world,
-    cheatEngine: { memorySectors, causalMask, display: displayArray },
+    cheatEngine: {
+      memorySectors,
+      causalMask,
+      display: displayArray,
+      channelMeter: memoryResult.value.meter,
+    },
   };
 
   if (!world.backlog.find((i) => i.id === "chip8-play-1")) {
     world = {
       ...world,
-      backlog: [
-        ...world.backlog,
-        { id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false },
-      ],
+      backlog: [...world.backlog, { id: "chip8-play-1", title: "Play CHIP-8 Game", ready: true, ambiguous: false }],
     };
   }
 
@@ -351,9 +386,7 @@ async function loop(): Promise<void> {
     why: world.cheatEngine?.why ?? null,
   };
 
-  const transfer: ArrayBuffer[] = attention
-    ? [attention.variance.buffer, attention.mean.buffer]
-    : [];
+  const transfer: ArrayBuffer[] = attention ? [attention.variance.buffer, attention.mean.buffer] : [];
   postToMain({ type: "FRAME", payload: eventAction }, transfer);
 
   cycle++;

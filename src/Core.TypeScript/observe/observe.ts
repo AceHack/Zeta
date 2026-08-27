@@ -60,13 +60,10 @@
  */
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
-import {
-  describeFirstSession,
-  firstSessionOracle,
-  type NodeSessionState,
-} from "./first-session";
+import { describeFirstSession, firstSessionOracle, type NodeSessionState } from "./first-session";
 import type { FourCornerOwnership } from "../workflow-engine/types";
 import type { WhyContext } from "../bayesian/why-chain";
+import type { ChannelMeterSnapshot } from "../chip8/channel-grant";
 
 /** One backlog item, classified to just what the controller needs to decide. */
 export interface BacklogItem {
@@ -155,7 +152,12 @@ export interface World {
   /** 081KSNY2Z0008QG0R0008PN7RQ slice 4: post-login cred adventure channel; absent when complete or unwired. */
   readonly nodeSession?: NodeSessionState;
   /** Cartography state: current spatial focus and time-resolution. */
-  readonly cartography?: { readonly focusId?: string; readonly scopeLevel: number; readonly timeOffset: number; readonly activeOrbitSignature?: string; };
+  readonly cartography?: {
+    readonly focusId?: string;
+    readonly scopeLevel: number;
+    readonly timeOffset: number;
+    readonly activeOrbitSignature?: string;
+  };
   /**
    * The time-travel LEDGER — LOCAL BOOKKEEPING, deliberately OUTSIDE the
    * four-oracle treaty (see `golden-vectors.ts` §"the treaty surface"). It is the
@@ -177,6 +179,8 @@ export interface CheatEngineState {
   readonly display?: any[];
   readonly causalMask?: boolean[];
   readonly memorySectors: Uint8Array[];
+  /** Harness-issued TAS apparatus identity and cumulative read/write crossings for this run. */
+  readonly channelMeter?: ChannelMeterSnapshot;
   readonly keyPredictions?: Record<number, number>;
   readonly chosenKey?: number;
   /** Forced-perception readout — what the agent currently sees and intends. */
@@ -252,7 +256,12 @@ export interface AgentAction {
  * is total across the union while remaining impossible to populate there.
  */
 export type HistoryEvent =
-  | { readonly type: "do_item"; readonly item: BacklogItem; readonly evaluation?: ItemEvaluation; readonly actions?: readonly AgentAction[] }
+  | {
+      readonly type: "do_item";
+      readonly item: BacklogItem;
+      readonly evaluation?: ItemEvaluation;
+      readonly actions?: readonly AgentAction[];
+    }
   | {
       readonly type: "retract_time";
       /** The `do_item` this reverses — `null` when there was nothing left to reverse. */
@@ -627,7 +636,11 @@ export const CHOOSER_INSTRUCTION =
  * reference oracle. On model failure, `chooseIndex` reports `fallback` and we
  * return the pure oracle's pick explicitly (degrade-toward-correct).
  */
-export async function observeWithLlm(world: World, backend: ModelBackend, instructionOverride?: string): Promise<NextAction> {
+export async function observeWithLlm(
+  world: World,
+  backend: ModelBackend,
+  instructionOverride?: string,
+): Promise<NextAction> {
   const menu = buildMenu(world);
   const result = await chooseIndex(backend, {
     context: describeWorld(world),
@@ -676,7 +689,12 @@ export function simulate(world: World, action: NextAction): World {
       const entry: HistoryEvent =
         action.evaluation === undefined
           ? { type: "do_item", item: action.item, ...(action.actions ? { actions: action.actions } : {}) }
-          : { type: "do_item", item: action.item, evaluation: action.evaluation, ...(action.actions ? { actions: action.actions } : {}) };
+          : {
+              type: "do_item",
+              item: action.item,
+              evaluation: action.evaluation,
+              ...(action.actions ? { actions: action.actions } : {}),
+            };
       return {
         ...world,
         backlog: world.backlog.filter((i) => i.id !== action.item.id),
@@ -698,11 +716,29 @@ export function simulate(world: World, action: NextAction): World {
       // without the key, which is what the parent actually had.
       const inheritedGrid = action.item.gridData !== undefined ? { gridData: action.item.gridData } : {};
       if (action.subTasks && action.subTasks.length > 0) {
-        children = action.subTasks.map((t, idx) => ({ id: `${action.item.id}.${idx + 1}`, title: t, ready: true, ambiguous: false, ...inheritedGrid }));
+        children = action.subTasks.map((t, idx) => ({
+          id: `${action.item.id}.${idx + 1}`,
+          title: t,
+          ready: true,
+          ambiguous: false,
+          ...inheritedGrid,
+        }));
       } else {
         children = [
-          { id: `${action.item.id}.1`, title: `${action.item.title} (part 1)`, ready: true, ambiguous: false, ...inheritedGrid },
-          { id: `${action.item.id}.2`, title: `${action.item.title} (part 2)`, ready: true, ambiguous: false, ...inheritedGrid },
+          {
+            id: `${action.item.id}.1`,
+            title: `${action.item.title} (part 1)`,
+            ready: true,
+            ambiguous: false,
+            ...inheritedGrid,
+          },
+          {
+            id: `${action.item.id}.2`,
+            title: `${action.item.title} (part 2)`,
+            ready: true,
+            ambiguous: false,
+            ...inheritedGrid,
+          },
         ];
       }
       return {
@@ -732,26 +768,33 @@ export function simulate(world: World, action: NextAction): World {
     case "free_time":
       return { ...world, mode: "free_time" };
     case "navigate_cartography":
-      return { ...world, cartography: { ...world.cartography, scopeLevel: world.cartography?.scopeLevel ?? 0, timeOffset: world.cartography?.timeOffset ?? 0 } };
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
+          scopeLevel: world.cartography?.scopeLevel ?? 0,
+          timeOffset: world.cartography?.timeOffset ?? 0,
+        },
+      };
     case "scope_cartography":
-      return { 
-        ...world, 
-        cartography: { 
-          ...world.cartography, 
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
           scopeLevel: (world.cartography?.scopeLevel ?? 0) + (action.direction === "in" ? 1 : -1),
-          timeOffset: world.cartography?.timeOffset ?? 0 
-        } 
+          timeOffset: world.cartography?.timeOffset ?? 0,
+        },
       };
     case "retract_time": {
       const hist = world.history || [];
-      
+
       // Thrash Guard: Limit consecutive retracts to prevent a confused model from dumping the ledger.
       let consecutiveRetracts = 0;
       for (let i = hist.length - 1; i >= 0; i--) {
         if (hist[i]?.type === "retract_time") consecutiveRetracts++;
         else break;
       }
-      
+
       if (consecutiveRetracts >= 3) {
         // Guard hit. ANNOUNCE the refusal — a silent `return world` is indistinguishable from a
         // retraction that simply had nothing to undo, and that ambiguity is how a bare `|| true`
@@ -800,26 +843,26 @@ export function simulate(world: World, action: NextAction): World {
         // Clock-free for the same reason as `do_item` above — a retraction that records WHEN it
         // happened cannot be replayed into the same state.
         history: [...hist, { type: "retract_time", item: targetItem }],
-        cartography: { 
-          ...world.cartography, 
+        cartography: {
+          ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
-          timeOffset: (world.cartography?.timeOffset ?? 0) - 1 
-        } 
+          timeOffset: (world.cartography?.timeOffset ?? 0) - 1,
+        },
       };
     }
     case "replay_time":
-      return { 
-        ...world, 
-        cartography: { 
-          ...world.cartography, 
+      return {
+        ...world,
+        cartography: {
+          ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
-          timeOffset: (world.cartography?.timeOffset ?? 0) + 1 
-        } 
+          timeOffset: (world.cartography?.timeOffset ?? 0) + 1,
+        },
       };
     case "read_memory_sector": {
       const caps = world.agentCapabilities ?? [];
       if (!caps.includes("ram_read_all") && !caps.includes("vram_read")) {
-         return world; // Blocked by capability constraints
+        return world; // Blocked by capability constraints
       }
       return {
         ...world,
@@ -827,13 +870,13 @@ export function simulate(world: World, action: NextAction): World {
           ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
           timeOffset: world.cartography?.timeOffset ?? 0,
-        }
+        },
       };
     }
     case "write_memory_sector": {
       const caps = world.agentCapabilities ?? [];
       if (!caps.includes("ram_write")) {
-         return world; // Blocked by capability constraints
+        return world; // Blocked by capability constraints
       }
       return {
         ...world,
@@ -841,7 +884,7 @@ export function simulate(world: World, action: NextAction): World {
           ...world.cartography,
           scopeLevel: world.cartography?.scopeLevel ?? 0,
           timeOffset: world.cartography?.timeOffset ?? 0,
-        }
+        },
       };
     }
   }
@@ -854,7 +897,7 @@ export function simulate(world: World, action: NextAction): World {
 export function classify(before: World, after: World, action: NextAction): string {
   if (action.kind === "do_item") {
     // Basic heuristic: check if the item moved from backlog to done
-    const stillInBacklog = after.backlog.find(b => b.id === action.item.id);
+    const stillInBacklog = after.backlog.find((b) => b.id === action.item.id);
     if (!stillInBacklog) return "item_completed";
     return "item_in_progress";
   }
@@ -876,8 +919,8 @@ function worldKey(world: World): string {
   const op = world.operator
     ? `${world.operator.pendingMessage ? "m" : "-"}${world.operator.pendingFerry ? "f" : "-"}`
     : "x";
-  const cart = world.cartography 
-    ? `c:${world.cartography.scopeLevel}:${world.cartography.timeOffset}:${(world.cartography as any).inspections ?? 0}` 
+  const cart = world.cartography
+    ? `c:${world.cartography.scopeLevel}:${world.cartography.timeOffset}:${(world.cartography as any).inspections ?? 0}`
     : "-";
   return `${bl}|op:${op}|mode:${world.mode ?? "-"}|${cart}`;
 }
@@ -959,11 +1002,15 @@ if (import.meta.main) {
     },
     {
       label: "ready work OFFERED as default (but free modes are in the menu)",
-      world: { backlog: [{ id: "081KSNY2Z0008QG0R002JKH50A", title: "encryption phase 2", ready: true, ambiguous: false }] },
+      world: {
+        backlog: [{ id: "081KSNY2Z0008QG0R002JKH50A", title: "encryption phase 2", ready: true, ambiguous: false }],
+      },
     },
     {
       label: "only ambiguous → decompose offered",
-      world: { backlog: [{ id: "081KSKBP80008QG0R000B3Y19A", title: "workflow engine v1", ready: false, ambiguous: true }] },
+      world: {
+        backlog: [{ id: "081KSKBP80008QG0R000B3Y19A", title: "workflow engine v1", ready: false, ambiguous: true }],
+      },
     },
     {
       label: "grammar can't express it → edit_grammar (not trapped)",
@@ -985,7 +1032,11 @@ if (import.meta.main) {
     },
     {
       label: "backlog all blocked → explore (forward, not quiet) — rest still choosable",
-      world: { backlog: [{ id: "081KRHWGX0008QG0R0025PX5SZ", title: "blocked on external dep", ready: false, ambiguous: false }] },
+      world: {
+        backlog: [
+          { id: "081KRHWGX0008QG0R0025PX5SZ", title: "blocked on external dep", ready: false, ambiguous: false },
+        ],
+      },
     },
   ];
 

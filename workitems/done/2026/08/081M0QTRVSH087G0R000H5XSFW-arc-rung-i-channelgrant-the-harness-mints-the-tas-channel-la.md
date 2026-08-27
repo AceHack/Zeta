@@ -1,11 +1,12 @@
 ---
 id: 081M0QTRVSH087G0R000H5XSFW
 type: task
-state: backlog
+state: done
 priority: P2
 slug: arc-rung-i-channelgrant-the-harness-mints-the-tas-channel-la
 title: "ARC rung I - ChannelGrant: the harness mints the TAS channel label, the agent cannot; an unproxied crossing refuses the run"
 created: 2026-08-23T17:30:24.945Z
+completed: 2026-08-27T04:51:39Z
 depends_on: []
 composes_with: []
 ---
@@ -16,7 +17,7 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081M0QTRVSH087G0R000H5XSFW-*.md` glob. -->
 
-**Register: `proposed`.** Design: `docs/design/2026-08-23-arc-agi-3-integration-design-chip8-chip9-atari-and-the-arena.md` §12.3-§12.5.
+**Register: `implemented`.** Design: `docs/design/2026-08-23-arc-agi-3-integration-design-chip8-chip9-atari-and-the-arena.md` §12.3-§12.5.
 
 Aaron 2026-08-23: _"direct memory manipulation and tool-assisted runs will be allowed, just properly
 labeled and metered through proxies even if in memory, so **the AI playing the game is not the one who
@@ -56,3 +57,18 @@ the only **reachable** one. Real enforcement needs process/WASM isolation and is
 **What already exists and is NOT this:** `cheat-engine.ts` sets `frame.causalMask[address] = true` on
 every byte it freezes or injects. That is a per-address provenance mask — a real proto-meter and the
 right place to hang this — but it has no channel, no direction, no count and no issuer.
+
+## Evidence
+
+- `src/Core/ChannelGrant.fs` provides validated channel sets, canonical apparatus labels, an opaque
+  grant, an `internal` harness issuer, and an immutable read/write crossing meter bound to the
+  existing CHIP-8 `RunKey`.
+- `src/Core.TypeScript/chip8/channel-grant.ts` provides the honest TypeScript substitute: branded
+  tokens backed by a `WeakMap`, runtime refusal of forged grants, ROM-bound run keys, and cumulative
+  meter snapshots carrying issuer, channel label, ranges, directions, and counts.
+- `src/Core.TypeScript/chip8/cheat-engine.ts` pre-authorizes complete reads and writes before mutating
+  or exposing memory. Both live hosts use the proxy and publish the meter with their memory readout.
+- Five F# tests and twelve TypeScript tests cover canonicalization, issuance mismatch, token forgery,
+  overlap rejection, read/write accounting, range accounting, and refusal-before-mutation.
+- The stated ceiling remains: raw in-process memory is reachable in TypeScript. Strong enforcement
+  still requires a process or WASM boundary and is not claimed by this item.
