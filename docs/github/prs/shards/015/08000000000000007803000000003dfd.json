@@ -1,0 +1,12 @@
+{
+  "pr_number": 15869,
+  "archive_path": "docs/history/pr-reviews/PR-15869-feat-evidence-publish-bounded-local-adjudication-teaching.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T17:37:19.813Z",
+  "schema_version": "v1",
+  "commit_sha": "85902519e009dce598b9467da7641100892de20c",
+  "title": "feat(evidence): publish bounded local adjudication teaching",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T17:36:38Z",
+  "head_ref": "feat/public-witness-adjudication-reader"
+}
