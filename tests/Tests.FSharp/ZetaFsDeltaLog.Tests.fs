@@ -133,3 +133,71 @@ let ``ZetaFsDeltaLog: merge handles non-conflicting branch merges and rejects co
         | _ -> Assert.Fail("Expected MergeConflict error")
     finally
         Directory.Delete(dir, true)
+
+[<Fact>]
+let ``truncate writes a parent edge — ReplayAsync is empty, the DAG still has the blob`` () =
+    let dir = getTempDir ()
+    try
+        let log = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher)
+        let asLog = log :> IDeltaLog<string>
+        let delta = ZSet.ofSeq [ "keep-me", 1L ]
+        asLog.AppendAsync(delta, Map.empty, CancellationToken.None).AsTask().Result
+        |> ignore
+
+        let before = log.ReachableDagDigest()
+        Assert.False(String.IsNullOrEmpty before)
+        Assert.False(before.Equals("no-ref", StringComparison.Ordinal))
+
+        match log.TryTipCommit() with
+        | None -> Assert.Fail("append must write a commit object")
+        | Some first ->
+            Assert.Equal(0, first.Parents.Length)
+            Assert.StartsWith("append seq=", first.Message, StringComparison.Ordinal)
+
+        asLog.TruncateAsync(1L, CancellationToken.None).AsTask().Wait()
+
+        let replayed = asLog.ReplayAsync(0L, CancellationToken.None).AsTask().Result
+        Assert.Equal(0, replayed.Length)
+        Assert.Equal(0L, asLog.HighWater)
+
+        match log.TryTipCommit() with
+        | None -> Assert.Fail("truncate must write a commit with a parent")
+        | Some tip ->
+            Assert.Equal(1, tip.Parents.Length)
+            Assert.StartsWith("truncate through=", tip.Message, StringComparison.Ordinal)
+
+        let after = log.ReachableDagDigest()
+        // Set inclusion, not equality: truncate adds its own commit. Every blob that
+        // was reachable before is still reachable after — the parent edge is the channel.
+        let beforeItems = before.Split(',') |> Set.ofArray
+        let afterItems = after.Split(',') |> Set.ofArray
+        Assert.Empty(Set.difference beforeItems afterItems)
+    finally
+        Directory.Delete(dir, true)
+
+[<Fact>]
+let ``legacy tree-as-ref still replays (commit wrapper is additive)`` () =
+    let dir = getTempDir ()
+    try
+        // A pre-commit-object store: ref points at a tree JSON, no k=commit wrapper.
+        let log1 = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher) :> IDeltaLog<string>
+        log1.AppendAsync(ZSet.ofSeq [ "x", 1L ], Map.empty, CancellationToken.None).AsTask().Result
+        |> ignore
+
+        let refsHeads = Path.Combine(dir, "refs", "heads")
+        let tipHex = File.ReadAllText(Path.Combine(refsHeads, "main")).Trim()
+        Assert.Equal(32, tipHex.Length)
+
+        // Point the ref at the TREE inside the commit, simulating a legacy store.
+        let logForRead = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher)
+        match logForRead.TryTipCommit() with
+        | None -> Assert.Fail("fresh append writes a commit")
+        | Some c -> File.WriteAllText(Path.Combine(refsHeads, "main"), c.Tree.ToHex())
+
+        let log2 = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher) :> IDeltaLog<string>
+        let replayed = log2.ReplayAsync(0L, CancellationToken.None).AsTask().Result
+        Assert.Equal(1, replayed.Length)
+        Assert.Equal(1L, replayed.[0].Seq)
+        Assert.Equal<ZSet<string>>(ZSet.ofSeq [ "x", 1L ], replayed.[0].Delta)
+    finally
+        Directory.Delete(dir, true)

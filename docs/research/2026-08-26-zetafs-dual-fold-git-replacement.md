@@ -60,11 +60,9 @@ this algebra, not a forever git packfile.
 
 ## Open (do not round up)
 
-1. **Parent edge.** `ZetaFsDeltaLog.TruncateAsync` moves the ref with no
-   parent link → Erasing through the read surface (orphaned loose
-   objects are litter, not recovery). `GitDeltaLog` keeps the old commit
-   as parent → Reversible. Own-format is not git-complete until that
-   DAG edge exists.
+1. **Parent edge.** ✅ `ZetaFsDeltaLog.TruncateAsync` writes a commit with
+   the old tip as parent. Read surface still Erasing; DAG walk Reversible.
+   Same split as `GitDeltaLog`.
 2. **BLAKE3 default** for the tamper-evident store (injected today;
    XxHash128 is the default digest).
 3. **Factory path** still execs `git`/`gh`. Item 1 done-test is zero

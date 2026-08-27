@@ -3,10 +3,22 @@ namespace Zeta.Core
 open System
 open System.Collections.Generic
 open System.Collections.Immutable
+open System.Globalization
 open System.IO
 open System.Text
+open System.Text.Json
 open System.Threading
 open System.Threading.Tasks
+
+/// Own-format commit: a tree plus parent hashes. Refs point here, not at trees.
+/// Truncate writes a new commit with the old tip as parent, so the preimage
+/// stays reachable — the same edge `GitDeltaLog` already had.
+[<Struct>]
+type ZetaFsCommit =
+    { Hash: MerkleHash
+      Tree: MerkleHash
+      Parents: MerkleHash array
+      Message: string }
 
 /// **ZetaFS-native Ref-aware Delta Log — content-addressed Merkle DAG over the filesystem.**
 /// Delivers full git-command parity on a plain directory, implementing the loose-object store
@@ -14,6 +26,9 @@ open System.Threading.Tasks
 /// The algebra of what this log stores is `ZetaFsDualFold`: forward `I` (+1) and
 /// generator-reinterpret deltas (−1 as a later append). This backend is the own-format
 /// destination; `GitDeltaLog` (LibGit2Sharp) is the v1 hexagonal adapter, not the endgame.
+///
+/// Refs point at **commits** (`k=commit` JSON: tree + parents + message). Legacy stores
+/// whose refs still point at trees are read as a tree with no parents.
 [<Sealed>]
 type ZetaFsDeltaLog<'K when 'K : comparison>
     (dir: string, entryCodec: IEntryCodec<'K>, ?hasher: IContentHasher) =
@@ -38,9 +53,20 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         | None -> fun bytes -> MerkleHash.ofBytes (ReadOnlySpan<byte> bytes)
 
     let ofHex (hex: string) : MerkleHash =
-        let hi = UInt64.Parse(hex.Substring(0, 16), System.Globalization.NumberStyles.HexNumber)
-        let lo = UInt64.Parse(hex.Substring(16, 16), System.Globalization.NumberStyles.HexNumber)
+        let hi =
+            UInt64.Parse(hex.Substring(0, 16), NumberStyles.HexNumber, CultureInfo.InvariantCulture)
+        let lo =
+            UInt64.Parse(hex.Substring(16, 16), NumberStyles.HexNumber, CultureInfo.InvariantCulture)
         MerkleHash(hi, lo)
+
+    let tryOfHex (hex: string) : MerkleHash option =
+        if isNull hex || hex.Length <> 32 then
+            None
+        else
+            try
+                Some(ofHex hex)
+            with _ ->
+                None
 
     let objectPath (h: MerkleHash) =
         let hex = h.ToHex()
@@ -103,18 +129,80 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         let dict = Dictionary<string, string>()
         for kv in links do
             dict.[kv.Key] <- kv.Value.ToHex()
-        System.Text.Json.JsonSerializer.SerializeToUtf8Bytes dict
+        JsonSerializer.SerializeToUtf8Bytes dict
 
     let deserializeTree (bytes: byte[]) : ImmutableDictionary<string, MerkleHash> =
-        let dict = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(ReadOnlySpan<byte> bytes)
+        let dict = JsonSerializer.Deserialize<Dictionary<string, string>>(ReadOnlySpan<byte> bytes)
         let builder = ImmutableDictionary.CreateBuilder<string, MerkleHash>()
         if dict <> null then
             for kv in dict do
-                builder.Add(kv.Key, ofHex kv.Value)
+                match tryOfHex kv.Value with
+                | Some h -> builder.Add(kv.Key, h)
+                | None -> ()
         builder.ToImmutable()
 
+    let serializeCommit (tree: MerkleHash) (parents: MerkleHash array) (message: string) : byte[] =
+        use stream = new MemoryStream()
+        use writer = new Utf8JsonWriter(stream)
+        writer.WriteStartObject()
+        writer.WriteString("k", "commit")
+        writer.WriteString("tree", tree.ToHex())
+        writer.WriteStartArray("parents")
+        for p in parents do
+            writer.WriteStringValue(p.ToHex())
+        writer.WriteEndArray()
+        writer.WriteString("message", if isNull message then "" else message)
+        writer.WriteEndObject()
+        writer.Flush()
+        stream.ToArray()
+
+    let tryParseCommit (hash: MerkleHash) (bytes: byte[]) : ZetaFsCommit option =
+        try
+            use doc = JsonDocument.Parse(ReadOnlyMemory<byte>(bytes))
+            let root = doc.RootElement
+            match root.TryGetProperty "k" with
+            | true, k when
+                k.ValueKind = JsonValueKind.String
+                && String.Equals(k.GetString(), "commit", StringComparison.Ordinal) ->
+                match root.TryGetProperty "tree", root.TryGetProperty "parents", root.TryGetProperty "message" with
+                | (true, t), (true, p), (true, m) when
+                    t.ValueKind = JsonValueKind.String
+                    && p.ValueKind = JsonValueKind.Array
+                    && m.ValueKind = JsonValueKind.String ->
+                    match tryOfHex (t.GetString()) with
+                    | None -> None
+                    | Some tree ->
+                        let parents =
+                            [| for e in p.EnumerateArray() do
+                                   if e.ValueKind = JsonValueKind.String then
+                                       match tryOfHex (e.GetString()) with
+                                       | Some h -> yield h
+                                       | None -> () |]
+                        let msg = m.GetString()
+                        Some
+                            { Hash = hash
+                              Tree = tree
+                              Parents = parents
+                              Message = if isNull msg then "" else msg }
+                | _ -> None
+            | _ -> None
+        with :? JsonException ->
+            None
+
+    let tryReadCommit (h: MerkleHash) : ZetaFsCommit option =
+        if h = MerkleHash.Zero then
+            None
+        else
+            match readObject h with
+            | None -> None
+            | Some bytes -> tryParseCommit h bytes
+
     let getRefPath (refName: string) =
-        let cleanRef = if refName.StartsWith "refs/heads/" then refName.Substring(11) else refName
+        let cleanRef =
+            if refName.StartsWith("refs/heads/", StringComparison.Ordinal) then
+                refName.Substring(11)
+            else
+                refName
         Path.Combine(refsDir, cleanRef)
 
     let readRef (refName: string) : MerkleHash option =
@@ -136,29 +224,98 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
         match tryReadTextCapped maxRefBytes headFile with
         | Some txt ->
             let txt = txt.Trim()
-            if txt.StartsWith "ref: " then txt.Substring(5) else "refs/heads/main"
+            if txt.StartsWith("ref: ", StringComparison.Ordinal) then
+                txt.Substring(5)
+            else
+                "refs/heads/main"
         | None -> "refs/heads/main"
 
     let writeActiveRefName (refName: string) =
         File.WriteAllText(headFile, sprintf "ref: %s" refName)
 
+    let treeFromObject (h: MerkleHash) (bytes: byte[]) : ImmutableDictionary<string, MerkleHash> =
+        match tryParseCommit h bytes with
+        | Some commit ->
+            match readObject commit.Tree with
+            | Some treeBytes -> deserializeTree treeBytes
+            | None -> ImmutableDictionary.Empty
+        | None -> deserializeTree bytes
+
     let loadTree (refName: string) : ImmutableDictionary<string, MerkleHash> =
         match readRef refName with
-        | Some h ->
+        | Some h when h <> MerkleHash.Zero ->
             match readObject h with
-            | Some bytes -> deserializeTree bytes
+            | Some bytes -> treeFromObject h bytes
             | None -> ImmutableDictionary.Empty
-        | None -> ImmutableDictionary.Empty
+        | _ -> ImmutableDictionary.Empty
 
-    let saveTree (refName: string) (links: ImmutableDictionary<string, MerkleHash>) : MerkleHash =
-        let bytes = serializeTree links
-        let h = writeObject bytes
-        writeRef refName h
-        h
+    /// Write a tree, then a commit whose parent is the current tip (plus any extras).
+    /// The ref moves to the commit. This is the Git shape: truncate's parent edge is
+    /// the same write path as append's.
+    let saveCommit
+        (refName: string)
+        (links: ImmutableDictionary<string, MerkleHash>)
+        (message: string)
+        (extraParents: MerkleHash array)
+        : MerkleHash =
+        let treeH = writeObject (serializeTree links)
+        let currentParent =
+            match readRef refName with
+            | Some h when h <> MerkleHash.Zero -> [| h |]
+            | _ -> Array.empty
+        let parents =
+            Array.append currentParent extraParents
+            |> Array.distinct
+        let commitH = writeObject (serializeCommit treeH parents message)
+        writeRef refName commitH
+        commitH
+
+    let reachableFromTip () : string =
+        match readRef (getActiveRefName ()) with
+        | None -> "no-ref"
+        | Some h when h = MerkleHash.Zero -> "no-commit"
+        | Some tip ->
+            let visited = HashSet<string>(StringComparer.Ordinal)
+            let acc = ResizeArray<string>()
+
+            let rec walk (h: MerkleHash) =
+                let hex = h.ToHex()
+
+                if visited.Add hex then
+                    match readObject h with
+                    | None -> ()
+                    | Some bytes ->
+                        match tryParseCommit h bytes with
+                        | Some commit ->
+                            acc.Add("c:" + hex + ":" + commit.Message)
+
+                            match readObject commit.Tree with
+                            | None -> ()
+                            | Some treeBytes ->
+                                acc.Add("t:" + commit.Tree.ToHex())
+                                let links = deserializeTree treeBytes
+
+                                for kv in links do
+                                    acc.Add(kv.Key + "@" + kv.Value.ToHex())
+
+                            for p in commit.Parents do
+                                walk p
+                        | None ->
+                            acc.Add("t:" + hex)
+                            let links = deserializeTree bytes
+
+                            for kv in links do
+                                acc.Add(kv.Key + "@" + kv.Value.ToHex())
+
+            walk tip
+
+            acc.ToArray()
+            |> Array.sortWith (fun a b -> String.CompareOrdinal(a, b))
+            |> String.concat ","
 
     let seqOfPath (path: string) : int64 option =
-        if path.StartsWith "deltas/" then
-            match Int64.TryParse(path.Substring(7)) with
+        if path.StartsWith("deltas/", StringComparison.Ordinal) then
+            match Int64.TryParse(path.Substring(7), NumberStyles.Integer, CultureInfo.InvariantCulture) with
             | true, v -> Some v
             | _ -> None
         else
@@ -182,7 +339,9 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
                 let bytes = encodeEntry entry
                 let entryHash = writeObject bytes
                 let links' = links.SetItem(pathOfSeq seq, entryHash)
-                saveTree activeRef links' |> ignore
+                let msg =
+                    String.Format(CultureInfo.InvariantCulture, "append seq={0}", seq)
+                saveCommit activeRef links' msg Array.empty |> ignore
                 ValueTask<int64>(seq)
             )
 
@@ -211,49 +370,66 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
             )
 
         member _.TruncateAsync(throughSeqInclusive, _ct) =
-            // Thermodynamic class: ERASING through the read surface. The new tree object is
-            // written and the ref moved to it — but unlike `GitDeltaLog` this tree carries NO
-            // PARENT LINK, so the superseded tree becomes an orphaned loose object that nothing
-            // traverses to. The delta blobs are still on the disk and nothing collects them; that
-            // is not recoverability, it is litter. See the second row in `ErasureProfiles`.
+            // Thermodynamic class: REVERSIBLE through the commit DAG. Same as GitDeltaLog:
+            // the truncated tree is committed WITH THE OLD COMMIT AS PARENT, so every
+            // removed delta blob stays reachable by walking one parent edge from the live
+            // ref. The read surface (ReplayAsync of the tip tree) is still Erasing — that
+            // is a different observation, declared below.
             lock gate (fun () ->
                 let activeRef = getActiveRefName ()
-                let links = loadTree activeRef
-                let builder = links.ToBuilder()
-                let toRemove = [ for kv in links do match seqOfPath kv.Key with Some s when s <= throughSeqInclusive -> yield kv.Key | _ -> () ]
-                for k in toRemove do builder.Remove k |> ignore
-                saveTree activeRef (builder.ToImmutable()) |> ignore
+
+                match readRef activeRef with
+                | Some h when h <> MerkleHash.Zero ->
+                    let links = loadTree activeRef
+                    let builder = links.ToBuilder()
+
+                    let toRemove =
+                        [ for kv in links do
+                              match seqOfPath kv.Key with
+                              | Some s when s <= throughSeqInclusive -> yield kv.Key
+                              | _ -> () ]
+
+                    for k in toRemove do
+                        builder.Remove k |> ignore
+
+                    let msg =
+                        String.Format(
+                            CultureInfo.InvariantCulture,
+                            "truncate through={0}",
+                            throughSeqInclusive
+                        )
+
+                    saveCommit activeRef (builder.ToImmutable()) msg Array.empty |> ignore
+                | _ -> ()
+
                 ValueTask.CompletedTask
             )
 
     /// **The declaration, beside the operation it classifies** (`ErasureClass`).
     ///
-    /// The instructive backend. It is content-addressed and never deletes an object, which makes
-    /// it *look* like the preserving case — and it is not, because preservation is about a channel
-    /// somebody can walk, not about bytes that happen to still be lying there. `GitDeltaLog` keeps
-    /// its truncated deltas by committing the new tree **with the old commit as parent**;
-    /// `saveTree` here just moves the ref. The difference is one edge in a DAG, and it is the
-    /// entire difference between Reversible and Erasing.
+    /// Same split as `GitDeltaLog`: the read surface sees only the tip tree (Erasing), and
+    /// the object DAG reachable from the live ref, walking commit parents, keeps the
+    /// preimage (Reversible). The parent edge is the recovery channel. Change the parent
+    /// list to `[]` and the DAG observation becomes Erasing with no other edit.
     interface IErasureDeclaring with
         member _.ErasureProfiles =
             [ { Representation = "ZetaFsDeltaLog"
                 Operation = "IDeltaLog.TruncateAsync"
                 Observation = "the log's own read surface (ReplayAsync(0) plus HighWater), at a pinned truncation point"
                 RecoveryChannel =
-                    "none that anything can walk — the superseded tree object survives on disk as \
-                     an orphan with no ref and no parent edge pointing at it, so no reader can \
-                     reach it and no traversal will find it"
+                    "nothing through this channel — ReplayAsync reads the tip tree only, so the \
+                     truncated deltas are as absent here as they are in any other backend"
                 Classification = ErasureClass.ThermodynamicClass.Erasing
                 Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real temp directory", 13, 3_700_440L) }
 
               { Representation = "ZetaFsDeltaLog"
                 Operation = "IDeltaLog.TruncateAsync"
-                Observation = "the object store as a whole, including unreachable loose objects"
+                Observation = "the object DAG reachable from the live ref, walking commit parents"
                 RecoveryChannel =
-                    "the orphaned tree and its delta blobs are byte-for-byte present under \
-                     objects/, so a reader with filesystem access and the old hash recovers them \
-                     exactly — which is why the bits are not yet dissipated even though the \
-                     fibre over the read surface has already collapsed"
+                    "the whole preimage — the truncated tree is committed WITH THE OLD COMMIT AS \
+                     PARENT, so every removed delta blob stays reachable from the ref through one \
+                     parent edge. Own-format never rewrites history: Landauer-honest, and manifesto \
+                     section 5 Memory Preservation discharged rather than asserted"
                 Classification = ErasureClass.ThermodynamicClass.Reversible
                 Evidence = ErasureClass.Evidence.BoundedModelSweep("truncate-through pinned at 2 (truncate everything); logs of 0-2 deltas over {empty, +a, -a}, on a real temp directory", 1, 0L) } ]
 
@@ -322,7 +498,11 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
                         Error(MergeConflict "Merge conflicts encountered during merge")
                     else
                         let merged = builder.ToImmutable()
-                        saveTree activeRef merged |> ignore
+                        let extra =
+                            match readRef activeRef with
+                            | Some ours when ours = sourceHash -> Array.empty
+                            | _ -> [| sourceHash |]
+                        saveCommit activeRef merged "merge" extra |> ignore
                         let seqs = [ for kv in merged do match seqOfPath kv.Key with Some s -> yield s | None -> () ]
                         let highWater = if List.isEmpty seqs then 0L else List.max seqs
                         Ok highWater
@@ -344,3 +524,15 @@ type ZetaFsDeltaLog<'K when 'K : comparison>
                     |> List.sort
                 Ok(List.toArray seqs)
             )
+
+    /// Tip commit of the active ref, if the ref points at a commit object.
+    member _.TryTipCommit() : ZetaFsCommit option =
+        lock gate (fun () ->
+            match readRef (getActiveRefName ()) with
+            | Some h -> tryReadCommit h
+            | None -> None)
+
+    /// Sorted digest of every commit, tree, and blob reachable by walking parent
+    /// edges from the live ref. The recovery channel `ErasureProfiles` names.
+    member _.ReachableDagDigest() : string =
+        lock gate (fun () -> reachableFromTip ())

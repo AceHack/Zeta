@@ -119,9 +119,10 @@ Z-set folds over our own Merkle DAG (`DagFs` / `ContentStore` / `ZetaFsDeltaLog`
   edit. Blobs are content-addressed.
 
 `GitDeltaLog` (LibGit2Sharp) is the hexagonal **v1** adapter behind `IDeltaLog`.
-`ZetaFsDeltaLog` is the own-format backend (loose objects + refs). Remaining: parent
-edges so truncate is reversible like git, BLAKE3 as the tamper-evident default, factory
-path stops execing `git`/`gh`. Workitem `081M108RYNT087G0R001JSRNZE`.
+`ZetaFsDeltaLog` is the own-format backend (loose objects + refs). Parent edge
+shipped: truncate writes a commit with the old tip as parent (Reversible through
+the DAG; read surface still Erasing). Remaining: BLAKE3 as the tamper-evident
+default, factory path stops execing `git`/`gh`. Workitem `081M108RYNT087G0R001JSRNZE`.
 
 **Thin needle (consistent-with, not identified by count).** `FourCornerTrace` is
 the VALUE-channel close (WSet +1/−1, generator reread; `−1 = i²` on ℂ is a
@@ -369,7 +370,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 ### Correctness / verification
 
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
-- ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
+- ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge shipped; BLAKE3 default / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
 - FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). Existing instances apply: TRACE on ℤ (`IntegerRing.Star`) / ℝ / tower / Cl3; C₄ generator only from ℂ up (and Cl3 bivectors). **Not a fermion:** Adinkra connection is Q-odd dashing = C₄ south; coded `[8,4]` `K_{8,8}` 8B+8F vs uncoded `Cl(0,8)` halves; Meijer 2-corner vs FourCorner product vs ISR error-sum. One tick = 2×2 occupancy; +1/−1 related-but-divergent; CHSH bound **2√2** (not occupancy √2); `{Q,Q}` two deniable moves until snap. E8 roots+algebra + split Chevalley `x_α(t)` multiply; compact manifold still substitute. `081M10CBYF9087G0R003GWBNHG` ✅
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
@@ -443,7 +444,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
 - **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
-- **ZetaFS dual-fold remaining** — parent edge on `ZetaFsDeltaLog` (truncate reversible), BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`)
+- **ZetaFS dual-fold remaining** — BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`). Parent edge on `ZetaFsDeltaLog` shipped (truncate reversible through the commit DAG).
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
@@ -557,7 +558,8 @@ These don't wait for a single round:
 - Replace git/LibGit2 as the store with **ZetaFS dual folds**
   (`ZetaFsDualFold` over `DagFs` / `ZSetMerkle` / `ZetaFsDeltaLog`):
   +1 `I` forward, −1 generator-reinterpret of retained history,
-  parent-edge still open. `081M108RYNT087G0R001JSRNZE`.
+  parent-edge shipped (truncate walks it). Remaining: BLAKE3 default,
+  factory path. `081M108RYNT087G0R001JSRNZE`.
 - **Dogfood, then extract.** Expect **dozens of peer repos**, split on
   Data Vault 2.0 change-rate *and* toolchain closure — not a three-repo
   ceiling. Local action in one repo; global effect via Ace pins,

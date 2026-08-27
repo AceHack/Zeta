@@ -24,7 +24,7 @@ open Zeta.Core
 // three different thermodynamic classes, for three unrelated reasons:
 //
 //   InMemoryDeltaLog        `list.RemoveAll`                      -> ERASING
-//   ZetaFsDeltaLog          new tree, ref moved, NO parent edge   -> ERASING (orphan != recovery)
+//   ZetaFsDeltaLog          new commit WITH old as parent         -> REVERSIBLE (DAG); ERASING (read surface)
 //   GitDeltaLog             new tree committed WITH old as parent -> REVERSIBLE
 //   GroupCommitDiskDeltaLog no-op; compaction unimplemented in v1 -> REVERSIBLE (the identity)
 //
@@ -34,9 +34,9 @@ open Zeta.Core
 // "tidies" that away.
 //
 // WHY EVERY ROW NAMES AN OBSERVATION. "Is the preimage recoverable" is not a question until you
-// say through what. `ZetaFsDeltaLog` is Erasing through its own read surface and its superseded
-// tree is simultaneously sitting on disk as an unreachable orphan. Two honest rows beat one
-// dishonest average, so `(Representation, Operation, Observation)` is the key.
+// say through what. `ZetaFsDeltaLog` is Erasing through its own read surface and Reversible
+// through the commit DAG (the parent edge). Two honest rows beat one dishonest average, so
+// `(Representation, Operation, Observation)` is the key.
 //
 // WHY `Unmeasured` IS NOT ZERO. An operation nobody has swept has an UNKNOWN cost. Recording that
 // as `0` is the closed-ledger free lunch this whole thread is about — a channel that looks free
@@ -149,19 +149,6 @@ let private pinnedDomain =
 let private fullDomain =
     [ for s in deltaSequences do
           for t in truncationPoints -> (s, t) ]
-
-/// Every loose object in a ZetaFS store, by content hash — the "including unreachable orphans"
-/// observation. A superseded tree is still a file here even when nothing can traverse to it.
-let private looseObjects (dir: string) : string =
-    let objects = Path.Combine(dir, "objects")
-
-    if not (Directory.Exists objects) then
-        ""
-    else
-        Directory.GetFiles(objects, "*", SearchOption.AllDirectories)
-        |> Array.map (fun p -> Path.GetFileName(Path.GetDirectoryName p) + Path.GetFileName p)
-        |> Array.sortWith (fun a b -> String.CompareOrdinal(a, b))
-        |> String.concat ","
 
 // ── backing-store probes ──────────────────────────────────────────────────────────────────────
 
@@ -411,24 +398,26 @@ let private sweeps: Sweep list =
                   pinnedDomain
                   (truncationProbe (fun () -> ZetaFsDeltaLog<int>(tempDir (), codec ()) :> IDeltaLog<int>) readSurface) }
 
-      // The orphan observation: same operation, same representation, DIFFERENT channel, and the
-      // answer flips. This row is why `Observation` is part of the key.
+      // The DAG observation: same operation, same representation, DIFFERENT channel, and the
+      // answer flips. This row is why `Observation` is part of the key. Walking commit
+      // parents from the live ref is the recovery channel (Git's shape).
       { Representation = "ZetaFsDeltaLog"
         Operation = "IDeltaLog.TruncateAsync"
-        Observation = "the object store as a whole, including unreachable loose objects"
+        Observation = "the object DAG reachable from the live ref, walking commit parents"
         Measure =
           fun () ->
               measureLargestFibre pinnedDomain (fun (deltas, t) ->
                   task {
                       let dir = tempDir ()
-                      let log = ZetaFsDeltaLog<int>(dir, codec ()) :> IDeltaLog<int>
+                      let log = ZetaFsDeltaLog<int>(dir, codec ())
+                      let asLog = log :> IDeltaLog<int>
 
                       for d in deltas do
-                          let! _ = log.AppendAsync(d, Map.empty, CancellationToken.None)
+                          let! _ = asLog.AppendAsync(d, Map.empty, CancellationToken.None)
                           ()
 
-                      do! log.TruncateAsync(t, CancellationToken.None)
-                      return looseObjects dir
+                      do! asLog.TruncateAsync(t, CancellationToken.None)
+                      return log.ReachableDagDigest()
                   }) }
 
       // ── backing stores ──────────────────────────────────────────────────────────────────────
@@ -894,9 +883,8 @@ let ``the same interface method carries opposite classes across representations`
 
 // ═══ 8. The observation is load-bearing — one representation, one operation, two answers ═══
 // `ZetaFsDeltaLog` truncation is Erasing through the read surface and Reversible through the
-// object store, because the superseded tree survives as an unreachable orphan. If those two rows
-// ever agree, either the store started collecting garbage or the read surface started traversing,
-// and both are facts a reader of this vocabulary needs.
+// commit DAG (parent edge). If those two rows ever agree, either ReplayAsync started walking
+// parents or truncate stopped writing them, and both are facts a reader of this vocabulary needs.
 
 [<Fact>]
 let ``one representation and one operation carry different classes under different observations`` () =

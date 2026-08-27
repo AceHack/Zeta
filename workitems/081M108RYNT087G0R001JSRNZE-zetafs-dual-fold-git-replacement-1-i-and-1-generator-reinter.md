@@ -46,10 +46,9 @@ git forever."
 
 ## Remaining slices (do not pretend they shipped)
 
-1. **Parent edge on `ZetaFsDeltaLog`.** Truncate today moves the ref with no
-   parent link, so it is Erasing through the read surface (littered orphans).
-   `GitDeltaLog` keeps the old commit as parent → Reversible. The own-format
-   DAG is not git-complete until that edge exists.
+1. **Parent edge on `ZetaFsDeltaLog`.** ✅ Truncate writes a commit with the
+   old tip as parent. Read surface (`ReplayAsync`) is still Erasing; the
+   DAG walk is Reversible — same split as `GitDeltaLog`.
 2. **BLAKE3 as default hasher** for the tamper-evident store (injected today;
    XxHash128 is the default).
 3. **Factory path** stops execing `git`/`gh`; Harny sc/fs tools ride this log.
