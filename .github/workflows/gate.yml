@@ -1281,6 +1281,24 @@ jobs:
         id: bash_retirement
         run: bun run hygiene:check-bash-retirement-inventory
 
+      - name: Healer oscillation registry
+        id: healer_oscillation
+        # `healer-harness` certifies idempotence, closure and convergence of the COMPOSITE in the
+        # ONE order `composeHealers` folds -- so it proves the composite reaches *a* fixed point and
+        # never that it reaches *the* fixed point. Five Tier-0 healers admit 120 orders and exactly
+        # one is certified, which makes the hardcoded order silently load-bearing the moment two
+        # healers start writing the same file.
+        #
+        # This fails on the two relations that are genuinely defects: an OSCILLATING pair (the
+        # composite never settles -- no declaration excuses it) and an UNDECLARED OVERRIDE (order is
+        # load-bearing and undocumented). `disjoint` and `commutes` pass; overlap is not illegal,
+        # and refusing it would block the rule-template collapse the parity family needs.
+        #
+        # It also refuses a corpus that fired NOTHING, exit 2. Measured: the three built-in harness
+        # fixtures trigger none of the Tier-0 healers, so a registry over them alone would report
+        # all-disjoint and be a green check over an empty experiment.
+        run: bun run hygiene:check-healer-oscillation
+
       - name: Ambient-credential-hoist guard
         id: cred_hoist
         # Refuses any tracked executable surface that puts a credential into a
