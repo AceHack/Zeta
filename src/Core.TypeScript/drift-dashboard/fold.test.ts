@@ -1085,3 +1085,68 @@ describe("the window is PRINTED, so a reader can judge without re-deriving it", 
     expect(describeWindow(w!)).toContain("no concluded runs inside the rate window");
   });
 });
+
+// ───────────────────────────────────────────────────────────────────────────
+// FALSIFIER: A BLIND PASS MUST NOT RENDER ITS OWN BLINDNESS AS RED.
+//
+// The inverted vacuity class. A check that cannot fail is the familiar defect; a check
+// that reports THE WORLD IS BROKEN when only its own credential is, is the dangerous
+// one — it is believed, then distrusted, then ignored.
+//
+// Reproduced from the live incident (2026-08-27, drift-dashboard run 17): the producer
+// could not authenticate, zero observations came back, and every row fell through to
+// `verdictForAbsence`. Twelve lanes were published RED / "STALE: newest verdict is 9h
+// old" while four sampled lanes had each run successfully within the hour.
+//
+// The pass must still FAIL — it learned nothing, and `unknown` is not OK. What it must
+// not do is convert its own silence into an accusation against the lanes.
+// ───────────────────────────────────────────────────────────────────────────
+
+function detailOf(v: { readonly kind: string } & { detail?: string }): string {
+  return v.detail ?? "";
+}
+
+describe("a source that could not be asked", () => {
+  const stale = rosterOf([def("nightly", { kind: "periodic", periodSeconds: 900, detail: "*/15 * * * *" })]);
+  const seen = recordObservations(stale, new Map([
+    ["nightly", { observedAt: "2026-08-22T09:00:00.000Z", kind: "green" as const, viaDeclaredTrigger: true }],
+  ]));
+
+  it("renders RED when the silence is genuinely the LANE's", () => {
+    const report = foldDashboard({ roster: seen, observations: [], now: NOW });
+    expect(rowFor(report, "nightly").band).toBe("red");
+    expect(detailOf(rowFor(report, "nightly").verdict)).toContain("STALE");
+  });
+
+  it("renders UNKNOWN when the silence is OURS — same roster, same clock", () => {
+    const report = foldDashboard({
+      roster: seen,
+      observations: [],
+      sourceErrors: ["test-source: could not enumerate check definitions: auth-failure: …"],
+      blindSources: ["test-source"],
+      now: NOW,
+    });
+    const row = rowFor(report, "nightly");
+    expect(row.band).toBe("unknown");
+    expect(detailOf(row.verdict)).toContain("the silence is OURS");
+    // Not softened into a pass: nothing was learned, so the report is not OK.
+    expect(report.ok).toBe(false);
+    expect(report.counts.red).toBe(0);
+  });
+
+  it("only blinds the sources that actually failed", () => {
+    const two = rosterOf([
+      def("a", { kind: "periodic", periodSeconds: 900, detail: "*/15 * * * *" }, "source-a"),
+      def("b", { kind: "periodic", periodSeconds: 900, detail: "*/15 * * * *" }, "source-b"),
+    ]);
+    const withHistory = recordObservations(two, new Map([
+      ["a", { observedAt: "2026-08-22T09:00:00.000Z", kind: "green" as const, viaDeclaredTrigger: true }],
+      ["b", { observedAt: "2026-08-22T09:00:00.000Z", kind: "green" as const, viaDeclaredTrigger: true }],
+    ]));
+    const report = foldDashboard({
+      roster: withHistory, observations: [], blindSources: ["source-a"], now: NOW,
+    });
+    expect(rowFor(report, "a").band).toBe("unknown");
+    expect(rowFor(report, "b").band).toBe("red");
+  });
+});

@@ -111,6 +111,10 @@ async function main(): Promise<number> {
   let observations: readonly CheckObservation[] = [];
   let failures: readonly CheckObservationFailure[] = [];
   const sourceErrors: string[] = [];
+  // Sources we could not ask AT ALL. Kept separate from the sentences above because
+  // the fold needs the KEY — to refuse to judge every check that belongs to the source
+  // — not the prose.
+  const blindSources: string[] = [];
 
   if (!args.offline) {
     const nwo = args.repo ?? detectRepo();
@@ -134,14 +138,16 @@ async function main(): Promise<number> {
         // the report NOT OK — a pass that failed must never look like a pass that
         // found nothing wrong.
         sourceErrors.push(`${source.sourceName}: observation pass failed: ${pass.error.kind}: ${pass.error.message}`);
+        blindSources.push(source.sourceName);
       }
     } else {
       sourceErrors.push(`${source.sourceName}: could not enumerate check definitions: ${defs.error.kind}: ${defs.error.message}`);
+      blindSources.push(source.sourceName);
     }
   }
 
   roster = mergeDefinitions(roster, definitions, now);
-  const report = foldDashboard({ roster, observations, failures, sourceErrors, now });
+  const report = foldDashboard({ roster, observations, failures, sourceErrors, blindSources, now });
 
   roster = recordObservations(
     roster,
@@ -161,6 +167,16 @@ async function main(): Promise<number> {
     ),
   );
 
+  // STDOUT IS ALWAYS THE REPORT — `--write` ADDS files, it does not DIVERT the report.
+  //
+  // It used to replace it: under `--write`, stdout carried the single line
+  // `wrote db/…, docs/…, data/…`. The cadence workflow does
+  // `cli.ts … --write > dashboard.md` and then `cat dashboard.md >> $GITHUB_STEP_SUMMARY`,
+  // so the job summary — the surface the workflow's own header calls the reason the
+  // lane exists, "the answer is in the run itself and not only in an artifact" — was
+  // that one line, every tick, for as long as the lane has existed. The receipt is a
+  // side note and belongs on stderr with the other side notes.
+  console.log(renderMarkdown(report));
   if (args.write) {
     saveRoster(rosterPath, roster);
     for (const [rel, text] of [
@@ -172,9 +188,7 @@ async function main(): Promise<number> {
       mkdirSync(dirname(abs), { recursive: true });
       writeFileSync(abs, text, "utf8");
     }
-    console.log(`wrote ${ROSTER_PATH}, ${MARKDOWN_PATH}, ${HTML_PATH}, ${JSON_PATH}`);
-  } else {
-    console.log(renderMarkdown(report));
+    console.error(`wrote ${ROSTER_PATH}, ${MARKDOWN_PATH}, ${HTML_PATH}, ${JSON_PATH}`);
   }
 
   if (args.timing) {
@@ -185,6 +199,12 @@ async function main(): Promise<number> {
         `· ${(ghCallStats.calls / Math.max(roster.checks.length, 1)).toFixed(2)} calls/check`,
     );
   }
+  // A SWALLOWED ERROR CHANNEL. `sourceErrors` was collected, counted in the headline
+  // ("SOURCE ERRORS 1") and rendered into artifacts nobody opens — and its TEXT reached
+  // no log. The one line that would have named the 2026-08-27 outage in the run's own
+  // output ("auth-failure: no GitHub token in …") existed the whole time and was never
+  // printed. A count is not a diagnosis.
+  for (const e of report.sourceErrors) console.error(`::error title=drift-dashboard source error::${e}`);
   console.error(headline(report));
   return args.exitZero || report.ok ? 0 : 1;
 }
