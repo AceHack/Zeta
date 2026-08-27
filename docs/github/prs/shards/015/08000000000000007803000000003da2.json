@@ -1,0 +1,12 @@
+{
+  "pr_number": 15778,
+  "archive_path": "docs/history/pr-reviews/PR-15778-feat-one-tick-is-fourcorner-2x2-chevalley-x-a-t-multiply.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:35:50.689Z",
+  "schema_version": "v1",
+  "commit_sha": "8a39a303084b767df391fdbd6dff240206ffacc6",
+  "title": "feat: one tick is FourCorner 2x2; Chevalley x_a(t) multiply",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T04:07:55Z",
+  "head_ref": "feat/c4-tick-chevalley-plusminus"
+}

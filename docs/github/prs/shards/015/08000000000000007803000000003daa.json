@@ -1,0 +1,12 @@
+{
+  "pr_number": 15786,
+  "archive_path": "docs/history/pr-reviews/PR-15786-feat-ci-fourth-stuck-class-a-workflow-held-for-approval-is-escalate-only.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:36:04.977Z",
+  "schema_version": "v1",
+  "commit_sha": "8a39a303084b767df391fdbd6dff240206ffacc6",
+  "title": "feat(ci): fourth stuck-class — a workflow held for approval is escalate-only",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T04:31:02Z",
+  "head_ref": "shadow/forward-action-du-approval-arm"
+}

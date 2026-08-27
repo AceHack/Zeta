@@ -1,0 +1,12 @@
+{
+  "pr_number": 15779,
+  "archive_path": "docs/history/pr-reviews/PR-15779-fix-drift-dashboard-a-cron-in-generated-markdown-needs-a-code-span-not-quotes.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:35:52.435Z",
+  "schema_version": "v1",
+  "commit_sha": "8a39a303084b767df391fdbd6dff240206ffacc6",
+  "title": "fix(drift-dashboard): a cron in generated markdown needs a code span, not quotes",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T04:07:28Z",
+  "head_ref": "shadow/cron-code-span"
+}

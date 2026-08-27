@@ -1,0 +1,12 @@
+{
+  "pr_number": 15781,
+  "archive_path": "docs/history/pr-reviews/PR-15781-research-decorr-h3-survives-5-fold-cross-validation-3-2pp-is-real-0-0pp-optimism.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:35:56.381Z",
+  "schema_version": "v1",
+  "commit_sha": "8a39a303084b767df391fdbd6dff240206ffacc6",
+  "title": "research(decorr): H3 survives 5-fold cross-validation — +3.2pp is real, 0.0pp optimism",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T04:20:12Z",
+  "head_ref": "alexa/decorr-h3-crossval"
+}
