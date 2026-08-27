@@ -39,6 +39,7 @@ What "critical-mass adoption" means structurally remains to be defined. Candidat
 3. Begin citing the manifesto in load-bearing substrate decisions (next PRs landing constraints 1-10 reference the manifesto)
 4. ~~Track citation count over time~~ → **081KS923C0008QG0R002BKAC95** is the dedicated slice for persistent-snapshot + delta-over-time
 5. When citation rate + cross-AI adoption + mechanical-CI-check land, propose promotion
+6. **Note (2026-08-26):** The newly refactored `LineageDisjointnessEstimator` (used in the `AdopterRegister` promotion gate) is strictly **unmetered** (implemented, used, but never falsified against real behavioral correlation). It acts as a necessary but insufficient proxy (measuring only provenance overlap). Thus, the N_eff gate itself remains unmetered and cannot solely authorize constitutional promotion.
 
 ### Cadence repair note (2026-05-30)
 
