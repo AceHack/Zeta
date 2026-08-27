@@ -92,8 +92,84 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # DEBOUNCE -- do not start a tick while the lane's PREVIOUS tick is still being
+  # validated.
+  #
+  # THE MEASURED PROBLEM (2026-08-27). This workflow fires on every push to `main`.
+  # Main was measured at 68 merges in ~6h = one every ~5.3 min. `gate` on
+  # `heartbeat/drift-sweep` was measured at ~16 min (median of 13 successful runs).
+  # Arrival rate over service rate is therefore ~3: each tick pushed the lane branch,
+  # which restarted `gate` on the open flush PR and CANCELLED the run already in
+  # flight. Measured outcome on that branch: 39 cancelled against 40 success, and
+  # every cancellation had an inter-push gap of 6-11 min while every success had 13+.
+  #
+  # That is queueing saturation, not flakiness. Past rho >= 1 a queue does not get
+  # slower, it stops draining -- so the flush PR could not land while main stayed
+  # busy, and it grew while it waited. The `on: push` trigger was added 2026-08-10 to
+  # make the tick faster, and it did make MEASUREMENT faster; what it also did was
+  # push the arrival rate past the service rate, which made LANDING slower without
+  # bound. Both halves are true and only the first was intended.
+  #
+  # WHY THIS GUARD AND NOT A TIME WINDOW. A `last push was < N minutes ago` heuristic
+  # would need N calibrated to gate's duration and would rot the moment gate got
+  # faster or slower. This asks the question directly -- is the previous tick still
+  # being validated? -- so it self-tunes, and it targets the actual mechanism
+  # (supersession) rather than a proxy for it.
+  #
+  # NOTHING IS LOST BY SKIPPING. A tick that never lands never existed: numbering is
+  # `max existing + 1` derived from the ledger, and `prepare` unions whatever is still
+  # parked on the lane. The next eligible run computes a fresh tick from current
+  # state. The cron heartbeat (7,37) is what guarantees liveness even if every
+  # event-driven tick in a busy hour is skipped.
+  #
+  # FAILS OPEN, ON PURPOSE. A stuck or unreadable gate run must never starve the lane
+  # permanently, so a run older than MAX_INFLIGHT_MIN is treated as not-in-flight, and
+  # any API error proceeds with the tick. The cost of a wrongly-skipped tick is a
+  # delayed measurement; the cost of a wrongly-starved lane is silence that looks like
+  # health -- and this repository treats the second as the worse failure.
+  debounce:
+    name: skip if the previous tick is still in gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      actions: read
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            src/Core.TypeScript/ci/flush-lane-debounce.ts
+          sparse-checkout-cone-mode: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        # This step PIPES BYTES and makes no decision. The decision is
+        # `src/Core.TypeScript/ci/flush-lane-debounce.ts`, which is a pure function with
+        # falsifiers -- per gate.yml's own rule that logic in a `run:` block is logic no test
+        # can reach. A debounce that decides wrong in the skip direction produces a silent
+        # lane, and silence that looks like health is exactly what this repo refuses to ship
+        # unfalsifiable.
+        run: |
+          set -uo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/gate.yml/runs?branch=heartbeat/drift-sweep&per_page=1" \
+            --jq '.workflow_runs[0]' 2>/dev/null \
+            | bun src/Core.TypeScript/ci/flush-lane-debounce.ts --max-inflight-minutes 45 \
+            | tee /tmp/debounce.txt
+          grep '^should_run=' /tmp/debounce.txt >> "$GITHUB_OUTPUT"
+          {
+            echo "### drift-sweep debounce"
+            echo ""
+            sed -n '1p' /tmp/debounce.txt
+          } >> "$GITHUB_STEP_SUMMARY"
+
   sweep:
     name: sweep main into the drift ledger
+    needs: debounce
+    if: needs.debounce.outputs.should_run == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
