@@ -1,16 +1,16 @@
 {
   "schema": "zeta.liveness.observation/1",
-  "observedAt": "2026-08-27T00:34:25.541Z",
+  "observedAt": "2026-08-27T00:34:50.066Z",
   "observer": "laptop/acehack-shadow-seed",
-  "observerRunId": null,
+  "observerRunId": "append-proof",
   "outcome": "not-alive",
   "thresholdMinutes": 60,
-  "summary": "NO TICK FROM ANY SOURCE IN 816 MINUTES - newest was github-actions/.github/workflows/agent-heartbeat.yml at 2026-08-26T10:57:33.000Z, threshold 60min",
+  "summary": "NO TICK FROM ANY SOURCE IN 817 MINUTES - newest was github-actions/.github/workflows/agent-heartbeat.yml at 2026-08-26T10:57:33.000Z, threshold 60min",
   "sources": [
     {
       "source": "github-actions/.github/workflows/agent-heartbeat.yml",
       "lastAt": "2026-08-26T10:57:33.000Z",
-      "ageMinutes": 816,
+      "ageMinutes": 817,
       "fresh": false
     }
   ],
