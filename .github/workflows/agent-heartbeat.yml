@@ -320,6 +320,7 @@ jobs:
           bun src/Core.TypeScript/agent-heartbeats/prepare-heartbeat-branch.ts --agent "$AGENT"
 
       - name: Run observe tick (local-llm, heartbeat mode)
+        id: observe_tick
         env:
           ZETA_FIRST_SESSION_MARKER: /tmp/zeta-first-session-complete
           ZETA_AGENT_ID: ${{ matrix.agent }}
@@ -337,10 +338,36 @@ jobs:
 
           mkdir -p /tmp && echo "2026-07-08" > /tmp/zeta-first-session-complete
           export ZETA_PARTICIPANT="local-llm:${MODEL}"
+          set +e
           bun src/Core.TypeScript/observe/run-loop-real.ts \
             --by "$ZETA_AGENT_ID" \
             --event-dir docs/observe-events \
-            --participant "local-llm:${MODEL}" || echo "[heartbeat] tick failed (non-fatal)"
+            --participant "local-llm:${MODEL}"
+          TICK_RC=$?
+          set -e
+          if [ "$TICK_RC" -ne 0 ]; then
+            echo "[heartbeat] tick failed (non-fatal); no room receipt will be emitted"
+            echo "observed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "observed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # First bounded production room emitter. Alexa alone owns the shared v1 feed index, avoiding
+      # cross-lane index races; other lanes keep their durable observe events and do not synthesize
+      # room receipts. The generated atom records a successful heartbeat generator only—not a solved
+      # episode, a cryptographic signature, or an authority verdict.
+      - name: Emit durable room receipt (Alexa bounded lane)
+        if: matrix.agent == 'alexa' && steps.observe_tick.outputs.observed == 'true'
+        env:
+          AGENT: ${{ matrix.agent }}
+          ROOM_RECEIPT_RUN_ID: github-run:${{ github.run_id }}:${{ github.run_attempt }}
+          ROOM_RECEIPT_SOURCE_SHA: ${{ github.sha }}
+        run: |
+          bun src/Core.TypeScript/agent-heartbeats/emit-room-evidence.ts \
+            --agent "$AGENT" \
+            --run-id "$ROOM_RECEIPT_RUN_ID" \
+            --repo-root . \
+            --source-sha "$ROOM_RECEIPT_SOURCE_SHA"
 
       - name: Commit accumulated heartbeat tick
         env:
@@ -348,7 +375,7 @@ jobs:
         run: |
           git config user.name "${AGENT}[bot]"
           git config user.email "${AGENT}[bot]@users.noreply.github.com"
-          git add docs/observe-events/ || true
+          git add docs/observe-events/ docs/room-evidence/ || true
           if git diff --cached --quiet; then
             echo "[heartbeat] no new events to commit"
           else
