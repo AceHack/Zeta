@@ -1,0 +1,12 @@
+{
+  "pr_number": 15762,
+  "archive_path": "docs/history/pr-reviews/PR-15762-research-toy-cl-4-8-8-boson-fermion-generator-the-bnn-adds-nothing-and-degrades-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:14:58.748Z",
+  "schema_version": "v1",
+  "commit_sha": "8471f56c53eda86f3401003befa9f9b9caa5f7cc",
+  "title": "research(toy): Cl(4) 8+8 boson/fermion generator — the BNN adds nothing, and degrades exactly at the code's bound",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:15:09Z",
+  "head_ref": "shadow/adinkra-boson-fermion-bnn"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15763,
+  "archive_path": "docs/history/pr-reviews/PR-15763-fix-drift-dashboard-a-blind-pass-reported-the-world-red-not-itself.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:15:00.604Z",
+  "schema_version": "v1",
+  "commit_sha": "8471f56c53eda86f3401003befa9f9b9caa5f7cc",
+  "title": "fix(drift-dashboard): a blind pass reported the world red, not itself",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:21:34Z",
+  "head_ref": "shadow/observe-token-resolver-false-red"
+}

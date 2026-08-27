@@ -1,0 +1,12 @@
+{
+  "pr_number": 15766,
+  "archive_path": "docs/history/pr-reviews/PR-15766-research-anchor-what-distler-garibaldi-forecloses-about-e8-and-the-standard-mode.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:15:05.180Z",
+  "schema_version": "v1",
+  "commit_sha": "8471f56c53eda86f3401003befa9f9b9caa5f7cc",
+  "title": "research(anchor): what Distler-Garibaldi forecloses about E8 and the Standard Model, and what it leaves open",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:25:26Z",
+  "head_ref": "shadow/anchor-standard-model-derivation"
+}

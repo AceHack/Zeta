@@ -1,0 +1,12 @@
+{
+  "pr_number": 15774,
+  "archive_path": "docs/history/pr-reviews/PR-15774-test-gh-cli-pin-the-refusal-texts-exactly-not-by-absence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T04:15:20.490Z",
+  "schema_version": "v1",
+  "commit_sha": "8471f56c53eda86f3401003befa9f9b9caa5f7cc",
+  "title": "test(gh-cli): pin the refusal texts exactly, not by absence",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:43:15Z",
+  "head_ref": "shadow/pin-refusal-texts-exactly"
+}
