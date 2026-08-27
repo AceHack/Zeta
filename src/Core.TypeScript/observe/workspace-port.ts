@@ -235,7 +235,18 @@ export interface BlameEntry {
 
 // ─── Real implementation (production) ────────────────────────────────────────
 
-import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  closeSync,
+  existsSync,
+  fstatSync,
+  mkdirSync,
+  openSync,
+  readdirSync,
+  readFileSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -265,10 +276,21 @@ export function realWorkspacePort(repoRoot: string): WorkspacePort {
     readFileEntry(path: string): IoResult<FileEntry> {
       try {
         const full = join(repoRoot, path);
-        const stat = statSync(full);
-        const executable = platform !== "win32" ? (stat.mode & 0o111) !== 0 : false;
-        // Heuristic: try UTF-8 first; if it contains null bytes, treat as binary
-        const raw = readFileSync(full);
+        // ONE handle for both facts. `statSync(full)` then `readFileSync(full)` resolves the path
+        // TWICE, so the mode and the bytes can describe two different files — replace the file
+        // between the calls and the entry reports one file's executable bit alongside another
+        // file's content, with nothing anywhere saying so (CodeQL `js/file-system-race`). Opening
+        // once and asking the descriptor pins both to the same inode.
+        const fd = openSync(full, "r");
+        let raw: Buffer;
+        let executable: boolean;
+        try {
+          const stat = fstatSync(fd);
+          executable = platform !== "win32" ? (stat.mode & 0o111) !== 0 : false;
+          raw = readFileSync(fd);
+        } finally {
+          closeSync(fd);
+        }
         const hasNull = raw.includes(0);
         if (hasNull) {
           return { ok: true, value: { path, content: new Uint8Array(raw), permissions: { executable }, binary: true } };

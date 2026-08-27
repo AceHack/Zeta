@@ -14,7 +14,7 @@
 //   acquire: 0 = claim published, 1 = already claimed (no publish)
 //   release: 0 = release published, 1 = error
 
-import { openSync, closeSync, unlinkSync, statSync, writeSync, readFileSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readFileSync, statSync, unlinkSync, writeSync } from "node:fs";
 import { join } from "node:path";
 import { publish, list, BUS_DIR, ensureDir } from "./bus.ts";
 import { SENDER_IDS } from "./types.ts";
@@ -59,12 +59,42 @@ function withAcquireLock<T>(itemId: string, fn: () => T): T {
       // Only do stale-lock recovery on EEXIST; other errors (permissions, I/O) bubble up.
       if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
       try {
-        const content = readFileSync(lp, "utf8").trim();
+        // BOTH FACTS FROM ONE HANDLE. `readFileSync(lp)` then `statSync(lp)` resolves the path
+        // twice, so the holder PID and the mtime can describe two different locks: if the holder
+        // releases and someone else acquires between the calls, this reads the OLD pid against the
+        // NEW mtime — or the reverse — and can reclaim a lock that is very much alive. That is a
+        // correctness bug in lock recovery, not only a scanner finding (CodeQL
+        // `js/file-system-race`). One `open`, one inode, both answers.
+        const rfd = openSync(lp, "r");
+        let content: string;
+        let st: ReturnType<typeof fstatSync>;
+        try {
+          st = fstatSync(rfd);
+          content = readFileSync(rfd, "utf8").trim();
+        } finally {
+          closeSync(rfd);
+        }
         const holderPid = parseInt(content, 10);
-        const st = statSync(lp);
         // Reclaim only if the lock is old enough AND its holder process is dead.
         if (Date.now() - st.mtimeMs > LOCK_STALE_MS && !isProcessRunning(holderPid)) {
-          unlinkSync(lp); // reclaim stale lock left by a crashed process
+          // IDENTITY CHECK BEFORE UNLINK, because `unlinkSync(lp)` resolves the path AGAIN. The
+          // inode we judged stale is the one held by `rfd`; if the holder released and someone else
+          // acquired in between, the path now names a DIFFERENT, LIVE lock and deleting it breaks
+          // mutual exclusion for a process that did nothing wrong. Comparing dev+ino makes that
+          // replacement detectable instead of silent.
+          //
+          // HONEST LIMIT, stated because narrowing a window is not closing it: a path-based unlink
+          // cannot be made race-free with the filesystem APIs Node exposes — there is no
+          // `funlinkat`. The residual window is between this stat and the unlink below. Closing it
+          // properly needs a different protocol (advisory `flock`/`fcntl`, or reclaim performed
+          // atomically by the next acquirer), which is a change to how mutual exclusion works here
+          // and not something a scanner finding should decide.
+          let sameInode = false;
+          try {
+            const onPath = statSync(lp);
+            sameInode = onPath.dev === st.dev && onPath.ino === st.ino;
+          } catch { /* vanished between the read and here — nothing of ours to reclaim */ }
+          if (sameInode) unlinkSync(lp); // reclaim stale lock left by a crashed process
         }
       } catch { /* lock disappeared between reads — harmless */ }
     }

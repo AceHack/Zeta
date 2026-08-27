@@ -1,0 +1,14 @@
+{
+  "id": "080d0224c2d65010a0130008d393b613",
+  "at": "2026-08-27T19:00:30.538Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M129GPP9087G0R000G7837F",
+    "type": "task",
+    "title": "bus/claim.ts stale-lock reclaim needs a protocol that does not unlink by path",
+    "slug": "bus-claim-ts-stale-lock-reclaim-needs-a-protocol-that-does-n",
+    "priority": "P2",
+    "filename": "081M129GPP9087G0R000G7837F-bus-claim-ts-stale-lock-reclaim-needs-a-protocol-that-does-n.md"
+  }
+}
