@@ -483,6 +483,7 @@
     <Compile Include="Formal/CliffordE8Roots.Tests.fs" />
     <Compile Include="Formal/CliffordE8BladeMask.Tests.fs" />
     <Compile Include="Formal/E8LieAlgebra.Tests.fs" />
+    <Compile Include="Formal/E8ChevalleyGroup.Tests.fs" />
     <Compile Include="Formal/FrequencyMachZehnder.Tests.fs" />
     <Compile Include="Formal/CliffordStarRing.Laws.Tests.fs" />
     <Compile Include="Formal/CliffordReflection.Laws.Tests.fs" />

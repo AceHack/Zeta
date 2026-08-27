@@ -297,7 +297,8 @@ Clifford versors).
 |---|---|---|---|
 | 1 | Root system Φ(E8), 240 | **metered** | `E8Lattice.roots`, `CliffordE8Roots` |
 | 2 | Lie algebra `e₈`, dim 248 | **metered** | `E8LieAlgebra` (Jacobi, Serre, Killing) |
-| 3 | Compact Lie group E8 | **honest substitute** | `compactFormKillingDiagonal` negative-definite; `centreOrder = 1` |
+| 3a | Split Chevalley group (`U_α`) | **metered multiply** | `E8ChevalleyGroup` `x_α(t)` |
+| 3b | Compact real Lie group E8 | **honest substitute** | `compactFormKillingDiagonal`; `centreOrder = 1` |
 | (4) | Weyl group W(E8) | versors in-tree; not the group | `CliffordE8Roots` |
 
 The compact-group substitute is Weyl's unitary trick: the Killing
@@ -309,10 +310,11 @@ Killing diagonal has length 248 because it is an **algebra-basis**
 form — the same 248 as `dim e₈`, which is also `dim` of the group
 as a manifold. Matching 248 does not identify them.
 
-Getting the actual compact group (Chevalley group over ℝ, or a
-faithful matrix representation with a checked product) remains
-open. Do not flip `e8ThreeObjects.CompactGroupIsSubstitute` until
-that product exists.
+The **split algebraic group** now has a checked product
+(`E8ChevalleyGroup`: `ad³=0`, even `ad²`, `x(s)x(t)=x(s+t)`). That
+is not the compact manifold. Do not flip
+`e8ThreeObjects.CompactGroupIsSubstitute` until the compact
+manifold's multiply exists.
 
 Two algebra decompositions already agree at 248 and are
 **different splits**: Cartan ⊕ roots (`8+240`) vs `so(16) ⊕ Δ⁺`
@@ -365,6 +367,71 @@ uncertainty. FourCorner + `SoftValue` is where Aaron extends the
 anchor. Composition remains a derivation, not "we run quantum
 hardware".
 
+## One clock tick is the 2×2 occupancy
+
+Aaron 2026-08-26: the four corners relate very closely to **one clock
+tick**. Meijer 2-corner is one Q (in/out, no `∂_τ`). AdinkraClock:
+`Q`(boson→fermion) emits no tick; `Q`(fermion→boson) emits one.
+`{Q,Q}` is the round-trip that *is* one `∂_τ`. FourCorner is that
+round-trip's I/O: two Q-moves × (in/out) = 4 slots. Occupancy of
+options, not a group law on the record. Checked: `oneTick` fills 4;
+`AdinkraClock` two steps ⇒ `DTauOrder = 1`.
+
+## Mutual options ~ √2, noninterference
+
+The two optional axes (data-out, feedback) may both be occupied —
+**mutual options**, a product, not a sum. They are declared channels
+(§13): filling both does not mix them and does not discard `TIn`.
+Two orthogonal unit occupancies have Euclidean norm `√(1²+1²) = √2`.
+
+`FeedbackThrottle.TsirelsonLatency` is also `√2` (solve
+`2 + 2/(1+L) = 2√2` under the `1/(1+L)` modeling choice). Same
+number, **contingent on the attenuation curve** — the module already
+labels that. Consistent-with, not identified
+(`.claude/rules/numerology-vs-number-theory.md`). What is structural:
+noninterference is the product (two declared axes); Meijer's sum
+collapses them into one terminal.
+
+## +1 and −1 compass: related, divergent
+
+The +1/−1 compass is C₄ north/south: `+1 = e^{i0} = genuineDelta`
+(VALUE, product, Reversible); `−1 = e^{iπ} = retractionDelta`
+(ping-return, `Negate`). `Negate ∘ Negate = id` — involution,
+Bennett-free correction (PhasorEndurance; Z-set `+1` then `−1`).
+
+Meijer filled the incomplete `IEnumerator` dual with `OnError`, which
+*sits in the −1 slot* (the other terminal) but is a **sum**: after
+`Error` the stream is gone, and there is no second application that
+restores `Ok`. Related C₄ points; **divergent as maps**. In-tree:
+`InterruptFeedback` on `Result` is that sum (`ErasureClass.Erasing`).
+Aaron: they are related but divergent. Checked: `negateIsInvolution`
+vs `errorHasNoInverse`.
+
+## E8 three objects — Chevalley root groups have multiply
+
+Aaron: try to have all the representations. The compact *manifold*
+is still a substitute. What is now a group with a checked product is
+the **split Chevalley group** (algebraic, over ℤ):
+
+`x_α(t) = exp(t ad e_α) = I + t ad + (t²/2) ad²` because
+`ad(e_α)³ = 0` (simply-laced). Root group law
+`x_α(s) x_α(t) = x_α(s+t)` ≅ `(ℤ, +)`. Falsifier: `ad(h_i)` is
+**not** nilpotent. Module `E8ChevalleyGroup`.
+
+| # | Object | Status |
+|---|---|---|
+| 1 | Root system Φ(E8), 240 | metered |
+| 2 | Lie algebra `e₈`, 248 | metered |
+| 3a | Split Chevalley group (root groups `U_α`) | **metered multiply** |
+| 3b | Compact real Lie group E8 | still Killing substitute |
+| (4) | Weyl group W(E8) | versors; not the group |
+
+3a is not 3b: algebraic split form vs compact real manifold. Both
+have adjoint dimension 248; the count does not identify them.
+Wikipedia's four properties of compact E8 (trivial centre, compact,
+simply connected, simply laced) — centre and simply-laced are
+metered on the algebra; compactness is the substitute.
+
 ## Remaining (not this slice)
 
 - Product path may *weight* a live observe/trace by `Cl3.Mv` without
@@ -372,12 +439,14 @@ hardware".
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice (`Cl3.fs`
   honest scope) — a different signature, still not the compass.
 - Inverse-free corners still do not get the trace.
-- Compact Lie group E8 as a group object (multiply / exp), not
-  the Killing-form substitute.
+- Compact Lie group E8 as a *manifold* (exp of the compact real
+  form), not the split Chevalley root groups and not the Killing
+  substitute.
 - N-extended adinkra clock (Q3 of `081KX93R6EF08QG0R0020AQQWZ`) —
   the N=1 valise still does not discriminate the A/B fork.
 
 Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
+Chevalley group: `src/Core/E8ChevalleyGroup.fs`.
 
 ## Anchors
 
@@ -397,6 +466,8 @@ Workitem `081M10CBYF9087G0R003GWBNHG`. Module `src/Core/FourCornerC4.fs`.
 - Gates / Iga — adinkra bipartition (boson even, fermion odd); dashing = odd 1-cochain
 - Landauer (1961) / Bennett (1973) — error-sum is erasing; feedback ping-return is fibre 1
 - Chevalley (1955) / Killing–Cartan — `e₈` identified by Dynkin diagram, not by dim 248
+- Chevalley (1955) / Carter (1972) ch. 4 — split algebraic group `x_α(t) = exp(t ad e_α)`; not the compact manifold
+- Goguen–Meseguer (1982) — noninterference: mutual options are declared channels, not a mixed sum
 - Atiyah, Bott & Shapiro (1964) — mod-8 clock; uncoded `Cl(0,8)` halves separate
 - Conway & Sloane, *SPLAG* ch. 5 — Construction A (coded tower, costs homoiconicity)
 - Cayley–Dickson doubling — `CayleyDickson.fs` / `ImaginaryStack.complex`

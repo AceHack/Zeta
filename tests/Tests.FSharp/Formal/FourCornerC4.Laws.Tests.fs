@@ -347,6 +347,7 @@ let ``E8: roots 240 and algebra 248 are metered; compact group is still a substi
     inv.AlgebraMetered |> should equal 248
     inv.RootsMetered + 8 |> should equal inv.AlgebraMetered
     inv.CompactGroupIsSubstitute |> should equal true
+    inv.ChevalleyRootGroupsMetered |> should equal true
     inv.CompactFormNegativeDefinite |> should equal true
     inv.CentreOrder |> should equal 1
     // the Killing diagonal is an algebra-basis form, not a group multiply
@@ -359,3 +360,62 @@ let ``E8: roots 240 and algebra 248 are metered; compact group is still a substi
     spinorTotal |> should equal inv.AlgebraMetered
     // coded Construction A lattice roots = algebra roots (set size)
     E8Lattice.roots.Length |> should equal inv.RootsMetered
+    // split Chevalley group has a multiply; compact manifold still does not
+    E8ChevalleyGroup.oneParameterHolds E8LieAlgebra.chevalleyE.[0] 1 1
+    |> should equal true
+
+// ── (K) one clock tick = FourCorner 2×2; Meijer 2-corner is one Q.
+//     Mutual options ~ √2 (Pythagorean of two declared channels).
+//     +1/−1 compass: related C₄ points, divergent as maps.
+
+[<Fact>]
+let ``K: one tick fills four corners; Meijer 2-corner is one Q of {Q,Q}`` () =
+    let tick = FC.oneTick 1 2 "authored" "ack"
+    FC.occupancyCount tick |> should equal 4
+    FC.occupancyCount (FourCorner.ofIn 1) |> should equal 1
+    FC.adinkraQMovesPerTick |> should equal 2
+    FC.meijerDualCornerCount |> should equal FC.adinkraQMovesPerTick
+    FC.fourCornerSlotCount
+    |> should equal (FC.adinkraQMovesPerTick * FC.meijerDualCornerCount)
+    // AdinkraClock: two Q-moves emit one ∂_τ
+    let s1, t1 = AdinkraClock.step AdinkraClock.initial
+    t1 |> should equal false
+    let s2, t2 = AdinkraClock.step s1
+    t2 |> should equal true
+    s2.DTauOrder |> should equal 1
+
+[<Fact>]
+let ``K: mutual options occupy orthogonally — norm √2, not a mixed channel`` () =
+    FC.mutualOptionOccupancyNorm false false |> should equal 0.0
+    FC.mutualOptionOccupancyNorm true false |> should equal 1.0
+    FC.mutualOptionOccupancyNorm false true |> should equal 1.0
+    abs (FC.mutualOptionOccupancyNorm true true - sqrt 2.0) < 1e-12
+    |> should equal true
+    // FeedbackThrottle's Tsirelson-crossing latency is the same number
+    // (model-contingent 1/(1+L)). Consistent-with, not identified.
+    abs (FeedbackThrottle.TsirelsonLatency - sqrt 2.0) < 1e-12
+    |> should equal true
+    // product: occupying both does not discard TIn
+    let both = FC.oneTick 7 8 "fb" "ack"
+    FC.feedbackKeepsInput 7 both |> should equal true
+
+[<Fact>]
+let ``K: +1/−1 compass related at C₄, divergent as maps — Negate involutes, Error does not`` () =
+    FC.plusOnePhase |> should equal FC.One
+    FC.minusOnePhase |> should equal FC.MinusOne
+    FC.mul FC.plusOnePhase FC.minusOnePhase |> should equal FC.MinusOne
+    // related: both are C₄ points; −1 = e^{iπ} = pingReturn(One)
+    closeC PhasorEndurance.genuineDelta cRing.One |> should equal true
+    closeC PhasorEndurance.retractionDelta (cRing.Negate cRing.One)
+    |> should equal true
+    FC.negateIsInvolution cRing closeC cRing.One |> should equal true
+    FC.negateIsInvolution cRing closeC (Doubled.make 0.3 0.4)
+    |> should equal true
+    // divergent: Meijer OnError / ISR Error is a terminal sum, not Negate
+    let err: Result<int, InterruptFeedback> = Error(Failed "onError analogue")
+    FC.errorHasNoInverse err |> should equal true
+    FC.errorDiscardsValue err |> should equal true
+    FC.pingReturnClass
+    |> should equal ErasureClass.ThermodynamicClass.Reversible
+    FC.errorShortCircuitClass
+    |> should equal ErasureClass.ThermodynamicClass.Erasing

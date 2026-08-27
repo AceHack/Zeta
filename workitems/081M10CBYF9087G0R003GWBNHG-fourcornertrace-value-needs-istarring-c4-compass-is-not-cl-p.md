@@ -40,5 +40,7 @@ are related; they are **not** “it is Cl(p,q)”.
   FourCorner to Cl(p,q)
 - Do not identify the I/O record with a Clifford algebra **or a fermion**
 - Conformal CGA Cl(4,1) stays the Sequoia distance slice
-- Compact Lie group E8 as a group object (multiply / exp), not the
-  Killing-form substitute
+- Compact Lie group E8 as a *manifold* (exp of the compact real
+  form) — split Chevalley root groups `x_α(t)` now have multiply
+  (`E8ChevalleyGroup`); that is the algebraic group, not the
+  compact manifold

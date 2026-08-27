@@ -13,7 +13,7 @@ open System.Collections.Generic
 /// | 2 | Construction A lattice `L_A(C)` (Conway–Sloane, *SPLAG* ch. 5) | `E8Lattice`, `ConstructionATheta` |
 /// | 3 | root system: 240 minimal vectors, simple system, W(E8) as versors | `E8Lattice.roots`, `CliffordE8Roots` |
 /// | **4** | **the Lie algebra `e₈`, `dim = 248`** | **NOTHING — only the integer tuple `(8, 240)` in `CliffordPeriodicity`** |
-/// | 5 | the compact Lie group E8 | nothing (see `compactFormKillingDiagonal` for what is honestly reachable) |
+/// | 5 | the compact Lie group E8 | Killing substitute here; split Chevalley root groups (multiply) in `E8ChevalleyGroup` — algebraic, not the compact manifold |
 ///
 /// **248 IS NOT A MEASUREMENT.** `dim g = |Φ| + rank = 240 + 8 = 248` is true *by construction* — the
 /// basis is literally one vector per root plus one per Cartan direction, so a "check" that the
