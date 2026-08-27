@@ -1,0 +1,12 @@
+{
+  "pr_number": 15878,
+  "archive_path": "docs/history/pr-reviews/PR-15878-docs-data-plane-stays-dumb-ferry-fourcorner-per-row-is-the-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T18:45:25.072Z",
+  "schema_version": "v1",
+  "commit_sha": "f2da5056f98b0c2723e6e9358c14629b577b07bd",
+  "title": "docs: data plane stays dumb; ferry FourCorner-per-row is the gap",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:44:48Z",
+  "head_ref": "feat/control-plane-vs-data-plane"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15880,
+  "archive_path": "docs/history/pr-reviews/PR-15880-feat-perf-emit-observations-so-the-ledger-has-a-denominator.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T18:26:44.125Z",
+  "schema_version": "v1",
+  "commit_sha": "f78221813e014890de2d11cd7cae425182599283",
+  "title": "feat(perf): emit observations so the ledger has a denominator",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:25:47Z",
+  "head_ref": "shadow/enroll-perf-observations"
+}
