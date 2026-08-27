@@ -69,9 +69,9 @@ follow-up increment on Aaron's 2026-08-23 constraint — §12). Allowing direct 
 through **declared, metered** channels: a TAS channel is the discipline's canonical case, and a ban is
 unenforceable where a meter is not. The agent that plays does **not** write the channel labels — the
 experimenter does, and that is not in tension with `pigeonhole-by-self-claim` (subject supplies the
-_identity claim_; experimenter supplies the _measurement conditions_). The concrete finding: **the
-cross-run orbit `RunKey` carries no channel label**, so an assisted run and a clean run collide on one
-key — latent today because the cheat engine is TS and the orbit writer is F#, live the moment they meet.
+_identity claim_; experimenter supplies the _measurement conditions_). The concrete finding is now
+closed by `081M0QTRVTP087G0R0030RN1C8`: cross-run orbit v2 requires a validated `channelLabel`, so
+an assisted run and a clean run cannot collide on one key. TAS execution remains a separate lane.
 
 ---
 
@@ -653,7 +653,7 @@ _stepping_ fit almost embarrassingly well — a 64×32 monochrome pure-`step` ma
 ARC environment's native shape. What CHIP-8 lacks is exactly the two things ARC environments are
 _made of_: **levels with a win condition**, and **priors-controlled content**. Which means the
 reverse arrow is not "wrap the emulator"; it is **author levels** — and the repo already has the
-one artifact that suggests what a level could be: `db/emus/chip8/orbits/a4e75aee78565f8a.orbit.json` has
+one artifact that suggests what a level could be: `db/emus/chip8/orbits/1c16e6780008dbe9.orbit.json` has
 μ=3, λ=5 — a 3-step tail into a 5-step cycle, a genuine ρ shape, _a program whose entire future is
 finite and was found_. A level whose win condition is "reach the cycle" is a goal defined by
 structure rather than by a designer's intent, and that is a different object from anything on
@@ -873,24 +873,24 @@ a genuine proto-meter, and better than nothing. But it is not a channel meter: i
 per-channel, it does not distinguish the emulator's own reads from the cheat engine's writes, it has
 no direction, no count, and no issuer. It is the right _place_ to hang the meter and not the meter.
 
-### 12.6 The concrete defect this exposes — the orbit run key does not carry the channel label
+### 12.6 Closed defect — the orbit run key now carries the channel label
 
 This is the checkable finding, and it is the reason the section is worth writing now rather than
 when someone builds a TAS lane.
 
-The cross-run orbit key is (`src/Core.TypeScript/chip9/chip8-cross-run-store.ts`, `RunKey`):
+The original cross-run orbit key was (`src/Core.TypeScript/chip9/chip8-cross-run-store.ts`, `RunKey`):
 
 ```
 romSha256 ⊕ seedHex ⊕ loadAddrHex ⊕ dialect ⊕ stepMapVersion
 ```
 
-**No channel state appears in it.** A run with a frozen memory address takes a different trajectory
+**No channel state appeared in it.** A run with a frozen memory address takes a different trajectory
 from a clean run with identical `romSha256`, `seed`, `loadAddr`, `dialect` and `stepMapVersion` — so
 the two runs **collide on one key**, and the store's own idempotency rule ("a rewrite is an upsert of
 identical bytes") would silently overwrite one measurement with the other. The (μ,λ) of an assisted
 run would be published as the (μ,λ) of the ROM.
 
-**Is it live today? No — and I checked rather than assumed.** The cheat engine is TypeScript; the
+**Was it live when found? No — and I checked rather than assumed.** The cheat engine is TypeScript; the
 orbit _writer_ is F# (`src/Core/Chip8CrossRunStore.fs`), and the TS module exports only readers
 (`parseArtifact`, `reduceStep`, `snapshotTextAt`, `decodeSnapshot`) — no writer. `git grep -li cheat
 origin/main -- 'src/Core/*.fs'` returns only `MeshPong.fs` and `SoftDashboard.fs`, neither of which
@@ -898,10 +898,18 @@ is the store or the COW core. **So the collision is latent, not live: the two ha
 yet.** They meet the moment either a TS writer is added or the F# core gains a cheat surface — and
 rung D (recorded ARC sessions as committed artifacts) is a path that walks straight into it.
 
-**The fix is cheap and belongs in the key, not in a convention:** add the channel label to `RunKey`,
-so an assisted run is a _different key_ rather than a colliding one. Note the key's own stated
-discipline makes this the right place — _"content-derived run identity. No wall clock, no counter,
-no path."_ A channel set is content, not a clock. Work-item `081M0QTRVTP087G0R0030RN1C8`.
+**Resolution (`081M0QTRVTP087G0R0030RN1C8`):** cross-run orbit schema v2 and canonical key `k2`
+require a validated `channelLabel`. The key is now:
+
+```
+romSha256 ⊕ seedHex ⊕ loadAddrHex ⊕ dialect ⊕ channelLabel ⊕ stepMapVersion
+```
+
+`clean` identifies the ordinary apparatus. Assisted labels have the form
+`assisted:<complete-channel-configuration>`; empty, whitespace-bearing, and key-delimiter-bearing
+labels are typed refusals. The F# and TypeScript implementations lock the same grammar and canonical
+bytes. The current F# emulator still executes only the clean path; this closes the identity collision
+without pretending the separate TAS execution surface exists.
 
 ### 12.7 What this adds to the ARC lane specifically
 

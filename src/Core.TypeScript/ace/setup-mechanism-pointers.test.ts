@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parseMechanismManifest } from "./setup-manifest.ts";
 import { listSetupRealizerIds } from "./setup-realizers/index.ts";
@@ -66,7 +66,6 @@ describe("setup mechanism pointers (Ace time-crystal deps)", () => {
 
   test("ace-mechanism-pointers.json matches generated pointers", () => {
     const expected = serializeSetupMechanismPointers();
-    writeFileSync(pointersJsonPath, `${expected}\n`);
     const onDisk = readFileSync(pointersJsonPath, "utf8").trim();
     expect(onDisk).toBe(expected.trim());
   });

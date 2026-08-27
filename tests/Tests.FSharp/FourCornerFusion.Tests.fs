@@ -101,7 +101,6 @@ let ``no ArrowApply app: SchedulerZeta predicts the VALUE-channel period; interr
     Assert.Equal(2, r.Period)
     Assert.Equal(0, r.Transient)
     Assert.Equal(2, r.Reachable)
-
     // ── "an interrupt does not change the predicted orbit" — as a check that CAN fail ──
     // This pair of predictions used to run `predict key step start` twice with a DISCARDED
     // `let _interrupt = Interrupted SentinelMissing` between them. Discarded means it reached

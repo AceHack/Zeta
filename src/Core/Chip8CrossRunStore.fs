@@ -50,13 +50,14 @@ module Chip8CrossRunStore =
     let StepMapVersion = "chip8cow-step-v1"
 
     [<Literal>]
-    let Schema = "zeta.chip8.cross-run-orbit.v1"
+    let Schema = "zeta.chip8.cross-run-orbit.v2"
 
     /// Result-over-exception: every refusal is one of these, never a throw.
     type Feedback =
         /// The budget arrived with no attribution — refused before any work (the hidden-oracle guard).
         | BudgetUnattributed
         | BudgetNotPositive of maxSteps: int
+        | InvalidChannelLabel of label: string
         | UnknownSchema of found: string
         | MalformedArtifact of detail: string
         | MalformedSnapshot of detail: string
@@ -91,12 +92,47 @@ module Chip8CrossRunStore =
           /// Who set this bound and why. Empty is refused.
           Attribution: string }
 
+    /// Apparatus identity for one run. `clean` means no outside channel was open; an assisted label
+    /// names the exact channel configuration supplied by the experimenter. The private constructor
+    /// prevents an empty or delimiter-ambiguous label from entering a run key through the typed path.
+    [<Struct>]
+    type RunChannelLabel = private RunChannelLabel of string
+
+    [<RequireQualifiedAccess>]
+    module RunChannelLabel =
+
+        let private isCanonicalAssistedLabel (label: string) =
+            not (isNull label)
+            && label.StartsWith("assisted:", StringComparison.Ordinal)
+            && label.Length > "assisted:".Length
+            && label
+               |> Seq.forall (fun c -> c >= '!' && c <= '~' && c <> '|')
+
+        /// Validate serialized channel identity. The restricted ASCII alphabet keeps `keyText`
+        /// injective without culture-sensitive normalization or escaping rules.
+        let tryCreate (label: string) : Result<RunChannelLabel, Feedback> =
+            if String.Equals(label, "clean", StringComparison.Ordinal) || isCanonicalAssistedLabel label then
+                Ok(RunChannelLabel label)
+            else
+                Error(InvalidChannelLabel label)
+
+        /// The ordinary emulator path: no assistance channels are open.
+        let clean = RunChannelLabel "clean"
+
+        /// Label an assisted apparatus. `detail` must identify the complete channel configuration,
+        /// such as `ram-write/freeze-0300=ff`, rather than merely saying assistance happened.
+        let assisted (detail: string) : Result<RunChannelLabel, Feedback> =
+            tryCreate ("assisted:" + detail)
+
+        let value (RunChannelLabel label) = label
+
     /// Content-derived; no wall clock, no counter, no path (`local-time-never-enters-the-shared-fold`).
     type RunKey =
         { RomSha256: string
           Seed: uint64
           LoadAddr: int
           Dialect: string
+          ChannelLabel: RunChannelLabel
           StepMapVersion: string }
 
     type Checkpoint =
@@ -330,11 +366,18 @@ module Chip8CrossRunStore =
     // ── the run key ────────────────────────────────────────────────────────────────────────────────
 
     /// Build the run key from the ROM bytes (content-derived identity).
-    let runKey (rom: byte[]) (seed: uint64) (loadAddr: int) (dialect: string) : RunKey =
+    let runKey
+        (rom: byte[])
+        (seed: uint64)
+        (loadAddr: int)
+        (dialect: string)
+        (channelLabel: RunChannelLabel)
+        : RunKey =
         { RomSha256 = sha256Hex rom
           Seed = seed
           LoadAddr = loadAddr
           Dialect = dialect
+          ChannelLabel = channelLabel
           StepMapVersion = StepMapVersion }
 
     /// The key's canonical text — also the basis of the artifact filename. Content-addressed, so two
@@ -342,11 +385,12 @@ module Chip8CrossRunStore =
     let keyText (k: RunKey) : string =
         String.concat
             "|"
-            [ "k1"
+            [ "k2"
               "rom=" + k.RomSha256
               "seed=" + hex16 k.Seed
               "load=" + hex4 k.LoadAddr
               "dialect=" + k.Dialect
+              "channel=" + RunChannelLabel.value k.ChannelLabel
               "stepmap=" + k.StepMapVersion ]
 
     /// `<first-16-hex-of-key-digest>.orbit.json` — no wall clock, no counter, no path in the name.
@@ -477,7 +521,7 @@ module Chip8CrossRunStore =
 
         String.concat
             "\n"
-            [ "b1"
+            [ "b2"
               a.Schema
               keyText a.Key
               "budget=" + inv a.Budget.MaxSteps + ";" + a.Budget.Attribution
@@ -506,6 +550,7 @@ module Chip8CrossRunStore =
         sb.AppendLine("    \"seedHex\": " + q (hex16 a.Key.Seed) + ",") |> ignore
         sb.AppendLine("    \"loadAddrHex\": " + q (hex4 a.Key.LoadAddr) + ",") |> ignore
         sb.AppendLine("    \"dialect\": " + q a.Key.Dialect + ",") |> ignore
+        sb.AppendLine("    \"channelLabel\": " + q (RunChannelLabel.value a.Key.ChannelLabel) + ",") |> ignore
         sb.AppendLine("    \"stepMapVersion\": " + q a.Key.StepMapVersion) |> ignore
         sb.AppendLine("  },") |> ignore
         sb.AppendLine("  \"budget\": {") |> ignore
@@ -606,7 +651,10 @@ module Chip8CrossRunStore =
             let! seedHex = str keyEl "seedHex"
             let! loadHex = str keyEl "loadAddrHex"
             let! dialect = str keyEl "dialect"
+            let! channelText = str keyEl "channelLabel"
             let! smv = str keyEl "stepMapVersion"
+
+            let! channelLabel = RunChannelLabel.tryCreate channelText
 
             let! seed =
                 match parseHexU64 seedHex with
@@ -623,6 +671,7 @@ module Chip8CrossRunStore =
                   Seed = seed
                   LoadAddr = load
                   Dialect = dialect
+                  ChannelLabel = channelLabel
                   StepMapVersion = smv }
         }
 

@@ -7,7 +7,7 @@
  * corpus, because that is where the finding turned out to be more than theoretical.
  */
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -16,6 +16,7 @@ import {
   buildPersonaRoster,
   discoverPersonaRosterPaths,
   loadAttestationRecords,
+  selectAttestationRecords,
   verifyAll,
 } from "./verify-attestation-events";
 import {
@@ -186,7 +187,14 @@ describe("the committed corpus", () => {
   });
 
   test("every leaked-fixture attestation is REFUSED — a path is not a persona", () => {
-    const records = loadAttestationRecords(dir);
+    // This falsifier names eleven exact historical records, so read those eleven rather
+    // than scanning every event in the repository to rediscover them.
+    const records = selectAttestationRecords(
+      LEAKED_FIXTURE_RECORDS.map((file) => ({
+        file,
+        raw: JSON.parse(readFileSync(join(dir, file), "utf8")),
+      })),
+    );
     const roster = buildPersonaRoster(discoverPersonaRosterPaths(REPO_ROOT));
     const byFile = new Map(records.map((r) => [r.file, r]));
 
@@ -257,12 +265,11 @@ describe("the committed corpus", () => {
       expect(typeof record.attestation.attestedDigest, file).toBe("string");
       expect(record.signature, file).toBeUndefined();
     }
-    // 30s, not the 5s default. Honest note on why: the recount is a SECOND full pass over
-    // the corpus, but measured it costs ~1.4s for the whole file — the 5s default was hit
-    // once on a cold cache, not by the work. The headroom is for corpus growth, not for a
-    // cost that exists today. Deriving `unbound` from the report would be cheaper and
-    // tautological, which is the one thing it must not be.
-  }, 30_000);
+    // 60s, not the 5s default. The verifier and independent recount are two full passes;
+    // this Mac measured 35s from a cold on-access scan on 2026-08-27, while a warm pass is
+    // about 1.4s. Deriving `unbound` from the report would be cheaper and tautological,
+    // which is the one thing it must not be.
+  }, 60_000);
 
   test("the event dir constant points at a real directory", () => {
     expect(readdirSync(dir).length).toBeGreaterThan(0);

@@ -47,7 +47,13 @@ module Chip8PredictionRoom =
 
     let load (seed: uint64) (rom: byte[]) (tank: SoftThrottle.Tank) : State =
         let frame = Chip8Cow.create seed |> Chip8Cow.loadRom rom
-        let key = Chip8CrossRunStore.runKey rom seed Chip8.ProgramStart "chip8"
+        let key =
+            Chip8CrossRunStore.runKey
+                rom
+                seed
+                Chip8.ProgramStart
+                "chip8"
+                Chip8CrossRunStore.RunChannelLabel.clean
         PredictionScheduler.planned (runtime frame (Some key)) tank
 
     let frame (state: State) : Chip8Cow.Frame = state.Inner.Frame

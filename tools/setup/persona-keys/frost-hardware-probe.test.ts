@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { beforeAll, describe, expect, it } from "bun:test";
 import {
   probeTpm2,
   probeYubikey,
@@ -407,10 +407,34 @@ describe("the derivation itself", () => {
 });
 
 describe("the real host", () => {
-  // The one test that touches the actual machine. It asserts a property that holds on
-  // every host rather than a fact about this one, so it stays true in CI.
+  let snapshot:
+    | {
+        readonly effects: HardwareProbeEffects;
+        readonly result: ReturnType<typeof probeHardwareSecurity>;
+      }
+    | undefined;
+
+  // Capture the host once so all assertions observe one machine state and the expensive
+  // system_profiler/device scans are not repeated. Keep the capture timed: an unresponsive
+  // host probe is a failure, but the child-process timeout can legitimately exceed Bun's
+  // default five-second hook budget before the remaining probes complete.
+  beforeAll(() => {
+    const effects = realProbeEffects();
+    snapshot = {
+      effects,
+      result: probeHardwareSecurity(effects),
+    };
+  }, 20_000);
+
+  function capturedHost(): NonNullable<typeof snapshot> {
+    if (snapshot === undefined) throw new Error("real-host probe did not complete");
+    return snapshot;
+  }
+
+  // These tests touch the actual machine. They assert properties that hold on every host
+  // rather than facts about this one, so they stay true in CI.
   it("probes without crashing and keeps the driver-is-not-a-device invariant", () => {
-    const res = probeHardwareSecurity(realProbeEffects());
+    const res = capturedHost().result;
     if (!res.tpm2Available && !res.yubikeyDetected && !res.smartCardReaderAttached && !res.yubiHsm2Detected) {
       expect(res.noHardwareDetected).toBeTrue();
     }
@@ -427,7 +451,7 @@ describe("the real host", () => {
   });
 
   it("agrees with the platform: darwin never has a TPM 2.0, and says it was not asked", () => {
-    const fx = realProbeEffects();
+    const fx = capturedHost().effects;
     if (fx.platform === "darwin") {
       const probe = probeTpm2(fx);
       expect(probe.available).toBeFalse();
@@ -438,7 +462,7 @@ describe("the real host", () => {
   });
 
   it("never reports tpm2Available without a device node on THIS machine", () => {
-    const res = probeHardwareSecurity(realProbeEffects());
+    const res = capturedHost().result;
     if (res.tpm2Available) expect(res.tpmDeviceNode).toBeDefined();
     expect(res.tpm2Reason.length).toBeGreaterThan(0);
   });

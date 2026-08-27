@@ -38,12 +38,13 @@ const OPEN: Verdict = { kind: "open-at-bound", maxSteps: 64 };
 /** Only `key` and `verdict` are read by the census; the rest is deliberately minimal. */
 function artifactWith(tag: string, verdict: Verdict): OrbitArtifact {
   return {
-    schema: "zeta.chip8.cross-run-orbit.v1",
+    schema: "zeta.chip8.cross-run-orbit.v2",
     key: {
       romSha256: tag.padEnd(64, "0"),
       seedHex: "0000000000000000",
       loadAddrHex: "0200",
       dialect: "chip8",
+      channelLabel: "clean",
       stepMapVersion: "chip8cow-step-v1",
     },
     budget: { maxSteps: 64, attribution: "consult-census.test: fixture bound, not a claim about any ROM" },
@@ -73,14 +74,20 @@ describe("consult-path post-selection census", () => {
   });
 
   it("CENSUS-2: reading every stored orbit once reports zero divergence", () => {
-    const c = censusOf(allFour, allFour.map((a) => hit(a.verdict)));
+    const c = censusOf(
+      allFour,
+      allFour.map((a) => hit(a.verdict)),
+    );
     expect(sharesIdentical(c)).toBe(true);
     expect(totalVariation(c)).toBe(0);
     expect(c.misses).toBe(0);
   });
 
   it("CENSUS-2b: a read set that is a SCALED copy of the stored set is also identical", () => {
-    const c = censusOf(allFour, allFour.flatMap((a) => [hit(a.verdict), hit(a.verdict), hit(a.verdict)]));
+    const c = censusOf(
+      allFour,
+      allFour.flatMap((a) => [hit(a.verdict), hit(a.verdict), hit(a.verdict)]),
+    );
     expect(sharesIdentical(c)).toBe(true);
     expect(totalVariation(c)).toBe(0);
   });
@@ -159,7 +166,11 @@ describe("consult-path post-selection census", () => {
   });
 
   it("CENSUS-6: the consult log carries only the KEY, so it cannot lie about a verdict", () => {
-    const log = [{ key: consultLogKey(cycling.key) }, { key: consultLogKey(halted.key) }, { key: "a-key-nobody-stored" }];
+    const log = [
+      { key: consultLogKey(cycling.key) },
+      { key: consultLogKey(halted.key) },
+      { key: "a-key-nobody-stored" },
+    ];
     const events = eventsFromLog(allFour, log);
     expect(events.map((e) => e.kind)).toEqual(["hit", "hit", "miss"]);
     const c = censusOf(allFour, events);

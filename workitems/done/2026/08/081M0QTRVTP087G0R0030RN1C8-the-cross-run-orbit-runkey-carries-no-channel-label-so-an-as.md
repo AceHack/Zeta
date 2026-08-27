@@ -1,11 +1,12 @@
 ---
 id: 081M0QTRVTP087G0R0030RN1C8
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: the-cross-run-orbit-runkey-carries-no-channel-label-so-an-as
 title: "the cross-run orbit RunKey carries no channel label, so an assisted run and a clean run collide on one key"
 created: 2026-08-23T17:30:24.982Z
+completed: 2026-08-27T00:49:05.491Z
 depends_on: []
 composes_with: []
 ---
@@ -41,3 +42,15 @@ identity. No wall clock, no counter, no path."_ A channel set is content, not a 
 
 **Falsifier:** a test that runs one ROM twice, once with a frozen address, and asserts the two artifacts
 land on **different** keys. Without the fix that test fails by producing one key and two trajectories.
+
+## Resolution
+
+Cross-run orbit schema v2 makes `channelLabel` a required part of `RunKey`, canonical key text, body
+digest, and artifact filename. The typed F# path can construct only `clean` or a validated
+`assisted:<complete-channel-configuration>` label; the TypeScript verifier enforces the same ASCII
+grammar. Empty, whitespace-bearing, and key-delimiter-bearing labels are typed refusals.
+
+The falsifier uses `assisted:ram-write/freeze-0300=ff` and proves it differs from the clean run in
+record identity, canonical key text, artifact filename, and serialized body. The five committed clean
+orbits and both cross-language fixtures were regenerated from the F# writer. This slice does not add
+TAS execution or claim that the current clean-only F# emulator applies the frozen address.

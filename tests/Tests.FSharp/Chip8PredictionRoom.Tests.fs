@@ -90,7 +90,13 @@ let private crossRunCost: RoomConsultation.CostPolicy =
       Attribution = "Chip8PredictionRoom.Tests: exact fixture projection" }
 
 let private artifactFor (seed: uint64) (rom: byte[]) =
-    let key = Chip8CrossRunStore.runKey rom seed Chip8.ProgramStart "chip8"
+    let key =
+        Chip8CrossRunStore.runKey
+            rom
+            seed
+            Chip8.ProgramStart
+            "chip8"
+            Chip8CrossRunStore.RunChannelLabel.clean
     match
         Chip8CrossRunStore.precompute
             { MaxSteps = 2048

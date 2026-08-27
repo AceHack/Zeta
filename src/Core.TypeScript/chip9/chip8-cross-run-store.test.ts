@@ -14,6 +14,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   CHIP8_CROSS_RUN_STORE_SCHEMA,
+  assistedRunChannelLabel,
+  artifactFileName,
   bodyText,
   decodeSnapshot,
   emptyCrossRunReader,
@@ -43,6 +45,7 @@ describe("CHIP-8 cross-run store — the TS reader against the F# writer", () =>
     const recomputed = await sha256Hex(bodyText(a));
     expect(recomputed).toBe(a.bodyDigest);
     expect(a.schema).toBe(CHIP8_CROSS_RUN_STORE_SCHEMA);
+    expect(a.key.channelLabel).toBe("clean");
     expect(a.key.stepMapVersion).toBe("chip8cow-step-v1");
   });
 
@@ -187,10 +190,36 @@ describe("CHIP-8 cross-run store — the TS reader against the F# writer", () =>
   it("the run key is order-stable and content-derived (no wall clock, no counter)", async () => {
     const a = await mustParse(closedJson);
     const text = keyText(a.key);
-    expect(text.startsWith("k1|rom=")).toBe(true);
+    expect(text.startsWith("k2|rom=")).toBe(true);
+    expect(text).toContain("channel=clean");
     expect(text).toContain("stepmap=chip8cow-step-v1");
     // nothing time-like leaked into the key
     expect(/\d{4}-\d{2}-\d{2}|T\d{2}:\d{2}|timestamp/i.test(text)).toBe(false);
+  });
+
+  it("clean and frozen-address assisted runs cannot collide on one run key", async () => {
+    const a = await mustParse(closedJson);
+    const channel = assistedRunChannelLabel("ram-write/freeze-0300=ff");
+    expect(channel.ok).toBe(true);
+    if (!channel.ok) return;
+
+    const assisted = { ...a.key, channelLabel: channel.value };
+    expect(keyText(assisted)).not.toBe(keyText(a.key));
+    expect(await artifactFileName(assisted)).not.toBe(await artifactFileName(a.key));
+    expect(keyText(assisted)).toContain("channel=assisted:ram-write/freeze-0300=ff");
+  });
+
+  it("invalid or delimiter-ambiguous channel labels are typed refusals", async () => {
+    for (const detail of ["", "ram-write|seed=bad", "ram write"]) {
+      const result = assistedRunChannelLabel(detail);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.feedback.code).toBe("invalid-channel-label");
+    }
+
+    const malformed = closedJson.replace('"channelLabel": "clean"', '"channelLabel": "assisted:"');
+    const parsed = await parseArtifact(malformed);
+    expect(parsed.ok).toBe(false);
+    if (!parsed.ok) expect(parsed.feedback.code).toBe("invalid-channel-label");
   });
 
   it("string order is ordinal, not locale-sensitive", () => {

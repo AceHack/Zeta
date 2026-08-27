@@ -74,17 +74,24 @@ min_version = "2026.6.12"
 #
 # macOS trap, measured 2026-08-23, HIT AGAIN AND CONFIRMED 2026-08-25 on
 # the 10.0.400 install: `mise install dotnet@<newer>` replaces the shared
-# host binary at `~/.local/share/mise/dotnet-root/dotnet` IN PLACE, and
-# the kernel keeps the previous binary's code-signature cache entry for
-# that vnode -- every later `dotnet` invocation is then SIGKILLed
+# host binary and native runtime libraries IN PLACE, and the kernel keeps
+# previous code-signature cache entries for those vnodes. A stale host vnode
+# SIGKILLs every later `dotnet` invocation
 # (exit 137, no stdout, no stderr). mise's own post-install `dotnet
 # --version` probe fails the same way ("exited with non-zero status: no
 # exit status"), so the install REPORTS FAILURE after having succeeded --
 # `dotnet-install: Installation finished successfully` is in the same
 # output, and the SDK is on disk. It is not a bad download: `codesign -v`
 # passes and a copy of the same bytes at a new path runs. Fix is to give
-# the file a new vnode -- `cp` it aside, `rm`, `cp` back. Do NOT revert
-# the pin on this signature; the roll is fine, the host binary is stale.
+# the file a new vnode -- `cp` it aside, `rm`, `cp` back.
+#
+# 2026-08-27 measured extension: the host can run while stale native files
+# under `shared/Microsoft.NETCore.App/<runtime>/` make `dotnet format` fail
+# with `ReflectionTypeLoadException: The signature is incorrect`. A clean SDK
+# at another path formats the same project. Preserve the old runtime directory,
+# then copy the clean runtime payload into a newly-created version directory so
+# every dylib receives a new vnode. Do NOT revert the pin on either signature;
+# the SDK payload is fine and the local vnode cache is stale.
 dotnet = "10.0.400"
 go = "1.26.4"
 golangci-lint = "2.13.1"

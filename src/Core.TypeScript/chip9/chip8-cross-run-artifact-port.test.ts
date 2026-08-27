@@ -7,7 +7,7 @@ import {
 } from "./chip8-cross-run-artifact-port";
 import { artifactFileName, keyText, parseArtifact, type OrbitArtifact } from "./chip8-cross-run-store";
 
-const fixtureFileName = "0f53d10f496f1f79.orbit.json";
+const fixtureFileName = "6fc62d33efc40357.orbit.json";
 const fixturePath = `db/emus/chip8/orbits/${fixtureFileName}`;
 
 async function fixtureBytes(): Promise<Uint8Array> {

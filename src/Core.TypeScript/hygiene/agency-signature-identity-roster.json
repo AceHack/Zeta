@@ -156,13 +156,14 @@
       "gitEmails": ["aaron_bond@yahoo.com", "acehack00@gmail.com", "578953+acehack@users.noreply.github.com"],
       "claimSpellings": [
         "AceHack",
+        "AceHack via gh",
         "acehack",
         "github:AceHack",
         "aaron_bond@yahoo.com",
         "acehack00@gmail.com",
         "578953+acehack@users.noreply.github.com"
       ],
-      "evidence": "Measured on origin/main 2026-08-26 over 600 commits. aaron_bond@yahoo.com and acehack00@gmail.com both appear as branch-commit authors on PR #15691 alone; 578953+acehack@users.noreply.github.com is already rostered under 'humans' for web/API-authored commits."
+      "evidence": "Measured on origin/main 2026-08-26 over 600 commits. aaron_bond@yahoo.com and acehack00@gmail.com both appear as branch-commit authors on PR #15691 alone; 578953+acehack@users.noreply.github.com is already rostered under 'humans' for web/API-authored commits. 'AceHack via gh' appears on the pre-enforcement Codex branch commits for PR #15744, whose author and committer use the same rostered aaron_bond@yahoo.com identity."
     },
     {
       "credential": "github-actions[bot]",

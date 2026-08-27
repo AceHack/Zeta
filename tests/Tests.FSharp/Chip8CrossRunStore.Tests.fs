@@ -45,7 +45,7 @@ let private loopRom = [| 0x6Auy; 0x0Cuy; 0x7Auy; 0x01uy; 0x12uy; 0x02uy |]
 let private rndLoopRom = [| 0xC0uy; 0xFFuy; 0x12uy; 0x00uy |]
 
 let private keyFor (rom: byte[]) (seed: uint64) =
-    Chip8CrossRunStore.runKey rom seed Chip8.ProgramStart "chip8"
+    Chip8CrossRunStore.runKey rom seed Chip8.ProgramStart "chip8" Chip8CrossRunStore.RunChannelLabel.clean
 
 let private frame0 (rom: byte[]) (seed: uint64) =
     Chip8Cow.create seed |> Chip8Cow.loadRom rom
@@ -209,6 +209,51 @@ let ``X8 DST: same seed gives byte-identical bytes; a different seed gives a dif
     Assert.Equal(Chip8CrossRunStore.toJson a, Chip8CrossRunStore.toJson b)
     Assert.NotEqual<string>(Chip8CrossRunStore.toJson a, Chip8CrossRunStore.toJson c)
     Assert.NotEqual<string>(Chip8CrossRunStore.artifactFileName k7, Chip8CrossRunStore.artifactFileName k8)
+
+[<Fact>]
+let ``X8b clean and frozen-address assisted runs cannot collide on one run key`` () =
+    let clean = keyFor loopRom 7UL
+
+    let frozenAddress =
+        ok (Chip8CrossRunStore.RunChannelLabel.assisted "ram-write/freeze-0300=ff")
+
+    let assisted =
+        Chip8CrossRunStore.runKey loopRom 7UL Chip8.ProgramStart "chip8" frozenAddress
+
+    let cleanArtifact = ok (Chip8CrossRunStore.precompute (budget 4096) 8 clean loopRom)
+    let assistedArtifact = ok (Chip8CrossRunStore.precompute (budget 4096) 8 assisted loopRom)
+
+    Assert.NotEqual<Chip8CrossRunStore.RunKey>(clean, assisted)
+    Assert.NotEqual<string>(Chip8CrossRunStore.keyText clean, Chip8CrossRunStore.keyText assisted)
+    Assert.NotEqual<string>(
+        Chip8CrossRunStore.artifactFileName clean,
+        Chip8CrossRunStore.artifactFileName assisted
+    )
+    Assert.NotEqual<string>(Chip8CrossRunStore.toJson cleanArtifact, Chip8CrossRunStore.toJson assistedArtifact)
+    Assert.Contains("channel=clean", Chip8CrossRunStore.keyText clean, StringComparison.Ordinal)
+    Assert.Contains(
+        "channel=assisted:ram-write/freeze-0300=ff",
+        Chip8CrossRunStore.keyText assisted,
+        StringComparison.Ordinal
+    )
+
+[<Fact>]
+let ``X8c invalid or delimiter-ambiguous channel labels are typed refusals`` () =
+    for label in [ ""; "assisted:"; "assisted:ram-write|seed=bad"; "ASSISTED:ram-write" ] do
+        match Chip8CrossRunStore.RunChannelLabel.tryCreate label with
+        | Error(Chip8CrossRunStore.InvalidChannelLabel refused) -> Assert.Equal(label, refused)
+        | other -> failwithf "invalid channel label %A was not refused: %A" label other
+
+    let artifact =
+        ok (Chip8CrossRunStore.precompute (budget 4096) 8 (keyFor loopRom 7UL) loopRom)
+
+    let malformed =
+        Chip8CrossRunStore.toJson artifact
+        |> fun json -> json.Replace("\"channelLabel\": \"clean\"", "\"channelLabel\": \"assisted:\"", StringComparison.Ordinal)
+
+    match Chip8CrossRunStore.parse malformed with
+    | Error(Chip8CrossRunStore.InvalidChannelLabel "assisted:") -> ()
+    | other -> failwithf "serialized invalid channel label was not refused distinctly: %A" other
 
 [<Fact>]
 let ``X9 MUTATION: a single corrupted nibble in a stored snapshot is REFUSED, not silently consulted`` () =

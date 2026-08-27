@@ -1,6 +1,7 @@
 # `db/emus/chip8/orbits/` — memoized orbits of `Chip8Cow.step`
 
-One text artifact per **run key** (`romSha256 ⊕ seed ⊕ loadAddr ⊕ dialect ⊕ stepMapVersion`). Run 1
+One text artifact per **run key**
+(`romSha256 ⊕ seed ⊕ loadAddr ⊕ dialect ⊕ channelLabel ⊕ stepMapVersion`). Run 1
 computes a ROM's deterministic trajectory; the result is written here; run 2 *consults* it instead of
 recomputing. Written by `src/Core/Chip8CrossRunStore.fs`; read by that module and by the TypeScript
 parity reader `src/Core.TypeScript/chip9/chip8-cross-run-store.ts`.
@@ -34,6 +35,7 @@ recomputes it and **refuses** a mismatch, in both languages.
 | field | meaning |
 |---|---|
 | `key` | content-derived run identity. No wall clock, no counter, no path (`local-time-never-enters-the-shared-fold`). |
+| `key.channelLabel` | experimenter-supplied apparatus identity: `clean` or `assisted:<complete-channel-configuration>`. Assisted and clean trajectories cannot share a key. |
 | `budget.maxSteps` / `budget.attribution` | the bound that produced this result **and who set it**. An unattributed bound is refused before any work runs. |
 | `verdict` | `closed` (a cycle was **observed**) or `open-at-bound` (the walk hit the bound). **Never conflate these.** |
 | `mu` / `lambda` | tail and cycle length, under `closed` only. |
@@ -56,7 +58,8 @@ prefix **refuses**; answering would promote the precompute budget into a claim a
 | `mikolay-delay-timer-test.ch8` | 16 | 1 | awaiting-input |
 | `mikolay-random-number-test.ch8` | 15 | 1 | awaiting-input |
 
-Regenerate: `Chip8CrossRunStore.precompute` with an attributed budget; the filename is
+Regenerate: `Chip8CrossRunStore.precompute` with an attributed budget and an explicit
+`RunChannelLabel` (`clean` for this committed set); the filename is
 `artifactFileName key`, so a rewrite is an upsert of identical bytes (idempotency #6).
 
 ## Does the READ side sample these evenly?

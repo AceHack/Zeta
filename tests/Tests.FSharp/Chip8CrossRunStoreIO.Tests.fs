@@ -16,7 +16,13 @@ let private ok (result: Result<'T, Chip8CrossRunStore.Feedback>) =
     | Error feedback -> failwithf "expected artifact, got %A" feedback
 
 let private artifact seed =
-    let key = Chip8CrossRunStore.runKey rom seed Chip8.ProgramStart "chip8"
+    let key =
+        Chip8CrossRunStore.runKey
+            rom
+            seed
+            Chip8.ProgramStart
+            "chip8"
+            Chip8CrossRunStore.RunChannelLabel.clean
 
     Chip8CrossRunStore.precompute
         { MaxSteps = 8

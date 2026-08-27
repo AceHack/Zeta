@@ -26,13 +26,14 @@
  * `(a, b) => (a < b ? -1 : a > b ? 1 : 0)` and hex is parsed with an explicit radix.
  */
 
-export const CHIP8_CROSS_RUN_STORE_SCHEMA = "zeta.chip8.cross-run-orbit.v1" as const;
+export const CHIP8_CROSS_RUN_STORE_SCHEMA = "zeta.chip8.cross-run-orbit.v2" as const;
 
 /** Bump in lockstep with `Chip8CrossRunStore.StepMapVersion` in F#. */
 export const STEP_MAP_VERSION = "chip8cow-step-v1" as const;
 
 export type CrossRunFeedbackCode =
   | "unknown-schema"
+  | "invalid-channel-label"
   | "malformed-artifact"
   | "malformed-snapshot"
   | "digest-mismatch"
@@ -48,7 +49,7 @@ export type CrossRunResult<T> =
   | { readonly ok: true; readonly value: T }
   | { readonly ok: false; readonly feedback: CrossRunFeedback };
 
-const fail = <T,>(code: CrossRunFeedbackCode, detail: string): CrossRunResult<T> => ({
+const fail = <T>(code: CrossRunFeedbackCode, detail: string): CrossRunResult<T> => ({
   ok: false,
   feedback: { code, detail },
 });
@@ -60,11 +61,35 @@ export type Verdict =
   /** The walk hit the injected bound without revisiting a state. Says NOTHING about whether a cycle exists. */
   | { readonly kind: "open-at-bound"; readonly maxSteps: number };
 
+export type RunChannelLabel = "clean" | `assisted:${string}`;
+
+export const CLEAN_RUN_CHANNEL_LABEL: RunChannelLabel = "clean";
+
+function parseRunChannelLabel(label: string): CrossRunResult<RunChannelLabel> {
+  const canonicalAssisted =
+    label.startsWith("assisted:") &&
+    label.length > "assisted:".length &&
+    [...label].every((c) => {
+      const code = c.charCodeAt(0);
+      return code >= 0x21 && code <= 0x7e && c !== "|";
+    });
+
+  return label === CLEAN_RUN_CHANNEL_LABEL || canonicalAssisted
+    ? { ok: true, value: label as RunChannelLabel }
+    : fail("invalid-channel-label", label);
+}
+
+/** Name the complete assisted apparatus configuration, not merely the fact of assistance. */
+export function assistedRunChannelLabel(detail: string): CrossRunResult<RunChannelLabel> {
+  return parseRunChannelLabel(`assisted:${detail}`);
+}
+
 export interface RunKey {
   readonly romSha256: string;
   readonly seedHex: string;
   readonly loadAddrHex: string;
   readonly dialect: string;
+  readonly channelLabel: RunChannelLabel;
   readonly stepMapVersion: string;
 }
 
@@ -144,11 +169,12 @@ export async function sha256Hex(text: string): Promise<string> {
 
 export function keyText(k: RunKey): string {
   return [
-    "k1",
+    "k2",
     `rom=${k.romSha256}`,
     `seed=${k.seedHex}`,
     `load=${k.loadAddrHex}`,
     `dialect=${k.dialect}`,
+    `channel=${k.channelLabel}`,
     `stepmap=${k.stepMapVersion}`,
   ].join("|");
 }
@@ -169,12 +195,10 @@ function verdictText(v: Verdict): string {
  * self-referential), and so is every JSON nicety — the digest covers MEANING, not formatting.
  */
 export function bodyText(a: OrbitArtifact): string {
-  const checkpoints = a.checkpoints
-    .map((c) => [String(c.step), c.stateDigest, c.snapshot ?? ""].join(";"))
-    .join("\n");
+  const checkpoints = a.checkpoints.map((c) => [String(c.step), c.stateDigest, c.snapshot ?? ""].join(";")).join("\n");
 
   return [
-    "b1",
+    "b2",
     a.schema,
     keyText(a.key),
     `budget=${String(a.budget.maxSteps)};${a.budget.attribution}`,
@@ -187,8 +211,7 @@ export function bodyText(a: OrbitArtifact): string {
 
 // ── parse + verify ───────────────────────────────────────────────────────────────────────────────
 
-const isRecord = (v: unknown): v is Record<string, unknown> =>
-  typeof v === "object" && v !== null && !Array.isArray(v);
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
 function readString(o: Record<string, unknown>, name: string): string | null {
   const v = o[name];
@@ -231,17 +254,24 @@ function parseRunKey(keyRaw: unknown): CrossRunResult<RunKey> {
   const seedHex = readString(keyRaw, "seedHex");
   const loadAddrHex = readString(keyRaw, "loadAddrHex");
   const dialect = readString(keyRaw, "dialect");
+  const channelText = readString(keyRaw, "channelLabel");
   const stepMapVersion = readString(keyRaw, "stepMapVersion");
   if (
     romSha256 === null ||
     seedHex === null ||
     loadAddrHex === null ||
     dialect === null ||
+    channelText === null ||
     stepMapVersion === null
   ) {
     return fail("malformed-artifact", "incomplete key");
   }
-  return { ok: true, value: { romSha256, seedHex, loadAddrHex, dialect, stepMapVersion } };
+  const channelLabel = parseRunChannelLabel(channelText);
+  if (!channelLabel.ok) return channelLabel;
+  return {
+    ok: true,
+    value: { romSha256, seedHex, loadAddrHex, dialect, channelLabel: channelLabel.value, stepMapVersion },
+  };
 }
 
 function parseBudget(budgetRaw: unknown): CrossRunResult<PrecomputeBudget> {

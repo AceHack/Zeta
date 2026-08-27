@@ -1,0 +1,11 @@
+{
+  "id": "080d0205890e9810a01300080fabff48",
+  "at": "2026-08-27T00:49:05.491Z",
+  "by": "vera",
+  "kind": "state-changed",
+  "payload": {
+    "workItemId": "081M0QTRVTP087G0R0030RN1C8",
+    "from": "backlog",
+    "to": "done"
+  }
+}

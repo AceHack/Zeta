@@ -59,6 +59,10 @@ describe("roster", () => {
     expect(roster.byClaim.get(normalizeIdentity("  GITHUB:AceHack "))).toBe("acehack");
   });
 
+  test("AceHack via gh is the same rostered credential, not a second identity", () => {
+    expect(roster.byClaim.get(normalizeIdentity("AceHack via gh"))).toBe("acehack");
+  });
+
   test("no lane credential asserts a mode — an unmeasured mode must stay unchecked", () => {
     expect(roster.byId.get("github-actions[bot]")?.mode).toBeUndefined();
   });

@@ -28,6 +28,7 @@ let private artifactWith (romTag: string) (v: Chip8CrossRunStore.Verdict) : Chip
               Seed = 0UL
               LoadAddr = Chip8.ProgramStart
               Dialect = "chip8"
+              ChannelLabel = Chip8CrossRunStore.RunChannelLabel.clean
               StepMapVersion = Chip8CrossRunStore.StepMapVersion }
           Budget = budget
           Verdict = v
