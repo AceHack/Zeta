@@ -1,0 +1,12 @@
+{
+  "pr_number": 15756,
+  "archive_path": "docs/history/pr-reviews/PR-15756-feat-room-emit-durable-heartbeat-evidence-with-local-adjudication.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T03:00:41.464Z",
+  "schema_version": "v1",
+  "commit_sha": "7424c15a52afc2925e436d451d28581b01112677",
+  "title": "feat(room): emit durable heartbeat evidence with local adjudication",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:00:06Z",
+  "head_ref": "feat/heartbeat-room-evidence-emission"
+}

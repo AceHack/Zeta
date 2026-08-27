@@ -1,0 +1,12 @@
+{
+  "pr_number": 15583,
+  "archive_path": "docs/history/pr-reviews/PR-15583-feat-dep-update-toy-typed-update-transitions-two-neutral-signals-recoverable-esc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T03:03:05.689Z",
+  "schema_version": "v1",
+  "commit_sha": "4eb0968379cc2b5f247eb8033e22e6b8353b23e3",
+  "title": "feat(dep-update): toy typed update transitions — two neutral signals, recoverable escalation",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:02:25Z",
+  "head_ref": "shadow/toy-update-transitions"
+}

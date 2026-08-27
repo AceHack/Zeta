@@ -1,0 +1,12 @@
+{
+  "pr_number": 15661,
+  "archive_path": "docs/history/pr-reviews/PR-15661-cluster-sovereign-by-default-exit-is-cheap-entry-is-costly-removal-never-confisc.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T03:04:39.909Z",
+  "schema_version": "v1",
+  "commit_sha": "a93cb444b664505912603ba09d37e6a41016a9e0",
+  "title": "cluster: sovereign-by-default — exit is cheap, entry is costly, removal never confiscates",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T03:04:05Z",
+  "head_ref": "shadow/sovereign-clusters-join-and-remove"
+}
