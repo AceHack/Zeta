@@ -1,0 +1,12 @@
+{
+  "pr_number": 15814,
+  "archive_path": "docs/history/pr-reviews/PR-15814-backlog-file-the-five-findings-that-outlived-15810-s-fix.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T14:27:59.649Z",
+  "schema_version": "v1",
+  "commit_sha": "e0a496f453c5339427e91a82bf557c58a1dc4222",
+  "title": "backlog: file the five findings that outlived #15810's fix",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T07:02:44Z",
+  "head_ref": "shadow/file-two-node-hardware-readiness-workitems"
+}

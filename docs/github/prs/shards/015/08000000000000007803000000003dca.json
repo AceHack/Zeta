@@ -1,0 +1,12 @@
+{
+  "pr_number": 15818,
+  "archive_path": "docs/history/pr-reviews/PR-15818-fix-heartbeat-carry-an-insertion-only-divergence-not-just-a-prefix-one.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T14:28:08.721Z",
+  "schema_version": "v1",
+  "commit_sha": "e0a496f453c5339427e91a82bf557c58a1dc4222",
+  "title": "fix(heartbeat): carry an insertion-only divergence, not just a prefix one",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T08:04:44Z",
+  "head_ref": "shadow/heartbeat-json-index-carry"
+}
