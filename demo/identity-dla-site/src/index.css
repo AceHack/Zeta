@@ -140,6 +140,62 @@
   grid-column: 1 / -1;
 }
 
+.evidence-chamber-live {
+  margin-top: 2.6rem;
+  padding-top: 0.2rem;
+}
+
+.evidence-chamber-replay {
+  margin-top: 3.3rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--cold);
+}
+
+.evidence-seam-primary {
+  position: relative;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--amber) 16%, transparent) 0 1px, transparent 1px) 17% 62% / 32% 1px no-repeat,
+    linear-gradient(90deg, transparent 0 48%, color-mix(in srgb, var(--amber) 19%, transparent) 48% 49%, transparent 49%) 0 100% / 100% 108px no-repeat;
+}
+
+.evidence-seam-primary::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber-dim) 18%, var(--amber) 50%, var(--amber-dim) 82%, transparent);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.observatory-controls label {
+  border-left: 1px solid var(--cold);
+  padding-left: 0.48rem;
+}
+
+.observatory-controls input[type="range"] {
+  accent-color: var(--amber);
+  filter: saturate(0.82);
+}
+
+.evidence-audit-readout {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cold) 15%, transparent), transparent 38%);
+}
+
+.evidence-proof-spine {
+  position: relative;
+}
+
+.evidence-proof-spine::after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  bottom: -0.95rem;
+  width: 1px;
+  height: 0.95rem;
+  background: var(--amber);
+}
+
 /* Evidence seam room — hard-edged instrument layout, stacked without decorative softening. */
 @media (max-width: 700px) {
   .evidence-room-shell > nav {
@@ -156,6 +212,15 @@
   }
   .evidence-feed-grid > article:last-child {
     grid-column: auto;
+  }
+  .evidence-spectrum-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .evidence-chamber-live {
+    margin-top: 1.8rem;
+  }
+  .evidence-chamber-replay {
+    margin-top: 2.1rem;
   }
   .fault-receipt-layout {
     grid-template-columns: 1fr !important;

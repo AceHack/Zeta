@@ -1,7 +1,7 @@
 /**
  * EvidenceSeamPanel — Dark Matter Observatory evidence room.
  *
- * Design: retained amber branch geometry is structural; hard-edged near-black instruments recede around proof states.
+ * Design: retained amber branch geometry carries proof states; calibrated controls recede around decisive readouts.
  * Teal marks unresolved state and red marks witnessed conflicts. No rounded decorative chrome.
  * Evidence values mirror merged Zeta PRs #15638, #15660, #15669, and #15680.
  */
@@ -72,13 +72,14 @@ const SPECTRUM = [
 
 const controlStyle = {
   width: "100%",
-  border: "1px solid var(--border)",
+  border: 0,
+  borderBottom: "1px solid var(--cold)",
   borderRadius: 0,
-  background: "oklch(0.085 0.012 265)",
+  background: "transparent",
   color: "var(--foreground)",
   font: "inherit",
   fontSize: "0.66rem",
-  padding: "0.55rem 0.65rem",
+  padding: "0.55rem 0.3rem 0.38rem",
 } as const;
 
 function Register({
@@ -93,7 +94,7 @@ function Register({
   tone: string;
 }) {
   return (
-    <div style={{ borderTop: `2px solid ${tone}`, padding: "0.72rem 0.6rem", background: "oklch(0.075 0.01 265)" }}>
+    <div style={{ borderTop: `1px solid ${tone}`, padding: "0.72rem 0.1rem", background: "transparent" }}>
       <div style={{ color: "var(--muted-foreground)", fontSize: "0.52rem", letterSpacing: "0.12em", textTransform: "uppercase" }}>
         {label}
       </div>
@@ -190,6 +191,7 @@ export default function EvidenceSeamPanel() {
   return (
     <section
       aria-labelledby="evidence-seam-title"
+      className="evidence-seam-panel"
       style={{
         border: "1px solid var(--border)",
         borderRadius: 0,
@@ -216,8 +218,8 @@ export default function EvidenceSeamPanel() {
       </header>
 
       <div className="evidence-seam-layout" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(250px, 0.65fr)", gap: 0 }}>
-        <div style={{ padding: "1rem", borderRight: "1px solid var(--border)" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.65rem", marginBottom: "0.9rem" }}>
+        <div className="evidence-seam-primary" style={{ padding: "1rem", borderRight: "1px solid var(--border)" }}>
+          <div className="observatory-controls" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.65rem", marginBottom: "0.9rem" }}>
             <label style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
               erased coordinates: <strong style={{ color: "var(--foreground)" }}>{erasedCount}</strong>
               <input
@@ -265,8 +267,13 @@ export default function EvidenceSeamPanel() {
 
           <ByteMask mask={mask} />
 
-          <div style={{ marginTop: "0.85rem", borderLeft: `3px solid ${transportTone}`, padding: "0.65rem 0.75rem", background: "oklch(0.08 0.012 265)" }}>
-              <div style={{ color: transportTone, fontWeight: 900, fontSize: "clamp(1.05rem, 2.35vw, 1.6rem)", lineHeight: 1, letterSpacing: "-0.055em" }}>
+          <div className="evidence-proof-spine" style={{ marginTop: "0.9rem", borderLeft: `3px solid ${transportTone}`, padding: "0.55rem 0.75rem 0.7rem", background: "linear-gradient(90deg, color-mix(in srgb, var(--amber) 8%, transparent), transparent 70%)" }}>
+            <div style={{ alignItems: "baseline", display: "flex", flexWrap: "wrap", gap: "0.35rem 0.7rem", marginBottom: "0.32rem" }}>
+              <span style={{ color: "var(--muted-foreground)", fontSize: "0.5rem", letterSpacing: "0.12em" }}>IDENTIFIABLE ERASURE DOMAIN</span>
+              <strong style={{ color: "var(--amber)", fontSize: "clamp(1.1rem, 2vw, 1.55rem)", letterSpacing: "-0.07em" }}>0–3 / 8</strong>
+              <span style={{ color: "var(--muted-foreground)", fontSize: "0.5rem", letterSpacing: "0.1em" }}>56 / 70 AT FOUR</span>
+            </div>
+            <div style={{ color: transportTone, fontWeight: 900, fontSize: "clamp(1.05rem, 2.35vw, 1.6rem)", lineHeight: 1, letterSpacing: "-0.055em" }}>
               {!semanticReceipt
                 ? "UNDECODABLE — no semantic receipt enters the ledger"
                 : exactRoot
@@ -280,7 +287,7 @@ export default function EvidenceSeamPanel() {
           <BoundaryTrace tone={transportTone} />
         </div>
 
-        <div style={{ padding: "1rem" }}>
+        <div className="evidence-audit-readout" style={{ padding: "1rem" }}>
           <div style={{ fontSize: "0.55rem", color: "var(--muted-foreground)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "0.7rem" }}>
             audit scenarios
           </div>
@@ -324,7 +331,7 @@ export default function EvidenceSeamPanel() {
             mutation gate: ambiguity · CRC · duplicate · length<br />4 / 4 deliberate weakenings killed
           </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "0.55rem" }}>
+        <div className="evidence-spectrum-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr repeat(3, minmax(0, 0.94fr))", gap: "0.55rem" }}>
           {SPECTRUM.map((row) => (
             <div key={row.lane} style={{ border: "1px solid var(--border)", borderTop: `2px solid ${row.tone}`, padding: "0.75rem", background: "oklch(0.068 0.011 265)" }}>
               <div style={{ color: "var(--muted-foreground)", fontSize: "0.6rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>

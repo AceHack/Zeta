@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   parseLocalWitnessAdjudication,
   parseLocalWitnessAdjudicationReference,
+  summarizeLocalWitnessAdjudicationAvailability,
   type LocalWitnessAdjudicationView,
 } from "@/lib/room-witness-adjudication";
 
@@ -184,6 +185,9 @@ export default function LiveRoomEvidenceFeed() {
 
   const tone = state.kind === "ready" ? "var(--amber)" : state.kind === "malformed" ? "var(--fail-red)" : "var(--teal)";
   const title = state.kind === "ready" ? "PERSISTED RECEIPT DISCOVERY" : state.kind === "empty" ? "NO RECEIPT EMITTED" : state.kind === "loading" ? "READING RECEIPT MANIFEST" : state.kind === "unavailable" ? "FEED UNAVAILABLE" : "FEED TEACHING ERROR";
+  const adjudicationAvailability = state.kind === "ready"
+    ? summarizeLocalWitnessAdjudicationAvailability(state.entries.map((entry) => entry.adjudication.kind))
+    : undefined;
 
   return (
     <section style={{ borderTop: "1px solid color-mix(in srgb, var(--amber) 48%, transparent)", marginTop: "1.4rem", paddingTop: "1rem" }}>
@@ -208,6 +212,16 @@ export default function LiveRoomEvidenceFeed() {
       {state.kind === "ready" && (
         <>
           <div style={{ color: "var(--amber)", fontSize: "0.64rem", marginBottom: "0.55rem" }}>SHOWING {state.entries.length} OF {state.total} DISCOVERED ENVELOPE{state.total === 1 ? "" : "S"}</div>
+          {adjudicationAvailability && (
+            <div aria-label="Local adjudication sidecar availability" style={{ borderLeft: "2px solid var(--cold)", color: "var(--muted-foreground)", display: "flex", flexWrap: "wrap", gap: "0.42rem 0.7rem", marginBottom: "0.8rem", padding: "0.38rem 0.55rem", fontSize: "0.53rem", letterSpacing: "0.08em" }}>
+              <span>LOCAL SIDECAR CHECK</span>
+              <span style={{ color: "var(--amber)" }}>{adjudicationAvailability.named} NAMED</span>
+              <span style={{ color: "var(--amber-dim)" }}>{adjudicationAvailability.ready} READY</span>
+              <span style={{ color: "var(--teal)" }}>{adjudicationAvailability.unavailable} UNAVAILABLE</span>
+              <span style={{ color: "var(--fail-red)" }}>{adjudicationAvailability.rejected} REJECTED</span>
+              <span>{adjudicationAvailability.outOfScope} NO REFERENCE · OUT OF SCOPE</span>
+            </div>
+          )}
           <div className="evidence-feed-grid">
             {state.entries.map((entry) => (
               <article key={entry.eventId} style={{ border: "1px solid var(--border)", borderLeft: "3px solid var(--amber)", padding: "0.8rem", background: "oklch(0.068 0.011 265)" }}>

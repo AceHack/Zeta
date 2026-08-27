@@ -10,6 +10,36 @@ export type LocalWitnessAdjudicationView = {
 
 export type LocalWitnessAdjudicationReference = { readonly file: string; readonly contentKey: string };
 
+export type LocalWitnessAdjudicationAvailabilityKind = "not-published" | "ready" | "unavailable" | "malformed";
+
+export type LocalWitnessAdjudicationAvailability = {
+  readonly named: number;
+  readonly ready: number;
+  readonly unavailable: number;
+  readonly rejected: number;
+  readonly outOfScope: number;
+};
+
+/**
+ * Counts only manifest-named sidecars as availability obligations. A receipt
+ * with no reference is deliberately out of scope, never silently a failure.
+ */
+export function summarizeLocalWitnessAdjudicationAvailability(
+  kinds: readonly LocalWitnessAdjudicationAvailabilityKind[],
+): LocalWitnessAdjudicationAvailability {
+  let ready = 0;
+  let unavailable = 0;
+  let rejected = 0;
+  let outOfScope = 0;
+  for (const kind of kinds) {
+    if (kind === "ready") ready += 1;
+    else if (kind === "unavailable") unavailable += 1;
+    else if (kind === "malformed") rejected += 1;
+    else outOfScope += 1;
+  }
+  return { named: ready + unavailable + rejected, ready, unavailable, rejected, outOfScope };
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }

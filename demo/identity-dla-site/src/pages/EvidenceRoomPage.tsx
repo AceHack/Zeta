@@ -1,6 +1,6 @@
 /**
  * EvidenceRoomPage — Dark Matter Observatory direct instrument route.
- * Structural retained-branch geometry, hard-edged mono layout; amber facts, teal unknowns, red only for visible faults.
+ * Structural retained-branch geometry creates three breathing observatory chambers; amber facts, teal unknowns, red only for visible faults.
  */
 import EvidenceSeamPanel from "@/components/EvidenceSeamPanel";
 import LiveRoomEvidenceFeed from "@/components/LiveRoomEvidenceFeed";
@@ -25,9 +25,9 @@ export default function EvidenceRoomPage() {
           <span className="evidence-room-wordmark">ZETA//IDENTITY-SPACE::PROOF-ENGINE</span>
           <span style={{ color: "var(--muted-foreground)", letterSpacing: "0.06em", justifySelf: "end", fontSize: "0.52rem" }}>FINITE BOUNDARY · NO PHYSICS OVERCLAIM</span>
         </nav>
-        <EvidenceSeamPanel />
-        <LiveRoomEvidenceFeed />
-        <ReplayableFaultReceiptPanel />
+        <div className="evidence-chamber evidence-chamber-seam"><EvidenceSeamPanel /></div>
+        <div className="evidence-chamber evidence-chamber-live"><LiveRoomEvidenceFeed /></div>
+        <div className="evidence-chamber evidence-chamber-replay"><ReplayableFaultReceiptPanel /></div>
       </div>
     </main>
   );

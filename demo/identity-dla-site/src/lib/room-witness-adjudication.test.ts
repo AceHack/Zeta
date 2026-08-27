@@ -2,7 +2,11 @@
  * Public adjudication-parser controls — valid local teaching is rendered; mismatched or incoherent inputs are rejected.
  */
 import { describe, expect, test } from "bun:test";
-import { parseLocalWitnessAdjudication, parseLocalWitnessAdjudicationReference } from "./room-witness-adjudication";
+import {
+  parseLocalWitnessAdjudication,
+  parseLocalWitnessAdjudicationReference,
+  summarizeLocalWitnessAdjudicationAvailability,
+} from "./room-witness-adjudication";
 
 const eventId = "59e83513bb0123e733f549982610cdc9";
 const expected = {
@@ -60,5 +64,21 @@ describe("public local witness-adjudication parser", () => {
     const mutated = unresolvedRecord();
     mutated.teaching.code = "RWA-2";
     expect(() => parseLocalWitnessAdjudication(mutated, expected)).toThrow("do not agree");
+  });
+
+  test("PWA-5: availability counts only manifest-named sidecars and keeps absent references out of scope", () => {
+    expect(
+      summarizeLocalWitnessAdjudicationAvailability(["ready", "unavailable", "malformed", "not-published", "not-published"]),
+    ).toEqual({ named: 3, ready: 1, unavailable: 1, rejected: 1, outOfScope: 2 });
+  });
+
+  test("PWA-6: a legacy manifest with no named sidecars is not reported as an availability failure", () => {
+    expect(summarizeLocalWitnessAdjudicationAvailability(["not-published", "not-published"])).toEqual({
+      named: 0,
+      ready: 0,
+      unavailable: 0,
+      rejected: 0,
+      outOfScope: 2,
+    });
   });
 });
