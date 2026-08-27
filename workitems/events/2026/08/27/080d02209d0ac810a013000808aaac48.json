@@ -1,0 +1,14 @@
+{
+  "id": "080d02209d0ac810a013000808aaac48",
+  "at": "2026-08-27T16:35:32.313Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M12178AR087G0R0014Z5JGE",
+    "type": "task",
+    "title": "UEFI keyfile restore: exercise non-zero cred write + metal tty1 path",
+    "slug": "uefi-keyfile-restore-exercise-non-zero-cred-write-metal-tty1",
+    "priority": "P2",
+    "filename": "081M12178AR087G0R0014Z5JGE-uefi-keyfile-restore-exercise-non-zero-cred-write-metal-tty1.md"
+  }
+}

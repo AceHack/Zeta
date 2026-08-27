@@ -592,6 +592,38 @@ export function assertUefiKeyfileRestoreContract(phase2Serial: string):
 }
 
 /**
+ * Parse the credential count the restore wrote, from the `wrote N creds` serial
+ * line. null when that line is absent (restore reported `already-present`, or did
+ * not run). See `restoreExercisedWritePath` for why 0 vs N>=1 matters.
+ */
+export function restoreWroteCount(phase2Serial: string): number | null {
+  const m = phase2Serial.match(/zeta-creds-restore: wrote (\d+) creds/);
+  return m && m[1] !== undefined ? Number(m[1]) : null;
+}
+
+/**
+ * True only when the in-guest run actually restored at least one credential —
+ * i.e. exercised decrypt + WRITE + chown end to end — not merely decrypted with
+ * nothing to write.
+ *
+ * The current QEMU picker bakes 0 creds (`Picker complete: 0 cred(s) selected`),
+ * so a passing restore run reports `wrote 0 creds`: the decrypt and the binding
+ * are proven, but the write/chown path is VACUOUS. `assertUefiKeyfileRestoreContract`
+ * intentionally still passes on `wrote 0` (a no-op restore is a legitimate,
+ * idempotent outcome), so this predicate exists to make the vacuity LEGIBLE
+ * rather than hidden inside that pass. The non-zero in-guest scenario — bake a
+ * real test cred in the picker, assert `wrote >= 1` — is tracked as a follow-up;
+ * see `docs/uefi-keyfile-restore-metal-path.md`. The wrong-passphrase and
+ * wrong-device REFUSAL paths are already covered by unit tests
+ * (installer decrypt security-rejection suite); the gap is exercising the
+ * positive write path in the QEMU guest.
+ */
+export function restoreExercisedWritePath(phase2Serial: string): boolean {
+  const n = restoreWroteCount(phase2Serial);
+  return n !== null && n >= 1;
+}
+
+/**
  * Serial markers zeta-install.sh emits around the first-boot install.sh step.
  *
  * These are LITERALS DUPLICATED from `zeta-install.sh` (the START echo and the

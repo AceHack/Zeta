@@ -29,6 +29,8 @@ import {
   reclaimLargeTempArtifacts,
   RESTORE_UNIT_CONDITION_PATHS,
   restoreServiceNeverRan,
+  restoreWroteCount,
+  restoreExercisedWritePath,
   UEFI_KEYFILE_RESTORE_SERIAL,
 } from "./qemu-full-install-test.ts";
 import { QEMU_USB_TEST_SERIAL } from "../installer/qemu-usb-storage.ts";
@@ -404,6 +406,20 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
       `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
     ].join("\n");
     expect(assertUefiKeyfileRestoreContract(serial).ok).toBe(true);
+  });
+
+  it("restoreWroteCount parses N, and restoreExercisedWritePath separates vacuous 0 from real >=1", () => {
+    // The write path is only truly exercised when a credential was actually
+    // written; wrote-0 (the current QEMU picker bakes 0 creds) is a legitimate
+    // pass but a VACUOUS write. This keeps that distinction legible.
+    const wrote3 = `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`;
+    const wrote0 = `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`;
+    expect(restoreWroteCount(wrote3)).toBe(3);
+    expect(restoreWroteCount(wrote0)).toBe(0);
+    expect(restoreWroteCount(UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent)).toBeNull();
+    expect(restoreExercisedWritePath(wrote3)).toBe(true);
+    expect(restoreExercisedWritePath(wrote0)).toBe(false);
+    expect(restoreExercisedWritePath(UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent)).toBe(false);
   });
 
   // 081M0WS33AK087G0R000BG9R8X -- fw_cfg does not exist on metal, so a green run
