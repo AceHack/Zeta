@@ -1,12 +1,10 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-27T09:32:23.363Z",
-  "commit": "380321966",
+  "generatedAtIso": "2026-08-27T21:41:01.062Z",
+  "commit": "56a1f9ee9",
   "totals": {
-    "findings": 1,
-    "bySeverity": {
-      "failing": 1
-    }
+    "findings": 0,
+    "bySeverity": {}
   },
   "territories": [
     {
@@ -36,20 +34,8 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "1 of the last 40 runs on main failed.",
-          "findings": [
-            {
-              "id": "ci:30763213215",
-              "title": "Code Quality: Push on main",
-              "severity": "failing",
-              "locus": "a6602cd86 — 2026-08-02 19:22",
-              "evidence": [
-                "Code Quality: Push on main",
-                "run id 30763213215"
-              ],
-              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
-            }
-          ]
+          "summary": "All of the last 40 runs on main concluded green.",
+          "findings": []
         }
       ]
     }
