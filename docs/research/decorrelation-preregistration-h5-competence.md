@@ -1,4 +1,4 @@
-# Pre-registration — H5: is cross-frame confidence comparability COMPETENCE-dependent or DOMAIN-dependent?
+# Pre-registration — H5: is cross-frame confidence comparability COMPETENCE-dependent or DOMAIN-dependent
 
 **Committed BEFORE generation.** H3 (operator-priority, best-single ~90%): the
 parameter-free confidence rule pays +3.2pp, cross-frame separation rank-biserial 1.000.

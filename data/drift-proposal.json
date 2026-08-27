@@ -1,49 +1,49 @@
 {
-  "latestTick": 979,
+  "latestTick": 987,
   "streak": 6,
   "fires": true,
-  "winnerHex": "#501019",
+  "winnerHex": "#5e0500",
   "perTick": [
     {
-      "tick": 974,
-      "currentFitness": -351.875,
-      "bestFitness": -309.5,
-      "bestHex": "#2e0014",
+      "tick": 982,
+      "currentFitness": -444.25,
+      "bestFitness": -279.5,
+      "bestHex": "#6b1800",
       "loses": true
     },
     {
-      "tick": 975,
-      "currentFitness": -368.625,
-      "bestFitness": -250.625,
-      "bestHex": "#411c2e",
+      "tick": 983,
+      "currentFitness": -444.25,
+      "bestFitness": -311.75,
+      "bestHex": "#5e2122",
       "loses": true
     },
     {
-      "tick": 976,
-      "currentFitness": -386.375,
-      "bestFitness": -241.875,
-      "bestHex": "#631a00",
+      "tick": 984,
+      "currentFitness": -444.25,
+      "bestFitness": -273.75,
+      "bestHex": "#2e0c0a",
       "loses": true
     },
     {
-      "tick": 977,
-      "currentFitness": -405.125,
-      "bestFitness": -297,
-      "bestHex": "#68000a",
+      "tick": 985,
+      "currentFitness": -444.25,
+      "bestFitness": -336.5,
+      "bestHex": "#460018",
       "loses": true
     },
     {
-      "tick": 978,
-      "currentFitness": -425,
-      "bestFitness": -256.75,
-      "bestHex": "#501019",
+      "tick": 986,
+      "currentFitness": -444.25,
+      "bestFitness": -267.5,
+      "bestHex": "#5e0500",
       "loses": true
     },
     {
-      "tick": 979,
-      "currentFitness": -444.125,
-      "bestFitness": -311.625,
-      "bestHex": "#44191d",
+      "tick": 987,
+      "currentFitness": -444.375,
+      "bestFitness": -267.875,
+      "bestHex": "#562716",
       "loses": true
     }
   ]
