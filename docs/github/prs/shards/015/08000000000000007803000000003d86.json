@@ -1,0 +1,12 @@
+{
+  "pr_number": 15750,
+  "archive_path": "docs/history/pr-reviews/PR-15750-fix-ci-the-red-state-flush-leased-against-a-ref-checkout-never-fetched.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T02:41:55.187Z",
+  "schema_version": "v1",
+  "commit_sha": "f30d64b085071026593edd240d9fcc7e32633261",
+  "title": "fix(ci): the red-state flush leased against a ref checkout never fetched",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T02:41:26Z",
+  "head_ref": "fix/red-state-flush-stale-info-lease"
+}

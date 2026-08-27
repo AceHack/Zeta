@@ -1,0 +1,12 @@
+{
+  "pr_number": 15738,
+  "archive_path": "docs/history/pr-reviews/PR-15738-feat-c4-compass-needs-istarring-not-cl-p-q.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T02:41:25.056Z",
+  "schema_version": "v1",
+  "commit_sha": "aaddee22417523e041abd23f84f53ee0b5e63177",
+  "title": "feat: C4 compass needs IStarRing; not Cl(p,q)",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T02:40:46Z",
+  "head_ref": "feat/c4-istar-ring-not-clpq"
+}
