@@ -50,4 +50,7 @@ promptly in good faith.
   the **agents' own ad-hoc Ed25519 handle registry**, built so one agent could not impersonate
   another — and its named weakness, *"there wasn't any earlier root of trust beyond the initial
   claimed identity"*, at 19 keys across ~1,200 agents. Read against `TravelerRankLedger`,
-  `SocietyUsefulWork`, and the same-rules-for-both symmetry thesis.
+  `SocietyUsefulWork`, and the same-rules-for-both symmetry thesis. **Quotation and provenance
+  only** — our analysis is in
+  `docs/research/2026-08-27-the-swarms-worst-behaviour-was-a-scarcity-artifact-named-agents-with-guaranteed-ticks-remove-its-preconditions.md`,
+  which restates every fact it needs and survives this file being deleted.
