@@ -255,3 +255,63 @@ describe("the live 2026-08-27 case, replayed", () => {
     expect(rolls[0]?.currentMissStreak).toBe(2);
   });
 });
+
+// ---------------------------------------------------------------------------
+// THE COLLECTOR. The emitter and the fold were both tested and both green for weeks while nothing
+// read the `##perf-obs` lines — two working halves and no pipeline. These pin the seam.
+// ---------------------------------------------------------------------------
+
+import { collectPerfLedger } from "./perf-regression-ledger.ts";
+
+describe("the collector folds real test output", () => {
+  const obs = (over: Record<string, unknown> = {}): string =>
+    PERF_OBS_PREFIX +
+    JSON.stringify({
+      test: "Zeta.Tests.Storage.ColumnZSet vectorized scan",
+      metric: "speedup", measured: 3.45, gate: 1.5, pass: true,
+      config: "Release", runner: "Linux",
+      at: "2026-08-27T18:04:05.1234567Z", sha: "abc1234", ...over,
+    });
+
+  test("observations buried in unrelated log noise are found", () => {
+    // Real `dotnet test` output is thousands of lines of MSBuild chatter with the sentinel lines
+    // interleaved. A collector that assumed a clean stream would silently find nothing.
+    const log = [
+      "Determining projects to restore...",
+      "  Zeta.Core -> /work/bin/Zeta.Core.dll",
+      obs(),
+      "Passed!  - Failed: 0, Passed: 812",
+      obs({ pass: false, measured: 0.93 }),
+      "Test Run Successful.",
+    ].join("\n");
+    const r = collectPerfLedger(log);
+    expect(r.observations).toBe(2);
+    expect(r.malformed).toBe(0);
+    expect(r.rolls[0]?.misses).toBe(1);
+  });
+
+  test("EMPTY output does not render as clean — the whole point of collecting", () => {
+    // If this ever renders a green-looking table, a build where the emitter broke would be
+    // indistinguishable from one where every assertion passed.
+    const r = collectPerfLedger("no observations here at all\n");
+    expect(r.observations).toBe(0);
+    expect(r.markdown).toMatch(/NO OBSERVATIONS/);
+    expect(r.markdown).toMatch(/not a clean bill of health/);
+  });
+
+  test("malformed sentinel lines are COUNTED, not dropped", () => {
+    // A broken emitter must show up as a number. Silently skipping unparseable lines would make a
+    // half-broken emitter look like a quiet one.
+    const r = collectPerfLedger([obs(), `${PERF_OBS_PREFIX}{not json`, obs()].join("\n"));
+    expect(r.observations).toBe(2);
+    expect(r.malformed).toBe(1);
+  });
+
+  test("a pass-only run is `clean` and a sustained-miss run is `regression`", () => {
+    // The control pair: without it, a collector that always reported one register would satisfy
+    // every assertion above.
+    expect(collectPerfLedger([obs(), obs(), obs()].join("\n")).rolls[0]?.register).toBe("clean");
+    const missed = [obs({ pass: false, measured: 0.9 }), obs({ pass: false, measured: 0.9 }), obs({ pass: false, measured: 0.9 })];
+    expect(collectPerfLedger(missed.join("\n")).rolls[0]?.register).toBe("regression");
+  });
+});

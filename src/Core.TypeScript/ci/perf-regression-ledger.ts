@@ -326,3 +326,49 @@ export function renderPerfLedger(rolls: readonly PerfTestRoll[], malformed = 0):
   }
   return lines.join("\n");
 }
+
+/**
+ * CLI — the COLLECTOR. Reads test output on stdin, folds the observations, writes the ledger.
+ *
+ * WHY THIS EXISTS. The emitter (`PerfObservation.fs`) and the fold (above) both landed and were
+ * both tested, and for the whole time since, `##perf-obs` lines have scrolled past in CI logs with
+ * nothing reading them. Two green halves and no pipeline: the denominator existed in principle and
+ * nowhere in fact, which is the same shape as a check that cannot fail.
+ *
+ * IT NEVER FAILS THE BUILD. A measurement that can break a test run would be worse than no
+ * measurement — the perf assertions themselves already decide pass/fail, and this only reports what
+ * they said. Exit is 0 even when nothing was parsed.
+ *
+ * BUT IT IS NEVER SILENT ABOUT SILENCE. `renderPerfLedger` already refuses to call an empty ledger
+ * clean ("NO OBSERVATIONS. This is not a clean bill of health — nothing was measured"), and that
+ * refusal is the reason this is safe to run non-fatally: a zero-observation run is loudly a
+ * zero-observation run, not a green one. Malformed lines are counted and reported rather than
+ * dropped, so a broken emitter shows up as a number instead of as quiet.
+ *
+ * STDIN, NOT A LOG PATH. The collector reads a stream so it can sit in a pipe next to the test
+ * command and never needs the log to be persisted first — one fewer artifact to keep in sync, and
+ * no chance of folding yesterday's file.
+ */
+export function collectPerfLedger(text: string, thresholds: PerfThresholds = DEFAULT_PERF_THRESHOLDS): {
+  readonly markdown: string;
+  readonly observations: number;
+  readonly malformed: number;
+  readonly rolls: readonly PerfTestRoll[];
+} {
+  const { observations, malformed } = parsePerfObservations(text);
+  const rolls = foldPerfLedger(observations, thresholds);
+  return { markdown: renderPerfLedger(rolls, malformed), observations: observations.length, malformed, rolls };
+}
+
+if (import.meta.main) {
+  const text = await Bun.stdin.text();
+  const r = collectPerfLedger(text);
+  const out = process.env["GITHUB_STEP_SUMMARY"];
+  if (out !== undefined && out.length > 0) {
+    // Appended, not written: other steps in the same job own this file too.
+    await Bun.write(out, (await Bun.file(out).text().catch(() => "")) + r.markdown);
+  }
+  console.log(r.markdown);
+  // Deliberately 0. See the header: this reports, it does not judge.
+  process.exit(0);
+}
