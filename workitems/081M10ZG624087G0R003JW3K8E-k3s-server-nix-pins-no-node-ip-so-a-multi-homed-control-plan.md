@@ -25,7 +25,7 @@ its peers cannot reach.
 ## This was NAMED, not missed
 
 #15746 pinned `--node-ip` in the VM harness and said explicitly what it was not
-fixing (`nixos/tests/k3s-server-join.nix`, the joiner `--node-ip` comment):
+fixing (`full-ai-cluster/nixos/tests/k3s-server-join.nix`, the joiner `--node-ip` comment):
 
 > *"Real hardware has no shared 10.0.2.15 — each machine's default route carries
 > its own LAN address. What real hardware DOES have is more than one NIC, and
@@ -40,7 +40,7 @@ This item is that named gap, filed so it survives the transcript.
 ## Why the VM test cannot catch it
 
 The harness pins `--node-ip` on **both** nodes
-(`tests/k3s-server-join.nix:184,271`, `lib.mkAfter` so it merges with the
+(`full-ai-cluster/nixos/tests/k3s-server-join.nix:184,271`, `lib.mkAfter` so it merges with the
 module's flags rather than replacing them). That pin is what makes the two guests
 distinguishable at all — without it both advertise QEMU's SLIRP address
 `10.0.2.15`, an address meaning "me" on every guest, which is the defect #15746

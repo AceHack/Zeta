@@ -24,7 +24,9 @@ server.succeed(
 )
 ```
 
-**k3s erases its own argv.** `pkg/cli/server/server.go` opens `run()` with
+**k3s erases its own argv.** The
+[upstream server command implementation](https://github.com/k3s-io/k3s/blob/master/pkg/cli/server/server.go)
+opens `run()` with
 `proctitle.SetProcTitle(os.Args[0] + " server")`, reaching
 `github.com/erikdubbelboer/gspt` (a cgo port of BSD setproctitle) which
 `memset`s the **whole** argv region and writes the short title back in place —

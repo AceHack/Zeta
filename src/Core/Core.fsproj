@@ -401,6 +401,7 @@
     <Compile Include="RoomConsultation.fs" />
     <Compile Include="Chip8CrossRunStore.fs" />
     <Compile Include="ChannelGrant.fs" />
+    <Compile Include="TasControlledPair.fs" />
     <Compile Include="Chip8CrossRunStoreIO.fs" />
     <Compile Include="Chip8PredictionRoom.fs" />
     <Compile Include="Chip8ConsultCensus.fs" />

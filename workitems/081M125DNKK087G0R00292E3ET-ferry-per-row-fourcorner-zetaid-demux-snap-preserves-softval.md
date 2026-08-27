@@ -188,7 +188,7 @@ Also this row:
   two-way (activation over tasks + model attention).
   Descriptions drop; **relations survive**. DeepSeek/Google
   attend over flat tokens; we attend over per-agent ontology.
-  `WAKE-UP.md` is the shipped slice.
+  `docs/WAKE-UP.md` is the shipped slice.
 - **ForgeHost extra-git is not Zeta and not Harny.** Surfaces
   already live in `src/Core.TypeScript/forge-host/`. Zeta
   (`clis/` `sim`/`mea`/`cut`) is git-native. Harny is the agent

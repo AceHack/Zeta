@@ -23,7 +23,7 @@ full-ai-cluster/nixos/hosts/
 
 There is **one** control-plane host directory. Every artefact for a second
 control plane — the one that JOINS rather than founds — exists only in
-`nixos/modules/injected-server-join.nix` and in the VM test that drives it over
+`full-ai-cluster/nixos/modules/injected-server-join.nix` and in the VM test that drives it over
 fixtures. Nothing in `hosts/` has ever been a joining server.
 
 ## Why this is plausibly the ROOT of its two siblings
