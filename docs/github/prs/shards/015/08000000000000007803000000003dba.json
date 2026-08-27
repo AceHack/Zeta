@@ -1,0 +1,12 @@
+{
+  "pr_number": 15802,
+  "archive_path": "docs/history/pr-reviews/PR-15802-research-decorr-resolve-h4-confound-confidence-is-within-arm-predictive-failure-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T10:35:37.010Z",
+  "schema_version": "v1",
+  "commit_sha": "a7cfa125b3108dcf4bac65d64197ea16711da706",
+  "title": "research(decorr): resolve H4 confound — confidence IS within-arm predictive; failure is real, possibly competence-dependent",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T05:24:58Z",
+  "head_ref": "alexa/decorr-h4-confound"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15807,
+  "archive_path": "docs/history/pr-reviews/PR-15807-feat-arc-meter-harness-issued-tas-channels.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T10:35:50.703Z",
+  "schema_version": "v1",
+  "commit_sha": "a7cfa125b3108dcf4bac65d64197ea16711da706",
+  "title": "feat(arc): meter harness-issued TAS channels",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T05:54:26Z",
+  "head_ref": "claim/081M0QTRVSH-channel-grant"
+}

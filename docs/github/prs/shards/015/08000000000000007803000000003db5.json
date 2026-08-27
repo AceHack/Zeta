@@ -1,0 +1,12 @@
+{
+  "pr_number": 15797,
+  "archive_path": "docs/history/pr-reviews/PR-15797-feat-ci-schedule-the-pr-area-statistics-lane-and-register-it-for-freshness.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T10:35:19.346Z",
+  "schema_version": "v1",
+  "commit_sha": "a7cfa125b3108dcf4bac65d64197ea16711da706",
+  "title": "feat(ci): schedule the PR-area statistics lane and register it for freshness",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T04:49:28Z",
+  "head_ref": "feat/pr-area-statistics-lane"
+}
