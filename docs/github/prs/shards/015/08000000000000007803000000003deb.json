@@ -1,0 +1,12 @@
+{
+  "pr_number": 15851,
+  "archive_path": "docs/history/pr-reviews/PR-15851-research-the-swarm-s-worst-behaviour-was-a-scarcity-artifact-and-a-segregation-f.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T16:46:09.487Z",
+  "schema_version": "v1",
+  "commit_sha": "abe038206ad8132b2aa049226ced80ec63d272d2",
+  "title": "research: the swarm's worst behaviour was a scarcity artifact — and a segregation fix",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T16:45:29Z",
+  "head_ref": "shadow/named-agents-vs-budget-mortality"
+}

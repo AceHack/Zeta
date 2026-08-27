@@ -1,0 +1,12 @@
+{
+  "pr_number": 15857,
+  "archive_path": "docs/history/pr-reviews/PR-15857-fix-heartbeat-offset-scheduled-ticks-from-hour-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T16:47:03.382Z",
+  "schema_version": "v1",
+  "commit_sha": "265868b400dd05f98742f0b4ed6ad766b6e05fa2",
+  "title": "fix(heartbeat): offset scheduled ticks from hour boundary",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T16:46:23Z",
+  "head_ref": "fix/agent-heartbeat-cadence-offset"
+}
