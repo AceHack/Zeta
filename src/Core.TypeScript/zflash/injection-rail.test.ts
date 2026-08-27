@@ -51,15 +51,13 @@ describe("the rail is exhaustive over the destinations lib.ts can actually plan"
       joinTokenSourcePath: "/tmp/node-token",
       bindUefiKeyfileMarker: true,
       qemuCredsPassphrase: "qemu-test-secret",
+      qemuBakeTestCredMarker: true,
     });
     expect(planned.ok).toBe(true);
     if (!planned.ok) return;
     const emitted = planned.value.espWrites.map((write) => write.destination);
-    // All EIGHT destinations exercised, so the classification is total over what ships.
-    // This read six when the module was written; the union grew to eight while the branch
-    // sat, and the number is corrected here rather than left as a count that used to be
-    // true — a stale total is the exact shape of vacuity this test exists to prevent.
-    expect(new Set(emitted).size).toBe(8);
+    // All NINE destinations exercised.
+    expect(new Set(emitted).size).toBe(9);
     for (const destination of emitted) {
       expect(ESP_DESTINATION_CONTENT_CLASS[destination]).toBeDefined();
     }
@@ -74,6 +72,7 @@ describe("the rail is exhaustive over the destinations lib.ts can actually plan"
       "/zeta-firstboot.conf",
       "/zeta-hostname.txt",
       "/zeta-join-token",
+      "/zeta-qemu-bake-test-cred",
       "/zeta-qemu-creds-passphrase",
       "/zeta-wifi-credentials.json",
     ]);
@@ -170,14 +169,16 @@ describe("describeEspWriteVerdict / railFindingsForEspWrites — what a human se
       "/zeta-wifi-credentials.json",
       "/zeta-join-token",
       "/zeta-qemu-creds-passphrase",
+      "/zeta-qemu-bake-test-cred",
     ]);
     expect(findings).toHaveLength(3);
     expect(findings.join("\n")).toContain("/zeta-wifi-credentials.json");
     expect(findings.join("\n")).toContain("/zeta-join-token");
     expect(findings.join("\n")).toContain("/zeta-qemu-creds-passphrase");
     expect(findings.join("\n")).not.toContain("/zeta-hostname.txt");
-    // The marker is a public identifier, so it stays out of the findings.
+    // The markers are public identifiers, so they stay out of the findings.
     expect(findings.join("\n")).not.toContain("/zeta-bind-uefi-keyfile");
+    expect(findings.join("\n")).not.toContain("/zeta-qemu-bake-test-cred");
   });
 
   test("a plan with no secrets produces no findings", () => {
@@ -263,6 +264,22 @@ describe("an UNDECIDED content class — the state that exists so nobody has to 
     expect(marker?.content).toBe("1\n");
     expect(ESP_DESTINATION_CONTENT_CLASS["/zeta-bind-uefi-keyfile"]).toBe("public-identifier");
     expect(evaluateEspWrite("/zeta-bind-uefi-keyfile").permitted).toBe("by-class");
+  });
+
+  test("/zeta-qemu-bake-test-cred is a public identifier (literal 1, not a secret)", () => {
+    const planned = planFileBackedZflashImage({
+      isoPath: "/tmp/installer.iso",
+      outputImagePath: "/tmp/out.img",
+      espOffsetBytes: 141_312,
+      hostname: "node-a",
+      qemuBakeTestCredMarker: true,
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) return;
+    const marker = planned.value.espWrites.find((write) => write.destination === "/zeta-qemu-bake-test-cred");
+    expect(marker?.content).toBe("1\n");
+    expect(ESP_DESTINATION_CONTENT_CLASS["/zeta-qemu-bake-test-cred"]).toBe("public-identifier");
+    expect(evaluateEspWrite("/zeta-qemu-bake-test-cred").permitted).toBe("by-class");
   });
 });
 

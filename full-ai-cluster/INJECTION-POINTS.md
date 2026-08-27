@@ -58,10 +58,15 @@ file to confirm it is an AES-256-GCM envelope.
 | `/zeta-hostname.txt`          | public identifier                           | permitted by class                                          |
 | `/zeta-firstboot.conf`        | public identifier                           | permitted by class                                          |
 | `/zeta-bind-uefi-keyfile`     | public identifier (the literal bytes `1\n`) | permitted by class                                          |
+| `/zeta-qemu-bake-test-cred`   | public identifier (the literal bytes `1\n`) | permitted by class                                          |
 | `/zeta-creds.enc`             | encrypted envelope                          | permitted by class (declared, not measured)                 |
 | `/zeta-join-token`            | **secret material**                         | **refused by class; ships under the §6 recorded exception** |
 | `/zeta-wifi-credentials.json` | **secret material**                         | **REFUSED — no exception on file; see §4a**                 |
 | `/zeta-qemu-creds-passphrase` | **UNDECIDED — pending security review**     | **REFUSED; see §4b**                                        |
+
+A ninth destination arrived later: `/zeta-qemu-bake-test-cred` (081M12178AR), a
+public-identifier marker (`1\n`) that asks the guest picker to bake one
+deterministic gh-cli _test_ token. The token is not on the ESP.
 
 **What is NOT claimed.** This module performs no cryptography and no key
 material passes through it. Nothing here is sealed, bound, attested, or

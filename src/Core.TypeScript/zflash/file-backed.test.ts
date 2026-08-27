@@ -78,6 +78,31 @@ describe("parseFileBackedZflashArgs", () => {
     });
   });
 
+  test("parses --qemu-bake-test-cred-marker as a boolean opt-in", () => {
+    const parsed = parseFileBackedZflashArgs([
+      "--iso",
+      "artifacts/zeta-installer.iso",
+      "--output",
+      "artifacts/zflash-baked.img",
+      "--esp-offset-bytes",
+      "1048576",
+      "--ssh-key",
+      "fixtures/id_ed25519.pub",
+      "--qemu-bake-test-cred-marker",
+    ]);
+
+    expect(parsed).toEqual({
+      kind: "run",
+      options: {
+        qemuBakeTestCredMarker: true,
+        espOffsetBytes: 1_048_576,
+        isoPath: "artifacts/zeta-installer.iso",
+        outputImagePath: "artifacts/zflash-baked.img",
+        pubkeyPath: "fixtures/id_ed25519.pub",
+      },
+    });
+  });
+
   test("parses --qemu-creds-passphrase-file without putting the secret in argv options as a flag name", () => {
     const dir = mkdtempSync(join(tmpdir(), "zeta-qemu-pp-"));
     const ppPath = join(dir, "pp.txt");

@@ -192,7 +192,11 @@ export interface FileBackedEspWrite {
     | "/zeta-firstboot.conf"
     | "/zeta-join-token"
     | "/zeta-bind-uefi-keyfile"
-    | "/zeta-qemu-creds-passphrase";
+    | "/zeta-qemu-creds-passphrase"
+    // 081M12178AR: QEMU restore probe. Presence asks 6.95-picker to bake one
+    // deterministic gh-cli test cred instead of --defer-all (empty bake).
+    // Literal bytes "1\n" — public identifier, not a secret.
+    | "/zeta-qemu-bake-test-cred";
   readonly sourcePath?: string;
   readonly content?: string;
 }
@@ -231,6 +235,12 @@ export interface FileBackedZflashImagePlanInput {
    * echo the value.
    */
   readonly qemuCredsPassphrase?: string;
+  /**
+   * When true, writes `/zeta-qemu-bake-test-cred` so the guest 6.95-picker
+   * bakes one deterministic gh-cli probe cred (081M12178AR). QEMU restore
+   * only; not implied by the passphrase file or the keyfile bind marker.
+   */
+  readonly qemuBakeTestCredMarker?: boolean;
   /**
    * When set, writes `/zeta-firstboot.conf` so the booting node learns
    * whether it founds a cluster or joins one. Omitted → unchanged behaviour:
@@ -450,6 +460,12 @@ export function planFileBackedZflashImage(input: FileBackedZflashImagePlanInput)
     espWrites.push({
       content: `${passphrase}\n`,
       destination: "/zeta-qemu-creds-passphrase",
+    });
+  }
+  if (input.qemuBakeTestCredMarker === true) {
+    espWrites.push({
+      content: "1\n",
+      destination: "/zeta-qemu-bake-test-cred",
     });
   }
   // 081KSNY2Z0008QG0R0008PN7RQ role provisioning. Ordered AFTER the existing

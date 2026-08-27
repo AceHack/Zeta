@@ -21,9 +21,10 @@
  * also bakes `/zeta-qemu-creds-passphrase` so 6.95-picker binds the blob —
  * the restore-decrypt precondition, not phase-2 decrypt. Opt-in
  * QEMU_UEFI_KEYFILE_RESTORE=1 (dedicated; not implied by PICKER) injects the
- * QEMU test passphrase via `-fw_cfg file=` on disk boot and asserts restore
- * decrypt against the UEFI keyfile. The secret is not copied onto the
- * installed ESP. ISO/cdrom cascade-5
+ * QEMU test passphrase via `-fw_cfg file=` on disk boot, bakes
+ * `/zeta-qemu-bake-test-cred` so 6.95-picker writes ≥1 probe cred, and asserts
+ * restore decrypt + write (`wrote >= 1`) against the UEFI keyfile. The secret
+ * is not copied onto the installed ESP. ISO/cdrom cascade-5
  * has no usb-storage serial=.
  * Not on gate.
  *
@@ -350,6 +351,14 @@ export function assertUsbISerialPhase1Contract(phase1Serial: string):
         "wifi/iSerial USB bake must not write /zeta-qemu-creds-passphrase",
     };
   }
+  if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.espBakeTestCredFound)) {
+    return {
+      ok: false,
+      reason:
+        "QEMU bake-test-cred ESP marker appeared on the default QEMU phase-1 path; " +
+        "wifi/iSerial USB bake must not write /zeta-qemu-bake-test-cred",
+    };
+  }
   if (!phase1Serial.includes(USB_ISERIAL_SERIAL.persistDefaultUuid)) {
     return {
       ok: false,
@@ -435,6 +444,15 @@ export function assertUefiKeyfilePhase1Contract(
         "(use QEMU_UEFI_KEYFILE_PICKER=1 for picker bind)",
     };
   }
+  if (!options.allowPassphraseEsp && phase1Serial.includes(UEFI_KEYFILE_SERIAL.espBakeTestCredFound)) {
+    return {
+      ok: false,
+      reason:
+        "QEMU bake-test-cred ESP marker appeared on the write-only UEFI keyfile path; " +
+        "QEMU_UEFI_KEYFILE_PHASE1 must not bake /zeta-qemu-bake-test-cred " +
+        "(use QEMU_UEFI_KEYFILE_RESTORE=1 for the non-zero restore write)",
+    };
+  }
   return { ok: true };
 }
 
@@ -443,7 +461,10 @@ export function assertUefiKeyfilePhase1Contract(
  * AND run 6.95-picker bound to `--uefi-keyfile`. Does not prove phase-2
  * restore decrypt (passphraseMode=file + /run staging). No metal claim.
  */
-export function assertUefiKeyfilePickerContract(phase1Serial: string):
+export function assertUefiKeyfilePickerContract(
+  phase1Serial: string,
+  options: { readonly requireProbeCredBake?: boolean } = {},
+):
   | {
       readonly ok: true;
     }
@@ -488,6 +509,38 @@ export function assertUefiKeyfilePickerContract(phase1Serial: string):
     return {
       ok: false,
       reason: "UEFI keyfile picker serial leaked QEMU test cred passphrase (must stay redacted)",
+    };
+  }
+  if (options.requireProbeCredBake === true) {
+    if (!phase1Serial.includes(UEFI_KEYFILE_SERIAL.espBakeTestCredFound)) {
+      return {
+        ok: false,
+        reason:
+          `QEMU bake-test-cred ESP marker missing ("${UEFI_KEYFILE_SERIAL.espBakeTestCredFound}"). ` +
+          "QEMU_UEFI_KEYFILE_RESTORE must bake /zeta-qemu-bake-test-cred so picker writes ≥1 cred.",
+      };
+    }
+    if (!phase1Serial.includes(UEFI_KEYFILE_SERIAL.pickerBakeTestCred)) {
+      return {
+        ok: false,
+        reason: `picker did not take the bake-test-cred path ("${UEFI_KEYFILE_SERIAL.pickerBakeTestCred}").`,
+      };
+    }
+    if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.pickerDeferAll)) {
+      return {
+        ok: false,
+        reason:
+          "picker used --defer-all on the restore probe path; that is the vacuous wrote-0 bake " +
+          "(081M12178AR). The bake-test-cred marker must suppress --defer-all.",
+      };
+    }
+  } else if (phase1Serial.includes(UEFI_KEYFILE_SERIAL.espBakeTestCredFound)) {
+    return {
+      ok: false,
+      reason:
+        "QEMU bake-test-cred ESP marker appeared on the picker-only path; " +
+        "QEMU_UEFI_KEYFILE_PICKER must not bake /zeta-qemu-bake-test-cred " +
+        "(use QEMU_UEFI_KEYFILE_RESTORE=1 for the non-zero restore write)",
     };
   }
   return { ok: true };
@@ -606,21 +659,46 @@ export function restoreWroteCount(phase2Serial: string): number | null {
  * i.e. exercised decrypt + WRITE + chown end to end — not merely decrypted with
  * nothing to write.
  *
- * The current QEMU picker bakes 0 creds (`Picker complete: 0 cred(s) selected`),
- * so a passing restore run reports `wrote 0 creds`: the decrypt and the binding
- * are proven, but the write/chown path is VACUOUS. `assertUefiKeyfileRestoreContract`
- * intentionally still passes on `wrote 0` (a no-op restore is a legitimate,
- * idempotent outcome), so this predicate exists to make the vacuity LEGIBLE
- * rather than hidden inside that pass. The non-zero in-guest scenario — bake a
- * real test cred in the picker, assert `wrote >= 1` — is tracked as a follow-up;
- * see `docs/uefi-keyfile-restore-metal-path.md`. The wrong-passphrase and
- * wrong-device REFUSAL paths are already covered by unit tests
- * (installer decrypt security-rejection suite); the gap is exercising the
- * positive write path in the QEMU guest.
+ * `assertUefiKeyfileRestoreContract` still passes on `wrote 0` (a no-op restore
+ * is a legitimate idempotent outcome). The live QEMU_UEFI_KEYFILE_RESTORE
+ * scenario additionally requires this predicate (or `already-present`) via
+ * {@link assertUefiKeyfileRestoreWritePath} so a green cannot hide a vacuous
+ * write. Wrong-passphrase / wrong-device refusal stay unit-tested.
  */
 export function restoreExercisedWritePath(phase2Serial: string): boolean {
   const n = restoreWroteCount(phase2Serial);
   return n !== null && n >= 1;
+}
+
+/**
+ * Live restore-lane write contract (081M12178AR). Accepts `already-present`
+ * (idempotent re-run) or `wrote N` with N>=1. Rejects `wrote 0` — that is the
+ * vacuous bake the probe cred exists to close.
+ */
+export function assertUefiKeyfileRestoreWritePath(phase2Serial: string):
+  | { readonly ok: true }
+  | { readonly ok: false; readonly reason: string } {
+  if (phase2Serial.includes(UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent)) {
+    return { ok: true };
+  }
+  if (restoreExercisedWritePath(phase2Serial)) {
+    return { ok: true };
+  }
+  const n = restoreWroteCount(phase2Serial);
+  if (n === 0) {
+    return {
+      ok: false,
+      reason:
+        "restore wrote 0 creds — picker bake was vacuous. QEMU_UEFI_KEYFILE_RESTORE " +
+        "must bake ≥1 probe cred (081M12178AR /zeta-qemu-bake-test-cred).",
+    };
+  }
+  return {
+    ok: false,
+    reason:
+      `restore did not report wrote N>=1 or already-present ("${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}" / ` +
+      `"${UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent}").`,
+  };
 }
 
 /**
@@ -1366,6 +1444,7 @@ async function main(): Promise<never> {
         : {}),
       ...(requireUefiKeyfile ? { bindUefiKeyfileMarker: true } : {}),
       ...(requireUefiKeyfilePicker ? { qemuCredsPassphrase: DEFAULT_QEMU_PASSPHRASE } : {}),
+      ...(requireUefiKeyfileRestore ? { qemuBakeTestCredMarker: true } : {}),
     });
     if ("error" in prepared) {
       console.error(`[qemu-full-install-test] USB boot-image bake failed: ${prepared.error}`);
@@ -1477,7 +1556,9 @@ async function main(): Promise<never> {
   }
 
   if (requireUefiKeyfilePicker) {
-    const pickerContract = assertUefiKeyfilePickerContract(phase1Serial);
+    const pickerContract = assertUefiKeyfilePickerContract(phase1Serial, {
+      requireProbeCredBake: requireUefiKeyfileRestore,
+    });
     if (!pickerContract.ok) {
       writeArtifactSerialLog(phase1Serial, "");
       reportResult(
@@ -1569,8 +1650,20 @@ async function main(): Promise<never> {
         artifactSerialLogPath,
       );
     }
+    const writePath = assertUefiKeyfileRestoreWritePath(phase2Serial);
+    if (!writePath.ok) {
+      reportResult(
+        {
+          exitCode: 1,
+          reason: `UEFI keyfile restore write-path contract failed — ${writePath.reason}`,
+          serialLogTail: phase2Serial.slice(-2000),
+          ...(phase2.elapsedSeconds !== undefined ? { elapsedSeconds: phase2.elapsedSeconds } : {}),
+        },
+        artifactSerialLogPath,
+      );
+    }
     console.log(
-      "[qemu-full-install-test] UEFI keyfile restore contract ok (fw_cfg staged; no ESP persist / metal claim)",
+      "[qemu-full-install-test] UEFI keyfile restore contract ok (fw_cfg staged; wrote>=1 or already-present; no ESP persist / metal claim)",
     );
   }
 

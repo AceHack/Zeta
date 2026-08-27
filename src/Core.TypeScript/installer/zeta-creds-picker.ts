@@ -24,7 +24,12 @@
 //     [--verify]
 //     [--dry-run]
 //     [--defer-all]  (every cred defers; no TTY prompts; never bake.
-//                    QEMU / non-TTY also take this path even without the flag.)
+//                    QEMU / non-TTY also take this path even without the flag,
+//                    unless --bake-cred is given — 081M12178AR restore probe.)
+//     [--bake-cred <id>=<value-source>] ...
+//                    Explicit bake on a non-TTY (QEMU restore probe). Mutually
+//                    exclusive with --defer-all. HC-8: this is the operator/CI
+//                    opt-in, not a default-bake.
 //
 // Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over
 // own creds; no default-bake (operator must explicitly pick bake for each);
@@ -60,6 +65,11 @@ interface PickerArgs {
   readonly verify: boolean;
   /** HC-8: every cred defers. No bake. QEMU / non-TTY path. */
   readonly deferAll: boolean;
+  /**
+   * Explicit `--bake-cred` args (081M12178AR). When non-empty, persist these
+   * even on a non-TTY — the flag IS the opt-in. Incompatible with --defer-all.
+   */
+  readonly bakeCredArgs: readonly string[];
 }
 
 function hasPresent(value: string | null): value is string {
@@ -89,6 +99,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
   let dryRun = false;
   let verify = false;
   let deferAll = false;
+  const bakeCredArgs: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     const next = (): string => {
@@ -106,6 +117,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
       else if (arg === "--dry-run") dryRun = true;
       else if (arg === "--verify") verify = true;
       else if (arg === "--defer-all") deferAll = true;
+      else if (arg === "--bake-cred") bakeCredArgs.push(next());
       else return { error: `unknown flag: ${arg}` };
     } catch (err) {
       return { error: err instanceof Error ? err.message : String(err) };
@@ -121,6 +133,9 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
   if (!passphraseFile && !passphraseEnv) {
     return { error: "passphrase source required: --passphrase-file <path> or --passphrase-env <VAR>" };
   }
+  if (deferAll && bakeCredArgs.length > 0) {
+    return { error: "--defer-all and --bake-cred are mutually exclusive" };
+  }
   return {
     usbUuid,
     usbISerial,
@@ -132,6 +147,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
     dryRun,
     verify,
     deferAll,
+    bakeCredArgs,
   };
 }
 
@@ -295,7 +311,14 @@ async function main(): Promise<number> {
   }
   const skipPrompts = shouldDeferAllPrompts(parsed.deferAll, Boolean(input.isTTY));
   let bakeArgs: string[] = [];
-  if (skipPrompts) {
+  if (parsed.bakeCredArgs.length > 0) {
+    // 081M12178AR: explicit --bake-cred is the opt-in. Do not empty it on
+    // non-TTY — that was the vacuous wrote-0 path.
+    console.log(
+      `zeta-creds-picker: --bake-cred x${parsed.bakeCredArgs.length} (explicit; no TTY prompts)`,
+    );
+    bakeArgs = [...parsed.bakeCredArgs];
+  } else if (skipPrompts) {
     console.log("zeta-creds-picker: non-TTY or --defer-all; every cred defers (HC-8: no default-bake)");
     bakeArgs = [];
   } else {

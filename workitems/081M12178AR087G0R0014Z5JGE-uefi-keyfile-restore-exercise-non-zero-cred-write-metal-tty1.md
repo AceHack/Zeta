@@ -1,7 +1,7 @@
 ---
 id: 081M12178AR087G0R0014Z5JGE
 type: task
-state: backlog
+state: in-progress
 priority: P2
 slug: uefi-keyfile-restore-exercise-non-zero-cred-write-metal-tty1
 title: "UEFI keyfile restore: exercise non-zero cred write + metal tty1 path"
@@ -28,6 +28,15 @@ named boundaries recorded in `docs/uefi-keyfile-restore-metal-path.md`:
    today, by design, to keep the vacuity legible.
 2. **Metal `tty1` path is unverified.** `fw_cfg` does not exist on hardware; the
    `systemd-ask-password` path has never run in CI.
+
+## Progress (2026-08-27, Riven)
+
+Non-zero write path is in tree: `QEMU_UEFI_KEYFILE_RESTORE=1` bakes
+`/zeta-qemu-bake-test-cred`, picker `--bake-cred gh-cli=env:ZETA_QEMU_PROBE_GH_CLI`,
+and `assertUefiKeyfileRestoreWritePath()` requires `wrote >= 1` (or
+`already-present`). Still needs a green `main` dispatch of
+`build-ai-cluster-iso.yml` before the CI-verifiable acceptance bullet is proven.
+Metal `tty1` remains hardware-gated.
 
 ## Plan
 

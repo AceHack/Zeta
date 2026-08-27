@@ -27,6 +27,14 @@ export const UEFI_KEYFILE_BIND_MARKER_IMAGE_PATH = "/zeta-bind-uefi-keyfile" as 
  */
 export const QEMU_CREDS_PASSPHRASE_IMAGE_PATH = "/zeta-qemu-creds-passphrase" as const;
 
+/**
+ * QEMU restore probe marker on the installer USB ESP (081M12178AR). Presence
+ * asks 6.95-picker to bake one deterministic gh-cli test cred instead of
+ * `--defer-all`. Literal `1\n` — not a secret. Dedicated; not implied by the
+ * passphrase file or the keyfile bind marker.
+ */
+export const QEMU_BAKE_TEST_CRED_IMAGE_PATH = "/zeta-qemu-bake-test-cred" as const;
+
 /** Install-time host path (target ESP mounted at /mnt/boot). */
 export const UEFI_KEYFILE_INSTALL_PATH = `/mnt/boot${UEFI_KEYFILE_IMAGE_PATH}` as const;
 
@@ -53,6 +61,11 @@ export const UEFI_KEYFILE_SERIAL = {
   espPassphraseMissing: "[uefi-keyfile] no zeta-qemu-creds-passphrase on boot USB ESP",
   espPassphraseCaptured: "[uefi-keyfile] passphrase captured from boot USB ESP (QEMU; not typed)",
   espPassphraseEmpty: "[uefi-keyfile] zeta-qemu-creds-passphrase empty; staying skip",
+  espBakeTestCredFound: "[uefi-keyfile] found zeta-qemu-bake-test-cred on boot USB ESP",
+  espBakeTestCredMissing: "[uefi-keyfile] no zeta-qemu-bake-test-cred on boot USB ESP",
+  pickerBakeTestCred:
+    "[iter-5.5.0]   QEMU bake-test-cred marker: picker bakes gh-cli probe (no TTY; not --defer-all)",
+  pickerDeferAll: "[iter-5.5.0]   non-TTY or QEMU passphrase file: picker --defer-all (no bake)",
   pickerBoundKeyfile: "[iter-5.5.0]   passphrase from Step 6.56; binding --uefi-keyfile",
   pickerSkipped: "[iter-5.5.0]   SKIP 6.95-picker:",
 } as const;

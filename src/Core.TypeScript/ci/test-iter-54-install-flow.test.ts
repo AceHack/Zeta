@@ -255,6 +255,17 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(ITER_595_BLOCK).toContain("[ ! -t 0 ]");
   });
 
+  test("6.95-picker bakes a probe cred when the restore marker is present (081M12178AR)", () => {
+    expect(ITER_595_BLOCK).toContain('PICKER_BAKE="--bake-cred gh-cli=env:ZETA_QEMU_PROBE_GH_CLI"');
+    expect(ITER_595_BLOCK).toContain("$PICKER_BAKE");
+    expect(ITER_595_BLOCK).toContain("QEMU_BAKE_TEST_CRED_FILE");
+    expect(ITER_595_BLOCK).toContain("test-token-for-qemu-b0891");
+    expect(ITER_595_BLOCK).toContain("--preserve-env=ZETA_CREDS_PASSPHRASE,ZETA_QEMU_PROBE_GH_CLI");
+    expect(ITER_595_BLOCK).toContain(
+      "QEMU bake-test-cred marker: picker bakes gh-cli probe (no TTY; not --defer-all)",
+    );
+  });
+
   test("6.95-picker persist sudo-installs onto ESP (zeta uid cannot write /mnt/boot)", () => {
     // Run 32804383505: --defer-all worked; persist EACCES on
     // /mnt/boot/zeta-creds.enc. Keyfile already writes /tmp then sudo cp.

@@ -2540,6 +2540,22 @@ if [ -n "$QEMU_PP_FILE" ]; then
 else
   echo "[uefi-keyfile] no zeta-qemu-creds-passphrase on boot USB ESP"
 fi
+# QEMU restore probe (081M12178AR): /zeta-qemu-bake-test-cred asks 6.95-picker
+# to bake one deterministic gh-cli test cred instead of --defer-all. The marker
+# is a public identifier (literal 1); the token is NOT on the ESP.
+QEMU_BAKE_TEST_CRED_FILE=""
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  QEMU_BAKE_TEST_CRED_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-qemu-bake-test-cred" -type f 2>/dev/null | head -1 || true)
+fi
+if [ -z "$QEMU_BAKE_TEST_CRED_FILE" ] && [ -f "$PROBE_MOUNT/zeta-qemu-bake-test-cred" ]; then
+  QEMU_BAKE_TEST_CRED_FILE="$PROBE_MOUNT/zeta-qemu-bake-test-cred"
+fi
+if [ -n "$QEMU_BAKE_TEST_CRED_FILE" ]; then
+  echo "[uefi-keyfile] found zeta-qemu-bake-test-cred on boot USB ESP"
+else
+  echo "[uefi-keyfile] no zeta-qemu-bake-test-cred on boot USB ESP"
+fi
 # 081KZHJPJCF: unmount the boot USB ESP that was RE-mounted for the iter-5.2 hostname +
 # iter-5-wifi probes (see the re-mount before iter-5.2). Harmless no-op if it was never
 # re-mounted (no pubkey / empty BOOT_ESP_PART).
@@ -3526,8 +3542,16 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0]   to opt out: set ZETA_CREDS_PICKER=0 OR touch /etc/zeta/no-picker"
     # QEMU serial has no TTY. readline.question hangs until the 1800s phase-1
     # timeout (run 32724820159). --defer-all is HC-8: empty bake, never bake.
+    # 081M12178AR: the restore probe marker is the explicit opt-in to bake one
+    # deterministic gh-cli test cred instead — never both flags.
     PICKER_DEFER=""
-    if [ ! -t 0 ] || [ -n "${QEMU_PP_FILE:-}" ]; then
+    PICKER_BAKE=""
+    PICKER_PROBE_ENV=""
+    if [ -n "${QEMU_BAKE_TEST_CRED_FILE:-}" ]; then
+      PICKER_BAKE="--bake-cred gh-cli=env:ZETA_QEMU_PROBE_GH_CLI"
+      PICKER_PROBE_ENV="test-token-for-qemu-b0891"
+      echo "[iter-5.5.0]   QEMU bake-test-cred marker: picker bakes gh-cli probe (no TTY; not --defer-all)"
+    elif [ ! -t 0 ] || [ -n "${QEMU_PP_FILE:-}" ]; then
       PICKER_DEFER="--defer-all"
       echo "[iter-5.5.0]   non-TTY or QEMU passphrase file: picker --defer-all (no bake)"
     fi
@@ -3557,10 +3581,12 @@ if [ -d "$ZETA_HOME" ]; then
     PICKER_TMP=/tmp/zeta-creds.enc
     PICKER_TMP_FACTOR=/tmp/zeta-creds.factor
     rm -f "$PICKER_TMP" "$PICKER_TMP_FACTOR"
-    ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
+    ZETA_CREDS_PASSPHRASE="$ZETA_CREDS_PASSPHRASE_VAL" \
+      ZETA_QEMU_PROBE_GH_CLI="${PICKER_PROBE_ENV:-}" \
+      sudo --preserve-env=ZETA_CREDS_PASSPHRASE,ZETA_QEMU_PROBE_GH_CLI -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
       MISE_TRUSTED_CONFIG_PATHS="$ZETA_HOME/Zeta" \
-      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output $PICKER_TMP --passphrase-env ZETA_CREDS_PASSPHRASE $PICKER_DEFER" || \
+      bash -c "set -o pipefail; export PATH='/run/current-system/sw/bin:/run/current-system/sw/sbin:${ZETA_HOME}/.local/share/mise/shims:${ZETA_HOME}/.bun/bin:/usr/bin:/bin'; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun src/Core.TypeScript/installer/zeta-creds-picker.ts $PICKER_BIND_FLAG '$PICKER_BIND_VALUE' --output $PICKER_TMP --passphrase-env ZETA_CREDS_PASSPHRASE $PICKER_DEFER $PICKER_BAKE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
     if [ -f "$PICKER_TMP" ]; then
       sudo install -m 0600 "$PICKER_TMP" /mnt/boot/zeta-creds.enc

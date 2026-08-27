@@ -8,6 +8,7 @@ import { executeAssembleFatImage, type AssembleStep } from "./multiboot/assemble
 import {
   UEFI_KEYFILE_BIND_MARKER_IMAGE_PATH,
   QEMU_CREDS_PASSPHRASE_IMAGE_PATH,
+  QEMU_BAKE_TEST_CRED_IMAGE_PATH,
   UEFI_KEYFILE_BYTES,
   UEFI_KEYFILE_IMAGE_PATH,
   UEFI_KEYFILE_INSTALL_PATH,
@@ -32,6 +33,7 @@ describe("uefi-keyfile-esp planning", () => {
     expect(UEFI_KEYFILE_RESTORE_PATH).toBe("/boot/EFI/ZETA/keyfile");
     expect(UEFI_KEYFILE_BIND_MARKER_IMAGE_PATH).toBe("/zeta-bind-uefi-keyfile");
     expect(QEMU_CREDS_PASSPHRASE_IMAGE_PATH).toBe("/zeta-qemu-creds-passphrase");
+    expect(QEMU_BAKE_TEST_CRED_IMAGE_PATH).toBe("/zeta-qemu-bake-test-cred");
   });
 
   it("serial markers do not claim TPM or Touch ID", () => {
@@ -235,6 +237,11 @@ describe("zeta-install.sh UEFI keyfile opt-in stays coupled to the write helper"
     expect(script).toContain(UEFI_KEYFILE_SERIAL.espPassphraseMissing);
     expect(script).toContain(UEFI_KEYFILE_SERIAL.espPassphraseCaptured);
     expect(script).toContain(UEFI_KEYFILE_SERIAL.espPassphraseEmpty);
+    expect(script).toContain("zeta-qemu-bake-test-cred");
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.espBakeTestCredFound);
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.espBakeTestCredMissing);
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.pickerBakeTestCred);
+    expect(script).toContain(UEFI_KEYFILE_SERIAL.pickerDeferAll);
     expect(script).toContain("binding $PICKER_BIND_FLAG");
     expect(script).toContain(UEFI_KEYFILE_SERIAL.helperUnavailable);
     expect(script).toContain(UEFI_KEYFILE_SERIAL.helperAbsent);

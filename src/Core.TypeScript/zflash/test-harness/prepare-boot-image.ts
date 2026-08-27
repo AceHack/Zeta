@@ -38,6 +38,10 @@ import { buildBlob, composeBundle } from "../../installer/zeta-creds-persist";
 export const DEFAULT_QEMU_USB_UUID = "b0891-qemu-test-usb-00000001";
 export const DEFAULT_QEMU_PASSPHRASE = "b0891-qemu-test-passphrase";
 export const DEFAULT_QEMU_HOSTNAME = "node-qemu-test";
+/** Deterministic QEMU-only gh-cli probe token (never a real PAT). */
+export const DEFAULT_QEMU_PROBE_GH_CLI = "test-token-for-qemu-b0891";
+/** Env var the installer uses to pass {@link DEFAULT_QEMU_PROBE_GH_CLI} into persist. */
+export const QEMU_PROBE_GH_CLI_ENV = "ZETA_QEMU_PROBE_GH_CLI";
 
 /** Deterministic QEMU-only wifi ESP blob (never a real network secret). */
 export const DEFAULT_QEMU_WIFI_SSID = "zeta-qemu-homelab";
@@ -66,6 +70,8 @@ export interface PrepareBootImageInput {
   readonly bindUefiKeyfileMarker?: boolean;
   /** QEMU-only: bake `/zeta-qemu-creds-passphrase` so non-interactive 6.95-picker can run. */
   readonly qemuCredsPassphrase?: string;
+  /** QEMU restore only: bake `/zeta-qemu-bake-test-cred` so picker writes ≥1 cred. */
+  readonly qemuBakeTestCredMarker?: boolean;
 }
 
 export interface PrepareBootImageResult {
@@ -109,7 +115,7 @@ export function writeTestCredentialBlob(outputPath: string): void {
   // cli.ts never flagged) reported them.
   const bundle = composeBundle({
     persona: null,
-    bakeCredArgs: ["gh-cli=test-token-for-qemu-b0891"],
+    bakeCredArgs: [`gh-cli=${DEFAULT_QEMU_PROBE_GH_CLI}`],
   });
   if ("error" in bundle) {
     throw new Error(bundle.error);
@@ -158,6 +164,7 @@ export function prepareBootImage(input: PrepareBootImageInput): PrepareBootImage
     ...(input.firstbootRole === undefined ? {} : { firstbootRole: input.firstbootRole }),
     ...(input.joinTokenSourcePath === undefined ? {} : { joinTokenSourcePath: input.joinTokenSourcePath }),
     ...(input.bindUefiKeyfileMarker === true ? { bindUefiKeyfileMarker: true } : {}),
+    ...(input.qemuBakeTestCredMarker === true ? { qemuBakeTestCredMarker: true } : {}),
     ...(input.qemuCredsPassphrase === undefined ? {} : { qemuCredsPassphrase: input.qemuCredsPassphrase }),
   });
 

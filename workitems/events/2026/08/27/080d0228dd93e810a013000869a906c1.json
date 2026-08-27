@@ -1,0 +1,11 @@
+{
+  "id": "080d0228dd93e810a013000869a906c1",
+  "at": "2026-08-27T21:23:58.205Z",
+  "by": "riven-cursor",
+  "kind": "state-changed",
+  "payload": {
+    "workItemId": "081M12178AR087G0R0014Z5JGE",
+    "from": "backlog",
+    "to": "in-progress"
+  }
+}

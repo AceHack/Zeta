@@ -155,6 +155,13 @@ export const ESP_DESTINATION_CONTENT_CLASS = Object.freeze({
    * `secret-material` would not close it either.
    */
   "/zeta-bind-uefi-keyfile": "public-identifier",
+  /**
+   * The literal bytes `"1\n"` — same shape as `/zeta-bind-uefi-keyfile`. Asks the
+   * guest 6.95-picker to bake one deterministic gh-cli *test* token (the value
+   * lives in the installer script + env, never on this file). Reading the marker
+   * discloses nothing and grants nothing.
+   */
+  "/zeta-qemu-bake-test-cred": "public-identifier",
   /** SEE {@link PENDING_CLASSIFICATIONS}. Not classified; refused until reviewed. */
   "/zeta-qemu-creds-passphrase": "pending-security-review",
 } satisfies Record<EspDestination, InjectionContentClass | PendingClassification>);

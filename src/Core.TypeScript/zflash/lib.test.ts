@@ -464,6 +464,24 @@ describe("planFileBackedZflashImage", () => {
     ]);
   });
 
+  test("plans the QEMU bake-test-cred marker as an ESP write of literal 1", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      qemuBakeTestCredMarker: true,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.espWrites).toEqual([
+      {
+        content: "1\n",
+        destination: "/zeta-qemu-bake-test-cred",
+      },
+    ]);
+  });
+
   test("rejects an empty QEMU cred passphrase without echoing a value", () => {
     const result = planFileBackedZflashImage({
       espOffsetBytes: 1_048_576,

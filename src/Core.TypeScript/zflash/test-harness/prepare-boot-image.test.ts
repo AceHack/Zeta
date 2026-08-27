@@ -46,4 +46,14 @@ describe("prepare-boot-image constants", () => {
     expect(DEFAULT_QEMU_WIFI_SSID).toBe("zeta-qemu-homelab");
     expect(DEFAULT_QEMU_WIFI_PASSWORD).toContain("qemu");
   });
+
+  test("installer probe token matches DEFAULT_QEMU_PROBE_GH_CLI", async () => {
+    const { DEFAULT_QEMU_PROBE_GH_CLI } = await import("./prepare-boot-image");
+    const installer = readFileSync(
+      join(import.meta.dir, "../../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh"),
+      "utf8",
+    );
+    expect(DEFAULT_QEMU_PROBE_GH_CLI).toBe("test-token-for-qemu-b0891");
+    expect(installer).toContain(`PICKER_PROBE_ENV="${DEFAULT_QEMU_PROBE_GH_CLI}"`);
+  });
 });

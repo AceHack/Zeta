@@ -90,9 +90,27 @@ describe("parseArgs", () => {
     const off = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P"]);
     if ("error" in off) throw new Error(off.error);
     expect(off.deferAll).toBe(false);
+    expect(off.bakeCredArgs).toEqual([]);
     const on = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P", "--defer-all"]);
     if ("error" in on) throw new Error(on.error);
     expect(on.deferAll).toBe(true);
+  });
+
+  it("parses --bake-cred and rejects combining it with --defer-all", () => {
+    const baked = parseArgs([
+      "--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P",
+      "--bake-cred", "gh-cli=env:ZETA_QEMU_PROBE_GH_CLI",
+    ]);
+    if ("error" in baked) throw new Error(baked.error);
+    expect(baked.bakeCredArgs).toEqual(["gh-cli=env:ZETA_QEMU_PROBE_GH_CLI"]);
+    const both = parseArgs([
+      "--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P",
+      "--defer-all", "--bake-cred", "gh-cli=x",
+    ]);
+    expect("error" in both).toBe(true);
+    if ("error" in both) {
+      expect(both.error).toContain("mutually exclusive");
+    }
   });
 });
 

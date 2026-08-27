@@ -12,6 +12,7 @@ import {
   assertUefiKeyfilePhase1Contract,
   assertUefiKeyfilePickerContract,
   assertUefiKeyfileRestoreContract,
+  assertUefiKeyfileRestoreWritePath,
   assertUsbISerialPhase1Contract,
   assertWifiEspPhase1Contract,
   buildQemuDiskBootArgsPure,
@@ -220,6 +221,23 @@ describe("qemu-full-install-test usb iSerial phase-1 contract", () => {
     }
   });
 
+  it("fails when the QEMU bake-test-cred marker is baked on the default QEMU path", () => {
+    const serial = [
+      USB_ISERIAL_SERIAL.found,
+      usbISerialValueMarker(QEMU_USB_TEST_SERIAL),
+      USB_ISERIAL_SERIAL.noMetalClaim,
+      USB_ISERIAL_SERIAL.persistDefaultUuid,
+      UEFI_KEYFILE_SERIAL.espMissing,
+      UEFI_KEYFILE_SERIAL.espBakeTestCredFound,
+      "ZETA CLUSTER NODE INSTALL COMPLETE",
+    ].join("\n");
+    const result = assertUsbISerialPhase1Contract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("bake-test-cred");
+    }
+  });
+
   it("fails when probe succeeded but persist-default marker is missing", () => {
     const serial = [
       USB_ISERIAL_SERIAL.found,
@@ -314,19 +332,19 @@ describe("qemu-full-install-test UEFI keyfile phase-1 contract", () => {
     }
   });
 
-  it("fails when the QEMU passphrase ESP file appears on the write-only path", () => {
+  it("fails when the QEMU bake-test-cred marker appears on the write-only path", () => {
     const serial = [
       UEFI_KEYFILE_SERIAL.espFound,
       UEFI_KEYFILE_SERIAL.wrote,
       UEFI_KEYFILE_SERIAL.noMetalClaim,
       UEFI_KEYFILE_SERIAL.persistOptInKeyfile,
-      UEFI_KEYFILE_SERIAL.espPassphraseFound,
+      UEFI_KEYFILE_SERIAL.espBakeTestCredFound,
       "ZETA CLUSTER NODE INSTALL COMPLETE",
     ].join("\n");
     const result = assertUefiKeyfilePhase1Contract(serial);
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.reason).toContain("write-only");
+      expect(result.reason).toContain("zeta-qemu-bake-test-cred");
     }
   });
 });
@@ -373,6 +391,38 @@ describe("qemu-full-install-test UEFI keyfile picker contract", () => {
       expect(result.reason).toContain("leaked");
     }
   });
+
+  it("fails when the bake-test-cred marker appears on the picker-only path", () => {
+    const serial = `${pickerSerial}\n${UEFI_KEYFILE_SERIAL.espBakeTestCredFound}\n`;
+    const result = assertUefiKeyfilePickerContract(serial);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.reason).toContain("picker-only");
+    }
+  });
+
+  it("requires the bake-test-cred path when requireProbeCredBake is set", () => {
+    const missing = assertUefiKeyfilePickerContract(pickerSerial, { requireProbeCredBake: true });
+    expect(missing.ok).toBe(false);
+    if (!missing.ok) {
+      expect(missing.reason).toContain("zeta-qemu-bake-test-cred");
+    }
+    const restorePicker = [
+      pickerSerial,
+      UEFI_KEYFILE_SERIAL.espBakeTestCredFound,
+      UEFI_KEYFILE_SERIAL.pickerBakeTestCred,
+    ].join("\n");
+    expect(assertUefiKeyfilePickerContract(restorePicker, { requireProbeCredBake: true }).ok).toBe(true);
+    const deferred = [
+      restorePicker,
+      UEFI_KEYFILE_SERIAL.pickerDeferAll,
+    ].join("\n");
+    const deferredResult = assertUefiKeyfilePickerContract(deferred, { requireProbeCredBake: true });
+    expect(deferredResult.ok).toBe(false);
+    if (!deferredResult.ok) {
+      expect(deferredResult.reason).toContain("--defer-all");
+    }
+  });
 });
 
 describe("qemu-full-install-test UEFI keyfile restore contract", () => {
@@ -409,9 +459,6 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
   });
 
   it("restoreWroteCount parses N, and restoreExercisedWritePath separates vacuous 0 from real >=1", () => {
-    // The write path is only truly exercised when a credential was actually
-    // written; wrote-0 (the current QEMU picker bakes 0 creds) is a legitimate
-    // pass but a VACUOUS write. This keeps that distinction legible.
     const wrote3 = `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}3 creds (target-root: /)`;
     const wrote0 = `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`;
     expect(restoreWroteCount(wrote3)).toBe(3);
@@ -420,6 +467,29 @@ describe("qemu-full-install-test UEFI keyfile restore contract", () => {
     expect(restoreExercisedWritePath(wrote3)).toBe(true);
     expect(restoreExercisedWritePath(wrote0)).toBe(false);
     expect(restoreExercisedWritePath(UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent)).toBe(false);
+  });
+
+  it("write-path contract requires wrote>=1 and still allows already-present", () => {
+    expect(assertUefiKeyfileRestoreWritePath(restoreSerial).ok).toBe(true);
+    const wrote0 = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+      `${UEFI_KEYFILE_RESTORE_SERIAL.wrotePrefix}0 creds (target-root: /)`,
+    ].join("\n");
+    const vacuous = assertUefiKeyfileRestoreWritePath(wrote0);
+    expect(vacuous.ok).toBe(false);
+    if (!vacuous.ok) {
+      expect(vacuous.reason).toContain("wrote 0");
+    }
+    expect(assertUefiKeyfileRestoreContract(wrote0).ok).toBe(true);
+    const already = [
+      UEFI_KEYFILE_RESTORE_SERIAL.stagedFromFwcfg,
+      UEFI_KEYFILE_RESTORE_SERIAL.bindingKeyfile,
+      UEFI_KEYFILE_RESTORE_SERIAL.transportFwcfgNotMetal,
+      UEFI_KEYFILE_RESTORE_SERIAL.alreadyPresent,
+    ].join("\n");
+    expect(assertUefiKeyfileRestoreWritePath(already).ok).toBe(true);
   });
 
   // 081M0WS33AK087G0R000BG9R8X -- fw_cfg does not exist on metal, so a green run
