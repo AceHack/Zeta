@@ -322,3 +322,48 @@ docs/history/pr-reviews/PR-*.md         merge=theirs
 # On conflict: rebuild, never hand-merge.
 db/search-index/inverted/*.jsonl   linguist-generated=true
 db/search-index/inverted/files.txt linguist-generated=true
+
+# NO NINTH HEARTBEAT LINE FOR `docs/room-evidence/index.json` (2026-08-27) — deliberately absent.
+#
+# That path wedged the alexa lane from 02:44Z on 2026-08-27 (run 33048649621, job 98438518098)
+# with `CONFLICT (content): Merge conflict in docs/room-evidence/index.json`. It is the ninth
+# member of the class the eight `merge=union` lines above were each hand-written for, and it does
+# not get a ninth line. The reason is not restraint — it is that `union` FAILS SILENTLY here.
+#
+# MEASURED, not argued. `docs/room-evidence/index.json` is a single pretty-printed JSON object,
+# `{ "schema": ..., "entries": [ ... ] }`, re-serialised sorted by `eventId` on every publish
+# (`canonicalIndex`, observe/room/durable-room-evidence-live-feed.ts). Six scenarios run against a
+# scratch repo with `merge=union` declared on the path:
+#
+#     base   main        lane          merge rc   result
+#     []     [HIGH]      [LOW,HIGH]    0          valid JSON, no duplicate   <- the live case
+#     []     [LOW]       [LOW,HIGH]    0          valid JSON, no duplicate
+#     []     [a,c]       [a,b,c]       0          valid JSON, no duplicate
+#     []     [b]         [a,b,c]       0          valid JSON, no duplicate
+#     []     [a,z]       [a,b]         0          *** INVALID JSON ***
+#     [a]    [a,c]       [a,b]         0          *** INVALID JSON ***
+#
+# Read the last two rows carefully, because they are the whole argument. Union does the right
+# thing on every LOSSLESS case — so a human adding this line would test it, see it work, and land
+# it. It corrupts exactly the DIVERGENT case (main holds an entry the lane never saw), and it
+# corrupts it with EXIT CODE 0: the tick goes green and publishes an unparseable index. Nothing
+# inside the tick re-reads the file, so the first thing to notice would be a browser.
+#
+# That is the inversion that disqualifies the declaration. The preparer's rule refuses the
+# divergent case LOUDLY and leaves the tick red; union accepts it SILENTLY and leaves the artifact
+# broken. A mechanism whose failure mode is a green run over corrupt published data is worse than
+# the wedge it was meant to clear.
+#
+# What clears it instead is `isLosslessLineExtension` in
+# `agent-heartbeats/prepare-heartbeat-branch.ts`, widened this day from whole-line PREFIX to
+# INSERTION-ONLY (main's lines embed in the lane's as a subsequence). The index sorts its entries,
+# so a new low-sorting entry lands in FRONT of what main holds — lossless, but never a prefix,
+# which is exactly why the 2026-08-26 fallback refused it.
+#
+# THE GENERAL SHAPE, so the next member of the class is recognised rather than rediscovered. A
+# per-path `merge=` line is an ASSERTION a human makes once that nothing rechecks, and it is tied
+# to a SERIALISATION — `union` means set-union only for line-delimited records, and means
+# concatenate-the-hunks for everything else. The preparer's rule is a per-tick MEASUREMENT against
+# the actual index bytes and is indifferent to serialisation. Reach for a declaration only where
+# the measurement correctly refuses and cannot help: the genuine multi-writer case, where main
+# legitimately holds content this lane never had. `data/ci-runs.jsonl` above is that case.

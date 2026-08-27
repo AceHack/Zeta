@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, it } from "bun:test";
 
-import { annotateFailure, isWholeLinePrefix, prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
+import { annotateFailure, isLosslessLineExtension, prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
 
 const roots: string[] = [];
 
@@ -604,7 +604,7 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     expect(merge.stdout + merge.stderr).toContain(LANE_PATH);
   });
 
-  it("CARRIES it anyway when main's copy is a whole-line prefix of the lane's", () => {
+  it("CARRIES it anyway when main's copy embeds in the lane's by insertions only", () => {
     const { work } = fixture();
     wedge(work, FLUSHED, FLUSHED + UNFLUSHED);
 
@@ -645,8 +645,8 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
   it("REFUSES when main holds a line the lane does not — the rule can still fail", () => {
     const { work } = fixture();
     // One rival row on main that the lane never saw. Taking the lane's copy would DROP it, so the
-    // prefix test is false and the tick must die exactly as it does today. This is the control
-    // that keeps the test above from being a check that cannot fail.
+    // embedding fails and the tick must die exactly as it does today. This is the control that
+    // keeps the test above from being a check that cannot fail.
     wedge(work, FLUSHED + '{"row":"rival"}\n', FLUSHED + UNFLUSHED);
 
     const result = prepareHeartbeatBranch("alexa", work);
@@ -658,8 +658,8 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
 
   it("REFUSES a mid-line prefix — a byte prefix that rewrites main's last row", () => {
     const { work } = fixture();
-    // Main's last line is unterminated, and the lane "extends" it. Byte-prefix holds; whole-line
-    // prefix does not, because main's row `{"row":2}` would silently become `{"row":22}`.
+    // Main's last line is unterminated, and the lane "extends" it. Byte-prefix holds; the
+    // insertion-only rule does not, because `{"row":2}` would silently become `{"row":22}`.
     wedge(work, '{"row":1}\n{"row":2}', '{"row":1}\n{"row":22}\n');
 
     expect(prepareHeartbeatBranch("alexa", work)).toMatchObject({ ok: false });
@@ -686,16 +686,224 @@ describe("prepareHeartbeatBranch — squash-flush divergence", () => {
     expect(unmerged.split("\n").filter((l) => l.length > 0).sort()).toEqual([healable, rival].sort());
   });
 
+  /**
+   * The NUL refusal has to be shown doing WORK, not merely present.
+   *
+   * The first pair below is refused by the line comparison alone, so it would pass with the NUL
+   * check deleted — it pins nothing. The second pair is the one that needs the check: `a\0\n` DOES
+   * embed in `a\0\nb\n` as a line subsequence, so without the refusal the rule would accept it and
+   * splice bytes into the middle of a blob whose records are located by OFFSET, not by newline.
+   * Every byte of main's copy survives and the file is still destroyed. Mutating the NUL check
+   * away left every other test green until this case was added.
+   */
   it("refuses binary blobs outright — the line argument does not apply to them", () => {
-    expect(isWholeLinePrefix(Buffer.from([0x61, 0x00]), Buffer.from([0x61, 0x00, 0x62]))).toBe(false);
+    expect(isLosslessLineExtension(Buffer.from([0x61, 0x00]), Buffer.from([0x61, 0x00, 0x62]))).toBe(false);
+    expect(
+      isLosslessLineExtension(Buffer.from([0x61, 0x00, 0x0a]), Buffer.from([0x61, 0x00, 0x0a, 0x62, 0x0a])),
+    ).toBe(false);
   });
 
   it("accepts an EMPTY main side — the ours=0 signature this class was first measured with", () => {
-    expect(isWholeLinePrefix(Buffer.alloc(0), Buffer.from("{}\n"))).toBe(true);
+    expect(isLosslessLineExtension(Buffer.alloc(0), Buffer.from("{}\n"))).toBe(true);
   });
 
   it("refuses equal blobs and a longer ours — neither is a STRICT extension", () => {
-    expect(isWholeLinePrefix(Buffer.from("a\n"), Buffer.from("a\n"))).toBe(false);
-    expect(isWholeLinePrefix(Buffer.from("a\nb\n"), Buffer.from("a\n"))).toBe(false);
+    expect(isLosslessLineExtension(Buffer.from("a\n"), Buffer.from("a\n"))).toBe(false);
+    expect(isLosslessLineExtension(Buffer.from("a\nb\n"), Buffer.from("a\n"))).toBe(false);
+  });
+});
+
+/** The live-feed index path, and the exact bytes its publisher emits. Shared by the two blocks below. */
+const INDEX_PATH = "docs/room-evidence/index.json";
+
+/**
+ * Reproduce `encodeRoomEvidenceLiveFeedIndex`: entries sorted by `eventId`, two-space, trailing NL.
+ *
+ * Restated here rather than imported because the point under test is a BYTE shape — if the
+ * publisher's serialisation ever changes, these fixtures must be re-measured against the new bytes
+ * rather than silently tracking it and continuing to pass.
+ */
+function liveFeedIndexJson(...eventIds: readonly string[]): string {
+  const entries = [...eventIds].sort().map((eventId) => ({
+    eventId,
+    auditContentKey: `audit-${eventId}`,
+    receiptContentKey: `receipt-${eventId}`,
+    file: `room-evidence/${eventId}.json`,
+  }));
+  return `${JSON.stringify({ schema: "zeta.room-evidence-live-feed-index.v1", entries }, null, 2)}\n`;
+}
+
+/**
+ * The SECOND shape of the same squash-flush divergence: a canonically-ORDERED accumulating set.
+ *
+ * `docs/room-evidence/index.json` is not a log. `canonicalIndex` in
+ * `observe/room/durable-room-evidence-live-feed.ts` re-serialises the whole entry set sorted by
+ * `eventId` on every publish, so an entry whose id sorts LOW lands in front of everything main
+ * already holds. Nothing is lost — the diff is pure insertion — but main's copy is not a byte
+ * prefix of the lane's, so the 2026-08-26 prefix rule refused it and the alexa lane died from
+ * 02:44Z on 2026-08-27 (run 33048649621, job 98438518098).
+ *
+ * Every fixture here reproduces the LIVE shape: a common base holding the empty index, main and
+ * the lane each publishing into it. That is a three-stage CONTENT conflict, not the add/add the
+ * block above covers — the two shapes reach the same fallback and must both be pinned.
+ */
+describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => {
+  const LOW = "11d5cf2c2f32f6ccff77d6a6174466d5";
+  const HIGH = "59e83513bb0123e733f549982610cdc9";
+
+  /** Base holds the empty index; main publishes `mainIds`, the lane publishes `laneIds`. */
+  function divergeOverBase(work: string, mainIds: readonly string[], laneIds: readonly string[]): void {
+    seedAttributes(work);
+    commitFile(work, INDEX_PATH, liveFeedIndexJson(), "base: empty live-feed index");
+    git(work, "push", "origin", "main");
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, INDEX_PATH, liveFeedIndexJson(...laneIds), "lane publishes its events");
+    pushLane(work);
+    git(work, "switch", "main");
+    commitFile(work, INDEX_PATH, liveFeedIndexJson(...mainIds), "flush lands an older snapshot");
+    git(work, "push", "origin", "main");
+  }
+
+  it("REPRODUCES the wedge, and shows the PREFIX rule could never have cleared it", () => {
+    const { work } = fixture();
+    divergeOverBase(work, [HIGH], [LOW, HIGH]);
+
+    git(work, "fetch", "origin", "+refs/heads/main:refs/remotes/origin/main");
+    git(work, "fetch", "origin", "+refs/heads/heartbeat/alexa:refs/remotes/origin/heartbeat/alexa");
+    git(work, "checkout", "-B", "probe", "origin/main");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const merge = spawnSync("git", ["merge", "--squash", "--no-commit", "refs/remotes/origin/heartbeat/alexa"], {
+      cwd: work,
+      encoding: "utf8",
+    });
+    expect(merge.status).not.toBe(0);
+    expect(merge.stdout + merge.stderr).toContain("CONFLICT (content)");
+    expect(merge.stdout + merge.stderr).toContain(INDEX_PATH);
+
+    // WHY THE OLD RULE FAILED, asserted rather than asserted-about: main's copy is not a byte
+    // prefix of the lane's, so the 2026-08-26 rule returned false and the tick died. Without this
+    // line the test below would pass under the old rule too, and prove nothing about the widening.
+    const ours = Buffer.from(liveFeedIndexJson(HIGH));
+    const theirs = Buffer.from(liveFeedIndexJson(LOW, HIGH));
+    expect(theirs.subarray(0, ours.length).equals(ours)).toBe(false);
+    expect(isLosslessLineExtension(ours, theirs)).toBe(true);
+  });
+
+  it("CARRIES it: the low-sorting entry is inserted and main's entry survives verbatim", () => {
+    const { work } = fixture();
+    divergeOverBase(work, [HIGH], [LOW, HIGH]);
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { carried: true, healed: [INDEX_PATH] } });
+
+    // Losslessness on the bytes: the file still parses, main's entry is intact field-for-field,
+    // the lane's arrived, canonical order holds, and no marker leaked into published discovery.
+    const carried = readFileSync(join(work, INDEX_PATH), "utf8");
+    expect(carried).not.toContain("<<<<<<<");
+    expect(carried).toBe(liveFeedIndexJson(LOW, HIGH));
+    const parsed = JSON.parse(carried) as { readonly entries: readonly { readonly eventId: string }[] };
+    expect(parsed.entries.map((entry) => entry.eventId)).toEqual([LOW, HIGH]);
+  });
+
+  it("REFUSES when main published an entry the lane never saw", () => {
+    const { work } = fixture();
+    // Main holds an entry absent from the lane's set. Taking the lane's copy would DELETE a
+    // published event from discovery — the exact clobber the rule exists to refuse.
+    divergeOverBase(work, [HIGH, "ff00000000000000000000000000000f"], [LOW, HIGH]);
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: false });
+    if (result.ok) throw new Error("unreachable");
+    expect(result.error).toContain("carry unflushed heartbeat state");
+  });
+
+  it("REFUSES a rewritten entry — same key, changed content key", () => {
+    const ours = Buffer.from(liveFeedIndexJson(HIGH));
+    const theirs = Buffer.from(liveFeedIndexJson(LOW, HIGH).replace(`audit-${HIGH}`, "audit-rewritten"));
+    // Every structural line still matches; only the value line changed. An embedding that ignored
+    // content would accept this and silently republish a different content address.
+    expect(isLosslessLineExtension(ours, theirs)).toBe(false);
+  });
+
+  it("REFUSES a REORDER — main's lines all present, but not in main's order", () => {
+    // The property is subsequence, not subset. `b` before `a` on main cannot embed in `a` then
+    // `b`, so a file whose records carry positional meaning is never silently re-sequenced.
+    expect(isLosslessLineExtension(Buffer.from("b\na\n"), Buffer.from("a\nb\nc\n"))).toBe(false);
+    expect(isLosslessLineExtension(Buffer.from("a\nb\n"), Buffer.from("a\nb\nc\n"))).toBe(true);
+  });
+
+  it("REFUSES a DELETION dressed as an insertion — main's line absent from a longer lane copy", () => {
+    expect(isLosslessLineExtension(Buffer.from("a\nb\n"), Buffer.from("a\nc\nd\ne\n"))).toBe(false);
+  });
+
+  /**
+   * The whole-line property, pinned where it now lives.
+   *
+   * The prefix rule enforced this with an explicit `ours` ends-with-newline guard. The
+   * insertion-only rule gets it from `terminatedLines` instead — the newline is carried inside
+   * each token, so main's unterminated `{"row":2}` cannot match the lane's `{"row":22}\n`. That is
+   * a real property of the tokeniser, not a happy accident: a tokeniser that dropped its trailing
+   * fragment (a one-line off-by-one) would accept this pair and silently rewrite main's last
+   * record. Asserted at the unit level because the guard it replaced no longer exists to mutate.
+   */
+  it("REFUSES a mid-line extension at the unit level — a row must not be rewritten", () => {
+    expect(isLosslessLineExtension(Buffer.from('{"row":1}\n{"row":2}'), Buffer.from('{"row":1}\n{"row":22}\n'))).toBe(
+      false,
+    );
+    // And the honest converse: an unterminated fragment that survives verbatim IS carried, so the
+    // refusal above is about the record CHANGING, not about the missing newline as such.
+    expect(isLosslessLineExtension(Buffer.from("a\nb"), Buffer.from("a\nc\nb"))).toBe(true);
+  });
+});
+
+/**
+ * WHY THERE IS NO NINTH `.gitattributes` LINE — the reasoning, as an executable check.
+ *
+ * The eight `merge=union` declarations in the heartbeat block were each hand-written after a lane
+ * died on a new path, and the reflex on the ninth is to write a ninth line. For
+ * `docs/room-evidence/index.json` that reflex is wrong, and wrong in the most dangerous way
+ * available: union RESOLVES this file correctly on every lossless case — so it would be tested,
+ * seen to work, and landed — and corrupts it SILENTLY, with exit code 0, on the divergent case.
+ * Prose saying so rots. This runs.
+ */
+describe("merge=union is disqualified for the JSON live-feed index", () => {
+  /** Merge `laneIds` into `mainIds` over an empty base, with `merge=union` declared on the path. */
+  function unionMerge(
+    mainIds: readonly string[],
+    laneIds: readonly string[],
+  ): { readonly rc: number; readonly body: string } {
+    const { work } = fixture();
+    commitFile(work, ".gitattributes", `${INDEX_PATH} merge=union\n`, "declare union on the index");
+    commitFile(work, INDEX_PATH, liveFeedIndexJson(), "base: empty index");
+    git(work, "switch", "-c", "lane");
+    commitFile(work, INDEX_PATH, liveFeedIndexJson(...laneIds), "lane publishes");
+    git(work, "switch", "main");
+    commitFile(work, INDEX_PATH, liveFeedIndexJson(...mainIds), "main publishes");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const merge = spawnSync("git", ["merge", "--squash", "--no-commit", "lane"], { cwd: work, encoding: "utf8" });
+    return { rc: merge.status ?? -1, body: readFileSync(join(work, INDEX_PATH), "utf8") };
+  }
+
+  it("looks correct on the lossless case — which is why the ninth line is tempting", () => {
+    const { rc, body } = unionMerge(["bbb"], ["aaa", "bbb"]);
+    expect(rc).toBe(0);
+    const parsed = JSON.parse(body) as { readonly entries: readonly { readonly eventId: string }[] };
+    expect(parsed.entries.map((entry) => entry.eventId)).toEqual(["aaa", "bbb"]);
+  });
+
+  it("SILENTLY publishes unparseable JSON on the divergent case, with exit code 0", () => {
+    // Main holds `zzz`, which the lane never saw. This is the case the preparer's rule refuses
+    // loudly, leaving the tick red. Union concatenates the two conflicting hunks of a
+    // pretty-printed object and hands back a broken artifact while reporting success.
+    const { rc, body } = unionMerge(["aaa", "zzz"], ["aaa", "bbb"]);
+    expect(rc).toBe(0);
+    expect(() => JSON.parse(body) as unknown).toThrow();
+  });
+
+  it("and so the shipped attributes must NOT declare a merge driver on that path", () => {
+    // The guard on the reflex. Deleting this test is the only way to add the line, which is the
+    // intended friction: whoever does it has to read the two cases above first.
+    const declaration = new RegExp(`^\\s*${INDEX_PATH.replaceAll(".", "\\.")}\\s+.*merge=`, "m");
+    expect(REPO_GITATTRIBUTES).not.toMatch(declaration);
   });
 });

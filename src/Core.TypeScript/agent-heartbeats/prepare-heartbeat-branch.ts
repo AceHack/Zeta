@@ -7,7 +7,7 @@ export interface PreparedHeartbeatBranch {
   readonly remoteFound: boolean;
   readonly carried: boolean;
   /**
-   * Conflicting paths resolved by the append-only prefix rule below, in index order.
+   * Conflicting paths resolved by the insertion-only rule below, in index order.
    *
    * Empty on every clean carry, which is the ordinary case. A non-empty value is not a
    * warning — it is the record of which paths the squash-flush's lost ancestry would
@@ -55,30 +55,97 @@ function stageBlob(cwd: string, stage: 1 | 2 | 3, path: string): Buffer | undefi
 }
 
 /**
- * Is `ours` a whole-line prefix of `theirs`, so that taking `theirs` loses none of `ours`?
+ * Split a blob into newline-TERMINATED lines, byte-faithfully.
  *
- * Byte-prefix ALONE is not enough and the newline check is the whole safety argument: if `ours`
- * ends mid-line, `theirs` extending it rewrites that last line's content rather than appending
- * after it, and main's final record would silently change meaning. Requiring `ours` to end on a
- * line boundary makes "prefix" mean what it has to mean here — every complete line of main's copy
- * survives verbatim, at the same position, in the lane's copy.
+ * `latin1` is deliberate: it is the one Node encoding that is a bijection on bytes, so an
+ * arbitrary non-UTF-8 byte survives the round trip instead of becoming U+FFFD and comparing
+ * equal to a different byte. A trailing fragment with no `\n` is kept as its own element so the
+ * caller can see that the blob does not end on a line boundary.
+ */
+function terminatedLines(blob: Buffer): readonly string[] {
+  const text = blob.toString("latin1");
+  const lines: string[] = [];
+  let start = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    if (text.charCodeAt(index) === 0x0a) {
+      lines.push(text.slice(start, index + 1));
+      start = index + 1;
+    }
+  }
+  if (start < text.length) lines.push(text.slice(start));
+  return lines;
+}
+
+/**
+ * Does `theirs` differ from `ours` by INSERTIONS ONLY — every line of `ours` present, in order?
+ *
+ * This is the losslessness condition stated at the level it actually holds. Taking `theirs` is
+ * safe exactly when main's copy embeds in the lane's as a line SUBSEQUENCE: each complete line
+ * main holds still appears, verbatim, with its neighbours still on the correct side of it. A line
+ * main holds that is absent, rewritten, or reordered breaks the embedding and the rule refuses.
+ *
+ * WHY SUBSEQUENCE AND NOT PREFIX (widened 2026-08-27). The original rule required main's copy to
+ * be a whole-line PREFIX, which is the shape an append-only log has — new records land after the
+ * old ones, so the old ones sit at the front. It is NOT the shape of a canonically-ORDERED
+ * accumulating set: `docs/room-evidence/index.json` re-serialises its entries sorted by `eventId`
+ * (`canonicalIndex` in `observe/room/durable-room-evidence-live-feed.ts`), so a new entry whose id
+ * sorts low lands BEFORE main's entries and the prefix test is false on a file that lost nothing.
+ * Measured on the live alexa lane at 07:10Z (run 33048649621, job 98438518098):
+ *
+ *     stage2 (main)  333 bytes, entries [59e83513…]
+ *     stage3 (lane)  591 bytes, entries [11d5cf2c…, 59e83513…]
+ *     prefix?        NO  — the two copies diverge at byte 60, inside the first eventId
+ *     subsequence?   YES — main's 11 lines embed in the lane's 17; the diff is pure `+`
+ *
+ * Prefix is the special case of subsequence where the insertions all land at the end, so nothing
+ * the old rule accepted is now refused; the widening only reaches cases the old rule failed on.
+ *
+ * WHY IT STILL CANNOT CLOBBER, which is the only thing that makes an automatic resolution
+ * admissible. Subsequence is not "the sides look similar" — it is a proof obligation discharged
+ * against the actual index bytes, and it fails on every way a copy can lose content:
+ *   - main holds a line the lane never saw (a rival writer, a backfill) → not embeddable
+ *   - main's line was rewritten in place (an edited row, a changed `file` field) → not embeddable
+ *   - main's lines appear but out of order (a re-sort under a different key) → not embeddable
+ * `data/ci-runs.jsonl` — main 539 rows, lane 516 — is the live refusal: main holds rows this lane
+ * never had, so it fails subsequence exactly as it failed prefix. Union resolves that path first
+ * (it is declared in `.gitattributes`), so it never reaches here; the point is that if the
+ * declaration were removed, this rule would refuse it rather than silently drop 23 rows.
+ *
+ * THE WHOLE-LINE PROPERTY NOW LIVES IN THE TOKENISATION, and that relocation is deliberate. The
+ * prefix rule needed a separate `ours` ends-with-newline guard, because a byte prefix that stops
+ * mid-line rewrites main's final record rather than appending after it — `{"row":2}` silently
+ * becoming `{"row":22}`. `terminatedLines` carries the newline INSIDE each token, so an
+ * unterminated trailing fragment is a distinct token that can only match another unterminated
+ * fragment; `{"row":2}` and `{"row":22}\n` are simply unequal and the embedding fails. The
+ * explicit guard was kept for one revision and then removed on measurement: mutating it away
+ * killed no test, which makes it a check that cannot fail — the thing this file is otherwise
+ * built to refuse. The property it asserted is pinned instead by the mid-line refusals below,
+ * which DO die when the tokeniser drops its trailing fragment.
  *
  * An EMPTY `ours` is the degenerate true case, and it is the exact signature this whole class was
  * first measured with: "main's side of the hunk is EMPTY (`ours=0`)". Nothing of main's is at risk
  * because main has nothing on that path.
  *
  * Binary is refused outright. A NUL byte means the line-boundary reasoning above does not apply,
- * and there is no append-only argument to make about a blob with no lines.
+ * and there is no insertion-only argument to make about a blob with no lines.
  */
-export function isWholeLinePrefix(ours: Buffer, theirs: Buffer): boolean {
+export function isLosslessLineExtension(ours: Buffer, theirs: Buffer): boolean {
   if (ours.includes(0) || theirs.includes(0)) return false;
+  // A strict extension is strictly longer. Equal blobs never conflict, and a longer `ours` holds
+  // content the lane cannot be carrying, so both are refused before any line work happens.
   if (ours.length >= theirs.length) return false;
-  if (!theirs.subarray(0, ours.length).equals(ours)) return false;
-  return ours.length === 0 || ours[ours.length - 1] === 0x0a;
+
+  const oursLines = terminatedLines(ours);
+  const theirsLines = terminatedLines(theirs);
+  let matched = 0;
+  for (const line of theirsLines) {
+    if (matched < oursLines.length && oursLines[matched] === line) matched += 1;
+  }
+  return matched === oursLines.length;
 }
 
-/** What the prefix rule concluded about the conflicted index as a whole. */
-export type PrefixHealResult =
+/** What the insertion-only rule concluded about the conflicted index as a whole. */
+export type LosslessExtensionHealResult =
   | { readonly ok: true; readonly healed: readonly string[] }
   | { readonly ok: false; readonly blocked: readonly string[] };
 
@@ -104,25 +171,25 @@ export type PrefixHealResult =
  * gone rather than deferred.
  *
  * WHY IT CANNOT CLOBBER, which is the only thing that makes an automatic resolution admissible:
- * it fires on a path ONLY when main's copy is a whole-line prefix of the lane's, which is checked
- * against the actual bytes in the index at merge time. Under that condition taking the lane's copy
- * is losslessness by construction — every line main holds is already in the result, in place. This
- * is strictly narrower than the `merge=union` declarations in `.gitattributes`, and deliberately:
+ * it fires on a path ONLY when the lane's copy differs from main's by INSERTIONS ONLY — every line
+ * main holds still present, in order — which is checked against the actual bytes in the index at
+ * merge time. Under that condition taking the lane's copy is losslessness by construction. This is
+ * strictly narrower than the `merge=union` declarations in `.gitattributes`, and deliberately:
  * union is a per-path ASSERTION that a human made once and that nothing rechecks, while this is a
  * per-tick MEASUREMENT. It is also free of union's documented duplicate-row hazard (`.gitattributes`
- * stated limit 3), because appending nothing cannot duplicate anything.
+ * stated limit 3), because inserting nothing cannot duplicate anything.
  *
  * WHAT IT REFUSES, which is what keeps the backpressure typed. If main holds a single line the lane
- * does not — a rival writer, a backfill, a rewritten row, an out-of-order interleave — the prefix
- * test is false and the tick fails exactly as it does today, with the original git error. Measured
- * live on the same refs: `data/ci-runs.jsonl` is main=539 lane=516 and is NOT a prefix, because all
- * three lanes append to it, so this rule would have refused it and left it to its declared driver.
- * That is the intended split, not a gap.
+ * does not — a rival writer, a backfill, a rewritten row — or holds main's lines in an order the
+ * lane reversed, the embedding fails and the tick dies exactly as it does today, with the original
+ * git error. Measured live on the same refs: `data/ci-runs.jsonl` is main=539 lane=516 and fails,
+ * because all three lanes append to it and main therefore holds rows this lane never saw, so this
+ * rule leaves it to its declared driver. That is the intended split, not a gap.
  *
  * ALL-OR-NOTHING. The index is inspected in full before a single path is written, so a run that
  * refuses one path mutates nothing and the caller reports git's own message unchanged.
  */
-export function healPrefixOnlyConflicts(cwd: string): PrefixHealResult {
+export function healLosslessExtensionConflicts(cwd: string): LosslessExtensionHealResult {
   const unmerged = git(cwd, ["diff", "--name-only", "--diff-filter=U", "-z"]);
   if (unmerged.status !== 0) return { ok: false, blocked: [] };
   const paths = unmerged.stdout.split("\0").filter((p) => p.length > 0);
@@ -131,7 +198,7 @@ export function healPrefixOnlyConflicts(cwd: string): PrefixHealResult {
   const blocked = paths.filter((path) => {
     const ours = stageBlob(cwd, 2, path) ?? Buffer.alloc(0);
     const theirs = stageBlob(cwd, 3, path);
-    return theirs === undefined || !isWholeLinePrefix(ours, theirs);
+    return theirs === undefined || !isLosslessLineExtension(ours, theirs);
   });
   if (blocked.length > 0) return { ok: false, blocked };
 
@@ -215,7 +282,7 @@ export function prepareHeartbeatBranch(agent: string, cwd: string = process.cwd(
       // FALLBACK-ONLY, and that ordering is the safety property. Every carry that succeeds today
       // still takes the branch above and never reaches this line, so the healthy path is
       // byte-identical to before. This runs only where the tick is already dead.
-      const rescue = healPrefixOnlyConflicts(cwd);
+      const rescue = healLosslessExtensionConflicts(cwd);
       if (!rescue.ok) return failed("carry unflushed heartbeat state", merge);
       healed = rescue.healed;
     }
@@ -281,8 +348,8 @@ if (import.meta.main) {
     // diverged, and the difference is exactly what tells us whether this rule is load-bearing.
     console.log(
       `::notice title=heartbeat lane healed a squash-flush divergence::` +
-        `carried ${String(result.value.healed.length)} append-only path(s) whose copy on main is a ` +
-        `whole-line prefix of the lane's: ${result.value.healed.join(", ")}`,
+        `carried ${String(result.value.healed.length)} path(s) whose copy on main embeds in the ` +
+        `lane's by insertions only: ${result.value.healed.join(", ")}`,
     );
   }
 }
