@@ -4,11 +4,14 @@
  * reds become noise, so the fixtures below are real workflow headers from this repo.
  */
 
+import { readdirSync, readFileSync } from "node:fs";
+
 import { describe, expect, it } from "bun:test";
 
 import {
   cronPeriodSeconds,
   expectationFromWorkflow,
+  extractCrons,
   extractOnBlock,
   branchesMatchRef,
   globMatches,
@@ -181,5 +184,128 @@ describe("cron detail is markdown-safe", () => {
     expect(detail).toContain("`*/15 * * * *`");
     expect(detail).toContain("`23 */6 * * *`");
     expect(outsideCodeSpans(detail)).not.toContain("*");
+  });
+});
+
+// The workflows whose COMMENTS document this parser are the workflows that broke it.
+// Six install shields carry the line
+//
+//     # (src/Core.TypeScript/forge-host/github/workflow-triggers.ts) turns a `cron:`
+//
+// inside their `on:` block. The extractor was unanchored, so it matched `cron:` in that
+// sentence and carried off the following backtick as a cron expression; the dashboard
+// rendered ``schedule: '`', '11 3 * * *'`` and `lint (markdownlint)` went red on `main`
+// with MD037. The code-span fix above is right and cannot help here — the value itself
+// was a backtick, so the span put around it closed on it.
+describe("a `cron:` in prose is not a declaration", () => {
+  // A faithful reduction of .github/workflows/docker-ubuntu-install-sh-test.yml's `on:`
+  // block: the real prose, the real cron, the real ordering.
+  const commentedWorkflow = [
+    "name: docker-ubuntu-install-sh-test",
+    "",
+    "on:",
+    "  # THIS IS NON-BLOCKING AND STILL LOUD, and the loudness needs no wiring here.",
+    "  # `drift-dashboard-cadence.yml` enumerates every active workflow and derives its",
+    "  # expectation from this `on:` block: `expectationFromWorkflow`",
+    "  # (src/Core.TypeScript/forge-host/github/workflow-triggers.ts) turns a `cron:`",
+    '  # into `{ kind: "periodic", periodSeconds }` -- and it treats a workflow that is',
+    "  # BOTH scheduled and PR-triggered as `periodic`.",
+    "  schedule:",
+    '    - cron: "11 3 * * *"',
+    "  pull_request:",
+    "    types: [opened, reopened, synchronize]",
+    "  workflow_dispatch:",
+    "",
+    "jobs:",
+    "  a: {}",
+    "",
+  ].join("\n");
+
+  it("reads the declared cron and only the declared cron", () => {
+    const e = expectationFromWorkflow(commentedWorkflow, "main");
+    expect(e.kind).toBe("periodic");
+    expect(e.kind === "periodic" && e.periodSeconds).toBe(86_400);
+    const detail = e.kind === "periodic" ? e.detail : "";
+    expect(detail).toContain("`11 3 * * *`");
+    // The bogus value. Before the fix this read ``schedule: `\``, `11 3 * * *` ...``.
+    expect(detail).not.toContain("``");
+    expect(detail).not.toContain("not fully derivable");
+  });
+
+  it("emits markdown a linter accepts — no unmatched or nested code span", () => {
+    const e = expectationFromWorkflow(commentedWorkflow, "main");
+    const detail = e.kind === "periodic" ? e.detail : "";
+    // Balanced spans, and nothing markup-active left outside them.
+    expect((detail.match(/`/g) ?? []).length % 2).toBe(0);
+    expect(detail.replace(/`[^`]*`/g, "")).not.toContain("*");
+  });
+});
+
+describe("extractCrons — declarations only, and a value it cannot read is refused", () => {
+  it("names a rejected value instead of rendering it as a cron", () => {
+    const x = extractCrons("  schedule:\n    - cron: not-a-cron\n    - cron: '0 6 * * *'\n");
+    expect(x.crons).toEqual(["0 6 * * *"]);
+    expect(x.rejected).toEqual(["not-a-cron"]);
+    expect(x.scheduleDeclared).toBe(true);
+  });
+
+  it("reads a scalar that begins on the following line", () => {
+    // low-memory.yml's real shape. The old newline-greedy `\s*` read this by accident;
+    // an anchored rewrite that dropped it would have swapped one silent defect for another.
+    const x = extractCrons('  schedule:\n    - cron:\n        "0 6 * * *" # 06:00 UTC daily\n        # (continued)\n');
+    expect(x.crons).toEqual(["0 6 * * *"]);
+    expect(x.rejected).toEqual([]);
+  });
+
+  it("strips a trailing comment from an unquoted scalar", () => {
+    expect(extractCrons("  schedule:\n    - cron: 0 6 * * *  # daily\n").crons).toEqual(["0 6 * * *"]);
+  });
+
+  it("every workflow in this repo declares only readable crons", () => {
+    // The end-to-end falsifier: the reduction above is a fixture, this is the substrate.
+    // A workflow whose `on:` prose or malformed cron feeds junk to the dashboard fails HERE.
+    const dir = ".github/workflows";
+    const files = readdirSync(dir).filter((f) => /\.ya?ml$/.test(f));
+    expect(files.length).toBeGreaterThan(20);
+    const bad: string[] = [];
+    for (const f of files) {
+      const on = extractOnBlock(readFileSync(`${dir}/${f}`, "utf8"));
+      if (on === null) continue;
+      const x = extractCrons(on);
+      if (x.rejected.length > 0) bad.push(`${f}: ${JSON.stringify(x.rejected)}`);
+      if (x.scheduleDeclared && x.crons.length === 0) bad.push(`${f}: schedule with no readable cron`);
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
+describe("a `schedule:` we cannot read is unknown, never quietly on-change", () => {
+  it("does not fall through to the push arm", () => {
+    // Falling through would downgrade a cadence claim to `on-change`, and the dashboard
+    // would stop asking why the clock went quiet — a check that cannot fail.
+    const e = expectationFromWorkflow("on:\n  schedule:\n    - cron: junk\n  push:\n    branches: [main]\n", "main");
+    expect(e.kind).toBe("unknown");
+    expect(e.detail).toContain("junk");
+  });
+
+  it("shows the unreadable value without breaking the markdown that shows it", () => {
+    const e = expectationFromWorkflow("on:\n  schedule:\n    - cron: '`'\n", "main");
+    expect(e.kind).toBe("unknown");
+    // A BACKSLASH-ESCAPED backtick is inert in CommonMark, so parity is checked on what
+    // is left after the escapes are consumed — the raw count is 7 here and that is fine.
+    const live = e.detail.replace(/\\./g, "");
+    expect((live.match(/`/g) ?? []).length % 2).toBe(0);
+    expect(e.detail).toContain("\\`");
+  });
+});
+
+describe("key matches are comment-blind, by anchor and not by accident", () => {
+  it("listValuesFor ignores a commented-out key", () => {
+    const sub = "    # branches: [never]\n    branches: [main]\n";
+    expect(listValuesFor(sub, "branches")).toEqual(["main"]);
+  });
+
+  it("triggerSubBlock ignores a commented-out trigger", () => {
+    expect(triggerSubBlock("  # push:\n  pull_request:\n    types: [opened]\n", "push")).toBeNull();
   });
 });
