@@ -116,10 +116,46 @@
 .heat-bar-recover { animation: heat-bar-recover 0.6s ease-out; }
 .heat-bar-critical { animation: heat-bar-critical 0.8s ease-in-out; }
 
+/* Evidence room — structural DLA branches and selective amber establish proof hierarchy. */
+.evidence-room-wordmark {
+  color: var(--amber);
+  border-bottom: 2px solid var(--amber);
+  font-size: clamp(0.68rem, 1.15vw, 0.92rem);
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  padding: 0.42rem 0.6rem 0.35rem;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--amber) 23%, transparent);
+  white-space: nowrap;
+}
+
+.evidence-feed-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  gap: 0.7rem;
+  align-items: start;
+}
+
+.evidence-feed-grid > article:last-child {
+  grid-column: 1 / -1;
+}
+
 /* Evidence seam room — hard-edged instrument layout, stacked without decorative softening. */
 @media (max-width: 700px) {
+  .evidence-room-shell > nav {
+    grid-template-columns: 1fr !important;
+  }
+  .evidence-room-shell > nav > :last-child {
+    justify-self: start !important;
+  }
+  .evidence-room-wordmark {
+    width: fit-content;
+  }
   .evidence-feed-grid {
     grid-template-columns: 1fr !important;
+  }
+  .evidence-feed-grid > article:last-child {
+    grid-column: auto;
   }
   .fault-receipt-layout {
     grid-template-columns: 1fr !important;

@@ -1,6 +1,6 @@
 /**
  * LiveRoomEvidenceFeed — Dark Matter Observatory discovery console.
- * Amber is a retrieved immutable envelope; teal is retained unknown/unavailable state; red rejects malformed local teaching records.
+ * Amber is reserved for retrieved immutable envelopes and verdicts; teal is retained unknown/unavailable state; red rejects malformed local teaching records.
  * This browser binds named local adjudication priors but never infers authority, global identity, or a content-address verdict from absence.
  */
 import { useCallback, useEffect, useState } from "react";
@@ -210,7 +210,7 @@ export default function LiveRoomEvidenceFeed() {
           <div style={{ color: "var(--amber)", fontSize: "0.64rem", marginBottom: "0.55rem" }}>SHOWING {state.entries.length} OF {state.total} DISCOVERED ENVELOPE{state.total === 1 ? "" : "S"}</div>
           <div className="evidence-feed-grid">
             {state.entries.map((entry) => (
-              <article key={entry.eventId} style={{ border: "1px solid color-mix(in srgb, var(--amber) 34%, transparent)", padding: "0.75rem", background: "color-mix(in srgb, var(--background) 88%, var(--amber))" }}>
+              <article key={entry.eventId} style={{ border: "1px solid var(--border)", borderLeft: "3px solid var(--amber)", padding: "0.8rem", background: "oklch(0.068 0.011 265)" }}>
                 <div style={{ ...labelStyle, color: "var(--amber)" }}>{entry.weight > 0 ? "+1 assertion" : "−1 retraction"} · sequence {entry.emitterSeq}</div>
                 <div style={{ margin: "0.4rem 0", color: "var(--foreground)", fontSize: "0.73rem", overflowWrap: "anywhere" }}>{entry.eventId}</div>
                 <div style={{ color: "var(--muted-foreground)", fontSize: "0.59rem", lineHeight: 1.55 }}>emitter: {entry.emitterId}<br />witness material: {entry.witnessMaterial ? "present; authority is assessed by a local verifier" : "absent; do not guess"}<br />audit key: {entry.auditContentKey.slice(0, 22)}…<LocalAdjudicationDetail adjudication={entry.adjudication} /></div>

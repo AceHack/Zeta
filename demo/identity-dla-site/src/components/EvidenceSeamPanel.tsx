@@ -1,8 +1,8 @@
 /**
  * EvidenceSeamPanel — Dark Matter Observatory evidence room.
  *
- * Design: hard-edged near-black instrument panel, mono data readouts, amber for retained facts,
- * teal for unresolved state, and red only for witnessed conflicts. No rounded decorative chrome.
+ * Design: retained amber branch geometry is structural; hard-edged near-black instruments recede around proof states.
+ * Teal marks unresolved state and red marks witnessed conflicts. No rounded decorative chrome.
  * Evidence values mirror merged Zeta PRs #15638, #15660, #15669, and #15680.
  */
 import { useMemo, useState } from "react";
@@ -133,15 +133,19 @@ function ByteMask({ mask }: { mask: number }) {
 
 function BoundaryTrace({ tone }: { tone: string }) {
   return (
-    <div style={{ position: "relative", marginTop: "0.85rem", minHeight: 112, borderTop: "1px solid var(--border)", overflow: "hidden" }} aria-hidden="true">
-      <svg viewBox="0 0 760 112" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
-        <path d="M0 78 L54 78 L78 48 L108 48 L126 70 L166 70 L186 30 L218 30 L236 57 L270 57 L292 17 L322 17 L346 49 L382 49 L404 82 L438 82 L462 42 L494 42 L518 64 L552 64 L576 25 L610 25 L632 55 L672 55 L696 36 L760 36" fill="none" stroke={tone} strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
-        <path d="M78 48 L95 27 L112 27 L126 12 M186 30 L202 10 L220 10 L236 0 M292 17 L307 2 L325 2 L346 20 M462 42 L480 22 L496 22 L518 5 M576 25 L592 7 L610 7 L632 30" fill="none" stroke={tone} strokeOpacity="0.66" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-        <path d="M76 48 L76 93 M186 30 L186 92 M292 17 L292 92 M462 42 L462 93 M576 25 L576 93 M696 36 L696 93" fill="none" stroke="oklch(0.55 0.1 190 / 0.45)" strokeWidth="1" strokeDasharray="4 5" vectorEffect="non-scaling-stroke" />
-        {[76, 186, 292, 462, 576, 696].map((x) => <circle key={x} cx={x} cy={93} r="3" fill="oklch(0.72 0.14 190)" />)}
+    <div style={{ position: "relative", marginTop: "0.95rem", minHeight: 164, borderTop: "1px solid var(--border)", overflow: "hidden" }} aria-hidden="true">
+      <svg viewBox="0 0 760 164" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        <path d="M380 160 L380 124 L333 124 L300 94 L252 94 L223 64 L175 64 L146 34 L80 34 M380 124 L427 124 L458 91 L508 91 L538 55 L592 55 L622 24 L710 24" fill="none" stroke={tone} strokeWidth="2.8" vectorEffect="non-scaling-stroke" />
+        <path d="M300 94 L300 52 L264 52 L236 18 M223 64 L188 96 L139 96 L111 130 M458 91 L458 45 L492 45 L525 15 M538 55 L568 96 L632 96 L670 136" fill="none" stroke={tone} strokeOpacity="0.58" strokeWidth="1.7" vectorEffect="non-scaling-stroke" />
+        <path d="M252 94 L226 121 L190 121 M508 91 L483 122 L448 122 M175 64 L151 82 M592 55 L617 76" fill="none" stroke={tone} strokeOpacity="0.34" strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+        <path d="M111 130 L111 149 M236 18 L236 42 M525 15 L525 39 M670 136 L670 151" fill="none" stroke="oklch(0.55 0.1 190 / 0.42)" strokeWidth="1" strokeDasharray="3 6" vectorEffect="non-scaling-stroke" />
+        {[111, 236, 525, 670].map((x, index) => <circle key={x} cx={x} cy={[149, 42, 39, 151][index]} r="3" fill="oklch(0.72 0.14 190)" />)}
       </svg>
+      <div style={{ position: "absolute", left: 8, top: 7, color: "var(--amber-dim)", fontSize: "0.48rem", letterSpacing: "0.13em" }}>
+        RETAINED BRANCH TOPOLOGY
+      </div>
       <div style={{ position: "absolute", right: 8, bottom: 7, color: "var(--muted-foreground)", fontSize: "0.48rem", letterSpacing: "0.11em" }}>
-        DLA BOUNDARY / RETAINED FACTS + UNRESOLVED SAMPLES
+        DLA-DERIVED BOUNDARY / SPARSE UNRESOLVED SAMPLES
       </div>
     </div>
   );
@@ -196,12 +200,12 @@ export default function EvidenceSeamPanel() {
         minHeight: "calc(100vh - 5rem)",
       }}
     >
-      <header style={{ padding: "1.25rem", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+      <header style={{ padding: "1.4rem 1.25rem 1.15rem", borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
         <div>
-          <div style={{ color: "var(--amber)", fontSize: "0.56rem", letterSpacing: "0.16em", textTransform: "uppercase" }}>
+          <div style={{ color: "var(--amber-dim)", fontSize: "0.56rem", letterSpacing: "0.16em", textTransform: "uppercase" }}>
             room evidence instrument · merged artifacts
           </div>
-          <h2 id="evidence-seam-title" style={{ margin: "0.38rem 0 0", fontSize: "clamp(1.25rem, 3vw, 2.05rem)", letterSpacing: "-0.045em" }}>
+          <h2 id="evidence-seam-title" style={{ margin: "0.38rem 0 0", fontSize: "clamp(1.4rem, 3.4vw, 2.5rem)", lineHeight: 0.98, letterSpacing: "-0.06em" }}>
             Adinkra recovery → durable truth → local witness
           </h2>
         </div>
@@ -211,7 +215,7 @@ export default function EvidenceSeamPanel() {
         </div>
       </header>
 
-      <div className="evidence-seam-layout" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) minmax(260px, 0.8fr)", gap: 0 }}>
+      <div className="evidence-seam-layout" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.5fr) minmax(250px, 0.65fr)", gap: 0 }}>
         <div style={{ padding: "1rem", borderRight: "1px solid var(--border)" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "0.65rem", marginBottom: "0.9rem" }}>
             <label style={{ fontSize: "0.55rem", color: "var(--muted-foreground)" }}>
@@ -262,7 +266,7 @@ export default function EvidenceSeamPanel() {
           <ByteMask mask={mask} />
 
           <div style={{ marginTop: "0.85rem", borderLeft: `3px solid ${transportTone}`, padding: "0.65rem 0.75rem", background: "oklch(0.08 0.012 265)" }}>
-            <div style={{ color: transportTone, fontWeight: 800, fontSize: "clamp(0.9rem, 1.8vw, 1.12rem)", letterSpacing: "-0.025em" }}>
+              <div style={{ color: transportTone, fontWeight: 900, fontSize: "clamp(1.05rem, 2.35vw, 1.6rem)", lineHeight: 1, letterSpacing: "-0.055em" }}>
               {!semanticReceipt
                 ? "UNDECODABLE — no semantic receipt enters the ledger"
                 : exactRoot
@@ -309,7 +313,7 @@ export default function EvidenceSeamPanel() {
       <div style={{ borderTop: "1px solid var(--border)", padding: "1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
           <div>
-            <div style={{ color: "var(--amber)", fontSize: "0.56rem", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            <div style={{ color: "var(--amber-dim)", fontSize: "0.56rem", letterSpacing: "0.14em", textTransform: "uppercase" }}>
               representation-defect spectrum
             </div>
             <div style={{ fontSize: "0.58rem", color: "var(--muted-foreground)", marginTop: "0.3rem" }}>
@@ -322,9 +326,9 @@ export default function EvidenceSeamPanel() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))", gap: "0.55rem" }}>
           {SPECTRUM.map((row) => (
-            <div key={row.lane} style={{ border: "1px solid var(--border)", borderTop: `3px solid ${row.tone}`, padding: "0.7rem", background: "oklch(0.075 0.01 265)" }}>
-              <div style={{ color: row.tone, fontSize: "0.65rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>
-              <div style={{ color: row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "clamp(1.25rem, 2.5vw, 1.85rem)", fontWeight: 900, letterSpacing: "-0.06em", margin: "0.25rem 0 0.55rem" }}>δ {row.defect}</div>
+            <div key={row.lane} style={{ border: "1px solid var(--border)", borderTop: `2px solid ${row.tone}`, padding: "0.75rem", background: "oklch(0.068 0.011 265)" }}>
+              <div style={{ color: "var(--muted-foreground)", fontSize: "0.6rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>
+              <div style={{ color: row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "clamp(1.45rem, 3vw, 2.2rem)", fontWeight: 900, letterSpacing: "-0.075em", margin: "0.25rem 0 0.6rem" }}>δ {row.defect}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.3rem", fontSize: "0.52rem", color: "var(--muted-foreground)", marginTop: "0.55rem" }}>
                 <span>carrier M</span><strong style={{ color: "var(--foreground)" }}>{row.carrier}</strong>
                 <span>operators A</span><strong style={{ color: "var(--foreground)" }}>{row.operators}</strong>

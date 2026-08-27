@@ -1,6 +1,6 @@
 /**
  * EvidenceRoomPage — Dark Matter Observatory direct instrument route.
- * Hard-edged mono layout; amber facts, teal unknowns, red only for visible faults.
+ * Structural retained-branch geometry, hard-edged mono layout; amber facts, teal unknowns, red only for visible faults.
  */
 import EvidenceSeamPanel from "@/components/EvidenceSeamPanel";
 import LiveRoomEvidenceFeed from "@/components/LiveRoomEvidenceFeed";
@@ -19,11 +19,11 @@ export default function EvidenceRoomPage() {
         fontFamily: "'JetBrains Mono', monospace",
       }}
     >
-      <div style={{ maxWidth: 1500, margin: "0 auto" }}>
-        <nav style={{ marginBottom: "0.8rem", fontSize: "0.58rem", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
-          <a href={observatoryHref} style={{ color: "var(--amber)", textDecoration: "none", fontSize: "0.62rem", letterSpacing: "0.08em" }}>← MULTI-ORACLE OBSERVATORY</a>
-          <span style={{ color: "var(--amber)", fontWeight: 900, fontSize: "0.68rem", letterSpacing: "0.13em", textShadow: "0 0 18px color-mix(in srgb, var(--amber) 25%, transparent)" }}>ZETA//IDENTITY-SPACE::PROOF-ENGINE</span>
-          <span style={{ color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>FINITE BOUNDARY · NO PHYSICS OVERCLAIM</span>
+      <div className="evidence-room-shell" style={{ maxWidth: 1500, margin: "0 auto" }}>
+        <nav style={{ borderBottom: "1px solid var(--border)", marginBottom: "1.2rem", paddingBottom: "0.6rem", fontSize: "0.58rem", display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto minmax(0, 1fr)", gap: "1rem", alignItems: "center" }}>
+          <a href={observatoryHref} style={{ color: "var(--amber-dim)", textDecoration: "none", fontSize: "0.56rem", letterSpacing: "0.08em" }}>← MULTI-ORACLE OBSERVATORY</a>
+          <span className="evidence-room-wordmark">ZETA//IDENTITY-SPACE::PROOF-ENGINE</span>
+          <span style={{ color: "var(--muted-foreground)", letterSpacing: "0.06em", justifySelf: "end", fontSize: "0.52rem" }}>FINITE BOUNDARY · NO PHYSICS OVERCLAIM</span>
         </nav>
         <EvidenceSeamPanel />
         <LiveRoomEvidenceFeed />
