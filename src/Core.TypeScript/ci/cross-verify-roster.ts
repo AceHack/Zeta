@@ -1102,7 +1102,32 @@ async function runAudit(id: string, gateYmlPath: string): Promise<number> {
     ...(audit.cwd === undefined ? {} : { cwd: audit.cwd }),
     stdio: ["inherit", "inherit", "inherit"],
   });
-  return await proc.exited;
+  const code = await proc.exited;
+
+  // AN ANNOTATION THAT CARRIES NOTHING IS A CHECK REPORTING ITS OWN EXIT CODE BACK TO YOU.
+  //
+  // Every other failure path in this function annotates (unknown id, unreadable region,
+  // derive drift). A failing AUDIT did not: it returned the child's code and the only
+  // annotation on the check-run was Actions' own `Process completed with exit code 1`.
+  // That string names no audit, no command, and no leg — and with 31 legs it does not even
+  // narrow it to one, because the check-run title is the only thing that does.
+  //
+  // Measured cost of that gap on 2026-08-27: `cross-verify (ace-suite)` went red on `main`
+  // and its annotation said exactly that one sentence. The real cause — two drift-gate
+  // tests timing out at 5174/5200 ms against Bun's default 5000 ms cap, with nothing
+  // actually drifted — was only readable by downloading the job log, and it was six checks
+  // that night whose annotations carried nothing.
+  //
+  // Deliberately `console.log` of a workflow command and nothing else: no shell, no
+  // installed program, no `shell:` key, and it runs in the Bun process already executing.
+  // A reporter that needs a toolchain cannot report a toolchain failure.
+  if (code !== 0) {
+    console.log(
+      `::error title=cross-verify (${id})::${audit.title} FAILED (exit ${String(code)}). ` +
+        `Command: ${audit.command.split("\n").join(" ")}`,
+    );
+  }
+  return code;
 }
 
 /**

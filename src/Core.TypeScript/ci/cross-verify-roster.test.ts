@@ -282,6 +282,43 @@ describe("event gating — a NOT-APPLICABLE leg says so out loud", () => {
   });
 });
 
+describe("a failing audit ANNOTATES — an exit code is not a diagnosis", () => {
+  // Actions' own annotation for a failing `run:` step is `Process completed with exit
+  // code 1`. It names no audit, no command and no leg, and with 31 legs sharing one
+  // script it does not even narrow the failure to one of them. On 2026-08-27
+  // `cross-verify (ace-suite)` went red on `main` carrying exactly that one sentence and
+  // nothing else, and the actual cause (two drift-gate tests over Bun's default 5000 ms
+  // cap, with nothing drifted) was readable only by downloading the job log.
+
+  test("a non-zero audit emits an ::error:: naming the audit and the exit code", () => {
+    // Reuses the one audit with a reachable non-zero exit that needs no fixture:
+    // `task-zetaid-resolves` exits 2 on empty stdin, on its own event.
+    const out = spawnSync("bun", [ROSTER_SCRIPT, "--run", "task-zetaid-resolves"], {
+      encoding: "utf8",
+      env: { ...process.env, GITHUB_EVENT_NAME: "pull_request", PR_BODY: "" },
+    });
+    expect(out.status).toBe(2);
+    const text = `${out.stdout}${out.stderr}`;
+    expect(text).toContain("::error title=cross-verify (task-zetaid-resolves)::");
+    // The exit code must be carried, not just the fact of failure: a 2 is a check that
+    // never ran and a 1 is a check that failed, and the annotation must let a reader tell
+    // them apart without opening the log.
+    expect(text).toContain("(exit 2)");
+  });
+
+  test("a PASSING audit emits no ::error:: (the annotation is not unconditional)", () => {
+    // The control. Without it, an annotation printed on every run would satisfy the
+    // assertion above while telling a reader nothing — a reporter that always reports a
+    // failure is the vacuity class pointed at diagnostics.
+    const out = spawnSync("bun", [ROSTER_SCRIPT, "--run", "task-zetaid-resolves"], {
+      encoding: "utf8",
+      env: { ...process.env, GITHUB_EVENT_NAME: "push" },
+    });
+    expect(out.status).toBe(0);
+    expect(`${out.stdout}${out.stderr}`).not.toContain("::error");
+  });
+});
+
 describe("the floor is not weakened", () => {
   // The split's one genuinely dangerous failure mode. `cross-verify` is a floor job; a
   // decomposition that made its 31 audits non-blocking would look exactly like a success

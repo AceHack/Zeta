@@ -403,6 +403,21 @@ describe("the checked-in repo graph", () => {
     // under whole-suite load against a 5000 ms per-test cap -- half of it re-deriving an
     // identical graph. Slow BY ACCIDENT, so made fast rather than given a timeout
     // (081KZZ3JHP1087G0R00027ARRR).
+    //
+    // THAT OPTIMISATION BOUGHT HEADROOM THE REPO HAS SINCE EATEN, so this now ALSO carries
+    // the explicit timeout its three siblings already had. Being fast is not the same as
+    // being under a budget, and one repo-wide derivation is no longer reliably under
+    // 5000 ms: measured on four consecutive `cross-verify (ace-suite)` legs on `main`,
+    // this test took 3669 / 4121 / 4452 / **5174** ms. The 5174 is job 98378495016, which
+    // went red on af0f1d478c with `this test timed out after 5000ms` and nothing else
+    // wrong. `git ls-files` is 52,819 entries and only grows, so the margin shrinks
+    // monotonically and WHICH commit was standing at the crossing was arbitrary: it was a
+    // periodic heartbeat batch merge touching only `data/` and `docs/github/prs/`, and the
+    // two commits AFTER it were green with those same files present.
+    //
+    // The BUDGET moves; the ASSERTION does not. A timeout is a wall-clock bound, not a
+    // skip and not a baseline — real drift still fails this test, because the comparison
+    // happens after the walk either way.
     const derived = deriveGraph(REPO_ROOT, graph);
     // The assertion below fails with a whole-file JSON diff and no instruction,
     // so the fix is printed FIRST. Three PRs hit this gate on 2026-08-14 and each
@@ -413,7 +428,7 @@ describe("the checked-in repo graph", () => {
     }
     expect(serializeGraph(derived)).toBe(serializeGraph(graph));
     expect(graphsEqual(derived, graph)).toBe(true);
-  });
+  }, 30_000);
 
   test("the checked-in file parses to exactly what loadGraph returns (no lossy fields)", () => {
     const raw = JSON.parse(readFileSync(join(REPO_ROOT, GRAPH_PATH), "utf8")) as BuildGraph;
@@ -852,6 +867,12 @@ describe("the checked-in repo graph — quorum", () => {
     // real 5000 ms cap -- explicit timeout, see 081KZZ3JHP1087G0R00027ARRR.
   }, 30_000);
 
+  // The last of the five repo-wide derivations to be left on Bun's DEFAULT 5000 ms cap —
+  // the only one of the four drift-gate tests that carried neither a timeout nor a note
+  // saying why it did not need one. It measured 3597 / 4075 / 4423 / **5200** ms on four
+  // consecutive `main` legs and timed out on the fourth (job 98378495016). Same budget as
+  // its siblings, same untouched assertion; see the note at the "regenerating from the
+  // repo's manifests" gate above for the measurements and 081KZZ3JHP1087G0R00027ARRR.
   test("DRIFT GATE: a hand-invented reviewer class fails derive", () => {
     const tampered: BuildGraph = {
       ...graph,
@@ -860,7 +881,7 @@ describe("the checked-in repo graph — quorum", () => {
       ),
     };
     expect(graphsEqual(deriveGraph(REPO_ROOT, tampered), tampered)).toBe(false);
-  });
+  }, 30_000);
 
   // Slow BY NATURE: proving determinism REQUIRES deriving twice, so the second walk is the
   // assertion and cannot be optimised away. Measured ~2.6s standalone against a real 5000 ms
@@ -949,5 +970,98 @@ describe("derivation input trigger (drift-check's predicate)", () => {
     expect(DERIVE_FIX_COMMAND).toBe("bun src/Core.TypeScript/ace/build-graph.ts derive --write");
     expect(DERIVE_FIX_COMMAND).toContain(DERIVER_PATH);
     expect(existsSync(join(REPO_ROOT, DERIVER_PATH))).toBe(true);
+  });
+});
+
+// ── The COUPLING, not the instance ───────────────────────────────────────
+//
+// Five call sites in this file perform a REPO-WIDE derivation (`deriveGraph` or
+// `computeQuorums` against `REPO_ROOT`). Each walks `git ls-files` — 52,819 entries and
+// growing — and each therefore has a wall-clock cost that rises monotonically with the
+// repo and has NO upper bound anyone declared.
+//
+// Bun's default per-test cap is 5000 ms, and "default" is the problem: it is a budget
+// nobody chose, applied to a cost nobody bounded. Three of the five sites were given an
+// explicit `30_000` on 2026-08-19 (081KZZ3JHP1087G0R00027ARRR) because they were measured
+// "too close to survive a loaded runner". The other two were left on the default — one
+// deliberately (it had been optimised from two derivations to one) and one silently.
+//
+// BOTH of them timed out on `main` on 2026-08-27 (job 98378495016), a week later, at
+// 5174 ms and 5200 ms. Nothing had drifted; the checked-in graph was correct. The audit
+// reported a defect that did not exist, on a leg inside `gate (required)`.
+//
+// A FALSE ALARM ON THE BLOCKING FLOOR IS NOT A LESSER FAULT THAN A MISS. It costs the
+// same thing — the verdict stops carrying information — and it is the failure mode that
+// gets a gate switched off. So the fix is not "raise the two numbers", which the next
+// site added would not inherit. It is this check: a repo-wide derivation must DECLARE its
+// budget, and one that does not is refused here rather than a month later on `main`.
+describe("repo-wide derivations declare a wall-clock budget (the coupling)", () => {
+  const SELF = join(REPO_ROOT, "src/Core.TypeScript/ace/build-graph.test.ts");
+
+  /** A call that walks the whole repository, and so has an unbounded, growing cost. */
+  const REPO_WIDE_CALL = /\b(?:deriveGraph|computeQuorums|applyQuorums|deriveTargets)\(\s*REPO_ROOT\b/u;
+
+  /**
+   * Split this file into `test("…", …)` blocks by brace depth. Deliberately a parse of
+   * the SOURCE and not a registry: a registry is a second place to remember, which is the
+   * same coupling defect one level up.
+   */
+  function testBlocks(source: string): { title: string; body: string }[] {
+    const blocks: { title: string; body: string }[] = [];
+    const opener = /\btest\(\s*(["'`])((?:\\.|(?!\1)[^\\])*)\1\s*,/gu;
+    for (let m = opener.exec(source); m !== null; m = opener.exec(source)) {
+      const start = m.index + m[0].length;
+      let depth = 0;
+      let end = start;
+      for (let i = start; i < source.length; i++) {
+        const c = source[i];
+        if (c === "(") depth++;
+        else if (c === ")") {
+          if (depth === 0) {
+            end = i;
+            break;
+          }
+          depth--;
+        }
+      }
+      blocks.push({ title: m[2] ?? "", body: source.slice(start, end) });
+    }
+    return blocks;
+  }
+
+  test("the block parser finds this file's tests at all (the check is not vacuous)", () => {
+    // Without this, a regex that matched nothing would make every assertion below pass
+    // over an empty set — a check that cannot fail, guarding a check that cannot fail.
+    const blocks = testBlocks(readFileSync(SELF, "utf8"));
+    expect(blocks.length).toBeGreaterThan(50);
+    expect(blocks.map((b) => b.title)).toContain("DRIFT GATE: a hand-invented reviewer class fails derive");
+  });
+
+  test("the repo-wide-call pattern actually matches this file's repo-wide calls", () => {
+    // The other half of the same non-vacuity claim: the predicate must fire on the two
+    // sites that failed, or this guard is a green light over an unread file.
+    const blocks = testBlocks(readFileSync(SELF, "utf8"));
+    const matching = blocks.filter((b) => REPO_WIDE_CALL.test(b.body)).map((b) => b.title);
+    expect(matching).toContain("DRIFT GATE: regenerating from the repo's manifests reproduces the checked-in graph");
+    expect(matching).toContain("DRIFT GATE: a hand-invented reviewer class fails derive");
+    expect(matching.length).toBeGreaterThanOrEqual(4);
+  });
+
+  test("EVERY test performing a repo-wide derivation declares an explicit timeout", () => {
+    const blocks = testBlocks(readFileSync(SELF, "utf8"));
+    // The trailing `, <number>` after the arrow function's closing brace is Bun's
+    // per-test timeout argument. A block without one is running on the 5000 ms default.
+    const undeclared = blocks
+      .filter((b) => REPO_WIDE_CALL.test(b.body))
+      .filter((b) => !/\}\s*,\s*[\d_]+\s*$/u.test(b.body.trimEnd()))
+      .map((b) => b.title);
+    if (undeclared.length > 0) {
+      console.error(
+        `::error::${undeclared.length} test(s) walk the whole repo on Bun's default 5000 ms cap: ` +
+          `${undeclared.join("; ")}. A repo-wide derivation measured 3.6-5.2s on CI in August 2026 and ` +
+          "grows with `git ls-files`. Declare a budget: add `, 30_000` after the test body.",
+      );
+    }
+    expect(undeclared).toEqual([]);
   });
 });
