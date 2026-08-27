@@ -135,11 +135,11 @@ let
   #
   # `k3s-server.nix` allows 6443/9345/10250 and INTENTIONALLY omits 2379/2380
   # ("embedded etcd binds 127.0.0.1 by default"). A role=server JOIN is etcd
-  # membership, not kubelet-only. After leftover UNIQUE leftover #15746
-  # leftover unique @ c1f0aff9 pinned `--node-ip` to the vlan, etcd advertises
-  # distinct peer URLs — and the joiner must then reach founder:2379 (MemberAdd
-  # client API) and founder:2380 (peer). The product firewall still rejects
-  # that. Measured, run 33035015161 step 13, not inferred:
+  # membership, not kubelet-only. After #15746 @ c1f0aff9 pinned `--node-ip`
+  # to the vlan, etcd advertises distinct peer URLs — and the joiner must then
+  # reach founder:2379 (MemberAdd client API) and founder:2380 (peer). The
+  # product firewall still rejects that. Measured, run 33035015161 step 13,
+  # not inferred:
   #
   #   Adding member joiner-6aba2ae3=https://192.168.1.2:2380
   #          to etcd cluster [founder-dce5ce45=https://192.168.1.1:2380]
@@ -147,7 +147,7 @@ let
   #   Retrying etcd cluster join: MemberAdd request timed out
   #
   # Same shape on 33020639794 after the SLIRP collision, and the reason
-  # leftover UNIQUE leftover #15746 unique @ c1f0aff9 did not green the lane.
+  # #15746 @ c1f0aff9 did not green the lane.
   # Agent-join stays green because an agent never joins etcd.
   #
   # Opened here with mkAfter so the shipped module's list stays the source
@@ -178,9 +178,9 @@ pkgs.testers.nixosTest {
       # that means "me" on BOTH machines.
       #
       # `extraFlags` is a list option, so a second assignment MERGES with
-      # k3s-server.nix rather than replacing it (measured: leftover UNIQUE
-      # leftover #15746 leftover unique @ c1f0aff9 — `--cluster-cidr` and
-      # `--tls-san` survive). `mkAfter` makes that additive intent explicit.
+      # k3s-server.nix rather than replacing it (measured: #15746 @ c1f0aff9
+      # — `--cluster-cidr` and `--tls-san` survive). `mkAfter` makes that
+      # additive intent explicit.
       services.k3s.extraFlags = lib.mkAfter [
         "--node-ip=${nodes.founder.networking.primaryIPAddress}"
       ];
@@ -332,10 +332,10 @@ pkgs.testers.nixosTest {
     FOUNDER_IP = "${nodes.founder.networking.primaryIPAddress}"
     JOINER_IP = "${nodes.joiner.networking.primaryIPAddress}"
 
-    # Two DISTINCT vlan addresses. leftover UNIQUE leftover #15746 leftover
-    # unique @ c1f0aff9 pinned `--node-ip` to primaryIPAddress; if that were
-    # still QEMU SLIRP 10.0.2.15 on both guests, the pin would be a no-op
-    # and FOUNDER_IP == JOINER_IP would make the getent assertion vacuous.
+    # Two DISTINCT vlan addresses. #15746 @ c1f0aff9 pinned `--node-ip` to
+    # primaryIPAddress; if that were still QEMU SLIRP 10.0.2.15 on both guests,
+    # the pin would be a no-op and FOUNDER_IP == JOINER_IP would make the
+    # getent assertion vacuous.
     # Measured on run 33035015161: primaryIP IS the vlan (192.168.1.1 / .2)
     # and etcd advertised those URLs. Keep the check so a driver renumber
     # that collapses them cannot look like a passing join.
@@ -500,15 +500,92 @@ pkgs.testers.nixosTest {
     # a readable one under a hardened unit.
     # `test -r <store path>` would be very close to vacuous — a store path is
     # readable essentially by construction, so it could not fail for the reason
-    # we care about. Ask the RUNNING PROCESS instead: the eval-time overrides in
-    # injected-server-join.nix must have reached the actual k3s command line,
-    # and k3s must have got far enough to authenticate with the token behind
+    # we care about. Assert the FLAGS instead: the eval-time overrides in
+    # injected-server-join.nix must have reached the actual k3s invocation, and
+    # k3s must have got far enough to authenticate with the token behind
     # `--token-file`. A successful join already implies the token was read; this
     # pins WHICH flags produced it, so a join that happened for some other
     # reason cannot be mistaken for this module working.
-    joiner_cmdline = joiner.succeed(
-        "tr '\\0' ' ' < /proc/$(systemctl show -p MainPID --value k3s.service)/cmdline"
-    )
+    #
+    # ── WHY THIS DOES NOT READ /proc/<pid>/cmdline ─────────────────────────
+    # K3S ERASES ITS OWN ARGV, and it has done so since v1.19.1+k3s1 (2020).
+    # `pkg/cli/server/server.go` opens `run()` with
+    #
+    #     // hide process arguments from ps output, since they may contain
+    #     // database credentials or other secrets.
+    #     proctitle.SetProcTitle(os.Args[0] + " server")
+    #
+    # which reaches `github.com/erikdubbelboer/gspt`, a cgo port of BSD
+    # setproctitle: it `memset`s the WHOLE argv region to zero and writes the
+    # short title back in place. Blanket, not per-secret — `--node-ip` and
+    # `--cluster-cidr` are destroyed alongside `--token-file`. (k3s-io/k3s
+    # PR #2072, commit 1eec7348, for issue #2014 "Database password written to
+    # process list"; `pkg/cli/agent/agent.go` does the same for agents.)
+    #
+    # MEASURED, not inferred — run 33040848262 step 13: the joiner's
+    # /proc/<MainPID>/cmdline is a 445-byte region whose first 74 bytes are
+    # `/nix/store/...-k3s-1.34.5+k3s1/bin/k3s server` and whose remaining 371
+    # bytes are NUL. The region keeps the length systemd exec'd it with, so the
+    # flags were overwritten AFTER exec rather than never passed; `tr` turned
+    # those 371 NULs into 371 spaces and the assertion read a command line with
+    # no flags on it at all.
+    #
+    # That run is the one where the join itself WORKED: `kubectl get nodes` on
+    # the founder returned exactly [founder, joiner], the two cluster CAs were
+    # IDENTICAL, the joiner carried the control-plane label, and the joiner's
+    # own journal recorded it adding itself to an etcd cluster that already
+    # held the founder. The assertion nonetheless said "injected-server-join.nix
+    # did not take effect". Every other signal in the same run says it did: the
+    # ORACLE was wrong, not the module. So the oracle is what changes here and
+    # every assertion it carried is kept, unweakened.
+    #
+    # systemd's record of the argv it exec'd is not scrubbed, and it is still a
+    # statement about the RUNNING SYSTEM rather than about a file on disk: it is
+    # read out of the unit systemd actually started, and it names the PID it
+    # started — bound to the live MainPID below, so a stale or earlier
+    # invocation cannot answer for this one. State the honest limit: what /proc
+    # could have caught, and this cannot, is a process that re-execs itself with
+    # different arguments. k3s does not; if it ever did, this would not see it.
+    import re
+
+    def k3s_exec_argv(machine, who):
+        # ONE call, so MainPID and the exec record cannot straddle a restart
+        # (the unit is Restart=always).
+        blob = machine.succeed("systemctl show -p MainPID -p ExecStart k3s.service")
+
+        pid_prop = re.search(r"^MainPID=(\d+)$", blob, re.M)
+        assert pid_prop is not None and int(pid_prop.group(1)) > 0, (
+            f"{who}: k3s.service reports no running MainPID ({blob!r}); there "
+            "is no live process for these flags to be attributed to"
+        )
+        main_pid = pid_prop.group(1)
+
+        # `systemctl show -p ExecStart` dumps
+        #   { path=... ; argv[]=... ; ignore_errors=... ; ... ; pid=N ; ... }
+        # Bind the record to the live PID before reading a single flag out of
+        # it: unbound, this is the argv of whatever ran last, which is exactly
+        # the "looks checked, checks nothing" shape the flags exist to refuse.
+        bound = re.search(r"[\s;]pid=(\d+)", blob)
+        assert bound is not None and bound.group(1) == main_pid, (
+            f"{who}: systemd's ExecStart record does not name the running "
+            f"MainPID {main_pid} — got {bound.group(1) if bound else None!r} "
+            f"({blob!r})"
+        )
+
+        argv_field = re.search(r"argv\[\]=(.*?) ; ", blob)
+        assert argv_field is not None, (
+            f"{who}: could not parse argv[] out of systemd's ExecStart record "
+            f"({blob!r}). Fail closed: asserting flags over a string that may "
+            "not contain the argv at all is how a check stops being one."
+        )
+        argv = argv_field.group(1)
+        assert "/bin/k3s " in argv, (
+            f"{who}: the parsed argv does not invoke k3s ({argv!r}); every "
+            "flag assertion below would be checking the wrong string"
+        )
+        return argv
+
+    joiner_cmdline = k3s_exec_argv(joiner, "joiner")
     assert "--server" in joiner_cmdline, (
         f"k3s on the joiner has no --server flag: {joiner_cmdline!r}. "
         "injected-server-join.nix did not take effect, so whatever made this "
@@ -539,9 +616,7 @@ pkgs.testers.nixosTest {
     # The founder must still be the founder — the mkOverride only fires on a
     # node with injected files, and asserting the negative keeps this test
     # honest about which node got which branch.
-    founder_cmdline = founder.succeed(
-        "tr '\\0' ' ' < /proc/$(systemctl show -p MainPID --value k3s.service)/cmdline"
-    )
+    founder_cmdline = k3s_exec_argv(founder, "founder")
     assert "--cluster-init" in founder_cmdline, (
         f"the founder lost --cluster-init: {founder_cmdline!r}"
     )
@@ -555,6 +630,76 @@ pkgs.testers.nixosTest {
         f"the founder lost --cluster-cidr: {founder_cmdline!r}. "
         "the harness --node-ip assignment replaced k3s-server.nix extraFlags "
         "instead of concatenating"
+    )
+
+    # ── PROVENANCE FROM THE PROCESS ITSELF, which /proc can no longer give ─
+    # The flag assertions above read systemd's record of what it exec'd. This
+    # reads what k3s DID, out of the joining process's own journal, and it is
+    # the one signal in this test that distinguishes "joined an existing etcd
+    # cluster" from "founded one" without trusting any flag string:
+    #
+    #   Adding member joiner-2dc3b09f=https://192.168.1.2:2380
+    #          to etcd cluster [founder-851fe68a=https://192.168.1.1:2380]
+    #
+    # The bracketed list is the membership the joiner found ALREADY THERE. A
+    # node that founded its own cluster never emits this line at all — it logs
+    # "Starting etcd for new cluster", which is what the founder logs. So the
+    # two halves are asserted as a pair, positive and negative, on the two
+    # machines: neither alone excludes the split-brain the step is named for.
+    #
+    # Matched loosely (the words that carry the meaning) rather than on the full
+    # sentence, because the member ids are random per boot and the exact
+    # phrasing is upstream's to change. If upstream does change it this goes red
+    # rather than quietly passing — the right direction to fail.
+    #
+    # THE NEGATIVE HALF NEEDS THE JOURNAL PROVED READABLE FIRST. "founder never
+    # logged joining" and "nothing could read the founder's journal" produce the
+    # identical empty result, and only one of them is evidence. So the unit's
+    # journal is measured non-trivial on both machines before a single absence
+    # is read as meaning anything.
+    def k3s_journal(machine, who, pattern):
+        lines = int(machine.succeed(
+            "journalctl -u k3s.service --no-pager | wc -l"
+        ).strip())
+        assert lines > 100, (
+            f"{who}: journalctl -u k3s.service returned {lines} lines. k3s "
+            "logs thousands during bring-up, so this is an unreadable or "
+            "empty journal — every absence checked against it would be "
+            "vacuous, including the negative half of this discriminator."
+        )
+        # `|| true` keeps a non-matching grep an empty RESULT rather than a
+        # failed command; the line count above is what stops empty from
+        # meaning two different things. Greps in the guest so a multi-MB
+        # journal never crosses the test driver.
+        return machine.succeed(
+            f"journalctl -u k3s.service --no-pager | grep -F '{pattern}' || true"
+        ).strip()
+
+    joiner_joined = k3s_journal(joiner, "joiner", "to etcd cluster [")
+    assert joiner_joined != "", (
+        "the joiner never logged adding itself to an EXISTING etcd cluster. A "
+        "control plane that joins emits `Adding member <self> to etcd cluster "
+        "[<existing members>]`; one that founds does not. Without this line "
+        "the node's membership was produced by something other than an etcd "
+        "join."
+    )
+    assert f"https://{FOUNDER_IP}:2380" in joiner_joined, (
+        f"the joiner joined an etcd cluster that does not contain the founder "
+        f"({FOUNDER_IP}). Joining SOME cluster is not joining THIS one. Got: "
+        f"{joiner_joined!r}"
+    )
+
+    founder_founded = k3s_journal(founder, "founder", "Starting etcd for new cluster")
+    assert founder_founded != "", (
+        "the founder did not log founding a new etcd cluster, so the negative "
+        "half of this discriminator is vacuous: if neither node founds, the "
+        "assertion above cannot be telling founding from joining."
+    )
+    founder_joined = k3s_journal(founder, "founder", "to etcd cluster [")
+    assert founder_joined == "", (
+        "the FOUNDER logged joining an existing etcd cluster. The two roles "
+        f"are inverted or both nodes joined something else. Got: "
+        f"{founder_joined!r}"
     )
 
     # Post-mortem state into the build log.

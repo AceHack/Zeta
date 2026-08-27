@@ -341,6 +341,7 @@ jobs:
         run: nix build .#checks.x86_64-linux.longhorn-volume-binds -L --print-build-logs --fallback --option sandbox false
 
       - name: Build installer ISO
+        id: iso_build
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs --fallback
 
@@ -684,8 +685,22 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+      # `!cancelled()` alone made this step run when `Build installer ISO` had
+      # been SKIPPED, and it then failed with "No installer ISO found under
+      # result/iso/" — an error about a MISSING ARTEFACT for a build that never
+      # ran. On 2026-08-27 that turned one broken step (the two-control-plane
+      # join test, which fails ahead of the build) into two red steps, and the
+      # second one named a file instead of naming its cause. A step that reports
+      # a missing output when the producing step was skipped is describing the
+      # symptom of an earlier failure as if it were a defect of its own.
+      #
+      # Gating on the build's own outcome keeps the original intent — the QEMU
+      # full-install gate below the build is flaky, and a SUCCESSFULLY BUILT ISO
+      # must still upload when it trips — while making the downstream-ness
+      # structural: no build, no ISO to locate, nothing to report. The job is
+      # already red from whatever stopped the build.
       - name: Locate ISO + capture metadata
-        if: ${{ !cancelled() }} # run even if the flaky QEMU full-install gate failed — a built ISO must still upload
+        if: ${{ !cancelled() && steps.iso_build.outcome == 'success' }}
         id: iso
         working-directory: full-ai-cluster
         run: |
