@@ -7,15 +7,26 @@ import { verifyPagesArtifact } from "./identity-dla-pages-artifact";
 
 const roots: string[] = [];
 
-function fixture(options: { readonly currentMarker?: boolean; readonly retiredMarker?: boolean; readonly validWasm?: boolean } = {}): string {
+function fixture(
+  options: {
+    readonly currentMarker?: boolean;
+    readonly evidenceRoom?: boolean;
+    readonly retiredMarker?: boolean;
+    readonly validWasm?: boolean;
+  } = {},
+): string {
   const root = mkdtempSync(join(tmpdir(), "zeta-pages-artifact-"));
   roots.push(root);
   mkdirSync(join(root, "assets"), { recursive: true });
   writeFileSync(join(root, "index.html"), '<script type="module" src="/assets/index-fixture.js"></script>');
-  writeFileSync(join(root, "assets", "index-fixture.js"), "import('./PasskeyProposalPanel-fixture.js')");
+  writeFileSync(join(root, "assets", "index-fixture.js"), "import('./PasskeyProposalPanel-fixture.js') evidence-seam");
   writeFileSync(
     join(root, "assets", "PasskeyProposalPanel-fixture.js"),
     `${options.currentMarker === false ? "" : "authorize this device"}${options.retiredMarker ? " GitHub's own issue form authenticates" : ""}`,
+  );
+  writeFileSync(
+    join(root, "assets", "EvidenceRoomPage-fixture.js"),
+    options.evidenceRoom === false ? "missing reader" : "evidence-seam docs/room-evidence/index.json",
   );
   for (const asset of PAGES_WASM_ASSETS) {
     const target = join(root, asset.published);
@@ -34,6 +45,8 @@ describe("identity-dla Pages artifact verification", () => {
     const evidence = verifyPagesArtifact(fixture());
     expect(evidence.proposalMarker).toBe("authorize this device");
     expect(evidence.authorizationAsset).toBe("PasskeyProposalPanel-fixture.js");
+    expect(evidence.evidenceRouteAsset).toBe("index-fixture.js");
+    expect(evidence.evidenceReaderAsset).toBe("EvidenceRoomPage-fixture.js");
     expect(evidence.wasmAssets).toHaveLength(6);
   });
 
@@ -47,5 +60,9 @@ describe("identity-dla Pages artifact verification", () => {
 
   test("FAULT INJECTION: rejects HTML or other stale bytes in a published WASM path", () => {
     expect(() => verifyPagesArtifact(fixture({ validWasm: false }))).toThrow("not a WebAssembly binary");
+  });
+
+  test("FAULT INJECTION: rejects a bundle that omitted the durable room-evidence reader", () => {
+    expect(() => verifyPagesArtifact(fixture({ evidenceRoom: false }))).toThrow("durable room-evidence reader");
   });
 });

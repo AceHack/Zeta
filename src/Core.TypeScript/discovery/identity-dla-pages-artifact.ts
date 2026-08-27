@@ -9,6 +9,8 @@ const RETIRED_PROPOSAL_MARKER = "GitHub's own issue form authenticates";
 export type PagesArtifactEvidence = Readonly<{
   readonly entryAsset: string;
   readonly authorizationAsset: string;
+  readonly evidenceRouteAsset: string;
+  readonly evidenceReaderAsset: string;
   readonly proposalMarker: typeof CURRENT_PROPOSAL_MARKER;
   readonly wasmAssets: readonly string[];
   /**
@@ -45,6 +47,14 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   if (!authorizationAsset) {
     throw new Error("teaching error: Pages artifact omits the current one-time device authorization control");
   }
+  const evidenceRouteAsset = scripts.find(script => script.body.includes("evidence-seam"))?.asset;
+  if (!evidenceRouteAsset) {
+    throw new Error("teaching error: Pages artifact omits the evidence-room route");
+  }
+  const evidenceReaderAsset = scripts.find(script => script.body.includes("room-evidence"))?.asset;
+  if (!evidenceReaderAsset) {
+    throw new Error("teaching error: Pages artifact omits the durable room-evidence reader");
+  }
   if (scripts.some(script => script.body.includes(RETIRED_PROPOSAL_MARKER))) {
     throw new Error("teaching error: Pages artifact still contains the retired GitHub issue-form proposal transport");
   }
@@ -61,6 +71,8 @@ export function verifyPagesArtifact(artifactRoot: string): PagesArtifactEvidence
   return {
     entryAsset,
     authorizationAsset,
+    evidenceRouteAsset,
+    evidenceReaderAsset,
     proposalMarker: CURRENT_PROPOSAL_MARKER,
     wasmAssets: [
       ...PAGES_WASM_ASSETS.map(asset => asset.published),

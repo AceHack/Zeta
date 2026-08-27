@@ -26,12 +26,12 @@ function LegacyPasskeyRedirect() {
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
       <Route path={"/authorize"}><Suspense fallback={<RouteLoader />}><AuthorizePage /></Suspense></Route>
       <Route path={"/passkey-proposal"} component={LegacyPasskeyRedirect} />
       <Route path={"/observatory"}><Suspense fallback={<RouteLoader />}><ObservatoryPage /></Suspense></Route>
       <Route path={"/evidence-seam"}><Suspense fallback={<RouteLoader />}><EvidenceRoomPage /></Suspense></Route>
       <Route path={"/wasm-lab"}><Suspense fallback={<RouteLoader />}><WasmLabPage /></Suspense></Route>
+      <Route path={"/"} component={Home} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
