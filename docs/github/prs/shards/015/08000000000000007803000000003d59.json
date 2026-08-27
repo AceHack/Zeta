@@ -1,0 +1,12 @@
+{
+  "pr_number": 15705,
+  "archive_path": "docs/history/pr-reviews/PR-15705-feat-forge-host-git-data-blobs-trees-commits-refs-over-rest.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T23:47:33.696Z",
+  "schema_version": "v1",
+  "commit_sha": "95c69b6f79996c6a49905e2f1c418dca105fa07b",
+  "title": "feat(forge-host): git-data blobs/trees/commits/refs over REST",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T23:46:56Z",
+  "head_ref": "feat/forgehost-git-data-rest"
+}
