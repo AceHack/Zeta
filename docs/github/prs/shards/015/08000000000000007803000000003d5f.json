@@ -1,0 +1,12 @@
+{
+  "pr_number": 15711,
+  "archive_path": "docs/history/pr-reviews/PR-15711-feat-forge-host-one-graphql-merge-observe-du-comments-issues-rest.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T00:19:33.627Z",
+  "schema_version": "v1",
+  "commit_sha": "ee263d563d5e69163d6b5755253763c355bc4aca",
+  "title": "feat(forge-host): one GraphQL merge-observe DU; comments/issues REST",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T00:18:56Z",
+  "head_ref": "feat/forgehost-cheap-merge-verbs"
+}

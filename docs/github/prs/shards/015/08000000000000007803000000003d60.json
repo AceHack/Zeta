@@ -1,0 +1,12 @@
+{
+  "pr_number": 15712,
+  "archive_path": "docs/history/pr-reviews/PR-15712-docs-hats-a-hat-is-a-contract-and-the-contracts-are-what-hold-a-federation-toget.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T00:12:05.949Z",
+  "schema_version": "v1",
+  "commit_sha": "fb7fe9fb0293fa8cad0b48c36a8da113304a3b99",
+  "title": "docs(hats): a hat is a contract — and the contracts are what hold a federation together",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T00:11:23Z",
+  "head_ref": "hat-contract-language"
+}
