@@ -83,11 +83,16 @@ have to ask. Workitem `081M107N9P4087G0R0002G5SR0`.
 ## ZetaFS as the git bootstrap
 
 ROADMAP item 1 (NO GIT CLI) is the same sentence as "we are our own
-source control." LibGit2Sharp `zeta` + DagFs exist; factory still
-execs `git`. Closing that is a bootstrap: clone-at-tag still builds
+source control." The destination is **not** LibGit2Sharp forever: dual
+DBSP Z-set folds over our Merkle DAG (`ZetaFsDualFold` — forward `I`,
+generator-reinterpret `−1` as a new append, `ZSetMerkle` snapshot,
+`DagFs` trees). `ZetaFsDeltaLog` is the own-format log; `GitDeltaLog`
+is the hexagonal v1 adapter. Factory still execs `git`. Closing that
+is a bootstrap: clone-at-tag still builds
 (`.claude/rules/clone-at-tag-stays-sufficient.md`); Ace never becomes
 the only path; ZetaFS becomes the *good* path for Harny's sc/fs tools.
-Closed-tools workitem `081M100RH3Q087G0R0018X4RSJ`.
+Closed-tools workitem `081M100RH3Q087G0R0018X4RSJ`; dual-fold
+`081M108RYNT087G0R001JSRNZE`.
 
 ## Harny × ActionGrid
 
@@ -102,4 +107,4 @@ not a bag of bash. Refresh is the move, not a side quest. Workitem
   `docs/research/2026-06-07-universal-action-grammar-xbox-controller-*`
 - Cost of polling: GitHub REST/GraphQL secondary rate limits
 - Webhooks: GitHub Checks API (`check_suite`, `check_run`)
-- Source control without git(1): LibGit2Sharp `zeta`, DagFs, ROADMAP item 1
+- Source control without git(1): `ZetaFsDualFold` / `ZetaFsDeltaLog` / `DagFs`; LibGit2Sharp `zeta` is v1; ROADMAP item 1

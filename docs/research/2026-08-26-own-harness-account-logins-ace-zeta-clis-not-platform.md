@@ -98,7 +98,15 @@ Agents still type `bun` / `mise` / `brew` / `curl`.
 Shipped: `zeta` F# exe over **LibGit2Sharp** (no `git` binary) + MCP
 porcelain (`zeta_status/log/branch/checkout/commit/push/fetch`);
 `github-login-cli.ts`; `ZetaExec` file seam in tests; DagFs as the
-algebra.
+tree algebra; `ZetaFsDeltaLog` as the own-format `IDeltaLog`;
+`ZetaFsDualFold` as the +1 `I` / −1 generator-reinterpret contract.
+
+LibGit2Sharp is the hexagonal **v1** adapter, not the destination.
+The git replacement is dual DBSP Z-set folds over our Merkle DAG
+(workitem `081M108RYNT087G0R001JSRNZE`): forward integrate, generator
+updates that reinterpret retained history as a new `−1/+1` entry,
+`ZSetMerkle` snapshot. See
+`docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md`.
 
 Not the factory path: `GitHubAdapter` / `rest-push` / poll-pr-gate /
 heartbeat flush all `spawnSync("gh")`. `push-with-retry` and

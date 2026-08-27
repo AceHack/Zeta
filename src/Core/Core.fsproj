@@ -250,6 +250,7 @@
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />
     <Compile Include="ZetaFsDeltaLog.fs" />
+    <Compile Include="ZetaFsDualFold.fs" />
     <Compile Include="SnapshotStore.fs" />
     <Compile Include="RecoverableSpine.fs" />
     <Compile Include="DurableSaga.fs" />

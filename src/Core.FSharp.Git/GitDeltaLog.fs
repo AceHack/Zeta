@@ -74,6 +74,8 @@ module internal GitBackend =
 ///
 /// **First adapter behind a port we own.** LibGit2Sharp is v1; it can be phased out for
 /// a pure-managed backend without touching any caller (hexagonal architecture).
+/// Destination format: `ZetaFsDeltaLog` + `ZetaFsDualFold` over `DagFs` / `ZSetMerkle`
+/// — own objects, not git packfiles. See ROADMAP item 1 and workitem 081M108RYNT087G0R001JSRNZE.
 ///
 /// Single-writer per shard (the writer-actor model): the in-process `gate` serialises
 /// the read-tip → build-tree → commit → update-ref sequence; cross-process single-writer

@@ -1,0 +1,14 @@
+{
+  "id": "080d020463d5d810a0130008f646b54e",
+  "at": "2026-08-27T00:09:03.419Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M108RYNT087G0R001JSRNZE",
+    "type": "task",
+    "title": "ZetaFS dual-fold git replacement: +1 I and -1 generator-reinterpret over DagFs Merkle",
+    "slug": "zetafs-dual-fold-git-replacement-1-i-and-1-generator-reinter",
+    "priority": "P1",
+    "filename": "081M108RYNT087G0R001JSRNZE-zetafs-dual-fold-git-replacement-1-i-and-1-generator-reinter.md"
+  }
+}

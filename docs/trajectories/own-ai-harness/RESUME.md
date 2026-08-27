@@ -1,7 +1,7 @@
 # Trajectory — Harny (custom agent harness)
 
 Status: active — workstream (current-focus)
-Last refreshed: 2026-08-26
+Last refreshed: 2026-08-27
 Type: workstream (current-focus)
 Current blocker: five of seven paid LLM accounts have no native `AuthProvider`; production `loop-tick` still spawnSyncs vendor CLIs. Token **import** from those CLIs is now a shipped fallback.
 Next concrete action: wire our own device-code where the vendor publishes it (Grok auth.x.ai, Kiro `--use-device-flow`) — `081M100RH29087G0R0031HHGJ0` — in parallel with ForgeHost without `gh`
@@ -46,7 +46,7 @@ The harness **library** is real. The fleet **runtime** is still vendor CLIs.
 | Full-duplex four-corner | ◐ library | `duplex-transport.ts` + WS mux; vendor APIs still SSE/HTTP |
 | Closed tools | ◐ library | `ZETA_TOOLS` = `fs_*`/`db_*` in-memory; fleet uses bash/gh/git |
 | Ace (deps) | ◐ dogfooded for setup | `ace.ts` + `setup-realize.ts`; agents still call bun/mise/brew |
-| Zeta CLI (sc/fs) | ◐ library | LibGit2Sharp `zeta` exe + MCP; factory still `git`/`gh` |
+| Zeta CLI (sc/fs) | ◐ library | LibGit2Sharp `zeta` is v1; `ZetaFsDualFold` + `ZetaFsDeltaLog` + `DagFs` is the destination (own Merkle, not git packfiles). Factory still `git`/`gh`. `081M108RYNT087G0R001JSRNZE` |
 | Indexing | ◐ in-tree | `harny search` → `search/inverted` (refuses on stale empty) |
 | loop-tick | ○ vendor default | `persona-registry.ts` harness.command = claude/codex/kiro-cli/agy/cursor-agent |
 
@@ -83,8 +83,11 @@ bun src/Core.TypeScript/harny/harny.ts import grok
    `081M107N9P4087G0R0002G5SR0`)
 3. **Closed tools = Ace + Zeta + Forge DU verbs on the Xbox ActionGrid** —
    `081M100RH3Q087G0R0018X4RSJ` · `081M107N9PZ087G0R0006X16SJ`
+   Git/fs through ZetaFS is ROADMAP item 1: dual Z-set folds
+   (`+1` `I` forward, `−1` generator-reinterpret of retained history)
+   over DagFs Merkle — not LibGit2Sharp-as-the-store.
+   `081M108RYNT087G0R001JSRNZE`.
 4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
-   Git/fs through ZetaFS is ROADMAP item 1 — another bootstrap.
 
 Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
 turn on Harny with a stored account token, no vendor CLI, no `gh`.
@@ -117,6 +120,7 @@ already running, not by inventing a fourth factory.
 ## Pointers
 
 - Research absorb: `docs/research/2026-08-26-own-harness-account-logins-ace-zeta-clis-not-platform.md`
+- ZetaFS dual fold: `docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md` · `src/Core/ZetaFsDualFold.fs`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
 - Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`

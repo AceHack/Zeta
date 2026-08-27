@@ -96,12 +96,29 @@ property (a value carrying its own vectors/laws) is what makes the VERIFY step c
 
 ### ITEM #1 — NO USE OF THE GIT CLI
 
-All persistence routes through **our DB layer** (understands filesystem + git, runs git-native:
-efficient use of git history, branches, ZetaIds). **Otto (the LLM) stops using the `git` CLI** — every
+All persistence routes through **our DB layer**. **Otto (the LLM) stops using the `git` CLI** — every
 persistence action, *including control-plane ops like backlog*, goes through the DB's **generic commands**.
 
+The destination is **not** "LibGit2Sharp forever." Git is a bootstrap. ZetaDB/FS is dual DBSP
+Z-set folds over our own Merkle DAG (`DagFs` / `ContentStore` / `ZetaFsDeltaLog`):
+
+- **Forward (+1, `I`)** — append deltas; materialized HEAD is `ZetaFsDualFold.foldForward`
+  (same combiner as `Primitive.IntegrateZSet`).
+- **Backward-looking (−1)** — a **generator-function update** re-reads the retained history
+  and emits `−gen(before, H) + gen(after, H)` as a **new** log entry (`FourCornerTrace` /
+  `ZetaFsDualFold.reinterpret`). The past record is not rewritten. Pseudo-retrocausality
+  (beliefs, not facts — `docs/VISION.md` §"Echolocation over time").
+- **Snapshot** — `ZSetMerkle.root` of the net Z-set (`+w` then `−w` is a no-op on the root).
+- **Tree** — `DagFs`: `editLocal` is the default fork; `editEverywhere` is the shared-object
+  edit. Blobs are content-addressed.
+
+`GitDeltaLog` (LibGit2Sharp) is the hexagonal **v1** adapter behind `IDeltaLog`.
+`ZetaFsDeltaLog` is the own-format backend (loose objects + refs). Remaining: parent
+edges so truncate is reversible like git, BLAKE3 as the tamper-evident default, factory
+path stops execing `git`/`gh`. Workitem `081M108RYNT087G0R001JSRNZE`.
+
 - **Done-test (the bright line):** a full work-cycle (land a change, branch, query history, update
-  backlog) with **zero `git` CLI calls**.
+  backlog) with **zero `git` CLI calls** and **zero LibGit2Sharp**.
 - **git-reach = the gap detector:** every fallback to `git` *names a missing DB primitive (or
   composition)*. Log it → add the primitive → fallback disappears. Empty list ⇒ interface complete by construction.
 - **Two surfaces, one core:** an **MCP** (agent-facing) + a **CLI** (human/script-facing) over the one
@@ -155,7 +172,9 @@ using DynamicValue's byte-locked per-format serializer:
 
 ### Sequence (data plane first)
 
-1. **NO GIT CLI** (item #1) — generic command surface (MCP + CLI) + route all persistence through it. *The definition of done.*
+1. **NO GIT CLI** (item #1) — generic command surface (MCP + CLI) + route all persistence through
+   `ZetaFsDualFold` / `ZetaFsDeltaLog` / `DagFs` (dual +1 `I` and −1 generator-reinterpret over
+   Merkle), not git(1) and not LibGit2Sharp-as-the-store. *The definition of done.*
 2. **Close the `Log` noun** — ✅ **DONE (4/4 byte-lock)**: F# #6730 + golden seed #6735 + C# #6743 +
    TS #6744 + Rust #6745. **The 3-noun data-plane proven math base is now whole (ZSet ✅ + DynamicValue ✅
    + Log ✅ across the runtimes).** Remaining tail: migrate `GitDeltaLog`/`DiskDeltaLog` off
@@ -215,7 +234,9 @@ using DynamicValue's byte-locked per-format serializer:
     Workflows are reservoir **walls**; observe is the **readout**
     (Jaeger 2001 / Maass 2002 — do not train the reservoir). Item 1
     (NO GIT CLI / ZetaFS) is the source-control bootstrap Harny's
-    sc/fs tools ride.
+    sc/fs tools ride — dual Z-set folds over DagFs Merkle
+    (`ZetaFsDualFold` / `081M108RYNT087G0R001JSRNZE`), not
+    LibGit2Sharp-as-the-store.
     Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
     Umbrella `081M100RB97087G0R0008EAAY7`; extract
     `081M102M6Y2087G0R000407SW3`; DU verbs
@@ -253,6 +274,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 ### Correctness / verification
 
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
+- ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
 - Incremental distinct (O(|Δ|)) ✅
@@ -324,6 +346,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Zeta.Core.CSharp shim** — declaration-site variance on interfaces (`IBackingStore<out K>` etc)
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
+- **ZetaFS dual-fold remaining** — parent edge on `ZetaFsDeltaLog` (truncate reversible), BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`)
 
 ## P2 (4 weeks)
 
@@ -424,3 +447,7 @@ These don't wait for a single round:
   does not replace `observe.ts` — it becomes an executor/scheme of
   that controller (Xbox `grammar-16`, Meijer μ/ν, reservoir walls).
   See `docs/trajectories/own-ai-harness/RESUME.md`.
+- Replace git/LibGit2 as the store with **ZetaFS dual folds**
+  (`ZetaFsDualFold` over `DagFs` / `ZSetMerkle` / `ZetaFsDeltaLog`):
+  +1 `I` forward, −1 generator-reinterpret of retained history,
+  parent-edge still open. `081M108RYNT087G0R001JSRNZE`.

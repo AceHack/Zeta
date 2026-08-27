@@ -11,6 +11,9 @@ open System.Threading.Tasks
 /// **ZetaFS-native Ref-aware Delta Log — content-addressed Merkle DAG over the filesystem.**
 /// Delivers full git-command parity on a plain directory, implementing the loose-object store
 /// and ref references on disk using BLAKE3 (or default XxHash128) as the content address.
+/// The algebra of what this log stores is `ZetaFsDualFold`: forward `I` (+1) and
+/// generator-reinterpret deltas (−1 as a later append). This backend is the own-format
+/// destination; `GitDeltaLog` (LibGit2Sharp) is the v1 hexagonal adapter, not the endgame.
 [<Sealed>]
 type ZetaFsDeltaLog<'K when 'K : comparison>
     (dir: string, entryCodec: IEntryCodec<'K>, ?hasher: IContentHasher) =
