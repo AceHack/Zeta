@@ -20,6 +20,12 @@
     # import.
     ./k3s-datastore-preflight.nix
 
+    # The module that DEFINES `zeta.k3sJoinIntentPreflight`, enabled below. Same
+    # import discipline as its sibling: the file that owns an option's value owns
+    # its import, so every VM test that imports this role module directly still
+    # evaluates.
+    ./k3s-join-intent-preflight.nix
+
     # The module that DEFINES `zeta.cluster.{podCidr,serviceCidr,…}`, which the
     # `--cluster-cidr` / `--service-cidr` flags below READ. Same rule as above,
     # in its other direction: a module that consumes an option must import the
@@ -367,4 +373,15 @@
   # console and serial, and deletes nothing. `lib.mkDefault` so a host can
   # switch it off.
   zeta.k3sDatastorePreflight.enable = lib.mkDefault true;
+
+  # THE SIBLING'S UNCOVERED CASE. `k3sDatastorePreflight` states its own
+  # boundary -- "On a genuinely from-scratch flash that is fine" -- and a
+  # from-scratch flash is exactly what an operator does to add a second machine.
+  # This one compares the join intent on DISK against what evaluation actually
+  # RESOLVED, so a rebuild that lost `/etc/zeta` (pure eval, a staging symlink
+  # that did not land) cannot come up as a silent second sovereign cluster.
+  # `role` is what makes the `clusterInit` half apply here and not to a worker.
+  # `lib.mkDefault` so a host can switch it off.
+  zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
+  zeta.k3sJoinIntentPreflight.role = lib.mkDefault "server";
 }

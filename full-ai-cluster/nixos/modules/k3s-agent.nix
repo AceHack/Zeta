@@ -21,6 +21,11 @@
     # for the same reason `k3s-join-observer.nix` is: this file owns the
     # option's value, so it owns the import.
     ./k3s-datastore-preflight.nix
+
+    # The module that DEFINES `zeta.k3sJoinIntentPreflight`, enabled below.
+    # Imported here for the same reason the two above are: this file owns the
+    # option's value, so it owns the import.
+    ./k3s-join-intent-preflight.nix
   ];
 
   # k3s's join is the join (Aaron 2026-08-13, closing PR #10493's open
@@ -36,6 +41,13 @@
   # once, re-flashed as a worker onto a disk whose server datastore survived.
   # k3s would then ignore the join arguments and resume being a server.
   zeta.k3sDatastorePreflight.enable = lib.mkDefault true;
+
+  # A worker that was told to join and resolved to no `serverAddr` starts
+  # nothing useful and reports nothing wrong. `role = "agent"` scopes the check
+  # to `serverAddr` alone -- `clusterInit` is not an agent's field, and
+  # convicting a worker for it would refuse every legitimate join.
+  zeta.k3sJoinIntentPreflight.enable = lib.mkDefault true;
+  zeta.k3sJoinIntentPreflight.role = lib.mkDefault "agent";
 
   services.k3s = {
     enable = true;

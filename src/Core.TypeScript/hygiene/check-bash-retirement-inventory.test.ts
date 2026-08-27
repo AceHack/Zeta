@@ -176,6 +176,10 @@ describe("buildInventoryReport", () => {
           // k3s.service. The node's closure carries no bun, so the boot path
           // is a retained-shell edge.
           "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
+          // The sibling's uncovered case — a from-scratch flash, which is how a
+          // second machine is added. Same boot-path edge, same reason it stays
+          // a tracked `.sh` rather than an inline Nix string.
+          "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
         ],
       },
       {
@@ -306,7 +310,7 @@ describe("renderReport", () => {
       report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files.length ?? 0;
     expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- git hooks: 4");
-    expect(renderReport(report)).toContain("- host-service wrappers: 3");
+    expect(renderReport(report)).toContain("- host-service wrappers: 4");
   });
 
   test("renders drift sections", () => {

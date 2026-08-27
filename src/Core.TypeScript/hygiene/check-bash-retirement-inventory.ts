@@ -77,6 +77,7 @@ export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh",
+  "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "githooks/pre-push",
@@ -129,6 +130,17 @@ export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedSh
   // off this inventory while still being bash, and it could not be EXECUTED by
   // `lint-k3s-datastore-preflight.test.ts`, which runs every branch of it in CI.
   "full-ai-cluster/nixos/modules/k3s-datastore-preflight.sh": "host-service wrappers",
+  // The sibling's UNCOVERED case: `k3s-datastore-preflight` states its own
+  // boundary ("On a genuinely from-scratch flash that is fine"), and a
+  // from-scratch flash is exactly how a second machine is added. This one
+  // compares the join intent on disk against what evaluation RESOLVED, so a
+  // rebuild that lost `/etc/zeta` cannot come up as a silent second sovereign
+  // cluster. Same retained-shell edge for the same reason: it runs on the boot
+  // path, the node's closure carries no bun, and an ExecStart cannot wait for
+  // one. Kept as a tracked `.sh` rather than an inline Nix string so it stays on
+  // this inventory AND can be EXECUTED by
+  // `lint-k3s-join-intent-preflight.test.ts`, which runs every branch in CI.
+  "full-ai-cluster/nixos/modules/k3s-join-intent-preflight.sh": "host-service wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",
   // 081KWN0JKJV retained Git-hook shell edge: installs/refuses commit-message
