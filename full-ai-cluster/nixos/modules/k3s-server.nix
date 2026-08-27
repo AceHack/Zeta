@@ -279,7 +279,39 @@
   # time (zeta-install.sh) once worker provisioning lands. Tracked
   # separately; single-node bring-up does not depend on it, and the VM test
   # supplies the mapping explicitly rather than pretending it is solved.
-  networking.hosts."127.0.0.1" = [ "control-plane" ];
+  #
+  # CONDITIONAL ON NOT JOINING, and the condition is load-bearing rather than
+  # defensive. `control-plane -> 127.0.0.1` is true exactly when the API server
+  # that name REFERS TO is this node — that is, when this node founds. On a node
+  # `injected-server-join.nix` has pointed at somebody else's cluster, the same
+  # entry makes the JOIN ENDPOINT resolve to the joiner itself, and a k3s server
+  # that dials its own supervisor joins nothing and founds a second cluster.
+  # That is precisely the defect `injected-server-join.nix` was written to
+  # prevent, reintroduced one layer down in /etc/hosts.
+  #
+  # Not a theoretical ordering hazard — `nixos/tests/k3s-server-join.nix`
+  # measured it on CI (run 33020639794): both entries land, `networking.hosts`
+  # is emitted in attribute order of the ADDRESS, `"127.0.0.1"` sorts before
+  # `"192.168.1.1"`, and glibc answers with the first match. The joiner resolved
+  # `control-plane` to `127.0.0.1`. Repairing that by relying on entry order
+  # would be a guess about glibc and about attrset iteration; deleting the entry
+  # that is FALSE on this node is a statement about what the name means.
+  #
+  # `serverAddr == ""` is the whole predicate. It is nixpkgs' default, pinned as
+  # such by the stub in `nixos/tests/k3s-server-join-eval-test.nix` (whose
+  # founding scenario asserts exactly `""`), and on a role=server node it is
+  # written by `injected-server-join.nix` and by nothing else.
+  #
+  # A JOINING control plane therefore gets no alias from this file, and that is
+  # deliberate: whoever supplied the endpoint owns resolving it. The VM test
+  # maps it to the founder explicitly; on hardware it is the same
+  # `control-plane <cp-ip>` /etc/hosts injection the paragraph above already
+  # names for workers. A joiner that cannot resolve its endpoint now fails
+  # loudly against an unreachable name instead of silently founding a rival
+  # cluster — the failure this tree would rather have.
+  networking.hosts = lib.mkIf (config.services.k3s.serverAddr == "") {
+    "127.0.0.1" = [ "control-plane" ];
+  };
 
   networking.firewall = {
     allowedTCPPorts = [

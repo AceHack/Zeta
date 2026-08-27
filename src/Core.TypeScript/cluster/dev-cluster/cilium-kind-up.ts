@@ -130,6 +130,49 @@ function podCidrFromValues(values: Readonly<Record<string, unknown>>): string {
   return first;
 }
 
+/**
+ * The pod IP out of one `<name>=<podIP> <hostNetwork>` jsonpath row.
+ *
+ * Everything after the `=` is TWO fields, and the second is EMPTY whenever
+ * `spec.hostNetwork` is unset — the ordinary case for CoreDNS. So the whole
+ * tail is `"10.143.0.62 "` (or `"10.143.0.62 false"`), never an address, and
+ * handing it to `cidrBounds` produces
+ *
+ *     error: not a dotted-quad CIDR: "10.143.0.62 /32"
+ *
+ * Measured on `main` at 5e196ea244, run 33025994843: the check CRASHED instead
+ * of reporting, so the lane went red with a stack trace and no verdict about
+ * the network at all. It was invisible until that commit because the predicate
+ * used to be `startsWith("10.42.")` — total on any string, and therefore unable
+ * to notice that the string was not an address. Making the containment exact is
+ * what exposed the sloppy split; both are fixed together.
+ *
+ * Exported for the test beside this file: the live lane is a five-minute kind
+ * bring-up, which is much too slow to be this parser's falsifier.
+ */
+export function podIpField(row: string): string {
+  return (row.split("=")[1] ?? "").trim().split(/\s+/)[0] ?? "";
+}
+
+/**
+ * Is `ip` inside `podCidr`, by ADDRESS ARITHMETIC rather than text?
+ *
+ * `10.143.0.0/17` is not a prefix-comparable boundary — `10.143.128.0` shares
+ * the `"10.143."` text and is outside the block — so a `startsWith` test
+ * accepts addresses the pool never hands out.
+ *
+ * A field that is not a dotted quad returns FALSE rather than throwing, and the
+ * direction matters: an empty `podIP` is a normal transient (a Pending pod has
+ * none), a lane that dies on one reports nothing, and counting it as "not from
+ * the pool" still FAILS the check. Fail-closed, with the raw rows in `detail`.
+ */
+export function podIpInPool(ip: string, podCidr: string): boolean {
+  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) return false;
+  const pool = cidrBounds(podCidr);
+  const addr = cidrBounds(`${ip}/32`).first;
+  return addr >= pool.first && addr <= pool.last;
+}
+
 function checkPodIpamFromClusterPool(runner: ProcessRunner, podCidr: string): Check {
   const pods = capture(runner, "kubectl", [
     "-n",
@@ -146,19 +189,7 @@ function checkPodIpamFromClusterPool(runner: ProcessRunner, podCidr: string): Ch
     .split("\n")
     .filter((line) => line.length > 0)
     .filter((line) => !line.endsWith(" true"));
-  // Numeric containment, not a string prefix: `10.143.0.0/17` is not a
-  // prefix-comparable boundary (10.143.128.0 is OUTSIDE it while sharing the
-  // "10.143." text), so a startsWith test would accept addresses the pool
-  // never hands out.
-  const pool = cidrBounds(podCidr);
-  const inPool = (ip: string): boolean => {
-    const addr = cidrBounds(`${ip}/32`).first;
-    return addr >= pool.first && addr <= pool.last;
-  };
-  const fromPool = rows.filter((row) => {
-    const ip = row.split("=")[1];
-    return ip !== undefined && ip.length > 0 && inPool(ip);
-  });
+  const fromPool = rows.filter((row) => podIpInPool(podIpField(row), podCidr));
   return {
     name: `CoreDNS pod IPs come from cluster-pool ${podCidr}`,
     ok: pods.ok && rows.length > 0 && fromPool.length === rows.length,

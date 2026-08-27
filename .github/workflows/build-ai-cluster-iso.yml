@@ -250,6 +250,64 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#checks.x86_64-linux.k3s-agent-join -L --print-build-logs --fallback
 
+      # EVALUATION-ONLY checks, run here because NOTHING ELSE RAN THEM.
+      #
+      # `cluster-cidr-derivation` and `k3s-server-join-model` were added to
+      # `flake.checks` by #15668 and were referenced by no workflow in the
+      # repository — `grep -rn 'cluster-cidr\|server-join' .github/workflows/`
+      # returned empty. No lane runs `nix flake check` on this flake (the steps
+      # here name each check individually), so both were checks that could not
+      # fail because nothing invoked them. Their TypeScript twins under
+      # src/Core.TypeScript/hygiene/ DO run in the bun sweep, which is why the
+      # gap was survivable and also why it was invisible.
+      #
+      # They cost no VM and their assertions fire during EVALUATION, so this is
+      # seconds, not minutes.
+      - name: Nix eval checks — cluster CIDR derivation + server-join model (were unrun)
+        timeout-minutes: 10
+        working-directory: full-ai-cluster
+        run: |
+          nix build .#checks.x86_64-linux.cluster-cidr-derivation -L --print-build-logs --fallback
+          nix build .#checks.x86_64-linux.k3s-server-join-model -L --print-build-logs --fallback
+
+      # TWO CONTROL PLANES, ONE CLUSTER. The agent-join step above boots a
+      # server and an AGENT — which has no datastore, no etcd and no CA, so it
+      # cannot exercise the path injected-server-join.nix was written for. A
+      # role=server node given `--server` joins an ETCD cluster; that is a
+      # different code path, and it is the one that failed on hardware.
+      #
+      # The assertion that carries this step is NOT node count. Two nodes that
+      # each founded their own cluster are also both "up" — that is exactly the
+      # state of the two machines on the maintainer's LAN, whose CA founding
+      # epochs are twelve days apart. This asserts both nodes hold the SAME
+      # cluster CA, which is the check that told those two apart.
+      #
+      # Hermetic (no internet -> no CNI -> nodes stay NotReady): membership and
+      # CA identity, never readiness. ~1-2 min, budgeted from the measured 67 s
+      # the two-node agent-join step costs on this runner.
+      - name: NixOS test — a second CONTROL PLANE joins (one cluster CA, not two)
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-server-join -L --print-build-logs --fallback
+
+      # THE DIRTY-DISK REFUSAL, on a real boot. k3s IGNORES
+      # --cluster-init/--server/--token-file when an etcd datastore already
+      # exists on disk, so a declarative join onto a dirty disk is a SILENT
+      # no-op: flags parse, disk wins, `systemctl status k3s` stays green, and
+      # the node resumes being the cluster it already was. It is the one
+      # failure mode in this subsystem with no symptom at all.
+      #
+      # lint-k3s-datastore-preflight.test.ts already EXECUTES the refusal script
+      # over fixtures and asserts every exit status. What it structurally cannot
+      # reach is whether systemd honours `before` + `requiredBy` on a boot:
+      # rewire that unit `wantedBy` and k3s starts anyway, the script still
+      # exits 1, and every existing assertion still passes. This step asserts
+      # the thing that mutation breaks — that k3s.service never started.
+      - name: NixOS test — dirty disk FAILS CLOSED (k3s must not start)
+        timeout-minutes: 30
+        working-directory: full-ai-cluster
+        run: nix build .#checks.x86_64-linux.k3s-datastore-preflight-fail-closed -L --print-build-logs --fallback
+
       # ONLINE end-to-end proof: boots the control-plane WITH internet,
       # installs Cilium for real, asserts the node reaches Ready + CoreDNS
       # Running. This is the gate that catches the full bring-up chain

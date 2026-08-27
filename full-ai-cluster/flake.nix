@@ -471,6 +471,35 @@
           k3s-agent-join =
             import ./nixos/tests/k3s-agent-join.nix { inherit pkgs; };
 
+          # TWO CONTROL PLANES, ONE CLUSTER. The sibling above boots a server
+          # and an AGENT; an agent has no datastore, no etcd and no CA, so it
+          # cannot exercise the path `injected-server-join.nix` exists for — a
+          # role=server node given `--server` joins an ETCD cluster, which is a
+          # different code path. Asserts the discriminator that node-count
+          # cannot: both nodes hold the SAME cluster CA. Two nodes that each
+          # founded are also both "up", which is how one intended cluster
+          # became the two sitting on the maintainer's LAN.
+          # Hermetic (membership + CA identity, not readiness).
+          # See nixos/tests/k3s-server-join.nix.
+          k3s-server-join =
+            import ./nixos/tests/k3s-server-join.nix { inherit pkgs; };
+
+          # THE DIRTY-DISK REFUSAL, on a real boot. k3s IGNORES
+          # --cluster-init/--server/--token-file when a datastore already
+          # exists, so a declarative join onto a dirty disk is a SILENT no-op
+          # with `systemctl status k3s` green throughout.
+          # lint-k3s-datastore-preflight.test.ts already executes the refusal
+          # SCRIPT over fixtures; what no test could reach is whether systemd
+          # HONOURS `before` + `requiredBy` on a boot. Wire that `wantedBy`
+          # instead and k3s starts anyway while every existing assertion still
+          # passes — the vacuity class in unit-file form. This check is what
+          # refutes that mutation.
+          # See nixos/tests/k3s-datastore-preflight-fail-closed.nix.
+          k3s-datastore-preflight-fail-closed =
+            import ./nixos/tests/k3s-datastore-preflight-fail-closed.nix {
+              inherit pkgs;
+            };
+
           # ONLINE end-to-end: boots the control-plane WITH internet, installs
           # Cilium for real, asserts the node reaches Ready + CoreDNS Running.
           # REQUIRES internet -> build with `--option sandbox false`.
