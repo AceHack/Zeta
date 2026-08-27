@@ -637,6 +637,94 @@ export interface DroughtLiveness {
  * false when the detector cannot demonstrate it saw anything, and a not-live detector
  * never reports `ok`.
  */
+/**
+ * The listing this detector reads is NOT a stable channel, and until 2026-08-27 nothing
+ * said so.
+ *
+ * Measured that day: `GET /actions/workflows/gate.yml/runs?branch=main&event=push` returned,
+ * from the same credential minutes apart, once a page whose newest run was
+ * `2026-08-02T19:22Z` and otherwise a page whose newest run was `2026-08-27T14:12Z` — a
+ * ~25-day-stale secondary index, served intermittently, with no error and a 200. The
+ * `drift (loud)` job at 14:26:30Z drew the stale page and reported `DROUGHT — main's last
+ * completed verdict is stale … 35703 min ago … 6029 commit(s)`. `main` had in fact been
+ * verdicted 19 minutes earlier. Both halves of the report were wrong, and it was the only
+ * failing job on 44 of the last 60 `push` runs on main.
+ *
+ * A loud detector that is loud about the wrong thing is worse than a quiet one: it trains
+ * every reader to skip it, which is precisely the cry-wolf failure `drift-loud.ts` was
+ * designed against. And it is the file's own subject turned inward — a check that did not
+ * look must not be readable as a check that ran.
+ *
+ * The guard is self-reference, because the detector holds exactly one fact the listing
+ * cannot fake: **it is itself one of the runs the listing is supposed to contain.** When
+ * this process is executing inside a `push` run of `gate.yml` on `main`, its own run id
+ * MUST appear in the window. If it does not, the window is stale — no fold over it can be
+ * trusted, and the honest register is `unknown`, never `drought`.
+ *
+ * Scope is deliberate and narrow. `drift-sweep` invokes the same reporter with
+ * `--report-only` from a `schedule` run of a different workflow, where the current run is
+ * legitimately absent; applying the guard there would be a check that always fires. So all
+ * of `event`, `ref`, and `workflow` must place the caller inside the listing before its
+ * absence means anything. `null` context (a local run, a fixture replay) skips it — the
+ * guard reports on what it can see and never guesses.
+ */
+export interface SelfWitnessContext {
+  readonly runId: string;
+  readonly eventName: string;
+  readonly refName: string;
+  readonly workflowRef: string;
+}
+
+/** The environment this reporter is executing in, or `null` when it is not in Actions. */
+export function selfWitnessFromEnv(env: Record<string, string | undefined>): SelfWitnessContext | null {
+  const runId = env["GITHUB_RUN_ID"] ?? "";
+  const eventName = env["GITHUB_EVENT_NAME"] ?? "";
+  const refName = env["GITHUB_REF_NAME"] ?? "";
+  const workflowRef = env["GITHUB_WORKFLOW_REF"] ?? "";
+  if (runId.length === 0) return null;
+  return { runId, eventName, refName, workflowRef };
+}
+
+/**
+ * `true` when the caller is one of the runs `?branch=main&event=push` is required to list.
+ * Only then does its absence prove staleness rather than prove nothing.
+ */
+export function selfIsInsideWindow(ctx: SelfWitnessContext): boolean {
+  return (
+    ctx.eventName === "push" &&
+    ctx.refName === "main" &&
+    ctx.workflowRef.includes(".github/workflows/gate.yml")
+  );
+}
+
+/**
+ * The staleness verdict. `null` => the guard does not apply (not in Actions, or the caller
+ * is not inside the window). Non-null => the window did not contain the caller, so it is
+ * stale and nothing folded from it may be reported as a measurement.
+ */
+export function detectStaleWindow(
+  observations: readonly GateRunObservation[],
+  ctx: SelfWitnessContext | null,
+): string | null {
+  if (ctx === null || !selfIsInsideWindow(ctx)) return null;
+  const selfId = Number.parseInt(ctx.runId, 10);
+  if (!Number.isFinite(selfId)) return null;
+  if (observations.some((r) => r.id === selfId)) return null;
+  const newest = orderNewestFirst(observations)[0];
+  const newestNote =
+    newest === undefined
+      ? "the window was empty"
+      : `the newest run it listed was ${String(newest.id)} (${newest.endedAt})`;
+  return (
+    `STALE LISTING, NOT A DROUGHT: this reporter is executing inside gate run ${ctx.runId}, ` +
+    `a \`push\` run of \`gate.yml\` on \`main\` — so that run is by construction one the ` +
+    `\`?branch=main&event=push\` listing must contain. It did not: ${newestNote}. ` +
+    "The Actions API served a stale secondary index with a 200 and no error, which has been " +
+    "observed ~25 days behind. NO drought is claimed from this window, because a fold over a " +
+    "listing that cannot see the caller is a measurement that did not happen."
+  );
+}
+
 export function assertDroughtDetectorLive(report: DroughtReport): DroughtLiveness {
   if (report.windowRuns === 0) {
     return {
@@ -899,6 +987,22 @@ async function main(): Promise<number> {
     observations = (listed.workflow_runs ?? []).map(toObservation);
     const newestVerdict = orderNewestFirst(observations).find((r) => isVerdict(r.conclusion));
     unverified = newestVerdict === undefined ? null : await commitsSince(repo, newestVerdict.sha, token);
+  }
+
+  // Before folding: did the listing contain the caller? A window that cannot see the run
+  // it is being read from is stale, and a fold over it is not a measurement. This is
+  // checked on the RAW observations, ahead of `foldDrought`, so a stale page can never
+  // reach the register at all.
+  const stale = detectStaleWindow(observations, selfWitnessFromEnv(process.env));
+  if (stale !== null) {
+    console.log("## main gate-verdict drought -- NOT MEASURED\n");
+    console.log(stale);
+    console.log(`::error title=verdict-drought read a stale listing::${stale}`);
+    console.log(
+      "\nEXIT 1 -- register `unmeasured`. This job is NOT in the `gate (required)` floor: " +
+        "the merge is unaffected. Red here means the detector could not see, not that main is stale.",
+    );
+    return 1;
   }
 
   const report = foldDrought(observations, unverified, nowIso, thresholds);

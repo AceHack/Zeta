@@ -26,6 +26,7 @@ import {
   constrainId,
   constrainSha,
   DEFAULT_DROUGHT_THRESHOLDS,
+  detectStaleWindow,
   droughtAnnotations,
   foldDrought,
   isVerdict,
@@ -34,6 +35,8 @@ import {
   orderNewestFirst,
   renderDroughtMarkdown,
   RUNNING,
+  selfIsInsideWindow,
+  selfWitnessFromEnv,
   severityOfRegister,
   shortSha,
   toObservation,
@@ -631,5 +634,127 @@ describe("the cancellation rate is annotated INDEPENDENTLY of the register", () 
     const lines = droughtAnnotations(drought, assertDroughtDetectorLive(drought));
     expect(lines.filter((l) => l.includes("gate cancellation rate")).length).toBe(0);
     expect(lines[0]).toContain("CANCELLATION RATE");
+  });
+});
+
+
+/**
+ * THE STALE-LISTING GUARD -- the falsifiers for the 2026-08-27 false drought.
+ *
+ * Live instance: `drift (loud)` in gate run 33080913662 reported a 35,703-minute /
+ * 6,029-commit drought while `main` had been verdicted 19 minutes earlier. The code was
+ * correct; its INPUT was a ~25-day-stale page that the Actions API served with a 200 and
+ * no error, intermittently, from the same credential that returned fresh pages minutes
+ * either side. Nothing in the reporter could tell the two apart, so the loudest detector
+ * in the repo was loud about a fact that was not true, on 44 of the last 60 pushes.
+ *
+ * These pin the one fact a stale listing cannot fake: the reporter is itself a run the
+ * listing must contain.
+ */
+describe("a window that cannot see the caller is stale, not a drought", () => {
+  const IN_WINDOW = {
+    runId: "33080913662",
+    eventName: "push",
+    refName: "main",
+    workflowRef: "Lucent-Financial-Group/Zeta/.github/workflows/gate.yml@refs/heads/main",
+  };
+
+  test("the live 2026-08-27 shape: caller absent from a stale page => STALE, never drought", () => {
+    // The page the API actually served: newest run ~25 days old, caller nowhere in it.
+    const stalePage = [obs(30763213560, "success", 35_700), obs(30762762709, "success", 35_703)];
+    const msg = detectStaleWindow(stalePage, IN_WINDOW);
+    expect(msg).not.toBeNull();
+    expect(msg).toMatch(/STALE LISTING, NOT A DROUGHT/);
+    expect(msg).toContain("33080913662");
+  });
+
+  test("caller PRESENT => the guard stands down and the fold is trusted", () => {
+    const freshPage = [obs(33080913662, "failure", 1), obs(33078983023, "failure", 20)];
+    expect(detectStaleWindow(freshPage, IN_WINDOW)).toBeNull();
+  });
+
+  test("an EMPTY window is stale too — the case that renders identically to a healthy one", () => {
+    expect(detectStaleWindow([], IN_WINDOW)).toMatch(/the window was empty/);
+  });
+
+  test("outside Actions the guard never fires — it reports what it sees, never guesses", () => {
+    expect(detectStaleWindow([], null)).toBeNull();
+    expect(selfWitnessFromEnv({})).toBeNull();
+    expect(selfWitnessFromEnv({ GITHUB_RUN_ID: "" })).toBeNull();
+  });
+
+  test("the guard is SCOPED — drift-sweep's schedule run is legitimately absent", () => {
+    // Same reporter, different host: `drift-sweep` calls it with `--report-only` from a
+    // `schedule` run of another workflow. Its run id is not in a `push`-filtered listing
+    // and never should be, so firing there would be a check that always fires.
+    const sweep = { ...IN_WINDOW, eventName: "schedule", workflowRef: "o/r/.github/workflows/drift-sweep.yml@refs/heads/main" };
+    expect(detectStaleWindow([], sweep)).toBeNull();
+    expect(selfIsInsideWindow(sweep)).toBe(false);
+  });
+
+  test("each scope condition is load-bearing on its own", () => {
+    expect(selfIsInsideWindow(IN_WINDOW)).toBe(true);
+    expect(selfIsInsideWindow({ ...IN_WINDOW, eventName: "pull_request" })).toBe(false);
+    expect(selfIsInsideWindow({ ...IN_WINDOW, refName: "shadow/x" })).toBe(false);
+    expect(selfIsInsideWindow({ ...IN_WINDOW, workflowRef: "o/r/.github/workflows/other.yml@refs/heads/main" })).toBe(false);
+  });
+
+  test("a non-numeric run id is unknown, not stale — an unparseable fact proves nothing", () => {
+    expect(detectStaleWindow([], { ...IN_WINDOW, runId: "not-a-number" })).toBeNull();
+  });
+});
+
+/**
+ * THE WIRING, not the guard.
+ *
+ * Every test above proves `detectStaleWindow` decides correctly. None of them proved
+ * `main()` ASKS it — unhooking the call left all sixty green, which is the same vacuity
+ * one level up that the guard itself exists to catch. This drives the real entry point in
+ * a subprocess with a fixture window and a forged Actions environment, so the stale page
+ * has to travel the whole path and come out as `unmeasured` rather than `drought`.
+ */
+describe("main() is WIRED to the guard", () => {
+  const SCRIPT = new URL("./verdict-drought.ts", import.meta.url).pathname;
+
+  /** The 2026-08-27 page: two ~25-day-old runs, caller absent. */
+  const STALE_FIXTURE = JSON.stringify([
+    { id: 30763213560, sha: "a48ffa5cdeadbeef", conclusion: "success", startedAt: "2026-08-02T19:10:07Z", endedAt: "2026-08-02T19:23:30Z" },
+  ]);
+
+  async function run(env: Record<string, string>): Promise<{ code: number; out: string }> {
+    const fixture = `${process.env["TMPDIR"] ?? "/tmp"}/vd-wire-${env["GITHUB_RUN_ID"] ?? "x"}.json`;
+    await Bun.write(fixture, STALE_FIXTURE);
+    const proc = Bun.spawn(["bun", SCRIPT, "--observations", fixture, "--now", "2026-08-27T14:26:24Z"], {
+      env: { ...process.env, ...env },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    const out = await new Response(proc.stdout).text();
+    const code = await proc.exited;
+    return { code, out };
+  }
+
+  test("inside a gate push run on main, a stale window exits `unmeasured` and never says DROUGHT", async () => {
+    const { code, out } = await run({
+      GITHUB_RUN_ID: "33080913662",
+      GITHUB_EVENT_NAME: "push",
+      GITHUB_REF_NAME: "main",
+      GITHUB_WORKFLOW_REF: "o/r/.github/workflows/gate.yml@refs/heads/main",
+    });
+    expect(out).toMatch(/STALE LISTING, NOT A DROUGHT/);
+    expect(out).toMatch(/NOT MEASURED/);
+    expect(out).not.toMatch(/DROUGHT -- main's last completed verdict is stale/);
+    expect(code).toBe(1);
+  });
+
+  test("outside that scope the SAME fixture still folds — the guard did not swallow the lane", async () => {
+    const { out } = await run({
+      GITHUB_RUN_ID: "999",
+      GITHUB_EVENT_NAME: "schedule",
+      GITHUB_REF_NAME: "main",
+      GITHUB_WORKFLOW_REF: "o/r/.github/workflows/drift-sweep.yml@refs/heads/main",
+    });
+    expect(out).not.toMatch(/STALE LISTING/);
+    expect(out).toMatch(/drought/);
   });
 });
