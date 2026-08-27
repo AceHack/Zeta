@@ -1,0 +1,12 @@
+{
+  "pr_number": 15854,
+  "archive_path": "docs/history/pr-reviews/PR-15854-docs-composability-over-layers-extract-is-measured-binary-fs-end-state.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T18:24:59.344Z",
+  "schema_version": "v1",
+  "commit_sha": "29b28938b938167a3bbd55c67c2976240279b4a6",
+  "title": "docs: composability over layers; extract is measured; binary FS end-state",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:23:18Z",
+  "head_ref": "feat/composability-over-layers"
+}
