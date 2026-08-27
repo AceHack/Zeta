@@ -68,9 +68,47 @@ let ``generator update reinterprets retained history without rewriting it`` () =
     let opening = reread before history
     let delta = ZetaFsDualFold.reinterpret reread history before after
     let view = ZetaFsDualFold.foldForward [ opening; delta ]
-    Assert.Equal<ZSet<int>>(reread after history, view)
-    // history itself is a value — the generator never held a mutable log
-    Assert.Equal<int list>([ 1; 2; 1 ], history)
+    // Oracles hand-counted off the history, NOT routed back through `reinterpret`
+    // or through `reread after`. `1` occurs twice and is relabelled to `9`, so the
+    // emitted delta retracts exactly those two rows and emits two under the new
+    // label; `2` is untouched and must not appear in the delta at all.
+    Assert.Equal<ZSet<int>>(ZSet.ofSeq [ 1, -2L; 9, 2L ], delta)
+    Assert.Equal<ZSet<int>>(ZSet.ofSeq [ 2, 1L; 9, 2L ], view)
+
+[<Fact>]
+let ``generator update reads the retained record twice, once per interpretation`` () =
+    // The record is a MUTABLE buffer on purpose. Against an immutable `int list`,
+    // "the past is not rewritten" is handed to us by the type and no implementation
+    // could violate it, so asserting it there is a check that cannot fail. Here a
+    // recording generator pins the read DISCIPLINE instead: how many reads, in which
+    // order, and against which record — all three are things a wrong `reinterpret`
+    // can get wrong.
+    let record = ResizeArray<int>([ 1; 2; 1 ])
+    let reads = ResizeArray<Interp * int list>()
+
+    let recording: ZetaFsDualFold.Generator<ResizeArray<int>, Interp, int> =
+        fun (interp: Interp) (h: ResizeArray<int>) ->
+            reads.Add(interp, List.ofSeq h)
+            h
+            |> Seq.map (fun x ->
+                let label =
+                    match Map.tryFind x interp with
+                    | Some y -> y
+                    | None -> x
+
+                label, 1L)
+            |> ZSet.ofSeq
+
+    let before: Interp = Map.empty
+    let after: Interp = Map.add 1 9 Map.empty
+    let delta = ZetaFsDualFold.reinterpret recording record before after
+    Assert.Equal(2, reads.Count)
+    Assert.Equal<Interp>(before, fst reads.[0])
+    Assert.Equal<Interp>(after, fst reads.[1])
+    // both readings saw the SAME retained record — the second is not a successor state
+    Assert.Equal<int list>(snd reads.[0], snd reads.[1])
+    Assert.Equal<int list>([ 1; 2; 1 ], List.ofSeq record)
+    Assert.Equal<ZSet<int>>(ZSet.ofSeq [ 1, -2L; 9, 2L ], delta)
 
 [<Fact>]
 let ``idempotent generator update emits the empty delta`` () =
@@ -113,15 +151,34 @@ let ``foldForward of a delta and its retraction is empty`` (pairs: (int * int64)
     let d = zsetOf pairs
     (ZetaFsDualFold.foldForward [ d; ZetaFsDualFold.retract d ]).IsEmpty
 
+/// The delta a reinterpretation emits is pinned against an oracle COUNTED OFF THE
+/// HISTORY — not against `reinterpret`'s own definition, and not against a second
+/// call to the generator. Relabelling `raw -> label` moves exactly the `n` rows that
+/// carried `raw`; every other row cancels and must be absent.
+///
+/// Two input choices are load-bearing and were wrong in the first draft of this
+/// property: `raw` is DRAWN FROM the history (an independently generated one misses
+/// on most inputs, leaving the delta empty and the property trivially true), and
+/// `label` is drawn from a range disjoint from the history (a colliding label makes
+/// the expected delta a different shape).
 [<Property>]
-let ``reinterpret then fold equals the generator under the new interpretation``
-    (history: int list)
-    (raw: int)
-    (label: int)
+let ``reinterpret emits exactly the rows the relabelling moves``
+    (seed: int)
+    (rest: int list)
+    (pick: int)
     =
-    let history = history |> List.truncate 8
+    let wrap (m: int) (x: int) = ((x % m) + m) % m
+    // non-empty by construction: no trivially-passing empty-history branch
+    let history = (seed :: rest) |> List.truncate 8 |> List.map (wrap 97)
+    let raw = history.[wrap history.Length pick]
+    let label = 100 + wrap 50 pick // 100..149, disjoint from 0..96
     let before: Interp = Map.empty
     let after = Map.add raw label Map.empty
-    let opening = reread before history
+    let n = history |> List.sumBy (fun x -> if x.Equals raw then 1L else 0L)
     let delta = ZetaFsDualFold.reinterpret reread history before after
-    ZetaFsDualFold.foldForward [ opening; delta ] = reread after history
+    let movedRows = ZSet.ofSeq [ raw, -n; label, n ]
+    let opening = reread before history
+
+    delta = movedRows
+    && n > 0L
+    && ZetaFsDualFold.foldForward [ opening; delta ] = reread after history
