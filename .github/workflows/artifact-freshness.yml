@@ -1,0 +1,112 @@
+# Is the timestamp we PUBLISH actually recent?
+#
+# THE FAILURE THIS ENDS. Three scheduled lanes died quietly and none produced a signal
+# anyone read: the Red State lane failed ten consecutive runs (2026-08-25T06:37Z ->
+# 2026-08-27T02:02Z) with `demo/red/red-state.json` frozen at 2026-08-23T18:35Z; a
+# sibling went two days; a retired launchd lane went ten weeks. Each was found because
+# a human happened to read a name off a list. That is not a detection mechanism.
+#
+# The surface was already there and unused. `collect-red-state.ts` writes
+# `generatedAtIso` and `demo/red/index.html` renders it in the footer — and nothing
+# asserted it was recent. A timestamp that is displayed but never checked is
+# decoration: it makes a page look accountable and holds nobody to anything.
+#
+# WHY THIS IS NOT THE DRIFT DASHBOARD AGAIN. That watches whether each WORKFLOW
+# produced a verdict. This watches whether the ARTIFACT the workflow exists to publish
+# actually LANDED. They come apart, and the gap is not theoretical: a lane can go
+# green, collect perfectly, and publish nothing when its flush PR does not merge. The
+# dashboard calls that lane healthy while the file is four days old.
+#
+# NOT A GATE, DELIBERATELY. This job goes RED so a freeze is visible in a conclusion
+# rather than in a file nobody opens, and it is absent from the required-check floor,
+# so it blocks no merge. Promoting it to the floor is the maintainer's call and must
+# not be a side effect of shipping the check
+# (`docs/DECISIONS/2026-07-09-drift-and-heal-replaces-pre-merge-gates-...`).
+#
+# AND IT IS ITSELF WATCHED. The drift dashboard enumerates every ACTIVE workflow and
+# derives each one's expected cadence from its own `cron`, so this lane joins that
+# roster automatically. If it stops firing, the next drift pass reports it as a
+# periodic check gone stale — the same strange loop `drift-dashboard-cadence.yml`
+# describes for itself. A watcher that could go dark unnoticed would just move the
+# problem up one level.
+
+name: artifact-freshness
+
+on:
+  schedule:
+    # EVERY TWO HOURS, and the number is chosen rather than inherited. The subjects
+    # declare a 6h cadence and go stale at 18h; polling at the subjects' own cadence
+    # would add up to a full period of detection latency on top of that, so the
+    # watcher runs faster than what it watches. Two hours bounds the delay between a
+    # freeze crossing the line and someone being able to see it, and the check is a
+    # single file read — cheap enough that a tighter interval buys nothing.
+    #
+    # :07 keeps it clear of the :23 and :41 lanes it observes, so it never reads a
+    # roster mid-flush, and off-the-hour so the fleet's scheduled runs are not all
+    # dropped together under scheduler load.
+    - cron: "7 */2 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "src/Core.TypeScript/hygiene/audit-artifact-freshness.ts"
+      - ".github/workflows/artifact-freshness.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: artifact-freshness
+  cancel-in-progress: true
+
+jobs:
+  freshness:
+    name: Published artifacts carry a recent timestamp
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      # No `continue-on-error` and no `|| true`. A swallowed refusal is what let the
+      # original freezes run for days: the lane reported success while publishing
+      # nothing. The audit emits `::error title=Stale published artifact (<id>)::` per
+      # subject, so the annotation names WHICH artifact and how old it is without
+      # anyone opening the log.
+      #
+      # `set -o pipefail` IS LOAD-BEARING HERE, not boilerplate. GitHub Actions runs
+      # `run:` under `bash -e {0}` with pipefail OFF, so `bun … | tee f` reports TEE's
+      # status — always 0 — and this step would go green on every stale artifact it
+      # found. An exit code read through a pipe is a check that never ran, wearing a
+      # pass. `tee` still writes the file before the pipeline's status is taken, so the
+      # summary below keeps its input.
+      - name: Audit published-artifact freshness
+        id: audit
+        run: |
+          set -euo pipefail
+          bun src/Core.TypeScript/hygiene/audit-artifact-freshness.ts | tee freshness.txt
+
+      # `if: always()` so the summary is written on the red path too — a report that
+      # only appears when there is nothing to report is not a report.
+      - name: Publish to the run summary
+        if: always()
+        run: |
+          {
+            echo "## Published-artifact freshness"
+            echo
+            if [ "${{ steps.audit.outcome }}" = "success" ]; then
+              echo "Every published artifact carries a timestamp inside its lane's window."
+            else
+              echo "**A published artifact is not fresh.** Its lane may be dead, or alive"
+              echo "and failing to LAND what it collected — a green workflow and a frozen"
+              echo "file are compatible, which is the gap this check exists for."
+            fi
+            echo
+            echo '```'
+            cat freshness.txt 2>/dev/null || echo "(no output captured — the step died before the audit ran)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
