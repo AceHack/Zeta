@@ -355,6 +355,10 @@ export function prepare(lane: string): number {
   // The buffer is always a superset of the active PR head: a publish mirrors the
   // same commit to both refs, then backpressured ticks advance only the buffer.
   // Prefer it so a merged active PR cannot strand observations accumulated later.
+  // NOTE: this loop `break`s at the first candidate that exists, so the ACTIVE ref's
+  // remote-tracking ref is normally never created here. Nothing downstream may assume it
+  // exists — the `flush` pushes name their lease explicitly for exactly that reason
+  // (`leaseArg`), rather than relying on a tracking ref this loop did not fetch.
   let ref: string | undefined;
   for (const candidate of [bufferRef(lane), stagingRef(lane)]) {
     // Exit 2 means the named ref does not exist. Any other non-zero result is an
@@ -370,8 +374,8 @@ export function prepare(lane: string): number {
     //
     // A lane buffer is a DISPOSABLE AGGREGATE (see `bufferRef`): every flush does
     // `checkout -B staging-<lane> origin/main` and republishes, so the ref is
-    // routinely REWRITTEN rather than advanced. `fetch-depth: 0` in the calling
-    // workflows means `refs/remotes/origin/<candidate>` already exists locally from
+    // routinely REWRITTEN rather than advanced. Where a calling workflow sets
+    // `fetch-depth: 0`, `refs/remotes/origin/<candidate>` already exists locally from
     // checkout. Without `+`, git refuses a non-fast-forward update to that
     // remote-tracking ref and exits non-zero — so this lane failed whenever the
     // buffer was rewritten between checkout and here, i.e. whenever another PR's
@@ -437,6 +441,142 @@ export function prepare(lane: string): number {
 
   process.stdout.write(`[flush] unioned pending ${ref} content onto origin/main\n`);
   return 0;
+}
+
+/**
+ * Build the EXPLICIT `--force-with-lease` argument for a lane ref.
+ *
+ * THE BARE FORM CANNOT EVALUATE ITS OWN LEASE, and that was a live outage.
+ * `git push --force-with-lease` with no `=<expect>` compares against the local
+ * remote-tracking ref `refs/remotes/origin/<ref>`. When that ref is ABSENT git does not
+ * fall back to "no expectation" — it refuses the push outright with
+ * `! [rejected] ... (stale info)`. The lease is not violated; it is UNREADABLE, and git
+ * reports both conditions with the same two words.
+ *
+ * On this lane the tracking ref is reliably absent. `proof-closure-drift.yml` pins
+ * `actions/checkout` with no `fetch-depth`, so the runner clones at depth 1 and fetches
+ * only the target ref — `refs/remotes/origin/heartbeat/<lane>` never exists. `prepare`
+ * creates a tracking ref only for the FIRST candidate that exists and then `break`s, and
+ * the buffer always exists, so the ACTIVE ref is never fetched. That is exactly the
+ * observed asymmetry: in the same run, seconds apart, the buffer push (which `prepare`
+ * had fetched) succeeded and the active push (which it had not) was rejected.
+ *
+ * NOTE the stale comment this corrects: `prepare` claims "`fetch-depth: 0` in the calling
+ * workflows means `refs/remotes/origin/<candidate>` already exists locally from checkout".
+ * That is true of the lanes it was written for and FALSE here — this workflow sets no
+ * `fetch-depth` at all. The assumption was load-bearing and unchecked.
+ *
+ * The defect was latent for as long as the lane stayed backpressured: while a flush PR is
+ * open, `chooseFlushRoute` returns `buffer` and `flush` returns before reaching the active
+ * push at all. PR #12321 merged 2026-08-25T03:26:23Z; the 00:37Z run before it buffered
+ * and passed, the 06:37Z run after it took the publish path and failed, and every run
+ * since has failed identically. Ten consecutive runs with no code change between them —
+ * the trigger was a REF-STATE transition, not a commit.
+ *
+ * Naming the expectation explicitly fixes it WITHOUT weakening it. `<ref>:<sha>` is still
+ * a compare-and-swap against the tip read moments earlier, so a concurrent writer that
+ * moves the ref in between is still rejected — the property that stops this lane
+ * clobbering a PR head that is mid-gate. `<ref>:` (empty expect) means "must not already
+ * exist", the correct assertion for a lane ref that has never been created. Degrading to a
+ * plain `--force` would also have made the symptom disappear, and would have thrown that
+ * protection away; it is deliberately not done here and must not be.
+ */
+export function leaseArg(ref: string, remoteSha: string | null): string {
+  return `refs/heads/${ref}:${remoteSha ?? ""}`;
+}
+
+/**
+ * Read the remote tip of a lane ref so the lease can name it.
+ *
+ * `ls-remote` WITHOUT `--exit-code` is deliberate: an absent ref is a normal state for a
+ * lane that has never published, and it exits 0 with empty output, which `leaseArg` turns
+ * into the "must not exist" expectation. A non-zero exit is an UNREADABLE REMOTE, and that
+ * fails closed — pushing under a lease we could not compute would mean pushing under no
+ * lease at all, over a head we cannot see.
+ */
+export function remoteTip(ref: string): { readonly sha: string | null } | { readonly error: string } {
+  const probe = git("ls-remote", "--heads", "origin", `refs/heads/${ref}`);
+  if (probe.status !== 0) {
+    return {
+      error:
+        `could not read the remote tip of ${ref} (git ls-remote exit ${String(probe.status)}): ` +
+        (probe.stderr || probe.stdout || "(no output from git)"),
+    };
+  }
+  const sha = probe.stdout.trim().split(/\s+/)[0];
+  return { sha: sha !== undefined && sha.length > 0 ? sha : null };
+}
+
+/**
+ * Publish `HEAD` onto a lane ref under an explicit lease. Returns `null` on success, or
+ * the reason it failed — always naming the git command, so the annotation the caller emits
+ * carries an instance rather than only the exit code's class.
+ *
+ * `expected` SHOULD be supplied by callers that have already made a routing decision, and
+ * `flush` does. The lease is a compare-and-swap, so the window it protects is the span
+ * between observing the tip and pushing — read the tip here and that window collapses to
+ * milliseconds, which would quietly make the guard weaker than the bare form it replaces.
+ * Observing at ROUTING time instead makes the CAS cover the whole decision: "no open PR
+ * held this ref when I decided to move it, and nothing has moved it since." Falling back
+ * to a fresh read keeps the helper usable standalone (and in tests).
+ */
+export function pushLaneRef(
+  ref: string,
+  expected?: { readonly sha: string | null },
+): { readonly command: string; readonly detail: string } | null {
+  const tip = expected ?? remoteTip(ref);
+  if ("error" in tip) {
+    return { command: `git ls-remote --heads origin refs/heads/${ref}`, detail: tip.error };
+  }
+  const lease = leaseArg(ref, tip.sha);
+  const command = `git push --force-with-lease=${lease} origin HEAD:refs/heads/${ref}`;
+  const pushed = git("push", `--force-with-lease=${lease}`, "origin", `HEAD:refs/heads/${ref}`);
+  if (pushed.status !== 0) {
+    return {
+      command,
+      detail: `exit ${String(pushed.status)}: ${pushed.stderr || pushed.stdout || "(no output from git)"}`,
+    };
+  }
+  return null;
+}
+
+/**
+ * Read both of a lane's ref tips in one step, so `flush` carries one failure branch rather
+ * than two. Fails closed on either — a lease that cannot be computed must not become a
+ * push with no lease at all.
+ */
+export function observeLaneTips(
+  activeRef: string,
+  bufferRefName: string,
+):
+  | { readonly active: { readonly sha: string | null }; readonly buffer: { readonly sha: string | null } }
+  | { readonly command: string; readonly error: string } {
+  const active = remoteTip(activeRef);
+  if ("error" in active) {
+    return { command: `git ls-remote --heads origin refs/heads/${activeRef}`, error: active.error };
+  }
+  const buffer = remoteTip(bufferRefName);
+  if ("error" in buffer) {
+    return { command: `git ls-remote --heads origin refs/heads/${bufferRefName}`, error: buffer.error };
+  }
+  return { active, buffer };
+}
+
+/**
+ * Emit a git failure as a GitHub annotation as well as on stderr.
+ *
+ * `Process completed with exit code 3` was the ENTIRE annotation for all ten failures of
+ * this lane. The exit code is a CLASS (`3` = a git operation failed) and carries no
+ * instance; the stderr detail naming the actual command sat in the log the whole time and
+ * nothing surfaced it where a human scanning check names would see it. Same discipline as
+ * the toolchain-free step-outcome annotation `build-and-test` grew in #15692: make the red
+ * thing say what broke. The exit-code vocabulary is unchanged — `3` still means exactly
+ * what it meant, it just no longer travels alone.
+ */
+function annotateGitFailure(lane: string, command: string, detail: string): void {
+  const flat = `${command} — ${detail}`.replace(/\r?\n/g, " ").trim();
+  process.stderr.write(`::error title=Telemetry flush git failure (lane ${lane})::${flat}\n`);
+  process.stderr.write(`flush-via-staging: ${command} failed: ${detail}\n`);
 }
 
 /**
@@ -533,6 +673,17 @@ export function flush(opts: FlushOptions): number {
   const headVerdict = existing.found === null ? "under-test" : probeHeadVerdict(opts.repo, existing.found.headSha);
   const route = chooseFlushRoute(opts.lane, existing.found, headVerdict);
 
+  // Observe both tips HERE — after the routing decision, before anything is written — so
+  // the leases below are a compare-and-swap over the whole decision window rather than
+  // over the microseconds around the push. A ref that moves after this point invalidates
+  // the decision that authorised moving it, and the push must fail rather than clobber.
+  const tips = observeLaneTips(route.activeRef, route.bufferRef);
+  if ("error" in tips) {
+    annotateGitFailure(opts.lane, tips.command, tips.error);
+    return 3;
+  }
+  const { active: activeTip, buffer: bufferTip } = tips;
+
   // Signed at the choke point — see `agencySignatureBlock` for why here and not
   // in each lane's workflow yaml.
   const commit = git("commit", "--no-verify", "-m", signedFlushMessage(opts.message, opts.lane));
@@ -544,11 +695,9 @@ export function flush(opts: FlushOptions): number {
   // Buffer first. If publishing the active ref subsequently fails, the payload is
   // still parked and the next prepare recovers it. A publish mirrors one commit to
   // both refs; later ticks advance only the buffer until that PR merges.
-  const pushBuffer = git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${route.bufferRef}`);
-  if (pushBuffer.status !== 0) {
-    process.stderr.write(
-      `flush-via-staging: push to ${route.bufferRef} failed: ${pushBuffer.stderr || pushBuffer.stdout}\n`,
-    );
+  const pushBuffer = pushLaneRef(route.bufferRef, bufferTip);
+  if (pushBuffer !== null) {
+    annotateGitFailure(opts.lane, pushBuffer.command, pushBuffer.detail);
     return 3;
   }
 
@@ -576,11 +725,11 @@ export function flush(opts: FlushOptions): number {
   // --force-with-lease: both refs are scratch aggregates reset from main. The
   // active ref changes only when it has no open PR (or when its head is dead and is being
   // superseded); the buffer may advance while a live active head completes its checks.
-  const pushActive = git("push", "--force-with-lease", "origin", `HEAD:refs/heads/${route.activeRef}`);
-  if (pushActive.status !== 0) {
-    process.stderr.write(
-      `flush-via-staging: push to ${route.activeRef} failed: ${pushActive.stderr || pushActive.stdout}\n`,
-    );
+  // The lease is EXPLICIT — see `leaseArg` for why the bare form could not evaluate it
+  // here, and why naming the expectation strengthens rather than relaxes the guard.
+  const pushActive = pushLaneRef(route.activeRef, activeTip);
+  if (pushActive !== null) {
+    annotateGitFailure(opts.lane, pushActive.command, pushActive.detail);
     return 3;
   }
   process.stdout.write(`[flush] ${opts.lane}: parked on ${route.activeRef}; mirrored on ${route.bufferRef}\n`);

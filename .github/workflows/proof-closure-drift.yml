@@ -77,9 +77,11 @@ jobs:
       # every run. So there is nothing to shard and nothing to union semantically:
       # latest-wins is the correct resolution, which is exactly what `prepare` gives here.
       - name: Prepare staging working tree
+        id: prepare
         run: bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts prepare --lane red-state
 
       - name: Collect red state
+        id: collect
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun src/Core.TypeScript/hygiene/collect-red-state.ts --ci
@@ -89,6 +91,7 @@ jobs:
       # main is no longer possible: ruleset "CI Gate" requires `gate (required)` at push
       # time with no bypass actors, by design.
       - name: Flush to main via staging branch + PR
+        id: flush
         env:
           # ROLE: PR-CREATE. One role, one secret.
           #
@@ -119,6 +122,30 @@ jobs:
             --lane red-state \
             --paths demo/red/red-state.json \
             --message "chore(red-state): refresh dashboard data"
+
+      # WHY THIS STEP EXISTS. This lane failed ten consecutive runs (2026-08-25T06:37Z ->
+      # 2026-08-27T02:02Z) and the only annotation on any of them was
+      # `Process completed with exit code 3`. The exit code is a CLASS, not an instance:
+      # `3` means "a git operation failed" and never says which. The cause -- a
+      # `--force-with-lease` whose remote-tracking ref checkout had never created -- was in
+      # the step log the entire time, and nothing put it where someone reading check names
+      # would see it. A scheduled lane that dies quietly is indistinguishable from one that
+      # never ran, which is the failure class this repo refuses to accept anywhere else.
+      #
+      # `flush-via-staging.ts` now emits `::error title=...` naming the exact git command.
+      # This step is the belt to that braces: it reports WHICH step died even when the step
+      # produced no annotation of its own (a crash, an OOM, the 6-minute timeout).
+      #
+      # TOOLCHAIN-FREE ON PURPOSE, exactly as `build-and-test` does since #15692: `echo`
+      # and nothing else. `echo` is a bash builtin AND a pwsh alias, so this needs no
+      # `shell:` key and no installed program -- it still reports when the failure IS the
+      # toolchain (a Bun install that never completed cannot run a reporter written in Bun).
+      - name: Name the failing step
+        if: failure()
+        run: |
+          echo "::error title=Red State lane failed::prepare=${{ steps.prepare.outcome }} collect=${{ steps.collect.outcome }} flush=${{ steps.flush.outcome }} -- the flush step emits its own ::error naming the git command; if there is no such annotation the step died before reaching git."
+          echo "[step-outcomes] prepare=${{ steps.prepare.outcome }} collect=${{ steps.collect.outcome }} flush=${{ steps.flush.outcome }}"
+          echo "[step-outcomes] exit 3 from the flush step means a git operation failed; exit 2 means bad arguments. They are different faults and must not be read as one."
 
   audit:
     name: Proof-closure claim audit

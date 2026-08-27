@@ -11,11 +11,33 @@ import {
   assertNoSkipCi,
   bufferRef,
   chooseFlushRoute,
+  leaseArg,
+  pushLaneRef,
   classifyHeadVerdict,
   prepare,
   signedFlushMessage,
   stagingRef,
 } from "./flush-via-staging";
+
+// One git runner for every real-git test below. It was copied per-`describe` and the
+// duplicates were flagged; a single definition is also the only way the three suites stay
+// consistent about what "failed" means.
+const g = (cwd: string, ...args: readonly string[]): string => {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
+  if (r.status !== 0) {
+    throw new Error(`git ${args.join(" ")} failed: ${r.stderr || r.stdout}`);
+  }
+  return r.stdout.trim();
+};
+
+// Non-throwing sibling: some cases EXPECT a non-zero git exit and must inspect it.
+const tryG = (cwd: string, ...args: readonly string[]): { status: number; err: string } => {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
+  // `encoding: "utf8"` makes both streams strings, so no coalescing is needed here.
+  return { status: r.status ?? 1, err: `${r.stderr}${r.stdout}` };
+};
 
 const WORKFLOW_DIR = join(import.meta.dir, "..", "..", "..", "..", ".github", "workflows");
 const workflow = (name: string): string => readFileSync(join(WORKFLOW_DIR, name), "utf8");
@@ -202,14 +224,6 @@ describe("the flush lane buffers without invalidating an active PR (real git)", 
     rmSync(tmp, { recursive: true, force: true });
   });
 
-  const g = (cwd: string, ...args: readonly string[]): string => {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
-    if (r.status !== 0) {
-      throw new Error(`git ${args.join(" ")} failed: ${r.stderr || r.stdout}`);
-    }
-    return r.stdout.trim();
-  };
 
   test("an open PR head is stable, every tick survives, and both refs stay bounded", () => {
     const originDir = join(tmp, "origin.git");
@@ -346,14 +360,6 @@ describe("prepare survives a REWRITTEN lane buffer (non-fast-forward)", () => {
     rmSync(tmp, { recursive: true, force: true });
   });
 
-  const g = (cwd: string, ...args: readonly string[]): string => {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
-    const r = spawnSync("git", [...args], { cwd, encoding: "utf8" });
-    if (r.status !== 0) {
-      throw new Error(`git ${args.join(" ")} failed: ${r.stderr || r.stdout}`);
-    }
-    return r.stdout.trim();
-  };
 
   test("a force-updated buffer is adopted rather than rejected", () => {
     const originDir = join(tmp, "origin.git");
@@ -768,5 +774,161 @@ describe("the pr-archive retry loop retries (the workflow's own script, real bas
     }
     // And the operator guidance -- previously unreachable -- actually fires.
     expect(out).toContain("::error title=Archive record could not be delivered");
+  });
+});
+
+// The lane went red for TEN consecutive runs on a single git rejection whose annotation
+// said only `Process completed with exit code 3`. These pin the cause, the cure, and the
+// property the cure must not trade away.
+describe("the active-ref lease is explicit (the `stale info` outage)", () => {
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-flush-lease-"));
+  afterAll(() => {
+    rmSync(tmp, { recursive: true, force: true });
+  });
+
+
+  test("leaseArg names the tip, and an absent ref becomes `must not exist`", () => {
+    expect(leaseArg("heartbeat/red-state", "abc123")).toBe("refs/heads/heartbeat/red-state:abc123");
+    // The empty expect is not a formatting accident -- it is git's "must not already
+    // exist" assertion, which is what a never-published lane ref needs.
+    expect(leaseArg("heartbeat/red-state", null)).toBe("refs/heads/heartbeat/red-state:");
+  });
+
+  // THE REGRESSION. Without an explicit lease this push is rejected `(stale info)` even
+  // though nothing conflicts -- git cannot read a remote-tracking ref that checkout at
+  // depth 1 never created. This test fails against the bare `--force-with-lease`.
+  test("a bare lease is REJECTED when the tracking ref was never fetched; an explicit one succeeds", () => {
+    const originDir = join(tmp, "origin.git");
+    const workDir = join(tmp, "work");
+    const lane = "leaselane";
+    const active = stagingRef(lane);
+
+    g(tmp, "init", "--quiet", "--bare", originDir);
+    g(tmp, "init", "--quiet", workDir);
+    g(workDir, "config", "user.email", "lane@zeta.local");
+    g(workDir, "config", "user.name", "lane");
+    writeFileSync(join(workDir, "base.txt"), "base\n");
+    g(workDir, "add", "-A");
+    g(workDir, "commit", "--quiet", "-m", "base");
+    g(workDir, "branch", "-M", "main");
+    g(workDir, "remote", "add", "origin", originDir);
+    g(workDir, "push", "--quiet", "origin", "main");
+    // The lane ref exists on the forge (a previous flush published it)...
+    g(workDir, "push", "--quiet", "origin", `HEAD:refs/heads/${active}`);
+    // ...but this working copy has NO remote-tracking ref for it, which is precisely what
+    // `actions/checkout` at its default depth produces. Deleting it is how we reproduce
+    // that state; without this line the defect is unreachable and the test proves nothing.
+    tryG(workDir, "update-ref", "-d", `refs/remotes/origin/${active}`);
+    expect(tryG(workDir, "rev-parse", "--verify", `refs/remotes/origin/${active}`).status).not.toBe(0);
+
+    writeFileSync(join(workDir, "base.txt"), "next\n");
+    g(workDir, "commit", "--quiet", "-am", "next");
+
+    // The old code path, verbatim -- and it fails, with the exact words from the CI log.
+    const bare = tryG(workDir, "push", "--force-with-lease", "origin", `HEAD:refs/heads/${active}`);
+    expect(bare.status).not.toBe(0);
+    expect(bare.err).toContain("stale info");
+
+    // The new code path succeeds against the identical repository state. This calls the
+    // SHIPPED function rather than reassembling its arguments here -- a test that rebuilt
+    // the push itself would keep passing if production were degraded to a plain `--force`.
+    const cwd = process.cwd();
+    let fixed: ReturnType<typeof pushLaneRef>;
+    try {
+      process.chdir(workDir);
+      fixed = pushLaneRef(active);
+    } finally {
+      process.chdir(cwd);
+    }
+    expect(fixed).toBeNull();
+    expect(g(workDir, "ls-remote", "--heads", "origin", `refs/heads/${active}`).split(/\s+/)[0]).toBe(
+      g(workDir, "rev-parse", "HEAD"),
+    );
+  });
+
+  // THE PROPERTY THE FIX MUST NOT TRADE AWAY. Degrading to `--force` would have made the
+  // outage disappear too, and would have let this lane clobber a PR head mid-gate. An
+  // explicit lease is still a compare-and-swap: if the remote moved after we read it, the
+  // push must still be refused. Swap `leaseArg` for a plain `--force` and this goes red.
+  test("an explicit lease STILL refuses a ref a concurrent writer moved", () => {
+    const originDir = join(tmp, "origin2.git");
+    const workDir = join(tmp, "work2");
+    const rivalDir = join(tmp, "rival");
+    const active = stagingRef("racelane");
+
+    g(tmp, "init", "--quiet", "--bare", originDir);
+    g(tmp, "init", "--quiet", workDir);
+    g(workDir, "config", "user.email", "lane@zeta.local");
+    g(workDir, "config", "user.name", "lane");
+    writeFileSync(join(workDir, "b.txt"), "base\n");
+    g(workDir, "add", "-A");
+    g(workDir, "commit", "--quiet", "-m", "base");
+    g(workDir, "branch", "-M", "main");
+    g(workDir, "remote", "add", "origin", originDir);
+    g(workDir, "push", "--quiet", "origin", "main");
+    g(workDir, "push", "--quiet", "origin", `HEAD:refs/heads/${active}`);
+
+    // We read the tip -- this is the value our lease will name.
+    const observed = g(workDir, "ls-remote", "--heads", "origin", `refs/heads/${active}`).split(/\s+/)[0];
+
+    // A rival advances the ref AFTER we read it (the PR head we must not clobber).
+    g(tmp, "clone", "--quiet", originDir, rivalDir);
+    g(rivalDir, "config", "user.email", "rival@zeta.local");
+    g(rivalDir, "config", "user.name", "rival");
+    // The bare origin's HEAD is an unborn default branch, so a fresh clone has no
+    // worktree until the lane ref is checked out explicitly.
+    g(rivalDir, "checkout", "--quiet", "-B", "rival", `origin/${active}`);
+    writeFileSync(join(rivalDir, "b.txt"), "rival\n");
+    g(rivalDir, "commit", "--quiet", "-am", "rival");
+    g(rivalDir, "push", "--quiet", "--force", "origin", `HEAD:refs/heads/${active}`);
+    const rivalTip = g(rivalDir, "rev-parse", "HEAD");
+
+    writeFileSync(join(workDir, "b.txt"), "ours\n");
+    g(workDir, "commit", "--quiet", "-am", "ours");
+
+    // Hand the production path the expectation observed BEFORE the rival moved the ref --
+    // which is exactly what `flush` does, capturing both tips at routing time. Bind to the
+    // shipped function, not a rebuilt push: a test that reassembled the push itself would
+    // keep passing if production were degraded to a plain `--force`.
+    const cwd = process.cwd();
+    let raced: ReturnType<typeof pushLaneRef>;
+    try {
+      process.chdir(workDir);
+      raced = pushLaneRef(active, { sha: observed ?? null });
+    } finally {
+      process.chdir(cwd);
+    }
+
+    expect(raced).not.toBeNull();
+    // Not merely "it failed": the rival's commit must still be the tip.
+    expect(g(workDir, "ls-remote", "--heads", "origin", `refs/heads/${active}`).split(/\s+/)[0]).toBe(rivalTip);
+  });
+
+  // An unpublished lane must be creatable; the empty expect asserts "must not exist".
+  test("a lane ref that does not exist yet is created under the empty-expect lease", () => {
+    const originDir = join(tmp, "origin3.git");
+    const workDir = join(tmp, "work3");
+    const fresh = stagingRef("freshlane");
+
+    g(tmp, "init", "--quiet", "--bare", originDir);
+    g(tmp, "init", "--quiet", workDir);
+    g(workDir, "config", "user.email", "lane@zeta.local");
+    g(workDir, "config", "user.name", "lane");
+    writeFileSync(join(workDir, "c.txt"), "base\n");
+    g(workDir, "add", "-A");
+    g(workDir, "commit", "--quiet", "-m", "base");
+    g(workDir, "branch", "-M", "main");
+    g(workDir, "remote", "add", "origin", originDir);
+    g(workDir, "push", "--quiet", "origin", "main");
+
+    expect(g(workDir, "ls-remote", "--heads", "origin", `refs/heads/${fresh}`)).toBe("");
+    const created = tryG(
+      workDir,
+      "push",
+      `--force-with-lease=${leaseArg(fresh, null)}`,
+      "origin",
+      `HEAD:refs/heads/${fresh}`,
+    );
+    expect(created.status).toBe(0);
   });
 });
