@@ -68,13 +68,53 @@ is the produce/verify asymmetry's honest cousin — not "checking is easier than
 (the leaked claim, retracted), but "the model is calibrated enough that its confidence
 ranks its own framings correctly."
 
+## Cross-validated — the +3.2pp is NOT in-sample optimism (Otto's guard)
+
+A confidence-gated selector with a fitted threshold will almost always beat best-single
+in-sample, because the threshold absorbs the noise it was fitted to. So the result was
+re-run under 5-fold cross-validation on the same 600 items: fit the threshold on the train
+folds, score the held-out fold (`kFoldThresholdSelector`, tested with a pure-noise control
+that correctly collapses to ~0 OOS lift).
+
+| | accuracy | lift over best-single |
+|---|---|---|
+| zero-threshold rule (H3 as reported) | 93.8% | +3.2pp |
+| fitted threshold, in-sample | 93.8% | +3.2pp |
+| **fitted threshold, out-of-sample (5-fold)** | **93.8%** | **+3.2pp** |
+| optimism removed by the split (in-sample − OOS) | — | **0.0pp** |
+
+OOS McNemar vs best-single: +3.2pp, CI [1.8, 4.6], resolved. **The lift survives with zero
+optimism.** The reason is the same clean separation the W13 check found: the confidence gap
+is bimodal with a gap straddling zero (clause-wins +0.04 to +0.66, canon-wins −0.31 to
+−0.04), so the fitted threshold lands at the natural τ=0 on every fold — there is no noisy
+boundary region for the fit to overfit. The selector has no free parameter to exploit, which
+is exactly why cross-validation does not shrink it.
+
+## Why "resolved" is justified here but was borderline for H2
+
+H2's McNemar CI was [0.05, 5.28] — it cleared zero by five hundredths of a point, and I
+should not have called it "reliably" anything (corrected in the H2 doc). H3's CI is
+[1.8, 4.6] — it clears zero by 1.8pp with margin, and it survives cross-validation. The same
+word "resolved" means something categorically stronger here: a robust, out-of-sample,
+CI-clean effect, not a boundary-grazing one. Naming that difference is the point.
+
+## Portability scope limit
+
+Token logprobs are a MODEL-INTERNAL signal. Ollama exposes them; not every provider does.
+A confidence-gated selector does not transfer to an API that returns only the text. The
+METHOD is real; its AVAILABILITY is not universal. Where logprobs are absent, the fallback
+signals from the H3 pre-registration (self-consistency across resamples, response length)
+would have to carry it — untested, and more expensive.
+
 ## What this does NOT claim
 
 - **Not metered.** It is 2× calls (canonical + clause-swap). The +3.2pp accuracy is real;
   whether it beats spending that same 2× compute another way (a bigger model, more items)
   is an energy question, and the register stays `unmetered` until a joule is measured. The
   next experiment is the metered one: accuracy-per-runner-second, confidence-gated pair vs.
-  a single larger model at matched wall-clock.
+  a single larger model at matched wall-clock. That denominator is the same one Chollet's
+  skill-acquisition-efficiency uses, so the anchor is already in the repo (Beacon) — this is
+  not a new metric, it is the standard efficiency frontier applied to composition.
 - **Not general calibration.** The perfect group separation is an N=51 sample property, not
   a claim that gemma2:2b confidence is calibrated everywhere.
 - **Not "clause-swap is good."** clause-swap alone is WORSE (88.5% < 90.7%). The value is

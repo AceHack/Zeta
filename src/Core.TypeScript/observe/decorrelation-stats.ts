@@ -372,6 +372,96 @@ export function mannWhitneyU(
   return { u, n1, n2, z, rankBiserial, rejects: Math.abs(z) > 1.96 };
 }
 
+// ═══ Out-of-sample threshold selection (guards against in-sample optimism) ═════
+
+export interface ThresholdItem {
+  /** The signal value the selector thresholds on (e.g. confB − confA). */
+  readonly signal: number;
+  /** Was config B correct on this item? (the config chosen when signal > threshold) */
+  readonly bCorrect: boolean;
+  /** Was config A correct? (chosen when signal ≤ threshold) */
+  readonly aCorrect: boolean;
+}
+
+/** Accuracy of "pick B iff signal > τ, else A" on a set of items. */
+function thresholdAccuracy(items: readonly ThresholdItem[], tau: number): number {
+  if (items.length === 0) return 0;
+  let c = 0;
+  for (const it of items) {
+    const pickB = it.signal > tau;
+    if ((pickB && it.bCorrect) || (!pickB && it.aCorrect)) c++;
+  }
+  return c / items.length;
+}
+
+/** The τ that maximizes accuracy on `train` (candidate τ's are the observed signal values). */
+export function fitThreshold(train: readonly ThresholdItem[]): number {
+  // Candidate thresholds: just below each distinct signal value, plus ±∞ endpoints.
+  const cands = [-Infinity, ...train.map((t) => t.signal)];
+  let bestTau = -Infinity, bestAcc = -1;
+  for (const tau of cands) {
+    const acc = thresholdAccuracy(train, tau);
+    if (acc > bestAcc) { bestAcc = acc; bestTau = tau; }
+  }
+  return bestTau;
+}
+
+export interface KFoldResult {
+  readonly k: number;
+  /** Pooled out-of-sample accuracy: each item scored by a threshold fit WITHOUT it. */
+  readonly oosAccuracy: number;
+  /** In-sample accuracy: threshold fit on ALL data (the optimistic number). */
+  readonly inSampleAccuracy: number;
+  /** best-single accuracy (max of always-A, always-B). */
+  readonly bestSingle: number;
+  /** oos − bestSingle: the honest lift. */
+  readonly oosLift: number;
+  /** in-sample − oos: the optimism the split removed. */
+  readonly optimism: number;
+  /** Per-item OOS correctness, in input order — for a McNemar vs best-single. */
+  readonly oosCorrect: readonly boolean[];
+}
+
+/**
+ * K-fold cross-validation of a threshold selector (Otto's fix for in-sample optimism).
+ * Deterministic fold assignment by index (i % k), so it is reproducible. The threshold is
+ * fit on the other k−1 folds and applied to the held-out fold, so no item's score depends
+ * on a threshold that saw it. Reports the OOS lift AND the optimism (in-sample − OOS) that
+ * the split removed, because naming the optimism is the point.
+ */
+export function kFoldThresholdSelector(
+  items: readonly ThresholdItem[], k = 5,
+): KFoldResult {
+  const n = items.length;
+  const oosCorrect = new Array<boolean>(n);
+  for (let fold = 0; fold < k; fold++) {
+    const train: ThresholdItem[] = [];
+    const testIdx: number[] = [];
+    for (let i = 0; i < n; i++) {
+      if (i % k === fold) testIdx.push(i);
+      else train.push(items[i]!);
+    }
+    const tau = fitThreshold(train);
+    for (const i of testIdx) {
+      const it = items[i]!;
+      const pickB = it.signal > tau;
+      oosCorrect[i] = (pickB && it.bCorrect) || (!pickB && it.aCorrect);
+    }
+  }
+  const oosAccuracy = oosCorrect.filter(Boolean).length / n;
+  const tauAll = fitThreshold(items);
+  const inSampleAccuracy = thresholdAccuracy(items, tauAll);
+  const accA = items.filter((t) => t.aCorrect).length / n;
+  const accB = items.filter((t) => t.bCorrect).length / n;
+  const bestSingle = Math.max(accA, accB);
+  return {
+    k, oosAccuracy, inSampleAccuracy, bestSingle,
+    oosLift: oosAccuracy - bestSingle,
+    optimism: inSampleAccuracy - oosAccuracy,
+    oosCorrect,
+  };
+}
+
 // ═══ The honest bundle ══════════════════════════════════════════════════════════
 
 export interface HonestMeasurement {

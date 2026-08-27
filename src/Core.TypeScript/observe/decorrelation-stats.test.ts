@@ -11,6 +11,7 @@ import {
   phi, phiMax, phiRatio, yulesQ, cohensKappa,
   wilsonInterval, proportionDiffInterval, requiredNForDifference,
   measureHonest, detectAnswerLeak, suspectExtremeRate, mcNemar, mannWhitneyU,
+  kFoldThresholdSelector, fitThreshold,
   type Table2x2,
 } from "./decorrelation-stats";
 
@@ -116,6 +117,58 @@ describe("requiredNForDifference — the power calculation (W3)", () => {
     expect(requiredNForDifference(0.5, 0.5)).toBe(Infinity);
   });
 });
+
+describe("kFoldThresholdSelector (Otto's in-sample-optimism guard)", () => {
+  test("a genuinely predictive signal keeps its lift out-of-sample", () => {
+    // signal>0 <=> B correct, signal<0 <=> A correct — cleanly separable, fold-independent
+    // (constant +1/-1 so any train fold recovers the same threshold near 0).
+    const items = Array.from({ length: 200 }, (_, i) => {
+      const bWins = i % 2 === 0;
+      return { signal: bWins ? 1 : -1, bCorrect: bWins, aCorrect: !bWins };
+    });
+    const r = kFoldThresholdSelector(items, 5);
+    expect(r.oosLift).toBeGreaterThan(0.3); // huge, real separation survives OOS
+    expect(r.optimism).toBeLessThan(0.05);
+  });
+
+  test("a PURE-NOISE signal shows ~0 OOS lift even if in-sample looks positive", () => {
+    // signal is random noise, uncorrelated with which config is right. A fitted threshold
+    // will find spurious in-sample gain; k-fold must strip it back toward best-single.
+    let s = 12345;
+    const rng = () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+    const items = Array.from({ length: 300 }, () => {
+      const bWins = rng() < 0.4; // B correct 40%, A 60% (A is best-single)
+      return { signal: rng() - 0.5, bCorrect: bWins, aCorrect: !bWins };
+    });
+    const r = kFoldThresholdSelector(items, 5);
+    // In-sample fitting can invent a small edge; OOS should not clear best-single meaningfully.
+    expect(r.oosLift).toBeLessThan(0.03);
+    // The optimism (in-sample minus OOS) is the noise the fit absorbed — it should be > 0.
+    expect(r.optimism).toBeGreaterThanOrEqual(0);
+  });
+
+  test("fitThreshold picks the accuracy-maximizing cut", () => {
+    const items = [
+      { signal: -2, bCorrect: false, aCorrect: true },
+      { signal: -1, bCorrect: false, aCorrect: true },
+      { signal: 1, bCorrect: true, aCorrect: false },
+      { signal: 2, bCorrect: true, aCorrect: false },
+    ];
+    const tau = fitThreshold(items);
+    // Any τ in [-1, 1) gives 100% (pick A below, B above). The fit returns one such.
+    expect(thresholdAccuracyProbe(items, tau)).toBe(1);
+  });
+});
+
+// local probe mirroring the module's private thresholdAccuracy for the test above
+function thresholdAccuracyProbe(items: { signal: number; bCorrect: boolean; aCorrect: boolean }[], tau: number): number {
+  let c = 0;
+  for (const it of items) {
+    const pickB = it.signal > tau;
+    if ((pickB && it.bCorrect) || (!pickB && it.aCorrect)) c++;
+  }
+  return c / items.length;
+}
 
 describe("mannWhitneyU (H3 — does a signal separate two groups?)", () => {
   test("cleanly separated groups reject with a large effect", () => {
