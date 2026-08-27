@@ -130,6 +130,31 @@ let
   sharedClusterToken = "zeta-vm-test-shared-cluster-token-not-a-credential\n";
 
   runtimeTokenPath = "/etc/zeta/k3s-join-token";
+
+  # ETCD MEMBERSHIP PORTS — HARNESS ONLY.
+  #
+  # `k3s-server.nix` allows 6443/9345/10250 and INTENTIONALLY omits 2379/2380
+  # ("embedded etcd binds 127.0.0.1 by default"). A role=server JOIN is etcd
+  # membership, not kubelet-only. After leftover UNIQUE leftover #15746
+  # leftover unique @ c1f0aff9 pinned `--node-ip` to the vlan, etcd advertises
+  # distinct peer URLs — and the joiner must then reach founder:2379 (MemberAdd
+  # client API) and founder:2380 (peer). The product firewall still rejects
+  # that. Measured, run 33035015161 step 13, not inferred:
+  #
+  #   Adding member joiner-6aba2ae3=https://192.168.1.2:2380
+  #          to etcd cluster [founder-dce5ce45=https://192.168.1.1:2380]
+  #   refused connection: IN=eth1 SRC=192.168.1.2 DST=192.168.1.1 DPT=2379
+  #   Retrying etcd cluster join: MemberAdd request timed out
+  #
+  # Same shape on 33020639794 after the SLIRP collision, and the reason
+  # leftover UNIQUE leftover #15746 unique @ c1f0aff9 did not green the lane.
+  # Agent-join stays green because an agent never joins etcd.
+  #
+  # Opened here with mkAfter so the shipped module's list stays the source
+  # of the API/supervisor/kubelet ports. Do NOT silently add 2379/2380 to
+  # the product firewall: that comment refuses a LAN-wide open, and the
+  # multi-homed `--node-ip` question stays with injected-cluster-address.nix.
+  etcdMembershipPorts = [ 2379 2380 ];
 in
 
 pkgs.testers.nixosTest {
@@ -151,7 +176,18 @@ pkgs.testers.nixosTest {
       # SLIRP address `10.0.2.15` on eth0, that interface carries the default
       # route, and k3s therefore advertises its etcd peer there — an address
       # that means "me" on BOTH machines.
-      services.k3s.extraFlags = [ "--node-ip=${nodes.founder.networking.primaryIPAddress}" ];
+      #
+      # `extraFlags` is a list option, so a second assignment MERGES with
+      # k3s-server.nix rather than replacing it (measured: leftover UNIQUE
+      # leftover #15746 leftover unique @ c1f0aff9 — `--cluster-cidr` and
+      # `--tls-san` survive). `mkAfter` makes that additive intent explicit.
+      services.k3s.extraFlags = lib.mkAfter [
+        "--node-ip=${nodes.founder.networking.primaryIPAddress}"
+      ];
+
+      # See `etcdMembershipPorts` in the let-block. Founder must accept
+      # MemberAdd on :2379 and peer traffic on :2380 from the joiner.
+      networking.firewall.allowedTCPPorts = lib.mkAfter etcdMembershipPorts;
 
       # A PRE-SHARED cluster secret, so the joiner can present a token that is
       # known at evaluation time. This is k3s's documented HA setup (`--token`
@@ -230,7 +266,15 @@ pkgs.testers.nixosTest {
       #
       # `k3s-agent-join.nix` is unaffected and always passed: an agent joins the
       # API server by NAME over the vlan and never joins etcd at all.
-      services.k3s.extraFlags = [ "--node-ip=${nodes.joiner.networking.primaryIPAddress}" ];
+      #
+      # `mkAfter`: list-merge, not replace. See the founder extraFlags note.
+      services.k3s.extraFlags = lib.mkAfter [
+        "--node-ip=${nodes.joiner.networking.primaryIPAddress}"
+      ];
+
+      # Joiner must accept the founder's etcd peer/client replies on the
+      # same two ports. Same harness-only mkAfter as the founder.
+      networking.firewall.allowedTCPPorts = lib.mkAfter etcdMembershipPorts;
 
       # Drive the shipped module over committed fixtures. `builtins.pathExists`
       # must be true for BOTH at evaluation time or the module's all-or-none
@@ -286,6 +330,23 @@ pkgs.testers.nixosTest {
   # address can be interpolated into the assertions instead of hardcoded.
   testScript = { nodes, ... }: ''
     FOUNDER_IP = "${nodes.founder.networking.primaryIPAddress}"
+    JOINER_IP = "${nodes.joiner.networking.primaryIPAddress}"
+
+    # Two DISTINCT vlan addresses. leftover UNIQUE leftover #15746 leftover
+    # unique @ c1f0aff9 pinned `--node-ip` to primaryIPAddress; if that were
+    # still QEMU SLIRP 10.0.2.15 on both guests, the pin would be a no-op
+    # and FOUNDER_IP == JOINER_IP would make the getent assertion vacuous.
+    # Measured on run 33035015161: primaryIP IS the vlan (192.168.1.1 / .2)
+    # and etcd advertised those URLs. Keep the check so a driver renumber
+    # that collapses them cannot look like a passing join.
+    assert FOUNDER_IP != JOINER_IP, (
+        f"founder and joiner share primaryIP {FOUNDER_IP!r}; --node-ip cannot "
+        "distinguish the etcd peers"
+    )
+    assert FOUNDER_IP != "10.0.2.15" and JOINER_IP != "10.0.2.15", (
+        f"primaryIP is still QEMU SLIRP: founder={FOUNDER_IP!r} "
+        f"joiner={JOINER_IP!r}"
+    )
 
     start_all()
 
@@ -335,6 +396,20 @@ pkgs.testers.nixosTest {
     founder.succeed(
         "journalctl -u zeta-k3s-datastore-preflight.service --no-pager "
         "| grep -q 'clear: no conflicting datastore'"
+    )
+
+    # ── ETCD MEMBERSHIP PORTS ARE REACHABLE, NOT MERELY DECLARED ──────────
+    # `ss` alone would pass with a closed firewall (listen + REJECT). The
+    # joiner probing founder:2379 / :2380 is the check that fails if someone
+    # re-closes the harness ports — the exact failure of run 33035015161
+    # (`refused connection … DPT=2379` then `MemberAdd request timed out`).
+    # A closed product firewall must not be able to look like a passing join.
+    founder.succeed("ss -lnt 'sport = :2380' | grep -q LISTEN")
+    joiner.succeed(
+        f"timeout 5 bash -c 'echo >/dev/tcp/{FOUNDER_IP}/2379'"
+    )
+    joiner.succeed(
+        f"timeout 5 bash -c 'echo >/dev/tcp/{FOUNDER_IP}/2380'"
     )
 
     # ── JOINBLOCKER 3: the joiner reaches the founder and JOINS ────────────
@@ -447,6 +522,19 @@ pkgs.testers.nixosTest {
         "clusterInit was not overridden to false, which is the founding "
         "behaviour this module exists to replace."
     )
+    assert f"--node-ip={JOINER_IP}" in joiner_cmdline, (
+        f"the joiner lost --node-ip={JOINER_IP}: {joiner_cmdline!r}. "
+        "extraFlags must MERGE with k3s-server.nix; a replace would drop "
+        "the vlan pin and re-advertise QEMU SLIRP."
+    )
+    assert "--cluster-cidr=" in joiner_cmdline, (
+        f"the joiner lost --cluster-cidr: {joiner_cmdline!r}. "
+        "the harness --node-ip assignment replaced k3s-server.nix extraFlags "
+        "instead of concatenating"
+    )
+    assert "--tls-san=control-plane" in joiner_cmdline, (
+        f"the joiner lost --tls-san=control-plane: {joiner_cmdline!r}"
+    )
 
     # The founder must still be the founder — the mkOverride only fires on a
     # node with injected files, and asserting the negative keeps this test
@@ -459,6 +547,14 @@ pkgs.testers.nixosTest {
     )
     assert "--server" not in founder_cmdline, (
         f"the founder acquired a --server flag: {founder_cmdline!r}"
+    )
+    assert f"--node-ip={FOUNDER_IP}" in founder_cmdline, (
+        f"the founder lost --node-ip={FOUNDER_IP}: {founder_cmdline!r}"
+    )
+    assert "--cluster-cidr=" in founder_cmdline, (
+        f"the founder lost --cluster-cidr: {founder_cmdline!r}. "
+        "the harness --node-ip assignment replaced k3s-server.nix extraFlags "
+        "instead of concatenating"
     )
 
     # Post-mortem state into the build log.
