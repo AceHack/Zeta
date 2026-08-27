@@ -1,0 +1,12 @@
+{
+  "pr_number": 15862,
+  "archive_path": "docs/history/pr-reviews/PR-15862-docs-test-installer-record-the-uefi-restore-proof-boundary-make-wrote-0-legible.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T16:52:31.458Z",
+  "schema_version": "v1",
+  "commit_sha": "12e75d4b3fe49baf1a54b91ffc4f411522efba2c",
+  "title": "docs+test(installer): record the UEFI restore proof boundary + make wrote-0 legible",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T16:51:50Z",
+  "head_ref": "cursor/restore-followups-c9c8"
+}

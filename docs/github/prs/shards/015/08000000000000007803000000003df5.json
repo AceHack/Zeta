@@ -1,0 +1,12 @@
+{
+  "pr_number": 15861,
+  "archive_path": "docs/history/pr-reviews/PR-15861-research-the-future-vision-material-measured-and-the-threat-analysis-is-not-here.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T16:54:27.771Z",
+  "schema_version": "v1",
+  "commit_sha": "5f0fc4a477ecf495d06d144fe72d26eaa1127bed",
+  "title": "research: the future-vision material — measured, and the threat analysis is NOT here",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T16:48:42Z",
+  "head_ref": "shadow/future-vision-inventory"
+}
