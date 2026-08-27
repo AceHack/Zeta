@@ -676,27 +676,26 @@ jobs:
         # hangs (the silent "MSB4181: VSTestTask returned false but did not log
         # an error" class — seen once on windows-11-arm), collect a crash dump
         # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
-        #
-        # `tee` + EXPLICIT pipefail. The perf collector below folds `##perf-obs` lines out of this
-        # output, which requires capturing it — and piping is the one change here that could do
-        # real damage: bash's default exit status for a pipeline is the LAST command's, so
-        # `dotnet test | tee` would return tee's 0 and MASK EVERY TEST FAILURE. GitHub's default
-        # shell is `bash -e`, which does not set pipefail. Hence the explicit `set -o pipefail`,
-        # and hence `shell: bash` so the option is definitely available.
-        #
-        # The step's outcome is load-bearing beyond this job -- the reporter below reads
-        # `steps.test.outcome` -- so this must fail exactly when `dotnet test` fails and at no
-        # other time.
-        shell: bash
-        run: |
-          set -o pipefail
-          dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m 2>&1 \
-            | tee /tmp/zeta-dotnet-test.log
+        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
 
       - name: Perf assertion ledger (regression vs flake)
         # THE COLLECTOR. `PerfObservation.emit` (F#) has printed `##perf-obs` lines on every perf
         # assertion for weeks and nothing has ever read them -- two tested halves and no pipeline,
         # so the flake/regression denominator existed in principle and nowhere in fact.
+        #
+        # CURRENTLY INERT, and deliberately left in place saying so. The first version of this
+        # wiring changed the Test step above to `shell: bash` with `set -o pipefail` and a `tee`,
+        # to capture the log. That broke BOTH WINDOWS LEGS on main -- clean at 4779f542, one leg
+        # red at the commit that landed it, both red on the next. The step died in ~2 minutes,
+        # far too fast to be real test failures, so it was the invocation and not the tests.
+        # Windows runners resolve `shell: bash` to Git Bash, and forcing it changed how the whole
+        # command line was interpreted on a leg that had been using the default shell.
+        #
+        # The Test step is restored EXACTLY as it was. This step stays because its
+        # missing-log branch is honest -- it says nothing was captured rather than printing an
+        # empty ledger -- and because the collector itself is tested and correct; what was wrong
+        # was how the bytes were captured. A Windows-safe capture (RUNNER_TEMP, or a Linux-only
+        # duplicate step with its own id) is the follow-up, and unbreaking main came first.
         #
         # `if: always()` because a FAILING test run is when this is most worth reading: a perf miss
         # is exactly the case the ledger exists to classify, and skipping on failure would hide the
