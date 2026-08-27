@@ -83,5 +83,37 @@ module PerfObservation =
         Prefix + JsonSerializer.Serialize(payload)
 
     /// Print the observation. Call from the assertion site, with the same `pass` it asserts on.
+    /// Where the sink file goes, when one is asked for. Set by CI; unset locally, and unset means
+    /// stdout only -- a developer running `dotnet test` should not have files appear.
+    [<Literal>]
+    let SinkEnvVar = "ZETA_PERF_OBS_FILE"
+
+    /// Emit one observation: always to stdout, and additionally to `ZETA_PERF_OBS_FILE` when set.
+    ///
+    /// WHY A FILE AND NOT A PIPE. The first attempt at collecting these captured the test step's
+    /// stdout with `tee`, which required `shell: bash` + `set -o pipefail` on every matrix leg.
+    /// That BROKE BOTH WINDOWS LEGS on main (2026-08-27): Windows runners resolve `shell: bash` to
+    /// Git Bash, and forcing it changed how the command line was interpreted on legs that had been
+    /// using the default shell. Build passed, Test died in ~2 minutes -- a broken invocation, not
+    /// broken tests.
+    ///
+    /// Writing the file HERE removes the shell from the problem entirely. The emitter already
+    /// knows it is emitting; `File.AppendAllText` is platform-agnostic through .NET, and the
+    /// workflow needs no `shell:`, no pipe, and no exit-status surgery on a step whose outcome is
+    /// read downstream.
+    ///
+    /// APPEND, not write: every assertion across every test class emits into one file, and the
+    /// collector folds the whole set. A failure to write is SWALLOWED -- a telemetry sink that can
+    /// fail a test run would be worse than no telemetry, and stdout still carries the line, so the
+    /// observation is not lost even when the file is.
     let emit (test: string) (metric: string) (measured: float) (gate: float) (pass: bool) =
-        Console.Out.WriteLine(line test metric measured gate pass)
+        let rendered = line test metric measured gate pass
+        Console.Out.WriteLine(rendered)
+        match Environment.GetEnvironmentVariable SinkEnvVar with
+        | null | "" -> ()
+        | path ->
+            try
+                IO.File.AppendAllText(path, rendered + Environment.NewLine)
+            with _ ->
+                // Deliberately silent. See above: this must never be why a test run fails.
+                ()

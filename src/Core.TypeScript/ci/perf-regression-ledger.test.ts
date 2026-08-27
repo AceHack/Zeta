@@ -307,6 +307,19 @@ describe("the collector folds real test output", () => {
     expect(r.malformed).toBe(1);
   });
 
+  test("CRLF line endings parse — the emitter writes Environment.NewLine, which is \\r\\n on Windows", () => {
+    // The sink file is written by .NET via `File.AppendAllText(path, line + Environment.NewLine)`.
+    // On Windows that is CRLF, and the parser splits on "\n", leaving a trailing "\r" on every
+    // line. JSON.parse tolerates trailing whitespace, so this works — but it works by accident
+    // unless something pins it, and a silent zero-observation ledger on the Windows legs would
+    // read as a quiet build rather than a broken sink.
+    const crlf = [obs(), obs({ pass: false, measured: 0.9 })].join("\r\n") + "\r\n";
+    const r = collectPerfLedger(crlf);
+    expect(r.observations).toBe(2);
+    expect(r.malformed).toBe(0);
+    expect(r.rolls[0]?.misses).toBe(1);
+  });
+
   test("a pass-only run is `clean` and a sustained-miss run is `regression`", () => {
     // The control pair: without it, a collector that always reported one register would satisfy
     // every assertion above.

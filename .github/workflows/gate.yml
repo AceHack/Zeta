@@ -676,6 +676,20 @@ jobs:
         # hangs (the silent "MSB4181: VSTestTask returned false but did not log
         # an error" class — seen once on windows-11-arm), collect a crash dump
         # and a Sequence_*.xml naming the in-flight test, instead of a mystery.
+        #
+        # ZETA_PERF_OBS_FILE: the perf emitter appends each `##perf-obs` line here as well as to
+        # stdout, so the collector below has a file to fold. This is an ENV VAR and nothing else --
+        # no `shell:`, no pipe, no exit-status surgery. The previous attempt captured stdout with
+        # `tee`, which needed `shell: bash` + `set -o pipefail` on every leg and BROKE BOTH WINDOWS
+        # LEGS: Windows resolves `shell: bash` to Git Bash and the command line was interpreted
+        # differently on legs that had been using the default shell. This step's outcome is read
+        # downstream via `steps.test.outcome`, so it must fail exactly when `dotnet test` fails --
+        # which it now does, because nothing about its invocation changed.
+        #
+        # RUNNER_TEMP is set on every hosted runner and is a native path on each, so .NET's
+        # File.AppendAllText handles Windows and POSIX without the workflow knowing which it is on.
+        env:
+          ZETA_PERF_OBS_FILE: ${{ runner.temp }}/zeta-perf-obs.log
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
 
       - name: Perf assertion ledger (regression vs flake)
@@ -683,19 +697,11 @@ jobs:
         # assertion for weeks and nothing has ever read them -- two tested halves and no pipeline,
         # so the flake/regression denominator existed in principle and nowhere in fact.
         #
-        # CURRENTLY INERT, and deliberately left in place saying so. The first version of this
-        # wiring changed the Test step above to `shell: bash` with `set -o pipefail` and a `tee`,
-        # to capture the log. That broke BOTH WINDOWS LEGS on main -- clean at 4779f542, one leg
-        # red at the commit that landed it, both red on the next. The step died in ~2 minutes,
-        # far too fast to be real test failures, so it was the invocation and not the tests.
-        # Windows runners resolve `shell: bash` to Git Bash, and forcing it changed how the whole
-        # command line was interpreted on a leg that had been using the default shell.
-        #
-        # The Test step is restored EXACTLY as it was. This step stays because its
-        # missing-log branch is honest -- it says nothing was captured rather than printing an
-        # empty ledger -- and because the collector itself is tested and correct; what was wrong
-        # was how the bytes were captured. A Windows-safe capture (RUNNER_TEMP, or a Linux-only
-        # duplicate step with its own id) is the follow-up, and unbreaking main came first.
+        # The capture is now an ENV VAR read by the F# emitter, not a shell pipe. The first version
+        # tee'd the Test step's stdout, which required `shell: bash` + pipefail on every matrix leg
+        # and broke both Windows legs. Moving the write into the emitter removes the shell from the
+        # problem: .NET writes the file natively on whatever platform it is on, and the Test step's
+        # invocation is untouched.
         #
         # `if: always()` because a FAILING test run is when this is most worth reading: a perf miss
         # is exactly the case the ledger exists to classify, and skipping on failure would hide the
@@ -707,11 +713,14 @@ jobs:
         # run reads as zero observations rather than as green.
         if: always() && needs.path-filter.outputs.code == 'true'
         shell: bash
+        env:
+          ZETA_PERF_OBS_FILE: ${{ runner.temp }}/zeta-perf-obs.log
         run: |
-          if [ -f /tmp/zeta-dotnet-test.log ]; then
-            bun src/Core.TypeScript/ci/perf-regression-ledger.ts < /tmp/zeta-dotnet-test.log || true
+          if [ -f "$ZETA_PERF_OBS_FILE" ]; then
+            bun src/Core.TypeScript/ci/perf-regression-ledger.ts < "$ZETA_PERF_OBS_FILE" || true
           else
-            echo "no dotnet test log captured — the test step did not run, so there is nothing to fold."
+            echo "no perf observations file — the test step did not run, or no perf assertion emitted."
+            echo "This is NOT a clean bill of health; it is an absence of measurement."
           fi
 
       - name: Name the failing step (toolchain-free; survives a broken toolchain)
