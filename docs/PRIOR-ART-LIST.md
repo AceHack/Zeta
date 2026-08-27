@@ -140,7 +140,11 @@ with a ⭐ below and add a row there.
   The (violation, repair) pair as a compiler surface (the light-bulb). Same shape as
   ESLint `--fix` and rustc `rustfix` / `cargo fix`. The factory's five `FIX:` lints are
   the prose half of that pair; a `healer-harness`-certified patch is the machine half.
-  `"Failed"` with no repair is not a training example. `081M12CZRHC087G0R0008X7SYG`.
+  `"Failed"` with no repair is not a training example. Immutable `SyntaxTree`: rewrite
+  by copy, never a dependent read — same rung as FP persistent structures, opposite of
+  a warp / a lock. **CoW / structural sharing** (Driscoll–Sarnak–Sleator–Tarjan 1989;
+  git; ZFS; Roslyn red-green trees) makes the copy cheap; it is not CAS.
+  `081M12CZRHC087G0R0008X7SYG` · `081M125DNKK087G0R00292E3ET`.
 - **Composable rules, not BNN layers** — **G. David Forney Jr.**, factor graphs with
   variables as edges (2001) is the composable-DAG shape; **Richardson & Domingos**,
   Markov logic networks (MLN, 2006) for weighted first-order detection; **Newman**
