@@ -62,11 +62,11 @@ const SPECTRUM = [
   },
   {
     lane: "bivector + half-spinor",
-    carrier: "undeclared",
-    operators: "undeclared",
-    defect: "unknown",
-    verdict: "unmeasured — no action map",
-    tone: "var(--muted-foreground)",
+    carrier: "128 S+",
+    operators: "120 bivectors",
+    defect: "—",
+    verdict: "so(16) action measured · δ unmeasured",
+    tone: "var(--amber)",
   },
 ] as const;
 
@@ -116,9 +116,9 @@ function ByteMask({ mask }: { mask: number }) {
               minHeight: 42,
               display: "grid",
               placeItems: "center",
-              border: `1px solid ${erased ? "var(--fail-red)" : "oklch(0.55 0.12 190)"}`,
-              background: erased ? "oklch(0.19 0.07 25)" : "oklch(0.12 0.035 190)",
-              color: erased ? "oklch(0.82 0.15 30)" : "oklch(0.78 0.12 190)",
+              border: `1px solid ${erased ? "var(--fail-red)" : "var(--amber)"}`,
+              background: erased ? "oklch(0.19 0.07 25)" : "oklch(0.14 0.04 85)",
+              color: erased ? "oklch(0.82 0.15 30)" : "var(--amber)",
               fontSize: "0.62rem",
               fontWeight: 800,
             }}
@@ -136,11 +136,12 @@ function BoundaryTrace({ tone }: { tone: string }) {
     <div style={{ position: "relative", marginTop: "0.85rem", minHeight: 112, borderTop: "1px solid var(--border)", overflow: "hidden" }} aria-hidden="true">
       <svg viewBox="0 0 760 112" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
         <path d="M0 78 L54 78 L78 48 L108 48 L126 70 L166 70 L186 30 L218 30 L236 57 L270 57 L292 17 L322 17 L346 49 L382 49 L404 82 L438 82 L462 42 L494 42 L518 64 L552 64 L576 25 L610 25 L632 55 L672 55 L696 36 L760 36" fill="none" stroke={tone} strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
+        <path d="M78 48 L95 27 L112 27 L126 12 M186 30 L202 10 L220 10 L236 0 M292 17 L307 2 L325 2 L346 20 M462 42 L480 22 L496 22 L518 5 M576 25 L592 7 L610 7 L632 30" fill="none" stroke={tone} strokeOpacity="0.66" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
         <path d="M76 48 L76 93 M186 30 L186 92 M292 17 L292 92 M462 42 L462 93 M576 25 L576 93 M696 36 L696 93" fill="none" stroke="oklch(0.55 0.1 190 / 0.45)" strokeWidth="1" strokeDasharray="4 5" vectorEffect="non-scaling-stroke" />
         {[76, 186, 292, 462, 576, 696].map((x) => <circle key={x} cx={x} cy={93} r="3" fill="oklch(0.72 0.14 190)" />)}
       </svg>
       <div style={{ position: "absolute", right: 8, bottom: 7, color: "var(--muted-foreground)", fontSize: "0.48rem", letterSpacing: "0.11em" }}>
-        RETAINED BOUNDARY / UNRESOLVED SAMPLES
+        DLA BOUNDARY / RETAINED FACTS + UNRESOLVED SAMPLES
       </div>
     </div>
   );
@@ -323,7 +324,7 @@ export default function EvidenceSeamPanel() {
           {SPECTRUM.map((row) => (
             <div key={row.lane} style={{ border: "1px solid var(--border)", borderTop: `3px solid ${row.tone}`, padding: "0.7rem", background: "oklch(0.075 0.01 265)" }}>
               <div style={{ color: row.tone, fontSize: "0.65rem", fontWeight: 800, minHeight: "2.2em" }}>{row.lane}</div>
-              <div style={{ color: row.tone, fontSize: "clamp(1.25rem, 2.5vw, 1.85rem)", fontWeight: 900, letterSpacing: "-0.06em", margin: "0.25rem 0 0.55rem" }}>δ {row.defect}</div>
+              <div style={{ color: row.defect === "—" ? "var(--muted-foreground)" : row.tone, fontSize: "clamp(1.25rem, 2.5vw, 1.85rem)", fontWeight: 900, letterSpacing: "-0.06em", margin: "0.25rem 0 0.55rem" }}>δ {row.defect}</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "0.3rem", fontSize: "0.52rem", color: "var(--muted-foreground)", marginTop: "0.55rem" }}>
                 <span>carrier M</span><strong style={{ color: "var(--foreground)" }}>{row.carrier}</strong>
                 <span>operators A</span><strong style={{ color: "var(--foreground)" }}>{row.operators}</strong>

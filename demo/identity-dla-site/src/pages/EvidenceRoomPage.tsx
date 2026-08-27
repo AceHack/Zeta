@@ -4,6 +4,7 @@
  */
 import EvidenceSeamPanel from "@/components/EvidenceSeamPanel";
 import LiveRoomEvidenceFeed from "@/components/LiveRoomEvidenceFeed";
+import ReplayableFaultReceiptPanel from "@/components/ReplayableFaultReceiptPanel";
 
 export default function EvidenceRoomPage() {
   const observatoryHref = typeof window !== "undefined" && window.location.hash ? "#/observatory" : "/";
@@ -19,12 +20,14 @@ export default function EvidenceRoomPage() {
       }}
     >
       <div style={{ maxWidth: 1500, margin: "0 auto" }}>
-        <nav style={{ marginBottom: "0.8rem", fontSize: "0.58rem", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
-          <a href={observatoryHref} style={{ color: "var(--amber)", textDecoration: "none" }}>← multi-oracle observatory</a>
-          <span style={{ color: "var(--muted-foreground)" }}>ZETA IDENTITY SPACE · PROOF ENGINE · finite boundary, no physics overclaim</span>
+        <nav style={{ marginBottom: "0.8rem", fontSize: "0.58rem", display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+          <a href={observatoryHref} style={{ color: "var(--amber)", textDecoration: "none", fontSize: "0.62rem", letterSpacing: "0.08em" }}>← MULTI-ORACLE OBSERVATORY</a>
+          <span style={{ color: "var(--amber)", fontWeight: 900, fontSize: "0.68rem", letterSpacing: "0.13em", textShadow: "0 0 18px color-mix(in srgb, var(--amber) 25%, transparent)" }}>ZETA//IDENTITY-SPACE::PROOF-ENGINE</span>
+          <span style={{ color: "var(--muted-foreground)", letterSpacing: "0.06em" }}>FINITE BOUNDARY · NO PHYSICS OVERCLAIM</span>
         </nav>
         <EvidenceSeamPanel />
         <LiveRoomEvidenceFeed />
+        <ReplayableFaultReceiptPanel />
       </div>
     </main>
   );

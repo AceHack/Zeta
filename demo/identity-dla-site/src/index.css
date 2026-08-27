@@ -121,6 +121,13 @@
   .evidence-feed-grid {
     grid-template-columns: 1fr !important;
   }
+  .fault-receipt-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .fault-receipt-layout > :first-child {
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--border);
+  }
   .evidence-seam-layout {
     grid-template-columns: 1fr !important;
   }

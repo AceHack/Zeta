@@ -110,7 +110,7 @@ export default function LiveRoomEvidenceFeed() {
 
   useEffect(() => refresh(), [refresh]);
 
-  const tone = state.kind === "ready" ? "var(--amber)" : state.kind === "malformed" ? "#ef4444" : "var(--teal)";
+  const tone = state.kind === "ready" ? "var(--amber)" : state.kind === "malformed" ? "var(--fail-red)" : "var(--teal)";
   const title = state.kind === "ready" ? "PERSISTED RECEIPT DISCOVERY" : state.kind === "empty" ? "NO RECEIPT EMITTED" : state.kind === "loading" ? "READING RECEIPT MANIFEST" : state.kind === "unavailable" ? "FEED UNAVAILABLE" : "FEED TEACHING ERROR";
 
   return (
@@ -118,7 +118,7 @@ export default function LiveRoomEvidenceFeed() {
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
         <div>
           <div style={labelStyle}>Durable room evidence · repository mirror</div>
-          <h2 style={{ margin: "0.25rem 0 0", color: tone, fontSize: "clamp(1.1rem, 2.5vw, 2rem)", lineHeight: 1, letterSpacing: "-0.06em" }}>{title}</h2>
+          <h2 style={{ margin: "0.25rem 0 0", color: tone, fontSize: "clamp(1.35rem, 3.2vw, 2.35rem)", lineHeight: 0.96, letterSpacing: "-0.075em" }}>{title}</h2>
         </div>
         <button onClick={() => refresh()} style={{ background: "transparent", border: `1px solid ${tone}`, color: tone, padding: "0.44rem 0.65rem", fontFamily: "inherit", fontSize: "0.6rem", letterSpacing: "0.1em", cursor: "pointer" }}>
           REFRESH MANIFEST
@@ -132,7 +132,7 @@ export default function LiveRoomEvidenceFeed() {
       {state.kind === "loading" && <div style={{ color: "var(--teal)", fontSize: "0.72rem" }}>→ requesting immutable manifest…</div>}
       {state.kind === "empty" && <div style={{ color: "var(--teal)", fontSize: "0.78rem", borderLeft: "3px solid var(--teal)", paddingLeft: "0.7rem" }}>The schema is published, but this feed currently contains zero persisted room receipts. This is not a retraction or a negative observation.</div>}
       {state.kind === "unavailable" && <div style={{ color: "var(--teal)", fontSize: "0.78rem", borderLeft: "3px solid var(--teal)", paddingLeft: "0.7rem" }}>No receipt state was synthesized. {state.reason}</div>}
-      {state.kind === "malformed" && <div style={{ color: "#ef4444", fontSize: "0.78rem", borderLeft: "3px solid #ef4444", paddingLeft: "0.7rem" }}>Rejected discovery record: {state.reason}</div>}
+      {state.kind === "malformed" && <div style={{ color: "var(--fail-red)", fontSize: "0.78rem", borderLeft: "3px solid var(--fail-red)", paddingLeft: "0.7rem" }}>Rejected discovery record: {state.reason}</div>}
       {state.kind === "ready" && (
         <>
           <div style={{ color: "var(--amber)", fontSize: "0.64rem", marginBottom: "0.55rem" }}>SHOWING {state.entries.length} OF {state.total} DISCOVERED ENVELOPE{state.total === 1 ? "" : "S"}</div>
