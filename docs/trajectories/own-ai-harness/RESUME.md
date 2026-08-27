@@ -87,6 +87,8 @@ bun src/Core.TypeScript/harny/harny.ts import grok
    (`+1` `I` forward, `−1` generator-reinterpret of retained history)
    over DagFs Merkle — not LibGit2Sharp-as-the-store.
    `081M108RYNT087G0R001JSRNZE`.
+   Full −1 of the view is **erasing**; `SoftValue.widen` is **non-erasing**
+   of support; negate alone is Bennett-free (`081M10BD9BM087G0R001SGDRXT`).
 4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
 
 Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
@@ -128,6 +130,7 @@ already running, not by inventing a fourth factory. The concert is
 
 - Research absorb: `docs/research/2026-08-26-own-harness-account-logins-ace-zeta-clis-not-platform.md`
 - ZetaFS dual fold: `docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md` · `src/Core/ZetaFsDualFold.fs`
+- Erasing vs widen: `docs/research/2026-08-26-full-minus-erasing-widen-nonerasing.md` · `src/Core/RetractionReading.fs`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
 - Cutover sequence: `docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`

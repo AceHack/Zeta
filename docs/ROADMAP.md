@@ -108,6 +108,12 @@ Z-set folds over our own Merkle DAG (`DagFs` / `ContentStore` / `ZetaFsDeltaLog`
   and emits `−gen(before, H) + gen(after, H)` as a **new** log entry (`FourCornerTrace` /
   `ZetaFsDualFold.reinterpret`). The past record is not rewritten. Pseudo-retrocausality
   (beliefs, not facts — `docs/VISION.md` §"Echolocation over time").
+  **Two readings** (Aaron 2026-08-26; Landauer/Bennett; `ErasureClass`):
+  **full −1 as one op** (`z + (−z)` then the view) is **erasing** of support
+  (annihilation pays; negate alone is Bennett-free). **Uncertainty widening**
+  (`SoftValue.widen`) is **non-erasing** of support — optionality restored,
+  no candidate dropped. Commutative twin: `foldRetained` (retract the evidence
+  SET). Workitem `081M10BD9BM087G0R001SGDRXT`.
 - **Snapshot** — `ZSetMerkle.root` of the net Z-set (`+w` then `−w` is a no-op on the root).
 - **Tree** — `DagFs`: `editLocal` is the default fork; `editEverywhere` is the shared-object
   edit. Blobs are content-addressed.
@@ -373,6 +379,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **ZetaFS dual-fold remaining** — parent edge on `ZetaFsDeltaLog` (truncate reversible), BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`)
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
+- **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 
 ## P2 (4 weeks)
 
@@ -484,3 +491,6 @@ These don't wait for a single round:
 - **DUs expand to DynamicValue (collapsed) and SoftValue (Bayesian
   interpretation).** `snap` is the only collapse. This is the bridge
   to our BNN / factor-graph reading of the same verbs.
+- Full −1 retraction of the **view** is **erasing**; `SoftValue.widen` is
+  **non-erasing** of support; `ZSet.neg` alone is Bennett-free. Same
+  reversible-computing vocabulary as `ErasureClass` (`081M10BD9BM087G0R001SGDRXT`).
