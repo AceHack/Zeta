@@ -22,6 +22,7 @@ import {
   keyedMapThreeWay,
   keyedSetThreeWay,
   latestTickWins,
+  roomEvidenceIndexThreeWay,
   resolveCarryConflict,
   resolveCarrySet,
   type CarryConflict,
@@ -117,7 +118,7 @@ describe("keyed map three-way — union is WRONG, and this is the data that prov
 });
 
 describe("keyed set three-way — docs/room-evidence/index.json", () => {
-  const rule = keyedSetThreeWay("entries", "eventId");
+  const rule = roomEvidenceIndexThreeWay();
   const entry = (id: string, k = "k") => ({ eventId: id, auditContentKey: k, receiptContentKey: k, file: `room-evidence/${id}.json` });
   const doc = (...ids: string[]) => ({ schema: "zeta.room-evidence-live-feed-index.v1", entries: ids.map((i) => entry(i)) });
 
@@ -144,6 +145,69 @@ describe("keyed set three-way — docs/room-evidence/index.json", () => {
     const r = rule(conflict("p", null, mainDoc, laneDoc));
     expect(r.kind).toBe("refused");
     expect(r.why).toMatch(/different payloads/);
+  });
+
+  test("THE MANUAL-RUN WEDGE: merges a valid main-only local adjudication pointer without losing lane receipts", () => {
+    const genesis = entry("59e8");
+    const mainGenesis = {
+      ...genesis,
+      adjudication: { file: "adjudications/59e8.json", contentKey: "local-adjudication-key" },
+    };
+    const r = rule(
+      conflict(
+        "docs/room-evidence/index.json",
+        { schema: "zeta.room-evidence-live-feed-index.v1", entries: [genesis] },
+        { schema: "zeta.room-evidence-live-feed-index.v1", entries: [mainGenesis] },
+        { schema: "zeta.room-evidence-live-feed-index.v1", entries: [entry("11d5"), genesis] },
+      ),
+    );
+    expect(r.kind).toBe("resolved");
+    if (r.kind !== "resolved") return;
+    const entries = JSON.parse(r.content).entries as readonly { readonly eventId: string; readonly adjudication?: { readonly file: string } }[];
+    expect(entries.map((candidate) => candidate.eventId)).toEqual(["11d5", "59e8"]);
+    expect(entries[1]?.adjudication?.file).toBe("adjudications/59e8.json");
+  });
+
+  test("REFUSES a same-event pointer with a foreign path — absence must not be repaired into authority metadata", () => {
+    const genesis = entry("59e8");
+    const r = rule(
+      conflict(
+        "docs/room-evidence/index.json",
+        null,
+        { schema: "s", entries: [{ ...genesis, adjudication: { file: "adjudications/other.json", contentKey: "k" } }] },
+        { schema: "s", entries: [genesis] },
+      ),
+    );
+    expect(r.kind).toBe("refused");
+    expect(r.why).toMatch(/different payloads/);
+  });
+
+  test("REFUSES competing local-adjudication keys for one event — a pointer is not a hidden winner", () => {
+    const genesis = entry("59e8");
+    const r = rule(
+      conflict(
+        "docs/room-evidence/index.json",
+        null,
+        { schema: "s", entries: [{ ...genesis, adjudication: { file: "adjudications/59e8.json", contentKey: "left" } }] },
+        { schema: "s", entries: [{ ...genesis, adjudication: { file: "adjudications/59e8.json", contentKey: "right" } }] },
+      ),
+    );
+    expect(r.kind).toBe("refused");
+    expect(r.why).toMatch(/different payloads/);
+  });
+
+  test("the generic keyed-set resolver still REFUSES optional-field divergence outside the room-evidence declaration", () => {
+    const generic = keyedSetThreeWay("entries", "eventId");
+    const bare = entry("59e8");
+    const r = generic(
+      conflict(
+        "unrelated.json",
+        null,
+        { schema: "s", entries: [{ ...bare, adjudication: { file: "adjudications/59e8.json", contentKey: "k" } }] },
+        { schema: "s", entries: [bare] },
+      ),
+    );
+    expect(r.kind).toBe("refused");
   });
 
   test("REFUSES when the non-entry fields differ — a schema change is a decision, not a carry", () => {

@@ -68,6 +68,8 @@ export interface CarryConflict {
 
 export type CarryResolver = (conflict: CarryConflict) => CarryResolution;
 
+type SameKeyReconciliation = (eventId: string, ours: unknown, theirs: unknown) => unknown | undefined;
+
 /** Pretty-print exactly as the publishers do, so a resolved file is byte-identical to a written one. */
 function canonicalJson(value: unknown): string {
   return `${JSON.stringify(value, null, 2)}\n`;
@@ -220,7 +222,11 @@ export function keyedMapThreeWay(): CarryResolver {
  * Refuses when: the same key carries different payloads on the two sides. Under
  * content-addressing that cannot happen honestly, so it must never be papered over.
  */
-export function keyedSetThreeWay(arrayField: string, idField: string): CarryResolver {
+export function keyedSetThreeWay(
+  arrayField: string,
+  idField: string,
+  reconcileSameKey?: SameKeyReconciliation,
+): CarryResolver {
   const rule = `keyed-set-3way(${arrayField}.${idField})`;
   const index = (v: Record<string, unknown>): Map<string, unknown> | null => {
     const arr = v[arrayField];
@@ -254,8 +260,14 @@ export function keyedSetThreeWay(arrayField: string, idField: string): CarryReso
       if (inB && (!inO || !inT)) continue;
       if (!inO && !inT) continue;
       if (inO && inT) {
-        if (JSON.stringify(oi.get(k)) === JSON.stringify(ti.get(k))) out.set(k, oi.get(k));
-        else conflicts.push(k);
+        const oursEntry = oi.get(k);
+        const theirsEntry = ti.get(k);
+        if (JSON.stringify(oursEntry) === JSON.stringify(theirsEntry)) out.set(k, oursEntry);
+        else {
+          const reconciled = reconcileSameKey?.(k, oursEntry, theirsEntry);
+          if (reconciled === undefined) conflicts.push(k);
+          else out.set(k, reconciled);
+        }
         continue;
       }
       out.set(k, inO ? oi.get(k) : ti.get(k));
@@ -287,6 +299,63 @@ export function keyedSetThreeWay(arrayField: string, idField: string): CarryReso
   };
 }
 
+function isIdentifier(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0 && value.length <= 1024 && !/[\u0000-\u001f\u007f]/.test(value);
+}
+
+function isBoundAdjudicationReference(value: unknown, eventId: string): boolean {
+  return (
+    isRecord(value) &&
+    value.file === `adjudications/${eventId}.json` &&
+    isIdentifier(value.contentKey) &&
+    Object.keys(value).length === 2
+  );
+}
+
+/**
+ * Carry the one monotone discovery extension admitted by the room-evidence feed:
+ * a structurally valid, event-bound local adjudication reference added to an otherwise
+ * byte-identical immutable receipt entry.
+ *
+ * This does NOT choose between two authority outcomes and it cannot rewrite the atom
+ * identity, audit key, receipt key, or envelope path. The durable feed decoder still
+ * checks the referenced sidecar's event binding before a browser presents it. Here the
+ * rule only prevents a prior lane copy from erasing metadata main has already published.
+ *
+ * Both directions intentionally return the entry WITH the reference: presence adds a
+ * local discovery pointer; absence carries no contradictory value. A malformed path,
+ * a foreign event binding, a changed key, or any difference outside this optional field
+ * remains a genuine same-event disagreement and returns `undefined` for refusal.
+ */
+export function reconcileRoomEvidenceAdjudicationReference(
+  eventId: string,
+  ours: unknown,
+  theirs: unknown,
+): unknown | undefined {
+  if (!isRecord(ours) || !isRecord(theirs)) return undefined;
+  const oursReference = ours.adjudication;
+  const theirsReference = theirs.adjudication;
+  if (oursReference === undefined && theirsReference === undefined) return undefined;
+
+  const oursWithoutReference = { ...ours };
+  const theirsWithoutReference = { ...theirs };
+  delete oursWithoutReference.adjudication;
+  delete theirsWithoutReference.adjudication;
+  if (JSON.stringify(oursWithoutReference) !== JSON.stringify(theirsWithoutReference)) return undefined;
+
+  const present = oursReference ?? theirsReference;
+  if (!isBoundAdjudicationReference(present, eventId)) return undefined;
+  if (oursReference !== undefined && theirsReference !== undefined && JSON.stringify(oursReference) !== JSON.stringify(theirsReference)) {
+    return undefined;
+  }
+  return { ...oursWithoutReference, adjudication: present };
+}
+
+/** The room-evidence index admits only its documented monotone adjudication pointer extension. */
+export function roomEvidenceIndexThreeWay(): CarryResolver {
+  return keyedSetThreeWay("entries", "eventId", reconcileRoomEvidenceAdjudicationReference);
+}
+
 /**
  * The registry: exact repo paths to the rule that decides them.
  *
@@ -296,7 +365,7 @@ export function keyedSetThreeWay(arrayField: string, idField: string): CarryReso
  * path here is a decision, and it should read like one.
  */
 export const CARRY_RESOLVERS: ReadonlyMap<string, CarryResolver> = new Map<string, CarryResolver>([
-  ["docs/room-evidence/index.json", keyedSetThreeWay("entries", "eventId")],
+  ["docs/room-evidence/index.json", roomEvidenceIndexThreeWay()],
   ["docs/drift-events/slo-filed.json", keyedMapThreeWay()],
   ["data/drift-evolution.json", latestTickWins(["tick"])],
   ["data/drift-genome.json", latestTickWins(["tick"])],
