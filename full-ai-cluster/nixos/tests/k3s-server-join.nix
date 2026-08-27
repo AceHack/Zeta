@@ -141,10 +141,17 @@ pkgs.testers.nixosTest {
     # `k3s-server.nix`'s `clusterInit = mkDefault true` stands. This is the
     # "endpoint absent -> byte-identical to today's founding behaviour" branch
     # of that module, exercised by being left alone rather than by assertion.
-    founder = { lib, ... }: {
+    founder = { lib, nodes, ... }: {
       imports = [ ../modules/k3s-server.nix ];
 
       services.k3s.manifests = lib.mkForce { };
+
+      # PIN THE NODE IP TO THE TEST VLAN. See the `--node-ip` note on the joiner
+      # for the full reason; in short, every nixosTest guest also holds QEMU's
+      # SLIRP address `10.0.2.15` on eth0, that interface carries the default
+      # route, and k3s therefore advertises its etcd peer there — an address
+      # that means "me" on BOTH machines.
+      services.k3s.extraFlags = [ "--node-ip=${nodes.founder.networking.primaryIPAddress}" ];
 
       # A PRE-SHARED cluster secret, so the joiner can present a token that is
       # known at evaluation time. This is k3s's documented HA setup (`--token`
@@ -187,6 +194,43 @@ pkgs.testers.nixosTest {
       ];
 
       services.k3s.manifests = lib.mkForce { };
+
+      # PIN THE NODE IP TO THE TEST VLAN — the etcd half of the same defect the
+      # `control-plane` alias was the DNS half of, and the reason this test's
+      # first green run still ended red.
+      #
+      # A nixosTest guest has TWO interfaces: eth0 is QEMU's SLIRP NAT, which
+      # hands EVERY guest the identical address `10.0.2.15` and carries the
+      # default route; eth1 is the test vlan, where the guests are actually
+      # distinct (192.168.1.1 / 192.168.1.2) and can actually reach each other.
+      # k3s picks its node IP off the default route, so both nodes advertised
+      #
+      #     etcd peer = https://10.0.2.15:2380
+      #
+      # and measured it (run 33020639794, step 13):
+      #
+      #     Adding member joiner-639dff20=https://10.0.2.15:2380
+      #            to etcd cluster [founder-e8c381a4=https://10.0.2.15:2380]
+      #     ...
+      #     etcd cluster join failed: dial tcp 127.0.0.1:2379: connection refused
+      #
+      # The joiner dialled the founder's advertised peer, arrived at ITSELF, found
+      # no etcd serving there yet, and crash-looped until the 420 s timeout. Same
+      # shape as the loopback alias: an address that means "me" on every node used
+      # as the cluster-wide identity of ONE node.
+      #
+      # This is a HARNESS artifact and is fixed in the harness. Real hardware has
+      # no shared 10.0.2.15 — each machine's default route carries its own LAN
+      # address. What real hardware DOES have is more than one NIC, and
+      # `k3s-server.nix` pins no `--node-ip`, so a multi-homed control plane can
+      # still advertise etcd on an interface its peers do not share. That is a
+      # product question about which interface the cluster segment owns, it
+      # belongs with `injected-cluster-address.nix`, and it is NOT decided here —
+      # naming it rather than quietly fixing it in a test that cannot see it.
+      #
+      # `k3s-agent-join.nix` is unaffected and always passed: an agent joins the
+      # API server by NAME over the vlan and never joins etcd at all.
+      services.k3s.extraFlags = [ "--node-ip=${nodes.joiner.networking.primaryIPAddress}" ];
 
       # Drive the shipped module over committed fixtures. `builtins.pathExists`
       # must be true for BOTH at evaluation time or the module's all-or-none

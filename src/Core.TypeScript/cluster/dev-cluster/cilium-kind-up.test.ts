@@ -74,6 +74,20 @@ describe("podIpInPool — address arithmetic, and total on junk", () => {
     expect(podIpInPool("not-an-ip", POOL)).toBe(false);
   });
 
+  test("RANGE counts as 'not an address' too — a shape-only guard would not be the claim made", () => {
+    // A `/^\d{1,3}(\.\d{1,3}){3}$/` guard accepts these and `cidrBounds` then
+    // throws `CIDR out of range` — a different throw through the very hole the
+    // guard exists to close. The docstring promises FALSE, so the guard checks
+    // shape AND range.
+    expect(podIpInPool("999.1.1.1", POOL)).toBe(false);
+    expect(podIpInPool("10.143.0.256", POOL)).toBe(false);
+    expect(podIpInPool("10.143.0", POOL)).toBe(false);
+    expect(podIpInPool("10.143.0.1.1", POOL)).toBe(false);
+    // ...and the in-range boundary is still accepted, so this is not just a
+    // guard that rejects everything.
+    expect(podIpInPool("10.143.0.255", POOL)).toBe(true);
+  });
+
   test("the pool itself is still validated — a malformed CIDR is a programmer error and throws", () => {
     // The tolerance above is for the OBSERVED value, never for the DECLARED
     // one. A pod CIDR that is not a CIDR means the values file is wrong, and

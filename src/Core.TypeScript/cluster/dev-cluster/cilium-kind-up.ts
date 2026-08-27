@@ -161,13 +161,20 @@ export function podIpField(row: string): string {
  * the `"10.143."` text and is outside the block — so a `startsWith` test
  * accepts addresses the pool never hands out.
  *
- * A field that is not a dotted quad returns FALSE rather than throwing, and the
+ * A field that is not an address returns FALSE rather than throwing, and the
  * direction matters: an empty `podIP` is a normal transient (a Pending pod has
  * none), a lane that dies on one reports nothing, and counting it as "not from
  * the pool" still FAILS the check. Fail-closed, with the raw rows in `detail`.
+ *
+ * "Not an address" is checked as SHAPE **and** RANGE, because a shape-only
+ * guard leaves the sentence above false: `/^\d{1,3}(\.\d{1,3}){3}$/` admits
+ * `999.1.1.1`, and `cidrBounds` then throws `CIDR out of range` — a different
+ * throw through the same hole this guard exists to close.
  */
 export function podIpInPool(ip: string, podCidr: string): boolean {
-  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) return false;
+  const octets = ip.split(".");
+  const isAddress = octets.length === 4 && octets.every((o) => /^\d{1,3}$/.test(o) && Number.parseInt(o, 10) <= 255);
+  if (!isAddress) return false;
   const pool = cidrBounds(podCidr);
   const addr = cidrBounds(`${ip}/32`).first;
   return addr >= pool.first && addr <= pool.last;
