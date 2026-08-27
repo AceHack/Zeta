@@ -1,0 +1,12 @@
+{
+  "pr_number": 15740,
+  "archive_path": "docs/history/pr-reviews/PR-15740-fix-ci-two-drift-gate-tests-walked-the-whole-repo-on-bun-s-default-5000-ms-cap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:46:34.466Z",
+  "schema_version": "v1",
+  "commit_sha": "e9f9b9217e5f6497e9b819eaec6d30e75e12ebd9",
+  "title": "fix(ci): two drift-gate tests walked the whole repo on Bun's default 5000 ms cap",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:45:57Z",
+  "head_ref": "fix/ace-drift-gate-default-timeout"
+}

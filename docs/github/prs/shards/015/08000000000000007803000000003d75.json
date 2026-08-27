@@ -1,0 +1,12 @@
+{
+  "pr_number": 15733,
+  "archive_path": "docs/history/pr-reviews/PR-15733-rules-governance-when-a-gated-action-looks-like-the-only-path-find-the-third-pat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:21:13.134Z",
+  "schema_version": "v1",
+  "commit_sha": "22f7268d89e439d4b2efaf88ddeaef32ce90507a",
+  "title": "rules(governance): when a gated action looks like the only path, find the third path",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:20:35Z",
+  "head_ref": "alexa/rule-third-path"
+}

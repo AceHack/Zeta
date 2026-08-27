@@ -1,0 +1,12 @@
+{
+  "pr_number": 15723,
+  "archive_path": "docs/history/pr-reviews/PR-15723-feat-bonsai-rx-query-connects-1-1-folds-local-du-commands.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T02:13:54.680Z",
+  "schema_version": "v1",
+  "commit_sha": "d58efeb6d983011cbf281e830727b9a4d5f80b2d",
+  "title": "feat: Bonsai Rx query connects +1/-1 folds; local DU commands",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T02:13:16Z",
+  "head_ref": "feat/rx-fold-query-local-du-sync"
+}

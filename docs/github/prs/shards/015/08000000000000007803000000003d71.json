@@ -1,0 +1,12 @@
+{
+  "pr_number": 15729,
+  "archive_path": "docs/history/pr-reviews/PR-15729-feat-pin-the-no-app-needle-kleisli-isr-vs-fourcornertrace.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:33:11.768Z",
+  "schema_version": "v1",
+  "commit_sha": "b2d5f9458d97b0d8d7819c4038a7eae2bd2ea6f9",
+  "title": "feat: pin the no-app needle — Kleisli ISR vs FourCornerTrace",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:32:36Z",
+  "head_ref": "feat/no-app-isr-kleisli-self-predict"
+}

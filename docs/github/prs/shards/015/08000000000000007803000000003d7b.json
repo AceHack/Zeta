@@ -1,0 +1,12 @@
+{
+  "pr_number": 15739,
+  "archive_path": "docs/history/pr-reviews/PR-15739-test-zetafs-give-the-dual-fold-checks-an-oracle-counted-off-the-history.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:44:08.458Z",
+  "schema_version": "v1",
+  "commit_sha": "0ed5e3562aa5a068c32ac8255dbcffdcd4104806",
+  "title": "test(zetafs): give the dual-fold checks an oracle counted off the history",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:43:35Z",
+  "head_ref": "shadow/zetafs-dual-fold-arity"
+}

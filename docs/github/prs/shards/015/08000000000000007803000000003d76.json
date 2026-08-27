@@ -1,0 +1,12 @@
+{
+  "pr_number": 15734,
+  "archive_path": "docs/history/pr-reviews/PR-15734-fix-heartbeat-break-the-self-sustaining-wedge-carry-an-append-only-prefix-instea.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:34:54.225Z",
+  "schema_version": "v1",
+  "commit_sha": "cb8c904b9958be542a21ca7cba7ebbc010e268f2",
+  "title": "fix(heartbeat): break the self-sustaining wedge — carry an append-only prefix instead of dying on it",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:34:15Z",
+  "head_ref": "shadow/alexa-heartbeat-accumulate-divergent-base"
+}

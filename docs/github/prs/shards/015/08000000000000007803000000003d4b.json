@@ -1,0 +1,17 @@
+{
+  "pr_number": 15691,
+  "archive_path": "docs/history/pr-reviews/PR-15691-research-decorr-honest-stats-layer-prompt-frame-is-mostly-noise-temp-0-not-deter.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7mgKgS",
+    "comment:PRRC_kwDOSF9kNM7mg_nB",
+    "thread:PRRT_kwDOSF9kNM6coo-g",
+    "thread:PRRT_kwDOSF9kNM6cpL2U"
+  ],
+  "fetched_at": "2026-08-27T01:52:08.962Z",
+  "schema_version": "v1",
+  "commit_sha": "4c586e534b7c2ba90c47f8d87fcc18085e34c2a3",
+  "title": "research(decorr): honest stats layer + prompt-frame is mostly noise (temp=0 not deterministic)",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:51:23Z",
+  "head_ref": "alexa/decorr-stats-fix"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15673,
+  "archive_path": "docs/history/pr-reviews/PR-15673-test-cluster-boot-the-control-plane-join-path-in-ci-fix-the-role-module-imports-.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:48:53.342Z",
+  "schema_version": "v1",
+  "commit_sha": "075a218bb7420918157fd8599423c8f956d85e24",
+  "title": "test(cluster): boot the control-plane JOIN path in CI; fix the role-module imports that broke flake eval",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:48:17Z",
+  "head_ref": "shadow/cluster-join-vm-tests"
+}

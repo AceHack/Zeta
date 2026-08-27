@@ -1,0 +1,12 @@
+{
+  "pr_number": 15747,
+  "archive_path": "docs/history/pr-reviews/PR-15747-test-fourcorner-let-the-interrupt-actually-reach-the-second-prediction.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T02:14:51.749Z",
+  "schema_version": "v1",
+  "commit_sha": "ed6017c6c4c8c83833b7897f0842fa6558642c0d",
+  "title": "test(fourcorner): let the interrupt actually reach the second prediction",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T02:14:17Z",
+  "head_ref": "shadow/fourcorner-interrupt-arity"
+}

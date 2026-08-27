@@ -1,0 +1,12 @@
+{
+  "pr_number": 15735,
+  "archive_path": "docs/history/pr-reviews/PR-15735-chore-backlog-close-081m0wtb5mn-uefi-keyfile-restore-verified-green.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:29:42.245Z",
+  "schema_version": "v1",
+  "commit_sha": "f879864420d9796566682f4e77e9a99dd3529f70",
+  "title": "chore(backlog): close 081M0WTB5MN — UEFI keyfile restore verified green",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:29:04Z",
+  "head_ref": "cursor/close-restore-workitem-c9c8"
+}

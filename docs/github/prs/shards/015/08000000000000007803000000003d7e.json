@@ -1,0 +1,12 @@
+{
+  "pr_number": 15742,
+  "archive_path": "docs/history/pr-reviews/PR-15742-ferry-ip-questionable-deepseek-harness-cordis-everything-is-a-plugin-is-our-mant.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T02:01:36.747Z",
+  "schema_version": "v1",
+  "commit_sha": "f08bde6133b6a6f14480550bcb1d735459373842",
+  "title": "ferry(ip-questionable): DeepSeek Harness / Cordis — \"everything is a plugin\" is our mantra",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T02:00:55Z",
+  "head_ref": "shadow/ferry-deepseek-harness-plugin-kernel"
+}

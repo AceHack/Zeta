@@ -1,0 +1,12 @@
+{
+  "pr_number": 15696,
+  "archive_path": "docs/history/pr-reviews/PR-15696-feat-lineage-disjointness-estimator-fka-rho.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:14:00.406Z",
+  "schema_version": "v1",
+  "commit_sha": "8f2146f7dc03b20bf478e6610f69bb45e4199fe9",
+  "title": "feat: lineage disjointness estimator (fka rho)",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:13:14Z",
+  "head_ref": "lior/lineage-disjointness-estimator"
+}

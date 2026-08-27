@@ -1,0 +1,12 @@
+{
+  "pr_number": 15746,
+  "archive_path": "docs/history/pr-reviews/PR-15746-fix-cluster-the-vm-join-test-s-two-etcd-peers-advertised-the-same-address.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T02:08:36.713Z",
+  "schema_version": "v1",
+  "commit_sha": "a383e3c80f77a802b984be5395acf4f4fb857497",
+  "title": "fix(cluster): the VM join test's two etcd peers advertised the same address",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T02:07:59Z",
+  "head_ref": "shadow/cluster-join-etcd-peer-address"
+}

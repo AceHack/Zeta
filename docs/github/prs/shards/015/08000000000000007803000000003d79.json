@@ -1,0 +1,12 @@
+{
+  "pr_number": 15737,
+  "archive_path": "docs/history/pr-reviews/PR-15737-fix-hygiene-the-check-arity-census-coupling-a-fix-command-that-cannot-silence.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:33:31.084Z",
+  "schema_version": "v1",
+  "commit_sha": "dfd2e1323a6601fb6f4cb6f0625da773cbfa8fba",
+  "title": "fix(hygiene): the check-arity census coupling — a fix command that cannot silence",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:32:53Z",
+  "head_ref": "fix/check-arity-census-coupling"
+}

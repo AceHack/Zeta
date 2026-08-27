@@ -1,0 +1,12 @@
+{
+  "pr_number": 15731,
+  "archive_path": "docs/history/pr-reviews/PR-15731-feat-full-1-retraction-erases-the-view-widen-does-not.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:15:25.631Z",
+  "schema_version": "v1",
+  "commit_sha": "42d98dc7d025e8a1c6226bf9469dfeee4628297e",
+  "title": "feat: full -1 retraction erases the view; widen does not",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T01:14:48Z",
+  "head_ref": "feat/retraction-erasing-widen-nonerasing"
+}
