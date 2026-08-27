@@ -616,6 +616,25 @@ export interface FoldInput {
   readonly failures?: readonly CheckObservationFailure[];
   /** Whole-source failures (e.g. the roster enumeration itself failed). */
   readonly sourceErrors?: readonly string[];
+  /**
+   * Source names we could not ask AT ALL this pass — the producer never answered, so
+   * no check belonging to it was observed and none of them CAN be judged.
+   *
+   * WHY THIS EXISTS, and it is the inverted vacuity class. A check that cannot fail is
+   * the familiar defect. Its mirror image is a check that reports THE WORLD IS BROKEN
+   * when only its own credential is, and that direction is the dangerous one: it is
+   * believed, then distrusted, then ignored. On 2026-08-27 this fold produced exactly
+   * that — a credential refusal upstream meant zero observations, every row fell through
+   * to `verdictForAbsence`, and twelve lanes that had each run successfully within the
+   * hour were rendered RED / "STALE: newest verdict is 9h old".
+   *
+   * The fold ALREADY had the right sentence for this, one branch up, for the per-check
+   * case: *"we do not get to conclude 'correctly silent' about a question we failed to
+   * ask."* A whole-source outage is that same fact for every check at once, and it just
+   * had no way in. This is that way in. The pass still fails — `unknown` is not OK — it
+   * fails saying "I could not see", which is the true statement.
+   */
+  readonly blindSources?: readonly string[];
   readonly config?: FoldConfig;
 }
 
@@ -631,6 +650,7 @@ export function foldDashboard(input: FoldInput): DashboardReport {
   const { roster, now } = input;
   const latest = latestPerCheck(input.observations);
   const failures = new Map((input.failures ?? []).map((f) => [f.checkId, f.detail]));
+  const blindSources = new Set(input.blindSources ?? []);
 
   const rows: DashboardRow[] = [];
   let expected = 0;
@@ -670,6 +690,15 @@ export function foldDashboard(input: FoldInput): DashboardReport {
       // and it outranks the expectation-based derivation: we do not get to conclude
       // "correctly silent" about a question we failed to ask.
       verdict = unknown("source-error", `producer could not answer for this check: ${failure}`);
+      observedAt = entry.lastObservedAt;
+    } else if (blindSources.has(entry.source)) {
+      // The producer for this check could not be reached AT ALL this pass. Absence of
+      // an observation here says nothing about the lane — only about our own sight —
+      // so it must not be derived into a staleness verdict against it.
+      verdict = unknown(
+        "source-error",
+        `source '${entry.source}' could not be observed this pass, so nothing is known about this check; the silence is OURS, not the lane's`,
+      );
       observedAt = entry.lastObservedAt;
     } else {
       verdict = verdictForAbsence(entry.expectation, entry.lastObservedAt, now, config, entry.definitionSince);

@@ -197,6 +197,15 @@ jobs:
       #      That is the design that produced ten days of stale dashboard data on the sibling
       #      lane (`drift-sweep`, 1,597 green runs, 081M0QPZD9C087G0R002W8QC2A).
       #
+      # FOUR ARTIFACTS ARE WRITTEN; FOR THREE DAYS TWO OF THEM WERE NOT FLUSHED. The pass
+      # writes `db/drift-dashboard/roster.json`, `docs/DRIFT-DASHBOARD.md`,
+      # `data/drift-dashboard.html` and `data/drift-dashboard.json`; `--paths` named only
+      # the first and the last. So the MARKDOWN dashboard on `main` — the one a human
+      # actually opens — last changed 2026-08-24, by a code commit, while the JSON beside
+      # it refreshed every six hours. A publication route that carries some of the
+      # publication is the stale-artifact defect this whole step was built to end, and it
+      # was reintroduced by an incomplete path list rather than by a swallow.
+      #
       # Now: park on the ungated `heartbeat/drift-dashboard` ref and land via a PR with
       # squash auto-merge armed, so `gate` runs on the flush like it does on everything else.
       # `flush-via-staging.ts` exits non-zero when the staging push or the PR call fails and
@@ -240,7 +249,7 @@ jobs:
           set -euo pipefail
           bun src/Core.TypeScript/forge-host/github/flush-via-staging.ts flush \
             --lane drift-dashboard \
-            --paths data/drift-dashboard.json db/drift-dashboard \
+            --paths data/drift-dashboard.json data/drift-dashboard.html docs/DRIFT-DASHBOARD.md db/drift-dashboard \
             --message "drift-dashboard: refresh roster"
 
       - name: Fail if dashboard is not OK
