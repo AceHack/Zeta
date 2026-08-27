@@ -67,7 +67,7 @@ describe("prepareHeartbeatBranch", () => {
     const result = prepareHeartbeatBranch("alexa", work);
     expect(result).toEqual({
       ok: true,
-      value: { head: "heartbeat/alexa", remoteFound: false, carried: false, healed: [] },
+      value: { head: "heartbeat/alexa", remoteFound: false, carried: false, healed: [], resolved: [] },
     });
     expect(git(work, "branch", "--show-current")).toBe("heartbeat/alexa");
   });
@@ -805,16 +805,32 @@ describe("prepareHeartbeatBranch — canonically-ordered set divergence", () => 
     expect(parsed.entries.map((entry) => entry.eventId)).toEqual([LOW, HIGH]);
   });
 
-  it("REFUSES when main published an entry the lane never saw", () => {
+  it("NEVER LOSES an entry main published that the lane never saw", () => {
     const { work } = fixture();
-    // Main holds an entry absent from the lane's set. Taking the lane's copy would DELETE a
-    // published event from discovery — the exact clobber the rule exists to refuse.
-    divergeOverBase(work, [HIGH, "ff00000000000000000000000000000f"], [LOW, HIGH]);
+    const ONLY_ON_MAIN = "ff00000000000000000000000000000f";
+    // Both sides ADD over an empty base: main publishes [HIGH, ONLY_ON_MAIN], the lane publishes
+    // [LOW, HIGH]. Nothing is deleted anywhere, so the union is the only lossless answer.
+    divergeOverBase(work, [HIGH, ONLY_ON_MAIN], [LOW, HIGH]);
 
     const result = prepareHeartbeatBranch("alexa", work);
-    expect(result).toMatchObject({ ok: false });
-    if (result.ok) throw new Error("unreachable");
-    expect(result.error).toContain("carry unflushed heartbeat state");
+
+    // THIS TEST USED TO ASSERT A REFUSAL, and the change is deliberate. Its own comment said why
+    // it refused: "Taking the lane's copy would DELETE a published event from discovery." That was
+    // true of the only mechanism available then — `checkout --theirs` literally takes the lane's
+    // copy and drops ONLY_ON_MAIN. The keyed-set resolver does not take a side; it merges on
+    // `eventId`, honours deletions, and refuses when one id carries two different payloads. So the
+    // refusal was protecting against a clobber that can no longer happen on this path.
+    //
+    // What is asserted now is the INVARIANT rather than the mechanism, which is strictly stronger:
+    // whatever carries this file, main's published entry must survive it. A future resolution that
+    // clobbers fails here even if it never refuses.
+    expect(result).toMatchObject({ ok: true });
+    if (!result.ok) throw new Error(result.error);
+    const carried = readFileSync(join(work, INDEX_PATH), "utf8");
+    expect(carried).toContain(ONLY_ON_MAIN);
+    expect(carried).toContain(LOW);
+    expect(carried).toContain(HIGH);
+    expect(result.value.resolved.map((r) => r.path)).toContain(INDEX_PATH);
   });
 
   it("REFUSES a rewritten entry — same key, changed content key", () => {

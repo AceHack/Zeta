@@ -1,6 +1,13 @@
 #!/usr/bin/env bun
 
 import { spawnSync } from "node:child_process";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import {
+  CARRY_RESOLVERS,
+  resolveCarryConflict,
+  type CarryResolver,
+} from "./carry-resolvers.ts";
 
 export interface PreparedHeartbeatBranch {
   readonly head: string;
@@ -15,6 +22,17 @@ export interface PreparedHeartbeatBranch {
    * healed itself says so out loud rather than looking like a tick that never diverged.
    */
   readonly healed: readonly string[];
+  /**
+   * Conflicting paths decided by a declared RULE rather than by the measurement above, each with
+   * the rule that decided it and why.
+   *
+   * Kept separate from `healed` on purpose. A healed path needed no judgement — the bytes said the
+   * lane's copy contains main's verbatim. A resolved path DID need one: a rule read both documents
+   * and picked. Collapsing them into one list would hide which paths a human should look at if the
+   * rule ever turns out to be wrong, and the whole reason automatic resolution is admissible here
+   * is that it stays legible afterwards.
+   */
+  readonly resolved: readonly { readonly path: string; readonly rule: string; readonly why: string }[];
 }
 
 export type PrepareHeartbeatResult =
@@ -142,6 +160,100 @@ export function isLosslessLineExtension(ours: Buffer, theirs: Buffer): boolean {
     if (matched < oursLines.length && oursLines[matched] === line) matched += 1;
   }
   return matched === oursLines.length;
+}
+
+/** What the carry concluded about the conflicted index as a whole. */
+export interface CarryHealResult {
+  readonly ok: boolean;
+  /** Paths taken by the insertion-only MEASUREMENT. */
+  readonly healed: readonly string[];
+  /** Paths decided by a declared RULE, with the rule that decided each. */
+  readonly resolved: readonly { readonly path: string; readonly rule: string; readonly why: string }[];
+  /** Paths no mechanism could settle. Non-empty => nothing was written. */
+  readonly blocked: readonly { readonly path: string; readonly why: string }[];
+}
+
+/**
+ * The carry, in two mechanisms, tried in order — measurement first, rule second.
+ *
+ * `healLosslessExtensionConflicts` asks "can these be carried without DECIDING anything?" It is a
+ * per-tick measurement against the actual bytes, it is the narrowest thing that can be true, and it
+ * is tried first for exactly that reason: a path it accepts needs no rule, no declaration, and no
+ * judgement. Nothing about that path changes here.
+ *
+ * What is new is the second question, asked only of the paths the measurement refuses: **is there a
+ * declared rule that DECIDES this one?** Before this, the answer was always no and the tick died —
+ * measured 2026-08-27, six files across two lanes, stuck for hours, cleared by hand:
+ *
+ *     docs/room-evidence/index.json          keyed set, entries content-addressed
+ *     docs/drift-events/slo-filed.json       keyed map, and UNION IS WRONG on it
+ *     data/drift-{evolution,genome,mtth,proposal}.json   snapshots carrying their own tick
+ *
+ * None of those needed coordination. Each had a rule that decides it from the documents alone, and
+ * `carry-resolvers.ts` is those rules with their falsifiers. This function is what asks them.
+ *
+ * ALL-OR-NOTHING, preserved exactly. Every path is classified before a single byte is written, so a
+ * run that cannot settle one path mutates nothing and the caller reports git's own message
+ * unchanged. That property is why an automatic resolution is admissible at all, and widening the
+ * mechanism must not weaken it.
+ *
+ * A REFUSAL IS STILL THE COMMON CASE and must stay reachable: an unregistered path has no rule, and
+ * `resolveCarryConflict` refuses by default rather than guessing one. `data/ci-runs.jsonl` — three
+ * lanes appending to one file — is the standing example: the measurement refuses it because main
+ * holds rows this lane never saw, and no resolver claims it, so it goes to its declared driver
+ * exactly as before.
+ */
+export function healCarryConflicts(
+  cwd: string,
+  resolvers: ReadonlyMap<string, CarryResolver> = CARRY_RESOLVERS,
+): CarryHealResult {
+  const empty: CarryHealResult = { ok: false, healed: [], resolved: [], blocked: [] };
+  const unmerged = git(cwd, ["diff", "--name-only", "--diff-filter=U", "-z"]);
+  if (unmerged.status !== 0) return empty;
+  const paths = unmerged.stdout.split("\0").filter((p) => p.length > 0);
+  if (paths.length === 0) return empty;
+
+  const healed: string[] = [];
+  const resolved: { path: string; rule: string; why: string; content: string }[] = [];
+  const blocked: { path: string; why: string }[] = [];
+
+  for (const path of paths) {
+    const ours = stageBlob(cwd, 2, path) ?? Buffer.alloc(0);
+    const theirs = stageBlob(cwd, 3, path);
+    if (theirs !== undefined && isLosslessLineExtension(ours, theirs)) {
+      healed.push(path);
+      continue;
+    }
+    // Stage 1 is ABSENT on an add/add, which is the squash-flush topology's normal shape — so a
+    // missing base is `null` (no common ancestor) and never an error.
+    const base = stageBlob(cwd, 1, path);
+    const verdict = resolveCarryConflict(
+      {
+        path,
+        base: base === undefined ? null : base.toString("utf8"),
+        ours: ours.toString("utf8"),
+        theirs: theirs === undefined ? "" : theirs.toString("utf8"),
+      },
+      resolvers,
+    );
+    if (verdict.kind === "resolved") resolved.push({ path, rule: verdict.rule, why: verdict.why, content: verdict.content });
+    else blocked.push({ path, why: `${verdict.rule}: ${verdict.why}` });
+  }
+
+  if (blocked.length > 0) return { ok: false, healed: [], resolved: [], blocked };
+
+  for (const path of healed) {
+    const take = git(cwd, ["checkout", "--theirs", "--", path]);
+    if (take.status !== 0) return { ok: false, healed: [], resolved: [], blocked: [{ path, why: "checkout --theirs failed" }] };
+    const stage = git(cwd, ["add", "--", path]);
+    if (stage.status !== 0) return { ok: false, healed: [], resolved: [], blocked: [{ path, why: "git add failed" }] };
+  }
+  for (const r of resolved) {
+    writeFileSync(join(cwd, r.path), r.content, "utf8");
+    const stage = git(cwd, ["add", "--", r.path]);
+    if (stage.status !== 0) return { ok: false, healed: [], resolved: [], blocked: [{ path: r.path, why: "git add failed" }] };
+  }
+  return { ok: true, healed, resolved: resolved.map(({ path, rule, why }) => ({ path, rule, why })), blocked: [] };
 }
 
 /** What the insertion-only rule concluded about the conflicted index as a whole. */
@@ -276,21 +388,23 @@ export function prepareHeartbeatBranch(agent: string, cwd: string = process.cwd(
   if (drivers !== undefined) return drivers;
 
   let healed: readonly string[] = [];
+  let resolved: CarryHealResult["resolved"] = [];
   if (remoteFound) {
     const merge = git(cwd, ["merge", "--squash", "--no-commit", remoteRef]);
     if (merge.status !== 0) {
       // FALLBACK-ONLY, and that ordering is the safety property. Every carry that succeeds today
       // still takes the branch above and never reaches this line, so the healthy path is
       // byte-identical to before. This runs only where the tick is already dead.
-      const rescue = healLosslessExtensionConflicts(cwd);
+      const rescue = healCarryConflicts(cwd);
       if (!rescue.ok) return failed("carry unflushed heartbeat state", merge);
       healed = rescue.healed;
+      resolved = rescue.resolved;
     }
   }
 
   const staged = git(cwd, ["diff", "--cached", "--quiet", "--exit-code"]);
   if (staged.status !== 0 && staged.status !== 1) return failed("inspect carried heartbeat state", staged);
-  return { ok: true, value: { head, remoteFound, carried: staged.status === 1, healed } };
+  return { ok: true, value: { head, remoteFound, carried: staged.status === 1, healed, resolved } };
 }
 
 /**
