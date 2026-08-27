@@ -1,0 +1,12 @@
+{
+  "pr_number": 15849,
+  "archive_path": "docs/history/pr-reviews/PR-15849-fix-archive-re-derive-the-pr-manifest-from-the-shards.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T16:31:57.097Z",
+  "schema_version": "v1",
+  "commit_sha": "7abc29640ce6c7f8205ce071c7fcc3c27e146f45",
+  "title": "fix(archive): re-derive the PR manifest from the shards",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T16:30:06Z",
+  "head_ref": "shadow/repair-pr-manifest"
+}
