@@ -31,27 +31,39 @@ backlog** — and the backlog selection criterion is *"does it help us see the s
 clearly?"* Anything that converts to none of the four is drift. (Detail:
 `memory/feedback_aaron_triage_every_input_toward_roadmap_via_code_proof_treaty_seed_or_backlog_*`.)
 
-### Layer names — TENTATIVE (pending naming-expert + Ilyana review; unanchored coinage = debt)
+### Names — TENTATIVE; a preliminary split, not the destination architecture
 
-Proposed set (Amara 2026-06-07, refined with Aaron) — internal direction **decided**; still pending a
-naming-expert + public-API (Ilyana) pass before any **public/glossary** use (unanchored coinage = debt):
+Aaron 2026-08-27: Ace · Zeta · Nucleus · Loom is a **preliminary split**. Prefer
+**composability over named layers** — fewer names, more packages that compose,
+the way the .NET BCL factors (`System.Collections` is not a "layer" above
+`System`; assemblies compose). Language ecosystems (NuGet / crates.io / PyPI)
+are the same shape: many small units, not a stack. When we actually extract
+peer repos, the cut is **measured** — git-history analysis (who changes with
+whom) **and** the live dependency graph (`ace` build-graph / project refs) —
+not the four names. Workitem `081M120GFSV087G0R003XCPC64`. Round-3 closure
+measurement: `docs/research/2026-08-19-repo-split-round-3-*`.
 
-| Layer | Name | Status |
-|-------|------|--------|
+Proposed set (Amara 2026-06-07, refined with Aaron) — internal direction
+**decided as a bootstrap naming**, still pending a naming-expert + public-API
+(Ilyana) pass before any **public/glossary** use (unanchored coinage = debt):
+
+| Role | Name | Status |
+|------|------|--------|
 | package-manager-of-package-managers | **Ace** | ✅ settled |
 | data plane + cell substrate | **Zeta** | ✅ settled |
 | DI/plugin **microcore** (MEF-like) | **Nucleus** | ✅ decided (Aaron — over `Kernel`, which is OS-overloaded) |
 | cross-cell saga / control layer | **Loom** (weaves cells without collapsing them) | ✅ decided |
-| within-cell HA / resilience | *(no layer name)* | resolved — **a host concern, not a named layer** |
+| within-cell HA / resilience | *(no extra name)* | resolved — **a host concern, not a named package** |
 | the cell's replication shape | **Geode** | the cell IS a geode (§1); not the HA shell |
 
 **Resolved (Aaron):** within-cell HA is **a host concern, not its own named layer** — k8s/Orleans provide
 it, systemd doesn't; it's a deployment property of a cell. So `Geode` stays attached to the **cell /
 replication concept** (a cell IS a geode — full-within/partial-across), and HA needs no separate coinage.
-Four named layers: **Ace · Zeta · Nucleus · Loom** (a cell = a Geode within Zeta). Public/glossary
+Four **bootstrap names**: **Ace · Zeta · Nucleus · Loom** (a cell = a Geode within
+Zeta). They are packages that compose, not a stack you must climb. Public/glossary
 anchoring still goes through the naming-expert + Ilyana pass before any external use.
 **Harny** (Aaron 2026-08-26) is the custom agent harness Ace will install — a
-product on Ace + Zeta, not a fifth layer. Trajectory:
+product on Ace + Zeta, not a fifth name. Trajectory:
 [`docs/trajectories/own-ai-harness/RESUME.md`](trajectories/own-ai-harness/RESUME.md).
 
 ### ZetaID — the universal cross-layer pointer
@@ -200,7 +212,11 @@ Format is chosen **per stream/table**; all ride the **same canonical entry↔Dyn
 using DynamicValue's byte-locked per-format serializer:
 
 - **git check-ins → YAML default** (diffable history). 🚧 PREREQUISITE GAP: no `DynamicValue.toYaml/fromYaml` yet.
+  **Bootstrap, not destination** (Aaron 2026-08-27): text encodings exist to play
+  nice with git **for now**. End-state storage is **binary FS and DB** (speed).
 - **filesystem → CBOR default** (speed). ✅ ready. All formats optional: CBOR ✅ JSON ✅ XML ✅ YAML 🚧 Arrow (partial).
+  This is the direction the destination codec already points. Own-format
+  `ZetaFsDeltaLog` objects are the store; git is the v1 adapter.
 - **Frontmatter is a GENERAL pattern, not markdown-only** — frontmatter = a **structured metadata header
   + a body** (`(metadata: DynamicValue.Object, body)`). Roots predate markdown: RFC 822 email
   (headers + blank line + body) and HTTP (headers + body) are the same shape; Jekyll/Hugo just popularized
@@ -325,14 +341,18 @@ using DynamicValue's byte-locked per-format serializer:
     `081M109WG5S087G0R0021E5MPT`.
 8c. **Granular peer-repo splits — dogfood, then extract; dozens expected.**
     The theme is **dogfooding in this monorepo while splitting reusable
-    chunks into their own repos.** Not three forever. Data Vault 2.0
-    partitions by **change rate** (hub / link / satellite) *and* by
-    **toolchain closure** (dotnet vs bun vs Lean vs wasm vs k8s) —
-    Martin's CCP vs CRP, measured in
-    `docs/research/2026-08-19-repo-split-round-3-*` (87% of the union
-    footprint is single-owner). Peer repos, **never submodules** (the
-    Ace/Zeta/Forge cycle cannot be a DAG — ADR 2026-04-22). Cutover
-    sequence already written
+    chunks into their own repos.** Not three forever, and **not a layer
+    stack** — composability over layers (`081M120GFSV087G0R003XCPC64`).
+    The cut, when we actually extract, is **measured**: git-history
+    analysis (co-change) **plus** the live dependency graph (`ace`
+    build-graph / project refs). Data Vault 2.0 partitions by **change
+    rate** (hub / link / satellite) *and* by **toolchain closure**
+    (dotnet vs bun vs Lean vs wasm vs k8s) — Martin's CCP vs CRP,
+    measured in `docs/research/2026-08-19-repo-split-round-3-*` (87% of
+    the union footprint is single-owner). That is the dep-graph half;
+    git-history analysis is the missing half. Peer repos, **never
+    submodules** (the Ace/Zeta/Forge cycle cannot be a DAG — ADR
+    2026-04-22). Cutover sequence already written
     (`docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`);
     no repository is created from this roadmap row (gated). Harny is
     the first extract; later cuts already ranked include `zeta-formal`,
@@ -449,7 +469,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
 - **ZetaFS dual-fold remaining** — factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`). Parent edge shipped. Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128 (hexagonal).
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
-- **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
+- **Next extract after Harny** — pick by measured git-history co-change **and** live dependency graph (not by a layer name); DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated). `081M120GFSV087G0R003XCPC64`
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 - **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
@@ -564,9 +584,11 @@ These don't wait for a single round:
   parent-edge shipped (truncate walks it). Remaining: BLAKE3 default,
   factory path. `081M108RYNT087G0R001JSRNZE`.
 - **Dogfood, then extract.** Expect **dozens of peer repos**, split on
-  Data Vault 2.0 change-rate *and* toolchain closure — not a three-repo
-  ceiling. Local action in one repo; global effect via Ace pins,
-  Z-set/+1 merge, and SoftValue observe (`DuExpand`).
+  measured git-history co-change **and** the live dependency graph
+  (Data Vault 2.0 change-rate *and* toolchain closure) — not a
+  three-repo ceiling and not a layer stack. Local action in one repo;
+  global effect via Ace pins, Z-set/+1 merge, and SoftValue observe
+  (`DuExpand`). `081M120GFSV087G0R003XCPC64`.
 - **DUs expand to DynamicValue (collapsed) and SoftValue (Bayesian
   interpretation).** `snap` is the only collapse. This is the bridge
   to our BNN / factor-graph reading of the same verbs.

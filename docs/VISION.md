@@ -1540,6 +1540,8 @@ expression trees — this is much easier to reason about than IL."*
 | IL / machine code / assembly emitted directly | **ASPIRATION** | Zero `Reflection.Emit`, `ILGenerator`, or `DynamicMethod` anywhere under `src/` |
 | A compiler of compilers, class libraries shared across all compiler languages | **ASPIRATION** | No mechanism |
 | Parser-combinator / ANTLR-shaped frontends for many languages and our own | **ASPIRATION** | No mechanism |
+| Filesystem as a compiler stage (type providers / Roslyn) | **ASPIRATION** | F# type providers reify an unbounded external space on demand (Syme / Battocchi 2012); Roslyn source generators are the C# analogue. The store is the information source. Pointed at in `docs/research/2026-06-07-zs-is-a-durable-cell-reified-types-every-loop-*`. No provider yet reads `ZetaFs` / `DagFs` as types |
+| Self-editing compiler: a tick loads the last tick's edits | **ASPIRATION** | Edits land as content-addressed objects; the next **bounded tick** (epoch, not a wall-clock duration — `AdinkraClock.isMetricFree`) picks them up. Ticks are bounded, so a self-edit cannot run unbounded. No mechanism yet wires "compiler edited the store" → "next tick's mix sees it" |
 
 **"Compiled" is currently true only in the Futamura sense** — specializing an interpreter to a program to
 get something faster than interpreting it. It is not true in the machine-code sense, and **"JIT-like" is

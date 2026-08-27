@@ -1,0 +1,14 @@
+{
+  "id": "080d022041f9f010a01300083b7605be",
+  "at": "2026-08-27T16:23:06.302Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M120GFSV087G0R003XCPC64",
+    "type": "task",
+    "title": "Repo extract is measured: git-history plus dependency graph; composability over layers",
+    "slug": "repo-extract-is-measured-git-history-plus-dependency-graph-c",
+    "priority": "P1",
+    "filename": "081M120GFSV087G0R003XCPC64-repo-extract-is-measured-git-history-plus-dependency-graph-c.md"
+  }
+}
