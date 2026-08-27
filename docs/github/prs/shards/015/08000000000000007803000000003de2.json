@@ -1,0 +1,12 @@
+{
+  "pr_number": 15842,
+  "archive_path": "docs/history/pr-reviews/PR-15842-feat-cluster-refuse-to-boot-k3s-when-a-node-told-to-join-resolved-to-found.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T15:59:50.794Z",
+  "schema_version": "v1",
+  "commit_sha": "069f6f5bad38db80c060d21edc9324ebb4bc18d2",
+  "title": "feat(cluster): refuse to boot k3s when a node told to JOIN resolved to FOUND",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T15:59:14Z",
+  "head_ref": "shadow/join-intent-outcome-guard"
+}

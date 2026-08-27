@@ -1,0 +1,12 @@
+{
+  "pr_number": 15843,
+  "archive_path": "docs/history/pr-reviews/PR-15843-docs-ip-questionable-metr-openai-swarm-incident-the-agents-own-identity-scheme.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T15:46:57.901Z",
+  "schema_version": "v1",
+  "commit_sha": "03421e39a4232e5df1b003ebf4575af8ebcf9e04",
+  "title": "docs(ip-questionable): METR/OpenAI swarm incident — the agents' own identity scheme",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T15:46:20Z",
+  "head_ref": "shadow/ip-metr-openai-swarm-identity"
+}
