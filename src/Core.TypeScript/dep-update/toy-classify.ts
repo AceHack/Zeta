@@ -1,0 +1,174 @@
+// TOY MODEL — the pure decision function.
+//
+// `toyClassify(proposal, adherenceRecord, provenanceFacts) -> Transition`
+//
+// Pure and total. No network, no clock, no filesystem, no `process.env`, no
+// randomness: entropy enters only through the declared parameters (§13
+// noninterference). The same three arguments always produce the same
+// transition, which is what makes it DST-replayable and what lets the falsifiers
+// below actually falsify something.
+//
+// ── THE COMBINATOR IS A JOIN, NOT A SUM. THIS IS THE WHOLE DESIGN. ────────────
+//
+// The two signals are combined by taking the MAXIMUM severity of the two
+// independent readings. They are never added, averaged, or weighted into a
+// single trust number.
+//
+// That refusal is the xz-utils lesson (CVE-2024-3094) stated as a type. The
+// backdoored releases came from a project with a spotless release record — a
+// time-weighted adherence score would have been RISING right up to the
+// backdoor, because nothing about the semver claims had gone wrong. What changed
+// was who was building it and how: a provenance discontinuity, observable
+// without any claim about anyone's motives.
+//
+// Under any weighted-sum combinator, a maximal adherence score BUYS DOWN a
+// provenance discontinuity, and the better the record the more it buys. That is
+// backwards, and it is backwards precisely in the case that matters. A join has
+// no exchange rate, so there is nothing to buy with:
+//
+//     transition = max(adherenceReading, provenanceReading)
+//
+// `toyProvenanceReading` below never reads the adherence record — it is not
+// passed it, so it cannot.
+//
+// ── ESCALATION IS RECOVERABLE, STRUCTURALLY. ─────────────────────────────────
+//
+// This function has no memory. Its inputs are the proposal, the current
+// adherence posterior, and the CURRENT provenance facts. There is no blocklist
+// parameter, no "previously flagged" field, and no row of `Transition` that
+// carries a publisher forward as flagged. So a publisher whose discontinuity
+// resolves — re-attested, provenance restored, maintainer handoff completed —
+// classifies as `AutoEligible` again on the next call, with their accumulated
+// adherence posterior untouched.
+//
+// Nothing is confiscated on the way through, either: `toyClassify` never returns
+// a modified belief. Standing is earned by observation and spent by nobody.
+//
+// This is also just correct on the base rate. Most maintainer changes are people
+// changing jobs; most provenance gaps are a CI migration; most cadence shifts
+// are a release train. Escalation says "look at this", and looking is cheap.
+
+import {
+  TRANSITION_RANK,
+  defaultToyPolicy,
+  type AdherenceFact,
+  type AdherenceRecord,
+  type ProvenanceFacts,
+  type RankedTransitionTag,
+  type ToyPolicy,
+  type Transition,
+  type UpdateProposal,
+} from "./types.ts";
+import { toyAdherenceScore, toyInflate } from "./toy-adherence.ts";
+
+function keyOf(publisher: string, ecosystem: string): string {
+  return `${publisher}\u0000${ecosystem}`;
+}
+
+/// Signal 1 read alone. Returns the severity this signal argues for, plus the
+/// neutral facts behind it.
+export function toyAdherenceReading(
+  proposal: UpdateProposal,
+  record: AdherenceRecord | undefined,
+  policy: ToyPolicy = defaultToyPolicy,
+): { readonly tag: RankedTransitionTag; readonly facts: readonly AdherenceFact[] } {
+  const facts: AdherenceFact[] = [];
+  let tag: RankedTransitionTag = "AutoEligible";
+
+  const raise = (t: RankedTransitionTag): void => {
+    if (TRANSITION_RANK[t] > TRANSITION_RANK[tag]) tag = t;
+  };
+
+  // A major bump is the publisher DECLARING breakage. Adherence measures whether
+  // compatibility claims held; a major makes no such claim, so a spotless record
+  // does not underwrite it. `.github/dependabot.yml` already reaches the same
+  // conclusion by hand ("Major bumps still open as individual PRs").
+  if (proposal.claimedBump === "major") {
+    facts.push({ t: "SemverMajorDeclared" });
+    raise("ScrutinyRaised");
+  }
+
+  if (record === undefined) {
+    facts.push({ t: "NoAdherenceRecord" });
+    raise("ScrutinyRaised");
+    return { tag, facts };
+  }
+
+  const recordKey = keyOf(record.publisher, record.ecosystem);
+  const proposalKey = keyOf(proposal.publisher, proposal.ecosystem);
+  if (recordKey !== proposalKey) {
+    // Recognising sameness is not assigning identity: a record for a different
+    // pair is not evidence about this one.
+    facts.push({ t: "AdherenceRecordMismatched", recordKey, proposalKey });
+    raise("ScrutinyRaised");
+    return { tag, facts };
+  }
+
+  if (record.belief.obsCount < policy.minObservations) {
+    facts.push({
+      t: "NewPublisher",
+      observations: record.belief.obsCount,
+      required: policy.minObservations,
+    });
+    raise("ScrutinyRaised");
+  }
+
+  // Age the posterior by the DECLARED gap before reading it. This is the only
+  // place "time" enters the decision, and it enters as a caller-supplied number.
+  // Note what ageing does and does not do: it widens σ², so the score regresses
+  // toward the 0.5 prior. It never discards an observation and never applies a
+  // penalty — a publisher who stops shipping becomes less KNOWN, not worse.
+  const gap = record.gapSinceLastObservation ?? 0;
+  const aged = toyInflate(record.belief, gap);
+
+  if (gap > policy.stalenessCeiling) {
+    facts.push({ t: "AdherenceStale", gap, ceiling: policy.stalenessCeiling });
+    raise("ScrutinyRaised");
+  }
+
+  const score = toyAdherenceScore(aged);
+  if (score < policy.scrutinyFloor) {
+    facts.push({ t: "AdherenceBelowFloor", score, floor: policy.scrutinyFloor });
+    raise("HeldForAttention");
+  } else if (score < policy.autoEligibleFloor) {
+    facts.push({ t: "AdherenceBelowFloor", score, floor: policy.autoEligibleFloor });
+    raise("ScrutinyRaised");
+  }
+
+  return { tag, facts };
+}
+
+/// Signal 2 read alone. NOTE THE SIGNATURE: it is not given the adherence
+/// record, so no adherence score can influence this reading. That is the join
+/// enforced by parameter list rather than by discipline.
+export function toyProvenanceReading(facts: ProvenanceFacts): RankedTransitionTag {
+  if (facts.length === 0) return "AutoEligible";
+  // Every provenance fact is a discontinuity in the name→artifact binding, and
+  // a discontinuity is exactly the thing an adherence record cannot see. Any one
+  // of them is enough to want a look.
+  return "HeldForAttention";
+}
+
+export function toyClassify(
+  proposal: UpdateProposal,
+  adherenceRecord: AdherenceRecord | undefined,
+  provenanceFacts: ProvenanceFacts,
+  policy: ToyPolicy = defaultToyPolicy,
+): Transition {
+  // A human-declared pin is a fact about OUR tree, not about the publisher, so
+  // it short-circuits both signals and records no opinion about either.
+  const pin = proposal.declaredPin;
+  if (pin !== undefined && pin.heldBumps.includes(proposal.claimedBump)) {
+    return { t: "HeldByDeclaredPin", reason: pin.reason };
+  }
+
+  const adherence = toyAdherenceReading(proposal, adherenceRecord, policy);
+  const provenance = toyProvenanceReading(provenanceFacts);
+
+  // The join. No arithmetic between the two signals — the worse reading wins,
+  // and a good score on one axis can never pay down the other.
+  const tag: RankedTransitionTag =
+    TRANSITION_RANK[provenance] > TRANSITION_RANK[adherence.tag] ? provenance : adherence.tag;
+
+  return { t: tag, adherenceFacts: adherence.facts, provenanceFacts };
+}
