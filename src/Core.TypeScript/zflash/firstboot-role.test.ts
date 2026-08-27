@@ -632,3 +632,65 @@ describe("validateJoinTokenMaterial", () => {
     expect(K3S_NODE_TOKEN_WITH_CA_HASH.test(`prefix K10${"a".repeat(64)}::s`)).toBe(false);
   });
 });
+
+// ---------------------------------------------------------------------------
+// SAN COVERAGE AT FLASH TIME — wiring `join-endpoint-san-coverage` into validation.
+//
+// The classifier landed in #15847 with tests and ZERO production callers. A tested module nobody
+// calls proves its own properties and constrains nothing, which is the same shape as a check that
+// cannot fail. These tests pin the wiring, not the classifier.
+//
+// The failure being prevented is expensive and specific: a DNS name that is not `control-plane`
+// passes every SHAPE check, gets staged, and fails at the TLS handshake AFTER the disk has been
+// partitioned. `k3s-server.nix:83` hardcodes `--tls-san=control-plane`, so that endpoint could
+// never have worked — refusing it blocks nothing that would have succeeded.
+// ---------------------------------------------------------------------------
+
+import { joinEndpointAdvisory } from "./firstboot-role.ts";
+
+describe("flash-time SAN coverage ADVISES; it must never refuse", () => {
+  // The first version of this wiring REFUSED `not-covered`, reasoning that k3s-server.nix:83
+  // hardcodes exactly `--tls-san=control-plane`. Sound about the certificate, wrong as a gate:
+  // `control-plane.local` appears 14 times in this very file — as often as `control-plane` — and
+  // in cluster-address.ts and the zflash harness. Ten existing tests went red, which is the suite
+  // doing its job. These tests pin that validation stays shape-only.
+  test("a non-`control-plane` DNS name still VALIDATES — a string check must not block a flash", () => {
+    expect(validateJoinServerUrl("https://zeta-cp-1.local:6443")).toBeNull();
+    expect(validateJoinServerUrl("https://control-plane.local:6443")).toBeNull();
+  });
+
+  test("`control-plane` and IP literals pass, as before", () => {
+    expect(validateJoinServerUrl("https://control-plane:6443")).toBeNull();
+    expect(validateJoinServerUrl("https://192.168.4.152:6443")).toBeNull();
+  });
+
+  test("shape errors are unaffected by the wiring", () => {
+    expect(validateJoinServerUrl("http://control-plane:6443")).toMatch(/must be https/);
+    expect(validateJoinServerUrl("https://control-plane:6443/path")).toMatch(/no path/);
+    expect(validateJoinServerUrl("")).toMatch(/required/);
+  });
+});
+
+describe("the advisory half carries what the refusal deliberately does not", () => {
+  test("an IP literal produces advice the operator can act on", () => {
+    const advice = joinEndpointAdvisory("https://192.168.4.152:6443");
+    expect(advice).not.toBeNull();
+    expect(advice).toMatch(/covered-if-node-ip/);
+  });
+
+  test("the designed path produces NO advice — silence when there is nothing to say", () => {
+    expect(joinEndpointAdvisory("https://control-plane:6443")).toBeNull();
+  });
+
+  test("a structurally-uncovered endpoint produces the LOUDEST advice — nothing else refuses it", () => {
+    // Since validation no longer refuses these, the advisory is the only surface that says
+    // anything. If it stayed silent here the highest-risk case would be the one nobody hears.
+    const advice = joinEndpointAdvisory("https://zeta-cp-1.local:6443");
+    expect(advice).toMatch(/not-covered/);
+    expect(advice).toMatch(/FIX:/);
+  });
+
+  test("a non-standard port is surfaced, since a typo here is silent otherwise", () => {
+    expect(joinEndpointAdvisory("https://192.168.4.152:6444")).toMatch(/6444/);
+  });
+});

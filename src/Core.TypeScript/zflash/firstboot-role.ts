@@ -47,6 +47,7 @@
  */
 
 import { resolveClusterSegmentAssignment } from "./cluster-address";
+import { classifyJoinEndpoint, renderEndpointAdvice } from "../cluster/join-endpoint-san-coverage.ts";
 
 /** ESP destination for the firstboot config. Read by `zeta-first-boot.sh`. */
 export const ZETA_FIRSTBOOT_CONF_ESP_DESTINATION = "/zeta-firstboot.conf";
@@ -251,6 +252,48 @@ export function validateJoinServerUrl(serverUrl: string): string | null {
     return `join server URL port must be 1..${String(MAX_TCP_PORT)}: ${trimmed}`;
   }
   return null;
+}
+
+/**
+ * ADVISORY on whether the founder's certificate can cover a join endpoint.
+ *
+ * WHAT THIS CATCHES. Everything in `validateJoinServerUrl` checks SHAPE — https, no path, no
+ * userinfo, numeric port. `zeta-install.sh` does the same, more loosely, with one regex. A DNS name
+ * outside the founder's SAN set passes every one of those, gets staged to
+ * `/etc/zeta/cluster-join-server-url`, and then fails at the TLS handshake — AFTER the disk has
+ * been partitioned. That is the live case for joining a second machine, and finding out late costs
+ * a re-flash.
+ *
+ * This runs on the OPERATOR'S WORKSTATION at flash time, before any hardware is touched. It turns a
+ * post-partition mystery into a pre-flash sentence.
+ *
+ * IT ADVISES; IT DOES NOT REFUSE — and that is a correction, not caution. The first version of this
+ * wiring refused `not-covered` on the reasoning that `k3s-server.nix:83` hardcodes exactly
+ * `--tls-san=control-plane`, so any other DNS name structurally cannot be covered. That reasoning
+ * is sound about the certificate and WRONG as a gate: `control-plane.local` appears 14 times in
+ * this module's own tests — as often as `control-plane` — and in `cluster-address.ts` and the
+ * zflash test harness. It is a path the repo actually uses, so refusing it would have broken ten
+ * existing tests and blocked real flashes on a string check.
+ *
+ * Whether `control-plane.local` genuinely survives the handshake is a real open question the
+ * classifier raises and this function deliberately does not answer. Surfacing it is useful;
+ * deciding it by refusing a flash is not.
+ */
+/**
+ * The non-refusing half: advice for an endpoint that MIGHT be covered.
+ *
+ * Returns text for a caller to print, or `null` when the endpoint is the designed path
+ * (`control-plane`) and there is nothing to say. Separate from `validateJoinServerUrl` because that
+ * function's contract is error-or-null and a warning is neither — folding a "probably fine" into an
+ * error would refuse working setups, and dropping it would lose the one case an operator can
+ * actually check.
+ */
+export function joinEndpointAdvisory(serverUrl: string): string | null {
+  const verdict = classifyJoinEndpoint(serverUrl.trim());
+  if (verdict.coverage === "covered-by-explicit-san") return null;
+  // Structurally-uncovered endpoints get advice too — nothing refuses them, so if this stayed
+  // silent the loudest case would be the one nobody hears.
+  return renderEndpointAdvice(serverUrl.trim());
 }
 
 /** Validate an ESP-relative token path: absolute, no traversal, shell-safe. */
