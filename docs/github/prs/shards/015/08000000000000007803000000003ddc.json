@@ -1,0 +1,12 @@
+{
+  "pr_number": 15836,
+  "archive_path": "docs/history/pr-reviews/PR-15836-feat-ci-perf-assertion-ledger-separate-a-regression-from-a-flake.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T15:42:39.000Z",
+  "schema_version": "v1",
+  "commit_sha": "444688c04ac2f01a27c6dba46827fe547ba756c6",
+  "title": "feat(ci): perf-assertion ledger — separate a regression from a flake",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T15:41:58Z",
+  "head_ref": "shadow/perf-regression-ledger"
+}
