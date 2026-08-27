@@ -1,0 +1,12 @@
+{
+  "pr_number": 15847,
+  "archive_path": "docs/history/pr-reviews/PR-15847-feat-cluster-classify-whether-a-join-endpoint-can-be-covered-by-the-founder-s-ce.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T16:15:13.772Z",
+  "schema_version": "v1",
+  "commit_sha": "c2ce40f9ad0797775a0353f4acafc8dae8761a6c",
+  "title": "feat(cluster): classify whether a join endpoint can be covered by the founder's cert",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T16:13:10Z",
+  "head_ref": "shadow/join-endpoint-san-coverage"
+}
