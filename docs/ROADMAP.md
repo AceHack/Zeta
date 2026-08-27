@@ -13,10 +13,12 @@ A relativistic git-native database: a **reliable data plane** (storage + read/wr
 **control plane of cells** (YinYang cells, not agents), agents added later as experiments. Built on a
 **minimal-noun, all-language (F#/C#/TS/Rust/Python/Go/Q#), all-serializer PROVEN math base**. Two product shapes:
 data-plane-only, and data-plane + cell control plane. **The data plane stays fast and dumb — no
-intelligence.** Futamura (`Cogen` / `MixCogen`), zetadb/fs merge, stored procs, and `gen/` (reify types
-from the store) live in the **control plane**. That split is what lets the data plane stay cutting-edge
-on performance. Sharpening of this two-plane split, not a third plane
-(`081M125DNKK087G0R00292E3ET`).
+intelligence.** Stored procs **default to the data plane** (fast, dumb, data-layer only). They pay
+for intelligence only when being **evolved/updated** or when they **explicitly ask**. Futamura
+(`Cogen` / `MixCogen`), zetadb/fs merge, `gen/`, and stored-proc *evolution* live in the **control
+plane**. Intelligence is **tiered**: each tier knows what it cannot do and routes up; not every
+call, not every proc. That split is what lets the data plane stay cutting-edge on performance.
+Sharpening of this two-plane split, not a third plane (`081M125DNKK087G0R00292E3ET`).
 
 > **The compiler / substrate ladder is direction, not sequence (2026-08-15).** "Memories, types, files,
 > and code are one content-addressed object store," epoch-based addressing, and the Bonsai → specializer →
@@ -275,8 +277,16 @@ using DynamicValue's byte-locked per-format serializer:
     JSON AdditionalFiles / `*.zetaschema.json` is bootstrap IR, not the store (`SchemaSourceGenerator`).
     A guessed schema from a SoftValue is a **different constructor** that keeps the SoftValue
     (do not change `snap`). `DynamicValue` is also a tiny **CFG**; context attaches via **holes**
-    (a second DV/SoftValue outside the term — Dual BNN as epi–mono, not two networks). Hitchhiker
-    trees contribute **buffers**, not holes. `gen/` wiring follows this slice. Control-plane work;
+    — Vokes's named structure is the **difference list** (unbound tail; also difference trees /
+    dictionaries; Hughes lists as the functional cousin), not Hitchhiker buffers. Dual BNN as
+    epi–mono, not two networks. TypeSchema IR leans **functional** (sum/product algebra); C#/OOP
+    surfaces are derived (F# did this). Envelope schema, object schema, and CloudEvents
+    `dataschema` are **one TypeSchema** if done correctly (`EventEnvelope` already carries
+    CloudEvents + Debezium `op` ≈ Z-set ±1). Debezium/CloudEvents over any transport.
+    MUMPS-like statics are **DI-injected**, not ambient. InterSystems Caché is the closest
+    commercial analog and assumes every node loads the same objects; we allow **per-node
+    divergence and reconcile over time** (that is independence). Multi-node is simulable
+    DoP=1→N on one machine. `gen/` wiring follows this slice. Control-plane work;
     data plane stays dumb. `081M125DNKK087G0R00292E3ET`.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
@@ -624,10 +634,22 @@ These don't wait for a single round:
   Not a fermion: Adinkra connection is the Q-odd dashing / feedback
   axis Meijer duals lack (error-sum is erasing). `FourCornerC4`.
   `081M10CBYF9087G0R003GWBNHG`.
-- **Data plane stays dumb.** Intelligence (Futamura, stored procs,
-  `gen/`, zetadb/fs merge) lives in the control plane. Do not put a
-  learner, a snap-without-remainder, or a schema guesser on the
-  store hot path. `081M125DNKK087G0R00292E3ET`.
+- **Data plane stays dumb.** Stored procs default here (data-layer
+  only). Intelligence (Futamura, `gen/`, zetadb/fs merge, stored-proc
+  *evolution*, an explicit ask) lives in the control plane. Do not
+  put a learner, a snap-without-remainder, or a schema guesser on
+  the store hot path. Each intelligence tier knows its incapability
+  and routes up. `081M125DNKK087G0R00292E3ET`.
+- **Vacuous feedback is heat.** An error that carries no teaching
+  is Landauer erasure (`ErasureClass`). Prefer FourCorner *feedback*
+  that teaches and, when it can, ships a new generator so the
+  scenario is cheaper next time. RFC 4918 §13 / 9457 is the wire
+  shape; a no-information 207 row is still erasure.
+- **Product vs framework.** Bundle related lanes; keep them
+  separate. Frameworks are used by products; products (or services
+  on them) are sold. Both may deserve a repo. The line blurs when
+  customers are developers — name the cut, don't pretend it is
+  sharp. `Port` stays a hexagonal-port coinage, not a product.
 - **Guessed TypeSchema keeps the SoftValue.** Do not change `snap`.
   A schema-from-soft constructor carries the still-soft
   distribution so reporting stays calibrated and `combine` still
@@ -639,9 +661,19 @@ These don't wait for a single round:
   exceed `MaxBatchSize` **split**; they are not refused.
 - **Ferry memory is pooled and bounded.** Default unbounded queue
   is the producer>consumer OOM. Anti-Nagle stays: no timer.
-- **`DynamicValue` stays a CFG.** Context is a hole / a second
-  value, not a rewrite of the term. Do not fuse Hitchhiker buffers
-  with Vokes/Joshi holes.
+- **`DynamicValue` stays a CFG.** Context is a **difference-list
+  hole** (Vokes; Clark/Tärnlund; Hughes lists) / a second value,
+  not a rewrite of the term. Same shape as recursive-CTE NULL as
+  a monadic hole (SQL PDW meter-sim; Diana Duncan OSS credit).
+  Hitchhiker buffers are the other mechanism. TypeSchema is a
+  functional algebra; OOP is derived.
+- **One schema, three names.** CloudEvents `dataschema`, the
+  Debezium envelope, and the object TypeSchema are the same
+  DynamicValue if the IR is honest. Do not run three registries.
+- **ZetaId is a stable name.** Content-address the blob
+  (Jumprope / BLAKE3); epoch chooses which blob the name
+  currently means. That is not mutex compare-and-swap. Caché
+  loads the same objects everywhere; we diverge and reconcile.
 - **CLIs share a plugin kernel.** Do not dump forge-host into
   Harny or Zeta. ForgeHost verbs are Nucleus plugins on the
   existing command core. No Quay. No fourth CLI product.
