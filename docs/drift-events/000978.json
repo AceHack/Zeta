@@ -1,0 +1,18 @@
+{
+  "tick": 978,
+  "at": "2026-08-27T05:09:34.237Z",
+  "findings": [
+    {
+      "path": "docs/DRIFT-DASHBOARD.md",
+      "rule": "MD037"
+    },
+    {
+      "path": "docs/research/decorrelation-preregistration-h4-crossdomain.md",
+      "rule": "MD032"
+    },
+    {
+      "path": "Zeta.sln",
+      "rule": "BD001"
+    }
+  ]
+}
