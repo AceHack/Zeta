@@ -118,10 +118,17 @@ describe("a timestamp from the future is not the freshest thing on the board", (
 
 describe("auditFreshness folds the roster", () => {
   test("one stale subject makes the audit not ok, and the fresh ones stay green", () => {
-    const read = (p: string): string | null =>
-      p === "demo/red/red-state.json"
-        ? doc("2026-08-23T18:35:32.125Z")
-        : JSON.stringify({ at: new Date(NOW - HOUR).toISOString() });
+    // Each subject is served a document carrying ITS OWN declared field. The
+    // previous version handed every non-red-state subject an `{ at: ... }`
+    // document, which happened to suit the two-entry roster and reported
+    // `no-field` the moment a third subject named a different key — a fixture
+    // failure reading as a subject failure.
+    const fresh = new Date(NOW - HOUR).toISOString();
+    const read = (p: string): string | null => {
+      if (p === "demo/red/red-state.json") return doc("2026-08-23T18:35:32.125Z");
+      const s = FRESHNESS_ROSTER.find((x) => x.path === p);
+      return s ? JSON.stringify({ [s.field]: fresh }) : null;
+    };
     const verdicts = auditFreshness(FRESHNESS_ROSTER, read, NOW);
     expect(verdicts).toHaveLength(FRESHNESS_ROSTER.length);
     expect(verdicts.filter((v) => !v.ok).map((v) => v.id)).toEqual(["red-state"]);

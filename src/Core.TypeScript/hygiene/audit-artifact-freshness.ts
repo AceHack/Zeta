@@ -87,15 +87,14 @@ export interface FreshnessSubject {
 }
 
 /**
- * Two entries, on purpose. One would be a single-lane guard; a roster of two is the
- * smallest thing that proves the check is not welded to `red-state` — and adding a
- * third is a five-line edit, not a design.
+ * Three entries. Two was the smallest roster that proved the check is not welded to
+ * `red-state`; the third arrived as predicted — a five-line edit, not a design.
  *
- * What a GENERAL version would need, and why it is not built here: deriving
+ * What a GENERAL version would need, and why it is still not built here: deriving
  * `cadenceSeconds` from the workflow's own `cron` automatically (the drift dashboard's
  * `expectationForWorkflow` already does this and could be lifted), and a way to name
  * the timestamp inside nested documents rather than a top-level key. Neither is worth
- * paying for at two subjects, and both become obvious at five.
+ * paying for at three subjects, and both become obvious at five.
  */
 export const FRESHNESS_ROSTER: readonly FreshnessSubject[] = [
   {
@@ -115,6 +114,15 @@ export const FRESHNESS_ROSTER: readonly FreshnessSubject[] = [
     cadenceSeconds: 6 * 3600,
     cadenceDeclaredIn: '.github/workflows/drift-dashboard-cadence.yml cron "41 */6 * * *"',
     why: "society-status reads this file; a frozen one reports yesterday's roster as today's",
+  },
+  {
+    id: "pr-categorization",
+    path: "data/pr-categorization/statistics.json",
+    field: "generatedAtIso",
+    // `.github/workflows/pr-categorization-cadence.yml` — `schedule: cron: "34 */6 * * *"`.
+    cadenceSeconds: 6 * 3600,
+    cadenceDeclaredIn: '.github/workflows/pr-categorization-cadence.yml cron "34 */6 * * *"',
+    why: "the PR area dashboard at data/pr-categorization/index.html renders these accuracies; a frozen one reports model scores measured against a corpus that has since grown by thousands of PRs, and the area mix is exactly what shifts fastest",
   },
 ];
 

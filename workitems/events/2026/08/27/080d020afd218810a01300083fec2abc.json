@@ -1,0 +1,14 @@
+{
+  "id": "080d020afd218810a01300083fec2abc",
+  "at": "2026-08-27T03:59:42.129Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10NZ91G087G0R00179W79W",
+    "type": "task",
+    "title": "PR categorisation: measured-vs-declared area statistics, model comparison, dashboard",
+    "slug": "pr-categorisation-measured-vs-declared-area-statistics-model",
+    "priority": "P2",
+    "filename": "081M10NZ91G087G0R00179W79W-pr-categorisation-measured-vs-declared-area-statistics-model.md"
+  }
+}
