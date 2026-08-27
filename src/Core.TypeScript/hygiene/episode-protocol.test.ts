@@ -13,6 +13,13 @@ const brk = (over: Partial<Extract<EpisodeEvent, { kind: "break_detected" }>> = 
   fleetHealInFlight: false,
   touchesVectorContracts: false,
   authorPersona: "riven",
+  // Defaulted TRUE so every pre-existing case below still exercises the guard
+  // it was written for. The attribution gate has its own cases in
+  // "attribution discipline"; leaving it false here would make the older
+  // tests pass for the new reason instead of the one they name — a falsifier
+  // satisfied by an EARLIER guard, which is the exact defect this suite exists
+  // to catch.
+  attributable: true,
   ...over,
 });
 
@@ -113,5 +120,59 @@ describe("push and post-push outcomes (sovereign closure)", () => {
       { kind: "human_cleared", tick: 13 },
     ]);
     expect(state).toEqual(IDLE);
+  });
+});
+
+// ── ATTRIBUTION DISCIPLINE (added 2026-08-26) ────────────────────────────────
+//
+// Every guard above is about UNIQUENESS or AT-MOST-ONCE. None was about
+// attribution. Uniqueness is a property of the commit GRAPH; attribution is a
+// property of the FAILURE — and an infrastructure outage produces a perfectly
+// unique isolation with a completely wrong answer.
+//
+// MEASURED, not hypothetical: during the 2026-08-26 `www.gnupg.org:443`
+// outage, `git log d4e39a78..c3addd47` was exactly one commit, and that commit
+// was #15683 — a GraphQL-transport hygiene lint, causally unrelated to a TLS
+// fetch failure. Every guard in the machine was satisfied.
+
+describe("attribution discipline", () => {
+  test("REFUSES a unique, otherwise-clean candidate when the red is not attributable to it", () => {
+    // The gnupg.org case in miniature: unique isolation, no fleet heal, two
+    // open ticks, no vector contracts touched — every pre-existing guard SAYS
+    // GO. Only attribution stops it.
+    const r = step("ep1", IDLE, brk({ attributable: false }));
+    expect(r.state.kind).toBe("refused");
+    expect(r.command.kind).toBe("file_findings_and_stop");
+    expect("reason" in r.command ? r.command.reason : "").toContain("not attributable");
+  });
+
+  test("the refusal is what STOPS the retraction, not merely what labels it", () => {
+    // The load-bearing assertion. A refusal that still emitted push_retraction
+    // would be a letter of apology attached to the revert.
+    const r = step("ep1", IDLE, brk({ attributable: false }));
+    expect(r.command.kind).not.toBe("push_retraction");
+  });
+
+  test("CONTROL: the identical event with attributable=true does retract", () => {
+    // Without this control the case above proves nothing — a machine that
+    // refused everything would pass it. This pins that attribution is the ONLY
+    // difference between the two outcomes.
+    const r = step("ep1", IDLE, brk({ attributable: true }));
+    expect(r.command.kind).toBe("push_retraction");
+  });
+
+  test("the attribution refusal is STICKY — a later attributable tick does not revive it", () => {
+    // Refusals here are cleared by a human, never by the next tick looking
+    // more convincing. Otherwise a flapping deriver re-arms the actuator.
+    const first = step("ep1", IDLE, brk({ attributable: false }));
+    const second = step("ep1", first.state, brk({ attributable: true }));
+    expect(second.state.kind).toBe("refused");
+    expect(second.command.kind).not.toBe("push_retraction");
+  });
+
+  test("attribution is checked on the REPLAY fold too, not only the live step", () => {
+    const { state, commands } = replay("ep1", [brk({ attributable: false })]);
+    expect(state.kind).toBe("refused");
+    expect(commands.some((c) => c.kind === "push_retraction")).toBe(false);
   });
 });

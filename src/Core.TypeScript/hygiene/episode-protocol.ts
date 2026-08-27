@@ -46,6 +46,28 @@ export type EpisodeEvent =
       readonly fleetHealInFlight: boolean; // includes the author's own fix-PR (Riven-1)
       readonly touchesVectorContracts: boolean; // computed on the REVERT's own diff (Lior-1)
       readonly authorPersona: string;
+      /**
+       * Is this red ATTRIBUTABLE to the isolated commit?
+       *
+       * Every other guard on this event is about UNIQUENESS (exactly one
+       * candidate) or AT-MOST-ONCE (one attempt per episode). Neither is
+       * attribution: uniqueness is a property of the commit GRAPH, attribution
+       * is a property of the FAILURE. An infrastructure outage produces a
+       * perfectly unique isolation and a completely wrong answer.
+       *
+       * Required, not optional, and deliberately so — an optional field would
+       * default to "absent" at every existing construction site and the guard
+       * would silently not apply. Compute it with `isAttributable` in
+       * `retraction-actuator.ts`, which is asymmetric: an underivable subject
+       * yields FALSE, so it withholds the remedy rather than licensing it.
+       *
+       * Live counterexample (2026-08-26, `docs/DECISIONS/2026-08-26-acting-on-a-
+       * verdict-about-a-commit-that-is-no-longer-the-tip.md` §3.2): `www.gnupg.org:443`
+       * stopped answering; isolation was exactly one commit; that commit was
+       * #15683, a GraphQL-transport hygiene lint, causally unrelated. Without
+       * this field the machine would have emitted `push_retraction` for it.
+       */
+      readonly attributable: boolean;
     }
   | { readonly kind: "sweep_healed"; readonly tick: number } // BD001 openCount → 0
   | { readonly kind: "push_result"; readonly tick: number; readonly pushed: boolean }
@@ -112,6 +134,15 @@ export function step(episodeId: string, state: EpisodeState, event: EpisodeEvent
         return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
       }
       const breakSha = event.candidateShas[0]!;
+      if (!event.attributable) {
+        // THE GATE THIS MACHINE WAS MISSING. Reached only once isolation is
+        // unique — so this refusal fires exactly where the old code emitted
+        // `push_retraction`, on the one path that could retract an innocent
+        // commit. Sticky, like every other refusal here: cleared by a human,
+        // never by the next tick looking more convincing.
+        const reason = `red is not attributable to ${breakSha.slice(0, 9)} — uniqueness is not attribution (§3.2)`;
+        return { state: { kind: "refused", reason }, command: { kind: "file_findings_and_stop", reason } };
+      }
       if (event.touchesVectorContracts) {
         // Sovereign mode has nothing between "push" and "human": a bot
         // cannot self-grant the vector ack, so this is a floor refusal.

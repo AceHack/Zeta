@@ -1,6 +1,19 @@
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 
-import { bd001OpenTicks, git, isolateBreak, isSha, touchesVectors } from "./retraction-actuator";
+import {
+  ACTUATOR_WORKFLOW,
+  bd001OpenTicks,
+  git,
+  grantedScopes,
+  isAttributable,
+  isolateBreak,
+  isSha,
+  missingScopes,
+  redRunSubjectPaths,
+  reportIncapacity,
+  touchesVectors,
+} from "./retraction-actuator";
 
 // The edge's pure fact-computations. All DECISIONS are episode-protocol's
 // (12 laws there); these tests cover only what the edge computes for it.
@@ -81,5 +94,88 @@ describe("isSha — the gate on every value that becomes a git argument", () => 
     expect(isSha("3168E5411A2B3C4D5E6F708192A3B4C5D6E7F809")).toBe(false); // ordinal: lowercase only
     expect(isSha("abcdef")).toBe(false); // shorter than any abbreviation git will resolve
     expect(isSha("")).toBe(false);
+  });
+});
+
+// ── ATTRIBUTION + CAPABILITY (added 2026-08-26) ──────────────────────────────
+
+describe("isAttributable — the asymmetry is the safety property", () => {
+  test("an underivable subject (empty) WITHHOLDS the remedy", () => {
+    // Flip this to true and an infrastructure outage licenses a revert.
+    expect(isAttributable([], ["src/anything.ts"])).toBe(false);
+  });
+
+  test("a non-empty subject that does not intersect the diff is NOT attributable", () => {
+    expect(isAttributable(["tools/setup/install.sh"], ["src/Core.TypeScript/x.ts"])).toBe(false);
+  });
+
+  test("intersection makes it attributable", () => {
+    expect(isAttributable(["src/a.ts", "src/b.ts"], ["src/b.ts"])).toBe(true);
+  });
+
+  test("matching is EXACT repo-relative equality, not prefix or directory containment", () => {
+    // Pinned deliberately: `stalled-pr-classifier.ts` (#15698) uses Set.has,
+    // and two copies of one rule must not drift into two different rules.
+    expect(isAttributable(["src/x/y.ts"], ["src/x/"])).toBe(false);
+  });
+
+  test("an empty candidate diff is never attributable", () => {
+    expect(isAttributable(["src/a.ts"], [])).toBe(false);
+  });
+});
+
+describe("redRunSubjectPaths — no deriver is wired, and it says so honestly", () => {
+  test("returns the empty set, which makes every candidate unattributable", () => {
+    // This is the CURRENT, correct state: the actuator never fetches job,
+    // step, or annotation data for the red run, so there is no evidence from
+    // which a subject could be derived. If someone wires a deriver, this test
+    // is the one that should change — and its change is the review signal.
+    expect(redRunSubjectPaths()).toEqual([]);
+    expect(isAttributable(redRunSubjectPaths(), ["src/Core.TypeScript/hygiene/anything.ts"])).toBe(false);
+  });
+});
+
+describe("capability preflight — incapacity must be LOUD on every run", () => {
+  test("the live workflow does NOT grant pull-requests: write", () => {
+    // The measurement this whole guard exists for. If someone grants the
+    // scope, this test goes red and that is correct: the claim below about
+    // never having fired stops being true and the comments must be revisited.
+    const yaml = readFileSync(ACTUATOR_WORKFLOW, "utf8");
+    expect(missingScopes(grantedScopes(yaml))).toContain("pull-requests: write");
+  });
+
+  test("grantedScopes reads the TOP-LEVEL block only", () => {
+    const yaml = ["permissions:", "  contents: write", "  actions: read", "", "jobs:"].join("\n");
+    expect(grantedScopes(yaml)).toEqual(["contents: write", "actions: read"]);
+  });
+
+  test("grantedScopes does not read a JOB-level block as the effective grant", () => {
+    // Over-reporting here would silence the annotation for the wrong reason.
+    const yaml = ["jobs:", "  sweep:", "    permissions:", "      pull-requests: write"].join("\n");
+    expect(grantedScopes(yaml)).toEqual([]);
+  });
+
+  test("reportIncapacity emits a ::error annotation naming the missing scope", () => {
+    const lines: string[] = [];
+    const emitted = reportIncapacity(["pull-requests: write"], (s) => lines.push(s));
+    expect(emitted).toBe(true);
+    expect(lines).toHaveLength(1);
+    expect(lines[0]!).toStartWith("::error ");
+    expect(lines[0]!).toContain("pull-requests: write");
+  });
+
+  test("reportIncapacity is SILENT when nothing is missing — no crying wolf", () => {
+    const lines: string[] = [];
+    expect(reportIncapacity([], (s) => lines.push(s))).toBe(false);
+    expect(lines).toHaveLength(0);
+  });
+
+  test("the failure path emits ::error rather than a bare log", () => {
+    // Source-level, because the push branch lives inside the un-exported entry
+    // block and cannot be reached by import. Before 2026-08-26 this branch
+    // printed `actuator: push failed → ...` and exited 0.
+    const src = readFileSync(new URL("./retraction-actuator.ts", import.meta.url), "utf8");
+    expect(src).toContain("::error title=Retraction actuator failed to push::");
+    expect(src).not.toContain("`actuator: push failed → ${machine.kind}");
   });
 });

@@ -109,6 +109,124 @@ export function touchesVectors(paths: readonly string[]): boolean {
   return paths.some((p) => VECTOR_PATTERNS.some((re) => re.test(p)));
 }
 
+// ── Attribution ─────────────────────────────────────────────────────────────
+//
+// Semantics deliberately identical to `isAttributable` in
+// `src/Core.TypeScript/ci/stalled-pr-classifier.ts` (PR #15698): exact
+// repo-relative path equality, and empty-means-NOT-attributable. Two copies of
+// one rule is a reconcilability risk, so the shape is kept byte-for-byte
+// comparable rather than "improved" here; if #15698 lands, this is the call
+// site to collapse onto its export.
+
+/**
+ * Is the failure attributable to this candidate commit?
+ *
+ * Attributable iff the failing run's subject paths INTERSECT the candidate's
+ * own diff. The asymmetry is the safety property: empty or absent
+ * `subjectPaths` yields NOT attributable, so an underivable subject WITHHOLDS
+ * the remedy rather than licensing it. Being wrong in this direction costs a
+ * delay; being wrong in the other direction retracts an innocent commit.
+ *
+ * Not a skip and not a default-permit. `[]` means "not derivable", which is
+ * `unknown` — never "unrelated", and never "fine to proceed".
+ */
+export function isAttributable(subjectPaths: readonly string[], candidatePaths: readonly string[]): boolean {
+  if (subjectPaths.length === 0) return false;
+  const diff = new Set(candidatePaths);
+  return subjectPaths.some((p) => diff.has(p));
+}
+
+/**
+ * Repo-relative paths the RED gate run is ABOUT.
+ *
+ * THERE IS NO DERIVER WIRED, AND THIS RETURNS THE HONEST EMPTY SET RATHER THAN
+ * A PLAUSIBLE GUESS. The actuator reduces the red run to a single boolean
+ * before the machine sees it — `GateRunFact` carries `headSha` and
+ * `conclusion` and nothing else. No failing job, no failing step, no
+ * annotation, no log is ever fetched for the red run, so there is no evidence
+ * from which a subject could be derived.
+ *
+ * Consequence, stated plainly: `isAttributable` therefore returns false for
+ * every candidate, and the machine refuses every retraction. That is the
+ * correct behaviour for a mechanism that cannot tell whose fault a failure is
+ * — not a bug to route around. Wiring a real deriver (annotations via
+ * `/actions/runs/{id}/jobs`, per `src/Core.TypeScript/ci/toolchain-install-stall.ts`)
+ * is what would let it act, and that is an operator decision, not a lint fix.
+ */
+export function redRunSubjectPaths(): readonly string[] {
+  return [];
+}
+
+// ── Capability preflight ────────────────────────────────────────────────────
+//
+// A mechanism that cannot complete its own happy path must SAY SO on every
+// run. The actuator's terminal act is opening a PR; under
+// `.github/workflows/drift-sweep.yml` the job grants `contents: write` and
+// `actions: read` only, so `POST /repos/{repo}/pulls` 403s. The old code
+// caught that, printed one truncated line, and called `process.exit(0)` — a
+// silent refusal indistinguishable from a tick with nothing to do, which is
+// why nobody noticed in the four days since 2026-08-22.
+//
+// This check is STATIC (it reads the workflow's own permissions block) so it
+// reports the incapacity whether or not the actuator would have acted this
+// tick. A check that only fires on the path it is guarding tells you nothing
+// on every run where that path is not taken.
+
+/** Scopes the actuator needs to complete a retraction end to end. */
+export const REQUIRED_SCOPES = ["contents: write", "pull-requests: write"] as const;
+
+/** The workflow whose `permissions:` block governs the actuator at runtime. */
+export const ACTUATOR_WORKFLOW = ".github/workflows/drift-sweep.yml";
+
+/**
+ * Scopes granted by a workflow's TOP-LEVEL `permissions:` mapping.
+ *
+ * Top-level only, and column 0 is how that is enforced: a `permissions:` nested
+ * under a job is indented, and reading one of those as the effective grant
+ * would over-report. Returns `[]` for a workflow with no top-level block —
+ * which, per GitHub's model, means the default grant applies, so an empty
+ * result is reported as "unknown", never as "nothing granted".
+ */
+export function grantedScopes(workflowYaml: string): string[] {
+  const lines = workflowYaml.split("\n");
+  const start = lines.findIndex((l) => /^permissions:\s*$/.test(l));
+  if (start === -1) return [];
+  const out: string[] = [];
+  for (const line of lines.slice(start + 1)) {
+    const m = /^\s+([a-z-]+):\s*([a-z]+)/.exec(line);
+    if (m === null) break; // first non-entry line ends the block
+    out.push(`${m[1]!}: ${m[2]!}`);
+  }
+  return out;
+}
+
+/** Required scopes absent from `granted`. */
+export function missingScopes(granted: readonly string[], required: readonly string[] = REQUIRED_SCOPES): string[] {
+  const have = new Set(granted);
+  return required.filter((r) => !have.has(r));
+}
+
+/**
+ * Emit the incapacity as a GitHub `::error` annotation.
+ *
+ * An annotation and not a non-zero exit, on purpose: failing the step would
+ * take the whole drift sweep red for a condition that is a standing design
+ * state, and a lane that is always red gets muted, which would recreate the
+ * silence this is fixing. The annotation surfaces on every run in the checks
+ * UI and in `GET /check-runs/{id}/annotations`, so it is machine-readable too.
+ */
+export function reportIncapacity(missing: readonly string[], log: (s: string) => void = console.log): boolean {
+  if (missing.length === 0) return false;
+  log(
+    `::error title=Retraction actuator cannot complete its happy path::` +
+      `${ACTUATOR_WORKFLOW} does not grant ${missing.join(", ")}. ` +
+      `The actuator's terminal act is opening a PR, so it will 403 and refuse. ` +
+      `This step has therefore never fired since 2026-08-22. ` +
+      `Granting the scope is an operator decision (#15698 §5.1) — this message is the report, not a request.`,
+  );
+  return true;
+}
+
 // ── Edge state ──────────────────────────────────────────────────────────────
 
 interface EpisodeRecord {
@@ -287,6 +405,25 @@ async function gh(path: string): Promise<unknown> {
   return res.json();
 }
 
+/**
+ * The workflow file, or "" when it is absent.
+ *
+ * NOT `existsSync(p) ? readFileSync(p) : ""`: that is two syscalls with a window between
+ * them, so the answer the check returned is already stale when the read runs (TOCTOU,
+ * CWE-367) — and a preflight whose own guard prevents nothing is exactly the vacuity this
+ * file exists to close. One syscall, and ENOENT is the absence answer. Any other errno
+ * rethrows: an unreadable workflow is not an ungranted scope, and reporting it as one
+ * would manufacture a false incapacity.
+ */
+function readWorkflowOrEmpty(): string {
+  try {
+    return readFileSync(ACTUATOR_WORKFLOW, "utf8");
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return "";
+    throw e;
+  }
+}
+
 const invokedDirectly = typeof process.argv[1] === "string" && /retraction-actuator\.(?:ts|js)$/.test(process.argv[1]);
 if (invokedDirectly) {
   const repo = process.env["REPO"];
@@ -294,6 +431,12 @@ if (invokedDirectly) {
     console.error("retraction-actuator: GH_TOKEN and REPO required");
     process.exit(2);
   }
+
+  // CAPABILITY PREFLIGHT — runs before any decision, on every tick, pass or
+  // fail. Placed here rather than at the push site so the incapacity is
+  // reported even on the (overwhelmingly common) ticks where main is green and
+  // the push site is never reached.
+  reportIncapacity(missingScopes(grantedScopes(readWorkflowOrEmpty())));
 
   const ledger = readLedger("docs/drift-events");
   const openTicks = bd001OpenTicks(ledger);
@@ -387,6 +530,11 @@ if (invokedDirectly) {
       fleetHealInFlight: fleetInFlight,
       touchesVectorContracts: touchesVectors(paths),
       authorPersona: author,
+      // `redRunSubjectPaths()` is the honest empty set — no deriver is wired,
+      // so nothing is known about WHAT the red run was about. Empty ⇒ not
+      // attributable ⇒ the machine refuses. See both functions for why that is
+      // the correct outcome rather than a gap to paper over.
+      attributable: isAttributable(redRunSubjectPaths(), paths),
     };
     const r = step(episodeId, machine, event);
     machine = r.state;
@@ -482,7 +630,16 @@ if (invokedDirectly) {
       } catch (err) {
         const pr = step(episodeId, machine, { kind: "push_result", tick: latestTick, pushed: false });
         machine = pr.state;
-        console.log(`actuator: push failed → ${machine.kind}: ${(err as Error).message.slice(0, 200)}`);
+        // LOUD, not a bare log. This is the branch a 403 lands in, and until
+      // 2026-08-26 it printed one line among hundreds and exited 0 — a
+      // mechanism failing to act looked exactly like one with nothing to do.
+      // The annotation makes the refusal visible in the checks UI and via
+      // `GET /check-runs/{id}/annotations` without taking the sweep red.
+      console.log(
+        `::error title=Retraction actuator failed to push::` +
+          `episode ${episodeId} reached the push and did not complete it: ` +
+          `${(err as Error).message.slice(0, 200)}`,
+      );
       } finally {
         if (msgFile !== "") rmSync(msgFile, { force: true });
         // Was `2>/dev/null || true` -- shell for "best effort". With no shell the

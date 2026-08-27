@@ -1,0 +1,194 @@
+# root-flake-check.yml — evaluate the ROOT flake.
+#
+# WHY THIS EXISTS. Until 2026-08-26 the only two `nix flake check` invocations
+# in the tree were both in `build-ai-cluster-iso.yml` (lines 193 and 847) and
+# both carried `working-directory: full-ai-cluster`. Nothing in CI ever
+# evaluated `/flake.nix`.
+#
+# The cost was measured, not theorised: PR #15585 moved the root flake off EOL
+# (nixpkgs + nix-darwin 24.11 -> 26.05, ~14 months past EOL) and merged with 79
+# green checks, NOT ONE of which had looked at the file it changed. A vacuous
+# green in the most literal sense — the reviewer sees a wall of green ticks and
+# infers a verification that never happened.
+#
+# TIER. Non-blocking drift. Deliberately NOT in `gate (required)`'s `needs:` —
+# promotion to the blocking floor is an operator decision, not a side effect of
+# adding a lane. What it buys unpromoted is real: the lane's own red is visible
+# on the PR and in the checks API even while it gates nothing.
+#
+# COST. Measured locally at 4-5s wall for the eval itself (`--no-build`, so no
+# derivation is realised). The nix install dominates the job.
+#
+# STATED LIMIT: THIS LANE EVALUATES, IT DOES NOT BUILD.
+#
+# `--no-build` establishes that every output is WELL-FORMED. It does not
+# establish that any of them PRODUCES anything. Those are different
+# guarantees, and the gap between them is real: a configuration can evaluate
+# cleanly and still fail to realise, because a major-version bump changes what
+# EXISTS, not merely what parses.
+#
+# That gap is exactly the shape of the change this lane was built for. #15585
+# moved nixpkgs + nix-darwin 24.11 -> 26.05, roughly 14 months of drift, and
+# merged with 79 green checks that read none of it. This lane would have
+# evaluated it. It would NOT have built it.
+#
+# So read a green here as "the root flake parses and its module system is
+# consistent", never as "the root flake works". Measured cold-cache cost of
+# closing the remainder, taken on aarch64-darwin 2026-08-26:
+# `darwinConfigurations.zeta-mac.system` needs 55 derivations built and 671
+# paths fetched (463.9 MiB download, 1.7 GiB unpacked). The follow-up that
+# would close it is a macOS lane that actually builds that attribute; it is
+# costed in PR #15704 and deliberately NOT bundled here.
+#
+# DEPTH IS MEASURED, NOT ASSUMED. The last step injects a deliberate break into
+# the darwin config and requires nix to catch it BY NAME. Confirmed on run
+# 33024066072: upstream nix on ubuntu-24.04 does descend into
+# darwinConfigurations, so no macOS runner is required for the EVAL half.
+
+name: root-flake-check
+
+on:
+  pull_request:
+    paths:
+      - "flake.nix"
+      - "flake.lock"
+      - "infra/nix-darwin/**"
+      - "infra/nixos/**"
+      - ".github/workflows/root-flake-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "flake.nix"
+      - "flake.lock"
+      - "infra/nix-darwin/**"
+      - "infra/nixos/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: root-flake-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evaluate:
+    name: root flake evaluates (drift)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        # Same pinned action and the same `determinate: false` as
+        # build-ai-cluster-iso.yml. Upstream Nix only — no FlakeHub login, which
+        # flaked with "Transient authentication mechanism error" on PR #8095.
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+        with:
+          determinate: false
+
+      - name: Show root flake metadata
+        # The pins this lane is judging, printed before the verdict so a reader
+        # can tell WHICH universe went green.
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      - name: Evaluate the root flake
+        # `--all-systems` IS LOAD-BEARING, not thoroughness theatre. Without it
+        # nix checks only outputs compatible with the runner and prints
+        #   warning: The check omitted these incompatible systems: ...
+        # On a Linux runner that omission silently drops every darwin output —
+        # including `darwinConfigurations.zeta-mac`, whose nix-darwin/nixpkgs
+        # branch-match assertion is exactly the class of defect #15585 changed.
+        # A lane that skipped it would be a narrower vacuous green replacing a
+        # wider one.
+        #
+        # `--no-build` keeps it an EVAL check: typos, missing imports, undefined
+        # attributes, and eval-time assertions, without realising derivations.
+        run: |
+          set -o pipefail
+          nix flake check --no-build --all-systems --show-trace 2>&1 | tee /tmp/flake-check.log
+
+      - name: Assert the check actually checked something
+        # ANTI-VACUITY. `nix flake check` exits 0 on a flake whose outputs it
+        # skipped entirely, so exit 0 alone does not distinguish "evaluated
+        # everything cleanly" from "evaluated nothing". THIS IS A GENERAL NIX
+        # TRAP, not a quirk of this repo — anyone adding a nix lane anywhere
+        # should copy this step, because the default failure mode of a nix
+        # eval lane is a confident green over an empty check.
+        #
+        # THE PATTERN IS FORMAT-INDEPENDENT ON PURPOSE, and that lesson was
+        # learned the expensive way on run 33023664270: the first version
+        # counted `^✅` lines, which is DETERMINATE Nix 3.x presentation. This
+        # job installs UPSTREAM nix (`determinate: false`), which prints the
+        # classic `checking flake output '...'` / `checking derivation ...`
+        # form and never emits an emoji. The guard therefore reported "ZERO
+        # outputs" while nix had in fact checked twenty — a check coupled to an
+        # incidental artifact of one implementation's output formatting rather
+        # than to the property it meant to measure. Exactly the defect class
+        # this lane exists to close, committed by the guard itself.
+        run: |
+          checked=$(grep -cE '^(✅|checking |evaluating )' /tmp/flake-check.log || true)
+          echo "outputs checked: $checked"
+          if [ "$checked" -eq 0 ]; then
+            echo "::error title=Root flake check validated nothing::nix flake check exited 0 having checked ZERO outputs. An eval lane that evaluates nothing is indistinguishable from one that passed."
+            exit 1
+          fi
+          # Roster substrings chosen to appear under BOTH output formats:
+          # upstream prints `checking flake output 'darwinConfigurations'`,
+          # Determinate prints `✅ darwinConfigurations.zeta-mac`.
+          missing=""
+          for want in darwinConfigurations nixosConfigurations.control-plane devShells; do
+            grep -q "$want" /tmp/flake-check.log || missing="$missing $want"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error title=Root flake check coverage narrowed::expected outputs were not evaluated:$missing — the lane is greener than its coverage. If this omission is intentional, change the expected roster in this step so the narrowing is a reviewed diff."
+            exit 1
+          fi
+          echo "coverage roster present: darwinConfigurations, nixosConfigurations, devShells"
+
+      - name: Prove the lane can fail, on THIS runner, for the darwin path
+        # NAMING THE ROSTER IS NOT MEASURING THE DEPTH. The step above proves
+        # `darwinConfigurations` was *mentioned*; it cannot prove nix
+        # *descended into* it. Upstream nix prints a per-config line for every
+        # `nixosConfigurations.<name>` but only one flat line for
+        # `darwinConfigurations` — which is consistent both with a deep
+        # evaluation and with a shallow skip of a non-standard output type.
+        #
+        # Rather than reason about which, this MEASURES it: break the darwin
+        # config deliberately and require nix to notice. If nix returns 0 on a
+        # flake whose darwin config does not evaluate, then this lane does not
+        # cover the nix-darwin/nixpkgs branch-match assertion — which is the
+        # single defect class that motivated the lane, since #15585 changed
+        # exactly that pin — and the job says so instead of implying coverage
+        # it does not have.
+        #
+        # The mutation is an undefined variable rather than a branch bump so
+        # the probe needs no network fetch and cannot pass for an unrelated
+        # reason. Asserting the error NAMES the probe token is what keeps this
+        # from being a falsifier satisfied by some earlier, incidental error.
+        run: |
+          cp flake.nix /tmp/flake.nix.orig
+          sed -i 's|system = "aarch64-darwin";|system = zetaDarwinDepthProbe;|' flake.nix
+          if ! grep -q zetaDarwinDepthProbe flake.nix; then
+            cp /tmp/flake.nix.orig flake.nix
+            echo "::error title=Depth probe could not be injected::the anchor 'system = aarch64-darwin' was not found in flake.nix, so this probe measured nothing. Update the anchor rather than deleting the probe."
+            exit 1
+          fi
+          set +e
+          nix flake check --no-build --all-systems > /tmp/probe.log 2>&1
+          probe_rc=$?
+          set -e
+          cp /tmp/flake.nix.orig flake.nix
+          echo "probe exit code: $probe_rc"
+          if [ "$probe_rc" -eq 0 ]; then
+            echo "::error title=darwinConfigurations is NOT evaluated by this lane::nix flake check returned 0 on a flake whose darwinConfigurations.zeta-mac does not even evaluate. This runner's nix treats darwinConfigurations as an unknown output type and skips it, so the nix-darwin/nixpkgs branch-match assertion — the defect class #15585 changed — is NOT covered here. Remedy: expose it through a standard output type, e.g. checks.aarch64-darwin.zeta-mac = self.darwinConfigurations.zeta-mac.system, which any platform can evaluate (eval is not build)."
+            exit 1
+          fi
+          if ! grep -q zetaDarwinDepthProbe /tmp/probe.log; then
+            echo "::error title=Depth probe failed for the WRONG reason::nix exited $probe_rc but its output never mentions zetaDarwinDepthProbe, so the failure was not caused by the injected break. A falsifier satisfied by an unrelated error proves nothing."
+            sed -n '1,40p' /tmp/probe.log
+            exit 1
+          fi
+          echo "darwin path IS evaluated on this runner: the injected break was caught by name."

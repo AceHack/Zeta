@@ -74,6 +74,12 @@
       "migrateTo": "full-ai-cluster/k8s/applications via the validator's existing --apps-dir flag, AND move the validator out of infra/k8s/tests/. MEASURED 2026-08-17: pointed at the live tree it reports 224 passed, 14 failed \u2014 so this is not a one-line repoint. See the work item."
     },
     {
+      "path": ".github/workflows/root-flake-check.yml",
+      "disposition": "blocking",
+      "note": "The lane that evaluates the ROOT flake, so it is keyed on the same tree flake.nix imports: infra/nixos/** appears in both the pull_request and the push path filter. Those filters are not decoration \u2014 nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} ARE ./infra/nixos/hosts/*/configuration.nix (see the flake.nix entry below), so a change under that tree changes what this lane evaluates and must retrigger it. Deleting infra/nixos leaves a path filter naming a directory that does not exist: it matches nothing and the lane silently stops triggering \u2014 a check that never runs looking like one that passed.",
+      "migrateTo": "Bound to the flake.nix entry below, which is UNDECIDED (maintainer decision). Wherever the root flake's nixosConfigurations repoint, these two path filters follow in the same commit."
+    },
+    {
       "path": "db/search-index/inverted/files.txt",
       "disposition": "derived",
       "note": "The git-native inverted index's document list (081M0QTXTR3087G0R002R439FH). It names infra/k8s and infra/nixos because it names EVERY indexed path in the repo \u2014 an index of the tree mentions the whole tree by construction, so any surviving file under those directories puts them here. Machine-written, rebuilt from an explicit git rev every ~6h by search-index-cadence.yml; nothing reads these paths as a target.",
