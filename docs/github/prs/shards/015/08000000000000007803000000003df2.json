@@ -1,0 +1,12 @@
+{
+  "pr_number": 15858,
+  "archive_path": "docs/history/pr-reviews/PR-15858-feat-zetafsstore-deltalog-is-the-blake3-composition-root.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T18:03:30.756Z",
+  "schema_version": "v1",
+  "commit_sha": "a885e0d3e1defc4190faad824be49d5f6447fcd0",
+  "title": "feat: ZetaFsStore.deltaLog is the BLAKE3 composition root",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:02:37Z",
+  "head_ref": "feat/zetafs-blake3-composition-root"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15839,
+  "archive_path": "docs/history/pr-reviews/PR-15839-feat-s-4-is-measured-2sqrt-2-is-a-predicted-floor-to-measure.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T18:07:27.813Z",
+  "schema_version": "v1",
+  "commit_sha": "4b67fefb8336b7331c09b5f56f103a8a3516db3d",
+  "title": "feat: S=4 is measured; 2sqrt(2) is a predicted floor to measure",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:01:52Z",
+  "head_ref": "feat/c4-measure-dont-model-s4"
+}
