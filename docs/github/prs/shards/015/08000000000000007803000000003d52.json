@@ -6,9 +6,9 @@
     "comment:PRRC_kwDOSF9kNM7mnxy8",
     "thread:PRRT_kwDOSF9kNM6cpMtz"
   ],
-  "fetched_at": "2026-08-27T07:12:43.826Z",
+  "fetched_at": "2026-08-27T06:23:08.190Z",
   "schema_version": "v1",
-  "commit_sha": "f9a1c35900ba54f4eb3e4b2031923552c258190f",
+  "commit_sha": "cfaefdb81ff9cd001ffa6dfb2c1e17637ada07b0",
   "title": "docs(ci): a stalled-PR healer classifies before it acts — attribution is the gate",
   "state": "MERGED",
   "merged_at": "2026-08-27T06:22:33Z",
