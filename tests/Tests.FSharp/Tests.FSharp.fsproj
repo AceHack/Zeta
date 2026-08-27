@@ -714,6 +714,7 @@
     <Compile Include="ClaimLane.Tests.fs" />
     <Compile Include="QuerySurface.Equivalence.Tests.fs" />
     <Compile Include="StreamTableDuality.Tests.fs" />
+    <Compile Include="ToyBosonFermionParity.Tests.fs" />
   </ItemGroup>
 
   <ItemGroup>

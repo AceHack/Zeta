@@ -54,6 +54,8 @@
     <Compile Include="KeptClaimOracle.fs" />
     <Compile Include="Web3Settlement.fs" />
     <Compile Include="SparseSocietyNetwork.fs" />
+    <Compile Include="ToyBosonFermionGenerator.fs" />
+    <Compile Include="ToyBosonFermionBnn.fs" />
   </ItemGroup>
 
   <ItemGroup>

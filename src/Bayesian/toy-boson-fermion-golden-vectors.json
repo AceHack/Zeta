@@ -1,0 +1,51 @@
+{
+  "_comment": [
+    "Byte-lock for ToyBosonFermionGenerator. The GENERATOR is the artifact; no dataset is",
+    "stored. These vectors pin a handful of seeds so a change in generator behaviour shows up",
+    "as a readable diff (.claude/rules/no-binary-in-proof-lineage.md: verification artifacts are",
+    "TEXT, hex-in-JSON, never binary).",
+    "",
+    "Each vector is `count` samples emitted by `generate seed flips count`, concatenated as",
+    "`ToyBosonFermionGenerator.toHex`: one nibble of true Cl(4) blade mask, two nibbles of the",
+    "observed 8-bit word, one nibble of label (0 = bosonic / even grade, 1 = fermionic / odd).",
+    "Four hex chars per sample.",
+    "",
+    "`meteredBits` is the entropy measured at the membrane per sample: 4 bits to draw the blade",
+    "plus 3 bits per flip operation (log2 8, exact). It is part of the lock because an unmetered",
+    "crossing is an unmeasured quantity, and the degradation curve is plotted against it.",
+    "",
+    "The seed-sensitivity vectors exist because a generator that IGNORED its seed would pass a",
+    "same-seed-twice check trivially. Both halves are asserted."
+  ],
+  "version": 1,
+  "encoding": "hex, 4 chars per sample: blade(1) observed(2) label(1)",
+  "vectors": [
+    { "seed": 1, "flips": 0, "count": 8, "meteredBits": 4, "hex": "1e117871e1e1b4b19990000055505550" },
+    { "seed": 1, "flips": 1, "count": 8, "meteredBits": 7, "hex": "1611e1619980575083811a1100408701" },
+    { "seed": 1, "flips": 2, "count": 8, "meteredBits": 10, "hex": "1211b481574062400050b411e5f1cfc0" },
+    { "seed": 42, "flips": 0, "count": 8, "meteredBits": 4, "hex": "555033302d214b412d216660d2d14b41" },
+    { "seed": 42, "flips": 1, "count": 8, "meteredBits": 7, "hex": "55d02c212921d3d15150fbf06e60cc80" },
+    { "seed": 42, "flips": 2, "count": 8, "meteredBits": 10, "hex": "55904f01d1d1ede16f602d2178719bb0" },
+    { "seed": 2026, "flips": 0, "count": 8, "meteredBits": 4, "hex": "3330d2d1e1e12d2199903330e1e1d2d1" },
+    { "seed": 2026, "flips": 1, "count": 8, "meteredBits": 7, "hex": "3130e1a19910e3e14b01d2c1858199b0" },
+    { "seed": 2026, "flips": 2, "count": 8, "meteredBits": 10, "hex": "35302d81e2e12f3185a19930321086c1" }
+  ],
+  "structure": {
+    "_comment": "Invariants of the generated structure, computed by the module, not transcribed.",
+    "bladeCount": 16,
+    "evenBlades": [0, 3, 5, 6, 9, 10, 12, 15],
+    "oddBlades": [1, 2, 4, 7, 8, 11, 13, 14],
+    "evenPartClosedUnderProduct": true,
+    "oddPartClosedUnderProduct": false,
+    "evenSubalgebraDimension": 8,
+    "codewordsHex": ["00","e1","d2","33","b4","55","66","87","78","99","aa","4b","cc","2d","1e","ff"],
+    "weightEnumerator": [[0, 1], [4, 14], [8, 1]],
+    "minimumDistance": 4,
+    "allOnesIsCodeword": true,
+    "pathsAgreeOverGf2_8": [256, 256],
+    "witnessSpectrum": [[2, 4], [4, 8], [6, 4]],
+    "weight2WitnessesHex": ["11", "22", "44", "88"],
+    "labelIrrecoverableErrorCount": 8,
+    "labelIrrecoverableMinimumWeight": 4
+  }
+}

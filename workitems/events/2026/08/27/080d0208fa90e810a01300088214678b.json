@@ -1,0 +1,14 @@
+{
+  "id": "080d0208fa90e810a01300088214678b",
+  "at": "2026-08-27T02:49:26.813Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10HYMGV087G0R003FWYDQX",
+    "type": "task",
+    "title": "toy boson/fermion generator + Bayesian probit classifier over Cl(4) grading and the [8,4,4] adinkra code",
+    "slug": "toy-boson-fermion-generator-bayesian-probit-classifier-over",
+    "priority": "P2",
+    "filename": "081M10HYMGV087G0R003FWYDQX-toy-boson-fermion-generator-bayesian-probit-classifier-over.md"
+  }
+}
