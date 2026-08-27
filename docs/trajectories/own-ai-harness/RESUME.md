@@ -21,6 +21,17 @@ CLIs: Ace = deps, Zeta = source control + filesystem.
 Daily identities we already pay for: grok, claude, openai, manus, gemini,
 codex, kiro.
 
+**Observe is the controller; Harny is not a second one.**
+`src/Core.TypeScript/observe/observe.ts` is already the external harness
+around vendor executors (`kiro-executor.ts`, `subscription-executor.ts`):
+pure `World → NextAction`, Xbox `grammar-16.ts` (ADR 2026-05-31).
+Meijer μF/νF: World snapshot is μ (fold); standing query/webhook is ν
+(unfold); Bonsai stores the μ generator of a ν process. Reservoir
+computing (Jaeger 2001 / Maass 2002): DU grammar + workflows are
+**walls**; `observe()` is the **readout** — do not train the reservoir
+by giving the model a bag of polls. Cheap forge observe is a World
+channel (`forgeState`), not a tool the LLM picks.
+
 ## Where we are (honest)
 
 The harness **library** is real. The fleet **runtime** is still vendor CLIs.
@@ -68,8 +79,12 @@ bun src/Core.TypeScript/harny/harny.ts import grok
 
 1. **Native device/OAuth for remaining local vendors** — `081M100RH29087G0R0031HHGJ0`
 2. **ForgeHost without `gh`** — `081M100RB9Z087G0R000GWY1MM`
-3. **Closed tools = Ace + Zeta verbs** — `081M100RH3Q087G0R0018X4RSJ`
+   (cheap merge-observe is one GraphQL DU, not N polls —
+   `081M107N9P4087G0R0002G5SR0`)
+3. **Closed tools = Ace + Zeta + Forge DU verbs on the Xbox ActionGrid** —
+   `081M100RH3Q087G0R0018X4RSJ` · `081M107N9PZ087G0R0006X16SJ`
 4. **loop-tick default `mux-duplex`** (Manus stays a remote task, not this loop) — `081M100RH30087G0R003YXHQ12`
+   Git/fs through ZetaFS is ROADMAP item 1 — another bootstrap.
 
 Phase A done when a Riven/Otto/Vera cell completes a **local** tool-using
 turn on Harny with a stored account token, no vendor CLI, no `gh`.
@@ -107,3 +122,8 @@ already running, not by inventing a fourth factory.
 - Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`
 - Index: `src/Core.TypeScript/search/inverted/`
 - CLI: `src/Core.TypeScript/harny/harny.ts`
+- Cheap forge verbs: `docs/research/2026-08-26-cheap-forge-verbs-du-observe-not-adhoc-poll.md`
+- Observe controller: `src/Core.TypeScript/observe/observe.ts` · `grammar-16.ts`
+- UAG / Xbox grid: `src/Core/ActionGrid.fs`
+- Reservoir walls: `docs/research/2026-05-28-aaron-workflow-as-reservoir-computing-*`
+- μF/νF: `docs/research/2026-08-11-rename-as-rolling-migration-*`

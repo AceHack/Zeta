@@ -13,7 +13,6 @@ import type {
   PrGateState,
   Issue,
   CheckRollup,
-  CheckSummary,
   CiRun,
   RepoInfo,
   BranchProtection,
@@ -28,7 +27,6 @@ import type {
   ListIssueOpts,
   CreateIssueOpts,
   MergeMethod,
-  NextAction,
   CheckDefinition,
   CheckObservationOpts,
   CheckObservationPass,
@@ -37,6 +35,7 @@ import { ok, err, forgeError } from "../result";
 import { githubRestRequest, resolveGitHubToken, runGh, runGhJson } from "./gh-cli";
 import { listGitHubCheckDefinitions, listGitHubCheckObservations } from "./check-observations.ts";
 import { restCreatePull, restGetPull, restListPulls, restPullToPr, type GithubRest } from "./github-pr-rest.ts";
+import { observeMerge, observeOpenPullRequests } from "./github-merge-observe.ts";
 
 // ─── Adapter ────────────────────────────────────────────────────────────────
 
@@ -116,13 +115,9 @@ export class GitHubAdapter implements ForgeHost {
   // ─── PR state ───────────────────────────────────────────────────────────
 
   async listOpenPullRequests(opts?: ListPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
-    const result = await restListPulls(this.rest, this.nwo, {
-      state: "open",
-      limit: opts?.limit ?? 100,
-      sort: opts?.orderBy === "created" ? "created" : "updated",
-    });
-    if (!result.ok) return result;
-    return ok(result.value.map(restPullToPr));
+    // GraphQL one-shot: REST list does not carry mergeStateStatus, so observe()'s
+    // World.forgeState.cleanPrCount would stay 0 (a quiet-loop bug).
+    return observeOpenPullRequests(this.rest, this.nwo, opts?.limit ?? 20);
   }
 
   async getPullRequest(number: number): Promise<Result<PullRequest, ForgeError>> {
@@ -132,54 +127,7 @@ export class GitHubAdapter implements ForgeHost {
   }
 
   async getPrGateState(number: number): Promise<Result<PrGateState, ForgeError>> {
-    // LEFTOVER `gh` porcelain (081M100RB9Z087G0R000GWY1MM): gate/threads/checks still
-    // need GraphQL fields REST list/create do not carry. Named, not forgotten.
-    const prResult = runGhJson<{
-      number: number;
-      state: string;
-      mergeStateStatus: string;
-      autoMergeRequest: { enabledAt?: string } | null;
-      mergeCommit: { oid: string } | null;
-      statusCheckRollup: { status?: string; conclusion?: string; name?: string }[];
-      reviewThreads: { nodes: { isResolved: boolean }[] };
-    }>([
-      "pr", "view", String(number), "--repo", this.nwo,
-      "--json", "number,state,mergeStateStatus,autoMergeRequest,mergeCommit,statusCheckRollup,reviewThreads",
-    ]);
-    if (!prResult.ok) return prResult;
-
-    const pr = prResult.value;
-    const rollup = pr.statusCheckRollup ?? [];
-    const checks = classifyChecks(rollup);
-    const unresolvedThreads = (pr.reviewThreads?.nodes ?? []).filter(t => !t.isResolved).length;
-
-    // Fetch required checks
-    let requiredChecks = checks; // fallback: treat all as required
-    const reqResult = runGhJson<{ name?: string }[]>([
-      "pr", "checks", String(number), "--repo", this.nwo, "--required", "--json", "name",
-    ]);
-    if (reqResult.ok) {
-      const requiredNames = new Set(reqResult.value.map(r => r.name).filter((n): n is string => !!n));
-      requiredChecks = classifyChecks(rollup.filter(c => c.name && requiredNames.has(c.name)));
-    }
-
-    const state = mapPrState(pr.state);
-    const gate = classifyGate(pr.mergeStateStatus, pr.state, requiredChecks, unresolvedThreads);
-    const warnings: string[] = [];
-    const nextAction = computeNextAction(state, gate, requiredChecks, unresolvedThreads);
-
-    return ok({
-      number: pr.number,
-      state,
-      gate,
-      checks,
-      requiredChecks,
-      unresolvedThreads,
-      autoMerge: pr.autoMergeRequest ? "armed" : "none",
-      mergeCommit: pr.mergeCommit?.oid ?? null,
-      warnings,
-      nextAction,
-    });
+    return observeMerge(this.rest, this.nwo, number);
   }
 
   async listMergedPullRequests(opts?: ListMergedPrOpts): Promise<Result<readonly PullRequest[], ForgeError>> {
@@ -239,69 +187,87 @@ export class GitHubAdapter implements ForgeHost {
   }
 
   async enableAutoMerge(prNumber: number, method?: MergeMethod): Promise<Result<void, ForgeError>> {
-    const args = ["pr", "merge", String(prNumber), "--repo", this.nwo, "--auto"];
-    if (method === "squash") args.push("--squash");
-    else if (method === "rebase") args.push("--rebase");
-    else args.push("--merge");
-
-    const result = runGh(args);
+    const merge_method = method === "rebase" ? "rebase" : method === "merge" ? "merge" : "squash";
+    const result = await this.rest.request("PUT", `repos/${this.nwo}/pulls/${String(prNumber)}/auto-merge`, { merge_method });
     if (!result.ok) return result;
     return ok(undefined);
   }
 
   async addPrComment(prNumber: number, body: string): Promise<Result<CommentRef, ForgeError>> {
-    const result = runGh([
-      "pr", "comment", String(prNumber), "--repo", this.nwo, "--body", body,
-    ]);
+    const result = await this.rest.request("POST", `repos/${this.nwo}/issues/${String(prNumber)}/comments`, { body });
     if (!result.ok) return result;
-    return ok({ id: "", url: `https://github.com/${this.nwo}/pull/${prNumber}` });
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(result.value);
+    } catch (e) {
+      return err(forgeError("parse-failure", `addPrComment: ${e instanceof Error ? e.message : String(e)}`));
+    }
+    const id = typeof parsed === "object" && parsed !== null ? (parsed as { id?: unknown }).id : undefined;
+    const url = typeof parsed === "object" && parsed !== null ? (parsed as { html_url?: unknown }).html_url : undefined;
+    return ok({
+      id: typeof id === "number" ? String(id) : typeof id === "string" ? id : "",
+      url: typeof url === "string" ? url : `https://github.com/${this.nwo}/pull/${String(prNumber)}`,
+    });
   }
 
   // ─── Issues ─────────────────────────────────────────────────────────────
 
   async listOpenIssues(opts?: ListIssueOpts): Promise<Result<readonly Issue[], ForgeError>> {
-    const limit = opts?.limit ?? 50;
-    const args = [
-      "issue", "list", "--repo", this.nwo, "--state", "open",
-      "--json", "number,title,body,state,url,labels",
-      "--limit", String(limit),
-    ];
-    if (opts?.labels?.length) {
-      for (const l of opts.labels) args.push("--label", l);
-    }
-
-    const result = runGhJson<{ number: number; title: string; body: string; state: string; url: string; labels: { name: string }[] }[]>(args);
+    const perPage = Math.min(Math.max(opts?.limit ?? 50, 1), 100);
+    const result = await this.rest.request("GET", `repos/${this.nwo}/issues?state=open&per_page=${String(perPage)}`);
     if (!result.ok) return result;
-    return ok(result.value.map(i => ({
-      number: i.number,
-      title: i.title,
-      body: i.body ?? "",
-      state: i.state.toLowerCase() as "open" | "closed",
-      url: i.url,
-      labels: i.labels.map(l => l.name),
-    })));
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(result.value);
+    } catch (e) {
+      return err(forgeError("parse-failure", `listOpenIssues: ${e instanceof Error ? e.message : String(e)}`));
+    }
+    if (!Array.isArray(parsed)) return err(forgeError("parse-failure", "listOpenIssues: expected array"));
+    const issues: Issue[] = [];
+    for (const item of parsed) {
+      if (typeof item !== "object" || item === null) continue;
+      const row = item as { pull_request?: unknown; number?: unknown; title?: unknown; body?: unknown; state?: unknown; html_url?: unknown; labels?: unknown };
+      if (row.pull_request !== undefined) continue;
+      if (typeof row.number !== "number" || typeof row.title !== "string") continue;
+      const labels: string[] = [];
+      if (Array.isArray(row.labels)) {
+        for (const l of row.labels) {
+          if (typeof l === "object" && l !== null && typeof (l as { name?: unknown }).name === "string") {
+            labels.push((l as { name: string }).name);
+          }
+        }
+      }
+      issues.push({
+        number: row.number,
+        title: row.title,
+        body: typeof row.body === "string" ? row.body : "",
+        state: row.state === "closed" ? "closed" : "open",
+        url: typeof row.html_url === "string" ? row.html_url : "",
+        labels,
+      });
+    }
+    return ok(issues);
   }
 
   async createIssue(opts: CreateIssueOpts): Promise<Result<Issue, ForgeError>> {
-    const args = [
-      "issue", "create", "--repo", this.nwo,
-      "--title", opts.title, "--body", opts.body,
-    ];
-    if (opts.labels?.length) {
-      for (const l of opts.labels) args.push("--label", l);
-    }
-    // gh issue create doesn't return full JSON easily; use --json after create
-    const result = runGh(args);
+    const payload: { title: string; body: string; labels?: readonly string[] } = { title: opts.title, body: opts.body };
+    if (opts.labels !== undefined && opts.labels.length > 0) payload.labels = opts.labels;
+    const result = await this.rest.request("POST", `repos/${this.nwo}/issues`, payload);
     if (!result.ok) return result;
-    // Parse the URL from stdout (gh outputs the issue URL)
-    const url = result.value.trim();
-    const numMatch = url.match(/\/issues\/(\d+)/);
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(result.value);
+    } catch (e) {
+      return err(forgeError("parse-failure", `createIssue: ${e instanceof Error ? e.message : String(e)}`));
+    }
+    if (typeof parsed !== "object" || parsed === null) return err(forgeError("parse-failure", "createIssue: expected object"));
+    const row = parsed as { number?: unknown; html_url?: unknown };
     return ok({
-      number: numMatch ? parseInt(numMatch[1]!, 10) : 0,
+      number: typeof row.number === "number" ? row.number : 0,
       title: opts.title,
       body: opts.body,
       state: "open",
-      url,
+      url: typeof row.html_url === "string" ? row.html_url : "",
       labels: opts.labels ?? [],
     });
   }
@@ -441,48 +407,4 @@ function mapPrState(state: string): "open" | "merged" | "closed" {
   if (lower === "merged") return "merged";
   if (lower === "closed") return "closed";
   return "open";
-}
-
-// ─── Check classification (mirrors poll-pr-gate.ts logic) ───────────────────
-
-const OK_CONCLUSIONS = new Set(["SUCCESS", "NEUTRAL", "SKIPPED"]);
-const BLOCKING_CONCLUSIONS = new Set(["FAILURE", "CANCELLED", "TIMED_OUT", "STARTUP_FAILURE", "ACTION_REQUIRED", "STALE", "ERROR"]);
-const PENDING_STATUSES = new Set(["QUEUED", "PENDING", "EXPECTED", "REQUESTED", "WAITING"]);
-
-function classifyChecks(rollup: { status?: string; conclusion?: string; name?: string }[]): CheckSummary {
-  let okCount = 0, inProgress = 0, pending = 0, failed = 0;
-  for (const c of rollup) {
-    if (c.status === "IN_PROGRESS") { inProgress++; continue; }
-    if (c.status && PENDING_STATUSES.has(c.status)) { pending++; continue; }
-    if (c.conclusion && OK_CONCLUSIONS.has(c.conclusion)) { okCount++; continue; }
-    if (c.conclusion && BLOCKING_CONCLUSIONS.has(c.conclusion)) { failed++; }
-  }
-  return { ok: okCount, inProgress, pending, failed };
-}
-
-function classifyGate(
-  mergeStateStatus: string, state: string, requiredChecks: CheckSummary, unresolvedThreads: number,
-): "clean" | "blocked" | "dirty" | "unstable" | "unknown" {
-  if (state === "MERGED" || state === "CLOSED") return "clean";
-  if (mergeStateStatus === "DIRTY" || mergeStateStatus === "BEHIND") return "dirty";
-  if (mergeStateStatus === "UNSTABLE") return "unstable";
-  if (requiredChecks.failed > 0) return "blocked";
-  if (mergeStateStatus === "BLOCKED") return "blocked";
-  if (mergeStateStatus === "CLEAN" && unresolvedThreads === 0) return "clean";
-  return "unknown";
-}
-
-function computeNextAction(
-  state: "open" | "merged" | "closed",
-  gate: string,
-  requiredChecks: CheckSummary,
-  unresolvedThreads: number,
-): NextAction {
-  if (state === "merged") return "verify-merge";
-  if (state === "closed") return "none";
-  if (gate === "dirty") return "rebase";
-  if (requiredChecks.failed > 0) return "fix-failed-checks";
-  if (unresolvedThreads > 0) return "resolve-threads";
-  if (requiredChecks.inProgress > 0 || requiredChecks.pending > 0) return "wait-ci";
-  return "none";
 }

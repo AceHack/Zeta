@@ -1,0 +1,14 @@
+{
+  "id": "080d0203d5370010a0130008e41a0a74",
+  "at": "2026-08-26T23:49:35.072Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M107N9PZ087G0R0006X16SJ",
+    "type": "task",
+    "title": "Harny closed tools are DU-aware ActionGrid verbs that auto-refresh, not ad-hoc agent poll",
+    "slug": "harny-closed-tools-are-du-aware-actiongrid-verbs-that-auto-r",
+    "priority": "P1",
+    "filename": "081M107N9PZ087G0R0006X16SJ-harny-closed-tools-are-du-aware-actiongrid-verbs-that-auto-r.md"
+  }
+}

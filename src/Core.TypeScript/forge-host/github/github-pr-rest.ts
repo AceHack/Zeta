@@ -1,8 +1,8 @@
 // github-pr-rest.ts — list / get / create pull requests over GitHub REST, no `gh`.
 //
 // 081M100RB9Z087G0R000GWY1MM. Porcelain `gh pr list|create|view` is the thing we are
-// replacing. REST does not carry GraphQL-only fields (reviewDecision; mergeStateStatus
-// on the list endpoint) — those stay unknown/null until getPrGateState is ported.
+// replacing. REST list does not carry GraphQL-only fields; `observeMerge`
+// (github-merge-observe.ts) is the one-shot gate DU.
 
 import type { CreatePrOpts, ForgeError, PullRequest, Result } from "../types";
 import { err, forgeError, ok } from "../result";

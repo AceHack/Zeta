@@ -1,0 +1,14 @@
+{
+  "id": "080d0203d5363810a0130008a490c5a4",
+  "at": "2026-08-26T23:49:35.047Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M107N9P4087G0R0002G5SR0",
+    "type": "task",
+    "title": "ForgeHost cheap merge-observe: one GraphQL DU per PR, webhooks later not naive poll",
+    "slug": "forgehost-cheap-merge-observe-one-graphql-du-per-pr-webhooks",
+    "priority": "P1",
+    "filename": "081M107N9P4087G0R0002G5SR0-forgehost-cheap-merge-observe-one-graphql-du-per-pr-webhooks.md"
+  }
+}

@@ -21,10 +21,12 @@ then `GH_TOKEN`/`GITHUB_TOKEN`, never `gh auth token`. `GitHubAdapter`
 list/get/create PR and list-merged go through REST (`github-pr-rest.ts`)
 with an injected `GithubRest` seam. `githubRestRequest` is fetch + Bearer.
 
-Still `gh`: getPrGateState, threads (porcelain door injected), auto-merge,
-comments, issues, search, check-observations GET fallback, poll-pr-gate,
-rest-push, archive. Git-data blobs/trees/commits/refs are REST. Each leftover
-is named at the call site.
+Shipped further: `observeMerge` is one GraphQL DU (`github-merge-observe.ts`).
+Comments, issues, auto-merge are REST. Git-data blobs/trees/commits/refs are REST.
+
+Still `gh`: threads (porcelain door injected), search, check-observations
+GET fallback, poll-pr-gate, rest-push, archive. Each leftover is named
+at the call site.
 
 ## Must
 

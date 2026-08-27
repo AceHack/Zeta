@@ -205,9 +205,21 @@ using DynamicValue's byte-locked per-format serializer:
     not submodules. Minimize toolchain per package to cut the monorepo
     cache tax. Manus is a remote-only adapter (account API key, no
     extra per-call billing) and may never fit the full local loop.
+    Closed tools are **DU-aware verbs** (Xbox `ActionGrid` / `grammar-16.ts`
+    — layout fixed, labels per-context), not ad-hoc polls the model
+    chooses. **`observe.ts` is the controller**; vendor CLIs and Harny
+    are executors/schemes plugged into it (ADR 2026-05-31 — do not
+    invent a second observe). Forge merge state is one GraphQL μ
+    snapshot (`081M107N9P4087G0R0002G5SR0`); webhooks are the ν
+    standing query (Meijer μF/νF; Rx `IEnumerable ⇄ IObservable`).
+    Workflows are reservoir **walls**; observe is the **readout**
+    (Jaeger 2001 / Maass 2002 — do not train the reservoir). Item 1
+    (NO GIT CLI / ZetaFS) is the source-control bootstrap Harny's
+    sc/fs tools ride.
     Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
     Umbrella `081M100RB97087G0R0008EAAY7`; extract
-    `081M102M6Y2087G0R000407SW3`.
+    `081M102M6Y2087G0R000407SW3`; DU verbs
+    `081M107N9PZ087G0R0006X16SJ`.
 9. **BFT Quorum Transition (Wallet Prerequisite)** — transition the BFT consensus from the fixed `Members`
    configuration to a rolling, window-based estimate of distinct sources derived dynamically from the stream
    correlation matrix. **This must precede and gate any Web3 wallet / transactional ledger integration.**
@@ -408,5 +420,7 @@ These don't wait for a single round:
   not an eventual cleanup.
 - Dogfood **Harny** (custom agent harness) on paid accounts, then
   extract it as the first isolated published package. Ace pre-bootstrap
-  stays two-path (published binary **or** from-source seed). See
-  `docs/trajectories/own-ai-harness/RESUME.md`.
+  stays two-path (published binary **or** from-source seed). Harny
+  does not replace `observe.ts` — it becomes an executor/scheme of
+  that controller (Xbox `grammar-16`, Meijer μ/ν, reservoir walls).
+  See `docs/trajectories/own-ai-harness/RESUME.md`.

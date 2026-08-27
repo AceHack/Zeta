@@ -61,7 +61,7 @@ Umbrella `081M100RB97087G0R0008EAAY7`.
 |---|---|---|---|
 | 0a | **Account-login roster + `harny` / `zeta-login` CLI** | ◐ **partial** | Roster + login ladder (device-code first). Native device login wired for `github` + `openai`/`codex`. Manus is a **wired account API key** (`harny login manus --from-file`) — no extra per-call billing, **remote-only** (never a local tool loop). `harny import` copies vendor-CLI sessions (grok/claude/gemini/codex/gh/kiro) without reverse-engineering their OAuth. `harny search` is inverted-index, not full-tree grep. |
 | 0b | **Paid cells summon through our tool loop** | ○ **not started** | `loop-tick` still spawnSyncs `claude`/`codex`/`kiro-cli`/`agy`/`cursor-agent`. `summon()` is a library proven on ChatGPT (2026-07-04), not the fleet. `081M100RH30087G0R003YXHQ12` |
-| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours. Token resolver is store then env, never `gh auth token`. `GitHubAdapter` list/get/create PR is REST. Gate/threads/git-data/rest-push still `spawnSync("gh")`. `081M100RB9Z087G0R000GWY1MM` |
+| 0c | **GitHub work without `gh`** | ◐ **partial** | Login is ours. Token resolver is store then env, never `gh auth token`. List/get/create PR, git-data, comments, issues, auto-merge, and **one-shot merge-observe** are REST/GraphQL. Threads / rest-push / archive still `gh`. `081M100RB9Z087G0R000GWY1MM` · `081M107N9P4087G0R0002G5SR0` |
 | 0d | **Tools = Ace + Zeta CLIs only** | ○ **not started** | Closed `fs_*`/`db_*` is in-memory DagFs. Fleet tools are vendor bash/git/gh. `081M100RH3Q087G0R0018X4RSJ` |
 
 ### Tier 1 — the society runtime (this is where we actually are)
