@@ -50,13 +50,33 @@ on:
 permissions:
   actions: read # read agent-heartbeat run history — the whole input to the verdict
   issues: write # raise/refresh the tracking issue so the alarm survives outside Actions
-  contents: read
+  # WRITE, AS OF 2026-08-27, AND EXACTLY WHAT IT CAN AND CANNOT REACH.
+  #
+  # This is the workflow's own scoped GITHUB_TOKEN, the same grant `agent-heartbeat.yml` already
+  # holds. It is used for ONE thing: `git push origin HEAD:liveness/observations`. It provably
+  # cannot reach `main`, and that is a property of the repository rulesets rather than of this
+  # workflow's good behaviour — verified against the live API on 2026-08-27:
+  #
+  #   `CI Gate` (required_status_checks) has conditions.ref_name.include == ["~DEFAULT_BRANCH"],
+  #   and its ONLY bypass actor is RepositoryRole 5 with bypass_mode `pull_request`. GITHUB_TOKEN
+  #   is not that actor, and even that actor cannot push to `main` without a PR.
+  #
+  # So this grant buys the ability to write a non-default ref and nothing else. It is not the
+  # bypass actor that a literal "observations land as commits ON main" would require; that would
+  # be a credential able to push anything to `main`, enforced only by its own source code, and it
+  # is a security decision for the maintainer rather than a workflow edit.
+  contents: write
 
 concurrency:
   group: heartbeat-liveness
-  # SAFE TO CANCEL HERE, unlike the heartbeat lane. This job holds no state and writes no
-  # commits; every run recomputes the same level from scratch. A newer check strictly
-  # supersedes an older queued one, so coalescing loses nothing.
+  # SAFE TO CANCEL HERE, unlike the heartbeat lane. Every run recomputes the same level from
+  # scratch, so a newer check strictly supersedes an older queued one.
+  #
+  # STILL TRUE AFTER THE LEDGER (2026-08-27), and worth stating because the ledger DOES write
+  # commits, which contradicts the sentence this comment used to carry. Cancelling a run mid-write
+  # loses that run's record, and a lost record reads as a gap — which is exactly what it was: a
+  # cancelled run did not observe anything. The ledger is append-only and keyed per run, so a
+  # superseded write is never half-applied and never double-counted.
   cancel-in-progress: true
 
 jobs:
@@ -146,6 +166,115 @@ jobs:
           # has always been; with it, "alive" means at least one tick source ticked, whichever one.
           bun src/Core.TypeScript/agent-heartbeats/heartbeat-liveness.ts runs.json "$STALE_AFTER_MINUTES" lane-evidence.json \
             | tee liveness.txt
+
+      - name: Record the observation on the liveness ledger (direct push, no PR, no gate)
+        # `always()`, AND THAT IS THE WHOLE POINT OF THE STEP.
+        #
+        # Until 2026-08-27 this workflow's observation was durable only as a check-run annotation,
+        # and an annotation is written only when the verdict is bad and only inside the substrate
+        # being observed. That gives an observation channel which cannot distinguish "healthy" from
+        # "not observing" — the vacuity class, wearing a monitor's costume.
+        #
+        # So: EVERY run records, including the run that finds nothing wrong, and including the run
+        # whose own verdict just failed. `always()` also covers `cancelled()`, which is deliberate —
+        # this repo measured 88% of gate runs on `main` cancelled, and a cancelled observer that
+        # writes nothing is indistinguishable from one that never started.
+        #
+        # WHAT THIS STEP DOES NOT DEPEND ON: `gate`, any check, any PR, `main`, or the flush
+        # pipeline. It pushes an orphan-history ref with the workflow's own scoped token. Aaron
+        # 2026-08-26: "the liveness observations about heartbeats never ever need PRs to get to
+        # main." The observer must not depend on the observed.
+        #
+        # THE HONEST LIMIT, stated rather than papered over: this writer runs inside GitHub Actions,
+        # so a run that dies before `Setup bun` writes no record at all, and a total Actions outage
+        # stops the writing along with the ticking. Nothing hosted here can fix that. What the
+        # ledger fixes is that such a gap becomes READABLE — because the healthy case is also
+        # written, `liveness-ledger.ts read` computes the age of the newest record and answers
+        # "is anyone still observing?" from a clone, with no call to the provider in question.
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          STALE_AFTER_MINUTES: ${{ github.event.inputs.stale_after_minutes || '60' }}
+          LEDGER_BRANCH: liveness/observations
+        run: |
+          set -euo pipefail
+          LEDGER_DIR="${RUNNER_TEMP}/liveness-ledger"
+          rm -rf "$LEDGER_DIR"
+          mkdir -p "$LEDGER_DIR"
+
+          # A SEPARATE REPOSITORY, not a worktree of the checkout. Two reasons, both load-bearing:
+          # the checkout was made with `persist-credentials: false` and must stay that way, and an
+          # orphan ledger has no business sharing an index, a HEAD, or a COMMIT_EDITMSG with the
+          # tree it is reporting on.
+          git init -q "$LEDGER_DIR"
+          git -C "$LEDGER_DIR" config user.name "heartbeat-liveness[bot]"
+          git -C "$LEDGER_DIR" config user.email "heartbeat-liveness[bot]@users.noreply.github.com"
+          git -C "$LEDGER_DIR" remote add origin "${GITHUB_SERVER_URL}/${REPO}.git"
+          # Token as an auth header, never in the remote URL — `git remote -v` and any error
+          # message that echoes the URL would otherwise carry the credential.
+          git -C "$LEDGER_DIR" config "http.${GITHUB_SERVER_URL}/.extraheader" \
+            "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+
+          # ABSENT REF IS THE FIRST OBSERVATION, NOT AN ERROR. Depth 1: the append only ever needs
+          # the current tip, and fetching the ledger's whole history every 15 minutes would make
+          # the recorder slower the longer it has been working.
+          if git -C "$LEDGER_DIR" fetch --quiet --depth=1 origin "$LEDGER_BRANCH"; then
+            git -C "$LEDGER_DIR" reset -q --hard FETCH_HEAD
+            echo "[liveness-ledger] appending to $LEDGER_BRANCH @ $(git -C "$LEDGER_DIR" rev-parse --short HEAD)"
+          else
+            echo "[liveness-ledger] $LEDGER_BRANCH does not exist yet — starting the orphan ledger"
+          fi
+
+          # Recomputes the verdict from the SAME arrays the alarm used, rather than scraping
+          # liveness.txt: a second, weaker parser could drift from the verdict and nothing would
+          # detect it. Missing inputs produce a `blind` record — never silence.
+          bun src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts record \
+            --dir "$LEDGER_DIR" \
+            --runs runs.json \
+            --evidence lane-evidence.json \
+            --threshold "$STALE_AFTER_MINUTES" \
+            --run-id "$RUN_ID" \
+            --subject-out "${RUNNER_TEMP}/liveness-subject.txt"
+
+          SUBJECT="$(head -n 1 "${RUNNER_TEMP}/liveness-subject.txt")"
+          [ -n "$SUBJECT" ] || { echo "::error::[liveness-ledger] recorder produced no commit subject"; exit 1; }
+
+          # Signed as the credential that actually pushes — `github-actions[bot]`, not as any
+          # human and not by copying another branch's block. `Human-Review:
+          # not-implied-by-credential` because nobody reviewed this observation: it is a machine
+          # reading a clock, and saying otherwise would be an attestation the validator's shape
+          # check would happily pass and that would be false.
+          MSG="${RUNNER_TEMP}/liveness-commit-msg.txt"
+          {
+            printf '%s\n\n' "$SUBJECT"
+            printf 'Recorded by heartbeat-liveness.yml run %s. Direct push to %s: no PR, no gate,\n' "$RUN_ID" "$LEDGER_BRANCH"
+            printf 'no dependency on the pipeline this observation may be reporting on.\n\n'
+            printf 'Agency-Signature-Version: 1\n'
+            printf 'Agent: shadow\n'
+            printf 'Agent-Runtime: github-actions/.github/workflows/heartbeat-liveness.yml\n'
+            printf 'Agent-Model: none\n'
+            printf 'Credential-Identity: github-actions[bot]\n'
+            printf 'Credential-Mode: workflow-token\n'
+            printf 'Human-Review: not-implied-by-credential\n'
+            printf 'Human-Review-Evidence: none\n'
+            printf 'Action-Mode: autonomous-fail-closed\n'
+            printf 'Task: none\n'
+          } > "$MSG"
+
+          # NOT `continue-on-error`. A recorder that cannot write must be loud: exiting 0 having
+          # recorded nothing is the silent-success failure this channel exists to remove, and it
+          # would be worse than the annotation it replaces because it would look like coverage.
+          bun src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts publish \
+            --dir "$LEDGER_DIR" \
+            --message-file "${RUNNER_TEMP}/liveness-commit-msg.txt"
+
+          # Read the channel back through the same public path a human would use. A write nobody
+          # has read back is a claim, not a proof.
+          bun src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read \
+            --dir "$LEDGER_DIR" --threshold "$STALE_AFTER_MINUTES" \
+            || echo "::warning::[liveness-ledger] the ledger read-back reports the observer stale; the record above still landed"
 
       - name: Raise or refresh the tracking issue
         # `failure()` only — scoped to this job's own failure so an infrastructure error in

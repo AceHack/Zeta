@@ -67,3 +67,13 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   `bun src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts`.
   Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
   spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.
+- **Liveness OBSERVATIONS live on `liveness/observations`, never on `main`** — the ticks flush via
+  PR (above); the *observations about* those ticks must never need one, or the report of a broken
+  pipeline would depend on that pipeline. They are direct-pushed to an orphan ref, every run,
+  including runs that find nothing wrong. Fetch first, exactly like `heartbeat/*`:
+  `git fetch origin '+refs/heads/liveness/*:refs/remotes/origin/liveness/*'`, then ask
+  **"is anyone still observing?"** — a question a check-run annotation cannot answer —
+  with `bun src/Core.TypeScript/agent-heartbeats/liveness-ledger.ts read --dir <checkout>`
+  (exit 1 = nobody has observed inside the threshold). One-file read:
+  `git show origin/liveness/observations:latest.json`.
+  Full: `docs/DECISIONS/2026-08-27-liveness-observations-reach-main-without-a-pr.md`.
