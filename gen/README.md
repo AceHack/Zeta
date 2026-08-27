@@ -40,6 +40,11 @@ generators (yacc/ANTLR lineage; FParsec monadic combinators) · CHIP-8 (the asm 
 generators are the **plan/standard**; the parser-gen + CHIP-8 codegen + the recursive-compiler-sim are
 **work to build** (route to Core). `gen/` is their home + the discipline (pure-interface, no-class).
 
+**Schema source is AdditionalFiles / JSON IR today, not the store.** Next honest slice:
+`TypeSchema` from a `DynamicValue` (store-native), then these generators consume it. That wiring
+lives in the **control plane** (data plane stays dumb). Workitem `081M125DNKK087G0R00292E3ET`;
+VISION §compiler ladder (DESIGNED).
+
 ## Pointers
 
 - [`clis/`](../clis/) (the `cut mea sim` loop the parser-gen compiles) · [`triggers/`](../triggers/) +

@@ -12,7 +12,11 @@
 A relativistic git-native database: a **reliable data plane** (storage + read/write over git), a
 **control plane of cells** (YinYang cells, not agents), agents added later as experiments. Built on a
 **minimal-noun, all-language (F#/C#/TS/Rust/Python/Go/Q#), all-serializer PROVEN math base**. Two product shapes:
-data-plane-only, and data-plane + cell control plane.
+data-plane-only, and data-plane + cell control plane. **The data plane stays fast and dumb — no
+intelligence.** Futamura (`Cogen` / `MixCogen`), zetadb/fs merge, stored procs, and `gen/` (reify types
+from the store) live in the **control plane**. That split is what lets the data plane stay cutting-edge
+on performance. Sharpening of this two-plane split, not a third plane
+(`081M125DNKK087G0R00292E3ET`).
 
 > **The compiler / substrate ladder is direction, not sequence (2026-08-15).** "Memories, types, files,
 > and code are one content-addressed object store," epoch-based addressing, and the Bonsai → specializer →
@@ -267,6 +271,13 @@ using DynamicValue's byte-locked per-format serializer:
    `System.Text.Json` onto the canonical codec (consumes the proven encoding; not part of the byte-lock).
 3. **YAML serializer for DynamicValue** (multi-runtime) — unblocks the git-default format.
 4. **MD + frontmatter treaty** (multi-runtime) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
+4b. **TypeSchema from DynamicValue** (store-native), then existing generators consume it.
+    JSON AdditionalFiles / `*.zetaschema.json` is bootstrap IR, not the store (`SchemaSourceGenerator`).
+    A guessed schema from a SoftValue is a **different constructor** that keeps the SoftValue
+    (do not change `snap`). `DynamicValue` is also a tiny **CFG**; context attaches via **holes**
+    (a second DV/SoftValue outside the term — Dual BNN as epi–mono, not two networks). Hitchhiker
+    trees contribute **buffers**, not holes. `gen/` wiring follows this slice. Control-plane work;
+    data plane stays dumb. `081M125DNKK087G0R00292E3ET`.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
    crash-durable `Log` — is ALREADY REAL**: the delta-log backends fsync on append (`DiskDeltaLog`
@@ -339,6 +350,13 @@ using DynamicValue's byte-locked per-format serializer:
     `081M102M6Y2087G0R000407SW3`; DU verbs
     `081M107N9PZ087G0R0006X16SJ`; Rx-fold + local DU
     `081M109WG5S087G0R0021E5MPT`.
+    **Harny is not the extra-git CLI.** Extra-git surfaces already
+    live in `src/Core.TypeScript/forge-host/` (GitHub + GitLab).
+    Zeta (`clis/` `sim`/`mea`/`cut`) is git-native. Do not dump
+    forge-host into Harny. ForgeHost verbs plug into **Nucleus** /
+    the existing command core (item #1) as plugins (k8s-controller
+    shape). Do not mint Quay (Red Hat collision) or a fourth CLI
+    product. Design, not this row. `081M125DNKK087G0R00292E3ET`.
 8c. **Granular peer-repo splits — dogfood, then extract; dozens expected.**
     The theme is **dogfooding in this monorepo while splitting reusable
     chunks into their own repos.** Not three forever, and **not a layer
@@ -473,6 +491,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 - **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion or a qubit**. QubitIso is the qubit, FourCorner is the pipe. Compact E8 *manifold* still open. **Do not sweep latency alone** for √2 / 2√2 — jitter is dual-use (degrades S *and* frost uniqueness). Decorrelation channels are an **open, non-exhaustive inventory** Alexa is still growing (system prompt, selected model, hat, prompt frame, …). Meter them; do not freeze a roster. S=4 is the seed-shared measure. String keys: `Collation.binary` (BIN2_UTF8 / ordinal codepoint), never ambient culture. `081M10CBYF9087G0R003GWBNHG`
+- **Ferry 4-way adapter + per-row FourCorner + ZetaId demux** — in-tree today is **single-batch** only (`ProcessAsync`/`EnqueueAsync` → `processBatch`, DoP=1→N, anti-Nagle). Missing the other cells: `ProcessMany` (batch-batch), split of an oversize caller batch (caller is clueless of `MaxBatchSize`), `processOne` (batch-single / single-single; underneath is one-at-a-time unless the handler is batchable). Per-row FourCorner + per-row failure (today `faultBoat` is whole-boat ≅ non-item-specific 5xx; indexed `completeBoat` ≅ RFC 4918 §13 Multi-Status / HTTP 207). ZetaId demux. Boat pooling + `MaxQueueSize` set in production (default unbounded is the container-OOM degenerate). Capture stays Kleisli-at-the-door (`EnqueueCapturedAsync`); ad-hoc OTEL snapshots AsyncLocal into the payload and must **restore** around `processBatch` (not yet). `SchedulerZeta.predict` is time/orbit; space/occupancy (bit-0 usage) is the missing coordinate. No SIMD in `fillBoat`. `081M125DNKK087G0R00292E3ET`
 
 ## P2 (4 weeks)
 
@@ -605,3 +624,24 @@ These don't wait for a single round:
   Not a fermion: Adinkra connection is the Q-odd dashing / feedback
   axis Meijer duals lack (error-sum is erasing). `FourCornerC4`.
   `081M10CBYF9087G0R003GWBNHG`.
+- **Data plane stays dumb.** Intelligence (Futamura, stored procs,
+  `gen/`, zetadb/fs merge) lives in the control plane. Do not put a
+  learner, a snap-without-remainder, or a schema guesser on the
+  store hot path. `081M125DNKK087G0R00292E3ET`.
+- **Guessed TypeSchema keeps the SoftValue.** Do not change `snap`.
+  A schema-from-soft constructor carries the still-soft
+  distribution so reporting stays calibrated and `combine` still
+  commutes. Snap-then-forget as the schema path is a fold leak.
+- **Ferry boat rows are four-corner + ZetaId.** Whole-boat fault is
+  the current contract and is the defect (RFC 4918: that is the
+  non-item-specific failure, not the 207 path). Demux over duplex
+  wires is by identity, not by boat index. Caller batches that
+  exceed `MaxBatchSize` **split**; they are not refused.
+- **Ferry memory is pooled and bounded.** Default unbounded queue
+  is the producer>consumer OOM. Anti-Nagle stays: no timer.
+- **`DynamicValue` stays a CFG.** Context is a hole / a second
+  value, not a rewrite of the term. Do not fuse Hitchhiker buffers
+  with Vokes/Joshi holes.
+- **CLIs share a plugin kernel.** Do not dump forge-host into
+  Harny or Zeta. ForgeHost verbs are Nucleus plugins on the
+  existing command core. No Quay. No fourth CLI product.

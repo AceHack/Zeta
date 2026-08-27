@@ -1,0 +1,14 @@
+{
+  "id": "080d0222b6b39810a0130008ed2dad24",
+  "at": "2026-08-27T17:48:56.819Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M125DNKK087G0R00292E3ET",
+    "type": "task",
+    "title": "Ferry per-row FourCorner + ZetaId demux; snap preserves SoftValue uncertainty",
+    "slug": "ferry-per-row-fourcorner-zetaid-demux-snap-preserves-softval",
+    "priority": "P1",
+    "filename": "081M125DNKK087G0R00292E3ET-ferry-per-row-fourcorner-zetaid-demux-snap-preserves-softval.md"
+  }
+}
