@@ -1,11 +1,12 @@
 ---
 id: 081M0WTB5MN087G0R001WA07PC
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: uefi-keyfile-restore-blob-not-on-phase-2-esp-and-the-conditi
 title: "UEFI keyfile restore: blob not on phase-2 ESP and the ConditionPathExists skip hides which path is missing"
 created: 2026-08-25T15:59:08.437Z
+completed: 2026-08-27T01:15:05.317Z
 depends_on: []
 composes_with: []
 ---
