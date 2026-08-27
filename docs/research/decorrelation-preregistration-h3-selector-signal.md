@@ -1,4 +1,4 @@
-# Pre-registration — H3: is the 4.0pp headroom ADDRESSABLE by an observable signal?
+# Pre-registration — H3: is the 4.0pp headroom ADDRESSABLE by an observable signal
 
 **Committed BEFORE generation.** H2 established: clause-swap decorrelates, but
 agreement-gating captures 0.0pp of the oracle's 4.0pp headroom (union 94.3% vs best-single

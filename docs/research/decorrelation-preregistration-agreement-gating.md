@@ -1,4 +1,4 @@
-# Pre-registration — agreement-gating: does clause-swap PAY?
+# Pre-registration — agreement-gating: does clause-swap PAY
 
 **Committed BEFORE generation.** This settles whether the clause-swap axis (proven to
 decorrelate, +6.3pp flip over floor, CI [3.2, 9.3] at N=400) improves a REAL selector's
