@@ -1298,6 +1298,33 @@ jobs:
         # report success the way `lint:markdown` did (#10712).
         run: bun run hygiene:no-graphql-transport-in-scripts
 
+      - name: No clean SARIF for a skipped analysis (security alerts stay honest)
+        id: no_clean_sarif
+        # A zero-result SARIF is read by GitHub as "this category was analysed
+        # and is clean", so it marks every open alert in that category FIXED.
+        # MEASURED 2026-08-27, on two surfaces, from codeql.yml's `path-gate`
+        # job — which never runs an analyser and uploaded exactly that under
+        # five real analysis categories on every event:
+        #
+        #   main  — 102 alerts across 14 rules closed at one instant
+        #           (02:56:34Z, none dismissed) on a commit that changed two
+        #           lines of one JSON data file. js/http-to-file-access #267 at
+        #           summon.ts:369 and #772 at tick-reasoning.ts:59 were closed
+        #           with their dataflows intact.
+        #   PR    — on #15636, alert #803 closed at 04:05:02Z and its
+        #           advanced-security review thread AUTO-RESOLVED (resolvedBy
+        #           = github-advanced-security[bot]); reopened 04:09:57Z. With
+        #           required_conversation_resolution true and auto-merge armed,
+        #           that 4m55s window is a merge gate opening on an erased
+        #           finding.
+        #
+        # Worse than a missing check: it emits a POSITIVE signal of safety. The
+        # PR surface is why an event gate is NOT an accepted remedy — only
+        # `executionSuccessful: false` or an analyser-owning job. Exits 3 on a
+        # violation, 4 if its own recognizers match nothing (a pass over an
+        # empty corpus is the same class of defect and is reported as one).
+        run: bun run hygiene:no-clean-sarif-for-skipped-analysis
+
       - name: Scan-floor route audit (the floors are themselves enumerable)
         id: scan_floor
         # Inventories every scan floor in the repo through four INDEPENDENT
