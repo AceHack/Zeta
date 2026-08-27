@@ -183,3 +183,98 @@ describe("sysfs flag parsing refuses to guess", () => {
     expect(parseSpeed(null)).toBeNull();
   });
 });
+
+// ---------------------------------------------------------------------------
+// THE CLI. Added when the module was wired: until it had an entry point nothing
+// could run it, which made every property above true and unreachable — a tested
+// module nobody can invoke is the same shape as a check that cannot fail.
+// ---------------------------------------------------------------------------
+
+import { mkdtempSync, readFileSync as read, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { main, realProbe } from "./hardware-only-facts.ts";
+
+const sink = (): { log: (s: string) => void; out: () => string } => {
+  const lines: string[] = [];
+  return { log: (s) => lines.push(s), out: () => lines.join("\n") };
+};
+
+describe("the CLI records rather than judges", () => {
+  test("a host that can answer NOTHING still exits 0", () => {
+    // The property that keeps this a recorder. "This machine tells us very little" is an ANSWER,
+    // and failing on it would make every caller treat an honest result as an error.
+    const s = sink();
+    expect(main([], probeOf({}, {}), s.log)).toBe(0);
+    expect(s.out()).toContain('"schema": "zeta.hardware-only-facts.v1"');
+    expect(s.out()).toContain('"present": "unknown"');
+  });
+
+  test("stdout always carries the artifact, even with no --out", () => {
+    // On a first boot the console is mirrored to the serial UART, so stdout is the sink that
+    // survives a failed mount. A capture that existed only as a file would be silently lost.
+    const s = sink();
+    main([], LINUX_BOX(), s.log);
+    expect(s.out()).toContain('"versionMajor": "2"');
+  });
+
+  test("--out writes the same bytes it printed", () => {
+    const dir = mkdtempSync(join(tmpdir(), "zeta-hwfacts-"));
+    try {
+      const p = join(dir, "facts.json");
+      const s = sink();
+      expect(main(["--out", p], LINUX_BOX(), s.log)).toBe(0);
+      const onDisk = read(p, "utf8");
+      expect(onDisk.trimEnd()).toBe(s.out());
+      expect(JSON.parse(onDisk).schema).toBe("zeta.hardware-only-facts.v1");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("an --out that CANNOT be written fails — the caller asked for a file and has not got one", () => {
+    // The one failure mode. Distinct from "nothing could be probed", which is a success.
+    const s = sink();
+    expect(main(["--out", "/nonexistent-dir-zeta/facts.json"], LINUX_BOX(), s.log)).toBe(1);
+    expect(s.out()).toContain("FAILED to write");
+    // ...and the artifact was still printed, so the run is not a total loss.
+    expect(s.out()).toContain("zeta.hardware-only-facts.v1");
+  });
+
+  test("a mistyped flag is REFUSED, not ignored", () => {
+    // Ignoring `--ou` would let a caller believe it requested a file it never gets.
+    const s = sink();
+    expect(main(["--ou", "x"], LINUX_BOX(), s.log)).toBe(2);
+    expect(s.out()).toContain("unknown argument");
+  });
+
+  test("--out with no path is refused rather than defaulting somewhere", () => {
+    expect(main(["--out"], LINUX_BOX(), sink().log)).toBe(2);
+  });
+});
+
+describe("the real probe turns every failure into `could not look`", () => {
+  test("unreadable paths yield null, never an empty string or empty list", () => {
+    // The distinction the whole module rests on. A probe returning "" or [] on error would convert
+    // "we could not look" into "we looked and found nothing".
+    const p = realProbe();
+    expect(p.read("/definitely/not/a/real/path")).toBeNull();
+    expect(p.list("/definitely/not/a/real/dir")).toBeNull();
+    expect(p.exists("/definitely/not/a/real/path")).toBe(false);
+  });
+
+  test("it reads a file that DOES exist — otherwise the test above passes on a probe that always fails", () => {
+    // The control. Without it, `realProbe` returning null unconditionally satisfies every assertion.
+    const dir = mkdtempSync(join(tmpdir(), "zeta-hwprobe-"));
+    try {
+      const f = join(dir, "carrier");
+      writeFileSync(f, "1\n", "utf8");
+      const p = realProbe();
+      expect(p.read(f)).toBe("1\n");
+      expect(p.list(dir)).toContain("carrier");
+      expect(p.exists(f)).toBe(true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});

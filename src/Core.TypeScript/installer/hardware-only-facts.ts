@@ -38,6 +38,8 @@
  * different claim from `false` and is recorded as such.
  */
 
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+
 /** Three-valued on purpose: a thing can be present, absent, or unreadable-from-here. */
 export type Tri = "yes" | "no" | "unknown";
 
@@ -196,4 +198,96 @@ export function gatherHardwareOnlyFacts(probe: HardwareProbe): HardwareOnlyFacts
  */
 export function renderHardwareOnlyFacts(facts: HardwareOnlyFacts): string {
   return `${JSON.stringify(facts, null, 2)}\n`;
+}
+
+/**
+ * The real machine. Constructed only in `main`, never at import time, so importing this module for
+ * its pure functions never touches the filesystem (§13 noninterference).
+ *
+ * Every failure collapses to the same answer the pure code already understands: `null` for a read,
+ * `null` for a listing, meaning "could not look" — which `gatherHardwareOnlyFacts` renders as
+ * `unknown` and names in `unmeasured`. A probe that returned `""` or `[]` on error would convert
+ * "we could not look" into "we looked and found nothing", which is the one thing this module exists
+ * to prevent.
+ */
+export function realProbe(): HardwareProbe {
+  return {
+    read: (path) => {
+      try {
+        return readFileSync(path, "latin1");
+      } catch {
+        return null;
+      }
+    },
+    list: (path) => {
+      try {
+        return readdirSync(path);
+      } catch {
+        return null;
+      }
+    },
+    exists: (path) => {
+      try {
+        return statSync(path) !== undefined;
+      } catch {
+        return false;
+      }
+    },
+  };
+}
+
+/**
+ * CLI. Prints the artifact to stdout, and additionally writes it to `--out <path>` when given.
+ *
+ * STDOUT IS THE PRIMARY SINK, deliberately. On a first boot the console is mirrored to the serial
+ * UART, so printing means the facts reach a durable place even when the disk write fails or the
+ * target filesystem is not mounted yet. A capture that exists only as a file is a capture that a
+ * failed mount silently deletes.
+ *
+ * EXIT 0 EVEN WHEN EVERYTHING IS `unknown`. This tool RECORDS; it does not judge. A host with no
+ * sysfs produces an artifact full of `unknown` and a populated `unmeasured` list, and that is a
+ * successful run — the honest answer to "what can this machine tell us" is sometimes "very little",
+ * and failing would make the caller treat an answer as an error. The one thing that DOES fail is a
+ * requested `--out` that could not be written, because then the caller asked for a file and has not
+ * got one.
+ */
+export function main(argv: readonly string[], probe: HardwareProbe, log: (s: string) => void): number {
+  let out: string | null = null;
+  for (let i = 0; i < argv.length; i += 1) {
+    const a = argv[i];
+    if (a === "--out") {
+      const next = argv[i + 1];
+      if (next === undefined) {
+        log("--out requires a path");
+        return 2;
+      }
+      out = next;
+      i += 1;
+    } else if (a === "-h" || a === "--help") {
+      log("usage: bun hardware-only-facts.ts [--out <path>]");
+      return 0;
+    } else {
+      // Refused rather than ignored: a mistyped flag that silently does nothing would let a caller
+      // believe it had requested a file it never gets.
+      log(`unknown argument: ${a} (accepted: --out <path>, --help)`);
+      return 2;
+    }
+  }
+
+  const rendered = renderHardwareOnlyFacts(gatherHardwareOnlyFacts(probe));
+  log(rendered.trimEnd());
+
+  if (out !== null) {
+    try {
+      writeFileSync(out, rendered, "utf8");
+    } catch (e) {
+      log(`FAILED to write ${out}: ${String(e)}`);
+      return 1;
+    }
+  }
+  return 0;
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2), realProbe(), (s) => console.log(s)));
 }
