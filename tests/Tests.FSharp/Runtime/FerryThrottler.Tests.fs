@@ -731,3 +731,139 @@ let ``injected-context background ferries replay a seeded schedule byte-identica
         let total = a |> List.concat |> List.length
         a |> List.concat |> List.sort |> should equal [ 1 .. total ]
     }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// Whole-boat fault contract + FourCorner-per-row GAP
+// (workitem 081M125DNKK087G0R00292E3ET).
+//
+// Pin CURRENT behavior so a later PerRow FourCorner change cannot land
+// silently wrong. These tests MUST be rewritten when PerRow independence
+// ships — wrapping each row in a fresh exception that still couples
+// siblings is NOT independence.
+//
+// One-boat witness: DeterministicSyncContext + enqueue-all-then-pump, so
+// two ProcessAsync items ride the SAME boat (MaxBatchSize >= 2).
+// ═══════════════════════════════════════════════════════════════════
+
+
+let private innerEx (t: Task<'a>) : exn =
+    t.Exception.InnerException
+
+
+/// Witness: this binding type-checks today. If result-arity `processBatch`
+/// is later constrained so `'TItem` must be `FourCornerOwnership`, this
+/// helper (and `ferry_boat_row_is_not_four_corner`) will not compile.
+let private intResultFerry
+    (processBatch: ReadOnlyMemory<int> -> CancellationToken -> Task<int array>)
+    (syncContext: SynchronizationContext)
+    : FerryThrottler<int, int> =
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 8 }
+    new FerryThrottler<int, int>(config, processBatch, syncContext = syncContext)
+
+
+[<Fact>]
+let ``processBatch throw: every boat row observes the SAME exception (WholeBoat, not PerRow)`` () : Task =
+    task {
+        let boom = InvalidOperationException "whole-boat boom"
+        let boats = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            boats.Enqueue boat.Length
+            Task.FromException<int array> boom
+        let ctx = DeterministicSyncContext()
+        use throttler = intResultFerry processBatch ctx
+        let t0 = throttler.ProcessAsync 10
+        let t1 = throttler.ProcessAsync 20
+        t0.IsCompleted |> should equal false
+        ctx.PumpToIdle()
+        try
+            let! _ = Task.WhenAll([| t0; t1 |])
+            ()
+        with _ -> ()
+        List.ofSeq boats |> should equal [ 2 ]
+        t0.IsFaulted |> should equal true
+        t1.IsFaulted |> should equal true
+        Object.ReferenceEquals(innerEx t0, innerEx t1) |> should equal true
+        Object.ReferenceEquals(innerEx t0, boom) |> should equal true
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``processBatch length mismatch: whole boat faults with the SAME InvalidOperationException (WholeBoat)`` () : Task =
+    task {
+        let boats = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            boats.Enqueue boat.Length
+            Task.FromResult [||]
+        let ctx = DeterministicSyncContext()
+        use throttler = intResultFerry processBatch ctx
+        let t0 = throttler.ProcessAsync 1
+        let t1 = throttler.ProcessAsync 2
+        ctx.PumpToIdle()
+        try
+            let! _ = Task.WhenAll([| t0; t1 |])
+            ()
+        with _ -> ()
+        List.ofSeq boats |> should equal [ 2 ]
+        t0.IsFaulted |> should equal true
+        t1.IsFaulted |> should equal true
+        Object.ReferenceEquals(innerEx t0, innerEx t1) |> should equal true
+        (innerEx t0 :? InvalidOperationException) |> should equal true
+        (innerEx t0).Message.Contains("result count mismatch", StringComparison.Ordinal)
+        |> should equal true
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``processBatch success: each boat row gets its own index-aligned result`` () : Task =
+    task {
+        let boats = ConcurrentQueue<int>()
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            boats.Enqueue boat.Length
+            Task.FromResult [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] * 10 |]
+        let ctx = DeterministicSyncContext()
+        use throttler = intResultFerry processBatch ctx
+        let t0 = throttler.ProcessAsync 1
+        let t1 = throttler.ProcessAsync 2
+        ctx.PumpToIdle()
+        let! r0 = t0
+        let! r1 = t1
+        List.ofSeq boats |> should equal [ 2 ]
+        r0 |> should equal 10
+        r1 |> should equal 20
+        (r0 = r1) |> should equal false
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }
+
+
+[<Fact>]
+let ``ferry_boat_row_is_not_four_corner: a boat of plain ints still works (FourCorner is not a row requirement today)``
+    ()
+    : Task =
+    // Gap (081M125DNKK087G0R00292E3ET): processBatch is
+    // `ReadOnlyMemory<'TItem> -> CancellationToken -> Task<'TResult array>`.
+    // `'TItem` is NOT required to be FourCornerOwnership — a boat of plain ints
+    // compiles and fans index-aligned results. Closing the gap means this test
+    // (and the type) change together; do not require FourCorner silently.
+    task {
+        let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+            Task.FromResult [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] |]
+        let ctx = DeterministicSyncContext()
+        use throttler = intResultFerry processBatch ctx
+        let t0 = throttler.ProcessAsync 7
+        let t1 = throttler.ProcessAsync 8
+        ctx.PumpToIdle()
+        let! results = Task.WhenAll([| t0; t1 |])
+        results |> should equal [| 7; 8 |]
+        let completion = throttler.CompleteAsync()
+        ctx.PumpToIdle()
+        do! completion
+    }

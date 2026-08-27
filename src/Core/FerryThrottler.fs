@@ -362,6 +362,12 @@ type FerryThrottler<'TItem>
 /// non-cancelled items because one ferry drains boats in FIFO order. With
 /// multiple ferries, every item still receives exactly one result/fault/cancel,
 /// but cross-ferry completion order is intentionally not specified.
+///
+/// **Fault scope today is `WholeBoat`:** `processBatch` throw or result-length
+/// mismatch sets the SAME exception on every row (`faultWholeBoat`). `PerRow`
+/// FourCorner independence (workitem 081M125DNKK087G0R00292E3ET) is the named
+/// gap — `'TItem` is NOT required to be `FourCornerOwnership`. Do not "fix"
+/// by wrapping each row in a fresh exception; that still couples siblings.
 [<Sealed>]
 type FerryThrottler<'TItem, 'TResult>
     (config: FerryThrottlerConfig,
@@ -414,7 +420,11 @@ type FerryThrottler<'TItem, 'TResult>
         | true, req -> ValueSome req
         | false, _ -> ValueNone
 
-    let faultBoat (requests: FerryRequest<'TItem, 'TResult> array) (count: int) (ex: exn) =
+    /// Current contract: WholeBoat — the SAME `ex` is set on every row.
+    /// `PerRow` (FourCorner feedback per row; 081M125DNKK087G0R00292E3ET) is
+    /// the named gap, not implemented this slice. Wrapping per row without
+    /// independence is not a PerRow landing.
+    let faultWholeBoat (requests: FerryRequest<'TItem, 'TResult> array) (count: int) (ex: exn) =
         for i in 0 .. count - 1 do
             requests.[i].TrySetException ex
 
@@ -450,7 +460,7 @@ type FerryThrottler<'TItem, 'TResult>
             let ex =
                 InvalidOperationException(
                     $"FerryThrottler result count mismatch: processor returned {results.Length} results for {count} items.")
-            faultBoat requests count ex
+            faultWholeBoat requests count ex
         else
             for i in 0 .. count - 1 do
                 requests.[i].TrySetResult results.[i]
@@ -526,7 +536,7 @@ type FerryThrottler<'TItem, 'TResult>
                             | :? OperationCanceledException when ct.IsCancellationRequested ->
                                 cancelBoat requests n ct
                             | ex ->
-                                faultBoat requests n ex
+                                faultWholeBoat requests n ex
                             Array.Clear(items, 0, n)
                             Array.Clear(requests, 0, n)
             with :? OperationCanceledException ->
