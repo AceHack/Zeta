@@ -1,0 +1,12 @@
+{
+  "pr_number": 15837,
+  "archive_path": "docs/history/pr-reviews/PR-15837-feat-heartbeats-decide-a-carry-conflict-without-coordination-or-refuse-loudly.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T15:27:32.577Z",
+  "schema_version": "v1",
+  "commit_sha": "6aaab8f989ea4c4999e76e85065906e8a3df425d",
+  "title": "feat(heartbeats): decide a carry conflict without coordination, or refuse loudly",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T15:26:52Z",
+  "head_ref": "shadow/uncoordinated-carry-resolvers"
+}
