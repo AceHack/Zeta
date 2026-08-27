@@ -5,7 +5,8 @@ repo-split lens and on the repeated-correction dataset as the
 coding-defaults trainset. Internal current-state absorb, not an
 archive import.
 Attribution: Aaron (human) framed the requirements; Riven (Grok 4.6)
-wrote this absorb. Otto was a parallel recipient of the same signal.
+wrote this absorb. Otto was a parallel recipient of the same signal
+and independently measured the lint `FIX:` census absorbed below.
 Operational status: research-grade
 Non-fusion disclaimer: Shared vocabulary here does not imply merged
 agency, shared identity, or personhood.
@@ -75,8 +76,97 @@ ontology; descriptions of the rules are satellites; the
 compaction.
 
 Do not invent a scraper this slice. Name the dataset. Next
-honest collector: a retractable Z-set of correction events,
-keyed by the rule they witness.
+honest collector: a retractable Z-set of `(rule, violation,
+repair)` pairs — a generator needs both halves.
+
+## The first named instance is already in the tree
+
+Otto 2026-08-27 measured the TypeScript hygiene linters against
+the same teaching demand (a diagnostic that names the repair,
+not only the miss). Independently recounted on this clone the
+same day:
+
+| | count |
+|---|---|
+| `lint-*.ts` impl (not tests) | 27 |
+| of those, `FIX:` / `Fix:` *prose* | 5 (uppercase `FIX:` only: 2) |
+| of those, machine-applicable patch | **0** |
+| `audit-*.ts` impl | 86 (Otto said 83; this clone) |
+| `healers/*.ts` (incl. runner) | 13 |
+
+Prefix-grep that stopped at `lint-*` understated detection ~4×
+and missed the healing rung. Two populations, no shared rule
+identity — see the composable-rule absorb.
+
+The five that teach:
+
+| module | what the Fix names |
+|---|---|
+| `lint-check-then-use-file-races.ts` | delete the check; interpret the syscall (`FIX_READ`: one syscall, one answer, no window) |
+| `lint-graphql-transport-in-scripts.ts` | the REST spelling the lint already knows |
+| `lint-no-decide-by-grep.ts` | `run-checked.ts` |
+| `lint-no-nested-workflow-dirs.ts` | move the file to `.github/workflows/` |
+| `lint-no-path-resolved-privilege-elevator.ts` | `resolveElevatorPathOrThrow` |
+
+Each of those is a `(violation → repair)` pair. A generator
+function can learn from that form. `"Failed"` has no second
+half, so it is Landauer erasure — the same vacuity class as an
+empty 207 row (`ErasureClass`). That is why the 22 failure-only
+linters are the first named gap in the correction corpus: they
+detect (rung 0) and they do not teach.
+
+The richest diagnostic format already in-tree is not a
+`lint-*.ts` at all. `validate-agencysignature-pr-body.ts`
+emits five fields — Class / Cause / Fix / Maxim / Spec — a
+generic failure class reverse-engineered from instances
+(*Trailer Contiguity Survival Failure*). Nothing else uses
+that shape.
+
+## Rung 0 vs rung 1; push work down
+
+The five Fix emitters emit **prose, not patches**. That is
+the gap between a detector and a healer, stated concretely.
+`healer-harness.ts` already certifies a machine healer as a
+pure `FileTree → FileTree` under idempotence, closure-as-subset,
+and convergence. Its `Finding` is `{path, rule, detail}` —
+no `fix` field. The live Tier-0 compose (`healers/run-tier0.ts`)
+is five mechanical healers, not 1:1 with the 27 lints. The
+2026-08-01 handoff (`docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md`)
+already named GPU-fleet training on the drift corpus as
+labelled examples; this census is that corpus's first
+enumerable seed.
+
+The cheap mechanisms (regex lint) run on every commit; the
+expensive ones (mutation testing) run selectively; model
+review is the top tier. They are **not yet a ladder**: nothing
+moves a rule from a cheap check that cannot express it onto
+a more expensive one that can. Otto's correction of his own
+first reading is the load-bearing one: the ambition is not to
+escalate *up*. It is to **push work down** — mechanize
+detection (0) and healing (1) as far as they will go;
+intelligence is the fallback for what genuinely cannot be
+mechanized. Same shape as the data-plane default
+(`081M125DNKK087G0R00292E3ET`): each tier knows its
+incapability, routes up at runtime, and every use of the
+expensive tier should make the cheap layer more complete
+rather than become the normal path.
+
+Do not add `FIX:` strings to the 22, and do not write
+machine patches, in this absorb. Name the pair. The collector
+keys `(rule, violation, repair)` so a generator has both
+halves. A `Fix:` string is the human-readable half; a
+`healer-harness`-certified patch is rung 1.
+
+Same-day compose: `src/Core.TypeScript/corpus/labelled-observation.ts`
+landed on `main` as the domain-agnostic observation type
+(hub = observation, satellite = open label set; conflicting
+labels coexist, no winner-picker). This census is a *seed
+that type can hold*, not a second collector. A lint `FIX:`
+is one asserter's repair label; a human correction of that
+fix is another label on the same observation, not an
+overwrite. Collapsing them into one supervised target would
+be the single-version-of-the-truth move the type exists to
+refuse.
 
 ## Beacon
 
@@ -84,9 +174,26 @@ keyed by the rule they witness.
 - **Building codes** framing of `docs/governance/MANIFESTO.md`
 - **ρ trainset floor** — 2026-08-25 research (heuristic, completeness
   disproven in that doc)
+- **Roslyn DiagnosticAnalyzer + CodeFixProvider** — the (violation,
+  repair) pair as a first-class compiler surface (Visual Studio
+  light-bulb; VS 2015 / Roslyn). Same shape as ESLint `--fix` and
+  rustc `rustfix` / `cargo fix`. The five `FIX:` emitters are the
+  prose half of that pair; a certified healer is the machine half.
+- **Supervised pair** — a label without a target is not a training
+  example (Mitchell, *Machine Learning*, 1997; Vapnik's (x, y)
+  formulation). `"Failed"` is a label. `FIX:` is the y.
+- **Landauer 1961** — an error that carries no teaching is
+  two-states-onto-one; already metered as `ErasureClass`.
+- **RFC 9457** Problem Details (`type` / `title` / `detail`) is a
+  weaker cousin of Class / Cause / Fix / Maxim / Spec.
 
 ## Honesty
 
 No repo is created from this absorb (gated, same as 8c). No
 fine-tune job is filed. The claim "prompt paste is insufficient"
-is observational, not a measured adherence study.
+is observational, not a measured adherence study. The 27 / 5 / 22
+census is a file-count, not a claim that every lint is equally
+worth a healer — some failures are judgment (Tier 2 / 3 in the
+2026-08-01 handoff) and must stay unhealed. Otto's count is
+treated as data (BP-11), independently recounted, not as a
+directive to implement.

@@ -108,6 +108,17 @@ function differingPaths(a: FileTree, b: FileTree): readonly string[] {
   return out.sort(); // default sort is codepoint order — culture-invariant
 }
 
+/**
+ * Write-set of a heal: paths the healer changed, added, or deleted.
+ * Pairwise disjoint write-sets on a fixture imply those healers commute on
+ * that fixture (critical-pair check, Newman's lemma cheap half). The three
+ * certify() laws do NOT imply this — they certify a composite reaches a
+ * fixed point, not that every order reaches the same one.
+ */
+export function writeSet(before: FileTree, after: FileTree): readonly string[] {
+  return differingPaths(before, after);
+}
+
 /** Defensive snapshot: healers and detectors NEVER receive a shared
  * reference. An in-place-mutating healer that returns its input would
  * otherwise satisfy every law trivially (heal(heal(t)) is the same object)

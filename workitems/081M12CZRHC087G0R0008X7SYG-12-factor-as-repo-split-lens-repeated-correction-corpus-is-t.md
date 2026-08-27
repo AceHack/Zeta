@@ -45,7 +45,40 @@ ontology / the generators, not another CLAUDE.md paste.
 
 Do not invent a collection pipeline this slice. Name it. Next honest
 slice: a store-native log of correction events (Z-set, retractable)
-keyed by the rule they witness, so activation over tasks can shape
-the ontology (same two-way attention as the harness window).
+keyed by `(rule, violation, repair)` so a generator has both halves.
+`"Failed"` has no second half (Landauer erasure). Activation over
+those pairs shapes the ontology (same two-way attention as the
+harness window).
 
-Pointers: `docs/ROADMAP.md` 8c + P1; `docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md`; manifesto building-codes framing.
+## First named seed (Otto 2026-08-27; independently recounted)
+
+27 `lint-*.ts` impl; 5 emit `FIX:`/`Fix:` prose (uppercase-only: 2);
+machine-applicable at lint tier **0/27**. 86 `audit-*.ts`. 13 healer
+modules — a separate population, no shared rule identity.
+`Finding` has no `fix` field. Ambition is **push work down**; if you
+route up, **take metrics** so the expensive use can mint a cheaper
+rule. Composable one-shot rules (expert-system shape); BNN is the
+wrong name for an addressable DAG. Lumen (factor/EP belief half) and
+Soraya (detection is a join-semilattice; DAG is residue of
+non-confluence) are both held. Store is canonical (Soraya);
+the posterior is which *viewer* is attached (Lumen), not which
+bytes. Flip-flopping view rules are Newman on the projection —
+report `ViewsDisagree`, do not average them into the hub.
+Flip-flop (period-k, no fixed point) is dual-use: it
+*discovers* a mutually exclusive writer-category (coproduct,
+not product). `AB ≠ BA` that still terminates is DAG/monodromy,
+not mutex. Do not appoint the categories; the oscillator finds
+them.
+
+Do not add 22 `FIX:` strings, and do not write patches, as a
+rider on this naming slice. Same-day: `labelled-observation.ts`
+is the collector type (disagreement-shaped; no winner). This
+census is a seed for that type, not a second schema.
+
+Pointers: `docs/ROADMAP.md` 8c + P1;
+`src/Core.TypeScript/corpus/labelled-observation.ts`;
+`docs/research/2026-08-27-twelve-factor-categorizes-extracts-building-codes-are-the-lower-layer-correction-corpus-is-the-trainset.md`;
+`docs/research/2026-08-27-composable-lint-heal-rules-are-an-antichain-metrics-on-escalate-make-the-cheap-layer.md`;
+`docs/research/2026-08-25-rho-is-a-layer-stack-not-a-scalar-and-the-trainset-is-the-floor.md`;
+`docs/handoffs/2026-08-01-shadow-to-alexa-self-healing-drift-classes-and-intelligence-tiers.md`;
+manifesto building-codes framing.

@@ -61,6 +61,8 @@ describe("the 2026-07-08 counterexamples", () => {
 
 describe("oscillation", () => {
   /// A deliberate period-2 healer: toggles a marker file's content.
+  /// Dual-use (Aaron 2026-08-27): this failure is also how an exclusive
+  /// writer-category is *discovered* — not every AB≠BA, only period-k.
   const toggler: Healer = {
     name: "toggler",
     heal: (t) => {

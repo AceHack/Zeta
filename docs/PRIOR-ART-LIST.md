@@ -136,6 +136,20 @@ with a ⭐ below and add a row there.
   backing services as attached resources). Repo-split _app_ lens; not a substitute for
   manifesto building codes (any code vs ad hoc) nor for DV2/CRP measurement.
   `081M12CZRHC087G0R0008X7SYG`.
+- **Roslyn DiagnosticAnalyzer + CodeFixProvider** — Microsoft, Visual Studio 2015 / Roslyn.
+  The (violation, repair) pair as a compiler surface (the light-bulb). Same shape as
+  ESLint `--fix` and rustc `rustfix` / `cargo fix`. The factory's five `FIX:` lints are
+  the prose half of that pair; a `healer-harness`-certified patch is the machine half.
+  `"Failed"` with no repair is not a training example. `081M12CZRHC087G0R0008X7SYG`.
+- **Composable rules, not BNN layers** — **G. David Forney Jr.**, factor graphs with
+  variables as edges (2001) is the composable-DAG shape; **Richardson & Domingos**,
+  Markov logic networks (MLN, 2006) for weighted first-order detection; **Newman**
+  (1942) local confluence + termination ⇒ confluence (the harness has termination
+  and is missing the cheap half: write-set / critical-pair disjointness);
+  **Newell & Simon** productions and **Buchanan & Shortliffe** MYCIN for
+  one-shot expert rules applied to writing good code — keep the production, not
+  MYCIN's certainty factors. `MultilayerBnn.fs` is a Gaussian _chain_ (RTS);
+  addressable lint/heal rules are not that object. `081M12CZRHC087G0R0008X7SYG`.
 - **CloudEvents** ⭐ — CNCF event-envelope standard (v1.0); to be the bus
   envelope over Zeta's busses. See `docs/research/2026-06-07-cloudevents-bus-envelope-and-debezium-cdc-as-zset-delta-anchor-aaron.md`.
 - **Debezium / CDC** ⭐ — Red Hat; the `before/after/op/source/ts_ms` change-event
