@@ -44,11 +44,18 @@ describe("heartbeat durable room-evidence emission", () => {
     expect(emitted.value.event.delta.genesisBinding).toEqual(heartbeatGenesisBinding("alexa"));
     expect(emitted.value.event.genesisWitness).toBeUndefined();
     expect(emitted.value.adjudicationContentKey).toMatch(/^[0-9a-f]{32}$/);
+    if (emitted.value.adjudicationContentKey === undefined) throw new Error("sequence-zero adjudication content key is missing");
     expect(emitted.value.event.receipt.solved).toBe(false);
     expect(emitted.value.event.receipt.uncertainty).toEqual({ meanPpm: 0, precisionPpm: 1 });
 
     const index = JSON.parse(await readFile(join(root, "docs/room-evidence/index.json"), "utf8")) as {
-      entries: Array<{ eventId: string; file: string; auditContentKey: string; receiptContentKey: string }>;
+      entries: Array<{
+        eventId: string;
+        file: string;
+        auditContentKey: string;
+        receiptContentKey: string;
+        adjudication?: { file: string; contentKey: string };
+      }>;
     };
     expect(index.entries).toHaveLength(1);
     const entry = index.entries[0]!;
@@ -66,6 +73,10 @@ describe("heartbeat durable room-evidence emission", () => {
     expect(await readFile(join(root, "docs/room-evidence/adjudications", `${entry.eventId}.json`), "utf8")).toContain(
       "request-local-witness",
     );
+    expect(entry.adjudication).toEqual({
+      file: `adjudications/${entry.eventId}.json`,
+      contentKey: emitted.value.adjudicationContentKey,
+    });
   });
 
   test("same workflow run is an idempotent discovery replay rather than a second evidence fact", async () => {

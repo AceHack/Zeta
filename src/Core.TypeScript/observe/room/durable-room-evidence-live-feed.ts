@@ -15,13 +15,23 @@ import type { RoomEvidenceResult } from "./durable-room-evidence";
 export const ROOM_EVIDENCE_LIVE_FEED_INDEX_SCHEMA = "zeta.room-evidence-live-feed-index.v1" as const;
 export const ROOM_EVIDENCE_LIVE_FEED_INDEX_FILE = "room-evidence-index.json";
 export const ROOM_EVIDENCE_LIVE_FEED_DIRECTORY = "room-evidence";
+export const ROOM_WITNESS_ADJUDICATION_DIRECTORY = "adjudications";
+
+export interface RoomEvidenceLiveFeedAdjudicationReference {
+  /** Event-bound, local-only teaching record; never an authority roster. */
+  readonly file: string;
+  /** Content address of the canonical adjudication payload. */
+  readonly contentKey: string;
+}
 
 export interface RoomEvidenceLiveFeedEntry {
   readonly eventId: string;
   readonly auditContentKey: string;
   readonly receiptContentKey: string;
-  /** Relative to docs/observe-events; this is discovery, not a global causal position. */
+  /** Relative to the feed root; this is discovery, not a global causal position. */
   readonly file: string;
+  /** Optional because legacy published envelopes predate named adjudication references. */
+  readonly adjudication?: RoomEvidenceLiveFeedAdjudicationReference;
 }
 
 export interface RoomEvidenceLiveFeedIndex {
@@ -75,6 +85,17 @@ function isFeedFile(value: unknown): value is string {
   );
 }
 
+function adjudicationFile(eventId: string): string {
+  return `${ROOM_WITNESS_ADJUDICATION_DIRECTORY}/${eventId}.json`;
+}
+
+function isAdjudicationReference(
+  value: unknown,
+  eventId: string,
+): value is RoomEvidenceLiveFeedAdjudicationReference {
+  return isRecord(value) && value.file === adjudicationFile(eventId) && isIdentifier(value.contentKey);
+}
+
 function eventFile(eventId: string): string {
   return `${ROOM_EVIDENCE_LIVE_FEED_DIRECTORY}/${eventId}.json`;
 }
@@ -113,11 +134,15 @@ export function decodeRoomEvidenceLiveFeedIndex(payload: string): RoomEvidenceRe
       }
       if (eventIds.has(entry.eventId)) return failed(`feed index repeats eventId ${entry.eventId}`);
       eventIds.add(entry.eventId);
+      if (entry.adjudication !== undefined && !isAdjudicationReference(entry.adjudication, entry.eventId)) {
+        return failed(`feed index entry ${String(position)} has an invalid or unbound adjudication reference`);
+      }
       entries.push({
         eventId: entry.eventId,
         auditContentKey: entry.auditContentKey,
         receiptContentKey: entry.receiptContentKey,
         file: entry.file,
+        ...(entry.adjudication === undefined ? {} : { adjudication: entry.adjudication }),
       });
     }
     return succeeded(canonicalIndex(entries));
@@ -179,22 +204,32 @@ export class DurableRoomEvidenceLiveFeedPublisher {
 
   async appendAndPublish(
     event: RoomEvidenceAuditEvent,
+    options: { readonly adjudication?: RoomEvidenceLiveFeedAdjudicationReference } = {},
   ): Promise<RoomEvidenceResult<PublishedRoomEvidenceLiveFeedEntry>> {
+    if (options.adjudication !== undefined && !isAdjudicationReference(options.adjudication, event.delta.eventId)) {
+      return failed("live feed adjudication reference must bind this event ID and declared local namespace");
+    }
     const stored = await this.ledger.append(event);
     if (!stored.ok) return stored;
 
+    const prior = this.index.entries.find((entry) => entry.eventId === stored.value.eventId);
+    const adjudication = options.adjudication ?? prior?.adjudication;
     const next: RoomEvidenceLiveFeedEntry = {
       eventId: stored.value.eventId,
       auditContentKey: stored.value.auditContentKey,
       receiptContentKey: stored.value.receiptContentKey,
       file: eventFile(stored.value.eventId),
+      ...(adjudication === undefined ? {} : { adjudication }),
     };
-    const prior = this.index.entries.find((entry) => entry.eventId === next.eventId);
     if (
       prior !== undefined &&
       (prior.auditContentKey !== next.auditContentKey ||
         prior.receiptContentKey !== next.receiptContentKey ||
-        prior.file !== next.file)
+        prior.file !== next.file ||
+        (prior.adjudication !== undefined &&
+          options.adjudication !== undefined &&
+          (prior.adjudication.file !== options.adjudication.file ||
+            prior.adjudication.contentKey !== options.adjudication.contentKey)))
     ) {
       return failed(`live feed eventId ${next.eventId} conflicts with a prior discovery entry`);
     }
@@ -203,7 +238,11 @@ export class DurableRoomEvidenceLiveFeedPublisher {
     if (!envelopeWrite.ok) return failed(`live feed envelope write failed: ${envelopeWrite.reason}`);
 
     const duplicate = prior !== undefined;
-    const candidate = canonicalIndex(duplicate ? this.index.entries : [...this.index.entries, next]);
+    const candidate = canonicalIndex(
+      duplicate
+        ? this.index.entries.map((entry) => (entry.eventId === next.eventId ? next : entry))
+        : [...this.index.entries, next],
+    );
     const indexWrite = await this.writer.write(
       ROOM_EVIDENCE_LIVE_FEED_INDEX_FILE,
       encodeRoomEvidenceLiveFeedIndex(candidate),

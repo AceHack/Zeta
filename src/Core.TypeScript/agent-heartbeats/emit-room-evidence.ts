@@ -393,17 +393,14 @@ export async function emitHeartbeatRoomEvidence(
     roster: [],
   });
   const publisher = new DurableRoomEvidenceLiveFeedPublisher(ledger, feedPort, existing.value.index);
-  const published = await publisher.appendAndPublish(event.value);
-  if (!published.ok) return published;
   if (event.value.delta.emitterSeq !== 0 || event.value.genesisWitness !== undefined) {
-    return succeeded({ event: event.value, ...published.value });
+    const published = await publisher.appendAndPublish(event.value);
+    return published.ok ? succeeded({ event: event.value, ...published.value }) : published;
   }
+  const receiptContentKey = makeStorageRecord(encodeRoomEvidenceReceipt(receipt)).key;
+  const auditContentKey = makeStorageRecord(encodeRoomEvidenceAuditEvent(event.value)).key;
   const adjudication = makeRoomWitnessAdjudication(
-    {
-      eventId: event.value.delta.eventId,
-      auditContentKey: published.value.auditContentKey,
-      receiptContentKey: published.value.receiptContentKey,
-    },
+    { eventId: event.value.delta.eventId, auditContentKey, receiptContentKey },
     "unresolved",
     [],
   );
@@ -415,6 +412,13 @@ export async function emitHeartbeatRoomEvidence(
     encodeRoomWitnessAdjudication(adjudication.value),
   );
   if (!named.ok) return failed(`adjudication replay reference failed: ${named.reason}`);
+  const published = await publisher.appendAndPublish(event.value, {
+    adjudication: {
+      file: `adjudications/${event.value.delta.eventId}.json`,
+      contentKey: persisted.value.contentKey,
+    },
+  });
+  if (!published.ok) return published;
   return succeeded({
     event: event.value,
     ...published.value,

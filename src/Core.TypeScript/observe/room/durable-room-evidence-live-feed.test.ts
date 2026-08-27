@@ -137,7 +137,10 @@ describe("durable room-evidence live feed", () => {
   test("DREL-2: append publishes only an already-durable event and a reader recovers its exact event identity", async () => {
     const feed = new MemoryFeed();
     const publisher = new DurableRoomEvidenceLiveFeedPublisher(ledger(), feed);
-    const published = await publisher.appendAndPublish(event());
+    const next = event();
+    const published = await publisher.appendAndPublish(next, {
+      adjudication: { file: `adjudications/${next.delta.eventId}.json`, contentKey: "a".repeat(32) },
+    });
     expect(published.ok).toBe(true);
     if (!published.ok) return;
     const read = await readRoomEvidenceLiveFeed(feed);
@@ -145,6 +148,10 @@ describe("durable room-evidence live feed", () => {
     if (read.kind === "ready") {
       expect(read.events.map((value) => value.delta.eventId)).toEqual([published.value.eventId]);
       expect(read.events[0]!.receipt.weight).toBe(1);
+      expect(read.index.entries[0]!.adjudication).toEqual({
+        file: `adjudications/${published.value.eventId}.json`,
+        contentKey: "a".repeat(32),
+      });
     }
   });
 
@@ -192,5 +199,33 @@ describe("durable room-evidence live feed", () => {
       }),
     );
     expect((await readRoomEvidenceLiveFeed(repeated)).kind).toBe("malformed");
+  });
+
+  test("DREL-5: a legacy published entry can gain one event-bound local adjudication reference without changing its receipt identity", async () => {
+    const feed = new MemoryFeed();
+    const next = event();
+    const publisher = new DurableRoomEvidenceLiveFeedPublisher(ledger(), feed);
+    const initial = await publisher.appendAndPublish(next);
+    expect(initial.ok).toBe(true);
+    const backfill = await publisher.appendAndPublish(next, {
+      adjudication: { file: `adjudications/${next.delta.eventId}.json`, contentKey: "b".repeat(32) },
+    });
+    expect(backfill).toMatchObject({ ok: true, value: { duplicate: true, eventId: next.delta.eventId } });
+    const index = JSON.parse(feed.files.get(ROOM_EVIDENCE_LIVE_FEED_INDEX_FILE) ?? "") as { entries: unknown[] };
+    expect(index.entries).toHaveLength(1);
+    expect(index.entries[0]).toMatchObject({
+      eventId: next.delta.eventId,
+      adjudication: { file: `adjudications/${next.delta.eventId}.json`, contentKey: "b".repeat(32) },
+    });
+  });
+
+  test("DREL-6: a sidecar reference for a different event is rejected before durable append or discovery publication", async () => {
+    const feed = new MemoryFeed();
+    const next = event();
+    const result = await new DurableRoomEvidenceLiveFeedPublisher(ledger(), feed).appendAndPublish(next, {
+      adjudication: { file: "adjudications/not-this-event.json", contentKey: "c".repeat(32) },
+    });
+    expect(result).toEqual({ ok: false, reason: expect.stringContaining("must bind this event ID") });
+    expect(feed.files.has(ROOM_EVIDENCE_LIVE_FEED_INDEX_FILE)).toBe(false);
   });
 });
