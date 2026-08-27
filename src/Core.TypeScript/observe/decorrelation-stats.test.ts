@@ -10,7 +10,7 @@ import { describe, test, expect } from "bun:test";
 import {
   phi, phiMax, phiRatio, yulesQ, cohensKappa,
   wilsonInterval, proportionDiffInterval, requiredNForDifference,
-  measureHonest, detectAnswerLeak, suspectExtremeRate,
+  measureHonest, detectAnswerLeak, suspectExtremeRate, mcNemar, mannWhitneyU,
   type Table2x2,
 } from "./decorrelation-stats";
 
@@ -117,30 +117,100 @@ describe("requiredNForDifference — the power calculation (W3)", () => {
   });
 });
 
-describe("detectAnswerLeak (W12) — the falsifier that would have caught the leak", () => {
+describe("mannWhitneyU (H3 — does a signal separate two groups?)", () => {
+  test("cleanly separated groups reject with a large effect", () => {
+    const lo = Array.from({ length: 25 }, (_, i) => i);        // 0..24
+    const hi = Array.from({ length: 25 }, (_, i) => i + 100);  // 100..124
+    const r = mannWhitneyU(hi, lo);
+    expect(r.rejects).toBe(true);
+    expect(Math.abs(r.rankBiserial)).toBeGreaterThan(0.9);
+  });
+
+  test("identical distributions do NOT reject (the not-addressable case)", () => {
+    const a = Array.from({ length: 30 }, (_, i) => i % 5);
+    const b = Array.from({ length: 30 }, (_, i) => i % 5);
+    const r = mannWhitneyU(a, b);
+    expect(r.rejects).toBe(false);
+    expect(Math.abs(r.rankBiserial)).toBeLessThan(0.15);
+  });
+
+  test("empty group is handled without NaN", () => {
+    const r = mannWhitneyU([], [1, 2, 3]);
+    expect(r.rejects).toBe(false);
+    expect(Number.isFinite(r.z)).toBe(true);
+  });
+});
+
+describe("mcNemar (paired) — the analysis Otto asked for", () => {
+  function build(a: number, b: number, c: number, d: number) {
+    const out: { aCorrect: boolean; bCorrect: boolean }[] = [];
+    for (let i = 0; i < a; i++) out.push({ aCorrect: true, bCorrect: true });
+    for (let i = 0; i < b; i++) out.push({ aCorrect: true, bCorrect: false });
+    for (let i = 0; i < c; i++) out.push({ aCorrect: false, bCorrect: true });
+    for (let i = 0; i < d; i++) out.push({ aCorrect: false, bCorrect: false });
+    return out;
+  }
+
+  test("symmetric discordant split (b≈c) is NOT resolved — the trades-equal falsifier", () => {
+    const r = mcNemar(build(300, 20, 20, 60));
+    expect(r.b).toBe(20);
+    expect(r.c).toBe(20);
+    close(r.accuracyDiff, 0);
+    expect(r.resolved).toBe(false);
+    expect(r.symmetric).toBe(true);
+  });
+
+  test("a strong directional split resolves with CI excluding zero", () => {
+    // b=40 (A right, B wrong), c=5 (B right, A wrong), over n=400.
+    const r = mcNemar(build(300, 40, 5, 55));
+    close(r.accuracyDiff, (40 - 5) / 400, 1e-9);
+    expect(r.diffLo).toBeGreaterThan(0);
+    expect(r.resolved).toBe(true);
+    expect(r.symmetric).toBe(false);
+  });
+
+  test("paired CI is narrower than the unpaired two-proportion CI on the same counts", () => {
+    const b = 30, c = 10, n = 400;
+    const r = mcNemar(build(300, b, c, n - 300 - b - c));
+    const pairedWidth = r.diffHi - r.diffLo;
+    // Unpaired difference CI on the same marginals:
+    const sA = 300 + b, sB = 300 + c;
+    const unpaired = proportionDiffInterval(sA, n, sB, n);
+    const unpairedWidth = unpaired.hi - unpaired.lo;
+    expect(pairedWidth).toBeLessThan(unpairedWidth);
+  });
+});
+
+describe("detectAnswerLeak (W12) — the falsifier, scoped to the instruction region", () => {
   const correct = "respond_to_operator";
 
-  test("RED on the ACTUAL leaky verifier prompt (proves it can fail)", () => {
-    const leaky =
+  test("RED on the ACTUAL leaky verifier RULES region (proves it can fail)", () => {
+    // The instruction/rules region names the correct option — the real leak.
+    const leakyRules =
       `You are verifying whether a proposed action is correct.\n\nRULES:\n` +
       `- If operator has a pending message, the ONLY correct action is "respond_to_operator"\n` +
-      `- Operator ALWAYS outranks work items\n\nSTATE: ...\n\nPROPOSED: "do_item: task-3"\n\nIs this correct?`;
-    const r = detectAnswerLeak(leaky, correct);
-    expect(r.leaked).toBe(true);
+      `- Operator ALWAYS outranks work items`;
+    expect(detectAnswerLeak(leakyRules, correct).leaked).toBe(true);
   });
 
-  test("GREEN on an equalized verifier prompt that does not name the answer", () => {
-    // A rule stated abstractly, without naming the winning option string.
+  test("GREEN on an equalized instruction that does not name the answer", () => {
     const clean =
       `You are verifying whether a proposed action is correct.\n\n` +
-      `Decide using the state and the proposed action only.\n\nSTATE: ...\n\nPROPOSED: "do_item: task-3"\n\nIs this correct?`;
-    const r = detectAnswerLeak(clean, correct);
-    expect(r.leaked).toBe(false);
+      `Decide using the state and the proposed action only.`;
+    expect(detectAnswerLeak(clean, correct).leaked).toBe(false);
   });
 
-  test("a verifier prompt that only carries the single candidate is clean", () => {
-    const candidateOnly = `PROPOSED: "do_item: task-7"\n\nIs this correct? yes/no`;
-    expect(detectAnswerLeak(candidateOnly, correct).leaked).toBe(false);
+  test("a PRODUCER's options menu is NOT a leak (the correct option is the choice set)", () => {
+    // This is the case that false-fired the whole-prompt version. The instruction region
+    // (excluding the options block) does not name the answer, so it is clean — even though
+    // the options block obviously contains `respond_to_operator`.
+    const producerInstruction = `Choose ONE action. Reply ONLY the number. Operator outranks everything.`;
+    expect(detectAnswerLeak(producerInstruction, correct).leaked).toBe(false);
+  });
+
+  test("the clause-swap instruction is also clean (no answer named)", () => {
+    const clauseSwap = `Operator outranks everything. Choose ONE action; reply ONLY the number.`;
+    expect(detectAnswerLeak(clauseSwap, correct).leaked).toBe(false);
   });
 });
 

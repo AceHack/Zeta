@@ -176,6 +176,56 @@ export function proportionDiffInterval(
   return { point: diff, lo: diff - z * se, hi: diff + z * se };
 }
 
+// ═══ McNemar (paired) ══════════════════════════════════════════════════════════
+
+export interface McNemarResult {
+  /** Discordant pairs: A correct & B wrong (b) and A wrong & B correct (c). */
+  readonly b: number;
+  readonly c: number;
+  /** The paired accuracy difference p(A) − p(B) = (b − c) / n. */
+  readonly accuracyDiff: number;
+  /** 95% CI on the paired difference of proportions (b−c)/n, discordant-pair based. */
+  readonly diffLo: number;
+  readonly diffHi: number;
+  /** Continuity-corrected McNemar chi-square on the discordant pairs. */
+  readonly chiSquare: number;
+  /** Whether the CI on the difference excludes zero (a resolved directional effect). */
+  readonly resolved: boolean;
+  /** Whether the discordant split is symmetric (b≈c) — the "trades equal" falsifier. */
+  readonly symmetric: boolean;
+}
+
+/**
+ * McNemar's test for two paired binary classifiers over the SAME items. This is the
+ * correct analysis when both configs answer every item (canonical vs clause-swap on the
+ * same scenarios): it uses ONLY the discordant pairs (b, c) and removes the between-item
+ * variance an unpaired two-proportion interval carries.
+ *
+ * The 95% CI on the paired difference uses the standard error for (b−c)/n derived from the
+ * discordant counts: SE = sqrt(b + c − (b−c)²/n) / n (the exact paired-proportion SE).
+ *
+ * Ref: McNemar (1947); Fleiss for the paired-proportion CI. Anchored.
+ */
+export function mcNemar(
+  trials: readonly { aCorrect: boolean; bCorrect: boolean }[], z = 1.96,
+): McNemarResult {
+  const t = tableFromTrials(trials);
+  const n = tableTotal(t);
+  const b = t.b, c = t.c;
+  const accuracyDiff = n > 0 ? (b - c) / n : 0;
+  // Paired SE for the difference of correlated proportions.
+  const se = n > 0 ? Math.sqrt(Math.max(0, b + c - ((b - c) * (b - c)) / n)) / n : 0;
+  const diffLo = accuracyDiff - z * se;
+  const diffHi = accuracyDiff + z * se;
+  // Continuity-corrected McNemar statistic.
+  const chiSquare = (b + c) > 0 ? ((Math.abs(b - c) - 1) ** 2) / (b + c) : 0;
+  const resolved = diffLo > 0 || diffHi < 0;
+  // Symmetric when neither discordant cell dominates (the b≈c "trades equal" falsifier):
+  // the CI on the difference straddles zero AND the counts are close.
+  const symmetric = !resolved;
+  return { b, c, accuracyDiff, diffLo, diffHi, chiSquare, resolved, symmetric };
+}
+
 // ═══ Power ══════════════════════════════════════════════════════════════════════
 
 /**
@@ -202,25 +252,52 @@ export function requiredNForDifference(
 // ═══ Leak detection (W12/W13) — a perfect classifier is a defect signal ════════
 
 /**
- * W12 — the leak falsifier. A verifier prompt must NOT contain the correct answer or a
- * rule that names it. If it does, the "verification" is a model reading back information
- * it was handed, not a cognitive check. Returns the offending substring, or null if
- * clean.
+ * W12 — the leak falsifier. A prompt's INSTRUCTION region must NOT name the correct
+ * answer or state a rule that names it. If it does, a "verification" or a "search" is a
+ * model reading back information it was handed, not a cognitive act. Returns the offending
+ * substring, or null if clean.
  *
- * This is the same class of guard as `assertNoOptionContamination` (which stops a text
- * arm from moving buttons) — pointed at a different axis: it stops the verifier prompt
- * from carrying the answer key.
+ * CRITICAL scoping (learned the hard way): the correct option legitimately appears in a
+ * PRODUCER's options menu — that is the choice set, not a leak. The leak is the answer
+ * named in the INSTRUCTION/RULES text, outside the choice set. So this checks a caller-
+ * supplied `instructionRegion`, NOT the whole prompt. The caller passes the instruction/
+ * rules portion with the options block excluded. Passing the whole prompt (options
+ * included) would false-positive on every producer, which is why the earlier whole-prompt
+ * version fired on the canonical producer.
+ *
+ * This is the same class of guard as `assertNoOptionContamination` (which stops a text arm
+ * from moving buttons) — pointed at a different axis: it stops the instruction from
+ * carrying the answer key.
+ *
+ * THE NARROWING SEQUENCE, stated so the fix is not mistaken for coverage (Otto's W12
+ * follow-up): the first version checked the WHOLE prompt, fired on the canonical producer
+ * (the options menu legitimately contains the correct option), was then narrowed to the
+ * instruction region, and the arm went green. That sequence — narrow, then green — is
+ * exactly how a guard gets quietly defeated, so the defense is the control test: this
+ * function is proven RED on the real leaky RULES region AND GREEN on a producer menu
+ * (see the tests). The narrowing is only trustworthy because the RED-on-real control still
+ * fails.
+ *
+ * WHAT THE NARROWED DETECTOR CAN NO LONGER SEE (the blind spot, named): it only catches a
+ * VERBATIM occurrence of the correct option STRING inside the instruction region. It does
+ * NOT catch:
+ *   - a paraphrase or synonym of the answer ("reply to the operator" vs "respond_to_operator"),
+ *   - a positional tell ("the correct action is usually near the top"),
+ *   - a rule that uniquely determines the answer without naming it ("pick the only
+ *     communication action"), or
+ *   - leakage in the STATE/context text rather than the instruction.
+ * It is a substring tripwire for the one leak that actually bit, not a proof of no leak. A
+ * clean result means "the obvious answer-key leak is absent," never "this comparison is
+ * information-fair." Fairness still requires reading both prompts.
  */
 export function detectAnswerLeak(
-  verifierPrompt: string,
+  instructionRegion: string,
   correctOptionText: string,
 ): { leaked: true; via: string } | { leaked: false } {
   const needle = correctOptionText.trim().toLowerCase();
-  const hay = verifierPrompt.toLowerCase();
-  // Direct mention of the correct option string inside the prompt (outside the single
-  // candidate slot the verifier is allowed to see).
+  const hay = instructionRegion.toLowerCase();
   if (needle.length >= 4 && hay.includes(needle)) {
-    return { leaked: true, via: `verifier prompt names the correct option "${correctOptionText}"` };
+    return { leaked: true, via: `instruction/rules names the correct option "${correctOptionText}"` };
   }
   return { leaked: false };
 }
@@ -238,6 +315,61 @@ export function suspectExtremeRate(
   if (successes === n) return `SUSPECT: ${label} is 100% (${n}/${n}) — treat as a leak/degenerate until proven otherwise`;
   if (successes === 0) return `SUSPECT: ${label} is 0% (0/${n}) — treat as degenerate (e.g. always-no) until proven otherwise`;
   return null;
+}
+
+// ═══ Mann–Whitney U (does a signal separate two groups?) ═══════════════════════
+
+export interface MannWhitneyResult {
+  readonly u: number;
+  readonly n1: number;
+  readonly n2: number;
+  /** Normal-approximation z (tie-corrected), for the two-sided test. */
+  readonly z: number;
+  /** Rank-biserial correlation = effect size in [−1, 1]. */
+  readonly rankBiserial: number;
+  /** Whether the two-sided test rejects at α=0.05 (|z| > 1.96). */
+  readonly rejects: boolean;
+}
+
+/**
+ * Mann–Whitney U (Wilcoxon rank-sum), normal approximation with tie correction.
+ * Tests whether two independent samples come from distributions with different location —
+ * here, whether a signal (confidence, length, …) DIFFERS between the items config B wins
+ * and the items config A wins. If it does not, no selector on that signal can separate
+ * them, and the headroom is unaddressable by that signal.
+ *
+ * Ref: Mann & Whitney (1947). Anchored. Normal approx is adequate for n ≥ ~20 per group.
+ */
+export function mannWhitneyU(
+  group1: readonly number[], group2: readonly number[],
+): MannWhitneyResult {
+  const n1 = group1.length, n2 = group2.length;
+  if (n1 === 0 || n2 === 0) return { u: 0, n1, n2, z: 0, rankBiserial: 0, rejects: false };
+  // Pool and rank (average ranks for ties).
+  const pooled = [...group1.map((v) => ({ v, g: 1 })), ...group2.map((v) => ({ v, g: 2 }))]
+    .sort((a, b) => a.v - b.v);
+  const ranks = new Array<number>(pooled.length);
+  let i = 0;
+  const tieGroups: number[] = [];
+  while (i < pooled.length) {
+    let j = i;
+    while (j < pooled.length && pooled[j]!.v === pooled[i]!.v) j++;
+    const avgRank = (i + 1 + j) / 2; // average of ranks i+1..j (1-based)
+    for (let k = i; k < j; k++) ranks[k] = avgRank;
+    if (j - i > 1) tieGroups.push(j - i);
+    i = j;
+  }
+  let r1 = 0;
+  for (let k = 0; k < pooled.length; k++) if (pooled[k]!.g === 1) r1 += ranks[k]!;
+  const u1 = r1 - (n1 * (n1 + 1)) / 2;
+  const u = Math.min(u1, n1 * n2 - u1);
+  const mu = (n1 * n2) / 2;
+  const N = n1 + n2;
+  const tieTerm = tieGroups.reduce((s, t) => s + (t ** 3 - t), 0);
+  const sigma = Math.sqrt((n1 * n2 / 12) * ((N + 1) - tieTerm / (N * (N - 1))));
+  const z = sigma > 0 ? (u1 - mu) / sigma : 0;
+  const rankBiserial = 1 - (2 * u) / (n1 * n2);
+  return { u, n1, n2, z, rankBiserial, rejects: Math.abs(z) > 1.96 };
 }
 
 // ═══ The honest bundle ══════════════════════════════════════════════════════════
