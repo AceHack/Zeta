@@ -1,16 +1,16 @@
 {
   "schema": "zeta.liveness.observation/1",
-  "observedAt": "2026-08-27T14:26:27.023Z",
+  "observedAt": "2026-08-27T18:15:38.625Z",
   "observer": "github-actions/.github/workflows/heartbeat-liveness.yml",
-  "observerRunId": "33082190195",
+  "observerRunId": "33102533059",
   "outcome": "not-alive",
   "thresholdMinutes": 60,
-  "summary": "NO TICK FROM ANY SOURCE IN 231 MINUTES - newest was github-actions/.github/workflows/agent-heartbeat.yml at 2026-08-27T10:35:02.000Z, threshold 60min",
+  "summary": "NO TICK FROM ANY SOURCE IN 227 MINUTES - newest was github-actions/.github/workflows/agent-heartbeat.yml at 2026-08-27T14:27:40.000Z, threshold 60min",
   "sources": [
     {
       "source": "github-actions/.github/workflows/agent-heartbeat.yml",
-      "lastAt": "2026-08-27T10:35:02.000Z",
-      "ageMinutes": 231,
+      "lastAt": "2026-08-27T14:27:40.000Z",
+      "ageMinutes": 227,
       "fresh": false
     }
   ],
