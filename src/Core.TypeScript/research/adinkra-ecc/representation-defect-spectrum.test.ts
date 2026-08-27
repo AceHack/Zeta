@@ -85,6 +85,9 @@ describe("finite Adinkra representation-defect spectrum", () => {
     expect(lane.bivectorDimension).toBe(120);
     expect(lane.halfSpinorDimension).toBe(128);
     expect(lane.totalDimension).toBe(248);
+    expect(lane.actionCensus.gammaAnticommutatorViolations).toBe(0);
+    expect(lane.actionCensus.chiralityViolations).toBe(0);
+    expect(lane.actionCensus.bivectorCommutatorViolations).toBe(0);
     expect(lane.regularity.status).toBe("unmeasured");
     expect(() => requireMeasuredRegularity(lane.regularity)).toThrow("regularity is unmeasured");
   });

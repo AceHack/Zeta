@@ -1,8 +1,8 @@
 // Finite representation-defect spectrum for the four Adinkra/Clifford lanes.
 //
 // Design rule: only lanes exposing both an operator algebra and a carrier receive a numerical
-// rank-one defect. The spinorial E8 decomposition is deliberately `unmeasured`: 120 + 128 = 248
-// checks dimensions, but does not supply an algebra-to-carrier module map.
+// rank-one defect. The spinorial lane now measures a bounded so(16) -> S+ action, but remains
+// `unmeasured` for regularity until it has the spinor bracket and rank-one witnesses.
 
 import {
   PRIMES,
@@ -13,6 +13,7 @@ import {
   popcount,
   type Mask,
 } from "./regular-representation-defect";
+import { measureNonQuotientHalfSpinAction, type HalfSpinActionCensus } from "./nonquotient-half-spin-action";
 
 export const EXT_HAMMING_8_4_4_ROWS = [
   [1, 0, 0, 0, 0, 1, 1, 1],
@@ -76,6 +77,7 @@ export interface BivectorSpinorLane {
   readonly halfSpinorDimension: 128;
   readonly totalDimension: 248;
   readonly quotientApplied: false;
+  readonly actionCensus: HalfSpinActionCensus;
   readonly regularity: UnmeasuredRegularity;
 }
 
@@ -153,6 +155,7 @@ export function measureRepresentationDefectSpectrum(
   const halfSpinorDimension = 2 ** (16 / 2 - 1);
   const totalDimension = bivectorDimension + halfSpinorDimension;
   if (totalDimension !== 248) throw new Error(`unexpected spinorial E8 dimension: ${totalDimension}`);
+  const actionCensus = measureNonQuotientHalfSpinAction();
 
   return {
     uncoded: {
@@ -188,13 +191,14 @@ export function measureRepresentationDefectSpectrum(
       halfSpinorDimension: 128,
       totalDimension,
       quotientApplied: false,
+      actionCensus,
       regularity: {
         status: "unmeasured",
-        reason: "120 + 128 = 248 is a decomposition, not an algebra-to-carrier regular-module map",
+        reason:
+          "the so(16) -> S+ action is measured, but the spinor bracket and regular-module rank-one witnesses are absent",
         missingWitnesses: [
-          "an implemented finite basis and Lie bracket",
-          "a declared carrier module",
-          "an explicit action of the operator algebra on that carrier",
+          "a normalized spinor-spinor bracket Lambda^2(S+) -> so(16)",
+          "the mixed Jacobi witness for so(16) plus S+",
           "an injectivity and rank-one-freeness test",
         ],
       },
