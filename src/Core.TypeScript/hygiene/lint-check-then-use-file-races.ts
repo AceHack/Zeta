@@ -176,9 +176,24 @@ export const GATED_USES: readonly string[] = [
   "utimesSync",
 ];
 
+/**
+ * Uses for which a preceding `statSync` is a race worth reporting even when the stat only read
+ * `.size`. These DESTROY or REPLACE the path, so acting on a stale judgement is not a wrong number
+ * — it is the wrong file.
+ */
+const STAT_THEN_DESTRUCTIVE: ReadonlySet<string> = new Set([
+  "unlinkSync",
+  "rmSync",
+  "renameSync",
+  "truncateSync",
+  "chmodSync",
+  "utimesSync",
+]);
+
 export type Rule =
   | "check-then-use"
   | "readdir-then-stat"
+  | "stat-then-use"
   | "unparsed"
   | "unreadable"
   | "empty-suppression"
@@ -780,6 +795,90 @@ export function analyzeSource(original: string, path: string): readonly Finding[
           "answer the check returned is already stale when the use runs. The check " +
           "reads as defensive and prevents nothing.",
         fix: FIX_READ,
+      });
+    }
+  }
+
+  // RULE 3 -- `statSync(p)` paired with a read of the SAME path `p`, either order.
+  //
+  // THE COVERAGE GAP THIS CLOSES, measured 2026-08-27 against CodeQL's
+  // `js/file-system-race` over the same tree: 22 files flagged there, 180 listed
+  // in this baseline, and only **10 in common**. Twelve files CodeQL saw that this
+  // linter structurally could not, and they were all one shape -- a `statSync`
+  // beside a read of the same path. Rule 1 misses it because `statSync` is not an
+  // existence GATE (there is no `if`), and rule 2 misses it because there is no
+  // `readdirSync`. Neither detector was a superset of the other; this is the half
+  // that was ours to fix.
+  //
+  // WHY IT IS A RACE AND NOT A STYLE NOTE. The two calls resolve the path
+  // separately, so the metadata and the bytes can describe two different files.
+  // Live instance: `observe/workspace-port.ts` reported one file's executable bit
+  // alongside another file's content. Worse instance: `bus/claim.ts` read a lock's
+  // holder PID and its mtime as separate resolutions, so stale-lock recovery could
+  // unlink a lock that was very much alive.
+  //
+  // DELIBERATELY NARROW. Both calls must name the path with the SAME expression
+  // text. A stat of `a` beside a read of `b` may still be a race, and proving it
+  // needs alias analysis this linter does not have -- claiming that reach would
+  // make the refusals unreliable, and an unreliable lint gets suppressed rather
+  // than obeyed.
+  for (const st of checks) {
+    if (st.api !== "statSync" && st.api !== "lstatSync") continue;
+    if (st.path === "" || suppressed.has(st.line)) continue;
+    // An existence GATE is rule 1's business; this rule is about the ungated pairing.
+    if (isExistenceGate(st, masked, masked.length)) continue;
+    // A stat read purely for `.size` beside a read is NOT flagged, and that is a decision this
+    // file already made — `a stat read for SIZE is a measurement, not a gate` is a pre-existing
+    // test, and a first pass of this rule broke it. The prior judgement is right for adoption:
+    // `statSync(p).size` next to `readFileSync(p)` is common and almost always benign, because
+    // `readFileSync` returns the whole file regardless of the size read earlier. Flagging it would
+    // make this lint noisy, and a noisy lint gets suppressed rather than obeyed — which costs more
+    // than the rare case it would catch.
+    //
+    // What IS flagged is the pairing that bites: a stat whose result steers behaviour (a mode bit,
+    // a kind) beside a read, and a stat beside a DESTRUCTIVE use. Both were live instances —
+    // `observe/workspace-port.ts` reported one file's executable bit with another file's content,
+    // and `bus/claim.ts` judged a lock stale and then unlinked whatever the path named next.
+    const sizeOnly = /^\s*\)?\s*\.\s*size\b/.test(masked.slice(st.end, st.end + 24));
+    // SAME SCOPE, not merely the same spelling. `full` is declared independently in several
+    // functions of `observe/workspace-port.ts`, and a first pass of this rule happily paired a
+    // `statSync(full)` in one with a `chmodSync(full)` in another — two different variables that
+    // share a name. Those are not races and reporting them would be the unreliable-lint failure
+    // this rule's own comment warns about, so the pairing is bounded to the enclosing block.
+    const scopeEnd = listingScopeEnd(masked, st.end);
+    const scopeStart = enclosingBlockStart(masked, st.index);
+    for (const use of uses) {
+      if (use.path !== st.path) continue;
+      if (use.line === st.line) continue;
+      if (suppressed.has(use.line)) continue;
+      if (use.index < scopeStart || use.index > scopeEnd) continue;
+      if (sizeOnly && !STAT_THEN_DESTRUCTIVE.has(use.api)) continue;
+      const first = st.index < use.index ? st : use;
+      const second = st.index < use.index ? use : st;
+      findings.push({
+        rule: "stat-then-use",
+        file: path,
+        line: first.line,
+        signature: first.api + "(" + first.path + ")->" + second.api + "(" + second.path + ")",
+        detail:
+          first.api +
+          "(" +
+          first.path +
+          ") at line " +
+          String(first.line) +
+          " and " +
+          second.api +
+          "(" +
+          second.path +
+          ") at line " +
+          String(second.line) +
+          " resolve the same path TWICE, so the metadata and the bytes can describe two " +
+          "different files. Replace the file between them and one answer belongs to a file " +
+          "the other answer never saw, with nothing reporting it.",
+        fix:
+          "Open once and ask the DESCRIPTOR: `const fd = openSync(p, \"r\"); try { " +
+          "fstatSync(fd); readFileSync(fd); } finally { closeSync(fd); }`. One handle, one " +
+          "inode, both answers, no window.",
       });
     }
   }

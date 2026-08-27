@@ -11,7 +11,6 @@
   "check-then-use src/Core.TypeScript/ace/deps.ts existsSync(abs)->readFileSync(abs)",
   "check-then-use src/Core.TypeScript/ace/deps.ts existsSync(contractPath)->readFileSync(contractPath)",
   "check-then-use src/Core.TypeScript/ace/setup-realizers/from-autotools-tarball.ts existsSync(tarball)->rmSync(tarball)",
-  "check-then-use src/Core.TypeScript/ace/setup-realizers/from-git-hooks.ts existsSync(hookSrc)->chmodSync(hookSrc)",
   "check-then-use src/Core.TypeScript/ace/setup-rust-components.test.ts existsSync(log)->readFileSync(log)",
   "check-then-use src/Core.TypeScript/ace/store.ts existsSync(manifestPath)->readFileSync(manifestPath)",
   "check-then-use src/Core.TypeScript/ace/store.ts existsSync(p)->readFileSync(p)",
@@ -292,5 +291,7 @@
   "readdir-then-stat src/Core.TypeScript/zflash/cli.ts readdirSync(d)->statSync(p)",
   "readdir-then-stat src/Core.TypeScript/zflash/esp-inject.test.ts readdirSync(dir)->statSync(p)",
   "readdir-then-stat src/Core.TypeScript/zflash/flash-usb-windows.ts readdirSync(downloadsDir)->statSync(p)",
-  "readdir-then-stat src/Core.TypeScript/zflash/iso-discovery.ts readdirSync(downloadsDir)->statSync(p)"
+  "readdir-then-stat src/Core.TypeScript/zflash/iso-discovery.ts readdirSync(downloadsDir)->statSync(p)",
+  "stat-then-use src/Core.TypeScript/bus/claim.ts statSync(lp)->unlinkSync(lp)",
+  "stat-then-use src/Core.TypeScript/ci/qemu-full-install-test.ts statSync(path)->unlinkSync(path)"
 ]
