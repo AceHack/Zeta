@@ -1,0 +1,654 @@
+#!/usr/bin/env bun
+/**
+ * f4-question-bias-analyze.ts — recompute every number in the F4 report from the raw
+ * JSONL, offline, with no model and no GPU.
+ *
+ *   bun f4-question-bias-analyze.ts            # all cells, markdown tables
+ *   bun f4-question-bias-analyze.ts --json     # the same, machine-readable
+ *
+ * The gates run FIRST and their verdict is printed before any axis number, because the
+ * order is the point: if the null axes move, the axis numbers below them are noise.
+ */
+
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { hillN1 } from "./f3-hat-choice-decorrelation";
+import {
+  ALPHA,
+  atomDistribution,
+  AXIS_PAIRS,
+  centroidRank,
+  checkAdditivity,
+  domainById,
+  EQUIVALENCE_DELTA,
+  evaluateGates,
+  holmAdjust,
+  measurePair,
+  type AxisPair,
+  type GateReport,
+  type PairMeasurement,
+} from "./f4-question-bias";
+
+const DATA_DIR = join(import.meta.dir, "..", "..", "..", "data", "f4-question-bias");
+
+const PERMUTATIONS = 5000;
+/** Fixed analysis seed — every number in the report replays from it. */
+const ANALYSIS_SEED = 20260826;
+
+/**
+ * Formulations compared by the centroid procedure. `CLOSED*` are excluded because their
+ * answer space differs by construction; `A2` because it is the same text as `A` and
+ * would trivially win a similarity contest against its own twin.
+ */
+const CENTROID_CANDIDATES = [
+  "A",
+  "WS",
+  "SYN",
+  "CLA-L",
+  "CLA-R",
+  "PRESUP",
+  "IDENTITY",
+  "TEAM",
+  "PRIME",
+  "PERSON",
+  "POLITE",
+  "LENGTH",
+] as const;
+
+interface Row {
+  readonly domain: string;
+  readonly model: string;
+  readonly prompt: string;
+  readonly replicate: number;
+  readonly raw: string;
+}
+
+export interface Cell {
+  readonly domain: string;
+  readonly model: string;
+  /**
+   * Distinct replicate counts across the cell's prompts. MUST be a single value.
+   *
+   * A ragged cell is the silent failure this whole design is built to avoid: the excess
+   * statistic subtracts a permutation null computed AT THE OBSERVED GROUP SIZES, so it
+   * only cancels the finite-sample bias when both sides have the same n. Compare a
+   * 240-sample prompt against a 120-sample one and the number that comes back is a
+   * mixture of the effect and the size difference, and it looks exactly like a real
+   * measurement. Caught live: reading the data mid-run, while a second replicate block
+   * was still being written, silently moved a null axis from 0.049 to 0.034.
+   */
+  readonly replicateCounts: readonly number[];
+  readonly samples: ReadonlyMap<string, readonly string[]>;
+  /**
+   * SECOND calibration: the anchor's own first replicate block against its own second.
+   * Same prompt INDEX, therefore adjacent seeds — where `CALIB-IDENTICAL` compares two
+   * prompt entries with the same text but seed blocks 100000 apart.
+   *
+   * It exists because the two are not interchangeable, and the difference is a real
+   * confound rather than a hypothetical one: seeds are handed to the sampler directly,
+   * so `seed = 1..120` and `seed = 100001..100120` are only exchangeable if the sampler
+   * has no structure across its seed space. Nothing here establishes that. If the
+   * cross-block calibration reads high while this one reads zero, the instrument's floor
+   * is measuring seed-block structure and not sampler noise. `undefined` where a cell
+   * has only one replicate block.
+   */
+  readonly withinBlockCalibration: PairMeasurement | undefined;
+  /**
+   * THIRD calibration, and the one that isolates the confound. The anchor's own
+   * replicates split by PARITY — odd seeds against even seeds, interleaved, same prompt.
+   *
+   * Three floors, in increasing distance between the two samples being compared:
+   *
+   *   1. this one          — same text, interleaved adjacent seeds. Pure sampler noise.
+   *   2. CALIB-IDENTICAL   — same text, seed blocks 100000 apart.
+   *   3. NULL-WHITESPACE   — one extra newline, seed blocks 100000 apart.
+   *
+   * Reading them in that order is what tells apart the two explanations of a non-zero
+   * null axis. If (1) is zero and (2) is not, the instrument's floor is seed-block
+   * structure and every axis inherits a spurious component. If (1) and (2) are both zero
+   * and (3) is not, whitespace genuinely moves the model.
+   *
+   * POST-HOC. It was added after the block-1 numbers were seen, and it is not part of
+   * the pre-registered gates. It is a diagnostic for a confound the pre-registration did
+   * not anticipate, not a fourth chance for a gate to pass.
+   */
+  readonly interleavedCalibration: PairMeasurement | undefined;
+  readonly measurements: readonly PairMeasurement[];
+  readonly holmBySemanticAxis: ReadonlyMap<string, number>;
+  readonly gates: GateReport;
+}
+
+/**
+ * Perform the operation and interpret its failure — never `existsSync` then read.
+ * (TOCTTOU — Bishop & Dilger 1996; CWE-367.)
+ */
+function listDataFiles(): string[] {
+  try {
+    return readdirSync(DATA_DIR).filter((f) => f.endsWith(".jsonl"));
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw err;
+  }
+}
+
+function readIfPresent(path: string): string | undefined {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw err;
+  }
+}
+
+/**
+ * Composite (domain, model) map key.
+ *
+ * JSON rather than a delimiter. The first version joined the two with a raw NUL — the
+ * classic "separator that cannot appear in the data" trick — and it is refused here for
+ * two independent reasons, one of which is a repo rule and one of which is a bug waiting
+ * to happen. The rule: `cross-verify (no-raw-nul-in-source)` rejects a NUL byte in a
+ * source file, because a file carrying one stops being text to `grep`, `diff`, and every
+ * reviewer's editor. The bug: "cannot appear in the data" is an assumption about model
+ * output and ollama tags that nothing in this file checks, and a delimiter collision
+ * would silently merge two cells rather than fail.
+ */
+export function cellKey(domain: string, model: string): string {
+  return JSON.stringify([domain, model]);
+}
+
+export function parseCellKey(key: string): readonly [string, string] {
+  const [domain, model] = JSON.parse(key) as [string, string];
+  return [domain, model];
+}
+
+function loadCells(): Cell[] {
+  const byCell = new Map<string, Map<string, string[]>>();
+  /** anchor responses split by replicate block, per cell — for the second calibration. */
+  const anchorBlocks = new Map<string, { early: string[]; late: string[]; odd: string[]; even: string[] }>();
+  for (const f of listDataFiles()) {
+    const body = readIfPresent(join(DATA_DIR, f));
+    if (body === undefined) continue;
+    for (const line of body.split("\n")) {
+      if (line.length === 0) continue;
+      const r = JSON.parse(line) as Row;
+      const key = cellKey(r.domain, r.model);
+      let cell = byCell.get(key);
+      if (cell === undefined) {
+        cell = new Map<string, string[]>();
+        byCell.set(key, cell);
+      }
+      let arr = cell.get(r.prompt);
+      if (arr === undefined) {
+        arr = [];
+        cell.set(r.prompt, arr);
+      }
+      arr.push(r.raw);
+      if (r.prompt === "A") {
+        let blocks = anchorBlocks.get(key);
+        if (blocks === undefined) {
+          blocks = { early: [], late: [], odd: [], even: [] };
+          anchorBlocks.set(key, blocks);
+        }
+        (r.replicate < 120 ? blocks.early : blocks.late).push(r.raw);
+        (r.replicate % 2 === 0 ? blocks.even : blocks.odd).push(r.raw);
+      }
+    }
+  }
+
+  const cells: Cell[] = [];
+  for (const [key, samples] of byCell) {
+    const [domain, model] = parseCellKey(key);
+    const measurements: PairMeasurement[] = [];
+    for (let i = 0; i < AXIS_PAIRS.length; i++) {
+      const pair = AXIS_PAIRS[i]!;
+      const left = samples.get(pair.left);
+      const right = samples.get(pair.right);
+      if (left === undefined || right === undefined) continue;
+      measurements.push(
+        measurePair(pair, left, right, {
+          permutations: PERMUTATIONS,
+          // Per-axis seed so a re-run of one axis reproduces bit-for-bit.
+          seed: ANALYSIS_SEED + i * 7919,
+        }),
+      );
+    }
+    const semantic = measurements.filter((m) => m.kind === "semantic");
+    const adj = holmAdjust(semantic.map((s) => s.p));
+    const holmBySemanticAxis = new Map<string, number>();
+    for (let i = 0; i < semantic.length; i++) holmBySemanticAxis.set(semantic[i]!.axis, adj[i]!);
+    const replicateCounts = [...new Set([...samples.values()].map((v) => v.length))].sort((a, b) => a - b);
+    const blocks = anchorBlocks.get(key);
+    const withinBlockCalibration =
+      blocks !== undefined && blocks.early.length >= 30 && blocks.late.length >= 30
+        ? measurePair(
+            { axis: "CALIB-WITHIN-PROMPT", kind: "calibration", left: "A", right: "A" },
+            blocks.early,
+            blocks.late,
+            { permutations: PERMUTATIONS, seed: ANALYSIS_SEED + 104_729 },
+          )
+        : undefined;
+    const interleavedCalibration =
+      blocks !== undefined && blocks.odd.length >= 30 && blocks.even.length >= 30
+        ? measurePair(
+            { axis: "CALIB-INTERLEAVED", kind: "calibration", left: "A", right: "A" },
+            blocks.even,
+            blocks.odd,
+            { permutations: PERMUTATIONS, seed: ANALYSIS_SEED + 15_485_863 },
+          )
+        : undefined;
+    cells.push({
+      domain,
+      model,
+      replicateCounts,
+      samples,
+      withinBlockCalibration,
+      interleavedCalibration,
+      measurements,
+      holmBySemanticAxis,
+      // The within-prompt calibration is NOT folded into the gates: the gates are what
+      // was pre-registered, and quietly adding a second way to pass one would be moving
+      // the threshold after seeing the data. It is reported beside them instead.
+      gates: evaluateGates(measurements),
+    });
+  }
+  return cells.sort((a, b) => (a.domain === b.domain ? (a.model < b.model ? -1 : 1) : a.domain < b.domain ? -1 : 1));
+}
+
+// ═══ Reporting ═══════════════════════════════════════════════════════════════
+
+const f = (x: number, d = 4): string => (Number.isFinite(x) ? x.toFixed(d) : "n/a");
+
+function pairById(axis: string): AxisPair | undefined {
+  return AXIS_PAIRS.find((p) => p.axis === axis);
+}
+
+function reportCell(cell: Cell): string[] {
+  const out: string[] = [];
+  out.push(`### ${cell.domain} / ${cell.model}`);
+  out.push("");
+  if (cell.replicateCounts.length !== 1) {
+    out.push(
+      `> **RAGGED CELL — NOT REPORTABLE.** Prompts in this cell have different replicate ` +
+        `counts (${cell.replicateCounts.join(", ")}). The excess statistic only cancels ` +
+        `JSD's finite-sample bias when both sides share an n, so every number below is a ` +
+        `mixture of the effect and the size difference. Finish the run, or delete the ` +
+        `partial block.`,
+    );
+    out.push("");
+  }
+  out.push(`Replicates per prompt: ${cell.replicateCounts.join(", ")}. Permutations: ${PERMUTATIONS}.`);
+  out.push("");
+  if (cell.interleavedCalibration !== undefined) {
+    const w = cell.interleavedCalibration;
+    out.push(
+      `Third calibration, POST-HOC (anchor even-numbered replicates vs odd, interleaved seeds, ` +
+        `pure sampler noise): excess=${f(w.excess)} p=${f(w.p)} MDE=${f(w.mde)}`,
+    );
+    out.push("");
+  }
+  if (cell.withinBlockCalibration !== undefined) {
+    const w = cell.withinBlockCalibration;
+    out.push(
+      `Second calibration (anchor block 1 vs anchor block 2, adjacent seeds, NOT part of the ` +
+        `pre-registered gates): excess=${f(w.excess)} p=${f(w.p)} MDE=${f(w.mde)}`,
+    );
+    out.push("");
+  }
+  out.push("**Gates** (evaluated before any axis number below):");
+  out.push("");
+  for (const d of cell.gates.detail) out.push(`- ${d}`);
+  out.push("");
+  out.push(
+    `G1 calibration ${cell.gates.calibrationPass ? "PASS" : "FAIL"} · ` +
+      `G2 null axes ${cell.gates.nullAxesPass ? "PASS" : "FAIL"} · ` +
+      `G3 separation ${cell.gates.separationPass ? "PASS" : "FAIL"}`,
+  );
+  out.push("");
+  out.push("| axis | kind | excess JSD | 95% CI | MDE | p (perm) | p (Holm) | N1 left | N1 right | variety ratio |");
+  out.push("|---|---|---|---|---|---|---|---|---|---|");
+  for (const m of cell.measurements) {
+    const holm = cell.holmBySemanticAxis.get(m.axis);
+    out.push(
+      `| \`${m.axis}\` | ${m.kind} | ${f(m.excess)} | [${f(m.excessLo)}, ${f(m.excessHi)}] | ${f(m.mde)} | ${f(m.p)} | ` +
+        `${holm === undefined ? "—" : f(holm)} | ${f(m.n1Left, 1)} | ${f(m.n1Right, 1)} | ${f(m.varietyRatio, 2)} |`,
+    );
+  }
+  out.push("");
+
+  const additivity = cell.measurements
+    .filter((m) => m.kind === "combo")
+    .map((combo) => {
+      const spec = pairById(combo.axis);
+      const parts = (spec?.combineOf ?? []).map((a) => cell.measurements.find((x) => x.axis === a));
+      if (parts.some((p) => p === undefined)) return undefined;
+      return checkAdditivity(combo, parts as PairMeasurement[]);
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== undefined);
+  if (additivity.length > 0) {
+    out.push("**Additivity** — is the shift predictable by summing its parts?");
+    out.push("");
+    out.push("| combo | predicted | observed | ratio | verdict |");
+    out.push("|---|---|---|---|---|");
+    for (const a of additivity) {
+      out.push(`| \`${a.axis}\` | ${f(a.predicted)} | ${f(a.observed)} | ${f(a.ratio, 2)} | ${a.verdict} |`);
+    }
+    out.push("");
+  }
+
+  const candidates = new Map<string, readonly string[]>();
+  for (const id of CENTROID_CANDIDATES) {
+    const s = cell.samples.get(id);
+    if (s !== undefined) candidates.set(id, s);
+  }
+  if (candidates.size >= 3) {
+    const ranked = centroidRank(candidates);
+    out.push(
+      `**Centroid rank** (mean word-bag JSD to every other candidate, ascending; worst case in parentheses): ` +
+        ranked.map((r) => `\`${r.promptId}\` ${f(r.meanJsd, 3)} (${f(r.maxJsd, 3)})`).join(" · "),
+    );
+    out.push("");
+  }
+  return out;
+}
+
+interface CellSummary {
+  readonly domain: string;
+  readonly model: string;
+  readonly n: string;
+  readonly gatesOk: boolean;
+  readonly top3: readonly string[];
+  readonly centroidArgmin: string | undefined;
+  readonly pooledN1: number;
+  readonly meanSemanticExcess: number;
+}
+
+function summarise(cell: Cell): CellSummary {
+  const rankable = cell.measurements
+    .filter((m) => m.kind === "semantic" && m.axis !== "CLOSED-ANSWER-SPACE")
+    .sort((a, b) => b.excess - a.excess);
+  const candidates = new Map<string, readonly string[]>();
+  for (const id of CENTROID_CANDIDATES) {
+    const s = cell.samples.get(id);
+    if (s !== undefined) candidates.set(id, s);
+  }
+  const ranked = candidates.size >= 3 ? centroidRank(candidates) : [];
+  const pooled: string[] = [];
+  for (const s of cell.samples.values()) for (const r of s) pooled.push(r);
+  const semanticExcesses = rankable.map((m) => m.excess);
+  return {
+    domain: cell.domain,
+    model: cell.model,
+    n: cell.replicateCounts.length === 1 ? String(cell.replicateCounts[0]) : `RAGGED ${cell.replicateCounts.join("/")}`,
+    gatesOk: cell.gates.calibrationPass && cell.gates.nullAxesPass && cell.gates.separationPass,
+    top3: rankable.slice(0, 3).map((m) => m.axis),
+    centroidArgmin: ranked[0]?.promptId,
+    pooledN1: hillN1(atomDistribution(pooled)),
+    meanSemanticExcess:
+      semanticExcesses.length > 0 ? semanticExcesses.reduce((a, b) => a + b, 0) / semanticExcesses.length : Number.NaN,
+  };
+}
+
+function reportCrossCell(cells: readonly Cell[]): string[] {
+  const out: string[] = [];
+  const sums = cells.map(summarise);
+  out.push("## Cross-cell");
+  out.push("");
+  out.push(
+    "| domain | model | gates | top-3 axes by excess JSD | centroid argmin | pooled N1 | mean semantic excess |",
+  );
+  out.push("|---|---|---|---|---|---|---|---|");
+  for (const s of sums) {
+    out.push(
+      `| ${s.domain} | \`${s.model}\` | ${s.n} | ${s.gatesOk ? "pass" : "FAIL"} | ${s.top3.map((a) => `\`${a}\``).join(" > ")} | ` +
+        `\`${s.centroidArgmin ?? "—"}\` | ${f(s.pooledN1, 1)} | ${f(s.meanSemanticExcess)} |`,
+    );
+  }
+  out.push("");
+
+  // THE headline table: the three calibrations and the three null axes, every cell.
+  // It is first because the order is the finding — if the floor is not zero, nothing
+  // below it is an attribution.
+  out.push("**The floor, every cell.** Excess JSD with permutation p in parentheses.");
+  out.push("");
+  const floorRows: readonly [string, (c: Cell) => PairMeasurement | undefined][] = [
+    ["CALIB-INTERLEAVED (post-hoc: pure sampler noise)", (c) => c.interleavedCalibration],
+    ["CALIB-WITHIN-PROMPT (post-hoc: adjacent seed blocks)", (c) => c.withinBlockCalibration],
+    [
+      "CALIB-IDENTICAL (pre-registered: distant seed blocks)",
+      (c) => c.measurements.find((m) => m.axis === "CALIB-IDENTICAL"),
+    ],
+    ["NULL-WHITESPACE", (c) => c.measurements.find((m) => m.axis === "NULL-WHITESPACE")],
+    ["NULL-SYNONYM", (c) => c.measurements.find((m) => m.axis === "NULL-SYNONYM")],
+    ["NULL-CLAUSE-ORDER", (c) => c.measurements.find((m) => m.axis === "NULL-CLAUSE-ORDER")],
+    ["FRAME-TEAM (largest semantic axis, for scale)", (c) => c.measurements.find((m) => m.axis === "FRAME-TEAM")],
+  ];
+  const ragged = cells.filter((c) => c.replicateCounts.length !== 1);
+  if (ragged.length > 0) {
+    out.push(
+      `> **RAGGED CELLS — NOT REPORTABLE:** ${ragged
+        .map((c) => `${c.domain}/\`${c.model}\` (n = ${c.replicateCounts.join(", ")})`)
+        .join(", ")}. Unequal replicate counts inside a cell mean the excess statistic is ` +
+        `mixing the effect with the group-size difference.`,
+    );
+    out.push("");
+  }
+  out.push(
+    `| level | ${cells.map((c) => `${c.domain}<br>\`${c.model}\`${c.replicateCounts.length === 1 ? "" : " RAGGED"}`).join(" | ")} |`,
+  );
+  out.push(`|---|${cells.map(() => "---").join("|")}|`);
+  for (const [label, pick] of floorRows) {
+    const cellsText = cells.map((c) => {
+      const m = pick(c);
+      if (m === undefined) return "—";
+      const sig = m.p < ALPHA ? "**" : "";
+      return `${sig}${f(m.excess, 3)}${sig} (${f(m.p, 3)})`;
+    });
+    out.push(`| ${label} | ${cellsText.join(" | ")} |`);
+  }
+  out.push("");
+  out.push(
+    "Bold = significant at the uncorrected 0.05. A bold row above `FRAME-TEAM` is an edit that was supposed to change nothing and did.",
+  );
+  out.push("");
+
+  // The semantic axes, every cell, with the LARGEST NULL AXIS printed underneath as the
+  // floor each of them has to clear. Absolute excess is not interpretable when the floor
+  // is non-zero, so the table is built to be read as a comparison and not as an
+  // attribution.
+  out.push("**The semantic axes, every cell — read as multiples of the floor below them, never as absolute bits.**");
+  out.push("");
+  const semanticAxes = AXIS_PAIRS.filter((p) => p.kind === "semantic" || p.kind === "combo").map((p) => p.axis);
+  out.push(`| axis | ${cells.map((c) => `${c.domain}<br>\`${c.model}\``).join(" | ")} |`);
+  out.push(`|---|${cells.map(() => "---").join("|")}|`);
+  for (const axis of semanticAxes) {
+    const caveat = pairById(axis)?.caveat === undefined ? "" : " ⚠";
+    const vals = cells.map((c) => {
+      const m = c.measurements.find((x) => x.axis === axis);
+      if (m === undefined) return "—";
+      const holm = c.holmBySemanticAxis.get(axis);
+      const sig = holm !== undefined && holm < ALPHA ? "**" : "";
+      return `${sig}${f(m.excess, 3)}${sig}`;
+    });
+    out.push(`| \`${axis}\`${caveat} | ${vals.join(" | ")} |`);
+  }
+  const worstNull = cells.map((c) => {
+    const nulls = c.measurements.filter((m) => m.kind === "null");
+    return nulls.length === 0 ? "—" : f(Math.max(...nulls.map((m) => m.excess)), 3);
+  });
+  out.push(`| **largest NULL axis (the floor)** | ${worstNull.join(" | ")} |`);
+  out.push("");
+  out.push(
+    "Bold = below Holm-adjusted alpha within its cell. ⚠ = answer space differs by construction; " +
+      "not comparable to the rest. **Any cell where a semantic axis sits below the floor row is an " +
+      "axis this experiment cannot distinguish from an edit that was supposed to change nothing.**",
+  );
+  out.push("");
+
+  // Counted here rather than eyeballed off the table above: an axis is "unattributable"
+  // in a cell when its excess does not exceed the largest NULL axis in that same cell.
+  // Combos and the definitionally-advantaged CLOSED axis are excluded.
+  const rankable = AXIS_PAIRS.filter((p) => p.kind === "semantic" && p.axis !== "CLOSED-ANSWER-SPACE").map(
+    (p) => p.axis,
+  );
+  let below = 0;
+  let totalChecked = 0;
+  const belowByAxis = new Map<string, number>();
+  for (const c of cells) {
+    const nulls = c.measurements.filter((m) => m.kind === "null");
+    if (nulls.length === 0) continue;
+    const floor = Math.max(...nulls.map((m) => m.excess));
+    for (const axis of rankable) {
+      const m = c.measurements.find((x) => x.axis === axis);
+      if (m === undefined) continue;
+      totalChecked++;
+      if (m.excess <= floor) {
+        below++;
+        belowByAxis.set(axis, (belowByAxis.get(axis) ?? 0) + 1);
+      }
+    }
+  }
+  out.push(
+    `**Unattributable: ${below} of ${totalChecked} semantic-axis measurements do not exceed their own ` +
+      `cell's largest null axis.** Per axis, out of ${cells.length} cells: ` +
+      rankable.map((a) => `\`${a}\` ${belowByAxis.get(a) ?? 0}`).join(" · "),
+  );
+  out.push("");
+
+  // H4 — does the top-3 ORDERING replicate across domains, per model?
+  const models = [...new Set(sums.map((s) => s.model))].sort();
+  out.push("**H4 — top-3 ordering replication across domains, per model:**");
+  out.push("");
+  for (const m of models) {
+    const rows = sums.filter((s) => s.model === m);
+    if (rows.length < 2) {
+      out.push(`- \`${m}\`: only ${rows.length} domain — not testable`);
+      continue;
+    }
+    const first = rows[0]!.top3.join(">");
+    const same = rows.every((r) => r.top3.join(">") === first);
+    const setSame = rows.every((r) => new Set(r.top3).size === 3 && r.top3.every((a) => rows[0]!.top3.includes(a)));
+    out.push(
+      `- \`${m}\`: ${rows.map((r) => `${r.domain}=${r.top3.join(">")}`).join(" | ")} → order ${same ? "SAME" : "differs"}, set ${setSame ? "SAME" : "differs"}`,
+    );
+  }
+  out.push("");
+
+  // H5 — additivity, pooled across cells.
+  const verdicts = new Map<string, number>();
+  const ratios: number[] = [];
+  for (const c of cells) {
+    for (const combo of c.measurements.filter((m) => m.kind === "combo")) {
+      const spec = pairById(combo.axis);
+      const parts = (spec?.combineOf ?? []).map((a) => c.measurements.find((x) => x.axis === a));
+      if (parts.some((x) => x === undefined)) continue;
+      const a = checkAdditivity(combo, parts as PairMeasurement[]);
+      verdicts.set(a.verdict, (verdicts.get(a.verdict) ?? 0) + 1);
+      if (Number.isFinite(a.ratio)) ratios.push(a.ratio);
+    }
+  }
+  ratios.sort((x, y) => x - y);
+  out.push(
+    `**H5 — additivity across all combos and cells:** ${[...verdicts.entries()]
+      .sort((x, y) => y[1] - x[1])
+      .map(([k, v]) => `${k} ${v}`)
+      .join(" · ")}${
+      ratios.length > 0
+        ? ` · observed/predicted ratio median ${f(ratios[Math.floor(ratios.length / 2)]!, 2)}, range ${f(ratios[0]!, 2)}–${f(ratios[ratios.length - 1]!, 2)}`
+        : ""
+    }`,
+  );
+  out.push("");
+
+  // THE TWO-NUMBER CHECK: where do location and variety disagree? A merged "bias score"
+  // would report one of these and hide the other, which is the defect this whole design
+  // refuses. Listing the disagreements is what makes keeping them separate falsifiable
+  // rather than merely principled.
+  const disagreements: string[] = [];
+  for (const c of cells) {
+    for (const m of c.measurements) {
+      if (m.kind === "calibration") continue;
+      const movedLocation = m.p < ALPHA && m.excess > 0.05;
+      const movedVariety = m.varietyRatio < 0.7 || m.varietyRatio > 1.43;
+      if (movedLocation !== movedVariety) {
+        disagreements.push(
+          `${c.domain}/\`${c.model}\` \`${m.axis}\` excess ${f(m.excess, 3)} (p ${f(m.p, 3)}) but variety x${f(m.varietyRatio, 2)}`,
+        );
+      }
+    }
+  }
+  out.push(
+    `**Two numbers, and they disagree in ${disagreements.length} of ${cells.reduce((n, c) => n + c.measurements.filter((m) => m.kind !== "calibration").length, 0)} axis measurements.** ` +
+      `Disagreement = the location moved without the variety, or the reverse.`,
+  );
+  out.push("");
+  for (const d of disagreements.slice(0, 12)) out.push(`- ${d}`);
+  if (disagreements.length > 12) out.push(`- …and ${disagreements.length - 12} more`);
+  out.push("");
+
+  // H6 — is the centroid argmin stable?
+  const argmins = sums.filter((s) => s.centroidArgmin !== undefined).map((s) => s.centroidArgmin!);
+  const tallyArgmin = new Map<string, number>();
+  for (const a of argmins) tallyArgmin.set(a, (tallyArgmin.get(a) ?? 0) + 1);
+  const best = [...tallyArgmin.entries()].sort((a, b) => b[1] - a[1])[0];
+  out.push(
+    `**H6 — centroid argmin stability:** ${[...tallyArgmin.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `\`${k}\` ${v}/${argmins.length}`)
+      .join(" · ")}${best === undefined ? "" : ` → modal \`${best[0]}\` in ${best[1]}/${argmins.length} cells`}`,
+  );
+  out.push("");
+  return out;
+}
+
+function main(): void {
+  const cells = loadCells();
+  if (cells.length === 0) {
+    console.error(`no data in ${DATA_DIR} — run f4-question-bias-run.ts first`);
+    process.exit(2);
+  }
+  if (process.argv.includes("--json")) {
+    console.log(
+      JSON.stringify(
+        cells.map((c) => ({
+          domain: c.domain,
+          model: c.model,
+          gates: c.gates,
+          measurements: c.measurements,
+          holm: [...c.holmBySemanticAxis.entries()],
+          summary: summarise(c),
+        })),
+        null,
+        2,
+      ),
+    );
+    return;
+  }
+  const out: string[] = [];
+  out.push(`# F4 question-bias attribution — computed ${new Date().toISOString().slice(0, 10)}`);
+  out.push("");
+  out.push(
+    `Equivalence delta ${EQUIVALENCE_DELTA} bits · alpha ${ALPHA} · analysis seed ${ANALYSIS_SEED} · ` +
+      `domains ${[...new Set(cells.map((c) => c.domain))].join(", ")}`,
+  );
+  out.push("");
+  out.push(...reportCrossCell(cells));
+  out.push("## Per cell");
+  out.push("");
+  for (const c of cells) out.push(...reportCell(c));
+  console.log(out.join("\n"));
+}
+
+if (import.meta.main) {
+  // Referenced so the domain registry is validated at analysis time too: a prompt id in
+  // an axis pair that no domain defines is a silently-skipped comparison otherwise.
+  for (const d of ["role", "preference"]) {
+    const spec = domainById(d);
+    const ids = new Set(spec.prompts.map((p) => p.id));
+    for (const pair of AXIS_PAIRS) {
+      if (!ids.has(pair.left) || !ids.has(pair.right)) {
+        throw new Error(`domain ${d} is missing a prompt for axis ${pair.axis}`);
+      }
+    }
+  }
+  main();
+}
