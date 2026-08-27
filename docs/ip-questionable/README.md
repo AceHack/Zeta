@@ -39,3 +39,7 @@ promptly in good faith.
 - `2026-06-15-playable-quotes-strange-loop-2023-transcript.md` — verbatim auto-transcript of the
   Strange Loop 2023 talk *"Playable Quotes for Game Boy Games"* (Joël Franušić & Adam Smith).
   Analysis that cites it: `docs/research/2026-06-15-playable-quotes-the-real-anchor-…md`.
+- `2026-08-27-deepseek-harness-cordis-everything-is-a-plugin-mehul-gupta-medium.md` — summary
+  and quotation of Mehul Gupta's Medium article on DeepSeek Harness (`dsh`) / the Cordis plugin
+  kernel. Ferried at Aaron's observation that *"everything is a plugin"* is our own mantra —
+  hexagonal ports + MEF, modernised. Adds the OSGi/Cockburn/MEF anchors the article omits.
