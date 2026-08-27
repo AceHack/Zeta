@@ -1,0 +1,12 @@
+{
+  "pr_number": 15704,
+  "archive_path": "docs/history/pr-reviews/PR-15704-ci-close-three-mechanisms-that-report-success-while-doing-nothing.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T07:12:47.403Z",
+  "schema_version": "v1",
+  "commit_sha": "f9a1c35900ba54f4eb3e4b2031923552c258190f",
+  "title": "ci: close three mechanisms that report success while doing nothing",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T06:08:31Z",
+  "head_ref": "shadow/close-three-vacuous-mechanisms"
+}

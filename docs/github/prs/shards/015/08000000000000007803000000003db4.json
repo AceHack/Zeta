@@ -1,0 +1,12 @@
+{
+  "pr_number": 15796,
+  "archive_path": "docs/history/pr-reviews/PR-15796-feat-tooling-pr-area-statistics-measured-vs-declared-taxonomy-three-model-compar.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T07:13:18.657Z",
+  "schema_version": "v1",
+  "commit_sha": "f9a1c35900ba54f4eb3e4b2031923552c258190f",
+  "title": "feat(tooling): PR area statistics — measured-vs-declared taxonomy, three-model comparison",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T05:18:58Z",
+  "head_ref": "feat/pr-area-statistics"
+}
