@@ -1,0 +1,22 @@
+{
+  "pr_number": 15636,
+  "archive_path": "docs/history/pr-reviews/PR-15636-research-f4-question-bias-attribution-the-null-axis-control-failed-cosmetic-rewo.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7m1eUD",
+    "comment:PRRC_kwDOSF9kNM7m1pHV",
+    "comment:PRRC_kwDOSF9kNM7m1pLf",
+    "comment:PRRC_kwDOSF9kNM7m1pPm",
+    "comment:PRRC_kwDOSF9kNM7mimzS",
+    "comment:PRRC_kwDOSF9kNM7mk3Qm",
+    "thread:PRRT_kwDOSF9kNM6c23ja",
+    "thread:PRRT_kwDOSF9kNM6cqP3H",
+    "thread:PRRT_kwDOSF9kNM6cruFK"
+  ],
+  "fetched_at": "2026-08-27T15:03:44.164Z",
+  "schema_version": "v1",
+  "commit_sha": "068b1056a3ce50aae08156dc68ce35c2e2888a53",
+  "title": "research(f4): question-bias attribution — the null-axis control FAILED; cosmetic rewording moves the answer",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T15:02:46Z",
+  "head_ref": "shadow/question-bias-attribution-null-axis-first"
+}
