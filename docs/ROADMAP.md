@@ -196,6 +196,14 @@ using DynamicValue's byte-locked per-format serializer:
   the only legitimate collapse. A local DU pick is a local action; the global
   effect is `DuExpand.globalEffect` (`SoftValue.observe` — independent evidence
   commutes). Workitem `081M10AAVAT087G0R0027M0GV5`.
+- **The +1 fold and the −1 fold are one Rx query** (Aaron 2026-08-26). The connection
+  is `ZSetRx.connectQuery`: Bonsai `Lambda(["plus1","minus1"], Call("zset.add", …))`.
+  It generalises to **any** `ZSet<'K>` — the tree never mentions `'K`. `integrateQuery`
+  is `I`; `retractQuery` is unary minus appended later. Persist with Bonsai (DeSmet /
+  Reaqtor); unfold on each delta (Meijer μ ⇄ ν). Formal siblings already in-tree:
+  `FourCornerTrace` (ℤ retraction / ℂ `−1 = i²`), Clifford generators squaring to ±1,
+  `MinimalBnn` + factor graphs (online +1 absorb). EP/ADF re-normalisation is **not**
+  Z-set minus. Workitem `081M109WG5S087G0R0021E5MPT`.
 
 ### Sequence (data plane first)
 
@@ -266,11 +274,20 @@ using DynamicValue's byte-locked per-format serializer:
     LibGit2Sharp-as-the-store. Self-prediction of Harny/CHIP-8 ticks
     uses the same no-`app` Kleisli close (`SoftScheduler` / `SchedulerZeta`
     / `Chip8Observer`) — consistent with `FourCornerTrace`, not the same
-    type (`081M10AZ6KS087G0R0000SSFMH`).
+    type (`081M10AZ6KS087G0R0000SSFMH`). The +1/−1 connection is the Bonsai Rx
+    query (`ZSetRx`). **Commands run locally** (`observe/local-command.ts`
+    `runLocal` / `DbCommand` over `IDeltaLog`); **background checks**
+    sync remote World channels through an injected door
+    (`backgroundSync`) and re-observe the **preexisting** NextAction /
+    ForgeState DUs — no second controller. **Own model:** `zeta-bnn`
+    (`MinimalBnn` / Student-t ADF) is a from-scratch **online learner**,
+    local, not chat-completions, sitting beside vendor ModelBackends
+    (`src/Core.TypeScript/model-backend/own-model.ts`).
     Live pointer: `docs/trajectories/own-ai-harness/RESUME.md`.
     Umbrella `081M100RB97087G0R0008EAAY7`; extract
     `081M102M6Y2087G0R000407SW3`; DU verbs
-    `081M107N9PZ087G0R0006X16SJ`.
+    `081M107N9PZ087G0R0006X16SJ`; Rx-fold + local DU
+    `081M109WG5S087G0R0021E5MPT`.
 8c. **Granular peer-repo splits — dogfood, then extract; dozens expected.**
     The theme is **dogfooding in this monorepo while splitting reusable
     chunks into their own repos.** Not three forever. Data Vault 2.0
@@ -398,6 +415,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
+- **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
 
 ## P2 (4 weeks)
 
@@ -408,6 +426,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Delta-CRDTs** anti-entropy for cross-node replication (Almeida et al. 2018)
 - **Dotted version vectors** for nested-circuit iteration numbering
 - **IQbservable** / Reaqtor-style **Bonsai slim IR** for persistable queries
+  (first query shipped: `ZSetRx.connectQuery` / `integrateQuery` / `retractQuery`)
 - **Templatization / CSE** — dedupe identical query shapes at Build
 - **Lean 4 kernel** proving `D∘I=id` + chain rule + rewrite-commute
 - **Ceph/CRUSH**-style hierarchical failure-domain placer (if distribution lands)
@@ -497,7 +516,10 @@ These don't wait for a single round:
   stays two-path (published binary **or** from-source seed). Harny
   does not replace `observe.ts` — it becomes an executor/scheme of
   that controller (Xbox `grammar-16`, Meijer μ/ν, reservoir walls).
-  See `docs/trajectories/own-ai-harness/RESUME.md`.
+  Commands are local-first; remote is a background DU sync.
+  Own BNN (`zeta-bnn`) is a first-class online-learning model beside
+  vendor chat backends. See
+  `docs/trajectories/own-ai-harness/RESUME.md`.
 - Replace git/LibGit2 as the store with **ZetaFS dual folds**
   (`ZetaFsDualFold` over `DagFs` / `ZSetMerkle` / `ZetaFsDeltaLog`):
   +1 `I` forward, −1 generator-reinterpret of retained history,

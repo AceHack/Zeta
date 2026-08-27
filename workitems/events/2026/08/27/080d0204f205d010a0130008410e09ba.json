@@ -1,0 +1,14 @@
+{
+  "id": "080d0204f205d010a0130008410e09ba",
+  "at": "2026-08-27T00:28:28.218Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M109WG5S087G0R0021E5MPT",
+    "type": "task",
+    "title": "Bonsai Rx query connects +1 and -1 folds; local commands sync remote DUs; own BNN model",
+    "slug": "bonsai-rx-query-connects-1-and-1-folds-local-commands-sync-r",
+    "priority": "P1",
+    "filename": "081M109WG5S087G0R0021E5MPT-bonsai-rx-query-connects-1-and-1-folds-local-commands-sync-r.md"
+  }
+}

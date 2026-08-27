@@ -85,6 +85,7 @@
     <Compile Include="Bonsai/BonsaiSoft.Tests.fs" />
     <Compile Include="Bonsai/DurableYinYang.Tests.fs" />
     <Compile Include="Bonsai.Property.Tests.fs" />
+    <Compile Include="ZSetRx.Tests.fs" />
     <Compile Include="Core/Codec.Tests.fs" />
     <Compile Include="RangeSet.Tests.fs" />
     <Compile Include="DynamicValue.Tests.fs" />

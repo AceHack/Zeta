@@ -105,6 +105,7 @@
     <Compile Include="Indentation.fs" />
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
+    <Compile Include="ZSetRx.fs" />
     <Compile Include="Resume.fs" />
     <Compile Include="RangeSet.fs" />
     <Compile Include="ByteCost.fs" />
