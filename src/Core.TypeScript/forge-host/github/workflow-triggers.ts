@@ -228,12 +228,12 @@ export function expectationFromWorkflow(yaml: string, ref: string): CheckExpecta
     const derived = periods.filter((p): p is number => p !== null);
     if (derived.length === crons.length) {
       const period = Math.min(...derived);
-      return { kind: "periodic", periodSeconds: period, detail: `schedule: ${crons.map((c) => `'${c}'`).join(", ")}` };
+      return { kind: "periodic", periodSeconds: period, detail: `schedule: ${crons.map((c) => `\`${c}\``).join(", ")}` };
     }
     return {
       kind: "periodic",
       periodSeconds: derived.length > 0 ? Math.min(...derived) : UNDERIVABLE_CRON_PERIOD_SECONDS,
-      detail: `schedule: ${crons.map((c) => `'${c}'`).join(", ")} — period not fully derivable, using ${derived.length > 0 ? "the derivable minimum" : "a 30d floor"} for staleness`,
+      detail: `schedule: ${crons.map((c) => `\`${c}\``).join(", ")} — period not fully derivable, using ${derived.length > 0 ? "the derivable minimum" : "a 30d floor"} for staleness`,
     };
   }
 

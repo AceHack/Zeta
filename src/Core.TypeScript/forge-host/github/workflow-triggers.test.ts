@@ -149,3 +149,37 @@ describe("branch filters — the bug this file's first version shipped", () => {
     expect(branchesMatchRef(block, "push", "feat/x")).toBe(true);
   });
 });
+
+// A cron expression is mostly asterisks, and `detail` is rendered into
+// docs/DRIFT-DASHBOARD.md. Unquoted, `11 3 * * *` reads to markdownlint as
+// emphasis markers with spaces inside (MD037), and the generated dashboard
+// went red on main the first time it flushed after 2026-08-24. Single quotes
+// are not a code span; backticks are.
+//
+// Asserted on expectationFromWorkflow's OWN output, not on a literal rebuilt
+// here — a test that reconstructs the format it is checking would pass while
+// the shipped generator emitted anything at all.
+describe("cron detail is markdown-safe", () => {
+  const outsideCodeSpans = (s: string): string => s.replace(/`[^`]*`/g, "");
+
+  it("the underivable-period branch emits crons inside code spans", () => {
+    const e = expectationFromWorkflow("on:\n  schedule:\n    - cron: '11 3 * * 1-5'\n", "main");
+    expect(e.kind).toBe("periodic");
+    const detail = e.kind === "periodic" ? e.detail : "";
+    expect(detail).toContain("not fully derivable");
+    expect(detail).toContain("`11 3 * * 1-5`");
+    expect(outsideCodeSpans(detail)).not.toContain("*");
+  });
+
+  it("the derivable-period branch does too, including multiple crons", () => {
+    const e = expectationFromWorkflow(
+      "on:\n  schedule:\n    - cron: '*/15 * * * *'\n    - cron: '23 */6 * * *'\n",
+      "main",
+    );
+    expect(e.kind).toBe("periodic");
+    const detail = e.kind === "periodic" ? e.detail : "";
+    expect(detail).toContain("`*/15 * * * *`");
+    expect(detail).toContain("`23 */6 * * *`");
+    expect(outsideCodeSpans(detail)).not.toContain("*");
+  });
+});
