@@ -2,7 +2,7 @@
   "pr_number": 15515,
   "archive_path": "docs/history/pr-reviews/PR-15515-fix-installer-zeta-creds-restore-failed-its-chdir-before-execstart-workingdirect.md",
   "source_ids": [],
-  "fetched_at": "2026-08-26T07:16:36.784Z",
+  "fetched_at": "2026-08-26T07:23:00.703Z",
   "schema_version": "v1",
   "commit_sha": "9acd60a07595eb4e06a2233ef27ebab2f2aa0d7d",
   "title": "fix(installer): zeta-creds-restore failed its chdir before ExecStart (WorkingDirectory=/) (081M0WTB5MN)",

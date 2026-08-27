@@ -1,0 +1,12 @@
+{
+  "pr_number": 15405,
+  "archive_path": "docs/history/pr-reviews/PR-15405-fix-flush-a-dead-flush-head-is-superseded-not-waited-on-forever-all-four-telemet.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:49:14.692Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "fix(flush): a dead flush head is superseded, not waited on forever — all four telemetry lanes were wedged at once",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:04:10Z",
+  "head_ref": "dejan/drift-flush-unwedge"
+}

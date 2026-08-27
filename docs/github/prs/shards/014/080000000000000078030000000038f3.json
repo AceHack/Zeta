@@ -1,0 +1,12 @@
+{
+  "pr_number": 14579,
+  "archive_path": "docs/history/pr-reviews/PR-14579-deps-bump-react-resizable-panels-from-3-0-6-to-4-12-3-in-demo-identity-dla-site.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:21:33.826Z",
+  "schema_version": "v1",
+  "commit_sha": "1277ee133117b61f4831a15b0aa4fe8e40e613f9",
+  "title": "deps: Bump react-resizable-panels from 3.0.6 to 4.12.3 in /demo/identity-dla-site",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T07:53:59Z",
+  "head_ref": "dependabot/npm_and_yarn/demo/identity-dla-site/react-resizable-panels-4.12.3"
+}

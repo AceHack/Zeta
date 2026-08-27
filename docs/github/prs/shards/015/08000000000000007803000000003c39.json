@@ -1,0 +1,12 @@
+{
+  "pr_number": 15417,
+  "archive_path": "docs/history/pr-reviews/PR-15417-research-math-triforce-hexagon-doubling-adjudicated-two-ladders-one-endpoint-fou.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:49:23.504Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "research(math): triforce/hexagon/doubling adjudicated — two ladders, one endpoint, four legs cut",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:32:38Z",
+  "head_ref": "lumen/triforce-hexagon-doubling-audit"
+}

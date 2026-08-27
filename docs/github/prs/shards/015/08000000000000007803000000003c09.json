@@ -1,0 +1,12 @@
+{
+  "pr_number": 15369,
+  "archive_path": "docs/history/pr-reviews/PR-15369-fix-hygiene-the-settings-record-said-the-ci-gate-was-off-while-it-was-on-and-cou.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:19:19.285Z",
+  "schema_version": "v1",
+  "commit_sha": "7333dd3f27e526569338290e066d5e42d982979e",
+  "title": "fix(hygiene): the settings record said the CI gate was OFF while it was ON, and could never say who may bypass it",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T15:55:28Z",
+  "head_ref": "fix/settings-record-wrong-in-the-permissive-direction"
+}

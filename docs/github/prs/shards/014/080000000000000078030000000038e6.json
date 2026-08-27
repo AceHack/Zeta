@@ -1,0 +1,12 @@
+{
+  "pr_number": 14566,
+  "archive_path": "docs/history/pr-reviews/PR-14566-deps-bump-xxhash-from-3-7-0-to-4-0-1-in-src-core-python.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T23:01:50.587Z",
+  "schema_version": "v1",
+  "commit_sha": "78f6b5fc8e32ded31db613f5469e4c13f8eba62b",
+  "title": "deps: Bump xxhash from 3.7.0 to 4.0.1 in /src/Core.Python",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T12:55:23Z",
+  "head_ref": "dependabot/uv/src/Core.Python/xxhash-4.0.1"
+}

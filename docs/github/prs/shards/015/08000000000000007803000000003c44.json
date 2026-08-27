@@ -1,0 +1,12 @@
+{
+  "pr_number": 15428,
+  "archive_path": "docs/history/pr-reviews/PR-15428-fix-pages-the-english-book-404s-on-every-path-a-reader-would-guess-en-works-noth.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:49:36.862Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "fix(pages): the English book 404s on every path a reader would guess — /en/ works, nothing else does",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T20:05:59Z",
+  "head_ref": "fix/book-en-404-redirects"
+}

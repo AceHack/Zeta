@@ -1,0 +1,12 @@
+{
+  "pr_number": 15379,
+  "archive_path": "docs/history/pr-reviews/PR-15379-research-governance-the-citation-metric-has-never-once-decreased-in-84-snapshots.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:19:26.709Z",
+  "schema_version": "v1",
+  "commit_sha": "7333dd3f27e526569338290e066d5e42d982979e",
+  "title": "research(governance): the citation metric has never once decreased in 84 snapshots — NOT READY on constitutional promotion",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:25:58Z",
+  "head_ref": "review/manifesto-constitutional-promotion-second-opinion"
+}

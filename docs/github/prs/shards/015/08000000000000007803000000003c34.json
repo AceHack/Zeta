@@ -1,0 +1,12 @@
+{
+  "pr_number": 15412,
+  "archive_path": "docs/history/pr-reviews/PR-15412-fix-research-a-stale-row-said-the-hardware-was-absent-it-was-present-and-unreach.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:49:20.134Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "fix(research): a stale row said the hardware was absent — it was present and unreachable for 11 days",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:04:53Z",
+  "head_ref": "fix/l1-now-reachable"
+}

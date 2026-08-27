@@ -1,0 +1,12 @@
+{
+  "pr_number": 15387,
+  "archive_path": "docs/history/pr-reviews/PR-15387-fix-heartbeat-the-pre-merge-moved-the-ref-and-left-source-sha-behind.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:19:33.934Z",
+  "schema_version": "v1",
+  "commit_sha": "7333dd3f27e526569338290e066d5e42d982979e",
+  "title": "fix(heartbeat): the pre-merge moved the ref and left SOURCE_SHA behind",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:07:11Z",
+  "head_ref": "fix/premerge-must-update-source-sha"
+}

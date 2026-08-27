@@ -1,0 +1,12 @@
+{
+  "pr_number": 13976,
+  "archive_path": "docs/history/pr-reviews/PR-13976-chore-make-objective-text-less-scary.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T20:30:28.589Z",
+  "schema_version": "v1",
+  "commit_sha": "da6f3ccc0272c9101f9fa873dc57634878cc51a3",
+  "title": "chore: make objective text less scary",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T22:56:35Z",
+  "head_ref": "fix/less-scary"
+}

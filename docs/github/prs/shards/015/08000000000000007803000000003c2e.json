@@ -1,0 +1,12 @@
+{
+  "pr_number": 15406,
+  "archive_path": "docs/history/pr-reviews/PR-15406-fix-lanes-main-is-red-the-mise-test-asserts-a-property-of-the-runner-and-lost-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:49:17.676Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "fix(lanes): main is red — the mise test asserts a property of the RUNNER, and lost the race with its own squash",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T18:46:41Z",
+  "head_ref": "fix/lane-allocator-test-hermetic"
+}

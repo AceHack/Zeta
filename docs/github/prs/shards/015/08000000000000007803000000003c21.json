@@ -1,0 +1,12 @@
+{
+  "pr_number": 15393,
+  "archive_path": "docs/history/pr-reviews/PR-15393-fix-observe-the-model-benchmark-is-won-by-a-constant-and-it-benchmarks-itself-on.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:19:38.450Z",
+  "schema_version": "v1",
+  "commit_sha": "7333dd3f27e526569338290e066d5e42d982979e",
+  "title": "fix(observe): the model benchmark is won by a constant, and it benchmarks itself on import",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T17:02:07Z",
+  "head_ref": "fix/benchmark-a-constant-scores-100"
+}

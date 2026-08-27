@@ -1,0 +1,12 @@
+{
+  "pr_number": 13799,
+  "archive_path": "docs/history/pr-reviews/PR-13799-skip-review-telemetry-flush-ops-budget-weekly-cadence-burn-snapshot-task-297.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T19:46:57.889Z",
+  "schema_version": "v1",
+  "commit_sha": "d26ac5663d286d03378b5df938f8879b1947c69d",
+  "title": "[skip-review][telemetry-flush] ops(budget): weekly cadence burn snapshot — task #297",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T17:08:24Z",
+  "head_ref": "heartbeat/budget-snapshot"
+}

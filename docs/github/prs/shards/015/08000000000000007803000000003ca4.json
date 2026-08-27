@@ -1,0 +1,12 @@
+{
+  "pr_number": 15524,
+  "archive_path": "docs/history/pr-reviews/PR-15524-skip-review-telemetry-flush-ops-081kt7yw00008qg0r002t1xnwt-daily-context-cost-tr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T08:49:32.299Z",
+  "schema_version": "v1",
+  "commit_sha": "d8a55190bfadecf5cc78970a25275bd82dc01ef1",
+  "title": "[skip-review][telemetry-flush] ops(081KT7YW00008QG0R002T1XNWT): daily context-cost trend row",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T08:29:24Z",
+  "head_ref": "heartbeat/context-cost-trend"
+}

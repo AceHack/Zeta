@@ -1,0 +1,12 @@
+{
+  "pr_number": 14611,
+  "archive_path": "docs/history/pr-reviews/PR-14611-skip-review-telemetry-flush-ops-081m0qtxtr3087g0r002r439fh-rebuild-git-native-in.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T23:02:07.991Z",
+  "schema_version": "v1",
+  "commit_sha": "78f6b5fc8e32ded31db613f5469e4c13f8eba62b",
+  "title": "[skip-review][telemetry-flush] ops(081M0QTXTR3087G0R002R439FH): rebuild git-native inverted index",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T05:48:40Z",
+  "head_ref": "heartbeat/search-index"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15372,
+  "archive_path": "docs/history/pr-reviews/PR-15372-fix-heartbeat-pre-merge-main-so-github-is-never-asked-to-apply-a-merge-driver.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:19:21.585Z",
+  "schema_version": "v1",
+  "commit_sha": "7333dd3f27e526569338290e066d5e42d982979e",
+  "title": "fix(heartbeat): pre-merge main so GitHub is never asked to apply a merge driver",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T16:12:13Z",
+  "head_ref": "fix/pre-merge-main-so-github-need-not-apply-union"
+}

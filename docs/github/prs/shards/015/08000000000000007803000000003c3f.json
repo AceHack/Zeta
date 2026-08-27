@@ -1,0 +1,19 @@
+{
+  "pr_number": 15423,
+  "archive_path": "docs/history/pr-reviews/PR-15423-research-math-the-ladder-is-one-generator-plus-a-three-valued-choice-not-a-banan.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7l3jDh",
+    "comment:PRRC_kwDOSF9kNM7l3jDx",
+    "comment:PRRC_kwDOSF9kNM7l8L8C",
+    "comment:PRRC_kwDOSF9kNM7l8MAL",
+    "thread:PRRT_kwDOSF9kNM6cNolN",
+    "thread:PRRT_kwDOSF9kNM6cNola"
+  ],
+  "fetched_at": "2026-08-26T04:49:34.487Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "research(math): the ladder is one generator plus a three-valued choice — not a banana split",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T22:08:21Z",
+  "head_ref": "banana-split/cd-order-ladder-factorisation"
+}

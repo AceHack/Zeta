@@ -1,0 +1,12 @@
+{
+  "pr_number": 13854,
+  "archive_path": "docs/history/pr-reviews/PR-13854-skip-review-telemetry-flush-ops-081ks923c0008qg0r002bkac95-daily-manifesto-citat.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-25T20:00:33.143Z",
+  "schema_version": "v1",
+  "commit_sha": "3d7b741ef25c80e0fad08c42b41e76a147c8dee5",
+  "title": "[skip-review][telemetry-flush] ops(081KS923C0008QG0R002BKAC95): daily manifesto-citation snapshot",
+  "state": "MERGED",
+  "merged_at": "2026-08-22T19:10:12Z",
+  "head_ref": "heartbeat/manifesto-citation-snapshot"
+}

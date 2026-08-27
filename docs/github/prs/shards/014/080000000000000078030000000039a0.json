@@ -1,0 +1,12 @@
+{
+  "pr_number": 14752,
+  "archive_path": "docs/history/pr-reviews/PR-14752-skip-review-telemetry-flush-drift-dashboard-refresh-roster.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T00:21:51.138Z",
+  "schema_version": "v1",
+  "commit_sha": "a372e49d90031d0ff699f33fd96be4d4a11e3d59",
+  "title": "[skip-review][telemetry-flush] drift-dashboard: refresh roster",
+  "state": "MERGED",
+  "merged_at": "2026-08-24T14:05:13Z",
+  "head_ref": "heartbeat/drift-dashboard"
+}

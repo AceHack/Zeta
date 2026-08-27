@@ -1,0 +1,24 @@
+{
+  "pr_number": 15394,
+  "archive_path": "docs/history/pr-reviews/PR-15394-feat-a-categorical-message-nobody-can-veto-or-clone-into-a-majority-and-an-arc-a.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7l0KSX",
+    "comment:PRRC_kwDOSF9kNM7l3y39",
+    "comment:PRRC_kwDOSF9kNM7l3y7z",
+    "comment:PRRC_kwDOSF9kNM7l3zRh",
+    "comment:PRRC_kwDOSF9kNM7lz0DT",
+    "comment:PRRC_kwDOSF9kNM7lz0Dn",
+    "comment:PRRC_kwDOSF9kNM7lz0Dw",
+    "thread:PRRT_kwDOSF9kNM6cLKja",
+    "thread:PRRT_kwDOSF9kNM6cLKjk",
+    "thread:PRRT_kwDOSF9kNM6cLKjq",
+    "thread:PRRT_kwDOSF9kNM6cLZWC"
+  ],
+  "fetched_at": "2026-08-26T04:49:10.714Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "feat: a categorical message nobody can veto or clone into a majority, and an ARC agent that reads its own action space",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:39:16Z",
+  "head_ref": "claude/tender-hawking-xmcs6m"
+}

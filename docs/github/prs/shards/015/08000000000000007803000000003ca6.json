@@ -2,7 +2,7 @@
   "pr_number": 15526,
   "archive_path": "docs/history/pr-reviews/PR-15526-fix-ci-cache-apt-s-archive-directory-the-561-mb-re-fetch-is-the-exit-124-cause-a.md",
   "source_ids": [],
-  "fetched_at": "2026-08-26T08:17:53.771Z",
+  "fetched_at": "2026-08-26T08:21:53.237Z",
   "schema_version": "v1",
   "commit_sha": "1277ee133117b61f4831a15b0aa4fe8e40e613f9",
   "title": "fix(ci): cache apt's archive directory — the 561 MB re-fetch is the exit-124 cause, and the banner named the wrong one",

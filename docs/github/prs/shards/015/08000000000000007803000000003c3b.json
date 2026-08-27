@@ -1,0 +1,12 @@
+{
+  "pr_number": 15419,
+  "archive_path": "docs/history/pr-reviews/PR-15419-book-raw-transmissibility-is-not-an-epistemic-preference-it-is-a-survival-constr.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T04:49:28.757Z",
+  "schema_version": "v1",
+  "commit_sha": "6377a3abe6188eca84965a6a3a55caaf13b87f51",
+  "title": "book(raw): transmissibility is not an epistemic preference — it is a survival constraint",
+  "state": "MERGED",
+  "merged_at": "2026-08-25T19:16:13Z",
+  "head_ref": "book/transmissibility-is-survival"
+}
