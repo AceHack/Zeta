@@ -135,7 +135,7 @@ describe("runTick sequencing", () => {
     try {
       const result = runTick(config({ repoRoot: root }), runner, NOW, () => ({
         ok: true,
-        value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false },
+        value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false, healed: [] },
       }));
       expect(result.ok).toBe(true);
     } finally {
@@ -164,7 +164,7 @@ describe("emitTickEvent", () => {
       const collide = { ...config({ repoRoot: root }), agent: "dejan-local" };
       const result = runTick(collide, runner, NOW, () => ({
         ok: true,
-        value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false },
+        value: { head: "heartbeat/dejan-local", remoteFound: true, carried: false, healed: [] },
       }));
       // Either it wrote a fresh id (ok) or it hit a collision and reported it — never threw.
       expect(typeof result.ok).toBe("boolean");

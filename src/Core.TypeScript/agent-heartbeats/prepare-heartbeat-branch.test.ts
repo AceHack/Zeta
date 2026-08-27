@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, it } from "bun:test";
 
-import { annotateFailure, prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
+import { annotateFailure, isWholeLinePrefix, prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
 
 const roots: string[] = [];
 
@@ -67,7 +67,7 @@ describe("prepareHeartbeatBranch", () => {
     const result = prepareHeartbeatBranch("alexa", work);
     expect(result).toEqual({
       ok: true,
-      value: { head: "heartbeat/alexa", remoteFound: false, carried: false },
+      value: { head: "heartbeat/alexa", remoteFound: false, carried: false, healed: [] },
     });
     expect(git(work, "branch", "--show-current")).toBe("heartbeat/alexa");
   });
@@ -546,4 +546,156 @@ describe("prepare-heartbeat-branch CLI", () => {
     // already marginal for the git-only tests on a busy runner; leaving this one on the default
     // would make it the first to flake, and a flaky falsifier gets deleted rather than fixed.
   }, 30_000);
+});
+
+/**
+ * THE SELF-SUSTAINING LOOP (2026-08-26, run 33024333706).
+ *
+ * These reconstruct the alexa wedge from its measured shape rather than asserting on the fix's own
+ * vocabulary. The condition being rebuilt, taken off the live refs at 00:54Z:
+ *
+ *     merge-base 443cdacdb5 (22:27:58Z)   data/tick-reasoning.jsonl ABSENT
+ *     main       16 rows (via the 23:11Z squash flush #15551)
+ *     lane       30 rows, of which rows 1..16 are main's 16 VERBATIM
+ *
+ * `main` acquires the path through a SQUASH, so no ancestry links its copy to the lane that wrote
+ * it and the base holds neither side — add/add by construction. Every fixture below builds main's
+ * copy that way, because a fixture that merged normally would give git the ancestry the production
+ * flush destroys and would pass without the fix.
+ */
+describe("prepareHeartbeatBranch — squash-flush divergence", () => {
+  /** The undeclared path is the point: a declared one would be resolved by `.gitattributes`. */
+  const LANE_PATH = "data/undeclared-stream.jsonl";
+  const FLUSHED = '{"row":1}\n{"row":2}\n';
+  const UNFLUSHED = '{"row":3}\n';
+
+  /**
+   * Build the wedge: lane at `laneBody`, main at `mainBody`, merge base holding NEITHER.
+   *
+   * Returns after leaving both refs on the origin, so `prepareHeartbeatBranch` sees exactly what a
+   * runner sees on a fresh checkout.
+   */
+  function wedge(work: string, mainBody: string, laneBody: string): void {
+    seedAttributes(work);
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, LANE_PATH, laneBody, "lane keeps ticking past the flush");
+    pushLane(work);
+    git(work, "switch", "main");
+    // The squash flush: main CREATES the path independently. No ancestry to the lane.
+    commitFile(work, LANE_PATH, mainBody, "squash flush lands a prefix of the lane's delta");
+    git(work, "push", "origin", "main");
+  }
+
+  it("REPRODUCES the wedge: without the prefix rule the carry is an add/add conflict", () => {
+    const { work } = fixture();
+    wedge(work, FLUSHED, FLUSHED + UNFLUSHED);
+
+    // The control. This is the exact command the preparer runs, minus the fallback — so it shows
+    // the condition is genuinely present and the passing test below is not vacuous.
+    git(work, "fetch", "origin", "+refs/heads/main:refs/remotes/origin/main");
+    git(work, "fetch", "origin", "+refs/heads/heartbeat/alexa:refs/remotes/origin/heartbeat/alexa");
+    git(work, "checkout", "-B", "probe", "origin/main");
+    const merge = spawnSync("git", ["merge", "--squash", "--no-commit", "refs/remotes/origin/heartbeat/alexa"], {
+      cwd: work,
+      encoding: "utf8",
+    });
+    expect(merge.status).not.toBe(0);
+    expect(merge.stdout + merge.stderr).toContain("CONFLICT (add/add)");
+    expect(merge.stdout + merge.stderr).toContain(LANE_PATH);
+  });
+
+  it("CARRIES it anyway when main's copy is a whole-line prefix of the lane's", () => {
+    const { work } = fixture();
+    wedge(work, FLUSHED, FLUSHED + UNFLUSHED);
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { carried: true, healed: [LANE_PATH] } });
+
+    // Losslessness, asserted on the bytes rather than on the outcome flag: every flushed row
+    // survives, the unflushed row arrives, nothing is duplicated, and no marker leaked through.
+    const carried = readFileSync(join(work, LANE_PATH), "utf8");
+    expect(carried).toBe(FLUSHED + UNFLUSHED);
+    expect(carried).not.toContain("<<<<<<<");
+    const rows = carried.split("\n").filter((l) => l.length > 0);
+    expect(rows).toEqual(new Array(...new Set(rows)));
+  });
+
+  it("BREAKS THE LOOP: the healed tick advances the merge base past the flush", () => {
+    const { work } = fixture();
+    wedge(work, FLUSHED, FLUSHED + UNFLUSHED);
+    const stuckBase = git(work, "merge-base", "origin/main", "origin/heartbeat/alexa");
+
+    // Tick once, exactly as the workflow does: prepare, commit, push the lane.
+    expect(prepareHeartbeatBranch("alexa", work)).toMatchObject({ ok: true });
+    git(work, "commit", "-m", "heartbeat(alexa): accumulated tick");
+    pushLane(work);
+
+    // THE PROPERTY. Before the fix a failed tick never pushed, so this value never moved and the
+    // next tick recomputed the identical add/add — forever. It has now moved onto the flush.
+    git(work, "fetch", "origin", "+refs/heads/heartbeat/alexa:refs/remotes/origin/heartbeat/alexa");
+    const movedBase = git(work, "merge-base", "origin/main", "origin/heartbeat/alexa");
+    expect(movedBase).not.toBe(stuckBase);
+    expect(git(work, "cat-file", "-t", `${movedBase}:${LANE_PATH}`)).toBe("blob");
+
+    // And the next tick is an ordinary clean carry — the divergence is gone, not deferred.
+    const next = prepareHeartbeatBranch("alexa", work);
+    expect(next).toMatchObject({ ok: true, value: { healed: [] } });
+  });
+
+  it("REFUSES when main holds a line the lane does not — the rule can still fail", () => {
+    const { work } = fixture();
+    // One rival row on main that the lane never saw. Taking the lane's copy would DROP it, so the
+    // prefix test is false and the tick must die exactly as it does today. This is the control
+    // that keeps the test above from being a check that cannot fail.
+    wedge(work, FLUSHED + '{"row":"rival"}\n', FLUSHED + UNFLUSHED);
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: false });
+    if (result.ok) throw new Error("unreachable");
+    expect(result.error).toContain("carry unflushed heartbeat state");
+    expect(result.error).toContain(LANE_PATH);
+  });
+
+  it("REFUSES a mid-line prefix — a byte prefix that rewrites main's last row", () => {
+    const { work } = fixture();
+    // Main's last line is unterminated, and the lane "extends" it. Byte-prefix holds; whole-line
+    // prefix does not, because main's row `{"row":2}` would silently become `{"row":22}`.
+    wedge(work, '{"row":1}\n{"row":2}', '{"row":1}\n{"row":22}\n');
+
+    expect(prepareHeartbeatBranch("alexa", work)).toMatchObject({ ok: false });
+  });
+
+  it("leaves the index untouched when any one path is refused (all-or-nothing)", () => {
+    const { work } = fixture();
+    seedAttributes(work);
+    const healable = "data/healable.jsonl";
+    const rival = "data/rival.jsonl";
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, healable, FLUSHED + UNFLUSHED, "lane: healable");
+    commitFile(work, rival, FLUSHED, "lane: rival");
+    pushLane(work);
+    git(work, "switch", "main");
+    commitFile(work, healable, FLUSHED, "flush: healable prefix");
+    commitFile(work, rival, '{"row":"only-on-main"}\n', "flush: rival diverged");
+    git(work, "push", "origin", "main");
+
+    expect(prepareHeartbeatBranch("alexa", work)).toMatchObject({ ok: false });
+    // The healable path must NOT have been quietly resolved on the way to refusing the other one:
+    // a partial resolution would leave a half-carried tick behind whatever gets reported.
+    const unmerged = git(work, "diff", "--name-only", "--diff-filter=U");
+    expect(unmerged.split("\n").filter((l) => l.length > 0).sort()).toEqual([healable, rival].sort());
+  });
+
+  it("refuses binary blobs outright — the line argument does not apply to them", () => {
+    expect(isWholeLinePrefix(Buffer.from([0x61, 0x00]), Buffer.from([0x61, 0x00, 0x62]))).toBe(false);
+  });
+
+  it("accepts an EMPTY main side — the ours=0 signature this class was first measured with", () => {
+    expect(isWholeLinePrefix(Buffer.alloc(0), Buffer.from("{}\n"))).toBe(true);
+  });
+
+  it("refuses equal blobs and a longer ours — neither is a STRICT extension", () => {
+    expect(isWholeLinePrefix(Buffer.from("a\n"), Buffer.from("a\n"))).toBe(false);
+    expect(isWholeLinePrefix(Buffer.from("a\nb\n"), Buffer.from("a\n"))).toBe(false);
+  });
 });
