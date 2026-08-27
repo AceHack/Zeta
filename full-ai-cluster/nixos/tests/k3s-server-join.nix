@@ -500,59 +500,66 @@ pkgs.testers.nixosTest {
     # a readable one under a hardened unit.
     # `test -r <store path>` would be very close to vacuous — a store path is
     # readable essentially by construction, so it could not fail for the reason
-    # we care about. Ask the RUNNING PROCESS instead: the eval-time overrides in
-    # injected-server-join.nix must have reached the actual k3s command line,
-    # and k3s must have got far enough to authenticate with the token behind
-    # `--token-file`. A successful join already implies the token was read; this
-    # pins WHICH flags produced it, so a join that happened for some other
-    # reason cannot be mistaken for this module working.
-    joiner_cmdline = joiner.succeed(
-        "tr '\\0' ' ' < /proc/$(systemctl show -p MainPID --value k3s.service)/cmdline"
+    # we care about. Inspect systemd's loaded ExecStart instead: it is the command
+    # systemd actually launched from the evaluated module. `/proc/<MainPID>/cmdline`
+    # is not that record because k3s re-execs after start and reduces its visible
+    # argv to `k3s server` (measured in CI run 33043309171 after this join had
+    # already succeeded). A successful join implies the token was read; ExecStart
+    # pins WHICH configured flags produced it, so a join that happened for some
+    # other reason cannot be mistaken for this module working.
+    joiner_exec_start = joiner.succeed(
+        "systemctl show -p ExecStart --value k3s.service"
     )
-    assert "--server" in joiner_cmdline, (
-        f"k3s on the joiner has no --server flag: {joiner_cmdline!r}. "
+    assert "k3s server" in joiner_exec_start, (
+        f"the joiner k3s ExecStart is not a server command: {joiner_exec_start!r}"
+    )
+    assert "--server" in joiner_exec_start, (
+        f"k3s on the joiner has no --server flag: {joiner_exec_start!r}. "
         "injected-server-join.nix did not take effect, so whatever made this "
         "node appear in the cluster was not the module under test."
     )
-    assert "--token-file" in joiner_cmdline, (
-        f"k3s on the joiner has no --token-file flag: {joiner_cmdline!r}"
+    assert "--token-file" in joiner_exec_start, (
+        f"k3s on the joiner has no --token-file flag: {joiner_exec_start!r}"
     )
-    assert "--cluster-init" not in joiner_cmdline, (
-        f"the joiner still carries --cluster-init: {joiner_cmdline!r}. "
+    assert "--cluster-init" not in joiner_exec_start, (
+        f"the joiner still carries --cluster-init: {joiner_exec_start!r}. "
         "clusterInit was not overridden to false, which is the founding "
         "behaviour this module exists to replace."
     )
-    assert f"--node-ip={JOINER_IP}" in joiner_cmdline, (
-        f"the joiner lost --node-ip={JOINER_IP}: {joiner_cmdline!r}. "
+    assert f"--node-ip={JOINER_IP}" in joiner_exec_start, (
+        f"the joiner lost --node-ip={JOINER_IP}: {joiner_exec_start!r}. "
         "extraFlags must MERGE with k3s-server.nix; a replace would drop "
         "the vlan pin and re-advertise QEMU SLIRP."
     )
-    assert "--cluster-cidr=" in joiner_cmdline, (
-        f"the joiner lost --cluster-cidr: {joiner_cmdline!r}. "
+    assert "--cluster-cidr=" in joiner_exec_start, (
+        f"the joiner lost --cluster-cidr: {joiner_exec_start!r}. "
         "the harness --node-ip assignment replaced k3s-server.nix extraFlags "
         "instead of concatenating"
     )
-    assert "--tls-san=control-plane" in joiner_cmdline, (
-        f"the joiner lost --tls-san=control-plane: {joiner_cmdline!r}"
+    assert "--tls-san=control-plane" in joiner_exec_start, (
+        f"the joiner lost --tls-san=control-plane: {joiner_exec_start!r}"
     )
 
     # The founder must still be the founder — the mkOverride only fires on a
     # node with injected files, and asserting the negative keeps this test
     # honest about which node got which branch.
-    founder_cmdline = founder.succeed(
-        "tr '\\0' ' ' < /proc/$(systemctl show -p MainPID --value k3s.service)/cmdline"
+    founder_exec_start = founder.succeed(
+        "systemctl show -p ExecStart --value k3s.service"
     )
-    assert "--cluster-init" in founder_cmdline, (
-        f"the founder lost --cluster-init: {founder_cmdline!r}"
+    assert "k3s server" in founder_exec_start, (
+        f"the founder k3s ExecStart is not a server command: {founder_exec_start!r}"
     )
-    assert "--server" not in founder_cmdline, (
-        f"the founder acquired a --server flag: {founder_cmdline!r}"
+    assert "--cluster-init" in founder_exec_start, (
+        f"the founder lost --cluster-init: {founder_exec_start!r}"
     )
-    assert f"--node-ip={FOUNDER_IP}" in founder_cmdline, (
-        f"the founder lost --node-ip={FOUNDER_IP}: {founder_cmdline!r}"
+    assert "--server" not in founder_exec_start, (
+        f"the founder acquired a --server flag: {founder_exec_start!r}"
     )
-    assert "--cluster-cidr=" in founder_cmdline, (
-        f"the founder lost --cluster-cidr: {founder_cmdline!r}. "
+    assert f"--node-ip={FOUNDER_IP}" in founder_exec_start, (
+        f"the founder lost --node-ip={FOUNDER_IP}: {founder_exec_start!r}"
+    )
+    assert "--cluster-cidr=" in founder_exec_start, (
+        f"the founder lost --cluster-cidr: {founder_exec_start!r}. "
         "the harness --node-ip assignment replaced k3s-server.nix extraFlags "
         "instead of concatenating"
     )
