@@ -1,0 +1,14 @@
+{
+  "id": "080d02062fcf5010a0130008b82a00ad",
+  "at": "2026-08-27T01:11:51.530Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10CBYF9087G0R003GWBNHG",
+    "type": "task",
+    "title": "FourCornerTrace VALUE needs IStarRing; C4 compass is not Cl(p,q)",
+    "slug": "fourcornertrace-value-needs-istarring-c4-compass-is-not-cl-p",
+    "priority": "P1",
+    "filename": "081M10CBYF9087G0R003GWBNHG-fourcornertrace-value-needs-istarring-c4-compass-is-not-cl-p.md"
+  }
+}

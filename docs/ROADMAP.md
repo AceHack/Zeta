@@ -137,6 +137,29 @@ factor graphs / Student-t ADF are the online +1 absorb; EP re-normalisation
 is **not** Z-set minus (inverse-free corners do not get the trace).
 Workitem `081M10AZ6KS087G0R0000SSFMH`.
 
+**FourCornerTrace VALUE needs `IStarRing`.** The ping-return is `Negate`
+(`−gen(before)+gen(after)`). On ℂ, `−1 = i²` is a *ring* identity matching
+the C₄ compass `{1, i, −1, −i}` on FourCorner — a **labeling**, not a group
+object, and **not** "FourCorner is Cl(p,q)". `e^{iπ} = −1` is the **same
+C₄ point** via Euler (`expI`), not a second fact and not what the TRACE
+consumes (`IStarRing` has no `Exp`). Book mark of *You, Born at the
+Hinge*. Two NSEW compasses (FourCorner × Rx) compose **at Meijer's
+missing feedback axis**: μF/νF / `IEnumerable`⇄`IObservable` are
+2-corner in/out; the duals traded a feedback channel for a non-monadic
+error terminal (`OnError`; in-tree `InterruptFeedback`). Error is a
+sum (erasing). Feedback is a product (Bennett-free Negate). Spin-½
+`R(2π)=−1` is the half-angle cover (`Cl3.rotor` / `QubitIso`), **not**
+FourCorner being a fermion. The Adinkra *connection* is the Q-odd
+dashing edge (boson ↔ fermion) carrying C₄ south; coded `[8,4]` and
+uncoded `Cl(0,8)` both split 8B+8F — same count, different objects.
+E8: roots 240 + algebra 248 metered; compact group still a Killing
+substitute. Clifford generator squares ±1 are **signature** (Cl(3,0)
+`eᵢ² = +1`; C₄ lives in the even subalgebra as `e₁₂² = −1`, and as
+Cl(0,1) ≅ ℂ). The trace can instantiate over `Cl3.Mv` *weights*
+because `Cl3.algebra` is an `IStarRing`; that is composition, not
+identification. Inverse-free corners still refuse the trace. Checked:
+`FourCornerC4`. Workitem `081M10CBYF9087G0R003GWBNHG`.
+
 - **Done-test (the bright line):** a full work-cycle (land a change, branch, query history, update
   backlog) with **zero `git` CLI calls** and **zero LibGit2Sharp**.
 - **git-reach = the gap detector:** every fallback to `git` *names a missing DB primitive (or
@@ -339,6 +362,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
 - ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
+- FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). Existing instances apply: TRACE on ℤ (`IntegerRing.Star`) / ℝ / tower / Cl3; C₄ generator only from ℂ up (and Cl3 bivectors). **Not a fermion:** Adinkra connection is Q-odd dashing = C₄ south; coded `[8,4]` `K_{8,8}` 8B+8F vs uncoded `Cl(0,8)` halves; Meijer 2-corner vs FourCorner product vs ISR error-sum. E8 roots+algebra metered; compact group substitute. `081M10CBYF9087G0R003GWBNHG` ✅
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
 - Incremental distinct (O(|Δ|)) ✅
@@ -416,6 +440,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)
 - **ZSetRx remaining** — full IQbservable over Bonsai (this slice is the +1/−1 connect query); BNN as a NextAction chooser, not just a roster card (`081M109WG5S087G0R0021E5MPT`)
+- **FourCorner / Clifford remaining** — do not identify FourCorner with Cl(p,q) **or with a fermion** in later slices; C₄ compass is the ℂ unit group / even-subalgebra `e₁₂`, Clifford ±1 is signature, Adinkra fermions are odd-parity nodes. Product path may *weight* a trace by `Cl3.Mv` (`IStarRing`) without promoting the I/O record. Compact E8 group object (not the Killing substitute) still open. `081M10CBYF9087G0R003GWBNHG`
 
 ## P2 (4 weeks)
 
@@ -455,6 +480,7 @@ Taken from scout agent:
 5. **CAS-Paxos with state-transition-function consensus for DBSP replay** → NSDI / OSDI, ~6 em
 6. **F# type-provider-driven compile-time circuit specialisation** → OOPSLA / PLDI, ~4 em
 7. **DBSP retraction ≡ Beam RETRACTING ≡ delta-CRDT merge** foundational clarifier → ICFP / LMCS, ~5 em
+8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object; in-tree discriminator already checked (`FourCornerC4`). Not a fermion: Adinkra Q-odd dashing is the connection; Meijer duals traded feedback for an erasing error channel; E8 compact group still a substitute.
 
 ## CFPs to target
 
@@ -538,3 +564,9 @@ These don't wait for a single round:
   channel; Kleisli ISR closes interrupts; DoP=1 ferry +
   `SchedulerZeta.predict` / `Chip8Observer.predict` run-ahead. Same
   shape, not one type. `081M10AZ6KS087G0R0000SSFMH`.
+- **FourCorner C₄ vs Clifford ±1 — related, not identified.** Compass
+  is a labeling; `−1 = i²` is an `IStarRing` identity (why the VALUE
+  ping-return needs a ring); Clifford generator squares are signature.
+  Not a fermion: Adinkra connection is the Q-odd dashing / feedback
+  axis Meijer duals lack (error-sum is erasing). `FourCornerC4`.
+  `081M10CBYF9087G0R003GWBNHG`.

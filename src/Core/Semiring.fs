@@ -50,6 +50,21 @@ module IntegerRing =
     /// upcast for free.
     let Instance : IRing<int64> = IntegerRing()
 
+    /// ℤ as an `IStarRing`: `IntegerRing` plus `Conj = id` (reals/integers
+    /// are their own conjugate). `WSet` / `FourCornerTrace` take `IStarRing`,
+    /// not `IRing` — law packs were re-boxing this locally. TRACE (Negate)
+    /// applies; there is no C₄ generator (`{±1} ≅ C₂`, `1² = (−1)² = 1`).
+    let Star : IStarRing<int64> =
+        let r = Instance
+
+        { new IStarRing<int64> with
+            member _.Zero = r.Zero
+            member _.One = r.One
+            member _.Add(a, b) = r.Add(a, b)
+            member _.Mul(a, b) = r.Mul(a, b)
+            member _.Negate(a) = r.Negate a
+            member _.Conj(a) = a }
+
 
 // ═══════════════════════════════════════════════════════════════════
 // INTERVAL WEIGHT  [lo, hi] ⊂ ℝ  — bounded-uncertainty ring

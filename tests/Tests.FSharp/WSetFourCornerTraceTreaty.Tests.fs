@@ -23,15 +23,8 @@ open System.Text
 open global.Xunit
 open Zeta.Core
 
-// ── the ℤ '*'-ring (IStarRing<int64>, same boxing as the law pack) ──────────────────────────
-let private intStar: IStarRing<int64> =
-    { new IStarRing<int64> with
-        member _.Zero = 0L
-        member _.One = 1L
-        member _.Add(a, b) = a + b
-        member _.Mul(a, b) = a * b
-        member _.Negate a = -a
-        member _.Conj a = a }
+// ── the ℤ '*'-ring (`IntegerRing.Star`, same instance as the law pack) ────────────────────
+let private intStar: IStarRing<int64> = IntegerRing.Star
 
 let private isZeroI (w: int64) = w = 0L
 

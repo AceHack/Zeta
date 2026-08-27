@@ -31,16 +31,8 @@ open Zeta.Core
 // ═══════════════════════════════════════════════════════════════════
 
 // ── the ℤ '*'-ring: (ℤ,+,×) with identity conjugation (ℝ⊇ℤ has no imaginary
-//    part). `IntegerRing` is only IRing<int64>; WSet's ops want IStarRing<int64>,
-//    so we box the base corner here (weights kept small ⇒ no overflow mid-law). ──
-let private intStar : IStarRing<int64> =
-    { new IStarRing<int64> with
-        member _.Zero = 0L
-        member _.One = 1L
-        member _.Add(a, b) = a + b
-        member _.Mul(a, b) = a * b
-        member _.Negate a = -a
-        member _.Conj a = a }
+//    part). Named src instance: IntegerRing.Star. Weights kept small. ──
+let private intStar : IStarRing<int64> = IntegerRing.Star
 
 let private isZeroI (w: int64) = w = 0L
 

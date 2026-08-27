@@ -53,15 +53,8 @@ open Zeta.Core
 // (bijective, zero heat) vs `measure k` (k bits to the heat ledger).
 // ═══════════════════════════════════════════════════════════════════
 
-/// The ℤ '*'-ring — the DBSP base corner (same boxing as WSet.Comonoid.Laws.Tests.fs).
-let private intStar: IStarRing<int64> =
-    { new IStarRing<int64> with
-        member _.Zero = 0L
-        member _.One = 1L
-        member _.Add(a, b) = a + b
-        member _.Mul(a, b) = a * b
-        member _.Negate a = -a
-        member _.Conj a = a }
+/// The ℤ '*'-ring — the DBSP base corner (`IntegerRing.Star`).
+let private intStar: IStarRing<int64> = IntegerRing.Star
 
 let private isZeroI (w: int64) = w = 0L
 

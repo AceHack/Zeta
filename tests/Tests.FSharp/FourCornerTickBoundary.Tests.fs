@@ -220,14 +220,7 @@ let ``FIN-3: two handlers contributing on one tick both survive the merge`` () =
 // MUTATION that must break it: drop the `consolidate` from the merge — then `+w` and `-w` sit side
 // by side instead of annihilating, and the corner is a log rather than a Z-set.
 
-let private intStar: IStarRing<int64> =
-    { new IStarRing<int64> with
-        member _.Zero = 0L
-        member _.One = 1L
-        member _.Add(a, b) = a + b
-        member _.Mul(a, b) = a * b
-        member _.Negate a = -a
-        member _.Conj a = a }
+let private intStar: IStarRing<int64> = IntegerRing.Star
 
 let private isZeroI (w: int64) = w = 0L
 

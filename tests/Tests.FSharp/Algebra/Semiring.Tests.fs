@@ -62,6 +62,14 @@ let ``IntegerRing — ring negate law`` () =
     checkRingNegate sr -7L
 
 [<Fact>]
+let ``IntegerRing.Star is IStarRing with Conj = id — TRACE applies, not C₄`` () =
+    let s = IntegerRing.Star
+    s.Conj 5L |> should equal 5L
+    s.Add(7L, s.Negate 7L) |> should equal 0L
+    s.Mul(s.One, s.One) |> should equal 1L
+    s.Mul(s.Negate s.One, s.Negate s.One) |> should equal 1L
+
+[<Fact>]
 let ``IntegerRing — matches legacy Weight constants`` () =
     // Ensure ISemiring<int64> aligns with existing Weight module.
     IntegerRing.Instance.Zero |> should equal Weight.Zero

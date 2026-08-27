@@ -8,7 +8,9 @@ namespace Zeta.Core
 ///
 /// **The four corners** = a 2×2 of (data × feedback) × (in × out), with implicit directionality (each axis
 /// directed) ⇒ a compass **N S E W = {1, i, −1, −i} = C₄ = `i`-rotation** (the harmonic four-corner phase;
-/// why Cayley-Dickson is everywhere). `TInFeedback` is **co-owned — both sides contribute** — which is
+/// why Cayley-Dickson is everywhere). That C₄ is a **labeling** of this record, not an identification
+/// with Cl(p,q) — generator squares ±1 are signature, and C₄ sits in Cl(3,0)'s even subalgebra as
+/// `e₁₂² = −1`, not as a vector. Checked in `FourCornerC4`. `TInFeedback` is **co-owned — both sides contribute** — which is
 /// "each is backpressure from the other's perspective" (frame-relative, no absolute backpressure). The
 /// fusion target (081KTQD8A0008QG0R0005EFYPV): the `ISR` arrow's feedback channel becomes this object. Pure record, no classes.
 [<RequireQualifiedAccess>]

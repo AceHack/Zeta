@@ -46,16 +46,8 @@ open Zeta.Core
 // = Weyl Reflection".
 // ═══════════════════════════════════════════════════════════════════
 
-// ── the ℤ '*'-ring (same boxing as the comonoid pack: IntegerRing is only
-//    IRing<int64>, WSet's ops want IStarRing<int64>). ──
-let private intStar: IStarRing<int64> =
-    { new IStarRing<int64> with
-        member _.Zero = 0L
-        member _.One = 1L
-        member _.Add(a, b) = a + b
-        member _.Mul(a, b) = a * b
-        member _.Negate a = -a
-        member _.Conj a = a }
+// ── the ℤ '*'-ring. Named src instance: IntegerRing.Star (Conj = id). ──
+let private intStar: IStarRing<int64> = IntegerRing.Star
 
 let private isZeroI (w: int64) = w = 0L
 

@@ -137,6 +137,9 @@ module WSet =
 /// one C₄ phase `{1, i, −1, −i}` — that is an identity in the *ring*, matching `FourCorner`'s 2×2 compass.
 /// It is NOT a claim that this substrate is physically quantum, nor that the trace exploits quantum
 /// mechanics; it is the same GDL circuit (Aji–McEliece 2000) run over a different semiring.
+/// **Related, not identified:** Clifford generator squares ±1 are the *signature* of Cl(p,q), not this
+/// compass. Cl(3,0) has `eᵢ² = +1`; C₄ lives in the even subalgebra (`e₁₂² = −1`) and as Cl(0,1) ≅ ℂ.
+/// The VALUE ping-return needs `IStarRing` (Negate). FourCorner is not Cl(p,q). See `FourCornerC4`.
 ///
 /// **HONESTY — the retraction is Landauer-FREE, so Landauer does not meter it.** `WSet.negate` is a
 /// self-inverse *bijection* of the state space, so by Bennett 1973 it erases nothing and costs nothing;

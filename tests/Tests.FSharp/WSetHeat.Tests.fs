@@ -5,14 +5,7 @@ open Xunit
 open Zeta.Core
 open Zeta.Core.Abstractions
 
-let private intStar: IStarRing<int64> =
-    { new IStarRing<int64> with
-        member _.Zero = 0L
-        member _.One = 1L
-        member _.Add(a, b) = a + b
-        member _.Mul(a, b) = a * b
-        member _.Negate a = -a
-        member _.Conj a = a }
+let private intStar: IStarRing<int64> = IntegerRing.Star
 
 let private isZero (value: int64) = value = 0L
 
