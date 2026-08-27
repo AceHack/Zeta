@@ -1,0 +1,15 @@
+{
+  "pr_number": 15604,
+  "archive_path": "docs/history/pr-reviews/PR-15604-feat-dep-update-tier-0-export-surface-diff-the-free-runner-escalation-ladder.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7mNpgs",
+    "thread:PRRT_kwDOSF9kNM6ccQFL"
+  ],
+  "fetched_at": "2026-08-26T12:16:30.852Z",
+  "schema_version": "v1",
+  "commit_sha": "210fa472166aa4066e565182ba89f6abbd2f93ec",
+  "title": "feat(dep-update): Tier 0 export-surface diff — the free-runner escalation ladder",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:57:59Z",
+  "head_ref": "shadow/dep-update-escalation-ladder"
+}

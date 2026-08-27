@@ -1,0 +1,12 @@
+{
+  "pr_number": 15725,
+  "archive_path": "docs/history/pr-reviews/PR-15725-liveness-observations-reach-durable-git-without-a-pr-ledger-ref.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:00:54.006Z",
+  "schema_version": "v1",
+  "commit_sha": "f6580917fd64a0ff15113ab8c2aa8b642d5fb676",
+  "title": "liveness: observations reach durable git without a PR (ledger ref)",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T00:52:19Z",
+  "head_ref": "shadow/liveness-ledger-ref"
+}

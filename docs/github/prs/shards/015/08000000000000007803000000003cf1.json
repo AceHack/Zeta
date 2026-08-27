@@ -1,0 +1,12 @@
+{
+  "pr_number": 15601,
+  "archive_path": "docs/history/pr-reviews/PR-15601-ci-gate-split-cross-verify-into-31-named-per-audit-checks.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:57:24.247Z",
+  "schema_version": "v1",
+  "commit_sha": "76319aecb565a322f608a2bae75b289c689eac70",
+  "title": "ci(gate): split cross-verify into 31 named per-audit checks",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:55:53Z",
+  "head_ref": "shadow/split-cross-verify-into-named-audits"
+}

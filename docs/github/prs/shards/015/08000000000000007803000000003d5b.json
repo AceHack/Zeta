@@ -1,0 +1,12 @@
+{
+  "pr_number": 15707,
+  "archive_path": "docs/history/pr-reviews/PR-15707-skip-review-telemetry-flush-archive-pr-reviews-pr-15592-on-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:00:37.605Z",
+  "schema_version": "v1",
+  "commit_sha": "f6580917fd64a0ff15113ab8c2aa8b642d5fb676",
+  "title": "[skip-review][telemetry-flush] archive(pr-reviews): PR #15592 on merge",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T23:53:23Z",
+  "head_ref": "heartbeat/pr-archive"
+}

@@ -2,7 +2,7 @@
   "pr_number": 15685,
   "archive_path": "docs/history/pr-reviews/PR-15685-feat-harness-declare-paid-account-providers-and-ship-zeta-login.md",
   "source_ids": [],
-  "fetched_at": "2026-08-26T22:28:39.893Z",
+  "fetched_at": "2026-08-26T22:30:54.616Z",
   "schema_version": "v1",
   "commit_sha": "443cdacdb50e083fe546ad57ed9d2cd834f6243b",
   "title": "feat(harness): declare paid-account providers and ship zeta-login",

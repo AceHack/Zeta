@@ -1,0 +1,15 @@
+{
+  "pr_number": 15635,
+  "archive_path": "docs/history/pr-reviews/PR-15635-usb-boot-the-assembled-image-off-a-real-gpt-esp-under-ovmf-with-a-negative-contr.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7mSZVM",
+    "thread:PRRT_kwDOSF9kNM6cfdqy"
+  ],
+  "fetched_at": "2026-08-26T15:50:49.791Z",
+  "schema_version": "v1",
+  "commit_sha": "52f4a71bd6cbae115b3c1dadd0324f3d9ec5e5b2",
+  "title": "usb: boot the assembled image off a real GPT/ESP under OVMF, with a negative control",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T15:02:58Z",
+  "head_ref": "usb-qemu-gpt-esp-boot-lane"
+}

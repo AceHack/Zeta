@@ -1,0 +1,12 @@
+{
+  "pr_number": 15718,
+  "archive_path": "docs/history/pr-reviews/PR-15718-feat-zetafs-dual-fold-algebra-is-the-git-replacement.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:00:44.778Z",
+  "schema_version": "v1",
+  "commit_sha": "f6580917fd64a0ff15113ab8c2aa8b642d5fb676",
+  "title": "feat(zetafs): dual-fold algebra is the git replacement",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T00:37:17Z",
+  "head_ref": "feat/zetafs-dual-fold-git-replacement"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 15666,
+  "archive_path": "docs/history/pr-reviews/PR-15666-fix-ci-take-the-repo-wide-archive-strand-audit-off-the-blocking-floor-and-fix-th.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T21:31:46.777Z",
+  "schema_version": "v1",
+  "commit_sha": "697a06e46b9c4051218970c99cddbfea67feac5d",
+  "title": "fix(ci): take the repo-wide archive-strand audit off the blocking floor — and fix the guard that went blind when cross-verify was split",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T21:03:38Z",
+  "head_ref": "shadow/archive-strand-alarm-rescope"
+}

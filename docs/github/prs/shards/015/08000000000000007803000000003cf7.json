@@ -1,0 +1,12 @@
+{
+  "pr_number": 15607,
+  "archive_path": "docs/history/pr-reviews/PR-15607-fix-hygiene-ah006-read-a-cited-id-as-a-declared-task-task-none-fell-through.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-26T11:57:28.440Z",
+  "schema_version": "v1",
+  "commit_sha": "76319aecb565a322f608a2bae75b289c689eac70",
+  "title": "fix(hygiene): AH006 read a CITED id as a declared Task — `Task: none` fell through",
+  "state": "MERGED",
+  "merged_at": "2026-08-26T11:54:28Z",
+  "head_ref": "shadow/ah006-mention-is-not-declaration"
+}

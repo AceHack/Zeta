@@ -7,9 +7,9 @@
     "thread:PRRT_kwDOSF9kNM6ccwfH",
     "thread:PRRT_kwDOSF9kNM6cl2Id"
   ],
-  "fetched_at": "2026-08-26T20:54:23.836Z",
+  "fetched_at": "2026-08-26T21:31:17.973Z",
   "schema_version": "v1",
-  "commit_sha": "e757ff9ffe255afd8060059809001f9b4b35c674",
+  "commit_sha": "697a06e46b9c4051218970c99cddbfea67feac5d",
   "title": "research(decorrelation): hat-CHOICE axis measured — not supported; 24 hatted agents are ~1.2 witnesses",
   "state": "MERGED",
   "merged_at": "2026-08-26T20:47:51Z",

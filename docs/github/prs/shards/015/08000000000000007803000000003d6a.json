@@ -1,0 +1,12 @@
+{
+  "pr_number": 15722,
+  "archive_path": "docs/history/pr-reviews/PR-15722-fix-heartbeat-declare-data-tick-reasoning-jsonl-union-unwedge-the-alexa-lane.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T01:00:52.218Z",
+  "schema_version": "v1",
+  "commit_sha": "f6580917fd64a0ff15113ab8c2aa8b642d5fb676",
+  "title": "fix(heartbeat): declare data/tick-reasoning.jsonl union — unwedge the alexa lane",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T00:43:36Z",
+  "head_ref": "fix/heartbeat-alexa-tick-reasoning-add-add"
+}
