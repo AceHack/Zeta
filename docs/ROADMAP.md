@@ -157,8 +157,10 @@ E8: roots 240 + algebra 248 metered; split Chevalley root groups
 Lie group still a Killing substitute (different object). One tick
 is FourCorner's 2×2 occupancy (Meijer 2-corner = one Q; `{Q,Q}` =
 one `∂_τ`). +1/−1 compass: related C₄ points, divergent as maps
-(`Negate` involutes; `OnError` does not). Mutual options occupy
-orthogonally (norm √2, noninterference product). Clifford generator
+(`Negate` involutes; `OnError` does not). Mutual options occupy orthogonally (factor √2);
+the CHSH bound is **2√2** (front 2 = classical floor), not √2.
+`{Q,Q}` is two deniable moves; both true-ish until the future snap.
+Clifford generator
 squares ±1 are **signature** (Cl(3,0)
 `eᵢ² = +1`; C₄ lives in the even subalgebra as `e₁₂² = −1`, and as
 Cl(0,1) ≅ ℂ). The trace can instantiate over `Cl3.Mv` *weights*
@@ -368,7 +370,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 
 - Z-set algebra (D, I, z⁻¹, H, Distinct) ✅
 - ZetaFS dual fold (`ZetaFsDualFold`: forward `I`, generator-reinterpret `−1`, Merkle snapshot, DagFs presence) — algebra named; parent-edge / factory-path still open (`081M108RYNT087G0R001JSRNZE`) ◐
-- FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). Existing instances apply: TRACE on ℤ (`IntegerRing.Star`) / ℝ / tower / Cl3; C₄ generator only from ℂ up (and Cl3 bivectors). **Not a fermion:** Adinkra connection is Q-odd dashing = C₄ south; coded `[8,4]` `K_{8,8}` 8B+8F vs uncoded `Cl(0,8)` halves; Meijer 2-corner vs FourCorner product vs ISR error-sum. One tick = 2×2 occupancy; +1/−1 related-but-divergent. E8 roots+algebra + split Chevalley `x_α(t)` multiply; compact manifold still substitute. `081M10CBYF9087G0R003GWBNHG` ✅
+- FourCornerC4 — C₄ compass labeling, ℂ `i² = Negate(One)` (`IStarRing` gate for FourCornerTrace VALUE), Cl(3,0) vector-square discriminator (`eᵢ² = +1 ≠ −1`). Related, **not** Cl(p,q). Existing instances apply: TRACE on ℤ (`IntegerRing.Star`) / ℝ / tower / Cl3; C₄ generator only from ℂ up (and Cl3 bivectors). **Not a fermion:** Adinkra connection is Q-odd dashing = C₄ south; coded `[8,4]` `K_{8,8}` 8B+8F vs uncoded `Cl(0,8)` halves; Meijer 2-corner vs FourCorner product vs ISR error-sum. One tick = 2×2 occupancy; +1/−1 related-but-divergent; CHSH bound **2√2** (not occupancy √2); `{Q,Q}` two deniable moves until snap. E8 roots+algebra + split Chevalley `x_α(t)` multiply; compact manifold still substitute. `081M10CBYF9087G0R003GWBNHG` ✅
 - Semi-naïve evaluation ✅
 - Higher-order differentials (D², Dⁿ, Aitken Δ²) ✅
 - Incremental distinct (O(|Δ|)) ✅
@@ -486,7 +488,7 @@ Taken from scout agent:
 5. **CAS-Paxos with state-transition-function consensus for DBSP replay** → NSDI / OSDI, ~6 em
 6. **F# type-provider-driven compile-time circuit specialisation** → OOPSLA / PLDI, ~4 em
 7. **DBSP retraction ≡ Beam RETRACTING ≡ delta-CRDT merge** foundational clarifier → ICFP / LMCS, ~5 em
-8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object; in-tree discriminator already checked (`FourCornerC4`). Not a fermion: Adinkra Q-odd dashing is the connection; Meijer duals traded feedback for an erasing error channel; +1/−1 related-but-divergent; split Chevalley `x_α(t)` multiply; compact E8 manifold still a substitute.
+8. **C₄ compass / IStarRing `i² = −1` / Clifford signature ±1 as three embeddings, not Cl(p,q)** — honesty paper for the traced-monoidal I/O object; in-tree discriminator already checked (`FourCornerC4`). Not a fermion: Adinkra Q-odd dashing is the connection; Meijer duals traded feedback for an erasing error channel; +1/−1 related-but-divergent; bound is **2√2** not √2; `{Q,Q}` two deniable moves; split Chevalley `x_α(t)` multiply; compact E8 manifold still a substitute.
 
 ## CFPs to target
 

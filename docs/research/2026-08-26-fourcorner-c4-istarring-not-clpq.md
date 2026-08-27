@@ -377,20 +377,50 @@ round-trip's I/O: two Q-moves × (in/out) = 4 slots. Occupancy of
 options, not a group law on the record. Checked: `oneTick` fills 4;
 `AdinkraClock` two steps ⇒ `DTauOrder = 1`.
 
-## Mutual options ~ √2, noninterference
+## Mutual options, noninterference, bound **2√2** not √2
+
+Aaron 2026-08-27: not √2 — **2√2**, missing the front 2.
 
 The two optional axes (data-out, feedback) may both be occupied —
 **mutual options**, a product, not a sum. They are declared channels
 (§13): filling both does not mix them and does not discard `TIn`.
-Two orthogonal unit occupancies have Euclidean norm `√(1²+1²) = √2`.
+Two orthogonal unit occupancies have Euclidean *factor* `√(1²+1²) = √2`.
 
-`FeedbackThrottle.TsirelsonLatency` is also `√2` (solve
-`2 + 2/(1+L) = 2√2` under the `1/(1+L)` modeling choice). Same
-number, **contingent on the attenuation curve** — the module already
-labels that. Consistent-with, not identified
-(`.claude/rules/numerology-vs-number-theory.md`). What is structural:
-noninterference is the product (two declared axes); Meijer's sum
-collapses them into one terminal.
+The **bound** is the classical / Meijer 2-corner floor **times** that
+factor: `2 × √2 = 2√2`. The front 2 is CHSH classical
+(`BellTest.ClassicalBound`; `Tsirelson` commuting control `C² = 4I`,
+S² = 4). Integer lock: S² = 8 = (2√2)² (`Tsirelson.fs`; the
+irrational appears only at readout).
+
+`FeedbackThrottle.TsirelsonLatency` is √2 — a model-contingent
+*latency* at which `maxChsh` hits 2√2, not the bound. Occupancy
+factor √2 and that latency can share a number; the bound does not.
+
+## Quantum from `{Q,Q}`: two deniable moves, future snap
+
+Aaron 2026-08-27: this is exactly where quantum comes from — `{Q,Q}`
+and two moves each, where either is plausibly deniable, both are
+true-ish, and the future determines which will collapse.
+
+- Each Q is a 2-corner (in/out). Two Q-moves × (in/out) = FourCorner's
+  4 slots of one tick.
+- **Deniable:** AdinkraClock's first Q emits no `∂_τ`. A single move
+  is not a clock event; you can deny that time happened.
+- **Both true-ish:** the FourCorner product holds both options
+  (SoftValue support, confidence < 1, `resolve` holds). Neither
+  erased — that is the noninterference product, not Meijer's sum.
+- **Future snap:** the second Q completes `{Q,Q}` (`DTauOrder = 1`).
+  `SoftValue.snap` is the only sanctioned collapse (`DuExpand`).
+
+Not "FourCorner is a qubit" and not "we run quantum hardware". The
+2×2 occupancy can carry two live options until the tick closes.
+CHSH 2√2 is the bound on correlating those options; S=4 is the
+PR-box / full-seed regime (`BellTest`), which is superdeterministic
+close of the same box, not extra physics.
+
+Peel: *collapse-like* via snap / tick-close, not literal wavefunction
+collapse. Anchors: Tsirelson 1980 (2√2); Pawłowski et al. 2009
+(Information Causality); `SoftValue.snap`; Adinkra `{Q,Q}=2∂_τ`.
 
 ## +1 and −1 compass: related, divergent
 

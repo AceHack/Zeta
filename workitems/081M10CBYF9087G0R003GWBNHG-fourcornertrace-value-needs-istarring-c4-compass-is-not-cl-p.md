@@ -44,3 +44,5 @@ are related; they are **not** “it is Cl(p,q)”.
   form) — split Chevalley root groups `x_α(t)` now have multiply
   (`E8ChevalleyGroup`); that is the algebraic group, not the
   compact manifold
+- Bound is **2√2** (front 2 = classical), not occupancy √2; `{Q,Q}`
+  two deniable moves, snap is the collapse

@@ -323,17 +323,48 @@ module FourCornerC4 =
     /// Two Q-moves per `{Q,Q}` tick (`AdinkraClock.step` twice).
     let adinkraQMovesPerTick = 2
 
-    // ── Mutual options ~ √2, noninterference ─────────────────────────
+    // ── Mutual options, noninterference, bound 2√2 not √2 ────────────
     // TOut and feedback are *mutual options*: both may be occupied
     // (product) without erasing TIn. Two declared unit axes, orthogonal
-    // by noninterference (§13 — entropy only through declared channels),
-    // Euclidean occupancy √(1²+1²) = √2. FeedbackThrottle.TsirelsonLatency
-    // is also √2 (contingent on 1/(1+L)). Consistent-with, not identified.
+    // by noninterference (§13). Their Pythagorean factor is √2.
+    // Aaron 2026-08-27: the CHSH / quantum number is **2√2**, not √2 —
+    // missing the front 2. The front 2 is the classical / Meijer
+    // 2-corner floor (BellTest.ClassicalBound; Tsirelson C²=4I when
+    // the pair commutes). Bound = 2 × √2 = 2√2. Integer lock:
+    // S² = 8 = (2√2)²; the irrational is readout only (`Tsirelson.fs`).
+    // Do not identify occupancy-√2 with FeedbackThrottle.TsirelsonLatency
+    // (that √2 is a model-contingent *latency*, not the bound).
 
     let mutualOptionOccupancyNorm (dataOut: bool) (feedback: bool) : float =
         let d = if dataOut then 1.0 else 0.0
         let f = if feedback then 1.0 else 0.0
         sqrt (d * d + f * f)
+
+    /// Classical CHSH / Meijer 2-corner floor. The front 2.
+    [<Literal>]
+    let classicalChshFloor = 2
+
+    /// Integer lock: S² ≤ 8. (2√2)². Irrational only at readout.
+    [<Literal>]
+    let tsirelsonSSquared = 8
+
+    /// Classical S² = 2² = 4 (commuting control in `Tsirelson.fs`).
+    [<Literal>]
+    let classicalSSquared = 4
+
+    /// The bound: front 2 × occupancy factor √2 = 2√2. Not √2 alone.
+    let tsirelsonBoundFromMutualOptions : float =
+        float classicalChshFloor * mutualOptionOccupancyNorm true true
+
+    // ── Quantum from {Q,Q}: two deniable moves, future snap ──────────
+    // Each Q is a 2-corner (in/out). Either move is *plausibly deniable*
+    // as a clock event: AdinkraClock's first Q emits no ∂_τ. Both are
+    // true-ish while the FourCorner product holds both options (SoftValue
+    // support, not snapped). The pair `{Q,Q}` is the tick; that close is
+    // the collapse. SoftValue.snap is the only sanctioned collapse
+    // (`DuExpand`: snap is the only collapse). Not "FourCorner is a
+    // qubit" — derivation of where the 2×2 occupancy can carry two
+    // live options until the future tick.
 
     // ── +1 and −1 compass: related, divergent ────────────────────────
     // +1 = north = genuineDelta = VALUE product = Reversible (involution).
