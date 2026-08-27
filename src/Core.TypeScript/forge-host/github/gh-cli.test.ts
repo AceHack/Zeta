@@ -46,18 +46,40 @@ describe("classifyTokenRejection — the two credential answers are distinguisha
 });
 
 describe("tokenRefusalMessage — says which, and never says the secret", () => {
-  test("the absent message claims absence; the rejected message explicitly denies it", () => {
-    expect(tokenRefusalMessage("absent")).toContain("no GitHub token");
-    expect(tokenRefusalMessage("rejected-by-charset-filter")).toContain("WAS resolved");
-    expect(tokenRefusalMessage("rejected-by-charset-filter")).toContain("NOT a missing credential");
-    expect(tokenRefusalMessage("rejected-by-charset-filter")).not.toContain("no GitHub token");
+  // EXACT-EQUALITY PINS, and the reason is a rule rather than a preference.
+  //
+  // The first draft asserted `not.toContain("no GitHub token")` on the rejected
+  // message, and `audit-check-arity-nonequality` was right to refuse it: an absence
+  // assertion under a taint claim witnesses ONE RENDERING of a leak, never its
+  // absence. `not.toContain(X)` passes for every message that happens not to contain
+  // X, including a message that leaks something else entirely.
+  //
+  // Pinning the WHOLE output positively carries the claim instead of gesturing at it:
+  // what the function returns is exactly this text, so it visibly does not claim
+  // absence and visibly cannot carry a credential — there is nothing here for one to
+  // be interpolated into. The pin is deliberately verbatim; a message change is
+  // supposed to be a decision, not a diff nobody reads.
+  const ABSENT =
+    "no GitHub token in ~/.config/zeta/auth/github.json or GH_TOKEN/GITHUB_TOKEN — run `harny login github` (gh CLI is not a fallback)";
+  const REJECTED =
+    "a GitHub token WAS resolved but `asGithubAccessToken` refused its shape, so it was never sent. This is a credential-shape refusal, NOT a missing credential: do not read it as 'the token is unset'. FIX: either store a credential matching the accepted shapes (gh[pousr]_… / github_pat_… / 40 hex) with `harny login github`, or widen the filter in src/Core.TypeScript/model-backend/resolve-stored-token.ts to admit the shape this host actually issues.";
+
+  test("each condition returns exactly its own text", () => {
+    expect(tokenRefusalMessage("absent")).toBe(ABSENT);
+    expect(tokenRefusalMessage("rejected-by-charset-filter")).toBe(REJECTED);
   });
 
-  test("neither message can carry a credential — they take no argument that could hold one", () => {
-    for (const m of [tokenRefusalMessage("absent"), tokenRefusalMessage("rejected-by-charset-filter")]) {
-      expect(m).not.toContain(REFUSED);
-      expect(m).not.toContain(ACCEPTED);
-    }
+  test("the two texts are different, which is the whole bug in one assertion", () => {
+    expect(tokenRefusalMessage("absent")).not.toBe(tokenRefusalMessage("rejected-by-charset-filter"));
+  });
+
+  test("the pinned texts are what a reader needs and nothing a credential fits into", () => {
+    // Positive: the rejected message states the correction the incident needed.
+    expect(REJECTED.startsWith("a GitHub token WAS resolved")).toBe(true);
+    // Positive: neither text is a template — no interpolation site exists at all, so
+    // there is no rendering in which a token could appear.
+    expect(ABSENT.includes("${")).toBe(false);
+    expect(REJECTED.includes("${")).toBe(false);
   });
 });
 
