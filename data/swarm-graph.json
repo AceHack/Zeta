@@ -1,0 +1,212 @@
+{
+  "generatedAt": "2026-08-27T17:03:22.104Z",
+  "windowDays": null,
+  "channels": [
+    {
+      "channel": "bus",
+      "label": "agent bus (message → recipient)",
+      "color": "#5EC8C2",
+      "directed": true
+    },
+    {
+      "channel": "workitem",
+      "label": "shared work item (co-participation)",
+      "color": "#E8B566",
+      "directed": false
+    },
+    {
+      "channel": "commit",
+      "label": "co-authored commit",
+      "color": "#A78BFA",
+      "directed": false
+    }
+  ],
+  "nodes": [
+    {
+      "id": "aaron",
+      "role": "HumanMaintainer",
+      "color": "#E7EBF4",
+      "activity": 0,
+      "degree": 0,
+      "strength": 0
+    },
+    {
+      "id": "addison",
+      "role": "Designer",
+      "color": "#F9A03F",
+      "activity": 0,
+      "degree": 0,
+      "strength": 0
+    },
+    {
+      "id": "alexa",
+      "role": "Builder",
+      "color": "#E8B566",
+      "activity": 1385,
+      "degree": 4,
+      "strength": 564
+    },
+    {
+      "id": "lior",
+      "role": "Compiler",
+      "color": "#6FA8FF",
+      "activity": 49,
+      "degree": 0,
+      "strength": 0
+    },
+    {
+      "id": "otto",
+      "role": "Operator",
+      "color": "#5EC8C2",
+      "activity": 2123,
+      "degree": 4,
+      "strength": 343
+    },
+    {
+      "id": "riven",
+      "role": "Builder",
+      "color": "#A78BFA",
+      "activity": 73,
+      "degree": 4,
+      "strength": 28
+    },
+    {
+      "id": "soraya",
+      "role": "Verifier",
+      "color": "#F472B6",
+      "activity": 296,
+      "degree": 4,
+      "strength": 299
+    },
+    {
+      "id": "vera",
+      "role": "Builder",
+      "color": "#7CD992",
+      "activity": 128,
+      "degree": 4,
+      "strength": 32
+    }
+  ],
+  "edges": [
+    {
+      "source": "otto",
+      "target": "vera",
+      "channel": "workitem",
+      "weight": 5,
+      "directed": false,
+      "lastAt": "2026-08-27T00:49:05.491Z"
+    },
+    {
+      "source": "otto",
+      "target": "riven",
+      "channel": "commit",
+      "weight": 17,
+      "directed": false,
+      "lastAt": "2026-08-27T16:32:02+00:00"
+    },
+    {
+      "source": "alexa",
+      "target": "soraya",
+      "channel": "commit",
+      "weight": 268,
+      "directed": false,
+      "lastAt": "2026-08-27T14:43:36+00:00"
+    },
+    {
+      "source": "alexa",
+      "target": "otto",
+      "channel": "commit",
+      "weight": 282,
+      "directed": false,
+      "lastAt": "2026-08-27T00:51:55+00:00"
+    },
+    {
+      "source": "otto",
+      "target": "soraya",
+      "channel": "commit",
+      "weight": 27,
+      "directed": false,
+      "lastAt": "2026-08-27T00:51:55+00:00"
+    },
+    {
+      "source": "otto",
+      "target": "vera",
+      "channel": "commit",
+      "weight": 12,
+      "directed": false,
+      "lastAt": "2026-08-26T09:43:19+00:00"
+    },
+    {
+      "source": "alexa",
+      "target": "vera",
+      "channel": "commit",
+      "weight": 8,
+      "directed": false,
+      "lastAt": "2026-08-17T16:38:17+00:00"
+    },
+    {
+      "source": "alexa",
+      "target": "riven",
+      "channel": "commit",
+      "weight": 6,
+      "directed": false,
+      "lastAt": "2026-08-17T15:20:30+00:00"
+    },
+    {
+      "source": "riven",
+      "target": "vera",
+      "channel": "commit",
+      "weight": 4,
+      "directed": false,
+      "lastAt": "2026-08-17T01:18:52+00:00"
+    },
+    {
+      "source": "riven",
+      "target": "soraya",
+      "channel": "commit",
+      "weight": 1,
+      "directed": false,
+      "lastAt": "2026-08-14T19:40:48+00:00"
+    },
+    {
+      "source": "soraya",
+      "target": "vera",
+      "channel": "commit",
+      "weight": 3,
+      "directed": false,
+      "lastAt": "2026-08-14T19:40:48+00:00"
+    }
+  ],
+  "metrics": {
+    "nodeCount": 8,
+    "edgeCount": 10,
+    "density": 0.35714285714285715,
+    "meanDegree": 2.5,
+    "maxDegree": 4,
+    "meanEdgeWeight": 63.3,
+    "clusteringCoefficient": 1,
+    "averagePathLength": 1,
+    "largestComponentDiameter": 1,
+    "componentCount": 4,
+    "largestComponentSize": 5,
+    "reciprocityBus": 0,
+    "smallWorldSigma": 6.354354697874652
+  },
+  "coverage": {
+    "bus": {
+      "records": 49,
+      "edges": 0,
+      "skipped": 0
+    },
+    "workitem": {
+      "records": 726,
+      "edges": 1,
+      "skipped": 18
+    },
+    "commit": {
+      "records": 4975,
+      "edges": 10,
+      "skipped": 0
+    }
+  }
+}
