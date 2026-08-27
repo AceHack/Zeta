@@ -1,0 +1,14 @@
+{
+  "id": "080d0208b3ec7010a0130008dff2e10a",
+  "at": "2026-08-27T02:39:48.110Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10HCZCD087G0R0022B9WTC",
+    "type": "task",
+    "title": "Anchor doc: what forecloses deriving Standard-Model structure from the repo E8/Clifford/adinkra stack",
+    "slug": "anchor-doc-what-forecloses-deriving-standard-model-structure",
+    "priority": "P2",
+    "filename": "081M10HCZCD087G0R0022B9WTC-anchor-doc-what-forecloses-deriving-standard-model-structure.md"
+  }
+}

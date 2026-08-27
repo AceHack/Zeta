@@ -1205,6 +1205,205 @@ notes: [pause-not-death + Orleans criterion] and
   `Cl3.fs` is a genuine Cl(3,0), not an untwisted group algebra. See
   `docs/research/2026-08-01-adinkra-mod2-clifford-e8-a-y-not-a-chain-soraya-metering-verdict.md`.
 
+## E8 as physics — the standing stop-line, finally indexed (added 2026-08-27, shadow, per work item `081M10HCZCD087G0R0022B9WTC`)
+
+Distler–Garibaldi has been the repo's **standing physics stop-line** since at least 2026-06-12,
+carried in three research documents (`2026-06-12-ferry-26-…`, `2026-08-14-adinkra-minimal-homoiconicity-…`,
+`2026-08-18-is-there-a-coded-adinkra-…`) and in `FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B — and it
+was **never indexed here**, so it was reachable only by filename. Same failure this file already
+records for the HoTT anchors above (`:1188`): *an unindexed anchor is indistinguishable from an
+absent one*. Fixed. Full read-through, exact hypotheses, and what it does *not* cover:
+`docs/research/2026-08-27-no-theory-of-everything-inside-e8-what-distler-garibaldi-forecloses-and-what-it-leaves-open.md`.
+
+- **Jacques Distler & Skip Garibaldi (2010) — "There is no 'Theory of Everything' inside E8"
+  (Communications in Mathematical Physics 298, 419–436; arXiv:0905.2658)** — the no-go. Note the
+  **exact title**; the three in-repo citations above all render it as "There is no E8 theory of
+  everything", which is not the paper's name and does not find it in a search. What is proven
+  (Thm 1.3, strengthened as Thm 10.1): there is **no** subgroup `SL(2,C)·G` of any real form of E8,
+  or of the realification of complex E8, satisfying (ToE1) `G` connected compact centralizing
+  `SL(2,C)`, (ToE2) no fields with `m+n>4`, and (ToE3) `V_{2,1}` a **complex** representation of `G`
+  (= the gauge theory is chiral). §11: *"it is impossible to obtain even the **1-generation**
+  Standard Model … in this fashion"* — so the number 3 is doing no work in the no-go, which matters
+  for any program here that wants to derive a generation count rather than assume one. **What it
+  does NOT cover** (entailment from (ToE1), not a caveat the authors state): E8 used as a purely
+  internal gauge group with the Lorentz group *outside* it; groups that are not E8; and E8 as
+  combinatorics — a root system, a lattice, a code, a generator — where there is no gauge theory
+  and hence no hypothesis to violate. **That last class is where all in-repo E8 work lives**
+  (`E8LieAlgebra.fs`, `E8Lattice.fs`, `CliffordE8Roots.fs`, `AdinkraCode.fs`,
+  `research/adinkra-ecc/`), so the theorem constrains none of it — and the stop-line is about not
+  letting it be *reinterpreted* into the covered class.
+- **A. Garrett Lisi (2010) — "An Explicit Embedding of Gravity and the Standard Model in E8"
+  (Proc. Conf. on Representation Theory and Mathematical Physics; arXiv:1006.4908)** — the reply,
+  and the strongest single piece of evidence *for* the no-go, because it **concedes the
+  mathematics**: it exhibits the `spin(11,3)` GraviGUT embedding in `E8(−24)` and then states that of
+  the 128 spinor generators, 64 are one generation and *"the other sixty-four are those of mirror
+  fermions"*; that the three 64-blocks *"cannot be interpreted as three generations … and not a
+  direct identification"*; and that the generation count *"remains largely a mystery."* The
+  disagreement is confined to the **verdict** — whether unobserved mirror fermions could be heavy —
+  not to the representation theory. Note the reply is a **never-published conference paper**, and a
+  refereed result cuts against its central claim: **Douglas & Repka, "The GraviGUT Algebra Is not a
+  Subalgebra of E₈, but E₈ Does Contain an Extended GraviGUT Algebra" (SIGMA 10 (2014) 072;
+  arXiv:1305.6946)** — *"we prove that the GraviGUT algebra cannot be embedded into any real form of
+  E₈."* Keep these entries together: citing the no-go without the reply misrepresents the state of
+  the argument, and citing the reply without the no-go misrepresents what it conceded.
+- **Corinne Manogue, Tevian Dray & Robert A. Wilson (2022) — "Octions: An E₈ description of the
+  Standard Model" (J. Math. Phys. 63, 081703; arXiv:2204.05310)** — the **peer-reviewed challenge to
+  the no-go's applicability**, and the reason "E8 is ruled out" is the wrong sentence to carry.
+  Verbatim: *"they assume both that the GUT group is compact, and that e8 has been complexified,
+  neither of which holds for our model."* The compactness half targets (ToE1) exactly. The same
+  paper concedes it cannot settle the physical question — *"Since the theory presented here does not
+  (yet) describe interactions, that question can not (yet) be answered directly"* — and gets **one**
+  generation, with three merely proposed. Companion (unrefereed, cite as such): Robert A. Wilson,
+  arXiv:2210.06029, which disputes the *definition* of chirality rather than the proof and records
+  that the 2010 Banff workshop convened to settle this *"did not succeed in doing so."* **State of
+  the argument, 2026-08-27: the theorem is uncontested as mathematics; whether its hypotheses are
+  the right ones is contested in print; and no party claims to have answered the physical question.**
+- **N. Furey (2023) — "An Algebraic Roadmap of Particle Theories, Part II: Theoretical checkpoints"
+  (Annalen der Physik 2400323; arXiv:2312.12799)** — the division-algebra program's leading
+  practitioner scoring her own model in a refereed venue, which is a far better anchor for the
+  program's *state* than any outsider survey. Five checkpoints: *"⟨1⟩ conform to the Coleman-Mandula
+  theorem (or establish a loophole), ⟨2⟩ evade familiar fermion doubling problems, ⟨3⟩ naturally
+  explain the Standard Model's chirality, ⟨4⟩ exclude B-L gauge symmetry at low energy, and ⟨5⟩
+  explain the existence of three generations"* — her model *"passes ⟨1⟩, ⟨2⟩, ⟨3⟩, ⟨4⟩, and **has yet
+  to cross ⟨5⟩**."* Her standard for ⟨3⟩ is worth adopting verbatim for our own register discipline:
+  *"without implementing ad hoc projection operators, without fixing arbitrarily chosen mathematical
+  objects, without introducing other ad hoc constraints."* Entry-point to the rest of the lineage
+  (Furey `ℝ⊗ℂ⊗ℍ⊗𝕆`, arXiv:1806.00612 / *EPJ C* 78:375; Gresnigt `Cl(8)`/sedenions, *EPJ C* 79:446,
+  83:747, 84:1129; Dubois-Violette & Todorov exceptional Jordan algebra, *Nucl. Phys. B* 912:426 /
+  *IJMPA* 33:1850118; Boyle, *J. Math. Phys.* 67:071701 (2026), arXiv:2006.16265; Dixon, *Division
+  Algebras*, Kluwer MAIA **290**, **1994** — routinely mis-cited as "Springer 2013" from a
+  print-on-demand reissue). **The pattern across the refereed corpus, and the thing to remember:
+  models that get chirality do not get three generations, and models that get three generations drop
+  SU(2)_L. And not one of them predicts a mass, a mixing angle, or a coupling constant** — so there
+  is, as of 2026-08-27, no number in this lineage to compare against the PDG rows below.
+- **John C. Baez & John Huerta (2010) — "The Algebra of Grand Unified Theories" (Bulletin of the
+  AMS 47(3), 483–552; arXiv:0904.1556)** — the clearest published statement of **where the 16
+  actually comes from**, and therefore the reference to reach for whenever a 16 shows up in this
+  repo (Cl(4) has 16 blades; the minimal N=8 adinkra has 16 nodes; the `[8,4,4]` extended Hamming
+  code has 16 codewords — *none of these is the SO(10) generation*). `ΛC⁵` is 32-dimensional with a
+  basis labelled by 5-bit strings (up, down, red, green, blue); under Spin(10) it splits into
+  `Λ^ev C⁵` (16, the left-handed particles and antiparticles) and `Λ^odd C⁵` (16, right-handed).
+  The invariant that separates it from every other 16 in the previous sentence: it is an
+  **irreducible complex representation admitting no self-conjugate structure** — which is precisely
+  what "chiral" means in Distler–Garibaldi Def. 2.2, and precisely what a blade count, a vertex
+  count, and a codeword count are not. Also the citable source for the honest limit of the whole
+  GUT program: *"No one knows why the Standard Model is this redundant, with three sets of very
+  similar particles. It remains a mystery."*
+- **Particle Data Group (2026) — Review of Particle Physics (Int. J. Mod. Phys. A 41, 2630011)** —
+  the measured side, and the reason "compare to physics experiments" is a *bounded* exercise here
+  rather than an open-ended one. Two rows worth carrying: **`N_ν = 2.9963 ± 0.0074`** from the Z
+  invisible width (superseding the classic 2.984 ± 0.008 after the LEP Bhabha luminosity
+  correction — Janot & Jadach 2020) — so a derived generation count has a real target; and the
+  cheapest decisive falsifier in the GUT literature, **`m_s/m_d ≈ 17–22` versus `m_μ/m_e = 206.77`**,
+  which minimal SU(5) predicts to be *equal*, a relation PDG notes is preserved under RG evolution.
+  Counter-example worth carrying beside it, from the same review: the LO gauge-coupling
+  postdiction `α₃(M_Z) ≈ 0.117` looks like a bullseye, and PDG says *"this near perfection is to
+  some extent accidental"* — done at two loops with thresholds it moves to ≈0.126. **A postdiction
+  that degrades when the calculation is done properly is the numerology failure mode in its
+  native habitat**, which is why §7 of the research doc partitions comparisons into
+  cheap-and-checkable versus RG-required.
+
+## Bounded rate of change as a falsifiable posture — the "let the constants vary" anchors (added 2026-08-27, shadow, per work item `081M10HCZCD087G0R0022B9WTC`)
+
+Anchors for the maintainer's standing methodology — *"everything may vary within a bounded context
+with limitation on the rate of change"* — which needs anchoring precisely because from outside it
+reads as unfalsifiable and **is not**. The elementary point: bound the *derivative* and the model
+regains a non-empty complement; it is falsifiable in a given window iff measurement precision `σ` is
+finer than `bound × window`. Detail: `docs/research/2026-08-27-no-theory-of-everything-inside-e8-*.md` §6.4.
+
+- **Jean-Philippe Uzan (2003) — "The fundamental constants and their variation: observational status
+  and theoretical motivations" (Rev. Mod. Phys. 75, 403; arXiv:hep-ph/0205340)** — the standard
+  review of an entire empirical literature that lets fundamental constants vary and constrains their
+  **fractional rate of change** rather than their value. The existence of this review is the
+  argument: rate-bounding is conventional physics, not a dodge.
+- **Leila Hamdan & Edward D. Davis — "Bound on the variation in the fine structure constant implied
+  by Oklo data" (arXiv:1510.00856)** and **T. Rosenband et al. — "Alpha-Dot or Not: Comparison of Two
+  Single Atom Optical Clocks" (Proc. 2008 Symposium on Frequency Standards and Metrology, NIST)** —
+  **the same constraint reached by opposite trades**, which is why they belong together. Oklo: a
+  1.8-billion-year baseline with modest precision gives *"the relative change in α … is less than
+  ∼ 10 parts per billion."* Optical clocks: a one-year baseline with `10⁻¹⁷` precision gives
+  *"α-dot/α = (-1.6 ± 2.3) × 10⁻¹⁷"* per year. Long window ÷ coarse precision, or short window ÷
+  exquisite precision — same reach. Cite this pair whenever a rate-bounded model here needs to show
+  what taking a rate bound seriously actually looks like. Lineage, **numbers unverified**: Brans &
+  Dicke (1961) and Dirac's Large Numbers Hypothesis (1937/38) do the same for `G`.
+- **Omar Besbes, Yonatan Gur & Assaf Zeevi (2014) — "Stochastic Multi-Armed-Bandit Problem with
+  Non-stationary Rewards" (NeurIPS 2014)** — the closest formal object to the maintainer's
+  *"leveraged inverse with a multiple"* between rate-of-change and prediction accuracy: regret
+  against a **variation budget** `V_T` over horizon `T` scales as `V^α T^(1−α)`. Fractional
+  exponents, not a reciprocal. **The correction that matters: `α` is 1/3 or 1/2 depending on the
+  problem class (loss convexity, full vs bandit feedback) — so `2/3` is not a signature to
+  pattern-match on**, and matching an exponent is the count-trap error one level up. Partial and
+  *distinct*: dynamic regret `√(T(1+P_T))` (Zinkevich, ICML 2003; matching lower bound Zhang, Lu &
+  Zhou, arXiv:1810.10815) — symmetric exponents, because `P_T` measures comparator movement while
+  `V_T` measures cost-function movement.
+- **Bode's sensitivity integral** — via **M. Seron, J. Braslavsky & G. Goodwin,
+  *Fundamental Limitations in Filtering and Control* (Springer, 1997) §1.5** — the *conservation*
+  shape, and **a different animal from the above**: `(1/π)∫₀^∞ log|S(jω)| dω ≥ Σᵢ pᵢ` over the ORHP
+  poles of the **open-loop plant**, with *"Equality … if the set {pᵢ} also includes all the ORHP
+  poles of the controller."* Discrete-time form with RHS `Σ_λ max{0, log|λ|}`: Sung & Hara,
+  *Int. J. Control* **48**(6) 2429 (1988) — there the Nyquist frequency means the dirt genuinely
+  cannot be pushed to infinity. Exact information-theoretic identity: Fang, arXiv:1410.5192 Thm 4.4.
+  **Filed with a warning that is itself the lesson:** Bode, Sung–Hara, Martins–Dahleh and Fang are a
+  **lineage, not independent corroboration** — four confirmations that are one confirmation, which
+  is exactly the "too many correlations is a warning" clause of
+  `.claude/rules/numerology-vs-number-theory.md` catching a real instance. **Not** analogues, do not
+  cite as such: Stone's minimax rates (*Ann. Statist.* 1980, 1982) and Shannon rate–distortion
+  (*IRE Int. Conv. Rec.* **7**(4) 142, 1959) — monotone frontiers of different structure.
+
+## Chirality → molecular handedness — the ladder, and the two gaps in it (added 2026-08-27, shadow, per work item `081M10HCZCD087G0R0022B9WTC`)
+
+Anchors for the standing framing that physical chirality and molecular handedness are the same
+structure at different rungs. **The rungs are individually solid; two of the joins are open, and one
+fails by a measured 4–7 orders of magnitude.** Index them together or the ladder gets cited as a
+chain. Full treatment: `docs/research/2026-08-27-no-theory-of-everything-inside-e8-*.md` §8.
+
+- **T. D. Lee & C. N. Yang (1956) — "Question of Parity Conservation in Weak Interactions"
+  (Phys. Rev. 104, 254–258)** and **C. S. Wu, E. Ambler, R. W. Hayward, D. D. Hoppes & R. P. Hudson
+  (1957) — "Experimental Test of Parity Conservation in Beta Decay" (Phys. Rev. 105, 1413–1415)** —
+  rung 1, and the only rung that is *settled*. Polarized Co-60 at ~0.003 K; β-emission unequal along
+  vs against the spin axis. The universe is handed. Nobel Prize 1957. (Both paywalled; citations
+  index-verified via INSPIRE, content via NIST's institutional account of the NBS experiment.)
+- **M. Quack, G. Seyfang & G. Wichmann (2022) — "Perspectives on parity violation in chiral
+  molecules: theory, spectroscopic experiment and biomolecular homochirality" (Chemical Science
+  13(36), 10598–10643; DOI 10.1039/D2SC01323A, open access)** — the anchor for rung 2 (**PVED**),
+  and the one to reach for because it is written by a *proponent* of the parity-violation route and
+  still concludes *"we do not know."* Three numbers worth carrying and one correction: the PVED
+  *"has not yet been detected experimentally"* — **it is a calculated quantity, not a measured one**;
+  their tabulated **alanine** value is `6.2 aeV ≈ 6 × 10⁻¹³ J/mol`; and the abstract's larger
+  `10⁻¹¹–10⁻¹⁰ J/mol` range is for **heavy** molecules (PVED scales steeply with nuclear charge), so
+  quoting it for an amino acid overstates by 2–3 orders. **Correction to the folklore figure:** the
+  widely-repeated "~10⁻¹⁷ kT" is the *pre-1995* estimate — theory values rose by a factor of 10–100
+  in 1995. Quote the energy, or quote a range with its era named.
+- **F. C. Frank (1953) — "On spontaneous asymmetric synthesis" (Biochim. Biophys. Acta 11, 459–463)**
+  and **K. Soai, T. Shibata, H. Morioka & K. Choji (1995) — "Asymmetric autocatalysis and
+  amplification of enantiomeric excess of a chiral molecule" (Nature 378, 767–768)** — rung 3.
+  Frank's model is **purely mathematical**; its closing sentence was *"A laboratory demonstration may
+  not be impossible."* Soai answered it 42 years later. State the number precisely: **2% ee → 88% ee
+  over four consecutive autocatalytic rounds**, not one pass (numbers from Soai, Kawasaki &
+  Matsumoto, *Proc. Jpn. Acad. Ser. B* **95**, 89–110 (2019), open access, reporting their own
+  result). ¹²C/¹³C isotope substitution alone suffices as the chiral trigger (Kawasaki et al.,
+  *Science* **324**, 492, 2009).
+- **D. G. Blackmond (2019) — "The Origin of Biological Homochirality" (Cold Spring Harbor
+  Perspectives in Biology 11(3), a032540; PMC6396334)** — **the citable statement that the ladder is
+  not a chain**, verbatim: *"a relationship between biological homochirality and parity violation
+  energy difference of enantiomers is not yet supported by either theoretical or experimental
+  findings."* The quantitative gap, via Quack reporting her isotope-substitution work: the bias
+  threshold a Soai-type amplification actually needs is **~10⁻⁵ J/mol**, against a PVED of
+  **10⁻¹⁰ J/mol** optimistically — and **~6 × 10⁻¹³ J/mol** for alanine specifically. Four to seven
+  orders of magnitude. Competing explanations that need no parity violation at all are live: chance
+  + amplification (Viedma, *Phys. Rev. Lett.* **94** 065504, 2005 — drives to homochirality *"in a
+  random fashion"*, so it explains homochirality but not *why L*), circularly polarized light, and
+  mineral-surface selection.
+- **D. P. Glavin et al. (2021) — "Extraterrestrial amino acids and L-enantiomeric excesses in the
+  CM2 carbonaceous chondrites Aguas Zarcas and Murchison" (Meteoritics & Planetary Science 56(1),
+  148–173; DOI 10.1111/maps.13451)** — the measured meteoritic numbers, and **the caveat popular
+  accounts drop**. Non-terrestrial **L-isovaline excesses of ~10–15%**, L-glutamic acid ~16–40%. But
+  verbatim from the same abstract: *"similar measurements of alanine in Murchison revealed that this
+  common protein amino acid was **both racemic (D ≈ L)**…"* — the robust excesses are in α-dialkyl
+  amino acids **life does not use**, while the protein amino acid measured is racemic. The paper
+  says the CPL interpretation is *"consistent with"*, not demonstrated. Cite this whenever
+  "meteorites show life's handedness came from space" is about to be repeated.
+
 ## Solar-system ephemeris + interplanetary light time — the Earth–Mars asymmetry-budget anchors (added 2026-08-13, shadow, per PR #10387)
 
 Anchors for `src/Bayesian/OrbitalAsymmetryBudget.fs` and its `δ_max` bound. Filed with work-items
