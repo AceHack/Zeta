@@ -1,0 +1,12 @@
+{
+  "pr_number": 15881,
+  "archive_path": "docs/history/pr-reviews/PR-15881-fix-peer-call-peer-transcripts-stop-landing-in-a-world-writable-tmp.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-27T20:21:03.851Z",
+  "schema_version": "v1",
+  "commit_sha": "ac308333ff92d99fd31eccf28bcdbc1a02933d84",
+  "title": "fix(peer-call): peer transcripts stop landing in a world-writable /tmp",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T18:51:39Z",
+  "head_ref": "shadow/codeql-insecure-temp-files"
+}
