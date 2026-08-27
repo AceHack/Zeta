@@ -1,0 +1,23 @@
+{
+  "pr_number": 15860,
+  "archive_path": "docs/history/pr-reviews/PR-15860-feat-swarm-society-interaction-topology-lens-for-debugging-the-agent-swarm.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7m5U68",
+    "comment:PRRC_kwDOSF9kNM7m5U7E",
+    "comment:PRRC_kwDOSF9kNM7m5U7O",
+    "comment:PRRC_kwDOSF9kNM7m5U7a",
+    "comment:PRRC_kwDOSF9kNM7m5U7o",
+    "thread:PRRT_kwDOSF9kNM6c5dDL",
+    "thread:PRRT_kwDOSF9kNM6c5dDQ",
+    "thread:PRRT_kwDOSF9kNM6c5dDX",
+    "thread:PRRT_kwDOSF9kNM6c5dDi",
+    "thread:PRRT_kwDOSF9kNM6c5dDt"
+  ],
+  "fetched_at": "2026-08-27T17:23:19.079Z",
+  "schema_version": "v1",
+  "commit_sha": "5fd409ea2781c026a7264065d9b4691f37dcc43a",
+  "title": "feat(swarm-society): interaction-topology lens for debugging the agent swarm",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T17:22:29Z",
+  "head_ref": "cursor/swarm-society-ui-c9c8"
+}
