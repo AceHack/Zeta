@@ -194,6 +194,82 @@ jobs:
                 --grandfather-cutover "$CUTOVER" \
                 --author-identity "$PR_AUTHOR"
 
+      # ---------------------------------------------------------------------
+      # THE IDENTITY CLAIM, CHECKED AGAINST THE COMMIT (added 2026-08-26)
+      # ---------------------------------------------------------------------
+      # The two steps above judge whether the block is WELL-FORMED. Neither ever
+      # asked whether `Credential-Identity` is TRUE of the commit carrying it.
+      # Measured live on PR #15691 while `agencysignature (PR body)` was green:
+      #
+      #   d98366df924d  block: Credential-Identity: alexa / Mode: dedicated-agent
+      #                 git:   author = committer = AceHack <aaron_bond@yahoo.com>
+      #
+      # `alexa` is a legal free-text string and `dedicated-agent` is a legal enum
+      # member, so the shape check could not see it. Its author's own correction,
+      # 759731489461, is `AceHack` / `shared` — exactly what this step demands.
+      #
+      # THIS IS THE ONLY MOMENT THE CHECK CAN RUN, and the measurement says so:
+      # all 600 of the last 600 commits on `main` have committer
+      # `noreply@github.com`, because squash-merge rewrites authorship to the
+      # MERGING account. 319 of them claim `github-actions[bot]` while authored
+      # `aaron_bond@yahoo.com` — true of the branch commits, uncomparable on the
+      # squash object. A main-tip run would therefore be UNVERIFIABLE 600/600:
+      # green forever, verifying nothing. The `--source main-tip` mode EXISTS in
+      # the tool (direct pushes are checkable and heartbeat lanes do them) and is
+      # deliberately NOT wired here, because a check that cannot fail is the
+      # exact defect this workflow exists to enforce against.
+      #
+      # THE DOOR THIS DOES NOT CLOSE, stated so a green tick does not overclaim:
+      # `PUT /pulls/{n}/merge` with a hand-written `commit_message` replaces the
+      # validated preimage AFTER every pre-merge check has run (#15676). This
+      # step cannot close it and structurally cannot — that object carries
+      # GitHub's own attribution, so there is no author left to compare against.
+      # What it does buy is that every claim a BRANCH COMMIT makes is bound.
+      #
+      # NOT ADDED TO `gate (required)`'s `needs`. Loud drift tier; promotion to
+      # the required set is a repository-settings change and the maintainer's
+      # call, exactly as this workflow's header already records for its siblings.
+      #
+      # Same security posture as the steps above: commit messages are
+      # author-controlled and travel via stdin, never interpolated into `run:`.
+      - name: Verify the Credential-Identity claim against the commits
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -uo pipefail
+          # NOT a pipeline. A failing `gh` under `pipefail` would surface as the
+          # pipeline's status and read as "the claim is refuted", when it is in
+          # fact "the lookup did not happen" — the conflation the sibling
+          # human-review job already had to remove. Fetch is checked on its own.
+          if ! gh api --paginate \
+                 "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits" \
+                 --jq '.[] | {sha: .sha, message: .commit.message,
+                              authorEmail: .commit.author.email,
+                              committerEmail: .commit.committer.email}' \
+                 > commits.jsonl; then
+            echo "::error::COULD NOT VERIFY — failed to read the PR's commits."
+            echo "TOOLING failure, not evidence about the claim. Exit 2."
+            exit 2
+          fi
+
+          bun src/Core.TypeScript/hygiene/credential-identity-claim.ts \
+              --source pull-request-commits < commits.jsonl
+          code=$?
+
+          if [ "$code" -eq 2 ]; then
+            echo "::error::COULD NOT VERIFY the Credential-Identity claim (exit 2)."
+            echo "TOOLING failure. It does not convict the claim and does not acquit it."
+          elif [ "$code" -eq 1 ]; then
+            echo "::error::A Credential-Identity claim is REFUTED: a block names a"
+            echo "credential that did not make the commit carrying it. Either sign with"
+            echo "the credential you name, or name the credential that signed. If the"
+            echo "commit's git identity is a DISPLAY alias of a real credential family,"
+            echo "the fix is a roster row, not a weaker claim:"
+            echo "  src/Core.TypeScript/hygiene/agency-signature-identity-roster.json"
+          fi
+          exit "$code"
+
   # -------------------------------------------------------------------------
   # THE CLAIM, CHECKED AGAINST THE WORLD (added 2026-08-18)
   # -------------------------------------------------------------------------

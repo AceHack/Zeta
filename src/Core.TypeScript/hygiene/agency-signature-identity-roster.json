@@ -53,7 +53,52 @@
     "github.actor. github.actor is whoever TRIGGERED the event -- on an `edited` event",
     "that is the editor, so matching it would let any rostered actor exempt somebody",
     "else's PR by touching it. Exact equality on the trimmed, lowercased login; no",
-    "prefixes, no globs, no `endsWith('[bot]')`. An empty or absent author is NOT exempt."
+    "prefixes, no globs, no `endsWith('[bot]')`. An empty or absent author is NOT exempt.",
+    "",
+    "THIRD SECTION, ADDED 2026-08-26: 'credentialIdentities'. Read by",
+    "credential-identity-claim.ts and by NOTHING else. It answers ONE question: does a",
+    "block's `Credential-Identity:` line agree with the git identity that actually made",
+    "the commit carrying it? Until this section existed, it did not have to -- PR #15691",
+    "carried `Credential-Identity: alexa` / `Credential-Mode: dedicated-agent` on commit",
+    "d98366df924d, whose author AND committer are `AceHack <aaron_bond@yahoo.com>`, and",
+    "`agencysignature (PR body)` reported SUCCESS. `alexa` is a legal free-text string",
+    "and `dedicated-agent` is a legal enum member, so the shape check could not see it.",
+    "",
+    "IT IS NOT AN ALLOWLIST OF AGENTS, for the same reason 'humans' is not. The rule is a",
+    "REFUTATION rule and needs only ONE side rostered: if the COMMIT's git e-mail is",
+    "unrostered, nothing is refuted (a fresh agent credential with its own git identity is",
+    "never accused, and adding an agent needs no edit here). If the commit's e-mail IS",
+    "rostered and the claim resolves to some OTHER credential -- or to none -- the claim",
+    "is false and is refuted. That is why #15691 is caught without anyone rostering",
+    "`alexa`: aaron_bond@yahoo.com is the shared `acehack` credential, and `alexa` is not it.",
+    "",
+    "'mode' IS DELIBERATELY ALMOST ALWAYS ABSENT. Credential-Mode is a fact about a",
+    "CREDENTIAL, not about a commit, and no reading of a git object produces it. The one",
+    "value asserted here is `shared` on `acehack`, which licenses exactly one refutation:",
+    "a block claiming `dedicated-agent` on the credential the whole fleet signs with is",
+    "provably false. `shared` itself stays unprovable, and every other mode is UNCHECKED.",
+    "Refutable is not provable, and the checker prints that distinction on every run.",
+    "",
+    "'claimSpellings' exists because main carries several spellings of one credential --",
+    "measured over the last 600 commits: `AceHack` x359, `acehack` x50,",
+    "`aaron_bond@yahoo.com` x31, `acehack00@gmail.com` x6, `github:AceHack` x3. Comparison",
+    "is ordinal-lowercased with a leading `github:` stripped; the roster rows are required",
+    "to be ASCII so that lowercasing is collation-stable",
+    "(.claude/rules/culture-invariant-by-default.md).",
+    "",
+    "THE LIMIT OF THIS SECTION, MEASURED THE HARD WAY. A git author/committer field is a",
+    "DISPLAY identity -- `git config user.email` sets it to anything -- so it is EVIDENCE",
+    "about which credential signed, never the credential itself. The first draft of this",
+    "roster listed `society[bot]` as its own credential and promptly refuted two honest",
+    "commits (cbc6f1a1c11d, 93310a63126d): society-heartbeat.yml sets that display identity",
+    "with `git config` while pushing with ZETA_TELEMETRY_FLUSH_TOKEN or GITHUB_TOKEN, so its",
+    "block's `Credential-Identity: github-actions[bot]` was TRUE and the roster was wrong.",
+    "Display identities that belong to one credential FAMILY therefore share one row.",
+    "",
+    "So this check is NOT an anti-forgery mechanism and must never be described as one: an",
+    "actor who controls the commit controls both the block and the display identity, and can",
+    "make them agree. What it catches is the failure that actually happened twice in one",
+    "night -- a block that nobody made consistent with the record it rides on."
   ],
   "humans": [
     {
@@ -101,6 +146,34 @@
         "Task": "none"
       },
       "profileEvidence": "Measured 2026-08-15 on PR #10753: pull_request.user.login = 'dependabot[bot]', user.type = 'Bot'. Opens PRs on a schedule with no human in the loop; the diff is a manifest version bump generated from the advisory/registry feed, not a model sample. A human still has to MERGE it -- that is the review, and it happens after this gate, which is why Human-Review is 'none' here and not 'explicit'."
+    }
+  ],
+  "credentialIdentities": [
+    {
+      "credential": "acehack",
+      "mode": "shared",
+      "why": "The maintainer's GitHub credential. THE SHARED ONE: the fleet signs with it, which is why `Credential-Mode: dedicated-agent` on it is refutable. Aaron is accountable for AceHack repos (memory: standing authority + the named liability split).",
+      "gitEmails": ["aaron_bond@yahoo.com", "acehack00@gmail.com", "578953+acehack@users.noreply.github.com"],
+      "claimSpellings": [
+        "AceHack",
+        "acehack",
+        "github:AceHack",
+        "aaron_bond@yahoo.com",
+        "acehack00@gmail.com",
+        "578953+acehack@users.noreply.github.com"
+      ],
+      "evidence": "Measured on origin/main 2026-08-26 over 600 commits. aaron_bond@yahoo.com and acehack00@gmail.com both appear as branch-commit authors on PR #15691 alone; 578953+acehack@users.noreply.github.com is already rostered under 'humans' for web/API-authored commits."
+    },
+    {
+      "credential": "github-actions[bot]",
+      "why": "The GitHub Actions credential FAMILY for the in-repo telemetry/archive lanes: GITHUB_TOKEN plus the fine-grained PATs the lanes fall back to. `society[bot]` IS IN THIS ROW, not its own: society-heartbeat.yml sets that name via `git config user.name/user.email` (a DISPLAY identity) while pushing with ZETA_TELEMETRY_FLUSH_TOKEN or GITHUB_TOKEN, so a block claiming `github-actions[bot]` on a society[bot]-authored commit is TRUE. Splitting them refuted two honest commits when this roster was first drafted. NO 'mode' ROW ON PURPOSE: nothing measured establishes whether the family is shared between lanes, and asserting a convenient value is the failure this instrument exists to catch. Its Credential-Mode is UNCHECKED.",
+      "gitEmails": [
+        "github-actions[bot]@users.noreply.github.com",
+        "41898282+github-actions[bot]@users.noreply.github.com",
+        "society[bot]@users.noreply.github.com"
+      ],
+      "claimSpellings": ["github-actions[bot]", "github-actions", "society[bot]", "society"],
+      "evidence": "319 blocks over the last 600 main commits claim `github-actions[bot]`. The society[bot] display identity is set at .github/workflows/society-heartbeat.yml 'Configure committer'; the push credential in that same file is secrets.ZETA_TELEMETRY_FLUSH_TOKEN with a secrets.GITHUB_TOKEN fallback. Falsified against commits cbc6f1a1c11d and 93310a63126d, 2026-08-26."
     }
   ]
 }
