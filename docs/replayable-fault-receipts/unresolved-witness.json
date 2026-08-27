@@ -1,0 +1,33 @@
+{
+  "schema": "zeta.replayable-room-fault-feed-receipt.v1",
+  "contentKey": "62d349e948a2fa534c692364125d39e0",
+  "receipt": {
+    "schema": "zeta.replayable-room-fault-receipt.v1",
+    "scenario": "unresolved-witness",
+    "subject": {
+      "roomFingerprint": "room:adinkra-844-durable-seam:conformance-v1",
+      "eventRef": "vector:adinkra-844-room-evidence:0"
+    },
+    "transport": {
+      "erasureMask": 1,
+      "classification": {
+        "mask": 1,
+        "erasedCount": 1,
+        "status": "identifiable"
+      },
+      "semanticReceipt": true
+    },
+    "registers": {
+      "evidenceSign": "+1",
+      "contentIntegrity": "intact",
+      "causalContinuity": "settled",
+      "genesisAuthority": "unresolved"
+    },
+    "outcome": "authority-unresolved",
+    "teaching": {
+      "code": "ADE-R4",
+      "lesson": "An absent local witness leaves authority unresolved, not invalid and not globally false.",
+      "nextGenerator": "Retain the event and request a locally verifiable witness binding before any authority-dependent action."
+    }
+  }
+}

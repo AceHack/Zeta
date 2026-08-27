@@ -1,0 +1,30 @@
+{
+  "schema": "zeta.replayable-room-fault-feed-index.v1",
+  "entries": [
+    {
+      "scenario": "altered-content",
+      "file": "altered-content.json",
+      "contentKey": "bc7028d92fa99062a45531c3f3886427"
+    },
+    {
+      "scenario": "correctable-recovery",
+      "file": "correctable-recovery.json",
+      "contentKey": "814622c568e6a68a20859db1dfe3c403"
+    },
+    {
+      "scenario": "undecodable-transport",
+      "file": "undecodable-transport.json",
+      "contentKey": "9fa1da9a1425c129f14662eff001da0b"
+    },
+    {
+      "scenario": "unresolved-witness",
+      "file": "unresolved-witness.json",
+      "contentKey": "62d349e948a2fa534c692364125d39e0"
+    },
+    {
+      "scenario": "visible-witness-conflict",
+      "file": "visible-witness-conflict.json",
+      "contentKey": "c7bbd6b1b1eb3051c4302a940ecebdb8"
+    }
+  ]
+}

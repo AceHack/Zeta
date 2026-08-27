@@ -1,0 +1,33 @@
+{
+  "schema": "zeta.replayable-room-fault-feed-receipt.v1",
+  "contentKey": "814622c568e6a68a20859db1dfe3c403",
+  "receipt": {
+    "schema": "zeta.replayable-room-fault-receipt.v1",
+    "scenario": "correctable-recovery",
+    "subject": {
+      "roomFingerprint": "room:adinkra-844-durable-seam:conformance-v1",
+      "eventRef": "vector:adinkra-844-room-evidence:0"
+    },
+    "transport": {
+      "erasureMask": 7,
+      "classification": {
+        "mask": 7,
+        "erasedCount": 3,
+        "status": "identifiable"
+      },
+      "semanticReceipt": true
+    },
+    "registers": {
+      "evidenceSign": "+1",
+      "contentIntegrity": "intact",
+      "causalContinuity": "settled",
+      "genesisAuthority": "witnessed"
+    },
+    "outcome": "recovered",
+    "teaching": {
+      "code": "ADE-R1",
+      "lesson": "The erased coordinates remain uniquely identifiable; the recovered bytes enter the ordinary durable fold.",
+      "nextGenerator": "Append the recovered signed atom through the existing ledger; retain the transport receipt for replay."
+    }
+  }
+}

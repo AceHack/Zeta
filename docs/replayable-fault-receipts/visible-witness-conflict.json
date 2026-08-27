@@ -1,0 +1,33 @@
+{
+  "schema": "zeta.replayable-room-fault-feed-receipt.v1",
+  "contentKey": "c7bbd6b1b1eb3051c4302a940ecebdb8",
+  "receipt": {
+    "schema": "zeta.replayable-room-fault-receipt.v1",
+    "scenario": "visible-witness-conflict",
+    "subject": {
+      "roomFingerprint": "room:adinkra-844-durable-seam:conformance-v1",
+      "eventRef": "vector:adinkra-844-room-evidence:0"
+    },
+    "transport": {
+      "erasureMask": 1,
+      "classification": {
+        "mask": 1,
+        "erasedCount": 1,
+        "status": "identifiable"
+      },
+      "semanticReceipt": true
+    },
+    "registers": {
+      "evidenceSign": "+1",
+      "contentIntegrity": "intact",
+      "causalContinuity": "settled",
+      "genesisAuthority": "disputed"
+    },
+    "outcome": "authority-disputed",
+    "teaching": {
+      "code": "ADE-R5",
+      "lesson": "Conflicting visible local witness atoms are disputed; choosing one silently would erase evidence.",
+      "nextGenerator": "Retain both witness atoms, block authority-dependent action, and emit a separately signed correction only after local adjudication."
+    }
+  }
+}
