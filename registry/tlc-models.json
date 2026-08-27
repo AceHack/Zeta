@@ -7,7 +7,7 @@
     "note": "The jar is COMMITTED to git (since #8053), so the TLC toolchain is already byte-pinned by the diff -- unlike z3/cvc5, which install-pinned-smt.ts pins off checksummed GitHub releases because apt's version is too old. That is why there is no tlc-solver-floor.json: a version FLOOR answers a question TLC does not have. What TLC lacked is the assertion that the jar actually loaded is the pinned one, which is now checked against versionBanner on every gated run. CAVEAT, MEASURED 2026-08-14: tools/setup/manifests/from-url still downloads a DIFFERENT tla2tools.jar from the tlaplus v1.8.0 release URL into tools/tla/tla2tools.jar, a path no runner reads. That download is dead weight and its version is unpinned; docs/dependency-status.md and docs/INSTALLED.md both describe the committed jar as v1.8.0, which the banner above contradicts."
   },
   "invocation": {
-    "jvm": ["-Xms64m", "-Xmx1g", "-XX:+UseSerialGC"],
+    "jvm": ["-Xms64m", "-Xmx4g", "-XX:+UseSerialGC"],
     "jvmDarwinArm64Extra": ["-XX:-UseTypeSpeculation"],
     "workers": 1,
     "note": "workers=1 is PINNED, not incidental. State counts for runs that HALT ON VIOLATION depend on worker count and exploration order; the 2026-08-13 figures came from a 4-worker run and disagreed with the single-worker gate. Exhaustive runs (0 states left on queue) are worker-independent, which is why only those carry an asserted distinctStates. No -deadlock flag exists here by construction: deadlock checking is declared per model in the .cfg as CHECK_DEADLOCK, never on a command line."
