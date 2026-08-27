@@ -151,13 +151,13 @@ const labelStyle = { color: "var(--muted-foreground)", fontSize: "0.54rem", lett
 
 function LocalAdjudicationDetail({ adjudication }: { readonly adjudication: AdjudicationView }) {
   if (adjudication.kind === "not-published") {
-    return <div style={{ color: "var(--teal)", marginTop: "0.5rem" }}>local adjudication: not published; no authority inferred</div>;
+    return <div style={{ color: "var(--teal)", marginTop: "0.5rem" }}>LOCAL ADJUDICATION · NOT PUBLISHED · AUTHORITY NOT INFERRED</div>;
   }
   if (adjudication.kind === "unavailable") {
-    return <div style={{ color: "var(--teal)", marginTop: "0.5rem" }}>local adjudication unavailable; no authority inferred<br />{adjudication.reason}</div>;
+    return <div style={{ color: "var(--teal)", marginTop: "0.5rem" }}>LOCAL ADJUDICATION · UNAVAILABLE · AUTHORITY NOT INFERRED<br />{adjudication.reason}</div>;
   }
   if (adjudication.kind === "malformed") {
-    return <div style={{ color: "var(--fail-red)", marginTop: "0.5rem" }}>rejected local adjudication: {adjudication.reason}</div>;
+    return <div style={{ color: "var(--fail-red)", marginTop: "0.5rem" }}>LOCAL ADJUDICATION · REJECTED · {adjudication.reason}</div>;
   }
   const tone = adjudication.value.authority === "disputed" ? "var(--fail-red)" : "var(--teal)";
   return (
@@ -190,7 +190,7 @@ export default function LiveRoomEvidenceFeed() {
     : undefined;
 
   return (
-    <section style={{ borderTop: "1px solid color-mix(in srgb, var(--amber) 48%, transparent)", marginTop: "1.4rem", paddingTop: "1rem" }}>
+    <section className="observatory-chamber live-evidence-instrument" style={{ borderTop: "1px solid color-mix(in srgb, var(--amber) 48%, transparent)", marginTop: "1.4rem", paddingTop: "1rem" }}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
         <div>
           <div style={labelStyle}>Durable room evidence · repository mirror</div>
@@ -201,8 +201,8 @@ export default function LiveRoomEvidenceFeed() {
         </button>
       </div>
 
-      <p style={{ margin: "0.75rem 0", color: "var(--muted-foreground)", fontSize: "0.7rem", lineHeight: 1.6, maxWidth: 960 }}>
-        Discovery only. The browser validates manifest/envelope shape, event-ID binding, and any named local adjudication prior. It does not perform durable content-address verification or infer authority from absent data.
+      <p className="evidence-instrument-note" style={{ margin: "0.75rem 0", color: "var(--muted-foreground)", fontSize: "0.7rem", lineHeight: 1.6, maxWidth: 960 }}>
+        Discovery surface. Event IDs bind envelopes. Named local sidecars only. No durable-address recomputation. No authority inferred from absence.
       </p>
 
       {state.kind === "loading" && <div style={{ color: "var(--teal)", fontSize: "0.72rem" }}>→ requesting immutable manifest…</div>}
@@ -211,11 +211,11 @@ export default function LiveRoomEvidenceFeed() {
       {state.kind === "malformed" && <div style={{ color: "var(--fail-red)", fontSize: "0.78rem", borderLeft: "3px solid var(--fail-red)", paddingLeft: "0.7rem" }}>Rejected discovery record: {state.reason}</div>}
       {state.kind === "ready" && (
         <>
-          <div style={{ color: "var(--amber)", fontSize: "0.64rem", marginBottom: "0.55rem" }}>SHOWING {state.entries.length} OF {state.total} DISCOVERED ENVELOPE{state.total === 1 ? "" : "S"}</div>
+          <div style={{ color: "var(--amber-dim)", fontSize: "0.64rem", marginBottom: "0.55rem", letterSpacing: "0.08em" }}>DISCOVERY LOCK · {state.entries.length} / {state.total} ENVELOPE{state.total === 1 ? "" : "S"}</div>
           {adjudicationAvailability && (
             <div aria-label="Local adjudication sidecar availability" style={{ borderLeft: "2px solid var(--cold)", color: "var(--muted-foreground)", display: "flex", flexWrap: "wrap", gap: "0.42rem 0.7rem", marginBottom: "0.8rem", padding: "0.38rem 0.55rem", fontSize: "0.53rem", letterSpacing: "0.08em" }}>
               <span>LOCAL SIDECAR CHECK</span>
-              <span style={{ color: "var(--amber)" }}>{adjudicationAvailability.named} NAMED</span>
+              <span style={{ color: "var(--amber-dim)" }}>{adjudicationAvailability.named} NAMED</span>
               <span style={{ color: "var(--amber-dim)" }}>{adjudicationAvailability.ready} READY</span>
               <span style={{ color: "var(--teal)" }}>{adjudicationAvailability.unavailable} UNAVAILABLE</span>
               <span style={{ color: "var(--fail-red)" }}>{adjudicationAvailability.rejected} REJECTED</span>
@@ -224,7 +224,7 @@ export default function LiveRoomEvidenceFeed() {
           )}
           <div className="evidence-feed-grid">
             {state.entries.map((entry) => (
-              <article key={entry.eventId} style={{ border: "1px solid var(--border)", borderLeft: "3px solid var(--amber)", padding: "0.8rem", background: "oklch(0.068 0.011 265)" }}>
+              <article className="evidence-feed-record" key={entry.eventId} style={{ border: "1px solid var(--border)", borderLeft: "3px solid var(--amber)", padding: "0.8rem", background: "oklch(0.068 0.011 265)" }}>
                 <div style={{ ...labelStyle, color: "var(--amber)" }}>{entry.weight > 0 ? "+1 assertion" : "−1 retraction"} · sequence {entry.emitterSeq}</div>
                 <div style={{ margin: "0.4rem 0", color: "var(--foreground)", fontSize: "0.73rem", overflowWrap: "anywhere" }}>{entry.eventId}</div>
                 <div style={{ color: "var(--muted-foreground)", fontSize: "0.59rem", lineHeight: 1.55 }}>emitter: {entry.emitterId}<br />witness material: {entry.witnessMaterial ? "present; authority is assessed by a local verifier" : "absent; do not guess"}<br />audit key: {entry.auditContentKey.slice(0, 22)}…<LocalAdjudicationDetail adjudication={entry.adjudication} /></div>

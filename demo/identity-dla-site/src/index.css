@@ -141,14 +141,78 @@
 }
 
 .evidence-chamber-live {
+  position: relative;
   margin-top: 2.6rem;
-  padding-top: 0.2rem;
+  padding: 1.15rem 0 0 1.35rem;
 }
 
 .evidence-chamber-replay {
+  position: relative;
   margin-top: 3.3rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--cold);
+  padding: 1.45rem 0 0 1.35rem;
+  border-top: 1px solid color-mix(in srgb, var(--cold) 74%, transparent);
+}
+
+/* Lower chambers inherit the DLA boundary as their physical reading rail, not a decorative divider. */
+.evidence-chamber-live::before,
+.evidence-chamber-replay::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: -1.6rem;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--amber-dim) 7%, var(--amber) 18%, var(--amber-dim) 48%, transparent 96%);
+  box-shadow: 18px 2.7rem 0 -17px var(--amber), 38px 4.5rem 0 -37px var(--amber-dim), 22px 6.2rem 0 -21px var(--amber-dim);
+  pointer-events: none;
+}
+
+.evidence-chamber-live::after,
+.evidence-chamber-replay::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 2.7rem;
+  width: clamp(0.8rem, 2.5vw, 2.1rem);
+  height: 1px;
+  background: linear-gradient(90deg, var(--amber), var(--amber-dim), transparent);
+  pointer-events: none;
+}
+
+.live-evidence-instrument,
+.replay-fault-chamber {
+  position: relative;
+  z-index: 1;
+  box-shadow: -1px 0 0 var(--cold), -0.42rem 0 0 -0.39rem color-mix(in srgb, var(--amber-dim) 65%, transparent);
+}
+
+.live-evidence-instrument > header,
+.replay-fault-chamber > header {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cold) 26%, transparent), transparent 42%);
+}
+
+.evidence-feed-record {
+  position: relative;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cold) 24%, transparent), transparent 32%) !important;
+}
+
+.evidence-feed-record::after {
+  content: "";
+  position: absolute;
+  top: 0.9rem;
+  right: 0.8rem;
+  width: 2.35rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--amber-dim) 78%, transparent));
+}
+
+.evidence-instrument-note {
+  color: var(--cold) !important;
+  font-size: 0.61rem !important;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
 }
 
 .evidence-seam-primary {
@@ -218,9 +282,11 @@
   }
   .evidence-chamber-live {
     margin-top: 1.8rem;
+    padding-left: 0.8rem;
   }
   .evidence-chamber-replay {
     margin-top: 2.1rem;
+    padding-left: 0.8rem;
   }
   .fault-receipt-layout {
     grid-template-columns: 1fr !important;

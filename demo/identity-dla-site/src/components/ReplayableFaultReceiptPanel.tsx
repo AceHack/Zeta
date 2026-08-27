@@ -66,7 +66,7 @@ export default function ReplayableFaultReceiptPanel() {
           <div style={{ color: "var(--amber)", fontSize: "0.53rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>replayable fault receipts · immutable static vectors</div>
           <h2 id="fault-replay-title" style={{ margin: "0.35rem 0 0", fontSize: "clamp(1.15rem, 2.7vw, 1.72rem)", letterSpacing: "-0.055em" }}>teach the fault; do not erase the observation</h2>
         </div>
-        <div style={{ color: "var(--muted-foreground)", fontSize: "0.53rem", lineHeight: 1.55, textAlign: "right" }}>declared-address equality checked<br />no production receipt implied</div>
+        <div className="evidence-instrument-note" style={{ color: "var(--muted-foreground)", fontSize: "0.53rem", lineHeight: 1.55, textAlign: "right" }}>declared address locked<br />fixture · not production evidence</div>
       </header>
 
       <div className="retained-branch-band" style={{ height: 48, borderBottom: "1px solid var(--border)", overflow: "hidden" }} aria-hidden="true">
@@ -96,14 +96,14 @@ export default function ReplayableFaultReceiptPanel() {
           </div>
           <div style={{ padding: "0.9rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "0.7rem", alignItems: "baseline", flexWrap: "wrap" }}>
-              <div style={{ color: vectorTone(vector), fontWeight: 900, fontSize: "clamp(1.3rem, 3.15vw, 2rem)", letterSpacing: "-0.065em" }}>{displayOutcome(vector)}</div>
+              <div style={{ color: vectorTone(vector), fontWeight: 900, fontSize: "clamp(1.5rem, 3.6vw, 2.25rem)", lineHeight: 0.92, letterSpacing: "-0.075em" }}>{displayOutcome(vector)}</div>
               <span style={{ color: "var(--muted-foreground)", fontSize: "0.5rem" }}>{vector.receipt.teaching.code} / VECTOR-{String(run).padStart(2, "0")}</span>
             </div>
             <div style={{ color: "var(--muted-foreground)", fontSize: "0.48rem", marginTop: "0.35rem", wordBreak: "break-all" }}>DECLARED CONTENT ADDRESS · {vector.contentKey}</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "1px", margin: "0.85rem 0", background: "var(--border)" }}>
               {([ ["sign", vector.receipt.registers.evidenceSign], ["integrity", vector.receipt.registers.contentIntegrity], ["continuity", vector.receipt.registers.causalContinuity], ["authority", vector.receipt.registers.genesisAuthority] ] as const).map(([field, value]) => <div key={field} style={{ background: "oklch(0.06 0.009 265)", padding: "0.5rem" }}><div style={{ color: "var(--muted-foreground)", fontSize: "0.44rem", textTransform: "uppercase", letterSpacing: "0.1em" }}>{field}</div><div style={{ color: vectorTone(vector), fontSize: "0.57rem", fontWeight: 700, marginTop: "0.25rem" }}>{value}</div></div>)}
             </div>
-            <p style={{ color: "var(--foreground)", fontSize: "0.62rem", lineHeight: 1.65, margin: "0.5rem 0" }}>{vector.receipt.teaching.lesson}</p>
+            <p style={{ color: "var(--foreground)", fontSize: "0.62rem", lineHeight: 1.55, margin: "0.5rem 0", maxWidth: "74ch" }}><strong style={{ color: vectorTone(vector) }}>OBSERVED</strong> · {vector.receipt.teaching.lesson}</p>
             <div style={{ borderLeft: `3px solid ${vectorTone(vector)}`, padding: "0.5rem 0.65rem", background: "oklch(0.07 0.01 265)", color: "var(--muted-foreground)", fontSize: "0.55rem", lineHeight: 1.5 }}><strong style={{ color: vectorTone(vector) }}>NEXT GENERATOR</strong> · {vector.receipt.teaching.nextGenerator}</div>
             <button type="button" onClick={() => setRun((value) => value + 1)} style={{ marginTop: "0.8rem", font: "inherit", fontSize: "0.58rem", fontWeight: 800, borderRadius: 0, border: `1px solid ${vectorTone(vector)}`, background: "transparent", color: vectorTone(vector), padding: "0.55rem 0.75rem", cursor: "pointer" }}>REPLAY DECLARED VECTOR →</button>
           </div>
