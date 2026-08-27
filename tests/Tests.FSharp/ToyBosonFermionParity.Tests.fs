@@ -183,12 +183,50 @@ let ``TBF-14 metered bits and realized damage DIVERGE — the gap the metering b
 
 [<Fact>]
 let ``TBF-15 the source is deterministic under replay AND actually reads its seed`` () =
-    let a = Gen.generate 42UL 2 32 |> List.map Gen.toHex
-    let b = Gen.generate 42UL 2 32 |> List.map Gen.toHex
-    Assert.Equal<string list>(a, b)
-    // The second half matters: a generator that ignored its seed would pass the first check.
-    let c = Gen.generate 43UL 2 32 |> List.map Gen.toHex
-    Assert.NotEqual<string list>(a, c)
+    // This test's first draft called `generate` twice and compared the results. That is
+    // `f(x) = f(x)` — true by construction for any pure total function, including a broken one,
+    // and a step WEAKER than the seed-ignoring generator it was supposed to catch. The repo's
+    // own `audit-check-arity` R2 found it. The honest remedy is a byte-lock plus a
+    // seed-sensitivity assertion, not a census row, so this test now anchors three ways:
+    //
+    //   (a) against the CHECKED-IN hex — an assertion that can fail, and fails readably;
+    //   (b) batch API vs hand-threaded source — two different code paths, with an unrelated
+    //       generation run in between as a decoy for hidden global state;
+    //   (c) a different seed must produce different output.
+    let batch = Gen.generate 42UL 2 32 |> List.map Gen.toHex
+
+    // (a) The byte-lock. `generate 42 2 8` is vector 5 of the golden file; the first eight
+    // samples of this run must reproduce it byte for byte.
+    let goldenPath = Path.Join(repoRoot (), "src", "Bayesian", "toy-boson-fermion-golden-vectors.json")
+    use goldenDoc = JsonDocument.Parse(File.ReadAllText goldenPath)
+
+    let expectedHex =
+        goldenDoc.RootElement.GetProperty("vectors").EnumerateArray()
+        |> Seq.find (fun v -> v.GetProperty("seed").GetUInt64() = 42UL && v.GetProperty("flips").GetInt32() = 2)
+        |> fun v -> v.GetProperty("hex").GetString()
+
+    Assert.Equal(expectedHex, batch |> List.truncate 8 |> String.concat "")
+
+    let decoy = Gen.generate 43UL 5 17
+    Assert.Equal(17, List.length decoy)
+
+    // (b) Same stream, produced by a different code path.
+    let stepped, finalSource =
+        List.fold
+            (fun (acc, src) _ ->
+                let sample, next = Gen.generateOne 2 src
+                (Gen.toHex sample :: acc, next))
+            ([], Gen.sourceOfSeed 42UL)
+            [ 1 .. 32 ]
+
+    Assert.Equal<string list>(batch, List.rev stepped)
+    // Resumption also has to be metered consistently, or "replayable" is only half true.
+    Assert.Equal(32 * (4 + 3 * 2), finalSource.BitsDrawn)
+    Assert.Equal(32 * (1 + 2), finalSource.Draws) // one crossing for the blade, one per flip
+
+    // (c) The half a seed-ignoring generator would fail.
+    let other = Gen.generate 43UL 2 32 |> List.map Gen.toHex
+    Assert.NotEqual<string list>(batch, other)
 
 [<Fact>]
 let ``TBF-GOLDEN the generator conforms to the checked-in hex-in-JSON vectors`` () =
