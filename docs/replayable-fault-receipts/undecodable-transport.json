@@ -1,0 +1,33 @@
+{
+  "schema": "zeta.replayable-room-fault-feed-receipt.v1",
+  "contentKey": "9fa1da9a1425c129f14662eff001da0b",
+  "receipt": {
+    "schema": "zeta.replayable-room-fault-receipt.v1",
+    "scenario": "undecodable-transport",
+    "subject": {
+      "roomFingerprint": "room:adinkra-844-durable-seam:conformance-v1",
+      "eventRef": "vector:adinkra-844-room-evidence:0"
+    },
+    "transport": {
+      "erasureMask": 255,
+      "classification": {
+        "mask": 255,
+        "erasedCount": 8,
+        "status": "underdetermined"
+      },
+      "semanticReceipt": false
+    },
+    "registers": {
+      "evidenceSign": "not-observed",
+      "contentIntegrity": "not-assessed",
+      "causalContinuity": "not-observed",
+      "genesisAuthority": "not-observed"
+    },
+    "outcome": "no-semantic-receipt",
+    "teaching": {
+      "code": "ADE-R2",
+      "lesson": "The erasure pattern is underdetermined. Missing bytes are not an unresolved evidence atom.",
+      "nextGenerator": "Retain the transport diagnostic and request a new transmission; do not append +1 or -1 evidence."
+    }
+  }
+}

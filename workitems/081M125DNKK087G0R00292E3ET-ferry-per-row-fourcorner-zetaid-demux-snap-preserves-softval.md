@@ -76,6 +76,29 @@ already exists. Measure before adding SIMD. Per-row failure is the
 P0 (today `faultBoat` clones one exception onto every row; tests
 lock that in).
 
+**AutoMUX** (Aaron coinage 2026-08-27, not a library): the
+usage-shaped *name* for mux + transparent batch over any
+transport. Not a replacement for the ferry or `IScheduler`
+(time vs occupancy vs identity are three axes). Batch on
+producer or consumer is an **earned** 4-way cell — do not
+implement `ProcessMany` prematurely. Perfect world: derive
+batch from single by **types**, else a **generator** (Futamura
+/ stream fusion), else JIT attention last. SIMD/GPU is that
+same specialization on the **producer or consumer loop**, not
+on the ferry pipe. The *source* is the Zeta ISA being worked
+on (braided monoidal, DU mini-control, no overall control
+structure, **phase not wall-clock**, embarrassingly parallel
+because no branching) encoded onto GPU / HTML-CSS (poor-man's GPGPU: shaders +
+compositor, **avoid CUDA warps**) / CPU. `BonsaiSoft` both-
+branch blend and NG4-as-blend (2026-08-23) are the in-tree
+work. `IsaSpec` CHIP-8 is the shipped oracle, not the braided
+ISA. Launch remains a metered crossing. Dependent-read kernel =
+bought a warp; FP/Roslyn copy-a-bit-more is the default
+(**CoW / structural sharing** makes the copy cheap — not a
+deep clone); stream fusion and CAS are the aggressive middle;
+locks are the warp of memory. CoW ≠ CAS. Original
+manual derivation is a requirement, not a source to open.
+
 White-room spec from original Itron code: **not required** for this
 row. The 4-way matrix + split + capture + backpressure are
 specified from this session. Do not open the original.

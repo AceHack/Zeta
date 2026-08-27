@@ -1,0 +1,33 @@
+{
+  "schema": "zeta.replayable-room-fault-feed-receipt.v1",
+  "contentKey": "bc7028d92fa99062a45531c3f3886427",
+  "receipt": {
+    "schema": "zeta.replayable-room-fault-receipt.v1",
+    "scenario": "altered-content",
+    "subject": {
+      "roomFingerprint": "room:adinkra-844-durable-seam:conformance-v1",
+      "eventRef": "vector:adinkra-844-room-evidence:0"
+    },
+    "transport": {
+      "erasureMask": 1,
+      "classification": {
+        "mask": 1,
+        "erasedCount": 1,
+        "status": "identifiable"
+      },
+      "semanticReceipt": true
+    },
+    "registers": {
+      "evidenceSign": "+1",
+      "contentIntegrity": "distinct-content",
+      "causalContinuity": "settled",
+      "genesisAuthority": "witnessed"
+    },
+    "outcome": "distinct-fact",
+    "teaching": {
+      "code": "ADE-R3",
+      "lesson": "CRC-valid changed content has a different durable root and cannot overwrite the prior signed fact.",
+      "nextGenerator": "Append the new fact separately; if it corrects an earlier claim, emit an explicit -1 retraction and a new generator fact."
+    }
+  }
+}
