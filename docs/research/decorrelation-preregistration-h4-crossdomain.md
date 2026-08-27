@@ -1,4 +1,4 @@
-# Pre-registration — H4: does the parameter-free confidence rule hold on a DIFFERENT domain?
+# Pre-registration — H4: does the parameter-free confidence rule hold on a DIFFERENT domain
 
 **Committed BEFORE generation.** H3 established, on the operator-priority menu domain, that
 the PARAMETER-FREE rule "select the arm with higher token confidence" (τ=0) beats
@@ -29,6 +29,7 @@ the option satisfying the rule (e.g. "the largest even number", "the number clos
 50"). This is different reasoning from operator-priority (arithmetic vs. priority-ordering),
 shares no rule text with the H3 domain, and is mechanically verifiable. The two prompt
 frames transfer unchanged in STRUCTURE:
+
 - canonical: `Choose ONE. Reply ONLY the number. <rule stated plainly>.`
 - clause-swap: `<rule stated plainly>. Choose ONE; reply ONLY the number.`
 

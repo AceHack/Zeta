@@ -1,0 +1,14 @@
+{
+  "tick": 971,
+  "at": "2026-08-27T04:46:24.057Z",
+  "findings": [
+    {
+      "path": "docs/DRIFT-DASHBOARD.md",
+      "rule": "MD037"
+    },
+    {
+      "path": "Zeta.sln",
+      "rule": "BD001"
+    }
+  ]
+}
