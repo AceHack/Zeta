@@ -1,0 +1,14 @@
+{
+  "id": "080d02092c4f9810a01300080073471d",
+  "at": "2026-08-27T02:56:14.323Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10JB2FJ087G0R00159NYSZ",
+    "type": "task",
+    "title": "Forward-action DU: total PR disposition classifier with a closed, reversibility-partitioned command set",
+    "slug": "forward-action-du-total-pr-disposition-classifier-with-a-clo",
+    "priority": "P2",
+    "filename": "081M10JB2FJ087G0R00159NYSZ-forward-action-du-total-pr-disposition-classifier-with-a-clo.md"
+  }
+}
