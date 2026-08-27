@@ -348,6 +348,91 @@ functions, not the other way). Functional is the math; OOP is
 the wrapper. Harder to recover function from class than class
 from function.
 
+## Harness context is a per-tick ontology, not a compressed window
+
+Aaron 2026-08-27:
+
+> oh we also have another spcialzation of dynamic value and soft
+> value, it's the context window in our harness we don't save
+> just raw context windows and compress it over time, we have a
+> pertick evolving onotlogy schema that is promary bulk of the
+> context, the ontology are closely related to filenames and
+> then hubs of files, and the satalites are out of context
+> retrival on demand content for the task at hand.
+
+The naive LLM-memory move is: dump the transcript, compress,
+reload. That is a **raw window** treated as a blob. We refuse
+it.
+
+The specialisation: the resident context **is** a TypeSchema /
+SoftValue — a **per-tick evolving ontology**. Tick N loads tick
+(N−1)'s ontology (VISION DESIGNED, blocked on epoch), not tick
+(N−1)'s token dump. Filenames and **hubs of files** are the
+ontology keys (stable, DV2 hubs). **Satellites** are
+out-of-context retrieval: the task asks, the satellite loads,
+the hub did not have to hold it. SoftValue keeps uncertainty
+about what belongs in the ontology this tick; snap is still the
+only collapse.
+
+Shipped slice, not a new invention: `docs/WAKE-UP.md` (SEED
+kernel cold, GLOSSARY on-demand); `.claude/rules/` carved
+sentences as hubs pointing at satellite docs; `MEMORY.md` hub
+→ `CURRENT-*.md` / `INDEX.md`. The missing half is making that
+ontology a **store-native DynamicValue** the generators and
+the harness both consume — TypeSchema-from-DV, same IR as the
+CloudEvents dataschema.
+
+Aaron 2026-08-27, on two-way attention and what survives
+compaction:
+
+> Oyes exactly this is the long term vision and repeated
+> activiation of words over tasks should help determine the
+> ontology that plus model involvement on what it prefers, it's
+> not just a one way compaction controlled from the outsite, the
+> model can direct it's attention at what parts of the otology
+> it find important, this is an attention optimization technique
+> similar to ones deep seek and google have investigated but
+> they are optimized on flat text and we are optimizing on per
+> agent hierarchy/ontology, where the descriptions are extera
+> the irrducable structure of relations is what survives
+> compaction
+
+## Attention over the ontology, not over the token stream
+
+Not one-way compaction from the outside. Two feeds, both
+legitimate:
+
+1. **Activation over tasks** — repeated use of a word / hub
+   across ticks is evidence it belongs in the ontology (the
+   naming-eigenvector / remembrance-graph shape: degree is
+   conferred, not self-minted).
+2. **Model-directed attention** — the agent points at the parts
+   of *its* hierarchy it finds important. Preference is an
+   observation, not a dump.
+
+DeepSeek and Google investigated the *same optimisation class*
+on a **flat token stream**:
+
+- DeepSeek **MLA** (V2, 2024) — compress KV into a latent;
+  **NSA** (Yuan et al., arXiv:2502.11089) — hierarchical sparse
+  over token blocks (compress / select / window); **DSA**
+  (V3.2) — token-wise indexer, still over a prefix of tokens.
+- Google **Infini-attention** (Munkhdalai, Faruqui, Gopal,
+  arXiv:2404.07143) — compressive memory + local attention,
+  still over **tokens**.
+
+We take the class and change the **carrier**. Attention and
+compaction run over a **per-agent ontology** (hubs + links),
+not over a transcript. Descriptions are **extra** (satellites).
+The **irreducible structure of relations** is what survives
+compaction — Rodney's "only the irreducible is primitive," DV2
+applied to the window. Prose can be retrieved; the graph of
+names cannot be reconstituted from squeezed tokens.
+
+Per-agent: each agent's hierarchy may diverge (same cut as
+Caché vs per-node). Reconciliation is later, over the relation
+graph, not over a merged transcript.
+
 ## Product vs framework
 
 As many product lanes as make sense; **bundle related**; keep
@@ -441,6 +526,80 @@ the Jumprope/content-addressed path. Mutex **compare-and-swap**
 on the pointer slot is a different operator. Do not use one
 acronym for both. Benefit from Jumprope: keep the ZetaId, park
 the current blob under a content hash, let epoch choose.
+
+Aaron 2026-08-27, on name↔hash pointing and the **hardware** CAS
+(Albahari, not Itron IP):
+
+> yes exactly but each can point to addresses in the other if we
+> get it right, or maybe they just need to point in one
+> direction, not sure. … this is our connonical CAS operation.
+> based on josephy albamari who wrote a bunch of dotnet books,
+> not itron ip, attributed to him and his books.
+
+Also: a detector improvement (teach the linter the
+stat-then-use shape) is the durable fix over N patches, but it
+would surface a large new finding set. How much debt to
+formalise at once is a separate call — **not** something to
+slip into a fix commit.
+
+## Hardware CAS is Albahari SpeculativeUpdate — this session does not implement it
+
+Two operators, two names:
+
+| name | what it is | Beacon |
+|---|---|---|
+| Jumprope "CAS-not-pointers" | **content-addressed storage** | Vokes / Pugh |
+| Hardware CAS | `Interlocked.CompareExchange` retry | **Joseph Albahari**, *Threading in C#* / *C# in a Nutshell*; also Toub / Fowler (standing threading rule) |
+
+The canonical **hardware** CAS, as a requirement (not as Itron
+expression):
+
+1. Snapshot the field.
+2. `update(snapshot)` must be **pure** — it may run more than
+   once (speculative).
+3. `Interlocked.CompareExchange(ref field, computed, snapshot)`.
+4. Success iff the CE result is the snapshot (reference-equals
+   for class; value-equals for `int`).
+5. Else `SpinWait.SpinOnce()` and retry. **No arbitrary retry
+   cap** — the environment decides (same anti-Nagle discipline
+   as the ferry). `Transaction.updateCas` today caps at 1024 and
+   `invalidOp`s; that is the cousin, not the canonical form.
+6. `Try…` variant: `shouldAbort(snapshot)` returns false without
+   writing.
+
+**Clean-room.** Aaron pasted an Itron `ExtensibilityExtensions.cs`
+path and body into chat as illustration and said it is **not**
+Itron IP. This session **did not open that file**. The paste is
+still *expression* this agent saw, so this agent **does not
+implement** SpeculativeUpdate. A later named agent that has not
+seen the paste implements from Albahari's published books and
+the numbered requirements above. `DeterministicSyncContext.fs`
+already cites Itron `TrySpeculativeUpdate` in a comment — that
+attribution should move to Albahari/Toub when the helper lands.
+
+## Name → hash is required; hash → names is an index, not identity
+
+Open, not decided. Two honest layouts:
+
+- **One direction (sufficient for epoch):** ZetaId → current
+  content hash. The name is stable; the blob moves; epoch
+  rebinds the name.
+- **Both directions:** the hash also carries (or an index
+  holds) the ZetaIds that currently name it — reverse lookup
+  without a scan. That is an **address index**, not a second
+  identity. "Each can point to addresses in the other" is this
+  index, not two identities for one object.
+
+Until someone picks, default is **one direction** (name → hash).
+The reverse is additive and does not change the epoch rule.
+
+## Linter debt is a detector, not a fix-commit rider
+
+Teaching the linter the stat-then-use shape is the durable fix
+(one detector, not N patches). It would also mint a large new
+finding set and needs a baseline expansion. That is a separate
+call, not a rider on a behaviour fix. Same rule as "do not
+slip."
 
 ## What is missing
 
@@ -550,6 +709,13 @@ single-item TCS away without a measured replacement for
 - **Diana Duncan** — recursive-CTE / NULL-as-hole meter-sim on
   SQL PDW; OSS co-credit granted (`DecorrelationMetrology.fs`).
   Book naming still proofread-gated (CONSENT-LEDGER).
+- **Joseph Albahari**, *Threading in C#* — `SpeculativeUpdate`
+  as the canonical hardware CAS (with Toub / Fowler / MS Learn
+  as the standing threading stack). Not Itron.
+- DeepSeek **MLA** (V2) / **NSA** (Yuan et al. arXiv:2502.11089)
+  / **DSA** (V3.2); Google **Infini-attention** (Munkhdalai et
+  al. arXiv:2404.07143) — attention optimisation on *tokens*.
+  Our carrier is the per-agent relation graph.
 - **David Greenberg**, Hitchhiker trees (buffers). **Scott
   Vokes**, *Data Structures: The Code That Isn't There* (Strange
   Loop 2012) — **difference lists** are the named holes (also

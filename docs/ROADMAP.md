@@ -286,7 +286,12 @@ using DynamicValue's byte-locked per-format serializer:
     MUMPS-like statics are **DI-injected**, not ambient. InterSystems Caché is the closest
     commercial analog and assumes every node loads the same objects; we allow **per-node
     divergence and reconcile over time** (that is independence). Multi-node is simulable
-    DoP=1→N on one machine. `gen/` wiring follows this slice. Control-plane work;
+    DoP=1→N on one machine. A further specialisation of DynamicValue/SoftValue: the
+    **harness context window is not a saved-and-compressed transcript**. It is a
+    **per-tick evolving ontology schema** (the bulk). Ontology keys sit next to
+    **filenames / file hubs**; **satellites** are out-of-context retrieval on demand
+    for the task (DV2). Already a slice: `SEED-VOCABULARY` cold, `GLOSSARY` on-demand;
+    carved-sentence rules. `gen/` wiring follows this slice. Control-plane work;
     data plane stays dumb. `081M125DNKK087G0R00292E3ET`.
 5. **Extract the data-plane package** at the `IDeltaLog`/`ISnapshotStore` seam.
 6. **Durability floor** — `fsync`. **CLARIFIED (2026-06-07):** the **CP-within-a-cell mechanism — a
@@ -670,10 +675,28 @@ These don't wait for a single round:
 - **One schema, three names.** CloudEvents `dataschema`, the
   Debezium envelope, and the object TypeSchema are the same
   DynamicValue if the IR is honest. Do not run three registries.
+- **Harness context is an ontology, not a compressed log.**
+  Per-tick evolving TypeSchema/SoftValue is the resident bulk.
+  Filenames and file hubs are the ontology keys. Satellites
+  retrieve on demand. Compaction is **two-way**: activation over
+  tasks *and* model-directed attention on that agent's
+  hierarchy. Descriptions are extra; the **relation graph**
+  survives. DeepSeek MLA/NSA/DSA and Google Infini-attention
+  are the same optimisation class on **flat tokens**; we run it
+  on per-agent ontology. `WAKE-UP.md` / carved-sentence rules
+  are the shipped slice.
 - **ZetaId is a stable name.** Content-address the blob
   (Jumprope / BLAKE3); epoch chooses which blob the name
-  currently means. That is not mutex compare-and-swap. Caché
-  loads the same objects everywhere; we diverge and reconcile.
+  currently means. Default pointer is **name → hash**; reverse
+  (hash → names) is an optional index, not a second identity.
+  Hardware CAS is Albahari `SpeculativeUpdate` (`Interlocked.CE`
+  + `SpinWait`, pure update, no retry cap) — not Jumprope, not
+  Itron IP. This slice does not implement it (clean-room: paste
+  was seen; implement from Albahari via a clean agent).
+  `Transaction.updateCas` is the in-tree cousin with a 1024 cap.
+  Caché loads the same objects everywhere; we diverge and
+  reconcile. Linter stat-then-use is a detector PR of its own,
+  not a rider on a fix.
 - **CLIs share a plugin kernel.** Do not dump forge-host into
   Harny or Zeta. ForgeHost verbs are Nucleus plugins on the
   existing command core. No Quay. No fourth CLI product.

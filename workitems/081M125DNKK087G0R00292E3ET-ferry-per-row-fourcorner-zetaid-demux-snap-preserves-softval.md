@@ -136,9 +136,14 @@ Also this row:
   SQL PDW meter-sim with Diana Duncan (OSS credit granted;
   book naming proofread-gated). Clean-room: requirement only.
 - **ZetaId is a stable name; Jumprope content-addresses the
-  blob.** Epoch chooses which blob. Not mutex compare-and-swap
-  (do not fuse the two "CAS"). Futamura specializes the
-  interpreter; Jumprope specializes location against content.
+  blob.** Epoch chooses which blob. Default: **name → hash**.
+  Reverse (hash → names) is an optional index, not identity —
+  open whether we need both. Hardware CAS is Albahari
+  `SpeculativeUpdate` (pure update, `Interlocked.CE`,
+  `SpinWait`, no retry cap). Not Itron IP. This session saw an
+  Itron paste and **does not implement**. `Transaction.updateCas`
+  is the cousin (1024-cap). Linter stat-then-use = separate
+  detector PR, not a fix rider.
 - **TypeSchema from DynamicValue.** Today
   `src/Core.CSharp/TypeSchema.cs` +
   `SchemaSourceGenerator` consume AdditionalFiles / JSON IR, not
@@ -153,7 +158,14 @@ Also this row:
   schema path is the defect.
 - **Tick-N loads tick-(N−1).** Self-editing compiler. Still needs
   the epoch layer (VISION: DESIGNED). Bounded ticks make the load
-  well-defined; the wire does not exist.
+  well-defined; the wire does not exist. What it loads is the
+  **ontology** (per-tick evolving TypeSchema/SoftValue), not a
+  compressed raw context window. Filenames/file hubs = ontology
+  keys; satellites = on-demand retrieval. Compaction is
+  two-way (activation over tasks + model attention).
+  Descriptions drop; **relations survive**. DeepSeek/Google
+  attend over flat tokens; we attend over per-agent ontology.
+  `WAKE-UP.md` is the shipped slice.
 - **ForgeHost extra-git is not Zeta and not Harny.** Surfaces
   already live in `src/Core.TypeScript/forge-host/`. Zeta
   (`clis/` `sim`/`mea`/`cut`) is git-native. Harny is the agent
