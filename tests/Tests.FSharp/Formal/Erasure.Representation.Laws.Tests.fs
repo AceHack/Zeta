@@ -10,6 +10,7 @@ open System.Threading.Tasks
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Core.FSharp.Blake3
 
 // ═══════════════════════════════════════════════════════════════════════════════════════════════
 // ERASURE IS A PROPERTY OF THE REPRESENTATION — the law pack for the spine/log/eviction sites
@@ -396,7 +397,7 @@ let private sweeps: Sweep list =
           fun () ->
               measureLargestFibre
                   pinnedDomain
-                  (truncationProbe (fun () -> ZetaFsDeltaLog<int>(tempDir (), codec ()) :> IDeltaLog<int>) readSurface) }
+                  (truncationProbe (fun () -> ZetaFsStore.deltaLog (tempDir ()) (codec ()) :> IDeltaLog<int>) readSurface) }
 
       // The DAG observation: same operation, same representation, DIFFERENT channel, and the
       // answer flips. This row is why `Observation` is part of the key. Walking commit
@@ -409,7 +410,7 @@ let private sweeps: Sweep list =
               measureLargestFibre pinnedDomain (fun (deltas, t) ->
                   task {
                       let dir = tempDir ()
-                      let log = ZetaFsDeltaLog<int>(dir, codec ())
+                      let log = ZetaFsStore.deltaLog dir (codec ())
                       let asLog = log :> IDeltaLog<int>
 
                       for d in deltas do
@@ -642,7 +643,7 @@ let private declarers: (Type * IErasureDeclaring) list =
       typeof<DiskDeltaLog<int>>, DiskDeltaLog<int>(tempDir (), codec ()) :> IErasureDeclaring
       typeof<GroupCommitDiskDeltaLog<int>>,
       (new GroupCommitDiskDeltaLog<int>(tempDir (), codec ())) :> IErasureDeclaring
-      typeof<ZetaFsDeltaLog<int>>, ZetaFsDeltaLog<int>(tempDir (), codec ()) :> IErasureDeclaring
+      typeof<ZetaFsDeltaLog<int>>, ZetaFsStore.deltaLog (tempDir ()) (codec ()) :> IErasureDeclaring
       typeof<InMemoryBackingStore<int>>, InMemoryBackingStore<int>() :> IErasureDeclaring
       typeof<DiskBackingStore<int>>, DiskBackingStore<int>(tempDir (), 1L) :> IErasureDeclaring
       typeof<InMemoryAsyncBackingStore<int>>, InMemoryAsyncBackingStore<int>() :> IErasureDeclaring

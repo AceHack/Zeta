@@ -447,7 +447,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
 - **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
-- **ZetaFS dual-fold remaining** — BLAKE3 default hasher, factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`). Parent edge on `ZetaFsDeltaLog` shipped (truncate reversible through the commit DAG).
+- **ZetaFS dual-fold remaining** — factory path off `git`/`LibGit2Sharp` (`081M108RYNT087G0R001JSRNZE`). Parent edge shipped. Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128 (hexagonal).
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); dogfood first, then `create-repo` cutover (gated)
 - **Retraction readings** — keep full −1 (erasing view) distinct from `widen` (non-erasing support) and from negate-alone (Bennett-free); do not invoice Landauer on `neg` (`081M10BD9BM087G0R001SGDRXT`)

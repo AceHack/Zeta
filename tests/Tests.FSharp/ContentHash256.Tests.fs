@@ -7,7 +7,7 @@ open Zeta.Core.FSharp.Blake3
 module C256 = Zeta.Core.FSharp.Blake3.ContentHash256
 
 let ofBytes bytes =
-    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<Blake3Hasher>.TypeHandle)
+    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<OwnBlake3Hasher>.TypeHandle)
     C256.ofBytes bytes
 
 [<Fact>]

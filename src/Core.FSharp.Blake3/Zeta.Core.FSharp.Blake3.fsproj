@@ -17,8 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Blake3Spec.fs" />
     <Compile Include="ContentHash256.fs" />
     <Compile Include="Blake3Hasher.fs" />
+    <Compile Include="ZetaFsStore.fs" />
   </ItemGroup>
 
 </Project>

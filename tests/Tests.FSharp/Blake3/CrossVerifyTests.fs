@@ -103,7 +103,7 @@ let private loadVectors (yamlText: string) : Blake3Vector list =
 [<Fact>]
 let ``cross-verify five blake3-256 vectors match TS+Rust hex`` () =
     // Initialize Blake3Hasher assembly to wire the ContentHash256 hook
-    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<Blake3Hasher>.TypeHandle)
+    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof<OwnBlake3Hasher>.TypeHandle)
 
     let root = repoRoot ()
     let yamlPath = Path.Join(root, "tests", "cross-verification", "blake3-256", "vectors.yaml")

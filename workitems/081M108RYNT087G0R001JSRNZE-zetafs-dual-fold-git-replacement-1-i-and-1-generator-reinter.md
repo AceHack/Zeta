@@ -49,8 +49,12 @@ git forever."
 1. **Parent edge on `ZetaFsDeltaLog`.** ✅ Truncate writes a commit with the
    old tip as parent. Read surface (`ReplayAsync`) is still Erasing; the
    DAG walk is Reversible — same split as `GitDeltaLog`.
-2. **BLAKE3 as default hasher** for the tamper-evident store (injected today;
-   XxHash128 is the default).
+2. **BLAKE3 as default hasher.** Own spec impl (`Blake3Spec` /
+   `OwnBlake3Hasher`) is the composition root. The NuGet `Blake3`
+   adapter is a **test oracle** (official KATs + own==nuget
+   differential). `ContentHasher.defaultHasher` stays XxHash128
+   — Core does not take the Blake3 NuGet. Crypto hardness is
+   cited (Aumasson et al. 2020), not proved.
 3. **Factory path** stops execing `git`/`gh`; Harny sc/fs tools ride this log.
    Closed-tools workitem `081M100RH3Q087G0R0018X4RSJ`.
 4. **Phase out LibGit2Sharp** behind `IDeltaLog` / `IRefDeltaLog` once (1)+(3)

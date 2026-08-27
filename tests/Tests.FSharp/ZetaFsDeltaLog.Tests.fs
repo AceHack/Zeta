@@ -24,7 +24,7 @@ let getTempDir () =
 let ``ZetaFsDeltaLog: append and replay works successfully`` () =
     let dir = getTempDir ()
     try
-        let log = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher) :> IRefDeltaLog<string>
+        let log = ZetaFsStore.deltaLog dir codec :> IRefDeltaLog<string>
         let delta1 = ZSet.ofSeq ["x", 1L]
         let delta2 = ZSet.ofSeq ["y", 2L]
         
@@ -48,7 +48,7 @@ let ``ZetaFsDeltaLog: append and replay works successfully`` () =
 let ``ZetaFsDeltaLog: branch and checkout works successfully`` () =
     let dir = getTempDir ()
     try
-        let log = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher) :> IRefDeltaLog<string>
+        let log = ZetaFsStore.deltaLog dir codec :> IRefDeltaLog<string>
         let delta = ZSet.ofSeq ["x", 1L]
         
         log.AppendAsync(delta, Map.empty, CancellationToken.None).AsTask().Result |> ignore
@@ -80,7 +80,7 @@ let ``ZetaFsDeltaLog: branch and checkout works successfully`` () =
 let ``ZetaFsDeltaLog: reset active tip to matches target ref`` () =
     let dir = getTempDir ()
     try
-        let log = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher) :> IRefDeltaLog<string>
+        let log = ZetaFsStore.deltaLog dir codec :> IRefDeltaLog<string>
         log.AppendAsync(ZSet.ofSeq ["x", 1L], Map.empty, CancellationToken.None).AsTask().Result |> ignore
         log.Branch("refs/heads/feature") |> ignore
         
@@ -99,7 +99,7 @@ let ``ZetaFsDeltaLog: reset active tip to matches target ref`` () =
 let ``ZetaFsDeltaLog: merge handles non-conflicting branch merges and rejects conflicting ones`` () =
     let dir = getTempDir ()
     try
-        let log = ZetaFsDeltaLog<string>(dir, codec, Blake3Hasher.hasher) :> IRefDeltaLog<string>
+        let log = ZetaFsStore.deltaLog dir codec :> IRefDeltaLog<string>
         log.AppendAsync(ZSet.ofSeq ["base", 1L], Map.empty, CancellationToken.None).AsTask().Result |> ignore
         
         // Branch out

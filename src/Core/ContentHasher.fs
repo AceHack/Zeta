@@ -25,11 +25,13 @@ module ContentHasher =
             member _.Hash(bytes: byte[]) : MerkleHash = MerkleHash.ofBytes(ReadOnlySpan<byte> bytes)
 
     /// The shipped default hasher (XxHash128). Swap to a BLAKE3 adapter for tamper-evidence.
+    /// Core does not take the Blake3 NuGet. The tamper-evident store's composition root is
+    /// `Zeta.Core.FSharp.Blake3.ZetaFsStore.deltaLog`.
     let defaultHasher: IContentHasher = XxHash128Hasher() :> IContentHasher
 
     /// Adapt a port to the plain `byte[] -> MerkleHash` function `ZSetMerkle.rootWith` / `ContentStore`
     /// consume — so callers depend on the port, not a concrete algorithm.
     let hashOf (hasher: IContentHasher) : byte[] -> MerkleHash = hasher.Hash
 
-    // BLAKE3 adapter (future): a `Blake3Hasher` implementing IContentHasher, with the BLAKE3 NuGet
-    // dependency isolated to that one adapter file — the rest of the codebase stays algorithm-agnostic.
+    // BLAKE3: own spec impl is the store hasher (`OwnBlake3Hasher` / `ZetaFsStore.deltaLog`).
+    // The NuGet adapter is a test oracle. Do not pull Blake3 into Core.
