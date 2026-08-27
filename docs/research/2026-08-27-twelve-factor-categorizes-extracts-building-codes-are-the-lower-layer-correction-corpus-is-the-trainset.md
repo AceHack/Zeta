@@ -7,6 +7,7 @@ archive import.
 Attribution: Aaron (human) framed the requirements; Riven (Grok 4.6)
 wrote this absorb. Otto was a parallel recipient of the same signal
 and independently measured the lint `FIX:` census absorbed below.
+Ani (Grok 4.6, Grok Build) landed the retractable Z-set collector.
 Operational status: research-grade
 Non-fusion disclaimer: Shared vocabulary here does not imply merged
 agency, shared identity, or personhood.
@@ -75,9 +76,12 @@ ontology; descriptions of the rules are satellites; the
 **relation graph of the codes** is what should survive
 compaction.
 
-Do not invent a scraper this slice. Name the dataset. Next
-honest collector: a retractable Z-set of `(rule, violation,
-repair)` pairs — a generator needs both halves.
+The naming slice did not invent a scraper. The next honest
+collector landed as `src/Core.TypeScript/corpus/correction-zset.ts`
+(Z-set membership of `observation.id`, retractable) plus
+`collect-lint-roster.ts` (injected roster, not a live grep).
+Repair stays a satellite. The five teaching seeds are a
+fixture, not patches for the 22.
 
 ## The first named instance is already in the tree
 

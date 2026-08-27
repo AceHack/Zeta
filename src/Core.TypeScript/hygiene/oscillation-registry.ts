@@ -178,10 +178,22 @@ export interface DeclaredEdge {
   readonly why: string;
 }
 
+export interface ExclusiveCategory {
+  /** Ordinal-sorted healer names. Size >= 2. */
+  readonly members: readonly string[];
+}
+
 export interface RegistryReport {
   readonly verdicts: readonly PairVerdict[];
   /** Always a defect. */
   readonly oscillating: readonly PairVerdict[];
+  /**
+   * Connected components of `oscillate` edges. Dual-use: the same period-k
+   * that is a composition defect also *discovers* a mutually exclusive
+   * writer-category (coproduct, not product). Not appointed. Override
+   * (AB≠BA that still terminates) is DAG/monodromy and is NOT a member.
+   */
+  readonly exclusiveCategories: readonly ExclusiveCategory[];
   /** Order-dependent with no declared edge — legal once declared, refused until then. */
   readonly undeclaredOverrides: readonly PairVerdict[];
   /** Declared edges for pairs that turned out to commute. Not a failure; stale documentation. */
@@ -190,6 +202,44 @@ export interface RegistryReport {
   readonly dagHeight: number;
   /** Pairs whose corpus fired nothing — the verdict is vacuous and says so. */
   readonly vacuousPairs: readonly PairVerdict[];
+}
+
+/**
+ * Union-find over oscillate edges. Override / commute / disjoint do not join.
+ * Categories are ordinal-sorted by first member, members ordinal-sorted.
+ */
+export function exclusiveCategories(verdicts: readonly PairVerdict[]): readonly ExclusiveCategory[] {
+  const parent = new Map<string, string>();
+  const find = (n: string): string => {
+    const p = parent.get(n);
+    if (p === undefined || p === n) {
+      parent.set(n, n);
+      return n;
+    }
+    const r = find(p);
+    parent.set(n, r);
+    return r;
+  };
+  const union = (a: string, b: string): void => {
+    const ra = find(a);
+    const rb = find(b);
+    if (ra === rb) return;
+    if (compareOrdinal(ra, rb) < 0) parent.set(rb, ra);
+    else parent.set(ra, rb);
+  };
+  for (const v of verdicts) {
+    if (v.relation !== "oscillate") continue;
+    union(v.a, v.b);
+  }
+  const groups = new Map<string, string[]>();
+  for (const n of parent.keys()) {
+    const r = find(n);
+    groups.set(r, [...(groups.get(r) ?? []), n]);
+  }
+  return [...groups.values()]
+    .map((members) => ({ members: [...new Set(members)].sort(compareOrdinal) }))
+    .filter((c) => c.members.length >= 2)
+    .sort((a, b) => compareOrdinal(a.members[0] ?? "", b.members[0] ?? ""));
 }
 
 function pairKey(x: string, y: string): string {
@@ -250,6 +300,7 @@ export function buildRegistry(
   return {
     verdicts: [...verdicts].sort((x, y) => compareOrdinal(x.a, y.a) || compareOrdinal(x.b, y.b)),
     oscillating,
+    exclusiveCategories: exclusiveCategories(verdicts),
     undeclaredOverrides,
     staleDeclarations,
     dagHeight: dagHeight(healers.map((h) => h.name), applicable),
@@ -277,6 +328,11 @@ export function renderReport(r: RegistryReport): string {
   }
   for (const v of r.oscillating) {
     lines.push(`  OSCILLATE ${v.a} <-> ${v.b} — never reaches a fixed point. This is always a defect.`);
+  }
+  for (const c of r.exclusiveCategories) {
+    lines.push(
+      `  EXCLUSIVE CATEGORY {${c.members.join(", ")}} — discovered from oscillate edges; coproduct, not appointed.`,
+    );
   }
   for (const v of r.undeclaredOverrides) {
     lines.push(

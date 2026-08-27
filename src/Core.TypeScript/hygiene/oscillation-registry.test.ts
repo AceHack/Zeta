@@ -17,10 +17,12 @@ import {
   canonical,
   classifyPair,
   dagHeight,
+  exclusiveCategories,
   isClean,
   renderReport,
   writeSet,
   type DeclaredEdge,
+  type PairVerdict,
 } from "./oscillation-registry.ts";
 
 const tree = (o: Record<string, string>): FileTree => new Map(Object.entries(o));
@@ -222,5 +224,64 @@ describe("mechanics that would silently corrupt the verdicts", () => {
     const boom: Healer = { name: "boom", heal: () => { throw new Error("nope"); } };
     const v = classifyPair(boom, rewriter("b", "x.md", "foo", "FOO"), corpusOf({ "x.md": "foo" }));
     expect(v.relation).not.toBe("oscillate");
+  });
+});
+
+describe("exclusive categories — oscillate discovers a coproduct", () => {
+  const osc = (a: string, b: string): PairVerdict => ({
+    a,
+    b,
+    relation: "oscillate",
+    sharedPaths: ["x.md"],
+    firedOn: ["c"],
+  });
+  const over = (a: string, b: string): PairVerdict => ({
+    a,
+    b,
+    relation: "override",
+    sharedPaths: ["x.md"],
+    firedOn: ["c"],
+  });
+
+  test("an oscillate pair is one exclusive category of two", () => {
+    expect(exclusiveCategories([osc("advance", "reset")])).toEqual([
+      { members: ["advance", "reset"] },
+    ]);
+  });
+
+  test("override is NOT exclusive — AB≠BA that settles is DAG, not mutex", () => {
+    expect(exclusiveCategories([over("upper", "wrap")])).toEqual([]);
+  });
+
+  test("two independent oscillate pairs are two categories, not one bag", () => {
+    const cats = exclusiveCategories([osc("advance", "reset"), osc("kick", "rebound")]);
+    expect(cats).toEqual([
+      { members: ["advance", "reset"] },
+      { members: ["kick", "rebound"] },
+    ]);
+  });
+
+  test("A-B and B-C oscillating is ONE category of three — discovered, not appointed", () => {
+    const cats = exclusiveCategories([osc("a", "b"), osc("b", "c")]);
+    expect(cats).toEqual([{ members: ["a", "b", "c"] }]);
+  });
+
+  test("buildRegistry surfaces the category next to the oscillate defect", () => {
+    const advance: Healer = {
+      name: "advance",
+      heal: (t) => {
+        const v = t.get("x.md");
+        if (v === "x") return new Map([...t, ["x.md", "y"]]);
+        if (v === "y") return new Map([...t, ["x.md", "z"]]);
+        return t;
+      },
+    };
+    const reset: Healer = {
+      name: "reset",
+      heal: (t) => (t.get("x.md") === "z" ? new Map([...t, ["x.md", "x"]]) : t),
+    };
+    const r = buildRegistry([advance, reset], corpusOf({ "x.md": "x" }));
+    expect(r.exclusiveCategories).toEqual([{ members: ["advance", "reset"] }]);
+    expect(renderReport(r)).toMatch(/EXCLUSIVE CATEGORY/);
   });
 });
