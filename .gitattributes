@@ -180,6 +180,58 @@ data/rs-blocks.jsonl                     merge=union
 # backfill that rewrites an outcome, say — this line must go.
 data/ci-runs.jsonl                       merge=union
 #
+# `data/tick-reasoning.jsonl` — added 2026-08-26 after it wedged alexa's tick from 23:42Z onward
+# (run 33024333706) with `CONFLICT (add/add): Merge conflict in data/tick-reasoning.jsonl`.
+# EIGHTH member of the class, and the first that wedged exactly ONE lane while its two siblings
+# ticked green on the same run — which is what localises the cause to the merge BASE rather than
+# to anything shared.
+#
+# WHY ONLY ALEXA. The path reached main for the first time at 23:11:11Z, in the alexa flush
+# `18e00976d2` (#15551). Measured on that tip:
+#     lane      merge-base   base has file   lane has file   main has file
+#     alexa     443cdacdb5   NO              YES             YES   -> ADD/ADD, wedged
+#     otto      64005b76ac   YES             YES             YES   -> 3-way content merge, green
+#     soraya    64005b76ac   YES             YES             YES   -> 3-way content merge, green
+# otto and soraya were rebuilt over a main that already carried the file, so their base has it and
+# git has a common ancestor to diff against. alexa's base predates its own flush, so the base has
+# neither side. This is SELF-SUSTAINING: the failed tick never advances the lane, so the base never
+# moves past the flush, so the next tick reproduces the same add/add. It cannot clear on its own.
+#
+# Measured on this tip, not assumed:
+#   - append-only — the sole writer is `appendFileSync(path, JSON.stringify(reasoning) + "\n")` in
+#     `observe/tick-reasoning.ts` `recordReasoning`; no code path rewrites an existing line
+#   - every row carries an `agent` field naming the emitting lane, so this is single-writer PER ROW
+#     exactly as `ci-runs.jsonl` and `rs-blocks.jsonl` are
+#   - 16 rows on main, 30 on the lane, all 16 parse; main's rows are a strict SUBSET of the lane's
+#     (`comm -23` = 0 rows only-main, 14 rows only-lane). Main's side of the hunk is EMPTY, the
+#     same vacuous-conflict signature this whole block exists for.
+#
+# REPRODUCED against the live refs rather than argued: `checkout -B lane origin/main` then
+# `merge --squash origin/heartbeat/alexa` emits the failing message VERBATIM without this line,
+# and "Auto-merging data/tick-reasoning.jsonl" with it — 30 rows, zero duplicates, zero markers.
+#
+# STATED LIMITS, three of them.
+#   1. No check enforces row uniqueness here, as with both siblings above. Union is safe on the
+#      append-only + per-row-single-writer argument alone. If a row ever becomes editable, this
+#      line must go.
+#   2. `recordReasoning` swallows its own write error (`catch { /* non-fatal */ }`), so a row can
+#      go MISSING without anything going red. That is a gap in the writer, not something union
+#      makes worse, and it is not fixed here.
+#   3. UNION CAN DUPLICATE A FLUSHED ROW, and this was measured rather than assumed while adding
+#      this line. Where the two sides share rows and main additionally holds a FOREIGN row placed
+#      BEFORE the shared ones, xdiff cannot align the common prefix and emits both copies of the
+#      shared row — never data loss, but one row counted twice. Measured over three orderings:
+#          main=[A1]      lane=[A1,A2]   -> 2 rows, 0 dupes   (the LIVE shape today)
+#          main=[A1,O]    lane=[A1,A2]   -> 3 rows, 0 dupes   (realistic post-flush; pinned by test)
+#          main=[O,A1]    lane=[A1,A2]   -> 4 rows, 1 DUPE
+#      This is a property of the `union` driver, so it applies equally to the four union paths
+#      declared above; it is recorded here because this is where it was first measured. It does
+#      not block this line: the live file is single-lane and main is a strict prefix of the lane
+#      (16 of 30 rows, `comm -23` = 0), which is the clean case. `manifest.jsonl` is the only
+#      union path with a duplicate-key check behind it; the rest, including this one, are not
+#      covered, and a duplicate here would inflate the decorrelation meter's denominator.
+data/tick-reasoning.jsonl                merge=union
+#
 # Regenerated-per-tick snapshots -> `theirs` (the lane's). `union` is WRONG for these and was
 # measured producing two concatenated objects, i.e. invalid JSON: .rs-buffer-*.json is a
 # single-line rolling buffer and vault-state/roster are whole-file rollups. The tick rewrites

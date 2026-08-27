@@ -5,7 +5,7 @@ import { join } from "node:path";
 
 import { afterEach, describe, expect, it } from "bun:test";
 
-import { prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
+import { annotateFailure, prepareHeartbeatBranch } from "./prepare-heartbeat-branch";
 
 const roots: string[] = [];
 
@@ -255,6 +255,60 @@ describe("prepareHeartbeatBranch", () => {
     expect(lines).not.toContain("<<<<<<< HEAD");
   });
 
+  it("carries the tick-reasoning log when main holds a strict PREFIX it has no ancestor for", () => {
+    // The path that wedged alexa from 23:42Z on 2026-08-26 (run 33024333706) with
+    // `CONFLICT (add/add): Merge conflict in data/tick-reasoning.jsonl`, while otto and soraya
+    // ticked GREEN on that same run.
+    //
+    // WHY THIS CASE IS NEITHER OF THE TWO ABOVE, and why the distinction is the whole bug. The
+    // mutation-findings case has main holding a prefix WITH a shared ancestor; the ci-runs case
+    // has the two sides DISJOINT with no ancestor. This one is the cross: the sides OVERLAP
+    // heavily -- measured live, main's 16 rows are a strict subset of the lane's 30 -- and git
+    // still calls it `add/add`, because the path first reached main in alexa's OWN flush
+    // (18e00976d2, #15551) at 23:11Z, which is NEWER than the lane's merge base. Overlapping
+    // content does not save you when the base has neither side.
+    //
+    // It is also why "just wait for the next tick" is not a fix: a failed tick never advances the
+    // lane, so the base never moves past the flush, so the add/add reproduces every 15 minutes
+    // until this line exists. Two hours of red proved that empirically.
+    const { work } = fixture();
+    const p = "data/tick-reasoning.jsonl";
+    seedAttributes(work);
+    // Main carries the flushed row PLUS a row this lane did not write, in the order a real flush
+    // leaves behind: the lane's snapshot first, then another lane's later append. Live data is
+    // single-lane today (16/16 rows are `"agent":"alexa"`), so otto's row is the forward-looking
+    // half of the per-ROW single-writer argument the `.gitattributes` entry rests on.
+    //
+    // It is also what makes this test DISCRIMINATE between the two drivers this repo uses.
+    // `merge=theirs` takes the lane wholesale and would silently DELETE otto's row while still
+    // satisfying every other assertion below. Dropping this row would leave a test that cannot
+    // tell `union` from `theirs`, which is the vacuity these tests exist to catch.
+    partialFlush(
+      work,
+      p,
+      '{"agent":"alexa","chosen":"work","at":"T1"}\n{"agent":"otto","chosen":"play","at":"T0"}\n',
+      '{"agent":"alexa","chosen":"work","at":"T1"}\n{"agent":"alexa","chosen":"explore","at":"T2"}\n',
+    );
+
+    const result = prepareHeartbeatBranch("alexa", work);
+    expect(result).toMatchObject({ ok: true, value: { remoteFound: true, carried: true } });
+
+    // The already-flushed row must survive EXACTLY ONCE. An add/add union over overlapping sides
+    // is the shape most likely to double a flushed row, and a doubled row would inflate the
+    // denominator of `observe/decorrelation-meter.ts`, which reads this file one row per decision.
+    const lines = readFileSync(join(work, p), "utf8").split("\n").filter(Boolean);
+    expect(lines).toEqual([
+      '{"agent":"alexa","chosen":"work","at":"T1"}',
+      '{"agent":"otto","chosen":"play","at":"T0"}',
+      '{"agent":"alexa","chosen":"explore","at":"T2"}',
+    ]);
+    expect(new Set(lines).size).toBe(lines.length);
+    expect(lines).not.toContain("<<<<<<< HEAD");
+    // Every row must still PARSE: `union` on a whole-file JSON snapshot produces concatenated
+    // objects, and this assertion is what distinguishes the append-only class from that one.
+    for (const line of lines) expect(() => JSON.parse(line) as unknown).not.toThrow();
+  });
+
   it("keeps a regenerated snapshot parseable when both sides rewrote it", () => {
     const { work } = fixture();
     const p = "docs/observe-events/.rs-buffer-alexa.json";
@@ -417,4 +471,79 @@ describe("prepareHeartbeatBranch", () => {
       error: "agent must be one safe branch component; got ../../main",
     });
   });
+});
+
+describe("annotateFailure", () => {
+  // The VERBATIM stderr of the alexa preparer in run 33024333706, job 98362009835, whose only
+  // annotation was `Process completed with exit code 1`.
+  const LIVE_FAILURE =
+    "carry unflushed heartbeat state failed: Auto-merging data/ci-runs.jsonl\n" +
+    "Auto-merging data/tick-reasoning.jsonl\n" +
+    "CONFLICT (add/add): Merge conflict in data/tick-reasoning.jsonl\n" +
+    "Auto-merging db/mutation-findings/alexa.jsonl\n" +
+    "Squash commit -- not updating HEAD\n" +
+    "Automatic merge failed; fix conflicts and then commit the result.";
+
+  it("carries the conflicting PATH into the annotation, which is the whole diagnosis", () => {
+    const annotation = annotateFailure(LIVE_FAILURE);
+    expect(annotation).toStartWith("::error title=heartbeat lane preparation failed::");
+    // Naming the file is what turns a red run into a one-line remedy: declare the path in the
+    // `.gitattributes` heartbeat block. An annotation that omitted it would be no better than
+    // the exit code it replaces.
+    expect(annotation).toContain("CONFLICT (add/add): Merge conflict in data/tick-reasoning.jsonl");
+  });
+
+  it("survives as ONE workflow command, so nothing after the first line is truncated", () => {
+    const annotation = annotateFailure(LIVE_FAILURE);
+    // A workflow command ends at a literal newline. The CONFLICT line is the THIRD line of the
+    // real message, so an unencoded annotation would be cut before reaching it -- the failure
+    // mode this encoding exists to prevent, and one a "contains the path" assertion alone would
+    // not catch.
+    expect(annotation).not.toContain("\n");
+    expect(annotation.split("%0A")).toHaveLength(6);
+  });
+
+  it("escapes the percent sign before the newline, so an encoded body is not re-read", () => {
+    // Order matters: escaping `\n` first and `%` second would rewrite the `%0A` just emitted into
+    // `%250A`, and the annotation would render the escape instead of a line break.
+    expect(annotateFailure("100%\ndone")).toBe(
+      "::error title=heartbeat lane preparation failed::100%25%0Adone",
+    );
+  });
+});
+
+describe("prepare-heartbeat-branch CLI", () => {
+  it("EMITS the annotation on a real conflicting tick, not merely computing one", () => {
+    // The falsifier for the wiring rather than the formatter. `annotateFailure` was fully covered
+    // by unit tests above and DELETING ITS ONLY CALL SITE still left them all green -- a check
+    // that cannot fail for the thing it exists to protect. Legibility is a property of the
+    // PROCESS OUTPUT, so it has to be asserted by running the process.
+    const { work } = fixture();
+    seedAttributes(work);
+    // An UNDECLARED path, so the preparer's typed backpressure fires exactly as it did live.
+    const p = "data/not-declared.jsonl";
+    git(work, "switch", "-c", "heartbeat/alexa");
+    commitFile(work, p, '{"n":"lane"}\n', "lane ticks past the flush snapshot");
+    git(work, "push", "--force-with-lease", "origin", "heartbeat/alexa");
+    git(work, "switch", "main");
+    commitFile(work, p, '{"n":"main"}\n', "partial flush: only the snapshot reached main");
+    git(work, "push", "origin", "main");
+
+    const run = spawnSync(
+      process.execPath,
+      [join(import.meta.dir, "prepare-heartbeat-branch.ts"), "--agent", "alexa"],
+      { cwd: work, encoding: "utf8" },
+    );
+
+    expect(run.status).toBe(1);
+    const annotation = run.stderr.split("\n").find((l) => l.startsWith("::error "));
+    expect(annotation).toBeDefined();
+    // The annotation must NAME THE PATH. That is the entire difference between this and the
+    // `Process completed with exit code 1` that was the only annotation on run 33024333706.
+    expect(annotation).toContain("data/not-declared.jsonl");
+    // Explicit timeout: this is the only test here that spawns a second `bun` runtime on top of
+    // the git fixture, so it is the most load-sensitive one in the file. The default 5s is
+    // already marginal for the git-only tests on a busy runner; leaving this one on the default
+    // would make it the first to flake, and a flaky falsifier gets deleted rather than fixed.
+  }, 30_000);
 });

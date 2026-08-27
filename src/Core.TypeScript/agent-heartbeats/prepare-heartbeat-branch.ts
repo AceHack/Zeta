@@ -108,6 +108,33 @@ export function prepareHeartbeatBranch(agent: string, cwd: string = process.cwd(
   return { ok: true, value: { head, remoteFound, carried: staged.status === 1 } };
 }
 
+/**
+ * Render the preparer's failure as a GitHub Actions `::error::` annotation.
+ *
+ * WHY THIS EXISTS. On 2026-08-26 the alexa lane failed every tick from 23:42Z, and the run's only
+ * annotation was `Process completed with exit code 1` — which names the exit status and nothing
+ * about the cause. The cause (`CONFLICT (add/add): Merge conflict in data/tick-reasoning.jsonl`)
+ * was in the step log the whole time, 1250 lines down, reachable only by downloading the job log.
+ * That is the third failure that night whose annotation said nothing useful, and the diagnosis
+ * each time is one line of text that the process already had in hand.
+ *
+ * The class this belongs to matters more than the instance: the conflicting-path failures are
+ * DESIGNED to recur — the preparer's typed backpressure refuses any undeclared conflicting path,
+ * so each genuinely-new append-only file surfaces exactly this way (eight times since 2026-08-16,
+ * per the `.gitattributes` heartbeat block). The remedy is always "declare the path", and the
+ * only thing standing between the alarm and the remedy is knowing WHICH path. Putting it in the
+ * annotation puts it on the run summary, where a watchdog or a person sees it without fetching
+ * logs — the same move #15692 made for `build-and-test`.
+ *
+ * Newlines are percent-encoded because a workflow command is terminated by a literal newline:
+ * an unencoded multi-line message is silently truncated at the first one, which for a git merge
+ * failure discards every line after `Auto-merging <first path>` — i.e. exactly the CONFLICT line
+ * that carries the diagnosis. `%0A` is the documented escape and renders as a line break.
+ */
+export function annotateFailure(error: string): string {
+  return `::error title=heartbeat lane preparation failed::${error.replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A")}`;
+}
+
 function parseAgent(argv: readonly string[]): { readonly ok: true; readonly agent: string } | { readonly ok: false } {
   return argv.length === 2 && argv[0] === "--agent" && argv[1] !== undefined
     ? { ok: true, agent: argv[1] }
@@ -123,6 +150,7 @@ if (import.meta.main) {
   const result = prepareHeartbeatBranch(parsed.agent);
   if (!result.ok) {
     console.error(`prepare-heartbeat-branch: ${result.error}`);
+    console.error(annotateFailure(result.error));
     process.exit(1);
   }
   console.log(
