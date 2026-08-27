@@ -1,0 +1,10 @@
+{
+  "tick": 962,
+  "at": "2026-08-27T04:10:07.159Z",
+  "findings": [
+    {
+      "path": "docs/DRIFT-DASHBOARD.md",
+      "rule": "MD037"
+    }
+  ]
+}
