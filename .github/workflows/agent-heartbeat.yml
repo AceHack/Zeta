@@ -2432,11 +2432,20 @@ jobs:
           fi
 
           # 081M010H4KE / 081M005FXAB. "All present checks are green" was the
-          # lie: gate never started. This exits 1 when a heartbeat/* PR older
-          # than one tick has no `gate (required)` in its rollup. Young PRs
-          # are ignored — the check may not have been scheduled yet.
+          # lie: gate never started. This exits 1 when a CURRENT-AGENT flush
+          # PR older than one tick has no `gate (required)` in its rollup.
+          #
+          # The previous heartbeat/* scope was over-broad: an unrelated stale
+          # archive or peer-lane PR could make this flush red AFTER this lane
+          # had safely written its own evidence. That turns another lane's
+          # unresolved promotion into erasure of a distinct observation. The
+          # agent-specific scope below preserves the gate-absence falsifier for
+          # this lane, while the repo-wide drift job still reports stale PRs.
+          # Young PRs are ignored — the check may not have been scheduled yet.
           set +e
-          bun src/Core.TypeScript/forge-host/github/required-check-started.ts --min-age-min 20
+          bun src/Core.TypeScript/forge-host/github/required-check-started.ts \
+            --min-age-min 20 \
+            --ref-prefix "heartbeat/${AGENT}-flush"
           RC=$?
           set -e
           if [ "$RC" -eq 2 ]; then

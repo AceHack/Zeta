@@ -76,6 +76,28 @@ describe("heartbeatPrsMissingRequiredCheck", () => {
     );
     expect(missing).toEqual([10490]);
   });
+
+  test("a current agent lane remains red while an unrelated heartbeat lane is excluded", () => {
+    const prs = [
+      {
+        number: 15772,
+        createdAt: "2026-08-15T12:00:00.000Z",
+        headRef: "heartbeat/pr-archive",
+        headSha: "e".repeat(40),
+        rollup: [],
+      },
+      {
+        number: 15784,
+        createdAt: "2026-08-15T12:00:00.000Z",
+        headRef: "heartbeat/alexa-flush",
+        headSha: "f".repeat(40),
+        rollup: [],
+      },
+    ];
+
+    expect(prsMissingRequiredCheck(prs, T0, 10 * 60_000, "heartbeat/alexa-flush")).toEqual([15784]);
+    expect(heartbeatPrsMissingRequiredCheck(prs, T0, 10 * 60_000)).toEqual([15772, 15784]);
+  });
 });
 
 // The regression these tests exist for (2026-08-17): rollup-absence alone

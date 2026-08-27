@@ -350,7 +350,9 @@ describe("heartbeat workflow credential split", () => {
     // lane merge unchecked — so its loss would silently restore the exact defect
     // (#10986 / 081M010H4KE) the deleted belt was originally covering for.
     expect(HEARTBEAT_WORKFLOW).toContain("- name: Fail if a heartbeat PR is old and gate never started");
-    expect(HEARTBEAT_WORKFLOW).toContain("required-check-started.ts --min-age-min 20");
+    expect(HEARTBEAT_WORKFLOW).toContain("required-check-started.ts \\");
+    expect(HEARTBEAT_WORKFLOW).toContain("--min-age-min 20");
+    expect(HEARTBEAT_WORKFLOW).toContain('--ref-prefix "heartbeat/${AGENT}-flush"');
   });
 
   it("arms auto-merge on the immutable outputs, never the mutable heartbeat head", () => {
