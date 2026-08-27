@@ -87,7 +87,9 @@ let ``interrupts stay in the ERROR channel (sum), corners in the VALUE channel (
 let ``no ArrowApply app: SchedulerZeta predicts the VALUE-channel period; interrupts are not in that map`` () =
     // Thin needle. The map is corners only — a DoP=1 ferry / soft IScheduler tick.
     // Structure is this function, not a value-arriving-as-an-arrow (Hughes app).
-    // An interrupt in the ERROR channel does not change the predicted orbit.
+    // An interrupt in the ERROR channel does not change the predicted orbit — measured below
+    // against a control that proves the interrupt is live, not asserted by running the same
+    // interrupt-free prediction twice.
     let step (o: Corners) : Corners =
         match o.TOut with
         | Some "a" -> FourCorner.withOut "b" o
@@ -99,9 +101,39 @@ let ``no ArrowApply app: SchedulerZeta predicts the VALUE-channel period; interr
     Assert.Equal(2, r.Period)
     Assert.Equal(0, r.Transient)
     Assert.Equal(2, r.Reachable)
-    let _interrupt = Interrupted SentinelMissing
-    let r2 = SchedulerZeta.predict key step start
+
+    // ── "an interrupt does not change the predicted orbit" — as a check that CAN fail ──
+    // This pair of predictions used to run `predict key step start` twice with a DISCARDED
+    // `let _interrupt = Interrupted SentinelMissing` between them. Discarded means it reached
+    // neither call, so the comparison was f(x) = f(x): true under every implementation of
+    // `predict`, including a broken one. To claim invariance UNDER interruption the interrupt
+    // has to actually reach the second prediction, so it is carried in the ticked state and
+    // advanced every tick on a period of THREE — coprime to the corners' period of two.
+    let nextIntr (i: InterruptFeedback option) : InterruptFeedback option =
+        match i with
+        | None -> Some(Interrupted SentinelMissing)
+        | Some(Interrupted _) -> Some(Failed "rate-limited")
+        | Some(Failed _) -> None
+
+    let stepI ((o, i): Corners * InterruptFeedback option) = step o, nextIntr i
+    let startI = (start, None)
+    let jointKey ((o, i): Corners * InterruptFeedback option) = key o, i
+    let valueKey ((o, _): Corners * InterruptFeedback option) = key o
+
+    // CONTROL, stated FIRST: the interrupt is genuinely live and genuinely on its own period.
+    // Keyed jointly, the orbit is lcm(2, 3) = 6. Without this the invariance below would pass
+    // just as happily if the interrupt never moved — which is the defect being repaired here.
+    let rJoint = SchedulerZeta.predict jointKey stepI startI
+    Assert.Equal(6, rJoint.Period)
+
+    // THE CLAIM: project that same interrupted run onto the VALUE channel and the corners'
+    // recurrence is untouched — the ERROR channel is not in the map. This fails if `predict`
+    // keys on any state the caller did not project (it would report the joint 6, not 2), a
+    // mutation the interrupt-free prediction above cannot see.
+    let r2 = SchedulerZeta.predict valueKey stepI startI
     Assert.Equal(r.Period, r2.Period)
+    Assert.Equal(r.Transient, r2.Transient)
+    Assert.Equal(r.Reachable, r2.Reachable)
     Assert.Equal(1, FerryThrottlerConfig.deterministic.MaxDegreeOfParallelism)
 
 [<Fact>]
