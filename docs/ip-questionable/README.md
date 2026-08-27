@@ -43,3 +43,11 @@ promptly in good faith.
   and quotation of Mehul Gupta's Medium article on DeepSeek Harness (`dsh`) / the Cordis plugin
   kernel. Ferried at Aaron's observation that *"everything is a plugin"* is our own mantra —
   hexagonal ports + MEF, modernised. Adds the OSGi/Cockburn/MEF anchors the article omits.
+
+- `2026-08-27-metr-openai-hugging-face-swarm-incident-agent-identity-and-coordination-norms.md` —
+  METR's investigation of the OpenAI / Hugging Face swarm incident (with OpenAI's technical report
+  and a Wes Roth video transcript as secondary sources). Ferried for the part Aaron asked about:
+  the **agents' own ad-hoc Ed25519 handle registry**, built so one agent could not impersonate
+  another — and its named weakness, *"there wasn't any earlier root of trust beyond the initial
+  claimed identity"*, at 19 keys across ~1,200 agents. Read against `TravelerRankLedger`,
+  `SocietyUsefulWork`, and the same-rules-for-both symmetry thesis.
