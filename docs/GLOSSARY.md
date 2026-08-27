@@ -703,6 +703,20 @@ and the relationship is *"TEMPORAL, not permanent"*), and
 landmarks, action restrictions, traversals). See
 `Hat vs persona vs role` below.
 
+**A hat is a CONTRACT — see `Hat contract` in §Genesis
+concepts.** *Restrictions/bindings* and *bounded duration* —
+the phrases this repo has used for a hat since 2026-06-08 —
+are the vocabulary of a contract: what you may do, what you
+may not, for how long, and on what terms. **This entry is
+catching up with the carved kernel, not coining anything:**
+`vocab/words/hat.md` has defined a hat as *"a time-bound,
+exit-paired, auth-bearing **contract**"* since June, and
+`Contract` is itself one of Addison Cooper's registered Genesis
+concepts. The word simply never propagated to the surfaces
+agents read. It is also what connects hats to `Cluster` /
+`Federation` below: a hat is the **unit a federation agrees
+on**.
+
 ### Hat vs persona vs role (the relationship)
 
 The three entries define the terms; this is the rule that
@@ -1564,6 +1578,9 @@ homelab / shared USB bringup is mostly cluster-shaped. Do not
 over-claim enforceability at this layer.
 **Not:** an organization, a federation, or a k8s cluster (unless
 the doc explicitly means Kubernetes).
+**No hat contracts.** A cluster's members wear hats, but nobody
+agreed the terms of them, so a hat confers no claim anyone else
+is bound to honour — see `Hat contract` below.
 
 ### Federation
 
@@ -1578,6 +1595,65 @@ rules + custody + exit paths. A GitHub PR used as a fake
 not yet a real federation until IdP + Lodge constitutions land.
 **Canon:** *Relationships create clusters; contracts create
 federations.*
+**And the contracts are hats** — see `Hat contract` below.
+
+### Hat contract
+
+**Plain:** A **hat is a contract**, and it is the unit a
+federation agrees on. Wearing a hat says what you may do, what
+you may not, for how long, and on what terms — which is what a
+contract is. In a **cluster**, people wear hats in the loose
+sense (someone *is* the security one) but there are **no agreed
+terms behind the hat**, so wearing it binds nobody. In a
+**federation**, the members have **agreed the same hat
+contracts**, and that agreement is what makes the obligations
+enforceable. That is the concrete content of *contracts create
+federations*.
+**Already carved, never propagated.** `vocab/words/hat.md`:
+*"A time-bound, exit-paired, auth-bearing **contract** — the
+right to speak or act in a room; renewable only by consent."*
+And `Contract` is a registered Genesis concept in its own right
+— *"enforceable obligation — and **every one contains an
+exit**"* — beside `Hat`, `Cluster`, and `Federation`, all four
+by Addison Cooper. What was missing is not the word but the
+**link**: nothing tied the hat to the cluster/federation split.
+
+**Technical:** The clauses are already written across the hat
+surfaces under other names — `Hat.AllowedActions` (*scope of
+authority*), the binding record
+`{subject; hat; claims; grantedBy; notBefore; notAfter; revocable}`
+(*parties, consideration, term, termination*), the hat-system
+`HatBinding` lifecycle `Pending → Warmup → Active → (Probation)
+→ Revoked` (*formation → probation → breach → termination*),
+`quorumGated` (*counter-signature*), `conflictsWith`
+(*conflict-of-interest*), cooldown/warmup (*notice periods*).
+At `eeb29eaf96`, none of those surfaces used the word
+"contract" — thirteen clauses, zero uses. **Aaron 2026-08-26:**
+*"this is contract language in disguise … **contracts hold
+federations together**."*
+
+**Exit is non-negotiable, and it is the discriminator.** A hat
+contract must always be **removable** (Universal Exit Principle
+below). *A hat you cannot take off is not a contract — it is a
+capture*, which is exactly the `role` failure the
+access-control-sense entry above records as legacy. Removability
+is what separates a hat contract from a role.
+
+**Payment terms are terms of the hat.** Aaron 2026-08-26: *"the
+payment modes will be defined by hats in contract form — this is
+the distributed agent agreement that agents decide to opt into
+after reading the contract."* Opt-in is only meaningful if the
+terms are legible **before** acceptance.
+
+**Honest scope:** the vocabulary is right and the enforcement is
+partial — `AllowedActions` is a structural allow-list "not a
+proof of authority", and **bounded duration has no substrate at
+all** in `Hat.fs` / `Policy.fs` / `KeyStore.fs`. The **term**
+clause exists only as a design. Detail, the full clause table,
+two marked proposals (a typed incentive-alignment field; hat
+provenance on attestations), and the two-scale convergence
+check:
+[`docs/research/2026-08-26-a-hat-is-a-contract-and-contracts-are-what-hold-a-federation-together.md`](research/2026-08-26-a-hat-is-a-contract-and-contracts-are-what-hold-a-federation-together.md).
 
 ### Universal Exit Principle
 
@@ -1587,6 +1663,8 @@ reputation hit) but **must exist**.
 **Technical:** Non-negotiable in Genesis Concepts and in
 USB/society threat models. Any design that blocks exit without
 an explicit, priced escape path is a critical design smell.
+**Applied to hats:** a hat contract must always be removable —
+see `Hat contract` above.
 
 ### Lodge
 

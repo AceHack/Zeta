@@ -61,6 +61,54 @@ gets swapped off; the hat persists.
 - **HatPolicy** — cluster-wide singleton (`metadata.name: default`)
   carrying throttle defaults and tick-emit configuration.
 
+## The four CRDs are contract instruments
+
+Aaron, 2026-08-26: *"we talk about hats coming with bounded
+authorization and restrictions/bindings; **this is contract language
+in disguise**."* Read the four CRDs that way and every field lands on
+an ordinary contract clause. This is a **naming**, not a re-scoping —
+nothing below changes what any hat authorizes.
+
+The word is not new: `vocab/words/hat.md` has defined a hat as *"a
+time-bound, exit-paired, auth-bearing **contract**"* since June, and
+`Contract` is a registered Genesis concept beside `Hat`, `Cluster`,
+and `Federation`. It just never propagated to this README.
+
+| what the CRD already says | the contract term for it |
+|---|---|
+| `Hat.spec.authority` (RBAC rules + namespace scope) | **scope of authority** |
+| `Hat.spec.skills` | **capacity** — what the party can perform |
+| `Hat.spec.supervises` (a DAG) | **delegation / sub-agency**, with no circular authority |
+| `HatBinding` `Pending → Warmup → Active → (Probation) → Revoked` | **formation → probation → breach → termination** |
+| `spec.wearer.spiffeID` (SPIRE-attested) | **identification of the party** |
+| `quorumGated` / `quorumSize` | **execution formality** — counter-signature |
+| `conflictsWith` | **conflict-of-interest clause** |
+| cooldown / warmup / sticky-attribution windows | **notice periods** and **term** |
+| `HatSwap` (append-only, one per transition) | the **record of the instrument** |
+| `HatPolicy` (cluster-wide singleton) | the **standard terms** instruments default to |
+
+**Why the naming earns its place here specifically.** It is what ties
+this operator to the society layer: *relationships create clusters;
+**contracts create federations*** — and the contracts are hats. A
+cluster's members wear hats with no agreed terms behind them, so
+wearing one binds nobody. A federation's members have **agreed the
+same hat contracts**, which is what makes the obligations
+enforceable. This directory is where that agreement stops being
+social and becomes machine-checkable.
+
+**It also re-reads the cage table above as the termination clause.**
+*Removable "by swap-off (one command)"* is not a pleasant property a
+hat happens to have — under the **Universal Exit Principle** it is
+the **discriminator**: a hat you cannot take off is not a contract,
+it is a capture, which is precisely the cage. Every `HatBinding`
+therefore needs a reachable `Revoked`.
+
+Detail, the F#-side clause table, the payment-terms half, and two
+marked proposals (a typed incentive-alignment field; hat provenance
+on attestations):
+`docs/research/2026-08-26-a-hat-is-a-contract-and-contracts-are-what-hold-a-federation-together.md`.
+Glossary: `docs/GLOSSARY.md` §`Hat contract`.
+
 ## The structured tick source
 
 CRD + operator = structured tick source. Every state transition
