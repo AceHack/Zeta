@@ -67,7 +67,8 @@ function fixtureArtifact(): string {
   const root = mkdtempSync(join(tmpdir(), "zeta-pages-artifact-"));
   mkdirSync(join(root, "assets"), { recursive: true });
   writeFileSync(join(root, "index.html"), `<script src="/assets/index-abc123.js"></script>`, "utf8");
-  writeFileSync(join(root, "assets", "index-abc123.js"), `console.log("authorize this device");`, "utf8");
+  writeFileSync(join(root, "assets", "index-abc123.js"), `console.log("authorize this device evidence-seam");`, "utf8");
+  writeFileSync(join(root, "assets", "EvidenceRoomPage-abc123.js"), `fetch("docs/room-evidence/index.json");`, "utf8");
   return root;
 }
 
