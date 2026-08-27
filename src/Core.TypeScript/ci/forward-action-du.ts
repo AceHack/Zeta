@@ -163,6 +163,24 @@ export interface PrFacts {
    * supersede it and it cannot self-heal.
    */
   readonly isFrozenLane: boolean;
+
+  /**
+   * The `gate.yml` workflow RUN for this head, as distinct from the check-runs
+   * it publishes. `null` when no run exists at all.
+   *
+   * These are different objects and the difference is the whole fourth class: a
+   * run can exist, complete, and publish NOTHING. GitHub reports that as
+   * `conclusion: "action_required"` with zero jobs — the workflow is held for
+   * manual approval and never dispatched. The required check is then simply
+   * absent, which at rollup level is indistinguishable from a healthy PR that
+   * happens to have fewer checks.
+   */
+  readonly gateRun: {
+    readonly id: number;
+    readonly status: string;
+    readonly conclusion: string | null;
+    readonly jobCount: number;
+  } | null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -367,6 +385,27 @@ export type Disposition =
   | { readonly kind: "OwnedElsewhere" }
   | { readonly kind: "VerdictUndispatchable"; readonly why: string }
   | { readonly kind: "VerdictNotDispatched"; readonly missing: readonly string[] }
+  /**
+   * The workflow is HELD FOR MANUAL APPROVAL. A run exists and completed with
+   * `action_required`, having executed zero jobs, so the required check was
+   * never published and the PR can never satisfy it.
+   *
+   * ESCALATE-ONLY, and this arm is the sharpest case in the DU for why the
+   * closed set has no executable form for some diagnoses. The remedy is a
+   * repository/organisation Actions approval policy, or a human pressing
+   * "Approve and run". **A machine must never grant itself the permission that
+   * unblocks it.** Retire-vs-recover was a judgement call; this is a privilege
+   * boundary, which is stricter: `.claude/rules/no-directives.md` says the
+   * shadow may INHERIT authorization within standing authority but never EXTEND
+   * it into a gated class. Self-approving a held workflow is extension.
+   */
+  | {
+      readonly kind: "VerdictAwaitingApproval";
+      readonly runId: number;
+      readonly conclusion: string;
+      readonly jobCount: number;
+      readonly mergeRefExists: boolean;
+    }
   | { readonly kind: "VerdictStale"; readonly unattributable: readonly string[]; readonly behindBy: number }
   | { readonly kind: "SuspectedInfraFlake"; readonly unattributable: readonly string[] }
   | { readonly kind: "MergeVerdictStale"; readonly remote: string }
@@ -461,6 +500,24 @@ export function rerunTargetRunId(checks: readonly CheckFact[]): number | null {
   return pick?.runId ?? null;
 }
 
+/**
+ * Is the gate workflow HELD FOR MANUAL APPROVAL?
+ *
+ * The discriminator is cheap and unambiguous, and it needs BOTH conjuncts:
+ * `conclusion === "action_required"` says GitHub is waiting on a human, and
+ * `jobCount === 0` says nothing ran, so nothing was published. Checking the
+ * conclusion alone would also catch a run that executed jobs and then requested
+ * a follow-up action — a different state with a different remedy.
+ *
+ * Note this is deliberately NOT keyed on the required check being absent. That
+ * absence is the SYMPTOM and is shared with the retarget-no-event class; the
+ * run's own conclusion is the CAUSE and separates them.
+ */
+export function isAwaitingApproval(f: PrFacts): boolean {
+  if (f.gateRun === null) return false;
+  return f.gateRun.conclusion === "action_required" && f.gateRun.jobCount === 0;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // THE CLASSIFIER — pure, total, fail-closed
 // ─────────────────────────────────────────────────────────────────────────────
@@ -543,6 +600,32 @@ export function classify(f: PrFacts): Disposition {
       kind: "Unknown",
       reason: "local merge probe did not answer; mergeability is unknown, not clean",
       evidence: [`remoteMergeable=${f.remoteMergeable}`, `behindBy=${String(f.behindBy)}`],
+    };
+  }
+
+  // 3b. The workflow is HELD FOR APPROVAL. This is a measured CAUSE, so it
+  //     outranks every arm below, all of which would otherwise read a SYMPTOM
+  //     of it (an absent required check, a lane that never supersedes) and
+  //     prescribe for that instead.
+  //
+  //     Measured live on #15772 (2026-08-27): run 33036398592, conclusion
+  //     `action_required`, ZERO jobs executed, `gate (required)` never
+  //     published — while `refs/pull/15772/merge` resolved fine and all 7
+  //     check-runs present on the head were green (CodeQL, submit-nuget). From
+  //     `gh pr view` it reads perfectly healthy.
+  //
+  //     Ordering matters and got this wrong before the arm existed: #15772 hit
+  //     `FrozenLane` first and proposed RETIRING a lane that was merely waiting
+  //     for a human — safe only because that arm is proposal-only. A non-lane
+  //     PR in the same state fell through to `VerdictNotDispatched` and its
+  //     AUTOMATABLE `MergeMainAndPush`. See the regression tests.
+  if (isAwaitingApproval(f) && f.gateRun !== null) {
+    return {
+      kind: "VerdictAwaitingApproval",
+      runId: f.gateRun.id,
+      conclusion: f.gateRun.conclusion ?? "action_required",
+      jobCount: f.gateRun.jobCount,
+      mergeRefExists: f.mergeRefExists,
     };
   }
 
@@ -634,9 +717,27 @@ export function actionFor(d: Disposition, f: PrFacts): { action: ActionName; arg
       // Cannot be fixed by pushing: the merge ref is absent for a reason we did
       // not establish. Reopen does not help. Hand it up.
       return { action: "Escalate", args: { pr: f.number } };
+    case "VerdictAwaitingApproval":
+      // `Escalate` (inert) rather than a new arm, deliberately. The closed set
+      // already contains exactly the right shape — a named escalation with NO
+      // executable form — and adding a near-duplicate would inflate the command
+      // set for no gain in authority (Saltzer & Schroeder, economy of
+      // mechanism). What must be legible is the privilege boundary, and that
+      // rides in the disposition and its prose, not in a ninth verb.
+      //
+      // There is deliberately NO arm that approves a held workflow, requests
+      // approval, or alters an Actions policy. Not "proposal-only" — absent.
+      return { action: "Escalate", args: { pr: f.number, runId: d.runId } };
     case "VerdictNotDispatched":
       // A merge commit changes the head, which fires `synchronize` — the one
       // trigger gate.yml does listen for. Additive and revertible.
+      //
+      // Reachable ONLY when the gate run is not held for approval; step 3b
+      // above intercepts that case. Without it, this automatable arm fires on
+      // an approval-blocked PR — and per the coordinator's 2026-08-27
+      // correction, a push from a non-approval-requiring credential may be
+      // precisely what creates a runnable event. That would make this arm a
+      // mechanical bypass of an approval gate.
       return { action: "MergeMainAndPush", args: { pr: f.number, sha: f.headSha } };
     case "VerdictStale":
       // NOT `RerunFailedJobs`, and the reason is a measured property of the
@@ -693,6 +794,14 @@ export function why(d: Disposition): string {
       return "branch held by another worktree or agent; not ours to move";
     case "VerdictUndispatchable":
       return d.why;
+    case "VerdictAwaitingApproval":
+      return [
+        `ESCALATION (privilege boundary) — gate run ${String(d.runId)} completed with conclusion '${d.conclusion}' having executed ${String(d.jobCount)} job(s),`,
+        `so ${REQUIRED_CHECK} was never published and this PR can never satisfy it.`,
+        `refs/pull/<n>/merge ${d.mergeRefExists ? "EXISTS" : "is ABSENT"} — ${d.mergeRefExists ? "this is NOT a conflict; do not go looking for one" : "note this differs from the usual approval-held shape"}.`,
+        `Remedy is a human pressing 'Approve and run', or an Actions workflow-approval policy change for the submitting identity.`,
+        `NO ACTION IN THE CLOSED SET CAN DO THIS, and none should: a machine must never grant itself the permission that unblocks it.`,
+      ].join(" ");
     case "VerdictNotDispatched":
       return `required check(s) never dispatched for this head: ${d.missing.join(", ")} (gate.yml listens on ${GATE_PR_TRIGGERS.join("/")} — note 'edited' is absent, so a retarget produces no run)`;
     case "VerdictStale":

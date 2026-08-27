@@ -29,7 +29,7 @@ and, earlier the same night:
 | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/Core.TypeScript/ci/forward-action-du.ts`                 | the DU: `Disposition` (total, measured) + `ACTION_REGISTRY` (closed, reversibility-partitioned) + `classify` / `actionFor` / `propose` |
 | `src/Core.TypeScript/ci/forward-action-report.ts`             | the READ-ONLY edge. Gathers facts, prints proposals, executes nothing                                                                  |
-| `src/Core.TypeScript/ci/forward-action-du.test.ts`            | 35 falsifiers                                                                                                                          |
+| `src/Core.TypeScript/ci/forward-action-du.test.ts`            | 46 falsifiers                                                                                                                          |
 | `src/Core.TypeScript/hygiene/lint-forward-action-registry.ts` | the escape hatch's price, and the mechanical proof that the edge cannot act                                                            |
 
 ## 2. The DU, and how each arm is DETECTED
@@ -38,21 +38,22 @@ Every arm below is decided by a **measurement**. Where GitHub offers a cached
 opinion, that opinion is carried as a corroborating fact and never as the
 decision — for reasons §3 makes concrete.
 
-| arm                     | detection                                                                               | action                                     | lane     |
-| ----------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------ | -------- |
-| `Healthy`               | no root failures, nothing pending                                                       | `NoAction`, or `ReArmAutoMerge` if unarmed | AUTO     |
-| `AwaitingVerdict`       | ≥1 check with `status != completed`                                                     | `Wait`                                     | inert    |
-| `OwnedElsewhere`        | head ref checked out in another worktree                                                | `NoAction`                                 | inert    |
-| `VerdictUndispatchable` | `refs/pull/N/merge` 404s, local merge CLEAN, **and GitHub has settled its own opinion** | `Escalate`                                 | inert    |
-| `VerdictNotDispatched`  | required check absent, nothing red                                                      | `MergeMainAndPush`                         | **AUTO** |
-| `VerdictStale`          | all complete, 0 pending, 0 attributable, `behindBy > 0`                                 | `MergeMainAndPush`                         | **AUTO** |
-| `SuspectedInfraFlake`   | same, but `behindBy == 0` and no re-run spent yet                                       | `RerunFailedJobs`                          | **AUTO** |
-| `MergeVerdictStale`     | GitHub says CONFLICTING, local `merge-tree` says CLEAN                                  | `MergeMainAndPush`                         | **AUTO** |
-| `MergeConflicted`       | local `merge-tree` rc=1 with real hunks                                                 | `ProposeConflictResolution`                | propose  |
-| `FrozenLane`            | head IS the lane tip and is the sole open PR for that lane                              | `ProposeRetireLane`                        | propose  |
-| `OwnFailure`            | failing step's subject paths intersect this PR's own diff                               | `ProposeAuthorReview`                      | propose  |
-| `NeedsIntelligence`     | state understood, closed set exhausted                                                  | `Escalate`                                 | inert    |
-| `Unknown`               | diagnosis failed; carries reason + evidence                                             | `NoAction`                                 | inert    |
+| arm                       | detection                                                                               | action                                     | lane     |
+| ------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------ | -------- |
+| `Healthy`                 | no root failures, nothing pending                                                       | `NoAction`, or `ReArmAutoMerge` if unarmed | AUTO     |
+| `AwaitingVerdict`         | ≥1 check with `status != completed`                                                     | `Wait`                                     | inert    |
+| `OwnedElsewhere`          | head ref checked out in another worktree                                                | `NoAction`                                 | inert    |
+| `VerdictUndispatchable`   | `refs/pull/N/merge` 404s, local merge CLEAN, **and GitHub has settled its own opinion** | `Escalate`                                 | inert    |
+| `VerdictAwaitingApproval` | gate run exists, `conclusion: action_required`, **zero jobs executed**                  | `Escalate`                                 | inert    |
+| `VerdictNotDispatched`    | required check absent, nothing red, **and the run is not approval-held**                | `MergeMainAndPush`                         | **AUTO** |
+| `VerdictStale`            | all complete, 0 pending, 0 attributable, `behindBy > 0`                                 | `MergeMainAndPush`                         | **AUTO** |
+| `SuspectedInfraFlake`     | same, but `behindBy == 0` and no re-run spent yet                                       | `RerunFailedJobs`                          | **AUTO** |
+| `MergeVerdictStale`       | GitHub says CONFLICTING, local `merge-tree` says CLEAN                                  | `MergeMainAndPush`                         | **AUTO** |
+| `MergeConflicted`         | local `merge-tree` rc=1 with real hunks                                                 | `ProposeConflictResolution`                | propose  |
+| `FrozenLane`              | head IS the lane tip and is the sole open PR for that lane                              | `ProposeRetireLane`                        | propose  |
+| `OwnFailure`              | failing step's subject paths intersect this PR's own diff                               | `ProposeAuthorReview`                      | propose  |
+| `NeedsIntelligence`       | state understood, closed set exhausted                                                  | `Escalate`                                 | inert    |
+| `Unknown`                 | diagnosis failed; carries reason + evidence                                             | `NoAction`                                 | inert    |
 
 Totality is not a claim, it is a compile error: `actionFor` switches on
 `Disposition` with no `default`, so adding an arm without deciding its action
@@ -270,6 +271,103 @@ booleans. Worth noting his own refactoring keeps an `option` _inside_ a variant
 where the uncertainty is genuine. Honest limit: the principle is transmitted as a
 slogan plus a refactoring, not a theorem; cite it as such.
 
+## 8b. The fourth stuck-class: a workflow held for manual approval
+
+Surfaced by the coordinator 2026-08-27 and **verified independently** before
+encoding, on **PR #15772** (`heartbeat/pr-archive`):
+
+```
+gate run 33036398592: status=completed  conclusion=action_required  event=pull_request
+jobs executed:                 0
+gate (required):               never published  (0 check-runs by that name)
+refs/pull/15772/merge:         EXISTS -> 9873f38dcc      <- NOT the dirty case
+mergeable / mergeable_state:   null / unknown
+head check-runs:               7, ALL green (CodeQL Analyze x5, submit-nuget x2)
+```
+
+`action_required` is GitHub holding the workflow for manual approval. No job
+runs, so the only required check is never published, and the PR can never
+satisfy it. From `gh pr view` it reads **perfectly healthy**: seven green checks
+and no conflict.
+
+### Why it is genuinely a new arm, not a rename of an old one
+
+| class                  | its distinguishing signal                   |
+| ---------------------- | ------------------------------------------- |
+| dirty / undispatchable | `refs/pull/N/merge` **404s**                |
+| retarget-no-event      | **no run exists at all**                    |
+| **awaiting approval**  | **run exists, `action_required`, jobs = 0** |
+
+The detector needs **both** conjuncts. `conclusion === "action_required"` alone
+also matches a run that executed jobs and then requested a follow-up action —
+a different state with a different remedy. And `jobCount === 0` alone matches a
+**queued** run that has not started yet; that mutant survived the first test pass
+and is now killed by a dedicated fixture (§11).
+
+Note also that it is deliberately **not** keyed on the required check being
+absent. That absence is the _symptom_ and is shared with the retarget class; the
+run's own conclusion is the _cause_ and is what separates them.
+
+### It must be escalate-only, and this is sharper than retire-vs-recover
+
+The remedy is an Actions workflow-approval policy for the submitting identity, or
+a human pressing _Approve and run_. **A machine must never grant itself the
+permission that unblocks it.**
+
+Retire-vs-recover was a _judgement_ the machine should not make. This is a
+_privilege boundary_, which is stricter — and the repo already has the rule:
+`.claude/rules/no-directives.md` says the shadow may **inherit** authorization
+within standing authority but never **extend** it into a gated class. Approving
+your own held workflow is extension, textbook.
+
+So there is no arm that approves a run, requests approval, or edits a policy —
+not proposal-only, **absent**. The disposition maps to `Escalate`, which is
+`inert` and has no executable form at all. Reusing `Escalate` rather than minting
+a tenth verb is deliberate (Saltzer & Schroeder, _economy of mechanism_): the
+privilege boundary must be legible, and it is legible in the disposition and its
+prose without inflating the command set.
+
+The refusal is worth nothing if a later edit can quietly add the endpoint, so
+`lint-forward-action-registry.ts` now forbids `/approve`, `pending_deployments`,
+`deployment_protection_rule`, and `actions/permissions` **in both files**.
+
+### The ordering bug this exposed, which is the real find
+
+Before the arm existed, #15772 hit **`FrozenLane`** first and proposed
+`ProposeRetireLane` — retiring a lane that was merely waiting for a human, and
+destroying live telemetry for a reason unrelated to the diagnosis. That was safe
+only because `ProposeRetireLane` is proposal-only. **Safe by luck, not by design.**
+
+Worse, a **non-lane** PR in the identical state has `isFrozenLane: false` and
+falls through to `VerdictNotDispatched` → `MergeMainAndPush`, which is
+**AUTOMATABLE**. Combined with correction (1) below, that is a mechanical bypass
+of an approval gate. Both cases now have regression tests.
+
+The general lesson, and it applies to the whole precedence list: **a measured
+cause must outrank every arm that reads a symptom of it.** `VerdictAwaitingApproval`
+therefore sits immediately after the unknown-guards and above everything else.
+
+### Scope — deliberately not over-weighted
+
+The coordinator scanned all 9 open PRs: **#15772 is the only one in this state.**
+One live instance and a clean detector justify the arm; they are not evidence of
+a widespread condition, and nothing here should be read as one. The arm ships
+**with its fixture** precisely because an arm that fires on exactly one PR is the
+kind that can be added and never exercised again.
+
+## 8c. Two corrections to the evidence base
+
+1. **The `MergeMainAndPush` remedy for #15724 worked, but the mechanism I stated
+   is less certain than implied.** It was reported as "a stale `dirty` verdict
+   cleared". The push also came from a credential that does **not** require
+   approval, and _that_ may be what created a runnable event — the merge content
+   possibly incidental. The `VerdictStale` → `MergeMainAndPush` edge is real and
+   the observed outcome stands; its **causal mechanism is not established**. This
+   matters beyond bookkeeping: if credential-identity is doing the work, then the
+   arm is partly a privilege effect, which is exactly what §8b says must never be
+   automated. Recorded as an open question, not resolved by assertion.
+2. **The class is isolated, not systemic** — see the scope note above.
+
 ## 9. The escape hatch — how a new action arm gets added
 
 A closed set with no legitimate way to extend it gets bypassed. So:
@@ -337,7 +435,7 @@ be actively unsafe. Stated here so a future edit cannot do it quietly.
 
 ## 11. Falsifiers
 
-**35 tests**, `tsc` clean, lint rc=0. The safety properties are mutation-checked;
+**46 tests**, `tsc` clean, lint rc=0. The safety properties are mutation-checked;
 each mutant killed ≥1 test:
 
 | mutant                                                         | tests killed |
@@ -350,6 +448,11 @@ each mutant killed ≥1 test:
 | empty `subjectPaths` becomes attributable                      | 6            |
 | `VerdictStale` re-runs the pinned merge commit                 | 1            |
 | `ProposeRetireLane` declared automatable                       | 3            |
+| approval detector drops the `jobCount == 0` conjunct           | 2            |
+| approval detector keys on `jobCount` alone (a QUEUED run)      | 1            |
+| `VerdictAwaitingApproval` arm removed entirely                 | 6            |
+| approval-held PR routed to `MergeMainAndPush`                  | 3            |
+| unanswered jobs probe read as zero                             | 1            |
 
 The lint is separately mutation-checked (each rc=1, unmutated rc=0): irreversible
 arm flipped to automatable; automatable arm drops its idempotence witness;
@@ -422,6 +525,11 @@ a regression test naming the PR, and by mutant 2 above.
 - **`priorRerunAttempts` is measured per head SHA**, so a push resets the probe
   budget. Defensible (new code deserves a fresh probe) but it is a policy choice
   smuggled into a measurement, and it is not currently tested against a real re-run.
+- **The frozen-lane detector fired on the WRONG CAUSE once** — on PR #15772,
+  which was approval-held, not abandoned. Now outranked by
+  `VerdictAwaitingApproval` (§8b), but the episode is the general warning: a
+  symptom-reading arm placed above a cause-reading arm gives a confident wrong
+  prescription, and proposal-only status is what kept it harmless.
 - **The frozen-lane detector is untested against a live positive.** No open PR was
   in that state during either snapshot, so the arm has fixtures and no field
   evidence.

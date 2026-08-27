@@ -161,6 +161,34 @@ for (const m of edge.matchAll(/\bgit\(\[\s*"([a-z-]+)"/g)) {
   }
 }
 
+// The PRIVILEGE BOUNDARY, checked mechanically.
+//
+// `VerdictAwaitingApproval` is escalate-only because the remedy is a permission
+// a machine must never grant itself. That refusal is worth nothing if a later
+// edit can quietly add the endpoint, so the endpoints are named and forbidden
+// outright — in BOTH files, not just the edge. A run held for approval is
+// released by `POST /actions/runs/{id}/approve` or by
+// `deployment_protection_rule` / `pending_deployments` callbacks; an Actions
+// policy is changed via `/actions/permissions`.
+//
+// Anchor: `.claude/rules/no-directives.md` — the shadow may INHERIT authority
+// within standing authorization, never EXTEND it into a gated class.
+for (const [label, re] of [
+  ["workflow self-approval", /\/approve\b|pending_deployments|deployment_protection_rule/],
+  ["Actions policy mutation", /actions\/permissions/],
+] as const) {
+  for (const [file, src] of [
+    ["du", du],
+    ["edge", edge],
+  ] as const) {
+    if (re.test(src)) {
+      fail(
+        `${label} endpoint referenced in ${file} — VerdictAwaitingApproval is escalate-only precisely because a machine must never grant itself the permission that unblocks it`,
+      );
+    }
+  }
+}
+
 // Belt and braces: verbs that are never acceptable anywhere in this pair.
 for (const [label, re] of [
   ["force-push", /--force\b|--force-with-lease\b|\+refs\//],

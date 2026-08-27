@@ -14,6 +14,7 @@ import {
   actionFor,
   classify,
   isAttributable,
+  isAwaitingApproval,
   isRemoteMergeVerdictStale,
   mayAutoExecute,
   propose,
@@ -42,8 +43,30 @@ function baseFacts(over: Partial<PrFacts> = {}): PrFacts {
     branchHeldElsewhere: false,
     isFrozenLane: false,
     priorRerunAttempts: 0,
+    gateRun: { id: 100, status: "completed", conclusion: "success", jobCount: 40 },
     ...over,
   };
+}
+
+/**
+ * The live shape of PR #15772 on 2026-08-27, field by field as measured.
+ *
+ * Note what is TRUE here and reads as healthy: the merge ref resolves, nothing
+ * is red, and every check-run present on the head is green — they are just all
+ * from OTHER workflows (CodeQL, submit-nuget). `gate (required)` is absent.
+ */
+function awaitingApprovalFacts(over: Partial<PrFacts> = {}): PrFacts {
+  return baseFacts({
+    number: 15772,
+    headRef: "heartbeat/pr-archive",
+    checks: [ok("Analyze (go)"), ok("Analyze (python)"), ok("submit-nuget")],
+    requiredCheckNames: [REQUIRED_CHECK],
+    mergeRefExists: true,
+    localMerge: "clean",
+    remoteMergeable: "UNKNOWN",
+    gateRun: { id: 33036398592, status: "completed", conclusion: "action_required", jobCount: 0 },
+    ...over,
+  });
 }
 
 function ok(name: string): CheckFact {
@@ -160,6 +183,11 @@ function everyFixture(): PrFacts[] {
     baseFacts({ diffPaths: [] }),
     baseFacts({ headSha: "" }),
     baseFacts({ checks: [failed("only-a-non-required-check")] }),
+    baseFacts({ gateRun: null }), // no gate run at all
+    baseFacts({ gateRun: { id: 1, status: "completed", conclusion: "action_required", jobCount: -1 } }), // jobs probe unanswered
+    awaitingApprovalFacts(),
+    awaitingApprovalFacts({ isFrozenLane: true }),
+    awaitingApprovalFacts({ headRef: "feat/ordinary", isFrozenLane: false }),
   ];
 }
 
@@ -194,6 +222,7 @@ describe("totality", () => {
       "OwnedElsewhere",
       "VerdictUndispatchable",
       "VerdictNotDispatched",
+      "VerdictAwaitingApproval",
       "VerdictStale",
       "SuspectedInfraFlake",
       "MergeVerdictStale",
@@ -212,6 +241,13 @@ describe("totality", () => {
       OwnedElsewhere: { kind: "OwnedElsewhere" },
       VerdictUndispatchable: { kind: "VerdictUndispatchable", why: "w" },
       VerdictNotDispatched: { kind: "VerdictNotDispatched", missing: ["x"] },
+      VerdictAwaitingApproval: {
+        kind: "VerdictAwaitingApproval",
+        runId: 1,
+        conclusion: "action_required",
+        jobCount: 0,
+        mergeRefExists: true,
+      },
       VerdictStale: { kind: "VerdictStale", unattributable: ["x"], behindBy: 1 },
       SuspectedInfraFlake: { kind: "SuspectedInfraFlake", unattributable: ["x"] },
       MergeVerdictStale: { kind: "MergeVerdictStale", remote: "CONFLICTING" },
@@ -430,6 +466,120 @@ describe("the measured evidence classes", () => {
 // ─────────────────────────────────────────────────────────────────────────────
 // DETECTOR-LEVEL FALSIFIERS — these are what the mutation run kills
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─────────────────────────────────────────────────────────────────────────────
+// THE FOURTH CLASS — a workflow held for manual approval (live: PR #15772)
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("VerdictAwaitingApproval — escalate-only, because the remedy is a privilege", () => {
+  test("the live #15772 shape classifies as VerdictAwaitingApproval", () => {
+    const d = classify(awaitingApprovalFacts());
+    expect(d.kind).toBe("VerdictAwaitingApproval");
+    if (d.kind !== "VerdictAwaitingApproval") throw new Error("unreachable");
+    expect(d.runId).toBe(33036398592);
+    expect(d.jobCount).toBe(0);
+    expect(d.mergeRefExists).toBe(true);
+  });
+
+  test("it is NOT auto-executable, and the action is the inert escalation", () => {
+    const p = propose(awaitingApprovalFacts());
+    expect(p.action).toBe("Escalate");
+    expect(p.autoExecutable).toBe(false);
+    expect(ACTION_REGISTRY.Escalate.reversibility).toBe("inert");
+  });
+
+  test("the escalation carries run id, conclusion, job count, and the merge-ref fact", () => {
+    const w = propose(awaitingApprovalFacts()).why;
+    expect(w).toContain("33036398592");
+    expect(w).toContain("action_required");
+    expect(w).toContain("0 job(s)");
+    // A reader must not be sent chasing a conflict that is not there.
+    expect(w).toContain("EXISTS");
+    expect(w).toContain("NOT a conflict");
+  });
+
+  test("the closed set contains NO arm that approves a run or edits a policy", () => {
+    for (const name of Object.keys(ACTION_REGISTRY)) {
+      expect(name.toLowerCase()).not.toContain("approve");
+      expect(name.toLowerCase()).not.toContain("permission");
+      expect(name.toLowerCase()).not.toContain("policy");
+    }
+    // And no arm reachable from this disposition is executable at all.
+    expect(mayAutoExecute(propose(awaitingApprovalFacts()).action)).toBe(false);
+  });
+
+  test("it OUTRANKS FrozenLane — else it proposes retiring a lane that is merely waiting", () => {
+    // This is what actually happened before the arm existed: #15772 hit
+    // FrozenLane and proposed ProposeRetireLane. Proposal-only, so safe — but
+    // the wrong diagnosis, and it would have destroyed live telemetry.
+    const p = propose(awaitingApprovalFacts({ isFrozenLane: true }));
+    expect(p.disposition.kind).toBe("VerdictAwaitingApproval");
+    expect(p.action).not.toBe("ProposeRetireLane");
+  });
+
+  test("REGRESSION: a non-lane PR in this state must NOT get an automatable action", () => {
+    // The latent defect. Without the new arm, `isFrozenLane: false` falls
+    // through to VerdictNotDispatched -> MergeMainAndPush [AUTO] — and a push
+    // from a non-approval-requiring credential may be exactly what creates a
+    // runnable event, making the automation a bypass of an approval gate.
+    const p = propose(awaitingApprovalFacts({ headRef: "feat/ordinary", isFrozenLane: false }));
+    expect(p.disposition.kind).toBe("VerdictAwaitingApproval");
+    expect(p.action).not.toBe("MergeMainAndPush");
+    expect(p.autoExecutable).toBe(false);
+  });
+
+  test("the detector needs BOTH conjuncts — conclusion alone is not enough", () => {
+    // A run that executed jobs and then requested a follow-up action is a
+    // different state with a different remedy.
+    const ranThenAsked = awaitingApprovalFacts({
+      gateRun: { id: 7, status: "completed", conclusion: "action_required", jobCount: 12 },
+    });
+    expect(isAwaitingApproval(ranThenAsked)).toBe(false);
+    expect(classify(ranThenAsked).kind).not.toBe("VerdictAwaitingApproval");
+  });
+
+  test("a QUEUED run also has zero jobs — jobCount alone must NOT imply approval-held", () => {
+    // Found by a surviving mutant: keying the detector on `jobCount === 0`
+    // alone passed every test. It is wrong, and wrong in the #15756 direction —
+    // a run that has not started yet has zero jobs and `conclusion: null`.
+    // Escalating that would report a privilege boundary for a PR that is simply
+    // warming up.
+    const queued = awaitingApprovalFacts({
+      gateRun: { id: 8, status: "queued", conclusion: null, jobCount: 0 },
+    });
+    expect(isAwaitingApproval(queued)).toBe(false);
+    expect(classify(queued).kind).not.toBe("VerdictAwaitingApproval");
+
+    // Same for a run cancelled before any job started.
+    const cancelledEarly = awaitingApprovalFacts({
+      gateRun: { id: 9, status: "completed", conclusion: "cancelled", jobCount: 0 },
+    });
+    expect(isAwaitingApproval(cancelledEarly)).toBe(false);
+  });
+
+  test("an UNANSWERED jobs probe never manufactures the diagnosis", () => {
+    // jobCount === -1 means "not measured". Zero is the positive signal, so
+    // defaulting an unanswered probe to zero would invent the class.
+    const unmeasured = awaitingApprovalFacts({
+      gateRun: { id: 7, status: "completed", conclusion: "action_required", jobCount: -1 },
+    });
+    expect(isAwaitingApproval(unmeasured)).toBe(false);
+  });
+
+  test("no gate run at all is NOT this class — that is the retarget/never-ran shape", () => {
+    expect(isAwaitingApproval(baseFacts({ gateRun: null }))).toBe(false);
+    const d = classify(baseFacts({ gateRun: null, checks: [], requiredCheckNames: [REQUIRED_CHECK] }));
+    expect(d.kind).toBe("VerdictNotDispatched");
+  });
+
+  test("it is distinguished from the dirty class by the merge ref EXISTING", () => {
+    const f = awaitingApprovalFacts();
+    expect(f.mergeRefExists).toBe(true);
+    expect(f.localMerge).toBe("clean");
+    expect(classify(f).kind).not.toBe("MergeConflicted");
+    expect(classify(f).kind).not.toBe("VerdictUndispatchable");
+  });
+});
 
 describe("detectors", () => {
   test("the aggregator is never counted as a cause", () => {

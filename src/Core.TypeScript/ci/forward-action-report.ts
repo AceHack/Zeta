@@ -199,13 +199,34 @@ function gather(pr: PullRow, held: Set<string>, mainTipDate: string, openByRef: 
 
   // Workflow-SCOPED, not repo-wide: at ~250 merges/day the repo-wide runs
   // endpoint is minutes deep before it reaches anything relevant.
-  const wf = ghGet<{ workflow_runs: { run_attempt: number }[] }>(
-    `repos/${REPO}/actions/workflows/gate.yml/runs?head_sha=${sha}&per_page=20`,
-  );
-  const priorRerunAttempts = wf.ok ? Math.max(0, ...wf.body.workflow_runs.map((r) => r.run_attempt - 1)) : 0;
+  const wf = ghGet<{
+    workflow_runs: { id: number; run_attempt: number; status: string; conclusion: string | null }[];
+  }>(`repos/${REPO}/actions/workflows/gate.yml/runs?head_sha=${sha}&per_page=20`);
+  const wfRuns = wf.ok ? wf.body.workflow_runs : [];
+  const priorRerunAttempts = Math.max(0, ...wfRuns.map((r) => r.run_attempt - 1), 0);
+
+  // The newest gate RUN for this head, and its JOB COUNT — the two facts that
+  // separate "held for approval" (run exists, zero jobs) from "never dispatched"
+  // (no run at all). The jobs endpoint is per-run, so this costs one extra GET
+  // and only when a run exists.
+  const latest = wfRuns[0] ?? null;
+  let gateRun: PrFacts["gateRun"] = null;
+  if (latest) {
+    const jobs = ghGet<{ total_count: number }>(`repos/${REPO}/actions/runs/${String(latest.id)}/jobs?per_page=1`);
+    gateRun = {
+      id: latest.id,
+      status: latest.status,
+      conclusion: latest.conclusion,
+      // An unanswered jobs probe must not read as zero — zero is the positive
+      // signal for the approval class, so defaulting to it would manufacture
+      // the diagnosis. -1 means "not measured" and fails the detector's test.
+      jobCount: jobs.ok ? jobs.body.total_count : -1,
+    };
+  }
 
   return {
     priorRerunAttempts,
+    gateRun,
     number: pr.number,
     headSha: sha,
     headRef: pr.head.ref,
