@@ -433,6 +433,7 @@
     <Compile Include="Protobuf.Tests.fs" />
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
+    <Compile Include="DuExpand.Tests.fs" />
     <Compile Include="SoftValue.CrossVerify.Tests.fs" />
     <Compile Include="SoftValueWidening.Tests.fs" />
     <Compile Include="SoftValueWeightedSet.Tests.fs" />

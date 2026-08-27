@@ -113,9 +113,16 @@ Ace is the bootstrap. Harny is an Ace package, not Ace itself.
      2026-04-22 ADR cycle cannot be a DAG
    - minimize toolchain per package (Harny: bun/node only)
    - cuts the monorepo cache tax
+3. **More granular splits after Harny** — `081M10AAVAT087G0R0027M0GV5`
+   - Data Vault 2.0 by change rate *and* toolchain closure (round 3)
+   - dozens of peer repos expected; dogfood in-tree, then extract
+   - DUs expand to DynamicValue + SoftValue (`DuExpand`) so a local
+     verb is a global Bayesian/Z-set effect
+   - cutover is ADR 2026-08-26 (gated; no repo created from a chat)
 
 Phase B dogfoods the repo-split design by extracting the thing we are
-already running, not by inventing a fourth factory.
+already running, not by inventing a fourth factory. The concert is
+**local actions → global effects**.
 
 ## Pointers
 
@@ -123,6 +130,8 @@ already running, not by inventing a fourth factory.
 - ZetaFS dual fold: `docs/research/2026-08-26-zetafs-dual-fold-git-replacement.md` · `src/Core/ZetaFsDualFold.fs`
 - Dogfood ledger Tier 0: `docs/trajectories/dogfooding-the-whole-stack/RESUME.md`
 - Repo split ADR: `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+- Cutover sequence: `docs/DECISIONS/2026-08-26-multi-repo-and-hat-credential-cutover-sequence.md`
+- DU expand / local→global: `docs/research/2026-08-26-du-expand-dynamicvalue-softvalue-granular-repo-splits.md` · `src/Core/DuExpand.fs`
 - Clone-at-tag: `.claude/rules/clone-at-tag-stays-sufficient.md`
 - Index: `src/Core.TypeScript/search/inverted/`
 - CLI: `src/Core.TypeScript/harny/harny.ts`

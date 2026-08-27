@@ -146,6 +146,7 @@
     <Compile Include="EvolutionWindow.fs" />
     <Compile Include="Protobuf.fs" />
     <Compile Include="SoftValue.fs" />
+    <Compile Include="DuExpand.fs" />
     <Compile Include="ParseSoft.fs" />
     <Compile Include="BonsaiSoft.fs" />
     <Compile Include="DurableYinYang.fs" />

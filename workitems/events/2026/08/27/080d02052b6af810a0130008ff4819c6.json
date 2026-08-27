@@ -1,0 +1,14 @@
+{
+  "id": "080d02052b6af810a0130008ff4819c6",
+  "at": "2026-08-27T00:36:18.399Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M10AAVAT087G0R0027M0GV5",
+    "type": "task",
+    "title": "DUs expand to DynamicValue and SoftValue; granular DV2 repo splits; local actions global effects",
+    "slug": "dus-expand-to-dynamicvalue-and-softvalue-granular-dv2-repo-s",
+    "priority": "P1",
+    "filename": "081M10AAVAT087G0R0027M0GV5-dus-expand-to-dynamicvalue-and-softvalue-granular-dv2-repo-s.md"
+  }
+}
