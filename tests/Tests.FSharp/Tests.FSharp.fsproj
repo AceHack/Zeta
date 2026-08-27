@@ -15,6 +15,7 @@
     <Compile Include="_Support/ConcurrencyHarness.fs" />
     <Compile Include="_Support/CartelInjector.fs" />
     <Compile Include="_Support/SerializerLegs.fs" />
+    <Compile Include="_Support/PerfObservation.fs" />
 
     <!-- Algebra/ -->
     <Compile Include="Detour.Tests.fs" />

@@ -8,6 +8,7 @@ open System.Diagnostics
 open System.Numerics
 open FsUnit.Xunit
 open global.Xunit
+open Zeta.Tests.Support
 open Zeta.Core
 
 
@@ -298,9 +299,16 @@ let ``ColumnZSet vectorized predicate scan is measurably faster than the scalar 
         sink |> should be (greaterThan 0)
 
         let speedup = bestScalar / bestVector
+        // Emitted BEFORE the assertion, and on both outcomes — see the note in ColumnLinearOps.
+        // This gate is a bare literal rather than a per-config `gate` binding, so the literal is
+        // passed to both the ledger and the assertion from ONE place: they cannot drift apart.
+        let gate = 1.5
+        PerfObservation.emit
+            "Zeta.Tests.Storage.ColumnZSetTests.ColumnZSet vectorized predicate scan is measurably faster than the scalar scan"
+            "speedup" speedup gate (speedup >= gate)
         Assert.True(
-            speedup >= 1.5,
-            $"vectorised predicate scan should be >= 1.5x the scalar scan on {n} unpredictable keys, "
+            speedup >= gate,
+            $"vectorised predicate scan should be >= {gate}x the scalar scan on {n} unpredictable keys, "
             + $"measured {speedup:F2}x (scalar {bestScalar:F3} ms, vector {bestVector:F3} ms, "
             + $"Vector<int64>.Count = {ColumnKernel.VectorWidth}). A ratio near 1.0 means the vector "
             + "path is no longer vectorised.")

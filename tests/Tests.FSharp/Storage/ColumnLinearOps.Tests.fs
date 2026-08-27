@@ -7,6 +7,7 @@ open System.Diagnostics
 open System.Numerics
 open FsUnit.Xunit
 open global.Xunit
+open Zeta.Tests.Support
 open Zeta.Core
 
 
@@ -614,6 +615,12 @@ let ``ColumnLinear vectorized filter is measurably faster on unpredictable data`
         let gate = 1.5
 #endif
         let speedup = bestScalar / bestVector
+        // Emitted BEFORE the assertion, and on both outcomes. A pass is an observation: without it
+        // the ledger has a numerator over an unknown denominator and cannot tell a flake from a
+        // regression. `pass` is the same expression the assertion uses, never re-derived.
+        PerfObservation.emit
+            "Zeta.Tests.Storage.ColumnLinearOpsTests.ColumnLinear vectorized filter is measurably faster on unpredictable data"
+            "speedup" speedup gate (speedup >= gate)
         Assert.True(
             speedup >= gate,
             $"vectorised filter should be >= {gate}x the scalar filter on {n} unpredictable keys "
