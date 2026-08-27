@@ -1,6 +1,6 @@
 {
   "ref": "main",
-  "at": "2026-08-27T02:10:14.131Z",
+  "at": "2026-08-27T03:30:23.281Z",
   "rows": [
     {
       "checkId": "docker-ubuntu-install-sh-test",
@@ -20,127 +20,94 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
-      "checkId": "zetadb-scheduled-node",
-      "displayName": "zetadb-scheduled-node",
+      "checkId": "chart-version-refresh",
+      "displayName": "chart-version-refresh",
       "source": "github-actions",
       "expectation": {
         "kind": "periodic",
-        "periodSeconds": 1800,
-        "detail": "schedule: '13,43 * * * *'"
+        "periodSeconds": 604800,
+        "detail": "schedule: '7 17 * * 0'"
       },
       "verdict": {
         "kind": "red",
-        "detail": "STALE: newest verdict is 9h old, declared to run every 30m (schedule: '13,43 * * * *')"
+        "detail": "run 32654132313 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-26T16:58:40Z",
-      "silenceSeconds": 33094,
-      "observedThisPass": false,
+      "observedAt": "2026-08-23T17:16:18Z",
+      "silenceSeconds": 296045,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
-      "checkId": "heartbeat-liveness",
-      "displayName": "heartbeat-liveness",
+      "checkId": "ruleset-apply",
+      "displayName": "ruleset-apply",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "run 32857443217 concluded 'failure'"
+      },
+      "band": "red",
+      "observedAt": "2026-08-25T14:10:18Z",
+      "silenceSeconds": 134405,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "mirror-to-fork",
+      "displayName": "mirror-to-fork",
       "source": "github-actions",
       "expectation": {
         "kind": "periodic",
-        "periodSeconds": 900,
-        "detail": "schedule: '*/15 * * * *'"
+        "periodSeconds": 86400,
+        "detail": "schedule: '13 8 * * *'"
       },
       "verdict": {
         "kind": "red",
-        "detail": "STALE: newest verdict is 8h old, declared to run every 15m (schedule: '*/15 * * * *')"
+        "detail": "run 32937913382 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-26T18:05:31Z",
-      "silenceSeconds": 29083,
-      "observedThisPass": false,
+      "observedAt": "2026-08-26T06:23:33Z",
+      "silenceSeconds": 76010,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-26T08:47:51Z",
+        "trigger": "on-request",
+        "detail": "a later workflow_dispatch run concluded 'green'"
+      },
+      "undeclared": false
     },
     {
-      "checkId": "rerun-toolchain-install-stall",
-      "displayName": "rerun-toolchain-install-stall",
+      "checkId": "manifesto-citation-snapshot-cadence",
+      "displayName": "manifesto-citation-snapshot-cadence",
       "source": "github-actions",
       "expectation": {
         "kind": "periodic",
-        "periodSeconds": 900,
-        "detail": "schedule: '*/15 * * * *'"
+        "periodSeconds": 86400,
+        "detail": "schedule: '37 6 * * *'"
       },
       "verdict": {
         "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 15m (schedule: '*/15 * * * *')"
+        "detail": "run 32940492136 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-26T18:41:30Z",
-      "silenceSeconds": 26924,
-      "observedThisPass": false,
+      "observedAt": "2026-08-26T06:59:27Z",
+      "silenceSeconds": 73856,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "tick-metrics",
-      "displayName": "tick-metrics",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 900,
-        "detail": "schedule: '*/15 * * * *'"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 15m (schedule: '*/15 * * * *')"
-      },
-      "band": "red",
-      "observedAt": "2026-08-26T18:43:00Z",
-      "silenceSeconds": 26834,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "lockfile-healer",
-      "displayName": "lockfile-healer",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 1020,
-        "detail": "schedule: '*/17 * * * *'"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 17m (schedule: '*/17 * * * *')"
-      },
-      "band": "red",
-      "observedAt": "2026-08-26T18:43:35Z",
-      "silenceSeconds": 26799,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "mux-swarm-tick",
-      "displayName": "mux-swarm-tick",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 3600,
-        "detail": "schedule: '0 * * * *'"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 60m (schedule: '0 * * * *')"
-      },
-      "band": "red",
-      "observedAt": "2026-08-26T18:46:08Z",
-      "silenceSeconds": 26646,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "society-heartbeat",
@@ -153,54 +120,14 @@
       },
       "verdict": {
         "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 30m (schedule: '*/30 * * * *')"
+        "detail": "STALE: newest verdict (green) is 2h old, declared to run every 30m (schedule: '*/30 * * * *')"
       },
       "band": "red",
-      "observedAt": "2026-08-26T18:46:29Z",
-      "silenceSeconds": 26625,
-      "observedThisPass": false,
+      "observedAt": "2026-08-27T01:52:40Z",
+      "silenceSeconds": 5863,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "drift-sweep",
-      "displayName": "drift-sweep",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 1800,
-        "detail": "schedule: '7,37 * * * *'"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 30m (schedule: '7,37 * * * *')"
-      },
-      "band": "red",
-      "observedAt": "2026-08-26T18:46:59Z",
-      "silenceSeconds": 26595,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "pages-deploy",
-      "displayName": "Deploy to GitHub Pages",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 900,
-        "detail": "schedule: '*/15 * * * *'"
-      },
-      "verdict": {
-        "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 15m (schedule: '*/15 * * * *')"
-      },
-      "band": "red",
-      "observedAt": "2026-08-26T19:00:13Z",
-      "silenceSeconds": 25801,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "pr-gate-presence",
@@ -213,14 +140,130 @@
       },
       "verdict": {
         "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 60m (schedule: '23 * * * *')"
+        "detail": "run 33032023310 concluded 'failure'"
       },
       "band": "red",
-      "observedAt": "2026-08-26T19:05:08Z",
-      "silenceSeconds": 25506,
-      "observedThisPass": false,
+      "observedAt": "2026-08-27T02:02:43Z",
+      "silenceSeconds": 5260,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
+    },
+    {
+      "checkId": "proof-closure-drift",
+      "displayName": "proof-closure-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '23 */6 * * *'"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "run 33032035933 concluded 'failure'"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T02:03:46Z",
+      "silenceSeconds": 5197,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T02:42:27Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "drift-dashboard-cadence",
+      "displayName": "drift-dashboard-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '41 */6 * * *'"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "run 33032413847 concluded 'failure'"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T02:10:24Z",
+      "silenceSeconds": 4799,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "rerun-toolchain-install-stall",
+      "displayName": "rerun-toolchain-install-stall",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "STALE: newest verdict (green) is 75m old, declared to run every 15m (schedule: '*/15 * * * *')"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T02:15:33Z",
+      "silenceSeconds": 4490,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "tick-metrics",
+      "displayName": "tick-metrics",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "STALE: newest verdict (green) is 73m old, declared to run every 15m (schedule: '*/15 * * * *')"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T02:17:03Z",
+      "silenceSeconds": 4400,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T03:01:55Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "heartbeat-liveness",
+      "displayName": "heartbeat-liveness",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "run 33034206627 concluded 'failure'"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T02:44:56Z",
+      "silenceSeconds": 2727,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
     },
     {
       "checkId": "agent-heartbeat",
@@ -233,14 +276,112 @@
       },
       "verdict": {
         "kind": "red",
-        "detail": "STALE: newest verdict is 7h old, declared to run every 15m (schedule: '*/15 * * * *')"
+        "detail": "MOSTLY FAILING over 7d (16 of 17 concluded runs failed, 2026-08-26T11:59:39Z .. 2026-08-27T02:48:33Z, 1 consecutive pass(es) since the last failure). The newest run passed and is the outlier — a majority-failing lane is broken, not flaky."
       },
       "band": "red",
-      "observedAt": "2026-08-26T19:09:47Z",
-      "silenceSeconds": 25227,
-      "observedThisPass": false,
+      "observedAt": "2026-08-27T02:48:33Z",
+      "silenceSeconds": 2510,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
+    },
+    {
+      "checkId": "search-index-cadence",
+      "displayName": "search-index-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '19 1,7,13,19 * * *'"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "run 33034997092 concluded 'failure'"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T03:02:02Z",
+      "silenceSeconds": 1701,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "build-ai-cluster-iso",
+      "displayName": "build-ai-cluster-iso",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "red",
+        "detail": "run 33033814682 concluded 'failure'"
+      },
+      "band": "red",
+      "observedAt": "2026-08-27T03:26:35Z",
+      "silenceSeconds": 228,
+      "observedThisPass": true,
+      "recheckInFlight": true,
+      "undeclared": false
+    },
+    {
+      "checkId": "context-cost-trend-cadence",
+      "displayName": "context-cost-trend-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '23 7 * * *'"
+      },
+      "verdict": {
+        "kind": "flapping",
+        "detail": "FLAPPING over 7d (3 of 7 concluded runs failed, 2026-08-20T07:36:50Z .. 2026-08-26T07:37:49Z, 4 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+      },
+      "band": "flapping",
+      "observedAt": "2026-08-26T07:37:49Z",
+      "silenceSeconds": 71554,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "tlaps-proof",
+      "displayName": "tlaps-proof",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "flapping",
+        "detail": "FLAPPING over 7d (3 of 8 concluded runs failed, 2026-08-20T12:09:11Z .. 2026-08-26T08:34:27Z, 2 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+      },
+      "band": "flapping",
+      "observedAt": "2026-08-26T08:34:27Z",
+      "silenceSeconds": 68156,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "pr-manifest-integrity",
+      "displayName": "pr-manifest-integrity",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 21600,
+        "detail": "schedule: '23 */6 * * *'"
+      },
+      "verdict": {
+        "kind": "flapping",
+        "detail": "FLAPPING over 7d (10 of 20 concluded runs failed, 2026-08-22T06:34:47Z .. 2026-08-27T02:04:23Z, 1 consecutive pass(es) since the last failure), and the newest passed. The latest verdict is green; the lane's next verdict is not predictable from it."
+      },
+      "band": "flapping",
+      "observedAt": "2026-08-27T02:04:23Z",
+      "silenceSeconds": 5160,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
     },
     {
       "checkId": "copilot",
@@ -261,7 +402,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "inventory-phase5-proof",
@@ -282,7 +423,28 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
+    },
+    {
+      "checkId": "root-flake-check",
+      "displayName": "root-flake-check",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "definition-absent",
+        "detail": "workflow file '.github/workflows/root-flake-check.yml' is registered ACTIVE on the forge host but is ABSENT from the repository"
+      },
+      "verdict": {
+        "kind": "unknown",
+        "reason": "registered-but-absent",
+        "detail": "REGISTERED with the producer but its definition is ABSENT from the repository (workflow file '.github/workflows/root-flake-check.yml' is registered ACTIVE on the forge host but is ABSENT from the repository) — roster-versus-repository drift, invisible to a run-list check and to a file-tree check alike"
+      },
+      "band": "unknown",
+      "observedAt": null,
+      "silenceSeconds": null,
+      "observedThisPass": false,
+      "recheckInFlight": false,
+      "undeclared": false
     },
     {
       "checkId": "spanserializer-windows-repro",
@@ -303,7 +465,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "substrate-claim-checker",
@@ -324,7 +486,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "zz-rustup-cache-probe",
@@ -345,1259 +507,26 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
-      "checkId": "copilot-pull-request-reviewer",
-      "displayName": "Copilot code review",
+      "checkId": "rerun-cancelled-gate",
+      "displayName": "rerun-cancelled-gate",
       "source": "github-actions",
       "expectation": {
-        "kind": "unknown",
-        "reason": "underivable",
-        "detail": "host-managed check 'dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer' — never declared in this repository, so its trigger cannot be read from the tree"
+        "kind": "on-demand",
+        "detail": "workflow_run"
       },
       "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 26d old"
+        "kind": "skipped",
+        "detail": "run 33036563142 was skipped"
       },
-      "band": "unknown",
-      "observedAt": "2026-08-01T04:10:02Z",
-      "silenceSeconds": 2239212,
-      "observedThisPass": false,
+      "band": "skipped",
+      "observedAt": "2026-08-27T03:30:23Z",
+      "silenceSeconds": 0,
+      "observedThisPass": true,
       "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "pages-build-deployment",
-      "displayName": "pages-build-deployment",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "unknown",
-        "reason": "underivable",
-        "detail": "host-managed check 'dynamic/pages/pages-build-deployment' — never declared in this repository, so its trigger cannot be read from the tree"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 20d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-07T09:37:04Z",
-      "silenceSeconds": 1701190,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "vocab-hygiene",
-      "displayName": "vocab hygiene",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 16d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-11T02:39:45Z",
-      "silenceSeconds": 1380629,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "inventory-hardening-check",
-      "displayName": "inventory-hardening-check",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 4d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-22T23:33:21Z",
-      "silenceSeconds": 355013,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "zflash-harness-lint",
-      "displayName": "zflash-harness-lint",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '17 15 * * 0'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 3d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-23T15:24:28Z",
-      "silenceSeconds": 297946,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "budget-snapshot-cadence",
-      "displayName": "budget-snapshot-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '23 16 * * 0'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 3d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-23T16:37:01Z",
-      "silenceSeconds": 293593,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "git-hotspot-cadence",
-      "displayName": "git-hotspot-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '43 16 * * 0'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 3d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-23T16:54:41Z",
-      "silenceSeconds": 292533,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "chart-version-refresh",
-      "displayName": "chart-version-refresh",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '7 17 * * 0'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 3d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-23T17:16:18Z",
-      "silenceSeconds": 291236,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "scorecard",
-      "displayName": "scorecard",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '0 7 * * 1'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 3d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-24T07:22:49Z",
-      "silenceSeconds": 240445,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "github-settings-drift",
-      "displayName": "github-settings-drift",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 604800,
-        "detail": "schedule: '17 14 * * 1'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 2d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-24T14:30:06Z",
-      "silenceSeconds": 214808,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "memory-index-integrity",
-      "displayName": "memory-index-integrity",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 2d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T00:04:46Z",
-      "silenceSeconds": 180328,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "memory-index-drift",
-      "displayName": "memory-index-drift",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 2d old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T00:06:31Z",
-      "silenceSeconds": 180223,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "skill-description-lint",
-      "displayName": "skill-description-lint",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 46h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T04:36:44Z",
-      "silenceSeconds": 164010,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "ruleset-apply",
-      "displayName": "ruleset-apply",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 36h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T14:10:18Z",
-      "silenceSeconds": 129596,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "bytelock",
-      "displayName": "bytelock",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 36h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T14:38:22Z",
-      "silenceSeconds": 127912,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "dependabot-updates",
-      "displayName": "Dependabot Updates",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "unknown",
-        "reason": "underivable",
-        "detail": "host-managed check 'dynamic/dependabot/dependabot-updates' — never declared in this repository, so its trigger cannot be read from the tree"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 36h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T14:39:56Z",
-      "silenceSeconds": 127818,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "installer-repair-mode-existing-install",
-      "displayName": "installer-repair-mode-existing-install",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 34h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T16:21:36Z",
-      "silenceSeconds": 121718,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "codeql",
-      "displayName": "CodeQL",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "unknown",
-        "reason": "underivable",
-        "detail": "host-managed check 'dynamic/github-code-scanning/codeql' — never declared in this repository, so its trigger cannot be read from the tree"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 31h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T18:55:43Z",
-      "silenceSeconds": 112471,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "backlog-index-integrity",
-      "displayName": "backlog-index-integrity",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 30h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-25T20:03:47Z",
-      "silenceSeconds": 108387,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "mirror-to-fork",
-      "displayName": "mirror-to-fork",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '13 8 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 20h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T06:23:33Z",
-      "silenceSeconds": 71201,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "low-memory",
-      "displayName": "low-memory",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '0 6 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 20h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T06:24:08Z",
-      "silenceSeconds": 71166,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "inventory-heartbeat",
-      "displayName": "inventory-heartbeat",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '17 6 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 20h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T06:29:25Z",
-      "silenceSeconds": 70849,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "manifesto-citation-snapshot-cadence",
-      "displayName": "manifesto-citation-snapshot-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '37 6 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 19h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T06:59:27Z",
-      "silenceSeconds": 69047,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "context-cost-trend-cadence",
-      "displayName": "context-cost-trend-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '23 7 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 19h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T07:37:49Z",
-      "silenceSeconds": 66745,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "update-graph",
-      "displayName": "Dependency Graph",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "unknown",
-        "reason": "underivable",
-        "detail": "host-managed check 'dynamic/dependabot/update-graph' — never declared in this repository, so its trigger cannot be read from the tree"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 18h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:08:37Z",
-      "silenceSeconds": 64897,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "memory-index-duplicate-lint",
-      "displayName": "memory-index-duplicate-lint",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 18h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:18:54Z",
-      "silenceSeconds": 64280,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "memory-reference-existence-lint",
-      "displayName": "memory-reference-existence-lint",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 18h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:19:39Z",
-      "silenceSeconds": 64235,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "stryker-mutation",
-      "displayName": "stryker-mutation",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 18h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:24:54Z",
-      "silenceSeconds": 63920,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "tlaps-proof",
-      "displayName": "tlaps-proof",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 18h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:34:27Z",
-      "silenceSeconds": 63347,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "agentic-organization-tests",
-      "displayName": "agentic-organization-tests",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 18h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:39:39Z",
-      "silenceSeconds": 63035,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "lean-proof",
-      "displayName": "lean-proof",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 17h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T08:54:11Z",
-      "silenceSeconds": 62163,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "build-platform-images",
-      "displayName": "build-platform-images",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 17h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T09:03:02Z",
-      "silenceSeconds": 61632,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "razor-cadence",
-      "displayName": "razor-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '17 9 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 17h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T09:28:15Z",
-      "silenceSeconds": 60119,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "interp-lane",
-      "displayName": "interp-lane",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 16h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T09:46:19Z",
-      "silenceSeconds": 59035,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "soraya-formal-coverage-cadence",
-      "displayName": "soraya-formal-coverage-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '37 9 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 16h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T09:54:13Z",
-      "silenceSeconds": 58561,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "arc-lane",
-      "displayName": "arc-lane",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 15h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T10:51:02Z",
-      "silenceSeconds": 55152,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "multiboot-qemu-uefi-smoke",
-      "displayName": "multiboot-qemu-uefi-smoke",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 15h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T11:11:58Z",
-      "silenceSeconds": 53896,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "role-ref-current-state-surfaces-lint",
-      "displayName": "role-ref-current-state-surfaces-lint",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 14h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T12:11:40Z",
-      "silenceSeconds": 50314,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "drift-dashboard-cadence",
-      "displayName": "drift-dashboard-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 21600,
-        "detail": "schedule: '41 */6 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 13h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T13:01:55Z",
-      "silenceSeconds": 47299,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "search-index-cadence",
-      "displayName": "search-index-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 21600,
-        "detail": "schedule: '19 1,7,13,19 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 12h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T13:42:01Z",
-      "silenceSeconds": 44893,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "k8s-lane-partition",
-      "displayName": "k8s-lane-partition",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T14:45:32Z",
-      "silenceSeconds": 41082,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "keyring-dst1000",
-      "displayName": "keyring 1000x DST",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T14:54:24Z",
-      "silenceSeconds": 40550,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "gitbash-install-routing-test",
-      "displayName": "gitbash-install-routing-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '`', '56 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T14:55:50Z",
-      "silenceSeconds": 40464,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "macos-install-sh-test",
-      "displayName": "macos-install-sh-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '`', '24 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T14:57:49Z",
-      "silenceSeconds": 40345,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "docker-nixos-install-sh-test",
-      "displayName": "docker-nixos-install-sh-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '`', '51 3 * * *' — period not fully derivable, using the derivable minimum for staleness"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T14:58:05Z",
-      "silenceSeconds": 40329,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "factory-hygiene-audit-cadence",
-      "displayName": "factory-hygiene-audit-cadence",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '37 14 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T14:58:26Z",
-      "silenceSeconds": 40308,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "wsl-install-sh-test",
-      "displayName": "wsl-install-sh-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '`', '49 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:01:43Z",
-      "silenceSeconds": 40111,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "docker-ubuntu-jammy-install-sh-test",
-      "displayName": "docker-ubuntu-jammy-install-sh-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '`', '26 3 * * *' — period not fully derivable, using the derivable minimum for staleness"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:03:52Z",
-      "silenceSeconds": 39982,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "ci-runtime-image",
-      "displayName": "ci-runtime-image",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:04:32Z",
-      "silenceSeconds": 39942,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "build-ai-cluster-iso",
-      "displayName": "build-ai-cluster-iso",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:05:14Z",
-      "silenceSeconds": 39900,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "installer-unit-tests",
-      "displayName": "installer-unit-tests",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:05:19Z",
-      "silenceSeconds": 39895,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "ci-cache-paths-lint",
-      "displayName": "ci-cache-paths-lint",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:05:27Z",
-      "silenceSeconds": 39887,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "docker-windows-install-ps1-test",
-      "displayName": "docker-windows-install-ps1-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '`', '9 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 11h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:22:15Z",
-      "silenceSeconds": 38879,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "agencysignature-enforcement",
-      "displayName": "agencysignature-enforcement",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 10h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:47:34Z",
-      "silenceSeconds": 37360,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "udp-lossy-tests",
-      "displayName": "udp-lossy-tests",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 10h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T15:48:53Z",
-      "silenceSeconds": 37281,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "helm-validate",
-      "displayName": "helm-validate",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '29 15 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 10h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T16:04:16Z",
-      "silenceSeconds": 36358,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "gate",
-      "displayName": "gate",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-change",
-        "detail": "push to main"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 10h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T16:04:23Z",
-      "silenceSeconds": 36351,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "k8s-argocd-health-test",
-      "displayName": "k8s-argocd-health-test",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 86400,
-        "detail": "schedule: '53 16 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 8h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T18:18:01Z",
-      "silenceSeconds": 28333,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "pr-manifest-integrity",
-      "displayName": "pr-manifest-integrity",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 21600,
-        "detail": "schedule: '23 */6 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 7h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T19:07:08Z",
-      "silenceSeconds": 25386,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "proof-closure-drift",
-      "displayName": "proof-closure-drift",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "periodic",
-        "periodSeconds": 21600,
-        "detail": "schedule: '23 */6 * * *'"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 7h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T19:07:16Z",
-      "silenceSeconds": 25378,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "auto-submission",
-      "displayName": "Automatic Dependency Submission",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "unknown",
-        "reason": "underivable",
-        "detail": "host-managed check 'dynamic/dependency-graph/auto-submission' — never declared in this repository, so its trigger cannot be read from the tree"
-      },
-      "verdict": {
-        "kind": "unknown",
-        "reason": "not-observed-this-pass",
-        "detail": "known check, produced no verdict in this pass; newest verdict is 7h old"
-      },
-      "band": "unknown",
-      "observedAt": "2026-08-26T19:09:00Z",
-      "silenceSeconds": 25274,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "accelerator-local-llm-validate",
@@ -1616,45 +545,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "accelerator-move-next",
-      "displayName": "accelerator-move-next",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-demand",
-        "detail": "workflow_dispatch"
-      },
-      "verdict": {
-        "kind": "not-applicable",
-        "detail": "declared to fire only on request (workflow_dispatch); newest verdict 89d old"
-      },
-      "band": "not-applicable",
-      "observedAt": "2026-05-30T04:44:02Z",
-      "silenceSeconds": 7680372,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "agent-proposal-gated-commit",
-      "displayName": "Agent proposal to gated review branch",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-demand",
-        "detail": "workflow_dispatch"
-      },
-      "verdict": {
-        "kind": "not-applicable",
-        "detail": "declared to fire only on request (workflow_dispatch); newest verdict 10d old"
-      },
-      "band": "not-applicable",
-      "observedAt": "2026-08-17T13:24:04Z",
-      "silenceSeconds": 823570,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "agent-reviewer",
@@ -1673,7 +564,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "agentic-organization-integration",
@@ -1692,7 +583,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "arc-swarm-fanout",
@@ -1711,7 +602,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "image-pull-measurement",
@@ -1730,7 +621,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "lint-autofix",
@@ -1749,26 +640,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "lint-autofix-apply",
-      "displayName": "lint-autofix-apply",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-demand",
-        "detail": "workflow_run"
-      },
-      "verdict": {
-        "kind": "not-applicable",
-        "detail": "declared to fire only on request (workflow_run); newest verdict 9h old"
-      },
-      "band": "not-applicable",
-      "observedAt": "2026-08-26T17:23:25Z",
-      "silenceSeconds": 31609,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "passkey-proposal-gated-commit",
@@ -1787,7 +659,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "pr-archive-on-merge",
@@ -1806,26 +678,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
-    },
-    {
-      "checkId": "rerun-cancelled-gate",
-      "displayName": "rerun-cancelled-gate",
-      "source": "github-actions",
-      "expectation": {
-        "kind": "on-demand",
-        "detail": "workflow_run"
-      },
-      "verdict": {
-        "kind": "not-applicable",
-        "detail": "declared to fire only on request (workflow_run); newest verdict 7h old"
-      },
-      "band": "not-applicable",
-      "observedAt": "2026-08-26T19:22:48Z",
-      "silenceSeconds": 24446,
-      "observedThisPass": false,
-      "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "resume-diff",
@@ -1844,7 +697,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "scaffold-stage1-create-repos",
@@ -1863,7 +716,7 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
     },
     {
       "checkId": "verify-ollama-pin",
@@ -1882,34 +735,1180 @@
       "silenceSeconds": null,
       "observedThisPass": false,
       "recheckInFlight": false,
-      "undeclared": true
+      "undeclared": false
+    },
+    {
+      "checkId": "accelerator-move-next",
+      "displayName": "accelerator-move-next",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-05-30T04:44:02Z",
+      "silenceSeconds": 7685181,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "agencysignature-enforcement",
+      "displayName": "agencysignature-enforcement",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:28:49Z",
+      "silenceSeconds": 94,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "agent-proposal-gated-commit",
+      "displayName": "Agent proposal to gated review branch",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_dispatch"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-17T13:24:04Z",
+      "silenceSeconds": 828379,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "agentic-organization-tests",
+      "displayName": "agentic-organization-tests",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T08:39:39Z",
+      "silenceSeconds": 67844,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "arc-lane",
+      "displayName": "arc-lane",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T20:48:00Z",
+      "silenceSeconds": 24143,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "archive-strand-alarm",
+      "displayName": "archive-strand-alarm",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1800,
+        "detail": "schedule: '13,43 * * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:49:10Z",
+      "silenceSeconds": 2473,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "auto-submission",
+      "displayName": "Automatic Dependency Submission",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/dependency-graph/auto-submission' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:29:33Z",
+      "silenceSeconds": 50,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "backlog-index-integrity",
+      "displayName": "backlog-index-integrity",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-25T20:03:47Z",
+      "silenceSeconds": 113196,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "budget-snapshot-cadence",
+      "displayName": "budget-snapshot-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '23 16 * * 0'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-23T16:37:01Z",
+      "silenceSeconds": 298402,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "build-platform-images",
+      "displayName": "build-platform-images",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T09:03:02Z",
+      "silenceSeconds": 66441,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "bytelock",
+      "displayName": "bytelock",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-25T14:38:22Z",
+      "silenceSeconds": 132721,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "ci-cache-paths-lint",
+      "displayName": "ci-cache-paths-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:22:37Z",
+      "silenceSeconds": 466,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "ci-runtime-image",
+      "displayName": "ci-runtime-image",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:48:15Z",
+      "silenceSeconds": 2528,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "codeql",
+      "displayName": "CodeQL",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/github-code-scanning/codeql' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:30:25Z",
+      "silenceSeconds": -2,
+      "observedThisPass": true,
+      "recheckInFlight": true,
+      "undeclared": false
+    },
+    {
+      "checkId": "copilot-pull-request-reviewer",
+      "displayName": "Copilot code review",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-01T04:10:02Z",
+      "silenceSeconds": 2244021,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "dependabot-updates",
+      "displayName": "Dependabot Updates",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/dependabot/dependabot-updates' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-25T14:39:56Z",
+      "silenceSeconds": 132627,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "docker-nixos-install-sh-test",
+      "displayName": "docker-nixos-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '`', '51 3 * * *' — period not fully derivable, using the derivable minimum for staleness"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:42:13Z",
+      "silenceSeconds": 2890,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "docker-ubuntu-jammy-install-sh-test",
+      "displayName": "docker-ubuntu-jammy-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '`', '26 3 * * *' — period not fully derivable, using the derivable minimum for staleness"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:47:22Z",
+      "silenceSeconds": 2581,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "docker-windows-install-ps1-test",
+      "displayName": "docker-windows-install-ps1-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '`', '9 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:04:50Z",
+      "silenceSeconds": 1533,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "drift-sweep",
+      "displayName": "drift-sweep",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1800,
+        "detail": "schedule: '7,37 * * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:45:45Z",
+      "silenceSeconds": 2678,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T03:29:30Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "factory-hygiene-audit-cadence",
+      "displayName": "factory-hygiene-audit-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '37 14 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T14:58:26Z",
+      "silenceSeconds": 45117,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "gate",
+      "displayName": "gate",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:30:20Z",
+      "silenceSeconds": 3,
+      "observedThisPass": true,
+      "recheckInFlight": true,
+      "undeclared": false
+    },
+    {
+      "checkId": "git-hotspot-cadence",
+      "displayName": "git-hotspot-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '43 16 * * 0'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-23T16:54:41Z",
+      "silenceSeconds": 297342,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "gitbash-install-routing-test",
+      "displayName": "gitbash-install-routing-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '`', '56 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:37:27Z",
+      "silenceSeconds": 3176,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "github-settings-drift",
+      "displayName": "github-settings-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '17 14 * * 1'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-24T14:30:06Z",
+      "silenceSeconds": 219617,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "helm-validate",
+      "displayName": "helm-validate",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '29 15 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T16:04:16Z",
+      "silenceSeconds": 41167,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T02:40:01Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "installer-repair-mode-existing-install",
+      "displayName": "installer-repair-mode-existing-install",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T23:30:02Z",
+      "silenceSeconds": 14421,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "installer-unit-tests",
+      "displayName": "installer-unit-tests",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:39:04Z",
+      "silenceSeconds": 3079,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "interp-lane",
+      "displayName": "interp-lane",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T09:46:19Z",
+      "silenceSeconds": 63844,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "inventory-hardening-check",
+      "displayName": "inventory-hardening-check",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-22T23:33:21Z",
+      "silenceSeconds": 359822,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "inventory-heartbeat",
+      "displayName": "inventory-heartbeat",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '17 6 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T06:29:25Z",
+      "silenceSeconds": 75658,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "k8s-argocd-health-test",
+      "displayName": "k8s-argocd-health-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '53 16 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T18:18:01Z",
+      "silenceSeconds": 33142,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T02:53:44Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "k8s-lane-partition",
+      "displayName": "k8s-lane-partition",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T00:25:16Z",
+      "silenceSeconds": 11107,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "keyring-dst1000",
+      "displayName": "keyring 1000x DST",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:38:57Z",
+      "silenceSeconds": 3086,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "lean-proof",
+      "displayName": "lean-proof",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T08:54:11Z",
+      "silenceSeconds": 66972,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "lint-autofix-apply",
+      "displayName": "lint-autofix-apply",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-demand",
+        "detail": "workflow_run"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:27:50Z",
+      "silenceSeconds": 153,
+      "observedThisPass": true,
+      "recheckInFlight": true,
+      "undeclared": false
+    },
+    {
+      "checkId": "lockfile-healer",
+      "displayName": "lockfile-healer",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1020,
+        "detail": "schedule: '*/17 * * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:57:36Z",
+      "silenceSeconds": 1967,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "low-memory",
+      "displayName": "low-memory",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '0 6 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T06:24:08Z",
+      "silenceSeconds": 75975,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T03:29:04Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "macos-install-sh-test",
+      "displayName": "macos-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '`', '24 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:42:12Z",
+      "silenceSeconds": 2891,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "memory-index-drift",
+      "displayName": "memory-index-drift",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T00:26:31Z",
+      "silenceSeconds": 11032,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "memory-index-duplicate-lint",
+      "displayName": "memory-index-duplicate-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T00:26:28Z",
+      "silenceSeconds": 11035,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "memory-index-integrity",
+      "displayName": "memory-index-integrity",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T00:25:56Z",
+      "silenceSeconds": 11067,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "memory-reference-existence-lint",
+      "displayName": "memory-reference-existence-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T00:26:45Z",
+      "silenceSeconds": 11018,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "multiboot-qemu-uefi-smoke",
+      "displayName": "multiboot-qemu-uefi-smoke",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T11:11:58Z",
+      "silenceSeconds": 58705,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "mux-swarm-tick",
+      "displayName": "mux-swarm-tick",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 3600,
+        "detail": "schedule: '0 * * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T01:24:03Z",
+      "silenceSeconds": 7580,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "pages-build-deployment",
+      "displayName": "pages-build-deployment",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/pages/pages-build-deployment' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-07T09:37:04Z",
+      "silenceSeconds": 1705999,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "pages-deploy",
+      "displayName": "Deploy to GitHub Pages",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 900,
+        "detail": "schedule: '*/15 * * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:46:42Z",
+      "silenceSeconds": 2621,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T03:29:41Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "razor-cadence",
+      "displayName": "razor-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '17 9 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T09:28:15Z",
+      "silenceSeconds": 64928,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "role-ref-current-state-surfaces-lint",
+      "displayName": "role-ref-current-state-surfaces-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:41:06Z",
+      "silenceSeconds": 2957,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "scorecard",
+      "displayName": "scorecard",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '0 7 * * 1'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-24T07:22:49Z",
+      "silenceSeconds": 245254,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-27T03:30:03Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
+    },
+    {
+      "checkId": "skill-description-lint",
+      "displayName": "skill-description-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-25T04:36:44Z",
+      "silenceSeconds": 168819,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "soraya-formal-coverage-cadence",
+      "displayName": "soraya-formal-coverage-cadence",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '37 9 * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T09:54:13Z",
+      "silenceSeconds": 63370,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "stryker-mutation",
+      "displayName": "stryker-mutation",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T08:24:54Z",
+      "silenceSeconds": 68729,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "udp-lossy-tests",
+      "displayName": "udp-lossy-tests",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T03:28:35Z",
+      "silenceSeconds": 108,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "update-graph",
+      "displayName": "Dependency Graph",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "unknown",
+        "reason": "underivable",
+        "detail": "host-managed check 'dynamic/dependabot/update-graph' — never declared in this repository, so its trigger cannot be read from the tree"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-26T08:08:37Z",
+      "silenceSeconds": 69706,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "vocab-hygiene",
+      "displayName": "vocab hygiene",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "on-change",
+        "detail": "push to main"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-11T02:39:45Z",
+      "silenceSeconds": 1385438,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "wsl-install-sh-test",
+      "displayName": "wsl-install-sh-test",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 86400,
+        "detail": "schedule: '`', '49 4 * * *' — period not fully derivable, using the derivable minimum for staleness"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:45:59Z",
+      "silenceSeconds": 2664,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "zetadb-scheduled-node",
+      "displayName": "zetadb-scheduled-node",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 1800,
+        "detail": "schedule: '13,43 * * * *'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-27T02:49:42Z",
+      "silenceSeconds": 2441,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "undeclared": false
+    },
+    {
+      "checkId": "zflash-harness-lint",
+      "displayName": "zflash-harness-lint",
+      "source": "github-actions",
+      "expectation": {
+        "kind": "periodic",
+        "periodSeconds": 604800,
+        "detail": "schedule: '17 15 * * 0'"
+      },
+      "verdict": {
+        "kind": "green"
+      },
+      "band": "green",
+      "observedAt": "2026-08-23T15:24:28Z",
+      "silenceSeconds": 302755,
+      "observedThisPass": true,
+      "recheckInFlight": false,
+      "supersededBy": {
+        "verdict": {
+          "kind": "green"
+        },
+        "observedAt": "2026-08-26T23:32:48Z",
+        "trigger": "on-change",
+        "detail": "a later push run concluded 'green'"
+      },
+      "undeclared": false
     }
   ],
   "counts": {
-    "red": 12,
-    "flapping": 0,
-    "unknown": 66,
+    "red": 15,
+    "flapping": 3,
+    "unknown": 6,
     "running": 0,
     "not-yet-due": 0,
-    "skipped": 0,
-    "not-applicable": 15,
-    "green": 0
+    "skipped": 1,
+    "not-applicable": 11,
+    "green": 59
   },
   "coverage": {
-    "expected": 78,
-    "observed": 12,
-    "shortfall": 66,
+    "expected": 80,
+    "observed": 74,
+    "shortfall": 6,
     "onDemand": 15,
     "retired": 0,
-    "known": 93
+    "known": 95
   },
   "oldestUnknownSilenceSeconds": null,
   "hasNeverObserved": true,
   "sources": [
     "github-actions"
   ],
-  "sourceErrors": [
-    "github-actions: could not enumerate check definitions: auth-failure: no GitHub token in ~/.config/zeta/auth/github.json or GH_TOKEN/GITHUB_TOKEN — run `harny login github` (gh CLI is not a fallback)"
-  ],
+  "sourceErrors": [],
   "ok": false
 }
