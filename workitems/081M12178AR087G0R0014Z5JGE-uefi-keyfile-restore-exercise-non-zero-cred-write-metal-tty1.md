@@ -38,14 +38,21 @@ and `assertUefiKeyfileRestoreWritePath()` requires `wrote >= 1` (or
 `build-ai-cluster-iso.yml` before the CI-verifiable acceptance bullet is proven.
 Metal `tty1` remains hardware-gated.
 
+## Progress (2026-08-28, Riven)
+
+QEMU non-zero write is proven on `main` dispatch run
+[33126215487](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33126215487)
+(`workflow_dispatch`, SHA `034544150`). Serial:
+`zeta-creds-restore: wrote 1 creds (target-root: /)` after picker
+`--bake-cred x1` (not `--defer-all`). First acceptance bullet is closed.
+Metal `tty1` and in-guest wrong-passphrase refusal remain open — do not
+complete this item.
+
 ## Plan
 
-- **Non-zero write (CI-verifiable):** bake ≥1 deterministic test credential in
-  the `QEMU_UEFI_KEYFILE_RESTORE` picker scenario (installer + workflow), then
-  tighten the contract to require `restoreExercisedWritePath() === true` for that
-  scenario (assert `wrote >= 1`), while still allowing `wrote 0` / `already-present`
-  on the idempotent re-run scenario. Verify via a `main` dispatch of
-  `build-ai-cluster-iso.yml` (nixos modules build from main; ~45 min restore step).
+- **Non-zero write (CI-verifiable):** DONE 2026-08-28. Bake path + write-path
+  contract landed in #15912; `main` dispatch run 33126215487 serial
+  `wrote 1 creds`.
 - **Wrong-passphrase / wrong-device refusal in-guest:** add a negative sub-check
   asserting decrypt REFUSAL on serial (unit-tested already; lift to in-guest).
 - **Metal `tty1`:** execute the hardware runbook in
@@ -55,6 +62,6 @@ Metal `tty1` remains hardware-gated.
 ## Acceptance
 
 - QEMU restore scenario asserts `wrote >= 1` on the bake path (green on a `main`
-  dispatch).
+  dispatch). **Proven 2026-08-28** — run 33126215487, serial `wrote 1 creds`.
 - Metal runbook executed once with captured serial + wrong-passphrase refusal;
-  evidence linked from the metal-path doc.
+  evidence linked from the metal-path doc. **Open** (hardware-gated).

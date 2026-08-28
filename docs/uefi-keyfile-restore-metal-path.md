@@ -17,12 +17,22 @@ that green covers, so no one quotes it for a guarantee it does not make.
 - The run **names its transport** as `qemu-fw_cfg metal-capable=no`, and the
   contract **refuses** any run that claims the interactive/metal transport inside
   QEMU. A green therefore cannot be misread as a metal proof.
-- **Non-zero write (081M12178AR, in tree; awaiting `main` dispatch proof).**
+- **Non-zero write (081M12178AR, proven on `main` dispatch).**
   `QEMU_UEFI_KEYFILE_RESTORE=1` bakes `/zeta-qemu-bake-test-cred` so 6.95-picker
   persists one deterministic gh-cli probe cred. Phase-2 then requires
   `assertUefiKeyfileRestoreWritePath()` (`wrote >= 1`, or `already-present` on
   an idempotent re-run). `wrote 0` still passes the decrypt/bind contract and
   fails this write-path contract, so vacuity cannot hide inside a green.
+  In-guest proof: workflow_dispatch run
+  [33126215487](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/33126215487)
+  on `main` @ `034544150` (restore commit `6f61a6a5` / #15912 is an ancestor).
+  Restore step `UEFI keyfile restore decrypt` succeeded. Serial (artifact
+  `qemu-uefi-keyfile-restore-serial-log`):
+
+  - `[uefi-keyfile] found zeta-qemu-bake-test-cred on boot USB ESP`
+  - `QEMU bake-test-cred marker: picker bakes gh-cli probe (no TTY; not --defer-all)`
+  - `zeta-creds-picker: --bake-cred x1 (explicit; no TTY prompts)`
+  - `zeta-creds-restore: wrote 1 creds (target-root: /)`
 
 ## NOT verified in CI — remaining gap
 
@@ -51,8 +61,8 @@ decrypt and the binding; it proves **nothing** about the metal passphrase entry.
 
 Until step 6 lands, treat the metal path as **unverified**.
 
-Work item `081M12178AR087G0R0014Z5JGE` tracks the remaining metal `tty1`
-verification (the in-guest non-zero write is the other half of that item).
+Work item `081M12178AR087G0R0014Z5JGE` still tracks the remaining metal `tty1`
+verification. The in-guest non-zero write half of that item is closed.
 
 ## Why this matters
 
