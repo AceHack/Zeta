@@ -1,0 +1,12 @@
+{
+  "pr_number": 15935,
+  "archive_path": "docs/history/pr-reviews/PR-15935-docs-installer-record-qemu-restore-wrote-1-proof-from-main-dispatch.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T05:24:05.270Z",
+  "schema_version": "v1",
+  "commit_sha": "cd56d58afdbfbd2b6bf3dc9096c1ae908de41251",
+  "title": "docs(installer): record QEMU restore wrote-1 proof from main dispatch",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T00:41:49Z",
+  "head_ref": "cursor/uefi-restore-wrote-1-proof-27c5"
+}
