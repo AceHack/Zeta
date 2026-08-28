@@ -278,6 +278,7 @@ using DynamicValue's byte-locked per-format serializer:
    `System.Text.Json` onto the canonical codec (consumes the proven encoding; not part of the byte-lock).
 3. **YAML serializer for DynamicValue** (multi-runtime) — unblocks the git-default format.
 4. **MD + frontmatter treaty** (multi-runtime) + the **per-file-type plugin registry** (open/closed) — `.md` as DB content.
+
 4b. **TypeSchema from DynamicValue** (store-native), then existing generators consume it.
     JSON AdditionalFiles / `*.zetaschema.json` is bootstrap IR, not the store (`SchemaSourceGenerator`).
     A guessed schema from a SoftValue is a **different constructor** that keeps the SoftValue
