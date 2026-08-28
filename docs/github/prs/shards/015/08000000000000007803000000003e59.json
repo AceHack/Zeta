@@ -1,0 +1,12 @@
+{
+  "pr_number": 15961,
+  "archive_path": "docs/history/pr-reviews/PR-15961-fix-flush-lane-an-all-green-head-with-no-gate-is-stalled-not-under-test.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T11:50:11.001Z",
+  "schema_version": "v1",
+  "commit_sha": "d44bd2be6a30ed79294b72f04a15b019416ca436",
+  "title": "fix(flush-lane): an all-green head with no gate is STALLED, not under test",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T11:49:40Z",
+  "head_ref": "fix/flush-lane-stalled-head-verdict"
+}
