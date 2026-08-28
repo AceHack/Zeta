@@ -1,10 +1,12 @@
 {
   "version": 1,
-  "generatedAtIso": "2026-08-27T21:41:01.062Z",
-  "commit": "56a1f9ee9",
+  "generatedAtIso": "2026-08-28T03:26:57.632Z",
+  "commit": "af6cda15f",
   "totals": {
-    "findings": 0,
-    "bySeverity": {}
+    "findings": 3,
+    "bySeverity": {
+      "failing": 3
+    }
   },
   "territories": [
     {
@@ -34,8 +36,42 @@
         {
           "id": "main-failures",
           "name": "main — recent runs",
-          "summary": "All of the last 40 runs on main concluded green.",
-          "findings": []
+          "summary": "3 of the last 40 runs on main failed.",
+          "findings": [
+            {
+              "id": "ci:33137257569",
+              "title": "gate",
+              "severity": "failing",
+              "locus": "af6cda15f — 2026-08-28 02:53",
+              "evidence": [
+                "metrics: append tick frame (#15940)",
+                "run id 33137257569"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:33136577222",
+              "title": "gate",
+              "severity": "failing",
+              "locus": "e3f9ba518 — 2026-08-28 02:39",
+              "evidence": [
+                "[heartbeat-batch-merge] merge(agent-heartbeats): periodic sync to mai…",
+                "run id 33136577222"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            },
+            {
+              "id": "ci:33134746445",
+              "title": "pr-gate-presence",
+              "severity": "failing",
+              "locus": "10e20d744 — 2026-08-28 02:03",
+              "evidence": [
+                "pr-gate-presence",
+                "run id 33134746445"
+              ],
+              "why": "A failing workflow on main is drift the fleet is expected to heal after the fact, not a gate that stops it."
+            }
+          ]
         }
       ]
     }
