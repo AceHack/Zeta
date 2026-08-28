@@ -1,0 +1,12 @@
+{
+  "pr_number": 15953,
+  "archive_path": "docs/history/pr-reviews/PR-15953-skip-review-telemetry-flush-pr-categorization-refresh-area-statistics.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T10:04:54.957Z",
+  "schema_version": "v1",
+  "commit_sha": "8b6045a691e8d1caf2215be8fd36079ff14ac1bc",
+  "title": "[skip-review][telemetry-flush] pr-categorization: refresh area statistics",
+  "state": "MERGED",
+  "merged_at": "2026-08-28T10:04:20Z",
+  "head_ref": "heartbeat/pr-categorization"
+}

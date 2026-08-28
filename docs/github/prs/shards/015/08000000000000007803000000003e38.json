@@ -5,9 +5,9 @@
     "comment:PRRC_kwDOSF9kNM7nD74N",
     "thread:PRRT_kwDOSF9kNM6dAezL"
   ],
-  "fetched_at": "2026-08-28T02:25:01.689Z",
+  "fetched_at": "2026-08-27T23:30:11.162Z",
   "schema_version": "v1",
-  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "commit_sha": "559a47d737fbd8202a91eac0c2a6d9f3cae81296",
   "title": "hygiene: wire the oscillation registry into CI",
   "state": "MERGED",
   "merged_at": "2026-08-27T23:28:44Z",
