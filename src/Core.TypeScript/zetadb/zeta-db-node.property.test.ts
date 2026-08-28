@@ -424,41 +424,75 @@ async function applyBatches(batches: readonly (readonly ZetaDbDelta[])[], limits
   return { outcome: stored === null ? "empty" : new TextDecoder().decode(stored.payload), bound };
 }
 
+/** PERM-A's generator + class split, NAMED for the same reason as PERM-B's below. */
+const PERM_A_PARTS = fc.array(singleRowDeltaPartsArb, { minLength: 3, maxLength: 4 });
+const PERM_A_MAX_ENTRIES = fc.integer({ min: 3, max: 8 });
+const PERM_A_MAX_BYTES = fc.integer({ min: 256, max: 4096 });
+
+/** Measured from SEED in the probe below; exact on purpose. */
+const PERM_A_SEEDED_COUNTS = { binding: 36, slack: 84 };
+
+type PermACase =
+  | { readonly kind: "binding" }
+  | { readonly kind: "slack"; readonly outcomes: readonly { readonly outcome: string }[] };
+
+async function classifyPermACase(
+  parts: readonly DeltaParts[],
+  maxEntries: number,
+  maxCheckpointBytes: number,
+): Promise<PermACase> {
+  const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries, maxCheckpointBytes };
+  const deltas = withEventIds(parts);
+  const outcomes = await Promise.all(permutations(deltas).map((order) => applyBatches([order], limits)));
+  if (outcomes.some((entry) => entry.bound)) return { kind: "binding" };
+  return { kind: "slack", outcomes };
+}
+
 describe("PERM-A · one tick is a pure function of its delta SET (falsifier for rowPairKey)", () => {
   test("outcome is invariant under permutation of deltas within a tick, budgets slack", async () => {
     let slackCases = 0;
     let bindingCases = 0;
 
+    // `PERM_A_PARTS` uses ONE row key on purpose: `rowPairKey` governs the (rowKey, payload)
+    // surface, so spreading deltas over several rows only dilutes the generator. Three or
+    // more deltas are required — the asymmetry needs a ZERO CROSSING (emit, retract to
+    // zero, re-emit under a different payload); two deltas conflict symmetrically in both
+    // orders and would never expose the defect. Discovered by reverting `rowPairKey` and
+    // watching a 2-delta generator stay green.
     await fc.assert(
-      fc.asyncProperty(
-        // ONE row key on purpose: `rowPairKey` governs the (rowKey, payload) surface, so
-        // spreading deltas over several rows only dilutes the generator. Three or more
-        // deltas are required — the asymmetry needs a ZERO CROSSING (emit, retract to
-        // zero, re-emit under a different payload); two deltas conflict symmetrically in
-        // both orders and would never expose the defect. Discovered by reverting
-        // `rowPairKey` and watching a 2-delta generator stay green.
-        fc.array(singleRowDeltaPartsArb, { minLength: 3, maxLength: 4 }),
-        fc.integer({ min: 3, max: 8 }),
-        fc.integer({ min: 256, max: 4096 }),
-        async (parts, maxEntries, maxCheckpointBytes) => {
-          const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries, maxCheckpointBytes };
-          const deltas = withEventIds(parts);
-          const outcomes = await Promise.all(permutations(deltas).map((order) => applyBatches([order], limits)));
-
-          if (outcomes.some((entry) => entry.bound)) {
-            bindingCases += 1;
-            return; // Budget-binding: commutativity is NOT claimed. See BIND · 081M0Q8TY1B087G0R0008CYZJ3.
-          }
-          slackCases += 1;
-          expect(new Set(outcomes.map((entry) => entry.outcome)).size).toBe(1);
-        },
-      ),
+      fc.asyncProperty(PERM_A_PARTS, PERM_A_MAX_ENTRIES, PERM_A_MAX_BYTES, async (parts, maxEntries, maxBytes) => {
+        const c = await classifyPermACase(parts, maxEntries, maxBytes);
+        if (c.kind === "binding") {
+          bindingCases += 1;
+          return; // Budget-binding: commutativity is NOT claimed. See BIND · 081M0Q8TY1B087G0R0008CYZJ3.
+        }
+        slackCases += 1;
+        expect(new Set(c.outcomes.map((entry) => entry.outcome)).size).toBe(1);
+      }),
       { numRuns: 120 },
     );
 
     console.log(`PERM-A generator — slack: ${String(slackCases)}  budget-binding: ${String(bindingCases)}`);
-    expect(slackCases).toBeGreaterThan(20);
-    expect(bindingCases).toBeGreaterThan(5);
+    // Coverage is proved in the seeded probe below, not here — see that docstring for why
+    // an unseeded run is the wrong place to assert a quota.
+  }, 120_000);
+});
+
+/** PERM-A's coverage probe. Same construction and same reasoning as PERM-B's below. */
+describe("PERM-A generator coverage (seeded — a fact about the generator, not about a run)", () => {
+  test("both classes the property splits on are PROVED reachable, deterministically", async () => {
+    const SEED = 20260828;
+    const NUM_RUNS = 120;
+    const counts = { binding: 0, slack: 0 };
+    const samples = fc.sample(fc.tuple(PERM_A_PARTS, PERM_A_MAX_ENTRIES, PERM_A_MAX_BYTES), {
+      numRuns: NUM_RUNS,
+      seed: SEED,
+    });
+    for (const [parts, maxEntries, maxBytes] of samples) {
+      counts[(await classifyPermACase(parts, maxEntries, maxBytes)).kind] += 1;
+    }
+    expect(counts.binding + counts.slack).toBe(NUM_RUNS);
+    expect(counts).toEqual(PERM_A_SEEDED_COUNTS);
   }, 120_000);
 });
 
@@ -483,6 +517,48 @@ function singlePayloadPerRow(batches: readonly (readonly ZetaDbDelta[])[]): bool
   return [...payloadsByRow.values()].every((payloads) => payloads.size === 1);
 }
 
+/**
+ * PERM-B's generator, NAMED so the property and the seeded coverage probe cannot drift.
+ *
+ * If the probe re-declared these inline it would be measuring a generator that merely
+ * looks like the property's — the same vacuity trap one level up. Sharing the objects
+ * makes the coupling structural instead of hopeful.
+ */
+const PERM_B_SHAPE = fc.array(fc.array(deltaPartsArb, { minLength: 1, maxLength: 2 }), {
+  minLength: 2,
+  maxLength: 3,
+});
+const PERM_B_MAX_ENTRIES = fc.integer({ min: 1, max: 8 });
+const PERM_B_MAX_BYTES = fc.integer({ min: 120, max: 2048 });
+
+/** Measured from SEED below; see the probe's docstring for why these are exact. */
+const PERM_B_SEEDED_COUNTS = { "multi-payload": 131, binding: 32, slack: 37 };
+
+type PermBCase =
+  | { readonly kind: "multi-payload" }
+  | { readonly kind: "binding" }
+  | { readonly kind: "slack"; readonly outcomes: readonly { readonly outcome: string }[] };
+
+/** The class split, shared by the property and the probe for the same reason as above. */
+async function classifyPermBCase(
+  shape: readonly (readonly DeltaParts[])[],
+  maxEntries: number,
+  maxCheckpointBytes: number,
+): Promise<PermBCase> {
+  const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries, maxCheckpointBytes };
+  let counter = 0;
+  const batches = shape.map((batch) =>
+    batch.map((part): ZetaDbDelta => {
+      counter += 1;
+      return { eventId: `event-${String(counter)}`, ...part };
+    }),
+  );
+  if (!singlePayloadPerRow(batches)) return { kind: "multi-payload" };
+  const outcomes = await Promise.all(permutations(batches).map((order) => applyBatches(order, limits)));
+  if (outcomes.some((entry) => entry.bound)) return { kind: "binding" };
+  return { kind: "slack", outcomes };
+}
+
 describe("PERM-B · batch order does not change the durable image (falsifier for canonicalEntryOrder)", () => {
   test("final durable bytes are invariant under permutation of batch order, budgets slack", async () => {
     let slackCases = 0;
@@ -490,33 +566,19 @@ describe("PERM-B · batch order does not change the durable image (falsifier for
     let multiPayloadCases = 0;
 
     await fc.assert(
-      fc.asyncProperty(
-        fc.array(fc.array(deltaPartsArb, { minLength: 1, maxLength: 2 }), { minLength: 2, maxLength: 3 }),
-        fc.integer({ min: 1, max: 8 }),
-        fc.integer({ min: 120, max: 2048 }),
-        async (shape, maxEntries, maxCheckpointBytes) => {
-          const limits: ZetaDbTickLimits = { maxDeltas: 8, maxEntries, maxCheckpointBytes };
-          let counter = 0;
-          const batches = shape.map((batch) =>
-            batch.map((part): ZetaDbDelta => {
-              counter += 1;
-              return { eventId: `event-${String(counter)}`, ...part };
-            }),
-          );
-          if (!singlePayloadPerRow(batches)) {
-            multiPayloadCases += 1;
-            return; // See PREFIX — the excluded class, witnessed, not hidden.
-          }
-
-          const outcomes = await Promise.all(permutations(batches).map((order) => applyBatches(order, limits)));
-          if (outcomes.some((entry) => entry.bound)) {
-            bindingCases += 1;
-            return;
-          }
-          slackCases += 1;
-          expect(new Set(outcomes.map((entry) => entry.outcome)).size).toBe(1);
-        },
-      ),
+      fc.asyncProperty(PERM_B_SHAPE, PERM_B_MAX_ENTRIES, PERM_B_MAX_BYTES, async (shape, maxEntries, maxBytes) => {
+        const c = await classifyPermBCase(shape, maxEntries, maxBytes);
+        if (c.kind === "multi-payload") {
+          multiPayloadCases += 1;
+          return; // See PREFIX — the excluded class, witnessed, not hidden.
+        }
+        if (c.kind === "binding") {
+          bindingCases += 1;
+          return;
+        }
+        slackCases += 1;
+        expect(new Set(c.outcomes.map((entry) => entry.outcome)).size).toBe(1);
+      }),
       { numRuns: 200 },
     );
 
@@ -529,21 +591,56 @@ describe("PERM-B · batch order does not change the durable image (falsifier for
       `PERM-B generator — slack: ${String(slackCases)}  budget-binding: ${String(bindingCases)}` +
         `  multi-payload-row (excluded, see PREFIX): ${String(multiPayloadCases)}`,
     );
-    // THE BAR IS SET FROM THE MEASURED DISTRIBUTION, not from a round number. `fc.assert`
-    // is unseeded here (every fast-check site in this repo is — exploration power is the
-    // point), so `slackCases` is a random variable and this line is a threshold on it.
-    // MEASURED 2026-08-28 over n=24 local runs: mean 35.4, sd 5.7, min 24, max 50.
-    // The previous bar of 20 sat 2.7 sd below the mean — about 0.2% per run, which at this
-    // fleet's run volume is a red every few days, and it takes `gate (required)` with it.
-    // It duly fired on #15947 with slack=19 while the property itself passed.
-    // 10 sits 4.4 sd out, so it does not fire on sampling noise, and it still fails loudly
-    // on the condition this guard actually exists to catch: the slack class collapsing
-    // toward zero, which is what vacuity would look like — mutation-verified: forcing every
-    // case down the binding branch yields slack=0 and turns this red. A drift from 35 to 20 is not
-    // vacuity — and the console.log above reports the count every run for anyone watching.
-    expect(slackCases).toBeGreaterThan(10);
-    expect(bindingCases).toBeGreaterThan(5);
-    expect(multiPayloadCases).toBeGreaterThan(5);
+    // NO COVERAGE ASSERTION HERE, ON PURPOSE. `fc.assert` is unseeded above so the
+    // property keeps exploring; that makes these counts random variables, and a threshold
+    // on a random variable is a coin flip wearing a guarantee. The old bar of 20 sat 2.7 sd
+    // below a measured mean of 35.4 (n=24) and duly fired on #15947 with slack=19 while the
+    // property itself PASSED — the red was the coverage guard, not the invariant.
+    // Reachability is a fact about the GENERATOR, not about this run, so it is proved
+    // deterministically in the seeded probe below. The counts stay logged for the human.
+  }, 120_000);
+});
+
+/**
+ * THE COVERAGE PROBE — seeded on purpose, and separate from the property above.
+ *
+ * ANTI-VACUITY is non-negotiable (`lean-proof.yml:312-324` is this repo's receipt for what
+ * a silently-empty selection costs: 13 theorem names resolving to nothing while the lane
+ * reported green). What changed is WHERE the obligation is discharged, not whether.
+ *
+ * "Does the generator reach all three classes?" is a fact about the GENERATOR. It does not
+ * need randomness — it needs determinism, so the answer is the same every run. The property
+ * above needs the opposite: an unseeded stream, so it keeps exploring and keeps finding
+ * counterexamples nobody has drawn yet. Those are two different questions, and asserting a
+ * quota on an unseeded run answered neither well: it made a generator fact into a coin
+ * flip, and the coin came up 19 on #15947 while the invariant itself was fine.
+ *
+ * So: the property explores unseeded and asserts only its invariant; this probe fixes the
+ * seed and asserts the class counts EXACTLY. Exact is the point — with the seed pinned
+ * there is no distribution left to be robust against, and an exact count catches a class
+ * going rare, not just a class going empty.
+ *
+ * fast-check's PRNG is pure JS and platform-independent, and `bunfig.toml` pins deps with
+ * `exact = true`, so these numbers are stable across machines. If they ever change, the
+ * cause is a real one — the generator, the classifier, or the fast-check version moved —
+ * and the right response is to re-measure and update them, not to loosen them.
+ */
+describe("PERM-B generator coverage (seeded — a fact about the generator, not about a run)", () => {
+  test("every class the property skips is PROVED reachable, deterministically", async () => {
+    const SEED = 20260828;
+    const NUM_RUNS = 200;
+    const counts = { "multi-payload": 0, binding: 0, slack: 0 };
+    const samples = fc.sample(fc.tuple(PERM_B_SHAPE, PERM_B_MAX_ENTRIES, PERM_B_MAX_BYTES), {
+      numRuns: NUM_RUNS,
+      seed: SEED,
+    });
+    for (const [shape, maxEntries, maxBytes] of samples) {
+      counts[(await classifyPermBCase(shape, maxEntries, maxBytes)).kind] += 1;
+    }
+
+    // The partition is total — every sample lands in exactly one class and none is lost.
+    expect(counts["multi-payload"] + counts.binding + counts.slack).toBe(NUM_RUNS);
+    expect(counts).toEqual(PERM_B_SEEDED_COUNTS);
   }, 120_000);
 });
 
