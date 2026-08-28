@@ -1,12 +1,12 @@
 {
-  "generatedAtIso": "2026-08-27T21:51:06.506Z",
+  "generatedAtIso": "2026-08-28T03:30:14.111Z",
   "corpus": {
-    "prsTotal": 13093,
-    "prsScored": 3274,
-    "trainN": 9819,
-    "testN": 3274,
+    "prsTotal": 13142,
+    "prsScored": 3286,
+    "trainN": 9856,
+    "testN": 3286,
     "splitKind": "temporal",
-    "splitAtIso": "2026-08-17T01:19:20Z",
+    "splitAtIso": "2026-08-17T02:33:21Z",
     "areas": [
       "telemetry",
       "research",
@@ -27,130 +27,130 @@
     ],
     "areaCounts": {
       "build": 58,
-      "docs-other": 1167,
-      "tooling-ts": 1771,
-      "agent-substrate": 320,
+      "docs-other": 1174,
+      "tooling-ts": 1789,
+      "agent-substrate": 322,
       "research": 2148,
-      "ci": 178,
-      "telemetry": 2685,
+      "ci": 179,
+      "telemetry": 2695,
       "other": 154,
       "governance": 43,
-      "memory": 1085,
+      "memory": 1086,
       "tests": 239,
-      "core-fsharp": 712,
-      "archive": 1369,
-      "backlog": 868,
-      "demo-web": 61,
+      "core-fsharp": 714,
+      "archive": 1373,
+      "backlog": 869,
+      "demo-web": 64,
       "infra": 235
     }
   },
   "baseline": {
-    "coverage": 0.7366531734514626,
-    "unlabellable": 0.26334682654853736,
-    "accuracyOnCovered": 0.6812856402280975,
-    "accuracyOverall": 0.5018712289009394,
-    "majorityClassAccuracy": 0.03909590714722053,
-    "testMajorityOracleAccuracy": 0.4731215638362859,
+    "coverage": 0.7362654086136052,
+    "unlabellable": 0.26373459138639477,
+    "accuracyOnCovered": 0.6811699049193882,
+    "accuracyOverall": 0.5015218383807639,
+    "majorityClassAccuracy": 0.03804017041996348,
+    "testMajorityOracleAccuracy": 0.4726110772976263,
     "testMajorityArea": "telemetry",
     "sourceCounts": {
-      "title": 8617,
-      "none": 852,
-      "branch": 1028,
-      "type-only": 2596
+      "title": 8642,
+      "none": 857,
+      "branch": 1034,
+      "type-only": 2609
     }
   },
   "models": [
     {
       "name": "closed-form baseline",
-      "accuracy": 0.5870494807574832,
+      "accuracy": 0.5824710894704809,
       "accuracyCi95": [
-        0.5700913864252947,
-        0.6038035327190593
+        0.5655226050166898,
+        0.5992269683366293
       ],
-      "macroF1": 0.2817500233017653,
-      "accuracyWhereBaselineSpeaks": 0.6774762072611914,
+      "macroF1": 0.2858048208097545,
+      "accuracyWhereBaselineSpeaks": 0.6748942172073342,
       "accuracyWhereBaselineAbstains": 0,
       "deltaVsBaseline": 0,
       "notes": "title scope -> paren scope -> branch prefix; abstains on 1 PR in 4"
     },
     {
       "name": "majority class",
-      "accuracy": 0.03909590714722053,
+      "accuracy": 0.03804017041996348,
       "accuracyCi95": [
-        0.032978721554740575,
-        0.04629344339673236
+        0.03202054177404369,
+        0.04513867464537297
       ],
-      "macroF1": 0.004703115814226925,
-      "accuracyWhereBaselineSpeaks": 0.04159323228762778,
-      "accuracyWhereBaselineAbstains": 0.02288329519450801,
-      "deltaVsBaseline": -54.79535736102626,
+      "macroF1": 0.004580768103195543,
+      "accuracyWhereBaselineSpeaks": 0.04055007052186178,
+      "accuracyWhereBaselineAbstains": 0.022222222222222223,
+      "deltaVsBaseline": -54.443091905051745,
       "notes": "floor: predicts the most common area for everything"
     },
     {
       "name": "random forest",
-      "accuracy": 0.7452657299938913,
+      "accuracy": 0.6622032866707243,
       "accuracyCi95": [
-        0.7300592030182649,
-        0.7598973586410904
+        0.6458508866967231,
+        0.6781768719649705
       ],
-      "macroF1": 0.2343740242783909,
-      "accuracyWhereBaselineSpeaks": 0.8170602749383151,
-      "accuracyWhereBaselineAbstains": 0.2791762013729977,
-      "deltaVsBaseline": 15.821624923640808,
+      "macroF1": 0.21982710301010722,
+      "accuracyWhereBaselineSpeaks": 0.7274330042313117,
+      "accuracyWhereBaselineAbstains": 0.2511111111111111,
+      "deltaVsBaseline": 7.973219720024338,
       "notes": "60 trees, gini, quantile-binned splits"
     },
     {
       "name": "BNN (ADF probit, one-vs-rest)",
-      "accuracy": 0.7312156383628589,
+      "accuracy": 0.7382836275106512,
       "accuracyCi95": [
-        0.7157652057016699,
-        0.7461241058501755
+        0.7229819138566417,
+        0.7530288460535012
       ],
-      "macroF1": 0.23967555125020476,
-      "accuracyWhereBaselineSpeaks": 0.8036658442016215,
-      "accuracyWhereBaselineAbstains": 0.2608695652173913,
-      "deltaVsBaseline": 14.416615760537566,
+      "macroF1": 0.2580002441706123,
+      "accuracyWhereBaselineSpeaks": 0.8159379407616361,
+      "accuracyWhereBaselineAbstains": 0.24888888888888888,
+      "deltaVsBaseline": 15.581253804017036,
       "notes": "diagonal Gaussian weight posterior; single ADF pass"
     },
     {
       "name": "hybrid: baseline where it speaks, forest elsewhere",
-      "accuracy": 0.6243127672571778,
+      "accuracy": 0.6168594035301278,
       "accuracyCi95": [
-        0.6075867433246025,
-        0.6407474043657557
+        0.600109664051992,
+        0.633336225865626
       ],
-      "macroF1": 0.28239074930517954,
-      "accuracyWhereBaselineSpeaks": 0.6774762072611914,
-      "accuracyWhereBaselineAbstains": 0.2791762013729977,
-      "deltaVsBaseline": 3.726328649969457,
+      "macroF1": 0.2858010792135893,
+      "accuracyWhereBaselineSpeaks": 0.6748942172073342,
+      "accuracyWhereBaselineAbstains": 0.2511111111111111,
+      "deltaVsBaseline": 3.438831405964693,
       "notes": "the deployable option"
     }
   ],
   "nulls": [
     {
       "name": "NULL random forest (labels shuffled)",
-      "accuracy": 0.05284056200366524,
+      "accuracy": 0.04625684723067559,
       "accuracyCi95": [
-        0.045687979023811054,
-        0.06104127842413883
+        0.039589675056686265,
+        0.05398370549756291
       ],
-      "macroF1": 0.016364090601238678,
-      "accuracyWhereBaselineSpeaks": 0.050052872752908,
-      "accuracyWhereBaselineAbstains": 0.07093821510297482,
-      "deltaVsBaseline": -53.42089187538179,
+      "macroF1": 0.014683000130902459,
+      "accuracyWhereBaselineSpeaks": 0.04372355430183357,
+      "accuracyWhereBaselineAbstains": 0.06222222222222222,
+      "deltaVsBaseline": -53.621424223980526,
       "notes": "must not beat the majority-class floor"
     },
     {
       "name": "NULL BNN (labels shuffled)",
-      "accuracy": 0.22938301771533293,
+      "accuracy": 0.047778454047474134,
       "accuracyCi95": [
-        0.21530333032520513,
-        0.24409702629971536
+        0.04099865669136801,
+        0.055614383887850144
       ],
-      "macroF1": 0.05399050696385327,
-      "accuracyWhereBaselineSpeaks": 0.24497708847373986,
-      "accuracyWhereBaselineAbstains": 0.12814645308924486,
-      "deltaVsBaseline": -35.76664630421503,
+      "macroF1": 0.019086388587574575,
+      "accuracyWhereBaselineSpeaks": 0.04372355430183357,
+      "accuracyWhereBaselineAbstains": 0.07333333333333333,
+      "deltaVsBaseline": -53.46926354230067,
       "notes": "must not beat the majority-class floor"
     }
   ],
@@ -158,47 +158,47 @@
     {
       "modelA": "random forest",
       "modelB": "closed-form baseline",
-      "b": 662,
-      "c": 144,
-      "pValue": 4.3150074596406365e-80,
+      "b": 591,
+      "c": 329,
+      "pValue": 4.572205087849962e-18,
       "favours": "a"
     },
     {
       "modelA": "BNN (ADF probit, one-vs-rest)",
       "modelB": "closed-form baseline",
-      "b": 608,
-      "c": 136,
-      "pValue": 4.982463045867985e-72,
+      "b": 704,
+      "c": 192,
+      "pValue": 2.571832572946003e-69,
       "favours": "a"
     },
     {
       "modelA": "BNN (ADF probit, one-vs-rest)",
       "modelB": "random forest",
-      "b": 146,
-      "c": 192,
-      "pValue": 0.01425758054835332,
-      "favours": "b"
+      "b": 432,
+      "c": 182,
+      "pValue": 2.1090792994785667e-24,
+      "favours": "a"
     },
     {
       "modelA": "hybrid: baseline where it speaks, forest elsewhere",
       "modelB": "random forest",
-      "b": 144,
-      "c": 540,
-      "pValue": 9.655225206856676e-55,
+      "b": 329,
+      "c": 478,
+      "pValue": 1.750185246387733e-7,
       "favours": "b"
     }
   ],
   "clustering": {
     "k": 16,
-    "adjustedRandIndex": 0.11616338107870097,
-    "normalizedMutualInfo": 0.3225023762754178,
-    "majorityMapAccuracy": 0.6854001221747098,
-    "nullAdjustedRandIndex": 0.0006186613147207149,
-    "inertia": 7060.514146566202
+    "adjustedRandIndex": 0.1279878502324743,
+    "normalizedMutualInfo": 0.3388123309686843,
+    "majorityMapAccuracy": 0.7078514911746805,
+    "nullAdjustedRandIndex": -0.0009260916515650223,
+    "inertia": 7365.1687434689375
   },
   "disagreement": {
-    "n": 3074,
-    "rate": 0.31871435977190254,
+    "n": 3085,
+    "rate": 0.31883009508061183,
     "topPairs": [
       {
         "declared": "docs-other",
@@ -208,12 +208,12 @@
       {
         "declared": "agent-substrate",
         "measured": "telemetry",
-        "n": 303
+        "n": 304
       },
       {
         "declared": "telemetry",
         "measured": "archive",
-        "n": 269
+        "n": 271
       },
       {
         "declared": "backlog",
@@ -228,7 +228,7 @@
       {
         "declared": "ci",
         "measured": "tooling-ts",
-        "n": 122
+        "n": 125
       },
       {
         "declared": "docs-other",
@@ -273,22 +273,10 @@
       {
         "declared": "docs-other",
         "measured": "tooling-ts",
-        "n": 39
+        "n": 40
       }
     ],
     "examples": [
-      {
-        "pr": 12226,
-        "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
-        "headRef": "heartbeat/red-state",
-        "declared": "telemetry",
-        "measured": "demo-web",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.8877545956180747,
-        "areaCounts": {
-          "demo-web": 1
-        }
-      },
       {
         "pr": 15753,
         "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
@@ -296,7 +284,7 @@
         "declared": "telemetry",
         "measured": "demo-web",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.8794212622847414,
+        "confidence": 0.9201298845506749,
         "areaCounts": {
           "demo-web": 1
         }
@@ -308,7 +296,31 @@
         "declared": "telemetry",
         "measured": "demo-web",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.8794212622847414,
+        "confidence": 0.9201298845506749,
+        "areaCounts": {
+          "demo-web": 1
+        }
+      },
+      {
+        "pr": 15913,
+        "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
+        "headRef": "heartbeat/red-state",
+        "declared": "telemetry",
+        "measured": "demo-web",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.9201298845506749,
+        "areaCounts": {
+          "demo-web": 1
+        }
+      },
+      {
+        "pr": 12226,
+        "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
+        "headRef": "heartbeat/red-state",
+        "declared": "telemetry",
+        "measured": "demo-web",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.8858611770676817,
         "areaCounts": {
           "demo-web": 1
         }
@@ -320,19 +332,7 @@
         "declared": "telemetry",
         "measured": "demo-web",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.8112837564589589,
-        "areaCounts": {
-          "demo-web": 1
-        }
-      },
-      {
-        "pr": 11375,
-        "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
-        "headRef": "heartbeat/red-state",
-        "declared": "telemetry",
-        "measured": "demo-web",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.8068393120145144,
+        "confidence": 0.8738843212616333,
         "areaCounts": {
           "demo-web": 1
         }
@@ -344,7 +344,7 @@
         "declared": "telemetry",
         "measured": "demo-web",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.8021291670869782,
+        "confidence": 0.8654076623284527,
         "areaCounts": {
           "demo-web": 1
         }
@@ -356,7 +356,7 @@
         "declared": "telemetry",
         "measured": "demo-web",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.8021291670869782,
+        "confidence": 0.8654076623284527,
         "areaCounts": {
           "demo-web": 1
         }
@@ -368,7 +368,19 @@
         "declared": "telemetry",
         "measured": "demo-web",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.7937958337536449,
+        "confidence": 0.8654076623284527,
+        "areaCounts": {
+          "demo-web": 1
+        }
+      },
+      {
+        "pr": 11375,
+        "title": "[skip-review][telemetry-flush] chore(red-state): refresh dashboard data",
+        "headRef": "heartbeat/red-state",
+        "declared": "telemetry",
+        "measured": "demo-web",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.8638843212616333,
         "areaCounts": {
           "demo-web": 1
         }
@@ -380,45 +392,33 @@
         "declared": "build",
         "measured": "ci",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.6536785632714555,
+        "confidence": 0.7119617088815519,
         "areaCounts": {
           "ci": 2
         }
       },
       {
-        "pr": 14824,
-        "title": "ferry: the four-colour connection is jurisdictional agreement — the bound is topological, not four",
-        "headRef": "ferry/four-colour-is-jurisdictional-agreement-and-the-bound-is-topological",
-        "declared": "memory",
-        "measured": "research",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.6399489337232421,
-        "areaCounts": {
-          "research": 1
-        }
-      },
-      {
-        "pr": 13184,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:13:46Z",
+        "pr": 11401,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T09:20:27Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.6109853593748544,
+        "confidence": 0.6918905049802514,
         "areaCounts": {
-          "telemetry": 3
+          "telemetry": 4
         }
       },
       {
-        "pr": 14581,
-        "title": "deps: Bump the github-actions-minor-patch group with 3 updates",
-        "headRef": "dependabot/github_actions/github-actions-minor-patch-a2871219e1",
-        "declared": "build",
-        "measured": "ci",
+        "pr": 11487,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T14:10:56Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.6001652177445191,
+        "confidence": 0.6900745888990352,
         "areaCounts": {
-          "ci": 2
+          "telemetry": 4
         }
       },
       {
@@ -428,45 +428,21 @@
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5978242059240689,
+        "confidence": 0.687825869374236,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12410,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T13:22:34Z",
+        "pr": 13264,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T16:46:46Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5929538824933719,
+        "confidence": 0.6850453436779073,
         "areaCounts": {
           "telemetry": 4
-        }
-      },
-      {
-        "pr": 13193,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:49:23Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5922797270039438,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 12589,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T23:40:52Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5877853833775065,
-        "areaCounts": {
-          "telemetry": 3
         }
       },
       {
@@ -476,7 +452,55 @@
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5833878961026244,
+        "confidence": 0.6717769908373139,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 13287,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T17:43:41Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6668473561495625,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 13216,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T14:47:02Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6664265525966561,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11601,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T18:13:17Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6617443222108751,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11581,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T17:10:59Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6605795059672989,
         "areaCounts": {
           "telemetry": 3
         }
@@ -488,55 +512,151 @@
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5833552567182755,
+        "confidence": 0.6602284722223306,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12258,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T02:30:45Z",
+        "pr": 13243,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T15:45:34Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.580176104715594,
+        "confidence": 0.6580748092520156,
+        "areaCounts": {
+          "telemetry": 4
+        }
+      },
+      {
+        "pr": 12425,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T14:46:48Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6576783542688589,
+        "areaCounts": {
+          "telemetry": 5
+        }
+      },
+      {
+        "pr": 13193,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:49:23Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6567681766626207,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12314,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T06:15:38Z",
+        "pr": 11611,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T19:14:53Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5789030487690028,
-        "areaCounts": {
-          "telemetry": 10
-        }
-      },
-      {
-        "pr": 13315,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T19:13:46Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5780316913947101,
+        "confidence": 0.6542766761045086,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12232,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T00:50:38Z",
+        "pr": 11960,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-18T13:48:27Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5751942575602116,
+        "confidence": 0.6520819190182088,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11432,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T11:41:49Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6492004625617523,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11355,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T05:17:34Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6396908772597474,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11305,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T03:24:07Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6395174978984978,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11418,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T10:45:23Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6388248372532076,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11282,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T02:32:19Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6307838897874223,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 13184,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:13:46Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6305285730967062,
+        "areaCounts": {
+          "telemetry": 3
+        }
+      },
+      {
+        "pr": 11648,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T20:43:05Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6305242105930806,
         "areaCounts": {
           "telemetry": 3
         }
@@ -548,215 +668,93 @@
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5660872469502658,
+        "confidence": 0.6291459103907918,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12214,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T00:20:37Z",
+        "pr": 11835,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-18T08:14:59Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5634202986272869,
+        "confidence": 0.6289654044723607,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12755,
-        "title": "ferry(ip-questionable): Kastner on the transactional interpretation + what it says about our meter",
-        "headRef": "research/measurement-problem-and-our-meter",
-        "declared": "memory",
-        "measured": "research",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5612509841797912,
-        "areaCounts": {
-          "docs-other": 1,
-          "research": 1
-        }
-      },
-      {
-        "pr": 12525,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T20:43:43Z",
+        "pr": 11631,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T20:09:25Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.560321525516427,
-        "areaCounts": {
-          "telemetry": 4
-        }
-      },
-      {
-        "pr": 12482,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T18:11:13Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5587913110914756,
-        "areaCounts": {
-          "telemetry": 6
-        }
-      },
-      {
-        "pr": 13287,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T17:43:41Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5562493761888596,
+        "confidence": 0.6272966710260749,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12580,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T23:09:06Z",
+        "pr": 13458,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-22T00:21:17Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5529141181090195,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 11618,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T19:42:24Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.551291677389703,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 12513,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T20:09:10Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5498897185435047,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 13208,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T14:18:00Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5454271115797645,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 11401,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T09:20:27Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5412630385756869,
-        "areaCounts": {
-          "telemetry": 4
-        }
-      },
-      {
-        "pr": 13198,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T13:22:42Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5408971884707335,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 11317,
-        "title": "[heartbeat-batch-merge] merge(agent-heartbeats): periodic sync to main (2026-08-17T03:36:10.482Z)",
-        "headRef": "heartbeat/soraya-flush-bb19743f7c5cf6c706bec01161ebc7cb7a27bbf1",
-        "declared": "telemetry",
-        "measured": "archive",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5387717339316814,
-        "areaCounts": {
-          "telemetry": 7,
-          "archive": 13
-        }
-      },
-      {
-        "pr": 13161,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T10:44:35Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5374142279579036,
-        "areaCounts": {
-          "telemetry": 3
-        }
-      },
-      {
-        "pr": 12425,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T14:46:48Z",
-        "headRef": "heartbeat/society",
-        "declared": "agent-substrate",
-        "measured": "telemetry",
-        "modelAgreesWithMeasured": true,
-        "confidence": 0.5328771735217385,
+        "confidence": 0.6266309029609672,
         "areaCounts": {
           "telemetry": 5
         }
       },
       {
-        "pr": 12418,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T14:16:03Z",
+        "pr": 13315,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-21T19:13:46Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5318356488751381,
+        "confidence": 0.6251323803041519,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 11382,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T07:26:23Z",
+        "pr": 12471,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T17:44:46Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.5304365375047124,
+        "confidence": 0.6249807671226473,
         "areaCounts": {
           "telemetry": 3
         }
       },
       {
-        "pr": 12272,
-        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T03:22:44Z",
+        "pr": 12296,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-19T04:46:55Z",
         "headRef": "heartbeat/society",
         "declared": "agent-substrate",
         "measured": "telemetry",
         "modelAgreesWithMeasured": true,
-        "confidence": 0.527914141121162,
+        "confidence": 0.6229533277384005,
         "areaCounts": {
-          "telemetry": 4
+          "telemetry": 5
+        }
+      },
+      {
+        "pr": 11714,
+        "title": "[skip-review][telemetry-flush] society: evolution tick 2026-08-17T23:40:19Z",
+        "headRef": "heartbeat/society",
+        "declared": "agent-substrate",
+        "measured": "telemetry",
+        "modelAgreesWithMeasured": true,
+        "confidence": 0.6224688118274392,
+        "areaCounts": {
+          "telemetry": 3
         }
       }
     ]
@@ -788,9 +786,9 @@
     },
     {
       "month": "2026-08",
-      "total": 4599,
-      "unlabellable": 795,
-      "rate": 0.17286366601435094
+      "total": 4648,
+      "unlabellable": 813,
+      "rate": 0.17491394148020653
     }
   ],
   "areaTrend": [
@@ -878,21 +876,21 @@
     {
       "month": "2026-08",
       "counts": {
-        "backlog": 286,
-        "tooling-ts": 749,
+        "backlog": 287,
+        "tooling-ts": 767,
         "build": 17,
         "research": 346,
-        "core-fsharp": 120,
+        "core-fsharp": 122,
         "tests": 43,
-        "docs-other": 137,
-        "ci": 86,
-        "demo-web": 44,
-        "telemetry": 1609,
-        "agent-substrate": 16,
+        "docs-other": 144,
+        "ci": 87,
+        "demo-web": 47,
+        "telemetry": 1619,
+        "agent-substrate": 18,
         "infra": 60,
         "other": 10,
-        "memory": 3,
-        "archive": 1070,
+        "memory": 4,
+        "archive": 1074,
         "governance": 3
       }
     }

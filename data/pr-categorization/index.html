@@ -73,17 +73,25 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
 <div class="wrap">
 <h1>PR area statistics</h1>
 <p class="sub">
-  13,093 merged pull requests &middot;
+  13,142 merged pull requests &middot;
   16 areas &middot;
   split: <strong>temporal</strong> at 2026-08-17 &middot;
-  generated <time datetime="2026-08-27T21:51:06.506Z">2026-08-27 21:51Z</time>
+  generated <time datetime="2026-08-28T03:30:14.111Z">2026-08-28 03:30Z</time>
 </p>
 
 <div class="card verdict">
-  <h3>The BNN does not beat the forest. Both beat the baseline.</h3>
-  <p>The BNN scores 73.1% and the forest 74.5%; McNemar
-       p = 0.01 does not separate them. Both beat the closed-form
-       parse at 58.7%, which is the comparison that matters.</p>
+  <h3>The BNN earns its place — but only under distribution shift.</h3>
+  <p>On this split the BNN scores 73.8% against the forest's 66.2%
+       (McNemar p = 2.1e-24, 432 vs 182 discordant).
+       Both beat the closed-form parse at 58.2%. Under an i.i.d. random split the
+       two models are statistically indistinguishable — so what the BNN buys is graceful
+       degradation when the fleet's mix of work changes, not raw discriminative power. One qualification, and it belongs beside the headline rather than in a column:
+          on <strong>macro-F1</strong> the baseline is still ahead — 28.6% against
+          28.6% for the best model (hybrid: baseline where it speaks, forest elsewhere). Accuracy rewards serving
+          the large areas; macro-F1 weights all 16 equally, and a parse can
+          hit a rare area exactly where a model fitted to this distribution almost never predicts
+          one. So the models are better at guessing where a PR probably went, and no better at
+          the tail.</p>
 </div>
 
 <div class="callout">
@@ -98,8 +106,9 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
 <p>
   The same pipeline is retrained on <strong>permuted labels</strong>. If it still learns, every
   other number on this page is void.
-  <strong style="color:var(--neg)">The null scores 22.9%, above the
-         3.9% floor — treat every number below as suspect.</strong>
+  The null lands at 4.8%, against a majority-class floor of
+         3.8% — i.e. it degenerates to guessing the biggest
+         class, which is exactly what a clean pipeline does. <strong>No leak.</strong>
 </p>
 
 <h2>Models</h2>
@@ -111,52 +120,52 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
 </tr></thead>
 <tbody><tr class="is-baseline">
       <td class="name">closed-form baseline<span class="note">title scope -&gt; paren scope -&gt; branch prefix; abstains on 1 PR in 4</span></td>
-      <td class="num">58.7%<span class="ci">57%–60%</span></td>
+      <td class="num">58.2%<span class="ci">57%–60%</span></td>
       <td class="num ">—</td>
-      <td class="num">28.2%</td>
-      <td class="num">67.7%</td>
+      <td class="num">28.6%</td>
+      <td class="num">67.5%</td>
       <td class="num strong">0.0%</td>
     </tr><tr class="">
       <td class="name">majority class<span class="note">floor: predicts the most common area for everything</span></td>
-      <td class="num">3.9%<span class="ci">3%–5%</span></td>
-      <td class="num neg">-54.8pp</td>
+      <td class="num">3.8%<span class="ci">3%–5%</span></td>
+      <td class="num neg">-54.4pp</td>
       <td class="num">0.5%</td>
-      <td class="num">4.2%</td>
-      <td class="num strong">2.3%</td>
+      <td class="num">4.1%</td>
+      <td class="num strong">2.2%</td>
     </tr><tr class="">
       <td class="name">random forest<span class="note">60 trees, gini, quantile-binned splits</span></td>
-      <td class="num">74.5%<span class="ci">73%–76%</span></td>
-      <td class="num pos">+15.8pp</td>
-      <td class="num">23.4%</td>
-      <td class="num">81.7%</td>
-      <td class="num strong">27.9%</td>
+      <td class="num">66.2%<span class="ci">65%–68%</span></td>
+      <td class="num pos">+8.0pp</td>
+      <td class="num">22.0%</td>
+      <td class="num">72.7%</td>
+      <td class="num strong">25.1%</td>
     </tr><tr class="">
       <td class="name">BNN (ADF probit, one-vs-rest)<span class="note">diagonal Gaussian weight posterior; single ADF pass</span></td>
-      <td class="num">73.1%<span class="ci">72%–75%</span></td>
-      <td class="num pos">+14.4pp</td>
-      <td class="num">24.0%</td>
-      <td class="num">80.4%</td>
-      <td class="num strong">26.1%</td>
+      <td class="num">73.8%<span class="ci">72%–75%</span></td>
+      <td class="num pos">+15.6pp</td>
+      <td class="num">25.8%</td>
+      <td class="num">81.6%</td>
+      <td class="num strong">24.9%</td>
     </tr><tr class="">
       <td class="name">hybrid: baseline where it speaks, forest elsewhere<span class="note">the deployable option</span></td>
-      <td class="num">62.4%<span class="ci">61%–64%</span></td>
-      <td class="num pos">+3.7pp</td>
-      <td class="num">28.2%</td>
-      <td class="num">67.7%</td>
-      <td class="num strong">27.9%</td>
+      <td class="num">61.7%<span class="ci">60%–63%</span></td>
+      <td class="num pos">+3.4pp</td>
+      <td class="num">28.6%</td>
+      <td class="num">67.5%</td>
+      <td class="num strong">25.1%</td>
     </tr><tr class="is-null">
       <td class="name">NULL random forest (labels shuffled)<span class="note">must not beat the majority-class floor</span></td>
-      <td class="num">5.3%</td><td class="num">—</td>
-      <td class="num">1.6%</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">4.6%</td><td class="num">—</td>
+      <td class="num">1.5%</td><td class="num">—</td><td class="num">—</td>
     </tr><tr class="is-null">
       <td class="name">NULL BNN (labels shuffled)<span class="note">must not beat the majority-class floor</span></td>
-      <td class="num">22.9%</td><td class="num">—</td>
-      <td class="num">5.4%</td><td class="num">—</td><td class="num">—</td>
+      <td class="num">4.8%</td><td class="num">—</td>
+      <td class="num">1.9%</td><td class="num">—</td><td class="num">—</td>
     </tr></tbody>
 </table></div>
 <p class="muted">
   The last column is the point. The closed form scores <strong>0%</strong> there by construction —
-  it has nothing to say about 26.3% of PRs — so any accuracy in that
+  it has nothing to say about 26.4% of PRs — so any accuracy in that
   column is work no amount of parsing could do. Oracle floor for this test set
   (always predict <code>telemetry</code>):
   <strong>47.3%</strong>.
@@ -172,30 +181,30 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
 <thead><tr><th>comparison</th><th class="num">A right, B wrong</th><th class="num">A wrong, B right</th><th class="num">p</th><th class="num">favours</th></tr></thead>
 <tbody><tr>
       <td class="name">random forest<span class="note">vs closed-form baseline</span></td>
-      <td class="num">662</td><td class="num">144</td>
-      <td class="num">4.3e-80</td>
+      <td class="num">591</td><td class="num">329</td>
+      <td class="num">4.6e-18</td>
       <td class="num"><strong>random forest</strong></td>
     </tr><tr>
       <td class="name">BNN (ADF probit, one-vs-rest)<span class="note">vs closed-form baseline</span></td>
-      <td class="num">608</td><td class="num">136</td>
-      <td class="num">5.0e-72</td>
+      <td class="num">704</td><td class="num">192</td>
+      <td class="num">2.6e-69</td>
       <td class="num"><strong>BNN (ADF probit, one-vs-rest)</strong></td>
     </tr><tr>
       <td class="name">BNN (ADF probit, one-vs-rest)<span class="note">vs random forest</span></td>
-      <td class="num">146</td><td class="num">192</td>
-      <td class="num">0.0143</td>
-      <td class="num"><strong>random forest</strong></td>
+      <td class="num">432</td><td class="num">182</td>
+      <td class="num">2.1e-24</td>
+      <td class="num"><strong>BNN (ADF probit, one-vs-rest)</strong></td>
     </tr><tr>
       <td class="name">hybrid: baseline where it speaks, forest elsewhere<span class="note">vs random forest</span></td>
-      <td class="num">144</td><td class="num">540</td>
-      <td class="num">9.7e-55</td>
+      <td class="num">329</td><td class="num">478</td>
+      <td class="num">1.8e-7</td>
       <td class="num"><strong>random forest</strong></td>
     </tr></tbody>
 </table></div>
 
 <h2>Where the declared area disagrees with the diff</h2>
 <p>
-  <strong>3,074</strong> PRs
+  <strong>3,085</strong> PRs
   (31.9% of those carrying a parseable area) changed files that sit
   somewhere other than where the title says. This set is the product: the closed form cannot
   produce it at all, because it never looks at a diff.
@@ -208,10 +217,10 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
          <td class="num">523</td></tr><tr><td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
          <td class="arrow">&rarr;</td>
          <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-         <td class="num">303</td></tr><tr><td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+         <td class="num">304</td></tr><tr><td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
          <td class="arrow">&rarr;</td>
          <td><span class="tag" style="--c:hsl(58 62% 52%)">archive</span></td>
-         <td class="num">269</td></tr><tr><td><span class="tag" style="--c:hsl(253 62% 52%)">backlog</span></td>
+         <td class="num">271</td></tr><tr><td><span class="tag" style="--c:hsl(253 62% 52%)">backlog</span></td>
          <td class="arrow">&rarr;</td>
          <td><span class="tag" style="--c:hsl(326 62% 52%)">docs-other</span></td>
          <td class="num">264</td></tr><tr><td><span class="tag" style="--c:hsl(58 62% 52%)">archive</span></td>
@@ -220,7 +229,7 @@ footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);color:v
          <td class="num">152</td></tr><tr><td><span class="tag" style="--c:hsl(294 62% 52%)">ci</span></td>
          <td class="arrow">&rarr;</td>
          <td><span class="tag" style="--c:hsl(58 62% 52%)">tooling-ts</span></td>
-         <td class="num">122</td></tr><tr><td><span class="tag" style="--c:hsl(326 62% 52%)">docs-other</span></td>
+         <td class="num">125</td></tr><tr><td><span class="tag" style="--c:hsl(326 62% 52%)">docs-other</span></td>
          <td class="arrow">&rarr;</td>
          <td><span class="tag" style="--c:hsl(253 62% 52%)">backlog</span></td>
          <td class="num">112</td></tr><tr><td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
@@ -250,164 +259,164 @@ Naming the pattern is the useful output; assigning blame would be reading intent
 <div class="scroll"><table>
 <thead><tr><th class="num">PR</th><th>title</th><th>declared</th><th>measured</th><th class="num">conf.</th></tr></thead>
 <tbody><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/15753">#15753</a></td>
+      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
+      <td class="num">0.92</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/15819">#15819</a></td>
+      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
+      <td class="num">0.92</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/15913">#15913</a></td>
+      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
+      <td class="num">0.92</td>
+    </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12226">#12226</a></td>
       <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
       <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
       <td class="num">0.89</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/15753">#15753</a></td>
-      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.88</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/15819">#15819</a></td>
-      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.88</td>
-    </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11451">#11451</a></td>
       <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
       <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.81</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11375">#11375</a></td>
-      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.81</td>
+      <td class="num">0.87</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11737">#11737</a></td>
       <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
       <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.80</td>
+      <td class="num">0.87</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12044">#12044</a></td>
       <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
       <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.80</td>
+      <td class="num">0.87</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12321">#12321</a></td>
       <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
       <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
-      <td class="num">0.79</td>
+      <td class="num">0.87</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11375">#11375</a></td>
+      <td class="title">[skip-review][telemetry-flush] chore(red-state): refresh dashboard data<span class="note">heartbeat/red-state &middot; demo-web:1</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td><span class="tag" style="--c:hsl(242 62% 52%)">demo-web</span></td>
+      <td class="num">0.86</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13584">#13584</a></td>
       <td class="title">deps: Bump the github-actions-minor-patch group with 3 updates<span class="note">dependabot/github_actions/github-actions-minor-patch-29ab28765e &middot; ci:2</span></td>
       <td><span class="tag" style="--c:hsl(318 62% 52%)">build</span></td>
       <td><span class="tag" style="--c:hsl(294 62% 52%)">ci</span></td>
-      <td class="num">0.65</td>
+      <td class="num">0.71</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/14824">#14824</a></td>
-      <td class="title">ferry: the four-colour connection is jurisdictional agreement — the bound is topological, not four<span class="note">ferry/four-colour-is-jurisdictional-agreement-and-the-bound-is-topological &middot; research:1</span></td>
-      <td><span class="tag" style="--c:hsl(65 62% 52%)">memory</span></td>
-      <td><span class="tag" style="--c:hsl(139 62% 52%)">research</span></td>
-      <td class="num">0.64</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13184">#13184</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:13:46Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11401">#11401</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-17T09:20:27Z<span class="note">heartbeat/society &middot; telemetry:4</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.61</td>
+      <td class="num">0.69</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/14581">#14581</a></td>
-      <td class="title">deps: Bump the github-actions-minor-patch group with 3 updates<span class="note">dependabot/github_actions/github-actions-minor-patch-a2871219e1 &middot; ci:2</span></td>
-      <td><span class="tag" style="--c:hsl(318 62% 52%)">build</span></td>
-      <td><span class="tag" style="--c:hsl(294 62% 52%)">ci</span></td>
-      <td class="num">0.60</td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11487">#11487</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-17T14:10:56Z<span class="note">heartbeat/society &middot; telemetry:4</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td class="num">0.69</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13328">#13328</a></td>
       <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T19:40:27Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.60</td>
+      <td class="num">0.69</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12410">#12410</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T13:22:34Z<span class="note">heartbeat/society &middot; telemetry:4</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13264">#13264</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T16:46:46Z<span class="note">heartbeat/society &middot; telemetry:4</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.59</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13193">#13193</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:49:23Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.59</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12589">#12589</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T23:40:52Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.59</td>
+      <td class="num">0.69</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13203">#13203</a></td>
       <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T13:49:16Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.58</td>
+      <td class="num">0.67</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13287">#13287</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T17:43:41Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td class="num">0.67</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13216">#13216</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T14:47:02Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td class="num">0.67</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11601">#11601</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-17T18:13:17Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td class="num">0.66</td>
+    </tr><tr>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11581">#11581</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-17T17:10:59Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
+      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
+      <td class="num">0.66</td>
     </tr><tr>
       <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13296">#13296</a></td>
       <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T18:16:29Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.58</td>
+      <td class="num">0.66</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12258">#12258</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T02:30:45Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13243">#13243</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T15:45:34Z<span class="note">heartbeat/society &middot; telemetry:4</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.58</td>
+      <td class="num">0.66</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12314">#12314</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T06:15:38Z<span class="note">heartbeat/society &middot; telemetry:10</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12425">#12425</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T14:46:48Z<span class="note">heartbeat/society &middot; telemetry:5</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.58</td>
+      <td class="num">0.66</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13315">#13315</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T19:13:46Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13193">#13193</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T12:49:23Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.58</td>
+      <td class="num">0.66</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12232">#12232</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T00:50:38Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11611">#11611</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-17T19:14:53Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.58</td>
+      <td class="num">0.65</td>
     </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/13226">#13226</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-21T15:13:38Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
+      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/11960">#11960</a></td>
+      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-18T13:48:27Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
       <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.57</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12214">#12214</a></td>
-      <td class="title">[skip-review][telemetry-flush] society: evolution tick 2026-08-19T00:20:37Z<span class="note">heartbeat/society &middot; telemetry:3</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">agent-substrate</span></td>
-      <td><span class="tag" style="--c:hsl(217 62% 52%)">telemetry</span></td>
-      <td class="num">0.56</td>
-    </tr><tr>
-      <td class="num"><a href="https://github.com/Lucent-Financial-Group/Zeta/pull/12755">#12755</a></td>
-      <td class="title">ferry(ip-questionable): Kastner on the transactional interpretation + what it says about our meter<span class="note">research/measurement-problem-and-our-meter &middot; docs-other:1 research:1</span></td>
-      <td><span class="tag" style="--c:hsl(65 62% 52%)">memory</span></td>
-      <td><span class="tag" style="--c:hsl(139 62% 52%)">research</span></td>
-      <td class="num">0.56</td>
+      <td class="num">0.65</td>
     </tr></tbody>
 </table></div>
 
 <h2>How much of the corpus is unlabellable?</h2>
 <div class="grid">
-  <div class="stat"><b>73.7%</b><span>parseable area</span></div>
-  <div class="stat"><b>26.3%</b><span>no area at all</span></div>
+  <div class="stat"><b>73.6%</b><span>parseable area</span></div>
+  <div class="stat"><b>26.4%</b><span>no area at all</span></div>
   <div class="stat"><b>68.1%</b><span>correct when parsed</span></div>
-  <div class="stat"><b>2,596</b><span>type but no area</span></div>
+  <div class="stat"><b>2,609</b><span>type but no area</span></div>
 </div>
 <p class="muted">
   <code>type-only</code> means a title declared a <em>kind</em> of change (<code>feat:</code>,
@@ -421,8 +430,8 @@ Naming the pattern is the useful output; assigning blame would be reading intent
       <text x="32" y="104.0" class="axis" text-anchor="end">19%</text><line x1="38" y1="69.0" x2="722" y2="69.0" class="grid"/>
       <text x="32" y="73.0" class="axis" text-anchor="end">28%</text><line x1="38" y1="38.0" x2="722" y2="38.0" class="grid"/>
       <text x="32" y="42.0" class="axis" text-anchor="end">38%</text>
-    <path d="M38.0,78.8 L209.0,71.2 L380.0,38.0 L551.0,48.1 L722.0,105.4" class="line"/>
-    <circle cx="38.0" cy="78.8" r="3.5" class="dot"><title>2026-04: 25.4% of 815 PRs unlabellable</title></circle><circle cx="209.0" cy="71.2" r="3.5" class="dot"><title>2026-05: 27.7% of 4333 PRs unlabellable</title></circle><circle cx="380.0" cy="38.0" r="3.5" class="dot"><title>2026-06: 37.9% of 2636 PRs unlabellable</title></circle><circle cx="551.0" cy="48.1" r="3.5" class="dot"><title>2026-07: 34.8% of 710 PRs unlabellable</title></circle><circle cx="722.0" cy="105.4" r="3.5" class="dot"><title>2026-08: 17.3% of 4599 PRs unlabellable</title></circle>
+    <path d="M38.0,78.8 L209.0,71.2 L380.0,38.0 L551.0,48.1 L722.0,104.7" class="line"/>
+    <circle cx="38.0" cy="78.8" r="3.5" class="dot"><title>2026-04: 25.4% of 815 PRs unlabellable</title></circle><circle cx="209.0" cy="71.2" r="3.5" class="dot"><title>2026-05: 27.7% of 4333 PRs unlabellable</title></circle><circle cx="380.0" cy="38.0" r="3.5" class="dot"><title>2026-06: 37.9% of 2636 PRs unlabellable</title></circle><circle cx="551.0" cy="48.1" r="3.5" class="dot"><title>2026-07: 34.8% of 710 PRs unlabellable</title></circle><circle cx="722.0" cy="104.7" r="3.5" class="dot"><title>2026-08: 17.5% of 4648 PRs unlabellable</title></circle>
     <text x="38.0" y="178" class="axis" text-anchor="middle">2026-04</text><text x="209.0" y="178" class="axis" text-anchor="middle">2026-05</text><text x="380.0" y="178" class="axis" text-anchor="middle">2026-06</text><text x="551.0" y="178" class="axis" text-anchor="middle">2026-07</text><text x="722.0" y="178" class="axis" text-anchor="middle">2026-08</text>
   </svg>
 
@@ -430,62 +439,62 @@ Naming the pattern is the useful output; assigning blame would be reading intent
 <div class="bars"><div class="bar-row">
       <span class="bar-label">telemetry</span>
       <span class="bar-track"><span class="bar-fill" style="width:100.00%;background:hsl(217 62% 52%)"></span></span>
-      <span class="bar-value">2,685 <em>20.5%</em></span>
+      <span class="bar-value">2,695 <em>20.5%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">research</span>
-      <span class="bar-track"><span class="bar-fill" style="width:80.00%;background:hsl(139 62% 52%)"></span></span>
-      <span class="bar-value">2,148 <em>16.4%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:79.70%;background:hsl(139 62% 52%)"></span></span>
+      <span class="bar-value">2,148 <em>16.3%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">tooling-ts</span>
-      <span class="bar-track"><span class="bar-fill" style="width:65.96%;background:hsl(58 62% 52%)"></span></span>
-      <span class="bar-value">1,771 <em>13.5%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:66.38%;background:hsl(58 62% 52%)"></span></span>
+      <span class="bar-value">1,789 <em>13.6%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">archive</span>
-      <span class="bar-track"><span class="bar-fill" style="width:50.99%;background:hsl(58 62% 52%)"></span></span>
-      <span class="bar-value">1,369 <em>10.5%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:50.95%;background:hsl(58 62% 52%)"></span></span>
+      <span class="bar-value">1,373 <em>10.4%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">docs-other</span>
-      <span class="bar-track"><span class="bar-fill" style="width:43.46%;background:hsl(326 62% 52%)"></span></span>
-      <span class="bar-value">1,167 <em>8.9%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:43.56%;background:hsl(326 62% 52%)"></span></span>
+      <span class="bar-value">1,174 <em>8.9%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">memory</span>
-      <span class="bar-track"><span class="bar-fill" style="width:40.41%;background:hsl(65 62% 52%)"></span></span>
-      <span class="bar-value">1,085 <em>8.3%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:40.30%;background:hsl(65 62% 52%)"></span></span>
+      <span class="bar-value">1,086 <em>8.3%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">backlog</span>
-      <span class="bar-track"><span class="bar-fill" style="width:32.33%;background:hsl(253 62% 52%)"></span></span>
-      <span class="bar-value">868 <em>6.6%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:32.24%;background:hsl(253 62% 52%)"></span></span>
+      <span class="bar-value">869 <em>6.6%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">core-fsharp</span>
-      <span class="bar-track"><span class="bar-fill" style="width:26.52%;background:hsl(90 62% 52%)"></span></span>
-      <span class="bar-value">712 <em>5.4%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:26.49%;background:hsl(90 62% 52%)"></span></span>
+      <span class="bar-value">714 <em>5.4%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">agent-substrate</span>
-      <span class="bar-track"><span class="bar-fill" style="width:11.92%;background:hsl(217 62% 52%)"></span></span>
-      <span class="bar-value">320 <em>2.4%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:11.95%;background:hsl(217 62% 52%)"></span></span>
+      <span class="bar-value">322 <em>2.5%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">tests</span>
-      <span class="bar-track"><span class="bar-fill" style="width:8.90%;background:hsl(113 62% 52%)"></span></span>
+      <span class="bar-track"><span class="bar-fill" style="width:8.87%;background:hsl(113 62% 52%)"></span></span>
       <span class="bar-value">239 <em>1.8%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">infra</span>
-      <span class="bar-track"><span class="bar-fill" style="width:8.75%;background:hsl(168 62% 52%)"></span></span>
+      <span class="bar-track"><span class="bar-fill" style="width:8.72%;background:hsl(168 62% 52%)"></span></span>
       <span class="bar-value">235 <em>1.8%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">ci</span>
-      <span class="bar-track"><span class="bar-fill" style="width:6.63%;background:hsl(294 62% 52%)"></span></span>
-      <span class="bar-value">178 <em>1.4%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:6.64%;background:hsl(294 62% 52%)"></span></span>
+      <span class="bar-value">179 <em>1.4%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">other</span>
-      <span class="bar-track"><span class="bar-fill" style="width:5.74%;background:hsl(96 62% 52%)"></span></span>
+      <span class="bar-track"><span class="bar-fill" style="width:5.71%;background:hsl(96 62% 52%)"></span></span>
       <span class="bar-value">154 <em>1.2%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">demo-web</span>
-      <span class="bar-track"><span class="bar-fill" style="width:2.27%;background:hsl(242 62% 52%)"></span></span>
-      <span class="bar-value">61 <em>0.5%</em></span>
+      <span class="bar-track"><span class="bar-fill" style="width:2.37%;background:hsl(242 62% 52%)"></span></span>
+      <span class="bar-value">64 <em>0.5%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">build</span>
-      <span class="bar-track"><span class="bar-fill" style="width:2.16%;background:hsl(318 62% 52%)"></span></span>
+      <span class="bar-track"><span class="bar-fill" style="width:2.15%;background:hsl(318 62% 52%)"></span></span>
       <span class="bar-value">58 <em>0.4%</em></span>
     </div><div class="bar-row">
       <span class="bar-label">governance</span>
@@ -494,26 +503,26 @@ Naming the pattern is the useful output; assigning blame would be reading intent
     </div></div>
 <h2>...and how that has moved</h2>
 <svg viewBox="0 0 760 260" class="chart" role="img" aria-label="Share of merged PRs by area, by month">
-    <path d="M38.0,184.7 L209.0,184.1 L380.0,221.1 L551.0,220.4 L722.0,157.6 L722.0,222.0 L551.0,222.0 L380.0,222.0 L209.0,222.0 L38.0,222.0 Z" fill="hsl(217 62% 52%)" opacity="0.86"><title>telemetry</title></path><path d="M38.0,164.0 L209.0,159.4 L380.0,160.2 L551.0,154.4 L722.0,143.8 L722.0,157.6 L551.0,220.4 L380.0,221.1 L209.0,184.1 L38.0,184.7 Z" fill="hsl(139 62% 52%)" opacity="0.86"><title>research</title></path><path d="M38.0,149.8 L209.0,137.8 L380.0,138.0 L551.0,119.6 L722.0,113.8 L722.0,143.8 L551.0,154.4 L380.0,160.2 L209.0,159.4 L38.0,164.0 Z" fill="hsl(58 62% 52%)" opacity="0.86"><title>tooling-ts</title></path><path d="M38.0,149.3 L209.0,125.9 L380.0,137.1 L551.0,118.6 L722.0,71.0 L722.0,113.8 L551.0,119.6 L380.0,138.0 L209.0,137.8 L38.0,149.8 Z" fill="hsl(58 62% 52%)" opacity="0.86"><title>archive</title></path><path d="M38.0,99.4 L209.0,107.0 L380.0,118.1 L551.0,95.0 L722.0,65.5 L722.0,71.0 L551.0,118.6 L380.0,137.1 L209.0,125.9 L38.0,149.3 Z" fill="hsl(326 62% 52%)" opacity="0.86"><title>docs-other</title></path><path d="M38.0,63.7 L209.0,75.5 L380.0,105.8 L551.0,93.2 L722.0,65.4 L722.0,65.5 L551.0,95.0 L380.0,118.1 L209.0,107.0 L38.0,99.4 Z" fill="hsl(65 62% 52%)" opacity="0.86"><title>memory</title></path><path d="M38.0,57.2 L209.0,58.5 L380.0,98.0 L551.0,82.8 L722.0,54.0 L722.0,65.4 L551.0,93.2 L380.0,105.8 L209.0,75.5 L38.0,63.7 Z" fill="hsl(253 62% 52%)" opacity="0.86"><title>backlog</title></path><path d="M38.0,53.1 L209.0,56.8 L380.0,67.7 L551.0,57.2 L722.0,49.2 L722.0,54.0 L551.0,82.8 L380.0,98.0 L209.0,58.5 L38.0,57.2 Z" fill="hsl(90 62% 52%)" opacity="0.86"><title>core-fsharp</title></path><path d="M38.0,50.6 L209.0,46.5 L380.0,64.7 L551.0,55.6 L722.0,48.5 L722.0,49.2 L551.0,57.2 L380.0,67.7 L209.0,56.8 L38.0,53.1 Z" fill="hsl(217 62% 52%)" opacity="0.86"><title>agent-substrate</title></path><path d="M38.0,49.5 L209.0,45.9 L380.0,54.5 L551.0,47.6 L722.0,46.8 L722.0,48.5 L551.0,55.6 L380.0,64.7 L209.0,46.5 L38.0,50.6 Z" fill="hsl(113 62% 52%)" opacity="0.86"><title>tests</title></path><path d="M38.0,49.5 L209.0,41.7 L380.0,49.1 L551.0,47.3 L722.0,44.4 L722.0,46.8 L551.0,47.6 L380.0,54.5 L209.0,45.9 L38.0,49.5 Z" fill="hsl(168 62% 52%)" opacity="0.86"><title>infra</title></path><path d="M38.0,45.0 L209.0,40.1 L380.0,47.6 L551.0,44.2 L722.0,41.0 L722.0,44.4 L551.0,47.3 L380.0,49.1 L209.0,41.7 L38.0,49.5 Z" fill="hsl(294 62% 52%)" opacity="0.86"><title>ci</title></path><path d="M38.0,42.7 L209.0,39.5 L380.0,39.6 L551.0,42.7 L722.0,40.6 L722.0,41.0 L551.0,44.2 L380.0,47.6 L209.0,40.1 L38.0,45.0 Z" fill="hsl(96 62% 52%)" opacity="0.86"><title>other</title></path><path d="M38.0,42.7 L209.0,39.1 L380.0,39.6 L551.0,40.9 L722.0,38.8 L722.0,40.6 L551.0,42.7 L380.0,39.6 L209.0,39.5 L38.0,42.7 Z" fill="hsl(242 62% 52%)" opacity="0.86"><title>demo-web</title></path><path d="M38.0,39.1 L209.0,38.6 L380.0,39.0 L551.0,39.3 L722.0,38.1 L722.0,38.8 L551.0,40.9 L380.0,39.6 L209.0,39.1 L38.0,42.7 Z" fill="hsl(318 62% 52%)" opacity="0.86"><title>build</title></path><path d="M38.0,38.0 L209.0,38.0 L380.0,38.0 L551.0,38.0 L722.0,38.0 L722.0,38.1 L551.0,39.3 L380.0,39.0 L209.0,38.6 L38.0,39.1 Z" fill="hsl(266 62% 52%)" opacity="0.86"><title>governance</title></path>
+    <path d="M38.0,184.7 L209.0,184.1 L380.0,221.1 L551.0,220.4 L722.0,157.9 L722.0,222.0 L551.0,222.0 L380.0,222.0 L209.0,222.0 L38.0,222.0 Z" fill="hsl(217 62% 52%)" opacity="0.86"><title>telemetry</title></path><path d="M38.0,164.0 L209.0,159.4 L380.0,160.2 L551.0,154.4 L722.0,144.2 L722.0,157.9 L551.0,220.4 L380.0,221.1 L209.0,184.1 L38.0,184.7 Z" fill="hsl(139 62% 52%)" opacity="0.86"><title>research</title></path><path d="M38.0,149.8 L209.0,137.8 L380.0,138.0 L551.0,119.6 L722.0,113.8 L722.0,144.2 L551.0,154.4 L380.0,160.2 L209.0,159.4 L38.0,164.0 Z" fill="hsl(58 62% 52%)" opacity="0.86"><title>tooling-ts</title></path><path d="M38.0,149.3 L209.0,125.9 L380.0,137.1 L551.0,118.6 L722.0,71.3 L722.0,113.8 L551.0,119.6 L380.0,138.0 L209.0,137.8 L38.0,149.8 Z" fill="hsl(58 62% 52%)" opacity="0.86"><title>archive</title></path><path d="M38.0,99.4 L209.0,107.0 L380.0,118.1 L551.0,95.0 L722.0,65.6 L722.0,71.3 L551.0,118.6 L380.0,137.1 L209.0,125.9 L38.0,149.3 Z" fill="hsl(326 62% 52%)" opacity="0.86"><title>docs-other</title></path><path d="M38.0,63.7 L209.0,75.5 L380.0,105.8 L551.0,93.2 L722.0,65.5 L722.0,65.6 L551.0,95.0 L380.0,118.1 L209.0,107.0 L38.0,99.4 Z" fill="hsl(65 62% 52%)" opacity="0.86"><title>memory</title></path><path d="M38.0,57.2 L209.0,58.5 L380.0,98.0 L551.0,82.8 L722.0,54.1 L722.0,65.5 L551.0,93.2 L380.0,105.8 L209.0,75.5 L38.0,63.7 Z" fill="hsl(253 62% 52%)" opacity="0.86"><title>backlog</title></path><path d="M38.0,53.1 L209.0,56.8 L380.0,67.7 L551.0,57.2 L722.0,49.3 L722.0,54.1 L551.0,82.8 L380.0,98.0 L209.0,58.5 L38.0,57.2 Z" fill="hsl(90 62% 52%)" opacity="0.86"><title>core-fsharp</title></path><path d="M38.0,50.6 L209.0,46.5 L380.0,64.7 L551.0,55.6 L722.0,48.6 L722.0,49.3 L551.0,57.2 L380.0,67.7 L209.0,56.8 L38.0,53.1 Z" fill="hsl(217 62% 52%)" opacity="0.86"><title>agent-substrate</title></path><path d="M38.0,49.5 L209.0,45.9 L380.0,54.5 L551.0,47.6 L722.0,46.9 L722.0,48.6 L551.0,55.6 L380.0,64.7 L209.0,46.5 L38.0,50.6 Z" fill="hsl(113 62% 52%)" opacity="0.86"><title>tests</title></path><path d="M38.0,49.5 L209.0,41.7 L380.0,49.1 L551.0,47.3 L722.0,44.5 L722.0,46.9 L551.0,47.6 L380.0,54.5 L209.0,45.9 L38.0,49.5 Z" fill="hsl(168 62% 52%)" opacity="0.86"><title>infra</title></path><path d="M38.0,45.0 L209.0,40.1 L380.0,47.6 L551.0,44.2 L722.0,41.0 L722.0,44.5 L551.0,47.3 L380.0,49.1 L209.0,41.7 L38.0,49.5 Z" fill="hsl(294 62% 52%)" opacity="0.86"><title>ci</title></path><path d="M38.0,42.7 L209.0,39.5 L380.0,39.6 L551.0,42.7 L722.0,40.7 L722.0,41.0 L551.0,44.2 L380.0,47.6 L209.0,40.1 L38.0,45.0 Z" fill="hsl(96 62% 52%)" opacity="0.86"><title>other</title></path><path d="M38.0,42.7 L209.0,39.1 L380.0,39.6 L551.0,40.9 L722.0,38.8 L722.0,40.7 L551.0,42.7 L380.0,39.6 L209.0,39.5 L38.0,42.7 Z" fill="hsl(242 62% 52%)" opacity="0.86"><title>demo-web</title></path><path d="M38.0,39.1 L209.0,38.6 L380.0,39.0 L551.0,39.3 L722.0,38.1 L722.0,38.8 L551.0,40.9 L380.0,39.6 L209.0,39.1 L38.0,42.7 Z" fill="hsl(318 62% 52%)" opacity="0.86"><title>build</title></path><path d="M38.0,38.0 L209.0,38.0 L380.0,38.0 L551.0,38.0 L722.0,38.0 L722.0,38.1 L551.0,39.3 L380.0,39.0 L209.0,38.6 L38.0,39.1 Z" fill="hsl(266 62% 52%)" opacity="0.86"><title>governance</title></path>
     <text x="38.0" y="238" class="axis" text-anchor="middle">2026-04</text><text x="209.0" y="238" class="axis" text-anchor="middle">2026-05</text><text x="380.0" y="238" class="axis" text-anchor="middle">2026-06</text><text x="551.0" y="238" class="axis" text-anchor="middle">2026-07</text><text x="722.0" y="238" class="axis" text-anchor="middle">2026-08</text>
   </svg>
   <div class="legend"><span class="chip"><i style="background:hsl(217 62% 52%)"></i>telemetry</span><span class="chip"><i style="background:hsl(139 62% 52%)"></i>research</span><span class="chip"><i style="background:hsl(58 62% 52%)"></i>tooling-ts</span><span class="chip"><i style="background:hsl(58 62% 52%)"></i>archive</span><span class="chip"><i style="background:hsl(326 62% 52%)"></i>docs-other</span><span class="chip"><i style="background:hsl(65 62% 52%)"></i>memory</span><span class="chip"><i style="background:hsl(253 62% 52%)"></i>backlog</span><span class="chip"><i style="background:hsl(90 62% 52%)"></i>core-fsharp</span><span class="chip"><i style="background:hsl(217 62% 52%)"></i>agent-substrate</span><span class="chip"><i style="background:hsl(113 62% 52%)"></i>tests</span><span class="chip"><i style="background:hsl(168 62% 52%)"></i>infra</span><span class="chip"><i style="background:hsl(294 62% 52%)"></i>ci</span><span class="chip"><i style="background:hsl(96 62% 52%)"></i>other</span><span class="chip"><i style="background:hsl(242 62% 52%)"></i>demo-web</span><span class="chip"><i style="background:hsl(318 62% 52%)"></i>build</span><span class="chip"><i style="background:hsl(266 62% 52%)"></i>governance</span></div>
 
 <h2>Clusters are not categories</h2>
 <div class="grid">
-  <div class="stat"><b>0.116</b><span>adjusted Rand index</span></div>
-  <div class="stat"><b>0.001</b><span>ARI against shuffled labels</span></div>
-  <div class="stat"><b>0.323</b><span>normalised mutual info</span></div>
+  <div class="stat"><b>0.128</b><span>adjusted Rand index</span></div>
+  <div class="stat"><b>-0.001</b><span>ARI against shuffled labels</span></div>
+  <div class="stat"><b>0.339</b><span>normalised mutual info</span></div>
   <div class="stat"><b>16</b><span>k</span></div>
 </div>
 <p class="muted">
   k-means returns a <em>partition</em>; the taxonomy is a <em>labelling</em>, and no amount of
   agreement turns one into the other. ARI is chance-corrected precisely so that running with
   16 clusters cannot flatter itself by producing 16 groups. At
-  0.116 against a null of
-  0.001, the unsupervised structure is real but weak,
+  0.128 against a null of
+  -0.001, the unsupervised structure is real but weak,
   and it is <strong>not</strong> the area taxonomy. The
-  68.5% figure you get by naming each cluster with its
+  70.8% figure you get by naming each cluster with its
   majority label is a supervised ceiling, not a clustering result.
 </p>
 
@@ -527,7 +536,7 @@ Naming the pattern is the useful output; assigning blame would be reading intent
   <p>
     Feature space: 355 dimensions over title, branch, meta &middot;
     forest 60 trees &middot; BNN 1-pass ADF probit, one-vs-rest &middot;
-    train 9,819 / test 3,274
+    train 9,856 / test 3,286
   </p>
 </footer>
 </div>
