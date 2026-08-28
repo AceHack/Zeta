@@ -1,0 +1,12 @@
+{
+  "pr_number": 15930,
+  "archive_path": "docs/history/pr-reviews/PR-15930-test-ferry-pin-wholeboat-fault-and-fourcorner-per-row-gap.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:25:04.746Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "test(ferry): pin WholeBoat fault and FourCorner-per-row gap",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T23:19:25Z",
+  "head_ref": "feat/ferry-fourcorner-row-falsifiers"
+}

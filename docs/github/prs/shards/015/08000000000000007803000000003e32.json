@@ -1,0 +1,12 @@
+{
+  "pr_number": 15922,
+  "archive_path": "docs/history/pr-reviews/PR-15922-design-the-merkle-dag-is-fundamental-a-filesystem-is-names-bolted-on-top.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:24:47.670Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "design: the Merkle DAG is fundamental — a filesystem is names bolted on top",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T22:39:16Z",
+  "head_ref": "shadow/zetafs-spec"
+}

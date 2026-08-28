@@ -1,0 +1,12 @@
+{
+  "pr_number": 15929,
+  "archive_path": "docs/history/pr-reviews/PR-15929-fix-gate-restore-the-test-step-my-tee-pipefail-change-broke-both-windows-legs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:25:03.304Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "fix(gate): restore the Test step — my tee/pipefail change broke both Windows legs",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T23:20:20Z",
+  "head_ref": "shadow/fix-windows-test-step"
+}

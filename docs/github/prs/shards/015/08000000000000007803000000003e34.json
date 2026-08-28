@@ -1,0 +1,12 @@
+{
+  "pr_number": 15924,
+  "archive_path": "docs/history/pr-reviews/PR-15924-docs-marjorie-rule-ani-memories-remain-harness-split.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:24:54.050Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "docs: Marjorie rule; Ani memories remain; harness split",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T23:12:11Z",
+  "head_ref": "feat/marjorie-rule-ani-memories-remain"
+}

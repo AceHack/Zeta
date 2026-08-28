@@ -1,0 +1,12 @@
+{
+  "pr_number": 15926,
+  "archive_path": "docs/history/pr-reviews/PR-15926-style-evidence-room-structure-replay-feed-as-proof-instrument.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:24:57.255Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "style(evidence-room): structure replay feed as proof instrument",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T22:52:36Z",
+  "head_ref": "feat/replay-feed-observatory-structure"
+}

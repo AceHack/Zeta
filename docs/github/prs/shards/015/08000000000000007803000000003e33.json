@@ -1,0 +1,12 @@
+{
+  "pr_number": 15923,
+  "archive_path": "docs/history/pr-reviews/PR-15923-feat-arc-measure-tas-controlled-pairs.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:24:51.554Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "feat(arc): measure TAS controlled pairs",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T22:43:50Z",
+  "head_ref": "claim/task-arc-tas-controlled-pair"
+}

@@ -1,0 +1,15 @@
+{
+  "pr_number": 15928,
+  "archive_path": "docs/history/pr-reviews/PR-15928-hygiene-wire-the-oscillation-registry-into-ci.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7nD74N",
+    "thread:PRRT_kwDOSF9kNM6dAezL"
+  ],
+  "fetched_at": "2026-08-28T02:25:01.689Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "hygiene: wire the oscillation registry into CI",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T23:28:44Z",
+  "head_ref": "shadow/wire-oscillation-registry"
+}

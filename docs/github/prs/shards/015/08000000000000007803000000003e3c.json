@@ -1,0 +1,12 @@
+{
+  "pr_number": 15932,
+  "archive_path": "docs/history/pr-reviews/PR-15932-ci-capture-perf-observations-via-an-env-var-sink-not-a-shell-pipe.md",
+  "source_ids": [],
+  "fetched_at": "2026-08-28T02:25:07.790Z",
+  "schema_version": "v1",
+  "commit_sha": "10e20d744841ffd43d80d02feebb8a902758122c",
+  "title": "ci: capture perf observations via an env-var sink, not a shell pipe",
+  "state": "MERGED",
+  "merged_at": "2026-08-27T23:48:56Z",
+  "head_ref": "shadow/perf-capture-windows-safe"
+}
