@@ -1,12 +1,12 @@
 {
-  "t": "2026-08-28T04:03:54.036Z",
+  "t": "2026-08-28T06:18:57.808Z",
   "total_events": 5162,
   "last_action": "explore",
   "last_mode": "explore",
   "last_agent": "soraya",
   "entropy_state": 0,
   "entropy_heat": 0,
-  "ticks_24h": 20,
-  "agents_active": 3,
+  "ticks_24h": 13,
+  "agents_active": 2,
   "claims_pending": 3
 }
