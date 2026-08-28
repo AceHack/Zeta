@@ -201,6 +201,115 @@ describe("head verdict -- when is an open PR head still under test", () => {
     expect(classifyHeadVerdict([check("gate (required)", "completed", "action_required")])).toBe("dead");
   });
 
+  // THE STALLED CASE (#15887 / #15891, measured 2026-08-28, stuck ~17h). Seven check-runs,
+  // every one completed/success, and `gate (required)` never created -- so nothing was
+  // terminal-non-success and the head read as under-test forever while the lane buffered
+  // behind a PR that could never merge. These pin the escape AND its three guards; the
+  // guards matter more than the escape, because an over-eager version force-pushes every
+  // lane's head every tick.
+  describe("STALLED -- all checks done, required check never created", () => {
+    const NOW = new Date("2026-08-28T12:00:00Z");
+    const ago = (min: number): string => new Date(NOW.getTime() - min * 60000).toISOString();
+    const done = (name: string, completedAt: string) => ({
+      name,
+      status: "completed",
+      conclusion: "success",
+      completedAt,
+    });
+
+    test("the measured shape: all green, no gate, past the grace window -- DEAD", () => {
+      const verdict = classifyHeadVerdict(
+        [
+          done("Analyze (csharp)", ago(60)),
+          done("Analyze (go)", ago(59)),
+          done("Analyze (python)", ago(58)),
+          done("submit-nuget", ago(57)),
+        ],
+        { now: NOW },
+      );
+      expect(verdict).toBe("dead");
+    });
+
+    test("GUARD 1 -- the same head INSIDE the grace window is still under test", () => {
+      // Checks are created over seconds, not atomically. A head observed between CodeQL
+      // starting and `gate` being scheduled must not be superseded.
+      expect(classifyHeadVerdict([done("Analyze (go)", ago(5))], { now: NOW })).toBe("under-test");
+      // And the boundary is not off by one.
+      expect(classifyHeadVerdict([done("Analyze (go)", ago(29))], { now: NOW })).toBe("under-test");
+      expect(classifyHeadVerdict([done("Analyze (go)", ago(30))], { now: NOW })).toBe("dead");
+    });
+
+    test("GUARD 2 -- a head that HAS its gate is never stalled, however old and however green", () => {
+      // This is the control for the whole feature. Without it the escape would supersede
+      // every healthy passing head the moment it aged, which is the starvation the buffer
+      // exists to prevent.
+      expect(
+        classifyHeadVerdict([done("gate (required)", ago(600)), done("Analyze (go)", ago(600))], { now: NOW }),
+      ).toBe("under-test");
+    });
+
+    test("GUARD 3 -- one check still running keeps the head under test, however old the others", () => {
+      // The running check CARRIES a timestamp on purpose. Without one, the missing-
+      // timestamp guard below would reject the head first and this test would pass even
+      // with the status check deleted -- a test that never exercises its own subject.
+      // Mutation-verified: removing the `status !== "completed"` line turns this red.
+      expect(
+        classifyHeadVerdict(
+          [
+            done("Analyze (go)", ago(600)),
+            { name: "lint (TS)", status: "in_progress", conclusion: null, completedAt: ago(600) },
+          ],
+          { now: NOW },
+        ),
+      ).toBe("under-test");
+    });
+
+    test("FAILS CLOSED -- no clock, no timestamps, or an unparseable one all stay under test", () => {
+      const old = [done("Analyze (go)", ago(600))];
+      expect(classifyHeadVerdict(old)).toBe("under-test"); // no `now` offered at all
+      // Each of these pairs an AGEABLE check with an unageable one, so the missing/bad
+      // timestamp is the only thing standing between the head and `dead`. Testing the
+      // unageable check alone would pass merely because nothing set a completion time.
+      expect(
+        classifyHeadVerdict(
+          [done("Analyze (go)", ago(600)), { name: "lint (TS)", status: "completed", conclusion: "success" }],
+          { now: NOW },
+        ),
+      ).toBe("under-test"); // no completedAt
+      expect(
+        classifyHeadVerdict([done("Analyze (go)", ago(600)), { ...old[0]!, name: "b", completedAt: "not-a-date" }], {
+          now: NOW,
+        }),
+      ).toBe("under-test"); // unparseable
+      expect(
+        classifyHeadVerdict([done("Analyze (go)", ago(600)), { ...old[0]!, name: "b", completedAt: null }], {
+          now: NOW,
+        }),
+      ).toBe("under-test"); // explicit null
+    });
+
+    test("a stalled head that ALSO has a failure is dead for the older, louder reason", () => {
+      // Ordering guard: the terminal-non-success scan must keep winning, so the reported
+      // cause stays the failure rather than the stall.
+      expect(
+        classifyHeadVerdict(
+          [{ name: "gate (required)", status: "completed", conclusion: "failure", completedAt: ago(600) }],
+          { now: NOW },
+        ),
+      ).toBe("dead");
+    });
+
+    test("an empty check list is still under test even with a clock -- a new head is not stalled", () => {
+      expect(classifyHeadVerdict([], { now: NOW })).toBe("under-test");
+    });
+
+    test("the required check name is configurable, and a different name does not accidentally match", () => {
+      expect(classifyHeadVerdict([done("gate (required)", ago(600))], { now: NOW, requiredCheck: "other" })).toBe(
+        "dead",
+      );
+    });
+  });
+
   test("only the LATEST run per check name counts -- a repaired head is not still dead", () => {
     // A re-run appends a second check-run with the same name; the failing one stays in the
     // list. Reading every entry would supersede a head that has just gone green, which is

@@ -150,26 +150,95 @@ export type FlushRoute =
  * A head with NO completed checks at all is under test, not dead — the run may not have
  * been scheduled yet, and calling that dead would supersede a head one second after
  * opening it, which is the starvation the buffer exists to prevent.
+ *
+ * THE THIRD CASE — STALLED (measured 2026-08-28, #15887 / #15891, stuck ~17h).
+ * The two verdicts above assume the required check will EVENTUALLY report, so waiting
+ * costs at most one tick of latency. That assumption fails when the required run is never
+ * CREATED. Both heads carried seven check-runs, every one `completed/success` (CodeQL
+ * Analyze ×5, submit-nuget ×2), while `gate.yml` never ran at all — so `gate (required)`
+ * did not exist, nothing was terminal-non-success, and the head classified `under-test`
+ * forever. The lane buffered behind a PR that could never merge; `data/platform-drift.json`
+ * stayed pinned and `drift (loud)` was red for seventeen hours. "Waiting costs one tick"
+ * is only true while the check is coming; when it is not, the cost is unbounded.
+ *
+ * So a head is DEAD when every check present has COMPLETED, the required check is ABSENT,
+ * and that has been true for `graceMinutes`. Each conjunct earns its place:
+ *   - every check completed — a head mid-run is still under test, unchanged.
+ *   - required check absent — an all-green head that HAS its gate is waited on exactly as
+ *     before. This case is about a check that was never created, not one that passed.
+ *   - grace window — checks are created over seconds, not atomically, so a head observed
+ *     between CodeQL starting and `gate` being scheduled would otherwise read as stalled.
+ *     The window is what separates "not yet" from "never".
+ * FAILS CLOSED like the rest: no `now`, no timestamps, or an unparseable one ⇒ `under-test`.
  */
 export type HeadVerdict = "under-test" | "dead";
 
 const TERMINAL_NON_SUCCESS = new Set(["failure", "timed_out", "cancelled", "action_required", "stale"]);
 
-export function classifyHeadVerdict(
-  checks: readonly { readonly name: string; readonly status: string; readonly conclusion: string | null }[],
-): HeadVerdict {
+/** The check a flush PR cannot merge without. Absent ⇒ no verdict will ever arrive. */
+export const REQUIRED_CHECK = "gate (required)";
+
+/**
+ * How long every-check-done-but-no-required-check must persist before it reads as never.
+ * Generous on purpose: over-waiting costs latency on one lane, superseding a head whose
+ * gate was merely slow to schedule costs a restarted gate on every lane, every tick.
+ */
+export const STALLED_GRACE_MINUTES = 30;
+
+export interface HeadCheck {
+  readonly name: string;
+  readonly status: string;
+  readonly conclusion: string | null;
+  /** ISO-8601 completion time, when the forge reported one. */
+  readonly completedAt?: string | null;
+}
+
+export interface HeadVerdictOptions {
+  readonly requiredCheck?: string;
+  /** Injected, never read from the clock — the decision stays replayable (§13). */
+  readonly now?: Date;
+  readonly graceMinutes?: number;
+}
+
+export function classifyHeadVerdict(checks: readonly HeadCheck[], opts: HeadVerdictOptions = {}): HeadVerdict {
   // LATEST RUN PER CHECK NAME. A re-run adds a second check-run with the same name and
   // the old failing one is still in the list; reading every entry would call a head dead
   // that has just been repaired. Later entries win, matching the caller's ordering by
   // `started_at`.
-  const latest = new Map<string, { readonly status: string; readonly conclusion: string | null }>();
-  for (const c of checks) latest.set(c.name, { status: c.status, conclusion: c.conclusion });
+  const latest = new Map<string, HeadCheck>();
+  for (const c of checks) latest.set(c.name, c);
 
   for (const c of latest.values()) {
     if (c.status !== "completed") continue;
     if (c.conclusion !== null && TERMINAL_NON_SUCCESS.has(c.conclusion)) return "dead";
   }
+
+  if (isStalled(latest, opts)) return "dead";
   return "under-test";
+}
+
+/** The STALLED predicate, split out so each conjunct is separately falsifiable. */
+function isStalled(latest: ReadonlyMap<string, HeadCheck>, opts: HeadVerdictOptions): boolean {
+  const now = opts.now;
+  if (now === undefined) return false; // no clock offered ⇒ the old contract, unchanged.
+  if (latest.size === 0) return false; // already handled above; restated so this is total.
+
+  const required = opts.requiredCheck ?? REQUIRED_CHECK;
+  if (latest.has(required)) return false; // the gate exists; this case is not ours.
+
+  let newestCompletion = Number.NEGATIVE_INFINITY;
+  for (const c of latest.values()) {
+    if (c.status !== "completed") return false; // something is still running.
+    const raw = c.completedAt;
+    if (raw === undefined || raw === null) return false; // cannot age it ⇒ fail closed.
+    const at = Date.parse(raw);
+    if (Number.isNaN(at)) return false; // unparseable ⇒ fail closed.
+    newestCompletion = Math.max(newestCompletion, at);
+  }
+  if (newestCompletion === Number.NEGATIVE_INFINITY) return false;
+
+  const grace = opts.graceMinutes ?? STALLED_GRACE_MINUTES;
+  return now.getTime() - newestCompletion >= grace * 60_000;
 }
 
 /**
@@ -600,7 +669,7 @@ export function probeHeadVerdict(repo: string, headSha: string): HeadVerdict {
     "--paginate",
     `repos/${repo}/commits/${headSha}/check-runs`,
     "--jq",
-    "[.check_runs[] | {name, status, conclusion, started_at}] | sort_by(.started_at) | .[]",
+    "[.check_runs[] | {name, status, conclusion, started_at, completed_at}] | sort_by(.started_at) | .[]",
   );
   if (result.status !== 0) {
     process.stderr.write(
@@ -608,14 +677,19 @@ export function probeHeadVerdict(repo: string, headSha: string): HeadVerdict {
     );
     return "under-test";
   }
-  const checks: { name: string; status: string; conclusion: string | null }[] = [];
+  const checks: HeadCheck[] = [];
   for (const line of result.stdout.split("\n")) {
     const trimmed = line.trim();
     if (trimmed === "") continue;
     try {
       const parsed = JSON.parse(trimmed);
       if (typeof parsed?.name === "string" && typeof parsed?.status === "string") {
-        checks.push({ name: parsed.name, status: parsed.status, conclusion: parsed.conclusion ?? null });
+        checks.push({
+          name: parsed.name,
+          status: parsed.status,
+          conclusion: parsed.conclusion ?? null,
+          completedAt: typeof parsed.completed_at === "string" ? parsed.completed_at : null,
+        });
       }
     } catch {
       process.stderr.write("[flush] head-verdict probe returned an unparseable line; treating head as under test\n");
@@ -623,7 +697,9 @@ export function probeHeadVerdict(repo: string, headSha: string): HeadVerdict {
     }
   }
   if (checks.length === 0) return "under-test";
-  return classifyHeadVerdict(checks);
+  // The clock is read HERE, at the edge, and injected — the classifier itself stays pure
+  // and replayable. This is a local scheduling decision, never a shared conclusion.
+  return classifyHeadVerdict(checks, { now: new Date() });
 }
 
 export interface FlushOptions {
