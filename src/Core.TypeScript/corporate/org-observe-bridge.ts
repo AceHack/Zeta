@@ -42,6 +42,13 @@ import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
 import { isBlockerKind, resolutionFor, type BlockerKind } from "./blocker-taxonomy";
 import { evaluateSteal, type OwnedWork, type WorkTransfer } from "./work-stealing";
+import {
+  type AlternateAssignment,
+  type AlternateCandidate,
+  AlternateWorkKind,
+  offerAlternateWork,
+} from "./alternate-work";
+import { outranksPriority, type PriorityClass } from "./prioritization";
 import type { BacklogItem } from "../observe/observe";
 import type { CascadeNode } from "./goal-cascade";
 import { WorkState } from "./goal-cascade";
@@ -71,6 +78,14 @@ export interface OrgView {
     readonly silenceSlaMs: number;
     readonly work: readonly OwnedWork[];
   };
+  /**
+   * Decided priority per work item.
+   *
+   * Absent means NO ALTERNATE WORK IS OFFERED — the same honest default as liveness. The guardrail
+   * against alternate work bypassing the priority policy is a comparison, and a comparison with no
+   * priorities is a check that cannot fail.
+   */
+  readonly priorities?: ReadonlyMap<string, PriorityClass>;
 }
 
 /** Just the organizational half of a `World` — merged into whatever else the caller has. */
@@ -270,13 +285,141 @@ export function stealableBy(
   return out;
 }
 
+/**
+ * Work this hat may hand to a BLOCKED report so it is not idle — the doc's alternate work.
+ *
+ * The scope is DERIVED, not configured: an agent blocked on a task may work on other tasks under
+ * the SAME PARENT, which is the doc's "adjacent backlog items in the same initiative" and is the
+ * only widening the organization already approved by putting the work there. Anything further out
+ * is scope creep with a good excuse, and this is the moment it is easiest to wave through.
+ *
+ * Only the HIGHEST-priority candidate is offered, because offering the rest is offering the agent
+ * a choice the priority policy already made.
+ */
+export function alternateWorkFor(
+  view: OrgView,
+  hatId: string,
+): readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[] {
+  const priorities = view.priorities;
+  if (priorities === undefined || view.blockers === undefined) return [];
+  const out: { item: BacklogItem; toHatIds: readonly string[] }[] = [];
+  for (const [blockedHatId, missing] of view.blockers) {
+    // A fast path over the whole blocker map. HONEST LIMIT: `offerAlternateWork` refuses on the
+    // same relation, so deleting this changes only how much work is done before the same empty
+    // answer — an equivalent mutant rather than an untested check, and it stops being equivalent
+    // the moment the two conditions differ.
+    if (!reportsUpTo(view.chart, blockedHatId, hatId) || blockedHatId === hatId) continue;
+    for (const m of missing) {
+      const offer = offerFor(view, hatId, blockedHatId, m.blocking, priorities);
+      if (offer !== undefined) out.push(offer);
+    }
+  }
+  return out;
+}
+
+/** The one thing this manager may hand this blocked hat, or nothing. */
+function offerFor(
+  view: OrgView,
+  hatId: string,
+  blockedHatId: string,
+  blockedWorkId: string,
+  priorities: ReadonlyMap<string, PriorityClass>,
+): { readonly item: BacklogItem; readonly toHatIds: readonly string[] } | undefined {
+  const blocked = view.cascade.find((n) => n.workId === blockedWorkId);
+  if (blocked?.parentWorkId === undefined) return undefined;
+  const blockedPriority = priorities.get(blocked.workId);
+  if (blockedPriority === undefined) return undefined;
+  const scopes = [blocked.parentWorkId];
+  const candidates = openCandidates(view, blocked.workId, priorities);
+  const best = bestCandidateIndex(candidates, scopes);
+  if (best === undefined) return undefined;
+  const verdict = offerAlternateWork(view.chart, {
+    agentHatId: blockedHatId,
+    blockedWorkId: blocked.workId,
+    blockedPriority,
+    candidates,
+    chosenIndex: best,
+    approvedScopes: scopes,
+    approvedByHatId: hatId,
+    atMs: 0,
+  });
+  if (!verdict.ok) return undefined;
+  const node = view.cascade.find((n) => n.workId === verdict.assignment.candidate.workId);
+  if (node === undefined) return undefined;
+  return {
+    item: { id: node.workId, title: node.title, ready: true, ambiguous: false },
+    toHatIds: [blockedHatId],
+  };
+}
+
+/**
+ * EVERY open, unassigned leaf task with a decided priority — deliberately NOT filtered by scope.
+ *
+ * The first version built this list from the blocked item's own parent and then handed the same
+ * parent to `offerAlternateWork` as the approved scope. That made the scope guardrail VACUOUS: a
+ * candidate list constructed inside the scope can never contain anything outside it, so the check
+ * could not fail, and a mutation matrix found it exactly there. A guardrail that cannot refuse is
+ * the same defect as a gate that cannot fail, and it is worse here because it reads as protection.
+ *
+ * Each candidate carries its OWN scope. The module compares them against what was approved, which
+ * is the comparison it exists to make.
+ */
+function openCandidates(
+  view: OrgView,
+  exceptWorkId: string,
+  priorities: ReadonlyMap<string, PriorityClass>,
+): readonly AlternateCandidate[] {
+  const out: AlternateCandidate[] = [];
+  for (const n of view.cascade) {
+    if (n.workId === exceptWorkId || n.parentWorkId === undefined) continue;
+    if (!isLeafType(n.workType) || n.state !== WorkState.Open || n.assigneeHatId !== undefined) continue;
+    const priority = priorities.get(n.workId);
+    if (priority === undefined) continue;
+    out.push({
+      kind: AlternateWorkKind.AdjacentBacklogItem,
+      workId: n.workId,
+      priority,
+      scope: n.parentWorkId,
+    });
+  }
+  return out;
+}
+
+/**
+ * The highest-priority IN-SCOPE candidate, ties broken ORDINALLY so two machines offer the same one.
+ *
+ * Scope is applied HERE rather than left to the refusal, because picking the best overall and then
+ * being refused for scope would offer the blocked agent nothing at all whenever something more
+ * urgent existed elsewhere — the guardrail turning into a stall.
+ */
+function bestCandidateIndex(
+  candidates: readonly AlternateCandidate[],
+  approvedScopes: readonly string[],
+): number | undefined {
+  let best: number | undefined;
+  let incumbent: AlternateCandidate | undefined;
+  candidates.forEach((c, i) => {
+    if (!approvedScopes.includes(c.scope)) return;
+    if (incumbent !== undefined && !beats(c, incumbent)) return;
+    best = i;
+    incumbent = c;
+  });
+  return best;
+}
+
+/** Higher priority wins; equal priority breaks ORDINALLY on the work id. */
+function beats(challenger: AlternateCandidate, incumbent: AlternateCandidate): boolean {
+  if (outranksPriority(challenger.priority, incumbent.priority)) return true;
+  return challenger.priority === incumbent.priority && challenger.workId < incumbent.workId;
+}
+
 /** The whole organizational surface for one hat. */
 export function orgSurfaceFor(view: OrgView, hatId: string): OrgSurface {
   return {
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
     missing: view.blockers?.get(hatId) ?? [],
-    assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId)],
+    assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId), ...alternateWorkFor(view, hatId)],
     convenable: convenableBy(view, hatId),
   };
 }
@@ -302,6 +445,14 @@ export type OrgEffect =
    * would fail to compile rather than silently drop them.
    */
   | { readonly kind: "reassign"; readonly transfer: WorkTransfer }
+  /**
+   * Work given to a hat that is currently BLOCKED, so it is not idle.
+   *
+   * Also a distinct effect, and for the same reason: it carries the blocked item it is standing in
+   * for, which is what makes the resumption question answerable later. An `assign` would land the
+   * work and forget what it was instead of.
+   */
+  | { readonly kind: "alternate"; readonly assignment: AlternateAssignment }
   | {
       readonly kind: "convene";
       readonly artifactId: string;
@@ -441,6 +592,19 @@ function placementEffect(
 ): EffectResult {
   const observed = view.assigned;
   const owned = observed?.work.find((w) => w.workId === workId);
+  const blocking = blockedOn(view, toHatId);
+  if (blocking !== undefined) {
+    // GIVING WORK TO A BLOCKED HAT IS ALTERNATE WORK, whatever the caller meant by it. The
+    // guardrails are not opt-in: the condition that makes them necessary is the target being
+    // stuck, and that is observable here.
+    if (owned !== undefined) {
+      return {
+        ok: false,
+        reason: `alternate_work: '${workId}' is held by '${owned.ownerHatId}'; a blocked hat is given free work, not someone else's`,
+      };
+    }
+    return alternateEffect(view, hatId, workId, toHatId, blocking, atMs);
+  }
   if (observed === undefined || owned === undefined) {
     return { ok: true, effect: { kind: "assign", workId, toHatId } };
   }
@@ -467,4 +631,58 @@ function placementEffect(
   });
   if (!verdict.ok) return { ok: false, reason: `${verdict.refusal}: ${verdict.reason}` };
   return { ok: true, effect: { kind: "reassign", transfer: verdict.transfer } };
+}
+
+/** The work item this hat says it is blocked on, if any. */
+function blockedOn(view: OrgView, hatId: string): string | undefined {
+  for (const m of view.blockers?.get(hatId) ?? []) {
+    if (m.blocking.trim() !== "") return m.blocking;
+  }
+  return undefined;
+}
+
+/**
+ * Work for a blocked hat, put through the doc's four guardrails.
+ *
+ * The candidate set is rebuilt here rather than taken from the caller, so the priority comparison
+ * is made against what was ACTUALLY available — a caller supplying its own shortlist could satisfy
+ * "highest of these" while the organization had something more important open.
+ */
+function alternateEffect(
+  view: OrgView,
+  hatId: string,
+  workId: string,
+  toHatId: string,
+  blockedWorkId: string,
+  atMs: number,
+): EffectResult {
+  const priorities = view.priorities;
+  if (priorities === undefined) {
+    return { ok: false, reason: "alternate_work: no priorities are decided, so the policy cannot be checked" };
+  }
+  const blocked = view.cascade.find((n) => n.workId === blockedWorkId);
+  if (blocked?.parentWorkId === undefined) {
+    return { ok: false, reason: `alternate_work: '${blockedWorkId}' has no parent, so no scope is approved` };
+  }
+  const blockedPriority = priorities.get(blockedWorkId);
+  if (blockedPriority === undefined) {
+    return { ok: false, reason: `alternate_work: '${blockedWorkId}' has no decided priority to rank against` };
+  }
+  const candidates = openCandidates(view, blockedWorkId, priorities);
+  const chosenIndex = candidates.findIndex((c) => c.workId === workId);
+  if (chosenIndex < 0) {
+    return { ok: false, reason: `alternate_work: '${workId}' is not an open, unassigned, prioritized task` };
+  }
+  const verdict = offerAlternateWork(view.chart, {
+    agentHatId: toHatId,
+    blockedWorkId,
+    blockedPriority,
+    candidates,
+    chosenIndex,
+    approvedScopes: [blocked.parentWorkId],
+    approvedByHatId: hatId,
+    atMs,
+  });
+  if (!verdict.ok) return { ok: false, reason: `${verdict.refusal}: ${verdict.reason}` };
+  return { ok: true, effect: { kind: "alternate", assignment: verdict.assignment } };
 }

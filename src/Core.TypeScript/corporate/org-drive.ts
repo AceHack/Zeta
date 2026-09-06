@@ -30,6 +30,8 @@
 
 import { buildMenu, type NextAction, type World } from "../observe/observe";
 import { effectOf, orgSurfaceFor, type OrgEffect, type OrgView } from "./org-observe-bridge";
+import type { WorkTransfer } from "./work-stealing";
+import type { AlternateAssignment } from "./alternate-work";
 import { assign, reassign, type Cascade } from "./goal-cascade";
 import { postToAnchor, type AnchorBoard } from "./discussion-anchor";
 import { headsOf } from "./artifact-deliberation";
@@ -157,27 +159,11 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       return { state: { ...state, cascade: assigned.cascade, view }, changed: true, refusals: [] };
     }
 
-    case "reassign": {
-      const t = effect.transfer;
-      const moved = reassign(state.cascade, deps.chart, t.workId, t.toHatId);
-      if (!moved.ok) return { state, changed: false, refusals: [moved.reason] };
-      // THE NOTICE IS DELIVERED, not merely computed. `evaluateSteal` makes it a required field so
-      // it cannot be dropped from the transfer; posting it here is the other half — the previous
-      // owner learns from the organization that its work moved, rather than from the work being
-      // gone. `postToAnchor` refuses an unknown anchor, so a transfer with nowhere to say it is a
-      // refusal rather than a silent take.
-      const said = postToAnchor(state.view.board, {
-        postId: deps.createId("post"),
-        anchorId: t.workId,
-        byHatId: t.decidedByHatId,
-        atMs: deps.nowMs,
-        body: t.notice,
-        evidence: [{ kind: "trace", ref: t.audit }],
-      });
-      if (!said.ok) return { state, changed: false, refusals: [said.reason] };
-      const view: OrgView = { ...state.view, cascade: moved.cascade.nodes, board: said.board };
-      return { state: { ...state, cascade: moved.cascade, view }, changed: true, refusals: [] };
-    }
+    case "reassign":
+      return applyReassign(state, effect.transfer, deps);
+
+    case "alternate":
+      return applyAlternate(state, effect.assignment, deps);
 
     case "turn": {
       const history = state.view.artifacts.get(effect.artifactId);
@@ -356,4 +342,47 @@ export function driveUntilSettled(
     if (r.changes === 0) return { state: current, rounds, settled: true };
   }
   return { state: current, rounds, settled: false };
+}
+
+/** Land a controlled steal: move the assignee, then tell the hat it was taken from. */
+function applyReassign(state: DriveState, t: WorkTransfer, deps: DriveDeps): ApplyResult {
+  const moved = reassign(state.cascade, deps.chart, t.workId, t.toHatId);
+  if (!moved.ok) return { state, changed: false, refusals: [moved.reason] };
+  // THE NOTICE IS DELIVERED, not merely computed. `evaluateSteal` makes it a required field so
+  // it cannot be dropped from the transfer; posting it here is the other half — the previous
+  // owner learns from the organization that its work moved, rather than from the work being
+  // gone. `postToAnchor` refuses an unknown anchor, so a transfer with nowhere to say it is a
+  // refusal rather than a silent take.
+  const said = postToAnchor(state.view.board, {
+    postId: deps.createId("post"),
+    anchorId: t.workId,
+    byHatId: t.decidedByHatId,
+    atMs: deps.nowMs,
+    body: t.notice,
+    evidence: [{ kind: "trace", ref: t.audit }],
+  });
+  if (!said.ok) return { state, changed: false, refusals: [said.reason] };
+  const view: OrgView = { ...state.view, cascade: moved.cascade.nodes, board: said.board };
+  return { state: { ...state, cascade: moved.cascade, view }, changed: true, refusals: [] };
+}
+
+/** Land alternate work: place it, then record against the BLOCKED item why the agent moved. */
+function applyAlternate(state: DriveState, a: AlternateAssignment, deps: DriveDeps): ApplyResult {
+  const placed = assign(state.cascade, deps.chart, a.candidate.workId, a.agentHatId);
+  if (!placed.ok) return { state, changed: false, refusals: [placed.reason] };
+  // RECORDED AGAINST THE BLOCKED ITEM, not the alternate. What has to survive is *why this
+  // agent is doing something else* — that is the fact `onBlockerCleared` needs when it asks
+  // whether to resume, and putting it on the alternate's own thread would file it where nobody
+  // looks when the blocker lifts.
+  const noted = postToAnchor(state.view.board, {
+    postId: deps.createId("post"),
+    anchorId: a.blockedWorkId,
+    byHatId: a.approvedByHatId,
+    atMs: deps.nowMs,
+    body: a.audit,
+    evidence: [{ kind: "trace", ref: `alternate:${a.candidate.workId}` }],
+  });
+  if (!noted.ok) return { state, changed: false, refusals: [noted.reason] };
+  const view: OrgView = { ...state.view, cascade: placed.cascade.nodes, board: noted.board };
+  return { state: { ...state, cascade: placed.cascade, view }, changed: true, refusals: [] };
 }
