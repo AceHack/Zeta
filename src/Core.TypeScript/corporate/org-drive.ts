@@ -39,6 +39,8 @@ import { conveneOverArtifact } from "./artifact-meeting";
 import { ExpectedOutput } from "./discussion-anchor";
 import type { Calendar } from "./work-schedule";
 import type { OrgChart } from "./org-chart";
+import { detectLag, type LagInput } from "./lag-detection";
+import { lagSignals } from "./lag-signals";
 
 /** The mutable half of the organization — what a tick can change. */
 export interface DriveState {
@@ -71,6 +73,19 @@ export interface DriveDeps {
   readonly choose?: (menu: readonly NextAction[], hatId: string) => NextAction | undefined;
   /** Derive effects and apply NONE. The honest way to ask what would happen next. */
   readonly dryRun?: boolean;
+  /**
+   * What to sweep for lag before the round, and who the sweep is attributed to.
+   *
+   * ABSENT MEANS NO SWEEP, and that is honest rather than convenient: the sweep needs observations
+   * nothing else in this state carries — heartbeats, tokens, queue depths — and running it over an
+   * empty input would report an organization with nothing wrong, which is precisely the lie
+   * `lag-detection.ts` is built to refuse.
+   */
+  readonly lagSweep?: {
+    readonly observerHatId: string;
+    readonly anchorId: string;
+    readonly input: LagInput;
+  };
 }
 
 /**
@@ -229,6 +244,8 @@ export interface DriveResult {
   readonly ticks: readonly TickReport[];
   /** Ticks that changed the organization. Zero over a whole round means it has settled or stalled. */
   readonly changes: number;
+  /** Why the lag sweep produced nothing, when it was asked to and could not. Empty is the norm. */
+  readonly sweepRefusals: readonly string[];
   readonly summary: string;
 }
 
@@ -244,6 +261,28 @@ export function driveRound(state: DriveState, hatIds: readonly string[], deps: D
   let current = state;
   const ticks: TickReport[] = [];
   let changes = 0;
+  const sweepRefusals: string[] = [];
+
+  // THE SWEEP RUNS FIRST, so a finding reaches its owner's surface in the SAME round it was found.
+  // After the ticks it would be a report about a round nobody could act in, which is the hidden log
+  // line under another name.
+  const sweep = deps.lagSweep;
+  if (sweep !== undefined) {
+    const report = detectLag(deps.chart, sweep.input);
+    const produced = lagSignals(deps.chart, report, {
+      observerHatId: sweep.observerHatId,
+      atMs: deps.nowMs,
+      createId: deps.createId,
+      anchorId: sweep.anchorId,
+    });
+    if (produced.ok) {
+      current = { ...current, view: { ...current.view, signals: [...current.view.signals, ...produced.signals] } };
+    } else {
+      // REPORTED, not swallowed. A sweep that could not address its findings has found nothing as
+      // far as anyone downstream can tell, and that is the one outcome this module may not hide.
+      sweepRefusals.push(`lag sweep: ${produced.reason}`);
+    }
+  }
 
   for (const hatId of hatIds) {
     const report = tick(current, hatId, deps);
@@ -265,9 +304,11 @@ export function driveRound(state: DriveState, hatIds: readonly string[], deps: D
     state: current,
     ticks,
     changes,
+    sweepRefusals,
     summary:
       `${String(ticks.filter((t) => t.chosen !== undefined).length)} of ${String(hatIds.length)} hat(s) acted; ` +
       `${String(changes)} change(s)` +
+      (sweepRefusals.length === 0 ? "" : `; ${String(sweepRefusals.length)} sweep refusal(s)`) +
       (deps.dryRun === true ? " (DRY RUN — nothing was applied)" : ""),
   };
 }
