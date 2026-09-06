@@ -49,6 +49,12 @@ import {
   offerAlternateWork,
 } from "./alternate-work";
 import { outranksPriority, type PriorityClass } from "./prioritization";
+import {
+  readinessOf,
+  type RequirementMaturity,
+  type RequirementProfile,
+  type Waiver,
+} from "./requirement-maturity";
 import type { BacklogItem } from "../observe/observe";
 import type { CascadeNode } from "./goal-cascade";
 import { WorkState } from "./goal-cascade";
@@ -86,6 +92,22 @@ export interface OrgView {
    * priorities is a check that cannot fail.
    */
   readonly priorities?: ReadonlyMap<string, PriorityClass>;
+  /**
+   * What intake recorded about each work item's REQUIREMENT — how well understood it is.
+   *
+   * Keyed by work id. An item with no entry is not gated, and neither is anything when the whole
+   * map is absent: the organization cannot refuse on a measurement it never took, and recording
+   * the profile is intake's job rather than this seam's. Stated because it is the permissive
+   * direction — the gate is only as good as what was written down.
+   */
+  readonly requirements?: ReadonlyMap<
+    string,
+    {
+      readonly profile: RequirementProfile;
+      readonly maturity: RequirementMaturity;
+      readonly waivers?: readonly Waiver[];
+    }
+  >;
 }
 
 /** Just the organizational half of a `World` — merged into whatever else the caller has. */
@@ -208,7 +230,11 @@ export function assignableBy(
         isLeafType(n.workType) &&
         n.state === WorkState.Open &&
         n.assigneeHatId === undefined &&
-        n.ownerHatId === hatId,
+        n.ownerHatId === hatId &&
+        // An ambiguous or customer-facing item whose requirement is not understood yet is not
+        // ready to be given to anybody. Offering it would put the menu's own rule — never offer an
+        // act the organization will refuse — against the gate one line downstream.
+        requirementGate(view, n.workId).ok,
     )
     .map((n) => ({
       // The cascade node AS a backlog item. `ready` is true because the filter above already
@@ -373,6 +399,9 @@ function openCandidates(
   for (const n of view.cascade) {
     if (n.workId === exceptWorkId || n.parentWorkId === undefined) continue;
     if (!isLeafType(n.workType) || n.state !== WorkState.Open || n.assigneeHatId !== undefined) continue;
+    // Alternate work is still work. An item nobody understands yet is not a safe way to fill a
+    // blocked agent's time — it is a second stall with a head start.
+    if (!requirementGate(view, n.workId).ok) continue;
     const priority = priorities.get(n.workId);
     if (priority === undefined) continue;
     out.push({
@@ -590,6 +619,14 @@ function placementEffect(
   toHatId: string,
   atMs: number,
 ): EffectResult {
+  // THE REQUIREMENT GATE COMES FIRST, and applies to every door.
+  //
+  // Placing work on a contributor is this register's version of the doc's move to `ready`, and the
+  // gate has to sit at the moment rather than on one path to it — a steal and an alternate-work
+  // placement put the same not-yet-understood item in front of the same agent.
+  const gate = requirementGate(view, workId);
+  if (!gate.ok) return { ok: false, reason: gate.reason };
+
   const observed = view.assigned;
   const owned = observed?.work.find((w) => w.workId === workId);
   const blocking = blockedOn(view, toHatId);
@@ -685,4 +722,18 @@ function alternateEffect(
   });
   if (!verdict.ok) return { ok: false, reason: `${verdict.refusal}: ${verdict.reason}` };
   return { ok: true, effect: { kind: "alternate", assignment: verdict.assignment } };
+}
+
+/**
+ * Is this work item's REQUIREMENT ready to be worked on?
+ *
+ * The doc's gate — maturity gates the work item state — landed at the moment work is placed on a
+ * contributor, which is this register's version of moving to `ready`. Everything before that is the
+ * organization thinking about the item; assignment is when it becomes somebody's work.
+ */
+function requirementGate(view: OrgView, workId: string): { readonly ok: true } | { readonly ok: false; readonly reason: string } {
+  const recorded = view.requirements?.get(workId);
+  if (recorded === undefined) return { ok: true };
+  const verdict = readinessOf(view.chart, recorded.profile, recorded.maturity, recorded.waivers ?? []);
+  return verdict.ok ? { ok: true } : { ok: false, reason: `${verdict.refusal}: ${verdict.reason}` };
 }
