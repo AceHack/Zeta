@@ -40,6 +40,7 @@ import { hatsAtLevel, reportsUpTo, type OrgChart } from "./org-chart";
 import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
+import { isBlockerKind, resolutionFor, type BlockerKind } from "./blocker-taxonomy";
 import type { BacklogItem } from "../observe/observe";
 import type { CascadeNode } from "./goal-cascade";
 import { WorkState } from "./goal-cascade";
@@ -287,6 +288,15 @@ export function effectOf(
   switch (action.kind) {
     case "request_information": {
       const tool = action.blocking.trim() === "" ? SignalTool.AskQuestion : SignalTool.ReportBlocker;
+      // THE TITLE CARRIES THE CLASSIFICATION for a blocker, because that is the field
+      // `routeSignal` reads as the scope. A classified blocker reaches the hat that owns that KIND
+      // — a credential problem to security, a missing design to an architect — instead of every
+      // blocker landing on one manager who can act on almost none of them.
+      //
+      // Unclassified keeps the agent's own words and falls through to the supervisor, which is the
+      // doc's triage step rather than a failure to route.
+      const classified = action.blockerKind !== undefined && isBlockerKind(action.blockerKind);
+      const title = classified ? action.blockerKind! : action.about;
       const sent = sendSupervisorSignal(
         view.chart,
         view.board,
@@ -295,8 +305,12 @@ export function effectOf(
           anchorId: ids.anchorId,
           fromHatId: hatId,
           tool,
-          title: action.about,
-          message: action.reason,
+          title,
+          // The resolution path travels WITH the ask, so the owner is told what resolving it looks
+          // like rather than being handed a problem and left to infer the shape of the answer.
+          message: classified
+            ? `${action.about} — ${resolutionFor(action.blockerKind as BlockerKind)}`
+            : action.reason,
           // The blocked work IS the evidence: a blocker report naming no work is an opinion, and
           // `evidenceSatisfies` refuses the signal rather than letting it travel unsupported.
           evidence: [{ kind: "trace", ref: `blocked:${action.blocking}` }],

@@ -167,6 +167,15 @@ export interface MissingInformation {
   readonly about: string;
   /** The work it is blocking, so the ask is not abstract. */
   readonly blocking: string;
+  /**
+   * WHAT KIND of blocker this is, if the agent can say — an opaque string here.
+   *
+   * The core does not know what kinds exist; a register interprets it and decides who that
+   * reaches. Optional because an agent that cannot classify its own blocker must still be able to
+   * report it: an unclassified blocker goes to whoever triages, and refusing it would leave the
+   * agent with nothing to do but guess or go quiet.
+   */
+  readonly kind?: string;
 }
 
 export interface World {
@@ -437,7 +446,7 @@ export type NextAction =
   /** Pull named peers into a room over an artifact — spends their calendars, so it is gated. */
   | { kind: "convene_meeting"; artifactId: string; withHatIds: readonly string[]; reason: string }
   /** Say what is missing. NEVER GATED — see the reconciliation row. */
-  | { kind: "request_information"; about: string; blocking: string; reason: string }
+  | { kind: "request_information"; about: string; blocking: string; reason: string; blockerKind?: string }
   /** Hand a work item to someone. Wires `canCreateWork`, which had no action until now. */
   | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string };
 
@@ -508,6 +517,7 @@ export function observe(world: World): NextAction {
       about: blocked.about,
       blocking: blocked.blocking,
       reason: `${blocked.blocking} is blocked on ${blocked.about}`,
+      ...(blocked.kind === undefined ? {} : { blockerKind: blocked.kind }),
     };
   }
   const asked = world.reviewsAsked?.[0];
@@ -758,6 +768,7 @@ export function buildMenu(world: World): NextAction[] {
       about: m.about,
       blocking: m.blocking,
       reason: `${m.blocking} is blocked on ${m.about}`,
+      ...(m.kind === undefined ? {} : { blockerKind: m.kind }),
     });
   }
   for (const c of world.convenable ?? []) {
