@@ -350,6 +350,57 @@ export function assign(
   workId: string,
   assigneeHatId: string,
 ): CascadeResult {
+  const eligible = assignmentEligibility(cascade, chart, workId, assigneeHatId);
+  if (!eligible.ok) return eligible;
+  const node = eligible.node;
+  // AN ASSIGNED ITEM IS NOT ASSIGNED AGAIN HERE. This overwrote the assignee silently, which is a
+  // reassignment performed by whoever called first — no trigger, no notice to the previous owner,
+  // no preservation of what it had already done. Taking work off a hat is `reassign` below, and it
+  // is deliberately a different verb so that path cannot be reached by accident.
+  if (node.assigneeHatId !== undefined && node.assigneeHatId !== assigneeHatId) {
+    return {
+      ok: false,
+      reason: `'${workId}' is already assigned to '${node.assigneeHatId}' — reassignment is a controlled move`,
+    };
+  }
+  return { ok: true, cascade: withAssignee(cascade, workId, assigneeHatId) };
+}
+
+/**
+ * Move an ALREADY-ASSIGNED item to a different contributor.
+ *
+ * Every eligibility rule `assign` enforces still applies — leaf, IC, reports to the owner — and the
+ * one thing that differs is that an existing assignee is permitted rather than refused. The caller
+ * is expected to have established that the move is allowed (`work-stealing.ts`); this verb does not
+ * re-derive that, it exists so the permitted move has a door of its own and the accidental one does
+ * not.
+ */
+export function reassign(
+  cascade: Cascade,
+  chart: OrgChart,
+  workId: string,
+  toHatId: string,
+): CascadeResult {
+  const eligible = assignmentEligibility(cascade, chart, workId, toHatId);
+  if (!eligible.ok) return eligible;
+  if (eligible.node.assigneeHatId === undefined) {
+    return { ok: false, reason: `'${workId}' has no assignee to take it from — use assign` };
+  }
+  return { ok: true, cascade: withAssignee(cascade, workId, toHatId) };
+}
+
+/**
+ * The rules BOTH doors enforce: a leaf, an individual contributor, reporting up to the owner.
+ *
+ * Shared rather than restated, so `reassign` cannot drift into a laxer version of `assign` — which
+ * is exactly how a controlled move becomes the uncontrolled one it replaced.
+ */
+function assignmentEligibility(
+  cascade: Cascade,
+  chart: OrgChart,
+  workId: string,
+  assigneeHatId: string,
+): { readonly ok: true; readonly node: CascadeNode } | { readonly ok: false; readonly reason: string } {
   const node = nodeById(cascade, workId);
   if (node === undefined) return { ok: false, reason: `no work item '${workId}'` };
   if (!isLeafType(node.workType)) {
@@ -366,12 +417,11 @@ export function assign(
       reason: `'${assigneeHatId}' does not report up to '${node.ownerHatId}', the owner of '${workId}'`,
     };
   }
-  return {
-    ok: true,
-    cascade: {
-      nodes: cascade.nodes.map((n) => (n.workId === workId ? { ...n, assigneeHatId } : n)),
-    },
-  };
+  return { ok: true, node };
+}
+
+function withAssignee(cascade: Cascade, workId: string, assigneeHatId: string): Cascade {
+  return { nodes: cascade.nodes.map((n) => (n.workId === workId ? { ...n, assigneeHatId } : n)) };
 }
 
 /** Set a node's state directly. Only leaves may be set to `done` — see `isDelivered`. */

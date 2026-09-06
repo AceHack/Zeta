@@ -41,6 +41,7 @@ import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./super
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
 import { isBlockerKind, resolutionFor, type BlockerKind } from "./blocker-taxonomy";
+import { evaluateSteal, type OwnedWork, type WorkTransfer } from "./work-stealing";
 import type { BacklogItem } from "../observe/observe";
 import type { CascadeNode } from "./goal-cascade";
 import { WorkState } from "./goal-cascade";
@@ -56,6 +57,20 @@ export interface OrgView {
   readonly artifacts: ReadonlyMap<string, ArtifactHistory>;
   /** What each hat has reported itself blocked on. Absent means nothing is blocking it. */
   readonly blockers?: ReadonlyMap<string, readonly MissingInformation[]>;
+  /**
+   * What the organization observes about work that already HAS an owner — the input a steal is
+   * derived from.
+   *
+   * The clock and the SLA travel WITH the observations rather than beside them, because they are
+   * only meaningful together: a heartbeat age needs a now, and a now with no heartbeats measures
+   * nothing. Absent means no reassignment is offered at all, which is the honest default — a
+   * register that does not track liveness cannot claim an owner has gone silent.
+   */
+  readonly assigned?: {
+    readonly nowMs: number;
+    readonly silenceSlaMs: number;
+    readonly work: readonly OwnedWork[];
+  };
 }
 
 /** Just the organizational half of a `World` — merged into whatever else the caller has. */
@@ -212,13 +227,56 @@ export function convenableBy(
   return out;
 }
 
+/**
+ * Work that ALREADY HAS AN OWNER and that this hat may nonetheless place elsewhere.
+ *
+ * Reassignment offered on the same menu key as assignment, because from the deciding hat's side it
+ * is the same act: this work needs to be with someone else. What differs is that it must be EARNED
+ * — `evaluateSteal` derives whether one of the doc's six conditions holds, whether this hat has
+ * standing over that condition, and whether the move would drop partial work or strand a session.
+ * Nothing here is offered on the strength of the hat being senior or the work looking stuck.
+ *
+ * A target is offered only if the steal to THAT target would be granted, so the menu never contains
+ * an act the organization will refuse — the same rule `assignableBy` was corrected to obey.
+ */
+export function stealableBy(
+  view: OrgView,
+  hatId: string,
+): readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[] {
+  const observed = view.assigned;
+  if (observed === undefined) return [];
+  const ics = hatsAtLevel(view.chart, "individual_contributor").filter((h) => h.id !== hatId);
+  const out: { item: BacklogItem; toHatIds: readonly string[] }[] = [];
+  for (const work of observed.work) {
+    const node = view.cascade.find((n) => n.workId === work.workId);
+    // Work the cascade does not have is work this bridge cannot describe as a backlog item. Better
+    // to omit it than to invent a title for something nobody can look up.
+    if (node === undefined) continue;
+    const toHatIds = ics
+      .filter(
+        (h) =>
+          evaluateSteal(view.chart, {
+            work,
+            toHatId: h.id,
+            decidedByHatId: hatId,
+            nowMs: observed.nowMs,
+            silenceSlaMs: observed.silenceSlaMs,
+          }).ok,
+      )
+      .map((h) => h.id);
+    if (toHatIds.length === 0) continue;
+    out.push({ item: { id: node.workId, title: node.title, ready: true, ambiguous: false }, toHatIds });
+  }
+  return out;
+}
+
 /** The whole organizational surface for one hat. */
 export function orgSurfaceFor(view: OrgView, hatId: string): OrgSurface {
   return {
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
     missing: view.blockers?.get(hatId) ?? [],
-    assignable: assignableBy(view, hatId),
+    assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId)],
     convenable: convenableBy(view, hatId),
   };
 }
@@ -235,6 +293,15 @@ export function orgSurfaceFor(view: OrgView, hatId: string): OrgSurface {
 export type OrgEffect =
   | { readonly kind: "signal"; readonly signal: SupervisorSignal }
   | { readonly kind: "assign"; readonly workId: string; readonly toHatId: string }
+  /**
+   * The same verb over work that already had an owner — a controlled steal.
+   *
+   * A separate effect rather than an `assign` with an extra field, because it carries obligations
+   * an assignment does not: a notice owed to the previous owner, where its partial work was kept,
+   * and the dependent queues that must be told. A caller that handled `assign` and forgot this
+   * would fail to compile rather than silently drop them.
+   */
+  | { readonly kind: "reassign"; readonly transfer: WorkTransfer }
   | {
       readonly kind: "convene";
       readonly artifactId: string;
@@ -323,7 +390,7 @@ export function effectOf(
       return { ok: true, effect: { kind: "signal", signal: sent.signal } };
     }
     case "assign_work":
-      return { ok: true, effect: { kind: "assign", workId: action.item.id, toHatId: action.toHatId } };
+      return placementEffect(view, hatId, action.item.id, action.toHatId, atMs);
     case "convene_meeting":
       return {
         ok: true,
@@ -355,4 +422,49 @@ export function effectOf(
       // organization has nothing to apply, and saying so explicitly beats a silent fall-through.
       return { ok: true, effect: { kind: "none" } };
   }
+}
+
+/**
+ * Placing work: an assignment when nobody holds it, a controlled steal when somebody does.
+ *
+ * WORK WITH AN OWNER IS NOT ASSIGNED, IT IS TAKEN. The verdict is re-derived here rather than
+ * trusted from the menu: the surface was built at some earlier moment, and the owner may have
+ * spoken since. A steal permitted by a stale observation is why this check exists at the point of
+ * application and not only at the point of offer.
+ */
+function placementEffect(
+  view: OrgView,
+  hatId: string,
+  workId: string,
+  toHatId: string,
+  atMs: number,
+): EffectResult {
+  const observed = view.assigned;
+  const owned = observed?.work.find((w) => w.workId === workId);
+  if (observed === undefined || owned === undefined) {
+    return { ok: true, effect: { kind: "assign", workId, toHatId } };
+  }
+  // AN OBSERVATION OLDER THAN THE SLA CANNOT ESTABLISH SILENCE.
+  //
+  // The elapsed-time triggers are judged at the APPLICATION's clock, which is the only "now" there
+  // is when the move actually happens. But the heartbeats being judged were read when the surface
+  // was built, and the owner may have spoken in the gap. Once that gap reaches the SLA the two are
+  // indistinguishable: an owner that has been quiet the whole time and one that answered a moment
+  // after the read produce the same record. Refusing is the only honest answer, and the caller's
+  // remedy is to re-read rather than to wait.
+  if (atMs - observed.nowMs >= observed.silenceSlaMs) {
+    return {
+      ok: false,
+      reason: `stale_observations: liveness was read ${String(atMs - observed.nowMs)}ms ago, at or past the ${String(observed.silenceSlaMs)}ms SLA`,
+    };
+  }
+  const verdict = evaluateSteal(view.chart, {
+    work: owned,
+    toHatId,
+    decidedByHatId: hatId,
+    nowMs: atMs,
+    silenceSlaMs: observed.silenceSlaMs,
+  });
+  if (!verdict.ok) return { ok: false, reason: `${verdict.refusal}: ${verdict.reason}` };
+  return { ok: true, effect: { kind: "reassign", transfer: verdict.transfer } };
 }

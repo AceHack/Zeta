@@ -30,7 +30,7 @@
 
 import { buildMenu, type NextAction, type World } from "../observe/observe";
 import { effectOf, orgSurfaceFor, type OrgEffect, type OrgView } from "./org-observe-bridge";
-import { assign, type Cascade } from "./goal-cascade";
+import { assign, reassign, type Cascade } from "./goal-cascade";
 import { postToAnchor, type AnchorBoard } from "./discussion-anchor";
 import { headsOf } from "./artifact-deliberation";
 import { conveneOverArtifact } from "./artifact-meeting";
@@ -155,6 +155,28 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       if (!assigned.ok) return { state, changed: false, refusals: [assigned.reason] };
       const view: OrgView = { ...state.view, cascade: assigned.cascade.nodes };
       return { state: { ...state, cascade: assigned.cascade, view }, changed: true, refusals: [] };
+    }
+
+    case "reassign": {
+      const t = effect.transfer;
+      const moved = reassign(state.cascade, deps.chart, t.workId, t.toHatId);
+      if (!moved.ok) return { state, changed: false, refusals: [moved.reason] };
+      // THE NOTICE IS DELIVERED, not merely computed. `evaluateSteal` makes it a required field so
+      // it cannot be dropped from the transfer; posting it here is the other half — the previous
+      // owner learns from the organization that its work moved, rather than from the work being
+      // gone. `postToAnchor` refuses an unknown anchor, so a transfer with nowhere to say it is a
+      // refusal rather than a silent take.
+      const said = postToAnchor(state.view.board, {
+        postId: deps.createId("post"),
+        anchorId: t.workId,
+        byHatId: t.decidedByHatId,
+        atMs: deps.nowMs,
+        body: t.notice,
+        evidence: [{ kind: "trace", ref: t.audit }],
+      });
+      if (!said.ok) return { state, changed: false, refusals: [said.reason] };
+      const view: OrgView = { ...state.view, cascade: moved.cascade.nodes, board: said.board };
+      return { state: { ...state, cascade: moved.cascade, view }, changed: true, refusals: [] };
     }
 
     case "turn": {
