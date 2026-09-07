@@ -85,9 +85,48 @@ The native runtime admission review separately requires explicit raw DTO
 fields before typed decoding, so missing zero/false/null values cannot
 silently acquire defaults. It also requires matching declared source commits
 before cost execution and maps an unlaunchable git process into a retained
-admission failure. These findings are being resolved before implementation
-archival; final checks will identify the reviewed bytes.
+admission failure. All these corrections passed the final independent admission reread before
+archival; final validation records identify the reviewed bytes.
 
 A source check of [.NET 10 Process on macOS](https://github.com/dotnet/runtime/blob/v10.0.0/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.OSX.cs)
 confirmed that the current-process CPU getter reads the current CPU usage.
 No extra process-refresh operation or timing-boundary change was introduced.
+
+## Final native admission reread
+
+A separate reviewer read the native runtime and behavior, cost and hand CLIs.
+Accepted corrections include equality of the declared source commit, exact
+recursive DTO property/scalar/container shape before F# deserialization,
+refusal of omitted zero/false fields and malformed JSON, exactly one nonblank
+behavior argument, output-path preflight, and typed Win32 process-launch
+failure. Exact archived bytes, loaded assembly identities, complete roster
+and value checks, and behavior-before-cost chronology remain enforced.
+
+Hand-mode negative mutations cover omitted Failure, Index, Effect and zero
+counter fields, extra/wrong-typed fields, and empty/blank/wrong-count arguments,
+with valid controls. A missing-git child-process attempt was retained with
+Complete=false, git-launch and empty Panels. No new source or receipt blocker
+remained in the final reread. The reviewer ran no native build, tests or
+registered streams. This is admission review, not a process-isolation or
+source-to-binary derivation proof.
+
+## Auxiliary exact envelopes
+
+The [exact-envelope note](2026-09-07-hidden-switch-exact-envelopes.md)
+derives the supplied model's depth-two and depth-three action boundaries,
+1/5 and 51/190, with exact rational endpoint certificates over all contingent
+tree values. It records tolerance shifts and binary64 qualifications.
+No source tape, episode or cost run was executed for that note, and it adds
+no registered policy arm or criterion. It makes the already stated limit
+concrete: an advantage over myopic behavior would not establish that online
+tree search is necessary to realize the supplied finite controller.
+
+## Integrated checkpoint before implementation archival
+
+The [integrated validation record](hidden-switch-validation/2026-09-07/README.md)
+contains the nineteen-file source manifest, successful mapped Release build,
+sixteen focused native tests, fresh identical hand fixture, full 431-case
+Python gate and exact earlier failures. The full-solution BftConsensus gate
+has not recovered. Its TLC trace-recovery error and subsequent in-run JVM
+SIGBUS are being investigated without changing the model, jar, registered
+experiment or verdict. No registered stream or timing has run.
