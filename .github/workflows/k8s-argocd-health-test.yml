@@ -292,24 +292,37 @@ on:
         type: choice
         options: ["false", "true"]
 
-# `packages: read` is what lets this workflow's `github.token` pull the PRIVATE
-# GHCR packages behind the `platform` Application's two images. It is additive
-# and least-privilege: no write scope of any kind, and every other job in this
-# file is unaffected by having it available.
+# `packages: read` is KEPT but is NO LONGER LOAD-BEARING for the `platform`
+# Application's two images. It stays because it is additive, least-privilege (no
+# write scope of any kind), and the next image added here may well be private.
 #
-# LIKELY SUFFICIENT, NOT YET PROVEN, and the gap is named rather than rounded off.
-# MEASURED 2026-08-22 via `gh api /orgs/Lucent-Financial-Group/packages/container/
-# zeta-{platform-controller,portal}`: both packages are private AND both report
-# `repository.full_name = Lucent-Financial-Group/Zeta`, i.e. they are linked to
-# THIS repository, which is the condition under which a repo-scoped GITHUB_TOKEN
-# is granted read access. So this is a well-founded expectation.
+# MEASURED 2026-09-07, and this REPLACES the 2026-08-22 reasoning below it. All
+# four Lucent-Financial-Group container packages -- `zeta-ci-runtime`,
+# `zeta-orleans-silo`, `zeta-platform-controller`, `zeta-portal` -- are PUBLIC.
+# Verified by EXERCISE rather than by API report: an anonymous ghcr.io pull token
+# (no credential of any kind) returns HTTP 200 on `tags/list` for
+# `zeta-platform-controller` and `zeta-portal`. No `GITHUB_TOKEN`, no package
+# grant, and no `ZETA_GHCR_PULL_TOKEN` is required to pull them.
 #
-# It is still not a pull. `platform/**` remains in
-# `DEFAULT_ROOT_DEV_CATALOG.excludeGlob`, so no job here has actually presented
-# this token to GHCR and been served a layer, and package-to-repo linkage is
-# reported by the API rather than exercised by it. The first run with `platform`
-# un-deferred is what measures it; if the token is refused, the exit is a
-# package-level grant or a PAT in `ZETA_GHCR_PULL_TOKEN`, not a change here.
+# WHAT THIS PARAGRAPH USED TO SAY, kept rather than deleted because the shape of
+# the error is the lesson: "MEASURED 2026-08-22 ... both packages are private AND
+# both report `repository.full_name = Lucent-Financial-Group/Zeta` ... So this is
+# a well-founded expectation. It is still not a pull ... The first run with
+# `platform` un-deferred is what measures it; if the token is refused, the exit is
+# a package-level grant or a PAT in `ZETA_GHCR_PULL_TOKEN`."
+#
+# That reasoning was careful, correctly hedged, and became FALSE when the packages
+# were made public -- and nothing re-measured it. `lane-partition.ts` had already
+# caught exactly this ("`zeta-portal` and `zeta-platform-controller` had been made
+# public, the anonymous read prices them, and nothing had re-measured"), so the
+# repo held both the correction and the stale claim at once, in two files, for
+# over two weeks. A RESOLVED BLOCKER STILL BEING REPORTED is the same defect class
+# as a check that did not run looking like one that passed: it costs real work,
+# because the standing plan was to mint a PAT for a wall that is not there.
+#
+# So the GHCR half of `platform`'s deferral is CLOSED. Whatever still defers
+# `platform` is not a credential, and any future claim here should be re-exercised
+# rather than re-read.
 permissions:
   contents: read
   packages: read
