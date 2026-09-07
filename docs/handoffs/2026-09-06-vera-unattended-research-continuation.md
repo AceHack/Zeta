@@ -6,7 +6,7 @@ Operational status: research-grade handoff
 Lifecycle: active
 Scope: continuation of the predictive-state, acting and relational research lanes
 Work item and retained publication review: [081M1WKKBQ2087G0R00221631M](../../workitems/done/2026/09/081M1WKKBQ2087G0R00221631M-publish-consolidated-unattended-research-handoff-with-verifi.md)
-Publication status: earlier studies and tooling repairs merged; hidden-switch results in draft PR #16928 pending final integration validation and main proof; next compiled-controller protocol remotely registered
+Publication status: hidden-switch results and compiled preregistration verified on main; compiled implementation now active under a fresh co-claim, with new streams held until its implementation archive
 
 ## Paste-ready bootstrap
 
@@ -20,8 +20,9 @@ Publication status: earlier studies and tooling repairs merged; hidden-switch re
 > cost criteria with exact replay, using a supplied correct model and decoder.
 > ARC and learned dynamics remain untested by those trials. Read the result,
 > exact-envelope caveat and separately registered compiled-controller protocol
-> before implementing that next study. Preserve its prior-study main dependency;
-> action-conditioned model identification remains an unregistered advisory. Keep
+> before continuing that next study. Its prior-study main dependency is verified;
+> preserve its fresh co-claim and separate implementation archive before new streams.
+> Action-conditioned model identification remains an unregistered advisory. Keep
 > conditional entropy premises separate from stipulated work: B=sum b_i,
 > R=sum r_e, M=1+R/B for B>0. Correlation components do not count controllers.
 > Preserve the declared-cut receipt invariant without calling it Lorentz
@@ -160,7 +161,7 @@ Maintain explicit observation/model assumptions, admission falsifiers and
 fresh frozen evaluation streams before new measurements. No public ARC
 example becomes held-out evidence through this continuation.
 
-Draft [PR #16928](https://github.com/Lucent-Financial-Group/Zeta/pull/16928)
+Merged [PR #16928](https://github.com/Lucent-Financial-Group/Zeta/pull/16928)
 retains the original hidden-switch result. Its initial CI failures are
 [indexed with exact source and logs](../research/hidden-switch-validation/2026-09-07/README.md):
 two TypeScript hygiene/race findings and a macOS inherited-pipe fixture
@@ -177,9 +178,18 @@ its first local full-test attempt crashed in the F# test host. One unchanged
 recovery completed 7,568 tests with six existing skips, all 52 formal models,
 eighteen synthetic checks and sixteen hidden-switch cases. Source and selected
 DLL hashes stayed unchanged. The first crash remains retained with a bounded
-GC-stack review and no established cause. Publication still requires
-the final result head's current checks and ancestry proof. The original scientific
-files, once-collected receipts and archived implementation are unchanged.
+GC-stack review and no established cause. Final reviewed head
+`f99c9f4e2502263943d899ec7a506aa287f76558` merged at 15:16:24 UTC on
+2026-09-07 as `1193d505de42f7a9406e64389f1496a311fc4b28`.
+The [coordinator proof](../research/hidden-switch-validation/2026-09-07/main-publication/README.md)
+verifies the actual signed body, refreshed main ancestry and all nineteen
+scientific/eighteen original result records. The
+[independent complete publication review](../research/hidden-switch-validation/2026-09-07/pr-16928-f99c9f4e-final/README.md)
+also verifies all 266 landed paths and seven descriptive-figure artifacts.
+Final CI has 93 successful checks, three skips and one retained historical-drift
+advisory failure; required/native/TypeScript/CodeQL checks pass, with no pending
+check or unresolved thread. The entire matrix is not green. Earlier failed and
+superseded checks remain separately indexed. No original experiment was rerun.
 
 ## Registered compiled-controller follow-up
 
@@ -195,8 +205,20 @@ read the same remote identities. Protocol size is 43,162 bytes; SHA256 is
 `8bbdfe44a0844dd8ce4f6c5dd77b060a56e5b84ea94ea7a6fdbb482aec9d738a`.
 
 At that freeze, no compiled implementation, guard bits, source streams or
-measurements existed. Implementation additionally waits for the prior
-hidden-switch study's main integration. The new protocol requires universal
+measurements existed. Preregistration-only
+[PR #16947](https://github.com/Lucent-Financial-Group/Zeta/pull/16947) subsequently
+merged as `6a371b881a44aa4e7a967264cdb30f31b9d0f552`; its
+[publication record](../research/hidden-switch-compiled-validation/2026-09-07/README.md)
+retains all 89 checks (85 successful, three skipped, one nonblocking historical
+drift failure), exact frozen protocol and unchanged remote tag. The prior-study
+main prerequisite above is now independently verified. Fresh implementation
+co-claim `d6ec464f4e9898904c2af77fceaefb8b28b48683` was remotely published with
+all sixteen quick checks passing. The
+[implementation plan](../research/2026-09-07-hidden-switch-compiled-implementation-plan.md)
+separates native/build wiring, independent Python arithmetic/certificate/reference,
+and coordinator evidence admission/replay/verdict. Runtime graph feasibility is
+an early implementation check. New behavior/cost streams still wait for the
+separate reviewed implementation archive. The new protocol requires universal
 action agreement under a declared binary64 source/runtime model, independent
 certificate and exact replay, and the same action-only output service in
 both timed arms. Both ordinary panels must independently meet wall and
