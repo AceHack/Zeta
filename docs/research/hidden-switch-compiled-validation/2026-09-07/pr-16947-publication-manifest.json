@@ -1,0 +1,25 @@
+{
+  "Schema": "zeta.compiled-hidden-switch.publication-proof.v1",
+  "PR": 16947,
+  "Artifacts": [
+    {
+      "Path": "pr-16947-main-proof.json",
+      "Bytes": 1070,
+      "Sha256": "67adc8b87f773240901def1277985ead230581fea7d9787d3f70cfaf2439729c",
+      "CaptureSource": "/tmp/zeta-16947-main-proof.json"
+    },
+    {
+      "Path": "pr-16947-final-checks-threads.json",
+      "Bytes": 19224,
+      "Sha256": "5cf3deec6ae41b7e6a17c8c769e6d1bb004bd5dfcf7fb06c912d2179b9376943",
+      "CaptureSource": "/tmp/zeta-16947-final-admission.json"
+    },
+    {
+      "Path": "pr-16947-drift-failure.log",
+      "Bytes": 5907,
+      "Sha256": "e89a8891706a0537ba311c2707dbd88908d56531f207c7a653e33a75297b9729",
+      "CaptureSource": "/tmp/zeta-16947-drift-failure.log"
+    }
+  ],
+  "Scope": "Post-registration publication evidence only; no experiment or runtime admission."
+}

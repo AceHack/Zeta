@@ -1,0 +1,36 @@
+drift (loud)	Report drift, loudly	﻿2026-09-07T15:01:33.5293962Z ##[group]Run bun src/Core.TypeScript/ci/drift-loud.ts \
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5294486Z ^[[36;1mbun src/Core.TypeScript/ci/drift-loud.ts \^[[0m
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5294889Z ^[[36;1m  --repo "$REPO" --run-id "$RUN_ID" --window 60 \^[[0m
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5295276Z ^[[36;1m  --ledger data/platform-drift.json^[[0m
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5342511Z shell: /usr/bin/bash -e {0}
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5342820Z env:
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5345554Z   GITHUB_TOKEN: ***
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5348177Z   GH_TOKEN: ***
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5348420Z   REPO: Lucent-Financial-Group/Zeta
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5348922Z   RUN_ID: 34134460302
+drift (loud)	Report drift, loudly	2026-09-07T15:01:33.5349142Z ##[endgroup]
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4636195Z ## Drift -- loud, and blocking nothing
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4636617Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4637756Z **149 absorbed failure(s)** across 5 subject(s) (of which the canary and this reporter are instruments, not findings) in the last 60 run(s) (window is bounded at 60). Coverage: 60/60 runs actually executed jobs (100.0%); 0 were cancelled before anything ran. Every rate below is over EXECUTIONS.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4639910Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4642052Z > **PUBLICATION OFF BY DECISION: `data/platform-drift.json` is pinned at run 33238368515 and the publisher is `disabled_manually`, so nothing is expected to land. The numbers below are FROZEN at that run, not current -- read them as a snapshot, never as today's platform. This is reported rather than silenced because a frozen dashboard that looks live is the failure this job exists to catch; it is a warning rather than an error because a deliberate off-switch is not a defect.**
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4643679Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4643894Z | subject | band | class | executions | failures | rate | clean streak | last |
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4644314Z | --- | --- | --- | --- | --- | --- | --- | --- |
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4644873Z | `build-and-test (macos-26)` | flapping -- intermittent | job red, `gate (required)` green | 60 | 2 | 3.3% | 3 | run 34131055539 |
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4645714Z | `build-and-test (windows-11-arm)` | SUSTAINED -- failing most runs, unhealed | job red, `gate (required)` green | 59 | 53 | 89.8% | 1 | run 34131348700 |
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4646590Z | `build-and-test (windows-2025)` | SUSTAINED -- failing most runs, unhealed | job red, `gate (required)` green | 59 | 53 | 89.8% | 1 | run 34131348700 |
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4647061Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4652664Z Loud: **3** annotated (2 at `::error::`). `healed` and `unobserved` rows carry NO annotation on purpose -- an alarm that stays lit after its defect is gone is how a real signal gets muted.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4653316Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4653849Z **This job is not in the `gate (required)` floor.** A red X here is a drift signal, never a merge block. Making any of these blocking is a floor amendment and a separate, human decision.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4654426Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4654954Z Detector liveness: OK -- detector live: the canary's swallowed step was observed in run 34134460302 via the annotation channel (Process completed with exit code 1.)
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4655527Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4696789Z ##[warning]build-and-test (macos-26) -- 2/60 executions failed (3.3%), clean streak 3, last run 34131055539. job red, `gate (required)` green. This is a DRIFT signal: it is loud on purpose and it blocks nothing.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4708188Z ##[error]build-and-test (windows-11-arm) -- 53/59 executions failed (89.8%), clean streak 1, last run 34131348700. job red, `gate (required)` green. This is a DRIFT signal: it is loud on purpose and it blocks nothing.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4711583Z ##[error]build-and-test (windows-2025) -- 53/59 executions failed (89.8%), clean streak 1, last run 34131348700. job red, `gate (required)` green. This is a DRIFT signal: it is loud on purpose and it blocks nothing.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4715786Z ##[warning]PUBLICATION OFF BY DECISION: `data/platform-drift.json` is pinned at run 33238368515 and the publisher is `disabled_manually`, so nothing is expected to land. The numbers below are FROZEN at that run, not current -- read them as a snapshot, never as today's platform. This is reported rather than silenced because a frozen dashboard that looks live is the failure this job exists to catch; it is a warning rather than an error because a deliberate off-switch is not a defect.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4717990Z 
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4718423Z EXIT 1 -- a drift signal is at its loudest band. This job is NOT in the `gate (required)` floor: the merge is unaffected. Red here means read it, not stop.
+drift (loud)	Report drift, loudly	2026-09-07T15:04:33.4723726Z ##[error]Process completed with exit code 1.

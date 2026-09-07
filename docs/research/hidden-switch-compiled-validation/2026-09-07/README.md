@@ -82,3 +82,45 @@ in the same PR; a new implementation claim must follow the separate
 PR #16928 main proof and retain the existing immutable registration.
 This PR introduces no measured implementation, guard computation or new
 source draws, and adds no changes to the prior study or its advisory.
+
+## Main publication proof: PR #16947
+
+[PR #16947](https://github.com/Lucent-Financial-Group/Zeta/pull/16947)
+merged at **2026-09-07T15:06:09Z** as
+`6a371b881a44aa4e7a967264cdb30f31b9d0f552`, from reviewed publication head
+`140a9eac714508dbd7e156d3588ae23672aa6ba6`. The
+[main proof](pr-16947-main-proof.json), captured at 15:06:53.780367Z,
+records successful merge ancestry against the refreshed `origin/main`
+at that same merge commit, absence of the released claim file, and exact
+protocol/tag identity. This is a dated verification, not a promise that
+`main` will remain at that commit.
+
+The [complete final check/thread response](pr-16947-final-checks-threads.json)
+contains all 89 contexts on one complete page, no further pages and no
+review threads. It binds the unchanged reviewed head immediately before
+normal head-guarded squash merge. The final matrix was **85 successes,
+three skips and one failure**. `gate (required)` and all three current
+native platform jobs passed. No administrator bypass or check rerun was
+used to merge this publication.
+
+The [raw drift failure log](pr-16947-drift-failure.log) explains the single
+red `drift (loud)` context: its bounded historical 60-run window counted
+**53 failures in 59 executed runs for each Windows platform**, and two
+failures in 60 macOS executions. These are historical execution counts,
+not failures of this PR's current native jobs. The reporter also retains
+the separate warning that its dashboard publication is deliberately off
+and its checked-in ledger is frozen at run `33238368515`. The log and
+workflow explicitly classify this audit as nonblocking; the retained red
+result is not relabeled green.
+
+The [publication manifest](pr-16947-publication-manifest.json) records
+byte counts and SHA256 hashes of all three captured artifacts. Raw JSON
+and log bytes are copied unchanged, including the log's terminal control
+sequences. This proof commit is outside the immutable registration tag
+and changes no protocol bytes.
+
+At this publication checkpoint, **PR #16928's main proof and a fresh
+implementation co-claim remain prerequisites to implementation**. The
+broader experiment task stays open. No compiled implementation, generated
+guard constants, new registered source tapes or measurements are supplied
+by these records. A later checkpoint must separately discharge that hold.

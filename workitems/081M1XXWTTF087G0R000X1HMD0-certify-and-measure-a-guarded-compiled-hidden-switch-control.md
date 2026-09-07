@@ -172,3 +172,13 @@ Existing mathematical acceptance was unchanged; no builds, tests,
 experiments or PR mutations were performed during this read-only review.
 This subsequent commit records that acceptance without changing the
 reviewed protocol, design, runtime note, plan or raw proof artifacts.
+
+## Dated preregistration main proof
+
+PR #16947 merged at 2026-09-07T15:06:09Z as `6a371b881`; its
+[indexed raw main/check/thread/drift proof](../docs/research/hidden-switch-compiled-validation/2026-09-07/README.md#main-publication-proof-pr-16947)
+preserves the exact reviewed head, complete matrix, ancestry and unchanged
+registration tag/protocol. The historical nonblocking drift audit remains
+a recorded failure. This publication completes no implementation or
+measurement obligation; the prior-study main proof and fresh co-claim
+remain outstanding at this dated checkpoint.
