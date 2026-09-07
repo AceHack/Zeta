@@ -126,3 +126,12 @@ and actual loaded-artifact identities. SDK export stubs are not runtime
 dylib hashes. These are prospective admission requirements and limits;
 no guard, implementation, native probe or policy execution was performed.
 The prior-study main dependency still precedes implementation.
+
+## Implementation coordination while the dependency is pending
+
+The [three-writer ownership/interface plan](../docs/research/2026-09-07-hidden-switch-compiled-implementation-plan.md)
+records native executable/build wiring, independent Python arithmetic and
+certificate/episode reconstruction, and coordinator replay/verdict scopes.
+It preserves the frozen contract and includes the shared filter/adapter
+caller closure in source-to-machine inspection. This is planning only;
+PR #16928 reaching main remains a prerequisite to implementation.
