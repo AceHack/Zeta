@@ -35,6 +35,10 @@ tracked Interp Python/config identities and the actual owned fixture tree.
 The [manifest](integration-5/manifest.json) keeps source and raw/stored hashes.
 This subset is separate from full Interp/native or runtime/outer admission.
 
+The [exact outer structure](../../2026-09-07-hidden-switch-compiled-outer-structure-validation.md)
+retains 60 tests for independent identity binding and the complete/failed
+92-case structure. Its read plan is separate from actual reads and replay.
+
 ## Frozen protocol and remote proof
 
 The [preregistration](../../2026-09-07-hidden-switch-compiled-protocol.md)
