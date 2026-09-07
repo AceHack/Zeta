@@ -390,7 +390,7 @@ let private runTlcUnlocked (model: PinnedModel) attemptNumber =
             let versionArgv = [|"-XX:ErrorFile=" + Path.Combine(attempt.Directory, "version_hs_err_pid%p.log"); "-version"|]
             TlcAttempts.writeDiagnostic attempt "runtime-invocation.json"
                 {| Stage = stage; Java = java; Argv = versionArgv; WorkingDirectory = attempt.Workspace
-                   TimeoutMilliseconds = 30000; TimeoutAction = "kill process tree and retain failure" |}
+                   TimeoutMilliseconds = 30000; TimeoutAction = "cancel complete capture; kill tree if direct process remains alive; exited-parent descendants are not isolated" |}
             let versionOut = Path.Combine(attempt.Directory, "version-stdout.log")
             let versionErr = Path.Combine(attempt.Directory, "version-stderr.log")
             let version = TlcAttempts.captureProcess java versionArgv attempt.Workspace versionOut versionErr (Some 30000)
@@ -783,3 +783,34 @@ let ``owned process capture retains probe streams and bounds timeout without Jav
         Assert.Equal(0L, exclusive.Length)
         Assert.Contains("error sentinel", File.ReadAllText stderr)
     finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``probe deadline covers inherited pipes after the launcher exits`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-inherited-pipe-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    let stdout = Path.Combine(scratch, "stdout.log")
+    try
+        let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
+        let script = "const child=Bun.spawn([process.execPath,'-e','setTimeout(()=>{},10000)'],{stdout:'inherit',stderr:'inherit'});child.unref();console.log(child.pid);process.exit(0)"
+        let clock = Stopwatch.StartNew()
+        let captured = TlcAttempts.captureProcess bun ["-e"; script] scratch stdout (Path.Combine(scratch, "stderr.log")) (Some 500)
+        clock.Stop()
+        Assert.Equal(0, captured.ExitCode)
+        Assert.True captured.TimedOut
+        Assert.True(clock.Elapsed.TotalSeconds < 3.0, "inherited-pipe drain exceeded the complete capture deadline: " + string clock.Elapsed)
+        let pid = Int32.Parse(File.ReadAllText(stdout).Trim(), Globalization.CultureInfo.InvariantCulture)
+        use child = Process.GetProcessById pid
+        Assert.False child.HasExited
+    finally
+        // A parent already exited cannot supply a descendant tree to Kill(true).
+        // This hand fixture owns and explicitly cleans its printed child PID.
+        if File.Exists stdout then
+            match Int32.TryParse(File.ReadAllText(stdout).Trim(), Globalization.NumberStyles.None, Globalization.CultureInfo.InvariantCulture) with
+            | true, pid ->
+                try
+                    use child = Process.GetProcessById pid
+                    if not child.HasExited then child.Kill true
+                with :? ArgumentException -> ()
+            | _ -> ()
+        Directory.Delete(scratch, true)
