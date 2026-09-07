@@ -1,0 +1,14 @@
+{
+  "id": "080d03f0be2de010a01300087ec8789d",
+  "at": "2026-09-07T22:58:02.300Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z1FHDW087G0R00210Z0PG",
+    "type": "task",
+    "title": "Overlay named argv takes bun JSON --from-json; null look is missing-os",
+    "slug": "overlay-named-argv-takes-bun-json-from-json-null-look-is-mis",
+    "priority": "P2",
+    "filename": "081M1Z1FHDW087G0R00210Z0PG-overlay-named-argv-takes-bun-json-from-json-null-look-is-mis.md"
+  }
+}

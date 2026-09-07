@@ -766,6 +766,27 @@ Workitem: `081M1WP0C7B087G0R000VK9E0V`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 
+## 2026-09-07 — overlay named argv takes bun JSON --from-json; null look is missing-os (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay optional named argv
+takes `--from-json`. Null look is unmeasured. Overlay
+NamedArgv still only took `--os` / `--effects`.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1Z1FHDW087G0R00210Z0PG`.
+
+- `planSetupFromFrostLookNamedArgv` takes `--from-json`.
+  Uses `look`. JSON `probe` is ignored even when non-null.
+  Null look is `missing-os`, not unmeasured. Mixing with
+  `--os` / `--effects` / `--from-conf` / env frost-look keys
+  is `mixed-source`. NamedEnv still requires OS. Does not
+  default to `realProbeEffects`. `/dev/tpmrm0` is not
+  `real`. Does not write ESP. Does not import the frost-look
+  CLI. Does not call this from `zeta-install.sh`. Does not
+  change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
 ## 2026-09-07 — overlay optional named argv takes bun JSON --from-json; JSON probe is ignored (Riven)
 
 Aaron: detect HSM/TPM at setup. Frost look CLI takes
