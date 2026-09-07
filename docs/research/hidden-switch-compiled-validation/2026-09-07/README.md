@@ -299,3 +299,10 @@ accepted the control and refused all 30 altered inputs. Every process exited
 zero; 162 raw records and both byte/hash layers are retained. This is scoped
 certificate conformance under explicit placeholder bindings, with no full
 source, outer-envelope or runtime admission.
+
+## Original writer history
+
+The [source-history retention record](source-history-retention.md) indexes
+four long-lived WIP refs for original implementation and review commits.
+They preserve provenance across cherry-pick integration and split evidence
+publication; they are not the scientific implementation archive.
