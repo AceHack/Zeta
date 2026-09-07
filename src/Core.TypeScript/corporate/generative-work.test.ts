@@ -121,8 +121,12 @@ describe("DIRECTION — a domain nobody pointed anywhere", () => {
     expect(directionOpenings(chart, [done]).map((o) => o.domain)).toContain(Domain.Implementation);
   });
 
-  test("the subject id is DERIVED from the domain, so a re-offer is the same opening", () => {
-    expect(directionOpenings(chart, [])[0]?.subjectId).toBe("direction-governance");
+  test("the subject id is DERIVED from the domain AND its generation", () => {
+    // The domain alone was enough while a direction was set once and never finished. Now that
+    // delivery rolls up, a domain whose cascade completes reopens — and reusing the id would have
+    // `acceptGoal` refuse a duplicate every round forever. Still derived, so a re-offer within a
+    // round is the same opening rather than a new one.
+    expect(directionOpenings(chart, [])[0]?.subjectId).toBe("direction-governance-1");
   });
 });
 
@@ -149,34 +153,46 @@ describe("BREAKDOWN — and the refusal it must not become", () => {
     }
   });
 
-  test("WORK THE CHART CANNOT STAFF BECOMES A SUPPLY GAP, not a retry", () => {
-    // MEASURED, not imagined: before this, `break_down_work` was chosen 257 times for 31 successful
-    // breakdowns across one drive, the remaining 226 refused every round for a rung the chart has
-    // no hat for. `architecture_director` supervises no managers, so its project cannot be split —
-    // and that is the RMO's problem, not a thing to keep asking its owner about.
+  test("A DEPARTMENT WITH NO MANAGER STAFFS ITSELF — the ladder bends before it reports", () => {
+    // This used to be a supply gap and is now an ordinary breakdown. `architecture_director` has no
+    // manager and no lead, and it has seven architects: it owns its own projects and its own tasks,
+    // which is what a small department does. Reporting that to the RMO as a shortfall was the rigid
+    // ladder complaining about an organization that was working fine.
     const stuck = node({ ownerHatId: "architecture_director", domain: Domain.Architecture });
+    const open = breakdownOpenings(chart, [stuck], "rmo_office", NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.BreakDownWork);
+    expect(open[0]?.byHatId).toBe("architecture_director");
+  });
+
+  test("WORK NOBODY IN THE LINE CAN DO BECOMES A SUPPLY GAP, not a retry", () => {
+    // MEASURED, not imagined: `break_down_work` was once chosen 257 times for 31 successful
+    // breakdowns, the remaining 226 refused every round. The gap is narrower now that the ladder
+    // bends — it fires only when the line contains no CONTRIBUTOR, so there is nobody to hand the
+    // work to at any level. `cost_controller` is that case: one manager under the CFO, supervising
+    // nobody.
+    const stuck = node({ ownerHatId: "cost_controller", domain: Domain.Operations });
     const open = breakdownOpenings(chart, [stuck], "rmo_office", NONE);
     expect(open).toHaveLength(1);
     expect(open[0]?.kind).toBe(GenerativeKind.SizeHatSupply);
     expect(open[0]?.byHatId).toBe("rmo_office");
     // THE RUNG IS `lead`, not `manager`. A project's children are tasks and a task is owned at
-    // lead level — the ladder says so, and guessing "one level down from a director" got it wrong
-    // when this test was written. The subject is read off `CASCADE_RUNGS`, never off intuition.
-    expect(open[0]?.subjectId).toBe("rung:architecture_director:lead");
+    // lead level — read off `CASCADE_RUNGS`, never off intuition.
+    expect(open[0]?.subjectId).toBe("rung:cost_controller:lead");
   });
 
   test("...and FORTY-SEVEN items behind ONE absent manager are ONE request", () => {
     // Keyed on the missing rung rather than on the work, because the alternative buries the gap
     // under a request per item — which is the same defect as reporting it 226 times, spread out.
     const many = Array.from({ length: 47 }, (_, i) =>
-      node({ workId: `w-${i}`, ownerHatId: "architecture_director", domain: Domain.Architecture }),
+      node({ workId: `w-${i}`, ownerHatId: "cost_controller", domain: Domain.Operations }),
     );
     expect(breakdownOpenings(chart, many, "rmo_office", NONE)).toHaveLength(1);
   });
 
   test("A GAP ALREADY RAISED IS NOT RAISED AGAIN", () => {
-    const stuck = node({ ownerHatId: "architecture_director", domain: Domain.Architecture });
-    const raised = new Set(["rung:architecture_director:lead"]);
+    const stuck = node({ ownerHatId: "cost_controller", domain: Domain.Operations });
+    const raised = new Set(["rung:cost_controller:lead"]);
     expect(breakdownOpenings(chart, [stuck], "rmo_office", raised)).toEqual([]);
   });
 });
@@ -438,7 +454,7 @@ describe("STAFFING — a lead who supervises nobody, and the work that dies ther
     // `breakdownOpenings` reports "no hat exists at the rung below"; this reports "the rung's hat
     // exists and has nobody under it". Collapsing them would report a hiring problem as a
     // reorganization one.
-    const stuck = node({ ownerHatId: "architecture_director", domain: Domain.Architecture });
+    const stuck = node({ ownerHatId: "cost_controller", domain: Domain.Operations });
     const rungGap = breakdownOpenings(chart, [stuck], "rmo_office", NONE)[0];
     expect(rungGap?.subjectId).toContain("rung:");
     expect(staffingOpenings(chart, [orphan], "rmo_office", NONE)[0]?.subjectId).toContain("staff:");

@@ -40,7 +40,16 @@
  */
 
 import { Domain, DomainMatch, departmentFor, type DomainRouting } from "./domain-ontology";
-import { isLeafType, nextRung, ownerForRung, WorkState, WorkType, type CascadeNode } from "./goal-cascade";
+import {
+  deliveredSet,
+  isLeafType,
+  nextRung,
+  ownerForRung,
+  supportRequirementFor,
+  WorkState,
+  WorkType,
+  type CascadeNode,
+} from "./goal-cascade";
 import {
   hatsAtLevel,
   reportsUpTo,
@@ -124,9 +133,27 @@ export interface DirectionClock {
   readonly reviewIntervalMs: number;
 }
 
-/** Work that still counts as live. Delivered and cancelled work leaves no gap behind it. */
-function isLive(node: CascadeNode): boolean {
-  return node.state === WorkState.Open || node.state === WorkState.InProgress;
+/**
+ * Work that still counts as live.
+ *
+ * ── WHY THIS READS THE WHOLE SUBTREE ─────────────────────────────────────────
+ * It used to be `state === Open || state === InProgress`, which is true of every goal this
+ * organization has ever set — because nothing marks a goal done. `isDelivered` derives that from
+ * the leaves and had no reader here, so a domain whose entire cascade was finished still looked
+ * occupied, and the C-suite was never asked what to do next.
+ *
+ * Measured: over seven simulated days the organization delivered thirteen tasks and set ZERO new
+ * directions. Days two through seven were sixteen restatements and nothing else — a company that
+ * finishes its work and then has nothing to say about it.
+ *
+ * So delivery rolls up by DERIVATION rather than by anybody writing a state: a node whose live
+ * children are all delivered is not live, whatever its own row says. That is the same discipline
+ * this register applies to `degraded`, `completeness` and `replayable` — the fact is computed from
+ * what happened, never declared alongside it.
+ */
+function isLive(delivered: ReadonlySet<string>, node: CascadeNode): boolean {
+  if (node.state === WorkState.Done || node.state === WorkState.Canceled) return false;
+  return !delivered.has(node.workId);
 }
 
 /**
@@ -176,7 +203,13 @@ export function directionOpenings(
   cascade: readonly CascadeNode[],
   clock?: DirectionClock,
 ): readonly GenerativeOpening[] {
-  const live = new Set(cascade.filter(isLive).map((n) => n.domain).filter((d): d is Domain => d !== undefined));
+  const delivered = deliveredSet({ nodes: cascade });
+  const live = new Set(
+    cascade
+      .filter((n) => isLive(delivered, n))
+      .map((n) => n.domain)
+      .filter((d): d is Domain => d !== undefined),
+  );
   const out: GenerativeOpening[] = [];
 
   // ── A DIRECTION GOES STALE, WHICH IS WHAT MAKES THIS A CADENCE ───────────
@@ -191,7 +224,7 @@ export function directionOpenings(
   if (clock !== undefined) {
     for (const node of cascade) {
       if (node.workType !== WorkType.Goal) continue;
-      if (!isLive(node)) continue;
+      if (!isLive(delivered, node)) continue;
       // A direction with no reading is not stale, it is UNDATED. Treating it as old would make the
       // first restatement a fact about the missing field rather than about the passage of time.
       if (node.directedAtMs === undefined) continue;
@@ -215,16 +248,48 @@ export function directionOpenings(
 
   for (const domain of Object.values(Domain)) {
     if (live.has(domain)) continue;
+    // ── DIRECTION IS PACED BY THE CALENDAR, NEVER BY THE ROUND LOOP ─────────
+    //
+    // Once delivery rolls up, a domain that finishes its cascade is empty again — and without this
+    // it is handed a new direction on the very next round, which cascades, delivers, and empties
+    // again. Measured: 162 goals and 643 work items in TWO simulated days, neither of which
+    // settled. Not a livelock — every round did real work and refused nothing — but an organization
+    // that re-plans itself eighty times a day is not one either.
+    //
+    // A company decides what it is for on a CLOCK. So a domain that has had a direction gets its
+    // next one no sooner than one review interval after the last was stated.
+    //
+    // AND WITH NO CLOCK, IT GETS NONE. That is the honest reading rather than the convenient one:
+    // an organization that cannot tell time cannot know an interval has passed, and setting a new
+    // direction anyway would pace the company by how fast its loop happens to run — which is not a
+    // pace at all. Clockless callers therefore see what they always saw: one direction per domain.
+    const stamps = cascade
+      .filter((n) => n.domain === domain && n.workType === WorkType.Goal)
+      .map((n) => n.directedAtMs);
+    if (stamps.length > 0) {
+      if (clock === undefined) continue;
+      // An UNDATED prior direction blocks too: it exists, and nothing can say how long ago it was
+      // set. Treating unknown as "long enough" is the reading that manufactures a fact.
+      if (stamps.some((t) => t === undefined)) continue;
+      const latest = Math.max(...stamps.filter((t): t is number => t !== undefined));
+      if (clock.nowMs - latest < clock.reviewIntervalMs) continue;
+    }
     const executive = executiveOver(chart, departmentFor(domain));
     if (executive === undefined) continue;
     out.push({
       kind: GenerativeKind.SetDirection,
       byHatId: executive.id,
       prompt: `what should ${departmentFor(domain)} be working towards for ${domain}?`,
-      // DERIVED FROM THE DOMAIN, so the same gap yields the same id every round. A minted id would
-      // make the opening look new each time and let one domain accumulate parallel directions
-      // nobody reconciled.
-      subjectId: `direction-${domain}`,
+      // DERIVED FROM THE DOMAIN AND HOW MANY DIRECTIONS IT HAS ALREADY HAD.
+      //
+      // The domain alone was enough while a direction was set once and never finished. Now that
+      // delivery rolls up, a domain whose cascade is complete reopens — and reusing the id would
+      // have `acceptGoal` refuse a duplicate every round forever, which is this drive's recurring
+      // livelock arriving through the very change meant to give the C-suite a second week.
+      //
+      // Still DERIVED rather than minted: the same gap in the same organization yields the same id,
+      // so a re-offer within a round is the same opening rather than a new one.
+      subjectId: `direction-${domain}-${String(cascade.filter((n) => n.domain === domain && n.workType === WorkType.Goal).length + 1)}`,
       domain,
       because: `no live work carries the domain '${domain}'`,
     });
@@ -245,9 +310,10 @@ export function draftingOpenings(
   cascade: readonly CascadeNode[],
   artifacts: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
+  const delivered = deliveredSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(node)) continue;
+    if (!isLive(delivered, node)) continue;
     if (node.domain === undefined) continue;
     if (node.workType === WorkType.Goal) continue;
     const artifactId = `doc-${node.workId}`;
@@ -296,9 +362,10 @@ export function priorityOpenings(
   cascade: readonly CascadeNode[],
   priced: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
+  const delivered = deliveredSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(node)) continue;
+    if (!isLive(delivered, node)) continue;
     if (priced.has(node.workId)) continue;
     const decider = supervisorOf(chart, node.ownerHatId) ?? chart.byId.get(node.ownerHatId);
     if (decider === undefined) continue;
@@ -385,9 +452,10 @@ export function breakdownOpenings(
   alreadyRaised: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
   const hasChild = new Set(cascade.map((n) => n.parentWorkId).filter((id): id is string => id !== undefined));
+  const delivered = deliveredSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(node)) continue;
+    if (!isLive(delivered, node)) continue;
     if (hasChild.has(node.workId)) continue;
     // ONE GUARD FOR THE BOTTOM OF THE LADDER, not two. This read `if (isLeafType(...)) continue;`
     // first, and a mutation run showed that deleting it killed nothing: `nextRung` already returns
@@ -406,8 +474,17 @@ export function breakdownOpenings(
     // entry so `nextRung` can only ever hand back `task`. `isLeafType` is kept because it says what
     // is being asked — is this the bottom — and stays right if the ladder ever ends somewhere else,
     // which the `===` spelling would not. Same expression as `decompose`'s, deliberately.
-    const mustSupport = isLeafType(rung.workType) ? ("individual_contributor" as const) : nextRung(rung.workType)?.ownerLevel;
-    const owner = ownerForRung(chart, rung.ownerLevel, node.ownerHatId, mustSupport, node.domain);
+    // THE SAME QUESTION `decompose` ASKS, asked of the same function. This used to be a second copy
+    // of the formula, and a mutation-free rewrite of the ladder made the two disagree — the menu
+    // would have gone on offering breakdowns the effect path had started refusing, which is this
+    // drive's recurring livelock arriving by a new route.
+    const owner = ownerForRung(
+      chart,
+      rung.ownerLevel,
+      node.ownerHatId,
+      supportRequirementFor(rung.workType),
+      node.domain,
+    );
     if (owner === undefined) {
       // AND THE REFUSAL IS NOT DISCARDED. Work that cannot be broken down for want of a hat is a
       // SUPPLY gap, which is a different hat's act — so the organization notices it cannot staff a
@@ -460,9 +537,10 @@ export function submissionOpenings(
   attempts: ReadonlyMap<string, number>,
   maxAttempts: number,
 ): readonly GenerativeOpening[] {
+  const delivered = deliveredSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(node)) continue;
+    if (!isLive(delivered, node)) continue;
     if (!isLeafType(node.workType)) continue;
     if (node.assigneeHatId === undefined) continue;
     const tried = attempts.get(node.workId) ?? 0;
@@ -511,9 +589,10 @@ export function staffingOpenings(
   alreadyRaised: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
   if (chart.byId.get(resourceAuthorityHatId) === undefined) return [];
+  const delivered = deliveredSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(node)) continue;
+    if (!isLive(delivered, node)) continue;
     if (!isLeafType(node.workType)) continue;
     if (node.assigneeHatId !== undefined) continue;
     const contributors = hatsAtLevel(chart, "individual_contributor").filter(

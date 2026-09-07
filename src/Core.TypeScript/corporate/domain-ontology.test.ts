@@ -65,12 +65,22 @@ function shipCheckout(domain: Domain | undefined) {
 }
 
 describe("THE MEASUREMENT THAT FORCED THIS MODULE", () => {
-  test("WITHOUT a domain, a product goal is owned by governance and cannot be staffed", () => {
-    // Recorded, not fixed. This is what every cascade did before work carried a domain, and it is
-    // the behaviour a caller still gets by saying nothing about what the work is about.
+  test("WITHOUT a domain, a product goal is owned by governance — and staffed by it", () => {
+    // Recorded, not fixed. This is what a caller still gets by saying nothing about what the work
+    // is about: "ship checkout" handed to the Hat Approval Steward because governance sorts first.
+    //
+    // IT NO LONGER DIES THERE, and that is a change worth stating rather than quietly dropping.
+    // The ladder bends now, so capability expansion staffs the whole thing out of its own
+    // contributors. Misrouted work that COMPLETES is in one way worse than misrouted work that
+    // stalls — a stall is loud — which is exactly why `domainRouting` reports every fallback.
     const before = shipCheckout(undefined);
-    expect(before.steps[0]?.owner).toBe("hat_approval_steward");
-    expect(before.refused).toContain("cannot be staffed");
+    expect(before.refused).toBeUndefined();
+    expect(before.steps.map((s) => s.owner)).toEqual([
+      "hat_approval_steward",
+      "hat_designer",
+      "hat_designer",
+    ]);
+    expect(before.steps.map((s) => s.owner)).not.toContain("engineering_director");
   });
 
   test("WITH one, it goes to engineering and staffs all the way down", () => {

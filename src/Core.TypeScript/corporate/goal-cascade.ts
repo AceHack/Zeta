@@ -227,6 +227,69 @@ export function childrenOf(cascade: Cascade, workId: string): readonly CascadeNo
  * reports up to X"), which names the real gap, rather than a vaguer one here about a rung that has
  * not been reached yet.
  */
+/**
+ * What an owner of `workType` must be able to reach, if anything.
+ *
+ * EXPORTED BECAUSE TWO CALLERS NEED IT AND THERE MAY ONLY BE ONE ANSWER. `decompose` asks it to
+ * pick an owner, and `generative-work.breakdownOpenings` asks it to decide whether to OFFER the
+ * decomposition at all — and the menu's own rule is that it must never offer an act the
+ * organization will refuse. When the two computed it separately they disagreed the moment one
+ * changed, and the disagreement is silent in the worse direction: an opening offered for a rung the
+ * effect path then refuses, which is this drive's recurring livelock.
+ *
+ * Only a LEAF carries a requirement, and it is that the owner can reach a contributor. A non-leaf
+ * owner needs nothing: with a ladder that bends, a director with no manager and no lead owns its
+ * own projects and its own tasks.
+ */
+export function supportRequirementFor(workType: WorkType): HatLevel | undefined {
+  return isLeafType(workType) ? "individual_contributor" : undefined;
+}
+
+/**
+ * The levels that can OWN a rung of the cascade, most senior first.
+ *
+ * An individual contributor is deliberately absent. An IC EXECUTES work — it is the assignee — and
+ * a task owned by one could never be assigned, because `assignableBy` looks for contributors
+ * BENEATH the owner and an IC has none. Ownership and execution are different jobs, and the ladder
+ * is about the first.
+ */
+const OWNING_LEVELS: readonly HatLevel[] = ["executive_board", "c_suite", "director", "manager", "lead"];
+
+/** Can this hat actually reach somebody at `level`? */
+function reaches(chart: OrgChart, hat: OrgHat, level: HatLevel): boolean {
+  return hatsAtLevel(chart, level).some((c) => c.id !== hat.id && reportsUpTo(chart, c.id, hat.id));
+}
+
+/**
+ * Who owns the next rung down — searched against the chart the organization ACTUALLY HAS.
+ *
+ * ── THE MEASUREMENT THAT FORCED THE LADDER TO BEND ───────────────────────────
+ * `CASCADE_RUNGS` names one owner level per work type: initiative to director, project to manager,
+ * task to lead. That is a six-level organization, and this one is not. Counted across the seeded
+ * chart's sixteen departments:
+ *
+ *   - **six directors have no manager beneath them** (architecture, security, documentation,
+ *     observability, the RMO, the policy steward)
+ *   - **nine managers have no lead beneath them**
+ *   - **only four departments have a lead rung at all**
+ *
+ * Most departments are director then contributors, directly. That is not a defect in the seed; it
+ * is what the reference organization looks like, and inventing an `architecture_manager` to satisfy
+ * a table would be fabricating an org chart to make a loop terminate.
+ *
+ * So the LADDER bends. A rung with nobody at its nominal level is owned by the nearest supervisory
+ * level below it, and failing that BY THE PARENT ITSELF — a director with no manager owns its own
+ * projects, which is exactly what happens in a small department and exactly what the reference
+ * shows. Accountability rolls up; it never evaporates.
+ *
+ * ── `mustSupportLevel` IS NOW A FILTER, NOT A TIE-BREAK ──────────────────────
+ * It used to nudge the sort: a candidate that could carry the next rung sorted ahead of one that
+ * could not, and one that could not still won when it was alone. That produced owners who could
+ * staff nothing — the failure surfaced a rung later as an assignment refusal naming a hat nobody
+ * had chosen. As a filter it makes the search DESCEND instead: if nobody at this level can reach a
+ * contributor, the rung belongs further down, and that is a question this function can answer
+ * rather than one it should pass on.
+ */
 export function ownerForRung(
   chart: OrgChart,
   level: HatLevel,
@@ -234,56 +297,96 @@ export function ownerForRung(
   mustSupportLevel?: HatLevel,
   domain?: Domain,
 ): OrgHat | undefined {
-  const candidates = hatsAtLevel(chart, level).filter(
-    (h) => h.id !== parentHatId && reportsUpTo(chart, h.id, parentHatId),
-  );
-  if (candidates.length === 0) return undefined;
+  const start = OWNING_LEVELS.indexOf(level);
+  const ladder = start < 0 ? [level] : OWNING_LEVELS.slice(start);
 
-  // THE DOMAIN'S OWN DEPARTMENT FIRST, and only among candidates already in the delegating line.
-  //
-  // This is the whole fix: the chart says who reports to whom and never said who does what, so a
-  // "ship checkout" initiative went to the Hat Approval Steward because governance sorted first.
-  // Preferring the owning department makes the choice a property of the WORK rather than of the
-  // alphabet.
-  //
-  // Falling back when the owning department is unreachable from this parent is deliberate and is
-  // reported by `domainMatch` rather than swallowed — a CTO's goal genuinely cannot delegate to a
-  // product director who reports to the CEO, and refusing there would stall real work over an
-  // org-shape fact the caller cannot fix from the cascade.
-  if (domain !== undefined) {
-    const owningDept = departmentFor(domain);
-    const inDomain = candidates.filter((h) => h.departmentId === owningDept);
-    if (inDomain.length > 0) return best(chart, inDomain, parentHatId, mustSupportLevel);
+  for (const rung of ladder) {
+    const candidates = hatsAtLevel(chart, rung).filter(
+      (h) =>
+        h.id !== parentHatId &&
+        reportsUpTo(chart, h.id, parentHatId) &&
+        (mustSupportLevel === undefined || reaches(chart, h, mustSupportLevel)),
+    );
+    if (candidates.length === 0) continue;
+
+    // AMONG EQUALS, PREFER THE ONE THAT CAN DELEGATE FURTHER — a soft preference, not a rule.
+    //
+    // The first version of the bending ladder dropped this along with the hard requirement it used
+    // to be, and a fixture caught the loss immediately: a domainless goal at the CTO went to
+    // whichever director sorted first rather than to one with a team beneath it, and the task ended
+    // up owned three levels higher than it needed to be. Delegating deeper is better than a
+    // director doing the work itself, and it costs nothing to prefer.
+    //
+    // A PREFERENCE and not a filter, because in ten of the sixteen departments NOBODY satisfies it
+    // — that is what made it wrong as a requirement, and it is still right as a tie-break.
+    const below = OWNING_LEVELS[OWNING_LEVELS.indexOf(rung) + 1];
+
+    // THE DOMAIN'S OWN DEPARTMENT FIRST, and only among candidates already in the delegating line.
+    //
+    // This is the whole fix `domain-ontology.ts` exists for: the chart says who reports to whom and
+    // never said who does what, so a "ship checkout" initiative went to the Hat Approval Steward
+    // because governance sorted first. Preferring the owning department makes the choice a property
+    // of the WORK rather than of the alphabet.
+    //
+    // Falling back when the owning department is unreachable from this parent is deliberate and is
+    // reported by `domainMatch` rather than swallowed — a CTO's goal genuinely cannot delegate to a
+    // product director who reports to the CEO, and refusing there would stall real work over an
+    // org-shape fact the caller cannot fix from the cascade.
+    if (domain !== undefined) {
+      const owningDept = departmentFor(domain);
+      const inDomain = candidates.filter((h) => h.departmentId === owningDept);
+      if (inDomain.length > 0) return best(chart, inDomain, parentHatId, below);
+    }
+    return best(chart, candidates, parentHatId, below);
   }
 
-  return best(chart, candidates, parentHatId, mustSupportLevel);
+  // THE PARENT WEARS THE RUNG ITSELF, last and only when it can carry it.
+  //
+  // Not a consolation prize: in a department with no manager, the director IS the project owner,
+  // and saying so is more honest than refusing the decomposition and reporting an organization that
+  // cannot plan its own work. The support check still applies — an owner who cannot reach a
+  // contributor cannot staff the work, and handing it to them would move the refusal one rung later
+  // rather than answering it.
+  const parent = chart.byId.get(parentHatId);
+  if (parent === undefined) return undefined;
+  // AND ONLY IF THE PARENT IS SENIOR ENOUGH TO WEAR IT. Caught by a falsifier the first version
+  // failed: `ownerForRung(chart, "manager", "backend_implementer")` handed the manager rung to the
+  // individual contributor itself. A hat wearing a rung ABOVE its own level is not a small
+  // department improvising, it is the hierarchy inverting — and every guard downstream that asks
+  // "does this owner outrank that one" would then be reasoning about a lie.
+  const parentRank = OWNING_LEVELS.indexOf(parent.level);
+  if (parentRank < 0 || parentRank > OWNING_LEVELS.indexOf(level)) return undefined;
+  if (mustSupportLevel !== undefined && !reaches(chart, parent, mustSupportLevel)) return undefined;
+  return parent;
 }
 
-/** Nearest, then able to carry the next rung, then ORDINAL. Shared by both paths above. */
+/**
+ * Nearest, then able to delegate further, then ORDINAL.
+ *
+ * `preferReach` is the level one rung below the one being filled. A candidate that can reach it
+ * sorts ahead of one that cannot — but neither is excluded, because in most of this chart's
+ * departments nobody can, and a requirement nobody satisfies is a gate that never opens. The HARD
+ * requirement lives in `ownerForRung`'s filter and applies only to leaves.
+ */
 function best(
   chart: OrgChart,
   candidates: readonly OrgHat[],
   parentHatId: string,
-  mustSupportLevel?: HatLevel,
+  preferReach?: HatLevel,
 ): OrgHat | undefined {
   const distance = (h: OrgHat): number => supervisorChainOf(chart, h.id).indexOf(parentHatId);
-  const supports = (h: OrgHat): boolean =>
-    mustSupportLevel === undefined ||
-    hatsAtLevel(chart, mustSupportLevel).some((c) => c.id !== h.id && reportsUpTo(chart, c.id, h.id));
-
+  const delegates = (h: OrgHat): boolean => preferReach !== undefined && reaches(chart, h, preferReach);
   return [...candidates].sort((a, b) => {
     const byDistance = distance(a) - distance(b);
     if (byDistance !== 0) return byDistance;
-    // Equal distance: the one that can carry the next rung wins.
-    const bySupport = Number(supports(b)) - Number(supports(a));
-    if (bySupport !== 0) return bySupport;
+    const byDelegation = Number(delegates(b)) - Number(delegates(a));
+    if (byDelegation !== 0) return byDelegation;
     // STILL EQUAL: ORDINALLY, never by the order the seed happens to declare hats in.
     //
     // With eight departments there was usually one candidate and this never showed. At the
     // reference's sixteen there are many, and the winner was whichever the file listed first — so
     // two organizations of identical SHAPE picked different owners because someone reordered a
-    // list. Measured when the seed grew: a lead was chosen that could staff nothing, and the
-    // failure surfaced a rung later as an assignment refusal naming a hat nobody had chosen.
+    // list.
     if (a.id === b.id) return 0;
     return a.id < b.id ? -1 : 1;
   })[0];
@@ -398,10 +501,14 @@ export function restateDirection(
 /**
  * Decompose a node into the rung below it.
  *
- * REFUSES rather than inventing an owner. If no hat at the child rung's level reports up to the
- * parent's owner, the work cannot be staffed inside that reporting line, and saying so is the
- * honest answer — silently attaching it to whoever was nearest would produce a plan the
- * organization cannot execute and, worse, cannot detect that it cannot execute.
+ * REFUSES rather than inventing an owner. `ownerForRung` will bend the ladder — down the
+ * supervisory levels, then to the parent itself — so by the time it comes back empty there is
+ * genuinely nobody in this reporting line who can hold the work, and saying so is the honest
+ * answer. Silently attaching it to whoever was nearest would produce a plan the organization cannot
+ * execute and, worse, cannot detect that it cannot execute.
+ *
+ * In practice that leaves ONE cause, and the message names it: a LEAF whose line contains no
+ * individual contributor. Every rung above a leaf can always fall back to the parent.
  */
 export function decompose(
   cascade: Cascade,
@@ -438,9 +545,17 @@ export function decompose(
   // switched off at the one rung where the work is actually done. A leaf is executed by an
   // individual contributor (`assign` says so), so that is what its owner must have, and it is
   // derived from `isLeafType` rather than named as a special case.
-  const mustSupport = isLeafType(rung.workType)
-    ? ("individual_contributor" as const)
-    : nextRung(rung.workType)?.ownerLevel;
+  // ONLY THE LEAF RUNG CARRIES A SUPPORT REQUIREMENT NOW.
+  //
+  // It used to demand that a non-leaf owner be able to reach the NEXT RUNG'S level — that a project
+  // owner have a lead beneath it, say. With a ladder that bends, that requirement is simply false:
+  // a director with no manager and no lead owns its own projects and its own tasks, and its
+  // contributors do the work. Keeping the demand would refuse decomposition in ten of the sixteen
+  // departments to protect a rung structure the organization does not have.
+  //
+  // Read from `supportRequirementFor` rather than computed here, because the generative menu asks
+  // the same question to decide whether to OFFER this act, and two copies of one rule disagree.
+  const mustSupport = supportRequirementFor(rung.workType);
   // The children's domain decides who owns them. They all share one here — a decompose that mixed
   // domains would need one owner per domain, and that is a different verb (delegating ACROSS
   // departments) than splitting work within one.
@@ -449,7 +564,14 @@ export function decompose(
   if (owner === undefined) {
     return {
       ok: false,
-      reason: `no ${rung.ownerLevel} hat reports up to '${parent.ownerHatId}', so this ${rung.workType} cannot be staffed`,
+      // NAMES THE REAL CAUSE, not the nominal rung. It used to read "no lead hat reports up to X",
+      // which stopped being true the moment the ladder bent: the search descends past lead and past
+      // the parent, so a reader chasing "we need a lead" was chasing a hat that would not have
+      // helped. What is actually missing is somebody to DO the work.
+      reason:
+        mustSupport === undefined
+          ? `nobody in '${parent.ownerHatId}'s line can own this ${rung.workType}, so it cannot be staffed`
+          : `no ${mustSupport} reports up to '${parent.ownerHatId}', so this ${rung.workType} cannot be staffed`,
     };
   }
 
@@ -615,6 +737,50 @@ export function isDelivered(cascade: Cascade, workId: string): boolean {
   const live = children.filter((c) => c.state !== WorkState.Canceled);
   if (live.length === 0) return false;
   return live.every((c) => isDelivered(cascade, c.workId));
+}
+
+/**
+ * Every work id whose subtree is delivered, in ONE pass.
+ *
+ * `isDelivered` answers the same question per item and recurses to the leaves each time. That is
+ * fine for a report and ruinous for a menu: the generative surface asks it of every node, for every
+ * hat, in every round, so a cadence over a growing cascade went quadratic-and-worse and a seven-day
+ * run stopped finishing. Same answer, computed once, memoised on the way up.
+ *
+ * The semantics are `isDelivered`'s, deliberately and not approximately — a childless node is
+ * delivered only if it is a DONE leaf, and a node whose children are all cancelled is not delivered
+ * at all. A faster function that answered a slightly different question would be the worse defect.
+ */
+export function deliveredSet(cascade: Cascade): ReadonlySet<string> {
+  const children = new Map<string, CascadeNode[]>();
+  for (const node of cascade.nodes) {
+    if (node.parentWorkId === undefined) continue;
+    const bucket = children.get(node.parentWorkId);
+    if (bucket === undefined) children.set(node.parentWorkId, [node]);
+    else bucket.push(node);
+  }
+  const memo = new Map<string, boolean>();
+  const walk = (node: CascadeNode): boolean => {
+    const known = memo.get(node.workId);
+    if (known !== undefined) return known;
+    // Guards a cascade whose parent links form a cycle. `buildOrgChart` refuses a cyclic chart and
+    // nothing here builds one, but an unguarded recursion over caller-supplied data is a hang
+    // waiting for the first malformed input, and a hang is the one failure a test cannot report.
+    memo.set(node.workId, false);
+    const kids = children.get(node.workId) ?? [];
+    let result: boolean;
+    if (kids.length === 0) {
+      result = isLeafType(node.workType) && node.state === WorkState.Done;
+    } else {
+      const live = kids.filter((c) => c.state !== WorkState.Canceled);
+      result = live.length > 0 && live.every((c) => walk(c));
+    }
+    memo.set(node.workId, result);
+    return result;
+  };
+  const out = new Set<string>();
+  for (const node of cascade.nodes) if (walk(node)) out.add(node.workId);
+  return out;
 }
 
 /** The chain of work ids from `workId` up to its goal, self first. */

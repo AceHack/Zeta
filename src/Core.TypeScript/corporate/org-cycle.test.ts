@@ -8,6 +8,7 @@
 
 import { describe, expect, test } from "bun:test";
 import { firstContributorUnder, runOrgCycle, type OrgCycleDeps } from "./org-cycle";
+import { isLeafType } from "./goal-cascade";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { accountableHatsFor, childrenOf, isDelivered, nodeById, WorkState, WorkType } from "./goal-cascade";
@@ -426,13 +427,19 @@ describe("the cycle refuses rather than pretending", () => {
     expect(report.delivered).toBe(false);
   });
 
-  test("a goal whose owner cannot be staffed downward is refused, not invented around", () => {
-    // The CFO has no directors beneath it in this seed.
+  test("a goal whose line has no contributors is refused at the LEAF, not invented around", () => {
+    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody.
+    //
+    // This used to refuse at the INITIATIVE for want of a director, and the goal had no children at
+    // all. The ladder bends now: the cost controller owns the CFO's initiative and its project,
+    // because that is what happens in a department of one. What the line still cannot do is find
+    // anybody to DO the work, and that is where it stops.
     const report = runOrgCycle(deps({ plan: { ...deps().plan, acceptingHatId: "cfo" } }));
     expect(report.refusals.some((r) => r.includes("cannot be staffed"))).toBe(true);
     expect(report.delivered).toBe(false);
-    // The goal exists — the C-suite did accept it — but nothing hangs off it.
-    expect(childrenOf(report.cascade, report.goalWorkId)).toHaveLength(0);
+    // The plan exists as far as the organization can carry it, and stops where it genuinely must.
+    expect(childrenOf(report.cascade, report.goalWorkId).length).toBeGreaterThan(0);
+    expect(report.cascade.nodes.filter((n) => isLeafType(n.workType))).toEqual([]);
   });
 
   test("staffing that lands outside the owning line is REFUSED at assignment", () => {

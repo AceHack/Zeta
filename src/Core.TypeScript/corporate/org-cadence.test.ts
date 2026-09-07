@@ -23,8 +23,9 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { EMPTY_BOARD } from "./discussion-anchor";
 import { EMPTY_CALENDAR } from "./work-schedule";
-import { WorkType } from "./goal-cascade";
+import { deliveredSet, WorkType } from "./goal-cascade";
 import { directionOpenings, GenerativeKind } from "./generative-work";
+import { Domain } from "./domain-ontology";
 import type { DriveDeps, DriveState } from "./org-drive";
 import { GateOutcome } from "./quality-gate";
 import type { OrgChooser } from "./org-decision";
@@ -228,8 +229,35 @@ describe("A WEEK, END TO END, FROM AN EMPTY COMPANY", () => {
   const nodes = week.state.cascade.nodes;
 
   test("it decides what it is for, breaks that down, documents it and prices it", () => {
-    expect(nodes.filter((n) => n.workType === WorkType.Goal)).toHaveLength(16);
-    expect(nodes.length).toBeGreaterThan(40);
+    // SIXTEEN GOALS WAS A CENSUS OF A COMPANY THAT COULD NOT FINISH ANYTHING. Now that delivery
+    // rolls up, a domain whose cascade completes is empty again and its executive sets a new
+    // direction the next day — so the count is many times sixteen and grows with the run length.
+    // Asserted as the property instead: every domain has been pointed somewhere, and no domain has
+    // two live directions at once.
+    const goals = nodes.filter((n) => n.workType === WorkType.Goal);
+    expect(new Set(goals.map((g) => g.domain))).toEqual(new Set(Object.values(Domain)));
+    expect(goals.length).toBeGreaterThan(16);
+    const liveByDomain = new Map<string, number>();
+    for (const g of goals) {
+      if (g.state === "done" || g.state === "canceled") continue;
+      if (!nodes.some((n) => n.parentWorkId === g.workId)) continue;
+      const delivered = deliveredSet({ nodes }).has(g.workId);
+      if (delivered) continue;
+      liveByDomain.set(g.domain ?? "?", (liveByDomain.get(g.domain ?? "?") ?? 0) + 1);
+    }
+    for (const [, n] of liveByDomain) expect(n).toBeLessThanOrEqual(1);
+  });
+
+  test("AND A SECOND WEEK'S WORTH OF DIRECTION — the C-suite keeps deciding", () => {
+    // The gap this closes, stated as the measurement that exposed it. Before delivery rolled up,
+    // days two through seven were sixteen restatements and nothing else: a company that finishes
+    // its work and then has nothing to say about it. Every day now sets NEW directions as domains
+    // complete, on top of the restatements.
+    const perDay = week.periods.map((p) =>
+      p.rounds.flatMap((r) => r.ticks).filter((t) => t.chosen?.kind === "set_direction" && t.effect.kind === "direction").length,
+    );
+    expect(perDay[0]).toBe(16);
+    expect(perDay.slice(1).every((n) => n > 0)).toBe(true);
   });
 
   test("AND IT FINISHES SOMETHING — through the gates, not by declaring itself done", () => {
@@ -250,18 +278,18 @@ describe("A WEEK, END TO END, FROM AN EMPTY COMPANY", () => {
     expect(refused.map((t) => `${t.hatId}:${t.chosen?.kind}:${t.refusals[0]}`)).toEqual([]);
   });
 
-  test("THE WORK IT COULD NOT STAFF IS REPORTED, not left sitting open in silence", () => {
-    // Three of the seed's four leads supervise nobody, so three of its four tasks can never be
-    // assigned. Before this the organization looked settled while three quarters of what it had
-    // decided to do was unstaffable — every step correct, the aggregate wrong, and silent.
-    const raised = new Set(week.state.view.signals.map((s) => s.title));
-    const orphanedOwners = new Set(
-      nodes
-        .filter((n) => n.workType === WorkType.Task && n.assigneeHatId === undefined)
-        .map((n) => `staff:${n.ownerHatId}`),
-    );
-    expect(orphanedOwners.size).toBeGreaterThan(0);
-    for (const subject of orphanedOwners) expect(raised.has(subject)).toBe(true);
+  test("EVERY TASK IT CREATED, IT STAFFED — the hollow-lead gap is closed, not merely reported", () => {
+    // Three of the seed's four leads supervise nobody, and tasks are owned at lead level, so three
+    // of every four tasks used to be unstaffable. Reporting that to the RMO was an improvement on
+    // silence and was never the answer: the ladder bends now, so a department with no lead staffs
+    // its work out of the contributors it actually has.
+    //
+    // The reporting path is NOT dead — `generative-work.test.ts` pins it against `cost_controller`,
+    // a manager with nobody at all beneath it. What changed is that it stopped firing on ten of
+    // sixteen departments that were working fine.
+    const tasks = nodes.filter((n) => n.workType === WorkType.Task);
+    expect(tasks.length).toBeGreaterThan(0);
+    expect(tasks.filter((n) => n.assigneeHatId === undefined)).toEqual([]);
   });
 
   test("every unfinished task is either staffed or reported — none is merely forgotten", () => {
@@ -306,23 +334,32 @@ describe("WHEN THE GATES SAY NO — the bound, and the fact somebody is told", (
     expect(out.state.cascade.nodes.filter((n) => n.state === "done")).toEqual([]);
   });
 
-  test("THE SUBMISSION IS BOUNDED — twice, not forever", () => {
+  test("THE SUBMISSION IS BOUNDED — twice PER ITEM, not forever", () => {
+    // Per item rather than in total: the organization staffs every department now, so a run this
+    // long has many tasks in flight and a single total would be a census that moves whenever the
+    // chart does.
     const attempts = [...(out.state.view.gateAttempts?.counts.values() ?? [])];
-    expect(attempts).toEqual([MAX]);
+    expect(attempts.length).toBeGreaterThan(0);
+    expect(attempts.every((n) => n === MAX)).toBe(true);
     const submissions = out.periods
       .flatMap((p) => p.rounds)
       .flatMap((r) => r.ticks)
       .filter((t) => t.chosen?.kind === "submit_work");
-    expect(submissions).toHaveLength(MAX);
+    expect(submissions).toHaveLength(attempts.length * MAX);
   });
 
   test("AND SOMEBODY IS TOLD — exhaustion is a blocker, routed and raised ONCE", () => {
     // The bound alone was a counter nobody read at the limit: the count reached the maximum, the
     // opening closed, and the work sat open in silence. A reader with no writer.
     const blocked = out.state.view.signals.filter((s) => s.title === BlockerKind.ReleaseBlocked);
-    expect(blocked).toHaveLength(1);
-    expect(blocked[0]?.workItemId).toBeDefined();
-    expect(blocked[0]?.toHatId).not.toBe(blocked[0]?.fromHatId);
+    const exhausted = [...(out.state.view.gateAttempts?.counts.entries() ?? [])]
+      .filter(([, n]) => n >= MAX)
+      .map(([id]) => id);
+    // ONE PER EXHAUSTED ITEM, and no more. Both halves matter: a missing one is work stuck in
+    // silence, and a second is the same blocker re-raised every round.
+    expect(new Set(blocked.map((s) => s.workItemId))).toEqual(new Set(exhausted));
+    expect(blocked).toHaveLength(exhausted.length);
+    expect(blocked.every((s) => s.toHatId !== s.fromHatId)).toBe(true);
   });
 
   test("...and it still SETTLES — a refusal is not a reason to spin", () => {

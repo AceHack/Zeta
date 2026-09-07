@@ -23,6 +23,7 @@ import {
   type Cascade,
 } from "./goal-cascade";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
+import { Domain } from "./domain-ontology";
 import { SEED_HATS } from "./org-seed";
 
 const chart = (() => {
@@ -131,25 +132,41 @@ describe("ownership is derived from the graph", () => {
     expect(ownerForRung(chart, "manager", "backend_implementer")).toBeUndefined();
   });
 
-  test("a tie is broken toward an owner who can carry the NEXT rung", () => {
-    // The regression this pins was live and silent. Three directors report to the CTO at equal
-    // distance — architecture, engineering, security — and only engineering has a manager beneath
-    // it. Without the tie-break, declaration order picked `architecture_director`, so every goal
-    // the CTO accepted produced an initiative that could never become a project: a plan that read
-    // as staffed and was not, failing one rung after the decision was made.
-    const blind = ownerForRung(chart, "director", "cto");
-    const aware = ownerForRung(chart, "director", "cto", "manager");
-    expect(aware?.id).toBe("engineering_director");
-    // The two genuinely differ here, which is what makes this test load-bearing rather than
-    // decorative — if they agreed, the tie-break would be untested by construction.
-    expect(blind?.id).not.toBe(aware?.id);
+  test("a tie is broken toward an owner who can DELEGATE the rung below", () => {
+    // Five directors report to the CTO at equal distance — architecture, engineering, QA
+    // engineering, security, documentation — and only two have a manager beneath them.
+    // `architecture_director` sorts first alphabetically, so without this preference every
+    // domainless goal the CTO accepted landed there and the whole cascade was owned by one hat
+    // three levels above the people doing it.
+    //
+    // ASSERTED WITHOUT `mustSupportLevel`, which is what makes it a preference rather than the
+    // filter it used to be confused with: nothing here REQUIRES a manager, and the ordering still
+    // prefers one. `architecture_director` is named as the loser so the test fails if the
+    // preference silently stops applying rather than merely changing its mind.
+    const chosen = ownerForRung(chart, "director", "cto");
+    expect(chosen?.id).toBe("engineering_director");
+    expect(chosen?.id).not.toBe("architecture_director");
   });
 
-  test("distance still beats support — a nearer owner is not skipped for a further one", () => {
-    // The tie-break is a TIE break, and this needs a chart the seed cannot provide: a nearer
-    // candidate that CANNOT support the next rung alongside a further one that can. In the seed
-    // every such pair happens to tie on distance, so the seed cannot tell the two orderings apart.
-    // Purpose-built rather than contorting the seed to make a witness.
+  test("...and the preference is NOT a requirement — a department with no manager still gets an owner", () => {
+    // Ten of this chart's sixteen departments have no manager rung at all. A filter here would
+    // refuse decomposition in every one of them to protect a structure the organization does not
+    // have, which is a gate that cannot open.
+    const owner = ownerForRung(chart, "director", "cto", undefined, Domain.Architecture);
+    expect(owner?.id).toBe("architecture_director");
+  });
+
+  test("`mustSupportLevel` is a REQUIREMENT — distance does not override it", () => {
+    // The distinction this pins was the defect. `mustSupportLevel` used to nudge the sort, so a
+    // candidate that could not support the next rung still won when it was nearest — and the
+    // failure surfaced a rung later, as an assignment refusal naming a hat nobody had chosen.
+    //
+    // A caller saying "this owner must be able to reach a manager" is stating a requirement, not a
+    // preference, and honouring it is what lets the search DESCEND to a level that can instead of
+    // handing back an owner it already knows cannot.
+    //
+    // Purpose-built rather than contorted from the seed: it needs a nearer candidate that CANNOT
+    // support alongside a further one that can, and in the seed every such pair ties on distance.
     const built = buildOrgChart([
       { id: "root", name: "Board", level: "executive_board", departmentId: "d" },
       // Distance 1 from root, and no manager beneath it.
@@ -162,19 +179,50 @@ describe("ownership is derived from the graph", () => {
     expect(built.ok).toBe(true);
     if (!built.ok) return;
 
-    // The nearer director wins even though it cannot carry the rung below. Ordering by support
-    // first would hand the work over the head of the hat that is actually closest.
-    expect(ownerForRung(built.chart, "director", "root", "manager")?.id).toBe("near_dir");
+    // The one that satisfies the requirement wins, even though it is further away.
+    expect(ownerForRung(built.chart, "director", "root", "manager")?.id).toBe("far_dir");
+
+    // AND DISTANCE STILL DECIDES AMONG CANDIDATES THAT ALL QUALIFY — otherwise this would have
+    // replaced one arbitrary rule with another. Drop the requirement and the nearer one wins.
+    expect(ownerForRung(built.chart, "director", "root")?.id).toBe("near_dir");
+  });
+
+  test("THE LADDER BENDS: a rung with nobody at its level falls to the parent itself", () => {
+    // Six of this chart's directors have no manager beneath them and no lead either, so a project
+    // in those departments has nobody at its nominal rung. Refusing there would stall ten of
+    // sixteen departments over a structure the reference organization does not have — so the
+    // director owns its own projects, which is what happens in a small department.
+    expect(ownerForRung(chart, "manager", "architecture_director")?.id).toBe("architecture_director");
+  });
+
+  test("...but NEVER to a hat too junior to wear it", () => {
+    // Caught by this test on the first version of the bending ladder: the manager rung was handed
+    // to the individual contributor itself. A hat wearing a rung above its own level is not a small
+    // department improvising, it is the hierarchy inverting.
+    expect(ownerForRung(chart, "manager", "backend_implementer")).toBeUndefined();
   });
 });
 
 describe("decomposition refuses rather than inventing", () => {
-  test("a goal whose owner has no director beneath it cannot be staffed", () => {
-    // The CFO has no directors reporting to it in this seed.
+  test("A LINE WITH NO CONTRIBUTORS FAILS AT THE LEAF, not at the top", () => {
+    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody.
+    //
+    // This used to refuse at the INITIATIVE, for want of a director. That was the rigid ladder
+    // talking: the honest answer is that the CFO's initiative and project are the cost
+    // controller's, and the thing this line genuinely cannot do is find anyone to DO the work.
+    // Refusing three rungs early hid which fact was missing.
     let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "cost", acceptingHatId: "cfo" }));
-    const r = decompose(c, chart, "g", [{ workId: "i", title: "x" }]);
+    c = must(decompose(c, chart, "g", [{ workId: "i", title: "x" }]));
+    expect(nodeById(c, "i")?.ownerHatId).toBe("cost_controller");
+    c = must(decompose(c, chart, "i", [{ workId: "p", title: "y" }]));
+    expect(nodeById(c, "p")?.ownerHatId).toBe("cost_controller");
+
+    const r = decompose(c, chart, "p", [{ workId: "t", title: "z" }]);
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toContain("cannot be staffed");
+    // AND THE MESSAGE NAMES THE REAL CAUSE. It used to say "no lead hat reports up to X", which
+    // sent a reader looking for a lead that would not have helped — the search descends past lead
+    // and past the parent. What is missing is somebody to do the work.
+    if (!r.ok) expect(r.reason).toContain("no individual_contributor reports up to 'cost_controller'");
   });
 
   test("decomposing into zero children is refused", () => {
