@@ -26,10 +26,15 @@ let private ok r =
     | Ok v -> v
     | Error e -> failwithf "%A" e
 
-let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: ZetaFsFreeze.Volume -> unit) =
+let private withVolumeCoherence
+    (store: string)
+    (coherence: ZetaFsMutbuf.Coherence)
+    (clock: ISimulationEnvironment)
+    (f: ZetaFsFreeze.Volume -> unit)
+    =
     ensureHasher ()
     FileSystem.Register(InMemoryFileSystem())
-    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let mutbuf = ZetaFsMutbuf.create store coherence
     let volume = ZetaFsFreeze.createManualStreamWith store mutbuf None clock
 
     try
@@ -37,6 +42,9 @@ let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: 
     finally
         ZetaFsFreeze.dispose volume
         FileSystem.Reset()
+
+let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: ZetaFsFreeze.Volume -> unit) =
+    withVolumeCoherence store ZetaFsMutbuf.Coherence.Shared clock f
 
 let private withVolume (store: string) (f: ZetaFsFreeze.Volume -> unit) =
     withVolumeClock store (Environment.createVirtual 21L :> ISimulationEnvironment) f
@@ -414,3 +422,53 @@ let ``Ascii rename to Notes.md is Confusable when notes.md is live`` () =
         | Error(ZetaFsPosixVfs.Confusable existing) ->
             Assert.True(sameBytes (utf8 "notes.md") existing)
         | other -> Assert.Fail(sprintf "Ascii rename onto fold collision must be Confusable, got %A" other))
+
+[<Fact>]
+let ``Shared open: pwrite on one fd is visible to the other without close`` () =
+    withVolume "/vfs-open-shared" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let node, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        let fdA = ok (ZetaFsPosixVfs.openFile mount1 node)
+        let fdB = ok (ZetaFsPosixVfs.openFile mount1 node)
+        Assert.Equal(3, ok (ZetaFsPosixVfs.pwriteFd mount1 fdA 0L [| 1uy; 2uy; 3uy |]))
+        let buf = Array.zeroCreate 8
+        Assert.Equal(3, ok (ZetaFsPosixVfs.preadFd mount1 fdB 0L buf))
+        Assert.Equal(1uy, buf.[0])
+        match ZetaFsPosixVfs.close mount1 fdA with
+        | Error e -> Assert.Fail(sprintf "close A: %A" e)
+        | Ok() -> ()
+        match ZetaFsPosixVfs.close mount1 fdB with
+        | Error e -> Assert.Fail(sprintf "close B: %A" e)
+        | Ok() -> ()
+        match ZetaFsPosixVfs.openFile mount1 (ZetaFsPosixVfs.root mount1) with
+        | Error(ZetaFsPosixVfs.Eisdir _) -> ()
+        | other -> Assert.Fail(sprintf "open dir must be Eisdir, got %A" other))
+
+[<Fact>]
+let ``CloseToOpen: writer publish is last-close; other fd does not see it until reopen`` () =
+    let clock = Environment.createVirtual 23L :> ISimulationEnvironment
+    withVolumeCoherence "/vfs-open-cto" ZetaFsMutbuf.Coherence.CloseToOpen clock (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let node, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        let fdA = ok (ZetaFsPosixVfs.openFile mount1 node)
+        let fdB = ok (ZetaFsPosixVfs.openFile mount1 node)
+        Assert.Equal(3, ok (ZetaFsPosixVfs.pwriteFd mount1 fdA 0L [| 9uy; 8uy; 7uy |]))
+        let before = Array.zeroCreate 8
+        Assert.Equal(0, ok (ZetaFsPosixVfs.preadFd mount1 fdB 0L before))
+        match ZetaFsPosixVfs.close mount1 fdA with
+        | Error e -> Assert.Fail(sprintf "close A: %A" e)
+        | Ok() -> ()
+        let still = Array.zeroCreate 8
+        Assert.Equal(0, ok (ZetaFsPosixVfs.preadFd mount1 fdB 0L still))
+        match ZetaFsPosixVfs.close mount1 fdB with
+        | Error e -> Assert.Fail(sprintf "close B: %A" e)
+        | Ok() -> ()
+        let fdC = ok (ZetaFsPosixVfs.openFile mount1 node)
+        let after = Array.zeroCreate 8
+        Assert.Equal(3, ok (ZetaFsPosixVfs.preadFd mount1 fdC 0L after))
+        Assert.Equal(9uy, after.[0])
+        match ZetaFsPosixVfs.close mount1 fdC with
+        | Error e -> Assert.Fail(sprintf "close C: %A" e)
+        | Ok() -> ())

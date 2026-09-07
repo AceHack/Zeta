@@ -31,6 +31,11 @@ module ZetaFsPosixVfs =
         { Name: byte[]
           Node: ZetaFsPosixNode.Node }
 
+    /// Open file description. Close-to-open isolation lives on `Handle`.
+    type Fd =
+        { Node: ZetaFsPosixNode.Node
+          Handle: ZetaFsMutbuf.Handle }
+
     let tryCreate (volume: ZetaFsFreeze.Volume) (collator: ZetaFsCollator.Kind) : Mount option =
         match volume.Root with
         | None -> None
@@ -238,6 +243,52 @@ module ZetaFsPosixVfs =
             match f h with
             | Error e -> Error(Mutbuf e)
             | Ok v -> Ok v
+
+    let openFile
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        : Result<Fd, Error> =
+        match requireFile mount node with
+        | Error e -> Error e
+        | Ok() ->
+            Ok
+                { Node = node
+                  Handle = ZetaFsMutbuf.openHandle mount.Volume.Mutbuf node.Entity }
+
+    let close (mount: Mount) (fd: Fd) : Result<unit, Error> =
+        ZetaFsMutbuf.close mount.Volume.Mutbuf fd.Handle
+        Ok()
+
+    let private withFd
+        (fd: Fd)
+        (f: ZetaFsMutbuf.Handle -> Result<'a, ZetaFsMutbuf.MutbufError>)
+        : Result<'a, Error> =
+        match f fd.Handle with
+        | Error e -> Error(Mutbuf e)
+        | Ok v -> Ok v
+
+    let pwriteFd
+        (mount: Mount)
+        (fd: Fd)
+        (offset: int64)
+        (src: byte[])
+        : Result<int, Error> =
+        withFd fd (fun h -> ZetaFsMutbuf.pwrite mount.Volume.Mutbuf h offset src)
+
+    let preadFd
+        (mount: Mount)
+        (fd: Fd)
+        (offset: int64)
+        (dst: byte[])
+        : Result<int, Error> =
+        withFd fd (fun h -> ZetaFsMutbuf.pread mount.Volume.Mutbuf h offset dst)
+
+    let truncateFd
+        (mount: Mount)
+        (fd: Fd)
+        (len: int64)
+        : Result<unit, Error> =
+        withFd fd (fun h -> ZetaFsMutbuf.truncate mount.Volume.Mutbuf h len)
 
     /// Shared mutbuf pwrite. Default Fake VFS coherence is Shared (E5).
     let pwrite

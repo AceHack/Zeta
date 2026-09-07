@@ -30,7 +30,9 @@ module ZetaFsMutbuf =
         { Entity: ZetaFsNamespace.EntityId
           Coherence: Coherence
           /// Close-to-open private copy. None on the shared path.
-          mutable Isolated: byte[] option }
+          mutable Isolated: byte[] option
+          /// Close-to-open only: close publishes Isolated iff this fd wrote.
+          mutable Dirty: bool }
 
     type Slot =
         { Entity: ZetaFsNamespace.EntityId
@@ -96,20 +98,26 @@ module ZetaFsMutbuf =
         | Coherence.Shared ->
             { Entity = id
               Coherence = Coherence.Shared
-              Isolated = None }
+              Isolated = None
+              Dirty = false }
         | Coherence.CloseToOpen ->
             let copy = lock slot.Gate (fun () -> Array.copy slot.Live)
             { Entity = id
               Coherence = Coherence.CloseToOpen
-              Isolated = Some copy }
+              Isolated = Some copy
+              Dirty = false }
 
     let close (catalog: Catalog) (handle: Handle) =
-        match handle.Coherence, handle.Isolated with
-        | Coherence.CloseToOpen, Some copy ->
+        match handle.Coherence, handle.Isolated, handle.Dirty with
+        | Coherence.CloseToOpen, Some copy, true ->
             let slot = slotOf catalog handle.Entity
             lock slot.Gate (fun () -> slot.Live <- Array.copy copy)
             handle.Isolated <- None
+            handle.Dirty <- false
             persist catalog handle.Entity
+        | Coherence.CloseToOpen, _, _ ->
+            handle.Isolated <- None
+            handle.Dirty <- false
         | _ -> ()
 
     let private grow (buf: byte[]) (needed: int) : byte[] =
@@ -148,6 +156,10 @@ module ZetaFsMutbuf =
                 if src.Length > 0 then
                     Buffer.BlockCopy(src, 0, grown, start, src.Length)
                 setActive slot handle grown
+
+                if handle.Coherence = Coherence.CloseToOpen then
+                    handle.Dirty <- true
+
                 Ok src.Length)
 
     let pread
@@ -182,6 +194,10 @@ module ZetaFsMutbuf =
                 let copy = min n buf.Length
                 Buffer.BlockCopy(buf, 0, next, 0, copy)
                 setActive slot handle next
+
+                if handle.Coherence = Coherence.CloseToOpen then
+                    handle.Dirty <- true
+
                 Ok())
 
     /// O_APPEND: serialized per EntityId (DoP=1). Does not tear two appends.
@@ -194,6 +210,10 @@ module ZetaFsMutbuf =
             if src.Length > 0 then
                 Buffer.BlockCopy(src, 0, grown, buf.Length, src.Length)
             setActive slot handle grown
+
+            if handle.Coherence = Coherence.CloseToOpen then
+                handle.Dirty <- true
+
             Ok src.Length)
 
     let length (catalog: Catalog) (handle: Handle) : int64 =
