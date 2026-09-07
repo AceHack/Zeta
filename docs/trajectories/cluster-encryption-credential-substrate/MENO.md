@@ -323,6 +323,13 @@ assume the number.
    `present`. Result joins stay result-only. Does not call
    this from `zeta-install.sh`. Does not change ISO bun
    `probe: null`. Does not invent an integrate decision.
+   Frost look CLI takes named effects (`081M1Y39EJJ087G0R003Z00P0Y`):
+   `named-frost-look-env.ts`. Missing effects is unmeasured,
+   not a live look. Does not default to `realProbeEffects`.
+   OS family is named, not inferred. `/dev/tpmrm0` is not
+   `real`. Does not call overlay join. Does not call this
+   from `zeta-install.sh`. Does not change ISO bun
+   `probe: null`. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork
