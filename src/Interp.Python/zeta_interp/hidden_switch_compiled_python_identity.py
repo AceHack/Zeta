@@ -38,7 +38,7 @@ def _refuse(code: str, message: str) -> NoReturn:
 def _text(value: object, label: str) -> str:
     if type(value) is not str or not value or "\0" in value:
         _refuse("InvalidMetadata", f"{label}: nonempty string required")
-    return cast(str, value)
+    return value
 
 
 def _root(value: object) -> Path:
@@ -81,8 +81,8 @@ def _roster(value: object) -> dict[str, dict[str, Json]]:
             or any(ch not in "0123456789ABCDEF" for ch in digest)
         ):
             _refuse("InvalidRoster", f"{name}: canonical source identity required")
-        result[cast(str, name)] = dict(row)
-        paths.add(cast(str, relative))
+        result[name] = dict(row)
+        paths.add(relative)
     if not {"zeta_interp", _COLLECTOR, _RESULT}.issubset(result):
         _refuse("InvalidRoster", "package, actual collector and Result helper required")
     return result
@@ -127,14 +127,17 @@ def _file(path: Path, expected_length: int | None = None) -> dict[str, Json]:
             if first_error is None:
                 _refuse("IdentityCleanup", f"descriptor cleanup refused: {cleanup}")
             first_error.add_note(f"Descriptor cleanup also refused: {cleanup}")
-    fields = lambda item: (
-        item.st_dev,
-        item.st_ino,
-        item.st_mode,
-        item.st_size,
-        item.st_mtime_ns,
-        item.st_ctime_ns,
-    )
+
+    def fields(item: os.stat_result) -> tuple[int, int, int, int, int, int]:
+        return (
+            item.st_dev,
+            item.st_ino,
+            item.st_mode,
+            item.st_size,
+            item.st_mtime_ns,
+            item.st_ctime_ns,
+        )
+
     if fields(before) != fields(after) or fields(after) != fields(named):
         _refuse("SnapshotChanged", f"file changed during read: {path}")
     if remaining or extra or length != after.st_size:
@@ -167,7 +170,6 @@ def _module(
     module = sys.modules.get(runtime_name)
     if type(module) is not ModuleType:
         _refuse("ModuleMissing", f"actual loaded module required: {runtime_name}")
-    module = cast(ModuleType, module)
     if name == _COLLECTOR and module is not _SELF:
         _refuse("ModuleIdentity", "collector object differs from executing collector")
     if name == _RESULT and module is not s:
@@ -176,7 +178,6 @@ def _module(
     spec = values.get("__spec__")
     if type(spec) is not ModuleSpec or values.get("__name__") != runtime_name:
         _refuse("ModuleIdentity", f"ordinary named ModuleSpec required: {name}")
-    spec = cast(ModuleSpec, spec)
     loader = spec.loader
     if (
         type(loader) is not SourceFileLoader
@@ -279,7 +280,7 @@ def _interpreter() -> dict[str, Json]:
 def _entry(entry: object, roster: dict[str, dict[str, Json]]) -> str | None:
     if entry is not None and (type(entry) is not str or entry not in roster):
         _refuse("EntryIdentity", "entry must name a required logical roster module")
-    name = cast(str | None, entry)
+    name = entry
     main = sys.modules.get("__main__")
     if name is not None:
         if name in sys.modules:

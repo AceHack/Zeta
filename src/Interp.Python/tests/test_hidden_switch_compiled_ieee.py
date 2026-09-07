@@ -5,6 +5,7 @@ import struct
 from fractions import Fraction as F
 
 import pytest
+
 from zeta_interp import hidden_switch_compiled_ieee as s
 
 

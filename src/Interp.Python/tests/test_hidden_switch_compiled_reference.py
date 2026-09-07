@@ -5,6 +5,7 @@ from dataclasses import asdict, replace
 from fractions import Fraction as F
 
 import pytest
+
 from zeta_interp import hidden_switch_compiled_certificate as c
 from zeta_interp import hidden_switch_compiled_ieee as s
 from zeta_interp import hidden_switch_compiled_reference as r
