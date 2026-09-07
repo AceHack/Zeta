@@ -3397,11 +3397,13 @@ if [ -d "$ZETA_HOME" ]; then
   # live ISO after nixos-install into /mnt). Do not infer epoch
   # from /mnt or /dev/tpmrm0. Do not export ZETA_UNSEAL_REQUEST
   # (missing is unmeasured, not auto). Do not invent a probe
-  # (missing is unmeasured, not present). Do not invoke from
+  # (missing is unmeasured, not present). Do not export
+  # ZETA_FROST_LOOK_OS / ZETA_FROST_LOOK_EFFECTS (missing is
+  # unmeasured look, not a live look). Do not invoke from
   # zeta-first-boot.sh. Do not open /dev/tpmrm0. Do not fill
   # /run/current-system/sw/bin/bao. Do not write Application.yaml.
   # A null ask is not a seal. A null request is not auto.
-  # A null probe is not present.
+  # A null probe is not present. A null look is not a probe.
   BAO_ENV_HELPER="$ZETA_HOME/Zeta/src/Core.TypeScript/zflash/firstboot-bao-env.ts"
   if [ -z "${ZETA_BAO_LOAD_SITE:-}" ] || [ -z "${ZETA_BAO_PATH:-}" ]; then
     echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   no bao names in env; consume skipped"
@@ -3423,14 +3425,19 @@ if [ -d "$ZETA_HOME" ]; then
       BAO_ENV_EPOCH=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.epoch' 2>/dev/null || printf 'unparseable')
       BAO_ENV_REQUESTED=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.requested' 2>/dev/null || printf 'unparseable')
       BAO_ENV_PROBE=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.probe' 2>/dev/null || printf 'unparseable')
+      BAO_ENV_LOOK=$(printf '%s' "$BAO_ENV_JSON" | jq -c '.look' 2>/dev/null || printf 'unparseable')
       echo "[081M1W6J9MH087G0R003VNMDDR-bao]   named epoch $BAO_ENV_EPOCH"
       echo "[081M1WG1RJB087G0R001ADMJNK-bao]   named PathRequest $BAO_ENV_REQUESTED"
       echo "[081M1WQNTZ0087G0R002Q8T8RT-bao]   named probe $BAO_ENV_PROBE"
+      echo "[081M1YGP8BF087G0R002Z1YH8R-bao]   named frost look $BAO_ENV_LOOK"
       if [ "$BAO_ENV_REQUESTED" = "null" ]; then
         echo "[081M1WG1RJB087G0R001ADMJNK-bao]   null request is unmeasured, not auto; not a seal"
       fi
       if [ "$BAO_ENV_PROBE" = "null" ]; then
         echo "[081M1WQNTZ0087G0R002Q8T8RT-bao]   null probe is unmeasured, not present"
+      fi
+      if [ "$BAO_ENV_LOOK" = "null" ]; then
+        echo "[081M1YGP8BF087G0R002Z1YH8R-bao]   null look is unmeasured, not a live look"
       fi
       if [ "$BAO_ENV_ASK" = "null" ]; then
         echo "[081M1W1NCDT087G0R002H3VG6Y-bao]   null ask is not option D at this epoch (tpmrm0 / non-bao / ISO current-system); not a seal"

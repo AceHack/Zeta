@@ -15,6 +15,10 @@ import {
   consumeFrostLookFromCliArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
+  consumeOptionalFrostLookFromArgv,
+  consumeOptionalFrostLookFromBunJson,
+  consumeOptionalFrostLookFromConf,
+  consumeOptionalFrostLookFromEnv,
   frostLookProbeFromNamed,
   parseFrostLookEffects,
   parseFrostLookOs,
@@ -217,6 +221,8 @@ describe("runFrostLookEnvCli — tpmrm0 is not present", () => {
     const cli = await Bun.file(new URL("./named-frost-look-env.ts", import.meta.url)).text();
     expect(cli.split("osFamilyFromOsRelease(").length - 1).toBe(0);
     expect(cli.split("planSetupFromFrostLookEnv(").length - 1).toBe(0);
+    expect(cli.split("planSetupFromFrostLookOptionalNamedEnv(").length - 1).toBe(0);
+    expect(cli.split("planSetupFromFrostLookOptionalNamedBunJson(").length - 1).toBe(0);
     expect(cli.split("integrateAtSetup(").length - 1).toBe(0);
     expect(cli.split("appendFirstbootBaoElfConf(").length - 1).toBe(0);
     expect(cli.split("from \"../../../src/Core.TypeScript/zflash/").length - 1).toBe(0);
@@ -227,6 +233,13 @@ describe("runFrostLookEnvCli — tpmrm0 is not present", () => {
     expect(firstboot.split("ZETA_FROST_LOOK_EFFECTS").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
     expect(bunCli.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
+    expect(bunCli.split("named-frost-look-env").length - 1).toBe(0);
+    expect(bunCli.split("namedProbeFromFrostLook").length - 1).toBe(0);
+    expect(bunCli.split("frost-hardware-probe").length - 1).toBe(0);
+    const parse = await Bun.file(new URL("./named-frost-look.ts", import.meta.url)).text();
+    expect(parse.split("from \"./named-probe-from-frost-look").length - 1).toBe(0);
+    expect(parse.split("namedProbeFromFrostLook").length - 1).toBe(0);
+    expect(parse.split("realProbeEffects(").length - 1).toBe(0);
   });
 
   test("process CLI missing effects does not call realProbeEffects", () => {
@@ -247,6 +260,80 @@ describe("consumeFrostLookFromEnv", () => {
       os: "nixos",
       effects: null,
     });
+  });
+});
+
+describe("consumeOptionalFrostLookFromEnv", () => {
+  test("missing both keys is unmeasured, not missing-os", () => {
+    expect(consumeOptionalFrostLookFromEnv({})).toEqual({ ok: true, look: null });
+  });
+
+  test("effects without OS still refuses", () => {
+    expect(consumeOptionalFrostLookFromEnv({ [FROST_LOOK_EFFECTS_KEY]: "real" })).toEqual({
+      ok: false,
+      reason: "missing-os",
+    });
+  });
+});
+
+describe("consumeOptionalFrostLookFromArgv", () => {
+  test("missing both flags is unmeasured, not missing-os", () => {
+    expect(consumeOptionalFrostLookFromArgv(["--bao-path=/run/current-system/sw/bin/bao"])).toEqual({
+      ok: true,
+      look: null,
+    });
+  });
+
+  test("--effects without --os still refuses", () => {
+    expect(consumeOptionalFrostLookFromArgv([`${FROST_LOOK_EFFECTS_FLAG}=real`])).toEqual({
+      ok: false,
+      reason: "missing-os",
+    });
+  });
+});
+
+describe("consumeOptionalFrostLookFromConf", () => {
+  test("missing both keys is unmeasured; HOST and bao keys are ignored", () => {
+    expect(
+      consumeOptionalFrostLookFromConf("ZETA_HOST_BAO=/run/current-system/sw/bin/bao\nZETA_BAO_EPOCH=installed-host\n"),
+    ).toEqual({ ok: true, look: null });
+  });
+
+  test("effects without OS still refuses", () => {
+    expect(consumeOptionalFrostLookFromConf(`${FROST_LOOK_EFFECTS_KEY}='real'\n`)).toEqual({
+      ok: false,
+      reason: "missing-os",
+    });
+  });
+});
+
+describe("consumeOptionalFrostLookFromBunJson", () => {
+  test("null look is unmeasured; JSON probe is ignored", () => {
+    expect(
+      consumeOptionalFrostLookFromBunJson(
+        JSON.stringify({ ok: true, look: null, probe: { tpm2: "present" } }),
+      ),
+    ).toEqual({ ok: true, look: null });
+  });
+
+  test("JSON effects null is unmeasured, not the named string null", () => {
+    expect(
+      consumeOptionalFrostLookFromBunJson(
+        JSON.stringify({ ok: true, look: { os: "nixos", effects: null }, probe: null }),
+      ),
+    ).toEqual({ ok: true, look: { os: "nixos", effects: null } });
+  });
+
+  test("tpmrm0 as look effects refuses", () => {
+    expect(
+      consumeOptionalFrostLookFromBunJson(
+        JSON.stringify({ ok: true, look: { os: "nixos", effects: TPM_CHAR_DEVICE }, probe: null }),
+      ),
+    ).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+
+  test("malformed JSON is unsafe-json", () => {
+    expect(consumeOptionalFrostLookFromBunJson("{")).toEqual({ ok: false, reason: "unsafe-json" });
   });
 });
 

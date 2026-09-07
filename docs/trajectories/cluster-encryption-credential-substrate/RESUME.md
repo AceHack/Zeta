@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-07 (overlay named-key joins take frost-look keys; tpmrm0 is not real)
+Last refreshed: 2026-09-07 (overlay optional named join takes ISO bun JSON look; JSON probe is ignored)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -763,6 +763,66 @@ Workitem: `081M1WP0C7B087G0R000VK9E0V`.
   Overlay passes the probe through. Inner `integrateAtSetup`
   still takes a capture. Does not import frost-hardware-probe.
   Does not call this from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay optional named join takes ISO bun JSON look; JSON probe is ignored (Riven)
+
+Aaron: detect HSM/TPM at setup. ISO bun consume prints
+`look`. Overlay optional named joins take env / argv /
+conf. Nobody joined the bun JSON `look` field.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1YQKYXQ087G0R000NXN8JN`.
+
+- `planSetupFromFrostLookOptionalNamedBunJson`. Uses
+  `look`. JSON `probe` is ignored even when non-null.
+  Null look is unmeasured, not `missing-os`. Mixing env
+  frost-look keys with JSON look is `mixed-source`.
+  NamedEnv still requires OS. Does not default to
+  `realProbeEffects`. `/dev/tpmrm0` is not `real`. Does
+  not write ESP. Does not import the frost-look CLI. Does
+  not call this from `zeta-install.sh`. Does not change
+  ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay optional named joins match ISO bun missing frost-look keys (Riven)
+
+Aaron: detect HSM/TPM at setup. ISO bun consume reports
+`look` when frost-look keys are missing. Overlay NamedEnv
+still refused that same env as `missing-os`.
+
+Consumer: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1YNNVFQ087G0R001J5SEPD`.
+
+- `planSetupFromFrostLookOptionalNamedEnv` / Argv / Conf.
+  Missing both frost-look keys is unmeasured (`probe`
+  null), not `missing-os`. NamedEnv still requires OS.
+  Does not default to `realProbeEffects`. `/dev/tpmrm0`
+  is not `real`. Does not write ESP. Does not import the
+  frost-look CLI. Does not call this from
+  `zeta-install.sh`. Does not change ISO bun
+  `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — ISO bun consume reports named frost-look keys (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay named-key joins
+consume frost-look keys. ISO bun consume still omitted
+them, so missing could be treated as a live look.
+
+Consumer: `src/Core.TypeScript/zflash/firstboot-bao-env.ts`.
+Workitem: `081M1YGP8BF087G0R002Z1YH8R`.
+
+- `consumeOptionalFrostLookFromEnv`. Missing both keys is
+  unmeasured (`look` null), not `missing-os`. Named `"real"`
+  is reported and still leaves `probe: null`. Parse does
+  not import the look mapper. `/dev/tpmrm0` is not `real`.
+  Does not import the frost-look CLI. Does not export
+  frost-look keys from `zeta-install.sh`. Does not write
+  ESP. Does not change ISO bun `probe: null`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 

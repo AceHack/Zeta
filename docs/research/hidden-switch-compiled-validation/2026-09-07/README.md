@@ -323,3 +323,12 @@ retains 57 passing cases and the caught unsafe-formatting regression. It
 checks exact input bytes and their own metadata, with executable lexical
 omission witnesses and the reviewed closure/exit partial order. This scoped
 implementation evidence does not complete the 92-case or runtime obligations.
+
+## Historical graph evidence: bounded publication
+
+[Capture five](native-graph-attempt-5/README.md) preserves 2,550 unchanged
+diagnostic records, their original manifest and checked lossless byte
+identities. Its unresolved dependencies remain explicit; runtime admission
+stays false. The [source-history record](source-history-retention.md) indexes
+original writer commits through split publication. The parent compiled
+implementation task remains open.

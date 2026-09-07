@@ -26,10 +26,15 @@ let private ok r =
     | Ok v -> v
     | Error e -> failwithf "%A" e
 
-let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: ZetaFsFreeze.Volume -> unit) =
+let private withVolumeCoherence
+    (store: string)
+    (coherence: ZetaFsMutbuf.Coherence)
+    (clock: ISimulationEnvironment)
+    (f: ZetaFsFreeze.Volume -> unit)
+    =
     ensureHasher ()
     FileSystem.Register(InMemoryFileSystem())
-    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let mutbuf = ZetaFsMutbuf.create store coherence
     let volume = ZetaFsFreeze.createManualStreamWith store mutbuf None clock
 
     try
@@ -37,6 +42,9 @@ let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: 
     finally
         ZetaFsFreeze.dispose volume
         FileSystem.Reset()
+
+let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: ZetaFsFreeze.Volume -> unit) =
+    withVolumeCoherence store ZetaFsMutbuf.Coherence.Shared clock f
 
 let private withVolume (store: string) (f: ZetaFsFreeze.Volume -> unit) =
     withVolumeClock store (Environment.createVirtual 21L :> ISimulationEnvironment) f
@@ -275,3 +283,192 @@ let ``pwrite negative offset is Mutbuf NegativeOffset`` () =
             match ZetaFsPosixVfs.pwrite mount1 node -1L [| 1uy |] with
             | Error(ZetaFsPosixVfs.Mutbuf(ZetaFsMutbuf.NegativeOffset n)) -> Assert.Equal(-1L, n)
             | other -> Assert.Fail(sprintf "expected NegativeOffset, got %A" other))
+
+[<Fact>]
+let ``create then lookup finds the file; mkdir then create under the dir`` () =
+    withVolume "/vfs-create" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let file, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        let stat = ok (ZetaFsPosixVfs.getattr mount1 file)
+        Assert.Equal(ZetaFsPosixMeta.fileMode, stat.Meta.Mode)
+        let found, mount2 = ok (ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "a"))
+        Assert.Equal(0, ZetaFsNamespace.EntityId.compare file.Entity found.Entity)
+        let dir, mount3 = ok (ZetaFsPosixVfs.mkdir mount2 rootNode (utf8 "d"))
+        let nested, mount4 = ok (ZetaFsPosixVfs.create mount3 dir (utf8 "b"))
+        let nestedStat = ok (ZetaFsPosixVfs.getattr mount4 nested)
+        Assert.Equal(ZetaFsPosixMeta.fileMode, nestedStat.Meta.Mode)
+        let back, _ = ok (ZetaFsPosixVfs.lookup mount4 nested ZetaFsPosixVfs.dotDot)
+        Assert.Equal(dir.Id, back.Id))
+
+[<Fact>]
+let ``Ascii create refuses Notes.md when notes.md is live; store is unchanged`` () =
+    withVolume "/vfs-create-ascii" (fun volume ->
+        let fuse0 = mustMount volume ZetaFsCollator.fuseTDefault
+        let rootNode = ZetaFsPosixVfs.root fuse0
+        let _, fuse1 = ok (ZetaFsPosixVfs.create fuse0 rootNode (utf8 "notes.md"))
+        match ZetaFsPosixVfs.create fuse1 rootNode (utf8 "Notes.md") with
+        | Error(ZetaFsPosixVfs.Confusable existing) ->
+            Assert.True(sameBytes (utf8 "notes.md") existing)
+        | other -> Assert.Fail(sprintf "Ascii must refuse Notes.md, got %A" other)
+        let notes, _ = ok (ZetaFsPosixVfs.lookup fuse1 rootNode (utf8 "notes.md"))
+        match ZetaFsPosixVfs.lookup fuse1 rootNode (utf8 "Notes.md") with
+        | Ok(node, _) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare notes.Entity node.Entity)
+        | Error e -> Assert.Fail(sprintf "Ascii lookup of Notes.md should fold to notes.md, got %A" e))
+
+[<Fact>]
+let ``create of dot or dotdot is Confusable`` () =
+    withVolume "/vfs-create-dot" (fun volume ->
+        let mount = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount
+        match ZetaFsPosixVfs.create mount rootNode ZetaFsPosixVfs.dot with
+        | Error(ZetaFsPosixVfs.Confusable name) -> Assert.True(sameBytes ZetaFsPosixVfs.dot name)
+        | other -> Assert.Fail(sprintf "dot must be Confusable, got %A" other)
+        match ZetaFsPosixVfs.mkdir mount rootNode ZetaFsPosixVfs.dotDot with
+        | Error(ZetaFsPosixVfs.Confusable name) -> Assert.True(sameBytes ZetaFsPosixVfs.dotDot name)
+        | other -> Assert.Fail(sprintf "dotdot must be Confusable, got %A" other))
+
+[<Fact>]
+let ``unlink tombs a file; lookup then NotFound; unlink of a dir is Eisdir`` () =
+    withVolume "/vfs-unlink" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let _, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        match ZetaFsPosixVfs.unlink mount1 rootNode (utf8 "a") with
+        | Error e -> Assert.Fail(sprintf "unlink: %A" e)
+        | Ok() ->
+            match ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "a") with
+            | Error ZetaFsPosixVfs.NotFound -> ()
+            | other -> Assert.Fail(sprintf "expected NotFound, got %A" other)
+        let dir, mount2 = ok (ZetaFsPosixVfs.mkdir mount1 rootNode (utf8 "d"))
+        match ZetaFsPosixVfs.unlink mount2 rootNode (utf8 "d") with
+        | Error(ZetaFsPosixVfs.Eisdir id) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir.Entity id)
+        | other -> Assert.Fail(sprintf "unlink dir must be Eisdir, got %A" other))
+
+[<Fact>]
+let ``rmdir of empty dir works; non-empty is Enotempty; file is Enotdir`` () =
+    withVolume "/vfs-rmdir" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let empty, mount1 = ok (ZetaFsPosixVfs.mkdir mount0 rootNode (utf8 "e"))
+        match ZetaFsPosixVfs.rmdir mount1 rootNode (utf8 "e") with
+        | Error e -> Assert.Fail(sprintf "rmdir empty: %A" e)
+        | Ok() ->
+            match ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "e") with
+            | Error ZetaFsPosixVfs.NotFound -> ()
+            | other -> Assert.Fail(sprintf "expected NotFound after rmdir, got %A" other)
+        let full, mount2 = ok (ZetaFsPosixVfs.mkdir mount1 rootNode (utf8 "f"))
+        let _, mount3 = ok (ZetaFsPosixVfs.create mount2 full (utf8 "x"))
+        match ZetaFsPosixVfs.rmdir mount3 rootNode (utf8 "f") with
+        | Error(ZetaFsPosixVfs.Enotempty id) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare full.Entity id)
+        | other -> Assert.Fail(sprintf "non-empty rmdir must be Enotempty, got %A" other)
+        let _, mount4 = ok (ZetaFsPosixVfs.create mount3 rootNode (utf8 "file"))
+        match ZetaFsPosixVfs.rmdir mount4 rootNode (utf8 "file") with
+        | Error(ZetaFsPosixVfs.Enotdir _) -> ()
+        | other -> Assert.Fail(sprintf "rmdir file must be Enotdir, got %A" other))
+
+[<Fact>]
+let ``symlink stores target bytes; readlink returns them; not resolved`` () =
+    withVolume "/vfs-symlink" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let target = utf8 "no/such"
+        let node, mount1 = ok (ZetaFsPosixVfs.symlink mount0 rootNode (utf8 "l") target)
+        let stat = ok (ZetaFsPosixVfs.getattr mount1 node)
+        Assert.Equal(ZetaFsPosixMeta.symlinkMode, stat.Meta.Mode)
+        let bytes = ok (ZetaFsPosixVfs.readlink mount1 node)
+        Assert.True(sameBytes target bytes)
+        match ZetaFsPosixVfs.readlink mount1 rootNode with
+        | Error ZetaFsPosixVfs.NotFound -> ()
+        | other -> Assert.Fail(sprintf "readlink on dir must miss, got %A" other))
+
+[<Fact>]
+let ``rename moves a file; dest file replace works; dest dir is Eisdir`` () =
+    withVolume "/vfs-rename" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let src, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        match ZetaFsPosixVfs.rename mount1 rootNode (utf8 "a") rootNode (utf8 "b") with
+        | Error e -> Assert.Fail(sprintf "rename: %A" e)
+        | Ok() ->
+            match ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "a") with
+            | Error ZetaFsPosixVfs.NotFound -> ()
+            | other -> Assert.Fail(sprintf "src should be gone, got %A" other)
+            let moved, _ = ok (ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "b"))
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare src.Entity moved.Entity)
+        let _, mount2 = ok (ZetaFsPosixVfs.create mount1 rootNode (utf8 "c"))
+        match ZetaFsPosixVfs.rename mount2 rootNode (utf8 "b") rootNode (utf8 "c") with
+        | Error e -> Assert.Fail(sprintf "replace file: %A" e)
+        | Ok() ->
+            let replaced, _ = ok (ZetaFsPosixVfs.lookup mount2 rootNode (utf8 "c"))
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare src.Entity replaced.Entity)
+        let _, mount3 = ok (ZetaFsPosixVfs.mkdir mount2 rootNode (utf8 "d"))
+        let _, mount4 = ok (ZetaFsPosixVfs.create mount3 rootNode (utf8 "e"))
+        match ZetaFsPosixVfs.rename mount4 rootNode (utf8 "e") rootNode (utf8 "d") with
+        | Error(ZetaFsPosixVfs.Eisdir _) -> ()
+        | other -> Assert.Fail(sprintf "file onto dir must be Eisdir, got %A" other))
+
+[<Fact>]
+let ``Ascii rename to Notes.md is Confusable when notes.md is live`` () =
+    withVolume "/vfs-rename-ascii" (fun volume ->
+        let fuse0 = mustMount volume ZetaFsCollator.fuseTDefault
+        let rootNode = ZetaFsPosixVfs.root fuse0
+        let _, fuse1 = ok (ZetaFsPosixVfs.create fuse0 rootNode (utf8 "notes.md"))
+        let _, fuse2 = ok (ZetaFsPosixVfs.create fuse1 rootNode (utf8 "other"))
+        match ZetaFsPosixVfs.rename fuse2 rootNode (utf8 "other") rootNode (utf8 "Notes.md") with
+        | Error(ZetaFsPosixVfs.Confusable existing) ->
+            Assert.True(sameBytes (utf8 "notes.md") existing)
+        | other -> Assert.Fail(sprintf "Ascii rename onto fold collision must be Confusable, got %A" other))
+
+[<Fact>]
+let ``Shared open: pwrite on one fd is visible to the other without close`` () =
+    withVolume "/vfs-open-shared" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let node, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        let fdA = ok (ZetaFsPosixVfs.openFile mount1 node)
+        let fdB = ok (ZetaFsPosixVfs.openFile mount1 node)
+        Assert.Equal(3, ok (ZetaFsPosixVfs.pwriteFd mount1 fdA 0L [| 1uy; 2uy; 3uy |]))
+        let buf = Array.zeroCreate 8
+        Assert.Equal(3, ok (ZetaFsPosixVfs.preadFd mount1 fdB 0L buf))
+        Assert.Equal(1uy, buf.[0])
+        match ZetaFsPosixVfs.close mount1 fdA with
+        | Error e -> Assert.Fail(sprintf "close A: %A" e)
+        | Ok() -> ()
+        match ZetaFsPosixVfs.close mount1 fdB with
+        | Error e -> Assert.Fail(sprintf "close B: %A" e)
+        | Ok() -> ()
+        match ZetaFsPosixVfs.openFile mount1 (ZetaFsPosixVfs.root mount1) with
+        | Error(ZetaFsPosixVfs.Eisdir _) -> ()
+        | other -> Assert.Fail(sprintf "open dir must be Eisdir, got %A" other))
+
+[<Fact>]
+let ``CloseToOpen: writer publish is last-close; other fd does not see it until reopen`` () =
+    let clock = Environment.createVirtual 23L :> ISimulationEnvironment
+    withVolumeCoherence "/vfs-open-cto" ZetaFsMutbuf.Coherence.CloseToOpen clock (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let node, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        let fdA = ok (ZetaFsPosixVfs.openFile mount1 node)
+        let fdB = ok (ZetaFsPosixVfs.openFile mount1 node)
+        Assert.Equal(3, ok (ZetaFsPosixVfs.pwriteFd mount1 fdA 0L [| 9uy; 8uy; 7uy |]))
+        let before = Array.zeroCreate 8
+        Assert.Equal(0, ok (ZetaFsPosixVfs.preadFd mount1 fdB 0L before))
+        match ZetaFsPosixVfs.close mount1 fdA with
+        | Error e -> Assert.Fail(sprintf "close A: %A" e)
+        | Ok() -> ()
+        let still = Array.zeroCreate 8
+        Assert.Equal(0, ok (ZetaFsPosixVfs.preadFd mount1 fdB 0L still))
+        match ZetaFsPosixVfs.close mount1 fdB with
+        | Error e -> Assert.Fail(sprintf "close B: %A" e)
+        | Ok() -> ()
+        let fdC = ok (ZetaFsPosixVfs.openFile mount1 node)
+        let after = Array.zeroCreate 8
+        Assert.Equal(3, ok (ZetaFsPosixVfs.preadFd mount1 fdC 0L after))
+        Assert.Equal(9uy, after.[0])
+        match ZetaFsPosixVfs.close mount1 fdC with
+        | Error e -> Assert.Fail(sprintf "close C: %A" e)
+        | Ok() -> ())

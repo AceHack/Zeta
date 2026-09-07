@@ -1,0 +1,14 @@
+{
+  "id": "080d03ec771f3010a0130008f5eab497",
+  "at": "2026-09-07T20:28:31.590Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YRXRZ5087G0R002K9XG7B",
+    "type": "task",
+    "title": "FUSE dispatcher setattr via PosixMeta",
+    "slug": "fuse-dispatcher-setattr-via-posixmeta",
+    "priority": "P2",
+    "filename": "081M1YRXRZ5087G0R002K9XG7B-fuse-dispatcher-setattr-via-posixmeta.md"
+  }
+}

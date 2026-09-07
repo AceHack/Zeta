@@ -371,19 +371,46 @@ in `named-frost-look.ts`, not the CLI. Missing OS is
 `missing-os`. Missing effects is unmeasured. Does not
 write ESP. Does not call this from `zeta-install.sh`. Does
 not change ISO bun `probe: null`.
+ISO bun consume reports named frost-look keys (`081M1YGP8BF087G0R002Z1YH8R`):
+bun JSON includes `look`. Missing both keys is unmeasured,
+not `missing-os`. Named `"real"` still leaves `probe:
+null`. Parse does not import the look mapper. Does not
+export frost-look keys from `zeta-install.sh`. Does not
+change ISO bun `probe: null`.
+Overlay optional named joins match ISO bun missing
+frost-look keys (`081M1YNNVFQ087G0R001J5SEPD`):
+`planSetupFromFrostLookOptionalNamedEnv` / Argv / Conf.
+Missing both keys is unmeasured, not `missing-os`.
+NamedEnv still requires OS. Does not write ESP. Does not
+call this from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
+Overlay optional named join takes ISO bun JSON look
+(`081M1YQKYXQ087G0R000NXN8JN`):
+`planSetupFromFrostLookOptionalNamedBunJson`. Uses `look`.
+JSON `probe` is ignored even when non-null. Mixing env
+frost-look keys with JSON look refuses. Does not call this
+from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
    two active OpenBao seals. Do not treat this overlay as
-   that commit. Named-key overlay joins landed
+   that commit.    Named-key overlay joins landed
    (`081M1YCFES8087G0R000R3MV6Y`); they do not write ESP.
-   Wiring this look on the live ISO is later and still
-   must not infer from `/dev/tpmrm0`. Bun JSON `probe`
-   stays null until that wiring exists. Does not expand
-   `ZetaFirstbootRole`. `/dev/tpmrm0` is still not an
-   ask and not a PathRequest.
+   ISO bun consume reports `look`
+   (`081M1YGP8BF087G0R002Z1YH8R`) and still leaves `probe`
+   null.    Optional named joins
+   (`081M1YNNVFQ087G0R001J5SEPD`) match that missing-key
+   unmeasure and still leave NamedEnv requiring OS.
+   Bun JSON look join
+   (`081M1YQKYXQ087G0R000NXN8JN`) uses `look` and ignores
+   JSON `probe`. Wiring this look on the live ISO is later
+   and still must not infer from `/dev/tpmrm0`. Bun JSON
+   `probe` stays null until that wiring exists. Does not
+   expand `ZetaFirstbootRole`. `/dev/tpmrm0` is still not
+   an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

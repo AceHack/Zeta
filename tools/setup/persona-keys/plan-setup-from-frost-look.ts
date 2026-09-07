@@ -18,8 +18,11 @@
  * named by the caller, not read from `/etc/os-release`.
  * Named-key joins parse `ZETA_FROST_LOOK_OS` /
  * `ZETA_FROST_LOOK_EFFECTS` (env / argv / conf body).
- * Does not import the frost-look CLI. Does not
- * change ISO bun `probe: null`.
+ * NamedEnv still requires OS. Optional named joins match
+ * ISO bun: missing both keys is unmeasured, not
+ * `missing-os`. Bun JSON join uses `look` and ignores
+ * JSON `probe`. Does not import the frost-look CLI. Does
+ * not change ISO bun `probe: null`.
  */
 
 import type { OsFamily } from "../../../src/Core.TypeScript/cluster/host-seal-profile.ts";
@@ -36,9 +39,15 @@ import {
   consumeFrostLookFromArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
+  consumeOptionalFrostLookFromArgv,
+  consumeOptionalFrostLookFromBunJson,
+  consumeOptionalFrostLookFromConf,
+  consumeOptionalFrostLookFromEnv,
+  envHasFrostLookKey,
   frostLookEffectsFromNamed,
   type FrostLookEnvError,
   type FrostLookEnvParse,
+  type OptionalFrostLookEnvParse,
 } from "./named-frost-look.ts";
 import { namedProbeFromFrostLook } from "./named-probe-from-frost-look.ts";
 
@@ -144,5 +153,97 @@ export function planSetupFromFrostLookNamedConf(
 ): FrostLookNamedJoin {
   return namedLookJoin(consumeFrostLookFromConf(conf), real, (fx, os) =>
     planSetupFromFrostLookConf(restore, conf, env, read, fx, os),
+  );
+}
+
+function optionalLookJoin(
+  parsed: OptionalFrostLookEnvParse,
+  real: HardwareProbeEffects,
+  thenLook: (fx: HardwareProbeEffects | null, os: OsFamily) => FirstBootBaoElfFromEnv,
+  thenNone: () => FirstBootBaoElfFromEnv,
+): FrostLookNamedJoin {
+  if (!parsed.ok) return parsed;
+  if (parsed.look === null) return thenNone();
+  return thenLook(frostLookEffectsFromNamed(parsed.look.effects, real), parsed.look.os);
+}
+
+/**
+ * Env join that matches ISO bun missing keys. Missing both
+ * frost-look keys is unmeasured (`probe` null), not
+ * `missing-os`. NamedEnv still requires OS. Named `"real"`
+ * uses the injected effects. Does not default to
+ * `realProbeEffects`.
+ */
+export function planSetupFromFrostLookOptionalNamedEnv(
+  restore: RestoredPkcs11PointerCapture,
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  real: HardwareProbeEffects,
+): FrostLookNamedJoin {
+  return optionalLookJoin(
+    consumeOptionalFrostLookFromEnv(env),
+    real,
+    (fx, os) => planSetupFromFrostLookEnv(restore, env, read, fx, os),
+    () => planSetupFromNamedBaoElfEnv(restore, env, read, null),
+  );
+}
+
+/**
+ * Argv sibling. Missing both flags is unmeasured. Unseal
+ * request stays named from env.
+ */
+export function planSetupFromFrostLookOptionalNamedArgv(
+  restore: RestoredPkcs11PointerCapture,
+  argv: readonly string[],
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  real: HardwareProbeEffects,
+): FrostLookNamedJoin {
+  return optionalLookJoin(
+    consumeOptionalFrostLookFromArgv(argv),
+    real,
+    (fx, os) => planSetupFromFrostLookArgv(restore, argv, env, read, fx, os),
+    () => planSetupFromNamedBaoElfArgv(restore, argv, env, read, null),
+  );
+}
+
+/**
+ * Conf sibling. Missing both keys is unmeasured. Unseal
+ * request stays named from env. Does not write ESP.
+ */
+export function planSetupFromFrostLookOptionalNamedConf(
+  restore: RestoredPkcs11PointerCapture,
+  conf: string,
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  real: HardwareProbeEffects,
+): FrostLookNamedJoin {
+  return optionalLookJoin(
+    consumeOptionalFrostLookFromConf(conf),
+    real,
+    (fx, os) => planSetupFromFrostLookConf(restore, conf, env, read, fx, os),
+    () => planSetupFromNamedBaoElfConf(restore, conf, env, read, null),
+  );
+}
+
+/**
+ * Bun JSON join. Uses `look`. Ignores JSON `probe` even
+ * when non-null. Env frost-look keys mixed with JSON look
+ * refuse. Bao / unseal stay named from env. Does not
+ * write ESP. Does not default to `realProbeEffects`.
+ */
+export function planSetupFromFrostLookOptionalNamedBunJson(
+  restore: RestoredPkcs11PointerCapture,
+  json: string,
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  real: HardwareProbeEffects,
+): FrostLookNamedJoin {
+  if (envHasFrostLookKey(env)) return { ok: false, reason: "mixed-source" };
+  return optionalLookJoin(
+    consumeOptionalFrostLookFromBunJson(json),
+    real,
+    (fx, os) => planSetupFromFrostLookEnv(restore, env, read, fx, os),
+    () => planSetupFromNamedBaoElfEnv(restore, env, read, null),
   );
 }

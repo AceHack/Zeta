@@ -1,0 +1,14 @@
+{
+  "id": "080d03e9cf6e9810a013000891874fca",
+  "at": "2026-09-07T18:55:43.571Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YKKVEK087G0R000HB7743",
+    "type": "task",
+    "title": "Fake VFS rename dest rules with collator refuse",
+    "slug": "fake-vfs-rename-dest-rules-with-collator-refuse",
+    "priority": "P2",
+    "filename": "081M1YKKVEK087G0R000HB7743-fake-vfs-rename-dest-rules-with-collator-refuse.md"
+  }
+}

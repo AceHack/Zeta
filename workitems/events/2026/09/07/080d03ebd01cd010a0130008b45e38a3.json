@@ -1,0 +1,14 @@
+{
+  "id": "080d03ebd01cd010a0130008b45e38a3",
+  "at": "2026-09-07T20:05:43.450Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YQM0WS087G0R003Q1JMNJ",
+    "type": "task",
+    "title": "FUSE dispatcher mkdir unlink symlink rename",
+    "slug": "fuse-dispatcher-mkdir-unlink-symlink-rename",
+    "priority": "P2",
+    "filename": "081M1YQM0WS087G0R003Q1JMNJ-fuse-dispatcher-mkdir-unlink-symlink-rename.md"
+  }
+}

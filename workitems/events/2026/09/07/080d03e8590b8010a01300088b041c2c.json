@@ -1,0 +1,14 @@
+{
+  "id": "080d03e8590b8010a01300088b041c2c",
+  "at": "2026-09-07T18:04:36.592Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YGP8BF087G0R002Z1YH8R",
+    "type": "task",
+    "title": "ISO bun consume reports named frost-look keys; probe stays null",
+    "slug": "iso-bun-consume-reports-named-frost-look-keys-probe-stays-nu",
+    "priority": "P2",
+    "filename": "081M1YGP8BF087G0R002Z1YH8R-iso-bun-consume-reports-named-frost-look-keys-probe-stays-nu.md"
+  }
+}

@@ -11,20 +11,26 @@
  * Named unseal request (`ZETA_UNSEAL_REQUEST`) is reported, not
  * inferred: missing is unmeasured (`requested` null), not `auto`.
  * Named probe is unmeasured (`probe` null), not present. A
- * named PathRequest is not a named probe. `/dev/tpmrm0` is
- * not a probe. Does not call `integrateAtSetup`. Does not
- * invent a capture. Does not open files. bun invoke lives in
- * `zeta-install.sh` after Step 6.95a (mise/bun on PATH).
- * bun invoke from `zeta-first-boot.sh` stays forbidden.
- * Does not expand `ZetaFirstbootRole`. Does not land
- * Application.yaml.
+ * named PathRequest is not a named probe. Named frost-look
+ * keys (`ZETA_FROST_LOOK_OS` / `ZETA_FROST_LOOK_EFFECTS`) are
+ * reported as `look`. Missing both keys is unmeasured
+ * (`look` null), not `missing-os`. Named `"real"` still
+ * leaves `probe` null. `/dev/tpmrm0` is not a probe and not
+ * `real`. Does not call `integrateAtSetup`. Does not invent
+ * a capture. Does not open files. Does not import the
+ * frost-look CLI or the live probe effects module. bun invoke
+ * lives in `zeta-install.sh` after Step 6.95a (mise/bun on
+ * PATH). bun invoke from `zeta-first-boot.sh` stays
+ * forbidden. Does not expand `ZetaFirstbootRole`. Does not
+ * land Application.yaml.
  *
  * Usage: bun src/Core.TypeScript/zflash/firstboot-bao-env.ts
- * Exit 0: JSON `{ ok: true, ask, epoch, requested, probe }`
- * (ask, epoch, requested, and probe may be null).
+ * Exit 0: JSON `{ ok: true, ask, epoch, requested, probe, look }`
+ * (ask, epoch, requested, probe, and look may be null).
  * Exit 2: JSON `{ ok: false, reason }`.
  */
 
+import { consumeOptionalFrostLookFromEnv } from "../../../tools/setup/persona-keys/named-frost-look.ts";
 import { type NamedHardwareProbe } from "../cluster/host-seal-profile.ts";
 import { consumeUnsealRequestFromEnv } from "../cluster/unseal-path.ts";
 import { consumeFirstbootBaoElfEnvWithEpoch, type FirstbootBaoElfEnvConsume } from "./firstboot-bao-elf.ts";
@@ -40,6 +46,11 @@ export function runFirstbootBaoElfEnvCli(
     write(`${JSON.stringify(request)}\n`);
     return 2;
   }
+  const look = consumeOptionalFrostLookFromEnv(env);
+  if (!look.ok) {
+    write(`${JSON.stringify(look)}\n`);
+    return 2;
+  }
   const parsed: FirstbootBaoElfEnvConsume = consumeFirstbootBaoElfEnvWithEpoch(env);
   if (!parsed.ok) {
     write(`${JSON.stringify(parsed)}\n`);
@@ -53,6 +64,7 @@ export function runFirstbootBaoElfEnvCli(
       epoch: parsed.epoch,
       requested: request.requested,
       probe,
+      look: look.look,
     })}\n`,
   );
   return 0;
