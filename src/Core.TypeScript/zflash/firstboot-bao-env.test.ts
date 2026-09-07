@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { FROST_LOOK_EFFECTS_KEY, FROST_LOOK_OS_KEY } from "../../../tools/setup/persona-keys/named-frost-look.ts";
 import { TPM_CHAR_DEVICE } from "../cluster/bao-load-site.ts";
 import { UNSEAL_REQUEST_ENV_KEY } from "../cluster/unseal-path.ts";
 import {
@@ -65,7 +66,7 @@ describe("runFirstbootBaoElfEnvCli", () => {
     );
     expect(code).toBe(0);
     expect(lines).toEqual([
-      `${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: null, requested: null, probe: null })}\n`,
+      `${JSON.stringify({ ok: true, ask: nixosHostBaoAsk(), epoch: null, requested: null, probe: null, look: null })}\n`,
     ]);
   });
 
@@ -98,6 +99,7 @@ describe("firstboot-bao-env.ts process entry", () => {
       epoch: null,
       requested: null,
       probe: null,
+      look: null,
     });
   });
 
@@ -107,7 +109,7 @@ describe("firstboot-bao-env.ts process entry", () => {
       env: { PATH: process.env.PATH },
     });
     expect(spawned.status).toBe(0);
-    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null, requested: null, probe: null });
+    expect(JSON.parse(spawned.stdout)).toEqual({ ok: true, ask: null, epoch: null, requested: null, probe: null, look: null });
   });
 });
 
@@ -198,7 +200,7 @@ describe("runFirstbootBaoElfEnvCli epoch", () => {
     );
     expect(code).toBe(0);
     expect(lines).toEqual([
-      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso", requested: null, probe: null })}\n`,
+      `${JSON.stringify({ ok: true, ask: null, epoch: "installer-iso", requested: null, probe: null, look: null })}\n`,
     ]);
   });
 });
@@ -223,6 +225,7 @@ describe("runFirstbootBaoElfEnvCli unseal request", () => {
       epoch: "installer-iso",
       requested: null,
       probe: null,
+      look: null,
     });
   });
 
@@ -246,6 +249,7 @@ describe("runFirstbootBaoElfEnvCli unseal request", () => {
       epoch: "installer-iso",
       requested: "pkcs11-tpm",
       probe: null,
+      look: null,
     });
   });
 
@@ -264,5 +268,113 @@ describe("runFirstbootBaoElfEnvCli unseal request", () => {
     );
     expect(code).toBe(2);
     expect(JSON.parse(lines[0] ?? "")).toEqual({ ok: false, reason: "unknown-request" });
+  });
+});
+
+describe("runFirstbootBaoElfEnvCli frost look", () => {
+  test("missing frost-look keys are unmeasured, not missing-os", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: null,
+      probe: null,
+      look: null,
+    });
+  });
+
+  test("named OS plus missing effects is reported; probe stays null", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [FROST_LOOK_OS_KEY]: "nixos",
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: null,
+      probe: null,
+      look: { os: "nixos", effects: null },
+    });
+  });
+
+  test("named real is reported and still leaves probe null", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [FROST_LOOK_OS_KEY]: "nixos",
+        [FROST_LOOK_EFFECTS_KEY]: "real",
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({
+      ok: true,
+      ask: null,
+      epoch: "installer-iso",
+      requested: null,
+      probe: null,
+      look: { os: "nixos", effects: "real" },
+    });
+  });
+
+  test("tpmrm0 as effects refuses and does not fill probe", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installer-iso",
+        [FROST_LOOK_OS_KEY]: "nixos",
+        [FROST_LOOK_EFFECTS_KEY]: TPM_CHAR_DEVICE,
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(2);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+
+  test("tpmrm0 as OS refuses and does not default to nixos", () => {
+    const lines: string[] = [];
+    const code = runFirstbootBaoElfEnvCli(
+      {
+        [FIRSTBOOT_BAO_LOAD_SITE_KEY]: "on-host",
+        [FIRSTBOOT_BAO_PATH_KEY]: NIXOS_HOST_BAO,
+        [FROST_LOOK_OS_KEY]: TPM_CHAR_DEVICE,
+      },
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(2);
+    expect(JSON.parse(lines[0] ?? "")).toEqual({ ok: false, reason: "unknown-os" });
   });
 });

@@ -2,18 +2,19 @@
  * tools/setup/persona-keys/named-frost-look.ts
  *
  * Named frost-look parse. No CLI. No `realProbeEffects`.
- * Overlay may import this file; it must not import
- * `named-frost-look-env.ts`. Cluster does not import this
- * file. Missing effects is unmeasured, not a live look.
- * Missing OS is `missing-os`, not `nixos`. `/dev/tpmrm0`
- * is not `real` and not an OS. Does not write ESP. Does
- * not import zflash conf-write. Does not change ISO bun
- * `probe: null`.
+ * Overlay and ISO bun may import this file; they must not
+ * import `named-frost-look-env.ts`. Cluster does not import
+ * this file. Missing effects is unmeasured, not a live
+ * look. Missing OS is `missing-os`, not `nixos`, except
+ * optional ISO bun consume: missing both keys is unmeasured
+ * (`look` null). `/dev/tpmrm0` is not `real` and not an OS.
+ * Does not write ESP. Does not import zflash conf-write.
+ * Does not import the look mapper. Does not
+ * change ISO bun `probe: null`.
  */
 
-import type { NamedHardwareProbe, OsFamily } from "../../../src/Core.TypeScript/cluster/host-seal-profile.ts";
+import type { OsFamily } from "../../../src/Core.TypeScript/cluster/host-seal-profile.ts";
 import type { HardwareProbeEffects } from "./frost-hardware-probe.ts";
-import { namedProbeFromFrostLook } from "./named-probe-from-frost-look.ts";
 
 export const FROST_LOOK_OS_KEY = "ZETA_FROST_LOOK_OS";
 export const FROST_LOOK_EFFECTS_KEY = "ZETA_FROST_LOOK_EFFECTS";
@@ -38,6 +39,15 @@ export type FrostLookEnvParse =
       readonly os: OsFamily;
       readonly effects: NamedFrostLookEffects | null;
     }
+  | { readonly ok: false; readonly reason: FrostLookEnvError };
+
+export type NamedFrostLook = {
+  readonly os: OsFamily;
+  readonly effects: NamedFrostLookEffects | null;
+};
+
+export type OptionalFrostLookEnvParse =
+  | { readonly ok: true; readonly look: NamedFrostLook | null }
   | { readonly ok: false; readonly reason: FrostLookEnvError };
 
 const OS_FAMILIES: readonly OsFamily[] = ["nixos", "darwin", "linux-other", "unknown"];
@@ -87,6 +97,22 @@ export function consumeFrostLookFromEnv(env: {
   const effects = parseFrostLookEffects(env[FROST_LOOK_EFFECTS_KEY]);
   if (!effects.ok) return effects;
   return { ok: true, os: os.os, effects: effects.effects };
+}
+
+/**
+ * ISO bun consume. Missing both keys is unmeasured, not
+ * `missing-os`. Overlay NamedEnv still requires OS. Named
+ * `"real"` is reported; it does not fill `probe`.
+ */
+export function consumeOptionalFrostLookFromEnv(env: {
+  readonly [key: string]: string | undefined;
+}): OptionalFrostLookEnvParse {
+  if (env[FROST_LOOK_OS_KEY] === undefined && env[FROST_LOOK_EFFECTS_KEY] === undefined) {
+    return { ok: true, look: null };
+  }
+  const parsed = consumeFrostLookFromEnv(env);
+  if (!parsed.ok) return parsed;
+  return { ok: true, look: { os: parsed.os, effects: parsed.effects } };
 }
 
 /**
@@ -228,17 +254,4 @@ export function frostLookEffectsFromNamed(
   real: HardwareProbeEffects,
 ): HardwareProbeEffects | null {
   return named === "real" ? real : null;
-}
-
-/**
- * Named `"real"` uses the injected effects. Missing /
- * `"null"` does not look. Does not default to
- * `realProbeEffects`.
- */
-export function frostLookProbeFromNamed(
-  os: OsFamily,
-  named: NamedFrostLookEffects | null,
-  real: HardwareProbeEffects,
-): NamedHardwareProbe | null {
-  return namedProbeFromFrostLook(os, frostLookEffectsFromNamed(named, real));
 }

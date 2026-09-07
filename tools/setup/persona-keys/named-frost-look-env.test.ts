@@ -15,6 +15,7 @@ import {
   consumeFrostLookFromCliArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
+  consumeOptionalFrostLookFromEnv,
   frostLookProbeFromNamed,
   parseFrostLookEffects,
   parseFrostLookOs,
@@ -227,6 +228,13 @@ describe("runFrostLookEnvCli — tpmrm0 is not present", () => {
     expect(firstboot.split("ZETA_FROST_LOOK_EFFECTS").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
     expect(bunCli.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
+    expect(bunCli.split("named-frost-look-env").length - 1).toBe(0);
+    expect(bunCli.split("namedProbeFromFrostLook").length - 1).toBe(0);
+    expect(bunCli.split("frost-hardware-probe").length - 1).toBe(0);
+    const parse = await Bun.file(new URL("./named-frost-look.ts", import.meta.url)).text();
+    expect(parse.split("from \"./named-probe-from-frost-look").length - 1).toBe(0);
+    expect(parse.split("namedProbeFromFrostLook").length - 1).toBe(0);
+    expect(parse.split("realProbeEffects(").length - 1).toBe(0);
   });
 
   test("process CLI missing effects does not call realProbeEffects", () => {
@@ -246,6 +254,19 @@ describe("consumeFrostLookFromEnv", () => {
       ok: true,
       os: "nixos",
       effects: null,
+    });
+  });
+});
+
+describe("consumeOptionalFrostLookFromEnv", () => {
+  test("missing both keys is unmeasured, not missing-os", () => {
+    expect(consumeOptionalFrostLookFromEnv({})).toEqual({ ok: true, look: null });
+  });
+
+  test("effects without OS still refuses", () => {
+    expect(consumeOptionalFrostLookFromEnv({ [FROST_LOOK_EFFECTS_KEY]: "real" })).toEqual({
+      ok: false,
+      reason: "missing-os",
     });
   });
 });

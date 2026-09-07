@@ -351,6 +351,14 @@ assume the number.
    not call this from `zeta-install.sh`. Does not change
    ISO bun `probe: null`. Does not invent an integrate
    decision.
+   ISO bun consume reports named frost-look keys (`081M1YGP8BF087G0R002Z1YH8R`):
+   bun JSON includes `look`. Missing both keys is
+   unmeasured, not `missing-os`. Named `"real"` still
+   leaves `probe: null`. `/dev/tpmrm0` is not `real`.
+   Parse does not import the look mapper. Does not import
+   the frost-look CLI. Does not export frost-look keys
+   from `zeta-install.sh`. Does not invent an integrate
+   decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

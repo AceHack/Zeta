@@ -616,6 +616,10 @@ Overlay named-key joins take frost-look
 keys (`081M1YCFES8087G0R000R3MV6Y`);
 parse is not the CLI; ISO bun `probe`
 stays null.
+ISO bun consume reports named frost-look
+keys (`081M1YGP8BF087G0R002Z1YH8R`);
+missing is unmeasured `look`; named
+`"real"` still leaves `probe` null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

@@ -23,6 +23,7 @@
  * Exit 2: JSON `{ ok: false, reason }`.
  */
 
+import type { NamedHardwareProbe, OsFamily } from "../../../src/Core.TypeScript/cluster/host-seal-profile.ts";
 import { realProbeEffects, type HardwareProbeEffects } from "./frost-hardware-probe.ts";
 import {
   argvHasFromConfFlag,
@@ -31,8 +32,9 @@ import {
   consumeFrostLookFromCliArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
-  frostLookProbeFromNamed,
+  frostLookEffectsFromNamed,
   type FrostLookEnvParse,
+  type NamedFrostLookEffects,
 } from "./named-frost-look.ts";
 import { namedProbeFromFrostLook } from "./named-probe-from-frost-look.ts";
 
@@ -48,14 +50,30 @@ export {
   consumeFrostLookFromCliArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
+  consumeOptionalFrostLookFromEnv,
   frostLookEffectsFromNamed,
-  frostLookProbeFromNamed,
   parseFrostLookEffects,
   parseFrostLookOs,
   type FrostLookEnvError,
   type FrostLookEnvParse,
+  type NamedFrostLook,
   type NamedFrostLookEffects,
+  type OptionalFrostLookEnvParse,
 } from "./named-frost-look.ts";
+
+/**
+ * Named `"real"` uses the injected effects. Missing /
+ * `"null"` does not look. Does not default to
+ * `realProbeEffects`. Lives here so parse does not load
+ * `named-probe-from-frost-look.ts`.
+ */
+export function frostLookProbeFromNamed(
+  os: OsFamily,
+  named: NamedFrostLookEffects | null,
+  real: HardwareProbeEffects,
+): NamedHardwareProbe | null {
+  return namedProbeFromFrostLook(os, frostLookEffectsFromNamed(named, real));
+}
 
 function writeFrostLookParse(
   parsed: FrostLookEnvParse,

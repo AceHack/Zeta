@@ -246,6 +246,8 @@ describe("planSetupFromFrostLookEnv — tpmrm0 is not present", () => {
     expect(resultJoin.split("probeHardwareSecurity(").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
     expect(bunCli.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
+    expect(bunCli.split("named-frost-look-env").length - 1).toBe(0);
+    expect(bunCli.split("consumeOptionalFrostLookFromEnv(").length - 1).toBe(1);
   });
 });
 
