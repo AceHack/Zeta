@@ -15,6 +15,8 @@ import {
   consumeFrostLookFromCliArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
+  consumeOptionalFrostLookFromArgv,
+  consumeOptionalFrostLookFromConf,
   consumeOptionalFrostLookFromEnv,
   frostLookProbeFromNamed,
   parseFrostLookEffects,
@@ -218,6 +220,7 @@ describe("runFrostLookEnvCli — tpmrm0 is not present", () => {
     const cli = await Bun.file(new URL("./named-frost-look-env.ts", import.meta.url)).text();
     expect(cli.split("osFamilyFromOsRelease(").length - 1).toBe(0);
     expect(cli.split("planSetupFromFrostLookEnv(").length - 1).toBe(0);
+    expect(cli.split("planSetupFromFrostLookOptionalNamedEnv(").length - 1).toBe(0);
     expect(cli.split("integrateAtSetup(").length - 1).toBe(0);
     expect(cli.split("appendFirstbootBaoElfConf(").length - 1).toBe(0);
     expect(cli.split("from \"../../../src/Core.TypeScript/zflash/").length - 1).toBe(0);
@@ -265,6 +268,37 @@ describe("consumeOptionalFrostLookFromEnv", () => {
 
   test("effects without OS still refuses", () => {
     expect(consumeOptionalFrostLookFromEnv({ [FROST_LOOK_EFFECTS_KEY]: "real" })).toEqual({
+      ok: false,
+      reason: "missing-os",
+    });
+  });
+});
+
+describe("consumeOptionalFrostLookFromArgv", () => {
+  test("missing both flags is unmeasured, not missing-os", () => {
+    expect(consumeOptionalFrostLookFromArgv(["--bao-path=/run/current-system/sw/bin/bao"])).toEqual({
+      ok: true,
+      look: null,
+    });
+  });
+
+  test("--effects without --os still refuses", () => {
+    expect(consumeOptionalFrostLookFromArgv([`${FROST_LOOK_EFFECTS_FLAG}=real`])).toEqual({
+      ok: false,
+      reason: "missing-os",
+    });
+  });
+});
+
+describe("consumeOptionalFrostLookFromConf", () => {
+  test("missing both keys is unmeasured; HOST and bao keys are ignored", () => {
+    expect(
+      consumeOptionalFrostLookFromConf("ZETA_HOST_BAO=/run/current-system/sw/bin/bao\nZETA_BAO_EPOCH=installed-host\n"),
+    ).toEqual({ ok: true, look: null });
+  });
+
+  test("effects without OS still refuses", () => {
+    expect(consumeOptionalFrostLookFromConf(`${FROST_LOOK_EFFECTS_KEY}='real'\n`)).toEqual({
       ok: false,
       reason: "missing-os",
     });

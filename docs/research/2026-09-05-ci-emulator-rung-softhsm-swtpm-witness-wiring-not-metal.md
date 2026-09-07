@@ -377,6 +377,13 @@ not `missing-os`. Named `"real"` still leaves `probe:
 null`. Parse does not import the look mapper. Does not
 export frost-look keys from `zeta-install.sh`. Does not
 change ISO bun `probe: null`.
+Overlay optional named joins match ISO bun missing
+frost-look keys (`081M1YNNVFQ087G0R001J5SEPD`):
+`planSetupFromFrostLookOptionalNamedEnv` / Argv / Conf.
+Missing both keys is unmeasured, not `missing-os`.
+NamedEnv still requires OS. Does not write ESP. Does not
+call this from `zeta-install.sh`. Does not change ISO bun
+`probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
@@ -387,7 +394,10 @@ change ISO bun `probe: null`.
    (`081M1YCFES8087G0R000R3MV6Y`); they do not write ESP.
    ISO bun consume reports `look`
    (`081M1YGP8BF087G0R002Z1YH8R`) and still leaves `probe`
-   null. Wiring this look on the live ISO is later and still
+   null. Optional named joins
+   (`081M1YNNVFQ087G0R001J5SEPD`) match that missing-key
+   unmeasure and still leave NamedEnv requiring OS.
+   Wiring this look on the live ISO is later and still
    must not infer from `/dev/tpmrm0`. Bun JSON `probe`
    stays null until that wiring exists. Does not expand
    `ZetaFirstbootRole`. `/dev/tpmrm0` is still not an

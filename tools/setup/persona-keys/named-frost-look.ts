@@ -100,9 +100,10 @@ export function consumeFrostLookFromEnv(env: {
 }
 
 /**
- * ISO bun consume. Missing both keys is unmeasured, not
- * `missing-os`. Overlay NamedEnv still requires OS. Named
- * `"real"` is reported; it does not fill `probe`.
+ * ISO bun consume and overlay optional named joins.
+ * Missing both keys is unmeasured, not `missing-os`.
+ * Overlay NamedEnv still requires OS. Named `"real"` is
+ * reported; it does not fill ISO bun `probe`.
  */
 export function consumeOptionalFrostLookFromEnv(env: {
   readonly [key: string]: string | undefined;
@@ -110,7 +111,10 @@ export function consumeOptionalFrostLookFromEnv(env: {
   if (env[FROST_LOOK_OS_KEY] === undefined && env[FROST_LOOK_EFFECTS_KEY] === undefined) {
     return { ok: true, look: null };
   }
-  const parsed = consumeFrostLookFromEnv(env);
+  return asOptionalLook(consumeFrostLookFromEnv(env));
+}
+
+function asOptionalLook(parsed: FrostLookEnvParse): OptionalFrostLookEnvParse {
   if (!parsed.ok) return parsed;
   return { ok: true, look: { os: parsed.os, effects: parsed.effects } };
 }
@@ -213,6 +217,34 @@ export function argvHasFrostLookFlag(argv: readonly string[]): boolean {
     }
   }
   return false;
+}
+
+/**
+ * Missing both flags is unmeasured, not `missing-os`.
+ * `--os` without `--effects` stays named with null effects.
+ */
+export function consumeOptionalFrostLookFromArgv(argv: readonly string[]): OptionalFrostLookEnvParse {
+  if (!argvHasFrostLookFlag(argv)) return { ok: true, look: null };
+  return asOptionalLook(consumeFrostLookFromArgv(argv));
+}
+
+function confHasFrostLookKey(body: string): boolean {
+  for (const rawLine of body.split("\n")) {
+    const line = rawLine.replace(/\r$/u, "").trim();
+    if (line.startsWith(`${FROST_LOOK_OS_KEY}=`) || line.startsWith(`${FROST_LOOK_EFFECTS_KEY}=`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Missing both keys is unmeasured, not `missing-os`. HOST /
+ * ZETA_ROLE / bao keys are ignored.
+ */
+export function consumeOptionalFrostLookFromConf(body: string): OptionalFrostLookEnvParse {
+  if (!confHasFrostLookKey(body)) return { ok: true, look: null };
+  return asOptionalLook(consumeFrostLookFromConf(body));
 }
 
 function takeFromConfBody(argv: readonly string[]): { readonly present: boolean; readonly body: string } {

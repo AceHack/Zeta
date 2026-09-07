@@ -50,6 +50,8 @@ export {
   consumeFrostLookFromCliArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
+  consumeOptionalFrostLookFromArgv,
+  consumeOptionalFrostLookFromConf,
   consumeOptionalFrostLookFromEnv,
   frostLookEffectsFromNamed,
   parseFrostLookEffects,
