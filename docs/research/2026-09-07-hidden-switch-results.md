@@ -5,7 +5,7 @@ Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XK02XM087G0R00043EW05
-Measurement status: pending implementation archive and full gate
+Measurement status: full scope gates complete; implementation archive pending
 
 This record separates registered measurements from the
 [frozen protocol](2026-09-07-hidden-switch-protocol.md),

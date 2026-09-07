@@ -24,8 +24,7 @@ registered measurements are a separate phase after implementation archival.
 
 The initial captured suite passed 124 cases. The final captured suite adds
 five metadata/overflow cases and passes 129. Neither run generates registered
-source tapes. Native compile/check history and combined gates will be added
-before measurement.
+source tapes. The later sections retain native compile/check history and combined gates.
 
 Archive-ref admission parity was added before freezing implementation.
 The [wrapper tests](python-archive-ref-tests.log) pass 64 cases and the
@@ -89,7 +88,7 @@ warning. [Mypy](python-combined-types.log) passed 39 source files;
 passed, with 40 formatted files. The Interp workflow floor is raised from
 299 to the actually collected 431; targeted actionlint also passed.
 
-This checkpoint is not a green full-solution gate. Native full-suite
+At that earlier checkpoint, the full-solution gate was not green. Native full-suite
 BftConsensus failed with TLC trace-recovery bug(4), and its unchanged
 isolated attempt failed with an in-run JVM SIGBUS. Both remain explicit
 in the native record. The separately indexed
@@ -99,8 +98,8 @@ Neither replaces an original failure or establishes its cause. Candidate
 source `47d29d9cb2dc7ebb2cf36135b6699bb9a0d66839` was independently reviewed
 and integrated as `ddbf9520b`; all thirteen indexed diagnostic files were
 verified against their declared hashes and byte lengths. The nineteen
-scientific files are unchanged. Full candidate and integrated validation
-remain pending; registered source generation and measurements are unexecuted.
+scientific files are unchanged. Candidate and integrated validation were still pending at that checkpoint;
+the later combined-gate section records their completion.
 
 ## Combined gate after the two TLC repairs
 
@@ -137,7 +136,7 @@ failure or the compiler failures. The Interp 431-case gate above concerns
 unchanged Python/scientific source. A separately discovered CI failure in
 historical NCI receipt tests requires an explicit historical registry
 fixture and current-registry refusal checks; that Python/TypeScript
-correction remains separate validation before the implementation freeze.
+correction has now completed the separate validation recorded below.
 Registered hidden-switch source streams and costs remain unexecuted.
 
 Original combined test records, losslessly compressed:
@@ -148,3 +147,35 @@ Original combined test records, losslessly compressed:
 [Tests.CSharp.TypeProvider](root-final-Tests.CSharp.TypeProvider.trx.gz),
 [Tests.FSharp](root-final-Tests.FSharp.trx.gz),
 [Tests.FSharp.Git](root-final-Tests.FSharp.Git.trx.gz).
+
+## Final receipt integration before archival
+
+The historical NCI correction was independently reviewed and integrated from
+`e2a11ebc9ca5e94c02656e904ddef9ba1b4f32f5` as `7882a31f0`. Its
+[policy and fixture record](../../2026-09-07-tlc-macos-c1-policy.md) preserves
+the original failed CI outputs, unchanged historical receipt/pins, explicit
+current-registry refusal and corrected exception propagation. The original
+source and evidence history remain under its separate annotated final tag.
+
+Current main `cd9c44c20290a366415f946c000b39fad64ccf21` then integrated as
+`7e9b8681c2e619316ed2439fd313cb8ae3d5f42e`. The resulting complete
+[Core.Python suite](root-final-core-python.log) passed 63 cases in 77.63s.
+The affected [TypeScript receipt suites](root-final-nci-ts.log) passed 26
+cases and 54 assertions on CI's Bun 1.3.13. The
+[scope record](root-final-scope.json) binds both exact commands and full logs
+to the integrated source. All 98 prelaunch native/TLC inputs and nineteen
+scientific files still match the completed combined native gate. That
+unchanged-source gate was not repeated for the Python/TypeScript integration.
+
+The final [quick preflight](root-final-prearchive-quick.log) passed all sixteen
+checks and is retained separately from the mandatory subsequent push hook. Implementation archival
+and registered measurement follow these checks; these validation results
+are not behavioral or cost observations.
+
+The [prepared measurement launcher](measurement-launcher.py.txt) checks the
+remote annotated implementation archive, current HEAD, nineteen source hashes
+and two loaded-DLL byte hashes before invoking the registered CLIs. It retains
+phase commands, process-name snapshots without arguments, exit codes and
+before/after source and binary identities. It adds no warmup, retry, row
+replacement or scientific policy. Preparing this wrapper generates no source
+tape; its later invocation and outputs belong to the measurement record.

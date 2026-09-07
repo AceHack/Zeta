@@ -135,8 +135,11 @@ hidden-switch cases. The mapped Release build has zero warnings/errors.
 No admitted scientific file, model, jar or experimental verdict changed.
 
 The integrated validation index preserves all seven original TRX streams,
-prelaunch source identities and the exact build/test logs. A historical
-NCI receipt fixture correction discovered by CI remains a separate
-Python/TypeScript prerequisite before archival; it must preserve the old
-receipt and refuse the changed current registry. No registered hidden-switch
-stream or timing has run.
+prelaunch source identities and the exact build/test logs. The historical
+NCI receipt fixture correction discovered by CI preserves the old receipt
+and refuses the changed current registry. It has completed independent review
+and final integration validation: 63 Core.Python tests and 26 TypeScript
+receipt tests with 54 assertions on Bun 1.3.13. All 98 prelaunch native/TLC
+inputs and nineteen scientific files remain byte-identical. The validation
+index retains commands and exact source identities. No registered
+hidden-switch stream or timing has run at this prearchive checkpoint.
