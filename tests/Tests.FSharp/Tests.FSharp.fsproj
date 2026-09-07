@@ -880,5 +880,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="../../src/Research.FSharp.Cli/MetadataProbe/dependencies.json" Link="MetadataProbe.dependencies.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../docs/research/hidden-switch-compiled-validation/2026-09-07/clrmd-mapping-attempt-1/mapping.json.gz" Link="MetadataProbe.mapping.json.gz" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

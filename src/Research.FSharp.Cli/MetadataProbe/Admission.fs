@@ -29,7 +29,16 @@ module Admission =
     let private filePin (value: FilePin) =
         not (String.IsNullOrWhiteSpace value.File) && IO.Path.IsPathFullyQualified value.File && value.Bytes > 0L && hash value.Sha256
 
-    let private shape (root: JsonElement) =
+    let private commonPins (dump: FilePin) (dac: FilePin) (runtime: RuntimePin) (modulePin: ModulePin) =
+        [dump; dac; runtime.Image; modulePin.Original; modulePin.Copy] |> List.forall filePin
+        && dump.Bytes <= 8L * 1024L * 1024L * 1024L
+        && modulePin.Original.File <> modulePin.Copy.File
+        && modulePin.Original.Sha256 = modulePin.Copy.Sha256 && modulePin.Original.Bytes = modulePin.Copy.Bytes
+        && runtime.ImageBase > 0UL && not (String.IsNullOrWhiteSpace runtime.Version)
+        && runtime.BuildId.Length = 32 && (runtime.BuildId |> Seq.forall Uri.IsHexDigit)
+        && fst(Guid.TryParseExact(modulePin.Mvid, "D"))
+
+    let private shape recordType (root: JsonElement) =
         let rec check (kind: Type) (value: JsonElement) =
             if FSharpType.IsRecord kind then
                 if value.ValueKind <> JsonValueKind.Object then false
@@ -51,25 +60,19 @@ module Admission =
             elif kind = typeof<uint32> then value.ValueKind = JsonValueKind.Number && fst(value.TryGetUInt32())
             elif kind = typeof<int> then value.ValueKind = JsonValueKind.Number && fst(value.TryGetInt32())
             else false
-        check typeof<Input> root
+        check recordType root
 
     let parse (raw: byte[]) =
         try
             if raw.Length > 65536 then error "input" "size" "manifest exceeds 64 KiB"
             else
                 use document = JsonDocument.Parse raw
-                if not (shape document.RootElement) then error "input" "shape" "requires exact typed fields, without duplicates or omitted defaults"
+                if not (shape typeof<Input> document.RootElement) then error "input" "shape" "requires exact typed fields, without duplicates or omitted defaults"
                 else
                     let input = JsonSerializer.Deserialize<Input> raw
                     let roles = [|"predict"; "condition"; "select"|]
                     let valid =
-                        [input.Dump; input.Dac; input.Runtime.Image; input.Module.Original; input.Module.Copy] |> List.forall filePin
-                        && input.Dump.Bytes <= 8L * 1024L * 1024L * 1024L
-                        && input.Module.Original.File <> input.Module.Copy.File
-                        && input.Module.Original.Sha256 = input.Module.Copy.Sha256 && input.Module.Original.Bytes = input.Module.Copy.Bytes
-                        && input.Runtime.ImageBase > 0UL && not (String.IsNullOrWhiteSpace input.Runtime.Version)
-                        && input.Runtime.BuildId.Length = 32 && (input.Runtime.BuildId |> Seq.forall Uri.IsHexDigit)
-                        && fst(Guid.TryParseExact(input.Module.Mvid, "D"))
+                        commonPins input.Dump input.Dac input.Runtime input.Module
                         && input.Methods.Length = 3
                         && Array.forall2 (fun role row -> row.Role = role && row.Address > 0UL && row.Address % 4UL = 0UL
                                                          && row.Bytes > 0u && row.Bytes <= 65536u && row.Bytes % 4u = 0u
@@ -80,6 +83,84 @@ module Admission =
                                              |> Array.forall (fun (left, right) -> left.Address + uint64 left.Bytes <= right.Address))
                     if disjoint then Ok input else error "input" "identity" "requires the finite three-method roster and canonical file/runtime identities"
         with exceptionValue -> Error(exceptionFailure "input" exceptionValue)
+
+    [<CLIMutable>]
+    type MappedMethod =
+        { Index: int; Role: string; Address: uint64; Bytes: uint32; Token: int; DeclaringType: string
+          Name: string; ReflectionSignature: string; IlHex: string; BodySha256: string
+          CompilerBlockIndex: int; CompilerName: string }
+    [<CLIMutable>]
+    type MappedInput =
+        { Dump: FilePin; Dac: FilePin; Runtime: RuntimePin; Module: ModulePin; Mapping: FilePin; Methods: MappedMethod[] }
+
+    let mappingBytes = 185092L
+    let mappingSha256 = "0D22A5C3679B5F47F874E8C1C10CFD34B17E9E4B7E3B649E2590F22F0F25A39A"
+    let private asMethod (row: MappedMethod) : MethodPin =
+        { Role = row.Role; Address = row.Address; Bytes = row.Bytes; Token = row.Token
+          Signature = row.ReflectionSignature; BodySha256 = row.BodySha256 }
+    let mappedBase (input: MappedInput) : Input =
+        { Dump = input.Dump; Dac = input.Dac; Runtime = input.Runtime; Module = input.Module
+          Methods = input.Methods |> Array.map asMethod }
+
+    /// The alternate command admits exactly the already reviewed finite mapping, not an arbitrary roster.
+    let parseMapped (raw: byte[]) =
+        try
+            if raw.Length > 256 * 1024 then error "input" "size" "mapped manifest exceeds 256 KiB"
+            else
+                use document = JsonDocument.Parse raw
+                if not (shape typeof<MappedInput> document.RootElement) then error "input" "shape" "requires exact mapped input fields"
+                else
+                    let input = JsonSerializer.Deserialize<MappedInput> raw
+                    if not(commonPins input.Dump input.Dac input.Runtime input.Module) then
+                        error "input" "identity" "requires canonical file/runtime identities"
+                    else
+                        let valid =
+                            filePin input.Mapping && input.Mapping.Bytes = mappingBytes && input.Mapping.Sha256 = mappingSha256
+                            && input.Methods.Length = 130
+                            && (input.Methods |> Array.forall (fun row ->
+                                row.Index >= 0 && row.Index < 139 && row.Role = "method-" + row.Index.ToString("D3", Globalization.CultureInfo.InvariantCulture)
+                                && row.Address > 0UL && row.Address % 4UL = 0UL && row.Bytes > 0u && row.Bytes <= 1664u && row.Bytes % 4u = 0u
+                                && row.Address <= UInt64.MaxValue - uint64 row.Bytes && row.Token >>> 24 = 6 && hash row.BodySha256
+                                && not(String.IsNullOrWhiteSpace row.DeclaringType) && not(String.IsNullOrWhiteSpace row.Name)
+                                && not(String.IsNullOrWhiteSpace row.ReflectionSignature) && row.IlHex.Length > 0 && row.IlHex.Length % 2 = 0
+                                && (row.IlHex |> Seq.forall (fun c -> (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')))))
+                            && (input.Methods |> Array.sumBy (fun row -> uint64 row.Bytes)) = 34660UL
+                            && (input.Methods |> Array.pairwise |> Array.forall (fun (a,b) -> a.Index < b.Index))
+                            && (input.Methods |> Array.distinctBy (fun row -> row.Token) |> Array.length) = 130
+                            && (input.Methods |> Array.sortBy (fun row -> row.Address) |> Array.pairwise
+                                |> Array.forall (fun (a,b) -> a.Address + uint64 a.Bytes <= b.Address))
+                        if valid then Ok input else error "input" "mapped-identity" "requires the exact ordered 130-row disjoint candidate scope and reviewed mapping identity"
+        with exceptionValue -> Error(exceptionFailure "input" exceptionValue)
+
+    /// Corroborates every field obtainable from the reviewed bytes; addresses remain physical-driver observations.
+    let bindMapped (raw: byte[]) (input: MappedInput) =
+        try
+            if int64 raw.Length <> mappingBytes || Convert.ToHexString(Security.Cryptography.SHA256.HashData raw) <> mappingSha256 then
+                error "mapping" "identity" "requires the exact reviewed mapping bytes"
+            else
+                use document = JsonDocument.Parse raw
+                let rows = document.RootElement.GetProperty("Rows").EnumerateArray()
+                           |> Seq.filter (fun row -> row.GetProperty("Outcome").GetProperty("Kind").GetString() = "mapped-candidate") |> Seq.toArray
+                let valid = rows.Length = input.Methods.Length && Array.forall2 (fun (row: JsonElement) (expected: MappedMethod) ->
+                    let observed = row.GetProperty("Input")
+                    let compiler = row.GetProperty("Outcome")
+                    row.GetProperty("Index").GetInt32() = expected.Index
+                    && observed.GetProperty("Mvid").GetString() = input.Module.Mvid
+                    && observed.GetProperty("Token").GetInt32() = expected.Token
+                    && observed.GetProperty("Type").GetString() = expected.DeclaringType
+                    && observed.GetProperty("Name").GetString() = expected.Name
+                    && observed.GetProperty("Signature").GetString() = expected.ReflectionSignature
+                    && observed.GetProperty("IlHex").GetString() = expected.IlHex
+                    && compiler.GetProperty("CompilerBlockIndex").GetInt32() = expected.CompilerBlockIndex
+                    && compiler.GetProperty("CompilerName").GetString() = expected.CompilerName
+                    && compiler.GetProperty("Bytes").GetUInt32() = expected.Bytes
+                    && compiler.GetProperty("Sha256").GetString() = expected.BodySha256) rows input.Methods
+                if valid then Ok() else error "mapping" "row" "mapped method input differs from the exact reviewed reflection/compiler row"
+        with exceptionValue -> Error(exceptionFailure "mapping" exceptionValue)
+
+    let mappedIdentity (expected: MappedMethod) token declaringType name moduleName expectedModule =
+        if token = expected.Token && declaringType = expected.DeclaringType && name = expected.Name && moduleName = expectedModule then Ok()
+        else error "method-query" "method-identity" "actual token/declaring type/name/module differs; no signature or nested-name normalization is performed"
 
     /// No cold or expanded range is permission for additional memory reads.
     let extents (expected: MethodPin) nativeCode hotStart hotSize coldStart coldSize =

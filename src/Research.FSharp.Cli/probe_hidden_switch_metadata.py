@@ -16,9 +16,9 @@ from analyze_hidden_switch_dump import (
     physical_method,
     unchanged_descriptor,
 )
-from capture_hidden_switch_dump import identity, utc, write
+from capture_hidden_switch_dump import custody_copy, identity, utc, write
 from hidden_switch_dump_memory import MachCore
-from inspect_hidden_switch_bodies import parse_blocks
+from inspect_hidden_switch_bodies import parse_blocks, stub_cell
 
 # Previous actual runtime metadata is an expectation only for these identical installed bytes.
 # Fresh runtime base comes from the new capture; the helper must independently match actual
@@ -64,20 +64,88 @@ def copied_module(inputs, ready, dll):
     return {**row, "Mvid": managed["Mvid"]}
 
 
-def output_admission(report, methods):
+def output_admission(report, methods, module=None):
     if report.get("Complete") is not True or report.get("Failure") is not None or report.get("Cleanup") != []:
-        raise ValueError("helper did not complete the three-method metadata slice")
+        raise ValueError("helper did not complete the declared method metadata slice")
     if any(report.get(key) is not False for key in ["RuntimeAdmitted", "BodyResolved", "ClosureAdmitted", "PhysicalCodeVerifiedByHelper"]):
         raise ValueError("helper admission scope changed")
+    for key in ["RequestedMethods", "AvailableMethods"]:
+        if type(report.get(key)) is not int or report[key] != len(methods):
+            raise ValueError("helper requested/available method count differs")
     rows = report.get("Methods")
-    if not isinstance(rows, list) or len(rows) != 3:
+    if not isinstance(rows, list) or len(rows) != len(methods):
         raise ValueError("helper method cardinality differs")
     for expected, actual in zip(methods, rows, strict=True):
         exact = {"Role": expected["Role"], "Query": expected["Address"], "Token": expected["Token"],
-                 "Signature": expected["Signature"], "NativeCode": expected["Address"],
+                 "NativeCode": expected["Address"],
                  "HotStart": expected["Address"], "HotSize": expected["Bytes"], "ColdStart": 0, "ColdSize": 0}
+        if module is None:
+            exact["Signature"] = expected["Signature"]
+        else:
+            exact.update({"DeclaringType": expected["DeclaringType"], "Name": expected["Name"], "ModuleName": module})
+            if not isinstance(actual.get("Signature"), str) or not actual["Signature"]:
+                raise ValueError("actual full method signature is missing")
         if any(type(actual.get(key)) is not type(value) or actual.get(key) != value for key, value in exact.items()):
             raise ValueError("helper extent/identity does not match the exact physical candidate")
+
+
+MAPPING_BYTES = 185092
+MAPPING_SHA = "0D22A5C3679B5F47F874E8C1C10CFD34B17E9E4B7E3B649E2590F22F0F25A39A"
+
+
+def mapped_plan(mapping, ready, blocks):
+    """Exact hash admission occurs at the caller; this corroborates the captured rows/blocks."""
+    if mapping.get("Complete") is not True or mapping.get("Failures") != [] or len(mapping["Rows"]) != 139:
+        raise ValueError("requires complete 139-row reviewed mapping")
+    if [row["Input"] for row in mapping["Rows"]] != ready["Methods"]:
+        raise ValueError("mapping rows differ from the captured reflection roster")
+    planned = []
+    for index, row in enumerate(mapping["Rows"]):
+        if row["Index"] != index:
+            raise ValueError("mapping row order differs")
+        outcome = row["Outcome"]
+        if outcome["Kind"] == "unprepared":
+            if row["Input"]["Prepared"] is not False or outcome["Refusal"] != row["Input"]["Refusal"]:
+                raise ValueError("unprepared observation differs")
+            continue
+        if outcome["Kind"] != "mapped-candidate" or row["Input"]["Prepared"] is not True:
+            raise ValueError("mapping contains an unadmitted prepared row")
+        block = blocks[outcome["CompilerBlockIndex"]]
+        if (block["Name"] != outcome["CompilerName"] or block["Bytes"] != outcome["Bytes"]
+                or hashlib.sha256(bytes.fromhex(block["Hex"])).hexdigest().upper() != outcome["Sha256"]
+                or block["Literals"] != outcome["DeclaredLiterals"]):
+            raise ValueError("mapping compiler identity differs")
+        planned.append((row, block))
+    if len(planned) != 130 or sum(block["Bytes"] for _, block in planned) != 34660:
+        raise ValueError("mapped candidate cardinality/byte bound differs")
+    return planned
+
+
+def mapped_physical(memory, row, block, attempt):
+    """One exact planned chain. Retain every successful physical prefix before dependency."""
+    entry = row["Input"]
+    role = f"method-{row['Index']:03d}"
+    address = int(entry["Callable"], 16)
+    stub, stub_record = memory.read(address, 8)
+    write(attempt / f"physical-{role}-stub.json", {"Method": entry, "Stub": stub_record})
+    cell_address = stub_cell(stub, address)
+    pointer, cell = memory.read(cell_address, 8)
+    body = int.from_bytes(pointer, "little")
+    write(attempt / f"physical-{role}-cell.json", {"Method": entry, "Cell": cell,
+          "DecodedTarget": f"{body:016X}", "TargetNonzeroAligned": body > 0 and body % 4 == 0,
+          "NextRequestedBodyBytes": block["Bytes"]})
+    if body == 0 or body % 4:
+        raise ValueError("resolved candidate body is zero or unaligned")
+    raw, physical = memory.read(body, block["Bytes"])
+    write(attempt / f"physical-{role}-body.json", {"Method": entry, "Body": physical})
+    matches = raw.hex().upper() == block["Hex"]
+    write(attempt / f"physical-{role}.json", {"Method": entry, "Stub": stub_record, "Cell": cell, "Body": physical,
+          "CompilerMatchesPhysical": matches, "BodyResolved": False})
+    if not matches:
+        raise ValueError("physical candidate differs from exact compiler bytes")
+    return {"Index": row["Index"], "Role": role, "Address": body, "Bytes": block["Bytes"], "Token": entry["Token"],
+            "DeclaringType": entry["Type"], "Name": entry["Name"], "ReflectionSignature": entry["Signature"], "IlHex": entry["IlHex"],
+            "BodySha256": row["Outcome"]["Sha256"], "CompilerBlockIndex": row["Outcome"]["CompilerBlockIndex"], "CompilerName": block["Name"]}
 
 
 def check_outputs(attempt, limit=2 * 1024**2):
@@ -116,7 +184,7 @@ def cleanup_owned(process, streams):
     return errors
 
 
-def run(capture, attempt, host, helper):
+def run(capture, attempt, host, helper, mapping_path=None):
     owned = False
     process = stream = out = err = None
     cleanup = []
@@ -127,7 +195,7 @@ def run(capture, attempt, host, helper):
         os.mkdir(attempt)
         owned = True
         write(attempt / "start.json", {**outcome, "StartedAtUtc": utc(),
-              "MethodRoster": list(SIGNATURES), "HelperSeconds": 180, "DumpHashSeconds": 120,
+              "MethodRoster": list(SIGNATURES) if mapping_path is None else "exact reviewed mapped-130", "HelperSeconds": 180, "DumpHashSeconds": 120,
               "OutputLimitPerFile": 2 * 1024**2,
               "LimitScope": "process deadline and polled output limit; overshoot retained, not filesystem quota or kernel I/O cancellation",
               "DumpPremise": "immutable local captured file/path through both held physical descriptor and separate helper open; no hostile namespace/in-place-write isolation",
@@ -162,14 +230,24 @@ def run(capture, attempt, host, helper):
         files = sorted(helper.parent.rglob("*.dll")) + [helper.with_suffix(".deps.json"), helper.with_suffix(".runtimeconfig.json"), helper.parent / "dependencies.json"]
         if not 0 < len(files) <= 32 or helper not in files:
             raise ValueError("helper module/config roster is outside its finite limit")
+        helper_copies = []
+        for index, file in enumerate(files):
+            destination = attempt / "helper-files" / file.relative_to(helper.parent)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            copied = custody_copy(file, destination)
+            helper_copies.append(copied)
+            write(attempt / f"helper-custody-{index:02d}.json", copied)
         files.extend([host] + [runtime_dir / name for name in ["libcoreclr.dylib", "libclrjit.dylib", "libmscordaccore.dylib", "libhostpolicy.dylib", "System.Private.CoreLib.dll"]])
         source_dir = Path(__file__).resolve().parent
         files.extend([source_dir / name for name in ["probe_hidden_switch_metadata.py", "analyze_hidden_switch_dump.py", "capture_hidden_switch_dump.py", "hidden_switch_dump_memory.py", "inspect_hidden_switch_bodies.py"]])
         files.extend(sorted((source_dir / "MetadataProbe").glob("*.fs")))
         files.extend([source_dir / "MetadataProbe/HiddenSwitchMetadata.fsproj", source_dir / "MetadataProbe/dependencies.json", source_dir.parent / "Core/Result.fs"])
         helper_pins = [identity(path) for path in files]
+        if any(row["Original"] not in helper_pins for row in helper_copies):
+            raise ValueError("helper original changed after custody copying")
         write(attempt / "inputs.json", {"CaptureMetadata": [identity(capture / name) for name in ["outcome.json", "inputs.json", "ready-observed.json", "jit.log"]],
-              "HelperSourcesModulesAndHost": helper_pins, "ModuleCustody": module,
+              "HelperSourcesModulesAndHost": helper_pins, "ModuleCustody": module, "HelperCustody": helper_copies,
+              "SourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, timeout=10).strip(),
               "Scope": "copy/file pins separate from actual helper loaded-image observations; framework resolution is not a complete load-closure proof"})
         stage = "physical-backing"
         dump = capture / "graph.core"
@@ -184,7 +262,25 @@ def run(capture, attempt, host, helper):
             raise ValueError("compiler transcript exceeds declared 16-MiB bound")
         blocks = parse_blocks(jit.read_text())
         methods = []
-        for role, signature in SIGNATURES.items():
+        mapping_pin = None
+        if mapping_path is not None:
+            stage = "mapping-admission"
+            mapping_pin = identity(mapping_path)
+            if mapping_pin["Bytes"] != MAPPING_BYTES or mapping_pin["Sha256"] != MAPPING_SHA:
+                raise ValueError("mapping file does not match exact reviewed identity")
+            mapping = read_json(mapping_path, 256 * 1024)
+            planned = mapped_plan(mapping, ready, blocks)
+            write(attempt / "mapped-plan.json", {"Mapping": mapping_pin, "Methods": len(planned),
+                  "Unprepared": [row for row in mapping["Rows"] if row["Outcome"]["Kind"] == "unprepared"],
+                  "ExtraCompilerBlocks": mapping["UnmappedCompilerBlocks"], "LiteralReads": 0,
+                  "RangeScope": "130 declared eight-byte stubs, eight-byte pointer cells and 34660 compiler body bytes only"})
+            for row, block in planned:
+                stage = f"physical-method-{row['Index']:03d}"
+                if row["Input"]["Mvid"] != module["Mvid"]:
+                    raise ValueError("mapped definition differs from captured module MVID")
+                methods.append(mapped_physical(memory, row, block, attempt))
+                write(attempt / f"method-input-{row['Index']:03d}.json", methods[-1])
+        for role, signature in (SIGNATURES.items() if mapping_path is None else []):
             entry = one(ready["Methods"], lambda row, role=role: row["Type"] == "Zeta.Research.HiddenSwitchPolicy" and row["Name"] == role, "prepared reflected " + role)
             block = one(blocks, lambda row, role=role: row["Name"].startswith("Zeta.Research.HiddenSwitchPolicy:" + role + "("), "compiler block " + role)
             if entry["Prepared"] is not True or entry["Mvid"] != module["Mvid"]:
@@ -196,9 +292,13 @@ def run(capture, attempt, host, helper):
         manifest = {"Dump": captured["LocalOnlyDump"], "Dac": identity(runtime_dir / "libmscordaccore.dylib"),
                     "Runtime": {"Image": runtime_image, "ImageBase": int(native["Header"], 16), "Version": RUNTIME_VERSION, "BuildId": RUNTIME_BUILD},
                     "Module": module, "Methods": methods}
+        if mapping_pin is not None:
+            manifest["Mapping"] = mapping_pin
+            if identity(mapping_path) != mapping_pin:
+                raise ValueError("mapping changed while physical candidates were read")
         write(attempt / "helper-input.json", manifest)
         stage = "helper-process"
-        args = [str(host), str(helper), str(attempt / "helper-input.json"), str(attempt / "helper-output.json")]
+        args = [str(host), str(helper)] + ([] if mapping_path is None else ["--mapped-130"]) + [str(attempt / "helper-input.json"), str(attempt / "helper-output.json")]
         overrides = {"COREHOST_TRACE": "1", "COREHOST_TRACEFILE": str(attempt / "helper-host.log")}
         env = os.environ.copy(); env.update(overrides)
         write(attempt / "helper-start.json", {"Arguments": args, "StartedAtUtc": utc(), "Overrides": overrides,
@@ -214,14 +314,16 @@ def run(capture, attempt, host, helper):
             raise ValueError("metadata helper refused or failed; exact output retained")
         stage = "output-admission"
         report = read_json(attempt / "helper-output.json", 1024**2)
-        output_admission(report, methods)
+        output_admission(report, methods, None if mapping_path is None else module["Original"]["File"])
         unchanged_descriptor(stream, dump, snapshot)
+        if mapping_pin is not None and identity(mapping_path) != mapping_pin:
+            raise ValueError("mapping changed after helper queries")
         if any(identity(Path(pin["File"])) != pin for pin in helper_pins + inputs["Pins"]):
             raise ValueError("prelaunch helper/target inputs changed")
-        if any(identity(Path(row["Copy"]["File"])) != row["Copy"] for row in inputs["TargetCustody"]):
+        if any(identity(Path(row["Copy"]["File"])) != row["Copy"] for row in inputs["TargetCustody"] + helper_copies):
             raise ValueError("target custody changed after helper query")
         outcome.update({"Complete": True, "PhysicalCandidateBytes": sum(row["Bytes"] for row in methods), "ComparedCurrentHotExtents": len(methods),
-                        "Scope": "three exact DAC current extents corresponding to independently stored physical candidate bytes; full closure remains unadmitted"})
+                        "Scope": "declared exact DAC current extents corresponding to independently stored physical candidate bytes; full closure remains unadmitted"})
     except Exception as error:  # noqa: BLE001 - owned diagnostic boundary retains every actual refusal
         outcome["Failure"] = {"Stage": stage, "Code": type(error).__name__, "Detail": str(error)[:4096]}
     finally:
@@ -241,6 +343,6 @@ def run(capture, attempt, host, helper):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 5:
-        raise SystemExit("requires fresh capture, absent attempt, exact host and isolated metadata DLL")
+    if len(sys.argv) not in (5, 6):
+        raise SystemExit("requires fresh capture, absent attempt, exact host, isolated metadata DLL and optional exact reviewed mapping")
     raise SystemExit(run(*(Path(value).absolute() for value in sys.argv[1:])))
