@@ -500,3 +500,11 @@ all retained compiler failures and the final 37 passing focused tests.
 The ten interventions and fifty-three invalid operations now retain actual
 call-site counters and active failure prefixes. No registered work, full hand
 admission or new runtime/body/closure acceptance follows from this slice.
+
+## Isolated offline metadata preparation
+
+The [ClrMD preparation record](clrmd-physical-preparation.md) indexes the
+reviewed isolated helper, fresh target-file custody, original failures and
+47 passing native plus 23 passing Python fixtures. The old SOS-host path
+remains closed. A separately named fresh capture and offline metadata query
+are pending; no complete graph/runtime admission is implied.
