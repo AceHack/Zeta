@@ -1,0 +1,1363 @@
+{
+  "StartedAtUtc": "2026-09-07T15:21:38.605890+00:00",
+  "FinishedAtUtc": "2026-09-07T15:21:47.771885+00:00",
+  "Complete": true,
+  "HeadSha": "f99c9f4e2502263943d899ec7a506aa287f76558",
+  "MergeSha": "1193d505de42f7a9406e64389f1496a311fc4b28",
+  "MergedAtUtc": "2026-09-07T15:16:24Z",
+  "RefreshedOriginMain": "1193d505de42f7a9406e64389f1496a311fc4b28",
+  "MergeIsAncestorOfOriginMain": true,
+  "MergedPathsComparedToCheckedHead": [
+    {
+      "Status": "M",
+      "Path": ".github/workflows/interp-lane.yml",
+      "HeadAndMergeBlob": "0f7b43c4ac6ad7f7f66455c6c55d9a1b00adcc9b"
+    },
+    {
+      "Status": "M",
+      "Path": ".prettierignore",
+      "HeadAndMergeBlob": "88d6f2aac676466d8a4d38c83e17ad3dacbf4cd7"
+    },
+    {
+      "Status": "M",
+      "Path": "docs/handoffs/2026-09-06-vera-unattended-research-continuation.md",
+      "HeadAndMergeBlob": "2f0204979691c54bbd004be5a56a871eeeb6d5bc"
+    },
+    {
+      "Status": "M",
+      "Path": "docs/handoffs/README.md",
+      "HeadAndMergeBlob": "959d4e610c048ca7708eb1dd762e7288b72b085e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-design-review.md",
+      "HeadAndMergeBlob": "411cd1c0a009f0d7710f6d87e86e58a31dd1b008"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-exact-envelopes.md",
+      "HeadAndMergeBlob": "8deff4d20c9b2af07b36cacb2430645bb420b6b4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-final-recovery-review.md",
+      "HeadAndMergeBlob": "7bb9a0e2947c61cc3c4bcd8ff9fcb33fb9a086d4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-implementation-review.md",
+      "HeadAndMergeBlob": "90a9c0d14db9415b7aeca113c287a8a3b5dc39bf"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-independent-review.md",
+      "HeadAndMergeBlob": "ceaef3db49720b9431fa391ff506e08ad0e20bb2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-prospective-model-identification.md",
+      "HeadAndMergeBlob": "fe8d3994db64d953a0ac5937b6ec7c079005be93"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-protocol.md",
+      "HeadAndMergeBlob": "b78fb1953c835bcfce019836d03942d0d779152b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-publication-integration-review.md",
+      "HeadAndMergeBlob": "f2a564b71468474b09fd9ae576877d2b8047482c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-result-review.md",
+      "HeadAndMergeBlob": "283af06c36815ede833ac90bc5c17695dec5b111"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/2026-09-07-hidden-switch-results.md",
+      "HeadAndMergeBlob": "17fab7a81a2d9b20559015a1e25d795dc4321ef9"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/README.md",
+      "HeadAndMergeBlob": "16dcce71aa5e9e65291f9df0fb3599dc28dbfc9a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/archive-verification.json",
+      "HeadAndMergeBlob": "337d991fe1c3146095e10bd3bb538ed6d246d5fc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json",
+      "HeadAndMergeBlob": "2ed47945e5de869676faa544a51e8ab9f22a0bf6"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.log",
+      "HeadAndMergeBlob": "eaaaa591641432ea10cabddd96948342bf18c851"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-processes-after.log",
+      "HeadAndMergeBlob": "ba1d700c89a0f59d461d5f869c9202f3386f903c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/behavior-processes-before.log",
+      "HeadAndMergeBlob": "8a2c9a7cd3e6009a813a2e5200df40d9fa156b7f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.json",
+      "HeadAndMergeBlob": "ca67464a9fca474c757ddb0f78bc30a50d0d8e71"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.log",
+      "HeadAndMergeBlob": "58d94c2b5ceb17d1a3182f62fe16511a7eaf2071"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-processes-after.log",
+      "HeadAndMergeBlob": "13297caee773ae1e8353805a8d10075fd54bb26c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/cost-processes-before.log",
+      "HeadAndMergeBlob": "e43ccdab6ad3ef7b56d2f12bcea904e259af8bc5"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/README.md",
+      "HeadAndMergeBlob": "211ffcc713c8bc56952a23d6fda7cf35ee40a72e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/hidden-switch-descriptive.png",
+      "HeadAndMergeBlob": "1ae2492d16e91a693ec5d07e06022df122e6f036"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/hidden-switch-descriptive.svg",
+      "HeadAndMergeBlob": "fea717ffbd12e448c0f429a832752d4dd8bfabce"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/manifest.json",
+      "HeadAndMergeBlob": "9262496096aba3204dcc65e692dbf26eaf294cc6"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/plot.py",
+      "HeadAndMergeBlob": "354f1246e1a9d02087ca6093eec84be25945d457"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/plotted-values.json",
+      "HeadAndMergeBlob": "88837843263b92ac7c01e5e01a216ebd676cbcb7"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/descriptive-figure/requirements.txt",
+      "HeadAndMergeBlob": "6ba70703bbbb26a27e75f01eaf32332bbbf86b1c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/implementation-push.log",
+      "HeadAndMergeBlob": "f14a547edee20c1095948951144a700ed1fceee7"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/measurement-attempt-1.json",
+      "HeadAndMergeBlob": "1f41769d943a16adaf378ccc286212a9a51138a4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/publication-preflight.log",
+      "HeadAndMergeBlob": "5eb2ac37760a6c61c56a40ff9cabdcefd7b40693"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/records-manifest.json",
+      "HeadAndMergeBlob": "bc6cb0d88a3f79300ba083e71427cf3d097e0aaa"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.json",
+      "HeadAndMergeBlob": "81449d8cd38d516e156c41515ee5ee8004372755"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.log",
+      "HeadAndMergeBlob": "7c351899e6280e0a78cab82235ce7c74bb65b87d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-execution-attempt-1.json",
+      "HeadAndMergeBlob": "c71282761d6d7fe03c9e146f3a19bcbad970b947"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/replay-launcher.py.txt",
+      "HeadAndMergeBlob": "7a42e7d1cb6c8406ce92c46fc093931049d6e26b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/results-archive-verification.json",
+      "HeadAndMergeBlob": "da47cf3507618ea1166c59af86d70948f96935ea"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/verdict-attempt-1.json",
+      "HeadAndMergeBlob": "44a6f6757f6548e3c2dc0d0f10b05b9b80b168de"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-results/2026-09-07/verdict-attempt-1.log",
+      "HeadAndMergeBlob": "d430d49a3c179bf69fde9563f791e757e71790b4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/README.md",
+      "HeadAndMergeBlob": "f27b139bc791ae9737c37f4fc0c414186e31b75e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/c1-codeql-reachability.json",
+      "HeadAndMergeBlob": "87353e5691f87bd8e7a87dbce36bda6fa6dab95d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/c1-codeql-reachability.py.txt",
+      "HeadAndMergeBlob": "1f69b56e25874b1bdeaed10f5b2a36d5c677b6bd"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/c1-codeql-reachability.stderr",
+      "HeadAndMergeBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/c1-final-advisory-drift.log",
+      "HeadAndMergeBlob": "0ba8ee5b7491c7cbb96e928b8a78bf5ae924fd4a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/c1-final-publication.json",
+      "HeadAndMergeBlob": "8a1d0e8047b7b767cb125176dff7d032f3e10911"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/hand-comparison-attempt-1.json",
+      "HeadAndMergeBlob": "7c944d0c7ab76149fbae2c5cf9add13e83e7c5e2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/hand-comparison-final.json",
+      "HeadAndMergeBlob": "7e9a00d664de4fb530378d90957639e2cc8dba30"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/hand-fixture.json",
+      "HeadAndMergeBlob": "acef68ed25ee1de8b4113fb26fbf38b6cd936257"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/implementation-source-manifest.json",
+      "HeadAndMergeBlob": "6989fcedd4ae293f9392f367cbd04ea9ba3e6a87"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/measurement-launcher.py.txt",
+      "HeadAndMergeBlob": "6c8433ea845f7452ab3cfb72c8fef479e6527949"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-build-full.log",
+      "HeadAndMergeBlob": "df1b875035d9f3d0b800679a80dda5bd4be812f6"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-1.log",
+      "HeadAndMergeBlob": "956c9ce5ea3d5d86870fe91d9211eb37fb988799"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-2.log",
+      "HeadAndMergeBlob": "5c983d92410ab3fc21954b9f0983015c49f1cc18"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-3.log",
+      "HeadAndMergeBlob": "8e70ffc94a5ff1b22da73dc811dc2aca97f39ad4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-4.log",
+      "HeadAndMergeBlob": "87d7a544d6b4cc7a6ef05c5346e907af7c87e8b3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-5.log",
+      "HeadAndMergeBlob": "49f2052ab1ea6ac85bc94819cfe7415d319fb4cc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-6.log",
+      "HeadAndMergeBlob": "f0fb833abfe5b24a56f3143ce09f81cf5cd30fc2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-compile-7.log",
+      "HeadAndMergeBlob": "8bbb249f3622bb38a5776f1b19a75bdc045db9c7"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-cost-refusal-no-archive.json",
+      "HeadAndMergeBlob": "d78b73e880485a9de7719e8354c61451ee0fe827"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-cost-refusal-no-archive.log",
+      "HeadAndMergeBlob": "e3f0fd85b8e6be70607c8ded55a270751978f4a3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-focused-1.log",
+      "HeadAndMergeBlob": "70de5f1c0b81fb80854f15e5462b2ec58965dabb"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-focused-2.log",
+      "HeadAndMergeBlob": "1977cb0bdf470e6ad38f1f2b18fa10b8286fdc1d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-focused-3.log",
+      "HeadAndMergeBlob": "15e308a14e2faf5a1e7bb0b7222263196ae17460"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-format.log",
+      "HeadAndMergeBlob": "105f1406189646b69c2990577e9e05f1bc57eb43"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-hand-1.log",
+      "HeadAndMergeBlob": "577876c4f061944664f3cbc75dcfb823991b9dfc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-hand-2.log",
+      "HeadAndMergeBlob": "a4f93a3d253766eaed31041722c1616c7b81fb19"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-hand-3.log",
+      "HeadAndMergeBlob": "c4302bf10830a068de4b69f9ff4a3e61d773483e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-hand-4.log",
+      "HeadAndMergeBlob": "cc62ebe5d45f72d7c543b509c0f6f224a92236eb"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-hand-5.log",
+      "HeadAndMergeBlob": "beb4151685eceb68e692edd0d743a767cfb28eaf"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-hand-attempt-2.json",
+      "HeadAndMergeBlob": "acef68ed25ee1de8b4113fb26fbf38b6cd936257"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-preflight-quick.log",
+      "HeadAndMergeBlob": "5a97b77c2b7c98fdd59aadbd8bdcdecd8e9ce976"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-missing-git.json",
+      "HeadAndMergeBlob": "4ee87f0796a580413987faa9c5af5bfc68f0e2d3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-missing-git.log",
+      "HeadAndMergeBlob": "975a37a2bfdbd718ed5502fa1e33d7395361e9d0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-no-archive-2.log",
+      "HeadAndMergeBlob": "7dcef2bc938d86f03796ea66826b3f8ef1fe5fcc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-no-archive-3.log",
+      "HeadAndMergeBlob": "bc0d85e0c5c488aa11b626f7764ec6f3d69b79d2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-no-archive-attempt-2.json",
+      "HeadAndMergeBlob": "cefe8f87aa89feabd335699cf25bd340c6b4522a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-no-archive-attempt-3.json",
+      "HeadAndMergeBlob": "204a6d4a141c6532f9b43d1bb3a56de62ce01ef3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-refusal-no-archive.log",
+      "HeadAndMergeBlob": "fdc0848918425f2182df8157ae09f3d04dc0908a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-size-bound.json",
+      "HeadAndMergeBlob": "8ef28defdf265e0467be28281de5fc16312be63a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-source-hashes.json",
+      "HeadAndMergeBlob": "ff61e0e2e0a0be1c89cce907b83b3cbec23cf79b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-tests-full-attempt-1.log",
+      "HeadAndMergeBlob": "bc20e7876b471fbcb461cf9af7314ce0f718d78a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-tlc-isolated-attempt-1.log",
+      "HeadAndMergeBlob": "68a3e0962c52f1fc80a35de35595b2fa3835da26"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/native-validation.md",
+      "HeadAndMergeBlob": "eb0a3e8c92e9083e4cc9cfac17833f1ab65e36ae"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pagination-final-advisory.log",
+      "HeadAndMergeBlob": "6b70338d3a59deda44ebbbe44f495771b85f8155"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-capture-1-incomplete/capture-script.py.txt",
+      "HeadAndMergeBlob": "a260eaf0b2e38a9aa274dd907066e183b77683d4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-capture-1-incomplete/check-pages.json",
+      "HeadAndMergeBlob": "ea1448e6e8cfbbd35a2f75757a099e454a423084"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-capture-1-incomplete/failed-job-101768218792.json",
+      "HeadAndMergeBlob": "83cf24e5bba19d6bbc327fc2cde7b5ba0e51e1c1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-capture-1-incomplete/refusal.json",
+      "HeadAndMergeBlob": "5302cbd940706d1e1fbb696caa7ce99bc299fbb0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-capture-1-incomplete/required-checks.json",
+      "HeadAndMergeBlob": "69f69da19287d9234fed09130d6d4ffb56a55b23"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-capture-1-incomplete/review-thread-pages.json",
+      "HeadAndMergeBlob": "1c4fcb855996c26590470dda723415fb25dc52a8"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/README.md",
+      "HeadAndMergeBlob": "bea93e9f8e87094e00551a5bd8d04e221aeac9b4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/capture-completion.json",
+      "HeadAndMergeBlob": "fd58cd1246542445a9c0e7ce1589c116f44f029e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/capture-manifest.json",
+      "HeadAndMergeBlob": "e67c87f607b6b574424df94aea57063ccf296450"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/capture-script.py.txt",
+      "HeadAndMergeBlob": "66f56a23f6fa4fa7a734161997e1cd09a7934d45"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/check-pages.json",
+      "HeadAndMergeBlob": "be91cc6247be91a15dff6fe3571776a25a1b4c9b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/failed-check-101768218792.json",
+      "HeadAndMergeBlob": "201017036fc2550e1b3b0252b27be0354c9680be"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/failed-check-annotations.json",
+      "HeadAndMergeBlob": "f31e7b18ab13f1152d399ac5ea39c6184a628bfd"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/failed-job-101768218792.json",
+      "HeadAndMergeBlob": "83cf24e5bba19d6bbc327fc2cde7b5ba0e51e1c1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/failed-job-101768218792.log",
+      "HeadAndMergeBlob": "b514ce50c17ce6d2d7a5ca8e088c12a825ea2bf5"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/failed-run-34128437843.json",
+      "HeadAndMergeBlob": "a87a6d9a415cecb9f12b0a295dedcdcb0541f178"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/gate-workflow-at-head.yml.txt.gz",
+      "HeadAndMergeBlob": "57090b7c70242ca45f5e53060e965c2eafb59c5f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/local-gate-comparison.json",
+      "HeadAndMergeBlob": "5f44fb522eb0f69163d0aef5278b8a5b86972ebd"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/required-checks.json",
+      "HeadAndMergeBlob": "b6ea2c2882459aa8435119b5e22e80f5c13547fb"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/review-thread-pages.json",
+      "HeadAndMergeBlob": "01964cbb64800bec3008c4ac7b2b4048b1dd4291"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/ruleset-16134995.json",
+      "HeadAndMergeBlob": "6fa70e736ac44b86e9280e3618f8e68daca1d86f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/rulesets.json",
+      "HeadAndMergeBlob": "ae5ae96f0fa7f10c2c24682e389fc91517785af0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/pr-16928-a2bf4225-review/snapshot.json",
+      "HeadAndMergeBlob": "931072852c99252296e5a2cb96da4043f0c3fde0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/README.md",
+      "HeadAndMergeBlob": "0c329c18746a029fd1464da3e5be01864b17e1c1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/finding.json",
+      "HeadAndMergeBlob": "50436a953db27e406dd682d42365abb6e83085fc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/manifest.json",
+      "HeadAndMergeBlob": "ec7d8ac37f307e0980909f4c49c005fc83ebdad3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/semgrep-drift-job-101780447107.json",
+      "HeadAndMergeBlob": "8203d433d7854392cc9e8bc06fb92d2d4f2a072e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/publication-json-bom-correction/semgrep-drift-job-101780447107.log.gz",
+      "HeadAndMergeBlob": "582a9accf3f2befb2f89439854ebbf824956ebb4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-archive-ref-tests.log",
+      "HeadAndMergeBlob": "ae985ae5d45d7bf9aaf2fe85f024fbb1739aef5a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-archive-ref-types.log",
+      "HeadAndMergeBlob": "b095268daa34f155662f1f3e6b0a593da52d284d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-combined-collection.log",
+      "HeadAndMergeBlob": "525a4cca4a769d780c5380779fb5665080b6a676"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-combined-format.log",
+      "HeadAndMergeBlob": "3a24bb4d926db96e6e47c2e85f88448fd52784c1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-combined-lint.log",
+      "HeadAndMergeBlob": "640ad88f8d7c51a32e8190df4b28a61390eb5a4b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-combined-tests.log",
+      "HeadAndMergeBlob": "895dc0dd3cff35c1c4364d0892819b1ce2171be0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-combined-types.log",
+      "HeadAndMergeBlob": "a1f3a4dcaa97e335f58acbf2d521c97eab33d319"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-focused-final.log",
+      "HeadAndMergeBlob": "678c21e71fc883dbbc3e1561c5fd03365384e109"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-focused-initial.log",
+      "HeadAndMergeBlob": "27a00376f7094e4369f036fbc188ec564fc659b9"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-format-final.log",
+      "HeadAndMergeBlob": "3158c7398c1ba75266b4343b79dd1125e687397b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-format-initial.log",
+      "HeadAndMergeBlob": "564085c75d7c2826da1b890334d8701e99cb5adc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-lint-final.log",
+      "HeadAndMergeBlob": "dea2967688f534bff50b123230c358291a5ec380"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-lint-initial.log",
+      "HeadAndMergeBlob": "95fd94609acf2e8d6ac7e57ce40db1be2318e8aa"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-types-final.log",
+      "HeadAndMergeBlob": "b2941348a04c93bde29760f5809e5a8ebfef55ec"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/python-types-initial.log",
+      "HeadAndMergeBlob": "e7aafecb1b99ca7efc8306789c9ccc889b3a7c1b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-build-combined.log",
+      "HeadAndMergeBlob": "d8dec88b60ea4dff4138f7bcafb61770b630e472"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-drift-failure.json",
+      "HeadAndMergeBlob": "789dd40e2e3ec634bfdfbc8edbb6c79375c9c606"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-drift-failure.log.gz",
+      "HeadAndMergeBlob": "bedacf5e13b01df757d686d1853c23bbac173bfc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-gate-failure.json",
+      "HeadAndMergeBlob": "4c1d450711e9f8c18634e799802384183e6b3f1e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-gate-failure.log.gz",
+      "HeadAndMergeBlob": "0c5425e5eea7581a538b1463ecb0796af29d7334"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-hygiene-failure.json",
+      "HeadAndMergeBlob": "06ab64e18d2ee1594c1803bb9b57eaa8d5f8d273"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-hygiene-failure.log.gz",
+      "HeadAndMergeBlob": "1e3d15fcca051ebb88289e5b537dba4d1a825364"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-initial-checks.json",
+      "HeadAndMergeBlob": "135fe32d75908b37d4384493dba6369eaeac9da2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-macos-failure.json",
+      "HeadAndMergeBlob": "b030b84b7caa9cdb4b681ba1ab4bc44e919deef4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-macos-failure.log.gz",
+      "HeadAndMergeBlob": "d4d2819638eb94ccb0ca61f2509923a5f26da77a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-toctou-failure.json",
+      "HeadAndMergeBlob": "5a195a877a7020610609c156531b12b73c366e60"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-toctou-failure.log.gz",
+      "HeadAndMergeBlob": "01826c203a9c3b1d596e60f3d2e5752e66afa1a2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-ts-hermetic-failure.json",
+      "HeadAndMergeBlob": "d8c5373bd9e487e41375540ac452498b5dcb947b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-ci-ts-hermetic-failure.log.gz",
+      "HeadAndMergeBlob": "663be4e1f62d50ef9455b779518f89f94774d597"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-codeql-panel-roster-test.json",
+      "HeadAndMergeBlob": "606fc4f9585778019f66c73c9ac0a6c671c2a6cb"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-codeql-panel-roster-test.log",
+      "HeadAndMergeBlob": "514a4b57225906784f586bab9e58c1e84cd9c83d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-core-build-recovery.log",
+      "HeadAndMergeBlob": "f4a148c09c379740ea7b9cead9fd61df68f2f7f1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-core-build.log",
+      "HeadAndMergeBlob": "ed4424d14c56c8eeabaf86cfd4ca10ef7983625c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-core-diagnostic-attempt-1.json",
+      "HeadAndMergeBlob": "b16bd9b3ec8c8124e5c858d82450e2c1a0aa39d9"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Bayesian.Tests.trx.gz",
+      "HeadAndMergeBlob": "fb0c520cb6874b6b0f8928f25e0b805211a5b710"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Core.CSharp.Mediator.Tests.trx.gz",
+      "HeadAndMergeBlob": "b47633b7db5452eccc0ced29eb4ec34bc498b76f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Core.CSharp.Tests.trx.gz",
+      "HeadAndMergeBlob": "5ee099271d1c4a09e8f02d510549693484be3d78"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Tests.CSharp.TypeProvider.trx.gz",
+      "HeadAndMergeBlob": "054b15f0e0164ac1909030635552b705b0d5e36b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Tests.CSharp.trx.gz",
+      "HeadAndMergeBlob": "9c67d25c463e57ddba7ab35bb3425bcb92af69a1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Tests.FSharp.Git.trx.gz",
+      "HeadAndMergeBlob": "f195811ac0b374aa37afd0efd20567918363c82e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-Tests.FSharp.trx.gz",
+      "HeadAndMergeBlob": "383191bb3a0189251f121abfe24c053f2d249b16"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-api-bom-packaging.json",
+      "HeadAndMergeBlob": "56b51b99296e5e8dfc2411679cdca0cc7d677747"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-api-gzip-quick.log.gz",
+      "HeadAndMergeBlob": "0949363b8298347d81e6c39737fcec86d5dd6cfe"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-api-semgrep-attempt-1.log.gz",
+      "HeadAndMergeBlob": "dc361416b7d25663fa31733268d3f3fd2d52c333"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-api-semgrep-attempt-2.log.gz",
+      "HeadAndMergeBlob": "3e615224593ccd4b2ab80426dd5b0c999fdb767e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-api-semgrep-validation.json",
+      "HeadAndMergeBlob": "0d6b4b1f6606aa95b8abbd1881f9e4a95d366a01"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-bft-invocation-live.json",
+      "HeadAndMergeBlob": "85dec9118163646656a0749a7d7586e5ff5374bf"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-bft-observation.json",
+      "HeadAndMergeBlob": "407bebfb3f009fb0ce387ddf276fddb2a75958e0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-bft-runtime-live.json",
+      "HeadAndMergeBlob": "db8eaa7a952ca21192cce906bee503cf3dbb124f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-build-attempt-1.log",
+      "HeadAndMergeBlob": "e4b38e3ddbe23f85ef2a9fab695839e84de56cba"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-core-python.log",
+      "HeadAndMergeBlob": "d6cb0ebef61bf94afae3ce59161bf764dfbfb933"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-gate-attempt-1.json",
+      "HeadAndMergeBlob": "374d5c2faf06e3fd542be9799e68dd323ff6dc40"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-gate-results.json",
+      "HeadAndMergeBlob": "5dccfa02a55c61f2001dcffc3625c669418fd80a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-nci-ts.log",
+      "HeadAndMergeBlob": "0f46fc829ef64abff3bc8d2769291041e0e56d59"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-prearchive-quick.log",
+      "HeadAndMergeBlob": "e0d9c88159d6ca22907d9341cee398bd532210c6"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-scope.json",
+      "HeadAndMergeBlob": "2415b3520cce36b47dbfc148af9be7079887ff87"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-team-activity.json",
+      "HeadAndMergeBlob": "20d4813faee3a61eae8c7bb9e178cf26705599d4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-final-tests-attempt-1.log",
+      "HeadAndMergeBlob": "35e803de35c2df41fe1d7a42741929179d6cd936"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-hand-fixture.json",
+      "HeadAndMergeBlob": "acef68ed25ee1de8b4113fb26fbf38b6cd936257"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-hand.log",
+      "HeadAndMergeBlob": "c4439ccc2157684abe1a20930fa240a313bca5bc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-hidden-focused.log",
+      "HeadAndMergeBlob": "eddabd68fc3488a748b0f0d1dd1ec413948dea98"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Bayesian.Tests.trx.gz",
+      "HeadAndMergeBlob": "d18bf0412370003e2b16ccea4c8f2d18eaf5025d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Core.CSharp.Mediator.Tests.trx.gz",
+      "HeadAndMergeBlob": "46f53d1dd42021a3eef84fac9df82261224de830"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Core.CSharp.Tests.trx.gz",
+      "HeadAndMergeBlob": "9b388f29461a03cc8e2d5883a73b8665ecdf415c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Tests.CSharp.TypeProvider.trx.gz",
+      "HeadAndMergeBlob": "8479c88ca1e0990c9f9480fc6961b38242b9e86c"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Tests.CSharp.trx.gz",
+      "HeadAndMergeBlob": "9e052ededf21fd1f10cb661bcafae9bd819e99cd"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Tests.FSharp.Git.trx.gz",
+      "HeadAndMergeBlob": "29fabe090aff1f2f2f37057f1d35fd2af065b987"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-Tests.FSharp.trx.gz",
+      "HeadAndMergeBlob": "c00723c9cacb90b1ab56dc30fc0c8c41b3fbf2a9"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-1-sequence.xml.gz",
+      "HeadAndMergeBlob": "41cff5a61646e82c3a91229570f73293663e70e5"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Bayesian.Tests.trx.gz",
+      "HeadAndMergeBlob": "e7e21ca9b43a81fbfe4dd487e7c9fc95d2ddc2fe"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Core.CSharp.Mediator.Tests.trx.gz",
+      "HeadAndMergeBlob": "e28e6e0261f31e1a4d544a9299cb92d2c20b41ec"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Core.CSharp.Tests.trx.gz",
+      "HeadAndMergeBlob": "22ca318a0c98c451771015ff943a0923be720c91"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Tests.CSharp.TypeProvider.trx.gz",
+      "HeadAndMergeBlob": "d937a5cd99469c9ee1aef5f939addf117b75ff57"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Tests.CSharp.trx.gz",
+      "HeadAndMergeBlob": "08b273b595d213386d15d591eb6df615e88c5963"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Tests.FSharp.Git.trx.gz",
+      "HeadAndMergeBlob": "8584b83853e3832dd3de2307a4ebc139c80b77f4"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-Tests.FSharp.trx.gz",
+      "HeadAndMergeBlob": "0daf9aff042c6bdac1bd26fd23d9b9f16b5ac9c0"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-bft-invocation-live.json",
+      "HeadAndMergeBlob": "ba6cd6a9f4b9497f0942eda06413e79b17f17b51"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-bft-observation.json",
+      "HeadAndMergeBlob": "4bf34358b34c18b2db72fb0a2a15e0b535de8c67"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-attempt-2-bft-runtime-live.json",
+      "HeadAndMergeBlob": "028591111f1e23e29b454f907f894d34c5f8abcc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-build-attempt-1.log",
+      "HeadAndMergeBlob": "e6d415e98ad3a0a6aae9bf1d8631d1251723576d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-crash-review.json",
+      "HeadAndMergeBlob": "b60a525df701b4d2b172063cafc1f6b203e10c14"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-crash-review.md",
+      "HeadAndMergeBlob": "01619f294a5be2708d0312a3cb17d63b87930c01"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-crash-runtimeconfig.json",
+      "HeadAndMergeBlob": "8920145845f1fffd58118a9956b68256abb4cd1b"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-gate-attempt-1-result.json",
+      "HeadAndMergeBlob": "a77886a7abc5f229f75e8d4f872af04fbe366949"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-gate-attempt-1.json",
+      "HeadAndMergeBlob": "e5083e08f2839fc5c5d7da2b25c806e7693e5193"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-gate-attempt-2-completion.json",
+      "HeadAndMergeBlob": "7881ce33e00aa437c204f47da919278ae994b989"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-gate-attempt-2-result.json",
+      "HeadAndMergeBlob": "af88def1a6ef3e47be9fd5e18dbc25d4f4c8c558"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-gate-attempt-2.json",
+      "HeadAndMergeBlob": "442cb46c13a28a75f72c72ecff1d0e608dc53cf3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-gate-launcher.py.txt",
+      "HeadAndMergeBlob": "e5359035fb52c852a8648e0ff3189b37661dce91"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-publication-quick-attempt-1.log",
+      "HeadAndMergeBlob": "1357e1c4c5b7cd675fd99cbe4f26ae9da099d121"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-publication-quick-attempt-2.log",
+      "HeadAndMergeBlob": "5a97b77c2b7c98fdd59aadbd8bdcdecd8e9ce976"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-recovery-launcher.py.txt",
+      "HeadAndMergeBlob": "ea52cc3f78e83de36334b723bf34d8320463b8d8"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-result-indexer.py.txt",
+      "HeadAndMergeBlob": "c177e42895eb3cd204a8ce26d3c2d455f7a50e9f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-tests-attempt-1.log",
+      "HeadAndMergeBlob": "fdd091bbc531f5ee3bd8dbfb49f1f88afaccf9a8"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-tests-attempt-2.log",
+      "HeadAndMergeBlob": "f42239aa8417b0010ccfd2c67a0816473cdad26e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-typescript-tests.json",
+      "HeadAndMergeBlob": "3bca1b823baf2242e81eb717750f6a58f12c2e69"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-typescript-tests.log",
+      "HeadAndMergeBlob": "641bd0f5a0f4428aa2c739af0ff50e27a5cf991e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-publication-build-attempt-1.log",
+      "HeadAndMergeBlob": "5fe943ce8befa6217a866bfd0fe46229a13f206d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-publication-focused-attempt-1.log",
+      "HeadAndMergeBlob": "3134585b476987b77b011e6f6a528196f71b2de7"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-publication-focused.trx.gz",
+      "HeadAndMergeBlob": "f1113aa253383e93fd6ab89f14b894d58c9f22eb"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-publication-integration-attempt-1.json",
+      "HeadAndMergeBlob": "cc1dd3454d0047c9ad92ba84199e977565e40f01"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-publication-integration-quick.log",
+      "HeadAndMergeBlob": "5a97b77c2b7c98fdd59aadbd8bdcdecd8e9ce976"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-publication-integration-results.json",
+      "HeadAndMergeBlob": "34c83c3d14fb9bd74e0d62bd270e0c848f075040"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/hidden-switch-validation/2026-09-07/root-tlc-correction-archives.json",
+      "HeadAndMergeBlob": "1d0a30ce2edad2645ccb950010b12002daab582e"
+    },
+    {
+      "Status": "M",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/README.md",
+      "HeadAndMergeBlob": "911b7f350ff96a1c12a96d84a0212ecfa68aa0d6"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication-proof.md",
+      "HeadAndMergeBlob": "ea71b63e87b3ac89c93c8db0456251464a8a47ed"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/corrected-macos.log.gz",
+      "HeadAndMergeBlob": "a60d799a773d2fb4d61186229ab5969e88a2347e"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/file-hashes.json",
+      "HeadAndMergeBlob": "64346dc6412c7230d41fac68cbbee5cf0f7c54e3"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/final-check-rollup.json",
+      "HeadAndMergeBlob": "e87d7fa434599768edddcc104869f9a413f51540"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-codeql-alert-895.json",
+      "HeadAndMergeBlob": "e5f56bef3b98f71d4d0d61ceea069a4866ce6227"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-codeql-alert-896.json",
+      "HeadAndMergeBlob": "05b136de7144a17ecfe5fc19eb38dfe58e82c99a"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-codeql-annotations.json",
+      "HeadAndMergeBlob": "6022a392505d9d3b2ee2ad37fc59091b116c80cc"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-codeql-check-after-triage.json",
+      "HeadAndMergeBlob": "823c9c7c3a5258fb005d18693ca01236b340eab2"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-codeql-check.json",
+      "HeadAndMergeBlob": "d07655b13d36e02cfd7ec5df853f0d7fe796af31"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-final-drift.log",
+      "HeadAndMergeBlob": "93a1398ae8216d57238281e3dbfaaf7ac4450996"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json.gz",
+      "HeadAndMergeBlob": "3c94f484b40c5847ab8638b2b1433ddfb5fc239d"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-project.diff",
+      "HeadAndMergeBlob": "b7b4692c4eea39469a810edc13932dfee961f7a1"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-proof.json",
+      "HeadAndMergeBlob": "c79f15333a9abeb7dc8bafef5589878e1354f1b7"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merged-pr.json",
+      "HeadAndMergeBlob": "e7862c427c3162bbdbecf16a1179e63d03daac45"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-publication-push.log",
+      "HeadAndMergeBlob": "7795b9c9d6ac41db95cffe2ba332368fb963ec14"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-remote-archives.txt",
+      "HeadAndMergeBlob": "818a9dc160fa27d4d749303577362475d8ca2828"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-reply-result-0.json",
+      "HeadAndMergeBlob": "74fe637d0a5d5f12eb11819da64a550de624be37"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-reply-result-1.json",
+      "HeadAndMergeBlob": "116aba6ca14d6966cde9478420b0658db16316a6"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-resolve-result-0.json",
+      "HeadAndMergeBlob": "8967c9f7482a930d05cec09a54f13dd8543c3728"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-resolve-result-1.json",
+      "HeadAndMergeBlob": "5488b2aebf794aa0d97bc0c2c0ea1de770280a42"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-triage-attempt-2-result-895.json",
+      "HeadAndMergeBlob": "82340504275fff916673c5b0c3af1121910f404f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-triage-attempt-2-result-896.json",
+      "HeadAndMergeBlob": "0dfbb2a597aa69929de368edb55783ef35233c3f"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-triage-attempt-2.json",
+      "HeadAndMergeBlob": "2249f3a70920b77b9e9668bb0808d08f2b78df08"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-triage-result-895.json",
+      "HeadAndMergeBlob": "90aa84f060eded60290db2572afd1cf5b03464fe"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-triage-result-896.json",
+      "HeadAndMergeBlob": "90aa84f060eded60290db2572afd1cf5b03464fe"
+    },
+    {
+      "Status": "A",
+      "Path": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-codeql-triage.json",
+      "HeadAndMergeBlob": "745d976ebeeca4844f97c2a1969ea3a9186cf008"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Interp.Python/tests/test_hidden_switch_reference.py",
+      "HeadAndMergeBlob": "27c79d9989cd8dea60067850bad92856e1cbef0d"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Interp.Python/tests/test_hidden_switch_replay.py",
+      "HeadAndMergeBlob": "3838191d96d7a926c6163268f98bd9c68ba5b451"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Interp.Python/tests/test_hidden_switch_verdict.py",
+      "HeadAndMergeBlob": "61fb460c8f773143609735d655801c39deadec0f"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "HeadAndMergeBlob": "a40615a423696562e5e1e4c62a7f0573397460d9"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_replay.py",
+      "HeadAndMergeBlob": "b1a38cf06f61312e62786a1c64a894cccc1de3e6"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_verdict.py",
+      "HeadAndMergeBlob": "c3b3d3966c76d249863b493b9f0323d7296cc0bc"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/HiddenSwitchCarrier.fs",
+      "HeadAndMergeBlob": "59afd4dc3d1dbfbb2ea095dd82df9356ce90e889"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/HiddenSwitchExperiment.fs",
+      "HeadAndMergeBlob": "81a410289980605943e94fd8a458ca011ae4c068"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/HiddenSwitchObservation.fs",
+      "HeadAndMergeBlob": "9acb5e813a77a1ebc7d45da9ec5d493420f94f1c"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/HiddenSwitchPolicy.fs",
+      "HeadAndMergeBlob": "205f344a1078b3f7c3ba5445de97b49a2b4edaac"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/HiddenSwitchReceipt.fs",
+      "HeadAndMergeBlob": "2c0af792309fa57b0b294421af88899ff365fa3c"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/HiddenSwitchRuntime.fsx",
+      "HeadAndMergeBlob": "50a9ca047830d596459e0ac7cb97b66add97e01b"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/check-hidden-switch-kernel.fsx",
+      "HeadAndMergeBlob": "06ec076b2cf4ce7c15db60199add544a737ebdce"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/measure-hidden-switch-inference.fsx",
+      "HeadAndMergeBlob": "75bd4b496e2483ad4f6c3c9f9bf39a5e0a02e664"
+    },
+    {
+      "Status": "A",
+      "Path": "src/Research.FSharp/run-hidden-switch-experiment.fsx",
+      "HeadAndMergeBlob": "aab60d4242e0ec395efc914a41af90f37882118f"
+    },
+    {
+      "Status": "A",
+      "Path": "tests/Tests.FSharp/HiddenSwitch.Tests.fs",
+      "HeadAndMergeBlob": "7148ca9accbd517acc5061bc32ae8aa7a885cdcd"
+    },
+    {
+      "Status": "M",
+      "Path": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "HeadAndMergeBlob": "0b75939ced87d2133d66a916546be9ec8c336923"
+    },
+    {
+      "Status": "A",
+      "Path": "workitems/done/2026/09/081M1XK02XM087G0R00043EW05-preregister-hidden-switch-dynamics-with-a-matched-planning-c.md",
+      "HeadAndMergeBlob": "9e84501003dbb0564e9221435d4c3985686e9ef7"
+    },
+    {
+      "Status": "A",
+      "Path": "workitems/events/2026/09/07/080d03d9805da810a01300084fd884bc.json",
+      "HeadAndMergeBlob": "81d6e20332bfcadd3d88029715a53ed48cf3071e"
+    },
+    {
+      "Status": "A",
+      "Path": "workitems/events/2026/09/07/080d03df066fa810a013000894f11efb.json",
+      "HeadAndMergeBlob": "67b1f42281db3dbbb608291eca86fb674ebf6624"
+    }
+  ],
+  "RawPR": {
+    "Bytes": 29477,
+    "Sha256": "a82a881f10605f1cdbc2d1e382b69b0776e4d5f0e2db290b484d11992f678a8d"
+  },
+  "RawPRGzip": {
+    "Bytes": 4373,
+    "Sha256": "55c290ce23ae833b29594baadd1d30469084fc38f6aec05c9c2602e4ea2a2551"
+  },
+  "RawCommit": {
+    "Bytes": 1312738,
+    "Sha256": "5df975ac6e031a74ea44d0780439d24c931eb86c6f2f9950a8bbcfbf8ea46b52"
+  },
+  "RawCommitGzip": {
+    "Bytes": 236701,
+    "Sha256": "fd1fc171f181d6d542c31f33ba049b926b0e63019506e044331e9670ec2f2898"
+  },
+  "SquashBody": {
+    "Bytes": 4085,
+    "Sha256": "77780dd65dcb9abeb453531e82406cc5f0a6bc4caf4aa3c5206f6a55ed181544"
+  },
+  "Scope": "Read-only API and local git object comparison. Git blob equality checks publication content, not source-to-binary correspondence; check outcomes are separately paginated."
+}
