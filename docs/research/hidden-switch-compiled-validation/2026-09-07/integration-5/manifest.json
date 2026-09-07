@@ -481,6 +481,14 @@
       "Encoding": "gzip",
       "StoredBytes": 1332,
       "StoredSha256": "FBBBD00434C68EEBE12FE92DDD0B5F2399943B0AE82903918AA5E599DF4C59EF"
+    },
+    {
+      "File": "compiled-integrated-publication-6.log.gz",
+      "Bytes": 2115,
+      "Sha256": "06B86181DE09B7C43D8BE15498A34B7FE61832CCCA60A3DF2AB7AC3DCC5BE38B",
+      "Encoding": "gzip",
+      "StoredBytes": 754,
+      "StoredSha256": "642E2B36ED63934E285129783FEB13798F8A6B60237668DFCE6EDEF47A8935BC"
     }
   ]
 }

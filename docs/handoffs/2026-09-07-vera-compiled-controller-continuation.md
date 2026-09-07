@@ -110,3 +110,8 @@ A prior unsafe pairwise lint rewrite dropped a chronology slice and produced a
 real failing test; the published failure and ordinary corrective commit remain
 preserved. Git/ANSI/invalid-UTF8 diagnostics are stored with lossless gzip and
 separate raw/stored hashes. Do not strip failed evidence to make lint pass.
+
+The first quick publication gate at this checkpoint passed 15 checks and
+refused one extra blank line in the imported native semantic record. The
+complete failed gate is retained in integration five. Removing that blank
+line changes no source or receipt; the next publication must pass its gate.

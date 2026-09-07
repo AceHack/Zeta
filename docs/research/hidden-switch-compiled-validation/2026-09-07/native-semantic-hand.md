@@ -76,7 +76,6 @@ the 37 individual retained outcomes; no reviewer test or target execution is
 claimed. A separate targeted independent schema/counter pass also accepted the exact
 source before the first actual semantic capture, without running native code.
 
-
 ## First actual semantic capture
 
 The [first actual capture inventory](native-semantic-attempt-1/manifest.json)
