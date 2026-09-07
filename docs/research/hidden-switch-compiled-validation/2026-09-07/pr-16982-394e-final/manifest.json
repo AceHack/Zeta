@@ -1,0 +1,12 @@
+{
+  "Artifacts": [
+    {
+      "File": "failed-wip-push.log.gz",
+      "Bytes": 2339,
+      "Sha256": "D38AE8EAC06B3A97C42AA0956593C302CEA0313C271DF4EB3B7C6A219F1A9659",
+      "Encoding": "gzip",
+      "StoredBytes": 856,
+      "StoredSha256": "F45D18BCD34353A5A2844C8579A7353BB8C56E457166379FADAC1A1DBDFCD471"
+    }
+  ]
+}
