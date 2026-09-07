@@ -2,10 +2,16 @@ namespace Zeta.Research
 
 open System
 
-/// File-backed entry point is parked before graph admission. It exposes no
-/// behavior/cost command and performs no policy or source-stream initialization.
+/// Only the explicit separate graph-hand feasibility command is currently
+/// available. Behavior/cost execution remains refused before runtime admission.
 module HiddenSwitchCompiledProgram =
     [<EntryPoint>]
-    let main (_arguments: string[]) =
-        Console.Error.WriteLine("hidden-switch-compiled: runtime-graph admission is not yet implemented; no study execution is available")
-        2
+    let main (arguments: string[]) =
+        match arguments with
+        | [| "graph-hand"; output |] ->
+            match HiddenSwitchCompiledGraph.run output with
+            | Ok () -> 0
+            | Error failure -> Console.Error.WriteLine(failure.Stage + ": " + failure.Code + ": " + failure.Detail); 2
+        | _ ->
+            Console.Error.WriteLine("hidden-switch-compiled: only graph-hand feasibility is available; study execution requires runtime admission")
+            2

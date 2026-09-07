@@ -101,3 +101,6 @@ census addition, not a disabled rule.
 
 The corrected quick preflight passed all 16 executed checks. Its complete output
 is retained; the required push hook will independently repeat that gate.
+
+The [separate graph prefix feasibility record](native-graph-feasibility.md)
+continues this slice with explicit non-admission and independent review.
