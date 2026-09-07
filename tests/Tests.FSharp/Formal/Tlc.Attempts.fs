@@ -6,6 +6,8 @@ open System.IO
 open System.Security.Cryptography
 open System.Text.Json
 open System.Text.RegularExpressions
+open System.Threading
+open System.Threading.Tasks
 
 type FileIdentity = { File: string; Bytes: int64; Sha256: string }
 type InputIdentity = { Source: FileIdentity; Copied: FileIdentity }
@@ -26,24 +28,27 @@ let captureProcess executable (argv: string seq) cwd stdout stderr (timeout: int
     for argument in argv do info.ArgumentList.Add argument
     use stdoutFile = new FileStream(stdout, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
     use stderrFile = new FileStream(stderr, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+    use deadline = new CancellationTokenSource()
+    match timeout with
+    | Some milliseconds -> deadline.CancelAfter milliseconds
+    | None -> ()
     use proc = Process.Start info
-    let copyOut = proc.StandardOutput.BaseStream.CopyToAsync stdoutFile
-    let copyErr = proc.StandardError.BaseStream.CopyToAsync stderrFile
-    let completed =
-        match timeout with
-        | None ->
-            proc.WaitForExit()
-            true
-        | Some milliseconds -> proc.WaitForExit milliseconds
-    if not completed then
-        try proc.Kill true
-        with :? InvalidOperationException when proc.HasExited -> ()
+    let copyOut = proc.StandardOutput.BaseStream.CopyToAsync(stdoutFile, deadline.Token)
+    let copyErr = proc.StandardError.BaseStream.CopyToAsync(stderrFile, deadline.Token)
+    let exit = proc.WaitForExitAsync deadline.Token
+    let mutable timedOut = false
+    try Task.WhenAll([|exit; copyOut; copyErr|]).GetAwaiter().GetResult()
+    with :? OperationCanceledException when deadline.IsCancellationRequested ->
+        // One deadline covers both the direct child and inherited-pipe EOF.
+        // Awaiting WhenAll also observes both cancelled copy tasks before disposing files.
+        timedOut <- true
+        if not proc.HasExited then
+            try proc.Kill true
+            with :? InvalidOperationException when proc.HasExited -> ()
         proc.WaitForExit()
-    copyOut.GetAwaiter().GetResult()
-    copyErr.GetAwaiter().GetResult()
     stdoutFile.Flush true
     stderrFile.Flush true
-    { ExitCode = proc.ExitCode; TimedOut = not completed }
+    { ExitCode = proc.ExitCode; TimedOut = timedOut }
 
 let identifyFile name path =
     use stream = File.OpenRead path
