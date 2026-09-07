@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: actual semantic capture; independent replay pending
+Artifact status: actual semantic capture and independent replay accepted
 
 Source `7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0` adds the file-backed
 `hand-semantic` entry. It executes the settled ten intervention cases and
@@ -76,7 +76,6 @@ the 37 individual retained outcomes; no reviewer test or target execution is
 claimed. A separate targeted independent schema/counter pass also accepted the exact
 source before the first actual semantic capture, without running native code.
 
-
 ## First actual semantic capture
 
 The [first actual capture inventory](native-semantic-attempt-1/manifest.json)
@@ -95,5 +94,11 @@ invocation rows, ten actual interventions and fifteen groups containing
 fifty-three actual invalid operations. Its 3,499,607-byte journal remains
 available independently. `SlicesComplete=true` records those collected slices;
 `Complete=false` retains the pending outer-negative, final archive and runtime
-admission. The independent Python replay has received these exact bytes but
-has not yet supplied a result. No registered source or timing run occurred.
+admission. The [independent Python replay](https://github.com/Lucent-Financial-Group/Zeta/blob/774a3893d4373d362e1114498f85fe9d865a7edc/docs/research/2026-09-07-hidden-switch-compiled-native-slice-replay.md)
+accepted those exact bytes without checker/schema changes: all 222/48/24
+slices, ten invocations, ten interventions and 53 refusal operations matched.
+It observed ten delegate and eight evaluator entries, and independently
+refused both executed wrong-action stubs. Its own harness/raw receipt/result
+are preserved at `774a3893d4373d362e1114498f85fe9d865a7edc`.
+Outer/runtime admission remains pending. No registered source or timing run
+occurred.
