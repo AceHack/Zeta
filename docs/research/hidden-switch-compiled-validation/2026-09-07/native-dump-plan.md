@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Status: prelaunch plan; no dump or analyzer execution yet
+Status: collection completed; reviewed offline analyzer has not launched
 
 The coordinator authorized one separately owned nonregistered graph process
 and one bounded offline analyzer feasibility attempt after the fixed hand
@@ -79,10 +79,10 @@ delimiters or unrecognized output stop the attempt. The command sequence is:
    runtime with collection pins; analyzer success alone does not prove
    matching DAC bytes, particularly because installed source guides indicate
    `ignoreMismatch:true` at runtime construction.
-5. Only then resolve selected recorded callable stubs and their pointer cells
-   using bounded code-related dump reads, never stack/heap/environment scans.
-   Unsupported command or stub forms refuse. Query `ip2md <body-IP>` then
-   `clru -n -o <same-body-IP>` on a successfully bound body address.
+5. Query `ip2md <body-IP>` then `clru -n -o <same-body-IP>` on the three
+   body addresses physically bound before analyzer startup, as described below.
+   Unsupported command or method forms refuse. No stack/heap/environment
+   query is part of this procedure.
 6. Query `runtimes` again after a successful DAC-dependent query and compare
    the actual cached DAC path/identity with the pinned local file. Missing
    or mismatched evidence refuses extent admission. Explicit `exit` and a
@@ -95,3 +95,49 @@ query errors remain typed refusals. A successful extent query alone does
 not establish all indirect call targets, actual guard-register association,
 floating-point environment stability or complete executing closure. All
 full admission flags remain false for this feasibility attempt.
+
+## Exact physical reader and analyzer admission
+
+The source is `src/Research.FSharp.Cli/analyze_hidden_switch_dump.py` with
+`hidden_switch_dump_memory.py`. Before launching the analyzer, the driver
+holds one regular descriptor for hashing and all physical reads. It rejects
+an initial size different from the captured count or above eight GiB, reads
+exactly the captured count plus at most one extra byte, and checks a separate
+120-second hash deadline between bounded reads. This is not kernel I/O
+cancellation. Initial/final descriptor and pathname metadata must agree.
+The analyzer separately opens that same stable local pathname; concurrent
+hostile namespace replacement or in-place writes are outside the admitted
+immutable-file premise.
+
+Only little-endian 64-bit ARM64 Mach-O core metadata is supported. Command
+count/lengths and segment integer/file bounds are checked; thread payloads
+are skipped. Unknown commands, section-bearing segments, nonzero segment
+flags including `SG_HIGHVM`, gaps, overlap and zero-filled selected bytes
+refuse. Exactly one fully stored segment must back each selected interval.
+The finite method roster is `HiddenSwitchPolicy.predict`, `condition` and
+`select`: eight-byte callable stubs, eight-byte pointer cells and unique
+compiler-declared candidate bodies of at most 65,536 bytes. Each successful
+stub/cell/body mapping is written before its next dependent read or parse.
+Raw bytes stay internal to comparisons; retained records contain addresses,
+file offsets, lengths and hashes. No analyzer image-file fallback establishes
+physical dump provenance.
+
+The actual resolved executable must equal the captured tool path/hash. Its
+package and runtime pins are separately checked. Command responses require
+exactly the expected prompt marker, space and command echo, followed by a
+success delimiter and admitted
+payload. Symbol-store payloads must prove an empty store; DAC set/query
+acknowledgements and unique runtime/method fields use anchored grammar from
+the version-specific source and installed IL review. The verification suffix
+is retained without changing policy. DAC acceptance alone does not establish
+binary equivalence, method extent or complete reachable closure.
+
+Stdout capture itself is capped at four MiB with a 65,536-byte line bound and
+128 queued lines; overflow retains the available prefix and refuses. Stderr
+and host tracing have an eight-MiB polled limit during command/cleanup waits;
+this is not a quota and overshoot remains retained. Commands have 15-second
+limits within the 120-second analyzer lifetime, followed by explicit exit,
+owned kill if needed and bounded joins. Failed joins do not justify closing
+streams still owned by the reader. First failures survive later cleanup or
+publication failures. All three admission flags remain false even if every
+query completes; interpreting retained extent output is a separate review.

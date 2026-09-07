@@ -392,3 +392,27 @@ from the study target's pinned 10.0.11 runtime. Full extent/call/data admission
 remains false. Offline analyzer reads may use local image fallback, so a later
 selected read must also match an independently admitted physical file range;
 an analyzer's successful memory-read command alone will not establish this.
+
+## Physical-reader and offline-driver preparation
+
+The [offline preparation inventory](native-dump-analysis-preparation/manifest.json)
+retains the exact parser/driver, 13 synthetic tests and failed/corrected static
+checks. The parser admits only explicitly supported core metadata and selected
+fully stored ranges. The driver binds the held dump descriptor, captured
+executable, immediate per-range prefix records and gated command grammar.
+The [revised plan](native-dump-plan.md) declares byte, queue and deadline limits
+and distinguishes checked deadlines from kernel cancellation or disk quotas.
+
+Independent read-only review found four prelaunch defects: command-echo and
+semantic-field admission, separate hash/read opens with lost method prefixes,
+unbound supplied executable, and unbounded reader output. All were repaired.
+A later review found hashing could follow a growing file; initial-size refusal,
+exact-count hashing plus one extra byte, and a checked deadline close that
+boundedness gap. Tests exercise malformed/duplicate fields, pathname
+replacement, wrong executable identity, retained stub/cell prefixes after
+body refusal, output/queue limits and a finite producing stream. The first
+combined test attempt had one macOS temporary-path alias fixture error; the
+fixture now resolves its captured path consistently. Lint/import-format
+failures remain retained. Final 13 tests and Ruff pass; no analyzer or real
+dump was opened during these synthetic checks. Reviewer acceptance is source
+inspection only and all runtime/body/closure admission remains false.
