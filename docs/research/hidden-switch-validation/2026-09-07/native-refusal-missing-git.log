@@ -1,0 +1,2 @@
+receipt=.git/hidden-switch-refusal-missing-git.json sha256=21BDE37B975B1E2E71C7D082CC7B0907D0901BC5165E653AAAEE04B4647AE7BC complete=false
+git-launch: An error occurred trying to start process 'git' with working directory '/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906'. No such file or directory

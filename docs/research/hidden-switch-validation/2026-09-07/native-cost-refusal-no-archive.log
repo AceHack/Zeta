@@ -1,0 +1,2 @@
+receipt=.git/hidden-switch-cost-refusal-no-archive.json sha256=B97012B863603262D0888F47CB79CE73899C4720BB22E9BF914D42CDC43CA776 complete=false
+git: fatal: Not a valid object name refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation

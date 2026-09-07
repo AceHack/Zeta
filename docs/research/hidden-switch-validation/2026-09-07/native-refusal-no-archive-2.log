@@ -1,0 +1,2 @@
+receipt=.git/hidden-switch-refusal-no-archive-attempt-2.json sha256=9F18FF215C8278EA185D4A0C1F0C76787878D95DEA2ACA6F318079892A36416E complete=false
+git: fatal: Not a valid object name refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation
