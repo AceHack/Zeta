@@ -110,7 +110,7 @@ module HiddenSwitchCompiledHand =
 
     /// This intentionally incomplete envelope makes the completed slices
     /// available to independent replay without asserting full hand admission.
-    let private collect (checkpoint: obj -> unit) arguments =
+    let internal collect (checkpoint: obj -> unit) arguments =
         let started = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
         let scalars = ResizeArray<HiddenSwitchCompiledReceipt.ScalarAudit>()
         let episodes, old = ResizeArray<EpisodeRow>(), ResizeArray<OldRow>()

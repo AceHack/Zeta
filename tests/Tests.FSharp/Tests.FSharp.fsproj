@@ -102,9 +102,14 @@
     <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledSelector.fs" Link="Research/HiddenSwitchCompiledSelector.fs" />
     <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledHand.fs" Link="Research/HiddenSwitchCompiledHand.fs" />
     <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledWitness.fs" Link="Research/HiddenSwitchCompiledWitness.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledConformance.fs" Link="Research/HiddenSwitchCompiledConformance.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledInterventions.fs" Link="Research/HiddenSwitchCompiledInterventions.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledRefusals.fs" Link="Research/HiddenSwitchCompiledRefusals.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledSemantic.fs" Link="Research/HiddenSwitchCompiledSemantic.fs" />
     <Compile Include="HiddenSwitchCompiled.Tests.fs" />
     <Compile Include="HiddenSwitchCompiledCertificate.Tests.fs" />
     <Compile Include="HiddenSwitchCompiledCertificateCheck.Tests.fs" />
+    <Compile Include="HiddenSwitchCompiledSemantic.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />
