@@ -443,6 +443,57 @@ def test_close_then_error_is_not_retried_and_preserves_first_failure(
         os.fstat(descriptors[0])
 
 
+def test_continuously_producing_stream_is_bounded_by_initial_size_plus_one(
+    fixture, monkeypatch
+):
+    _, _, _, roster = fixture
+    initial = roster["zeta_interp"]["Bytes"]
+    reads = []
+    descriptors = []
+
+    class ProducingStream:
+        def __init__(self, descriptor):
+            self.descriptor = descriptor
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def fileno(self):
+            return self.descriptor
+
+        def read(self, size):
+            reads.append(size)
+            # The old read-until-EOF loop would trip this bound, never hang.
+            assert sum(reads) <= initial + 1
+            return b"x" * size
+
+    def producing_stream(descriptor, *args, **kwargs):
+        assert kwargs["closefd"] is False
+        descriptors.append(descriptor)
+        return ProducingStream(descriptor)
+
+    monkeypatch.setattr(os, "fdopen", producing_stream)
+    refusal(admit(fixture), "SnapshotChanged")
+    assert reads == [initial, 1]
+    assert len(descriptors) == 1
+    with pytest.raises(OSError):
+        os.fstat(descriptors[0])
+
+
+def test_reviewed_length_mismatch_refuses_before_hashing(fixture, monkeypatch):
+    _, _, loaded, roster = fixture
+    roster["zeta_interp"]["Bytes"] += 1
+
+    def forbidden_hash(*args, **kwargs):
+        raise AssertionError("length mismatch must refuse before hashing")
+
+    monkeypatch.setattr(loaded[COLLECTOR].hashlib, "sha256", forbidden_hash)
+    refusal(admit(fixture), "SourceBytes")
+
+
 def test_invalid_public_arguments_refuse(fixture):
     root, _, loaded, roster = fixture
     function = loaded[COLLECTOR].admit_python_identity

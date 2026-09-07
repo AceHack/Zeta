@@ -88,7 +88,7 @@ def _roster(value: object) -> dict[str, dict[str, Json]]:
     return result
 
 
-def _file(path: Path) -> dict[str, Json]:
+def _file(path: Path, expected_length: int | None = None) -> dict[str, Json]:
     if not path.is_absolute() or path.resolve(strict=True) != path:
         _refuse("FileIdentity", f"canonical regular file required: {path}")
     # O_NOFOLLOW plus descriptor/path identities bound this individual read.
@@ -101,11 +101,19 @@ def _file(path: Path) -> dict[str, Json]:
             before = os.fstat(stream.fileno())
             if not stat.S_ISREG(before.st_mode):
                 _refuse("FileIdentity", f"regular file required: {path}")
+            if expected_length is not None and before.st_size != expected_length:
+                _refuse("SourceBytes", f"reviewed source length differs: {path}")
             digest = hashlib.sha256()
             length = 0
-            while chunk := stream.read(1024 * 1024):
+            remaining = before.st_size
+            while remaining:
+                chunk = stream.read(min(1024 * 1024, remaining))
+                if not chunk:
+                    break
                 length += len(chunk)
+                remaining -= len(chunk)
                 digest.update(chunk)
+            extra = stream.read(1)
             after = os.fstat(stream.fileno())
             named = path.stat(follow_symlinks=False)
     except BaseException as error:
@@ -129,7 +137,7 @@ def _file(path: Path) -> dict[str, Json]:
     )
     if fields(before) != fields(after) or fields(after) != fields(named):
         _refuse("SnapshotChanged", f"file changed during read: {path}")
-    if length != after.st_size:
+    if remaining or extra or length != after.st_size:
         _refuse("SnapshotChanged", f"file length changed during read: {path}")
     return {"Bytes": length, "Sha256": digest.hexdigest().upper()}
 
@@ -209,7 +217,7 @@ def _module(
         _refuse("ModuleIdentity", f"invalid cache metadata: {name}")
     if cached != spec.cached:
         _refuse("ModuleIdentity", f"cache metadata differs: {name}")
-    actual = _file(absolute)
+    actual = _file(absolute, cast(int, expected["Bytes"]))
     if actual["Bytes"] != expected["Bytes"] or actual["Sha256"] != expected["Sha256"]:
         _refuse("SourceBytes", f"actual source bytes differ: {name}")
     row: dict[str, Json] = {
