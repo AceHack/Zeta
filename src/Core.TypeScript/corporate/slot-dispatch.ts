@@ -65,6 +65,14 @@ export interface Dispatch {
   readonly result: WorkResult | undefined;
   readonly evidenceRefs: readonly string[];
   readonly summary: string;
+  /**
+   * Was a budget actually consulted for this dispatch?
+   *
+   * False means no budget was declared, NOT that one was checked and passed. A run in which real
+   * work was dispatched without any budget check should be able to say so, and a boolean that
+   * conflated "allowed" with "unbudgeted" could not.
+   */
+  readonly budgetChecked?: boolean;
 }
 
 export interface SlotDispatcher {
@@ -113,13 +121,25 @@ export type PerformWork = (workId: string) => Promise<{
 }>;
 
 /**
+ * The budget check a dispatcher consults before performing.
+ *
+ * Returns a refusal reason, or `undefined` to proceed. A function rather than a `Budget` value so
+ * the dispatcher never holds or mutates the ledger — it asks, and whoever owns the budget answers.
+ *
+ * `Unbudgeted` is the caller's to decide, not this module's: an organization that has declared no
+ * budget must not be stopped by a limit nobody set, and it must not be recorded as having passed a
+ * check that never ran. Both facts reach the `Dispatch` — it proceeds, and `budgetChecked` is false.
+ */
+export type BudgetGate = (workId: string) => { readonly refusal?: string; readonly checked: boolean };
+
+/**
  * PRIMARY — the selected slot reaches the real runtime.
  *
  * `PickWork` runs the pipeline for that item and reports what it did. Every other slot performs
  * nothing HERE and says so, rather than being quietly treated as a success: heartbeats, pauses and
  * free time are changes to the agent's own state, and the state machine already applies them.
  */
-export function primaryDispatcher(perform: PerformWork): SlotDispatcher {
+export function primaryDispatcher(perform: PerformWork, budget?: BudgetGate): SlotDispatcher {
   return {
     meta: {
       port: Port.WorkExecution,
@@ -139,12 +159,30 @@ export function primaryDispatcher(perform: PerformWork): SlotDispatcher {
           summary: `'${option.tag}' changes the agent's own state; nothing was dispatched`,
         };
       }
+      // ── "IF BUDGET IS AVAILABLE" ────────────────────────────────────────
+      // Checked BEFORE performing, because a budget consulted afterwards is a report and not a
+      // limit. A refusal here means the work was not attempted — so it produces no result, exactly
+      // as a shadow does: it did not fail, it was not started.
+      const allowed = budget?.(option.work.id) ?? { checked: false };
+      if (allowed.refusal !== undefined) {
+        return {
+          mode: AgentLoopMode.ObserveActPrimary,
+          slot: option.tag,
+          workId: option.work.id,
+          performed: false,
+          result: undefined,
+          evidenceRefs: [`budget-refused:${option.work.id}`],
+          summary: `budget refused '${option.work.id}': ${allowed.refusal}`,
+          budgetChecked: allowed.checked,
+        };
+      }
       const done = await perform(option.work.id);
       return {
         mode: AgentLoopMode.ObserveActPrimary,
         slot: option.tag,
         workId: option.work.id,
         performed: true,
+        budgetChecked: allowed.checked,
         result: {
           workId: option.work.id,
           lane: option.work.lane,
@@ -271,6 +309,12 @@ export function evaluatePromotionGate(window: PromotionWindow): GateVerdict {
  * organization is safe to promote a lane — and it is the reason this takes a verdict rather than a
  * mode.
  */
-export function dispatcherFor(verdict: GateVerdict, perform: PerformWork): SlotDispatcher {
-  return verdict.mode === AgentLoopMode.ObserveActPrimary ? primaryDispatcher(perform) : shadowDispatcher();
+export function dispatcherFor(
+  verdict: GateVerdict,
+  perform: PerformWork,
+  budget?: BudgetGate,
+): SlotDispatcher {
+  return verdict.mode === AgentLoopMode.ObserveActPrimary
+    ? primaryDispatcher(perform, budget)
+    : shadowDispatcher();
 }

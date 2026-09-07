@@ -90,16 +90,17 @@ import {
 import { bindWearerToLoop } from "./loop-policy";
 import { firstLegalChooser, preferChooser, type OrgChooser } from "./org-decision";
 import { reportsUpTo, type HatLevel, type OrgChart } from "./org-chart";
-import { evaluateTrajectory, warrantsEscalation, type Trajectory } from "./mission-trajectory";
+import { evaluateTrajectory, TrajectoryStatus, warrantsEscalation, type Trajectory } from "./mission-trajectory";
 import {
   DEFAULT_PIPELINE,
   runPipeline,
+  gatesOf,
   withProducers,
   type Artifact,
   type Pipeline,
   type ProducerPort,
 } from "./pipeline";
-import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
+import { fidelityLine, recordingProviders, runFidelityOf, type ChangeHandle, type DataSourcePort, type ProviderSet, type ReviewVerdict, type RunFidelity } from "./providers";
 import { autoApproveReview, simulatedChangeControl, simulatedIntake, simulatedTestRunner, simulatedWorkExecutor } from "./adapters";
 import { associateGoal, EMPTY_BOOK, openPortfolio, type PortfolioKind } from "./portfolio";
 import {
@@ -108,6 +109,11 @@ import {
   type ActionKind,
   type ReactorReport,
 } from "./org-reactor";
+import { reconcile, type ReconciliationReport } from "./reconciliation";
+import { groomingProducer } from "./grooming";
+import { historyFromPhases, type ArtifactHistory } from "./artifact-deliberation";
+import { findInefficiencies, type Inefficiency } from "./inefficiency";
+import { bookQaBlocks, bookReviewBlocks, requestReviewsFor } from "./review-calendar";
 import type { NamedDependency, WorkBatch } from "./work-batch";
 import {
   computeRecommendation,
@@ -261,6 +267,35 @@ export interface OrgRuntimeDeps {
   readonly priorityChooser?: OrgChooser<PriorityClass>;
   readonly maxGateAttempts?: number;
   readonly churnThreshold?: number;
+  /**
+   * Which staffed work this run delivers ITSELF. Absent means all of it — the behaviour this
+   * runtime has always had.
+   *
+   * Pass `[]` and the runtime staffs, schedules and runs QA but delivers nothing, leaving the work
+   * live for an agent to pick up and deliver through `deliverWorkItem`.
+   *
+   * WHY THIS HAS TO EXIST. The agent loop is offered `candidatesFrom`, which is live leaves only.
+   * A runtime that delivers everything before the loop is consulted leaves ZERO candidates, so the
+   * agent's only legal choices are heartbeats and free time — and its decision is decorative no
+   * matter how honestly the dispatcher is wired underneath. Measured: every cycle of the demo run
+   * chose `EmitHeartbeat` over an empty candidate list, with a fully-wired dispatcher behind it
+   * that never once ran.
+   *
+   * So this is not a convenience flag. It is what makes an agent's choice CAPABLE of being
+   * load-bearing: someone has to leave the work undone for the agent to do it.
+   */
+  readonly deliverSelf?: readonly string[];
+  /**
+   * What agents READ from — a git repository, a directory of specs, a union of both.
+   *
+   * Absent means `business_context_grooming` stays a judgement-only phase, which is what it has
+   * always been. Supplying one gives that phase a producer, so grooming cites documents at a
+   * revision instead of approving a title.
+   *
+   * A PORT like the other five, so it appears in the run's fidelity report: a run groomed against
+   * a fixture says so, and cannot be mistaken for one that read a repository.
+   */
+  readonly dataSource?: DataSourcePort;
   /** Wearers per hat the RMO has authorized. */
   readonly supplyTarget?: number;
 }
@@ -354,6 +389,34 @@ export interface OrgRuntimeReport {
    */
   readonly trajectory: Trajectory | undefined;
   /**
+   * Whether reality agrees with what this run believes — the north-star loop's last step.
+   *
+   * Always present, and always reporting what it could NOT check: the tracker is compared only
+   * when one was supplied, and a reconciliation that skipped a party says so rather than counting
+   * its silence as agreement.
+   */
+  readonly reconciliation: ReconciliationReport;
+  /**
+   * What each work item's phases PRODUCED, as an artifact history a hat can cite and revise.
+   *
+   * `openArtifact` had zero callers outside tests, so no run ever produced one of these and the
+   * whole deliberation layer was unreachable: no hat could be offered a turn, because a turn cites
+   * a revision and no revision existed. The pipeline was already making the thing — every phase
+   * with a producer returns an artifact — and this is that, translated.
+   *
+   * A work item whose phases produced nothing is ABSENT from the map rather than present and
+   * empty: an artifact with no content is a document claiming the run made something.
+   */
+  readonly artifacts: ReadonlyMap<string, ArtifactHistory>;
+  /**
+   * Frictions that recurred across DIFFERENT work items this run — the organization noticing that
+   * something keeps going wrong rather than that one thing went wrong.
+   *
+   * Reported as well as signalled: the signal travels the chain and this is what a reader of the
+   * run sees without folding the log.
+   */
+  readonly inefficiencies: readonly Inefficiency[];
+  /**
    * Tasks whose loop an escalation STOPPED, and which action stopped it.
    *
    * The difference between "this run finished" and "this run gave up" — a driver that cannot tell
@@ -387,6 +450,28 @@ const LEVEL_ORDER: readonly HatLevel[] = [
 ];
 
 /**
+ * The ports a run uses when the caller named none — EVERY ONE SIMULATED.
+ *
+ * Exported because a second caller needs the same answer, and the one thing every entry point must
+ * agree on is what "unspecified" means: that is the answer deciding whether a run touched anything
+ * real. A copy of this object elsewhere would be a second set of defaults to drift, and the drift
+ * would show up as a fidelity report naming a capability that never ran.
+ */
+export function defaultProviderSet(deps: {
+  readonly externalEvents: OrgRuntimeDeps["externalEvents"];
+  readonly qaPlan?: OrgRuntimeDeps["qaPlan"];
+  readonly qaFallback?: OrgRuntimeDeps["qaFallback"];
+}): ProviderSet {
+  return {
+    intake: simulatedIntake(deps.externalEvents),
+    work: simulatedWorkExecutor(true),
+    tests: simulatedTestRunner(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
+    review: autoApproveReview(),
+    change: simulatedChangeControl(),
+  };
+}
+
+/**
  * Run the whole organization once.
  *
  * Long and linear on purpose: the value of this function is that the entire pipeline is readable in
@@ -396,13 +481,12 @@ const LEVEL_ORDER: readonly HatLevel[] = [
 export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeReport> {
   // The ports, resolved ONCE. Defaulting here rather than at each call site means one place decides
   // what this run is touching, and one place reports it.
-  const configured: ProviderSet = deps.providers ?? {
-    intake: simulatedIntake(deps.externalEvents),
-    work: simulatedWorkExecutor(true),
-    tests: simulatedTestRunner(deps.qaPlan ?? new Map(), deps.qaFallback ?? RunOutcome.Passed),
-    review: autoApproveReview(),
-    change: simulatedChangeControl(),
-  };
+  // The data source joins the set, so the fidelity report counts it. Merged HERE rather than being
+  // asked of the caller twice: `deps.dataSource` is where a run declares one, and a set that
+  // disagreed with it would report a fidelity the run did not have.
+  const declared: ProviderSet = deps.providers ?? defaultProviderSet(deps);
+  const configured: ProviderSet =
+    deps.dataSource === undefined ? declared : { ...declared, dataSource: deps.dataSource };
   // WRAPPED, so the report can say what the run DID and not only what it was configured to do.
   // `providers` below is the recording set; nothing in this function may reach the raw one, or the
   // count would silently miss whatever bypassed it.
@@ -559,6 +643,22 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const empty = (): OrgRuntimeReport => ({
     fidelity: noteFidelity("run", deps.nowMs),
     halted: [],
+    // An early return ran no phases, so it produced no artifact. Empty rather than a map of empty
+    // histories: an artifact with no content would claim the run made something.
+    artifacts: new Map(),
+    // Nothing ran, so nothing recurred. An empty list is the true reading of a run that did
+    // no work, and is not the same claim as "this organization is efficient".
+    inefficiencies: [],
+    // An early return reconciled NOTHING, and that is what it reports: no items, no disagreements,
+    // and the tracker listed as unchecked. `fullyReconciled` is false over it, which is correct —
+    // a run that did nothing has not established that anything agrees.
+    reconciliation: reconcile({
+      cascade: [],
+      changesLanded: [],
+      changesUnlanded: [],
+      gateEvaluations: [],
+      delivered: false,
+    }),
     // An early return has done no work, so its pace is measured over an empty cascade — which the
     // trajectory reports as NOT STARTED rather than as on track.
     trajectory: trajectoryOf([]),
@@ -778,7 +878,25 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       toState: sent.signal.toHatId,
       atMs: deps.nowMs,
       evidenceRefs: sent.signal.evidence.map((e) => e.ref),
+      // THE SIGNAL ITSELF, so a second process can read what was asked rather than a sentence
+      // about it. Without this the upward channel does not survive a process boundary.
+      fact: { kind: "supervisor_signal", signal: sent.signal },
     });
+    // THE ANCHOR THE SIGNAL OPENED. Recorded separately because a signal and the deliberation it
+    // starts are different things: the signal is what was asked, the anchor is what the asking
+    // OWES. Reading one from the other would mean re-deriving the anchor's expected output from
+    // the tool that opened it, which is a mapping nobody wrote down.
+    for (const opened of sent.board.anchors.filter((x) => x.anchorId === sent.signal.anchorId)) {
+      note({
+        kind: OrgEventKind.DecisionRecorded,
+        subjectId: opened.anchorId,
+        actorHatId: opened.openedByHatId,
+        decision: `opened '${opened.title}' owing ${opened.expectedOutput}`,
+        toState: opened.state,
+        atMs: deps.nowMs,
+        fact: { kind: "discussion_anchor", anchor: opened },
+      });
+    }
 
     // TWO SEPARATE QUESTIONS, and conflating them is what made the first run of this pipeline
     // starve. `goal-cascade.assign` assigns a HAT to the task; `assignment-engine.assignHat` picks
@@ -854,8 +972,23 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       rationale: `ranked first among eligible candidates in the owning line`,
       evidence: STAFFING_EVIDENCE,
     });
-    if (decided.ok) board = decided.board;
-    else refusals.push(`RMO decision for ${task.workId}: ${decided.reason}`);
+    if (decided.ok) {
+      board = decided.board;
+      // THE DECISION AS AN ARTIFACT, with its rationale. A decision whose reason is not recorded
+      // cannot be revisited when circumstances change — nobody can tell whether it still holds.
+      const record = decided.board.decisions[decided.board.decisions.length - 1];
+      if (record !== undefined) {
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: record.anchorId,
+          actorHatId: record.byHatId,
+          decision: record.decision,
+          atMs: deps.nowMs,
+          evidenceRefs: record.evidence.map((e) => e.ref),
+          fact: { kind: "decision_record", record },
+        });
+      }
+    } else refusals.push(`RMO decision for ${task.workId}: ${decided.reason}`);
 
     const assigned = assign(cascade, deps.chart, task.workId, targetHat.id);
     if (!assigned.ok) {
@@ -876,8 +1009,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     });
 
     const resolved = resolveAnchor(board, sent.signal.anchorId);
-    if (resolved.ok) board = resolved.board;
-    else refusals.push(`resolve staffing anchor: ${resolved.reason}`);
+    if (resolved.ok) {
+      board = resolved.board;
+      const closed = resolved.board.anchors.find((x) => x.anchorId === sent.signal.anchorId);
+      if (closed !== undefined) {
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: closed.anchorId,
+          actorHatId: sent.signal.toHatId,
+          decision: `anchor ${closed.state}`,
+          toState: closed.state,
+          atMs: deps.nowMs,
+          fact: { kind: "anchor_state", anchorId: closed.anchorId, state: closed.state },
+        });
+      }
+    } else refusals.push(`resolve staffing anchor: ${resolved.reason}`);
   }
 
   // Warm the bindings up so they authorize. `advanceAll` is the runtime tick.
@@ -936,6 +1082,125 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         workItemId: task.workId,
       },
     });
+    cursor += deps.workBlockMs;
+
+    // ── REVIEWS AND QA GET TIME TOO ──────────────────────────────────────
+    // Booked here, alongside the work, because the calendar is RUNTIME AUTHORITY: `loop-policy`
+    // narrows a hat's menu by what it is booked to be doing, so a review with no block is one the
+    // reviewing hat's tick cannot see it is supposed to do. Work was authorised by the schedule
+    // and reviews were not, which is why the review lane could never drive itself.
+    const chain = gatesOf(deps.pipeline ?? DEFAULT_PIPELINE);
+    const reviews = bookReviewBlocks({
+      chart: deps.chart,
+      calendar,
+      gates: chain,
+      workId: task.workId,
+      proposerHatId: task.assigneeHatId!,
+      fromMs: cursor,
+      blockMs: deps.workBlockMs,
+      createId: deps.createId,
+    });
+    calendar = reviews.calendar;
+    for (const r of reviews.refusals) refusals.push(r);
+    for (const b of reviews.booked) {
+      note({
+        kind: OrgEventKind.ScheduleBlockPlanned,
+        subjectId: task.workId,
+        actorHatId: b.block.hatId,
+        decision: `booked a review of '${b.gate}'`,
+        toState: ScheduleBlockType.Review,
+        atMs: b.block.startMs,
+        fact: {
+          kind: "block_planned",
+          blockId: b.block.blockId,
+          hatId: b.block.hatId,
+          blockType: ScheduleBlockType.Review,
+          startMs: b.block.startMs,
+          endMs: b.block.endMs,
+          workItemId: task.workId,
+        },
+      });
+    }
+    cursor += chain.length * deps.workBlockMs;
+
+    // AND ACTUALLY ASK THEM. Booking the time and sending the request are two halves of one act:
+    // `RequestReview` had a reader (`reviewsAskedOf`, which builds a hat's menu) and no writer, so
+    // that surface was always empty and `review_artifact` was a verb no agent could be offered.
+    // Built from what was BOOKED, so the hat with the time is the hat with the ask.
+    const asked = requestReviewsFor({
+      chart: deps.chart,
+      board,
+      booked: reviews.booked,
+      workId: task.workId,
+      fromHatId: task.assigneeHatId!,
+      atMs: cursor,
+      createId: deps.createId,
+      resourceAuthorityHatId: deps.resourceAuthorityHatId,
+      evidenceRefs: [`work:${task.workId}`],
+    });
+    board = asked.board;
+    for (const r of asked.refusals) refusals.push(r);
+    for (const sig of asked.signals) {
+      signals.push(sig);
+      note({
+        kind: OrgEventKind.SupervisorSignalSent,
+        subjectId: task.workId,
+        actorHatId: sig.fromHatId,
+        decision: `${sig.tool} → ${sig.toHatId} for '${sig.title}'`,
+        toState: sig.toHatId,
+        atMs: cursor,
+        evidenceRefs: sig.evidence.map((e) => e.ref),
+        fact: { kind: "supervisor_signal", signal: sig },
+      });
+      // AND THE ANCHOR IT OPENED. Missed on the first pass: 28 anchors existed on the board and
+      // 2 were in the log, because only the staffing path emitted this fact. A deliberation the
+      // log does not hold is one no second process can read — the exact defect the board facts
+      // were added to close, reintroduced one code path over.
+      const opened = asked.board.anchors.find((x) => x.anchorId === sig.anchorId);
+      if (opened !== undefined) {
+        note({
+          kind: OrgEventKind.DecisionRecorded,
+          subjectId: opened.anchorId,
+          actorHatId: opened.openedByHatId,
+          decision: `opened '${opened.title}' owing ${opened.expectedOutput}`,
+          toState: opened.state,
+          atMs: cursor,
+          fact: { kind: "discussion_anchor", anchor: opened },
+        });
+      }
+    }
+
+    const qa = bookQaBlocks({
+      calendar,
+      qaHatIds: gateOwners(deps.chart, GateKind.RuntimeValidation)
+        .filter((h) => h.id !== task.assigneeHatId)
+        .map((h) => h.id),
+      workId: task.workId,
+      fromMs: cursor,
+      blockMs: deps.workBlockMs,
+      createId: deps.createId,
+    });
+    calendar = qa.calendar;
+    for (const r of qa.refusals) refusals.push(r);
+    for (const b of qa.booked) {
+      note({
+        kind: OrgEventKind.ScheduleBlockPlanned,
+        subjectId: task.workId,
+        actorHatId: b.block.hatId,
+        decision: "booked QA time",
+        toState: ScheduleBlockType.PromptFlowExecution,
+        atMs: b.block.startMs,
+        fact: {
+          kind: "block_planned",
+          blockId: b.block.blockId,
+          hatId: b.block.hatId,
+          blockType: ScheduleBlockType.PromptFlowExecution,
+          startMs: b.block.startMs,
+          endMs: b.block.endMs,
+          workItemId: task.workId,
+        },
+      });
+    }
     cursor += deps.workBlockMs;
   }
 
@@ -1107,6 +1372,8 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
 
   // ── 8 & 9. QA and the GATES ───────────────────────────────────────────────
   const qaReports: QaCycleReport[] = [];
+  /** Per work item, what its phases produced — see `OrgRuntimeReport.artifacts`. */
+  const artifacts = new Map<string, ArtifactHistory>();
   /**
    * The change opened for each task, kept so the same handle is the one merged later.
    *
@@ -1127,6 +1394,12 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   const threshold = deps.churnThreshold ?? DEFAULT_CHURN_THRESHOLD;
 
   for (const task of staffedTasks) {
+    // Work this run was told not to deliver stays LIVE, for an agent to pick up. Skipped before QA
+    // and before the change is opened, so a deferred item leaves no half-started branch behind.
+    if (deps.deliverSelf !== undefined && !deps.deliverSelf.includes(task.workId)) {
+      refusals.push(`${task.workId} was left for the agent lane to deliver; this run did not deliver it`);
+      continue;
+    }
     // QA derives its cases from the task's own criterion — the BRD stands in for the spec.
     const cases = deriveTestCases(
       {
@@ -1234,6 +1507,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     const pipeline = withProducers(
       deps.pipeline ?? DEFAULT_PIPELINE,
       new Map<GateKind, ProducerPort>([
+        // Grooming reads a DATA SOURCE, when the run declared one. Without a source this phase
+        // stays judgement-only, exactly as it was — an organization that named no repository has
+        // nothing to groom against, and a producer that read nothing would be worse than none: it
+        // would put an empty citation list behind an approval and look like diligence.
+        // THE RECORDED source, never `deps.dataSource`. Reaching the raw one would leave a real
+        // adapter that read a repository absent from `invoked`, and the run would report it as
+        // configured-but-never-reached while its citations sat in the gate's evidence.
+        ...(providers.dataSource === undefined
+          ? []
+          : ([[GateKind.BusinessContextGrooming, groomingProducer(providers.dataSource)]] as const)),
         [GateKind.ImplementationReview, workProducer],
         [GateKind.RuntimeValidation, testProducer],
       ]),
@@ -1300,6 +1583,21 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       });
       // Shaped as the old `GateRunResult` so the churn/escalation handling below is untouched by
       // the reordering — that logic is about what a rejection MEANS, which did not change.
+      // THE PHASES' OUTPUT AS AN ARTIFACT the organization can deliberate over. In the pipeline's
+      // own order, so a reordered pipeline yields a history in the order it actually ran.
+      const produced = [...walked.artifacts.entries()].map(([gate, art]) => ({
+        gate: String(gate),
+        refs: art.refs,
+        summary: art.summary,
+      }));
+      const history = historyFromPhases({
+        artifactId: task.workId,
+        phases: produced,
+        byHatId: task.assigneeHatId ?? NO_PROPOSER,
+        atMs: warmedAt,
+      });
+      if (history !== undefined) artifacts.set(task.workId, history);
+
       const run: GateRunResult = {
         evaluations: walked.evaluations,
         passed: walked.passed,
@@ -1366,6 +1664,52 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         break;
       }
       escalations.push({ taskId: task.workId, action: esc.action, effect: esc.effect, byHatId: esc.byHatId });
+
+      // ASK THE LEVEL THAT HOLDS THE AUTHORITY. `RequestDecision`'s own policy says when it is
+      // for — *"multiple valid paths exist and authority sits above the hat"* — and that is
+      // exactly an escalation. It had ZERO senders, so the one signal family meant to carry "how
+      // should we execute this?" upward was never used, and an escalation was a decision the hat
+      // that noticed the problem made for itself.
+      //
+      // Sent AS WELL AS recorded, not instead: the local decision is what the run did, and the
+      // signal is what the organization was asked. A supervisor overruling it later is the chain
+      // working, and it cannot overrule something it was never told about.
+      const askedDecision = sendSupervisorSignal(
+        deps.chart,
+        board,
+        {
+          signalId: deps.createId("sig"),
+          anchorId: deps.createId("anchor"),
+          fromHatId: esc.byHatId,
+          tool: SignalTool.RequestDecision,
+          title: `how to proceed with ${task.workId}`,
+          message: `escalated after repeated rejection; the local call was '${esc.action}'`,
+          // The gate verdicts ARE the document: a decision request with no record of what went
+          // wrong asks the supervisor to re-derive the problem before deciding anything.
+          evidence: [{ kind: "document", ref: `gates:${task.workId}` }],
+          atMs: warmedAt,
+          workItemId: task.workId,
+        },
+        deps.resourceAuthorityHatId,
+      );
+      if (askedDecision.ok) {
+        board = askedDecision.board;
+        signals.push(askedDecision.signal);
+        note({
+          kind: OrgEventKind.SupervisorSignalSent,
+          subjectId: task.workId,
+          actorHatId: askedDecision.signal.fromHatId,
+          decision: `${askedDecision.signal.tool} → ${askedDecision.signal.toHatId}`,
+          toState: askedDecision.signal.toHatId,
+          atMs: warmedAt,
+          evidenceRefs: askedDecision.signal.evidence.map((e) => e.ref),
+          fact: { kind: "supervisor_signal", signal: askedDecision.signal },
+        });
+      } else {
+        // The top of the chain has nobody to ask. Reported, because an escalation nobody above can
+        // take is the organization discovering it has run out of authority — not a quiet no-op.
+        refusals.push(`could not ask for a decision on ${task.workId}: ${askedDecision.reason}`);
+      }
       engage(esc.byHatId);
       note({
         kind: OrgEventKind.EscalationDecision,
@@ -1375,6 +1719,16 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
         fromState: EscalationTrigger.RepeatedGateRejection,
         toState: esc.action,
         atMs: warmedAt,
+        // The DECISION as a value. An escalation is the organization deciding something, and a
+        // decision recorded as prose has to be re-parsed by whoever needs to act on it.
+        fact: {
+          kind: "escalation",
+          taskId: task.workId,
+          action: esc.action,
+          effect: esc.effect,
+          byHatId: esc.byHatId,
+          trigger: EscalationTrigger.RepeatedGateRejection,
+        },
       });
 
       // ── THE EFFECT IS RECORDED, AND THE LOOP STOPS EITHER WAY ─────────────
@@ -1575,6 +1929,63 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
   // Computed from the finished cascade so the reading is over what the run actually delivered.
   // A run that is measurably behind RAISES the trigger rather than deciding anything: what to do
   // about it is the organization's call, through the normal authority check.
+  // ── REPEATABLE INEFFICIENCY IS A REQUEST TO CHANGE THE SYSTEM ─────────────
+  // `ORGANIZATION_RUNTIME_ARCHITECTURE.md` §"Workflow and Runtime Expansion": agents request new
+  // workflows and automation *"when they discover repeatable organizational inefficiency"*, and
+  // its examples are all countable — an Engineering Manager noticing REPEATED review drift, QA
+  // noticing REPEATED missed coverage.
+  //
+  // The unit is DISTINCT WORK ITEMS, never occurrences. One item failing a gate four times is a
+  // hard item, which churn and escalation already handle; four different items failing the same
+  // gate is the process. That is also what separates this from the escalation above it: an
+  // escalation asks somebody to decide about ONE stuck thing, an improvement says no per-item
+  // decision will stop the next one.
+  const inefficiencies = findInefficiencies({
+    gateBlocked,
+    escalations,
+    refusals,
+  });
+  for (const pattern of inefficiencies) {
+    // Raised by the hat that OWNS the affected work, so it travels the chain from where the
+    // friction was felt rather than from wherever the detector happens to run.
+    const owner = cascade.nodes.find((n) => n.workId === pattern.workIds[0])?.ownerHatId;
+    if (owner === undefined) continue;
+    const asked = sendSupervisorSignal(
+      deps.chart,
+      board,
+      {
+        signalId: deps.createId("sig"),
+        anchorId: deps.createId("anchor"),
+        fromHatId: owner,
+        tool: SignalTool.SuggestImprovement,
+        title: `recurring ${pattern.kind}: ${pattern.pattern}`,
+        // What was seen, NOT what to build. The doc has a Director or a Manager deciding what
+        // workflow to add; a detector arriving with a solution would make that call from the
+        // bottom of the chain with the least context about what else is already in flight.
+        message: `${pattern.summary} — ${pattern.workIds.join(", ")}`,
+        evidence: pattern.workIds.map((id) => ({ kind: "trace" as const, ref: `recurrence:${id}` })),
+        atMs: warmedAt,
+      },
+      deps.resourceAuthorityHatId,
+    );
+    if (asked.ok) {
+      board = asked.board;
+      signals.push(asked.signal);
+      note({
+        kind: OrgEventKind.SupervisorSignalSent,
+        subjectId: pattern.pattern,
+        actorHatId: asked.signal.fromHatId,
+        decision: `${asked.signal.tool} → ${asked.signal.toHatId}: ${pattern.summary}`,
+        toState: asked.signal.toHatId,
+        atMs: warmedAt,
+        evidenceRefs: asked.signal.evidence.map((e) => e.ref),
+        fact: { kind: "supervisor_signal", signal: asked.signal },
+      });
+    } else {
+      refusals.push(`could not raise '${pattern.pattern}' as an improvement: ${asked.reason}`);
+    }
+  }
+
   const trajectory = trajectoryOf(cascade.nodes);
   if (trajectory !== undefined) {
     note({
@@ -1583,6 +1994,54 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
       decision: `mission pace: ${trajectory.status} — ${trajectory.basis}`,
       atMs: warmedAt,
     });
+    // A PACE PROBLEM IS A RISK, and `ReportRisk` is the family for one — *"a risk could affect
+    // scope, schedule, quality, security, or cost"*. It had no senders, so the organization
+    // measured its own pace and told nobody: the trigger went into `refusals`, which is a list for
+    // things that went wrong rather than a channel anyone is watching.
+    //
+    // Raised for AT RISK as well as OFF TRACK, and that is the point of a risk report: off track
+    // is a fact somebody must act on, at risk is a warning while acting is still cheap. Reporting
+    // only the first would make the family a slower duplicate of the escalation above it.
+    if (trajectory.status !== TrajectoryStatus.OnTrack && trajectory.status !== TrajectoryStatus.NotStarted) {
+      const owner = cascade.nodes.find((n) => n.workId === goalId)?.ownerHatId;
+      const risk =
+        owner === undefined
+          ? undefined
+          : sendSupervisorSignal(
+              deps.chart,
+              board,
+              {
+                signalId: deps.createId("sig"),
+                anchorId: deps.createId("anchor"),
+                fromHatId: owner,
+                tool: SignalTool.ReportRisk,
+                title: `mission pace is ${trajectory.status}`,
+                message: trajectory.basis,
+                // The pace reading IS the measurement. A risk reported without one is an opinion
+                // about the schedule, and `evidenceSatisfies` refuses it.
+                evidence: [{ kind: "measurement", ref: `pace:${goalId}:${trajectory.status}` }],
+                atMs: warmedAt,
+                workItemId: goalId,
+              },
+              deps.resourceAuthorityHatId,
+            );
+      if (risk?.ok === true) {
+        board = risk.board;
+        signals.push(risk.signal);
+        note({
+          kind: OrgEventKind.SupervisorSignalSent,
+          subjectId: goalId,
+          actorHatId: risk.signal.fromHatId,
+          decision: `${risk.signal.tool} → ${risk.signal.toHatId}`,
+          toState: risk.signal.toHatId,
+          atMs: warmedAt,
+          evidenceRefs: risk.signal.evidence.map((e) => e.ref),
+          fact: { kind: "supervisor_signal", signal: risk.signal },
+        });
+      } else if (risk !== undefined) {
+        refusals.push(`could not report the pace risk on ${goalId}: ${risk.reason}`);
+      }
+    }
     if (warrantsEscalation(trajectory)) {
       refusals.push(
         `mission is off track (${trajectory.basis}) — ${EscalationTrigger.MissionOffTrack} is warranted`,
@@ -1620,6 +2079,19 @@ export async function runOrgRuntime(deps: OrgRuntimeDeps): Promise<OrgRuntimeRep
     events: trace.map(render),
     refusals,
     reactor,
+    artifacts,
+    inefficiencies,
+    // THE LAST STEP OF THE LOOP. Computed from what this run actually did, so the comparison is
+    // against the repository and the gates rather than against the plan. The tracker is not passed
+    // here: this runtime has no external state to compare with, and the report says so by listing
+    // it under `notChecked` — silence is never counted as agreement.
+    reconciliation: reconcile({
+      cascade: cascade.nodes,
+      changesLanded,
+      changesUnlanded,
+      gateEvaluations,
+      delivered,
+    }),
     fidelity,
   };
 }

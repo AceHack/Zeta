@@ -144,8 +144,48 @@ const isFreeMode = (m: Mode): m is FreeMode => m !== "work";
  * agent). `mode` ABSENT = unset (the defaults apply). Same DU, fewer channels;
  * no separate workflow type.
  */
+/** A review somebody asked this agent for. Generic: the core does not know what a gate is. */
+export interface ReviewAsk {
+  readonly artifactId: string;
+  readonly revisionId: string;
+  /** What the review is FOR, as the register names it. An opaque string here. */
+  readonly forGate: string;
+  readonly askedByHatId: string;
+}
+
+/** An open deliberation this agent is a participant in. */
+export interface OpenDeliberation {
+  readonly anchorId: string;
+  readonly artifactId: string;
+  /** The revision currently under discussion — what a turn would cite. */
+  readonly revisionId: string;
+  readonly title: string;
+}
+
+/** Something this agent needs and does not have. */
+export interface MissingInformation {
+  readonly about: string;
+  /** The work it is blocking, so the ask is not abstract. */
+  readonly blocking: string;
+}
+
 export interface World {
   readonly backlog: readonly BacklogItem[];
+  /**
+   * The organizational surface — what this agent has been asked for, and who it can reach.
+   *
+   * ALL OPTIONAL, and absent means the corresponding verbs are simply not offered. A standalone
+   * agent with no organization behind it sees the menu it always saw; nothing here is a new
+   * obligation. That is the same shape as `MainDeps.surface`: the core declares the seam and a
+   * register fills it.
+   */
+  readonly reviewsAsked?: readonly ReviewAsk[];
+  readonly deliberations?: readonly OpenDeliberation[];
+  readonly missing?: readonly MissingInformation[];
+  /** Work this agent may hand to someone else, with who is eligible. */
+  readonly assignable?: readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[];
+  /** Hats this agent could pull into a room, and the artifact it would convene over. */
+  readonly convenable?: readonly { readonly artifactId: string; readonly withHatIds: readonly string[] }[];
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
@@ -380,7 +420,26 @@ export type NextAction =
   | { kind: "retract_time"; reason: string } // Undo/retract event (LT)
   | { kind: "replay_time"; reason: string } // Redo/replay event (RT)
   | { kind: "read_memory_sector"; sectorIndex: number; length: number; reason: string } // CheatEngine lensography mapping
-  | { kind: "write_memory_sector"; sectorIndex: number; offset: number; value: number; reason: string }; // CheatEngine tool-assisted ram write
+  | { kind: "write_memory_sector"; sectorIndex: number; offset: number; value: number; reason: string } // CheatEngine tool-assisted ram write
+  // ── WORKING WITH OTHER AGENTS ────────────────────────────────────────────
+  // Until these existed the grammar had exactly one communication verb —
+  // `respond_to_operator`, which addresses the HUMAN. An agent could work, decompose, explore,
+  // rest and rewrite the grammar, and had no way to look at a colleague's artifact, answer it,
+  // ask for what it was missing, pull anyone into a room, or hand work to someone. A hierarchy
+  // whose members cannot address each other is an org chart drawn over solitary confinement.
+  //
+  // Every one of these is GENERIC. The core does not know what an organization is — ids are
+  // strings and a register fills them, exactly as `MainDeps.surface` already works.
+  /** Do a review that was asked of this agent, on a named revision. */
+  | { kind: "review_artifact"; artifactId: string; revisionId: string; forGate: string; reason: string }
+  /** Take a turn in a deliberation, citing the revision being addressed. */
+  | { kind: "respond_to_artifact"; anchorId: string; artifactId: string; revisionId: string; reason: string }
+  /** Pull named peers into a room over an artifact — spends their calendars, so it is gated. */
+  | { kind: "convene_meeting"; artifactId: string; withHatIds: readonly string[]; reason: string }
+  /** Say what is missing. NEVER GATED — see the reconciliation row. */
+  | { kind: "request_information"; about: string; blocking: string; reason: string }
+  /** Hand a work item to someone. Wires `canCreateWork`, which had no action until now. */
+  | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string };
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -422,8 +481,85 @@ export function observe(world: World): NextAction {
   // it never sticks as idle.)
   if (world.mode && isFreeMode(world.mode)) return freeModeAction(world.mode);
 
+  // ── OTHER AGENTS OUTRANK NEW WORK ────────────────────────────────────────
+  // Placed BELOW the operator and the persisted free mode, and ABOVE the backlog. The ordering is
+  // the argument:
+  //
+  //   BEING BLOCKED comes first. Asking costs one message and un-sticks this agent; starting
+  //   something else while stuck is how an agent accumulates two unfinished things instead of one.
+  //   `request_information` is also the one verb that is never gated, so it is always a real
+  //   option — an oracle that recommended it and a gate that removed it would be incoherent.
+  //
+  //   A REVIEW SOMEBODY IS WAITING ON comes next. Another agent is blocked on this one, so the
+  //   work is already started and finishing it is worth more than beginning something new. This is
+  //   where a queue stops growing.
+  //
+  //   AN OPEN ROOM comes after that: a deliberation with a turn owed is cheaper to close than a
+  //   fresh work item is to open.
+  //
+  // All three sit above `do_item` for the same underlying reason — an organization whose members
+  // always prefer new work to unblocking each other builds a backlog of half-finished things and a
+  // queue of people waiting. None of them is forced: they are what `observe` RECOMMENDS, and the
+  // free modes remain in the menu beside them exactly as before.
+  const blocked = world.missing?.[0];
+  if (blocked) {
+    return {
+      kind: "request_information",
+      about: blocked.about,
+      blocking: blocked.blocking,
+      reason: `${blocked.blocking} is blocked on ${blocked.about}`,
+    };
+  }
+  const asked = world.reviewsAsked?.[0];
+  if (asked) {
+    return {
+      kind: "review_artifact",
+      artifactId: asked.artifactId,
+      revisionId: asked.revisionId,
+      forGate: asked.forGate,
+      reason: `${asked.askedByHatId} is waiting on '${asked.forGate}'`,
+    };
+  }
+  const room = world.deliberations?.[0];
+  if (room) {
+    return {
+      kind: "respond_to_artifact",
+      anchorId: room.anchorId,
+      artifactId: room.artifactId,
+      revisionId: room.revisionId,
+      reason: `'${room.title}' is open and you are in it`,
+    };
+  }
+
+  // ASSIGNING OUTRANKS DOING. A hat holding unassigned work while its reports are idle is the
+  // bottleneck, and a manager who does the task itself has cleared one item and still has the
+  // queue. This is above `do_item` for that reason and no other.
+  const toAssign = world.assignable?.[0];
+  if (toAssign && toAssign.toHatIds.length > 0) {
+    return {
+      kind: "assign_work",
+      item: toAssign.item,
+      toHatId: toAssign.toHatIds[0]!,
+      reason: `hand '${toAssign.item.id}' to ${toAssign.toHatIds[0]!}`,
+    };
+  }
+
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) return { kind: "do_item", item: doable };
+
+  // CONVENING SITS BELOW OWN WORK, because it spends other hats' calendars: a divergence is worth
+  // a room, and it is not worth one before this agent has done the work already in front of it.
+  // Above the free modes, though — an artifact with two heads is stuck, and exploring past it
+  // leaves it stuck.
+  const room2 = world.convenable?.[0];
+  if (room2 && room2.withHatIds.length > 1) {
+    return {
+      kind: "convene_meeting",
+      artifactId: room2.artifactId,
+      withHatIds: room2.withHatIds,
+      reason: `${room2.artifactId} has two heads and needs one`,
+    };
+  }
 
   // Forge-aware: if no backlog work is ready but clean PRs exist, signal
   // that merge work is available. The action is "do_item" with a synthetic
@@ -589,6 +725,54 @@ export function buildMenu(world: World): NextAction[] {
   // The agent can CLAIM it (promise to deliver by a deadline) instead of doing it now.
   // This is the inter-agent coordination primitive: "I'll handle this, you don't need to."
   if (doable) candidates.push({ kind: "self_claim", item: doable, deadline: 0 }); // deadline filled by chooser
+
+  // ── WORKING WITH OTHER AGENTS ────────────────────────────────────────────
+  // Offered when the organization has actually asked for something, and absent otherwise. A
+  // standalone agent with no register behind it sees exactly the menu it always saw.
+  //
+  // ORDERED BEFORE the free modes and AFTER operator/work, deliberately: a review somebody is
+  // waiting on is more urgent than exploration and less urgent than the human, and the menu's
+  // order is the only way that priority is expressed to a chooser that takes the first legal
+  // option.
+  for (const ask of world.reviewsAsked ?? []) {
+    candidates.push({
+      kind: "review_artifact",
+      artifactId: ask.artifactId,
+      revisionId: ask.revisionId,
+      forGate: ask.forGate,
+      reason: `${ask.askedByHatId} is waiting on '${ask.forGate}' for ${ask.artifactId}`,
+    });
+  }
+  for (const d of world.deliberations ?? []) {
+    candidates.push({
+      kind: "respond_to_artifact",
+      anchorId: d.anchorId,
+      artifactId: d.artifactId,
+      revisionId: d.revisionId,
+      reason: `'${d.title}' is open and you are in it`,
+    });
+  }
+  for (const m of world.missing ?? []) {
+    candidates.push({
+      kind: "request_information",
+      about: m.about,
+      blocking: m.blocking,
+      reason: `${m.blocking} is blocked on ${m.about}`,
+    });
+  }
+  for (const c of world.convenable ?? []) {
+    candidates.push({
+      kind: "convene_meeting",
+      artifactId: c.artifactId,
+      withHatIds: c.withHatIds,
+      reason: `talk ${c.artifactId} through with ${c.withHatIds.join(", ")}`,
+    });
+  }
+  for (const a of world.assignable ?? []) {
+    for (const to of a.toHatIds) {
+      candidates.push({ kind: "assign_work", item: a.item, toHatId: to, reason: `hand '${a.item.id}' to ${to}` });
+    }
+  }
 
   const needs = world.backlog.find((i) => i.needsNewAction);
   candidates.push(
@@ -927,6 +1111,19 @@ export function simulate(world: World, action: NextAction): World {
         },
       };
     }
+    // ── WORKING WITH OTHER AGENTS ──────────────────────────────────────────
+    // None of these change THIS agent's world. A review, a turn, a convening, an ask and an
+    // assignment all act on things the ORGANIZATION owns — a board, a calendar, someone else's
+    // queue — and the register applies them. Returning `world` unchanged is the honest simulation
+    // of an action whose effect is not local, and inventing a local effect here (dropping the
+    // assigned item from this agent's backlog, say) would make the pure simulation disagree with
+    // what actually happened.
+    case "review_artifact":
+    case "respond_to_artifact":
+    case "convene_meeting":
+    case "request_information":
+    case "assign_work":
+      return world;
   }
 }
 

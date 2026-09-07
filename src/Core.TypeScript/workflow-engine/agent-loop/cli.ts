@@ -297,6 +297,24 @@ export interface MainDeps {
    * offers the seam and a register fills it. `corporate/run-agent.ts` is the first filler.
    */
   readonly surface?: (at: string) => LoopSurface;
+  /**
+   * WHAT A CHOSEN SLOT ACTUALLY DOES.
+   *
+   * `runOneCycle` takes a SYNCHRONOUS `resultFor`, and `main` never supplied one — so a participant
+   * choosing `PickWork` advanced the state machine to `ExecutingWork` and nothing happened: the
+   * work was never done and never reported done. The sync shape is also why nothing could be
+   * supplied honestly, since reaching a delivery pipeline is asynchronous; the only value that fits
+   * a sync seam is one made up on the spot.
+   *
+   * So the seam is ASYNC and lives here, and `mainAsync` awaits it after the participant has
+   * chosen. Like `surface`, the core defines the shape and a register fills it — the loop still
+   * does not know an organization exists.
+   *
+   * Returning `undefined` is a real answer: nothing was dispatched, and the agent stays in
+   * `ExecutingWork` with the work outstanding. That is what a shadow lane looks like, and it must
+   * never be rounded to a success.
+   */
+  readonly dispatch?: (option: MenuOption) => Promise<WorkResult | undefined>;
 }
 
 /**
@@ -328,6 +346,14 @@ export async function chooseByParticipant(
 export interface ResolvedChoice {
   readonly choose: string;
   readonly note: string;
+  /**
+   * What dispatching that choice produced, when a dispatcher ran.
+   *
+   * Threaded through the SAME pre-resolution seam as the choice itself, for the same reason: the
+   * dispatch must act on the option the participant actually chose, and re-deriving it here would
+   * open a gap where the two could differ. Absent means nothing was dispatched — never a success.
+   */
+  readonly result?: WorkResult;
 }
 
 export function main(argv: readonly string[], deps: MainDeps = {}, resolved?: ResolvedChoice): number {
@@ -381,6 +407,9 @@ export function main(argv: readonly string[], deps: MainDeps = {}, resolved?: Re
       return choose === undefined ? {} : { choose };
     })(),
     ...(deps.menuPolicy === undefined ? {} : { menuPolicy: deps.menuPolicy }),
+    // The dispatch already happened, in `mainAsync`, on this exact option. `runCycle` applies what
+    // it produced; `undefined` closes no cycle and leaves the work outstanding, which is true.
+    ...(resolved?.result === undefined ? {} : { resultFor: () => resolved.result }),
   });
   if (resolved !== undefined) console.log(`  ${resolved.note}`);
 
@@ -473,7 +502,11 @@ export async function mainAsync(argv: readonly string[], deps: MainDeps = {}): P
   }
 
   const choice = await chooseByParticipant(resolvedParticipant.participant, state, surface.snapshot, menu);
-  return main(argv, deps, choice);
+  // THE DISPATCH — after the participant chose, before the cycle closes. `menu[Number(choice.choose)]`
+  // is the option it actually saw and picked, taken from the same menu rather than regenerated.
+  const chosen = menu[Number(choice.choose)];
+  const result = chosen === undefined ? undefined : await deps.dispatch?.(chosen);
+  return main(argv, deps, { ...choice, ...(result === undefined ? {} : { result }) });
 }
 
 if (import.meta.main) {

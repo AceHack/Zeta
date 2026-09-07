@@ -61,19 +61,31 @@ export interface HatAuthority {
   readonly canAccessOperator: boolean;
   /** Can this hat edit the action grammar? (director+ only) */
   readonly canEditGrammar: boolean;
+  /**
+   * Can this hat pull other hats into a room?
+   *
+   * Its own bit rather than a reuse of `canCreateWork`, because convening spends a resource that
+   * belongs to SOMEONE ELSE — the attendees' calendars. An IC may do work, ask for information and
+   * answer a review without ever being able to book three directors into a half-hour; those are
+   * different kinds of authority and one bit could not tell them apart.
+   *
+   * Lead and above. An IC that needs a room asks for one — `request_information` is never gated,
+   * so the path out is always open.
+   */
+  readonly canConvene: boolean;
 }
 
 // ─── Default authority by level ─────────────────────────────────────
 
 const AUTHORITY_BY_LEVEL: Record<HatLevel, HatAuthority> = {
-  executive_board: { level: "executive_board", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true },
-  c_suite: { level: "c_suite", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true },
-  director: { level: "director", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: true },
-  manager: { level: "manager", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false },
-  lead: { level: "lead", canMerge: false, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false },
+  executive_board: { level: "executive_board", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true , canConvene: true },
+  c_suite: { level: "c_suite", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: true, canEditGrammar: true , canConvene: true },
+  director: { level: "director", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: true , canConvene: true },
+  manager: { level: "manager", canMerge: true, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false , canConvene: true },
+  lead: { level: "lead", canMerge: false, canDoWork: true, canCreateWork: true, canDecompose: true, canAccessOperator: false, canEditGrammar: false , canConvene: true },
   // canDoWork is TRUE here and canCreateWork is FALSE: an IC executes offered work but does not
   // open new work. That distinction is the entire reason the two bits are separate.
-  individual_contributor: { level: "individual_contributor", canMerge: false, canDoWork: true, canCreateWork: false, canDecompose: false, canAccessOperator: false, canEditGrammar: false },
+  individual_contributor: { level: "individual_contributor", canMerge: false, canDoWork: true, canCreateWork: false, canDecompose: false, canAccessOperator: false, canEditGrammar: false , canConvene: false },
 };
 
 export function authorityForLevel(level: HatLevel): HatAuthority {
@@ -123,6 +135,16 @@ function isAuthorized(action: NextAction, auth: HatAuthority): boolean {
       return auth.canDecompose;
     case "edit_grammar":
       return auth.canEditGrammar;
+    // A review IS work, so it rides the same bit rather than inventing a second one that would
+    // have to be kept in step with it.
+    case "collaborate":
+      return auth.canDoWork;
+    case "convene":
+      return auth.canConvene;
+    // The action `canCreateWork` was documented as waiting for: assigning work to someone is
+    // creating work for them, and an IC (`canCreateWork: false`) does not hand out tasks.
+    case "assign_work":
+      return auth.canCreateWork;
     case "execute_item": {
       const id = itemIdOf(action);
       return id === null ? auth.canDoWork : canExecuteItem(id, auth);
@@ -147,4 +169,5 @@ export const SOVEREIGN: HatAuthority = {
   canDecompose: true,
   canAccessOperator: true,
   canEditGrammar: true,
+  canConvene: true,
 };

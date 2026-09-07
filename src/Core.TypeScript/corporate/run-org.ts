@@ -104,7 +104,7 @@ import {
 import { EscalationAction, EscalationTrigger } from "./escalation";
 import { ScheduleBlockType } from "./work-schedule";
 import { observeForHat } from "./work-batch";
-import { isLeafType, WorkState as WorkStateValue, WorkType as WorkTypeValue } from "./goal-cascade";
+import { isLeafType, WorkType as WorkTypeValue } from "./goal-cascade";
 import { associateGoal, EMPTY_BOOK, openPortfolio, PortfolioKind, retirePortfolio } from "./portfolio";
 import { appendRun, deliveryRate, readEvents } from "./org-store";
 import { runUntilSettled } from "./autonomy";
@@ -114,6 +114,10 @@ import { isFullyMeasured, renderDora } from "./dora";
 import { contextFor, runDispatchedCycle, statusSurfaceFrom } from "./agent-loop-bridge";
 import { dispatcherFor, evaluatePromotionGate } from "./slot-dispatch";
 import { compareToLegacy, foldObserveActWindow, legacySelection, type ObserveActTick } from "./observe-act-window";
+import { deliverWorkItem } from "./work-delivery";
+import { gitDataSource, unionOf } from "./git-data-source";
+import type { DataSourcePort } from "./providers";
+import { DEFAULT_PIPELINE } from "./pipeline";
 import { foldObserveActTicks } from "./org-fold";
 import { emit } from "./org-event";
 import type { AgentState } from "../workflow-engine/agent-loop/state-machine";
@@ -231,6 +235,23 @@ export interface Args {
    * be demonstrated deterministically: the same flags always produce the same window.
    */
   readonly now: string | undefined;
+  /**
+   * Leave the work for the AGENT to deliver instead of delivering it in the runtime's own loop.
+   *
+   * Off by default, so the CLI behaves exactly as it always has. On, the runtime staffs and
+   * schedules and runs QA, and the delivery happens because an agent CHOSE the item — which is the
+   * only arrangement in which the choice is load-bearing rather than decorative.
+   */
+  readonly agentDelivers: boolean;
+  /**
+   * A git repository agents READ from, as `<dir>` or `<dir>@<ref>`.
+   *
+   * Absent means grooming stays judgement-only. Repeatable: several repositories become one
+   * G-Set union, which is what an organization whose domain spans repositories actually has.
+   */
+  readonly sourceRepos: readonly string[];
+  /** Restrict each source repository to a subtree — `docs/`, say, rather than the whole tree. */
+  readonly sourceSubdir: string | undefined;
 }
 
 /** The value after a flag, or undefined. A flag with nothing after it is the same as absent. */
@@ -277,6 +298,9 @@ export function parseArgs(argv: readonly string[]): Args {
     windowStart: valueAfter(argv, "--window-start"),
     windowTarget: valueAfter(argv, "--window-target"),
     now: valueAfter(argv, "--now"),
+    agentDelivers: argv.includes("--agent-delivers"),
+    sourceRepos: valuesAfter(argv, "--source-repo"),
+    sourceSubdir: valueAfter(argv, "--source-subdir"),
     workAgentArgs: valuesAfter(argv, "--work-agent-arg"),
     workVerify: valueAfter(argv, "--work-verify"),
     workVerifyArgs: valuesAfter(argv, "--work-verify-arg"),
@@ -406,6 +430,15 @@ export function argRefusals(args: Args): readonly string[] {
   }
   if (startMs !== undefined && targetMs !== undefined && !Number.isNaN(startMs) && !Number.isNaN(targetMs) && targetMs <= startMs) {
     out.push("--window-target must be after --window-start; a window that ends before it begins has no pace");
+  }
+  for (const spec of args.sourceRepos) {
+    // A repository is a DIRECTORY, and an empty spec is a flag someone meant to fill in. Refused
+    // rather than skipped: a silently-dropped source is an organization grooming against less than
+    // its operator believes it is reading.
+    if (spec.trim() === "") out.push("--source-repo needs a directory, optionally as <dir>@<ref>");
+  }
+  if (args.sourceSubdir !== undefined && args.sourceRepos.length === 0) {
+    out.push("--source-subdir narrows a source that was never declared: add --source-repo");
   }
   if (args.now !== undefined && Number.isNaN(Date.parse(args.now))) {
     out.push("--now is not a parseable ISO-8601 instant");
@@ -589,6 +622,11 @@ export async function main(argv: readonly string[]): Promise<number> {
   }
 
   // ── The whole organization ────────────────────────────────────────────────
+  // ── THE DATA SOURCES THIS RUN READS ───────────────────────────────────────
+  // `<dir>` or `<dir>@<ref>`. The ref defaults inside `gitDataSource` to `origin/main` rather than
+  // HEAD, because HEAD is a property of one checkout and the organization's context is not.
+  const dataSource = args.sourceRepos.length === 0 ? undefined : sourceFromArgs(args);
+
   const providers = providersFromArgs(args, REPORTS, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
   const runtimeDeps = {
     chart,
@@ -606,6 +644,14 @@ export async function main(argv: readonly string[]): Promise<number> {
     ...(args.windowStart === undefined || args.windowTarget === undefined
       ? {}
       : { missionWindow: { startsAtMs: Date.parse(args.windowStart), targetAtMs: Date.parse(args.windowTarget) } }),
+    // Nothing delivered by the runtime when the agent lane owns delivery, so the work is still live
+    // when the loop is offered it — otherwise the loop sees an empty candidate list and `PickWork`
+    // is not on the menu at all.
+    ...(args.agentDelivers ? { deliverSelf: [] } : {}),
+    // WHAT AGENTS READ FROM. Absent leaves grooming judgement-only; one or more repositories
+    // become a G-Set union, which is the merge the agent-bus already proves is commutative and
+    // idempotent.
+    ...(dataSource === undefined ? {} : { dataSource }),
     leaseMs: 300_000,
     ...(args.qaFails ? { qaFallback: RunOutcome.Failed } : {}),
     ...(args.churn ? { churnThreshold: 2, maxGateAttempts: 5 } : {}),
@@ -795,18 +841,47 @@ export async function main(argv: readonly string[]): Promise<number> {
   const priorTicks = args.store === undefined ? [] : foldObserveActTicks(readEvents(args.store));
   const readout = foldObserveActWindow(priorTicks, nowMs);
   const verdict = evaluatePromotionGate(readout.window);
-  const dispatcher = dispatcherFor(verdict, async (workId) => ({
-    succeeded: report.cascade.nodes.some((n) => n.workId === workId && n.state === WorkStateValue.Done),
-    evidenceRefs: report.gateEvaluations.filter((g) => g.workId === workId).flatMap((g) => g.evidenceRefs),
-    summary: `pipeline outcome for ${workId}`,
-    // MEASURED from what landed, not a constant: the fraction of this item's gates that passed.
-    doraContribution:
-      report.gateEvaluations.filter((g) => g.workId === workId).length === 0
-        ? 0
-        : report.changesLanded.includes(workId)
-          ? 1
-          : 0,
-  }));
+  // ── WHAT A CHOSEN SLOT ACTUALLY DOES ──────────────────────────────────────
+  // `deliverWorkItem` RUNS THE PIPELINE for the item the agent picked — opens a change, walks the
+  // phases, merges what passed. It does not read the report of a run that already happened.
+  //
+  // That distinction is the whole point and the previous version of this line failed it. Replacing
+  // the hardcoded `{ success: true }` with a LOOKUP into `report` still left the agent's decision
+  // decorative: the pipeline ran because the runtime iterated its own list, and the choice was
+  // consulted by nobody. A dispatcher reporting an outcome it did not cause is the same lie, told
+  // more quietly.
+  //
+  // A node the cascade does not have is a REFUSAL, not a failure — the agent picked something this
+  // organization does not know about, which is a different problem from work that did not land.
+  const dispatcher = dispatcherFor(verdict, async (workId) => {
+    const node = report.cascade.nodes.find((n) => n.workId === workId);
+    if (node === undefined) {
+      return {
+        succeeded: false,
+        evidenceRefs: [],
+        summary: `no cascade node for '${workId}'; nothing was delivered`,
+        doraContribution: 0,
+      };
+    }
+    const outcome = await deliverWorkItem({
+      chart,
+      node,
+      pipeline: DEFAULT_PIPELINE,
+      providers,
+      atMs: nowMs,
+      proposerHatId: node.assigneeHatId ?? "unassigned",
+      // The tests this run ACTUALLY produced decide runtime_validation — not an assumption, and
+      // not an approval handed over because no runs were found.
+      qaVerdict: qaVerdictFrom(report),
+      branch: `agent-work/${workId}`,
+    });
+    return {
+      succeeded: outcome.landed,
+      evidenceRefs: outcome.evidenceRefs,
+      summary: outcome.summary,
+      doraContribution: outcome.doraContribution,
+    };
+  });
   console.log(`  mode:        ${verdict.mode}${verdict.blockedBy.length === 0 ? "" : ` — ${verdict.blockedBy[0]!}`}`);
   console.log(`  window:      ${readout.summary}`);
 
@@ -1221,4 +1296,50 @@ if (import.meta.main) {
       process.exit(2);
     },
   );
+}
+
+/**
+ * What the run's own test evidence says, for the one gate decided by evidence rather than opinion.
+ *
+ * NO RUNS IS A REJECTION. An organization that ran no tests has not validated anything, and the
+ * tempting default — treat "no failures found" as a pass — is the vacuity class exactly: a check
+ * that cannot fail because it never looked. The reason string says which of the two it was, so a
+ * reader can tell an untested item from a failing one.
+ */
+function qaVerdictFrom(report: OrgRuntimeReport): { readonly outcome: GateOutcome; readonly reason: string } {
+  const runs = report.qa.flatMap((q) => q.runs);
+  if (runs.length === 0) {
+    return { outcome: GateOutcome.Rejected, reason: "no test runs were recorded; nothing was validated" };
+  }
+  const failed = runs.filter((r) => r.outcome !== RunOutcome.Passed);
+  return failed.length === 0
+    ? { outcome: GateOutcome.Approved, reason: `${String(runs.length)} test run(s) passed` }
+    : {
+        outcome: GateOutcome.Rejected,
+        reason: `${String(failed.length)} of ${String(runs.length)} test run(s) did not pass`,
+      };
+}
+
+/**
+ * The data source this run reads, built from `--source-repo` specs.
+ *
+ * One repository is that repository; several are their G-Set union, which is exact and
+ * conflict-free because documents are keyed by `<source>:<sha>:<path>` — the property
+ * `agent-bus/g-set-view.ts` establishes for the bus and this reuses rather than re-derives.
+ */
+function sourceFromArgs(args: Args): DataSourcePort {
+  const sources = args.sourceRepos.map((spec, i) => {
+    // Split on the LAST `@`, so a Windows path or a directory containing one still parses.
+    const at = spec.lastIndexOf("@");
+    const hasRef = at > 0;
+    return gitDataSource({
+      repoDir: hasRef ? spec.slice(0, at) : spec,
+      ...(hasRef ? { ref: spec.slice(at + 1) } : {}),
+      ...(args.sourceSubdir === undefined ? {} : { subdir: args.sourceSubdir }),
+      // Named by position as well as path, because `register` refuses a duplicate (port, name) and
+      // two specs for one repository at two refs are two legitimate sources.
+      name: `git-${String(i + 1)}`,
+    });
+  });
+  return sources.length === 1 ? sources[0]! : unionOf(sources);
 }

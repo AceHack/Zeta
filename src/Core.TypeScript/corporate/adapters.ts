@@ -860,6 +860,23 @@ export function gitChangeControl(input: {
   readonly baseBranch: string;
   readonly name?: string;
 }): ChangeControlPort {
+  // ── A MISSING DIRECTORY MUST NOT BECOME THE CURRENT ONE ─────────────────
+  // `spawnSync` treats `cwd: undefined` as "wherever this process is standing", so an adapter
+  // constructed without one branches, commits and MERGES in whatever repository the caller
+  // happens to be in. TypeScript already requires the field — and that is not enough, because
+  // `bun test` does not typecheck: a test that passed `repoDir` instead of `cwd` compiled with an
+  // error nobody had run yet and executed against THIS repository, leaving it checked out on a
+  // `work/task-013` branch it had created and merged.
+  //
+  // So the guard is at RUNTIME, where the damage happens. It throws rather than returning a
+  // refusing port: a change-control adapter that cannot say which repository it writes to is
+  // misconfigured, and every later call would be a fresh chance to write somewhere unintended.
+  if (typeof input.cwd !== "string" || input.cwd.trim() === "") {
+    throw new Error(
+      "gitChangeControl needs an explicit `cwd`: without one git would run in the current " +
+        "process directory, which is a repository nobody chose",
+    );
+  }
   const git = (args: readonly string[]) =>
     spawnSync("git", [...args], { cwd: input.cwd, encoding: "utf-8", shell: false });
   return {

@@ -29,8 +29,16 @@ const OTHER: BacklogItem = { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Someone e
 const MERGE: BacklogItem = { id: "merge-pr-42", title: "Merge PR 42", ready: true, ambiguous: false };
 
 describe("the table is total and self-consistent", () => {
-  test("covers exactly the 16 NextAction kinds", () => {
-    expect(ALL_KINDS).toHaveLength(16);
+  test("covers exactly the 21 NextAction kinds", () => {
+    // SIXTEEN until the grammar gained peer verbs. The number is pinned rather than derived on
+    // purpose — the table is `Record<ActionKind, ActionRow>`, so a new kind cannot be missing a
+    // row, but it CAN be added without anyone noticing the grammar grew. This assertion is the
+    // noticing.
+    //
+    // The five additions are `review_artifact`, `respond_to_artifact`, `convene_meeting`,
+    // `request_information` and `assign_work`. Before them the grammar had exactly one
+    // communication verb and it addressed the human.
+    expect(ALL_KINDS).toHaveLength(21);
   });
 
   test("every row's key agrees with its own kind — a copy-paste row is a real risk here", () => {
@@ -64,7 +72,11 @@ describe("the table is total and self-consistent", () => {
   });
 
   test("item-scoped kinds are exactly the kinds that carry an item to act on", () => {
+    // `assign_work` joins them because it carries the item it is handing over: a hat may only
+    // assign work that is inside its own room's scope, or it could push items it has no standing
+    // in onto someone else's queue.
     expect(ALL_KINDS.filter((k) => rowFor(k).scope === "item_in_scope").sort()).toEqual([
+      "assign_work",
       "decompose",
       "do_item",
       "self_claim",
@@ -128,6 +140,14 @@ describe("the hat gate did not widen — every level, every kind", () => {
               return auth.canEditGrammar;
             case "execute_item":
               return auth.canDoWork;
+            // Mirrors the production switch. This duplication is the cross-check's whole point:
+            // the two must agree, and a new gate that only one of them knows about fails here.
+            case "collaborate":
+              return auth.canDoWork;
+            case "convene":
+              return auth.canConvene;
+            case "assign_work":
+              return auth.canCreateWork;
           }
         })();
         expect(hatFilter([action], auth).length === 1).toBe(expected);

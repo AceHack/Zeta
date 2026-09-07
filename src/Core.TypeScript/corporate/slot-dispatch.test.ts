@@ -237,3 +237,75 @@ describe("UNMEASURED DIVERGENCE BLOCKS — the worst place to read absence as pe
     expect(v.mode).toBe(AgentLoopMode.ObserveActPrimary);
   });
 });
+
+describe("THE BUDGET GATE — 'if budget is available', able to refuse", () => {
+  test("a refused budget means the work was NOT ATTEMPTED — no result, nothing performed", async () => {
+    // The same three-state answer as shadow, for a different reason: it did not fail, it was never
+    // started. `success: false` here would tell an agent its work was rejected on merit.
+    let performed = false;
+    const d = await primaryDispatcher(
+      async () => {
+        performed = true;
+        return { succeeded: true, evidenceRefs: [], summary: "", doraContribution: 1 };
+      },
+      () => ({ refusal: "eng-q3 has 0 agent-minutes left", checked: true }),
+    ).dispatch(pickWork);
+
+    expect(performed).toBe(false);
+    expect(d.performed).toBe(false);
+    expect(d.result).toBeUndefined();
+    expect(d.summary).toContain("budget refused");
+  });
+
+  test("the budget is checked BEFORE the work runs, not after", async () => {
+    // A budget consulted afterwards is a report, not a limit.
+    const order: string[] = [];
+    await primaryDispatcher(
+      async () => {
+        order.push("perform");
+        return { succeeded: true, evidenceRefs: [], summary: "", doraContribution: 1 };
+      },
+      () => {
+        order.push("budget");
+        return { checked: true };
+      },
+    ).dispatch(pickWork);
+    expect(order).toEqual(["budget", "perform"]);
+  });
+
+  test("an allowed budget lets the work through and records that it was CHECKED", async () => {
+    const d = await primaryDispatcher(
+      async () => ({ succeeded: true, evidenceRefs: [], summary: "ok", doraContribution: 1 }),
+      () => ({ checked: true }),
+    ).dispatch(pickWork);
+    expect(d.performed).toBe(true);
+    expect(d.budgetChecked).toBe(true);
+  });
+
+  test("NO BUDGET DECLARED PROCEEDS, AND SAYS THE CHECK DID NOT RUN", async () => {
+    // Not stopped by a limit nobody set, and not recorded as having passed one. `budgetChecked`
+    // false is the difference between "allowed" and "unbudgeted", which one boolean would conflate.
+    const d = await primaryDispatcher(async () => ({
+      succeeded: true,
+      evidenceRefs: [],
+      summary: "ok",
+      doraContribution: 1,
+    })).dispatch(pickWork);
+    expect(d.performed).toBe(true);
+    expect(d.budgetChecked).toBe(false);
+  });
+
+  test("SHADOW NEVER CONSULTS A BUDGET — it spends nothing to spend", async () => {
+    let asked = false;
+    const d = dispatcherFor(
+      evaluatePromotionGate({ ...earned, divergenceMeasured: false }),
+      async () => ({ succeeded: true, evidenceRefs: [], summary: "", doraContribution: 1 }),
+      () => {
+        asked = true;
+        return { checked: true };
+      },
+    );
+    await d.dispatch(pickWork);
+    expect(asked).toBe(false);
+  });
+});

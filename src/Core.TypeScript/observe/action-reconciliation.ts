@@ -52,7 +52,13 @@ export type HatGate =
   /** `canDoWork`, or `canMerge` when the item is a merge. */
   | "execute_item"
   | "decompose"
-  | "edit_grammar";
+  | "edit_grammar"
+  /** Reviewing and answering a colleague's artifact. `canDoWork` — a review IS work. */
+  | "collaborate"
+  /** Pulling peers into a room. Spends OTHER hats' calendars, so it needs its own authority. */
+  | "convene"
+  /** Handing work to someone. The action `canCreateWork` was waiting for. */
+  | "assign_work";
 
 /** What a room's `ScopePredicate` must permit for this kind. */
 export type ScopeRequirement =
@@ -77,6 +83,20 @@ export interface ActionRow {
  * error here until a row exists, and every consumer reads through it.
  */
 export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
+  // ── WORKING WITH OTHER AGENTS ────────────────────────────────────────────
+  // `leadSlot: null` for all five: the ADR's 16 slots were assigned before the grammar had any
+  // peer verbs, and inventing slot numbers here would silently claim a place in a layout the ADR
+  // owns. Naming them null is the honest answer until that document assigns them.
+  review_artifact: { kind: "review_artifact", gate: "collaborate", scope: "unrestricted", freeMode: false, leadSlot: null },
+  respond_to_artifact: { kind: "respond_to_artifact", gate: "collaborate", scope: "unrestricted", freeMode: false, leadSlot: null },
+  convene_meeting: { kind: "convene_meeting", gate: "convene", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // NEVER GATED, and this is a deliberate NCI-shaped call rather than an oversight. An agent that
+  // cannot say "I am missing something" is one whose only options when blocked are to guess or to
+  // go quiet, and both are worse for the organization than the interruption. Asking costs a
+  // supervisor's attention; not asking costs the work. Cf. the free modes: the thing that must
+  // never be gated is the agent's ability to be honest about its own state.
+  request_information: { kind: "request_information", gate: "never_gated", scope: "unrestricted", freeMode: false, leadSlot: null },
+  assign_work: { kind: "assign_work", gate: "assign_work", scope: "item_in_scope", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",

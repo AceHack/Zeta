@@ -24,6 +24,7 @@ import {
   SIGNAL_POLICY,
   SignalTool,
 } from "./supervisor-signal";
+import { GateKind } from "./quality-gate";
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 
@@ -359,7 +360,9 @@ describe("sending a signal produces a routed, evidenced, ANCHORED artifact", () 
   });
 
   test("the anchor owes what the family promises", () => {
-    const r = sendSupervisorSignal(chart, EMPTY_BOARD, { ...base, tool: SignalTool.RequestReview, evidence: [{ kind: "diff", ref: "pr/9" }] }, RMO);
+    // The title IS the scope for a review request — `RequestReview` routes to the hat holding the
+    // gate, so a title that names no gate has nobody to route to. That is the point of the family.
+    const r = sendSupervisorSignal(chart, EMPTY_BOARD, { ...base, title: GateKind.ImplementationReview, tool: SignalTool.RequestReview, evidence: [{ kind: "diff", ref: "pr/9" }] }, RMO);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.board.anchors[0]?.expectedOutput).toBe(ExpectedOutput.GateResult);

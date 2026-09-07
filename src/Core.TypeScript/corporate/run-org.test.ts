@@ -46,7 +46,7 @@ describe("argument parsing", () => {
       // the fidelity block still says so — reaching a tracker, an agent or a model is opt-in.
       reviewModel: undefined, tracker: undefined, trackerItems: undefined,
       trackerHeaders: [], trackerMap: [], trackerSource: "tracker",
-      workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
+      workAgent: undefined, workModel: undefined, until: undefined, windowStart: undefined, windowTarget: undefined, now: undefined, agentDelivers: false, sourceRepos: [], sourceSubdir: undefined, workAgentArgs: [], workVerify: undefined, workVerifyArgs: [],
     });
     expect(parseArgs(["--store", "/tmp/x"]).store).toBe("/tmp/x");
   });

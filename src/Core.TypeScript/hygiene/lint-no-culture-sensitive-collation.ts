@@ -193,6 +193,11 @@ export const ALLOWLIST: readonly { readonly file: string; readonly reason: strin
     reason: "pins that tracked-file order is ordinal by exhibiting the locale order it must not be",
   },
   {
+    file: "src/Core.TypeScript/corporate/git-data-source.test.ts",
+    reason:
+      "asserts that the git data source's document order is ordinal by exhibiting the locale order it must NOT be: `\"Beta.md\".localeCompare(\"alpha.md\") > 0` computes the cultural order the read must not match (uppercase-first ordinal vs locale-interleaved), so removing the call would leave the ordering assertion pinning nothing. Same shape as tracked-files.test.ts and society.test.ts above.",
+  },
+  {
     file: "src/Core.TypeScript/ace/ace-cli-collation.test.ts",
     reason:
       "asserts that `graphMerkleRoot`'s entry order DIVERGES from localeCompare; the single call computes the cultural order the root must NOT match, and is the premise the test asserts rather than assumes. Same shape as society.test.ts above.",

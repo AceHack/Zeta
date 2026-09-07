@@ -32,6 +32,8 @@ import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
 import type { RunFidelity } from "./providers";
 import type { ObserveActTick } from "./observe-act-window";
+import type { SupervisorSignal } from "./supervisor-signal";
+import type { AnchorPost, DecisionRecord, DiscussionAnchor } from "./discussion-anchor";
 
 export const OrgEventKind = {
   IntakeReceived: "intake_received",
@@ -177,6 +179,46 @@ export type OrgFact =
    * one property a gate must not have.
    */
   | { readonly kind: "observe_act_tick"; readonly tick: ObserveActTick }
+  /**
+   * A hat talking upward, as a VALUE rather than as a sentence.
+   *
+   * `supervisor_signal_sent` recorded `decision: "<tool> → <hat>"` and nothing else, so the routed,
+   * evidenced signal was flattened to prose the moment it was logged. Fourteen other event kinds
+   * carried a fact; this one did not, which meant a second process folding the log could read that
+   * a signal happened and could not read WHAT WAS ASKED. An organization whose upward channel
+   * survives only as a description of itself has no upward channel across a process boundary.
+   */
+  | { readonly kind: "supervisor_signal"; readonly signal: SupervisorSignal }
+  /**
+   * A deliberation opened — what is being discussed, by whom, and what it OWES.
+   *
+   * The board was an in-memory value returned in the report and recorded nowhere. `decision_recorded`
+   * existed as an event kind with zero emitters, so every anchor, post and decision an organization
+   * produced vanished when the process ended. An organization that cannot say what it discussed
+   * yesterday has no deliberation record, only a habit of deliberating.
+   */
+  | { readonly kind: "discussion_anchor"; readonly anchor: DiscussionAnchor }
+  /** One turn in a deliberation, with whatever artifacts the speaker pointed at. */
+  | { readonly kind: "anchor_post"; readonly post: AnchorPost }
+  /** The artifact a `decision` anchor owes. Its rationale is what makes the choice revisitable. */
+  | { readonly kind: "decision_record"; readonly record: DecisionRecord }
+  /** An anchor reaching a terminal state — resolved or abandoned, and which. */
+  | { readonly kind: "anchor_state"; readonly anchorId: string; readonly state: string }
+  /**
+   * An escalation, likewise — who escalated, what action, what effect.
+   *
+   * Same defect and the same consequence: `escalated → <action> (<effect>)` is readable by a human
+   * and unusable by a fold. An escalation is the organization DECIDING something, and a decision
+   * that survives as prose has to be re-parsed and re-interpreted by whoever needs to act on it.
+   */
+  | {
+      readonly kind: "escalation";
+      readonly taskId: string;
+      readonly action: string;
+      readonly effect: string;
+      readonly byHatId: string;
+      readonly trigger: string;
+    }
   /**
    * One QA cycle: every run it made, the regressions it found, the defects it filed.
    *

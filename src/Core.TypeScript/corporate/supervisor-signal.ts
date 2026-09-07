@@ -45,6 +45,7 @@ import {
   type EvidenceRef,
 } from "./discussion-anchor";
 import { nearestSupervisorAtOrAbove, supervisorOf, type HatLevel, type OrgChart, type OrgHat } from "./org-chart";
+import { gateOwners, type GateKind } from "./quality-gate";
 
 /** The eight starter families, verbatim from the reference table. */
 export const SignalTool = {
@@ -73,7 +74,24 @@ export type SignalTool = (typeof SignalTool)[keyof typeof SignalTool];
  *     *"the current supervisor level cannot resolve the issue alone"*, so routing it back to that
  *     same supervisor would be a no-op that reports success.
  */
-export type SignalRouting = "supervisor" | "resource_authority" | "escalate";
+export type SignalRouting =
+  | "supervisor"
+  | "resource_authority"
+  | "escalate"
+  /**
+   * The hat that HOLDS the scope being asked about — for a review, the gate's owner.
+   *
+   * The fourth kind, and it exists because the other three all route along the reporting line and a
+   * review does not travel that way. `RequestReview` routed to `supervisor`, so twenty-six requests
+   * covering thirteen different gates all landed on one lead — while the calendar had already
+   * booked thirteen different hats to do them. Time booked for a review nobody asked for, and a
+   * request sitting with a hat that cannot answer it.
+   *
+   * Routing is STILL derived and still not the sender's to choose: it comes from gate ownership
+   * rather than from the chain. That is the discipline the whole module is built on — the sender
+   * names the tool and the scope, and the organization decides who that reaches.
+   */
+  | "scope_holder";
 
 export interface SignalToolPolicy {
   readonly tool: SignalTool;
@@ -126,7 +144,7 @@ export const SIGNAL_POLICY: Readonly<Record<SignalTool, SignalToolPolicy>> = {
   },
   [SignalTool.RequestReview]: {
     tool: SignalTool.RequestReview,
-    routing: "supervisor",
+    routing: "scope_holder",
     evidenceAnyOf: ["diff", "test", "document"],
     expectedOutput: ExpectedOutput.GateResult,
     whenToUse: "a supervisor/reviewer decision is needed before lifecycle progress",
@@ -201,6 +219,15 @@ export function routeSignal(
   fromHatId: string,
   tool: SignalTool,
   resourceAuthorityHatId: string,
+  /**
+   * WHAT the signal is about, when the family routes by scope — a gate id for a review request.
+   *
+   * Optional because three of the four routing kinds do not need it. A `scope_holder` family with
+   * no scope cannot be routed, and returns `undefined` rather than falling back to the supervisor:
+   * a review delivered to someone who does not hold the gate is one that sits in a queue nobody
+   * can clear, which is worse than a refusal the sender can see.
+   */
+  scope?: string,
 ): OrgHat | undefined {
   const policy = SIGNAL_POLICY[tool];
   switch (policy.routing) {
@@ -213,6 +240,13 @@ export function routeSignal(
       // request in front of a hat with no standing over the requester's work.
       if (rmo === undefined) return undefined;
       return rmo;
+    }
+    case "scope_holder": {
+      if (scope === undefined) return undefined;
+      // Excluding the sender is the same separation of duties the pipeline applies: whoever did
+      // the work does not review it, and a request routed back to its author would be a no-op
+      // reporting success.
+      return gateOwners(chart, scope as GateKind).find((h) => h.id !== fromHatId);
     }
     case "escalate": {
       const boss = supervisorOf(chart, fromHatId);
@@ -263,7 +297,10 @@ export function sendSupervisorSignal(
     };
   }
 
-  const target = routeSignal(chart, input.fromHatId, input.tool, resourceAuthorityHatId);
+  // THE TITLE IS THE SCOPE for a scope-routed family. `requestReviewsFor` puts the gate id there
+  // precisely so it can be read back — by `reviewsAskedOf` as `forGate`, and here as the thing that
+  // decides who receives it. One value, two readers, no second field to drift.
+  const target = routeSignal(chart, input.fromHatId, input.tool, resourceAuthorityHatId, input.title);
   if (target === undefined) {
     // The top of the chain, or an escalation one rung below it. Saying so is the honest answer:
     // there is nobody above to take this, and the hat needs to know that rather than believe it

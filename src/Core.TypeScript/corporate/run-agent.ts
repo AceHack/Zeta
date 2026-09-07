@@ -42,7 +42,7 @@
 
 import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
-import { agentsFromChart, runOrgRuntime, type OrgRuntimeDeps, type OrgRuntimeReport } from "./org-runtime";
+import { agentsFromChart, defaultProviderSet, runOrgRuntime, type OrgRuntimeDeps, type OrgRuntimeReport } from "./org-runtime";
 import { statusSurfaceFrom } from "./agent-loop-bridge";
 import { appendRun, deliveryRate, readEvents } from "./org-store";
 import { everyRunWasSimulated, foldOrganization } from "./org-fold";
@@ -51,10 +51,13 @@ import { emptyQueue, type WorkQueue } from "./work-market";
 import { fidelityLine } from "./providers";
 import { argRefusals, parseArgs, providersFromArgs, type Args } from "./run-org";
 import { IntakeKind, Severity, type ExternalEvent } from "./intake";
-import { RunOutcome } from "./qa";
 import { isLeafType, WorkType } from "./goal-cascade";
 import type { OrgEvent } from "./org-event";
 import { mainAsync, type LoopSurface, type MainDeps } from "../workflow-engine/agent-loop/cli";
+import { deliverWorkItem, type DeliveryOutcome } from "./work-delivery";
+import { DEFAULT_PIPELINE } from "./pipeline";
+import { GateOutcome } from "./quality-gate";
+import { RunOutcome } from "./qa";
 
 /** The inbound event the demo organization works. A real caller supplies its own. */
 const DEFECT: ExternalEvent = {
@@ -196,6 +199,14 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
   readonly trace: readonly OrgEvent[];
   /** What this run COULD do, derived from the adapters it was given. Never declared. */
   readonly fidelity: OrgRuntimeReport["fidelity"];
+  /**
+   * Deliver one work item for real — the seam that makes a chosen slot DO something.
+   *
+   * Returned as a closure rather than as its ingredients because the ingredients are this run's:
+   * its chart, its providers, its clock. Handing a caller the parts would let it assemble a
+   * delivery against a different organization than the surface it is looking at.
+   */
+  readonly deliver: (workId: string) => Promise<DeliveryOutcome>;
 }> {
   const chart = buildOrgChart(SEED_HATS);
   if (!chart.ok) throw new Error(chart.reason);
@@ -212,6 +223,14 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
       ...(args.incident ? { kind: IntakeKind.Incident, title: "checkout is down" } : {}),
     },
   ];
+
+  // ONE provider set for this run, named — so the delivery a chosen slot triggers runs against the
+  // same adapters the runtime did. Building a second set here would let an agent's work be
+  // simulated while the run reported real ports, or the reverse, with nothing to notice it.
+  const chosenProviders =
+    args.ports === undefined
+      ? undefined
+      : providersFromArgs(args.ports, events, args.qaFails ? RunOutcome.Failed : RunOutcome.Passed);
   const deps: OrgRuntimeDeps = {
     chart: chart.chart,
     externalEvents: events,
@@ -237,15 +256,7 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
     // Built from the SAME function `run-org.ts` uses. A second mapping from flags to adapters would
     // be a second set of defaults to drift, and the one thing both CLIs must agree on is what
     // "unspecified" means — because that is the answer that decides whether a run touched anything.
-    ...(args.ports === undefined
-      ? {}
-      : {
-          providers: providersFromArgs(
-            args.ports,
-            events,
-            args.qaFails ? RunOutcome.Failed : RunOutcome.Passed,
-          ),
-        }),
+    ...(chosenProviders === undefined ? {} : { providers: chosenProviders }),
     // The goal is about a long-lived product. Emitted as facts, so with `--store` the portfolio
     // accumulates goals across runs — which is the only thing a container buys that a per-run value
     // does not.
@@ -286,6 +297,21 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
     );
   }
 
+  // The run's own test evidence, for the one gate decided by evidence rather than opinion.
+  // NO RUNS IS A REJECTION: an organization that ran no tests has validated nothing, and treating
+  // "no failures found" as a pass is a check that cannot fail because it never looked.
+  const runs = report.qa.flatMap((q) => q.runs);
+  const failed = runs.filter((r) => r.outcome !== RunOutcome.Passed);
+  const qaVerdict =
+    runs.length === 0
+      ? { outcome: GateOutcome.Rejected, reason: "no test runs were recorded; nothing was validated" }
+      : failed.length === 0
+        ? { outcome: GateOutcome.Approved, reason: `${String(runs.length)} test run(s) passed` }
+        : {
+            outcome: GateOutcome.Rejected,
+            reason: `${String(failed.length)} of ${String(runs.length)} test run(s) did not pass`,
+          };
+
   return {
     surface: { snapshot: built.snapshot, candidates: built.candidates, heartbeatLane: "operational" },
     delivered: report.delivered,
@@ -294,6 +320,36 @@ export async function organizationSurface(args: AgentRunArgs): Promise<{
     unmeasured: built.dora.unmeasured.map((u) => u.field),
     trace: report.trace,
     fidelity: report.fidelity,
+    // WHAT A CHOSEN SLOT DOES. Bound to THIS run's chart, providers and clock, so the delivery
+    // happens in the organization the agent is looking at rather than one assembled beside it.
+    deliver: async (workId) => {
+      const node = report.cascade.nodes.find((n) => n.workId === workId);
+      if (node === undefined) {
+        return {
+          workId,
+          complete: false,
+          landed: false,
+          blockedAt: undefined,
+          evaluations: [],
+          evidenceRefs: [],
+          refusals: [`no cascade node for '${workId}'`],
+          summary: `'${workId}' is not work this organization knows about; nothing was delivered`,
+          doraContribution: 0,
+        };
+      }
+      return deliverWorkItem({
+        chart: chart.chart,
+        node,
+        pipeline: DEFAULT_PIPELINE,
+        providers:
+          deps.providers ??
+          defaultProviderSet({ externalEvents: events, qaFallback: args.qaFails ? RunOutcome.Failed : RunOutcome.Passed }),
+        atMs: args.atMs,
+        proposerHatId: node.assigneeHatId ?? "unassigned",
+        qaVerdict,
+        branch: `agent-work/${workId}`,
+      });
+    },
   };
 }
 
@@ -398,7 +454,33 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (idle.length > 0) console.log(`  idle (all goals delivered): ${idle.map((p) => p.title).join(", ")}`);
   }
 
-  const deps: MainDeps = { surface: () => org.surface };
+  // ── THE JOIN, AT THE RETURN AND NOT ONLY AT THE SURFACE ───────────────────
+  // `surface` is what the agent SEES; `dispatch` is what its choice DOES. Until this line the
+  // second half did not exist: a participant choosing `PickWork` advanced to `ExecutingWork` and
+  // nothing ran, so the work was never done and never reported done.
+  //
+  // A non-`PickWork` slot dispatches nothing and returns `undefined` — heartbeats, pauses and free
+  // time are changes to the agent's own state and the state machine already applies them. Returning
+  // a manufactured success for those would be the defect this replaces, one slot over.
+  const deps: MainDeps = {
+    surface: () => org.surface,
+    dispatch: async (option) => {
+      if (option.tag !== "PickWork") return undefined;
+      const outcome = await org.deliver(option.work.id);
+      for (const r of outcome.refusals) console.error(`  ! ${r}`);
+      console.log(`  dispatched: ${outcome.summary}`);
+      return {
+        workId: option.work.id,
+        lane: option.work.lane,
+        // WHAT LANDED, not what was attempted. A pipeline that passed every gate over a merge the
+        // port refused is the organization and the repository disagreeing, and reporting that to
+        // the agent as success would hide the one thing change control exists to catch.
+        success: outcome.landed,
+        doraContribution: outcome.doraContribution,
+        notes: outcome.summary,
+      };
+    },
+  };
   return mainAsync(argv, deps);
 }
 

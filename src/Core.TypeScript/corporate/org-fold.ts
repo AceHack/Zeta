@@ -40,6 +40,8 @@ import type { WorkQueue } from "./work-market";
 import type { QaCycleReport } from "./qa";
 import type { FidelityReport, RunFidelity } from "./providers";
 import type { ObserveActTick } from "./observe-act-window";
+import type { SupervisorSignal } from "./supervisor-signal";
+import type { AnchorBoard, AnchorPost, DecisionRecord, DiscussionAnchor } from "./discussion-anchor";
 
 /** The events that constitute state, in the order they happened. */
 export function factEvents(events: readonly OrgEvent[]): readonly OrgEvent[] {
@@ -252,6 +254,119 @@ export function foldRunFidelity(events: readonly OrgEvent[]): readonly RunFideli
   const out: RunFidelity[] = [];
   for (const event of factEvents(events)) {
     if (event.fact?.kind === "run_fidelity") out.push(event.fact.report);
+  }
+  return out;
+}
+
+/**
+ * Rebuild the DELIBERATION BOARD from the log — what was discussed, and what it produced.
+ *
+ * The same fold shape as `foldCascade`: state is a replay of the facts, so a second process can
+ * read the whole deliberation without having been present for it. Before these facts existed the
+ * board lived only in the report a run returned, which meant the organization's record of WHY it
+ * decided something ended with the process that decided it.
+ *
+ * ANCHOR STATE IS LAST-WINS, and posts and decisions are APPEND-ONLY. That asymmetry is the
+ * deliberation's actual shape: an anchor opens and later resolves, so the newest state is the true
+ * one; a post or a decision is a thing that was said, and a later one never unsays an earlier one.
+ * Collapsing posts the way state collapses would turn a conversation into its last message.
+ */
+export function foldBoard(events: readonly OrgEvent[]): AnchorBoard {
+  const anchors = new Map<string, DiscussionAnchor>();
+  const posts: AnchorPost[] = [];
+  const decisions: DecisionRecord[] = [];
+  for (const event of factEvents(events)) {
+    const fact = event.fact;
+    if (fact === undefined) continue;
+    if (fact.kind === "discussion_anchor") {
+      // First writer wins for the anchor's own identity: re-folding a log must not duplicate an
+      // anchor, and a later `anchor_state` is what changes it.
+      if (!anchors.has(fact.anchor.anchorId)) anchors.set(fact.anchor.anchorId, fact.anchor);
+    } else if (fact.kind === "anchor_post") {
+      posts.push(fact.post);
+    } else if (fact.kind === "decision_record") {
+      decisions.push(fact.record);
+    } else if (fact.kind === "anchor_state") {
+      const existing = anchors.get(fact.anchorId);
+      // A state change for an anchor the log never opened is IGNORED rather than invented. A
+      // fabricated anchor would carry no purpose and no expected output, so it would resolve
+      // vacuously — the fold would manufacture a deliberation nobody had.
+      if (existing !== undefined) {
+        anchors.set(fact.anchorId, { ...existing, state: fact.state as DiscussionAnchor["state"] });
+      }
+    }
+  }
+  return { anchors: [...anchors.values()], posts, decisions };
+}
+
+/** Everything said on one anchor, oldest first — a conversation, read back off the log. */
+export function conversationOn(
+  events: readonly OrgEvent[],
+  anchorId: string,
+): readonly AnchorPost[] {
+  return foldBoard(events)
+    .posts.filter((p) => p.anchorId === anchorId)
+    .sort((a, b) => a.atMs - b.atMs || (a.postId < b.postId ? -1 : a.postId > b.postId ? 1 : 0));
+}
+
+/**
+ * Every upward signal the log recorded — the organization's upward channel, folded.
+ *
+ * This is what makes the channel work ACROSS PROCESSES without a message bus. A signal is emitted
+ * as a fact into the same content-addressed, append-only store everything else uses, so a second
+ * process reads the routed, evidenced signal by folding the log — the substrate corporate already
+ * has, rather than a second one beside it.
+ *
+ * PLURAL and unreduced, like `foldRunFidelity`: two signals asking the same hat for the same thing
+ * are two askings, and collapsing them would lose the fact that it had to be asked twice.
+ */
+export function foldSupervisorSignals(events: readonly OrgEvent[]): readonly SupervisorSignal[] {
+  const out: SupervisorSignal[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "supervisor_signal") out.push(event.fact.signal);
+  }
+  return out;
+}
+
+/** Signals addressed to one hat — the question "what is waiting for me?", answerable from disk. */
+export function signalsTo(events: readonly OrgEvent[], hatId: string): readonly SupervisorSignal[] {
+  return foldSupervisorSignals(events).filter((s) => s.toHatId === hatId);
+}
+
+/**
+ * Every escalation the log recorded, as decisions rather than as sentences.
+ *
+ * Kept separate from the signals fold because they answer different questions: a signal is a hat
+ * ASKING, an escalation is the organization DECIDING. A caller wanting to know what was decided
+ * should not have to filter a list of requests to find out.
+ */
+export function foldEscalations(
+  events: readonly OrgEvent[],
+): readonly {
+  readonly taskId: string;
+  readonly action: string;
+  readonly effect: string;
+  readonly byHatId: string;
+  readonly trigger: string;
+}[] {
+  const out: {
+    taskId: string;
+    action: string;
+    effect: string;
+    byHatId: string;
+    trigger: string;
+  }[] = [];
+  for (const event of factEvents(events)) {
+    if (event.fact?.kind === "escalation") {
+      const f = event.fact;
+      out.push({
+        taskId: f.taskId,
+        action: f.action,
+        effect: f.effect,
+        byHatId: f.byHatId,
+        trigger: f.trigger,
+      });
+    }
   }
   return out;
 }

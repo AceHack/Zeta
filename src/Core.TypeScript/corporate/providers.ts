@@ -57,6 +57,15 @@ export type Fidelity = (typeof Fidelity)[keyof typeof Fidelity];
 export const Port = {
   /** Where inbound work comes from. */
   Intake: "intake",
+  /**
+   * Where an agent READS from — a repository, a wiki, a directory of specs.
+   *
+   * Distinct from `Intake` on purpose, and the distinction is the reason this port exists. Intake
+   * answers "what work has arrived"; a data source answers "what is true about the domain I am
+   * about to work in". `business_context_grooming` is the first gate in the pipeline and had no way
+   * to read anything, so grooming was a phase that produced a title.
+   */
+  DataSource: "data_source",
   /** What actually performs a work item. */
   WorkExecution: "work_execution",
   /** What runs the tests. */
@@ -97,6 +106,40 @@ export interface IntakeSource {
   readonly meta: ProviderMeta;
   /** Everything waiting to come in. Empty is a normal answer, not an error. */
   poll(): Promise<PortResult<readonly ExternalEvent[]>>;
+}
+
+/**
+ * One thing an agent can read: a file at a revision, a page, a record.
+ *
+ * `revision` is what makes a reading CITABLE. A document quoted without the revision it was read at
+ * is a claim about a moving target — the reviewer who checks it later sees a different file and
+ * cannot tell whether the agent misread it or the file changed underneath. Every grooming artifact
+ * in this register carries `ref` values built from these, so the evidence trail points at bytes
+ * that still exist.
+ */
+export interface SourceDocument {
+  /** Where it came from, within the source — a repo-relative path, a URL path, a key. */
+  readonly path: string;
+  /** The exact revision this content was read at. A commit sha, an etag, a version. */
+  readonly revision: string;
+  readonly content: string;
+  /** A citable reference: `<source>:<revision>:<path>`. Built by the adapter, never by a caller. */
+  readonly ref: string;
+}
+
+/**
+ * Something an agent can read from — the seam a git repository plugs into.
+ *
+ * `query` is a substring match rather than a query language, deliberately. A richer interface would
+ * be one every adapter had to implement badly; a substring is something a git tree, a directory and
+ * an HTTP index can each answer honestly, and an adapter that can do better is free to.
+ */
+export interface DataSourcePort {
+  readonly meta: ProviderMeta;
+  /** Everything this source holds, at the revision it currently reads. */
+  read(): Promise<PortResult<readonly SourceDocument[]>>;
+  /** The subset whose path or content contains `term`, matched ORDINALLY. */
+  query(term: string): Promise<PortResult<readonly SourceDocument[]>>;
 }
 
 /** What an attempt at a work item produced. */
@@ -183,7 +226,7 @@ export interface ChangeControlPort {
   merge(handle: ChangeHandle): Promise<PortResult<ChangeHandle>>;
 }
 
-export type AnyProvider = IntakeSource | WorkExecutor | TestRunner | ReviewPort | ChangeControlPort;
+export type AnyProvider = IntakeSource | WorkExecutor | TestRunner | ReviewPort | ChangeControlPort | DataSourcePort;
 
 // ─── The registry ───────────────────────────────────────────────────────────
 
@@ -258,6 +301,16 @@ export function providersFor(registry: ProviderRegistry, port: Port): readonly A
 // ─── The resolved set a run uses ────────────────────────────────────────────
 
 export interface ProviderSet {
+  /**
+   * What agents READ from. Optional, because an organization may legitimately have declared none.
+   *
+   * Optional and still COUNTED: when present it is part of what the run touched, so it appears in
+   * the fidelity report like every other port. It was omitted from that report for exactly one
+   * commit, and the result was a run reading a real repository at a real commit while printing
+   * *"every port was simulated; this run performed nothing and reached nothing"* — a disclosure
+   * contradicted by the thing it was disclosing.
+   */
+  readonly dataSource?: DataSourcePort;
   readonly intake: IntakeSource;
   readonly work: WorkExecutor;
   readonly tests: TestRunner;
@@ -319,7 +372,14 @@ export interface FidelityReport {
  * impossible to state by accident.
  */
 export function fidelityOf(set: ProviderSet): FidelityReport {
-  const ports = [set.intake.meta, set.work.meta, set.tests.meta, set.review.meta, set.change.meta];
+  const ports = [
+    ...(set.dataSource === undefined ? [] : [set.dataSource.meta]),
+    set.intake.meta,
+    set.work.meta,
+    set.tests.meta,
+    set.review.meta,
+    set.change.meta,
+  ];
   const realPorts = ports.filter((m) => m.fidelity === Fidelity.Real).map((m) => m.port);
   return { ports, replayable: realPorts.length === 0, realPorts };
 }
@@ -411,6 +471,25 @@ export function recordingProviders(set: ProviderSet): {
   return {
     invoked: () => [...called].sort(),
     providers: {
+      // Wrapped like every other port. A data source reached through the RAW set would be a real
+      // adapter that read a repository and never appeared in `invoked`, so the run would report it
+      // as "configured real and never reached" while its documents sat in a gate's evidence. That
+      // is the exact contradiction this recorder exists to make impossible.
+      ...(set.dataSource === undefined
+        ? {}
+        : {
+            dataSource: {
+              meta: set.dataSource.meta,
+              read: async () => {
+                mark(Port.DataSource);
+                return set.dataSource!.read();
+              },
+              query: async (term: string) => {
+                mark(Port.DataSource);
+                return set.dataSource!.query(term);
+              },
+            },
+          }),
       intake: {
         meta: set.intake.meta,
         poll: async () => {
