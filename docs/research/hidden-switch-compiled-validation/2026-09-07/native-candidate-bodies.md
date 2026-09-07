@@ -373,3 +373,22 @@ All three repairs are present. Collector-host resolution tracing is separate
 from target runtime identity. The size limit is polled, cleanup is limited
 to owned direct children/process groups, and partial-dump identity is only
 a post-direct-child snapshot. No target or analyzer ran during this review.
+
+The [one actual capture](native-dump-attempt-1/manifest.json) subsequently
+ran source `1bbc2ea8b9df319eb238c3efd615a07328274ebc`. Owned target 53097
+started at 19:52:58.647598 UTC; collection ran from 19:52:59.224619 to
+19:53:04.270733 UTC. Collector and target exited zero, target pin release
+was explicitly admitted, no cleanup failure occurred and pinned inputs
+remained unchanged. The dump is 6,195,515,944 bytes, with SHA256
+`56B72504B271BBDB8D9C42DFB9D729E716F294B9C596431A1D0988337478E39B`.
+Those raw bytes remain local-only under the writer's `.git` attempt directory;
+the Git inventory retains only their custody identity and separate metadata.
+The terminal timestamp precedes the post-child streaming hash operation.
+
+The 32-byte file-format header identifies little-endian 64-bit ARM64
+Mach-O `MH_CORE`. No broad dump-memory scan was performed. The collector
+host-resolution trace selects runtime 8.0.0 through hostfxr 10.0.11, separately
+from the study target's pinned 10.0.11 runtime. Full extent/call/data admission
+remains false. Offline analyzer reads may use local image fallback, so a later
+selected read must also match an independently admitted physical file range;
+an analyzer's successful memory-read command alone will not establish this.
