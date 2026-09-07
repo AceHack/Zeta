@@ -1,0 +1,101 @@
+{
+  "Schema": 1,
+  "SourceCommit": "457bdf094f368eb9e6f2b359b72e5677fd015eb3",
+  "Scope": "Parent-executed combined C1-policy, retention and hidden-switch gate; copied raw bytes and independently parsed TRX, not re-executed here.",
+  "Files": [
+    {
+      "File": "root-final-gate-attempt-1.json",
+      "Bytes": 14797,
+      "Sha256": "A098CAFDE7E2752806E425EA3CAF7B781B8D893652D25E6E1C20437E810D54DB"
+    },
+    {
+      "File": "root-final-gate-results.json",
+      "Bytes": 17357,
+      "Sha256": "CFAE4D23A41560328C42A0ACE239EE1C0D58F04F552A5F10E1EEE83812EA1050"
+    },
+    {
+      "File": "root-final-build-attempt-1.log",
+      "Bytes": 9200,
+      "Sha256": "813CD3A1CB89AB7DC4C99277F85400708B8B8BDA1A9CA42331338E3E1BACE956"
+    },
+    {
+      "File": "root-final-tests-attempt-1.log",
+      "Bytes": 6789,
+      "Sha256": "7656DC4A7111E8F9556C36349E39607F8F459BB249BAF636B88201918F540A5B"
+    },
+    {
+      "File": "root-final-bft-invocation-live.json",
+      "Bytes": 35450,
+      "Sha256": "9EDF82F6515F28CD21BC9B2443CAA475FD723F1D9A1C6A69AFB11E839A103D5B"
+    },
+    {
+      "File": "root-final-bft-runtime-live.json",
+      "Bytes": 1186,
+      "Sha256": "D9DB876214F87CD63644A58A803929DB237404F552B1E31A05BA7D3CA0E4EDDE"
+    },
+    {
+      "File": "root-final-bft-observation.json",
+      "Bytes": 738,
+      "Sha256": "414E9443007A82E1A3F3F68169FF52B33DDA7EEA1E83A820270E6851A8AD32FD"
+    },
+    {
+      "File": "root-final-team-activity.json",
+      "Bytes": 885,
+      "Sha256": "13FA8DA967964229B7499B5DFFFD524F08F8CAC624F370B3AD88B866B4595184"
+    },
+    {
+      "File": "root-final-Bayesian.Tests.trx.gz",
+      "Bytes": 131238,
+      "Sha256": "4511C5A6F5432C5E5461803FEE382489302047DF11B93B60EA8E92661283F326",
+      "UncompressedBytes": 742753,
+      "UncompressedSha256": "DFFD098CD43D0D88B303A4BCDAAAD14237F10C282BB59970ACB4BB8C9576095B"
+    },
+    {
+      "File": "root-final-Core.CSharp.Mediator.Tests.trx.gz",
+      "Bytes": 2906,
+      "Sha256": "4FEDC0F245E221E981CC6785831FF1F00271C251CA376D7D31488F2962A26D82",
+      "UncompressedBytes": 19609,
+      "UncompressedSha256": "4275EE5FE4E0D9450887825CE8C67E82A7A9058A0D78FE12B265C857EEE2CE39"
+    },
+    {
+      "File": "root-final-Core.CSharp.Tests.trx.gz",
+      "Bytes": 4128,
+      "Sha256": "F0520F468DF1FB72906388DA01DD4F3F7986B5948604B62F95C1F6DCD0DE8E1E",
+      "UncompressedBytes": 31465,
+      "UncompressedSha256": "117693945E1CB9480B19D62A487AC1A0EB37EDDC9834E12ECE8E0E9E6A99A6C2"
+    },
+    {
+      "File": "root-final-Tests.CSharp.TypeProvider.trx.gz",
+      "Bytes": 1685,
+      "Sha256": "D334D921866397973014196D829FEBC4556B7D0BB8F8740F627A5A999CC65B8B",
+      "UncompressedBytes": 6342,
+      "UncompressedSha256": "588D8C2023A593F4E6866B3AB1E22AAA222C39B328EB6A455C3DFF7D6C61C14B"
+    },
+    {
+      "File": "root-final-Tests.CSharp.trx.gz",
+      "Bytes": 93525,
+      "Sha256": "85CEB7742ADD665C3E13878888D195BFEBA8C4AC53749AD440CCC342A522E2D1",
+      "UncompressedBytes": 580093,
+      "UncompressedSha256": "3BDA038F22A138E0CC7835A837DB60B80D5D22A7C2E536445A415EADE18F6739"
+    },
+    {
+      "File": "root-final-Tests.FSharp.Git.trx.gz",
+      "Bytes": 7842,
+      "Sha256": "439F6555933DE899933B66F39490C1C2D5F858E57AD8E1B0B2C9DDD1DD4A3DA9",
+      "UncompressedBytes": 57454,
+      "UncompressedSha256": "18D605AA6F32166AB2312327CFE999818560911A2803DC06FE7F6CA350617689"
+    },
+    {
+      "File": "root-final-Tests.FSharp.trx.gz",
+      "Bytes": 1862487,
+      "Sha256": "615E23184E817BA2085327DBC1D0398ABF2AEB4C9EEBB0D6E6D068DB676064FF",
+      "UncompressedBytes": 9506557,
+      "UncompressedSha256": "F26CE8D7CACBD4E8514536D36B2880824F0C19D49C07CF99A621D3717254B386"
+    }
+  ],
+  "Rows": 7558,
+  "Passed": 7552,
+  "Skipped": 6,
+  "Failed": 0,
+  "TlcCases": 52
+}

@@ -4,7 +4,7 @@ Date: 2026-09-07
 
 Operational status: research-grade validation record for a factory repair
 
-Lifecycle: active; focused source validation completed, combined catalog gate pending
+Lifecycle: active; local combined validation completed, publication pending
 
 Author: Vera, OpenAI Codex using GPT-6 Astra
 
@@ -168,3 +168,37 @@ coordinates one fresh mapped Release build and full solution/catalog gate
 on the combined C1-policy, retention and hidden-switch tree. Exact matched
 source bytes and that independent integration outcome are required before
 this repair's PR is presented as locally complete.
+
+
+## Completed combined gate
+
+The coordinating parent executed the fresh mapped Release build and full
+solution gate at `457bdf094f368eb9e6f2b359b72e5677fd015eb3`, completing on
+2026-09-07 at 11:44:01 UTC. The [self-contained gate record](tlc-attempt-retention-validation/2026-09-07/README.md#combined-gate)
+retains the prelaunch input hashes, exact commands/full logs, seven compressed
+TRX files, result inventory and active BftConsensus invocation/runtime
+snapshots. The repair author copied the raw bytes and independently parsed
+all seven TRX files without rerunning the gate.
+
+The build passed with zero warnings and errors in 101.75 seconds. The full
+solution has 7,552 passed rows, six existing skipped rows and zero failures;
+all 52 pinned TLC cases, 18 TLC synthetic/metadata cases and 16 additional
+hidden-switch tests passed. BftConsensus passed in 4m37.99s. No prelaunch
+input or scientific source changed during the gate, and no unexpected TLC
+attempt directory remained after the successful run.
+
+This is shared validation on a larger combined snapshot containing the
+separate C1 policy and hidden-switch tests. It is not a claim that 7,552
+checks ran in this smaller repair branch. The repair's capture/retry code
+is unchanged from the accepted source pins; its two overlapping invocation
+files differ only by the separately reviewed C1 comment/assertion hunks.
+The project also contains the additional scientific test links. Final PR
+integration waits for the C1 policy on main and verifies the resulting
+runner/input bytes before publication. Later unrelated Python/TypeScript
+historical-receipt fixture fixes do not rewrite this native result.
+
+The original failed attempts remain failures. The fresh successful gate
+establishes this tested integration result, not a general JVM stability
+claim or a root cause for the earlier failures. The activity record retains
+the already-running quick-lint overlap at root build start; this was not a
+registered quiet cost window.

@@ -35,5 +35,6 @@ dependency, not an implicit skip.
 - [Focused checks and retained failures](../docs/research/tlc-attempt-retention-validation/2026-09-07/README.md)
 
 Source pins: `2e69017ff` and `07e399929`. The independent source review accepts the final repair. The combined
-C1-policy/retention/hidden-switch full catalog gate remains required before
-publication as locally complete.
+C1-policy/retention/hidden-switch full catalog gate passed at `457bdf094`:
+7,552 passes, six existing skips, zero failures; build zero warnings/errors.
+The focused PR follows C1 main integration and source-byte verification.

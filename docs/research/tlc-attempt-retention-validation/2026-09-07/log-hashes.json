@@ -7,6 +7,11 @@
       "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
     },
     {
+      "File": "claim-push.log",
+      "Bytes": 1948,
+      "Sha256": "BFFEE694F7A8AB7A85BCBEDC9941BBDB7D3559F009C27859C2778A30765D498C"
+    },
+    {
       "File": "derived-format.log",
       "Bytes": 107,
       "Sha256": "37D66529DBC7F048F0AB71B9BEB37661984F5B325667EE2B3CB81A0EBBFA57FE"
@@ -65,6 +70,16 @@
       "File": "preflight-source.log",
       "Bytes": 1224,
       "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    },
+    {
+      "File": "root-final-build-attempt-1.log",
+      "Bytes": 9200,
+      "Sha256": "813CD3A1CB89AB7DC4C99277F85400708B8B8BDA1A9CA42331338E3E1BACE956"
+    },
+    {
+      "File": "root-final-tests-attempt-1.log",
+      "Bytes": 6789,
+      "Sha256": "7656DC4A7111E8F9556C36349E39607F8F459BB249BAF636B88201918F540A5B"
     },
     {
       "File": "ts-focused-attempt-1.log",

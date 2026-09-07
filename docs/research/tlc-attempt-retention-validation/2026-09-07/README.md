@@ -63,9 +63,52 @@ The separate policy owner reported no quick/push/Java/.NET workload during
 11:19-11:21 UTC; a 0.4-second Python archive/hash step at 11:20:19 is recorded
 without causal attribution or a claim to know all host activity.
 
-## Remaining integration evidence
+## Combined gate
 
-The parent coordinates the fresh mapped full build and full solution/catalog
-gate on C1-policy plus these exact repair bytes and hidden-switch source.
-Those results will be indexed separately when complete. This record does not
-call a synthetic-only filter a successful model check.
+The parent ran the fresh complete gate at
+`457bdf094f368eb9e6f2b359b72e5677fd015eb3`. This repair author copied the
+exact evidence bytes and independently parsed the seven TRX files. The
+[source/input prelaunch record](root-final-gate-attempt-1.json) and
+[result inventory](root-final-gate-results.json) bind that larger C1-policy,
+retention and hidden-switch integration, not this smaller writer's HEAD.
+
+- [Full build](root-final-build-attempt-1.log): exit 0, zero warnings/errors,
+  101.75 seconds.
+- [Full solution](root-final-tests-attempt-1.log): 7,552 passed, six existing
+  skipped rows, zero failures; 52 pinned TLC, 18 TLC metadata/synthetic and
+  16 additional hidden-switch cases passed.
+- [Compressed and uncompressed byte fingerprints](combined-gate-hashes.json)
+  bind all fifteen copied records, including the seven complete TRX files:
+  [Bayesian](root-final-Bayesian.Tests.trx.gz),
+  [Mediator](root-final-Core.CSharp.Mediator.Tests.trx.gz),
+  [Core C#](root-final-Core.CSharp.Tests.trx.gz),
+  [C#](root-final-Tests.CSharp.trx.gz),
+  [type provider](root-final-Tests.CSharp.TypeProvider.trx.gz),
+  [F#](root-final-Tests.FSharp.trx.gz),
+  [F# Git](root-final-Tests.FSharp.Git.trx.gz).
+- [Active BftConsensus observation](root-final-bft-observation.json),
+  [invocation](root-final-bft-invocation-live.json) and
+  [runtime](root-final-bft-runtime-live.json) retain the actual owned
+  workspace/copy/runtime facts. These were live metadata snapshots;
+  final outcome comes from the completed test result, not those snapshots.
+- [Known team activity](root-final-team-activity.json) retains the existing
+  quick-lint overlap at build start and the limits of host observation.
+- [Publication hook](claim-push.log): all sixteen quick checks passed and
+  remote claim head `8367117f1ff8c4fec2a837b24d4bc080d5c75b75` was verified.
+
+```bash
+dotnet build Zeta.sln -c Release -p:ContinuousIntegrationBuild=true -m:1 -nr:false
+dotnet test Zeta.sln -c Release --no-build --blame-crash --blame-hang-timeout 15m --logger 'trx;LogFilePrefix=hidden-switch-final-1'
+```
+
+No prelaunch native input or scientific source changed during the gate.
+No unexpected diagnostic directory remained. The native dependency/capture
+behavior is covered in that full catalog execution, including the new
+private workspace and inherited-pipe boundary. The six existing skips
+remain explicit. Earlier failed TLC and compiler attempts remain failed;
+this fresh combined gate does not retroactively turn them green.
+
+The original review pins are preserved on the repair claim branch. An
+immutable supplemental archive will retain the final source/evidence head
+before squash-merge branch deletion. Its exact tag proof will be added at
+publication, after the C1 policy is integrated from main.
