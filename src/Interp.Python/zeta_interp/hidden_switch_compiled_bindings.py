@@ -235,7 +235,7 @@ def admit_phase_chronology(value: Any) -> a.Admission[tuple[tuple[str, int], ...
         ("BehaviorFinish", "BehaviorExit"),
         ("BehaviorClosed", "CostStarted"),
         ("BehaviorExit", "CostStarted"),
-        *itertools.pairwise(TIMELINE_FIELDS),
+        *itertools.pairwise(TIMELINE_FIELDS[3:]),
     )
     for before, after in edges:
         if stamps[before] > stamps[after]:
