@@ -612,3 +612,9 @@ with no remaining material finding. The signed design review is
 reviewer executed no tests, native code, policy or source streams. Design
 acceptance does not imply that the 92 coordinator cases have been implemented
 or executed, or that either separate admission obligation has passed.
+
+The subsequent [input-binding source review](2026-09-07-hidden-switch-compiled-binding-source-review.md)
+accepts the shared original-byte primitive and synthetic seven-subject adapter
+at coordinator commit `bdeb180c1dbc9766ec90e4f79941ce348995d605`. It retains the
+intermediate chronology regression and its repair, and keeps complete phase
+and runtime admission separate.
