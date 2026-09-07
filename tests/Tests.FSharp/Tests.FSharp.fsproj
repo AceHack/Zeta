@@ -199,6 +199,7 @@
     <Compile Include="InMemoryFileSystemPathIdentity.Tests.fs" />
     <Compile Include="ZetaFsFreeze.Tests.fs" />
     <Compile Include="ZetaFsPosixVfs.Tests.fs" />
+    <Compile Include="ZetaFsFuse.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
