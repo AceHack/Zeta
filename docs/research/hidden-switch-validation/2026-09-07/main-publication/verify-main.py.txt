@@ -1,0 +1,49 @@
+from pathlib import Path
+import datetime
+import hashlib
+import json
+import subprocess
+import sys
+
+root = Path.cwd()
+gh = "/opt/homebrew/bin/gh"
+repo = "Lucent-Financial-Group/Zeta"
+expected_head = (root / ".git/hidden-switch-final-head.txt").read_text().strip()
+expected_body = (root / ".git/hidden-switch-pr-body-final.md").read_text().strip()
+raw = subprocess.check_output([gh, "pr", "view", "16928", "--repo", repo, "--json", "headRefOid,state,mergedAt,mergeCommit,body,title,url"])
+pr = json.loads(raw)
+if pr["state"] != "MERGED":
+    print("Not merged; no publication proof emitted")
+    sys.exit(2)
+if pr["headRefOid"] != expected_head or pr["body"].strip() != expected_body:
+    raise RuntimeError("Merged PR head/body differs from exact reviewed publication")
+merge = pr["mergeCommit"]["oid"]
+subprocess.run(["git", "fetch", "origin", "main"], check=True)
+main = subprocess.check_output(["git", "rev-parse", "origin/main"], text=True).strip()
+subprocess.run(["git", "merge-base", "--is-ancestor", merge, main], check=True)
+message = subprocess.check_output(["git", "show", "-s", "--format=%B", merge], text=True)
+if message.split("\n\n", 1)[1].strip() != expected_body:
+    raise RuntimeError("Actual squash body differs from reviewed full signed body")
+manifest = json.loads((root / "docs/research/hidden-switch-validation/2026-09-07/implementation-source-manifest.json").read_text())
+records = json.loads((root / "docs/research/hidden-switch-results/2026-09-07/records-manifest.json").read_text())["Records"]
+verified = []
+for row in manifest["SourceHashes"]:
+    path = row["File"]
+    blob = subprocess.check_output(["git", "show", merge + ":" + path])
+    if hashlib.sha256(blob).hexdigest().lower() != row["Sha256"].lower():
+        raise RuntimeError("Scientific source changed in merge: " + path)
+    verified.append({"File": path, "Bytes": len(blob), "Sha256": hashlib.sha256(blob).hexdigest()})
+result_rows = []
+for name, row in records.items():
+    path = "docs/research/hidden-switch-results/2026-09-07/" + name
+    blob = subprocess.check_output(["git", "show", merge + ":" + path])
+    if len(blob) != row["Bytes"] or hashlib.sha256(blob).hexdigest().lower() != row["Sha256"].lower():
+        raise RuntimeError("Original result changed in merge: " + path)
+    result_rows.append({"File": path, "Bytes": len(blob), "Sha256": hashlib.sha256(blob).hexdigest()})
+verified_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+out = root / ".git/hidden-switch-main-publication-proof"
+out.mkdir(exist_ok=False)
+(out / "merged-pr.json").write_bytes(raw)
+(out / "merge-message.txt").write_text(message)
+(out / "proof.json").write_text(json.dumps({"VerifiedAtUtc": verified_at, "Pr": pr["url"], "Head": expected_head, "MergeCommit": merge, "MergedAtUtc": pr["mergedAt"], "ObservedMain": main, "MergeIsAncestorOfObservedMain": True, "VisibleAndActualSignedBodiesMatch": True, "ScientificSources": verified, "OriginalResultRecords": result_rows, "Scope": "Actual merged commit and refreshed main ancestry with selected scientific/original-result byte identity. Final check matrix is a separate paginated observation; no new experiment or whole-tree source-to-binary proof."}, indent=2))
+print("Verified merge", merge, "on refreshed main", main, "; sources", len(verified), "; original records", len(result_rows))
