@@ -133,3 +133,20 @@ module ZetaFsPosixVfs =
             match ZetaFsCollator.refuseCreate mount.Collator names name with
             | Ok() -> Ok()
             | Error(ZetaFsCollator.ConfusableWithExisting existing) -> Error(Confusable existing)
+
+    let getattr
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        : Result<ZetaFsPosixMeta.PosixStat, Error> =
+        match ZetaFsFreeze.getattr mount.Volume node.Entity with
+        | Error e -> Error(ofBind e)
+        | Ok stat -> Ok stat
+
+    let setattr
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        (patch: ZetaFsPosixMeta.PosixSetattr)
+        : Result<unit, Error> =
+        match ZetaFsFreeze.setattr mount.Volume node.Entity patch with
+        | Error e -> Error(ofBind e)
+        | Ok() -> Ok()

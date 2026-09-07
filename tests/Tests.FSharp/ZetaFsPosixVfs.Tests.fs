@@ -26,17 +26,20 @@ let private ok r =
     | Ok v -> v
     | Error e -> failwithf "%A" e
 
-let private withVolume (store: string) (f: ZetaFsFreeze.Volume -> unit) =
+let private withVolumeClock (store: string) (clock: ISimulationEnvironment) (f: ZetaFsFreeze.Volume -> unit) =
     ensureHasher ()
     FileSystem.Register(InMemoryFileSystem())
     let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
-    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let volume = ZetaFsFreeze.createManualStreamWith store mutbuf None clock
 
     try
         f volume
     finally
         ZetaFsFreeze.dispose volume
         FileSystem.Reset()
+
+let private withVolume (store: string) (f: ZetaFsFreeze.Volume -> unit) =
+    withVolumeClock store (Environment.createVirtual 21L :> ISimulationEnvironment) f
 
 [<Fact>]
 let ``readdir synthesizes dot and dotdot then live names`` () =
@@ -174,3 +177,52 @@ let ``tombstone is omitted from Fake VFS readdir`` () =
                 Assert.Equal(2, entries.Length)
                 Assert.True(sameBytes ZetaFsPosixVfs.dot entries.[0].Name)
                 Assert.True(sameBytes ZetaFsPosixVfs.dotDot entries.[1].Name))
+
+[<Fact>]
+let ``getattr stamps from the injected clock and setattr caller times persist`` () =
+    let clock =
+        Environment.createVirtualAt (DateTimeOffset.FromUnixTimeSeconds 1L) 22L
+        :> ISimulationEnvironment
+
+    withVolumeClock "/vfs-getattr" clock (fun volume ->
+        match ZetaFsFreeze.bindFile volume (utf8 "a") with
+        | Error e -> Assert.Fail(sprintf "bindFile: %A" e)
+        | Ok id ->
+            let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+            let node, mount1 =
+                ok (ZetaFsPosixVfs.lookup mount0 (ZetaFsPosixVfs.root mount0) (utf8 "a"))
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare id node.Entity)
+            let stat = ok (ZetaFsPosixVfs.getattr mount1 node)
+            Assert.Equal(1_000_000_000L, stat.Meta.MtimeNs)
+            Assert.Equal(1_000_000_000L, stat.Meta.CtimeNs)
+            Assert.Equal(ZetaFsPosixMeta.fileMode, stat.Meta.Mode)
+            Assert.Equal(1L, stat.Nlink)
+            Assert.Equal(0UL, stat.Size)
+            match
+                ZetaFsPosixVfs.setattr
+                    mount1
+                    node
+                    { ZetaFsPosixMeta.emptyPatch with
+                        MtimeNs = Some 42L
+                        CtimeNs = Some 43L }
+            with
+            | Error e -> Assert.Fail(sprintf "setattr: %A" e)
+            | Ok() ->
+                let again = ok (ZetaFsPosixVfs.getattr mount1 node)
+                Assert.Equal(42L, again.Meta.MtimeNs)
+                Assert.Equal(43L, again.Meta.CtimeNs))
+
+[<Fact>]
+let ``getattr size is dirty mutbuf length`` () =
+    withVolume "/vfs-getattr-size" (fun volume ->
+        match ZetaFsFreeze.bindFile volume (utf8 "b") with
+        | Error e -> Assert.Fail(sprintf "bindFile: %A" e)
+        | Ok _ ->
+            let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+            let node, mount1 =
+                ok (ZetaFsPosixVfs.lookup mount0 (ZetaFsPosixVfs.root mount0) (utf8 "b"))
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf node.Entity
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let stat = ok (ZetaFsPosixVfs.getattr mount1 node)
+            Assert.Equal(3UL, stat.Size)
+            Assert.Equal(0UL, stat.Meta.Size))

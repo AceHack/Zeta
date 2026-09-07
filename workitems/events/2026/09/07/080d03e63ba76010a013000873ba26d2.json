@@ -1,0 +1,14 @@
+{
+  "id": "080d03e63ba76010a013000873ba26d2",
+  "at": "2026-09-07T16:50:41.516Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YCEX7C087G0R003H40FBQ",
+    "type": "task",
+    "title": "Fake VFS getattr setattr via injected PosixMeta",
+    "slug": "fake-vfs-getattr-setattr-via-injected-posixmeta",
+    "priority": "P2",
+    "filename": "081M1YCEX7C087G0R003H40FBQ-fake-vfs-getattr-setattr-via-injected-posixmeta.md"
+  }
+}
