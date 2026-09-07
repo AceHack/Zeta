@@ -238,6 +238,14 @@ module HiddenSwitchCompiledCertificate =
             let comparison = compareQ (sub value (valueOfBits below)) (sub (valueOfBits (below + 1UL)) value)
             if comparison < 0 || (comparison = 0 && below % 2UL = 0UL) then below else below + 1UL
 
+    /// Fixed protocol hand centers only; this introduces no general rational
+    /// parser/API and is never called by the measured action service.
+    let internal handCenterBits () =
+        let epsilon = valueOfBits (BitConverter.DoubleToUInt64Bits 1e-12)
+        [| r 1 5; r 51 190; r 17 42; r 25 42
+           sub (r 1 5) (mul (r 2 5) epsilon)
+           sub (r 51 190) (mul (r 32 95) epsilon) |] |> Array.map nearestBits
+
     type GuardSet = private GuardSet of float * float * float * float
     type VerifiedCertificate = private { NumericSha256: string; NumericGuards: GuardSet }
     let numericSha256 certificate = certificate.NumericSha256

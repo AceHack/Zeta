@@ -1,0 +1,114 @@
+{
+  "Meaning": "Prelaunch working source fingerprints and build outputs. Build5 is the final corrected source gate; earlier logs describe earlier working snapshots, not this complete final source. No hand run yet.",
+  "ContextCommit": "46e3c58c5256c89d18d26439f28882c7f1525f07",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-build-1.log",
+      "Bytes": 1452,
+      "Sha256": "4B43E32287A5390F451D8121C36E7BCD47B57F09ECB067B690660A2B02E80E68",
+      "StoredFile": "hidden-switch-compiled-hand-core-build-1.log.gz",
+      "StoredBytes": 394,
+      "StoredSha256": "B604A5EAA396F181E79121B605D44B3070A7E67C52B2C72998A9B54EF708A922",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-build-2.log",
+      "Bytes": 979,
+      "Sha256": "70ACEB9A71C3C018A243A099F153EFC126A6F2B9E7559402FCDAD6C090ECB372",
+      "StoredFile": "hidden-switch-compiled-hand-core-build-2.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "7C10B3CAC54A9B2BE6F5BC0167FE1B05620E9006A184084A4795A6810EC4026A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-build-3.log",
+      "Bytes": 979,
+      "Sha256": "594735E128B4937C1719243B6C647FF09A97C85071336DAA7D5686E5B0E68B2C",
+      "StoredFile": "hidden-switch-compiled-hand-core-build-3.log.gz",
+      "StoredBytes": 318,
+      "StoredSha256": "EB22A1064E640A5009524509130A9E6E8A9FB6F33D16FB7B6AD085F0236027BA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-build-4.log",
+      "Bytes": 979,
+      "Sha256": "D992D12FBA5485A4085D106FE90301BE2255AF7F902DE7BD31821656CE991B3B",
+      "StoredFile": "hidden-switch-compiled-hand-core-build-4.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "D4CC96D6C4C65FF6B6479158349A24C36D3A83329A91F5ED35DAE67C99D2417F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-build-5.log",
+      "Bytes": 979,
+      "Sha256": "E274E80C9516C95990CEA35C93464C2C189D914B9007D8C135CCE1FDCF694658",
+      "StoredFile": "hidden-switch-compiled-hand-core-build-5.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "D3B6958B9F86F03D3C53744E1456B2FA0C3C017D792F84E987EC96F1B7D6DADE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-buildgraph.log",
+      "Bytes": 116,
+      "Sha256": "C17B9F4FFE4124EC1D8211156BB9829DC2083DA2F1A260AE832359A4112A8D9A",
+      "StoredFile": "hidden-switch-compiled-hand-buildgraph.log.gz",
+      "StoredBytes": 98,
+      "StoredSha256": "5011AA2C055AED4C1D777E69ADDC4EEE185F67C7733CB336B7BEF0EEA48D9683",
+      "Encoding": "gzip"
+    }
+  ],
+  "SourceFiles": [
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledHand.fs",
+      "Bytes": 15565,
+      "Sha256": "E1BDAFE52B157FA5088B84FD76039D068AE9876283298D7E52C69296B8E9C282"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledCertificate.fs",
+      "Bytes": 24506,
+      "Sha256": "F9AD3D527A179BB25C72D57B67E469F9045B65F6325347EC00EC63F6E8B8A609"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledPolicy.fs",
+      "Bytes": 6040,
+      "Sha256": "658E65F55BF44F477DA04EACA532AF0EF779A4999672442B6AB48C32FBD6B7D1"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledSelector.fs",
+      "Bytes": 2442,
+      "Sha256": "59D72B245719A815127C4BB09E403354E70CB672D90FCF685E06AD8AA32292B4"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/Program.fs",
+      "Bytes": 989,
+      "Sha256": "26F9A0AF85B8D1B2ABE99DCD80DF95D23D7437330DB938F4C43963FC66FB86FC"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/HiddenSwitchCompiled.fsproj",
+      "Bytes": 2065,
+      "Sha256": "6662B36750F5F178D77960548FABA3790A8C51C9DBD004BB10D7784DA334FBAF"
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 46624,
+      "Sha256": "2972846AAEBEA37F5915889FB629B273FA4BB17A57095AD5C0D60E5557905BAD"
+    }
+  ],
+  "BuildOutputs": [
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.dll",
+      "Bytes": 368640,
+      "Sha256": "6FDF7ECA095C56A923FC657A8EC235740A4B35795513FABD3B5DCB12A71FFB61"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.runtimeconfig.json",
+      "Bytes": 573,
+      "Sha256": "8BE4ED4B6B8A41EB936189FEE1672D4E0AD91EDD88227E90464658C05E9598A0"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.deps.json",
+      "Bytes": 12553,
+      "Sha256": "16859052CFF9189BF0163E695B3B068C16DAB7A9F253DAC478042F1EFC8DAC80"
+    }
+  ]
+}

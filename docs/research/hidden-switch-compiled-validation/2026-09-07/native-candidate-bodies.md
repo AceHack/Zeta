@@ -245,3 +245,36 @@ call and exception boundary, and a stated limit distinct from metadata-defined
 method extent. The current buffers establish neither that argument nor
 runtime admission. Optional SOS/DAC inspection is a separate dependency and
 has not been added to this otherwise working collector.
+
+## Incomplete hand-core preparation
+
+The coordinator authorized explicit fixed-tape collection of 222 scalar audits,
+48 new episodes and 24 unchanged old controls before full runtime admission.
+The [prelaunch source/build inventory](native-hand-core-preparation/manifest.json)
+pins the hand collector, fixed six-center helper, wiring and actual CLI outputs.
+All 37 scalar positions retain their declared order and duplicates, including
+separate positive and negative zero. No source generator or measurement runner
+is reachable through the new `hand-core` command.
+
+The first build failed because the provisional falsifier field used a null
+value with an F# non-null object type. The optional object field now serializes
+as null. Four subsequent preparation builds passed with zero warnings/errors;
+the last is the source gate after the final checkpoint repairs. These are CLI
+builds, not a full solution gate or completed conformance experiment.
+
+Exclusive output and append-only journal files precede hand computation. Every
+completed scalar or episode is flushed with its stage/index/strategy; verified
+certificate identity is journaled as soon as established. The new episode
+accumulator catches unexpected exceptions and retains its accessible prefix.
+An established computation failure takes precedence over a later journal-write
+failure. The unchanged old runner does not expose an internal accumulator after
+an unexpected exception; only its preceding completed controls and current
+locator can be retained in that case. This limitation is explicit.
+
+Independent source review found and closed completed-slice loss, current-locator
+loss, episode-prefix loss, certificate-hash checkpoint omission and secondary
+write replacement of an established failure. The final read-only acceptance
+permits this incomplete hand-core capture; it is not executable fault-injection
+coverage. The envelope always has `Complete=false`, with separate
+`SlicesComplete` and explicit pending falsifier/runtime/source-admission
+categories. Runtime, body and closure admission remain false.
