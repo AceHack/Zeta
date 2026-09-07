@@ -12,12 +12,28 @@
     ../../modules/k3s-server.nix
     ../../modules/docker.nix
     ../../modules/local-storage.nix
+    # CLUSTER-SCOPED, declared here because only a SERVER can apply it.
+    # `services.k3s.manifests` writes to /var/lib/rancher/k3s/server/manifests and the
+    # k3s deploy controller submits them — an agent writes the files and nothing reads
+    # them. This DaemonSet used to be declared ONLY on worker-gpu (role = "agent"), so
+    # it was never applied and GPUs were never advertised to the scheduler
+    # (081M1XXA0FC087G0R002F92ZQC). The DaemonSet already carries
+    # `nodeSelector: zeta.io/gpu: <vendor>`, so declaring it from a GPU-less control
+    # plane is correct: the scheduler places it on the nodes that have the hardware.
+    ../../modules/gpu-device-plugin.nix
     # Iter-4 credential substrate (per B-0789):
     ../../modules/initial-password.nix      # zeta user has known initial password (rotate on first login)
     ../../modules/operator-ssh-keys.nix     # operator pubkey(s) injected by zeta-install.sh from USB
   ];
 
   networking.hostName = "control-plane";
+
+  # The CLUSTER's GPU vendor mix, not this host's. The control plane needs no GPU to
+  # declare the plugin; it needs only to be the node that can apply a manifest.
+  zeta.gpu-device-plugin = {
+    enable = true;
+    vendors = [ "nvidia" ];
+  };
 
   # B-0850 Phase 3 refactor: enable AI agent systemd services on
   # control-plane. Operator framing 2026-05-27:

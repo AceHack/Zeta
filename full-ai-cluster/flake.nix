@@ -596,6 +596,8 @@
               report = import ./nixos/tests/gpu-node-label-preflight-eval-test.nix {
                 inherit pkgs;
                 nixosConfig = self.nixosConfigurations.worker-gpu;
+                # The node that can apply the DaemonSet — see the P6 correction in the test.
+                applierConfig = self.nixosConfigurations.control-plane;
               };
             in
             pkgs.runCommand "gpu-node-label-preflight" { inherit (report) status; } ''

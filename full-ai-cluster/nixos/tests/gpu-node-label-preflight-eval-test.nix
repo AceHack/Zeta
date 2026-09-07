@@ -35,7 +35,7 @@
 #   the console marker to look for is ZETA_GPU_NODE_LABEL_PREFLIGHT_OK with
 #   devices >= 1.
 
-{ pkgs, nixosConfig }:
+{ pkgs, nixosConfig, applierConfig }:
 
 let
   inherit (pkgs) lib;
@@ -53,6 +53,10 @@ let
   amd = callChecks "amd";
 
   hostConfig = nixosConfig.config;
+  # The node that can APPLY a manifest. `services.k3s.manifests` is submitted by the k3s
+  # deploy controller, which runs on a SERVER — so the plugin being "enabled" on the GPU
+  # worker never made its selector live. See the P6 correction below.
+  applier = applierConfig.config;
   k3sFlags = hostConfig.services.k3s.extraFlags;
   unit = hostConfig.systemd.services.zeta-gpu-node-label-preflight or null;
 
@@ -207,9 +211,20 @@ let
     # -- P6 the label's LIVE consumer cannot drift from the label ------------
     # gpu-device-plugin.nix:85-86 is the only consumer that is not masked by a
     # zero replica count today (k8s/applications/vllm/deployment.yaml:16 and
-    # k8s/applications/ollama/Application.yaml:34 both ship zero), and
-    # hosts/worker-gpu/configuration.nix enables it, so k3s really applies that
-    # DaemonSet. Renaming the label without it is a red check here.
+    # k8s/applications/ollama/Application.yaml:34 both ship zero).
+    #
+    # CORRECTED 2026-09-07 (081M1XXA0FC087G0R002F92ZQC). This block used to end
+    # "hosts/worker-gpu/configuration.nix enables it, SO K3S REALLY APPLIES THAT
+    # DAEMONSET" — and that inference was false. worker-gpu is role = "agent",
+    # and `services.k3s.manifests` is submitted by the k3s deploy controller,
+    # which runs on a SERVER. On an agent the files are written and nothing
+    # reads them. So this property verified a DECLARATION and concluded
+    # APPLICATION: it was green while the DaemonSet could never install, which
+    # is the precise shape of a check that cannot fail.
+    #
+    # The property was right; its WITNESS was the wrong node. It now asserts the
+    # plugin is enabled on the node that can apply it, and that this node really
+    # is a server. Renaming the label without the plugin is still a red check.
     #
     # The needle carries its terminating newline. Without it the match is a
     # PREFIX test, and a selector renamed to `zeta.io/gpu: nvidia-renamed` still
@@ -218,9 +233,15 @@ let
     (check "the NVIDIA device-plugin DaemonSet still selects on the label this module emits" (
       countOccurrences "${nvidia.labelKey}: ${nvidia.vendor}\n" pluginText == 1
     ))
-    (check "and the device plugin is actually enabled on worker-gpu, so that selector is live" (
-      hostConfig.zeta.gpu-device-plugin.enable
-      && builtins.elem "nvidia" hostConfig.zeta.gpu-device-plugin.vendors
+    (check "and the device plugin is enabled on a node that can APPLY it, so the selector is live" (
+      applier.zeta.gpu-device-plugin.enable
+      && builtins.elem "nvidia" applier.zeta.gpu-device-plugin.vendors
+    ))
+    (check "and that node is a k3s SERVER — an agent writes manifests nothing reads" (
+      applier.services.k3s.role == "server"
+    ))
+    (check "the GPU node itself carries the label the DaemonSet selects on" (
+      gpuLabelFlagsOf hostConfig.services.k3s.extraFlags != [ ]
     ))
   ];
 

@@ -1,0 +1,14 @@
+{
+  "id": "080d03dea80f6810a0130008f9ba9515",
+  "at": "2026-09-07T12:25:52.365Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XXA0FC087G0R002F92ZQC",
+    "type": "bug",
+    "title": "k3s manifests declared on agent nodes are never applied — the nvidia device plugin never installs",
+    "slug": "k3s-manifests-declared-on-agent-nodes-are-never-applied-the",
+    "priority": "P2",
+    "filename": "081M1XXA0FC087G0R002F92ZQC-k3s-manifests-declared-on-agent-nodes-are-never-applied-the.md"
+  }
+}
