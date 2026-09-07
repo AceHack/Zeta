@@ -20,6 +20,7 @@ import { projectGraph, UNDERIVED_EDGE_KINDS, EdgeKind } from "./org-graph";
 import { Fidelity, Port } from "./providers";
 import { DisagreementKind, Party, reconcile } from "./reconciliation";
 import { WorkState, WorkType } from "./goal-cascade";
+import { Domain, DomainMatch, type DomainRouting } from "./domain-ontology";
 import {
   blindSpots,
   foldObservations,
@@ -33,6 +34,7 @@ import {
   fromHandoffBrief,
   fromLagReport,
   fromOrgGraph,
+  fromDomainRouting,
   fromPortFidelity,
   fromReconciliation,
 } from "./observation-sources";
@@ -263,5 +265,43 @@ describe("THE POINT OF ALL OF IT — one place to ask how much of this is silenc
     expect(ledger.completeness).toBe(1);
     expect(fullyObserved(ledger)).toBe(true);
     expect(ledger.findings).toBe(0);
+  });
+});
+
+describe("fromDomainRouting — routing that nobody stated is SILENCE, not success", () => {
+  const rows: readonly DomainRouting[] = [
+    { workId: "a", ownerHatId: "engineering_director", ownerDepartmentId: "engineering", domain: Domain.Implementation, match: DomainMatch.InDomain },
+    { workId: "b", ownerHatId: "cto", ownerDepartmentId: "engineering", domain: Domain.ProductDiscovery, match: DomainMatch.OutOfDomain },
+    { workId: "c", ownerHatId: "ceo", ownerDepartmentId: "executive_board_and_governance", match: DomainMatch.Unstated },
+  ];
+
+  test("in-domain is observed and clean; out-of-domain is observed and a FINDING", () => {
+    const obs = fromDomainRouting(rows);
+    expect(obs[0]).toMatchObject({ state: ObservationState.Observed, findings: 0 });
+    expect(obs[1]).toMatchObject({ state: ObservationState.Observed, findings: 1 });
+  });
+
+  test("UNSTATED IS not_run WITH A WHY — never a zero-findings pass", () => {
+    // Zero findings under `observed` means CLEAN. Recording an unrouted work item that way would
+    // reproduce, inside the ledger built to end it, the exact defect the ledger exists for.
+    const obs = fromDomainRouting(rows);
+    expect(obs[2]?.state).toBe(ObservationState.NotRun);
+    expect(obs[2]?.why).toContain("does not say what it is about");
+  });
+
+  test("...so a cascade with no domains at all is NOT fully observed", () => {
+    const none = fromDomainRouting(rows.map((r) => ({ ...r, match: DomainMatch.Unstated })));
+    const ledger = foldObservations(none);
+    if (!ledger.ok) throw new Error(ledger.reason);
+    expect(fullyObserved(ledger.ledger)).toBe(false);
+    expect(blindSpots(ledger.ledger)).toHaveLength(3);
+  });
+
+  test("an all-matched cascade IS fully observed and finds nothing", () => {
+    const all = fromDomainRouting(rows.map((r) => ({ ...r, match: DomainMatch.InDomain })));
+    const ledger = foldObservations(all);
+    if (!ledger.ok) throw new Error(ledger.reason);
+    expect(fullyObserved(ledger.ledger)).toBe(true);
+    expect(ledger.ledger.entries.every((e) => e.findings === 0)).toBe(true);
   });
 });

@@ -22,6 +22,7 @@
  */
 
 import { OmissionKind, type ContextPack } from "./context-pack";
+import { DomainMatch, type DomainRouting } from "./domain-ontology";
 import { type HandoffBrief } from "./handoff-brief";
 import { LagKind, type LagReport } from "./lag-detection";
 import { ObservationState, type Observation } from "./observation-ledger";
@@ -224,6 +225,39 @@ export function fromPortFidelity(
       question: `fidelity:${port}`,
       state: ObservationState.Observed,
       findings: known === Fidelity.Real ? 0 : 1,
+    };
+  });
+}
+
+/**
+ * Whether each piece of work reached the department that owns it.
+ *
+ * The `unstated` rows are why this adapter exists at all. Work that never said what it was about
+ * was routed by graph distance and an ordinal tie-break — which is how a "ship checkout" initiative
+ * came to be owned by the Hat Approval Steward — and a report that counted only the MISSES would
+ * show a perfect score for an organization in exactly that state. So an unstated domain is
+ * `not_run`: the detector exists and was not given what it needs, which is the truth and is fixed
+ * by wiring rather than by building something.
+ */
+export function fromDomainRouting(routings: readonly DomainRouting[]): readonly Observation[] {
+  return routings.map((r) => {
+    if (r.match === DomainMatch.Unstated) {
+      return {
+        subject: "domain-ontology",
+        question: `routing:${r.workId}`,
+        state: ObservationState.NotRun,
+        findings: 0,
+        why: `'${r.workId}' does not say what it is about, so '${r.ownerHatId}' was chosen by graph distance and ordinal tie-break rather than by domain`,
+      };
+    }
+    // OUT OF DOMAIN IS A FINDING, NOT A FAILURE TO LOOK. The cascade deliberately falls back when
+    // the owning department is unreachable from the delegating parent, and that fallback staffs
+    // real work. What it must never do is happen quietly.
+    return {
+      subject: "domain-ontology",
+      question: `routing:${r.workId}`,
+      state: ObservationState.Observed,
+      findings: r.match === DomainMatch.OutOfDomain ? 1 : 0,
     };
   });
 }

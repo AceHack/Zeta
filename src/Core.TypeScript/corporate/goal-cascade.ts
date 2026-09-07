@@ -38,6 +38,7 @@ import {
   type OrgChart,
   type OrgHat,
 } from "./org-chart";
+import { departmentFor, type Domain } from "./domain-ontology";
 
 /** The kinds of work in the cascade. Ordered top-down. */
 export const WorkType = {
@@ -163,6 +164,18 @@ export interface CascadeNode {
   readonly parentWorkId?: string;
   /** The IC doing it. Only meaningful on a task. */
   readonly assigneeHatId?: string;
+  /**
+   * What this work is ABOUT — the fact the chart never carried.
+   *
+   * Optional, because a cascade without one behaves exactly as it always did. Present, it decides
+   * which department the owner is drawn from, which is the difference between a product initiative
+   * reaching a product director and reaching whichever director sorts first.
+   *
+   * Children INHERIT it unless they state their own: a project under a product initiative is
+   * product work until somebody says otherwise, and making every caller repeat it would guarantee
+   * the one that forgot routes alphabetically again.
+   */
+  readonly domain?: Domain;
 }
 
 export interface Cascade {
@@ -210,12 +223,40 @@ export function ownerForRung(
   level: HatLevel,
   parentHatId: string,
   mustSupportLevel?: HatLevel,
+  domain?: Domain,
 ): OrgHat | undefined {
   const candidates = hatsAtLevel(chart, level).filter(
     (h) => h.id !== parentHatId && reportsUpTo(chart, h.id, parentHatId),
   );
   if (candidates.length === 0) return undefined;
 
+  // THE DOMAIN'S OWN DEPARTMENT FIRST, and only among candidates already in the delegating line.
+  //
+  // This is the whole fix: the chart says who reports to whom and never said who does what, so a
+  // "ship checkout" initiative went to the Hat Approval Steward because governance sorted first.
+  // Preferring the owning department makes the choice a property of the WORK rather than of the
+  // alphabet.
+  //
+  // Falling back when the owning department is unreachable from this parent is deliberate and is
+  // reported by `domainMatch` rather than swallowed — a CTO's goal genuinely cannot delegate to a
+  // product director who reports to the CEO, and refusing there would stall real work over an
+  // org-shape fact the caller cannot fix from the cascade.
+  if (domain !== undefined) {
+    const owningDept = departmentFor(domain);
+    const inDomain = candidates.filter((h) => h.departmentId === owningDept);
+    if (inDomain.length > 0) return best(chart, inDomain, parentHatId, mustSupportLevel);
+  }
+
+  return best(chart, candidates, parentHatId, mustSupportLevel);
+}
+
+/** Nearest, then able to carry the next rung, then ORDINAL. Shared by both paths above. */
+function best(
+  chart: OrgChart,
+  candidates: readonly OrgHat[],
+  parentHatId: string,
+  mustSupportLevel?: HatLevel,
+): OrgHat | undefined {
   const distance = (h: OrgHat): number => supervisorChainOf(chart, h.id).indexOf(parentHatId);
   const supports = (h: OrgHat): boolean =>
     mustSupportLevel === undefined ||
@@ -292,7 +333,12 @@ export function decompose(
   cascade: Cascade,
   chart: OrgChart,
   parentWorkId: string,
-  children: readonly { readonly workId: string; readonly title: string; readonly workType?: WorkType }[],
+  children: readonly {
+    readonly workId: string;
+    readonly title: string;
+    readonly workType?: WorkType;
+    readonly domain?: Domain;
+  }[],
 ): CascadeResult {
   const parent = nodeById(cascade, parentWorkId);
   if (parent === undefined) return { ok: false, reason: `no work item '${parentWorkId}'` };
@@ -321,7 +367,11 @@ export function decompose(
   const mustSupport = isLeafType(rung.workType)
     ? ("individual_contributor" as const)
     : nextRung(rung.workType)?.ownerLevel;
-  const owner = ownerForRung(chart, rung.ownerLevel, parent.ownerHatId, mustSupport);
+  // The children's domain decides who owns them. They all share one here — a decompose that mixed
+  // domains would need one owner per domain, and that is a different verb (delegating ACROSS
+  // departments) than splitting work within one.
+  const childDomain = children.find((c) => c.domain !== undefined)?.domain ?? parent.domain;
+  const owner = ownerForRung(chart, rung.ownerLevel, parent.ownerHatId, mustSupport, childDomain);
   if (owner === undefined) {
     return {
       ok: false,
@@ -345,6 +395,7 @@ export function decompose(
         reason: `'${child.workId}' is a ${childType}, which does not belong at the ${rung.workType} rung`,
       };
     }
+    const domain = child.domain ?? parent.domain;
     nodes.push({
       workId: child.workId,
       workType: childType,
@@ -352,6 +403,7 @@ export function decompose(
       state: WorkState.Open,
       ownerHatId: owner.id,
       parentWorkId,
+      ...(domain === undefined ? {} : { domain }),
     });
   }
   return { ok: true, cascade: { nodes } };
