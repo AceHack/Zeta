@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Status: two offline refusals retained; one reviewed metadata-only correction pending
+Status: three offline refusals retained; extent-command route stopped
 
 The coordinator authorized one separately owned nonregistered graph process
 and one bounded offline analyzer feasibility attempt after the fixed hand
@@ -153,3 +153,10 @@ Neither failure is relabeled passed. The third attempt's `u` export and known
 unsupported callback are source-reviewed metadata feasibility only. Runtime,
 body and closure admission remain false, including if a useful bounds prefix
 is obtained before output/deadline refusal.
+
+The third actual attempt also refused `u` before any bounds prefix. All three
+current method identities and cached-DAC metadata were retained first, but
+neither native export inspection nor shared documentation predicted the actual
+host registration. This route is stopped after that bounded attempt; no
+unimplemented disassembly callback or method extent was actually observed.
+The [indexed outcomes](native-candidate-bodies.md) preserve all three refusals.

@@ -469,3 +469,25 @@ a bounded metadata-feasibility attempt with all original output/error/deadline
 refusals. Fifteen tests pass, including bounds-prefix output followed by EOF or
 an error delimiter remaining incomplete. Any later bounds interpretation is
 independent of instruction-disassembly success and complete executing closure.
+
+The [third actual metadata attempt](native-dump-analysis-attempt-3/manifest.json)
+ran reviewed source `21774b94d251273bae9b8565c8ec9e0767bec662`. It retained
+all three current method identities and the exact cached local DAC path before
+querying `u`. The actual host again returned an unrecognized-command error,
+this time for `u`, without any `Begin`/extent prefix. The inspected native
+export and version-specific source guidance did not establish this host's
+command registration. No unsupported disassembly callback was observed.
+The coordinator's stopping boundary now closes this offline extent route;
+no additional analyzer attempt is implied.
+
+Owned analyzer PID 95240 exited zero; driver exit two remains the result.
+All 5,384 stdout bytes, empty stderr, successful metadata prefixes and the
+error delimiter are retained with empty cleanup/publication failures. The
+attempt ended at 20:38:33.098942 UTC. Current addresses/tokens were predict
+`10B720A20`/`06000495`, condition `10B720FF0`/`06000496`, and select
+`10B71ED60`/`06000497`. Their 252/532/224 physical candidate bytes match
+compiler bytes. The cached DAC file is 2,408,704 bytes with SHA256
+`F83D4FF7907E659312C49A730AC57AACA627EEED47828984C1E61BB2666307B2`.
+Its observed verification suffix remains unchanged; cached path/file identity
+is not a loaded-binary theorem or a method-extent proof. Full runtime, body
+and closure admission remain false while native conformance work continues.
