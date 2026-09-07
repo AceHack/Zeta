@@ -1,0 +1,16 @@
+{
+  "pr_number": 16928,
+  "archive_path": "docs/history/pr-reviews/PR-16928-research-validate-hidden-switch-planning-with-matched-work.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rbc5o",
+    "comment:PRRC_kwDOSF9kNM7rcO-V",
+    "thread:PRRT_kwDOSF9kNM6f6pw7"
+  ],
+  "fetched_at": "2026-09-07T15:17:39.183Z",
+  "schema_version": "v1",
+  "commit_sha": "1193d505de42f7a9406e64389f1496a311fc4b28",
+  "title": "research: Validate hidden-switch planning with matched work",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T15:16:24Z",
+  "head_ref": "claim/task-hidden-dynamics-preregistration-20260907"
+}

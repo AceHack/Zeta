@@ -1,0 +1,12 @@
+{
+  "pr_number": 16965,
+  "archive_path": "docs/history/pr-reviews/PR-16965-feat-081m1yjasgg087g0r000qnvqf4-fake-vfs-unlink-rmdir-symlink-readlink.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T18:56:03.513Z",
+  "schema_version": "v1",
+  "commit_sha": "7c8f4da1596761385fb9e5d35dfdb618fd3b4d29",
+  "title": "feat(081M1YJASGG087G0R000QNVQF4): Fake VFS unlink rmdir symlink readlink",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T18:54:44Z",
+  "head_ref": "feat/zetafs-posix-vfs-unlink"
+}

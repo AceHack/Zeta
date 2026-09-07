@@ -1,0 +1,12 @@
+{
+  "pr_number": 16962,
+  "archive_path": "docs/history/pr-reviews/PR-16962-docs-benchmark-freeze-minigrid-policy-comparison-gate.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T18:30:52.277Z",
+  "schema_version": "v1",
+  "commit_sha": "fd9ecb3969fde27b83c9437335529f1dfe1b2d03",
+  "title": "docs(benchmark): freeze MiniGrid policy comparison gate",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T18:30:11Z",
+  "head_ref": "lumen/minigrid-policy-comparison-contract"
+}

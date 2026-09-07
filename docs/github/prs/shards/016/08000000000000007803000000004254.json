@@ -1,0 +1,12 @@
+{
+  "pr_number": 16980,
+  "archive_path": "docs/history/pr-reviews/PR-16980-feat-081m1yxw8x8087g0r001ns5y0a-fuse-byte-session-answers-init.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T22:33:40.176Z",
+  "schema_version": "v1",
+  "commit_sha": "2d2faba5ab326a72d09eb8c8a71fe6c5626ede08",
+  "title": "feat(081M1YXW8X8087G0R001NS5Y0A): FUSE byte session answers INIT",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T22:33:00Z",
+  "head_ref": "feat/zetafs-fuse-init-session"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16947,
+  "archive_path": "docs/history/pr-reviews/PR-16947-docs-research-preregister-guarded-hidden-switch-controller-compilation.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T15:06:58.494Z",
+  "schema_version": "v1",
+  "commit_sha": "6a371b881a44aa4e7a967264cdb30f31b9d0f552",
+  "title": "docs(research): preregister guarded hidden-switch controller compilation",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T15:06:09Z",
+  "head_ref": "codex/hidden-switch-compiled-20260907"
+}

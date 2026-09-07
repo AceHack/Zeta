@@ -1,0 +1,12 @@
+{
+  "pr_number": 16937,
+  "archive_path": "docs/history/pr-reviews/PR-16937-feat-081m1y0722x087g0r002brxzrj-posix-node-cache-path-contextual-dot-dot.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:40:17.971Z",
+  "schema_version": "v1",
+  "commit_sha": "102d69365f4baf82290b53a9b25090e38b020baf",
+  "title": "feat(081M1Y0722X087G0R002BRXZRJ): POSIX node cache path-contextual dot-dot",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:39:24Z",
+  "head_ref": "feat/zetafs-posix-dotdot-node-cache"
+}
