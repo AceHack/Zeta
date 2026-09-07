@@ -93,7 +93,7 @@ def _file(path: Path) -> dict[str, Json]:
         _refuse("FileIdentity", f"canonical regular file required: {path}")
     # O_NOFOLLOW plus descriptor/path identities bound this individual read.
     # Parent-component and cross-file atomicity still rely on the declared OS.
-    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     first_error: BaseException | None = None
     try:
         # The descriptor remains owned here even if stream creation refuses.
