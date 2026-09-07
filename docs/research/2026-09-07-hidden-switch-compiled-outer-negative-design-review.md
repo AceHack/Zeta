@@ -63,3 +63,24 @@ implementation, independent replay and failure fixtures still need source and
 evidence review. Native executing-graph/runtime admission and the final actual
 hand/certificate/behavior/cost/replay/verdict byte chain remain two separate
 mandatory obligations. Finite mutation coverage does not prove either one.
+
+## Six-member semantic API source
+
+The subsequently reviewed source is
+`cdcf34d759a74201aa5599f4556e07af00f6dc4a`, limited to the existing
+`hidden_switch_compiled_falsifiers.py` and its tests. It is accepted as the
+proposed standalone semantic boundary. The distinct semantic success/failure
+types retain exact counts, actual mutant refusals and pending outer/runtime
+scopes, with no descriptor field. Shared checking internals still execute
+the complete scalar/new/old slices, coverage and invocation/intervention/
+refusal validation.
+
+The complete API preserves its previous order: slices, exact top-level shape,
+coverage, outer descriptor, then semantic witnesses. The new API omits only
+that descriptor boundary. Added tests guard against descriptor access, verify
+actual slice replay calls, and discriminate missing/extra fields, late old-Q
+errors, late refusal prefixes, skipped witness checking and unissued
+certificates. The author reports 72 cases passing, including the original 63
+and nine new API cases. This reviewer read the source/test diff without
+executing it. No material source finding remains; actual native replay,
+outer artifact admission and runtime proof obligations remain separate.
