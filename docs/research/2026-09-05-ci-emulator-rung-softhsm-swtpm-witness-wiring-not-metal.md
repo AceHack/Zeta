@@ -324,17 +324,24 @@ A YubiKey / CCID reader is not CardContact. A driver on disk
 is not an attached YubiHSM. Null frost result is unmeasured,
 not absent. OS family is named, not inferred. Does not run
 the live probe. Does not import frost into cluster.
+Overlay env join takes frost result (`081M1WTR4BW087G0R0001NVXWQ`):
+`planSetupFromFrostEnv`. Maps via `namedProbeFromFrostResult`
+then `planSetupFromNamedBaoElfEnv`. `/dev/tpmrm0` is not
+`present`. Null frost result is unmeasured, not present.
+Does not run the live probe. Does not change ISO bun
+`probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this mapper as
-   that commit. Wiring `namedProbeFromFrostResult` on the
-   live ISO is later and still must not infer from
-   `/dev/tpmrm0`. Bun JSON `probe` stays null until that
-   wiring exists. Does not expand `ZetaFirstbootRole`.
-   `/dev/tpmrm0` is still not an ask and not a PathRequest.
+   two active OpenBao seals. Do not treat this join as
+   that commit. Argv/conf frost joins are later. Wiring
+   `namedProbeFromFrostResult` on the live ISO is later
+   and still must not infer from `/dev/tpmrm0`. Bun JSON
+   `probe` stays null until that wiring exists. Does not
+   expand `ZetaFirstbootRole`. `/dev/tpmrm0` is still not
+   an ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

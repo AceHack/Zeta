@@ -294,6 +294,13 @@ assume the number.
    unmeasured, not absent. OS family is named, not inferred.
    Does not run the live probe. Does not import frost into
    cluster. Does not invent an integrate decision.
+   Overlay env join takes frost result (`081M1WTR4BW087G0R0001NVXWQ`):
+   `planSetupFromFrostEnv`. Maps via `namedProbeFromFrostResult`
+   then `planSetupFromNamedBaoElfEnv`. `/dev/tpmrm0` is not
+   `present`. A YubiKey is not CardContact. Null frost result
+   is unmeasured, not present. Does not run the live probe.
+   Does not change ISO bun `probe: null`. Does not invent
+   an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

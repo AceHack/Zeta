@@ -579,6 +579,10 @@ Frost result becomes named probe
 YubiKey is not CardContact; still
 does not run the live probe from
 `zeta-install.sh`.
+Overlay env join takes frost result
+(`081M1WTR4BW087G0R0001NVXWQ`);
+null frost result is unmeasured, not
+present; ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
