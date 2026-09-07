@@ -107,12 +107,6 @@
       "migrateTo": "NONE — do not repoint. The mutation genuinely ran against that file at that path, and rewriting the log to name full-ai-cluster would falsify what was measured. Drop the row with the tree; the log is append-only and its records are content-addressed."
     },
     {
-      "path": "db/search-index/inverted/files.txt",
-      "disposition": "derived",
-      "note": "The git-native inverted index's document list (081M0QTXTR3087G0R002R439FH). It names infra/k8s and infra/nixos because it names EVERY indexed path in the repo — an index of the tree mentions the whole tree by construction, so any surviving file under those directories puts them here. Machine-written, rebuilt from an explicit git rev every ~6h by search-index-cadence.yml; nothing reads these paths as a target.",
-      "migrateTo": "nothing to do — the next scheduled rebuild after the deletion drops the lines, and this roster entry then goes stale and fails, which is the roster shrinking as designed."
-    },
-    {
       "path": "db/uncertainty/081M0BH05N7087G0R0037KFCJD-k8s-bootstrap-never-deployed-argocd-install-was-a-kustomize.md",
       "disposition": "prose",
       "note": "A ΔU ledger entry recording that the infra/k8s bootstrap never deployed (argocd-install.yaml was a kustomize Kustomization, a build-time input, not an API object). It names infra/k8s because it DOCUMENTS AN EVENT IN THAT TREE — it is a historical record, not a live consumer, and nothing imports or resolves against the path.",
