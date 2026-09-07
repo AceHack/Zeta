@@ -23,8 +23,8 @@
     },
     {
       "Path": "src/Core.Python/tests/test_nci_witness_receipt_oracle.py",
-      "Bytes": 4017,
-      "Sha256": "0d4216167361933e96d9a6824506888c5a593e267f91ff3bce7903f7bb414906"
+      "Bytes": 4018,
+      "Sha256": "025ad5e89dfc6d329e4ff80cc9f1839e9afd67174b1059e9e2d23774cb95cfa1"
     },
     {
       "Path": "src/Core.TypeScript/formal-verification/nci-witness-receipt.ts",
@@ -106,6 +106,52 @@
       "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
       "OriginalBytes": 43,
       "OriginalSha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8"
+    },
+    {
+      "Path": "nci-ci-ts-hermetic-failure.log.gz",
+      "Bytes": 1064967,
+      "Sha256": "214a2ac9e57e03d786ba14d1619691685e214d76afe0334a73bd4389cdb236c0",
+      "OriginalBytes": 4802685,
+      "OriginalSha256": "260a7a2187385199f68a884e73337c40638cb2f56c2a1db8b6377082783041a8"
+    },
+    {
+      "Path": "nci-first-preflight.log",
+      "Bytes": 2725,
+      "Sha256": "4f29ec51dcf44458c08aa97f2a65abe607b5d1447e091433831546b6a9b16125",
+      "OriginalBytes": 2725,
+      "OriginalSha256": "4f29ec51dcf44458c08aa97f2a65abe607b5d1447e091433831546b6a9b16125"
+    },
+    {
+      "Path": "nci-python-lane-lint.log",
+      "Bytes": 19,
+      "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "OriginalBytes": 19,
+      "OriginalSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "Path": "nci-python-lane-format.log",
+      "Bytes": 26,
+      "Sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+      "OriginalBytes": 26,
+      "OriginalSha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "Path": "nci-python-focused-final.log",
+      "Bytes": 98,
+      "Sha256": "f9e270a1148f8079728fc97df1841a3afa34d3e9b6eb4dd211e305897b916afd",
+      "OriginalBytes": 98,
+      "OriginalSha256": "f9e270a1148f8079728fc97df1841a3afa34d3e9b6eb4dd211e305897b916afd"
+    },
+    {
+      "Path": "nci-final-preflight.log",
+      "Bytes": 1224,
+      "Sha256": "78384de8312a3216342fc13b8f8682eaaef4762d3eb4b3d06daed458418e405e",
+      "OriginalBytes": 1224,
+      "OriginalSha256": "78384de8312a3216342fc13b8f8682eaaef4762d3eb4b3d06daed458418e405e"
     }
-  ]
+  ],
+  "FailedTypeScriptJob": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34117338536/job/101727125328",
+  "InitialQuickFailure": "Core.Python lane Ruff requires local-package import spacing; repaired with one blank line. Initial root-directory Ruff result is retained separately.",
+  "FinalPythonLintWorkingDirectory": "src/Core.Python",
+  "FinalQuickChecksPassed": 16
 }

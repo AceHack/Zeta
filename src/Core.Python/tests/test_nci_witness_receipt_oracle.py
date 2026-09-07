@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
+
 from zeta.nci_witness_receipt_oracle import (
     WitnessFailure,
     render_receipt,

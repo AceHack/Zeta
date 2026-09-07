@@ -20,6 +20,8 @@ artifacts explicitly.
 | Source preservation | [Source push and sixteen-check hook](policy-source-push.log) |
 | NCI fixture correction | [Input/log manifest](nci-fixture-correction.json), [complete original failed CI log, gzip](nci-ci-full-verify-failure.log.gz), [historical registry](../2026-09-06-nci-witness-v1-registry.json) |
 | NCI correction validation | [Python focused](nci-python-focused.log), [complete Core.Python suite](nci-python-full.log), [Bun 1.3.13](nci-bun-1.3.13.log), [Bun 1.3.14](nci-bun-1.3.14.log), [Ruff](nci-python-lint.log), [mypy](nci-python-mypy.log) |
+| Completed original TS CI failure | [Full hermetic job, gzip](nci-ci-ts-hermetic-failure.log.gz); eight NCI fixture failures |
+| Canonical Python-lane correction | [Initial quick failure](nci-first-preflight.log), [lane-local Ruff](nci-python-lane-lint.log), [lane-local format](nci-python-lane-format.log), [final focused Python](nci-python-focused-final.log), [final sixteen-check preflight](nci-final-preflight.log) |
 
 The seven original TRX files are retained as lossless gzip archives:
 [Bayesian](Bayesian.Tests.trx.gz),

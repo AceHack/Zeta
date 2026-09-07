@@ -202,6 +202,18 @@ repair resets/guards teardown, removes the owned failed subject and preserves
 the original admission error. Its new negative fixture passed on both Bun
 versions. All 95 native-policy input pins still match the tested source.
 
+The second review accepted the source/evidence correction at
+`e37421d8bae808ee4f12d5e3c78e7fe259cbc2be`, including the repaired setup
+path and all four pin/receipt identities. It performed no builds, tests or
+scientific reruns. The completed original TypeScript hermetic job then
+reported eight NCI fixture failures from the same registry mismatch; its full
+output is also retained. The first correction quick gate found one import
+separator error because Ruff had initially been invoked from the repository
+root. Restoring the local-package separator and running Ruff/format from
+`src/Core.Python` passed; the seven focused Python tests passed again, and
+the final quick gate passed all sixteen checks. The first failed quick log
+and both successful lane-local checks remain indexed separately.
+
 The supplemental annotated tag
 `archive/tlc-macos-c1-policy/081M1XR248G087G0R000H0WJT1-final` preserves the
 final corrected source/evidence history, including the original tested
