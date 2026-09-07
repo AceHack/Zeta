@@ -1701,7 +1701,7 @@ describe("findRungCoverage — the budgeted rung vs the committed rung", () => {
     // 6690m -> 7690m on 2026-09-04: `opensearch` was added, one StatefulSet pod at the
     // metal rung's 1000m (081M1Q1XHVV087G0R0034X846M). Same property, same mutation,
     // fourth value -- which is the point of writing the sequence rather than the number.
-    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("8390m", "7891m"));
+    const moved = live.acknowledgedRungBudgetGap.map((key) => key.replace("7390m", "7891m"));
     expect(moved).not.toEqual(live.acknowledgedRungBudgetGap);
     expect(findRungCoverage({ ...live, acknowledgedRungBudgetGap: moved }, resources).length).toBe(1);
   });

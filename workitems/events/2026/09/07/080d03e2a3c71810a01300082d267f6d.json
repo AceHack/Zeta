@@ -1,0 +1,14 @@
+{
+  "id": "080d03e2a3c71810a01300082d267f6d",
+  "at": "2026-09-07T14:45:05.891Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y58Y72087G0R003820K4Q",
+    "type": "bug",
+    "title": "Reject truncated GitHub merge receipts and page every blocker",
+    "slug": "reject-truncated-github-merge-receipts-and-page-every-blocke",
+    "priority": "P2",
+    "filename": "081M1Y58Y72087G0R003820K4Q-reject-truncated-github-merge-receipts-and-page-every-blocke.md"
+  }
+}
