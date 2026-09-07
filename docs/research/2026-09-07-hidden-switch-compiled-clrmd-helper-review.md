@@ -17,6 +17,17 @@ commit claim. The helper is isolated from the study CLI and links no study
 assembly. Final source publication and focused build/test outcomes belong to
 the native author's preparation record; this review does not substitute for them.
 
+Final source verification binds
+`2f068ba34da612f82370c64cef4e38a909e7edd5`: all seven retained working
+fingerprints exactly match those committed files. I independently read the
+two focused TRX files: initial 46 Passed/one PathMap failure; recovery 47 Passed,
+including exactly ten metadata-class tests and 37 compiled-native cases, with
+no skips or failures. Logs show helper build7 in 2.21 seconds and test-project
+build3 in 26.63 seconds, both zero warnings/errors. These are read-only
+verification of the author's executions. The
+[preparation record](hidden-switch-compiled-validation/2026-09-07/clrmd-physical-preparation.md)
+retains the full earlier failure chronology.
+
 Four material source findings were repaired before this acceptance:
 
 1. The original DAC collector used `Process.Modules`. Installed macOS
