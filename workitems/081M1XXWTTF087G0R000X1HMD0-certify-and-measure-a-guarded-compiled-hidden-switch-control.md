@@ -59,3 +59,12 @@ reproduced the prediction/mass/posterior error bounds and recurrence
 strictness, under the declared correctly rounded/source-order premises.
 Neither review is a JIT/source-to-binary theorem. The paper correction
 also binds all executable code versions and symmetric setup-cost exclusion.
+
+The complete-protocol review of draft `9c54bec74` accepted its mathematical
+scope and counts but required explicit process/prelude execution, fixed
+panel versus rotated strategy order, total metric/ratio admission, full
+ordered candidate reconstruction, signed-zero arithmetic, and a finite
+source/runtime dependency roster. Independent review also required exact
+envelope binding through replay/verdict and clarification that trivial
+paths still admit inputs. The focused prefreeze correction records these
+dispositions without generating guard bits, implementation or source data.

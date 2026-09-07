@@ -137,6 +137,17 @@ envelopes against every contingent alpha-vector candidate using exact
 rational endpoint dominance, with complete interval coverage. No sampled
 grid replaces this finite certificate.
 
+Reconstruct the complete ordered contingent-tree roster independently from
+the supplied transition/emission tables. Depth one lists root action zero
+then one. At each later depth, loop root action zero then one, cue-zero
+child index from zero through the previous roster's last index, then
+cue-one child index through that same range. Child indices refer to the
+entire previous-depth roster, not only trees sharing a root action. This
+gives 2, 8 and 128 positions at depths one, two and three, with 1, 4 and
+64 per fixed root action. Preserve duplicate vectors and their distinct
+tree positions. The checker rebuilds every vector and compares the full
+ordered roster, not a supplied count, selected extreme vectors or pass flag.
+
 Define exact rational cuts:
 
 ```text
@@ -202,8 +213,21 @@ Perform archive/certificate/runtime admission once before timed rows.
 Retain setup wall/CPU/allocation separately, excluded symmetrically from
 both strategies. Per-choice input admission, dispatch, comparisons,
 actual recursion, work counting and output-record writes remain timed.
-Disclose any conformance/preparation that executes policies before costs.
-No extra data-driven warmup or hidden per-arm setup exclusion is permitted.
+The closed process/prelude schedule in section F enumerates all policy
+execution in the cost process. No extra data-driven warmup or hidden
+per-arm setup exclusion is permitted.
+
+Graph inspection and hand/negative conformance occur in a separate
+admission process before implementation archival, under the same declared
+runtime binaries, managed modules, concrete method/generic-instantiation
+roster, settings and arithmetic mode as measurement. Retain their inspected
+code-version/graph records. Measurement uses a compiled entry point, not
+an FSI-generated task assembly, and checks that correspondence before any
+policy call. Disabling tier transitions fixes the admitted configuration;
+the recorded source/code/runtime correspondence remains an inspection
+premise, not a theorem that arbitrary JIT executions agree. No disassembly,
+test, dynamic instrumentation or graph-inspection policy call runs inside
+the fresh cost process.
 
 ## D. Hand, boundary and negative conformance before source generation
 
@@ -293,6 +317,35 @@ After complete native behavior/control receipts, generate two separate
 (null), both dot/fixed. Each consumes 2,448 draws, 4,896 total. The first
 eight tapes are warmup, the next 64 measured. Never reuse behavior tapes.
 
+Use a native behavior process and then exactly one fresh native cost
+process for all fifty cost rows. The behavior process exits after its
+complete behavior/control envelope is exclusively written and closed.
+The cost process starts only after admitting and hashing that complete
+envelope. Its prelude is exactly:
+
+1. Read and admit the archived source/certificate, stored hand/graph records,
+   native runtime/settings/artifact roster and complete behavior envelope;
+   create the fresh attempt directory and read clocks/allocation counters.
+   These are metadata operations with zero policy, simulator-step, filter,
+   evaluator or selector calls. Static initialization may decode/validate
+   constants but must not execute a policy or conformance fixture.
+2. Generate the two 72-tape cost corpora in declared panel order and decode
+   the ten already-defined stress tuples. This performs zero policy calls.
+3. Run exactly the 144 old complete-runner trajectories described below,
+   effective panel then null, tape indices zero through 71. This executes
+   2,304 old policy choices and 2,448 old observations in total, with no new
+   native-strategy or compiled-strategy calls. Write their untimed raw setup
+   outputs and construct the ordered scalar input arrays.
+
+The first measured mode follows immediately after that prelude. Its only
+additional policy execution before a timed row is that row's specified
+warmup. Do not repeat hand conformance, warmup probes, trial rows, graph
+inspection or arbitrary method-preparation policy calls in this process.
+Do not restart it between modes/panels/replicates. Retain prelude stage
+times, allocation, calls and artifacts separately. The old-runner prelude
+warms shared native routines and is part of the fixed, disclosed setup;
+it is not claimed to place both strategies in identical cache states.
+
 Before timing, run the old full native controller once on each cost tape,
 retaining the 144 complete untimed setup trajectories. Use its observed
 binary64 belief bits/effect/depth at all sixteen choices as the common
@@ -303,9 +356,20 @@ Independent replay reconstructs these tuples from source, not receipt trust.
 
 Execute all modes in this order: ordinary choice-only, deterministic
 boundary choice-only, whole episodes. In each mode use five replicates.
-Within each replicate use panel order then strategy order, rotated by
-`replicate_index mod 2`. Record one row per panel/replicate/strategy. Do not
-interleave independent host workloads or collect replacement rows.
+Panel order is always effective then null in ordinary/whole modes, with
+one stress panel in the boundary mode. Rotate only strategy order:
+
+```text
+for mode in [ordinary-choice, boundary-choice, whole-episode]:
+  for r in [0,1,2,3,4]:
+    for panel in mode.fixed_panel_order:
+      for strategy_index in [r mod 2, (r+1) mod 2]:
+        run exactly that row's warmup, then that row's measured work
+```
+
+Strategy indices remain zero=native, one=compiled. Record one row per
+mode/panel/replicate/strategy. Do not rotate panels or the flattened row
+roster, interleave independent host workloads or collect replacement rows.
 
 ### Ordinary choice-only: twenty rows
 
@@ -361,7 +425,8 @@ buffer only after timing; retain the lossless bytes and their hash.
 Native always executes one recursive call with zero guard comparisons.
 Compiled effective depth two/three performs one comparison on fast switch,
 two on certified harvest/fallback. Depth-one/null trivial harvest performs
-no belief/guard comparisons. Only real recursion contributes native tree
+zero counted belief-to-guard comparisons; finite/range input admission
+still executes and remains timed. Only real recursion contributes native tree
 counters. A fallback executes one recursive call; a fast path executes
 none. Validation/dispatch work remains timed despite not being classified
 as tree or guard work. No expected-counter formula substitutes for executed
@@ -380,6 +445,18 @@ timestamps, process/runtime/source identities, arguments, complete/failure,
 and raw output hashes. Divide whole-episode totals by 64 and choice totals
 by actual fixed call count when reporting per-unit figures. Do not infer
 energy, resident memory or universal cost from these ledgers.
+
+All measured wall/CPU/allocation totals, setup totals and GC generation
+counts/deltas are integers in `[0,2^63-1]`, excluding JSON booleans.
+Wall nanoseconds are strictly positive on every measured row; setup wall
+and all CPU/allocation totals may be zero. Negative, nonfinite, fractional,
+overflowed or missing measurements refuse. GC counts/deltas must remain
+nonnegative; a negative delta cannot be repaired by taking its absolute
+value. Retain actual zero compiled-allocation numerators without flooring
+or imputation: with a positive native denominator the numeric ratio is
+zero, still subject to independent matched-buffer/service and allocation
+accounting conformance. A zero report does not waive the required real
+buffer allocation or permit off-thread work.
 
 One measuring thread performs the timed work; no tasks/threads may move
 allocations out of its current-thread ledger. The raw buffer and ordinary
@@ -410,6 +487,38 @@ conformance/evidence validation, not the universal proof. Float differences
 must not be hidden with a tolerance when exact action/bit equality is the
 specified contract. No raw hidden state is used to choose an action.
 
+The software binary64 model represents sign, exponent and significand,
+including both zeros and subnormals. It preserves signed-zero results and
+rounding-to-zero signs for each elementary operation, exact halfway
+nearest/even behavior, underflow and the pinned maximum/selector behavior.
+Mapping both zeros to an unsigned `Fraction(0)` is insufficient. Exact
+rationals may supply magnitudes only alongside explicit sign/format state.
+Retain bit-level hand witnesses for zero addition/subtraction,
+multiplication/division and underflow, as well as both signed-zero policy
+inputs. Float comparisons use the admitted numerical semantics while raw
+records retain their distinct bits.
+
+Replay records the SHA256 and length of the exact complete native hand,
+certificate, graph/admission, behavior, cost and setup envelopes it reads,
+in addition to each raw artifact they reference. It rejects altered
+envelope metadata even if trace arrays are unchanged. The verdict binds
+those exact native input bytes plus the exact replay envelope/artifacts,
+recomputes their hashes and decision conditions, and rejects substitution.
+Native admission, behavior and cost envelopes must agree on the admitted
+implementation/protocol/certificate identities, native runtime/settings,
+managed artifacts and declared native-image roster. Replay records those
+same admitted native identities and its own separately identified Python
+runtime; it does not pretend the two runtimes are identical.
+
+Cost admission binds the complete behavior envelope read before cost
+startup. Require behavior completion time no later than cost startup and
+the recorded exclusive-file/read sequence; all cost rows follow their
+recorded prelude. Replay/verdict also validate this cross-phase chronology.
+Bind the actual executing CLI, native entry point and loaded Python task
+modules to the admitted source/artifact paths. A command or imported task
+module from another checkout refuses even if its self-reported manifest
+copies the expected identities.
+
 Exact action equality, native-versus-compiled belief bits, semantic traces,
 hashes, source/certificate/runtime admission, correct counters and every
 falsifier are mandatory before any speed claim. Independent software
@@ -422,10 +531,24 @@ For each ordinary choice-only panel separately, compute compiled/native
 ratios of the medians of the five row wall totals and of the five row
 allocation totals. Both ratios must be at most `0.5` on both panels to
 earn the registered ordinary choice-cost claim. Require positive finite
-denominators and the complete fixed row roster. No pooling, median of
+native wall and allocation median denominators and the complete fixed row
+roster. A zero required native allocation median refuses that cost claim.
+Compute the five-row medians as exact integer order statistics and test
+the required ratio by `2*compiled_median<=native_median` using unbounded
+integer arithmetic. Retain exact numerator/denominator pairs. No pooling, median of
 ratios, selected replicates or threshold relaxation is permitted. CPU,
 whole-episode and stress ratios are descriptive, reported regardless of
 outcome with all rows and fast/fallback counts.
+
+For every descriptive ratio, a zero native CPU denominator produces
+`null` with reason `zero-native-cpu`; a zero native allocation denominator
+produces `null` with reason `zero-native-allocation`. Never fabricate zero
+or infinity for division by zero. A zero numerator over a positive
+denominator produces the actual ratio zero. Exact rational pairs are the
+primary derived values; any displayed floating conversion must be finite
+or be `null` with an explicit conversion reason. A descriptive missing
+ratio does not weaken positive-wall or required allocation-denominator
+admission and does not create a division exception.
 
 If equivalence/certificate admission passes but the cost condition fails,
 report an action-equivalent implementation without the registered speed
@@ -449,12 +572,34 @@ new behavior/cost streams remain untouched until source freeze.
 Preserve the complete reviewed source manifest, native/reference hand
 outputs, guard/certificate evidence, runtime configuration and tests under
 `archive/experiments/081M1XXWTTF087G0R000X1HMD0-implementation` before
-behavior/cost generation. Include every executable dependency that can
-affect source, filter, policy, renderer, arithmetic, records, replay or
-verdict; no omitted imported helper or prebuilt unbound DLL. Pin old
+behavior/cost generation. Freeze a finite enumerated dependency manifest:
+all task source files and their direct repository helpers for the runner,
+source, filter, policy, renderer, arithmetic, records, checker, replay and
+verdict; the executing CLI/entry point and build wiring; declared managed
+module files with SHA256/MVID; the dotnet host/runtime/JIT and Python
+interpreter identities; the Python task-module/direct-helper import paths;
+and the declared observed native-image/runtime-artifact roster with its
+collection method. Every listed file has an exact path and hash, and
+admission rejects an unlisted task module or helper rather than assuming
+an unspecified dependency closure was checked. Pin old
 dependency bytes against the archived old study and new bytes against the
 new full source commit. Record fresh build evidence and loaded artifacts
 without calling hashes a source-to-binary proof.
+
+Task logic may not use Reflection.Emit, dynamically generated task
+assemblies, dynamic native plugins or unlisted native calls. The compiled
+measurement entry point and all task-managed modules are file-backed and
+bound. JIT-generated machine code is explicitly the inspected conditional
+runtime boundary in section C, not an immutable source artifact. Any
+framework-generated dynamic method/image must be identified in the declared
+runtime record and its role/collector limits disclosed; unexpected dynamic
+task code refuses. Record managed/native loaded-image rosters before and
+after each phase against the reviewed allowed roster. Unlisted loads that
+can execute task logic refuse. Standard library, system native libraries,
+kernel, loader and hardware remain the declared runtime/OS trust boundary;
+record their available binary/OS identities and collection limitations.
+This is not a full transitive source/toolchain or operating-system proof,
+and it does not establish that all runtime code was formally verified.
 
 Each envelope has schema/version, attempt ID, complete/failure, protocol
 hash, resolved archive commits, full source/loaded-artifact identities,
@@ -480,3 +625,14 @@ review from this task's durable research/work-item surfaces; publish with
 required repository/PR gates and full attribution. Release the new claim
 in the final PR. This draft remains unfrozen until the accepted review
 record explicitly replaces its draft status.
+
+## Prefreeze review history
+
+Original complete draft `9c54bec7407edd19f3c5f0494d55a19f78dd7709` remains
+preserved. The next revision closes the fresh-cost-process/prelude and
+strategy-only rotation schedule; makes numeric/zero-denominator handling
+total; specifies complete ordered alpha reconstruction and signed-zero
+software arithmetic; enumerates the bounded source/runtime dependency
+surface; and binds replay/verdict to exact envelope bytes and cross-phase
+identities. These are prefreeze clarifications, not changes informed by
+guard computation, implementation, generated tapes or measurements.
