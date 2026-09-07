@@ -1,0 +1,80 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.native-slice-replay-evidence.v1",
+  "ReferenceCommit": "5c6d40e66339077754f8f392390ab5befc5f3c8f",
+  "NativeSourceCommit": "e8753be7fd022e930d91f4342b57b9e534deb45e",
+  "NativeEvidenceCommit": "3bd4843b8632b99081521f78183b95edeeeb1d48",
+  "Command": "PYTHONPATH=src/Interp.Python src/Interp.Python/.venv/bin/python .git/hidden-switch-compiled-native-slice-replay-attempt-1/replay.py",
+  "ExitCode": 0,
+  "Artifacts": [
+    {
+      "File": "replay.py.gz",
+      "Bytes": 3034,
+      "Sha256": "81B66EA8AB21CD745753E0D8BDCA98CE4CE18A2B8F5987E4E0A5ACFC137B1669",
+      "Encoding": "gzip",
+      "StoredBytes": 1435,
+      "StoredSha256": "864D10D7771B784EDFA5E4883DAE4A3020DAB0725741CCF229C63264EA526FFB"
+    },
+    {
+      "File": "result.stdout.json.gz",
+      "Bytes": 3687,
+      "Sha256": "C3C3727FC9D626F13AB739157DE3CA2AA86E30EFE436DA724D2B0181C9C2522B",
+      "Encoding": "gzip",
+      "StoredBytes": 1277,
+      "StoredSha256": "0F44DDD67097E94D610F84CEF3153BFA103E5D36976180B49312BBE93028A29C"
+    },
+    {
+      "File": "stderr.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "native-hand-core.json.gz",
+      "Bytes": 447583,
+      "Sha256": "48965F2CD70C40047772DA7E87DD462734D5A371D059BD30C6E1D8C0BFA17D32",
+      "Encoding": "gzip",
+      "StoredBytes": 15185,
+      "StoredSha256": "2D4B89BAB1EE0696F0F9E10CC2E4C7686A4FD611ABACE3AEC23E53CE03DB6593"
+    }
+  ],
+  "ObservedTaskSourceFiles": [
+    {
+      "Name": "zeta_interp.hidden_switch_compiled_certificate",
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "Name": "zeta_interp.hidden_switch_compiled_ieee",
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "Name": "zeta_interp.hidden_switch_compiled_old_replay",
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Bytes": 10841,
+      "Sha256": "8571296D52A4D3F4C00D787ADF258E9558D91072F52BF5E67F9B0387803C45BB"
+    },
+    {
+      "Name": "zeta_interp.hidden_switch_compiled_reference",
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    },
+    {
+      "Name": "zeta_interp.hidden_switch_compiled_replay",
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ED2CF49D070F0D9CE3243DD634BA53FE35DEF36742D26ABEB7644469DFBBA45"
+    }
+  ],
+  "Scope": "actual native 222 scalar/48 new/24 old hand slices only",
+  "Limitations": [
+    "Module rows report actual imported file paths and then-current source bytes; no complete module admission or source-to-bytecode theorem.",
+    "The small retained harness admits the named raw input hash and numeric slices, not the full outer envelope or runtime.",
+    "Certificate uses protocol plus hand-validation zero placeholder binding, not complete archived source admission."
+  ]
+}

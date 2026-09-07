@@ -127,3 +127,12 @@ admission and the Python-produced fixture provenance.
 The reviewer executed no tests, certificate/guard computation, policy,
 source generation or measurement. This is bounded read-only source review,
 not independent execution or admission of the eventual native receipts.
+
+## Subsequent actual native slice comparison
+
+The [first actual native hand-core replay](2026-09-07-hidden-switch-compiled-native-slice-replay.md)
+subsequently matched all 222 scalar positions, 48 new hand episodes and,
+through the separately invoked full checker, 24 old controls. Its exact
+native input, harness and result are preserved separately from the earlier
+Python-generated tests. Complete falsifier, archive and runtime admission
+remain pending; this does not change the original test provenance above.
