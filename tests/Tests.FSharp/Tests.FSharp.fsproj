@@ -189,6 +189,7 @@
     <Compile Include="ZetaFsNamespace.Tests.fs" />
     <Compile Include="ZetaFsCollator.Tests.fs" />
     <Compile Include="ZetaFsPosixNode.Tests.fs" />
+    <Compile Include="ZetaFsPosixMeta.Tests.fs" />
     <Compile Include="ZetaFsCli.Tests.fs" />
     <Compile Include="ZetaFsPolicy.Tests.fs" />
     <Compile Include="ZetaFsPlacement.Tests.fs" />

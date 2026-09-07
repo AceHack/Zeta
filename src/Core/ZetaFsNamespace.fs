@@ -319,6 +319,16 @@ module ZetaFsNamespace =
             |> Ok
         | Some _ -> Error(NotDirectory dir)
 
+    /// Count of live names pointing at `id`. Multi-parent files have nlink > 1.
+    let liveNlink (state: State) (id: EntityId) : int64 =
+        liveWinners state
+        |> List.fold
+            (fun n b ->
+                match b.Target with
+                | Live child when child = id -> n + 1L
+                | _ -> n)
+            0L
+
     let private isDirectoryKind (k: EntityKind) : bool =
         match k with
         | EntityKind.Directory -> true
