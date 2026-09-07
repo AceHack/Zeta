@@ -149,5 +149,27 @@ module ZetaFsFuseSession =
 
                     Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeAttrOut body), session)
                 | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseReaddir then
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Readdir header.Nodeid) with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Dirents entries ->
+                    let packed =
+                        entries
+                        |> Array.map (fun d ->
+                            let typ =
+                                match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr d.Node.Id) with
+                                | ZetaFsFuse.Stat(stat, _) -> ZetaFsFuseAbi.dtOf stat.Meta.Mode
+                                | _ -> ZetaFsFuseAbi.dtReg
+
+                            let row: ZetaFsFuseAbi.PackedDirent =
+                                { Ino = d.Node.Ino
+                                  Name = d.Name
+                                  Typ = typ }
+
+                            row)
+
+                    Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeDirents packed), session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
             else
                 Result.Ok(replyErrno header.Unique 38, session)

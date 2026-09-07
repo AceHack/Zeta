@@ -1,0 +1,14 @@
+{
+  "id": "080d03f155e1f010a0130008ee5e502a",
+  "at": "2026-09-07T23:18:45.054Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z2NF1Y087G0R001W6X77E",
+    "type": "task",
+    "title": "FUSE byte session READDIR encodes aligned fuse_dirent",
+    "slug": "fuse-byte-session-readdir-encodes-aligned-fuse-dirent",
+    "priority": "P2",
+    "filename": "081M1Z2NF1Y087G0R001W6X77E-fuse-byte-session-readdir-encodes-aligned-fuse-dirent.md"
+  }
+}

@@ -125,3 +125,51 @@ let ``byte GETATTR of a created file encodes fuse_attr_out; missing is ENOENT`` 
                         Assert.Equal(0UL, attrOut.AttrValid)
                         Assert.Equal(4096u, attrOut.Attr.Blksize)
         | other -> Assert.Fail(sprintf "create: %A" other))
+
+let private readdirReq (id: uint64) (unique: uint64) : byte[] =
+    let header: ZetaFsFuseAbi.InHeader =
+        { Len = uint32 ZetaFsFuseAbi.inHeaderSize
+          Opcode = ZetaFsFuseAbi.fuseReaddir
+          Unique = unique
+          Nodeid = id
+          Uid = 0u
+          Gid = 0u
+          Pid = 0u }
+
+    ZetaFsFuseAbi.encodeInHeader header
+
+let private sameBytes (a: byte[]) (b: byte[]) =
+    a.Length = b.Length
+    && MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b)
+
+[<Fact>]
+let ``byte READDIR synthesizes dot and dirents; records are 8-byte aligned`` () =
+    withSession "/fuse-readdir-bytes" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node created ->
+            match ZetaFsFuseSession.handleMounted session (readdirReq root 7UL) with
+            | Error e -> Assert.Fail(sprintf "readdir: %A" e)
+            | Ok(reply, _) ->
+                match ZetaFsFuseAbi.decodeOutHeader reply with
+                | Error e -> Assert.Fail(sprintf "out: %A" e)
+                | Ok header ->
+                    Assert.Equal(0, header.Error)
+                    Assert.Equal(7UL, header.Unique)
+                    let body = Array.sub reply ZetaFsFuseAbi.outHeaderSize (reply.Length - ZetaFsFuseAbi.outHeaderSize)
+                    match ZetaFsFuseAbi.decodeDirents body with
+                    | Error e -> Assert.Fail(sprintf "dirents: %A" e)
+                    | Ok entries ->
+                        Assert.True(entries.Length >= 3)
+                        Assert.True(sameBytes ZetaFsPosixVfs.dot entries.[0].Name)
+                        Assert.Equal(ZetaFsFuseAbi.dtDir, entries.[0].Typ)
+                        Assert.True(sameBytes ZetaFsPosixVfs.dotDot entries.[1].Name)
+                        let found =
+                            entries
+                            |> Array.exists (fun e ->
+                                sameBytes (utf8 "a") e.Name
+                                && e.Ino = created.Ino
+                                && e.Typ = ZetaFsFuseAbi.dtReg)
+                        Assert.True(found)
+                        Assert.Equal(0, body.Length % 8)
+        | other -> Assert.Fail(sprintf "create: %A" other))

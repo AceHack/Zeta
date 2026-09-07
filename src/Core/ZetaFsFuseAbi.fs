@@ -21,8 +21,18 @@ module ZetaFsFuseAbi =
     /// fuse(4) FUSE_GETATTR.
     let fuseGetattr = 3u
 
+    /// fuse(4) FUSE_READDIR.
+    let fuseReaddir = 28u
+
     /// fuse(4) FUSE_INIT.
     let fuseInit = 26u
+
+    /// dirent.h DT_DIR / DT_REG / DT_LNK.
+    let dtDir = 4u
+    let dtReg = 8u
+    let dtLnk = 10u
+
+    let direntHeaderSize = 24
 
     let attrSize = 88
     let entryOutSize = 128
@@ -289,6 +299,72 @@ module ZetaFsFuseAbi =
                     { AttrValid = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
                       AttrValidNsec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 8, 4))
                       Attr = attr }
+
+    type PackedDirent =
+        { Ino: uint64
+          Name: byte[]
+          Typ: uint32 }
+
+    let recAlign (n: int) : int = (n + 7) &&& ~~~7
+
+    let direntRecordSize (nameLen: int) : int = recAlign (direntHeaderSize + nameLen)
+
+    let dtOf (mode: uint32) : uint32 =
+        match mode &&& 0o170000u with
+        | 0o040000u -> dtDir
+        | 0o120000u -> dtLnk
+        | _ -> dtReg
+
+    let encodeDirents (entries: PackedDirent[]) : byte[] =
+        let sizes = entries |> Array.map (fun e -> direntRecordSize e.Name.Length)
+        let total = Array.sum sizes
+        let buf = Array.zeroCreate total
+        let mutable pos = 0
+        let mutable i = 0
+
+        while i < entries.Length do
+            let e = entries.[i]
+            let recLen = sizes.[i]
+            let nextOff = uint64 (pos + recLen)
+            BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, pos, 8), e.Ino)
+            BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, pos + 8, 8), nextOff)
+            BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, pos + 16, 4), uint32 e.Name.Length)
+            BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, pos + 20, 4), e.Typ)
+
+            if e.Name.Length > 0 then
+                Buffer.BlockCopy(e.Name, 0, buf, pos + direntHeaderSize, e.Name.Length)
+
+            pos <- pos + recLen
+            i <- i + 1
+
+        buf
+
+    let decodeDirents (buf: byte[]) : Result<PackedDirent[], DecodeError> =
+        let rec walk (pos: int) (acc: PackedDirent list) : Result<PackedDirent[], DecodeError> =
+            if pos = buf.Length then
+                Ok(acc |> List.rev |> Array.ofList)
+            elif pos + direntHeaderSize > buf.Length then
+                Error(Truncated(direntHeaderSize, buf.Length - pos))
+            else
+                let namelen = int (BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, pos + 16, 4)))
+                let recLen = direntRecordSize namelen
+
+                if namelen < 0 || pos + recLen > buf.Length then
+                    Error(Truncated(max recLen direntHeaderSize, buf.Length - pos))
+                else
+                    let name = Array.zeroCreate namelen
+
+                    if namelen > 0 then
+                        Buffer.BlockCopy(buf, pos + direntHeaderSize, name, 0, namelen)
+
+                    let entry =
+                        { Ino = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, pos, 8))
+                          Name = name
+                          Typ = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, pos + 20, 4)) }
+
+                    walk (pos + recLen) (entry :: acc)
+
+        walk 0 []
 
     let hex (buf: byte[]) : string =
         Convert.ToHexString(buf).ToLowerInvariant()
