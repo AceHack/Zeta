@@ -186,3 +186,28 @@ configuration observation, not a hostile-process guarantee.
 No new dump, target, help probe, tool installation or platform-protection change
 was performed in this follow-up inspection. The working candidate collector
 and its unresolved graph obligations remain unchanged.
+
+The coordinator subsequently authorized the native owner to prepare one owned,
+nonregistered graph-process dump and a bounded offline procedure, subject to
+prelaunch review. The dump remains local-only; its raw hash/size and the
+source/runtime/DAC/address correspondence may be retained without publishing
+or ingesting the dump's memory. This authorization does not change either
+failed Apple-host record or admit an executing graph.
+
+Pinned official `Analyzer.cs` opens the dump, then installs a default symbol
+server/cache/dump-directory search before running command-line commands.
+Consequently the offline procedure must first disable the store and inspect
+the observed empty configuration. It must stop if that fails, before issuing
+DAC or method queries; a blind multi-command batch cannot substitute for this
+check. Command success and content matter independently of process exit zero.
+This source is guidance for the installed package, not binary derivation proof.
+[Pinned analysis-host source](https://github.com/dotnet/diagnostics/blob/65349e35e532e2d9c300b0b6a1738bbcd8f360f1/src/Tools/dotnet-dump/Analyzer.cs)
+
+That host also attempts history-file reads/writes. The matching upstream helper
+uses `Environment.SpecialFolder.UserProfile`, not a demonstrated CLI-home
+override, and contains an apparent inverted empty-path guard. The reviewer
+therefore retracted an initial suggestion to rely on a CLI-home setting: no
+such isolation switch or installed history behavior has been established.
+The procedure must preserve user history and avoid repointing HOME; this
+source discrepancy is not a reason to modify the installed tool.
+[Pinned directory helper](https://github.com/dotnet/diagnostics/blob/65349e35e532e2d9c300b0b6a1738bbcd8f360f1/src/Microsoft.Diagnostics.DebugServices.Implementation/Utilities.cs)
