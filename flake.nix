@@ -109,11 +109,6 @@
       # Helper that wires up a NixOS system with shared specialArgs so
       # every host module can reference `inputs`, `stateVersion`, and
       # the `nixos-hardware` collection.
-      mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs stateVersion; };
-        modules = modules;
-      };
     in
     {
       # -----------------------------------------------------------------------
@@ -129,35 +124,25 @@
       # full-ai-cluster/usb-nixos-installer/ and is built via the dedicated
       # build-ai-cluster-iso.yml workflow. Per the human maintainer's
       # "get rid of the old" cleanup direction.
-      nixosConfigurations = {
-        control-plane = mkSystem {
-          modules = [
-            ./infra/nixos/hosts/control-plane/configuration.nix
-          ];
-        };
-
-        worker-gpu-01 = mkSystem {
-          modules = [
-            ./infra/nixos/hosts/worker-gpu-01/configuration.nix
-          ];
-        };
-
-        worker-gpu-02 = mkSystem {
-          modules = [
-            ./infra/nixos/hosts/worker-gpu-02/configuration.nix
-          ];
-        };
-      };
-
-      # Shared modules exposed as flake outputs so per-host configs can
-      # import them via `imports = [ inputs.self.nixosModules.k3s-server ]`
-      # or via direct relative path inside this repo.
-      nixosModules = {
-        common = ./infra/nixos/modules/common.nix;
-        k3s-server = ./infra/nixos/modules/k3s-server.nix;
-        k3s-agent = ./infra/nixos/modules/k3s-agent.nix;
-        gpu = ./infra/nixos/modules/gpu.nix;
-      };
+      # nixosConfigurations REMOVED 2026-09-07 (081M00QCHWA087G0R000GKKRXD).
+      #
+      # This flake used to declare control-plane, worker-gpu-01 and worker-gpu-02 from
+      # `infra/nixos/hosts/`, and `nixosModules` exposing four modules from
+      # `infra/nixos/modules/`. They were the OLDER of the repo's two cluster
+      # declarations — 5 modules against full-ai-cluster's ~30 — and nothing installed
+      # from them: `full-ai-cluster/PROVISIONING.md` runs
+      # `nixos-install --flake .#<host>` against full-ai-cluster's flake, which is what
+      # `zeta-install.sh` uses.
+      #
+      # The one thing that could not be checked from inside the repo was whether a
+      # machine OUT THERE tracked `.#control-plane` from here — a 2026-08-26 research
+      # doc named it "unknowable" and it blocked this removal. Aaron answered it
+      # directly on 2026-09-07: "there are no machines out there tracking anything yet,
+      # I'm waiting to reformat the machine once we get everything working." So the
+      # unknown was resolved by asking, which was the only way it could be.
+      #
+      # Machines are declared in `full-ai-cluster/flake.nix`. This flake keeps the
+      # developer surface: devShells, packages, checks, and darwinConfigurations.
 
       # -----------------------------------------------------------------------
       # darwinConfigurations — maintainer macOS workstations

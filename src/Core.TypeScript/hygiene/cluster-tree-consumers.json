@@ -77,12 +77,6 @@
       "migrateTo": "drop the infra/k8s path-filter entries in the deletion commit; nothing breaks if it lags."
     },
     {
-      "path": ".github/workflows/root-flake-check.yml",
-      "disposition": "blocking",
-      "note": "The lane that evaluates the ROOT flake, so it is keyed on the same tree flake.nix imports: infra/nixos/** appears in both the pull_request and the push path filter. Those filters are not decoration — nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} ARE ./infra/nixos/hosts/*/configuration.nix (see the flake.nix entry below), so a change under that tree changes what this lane evaluates and must retrigger it. Deleting infra/nixos leaves a path filter naming a directory that does not exist: it matches nothing and the lane silently stops triggering — a check that never runs looking like one that passed.",
-      "migrateTo": "Bound to the flake.nix entry below, which is UNDECIDED (maintainer decision). Wherever the root flake's nixosConfigurations repoint, these two path filters follow in the same commit."
-    },
-    {
       "path": ".gitignore",
       "disposition": "prose",
       "note": "Comment naming infra/nixos/hosts/<host>/hardware-configuration.nix.",
@@ -120,9 +114,9 @@
     },
     {
       "path": "flake.nix",
-      "disposition": "blocking",
-      "note": "nixosConfigurations.{control-plane,worker-gpu-01,worker-gpu-02} import ./infra/nixos/hosts/*/configuration.nix and nixosModules.{common,k3s-server,k3s-agent,gpu} ARE ./infra/nixos/modules/*.nix. VERIFIED 2026-08-17: `nix flake check --no-build` at the repo root evaluates all three hosts today, so deleting infra/nixos/ breaks it. NOT verified by CI — the only `nix flake check` in .github/workflows/build-ai-cluster-iso.yml runs with working-directory: full-ai-cluster. A root flake.lock landed 2026-08-26 (was absent until then); `nix flake check --no-build` still evaluates all three hosts against it. The lock pins nixos-hardware@master, which was the one genuinely floating input.",
-      "migrateTo": "UNDECIDED — full-ai-cluster/flake.nix already declares control-plane and worker-gpu, on nixpkgs 25.11 against the root flake's 24.11. Repointing crosses a nixpkgs major; dropping the outputs breaks any off-repo machine tracking .#control-plane. Maintainer decision."
+      "disposition": "prose",
+      "note": "Comment only. The root flake's nixosConfigurations and nixosModules — which imported infra/nixos/hosts and infra/nixos/modules — were REMOVED 2026-09-07; machines are declared in full-ai-cluster/flake.nix. What remains is the paragraph recording what was removed and why, including that the blocking unknown (whether any off-repo machine tracked .#control-plane) was resolved by asking Aaron rather than by inference.",
+      "migrateTo": "drop the removal note when the stale tree is gone."
     },
     {
       "path": "full-ai-cluster/k8s/applications/gitlab/Application.yaml",
