@@ -1,0 +1,14 @@
+{
+  "id": "080d03de7342e810a0130008dee6721c",
+  "at": "2026-09-07T12:18:39.837Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XWWT2W087G0R003PJK3FX",
+    "type": "task",
+    "title": "delete the committed search index; derived artifacts move to a history-not-preserved repo",
+    "slug": "delete-the-committed-search-index-derived-artifacts-move-to",
+    "priority": "P2",
+    "filename": "081M1XWWT2W087G0R003PJK3FX-delete-the-committed-search-index-derived-artifacts-move-to.md"
+  }
+}

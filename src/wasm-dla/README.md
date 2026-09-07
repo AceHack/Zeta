@@ -170,7 +170,7 @@ exemption so it can only shrink and so the next unstripped substrate fails inste
 
 All four compilers are declared in desired-state config:
 
-- **NixOS** (`infra/nixos/modules/common.nix`): `wabt`, `binaryen`, `emscripten`, `nodejs`
+- **NixOS** (`full-ai-cluster/nixos/modules/common.nix`): `wabt`, `binaryen`, `emscripten`, `nodejs`, `zig`, `llvm`, `rustup`, `go`, `lua5` — every cluster host can run the whole byte-lock, by decision (Aaron 2026-09-07) rather than by accident
 - **macOS** (`tools/setup/manifests/brew`): `wabt`, `binaryen`, `emscripten tier=standard`
 - **Ubuntu** (`tools/setup/manifests/apt`): `wabt`, `binaryen`, `emscripten`, `nodejs`
 - **devShell** (`flake.nix`): `wabt`, `binaryen`, `emscripten`, `nodejs`

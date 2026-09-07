@@ -1,6 +1,8 @@
 namespace Zeta.Core
 
 open System
+open System.Globalization
+open System.Text
 
 /// Per-entity / prefix policy as a Z-set satellite (E6 / PR5).
 /// Policy is of the EntityId, not of a path. `Policy.fs` SELECTS; this module
@@ -216,3 +218,183 @@ module ZetaFsPolicy =
     let targetHistory = History KeepNone
     let sourceDurability = DurabilityDefault Durable
     let targetDurability = DurabilityDefault Buffered
+
+    let private opt64 (n: uint64 option) : string =
+        match n with
+        | None -> "-"
+        | Some x -> x.ToString(CultureInfo.InvariantCulture)
+
+    let formatKind (k: Kind) : string =
+        match k with
+        | History KeepAll -> "history keep-all"
+        | History KeepNone -> "history keep-none"
+        | History(Rolling(None, _, _)) -> "history keep-all"
+        | History(Rolling(Some n, phase, bytes)) ->
+            "history rolling "
+            + n.ToString(CultureInfo.InvariantCulture)
+            + " "
+            + opt64 phase
+            + " "
+            + opt64 bytes
+        | History(Regen(generatorId, _)) ->
+            if String.IsNullOrEmpty generatorId then
+                "history regen -"
+            else
+                "history regen " + Convert.ToHexString(Encoding.UTF8.GetBytes generatorId)
+        | Placement Single -> "placement single"
+        | Placement SinglePlusParity -> "placement single-plus-parity"
+        | Placement Stripe -> "placement stripe"
+        | Placement Mirror -> "placement mirror"
+        | DurabilityDefault Buffered -> "durability buffered"
+        | DurabilityDefault Journaled -> "durability journaled"
+        | DurabilityDefault Durable -> "durability durable"
+
+    let private parseOpt64 (s: string) : uint64 option =
+        if String.Equals(s, "-", StringComparison.Ordinal) then
+            None
+        else
+            match UInt64.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture) with
+            | true, n -> Some n
+            | _ -> None
+
+    let parseKind (parts: string[]) : Kind option =
+        if parts.Length < 2 then
+            None
+        elif String.Equals(parts.[0], "history", StringComparison.Ordinal) then
+            match parts.[1] with
+            | "keep-all" -> Some(History KeepAll)
+            | "keep-none" -> Some(History KeepNone)
+            | "rolling" when parts.Length >= 3 ->
+                match Int32.TryParse(parts.[2], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+                | true, n when n >= 1 ->
+                    let phase = if parts.Length >= 4 then parseOpt64 parts.[3] else None
+                    let bytes = if parts.Length >= 5 then parseOpt64 parts.[4] else None
+                    Some(History(Rolling(Some n, phase, bytes)))
+                | _ -> None
+            | "regen" when parts.Length >= 3 ->
+                if String.Equals(parts.[2], "-", StringComparison.Ordinal) then
+                    Some(History(Regen("", [])))
+                else
+                    try
+                        let id = Encoding.UTF8.GetString(Convert.FromHexString parts.[2])
+                        Some(History(Regen(id, [])))
+                    with _ ->
+                        None
+            | _ -> None
+        elif String.Equals(parts.[0], "placement", StringComparison.Ordinal) then
+            match parts.[1] with
+            | "single" -> Some(Placement Single)
+            | "single-plus-parity" -> Some(Placement SinglePlusParity)
+            | "stripe" -> Some(Placement Stripe)
+            | "mirror" -> Some(Placement Mirror)
+            | _ -> None
+        elif String.Equals(parts.[0], "durability", StringComparison.Ordinal) then
+            match parts.[1] with
+            | "buffered" -> Some(DurabilityDefault Buffered)
+            | "journaled" -> Some(DurabilityDefault Journaled)
+            | "durable" -> Some(DurabilityDefault Durable)
+            | _ -> None
+        else
+            None
+
+    let formatBinding (b: Binding) : string =
+        let asserter =
+            match b.Asserter with
+            | ZetaFsNamespace.ActorId a -> a
+
+        let ver = b.Phase.Stamp.Version.ToString(CultureInfo.InvariantCulture)
+        let payload = formatKind b.Kind
+
+        match b.Subject with
+        | VolumeDefault -> "volume-default " + payload + " " + asserter + " " + ver
+        | ByEntity id ->
+            "entity "
+            + ZetaFsNamespace.EntityId.format id
+            + " "
+            + payload
+            + " "
+            + asserter
+            + " "
+            + ver
+        | ByPrefix(parent, prefix) ->
+            "prefix "
+            + ZetaFsNamespace.EntityId.format parent
+            + " "
+            + Convert.ToHexString prefix
+            + " "
+            + payload
+            + " "
+            + asserter
+            + " "
+            + ver
+
+    let parseBinding (raw: string) : Binding option =
+        let parts = raw.Split(' ')
+
+        if parts.Length < 5 then
+            None
+        else
+            let asserter = ZetaFsNamespace.ActorId parts.[parts.Length - 2]
+
+            match Int64.TryParse(parts.[parts.Length - 1], NumberStyles.Integer, CultureInfo.InvariantCulture) with
+            | false, _ -> None
+            | true, ver ->
+                let phase: ZetaFsNamespace.FsPhase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 ver }
+
+                if String.Equals(parts.[0], "volume-default", StringComparison.Ordinal) then
+                    match parseKind parts.[1 .. parts.Length - 3] with
+                    | None -> None
+                    | Some kind ->
+                        Some
+                            { Subject = VolumeDefault
+                              Kind = kind
+                              Phase = phase
+                              Asserter = asserter }
+                elif String.Equals(parts.[0], "entity", StringComparison.Ordinal) && parts.Length >= 6 then
+                    match ZetaFsNamespace.EntityId.tryParse parts.[1], parseKind parts.[2 .. parts.Length - 3] with
+                    | Some id, Some kind ->
+                        Some
+                            { Subject = ByEntity id
+                              Kind = kind
+                              Phase = phase
+                              Asserter = asserter }
+                    | _ -> None
+                elif String.Equals(parts.[0], "prefix", StringComparison.Ordinal) && parts.Length >= 7 then
+                    match ZetaFsNamespace.EntityId.tryParse parts.[1], parseKind parts.[3 .. parts.Length - 3] with
+                    | Some parent, Some kind ->
+                        try
+                            let name = Convert.FromHexString parts.[2]
+
+                            Some
+                                { Subject = ByPrefix(parent, name)
+                                  Kind = kind
+                                  Phase = phase
+                                  Asserter = asserter }
+                        with _ ->
+                            None
+                    | _ -> None
+                else
+                    None
+
+    /// Oldest first on disk; load prepends so newest stays head.
+    let formatCatalog (catalog: Catalog) : string =
+        let sb = StringBuilder()
+
+        for b in List.rev catalog.Bindings do
+            sb.Append(formatBinding b).Append('\n') |> ignore
+
+        sb.ToString()
+
+    let parseCatalog (text: string) : Catalog =
+        let mutable acc = empty
+        let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+        for raw in lines do
+            if raw.Length > 0 then
+                match parseBinding raw with
+                | None -> ()
+                | Some b -> acc <- { Bindings = b :: acc.Bindings }
+
+        acc

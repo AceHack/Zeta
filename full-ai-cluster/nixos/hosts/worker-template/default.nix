@@ -21,7 +21,7 @@
 #
 # Hardware shape: x86_64, UEFI, 1+ internal disks (any size),
 # 1+ NVIDIA GPU. For AMD-only or Intel-only GPU nodes change the
-# `zeta.gpu-device-plugin.vendors` setting; for non-GPU workers
+# GPU nodes are labelled `zeta.io/gpu`; for non-GPU workers
 # drop the GPU imports entirely.
 
 { config, pkgs, lib, inputs, ... }:
@@ -38,7 +38,6 @@
     ../../modules/common.nix
     ../../modules/k3s-agent.nix
     ../../modules/gpu.nix
-    ../../modules/gpu-device-plugin.nix
     ../../modules/gpu-passthrough.nix
     ../../modules/docker.nix
     ../../modules/local-storage.nix
@@ -74,11 +73,12 @@
   # K3S join target — same for every worker in the cluster.
   services.k3s.serverAddr = "https://control-plane:6443";
 
-  # GPU device plugin vendor mix. Override per-host if AMD or Intel.
-  zeta.gpu-device-plugin = {
-    enable = true;
-    vendors = [ "nvidia" ];
-  };
+  # The GPU device plugin is declared on the CONTROL PLANE, not here. It installs via
+  # `services.k3s.manifests`, which only a k3s SERVER applies — declared on a role="agent"
+  # node the files are written and nothing reads them, so GPUs are never advertised to the
+  # scheduler (081M1XXA0FC087G0R002F92ZQC). Set the cluster's vendor mix on the control
+  # plane. This template still provides the hardware-level half below: drivers, the
+  # containerd runtime, and the `zeta.io/gpu` label the DaemonSet's nodeSelector targets.
 
   # VFIO passthrough off by default; enable per-host with PCI IDs.
   zeta.gpu-passthrough = {

@@ -1,0 +1,14 @@
+{
+  "id": "080d03dea817b010a0130008e6e5e514",
+  "at": "2026-09-07T12:25:52.630Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XXA0QN087G0R002AWMYGW",
+    "type": "task",
+    "title": "freeze bind copies policy satellite at first bind",
+    "slug": "freeze-bind-copies-policy-satellite-at-first-bind",
+    "priority": "P2",
+    "filename": "081M1XXA0QN087G0R002AWMYGW-freeze-bind-copies-policy-satellite-at-first-bind.md"
+  }
+}
