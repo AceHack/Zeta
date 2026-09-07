@@ -363,3 +363,194 @@ def test_child_count_and_trace_corruption_never_count_as_completed(
     assert isinstance(result.ObservedOutcome, f.PythonChildOutcome)
     assert result.ObservedOutcome.Process.ReturnCode == 0
     assert result.Code in ("ChildEntries", "ChildTrace")
+
+
+@pytest.mark.parametrize("point", ["entry", "return"])
+def test_abnormal_close_preserves_actual_trace_prefix_and_return(
+    tmp_path: Path,
+    python_sources: tuple[f.FixtureSource, ...],
+    monkeypatch: pytest.MonkeyPatch,
+    point: str,
+) -> None:
+    if point == "entry":
+        source = f._ENTRY.replace(
+            b"    result = identity.admit_python_identity(",
+            b"    raise RuntimeError('crash after collector entry')\n    result = identity.admit_python_identity(",
+        )
+    else:
+        source = f._ENTRY + b"\nraise RuntimeError('crash after collector return')\n"
+    assert source != f._ENTRY
+    monkeypatch.setattr(f, "_ENTRY", source)
+    result = f.run_identity_fixture(
+        "python/control", tmp_path / "case", python_sources=python_sources
+    )
+    assert isinstance(result, f.FixtureFailed) and result.CompletedOperation == 0
+    assert result.Code == "PythonChild" and result.Call is None
+    observed = result.ObservedOutcome
+    assert isinstance(observed, f.PythonChildOutcome)
+    assert observed.Process.ReturnCode == 1 and observed.CollectorEntries == 1
+    root = Path(result.Root or "")
+    lines = (root / observed.Trace).read_bytes().splitlines()
+    if point == "entry":
+        assert observed.TraceStatus == "entry-only"
+        assert observed.CollectorReturns == 0 and observed.CollectorResult is None
+        assert len(lines) == 1
+    else:
+        assert observed.TraceStatus == "complete" and observed.CollectorReturns == 1
+        assert observed.CollectorResult == json.loads(lines[1])["Result"]
+        assert isinstance(observed.CollectorResult, dict)
+        assert observed.CollectorResult["Type"] == f.IEEE + ".Success"
+    assert b"crash after collector" in (root / observed.Process.Stderr).read_bytes()
+
+
+@pytest.mark.parametrize("trace", [None, b"{truncated", b"{}\n"])
+def test_absent_or_invalid_initial_trace_is_unknown_not_zero(
+    tmp_path: Path,
+    python_sources: tuple[f.FixtureSource, ...],
+    monkeypatch: pytest.MonkeyPatch,
+    trace: bytes | None,
+) -> None:
+    code = b"import os\nfrom pathlib import Path\n"
+    if trace is not None:
+        code += (
+            f"(Path(os.environ['ZETA_IDENTITY_ROOT'])/'child-trace.jsonl').write_bytes({trace!r})\n"
+        ).encode("ascii")
+    code += b"raise RuntimeError('early crash')\n"
+    monkeypatch.setattr(f, "_ENTRY", code)
+    result = f.run_identity_fixture(
+        "python/control", tmp_path / "case", python_sources=python_sources
+    )
+    assert isinstance(result, f.FixtureFailed) and result.CompletedOperation == 0
+    observed = result.ObservedOutcome
+    assert isinstance(observed, f.PythonChildOutcome)
+    assert observed.CollectorEntries is None and observed.CollectorReturns is None
+    assert observed.CollectorResult is None
+    assert observed.TraceStatus == ("missing" if trace is None else "invalid-prefix")
+    assert observed.TraceDetail
+
+
+def test_valid_return_survives_later_malformed_trace_and_crash(
+    tmp_path: Path,
+    python_sources: tuple[f.FixtureSource, ...],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    code = (
+        f._ENTRY
+        + b"\nwith (root/'child-trace.jsonl').open('ab') as t: t.write(b'{partial')\nraise RuntimeError('late crash')\n"
+    )
+    monkeypatch.setattr(f, "_ENTRY", code)
+    result = f.run_identity_fixture(
+        "python/control", tmp_path / "case", python_sources=python_sources
+    )
+    assert isinstance(result, f.FixtureFailed) and result.CompletedOperation == 0
+    observed = result.ObservedOutcome
+    assert isinstance(observed, f.PythonChildOutcome)
+    assert observed.CollectorEntries == observed.CollectorReturns == 1
+    assert observed.CollectorResult is not None
+    assert observed.TraceStatus == "invalid-suffix"
+
+
+@pytest.mark.parametrize("destination", ["stdout", "stderr", "trace"])
+def test_actual_child_output_limit_refuses_and_retains_overshoot(
+    tmp_path: Path,
+    python_sources: tuple[f.FixtureSource, ...],
+    monkeypatch: pytest.MonkeyPatch,
+    destination: str,
+) -> None:
+    monkeypatch.setattr(f, "OUTPUT_BYTES", 1024)
+    monkeypatch.setattr(f, "TRACE_BYTES", 1024)
+    code = b"import os, sys, time\nfrom pathlib import Path\n"
+    if destination == "trace":
+        code += b"(Path(os.environ['ZETA_IDENTITY_ROOT'])/'child-trace.jsonl').write_bytes(b'x'*2048)\n"
+    else:
+        code += f"sys.{destination}.buffer.write(b'x'*2048)\nsys.{destination}.flush()\n".encode(
+            "ascii"
+        )
+    code += b"time.sleep(60)\n"
+    monkeypatch.setattr(f, "_ENTRY", code)
+    result = f.run_identity_fixture(
+        "python/control", tmp_path / "case", python_sources=python_sources
+    )
+    assert isinstance(result, f.FixtureFailed) and result.CompletedOperation == 0
+    observed = result.ObservedOutcome
+    assert isinstance(observed, f.PythonChildOutcome)
+    process = observed.Process
+    assert process.ResourceExceeded and not process.TimedOut
+    assert process.ReturnCode == -9 and process.Signal == 9
+    assert process.Error and "output size/type bound" in process.Error
+    assert process.PollSeconds == 0.02
+    name = {
+        "stdout": process.Stdout,
+        "stderr": process.Stderr,
+        "trace": observed.Trace,
+    }[destination]
+    assert (Path(result.Root or "") / name).read_bytes() == b"x" * 2048
+    if destination == "trace":
+        assert observed.TraceStatus == "unreadable"
+
+
+def test_oversized_supplied_source_refuses_before_owned_setup(
+    tmp_path: Path,
+    python_sources: tuple[f.FixtureSource, ...],
+) -> None:
+    original = python_sources[0]
+    oversized = f.FixtureSource(
+        original.Module, original.RelativePath, b"x" * (1024 * 1024 + 1)
+    )
+    root = tmp_path / "case"
+    result = f.run_identity_fixture(
+        "python/control", root, python_sources=(oversized, python_sources[1])
+    )
+    assert isinstance(result, f.FixtureFailed) and result.Code == "FixtureSources"
+    assert not root.exists() and result.Root is None
+
+
+def test_initial_file_bound_precedes_reader_and_hashing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "oversized").write_bytes(b"12345")
+    run = f._Run("source/control", tmp_path)
+
+    def trap(*args: object, **kwargs: object) -> Any:
+        pytest.fail("oversized file reached held-descriptor reader")
+
+    monkeypatch.setattr(storage, "read_exact", trap)
+    with pytest.raises(f._Stop, match="regular file within") as refused:
+        run.read("oversized", 4)
+    assert refused.value.code == "FixtureFileBound"
+
+
+def test_finite_producing_read_stops_at_initial_length_plus_one(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "growing").write_bytes(b"abc")
+    requests: list[int] = []
+
+    def finite_producer(descriptor: int, count: int) -> bytes:
+        requests.append(count)
+        assert len(requests) <= 1, "must not read until EOF"
+        return b"x" * count
+
+    monkeypatch.setattr(os, "read", finite_producer)
+    with pytest.raises(f._Stop) as refused:
+        f._Run("source/control", tmp_path).read("growing", 64)
+    assert requests == [4] and refused.value.code == "file-changed"
+
+
+@pytest.mark.parametrize(
+    "limit",
+    ["INVENTORY_FILES", "INVENTORY_BYTES", "INVENTORY_ENTRIES", "INVENTORY_DEPTH"],
+)
+def test_inventory_limits_retain_root_and_bounded_known_prefix(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, limit: str
+) -> None:
+    monkeypatch.setattr(f, limit, 1)
+    result = f.run_identity_fixture("source/control", tmp_path / "case")
+    assert (
+        isinstance(result, f.FixtureFailed) and result.Code == "FixtureInventoryBound"
+    )
+    assert result.CompletedOperation == 1 and result.Call is not None
+    assert result.Root == str(tmp_path / "case")
+    assert (tmp_path / "case" / "repository" / ".git").is_dir()
+    assert len(result.TraceFiles) <= f.INVENTORY_FILES
+    assert not (tmp_path / "case" / "manifest.json").exists()
