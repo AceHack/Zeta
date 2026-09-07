@@ -534,3 +534,134 @@ all method/closure/runtime admission flags remain false. The coordinator
 separately authorized one third attempt; actual revised source and outcome
 are separate review boundaries.
 [Extent-before-disassembly ordering](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/Strike/strike.cpp)
+
+## Third actual refusal: analyzer route stopped
+
+The final two-file source at
+`21774b94d251273bae9b8565c8ec9e0767bec662` is accepted for the separately
+authorized third attempt. It retains all three method queries before the
+cached-DAC observation, then attempts `u`; command errors and incomplete
+responses still refuse. It adds explicit owned analyzer PID/exit evidence.
+The source review included the actual command-session fixture that preserves
+an incomplete Begin prefix on EOF/error. The owner reports 15 passing tests;
+the reviewer did not execute them. A final comment adjustment accurately
+labels the extent-before-disassembly ordering as version-specific source
+guidance, not observed output.
+
+The [47 retained records](hidden-switch-compiled-validation/2026-09-07/native-dump-analysis-attempt-3/manifest.json)
+are committed by the owner as `f8ccb0ba36b16111c1846340ec14ff291b39dd46`.
+The reviewer verified every stored/raw length and hash, equality to the
+retained originals, and all three source-helper identities against the
+executed commit. An initial verification command used this producer's
+original `File` field as a stored filename and failed before validation;
+the corrected check used `StoredFile` and verified all 47 records. This was
+a review-script path error, not a diagnostic or source failure.
+
+Actual `u -n -o 000000010B720A20` also returned an unrecognized SOS command
+and the error delimiter. No Begin/size or other extent prefix exists.
+All three selected current method identities and cached DAC-path metadata
+were retained first. Driver exit two, analyzer PID 95240/exit zero,
+5,384 retained stdout bytes and empty cleanup failures remain separate.
+Completion is false at `u-predict`; every admission flag remains false.
+The cached DAC is the installed 10.0.11 file, 2,408,704 bytes, SHA256
+`f83d4ff7907e659312c49a730ac57aaca627eeed47828984c1e61bb2666307b2`.
+Its recorded annotation explicitly says not to verify; this is path/file
+correspondence, not loaded-binary or version-equivalence proof.
+
+Thus the export/source guidance did not establish actual host availability.
+The returned error does not demonstrate that `SOSHost.Disassemble` or its
+`E_NOTIMPL` callback was reached. The coordinator stopped this analyzer route;
+there are no further SOS attempts or automatic retries. Original failures
+remain unchanged. No raw dump was opened by this reviewer.
+
+## Installed ClrMD extent API and separate proposal
+
+Static installed IL confirms public `ClrMethod.HotColdInfo`, whose
+`HotColdRegions` value exposes unsigned hot/cold starts and sizes.
+The installed `Microsoft.Diagnostics.Runtime.dll` is 685,640 bytes, SHA256
+`45fe59b0e9d206b37616f0177279189b53a4eec50717dd6cd60c9d7c38a2a59e`.
+Package dependency metadata identifies version `4.0.0-beta.25610.1`;
+its informational version names source commit
+`41c1e91786141d37b26cfdfb8059fc522e81fb8d`.
+Seven bounded file-only IL inspections exited zero with empty stderr.
+Their 21 lossless records bring the static manifest to 45; 20 local file
+identities are recorded. The two constructor filters unexpectedly emitted
+the same broader constructor-only listing. Both original outputs are
+retained; inspection located the exact named class sections within them.
+This records actual installed API/IL, not a reproducible-build theorem or
+complete loaded-tool dependency proof.
+[Public regions type](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/HotColdRegions.cs)
+
+The installed method locator obtains MethodDesc and code-header data directly
+through the DAC. It builds these regions from the MethodDesc's current native
+address and code-header sizes; no SOS host disassembler is involved in that
+path. An IP lookup may resolve a MethodDesc whose current code version differs
+from the supplied historical IP. Exact current-body correspondence remains
+necessary, together with method token, signature and module association.
+[DAC method locator](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/DacImplementation/DacMethodLocator.cs)
+
+There is a concrete initialization hazard: this version interprets an empty
+symbol path as its default Microsoft server and creates a temporary symbol
+cache. `SetSymbolPath("")` does not disable lookup. The public dump loader
+constructs a target before the caller can replace its locator. A non-null
+custom locator supplied before the target constructor bypasses that default
+branch, as confirmed by installed IL. Local PE-file fallback can still occur
+outside the locator, so the locator is not a general filesystem isolation
+boundary or proof of physical dump bytes.
+[Symbol-path implementation](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/Implementation/SymbolGroup.cs),
+[target construction and local-file fallback](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/DataTarget.cs)
+
+The coordinator accepted this narrow source proposal and assigned its
+implementation to the native owner, with exact-source review before any dump
+query:
+
+1. Pin the helper, build inputs/outputs, exact installed ClrMD/dependencies,
+   host runtime and local DAC. Use no package download or installed-file edit.
+   Retain actual load observations separately from file snapshots.
+2. Reflect only the exact installed internal
+   `Microsoft.Diagnostics.Runtime.MacOS.MachOCoreReader` and its public
+   instance constructor `(string, Stream, bool)`. Use the held captured stream
+   with `leaveOpen=true`, cast to public `IDataReader`, and refuse a missing
+   or changed type/signature. This is a version-bound internal factory,
+   explicitly not a supported public dump-loader API.
+3. Give `CustomDataTarget` a non-null deny-all `IFileLocator` implementing all
+   four methods before constructing `DataTarget`. Do not fall back to
+   `LoadDump`, default symbol paths, network or cache construction. Preserve
+   bounded locator requests/refusals; parent environment/settings stay intact.
+4. Require exactly one matching platform/architecture/runtime module identity
+   and actual runtime version. Use the exact pinned DAC with
+   `ignoreMismatch=false` and an explicit `verifySignature=false` limitation.
+   The latter performs no publisher-signature verification. A mismatch is a
+   retained refusal, not permission to relax that flag or search elsewhere.
+5. Query only the three already declared body IPs with
+   `GetMethodByInstructionPointer`; immediately retain each method identity,
+   current `NativeCode` and `HotColdInfo`. Refuse null/wrong identity, zero hot
+   length, overflow, misalignment, overlap or inconsistent cold-region data.
+   A new or expanded region is metadata plus refusal, not permission to read
+   additional memory.
+6. Compare only the separately declared, bounded physical ranges using the
+   accepted Mach-O reader. Require full stored-file coverage and exact
+   compiler/body length and byte correspondence. ClrMD views never substitute
+   for that check. Preserve first failure, per-method prefixes, output limits,
+   owned process termination and cleanup results. Keep all complete-method,
+   closure and runtime admission flags false pending independent review.
+
+Installed IL confirms the precise reader constructor and the custom-target
+branch. Version-specific source confirms the explicit DAC path avoids search;
+the macOS version check reads the file's recorded version rather than trusting
+its directory spelling. No successful runtime-10 compatibility result is
+predicted from those APIs.
+[Internal Mach-O reader](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/MacOS/MachOCoreReader.cs),
+[custom target](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/CustomDataTarget.cs),
+[explicit DAC selection](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/Implementation/DotNetClrInfoProvider.cs),
+[macOS file-version check](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/Utilities/Platform/MacOSFunctions.cs)
+
+The library internally reads dump thread/module and runtime type metadata;
+the IP API uses heap/type services to recover its declaring type. This plan
+requests no heap, stack or object enumeration and publishes no unrelated
+memory. It does not claim that internal reads touch only the three code
+ranges. Local image fallback, internal-API compatibility and source-to-binary
+correspondence remain explicit limits. At this review point no helper was
+implemented or run by the reviewer, and no new diagnostic target, policy,
+registered stream or measurement occurred.
+[IP-to-method path](https://github.com/microsoft/clrmd/blob/41c1e91786141d37b26cfdfb8059fc522e81fb8d/src/Microsoft.Diagnostics.Runtime/ClrRuntime.cs)
