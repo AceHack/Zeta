@@ -187,6 +187,22 @@ The coordinator integrated these five Python modules and ran their combined
 focused suite: **152 passed in 5.14 seconds**. This checks the imported modules
 and storage correction together; it adds no native conformance or measurement.
 
+Later [loaded-Python identity validation](../../2026-09-07-hidden-switch-compiled-python-identity-validation.md)
+retains the 53-case collector and its FIFO/bounded-read repairs. The
+[old-control replay](../../2026-09-07-hidden-switch-compiled-old-replay-validation.md)
+checks all 24 complete old records and 1,944 exact numeric values, with 57
+focused tests. Signed-zero decoding now preserves native lexical `-0` before
+that comparison, with 51 primitive tests and independent acceptance of
+`51f74ca17`. The old source and result archives remain unchanged.
+
+The [binary-buffer replay validation](../../2026-09-07-hidden-switch-compiled-choice-buffer-validation.md)
+records source `a561868de`, 54 focused tests, independent acceptance and an
+integrated **401-test pass** across ten compiled-study Python modules. It
+retains the failed additional strict-test audit and distinguishes the passing
+configured 59-file lane check from strict checking of ten implementation
+modules. Every binary invocation is decoded and compared; this does not
+substitute for source/runtime, roster, schedule or whole-phase admission.
+
 These implementation slices follow PR #16928's verified main publication
 and the fresh [co-claim](../../../claims/task-hidden-switch-compiled-20260907.md)
 at `d6ec464f4`. The immutable registration is unchanged. Complete native
@@ -207,6 +223,18 @@ The later [native graph feasibility record](native-graph-feasibility.md) and
 [prelaunch review](../../2026-09-07-hidden-switch-compiled-graph-prelaunch-review.md)
 pin initial collector `efc8dbe62` and five synthetic capture tests. This is an
 explicitly bounded callable-prefix probe, with false body/runtime-admission
-flags. Its initial live launch subsequently refused on a changing loaded-image
-count; the native owner is preserving that raw attempt and reviewing the
-collection correction. No new registered stream or timing has run.
+flags. Its initial live launch refused on a changing loaded-image count.
+The [prefix review](../../2026-09-07-hidden-switch-compiled-prefix-feasibility-review.md)
+retains that first attempt, the second attempt's completion-transport refusal
+and the successful third attempt. All three preserve their original evidence;
+callable prefixes alone do not establish executing method bodies.
+
+The [candidate-body instrument](native-candidate-bodies.md) and
+[independent source review](../../2026-09-07-hidden-switch-compiled-candidate-body-review.md)
+pin `5ff11d7e5`, fourteen synthetic debugger fixtures, 21 native tests and
+the mapped build/wiring evidence. Attempt four retains 123 independently
+decoded candidate spans, 33,444 bytes and ten scalar/vector literals across
+768 lossless records. Both native/debugger exits were successful. The
+floating-point status changed while the observed control register remained
+zero; no cause is inferred. Runtime, full body and call-closure admission
+remain false. No new registered stream or timing has run.

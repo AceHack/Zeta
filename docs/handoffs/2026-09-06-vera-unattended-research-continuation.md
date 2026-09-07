@@ -301,6 +301,16 @@ executing-code admission remain pending; the compiled study's new streams and
 timing are still unopened, with no implementation archive yet. Earlier test
 counts below are dated checkpoints, not a count of this expanded tree.
 
+The later compiled checkpoint has an exact 62,458-byte native/independent
+certificate match, 21 integrated native tests and 401 focused Python tests.
+Independent review accepted exact old-control and every-invocation binary
+replay. Four retained debugger attempts culminated in 123 candidate spans
+and ten bound literals; actual guard-object contents and indirect-call
+closure remain under inspection. Runtime admission is still false, no
+implementation archive exists, and the 9307/9409 streams remain unopened.
+The validation index preserves the initial failures, repairs and exact scopes;
+none of these implementation tests is a registered cost result.
+
 [PR #16949](https://github.com/Lucent-Financial-Group/Zeta/pull/16949) has also
 merged as `7fafe1f883599840c5e65c08ce5ebcaec3a0365d`. Its
 [publication proof](../research/merge-observe-pagination-validation/2026-09-07/publication/README.md)
