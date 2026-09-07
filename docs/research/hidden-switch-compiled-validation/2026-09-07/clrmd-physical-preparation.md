@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: reviewed source and synthetic preparation; query pending
+Artifact status: three actual current-extent comparisons; full admission pending
 
 Source `2f068ba34da612f82370c64cef4e38a909e7edd5` adds an isolated file-backed
 metadata helper, with no study assembly reference. It uses the already
@@ -111,8 +111,10 @@ The raw dump remains local-only at the writer's
 `.git/hidden-switch-compiled-dump-attempt-2/graph.core`, 6,208,508,456 bytes,
 SHA256 `7584B8D3E56DAFA79CAE8C954C03C2587AC25134CAA970F67CE530FDE17D3709`.
 Raw target DLL/config copies remain local-only beside it under `target-files`;
-their complete identities are preserved in the capture inventory. No dump
-memory is published or broadly scanned.
+their complete identities are preserved in the capture inventory. No unrelated dump memory is published. Full-file hashing reads every byte;
+the physical driver parses format/segment metadata and explicitly queries
+only the declared code-chain ranges. ClrMD/DAC can read additional internal
+module/type/thread metadata; this boundary does not restrict library reads.
 
 The [first metadata-attempt inventory](clrmd-attempt-1/manifest.json) retains
 26 lossless records. Three physically stored callable/cell/body chains matched
@@ -130,7 +132,62 @@ result or extent prefix. The original helper module/config bytes were copied
 locally after failure and checked against their prelaunch fingerprints; that
 is explicitly post-failure custody, not a prelaunch copy claim.
 
-No retry has replaced this attempt. A narrow explicit FSharp.Core package
-reference and a separately numbered reviewed recovery are pending. The
-captured target/dump bytes remain unchanged and no study source is modified
-by this helper-only correction. All full admission flags remain false.
+The separately numbered dependency recovery below does not replace this
+attempt. The captured target/dump bytes remain unchanged and no study source
+is modified by the helper-only correction. All full admission flags remain
+false.
+
+## Reviewed dependency recovery and actual extent agreement
+
+Recovery source `c1cf790218d0584330743cf0178f9dc75772c439` explicitly references
+the existing central FSharp.Core 10.1.400 package. It checks the actual loaded
+language-runtime assembly's 2,405,712-byte file against SHA256
+`454275E6F64F26C19F989CC0E0C43A2EAF41705FC0F456097FAA1DA445139394`
+before dump reading, independently of the unchanged thirteen ClrMD assets.
+The bounded helper inventory now includes all thirteen locale-resource DLLs,
+31 module/config files total under its existing limit of 32. This is file
+custody, not a claim about complete actual assembly loading. The explicit
+cached-package build passed in 2.41 seconds, zero warnings/errors; 23 Python
+fixtures and Ruff also passed. No package installation/download occurred.
+
+The [separate startup inventory](clrmd-startup-attempt-1/manifest.json) retains
+42 lossless records. PID 85961 reached the exact no-arguments usage response
+and returned expected exit two at 22:26:30.098526 UTC, with empty stdout,
+unchanged source/module pins and all 31 exclusive helper copies. No input or
+dump path was supplied. This successful executable-loading regression is
+separate from the actual metadata query.
+
+The [second metadata inventory](clrmd-attempt-2/manifest.json) retains 28
+lossless records from the reviewed recovery source. Helper PID 86223 and the
+driver both exited zero, finishing at 22:27:03.119799 UTC, with no first or
+cleanup failure. All three actual DAC current hot extents exactly equal the
+fresh physically stored compiler candidates: 252, 532 and 224 bytes, 1,008
+total. All cold starts/sizes are zero. Actual tokens, full signatures,
+current body addresses and module-file associations matched the declared
+three methods; no range expansion or historical-version substitution passed.
+
+The 74,297-byte journal retains 402 records. Complete runtime enumeration was
+explicitly enabled; the actual target version was 10.0.1126.37416 and build ID
+`6CB64FF242FF30EABC454640FA3B0D03`, matched under the exact installed runtime
+file hash. The helper observed the requested local DAC path/header and its
+expected file identity, with zero locator requests. Its raw dyld counts were
+358 before, 358 after copying and 358 after file identity work. These equal
+counts remain a non-atomic observation. The managed-assembly count changed
+from 23 to 28 across observations; no complete stable load-closure claim is
+inferred. File identity does not prove loaded-memory byte equality or a
+verified publisher signature.
+
+The startup's local helper copies independently match all actual query
+prelaunch pins and still match their raw files afterward; the derived
+association record identifies its post-query verification timing. Original
+study input/module identities and the same fresh dump remained unchanged.
+Raw dump and copied executable files remain local-only custody. There is no
+additional driver memory-range query or unrelated memory publication; full
+hashing and ClrMD/DAC internal metadata reads remain explicitly admitted.
+
+This establishes a bounded three-method extent correspondence, not complete
+reachable call closure, guard-object/selector-register association, native
+helper correctness or full runtime admission. `RuntimeAdmitted`,
+`BodyResolved` and `ClosureAdmitted` remain false in the actual records. The
+next scope requires separate review of a finite expanded method/call roster;
+no additional query is authorized merely by this successful comparison.
