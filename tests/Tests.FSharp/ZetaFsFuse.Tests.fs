@@ -97,3 +97,38 @@ let ``open write read release round-trips; write on a dir is EISDIR`` () =
                 | other -> Assert.Fail(sprintf "read after release must miss, got %A" other)
             | other -> Assert.Fail(sprintf "open: %A" other)
         | other -> Assert.Fail(sprintf "create: %A" other))
+
+[<Fact>]
+let ``mkdir unlink rmdir symlink rename through the dispatcher`` () =
+    withSession "/fuse-more" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "d")) with
+        | ZetaFsFuse.Node dir ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(dir.Id, utf8 "a")) with
+            | ZetaFsFuse.Node _ -> ()
+            | other -> Assert.Fail(sprintf "create in dir: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Rmdir(root, utf8 "d")) with
+            | ZetaFsFuse.Fail ZetaFsFuse.ENOTEMPTY -> ()
+            | other -> Assert.Fail(sprintf "rmdir full: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Unlink(dir.Id, utf8 "a")) with
+            | ZetaFsFuse.Done -> ()
+            | other -> Assert.Fail(sprintf "unlink: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Rmdir(root, utf8 "d")) with
+            | ZetaFsFuse.Done -> ()
+            | other -> Assert.Fail(sprintf "rmdir empty: %A" other)
+        | other -> Assert.Fail(sprintf "mkdir: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node _ -> ()
+        | other -> Assert.Fail(sprintf "create a: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Rename(root, utf8 "a", root, utf8 "b")) with
+        | ZetaFsFuse.Done -> ()
+        | other -> Assert.Fail(sprintf "rename: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(root, utf8 "a")) with
+        | ZetaFsFuse.Fail ZetaFsFuse.ENOENT -> ()
+        | other -> Assert.Fail(sprintf "old name: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Symlink(root, utf8 "l", utf8 "b")) with
+        | ZetaFsFuse.Node link ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Readlink link.Id) with
+            | ZetaFsFuse.Bytes b -> Assert.True(sameBytes (utf8 "b") b)
+            | other -> Assert.Fail(sprintf "readlink: %A" other)
+        | other -> Assert.Fail(sprintf "symlink: %A" other))

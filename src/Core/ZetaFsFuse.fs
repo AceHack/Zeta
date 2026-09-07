@@ -28,6 +28,12 @@ module ZetaFsFuse =
         | Getattr of id: uint64
         | Readdir of id: uint64
         | Create of parent: uint64 * name: byte[]
+        | Mkdir of parent: uint64 * name: byte[]
+        | Unlink of parent: uint64 * name: byte[]
+        | Rmdir of parent: uint64 * name: byte[]
+        | Symlink of parent: uint64 * name: byte[] * target: byte[]
+        | Readlink of id: uint64
+        | Rename of srcParent: uint64 * srcName: byte[] * dstParent: uint64 * dstName: byte[]
         | Open of id: uint64
         | Read of fh: uint64 * offset: int64 * size: int
         | Write of fh: uint64 * offset: int64 * data: byte[]
@@ -41,6 +47,7 @@ module ZetaFsFuse =
         | Bytes of byte[]
         | Written of int
         | Released
+        | Done
         | Fail of Errno
 
     type Session =
@@ -109,6 +116,59 @@ module ZetaFsFuse =
                 | Result.Ok(node, mount) ->
                     session.Mount <- mount
                     Node node
+
+        | Mkdir(parentId, name) ->
+            match nodeOf session parentId with
+            | Result.Error e -> Fail e
+            | Result.Ok parent ->
+                match ZetaFsPosixVfs.mkdir session.Mount parent name with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok(node, mount) ->
+                    session.Mount <- mount
+                    Node node
+
+        | Unlink(parentId, name) ->
+            match nodeOf session parentId with
+            | Result.Error e -> Fail e
+            | Result.Ok parent ->
+                match ZetaFsPosixVfs.unlink session.Mount parent name with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok() -> Done
+
+        | Rmdir(parentId, name) ->
+            match nodeOf session parentId with
+            | Result.Error e -> Fail e
+            | Result.Ok parent ->
+                match ZetaFsPosixVfs.rmdir session.Mount parent name with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok() -> Done
+
+        | Symlink(parentId, name, target) ->
+            match nodeOf session parentId with
+            | Result.Error e -> Fail e
+            | Result.Ok parent ->
+                match ZetaFsPosixVfs.symlink session.Mount parent name target with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok(node, mount) ->
+                    session.Mount <- mount
+                    Node node
+
+        | Readlink id ->
+            match nodeOf session id with
+            | Result.Error e -> Fail e
+            | Result.Ok node ->
+                match ZetaFsPosixVfs.readlink session.Mount node with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok bytes -> Bytes bytes
+
+        | Rename(srcParentId, srcName, dstParentId, dstName) ->
+            match nodeOf session srcParentId, nodeOf session dstParentId with
+            | Result.Error e, _ -> Fail e
+            | _, Result.Error e -> Fail e
+            | Result.Ok srcParent, Result.Ok dstParent ->
+                match ZetaFsPosixVfs.rename session.Mount srcParent srcName dstParent dstName with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok() -> Done
 
         | Open id ->
             match nodeOf session id with
