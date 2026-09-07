@@ -1,0 +1,14 @@
+{
+  "FinishedAtUtc": "2026-09-07T10:47:15.676260+00:00",
+  "ElapsedSeconds": 284.14538316699327,
+  "ExitCode": 0,
+  "TimedOut": false,
+  "CompletionMarker": true,
+  "DistinctStates": 4665495,
+  "DiagnosticPassed": true,
+  "PinnedGatePassed": false,
+  "InputBytesUnchanged": true,
+  "StdoutSha256": "873e7f0665f093bf4482af481004cf205b84d63abfa4282dbdf81d643ec193d7",
+  "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "CrashReports": []
+}

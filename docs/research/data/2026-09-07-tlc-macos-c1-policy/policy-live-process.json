@@ -1,0 +1,10 @@
+{
+  "CapturedAtUtc": "2026-09-07T11:14:00.684325+00:00",
+  "Scope": "Read-only snapshot of this writer TLC child processes during full candidate gate",
+  "Processes": [
+    {
+      "Pid": 10983,
+      "ArgvDisplay": "java -Xms64m -Xmx4g -XX:+UseSerialGC -XX:-UseTypeSpeculation -XX:TieredStopAtLevel=1 -XX:ErrorFile=/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc_run_BftConsensus_ed289771-e1c1-4b30-9641-d5d7c9890eec/hs_err_pid%p.log -cp /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar tlc2.TLC -metadir /var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc_run_BftConsensus_ed289771-e1c1-4b30-9641-d5d7c9890eec -workers 1 -config BftConsensus.cfg BftConsensus"
+    }
+  ]
+}

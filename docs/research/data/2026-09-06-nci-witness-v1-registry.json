@@ -8,7 +8,7 @@
   },
   "invocation": {
     "jvm": ["-Xms64m", "-Xmx4g", "-XX:+UseSerialGC"],
-    "jvmDarwinArm64Extra": ["-XX:-UseTypeSpeculation", "-XX:TieredStopAtLevel=1"],
+    "jvmDarwinArm64Extra": ["-XX:-UseTypeSpeculation"],
     "workers": 1,
     "note": "workers=1 is PINNED, not incidental. State counts for runs that HALT ON VIOLATION depend on worker count and exploration order; the 2026-08-13 figures came from a 4-worker run and disagreed with the single-worker gate. Exhaustive runs (0 states left on queue) are worker-independent, which is why only those carry an asserted distinctStates. No -deadlock flag exists here by construction: deadlock checking is declared per model in the .cfg as CHECK_DEADLOCK, never on a command line."
   },

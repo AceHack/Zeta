@@ -51,9 +51,20 @@ describe("buildTlcArgv", () => {
     }
   });
 
-  test("keeps the macOS arm64 C2 workaround and nowhere else", () => {
-    expect(tlcJvmArguments(registry, "darwin", "arm64")).toContain("-XX:-UseTypeSpeculation");
-    expect(tlcJvmArguments(registry, "linux", "x64")).not.toContain("-XX:-UseTypeSpeculation");
+  test("uses C1 only on macOS arm64 without changing common JVM flags", () => {
+    expect(registry.invocation.jvmDarwinArm64Extra).toEqual([
+      "-XX:-UseTypeSpeculation", "-XX:TieredStopAtLevel=1",
+    ]);
+    expect(tlcJvmArguments(registry, "darwin", "arm64")).toEqual([
+      ...registry.invocation.jvm, "-XX:-UseTypeSpeculation", "-XX:TieredStopAtLevel=1",
+    ]);
+    for (const [platform, architecture] of [
+      ["darwin", "x64"], ["linux", "x64"], ["linux", "arm64"],
+      ["win32", "x64"], ["win32", "arm64"],
+    ] as const) {
+      expect(tlcJvmArguments(registry, platform, architecture)).toEqual(registry.invocation.jvm);
+      expect(tlcJvmArguments(registry, platform, architecture)).not.toContain("-XX:TieredStopAtLevel=1");
+    }
   });
 
   test("invocationLine is copy-pasteable next to a recorded result", () => {
