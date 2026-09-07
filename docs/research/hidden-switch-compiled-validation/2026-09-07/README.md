@@ -217,6 +217,18 @@ at `d6ec464f4`. The immutable registration is unchanged. Complete native
 conformance, executing-code admission and a separate reviewed implementation
 archive remain prerequisites to every new registered stream and measurement.
 
+The later [exact cost schedule](../../2026-09-07-hidden-switch-compiled-schedule-validation.md)
+pins `33f66f382`, eighty focused tests and independent read-only acceptance.
+All fifty row headers enforce fixed order, strategy rotation and separate
+action/episode counts. Header conformance alone admits no measured payload,
+resource ledger or executing process.
+
+The [falsifier design](../../2026-09-07-hidden-switch-compiled-falsifier-design.md)
+closes the explicit 10 invocation, 10 intervention and 53 refusal-operation
+witnesses. Its [source review](../../2026-09-07-hidden-switch-compiled-falsifier-source-review.md)
+separately accepts the strengthened pure checker at `4722b7ae2`; native
+collection and the separately replayed outer-negative artifact remain open.
+
 ## Installed runtime and actual graph readiness
 
 The [independent readiness review](../../2026-09-07-hidden-switch-compiled-runtime-readiness-review.md)
@@ -246,3 +258,18 @@ decoded candidate spans, 33,444 bytes and ten scalar/vector literals across
 floating-point status changed while the observed control register remained
 zero; no cause is inferred. Runtime, full body and call-closure admission
 remain false. No new registered stream or timing has run.
+
+Attempt five adds same-object guard getter/raw-byte correspondence and static
+call-cell reads: 123 candidate spans, 33,496 bytes and ten literals, retained
+in 2,550 lossless records. The [actual-evidence review](../../2026-09-07-hidden-switch-compiled-candidate-evidence-review.md)
+preserves the 32 unresolved indirect transfers and the distinction between
+object bytes and proven generated selector layout. The later native
+conformance-boundary refactor requires refreshed graph evidence; an earlier
+capture cannot admit changed executing code.
+
+The [SOS feasibility review](../../2026-09-07-hidden-switch-compiled-sos-feasibility-review.md)
+retains both no-target debugger-host failures, including the explicit runtime
+10 variant, their crash reports and lossless manifests. Both stopped at the
+host's Mach-port guard before any study target ran. The read-only alternative
+tool inventory and proposed offline dump path do not establish method extents.
+Body, closure, layout and runtime admission remain false.
