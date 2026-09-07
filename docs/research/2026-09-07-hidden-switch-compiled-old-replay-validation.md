@@ -166,3 +166,7 @@ preservation remains a required raw-decoder precondition.
 The reviewer ran no task imports, tests or policies. The reported fixture
 execution remains old-Python-produced evidence, with native conformance and
 runtime admission outside this bounded read-only acceptance.
+
+The subsequent [falsifier contract design](2026-09-07-hidden-switch-compiled-falsifier-design.md)
+links this complete old-control slice to proposed section-D coverage. That
+design is a separate implementation draft and adds no execution claim here.
