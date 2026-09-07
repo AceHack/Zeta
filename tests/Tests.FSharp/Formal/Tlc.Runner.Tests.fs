@@ -9,6 +9,7 @@ open System.Diagnostics
 open System.IO
 open System.Text.Json
 open System.Threading
+open System.Threading.Tasks
 open FsUnit.Xunit
 open global.Xunit
 
@@ -773,7 +774,7 @@ let ``owned process capture retains probe streams and bounds timeout without Jav
         Assert.Contains("error sentinel", File.ReadAllText stderr)
         Assert.ThrowsAny<System.ComponentModel.Win32Exception>(fun () ->
             TlcAttempts.captureProcess (Path.Combine(scratch, "missing-executable")) [] scratch (Path.Combine(scratch, "missing-out")) (Path.Combine(scratch, "missing-err")) (Some 100) |> ignore) |> ignore
-        let timed = TlcAttempts.captureProcess bun ["-e"; "setTimeout(()=>{},10000)"] scratch (Path.Combine(scratch, "timed-out")) (Path.Combine(scratch, "timed-err")) (Some 40)
+        let timed = TlcAttempts.captureProcess bun ["-e"; "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)"] scratch (Path.Combine(scratch, "timed-out")) (Path.Combine(scratch, "timed-err")) (Some 40)
         Assert.True timed.TimedOut
         Assert.False(not timed.TimedOut && shouldRetryJvmStart 1 timed.ExitCode "Error occurred during initialization of VM")
         let partial = Path.Combine(scratch, "partial-open")
@@ -786,31 +787,100 @@ let ``owned process capture retains probe streams and bounds timeout without Jav
 
 
 [<Fact>]
-let ``probe deadline covers inherited pipes after the launcher exits`` () =
-    let scratch = Path.Combine(Path.GetTempPath(), "tlc-inherited-pipe-fixture-" + Guid.NewGuid().ToString("N"))
+let ``probe cancellation drains inherited pipes after observed launcher exit`` () =
+    let scratch = Path.Combine(repoRoot, "TestResults", "tlc-diagnostics", "inherited-pipe-fixture-" + Guid.NewGuid().ToString("N"))
     Directory.CreateDirectory scratch |> ignore
     let stdout = Path.Combine(scratch, "stdout.log")
+    let stderr = Path.Combine(scratch, "stderr.log")
+    let pidPath = Path.Combine(scratch, "child.pid")
+    let mutable complete = false
+    let mutable stage = "setup"
+    let mutable primaryFailure: exn option = None
+    let mutable capture: Task<TlcAttempts.ProcessCapture> option = None
+    use launcher = new Process()
+    use deadline = new CancellationTokenSource()
+    let recordFailure name (value: obj) =
+        try File.WriteAllText(Path.Combine(scratch, name), JsonSerializer.Serialize value)
+        with writeError ->
+            // Diagnostic storage failure must not replace the original assertion.
+            try Console.Error.WriteLine("Fixture diagnostic write failed at " + scratch + ": " + writeError.ToString())
+            with _ -> ()
     try
-        let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
-        let script = "const child=Bun.spawn([process.execPath,'-e','setTimeout(()=>{},10000)'],{stdout:'inherit',stderr:'inherit'});child.unref();console.log(child.pid);process.exit(0)"
-        let clock = Stopwatch.StartNew()
-        let captured = TlcAttempts.captureProcess bun ["-e"; script] scratch stdout (Path.Combine(scratch, "stderr.log")) (Some 500)
-        clock.Stop()
-        Assert.Equal(0, captured.ExitCode)
-        Assert.True captured.TimedOut
-        Assert.True(clock.Elapsed.TotalSeconds < 3.0, "inherited-pipe drain exceeded the complete capture deadline: " + string clock.Elapsed)
-        let pid = Int32.Parse(File.ReadAllText(stdout).Trim(), Globalization.CultureInfo.InvariantCulture)
-        use child = Process.GetProcessById pid
-        Assert.False child.HasExited
-    finally
-        // A parent already exited cannot supply a descendant tree to Kill(true).
-        // This hand fixture owns and explicitly cleans its printed child PID.
-        if File.Exists stdout then
-            match Int32.TryParse(File.ReadAllText(stdout).Trim(), Globalization.NumberStyles.None, Globalization.CultureInfo.InvariantCulture) with
-            | true, pid ->
+        // Successful cleanup joins capture before disposal. A bounded join failure
+        // remains a retained failure, not a claim that all work became quiescent.
+        use stdoutFile = new FileStream(stdout, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+        use stderrFile = new FileStream(stderr, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+        try
+            try
+                let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
+                // PID ownership is independent of the drain path under test. Rename
+                // publishes complete bytes; readiness/exit precede cancellation.
+                let script = "const fs=require('node:fs');const child=Bun.spawn([process.execPath,'-e','Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)'],{stdout:'inherit',stderr:'inherit'});child.unref();fs.writeFileSync(process.argv[1]+'.partial',String(child.pid));fs.renameSync(process.argv[1]+'.partial',process.argv[1]);console.log(child.pid);process.exit(0)"
+                let info = ProcessStartInfo(bun)
+                info.WorkingDirectory <- scratch
+                info.UseShellExecute <- false
+                info.RedirectStandardOutput <- true
+                info.RedirectStandardError <- true
+                for arg in ["-e"; script; pidPath] do info.ArgumentList.Add arg
+                launcher.StartInfo <- info
+                File.WriteAllText(Path.Combine(scratch, "fixture.json"), JsonSerializer.Serialize
+                    {| Kind = "synthetic-inherited-pipe-cancellation"; Executable = bun
+                       Argv = [|"-e"; script; pidPath|]; SetupPatienceMilliseconds = 10000
+                       DeadlineMode = "cancel only after readiness and observed launcher exit" |})
+                let running = Task.Run(fun () -> TlcAttempts.captureProcessWithDeadline launcher stdoutFile stderrFile deadline)
+                capture <- Some running
+                Assert.True(SpinWait.SpinUntil((fun () -> File.Exists pidPath || running.IsCompleted), 10000), "fixture readiness not observed; retained: " + scratch)
+                if running.IsCompleted then running.GetAwaiter().GetResult() |> ignore
+                Assert.True(File.Exists pidPath, "fixture child PID not published; retained: " + scratch)
+                Assert.True(launcher.WaitForExit(10000), "launcher exit not observed; retained: " + scratch)
+                Assert.Equal(0, launcher.ExitCode)
+                let pid = Int32.Parse(File.ReadAllText(pidPath).Trim(), Globalization.CultureInfo.InvariantCulture)
+                use child = Process.GetProcessById pid
+                Assert.False child.HasExited
+                Assert.False running.IsCompleted
+                stage <- "cancel-and-drain"
+                deadline.Cancel()
+                Assert.True(running.Wait(10000), "cancelled pipe drain did not finish; retained: " + scratch)
+                let captured = running.GetAwaiter().GetResult()
+                Assert.Equal(0, captured.ExitCode)
+                Assert.True captured.TimedOut
+                Assert.False child.HasExited
+                Assert.Equal(pid.ToString(Globalization.CultureInfo.InvariantCulture), File.ReadAllText(stdout).Trim())
+            with error ->
+                primaryFailure <- Some error
+                recordFailure "fixture-failure.json" (box {| Stage = stage; Error = error.ToString() |})
+                try Console.Error.WriteLine("Inherited-pipe fixture retained at " + scratch)
+                with _ -> ()
+                reraise()
+        finally
+            // Cancellation does not claim to isolate an exited launcher's child.
+            // This fixture explicitly owns and cleans the separately recorded PID.
+            let cleanupFailures = ResizeArray<string>()
+            let clean action =
+                try action()
+                with error -> cleanupFailures.Add(error.ToString())
+            clean (fun () -> deadline.Cancel())
+            clean (fun () ->
                 try
-                    use child = Process.GetProcessById pid
-                    if not child.HasExited then child.Kill true
-                with :? ArgumentException -> ()
-            | _ -> ()
-        Directory.Delete(scratch, true)
+                    if not launcher.HasExited then launcher.Kill true
+                with :? InvalidOperationException -> ())
+            clean (fun () ->
+                if File.Exists pidPath then
+                    let pid = Int32.Parse(File.ReadAllText(pidPath).Trim(), Globalization.CultureInfo.InvariantCulture)
+                    try
+                        use child = Process.GetProcessById pid
+                        if not child.HasExited then child.Kill true
+                    with :? ArgumentException -> ())
+            // Kill closes the fixture's inherited pipes even if cancellation regresses.
+            clean (fun () ->
+                match capture with
+                | Some running ->
+                    Assert.True(running.Wait(10000), "fixture capture did not join after owned cleanup; retained: " + scratch)
+                    running.GetAwaiter().GetResult() |> ignore
+                | None -> ())
+            if cleanupFailures.Count <> 0 then
+                recordFailure "cleanup-failure.json" (box (cleanupFailures.ToArray()))
+                if primaryFailure.IsNone then invalidOp ("fixture cleanup failed; retained: " + scratch + "; " + String.concat "\n" cleanupFailures)
+        complete <- true
+    finally
+        if complete then Directory.Delete(scratch, true)

@@ -17,22 +17,10 @@ type Attempt =
 type PreparationFailure = { Directory: string; Error: string }
 type ProcessCapture = { ExitCode: int; TimedOut: bool }
 
-/// File ownership survives failed launch or second-stream opening. The optional
-/// deadline is for metadata probes; the F# model checker retains its existing no-timeout policy.
-let captureProcess executable (argv: string seq) cwd stdout stderr (timeout: int option) =
-    let info = ProcessStartInfo(executable)
-    info.WorkingDirectory <- cwd
-    info.UseShellExecute <- false
-    info.RedirectStandardOutput <- true
-    info.RedirectStandardError <- true
-    for argument in argv do info.ArgumentList.Add argument
-    use stdoutFile = new FileStream(stdout, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
-    use stderrFile = new FileStream(stderr, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
-    use deadline = new CancellationTokenSource()
-    match timeout with
-    | Some milliseconds -> deadline.CancelAfter milliseconds
-    | None -> ()
-    use proc = Process.Start info
+/// Start and drain one real process under one caller-owned cancellation source.
+/// The caller owns the process, streams and token until this operation completes.
+let captureProcessWithDeadline (proc: Process) (stdoutFile: FileStream) (stderrFile: FileStream) (deadline: CancellationTokenSource) =
+    if not (proc.Start()) then invalidOp "process did not start"
     let copyOut = proc.StandardOutput.BaseStream.CopyToAsync(stdoutFile, deadline.Token)
     let copyErr = proc.StandardError.BaseStream.CopyToAsync(stderrFile, deadline.Token)
     let exit = proc.WaitForExitAsync deadline.Token
@@ -49,6 +37,24 @@ let captureProcess executable (argv: string seq) cwd stdout stderr (timeout: int
     stdoutFile.Flush true
     stderrFile.Flush true
     { ExitCode = proc.ExitCode; TimedOut = timedOut }
+
+/// File ownership survives failed launch or second-stream opening. The optional
+/// deadline is for metadata probes; the F# model checker retains its existing no-timeout policy.
+let captureProcess executable (argv: string seq) cwd stdout stderr (timeout: int option) =
+    let info = ProcessStartInfo(executable)
+    info.WorkingDirectory <- cwd
+    info.UseShellExecute <- false
+    info.RedirectStandardOutput <- true
+    info.RedirectStandardError <- true
+    for argument in argv do info.ArgumentList.Add argument
+    use stdoutFile = new FileStream(stdout, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+    use stderrFile = new FileStream(stderr, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+    use deadline = new CancellationTokenSource()
+    match timeout with
+    | Some milliseconds -> deadline.CancelAfter milliseconds
+    | None -> ()
+    use proc = new Process(StartInfo = info)
+    captureProcessWithDeadline proc stdoutFile stderrFile deadline
 
 let identifyFile name path =
     use stream = File.OpenRead path
