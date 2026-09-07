@@ -18,15 +18,15 @@ in the collection sites, ordered DTOs or counter semantics below.
 
 The ten intervention rows preserve the agreed kind/strategy order. Each
 choice commits before the actual carrier transition; feedback state remains
-receipt data. The future-suffix case copies the tape and flips drift index8,
-which can first change state/cue9. The scorer intervention changes only recorded
+receipt data. The future-suffix case copies the tape and flips drift index 8,
+which can first change state/cue 9. The scorer intervention changes only recorded
 rewards after the real transition. The separate band intervention replaces
-exactly the lower512 cells before projection. Caller isolation mutates the
+exactly the lower 512 cells before projection. Caller isolation mutates the
 supplied array after observe, then uses an independently created controller
 for the changed-input control; its reset is visible in the event snapshots.
 
-All53 invalid operations have the agreed15 groups and exact operation/input
-rosters. The38 invalid scalar calls decode fixture bits into the actual native
+All 53 invalid operations have the agreed 15 groups and exact operation/input
+rosters. The 38 invalid scalar calls decode fixture bits into the actual native
 or compiled service, including null/depth-one branches. The two lowercase wire
 cases remain parser refusals. The malformed-frame/order/prediction cases call
 their relevant entries. Entry calls, service entries and actual evaluator-root
@@ -34,7 +34,7 @@ entries have distinct increment sites. Recursive Nodes are returned work, not
 an alternative root-entry count. Terminal refusal setup reuses one actual
 34-entry/49-event timeline and its actual terminal successor policy.
 
-I also read the9 new native tests, including active setup/copy/timeline
+I also read the 9 new native tests, including active setup/copy/timeline
 preservation when journal publication fails and actual accepted-result
 retention at the refusal judgment seam. The latter uses a successful control
 value and explicitly does not pretend its valid input is invalid. Completed
@@ -58,7 +58,7 @@ All hashes below are uppercase SHA256 of the committed bytes.
 | src/Research.FSharp/HiddenSwitchCompiledSemantic.fs | 8361 | 5F0CCE172E8DF731666EB626F22F43703BA51BD83D7D90B2781DC8FF6B57D1F2 |
 | tests/Tests.FSharp/HiddenSwitchCompiledSemantic.Tests.fs | 13195 | 075D200F4F3923BE8F2E59C223D2BFBCE597BF7BB78FC58751A7EDB2FE5AE4D3 |
 
-The native author reports37 focused native tests passing, including these9
+The native author reports 37 focused native tests passing, including these 9
 new tests. I did not rerun them, build, import task modules, evaluate guards,
 execute a policy/source tape or inspect actual semantic output in this review.
 Acceptance is source-level agreement with a finite conformance contract;

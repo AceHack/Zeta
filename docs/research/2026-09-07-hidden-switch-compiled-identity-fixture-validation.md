@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra, independent reference writer
-Artifact status: initial implementation validation; two review findings under repair
+Artifact status: repaired implementation validation; independent rereview pending
 
 The [fixture runner](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_fixtures.py)
 implements the seven source and eight Python cases from the
@@ -93,3 +93,55 @@ Both findings are accepted and remain under repair at this initial checkpoint.
 New real child failures after entry/return and small resource-bound witnesses
 will discriminate the corrections. No registered behavior/cost stream, policy
 episode, native target or scientific measurement was executed in this work.
+
+## Repaired recorder and discriminating validation
+
+The bounded repair is `0e0f8664765c7157b153bed86da217b8bf81a5e4`.
+Its [separate lossless evidence](hidden-switch-compiled-validation/2026-09-07/identity-fixtures-repair/manifest.json)
+preserves both 46-case passes (8.06 and 8.23 seconds), the initial test-only
+unexported `os` typing diagnostic and its explicit-import correction, clean
+final strict source/test mypy, Ruff and format logs, and ten exact source/helper
+pins. The original implementation and original thirty-case evidence remain
+unchanged above.
+
+Python trace inspection now precedes abnormal-close classification. Valid
+observed entry/return markers and any returned record survive a later crash,
+even when a subsequent trace row is malformed. These are counts of observed
+valid markers, not inferred total process work. Absent, unreadable or invalid
+initial traces use null counts with `TraceStatus` and `TraceDetail`; they do
+not fabricate zero collector calls. An abnormal child still has
+`CompletedOperation=0`. Actual children that crash after the entry marker,
+after the returned-result marker, or after an additional malformed trace row
+discriminate this separation.
+
+The declared output limits are 1 MiB each for stdout/stderr and 2 MiB for the
+child trace. The parent polls their observed sizes every 20 milliseconds during
+the existing 30-second deadline, refuses excess output and attempts to stop
+its owned live launcher/process group. A child can overshoot between polls;
+this is not an OS disk quota or a guarantee about arbitrary descendants after
+the launcher exits. Raw output files remain intact. Fixed Git stdin now comes
+from its already retained owned file, avoiding a separate pipe-write wait.
+Each process record carries its limits, polling interval and resource-refusal
+status separately from timeout status.
+
+Reads admit a regular file's initial length against the declared bound, then
+use the existing held-descriptor reader for at most that length plus one byte.
+Regular fixture files are limited to 4 MiB each. Inventory traversal admits at
+most 1,024 regular files, 32 MiB total file bytes, 4,096 directory entries and
+32 directory levels, without following symlinks. A limit refusal retains the
+owned root, first failure and bounded known file prefix; it cannot claim a
+complete inventory. These are finite observation/read limits under the ordinary
+owned-fixture filesystem assumptions, not protection from a hostile filesystem.
+
+The new tests exercise real small stdout/stderr/trace overshoots, oversized
+source admission before setup, an initial-file reader trap, a finite producing
+reader that must stop at initial length plus one, and each inventory limit.
+Existing close-after-success/error and returned-operation retention tests still
+pass. The final test tree is retained as a verified tar byte stream in gzip:
+1,067 regular files, 3,263,900 original bytes and 21 symlink entries across all
+unit fixtures. These aggregate test-tree counts are not one fixture's inventory
+and are not the final fifteen coordinator results.
+
+Independent rereview of the repaired pin is pending at this record-writing
+checkpoint. No policy, registered source stream, native target or scientific
+measurement was executed by the fixture repair tests.
