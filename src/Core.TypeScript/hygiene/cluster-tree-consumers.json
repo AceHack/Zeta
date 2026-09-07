@@ -167,6 +167,12 @@
       "migrateTo": "drop the historical paragraph when the stale tree is gone."
     },
     {
+      "path": "full-ai-cluster/nixos/modules/common.nix",
+      "disposition": "prose",
+      "note": "Comment only. The byte-lock toolchain block was CARRIED HERE from infra/nixos/modules/common.nix (Aaron 2026-09-07: the whole toolchain should run on the real hardware and cluster). The mention is the paragraph recording where it came from and why the alternative — recording that cluster hosts do not need it — was rejected.",
+      "migrateTo": "drop the provenance paragraph when the stale tree is gone; the packages stay."
+    },
+    {
       "path": "src/Core.TypeScript/ace/deps.ts",
       "disposition": "prose",
       "note": "`generateArgoCD` now emits `full-ai-cluster/k8s/applications/${chart}`; the only remaining mention is the comment recording what the path used to be and why it was wrong (the stale tree prunes, and it holds no per-chart directories, so the old path resolved to nothing). `deps.test.ts` asserts the emitted path and refuses any path under a roster-declared stale tree.",
@@ -276,12 +282,6 @@
       "disposition": "derived",
       "note": "`FRAME_RENAMES` maps the pre-move path of two validators to their current path, so a draw recorded in the APPEND-ONLY mutation-findings ledger still lands in the frame. Same class as the `db/mutation-findings/*.jsonl` rows above and rostered on the same reasoning: the old path is the SUBJECT of a past record, not a path anything resolves. `applyFrameRename` is frame-aware, so the row is inert at any frame that does not hold the target.",
       "migrateTo": "NO EDIT REQUIRED at deletion — the key is a historical path that is not meant to resolve. Drop the row only when the ledger records citing it are themselves retired."
-    },
-    {
-      "path": "src/wasm-dla/README.md",
-      "disposition": "blocking",
-      "note": "States the byte-lock toolchain (wabt, binaryen, emscripten, nodejs) is declared in infra/nixos/modules/common.nix. TRUE TODAY and it is the ONLY NixOS module that declares it — VERIFIED 2026-08-17: full-ai-cluster/nixos/modules/common.nix contains none of wabt/binaryen/emscripten/zig/rustup. This is content unique to the stale tree, not a stale citation. MEASURED 2026-09-06, so the decision below needs no further digging: (a) the README enumerates FOUR declaration sites — NixOS, brew, apt, and the root flake devShell — and deleting infra/nixos removes only the NixOS one; (b) `full-ai-cluster/` declares the byte-lock toolchain NOWHERE (grep for wabt/binaryen/emscripten across the tree returns nothing), so the packages would simply be absent from cluster hosts; (c) bytelock.yml never runs on a cluster host — its matrix is ubuntu-24.04 / macos / windows GitHub runners and it installs wabt via apt, brew and choco. So no byte-lock work depends on the NixOS declaration today.",
-      "migrateTo": "MAINTAINER DECISION, now cheap: either carry the byte-lock toolchain block into full-ai-cluster/nixos/modules/common.nix (cluster hosts gain 4 packages they are not measured to need), or record on the record that cluster hosts do not need it and the root devShell + the three OS manifests are the declaration set. The evidence for the second is in the note above; this roster does not choose."
     }
   ]
 }
