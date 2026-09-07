@@ -116,6 +116,15 @@ The programmatic poll snippet above is the fastest answer-now path for the GitHu
 
 These are the failure modes the factory should watch for; the surface flags them, it does not mitigate them.
 
+### Nested check pagination can produce a false gate-absence alarm
+
+The [2026-09-07 detector correction](research/2026-09-07-required-check-pagination-correction.md)
+retains a concrete case: `gh pr list` exposed 100 of 103 contexts, hiding the
+successful required gate on page two. The detector now verifies complete
+PR-context pagination before classifying absence. Check the exact PR head and
+`gh pr checks <number> --required` when interpreting this advisory alarm;
+a red presence watchdog alone does not establish a GitHub outage.
+
 ### GitHub merge-queue / auto-merge wrong-commit class
 
 The maintainer 2026-04-30 surfaced this concern citing Trunk.io's [merge-queue-builds-on-wrong-commit post](https://trunk.io/blog/what-happens-if-a-merge-queue-builds-on-the-wrong-commit). Verified at write-time:

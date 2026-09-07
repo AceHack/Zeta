@@ -1,0 +1,1592 @@
+{
+  "CapturedAtUtc": "2026-09-07T09:43:54.081480+00:00",
+  "DetectorBaseline": "a0ffd1bff714f4bcc6fbf31a9a64792aed5846ec",
+  "DetectorBaselineSha256": "b88e9531fea648542593432a0db1837e8f83f57cf882eefed4e3fa124a416216",
+  "GhVersion": "gh version 2.98.0 (2026-08-20)",
+  "PrNumber": 16911,
+  "PrHead": "594aee771a9e20c4f72b6f03b54aa8e27072523a",
+  "PrListReturnedPrCount": 1,
+  "PrListRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:39:55Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406620/job/101614486739",
+      "name": "verify flush batch",
+      "startedAt": "2026-09-07T03:39:56Z",
+      "status": "COMPLETED",
+      "workflowName": "agent-reviewer"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:43:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080404541/job/101614483594",
+      "name": "Analyze (csharp)",
+      "startedAt": "2026-09-07T03:40:32Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL - Code Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:28Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406570/job/101614485785",
+      "name": "Path gate",
+      "startedAt": "2026-09-07T03:39:59Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406608/job/101614485959",
+      "name": "agencysignature (PR body)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "agencysignature-enforcement"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:56:46Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406546/job/101614485715",
+      "name": "build-iso",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "build-ai-cluster-iso"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:45:54Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406538/job/101614485609",
+      "name": "ci-runtime image (build + one-job proof + toolchain drift)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "ci-runtime-image"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:45:54Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406635/job/101614485885",
+      "name": "docker-nixos-install-sh-test",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "docker-nixos-install-sh-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:55:26Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406648/job/101614485856",
+      "name": "docker-ubuntu-install-sh-test",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "docker-ubuntu-install-sh-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:55:51Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406607/job/101614485806",
+      "name": "docker-ubuntu-jammy-install-sh-test",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "docker-ubuntu-jammy-install-sh-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T04:11:33Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406539/job/101614485615",
+      "name": "docker-windows-install-ps1-test",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "docker-windows-install-ps1-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:07Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080394813/job/101614455286",
+      "name": "submit-nuget",
+      "startedAt": "2026-09-07T03:39:45Z",
+      "status": "COMPLETED",
+      "workflowName": "Automatic Dependency Submission"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:01Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486114",
+      "name": "matrix setup",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:26Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406576/job/101614485711",
+      "name": "gitbash-install-routing-test",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gitbash-install-routing-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:46Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080394039/job/101614450827",
+      "name": "keyring byte-lock + 1000x determinism",
+      "startedAt": "2026-09-07T03:39:43Z",
+      "status": "COMPLETED",
+      "workflowName": "keyring 1000x DST"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:03Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406604/job/101614485862",
+      "name": "mechanical lint auto-heal (produce patch)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "lint-autofix"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:44:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406644/job/101614485884",
+      "name": "macos-install-sh-test",
+      "startedAt": "2026-09-07T03:40:01Z",
+      "status": "COMPLETED",
+      "workflowName": "macos-install-sh-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406559/job/101614485877",
+      "name": "test",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "udp-lossy-tests"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:47:28Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406642/job/101614485923",
+      "name": "wsl-install-sh-test",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "wsl-install-sh-test"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:42:11Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080404541/job/101614483560",
+      "name": "Analyze (go)",
+      "startedAt": "2026-09-07T03:39:56Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL - Code Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080404541/job/101614483622",
+      "name": "Analyze (java-kotlin)",
+      "startedAt": "2026-09-07T03:39:56Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL - Code Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:45:21Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080404541/job/101614483451",
+      "name": "Analyze (javascript-typescript)",
+      "startedAt": "2026-09-07T03:39:56Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL - Code Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080404541/job/101614483547",
+      "name": "Analyze (python)",
+      "startedAt": "2026-09-07T03:39:56Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL - Code Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:45:54Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406538/job/101615410598",
+      "name": "cold pull of the published digest (leg ${{ matrix.leg }})",
+      "startedAt": "2026-09-07T03:45:54Z",
+      "status": "COMPLETED",
+      "workflowName": "ci-runtime-image"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406570/job/101614573744",
+      "name": "Analyze (actions)",
+      "startedAt": "2026-09-07T03:40:30Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406608/job/101614485839",
+      "name": "agencysignature (human-review evidence)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "agencysignature-enforcement"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T04:06:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406546/job/101614485641",
+      "name": "build-iso-aarch64 + qemu-boot",
+      "startedAt": "2026-09-07T03:39:59Z",
+      "status": "COMPLETED",
+      "workflowName": "build-ai-cluster-iso"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486080",
+      "name": "path filter",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:50:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406570/job/101614573740",
+      "name": "Analyze (csharp)",
+      "startedAt": "2026-09-07T03:40:30Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:42:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406570/job/101614573727",
+      "name": "Analyze (java-kotlin)",
+      "startedAt": "2026-09-07T03:40:30Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:41Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406570/job/101614573714",
+      "name": "Analyze (python)",
+      "startedAt": "2026-09-07T03:40:30Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:46:23Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406570/job/101614573716",
+      "name": "Analyze (javascript-typescript)",
+      "startedAt": "2026-09-07T03:40:30Z",
+      "status": "COMPLETED",
+      "workflowName": "CodeQL"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:39:55Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406608/job/101614486349",
+      "name": "agencysignature (main tip)",
+      "startedAt": "2026-09-07T03:39:56Z",
+      "status": "COMPLETED",
+      "workflowName": "agencysignature-enforcement"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:01Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486091",
+      "name": "lint (semgrep)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:42:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486086",
+      "name": "lint (semgrep drift)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:04Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486106",
+      "name": "lint (yaml/k8s)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:59Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614485982",
+      "name": "lint (shellcheck)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:58Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486167",
+      "name": "lint (bash retirement inventory + hygiene unit tests)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:29Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486158",
+      "name": "lint (actionlint)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486103",
+      "name": "lint (tick-history order)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486310",
+      "name": "drift (triangle corners)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486241",
+      "name": "lint (no conflict markers)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486101",
+      "name": "lint (archive header \u00a733)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486136",
+      "name": "lint (\u00a733 migration xrefs)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486219",
+      "name": "lint (tick-shard relative-paths)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486089",
+      "name": "lint (build-graph completeness)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:29Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486084",
+      "name": "lint (structural hygiene)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486347",
+      "name": "lint (no empty dirs)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:41Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486155",
+      "name": "lint (markdownlint)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:11Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486299",
+      "name": "lint (TS)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:32Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486149",
+      "name": "lint (twitch-ai app)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:29Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486107",
+      "name": "lint (identity-dla site)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:21Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486147",
+      "name": "lint (Renderers/website)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:42Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486093",
+      "name": "lint (F#)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:42:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486127",
+      "name": "lint (C#)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:12Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486203",
+      "name": "lint (Go)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:41:32Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486124",
+      "name": "lint (Python)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:42:26Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486256",
+      "name": "lint (Rust)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:51Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486463",
+      "name": "cross-verify (ace-suite)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486395",
+      "name": "cross-verify (qsharp-oracles)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:42:57Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486493",
+      "name": "cross-verify (byte-lock-oracles)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486508",
+      "name": "cross-verify (proof-lineage-binaries)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486413",
+      "name": "cross-verify (stage0-independence)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486501",
+      "name": "cross-verify (step-output-writers)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486438",
+      "name": "cross-verify (action-sha-roster)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486448",
+      "name": "cross-verify (task-zetaid-resolves)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486393",
+      "name": "cross-verify (credential-role-separation)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486485",
+      "name": "cross-verify (coauthor-identity-collision)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486383",
+      "name": "cross-verify (write-token-consistency)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486458",
+      "name": "cross-verify (heartbeat-lane-attestations)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:20Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486433",
+      "name": "cross-verify (heartbeat-lane-audit-tests)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486456",
+      "name": "cross-verify (push-without-rebase)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486408",
+      "name": "cross-verify (skip-token-cannot-land)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486446",
+      "name": "cross-verify (dotnet-pin-parity)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:20Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486515",
+      "name": "cross-verify (argocd-pin-parity)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486416",
+      "name": "cross-verify (committed-chart-credentials)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486471",
+      "name": "cross-verify (committed-chart-credentials-tests)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:19Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486482",
+      "name": "cross-verify (bootstrap-application-pin-parity)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486518",
+      "name": "cross-verify (bootstrap-application-pin-parity-tests)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486453",
+      "name": "cross-verify (argocd-pin-parity-tests)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:22Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486409",
+      "name": "cross-verify (mise-toolchain-couplings)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486491",
+      "name": "cross-verify (flash-entrypoint-parity)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486502",
+      "name": "cross-verify (chart-target-revisions)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486477",
+      "name": "cross-verify (image-source-provenance)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486480",
+      "name": "cross-verify (image-source-provenance-tests)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486437",
+      "name": "cross-verify (reason-truth)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:14Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486549",
+      "name": "cross-verify (no-raw-nul-in-source)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486487",
+      "name": "cross-verify (concept-registry-drift)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486498",
+      "name": "cross-verify (tech-radar-claims)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486457",
+      "name": "cross-verify (tech-radar-audit-tests)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:16Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486443",
+      "name": "cross-verify (check-then-use-races)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486451",
+      "name": "cross-verify (mumps-zeta-id)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486534",
+      "name": "cross-verify (zeta-id-gen-layout-drift)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486510",
+      "name": "cross-verify (algebra-tower-drift)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:59:00Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486164",
+      "name": "test (TS hermetic)",
+      "startedAt": "2026-09-07T03:39:58Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:43:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486168",
+      "name": "test (TS environment-dependent)",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:40:00Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614486162",
+      "name": "drift-canary",
+      "startedAt": "2026-09-07T03:39:57Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:54:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614531433",
+      "name": "build-and-test (ubuntu-24.04)",
+      "startedAt": "2026-09-07T03:40:15Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:47:47Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614531406",
+      "name": "build-and-test (ubuntu-24.04-arm)",
+      "startedAt": "2026-09-07T03:40:16Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:48:51Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614531557",
+      "name": "build-and-test (macos-26)",
+      "startedAt": "2026-09-07T03:40:18Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-07T03:45:41Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34080406671/job/101614531452",
+      "name": "full-verify (7-lang oracle + cost + proofs)",
+      "startedAt": "2026-09-07T03:40:15Z",
+      "status": "COMPLETED",
+      "workflowName": "gate"
+    }
+  ],
+  "Query": "query($owner:String!,$name:String!,$number:Int!,$endCursor:String) {\n  repository(owner:$owner,name:$name) {\n    pullRequest(number:$number) {\n      headRefOid\n      commits(last:1) { nodes { commit {\n        oid\n        statusCheckRollup { contexts(first:100,after:$endCursor) {\n          totalCount\n          pageInfo { hasNextPage endCursor }\n          nodes { __typename ... on CheckRun { id name } ... on StatusContext { id context } }\n        } }\n      } } }\n    }\n  }\n}",
+  "PrContextPages": [
+    {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "headRefOid": "594aee771a9e20c4f72b6f03b54aa8e27072523a",
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "594aee771a9e20c4f72b6f03b54aa8e27072523a",
+                    "statusCheckRollup": {
+                      "contexts": {
+                        "totalCount": 103,
+                        "pageInfo": {
+                          "hasNextPage": true,
+                          "endCursor": "MTAw"
+                        },
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIE0w",
+                            "name": "verify flush batch"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLH4ig",
+                            "name": "Analyze (csharp)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBGQ",
+                            "name": "Path gate"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBxw",
+                            "name": "agencysignature (PR body)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIA0w",
+                            "name": "build-iso"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIAaQ",
+                            "name": "ci-runtime image (build + one-job proof + toolchain drift)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBfQ",
+                            "name": "docker-nixos-install-sh-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBYA",
+                            "name": "docker-ubuntu-install-sh-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBLg",
+                            "name": "docker-ubuntu-jammy-install-sh-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIAbw",
+                            "name": "docker-windows-install-ps1-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLGJ9g",
+                            "name": "submit-nuget"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICYg",
+                            "name": "matrix setup"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIAzw",
+                            "name": "gitbash-install-routing-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLF4iw",
+                            "name": "keyring byte-lock + 1000x determinism"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBZg",
+                            "name": "mechanical lint auto-heal (produce patch)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBfA",
+                            "name": "macos-install-sh-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBdQ",
+                            "name": "test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBow",
+                            "name": "wsl-install-sh-test"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLH4aA",
+                            "name": "Analyze (go)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLH4pg",
+                            "name": "Analyze (java-kotlin)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLH3-w",
+                            "name": "Analyze (javascript-typescript)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLH4Ww",
+                            "name": "Analyze (python)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqMAdpg",
+                            "name": "cold pull of the published digest (leg ${{ matrix.leg }})"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLNYsA",
+                            "name": "Analyze (actions)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIBTw",
+                            "name": "agencysignature (human-review evidence)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIAiQ",
+                            "name": "build-iso-aarch64 + qemu-boot"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICQA",
+                            "name": "path filter"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLNYrA",
+                            "name": "Analyze (csharp)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLNYnw",
+                            "name": "Analyze (java-kotlin)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLNYkg",
+                            "name": "Analyze (python)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLNYlA",
+                            "name": "Analyze (javascript-typescript)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDTQ",
+                            "name": "agencysignature (main tip)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICSw",
+                            "name": "lint (semgrep)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICRg",
+                            "name": "lint (semgrep drift)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICWg",
+                            "name": "lint (yaml/k8s)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIB3g",
+                            "name": "lint (shellcheck)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIClw",
+                            "name": "lint (bash retirement inventory + hygiene unit tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICjg",
+                            "name": "lint (actionlint)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICVw",
+                            "name": "lint (tick-history order)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDJg",
+                            "name": "drift (triangle corners)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIC4Q",
+                            "name": "lint (no conflict markers)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICVQ",
+                            "name": "lint (archive header \u00a733)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICeA",
+                            "name": "lint (\u00a733 migration xrefs)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICyw",
+                            "name": "lint (tick-shard relative-paths)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICSQ",
+                            "name": "lint (build-graph completeness)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICRA",
+                            "name": "lint (structural hygiene)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDSw",
+                            "name": "lint (no empty dirs)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICiw",
+                            "name": "lint (markdownlint)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDGw",
+                            "name": "lint (TS)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIChQ",
+                            "name": "lint (twitch-ai app)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICWw",
+                            "name": "lint (identity-dla site)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICgw",
+                            "name": "lint (Renderers/website)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICTQ",
+                            "name": "lint (F#)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICbw",
+                            "name": "lint (C#)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICuw",
+                            "name": "lint (Go)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICbA",
+                            "name": "lint (Python)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIC8A",
+                            "name": "lint (Rust)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDvw",
+                            "name": "cross-verify (ace-suite)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDew",
+                            "name": "cross-verify (qsharp-oracles)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID3Q",
+                            "name": "cross-verify (byte-lock-oracles)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID7A",
+                            "name": "cross-verify (proof-lineage-binaries)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDjQ",
+                            "name": "cross-verify (stage0-independence)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID5Q",
+                            "name": "cross-verify (step-output-writers)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDpg",
+                            "name": "cross-verify (action-sha-roster)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDsA",
+                            "name": "cross-verify (task-zetaid-resolves)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDeQ",
+                            "name": "cross-verify (credential-role-separation)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID1Q",
+                            "name": "cross-verify (coauthor-identity-collision)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDbw",
+                            "name": "cross-verify (write-token-consistency)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDug",
+                            "name": "cross-verify (heartbeat-lane-attestations)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDoQ",
+                            "name": "cross-verify (heartbeat-lane-audit-tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDuA",
+                            "name": "cross-verify (push-without-rebase)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDiA",
+                            "name": "cross-verify (skip-token-cannot-land)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDrg",
+                            "name": "cross-verify (dotnet-pin-parity)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID8w",
+                            "name": "cross-verify (argocd-pin-parity)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDkA",
+                            "name": "cross-verify (committed-chart-credentials)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDxw",
+                            "name": "cross-verify (committed-chart-credentials-tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID0g",
+                            "name": "cross-verify (bootstrap-application-pin-parity)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID9g",
+                            "name": "cross-verify (bootstrap-application-pin-parity-tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDtQ",
+                            "name": "cross-verify (argocd-pin-parity-tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDiQ",
+                            "name": "cross-verify (mise-toolchain-couplings)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID2w",
+                            "name": "cross-verify (flash-entrypoint-parity)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID5g",
+                            "name": "cross-verify (chart-target-revisions)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDzQ",
+                            "name": "cross-verify (image-source-provenance)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID0A",
+                            "name": "cross-verify (image-source-provenance-tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDpQ",
+                            "name": "cross-verify (reason-truth)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIEFQ",
+                            "name": "cross-verify (no-raw-nul-in-source)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID1w",
+                            "name": "cross-verify (concept-registry-drift)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID4g",
+                            "name": "cross-verify (tech-radar-claims)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDuQ",
+                            "name": "cross-verify (tech-radar-audit-tests)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDqw",
+                            "name": "cross-verify (check-then-use-races)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIDsw",
+                            "name": "cross-verify (mumps-zeta-id)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIEBg",
+                            "name": "cross-verify (zeta-id-gen-layout-drift)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLID7g",
+                            "name": "cross-verify (algebra-tower-drift)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLIClA",
+                            "name": "test (TS hermetic)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICmA",
+                            "name": "test (TS environment-dependent)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLICkg",
+                            "name": "drift-canary"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLKzaQ",
+                            "name": "build-and-test (ubuntu-24.04)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLKzTg",
+                            "name": "build-and-test (ubuntu-24.04-arm)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLKz5Q",
+                            "name": "build-and-test (macos-26)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLKzfA",
+                            "name": "full-verify (7-lang oracle + cost + proofs)"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "headRefOid": "594aee771a9e20c4f72b6f03b54aa8e27072523a",
+            "commits": {
+              "nodes": [
+                {
+                  "commit": {
+                    "oid": "594aee771a9e20c4f72b6f03b54aa8e27072523a",
+                    "statusCheckRollup": {
+                      "contexts": {
+                        "totalCount": 103,
+                        "pageInfo": {
+                          "hasNextPage": false,
+                          "endCursor": "MTAz"
+                        },
+                        "nodes": [
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqN5ofQ",
+                            "name": "gate (required)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqN7NOQ",
+                            "name": "drift (loud)"
+                          },
+                          {
+                            "__typename": "CheckRun",
+                            "id": "CR_kwDOSF9kNM8AAAAXqLWgUA",
+                            "name": "CodeQL"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "FailedWatchdogRun": 34101855387,
+  "ExistingGateRun": 34080406671,
+  "RequiredCheckJob": 101617395837,
+  "OriginalDetectorExit": 1,
+  "RequiredCheckCliExit": 0
+}

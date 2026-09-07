@@ -144,6 +144,118 @@ export interface GhListResult {
 export type GhListRunner = () => GhListResult | Promise<GhListResult>;
 export type RetryDelay = (milliseconds: number) => Promise<void>;
 
+/** The list-PR response truncates each nested rollup at 100 contexts (#16911). */
+export const HEAD_CHECKS_QUERY = `query($owner:String!,$name:String!,$number:Int!,$endCursor:String) {
+  repository(owner:$owner,name:$name) {
+    pullRequest(number:$number) {
+      headRefOid
+      commits(last:1) { nodes { commit {
+        oid
+        statusCheckRollup { contexts(first:100,after:$endCursor) {
+          totalCount
+          pageInfo { hasNextPage endCursor }
+          nodes { __typename ... on CheckRun { id name } ... on StatusContext { id context } }
+        } }
+      } } }
+    }
+  }
+}`;
+
+export type HeadCheckRead =
+  { readonly kind: "measured"; readonly started: boolean } | { readonly kind: "unmeasured"; readonly reason: string };
+
+const record = (value: unknown): Record<string, unknown> | undefined =>
+  value !== null && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined;
+
+/**
+ * Absence needs every context page for the observed commit, not a PR-list prefix.
+ * A changing, malformed, truncated or over-cap read is unmeasured, never stalled.
+ * The 100-page cap bounds host work; it does not admit an incomplete negative.
+ */
+export async function readRequiredCheckOnHead(
+  headSha: string,
+  fetchPage: (cursor: string | null) => GhListResult | Promise<GhListResult>,
+  requiredName = REQUIRED_GATE_NAME,
+): Promise<HeadCheckRead> {
+  const refused = (reason: string): HeadCheckRead => ({ kind: "unmeasured", reason });
+  if (!/^[0-9a-f]{40}$/i.test(headSha)) return refused("invalid observed head SHA");
+  let cursor: string | null = null;
+  let total: number | undefined;
+  let started = false;
+  const cursors = new Set<string>();
+  const ids = new Set<string>();
+  for (let page = 0; page < 100; page++) {
+    let result: GhListResult;
+    try {
+      result = await fetchPage(cursor);
+    } catch (error) {
+      return refused(error instanceof Error ? error.message : "head-check page read threw");
+    }
+    if (result.status !== 0) return refused(result.stderr || "head-check page read failed");
+    let response: Record<string, unknown> | undefined;
+    try {
+      response = record(JSON.parse(result.stdout));
+    } catch {
+      return refused("invalid head-check page JSON");
+    }
+    if (
+      !response ||
+      (response.errors !== undefined && (!Array.isArray(response.errors) || response.errors.length !== 0))
+    ) {
+      return refused("head-check page contains GraphQL errors");
+    }
+    const data = record(response.data);
+    const repository = record(data?.repository);
+    const pr = record(repository?.pullRequest);
+    const commitNodes = record(pr?.commits)?.nodes;
+    if (pr?.headRefOid !== headSha || !Array.isArray(commitNodes) || commitNodes.length !== 1) {
+      return refused("PR head changed or its commit was not measured");
+    }
+    const commit = record(record(commitNodes[0])?.commit);
+    if (commit?.oid !== headSha) return refused("head-check page does not match the observed commit");
+    if (commit.statusCheckRollup === null && page === 0) return { kind: "measured", started: false };
+    const contexts = record(record(commit.statusCheckRollup)?.contexts);
+    const info = record(contexts?.pageInfo);
+    const nodes = contexts?.nodes;
+    const count = contexts?.totalCount;
+    if (
+      !Number.isSafeInteger(count) ||
+      typeof count !== "number" ||
+      count < 0 ||
+      !Array.isArray(nodes) ||
+      nodes.length > 100 ||
+      typeof info?.hasNextPage !== "boolean"
+    ) {
+      return refused("invalid head-check page metadata");
+    }
+    if (total !== undefined && total !== count) return refused("head-check count changed during pagination");
+    total = count;
+    for (const value of nodes) {
+      const node = record(value);
+      if (typeof node?.id !== "string" || node.id.length === 0 || ids.has(node.id)) {
+        return refused("missing or repeated head-check context identity");
+      }
+      ids.add(node.id);
+      if (node.__typename === "CheckRun" && typeof node.name === "string") {
+        started ||= node.name === requiredName;
+      } else if (node.__typename !== "StatusContext" || typeof node.context !== "string") {
+        return refused("invalid head-check context");
+      }
+    }
+    if (ids.size > total) return refused("head-check pages exceed the declared count");
+    if (!info.hasNextPage) {
+      return ids.size === total ? { kind: "measured", started } : refused("head-check listing is incomplete");
+    }
+    const next = info.endCursor;
+    if (nodes.length === 0 || typeof next !== "string" || next.length === 0 || cursors.has(next)) {
+      return refused("head-check pagination cannot advance");
+    }
+    cursors.add(next);
+    cursor = next;
+  }
+  return refused("head-check pagination exceeds the 100-page bound");
+}
+
 /** Host failures that say nothing about whether a required check exists. */
 export function isTransientHostFailure(message: string): boolean {
   return /\bHTTP (?:429|502|503|504)\b|timed? out|ECONNRESET|connection reset/i.test(message);
@@ -316,6 +428,42 @@ async function main(argv: readonly string[]): Promise<number> {
       // to guess is the whole point of this file.
       process.stderr.write(`required-check-started: #${number} has no head SHA — existence unmeasured\n`);
       return 2;
+    }
+    // `gh pr list` does not paginate its nested contexts. In the retained
+    // #16911 witness the successful gate was context 101 of 103, so counting
+    // completed workflow runs after that truncated negative invented a stall.
+    const complete = await readRequiredCheckOnHead(sha, (cursor) =>
+      listWithTransientRetry(() => {
+        const args = [
+          "api",
+          "graphql",
+          "-f",
+          `query=${HEAD_CHECKS_QUERY}`,
+          "-F",
+          "owner={owner}",
+          "-F",
+          "name={repo}",
+          "-F",
+          `number=${number}`,
+        ];
+        if (cursor !== null) args.push("-f", `endCursor=${cursor}`);
+        const result = spawnSync("gh", args, { encoding: "utf8" });
+        return {
+          status: result.status ?? -1,
+          stdout: result.stdout,
+          stderr: result.error?.message ?? result.stderr,
+        };
+      }),
+    );
+    if (complete.kind === "unmeasured") {
+      process.stderr.write(`required-check-started: #${number} checks unmeasured: ${complete.reason}\n`);
+      return 2;
+    }
+    if (complete.started) {
+      process.stdout.write(
+        `required-check-started: ${REQUIRED_GATE_NAME} is published on #${number} (paginated head read)\n`,
+      );
+      continue;
     }
     const counted = await listWithTransientRetry(() => {
       const result = spawnSync(
