@@ -301,7 +301,8 @@ def prepare_native_fixtures(
                 "complete ordered certificate corpus required",
                 "CertificateCases",
             )
-        baseline = prep.decode("certificate-corpus-baseline", cases.Cases[0].Raw)
+        baseline_raw = prep.raw("certificate-corpus-baseline", cases.Cases[0].Raw)
+        baseline = prep.decode("certificate-corpus-baseline", baseline_raw)
         strict._same(cast(certs.Json, baseline), supplied_certificate, "Certificate")
         if cases.BaselineSha256 != admitted.NumericSha256:
             raise _Refusal(
