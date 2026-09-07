@@ -21,8 +21,9 @@
  * NamedEnv still requires OS. Optional named joins match
  * ISO bun: missing both keys is unmeasured, not
  * `missing-os`. Bun JSON join uses `look` and ignores
- * JSON `probe`. Does not import the frost-look CLI. Does
- * not change ISO bun `probe: null`.
+ * JSON `probe`. Optional named argv `--from-json` uses
+ * that same look field. Does not import the frost-look
+ * CLI. Does not change ISO bun `probe: null`.
  */
 
 import type { OsFamily } from "../../../src/Core.TypeScript/cluster/host-seal-profile.ts";
@@ -36,11 +37,13 @@ import {
 } from "../../../src/Core.TypeScript/installer/bao-elf-capture.ts";
 import type { HardwareProbeEffects } from "./frost-hardware-probe.ts";
 import {
+  argvHasFromJsonFlag,
   consumeFrostLookFromArgv,
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
   consumeOptionalFrostLookFromArgv,
   consumeOptionalFrostLookFromBunJson,
+  consumeOptionalFrostLookFromCliJson,
   consumeOptionalFrostLookFromConf,
   consumeOptionalFrostLookFromEnv,
   envHasFrostLookKey,
@@ -189,8 +192,10 @@ export function planSetupFromFrostLookOptionalNamedEnv(
 }
 
 /**
- * Argv sibling. Missing both flags is unmeasured. Unseal
- * request stays named from env.
+ * Argv sibling. Missing both flags is unmeasured.
+ * `--from-json` uses `look` and ignores JSON `probe`.
+ * Env frost-look keys mixed with `--from-json` refuse.
+ * Unseal request stays named from env.
  */
 export function planSetupFromFrostLookOptionalNamedArgv(
   restore: RestoredPkcs11PointerCapture,
@@ -199,6 +204,15 @@ export function planSetupFromFrostLookOptionalNamedArgv(
   read: BaoElfRead,
   real: HardwareProbeEffects,
 ): FrostLookNamedJoin {
+  if (argvHasFromJsonFlag(argv)) {
+    if (envHasFrostLookKey(env)) return { ok: false, reason: "mixed-source" };
+    return optionalLookJoin(
+      consumeOptionalFrostLookFromCliJson(argv),
+      real,
+      (fx, os) => planSetupFromFrostLookArgv(restore, argv, env, read, fx, os),
+      () => planSetupFromNamedBaoElfArgv(restore, argv, env, read, null),
+    );
+  }
   return optionalLookJoin(
     consumeOptionalFrostLookFromArgv(argv),
     real,

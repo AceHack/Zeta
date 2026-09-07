@@ -398,6 +398,14 @@ when non-null. Mixing with `--os` / `--effects` /
 write ESP. Does not call overlay join. Does not call this
 from `zeta-install.sh`. Does not change ISO bun
 `probe: null`.
+Overlay optional named argv takes bun JSON `--from-json`
+(`081M1YWR8EB087G0R002X0SFX7`):
+`planSetupFromFrostLookOptionalNamedArgv`. Uses `look`.
+JSON `probe` is ignored even when non-null. Mixing
+`--from-json` with `--os` / `--effects` / `--from-conf` /
+env frost-look keys refuses. Does not import the
+frost-look CLI. Does not call this from `zeta-install.sh`.
+Does not change ISO bun `probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
@@ -415,7 +423,10 @@ from `zeta-install.sh`. Does not change ISO bun
    (`081M1YQKYXQ087G0R000NXN8JN`) uses `look` and ignores
    JSON `probe`. Frost look CLI `--from-json`
    (`081M1YS9661087G0R001YK5CEY`) prints that same look
-   and still ignores JSON `probe`. Wiring this look on
+   and still ignores JSON `probe`. Overlay optional named
+   argv `--from-json` (`081M1YWR8EB087G0R002X0SFX7`)
+   joins that same look with argv bao flags and still
+   ignores JSON `probe`. Wiring this look on
    the live ISO is later
    and still must not infer from `/dev/tpmrm0`. Bun JSON
    `probe` stays null until that wiring exists. Does not

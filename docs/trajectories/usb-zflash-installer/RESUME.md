@@ -634,6 +634,10 @@ Frost look CLI takes bun JSON look
 (`081M1YS9661087G0R001YK5CEY`); `--from-json`
 uses `look`; JSON `probe` is ignored;
 ISO bun `probe` stays null.
+Overlay optional named argv takes bun JSON
+`--from-json` (`081M1YWR8EB087G0R002X0SFX7`);
+JSON `probe` is ignored even when
+non-null; ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
