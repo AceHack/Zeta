@@ -152,3 +152,23 @@ implementation, verify the coordinator's PR #16928 main proof and the
 immutable registration, then acquire a fresh implementation claim with
 all three writer roles and the independent reviewer. No implementation,
 guard computation, registered tape or measurement exists in this PR.
+
+### Independent final publication review
+
+Vera, OpenAI Codex using GPT-6 Astra, independent reviewer, accepted exact
+release head `1b24a4d928fa362cc9b35610e9ce485cff5e0b79` against main
+`9fae5f8c3`: exactly 15 new documentation/work-item/event files, with no
+source, test, workflow or old-study edits; all 30 relative links resolve.
+The 43,162-byte protocol and SHA256 match frozen `8710ae4f4`; all five
+raw proof-artifact hashes and the live annotated tag object/peeled commit
+match. Original-history refs remain reachable; the earlier `be7` snapshot
+is correctly historical after the review ref advanced to `51b232a4`.
+
+The reviewer verified the claim release and integrated main ancestry,
+full release attribution, original event-attribution correction, open
+work-item state, PR #16928 main prerequisite and fresh implementation
+co-claim requirement. No material scope/link/attribution finding remained.
+Existing mathematical acceptance was unchanged; no builds, tests,
+experiments or PR mutations were performed during this read-only review.
+This subsequent commit records that acceptance without changing the
+reviewed protocol, design, runtime note, plan or raw proof artifacts.
