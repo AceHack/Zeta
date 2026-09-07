@@ -1,0 +1,22 @@
+{
+  "StartedAtUtc": "2026-09-07T15:22:02.576920+00:00",
+  "FinishedAtUtc": "2026-09-07T15:22:03.297566+00:00",
+  "Jobs": [
+    {
+      "JobId": 101791485850,
+      "Metadata": {
+        "Bytes": 2267,
+        "Sha256": "507e16a958d79169d9e6f37ac8e8357aacb887c886837a12b50d72b975d4e931"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 23289,
+        "Sha256": "6bd3115b3649cb2f4156a16bf7479d2f2826bc1b83a335419017237fdbb0d05d"
+      },
+      "LogGzip": {
+        "Bytes": 6231,
+        "Sha256": "d71e8ce1f726e976d63d6a57a9699750d238ca8c31ae86f32f1f973750e36cb8"
+      }
+    }
+  ]
+}

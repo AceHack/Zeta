@@ -431,3 +431,10 @@ The [packaging correction quick preflight](root-final-api-gzip-quick.log.gz)
 passed all sixteen checks before its separate mandatory push hook. The
 native build/test gate was not repeated for this evidence-only packaging
 change; the nineteen scientific files and original result records are unchanged.
+
+## Main publication prerequisite verified
+
+The [coordinator main publication proof](main-publication/README.md) verifies
+PR #16928 merge `1193d505d`, full signed body, refreshed main ancestry and
+all nineteen scientific/eighteen original result records. Final paginated
+CI outcomes remain separately recorded. No original experiment was rerun.

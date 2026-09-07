@@ -1,0 +1,207 @@
+{
+  "StartedAtUtc": "2026-09-07T14:50:10.048903+00:00",
+  "FinishedAtUtc": "2026-09-07T14:50:19.963178+00:00",
+  "HeadSha": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "Complete": true,
+  "PRBefore": {
+    "number": 16928,
+    "state": "open",
+    "draft": false,
+    "merged": false,
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "merge_commit_sha": "74f1867d9e432ecbbfd1f0acfbf0542a6d389aa3",
+    "merged_at": null,
+    "HeadSha": "f3bd1347e490084f411198dc8abff197c817eb1b",
+    "BaseSha": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e"
+  },
+  "PRAfter": {
+    "number": 16928,
+    "state": "open",
+    "draft": false,
+    "merged": false,
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "merge_commit_sha": "74f1867d9e432ecbbfd1f0acfbf0542a6d389aa3",
+    "merged_at": null,
+    "HeadSha": "f3bd1347e490084f411198dc8abff197c817eb1b",
+    "BaseSha": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e"
+  },
+  "CheckPages": 4,
+  "CheckCount": 171,
+  "States": {
+    "CANCELLED": 14,
+    "SKIPPED": 4,
+    "SUCCESS": 148,
+    "FAILURE": 3,
+    "IN_PROGRESS": 2
+  },
+  "NonSuccessChecks": [
+    {
+      "Id": 101779346710,
+      "Name": "agencysignature (PR body)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133617602
+    },
+    {
+      "Id": 101779346335,
+      "Name": "agencysignature (human-review evidence)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133617602
+    },
+    {
+      "Id": 101780447107,
+      "Name": "lint (semgrep drift)",
+      "Status": "COMPLETED",
+      "Conclusion": "FAILURE",
+      "RunId": 34133618773
+    },
+    {
+      "Id": 101778811633,
+      "Name": "lint (semgrep drift)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778811501,
+      "Name": "lint (bash retirement inventory + hygiene unit tests)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778811513,
+      "Name": "lint (archive header \u00a733)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778811549,
+      "Name": "lint (C#)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778811642,
+      "Name": "lint (Rust)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778812156,
+      "Name": "cross-verify (byte-lock-oracles)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778811494,
+      "Name": "test (TS hermetic)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101780447339,
+      "Name": "test (TS hermetic)",
+      "Status": "IN_PROGRESS",
+      "Conclusion": null,
+      "RunId": 34133618773
+    },
+    {
+      "Id": 101778811679,
+      "Name": "test (TS environment-dependent)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778894600,
+      "Name": "build-and-test (ubuntu-24.04)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101780533634,
+      "Name": "build-and-test (ubuntu-24.04)",
+      "Status": "IN_PROGRESS",
+      "Conclusion": null,
+      "RunId": 34133618773
+    },
+    {
+      "Id": 101778894604,
+      "Name": "build-and-test (ubuntu-24.04-arm)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778894607,
+      "Name": "build-and-test (macos-26)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101778894490,
+      "Name": "full-verify (7-lang oracle + cost + proofs)",
+      "Status": "COMPLETED",
+      "Conclusion": "CANCELLED",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101779454436,
+      "Name": "gate (required)",
+      "Status": "COMPLETED",
+      "Conclusion": "FAILURE",
+      "RunId": 34133451374
+    },
+    {
+      "Id": 101779519401,
+      "Name": "drift (loud)",
+      "Status": "COMPLETED",
+      "Conclusion": "FAILURE",
+      "RunId": 34133451374
+    }
+  ],
+  "ThreadPages": 1,
+  "ThreadCount": 1,
+  "UnresolvedThreads": [],
+  "GateRuns": [
+    {
+      "Id": 34133618773,
+      "Event": "pull_request",
+      "CreatedAt": "2026-09-07T14:33:42Z",
+      "Status": "in_progress",
+      "Conclusion": null,
+      "Attempt": 1,
+      "JobConclusions": {
+        "success": 67,
+        "failure": 1,
+        "in_progress": 2
+      }
+    },
+    {
+      "Id": 34133451374,
+      "Event": "pull_request",
+      "CreatedAt": "2026-09-07T14:31:51Z",
+      "Status": "completed",
+      "Conclusion": "cancelled",
+      "Attempt": 1,
+      "JobConclusions": {
+        "success": 58,
+        "cancelled": 12,
+        "failure": 2
+      }
+    }
+  ],
+  "RequiredExitCode": 0,
+  "Scope": "Read-only bounded non-atomic snapshot; full pagination and fixed-head binding; no CI or PR mutation."
+}

@@ -1,0 +1,30 @@
+from pathlib import Path
+import datetime,hashlib,json,subprocess
+ROOT=Path('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906')
+HEAD='f99c9f4e2502263943d899ec7a506aa287f76558'; PREVIOUS='f3bd1347e490084f411198dc8abff197c817eb1b'
+IMPLEMENTATION='4fc82b611012bd2620a26e02afe6baba491fe553'; RESULTS='900c0f57a51bfb79d7e9a7b8156ef367d97824f8'; FIGURE='58a3999765766f117f6c6ab46dc436cb9a92397a'
+def git(*a):return subprocess.check_output(['git','-C',str(ROOT),*a])
+def blob(ref,path):return git('show',ref+':'+path)
+def ident(b):return {'Bytes':len(b),'Sha256':hashlib.sha256(b).hexdigest()}
+def equal(ref,path,expected=None):
+ b=blob(HEAD,path);other=blob(ref,path);assert b==other,path
+ row={'Path':path,'ComparisonCommit':ref,**ident(b)}
+ if expected:
+  assert row['Sha256'].lower()==expected['Sha256'].lower(),path
+  if 'Bytes' in expected:assert row['Bytes']==expected['Bytes'],path
+ return row
+start=datetime.datetime.now(datetime.timezone.utc).isoformat()
+sm=json.loads(blob(HEAD,'docs/research/hidden-switch-validation/2026-09-07/implementation-source-manifest.json'))
+science=[equal(IMPLEMENTATION,r['File'],r) for r in sm['SourceHashes']];assert len(science)==19
+rdir='docs/research/hidden-switch-results/2026-09-07/'
+rm=json.loads(blob(HEAD,rdir+'records-manifest.json'))
+records=[equal(RESULTS,rdir+n,r) for n,r in rm['Records'].items()];assert len(records)==18
+figdir=rdir+'descriptive-figure/'
+fig=[equal(FIGURE,figdir+n) for n in ['README.md','plot.py','requirements.txt','manifest.json','plotted-values.json','hidden-switch-descriptive.svg','hidden-switch-descriptive.png']]
+diff=git('diff','--name-status',PREVIOUS,HEAD).decode();assert all(line.split('\t')[-1].startswith('docs/') for line in diff.splitlines())
+original='docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json'
+import gzip
+compressed=blob(HEAD,original+'.gz');raw=gzip.decompress(compressed);assert raw==blob(PREVIOUS,original)
+result={'StartedAtUtc':start,'FinishedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'HeadSha':HEAD,'ComparisonHeadSha':PREVIOUS,'ImplementationArchiveCommit':IMPLEMENTATION,'ResultArchiveCommit':RESULTS,'SourceFiles':science,'OriginalResultRecords':records,'FigureFiles':fig,'DiffFromF3':diff,'GzipApiResponse':{'Path':original+'.gz','Stored':ident(compressed),'Original':ident(raw),'EqualsOriginalF3CommittedBytes':True},'Scope':'Read-only committed-byte comparison, not source-to-binary proof, validation rerun or new scientific analysis.'}
+Path('.git/pr16928-f99-byte-review.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({'HeadSha':HEAD,'Science':len(science),'OriginalResults':len(records),'Figure':len(fig),'DiffPaths':len(diff.splitlines()),'GzipExact':True}))

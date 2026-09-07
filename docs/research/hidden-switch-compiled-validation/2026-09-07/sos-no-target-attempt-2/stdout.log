@@ -1,0 +1,14 @@
+(lldb) settings set symbols.enable-external-lookup false
+(lldb) settings set target.load-script-from-symbol-file false
+(lldb) settings clear plugin.symbol-locator.debuginfod.server-urls
+(lldb) settings show symbols.enable-external-lookup
+symbols.enable-external-lookup (boolean) = false
+(lldb) settings show target.load-script-from-symbol-file
+target.load-script-from-symbol-file (enum) = false
+(lldb) settings show plugin.symbol-locator.debuginfod.server-urls
+plugin.symbol-locator.debuginfod.server-urls (array of strings) =
+(lldb) plugin load /Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsosplugin.dylib
+(lldb) sethostruntime -major 10 /Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11
+Using .NET Core runtime (version 10.0) to host the managed SOS code
+Host runtime path: /Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11
+(lldb) soshelp u

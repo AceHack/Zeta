@@ -1,0 +1,24 @@
+{
+  "data": {
+    "repository": {
+      "pullRequest": {
+        "headRefOid": "f3bd1347e490084f411198dc8abff197c817eb1b",
+        "timelineItems": {
+          "totalCount": 69,
+          "pageInfo": {
+            "hasNextPage": false,
+            "endCursor": "Y3Vyc29yOnYyOpPPAAABoHxJ_bgBqzMwNjk4MjEzMTcx"
+          },
+          "nodes": [
+            {
+              "createdAt": "2026-09-07T14:33:39Z",
+              "actor": {
+                "login": "AceHack"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "Scope": "post-variant file correspondence against the prior committed metadata; no full loaded dependency theorem",
+  "ComparedFiles": 13,
+  "AllPriorFileIdentitiesUnchanged": true,
+  "CrashLoadedCoreClrImageUuid": "6CB64FF2-42FF-30EA-BC45-4640FA3B0D03",
+  "MatchingLocalHostVersion": "10.0.11",
+  "TargetCreated": false,
+  "MethodQueriesExecuted": 0,
+  "SosSymbolStoreVerificationReached": false
+}

@@ -25,3 +25,9 @@ Keep the complete PR path inventory below 3,000 paths, run the full local gate,
 obtain independent publication review and verify exact main publication.
 The parent experiment remains active; no implementation archive, registered
 stream generation, full runtime/outer admission or speed result is claimed.
+
+The publication includes the subsequent documentation-only spacing repair
+`f6830f83cbafd6b1a992a8a9bdf6bb1db87dd3fa`, with the refused pre-push
+gate preserved. Integration into main base `fe90e36e8` merged the native test
+project normally. The parent claim file is omitted only from this publication
+tree; the actual parent claim remains active on its separate remote branch.

@@ -1,0 +1,159 @@
+{
+  "SourceCommit": "a561868de51b3ae444fbb7d4bb919088db038746",
+  "Scope": "pure binary choice replay validation; no registered source streams",
+  "Sources": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_choice_replay.py",
+      "Bytes": 6923,
+      "Sha256": "9A4A7D302F1B7345D4A49A0C1E81D316397C3960426C86C88334B0BED2ABB3CE"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_choice_replay.py",
+      "Bytes": 9098,
+      "Sha256": "0D369F53F24D7492A6C9EA5DA52202EF5F8F7CBDFDA4956CB40AD770D3D56768"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "compiled-choice-replay-pytest-1.log.gz",
+      "Bytes": 99,
+      "Sha256": "20296B572CDEF99797D398DD19DC649EB21AA69996BD999778DD4365960CB145",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "7CCBFE4F83CC94415FB2F9FDDBB11E05089B1300F8F39F29EFAD3DECFCDB1EA0"
+    },
+    {
+      "File": "compiled-signed-zero-pytest.log.gz",
+      "Bytes": 99,
+      "Sha256": "06678DF95AD070497F3EE4866D18E212978824A83CD32CB3A6F64E2064BFDFE0",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "C65029EEE1E8EE3C4F3110899EEEF06B5E63890D948D65C4E2FAE9096658D1CC"
+    },
+    {
+      "File": "compiled-integrated-python-tests.log.gz",
+      "Bytes": 501,
+      "Sha256": "6070A6752F5EDB8BB7633B93DC7A9270E2893F83FB11678335FE2F2DA74BCF3C",
+      "Encoding": "gzip",
+      "StoredBytes": 84,
+      "StoredSha256": "8A76B51EDCA1B3E536CD7641B091D4DD0C2928A1C5253721A13776B1FE3950AE"
+    },
+    {
+      "File": "compiled-integrated-python-ruff.log.gz",
+      "Bytes": 3712,
+      "Sha256": "ED021708C2ABE04CC467A97C63C9DFDEEF0E7B64D072DB723F44D1BBCC5E2963",
+      "Encoding": "gzip",
+      "StoredBytes": 753,
+      "StoredSha256": "8C874B05B7A9732665CF47B7B73C22C8D5BFA02D37F1D1F6030C6A9B1A5BF927"
+    },
+    {
+      "File": "compiled-integrated-python-format.log.gz",
+      "Bytes": 27,
+      "Sha256": "793E2905062E677BC49A961CD9FD445B511F01C6196D6DFC46AC854A2639A903",
+      "Encoding": "gzip",
+      "StoredBytes": 47,
+      "StoredSha256": "3CE54A1031FC750FB4D22F80DD54AD1BF907B3631B0A96FEFD9EE6FC6396DFFC"
+    },
+    {
+      "File": "compiled-integrated-python-mypy.log.gz",
+      "Bytes": 24729,
+      "Sha256": "8A3D692D4F16DCCF916559BF428C4509128F35F7A5492913BA86F0D6364B9D56",
+      "Encoding": "gzip",
+      "StoredBytes": 1953,
+      "StoredSha256": "B894EA014444312ED2164D5E80FAD919605EC0DD7090B09EEC4AE184FAC1198E"
+    },
+    {
+      "File": "compiled-integration-import-spacing.log.gz",
+      "Bytes": 39,
+      "Sha256": "DFB07B12748AA872177E357C267D123773C61020A9A3DE883985DF0DE5913666",
+      "Encoding": "gzip",
+      "StoredBytes": 59,
+      "StoredSha256": "5302F45462537C39AF06F68988A0E64ED9166E8B28E7DC6B95B8E2B0AB8A0077"
+    },
+    {
+      "File": "compiled-integrated-python-ruff-2.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-integrated-python-lane-mypy.log.gz",
+      "Bytes": 44,
+      "Sha256": "960745A059DF2E6BF5556B518F6404C7707247BF3DA084D48C3008145EB95A5D",
+      "Encoding": "gzip",
+      "StoredBytes": 64,
+      "StoredSha256": "8C1B4ED1D2DB4F4FFAEBEAA34D446CD694271E8EB382AE3B7D6A45BB73C6835B"
+    },
+    {
+      "File": "compiled-integrated-python-source-mypy.log.gz",
+      "Bytes": 848,
+      "Sha256": "99DA24496F6087F12B3AFDE7DC40D103AEB44B7D050E4EE44E3FE5F1421A2764",
+      "Encoding": "gzip",
+      "StoredBytes": 251,
+      "StoredSha256": "B197B3B397154E9E2D0BCC737D763C8854C73323EDE802F658D2CB2FDB975E80"
+    },
+    {
+      "File": "compiled-integrated-python-source-mypy-2.log.gz",
+      "Bytes": 44,
+      "Sha256": "14FDF673BD175FE32EF42DF34666481BB15E465313F7DBEF32D0AEA2BA76A26E",
+      "Encoding": "gzip",
+      "StoredBytes": 64,
+      "StoredSha256": "A0B98A90150E56194B4C97312047CDF687E2F64232558CFDB046DF4F65C0B409"
+    },
+    {
+      "File": "compiled-integrated-python-format-2.log.gz",
+      "Bytes": 533,
+      "Sha256": "2F9CB2FD2C952017871631F7F669C7DB250766A07D88CDA5F2AD03D9DAA392C2",
+      "Encoding": "gzip",
+      "StoredBytes": 281,
+      "StoredSha256": "86ACF97AE27B6EA952152E9A073C6C4DE68E509B8DC0AEBFD0E99F2A8AB47DE4"
+    },
+    {
+      "File": "compiled-integrated-python-format-3.log.gz",
+      "Bytes": 27,
+      "Sha256": "793E2905062E677BC49A961CD9FD445B511F01C6196D6DFC46AC854A2639A903",
+      "Encoding": "gzip",
+      "StoredBytes": 47,
+      "StoredSha256": "3CE54A1031FC750FB4D22F80DD54AD1BF907B3631B0A96FEFD9EE6FC6396DFFC"
+    },
+    {
+      "File": "compiled-integrated-python-ruff-3.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-identity-typing-tests.log.gz",
+      "Bytes": 99,
+      "Sha256": "23CD1122E809E1248E1004EAFD05C0C2E0C700F4D2F334A8092D78C968262F5C",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "9DCDAD54D569F8F3F63046BB4DDDAEDC73A57E1BC097683A50ECD3F2811BC79E"
+    }
+  ],
+  "IntegratedSourceCommit": "cbbabc09291c76454e8d94954ad826738a168c04"
+}

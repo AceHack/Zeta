@@ -1,0 +1,5 @@
+{
+  "ExitCode": 0,
+  "Stdout": "[{\"bucket\":\"pass\",\"link\":\"https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34135719099/job/101791432485\",\"name\":\"gate (required)\",\"state\":\"SUCCESS\"}]\n",
+  "Stderr": ""
+}

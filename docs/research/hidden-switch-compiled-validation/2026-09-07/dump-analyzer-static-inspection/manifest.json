@@ -1,0 +1,467 @@
+{
+  "Kind": "installed-analyzer-static-inspection",
+  "SubjectVersion": "9.0.661903",
+  "PackageRepositoryCommit": "d7b455b46332b31fd9ba3a3f3e020387984c511a",
+  "ExecutionScope": "File-only IL disassemblers; no subject analyzer or diagnostic target execution. Identity snapshot taken after inspection; not complete loaded-reader dependency provenance.",
+  "HistoryEnvironmentPlan": {
+    "Status": "authorized, not executed by reviewer",
+    "AnalysisChildOnlyRemove": [
+      "HOME",
+      "DOTNET_DIAGNOSTIC_EXTENSIONS"
+    ],
+    "ParentEnvironmentUnchanged": true,
+    "HomeReassigned": false
+  },
+  "Records": [
+    {
+      "File": "Microsoft.Diagnostics.DebugServices.Implementation.dll.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "Microsoft.Diagnostics.DebugServices.Implementation.dll.stdout.txt.gz",
+      "StoredBytes": 48099,
+      "StoredSha256": "2d2051b122c8b47d7e5fc2ecec52ba7a07214de0a322ead63f219dc3ab96003f",
+      "RawBytes": 515783,
+      "RawSha256": "f45c6c8e421e0b93410cceba3266de24f5fafd0566e60a97ad63070b2b35b8a2"
+    },
+    {
+      "File": "Microsoft.Diagnostics.Repl.dll.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "Microsoft.Diagnostics.Repl.dll.stdout.txt.gz",
+      "StoredBytes": 11963,
+      "StoredSha256": "8fa1831cacd3728b28cf61aeacf2d9a88725e51111bc8b3843895d90a5224834",
+      "RawBytes": 87057,
+      "RawSha256": "41f30da77c580ef74e08060f518a8448563129ab48120a62ed2f78ae12307e0a"
+    },
+    {
+      "File": "analyzer.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "analyzer.ildasm.stdout.txt.gz",
+      "StoredBytes": 3875,
+      "StoredSha256": "805083ccf0fa73b904d05e0c7f85aba2b0701d192d205ba98b254ac6d6b2e006",
+      "RawBytes": 30257,
+      "RawSha256": "eb604417173b9a886ed24685f8f529c85696588e055df29ea333fc00bbd938bc"
+    },
+    {
+      "File": "dotnet-dump.dll.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "dotnet-dump.dll.stdout.txt.gz",
+      "StoredBytes": 16809,
+      "StoredSha256": "45452085039e483c6696bca69042f9117b5e6a9f922ebcd257576076ceeffbd1",
+      "RawBytes": 136679,
+      "RawSha256": "4d230b0448ef226045c12197a11df4ab1b86aaf80b25ad76b28964ca5d0a34c8"
+    },
+    {
+      "File": "history-helper.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "history-helper.ildasm.stdout.txt.gz",
+      "StoredBytes": 859,
+      "StoredSha256": "1e6e215a7aad9385ccb2e9714df0d55287c0f3c89d1b97d28ed29038e5d7df79",
+      "RawBytes": 2776,
+      "RawSha256": "b02f975e25fa59e74a0c9f7ff9bdbd872e5d16261a7e58b29af9f7f47c0b3d43"
+    },
+    {
+      "File": "ildasm-invocations.json.gz",
+      "StoredBytes": 463,
+      "StoredSha256": "704d91b70adf451d892009fb3aa60924469625f4bd636ed15de7f30b529057c1",
+      "RawBytes": 1297,
+      "RawSha256": "e30657cfbc4dfed57e41364f4262e8f9e0f3a03691a19d989391b2b2c2f04d88"
+    },
+    {
+      "File": "invocations.json.gz",
+      "StoredBytes": 443,
+      "StoredSha256": "3483a7a14a4e2016e5aeddfc5be1942e403353356a7cda09b0302d5855007a82",
+      "RawBytes": 1335,
+      "RawSha256": "58b6f2efe422c4c15c196914bfa0452ec8b71ca35e64a0f831232ce989368b22"
+    },
+    {
+      "File": "readmemory.ildasm.invocation.json.gz",
+      "StoredBytes": 482,
+      "StoredSha256": "734299b98ac3182b2958cef86ddf3c63e66d5b6348fc4064cf64f8116dea7d26",
+      "RawBytes": 903,
+      "RawSha256": "7040a68ba04a118c6d4052110412ef4844655ce2da9fbc19b6ccc6a140ae80fc"
+    },
+    {
+      "File": "readmemory.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "readmemory.ildasm.stdout.txt.gz",
+      "StoredBytes": 6083,
+      "StoredSha256": "711191c3e14c024978a1a9161dfad4a8d9d236e1afe52fbaa4730278250c4ee6",
+      "RawBytes": 57276,
+      "RawSha256": "3d8740b44f73c06be76de6e4b5c82b4345eb1cf3fa72dd919596d9cec6cec18d"
+    },
+    {
+      "File": "host-soscommand.ildasm.stdout.txt.gz",
+      "StoredBytes": 2049,
+      "StoredSha256": "0ee7635daf147629e376bccd1be4338356ac1df6c53adc09ccc145b64bde1ed6",
+      "RawBytes": 14451,
+      "RawSha256": "66ce888aba52f599e6c693e067fbf33113d1ec05745690e9a0768f27c62a7655"
+    },
+    {
+      "File": "host-soscommand.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "host-soscommand.ildasm.invocation.json.gz",
+      "StoredBytes": 458,
+      "StoredSha256": "8babd6f5bc5d98275fb3099c736201d20327401c985ee19fff53abde5a68c285",
+      "RawBytes": 888,
+      "RawSha256": "e3588c2c840a3850baa1f39b185123ebd4079c902fd3f6858d0f092902f46a9a"
+    },
+    {
+      "File": "host-disassemble.ildasm.stdout.txt.gz",
+      "StoredBytes": 1821,
+      "StoredSha256": "8b1977a1fa01bfc0e75dc85510b031952cf82407ec604376a0b3210be283e017",
+      "RawBytes": 11718,
+      "RawSha256": "8759e2304a07fb2c34fc376a034b816de47421a4ed838f7f14d03db7e2d1128a"
+    },
+    {
+      "File": "host-disassemble.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "host-disassemble.ildasm.invocation.json.gz",
+      "StoredBytes": 470,
+      "StoredSha256": "ff5d81f2e70660882a93bccaca85a2e31e6e52611588f9cd33106eb74a37f499",
+      "RawBytes": 886,
+      "RawSha256": "a8de35a4b391212b863f2e13b5f213fa4d5e3ae04b54c9c2d0df52c049bb27e3"
+    },
+    {
+      "File": "host-native-exports.stdout.txt.gz",
+      "StoredBytes": 554,
+      "StoredSha256": "d27c90589648d25937c2fc0d12dcdd88048d2f5c527d45986899ff828edff042",
+      "RawBytes": 1524,
+      "RawSha256": "31c0528118a8d0db899386b51845cac415b513cea3c4ba538c8ae78a1deb1237"
+    },
+    {
+      "File": "host-native-exports.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "host-native-exports.invocation.json.gz",
+      "StoredBytes": 385,
+      "StoredSha256": "a6aa0ce14754210aa2ac744a9c54438746682bddc7c618fc2c4b85cfee1561ad",
+      "RawBytes": 627,
+      "RawSha256": "8a9915fecff449651cb217c749ca4e4fc4414c3372aa55a23653c7bc45c68883"
+    },
+    {
+      "File": "clrmd-codeheader.ildasm.invocation.json.gz",
+      "StoredBytes": 494,
+      "StoredSha256": "bef966a040057ca5e82a47812d00040b5bc455cefe3c39c87b8214663a9510a4",
+      "RawBytes": 915,
+      "RawSha256": "cc021843bdc4ceadaf87e1bbd560f539dcb1cef33fbb660e5ba06c6fc6c3fba5"
+    },
+    {
+      "File": "clrmd-codeheader.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-codeheader.ildasm.stdout.txt.gz",
+      "StoredBytes": 1268,
+      "StoredSha256": "e674492c145161d3843f14211aba976f7d2d1b1757050a080be1f8bf66a2ed23",
+      "RawBytes": 7844,
+      "RawSha256": "c7b9ea316f7b44ea4e0565a5823623e10a87b0db488fe4c7b0a8b43621400137"
+    },
+    {
+      "File": "clrmd-create.ildasm.invocation.json.gz",
+      "StoredBytes": 484,
+      "StoredSha256": "1c2d65a71ccf62b9b6515f95fe9f2443be86eabdfa68fdd783781c2226d4f570",
+      "RawBytes": 898,
+      "RawSha256": "1c799325e89aa9ae115724059b0757fcd05c738b06056cb94dfd33f25dec35d6"
+    },
+    {
+      "File": "clrmd-create.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-create.ildasm.stdout.txt.gz",
+      "StoredBytes": 1104,
+      "StoredSha256": "a26e70f33f82879444b38b637162215589bbcf573c24f45354cecba8e62d849c",
+      "RawBytes": 7830,
+      "RawSha256": "8ab983557687826e98ef5a4a68ada700c7dc35075cbba6d13fc4c55438113032"
+    },
+    {
+      "File": "clrmd-hotcold.ildasm.invocation.json.gz",
+      "StoredBytes": 498,
+      "StoredSha256": "8bb340b7de9004e87463d6d53390fddd83c6cd7e67f13b8eee48acd11f4f6b40",
+      "RawBytes": 912,
+      "RawSha256": "ad3602204ae4743926dc2b4c5c1db51632f13c75dfc44e2ddaf2864c08d5d5a8"
+    },
+    {
+      "File": "clrmd-hotcold.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-hotcold.ildasm.stdout.txt.gz",
+      "StoredBytes": 707,
+      "StoredSha256": "7cd39b05d4e3a326bb80fa8b60fdefbf26ab5246de60ee28af70a52ed8a7bfad",
+      "RawBytes": 3611,
+      "RawSha256": "9392a61ae0cd6e8b609857d75087f0435e5c4d6683d5f683ea1cbc07d662843b"
+    },
+    {
+      "File": "clrmd-reader.ildasm.invocation.json.gz",
+      "StoredBytes": 487,
+      "StoredSha256": "129aebfbe2bf6626ce7333263ef05a4875d9e6cc88d196427bb2629e7e0a70b7",
+      "RawBytes": 901,
+      "RawSha256": "d5548030993d8d412e5c48dba4dca268dbeb04493551106e353accc1ea3cc169"
+    },
+    {
+      "File": "clrmd-reader.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-reader.ildasm.stdout.txt.gz",
+      "StoredBytes": 91603,
+      "StoredSha256": "302c1237b6ce2dd21f6d774282537ba38f2291d2f86f06a5be1ca787f67017c2",
+      "RawBytes": 1111868,
+      "RawSha256": "5080ef369710479eef71e7cb076c4b9da9a54f4b44de1c3afb9f8bdd57c4a7f7"
+    },
+    {
+      "File": "clrmd-regions.ildasm.invocation.json.gz",
+      "StoredBytes": 480,
+      "StoredSha256": "90a5ecf9294feff681442ba51062c32e95a023b705489627583d04be2d77ddc4",
+      "RawBytes": 892,
+      "RawSha256": "5d27d8259aae622202bc523a9b40316a090c983077df74bc6b4050b798c92e3b"
+    },
+    {
+      "File": "clrmd-regions.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-regions.ildasm.stdout.txt.gz",
+      "StoredBytes": 781,
+      "StoredSha256": "adc8457f4d7168521a5f9623b9560ca59b67b4a98230e5016f08f91263fa132b",
+      "RawBytes": 5392,
+      "RawSha256": "3b103ed015183618c25c040408732b3d020c012e27eb1bbf198bb2b90b9383ba"
+    },
+    {
+      "File": "clrmd-symbols.ildasm.invocation.json.gz",
+      "StoredBytes": 491,
+      "StoredSha256": "3ce8b5647cd5e1a6104664ac9b7bacbf4831e0493a45b5a6a224f112783e3e23",
+      "RawBytes": 912,
+      "RawSha256": "449010d83d284ce3649e73ece0a269edc5c2fccd461793c1ffcab7c4eaa9b936"
+    },
+    {
+      "File": "clrmd-symbols.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-symbols.ildasm.stdout.txt.gz",
+      "StoredBytes": 2300,
+      "StoredSha256": "dd9759ec8e6621118a81667b3f2b6a16903a67bc2939ca66726f9ead8d5499b4",
+      "RawBytes": 12097,
+      "RawSha256": "39094656f7ab2a1a2d1f30e404458704b777b4d4c82f94b78ab120b04e13d2d5"
+    },
+    {
+      "File": "clrmd-target.ildasm.invocation.json.gz",
+      "StoredBytes": 481,
+      "StoredSha256": "a2a6e325d175d5860317553cdb718f9e29c447fd20c747636e8312178a39502a",
+      "RawBytes": 896,
+      "RawSha256": "a268d61b6e13d92de39058d327291181efe20f5f428d3fb691093cee89fa2cd0"
+    },
+    {
+      "File": "clrmd-target.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "clrmd-target.ildasm.stdout.txt.gz",
+      "StoredBytes": 91603,
+      "StoredSha256": "302c1237b6ce2dd21f6d774282537ba38f2291d2f86f06a5be1ca787f67017c2",
+      "RawBytes": 1111868,
+      "RawSha256": "5080ef369710479eef71e7cb076c4b9da9a54f4b44de1c3afb9f8bdd57c4a7f7"
+    }
+  ],
+  "LocalFileIdentities": [
+    {
+      "Path": "/opt/homebrew/bin/monodis",
+      "ResolvedPath": "/opt/homebrew/Cellar/mono/6.14.1/bin/monodis",
+      "Bytes": 2692888,
+      "Sha256": "f0fee35a66d166952f8f35d353c25e26452958fffcc88059a2caf74909cdc2a4"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/dotnet",
+      "ResolvedPath": "/Users/acehack/.local/share/mise/dotnet-root/dotnet",
+      "Bytes": 141392,
+      "Sha256": "2ff302a3c5cecc4a371fd6482d2f5547c57d93eff9fe19919ef729a54f69ce04"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/dotnet-ildasm.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/dotnet-ildasm.dll",
+      "Bytes": 34816,
+      "Sha256": "0a2ebf6b6a5f2b169aa143d18be93f23c9be3581c0ed4c05a03c06f9bcf81698"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.Mdb.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.Mdb.dll",
+      "Bytes": 39424,
+      "Sha256": "24ae41f17e12a92c58f5c144e534f49f57626fab8196959a45b08fc994aea45c"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.Pdb.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.Pdb.dll",
+      "Bytes": 89088,
+      "Sha256": "15c15591bbfb151887fa3ddb9b0fa244b4baa42cf4e4b5c8160cd47e306f5d05"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.Rocks.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.Rocks.dll",
+      "Bytes": 24576,
+      "Sha256": "f8f51de88b557827b5d5507bcb5ecc5dbc937adeec1650324a14a4cae395d6d0"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-ildasm/0.12.2/dotnet-ildasm/0.12.2/tools/netcoreapp3.0/any/Mono.Cecil.dll",
+      "Bytes": 342016,
+      "Sha256": "834ac6087cc340f72dcd5fea0772683bf7d41ba5778b13b48990cd9db59bc7ca"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/dotnet-dump.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/dotnet-dump.dll",
+      "Bytes": 54304,
+      "Sha256": "3fb5728f338cb21c2c8b81dff57237a3dabc544000315f1aae9897660040034c"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.DebugServices.Implementation.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.DebugServices.Implementation.dll",
+      "Bytes": 149024,
+      "Sha256": "6f75dfb60ea740411243464ad4f0cbcdbf60ac987e2314326c7231ca103bb241"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.Repl.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.Repl.dll",
+      "Bytes": 25120,
+      "Sha256": "482d492876738ce69bccea4e501b3f7a5183f53ade2d30f586d80501c7c308d7"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.ExtensionCommands.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.ExtensionCommands.dll",
+      "Bytes": 517664,
+      "Sha256": "ec067c10e58683872ed66f4c860e13bdc1873fd850475e15af3a192c873f0a47"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/sosdocsunix.txt",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/sosdocsunix.txt",
+      "Bytes": 66843,
+      "Sha256": "8a4ca323212a5a41570b275001532f66ac10bd6f1e73d9fb833338a7959b5f01"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/dotnet-dump.nuspec",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/dotnet-dump.nuspec",
+      "Bytes": 1085,
+      "Sha256": "12a08953b16e14a9662940990b9ae98cfc059a13e4ef8786f2df54dfe104947f"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/SOS.Hosting.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/SOS.Hosting.dll",
+      "Bytes": 327200,
+      "Sha256": "54ef3b592a663e1ef1d90ff0f53c40fb03ca0a17c8d79ad35ccccec2be5b6b63"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsos.dylib",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsos.dylib",
+      "Bytes": 793968,
+      "Sha256": "d6ba022e580d0e94ebacd5e2f60b58afbbeba668ee0d0218c88c87234bcecf92"
+    },
+    {
+      "Path": "/usr/bin/nm",
+      "ResolvedPath": "/usr/bin/nm",
+      "Bytes": 118640,
+      "Sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.Runtime.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.Runtime.dll",
+      "Bytes": 685640,
+      "Sha256": "45fe59b0e9d206b37616f0177279189b53a4eec50717dd6cd60c9d7c38a2a59e"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/dotnet-dump.deps.json",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/dotnet-dump.deps.json",
+      "Bytes": 16748,
+      "Sha256": "430f074d7e0b2be60f5091c43a525bd80eec8b55c92b892bd3b6d38ece9fdbc7"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libmscordaccore.dylib",
+      "ResolvedPath": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libmscordaccore.dylib",
+      "Bytes": 2408704,
+      "Sha256": "f83d4ff7907e659312c49a730ac57aaca627eeed47828984c1e61bb2666307b2"
+    },
+    {
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+      "ResolvedPath": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+      "Bytes": 6217584,
+      "Sha256": "10b24d0b11c7f6d838114744097bf10df9b08b906afc9016567631a1c009dfd0"
+    }
+  ],
+  "LocalFormatGuidance": {
+    "Path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/mach-o/loader.h",
+    "Bytes": 74809,
+    "Sha256": "5862aeb7fbf183453080bc887c0d502fe25a86ff5bd81291bbcc408bd7fe6e74",
+    "Scope": "SDK format definition only; not runtime or dump format identity"
+  },
+  "ClrMdFeasibility": {
+    "Version": "4.0.0-beta.25610.1",
+    "InformationalSourceCommit": "41c1e91786141d37b26cfdfb8059fc522e81fb8d",
+    "Scope": "Static installed API/IL and version-specific primary source; no ClrMD dump helper implemented or run by reviewer. Subject source guidance is not a reproducible-build proof.",
+    "ConstructorFilterLimit": "The two Class::.ctor inspector requests emitted the same broader constructor-only listing; both exact outputs are retained. Their named class sections were located in the captured text. No subject library or dump was loaded by these file readers.",
+    "Proposal": "Exact pinned internal MachOCoreReader(string, Stream, bool) reflected constructor; non-null deny-all IFileLocator before public DataTarget constructor; exact local DAC with ignoreMismatch=false and explicit signature-verification limit; three fixed method HotColdInfo queries, separately bounded physical-file checks, all full admission flags false."
+  }
+}

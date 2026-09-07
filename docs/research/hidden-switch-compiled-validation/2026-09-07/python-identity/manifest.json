@@ -1,0 +1,100 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.python-identity-validation.v1",
+  "RecordedAt": "2026-09-07T16:52:20.331434+00:00",
+  "SourceCommit": "e2c7c046660729bea8cf433c60a62456c0bb8297",
+  "SourceHistory": [
+    {
+      "Commit": "9116bd54603c3d484f8ec3c5ed5e0e701736f1bf",
+      "PythonTests": 50,
+      "Disposition": "initial source; FIFO and read-until-EOF findings followed"
+    },
+    {
+      "Commit": "da8b48c5216481017de6269321906922ed9bac12",
+      "PythonTests": 51,
+      "Disposition": "nonblocking writerless-FIFO refusal repair"
+    },
+    {
+      "Commit": "e2c7c046660729bea8cf433c60a62456c0bb8297",
+      "PythonTests": 53,
+      "Disposition": "bounded read and early reviewed-length refusal; independent review accepted"
+    }
+  ],
+  "Branch": "codex/hidden-switch-compiled-reference-20260907",
+  "Sources": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_python_identity.py",
+      "Bytes": 16256,
+      "Sha256": "102a339ff06364df2eb3831ebda98c74a964053c9c778d1043361014d00cfa2f"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_hidden_switch_compiled_python_identity.py",
+      "Bytes": 17882,
+      "Sha256": "921f0dfc045380fa2744c5e69bed5f5bb60ab314e9797f2dcf1863109cf8a224"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702a5e6e6bd330cb4d27dd3c3bddbbeba779ea8d6127249efd7e9ecbfa54d8c4"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "focused-python.log.gz",
+      "SourceCommit": "9116bd54603c3d484f8ec3c5ed5e0e701736f1bf",
+      "Compression": "gzip",
+      "Bytes": 127,
+      "Sha256": "62b91f3ba0e19dfcb1697cfefce8a7b0823588690a772f4b8eabf03d5aa84396",
+      "DecompressedBytes": 186,
+      "DecompressedSha256": "00443f66fa0368feb8bcbadc5ef84aa46424a3611b8bb2ea7aeeaa62b35cdeeb",
+      "LiteralControls": []
+    },
+    {
+      "Path": "fifo-python.log.gz",
+      "SourceCommit": "da8b48c5216481017de6269321906922ed9bac12",
+      "Compression": "gzip",
+      "Bytes": 52,
+      "Sha256": "b230e9e925f0eae3c78dd042df3040884bcd3599c1d0db3d388e6cad946155f0",
+      "DecompressedBytes": 99,
+      "DecompressedSha256": "cba6acae96b942a0bad0dac5ed3138c5d89c915e3fee361e3bae241f6cf92410",
+      "LiteralControls": []
+    },
+    {
+      "Path": "bounded-python.log.gz",
+      "SourceCommit": "e2c7c046660729bea8cf433c60a62456c0bb8297",
+      "Compression": "gzip",
+      "Bytes": 52,
+      "Sha256": "92df9e4bb8b78d7676f2aa109958ac506a978f91cce72c48aeaed9db8a314b7f",
+      "DecompressedBytes": 99,
+      "DecompressedSha256": "bafb7b8b2c895cdb93c35bc3e601bd5b324614fa5ddd3c7b36c1da5ee18fefb5",
+      "LiteralControls": []
+    },
+    {
+      "Path": "source-publication.log.gz",
+      "SourceCommit": "9116bd54603c3d484f8ec3c5ed5e0e701736f1bf",
+      "Compression": "gzip",
+      "Bytes": 665,
+      "Sha256": "2d82a10cef1a40e51eb5a648ffc09005de846f8de735da8574050275a83b83ce",
+      "DecompressedBytes": 1760,
+      "DecompressedSha256": "f65bc3b943688084cc2964e4674478dba5220565053c4eb2b0349eafbe4924bb",
+      "LiteralControls": []
+    },
+    {
+      "Path": "repair-publication.log.gz",
+      "SourceCommit": "e2c7c046660729bea8cf433c60a62456c0bb8297",
+      "Compression": "gzip",
+      "Bytes": 664,
+      "Sha256": "1d5a0ffe1cb7494de8c1a7390399108983bcbfcdc6c7cc2faa818bc150cb6618",
+      "DecompressedBytes": 1760,
+      "DecompressedSha256": "c03930eb42639118baecb687a26d116d2c4d45c04548abc37c17356e085088a9",
+      "LiteralControls": []
+    }
+  ],
+  "PythonTests": 53,
+  "FixtureDescription": "Actual imported owned temporary-clone modules and metadata-only python -m children; copied collector and IEEE helper with tiny package/subject/entry fixtures.",
+  "RegisteredTaskIdentityAdmitted": false,
+  "TaskPolicyExecuted": false,
+  "RegisteredSourceRunsPerformed": false,
+  "NativeRuntimeProbesPerformed": false,
+  "CostMeasurementsPerformed": false,
+  "BytecodeDerivationEstablished": false
+}

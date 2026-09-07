@@ -1,0 +1,135 @@
+{
+  "Files": [
+    {
+      "Path": "check-collector.py.txt",
+      "Bytes": 5524,
+      "Sha256": "e54e4655adc112c88776882d553727bc4bca776279c52f482b48df3dc2a01c13"
+    },
+    {
+      "Path": "checked-head-fetch.log",
+      "Bytes": 158,
+      "Sha256": "01fe6723368ef3eb28d9937352fcdfcf9f9f7aca2a8b499580c718afd35cd6a2"
+    },
+    {
+      "Path": "checks.json",
+      "Bytes": 79715,
+      "Sha256": "a864f9ca5319df57647e025146da81263786f33ba5e44515f3f0198c7182c66f"
+    },
+    {
+      "Path": "committed-byte-review.json",
+      "Bytes": 14209,
+      "Sha256": "9581baa32c2efb76eb4e6615249ea51337fbb7a0197aa0f9c3d9affe98fcb07f"
+    },
+    {
+      "Path": "committed-byte-review.py.txt",
+      "Bytes": 2779,
+      "Sha256": "d435d6be3f3ef34b3af170ac9c33590f9f08d002c45d8eb947abf983e3118c02"
+    },
+    {
+      "Path": "failed-advisory-identities.json",
+      "Bytes": 599,
+      "Sha256": "e4aa8e16c0147d352531c6f931286618e388eceb8a78c6a6a9b34f308cde3b0c"
+    },
+    {
+      "Path": "initial-merge-capture-merge-commit.json.gz",
+      "Bytes": 236701,
+      "Sha256": "fd1fc171f181d6d542c31f33ba049b926b0e63019506e044331e9670ec2f2898",
+      "DecompressedBytes": 1312738,
+      "DecompressedSha256": "5df975ac6e031a74ea44d0780439d24c931eb86c6f2f9950a8bbcfbf8ea46b52"
+    },
+    {
+      "Path": "initial-merge-capture-pr.json.gz",
+      "Bytes": 4373,
+      "Sha256": "55c290ce23ae833b29594baadd1d30469084fc38f6aec05c9c2602e4ea2a2551",
+      "DecompressedBytes": 29477,
+      "DecompressedSha256": "a82a881f10605f1cdbc2d1e382b69b0776e4d5f0e2db290b484d11992f678a8d"
+    },
+    {
+      "Path": "initial-merge-capture-refusal.json",
+      "Bytes": 1050,
+      "Sha256": "c5ff0bd52f56d2ae3559ea288c7f1d5c9d3b7e5b38fb7c8327bd034b2be66ee6"
+    },
+    {
+      "Path": "initial-merge-capture-squash-body.txt",
+      "Bytes": 4085,
+      "Sha256": "77780dd65dcb9abeb453531e82406cc5f0a6bc4caf4aa3c5206f6a55ed181544"
+    },
+    {
+      "Path": "job-101791485850.json",
+      "Bytes": 2267,
+      "Sha256": "507e16a958d79169d9e6f37ac8e8357aacb887c886837a12b50d72b975d4e931"
+    },
+    {
+      "Path": "job-101791485850.log.gz",
+      "Bytes": 6231,
+      "Sha256": "d71e8ce1f726e976d63d6a57a9699750d238ca8c31ae86f32f1f973750e36cb8",
+      "DecompressedBytes": 23289,
+      "DecompressedSha256": "6bd3115b3649cb2f4156a16bf7479d2f2826bc1b83a335419017237fdbb0d05d"
+    },
+    {
+      "Path": "jobs-34135719099.json",
+      "Bytes": 307648,
+      "Sha256": "a4de077f6e8dc49410df1b123d5e85119008b2609cbb217c61767e6220f6a0dd"
+    },
+    {
+      "Path": "main-fetch.log",
+      "Bytes": 153,
+      "Sha256": "e12887624b072cc7c454dacbdf60db4f7f30d237cdf649b1e79fbe4d133cabf2"
+    },
+    {
+      "Path": "merge-commit.json.gz",
+      "Bytes": 236701,
+      "Sha256": "fd1fc171f181d6d542c31f33ba049b926b0e63019506e044331e9670ec2f2898",
+      "DecompressedBytes": 1312738,
+      "DecompressedSha256": "5df975ac6e031a74ea44d0780439d24c931eb86c6f2f9950a8bbcfbf8ea46b52"
+    },
+    {
+      "Path": "merge-proof-attempt-2.log",
+      "Bytes": 160,
+      "Sha256": "34abc33cc0ccfc305d76668baa9f16ed3410e22d56d4a061bc61da50ec195915"
+    },
+    {
+      "Path": "merge-proof-collector.py.txt",
+      "Bytes": 2637,
+      "Sha256": "eb632eee18ced0b72c450a2222be6ebd9e7746689ed135dfdb26e146b94ff568"
+    },
+    {
+      "Path": "merge-proof.json",
+      "Bytes": 54644,
+      "Sha256": "61eb69aec845585f371ea1fb07d069367bce77306d5b33035cdf5f9791886b02"
+    },
+    {
+      "Path": "pr.json.gz",
+      "Bytes": 4373,
+      "Sha256": "55c290ce23ae833b29594baadd1d30469084fc38f6aec05c9c2602e4ea2a2551",
+      "DecompressedBytes": 29477,
+      "DecompressedSha256": "a82a881f10605f1cdbc2d1e382b69b0776e4d5f0e2db290b484d11992f678a8d"
+    },
+    {
+      "Path": "required.json",
+      "Bytes": 230,
+      "Sha256": "bef93ca8d662b871426b2d69edb21b432e2a54eaa566b33c8633d086eaf2c7a8"
+    },
+    {
+      "Path": "runs.json",
+      "Bytes": 203134,
+      "Sha256": "a1a78028ab67cab5e4f53973a244333a0545f7b5b423b39dd63e8506ea7677ab"
+    },
+    {
+      "Path": "squash-body.txt",
+      "Bytes": 4085,
+      "Sha256": "77780dd65dcb9abeb453531e82406cc5f0a6bc4caf4aa3c5206f6a55ed181544"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1757,
+      "Sha256": "1571bd7bc2a38fe75763d4f42770b4d6cf30e07219b763655f9d9d50087effd4"
+    },
+    {
+      "Path": "threads.json",
+      "Bytes": 2597,
+      "Sha256": "91ef1d4cd3e9209140df166b10d0cd6d722595f5cbdd47b3f68d78495804b0de"
+    }
+  ],
+  "Scope": "Stored artifact bytes and decompressed originals. README and this inventory are excluded to avoid self-reference."
+}

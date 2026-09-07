@@ -1,0 +1,30 @@
+{
+  "Argv": [
+    "/usr/bin/lldb",
+    "--no-lldbinit",
+    "--batch",
+    "-o",
+    "settings set symbols.enable-external-lookup false",
+    "-o",
+    "settings set target.load-script-from-symbol-file false",
+    "-o",
+    "settings clear plugin.symbol-locator.debuginfod.server-urls",
+    "-o",
+    "settings show symbols.enable-external-lookup",
+    "-o",
+    "settings show target.load-script-from-symbol-file",
+    "-o",
+    "settings show plugin.symbol-locator.debuginfod.server-urls",
+    "-o",
+    "plugin load /Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsosplugin.dylib",
+    "-o",
+    "soshelp u",
+    "-o",
+    "soshelp ip2md",
+    "-o",
+    "soshelp setsymbolserver"
+  ],
+  "Target": null,
+  "TimeoutSeconds": 20,
+  "Scope": "debugger settings and plugin help only"
+}

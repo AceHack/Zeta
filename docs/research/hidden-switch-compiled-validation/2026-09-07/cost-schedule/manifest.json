@@ -1,0 +1,29 @@
+{
+  "SourceCommit": "33f66f382767f36dfde9933b87f76aa1144cbdaa",
+  "Artifacts": [
+    {
+      "File": "schedule.json",
+      "Bytes": 13570,
+      "Sha256": "B200A39D28B9A5832367B0B38E0354F1B590DF1EA74094B5989507B03A197CD7",
+      "Encoding": "identity",
+      "StoredBytes": 13570,
+      "StoredSha256": "B200A39D28B9A5832367B0B38E0354F1B590DF1EA74094B5989507B03A197CD7"
+    },
+    {
+      "File": "compiled-schedule-tests-1.log.gz",
+      "Bytes": 179,
+      "Sha256": "849094E73EAC83794D3DE6B98C183FE0E66ABFF0D0B07C8EC91F3C47B795E8F7",
+      "Encoding": "gzip",
+      "StoredBytes": 59,
+      "StoredSha256": "440430771E58A42B1D6221A5D8A236B30B6DE3D477100F9129C07E4B9C08E246"
+    },
+    {
+      "File": "retain-compiled-schedule.py.gz",
+      "Bytes": 2083,
+      "Sha256": "E24446F1EF7FEB3A81F79176F31A17A62624F1347AE6BDAD59738D5334661BD5",
+      "Encoding": "gzip",
+      "StoredBytes": 913,
+      "StoredSha256": "F0B0FCAF334C269B4D721D32E24D8F0BE7DB9F9A4824CAA6A259C2E790557C9D"
+    }
+  ]
+}
