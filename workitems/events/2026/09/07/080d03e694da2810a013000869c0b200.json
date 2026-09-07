@@ -1,0 +1,14 @@
+{
+  "id": "080d03e694da2810a013000869c0b200",
+  "at": "2026-09-07T17:02:52.229Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YD56T5087G0R0022QA48N",
+    "type": "task",
+    "title": "Rotation CLI, and recover the ergonomics fix that missed the squash",
+    "slug": "rotation-cli-and-recover-the-ergonomics-fix-that-missed-the",
+    "priority": "P2",
+    "filename": "081M1YD56T5087G0R0022QA48N-rotation-cli-and-recover-the-ergonomics-fix-that-missed-the.md"
+  }
+}

@@ -26,6 +26,8 @@ import {
   rewriteCorefileForwardToPublicResolvers,
   applyDevBootstrapSecrets,
   rotateDevCredential,
+  rotateDevCredentials,
+  allDevCredentialTargets,
 } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
@@ -1177,5 +1179,46 @@ describe("rotateDevCredential — shared credentials rotate everywhere or nowher
       [...values].map((yaml) => yaml.replace(/namespace: \S+/g, "namespace: NS")),
     );
     expect(distinctSecretBodies.size).toBe(1);
+  });
+});
+
+describe("rotateDevCredentials — the ergonomic form", () => {
+  const specs = DEV_BOOTSTRAP_SECRETS.slice(0, 2);
+  const present = specs.map((s) => `secret/${s.name}@${s.namespace}`);
+  const targets = specs.map((s) => `${s.namespace}/${s.name}`);
+
+  test("rotates every target in one call", () => {
+    const results = rotateDevCredentials(fakePorts([], present), targets);
+    expect(results).toHaveLength(targets.length);
+    expect(results.every((r) => r.rotated)).toBe(true);
+  });
+
+  test("ONE REFUSAL DOES NOT CANCEL THE REST — outcomes are per credential", () => {
+    // The failure this pins: if a single bad name aborted the batch, a typo would
+    // read as "rotation completed" for everything after it. Each target reports
+    // for itself, so a caller can see exactly which moved.
+    const log: string[] = [];
+    const results = rotateDevCredentials(fakePorts(log, present), [
+      "nowhere/not-a-credential",
+      ...targets,
+    ]);
+    expect(results).toHaveLength(targets.length + 1);
+    expect(results[0]?.rotated).toBe(false);
+    expect(results[0]?.refusal ?? "").toContain("not a known dev credential");
+    expect(results.slice(1).every((r) => r.rotated)).toBe(true);
+  });
+
+  test("a batch of absent credentials writes NOTHING — refusal stays total in bulk", () => {
+    const log: string[] = [];
+    const results = rotateDevCredentials(fakePorts(log, []), targets);
+    expect(results.every((r) => !r.rotated)).toBe(true);
+    expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(false);
+  });
+
+  test("allDevCredentialTargets names every credential the cluster mints", () => {
+    const all = allDevCredentialTargets();
+    for (const spec of DEV_BOOTSTRAP_SECRETS) expect(all).toContain(`${spec.namespace}/${spec.name}`);
+    for (const spec of DEV_SHARED_SECRETS) expect(all).toContain(spec.name);
+    expect(all.length).toBe(DEV_BOOTSTRAP_SECRETS.length + DEV_SHARED_SECRETS.length);
   });
 });
