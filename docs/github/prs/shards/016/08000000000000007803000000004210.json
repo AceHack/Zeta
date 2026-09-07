@@ -1,0 +1,12 @@
+{
+  "pr_number": 16912,
+  "archive_path": "docs/history/pr-reviews/PR-16912-fix-ci-page-complete-pr-checks-before-declaring-a-gate-absent.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T10:11:56.879Z",
+  "schema_version": "v1",
+  "commit_sha": "a97d61b78c73e2366b16d6c54662a94ca688740d",
+  "title": "fix(ci): Page complete PR checks before declaring a gate absent",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T10:11:15Z",
+  "head_ref": "claim/bug-required-check-pagination-20260907"
+}
