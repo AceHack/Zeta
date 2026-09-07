@@ -82,3 +82,12 @@ in the same PR; a new implementation claim must follow the separate
 PR #16928 main proof and retain the existing immutable registration.
 This PR introduces no measured implementation, guard computation or new
 source draws, and adds no changes to the prior study or its advisory.
+
+## Historical graph evidence: bounded publication
+
+[Capture five](native-graph-attempt-5/README.md) preserves 2,550 unchanged
+diagnostic records, their original manifest and checked lossless byte
+identities. Its unresolved dependencies remain explicit; runtime admission
+stays false. The [source-history record](source-history-retention.md) indexes
+original writer commits through split publication. The parent compiled
+implementation task remains open.
