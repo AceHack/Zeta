@@ -1,0 +1,14 @@
+{
+  "id": "080d03e221fc1010a0130008d34a64a5",
+  "at": "2026-09-07T14:27:22.626Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y48FW2087G0R002H43E44",
+    "type": "task",
+    "title": "readdir live names without dot or dot-dot",
+    "slug": "readdir-live-names-without-dot-or-dot-dot",
+    "priority": "P2",
+    "filename": "081M1Y48FW2087G0R002H43E44-readdir-live-names-without-dot-or-dot-dot.md"
+  }
+}

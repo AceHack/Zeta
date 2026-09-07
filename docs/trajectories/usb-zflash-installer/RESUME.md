@@ -597,6 +597,11 @@ null effects is unmeasured, not a
 live look; result joins stay
 result-only; ISO bun `probe` stays
 null.
+Frost look CLI takes named effects
+(`081M1Y39EJJ087G0R003Z00P0Y`);
+missing effects is unmeasured, not
+a live look; `/dev/tpmrm0` is not
+`real`; ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

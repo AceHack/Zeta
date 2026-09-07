@@ -1,0 +1,35 @@
+object 8710ae4f4e37b727ccc8bb79e212a7bed433bbd0
+type commit
+tag archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration
+tagger Aaron Stainback <aaron_bond@yahoo.com> 1788787121 -0400
+
+Guarded hidden-switch controller preregistration
+
+Work item: 081M1XXWTTF087G0R000X1HMD0
+Registration commit: 8710ae4f4e37b727ccc8bb79e212a7bed433bbd0
+Protocol: docs/research/2026-09-07-hidden-switch-compiled-protocol.md
+Protocol bytes: 43162
+Protocol SHA256: 8bbdfe44a0844dd8ce4f6c5dd77b060a56e5b84ea94ea7a6fdbb482aec9d738a
+
+The coordinating and independent reviewers accepted the mathematical and
+complete protocol, including the exact 75718b9a8 chronology correction.
+Original design/correction/review histories and exact prefreeze hashes are
+indexed in this commit. This tag is immutable; remote verification freezes
+the protocol before new guard/certificate implementation or source draws.
+
+Implementation additionally waits for prior-study main integration.
+Registered behavior/cost source generation additionally requires a reviewed
+and remotely archived implementation. No implementation or measurements
+are represented by this registration tag.
+
+Agency-Signature-Version: 1
+Agent: Vera
+Agent-Runtime: OpenAI Codex
+Agent-Model: GPT-6 Astra
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: none
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-open
+Task: 081M1XXWTTF087G0R000X1HMD0
+Co-Authored-By: Codex <noreply@openai.com>

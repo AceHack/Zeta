@@ -1,0 +1,4 @@
+8710ae4f4e37b727ccc8bb79e212a7bed433bbd0	refs/heads/claim/task-hidden-switch-compiled-20260907
+8710ae4f4e37b727ccc8bb79e212a7bed433bbd0	refs/heads/codex/hidden-switch-compiled-20260907
+be7e9ab616728a1cf92181567e7dd1a54496c54a	refs/heads/codex/hidden-switch-compiled-protocol-review-provenance-20260907
+f47c9569c14e274225bf2fc1eea03a89d520809c	refs/heads/codex/hidden-switch-prospective-note-20260907

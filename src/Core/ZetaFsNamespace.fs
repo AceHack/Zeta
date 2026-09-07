@@ -300,6 +300,25 @@ module ZetaFsNamespace =
         |> List.filter (fun b -> b.Parent = dir)
         |> List.length
 
+    /// Live non-tombstone names. No `.` / `..` — the adapter synthesizes those.
+    let readdir (state: State) (dir: EntityId) : Result<(byte[] * EntityId)[], BindError> =
+        match Map.tryFind dir state.Entities with
+        | None -> Error(UnknownEntity dir)
+        | Some k when k <> EntityKind.Directory -> Error(NotDirectory dir)
+        | Some EntityKind.Directory ->
+            liveWinners state
+            |> List.choose (fun b ->
+                if b.Parent = dir then
+                    match b.Target with
+                    | Live id -> Some(b.Name, id)
+                    | Tombstone -> None
+                else
+                    None)
+            |> List.sortWith (fun (a, _) (b, _) -> compareBytes a b)
+            |> List.toArray
+            |> Ok
+        | Some _ -> Error(NotDirectory dir)
+
     let private isDirectoryKind (k: EntityKind) : bool =
         match k with
         | EntityKind.Directory -> true

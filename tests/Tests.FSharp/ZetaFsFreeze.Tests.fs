@@ -670,6 +670,47 @@ let ``rename dest directory and source file is Eisdir and persists both names`` 
         FileSystem.Reset()
 
 [<Fact>]
+let ``readdir lists live names after reopen and omits tombstones`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-readdir"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let nameA = Encoding.UTF8.GetBytes "a"
+    let nameB = Encoding.UTF8.GetBytes "b"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindFile volume nameA with
+            | Error e -> Assert.Fail(sprintf "bindFile a failed: %A" e)
+            | Ok a ->
+                match ZetaFsFreeze.bindFile volume nameB with
+                | Error e -> Assert.Fail(sprintf "bindFile b failed: %A" e)
+                | Ok b ->
+                    match ZetaFsFreeze.unlinkFile volume nameA with
+                    | Error e -> Assert.Fail(sprintf "unlinkFile failed: %A" e)
+                    | Ok() ->
+                        match ZetaFsFreeze.readdir volume root with
+                        | Error e -> Assert.Fail(sprintf "readdir failed: %A" e)
+                        | Ok names ->
+                            Assert.Equal(1, names.Length)
+                            Assert.Equal(0, ZetaFsNamespace.EntityId.compare b (snd names.[0]))
+                        ZetaFsFreeze.dispose volume
+                        let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                        try
+                            match ZetaFsFreeze.readdir reopened root with
+                            | Error e -> Assert.Fail(sprintf "readdir reopen failed: %A" e)
+                            | Ok names ->
+                                Assert.Equal(1, names.Length)
+                                Assert.Equal(0, ZetaFsNamespace.EntityId.compare b (snd names.[0]))
+                        finally
+                            ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()

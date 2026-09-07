@@ -10,6 +10,10 @@ open Zeta.Core.FSharp.ZetaId
 
 let private utf8 (s: string) = Encoding.UTF8.GetBytes s
 
+let private namesEqual (a: byte[]) (b: byte[]) =
+    a.Length = b.Length
+    && MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b)
+
 let private rng () =
     let e = Environment.createVirtual 7L :> Zeta.Core.ISimulationEnvironment
     ZetaFsNamespace.Entropy(fun () -> e.NextInt64())
@@ -201,6 +205,34 @@ let ``rename same parent and name is a no-op`` () =
     match ZetaFsNamespace.rename ns2 ns0.Root (utf8 "a") ns0.Root (utf8 "a") asserter with
     | Error e -> Assert.Fail(sprintf "%A" e)
     | Ok ns3 -> Assert.Equal(Some file, ZetaFsNamespace.liveResolve ns0.Root (utf8 "a") ns3.Bindings)
+
+[<Fact>]
+let ``readdir lists live names without dot or dot-dot and skips tombstones`` () =
+    let next = rng ()
+    let ns0 = ZetaFsNamespace.create next
+    let a, ns1 = ZetaFsNamespace.mint ns0 ZetaFsNamespace.EntityKind.File next
+    let b, ns2 = ZetaFsNamespace.mint ns1 ZetaFsNamespace.EntityKind.File next
+    let ns3 = mustBind ns2 ns0.Root (utf8 "b") b
+    let ns4 = mustBind ns3 ns0.Root (utf8 "a") a
+    match ZetaFsNamespace.readdir ns4 ns0.Root with
+    | Error e -> Assert.Fail(sprintf "%A" e)
+    | Ok names ->
+        Assert.Equal(2, names.Length)
+        Assert.True(namesEqual (utf8 "a") (fst names.[0]))
+        Assert.True(namesEqual (utf8 "b") (fst names.[1]))
+        Assert.Equal(0, ZetaFsNamespace.EntityId.compare a (snd names.[0]))
+        Assert.Equal(0, ZetaFsNamespace.EntityId.compare b (snd names.[1]))
+        for name, _ in names do
+            Assert.False(namesEqual (utf8 ".") name)
+            Assert.False(namesEqual (utf8 "..") name)
+    match ZetaFsNamespace.unlink ns4 ns0.Root (utf8 "a") asserter with
+    | Error e -> Assert.Fail(sprintf "%A" e)
+    | Ok ns5 ->
+        match ZetaFsNamespace.readdir ns5 ns0.Root with
+        | Error e -> Assert.Fail(sprintf "%A" e)
+        | Ok names ->
+            Assert.Equal(1, names.Length)
+            Assert.True(namesEqual (utf8 "b") (fst names.[0]))
 
 [<Fact>]
 let ``init writes ROOT Crockford-26 and does not flip FORMAT to bindings`` () =
