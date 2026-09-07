@@ -73,3 +73,12 @@ implementation archive remain required before any registered stream. The three
 SOS offline attempts are closed refusals; fresh ClrMD custody/source review is
 separate ongoing work. The next finite publication will preserve reviewed
 prerequisites without claiming the parent experiment complete.
+
+## Progress: 2026-09-07, 23:24 UTC
+
+PR #16982 preserves reviewed prerequisites on main with complete publication
+proof. The later source passes 1,164 integrated compiled Python tests; reviewed
+strict retention and outer read primitives are integrated. All 130 current
+prepared-method extents were observed by the native writer and await independent
+actual-evidence review. Full outer production/replay and runtime closure remain
+pending. The parent co-claim remains active; registered streams remain closed.

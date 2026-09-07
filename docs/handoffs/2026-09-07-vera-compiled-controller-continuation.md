@@ -1,7 +1,7 @@
 # Vera: compiled-controller continuation
 
 Date: 2026-09-07
-Checkpoint: 22:14 UTC
+Checkpoint: 23:24 UTC
 From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
@@ -17,7 +17,7 @@ Status: implementation active; registered experiment unopened
 > original study's source/results. The original hidden-switch result and new
 > registration are on main through PRs #16928 and #16947. Historical graph
 > capture five is on main through #16974, with all runtime admission flags false.
-> The current compiled Python subset passes 983 tests; actual native semantic
+> The current compiled Python subset passes 1,164 tests; actual native semantic
 > replay passes all registered hand slices. Neither is full implementation
 > admission. Finish the 92-case recorder/replayer and actual runtime body/closure
 > evidence, independently review the complete source, and publish the immutable
@@ -31,6 +31,36 @@ retains earlier prediction, acting, identity and categorical results and their
 limits. The [compiled validation index](../research/hidden-switch-compiled-validation/2026-09-07/README.md)
 is the source/evidence entry point. These dated snapshots do not supersede
 live Git or independently verified current bytes.
+
+## Latest continuation checkpoint
+
+[PR #16982 publication proof](../research/hidden-switch-compiled-validation/2026-09-07/pr-16982-394e-final-2/README.md)
+verifies reviewed prerequisites on main at
+`d9100a6fd3ccd88defb33ccd9211a16743792796`. The complete 2,314-path
+inventory includes one explicitly checked inherited FUSE project integration.
+Current required/native checks passed; the historical drift reporter remains
+separately red. The shared view is clean and ancestry verified.
+
+The [sixth integrated validation](../research/hidden-switch-compiled-validation/2026-09-07/integration-6/README.md)
+passes 1,164 compiled Python tests in 82.61 seconds at
+`6f497346389491ccd8be30f774aa857f42ad6854`, binding 91 source/config
+files and the complete 4,503-entry owned tree. This adds reviewed record-store,
+outer-structure and strict artifact-reader primitives. Actual complete outer
+production and independent static/file/identity/native replay remain in progress.
+
+Fresh copied-target custody and a version-pinned isolated ClrMD query now
+establish the first three current method extents. The native owner additionally
+observed all 130 prepared methods matching 34,660 compiler/physical bytes at
+`b672cd5b3c40423982ff7bdaed9439562f6f6e48`; that newer actual evidence is
+awaiting independent review at this checkpoint. This does not imply every
+prepared method dynamically executed. All full runtime/body/closure flags
+remain false. The old SOS refusals are not retroactively changed.
+
+The detailed sections below retain the prior 22:14 snapshot and its exact run
+scopes; this checkpoint takes precedence for current work ordering. No immutable
+implementation archive or registered 9307/9409 stream exists. The next work is
+finite call decoding/closure and complete outer producer/replay, followed by
+independent admission and archival before any scientific measurement.
 
 ## Current evidence
 
