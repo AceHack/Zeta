@@ -8,6 +8,10 @@ module HiddenSwitchCompiledProgram =
     [<EntryPoint>]
     let main (arguments: string[]) =
         match arguments with
+        | [| "hand-invocations"; output |] ->
+            match HiddenSwitchCompiledWitness.run output with
+            | Ok () -> 0
+            | Error failure -> Console.Error.WriteLine(failure.Stage + ": " + failure.Code + ": " + failure.Detail); 2
         | [| "hand-core"; output |] ->
             match HiddenSwitchCompiledHand.run output with
             | Ok () -> 0
