@@ -52,6 +52,8 @@ def _git(repository: Path, arguments: list[str]) -> Admission[bytes]:
             [
                 "git",
                 "--no-replace-objects",
+                "--no-lazy-fetch",
+                "--literal-pathspecs",
                 f"--git-dir={repository / '.git'}",
                 f"--work-tree={repository}",
                 *arguments,

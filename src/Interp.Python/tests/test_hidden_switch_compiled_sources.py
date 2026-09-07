@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import os
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -202,3 +203,68 @@ def test_nul_and_nonclone_roots_refuse(archive: Any, tmp_path: Path) -> None:
     _, commit, rows = archive
     for root in (Path("relative"), tmp_path, tmp_path / "bad\x00root"):
         assert isinstance(verify((root, commit, rows)), Refused)
+
+
+def test_missing_promisor_object_refuses_without_fetch_or_object_write(
+    archive: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, _, rows = archive
+    executable_directory = tmp_path / "helper-bin"
+    executable_directory.mkdir()
+    marker = tmp_path / "promisor-called"
+    helper = executable_directory / "git-remote-fixture"
+    helper.write_text(
+        f"#!{sys.executable}\nfrom pathlib import Path\n"
+        f"Path({str(marker)!r}).write_text('called')\nraise SystemExit(1)\n"
+    )
+    helper.chmod(0o700)
+    monkeypatch.setenv(
+        "PATH", str(executable_directory) + os.pathsep + os.environ["PATH"]
+    )
+    for key, value in (
+        ("core.repositoryFormatVersion", "1"),
+        ("extensions.partialClone", "origin"),
+        ("remote.origin.url", "fixture::unused"),
+        ("remote.origin.promisor", "true"),
+        ("remote.origin.partialCloneFilter", "blob:none"),
+        ("protocol.fixture.allow", "always"),
+    ):
+        git(root, "config", key, value)
+    missing = "1" * 40
+    # The real unfixed local Git read invokes our controlled helper. That helper
+    # only writes the marker and exits; it has no network or object-write code.
+    with pytest.raises(subprocess.CalledProcessError):
+        git(root, "cat-file", "-t", missing)
+    assert marker.read_text() == "called"
+    marker.unlink()
+
+    def objects() -> dict[str, bytes]:
+        directory = root / ".git/objects"
+        return {
+            str(p.relative_to(directory)): p.read_bytes()
+            for p in directory.rglob("*")
+            if p.is_file()
+        }
+
+    before = objects()
+    assert isinstance(verify(archive), Admitted)  # Local objects remain admissible.
+    result = verify((root, missing, rows))
+    assert isinstance(result, Refused) and result.code == "archive-command"
+    assert not marker.exists()
+    assert objects() == before
+
+
+def test_pathspec_spelling_cannot_expand_the_reviewed_roster(tmp_path: Path) -> None:
+    root = tmp_path / "clone"
+    root.mkdir()
+    git(root, "init", "-q")
+    files = {"source[1].py": b"literal source", "source1.py": b"other source"}
+    commit = commit_files(root, files)
+    (root / "source[1].py").write_bytes(files["source[1].py"])
+    result = source.verify_source_files(
+        root,
+        commit,
+        [row("source[1].py", files["source[1].py"])],
+        expected_files=("source[1].py",),
+    )
+    assert isinstance(result, Refused) and result.code == "artifact-path"

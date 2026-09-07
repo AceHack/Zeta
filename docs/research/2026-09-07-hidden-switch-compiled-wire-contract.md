@@ -202,7 +202,8 @@ Symlinks, ref expressions, missing/duplicate/reordered files, changed current
 bytes and a descriptor hash changed to match unarchived bytes all refuse.
 
 Git reads use an explicit clone metadata/work-tree path, no replacement objects,
-and no inherited `GIT_*` routing variables. They invoke no shell, hooks, filters,
+literal pathspecs, explicit `--no-lazy-fetch`, and no inherited `GIT_*` routing
+variables. They invoke no shell, hooks, filters,
 checkout, object writes or network. The installed Git executable/object database
 and caller-admitted clone root remain trusted. Admission covers only the finite
 supplied roster: it neither discovers an unspecified dependency closure nor
@@ -219,3 +220,20 @@ Other witnesses cover forged live/archived hashes, noncommit objects, regular-fi
 mode, symlinks and unavailable Git. An initial Ruff invocation from the repository
 root used a different import-spacing configuration; the applicable Interp checks
 above pass. No task source stream, policy or measurement executes in these tests.
+
+Independent review of initial source `dfb015252` found that a local partial clone
+can fetch missing promisor objects during an otherwise ordinary `cat-file` read.
+The initial no-network/object-write statement therefore lacked a required guard.
+The correction explicitly uses [Git's documented `--no-lazy-fetch`](https://git-scm.com/docs/git#Documentation/git.txt---no-lazy-fetch),
+verified available in the installed Git 2.54.0. An unsupported Git refuses through
+the existing command-error boundary; there is no fallback that permits fetching.
+
+The corrected suite passed **22 tests in 8.47 seconds**, with strict mypy/Ruff
+passes. A real local promisor fixture first demonstrates that the unguarded read
+invokes a controlled remote helper; the helper only writes a test marker and exits.
+The corrected helper admits already-local objects, refuses a missing object,
+does not invoke that remote helper and leaves every object-file byte unchanged.
+An additional pathspec test initially expected an out-of-domain bracketed path to
+admit; it was corrected to assert the existing canonical-path refusal, without
+widening the source path contract. The initial corrected run retained 21 passes
+and that one test-author failure before the final 22-case pass.
