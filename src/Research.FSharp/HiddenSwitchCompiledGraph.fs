@@ -56,7 +56,7 @@ module HiddenSwitchCompiledGraph =
           Runtime: string; Framework: string; Architecture: string; OS: string
           Environment: Map<string, string>; BeforeFp: FpSnapshot; AfterFp: FpSnapshot
           ManagedImages: ManagedImage[]; NativeImages: NativeSnapshot; Methods: MethodEntry[]
-          NativePreparationCalls: int; SourceDraws: int; Scope: string }
+          NativePreparationCalls: int; CompiledPreparationCalls: int; SourceDraws: int; Scope: string }
 
     let private address (value: nativeint) = (uint64 (value.ToInt64())).ToString("X16", CultureInfo.InvariantCulture)
     let private identity path =
@@ -139,14 +139,21 @@ module HiddenSwitchCompiledGraph =
     let private methods () =
         let assembly = typeof<HiddenSwitchCompiledReceipt.ChoiceWork>.Assembly
         let prefixes = [|"Zeta.Research.HiddenSwitchPolicy"; "Zeta.Research.HiddenSwitchCompiledPolicy";
-                         "Zeta.Research.HiddenSwitchObservation"; "Zeta.Research.HiddenSwitchCompiledReceipt"|]
+                         "Zeta.Research.HiddenSwitchObservation"; "Zeta.Research.HiddenSwitchCompiledReceipt";
+                         "Zeta.Research.HiddenSwitchCompiledSelector"|]
         let flags = BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.Instance ||| BindingFlags.DeclaredOnly
+        let certificateType = "Zeta.Research.HiddenSwitchCompiledCertificate"
+        let graphType = "Zeta.Research.HiddenSwitchCompiledGraph"
         assembly.GetTypes()
-        |> Array.filter (fun t -> prefixes |> Array.exists (fun p -> t.FullName.StartsWith(p, StringComparison.Ordinal)))
+        |> Array.filter (fun t -> (prefixes |> Array.exists (fun p -> t.FullName.StartsWith(p, StringComparison.Ordinal)))
+                                 || t.FullName = certificateType || t.FullName = graphType
+                                 || t.FullName.StartsWith(graphType + "+prepare", StringComparison.Ordinal))
         |> Array.collect (fun t ->
             let moduleType = Array.contains t.FullName prefixes
             t.GetMethods flags
-            |> Array.filter (fun m -> moduleType || m.Name = "Invoke")
+            |> Array.filter (fun m -> moduleType || m.Name = "Invoke"
+                                     || (t.FullName = certificateType && List.contains m.Name ["depthTwo"; "depthThree"])
+                                     || (t.FullName = graphType && m.Name.StartsWith("prepare", StringComparison.Ordinal)))
             |> Array.map (fun method ->
                 let body = method.GetMethodBody()
                 let generic = method.ContainsGenericParameters
@@ -162,6 +169,11 @@ module HiddenSwitchCompiledGraph =
     let private prepare () =
         result {
             let mutable calls = 0
+            let mutable compiledCalls = 0
+            let bindings = Map.ofList ["ProtocolSha256", "8BBDFE44A0844DD8CE4F6C5DD77B060A56E5B84EA94EA7A6FDBB482AEC9D738A"; "hand-validation", String.replicate 64 "0"]
+            let! rawCertificate = HiddenSwitchCompiledCertificate.build bindings
+            let! certificate = HiddenSwitchCompiledCertificate.verify rawCertificate bindings
+            let guards = HiddenSwitchCompiledCertificate.guards certificate
             let scalarInputs = [for effect in [false; true] do
                                     for depth in 1 .. 3 do
                                         for belief in [0.0; 0.25; 0.5; 1.0] do yield effect, depth, belief]
@@ -170,6 +182,19 @@ module HiddenSwitchCompiledGraph =
                 calls <- calls + 1
                 let bytes = Array.zeroCreate<byte> 28
                 do! HiddenSwitchCompiledReceipt.writeChoice bytes 0 choice
+                let! compiled = HiddenSwitchCompiledSelector.choose guards effect belief depth
+                compiledCalls <- compiledCalls + 1
+                do! HiddenSwitchCompiledReceipt.writeChoice bytes 0 compiled
+            })
+            // These are graph-only hand points, not the registered scalar roster.
+            do! [2; 3] |> iterate (fun depth -> result {
+                let struct(low, high) = if depth = 2 then HiddenSwitchCompiledCertificate.depthTwo guards else HiddenSwitchCompiledCertificate.depthThree guards
+                do! [low; Math.BitIncrement low; Math.BitDecrement high; high] |> iterate (fun belief -> result {
+                    let! choice = HiddenSwitchCompiledSelector.choose guards true belief depth
+                    compiledCalls <- compiledCalls + 1
+                    let bytes = Array.zeroCreate<byte> 28
+                    do! HiddenSwitchCompiledReceipt.writeChoice bytes 0 choice
+                })
             })
             let adapterInputs = [for effect in [false; true] do for cue in [0; 1] do yield effect, cue]
             do! adapterInputs |> iterate (fun (effect, cue) -> result {
@@ -182,9 +207,12 @@ module HiddenSwitchCompiledGraph =
                 let! _, committed = HiddenSwitchCompiledPolicy.chooseNative observed
                 calls <- calls + 1
                 let! _ = HiddenSwitchCompiledPolicy.observe projection committed
+                let! _, compiled = HiddenSwitchCompiledPolicy.chooseWith (HiddenSwitchCompiledSelector.choose guards) observed
+                compiledCalls <- compiledCalls + 1
+                let! _ = HiddenSwitchCompiledPolicy.observe projection compiled
                 return ()
             })
-            return calls
+            return calls, compiledCalls
         }
 
     let private waitForCompletion path =
@@ -229,9 +257,9 @@ module HiddenSwitchCompiledGraph =
                     else Ok())
                 let before = fp()
                 emit (box {| Kind = "floating-environment-before"; Observation = before |})
-                let! calls = prepare()
+                let! calls, compiledCalls = prepare()
                 let entries = methods()
-                emit (box {| Kind = "method-callable-observation"; Methods = entries; NativePreparationCalls = calls; SourceDraws = 0 |})
+                emit (box {| Kind = "method-callable-observation"; Methods = entries; NativePreparationCalls = calls; CompiledPreparationCalls = compiledCalls; SourceDraws = 0 |})
                 let! images = nativeImages emit
                 let loaded = managed()
                 let after = fp()
@@ -245,7 +273,8 @@ module HiddenSwitchCompiledGraph =
                          Architecture = RuntimeInformation.ProcessArchitecture.ToString(); OS = RuntimeInformation.OSDescription
                          Environment = environment; BeforeFp = before; AfterFp = after; ManagedImages = loaded
                          NativeImages = images; Methods = entries; NativePreparationCalls = calls; SourceDraws = 0
-                         Scope = "initial pure/native graph feasibility only; callable pointers are not body spans; no compiled guard, final caller closure, runtime admission or registered source execution" }
+                         CompiledPreparationCalls = compiledCalls
+                         Scope = "graph hand preparation: 28 direct native-wrapper calls plus 36 compiled-service calls (which may themselves recurse); verified placeholder hand bindings; not registered conformance/streams; callable pointers are not body spans; final caller closure and runtime admission pending" }
             })
             match work with
             | Error failure -> emit {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}; Error failure

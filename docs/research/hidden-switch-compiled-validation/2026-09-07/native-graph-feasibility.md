@@ -141,6 +141,8 @@ prefix capture, marker publication, resume and observed exit for that exact
 instrument. It does not resolve the stubs, admit a complete evaluator graph or
 exercise the subsequently added compiled selector. Attempts 1 and 2 stay failed.
 
+The next bounded slice is [compiled integration and candidate body inspection](native-candidate-bodies.md).
+
 Source guidance remains distinct from installed binary provenance: the public
 .NET v10.0.11 source pin is `79d0c463f1b55624c874a11585f7e47731e8d675`, while the
 installed runtime reports `e2f47b0110ed922f21a1522da67279133ce28f32`. Public source

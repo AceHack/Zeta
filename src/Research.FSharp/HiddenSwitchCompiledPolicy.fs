@@ -77,13 +77,17 @@ module HiddenSwitchCompiledPolicy =
             return { policy with PendingAction = action }
         }
 
-    let chooseNative (policy: Policy) =
+    /// Shared choice/commit chronology. The caller supplies a numeric service;
+    /// callback construction belongs inside the same accounted arm boundary.
+    let chooseWith service (policy: Policy) =
         result {
             let! d = depth policy
-            let! choice = native policy.Effect policy.Belief d
+            let! (choice: HiddenSwitchCompiledReceipt.ChoiceWork) = service policy.Effect policy.Belief d
             let! committed = commit (int choice.Action) policy
             return choice, committed
         }
+
+    let chooseNative (policy: Policy) = chooseWith native policy
 
     let snapshot (policy: Policy) : Snapshot =
         { Effect = policy.Effect; Geometry = policy.Geometry; BeliefBits = HiddenSwitchCompiledReceipt.bits policy.Belief

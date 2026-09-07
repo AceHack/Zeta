@@ -9,12 +9,13 @@ invent resolved body bounds, accept guards or launch registered study streams.
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
-from pathlib import Path
 import shlex
 import time
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 import lldb
 
@@ -178,7 +179,7 @@ def capture(debugger, command, result, _internal_dict):
             "DOTNET_TieredCompilation": "0",
             "DOTNET_TieredPGO": "0",
             "DOTNET_ReadyToRun": "0",
-            "DOTNET_JitDisasm": "Zeta.Research.HiddenSwitchPolicy*:* Zeta.Research.HiddenSwitchCompiledPolicy*:* Zeta.Research.HiddenSwitchObservation*:* Zeta.Research.HiddenSwitchCompiledReceipt*:*",
+            "DOTNET_JitDisasm": "Zeta.Research.HiddenSwitchPolicy*:* Zeta.Research.HiddenSwitchCompiledPolicy*:* Zeta.Research.HiddenSwitchObservation*:* Zeta.Research.HiddenSwitchCompiledReceipt*:* Zeta.Research.HiddenSwitchCompiledSelector*:* Zeta.Research.HiddenSwitchCompiledCertificate:depth* Zeta.Research.HiddenSwitchCompiledGraph:prepare* Zeta.Research.HiddenSwitchCompiledGraph+prepare*:*",
             "DOTNET_JitDisasmSummary": "1",
             "DOTNET_JitDisasmWithCodeBytes": "1",
             "DOTNET_JitStdOutFile": str(jit_path),
@@ -195,6 +196,7 @@ def capture(debugger, command, result, _internal_dict):
         })
         stage = "input-identity"
         helper = Path(__file__).resolve()
+        body_helper = helper.with_name("inspect_hidden_switch_bodies.py")
         root = helper.parents[2]
         project = helper.with_name("HiddenSwitchCompiled.fsproj")
         sources = [project, root / "Directory.Build.props", root / "Directory.Packages.props", root / "global.json", root / "src/Core/Result.fs"]
@@ -202,7 +204,10 @@ def capture(debugger, command, result, _internal_dict):
             source = (project.parent / item.attrib["Include"]).resolve()
             source.relative_to(root)
             sources.append(source)
-        _write(attempt / "inputs.json", {"Files": [_file(host), _file(dll), _file(helper), _file(dll.with_suffix(".runtimeconfig.json")), _file(dll.with_suffix(".deps.json"))] + [_file(source) for source in sources], "SourceSnapshotMeaning": "working source bytes and observed built artifacts; not a source-to-binary theorem or published implementation archive"})
+        _write(attempt / "inputs.json", {"Files": [_file(host), _file(dll), _file(helper), _file(body_helper), _file(dll.with_suffix(".runtimeconfig.json")), _file(dll.with_suffix(".deps.json"))] + [_file(source) for source in sources], "SourceSnapshotMeaning": "working source bytes and observed built artifacts; not a source-to-binary theorem or published implementation archive"})
+        body_spec = importlib.util.spec_from_file_location("graph_candidate_bodies", body_helper)
+        body_module = importlib.util.module_from_spec(body_spec)
+        body_spec.loader.exec_module(body_module)
         stage = "launch"
         initial_async = debugger.GetAsync()
         debugger.SetAsync(True)
@@ -232,6 +237,11 @@ def capture(debugger, command, result, _internal_dict):
         stage = "entry-prefixes"
         entries = _entries(target, process, report, attempt)
         _write(attempt / "entry-prefixes.json", entries)
+        stage = "candidate-bodies"
+        blocks = body_module.parse_blocks(jit_path.read_text(encoding="utf-8"))
+        _write(attempt / "compiler-blocks.json", blocks)
+        bodies = body_module.capture(lldb, target, process, report, blocks, lambda name, value: _write(attempt / name, value))
+        _write(attempt / "body-candidates.json", bodies)
         stage = "resume"
         completion = Path(str(report_path) + ".complete")
         _complete(completion, int(process.GetProcessID()))
@@ -243,9 +253,9 @@ def capture(debugger, command, result, _internal_dict):
         _wait(process, lambda: process.GetState() == lldb.eStateExited, 30, stage)
         if process.GetExitStatus() != 0:
             raise RuntimeError(f"native graph process failed: {_state(process)}")
-        outcome.update(Complete=True, Process=_state(process), EntryCount=len(entries), BodyAdmission="pending explicit stub resolution, complete spans and call-graph review")
+        outcome.update(Complete=True, Process=_state(process), EntryCount=len(entries), CandidateCount=len(bodies), BodyAdmission="compiler-sized candidate bytes only; independent bounds and full call/data/arithmetic graph review pending")
         result.AppendMessage(f"graph feasibility prefixes retained at {attempt}; runtime not admitted")
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 -- retain unknown LLDB/API failures at the command boundary
         outcome["Failure"] = {"Stage": stage, "Type": type(error).__name__, "Detail": str(error)}
         result.SetError(f"{stage}: {type(error).__name__}: {error}")
     finally:
@@ -253,7 +263,7 @@ def capture(debugger, command, result, _internal_dict):
         def note(stage_name, operation):
             try:
                 return operation()
-            except Exception as error:
+            except Exception as error:  # noqa: BLE001 -- cleanup must preserve the primary failure
                 secondary.append({"Stage": stage_name, "Type": type(error).__name__, "Detail": str(error)})
                 return None
         valid = note("cleanup-valid", lambda: process is not None and process.IsValid())
@@ -278,10 +288,10 @@ def capture(debugger, command, result, _internal_dict):
         if owned_attempt:
             try:
                 _write(attempt / "outcome.json", outcome)
-            except Exception as error:
+            except Exception as error:  # noqa: BLE001 -- outcome-storage failures need a final reporting attempt
                 try:
                     result.SetError(f"outcome retention failed: {error}; original outcome: {outcome}")
-                except Exception:
+                except Exception:  # noqa: BLE001 -- last-resort LLDB reporting failure remains visible
                     print(f"outcome retention/reporting failed; original outcome: {outcome}")
 
 

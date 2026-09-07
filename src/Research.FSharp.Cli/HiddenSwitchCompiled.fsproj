@@ -19,7 +19,9 @@
     <Compile Include="../Research.FSharp/HiddenSwitchPolicy.fs" Link="Research/HiddenSwitchPolicy.fs" />
     <Compile Include="../Research.FSharp/HiddenSwitchExperiment.fs" Link="Research/HiddenSwitchExperiment.fs" />
     <Compile Include="../Research.FSharp/HiddenSwitchCompiledReceipt.fs" Link="Research/HiddenSwitchCompiledReceipt.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledCertificate.fs" Link="Research/HiddenSwitchCompiledCertificate.fs" />
     <Compile Include="../Research.FSharp/HiddenSwitchCompiledPolicy.fs" Link="Research/HiddenSwitchCompiledPolicy.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledSelector.fs" Link="Research/HiddenSwitchCompiledSelector.fs" />
     <Compile Include="../Research.FSharp/HiddenSwitchCompiledGraph.fs" Link="Research/HiddenSwitchCompiledGraph.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

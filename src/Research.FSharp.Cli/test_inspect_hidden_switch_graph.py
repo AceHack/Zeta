@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import importlib.util
 import json
-from pathlib import Path
 import sys
 import tempfile
-from types import SimpleNamespace
 import unittest
+from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location("capture_under_test", Path(__file__).with_name("inspect_hidden_switch_graph.py"))
