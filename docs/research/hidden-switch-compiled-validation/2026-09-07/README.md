@@ -169,6 +169,12 @@ checks all 23 records, 12 source/config pins and three retained output hashes.
 The executable at that checkpoint deliberately refuses study execution;
 its runtime settings and adapter tests do not establish graph admission.
 
+The [native numeric validation](../../2026-09-07-hidden-switch-compiled-native-numeric-validation.md)
+pins source `82939e501`, 29 lossless records, the complete 62,458-byte independent
+certificate match and 16 passing native certificate/selector tests. It retains
+harness failures and the repaired deferred-Unicode refusal. Independent source
+review accepted the numeric slice; final executable/graph admission stays open.
+
 The [pure replay validation](../../2026-09-07-hidden-switch-compiled-pure-replay-validation.md)
 pins separately authored source `3a7cc51a7`, independently accepted after its
 59 focused tests. It checks all 222 scalar rows/444 choice records and 48 new
