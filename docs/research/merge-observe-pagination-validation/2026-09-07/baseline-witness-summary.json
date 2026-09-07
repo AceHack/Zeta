@@ -1,0 +1,134 @@
+{
+  "BaselineCommit": "9fae5f8c3c499d424bc773fa4a13c057d7990495",
+  "Scope": "Existing mapper and authorizer executed before source edits. Live objects are reduced to fields actually observed; diagnostic query did not request auto-merge or merge-commit metadata. No forge mutation. Sequential pages are not an atomic snapshot.",
+  "Fixtures": [
+    {
+      "name": "unresolved-thread-101",
+      "prefix": {
+        "gate": "clean",
+        "checks": {
+          "ok": 100,
+          "inProgress": 0,
+          "pending": 0,
+          "failed": 0
+        },
+        "unresolved": 0,
+        "nextAction": "none",
+        "permitted": true,
+        "why": "PR #1 is Approved"
+      },
+      "complete": {
+        "gate": "unknown",
+        "checks": {
+          "ok": 100,
+          "inProgress": 0,
+          "pending": 0,
+          "failed": 0
+        },
+        "unresolved": 1,
+        "nextAction": "resolve-threads",
+        "permitted": false,
+        "why": "PR #1 is RevisionRequested, not Approved \u2014 1 unresolved review thread(s) \u2014 the review is not finished;   - no comment text available; forge reports the merge gate \"unknown\""
+      }
+    },
+    {
+      "name": "failure-101-blocked",
+      "prefix": {
+        "gate": "blocked",
+        "checks": {
+          "ok": 100,
+          "inProgress": 0,
+          "pending": 0,
+          "failed": 0
+        },
+        "unresolved": 0,
+        "nextAction": "none",
+        "permitted": false,
+        "why": "PR #1 is InReview, not Approved \u2014 forge reports the merge gate \"blocked\""
+      },
+      "complete": {
+        "gate": "blocked",
+        "checks": {
+          "ok": 100,
+          "inProgress": 0,
+          "pending": 0,
+          "failed": 1
+        },
+        "unresolved": 0,
+        "nextAction": "fix-failed-checks",
+        "permitted": false,
+        "why": "PR #1 is InReview, not Approved \u2014 1 required check(s) failing; forge reports the merge gate \"blocked\""
+      }
+    },
+    {
+      "name": "pending-101-clean",
+      "prefix": {
+        "gate": "clean",
+        "checks": {
+          "ok": 100,
+          "inProgress": 0,
+          "pending": 0,
+          "failed": 0
+        },
+        "unresolved": 0,
+        "nextAction": "none",
+        "permitted": true,
+        "why": "PR #1 is Approved"
+      },
+      "complete": {
+        "gate": "clean",
+        "checks": {
+          "ok": 100,
+          "inProgress": 1,
+          "pending": 0,
+          "failed": 0
+        },
+        "unresolved": 0,
+        "nextAction": "wait-ci",
+        "permitted": false,
+        "why": "PR #1 is InReview, not Approved \u2014 1 required check(s) still running"
+      }
+    }
+  ],
+  "LiveDiagnosticProjection": [
+    {
+      "number": 16928,
+      "state": "open",
+      "gate": "blocked",
+      "checks": {
+        "ok": 90,
+        "inProgress": 1,
+        "pending": 0,
+        "failed": 9
+      },
+      "requiredChecks": {
+        "ok": 90,
+        "inProgress": 1,
+        "pending": 0,
+        "failed": 9
+      },
+      "unresolvedThreads": 0,
+      "nextAction": "fix-failed-checks"
+    },
+    {
+      "number": 16928,
+      "state": "open",
+      "gate": "blocked",
+      "checks": {
+        "ok": 148,
+        "inProgress": 6,
+        "pending": 0,
+        "failed": 17
+      },
+      "requiredChecks": {
+        "ok": 148,
+        "inProgress": 6,
+        "pending": 0,
+        "failed": 17
+      },
+      "unresolvedThreads": 0,
+      "nextAction": "fix-failed-checks"
+    }
+  ],
+  "FixtureQualification": "Initial audit connection totals were hardcoded and not a well-shaped complete API fixture. Preserve those original outcomes as diagnostic history only; use merge-observe-baseline-replay-result.json.gz for the corrected complete-shape witness."
+}
