@@ -144,9 +144,13 @@ repair `a289c75ff6abc1808107c016d20cc7ccaf57556a`: primary failures survive
 cleanup, child ownership precedes transfer, uncertain closes are not retried,
 and malformed roots refuse. That reread ran no tests or study sources.
 
-The wire record also covers a 20-test archive-to-file helper: actual full-commit
+The wire record also covers the initial 20-test archive-to-file helper: actual full-commit
 blob identity and descriptor-read current bytes must both match the complete
 caller-enumerated roster. Loaded task-module and runtime admission remain separate.
+Independent review found implicit lazy promisor fetching in `dfb015252`; corrected
+source `46d67bd8eee78762c429cdf3748d63fc37b574ae` explicitly disables it and passes
+22 tests, including a real controlled promisor-helper witness. The reviewer
+accepted that exact correction without rerunning tests or generating task sources.
 
 ## Independent numerical and pure native implementation
 
@@ -164,6 +168,14 @@ exact artifact snapshot. The [independent native review](../../2026-09-07-hidden
 checks all 23 records, 12 source/config pins and three retained output hashes.
 The executable at that checkpoint deliberately refuses study execution;
 its runtime settings and adapter tests do not establish graph admission.
+
+The [pure replay validation](../../2026-09-07-hidden-switch-compiled-pure-replay-validation.md)
+pins separately authored source `3a7cc51a7`, independently accepted after its
+59 focused tests. It checks all 222 scalar rows/444 choice records and 48 new
+hand episodes/768 choices/816 observations, including exact ordering and every
+nested field. Its fixtures are generated Python inputs, not native receipts;
+old controls, falsifiers, executing runtime and outer-envelope admission remain
+explicit separate obligations.
 
 The coordinator integrated these five Python modules and ran their combined
 focused suite: **152 passed in 5.14 seconds**. This checks the imported modules
@@ -184,3 +196,11 @@ version-tag source guidance is not proven provenance of these binaries. Actual
 code/configuration/image correspondence remains required before admission.
 No build, debugger attachment, P/Invoke probe, guard calculation or policy
 execution occurred in that read-only readiness pass.
+
+The later [native graph feasibility record](native-graph-feasibility.md) and
+[prelaunch review](../../2026-09-07-hidden-switch-compiled-graph-prelaunch-review.md)
+pin initial collector `efc8dbe62` and five synthetic capture tests. This is an
+explicitly bounded callable-prefix probe, with false body/runtime-admission
+flags. Its initial live launch subsequently refused on a changing loaded-image
+count; the native owner is preserving that raw attempt and reviewing the
+collection correction. No new registered stream or timing has run.
