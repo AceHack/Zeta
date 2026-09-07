@@ -1,0 +1,92 @@
+{
+  "StartedAtUtc": "2026-09-07T12:15:02.156388+00:00",
+  "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "ImplementationTag": "archive/experiments/081M1XK02XM087G0R00043EW05-implementation",
+  "RemoteArchive": {
+    "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation": "bb746ecdf7e25fa5b5d26c7b89d948d929c097a4",
+    "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation^{}": "4fc82b611012bd2620a26e02afe6baba491fe553"
+  },
+  "LoadedBinarySha256Before": {
+    "src/Core/bin/Release/net10.0/Zeta.Core.dll": "9df725673e1a60233ed5d486a18b68262d8133cbc70e11f39c07583a31727328",
+    "src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll": "a3dd6dcd54df2432bcf1f5f7ad36b6248501089716728ae5201b553ab8c5e64c"
+  },
+  "QuietWindowDeclaration": "This Codex team held builds, tests, lints, training and push hooks idle during costs; remote CI monitoring and light documentation were allowed. No exclusive host control is claimed.",
+  "HostActivity": "The macOS user session, Codex, other agent applications, browser and system services remained running. Other writers are outside this team coordination. Before/after process-name snapshots are retained without command arguments; their sampled CPU values are descriptive and do not establish absence of overlap.",
+  "Commands": [
+    {
+      "Phase": "behavior",
+      "Args": [
+        "dotnet",
+        "fsi",
+        "src/Research.FSharp/run-hidden-switch-experiment.fsx",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json"
+      ],
+      "StartedAtUtc": "2026-09-07T12:15:02.208423+00:00",
+      "CompletedAtUtc": "2026-09-07T12:15:09.846495+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Phase": "cost",
+      "Args": [
+        "dotnet",
+        "fsi",
+        "src/Research.FSharp/measure-hidden-switch-inference.fsx",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.json",
+        "This Codex team held builds, tests, lints, training and push hooks idle during costs; remote CI monitoring and light documentation were allowed. No exclusive host control is claimed.",
+        "The macOS user session, Codex, other agent applications, browser and system services remained running. Other writers are outside this team coordination. Before/after process-name snapshots are retained without command arguments; their sampled CPU values are descriptive and do not establish absence of overlap."
+      ],
+      "StartedAtUtc": "2026-09-07T12:15:10.359013+00:00",
+      "CompletedAtUtc": "2026-09-07T12:15:15.976536+00:00",
+      "ExitCode": 0
+    }
+  ],
+  "CompletedAtUtc": "2026-09-07T12:15:16.022436+00:00",
+  "FinalSourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "LoadedBinarySha256After": {
+    "src/Core/bin/Release/net10.0/Zeta.Core.dll": "9df725673e1a60233ed5d486a18b68262d8133cbc70e11f39c07583a31727328",
+    "src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll": "a3dd6dcd54df2432bcf1f5f7ad36b6248501089716728ae5201b553ab8c5e64c"
+  },
+  "Files": {
+    "archive-verification.json": {
+      "Sha256": "8b6ef55bda4a284e8cf2db2d4a94805f78c4b56b56c72c11e7b3398d21b2aaa7",
+      "Bytes": 2090
+    },
+    "cost-processes-before.log": {
+      "Sha256": "e48f823b013ecccaa00e287465c0e9da09b50bf2d1b06d92547c2031cf8d1419",
+      "Bytes": 131880
+    },
+    "behavior-processes-before.log": {
+      "Sha256": "34fef680b01a9f33b2cf526ebc1c70f59d5ba8904b0d63067d6f9f68be21bd3b",
+      "Bytes": 131993
+    },
+    "behavior-attempt-1.json": {
+      "Sha256": "f15ca0d41b1437b5e05a6ca402a8a8609f85d8b0e1c6218c316460257f450c2e",
+      "Bytes": 78026027
+    },
+    "behavior-processes-after.log": {
+      "Sha256": "6ce41b630ed8715911f7d2c1dff5f051a6c19a1f82a0d077258938b6b2fa2a7a",
+      "Bytes": 131973
+    },
+    "cost-processes-after.log": {
+      "Sha256": "c465672486d925e1c189e536a2a1f511772dee63ff258e633d0f814eb4a561f0",
+      "Bytes": 131593
+    },
+    "cost-attempt-1.json": {
+      "Sha256": "6af9cf36f4cfc1c5e38f236e8922025cd845481d9e2e18daff58e5be191b9df3",
+      "Bytes": 6868985
+    },
+    "cost-attempt-1.log": {
+      "Sha256": "b154aa302e068d51935a04b23fb00327db254290438d8dd5abcf0766f4b479ac",
+      "Bytes": 1274
+    },
+    "behavior-attempt-1.log": {
+      "Sha256": "cba71eb82777b61ef74ce9afacb41a0c3d73905a01eb10c026cc48cf9fb75d81",
+      "Bytes": 632
+    },
+    "implementation-push.log": {
+      "Sha256": "991021db5cda47cad02acde7f095262726c5a74543425dda69f54f98e0186200",
+      "Bytes": 2857
+    }
+  }
+}

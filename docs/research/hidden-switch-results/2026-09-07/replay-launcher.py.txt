@@ -1,0 +1,22 @@
+from pathlib import Path
+import subprocess,datetime,json,hashlib,sys
+root=Path.cwd();out=root/'docs/research/hidden-switch-results/2026-09-07'
+source=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+assert source=='4fc82b611012bd2620a26e02afe6baba491fe553'
+behavior=str(out/'behavior-attempt-1.json');cost=str(out/'cost-attempt-1.json');replay=str(out/'replay-attempt-1.json')
+commands=[('replay',['uv','run','python','-m','zeta_interp.hidden_switch_replay',behavior,cost,'--root',str(root),'--output',replay]),('verdict',['uv','run','python','-m','zeta_interp.hidden_switch_verdict',behavior,cost,replay,'--root',str(root),'--output',str(out/'verdict-attempt-1.json')])]
+def now(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
+record={'SourceCommit':source,'StartedAtUtc':now(),'Commands':[]}
+for phase,args in commands:
+ assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==source
+ with (out/(phase+'-attempt-1.log')).open('xb') as f:
+  start=now();f.write(('Command: '+repr(args)+'\nSourceCommit: '+source+'\nStartedAtUtc: '+start+'\n').encode());f.flush()
+  r=subprocess.run(args,cwd=root/'src/Interp.Python',stdout=f,stderr=subprocess.STDOUT)
+  f.write(('\nExitCode: '+str(r.returncode)+'\nCompletedAtUtc: '+now()+'\n').encode())
+ record['Commands'].append({'Phase':phase,'Args':args,'StartedAtUtc':start,'CompletedAtUtc':now(),'ExitCode':r.returncode})
+ print(phase,'exit',r.returncode,flush=True)
+ if r.returncode: break
+record['CompletedAtUtc']=now();record['FinalSourceCommit']=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+record['Files']={p.name:{'Sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'Bytes':p.stat().st_size} for p in out.iterdir() if p.name.startswith(('replay-','verdict-')) and p.is_file()}
+with (out/'replay-execution-attempt-1.json').open('x') as f:json.dump(record,f,indent=2);f.write('\n')
+sys.exit(r.returncode)

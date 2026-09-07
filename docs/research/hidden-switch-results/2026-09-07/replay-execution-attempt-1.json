@@ -1,0 +1,65 @@
+{
+  "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "StartedAtUtc": "2026-09-07T12:16:19.168293+00:00",
+  "Commands": [
+    {
+      "Phase": "replay",
+      "Args": [
+        "uv",
+        "run",
+        "python",
+        "-m",
+        "zeta_interp.hidden_switch_replay",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.json",
+        "--root",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906",
+        "--output",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.json"
+      ],
+      "StartedAtUtc": "2026-09-07T12:16:19.174873+00:00",
+      "CompletedAtUtc": "2026-09-07T12:17:06.167856+00:00",
+      "ExitCode": 0
+    },
+    {
+      "Phase": "verdict",
+      "Args": [
+        "uv",
+        "run",
+        "python",
+        "-m",
+        "zeta_interp.hidden_switch_verdict",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.json",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.json",
+        "--root",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906",
+        "--output",
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/verdict-attempt-1.json"
+      ],
+      "StartedAtUtc": "2026-09-07T12:17:06.180045+00:00",
+      "CompletedAtUtc": "2026-09-07T12:17:52.876091+00:00",
+      "ExitCode": 0
+    }
+  ],
+  "CompletedAtUtc": "2026-09-07T12:17:52.876116+00:00",
+  "FinalSourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "Files": {
+    "verdict-attempt-1.json": {
+      "Sha256": "d0fbffe371155002a204bae3959b788a4e1b54d1ad83761d0e5933cb9cb67222",
+      "Bytes": 11871
+    },
+    "replay-attempt-1.log": {
+      "Sha256": "5c7311db7129dbe9e09516be652325c4b73d6ba816f26256ffcc5ed104b5ddc1",
+      "Bytes": 808
+    },
+    "replay-attempt-1.json": {
+      "Sha256": "04c282c7eea51e9672362427d36e4238f10897074ca9b691ba9c3a534e9137fb",
+      "Bytes": 7553
+    },
+    "verdict-attempt-1.log": {
+      "Sha256": "d3b477b188d6f1f499ce4c35a30130c6f524e41dce4a47eb8094b339baea5b6f",
+      "Bytes": 982
+    }
+  }
+}

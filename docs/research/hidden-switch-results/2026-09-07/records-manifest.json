@@ -1,0 +1,77 @@
+{
+  "MeasuredSourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+  "Records": {
+    "archive-verification.json": {
+      "Bytes": 2090,
+      "Sha256": "8B6EF55BDA4A284E8CF2DB2D4A94805F78C4B56B56C72C11E7B3398D21B2AAA7"
+    },
+    "behavior-attempt-1.json": {
+      "Bytes": 78026027,
+      "Sha256": "F15CA0D41B1437B5E05A6CA402A8A8609F85D8B0E1C6218C316460257F450C2E"
+    },
+    "behavior-attempt-1.log": {
+      "Bytes": 632,
+      "Sha256": "CBA71EB82777B61EF74CE9AFACB41A0C3D73905A01EB10C026CC48CF9FB75D81"
+    },
+    "behavior-processes-after.log": {
+      "Bytes": 131973,
+      "Sha256": "6CE41B630ED8715911F7D2C1DFF5F051A6C19A1F82A0D077258938B6B2FA2A7A"
+    },
+    "behavior-processes-before.log": {
+      "Bytes": 131993,
+      "Sha256": "34FEF680B01A9F33B2CF526EBC1C70F59D5BA8904B0D63067D6F9F68BE21BD3B"
+    },
+    "cost-attempt-1.json": {
+      "Bytes": 6868985,
+      "Sha256": "6AF9CF36F4CFC1C5E38F236E8922025CD845481D9E2E18DAFF58E5BE191B9DF3"
+    },
+    "cost-attempt-1.log": {
+      "Bytes": 1274,
+      "Sha256": "B154AA302E068D51935A04B23FB00327DB254290438D8DD5ABCF0766F4B479AC"
+    },
+    "cost-processes-after.log": {
+      "Bytes": 131593,
+      "Sha256": "C465672486D925E1C189E536A2A1F511772DEE63FF258E633D0F814EB4A561F0"
+    },
+    "cost-processes-before.log": {
+      "Bytes": 131880,
+      "Sha256": "E48F823B013ECCCAA00E287465C0E9DA09B50BF2D1B06D92547C2031CF8D1419"
+    },
+    "implementation-push.log": {
+      "Bytes": 2857,
+      "Sha256": "991021DB5CDA47CAD02ACDE7F095262726C5A74543425DDA69F54F98E0186200"
+    },
+    "measurement-attempt-1.json": {
+      "Bytes": 4816,
+      "Sha256": "C87BEC2403062B2553C3D496F38A41C253CA5744313B3E489D20D61021CF853C"
+    },
+    "publication-preflight.log": {
+      "Bytes": 1366,
+      "Sha256": "05507FF5D03528E4B30BC1F8AD183F0AC152FBA0E86FFCCA236D83FBB33F0D81"
+    },
+    "replay-attempt-1.json": {
+      "Bytes": 7553,
+      "Sha256": "04C282C7EEA51E9672362427D36E4238F10897074CA9B691BA9C3A534E9137FB"
+    },
+    "replay-attempt-1.log": {
+      "Bytes": 808,
+      "Sha256": "5C7311DB7129DBE9E09516BE652325C4B73D6BA816F26256FFCC5ED104B5DDC1"
+    },
+    "replay-execution-attempt-1.json": {
+      "Bytes": 2774,
+      "Sha256": "0D268D3CA6D7DC8F2718908C6C45AF9E14AEC17D0A064103943CEB9B344599F8"
+    },
+    "replay-launcher.py.txt": {
+      "Bytes": 1936,
+      "Sha256": "35A62513BBB7A2391937724623757D1E551E40AFA6F73068C9BD2FA20165A9CF"
+    },
+    "verdict-attempt-1.json": {
+      "Bytes": 11871,
+      "Sha256": "D0FBFFE371155002A204BAE3959B788A4E1B54D1AD83761D0E5933CB9CB67222"
+    },
+    "verdict-attempt-1.log": {
+      "Bytes": 982,
+      "Sha256": "D3B477B188D6F1F499CE4C35A30130C6F524E41DCE4A47EB8094B339BAEA5B6F"
+    }
+  }
+}

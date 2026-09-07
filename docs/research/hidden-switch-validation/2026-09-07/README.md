@@ -179,3 +179,24 @@ phase commands, process-name snapshots without arguments, exit codes and
 before/after source and binary identities. It adds no warmup, retry, row
 replacement or scientific policy. Preparing this wrapper generates no source
 tape; its later invocation and outputs belong to the measurement record.
+
+## C1 publication review disposition
+
+At C1 PR #16917 head `e2a11ebc9ca5e94c02656e904ddef9ba1b4f32f5`,
+CodeQL classified the two assertions after the nested context-manager test
+as unreachable. The outer `pytest.raises` suppresses the expected original
+exception after the inner context manager propagates it, so execution resumes
+at both assertions. Root and the independent-reference writer accepted this
+source-level interpretation. The author then retained an
+[executed line-trace witness](c1-codeql-reachability.json) with assertions
+enabled and explicit line events for 85 and 86; it returned normally on the
+exact checked source. The [executed script](c1-codeql-reachability.py.txt)
+and [empty stderr](c1-codeql-reachability.stderr) are original bytes. The
+review disposition requires no source mutation or new scientific run.
+
+The [C1 advisory drift output](c1-final-advisory-drift.log) records the
+separate nonblocking historical Windows rows: 43 failures in 59 runs
+(72.9%), last main run 34118407589. It explicitly reports the manually
+disabled publisher/frozen ledger. Current required/platform tests passed;
+the matrix with this advisory failure must not be described as all-green.
+Final merge ancestry remains a separate publication check.
