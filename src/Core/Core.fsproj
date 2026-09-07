@@ -272,6 +272,7 @@
     <Compile Include="ZetaFsReclaim.fs" />
     <Compile Include="ZetaFsFormat.fs" />
     <Compile Include="ZetaFsFreeze.fs" />
+    <Compile Include="ZetaFsPosixVfs.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="DeltaLog.fs" />
