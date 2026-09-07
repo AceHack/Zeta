@@ -1,0 +1,41 @@
+{
+  "SourceHead": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "Bytes": 22086,
+  "Sha256": "dcb1ac29d1e83410e5059d18774896398b8133dc8eb4e5ed4517b0144886134e",
+  "Excerpts": [
+    {
+      "Line": 84,
+      "Lines": [
+        "",
+        "on:",
+        "  pull_request:",
+        "    types: [opened, reopened, edited, synchronize, ready_for_review]",
+        "  # ADDED 2026-08-18 for the `verify-human-review` job below. A review is the",
+        "  # artifact that job reads, and it can arrive AFTER every `pull_request` event",
+        "  # has fired: without this trigger a PR that truthfully claims",
+        "  # `Human-Review: explicit` would stay red until an unrelated push happened to",
+        "  # re-run the check. The gate has to re-evaluate when its evidence appears.",
+        "  pull_request_review:",
+        "    types: [submitted, edited, dismissed]",
+        "  push:"
+      ]
+    },
+    {
+      "Line": 103,
+      "Lines": [
+        "  # this workflow never writes a PR.",
+        "  pull-requests: read",
+        "",
+        "concurrency:",
+        "  group: ${{ github.workflow }}-${{ github.ref }}",
+        "  cancel-in-progress: ${{ github.event_name == 'pull_request' }}",
+        "",
+        "jobs:",
+        "  validate-pr-body:",
+        "    name: agencysignature (PR body)",
+        "    if: github.event_name == 'pull_request'",
+        "    runs-on: ubuntu-24.04"
+      ]
+    }
+  ]
+}

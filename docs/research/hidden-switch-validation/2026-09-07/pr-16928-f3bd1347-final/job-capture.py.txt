@@ -1,0 +1,21 @@
+import concurrent.futures, datetime, gzip, hashlib, json, subprocess, sys
+from pathlib import Path
+out=Path(sys.argv[1]);out.mkdir(exist_ok=False)
+ids=[int(x) for x in sys.argv[2:]]
+def identity(b):return {'Bytes':len(b),'Sha256':hashlib.sha256(b).hexdigest()}
+def get(j):
+ prefix=f'job-{j}'
+ meta=subprocess.check_output(['/opt/homebrew/bin/gh','api',f'repos/Lucent-Financial-Group/Zeta/actions/jobs/{j}'])
+ (out/(prefix+'.json')).write_bytes(meta)
+ p=subprocess.run(['/opt/homebrew/bin/gh','api',f'repos/Lucent-Financial-Group/Zeta/actions/jobs/{j}/logs','--allow-escape-sequences'],capture_output=True)
+ row={'JobId':j,'Metadata':identity(meta),'LogExitCode':p.returncode}
+ if p.returncode==0:
+  z=gzip.compress(p.stdout,mtime=0);assert gzip.decompress(z)==p.stdout
+  (out/(prefix+'.log.gz')).write_bytes(z);row.update({'Log':identity(p.stdout),'LogGzip':identity(z)})
+ else:
+  (out/(prefix+'-log-error.json')).write_text(json.dumps({'ExitCode':p.returncode,'Stdout':p.stdout.decode(errors='replace'),'Stderr':p.stderr.decode(errors='replace')},indent=2)+'\n')
+ return row
+start=datetime.datetime.now(datetime.timezone.utc).isoformat()
+with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool: rows=list(pool.map(get,ids))
+(out/'manifest.json').write_text(json.dumps({'StartedAtUtc':start,'FinishedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'Jobs':rows},indent=2)+'\n')
+print(json.dumps(rows,indent=2))
