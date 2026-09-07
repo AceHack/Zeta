@@ -12,6 +12,10 @@ preserves the exact resource-helper extension, fixed case/prefix contract and
 802-test compiled Python integration pass. Actual complete coordinator execution
 and runtime admission remain separate prerequisites.
 
+The [capture-five publication proof](pr-16974-ae632-final/README.md) verifies
+all 2,566 reviewed paths on main through PR #16974 and retains the complete
+gate, review, dependency and historical-drift observations.
+
 ## Frozen protocol and remote proof
 
 The [preregistration](../../2026-09-07-hidden-switch-compiled-protocol.md)
