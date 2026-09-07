@@ -75,3 +75,59 @@ separate prerequisites before any registered behavior or cost run.
 | CLI `Program.fs` | `26f9a0af85b8d1b2abe99dcd80df95d23d7437330db938f4c43963fc66fb86fc` |
 | CLI `HiddenSwitchCompiled.fsproj` | `6662b36750f5f178d77960548faba3790a8c51c9dbd004bb10d7784da334fbaf` |
 | `Tests.FSharp.fsproj` | `2972846aaebea37f5915889fb629b273fa4bb17a57095ad5c0d60e5557905bad` |
+
+## Invocation and supplied-Q witness source
+
+The subsequent bounded witness source is
+`8aede9982fc3ce1eb891c5d630710f778b3eff63`. The reviewer checked its new
+`HiddenSwitchCompiledWitness.fs`, selector dispatcher and CLI/project wiring
+against those exact committed bytes. The author reports its fifth CLI build
+passed in 3.30 seconds with zero warnings/errors and retains all earlier
+build attempts. No reviewer test, build or target ran.
+
+The ten cases comprise six unsupported-runtime calls across both effects and
+three depths, two real interior fallback calls, and two deliberately wrong
+callbacks tied to the preceding real cases. Delegate entries are incremented
+at the actual callback entry; evaluator entries are incremented immediately
+before the real evaluator call through the shared native core. The wrong
+callback is actually invoked and returns the opposite action with zero tree
+work. Returned traversal counters remain distinct from these entry counters.
+Normal unsupported dispatch still binds the actual native service.
+
+A separate supplied-Q witness reads the verified certificate's epsilon,
+executes the unchanged strict selector at `[0, epsilon]`, and executes the
+explicit inclusive-comparison mutant. It is not an eleventh invocation case.
+The raw-byte helper is now private to its verified caller, resolving the
+reviewed exception path on a formerly public Result-returning helper.
+
+An initial early metadata/certificate failure could bypass the terminal report.
+The accepted repair retains available hashes, provenance and completed cases
+in an incomplete report, attempts journal and final output independently, and
+preserves an established computation failure through later write/disposal
+errors. If the terminal journal fails, the final report's `SlicesComplete`
+is false. Successful checkpoint retention is explicitly qualified for abrupt
+termination and storage failure. Source review is not exhaustive injected-I/O
+validation or a durability theorem.
+
+The witness module's SHA256 is
+`9aedcdd2e90715d27b49b6105ef218a21e6a2f6783c5041f9ddbafac03a5000a`.
+No material source finding remains in this incomplete conformance scope.
+Independent replay of actual output and the separate complete falsifier,
+source and runtime boundaries remain required.
+
+## Independent supplied-Q replay source
+
+The pure checker at `16d2ac85bd00ce6664731470a3c5f8345f9df4fb`
+(`hidden_switch_compiled_outer_negatives.py` and its test) is accepted for
+this one witness. It admits the opaque certificate and exact nested input
+shape and Q roster before decoding. It actually invokes the independent
+software selector on those retained bits, checks the exact epsilon difference
+and strict harvest result, then checks the inclusive mutant through the same
+action boundary. A mutant that does not differ cannot earn coverage.
+
+The source tests distinguish permissive action checking and an inclusive
+reference selector, as well as wrong action types, altered Q bits and extra
+fields. The author reports 23 focused cases passing after a retained static
+typing correction. The reviewer read the immutable source and tests without
+executing them. This acceptance covers neither actual native output replay
+nor file, envelope or executing-runtime admission.

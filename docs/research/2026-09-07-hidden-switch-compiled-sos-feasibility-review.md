@@ -211,3 +211,77 @@ such isolation switch or installed history behavior has been established.
 The procedure must preserve user history and avoid repointing HOME; this
 source discrepancy is not a reason to modify the installed tool.
 [Pinned directory helper](https://github.com/dotnet/diagnostics/blob/65349e35e532e2d9c300b0b6a1738bbcd8f360f1/src/Microsoft.Diagnostics.DebugServices.Implementation/Utilities.cs)
+
+## Installed analyzer history and offline command boundary
+
+The package metadata identifies repository commit
+`d7b455b46332b31fd9ba3a3f3e020387984c511a`. That version differs from the
+newer source consulted above. The reviewer inspected installed IL to resolve
+the difference; the earlier current-source observation is retained as history,
+not asserted as installed behavior. The
+[static-inspection manifest](hidden-switch-compiled-validation/2026-09-07/dump-analyzer-static-inspection/manifest.json)
+indexes 12 losslessly compressed records, including exact invocations, complete
+or partial outputs and empty error streams. Its 13 local file identities are
+a post-inspection snapshot, not a complete loaded-reader dependency inventory.
+
+The already installed `monodis` reader exited by signal 11 while reading
+`dotnet-dump.dll` and `Microsoft.Diagnostics.DebugServices.Implementation.dll`.
+Both partial outputs and zero-length error streams are retained; neither is
+called a complete disassembly. Reading `Microsoft.Diagnostics.Repl.dll`
+completed with exit zero. The separately installed `dotnet-ildasm` 0.12.2 then
+read only the selected helper and analyzer methods successfully, using the
+explicit installed .NET 10.0.11 host. These were static file-reader executions;
+the subject analyzer, SOS and a diagnostic target were not executed. The record
+contains no retrospective timing log and makes no cause claim for the crashes.
+
+Installed `Utilities.GetDotNetHomeDirectory` reads `HOME` on this platform.
+If absent, it throws before returning a history directory. Installed
+`Analyzer.Analyze` initializes its history filename to null, catches that
+specific early exception, and only reads/writes history after a filename has
+been assigned. Redirected input alone does not prevent these accesses. Thus
+the approved procedure omits `HOME` only from the private analysis child's
+environment dictionary. It does not reassign `HOME`, change the parent's
+environment, inspect user history or modify user settings. Startup might still
+refuse elsewhere; that outcome must be retained without widening the procedure.
+[Version-specific helper](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/Utilities.cs),
+[version-specific analyzer](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Tools/dotnet-dump/Analyzer.cs)
+
+The installed REPL's redirected-input path emits an initial
+`<END_COMMAND_OUTPUT>` marker, followed by success or error markers after
+nonempty commands. Empty input or EOF is not an exit request. A bounded owner
+must send `exit` or terminate/join its own process on timeout. Markers are
+transport evidence: SOS may print a semantic failure without a host-command
+exception, so output contents must also be checked. These facts support a
+gated command loop, not a blind batch whose only check is process exit zero.
+[Version-specific console source](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.Repl/ConsoleService.cs)
+
+Before DAC or method queries, the proposed loop must complete
+`setsymbolserver -disable`, then inspect `setsymbolserver`. The expected
+configuration is the symbol-settings header with no store entries; the
+version-specific implementation clears the store and prints each remaining
+entry with an arrow. Any unexpected entry or failed command stops analysis.
+This disables the analyzer's default store after startup, not network access
+at the operating-system boundary. No unverified claim of an absent startup
+network request is inferred from source ordering.
+[Symbol command](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.ExtensionCommands/Host/SetSymbolServerCommand.cs),
+[symbol store implementation](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/SymbolService.cs)
+
+Next set and inspect `setclrpath` using the exact installed runtime 10.0.11
+directory. This selects the local DAC/DBI directory; it does not prove that a
+particular file has loaded. Retain `runtimes` output and actual module/library
+identities without changing signature verification or runtime-selection
+policy. Then query only body addresses established from this dump's own
+stub/cell/code reads with `ip2md <IP>` and `clru -n -o <IP>`. The installed
+platform help documents these command names and flags. Require the observed
+method identity and hot/cold extents to agree with captured code; preserve
+missing-memory, unknown-method or compatibility failures as unresolved.
+[DAC path command](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.ExtensionCommands/Host/SetClrPathCommand.cs),
+[runtime metadata command](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.ExtensionCommands/Host/RuntimesCommand.cs)
+
+The authorized dump belongs to one nonregistered graph process and remains
+local-only. Its hash, size, capture identity and code-related observations may
+be retained; its memory is not ingested or published. Direct runtime-IPC
+collection while the graph process waits is a different snapshot from an LLDB
+stop. No analyzer or dump capture has run in the reviewer's lane. The native
+owner's complete ownership, timeout, collection and command plan still needs
+prelaunch review; this note neither admits the runtime nor changes the protocol.
