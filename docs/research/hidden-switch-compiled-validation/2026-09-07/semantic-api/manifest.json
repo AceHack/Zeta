@@ -1,0 +1,117 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.semantic-api-validation.v1",
+  "SourceCommit": "cdcf34d759a74201aa5599f4556e07af00f6dc4a",
+  "WorkingDirectory": "src/Interp.Python",
+  "Sources": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "Bytes": 33300,
+      "Sha256": "3D2BFDB3D961D7B30637E7ADB1F28A3B6A1F7703D5C04D0FC986E8F18A19F463"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_falsifiers.py",
+      "Bytes": 33720,
+      "Sha256": "B736E3D1D5D41A9CB3EC2BE7AEE4C88A112A4DCD5F5F0D0C5CDA7ADC768BD789"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ED2CF49D070F0D9CE3243DD634BA53FE35DEF36742D26ABEB7644469DFBBA45"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Bytes": 10841,
+      "Sha256": "8571296D52A4D3F4C00D787ADF258E9558D91072F52BF5E67F9B0387803C45BB"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "Bytes": 27739,
+      "Sha256": "7130FBF88E4A5F7393AD59CFFD6C56637B3D226F630B8CF547167D319BF880E2"
+    }
+  ],
+  "Commands": [
+    {
+      "Command": "uv run python -m pytest tests/test_hidden_switch_compiled_falsifiers.py -q",
+      "ExitCode": 0,
+      "Log": "focused.log.gz"
+    },
+    {
+      "Command": "uv run ruff check zeta_interp/hidden_switch_compiled_falsifiers.py tests/test_hidden_switch_compiled_falsifiers.py",
+      "ExitCode": 0,
+      "Log": "ruff.log.gz"
+    },
+    {
+      "Command": "uv run ruff format --check zeta_interp/hidden_switch_compiled_falsifiers.py tests/test_hidden_switch_compiled_falsifiers.py",
+      "ExitCode": 0,
+      "Log": "format.log.gz"
+    },
+    {
+      "Command": "uv run mypy --strict zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "ExitCode": 0,
+      "Log": "mypy-source.log.gz"
+    },
+    {
+      "Command": "uv run mypy tests/test_hidden_switch_compiled_falsifiers.py",
+      "ExitCode": 0,
+      "Log": "mypy-tests.log.gz"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "focused.log.gz",
+      "Bytes": 100,
+      "Sha256": "928088B45D60A67EC558546FDC1680A8475008042DFBA9ADCA81FA5FB1BBEACB",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "5C0CEB4494DB8AED91BC5B1EC0F5F3F95E1D3D3D7E5A7A458610E33F5629246B"
+    },
+    {
+      "File": "ruff.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "format.log.gz",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "Encoding": "gzip",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "File": "mypy-source.log.gz",
+      "Bytes": 42,
+      "Sha256": "5D4B6D285B77932E3D08212C3B4974D0A803F98EC60408AC6CCF6A063FA6C19E",
+      "Encoding": "gzip",
+      "StoredBytes": 62,
+      "StoredSha256": "2F7B9C4111C2BA775333E2EA54F81225E3637B13E8892DF5AA0EB59733A00FCD"
+    },
+    {
+      "File": "mypy-tests.log.gz",
+      "Bytes": 42,
+      "Sha256": "5D4B6D285B77932E3D08212C3B4974D0A803F98EC60408AC6CCF6A063FA6C19E",
+      "Encoding": "gzip",
+      "StoredBytes": 62,
+      "StoredSha256": "2F7B9C4111C2BA775333E2EA54F81225E3637B13E8892DF5AA0EB59733A00FCD"
+    }
+  ],
+  "Scope": "Python fixtures and bounded source review; no native/full-runtime or registered measurement admission"
+}

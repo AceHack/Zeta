@@ -160,3 +160,12 @@ The reviewer ran no tests, native code or registered sources. This source
 acceptance does not establish actual native event collection, outer-negative
 replay, CLI/module identity, the loaded executable graph or runtime premises.
 Those named obligations remain necessary before complete experiment admission.
+
+## Subsequent acyclic semantic API
+
+The separately indexed [six-member API validation](2026-09-07-hidden-switch-compiled-semantic-api-validation.md)
+adds a distinct descriptor-free prerequisite boundary at source `cdcf34d759a74201aa5599f4556e07af00f6dc4a`.
+It shares the actual full checks, preserves this complete API's order, and
+passes the original 63 plus nine added API cases. Its evidence and independent
+review preserve the same pending outer/runtime scope and do not rewrite this
+earlier source or failed-witness history.
