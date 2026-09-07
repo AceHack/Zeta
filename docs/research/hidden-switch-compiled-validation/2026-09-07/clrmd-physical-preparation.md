@@ -95,3 +95,42 @@ explicitly named dump and exact custody. Raw dump memory stays local-only.
 No registered source, cost run, complete method closure or full runtime
 admission follows from this preparation. All three admission flags remain
 false even if the three metadata/physical extent comparisons later complete.
+
+## Fresh capture and first actual helper outcome
+
+The [fresh capture inventory](dump-attempt-2/manifest.json) preserves 39
+lossless records from execution HEAD
+`f3d9229ed88425826798da7ccb3ff416429ac85e`. Target PID 76685 started at
+22:16:42.069352 UTC; collection exited zero at 22:16:48.287558 UTC and the
+closed capture finished at 22:16:48.416927 UTC. Input and exclusive target
+custody hashes remained unchanged, with no cleanup failures. Parent was
+running an unrelated publication preflight concurrently; no exclusive-host
+or causal workload claim is made.
+
+The raw dump remains local-only at the writer's
+`.git/hidden-switch-compiled-dump-attempt-2/graph.core`, 6,208,508,456 bytes,
+SHA256 `7584B8D3E56DAFA79CAE8C954C03C2587AC25134CAA970F67CE530FDE17D3709`.
+Raw target DLL/config copies remain local-only beside it under `target-files`;
+their complete identities are preserved in the capture inventory. No dump
+memory is published or broadly scanned.
+
+The [first metadata-attempt inventory](clrmd-attempt-1/manifest.json) retains
+26 lossless records. Three physically stored callable/cell/body chains matched
+compiler bytes: predict at `10BCB0BC0` (252 bytes), condition at `10BCB1190`
+(532 bytes), and select at `10BCAEF00` (224 bytes). These 1,008 candidate bytes
+remain distinct from independent method extents or closure admission.
+
+Helper PID 77319 then exited -6 (SIGABRT). Its exact 378-byte stderr reports
+missing `FSharp.Core, Version=10.1.0.0` at `Program.main`; stdout is empty and
+no helper final file/journal was created. Driver exit two at 22:17:22.448673
+UTC is the actual outcome, with empty cleanup failures. The thirteen pinned
+ClrMD transitive assets were not the F# executable's complete dependencies.
+This is a concrete startup dependency failure, with no actual DAC query
+result or extent prefix. The original helper module/config bytes were copied
+locally after failure and checked against their prelaunch fingerprints; that
+is explicitly post-failure custody, not a prelaunch copy claim.
+
+No retry has replaced this attempt. A narrow explicit FSharp.Core package
+reference and a separately numbered reviewed recovery are pending. The
+captured target/dump bytes remain unchanged and no study source is modified
+by this helper-only correction. All full admission flags remain false.

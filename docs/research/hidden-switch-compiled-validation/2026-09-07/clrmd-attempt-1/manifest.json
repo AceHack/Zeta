@@ -1,0 +1,240 @@
+{
+  "ExecutionHead": "f3d9229ed88425826798da7ccb3ff416429ac85e",
+  "RawDumpAndCustodyFiles": "local-only; inventory/hash identities are preserved here, raw dump/module files are not git-canonical",
+  "Records": [
+    {
+      "File": "held-dump.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/held-dump.json",
+      "Bytes": 458,
+      "Sha256": "770D51A61EE9C2FC4C7A1624B434F64CD301D8717411094E56D99E577FC955AA",
+      "StoredBytes": 318,
+      "StoredSha256": "0BDF98F9D3768CABE68C52B01C162A77C7FE24F7DC746D913B050FAA90F744B1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper-finished.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper-finished.json",
+      "Bytes": 98,
+      "Sha256": "F7D0AA2D2B41756FDAE902075DA3D8D52960C50DCAA38036D3FDD9C6EBC6E5CD",
+      "StoredBytes": 110,
+      "StoredSha256": "2FAE8A197733B9924AE639D5F23D1A9152ED919A4BC8503190CB5167BA82538D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper-host.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper-host.log",
+      "Bytes": 263295,
+      "Sha256": "8B4B7D6397B62120C8BE9986A71551E931B2256EE3DFA5051BBF926DA3DE6A30",
+      "StoredBytes": 14736,
+      "StoredSha256": "4A98296B65399EAB87BC7232C2744686D9823D8A34650BBBD6AECC1A28BE43D8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper-input.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper-input.json",
+      "Bytes": 2432,
+      "Sha256": "EE25FBB8A3BB90A78E9C84764AD1827A9957CC062A06800624E7ADED49BC2188",
+      "StoredBytes": 974,
+      "StoredSha256": "5106D667081BEA19F3A5C218679ECC3FAE7E5E0E5EF92F17515688C7DB0F5874",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper-start.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper-start.json",
+      "Bytes": 996,
+      "Sha256": "4ECBCA7FE8191D44D071AD0D1B09C528F2E460AEBCEBEBEEC5B509738D3F2C66",
+      "StoredBytes": 458,
+      "StoredSha256": "065AF0417008F9E347D53CAAAFF7A8466121067DF8E4B432C0E480B14FD1B4DD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper-started.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper-started.json",
+      "Bytes": 79,
+      "Sha256": "5F7DB2280AF91A8ADF7DE240C34CB4EE8BE904B4FE24309BDBEECB5217FEC262",
+      "StoredBytes": 95,
+      "StoredSha256": "55FC905AB6BC2E6E1B058C574B2E932DFAD8B36742A2D88FF2BF76893DE633D0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper.stderr.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper.stderr.log",
+      "Bytes": 378,
+      "Sha256": "891435A34AE40063ECBD9CE6CCA22601FA40C2B12DFEF7EB51FAA9F080B2C7AD",
+      "StoredBytes": 255,
+      "StoredSha256": "AC089C7F74ABC05EAF674629ADC519B3E0CFAD825129FACCA90AD6656DEA65BE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "helper.stdout.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper.stdout.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "inputs.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/inputs.json",
+      "Bytes": 11369,
+      "Sha256": "88C9D2D9478C5C3C2266CECBFC24D06C634B2B5D1EF8F7647530F588E33481AA",
+      "StoredBytes": 2792,
+      "StoredSha256": "3FEBC2092F7644FAC01F2B2B26C67C4083739E374BBD2EB0C0F81F84E6AB44F6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "outcome.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/outcome.json",
+      "Bytes": 451,
+      "Sha256": "66CAB9F9600B1D7BA2624AFDEDC0333B375E520464A512CB40D8CAD6F20B45EA",
+      "StoredBytes": 299,
+      "StoredSha256": "13957DCE3D35DDD9458A1E4A95580AA342B926B2BFAC48AA4B0DFEA1D8E4020B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-condition-body.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-condition-body.json",
+      "Bytes": 1158,
+      "Sha256": "C67F083053EF4889B59844E32B6579B33DA845F48F0D3EE8533F4A4E2EBB1338",
+      "StoredBytes": 608,
+      "StoredSha256": "5AA7960F99C09722BC2AADCC76D3932E87FCC1FB14F47D9F6112027C90EAB925",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-condition-cell.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-condition-cell.json",
+      "Bytes": 1156,
+      "Sha256": "BEF1EEFD9A7C544EFBD91A1D490ACCAC3E9F5B352E55ABBD823B2E182A90592D",
+      "StoredBytes": 606,
+      "StoredSha256": "A4E542DBF9DCBB13C9E3ABFCBFCA6EF4E67EE6E9E67970D20A230AA0D12F5482",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-condition-stub.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-condition-stub.json",
+      "Bytes": 1156,
+      "Sha256": "9600BD52CED739E11B672475C1E761076BDE1CFF51CA1FE31E23B6A37CCCE36F",
+      "StoredBytes": 601,
+      "StoredSha256": "7E067AB4750C90B40350AF85E832EF7EBD526D1B393718E005A06E3C79DF58DC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-condition.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-condition.json",
+      "Bytes": 1752,
+      "Sha256": "C3DCFA3D1FA4F23D7B2238858FCADC6F3EEF3A1259C3238E1AC6D68BF0CA171B",
+      "StoredBytes": 771,
+      "StoredSha256": "B1CEEFC799361D7936CAE4689ABE2EA4C8A07F072421FAE4BB3B39BD8E4CEAC3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-format.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-format.json",
+      "Bytes": 106,
+      "Sha256": "1FF57609F20C67221010ED5E94D750B0E1432E7BED0F82B287211F1762A7AAA4",
+      "StoredBytes": 102,
+      "StoredSha256": "394A35E60CF639F12A788608008ADD33BB838E0850966409084F0A113CBBC18F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-predict-body.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-predict-body.json",
+      "Bytes": 919,
+      "Sha256": "D2E1D4B117411B40DEF50080597468D81E06EE6803CEC6DF8EBADE50A73C7B54",
+      "StoredBytes": 558,
+      "StoredSha256": "23A2A74A051DB456BBC7523C9779099483BC0476829D12281DDFFA9D443E9464",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-predict-cell.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-predict-cell.json",
+      "Bytes": 917,
+      "Sha256": "890939C8634610697730B615B225A70B7C031AD58B7C93EACF10BAEE106BCB3E",
+      "StoredBytes": 555,
+      "StoredSha256": "5772EF102B45214C2F8DB96C6CA6BA3CE76A6750D67C3EBB9F894CB86CB0A663",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-predict-stub.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-predict-stub.json",
+      "Bytes": 917,
+      "Sha256": "EBEFCE0DDE94E1FC877C6E84087115DDA0E5C51D24C7355DC4CDCB9FB8BF3ADF",
+      "StoredBytes": 549,
+      "StoredSha256": "21AAB717FE13DD3C4384DDBD7BB81B5B0749B0BC0C58DE0B5F3C14168E468220",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-predict.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-predict.json",
+      "Bytes": 1513,
+      "Sha256": "1FD2D15B91C3E2092757D32B0B0297D17FAEA604050DEA280FB15E88935E1A01",
+      "StoredBytes": 719,
+      "StoredSha256": "09EC1BD7AAEC538102ACEE68DE505F1C599BB7C92CEDDF04685372EF80471DE6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-select-body.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-select-body.json",
+      "Bytes": 912,
+      "Sha256": "64B8F3B158D4D553D123550C70DBED7F948AB5CA6ABBE46DED810C99DF8E1DD0",
+      "StoredBytes": 563,
+      "StoredSha256": "E03B790CD052CD8A18E73A3175DFA1FC1F6BAEC7E1A60888F0FDB4ED6178E208",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-select-cell.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-select-cell.json",
+      "Bytes": 910,
+      "Sha256": "4D256ADB678CB475D46A11BAF447EFB82F53E38C7E4A7B3A531871544E4D9FE0",
+      "StoredBytes": 562,
+      "StoredSha256": "B37C83C04A4934395FFD9E71D3A15BB977F9CDB347418AEEC229003D6EF64C52",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-select-stub.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-select-stub.json",
+      "Bytes": 910,
+      "Sha256": "23175C1076E65588CC3CA12F404677D012B2C1293018B486962E445702F1FADE",
+      "StoredBytes": 560,
+      "StoredSha256": "4BCC1D401231EC65197EBD2A5D1CE79C109AC3EAFF9F9F582C1B65C2EED7322C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "physical-select.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/physical-select.json",
+      "Bytes": 1506,
+      "Sha256": "6D51B5442513E3AA98A0473A10E9D4D44926942CA67A80C036707E7D8C692022",
+      "StoredBytes": 727,
+      "StoredSha256": "BD80F71034AB4AF693B6CA610007204240F371AC060FC2BC4EA2DC30715C7002",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "start.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/start.json",
+      "Bytes": 988,
+      "Sha256": "4E16BF35B69470D8997E628D740C6AB310F563DA5A25EB2A75BA6A3DCD58E980",
+      "StoredBytes": 631,
+      "StoredSha256": "0D2EF6DD6226DECAC73886FFE804BB94BEAF7912ED70A02C0549E46C9A72FCEB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "driver.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1.log",
+      "Bytes": 403,
+      "Sha256": "1D6F680D385833FE80C5A4B49DA664D12510627A94C1DFCB957CE247B8E3926A",
+      "StoredBytes": 286,
+      "StoredSha256": "487E1436498A6CF991E143B2A62EE96E7390A718445B0F30A56B3DBAD3C44F49",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "post-failure-helper-custody.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-compiled-clrmd-attempt-1/helper-files/manifest.json",
+      "Bytes": 9027,
+      "Sha256": "97389DF2D0E0DFC8D840512D05F7FD761E3E0CD0FD719FDD9B0A601FE3EF3039",
+      "StoredBytes": 1521,
+      "StoredSha256": "BE046FB9FFBF83661A6E4C190194A50D7CB817AF078E663BFB5BE6677D44EEA5",
+      "Encoding": "gzip"
+    }
+  ]
+}
