@@ -119,3 +119,44 @@ There is no registered-corpus generation, performance result or speed claim.
 The next review must establish the arithmetic/selector graph and data/call
 boundaries, with independent method-extent metadata or an explicitly accepted
 inspection premise; matching sampled outcomes would not discharge that work.
+
+## Guard-data and selected-call preparation
+
+The next inspection-only source returns the exact verified `GuardSet` used by
+the preceding hand preparation, pins that same reference, asserts reference
+identity and retains its reflected field/type metadata plus the four ordered
+getter bit patterns. The debugger reads exactly 32 bytes at the documented
+object-data address, compares them with the getter order and repeats the read.
+The handle is released once in guarded cleanup. No pin or handle is introduced
+into the policy or measured service. The
+[official API contract](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.gchandle.addrofpinnedobject?view=net-10.0)
+defines a data address; this collector neither subtracts a presumed object
+header nor claims an established association with the selector's object register.
+`LayoutAdmitted=false` remains explicit even if the candidate bytes match.
+
+The added transfer collector recognizes consecutive ARM64 `MOVZ`/`MOVK`
+address construction followed by an unsigned-offset 64-bit `LDR` and `BLR` or
+`BR`. It reads the corresponding pointer cell, retains a 16-byte target prefix,
+and repeats the cell read. Direct `B`/`BL` targets are decoded from their actual
+instruction words. Every selected transfer retains either its bounded static
+mapping or an unresolved/refusal record. These are stopped data-dependency
+observations, not executed-call witnesses, complete target bodies or a complete
+control-flow graph. Dynamic/virtual dispatch, task/framework classification,
+independent extent and actual guard-register association remain open.
+
+The [preparation inventory](native-call-data-preparation/manifest.json) retains
+the working source fingerprints and lossless check logs. All 21 synthetic
+tests pass, including seven new call/data tests covering exact address chunks,
+rewrites, wrong registers/gaps, signed direct offsets, changed guard data,
+changed pointer cells, uint64 overflow and unresolved paths. The first file-backed
+CLI Release build passed in 27.41 seconds with zero warnings/errors. Ruff first rejected a test
+lambda's unbound loop variable; explicit binding corrected it, and both outcomes
+are retained. Independent review then found that secondary diagnostic writes
+could replace a primary failure, and that unbounded Python address addition
+could invent a value beyond the ARM64 address width. The correction guards
+diagnostic writes and preserves established failure identity through later
+writer disposal; a failed success-marker write still fails. Address overflow
+now refuses explicitly. The corrected CLI build passes in 3.14 seconds with
+zero warnings/errors, and all 21 synthetic cases plus Ruff pass. This is a
+collector preparation gate, with no target capture or registered source
+execution implied by these checks.
