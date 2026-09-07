@@ -134,20 +134,20 @@ The first actual native semantic receipt from source
 `7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0` passed the unchanged independent
 six-member API at `cdcf34d759a74201aa5599f4556e07af00f6dc4a`.
 The [lossless attempt-one manifest](hidden-switch-compiled-validation/2026-09-07/native-semantic-replay-attempt-1/manifest.json)
-binds the complete975,309-byte input, SHA256
+binds the complete 975,309-byte input, SHA256
 `E83775583A18712E4495EB57EFAC80A61316129E85D4EFAC0D02C8E1AB6C1451`,
 exact executed harness, result, identical stdout, empty stderr and preservation
 script. It also pins the actually observed imported task-source files to the
 reference checkout `0e0f8664765c7157b153bed86da217b8bf81a5e4`.
 
-Replay checked all222 scalar positions,48 new episodes,24 old controls,
-10 invocation cases,10 intervention cases and15 groups comprising53 invalid
-operations. Actual delegate/evaluator-root counts were10/8. The two deliberate
+Replay checked all 222 scalar positions, 48 new episodes, 24 old controls,
+10 invocation cases, 10 intervention cases and 15 groups comprising 53 invalid
+operations. Actual delegate/evaluator-root counts were 10/8. The two deliberate
 stub outputs were independently rejected at their `Choice.Action` fields.
 The supplied-Q tie witness remains a separately retained earlier slice; it
 was not silently added to this six-member receipt.
 
-The replay process exited0. Original input bytes and observed imported-file
+The replay process exited 0. Original input bytes and observed imported-file
 snapshots remained unchanged. These snapshots record file/current-byte facts;
 they are not complete loaded-module admission or a source-to-bytecode theorem.
 The native receipt has `SlicesComplete=true`, `Complete=false`, and all
