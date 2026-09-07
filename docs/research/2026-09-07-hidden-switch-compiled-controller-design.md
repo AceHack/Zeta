@@ -260,13 +260,20 @@ mode must be covered by the bound for its actual operation graph, or
 disable the fast path. A hash alone does not prove source-to-binary
 derivation, and a few floating-point probes do not certify a whole JIT.
 State the resulting formal-model and inspected-runtime limits explicitly.
+Cover every executable JIT/code version during the admitted run, or freeze
+a configuration that prevents a transition to uninspected code. A single
+disassembly and assembly hash do not cover later optimized tiers.
 
-Useful implementation regressions, after separate authorization, include
+Useful implementation regressions, after separately reviewed registration
+and implementation archival, include
 both signed zeros, subnormal beliefs, one, malformed inputs, all depths,
 both effect flags, exact decoded guard endpoints and their neighbors,
 beliefs inside the fallback band, and neighbors of every rational kink
-and tolerance-shifted root boundary. Require the real fallback to execute
-there and retain its exact native action, including near ties. Mutated
+and tolerance-shifted root boundary. Require the real fallback strictly
+between `Smax` and `Hmin`, including near ties, and in the labeled
+unsupported-runtime mode. At guard endpoints and kink neighbors, check
+the appropriate certified path and action. Malformed inputs/certificates
+must refuse. Mutated
 guard direction, inclusive switch tie, omitted final-subtraction error,
 invalid source admission or an ignored fallback must fail. These checks
 support the source connection and detect defects; finite grids cannot
@@ -293,6 +300,12 @@ adapter. Any action disagreement is an equivalence failure, irrespective
 of whether aggregate return happens to match.
 
 Use two explicitly distinct cost boundaries in a future registration:
+
+Perform one-time archive/certificate validation symmetrically before
+timing, disclose its setup cost separately, and retain per-choice input
+admission, dispatch and actual guard/fallback work inside both timed arms.
+The registration must state these boundaries explicitly; excluding setup
+from only the compiled arm would compare different services.
 
 - Choice-only: the same ordered admitted belief/effect/depth inputs for
   both strategies, prepared outside the timed region. Include complete
@@ -334,3 +347,15 @@ it does not turn the earlier return advantage into proof that online tree
 search is necessary. No outcome here establishes a general compilation
 result, learned planning, unseen-model performance or full-horizon
 optimality.
+
+## Review disposition
+
+The original draft is retained at `4332b1bed3ed2e516c8188e5d928e8bd6dd1af3e`.
+Independent mathematical review reproduced the paper error recurrence
+under its declared arithmetic/source premises. This follow-up resolves
+four pre-registration clarifications: fallback wording had also appeared
+to cover certified endpoints; execution depends on registration/archive
+review rather than another human approval; runtime admission must cover
+all code versions that can execute; and excluded one-time setup must be
+symmetric and separately disclosed. No guard, policy, source stream,
+proof assistant, test or performance measurement was run for this change.
