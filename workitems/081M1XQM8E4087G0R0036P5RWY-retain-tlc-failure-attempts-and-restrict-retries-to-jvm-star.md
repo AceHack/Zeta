@@ -1,7 +1,7 @@
 ---
 id: 081M1XQM8E4087G0R0036P5RWY
 type: bug
-state: backlog
+state: in-progress
 priority: P1
 slug: retain-tlc-failure-attempts-and-restrict-retries-to-jvm-star
 title: "Retain TLC failure attempts and restrict retries to JVM startup"

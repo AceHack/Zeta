@@ -164,10 +164,10 @@ archive/hash step at 11:20:19 is recorded without causal attribution.
 These observations do not establish all host activity.
 
 The original failed hidden-switch full gate remains failed. The parent
-coordinates one fresh mapped Release build and full solution/catalog gate
-on the combined C1-policy, retention and hidden-switch tree. Exact matched
-source bytes and that independent integration outcome are required before
-this repair's PR is presented as locally complete.
+coordinated the fresh mapped Release build and full solution/catalog gate
+on the combined C1-policy, retention and hidden-switch tree. The matched
+source bytes and completed integration outcome are retained below; the
+separate CI and main-integration evidence follows at publication.
 
 
 ## Completed combined gate
