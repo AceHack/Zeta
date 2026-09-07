@@ -437,3 +437,11 @@ ended at 20:22:47.658546 UTC before any `clru` or post-query cached-DAC command.
 No method-extent, complete-closure or runtime admission is claimed. The
 coordinator authorized one separate corrected attempt only after preserving
 this refusal, exact-source review and discriminating synthetic cases.
+
+The [narrow parser correction](native-dump-parser-correction/manifest.json)
+uses installed `Method Name`, `Current CodeAddr` and `IsJitted: yes` fields
+uniquely. A matching historical address cannot authorize a changed current
+body. Fourteen tests pass, including the exact preserved first response and
+mutations of its current address, duplicate/missing fields and non-jitted
+status. This source change does not reinterpret the first attempt as passed;
+its retained failure remains unchanged and a second execution is separate.
