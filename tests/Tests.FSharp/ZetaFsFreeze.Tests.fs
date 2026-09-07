@@ -400,6 +400,115 @@ let ``resolveAt prior phase still sees Live after unlink`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``bindFile copies nearest ByPrefix onto ByEntity and later prefix edits do not rewrite`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-policy-first-bind"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let prefix = Encoding.UTF8.GetBytes "src/"
+    let name = Encoding.UTF8.GetBytes "src/a"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            ZetaFsFreeze.assertPolicyBinding
+                volume
+                { Subject = ZetaFsPolicy.ByPrefix(root, prefix)
+                  Kind = ZetaFsPolicy.sourceHistory
+                  Phase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 1L }
+                  Asserter = ZetaFsNamespace.ActorId "freeze" }
+            match ZetaFsFreeze.bindFile volume name with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.effectiveHistory volume id with
+                | Some ZetaFsPolicy.KeepAll -> ()
+                | other -> Assert.Fail(sprintf "first bind must copy src/ keep-all, got %A" other)
+                ZetaFsFreeze.assertPolicyBinding
+                    volume
+                    { Subject = ZetaFsPolicy.ByPrefix(root, prefix)
+                      Kind = ZetaFsPolicy.targetHistory
+                      Phase =
+                        { Line = ZetaFsNamespace.PhaseLine
+                          Stamp = Versionstamp.ofInt64 9L }
+                      Asserter = ZetaFsNamespace.ActorId "freeze" }
+                match ZetaFsFreeze.effectiveHistory volume id with
+                | Some ZetaFsPolicy.KeepAll -> ()
+                | other -> Assert.Fail(sprintf "later prefix edit must not rewrite, got %A" other)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                try
+                    match ZetaFsFreeze.effectiveHistory reopened id with
+                    | Some ZetaFsPolicy.KeepAll -> ()
+                    | other -> Assert.Fail(sprintf "reopen must keep first-bind copy, got %A" other)
+                    Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine2 store "policy"))
+                finally
+                    ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``bindName second parent does not rewrite first-bind policy`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-policy-two-parent"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let srcPrefix = Encoding.UTF8.GetBytes "src/"
+    let targetPrefix = Encoding.UTF8.GetBytes "target/"
+    let srcName = Encoding.UTF8.GetBytes "src/a"
+    let targetName = Encoding.UTF8.GetBytes "target/a"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            ZetaFsFreeze.assertPolicyBinding
+                volume
+                { Subject = ZetaFsPolicy.ByPrefix(root, srcPrefix)
+                  Kind = ZetaFsPolicy.sourceHistory
+                  Phase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 1L }
+                  Asserter = ZetaFsNamespace.ActorId "freeze" }
+            ZetaFsFreeze.assertPolicyBinding
+                volume
+                { Subject = ZetaFsPolicy.ByPrefix(root, targetPrefix)
+                  Kind = ZetaFsPolicy.targetHistory
+                  Phase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 1L }
+                  Asserter = ZetaFsNamespace.ActorId "freeze" }
+            match ZetaFsFreeze.bindFile volume srcName with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.bindName volume root targetName id with
+                | Error e -> Assert.Fail(sprintf "bindName failed: %A" e)
+                | Ok() ->
+                    match ZetaFsFreeze.effectiveHistory volume id with
+                    | Some ZetaFsPolicy.KeepAll -> ()
+                    | other -> Assert.Fail(sprintf "first-bind src/ keep-all must win, got %A" other)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                    try
+                        match ZetaFsFreeze.effectiveHistory reopened id with
+                        | Some ZetaFsPolicy.KeepAll -> ()
+                        | other -> Assert.Fail(sprintf "reopen must keep first-bind copy, got %A" other)
+                        match ZetaFsFreeze.liveResolve reopened srcName with
+                        | None -> Assert.Fail("src/a must stay live")
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+                        match ZetaFsFreeze.liveResolve reopened targetName with
+                        | None -> Assert.Fail("target/a must stay live")
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``bindName refuses a directory cycle and does not persist it`` () =
     ensureHasher ()
     FileSystem.Register(InMemoryFileSystem())
