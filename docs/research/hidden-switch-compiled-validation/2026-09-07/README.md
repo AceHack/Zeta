@@ -129,3 +129,10 @@ implementation co-claim remain prerequisites to implementation**. The
 broader experiment task stays open. No compiled implementation, generated
 guard constants, new registered source tapes or measurements are supplied
 by these records. A later checkpoint must separately discharge that hold.
+
+## Initial coordinator evidence boundary
+
+The [wire contract and validation](../../2026-09-07-hidden-switch-compiled-wire-contract.md)
+records the initial pure evidence module, 47 passing focused tests, strict type
+checks, the corrected collection failure, and the remaining whole-phase/runtime
+admission boundary. This is implementation validation, not a registered experiment.

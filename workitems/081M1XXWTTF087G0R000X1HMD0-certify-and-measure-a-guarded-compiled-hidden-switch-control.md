@@ -182,3 +182,14 @@ registration tag/protocol. The historical nonblocking drift audit remains
 a recorded failure. This publication completes no implementation or
 measurement obligation; the prior-study main proof and fresh co-claim
 remain outstanding at this dated checkpoint.
+
+## Implementation boundary after verified main
+
+The [prior-study actual main proof](../docs/research/hidden-switch-validation/2026-09-07/main-publication/README.md)
+and [complete final CI review](../docs/research/hidden-switch-validation/2026-09-07/pr-16928-f99c9f4e-final/README.md)
+clear the main dependency without erasing its advisory failure or earlier attempts.
+Fresh implementation co-claim `d6ec464f4` is remotely preserved. The
+[evidence wire contract](../docs/research/2026-09-07-hidden-switch-compiled-wire-contract.md)
+indexes initial strict-admission code and 47 focused tests; whole-phase/runtime
+admission, independent numerical integration and the implementation archive remain
+required before registered source generation. No new behavior or cost tape has run.
