@@ -145,8 +145,13 @@ describe("the chain is the routing primitive", () => {
   test("direct reports are direct only", () => {
     const ids = directReportsOf(seed, "tech_lead").map((h) => h.id);
     expect(ids.sort()).toEqual(["backend_implementer", "frontend_implementer"]);
-    // The engineering director supervises the dev transitively but does not directly report it.
-    expect(directReportsOf(seed, "engineering_director").map((h) => h.id)).toEqual(["engineering_manager"]);
+    // THE PROPERTY, not the census. The director's direct reports grew when the seed did, and an
+    // exact list would have failed for a reason that is not about directness at all — what matters
+    // is that a hat two rungs down is supervised transitively and NOT reported directly.
+    const direct = directReportsOf(seed, "engineering_director").map((h) => h.id);
+    expect(direct).toContain("engineering_manager");
+    expect(direct).not.toContain("backend_implementer");
+    expect(reportsUpTo(seed, "backend_implementer", "engineering_director")).toBe(true);
   });
 });
 

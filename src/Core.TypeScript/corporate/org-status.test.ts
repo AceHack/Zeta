@@ -275,9 +275,14 @@ describe("the status reads a REAL run", () => {
   test("chart health finds supervisors with nobody beneath them", () => {
     const h = chartHealth(chart, [], 0);
     expect(h.levels[0]?.level).toBe("executive_board");
-    // The seed genuinely has directors with no team — that is a staffing fact worth surfacing.
+    // The seed genuinely has supervisors with no team — that is a staffing fact worth surfacing,
+    // and WHICH ones is a property of the org chart rather than of this test. Asserting a specific
+    // id pinned the old eight-department subset; `team_lead` is named because it is the one the
+    // cascade would otherwise have handed work it could not staff.
     expect(h.childlessSupervisors.length).toBeGreaterThan(0);
-    expect(h.childlessSupervisors).toContain("hat_approval_steward");
+    expect(h.childlessSupervisors).toContain("team_lead");
+    // ...and a supervisor WITH a team is never listed.
+    expect(h.childlessSupervisors).not.toContain("tech_lead");
     expect(h.wornHats).toEqual([]);
   });
 

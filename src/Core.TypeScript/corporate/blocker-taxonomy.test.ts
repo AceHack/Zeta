@@ -20,7 +20,7 @@ import {
   routeBlocker,
 } from "./blocker-taxonomy";
 import { buildOrgChart } from "./org-chart";
-import { SEED_HATS } from "./org-seed";
+import { Department, SEED_HATS } from "./org-seed";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -97,9 +97,10 @@ describe("ABSENT HATS ARE SKIPPED, never assumed", () => {
     // The caller falls back to the supervisor only for an UNCLASSIFIED blocker. A classified one
     // with no owner here is a real gap in the organization, and reporting it as routed would hide
     // that the chart has nobody for a whole category of problem.
-    const none = buildOrgChart(
-      SEED_HATS.filter((h) => h.id !== "security_engineer" && h.id !== "security_director"),
-    );
+    // Removing the two owners also strands everyone who reported to them, so the whole security
+    // department goes — a chart with a dangling `reportsTo` is refused by `buildOrgChart`, which is
+    // its own correct behaviour and not what this test is about.
+    const none = buildOrgChart(SEED_HATS.filter((h) => h.departmentId !== Department.SecurityAndCompliance));
     if (!none.ok) throw new Error(none.reason);
     expect(routeBlocker(none.chart, BlockerKind.SecurityBlocked, "backend_implementer")).toBeUndefined();
   });

@@ -225,7 +225,17 @@ export function ownerForRung(
     const byDistance = distance(a) - distance(b);
     if (byDistance !== 0) return byDistance;
     // Equal distance: the one that can carry the next rung wins.
-    return Number(supports(b)) - Number(supports(a));
+    const bySupport = Number(supports(b)) - Number(supports(a));
+    if (bySupport !== 0) return bySupport;
+    // STILL EQUAL: ORDINALLY, never by the order the seed happens to declare hats in.
+    //
+    // With eight departments there was usually one candidate and this never showed. At the
+    // reference's sixteen there are many, and the winner was whichever the file listed first — so
+    // two organizations of identical SHAPE picked different owners because someone reordered a
+    // list. Measured when the seed grew: a lead was chosen that could staff nothing, and the
+    // failure surfaced a rung later as an assignment refusal naming a hat nobody had chosen.
+    if (a.id === b.id) return 0;
+    return a.id < b.id ? -1 : 1;
   })[0];
 }
 
@@ -301,7 +311,17 @@ export function decompose(
   }
 
   // Pass the rung BELOW this one so the owner chosen can actually carry the rest of the ladder.
-  const owner = ownerForRung(chart, rung.ownerLevel, parent.ownerHatId, nextRung(rung.workType)?.ownerLevel);
+  // A LEAF'S OWNER MUST BE ABLE TO STAFF IT.
+  //
+  // `nextRung` is undefined for a leaf, so this passed `undefined` and every candidate "supported"
+  // the next rung vacuously — the check that exists to stop an owner who cannot carry the work was
+  // switched off at the one rung where the work is actually done. A leaf is executed by an
+  // individual contributor (`assign` says so), so that is what its owner must have, and it is
+  // derived from `isLeafType` rather than named as a special case.
+  const mustSupport = isLeafType(rung.workType)
+    ? ("individual_contributor" as const)
+    : nextRung(rung.workType)?.ownerLevel;
+  const owner = ownerForRung(chart, rung.ownerLevel, parent.ownerHatId, mustSupport);
   if (owner === undefined) {
     return {
       ok: false,

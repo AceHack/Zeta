@@ -182,8 +182,13 @@ describe("who owns a gate is DERIVED from the hats' approval scopes", () => {
   });
 
   test("owners are the hats that hold the scope, and nobody else", () => {
+    // The reference catalog grants `runtime_validation` to its own QA reviewer and verifier as
+    // well, so the owner set grew with the seed. What the test is about is that ownership is
+    // DERIVED from the scope and held by nobody else — so it asserts the membership rule rather
+    // than a headcount that changes whenever the organization does.
     const owners = gateOwners(chart, GateKind.RuntimeValidation).map((h) => h.id);
-    expect(owners.sort()).toEqual(["qa_director", "qa_engineer", "qa_manager"]);
+    expect(owners.sort()).toEqual(["qa_director", "qa_engineer", "qa_manager", "qa_reviewer", "qa_verifier"]);
+    expect(owners.every((id) => chart.byId.get(id)?.approvalScopes?.includes(GateKind.RuntimeValidation))).toBe(true);
     expect(mayEvaluate(chart, "qa_engineer", GateKind.RuntimeValidation)).toBe(true);
     // A dev is not a QA reviewer, however senior its own line.
     expect(mayEvaluate(chart, "backend_implementer", GateKind.RuntimeValidation)).toBe(false);
