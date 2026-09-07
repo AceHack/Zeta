@@ -1,0 +1,14 @@
+{
+  "id": "080d03dedd299010a013000857565a7d",
+  "at": "2026-09-07T12:33:07.378Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XXQ99J087G0R002XKCSRC",
+    "type": "task",
+    "title": "FUSE-T collator CaseFold.Ascii refuses collisions",
+    "slug": "fuse-t-collator-casefold-ascii-refuses-collisions",
+    "priority": "P2",
+    "filename": "081M1XXQ99J087G0R002XKCSRC-fuse-t-collator-casefold-ascii-refuses-collisions.md"
+  }
+}

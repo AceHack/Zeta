@@ -1046,8 +1046,8 @@ Do not encode the live namespace as git trees (K5). A compatibility exporter may
 
 | Adapter | Role | Status |
 |---|---|---|
-| Linux FUSE | first-class Linux mount | not built; `..` path-contextual is a merge gate; default collator = ordinal (C7) |
-| FUSE-T (macOS, ungated) | first-class Mac mount without paid entitlement | not built; same gates; default collator = `CaseFold.Ascii` + refuse collisions (C7); store stays ordinal |
+| Linux FUSE | first-class Linux mount | not built; `..` path-contextual is a merge gate; default collator = ordinal (C7). Collator algebra landed (`ZetaFsCollator`: ordinal / `CaseFold.Ascii` refuse). |
+| FUSE-T (macOS, ungated) | first-class Mac mount without paid entitlement | not built; same gates; default collator = `CaseFold.Ascii` + refuse collisions (C7); store stays ordinal. Collator algebra landed; no kernel FUSE-T binary, so Apple Developer Program is not the next blocker. |
 | FSKit | native Mac after paid entitlement | later. Compile-without-pay is **out of tree**, not an in-tree capability |
 | WebDAV `experiments/zetafs-webdav` | experiment | read-only in-memory; **not** the product |
 | Native volume | objects on block/zone; unikernel + Linux | later; this is where `stripe`/`mirror`/`single+parity` become real media |
@@ -1509,7 +1509,7 @@ Each PR is independently reviewable and mergeable. Tests green or it does not la
 - **Title:** `zetafs: POSIX view via Linux FUSE and macOS FUSE-T (not WebDAV, not FSKit, not NFS)`
 - **Files:** new mount project; path-contextual `..` in the **FUSE node cache** (merge gate; volume Handle has no ArrivalParent); inode projection side table; collator refuse-on-collision; `direct_io`; MAP_SHARED refused or documented; CreateSymlink; rename dest EISDIR/ENOTDIR/ENOTEMPTY
 - **Depends on:** PR3-PR7, PR11 recommended, PR12 recommended before calling crash-safe
-- **Changes:** POSIX is a view. WebDAV untouched. NFS not in this PR (C10). Linux collator = ordinal. FUSE-T collator = `CaseFold.Ascii` + refuse collisions (C7). Both mounts over the same ordinal store.
+- **Changes:** POSIX is a view. WebDAV untouched. NFS not in this PR (C10). Linux collator = ordinal. FUSE-T collator = `CaseFold.Ascii` + refuse collisions (C7). Both mounts over the same ordinal store. **Slice landed (`081M1XXQ99J087G0R002XKCSRC`):** `src/Core/ZetaFsCollator.fs` — `Ordinal` / `Ascii` fold; `refuseCreate` reports `ConfusableWithExisting`; existing pairs enumerate and do not merge. No kernel FUSE, no FUSE-T binary, no Apple Developer Program enrollment.
 
 ### PR14 (later) -- LRC + lazy encode
 
