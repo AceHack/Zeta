@@ -125,3 +125,48 @@ Import order and one unnecessary lint annotation were also corrected.
 No native graph, certificate, behavior, cost or whole-phase admission success
 is inferred from these evidence-only tests. Further scientific admission
 and complete repository validation remain part of the open task.
+
+The independent protocol reviewer read source `35c12618f` and these tests,
+accepting the primitive boundary without a material finding. That review
+reconciled duplicate/nonfinite admission, signed-zero bits, nanosecond
+chronology, all 28 service bytes, exact gzip relation, GC deltas and median
+thresholds. The reviewer ran no test or scientific execution and explicitly
+did not infer filesystem, numerical, runtime or whole-phase admission.
+
+## Descriptor-relative storage implementation
+
+[The storage helper](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py)
+resolves the caller-admitted root once, then opens each artifact directory
+component relative to a held descriptor without following symlinks. The
+trusted-root resolution is explicit; it does not claim to forbid symlinks in
+the caller's original root spelling. Required no-follow, directory, nonblocking
+and descriptor-relative capabilities are checked before access.
+
+Each read uses one regular-file descriptor, exact declared length and bounded
+bytes, comparing device/inode/size/mtime/ctime before and after. FIFO inputs
+refuse without a blocking read. Artifact admission then checks the exact
+stored/original hashes and lossless gzip relation. These are observations
+about the bytes read, not a future pathname lock or hostile-kernel guarantee.
+
+Directory creation is atomic and refuses an existing name. File writes use
+exclusive creation, preserve partial files on failure and sync successful
+file/directory operations. Existing directories, files and symlink destinations
+are never reused or overwritten. The helper creates no missing parents behind
+the caller's back; phase orchestration must record its actual setup sequence.
+
+The final storage suite has **nine tests passed in 4.48 seconds**, plus strict
+mypy and Ruff passes. An earlier eight-test version passed before the explicit
+unsupported-capability check and its ninth witness were added. Tests include
+existing-output preservation, an actual interrupted write with retained prefix,
+parent/leaf symlink refusal, FIFO and length refusal, changed in-place read
+metadata, complete hash-bound identity/gzip storage, bounded expansion,
+trailing gzip members and missing no-follow capability. These calls use owned
+temporary test files; they generate no registered source and execute no policy.
+
+Native phase setup needs the same exclusive-attempt property. Microsoft's
+[Directory.CreateDirectory contract](https://learn.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=net-10.0)
+returns existing directories too, so an existence check followed by that call
+does not establish exclusive ownership. The native owner will separately
+declare/review its actual mechanism before implementation archival. Cost
+stage-one counters must start before native attempt creation; coordinator
+precreation cannot replace that registered step.
