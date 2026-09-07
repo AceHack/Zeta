@@ -1,0 +1,14 @@
+{
+  "id": "080d03edce71f010a0130008d58606e9",
+  "at": "2026-09-07T21:15:24.094Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YVKKHY087G0R003E4TE1M",
+    "type": "task",
+    "title": "FUSE dispatcher refuses MAP_SHARED; DirectIo is first-product",
+    "slug": "fuse-dispatcher-refuses-map-shared-directio-is-first-product",
+    "priority": "P2",
+    "filename": "081M1YVKKHY087G0R003E4TE1M-fuse-dispatcher-refuses-map-shared-directio-is-first-product.md"
+  }
+}
