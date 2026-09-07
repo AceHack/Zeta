@@ -376,3 +376,41 @@ let ``symlink stores target bytes; readlink returns them; not resolved`` () =
         match ZetaFsPosixVfs.readlink mount1 rootNode with
         | Error ZetaFsPosixVfs.NotFound -> ()
         | other -> Assert.Fail(sprintf "readlink on dir must miss, got %A" other))
+
+[<Fact>]
+let ``rename moves a file; dest file replace works; dest dir is Eisdir`` () =
+    withVolume "/vfs-rename" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let src, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        match ZetaFsPosixVfs.rename mount1 rootNode (utf8 "a") rootNode (utf8 "b") with
+        | Error e -> Assert.Fail(sprintf "rename: %A" e)
+        | Ok() ->
+            match ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "a") with
+            | Error ZetaFsPosixVfs.NotFound -> ()
+            | other -> Assert.Fail(sprintf "src should be gone, got %A" other)
+            let moved, _ = ok (ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "b"))
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare src.Entity moved.Entity)
+        let _, mount2 = ok (ZetaFsPosixVfs.create mount1 rootNode (utf8 "c"))
+        match ZetaFsPosixVfs.rename mount2 rootNode (utf8 "b") rootNode (utf8 "c") with
+        | Error e -> Assert.Fail(sprintf "replace file: %A" e)
+        | Ok() ->
+            let replaced, _ = ok (ZetaFsPosixVfs.lookup mount2 rootNode (utf8 "c"))
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare src.Entity replaced.Entity)
+        let _, mount3 = ok (ZetaFsPosixVfs.mkdir mount2 rootNode (utf8 "d"))
+        let _, mount4 = ok (ZetaFsPosixVfs.create mount3 rootNode (utf8 "e"))
+        match ZetaFsPosixVfs.rename mount4 rootNode (utf8 "e") rootNode (utf8 "d") with
+        | Error(ZetaFsPosixVfs.Eisdir _) -> ()
+        | other -> Assert.Fail(sprintf "file onto dir must be Eisdir, got %A" other))
+
+[<Fact>]
+let ``Ascii rename to Notes.md is Confusable when notes.md is live`` () =
+    withVolume "/vfs-rename-ascii" (fun volume ->
+        let fuse0 = mustMount volume ZetaFsCollator.fuseTDefault
+        let rootNode = ZetaFsPosixVfs.root fuse0
+        let _, fuse1 = ok (ZetaFsPosixVfs.create fuse0 rootNode (utf8 "notes.md"))
+        let _, fuse2 = ok (ZetaFsPosixVfs.create fuse1 rootNode (utf8 "other"))
+        match ZetaFsPosixVfs.rename fuse2 rootNode (utf8 "other") rootNode (utf8 "Notes.md") with
+        | Error(ZetaFsPosixVfs.Confusable existing) ->
+            Assert.True(sameBytes (utf8 "notes.md") existing)
+        | other -> Assert.Fail(sprintf "Ascii rename onto fold collision must be Confusable, got %A" other))

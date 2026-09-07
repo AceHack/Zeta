@@ -56,6 +56,10 @@ module ZetaFsPosixVfs =
         match e with
         | ZetaFsNamespace.NotDirectory id -> NotDirectory id
         | ZetaFsNamespace.UnknownEntity id -> UnknownEntity id
+        | ZetaFsNamespace.Eisdir id -> Eisdir id
+        | ZetaFsNamespace.Enotdir id -> Enotdir id
+        | ZetaFsNamespace.Enotempty id -> Enotempty id
+        | ZetaFsNamespace.SourceNotFound -> NotFound
         | other -> Bind other
 
     let private liveNames
@@ -309,3 +313,43 @@ module ZetaFsPosixVfs =
                         match ZetaFsFreeze.unlinkUnder mount.Volume parent.Entity name with
                         | Error e -> Error(ofBind e)
                         | Ok() -> Ok()
+
+    /// POSIX typed replace via the volume. Dest exact-name replace is
+    /// allowed. A dest that only collides under the collator is Confusable.
+    let rename
+        (mount: Mount)
+        (srcParent: ZetaFsPosixNode.Node)
+        (srcName: byte[])
+        (dstParent: ZetaFsPosixNode.Node)
+        (dstName: byte[])
+        : Result<unit, Error> =
+        if sameBytes srcName dot || sameBytes srcName dotDot then
+            Error(Confusable srcName)
+        elif sameBytes dstName dot || sameBytes dstName dotDot then
+            Error(Confusable dstName)
+        else
+            match liveNames mount dstParent.Entity with
+            | Error e -> Error e
+            | Ok live ->
+                let exact =
+                    live
+                    |> Array.exists (fun (n, _) -> sameBytes n dstName)
+
+                let proceed () =
+                    match
+                        ZetaFsFreeze.rename
+                            mount.Volume
+                            srcParent.Entity
+                            srcName
+                            dstParent.Entity
+                            dstName
+                    with
+                    | Error e -> Error(ofBind e)
+                    | Ok() -> Ok()
+
+                if exact then
+                    proceed ()
+                else
+                    match refuseCreate mount dstParent dstName with
+                    | Error e -> Error e
+                    | Ok() -> proceed ()
