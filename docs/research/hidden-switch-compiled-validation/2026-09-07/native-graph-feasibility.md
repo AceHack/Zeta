@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: two live captures refused; second retains actual callable prefixes
+Artifact status: third prefix capture completed; body and runtime admission pending
 
 This bounded next step follows the [pure boundary](native-pure-validation.md) and
 [runtime inspection plan](../../2026-09-07-hidden-switch-compiled-runtime-feasibility.md).
@@ -126,6 +126,20 @@ Release build 7 (26.06 seconds, zero warnings/errors) and all synthetic outcomes
 the first new test run failed because an existing assertion was misplaced into
 the new test and referenced an undefined local; the corrected six-test run passed.
 No policy, native target or registered stream was run by these Python fixtures.
+
+## Third capture: completion of the bounded prefix scope
+
+Attempt 3 used `7ff6bc3cfa410e621fdf0e246efc3807d17ee601` from
+16:45:21.265743 to 16:45:23.081394 UTC. The
+[lossless third-attempt inventory](native-graph-attempt-3/manifest.json) retains
+the raw evidence, including the process-bound marker and its fingerprint. Native
+process 15204 and LLDB both exited zero; the native terminal record reports
+`graph-hand-finished`, and the debugger outcome reports `Complete=true` with all
+90 prefix-roster rows. `RuntimeAdmitted=false` and every prepared row's
+`BodyResolved=false` remain unchanged. This completes launch, ready, interrupt,
+prefix capture, marker publication, resume and observed exit for that exact
+instrument. It does not resolve the stubs, admit a complete evaluator graph or
+exercise the subsequently added compiled selector. Attempts 1 and 2 stay failed.
 
 Source guidance remains distinct from installed binary provenance: the public
 .NET v10.0.11 source pin is `79d0c463f1b55624c874a11585f7e47731e8d675`, while the
