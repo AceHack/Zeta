@@ -24,6 +24,10 @@ The [owned file fixture validation](../../2026-09-07-hidden-switch-compiled-file
 preserves 31 tests, both actual fixture trees and exact failure-prefix behavior
 for the seven filesystem cases. Full coordinator replay remains pending.
 
+The [bounded record encoder](../../2026-09-07-hidden-switch-compiled-record-encoding-validation.md)
+preserves 43 passing tests, complete public-result parity and quota-before-
+expansion checks. Per-attempt retention and actual outcome replay are separate.
+
 ## Frozen protocol and remote proof
 
 The [preregistration](../../2026-09-07-hidden-switch-compiled-protocol.md)
