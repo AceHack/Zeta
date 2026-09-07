@@ -103,7 +103,7 @@ three skips and one failure**. `gate (required)` and all three current
 native platform jobs passed. No administrator bypass or check rerun was
 used to merge this publication.
 
-The [raw drift failure log](pr-16947-drift-failure.log) explains the single
+The [losslessly compressed raw drift failure log](pr-16947-drift-failure.log.gz) explains the single
 red `drift (loud)` context: its bounded historical 60-run window counted
 **53 failures in 59 executed runs for each Windows platform**, and two
 failures in 60 macOS executions. These are historical execution counts,
@@ -114,10 +114,15 @@ workflow explicitly classify this audit as nonblocking; the retained red
 result is not relabeled green.
 
 The [publication manifest](pr-16947-publication-manifest.json) records
-byte counts and SHA256 hashes of all three captured artifacts. Raw JSON
-and log bytes are copied unchanged, including the log's terminal control
-sequences. This proof commit is outside the immutable registration tag
-and changes no protocol bytes.
+stored byte counts and SHA256 hashes of all three captured artifacts.
+The two raw JSON files contain no literal invisible/control characters
+other than ordinary text whitespace. The raw log contains U+FEFF at
+character index 34, so it is stored with lossless gzip instead of literal
+invisible text. Its original 5,907 bytes and SHA256
+`e89a8891706a0537ba311c2707dbd88908d56531f207c7a653e33a75297b9729`
+are retained separately from the compressed hash; decompression reproduces
+the original capture exactly, with no stripping or normalization. This
+proof is outside the immutable registration tag and changes no protocol bytes.
 
 At this publication checkpoint, **PR #16928's main proof and a fresh
 implementation co-claim remain prerequisites to implementation**. The
