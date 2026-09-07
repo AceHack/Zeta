@@ -638,3 +638,9 @@ The [exclusive record-store implementation record](2026-09-07-hidden-switch-comp
 preserves bounded sequential artifact retention, actual failure outcomes and
 the once-only final metadata journal. Store serialization and filesystem
 validation are separate from operation execution and whole-envelope admission.
+
+The [fixed static replay validation](2026-09-07-hidden-switch-compiled-static-replay-validation.md)
+retains fresh execution and exact typed-result comparison for the 32 static
+cases and 36 shared-API slots. It preserves actual failure prefixes and original
+result bytes while leaving file/native/identity and whole-envelope admission
+separate.
