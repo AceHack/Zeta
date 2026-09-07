@@ -1,0 +1,40 @@
+TLC2 Version 2026.05.18.174321 (rev: 8ba1027)
+Warning: Please run the Java VM, which executes TLC with a throughput optimized garbage collector, by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 95 and seed 7978938471659948499 with 1 worker on 24 cores with 4095MB heap and 64MB offheap memory [pid: 89927] (Mac OS X 26.6.2 aarch64, Oracle Corporation 26 64bit, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/specs/BftConsensus.tla
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/Naturals.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/Naturals.tla)
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/FiniteSets.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/FiniteSets.tla)
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/Sequences.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/Sequences.tla)
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/_TLCTrace.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/_TLCTrace.tla)
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/TLC.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/TLC.tla)
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/TLCExt.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/TLCExt.tla)
+Parsing file /private/var/folders/ln/xj3yny_946xc3hqyby4s6lh80000gn/T/tlc-736283124472997166/Integers.tla (jar:file:/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/src/Core.TLA/tla2tools.jar!/tla2sany/StandardModules/Integers.tla)
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Integers
+Semantic processing of module TLCExt
+Semantic processing of module _TLCTrace
+Semantic processing of module BftConsensus
+Linting of module TLCExt
+Linting of module _TLCTrace
+Linting of module BftConsensus
+Starting... (2026-09-07 06:42:31)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-07 06:42:31.
+Progress(8) at 2026-09-07 06:42:34: 448,061 states generated (448,061 s/min), 91,587 distinct states found (91,587 ds/min), 60,641 states left on queue.
+Progress(12) at 2026-09-07 06:43:34: 10,256,011 states generated (9,807,950 s/min), 1,380,583 distinct states found (1,288,996 ds/min), 556,174 states left on queue.
+Progress(14) at 2026-09-07 06:44:34: 20,007,127 states generated (9,751,116 s/min), 2,452,072 distinct states found (1,071,489 ds/min), 728,637 states left on queue.
+Progress(15) at 2026-09-07 06:45:34: 29,402,472 states generated (9,395,345 s/min), 3,371,927 distinct states found (919,855 ds/min), 654,732 states left on queue.
+Progress(17) at 2026-09-07 06:46:34: 38,406,428 states generated (9,003,956 s/min), 4,196,913 distinct states found (824,986 ds/min), 403,180 states left on queue.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 10.0E-6
+  based on the actual fingerprints:  val = 7.5E-7
+44070202 states generated, 4665495 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 4).
+Finished in 04min 43s at (2026-09-07 06:47:15)
