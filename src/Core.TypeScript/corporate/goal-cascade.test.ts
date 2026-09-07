@@ -14,6 +14,7 @@ import {
   nextRung,
   nodeById,
   ownerForRung,
+  restateDirection,
   rungFor,
   setState,
   unstaffedTasks,
@@ -427,5 +428,87 @@ describe("THE BOTTOM RUNG IS NOT ONE SHAPE", () => {
     const done = setState(made.cascade, "inc1", WorkState.Done);
     expect(done.ok).toBe(false);
     if (!done.ok) expect(done.reason).toContain("incident");
+  });
+});
+
+describe("RESTATING A DIRECTION — a separate verb, because a silent overwrite is not a decision", () => {
+  // Reachable from the drive only along the happy path, so every refusal here is tested directly.
+  // A mutation run proved that necessary: deleting four of these five guards killed nothing,
+  // because no cadence ever produced an input that tripped them.
+  const chart = (() => {
+    const r = buildOrgChart(SEED_HATS);
+    if (!r.ok) throw new Error(r.reason);
+    return r.chart;
+  })();
+
+  function withGoal(): Cascade {
+    const r = acceptGoal({ nodes: [] }, chart, {
+      workId: "g-1",
+      title: "grow the business",
+      acceptingHatId: "ceo",
+      atMs: 100,
+    });
+    if (!r.ok) throw new Error(r.reason);
+    return r.cascade;
+  }
+
+  test("acceptGoal RECORDS WHEN — without it nothing can ever go stale", () => {
+    expect(withGoal().nodes[0]?.directedAtMs).toBe(100);
+  });
+
+  test("a clockless acceptGoal records NO time, rather than a convenient one", () => {
+    const r = acceptGoal({ nodes: [] }, chart, { workId: "g-2", title: "t", acceptingHatId: "ceo" });
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.cascade.nodes[0]?.directedAtMs).toBeUndefined();
+  });
+
+  test("the holder restates it: NEW OBJECTIVE, NEW CLOCK", () => {
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "grow it faster", byHatId: "ceo", atMs: 500 });
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.cascade.nodes[0]?.title).toBe("grow it faster");
+    expect(r.cascade.nodes[0]?.directedAtMs).toBe(500);
+  });
+
+  test("ONLY THE ONE NAMED — a restatement is not a broadcast", () => {
+    const two = acceptGoal(withGoal(), chart, { workId: "g-2", title: "hold the line", acceptingHatId: "ceo", atMs: 100 });
+    if (!two.ok) throw new Error(two.reason);
+    const r = restateDirection(two.cascade, chart, { workId: "g-1", title: "changed", byHatId: "ceo", atMs: 500 });
+    if (!r.ok) throw new Error(r.reason);
+    expect(r.cascade.nodes.find((n) => n.workId === "g-2")?.title).toBe("hold the line");
+    expect(r.cascade.nodes.find((n) => n.workId === "g-2")?.directedAtMs).toBe(100);
+  });
+
+  test("REFUSED: a work item that is not a direction", () => {
+    const cascade: Cascade = {
+      nodes: [{ workId: "t-1", workType: WorkType.Task, title: "t", state: WorkState.Open, ownerHatId: "ceo" }],
+    };
+    const r = restateDirection(cascade, chart, { workId: "t-1", title: "x", byHatId: "ceo", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("not a direction");
+  });
+
+  test("REFUSED: a lead restating the company's direction", () => {
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "tech_lead", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("restated at the top");
+  });
+
+  test("REFUSED: ANOTHER EXECUTIVE redirecting a peer's domain", () => {
+    // Both are c_suite, so the level check passes and only this one stands between them. Without
+    // it any executive could redirect any other's domain, which is not a hierarchy.
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "cto", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("held by 'ceo'");
+  });
+
+  test("REFUSED: a restatement that states nothing", () => {
+    const r = restateDirection(withGoal(), chart, { workId: "g-1", title: "   ", byHatId: "ceo", atMs: 1 });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("states nothing");
+  });
+
+  test("REFUSED: a direction that does not exist, and an unknown hat", () => {
+    expect(restateDirection(withGoal(), chart, { workId: "nope", title: "x", byHatId: "ceo", atMs: 1 }).ok).toBe(false);
+    expect(restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "ghost", atMs: 1 }).ok).toBe(false);
   });
 });

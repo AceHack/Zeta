@@ -187,7 +187,14 @@ export interface MissingInformation {
  * buys everywhere else here.
  */
 export type GenerativeOpening =
-  | { readonly kind: "set_direction"; readonly subjectId: string; readonly prompt: string; readonly domain?: string }
+  | {
+      readonly kind: "set_direction";
+      readonly subjectId: string;
+      readonly prompt: string;
+      readonly domain?: string;
+      /** True when this replaces a direction that exists. A restatement is a different act. */
+      readonly restates?: boolean;
+    }
   | {
       readonly kind: "draft_business_doc";
       readonly subjectId: string;
@@ -501,7 +508,7 @@ export type NextAction =
   // Generic like the rest: `subjectId` is a string the core does not interpret, and a register
   // decides what it names. The core still does not know what an organization is.
   /** State or restate what a part of the company is for. */
-  | { kind: "set_direction"; subjectId: string; objective: string; domain?: string; reason: string }
+  | { kind: "set_direction"; subjectId: string; objective: string; domain?: string; restates?: boolean; reason: string }
   /** Write the document a piece of work is missing. */
   | { kind: "draft_business_doc"; subjectId: string; forWorkId: string; title: string; reason: string }
   /** Say how urgent something is, from an offered set. */
@@ -529,6 +536,7 @@ function generativeAction(g: GenerativeOpening): NextAction {
         // caller with a model behind it replaces this before the action reaches an effect.
         objective: g.prompt,
         ...(g.domain === undefined ? {} : { domain: g.domain }),
+        ...(g.restates === undefined ? {} : { restates: g.restates }),
         reason: g.prompt,
       };
     case "draft_business_doc":

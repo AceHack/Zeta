@@ -65,7 +65,7 @@ import {
   type Waiver,
 } from "./requirement-maturity";
 import type { BacklogItem, GenerativeOpening as GrammarOpening } from "../observe/observe";
-import { GenerativeKind, generativeOpeningsFor } from "./generative-work";
+import { GenerativeKind, generativeOpeningsFor, type DirectionClock } from "./generative-work";
 import { domainRouting, isDomain, type Domain } from "./domain-ontology";
 import { isPriorityClass } from "./prioritization";
 import type { CascadeNode } from "./goal-cascade";
@@ -475,7 +475,12 @@ function beats(challenger: AlternateCandidate, incumbent: AlternateCandidate): b
  * `resourceAuthorityHatId` is absent here because `OrgView` does not carry it: supply openings are
  * the RMO's and reach the surface through `generativeInputFor` below, which the drive supplies.
  */
-export function generativeFor(view: OrgView, hatId: string, resourceAuthorityHatId: string): readonly GrammarOpening[] {
+export function generativeFor(
+  view: OrgView,
+  hatId: string,
+  resourceAuthorityHatId: string,
+  directionClock?: DirectionClock,
+): readonly GrammarOpening[] {
   const openings = generativeOpeningsFor(
     {
       chart: view.chart,
@@ -486,6 +491,7 @@ export function generativeFor(view: OrgView, hatId: string, resourceAuthorityHat
       routings: domainRouting(view.cascade, (id) => view.chart.byId.get(id)?.departmentId),
       // Read back off the organization's own record, never held beside it. A second list of what
       // has been raised is a list that can disagree with the signals themselves.
+      ...(directionClock === undefined ? {} : { directionClock }),
       raisedSupplySubjects: new Set(
         view.signals.filter((sig) => sig.tool === SignalTool.SuggestImprovement).map((sig) => sig.title),
       ),
@@ -501,6 +507,7 @@ export function generativeFor(view: OrgView, hatId: string, resourceAuthorityHat
           subjectId: o.subjectId,
           prompt: o.prompt,
           ...(o.domain === undefined ? {} : { domain: o.domain }),
+          ...(o.restates === undefined ? {} : { restates: o.restates }),
         });
         break;
       case GenerativeKind.DraftBusinessDoc:
@@ -543,14 +550,19 @@ export function generativeFor(view: OrgView, hatId: string, resourceAuthorityHat
  * caller says who the resource authority is — the honest default. A register that guessed the RMO
  * would put chart-changing acts on somebody's menu on the strength of a guess.
  */
-export function orgSurfaceFor(view: OrgView, hatId: string, resourceAuthorityHatId?: string): OrgSurface {
+export function orgSurfaceFor(
+  view: OrgView,
+  hatId: string,
+  resourceAuthorityHatId?: string,
+  directionClock?: DirectionClock,
+): OrgSurface {
   return {
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
     missing: unraisedBlockers(view, hatId),
     assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId), ...alternateWorkFor(view, hatId)],
     convenable: convenableBy(view, hatId),
-    generative: generativeFor(view, hatId, resourceAuthorityHatId ?? hatId),
+    generative: generativeFor(view, hatId, resourceAuthorityHatId ?? hatId, directionClock),
   };
 }
 
@@ -623,6 +635,12 @@ export type OrgEffect =
       readonly domain?: Domain;
     }
   | { readonly kind: "document"; readonly artifactId: string; readonly workId: string; readonly byHatId: string }
+  | {
+      readonly kind: "redirection";
+      readonly workId: string;
+      readonly title: string;
+      readonly byHatId: string;
+    }
   | { readonly kind: "priced"; readonly workId: string; readonly priority: PriorityClass }
   | {
       readonly kind: "breakdown";
@@ -732,6 +750,12 @@ export function effectOf(
         return { ok: false, reason: `direction is set at the top: '${hatId}' is ${hat.level}` };
       }
       if (action.objective.trim() === "") return { ok: false, reason: "a direction with no objective states nothing" };
+      // A RESTATEMENT IS A DIFFERENT EFFECT, and it is chosen by what the ACTION says rather than
+      // by whether the id happens to be taken. Inferring it would make a caller that meant to state
+      // a new direction, and picked a colliding id, silently overwrite an existing one.
+      if (action.restates === true) {
+        return { ok: true, effect: { kind: "redirection", workId: action.subjectId, title: action.objective, byHatId: hatId } };
+      }
       const domain = action.domain !== undefined && isDomain(action.domain) ? action.domain : undefined;
       return {
         ok: true,

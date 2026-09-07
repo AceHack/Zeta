@@ -91,8 +91,28 @@ export interface GenerativeOpening {
   readonly domain?: Domain;
   /** For `decide_priority`, the classes it may choose between. Ordinal, most urgent first. */
   readonly options?: readonly PriorityClass[];
+  /**
+   * For `set_direction`, whether this REPLACES a direction that already exists.
+   *
+   * An explicit flag rather than "the register will notice the id is taken", because a restatement
+   * and a first statement are different acts by different rules — and the version of this that
+   * inferred it would have been a silent overwrite, which this register has already shipped once.
+   */
+  readonly restates?: boolean;
   /** Why this is open — the gap that was measured, in the words of whatever measured it. */
   readonly because: string;
+}
+
+/**
+ * How often a direction must be restated, and what time it is.
+ *
+ * Both, or neither. A `nowMs` with no interval cannot say what is old and an interval with no
+ * `nowMs` cannot say when — so they travel together, exactly as `OrgView.assigned` carries its
+ * clock beside its heartbeats for the same reason.
+ */
+export interface DirectionClock {
+  readonly nowMs: number;
+  readonly reviewIntervalMs: number;
 }
 
 /** Work that still counts as live. Delivered and cancelled work leaves no gap behind it. */
@@ -142,9 +162,48 @@ function executiveOver(chart: OrgChart, departmentId: string): OrgHat | undefine
  * anywhere. That is precisely the fact a C-suite exists to change, and until now the only thing
  * that could change it was a script.
  */
-export function directionOpenings(chart: OrgChart, cascade: readonly CascadeNode[]): readonly GenerativeOpening[] {
+export function directionOpenings(
+  chart: OrgChart,
+  cascade: readonly CascadeNode[],
+  clock?: DirectionClock,
+): readonly GenerativeOpening[] {
   const live = new Set(cascade.filter(isLive).map((n) => n.domain).filter((d): d is Domain => d !== undefined));
   const out: GenerativeOpening[] = [];
+
+  // ── A DIRECTION GOES STALE, WHICH IS WHAT MAKES THIS A CADENCE ───────────
+  // Without this, direction is set once per domain and never revisited: the C-suite decides the
+  // company's shape in round one and has nothing to say for the rest of its life. "Over a week the
+  // C-suite will maintain and shift and adjust company direction" is a claim about TIME PASSING,
+  // and nothing in this register could observe time passing until the goal carried a reading.
+  //
+  // NO CLOCK MEANS NO RESTATEMENTS, never a default interval. An organization that does not know
+  // what time it is cannot know anything is old, and inventing a `now` here would make every
+  // clockless caller's directions spontaneously stale.
+  if (clock !== undefined) {
+    for (const node of cascade) {
+      if (node.workType !== WorkType.Goal) continue;
+      if (!isLive(node)) continue;
+      // A direction with no reading is not stale, it is UNDATED. Treating it as old would make the
+      // first restatement a fact about the missing field rather than about the passage of time.
+      if (node.directedAtMs === undefined) continue;
+      if (clock.nowMs - node.directedAtMs < clock.reviewIntervalMs) continue;
+      out.push({
+        kind: GenerativeKind.SetDirection,
+        byHatId: node.ownerHatId,
+        // THE PROMPT MUST NOT QUOTE THE TITLE. A deterministic driver answers a prompt with the
+        // prompt, so a restatement whose question embeds the current objective writes that
+        // objective back inside the new one — measured at 363 characters and six levels of nesting
+        // after a single simulated week, growing without bound. The question names the SUBJECT
+        // instead, which is stable under any number of restatements.
+        prompt: `is ${node.domain ?? node.workId} still pointed the right way?`,
+        subjectId: node.workId,
+        ...(node.domain === undefined ? {} : { domain: node.domain }),
+        restates: true,
+        because: `stated ${String(clock.nowMs - node.directedAtMs)}ms ago, and the review interval is ${String(clock.reviewIntervalMs)}ms`,
+      });
+    }
+  }
+
   for (const domain of Object.values(Domain)) {
     if (live.has(domain)) continue;
     const executive = executiveOver(chart, departmentFor(domain));
@@ -392,6 +451,8 @@ export interface GenerativeInput {
    * You raise a gap ONCE. The same rule, and the same fix, as `unraisedBlockers`.
    */
   readonly raisedSupplySubjects?: ReadonlySet<string>;
+  /** Absent means no direction is ever revisited — see `directionOpenings`. */
+  readonly directionClock?: DirectionClock;
 }
 
 /**
@@ -404,7 +465,7 @@ export interface GenerativeInput {
 export function generativeOpeningsFor(input: GenerativeInput, hatId: string): readonly GenerativeOpening[] {
   const raised = input.raisedSupplySubjects ?? new Set<string>();
   const all = [
-    ...directionOpenings(input.chart, input.cascade),
+    ...directionOpenings(input.chart, input.cascade, input.directionClock),
     ...draftingOpenings(input.chart, input.cascade, input.artifactIds),
     ...priorityOpenings(input.chart, input.cascade, input.pricedWorkIds),
     ...supplyOpenings(input.chart, input.resourceAuthorityHatId, raised),

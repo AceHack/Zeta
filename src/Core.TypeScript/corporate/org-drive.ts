@@ -32,7 +32,7 @@ import { buildMenu, type NextAction, type World } from "../observe/observe";
 import { effectOf, orgSurfaceFor, type OrgEffect, type OrgView } from "./org-observe-bridge";
 import type { WorkTransfer } from "./work-stealing";
 import type { AlternateAssignment } from "./alternate-work";
-import { acceptGoal, assign, decompose, reassign, type Cascade } from "./goal-cascade";
+import { acceptGoal, assign, decompose, reassign, restateDirection, type Cascade } from "./goal-cascade";
 import { postToAnchor, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, openArtifact } from "./artifact-deliberation";
 import { conveneOverArtifact } from "./artifact-meeting";
@@ -81,6 +81,15 @@ export interface DriveDeps {
    * empty input would report an organization with nothing wrong, which is precisely the lie
    * `lag-detection.ts` is built to refuse.
    */
+  /**
+   * How long a direction may stand before its owner is asked to restate it.
+   *
+   * ABSENT MEANS NO DIRECTION IS EVER REVISITED, and that is the honest default rather than a
+   * conservative one: a drive with a frozen `nowMs` — which every existing caller has — would
+   * otherwise find every direction stale the moment the interval elapsed in wall-clock terms it
+   * never observes. A cadence supplies both this and a moving clock, together.
+   */
+  readonly directionReviewMs?: number;
   readonly lagSweep?: {
     readonly observerHatId: string;
     readonly anchorId: string;
@@ -99,7 +108,14 @@ export interface DriveDeps {
 export function tick(state: DriveState, hatId: string, deps: DriveDeps): TickReport {
   const world: World = {
     backlog: [],
-    ...orgSurfaceFor(state.view, hatId, deps.resourceAuthorityHatId),
+    ...orgSurfaceFor(
+      state.view,
+      hatId,
+      deps.resourceAuthorityHatId,
+      deps.directionReviewMs === undefined
+        ? undefined
+        : { nowMs: deps.nowMs, reviewIntervalMs: deps.directionReviewMs },
+    ),
   };
   const menu = buildMenu(world);
   const chosen = (deps.choose ?? ((m) => m[0]))(menu, hatId);
@@ -237,11 +253,24 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
         workId: effect.workId,
         title: effect.title,
         acceptingHatId: effect.byHatId,
+        atMs: deps.nowMs,
         ...(effect.domain === undefined ? {} : { domain: effect.domain }),
       });
       if (!accepted.ok) return { state, changed: false, refusals: [accepted.reason] };
       const view: OrgView = { ...state.view, cascade: accepted.cascade.nodes };
       return { state: { ...state, cascade: accepted.cascade, view }, changed: true, refusals: [] };
+    }
+
+    case "redirection": {
+      const restated = restateDirection(state.cascade, deps.chart, {
+        workId: effect.workId,
+        title: effect.title,
+        byHatId: effect.byHatId,
+        atMs: deps.nowMs,
+      });
+      if (!restated.ok) return { state, changed: false, refusals: [restated.reason] };
+      const view: OrgView = { ...state.view, cascade: restated.cascade.nodes };
+      return { state: { ...state, cascade: restated.cascade, view }, changed: true, refusals: [] };
     }
 
     case "document": {

@@ -176,6 +176,15 @@ export interface CascadeNode {
    * the one that forgot routes alphabetically again.
    */
   readonly domain?: Domain;
+  /**
+   * When this direction was last STATED. Only meaningful on a goal.
+   *
+   * Optional because a cascade assembled without a clock has no honest value to put here, and a
+   * default would be a lie the staleness check then reads as fact. Absent means nothing can say
+   * this direction is old — which is exactly right for an organization that does not know what
+   * time it is, and is why `directionOpenings` offers no restatements without a clock.
+   */
+  readonly directedAtMs?: number;
 }
 
 export interface Cascade {
@@ -304,6 +313,8 @@ export function acceptGoal(
      * reintroduced at the one verb that creates the branch.
      */
     readonly domain?: Domain;
+    /** When the direction was stated. Absent means this organization has no clock. */
+    readonly atMs?: number;
   },
 ): CascadeResult {
   const hat = chart.byId.get(input.acceptingHatId);
@@ -330,8 +341,56 @@ export function acceptGoal(
           state: WorkState.Open,
           ownerHatId: hat.id,
           ...(input.domain === undefined ? {} : { domain: input.domain }),
+          ...(input.atMs === undefined ? {} : { directedAtMs: input.atMs }),
         },
       ],
+    },
+  };
+}
+
+/**
+ * Restate a direction — a new objective on an existing goal, and a new clock reading.
+ *
+ * A SEPARATE VERB, never `acceptGoal` quietly accepting a duplicate id. This register has already
+ * shipped one silent overwrite (`assign` replacing an assignee) and the lesson was that the caller
+ * who meant it and the caller who made a mistake are indistinguishable at the call site — so the
+ * one who means it says so.
+ *
+ * The refusals are the same ones `acceptGoal` applies, because a restatement is a direction: it is
+ * made at the top, and it says something.
+ */
+export function restateDirection(
+  cascade: Cascade,
+  chart: OrgChart,
+  input: {
+    readonly workId: string;
+    readonly title: string;
+    readonly byHatId: string;
+    readonly atMs: number;
+  },
+): CascadeResult {
+  const node = nodeById(cascade, input.workId);
+  if (node === undefined) return { ok: false, reason: `no direction '${input.workId}' to restate` };
+  if (node.workType !== WorkType.Goal) {
+    return { ok: false, reason: `'${input.workId}' is a ${node.workType}, not a direction` };
+  }
+  const hat = chart.byId.get(input.byHatId);
+  if (hat === undefined) return { ok: false, reason: `unknown hat '${input.byHatId}'` };
+  if (hat.level !== "c_suite" && hat.level !== "executive_board") {
+    return { ok: false, reason: `a direction is restated at the top: '${hat.id}' is ${hat.level}` };
+  }
+  // THE HAT THAT HOLDS IT. Any executive could otherwise redirect any other executive's domain,
+  // which is not a hierarchy, and the chart already said who owns this one.
+  if (node.ownerHatId !== input.byHatId) {
+    return { ok: false, reason: `'${input.workId}' is held by '${node.ownerHatId}', not '${input.byHatId}'` };
+  }
+  if (input.title.trim() === "") return { ok: false, reason: "a restatement with no objective states nothing" };
+  return {
+    ok: true,
+    cascade: {
+      nodes: cascade.nodes.map((n) =>
+        n.workId === input.workId ? { ...n, title: input.title, directedAtMs: input.atMs } : n,
+      ),
     },
   };
 }
