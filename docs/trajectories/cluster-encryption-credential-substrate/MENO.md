@@ -301,6 +301,13 @@ assume the number.
    is unmeasured, not present. Does not run the live probe.
    Does not change ISO bun `probe: null`. Does not invent
    an integrate decision.
+   Overlay argv/conf joins take frost result (`081M1WXPCAV087G0R002H1X6VY`):
+   `planSetupFromFrostArgv` / `planSetupFromFrostConf`. Maps
+   via `namedProbeFromFrostResult` then the argv/conf overlay
+   joins. `/dev/tpmrm0` is not `present`. A YubiKey is not
+   CardContact. Null frost result is unmeasured, not present.
+   Does not add the request to ESP conf. Does not change ISO
+   bun `probe: null`. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

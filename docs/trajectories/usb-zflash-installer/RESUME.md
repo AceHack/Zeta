@@ -583,6 +583,10 @@ Overlay env join takes frost result
 (`081M1WTR4BW087G0R0001NVXWQ`);
 null frost result is unmeasured, not
 present; ISO bun `probe` stays null.
+Overlay argv/conf joins take frost
+result (`081M1WXPCAV087G0R002H1X6VY`);
+does not add the request to ESP conf;
+ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

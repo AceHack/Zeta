@@ -4,10 +4,12 @@ import { USB_PKCS11_MODULE_POINTER, hostBaoSealHcl } from "../../../src/Core.Typ
 import { UNSEAL_REQUEST_ENV_KEY } from "../../../src/Core.TypeScript/cluster/unseal-path.ts";
 import {
   FIRSTBOOT_BAO_ELF_EPOCH_KEY,
+  FIRSTBOOT_BAO_LOAD_SITE_KEY,
+  FIRSTBOOT_BAO_PATH_KEY,
   NIXOS_HOST_BAO,
 } from "../../../src/Core.TypeScript/installer/bao-elf-capture.ts";
 import type { HardwareProbeResult } from "./frost-hardware-probe.ts";
-import { planSetupFromFrostEnv } from "./plan-setup-from-frost.ts";
+import { planSetupFromFrostArgv, planSetupFromFrostConf, planSetupFromFrostEnv } from "./plan-setup-from-frost.ts";
 
 function frostLook(partial: Partial<HardwareProbeResult> = {}): HardwareProbeResult {
   return {
@@ -70,6 +72,28 @@ function optionDEnv(request: string): { readonly [key: string]: string } {
     [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installed-host",
     [UNSEAL_REQUEST_ENV_KEY]: request,
   };
+}
+
+function requestEnv(request: string): { readonly [key: string]: string } {
+  return { [UNSEAL_REQUEST_ENV_KEY]: request };
+}
+
+function optionDArgv(): readonly string[] {
+  return ["--bao-load-site=on-host", `--bao-path=${NIXOS_HOST_BAO}`];
+}
+
+function optionDConf(): string {
+  return `${FIRSTBOOT_BAO_LOAD_SITE_KEY}='on-host'\n${FIRSTBOOT_BAO_PATH_KEY}='${NIXOS_HOST_BAO}'\n`;
+}
+
+function namedTpmFrost(): HardwareProbeResult {
+  return frostLook({
+    tpm2Available: true,
+    tpm2State: "present",
+    yubikeyDetected: false,
+    smartCardReaderAttached: false,
+    pkcs11ModuleFound: false,
+  });
 }
 
 function glibcRead(opened: string[]): (path: string) => { exists: boolean; bytes: Uint8Array | null } {
@@ -213,15 +237,143 @@ describe("planSetupFromFrostEnv — tpmrm0 is not present", () => {
       "../../../src/Core.TypeScript/installer/bao-elf-capture.ts",
       "../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts",
       "../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+      "../../../full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
     ];
     for (const rel of files) {
       const src = await Bun.file(new URL(rel, import.meta.url)).text();
       expect(src.split("plan-setup-from-frost").length - 1).toBe(0);
       expect(src.split("planSetupFromFrostEnv").length - 1).toBe(0);
+      expect(src.split("planSetupFromFrostArgv").length - 1).toBe(0);
+      expect(src.split("planSetupFromFrostConf").length - 1).toBe(0);
     }
     const join = await Bun.file(new URL("./plan-setup-from-frost.ts", import.meta.url)).text();
     expect(join.split("probeHardwareSecurity(").length - 1).toBe(0);
+    expect(join.split("appendFirstbootBaoElfConf(").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
     expect(bunCli.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
+  });
+});
+
+describe("planSetupFromFrostArgv/Conf — tpmrm0 is not present", () => {
+  test("null frost result is unmeasured on argv and conf", () => {
+    const argvOpened: string[] = [];
+    const fromArgv = planSetupFromFrostArgv(
+      missingRestore,
+      optionDArgv(),
+      requestEnv("pkcs11-tpm"),
+      glibcRead(argvOpened),
+      null,
+      "nixos",
+    );
+    expect(fromArgv.ok).toBe(true);
+    if (!fromArgv.ok) return;
+    expect(argvOpened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromArgv.plan.oracle).toBe("none");
+    expect(fromArgv.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromArgv.plan)).toBeNull();
+    const confOpened: string[] = [];
+    const fromConf = planSetupFromFrostConf(
+      missingRestore,
+      optionDConf(),
+      requestEnv("pkcs11-tpm"),
+      glibcRead(confOpened),
+      null,
+      "nixos",
+    );
+    expect(fromConf.ok).toBe(true);
+    if (!fromConf.ok) return;
+    expect(confOpened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromConf.plan.oracle).toBe("none");
+    expect(fromConf.plan.mayCommitHostHcl).toBe(false);
+    expect(hostBaoSealHcl(fromConf.plan)).toBeNull();
+  });
+
+  test("tpmrm0 plus indeterminate stays unmeasured on argv and conf", () => {
+    const argvOpened: string[] = [];
+    const fromArgv = planSetupFromFrostArgv(
+      missingRestore,
+      optionDArgv(),
+      requestEnv("pkcs11-tpm"),
+      glibcRead(argvOpened),
+      frostLook(),
+      "nixos",
+    );
+    expect(fromArgv.ok).toBe(true);
+    if (!fromArgv.ok) return;
+    expect(fromArgv.plan.oracle).toBe("none");
+    expect(fromArgv.plan.mayCommitHostHcl).toBe(false);
+    const confOpened: string[] = [];
+    const fromConf = planSetupFromFrostConf(
+      missingRestore,
+      optionDConf(),
+      requestEnv("pkcs11-tpm"),
+      glibcRead(confOpened),
+      frostLook(),
+      "nixos",
+    );
+    expect(fromConf.ok).toBe(true);
+    if (!fromConf.ok) return;
+    expect(fromConf.plan.oracle).toBe("none");
+    expect(fromConf.plan.mayCommitHostHcl).toBe(false);
+  });
+
+  test("YubiKey plus CCID reader is not CardContact on argv and conf", () => {
+    const fromArgv = planSetupFromFrostArgv(
+      missingRestore,
+      optionDArgv(),
+      requestEnv("pkcs11-smartcard"),
+      glibcRead([]),
+      frostLook(),
+      "nixos",
+    );
+    expect(fromArgv.ok).toBe(true);
+    if (!fromArgv.ok) return;
+    expect(fromArgv.plan.oracle).toBe("none");
+    expect(fromArgv.plan.mayCommitHostHcl).toBe(false);
+    const fromConf = planSetupFromFrostConf(
+      missingRestore,
+      optionDConf(),
+      requestEnv("pkcs11-smartcard"),
+      glibcRead([]),
+      frostLook(),
+      "nixos",
+    );
+    expect(fromConf.ok).toBe(true);
+    if (!fromConf.ok) return;
+    expect(fromConf.plan.oracle).toBe("none");
+    expect(fromConf.plan.mayCommitHostHcl).toBe(false);
+  });
+
+  test("named TPM present may emit host HCL on argv and conf and cannot commit Application.yaml", () => {
+    const argvOpened: string[] = [];
+    const fromArgv = planSetupFromFrostArgv(
+      missingRestore,
+      optionDArgv(),
+      requestEnv("pkcs11-tpm"),
+      glibcRead(argvOpened),
+      namedTpmFrost(),
+      "nixos",
+    );
+    expect(fromArgv.ok).toBe(true);
+    if (!fromArgv.ok) return;
+    expect(argvOpened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromArgv.plan.oracle).toBe("tpm2-pkcs11");
+    expect(fromArgv.plan.mayCommitSeal).toBe(false);
+    expect(fromArgv.plan.mayCommitHostHcl).toBe(true);
+    const confOpened: string[] = [];
+    const fromConf = planSetupFromFrostConf(
+      missingRestore,
+      optionDConf(),
+      requestEnv("pkcs11-tpm"),
+      glibcRead(confOpened),
+      namedTpmFrost(),
+      "nixos",
+    );
+    expect(fromConf.ok).toBe(true);
+    if (!fromConf.ok) return;
+    expect(confOpened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromConf.plan.oracle).toBe("tpm2-pkcs11");
+    expect(fromConf.plan.mayCommitSeal).toBe(false);
+    expect(fromConf.plan.mayCommitHostHcl).toBe(true);
   });
 });
