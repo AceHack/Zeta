@@ -750,6 +750,28 @@ def test_empty_reference_roster_cannot_pass(data, monkeypatch):
     assert failure.Completed.InvocationCases == 0
 
 
+def test_band_hash_discriminator_survives_matching_source_and_payload_mutation(
+    data, monkeypatch
+):
+    changed = copy.deepcopy(data[4])
+    for row in changed["InterventionCases"][6:8]:
+        row["After"]["FrameSha256"] = list(row["Before"]["FrameSha256"])
+    original = r.run_episode
+
+    def substituted(*args, **kwargs):
+        result = original(*args, **kwargs)
+        if kwargs.get("private_band") is not None and isinstance(result, s.Success):
+            baseline = value(original(*args, **{**kwargs, "private_band": None}))
+            result.value["FrameSha256"] = baseline["FrameSha256"]
+        return result
+
+    monkeypatch.setattr(r, "run_episode", substituted)
+    failure = replay(data, changed)
+    assert isinstance(failure, f.FalsifierFailure)
+    assert failure.Code == "VacuousMutation"
+    assert failure.Completed.InterventionCases == 6
+
+
 def test_all_raw_slices_are_checked_and_prefixes_preserved(data):
     cert, scalars, hands, controls, witnesses = data
     changed = copy.deepcopy(controls)
