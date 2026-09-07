@@ -74,6 +74,8 @@
         "aarch64-linux"
       ];
 
+      mkHost = import ./nixos/lib/mk-host.nix { inherit (nixpkgs) lib; };
+
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs stateVersion; };
@@ -121,6 +123,88 @@
           modules = [
             ./nixos/hosts/worker-gpu/configuration.nix
           ];
+        };
+
+        # CONTROL PLANE + GPU ON ONE MACHINE — the composition Aaron asked for
+        # 2026-09-07: "we want to be able to support more than one on a machine at
+        # the same time, control plane and gpu, not just one or the other."
+        #
+        # Assembled by `mkHostModules` from a ROLE and CAPABILITIES rather than by
+        # hand-listing modules, which is what made the combination unexpressible
+        # before — nothing technical prevented it; there was simply no bundle for it.
+        #
+        # It is a TEMPLATE: it borrows control-plane's hardware-configuration.nix
+        # because no such machine exists yet. Copy the directory, generate real
+        # hardware config, and add an entry here — the same shape as worker-template.
+        #
+        # Note what the capability split buys: `gpu-device-plugin` is a CLUSTER
+        # capability, so `mkHostModules` would REFUSE it on a role="agent" host. On
+        # this one it is correct, and that is checked rather than assumed —
+        # checks.mk-host-refuses-cluster-capability-on-an-agent proves both directions.
+        control-plane-gpu = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "server";
+            hardware = ./nixos/hosts/control-plane/hardware-configuration.nix;
+            nodeCapabilities = [ "gpu" "docker" "operator-credentials" ];
+            clusterCapabilities = [ "local-storage" "gpu-device-plugin" ];
+            extra = [
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "control-plane-gpu";
+                zeta.gpu-device-plugin = { enable = true; vendors = [ "nvidia" ]; };
+              })
+            ];
+          };
+        };
+
+        # worker-cpu — k3s agent, NO GPU. Row 2 of the taxonomy.
+        worker-cpu = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "agent";
+            hardware = ./nixos/hosts/worker-gpu/hardware-configuration.nix;
+            nodeCapabilities = [ "docker" ];
+            extra = [
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "worker-cpu";
+                services.k3s.serverAddr = lib.mkForce "https://control-plane:6443";
+              })
+            ];
+          };
+        };
+
+        # worker-storage — k3s agent with the extra Longhorn data paths. Row 3:
+        # a storage-heavy node carrying many replicas, no GPU.
+        worker-storage = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "agent";
+            hardware = ./nixos/hosts/worker-gpu/hardware-configuration.nix;
+            nodeCapabilities = [ "docker" "longhorn-disks" ];
+            extra = [
+              inputs.disko.nixosModules.disko
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "worker-storage";
+                services.k3s.serverAddr = lib.mkForce "https://control-plane:6443";
+              })
+            ];
+          };
+        };
+
+        # all-in-one — server + GPU + extra Longhorn disks. Row 4: a single-node
+        # lab cluster that fuses every role, which is the shape Aaron's original
+        # 2026-05-25 ask ends on ("or some that fuse all three").
+        all-in-one = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "server";
+            hardware = ./nixos/hosts/control-plane/hardware-configuration.nix;
+            nodeCapabilities = [ "gpu" "docker" "operator-credentials" "longhorn-disks" ];
+            clusterCapabilities = [ "local-storage" "gpu-device-plugin" ];
+            extra = [
+              inputs.disko.nixosModules.disko
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "all-in-one";
+                zeta.gpu-device-plugin = { enable = true; vendors = [ "nvidia" ]; };
+              })
+            ];
+          };
         };
 
         # Cookie-cutter worker template — uses disko for declarative
@@ -214,6 +298,53 @@
         # x86_64). Run one with:
         #   nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L
         checks = {
+          # 081M1XXA0FC087G0R002F92ZQC — the role/capability model REFUSES what the
+          # k3s-manifests audit merely detects.
+          #
+          # A cluster capability installs through `services.k3s.manifests`, which the k3s
+          # deploy controller applies ON A SERVER. Declared on an agent the files are written
+          # and nothing reads them — which is how the NVIDIA device plugin came to be declared
+          # only on worker-gpu and therefore never installed. `mkHostModules` asserts against
+          # it, and this check proves the assertion FIRES rather than trusting that it would.
+          #
+          # `builtins.tryEval` is what makes an assertion testable: `.success` is false when
+          # the assert throws. Both directions are asserted, so this cannot pass by the
+          # refusal never being reachable.
+          mk-host-refuses-cluster-capability-on-an-agent =
+            let
+              mkHost = import ./nixos/lib/mk-host.nix { inherit (nixpkgs) lib; };
+              hw = ./nixos/hosts/control-plane/hardware-configuration.nix;
+              bad = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "agent";
+                hardware = hw;
+                clusterCapabilities = [ "gpu-device-plugin" ];
+              }));
+              goodServer = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                clusterCapabilities = [ "gpu-device-plugin" "local-storage" ];
+                nodeCapabilities = [ "docker" ];
+              }));
+              # The composition Aaron asked for: control plane AND gpu on one machine.
+              goodComposed = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                nodeCapabilities = [ "gpu" "docker" ];
+                clusterCapabilities = [ "gpu-device-plugin" ];
+              }));
+              unknownCap = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                nodeCapabilities = [ "not-a-capability" ];
+              }));
+            in
+            assert bad.success == false;          # the refusal fires
+            assert goodServer.success == true;    # a server may hold cluster capabilities
+            assert goodComposed.success == true;  # control-plane + gpu composes
+            assert unknownCap.success == false;   # a typo is refused, not silently dropped
+            pkgs.runCommand "mk-host-refuses-cluster-capability-on-an-agent" { } "touch $out";
+
+
           # 081M00KTH58087G0R00120WT6F — properties of the Secure Boot
           # desired-state model (nixos/modules/secure-boot-phase-model.nix).
           #
