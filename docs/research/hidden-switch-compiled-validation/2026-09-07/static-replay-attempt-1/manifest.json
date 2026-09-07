@@ -854,6 +854,14 @@
       "Encoding": "gzip",
       "StoredBytes": 20,
       "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "publication-push.log.gz",
+      "Bytes": 1717,
+      "Sha256": "451209BC155286A712BF1A384EA8CED9B9798EFEDBFF76A916A94D4B30A82B9C",
+      "Encoding": "gzip",
+      "StoredBytes": 667,
+      "StoredSha256": "373BB8BF4E7AB74DBEEDA4A29A2630F02C4DDD9F3FBB254FADFD3F327B9878B6"
     }
   ],
   "NativeLaunches": 0,

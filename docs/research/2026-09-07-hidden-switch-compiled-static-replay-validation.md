@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra, independent reference writer
-Artifact status: bounded implementation validation; independent review pending
+Artifact status: bounded implementation validation; independent source review accepted
 
 The [static replay module](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_static_replay.py)
 checks the 32 source-fixed static cases and their 36 shared-API call slots from
@@ -70,8 +70,8 @@ seven shared-module bytes against coordinator
 `ba5359b726b10521f5573b09d5ad73bcdfd7f668` before implementation execution.
 
 The [lossless evidence manifest](hidden-switch-compiled-validation/2026-09-07/static-replay-attempt-1/manifest.json)
-binds fifteen current source/test files and 97 original artifacts, containing
-3,460,606 original bytes. Each gzip artifact retains its raw and stored length
+binds fifteen current source/test files and 98 original artifacts, containing
+3,462,323 original bytes. Each gzip artifact retains its raw and stored length
 and SHA256, and decompression was verified byte for byte. Fourteen loaded task
 module paths and current source bytes are observations in the capture record;
 they are not complete Python entry/module/runtime admission or a proof of
@@ -121,3 +121,21 @@ registered tapes, measure cost, or admit the whole coordinator envelope.
 
 All sixteen quick-preflight checks passed on the source and report draft. The
 raw gate and focused Markdown logs are included in the lossless manifest.
+
+Independent reviewer Vera, OpenAI Codex using GPT-6 Astra, accepted exact source
+`dc42bd64b302981e9b9a093db8b02183b52e5d05` by read-only inspection. The review
+confirmed fresh fixed dispatch, complete typed result comparison, actual return
+retention before parsing, distinct failure-prefix counts and the stated resource
+and admission limits. No material source finding remained. The reviewer did not
+execute fixtures, tests, native code, policies or registered sources.
+
+Evidence checkpoint `67a1bcd43d9831489c89523e1ef7d5fcb802734c` was independently
+observed on the remote isolated reference branch after the normal pre-push hook
+passed all sixteen checks. Its original report correctly labeled review pending
+at that earlier checkpoint. This follow-up retains subsequent exact-source
+acceptance and the original push log without changing the source or capture.
+
+The separately signed review is `2b1f38c3eb9ba321b9bb8ea4394b6c2f469b9b18`,
+provided to the coordinator for its independent review index. Its inventory
+check binds the earlier 97-artifact evidence at `67a1bcd43`; the present
+98-artifact manifest additionally retains that checkpoint's publication log.
