@@ -33,7 +33,31 @@ type ZetaFsCommit =
 type ZetaFsDeltaLog<'K when 'K : comparison>
     (dir: string, entryCodec: IEntryCodec<'K>, ?hasher: IContentHasher, ?env: ISimulationEnvironment) =
 
-    let root = Path.GetFullPath dir
+    /// A ZetaFs store path is a VIRTUAL, POSIX-rooted path: every other path operation in this
+    /// type goes through `ZetaFsPath`, whose separator is '/' and whose `join` already carries a
+    /// `rooted` concept. `Path.GetFullPath` is the one OS-dependent call in the subsystem, and it
+    /// was the only one — which is exactly why it produced a single-platform failure.
+    ///
+    /// ON WINDOWS `Path.GetFullPath "/store"` returns `D:\store`: drive-qualified, backslashed.
+    /// The `FileSystem` holding the store still has it at `/store`, so the FORMAT probe below
+    /// missed, a `ns=bindings` store was read as a NEW store, and the refusal it is supposed to
+    /// raise never fired. That is `ZetaFsFreezeTests."new freeze volume writes ns=bindings and
+    /// git-trees deltaLog still refuses"` failing on windows-2025 and windows-11-arm and passing
+    /// everywhere else — 1 failure in 6545, on both Windows legs, every run.
+    ///
+    /// The healer flagged this exact line and declined to auto-fix it:
+    ///   "[zetafs-virtual-path] line 36: Path.GetFullPath resolves against the process CWD —
+    ///    ambient state. NOT auto-healed: removing it changes behaviour for real-path callers.
+    ///    Needs a human."
+    /// It was right to decline, and this is the distinction it could not draw on its own:
+    ///
+    ///   already POSIX-rooted  -> a virtual path. Leave it alone; OS resolution corrupts it.
+    ///   anything else         -> a real relative/OS path. Resolve against CWD exactly as before.
+    ///
+    /// So real-path callers keep their behaviour to the byte, and virtual paths stop being
+    /// rewritten into a filesystem that does not hold them.
+    let root =
+        if dir.StartsWith("/", StringComparison.Ordinal) then dir else Path.GetFullPath dir
     let objectsDir = ZetaFsPath.combine2 root "objects"
     let refsDir = ZetaFsPath.combine3 root "refs" "heads"
     let headFile = ZetaFsPath.combine2 root "HEAD"
