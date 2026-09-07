@@ -48,6 +48,20 @@ all 83 integration-five Python pins and all 502 local links.
 
 The final publication-only release removes both claim files from this tree
 and moves the finite publication work item to its done folder. This does not
-release the parent remote implementation claim. No source changed after the
-full gate. Final quick gate, current CI and exact main proof are separate
+release the parent remote implementation claim. At that release checkpoint no source changed after the
+full gate. The later test-only repair below is separate. Final quick gate,
+current CI and exact main proof are separate
 publication observations and must still be verified.
+
+## GitHub test-helper correction
+
+PR #16982 review found two `os.write` calls inside assertions in the owned-file
+fixture tests. Repair `65b30763b4e7c4f8395c2433631287400091882f` evaluates
+both writes first, then asserts their returned byte counts. This keeps the
+actual fixture side effects explicit when assertions are disabled. All 33
+affected tests pass in 4.26 seconds; strict mypy, Ruff and format checks pass.
+The [retained review and checks](hidden-switch-compiled-validation/2026-09-07/prerequisites-file-assert-repair/manifest.json)
+bind the exact test source and both GitHub findings. Production source, the
+original 19 scientific files, all result receipts and protocol are unchanged.
+The 83-file integration-five identity check remains the earlier reviewed
+checkpoint; this single test file now has the separately recorded new hash.
