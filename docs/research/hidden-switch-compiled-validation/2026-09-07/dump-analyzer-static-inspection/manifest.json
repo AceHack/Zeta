@@ -96,6 +96,27 @@
       "StoredSha256": "3483a7a14a4e2016e5aeddfc5be1942e403353356a7cda09b0302d5855007a82",
       "RawBytes": 1335,
       "RawSha256": "58b6f2efe422c4c15c196914bfa0452ec8b71ca35e64a0f831232ce989368b22"
+    },
+    {
+      "File": "readmemory.ildasm.invocation.json.gz",
+      "StoredBytes": 482,
+      "StoredSha256": "734299b98ac3182b2958cef86ddf3c63e66d5b6348fc4064cf64f8116dea7d26",
+      "RawBytes": 903,
+      "RawSha256": "7040a68ba04a118c6d4052110412ef4844655ce2da9fbc19b6ccc6a140ae80fc"
+    },
+    {
+      "File": "readmemory.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "readmemory.ildasm.stdout.txt.gz",
+      "StoredBytes": 6083,
+      "StoredSha256": "711191c3e14c024978a1a9161dfad4a8d9d236e1afe52fbaa4730278250c4ee6",
+      "RawBytes": 57276,
+      "RawSha256": "3d8740b44f73c06be76de6e4b5c82b4345eb1cf3fa72dd919596d9cec6cec18d"
     }
   ],
   "LocalFileIdentities": [
@@ -177,5 +198,11 @@
       "Bytes": 1085,
       "Sha256": "12a08953b16e14a9662940990b9ae98cfc059a13e4ef8786f2df54dfe104947f"
     }
-  ]
+  ],
+  "LocalFormatGuidance": {
+    "Path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/mach-o/loader.h",
+    "Bytes": 74809,
+    "Sha256": "5862aeb7fbf183453080bc887c0d502fe25a86ff5bd81291bbcc408bd7fe6e74",
+    "Scope": "SDK format definition only; not runtime or dump format identity"
+  }
 }

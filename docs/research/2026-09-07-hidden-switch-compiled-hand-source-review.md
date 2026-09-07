@@ -131,3 +131,27 @@ fields. The author reports 23 focused cases passing after a retained static
 typing correction. The reviewer read the immutable source and tests without
 executing them. This acceptance covers neither actual native output replay
 nor file, envelope or executing-runtime admission.
+
+## Actual certificate-verifier command
+
+The supplied-byte command at
+`34b4395175cd58ee2caba179e6061e54521673f6` is accepted for untimed certificate
+conformance. It retains the raw certificate hash before reading bindings,
+then retains the binding hash before strict map admission. Duplicate names,
+wrong value types and noncanonical SHA strings refuse before map construction.
+The verifier entry counter increments immediately before the real verifier
+call. A completed verifier refusal is distinct from an incomplete command,
+input-read, launch or output failure; only the former is a negative witness.
+
+The final report and journal are attempted independently, retaining the first
+unexpected failure. Existing final or journal paths refuse without replacing
+their contents. The reviewed command does not call a choice service or generate
+a source stream, and supplied binding syntax does not admit archive semantics.
+
+The reviewer additionally verified six compressed/raw record identities and
+lengths, seven committed source fingerprints, and five individual Passed TRX
+outcomes in the author's preparation manifest. These five file tests cover
+strict bindings, real verifier refusal, missing second input, exclusive outputs
+and duplicate-binding hash retention. The original ambiguous-hash build error
+remains retained. No reviewer test or full 31-input corpus execution occurred;
+the coordinator's actual corpus comparison remains separate evidence.

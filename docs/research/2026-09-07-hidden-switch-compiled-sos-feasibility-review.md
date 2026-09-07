@@ -220,7 +220,7 @@ newer source consulted above. The reviewer inspected installed IL to resolve
 the difference; the earlier current-source observation is retained as history,
 not asserted as installed behavior. The
 [static-inspection manifest](hidden-switch-compiled-validation/2026-09-07/dump-analyzer-static-inspection/manifest.json)
-indexes 12 losslessly compressed records, including exact invocations, complete
+initially indexed 12 losslessly compressed records, including exact invocations, complete
 or partial outputs and empty error streams. Its 13 local file identities are
 a post-inspection snapshot, not a complete loaded-reader dependency inventory.
 
@@ -283,5 +283,65 @@ local-only. Its hash, size, capture identity and code-related observations may
 be retained; its memory is not ingested or published. Direct runtime-IPC
 collection while the graph process waits is a different snapshot from an LLDB
 stop. No analyzer or dump capture has run in the reviewer's lane. The native
-owner's complete ownership, timeout, collection and command plan still needs
-prelaunch review; this note neither admits the runtime nor changes the protocol.
+owner's complete ownership, timeout, collection and command plan still required
+prelaunch review at that point; the subsequent bounded disposition follows.
+
+## Capture-only source acceptance and raw-read qualification
+
+The collection script and plan at
+`1bbc2ea8b9df319eb238c3efd615a07328274ebc` are accepted for the coordinator's
+one authorized direct graph-process dump. The reviewed script SHA256 is
+`398d2750c087f3a88710375e1220bab2d70f0aaf63dbcc2a0690431dd9014f0f`.
+It owns an exclusive attempt directory and direct target/collector sessions,
+bounds readiness/collection/target exit to 30/60/5 seconds, and retains
+failures without retrying or deleting partial dumps. The eight-GiB cap is
+polled, with a twelve-GiB free-space precondition; neither is a hard quota.
+Cleanup bounds direct-child management, not arbitrary descendant containment.
+
+Review required three repairs before launch: dump identity/stat errors must
+still permit terminal outcome publication; the single completion record must
+name the owned PID and affirm completion and guard-pin release; and collector
+package/configuration/native-library identities must accompany its apphost
+hash. The accepted source implements these and retains a collector-only host
+resolution trace. Target runtime 10.0.11 is not silently assigned to the
+collector. A failed dump's hash is at most a post-direct-child snapshot.
+No reviewer dump, analyzer or target ran; offline analysis remains separate.
+
+One further static class inspection of the installed command assembly
+completed with exit zero and empty stderr. Its three additional retained
+records bring the manifest to 15. Installed command attributes and IL confirm
+the `readmemory` alias, explicit count/element-size/row-width options and
+display flags. Address and formatting state can persist between commands.
+For selected bytes, set all fields explicitly with a positive bounded count,
+element length one, and both string modes disabled. Never use a string scan,
+implicit prior address or default count. Missing bytes print question marks
+and need not cause command failure: require the exact requested contiguous
+addresses and byte count independently of the transport marker.
+[Version-specific memory command](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.ExtensionCommands/Host/ReadMemoryCommand.cs)
+
+Version-specific target construction wraps dump reads in native and managed
+image-mapping services on macOS. A missing or partial read can therefore be
+filled from a local module file even when network symbol lookup is disabled.
+An analyzer-view byte string alone does not establish physical dump backing.
+No source or runtime setting is changed to hide this distinction.
+[Target construction](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/TargetFromDataReader.cs),
+[image fallback](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/ImageMappingMemoryService.cs)
+
+The planned physical check reads bounded format/segment metadata and only
+the already selected code, stub, pointer-cell or guard ranges. Require exact
+file backing, checked address/file arithmetic, complete reads and unambiguous
+range coverage. Unknown format, overlap, missing bytes or zero-fill refuses.
+For Mach-O, the local SDK defines `SG_HIGHVM` as placing file contents at the
+high end of a segment; a simple low-address mapping must reject that flag.
+Its header identity is recorded as format guidance, not dump/runtime identity.
+Only selected offsets, lengths, hashes and comparison results may leave the
+local helper; the raw dump and unrelated memory remain unexamined/unpublished.
+The actual range parser and analyzer driver still require source review.
+[Apple format definitions](https://github.com/apple-oss-distributions/xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h)
+
+Finally, version-specific runtime creation uses `ignoreMismatch:true` when
+opening the DAC-backed CLR model. Set the exact local directory before the
+first dependent query and inspect cached DAC paths afterward. Independent
+target/runtime/DAC identities remain necessary; successful metadata commands
+alone do not establish version matching or method/body correspondence.
+[Version-specific runtime source](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/Runtime.cs)
