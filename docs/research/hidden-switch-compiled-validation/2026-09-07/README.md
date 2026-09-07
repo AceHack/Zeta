@@ -144,6 +144,10 @@ repair `a289c75ff6abc1808107c016d20cc7ccaf57556a`: primary failures survive
 cleanup, child ownership precedes transfer, uncertain closes are not retried,
 and malformed roots refuse. That reread ran no tests or study sources.
 
+The wire record also covers a 20-test archive-to-file helper: actual full-commit
+blob identity and descriptor-read current bytes must both match the complete
+caller-enumerated roster. Loaded task-module and runtime admission remain separate.
+
 ## Independent numerical and pure native implementation
 
 The [numerical validation](../../2026-09-07-hidden-switch-compiled-numerical-validation.md)
