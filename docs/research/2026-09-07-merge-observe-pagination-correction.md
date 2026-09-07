@@ -25,6 +25,8 @@ TypeScript and full-verification checks as well as failed historical checks.
 The PR was `OPEN/BLOCKED`; both projections recommended fixing failed checks.
 **This establishes live truncation, not an observed unsafe live merge.**
 
+The final well-shaped baseline replay loads four byte-verified runtime source
+files from that exact original git commit into a private snapshot.
 Separate deterministic executions of the unchanged mapper and real
 `authorizeMerge` consumer establish the possible decision error. With a
 `CLEAN` receipt, 100 resolved threads permitted authorization; including an
@@ -33,6 +35,15 @@ permitted prefix into a refusal. A `BLOCKED` fixture with failure 101 changed
 `nextAction` from `none` to `fix-failed-checks`, while both versions refused
 authorization. These executions performed no forge mutation. They do not
 claim that GitHub's own required-check or branch protection was bypassed.
+
+The first pre-edit audit hardcoded both connection totals to 101 even where
+the corresponding complete node list had a different length. Its original
+outcomes are retained as diagnostic history, not used as a well-shaped API
+witness. The corrected replay sets each connection total independently and
+adds the head/commit IDs; the current strict mapper admits every complete
+fixture and refuses each incomplete prefix. The original mapper still shows
+the same three decision/action differences. No production source changed for
+this evidence correction.
 
 The [validation index](merge-observe-pagination-validation/2026-09-07/README.md)
 retains the exact API bytes, original audit script/output and a reduced

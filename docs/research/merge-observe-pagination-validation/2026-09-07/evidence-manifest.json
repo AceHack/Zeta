@@ -16,6 +16,41 @@
       "UncompressedSha256": "0D17F667496F5D627178A2FBEC47F9303ACB027CA651E738870D52C619905E3C"
     },
     {
+      "File": "merge-observe-baseline-replay-attempt-1.log.gz",
+      "Bytes": 213,
+      "Sha256": "450C00AB2EEAAB958DACCA59836A81307B9184BDA2191CCC6244938CAAF9388B",
+      "UncompressedBytes": 387,
+      "UncompressedSha256": "3ECAE1805BAD86DEED5287F083E8DE8196B7C848ED93FC1D5E853B2CBFA3210D"
+    },
+    {
+      "File": "merge-observe-baseline-replay-attempt-1.ts.gz",
+      "Bytes": 1834,
+      "Sha256": "08BEB4D07DF3B1D3F5BF13BC2547EA8C6FFFFDB214440DC48BB9C0E036101EE8",
+      "UncompressedBytes": 4162,
+      "UncompressedSha256": "0BC4BAFE5FDF57A83AAD1E3607F12C0EFD7A6B60DF2809514B650E1112B79AE5"
+    },
+    {
+      "File": "merge-observe-baseline-replay-attempt-2.log.gz",
+      "Bytes": 764,
+      "Sha256": "A6F27BE7ED2343A185EDB4C6B483E14FD968295585C8A0EB96CFA5CAFE66EFEA",
+      "UncompressedBytes": 3539,
+      "UncompressedSha256": "BF43F72A286BCC16856904F8B8EACA90406878A5E7BE095688BE74CA1403216C"
+    },
+    {
+      "File": "merge-observe-baseline-replay-result.json.gz",
+      "Bytes": 8106,
+      "Sha256": "9FDE52D57E715FB88D92F17E3333BB09693F949711C1B29FDDF5AAFD490BC205",
+      "UncompressedBytes": 258712,
+      "UncompressedSha256": "DD091EB3DEE28BD766407C2EBCE6807F3C722651F91CA6520AEDB30BD72FB35A"
+    },
+    {
+      "File": "merge-observe-baseline-replay.ts.gz",
+      "Bytes": 1833,
+      "Sha256": "BCE64F6FB793C262EF9D2BA748CA4406F9F96756300962166CF722F45396F2C1",
+      "UncompressedBytes": 4163,
+      "UncompressedSha256": "FE4DB429C11E57E63FE70685EF3657135F75638B71706FCFFA1E183541EB4DF2"
+    },
+    {
       "File": "merge-observe-build-graph.log.gz",
       "Bytes": 98,
       "Sha256": "6F9E033508239AC699BBDB3B70426C09B88E534076AC80D3CC5C2200DF863766",

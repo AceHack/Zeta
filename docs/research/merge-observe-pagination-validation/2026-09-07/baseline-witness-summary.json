@@ -129,5 +129,6 @@
       "unresolvedThreads": 0,
       "nextAction": "fix-failed-checks"
     }
-  ]
+  ],
+  "FixtureQualification": "Initial audit connection totals were hardcoded and not a well-shaped complete API fixture. Preserve those original outcomes as diagnostic history only; use merge-observe-baseline-replay-result.json.gz for the corrected complete-shape witness."
 }

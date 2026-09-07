@@ -78,3 +78,28 @@ The final forge/receipt suite also passes with the CI-pinned Bun 1.3.13:
 retained separately. Tool versions are in the source snapshot. The complete
 GitHub status response reports the relevant API Requests, Pull Requests,
 Actions and Webhooks components operational at publication preparation.
+
+## Corrected baseline fixture admission
+
+Final evidence review found that the original pre-edit audit hardcoded both
+connection totals to 101, even where the complete check or thread node list
+had another length. Preserve that original result as diagnostic history;
+its node-level comparison does not establish well-shaped complete API data.
+Auto-merge was disabled before this pre-publication evidence correction.
+
+`merge-observe-baseline-replay.ts.gz` reconstructs four exact original runtime
+source files from git commit `9fae5f8c3c499d424bc773fa4a13c057d7990495` in a
+private `.git` snapshot and verifies the materialized bytes. It executes the
+unchanged mapper and actual authorizer on separate, correctly counted
+check/thread connections with complete node and head/commit IDs. It also
+requires the corrected mapper to admit all complete fixtures and refuse all
+three prefixes. The exact script, complete inputs, source hashes and results
+are retained in `merge-observe-baseline-replay-result.json.gz` and the attempt-2
+log. The resulting three decision/action differences match the original
+node-level diagnosis. No forge mutation was performed.
+
+The first reconstruction-script attempt had a missing closing brace and did
+not execute. Its exact source and parse-error log are retained as attempt 1;
+the bounded syntax correction precedes successful attempt 2. This changed
+only audit/evidence files. All five production/test files and six consumers
+remain byte-identical to the reviewed source snapshot.
