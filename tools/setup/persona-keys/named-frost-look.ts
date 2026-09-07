@@ -7,9 +7,10 @@
  * this file. Missing effects is unmeasured, not a live
  * look. Missing OS is `missing-os`, not `nixos`, except
  * optional ISO bun consume: missing both keys is unmeasured
- * (`look` null). `/dev/tpmrm0` is not `real` and not an OS.
- * Does not write ESP. Does not import zflash conf-write.
- * Does not import the look mapper. Does not
+ * (`look` null). `--from-json` is ISO bun stdout. JSON
+ * `probe` is ignored. `/dev/tpmrm0` is not `real` and not
+ * an OS. Does not write ESP. Does not import zflash
+ * conf-write. Does not import the look mapper. Does not
  * change ISO bun `probe: null`.
  */
 
@@ -21,6 +22,7 @@ export const FROST_LOOK_EFFECTS_KEY = "ZETA_FROST_LOOK_EFFECTS";
 export const FROST_LOOK_OS_FLAG = "--os";
 export const FROST_LOOK_EFFECTS_FLAG = "--effects";
 export const FROST_LOOK_CONF_FLAG = "--from-conf";
+export const FROST_LOOK_JSON_FLAG = "--from-json";
 
 export type NamedFrostLookEffects = "null" | "real";
 
@@ -336,13 +338,58 @@ export function argvHasFromConfFlag(argv: readonly string[]): boolean {
   return takeFromConfBody(argv).present;
 }
 
+function takeFromJsonBody(argv: readonly string[]): { readonly present: boolean; readonly body: string } {
+  let present = false;
+  let body = "";
+  for (let i = 0; i < argv.length; i++) {
+    const jsonFlag = takeFlagValue(argv, i, FROST_LOOK_JSON_FLAG);
+    if (jsonFlag.value !== undefined) {
+      present = true;
+      body = jsonFlag.value;
+      i = jsonFlag.next;
+    }
+  }
+  return { present, body };
+}
+
+export function argvHasFromJsonFlag(argv: readonly string[]): boolean {
+  return takeFromJsonBody(argv).present;
+}
+
+/**
+ * `--from-json` is ISO bun stdout. JSON `probe` is ignored.
+ * Mixing with `--from-conf` / `--os` / `--effects` refuses.
+ * Null look is unmeasured, not `missing-os`.
+ */
+export function consumeOptionalFrostLookFromCliJson(argv: readonly string[]): OptionalFrostLookEnvParse {
+  const json = takeFromJsonBody(argv);
+  if (json.present && (takeFromConfBody(argv).present || argvHasFrostLookFlag(argv))) {
+    return { ok: false, reason: "mixed-source" };
+  }
+  if (!json.present) return { ok: true, look: null };
+  return consumeOptionalFrostLookFromBunJson(json.body);
+}
+
 /**
  * `--from-conf` is a conf body, not `--os` / `--effects`.
- * Mixing those sources refuses. Does not read env.
+ * `--from-json` mixed with those sources refuses. Required
+ * CLI argv maps null JSON look to `missing-os`. Optional
+ * `--from-json` uses `consumeOptionalFrostLookFromCliJson`.
+ * Does not read env.
  */
 export function consumeFrostLookFromCliArgv(argv: readonly string[]): FrostLookEnvParse {
+  const json = takeFromJsonBody(argv);
   const conf = takeFromConfBody(argv);
+  if (json.present && (conf.present || argvHasFrostLookFlag(argv))) {
+    return { ok: false, reason: "mixed-source" };
+  }
   if (conf.present && argvHasFrostLookFlag(argv)) return { ok: false, reason: "mixed-source" };
+  if (json.present) {
+    const parsed = consumeOptionalFrostLookFromBunJson(json.body);
+    if (!parsed.ok) return parsed;
+    if (parsed.look === null) return { ok: false, reason: "missing-os" };
+    return { ok: true, os: parsed.look.os, effects: parsed.look.effects };
+  }
   if (conf.present) return consumeFrostLookFromConf(conf.body);
   return consumeFrostLookFromArgv(argv);
 }

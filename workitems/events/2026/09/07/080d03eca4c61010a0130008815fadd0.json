@@ -1,0 +1,14 @@
+{
+  "id": "080d03eca4c61010a0130008815fadd0",
+  "at": "2026-09-07T20:34:45.570Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YS9661087G0R001YK5CEY",
+    "type": "task",
+    "title": "Frost look CLI takes ISO bun JSON look; JSON probe is ignored",
+    "slug": "frost-look-cli-takes-iso-bun-json-look-json-probe-is-ignored",
+    "priority": "P2",
+    "filename": "081M1YS9661087G0R001YK5CEY-frost-look-cli-takes-iso-bun-json-look-json-probe-is-ignored.md"
+  }
+}

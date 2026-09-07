@@ -264,6 +264,11 @@ describe("planSetupFromFrostLookEnv — tpmrm0 is not present", () => {
     expect(bunCli.split("planSetupFromFrostLookOptionalNamedEnv").length - 1).toBe(0);
     expect(bunCli.split("planSetupFromFrostLookOptionalNamedBunJson").length - 1).toBe(0);
     expect(bunCli.split("consumeOptionalFrostLookFromBunJson").length - 1).toBe(0);
+    expect(bunCli.split("FROST_LOOK_JSON_FLAG").length - 1).toBe(0);
+    expect(bunCli.split("--from-json").length - 1).toBe(0);
+    expect(join.split("FROST_LOOK_JSON_FLAG").length - 1).toBe(0);
+    expect(join.split("runFrostLookJsonCli").length - 1).toBe(0);
+    expect(join.split("consumeOptionalFrostLookFromCliJson").length - 1).toBe(0);
   });
 });
 

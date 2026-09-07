@@ -630,6 +630,10 @@ Overlay optional named join takes ISO bun
 JSON look (`081M1YQKYXQ087G0R000NXN8JN`);
 JSON `probe` is ignored even when
 non-null; ISO bun `probe` stays null.
+Frost look CLI takes bun JSON look
+(`081M1YS9661087G0R001YK5CEY`); `--from-json`
+uses `look`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 
