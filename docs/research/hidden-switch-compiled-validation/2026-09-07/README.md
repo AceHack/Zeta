@@ -1,11 +1,11 @@
-# Guarded hidden-switch compilation: registration publication record
+# Guarded hidden-switch compilation: validation and publication record
 
 Date: 2026-09-07
 Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: registration publication proof; no implementation or experiment
+Artifact status: frozen registration and subsequent implementation validation; no new experiment
 
 ## Frozen protocol and remote proof
 
@@ -137,9 +137,39 @@ records the initial pure evidence module, 47 passing focused tests, strict type
 checks, the corrected collection failure, and the remaining whole-phase/runtime
 admission boundary. This is implementation validation, not a registered experiment.
 
-The same wire record now includes independent acceptance of primitive source
-`35c12618f` and nine storage tests covering exclusive outputs, retained prefixes,
-descriptor-relative reads, symlink/FIFO refusal and exact lossless artifacts.
+The same wire record includes independent acceptance of primitive source
+`35c12618f`, the initial nine storage tests, the material cleanup failure found
+in `c0e975fd8`, and its corrected 18-test suite. The reviewer accepted exact
+repair `a289c75ff6abc1808107c016d20cc7ccaf57556a`: primary failures survive
+cleanup, child ownership precedes transfer, uncertain closes are not retried,
+and malformed roots refuse. That reread ran no tests or study sources.
+
+## Independent numerical and pure native implementation
+
+The [numerical validation](../../2026-09-07-hidden-switch-compiled-numerical-validation.md)
+pins six source/test files through `aa62eea53`, with 87 Python tests,
+222 scalar positions and 48 new Python hand episodes. Its 24 comparison
+controls are calls to the unchanged old Python reference; they are not
+native conformance. Software arithmetic, complete alpha reconstruction,
+guard margins and actual fallback traversal were independently source-reviewed.
+
+The [native pure validation](native-pure-validation.md) retains the file-backed
+executable/adapter at `0b323c30f`, build failures and corrected zero-warning,
+zero-error builds, four passing hand tests, 23 lossless raw records and the
+exact artifact snapshot. The [independent native review](../../2026-09-07-hidden-switch-compiled-native-pure-review.md)
+checks all 23 records, 12 source/config pins and three retained output hashes.
+The executable at that checkpoint deliberately refuses study execution;
+its runtime settings and adapter tests do not establish graph admission.
+
+The coordinator integrated these five Python modules and ran their combined
+focused suite: **152 passed in 5.14 seconds**. This checks the imported modules
+and storage correction together; it adds no native conformance or measurement.
+
+These implementation slices follow PR #16928's verified main publication
+and the fresh [co-claim](../../../claims/task-hidden-switch-compiled-20260907.md)
+at `d6ec464f4`. The immutable registration is unchanged. Complete native
+conformance, executing-code admission and a separate reviewed implementation
+archive remain prerequisites to every new registered stream and measurement.
 
 ## Installed runtime and actual graph readiness
 

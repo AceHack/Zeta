@@ -292,6 +292,23 @@ scientific source snapshot or substitute it for the final merged-tree gate.
 
 ## Hidden-switch validation and preservation checkpoint
 
+The compiled follow-on now has reviewed independent software binary64 arithmetic,
+numeric-certificate reconstruction, guarded/reference control and a file-backed
+native action-only adapter. The [compiled validation index](../research/hidden-switch-compiled-validation/2026-09-07/README.md)
+retains source identities, native build/test evidence and a real filesystem
+cleanup finding with its corrected 18-test suite. Actual native conformance and
+executing-code admission remain pending; the compiled study's new streams and
+timing are still unopened, with no implementation archive yet. Earlier test
+counts below are dated checkpoints, not a count of this expanded tree.
+
+[PR #16949](https://github.com/Lucent-Financial-Group/Zeta/pull/16949) has also
+merged as `7fafe1f883599840c5e65c08ce5ebcaec3a0365d`. Its
+[publication proof](../research/merge-observe-pagination-validation/2026-09-07/publication/README.md)
+verifies all 49 changed paths, the actual signed squash body and merge ancestry.
+The final matrix had 93 successes, three skips and one nonblocking historical
+drift failure. Complete check/thread pagination now guards the merge observer;
+the historical failure is retained and is not a current native-platform failure.
+
 Read the [implementation review](../research/2026-09-07-hidden-switch-implementation-review.md),
 [premeasurement validation](../research/hidden-switch-validation/2026-09-07/README.md)
 and [postmeasurement review](../research/2026-09-07-hidden-switch-result-review.md).
