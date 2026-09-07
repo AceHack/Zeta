@@ -108,7 +108,14 @@ private workspace and inherited-pipe boundary. The six existing skips
 remain explicit. Earlier failed TLC and compiler attempts remain failed;
 this fresh combined gate does not retroactively turn them green.
 
-The original review pins are preserved on the repair claim branch. An
-immutable supplemental archive will retain the final source/evidence head
-before squash-merge branch deletion. Its exact tag proof will be added at
-publication, after the C1 policy is integrated from main.
+The C1 policy is now integrated from main. The
+[exact input comparison](main-integration-input-comparison.json) retains
+97 matches plus the [six-link project difference](combined-project-links.diff).
+The additional links belong to the larger root gate; this is not equal
+whole-tree or DLL identity.
+
+The supplemental annotated ref
+`archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention`
+retains this source/evidence head and the original review pins before
+squash-merge branch deletion. Resolve the immutable remote tag for its
+actual target; the publication proof records that resolution separately.

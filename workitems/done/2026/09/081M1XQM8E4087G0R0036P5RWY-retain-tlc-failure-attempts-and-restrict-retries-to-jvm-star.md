@@ -1,11 +1,12 @@
 ---
 id: 081M1XQM8E4087G0R0036P5RWY
 type: bug
-state: in-progress
+state: done
 priority: P1
 slug: retain-tlc-failure-attempts-and-restrict-retries-to-jvm-star
 title: "Retain TLC failure attempts and restrict retries to JVM startup"
 created: 2026-09-07T10:46:36.740Z
+completed: 2026-09-07T12:33:17.414Z
 depends_on: []
 composes_with: []
 ---
@@ -30,11 +31,16 @@ dependency, not an implicit skip.
 
 ## Preserved repair and validation
 
-- [Repair report](../docs/research/2026-09-07-tlc-attempt-retention.md)
-- [Accepted independent source review](../docs/research/2026-09-07-tlc-attempt-retention-review.md)
-- [Focused checks and retained failures](../docs/research/tlc-attempt-retention-validation/2026-09-07/README.md)
+- [Repair report](../../../../docs/research/2026-09-07-tlc-attempt-retention.md)
+- [Accepted independent source review](../../../../docs/research/2026-09-07-tlc-attempt-retention-review.md)
+- [Focused checks and retained failures](../../../../docs/research/tlc-attempt-retention-validation/2026-09-07/README.md)
 
 Source pins: `2e69017ff` and `07e399929`. The independent source review accepts the final repair. The combined
 C1-policy/retention/hidden-switch full catalog gate passed at `457bdf094`:
 7,552 passes, six existing skips, zero failures; build zero warnings/errors.
 The focused PR follows C1 main integration and source-byte verification.
+
+The C1 merge `536570576` is integrated. The 97 matching inputs and exactly
+six additional project links in the larger gate are recorded explicitly.
+Source/review/evidence ancestry is retained by the immutable supplemental
+archive named in the report; required publication CI remains its own signal.
