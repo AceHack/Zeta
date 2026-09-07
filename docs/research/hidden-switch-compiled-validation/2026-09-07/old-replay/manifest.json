@@ -1,0 +1,114 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.old-replay-validation.v1",
+  "RecordedAt": "2026-09-07T17:11:49.344573+00:00",
+  "SourceCommit": "530688775ac66d1ec94f23d6aa801895b0c922a1",
+  "Branch": "codex/hidden-switch-compiled-reference-20260907",
+  "Sources": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Role": "old-control checker",
+      "Bytes": 10841,
+      "Sha256": "8571296d52a4d3f4c00d787adf258e9558d91072f52bf5e67f9b0387803c45bb"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_hidden_switch_compiled_old_replay.py",
+      "Role": "old-control tests",
+      "Bytes": 12764,
+      "Sha256": "fda5e1940646bd9408794eee84f1a94f8d10cc6a06ec2b6a0d8a2ada07219290"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Role": "software binary64",
+      "Bytes": 7559,
+      "Sha256": "702a5e6e6bd330cb4d27dd3c3bddbbeba779ea8d6127249efd7e9ecbfa54d8c4"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Role": "shared JSON type and reference dependency",
+      "Bytes": 19745,
+      "Sha256": "0ad02607ff6fd06620f9fc447b653e1798bbfba566cd7a4142c0c3c0256ecec3"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Role": "independent arithmetic/render reference",
+      "Bytes": 23008,
+      "Sha256": "f9c88b46766034ef67dd78380213ba9c3cc153762d01505bb615dc69a3175b6a"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Role": "strict decoded-tree helpers",
+      "Bytes": 10004,
+      "Sha256": "4ed2cf49d070f0d9ce3243dd634ba53fe35def36742d26abeb7644469dfbba45"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "Role": "unchanged old Python test-input producer",
+      "Bytes": 27739,
+      "Sha256": "7130fbf88e4a5f7393ad59cffd6c56637b3d226f630b8cf547167d319bf880e2"
+    }
+  ],
+  "NativeContracts": [
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchReceipt.fs",
+      "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 5350,
+      "Sha256": "8d0f4b1844b64b46cbc8b6e8a0688b0afad1ba2f29b1a088dfeaa8c1ae529f55"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchPolicy.fs",
+      "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 6968,
+      "Sha256": "4358b476fa4871b1c187f615133b35bac1139359919500cd3b05dbe1da0aafb1"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchCarrier.fs",
+      "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 6207,
+      "Sha256": "eb21882259b482db5136824d7e9a10f348abc59e3dc8a9a1e80221aff0b3d868"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchObservation.fs",
+      "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 2430,
+      "Sha256": "09468d775552259612af31ef7aaf3831474b5ae37f0063ea17aa632d04a4448e"
+    },
+    {
+      "Path": "src/Research.FSharp/HiddenSwitchExperiment.fs",
+      "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+      "Bytes": 9194,
+      "Sha256": "21b33c22912d56dd1bdda071bb821279207e64c4a34ba05129564c4d81cbc55a"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "focused-python.log.gz",
+      "Compression": "gzip",
+      "Bytes": 127,
+      "Sha256": "a4cfaf951ae2085f61bb0489660855c6097293ebaf0266794da63a6df73ce991",
+      "DecompressedBytes": 186,
+      "DecompressedSha256": "8d96651aabd8b1cd6782c5b637730ae7040cfc2eefb7c763070a3ab7c35c573b",
+      "LiteralControls": []
+    },
+    {
+      "Path": "source-publication.log.gz",
+      "Compression": "gzip",
+      "Bytes": 665,
+      "Sha256": "60f5e4e8e6e1ad20e2ba4de56339d0bbeddfdecb385ffe64c16d027641b03195",
+      "DecompressedBytes": 1760,
+      "DecompressedSha256": "95e5edaaeed11b1afeae83db68f26e27e787427f5d6c0ff72e5b83a6144375a6",
+      "LiteralControls": []
+    }
+  ],
+  "PythonTests": 57,
+  "OldPythonHandInputEpisodes": 24,
+  "PlanningRecords": 384,
+  "ObservationRecords": 408,
+  "NumericValues": 1944,
+  "SupplementarySuppliedTapeFixtures": 1,
+  "FixtureOrigin": "Fresh unchanged old Python belief-depth3 calls, not native-produced receipts. Checker expectations use independent software binary64; no old runner calls during replay.",
+  "NumericComparison": "Exact finite binary64 bits, without tolerance; raw lexical negative-zero preservation belongs to outer decoder.",
+  "NativeConformancePerformed": false,
+  "RuntimeAndOuterAdmissionPerformed": false,
+  "RegisteredSourceRunsPerformed": false,
+  "CostMeasurementsPerformed": false
+}
