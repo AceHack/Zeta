@@ -191,3 +191,60 @@ helper correctness or full runtime admission. `RuntimeAdmitted`,
 `BodyResolved` and `ClosureAdmitted` remain false in the actual records. The
 next scope requires separate review of a finite expanded method/call roster;
 no additional query is authorized merely by this successful comparison.
+
+## Frozen fresh-roster mapping
+
+The [metadata-only mapping inventory](clrmd-mapping-attempt-1/manifest.json)
+retains nine lossless records, including exact command, executed mapper source
+pins, ready/JIT input pins, output, three passing pure fixtures, and the
+original import-format lint finding plus correction. Mapper source is
+`37a8bc1ca61d7018310d6cfdf5a35efbd73df4b9`. Its actual 185,092-byte output
+has SHA256 `0D22A5C3679B5F47F874E8C1C10CFD34B17E9E4B7E3B649E2590F22F0F25A39A`.
+It completed with all metadata input/source bytes unchanged and no dump-byte
+access, target launch or runtime query.
+
+All 139 reflection rows remain in order: 130 prepared rows map uniquely by
+type/name to one compiler block, with distinct module/token identities and
+no compiler-block reuse; nine unprepared rows retain their actual refusal.
+The mapped candidates total 34,660 bytes, maximum 1,664 each, with ten declared
+literal records. These remain compiler candidates, not newly observed extents.
+
+Nine other emitted compiler blocks are retained separately: eight static
+initializers and `HiddenSwitchCompiledPolicy.previous[int]`. They are not the
+same set as the nine unprepared reflection rows. Their presence demonstrates
+why the reflected roster alone cannot establish executing call closure.
+In particular, the open generic previous template does not erase the emitted
+concrete specialization. No inline/template absence is dismissed as irrelevant
+without later actual caller/body evidence.
+
+## Proposed finite expansion, awaiting exact implementation review
+
+The next helper entry will consume this exact reviewed mapping identity and
+its unchanged fresh capture inputs. It must retain all 139 rows, including
+the nine explicit unprepared observations and nine separate emitted extras.
+The requested extent scope is only the 130 prepared mapped candidates.
+Each query must bind the captured CLI MVID/file association, method-definition
+token, declaring type/name, actual full signature, current NativeCode and
+complete hot/cold metadata. Unsupported identity formatting, changed body,
+cold expansion or ambiguous ownership remains a recorded refusal; the proposal
+does not weaken the already accepted three-method comparison.
+
+The physical driver may resolve only the 130 declared eight-byte callable
+stubs and eight-byte cells, followed by their exact compiler-sized spans
+(34,660 bytes total). Any added literal range must derive from a supported
+actual opcode and its declared compiler label, with explicit uint64 and
+physical-segment admission; there are ten declared literal records, at most
+sixteen bytes each. Each successful prefix must publish before a later read
+or query can fail. No unknown target, expanded extent or zero-fill region
+implicitly authorizes more memory access.
+
+An initial call/transfer inventory can then be computed from these admitted
+instruction bytes and retained compiler metadata. Before arithmetic or call
+interpretation, independent decoded spans must match those same physical
+bytes; compiler text is not an independent decoder. Unresolved indirect paths,
+concrete generic specializations, static initializers, framework/native
+helpers and referenced guard data remain separate obligations. Additional
+callee or object/register reads require another exact finite roster and
+review. The 130-candidate extent result alone cannot set any full admission
+flag or permit registered study work. No expanded helper or range query has
+yet executed.
