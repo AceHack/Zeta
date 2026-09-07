@@ -306,3 +306,11 @@ The [source-history retention record](source-history-retention.md) indexes
 four long-lived WIP refs for original implementation and review commits.
 They preserve provenance across cherry-pick integration and split evidence
 publication; they are not the scientific implementation archive.
+
+## Shared complete-input byte and chronology checks
+
+The [binding validation](../../2026-09-07-hidden-switch-compiled-binding-validation.md)
+retains 57 passing cases and the caught unsafe-formatting regression. It
+checks exact input bytes and their own metadata, with executable lexical
+omission witnesses and the reviewed closure/exit partial order. This scoped
+implementation evidence does not complete the 92-case or runtime obligations.
