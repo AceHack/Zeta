@@ -159,7 +159,7 @@ def run(capture, attempt, host, helper):
         stage = "helper-identities"
         if helper.name != "Zeta.Research.HiddenSwitchMetadata.dll":
             raise ValueError("requires the declared isolated helper assembly")
-        files = sorted(helper.parent.glob("*.dll")) + [helper.with_suffix(".deps.json"), helper.with_suffix(".runtimeconfig.json"), helper.parent / "dependencies.json"]
+        files = sorted(helper.parent.rglob("*.dll")) + [helper.with_suffix(".deps.json"), helper.with_suffix(".runtimeconfig.json"), helper.parent / "dependencies.json"]
         if not 0 < len(files) <= 32 or helper not in files:
             raise ValueError("helper module/config roster is outside its finite limit")
         files.extend([host] + [runtime_dir / name for name in ["libcoreclr.dylib", "libclrjit.dylib", "libmscordaccore.dylib", "libhostpolicy.dylib", "System.Private.CoreLib.dll"]])
