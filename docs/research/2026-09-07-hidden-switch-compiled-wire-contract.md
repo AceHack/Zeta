@@ -237,3 +237,22 @@ An additional pathspec test initially expected an out-of-domain bracketed path t
 admit; it was corrected to assert the existing canonical-path refusal, without
 widening the source path contract. The initial corrected run retained 21 passes
 and that one test-author failure before the final 22-case pass.
+
+## Signed-zero token correction before old-control replay
+
+The old native DTO stores its Q and belief diagnostics as JSON numbers.
+During integration, default integer-token decoding was found to turn the
+lexical token `-0` into integer zero, erasing its sign before independent
+bit-level replay. The strict decoder now preserves this token as binary64
+negative zero; decimal/exponent negative-zero tokens retain the same sign.
+Ordinary `0` remains an integer. Integer-only counters refuse the preserved
+negative-zero float rather than silently coercing it. No old source, archived
+receipt or registered protocol was edited.
+
+The corrected primitive suite passed **51 tests in 4.19 seconds**, with strict
+mypy and Ruff passes. Four added token witnesses check both top-level and
+nested decoding, exact `8000000000000000` bits, integer-counter refusal and
+ordinary integer-zero admission. The first Ruff command identified an
+existing missing separator between third-party and project imports under
+the Interp configuration; the separator was corrected before the passing
+checks. These tests execute no policy or study source.

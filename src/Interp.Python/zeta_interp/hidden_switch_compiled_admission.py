@@ -71,6 +71,12 @@ class _Nonfinite:
     spelling: str
 
 
+def _json_integer(spelling: str) -> int | float:
+    # The unchanged native double DTO may emit -0. Default parse_int loses its
+    # sign before bit-exact replay; integer-only schema fields still refuse it.
+    return -0.0 if spelling == "-0" else int(spelling)
+
+
 def _materialize(node: Any, path: str, depth: int) -> Admission[Any]:
     if depth > 128:
         return Refused("json-depth", path, "JSON exceeds the admitted nesting depth")
@@ -117,7 +123,12 @@ def strict_json(
         return Refused("json-size", "$", "JSON exceeds the declared byte bound")
     try:
         text = raw.decode("utf-8", errors="strict")
-        parsed = json.loads(text, object_pairs_hook=_Pairs, parse_constant=_Nonfinite)
+        parsed = json.loads(
+            text,
+            object_pairs_hook=_Pairs,
+            parse_constant=_Nonfinite,
+            parse_int=_json_integer,
+        )
     except (UnicodeDecodeError, ValueError, RecursionError) as error:
         return Refused("json-parse", "$", str(error))
     return _materialize(parsed, "$", 0)
