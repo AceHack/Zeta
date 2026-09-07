@@ -15,9 +15,9 @@ import signal
 import stat
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import NoReturn
 
 from . import hidden_switch_compiled_admission as a
 from . import hidden_switch_compiled_conformance as c
@@ -51,6 +51,14 @@ ENTRY = "zeta_interp.hidden_switch_fixture_entry"
 HELPER = "zeta_interp.hidden_switch_fixture_helper"
 EXTRA = "zeta_interp.hidden_switch_fixture_extra"
 DEADLINE_SECONDS = 30
+POLL_SECONDS = 0.02
+OUTPUT_BYTES = 1024 * 1024
+TRACE_BYTES = 2 * 1024 * 1024
+FILE_BYTES = 4 * 1024 * 1024
+INVENTORY_FILES = 1024
+INVENTORY_BYTES = 32 * 1024 * 1024
+INVENTORY_ENTRIES = 4096
+INVENTORY_DEPTH = 32
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,15 +83,22 @@ class ProcessObservation:
     Stderr: str
     Input: str | None
     Environment: tuple[tuple[str, str], ...]
+    ResourceExceeded: bool
+    OutputLimits: tuple[tuple[str, int], ...]
+    PollSeconds: float
 
 
 @dataclass(frozen=True, slots=True)
 class PythonChildOutcome:
     Process: ProcessObservation
-    CollectorEntries: int
-    CollectorReturns: int
+    # Counts describe valid observed trace markers, not inferred process work.
+    # Missing/unreadable/invalid initial trace means unknown, never zero.
+    CollectorEntries: int | None
+    CollectorReturns: int | None
     CollectorResult: object | None
     Trace: str
+    TraceStatus: str
+    TraceDetail: str | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -141,10 +156,6 @@ def _close_descriptor(descriptor: int) -> None:
     os.close(descriptor)
 
 
-def _walk_error(error: OSError) -> NoReturn:
-    raise error
-
-
 class _Run:
     def __init__(self, case_id: str, root: Path) -> None:
         self.case_id, self.root = case_id, root
@@ -152,8 +163,11 @@ class _Run:
         self.call: c.CallResult | None = None
         self.outcome: ProcessObservation | PythonChildOutcome | None = None
         self.sequence = 0
+        self.inventory_prefix: tuple[str, ...] = ()
 
     def write(self, relative: str, raw: bytes) -> None:
+        if len(raw) > FILE_BYTES:
+            raise _Stop("FixtureFileBound", "write:" + relative, "file exceeds bound")
         result = storage.write_exclusive(self.root, relative, raw)
         if isinstance(result, a.Refused):
             raise _Stop(result.code, "write:" + relative, result.detail)
@@ -176,18 +190,65 @@ class _Run:
         for item in self.inputs:
             self.write(item.Role + ".json", item.Raw)
 
+    def read(self, relative: str, maximum: int) -> bytes:
+        before = (self.root / relative).lstat()
+        if not stat.S_ISREG(before.st_mode) or before.st_size > maximum:
+            raise _Stop(
+                "FixtureFileBound",
+                "read:" + relative,
+                "requires a regular file within the declared bound",
+            )
+        result = storage.read_exact(
+            self.root, relative, expected_bytes=before.st_size, maximum_bytes=maximum
+        )
+        if isinstance(result, a.Refused):
+            raise _Stop(result.code, "read:" + relative, result.detail)
+        return result.value
+
     def files(self) -> tuple[str, ...]:
-        # No symlink traversal. Symlink intentions/targets are in the event log;
-        # actual link leaves remain in place but are not ordinary file artifacts.
-        found = []
-        for directory, _, names in os.walk(
-            self.root, followlinks=False, onerror=_walk_error
-        ):
-            for name in names:
-                path = Path(directory) / name
-                if stat.S_ISREG(path.lstat().st_mode):
-                    found.append(path.relative_to(self.root).as_posix())
-        return tuple(sorted(found))
+        # Bounded enumeration without following symlinks. The retained prefix
+        # remains available even when an inventory limit refuses completion.
+        found: list[str] = []
+        pending = [(self.root, 0)]
+        entries, total = 0, 0
+        self.inventory_prefix = ()
+        while pending:
+            directory, depth = pending.pop()
+            with os.scandir(directory) as children:
+                for child in children:
+                    entries += 1
+                    if entries > INVENTORY_ENTRIES:
+                        raise _Stop(
+                            "FixtureInventoryBound", "inventory", "entry bound exceeded"
+                        )
+                    metadata = child.stat(follow_symlinks=False)
+                    path = Path(child.path)
+                    if stat.S_ISDIR(metadata.st_mode):
+                        if depth >= INVENTORY_DEPTH:
+                            raise _Stop(
+                                "FixtureInventoryBound",
+                                "inventory",
+                                "depth bound exceeded",
+                            )
+                        pending.append((path, depth + 1))
+                    elif stat.S_ISREG(metadata.st_mode):
+                        if len(found) >= INVENTORY_FILES:
+                            raise _Stop(
+                                "FixtureInventoryBound",
+                                "inventory",
+                                "file count exceeded",
+                            )
+                        relative = path.relative_to(self.root).as_posix()
+                        found.append(relative)
+                        self.inventory_prefix = tuple(sorted(found))
+                        total += metadata.st_size
+                        if metadata.st_size > FILE_BYTES or total > INVENTORY_BYTES:
+                            raise _Stop(
+                                "FixtureInventoryBound",
+                                "inventory",
+                                "file or total bytes exceeded",
+                            )
+        return self.inventory_prefix
 
     def capture(
         self,
@@ -198,6 +259,11 @@ class _Run:
         stdin: bytes | None = None,
     ) -> ProcessObservation:
         serial = self.sequence
+        limits = (
+            (f"process-{serial:04d}.stdout", OUTPUT_BYTES),
+            (f"process-{serial:04d}.stderr", OUTPUT_BYTES),
+            ("child-trace.jsonl", TRACE_BYTES),
+        )
         self.event(
             "process-start",
             {
@@ -205,6 +271,9 @@ class _Run:
                 "Directory": str(directory),
                 "DeadlineSeconds": DEADLINE_SECONDS,
                 "Environment": recorded_environment,
+                "OutputLimits": limits,
+                "PollSeconds": POLL_SECONDS,
+                "BoundScope": "polled size refusal; overshoot possible, not an OS quota",
             },
         )
         out, err = f"process-{serial:04d}.stdout", f"process-{serial:04d}.stderr"
@@ -213,7 +282,7 @@ class _Run:
             self.write(input_path, stdin if stdin is not None else b"")
         owned: list[int] = []
         process: subprocess.Popen[bytes] | None = None
-        timed_out, error = False, None
+        timed_out, resource_exceeded, error = False, False, None
         cleanup: list[str] = []
         try:
             for name in (out, err):
@@ -223,30 +292,47 @@ class _Run:
                     0o600,
                 )
                 owned.append(descriptor)
+            input_descriptor: int | None = None
+            if input_path is not None:
+                input_descriptor = os.open(
+                    self.root / input_path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+                )
+                owned.append(input_descriptor)
             process = subprocess.Popen(
                 arguments,
                 cwd=directory,
                 env=environment,
                 start_new_session=True,
-                stdin=subprocess.PIPE if stdin is not None else subprocess.DEVNULL,
+                stdin=input_descriptor
+                if input_descriptor is not None
+                else subprocess.DEVNULL,
                 stdout=owned[0],
                 stderr=owned[1],
             )
-            try:
-                process.communicate(stdin, timeout=DEADLINE_SECONDS)
-            except subprocess.TimeoutExpired:
-                timed_out = True
-                error = "deadline exceeded; attempted owned process-group kill"
+            deadline = time.monotonic() + DEADLINE_SECONDS
+            while True:
+                for relative, maximum in limits:
+                    try:
+                        metadata = (self.root / relative).lstat()
+                    except FileNotFoundError:
+                        continue
+                    if not stat.S_ISREG(metadata.st_mode) or metadata.st_size > maximum:
+                        resource_exceeded = True
+                        error = "output size/type bound exceeded: " + relative
+                        break
+                if resource_exceeded or process.poll() is not None:
+                    break
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    timed_out = True
+                    error = "deadline exceeded; attempted owned process-group kill"
+                    break
                 try:
-                    os.killpg(process.pid, signal.SIGKILL)
-                except ProcessLookupError:
+                    process.wait(timeout=min(POLL_SECONDS, remaining))
+                except subprocess.TimeoutExpired:
                     pass
-                except OSError as failure:
-                    cleanup.append("kill: " + str(failure))
-                try:
-                    process.communicate(timeout=5)
-                except (OSError, subprocess.SubprocessError) as failure:
-                    cleanup.append("post-timeout wait: " + str(failure))
+            # Files stay intact. Polling bounds detection and subsequent reads,
+            # not instantaneous disk usage or arbitrary descendant survival.
         except (OSError, ValueError, subprocess.SubprocessError) as failure:
             error = str(failure)
         finally:
@@ -285,6 +371,9 @@ class _Run:
             err,
             input_path,
             recorded_environment,
+            resource_exceeded,
+            limits,
+            POLL_SECONDS,
         )
         self.outcome = result
         self.event("process-return", result)
@@ -321,7 +410,7 @@ class _Run:
         )
         if observed.ReturnCode != 0 or observed.Error or observed.CleanupErrors:
             raise _Stop("GitSetup", "git:" + args[0], repr(observed))
-        return (self.root / observed.Stdout).read_bytes()
+        return self.read(observed.Stdout, OUTPUT_BYTES)
 
 
 _COMMIT_MESSAGE = b"""fixture: retain owned source admission bytes
@@ -505,6 +594,79 @@ print(json.dumps({"CollectorEntries": 1, "CollectorReturns": 1, "Result": encode
 '''
 
 
+def _collector_record(record: object) -> bool:
+    if type(record) is not dict or record.keys() != {"Type", "Fields"}:
+        return False
+    fields = record["Fields"]
+    if record["Type"] == IEEE + ".Success":
+        return (
+            type(fields) is dict
+            and fields.keys() == {"value"}
+            and type(fields["value"]) is dict
+        )
+    return (
+        record["Type"] == IEEE + ".Failure"
+        and type(fields) is dict
+        and fields.keys() == {"Code", "Message"}
+        and all(type(x) is str for x in fields.values())
+    )
+
+
+def _trace_outcome(run: _Run, observed: ProcessObservation) -> PythonChildOutcome:
+    trace = "child-trace.jsonl"
+    entries: int | None = None
+    returns: int | None = None
+    record: object | None = None
+    status, detail = "missing", None
+    try:
+        lines = run.read(trace, TRACE_BYTES).splitlines()
+        status = "invalid-prefix"
+        detail = "no valid initial entry marker"
+        if lines:
+            first = a.strict_json(lines[0])
+            if isinstance(first, a.Admitted):
+                row = first.value
+                valid_entry = (
+                    type(row) is dict
+                    and row.keys() == {"Kind", "Entry", "CaseId", "Before", "After"}
+                    and row["Kind"] == "collector-entry"
+                    and row["CaseId"] == run.case_id
+                    and type(row["Entry"]) is int
+                    and row["Entry"] == 1
+                    and type(row["Before"]) is list
+                    and type(row["After"]) is list
+                )
+                if valid_entry:
+                    entries, returns, status, detail = 1, 0, "entry-only", None
+                    if len(lines) >= 2:
+                        second = a.strict_json(lines[1])
+                        status, detail = "invalid-suffix", "invalid return marker"
+                        if isinstance(second, a.Admitted):
+                            last = second.value
+                            if (
+                                type(last) is dict
+                                and last.keys() == {"Kind", "Return", "Result"}
+                                and last["Kind"] == "collector-return"
+                                and type(last["Return"]) is int
+                                and last["Return"] == 1
+                                and _collector_record(last["Result"])
+                            ):
+                                returns, record = 1, last["Result"]
+                                status = (
+                                    "complete" if len(lines) == 2 else "invalid-suffix"
+                                )
+                                detail = (
+                                    None
+                                    if len(lines) == 2
+                                    else "extra trace rows after valid return"
+                                )
+    except FileNotFoundError:
+        detail = "trace absent; collector work unknown"
+    except (OSError, _Stop) as error:
+        status, detail = "unreadable", str(error)
+    return PythonChildOutcome(observed, entries, returns, record, trace, status, detail)
+
+
 def _python(run: _Run, supplied: tuple[FixtureSource, ...]) -> None:
     fixed = (
         FixtureSource("zeta_interp", PACKAGE_PATH + "/__init__.py", _PACKAGE),
@@ -566,7 +728,7 @@ def _python(run: _Run, supplied: tuple[FixtureSource, ...]) -> None:
     observed = run.capture(
         arguments, run.root, environment, tuple(sorted(settings.items()))
     )
-    outcome = PythonChildOutcome(observed, 0, 0, None, "child-trace.jsonl")
+    outcome = _trace_outcome(run, observed)
     run.outcome = outcome
     if observed.ReturnCode != 0 or observed.TimedOut or observed.Error:
         raise _Stop(
@@ -574,7 +736,7 @@ def _python(run: _Run, supplied: tuple[FixtureSource, ...]) -> None:
             "child",
             "child did not close normally with a collector return",
         )
-    raw = (run.root / observed.Stdout).read_bytes()
+    raw = run.read(observed.Stdout, OUTPUT_BYTES)
     parsed = a.strict_json(raw)
     if isinstance(parsed, a.Refused):
         raise _Stop(parsed.code, "child-output", parsed.detail)
@@ -595,60 +757,16 @@ def _python(run: _Run, supplied: tuple[FixtureSource, ...]) -> None:
             "exactly one collector entry and return required",
         )
     record = value["Result"]
-    if type(record) is not dict or record.keys() != {"Type", "Fields"}:
-        raise _Stop(
-            "ChildResult", "child-output", "complete typed collector result required"
-        )
-    fields = record["Fields"]
-    if record["Type"] == IEEE + ".Success":
-        valid = (
-            type(fields) is dict
-            and fields.keys() == {"value"}
-            and type(fields["value"]) is dict
-        )
-    elif record["Type"] == IEEE + ".Failure":
-        valid = (
-            type(fields) is dict
-            and fields.keys() == {"Code", "Message"}
-            and all(type(x) is str for x in fields.values())
-        )
-    else:
-        valid = False
-    if not valid:
+    if not _collector_record(record):
         raise _Stop(
             "ChildResult",
             "child-output",
             "unknown or malformed actual collector result",
         )
-    lines = (run.root / "child-trace.jsonl").read_bytes().splitlines()
-    if len(lines) != 2:
-        raise _Stop(
-            "ChildTrace", "child-trace", "one actual entry/return trace required"
-        )
-    traces = [a.strict_json(line) for line in lines]
-    if any(isinstance(item, a.Refused) for item in traces):
-        raise _Stop("ChildTrace", "child-trace", "malformed trace JSON")
-    first_trace, last_trace = (
-        item.value for item in traces if isinstance(item, a.Admitted)
-    )
-    if (
-        type(first_trace) is not dict
-        or first_trace.keys() != {"Kind", "Entry", "CaseId", "Before", "After"}
-        or first_trace["Kind"] != "collector-entry"
-        or first_trace["CaseId"] != run.case_id
-        or type(first_trace["Entry"]) is not int
-        or first_trace["Entry"] != 1
-        or type(first_trace["Before"]) is not list
-        or type(first_trace["After"]) is not list
-        or type(last_trace) is not dict
-        or type(last_trace.get("Return")) is not int
-        or last_trace != {"Kind": "collector-return", "Return": 1, "Result": record}
-    ):
+    if outcome.TraceStatus != "complete" or outcome.CollectorResult != record:
         raise _Stop(
             "ChildTrace", "child-trace", "collector trace and actual output disagree"
         )
-    outcome = PythonChildOutcome(observed, 1, 1, record, "child-trace.jsonl")
-    run.outcome = outcome
     run.call = c.CallResult("python-identity-child", ("fixture", "expected"), outcome)
     if observed.CleanupErrors:
         raise _Stop("DescriptorCleanup", "child-cleanup", repr(observed.CleanupErrors))
@@ -742,7 +860,7 @@ def run_identity_fixture(
         files = run.files()
         inventory = []
         for relative in files:
-            raw = (case_root / relative).read_bytes()
+            raw = run.read(relative, FILE_BYTES)
             inventory.append({"File": relative, "Bytes": len(raw), "Sha256": _sha(raw)})
         run.write(
             "manifest.json",
@@ -775,7 +893,8 @@ def run_identity_fixture(
                 detail += "; failure-record retention: " + str(retention)
             try:
                 failure_files = run.files()
-            except OSError as inspection:
+            except (OSError, _Stop) as inspection:
+                failure_files = run.inventory_prefix
                 detail += "; inventory observation: " + str(inspection)
         return FixtureFailed(
             code,
