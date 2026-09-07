@@ -38,8 +38,10 @@ module HiddenSwitchCompiledSelector =
 
     /// Separate conformance-only path: no runtime boolean enters the service.
     /// Even trivial inputs execute the actual unmodified recursive evaluator.
-    let unsupportedRuntime effect belief depth =
+    let internal unsupportedWith nativeService effect belief depth =
         result {
-            let! actual = HiddenSwitchCompiledPolicy.native effect belief depth
+            let! (actual: HiddenSwitchCompiledReceipt.ChoiceWork) = nativeService effect belief depth
             return { actual with Path = 4uy; GuardComparisons = 0u }
         }
+
+    let unsupportedRuntime effect belief depth = unsupportedWith HiddenSwitchCompiledPolicy.native effect belief depth

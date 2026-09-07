@@ -289,3 +289,33 @@ The append-only journal independently retains each completed row, current
 location and certificate identity. `SlicesComplete=true` and `Complete=false`
 are distinct; independent replay was pending at this preservation step. No
 registered source or performance measurement was performed.
+
+## Invocation and strict-selector preparation
+
+The [next prelaunch inventory](native-invocation-preparation/manifest.json)
+pins ten explicit invocation witnesses: six unsupported-runtime inputs,
+two real guard-interior fallbacks and two actually invoked wrong-action
+callbacks. Conformance observes delegate entry and real evaluator-root entry
+at separate call sites; returned node counts retain their separate meaning.
+A shared internal `unsupportedWith` keeps normal unsupported dispatch bound
+to the actual native service. Measured native/compiled strategies gain no
+observer or runtime-status switch.
+
+A separate supplied-Q witness reads epsilon from the verified certificate,
+calls unchanged old `select` with `[0, epsilon]`, and executes an explicit
+`>=` comparison mutant. This is an untimed code-level boundary witness,
+distinct from mutating a certificate's comparison declaration. Its output
+records the two actual actions; later independent replay must perform its
+own comparison and rejection.
+
+Independent read-only review accepted the invocation sites and found early
+metadata/certificate errors could escape without terminal retained structure.
+The correction always constructs the incomplete report after collection,
+preserves available provenance/prefixes and independently attempts journal
+and final-output publication. The verified-byte-only selector helper is
+private; storage and abrupt-failure limits qualify checkpoint retention.
+Build 1 retained an F# match syntax failure; build 2 retained type inference
+and unsupported Result-builder constructs. Build 3 corrected those issues;
+builds 4 and 5 cover the preservation refinements, with final build 5 passing
+in 3.30 seconds with zero warnings/errors. No invocation capture, full
+conformance or full solution gate is claimed by this preparation record.
