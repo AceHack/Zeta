@@ -34,6 +34,18 @@ def _file(path: Path) -> dict[str, object]:
     }
 
 
+def _complete(path: Path, process_id: int) -> None:
+    if type(process_id) is not int or process_id <= 0:
+        raise ValueError("completion requires the actual positive process ID")
+    data = f"graph-capture-complete:{process_id}\n".encode("ascii")
+    with path.open("xb") as handle:
+        written = handle.write(data)
+        if written != len(data):
+            raise RuntimeError("completion file write was partial")
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
 def _state(process: lldb.SBProcess) -> dict[str, object]:
     return {
         "State": int(process.GetState()),
@@ -178,6 +190,7 @@ def capture(debugger, command, result, _internal_dict):
             "OtherRuntimeEnvironmentKeys": sorted(key for key in os.environ if key.startswith(("DOTNET_", "COMPlus_", "CORECLR_", "COR_", "DYLD_")) and key not in environment),
             "LLDBVersion": debugger.GetVersionString(),
             "DeadlineSeconds": {"StartupReady": 60, "Interrupt": 10, "Exit": 30},
+            "Completion": {"File": str(report_path) + ".complete", "NativeDeadlineSeconds": 120, "Meaning": "exclusive process-bound marker written only after capture while owned target is stopped"},
             "Scope": "launch support only, not attach support; no runtime admission or registered streams",
         })
         stage = "input-identity"
@@ -220,9 +233,9 @@ def capture(debugger, command, result, _internal_dict):
         entries = _entries(target, process, report, attempt)
         _write(attempt / "entry-prefixes.json", entries)
         stage = "resume"
-        written = process.PutSTDIN("graph-capture-complete\n")
-        if written != len("graph-capture-complete\n"):
-            raise RuntimeError("debugger completion handshake was not fully written")
+        completion = Path(str(report_path) + ".complete")
+        _complete(completion, int(process.GetProcessID()))
+        _write(attempt / "completion.json", _file(completion))
         error = process.Continue()
         if not error.Success():
             raise RuntimeError(f"resume refused: {error}")

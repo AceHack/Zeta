@@ -187,17 +187,40 @@ module HiddenSwitchCompiledGraph =
             return calls
         }
 
+    let private waitForCompletion path =
+        protect "debugger" (fun () ->
+            let timer = Stopwatch.StartNew()
+            while not (File.Exists path) && timer.Elapsed.TotalSeconds < 120.0 do
+                Threading.Thread.Sleep 25
+            if not (File.Exists path) then
+                Error(HiddenSwitchCompiledReceipt.failure "debugger" "completion-timeout" "owned completion file absent after 120 seconds")
+            else
+                let expected = Encoding.ASCII.GetBytes("graph-capture-complete:" + Environment.ProcessId.ToString(CultureInfo.InvariantCulture) + "\n")
+                use input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)
+                let bytes = Array.zeroCreate<byte> expected.Length
+                if input.Length <> int64 expected.Length then
+                    Error(HiddenSwitchCompiledReceipt.failure "debugger" "handshake-size" "completion file has unexpected length")
+                else
+                    input.ReadExactly bytes
+                    if bytes <> expected then
+                        Error(HiddenSwitchCompiledReceipt.failure "debugger" "handshake-content" "completion file does not name this process")
+                    else Ok())
+
     /// Explicit feasibility-only command. The exclusive JSONL stream retains
-    /// the start stage before hand work. It waits for the owning debugger's
-    /// newline; the external launcher owns the bounded process lifetime.
+    /// the start stage before hand work. Only the owning debugger creates the
+    /// process-bound completion file; the external launcher also bounds lifetime.
     let run path =
         let started = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
         try
             use stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
             use writer = new StreamWriter(stream, UTF8Encoding(false))
             let emit (value: obj) = writer.WriteLine(JsonSerializer.Serialize value); writer.Flush(); stream.Flush(true)
-            emit {| Kind = "graph-hand-start"; ProcessId = Environment.ProcessId; StartedAtUtc = started; SourceDraws = 0 |}
+            let completion = path + ".complete"
+            emit {| Kind = "graph-hand-start"; ProcessId = Environment.ProcessId; StartedAtUtc = started; SourceDraws = 0
+                    CompletionFile = completion; CompletionDeadlineSeconds = 120 |}
             let work = protect "graph-hand-collection" (fun () -> result {
+                if File.Exists completion || Directory.Exists completion then
+                    return! Error(HiddenSwitchCompiledReceipt.failure "debugger" "completion-exists" "completion channel must be absent before hand work")
                 if not (OperatingSystem.IsMacOS()) || RuntimeInformation.ProcessArchitecture <> Architecture.Arm64 then
                     return! Error(HiddenSwitchCompiledReceipt.failure "runtime" "platform" "this feasibility collector requires macOS ARM64")
                 do! ["DOTNET_TieredCompilation"; "DOTNET_TieredPGO"; "DOTNET_ReadyToRun"] |> iterate (fun key ->
@@ -228,12 +251,11 @@ module HiddenSwitchCompiledGraph =
             | Error failure -> emit {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}; Error failure
             | Ok report ->
                 emit report
-                let command = Console.ReadLine()
-                if command <> "graph-capture-complete" then
-                    let failure = HiddenSwitchCompiledReceipt.failure "debugger" "handshake" "requires explicit owning debugger completion"
+                match waitForCompletion completion with
+                | Error failure ->
                     emit {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}
                     Error failure
-                else
+                | Ok () ->
                     emit {| Kind = "graph-hand-finished"; Complete = true; ProcessId = Environment.ProcessId |}
                     Ok()
         with error -> Error(HiddenSwitchCompiledReceipt.failure "graph-hand" "collector-exception" (error.GetType().FullName + ": " + error.Message))

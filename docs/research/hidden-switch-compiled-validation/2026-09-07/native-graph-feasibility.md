@@ -34,7 +34,7 @@ contain stubs or literal data; they are not assumed to be complete method bodies
 `RuntimeAdmitted=false` and `BodyResolved=false` remain mandatory. Capture completion
 alone is the meaning of `Complete=true` here.
 
-The owning debugger supplies the completion handshake, resumes and observes exit,
+The owning debugger supplies a process-bound completion file, resumes and observes exit,
 and attempts bounded cleanup on failure. Guarded cleanup/restoration retains the
 primary failure and secondary details. Startup, interrupt and exit waits have
 60/10/30-second operational bounds; the external process owner must also bound the
@@ -113,6 +113,19 @@ LLDB exited 1. The final outcome is `Complete=false`, `RuntimeAdmitted=false`.
 The earlier successful capture stages do not change that failure classification.
 The next instrument correction will use an explicitly owned completion channel
 and preserve the exact handshake observation, without changing a measured path.
+
+The reviewed transport correction exclusively writes and fsyncs the exact ASCII
+marker naming the positive native PID only after capture, while that process is
+stopped. The native collector refuses a preexisting marker before hand work, then
+waits at most 120 seconds and checks exact bounded length/content. The external
+150-second process bound remains. Neither a partial write nor refusal resumes the
+target. This is an owned writer-directory convention, not hostile-filesystem
+isolation. The independent reviewer accepted this source-only transport scope.
+The [transport evidence](native-graph-transport/manifest.json) retains mapped
+Release build 7 (26.06 seconds, zero warnings/errors) and all synthetic outcomes:
+the first new test run failed because an existing assertion was misplaced into
+the new test and referenced an undefined local; the corrected six-test run passed.
+No policy, native target or registered stream was run by these Python fixtures.
 
 Source guidance remains distinct from installed binary provenance: the public
 .NET v10.0.11 source pin is `79d0c463f1b55624c874a11585f7e47731e8d675`, while the
