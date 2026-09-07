@@ -1839,6 +1839,33 @@ module ZetaFsFreeze =
                 | Error e -> Error e
                 | Ok _ -> Ok())
 
+    /// POSIX typed replace. Eisdir / Enotdir / Enotempty do not tombstone.
+    let rename
+        (volume: Volume)
+        (srcParent: ZetaFsNamespace.EntityId)
+        (srcName: byte[])
+        (dstParent: ZetaFsNamespace.EntityId)
+        (dstName: byte[])
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity srcParent)
+            | Some state ->
+                match
+                    ZetaFsNamespace.rename
+                        state
+                        srcParent
+                        srcName
+                        dstParent
+                        dstName
+                        (ZetaFsNamespace.ActorId "freeze")
+                with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok())
+
     /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
     /// row. Reopen `liveResolve` must be None.
     let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =

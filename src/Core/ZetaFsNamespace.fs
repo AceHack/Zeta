@@ -82,6 +82,10 @@ module ZetaFsNamespace =
         | UnknownEntity of EntityId
         | NotDirectory of EntityId
         | Cycle of parent: EntityId * target: EntityId
+        | SourceNotFound
+        | Eisdir of dest: EntityId
+        | Enotdir of dest: EntityId
+        | Enotempty of dest: EntityId
 
     type State =
         { Root: EntityId
@@ -290,3 +294,63 @@ module ZetaFsNamespace =
                     Bindings = binding :: state.Bindings
                     Next = next }
         | Some _ -> Error(NotDirectory parent)
+
+    let private liveChildCount (state: State) (dir: EntityId) : int =
+        liveWinners state
+        |> List.filter (fun b -> b.Parent = dir)
+        |> List.length
+
+    let private isDirectoryKind (k: EntityKind) : bool =
+        match k with
+        | EntityKind.Directory -> true
+        | _ -> false
+
+    /// POSIX typed replace. Dest file+src file: tombstone dest. Dest dir+src
+    /// file: Eisdir. Dest file+src dir: Enotdir. Dest empty dir+src dir:
+    /// tombstone dest. Dest non-empty dir: Enotempty. Same parent+name: no-op.
+    let rename
+        (state: State)
+        (srcParent: EntityId)
+        (srcName: byte[])
+        (dstParent: EntityId)
+        (dstName: byte[])
+        (asserter: ActorId)
+        : Result<State, BindError> =
+        if srcParent = dstParent && namesEqual srcName dstName then
+            Ok state
+        else
+            match Map.tryFind srcParent state.Entities, Map.tryFind dstParent state.Entities with
+            | None, _ -> Error(UnknownEntity srcParent)
+            | _, None -> Error(UnknownEntity dstParent)
+            | Some srcParentKind, _ when not (isDirectoryKind srcParentKind) -> Error(NotDirectory srcParent)
+            | _, Some dstParentKind when not (isDirectoryKind dstParentKind) -> Error(NotDirectory dstParent)
+            | Some EntityKind.Directory, Some EntityKind.Directory ->
+                match liveResolve srcParent srcName state.Bindings with
+                | None -> Error SourceNotFound
+                | Some srcId ->
+                    match Map.tryFind srcId state.Entities with
+                    | None -> Error(UnknownEntity srcId)
+                    | Some srcKind ->
+                        let move (s: State) : Result<State, BindError> =
+                            match bind s dstParent dstName srcId asserter with
+                            | Error e -> Error e
+                            | Ok s1 -> unlink s1 srcParent srcName asserter
+
+                        match liveResolve dstParent dstName state.Bindings with
+                        | None -> move state
+                        | Some destId ->
+                            match Map.tryFind destId state.Entities with
+                            | None -> Error(UnknownEntity destId)
+                            | Some destKind ->
+                                match srcKind, destKind with
+                                | (EntityKind.File | EntityKind.Symlink | EntityKind.Essence), EntityKind.Directory ->
+                                    Error(Eisdir destId)
+                                | EntityKind.Directory, (EntityKind.File | EntityKind.Symlink | EntityKind.Essence) ->
+                                    Error(Enotdir destId)
+                                | EntityKind.Directory, EntityKind.Directory when liveChildCount state destId > 0 ->
+                                    Error(Enotempty destId)
+                                | _ ->
+                                    match unlink state dstParent dstName asserter with
+                                    | Error e -> Error e
+                                    | Ok s1 -> move s1
+            | _ -> Error(NotDirectory srcParent)

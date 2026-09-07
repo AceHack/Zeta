@@ -625,6 +625,51 @@ let ``bindSymlink persists UTF-8 target bytes across reopen`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``rename dest directory and source file is Eisdir and persists both names`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-rename-eisdir"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let fileName = Encoding.UTF8.GetBytes "a"
+    let dirName = Encoding.UTF8.GetBytes "d"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindFile volume fileName with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok file ->
+                match ZetaFsFreeze.bindDirectory volume root dirName with
+                | Error e -> Assert.Fail(sprintf "bindDirectory failed: %A" e)
+                | Ok dir ->
+                    match ZetaFsFreeze.rename volume root fileName root dirName with
+                    | Ok() -> Assert.Fail("rename file onto directory must be Eisdir")
+                    | Error(ZetaFsNamespace.Eisdir dest) ->
+                        Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir dest)
+                    | Error e -> Assert.Fail(sprintf "expected Eisdir, got %A" e)
+                    match ZetaFsFreeze.liveResolve volume fileName with
+                    | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare file live)
+                    | None -> Assert.Fail("source file name must stay live")
+                    match ZetaFsFreeze.liveResolve volume dirName with
+                    | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir live)
+                    | None -> Assert.Fail("dest directory name must stay live")
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                    try
+                        match ZetaFsFreeze.liveResolve reopened fileName with
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare file live)
+                        | None -> Assert.Fail("source file name must survive reopen")
+                        match ZetaFsFreeze.liveResolve reopened dirName with
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir live)
+                        | None -> Assert.Fail("dest directory name must survive reopen")
+                    finally
+                        ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()
