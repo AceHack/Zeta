@@ -82,3 +82,10 @@ in the same PR; a new implementation claim must follow the separate
 PR #16928 main proof and retain the existing immutable registration.
 This PR introduces no measured implementation, guard computation or new
 source draws, and adds no changes to the prior study or its advisory.
+
+## Initial coordinator evidence boundary
+
+The [wire contract and validation](../../2026-09-07-hidden-switch-compiled-wire-contract.md)
+records the initial pure evidence module, 47 passing focused tests, strict type
+checks, the corrected collection failure, and the remaining whole-phase/runtime
+admission boundary. This is implementation validation, not a registered experiment.
