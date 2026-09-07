@@ -101,5 +101,7 @@
       "Sha256": "f9051ccb85b19b1d56bc6594c54fb4eddcffdcf42b4a7b0fadfc3a9ad0e93558"
     }
   ],
-  "SourceStatus": "uncommitted corrected helper at review; final source commit/gates recorded in review note separately"
+  "SourceStatus": "uncommitted corrected helper at review; final source commit/gates recorded in review note separately",
+  "FinalSourceCommit": "2f068ba34da612f82370c64cef4e38a909e7edd5",
+  "FinalSourceCorrespondence": "All seven reviewed working files were independently verified byte-identical to the final committed files; no metadata query executed by reviewer."
 }
