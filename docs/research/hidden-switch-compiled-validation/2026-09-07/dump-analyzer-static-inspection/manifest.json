@@ -117,6 +117,69 @@
       "StoredSha256": "711191c3e14c024978a1a9161dfad4a8d9d236e1afe52fbaa4730278250c4ee6",
       "RawBytes": 57276,
       "RawSha256": "3d8740b44f73c06be76de6e4b5c82b4345eb1cf3fa72dd919596d9cec6cec18d"
+    },
+    {
+      "File": "host-soscommand.ildasm.stdout.txt.gz",
+      "StoredBytes": 2049,
+      "StoredSha256": "0ee7635daf147629e376bccd1be4338356ac1df6c53adc09ccc145b64bde1ed6",
+      "RawBytes": 14451,
+      "RawSha256": "66ce888aba52f599e6c693e067fbf33113d1ec05745690e9a0768f27c62a7655"
+    },
+    {
+      "File": "host-soscommand.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "host-soscommand.ildasm.invocation.json.gz",
+      "StoredBytes": 458,
+      "StoredSha256": "8babd6f5bc5d98275fb3099c736201d20327401c985ee19fff53abde5a68c285",
+      "RawBytes": 888,
+      "RawSha256": "e3588c2c840a3850baa1f39b185123ebd4079c902fd3f6858d0f092902f46a9a"
+    },
+    {
+      "File": "host-disassemble.ildasm.stdout.txt.gz",
+      "StoredBytes": 1821,
+      "StoredSha256": "8b1977a1fa01bfc0e75dc85510b031952cf82407ec604376a0b3210be283e017",
+      "RawBytes": 11718,
+      "RawSha256": "8759e2304a07fb2c34fc376a034b816de47421a4ed838f7f14d03db7e2d1128a"
+    },
+    {
+      "File": "host-disassemble.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "host-disassemble.ildasm.invocation.json.gz",
+      "StoredBytes": 470,
+      "StoredSha256": "ff5d81f2e70660882a93bccaca85a2e31e6e52611588f9cd33106eb74a37f499",
+      "RawBytes": 886,
+      "RawSha256": "a8de35a4b391212b863f2e13b5f213fa4d5e3ae04b54c9c2d0df52c049bb27e3"
+    },
+    {
+      "File": "host-native-exports.stdout.txt.gz",
+      "StoredBytes": 554,
+      "StoredSha256": "d27c90589648d25937c2fc0d12dcdd88048d2f5c527d45986899ff828edff042",
+      "RawBytes": 1524,
+      "RawSha256": "31c0528118a8d0db899386b51845cac415b513cea3c4ba538c8ae78a1deb1237"
+    },
+    {
+      "File": "host-native-exports.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "host-native-exports.invocation.json.gz",
+      "StoredBytes": 385,
+      "StoredSha256": "a6aa0ce14754210aa2ac744a9c54438746682bddc7c618fc2c4b85cfee1561ad",
+      "RawBytes": 627,
+      "RawSha256": "8a9915fecff449651cb217c749ca4e4fc4414c3372aa55a23653c7bc45c68883"
     }
   ],
   "LocalFileIdentities": [
@@ -197,6 +260,24 @@
       "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/dotnet-dump.nuspec",
       "Bytes": 1085,
       "Sha256": "12a08953b16e14a9662940990b9ae98cfc059a13e4ef8786f2df54dfe104947f"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/SOS.Hosting.dll",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/SOS.Hosting.dll",
+      "Bytes": 327200,
+      "Sha256": "54ef3b592a663e1ef1d90ff0f53c40fb03ca0a17c8d79ad35ccccec2be5b6b63"
+    },
+    {
+      "Path": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsos.dylib",
+      "ResolvedPath": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsos.dylib",
+      "Bytes": 793968,
+      "Sha256": "d6ba022e580d0e94ebacd5e2f60b58afbbeba668ee0d0218c88c87234bcecf92"
+    },
+    {
+      "Path": "/usr/bin/nm",
+      "ResolvedPath": "/usr/bin/nm",
+      "Bytes": 118640,
+      "Sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9"
     }
   ],
   "LocalFormatGuidance": {

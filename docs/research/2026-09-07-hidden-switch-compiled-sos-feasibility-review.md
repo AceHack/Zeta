@@ -485,3 +485,52 @@ inspected these cases without executing them. Physical reads, capture bounds,
 command sequencing, first-failure preservation and all false admission flags
 are unchanged. This accepts a correction to the parser, not a replacement
 for the first attempt or advance acceptance of later method extents.
+
+## Second refusal and host-specific export boundary
+
+Second-attempt source `88c60b5f137cc1770d38ab886c54d8ec586261de` and its
+[39 diagnostic records](hidden-switch-compiled-validation/2026-09-07/native-dump-analysis-attempt-2/manifest.json)
+are retained in owner commit `bd2393522c44908e377a390d301cadc9d4fc3942`.
+The reviewer verified all stored and decompressed lengths/hashes and read
+the actual command refusal. Current predict method identity now passes;
+`clru` fails with an unrecognized-command error and the error delimiter.
+Driver exit two, analyzer exit zero and empty cleanup remain distinct.
+No extent or post-query cached-DAC response occurred. The original attempt
+is unchanged, and no raw dump was opened for this review.
+
+The shared Unix SOS help lists `u` and `clru`, but that text does not establish
+the latter as an alias in this host. The initial plan carried that unsupported
+host-compatibility assumption. Static installed export inspection now finds
+`_u` and no `_clru`. Installed host-command IL shows the generic SOS fallback;
+version-specific native-library dispatch resolves the exact export name.
+Three new bounded file-only inspections completed with exit zero and empty
+stderr. Their nine lossless records bring the static manifest to 24, with
+added SOS hosting/native-library and inspection-tool identities. These
+inspectors did not load the subject library, start an analyzer or run a target.
+[Host command dispatch](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Tools/dotnet-dump/Commands/SOSCommand.cs),
+[native export dispatch](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/SOS.Hosting/SOSLibrary.cs)
+
+The export alone is insufficient. Installed `SOSHost.Disassemble` IL returns
+`E_NOTIMPL`, clears its output and leaves the end offset unchanged. The
+version-specific non-debugger host connects this callback to its LLDB service
+adapter. Its ARM64 unassembly loop ignores the disassembler status through
+`DisasmAndClean`, so lack of progress and an output/time-bound refusal are
+concrete possibilities. This is an implementation observation and source
+inference, not a claim that the third attempt has occurred or must fail.
+[Host callback](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/SOS.Hosting/SOSHost.cs),
+[adapter binding](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/SOS.Hosting/LLDBServices.cs),
+[ARM64 loop](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/Strike/disasmARM64.cpp),
+[disassembler wrapper](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/Strike/disasm.cpp)
+
+Version-specific `u` obtains `DacpCodeHeaderData` and prints its managed method
+name and begin/size, including hot/cold extents when present, before the
+instruction loop. A bounded response prefix could therefore contain useful
+prospective extent metadata even if the command never completes. The revised
+plan obtains all three fixed method identities and then cached-DAC runtime
+metadata before the export-backed `u` requests. Explicit owned analyzer PID
+and return code improve custody. No failed or undelimited response becomes
+successful; any retained extent still needs independent interpretation, and
+all method/closure/runtime admission flags remain false. The coordinator
+separately authorized one third attempt; actual revised source and outcome
+are separate review boundaries.
+[Extent-before-disassembly ordering](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/SOS/Strike/strike.cpp)
