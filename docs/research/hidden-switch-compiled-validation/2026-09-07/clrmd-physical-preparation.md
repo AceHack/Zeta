@@ -431,3 +431,37 @@ before reaching its exact line-count check, so no skipped-word realignment or
 comment removal was admitted. These additional formatting observations also
 need a precise reviewed disposition before another attempt. Full runtime,
 body and closure flags remain false.
+
+## Minimal RCPC and immediate-comment preparation
+
+Source `4a570eaf3ee2d5dccef07b5eeea229a363cd7365` changes only the offline
+decoder and its pure fixtures. The [nine preparation records](llvm-rcpc-preparation/manifest.json)
+bind the exact two source files, all validation attempts and an unchanged
+recheck of the first attempt's 142 stored/decompressed/original identities.
+
+The separately signed primary-source review `6dc3eb74e` associates the two
+rejected words with LLVM's RCPC feature. Only `--mattr=+rcpc` is added; the
+generic CPU, Darwin triple, print options and every exit/diagnostic/byte gate
+remain fixed. This enables decoder recognition; it changes no study-process
+CPU setting and proves neither host instruction support nor execution.
+
+The version-specific printer emits opposite-base immediate comments, so
+changing the immediate print base would not remove them. The parser now
+preserves at most one exact standalone hexadecimal comment immediately after
+a decimal-immediate `mov` to a named 32/64-bit integer register. It checks
+the comment's value against the operand modulo that register width and retains
+the instruction's original text-line position. Unknown, orphan, repeated,
+wrong-value, misplaced and non-mov comments refuse. Exact instruction count
+is independent of text-line count; comments cannot replace missing words.
+
+Forty-five combined pure diagnostic cases pass. A subsequent fixture-only
+Ruff repair uses one-element unpacking to retain generator exhaustion; all
+15 decoder cases pass at the final source, and Ruff passes. The initial style
+finding remains in the inventory. The new cases include both register widths,
+negative operands, comment associations, missing/extra/reordered instructions
+and preservation of an already decoded word/comment before a later refusal.
+No candidate decoder, dump, target or policy ran during this preparation.
+The independent protocol-review agent accepted the exact source pin on a
+read-only pass, including the strict comment/feature boundary and unchanged
+refusal rules. The separately authorized second attempt will preserve its
+own invocation and outcome. All full admission flags remain false.
