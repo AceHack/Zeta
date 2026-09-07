@@ -185,6 +185,70 @@ remain source-reviewed and retained. The pure checker independently executes
 the strict software subtraction/selection and submits the actual mutant action
 to its exact comparator, retaining the resulting typed mismatch.
 
+## Exact counted operation roster
+
+`Completed.Calls` counts the top-level calls in each case's `Calls` array,
+not every helper, system call, child process event or recursive policy node.
+Successful completion is exactly **136 calls across 92 cases**. Child and
+fixture helper traces are retained separately and cannot be substituted for
+the named top-level result. A missing result leaves that call incomplete even
+if the child was launched. An expected typed refusal is a completed call;
+a launch exception, timeout or missing result is not.
+
+The following table fixes every operation name, input-role order and call
+cardinality. Where a role contains a fixture, its artifact preserves the exact
+owned setup, requested mutation and observed before/after state. The independent
+replay reconstructs that fixture from the fixed case definition and checks the
+actual observations; it does not execute instructions read from the artifact.
+Fixture roots, file bytes, child stdout/stderr/exit and state observations remain
+retained even when the tested API returns a failure. These preparation/audit
+traces are outside the top-level call counter, not omitted from evidence.
+
+| Cases | Ordered operations and exact InputRoles | Calls per case |
+| --- | --- | --- |
+| All 31 `certificate/*` | `python-certificate-verify(raw,bindings)`; `native-certificate-verify(raw,bindings)` | 2 |
+| `semantic/full-hand` | `semantic-falsifier-replay(hand-slices,semantic,certificate)` | 1 |
+| `selector/epsilon-tie` | `selector-witness-replay(witness,certificate)` | 1 |
+| All 8 `json/*` | `json-fixture-pipeline(raw)` | 1 |
+| `artifact/control` | `bind-artifact(descriptor-identity,stored-identity,original)`; `bind-artifact(descriptor-gzip,stored-gzip,original)` | 2 |
+| `artifact/stored-hash`, `artifact/original-hash`, `artifact/unrelated-gzip` | `bind-artifact(descriptor,stored,original)` | 1 |
+| `artifact/parent-path` | `artifact-descriptor(descriptor)` | 1 |
+| `artifact/symlink-path`, `artifact/truncated-gzip` | `read-artifact(fixture,descriptor)` | 1 |
+| All 7 `source/*` | `verify-source-files(fixture,expected)` | 1 |
+| All 8 `python/*` | `python-identity-child(fixture,expected)` | 1 |
+| `storage/control` | `create-directory(fixture)`; `write-exclusive(fixture,original)` | 2 |
+| `storage/reused-attempt` | `create-directory(fixture)`; `create-directory(fixture)` | 2 |
+| `storage/reused-file` | `write-exclusive(fixture,original)`; `write-exclusive(fixture,replacement)` | 2 |
+| `storage/partial-write` | `write-exclusive(fixture,original)`; `write-exclusive(fixture,replacement)` | 2 |
+| `storage/changed-read` | `read-exact(fixture,expected)` | 1 |
+| All 8 `links/*` | `admit-binding-subjects(fixture,expected)` | 1 |
+| All 5 `choice/*` | `replay-choice-buffer(native-buffer,tuples,context)`; `replay-choice-buffer(compiled-buffer,tuples,context)` | 2 |
+| All 5 `schedule/*` | `admit-cost-schedule(headers)` | 1 |
+| `resources/control` | `admit-timing(timing)`; `descriptive-ratio(cpu)`; `descriptive-ratio(allocation)` | 3 |
+| `resources/zero-wall`, `resources/negative-allocation`, `resources/decreasing-gc` | `admit-timing(timing)` | 1 |
+| `resources/zero-native-allocation` | `half-median(compiled,native)` | 1 |
+| `resources/half-threshold` | `half-median(compiled-at-half,native)`; `half-median(compiled-above-half,native)` | 2 |
+
+Case Inputs contains exactly the first-occurrence ordered union of the roles
+in its row. For choice replay, context has exactly `CertificateId,
+SourceManifestSha256, NativeRecordSha256, Passes`: the certificate prerequisite
+ID, the two caller-bound hashes, and integer 2. The tuples artifact is the exact
+two-element array of `BeliefBits, Effect, Depth` objects, dropping only the
+scalar-audit Index field. The first call's strategy is fixed native-recursive;
+the second is compiled-guarded. Native and compiled calls otherwise share
+context/tuples and differ in their associated buffer. The child wrapper
+records exactly one actual identity-collector entry in its child trace, but
+that nested entry is not a second `Completed.Calls` entry. Likewise the two
+actual native selector call sites are a prerequisite to the one counted pure
+selector-witness replay, not two additional top-level calls here.
+
+Directory preparation needed by a storage write, creation of the original
+changed-read file, and post-call file-state/hash observations are explicit
+fixture preparation/audit operations outside this counter. Only the calls
+listed above occupy the case's Calls array. The fixture log retains those
+other operations in order with their actual results. This convention fixes
+the counter without claiming to count all work performed by the process.
+
 ## Fixed 92-case roster and controls
 
 Groups execute in the order printed here. IDs within each group execute in
@@ -318,7 +382,8 @@ sys.modules result or self-reported path substitutes for the actual objects.
 | `python/changed-bytes` | `python/control` | After import, change one same-length helper source byte without changing expected hash; refuse. |
 
 Each row has one child entry operation and one actual collector operation in
-its retained child trace. The deadline, raw stdout/stderr/exit status and exact
+its retained child trace; only the top-level child operation is counted in
+`Completed.Calls`. The deadline, raw stdout/stderr/exit status and exact
 fixture files are retained; timeout or child crash is not the required typed
 refusal. This is ordinary loader/interpreter trust, not a hostile-Python proof.
 
@@ -367,20 +432,37 @@ Timeline has exactly `BehaviorFinish, BehaviorClosed, BehaviorExit,
 CostStarted, BehaviorReadStarted, BehaviorReadFinished, AdmissionFinished,
 FirstPolicyCall, SetupFinished, FirstRowStarted`. The positive fixture uses
 2026-09-07T00:00:00Z plus respectively 0 through 9 nanoseconds, rendered at
-the existing exact timestamp precision. Require nondecreasing times in that
-order: the producer closes its output before successful process exit. This is synthetic
+the existing exact timestamp precision. Closed denotes actual producer output
+closure; a coordinator's later observation is a separate fact, not this event.
+The validator requires the following partial order, allowing equal timestamps:
+BehaviorFinish is no later than either BehaviorClosed or BehaviorExit; both
+BehaviorClosed and BehaviorExit are no later than CostStarted. It does not
+impose an order between closure and exit. The remaining sequence from
+CostStarted through FirstRowStarted is nondecreasing in printed order.
+This is synthetic
 chronology, not measured process timing or proof that policy calls occurred.
 
 | ID | Control | Exact change/result |
 | --- | --- | --- |
 | `links/control` | null | Bind all seven original complete subjects, contexts, links and timeline. |
-| `links/envelope-substitution` | `links/control` | Change replay's metadata Role string, recompute its descriptor, retain original independent Expected input hash and unchanged Payload; refuse complete-byte binding. |
+| `links/envelope-substitution` | `links/control` | Prefix the raw replay subject with one ASCII space, recompute its descriptor, retain the original independent Expected input hash; decoded fields are identical. Refuse complete-byte binding. |
 | `links/source-substitution` | `links/control` | Change cost's SourceCommit to a different 40-hex value and refresh its byte descriptors/links, retaining expected Context; refuse identity mismatch. |
 | `links/certificate-substitution` | `links/control` | Similarly change cost's numeric certificate hash while refreshing byte bindings; refuse. |
 | `links/runtime-substitution` | `links/control` | Similarly change cost's complete NativeRecordSha256 while refreshing byte bindings; refuse. This tests record identity, not live runtime inspection. |
 | `links/reordered-inputs` | `links/control` | Swap the final two Records and Expected rows without changing their content; refuse fixed-role order. |
 | `links/cost-before-behavior` | `links/control` | Move CostStarted one nanosecond before BehaviorFinish; refuse chronology. |
-| `links/replay-substitution` | `links/control` | Change the replay subject's Payload.Witness to 1, refresh its own descriptor but retain the independently expected replay-byte binding; refuse. |
+| `links/replay-substitution` | `links/control` | In the raw replay subject, encode the existing Witness key as `"\u0057itness"`, refresh its descriptor and retain the original independent expected replay-byte binding. The decoded tree is unchanged; refuse complete-byte binding. |
+
+Both lexical variants deliberately target the final role, so no later linked
+subject introduces a second semantic/hash inconsistency. They must fail with
+the shared validator's `input-envelope-bytes` refusal at the exact replay
+binding, not an unrelated schema/type/role error. Preserve an executable
+check-omission discriminator: bypass only that complete-input-byte comparison
+in an explicitly labeled fixture mutant, leaving ordinary artifact validation,
+context, schema, chronology and link checks live. Both variants must then be
+incorrectly accepted by the mutant, and the witness checker must reject that
+actual acceptance. This tests whether byte binding is load-bearing; merely
+changing a semantically constrained field would not establish that.
 
 The later actual verdict must additionally bind the exact real replay bytes
 and native inputs. Passing these synthetic shared-validator cases does not
@@ -422,6 +504,14 @@ The base timing fixture is exactly `WallNs=1, CpuNs=0, AllocatedBytes=0`,
 with three-element all-zero `GcBefore, GcAfter, GcDelta`. The native required
 allocation median for the positive control is 1. These are synthetic integer
 observations; no stopwatch, allocation probe or cost claim is produced.
+The `cpu` ratio input is exactly `{Kind:"cpu", Numerator:0, Denominator:0}`;
+`allocation` is `{Kind:"allocation", Numerator:0, Denominator:1}`. The shared
+ratio helper returns an admitted exact `Numerator, Denominator, Ratio, Reason`
+object: Ratio is null with the named reason for the zero denominator, or a
+canonical `{Num, Den}` rational pair with Reason null. Num/Den are canonical
+decimal strings with positive reduced denominator. No floating conversion
+is needed for these cases. The required-median arrays are exactly five
+repetitions of the named integer in each case.
 
 | ID | Control | Actual operations and required result |
 | --- | --- | --- |
@@ -463,3 +553,26 @@ implementation defect is repaired with its original evidence retained; there
 is no replacement behavioral seed or changed scientific threshold. Full
 runtime/graph admission and final real-byte chain validation remain required
 in addition to this bounded implementation evidence.
+
+## Retained pre-implementation review findings
+
+The independent reviewer examined original design `05ef2a04fca26f0fb2bb1750d634bcc123ac8168`
+and accepted the acyclic six-member boundary, 92 IDs and separate pending
+obligations, while requiring three corrections before implementation:
+
+1. The original link mutations changed Role or Payload.Witness and could be
+   rejected semantically even if complete-byte comparison were missing. The
+   corrected cases preserve the decoded tree and require the actual byte
+   refusal plus an executed check-omission discriminator.
+2. The prose did not uniquely determine top-level call counts, particularly
+   for child/composite/control and storage setup operations. The exact table
+   now fixes 136 calls and separates retained child/helper observations.
+3. A working-draft timeline imposed a total order on output closure and process
+   exit. The reviewer clarified that its initial exit-before-closure remark
+   referred to a draft read before the 05ef pin; 05ef already had closure before
+   exit. The substantive correction is the partial order above, which avoids
+   adding either stronger total-order requirement to the frozen protocol.
+
+These are design findings, not measured failures. No source generation or
+policy/measurement run was used to make these corrections. Final exact-pin
+acceptance remains pending the reviewer's reread.
