@@ -377,4 +377,12 @@ describe("runFirstbootBaoElfEnvCli frost look", () => {
     expect(code).toBe(2);
     expect(JSON.parse(lines[0] ?? "")).toEqual({ ok: false, reason: "unknown-os" });
   });
+
+  test("ISO bun still does not consume --from-json", async () => {
+    const src = await Bun.file(new URL("./firstboot-bao-env.ts", import.meta.url)).text();
+    expect(src.split("--from-json").length - 1).toBe(0);
+    expect(src.split("FROST_LOOK_JSON_FLAG").length - 1).toBe(0);
+    expect(src.split("consumeOptionalFrostLookFromCliJson").length - 1).toBe(0);
+    expect(src.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
+  });
 });

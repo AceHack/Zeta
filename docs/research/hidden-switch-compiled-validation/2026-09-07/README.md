@@ -43,6 +43,9 @@ The [actual strict outer artifact reads](../../2026-09-07-hidden-switch-compiled
 retain the 23-test original and accepted 25-test exception repair, three
 owned fixture trees and complete first-failure read outcomes. Operation replay
 and final source/runtime admission remain separate.
+The [bounded prerequisite publication](../../2026-09-07-hidden-switch-compiled-prerequisites-publication.md)
+freezes a reviewed source/evidence slice while the parent experiment and
+its runtime/outer admission remain active.
 
 ## Frozen protocol and remote proof
 

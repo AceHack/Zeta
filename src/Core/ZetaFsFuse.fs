@@ -12,6 +12,7 @@ module ZetaFsFuse =
         | ENOTDIR
         | EISDIR
         | EINVAL
+        | ENOSYS
         | ENOTEMPTY
 
     let code (e: Errno) : int =
@@ -21,6 +22,7 @@ module ZetaFsFuse =
         | ENOTDIR -> 20
         | EISDIR -> 21
         | EINVAL -> 22
+        | ENOSYS -> 38
         | ENOTEMPTY -> 39
 
     type Request =
@@ -40,6 +42,9 @@ module ZetaFsFuse =
         | Read of fh: uint64 * offset: int64 * size: int
         | Write of fh: uint64 * offset: int64 * data: byte[]
         | Release of fh: uint64
+        /// MAP_SHARED is refused (ENOSYS). MAP_PRIVATE is process COW and
+        /// does not enter the store.
+        | Mmap of id: uint64 * shared: bool
 
     type Reply =
         | Node of ZetaFsPosixNode.Node
@@ -55,12 +60,16 @@ module ZetaFsFuse =
     type Session =
         { mutable Mount: ZetaFsPosixVfs.Mount
           Fds: Dictionary<uint64, ZetaFsPosixVfs.Fd>
-          mutable NextFd: uint64 }
+          mutable NextFd: uint64
+          /// First-product FUSE uses `direct_io`. Writeback + MAP_SHARED
+          /// is a known graveyard (spec PR13).
+          DirectIo: bool }
 
     let create (mount: ZetaFsPosixVfs.Mount) : Session =
         { Mount = mount
           Fds = Dictionary<uint64, ZetaFsPosixVfs.Fd>()
-          NextFd = 1UL }
+          NextFd = 1UL
+          DirectIo = true }
 
     let private ofVfs (e: ZetaFsPosixVfs.Error) : Errno =
         match e with
@@ -240,3 +249,12 @@ module ZetaFsFuse =
                 | Result.Ok() ->
                     session.Fds.Remove fh |> ignore
                     Released
+
+        | Mmap(id, shared) ->
+            match nodeOf session id with
+            | Result.Error e -> Fail e
+            | Result.Ok _ ->
+                if shared then
+                    Fail ENOSYS
+                else
+                    Done

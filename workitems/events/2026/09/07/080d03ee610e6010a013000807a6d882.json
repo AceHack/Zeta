@@ -1,0 +1,14 @@
+{
+  "id": "080d03ee610e6010a013000807a6d882",
+  "at": "2026-09-07T21:35:25.132Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YWR8EB087G0R002X0SFX7",
+    "type": "task",
+    "title": "Overlay optional named argv takes bun JSON --from-json; JSON probe is ignored",
+    "slug": "overlay-optional-named-argv-takes-bun-json-from-json-json-pr",
+    "priority": "P2",
+    "filename": "081M1YWR8EB087G0R002X0SFX7-overlay-optional-named-argv-takes-bun-json-from-json-json-pr.md"
+  }
+}

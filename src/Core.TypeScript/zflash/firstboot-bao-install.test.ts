@@ -340,6 +340,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(executable.split("jq -c '.requested'").length - 1).toBe(1);
     expect(executable.split("jq -c '.probe'").length - 1).toBe(1);
     expect(executable.split("jq -c '.look'").length - 1).toBe(1);
+    expect(executable.split("--from-json").length - 1).toBe(0);
     expect(block.split("null request is unmeasured, not auto").length - 1).toBe(1);
     expect(block.split("null probe is unmeasured, not present").length - 1).toBe(1);
     expect(block.split("null look is unmeasured, not a live look").length - 1).toBe(1);
@@ -363,6 +364,7 @@ describe("zeta-install.sh named bao bun consume after 6.95a", () => {
     expect(helperSrc.split("named-frost-look-env").length - 1).toBe(0);
     expect(helperSrc.split("namedProbeFromFrostLook").length - 1).toBe(0);
     expect(helperSrc.split("realProbeEffects").length - 1).toBe(0);
+    expect(helperSrc.split("--from-json").length - 1).toBe(0);
     expect(helperSrc.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
     const spawned = spawnSync(process.execPath, [helper], {
       encoding: "utf8",

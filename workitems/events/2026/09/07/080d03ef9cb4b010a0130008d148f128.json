@@ -1,0 +1,14 @@
+{
+  "id": "080d03ef9cb4b010a0130008d148f128",
+  "at": "2026-09-07T22:18:30.934Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YZ75MP087G0R001EQY7JK",
+    "type": "task",
+    "title": "FUSE byte session LOOKUP encodes fuse_entry_out",
+    "slug": "fuse-byte-session-lookup-encodes-fuse-entry-out",
+    "priority": "P2",
+    "filename": "081M1YZ75MP087G0R001EQY7JK-fuse-byte-session-lookup-encodes-fuse-entry-out.md"
+  }
+}

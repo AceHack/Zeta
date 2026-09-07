@@ -38,6 +38,7 @@ let ``errno codes are the Linux values`` () =
     Assert.Equal(20, ZetaFsFuse.code ZetaFsFuse.ENOTDIR)
     Assert.Equal(21, ZetaFsFuse.code ZetaFsFuse.EISDIR)
     Assert.Equal(22, ZetaFsFuse.code ZetaFsFuse.EINVAL)
+    Assert.Equal(38, ZetaFsFuse.code ZetaFsFuse.ENOSYS)
     Assert.Equal(39, ZetaFsFuse.code ZetaFsFuse.ENOTEMPTY)
 
 [<Fact>]
@@ -176,4 +177,82 @@ let ``truncate shrinks getattr size; directory is EISDIR; negative is EINVAL`` (
             match ZetaFsFuse.dispatch session (ZetaFsFuse.Truncate(node.Id, -1L)) with
             | ZetaFsFuse.Fail ZetaFsFuse.EINVAL -> ()
             | other -> Assert.Fail(sprintf "neg: %A" other)
+        | other -> Assert.Fail(sprintf "create: %A" other))
+
+[<Fact>]
+let ``lookup of dot is self; lookup of dotdot from a dir is the arrival parent`` () =
+    withSession "/fuse-dotdot" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(root, ZetaFsPosixVfs.dot)) with
+        | ZetaFsFuse.Node self -> Assert.Equal(root, self.Id)
+        | other -> Assert.Fail(sprintf "dot: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(root, ZetaFsPosixVfs.dotDot)) with
+        | ZetaFsFuse.Node up -> Assert.Equal(root, up.Id)
+        | other -> Assert.Fail(sprintf "root dotdot: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "d")) with
+        | ZetaFsFuse.Node dir ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(dir.Id, ZetaFsPosixVfs.dotDot)) with
+            | ZetaFsFuse.Node up -> Assert.Equal(root, up.Id)
+            | other -> Assert.Fail(sprintf "dotdot: %A" other)
+        | other -> Assert.Fail(sprintf "mkdir: %A" other))
+
+[<Fact>]
+let ``two parents yield two FUSE dotdot nodes and one st_ino`` () =
+    withSession "/fuse-two-dotdot" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "a")) with
+        | ZetaFsFuse.Node dirA ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "b")) with
+            | ZetaFsFuse.Node dirB ->
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(dirA.Id, utf8 "f")) with
+                | ZetaFsFuse.Node file ->
+                    match ZetaFsFreeze.bindName session.Mount.Volume dirB.Entity (utf8 "f") file.Entity with
+                    | Error e -> Assert.Fail(sprintf "bindName: %A" e)
+                    | Ok() ->
+                        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(dirA.Id, utf8 "f")) with
+                        | ZetaFsFuse.Node viaA ->
+                            match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(dirB.Id, utf8 "f")) with
+                            | ZetaFsFuse.Node viaB ->
+                                Assert.Equal(viaA.Ino, viaB.Ino)
+                                Assert.NotEqual(viaA.Id, viaB.Id)
+                                match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(viaA.Id, ZetaFsPosixVfs.dotDot)) with
+                                | ZetaFsFuse.Node upA -> Assert.Equal(dirA.Id, upA.Id)
+                                | other -> Assert.Fail(sprintf "upA: %A" other)
+                                match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(viaB.Id, ZetaFsPosixVfs.dotDot)) with
+                                | ZetaFsFuse.Node upB -> Assert.Equal(dirB.Id, upB.Id)
+                                | other -> Assert.Fail(sprintf "upB: %A" other)
+                            | other -> Assert.Fail(sprintf "lookup b/f: %A" other)
+                        | other -> Assert.Fail(sprintf "lookup a/f: %A" other)
+                | other -> Assert.Fail(sprintf "create: %A" other)
+            | other -> Assert.Fail(sprintf "mkdir b: %A" other)
+        | other -> Assert.Fail(sprintf "mkdir a: %A" other))
+
+[<Fact>]
+let ``first-product DirectIo is set; MAP_SHARED is ENOSYS; MAP_PRIVATE does not enter the store`` () =
+    withSession "/fuse-mmap" (fun session ->
+        Assert.True(session.DirectIo)
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Mmap(99UL, true)) with
+        | ZetaFsFuse.Fail ZetaFsFuse.ENOENT -> ()
+        | other -> Assert.Fail(sprintf "missing: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node node ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Open node.Id) with
+            | ZetaFsFuse.Fh fh ->
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Write(fh, 0L, [| 1uy; 2uy; 3uy |])) with
+                | ZetaFsFuse.Written 3 -> ()
+                | other -> Assert.Fail(sprintf "write: %A" other)
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Release fh) with
+                | ZetaFsFuse.Released -> ()
+                | other -> Assert.Fail(sprintf "release: %A" other)
+            | other -> Assert.Fail(sprintf "open: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Mmap(node.Id, true)) with
+            | ZetaFsFuse.Fail ZetaFsFuse.ENOSYS -> ()
+            | other -> Assert.Fail(sprintf "shared: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Mmap(node.Id, false)) with
+            | ZetaFsFuse.Done -> ()
+            | other -> Assert.Fail(sprintf "private: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr node.Id) with
+            | ZetaFsFuse.Stat(stat, _) -> Assert.Equal(3UL, stat.Size)
+            | other -> Assert.Fail(sprintf "getattr: %A" other)
         | other -> Assert.Fail(sprintf "create: %A" other))

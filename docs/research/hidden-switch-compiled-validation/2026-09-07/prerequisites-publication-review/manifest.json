@@ -1,0 +1,33 @@
+{
+  "ReviewHead": "2d1aff7686823c050fad8e093ac89a3180f29b48",
+  "Scope": "Read-only git-tree identity and link-existence snapshots; no build/test/target/measurement execution",
+  "Records": [
+    {
+      "OriginalFile": "snapshot.json",
+      "Bytes": 268327,
+      "Sha256": "56fc96a8f26d3c0ef41d9b16d82d5a22723dde4129572e2701f84e91bcdeb237",
+      "StoredFile": "snapshot.json.gz",
+      "StoredBytes": 12676,
+      "StoredSha256": "8a04dbaad92f193544b023ace10d33ffe404d1a8971c2d09d6b8a2c54c121070",
+      "Encoding": "gzip; mtime=0; losslessly verified"
+    },
+    {
+      "OriginalFile": "original-study-pin-check.json",
+      "Bytes": 8027,
+      "Sha256": "3b774feaa443f5af6ca515a19bea193ea13693b88e002b5b1a322dd233f0d3f6",
+      "StoredFile": "original-study-pin-check.json.gz",
+      "StoredBytes": 2302,
+      "StoredSha256": "4a8e76a137585fac0bebe43ae406d8f4b2b98a170b37531a32cf780f340851a6",
+      "Encoding": "gzip; mtime=0; losslessly verified"
+    },
+    {
+      "OriginalFile": "link-check.json",
+      "Bytes": 241,
+      "Sha256": "333c45473824da7a55432cf576e323fc45cac490039f2068e449d99ee9ecc28d",
+      "StoredFile": "link-check.json.gz",
+      "StoredBytes": 207,
+      "StoredSha256": "2badea2f47eb2b53b098ec823713d62feb4cabbcebf8ebf5a621facfe2c95550",
+      "Encoding": "gzip; mtime=0; losslessly verified"
+    }
+  ]
+}
