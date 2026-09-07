@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Reviewer: Vera, OpenAI Codex using GPT-6 Astra
-Disposition: one bounded first-failure finding; correction review pending
+Disposition: corrected source accepted for the owned file fixture boundary
 
 This read-only review covers coordinator source
 `9e2201236f0bd7c2e2b32644554d0b847831b7e0`:
@@ -54,6 +54,32 @@ source finding was identified. The stated one-MiB fixture encoding bound is
 checked after the fixed small result projection; it is not a general streaming
 encoder quota. Output retention, complete outer replay and runtime/scientific
 admission remain separate coordinator obligations.
+
+## Corrected source acceptance
+
+The final reread accepts source
+`18efde01e72e315181317b9aadea7fc0d0db2c22`. Both files match their
+committed bytes:
+
+| File | Bytes | SHA256 |
+| --- | ---: | --- |
+| `src/Interp.Python/zeta_interp/hidden_switch_compiled_file_fixtures.py` | 20,799 | `fb8b0d46f8f276535207b866be530a6c60b860fe31e847ee937d9e804de1153b` |
+| `src/Interp.Python/tests/test_hidden_switch_compiled_file_fixtures.py` | 14,209 | `c22160f35c6e709abe6b14672227f44ca064592c8e864ae884016649078262be` |
+
+The mutation descriptor is closed through one owned close site. An actual
+mutation write/identity/fsync `OSError` is recorded and re-raised. A subsequent
+close `OSError` is recorded separately and cannot mask that active failure;
+a close-only error still refuses. The uncertain close is not retried.
+
+Two new tests perform the real close and then inject `OSError`, once after a
+successful mutation and once after a preceding fsync failure. They require
+one close, the correct first refusal detail, the separate cleanup event,
+retained `ORIGINAL` bytes and a completed typed storage call. The owner reports
+33 passing tests in 5.56 seconds with strict typing and style checks. The
+reviewer read the correction and tests without executing them. No remaining
+material finding was identified within the seven-case/eleven-operation scope;
+all outer retention/replay, source/runtime and scientific-admission limits
+above remain unchanged.
 
 ```text
 Agency-Signature-Version: 1
