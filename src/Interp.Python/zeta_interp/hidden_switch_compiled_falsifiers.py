@@ -378,6 +378,18 @@ def _intervention(
     elif kind == "private-band-noninterference":
         changed_run = _timeline(strategy, tape, cert, _BAND)
         after = changed_run.episode
+        before_hashes = strict._array(
+            base.episode["FrameSha256"], 17, "Reference.Band.BeforeHashes"
+        )
+        after_hashes = strict._array(
+            after["FrameSha256"], 17, "Reference.Band.AfterHashes"
+        )
+        if any(left == right for left, right in zip(before_hashes, after_hashes)):
+            raise strict._Mismatch(
+                "VacuousMutation",
+                "all seventeen full-frame hashes must change",
+                "Reference.Band.FrameSha256",
+            )
         for index, (original_frame, changed_frame) in enumerate(
             zip(base.frames, changed_run.frames)
         ):
