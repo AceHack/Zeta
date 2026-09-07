@@ -18,11 +18,15 @@ module ZetaFsFuseAbi =
     /// fuse(4) FUSE_LOOKUP.
     let fuseLookup = 1u
 
+    /// fuse(4) FUSE_GETATTR.
+    let fuseGetattr = 3u
+
     /// fuse(4) FUSE_INIT.
     let fuseInit = 26u
 
     let attrSize = 88
     let entryOutSize = 128
+    let attrOutSize = 104
 
     /// fuse(4) highest documented kernel major at the man page pin.
     let protoMajor = 7u
@@ -256,6 +260,34 @@ module ZetaFsFuseAbi =
                       AttrValid = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 24, 8))
                       EntryValidNsec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 32, 4))
                       AttrValidNsec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 36, 4))
+                      Attr = attr }
+
+    type AttrOut =
+        { AttrValid: uint64
+          AttrValidNsec: uint32
+          Attr: Attr }
+
+    let encodeAttrOut (a: AttrOut) : byte[] =
+        let buf = Array.zeroCreate attrOutSize
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), a.AttrValid)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 8, 4), a.AttrValidNsec)
+        let attr = encodeAttr a.Attr
+        Buffer.BlockCopy(attr, 0, buf, 16, attrSize)
+        buf
+
+    let decodeAttrOut (buf: byte[]) : Result<AttrOut, DecodeError> =
+        if buf.Length < attrOutSize then
+            Error(Truncated(attrOutSize, buf.Length))
+        else
+            let attrBytes = Array.zeroCreate attrSize
+            Buffer.BlockCopy(buf, 16, attrBytes, 0, attrSize)
+
+            match decodeAttr attrBytes with
+            | Error e -> Error e
+            | Ok attr ->
+                Ok
+                    { AttrValid = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                      AttrValidNsec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 8, 4))
                       Attr = attr }
 
     let hex (buf: byte[]) : string =

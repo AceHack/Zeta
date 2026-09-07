@@ -1,0 +1,14 @@
+{
+  "id": "080d03f0b013d010a0130008ccdf4260",
+  "at": "2026-09-07T22:56:06.778Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z1C0KT087G0R002FWC42P",
+    "type": "task",
+    "title": "FUSE byte session GETATTR encodes fuse_attr_out",
+    "slug": "fuse-byte-session-getattr-encodes-fuse-attr-out",
+    "priority": "P2",
+    "filename": "081M1Z1C0KT087G0R002FWC42P-fuse-byte-session-getattr-encodes-fuse-attr-out.md"
+  }
+}

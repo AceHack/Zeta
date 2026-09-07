@@ -101,7 +101,7 @@ module ZetaFsFuseSession =
           Rdev = 0u
           Blksize = 4096u }
 
-    /// LOOKUP/GETATTR over a live Fake VFS session. INIT still works.
+    /// LOOKUP and GETATTR over a live Fake VFS session. INIT still works.
     /// Unknown opcodes are ENOSYS. No `/dev/fuse`.
     let handleMounted
         (session: ZetaFsFuse.Session)
@@ -136,6 +136,18 @@ module ZetaFsFuseSession =
                     | ZetaFsFuse.Fail e ->
                         Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
                     | _ -> Result.Ok(replyErrno header.Unique 22, session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseGetattr then
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr header.Nodeid) with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Stat(stat, ino) ->
+                    let body: ZetaFsFuseAbi.AttrOut =
+                        { AttrValid = 0UL
+                          AttrValidNsec = 0u
+                          Attr = attrOf stat ino }
+
+                    Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeAttrOut body), session)
                 | _ -> Result.Ok(replyErrno header.Unique 22, session)
             else
                 Result.Ok(replyErrno header.Unique 38, session)
