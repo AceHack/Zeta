@@ -330,6 +330,12 @@ assume the number.
    `real`. Does not call overlay join. Does not call this
    from `zeta-install.sh`. Does not change ISO bun
    `probe: null`. Does not invent an integrate decision.
+   Frost look CLI argv takes named effects (`081M1Y5WKS2087G0R002Q7ZKS7`):
+   `--os` / `--effects`. Missing `--effects` is unmeasured,
+   not a live look. `/dev/tpmrm0` is not `real`. Does not
+   mix argv with env. Does not call this from
+   `zeta-install.sh`. Does not change ISO bun `probe: null`.
+   Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

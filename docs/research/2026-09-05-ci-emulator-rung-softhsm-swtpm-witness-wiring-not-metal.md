@@ -354,6 +354,11 @@ not a live look. Does not default to `realProbeEffects`.
 OS family is named, not inferred. `/dev/tpmrm0` is not
 `real`. Does not call overlay join. Does not call this from
 `zeta-install.sh`. Does not change ISO bun `probe: null`.
+Frost look CLI argv takes named effects (`081M1Y5WKS2087G0R002Q7ZKS7`):
+`--os` / `--effects`. Missing `--effects` is unmeasured.
+`/dev/tpmrm0` is not `real`. Does not mix argv with env.
+Does not call this from `zeta-install.sh`. Does not change
+ISO bun `probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
