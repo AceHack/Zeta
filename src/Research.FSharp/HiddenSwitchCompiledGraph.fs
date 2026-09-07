@@ -40,7 +40,13 @@ module HiddenSwitchCompiledGraph =
     type FpSnapshot = { ThreadId: int; EnvironmentReturn: int; RoundingReturn: int; Fpsr: string; Fpcr: string; StructBytes: int }
     type ManagedImage = { Name: string; Dynamic: bool; Context: string; Mvid: string; Identity: FileIdentity }
     type NativeImage = { Index: uint32; Name: string; Header: string; Slide: int64; Identity: FileIdentity }
-    type NativeSnapshot = { CountBefore: uint32; CountAfter: uint32; Images: NativeImage[]; Atomic: bool; Limit: string }
+    type RawNativeImage = { Index: uint32; Name: string; Header: string; Slide: int64 }
+    type RawNativeSnapshot =
+        { Kind: string; CountBefore: uint32; CountAfter: uint32; Images: RawNativeImage[]
+          Failure: HiddenSwitchCompiledReceipt.Failure; FileIdentityWorkStarted: bool }
+    type NativeSnapshot =
+        { CountBefore: uint32; CountAfter: uint32; CountAfterFileIdentity: uint32
+          Images: NativeImage[]; Atomic: bool; Limit: string }
     type MethodEntry =
         { Type: string; Name: string; Signature: string; Token: int; Mvid: string; Generic: bool
           Prepared: bool; Refusal: string; Callable: string; IlHex: string }
@@ -93,24 +99,41 @@ module HiddenSwitchCompiledGraph =
     let private iterate operation values =
         values |> Seq.fold (fun state value -> state |> Result.bind (fun () -> operation value)) (Ok())
 
-    let private nativeImages () =
-        result {
-            let before = imageCount()
+    let private protect stage operation =
+        try operation()
+        with error -> Error(HiddenSwitchCompiledReceipt.failure stage "collector-exception" (error.GetType().FullName + ": " + error.Message))
+
+    let private nativeImages emit =
+        let before = imageCount()
+        let rows = ResizeArray<RawNativeImage>()
+        let collected = protect "native-images" (fun () -> result {
             if before = 0u || before > 1024u then
                 return! Error(HiddenSwitchCompiledReceipt.failure "native-images" "count-bound" "requires 1..1024 loaded images")
-            let rows = ResizeArray<NativeImage>()
             do! [0u .. before - 1u] |> iterate (fun index -> result {
                 let! path = name (imageName index)
                 let header = imageHeader index
                 if header = nativeint 0 then
-                    return! Error(HiddenSwitchCompiledReceipt.failure "native-images" "null-header" "dyld returned no header")
-                rows.Add { Index = index; Name = path; Header = address header; Slide = (imageSlide index).ToInt64(); Identity = identity path }
+                    return! Error(HiddenSwitchCompiledReceipt.failure "native-images" "null-header" ("dyld returned no header at index " + index.ToString(CultureInfo.InvariantCulture)))
+                rows.Add { Index = index; Name = path; Header = address header; Slide = (imageSlide index).ToInt64() }
             })
-            let after = imageCount()
-            if before <> after then
-                return! Error(HiddenSwitchCompiledReceipt.failure "native-images" "changed-count" "detected load/unload during non-atomic collection")
-            return { CountBefore = before; CountAfter = after; Images = rows.ToArray(); Atomic = false
-                     Limit = "equal counts do not exclude load/unload; OS/loader and borrowed pointers trusted; unavailable shared-cache files have no invented hash" }
+        })
+        let after = imageCount()
+        let admission = collected |> Result.bind (fun () ->
+            if before = after then Ok()
+            else Error(HiddenSwitchCompiledReceipt.failure "native-images" "changed-count"
+                            ("non-atomic raw enumeration: before=" + before.ToString(CultureInfo.InvariantCulture) + ", after=" + after.ToString(CultureInfo.InvariantCulture))))
+        let reason = match admission with Ok () -> null | Error failure -> failure
+        // Preserve actual raw observation and any collected prefix BEFORE file
+        // hashes or their possible lazy metadata/native-library initialization.
+        emit (box ({ Kind = "native-image-raw-observation"; CountBefore = before; CountAfter = after
+                     Images = rows.ToArray(); Failure = reason; FileIdentityWorkStarted = false }: RawNativeSnapshot))
+        result {
+            do! admission
+            let identified = rows |> Seq.map (fun row ->
+                { Index = row.Index; Name = row.Name; Header = row.Header; Slide = row.Slide; Identity = identity row.Name }: NativeImage) |> Seq.toArray
+            let afterIdentity = imageCount()
+            return { CountBefore = before; CountAfter = after; CountAfterFileIdentity = afterIdentity; Images = identified; Atomic = false
+                     Limit = "raw rows precede later file identity work; later loads do not expand that earlier observation; equal counts do not exclude load/unload; OS/loader trusted; unavailable shared-cache files have no invented hash" }
         }
 
     let private methods () =
@@ -135,10 +158,6 @@ module HiddenSwitchCompiledGraph =
                   Callable = if prepared then address (method.MethodHandle.GetFunctionPointer()) else null
                   IlHex = if isNull body then null else body.GetILAsByteArray() |> Convert.ToHexString }))
         |> Array.sortBy (fun item -> item.Type, item.Token)
-
-    let private protect stage operation =
-        try operation()
-        with error -> Error(HiddenSwitchCompiledReceipt.failure stage "collector-exception" (error.GetType().FullName + ": " + error.Message))
 
     let private prepare () =
         result {
@@ -186,9 +205,11 @@ module HiddenSwitchCompiledGraph =
                         Error(HiddenSwitchCompiledReceipt.failure "runtime" "startup-flags" (key + " must be 0"))
                     else Ok())
                 let before = fp()
+                emit (box {| Kind = "floating-environment-before"; Observation = before |})
                 let! calls = prepare()
                 let entries = methods()
-                let! images = nativeImages()
+                emit (box {| Kind = "method-callable-observation"; Methods = entries; NativePreparationCalls = calls; SourceDraws = 0 |})
+                let! images = nativeImages emit
                 let loaded = managed()
                 let after = fp()
                 let environment =
