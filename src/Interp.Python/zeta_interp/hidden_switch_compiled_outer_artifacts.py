@@ -152,7 +152,7 @@ def read_outer_artifacts(
                 maximum_stored_bytes=reference.StoredBytes,
                 maximum_original_bytes=reference.Bytes,
             )
-        except (OSError, RuntimeError, ValueError, TypeError) as error:
+        except Exception as error:  # noqa: BLE001 - retain ordinary helper failures at this boundary
             # This records a helper contract violation separately from a returned
             # typed refusal. No missing return becomes successful negative evidence.
             detail = str(error)

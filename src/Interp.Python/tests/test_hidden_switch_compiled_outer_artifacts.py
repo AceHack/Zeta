@@ -288,3 +288,45 @@ def test_actual_reader_contract_failure_is_not_a_successful_negative(
             assert observed.ActualResult is marker
         if kind == "refused":
             assert observed.ActualResult is refusal and result.Problem is refusal
+
+
+class ReadMarkerError(Exception):
+    pass
+
+
+@pytest.mark.parametrize(
+    "error", [ReadMarkerError("late custom failure"), KeyError("late missing key")]
+)
+def test_late_ordinary_exception_retains_actual_read_prefix(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, error: Exception
+) -> None:
+    row, expected = inputs(tmp_path)
+    original = storage.read_artifact
+
+    def read(
+        root: Path,
+        artifact: Any,
+        *,
+        maximum_stored_bytes: int,
+        maximum_original_bytes: int,
+    ) -> a.Admission[bytes]:
+        if artifact["File"] == "p7.json":
+            raise error
+        return original(
+            root,
+            artifact,
+            maximum_stored_bytes=maximum_stored_bytes,
+            maximum_original_bytes=maximum_original_bytes,
+        )
+
+    monkeypatch.setattr(storage, "read_artifact", read)
+    result = reader.read_outer_artifacts(encode(row), expected, tmp_path)
+    assert isinstance(result, reader.ReadFailure) and len(result.Reads) == 9
+    assert result.ReferenceReads == tuple(range(8))
+    observed = result.Reads[-1]
+    assert not observed.Returned and observed.ActualResult is None
+    assert (
+        observed.RaisedType == type(error).__module__ + "." + type(error).__qualname__
+    )
+    assert observed.RaisedDetail == str(error)
+    assert all(isinstance(item.ActualResult, a.Admitted) for item in result.Reads[:-1])
