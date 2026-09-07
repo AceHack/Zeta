@@ -1,0 +1,116 @@
+{
+  "InventoriedAtUtc": "2026-09-07T14:15:53.426236+00:00",
+  "Scope": "Post-capture inventory of unchanged retained API records, raw failed advisory log, source workflow, executed collector, first partial capture and independent local TRX comparison.",
+  "Files": [
+    {
+      "File": "pr-16928-a2bf4225-capture-1-incomplete/capture-script.py.txt",
+      "Bytes": 6500,
+      "Sha256": "8272d912d56e225d64254e0aa41256307b87320976eb2a7196bfa2e7fe971938"
+    },
+    {
+      "File": "pr-16928-a2bf4225-capture-1-incomplete/check-pages.json",
+      "Bytes": 79724,
+      "Sha256": "f20a33a2a0ffcdb21f139346f12a1d470da912b4c9581a7af874b1383a2666fe"
+    },
+    {
+      "File": "pr-16928-a2bf4225-capture-1-incomplete/failed-job-101768218792.json",
+      "Bytes": 2836,
+      "Sha256": "63704a6fea184d1b0734640b9e43580a445a6fd9acb8ed8d17eb64619113c635"
+    },
+    {
+      "File": "pr-16928-a2bf4225-capture-1-incomplete/refusal.json",
+      "Bytes": 383,
+      "Sha256": "75544401c0d94a9b02eb363b8744c7ea927d65813637b2deff7362c07c69f831"
+    },
+    {
+      "File": "pr-16928-a2bf4225-capture-1-incomplete/required-checks.json",
+      "Bytes": 438,
+      "Sha256": "f01cb65bc4bdc034ec54b82a171e49d519c82f4ed202cd294f97b4897a49f589"
+    },
+    {
+      "File": "pr-16928-a2bf4225-capture-1-incomplete/review-thread-pages.json",
+      "Bytes": 2668,
+      "Sha256": "3b5f3fc52819103ece03c8c3ac7a9c08ec91c403662a365dec94668b99ded29e"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/README.md",
+      "Bytes": 5884,
+      "Sha256": "b666c942a9fb1a70b4d7c6eda7a33ee6f5510e6157e45b6a086d151733654a80"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/capture-completion.json",
+      "Bytes": 791,
+      "Sha256": "a45a21d6e689464fe1c531678bf31230df8a084e18bc91cbef055f22b808ace3"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/capture-script.py.txt",
+      "Bytes": 6528,
+      "Sha256": "b39cbfc78db0f0ad94d4a98c0a68ef9c4cbcb0438095abc4d7cd917d28f3ffcb"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/check-pages.json",
+      "Bytes": 79724,
+      "Sha256": "f0029d3bce784517ffce03ad2a57a6e11cf580d2a37ecd365e74523ff85df5f8"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/failed-check-101768218792.json",
+      "Bytes": 4562,
+      "Sha256": "05af30c194dbe064e312f108a07bd23d1516c5fed10d5e4aeb996e704106b1c7"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/failed-check-annotations.json",
+      "Bytes": 2349,
+      "Sha256": "91893bd3dee06d0fbbc5d148be8ba9cee82b3ea9e1227f5ea24daefb048edc03"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/failed-job-101768218792.json",
+      "Bytes": 2836,
+      "Sha256": "63704a6fea184d1b0734640b9e43580a445a6fd9acb8ed8d17eb64619113c635"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/failed-job-101768218792.log",
+      "Bytes": 23092,
+      "Sha256": "21a255d551252dbe0fae00a3aa6b42f78af55cbae8d7092cb7b39b7993b092d1"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/failed-run-34128437843.json",
+      "Bytes": 15650,
+      "Sha256": "1800b0fe38cd06c7b7a967553ed1240ec34634f9845ae824aed35683b6f7c1bc"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/gate-workflow-at-head.yml.txt.gz",
+      "Bytes": 81963,
+      "Sha256": "212017e3c677798b69036fdafbbd7c07f2109fee126d31d0989fb7a562334456"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/local-gate-comparison.json",
+      "Bytes": 3204,
+      "Sha256": "cc69054d527a2a17ac357bfd169a8fe6aea96d14f249cb23a68b69e788342e55"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/required-checks.json",
+      "Bytes": 438,
+      "Sha256": "711f0bfcf191aa0a4d81101c76033bf8f10b40929ee643e740381ab2ec705757"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/review-thread-pages.json",
+      "Bytes": 2668,
+      "Sha256": "e36f3ef2c3161b99109a5bff61295570aa4c31ba6cc014bb68c8301f7d35c257"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/ruleset-16134995.json",
+      "Bytes": 1195,
+      "Sha256": "dd1287a181a87e3a61129538014d3339782baf63b687826fd344f336a67d0cbf"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/rulesets.json",
+      "Bytes": 2985,
+      "Sha256": "91f1f5b436f31b5d7af203c57ded40d32e1bf3a139ecc446187bcf99522cf6f4"
+    },
+    {
+      "File": "pr-16928-a2bf4225-review/snapshot.json",
+      "Bytes": 1687,
+      "Sha256": "8fdb75fca169910a6165998cd3f15dc7c75a6eebc3f0ca30232e4885c569a006"
+    }
+  ]
+}

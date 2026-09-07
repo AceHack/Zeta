@@ -1,0 +1,94 @@
+{
+  "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+  "InputResultManifest": {
+    "File": "root-main-gate-attempt-1-result.json",
+    "Bytes": 4393,
+    "Sha256": "05b0d1fbd7940076895b8eea79e17a7f5a8e08d8b5b25ac4eee672c7ee17b13b"
+  },
+  "TRX": [
+    {
+      "File": "root-main-attempt-1-Bayesian.Tests.trx.gz",
+      "CompressedSha256": "9ea783c6de5265fb1ce527d8a70ae1303af3a74038b1086c061ac81cd42bc8d1",
+      "OriginalSha256": "2cc66a22df3add3dddc8550e70ef08d170d1fd73c7ff40ad66b5abc7fe5cc33f",
+      "Outcomes": {
+        "Passed": 503
+      },
+      "Summary": {
+        "outcome": "Completed"
+      }
+    },
+    {
+      "File": "root-main-attempt-1-Core.CSharp.Mediator.Tests.trx.gz",
+      "CompressedSha256": "36e180960b6b0bf28b42d66197340d453500fb45b776ca6ab423e5f9f14ca1ae",
+      "OriginalSha256": "eb9fc1ea5b9dd54b3a25e9f7803744a6727b4f6b7e9f796c59568a7dce69176a",
+      "Outcomes": {
+        "Passed": 12
+      },
+      "Summary": {
+        "outcome": "Completed"
+      }
+    },
+    {
+      "File": "root-main-attempt-1-Core.CSharp.Tests.trx.gz",
+      "CompressedSha256": "9d1861af6e8f886085673061a019390d18c70bae32c927795d2f1c7896c7212d",
+      "OriginalSha256": "53949644f26ecca75e305abd85afbabc94f3c535df44750d0c2fe4d512718b9a",
+      "Outcomes": {
+        "Passed": 21
+      },
+      "Summary": {
+        "outcome": "Completed"
+      }
+    },
+    {
+      "File": "root-main-attempt-1-Tests.CSharp.trx.gz",
+      "CompressedSha256": "322a18562d1f2f48ef55bbc994ccf8c1c4d8e749bb2f93b85973f3497e4f9505",
+      "OriginalSha256": "7c2230daf92a4a2f8443d8befefeadc970048948ead01427a4bb8b090f9df7e3",
+      "Outcomes": {
+        "Passed": 413
+      },
+      "Summary": {
+        "outcome": "Completed"
+      }
+    },
+    {
+      "File": "root-main-attempt-1-Tests.CSharp.TypeProvider.trx.gz",
+      "CompressedSha256": "37ddb221d4094392c17264236deb0a73cf4b3e21ff8bc6d2b58727e5305abf7c",
+      "OriginalSha256": "ee9812e590b910352e02fe9001542b0a80c886dfd17739f99cdd71b6a9a2b2c0",
+      "Outcomes": {
+        "Passed": 3
+      },
+      "Summary": {
+        "outcome": "Completed"
+      }
+    },
+    {
+      "File": "root-main-attempt-1-Tests.FSharp.trx.gz",
+      "CompressedSha256": "51a0e38f52c610790ac8fe6b6089cb161ae87d5989547e1a330c3cfa02b843d5",
+      "OriginalSha256": "39209f7da56815342fee7b67237b6c78386f0746ed6da0c4ce1357c1b419ddba",
+      "Outcomes": {
+        "Passed": 1204
+      },
+      "Summary": {
+        "outcome": "Failed"
+      }
+    },
+    {
+      "File": "root-main-attempt-1-Tests.FSharp.Git.trx.gz",
+      "CompressedSha256": "49b3ad857f6b54eebb433ee59e64c801b1df940013d2eadb624d0d839465994d",
+      "OriginalSha256": "2a0081bd47267c8d6fbc63ee8869eaa8a40b00b2bf7c10a58c060017150ca730",
+      "Outcomes": {
+        "Passed": 38
+      },
+      "Summary": {
+        "outcome": "Completed"
+      }
+    }
+  ],
+  "RecordedBuildExitCode": 0,
+  "RecordedTestCommandExitCode": 1,
+  "RecordedFSharpProcessExitCode": 139,
+  "CompleteFullSuite": false,
+  "FSharpIndividualPasses": 1204,
+  "OtherIndividualPasses": 990,
+  "Scope": "Read-only independent compressed/raw hash and individual XML outcome check of retained owner artifacts; no build/test or cause diagnosis."
+}

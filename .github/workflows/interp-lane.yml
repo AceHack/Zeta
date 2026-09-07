@@ -148,7 +148,7 @@ jobs:
           # disabling the check.
           # The 157 predecessor/identity cases plus 101 acting carrier,
           # full-envelope, and independent-verdict cases.
-          INTERP_MIN_TESTS: "299"
+          INTERP_MIN_TESTS: "431"
         run: |
           set -euo pipefail
           uv run --project src/Interp.Python pytest src/Interp.Python/tests -q \

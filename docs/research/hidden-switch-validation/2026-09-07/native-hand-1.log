@@ -1,0 +1,10 @@
+
+
+/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp/check-hidden-switch-kernel.fsx(110,13): error FS0058: Unexpected syntax or possible incorrect indentation: this token is offside of context started at position (109:57). Try indenting this further.
+To continue using non-conforming indentation, pass the '--strict-indentation-' flag to the compiler, or set the language version to F# 7.
+
+
+
+/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp/check-hidden-switch-kernel.fsx(111,13): error FS0058: Unexpected syntax or possible incorrect indentation: this token is offside of context started at position (110:13). Try indenting this further.
+To continue using non-conforming indentation, pass the '--strict-indentation-' flag to the compiler, or set the language version to F# 7.
+

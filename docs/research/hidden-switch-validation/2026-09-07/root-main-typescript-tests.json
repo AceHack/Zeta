@@ -1,0 +1,21 @@
+{
+  "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+  "Command": [
+    "mise",
+    "exec",
+    "bun@1.3.13",
+    "--",
+    "bun",
+    "test",
+    "src/Core.TypeScript/formal-verification/tlc-attempts.test.ts",
+    "src/Core.TypeScript/formal-verification/run-tlc.test.ts",
+    "src/Core.TypeScript/formal-verification/tlc-invocation.test.ts",
+    "src/Core.TypeScript/hygiene/lint-drift-publication-lands.test.ts"
+  ],
+  "StartedUtc": "2026-09-07T13:56:41.875692+00:00",
+  "CompletedUtc": "2026-09-07T13:56:42.612203+00:00",
+  "ExitCode": 0,
+  "LogBytes": 7105,
+  "LogSha256": "ae16220a4c03b1bfc9b42f60b71c6ff16c7a46c061cdd2b0a99ebc561f1c583d",
+  "Scope": "Affected TLC regression suites plus concurrently merged drift-publication unit tests on CI Bun. Native full solution tests were concurrently active; no registered performance measurement."
+}

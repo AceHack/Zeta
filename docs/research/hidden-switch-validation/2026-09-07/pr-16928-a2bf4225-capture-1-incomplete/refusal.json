@@ -1,0 +1,7 @@
+{
+  "Complete": false,
+  "Stage": "download-failed-advisory-log",
+  "CommandExitCode": 1,
+  "ObservedDiagnostic": "the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway",
+  "Effect": "No original job log bytes were retained in this first partial capture. The next capture permits raw escaped bytes into a file, without executing them."
+}

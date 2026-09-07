@@ -1,0 +1,97 @@
+[
+  {
+    "id": 16189060,
+    "name": "Branch Safety",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "Lucent-Financial-Group/Zeta",
+    "enforcement": "active",
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5IX2Q0zgD3BoQ",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/rulesets/16189060"
+      },
+      "html": {
+        "href": "https://github.com/Lucent-Financial-Group/Zeta/rules/16189060"
+      }
+    },
+    "created_at": "2026-05-10T05:25:02.083-04:00",
+    "updated_at": "2026-08-01T12:17:01.113-04:00"
+  },
+  {
+    "id": 16134995,
+    "name": "CI Gate",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "Lucent-Financial-Group/Zeta",
+    "enforcement": "active",
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5IX2Q0zgD2M1M",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/rulesets/16134995"
+      },
+      "html": {
+        "href": "https://github.com/Lucent-Financial-Group/Zeta/rules/16134995"
+      }
+    },
+    "created_at": "2026-05-08T07:14:55.148-04:00",
+    "updated_at": "2026-08-13T17:50:54.114-04:00"
+  },
+  {
+    "id": 19490341,
+    "name": "Code Quality Copilot review for default branch",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "Lucent-Financial-Group/Zeta",
+    "enforcement": "disabled",
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5IX2Q0zgEpZiU",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/rulesets/19490341"
+      },
+      "html": {
+        "href": "https://github.com/Lucent-Financial-Group/Zeta/rules/19490341"
+      }
+    },
+    "created_at": "2026-07-21T18:40:44.846-04:00",
+    "updated_at": "2026-08-01T12:17:01.559-04:00"
+  },
+  {
+    "id": 15256879,
+    "name": "Default",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "Lucent-Financial-Group/Zeta",
+    "enforcement": "active",
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5IX2Q0zgDozS8",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/rulesets/15256879"
+      },
+      "html": {
+        "href": "https://github.com/Lucent-Financial-Group/Zeta/rules/15256879"
+      }
+    },
+    "created_at": "2026-04-19T01:12:35.412-04:00",
+    "updated_at": "2026-05-10T05:25:02.419-04:00"
+  },
+  {
+    "id": 16934633,
+    "name": "Heartbeat Branch Protection",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "Lucent-Financial-Group/Zeta",
+    "enforcement": "active",
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5IX2Q0zgECZuk",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/rulesets/16934633"
+      },
+      "html": {
+        "href": "https://github.com/Lucent-Financial-Group/Zeta/rules/16934633"
+      }
+    },
+    "created_at": "2026-05-27T10:15:45.261-04:00",
+    "updated_at": "2026-08-25T09:21:57.997-04:00"
+  }
+]

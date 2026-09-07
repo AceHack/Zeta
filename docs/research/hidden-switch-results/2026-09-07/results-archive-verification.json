@@ -1,0 +1,8 @@
+{
+  "VerifiedAtUtc": "2026-09-07T12:33:46.260902+00:00",
+  "Tag": "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-results",
+  "TagObject": "18299050b53045dedddedd1007d913d8f2ed2505",
+  "Commit": "900c0f57a51bfb79d7e9a7b8156ef367d97824f8",
+  "RemoteOutput": "18299050b53045dedddedd1007d913d8f2ed2505\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-results\n900c0f57a51bfb79d7e9a7b8156ef367d97824f8\trefs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-results^{}\n",
+  "OriginalResultsPreserved": true
+}

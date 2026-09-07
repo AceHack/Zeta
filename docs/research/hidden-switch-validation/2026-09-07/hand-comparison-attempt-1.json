@@ -1,0 +1,25 @@
+{
+  "InputFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/hidden-switch-hand-attempt-2.json",
+  "InputSha256": "A37CBDB7B62399FA0A74ADFE0ADAFF7395863F89A47131FCDF0ABC68C4260A84",
+  "HandConformance": {
+    "InputSha256": "A37CBDB7B62399FA0A74ADFE0ADAFF7395863F89A47131FCDF0ABC68C4260A84",
+    "Transitions": 16,
+    "Cues": 4,
+    "Conditioning": 40,
+    "Planning": 30,
+    "Episodes": 96,
+    "MaximumAbsoluteError": 2.7755575615628914e-17,
+    "NativeAndIndependentFalsifiers": [
+      "action-effect",
+      "suffix-noninterference",
+      "private-band-noninterference",
+      "scorer-noninterference",
+      "caller-frame-isolation",
+      "geometry-palette-invariance",
+      "malformed-input-refusal",
+      "padded-equivalence",
+      "counter-accounting",
+      "null-dominance"
+    ]
+  }
+}

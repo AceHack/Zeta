@@ -1,0 +1,54 @@
+{
+  "ObservedAtUtc": "2026-09-07T13:49:35.846131+00:00",
+  "PullRequest": 16925,
+  "CheckedHead": "038ff0e3c854d6757dce08252ee9c15e5105429c",
+  "MergeCommit": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e",
+  "MergedAt": "2026-09-07T13:48:38Z",
+  "RefreshedOriginMain": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e",
+  "AncestorVerified": true,
+  "VisibleAndSquashBodyEqual": true,
+  "SourceFiles": [
+    {
+      "File": "tests/Tests.FSharp/Formal/Tlc.Attempts.fs",
+      "Sha256": "3E31F7F94D9E843479C8BB6BA2F4E0BD613DABB1B312CBEFC002C488BEC797B3",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs",
+      "Sha256": "7D2A4B5425B0CD62CD9E29F593ED87C7A1FCEB3FC9A6271DE1826E2406C759B9",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-attempts.ts",
+      "Sha256": "B2519EA289D7FA7955C4582335FF3FC8A4A05D0151B513CF6D4F6A459DAAFE63",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-attempts.test.ts",
+      "Sha256": "AED35A1D82341D33A49DBFC7EAAA558290E674D0246D8E3B561B8B524EA1EB70",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/run-tlc.ts",
+      "Sha256": "E65B529C3762565EBE8FDAE132F6D2C836A9FB0D8CC6CCE54BF734E954C90004",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-invocation.ts",
+      "Sha256": "EA4C865EF96FA5301CA24B82133968EC099DB18090AD73320F7562C6FBBCBAB4",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": "registry/tlc-retry-fixtures.json",
+      "Sha256": "06ACDE8663442083126C158C7179FA8FA505B7B49C3511DA9754F195E6795D64",
+      "EqualCheckedHeadAndMerge": true
+    },
+    {
+      "File": ".github/workflows/gate.yml",
+      "Sha256": "6C5F1BE46C7A200EF7998072DFB16DB8EBB4BAA1564D9537AF68088F8342487C",
+      "EqualCheckedHeadAndMerge": true
+    }
+  ],
+  "ProjectWholeBytesEqual": false,
+  "ProjectHelperLinkRetained": true
+}

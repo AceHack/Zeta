@@ -2,6 +2,10 @@
 
 [Repair and boundaries](../../2026-09-07-tlc-attempt-retention.md).
 
+[Final publication proof](publication-proof.md) records PR #16925's main
+ancestry, exact source/body checks, specific CodeQL test-alert disposition,
+and corrected remote validation without rewriting earlier failed attempts.
+
 All linked logs retain their exact local bytes. [Log fingerprints](log-hashes.json)
 bind the files; [source fingerprints](source-hashes.json) bind the nine repair
 files at `07e399929`. No real TLC catalog case was executed by the focused

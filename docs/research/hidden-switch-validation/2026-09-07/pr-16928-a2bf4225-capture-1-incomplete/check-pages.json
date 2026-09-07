@@ -1,0 +1,2170 @@
+{
+  "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+  "DeclaredCount": 96,
+  "ObservedCount": 96,
+  "Pages": [
+    {
+      "ObservedAtUtc": "2026-09-07T14:10:22.151916+00:00",
+      "RequestedCursor": null,
+      "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+      "Connection": {
+        "totalCount": 96,
+        "pageInfo": {
+          "hasNextPage": true,
+          "endCursor": "MjU"
+        },
+        "nodes": [
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSpjA",
+            "databaseId": 101762509196,
+            "name": "verify flush batch",
+            "status": "COMPLETED",
+            "conclusion": "SKIPPED",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437902/job/101762509196",
+            "startedAt": "2026-09-07T13:37:32Z",
+            "completedAt": "2026-09-07T13:37:32Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437902,
+                "workflow": {
+                  "name": "agent-reviewer"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSC0g",
+            "databaseId": 101762499282,
+            "name": "Analyze (csharp)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128434073/job/101762499282",
+            "startedAt": "2026-09-07T13:37:33Z",
+            "completedAt": "2026-09-07T13:40:18Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128434073,
+                "workflow": {
+                  "name": "CodeQL - Code Quality"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSlgQ",
+            "databaseId": 101762508161,
+            "name": "Path gate",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437825/job/101762508161",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:01Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437825,
+                "workflow": {
+                  "name": "CodeQL"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSjBA",
+            "databaseId": 101762507524,
+            "name": "agencysignature (PR body)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437906/job/101762507524",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:54Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437906,
+                "workflow": {
+                  "name": "agencysignature-enforcement"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYvzTQ",
+            "databaseId": 101762986829,
+            "name": "agencysignature (PR body)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128584162/job/101762986829",
+            "startedAt": "2026-09-07T13:39:11Z",
+            "completedAt": "2026-09-07T13:39:32Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128584162,
+                "workflow": {
+                  "name": "agencysignature-enforcement"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSkTw",
+            "databaseId": 101762507855,
+            "name": "audit actions/cache paths vs git ls-files",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437869/job/101762507855",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:49Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437869,
+                "workflow": {
+                  "name": "ci-cache-paths-lint"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYRlfw",
+            "databaseId": 101762491775,
+            "name": "submit-nuget",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128431217/job/101762491775",
+            "startedAt": "2026-09-07T13:37:30Z",
+            "completedAt": "2026-09-07T13:38:35Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128431217,
+                "workflow": {
+                  "name": "Automatic Dependency Submission"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSmyQ",
+            "databaseId": 101762508489,
+            "name": "matrix setup",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508489",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:38Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSj2Q",
+            "databaseId": 101762507737,
+            "name": "interp lane (drift check)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437893/job/101762507737",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:44:49Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437893,
+                "workflow": {
+                  "name": "interp-lane"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSmwQ",
+            "databaseId": 101762508481,
+            "name": "mechanical lint auto-heal (produce patch)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437909/job/101762508481",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:37Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437909,
+                "workflow": {
+                  "name": "lint-autofix"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSkbA",
+            "databaseId": 101762507884,
+            "name": "test",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437940/job/101762507884",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437940,
+                "workflow": {
+                  "name": "udp-lossy-tests"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSCyg",
+            "databaseId": 101762499274,
+            "name": "Analyze (go)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128434073/job/101762499274",
+            "startedAt": "2026-09-07T13:37:32Z",
+            "completedAt": "2026-09-07T13:40:10Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128434073,
+                "workflow": {
+                  "name": "CodeQL - Code Quality"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSBhQ",
+            "databaseId": 101762498949,
+            "name": "Analyze (java-kotlin)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128434073/job/101762498949",
+            "startedAt": "2026-09-07T13:37:32Z",
+            "completedAt": "2026-09-07T13:38:59Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128434073,
+                "workflow": {
+                  "name": "CodeQL - Code Quality"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSCZA",
+            "databaseId": 101762499172,
+            "name": "Analyze (javascript-typescript)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128434073/job/101762499172",
+            "startedAt": "2026-09-07T13:37:32Z",
+            "completedAt": "2026-09-07T13:42:12Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128434073,
+                "workflow": {
+                  "name": "CodeQL - Code Quality"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSDfA",
+            "databaseId": 101762499452,
+            "name": "Analyze (python)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128434073/job/101762499452",
+            "startedAt": "2026-09-07T13:37:32Z",
+            "completedAt": "2026-09-07T13:39:00Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128434073,
+                "workflow": {
+                  "name": "CodeQL - Code Quality"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYbpHg",
+            "databaseId": 101762656542,
+            "name": "Analyze (actions)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437825/job/101762656542",
+            "startedAt": "2026-09-07T13:38:03Z",
+            "completedAt": "2026-09-07T13:39:08Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437825,
+                "workflow": {
+                  "name": "CodeQL"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSkCQ",
+            "databaseId": 101762507785,
+            "name": "agencysignature (human-review evidence)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437906/job/101762507785",
+            "startedAt": "2026-09-07T13:37:45Z",
+            "completedAt": "2026-09-07T13:38:04Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437906,
+                "workflow": {
+                  "name": "agencysignature-enforcement"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYv0mA",
+            "databaseId": 101762987160,
+            "name": "agencysignature (human-review evidence)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128584162/job/101762987160",
+            "startedAt": "2026-09-07T13:39:11Z",
+            "completedAt": "2026-09-07T13:39:27Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128584162,
+                "workflow": {
+                  "name": "agencysignature-enforcement"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSlYQ",
+            "databaseId": 101762508129,
+            "name": "path filter",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508129",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYbpRg",
+            "databaseId": 101762656582,
+            "name": "Analyze (csharp)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437825/job/101762656582",
+            "startedAt": "2026-09-07T13:38:05Z",
+            "completedAt": "2026-09-07T13:46:32Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437825,
+                "workflow": {
+                  "name": "CodeQL"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYbqGw",
+            "databaseId": 101762656795,
+            "name": "Analyze (java-kotlin)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437825/job/101762656795",
+            "startedAt": "2026-09-07T13:38:03Z",
+            "completedAt": "2026-09-07T13:39:24Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437825,
+                "workflow": {
+                  "name": "CodeQL"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYbptw",
+            "databaseId": 101762656695,
+            "name": "Analyze (python)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437825/job/101762656695",
+            "startedAt": "2026-09-07T13:38:39Z",
+            "completedAt": "2026-09-07T13:39:59Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437825,
+                "workflow": {
+                  "name": "CodeQL"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYbpTQ",
+            "databaseId": 101762656589,
+            "name": "Analyze (javascript-typescript)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437825/job/101762656589",
+            "startedAt": "2026-09-07T13:38:03Z",
+            "completedAt": "2026-09-07T13:44:16Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437825,
+                "workflow": {
+                  "name": "CodeQL"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSqGQ",
+            "databaseId": 101762509337,
+            "name": "agencysignature (main tip)",
+            "status": "COMPLETED",
+            "conclusion": "SKIPPED",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437906/job/101762509337",
+            "startedAt": "2026-09-07T13:37:32Z",
+            "completedAt": "2026-09-07T13:37:32Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437906,
+                "workflow": {
+                  "name": "agencysignature-enforcement"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYv5yA",
+            "databaseId": 101762988488,
+            "name": "agencysignature (main tip)",
+            "status": "COMPLETED",
+            "conclusion": "SKIPPED",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128584162/job/101762988488",
+            "startedAt": "2026-09-07T13:39:09Z",
+            "completedAt": "2026-09-07T13:39:08Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128584162,
+                "workflow": {
+                  "name": "agencysignature-enforcement"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ObservedAtUtc": "2026-09-07T14:10:22.676809+00:00",
+      "RequestedCursor": "MjU",
+      "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+      "Connection": {
+        "totalCount": 96,
+        "pageInfo": {
+          "hasNextPage": true,
+          "endCursor": "NTA"
+        },
+        "nodes": [
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSmVg",
+            "databaseId": 101762508374,
+            "name": "lint (semgrep)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508374",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSm9Q",
+            "databaseId": 101762508533,
+            "name": "lint (semgrep drift)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508533",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:39:29Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSmdA",
+            "databaseId": 101762508404,
+            "name": "lint (yaml/k8s)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508404",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:34Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnqg",
+            "databaseId": 101762508714,
+            "name": "lint (shellcheck)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508714",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:33Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnPA",
+            "databaseId": 101762508604,
+            "name": "lint (bash retirement inventory + hygiene unit tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508604",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:39:13Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnBQ",
+            "databaseId": 101762508549,
+            "name": "lint (actionlint)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508549",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:03Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSn_A",
+            "databaseId": 101762508796,
+            "name": "lint (tick-history order)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508796",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:50Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSmpw",
+            "databaseId": 101762508455,
+            "name": "drift (triangle corners)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508455",
+            "startedAt": "2026-09-07T13:37:33Z",
+            "completedAt": "2026-09-07T13:37:50Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnlg",
+            "databaseId": 101762508694,
+            "name": "lint (no conflict markers)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508694",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:30Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSmsA",
+            "databaseId": 101762508464,
+            "name": "lint (archive header \u00a733)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508464",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:41Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnHw",
+            "databaseId": 101762508575,
+            "name": "lint (\u00a733 migration xrefs)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508575",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:32Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSpDA",
+            "databaseId": 101762509068,
+            "name": "lint (tick-shard relative-paths)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509068",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:49Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnsQ",
+            "databaseId": 101762508721,
+            "name": "lint (build-graph completeness)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508721",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:50Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnLw",
+            "databaseId": 101762508591,
+            "name": "lint (structural hygiene)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508591",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:08Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSoHw",
+            "databaseId": 101762508831,
+            "name": "lint (no empty dirs)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508831",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnzw",
+            "databaseId": 101762508751,
+            "name": "lint (markdownlint)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508751",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:16Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSndQ",
+            "databaseId": 101762508661,
+            "name": "lint (TS)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508661",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:36Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSovw",
+            "databaseId": 101762508991,
+            "name": "lint (twitch-ai app)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508991",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:08Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnXA",
+            "databaseId": 101762508636,
+            "name": "lint (identity-dla site)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508636",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:38:08Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnww",
+            "databaseId": 101762508739,
+            "name": "lint (Renderers/website)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508739",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:05Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnhA",
+            "databaseId": 101762508676,
+            "name": "lint (F#)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508676",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:39:27Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSniA",
+            "databaseId": 101762508680,
+            "name": "lint (C#)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508680",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:39:43Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSoRQ",
+            "databaseId": 101762508869,
+            "name": "lint (Go)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508869",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:38Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSogA",
+            "databaseId": 101762508928,
+            "name": "lint (Python)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508928",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:39:02Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSoJQ",
+            "databaseId": 101762508837,
+            "name": "lint (Rust)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508837",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:40:01Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ObservedAtUtc": "2026-09-07T14:10:23.175777+00:00",
+      "RequestedCursor": "NTA",
+      "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+      "Connection": {
+        "totalCount": 96,
+        "pageInfo": {
+          "hasNextPage": true,
+          "endCursor": "NzU"
+        },
+        "nodes": [
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsSQ",
+            "databaseId": 101762509897,
+            "name": "cross-verify (ace-suite)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509897",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:38:31Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsFw",
+            "databaseId": 101762509847,
+            "name": "cross-verify (qsharp-oracles)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509847",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:54Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsMg",
+            "databaseId": 101762509874,
+            "name": "cross-verify (byte-lock-oracles)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509874",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:41:26Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsEw",
+            "databaseId": 101762509843,
+            "name": "cross-verify (proof-lineage-binaries)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509843",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSrsQ",
+            "databaseId": 101762509745,
+            "name": "cross-verify (stage0-independence)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509745",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSr6w",
+            "databaseId": 101762509803,
+            "name": "cross-verify (step-output-writers)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509803",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsIA",
+            "databaseId": 101762509856,
+            "name": "cross-verify (action-sha-roster)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509856",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSscQ",
+            "databaseId": 101762509937,
+            "name": "cross-verify (task-zetaid-resolves)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509937",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSr-w",
+            "databaseId": 101762509819,
+            "name": "cross-verify (credential-role-separation)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509819",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsfA",
+            "databaseId": 101762509948,
+            "name": "cross-verify (coauthor-identity-collision)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509948",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsgg",
+            "databaseId": 101762509954,
+            "name": "cross-verify (write-token-consistency)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509954",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsZw",
+            "databaseId": 101762509927,
+            "name": "cross-verify (heartbeat-lane-attestations)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509927",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsdg",
+            "databaseId": 101762509942,
+            "name": "cross-verify (heartbeat-lane-audit-tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509942",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsXQ",
+            "databaseId": 101762509917,
+            "name": "cross-verify (push-without-rebase)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509917",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSs7A",
+            "databaseId": 101762510060,
+            "name": "cross-verify (skip-token-cannot-land)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510060",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsUA",
+            "databaseId": 101762509904,
+            "name": "cross-verify (dotnet-pin-parity)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509904",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStCQ",
+            "databaseId": 101762510089,
+            "name": "cross-verify (argocd-pin-parity)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510089",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:57Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSshA",
+            "databaseId": 101762509956,
+            "name": "cross-verify (committed-chart-credentials)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509956",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:50Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSs5A",
+            "databaseId": 101762510052,
+            "name": "cross-verify (committed-chart-credentials-tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510052",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsKQ",
+            "databaseId": 101762509865,
+            "name": "cross-verify (bootstrap-application-pin-parity)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509865",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSswQ",
+            "databaseId": 101762510017,
+            "name": "cross-verify (bootstrap-application-pin-parity-tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510017",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:55Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSseg",
+            "databaseId": 101762509946,
+            "name": "cross-verify (argocd-pin-parity-tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509946",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStEg",
+            "databaseId": 101762510098,
+            "name": "cross-verify (mise-toolchain-couplings)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510098",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:56Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsjw",
+            "databaseId": 101762509967,
+            "name": "cross-verify (flash-entrypoint-parity)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509967",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSsuA",
+            "databaseId": 101762510008,
+            "name": "cross-verify (chart-target-revisions)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510008",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "ObservedAtUtc": "2026-09-07T14:10:23.601570+00:00",
+      "RequestedCursor": "NzU",
+      "HeadSha": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb",
+      "Connection": {
+        "totalCount": 96,
+        "pageInfo": {
+          "hasNextPage": false,
+          "endCursor": "OTY"
+        },
+        "nodes": [
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSslQ",
+            "databaseId": 101762509973,
+            "name": "cross-verify (image-source-provenance)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762509973",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSszQ",
+            "databaseId": 101762510029,
+            "name": "cross-verify (image-source-provenance-tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510029",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStKQ",
+            "databaseId": 101762510121,
+            "name": "cross-verify (reason-truth)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510121",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSs4Q",
+            "databaseId": 101762510049,
+            "name": "cross-verify (no-raw-nul-in-source)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510049",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:55Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStpQ",
+            "databaseId": 101762510245,
+            "name": "cross-verify (concept-registry-drift)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510245",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStFQ",
+            "databaseId": 101762510101,
+            "name": "cross-verify (tech-radar-claims)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510101",
+            "startedAt": "2026-09-07T13:37:42Z",
+            "completedAt": "2026-09-07T13:38:00Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStHQ",
+            "databaseId": 101762510109,
+            "name": "cross-verify (tech-radar-audit-tests)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510109",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:54Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStIQ",
+            "databaseId": 101762510113,
+            "name": "cross-verify (check-then-use-races)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510113",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:53Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSs7g",
+            "databaseId": 101762510062,
+            "name": "cross-verify (mumps-zeta-id)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510062",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStYQ",
+            "databaseId": 101762510177,
+            "name": "cross-verify (zeta-id-gen-layout-drift)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510177",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:51Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYStbQ",
+            "databaseId": 101762510189,
+            "name": "cross-verify (algebra-tower-drift)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762510189",
+            "startedAt": "2026-09-07T13:37:35Z",
+            "completedAt": "2026-09-07T13:37:55Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnow",
+            "databaseId": 101762508707,
+            "name": "test (TS hermetic)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508707",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:56:24Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSoGQ",
+            "databaseId": 101762508825,
+            "name": "test (TS environment-dependent)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508825",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:41:47Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYSnXw",
+            "databaseId": 101762508639,
+            "name": "drift-canary",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762508639",
+            "startedAt": "2026-09-07T13:37:34Z",
+            "completedAt": "2026-09-07T13:37:38Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYYdSA",
+            "databaseId": 101762604360,
+            "name": "build-and-test (ubuntu-24.04)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762604360",
+            "startedAt": "2026-09-07T13:37:53Z",
+            "completedAt": "2026-09-07T13:52:22Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYYdhw",
+            "databaseId": 101762604423,
+            "name": "build-and-test (ubuntu-24.04-arm)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762604423",
+            "startedAt": "2026-09-07T13:37:55Z",
+            "completedAt": "2026-09-07T13:45:36Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYYdRQ",
+            "databaseId": 101762604357,
+            "name": "build-and-test (macos-26)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762604357",
+            "startedAt": "2026-09-07T13:37:57Z",
+            "completedAt": "2026-09-07T13:52:35Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYYc5Q",
+            "databaseId": 101762604261,
+            "name": "full-verify (7-lang oracle + cost + proofs)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101762604261",
+            "startedAt": "2026-09-07T13:37:53Z",
+            "completedAt": "2026-09-07T13:42:52Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsdsCWQ",
+            "databaseId": 101768168025,
+            "name": "gate (required)",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101768168025",
+            "startedAt": "2026-09-07T13:56:26Z",
+            "completedAt": "2026-09-07T13:56:34Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsdvIqA",
+            "databaseId": 101768218792,
+            "name": "drift (loud)",
+            "status": "COMPLETED",
+            "conclusion": "FAILURE",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34128437843/job/101768218792",
+            "startedAt": "2026-09-07T13:56:37Z",
+            "completedAt": "2026-09-07T13:59:47Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": {
+                "databaseId": 34128437843,
+                "workflow": {
+                  "name": "gate"
+                }
+              }
+            }
+          },
+          {
+            "__typename": "CheckRun",
+            "id": "CR_kwDOSF9kNM8AAAAXsYqA6w",
+            "databaseId": 101762892011,
+            "name": "CodeQL",
+            "status": "COMPLETED",
+            "conclusion": "SUCCESS",
+            "detailsUrl": "https://github.com/Lucent-Financial-Group/Zeta/runs/101762892011",
+            "startedAt": "2026-09-07T13:38:49Z",
+            "completedAt": "2026-09-07T13:38:57Z",
+            "checkSuite": {
+              "commit": {
+                "oid": "a2bf4225cef685ff9c67037d8dbcf7e19b9704cb"
+              },
+              "workflowRun": null
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

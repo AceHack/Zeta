@@ -1,0 +1,42 @@
+{
+  "HeadSha": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "RunId": 34133618773,
+  "RunAttempt": 1,
+  "JobId": 101780447107,
+  "JobName": "lint (semgrep drift)",
+  "Conclusion": "failure",
+  "Rule": "invisible-unicode-in-text",
+  "FindingCount": 3,
+  "SourcePath": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json",
+  "SourceBytes": 711308,
+  "SourceSha256": "040b64e0a36a7935f28aba75dc825040a1552910e47e3a3a10d2d61e44950205",
+  "Occurrences": [
+    {
+      "ByteOffset": 50540,
+      "Codepoint": "U+FEFF",
+      "JsonPath": "$.files[6].patch",
+      "EmbeddedOriginalLog": "ci-attribution-attempt-1.log"
+    },
+    {
+      "ByteOffset": 182327,
+      "Codepoint": "U+FEFF",
+      "JsonPath": "$.files[24].patch",
+      "EmbeddedOriginalLog": "ci-hygiene-attempt-1.log"
+    },
+    {
+      "ByteOffset": 305632,
+      "Codepoint": "U+FEFF",
+      "JsonPath": "$.files[32].patch",
+      "EmbeddedOriginalLog": "ci-races-attempt-1.log"
+    }
+  ],
+  "OriginalJobLog": {
+    "Bytes": 3779217,
+    "Sha256": "3f32aa6a38c326f951b595e292257dc6be9737e9bb066ce6483f9cd68bbf29e7"
+  },
+  "CompressedJobLog": {
+    "Bytes": 666728,
+    "Sha256": "eec9a32e096291097a5f2f8f85748630c588aa68ac0a38fb8b05425865706bfe"
+  },
+  "Disposition": "A real text-hygiene finding in a raw archival API response. Preserve its exact bytes losslessly with explicit compressed/uncompressed hashes and links; no stripping, reserialization, rule suppression or scientific change. Corrected publication head requires separate CI."
+}

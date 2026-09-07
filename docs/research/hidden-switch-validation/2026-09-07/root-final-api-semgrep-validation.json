@@ -1,0 +1,42 @@
+{
+  "CollectedAtUtc": "2026-09-07T14:51:33.440867+00:00",
+  "WorkingTreeMeaning": "The focused gzip/manifest/index correction was uncommitted during scans. The second scan additionally covered the imported failure-evidence files and staged correction. No claim that checkout HEAD alone describes the scanned worktree.",
+  "Command": [
+    "semgrep",
+    "--config",
+    ".semgrep.yml",
+    "--config",
+    ".semgrep-floor.yml",
+    "--error",
+    "--metrics=off"
+  ],
+  "SemgrepVersion": "1.174.0",
+  "ConfigSha256": {
+    ".semgrep.yml": "1344cfb02710176e6cf4c08b901a9af7cd8f50aa262af392c56f38bb8471a54c",
+    ".semgrep-floor.yml": "e664ab67275b96e7775da64dc66e96884ced954f911ba714b890fde55087dfbb"
+  },
+  "Logs": [
+    {
+      "File": "root-final-api-semgrep-attempt-1.log.gz",
+      "Bytes": 1497,
+      "Sha256": "16a4ccfea2cb7d3742c1b6029109ab3a4d8bca1f55afb9c3ef0e845babc468ef",
+      "OriginalBytes": 20415,
+      "OriginalSha256": "68c338649af3aafe831b7eed3943ffd28d000712d9da58775933d8da87528bc2",
+      "ExitCode": 0,
+      "TargetsScanned": 43187,
+      "CheckoutHead": "f3bd1347e490084f411198dc8abff197c817eb1b"
+    },
+    {
+      "File": "root-final-api-semgrep-attempt-2.log.gz",
+      "Bytes": 1497,
+      "Sha256": "4bbb5b3faca41104c2674dca2b3904ee7f83d03c09df916d4e08763b9782dc23",
+      "OriginalBytes": 20415,
+      "OriginalSha256": "a2e98e9f8dfe8f92015da7671738653dc05bbfbf11695edd5a5f52e6374c1e43",
+      "ExitCode": 0,
+      "TargetsScanned": 43191,
+      "CheckoutHead": "40dd16ed34248e9258f6de468e2e7ccb6c43f642"
+    }
+  ],
+  "Scope": "Both full repository scans completed with zero findings; original output retains all warnings and skipped-file declarations. This does not assert that ignored or oversized files were scanned. No scientific execution or rule change.",
+  "CollectedCheckoutHead": "40dd16ed34248e9258f6de468e2e7ccb6c43f642"
+}

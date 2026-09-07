@@ -1,0 +1,23 @@
+{
+  "ChangedAtUtc": "2026-09-07T14:45:47.784357+00:00",
+  "PublishedHead": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "OriginalFile": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json",
+  "OriginalBytes": 711308,
+  "OriginalSha256": "040b64e0a36a7935f28aba75dc825040a1552910e47e3a3a10d2d61e44950205",
+  "CompressedFile": "docs/research/tlc-attempt-retention-validation/2026-09-07/publication/tlc-ci-merge-commit.json.gz",
+  "CompressedBytes": 146476,
+  "CompressedSha256": "d2509c1dc1282aa7ad4428274d85c2c139f2f72605ff52dd104db6499ff98aca",
+  "DecompressionEqualsOriginal": true,
+  "LiteralUtf8BomByteOffsets": [
+    50540,
+    182327,
+    305632
+  ],
+  "JsonPaths": [
+    "$.files[6].patch",
+    "$.files[24].patch",
+    "$.files[32].patch"
+  ],
+  "PreviousManifestSha256": "936628ab9d00f05b0a2922502a814e625b8b07aab16dc197a824068c92eb4330",
+  "Scope": "Lossless packaging of one raw external API record. No character removal, JSON reserialization of that record, rule suppression, or scientific artifact change."
+}

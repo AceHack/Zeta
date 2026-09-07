@@ -1,0 +1,4 @@
+$ uv run mypy zeta_interp/hidden_switch_reference.py zeta_interp/hidden_switch_replay.py zeta_interp/hidden_switch_verdict.py tests/test_hidden_switch_reference.py tests/test_hidden_switch_replay.py tests/test_hidden_switch_verdict.py
+Success: no issues found in 6 source files
+
+ExitCode: 0

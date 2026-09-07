@@ -1,0 +1,56 @@
+{
+  "SourceCommit": "b3b120a8f5dfcd885fc48dc223554cf2f73e3988",
+  "Results": [
+    {
+      "Command": [
+        "dotnet",
+        "build",
+        "tests/Tests.FSharp/Tests.FSharp.fsproj",
+        "-c",
+        "Release",
+        "-p:ContinuousIntegrationBuild=true",
+        "-m:1",
+        "-nr:false"
+      ],
+      "StartedUtc": "2026-09-07T13:23:23.048608+00:00",
+      "CompletedUtc": "2026-09-07T13:24:41.123144+00:00",
+      "ExitCode": 0,
+      "LogFile": "root-publication-build-attempt-1.log",
+      "LogBytes": 3966,
+      "LogSha256": "a85128c051b45f38c7fbfff133b89c13ff047aa5a5218f4940230416279b577e"
+    },
+    {
+      "Command": [
+        "dotnet",
+        "test",
+        "tests/Tests.FSharp/Tests.FSharp.fsproj",
+        "-c",
+        "Release",
+        "--no-build",
+        "--filter",
+        "FullyQualifiedName~HiddenSwitchTests",
+        "--logger",
+        "trx;LogFileName=hidden-switch-publication-focused.trx"
+      ],
+      "StartedUtc": "2026-09-07T13:24:41.123285+00:00",
+      "CompletedUtc": "2026-09-07T13:24:44.395682+00:00",
+      "ExitCode": 0,
+      "LogFile": "root-publication-focused-attempt-1.log",
+      "LogBytes": 499,
+      "LogSha256": "5b531daa085f28182f585e0bcd2d9e00a6109d0a3c6c2b8e65567739ead8efd8"
+    }
+  ],
+  "InputHashesUnchanged": true,
+  "FocusedTrx": {
+    "File": "root-publication-focused.trx.gz",
+    "Bytes": 3581,
+    "Sha256": "5b64b6549b3d59e16c16a907f7cd636a90240edebd8fdf22c98c8ce9566aab97",
+    "OriginalBytes": 24880,
+    "OriginalSha256": "20d08172773b6e02851f6921ac4bfd697065ddf06b9d2e4d8e2dd69cb6e430b6",
+    "Outcomes": {
+      "Passed": 16
+    }
+  },
+  "ScientificSourceCount": 19,
+  "ScientificSourcesUnchanged": true
+}

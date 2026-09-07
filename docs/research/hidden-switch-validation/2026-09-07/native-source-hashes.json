@@ -1,0 +1,42 @@
+{
+  "RegistrationCommit": "6a3150037a1e6be6ae89996dc8562f2061f7c75d",
+  "Scope": "Native source bytes after bounded independent source review; nine files. Tests, project links and logs are validation-only. This is not the complete integrated implementation manifest.",
+  "Files": [
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCarrier.fs",
+      "Sha256": "EB21882259B482DB5136824D7E9A10F348ABC59E3DC8A9A1E80221AFF0B3D868"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchExperiment.fs",
+      "Sha256": "21B33C22912D56DD1BDDA071BB821279207E64C4A34BA05129564C4D81CBC55A"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchObservation.fs",
+      "Sha256": "09468D775552259612AF31EF7AAF3831474B5AE37F0063EA17AA632D04A4448E"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchPolicy.fs",
+      "Sha256": "4358B476FA4871B1C187F615133B35BAC1139359919500CD3B05DBE1DA0AAFB1"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchReceipt.fs",
+      "Sha256": "8D0F4B1844B64B46CBC8B6E8A0688B0AFAD1BA2F29B1A088DFEAA8C1AE529F55"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchRuntime.fsx",
+      "Sha256": "FD90ED4117DF678FC2BFEACF987A59593446EC755F14333B9F067C6172C48D14"
+    },
+    {
+      "File": "src/Research.FSharp/check-hidden-switch-kernel.fsx",
+      "Sha256": "B218FC4A733DFAAB986F82921A3EA0AE985A4B9A56C39F085BD75A8951A95052"
+    },
+    {
+      "File": "src/Research.FSharp/measure-hidden-switch-inference.fsx",
+      "Sha256": "E8330838C496C518D72DCAF6661CD97319A040B260F856A0DF7A13D984F67F81"
+    },
+    {
+      "File": "src/Research.FSharp/run-hidden-switch-experiment.fsx",
+      "Sha256": "088C4BC3F18688DB08C4503D12EB23C05D7B47D1AD44477FA3679FA9599E7D9F"
+    }
+  ]
+}

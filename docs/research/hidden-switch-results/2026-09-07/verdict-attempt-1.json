@@ -1,0 +1,375 @@
+{
+  "Protocol": "hidden-switch-v1",
+  "Kind": "verdict",
+  "Complete": true,
+  "Failure": null,
+  "ProtocolSha256": "E6E2943D5991E70DBC95D3ED1E620AA7505D3E692315E80588729C9FCD03946A",
+  "StartedAtUtc": "2026-09-07T12:17:10.091882+00:00",
+  "Arguments": [
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/behavior-attempt-1.json",
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/cost-attempt-1.json",
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/replay-attempt-1.json",
+    "--root",
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906",
+    "--output",
+    "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/docs/research/hidden-switch-results/2026-09-07/verdict-attempt-1.json"
+  ],
+  "Environment": {
+    "Python": "3.14.6 (main, Jun 11 2026, 03:55:33) [Clang 22.1.3 ]",
+    "OperatingSystem": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+  },
+  "Config": {
+    "Arms": [
+      "belief-depth3",
+      "belief-myopic",
+      "belief-myopic-padded",
+      "latest-cue-depth3"
+    ],
+    "Panels": [
+      {
+        "Name": "dot-switch",
+        "Episodes": 1024,
+        "Seed": 9101,
+        "Domain": 911,
+        "Effect": true,
+        "Geometry": "dot",
+        "Palette": "fixed"
+      },
+      {
+        "Name": "bar-switch",
+        "Episodes": 1024,
+        "Seed": 9101,
+        "Domain": 912,
+        "Effect": true,
+        "Geometry": "bar",
+        "Palette": "fixed"
+      },
+      {
+        "Name": "palette-switch",
+        "Episodes": 1024,
+        "Seed": 9101,
+        "Domain": 913,
+        "Effect": true,
+        "Geometry": "dot",
+        "Palette": "odd-complement"
+      },
+      {
+        "Name": "dot-null",
+        "Episodes": 1024,
+        "Seed": 9101,
+        "Domain": 914,
+        "Effect": false,
+        "Geometry": "dot",
+        "Palette": "fixed"
+      }
+    ],
+    "Horizon": 16,
+    "Observations": 17,
+    "DriftProbability": 0.125,
+    "CueReliability": 0.75,
+    "InitialBelief": 0.5,
+    "PlanningDepth": 3,
+    "TieTolerance": 1e-12,
+    "ReplayTolerance": 1e-10,
+    "ReturnScale": 64,
+    "MinimumGain": 0.1,
+    "MaximumCostRatio": 1.25,
+    "FrameWidth": 64,
+    "FrameHeight": 32,
+    "ProjectionRows": 24,
+    "Cost": {
+      "Seed": 9203,
+      "Domain": 921,
+      "SourceEpisodes": 72,
+      "WarmupEpisodes": 8,
+      "TimedEpisodes": 64,
+      "Replicates": 5,
+      "Rotation": "left-by-replicate"
+    }
+  },
+  "AttemptedRoster": {
+    "BehaviorArmPanels": 16,
+    "BehaviorEpisodes": 16384,
+    "CostRows": 20,
+    "CostWarmupEpisodes": 160,
+    "CostTimedEpisodes": 1280
+  },
+  "ExecutionProgress": {
+    "Phase": "complete",
+    "BehaviorEpisodesCompared": 16384,
+    "CostEpisodesCompared": 1440,
+    "Current": null
+  },
+  "Admission": true,
+  "PromotionEligible": true,
+  "Provenance": {
+    "SourceCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+    "RegistrationTag": "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-registration",
+    "RegistrationCommit": "6a3150037a1e6be6ae89996dc8562f2061f7c75d",
+    "ImplementationTag": "refs/tags/archive/experiments/081M1XK02XM087G0R00043EW05-implementation",
+    "ImplementationCommit": "4fc82b611012bd2620a26e02afe6baba491fe553",
+    "SourceHashes": [
+      {
+        "File": "src/Core/ControlScheme.fs",
+        "Sha256": "1FBA050D2E32DC59C6B7EB9CC40130F0152CCFCD2465B70CA7F94801DEB59F87"
+      },
+      {
+        "File": "src/Core/GameEnvironment.fs",
+        "Sha256": "D4DE496B2DB5136C53F5761825A23862F55083FE04C7E475033B3748A890EED8"
+      },
+      {
+        "File": "src/Core/SplitMix64.fs",
+        "Sha256": "56D14EA951C459EF9509F934AE9AD65A293BEACBA841A2CBA8A2289693AAF174"
+      },
+      {
+        "File": "src/Core/Result.fs",
+        "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1"
+      },
+      {
+        "File": "src/Research.FSharp/ResearchRandom.fs",
+        "Sha256": "4422C5EE4380A698FF479F0082C44E1453990C48AA034B9842719C4E0E7C79FF"
+      },
+      {
+        "File": "src/Research.FSharp/HiddenSwitchReceipt.fs",
+        "Sha256": "8D0F4B1844B64B46CBC8B6E8A0688B0AFAD1BA2F29B1A088DFEAA8C1AE529F55"
+      },
+      {
+        "File": "src/Research.FSharp/HiddenSwitchObservation.fs",
+        "Sha256": "09468D775552259612AF31EF7AAF3831474B5AE37F0063EA17AA632D04A4448E"
+      },
+      {
+        "File": "src/Research.FSharp/HiddenSwitchCarrier.fs",
+        "Sha256": "EB21882259B482DB5136824D7E9A10F348ABC59E3DC8A9A1E80221AFF0B3D868"
+      },
+      {
+        "File": "src/Research.FSharp/HiddenSwitchPolicy.fs",
+        "Sha256": "4358B476FA4871B1C187F615133B35BAC1139359919500CD3B05DBE1DA0AAFB1"
+      },
+      {
+        "File": "src/Research.FSharp/HiddenSwitchExperiment.fs",
+        "Sha256": "21B33C22912D56DD1BDDA071BB821279207E64C4A34BA05129564C4D81CBC55A"
+      },
+      {
+        "File": "src/Research.FSharp/HiddenSwitchRuntime.fsx",
+        "Sha256": "FD90ED4117DF678FC2BFEACF987A59593446EC755F14333B9F067C6172C48D14"
+      },
+      {
+        "File": "src/Research.FSharp/run-hidden-switch-experiment.fsx",
+        "Sha256": "088C4BC3F18688DB08C4503D12EB23C05D7B47D1AD44477FA3679FA9599E7D9F"
+      },
+      {
+        "File": "src/Research.FSharp/measure-hidden-switch-inference.fsx",
+        "Sha256": "E8330838C496C518D72DCAF6661CD97319A040B260F856A0DF7A13D984F67F81"
+      },
+      {
+        "File": "src/Research.FSharp/check-hidden-switch-kernel.fsx",
+        "Sha256": "B218FC4A733DFAAB986F82921A3EA0AE985A4B9A56C39F085BD75A8951A95052"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+        "Sha256": "7130FBF88E4A5F7393AD59CFFD6C56637B3D226F630B8CF547167D319BF880E2"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/hidden_switch_replay.py",
+        "Sha256": "1F676223B32583AB3313476373A6FA9FBA792231827F504788F39C1BA42D50D5"
+      },
+      {
+        "File": "src/Interp.Python/zeta_interp/hidden_switch_verdict.py",
+        "Sha256": "DEB49D086669FC71C8675548408EE251FDB175624FEB48931993D60F70D36F23"
+      },
+      {
+        "File": "docs/research/2026-09-07-hidden-switch-protocol.md",
+        "Sha256": "E6E2943D5991E70DBC95D3ED1E620AA7505D3E692315E80588729C9FCD03946A"
+      },
+      {
+        "File": "docs/research/hidden-switch-validation/2026-09-07/hand-fixture.json",
+        "Sha256": "A37CBDB7B62399FA0A74ADFE0ADAFF7395863F89A47131FCDF0ABC68C4260A84"
+      }
+    ],
+    "Python": "3.14.6 (main, Jun 11 2026, 03:55:33) [Clang 22.1.3 ]",
+    "OperatingSystem": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+  },
+  "HandConformance": {
+    "InputSha256": "A37CBDB7B62399FA0A74ADFE0ADAFF7395863F89A47131FCDF0ABC68C4260A84",
+    "Transitions": 16,
+    "Cues": 4,
+    "Conditioning": 40,
+    "Planning": 30,
+    "Episodes": 96,
+    "MaximumAbsoluteError": 2.7755575615628914e-17,
+    "NativeAndIndependentFalsifiers": [
+      "action-effect",
+      "suffix-noninterference",
+      "private-band-noninterference",
+      "scorer-noninterference",
+      "caller-frame-isolation",
+      "geometry-palette-invariance",
+      "malformed-input-refusal",
+      "padded-equivalence",
+      "counter-accounting",
+      "null-dominance"
+    ]
+  },
+  "InputBehaviorSha256": "F15CA0D41B1437B5E05A6CA402A8A8609F85D8B0E1C6218C316460257F450C2E",
+  "InputCostSha256": "6AF9CF36F4CFC1C5E38F236E8922025CD845481D9E2E18DAFF58E5BE191B9DF3",
+  "InputReplaySha256": "04C282C7EEA51E9672362427D36E4238F10897074CA9B691BA9C3A534E9137FB",
+  "Replay": {
+    "BehaviorEpisodes": 16384,
+    "CostEpisodes": 1440,
+    "MaximumAbsoluteError": 0.0,
+    "Mismatches": 0,
+    "CostsRemeasured": false
+  },
+  "Conditions": [
+    {
+      "Name": "dot-switch/planning-gain",
+      "Passed": true,
+      "Value": 0.1248321533203125,
+      "Minimum": 0.1
+    },
+    {
+      "Name": "dot-switch/padded-myopic-equivalence",
+      "Passed": true,
+      "ActionMismatches": 0,
+      "RewardMismatches": 0,
+      "MaximumBeliefError": 0.0
+    },
+    {
+      "Name": "bar-switch/planning-gain",
+      "Passed": true,
+      "Value": 0.1067657470703125,
+      "Minimum": 0.1
+    },
+    {
+      "Name": "bar-switch/padded-myopic-equivalence",
+      "Passed": true,
+      "ActionMismatches": 0,
+      "RewardMismatches": 0,
+      "MaximumBeliefError": 0.0
+    },
+    {
+      "Name": "palette-switch/planning-gain",
+      "Passed": true,
+      "Value": 0.1173095703125,
+      "Minimum": 0.1
+    },
+    {
+      "Name": "palette-switch/padded-myopic-equivalence",
+      "Passed": true,
+      "ActionMismatches": 0,
+      "RewardMismatches": 0,
+      "MaximumBeliefError": 0.0
+    },
+    {
+      "Name": "dot-null/padded-myopic-equivalence",
+      "Passed": true,
+      "ActionMismatches": 0,
+      "RewardMismatches": 0,
+      "MaximumBeliefError": 0.0
+    },
+    {
+      "Name": "dot-null/action-dominance",
+      "Passed": true,
+      "AllHarvest": true,
+      "SameRewards": true
+    },
+    {
+      "Name": "cost/WallMsTotal/planner-over-padded",
+      "Passed": true,
+      "Value": 1.005628842594892,
+      "Maximum": 1.25
+    },
+    {
+      "Name": "cost/AllocatedBytesTotal/planner-over-padded",
+      "Passed": true,
+      "Value": 1.0,
+      "Maximum": 1.25
+    }
+  ],
+  "BehavioralConditionsMet": true,
+  "CostConditionsMet": true,
+  "AllRegisteredConditionsMet": true,
+  "PanelReturns": [
+    {
+      "Panel": "dot-switch",
+      "MeanNormalizedReturns": {
+        "belief-depth3": 0.6129302978515625,
+        "belief-myopic": 0.48809814453125,
+        "belief-myopic-padded": 0.48809814453125,
+        "latest-cue-depth3": 0.4299163818359375
+      }
+    },
+    {
+      "Panel": "bar-switch",
+      "MeanNormalizedReturns": {
+        "belief-depth3": 0.6052398681640625,
+        "belief-myopic": 0.49847412109375,
+        "belief-myopic-padded": 0.49847412109375,
+        "latest-cue-depth3": 0.4338836669921875
+      }
+    },
+    {
+      "Panel": "palette-switch",
+      "MeanNormalizedReturns": {
+        "belief-depth3": 0.60748291015625,
+        "belief-myopic": 0.49017333984375,
+        "belief-myopic-padded": 0.49017333984375,
+        "latest-cue-depth3": 0.4171905517578125
+      }
+    },
+    {
+      "Panel": "dot-null",
+      "MeanNormalizedReturns": {
+        "belief-depth3": 0.50225830078125,
+        "belief-myopic": 0.50225830078125,
+        "belief-myopic-padded": 0.50225830078125,
+        "latest-cue-depth3": 0.50225830078125
+      }
+    }
+  ],
+  "CostMediansPerEpisode": {
+    "belief-depth3": {
+      "WallMsTotal": 0.202149734375,
+      "CpuMsTotal": 0.20278125,
+      "AllocatedBytesTotal": 220425.375
+    },
+    "belief-myopic": {
+      "WallMsTotal": 0.157884125,
+      "CpuMsTotal": 0.16009375,
+      "AllocatedBytesTotal": 128409.375
+    },
+    "belief-myopic-padded": {
+      "WallMsTotal": 0.201018234375,
+      "CpuMsTotal": 0.2009375,
+      "AllocatedBytesTotal": 220425.375
+    },
+    "latest-cue-depth3": {
+      "WallMsTotal": 0.203484375,
+      "CpuMsTotal": 0.203296875,
+      "AllocatedBytesTotal": 220425.375
+    }
+  },
+  "PlannerCostRatios": {
+    "belief-myopic": {
+      "WallMsTotal": 1.2803677024210003,
+      "CpuMsTotal": 1.2666406402498536,
+      "AllocatedBytesTotal": 1.7165831934000146
+    },
+    "belief-myopic-padded": {
+      "WallMsTotal": 1.005628842594892,
+      "CpuMsTotal": 1.0091757387247278,
+      "AllocatedBytesTotal": 1.0
+    },
+    "latest-cue-depth3": {
+      "WallMsTotal": 0.9934410658066498,
+      "CpuMsTotal": 0.9974636845745908,
+      "AllocatedBytesTotal": 1.0
+    }
+  },
+  "UnavailableRatios": [],
+  "CpuRatioIsDescriptiveOnly": true,
+  "LatestCueComparisonIsDescriptive": true,
+  "PaddedWorkIsIntentionallyDiscarded": true,
+  "ClaimsOnlineSearchNecessary": false,
+  "FinishedAtUtc": "2026-09-07T12:17:52.312080+00:00"
+}

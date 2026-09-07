@@ -1,0 +1,4 @@
+Command: uv run ruff format --check .
+40 files already formatted
+
+ExitCode: 0

@@ -1,0 +1,50 @@
+{
+  "id": 16134995,
+  "name": "CI Gate",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "Lucent-Financial-Group/Zeta",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~DEFAULT_BRANCH"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "gate (required)",
+            "integration_id": 15368
+          }
+        ]
+      }
+    }
+  ],
+  "node_id": "RRS_lACqUmVwb3NpdG9yec5IX2Q0zgD2M1M",
+  "created_at": "2026-05-08T07:14:55.148-04:00",
+  "updated_at": "2026-08-13T17:50:54.114-04:00",
+  "bypass_actors": [
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "pull_request"
+    }
+  ],
+  "current_user_can_bypass": "pull_requests_only",
+  "_links": {
+    "self": {
+      "href": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/rulesets/16134995"
+    },
+    "html": {
+      "href": "https://github.com/Lucent-Financial-Group/Zeta/rules/16134995"
+    }
+  }
+}

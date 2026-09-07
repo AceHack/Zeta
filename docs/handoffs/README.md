@@ -31,11 +31,13 @@ Current:
   correspondence carries a register. Aaron is routing this through OpenAI's Astra.
 - [`2026-09-06-vera-unattended-research-continuation.md`](./2026-09-06-vera-unattended-research-continuation.md)
   — **Vera, consolidated unattended continuation.** Paste-ready GPT-6 Astra bootstrap,
-  eight verified research/repair merges, immutable experiment references, combined
-  299-case Interp validation and encountered re-entry hazards. Separates supplied-goal
-  action success, conditional entropy/work accounting and finite classical C/K functors
-  from planning, controller-count and quantum-equivalence claims. The next bounded
-  action-conditioned hidden-dynamics preregistration remains proposed.
+  verified research/repair merges, immutable experiment references, combined
+  431-case Interp validation and encountered re-entry hazards. Includes the completed
+  supplied-model hidden-switch result, exact replay, matched-work costs, all-row
+  descriptive figure and separately retained publication failures/recovery. The next
+  compiled-controller protocol is remotely registered and waits for prior-study main
+  integration; model-identification advice remains unregistered. Keeps learning,
+  online-search necessity, controller counts and quantum equivalence outside earned results.
 - [`2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md`](./2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md)
   — **Fresh Astra re-entry.** Links Vera's landed ARC honesty audit, WSet/Simplex comparison,
   Mess3 and RRXOR learning, entropy/spectral work, learned-HMM and factored-state controls,
@@ -48,8 +50,9 @@ Current:
   and the gates required before any ARC-AGI-3 policy integration.
   The rendered predictor now has independently replayed results: all RNNs beat bigram,
   none meets the stronger order-two criterion. The subsequent supplied-goal catch trial
-  passes every registered return/cost condition with exact full replay; learned perception,
-  action-conditioned dynamics and planning remain separate future experiments.
+  passes every registered return/cost condition with exact full replay. The continuation
+  also records supplied-model hidden-switch planning; learned perception and learned
+  dynamics remain separate future experiments.
 - `vera-qsharp-verification-package.txt` — the Q# verification hand-off (brief REVISION 2 +
   claim-bearing sources + known-answer table). Vera's verdict lines remain hers to write.
 - `kestrel-shape-validation-bundle.txt` — the faithful-renderer port bundle (sources + cartridges

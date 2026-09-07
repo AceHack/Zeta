@@ -1,0 +1,104 @@
+{
+  "ObservedAtUtc": "2026-09-07T14:07:11.427717+00:00",
+  "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+  "BuildExitCode": 0,
+  "TestCommandExitCode": 1,
+  "FSharpTestProcessReportedExitCode": 139,
+  "CompleteFullSuite": false,
+  "InputCount": 1955,
+  "ChangedInputs": [],
+  "Trx": [
+    {
+      "File": "root-main-attempt-1-Bayesian.Tests.trx.gz",
+      "Bytes": 131463,
+      "Sha256": "9ea783c6de5265fb1ce527d8a70ae1303af3a74038b1086c061ac81cd42bc8d1",
+      "OriginalFile": "tests/Bayesian.Tests/TestResults/hidden-switch-main-1_net10.0_20260907095530.trx",
+      "OriginalBytes": 742753,
+      "OriginalSha256": "2cc66a22df3add3dddc8550e70ef08d170d1fd73c7ff40ad66b5abc7fe5cc33f",
+      "Outcomes": {
+        "Passed": 503
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "File": "root-main-attempt-1-Core.CSharp.Mediator.Tests.trx.gz",
+      "Bytes": 2901,
+      "Sha256": "36e180960b6b0bf28b42d66197340d453500fb45b776ca6ab423e5f9f14ca1ae",
+      "OriginalFile": "tests/Core.CSharp.Mediator.Tests/TestResults/hidden-switch-main-1_net10.0_20260907095524.trx",
+      "OriginalBytes": 19609,
+      "OriginalSha256": "eb9fc1ea5b9dd54b3a25e9f7803744a6727b4f6b7e9f796c59568a7dce69176a",
+      "Outcomes": {
+        "Passed": 12
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "File": "root-main-attempt-1-Core.CSharp.Tests.trx.gz",
+      "Bytes": 4140,
+      "Sha256": "9d1861af6e8f886085673061a019390d18c70bae32c927795d2f1c7896c7212d",
+      "OriginalFile": "tests/Core.CSharp.Tests/TestResults/hidden-switch-main-1_net10.0_20260907095524.trx",
+      "OriginalBytes": 31465,
+      "OriginalSha256": "53949644f26ecca75e305abd85afbabc94f3c535df44750d0c2fe4d512718b9a",
+      "Outcomes": {
+        "Passed": 21
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "File": "root-main-attempt-1-Tests.CSharp.trx.gz",
+      "Bytes": 93663,
+      "Sha256": "322a18562d1f2f48ef55bbc994ccf8c1c4d8e749bb2f93b85973f3497e4f9505",
+      "OriginalFile": "tests/Tests.CSharp/TestResults/hidden-switch-main-1_net10.0_20260907095527.trx",
+      "OriginalBytes": 580093,
+      "OriginalSha256": "7c2230daf92a4a2f8443d8befefeadc970048948ead01427a4bb8b090f9df7e3",
+      "Outcomes": {
+        "Passed": 413
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "File": "root-main-attempt-1-Tests.CSharp.TypeProvider.trx.gz",
+      "Bytes": 1687,
+      "Sha256": "37ddb221d4094392c17264236deb0a73cf4b3e21ff8bc6d2b58727e5305abf7c",
+      "OriginalFile": "tests/Tests.CSharp.TypeProvider/TestResults/hidden-switch-main-1_net10.0_20260907095524.trx",
+      "OriginalBytes": 6342,
+      "OriginalSha256": "ee9812e590b910352e02fe9001542b0a80c886dfd17739f99cdd71b6a9a2b2c0",
+      "Outcomes": {
+        "Passed": 3
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "File": "root-main-attempt-1-Tests.FSharp.trx.gz",
+      "Bytes": 324906,
+      "Sha256": "51a0e38f52c610790ac8fe6b6089cb161ae87d5989547e1a330c3cfa02b843d5",
+      "OriginalFile": "tests/Tests.FSharp/TestResults/hidden-switch-main-1_net10.0_20260907095710.trx",
+      "OriginalBytes": 1734023,
+      "OriginalSha256": "39209f7da56815342fee7b67237b6c78386f0746ed6da0c4ce1357c1b419ddba",
+      "Outcomes": {
+        "Passed": 1204
+      },
+      "SummaryOutcome": "Failed"
+    },
+    {
+      "File": "root-main-attempt-1-Tests.FSharp.Git.trx.gz",
+      "Bytes": 7727,
+      "Sha256": "49b3ad857f6b54eebb433ee59e64c801b1df940013d2eadb624d0d839465994d",
+      "OriginalFile": "tests/Tests.FSharp.Git/TestResults/hidden-switch-main-1_net10.0_20260907095525.trx",
+      "OriginalBytes": 57454,
+      "OriginalSha256": "2a0081bd47267c8d6fbc63ee8869eaa8a40b00b2bf7c10a58c060017150ca730",
+      "Outcomes": {
+        "Passed": 38
+      },
+      "SummaryOutcome": "Completed"
+    }
+  ],
+  "Sequence": {
+    "File": "root-main-attempt-1-sequence.xml.gz",
+    "Bytes": 47798,
+    "Sha256": "33df0efee1701c57d5a1f6f59e2262681fa90ef928807d8232f96ea0382af20b",
+    "OriginalBytes": 468079,
+    "OriginalSha256": "1194d43a142d413ee963d44a8bd4656e3c3286b9dd962f9ad37792816fad16f7"
+  },
+  "Interpretation": "The command failed despite a misleading Passed line for the FSharp partial run. Individual completed outcomes do not establish completion of the full suite. Root launcher exits on command failure and therefore did not emit its success-only completion file. No cause is established."
+}

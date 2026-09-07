@@ -1,0 +1,14 @@
+{
+  "HandBytes": 476473,
+  "HandEpisodes": 96,
+  "MinimumHandEpisodeBytes": 4285,
+  "MaximumHandEpisodeBytes": 5145,
+  "WorstCaseEpisodeBytes": 5700,
+  "BehaviorEpisodes": 16384,
+  "EpisodeArrayBoundBytes": 93405184,
+  "EnvelopeReserveBytes": 1048576,
+  "WholeFileBoundBytes": 94453760,
+  "GitHub100MiBBytes": 104857600,
+  "WithinBound": true,
+  "Method": "Fixed-schema bound:24characters for every belief/Q numeric value, conservative integer widths, exact fixed strings/hashes,1MiB envelope/provenance reserve. No registered source generated."
+}

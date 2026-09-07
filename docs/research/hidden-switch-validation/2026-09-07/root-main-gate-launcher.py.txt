@@ -1,0 +1,61 @@
+from pathlib import Path
+import datetime
+import hashlib
+import json
+import os
+import subprocess
+import sys
+
+root = Path.cwd()
+out = root / "docs/research/hidden-switch-validation/2026-09-07"
+def utc():
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+def digest(path):
+    with path.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest().upper()
+manifest = json.loads((out / "implementation-source-manifest.json").read_text())
+for row in manifest["SourceHashes"]:
+    assert digest(root / row["File"]) == row["Sha256"], row["File"]
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+paths = ["registry/tlc-models.json", "registry/tlc-retry-fixtures.json",
+         "src/Core.TLA/tla2tools.jar", "tests/Tests.FSharp/Tests.FSharp.fsproj",
+         "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs", "tests/Tests.FSharp/Formal/Tlc.Attempts.fs",
+         "src/Core.TypeScript/formal-verification/run-tlc.ts",
+         "src/Core.TypeScript/formal-verification/tlc-attempts.ts",
+         "src/Core.TypeScript/formal-verification/tlc-invocation.ts"]
+paths += sorted(str(p.relative_to(root)) for p in (root / "src/Core.TLA/specs").iterdir() if p.suffix in (".tla", ".cfg"))
+tracked = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
+paths += [p for p in tracked if p.startswith(("src/", "tests/", "clis/")) and Path(p).suffix in (".fs", ".fsi", ".fsproj", ".cs", ".csproj")]
+paths += [p for p in ("Directory.Build.props", "Directory.Build.targets", "Directory.Packages.props", "Zeta.sln", "global.json", ".mise.toml") if (root / p).is_file()]
+paths = sorted(set(paths))
+metadata = {"StartedAtUtc": utc(), "SourceCommit": head,
+            "InputSha256": {p: digest(root / p) for p in paths},
+            "ScientificSourceHashes": manifest["SourceHashes"],
+            "RegisteredSourcesGenerated": False,
+            "Scope": "Final main integration native gate on its fixed committed source. Selected tracked native sources/build and TLC input hashes; not a complete transitive runtime dependency proof. No registered experiment execution"}
+with (out / "root-main-gate-attempt-1.json").open("x") as handle:
+    json.dump(metadata, handle, indent=2)
+commands = [
+    ("build", ["dotnet", "build", "Zeta.sln", "-c", "Release", "-p:ContinuousIntegrationBuild=true", "-m:1", "-nr:false"]),
+    ("tests", ["dotnet", "test", "Zeta.sln", "-c", "Release", "--no-build", "--blame-crash", "--blame-hang-timeout", "15m", "--logger", "trx;LogFilePrefix=hidden-switch-main-1"]),
+]
+env = os.environ.copy()
+env["MSBUILDDEBUGPATH"] = str(root / ".git/hidden-switch-main-msbuild-diagnostics")
+Path(env["MSBUILDDEBUGPATH"]).mkdir(exist_ok=False)
+for name, argv in commands:
+    started = utc()
+    print(name + " started " + started, flush=True)
+    with (out / ("root-main-" + name + "-attempt-1.log")).open("x") as output:
+        output.write("Command: " + json.dumps(argv) + "\nStartedAtUtc: " + started + "\nSourceCommit: " + head + "\n")
+        output.flush()
+        result = subprocess.run(argv, cwd=root, env=env, stdout=output, stderr=subprocess.STDOUT)
+        output.write("\nExitCode: " + str(result.returncode) + "\nFinishedAtUtc: " + utc() + "\n")
+    print(name + " exit " + str(result.returncode), flush=True)
+    if result.returncode:
+        sys.exit(result.returncode)
+unchanged = all(digest(root / path) == expected for path, expected in metadata["InputSha256"].items())
+with (out / "root-main-gate-completion.json").open("x") as handle:
+    json.dump({"SourceCommit": head, "FinishedAtUtc": utc(), "BuildExitCode": 0, "TestExitCode": 0, "InputCount": len(paths), "AllInputHashesUnchanged": unchanged}, handle, indent=2)
+print("Main integration native gate complete; unchanged=" + str(unchanged), flush=True)
+if not unchanged:
+    sys.exit(1)

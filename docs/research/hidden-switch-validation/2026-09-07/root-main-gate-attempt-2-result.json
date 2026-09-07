@@ -1,0 +1,627 @@
+{
+  "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+  "CollectedAtUtc": "2026-09-07T14:17:28.024628+00:00",
+  "Projects": [
+    {
+      "Project": "Bayesian.Tests",
+      "Total": 503,
+      "Outcomes": {
+        "Passed": 503
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "Project": "Core.CSharp.Mediator.Tests",
+      "Total": 12,
+      "Outcomes": {
+        "Passed": 12
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "Project": "Core.CSharp.Tests",
+      "Total": 21,
+      "Outcomes": {
+        "Passed": 21
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "Project": "Tests.CSharp",
+      "Total": 413,
+      "Outcomes": {
+        "Passed": 413
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "Project": "Tests.CSharp.TypeProvider",
+      "Total": 3,
+      "Outcomes": {
+        "Passed": 3
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "Project": "Tests.FSharp",
+      "Total": 6584,
+      "Outcomes": {
+        "Passed": 6578,
+        "NotExecuted": 6
+      },
+      "SummaryOutcome": "Completed"
+    },
+    {
+      "Project": "Tests.FSharp.Git",
+      "Total": 38,
+      "Outcomes": {
+        "Passed": 38
+      },
+      "SummaryOutcome": "Completed"
+    }
+  ],
+  "TrxArchives": [
+    {
+      "File": "root-main-attempt-2-Bayesian.Tests.trx.gz",
+      "Bytes": 131460,
+      "Sha256": "5a7323b28cec6fc11df0aa4eecd68318b0c4cbbb829d246debfce53df07c7f7c",
+      "OriginalFile": "tests/Bayesian.Tests/TestResults/hidden-switch-main-2_net10.0_20260907100942.trx",
+      "OriginalBytes": 742753,
+      "OriginalSha256": "22aa7cd2b636d1f4e1b18b621e82b46faa9942f437a098fac65da754872f4660"
+    },
+    {
+      "File": "root-main-attempt-2-Core.CSharp.Mediator.Tests.trx.gz",
+      "Bytes": 2900,
+      "Sha256": "4fcae9ec6aca3c32d849c938ac234ee403c4e416b1d65df17944adf5e4ed46dc",
+      "OriginalFile": "tests/Core.CSharp.Mediator.Tests/TestResults/hidden-switch-main-2_net10.0_20260907100934.trx",
+      "OriginalBytes": 19609,
+      "OriginalSha256": "5dcaf58fa315114096287a98184f72f47136a9049ebc65527c4a6febb1fce748"
+    },
+    {
+      "File": "root-main-attempt-2-Core.CSharp.Tests.trx.gz",
+      "Bytes": 4134,
+      "Sha256": "3ba7006cfef19f7f9f1c014ce191bbe1eb5dfdeb1b296dc46167cee8a33a503c",
+      "OriginalFile": "tests/Core.CSharp.Tests/TestResults/hidden-switch-main-2_net10.0_20260907100933.trx",
+      "OriginalBytes": 31465,
+      "OriginalSha256": "8da145f5f3395b9938320595172e49e8f112930989212c78b150ff30e28478e9"
+    },
+    {
+      "File": "root-main-attempt-2-Tests.CSharp.trx.gz",
+      "Bytes": 93952,
+      "Sha256": "ab4bdc2b4b2318b5177fb866e9c5e6db739aec3cdd5dc38517c9c65cd466719e",
+      "OriginalFile": "tests/Tests.CSharp/TestResults/hidden-switch-main-2_net10.0_20260907100938.trx",
+      "OriginalBytes": 580093,
+      "OriginalSha256": "40cac29e31b08319355d78847d4b689f3461da7e0d4fe83e11afd015bb781ddf"
+    },
+    {
+      "File": "root-main-attempt-2-Tests.CSharp.TypeProvider.trx.gz",
+      "Bytes": 1686,
+      "Sha256": "8b865be1275b99428cf15662b28aef21d20a56134fc35bc917f38e776c7b73f1",
+      "OriginalFile": "tests/Tests.CSharp.TypeProvider/TestResults/hidden-switch-main-2_net10.0_20260907100933.trx",
+      "OriginalBytes": 6342,
+      "OriginalSha256": "63d68b69f8a696e291f59e62660759845502c5b381b2a6d9c3a9c7829f3ac8e4"
+    },
+    {
+      "File": "root-main-attempt-2-Tests.FSharp.trx.gz",
+      "Bytes": 1870622,
+      "Sha256": "d7517226114c4f31d165707cf1390350d4bc77019acb3345905713cc6609efa5",
+      "OriginalFile": "tests/Tests.FSharp/TestResults/hidden-switch-main-2_net10.0_20260907101703.trx",
+      "OriginalBytes": 9528938,
+      "OriginalSha256": "15748f3082c6d94cb1e9c86ef38b66ae58b7665bf890aa25c6e162a2af9f245c"
+    },
+    {
+      "File": "root-main-attempt-2-Tests.FSharp.Git.trx.gz",
+      "Bytes": 7887,
+      "Sha256": "1e3321c843bb87118f39228ce739ba72bdf8e8f9e4fa1aa5b788bea0a209e849",
+      "OriginalFile": "tests/Tests.FSharp.Git/TestResults/hidden-switch-main-2_net10.0_20260907100935.trx",
+      "OriginalBytes": 57454,
+      "OriginalSha256": "01fd2f76452015045d37e4cf59e57917d6ca4c69006fd1ed5a843b669852d6eb"
+    }
+  ],
+  "GateModels": [
+    {
+      "Id": "TwoPCSink",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5687354"
+    },
+    {
+      "Id": "NonRegisterCollapse",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5155816"
+    },
+    {
+      "Id": "TickMonotonicity",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5417288"
+    },
+    {
+      "Id": "TransactionInterleaving",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5676587"
+    },
+    {
+      "Id": "QuorumCollateralDeterrenceR4",
+      "Outcome": "Passed",
+      "Duration": "00:00:16.3916088"
+    },
+    {
+      "Id": "DictionaryStripedCAS",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5902460"
+    },
+    {
+      "Id": "PredictiveLookahead",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9428705"
+    },
+    {
+      "Id": "RecoveryHomeostat",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5634710"
+    },
+    {
+      "Id": "WagerSolvency",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6088453"
+    },
+    {
+      "Id": "QuorumCollateralThreshold",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.2938902"
+    },
+    {
+      "Id": "NciSafety",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5857926"
+    },
+    {
+      "Id": "ChaosEnvDeterminism",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5642559"
+    },
+    {
+      "Id": "RefuseBinding",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6344335"
+    },
+    {
+      "Id": "DbspSpec",
+      "Outcome": "Passed",
+      "Duration": "00:00:19.1513399"
+    },
+    {
+      "Id": "NciLiveness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6117279"
+    },
+    {
+      "Id": "QuorumPhaseCancellation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6330344"
+    },
+    {
+      "Id": "QuorumCollateralWitness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5752947"
+    },
+    {
+      "Id": "QuorumCollateralCompulsion",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5230733"
+    },
+    {
+      "Id": "WagerSolvencyStaleAttestation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5345512"
+    },
+    {
+      "Id": "RecursiveSignedSemiNaive",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6112240"
+    },
+    {
+      "Id": "NciNonUrgency",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6270244"
+    },
+    {
+      "Id": "SpineAsyncProtocol",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5703743"
+    },
+    {
+      "Id": "BftSybilConsensus",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6166890"
+    },
+    {
+      "Id": "QuorumCollateral",
+      "Outcome": "Passed",
+      "Duration": "00:00:02.3832682"
+    },
+    {
+      "Id": "QuorumCollateralThresholdWitness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6036207"
+    },
+    {
+      "Id": "WagerSolvencyPhantom",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5886300"
+    },
+    {
+      "Id": "QuorumCollateralWitnessConflict",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9138243"
+    },
+    {
+      "Id": "InfoTheoreticSharder",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.0128662"
+    },
+    {
+      "Id": "QuorumCollateralR3",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.8549417"
+    },
+    {
+      "Id": "WagerSolvencyWitness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5685521"
+    },
+    {
+      "Id": "OperatorLifecycleRace",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5341836"
+    },
+    {
+      "Id": "BpExactOnTree",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5813663"
+    },
+    {
+      "Id": "RecursiveCountingLFP",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5275293"
+    },
+    {
+      "Id": "NciUnbounded",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5133308"
+    },
+    {
+      "Id": "WagerSolvencyNoSplit",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6072588"
+    },
+    {
+      "Id": "ConsistentHashRebalance",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5135035"
+    },
+    {
+      "Id": "QuorumPhaseHonestSplit",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5325488"
+    },
+    {
+      "Id": "EngagementLiveness",
+      "Outcome": "Passed",
+      "Duration": "00:00:02.2829799"
+    },
+    {
+      "Id": "SpineMergeInvariants",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6264913"
+    },
+    {
+      "Id": "Bifurcation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6294549"
+    },
+    {
+      "Id": "QuorumCollateralDeterrenceR2",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.8551220"
+    },
+    {
+      "Id": "QuorumCollateralR1",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6410668"
+    },
+    {
+      "Id": "AsyncStreamEnumerator",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5557261"
+    },
+    {
+      "Id": "QuorumCollateralCompulsionR1",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5642174"
+    },
+    {
+      "Id": "QuorumPhaseOddParity",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5278736"
+    },
+    {
+      "Id": "BftConsensus",
+      "Outcome": "Passed",
+      "Duration": "00:04:38.0723168"
+    },
+    {
+      "Id": "SmokeCheck",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5490242"
+    },
+    {
+      "Id": "CircuitRegistration",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.6316894"
+    },
+    {
+      "Id": "QuorumCollateralR2",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6348596"
+    },
+    {
+      "Id": "FeatureFlagsResolution",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5343721"
+    },
+    {
+      "Id": "QuorumPhaseUnnormalised",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.5769736"
+    },
+    {
+      "Id": "PermanentHarmHorizon",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7381712"
+    }
+  ],
+  "ExpectedGateModelIds": [
+    "AsyncStreamEnumerator",
+    "BftConsensus",
+    "BftSybilConsensus",
+    "Bifurcation",
+    "BpExactOnTree",
+    "ChaosEnvDeterminism",
+    "CircuitRegistration",
+    "ConsistentHashRebalance",
+    "DbspSpec",
+    "DictionaryStripedCAS",
+    "EngagementLiveness",
+    "FeatureFlagsResolution",
+    "InfoTheoreticSharder",
+    "NciLiveness",
+    "NciNonUrgency",
+    "NciSafety",
+    "NciUnbounded",
+    "NonRegisterCollapse",
+    "OperatorLifecycleRace",
+    "PermanentHarmHorizon",
+    "PredictiveLookahead",
+    "QuorumCollateral",
+    "QuorumCollateralCompulsion",
+    "QuorumCollateralCompulsionR1",
+    "QuorumCollateralDeterrenceR2",
+    "QuorumCollateralDeterrenceR4",
+    "QuorumCollateralR1",
+    "QuorumCollateralR2",
+    "QuorumCollateralR3",
+    "QuorumCollateralThreshold",
+    "QuorumCollateralThresholdWitness",
+    "QuorumCollateralWitness",
+    "QuorumCollateralWitnessConflict",
+    "QuorumPhaseCancellation",
+    "QuorumPhaseHonestSplit",
+    "QuorumPhaseOddParity",
+    "QuorumPhaseUnnormalised",
+    "RecoveryHomeostat",
+    "RecursiveCountingLFP",
+    "RecursiveSignedSemiNaive",
+    "RefuseBinding",
+    "SmokeCheck",
+    "SpineAsyncProtocol",
+    "SpineMergeInvariants",
+    "TickMonotonicity",
+    "TransactionInterleaving",
+    "TwoPCSink",
+    "WagerSolvency",
+    "WagerSolvencyNoSplit",
+    "WagerSolvencyPhantom",
+    "WagerSolvencyStaleAttestation",
+    "WagerSolvencyWitness"
+  ],
+  "ExactGateRosterMatch": true,
+  "FocusedTlcCases": [
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.a JVM that never started is reported as such, not as toolchain drift",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0007694"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.owned process capture retains probe streams and bounds timeout without Java",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2001986"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.the retry is BOUNDED \u2014 a persistent shortage still fails",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0002255"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.TLC JVM policy uses C1 only on macOS arm64",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0009441"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.every TLC invocation carries -config and never -deadlock",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0018457"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.the TLA+ gate leg actually carries the gate on CI",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0001591"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.a valid completion followed by fatal nonzero exit remains a failed answer",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0003524"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.failed attempt streams states and helper inputs survive later expected cleanup",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0265048"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.every .cfg on disk is claimed by exactly one pinned model",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0011070"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.actual source collection admits unstaged and new helpers but refuses ignored helpers",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.1984312"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.startup retry policy agrees with the cross-runner refusal roster",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0008223"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.a JVM that never started is retried",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0000316"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.probe cancellation drains inherited pipes after observed launcher exit",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0809307"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.an ANSWER is never retried",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0001631"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.the registry pins a violation string for every EXPECT-VIOLATION model",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0004236"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.a jar reporting a different version IS toolchain drift",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0005083"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.source inventory and copy refusals retain explicit attempt metadata",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0424350"
+    },
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.models that cannot deadlock say so in the registry",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0006985"
+    }
+  ],
+  "HiddenSwitchCases": [
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Filter conditions on the committed action while latest-cue resets its prior",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.1261753"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Fixed configuration returns fresh mutable-array boundaries",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0681349"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Adapter copies the tape and refuses unsupported and terminal calls",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0230800"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Real runner ignores private-band and scorer changes at the policy boundary",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0792434"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Pre-transition rewards and action effects are separate from drift",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0901747"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Padded myopic spends the planner tree budget but acts like natural myopic",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.9412312"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Changed unrevealed source suffix leaves the actual runner common-prefix decision fixed",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.1311715"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Binary private-band substitution preserves projection including equal tie refusal",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0041164"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Registered noisy model has the hand-derived nonmyopic opportunity",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0002153"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Source and episode admission refuse unsupported numeric bounds without generating tapes",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0014364"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Caller frame and returned Q mutation cannot rewrite retained policy state",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.1150390"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Depth two values match the independent affine hand derivation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0003072"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Observe choose chronology refuses repeated calls and terminal decisions",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0010780"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Selection tolerance chooses harvest but recursion retains numerical maxima",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0017742"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.Malformed frames priors and action-value arrays refuse instead of repair",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0006006"
+    },
+    {
+      "Name": "Zeta.Tests.HiddenSwitchTests.All frozen hand episodes retain complete chronology and actual expansion accounting",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7056805"
+    }
+  ],
+  "Total": 7574,
+  "Outcomes": {
+    "Passed": 7568,
+    "NotExecuted": 6
+  },
+  "Completion": {
+    "SourceCommit": "4d7b13947bef9b53a65c043885971ceefa168e87",
+    "FinishedAtUtc": "2026-09-07T14:17:03.764288+00:00",
+    "TestCommandExitCode": 0,
+    "InputCount": 1955,
+    "ChangedSelectedInputs": [],
+    "ChangedSelectedTestDlls": []
+  },
+  "RemainingTlcDirectories": [],
+  "Scope": "One unchanged-source full-solution recovery after a retained test-host crash. Does not establish the crash cause, replace the original failure, or rerun a registered experiment."
+}
