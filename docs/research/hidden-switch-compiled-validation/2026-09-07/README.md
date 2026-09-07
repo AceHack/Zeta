@@ -16,6 +16,10 @@ The [capture-five publication proof](pr-16974-ae632-final/README.md) verifies
 all 2,566 reviewed paths on main through PR #16974 and retains the complete
 gate, review, dependency and historical-drift observations.
 
+The [static fixture validation](../../2026-09-07-hidden-switch-compiled-static-fixture-validation.md)
+retains 59 tests for 32 fixed non-I/O cases and 36 actual one-call dispatches.
+It leaves full coordinator retention, replay and source/runtime admission open.
+
 ## Frozen protocol and remote proof
 
 The [preregistration](../../2026-09-07-hidden-switch-compiled-protocol.md)
