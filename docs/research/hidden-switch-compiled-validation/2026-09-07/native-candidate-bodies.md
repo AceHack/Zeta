@@ -193,3 +193,34 @@ are zero; FPSR again changes from `0000000008000010` to
 `0000000008000011`, with no established cause. Capture completion does not
 change any runtime, body, layout or closure admission flag. No registered
 source, behavior or performance measurement occurred.
+
+## Shared conformance invocation boundary
+
+The coordinator authorized an internal shared `nativeCore` evaluator parameter
+and `chooseWithFallback` selector parameter. Normal `native` binds the unchanged
+old evaluator directly; normal `choose` binds that real native service. There
+is no optional logging branch or runtime-status boolean in the normal service.
+Conformance can supply a real wrapper which records entry immediately before
+the unchanged evaluator call, or a deliberately incorrect stub which never
+enters it. Delegate entries, evaluator-root entries and returned recursive
+node counts are distinct. `inline`/`InlineIfLambda` express a compiler request;
+actual dispatch, allocation and executing graph still require fresh inspection
+and remain inside the later service cost boundary.
+
+Two focused tests exercise depth-two and depth-three interior guard values,
+actual real evaluation, an invoked opposite-action stub with zero evaluator
+entries/work, admission before evaluator invocation, and retention of an
+actual injected evaluator refusal. The independent source reviewer accepted
+this shared-boundary shape and its discrimination without executing a target
+or test. The [lossless validation inventory](native-conformance-boundary/manifest.json)
+retains the final source/output hashes, all build attempts and focused TRX.
+
+The first CLI build failed on the F# modifier order `let internal inline`;
+the corrected `let inline internal` build passed in 2.99 seconds with zero
+warnings/errors. The first test-project build then failed after 42.04 seconds
+because its F# compiler process exited 139 (`MSB6006`), without a source error
+diagnostic. One unchanged test-project retry passed in 27.20 seconds with zero
+warnings/errors. This recovery does not identify the original crash cause.
+All 23 compiled-study focused tests pass (zero failures/skips), with a reported
+290 ms duration. Both assertion audits pass with unchanged censuses. No full
+solution gate or registered conformance completion is claimed by this slice.

@@ -50,6 +50,63 @@ module HiddenSwitchCompiledTests =
         { W = 64; H = 32; Palette = 2; Cells = cells }
 
     [<Fact>]
+    let ``conformance fallback distinguishes callback entries evaluator roots and tree nodes`` () =
+        let bindings = Map.ofList ["ProtocolSha256", "8BBDFE44A0844DD8CE4F6C5DD77B060A56E5B84EA94EA7A6FDBB482AEC9D738A"; "hand-validation", String.replicate 64 "0"]
+        let raw = HiddenSwitchCompiledCertificate.build bindings |> get
+        let guards = HiddenSwitchCompiledCertificate.verify raw bindings |> get |> HiddenSwitchCompiledCertificate.guards
+        for depth in [2; 3] do
+            let struct(low, high) = if depth = 2 then HiddenSwitchCompiledCertificate.depthTwo guards else HiddenSwitchCompiledCertificate.depthThree guards
+            let belief = Math.BitIncrement low
+            Assert.True(belief < high)
+            let baseline = HiddenSwitchCompiledPolicy.native true belief depth |> get
+            let mutable delegateEntries = 0
+            let mutable evaluatorEntries = 0
+            let logged effect current d =
+                delegateEntries <- delegateEntries + 1
+                HiddenSwitchCompiledPolicy.nativeCore (fun e b level ->
+                    evaluatorEntries <- evaluatorEntries + 1
+                    HiddenSwitchPolicy.evaluate e b level) effect current d
+            let actual = HiddenSwitchCompiledSelector.chooseWithFallback logged guards true belief depth |> get
+            Assert.Equal(1, delegateEntries)
+            Assert.Equal(1, evaluatorEntries)
+            Assert.Equal(baseline.Action, actual.Action)
+            Assert.Equal(baseline.Nodes, actual.Nodes)
+            Assert.Equal(1u, actual.RecursiveCalls)
+            Assert.Equal(4uy, actual.Path)
+            Assert.Equal(2u, actual.GuardComparisons)
+            delegateEntries <- 0
+            evaluatorEntries <- 0
+            let stub _ _ _ =
+                delegateEntries <- delegateEntries + 1
+                Ok { baseline with Action = 1uy - baseline.Action; RecursiveCalls = 0u
+                                   Nodes = 0u; ActionValues = 0u; Predictions = 0u; Updates = 0u }
+            let mutant = HiddenSwitchCompiledSelector.chooseWithFallback stub guards true belief depth |> get
+            Assert.Equal(1, delegateEntries)
+            Assert.Equal(0, evaluatorEntries)
+            Assert.NotEqual(baseline.Action, mutant.Action)
+            Assert.Equal(0u, mutant.RecursiveCalls)
+            Assert.Equal(0u, mutant.Nodes)
+            Assert.Equal(4uy, mutant.Path)
+            Assert.Equal(2u, mutant.GuardComparisons)
+
+    [<Fact>]
+    let ``native core refuses invalid admission before evaluator and preserves evaluator failure`` () =
+        let mutable entries = 0
+        let rejected _ _ _ =
+            entries <- entries + 1
+            Error(HiddenSwitchReceipt.failure "hand-evaluator" "deliberate-refusal" "synthetic evaluator refusal")
+        let invalid = HiddenSwitchCompiledPolicy.nativeCore rejected true Double.NaN 3
+        Assert.True(Result.isError invalid)
+        Assert.Equal(0, entries)
+        let failure = HiddenSwitchCompiledPolicy.nativeCore rejected true 0.5 3
+        Assert.Equal(1, entries)
+        match failure with
+        | Ok _ -> Assert.Fail("the actual evaluator refusal must survive")
+        | Error reason ->
+            Assert.Equal("hand-evaluator", reason.Stage)
+            Assert.Equal("deliberate-refusal", reason.Code)
+
+    [<Fact>]
     let ``common adapter commits before feedback and keeps scalar snapshot after caller mutation`` () =
         let initial = HiddenSwitchCompiledPolicy.create true "dot" |> get
         Assert.True(HiddenSwitchCompiledPolicy.chooseNative initial |> Result.isError)

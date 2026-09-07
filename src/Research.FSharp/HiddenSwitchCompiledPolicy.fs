@@ -22,21 +22,26 @@ module HiddenSwitchCompiledPolicy =
         elif depth < 1 || depth > 3 then fail "depth" "requires depth 1..3"
         else Ok()
 
-    /// This is one actual invocation of the unchanged native evaluator/selector.
-    /// Internal Q arrays remain real work but are not part of the returned service.
-    let native effect belief depth : Result<HiddenSwitchCompiledReceipt.ChoiceWork, HiddenSwitchCompiledReceipt.Failure> =
+    /// Shared evaluator boundary. Conformance may supply a logged real evaluator;
+    /// normal native binds the unchanged evaluator directly, without an observer
+    /// branch. Inlining is a request, not a claim that dispatch/allocation vanished.
+    let inline internal nativeCore ([<InlineIfLambda>] evaluator) effect belief depth : Result<HiddenSwitchCompiledReceipt.ChoiceWork, HiddenSwitchCompiledReceipt.Failure> =
         result {
             do! admit belief depth
             let mutable calls = 0u
             calls <- calls + 1u
-            let! q, counts = HiddenSwitchPolicy.evaluate effect belief depth |> previous
-            let! action = HiddenSwitchPolicy.select q |> previous
+            let! q, (counts: HiddenSwitchReceipt.PlanningCounters) = evaluator effect belief depth |> Result.mapError HiddenSwitchCompiledReceipt.fromPrevious
+            let! action = HiddenSwitchPolicy.select q |> Result.mapError HiddenSwitchCompiledReceipt.fromPrevious
             if counts.Nodes < 0 || counts.ActionValues < 0 || counts.Predictions < 0 || counts.Updates < 0 then
-                return! fail "counter" "native traversal returned a negative counter"
+                return! Error(HiddenSwitchCompiledReceipt.failure "policy" "counter" "native traversal returned a negative counter")
             return { Action = byte action; Path = 0uy; GuardComparisons = 0u; RecursiveCalls = calls
                      Nodes = uint32 counts.Nodes; ActionValues = uint32 counts.ActionValues
                      Predictions = uint32 counts.Predictions; Updates = uint32 counts.Updates }
         }
+
+    /// One actual invocation of the unchanged evaluator/selector. Internal Q
+    /// arrays remain real work but are not part of the returned action service.
+    let native effect belief depth = nativeCore HiddenSwitchPolicy.evaluate effect belief depth
 
     let create effect geometry =
         result {

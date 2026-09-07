@@ -10,7 +10,10 @@ module HiddenSwitchCompiledSelector =
         { Action = action; Path = path; GuardComparisons = comparisons; RecursiveCalls = 0u
           Nodes = 0u; ActionValues = 0u; Predictions = 0u; Updates = 0u }
 
-    let choose (guards: HiddenSwitchCompiledCertificate.GuardSet) effect belief depth =
+    /// Internal conformance injection shares this exact branch logic. Normal
+    /// choose below always binds the actual recursive service; no runtime flag
+    /// or optional observer enters that service.
+    let internal chooseWithFallback fallback (guards: HiddenSwitchCompiledCertificate.GuardSet) effect belief depth =
         result {
             do! HiddenSwitchCompiledPolicy.admit belief depth
             if System.Object.ReferenceEquals(guards, null) then
@@ -27,9 +30,11 @@ module HiddenSwitchCompiledSelector =
                     comparisons <- comparisons + 1u
                     if belief >= harvestMin then return fast 0uy 2uy comparisons
                     else
-                        let! actual = HiddenSwitchCompiledPolicy.native effect belief depth
+                        let! actual = fallback effect belief depth
                         return { actual with Path = 4uy; GuardComparisons = comparisons }
         }
+
+    let choose guards effect belief depth = chooseWithFallback HiddenSwitchCompiledPolicy.native guards effect belief depth
 
     /// Separate conformance-only path: no runtime boolean enters the service.
     /// Even trivial inputs execute the actual unmodified recursive evaluator.
