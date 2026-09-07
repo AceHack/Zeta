@@ -10,9 +10,9 @@ Artifact status: paper and source review; no controller implementation or measur
 ## Reviewed inputs and disposition
 
 This review examines the [prospective design](2026-09-07-hidden-switch-compiled-controller-design.md)
-and [exact envelopes](2026-09-07-hidden-switch-exact-envelopes.md) at
+and [exact envelopes](https://github.com/Lucent-Financial-Group/Zeta/blob/4fc82b611012bd2620a26e02afe6baba491fe553/docs/research/2026-09-07-hidden-switch-exact-envelopes.md) at
 `4332b1bed3ed2e516c8188e5d928e8bd6dd1af3e`, against
-[`HiddenSwitchPolicy.fs`](../../src/Research.FSharp/HiddenSwitchPolicy.fs)
+[`HiddenSwitchPolicy.fs`](https://github.com/Lucent-Financial-Group/Zeta/blob/4fc82b611012bd2620a26e02afe6baba491fe553/src/Research.FSharp/HiddenSwitchPolicy.fs)
 at the unchanged experiment archive
 `4fc82b611012bd2620a26e02afe6baba491fe553`.
 The successor study owns this review and any prospective correction;
@@ -192,3 +192,13 @@ archive headers, section-33 migration cross-references, dangling symlinks
 and sealed rooms. No full preflight, native build or test gate was claimed
 for this local review-only commit. The new study's owner will index and
 publish the review through its active claim; this reviewer did not push it.
+
+## Successor-task integration
+
+This review was imported without text changes at `3352e3987` from
+`c5460ab6ff589e9c8e3ed755105235eb8154fa61`; subsequent integration changes
+only these dependency links and this index note. The original design and
+its correction remain separate commits. The successor
+[complete protocol](2026-09-07-hidden-switch-compiled-protocol.md) owns new
+registration and implementation; the prior study remains an explicit main
+integration dependency, with its scientific source and evidence untouched.

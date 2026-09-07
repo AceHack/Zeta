@@ -76,3 +76,12 @@ call. Setup stage counters begin before the corresponding work, including
 archive/certificate validation. The coordinating reviewer accepts the
 complete protocol subject to verification of these two wording corrections;
 registration remains pending their final disposition and provenance import.
+
+The [paper design](../docs/research/2026-09-07-hidden-switch-compiled-controller-design.md)
+and [independent paper review](../docs/research/2026-09-07-hidden-switch-compiled-controller-review.md)
+are imported under this task in separate commits. The protocol indexes
+original/import commit identities and verified byte counts/SHA256 values.
+Independent protocol review accepted the final chronology correction
+`75718b9a8`; no material complete-protocol finding remains. Registration
+publication is next, followed by the explicit prior-study main dependency
+before any implementation.

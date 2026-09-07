@@ -3,7 +3,8 @@
 Date: 2026-09-07
 Operational status: research-grade
 Lifecycle: active
-Work item: 081M1XK02XM087G0R00043EW05
+Work item: 081M1XXWTTF087G0R000X1HMD0
+Original design context: completed task 081M1XK02XM087G0R00043EW05
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Artifact status: UNREGISTERED design and paper derivation; no implementation or measurement
 
@@ -16,8 +17,8 @@ envelopes. This can establish action equivalence without enumerating every
 binary64 belief or executing the tree on every fast-path call.
 
 This is a prospective follow-up to the
-[unregistered advisory](2026-09-07-hidden-switch-prospective-model-identification.md)
-and [exact envelopes](2026-09-07-hidden-switch-exact-envelopes.md). The
+[unregistered advisory](https://github.com/Lucent-Financial-Group/Zeta/blob/f52b00065eb8055a32aea4bd93628df7537f4949/docs/research/2026-09-07-hidden-switch-prospective-model-identification.md)
+and [exact envelopes](https://github.com/Lucent-Financial-Group/Zeta/blob/4fc82b611012bd2620a26e02afe6baba491fe553/docs/research/2026-09-07-hidden-switch-exact-envelopes.md). The
 coordinator reported completion of the current registered experiment
 before requesting this design. This author did not inspect its raw
 behavioral/cost data for this task. No claimed current result or numerical
@@ -26,7 +27,7 @@ performance observation is needed for the derivation below.
 The target source is `HiddenSwitchPolicy.evaluate` followed by `select`
 in the current experiment's archived source commit
 `4fc82b611012bd2620a26e02afe6baba491fe553`. Its implementation was previously
-reviewed in the [independent source review](2026-09-07-hidden-switch-independent-review.md).
+reviewed in the [independent source review](https://github.com/Lucent-Financial-Group/Zeta/blob/4fc82b611012bd2620a26e02afe6baba491fe553/docs/research/2026-09-07-hidden-switch-independent-review.md).
 This note changes no archived source, receipt, tag, protocol or threshold.
 It chooses no new seed, sample size, warmup schedule or performance
 acceptance threshold. A separate reviewed registration and implementation
@@ -359,3 +360,11 @@ review rather than another human approval; runtime admission must cover
 all code versions that can execute; and excluded one-time setup must be
 symmetric and separately disclosed. No guard, policy, source stream,
 proof assistant, test or performance measurement was run for this change.
+
+The successor task imports the original design unchanged at `c04cdc867`,
+its focused correction at `f5a56399f`, and the
+[independent paper review](2026-09-07-hidden-switch-compiled-controller-review.md)
+at `3352e3987`. This integration only updates task/index/archive pointers.
+The separate [complete protocol](2026-09-07-hidden-switch-compiled-protocol.md)
+now supplies prospective budgets and schedules; this unregistered paper
+does not acquire experimental-evidence status from that registration.

@@ -26,8 +26,9 @@ waits for their main integration before new implementation, and checks
 the imported dependency bytes against that archive. It does not copy or
 modify the old study to make missing main paths appear present.
 
-Unregistered paper design `4332b1bed` and its focused correction
-`f47c9569c` are prospective provenance. Their mathematical review supports
+The [unregistered paper design](2026-09-07-hidden-switch-compiled-controller-design.md)
+at `4332b1bed` and its focused correction `f47c9569c` are prospective
+provenance, with an [independent paper review](2026-09-07-hidden-switch-compiled-controller-review.md). Their mathematical review supports
 the source-graph derivation under declared IEEE assumptions; it is not a
 JIT theorem. Neither those notes nor this unfrozen draft authorizes guard
 generation, implementation, new tapes or measurements. Freeze requires
@@ -652,3 +653,27 @@ and each setup stage starts its counters before its work, including actual
 archive/certificate validation. These changes preserve every declared
 corpus, count, action contract and threshold. No implementation, guard
 bits, source generation or measurement informed the correction.
+
+## Imported design provenance and accepted review
+
+The source artifacts below were imported byte-for-byte in separate commits
+under this new task. The original design commit also changed a link in the
+prior advisory; that one hunk was omitted because the advisory is absent
+on this branch and remains in the separate prior-study publication. No
+prior scientific implementation or evidence was imported to fill that gap.
+Later integration changes only task labels, indices and fixed archive links.
+
+| Artifact | Original source commit | Byte-identical import commit | Bytes | SHA256 |
+| --- | --- | --- | ---: | --- |
+| Original design | `4332b1bed3ed2e516c8188e5d928e8bd6dd1af3e` | `c04cdc8676cc930311979d958968753ba3b01857` | 18,014 | `22c9716bae34cdac3fc3a4c833e2e5375e892678236e8df3ebc1699f8f1c8763` |
+| Corrected design | `f47c9569c14e274225bf2fc1eea03a89d520809c` | `f5a56399fc2a1d66f43dac23bf596338a8edd95f` | 19,451 | `bf0d2be39a59c6290e8b46279dfca7fb6d65538d4495b7de86f91c4d1c89926f` |
+| Independent paper review | `c5460ab6ff589e9c8e3ed755105235eb8154fa61` | `3352e3987d6053bdef5168ba7d6dc7ee23a518de` | 11,365 | `9636422e0557322d70d79144eb23d27a3325ce4212084a7819ed9dbdd3932c10` |
+
+The coordinating reviewer accepted the complete protocol at `14786d2ae`,
+subject to the two final chronology clarifications. The independent
+protocol reviewer read and accepted both corrections at
+`75718b9a82b9e5d1d303d6a3f2cf5f83792bca1a`: coordinator exit/closed-output
+ordering and setup counters enclosing actual validation/work. No material
+complete-protocol finding remains. These are paper/source/count and
+execution-contract reviews; no guard, certificate implementation, source
+tape or measured result exists for this task.
