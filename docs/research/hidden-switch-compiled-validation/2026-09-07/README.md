@@ -203,6 +203,14 @@ configured 59-file lane check from strict checking of ten implementation
 modules. Every binary invocation is decoded and compared; this does not
 substitute for source/runtime, roster, schedule or whole-phase admission.
 
+The [certificate negative corpus](../../2026-09-07-hidden-switch-compiled-certificate-cases-validation.md)
+pins source `60eeb0b86`, 39 focused tests and independent acceptance. A retained
+placeholder-binding fixture has one valid control and thirty distinct raw
+mutations with actual Python outcomes. Its 34-artifact inventory preserves
+every raw input; actual native verification and the final full-binding corpus
+remain separate obligations. Certificate-declaration mutations are explicitly
+distinguished from mutations of executing code.
+
 These implementation slices follow PR #16928's verified main publication
 and the fresh [co-claim](../../../claims/task-hidden-switch-compiled-20260907.md)
 at `d6ec464f4`. The immutable registration is unchanged. Complete native
