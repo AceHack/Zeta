@@ -26,6 +26,12 @@ TOOL_PINS = [
     ("/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib", 649648, "E2847C4613B386683C234913AE3B7B04299254096CAF7616E3B3CD9BB97A39AB"),
 ]
 MAX64 = (1 << 64) - 1
+DECODER_FEATURES = ["+rcpc"]
+
+
+def decoder_arguments():
+    return [TOOL_PINS[0][0], "--disassemble", "--triple=aarch64-apple-darwin", "--mcpu=generic",
+            "--mattr=" + ",".join(DECODER_FEATURES), "--show-encoding"]
 
 
 @contextlib.contextmanager
@@ -155,9 +161,14 @@ def decoded_rows(stdout, stderr, exit_code, words):
     if exit_code != 0 or stderr:
         raise ValueError("decoder exit/diagnostics refuse byte admission")
     lines = stdout.decode("ascii", errors="strict").splitlines()
-    if len(lines) != len(words):
-        raise ValueError("decoded instruction cardinality differs from exact word count")
-    for index, (line, expected) in enumerate(zip(lines, words, strict=True)):
+    if len(lines) > 2 * len(words):
+        raise ValueError("decoded text exceeds one instruction and at most one comment per word")
+    cursor = 0
+    for index, expected in enumerate(words):
+        if cursor == len(lines):
+            raise ValueError("decoded instruction cardinality differs from exact word count")
+        line_number = cursor + 1
+        line = lines[cursor]; cursor += 1
         if len(line) > 1024:
             raise ValueError(f"word {index} exceeds the decoded line bound")
         match = re.fullmatch(r"\s*([^;\r\n]+?)\s+; encoding: \[(0x[0-9a-f]{2},0x[0-9a-f]{2},0x[0-9a-f]{2},0x[0-9a-f]{2})\]", line)
@@ -169,7 +180,21 @@ def decoded_rows(stdout, stderr, exit_code, words):
         observed = bytes(int(token, 16) for token in match[2].split(","))
         if observed.hex().upper() != expected["Hex"]:
             raise ValueError(f"word {index} re-encoding differs from original physical/compiler bytes")
-        yield {**expected, "Instruction": match[1].strip(), "PrintedAddressMeaning": "chunk-relative/zero printer address; never a runtime target"}
+        comment = None
+        if cursor < len(lines) and lines[cursor].lstrip().startswith(";"):
+            comment = lines[cursor]
+            immediate = re.fullmatch(r"mov[ \t]+([wx])(?:[0-9]|[12][0-9]|30), #(-?(?:0|[1-9][0-9]*))", instruction)
+            annotation = re.fullmatch(r"; =0x([0-9a-f]{1,16})", comment)
+            if immediate is None or annotation is None:
+                raise ValueError(f"word {index} has an unsupported standalone comment association")
+            width = 32 if immediate[1] == "w" else 64
+            if len(annotation[1]) > width // 4 or int(annotation[1], 16) != int(immediate[2]) % (1 << width):
+                raise ValueError(f"word {index} immediate comment differs from its register-width operand")
+            cursor += 1
+        yield {**expected, "Instruction": instruction, "TextLine": line_number, "ImmediateComment": comment,
+               "PrintedAddressMeaning": "chunk-relative/zero printer address; never a runtime target"}
+    if cursor != len(lines):
+        raise ValueError("decoded instruction cardinality or trailing text differs from exact word count")
 
 
 def run(capture, mapped, retained, attempt):
@@ -184,7 +209,7 @@ def run(capture, mapped, retained, attempt):
     try:
         os.mkdir(attempt); owned = True
         write(attempt / "start.json", {**outcome, "StartedAtUtc": utc(), "Words": 8665, "Methods": 130,
-              "ProcessSeconds": 30, "PolledOutputBytes": 2 * 1024**2, "Triple": "aarch64-apple-darwin", "Cpu": "generic", "Features": [],
+              "ProcessSeconds": 30, "PolledOutputBytes": 2 * 1024**2, "Triple": "aarch64-apple-darwin", "Cpu": "generic", "Features": DECODER_FEATURES,
               "Scope": "byte decoding and exact re-encoding only; no interpreted runtime branch targets, CFG or arithmetic admission",
               "FilePremise": "stable local files; bounded hash chunks and checked deadlines do not cancel kernel I/O or provide hostile namespace/in-place-write isolation",
               "ReadFlags": {"NonblockingAvailable": hasattr(os, "O_NONBLOCK"), "NoFollowAvailable": hasattr(os, "O_NOFOLLOW")}})
@@ -244,9 +269,9 @@ def run(capture, mapped, retained, attempt):
             pins.append(identity(Path(__file__).with_name(name)))
         if any(key.startswith("DYLD_") and value for key, value in os.environ.items()):
             raise ValueError("nonempty inherited DYLD overrides are outside the declared decoder environment")
-        args = [TOOL_PINS[0][0], "--disassemble", "--triple=aarch64-apple-darwin", "--mcpu=generic", "--show-encoding"]
+        args = decoder_arguments()
         write(attempt / "inputs.json", {"Pins": pins, "Arguments": args, "SourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True, timeout=10).strip(),
-              "EnvironmentDelta": {}, "NonemptyDyldOverrides": [], "Features": [],
+              "EnvironmentDelta": {}, "NonemptyDyldOverrides": [], "Features": DECODER_FEATURES,
               "LinkedFileScope": "pinned declared Homebrew libraries; no actual load snapshot or complete system-library identity claim"})
         input_write = (attempt / "decoder.input").open("xb+")
         input_write.write(atomic_input(words)); input_write.flush(); os.fsync(input_write.fileno())
