@@ -1,0 +1,72 @@
+bun test v1.3.14 (0d9b296a)
+
+src/Core.TypeScript/formal-verification/tlc-attempts.test.ts:
+(pass) TLC startup retry parity > heap-reservation [0.22ms]
+(pass) TLC startup retry parity > vm-initialization [0.01ms]
+(pass) TLC startup retry parity > missing-jar
+(pass) TLC startup retry parity > unclassified
+(pass) TLC startup retry parity > unclassified-oom
+(pass) TLC startup retry parity > banner-and-heap
+(pass) TLC startup retry parity > progress-and-initialization
+(pass) TLC startup retry parity > sigbus-and-startup
+(pass) TLC startup retry parity > internal-checker-error
+(pass) TLC startup retry parity > invariant
+(pass) TLC startup retry parity > completion-then-fatal
+(pass) TLC startup retry parity > startup-then-inrun-oom
+(pass) TLC startup retry parity > metadata-sigbus
+(pass) TLC startup retry parity > metadata-kill
+(pass) TLC startup retry parity > metadata-timeout
+(pass) TLC startup retry parity > process-error-with-exit1
+(pass) TLC startup retry parity > other-exit
+(pass) TLC startup retry parity > a successful recovery retains the earlier failed result [0.05ms]
+(pass) TLC startup retry parity > persistent startup failure stops at three; fatal completion stops at one [0.09ms]
+(pass) TLC owned diagnostic directories > the actual collector includes unstaged/new helper bytes and refuses ignored helpers [46.04ms]
+76 |       expect(result.status).toBe(0);
+77 |       expect(readFileSync(out, "utf8")).toContain("output sentinel");
+78 |       expect(readFileSync(err, "utf8")).toContain("error sentinel");
+79 |       const missing = captureProcess(join(scratch, "missing-executable"), [], scratch, join(scratch, "missing-out"), join(scratch, "missing-err"), 100);
+80 |       expect(missing.error).toBeDefined();
+81 |       expect(missing.status).toBeNull();
+                                  ^
+error: expect(received).toBeNull()
+
+Received: undefined
+
+      at <anonymous> (/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.TypeScript/formal-verification/tlc-attempts.test.ts:81:30)
+(fail) TLC owned diagnostic directories > owned process capture retains streams and refuses missing executables/timeouts [101.35ms]
+(pass) TLC owned diagnostic directories > retains full failure bytes and helper inputs while cleaning only a later expected attempt [4.85ms]
+(pass) TLC owned diagnostic directories > copy/inventory refusals leave explicit attempts rather than disappear [3.16ms]
+(pass) TLC owned diagnostic directories > the explicit crash-report path changes only a diagnostic JVM argument [0.13ms]
+
+src/Core.TypeScript/formal-verification/run-tlc.test.ts:
+(pass) run-tlc CLI contract > --invocation prints the pinned command, so a recorded result can carry it [35.13ms]
+(pass) run-tlc CLI contract > --list names every model in the registry [36.84ms]
+(pass) run-tlc CLI contract > an unknown model id is an error, not a silent no-op [30.91ms]
+(pass) run-tlc CLI contract > an unknown flag exits 3, distinct from a model failure [32.00ms]
+
+src/Core.TypeScript/formal-verification/tlc-invocation.test.ts:
+(pass) buildTlcArgv > always passes -config, so the twelve ungated configs cannot recur [0.03ms]
+(pass) buildTlcArgv > pins the worker count, because halt-on-violation counts move with it [0.02ms]
+(pass) buildTlcArgv > never passes -deadlock -- deadlock policy lives in the .cfg [0.08ms]
+(pass) buildTlcArgv > keeps the macOS arm64 C2 workaround and nowhere else [0.01ms]
+(pass) buildTlcArgv > invocationLine is copy-pasteable next to a recorded result [0.04ms]
+(pass) judgeTlcRun > accepts the pinned clean shape [0.26ms]
+(pass) judgeTlcRun > REFUSES a witness that has stopped firing [0.01ms]
+(pass) judgeTlcRun > REFUSES a witness that fires on a DIFFERENT property [0.01ms]
+(pass) judgeTlcRun > accepts the pinned violation
+(pass) judgeTlcRun > REFUSES an exit code the registry did not pin -- exit 11 is deadlock, 12 invariant, 13 temporal
+(pass) judgeTlcRun > REFUSES exhaustive state-count drift [0.02ms]
+(pass) judgeTlcRun > parses comma-grouped counts [0.02ms]
+(pass) judgeTlcRun > does NOT assert a count for halt-on-violation models [0.01ms]
+(pass) judgeToolchainBanner > accepts the pinned jar banner [0.02ms]
+(pass) judgeToolchainBanner > REFUSES a swapped jar [0.01ms]
+(pass) judgeTlcRun state-count parsing > reads the FINAL summary, not a progress line [0.02ms]
+(pass) judgeTlcRun state-count parsing > still fails when the FINAL count drifts, progress lines notwithstanding [0.01ms]
+
+1 tests failed:
+(fail) TLC owned diagnostic directories > owned process capture retains streams and refuses missing executables/timeouts [101.35ms]
+
+ 44 pass
+ 1 fail
+ 197 expect() calls
+Ran 45 tests across 3 files. [721.00ms]

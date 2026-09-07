@@ -27,3 +27,12 @@ Validation must include synthetic startup/crash/retention/no-overwrite
 regressions and the full solution gate after the coordinated runtime diagnosis.
 The failed original full gate remains failed; runtime diagnosis is a named
 dependency, not an implicit skip.
+
+## Preserved repair and validation
+
+- [Repair report](../docs/research/2026-09-07-tlc-attempt-retention.md)
+- [Focused checks and retained failures](../docs/research/tlc-attempt-retention-validation/2026-09-07/README.md)
+
+Source pins: `2e69017ff` and `07e399929`. The independent source review and
+combined C1-policy/retention/hidden-switch full catalog gate remain required
+before publication as locally complete.

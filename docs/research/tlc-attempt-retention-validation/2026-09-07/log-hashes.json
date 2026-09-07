@@ -1,0 +1,127 @@
+{
+  "Schema": 1,
+  "Logs": [
+    {
+      "File": "actionlint.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "derived-format.log",
+      "Bytes": 107,
+      "Sha256": "37D66529DBC7F048F0AB71B9BEB37661984F5B325667EE2B3CB81A0EBBFA57FE"
+    },
+    {
+      "File": "format.log",
+      "Bytes": 5192,
+      "Sha256": "AE8DF6A64C497F2902CD855C16AA7D23382405EAE5E55AA25B6BFA733A8A7E14"
+    },
+    {
+      "File": "fsharp-focused-attempt-1.log",
+      "Bytes": 5634,
+      "Sha256": "9EAE1273FB5B229740C7DC0A15B1DF171322669AD3E1540CDF8E6C3E00AFEB71"
+    },
+    {
+      "File": "fsharp-focused-attempt-2.log",
+      "Bytes": 6222,
+      "Sha256": "A0D3AB7EC5FAD8E0BA875EB08A4A06DC049C281DDC7387BFC5B3EAD43E09087F"
+    },
+    {
+      "File": "fsharp-focused-attempt-3.log",
+      "Bytes": 4024,
+      "Sha256": "9C00FDC2F46637FC9BC7E0452E72C73ABDB18952637F136B868AF8EE9D7F2489"
+    },
+    {
+      "File": "fsharp-focused-attempt-4.log",
+      "Bytes": 6484,
+      "Sha256": "6F6565CDC34025E4676E27785847784586FC8D944EA7755CF01F778526B6F38A"
+    },
+    {
+      "File": "fsharp-focused-attempt-5.log",
+      "Bytes": 6600,
+      "Sha256": "1C16E428C5F02F10AE20E9C60F05EC93EB77C56A6D2CFBFE3EE1DB970C55B852"
+    },
+    {
+      "File": "fsharp-pinned-1.3.13.log",
+      "Bytes": 2688,
+      "Sha256": "27E8D4C9DCA49CD44A952EF4804518EB438F80CD6BB5EE431DA67275103D8B5F"
+    },
+    {
+      "File": "motivation-native-tests-full-attempt-1.log",
+      "Bytes": 13894,
+      "Sha256": "8450E81203E6C055151751D786BEFB9E4E3FA5BDBABF38BDD2D956F02CE7D92F"
+    },
+    {
+      "File": "motivation-native-tlc-isolated-attempt-1.log",
+      "Bytes": 5568,
+      "Sha256": "BA431A3B066C43246FA595404A0FA0C9E6DE6040A85D7DF972B812279E28EAE3"
+    },
+    {
+      "File": "preflight-reviewed.log",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    },
+    {
+      "File": "preflight-source.log",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    },
+    {
+      "File": "ts-focused-attempt-1.log",
+      "Bytes": 3316,
+      "Sha256": "13377486F4308A8347FD3B2E729DB91991CD51313201CE0B9B663883A9FBD8F3"
+    },
+    {
+      "File": "ts-focused-attempt-2.log",
+      "Bytes": 3316,
+      "Sha256": "6136A1C02743D6E6B46F93B71F281143809652BEC2AA0796C18336F2D8DA5A9F"
+    },
+    {
+      "File": "ts-focused-attempt-3.log",
+      "Bytes": 4686,
+      "Sha256": "436FE2E541D6A16CF6DAE938AAF944D9A2B30C5F705CB1F685497F4C5949319C"
+    },
+    {
+      "File": "ts-focused-attempt-4.log",
+      "Bytes": 3828,
+      "Sha256": "6D070284C480A7050503818A530F26BDD7841D9ECE4DCC6F87C5C984CBE73179"
+    },
+    {
+      "File": "ts-focused-final.log",
+      "Bytes": 3828,
+      "Sha256": "D2914C29A3DE965DE9C5543713CDAD90DCF1618CF36844F05CE9DA2016E21331"
+    },
+    {
+      "File": "ts-pinned-1.3.13.log",
+      "Bytes": 3828,
+      "Sha256": "BD83E96BE742ADBE08FD80E359FD68AA66C919012B1CAAC74F7EE116D917B6F9"
+    },
+    {
+      "File": "ts-typecheck-attempt-1.log",
+      "Bytes": 142,
+      "Sha256": "5B766B55DF5BC15C215149742C8FE88D72A584CB45F5422C7EDCA1594B6D0CB5"
+    },
+    {
+      "File": "ts-typecheck-attempt-2.log",
+      "Bytes": 797,
+      "Sha256": "62F7A434AB0C4C804676E3C41778793DB046AEB8A86416800B5E4D1A7BBF63AD"
+    },
+    {
+      "File": "ts-typecheck-attempt-3.log",
+      "Bytes": 666,
+      "Sha256": "648C9A3F0F7A0778099D5CB7C527AE159D18446EB97183A065ECDF5E75B55F86"
+    },
+    {
+      "File": "ts-typecheck-attempt-4.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "ts-typecheck-final.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    }
+  ],
+  "HistoricalSourceCommit": "31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb",
+  "Meaning": "Exact preserved raw log bytes; outcomes and command boundaries are described in README.md."
+}
