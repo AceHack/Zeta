@@ -1,0 +1,14 @@
+{
+  "id": "080d03e789eea810a01300080ce8dbdf",
+  "at": "2026-09-07T17:36:19.925Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YF2FEM087G0R000RP57XZ",
+    "type": "task",
+    "title": "Fake VFS pread pwrite truncate via shared mutbuf",
+    "slug": "fake-vfs-pread-pwrite-truncate-via-shared-mutbuf",
+    "priority": "P2",
+    "filename": "081M1YF2FEM087G0R000RP57XZ-fake-vfs-pread-pwrite-truncate-via-shared-mutbuf.md"
+  }
+}

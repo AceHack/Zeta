@@ -15,8 +15,10 @@ module ZetaFsPosixVfs =
         | NotFound
         | NotDirectory of ZetaFsNamespace.EntityId
         | UnknownEntity of ZetaFsNamespace.EntityId
+        | Eisdir of ZetaFsNamespace.EntityId
         | Confusable of existing: byte[]
         | Bind of ZetaFsNamespace.BindError
+        | Mutbuf of ZetaFsMutbuf.MutbufError
 
     type Mount =
         { Volume: ZetaFsFreeze.Volume
@@ -150,3 +152,54 @@ module ZetaFsPosixVfs =
         match ZetaFsFreeze.setattr mount.Volume node.Entity patch with
         | Error e -> Error(ofBind e)
         | Ok() -> Ok()
+
+    let private ifreg = 0o100000u
+    let private ifdir = 0o040000u
+    let private ifmt = 0o170000u
+
+    let private requireFile (mount: Mount) (node: ZetaFsPosixNode.Node) : Result<unit, Error> =
+        match getattr mount node with
+        | Error e -> Error e
+        | Ok stat ->
+            match stat.Meta.Mode &&& ifmt with
+            | mode when mode = ifreg -> Ok()
+            | mode when mode = ifdir -> Error(Eisdir node.Entity)
+            | _ -> Error NotFound
+
+    let private withHandle
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        (f: ZetaFsMutbuf.Handle -> Result<'a, ZetaFsMutbuf.MutbufError>)
+        : Result<'a, Error> =
+        match requireFile mount node with
+        | Error e -> Error e
+        | Ok() ->
+            let h = ZetaFsMutbuf.openHandle mount.Volume.Mutbuf node.Entity
+
+            match f h with
+            | Error e -> Error(Mutbuf e)
+            | Ok v -> Ok v
+
+    /// Shared mutbuf pwrite. Default Fake VFS coherence is Shared (E5).
+    let pwrite
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        (offset: int64)
+        (src: byte[])
+        : Result<int, Error> =
+        withHandle mount node (fun h -> ZetaFsMutbuf.pwrite mount.Volume.Mutbuf h offset src)
+
+    let pread
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        (offset: int64)
+        (dst: byte[])
+        : Result<int, Error> =
+        withHandle mount node (fun h -> ZetaFsMutbuf.pread mount.Volume.Mutbuf h offset dst)
+
+    let truncate
+        (mount: Mount)
+        (node: ZetaFsPosixNode.Node)
+        (len: int64)
+        : Result<unit, Error> =
+        withHandle mount node (fun h -> ZetaFsMutbuf.truncate mount.Volume.Mutbuf h len)

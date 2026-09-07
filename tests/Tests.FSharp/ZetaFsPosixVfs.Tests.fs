@@ -226,3 +226,52 @@ let ``getattr size is dirty mutbuf length`` () =
             let stat = ok (ZetaFsPosixVfs.getattr mount1 node)
             Assert.Equal(3UL, stat.Size)
             Assert.Equal(0UL, stat.Meta.Size))
+
+[<Fact>]
+let ``pwrite then pread round-trips and truncate shrinks getattr size`` () =
+    withVolume "/vfs-pwrite" (fun volume ->
+        match ZetaFsFreeze.bindFile volume (utf8 "a") with
+        | Error e -> Assert.Fail(sprintf "bindFile: %A" e)
+        | Ok _ ->
+            let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+            let node, mount1 =
+                ok (ZetaFsPosixVfs.lookup mount0 (ZetaFsPosixVfs.root mount0) (utf8 "a"))
+            Assert.Equal(3, ok (ZetaFsPosixVfs.pwrite mount1 node 0L [| 1uy; 2uy; 3uy |]))
+            let buf = Array.zeroCreate 8
+            Assert.Equal(3, ok (ZetaFsPosixVfs.pread mount1 node 0L buf))
+            Assert.Equal(1uy, buf.[0])
+            Assert.Equal(2uy, buf.[1])
+            Assert.Equal(3uy, buf.[2])
+            let stat = ok (ZetaFsPosixVfs.getattr mount1 node)
+            Assert.Equal(3UL, stat.Size)
+            match ZetaFsPosixVfs.truncate mount1 node 1L with
+            | Error e -> Assert.Fail(sprintf "truncate: %A" e)
+            | Ok() ->
+                let shrunk = ok (ZetaFsPosixVfs.getattr mount1 node)
+                Assert.Equal(1UL, shrunk.Size)
+                let one = Array.zeroCreate 8
+                Assert.Equal(1, ok (ZetaFsPosixVfs.pread mount1 node 0L one))
+                Assert.Equal(1uy, one.[0]))
+
+[<Fact>]
+let ``pwrite on a directory is Eisdir`` () =
+    withVolume "/vfs-pwrite-dir" (fun volume ->
+        let mount = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount
+        match ZetaFsPosixVfs.pwrite mount rootNode 0L [| 1uy |] with
+        | Error(ZetaFsPosixVfs.Eisdir id) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare rootNode.Entity id)
+        | other -> Assert.Fail(sprintf "expected Eisdir, got %A" other))
+
+[<Fact>]
+let ``pwrite negative offset is Mutbuf NegativeOffset`` () =
+    withVolume "/vfs-pwrite-neg" (fun volume ->
+        match ZetaFsFreeze.bindFile volume (utf8 "a") with
+        | Error e -> Assert.Fail(sprintf "bindFile: %A" e)
+        | Ok _ ->
+            let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+            let node, mount1 =
+                ok (ZetaFsPosixVfs.lookup mount0 (ZetaFsPosixVfs.root mount0) (utf8 "a"))
+            match ZetaFsPosixVfs.pwrite mount1 node -1L [| 1uy |] with
+            | Error(ZetaFsPosixVfs.Mutbuf(ZetaFsMutbuf.NegativeOffset n)) -> Assert.Equal(-1L, n)
+            | other -> Assert.Fail(sprintf "expected NegativeOffset, got %A" other))
