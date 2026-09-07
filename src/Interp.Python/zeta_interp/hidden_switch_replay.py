@@ -231,6 +231,11 @@ def admit_sources(root: Path, caller: Path | None = None) -> dict[str, Any]:
         )
     for actual, relative in expected_modules.items():
         require(actual == (root / relative).resolve(), "executing module path mismatch")
+    for tag in (REGISTRATION, IMPLEMENTATION):
+        require(
+            git(root, "cat-file", "-t", tag).decode().strip() == "tag",
+            f"archive must be an annotated tag: {tag}",
+        )
     registration = object_id(root, REGISTRATION + "^{commit}")
     require(registration == REGISTRATION_COMMIT, "registration tag changed")
     implementation = object_id(root, IMPLEMENTATION + "^{commit}")

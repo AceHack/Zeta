@@ -31,7 +31,7 @@ actual source generation; hand tests use the four named deterministic tapes.
 
 A separate reviewer inspected protocol conformance, source admission, replay
 and verdict without running registered streams. Findings corrected before
-archival include sequential retention of input hashes, exact declared-source
+archival include sequential retention of input hashes, annotated archive-ref types, exact declared-source
 bytes and supplied replay metadata/environment, canonical native assembly
 metadata, behavior-before-cost chronology, complete cost draw/payload/activity
 and attempted rosters, persistent comparison progress, early output refusal
@@ -72,3 +72,22 @@ replace the forthcoming combined Interp and native Release gates.
 retain commands, outputs, exit status and earlier checks. No result from
 these deterministic hand and admission tests is a registered behavioral
 or cost outcome.
+
+## Independent source review
+
+The [independent reference/native review](2026-09-07-hidden-switch-independent-review.md)
+retains authoring chronology, exact rational oracle construction, inspected
+source fingerprints, source-boundary findings, their dispositions and a
+retracted default-frame concern. Its reference index guard was narrowed to
+0..1023 before archival; no admitted trajectory semantics changed.
+
+The native runtime admission review separately requires explicit raw DTO
+fields before typed decoding, so missing zero/false/null values cannot
+silently acquire defaults. It also requires matching declared source commits
+before cost execution and maps an unlaunchable git process into a retained
+admission failure. These findings are being resolved before implementation
+archival; final checks will identify the reviewed bytes.
+
+A source check of [.NET 10 Process on macOS](https://github.com/dotnet/runtime/blob/v10.0.0/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.OSX.cs)
+confirmed that the current-process CPU getter reads the current CPU usage.
+No extra process-refresh operation or timing-boundary change was introduced.

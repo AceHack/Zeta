@@ -380,3 +380,17 @@ def test_foreign_repository_root_refuses_before_any_git_query(tmp_path, monkeypa
     )
     with pytest.raises(ValueError, match="executing module path"):
         subject.admit_sources(tmp_path)
+
+
+@pytest.mark.parametrize("replaced_tag", [subject.REGISTRATION, subject.IMPLEMENTATION])
+def test_archive_ref_cannot_be_replaced_by_a_lightweight_tag(monkeypatch, replaced_tag):
+    root = Path(subject.__file__).resolve().parents[3]
+
+    def synthetic_git(actual_root, *arguments):
+        assert actual_root == root
+        assert arguments[:2] == ("cat-file", "-t")
+        return b"commit\n" if arguments[2] == replaced_tag else b"tag\n"
+
+    monkeypatch.setattr(subject, "git", synthetic_git)
+    with pytest.raises(ValueError, match="archive must be an annotated tag"):
+        subject.admit_sources(root)

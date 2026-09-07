@@ -1,0 +1,5 @@
+Command: uv run pytest tests/test_hidden_switch_replay.py tests/test_hidden_switch_verdict.py -q
+................................................................         [100%]
+64 passed in 5.73s
+
+ExitCode: 0

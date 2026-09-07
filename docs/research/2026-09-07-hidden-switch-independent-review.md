@@ -65,7 +65,8 @@ another language, although shared mathematical mistakes remain possible.
 The author executed the focused tests, including:
 
 - All 96 declared hand episodes, exact transition/reward/cue tables, the
-  five-prior rational filter/grid checks and the noiseless design witness.
+  five-prior rational filter/grid checks, plus an auxiliary q=0 oracle unit
+  check outside the registered q=1/8 hand grid.
 - Action-before-feedback chronology, action-conditioned belief updates,
   natural/padded myopic agreement and the separate real-filter/tree counts.
 - Real-runner suffix, private-band and scorer interventions; geometry and

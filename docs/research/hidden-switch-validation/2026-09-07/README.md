@@ -26,3 +26,9 @@ The initial captured suite passed 124 cases. The final captured suite adds
 five metadata/overflow cases and passes 129. Neither run generates registered
 source tapes. Native compile/check history and combined gates will be added
 before measurement.
+
+Archive-ref admission parity was added before freezing implementation.
+The [wrapper tests](python-archive-ref-tests.log) pass 64 cases and the
+[four-file mypy check](python-archive-ref-types.log) passes. These checks
+include both lightweight-tag replacement refusals and generate no source
+stream. The separate reference index guard now has 68 focused cases.
