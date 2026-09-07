@@ -27,6 +27,7 @@ module ZetaFsFuse =
         | Lookup of parent: uint64 * name: byte[]
         | Getattr of id: uint64
         | Setattr of id: uint64 * patch: ZetaFsPosixMeta.PosixSetattr
+        | Truncate of id: uint64 * len: int64
         | Readdir of id: uint64
         | Create of parent: uint64 * name: byte[]
         | Mkdir of parent: uint64 * name: byte[]
@@ -103,6 +104,17 @@ module ZetaFsFuse =
             | Result.Error e -> Fail e
             | Result.Ok node ->
                 match ZetaFsPosixVfs.setattr session.Mount node patch with
+                | Result.Error e -> Fail(ofVfs e)
+                | Result.Ok() ->
+                    match ZetaFsPosixVfs.getattr session.Mount node with
+                    | Result.Error e -> Fail(ofVfs e)
+                    | Result.Ok stat -> Stat(stat, node.Ino)
+
+        | Truncate(id, len) ->
+            match nodeOf session id with
+            | Result.Error e -> Fail e
+            | Result.Ok node ->
+                match ZetaFsPosixVfs.truncate session.Mount node len with
                 | Result.Error e -> Fail(ofVfs e)
                 | Result.Ok() ->
                     match ZetaFsPosixVfs.getattr session.Mount node with

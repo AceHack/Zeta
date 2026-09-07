@@ -151,3 +151,29 @@ let ``setattr writes caller unix-ns and getattr returns them`` () =
                 Assert.Equal(node.Ino, ino)
             | other -> Assert.Fail(sprintf "setattr: %A" other)
         | other -> Assert.Fail(sprintf "create: %A" other))
+
+[<Fact>]
+let ``truncate shrinks getattr size; directory is EISDIR; negative is EINVAL`` () =
+    withSession "/fuse-trunc" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Truncate(root, 0L)) with
+        | ZetaFsFuse.Fail ZetaFsFuse.EISDIR -> ()
+        | other -> Assert.Fail(sprintf "trunc dir: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node node ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Open node.Id) with
+            | ZetaFsFuse.Fh fh ->
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Write(fh, 0L, [| 1uy; 2uy; 3uy |])) with
+                | ZetaFsFuse.Written 3 -> ()
+                | other -> Assert.Fail(sprintf "write: %A" other)
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Release fh) with
+                | ZetaFsFuse.Released -> ()
+                | other -> Assert.Fail(sprintf "release: %A" other)
+            | other -> Assert.Fail(sprintf "open: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Truncate(node.Id, 1L)) with
+            | ZetaFsFuse.Stat(stat, _) -> Assert.Equal(1UL, stat.Size)
+            | other -> Assert.Fail(sprintf "truncate: %A" other)
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Truncate(node.Id, -1L)) with
+            | ZetaFsFuse.Fail ZetaFsFuse.EINVAL -> ()
+            | other -> Assert.Fail(sprintf "neg: %A" other)
+        | other -> Assert.Fail(sprintf "create: %A" other))
