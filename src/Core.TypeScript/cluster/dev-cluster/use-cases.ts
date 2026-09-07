@@ -24,6 +24,7 @@ import {
   resolveRegistryToken,
   REPO_ROOT,
 } from "./lib.ts";
+import { CHART_ROTATION_CONSTRAINTS } from "../chart-rotation-conformance.ts";
 import { SERVED_GIT_REF } from "../lane-tree-source.ts";
 
 /**
@@ -210,6 +211,147 @@ export function applyDevBootstrapSecrets(ports: DevClusterPorts): void {
  * holding the old value, and the mismatch would surface as an S3 auth error days later rather
  * than as a refusal now.
  */
+/**
+ * What a rotation did, and -- as loudly -- what it did NOT do.
+ *
+ * `restartRequired` is ADVISORY and the field name is the honest one: this
+ * process cannot perform it. `ClusterControlPlane` exposes `applyInlineManifest`,
+ * `ensureNamespace` and `resourceExists` and nothing that rolls a workload, so a
+ * rotation here swaps the stored bytes and stops. Reporting the restart without
+ * naming it as un-performed would be the exact failure this repo keeps finding:
+ * an operation that reads as complete while the running service still presents
+ * the credential it was started with.
+ */
+export interface CredentialRotation {
+  /** `namespace/name`, or for a shared credential just `name`. */
+  readonly credential: string;
+  readonly rotated: boolean;
+  /**
+   * ALWAYS false, and typed as the literal so it cannot quietly become true.
+   *
+   * `docs/DECISIONS/2026-06-15-zero-downtime-id-rotation-pattern-overlap-window-dual-key.md`
+   * wants old and new valid together, then a retirement. A Kubernetes Secret
+   * holding ONE password under ONE key cannot express that, and every chart in
+   * `CHART_ROTATION_CONSTRAINTS` reads exactly one -- see that register for which
+   * ones could be fixed upstream and which are single-by-design. So this verb
+   * does a REPLACE, and says so rather than claiming an overlap it did not open.
+   */
+  readonly overlapWindow: false;
+  /** Workloads that keep the OLD credential until something restarts them. */
+  readonly restartRequired: readonly string[];
+  /** Set when nothing was rotated. Mutually exclusive with `rotated`. */
+  readonly refusal?: string;
+}
+
+/**
+ * Rotate ONE dev/CI credential, by name, deliberately.
+ *
+ * -- WHY THIS IS A SEPARATE VERB, AND TAKES A TARGET ------------------------
+ * `applyDevBootstrapSecrets` is mint-if-absent and must stay that way: a bare
+ * apply on every bring-up would re-roll an admin password under a running
+ * service, which `use-cases.test.ts` pins with "a second bring-up ... does NOT
+ * rotate them". Rotation is therefore the OTHER verb, and it is deliberately
+ * awkward to invoke in bulk -- it takes one credential, never a roster and never
+ * an "all". The blast radius is chosen by the caller, in writing, per call.
+ *
+ * -- ROTATION IS NOT A MINT, AND REFUSES TO BECOME ONE ----------------------
+ * A rotation against a credential the cluster does not hold is a MINT wearing a
+ * rotation's name: the operator asked to replace something and would instead
+ * have created it, learning nothing about the missing original. That is refused.
+ * Rotating a name absent from the roster is refused for the same reason -- a
+ * typo would otherwise mint an unreferenced Secret nobody consumes, which is the
+ * "credential with no consumer" that `audit-existing-secret-is-minted` exists to
+ * catch, arriving through a door that audit does not watch.
+ *
+ * -- SHARED CREDENTIALS ROTATE EVERYWHERE OR NOWHERE ------------------------
+ * The all-or-nothing rule `applyDevSharedSecrets` states for minting binds
+ * harder here. One value spans several namespaces; rotating a subset leaves the
+ * rest presenting a key the store no longer knows, and that surfaces as an auth
+ * error days later rather than as a refusal now. The draw stays OUTSIDE the
+ * namespace loop for the same reason it does there.
+ */
+export function rotateDevCredential(ports: DevClusterPorts, target: string): CredentialRotation {
+  const shared = DEV_SHARED_SECRETS.find((spec) => spec.name === target);
+  if (shared !== undefined) {
+    const missing = shared.namespaces.filter(
+      (ns) => !ports.controlPlane.resourceExists(`secret/${shared.name}`, ns),
+    );
+    if (missing.length > 0) {
+      return {
+        credential: shared.name,
+        rotated: false,
+        overlapWindow: false,
+        restartRequired: [],
+        refusal:
+          `refusing to rotate ${shared.name}: absent from ${missing.join(", ")}. ` +
+          "A shared credential rotates in every namespace or in none -- a partial rotation " +
+          "leaves consumers presenting a key the producer no longer knows.",
+      };
+    }
+    // ONE draw for every namespace. See applyDevSharedSecrets: drawing per
+    // namespace is the defect this placement prevents.
+    const value = randomBytes(24).toString("base64url");
+    for (const ns of shared.namespaces) {
+      ports.controlPlane.applyInlineManifest(buildDevSharedSecretManifest(shared, ns, value));
+    }
+    return {
+      credential: shared.name,
+      rotated: true,
+      overlapWindow: false,
+      restartRequired: consumersOf(shared.name),
+    };
+  }
+
+  const spec = DEV_BOOTSTRAP_SECRETS.find((entry) => `${entry.namespace}/${entry.name}` === target);
+  if (spec === undefined) {
+    return {
+      credential: target,
+      rotated: false,
+      overlapWindow: false,
+      restartRequired: [],
+      refusal:
+        `refusing to rotate ${target}: not a known dev credential. ` +
+        "Rotation never mints -- an unrecognised name would create a Secret no Application reads.",
+    };
+  }
+
+  if (!ports.controlPlane.resourceExists(`secret/${spec.name}`, spec.namespace)) {
+    return {
+      credential: target,
+      rotated: false,
+      overlapWindow: false,
+      restartRequired: [],
+      refusal:
+        `refusing to rotate ${target}: the cluster does not hold it. ` +
+        "Rotation is not a mint; run a bring-up if the credential should exist.",
+    };
+  }
+
+  console.log(`Rotating dev/CI credential ${target} (new value is per-cluster and never logged) ...`);
+  ports.controlPlane.applyInlineManifest(
+    buildDevAdminSecretManifest(spec, randomBytes(24).toString("base64url")),
+  );
+  return {
+    credential: target,
+    rotated: true,
+    overlapWindow: false,
+    restartRequired: consumersOf(`${spec.namespace}/${spec.name}`),
+  };
+}
+
+/**
+ * Which Applications keep the old value until restarted.
+ *
+ * Read from `CHART_ROTATION_CONSTRAINTS` rather than re-listed here, so the
+ * consumer of a credential has ONE source. A second hand-written list would
+ * drift from the first, and the drift would be invisible: a rotation would
+ * simply stop naming a service that still needed restarting.
+ */
+function consumersOf(credential: string): readonly string[] {
+  return CHART_ROTATION_CONSTRAINTS.filter((c) => c.secret === credential).map((c) => c.consumer);
+}
+
+
 export function applyDevSharedSecrets(ports: DevClusterPorts): void {
   for (const spec of DEV_SHARED_SECRETS) {
     const ref = `secret/${spec.name}`;

@@ -24,6 +24,8 @@ import {
   bringUpK3dDevCluster,
   bringUpKindCiCluster,
   rewriteCorefileForwardToPublicResolvers,
+  applyDevBootstrapSecrets,
+  rotateDevCredential,
 } from "./use-cases.ts";
 import type {
   AppCatalogApplicator,
@@ -1046,5 +1048,134 @@ describe("the lane-tree resource-rung override point", () => {
     bringUpK3dDevCluster(fakePorts(log), k3dOptions);
     expect(log).toContain(`catalog:main@${k3dOptions.gitRepoUrl}`);
     expect(log.some((line) => line.includes("zeta-lane-tree"))).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ROTATION. The mint had a guard proving a re-bring-up does NOT rotate; nothing
+// proved a DELIBERATE rotation works, because until now there was no verb to
+// rotate with. These are that verb's falsifiers, and the negative cases carry
+// the weight -- a rotation that silently mints, or silently half-rotates a
+// shared credential, fails in a way that surfaces as an auth error days later.
+// ---------------------------------------------------------------------------
+
+/** Every password a run applied, pulled back out of the manifests it wrote. */
+function appliedPasswords(log: readonly string[], passwordKey: string): readonly string[] {
+  return log
+    .filter((entry) => entry.startsWith("inline-manifest:"))
+    .flatMap((entry) => {
+      const match = new RegExp(`^\\s*${passwordKey}: (.+)$`, "m").exec(entry);
+      return match?.[1] === undefined ? [] : [match[1].trim()];
+    });
+}
+
+describe("rotateDevCredential", () => {
+  const spec = DEV_BOOTSTRAP_SECRETS[0]!;
+  const target = `${spec.namespace}/${spec.name}`;
+  const present = [`secret/${spec.name}@${spec.namespace}`];
+
+  test("rotating a credential the cluster HOLDS replaces it and reports the swap", () => {
+    const log: string[] = [];
+    const result = rotateDevCredential(fakePorts(log, present), target);
+    expect(result.rotated).toBe(true);
+    expect(result.refusal).toBeUndefined();
+    expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(true);
+  });
+
+  test("THE VALUE ACTUALLY CHANGES — the point of a rotation", () => {
+    // A rotation that re-applied the same bytes would satisfy every structural
+    // assertion above and rotate nothing. Two rotations, two draws, compared.
+    const first: string[] = [];
+    const second: string[] = [];
+    rotateDevCredential(fakePorts(first, present), target);
+    rotateDevCredential(fakePorts(second, present), target);
+    const a = appliedPasswords(first, spec.passwordKey);
+    const b = appliedPasswords(second, spec.passwordKey);
+    expect(a).toHaveLength(1);
+    expect(b).toHaveLength(1);
+    expect(a[0]).not.toEqual(b[0]);
+    expect((a[0] ?? "").length).toBeGreaterThan(20);
+  });
+
+  test("ROTATION IS NOT A MINT — an absent credential is refused, not created", () => {
+    const log: string[] = [];
+    const result = rotateDevCredential(fakePorts(log, []), target);
+    expect(result.rotated).toBe(false);
+    expect(result.refusal ?? "").toContain("does not hold it");
+    // The refusal must be total: nothing written.
+    expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(false);
+  });
+
+  test("an unrecognised name is refused rather than minted as a new Secret", () => {
+    const log: string[] = [];
+    const result = rotateDevCredential(fakePorts(log, present), "nowhere/not-a-credential");
+    expect(result.rotated).toBe(false);
+    expect(result.refusal ?? "").toContain("not a known dev credential");
+    expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(false);
+  });
+
+  test("it never claims an overlap window it did not open", () => {
+    const result = rotateDevCredential(fakePorts([], present), target);
+    expect(result.overlapWindow).toBe(false);
+  });
+
+  test("it names the consumers that still hold the OLD value until restarted", () => {
+    const result = rotateDevCredential(fakePorts([], present), target);
+    expect(result.restartRequired.length).toBeGreaterThan(0);
+  });
+
+  test("MINTING STAYS IDEMPOTENT — adding rotation did not make bring-up rotate", () => {
+    // The guard this verb had to not break. Driven through the mint, not the
+    // rotate, because that is the path a bring-up takes.
+    const log: string[] = [];
+    // BOTH ROSTERS. `applyDevBootstrapSecrets` ends by calling
+    // `applyDevSharedSecrets`, so listing only the bootstrap refs would leave the
+    // shared ones to mint and this test would go red for the right reason while
+    // claiming the wrong one -- the same trap the sibling idempotency test above
+    // documents.
+    const existing = [
+      ...DEV_BOOTSTRAP_SECRETS.map((s) => `secret/${s.name}@${s.namespace}`),
+      ...DEV_SHARED_SECRETS.flatMap((s) => s.namespaces.map((ns) => `secret/${s.name}@${ns}`)),
+    ];
+    applyDevBootstrapSecrets(fakePorts(log, existing));
+    expect(appliedPasswords(log, spec.passwordKey)).toHaveLength(0);
+  });
+});
+
+describe("rotateDevCredential — shared credentials rotate everywhere or nowhere", () => {
+  const shared = DEV_SHARED_SECRETS[0]!;
+
+  test("a partially-present shared credential is REFUSED, not half-rotated", () => {
+    // The failure this prevents does not surface here: it surfaces days later as
+    // an auth error, when a consumer left on the old value talks to a producer
+    // that moved. Refusing now is the whole reason the rule exists.
+    const partial = shared.namespaces
+      .slice(0, Math.max(1, shared.namespaces.length - 1))
+      .map((ns) => `secret/${shared.name}@${ns}`);
+    const log: string[] = [];
+    const result = rotateDevCredential(fakePorts(log, partial), shared.name);
+    if (shared.namespaces.length > 1) {
+      expect(result.rotated).toBe(false);
+      expect(result.refusal ?? "").toContain("every namespace or in none");
+      expect(log.some((entry) => entry.startsWith("inline-manifest:"))).toBe(false);
+    } else {
+      expect(result.rotated).toBe(true);
+    }
+  });
+
+  test("a fully-present shared credential rotates every namespace with ONE value", () => {
+    const log: string[] = [];
+    const all = shared.namespaces.map((ns) => `secret/${shared.name}@${ns}`);
+    const result = rotateDevCredential(fakePorts(log, all), shared.name);
+    expect(result.rotated).toBe(true);
+    const applied = log.filter((entry) => entry.startsWith("inline-manifest:"));
+    expect(applied).toHaveLength(shared.namespaces.length);
+    // ONE draw across all of them: drawing per namespace is the defect the
+    // production code places the draw outside the loop to avoid.
+    const values = new Set(applied.map((entry) => entry.replace(/^inline-manifest:/, "")));
+    const distinctSecretBodies = new Set(
+      [...values].map((yaml) => yaml.replace(/namespace: \S+/g, "namespace: NS")),
+    );
+    expect(distinctSecretBodies.size).toBe(1);
   });
 });
