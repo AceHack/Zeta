@@ -1,0 +1,258 @@
+{
+  "SourceCommit": "7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-semantic-build-1.log",
+      "Bytes": 979,
+      "Sha256": "2D6C0A2BD07BB5BDCF35FCF39E5543C1DFEB70D852B5F1D66E086D4D5F031BEE",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-build-1.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "7CD0D1D480DB3B512C80F4E227BD270435F0A456FB9838857765B6EAA96423DB"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-build-2.log",
+      "Bytes": 979,
+      "Sha256": "0891E73D7E780C9FA7F9D22C216E17A1AD88018E5CE95E342421853C6D18AB43",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-build-2.log.gz",
+      "StoredBytes": 318,
+      "StoredSha256": "E3E884AB6A6320FB3D4CAF2A9EE7C6F5D198F2022410E403625B97AD2491929E"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-build-3.log",
+      "Bytes": 1622,
+      "Sha256": "47D09958F146692D6F1A796165306E3E600E5D5563DF22A4498E1387B6196514",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-build-3.log.gz",
+      "StoredBytes": 443,
+      "StoredSha256": "56607364A42F1C21F0526E56C39F00CF71A4D525CC322D5AB0ECA5573182E07F"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-buildgraph-1.log",
+      "Bytes": 116,
+      "Sha256": "EF6AC05E0378FD8F87E01EDEB8120E9146BF17D5BA60B828FE9CEEF246ECB3DA",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-buildgraph-1.log.gz",
+      "StoredBytes": 98,
+      "StoredSha256": "061CD05EC382A27747687E4CD65EEAFA6AE2DD02D847BE860F78366A8629A9B2"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-cli-build-4.log",
+      "Bytes": 979,
+      "Sha256": "371B74D15B3882C843B3C79D7CC5857CE600C519CAB50166252CF7E172C8884C",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-cli-build-4.log.gz",
+      "StoredBytes": 318,
+      "StoredSha256": "8C808CA85408D694DB5227D0B98CD2E8F59D03B609EAE6EB54A21CC76142BDE8"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-cli-build-5.log",
+      "Bytes": 979,
+      "Sha256": "21142199D9D830588C829C639AA8F85323630845634023BCA1036F02D3467342",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-cli-build-5.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "5AF6CE4E900F74AFC0865F6ED02F31B16CBE9ED5C182848AA346A65F8C626540"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-equality-1.log",
+      "Bytes": 205,
+      "Sha256": "5195EB5304349B908222AA2EB1035E48341CC21976014DB092B983C14114E100",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-equality-1.log.gz",
+      "StoredBytes": 178,
+      "StoredSha256": "D291862B8A417ABD09F97F5BCE3BAD70371685D3912C44172D0B450A819A1D64"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-equality-2.log",
+      "Bytes": 205,
+      "Sha256": "5195EB5304349B908222AA2EB1035E48341CC21976014DB092B983C14114E100",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-equality-2.log.gz",
+      "StoredBytes": 178,
+      "StoredSha256": "D291862B8A417ABD09F97F5BCE3BAD70371685D3912C44172D0B450A819A1D64"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-1.log",
+      "Bytes": 6363,
+      "Sha256": "145BEAA146D11C2F6D9371BDEBE05691B295FB84344B1D30A838F8DA32178C31",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-1.log.gz",
+      "StoredBytes": 854,
+      "StoredSha256": "8D52045D971AFBA883F01533C1FB09F8E7B61371DFC11C12392279F38D77C8B0"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-2.log",
+      "Bytes": 3989,
+      "Sha256": "715171A6A0A4F7D70EBDFCBB946141643685F120502A436F9A6D5BA737F5752E",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-2.log.gz",
+      "StoredBytes": 571,
+      "StoredSha256": "8130BABCE64F915958D028EB36A460C0DE7091A10B7A035207635C798A705DAE"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-3.log",
+      "Bytes": 4485,
+      "Sha256": "844BFCF9C94EAC791D73CE462E3BA5E23F78D0B29267A68B66079F3210A525FD",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-3.log.gz",
+      "StoredBytes": 674,
+      "StoredSha256": "A4A7D7B1A30307C5B0AA7D70DDC1B8CCE5C4AFAC09BFCEC108DA6E62B5DF16F0"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-4.log",
+      "Bytes": 3989,
+      "Sha256": "6D376AA6F9856F0F8A7F26A40E4C2663C95C5F2E29D4FD5F9C581F25DCECF303",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-4.log.gz",
+      "StoredBytes": 571,
+      "StoredSha256": "E4A1B528152E56FFAE4800691ABFB497F2495C2D39FEB7803C4CA935FC2BC932"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-tests-1.log",
+      "Bytes": 506,
+      "Sha256": "BF7B810375150E59ABEBDF44BCADFB68700CCD384D8D0D5176978ACA49CF09E9",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-tests-1.log.gz",
+      "StoredBytes": 296,
+      "StoredSha256": "36C8CA1AF22267BEF451B864A04BC3DF9DBA862D9928FF9F3C711E3F850705A0"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-format-1.log",
+      "Bytes": 5399,
+      "Sha256": "535DC962B5C7272B914D941E9E171B58D7D063CD94E32087EB9340AD20B436FC",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-format-1.log.gz",
+      "StoredBytes": 568,
+      "StoredSha256": "7128AC7DACB6587202E6567FF12721FF1E1A5C481ED8069920838613A4121BA6"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-nonequality-1.log",
+      "Bytes": 201,
+      "Sha256": "866CDD83380195F1185853A469ECEF7CF64F2FF6F536050713221FBD298E55A0",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-nonequality-1.log.gz",
+      "StoredBytes": 173,
+      "StoredSha256": "4EEED11E72CECB3CB551E76A77DBB7653F5B123A4BCE52A043BB205941960232"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-nonequality-2.log",
+      "Bytes": 201,
+      "Sha256": "3F598F87CBD5A381543D037075303D092EF2804E0960E2224765790C43D00433",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-nonequality-2.log.gz",
+      "StoredBytes": 174,
+      "StoredSha256": "2AC2E0707ECA7F9A86C37A314A4ADF2758AD8F5430F8E7745AE0E4E5CA13C13D"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-regression-tests-1.log",
+      "Bytes": 509,
+      "Sha256": "E33B6EBD2AE7A5D81920CAB110620A280B91FA0A0DCF59B3D0661976E0486F8E",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-regression-tests-1.log.gz",
+      "StoredBytes": 299,
+      "StoredSha256": "7679E90DB61D4DEDA837765951AFCEB219A4D4047F0EBECEC8891E8F9F562DFC"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-regression-tests-2.log",
+      "Bytes": 509,
+      "Sha256": "98672C2E96BCDD9FF87316C6310367B81544C5AF218C2A4BE511FC619053FE08",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-regression-tests-2.log.gz",
+      "StoredBytes": 299,
+      "StoredSha256": "4074630EA697E46F2B1AF744C621DC01C429F76749C6FDD951B340B942813CAC"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-build-1-source.json",
+      "Bytes": 5459,
+      "Sha256": "2630E0D828AC0728E559076F67B9E54FFB7F4863389DF6B9399465E53B536D7E",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-build-1-source.json.gz",
+      "StoredBytes": 1573,
+      "StoredSha256": "410E2EBD3480EDDE4B9A5A420F4119F3DE7C4246EB77797504988023A6E00AD5"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-build-2-source.json",
+      "Bytes": 5609,
+      "Sha256": "2DF68B7EE033B270F88407BEAED9DD575B216755148C5A69AE81F9FC746D0A3B",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-build-2-source.json.gz",
+      "StoredBytes": 1557,
+      "StoredSha256": "8E489245BB136F82FE5251F0A9B304801280C2000C6CF66A6449DAE95FFB752F"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-build-3-source.json",
+      "Bytes": 1850,
+      "Sha256": "0CD91AC481A733127A1B79BAF72F6AFD33D554490A98857081D4444FC92AAA1C",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-build-3-source.json.gz",
+      "StoredBytes": 757,
+      "StoredSha256": "D6EFF8265B722D64D21AA12065CEDF8371BE08EE6BB53DB43183137D9CC50853"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-2-source.json",
+      "Bytes": 1850,
+      "Sha256": "3E729237510B828404E7F4E44F121C709BDCD92FB70683A603E4764E60E2C560",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-2-source.json.gz",
+      "StoredBytes": 755,
+      "StoredSha256": "8284F2B968EC29C199B65A9528EF8C2B22F0682063255D7F2B269BC49E7C4846"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-3-source.json",
+      "Bytes": 1850,
+      "Sha256": "8E4E55725906F8D76B9756FC5C62D8546BC2DAF3A74929090338F16C6CAB4AED",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-3-source.json.gz",
+      "StoredBytes": 755,
+      "StoredSha256": "3C209B3B20509594B6811482252F042308A072622419A70C7D9FEA5603932993"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-focused-build-4-source.json",
+      "Bytes": 1850,
+      "Sha256": "695891C281E3AE4256C1405C2E481B6A44330DF12BFF5E39ECA0D579BF216749",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-build-4-source.json.gz",
+      "StoredBytes": 758,
+      "StoredSha256": "845063F46B91C34F21D5244998FF4CD97F5142E76F08EAF297DDF2F0D4694549"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-final-validation.json",
+      "Bytes": 31839,
+      "Sha256": "BF1BB21DD86CDA57F0161EF4517BF6BEF2EF985580706E8569A0AEFC64C64070",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-final-validation.json.gz",
+      "StoredBytes": 6725,
+      "StoredSha256": "ECF0F342BC22A2FD95FD7BCC84BF5FCBFB55580BA7B652A65042A71EA5328843"
+    },
+    {
+      "File": "tests/Tests.FSharp/TestResults/hidden-switch-compiled-semantic-focused-1.trx",
+      "Bytes": 13707,
+      "Sha256": "F4717388F92E5850B9D8A4F918BAF1F795E6E1D718878B7A72CC1899A57E49B7",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-focused-1.trx.gz",
+      "StoredBytes": 2421,
+      "StoredSha256": "B4070A040E88C000BF5B796BB5BB4AF30DBD0A42CA80D4D0B7FF1C8AE240B938"
+    },
+    {
+      "File": "tests/Tests.FSharp/TestResults/hidden-switch-compiled-semantic-regression-1.trx",
+      "Bytes": 55745,
+      "Sha256": "F654309C0D10B5DC5A4183A4567F4EC204B28BB58908E8F24632E23212E1B432",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-regression-1.trx.gz",
+      "StoredBytes": 6948,
+      "StoredSha256": "8D7DB05A07B8DFE2BA7952397B3554BDBAF38266ACFB69386EB912ACC5A06F00"
+    },
+    {
+      "File": "tests/Tests.FSharp/TestResults/hidden-switch-compiled-semantic-regression-2.trx",
+      "Bytes": 57221,
+      "Sha256": "D72DB46D3F643AFBC348D5CAB9441015170D693108BC0A14B61253F9B91B59B6",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-regression-2.trx.gz",
+      "StoredBytes": 7381,
+      "StoredSha256": "E119103386785C4B17C9AD99BEF39BCFB8148D05614D19B152E8412EFD094606"
+    }
+  ],
+  "Scope": "source/build/focused tests only; no actual semantic capture or full native gate"
+}

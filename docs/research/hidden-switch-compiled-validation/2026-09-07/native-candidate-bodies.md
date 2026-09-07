@@ -491,3 +491,12 @@ compiler bytes. The cached DAC file is 2,408,704 bytes with SHA256
 Its observed verification suffix remains unchanged; cached path/file identity
 is not a loaded-binary theorem or a method-extent proof. Full runtime, body
 and closure admission remain false while native conformance work continues.
+
+## Native semantic collection source
+
+The [semantic hand record](native-semantic-hand.md) indexes source
+`7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0`, its 28 preparation records,
+all retained compiler failures and the final 37 passing focused tests.
+The ten interventions and fifty-three invalid operations now retain actual
+call-site counters and active failure prefixes. No registered work, full hand
+admission or new runtime/body/closure acceptance follows from this slice.
