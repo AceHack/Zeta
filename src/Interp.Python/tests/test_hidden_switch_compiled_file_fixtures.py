@@ -183,7 +183,8 @@ def test_hooks_delegate_unrelated_file_and_restore_even_after_actual_refusal(
     original_write, original_stat = os.write, os.fstat
 
     def write(root: Path, relative: str, raw: bytes) -> a.Admission[int]:
-        assert os.write(fd, b"unrelated") == 9
+        written = os.write(fd, b"unrelated")
+        assert written == 9
         return real_api(root, relative, raw)
 
     monkeypatch.setattr(storage, "write_exclusive", write)
@@ -207,7 +208,8 @@ def test_operation_exception_retains_fault_prefix_and_restores_hooks(
             fixture.Root / fixture.Target, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600
         )
         try:
-            assert os.write(fd, b"original") == 3
+            written = os.write(fd, b"original")
+            assert written == 3
         finally:
             os.close(fd)
         raise RuntimeError("actual call did not return")
