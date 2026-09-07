@@ -177,3 +177,51 @@ let ``truncate shrinks getattr size; directory is EISDIR; negative is EINVAL`` (
             | ZetaFsFuse.Fail ZetaFsFuse.EINVAL -> ()
             | other -> Assert.Fail(sprintf "neg: %A" other)
         | other -> Assert.Fail(sprintf "create: %A" other))
+
+[<Fact>]
+let ``lookup of dot is self; lookup of dotdot from a dir is the arrival parent`` () =
+    withSession "/fuse-dotdot" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(root, ZetaFsPosixVfs.dot)) with
+        | ZetaFsFuse.Node self -> Assert.Equal(root, self.Id)
+        | other -> Assert.Fail(sprintf "dot: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(root, ZetaFsPosixVfs.dotDot)) with
+        | ZetaFsFuse.Node up -> Assert.Equal(root, up.Id)
+        | other -> Assert.Fail(sprintf "root dotdot: %A" other)
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "d")) with
+        | ZetaFsFuse.Node dir ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(dir.Id, ZetaFsPosixVfs.dotDot)) with
+            | ZetaFsFuse.Node up -> Assert.Equal(root, up.Id)
+            | other -> Assert.Fail(sprintf "dotdot: %A" other)
+        | other -> Assert.Fail(sprintf "mkdir: %A" other))
+
+[<Fact>]
+let ``two parents yield two FUSE dotdot nodes and one st_ino`` () =
+    withSession "/fuse-two-dotdot" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "a")) with
+        | ZetaFsFuse.Node dirA ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(root, utf8 "b")) with
+            | ZetaFsFuse.Node dirB ->
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(dirA.Id, utf8 "f")) with
+                | ZetaFsFuse.Node file ->
+                    match ZetaFsFreeze.bindName session.Mount.Volume dirB.Entity (utf8 "f") file.Entity with
+                    | Error e -> Assert.Fail(sprintf "bindName: %A" e)
+                    | Ok() ->
+                        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(dirA.Id, utf8 "f")) with
+                        | ZetaFsFuse.Node viaA ->
+                            match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(dirB.Id, utf8 "f")) with
+                            | ZetaFsFuse.Node viaB ->
+                                Assert.Equal(viaA.Ino, viaB.Ino)
+                                Assert.NotEqual(viaA.Id, viaB.Id)
+                                match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(viaA.Id, ZetaFsPosixVfs.dotDot)) with
+                                | ZetaFsFuse.Node upA -> Assert.Equal(dirA.Id, upA.Id)
+                                | other -> Assert.Fail(sprintf "upA: %A" other)
+                                match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(viaB.Id, ZetaFsPosixVfs.dotDot)) with
+                                | ZetaFsFuse.Node upB -> Assert.Equal(dirB.Id, upB.Id)
+                                | other -> Assert.Fail(sprintf "upB: %A" other)
+                            | other -> Assert.Fail(sprintf "lookup b/f: %A" other)
+                        | other -> Assert.Fail(sprintf "lookup a/f: %A" other)
+                | other -> Assert.Fail(sprintf "create: %A" other)
+            | other -> Assert.Fail(sprintf "mkdir b: %A" other)
+        | other -> Assert.Fail(sprintf "mkdir a: %A" other))
