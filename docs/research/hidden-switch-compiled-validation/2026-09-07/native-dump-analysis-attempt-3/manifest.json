@@ -1,0 +1,446 @@
+{
+  "Meaning": "Third separately authorized metadata attempt on unchanged captured dump. All physical/current method identities and cached local DAC metadata retained; installed host still refuses u before any Begin/extent prefix. No unsupported disassembly callback was observed. Driver2, actual analyzer PID95240/exit0, empty cleanup. This offline route stops here. All full admission flags false; raw dump excluded.",
+  "SourceCommit": "21774b94d251273bae9b8565c8ec9e0767bec662",
+  "SourceHelpers": [
+    {
+      "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp.Cli/analyze_hidden_switch_dump.py",
+      "Bytes": 23970,
+      "Sha256": "46F247DCB8B11C52FB6435474F6DB7D772DD507B299D39C852F1E8E1ECEBE8B9"
+    },
+    {
+      "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp.Cli/hidden_switch_dump_memory.py",
+      "Bytes": 4829,
+      "Sha256": "F0D1D2F30D4A08CB3F7CDC8D402574F494A5920E40D0A05DFCBE2487AF342537"
+    },
+    {
+      "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Research.FSharp.Cli/inspect_hidden_switch_bodies.py",
+      "Bytes": 10132,
+      "Sha256": "ACD80BF2420D5E33568D8D856ACCC25B9020DDD580DB93832F9B661B7331DEBF"
+    }
+  ],
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/analyzer-host.log",
+      "Bytes": 257252,
+      "Sha256": "8D753735270C9A268D231F87829DAD325BDF1533FD1DD0EB84DD646EE959ACF1",
+      "StoredFile": "analyzer-host.log.gz",
+      "StoredBytes": 15444,
+      "StoredSha256": "4BA120C24CD0814FE4947F7F5D658EA1520E804D0451B2E30E47EC5962EE1345",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/analyzer-start.json",
+      "Bytes": 828,
+      "Sha256": "94E89C8B3189C5530D670CF67C4CDF9DE3642D28E37C9693450B6BF2C3DA7E8F",
+      "StoredFile": "analyzer-start.json.gz",
+      "StoredBytes": 461,
+      "StoredSha256": "2F3C93F130500CF08B92B7D2233CA4AE88854FDA29E94B288A9FE82F725A3A66",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/analyzer-started.json",
+      "Bytes": 178,
+      "Sha256": "E03C498DBF9F5D69EDABD8DD5B1F707487CED7A17B15672A169FD32AE4827977",
+      "StoredFile": "analyzer-started.json.gz",
+      "StoredBytes": 167,
+      "StoredSha256": "43E2BF884D9E1E7AF15A632731587484A8E9573EAD651A11D67DCF7D4A31FCC2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/analyzer.stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredFile": "analyzer.stderr.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/analyzer.stdout.log",
+      "Bytes": 5384,
+      "Sha256": "8C54C363A7731C4CC2B4A4BF3D7F6DED75CC7CF2BA2355142B530B81BB3C107F",
+      "StoredFile": "analyzer.stdout.log.gz",
+      "StoredBytes": 1188,
+      "StoredSha256": "C94A019D47E58D88A0AAA19C144ACB7EAA423D1B8AC7CDD3B506E0D64EFBF579",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-00.json",
+      "Bytes": 76,
+      "Sha256": "87A5E6B5E0C77342D0D6D2F209918EE5261404F4103F610CF053B528582CA379",
+      "StoredFile": "command-00.json.gz",
+      "StoredBytes": 92,
+      "StoredSha256": "20C8452E5693DB1392B5C03A64860463FB27B0F9997227E5093DC40B7DD85822",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-00.txt",
+      "Bytes": 345,
+      "Sha256": "FC0A2F3BC1E74A0D1B805B37BF6C1018B9432A4746EFF3E541D6F410A2EC1F25",
+      "StoredFile": "command-00.txt.gz",
+      "StoredBytes": 264,
+      "StoredSha256": "DD562D520AFEAD5FB8FAE804CE48AA0D69C65B8AC8A1D4C44C47FF29F16733AC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-01.json",
+      "Bytes": 98,
+      "Sha256": "0AED6C6A1A0CB1D2A3BAAF9A6AA1C1027CE69CC7D008335E2945DF71F145CFB9",
+      "StoredFile": "command-01.json.gz",
+      "StoredBytes": 114,
+      "StoredSha256": "E6B43AAE51BC882E8FA61A9C9C1533A2564A8A3B1C6C7E7328141C218C151404",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-01.txt",
+      "Bytes": 79,
+      "Sha256": "4A0291D45045246539B4AE8C51B965EC9D174CB0C89B10502154BDFE8A55DD91",
+      "StoredFile": "command-01.txt.gz",
+      "StoredBytes": 91,
+      "StoredSha256": "922D71070B0BDBC5F1B6FB1C72A1566193132FBA3AB40EB8DE53995805D8B4D2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-02.json",
+      "Bytes": 89,
+      "Sha256": "F44EE0B6560B1528ED7389F9118F69B8246B79141E4309EF74C438D63A73BEBB",
+      "StoredFile": "command-02.json.gz",
+      "StoredBytes": 105,
+      "StoredSha256": "262DFBDB484DFB83E1BFBB2E8290A79826E39AE4AA558061735ED198ACDA5106",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-02.txt",
+      "Bytes": 70,
+      "Sha256": "4832292AF308F42D37675EA6BA70A4E80261363C1B52C5492EC1292F009CB29C",
+      "StoredFile": "command-02.txt.gz",
+      "StoredBytes": 82,
+      "StoredSha256": "C0E3417BEC8A51AB96CB5BB4594323938B3DC1C2A41F907A088C215802BDEA31",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-03.json",
+      "Bytes": 166,
+      "Sha256": "44CA6112F60D3BD2AC10FE812850E23E68E72AF25CE2DE696C61CA46E02EEEC0",
+      "StoredFile": "command-03.json.gz",
+      "StoredBytes": 161,
+      "StoredSha256": "832831ECC0CB25433E4A1DD93F5662A5E53C0C061E2DF43483F71873B61CFB1D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-03.txt",
+      "Bytes": 229,
+      "Sha256": "D0A9D83039BB0A88745AB3FF95A0F32C1A35435F3C1617921544CBBAAF3CC08D",
+      "StoredFile": "command-03.txt.gz",
+      "StoredBytes": 152,
+      "StoredSha256": "7F84B3A105BA57A151BD6047AC9F67C577BB8C13E206434799B4C9C4B40F2C3C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-04.json",
+      "Bytes": 84,
+      "Sha256": "CA71FAB6DA4FA1A01C949C89593A5AA95E2C5A023CBEB96061F73A13BB7C7238",
+      "StoredFile": "command-04.json.gz",
+      "StoredBytes": 99,
+      "StoredSha256": "ED468C0546C00B2672A4B57BB380CB3013DA5955CC0EECD36F516D1F8C6E5CFD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-04.txt",
+      "Bytes": 141,
+      "Sha256": "C6A799F99E277FCEC5D11385A200FAEA9BA36970023FD9A963CFDA8F64DBDCC8",
+      "StoredFile": "command-04.txt.gz",
+      "StoredBytes": 145,
+      "StoredSha256": "7B7A6B43DF0D9A324EF891C498EACC55C37AD8D0C679D45EB2F36D676ADB655D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-05.json",
+      "Bytes": 82,
+      "Sha256": "DB225BA96DC0137F96D92285FA2DAEA9D076CDF1CE88CB29EC73FD7876DCF319",
+      "StoredFile": "command-05.json.gz",
+      "StoredBytes": 97,
+      "StoredSha256": "9E747693BB9C2FDC4C4B9FF27CAABA5A3310C01E230778CA678FEC9DF22B0634",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-05.txt",
+      "Bytes": 1163,
+      "Sha256": "92F7F7D6F632A04C78257A4FA999DF5B5B7E7BA107ADFB76CE3239D1D79F3A9B",
+      "StoredFile": "command-05.txt.gz",
+      "StoredBytes": 491,
+      "StoredSha256": "8B2A92B459A64423590A795C5AEF1461F57EA13CDD317F93699F3683A84A30DD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-06.json",
+      "Bytes": 96,
+      "Sha256": "2F1CB452871DFA19093107FDC3128957507AE2B7064FD4AD22CB177C54B8C066",
+      "StoredFile": "command-06.json.gz",
+      "StoredBytes": 106,
+      "StoredSha256": "DF6C49C3E4E120BB4D063E85695D57A490741342545A1E16A1C0E8E49D421257",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-06.txt",
+      "Bytes": 666,
+      "Sha256": "124890263B66C089631270FCFAE14DACA1A3C11AA76B455DC16C506D308D5507",
+      "StoredFile": "command-06.txt.gz",
+      "StoredBytes": 343,
+      "StoredSha256": "B7DA024C37142DA72202B05E6E6628C9920C48439389563D582068B60FDF1727",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-07.json",
+      "Bytes": 96,
+      "Sha256": "9BD63F2638726748FCA90DD948B9F6FE8B3E477235231FBCA9E56A6EB6857949",
+      "StoredFile": "command-07.json.gz",
+      "StoredBytes": 107,
+      "StoredSha256": "63AC5BB62077DAAFCEB41A217010DD8C14ACA50CF70C40E1F4D8F800889EB1D1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-07.txt",
+      "Bytes": 659,
+      "Sha256": "3D3ED0ED1F03DEF4353BE2826F7B22A2DA69C8DD144219D3B24A39B27BFA829C",
+      "StoredFile": "command-07.txt.gz",
+      "StoredBytes": 341,
+      "StoredSha256": "627A381472CDDF0BD0FFEF76BEE5134CAAE2154167BD2C069E4194454A283F80",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-08.json",
+      "Bytes": 96,
+      "Sha256": "50E00C1029F5DDF9E20BF0E8534F73E729716AB6C75F68354BB0457A843FD5F8",
+      "StoredFile": "command-08.json.gz",
+      "StoredBytes": 107,
+      "StoredSha256": "4017B86B81979A6B59E87A65158EA44C8B887A0FC7E90D629346078D4E4911A1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-08.txt",
+      "Bytes": 651,
+      "Sha256": "5DF5EB78FD38EA43599AA19D827E9ABF4BED74C3183AA44B91450A00F78B567E",
+      "StoredFile": "command-08.txt.gz",
+      "StoredBytes": 335,
+      "StoredSha256": "0F45406EEE3A2CB362939978D473988FB0767DB6F22DDA8DF8B370AF8CAD7543",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-09.json",
+      "Bytes": 82,
+      "Sha256": "913C8D935C054B2DABA044B6E427B17299BE535A55B45239EF1AF270406F7715",
+      "StoredFile": "command-09.json.gz",
+      "StoredBytes": 97,
+      "StoredSha256": "FF5D4BC4B273BBF9C543B257F7DB485153285DB44E352208DF28A7C64C6C9F52",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-09.txt",
+      "Bytes": 1291,
+      "Sha256": "11779396E698CFB50948057CF60D3B75E5F06AE0AE6455F72A6F1BD420A44E50",
+      "StoredFile": "command-09.txt.gz",
+      "StoredBytes": 511,
+      "StoredSha256": "24D00AF3E924EAED3F88DACBADFA93365D2621481F1E169623CCC92BD8D324B7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-10.json",
+      "Bytes": 98,
+      "Sha256": "817EC48DEB34B5BA1BCDAE53891E5488ECB3343F61A06D739EB814F83597F81D",
+      "StoredFile": "command-10.json.gz",
+      "StoredBytes": 107,
+      "StoredSha256": "87FFC2F4A63ACFCDC32480C7CE528CD392CABC91296D85318B532A65D2B8EA37",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/command-10.partial.txt",
+      "Bytes": 83,
+      "Sha256": "E25A9DFE88B71B91728B558FB2C116BF23B8C3EC5F22A132759E663D8355C1D6",
+      "StoredFile": "command-10.partial.txt.gz",
+      "StoredBytes": 94,
+      "StoredSha256": "584B04C63A0E0757F0C71C75AC51D9B641525239665E90A3D20B62939F464D22",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/dac-observed.json",
+      "Bytes": 611,
+      "Sha256": "6A16B5334FA55B7233E0FDBEE5CF3A926D090D15ADD81A7AFD498DF80FB03E71",
+      "StoredFile": "dac-observed.json.gz",
+      "StoredBytes": 340,
+      "StoredSha256": "EFD3960A97730267414E2AA5ABB5837C65D93CA7436FF9A78AD895B2A865197F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/dump-descriptor.json",
+      "Bytes": 154,
+      "Sha256": "91A7CFDCAA8B4A63DC24AA9686299891D90E7865F4A972932C74D30FCB902C30",
+      "StoredFile": "dump-descriptor.json.gz",
+      "StoredBytes": 121,
+      "StoredSha256": "E586824EECA26E7CCB9D712F8243269DCFF0359F6D5A023F7685A5EE6B11D87A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/inputs.json",
+      "Bytes": 2174,
+      "Sha256": "EB35B690BF73AB7F36B5EB48F58D1C17320914BC45D558710965A0E0C4B8BAEB",
+      "StoredFile": "inputs.json.gz",
+      "StoredBytes": 753,
+      "StoredSha256": "6BCAAD9244A76130565F4B34B64BF00B950F88CC6C82EE3AC8048DB59275B63E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/launch-tool.json",
+      "Bytes": 156,
+      "Sha256": "DC35468DCA0CA0EAE8E2885E322137C30D4E60B08C0B0E432AC738A50321CD6E",
+      "StoredFile": "launch-tool.json.gz",
+      "StoredBytes": 154,
+      "StoredSha256": "D98EDECF641A59DC0CBDFC725A1528F11D84E3B88621D749225364C59BE3FE4E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/outcome.json",
+      "Bytes": 563,
+      "Sha256": "CE40DA5BACD28417A0A3524CD3DA4BC24A07AA9B7256BC523A7AA1901251BB68",
+      "StoredFile": "outcome.json.gz",
+      "StoredBytes": 331,
+      "StoredSha256": "ABD96B116D51317E917430304221E18368B4C78E97E130C4F5DB98CEB6A8B036",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-condition-body.json",
+      "Bytes": 1158,
+      "Sha256": "969F50FF83A1B6C58A54B981257157341766E375306058AC29A7AC8D65A85A09",
+      "StoredFile": "physical-condition-body.json.gz",
+      "StoredBytes": 608,
+      "StoredSha256": "78400DE434F20DBB6C0AAA5ED7C7AE0F0AB955EC90299B6291EFDFAB3FF5A32D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-condition-cell.json",
+      "Bytes": 1156,
+      "Sha256": "F9A834E289433564CE3F6F5473A44AD424551C558A927692A69A64A3EF340DEF",
+      "StoredFile": "physical-condition-cell.json.gz",
+      "StoredBytes": 607,
+      "StoredSha256": "9AFB17EBB5795B8952261C2F70A89345AA47D7BF6CF0D56CFF71A005F9657F4E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-condition-stub.json",
+      "Bytes": 1156,
+      "Sha256": "B0E1CD5508C01EE0A9AF8FF5399675726C2639E58398F8EB24B0D905B2CC54CA",
+      "StoredFile": "physical-condition-stub.json.gz",
+      "StoredBytes": 603,
+      "StoredSha256": "935DEB265D79CED913986A9A318EB63FE61E17CBD51CA27574AEAEEB5EAC7B49",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-condition.json",
+      "Bytes": 1752,
+      "Sha256": "2B5F00A67C2057A2EA62B9613F9252505C3558FE4B6809F81ABFF0971DADB453",
+      "StoredFile": "physical-condition.json.gz",
+      "StoredBytes": 768,
+      "StoredSha256": "A426C73A43A7E94325ECAE1636E57AE6CB2C0B3829F438A2BAF44EB90F05D21F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-format.json",
+      "Bytes": 106,
+      "Sha256": "508C94B203089849A7DD2808B3BB281760571C67668E3176035C94E60A701F3F",
+      "StoredFile": "physical-format.json.gz",
+      "StoredBytes": 101,
+      "StoredSha256": "3044C35CF29D948776D20B33A3184746F8EA73AC6028045959CFB9D49822DF16",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-predict-body.json",
+      "Bytes": 919,
+      "Sha256": "5B252B48D7E235F4F0793AF13A67C851CB7011897E183826C940C7B7425A0A9E",
+      "StoredFile": "physical-predict-body.json.gz",
+      "StoredBytes": 562,
+      "StoredSha256": "4C519F0F1CF246F4D3F0D46632D8D630DD481CFD350E6E5247DBD2163AD8D109",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-predict-cell.json",
+      "Bytes": 917,
+      "Sha256": "F74773E4496AE5C68B62412B04FCC1DA8761B16C6D4D74E5B3E1CE0CD8DC7216",
+      "StoredFile": "physical-predict-cell.json.gz",
+      "StoredBytes": 556,
+      "StoredSha256": "E1DC083D63D813BF707766B6455ED9187648BCF60D5DE4CAE5C665AB6EECB62F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-predict-stub.json",
+      "Bytes": 917,
+      "Sha256": "8317EAF61CE61298D08656B0AB49A31862560D4DD0952170F37B6B8A31578BB2",
+      "StoredFile": "physical-predict-stub.json.gz",
+      "StoredBytes": 553,
+      "StoredSha256": "8FE22BBF2CAB05D9ACBE8EE49FF6216909E849D3C52B9E086AC5B03266BB57C6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-predict.json",
+      "Bytes": 1513,
+      "Sha256": "9A0A15CF4E47A69B2A758DB89C2A848D19A5FEAAD7CD815F6B917EB9FEDEE782",
+      "StoredFile": "physical-predict.json.gz",
+      "StoredBytes": 719,
+      "StoredSha256": "ED4E34A585136BED819F3581576C0F203B82DA02396B996F3568E30431E56BA7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-select-body.json",
+      "Bytes": 912,
+      "Sha256": "717174D636EB7570C4A336A5FC33BB628E7252A5F3387526F47B94F4253938D9",
+      "StoredFile": "physical-select-body.json.gz",
+      "StoredBytes": 566,
+      "StoredSha256": "EB352ACCCEA012C95F56E8A603A8A513060931CE7CD7DFE3DC670758F980B692",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-select-cell.json",
+      "Bytes": 910,
+      "Sha256": "8F5C33566D9D254FEC9ED1AD21B48D8D2B7FD3D427A99421EBD96E36008F960D",
+      "StoredFile": "physical-select-cell.json.gz",
+      "StoredBytes": 564,
+      "StoredSha256": "D0B3FA29C3E45327D0ECF530C7A008E0A6C3090E6152105838781869E550F652",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-select-stub.json",
+      "Bytes": 910,
+      "Sha256": "5A4B3EB8F975064474814CC7F89EFE87081A9754C0CBFEE4D0222A2A4CE7FD82",
+      "StoredFile": "physical-select-stub.json.gz",
+      "StoredBytes": 560,
+      "StoredSha256": "F76E5C45E1742116A43D2C40FBD920A6B689AE84BB591C67CF1776F07CB9F9A2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/physical-select.json",
+      "Bytes": 1506,
+      "Sha256": "B23FAA6F3616E78E4272E1B9A8805627B7856DBF6C75554DD9B15ACFAEE49F9F",
+      "StoredFile": "physical-select.json.gz",
+      "StoredBytes": 727,
+      "StoredSha256": "C922F7289EBC4849B8E50E898AEAA73F21D4F1F2D8E81D03CA9E356FF2B36A1E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-attempt-3/start.json",
+      "Bytes": 667,
+      "Sha256": "CF195B80B88F95D4245C4ED61299FB2E514BDA02591D7ADAB0546A210B2098C7",
+      "StoredFile": "start.json.gz",
+      "StoredBytes": 426,
+      "StoredSha256": "74FD1F381F425B2B7AF8F7F18C624E46CAF958124DE650916281AEAB44177D42",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-analysis-launch-3.log",
+      "Bytes": 495,
+      "Sha256": "097BDF0113B9CDF22C226BD3A49663161C61496E66D6C1147BFE14E1ECC10DF8",
+      "StoredFile": "hidden-switch-compiled-dump-analysis-launch-3.log.gz",
+      "StoredBytes": 318,
+      "StoredSha256": "FBDF909E563A9780667C7D745C4F756871F9BAAFDD7EE655DC4A15D533A2A3CB",
+      "Encoding": "gzip"
+    }
+  ]
+}
