@@ -12,6 +12,7 @@ from decode_hidden_switch_methods import (
     checked_word,
     cleanup,
     decoded_rows,
+    decoder_arguments,
     identity,
     publish_terminal,
 )
@@ -88,6 +89,70 @@ class DecodeMethodTests(unittest.TestCase):
         self.assertEqual([row["Instruction"] for row in decoded], ["nop", "ret"])
         self.assertEqual([row["Address"] for row in decoded], ["0000000000001000", "0000000000001004"])
         self.assertIn("never a runtime target", decoded[0]["PrintedAddressMeaning"])
+
+    def test_explicit_rcpc_is_the_only_added_decoder_feature(self):
+        self.assertEqual(decoder_arguments()[1:], ["--disassemble", "--triple=aarch64-apple-darwin", "--mcpu=generic",
+                                                  "--mattr=+rcpc", "--show-encoding"])
+
+    def mov_word(self, register, immediate, encoded):
+        word = checked_word("owned", 0x2000, 0, bytes.fromhex(encoded))
+        tokens = ",".join(f"0x{byte:02x}" for byte in bytes.fromhex(encoded))
+        line = f"\tmov\t{register}, #{immediate} ; encoding: [{tokens}]\n".encode("ascii")
+        return word, line
+
+    def test_mov_comments_bind_to_preceding_instruction_and_register_width(self):
+        for register, value, encoded, comment in [("x0", 1, "200080D2", b"; =0x1\n"),
+                                                   ("w1", -1, "01008012", b"; =0xffffffff\n"),
+                                                   ("x30", -1, "1E008092", b"; =0xffffffffffffffff\n")]:
+            with self.subTest(register=register):
+                word, line = self.mov_word(register, value, encoded)
+                rows = list(decoded_rows(line + comment, b"", 0, [word]))
+                self.assertEqual(len(rows), 1)
+                self.assertEqual(rows[0]["ImmediateComment"], comment.decode().rstrip("\n"))
+                self.assertEqual(rows[0]["TextLine"], 1)
+                self.assertEqual(rows[0]["Address"], "0000000000002000")
+                bare, = decoded_rows(line, b"", 0, [word])
+                self.assertIsNone(bare["ImmediateComment"])
+
+    def test_orphan_repeated_wrong_non_mov_and_unknown_comments_refuse(self):
+        word, line = self.mov_word("x0", 1, "200080D2")
+        comment = b"; =0x1\n"
+        for output in [comment + line, line + comment + comment, line + b"; =0x2\n",
+                       line + b"; =1\n", line + b"; anything\n", line + b"\t; =0x1\n",
+                       line + b"; =0x1 trailing\n", line + b"; =0xA\n", line + b"\n" + comment]:
+            with self.subTest(output=output), self.assertRaises(ValueError):
+                list(decoded_rows(output, b"", 0, [word]))
+        for register in ["w31", "x31", "xzr", "sp"]:
+            with self.subTest(register=register), self.assertRaises(ValueError):
+                list(decoded_rows(line.replace(b"x0", register.encode()) + comment, b"", 0, [word]))
+        for instruction in [b"movk x0, #1", b"mov x0, #0x1", b"mov x0, x1", b"add x0, x0, #1"]:
+            with self.subTest(instruction=instruction), self.assertRaises(ValueError):
+                list(decoded_rows(line.replace(b"mov\tx0, #1", instruction) + comment, b"", 0, [word]))
+        with self.assertRaises(ValueError):
+            list(decoded_rows(self.output().splitlines(keepends=True)[0] + comment, b"", 0, self.words()[:1]))
+        word, line = self.mov_word("w1", -1, "01008012")
+        with self.assertRaises(ValueError):
+            list(decoded_rows(line + b"; =0xffffffffffffffff\n", b"", 0, [word]))
+
+    def test_comment_lines_do_not_fill_missing_instruction_or_hide_extra_output(self):
+        word, line = self.mov_word("x0", 1, "200080D2")
+        comment = b"; =0x1\n"
+        ret = self.words()[1]
+        ret_line = self.output().splitlines(keepends=True)[1]
+        valid = line + comment + ret_line
+        rows = list(decoded_rows(valid, b"", 0, [word, ret]))
+        self.assertEqual([row["TextLine"] for row in rows], [1, 3])
+        for output in [line + comment, valid + ret_line, ret_line + line + comment]:
+            with self.subTest(output=output), self.assertRaises(ValueError):
+                list(decoded_rows(output, b"", 0, [word, ret]))
+
+    def test_prior_attached_comment_survives_later_refusal(self):
+        word, line = self.mov_word("x0", 1, "200080D2")
+        ret_line = self.output().splitlines(keepends=True)[1].replace(b"0xc0", b"0xc1")
+        rows = decoded_rows(line + b"; =0x1\n" + ret_line, b"", 0, [word, self.words()[1]])
+        self.assertEqual(next(rows)["ImmediateComment"], "; =0x1")
+        with self.assertRaises(ValueError):
+            next(rows)
 
     def test_truncated_word_and_address_overflow_refuse(self):
         for base, offset, raw in [(0x1000, 0, bytes(3)), (0x1000, 1, bytes(4)), (0x1001, 0, bytes(4)),
