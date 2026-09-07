@@ -360,3 +360,6 @@ identities. Its unresolved dependencies remain explicit; runtime admission
 stays false. The [source-history record](source-history-retention.md) indexes
 original writer commits through split publication. The parent compiled
 implementation task remains open.
+
+- [Sixth integrated validation](integration-6/README.md): 1,164 compiled Python
+  tests pass at their exact source pin, with the complete owned fixture tree.
