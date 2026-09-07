@@ -16,6 +16,8 @@ module ZetaFsPosixVfs =
         | NotDirectory of ZetaFsNamespace.EntityId
         | UnknownEntity of ZetaFsNamespace.EntityId
         | Eisdir of ZetaFsNamespace.EntityId
+        | Enotdir of ZetaFsNamespace.EntityId
+        | Enotempty of ZetaFsNamespace.EntityId
         | Confusable of existing: byte[]
         | Bind of ZetaFsNamespace.BindError
         | Mutbuf of ZetaFsMutbuf.MutbufError
@@ -174,6 +176,20 @@ module ZetaFsPosixVfs =
             | Error e -> Error(ofBind e)
             | Ok id -> Ok(internChild mount parent id)
 
+    /// Create a Symlink under `parent`. Target bytes are not resolved.
+    let symlink
+        (mount: Mount)
+        (parent: ZetaFsPosixNode.Node)
+        (name: byte[])
+        (target: byte[])
+        : Result<ZetaFsPosixNode.Node * Mount, Error> =
+        match refuseCreate mount parent name with
+        | Error e -> Error e
+        | Ok() ->
+            match ZetaFsFreeze.bindSymlink mount.Volume parent.Entity name target with
+            | Error e -> Error(ofBind e)
+            | Ok id -> Ok(internChild mount parent id)
+
     let getattr
         (mount: Mount)
         (node: ZetaFsPosixNode.Node)
@@ -193,6 +209,7 @@ module ZetaFsPosixVfs =
 
     let private ifreg = 0o100000u
     let private ifdir = 0o040000u
+    let private iflnk = 0o120000u
     let private ifmt = 0o170000u
 
     let private requireFile (mount: Mount) (node: ZetaFsPosixNode.Node) : Result<unit, Error> =
@@ -241,3 +258,54 @@ module ZetaFsPosixVfs =
         (len: int64)
         : Result<unit, Error> =
         withHandle mount node (fun h -> ZetaFsMutbuf.truncate mount.Volume.Mutbuf h len)
+
+    let readlink (mount: Mount) (node: ZetaFsPosixNode.Node) : Result<byte[], Error> =
+        match getattr mount node with
+        | Error e -> Error e
+        | Ok stat when (stat.Meta.Mode &&& ifmt) = iflnk ->
+            match ZetaFsFreeze.readSymlink mount.Volume node.Entity with
+            | Some bytes -> Ok bytes
+            | None -> Error NotFound
+        | Ok _ -> Error NotFound
+
+    let unlink
+        (mount: Mount)
+        (parent: ZetaFsPosixNode.Node)
+        (name: byte[])
+        : Result<unit, Error> =
+        if sameBytes name dot || sameBytes name dotDot then
+            Error(Confusable name)
+        else
+            match lookup mount parent name with
+            | Error e -> Error e
+            | Ok(node, _) ->
+                match getattr mount node with
+                | Error e -> Error e
+                | Ok stat when (stat.Meta.Mode &&& ifmt) = ifdir -> Error(Eisdir node.Entity)
+                | Ok _ ->
+                    match ZetaFsFreeze.unlinkUnder mount.Volume parent.Entity name with
+                    | Error e -> Error(ofBind e)
+                    | Ok() -> Ok()
+
+    let rmdir
+        (mount: Mount)
+        (parent: ZetaFsPosixNode.Node)
+        (name: byte[])
+        : Result<unit, Error> =
+        if sameBytes name dot || sameBytes name dotDot then
+            Error(Confusable name)
+        else
+            match lookup mount parent name with
+            | Error e -> Error e
+            | Ok(node, _) ->
+                match getattr mount node with
+                | Error e -> Error e
+                | Ok stat when (stat.Meta.Mode &&& ifmt) <> ifdir -> Error(Enotdir node.Entity)
+                | Ok _ ->
+                    match liveNames mount node.Entity with
+                    | Error e -> Error e
+                    | Ok live when live.Length > 0 -> Error(Enotempty node.Entity)
+                    | Ok _ ->
+                        match ZetaFsFreeze.unlinkUnder mount.Volume parent.Entity name with
+                        | Error e -> Error(ofBind e)
+                        | Ok() -> Ok()

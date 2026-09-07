@@ -320,3 +320,59 @@ let ``create of dot or dotdot is Confusable`` () =
         match ZetaFsPosixVfs.mkdir mount rootNode ZetaFsPosixVfs.dotDot with
         | Error(ZetaFsPosixVfs.Confusable name) -> Assert.True(sameBytes ZetaFsPosixVfs.dotDot name)
         | other -> Assert.Fail(sprintf "dotdot must be Confusable, got %A" other))
+
+[<Fact>]
+let ``unlink tombs a file; lookup then NotFound; unlink of a dir is Eisdir`` () =
+    withVolume "/vfs-unlink" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let _, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        match ZetaFsPosixVfs.unlink mount1 rootNode (utf8 "a") with
+        | Error e -> Assert.Fail(sprintf "unlink: %A" e)
+        | Ok() ->
+            match ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "a") with
+            | Error ZetaFsPosixVfs.NotFound -> ()
+            | other -> Assert.Fail(sprintf "expected NotFound, got %A" other)
+        let dir, mount2 = ok (ZetaFsPosixVfs.mkdir mount1 rootNode (utf8 "d"))
+        match ZetaFsPosixVfs.unlink mount2 rootNode (utf8 "d") with
+        | Error(ZetaFsPosixVfs.Eisdir id) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir.Entity id)
+        | other -> Assert.Fail(sprintf "unlink dir must be Eisdir, got %A" other))
+
+[<Fact>]
+let ``rmdir of empty dir works; non-empty is Enotempty; file is Enotdir`` () =
+    withVolume "/vfs-rmdir" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let empty, mount1 = ok (ZetaFsPosixVfs.mkdir mount0 rootNode (utf8 "e"))
+        match ZetaFsPosixVfs.rmdir mount1 rootNode (utf8 "e") with
+        | Error e -> Assert.Fail(sprintf "rmdir empty: %A" e)
+        | Ok() ->
+            match ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "e") with
+            | Error ZetaFsPosixVfs.NotFound -> ()
+            | other -> Assert.Fail(sprintf "expected NotFound after rmdir, got %A" other)
+        let full, mount2 = ok (ZetaFsPosixVfs.mkdir mount1 rootNode (utf8 "f"))
+        let _, mount3 = ok (ZetaFsPosixVfs.create mount2 full (utf8 "x"))
+        match ZetaFsPosixVfs.rmdir mount3 rootNode (utf8 "f") with
+        | Error(ZetaFsPosixVfs.Enotempty id) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare full.Entity id)
+        | other -> Assert.Fail(sprintf "non-empty rmdir must be Enotempty, got %A" other)
+        let _, mount4 = ok (ZetaFsPosixVfs.create mount3 rootNode (utf8 "file"))
+        match ZetaFsPosixVfs.rmdir mount4 rootNode (utf8 "file") with
+        | Error(ZetaFsPosixVfs.Enotdir _) -> ()
+        | other -> Assert.Fail(sprintf "rmdir file must be Enotdir, got %A" other))
+
+[<Fact>]
+let ``symlink stores target bytes; readlink returns them; not resolved`` () =
+    withVolume "/vfs-symlink" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let target = utf8 "no/such"
+        let node, mount1 = ok (ZetaFsPosixVfs.symlink mount0 rootNode (utf8 "l") target)
+        let stat = ok (ZetaFsPosixVfs.getattr mount1 node)
+        Assert.Equal(ZetaFsPosixMeta.symlinkMode, stat.Meta.Mode)
+        let bytes = ok (ZetaFsPosixVfs.readlink mount1 node)
+        Assert.True(sameBytes target bytes)
+        match ZetaFsPosixVfs.readlink mount1 rootNode with
+        | Error ZetaFsPosixVfs.NotFound -> ()
+        | other -> Assert.Fail(sprintf "readlink on dir must miss, got %A" other))

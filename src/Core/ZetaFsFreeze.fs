@@ -1939,19 +1939,28 @@ module ZetaFsFreeze =
                     volume.Ns := Some next
                     Ok())
 
-    /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
-    /// row. Reopen `liveResolve` must be None.
-    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+    /// POSIX unlink: append Tombstone under `parent`. Does not retract Live.
+    let unlinkUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<unit, ZetaFsNamespace.BindError> =
         lock volume.Gate (fun () ->
-            match volume.Root, !volume.Ns with
-            | Some root, Some state ->
-                match ZetaFsNamespace.unlink state root name (ZetaFsNamespace.ActorId "freeze") with
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                match ZetaFsNamespace.unlink state parent name (ZetaFsNamespace.ActorId "freeze") with
                 | Error e -> Error e
                 | Ok next ->
                     persistNamespace volume.StoreDir next
                     volume.Ns := Some next
-                    Ok()
-            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+                    Ok())
+
+    /// POSIX unlink under ROOT.
+    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+        match volume.Root with
+        | Some root -> unlinkUnder volume root name
+        | None -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero })
 
     let liveResolve (volume: Volume) (name: byte[]) : ZetaFsNamespace.EntityId option =
         lock volume.Gate (fun () ->
