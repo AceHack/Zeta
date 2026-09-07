@@ -291,3 +291,11 @@ checks the unchanged selector's harvest against an executed inclusive mutant's
 switch at an exact supplied-Q tie. It retains 23 pure tests, independent source
 acceptance and the first actual native witness replay, plus a separately scoped
 3,872-artifact byte-preservation audit with its initial path-interpretation error.
+
+## Actual native certificate corpus
+
+The [first actual 31-case batch](../../2026-09-07-hidden-switch-compiled-native-certificate-fixture-validation.md)
+accepted the control and refused all 30 altered inputs. Every process exited
+zero; 162 raw records and both byte/hash layers are retained. This is scoped
+certificate conformance under explicit placeholder bindings, with no full
+source, outer-envelope or runtime admission.
