@@ -1,16 +1,16 @@
 {
   "schema": "zeta.liveness.observation/1",
-  "observedAt": "2026-09-07T21:48:26.090Z",
+  "observedAt": "2026-09-07T22:09:46.658Z",
   "observer": "github-actions/.github/workflows/heartbeat-liveness.yml",
-  "observerRunId": "34164415003",
+  "observerRunId": "34165660823",
   "outcome": "paused",
   "thresholdMinutes": 60,
-  "summary": "lane PAUSED - the watched Actions subject is disabled_manually, so its silence is expected and is NOT reported as an outage. Silent, and currently unwatched: github-actions/.github/workflows/agent-heartbeat.yml (13861min). Whether the other silent sources are paused or dead cannot be told apart from here.",
+  "summary": "lane PAUSED - the watched Actions subject is disabled_manually, so its silence is expected and is NOT reported as an outage. Silent, and currently unwatched: github-actions/.github/workflows/agent-heartbeat.yml (13882min). Whether the other silent sources are paused or dead cannot be told apart from here.",
   "sources": [
     {
       "source": "github-actions/.github/workflows/agent-heartbeat.yml",
       "lastAt": "2026-08-29T06:47:24.000Z",
-      "ageMinutes": 13861,
+      "ageMinutes": 13882,
       "fresh": false
     }
   ],
