@@ -250,9 +250,23 @@ export interface CredentialRotation {
  * `applyDevBootstrapSecrets` is mint-if-absent and must stay that way: a bare
  * apply on every bring-up would re-roll an admin password under a running
  * service, which `use-cases.test.ts` pins with "a second bring-up ... does NOT
- * rotate them". Rotation is therefore the OTHER verb, and it is deliberately
- * awkward to invoke in bulk -- it takes one credential, never a roster and never
- * an "all". The blast radius is chosen by the caller, in writing, per call.
+ * rotate them". Rotation is therefore the OTHER verb, invoked on purpose.
+ *
+ * THE FIRST DRAFT MADE BULK ROTATION DELIBERATELY AWKWARD and that was wrong.
+ * Aaron 2026-09-07: "the awkward bits we want to make easy, cause when key
+ * rotation is easy per identity then decorrelation measuring becomes much
+ * simpler." He is right, and the error was conflating EXPLICIT with TEDIOUS.
+ * What makes rotation safe is that it refuses to mint, that a shared credential
+ * moves all-or-nothing, and that it is a separate verb a bring-up never calls --
+ * none of which require one-at-a-time. Tedium bought no safety; it only made the
+ * safe path expensive, and an expensive safe path is one people route around.
+ *
+ * AND CHEAP ROTATION IS AN INSTRUMENT, not just a convenience. If each identity's
+ * credentials can be rolled independently and often, rotation INDEPENDENCE becomes
+ * observable: roll A without touching B and see whether B moves. That is a
+ * decorrelation measurement, and it is only affordable if rotating is cheap.
+ * `rotateDevCredentials` below is therefore the primary form and the singular is
+ * a wrapper over it.
  *
  * -- ROTATION IS NOT A MINT, AND REFUSES TO BECOME ONE ----------------------
  * A rotation against a credential the cluster does not hold is a MINT wearing a
@@ -338,6 +352,38 @@ export function rotateDevCredential(ports: DevClusterPorts, target: string): Cre
     restartRequired: consumersOf(`${spec.namespace}/${spec.name}`),
   };
 }
+
+/**
+ * Rotate SEVERAL credentials in one call, reporting each independently.
+ *
+ * The ergonomic form, and the one to reach for. Every refusal of the singular
+ * verb still applies PER CREDENTIAL: an absent one refuses without writing, an
+ * unknown name refuses without minting, and a shared credential still moves in
+ * every namespace or none. What changes is only that the caller does not pay a
+ * round trip per identity.
+ *
+ * INDEPENDENT OUTCOMES, NOT ALL-OR-NOTHING ACROSS THE SET. One credential
+ * refusing must not silently cancel the rest -- that would make a single typo
+ * look like a completed rotation of everything else. Each target gets its own
+ * `CredentialRotation`, so a caller can see exactly which moved. (The
+ * all-or-nothing rule is a property of ONE shared credential across ITS
+ * namespaces, which is a different claim and is enforced where it belongs.)
+ */
+export function rotateDevCredentials(
+  ports: DevClusterPorts,
+  targets: readonly string[],
+): readonly CredentialRotation[] {
+  return targets.map((target) => rotateDevCredential(ports, target));
+}
+
+/** Every dev credential this cluster mints -- the roster a full roll would name. */
+export function allDevCredentialTargets(): readonly string[] {
+  return [
+    ...DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`),
+    ...DEV_SHARED_SECRETS.map((spec) => spec.name),
+  ];
+}
+
 
 /**
  * Which Applications keep the old value until restarted.
