@@ -132,3 +132,25 @@ recovery. Corrected-head CI is still an independent publication signal.
 The original `c247` archive is unchanged; the supplemental immutable tag
 `archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention-ci-correction`
 will preserve this correction/evidence history before squash deletion.
+
+## Final independent evidence acceptance
+
+The same independent reviewer accepted the retained evidence after reading
+all 103 current/committed input hashes, the four corrected source files
+against their two source pins, all twelve project/log fingerprints and
+all seven decompressed TRX files. The reviewer independently parsed 7,545
+individual outcomes: 7,539 passed and six not executed. The 52 unique TLC
+IDs equal the registry's gate tier (53 entries in the complete catalog);
+the other 18 runner cases passed. All 89 source/copied input identities
+in the BftConsensus snapshot match current bytes. Jar, registry, runner
+DLL/source and Java fingerprints were unchanged at inspection.
+
+The reviewer confirmed the actual C1 flag, one worker, original 4,665,495
+distinct-state assertion and unchanged F# model timeout. The precise
+BftConsensus TRX duration is `00:04:54.2858498`. Build and formatter
+observations, six explicit skips, empty current diagnostic directory and
+live-snapshot limitations were also checked. No algorithm, test, build,
+Java process or experiment was rerun. The reviewed result inventory SHA-256
+is `F6C395F7A2EDC71847B0492D9F5E533061D871381FF44C02EAAB36F71CAC071C`.
+No material source/evidence finding remains; remote corrected-head CI
+remains its own signal.
