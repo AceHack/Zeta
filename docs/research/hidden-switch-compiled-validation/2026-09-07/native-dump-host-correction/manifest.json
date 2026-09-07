@@ -1,0 +1,40 @@
+{
+  "Meaning": "Installed host export u plus cached-DAC metadata ordering, explicit PID/return code and incomplete-prefix tests before one third attempt. Fifteen tests pass. Known E_NOTIMPL callback means metadata-only feasibility, not a disassembly-success claim.",
+  "SourceFiles": [
+    {
+      "File": "src/Research.FSharp.Cli/analyze_hidden_switch_dump.py",
+      "Bytes": 23970,
+      "Sha256": "46F247DCB8B11C52FB6435474F6DB7D772DD507B299D39C852F1E8E1ECEBE8B9"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_analyze_hidden_switch_dump.py",
+      "Bytes": 10636,
+      "Sha256": "1F8ABA19BC4293B209D1CC99FA179F1B899F56D283A8B3C7B1873183E8AD8BB4"
+    },
+    {
+      "File": "docs/research/hidden-switch-compiled-validation/2026-09-07/native-dump-plan.md",
+      "Bytes": 9235,
+      "Sha256": "8C54153B929906221B9E5B9438186107C0F615073C609024F49E9452EA251D80"
+    }
+  ],
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-dump-host-correction-lint-1.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredFile": "hidden-switch-compiled-dump-host-correction-lint-1.log.gz",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-dump-host-correction-tests-1.log",
+      "Bytes": 2635,
+      "Sha256": "CBE5CF2A98EB53F94CD4FBB23576CBB6ED6D9D910DC9B2FEDBAC600910FFC4E1",
+      "StoredFile": "hidden-switch-compiled-dump-host-correction-tests-1.log.gz",
+      "StoredBytes": 628,
+      "StoredSha256": "08B530754019A562158656583AD2D7BDC09767FBC4805A4DB65E54ACCDF344FF",
+      "Encoding": "gzip"
+    }
+  ]
+}
