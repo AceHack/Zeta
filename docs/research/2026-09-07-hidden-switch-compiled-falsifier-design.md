@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: native DTO agreed; revised independent design review pending
+Artifact status: implementation contract; design accepted; source/native conformance pending
 
 ## Scope and unchanged registration
 
@@ -427,8 +427,20 @@ scalar/episode rows, complete preceding invocation/intervention cases, and
 completed refused operations/groups. It never reports the currently failing
 case as accepted. Failure and success both retain the bounded scope;
 `OuterNegativeAdmission` remains `pending-coordinator-replay` and runtime
-admission remains outside this module. The exact public result dataclass
-fields will be pinned with the first implementation commit for caller review.
+admission remains outside this module. The first implementation pins these
+public dataclass fields:
+
+- `FalsifierCounts`: `ScalarPositions`, `NewHandEpisodes`,
+  `OldControlEpisodes`, `InvocationCases`, `InterventionCases`,
+  `RefusalOperations`, `RefusalGroups`, `DelegateEntries`, `EvaluatorEntries`.
+  The last two total only the invocation-case ledger. Every refusal setup
+  and final-operation counter is checked separately in its own record.
+- `MutantRefusal`: `CaseId`, `Code`, `Path`, `Message`.
+- `FalsifierReplay`: `NumericCertificateSha256`, `Completed`,
+  `MutantRefusals`, `OuterNegativeEvidence`, `Scope`,
+  `OuterNegativeAdmission`, `RuntimeAdmission`.
+- `FalsifierFailure`: `Code`, `Message`, `Path`, `Completed`, `Scope`,
+  `OuterNegativeAdmission`, `RuntimeAdmission`.
 
 ## Separate outer negatives and closure prerequisites
 
@@ -475,12 +487,20 @@ indices, discriminating caller/band controls and scorer semantics, then
 identified the standalone-refusal-helper gap and the ambiguous phrase
 "actual tree-entry count." The 53-operation expansion and separate
 delegate/evaluator/node counts above preserve those findings and their
-source-owner-approved dispositions. Final revised-design review is pending.
+source-owner-approved dispositions. The reviewer subsequently accepted the
+complete revised design at `8e68332fd9c62a23283097eae234351698364a01`,
+including the 53-operation arithmetic, actual service coverage, parser
+separation, setup entry counts, successor use, all per-kind unions, explicit
+outer-negative scope and completed-prefix accounting. No material design
+finding remained. That acceptance ran no tests, guards, policies or sources;
+actual implementation call sites, native conformance, outer replay and
+runtime/graph admission remain separate obligations.
 
-This draft preserves the native scorer-semantics coordination and a concrete
-finite starting roster for review. It claims no new implementation, actual
-falsifier execution, native conformance or experimental outcome.
+This design preserves the native scorer-semantics coordination and the
+reviewed finite implementation contract. Its acceptance alone establishes
+no actual native falsifier execution, conformance or experimental outcome.
 
-For this documentation-only draft, focused Markdown lint, all six repository
-hygiene checks and diff whitespace validation passed. No native build,
-Python policy/test execution or experiment was needed or performed.
+For the initial documentation-only drafts, focused Markdown lint, all six
+repository hygiene checks and diff whitespace validation passed. No native
+build, Python policy/test execution or experiment was needed or performed
+in that design phase. Subsequent source validation is recorded separately.
