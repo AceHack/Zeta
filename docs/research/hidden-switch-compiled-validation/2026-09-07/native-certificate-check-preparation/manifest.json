@@ -1,0 +1,109 @@
+{
+  "Meaning": "Final certificate-check source bytes for five focused native file tests and corrected CLI/test-project builds. Initial ambiguous hash overload build failure retained. This is neither the full thirty-one-input corpus nor a full solution gate.",
+  "ContextCommit": "ec11dcb41c4c1a87a661ad3ef02b01f4308d8032",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-certificate-check-build-1.log",
+      "Bytes": 3252,
+      "Sha256": "773D5CFE9CAA15C44A1A5191ED43727A2F2D0C0E2E9E5B6089280E184D5699CF",
+      "StoredFile": "hidden-switch-compiled-certificate-check-build-1.log.gz",
+      "StoredBytes": 606,
+      "StoredSha256": "F52ED1B93653275C870709019F90445E99CA28CBCA88EDCC71C9A1AA0D06D509",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-certificate-check-build-2.log",
+      "Bytes": 979,
+      "Sha256": "E33AE2948222519D7E73399A94CC81D00FD18BA04FD6A0689C3953636EE7C7EB",
+      "StoredFile": "hidden-switch-compiled-certificate-check-build-2.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "F56CB2AE755AB18A99F49A2D3F37925FEB1B80A08EE25292EC33243A9F02FBF5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-certificate-check-test-build-1.log",
+      "Bytes": 3989,
+      "Sha256": "46EBF12BCBBAA4B4117E587DA303BBCF75E4FE869B087A23B644942807218997",
+      "StoredFile": "hidden-switch-compiled-certificate-check-test-build-1.log.gz",
+      "StoredBytes": 571,
+      "StoredSha256": "372C9EF41B8251E80F7F05AF0E49376098949C24B8BF1433FE30E0A3F2B9C502",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-certificate-check-tests-1.log",
+      "Bytes": 496,
+      "Sha256": "DD17535451EEB179841F1409612A3B47A96ABAD9AAD03F2D41ECE7739FE1EC8B",
+      "StoredFile": "hidden-switch-compiled-certificate-check-tests-1.log.gz",
+      "StoredBytes": 290,
+      "StoredSha256": "CC430CE1420430FCC4A114985FF86705A3A4AFBA84E3FFD5A34BB3F431CE81F8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-certificate-check-buildgraph.log",
+      "Bytes": 116,
+      "Sha256": "A2DB46B278E9D3B3A531CD8901A4F613FAC25B51D99FA2A90DED31682F017EC2",
+      "StoredFile": "hidden-switch-compiled-certificate-check-buildgraph.log.gz",
+      "StoredBytes": 98,
+      "StoredSha256": "B049ADF146D6510ABEEC98278C53912AD3A4E9EB36AEA61796D64A5B58564E33",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "tests/Tests.FSharp/TestResults/compiled-certificate-check-1.trx",
+      "Bytes": 9264,
+      "Sha256": "293C0FBB3437BC1A83A3D9C5AD687047F8CC51CC9DC9E57849D4C299F6D8C0CD",
+      "StoredFile": "compiled-certificate-check-1.trx.gz",
+      "StoredBytes": 1946,
+      "StoredSha256": "95698F1FD97BCE75FABA4CF3669AB4522DB5977CE0CD2E885C94C9287A202D99",
+      "Encoding": "gzip"
+    }
+  ],
+  "SourceFiles": [
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledCertificateCheck.fs",
+      "Bytes": 7234,
+      "Sha256": "70DD15918B1C74FE6DF3329EB41E2B289164BC619F697F3066F353B782A9C6F4"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledCertificate.fs",
+      "Bytes": 24506,
+      "Sha256": "F9AD3D527A179BB25C72D57B67E469F9045B65F6325347EC00EC63F6E8B8A609"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/Program.fs",
+      "Bytes": 1535,
+      "Sha256": "BFA8F1908B0371EA27A85B02890825C068FC2DA38A607BAE720F1658D454EC62"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/HiddenSwitchCompiled.fsproj",
+      "Bytes": 2329,
+      "Sha256": "8AEF20989AC8C733E4E956D7259144DD59DB36A15020BA79E8A7C15B94795380"
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 46974,
+      "Sha256": "82586C52D386759E4DA00B0A953774B44576B0DBB82AE39DDD0EFB01EDCB7126"
+    },
+    {
+      "File": "tests/Tests.FSharp/HiddenSwitchCompiledCertificateCheck.Tests.fs",
+      "Bytes": 6295,
+      "Sha256": "318BCB2C558E270E2CEEFB2034C760330C5E265DBBEFA5C9AF6EFF4EC15CB8D2"
+    },
+    {
+      "File": "src/Core.TypeScript/ace/build-graph.json",
+      "Bytes": 88375,
+      "Sha256": "4B4B1FA77DBACDF0093D428D32F77EC7800CFA53BAC8275D7900ADC6E5724A66"
+    }
+  ],
+  "BuildOutputs": [
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.dll",
+      "Bytes": 439808,
+      "Sha256": "203F68A0B23157D6A07D7395DE00C8DD556E5D4E95C788DC15CB09EF1F922E77"
+    },
+    {
+      "File": "tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll",
+      "Bytes": 10124800,
+      "Sha256": "8A7B3868B6AA4ABF406D5E93735417A3373068D967D8C588517008F329108F4F"
+    }
+  ]
+}

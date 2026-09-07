@@ -331,3 +331,26 @@ harvest zero and the executed inclusive comparison returned switch one.
 The journal retains actual callback events and terminal evidence. Independent
 replay was requested on these bytes and remained pending at preservation;
 full hand, body, closure and runtime admission remain false.
+
+## File-backed certificate conformance entry
+
+The coordinator approved the untimed `certificate-check` entry for one raw
+certificate plus a raw caller binding map. The actual verifier is called
+once after strict duplicate/type/canonical-hash binding admission. A real
+verification refusal is a completed command with a `refused` outcome;
+startup/read/admission/output failures are distinct command failures. Raw
+input and binding hashes are recorded immediately after their respective
+reads, before later work can fail. No action service or source generator
+is reachable from this entry; supplied binding syntax is not source/archive
+admission.
+
+The [focused validation inventory](native-certificate-check-preparation/manifest.json)
+retains five real-file tests for strict binding syntax, actual verifier
+refusal, the first input hash surviving a missing second file, output/journal
+no-clobber behavior and duplicate-map refusal before verifier entry. All five
+pass in 171 ms. The initial CLI build failed on an ambiguous hash overload;
+the explicit byte-array annotation builds in 3.71 seconds with zero warnings
+or errors. The test-project build passes in 46.10 seconds with zero warnings
+or errors. Independent source review accepted first-failure retention and
+the supplied-binding scope. The complete 31-input certificate corpus and
+full solution gate remain separate, pending executions.
