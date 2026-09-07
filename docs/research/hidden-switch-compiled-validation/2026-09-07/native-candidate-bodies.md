@@ -160,3 +160,36 @@ now refuses explicitly. The corrected CLI build passes in 3.14 seconds with
 zero warnings/errors, and all 21 synthetic cases plus Ruff pass. This is a
 collector preparation gate, with no target capture or registered source
 execution implied by these checks.
+
+## Actual guard-data and selected-call capture
+
+Independent read-only source review accepted the corrected collector before
+attempt 5. It ran source `18ef52ac8dea69a0bd98c4cce9c08619d90d7757` from
+18:30:34.020760 to 18:30:37.232363 UTC; native process 89475 and LLDB both
+exited zero. The [complete lossless inventory](native-graph-attempt-5/manifest.json)
+retains the actual inputs, prefixes, candidate/data/cell reads, repeats,
+unresolved rows, native pin cleanup, compiler text and outcomes.
+
+The 123 compiler-sized candidates total 33,496 bytes and retain ten matching
+literal records. The exact same verified preparation guard object has four
+reflected `System.Double` fields. Its 32 pinned data bytes match both ordered
+getter bits and the repeated debugger read; the raw data SHA256 is
+`C25DB4F106E7CACB50612E392323D5A83A01D97D00AFDD74060EC5EB1FE4EF99`.
+The terminal native record reports that the inspection pin was released.
+This remains a data/getter correspondence, with no inferred header subtraction
+or proven link to the selector's live object register.
+
+The selected static-transfer ledger has 811 rows: 590 direct branches/calls,
+189 recognized indirect cell shapes and 32 unsupported indirect dependencies.
+The recognized indirect rows use 67 distinct observed cells and targets.
+Fifty-six sites target already captured candidate starts; 133 target locations
+outside that candidate set. Every recognized cell read/repeat and selected
+target prefix completed. Unknown transfers remain explicit unresolved rows.
+Neither this ledger nor a target prefix supplies the missing complete helper
+bodies, dynamic dispatch explanation or independent managed-method extents.
+
+Loader counts remain 357/357/357. Both FPCR values and rounding-query returns
+are zero; FPSR again changes from `0000000008000010` to
+`0000000008000011`, with no established cause. Capture completion does not
+change any runtime, body, layout or closure admission flag. No registered
+source, behavior or performance measurement occurred.
