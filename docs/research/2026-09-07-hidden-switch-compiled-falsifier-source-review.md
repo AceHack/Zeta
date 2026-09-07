@@ -70,6 +70,36 @@ counts, not evidence that the work ran. Actual buffers, chronology, runtime,
 timing and cost admission remain separate. No material source finding remains;
 the author's 80-test validation was not rerun by the reviewer.
 
+## Cost-ledger projections
+
+The subsequent root source `faa670a4ee615f4d55e96832f4ce4d421b560211`
+admits exactly 50 projected cost ledgers paired with the separately admitted
+schedule. The reviewer read the complete module, existing timing/timestamp
+primitives and all 13 test functions with their parameterization. The author
+reports 73 passing cases; no reviewer execution was performed.
+
+Each row has exact index, start/end UTC timestamps and the six existing timing
+fields. Ordering uses integer nanoseconds, preserving native submicrosecond
+digits. Every row follows the supplied complete prelude and prior row, and
+finishes within the supplied cost-phase end. GC counts cannot decrease between
+rows, while interstitial increases remain valid. Monotonic wall time remains
+separate from UTC elapsed time; no equality of these clocks is assumed.
+
+The module derives 15 distinct mode/panel/metric ratio groups from exact
+five-row integer medians. Four ordinary panel/metric conditions require
+positive native denominators and use unbounded `2*compiled<=native` arithmetic.
+It retains exact numerator/denominator pairs, actual zero numerators and the
+registered reasons for unavailable descriptive ratios. A zero required native
+allocation median marks the cost condition refused while retaining the valid
+ledgers; it does not assert that independent action equivalence failed.
+
+The tests discriminate ratio-of-medians from median-of-ratios, panel pooling,
+fixed-width overflow, zero numerators/denominators, each row's checked prefix
+and 100 ns overlap. No material finding remains at this pin. These are pure
+projection checks: actual buffers, warmups, invocation counts, measurement
+boundaries, prelude envelopes and runtime/source identities still require
+separate admission before any cost claim.
+
 This review belongs to the current compiled-controller work item. It does not
 reopen the completed prior study, amend registration, admit a final graph or
 authorize registered source generation or measurements.
