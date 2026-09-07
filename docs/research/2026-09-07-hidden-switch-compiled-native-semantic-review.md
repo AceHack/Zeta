@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Reviewer: Vera, OpenAI Codex using GPT-6 Astra
-Disposition: two bounded retention findings; corrected source review pending
+Disposition: corrected source accepted for the bounded semantic hand collector
 
 This read-only pass covers the native owner's initial four-module working
 draft following `f8ccb0ba36b16111c1846340ec14ff291b39dd46`, together with
@@ -68,6 +68,56 @@ retention. No test, target, policy, source generator, dump query or measurement
 was executed in this review. Both findings were sent to the owner; no final
 source/capture acceptance is implied. Complete method, call-closure, source
 archive and runtime admission remain separate pending obligations.
+
+## Corrected source disposition
+
+Final reviewed source is
+`7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0`. Its committed files match
+the inspected working source:
+
+| File | Bytes | SHA256 |
+| --- | ---: | --- |
+| `src/Research.FSharp/HiddenSwitchCompiledConformance.fs` | 10,646 | `7e76ee09d652137529ebe9c99a15a52a84ba451cc71b993f76b65324dd0c4826` |
+| `src/Research.FSharp/HiddenSwitchCompiledInterventions.fs` | 9,260 | `f36bf5db4f636f835e7e4f6970b4095475dc702687781a3bc03b2773830167a0` |
+| `src/Research.FSharp/HiddenSwitchCompiledRefusals.fs` | 14,434 | `19ea35f51c364d00dbeab6e74035c6761d63d85a7673b923c46819cdac2ed4b6` |
+| `src/Research.FSharp/HiddenSwitchCompiledSemantic.fs` | 8,361 | `5f0cce172e8df731666eb626f22f43703ba51bd83d7d90b2781dc8ff6b57d1f2` |
+| `tests/Tests.FSharp/HiddenSwitchCompiledSemantic.Tests.fs` | 13,195 | `075d200f4f3923be8f2e59c223d2bfbce597bf7bb78fc58751a7edb2fe5ae4d3` |
+
+The first finding is resolved by retaining the actual accepted result, input,
+setup and call deltas before returning typed `unexpected-acceptance`. A real
+successful service result exercises the shared judgment seam in a synthetic
+test; the test does not claim its deliberately valid input was invalid.
+The second finding is resolved by updating observation/choice/reward arrays
+before checkpoint publication and returning active diagnostics separately
+from the fixed six-member semantic DTO. The final report independently writes
+that available prefix even when every later journal callback fails. Primary
+computation failure survives subsequent checkpoint, output and disposal errors;
+a publication-only failure cannot produce successful completion.
+
+The final reread identified one additional instance of the same retention
+boundary: the suffix tape had been changed before a fallible mutation
+checkpoint, while active diagnostics still described only its baseline.
+The correction retains the baseline, changed tape and actual mutation event
+before that checkpoint and carries this context into an altered timeline's
+failure. Its ninth focused fixture fails exactly at mutation publication and
+checks the preserved flipped bit. Exact timeline tape/flags and planned
+refusal operation/input are also recorded before their relevant fallible
+publication. Copy/setup/terminal prefixes retain actual events and counters.
+
+No remaining material source finding was identified. The other four files in
+the nine-file commit provide CLI/test-project wiring and change only the hand
+collector's accessibility from private to internal. The reviewer inspected
+the final nine semantic tests and the existing regression coverage without
+running them. The retained regression-2 TRX contains 37 individual Passed
+outcomes, including all nine semantic cases, and zero skipped/failed outcomes;
+its 57,221 bytes hash to
+`d72db46d3f643afbc348d5cab9441015170d693108bc0a14b61253f9b91b59b6`.
+The retained final focused build and standalone CLI build report 28.40 and
+4.32 seconds respectively, each with zero warnings and errors. Earlier failed
+build attempts remain the owner's diagnostic history and are not overwritten
+by this acceptance. No actual semantic capture had occurred when this source
+review closed. Successful future six-member replay, full envelope/source
+archive, executing graph and runtime admission remain separate obligations.
 
 ```text
 Agency-Signature-Version: 1
