@@ -1,4 +1,18 @@
 import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import {
+  chmodSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmdirSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { delimiter, dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   DEFAULT_PR_LIST_LIMIT,
   HEARTBEAT_REF_PREFIX,
@@ -9,6 +23,7 @@ import {
   listWithTransientRetry,
   listingWasTruncated,
   prsMissingRequiredCheck,
+  readRequiredCheckOnHead,
   requiredCheckStarted,
 } from "./required-check-started";
 
@@ -26,6 +41,215 @@ describe("requiredCheckStarted (081M010H4KE)", () => {
   test("empty rollup is the filed defect", () => {
     expect(requiredCheckStarted([])).toBe(false);
   });
+});
+
+const PAGINATION_HEAD = "594aee771a9e20c4f72b6f03b54aa8e27072523a";
+const context = (id: number, name = `advisory-${id}`) => ({ __typename: "CheckRun", id: `check-${id}`, name });
+const firstHundred = () => Array.from({ length: 100 }, (_, i) => context(i));
+const prPage = <T>(commit: T, headRefOid = PAGINATION_HEAD) => ({
+  data: { repository: { pullRequest: { headRefOid, commits: { nodes: [{ commit }] } } } },
+});
+const contextPage = (nodes: unknown[], totalCount: number, hasNextPage = false, endCursor: string | null = null) =>
+  prPage({
+    oid: PAGINATION_HEAD,
+    statusCheckRollup: {
+      contexts: { nodes, totalCount, pageInfo: { hasNextPage, endCursor } },
+    },
+  });
+const pageResult = (page: unknown) => ({ status: 0, stdout: JSON.stringify(page), stderr: "" });
+
+describe("complete required-check pagination (081M1XK76XQ087G0R000Y23NGM)", () => {
+  test("the successful check hidden at position 101 is present, not a terminal-run stall", async () => {
+    const first = firstHundred();
+    expect(requiredCheckStarted(first)).toBe(false);
+    const cursors: (string | null)[] = [];
+    const result = await readRequiredCheckOnHead(PAGINATION_HEAD, (cursor) => {
+      cursors.push(cursor);
+      return pageResult(
+        cursor === null
+          ? contextPage(first, 103, true, "MTAw")
+          : contextPage([context(100, REQUIRED_GATE_NAME), context(101, "drift (loud)"), context(102, "CodeQL")], 103),
+      );
+    });
+    expect(result).toEqual({ kind: "measured", started: true });
+    expect(cursors).toEqual([null, "MTAw"]);
+  });
+
+  test("complete absence still permits the existing queued versus stalled distinction", async () => {
+    const result = await readRequiredCheckOnHead(PAGINATION_HEAD, (cursor) =>
+      pageResult(
+        cursor === null
+          ? contextPage(firstHundred(), 103, true, "next")
+          : contextPage([context(100), context(101), context(102)], 103),
+      ),
+    );
+    expect(result).toEqual({ kind: "measured", started: false });
+    expect(classifyMissingRequiredCheck([{ number: 1, runCount: 1, liveRunCount: 0 }]).stalled).toEqual([1]);
+    expect(classifyMissingRequiredCheck([{ number: 1, runCount: 1, liveRunCount: 1 }]).queued).toEqual([1]);
+  });
+
+  test("an existing commit with no rollup has no published check", async () => {
+    expect(
+      await readRequiredCheckOnHead(PAGINATION_HEAD, () =>
+        pageResult(prPage({ oid: PAGINATION_HEAD, statusCheckRollup: null })),
+      ),
+    ).toEqual({ kind: "measured", started: false });
+  });
+
+  test("legacy status contexts contribute to page counts without impersonating a named CheckRun", async () => {
+    const page = contextPage([{ __typename: "StatusContext", id: "legacy", context: REQUIRED_GATE_NAME }], 1);
+    expect(await readRequiredCheckOnHead(PAGINATION_HEAD, () => pageResult(page))).toEqual({
+      kind: "measured",
+      started: false,
+    });
+  });
+
+  test("a repeated cursor or context cannot masquerade as complete pagination", async () => {
+    for (const second of [contextPage([context(1)], 3, true, "same"), contextPage([context(0)], 2)]) {
+      const result = await readRequiredCheckOnHead(PAGINATION_HEAD, (cursor) =>
+        pageResult(
+          cursor === null
+            ? contextPage(
+                [context(0)],
+                second.data.repository.pullRequest.commits.nodes[0]!.commit.statusCheckRollup.contexts.totalCount,
+                true,
+                "same",
+              )
+            : second,
+        ),
+      );
+      expect(result.kind).toBe("unmeasured");
+    }
+  });
+
+  test("a changing count or incomplete final page refuses the negative inference", async () => {
+    for (const second of [contextPage([context(1)], 3), contextPage([], 2)]) {
+      expect(
+        (
+          await readRequiredCheckOnHead(PAGINATION_HEAD, (cursor) =>
+            pageResult(cursor === null ? contextPage([context(0)], 2, true, "next") : second),
+          )
+        ).kind,
+      ).toBe("unmeasured");
+    }
+  });
+
+  test("malformed pages, partial GraphQL errors, missing commits and wrong heads stay unmeasured", async () => {
+    const wrongHead = contextPage([], 0);
+    const changedPrHead = contextPage([], 0);
+    changedPrHead.data.repository.pullRequest.headRefOid = "e".repeat(40);
+    wrongHead.data.repository.pullRequest.commits.nodes[0]!.commit.oid = "f".repeat(40);
+    const boolCount = contextPage([], 0) as unknown as { data: unknown };
+    const malformedCount = JSON.parse(JSON.stringify(boolCount));
+    malformedCount.data.repository.pullRequest.commits.nodes[0]!.commit.statusCheckRollup.contexts.totalCount = false;
+    for (const page of [
+      null,
+      { data: { repository: null } },
+      wrongHead,
+      changedPrHead,
+      malformedCount,
+      { ...contextPage([], 0), errors: [{ message: "incomplete authorization" }] },
+      contextPage([], 1, true, "next"),
+      contextPage([{}], 1),
+      contextPage([context(0)], 0),
+    ]) {
+      expect((await readRequiredCheckOnHead(PAGINATION_HEAD, () => pageResult(page))).kind).toBe("unmeasured");
+    }
+    expect(
+      (await readRequiredCheckOnHead(PAGINATION_HEAD, () => ({ status: 0, stdout: "not JSON", stderr: "" }))).kind,
+    ).toBe("unmeasured");
+  });
+
+  test("a failed page is not a measured absence", async () => {
+    const result = await readRequiredCheckOnHead(PAGINATION_HEAD, () => ({
+      status: 1,
+      stdout: "",
+      stderr: "HTTP 403",
+    }));
+    expect(result).toEqual({ kind: "unmeasured", reason: "HTTP 403" });
+  });
+
+  test("invalid head and excessive pagination refuse within a fixed host-work bound", async () => {
+    let calls = 0;
+    expect(
+      (
+        await readRequiredCheckOnHead("not-a-sha", () => {
+          calls++;
+          return pageResult(null);
+        })
+      ).kind,
+    ).toBe("unmeasured");
+    expect(calls).toBe(0);
+    const result = await readRequiredCheckOnHead(PAGINATION_HEAD, () => {
+      const id = calls++;
+      return pageResult(contextPage([context(id)], 101, true, `cursor-${id}`));
+    });
+    expect(result.kind).toBe("unmeasured");
+    expect(calls).toBe(100);
+  });
+
+  // The executable shim is POSIX-only; the pagination cases above have no host dependency.
+  test.skipIf(process.platform === "win32")(
+    "the real CLI consults page two before any terminal-workflow inference",
+    () => {
+      const dir = mkdtempSync(join(tmpdir(), "zeta-required-check-page-"));
+      const bin = join(dir, "bin");
+      mkdirSync(bin);
+      const gh = join(bin, "gh");
+      const trace = join(dir, "trace.jsonl");
+      const first = contextPage(firstHundred(), 103, true, "MTAw");
+      const second = contextPage([context(100, REQUIRED_GATE_NAME), context(101), context(102)], 103);
+      const listed = [
+        {
+          number: 16911,
+          createdAt: "2000-01-01T00:00:00Z",
+          headRefName: "fixture",
+          headRefOid: PAGINATION_HEAD,
+          statusCheckRollup: firstHundred(),
+        },
+      ];
+      const script = `#!/usr/bin/env bun
+import { appendFileSync } from "node:fs";
+const args = process.argv.slice(2);
+appendFileSync(${JSON.stringify(trace)}, JSON.stringify(args) + "\\n");
+if (args[0] === "pr" && args[1] === "list") {
+  process.stdout.write(JSON.stringify(${JSON.stringify(listed)}));
+} else if (args[0] === "api" && args[1] === "graphql" && args.includes("number=16911")) {
+  process.stdout.write(JSON.stringify(args.includes("endCursor=MTAw") ? ${JSON.stringify(second)} : ${JSON.stringify(first)}));
+} else {
+  process.stderr.write("unexpected gh call; no external command is allowed");
+  process.exit(2);
+}
+`;
+      writeFileSync(gh, script);
+      chmodSync(gh, 0o755);
+      try {
+        const subject = fileURLToPath(new URL("./required-check-started.ts", import.meta.url));
+        const result = spawnSync(process.execPath, [subject, "--ref-prefix", "", "--min-age-min", "0"], {
+          encoding: "utf8",
+          timeout: 10_000,
+          env: { ...process.env, PATH: [bin, dirname(process.execPath), process.env.PATH ?? ""].join(delimiter) },
+        });
+        expect(result.status).toBe(0);
+        expect(result.stderr).toBe("");
+        expect(result.stdout).toContain("gate (required) is published on #16911 (paginated head read)");
+        const calls = readFileSync(trace, "utf8")
+          .trim()
+          .split("\n")
+          .map((line) => JSON.parse(line) as string[]);
+        expect(calls.length).toBe(3);
+        expect(calls[1]).not.toContain("endCursor=MTAw");
+        expect(calls[2]).toContain("endCursor=MTAw");
+        expect(calls[1]![calls[1]!.indexOf("number=16911") - 1]).toBe("-F");
+        expect(calls.flat().some((arg) => arg.includes("/actions/workflows/"))).toBe(false);
+      } finally {
+        for (const file of readdirSync(bin)) unlinkSync(join(bin, file));
+        rmdirSync(bin);
+        for (const file of readdirSync(dir)) unlinkSync(join(dir, file));
+        rmdirSync(dir);
+      }
+    },
+  );
 });
 
 describe("heartbeatPrsMissingRequiredCheck", () => {
