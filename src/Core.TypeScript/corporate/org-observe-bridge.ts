@@ -64,7 +64,10 @@ import {
   type RequirementProfile,
   type Waiver,
 } from "./requirement-maturity";
-import type { BacklogItem } from "../observe/observe";
+import type { BacklogItem, GenerativeOpening as GrammarOpening } from "../observe/observe";
+import { GenerativeKind, generativeOpeningsFor } from "./generative-work";
+import { domainRouting, isDomain, type Domain } from "./domain-ontology";
+import { isPriorityClass } from "./prioritization";
 import type { CascadeNode } from "./goal-cascade";
 import { WorkState } from "./goal-cascade";
 import { isLeafType } from "./goal-cascade";
@@ -122,7 +125,7 @@ export interface OrgView {
 /** Just the organizational half of a `World` — merged into whatever else the caller has. */
 export type OrgSurface = Pick<
   World,
-  "reviewsAsked" | "deliberations" | "missing" | "assignable" | "convenable"
+  "reviewsAsked" | "deliberations" | "missing" | "assignable" | "convenable" | "generative"
 >;
 
 /**
@@ -461,14 +464,93 @@ function beats(challenger: AlternateCandidate, incumbent: AlternateCandidate): b
   return challenger.priority === incumbent.priority && challenger.workId < incumbent.workId;
 }
 
-/** The whole organizational surface for one hat. */
-export function orgSurfaceFor(view: OrgView, hatId: string): OrgSurface {
+/**
+ * Generative acts open to this hat, in the grammar's own shape.
+ *
+ * The register's `GenerativeOpening` and the grammar's are DIFFERENT TYPES on purpose. The core
+ * does not know what a `Domain` or a `PriorityClass` is and must not learn — it takes strings and a
+ * register decides what they name, exactly as `MainDeps.surface` already works. This function is
+ * the one place the two vocabularies meet.
+ *
+ * `resourceAuthorityHatId` is absent here because `OrgView` does not carry it: supply openings are
+ * the RMO's and reach the surface through `generativeInputFor` below, which the drive supplies.
+ */
+export function generativeFor(view: OrgView, hatId: string, resourceAuthorityHatId: string): readonly GrammarOpening[] {
+  const openings = generativeOpeningsFor(
+    {
+      chart: view.chart,
+      cascade: view.cascade,
+      artifactIds: new Set(view.artifacts.keys()),
+      pricedWorkIds: new Set(view.priorities?.keys() ?? []),
+      resourceAuthorityHatId,
+      routings: domainRouting(view.cascade, (id) => view.chart.byId.get(id)?.departmentId),
+      // Read back off the organization's own record, never held beside it. A second list of what
+      // has been raised is a list that can disagree with the signals themselves.
+      raisedSupplySubjects: new Set(
+        view.signals.filter((sig) => sig.tool === SignalTool.SuggestImprovement).map((sig) => sig.title),
+      ),
+    },
+    hatId,
+  );
+  const out: GrammarOpening[] = [];
+  for (const o of openings) {
+    switch (o.kind) {
+      case GenerativeKind.SetDirection:
+        out.push({
+          kind: "set_direction",
+          subjectId: o.subjectId,
+          prompt: o.prompt,
+          ...(o.domain === undefined ? {} : { domain: o.domain }),
+        });
+        break;
+      case GenerativeKind.DraftBusinessDoc:
+        // `doc-<workId>` is the register's own convention, and the work id is recovered from it
+        // rather than carried twice. Two fields that must agree are two fields that can disagree.
+        out.push({
+          kind: "draft_business_doc",
+          subjectId: o.subjectId,
+          prompt: o.prompt,
+          forWorkId: o.subjectId.startsWith("doc-") ? o.subjectId.slice("doc-".length) : o.subjectId,
+        });
+        break;
+      case GenerativeKind.DecidePriority:
+        out.push({ kind: "decide_priority", subjectId: o.subjectId, prompt: o.prompt, options: o.options ?? [] });
+        break;
+      case GenerativeKind.SizeHatSupply:
+        out.push({ kind: "size_hat_supply", subjectId: o.subjectId, prompt: o.prompt });
+        break;
+      case GenerativeKind.BreakDownWork:
+        // DERIVED FROM THE PARENT, so the same undecomposed rung yields the same child id every
+        // round. A minted id would make the opening look new each time, and `decompose` would
+        // accept a second child for a rung that already had one — which is not a livelock, it is
+        // worse: an organization that grows a new sub-project every round forever.
+        out.push({
+          kind: "break_down_work",
+          subjectId: o.subjectId,
+          prompt: o.prompt,
+          childId: `${o.subjectId}-1`,
+        });
+        break;
+    }
+  }
+  return out;
+}
+
+/**
+ * The whole organizational surface for one hat.
+ *
+ * `resourceAuthorityHatId` defaults to the hat itself, which offers NO supply openings unless the
+ * caller says who the resource authority is — the honest default. A register that guessed the RMO
+ * would put chart-changing acts on somebody's menu on the strength of a guess.
+ */
+export function orgSurfaceFor(view: OrgView, hatId: string, resourceAuthorityHatId?: string): OrgSurface {
   return {
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
     missing: unraisedBlockers(view, hatId),
     assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId), ...alternateWorkFor(view, hatId)],
     convenable: convenableBy(view, hatId),
+    generative: generativeFor(view, hatId, resourceAuthorityHatId ?? hatId),
   };
 }
 
@@ -523,6 +605,30 @@ export type OrgEffect =
       readonly artifactId: string;
       readonly revisionId: string;
       readonly forGate: string;
+    }
+  // ── THE GENERATIVE EFFECTS ───────────────────────────────────────────────
+  // Each one is what its verb MEANS, still as a description. `direction` is an accepted goal;
+  // `document` is an artifact's first revision; `priced` is one entry in the priority map;
+  // `size_hat_supply` has NO effect of its own and produces a `signal` instead. A tick that could
+  // add a hat to the chart would let the organization grow itself with no approval anywhere, which
+  // is what `rmo.ts`'s quorum lifecycle exists to prevent — and a bespoke "request" effect that
+  // nothing applied would have been a promise the drive counted as an act. Routed as
+  // `SuggestImprovement`, so it travels to the supervisor: a missing hat is a structural gap only
+  // the level above the RMO can close.
+  | {
+      readonly kind: "direction";
+      readonly workId: string;
+      readonly title: string;
+      readonly byHatId: string;
+      readonly domain?: Domain;
+    }
+  | { readonly kind: "document"; readonly artifactId: string; readonly workId: string; readonly byHatId: string }
+  | { readonly kind: "priced"; readonly workId: string; readonly priority: PriorityClass }
+  | {
+      readonly kind: "breakdown";
+      readonly parentWorkId: string;
+      readonly childWorkId: string;
+      readonly title: string;
     }
   /** The action was not one of the organizational verbs — the register has nothing to do. */
   | { readonly kind: "none" };
@@ -616,6 +722,92 @@ export function effectOf(
           forGate: action.forGate,
         },
       };
+    case "set_direction": {
+      // REFUSED HERE, NOT ONLY AT THE MENU. `acceptGoal` will refuse a hat below c_suite, and this
+      // check exists so the refusal names the same rule at the point the choice is made rather
+      // than three layers down where the reason has become "unknown hat".
+      const hat = view.chart.byId.get(hatId);
+      if (hat === undefined) return { ok: false, reason: `unknown hat '${hatId}'` };
+      if (hat.level !== "c_suite" && hat.level !== "executive_board") {
+        return { ok: false, reason: `direction is set at the top: '${hatId}' is ${hat.level}` };
+      }
+      if (action.objective.trim() === "") return { ok: false, reason: "a direction with no objective states nothing" };
+      const domain = action.domain !== undefined && isDomain(action.domain) ? action.domain : undefined;
+      return {
+        ok: true,
+        effect: {
+          kind: "direction",
+          workId: action.subjectId,
+          title: action.objective,
+          byHatId: hatId,
+          ...(domain === undefined ? {} : { domain }),
+        },
+      };
+    }
+    case "draft_business_doc": {
+      if (view.artifacts.has(action.subjectId)) {
+        return { ok: false, reason: `'${action.subjectId}' already exists; a draft does not overwrite one` };
+      }
+      const node = view.cascade.find((n) => n.workId === action.forWorkId);
+      if (node === undefined) return { ok: false, reason: `no work item '${action.forWorkId}' to document` };
+      return {
+        ok: true,
+        effect: { kind: "document", artifactId: action.subjectId, workId: action.forWorkId, byHatId: hatId },
+      };
+    }
+    case "decide_priority": {
+      // AN UNRECOGNISED CLASS IS REFUSED, never coerced. See `isPriorityClass` for why a silently
+      // defaulted priority is worse than an absent one.
+      if (!isPriorityClass(action.priority)) {
+        return { ok: false, reason: `'${action.priority}' is not a priority class` };
+      }
+      if (view.priorities?.has(action.subjectId) === true) {
+        return { ok: false, reason: `'${action.subjectId}' is already priced; changing it is a re-prioritization` };
+      }
+      if (view.cascade.find((n) => n.workId === action.subjectId) === undefined) {
+        return { ok: false, reason: `no work item '${action.subjectId}' to price` };
+      }
+      return { ok: true, effect: { kind: "priced", workId: action.subjectId, priority: action.priority } };
+    }
+    case "break_down_work": {
+      const parent = view.cascade.find((n) => n.workId === action.subjectId);
+      if (parent === undefined) return { ok: false, reason: `no work item '${action.subjectId}' to break down` };
+      // REFUSED AT THE POINT OF CHOICE. `decompose` refuses a duplicate id too, but this hat may
+      // have been offered the opening before another hat's tick created the child, and a refusal
+      // that names the real reason beats one that says "duplicate work id".
+      if (view.cascade.some((n) => n.parentWorkId === action.subjectId)) {
+        return { ok: false, reason: `'${action.subjectId}' is already broken down` };
+      }
+      if (parent.ownerHatId !== hatId) {
+        return { ok: false, reason: `'${action.subjectId}' is owned by '${parent.ownerHatId}', not '${hatId}'` };
+      }
+      return {
+        ok: true,
+        effect: { kind: "breakdown", parentWorkId: action.subjectId, childWorkId: action.childId, title: action.title },
+      };
+    }
+    case "size_hat_supply": {
+      const raised = sendSupervisorSignal(
+        view.chart,
+        view.board,
+        {
+          signalId: ids.signalId,
+          anchorId: ids.anchorId,
+          fromHatId: hatId,
+          tool: SignalTool.SuggestImprovement,
+          // THE TITLE IS THE SUBJECT, and that is what makes the gap raiseable exactly once:
+          // `raisedSupplySubjects` reads these titles back, so a second offer of the same gap is
+          // filtered before it reaches the menu.
+          title: action.subjectId,
+          message: action.reason,
+          evidence: [{ kind: "trace", ref: `routing-gap:${action.subjectId}` }],
+          atMs,
+        },
+        resourceAuthorityHatId,
+      );
+      if (!raised.ok) return { ok: false, reason: raised.reason };
+      return { ok: true, effect: { kind: "signal", signal: raised.signal } };
+    }
     default:
       // Every other verb is the agent's own business — work, decomposition, the free modes. The
       // organization has nothing to apply, and saying so explicitly beats a silent fall-through.

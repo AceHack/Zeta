@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { apply, driveRound, tick, type DriveDeps, type DriveState } from "./org-drive";
+import { apply, driveRound, driveUntilSettled, tick, type DriveDeps, type DriveState } from "./org-drive";
 import { orgSurfaceFor, type OrgView } from "./org-observe-bridge";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
@@ -246,8 +246,14 @@ describe("a ROUND gives every hat a turn, and reports what moved", () => {
   test("A SETTLED ORGANIZATION REPORTS ZERO CHANGES rather than looking busy", () => {
     // The stall detector's input. A driver that keeps ticking while nothing changes burns a budget
     // producing nothing and reports success by never admitting it finished.
-    const r = driveRound(state(), hats, deps());
-    expect(r.changes).toBe(0);
+    //
+    // THE FIXTURE USED TO BE AN EMPTY CASCADE, and that stopped being a settled organization the
+    // moment the grammar gained generative verbs: an org with no direction anywhere is not at rest,
+    // it has not started. Bumping the expected count would have hidden that. So the claim is
+    // asserted where it is actually true — RUN IT TO SETTLEMENT, then ask for one more round.
+    const settled = driveUntilSettled(state(), hats, deps(), 200);
+    expect(settled.settled).toBe(true);
+    expect(driveRound(settled.state, hats, deps()).changes).toBe(0);
   });
 
   test("DRY RUN derives every effect and applies NONE", () => {

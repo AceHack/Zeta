@@ -178,6 +178,38 @@ export interface MissingInformation {
   readonly kind?: string;
 }
 
+/**
+ * A generative act on offer — one that makes work rather than advancing it.
+ *
+ * A DISCRIMINATED UNION rather than one shape with optional fields, so the fields that belong to
+ * one kind cannot be read on another. The first draft was the flat shape and the compiler could not
+ * prove the builder below handled every kind, which is the same exhaustiveness the action table
+ * buys everywhere else here.
+ */
+export type GenerativeOpening =
+  | { readonly kind: "set_direction"; readonly subjectId: string; readonly prompt: string; readonly domain?: string }
+  | {
+      readonly kind: "draft_business_doc";
+      readonly subjectId: string;
+      readonly prompt: string;
+      readonly forWorkId: string;
+    }
+  | {
+      readonly kind: "decide_priority";
+      readonly subjectId: string;
+      readonly prompt: string;
+      /** Most urgent first. The surface owns the order; the chooser owns the choice. */
+      readonly options: readonly string[];
+    }
+  | { readonly kind: "size_hat_supply"; readonly subjectId: string; readonly prompt: string }
+  | {
+      readonly kind: "break_down_work";
+      readonly subjectId: string;
+      readonly prompt: string;
+      /** The id the first child would take. Supplied by the register, so a re-offer is the same act. */
+      readonly childId: string;
+    };
+
 export interface World {
   readonly backlog: readonly BacklogItem[];
   /**
@@ -195,6 +227,14 @@ export interface World {
   readonly assignable?: readonly { readonly item: BacklogItem; readonly toHatIds: readonly string[] }[];
   /** Hats this agent could pull into a room, and the artifact it would convene over. */
   readonly convenable?: readonly { readonly artifactId: string; readonly withHatIds: readonly string[] }[];
+  /**
+   * Generative acts open to this agent — making work rather than advancing it.
+   *
+   * `prompt` is the QUESTION, never the answer. A deterministic driver takes it verbatim, which is
+   * what keeps a drive replayable; a driver with a model behind it answers it and supplies its own
+   * text. The grammar cannot tell the two apart, and must not be able to.
+   */
+  readonly generative?: readonly GenerativeOpening[];
   readonly operator?: OperatorChannel;
   readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
   readonly forgeState?: ForgeState; // PR/CI state from the forge host (optional — absent if no forge resolved)
@@ -448,7 +488,83 @@ export type NextAction =
   /** Say what is missing. NEVER GATED — see the reconciliation row. */
   | { kind: "request_information"; about: string; blocking: string; reason: string; blockerKind?: string }
   /** Hand a work item to someone. Wires `canCreateWork`, which had no action until now. */
-  | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string };
+  | { kind: "assign_work"; item: BacklogItem; toHatId: string; reason: string }
+
+  // ── MAKING WORK, NOT ONLY ADVANCING IT ───────────────────────────────────
+  // Every verb above this line moves work that already exists. Measured over 200 rounds, an
+  // organization built from them alone reaches a fixed point and stops: it can staff, review,
+  // escalate and deliver a cascade, and it can never produce the next one. The acts that produce
+  // one existed and were reachable only from a script that called them in a fixed order — so the
+  // C-suite did not set direction, the script did, and named a C-suite hat as the one it happened
+  // to.
+  //
+  // Generic like the rest: `subjectId` is a string the core does not interpret, and a register
+  // decides what it names. The core still does not know what an organization is.
+  /** State or restate what a part of the company is for. */
+  | { kind: "set_direction"; subjectId: string; objective: string; domain?: string; reason: string }
+  /** Write the document a piece of work is missing. */
+  | { kind: "draft_business_doc"; subjectId: string; forWorkId: string; title: string; reason: string }
+  /** Say how urgent something is, from an offered set. */
+  | { kind: "decide_priority"; subjectId: string; priority: string; reason: string }
+  /** Say the organization is missing a hat. The only verb whose effect is on the CHART. */
+  | { kind: "size_hat_supply"; subjectId: string; reason: string }
+  /** Turn one thing into the things it is made of. The verb that makes a ladder run. */
+  | { kind: "break_down_work"; subjectId: string; childId: string; title: string; reason: string };
+
+
+/**
+ * One opening, as the action that takes it.
+ *
+ * ONE FUNCTION for the lead action and the candidate list, because the two disagreeing is how a
+ * chooser ends up unable to pick the thing the observer told it to do. The `reason` is the
+ * opening's own prompt — the agent is being asked a question, and the menu should say which.
+ */
+function generativeAction(g: GenerativeOpening): NextAction {
+  switch (g.kind) {
+    case "set_direction":
+      return {
+        kind: "set_direction",
+        subjectId: g.subjectId,
+        // THE PROMPT AS THE OBJECTIVE is the deterministic driver's answer, not the only one. A
+        // caller with a model behind it replaces this before the action reaches an effect.
+        objective: g.prompt,
+        ...(g.domain === undefined ? {} : { domain: g.domain }),
+        reason: g.prompt,
+      };
+    case "draft_business_doc":
+      return {
+        kind: "draft_business_doc",
+        subjectId: g.subjectId,
+        forWorkId: g.forWorkId,
+        title: g.prompt,
+        reason: g.prompt,
+      };
+    case "decide_priority":
+      return {
+        kind: "decide_priority",
+        subjectId: g.subjectId,
+        // THE FIRST OPTION, and the surface orders them most-urgent-first, so a deterministic
+        // driver prices everything `expedite`. That is deliberate and visible rather than hidden
+        // behind a "sensible default": a register that wants a different answer supplies a chooser,
+        // and one that supplies none should not be able to pretend it decided anything.
+        priority: g.options[0] ?? "",
+        reason: g.prompt,
+      };
+    case "size_hat_supply":
+      return { kind: "size_hat_supply", subjectId: g.subjectId, reason: g.prompt };
+    case "break_down_work":
+      return {
+        kind: "break_down_work",
+        subjectId: g.subjectId,
+        childId: g.childId,
+        // ONE CHILD, and named after the question. The deterministic driver's answer, exactly as
+        // `set_direction` takes the prompt as its objective — a caller with a model behind it says
+        // what the pieces actually are.
+        title: g.prompt,
+        reason: g.prompt,
+      };
+  }
+}
 
 /**
  * Pure controller. Priority: operator > offered-work > forward-default.
@@ -570,6 +686,12 @@ export function observe(world: World): NextAction {
       reason: `${room2.artifactId} has two heads and needs one`,
     };
   }
+
+  // MAKING WORK, as the lead action. Same placement argument as in the candidate list: below
+  // everything a colleague is waiting on, above exploring. An organization whose lead action is
+  // always `explore` when its queues are empty is one that never decides anything again.
+  const opening = world.generative?.[0];
+  if (opening !== undefined) return generativeAction(opening);
 
   // Forge-aware: if no backlog work is ready but clean PRs exist, signal
   // that merge work is available. The action is "do_item" with a synthetic
@@ -783,6 +905,16 @@ export function buildMenu(world: World): NextAction[] {
     for (const to of a.toHatIds) {
       candidates.push({ kind: "assign_work", item: a.item, toHatId: to, reason: `hand '${a.item.id}' to ${to}` });
     }
+  }
+
+  // ── MAKING WORK ──────────────────────────────────────────────────────────
+  // AFTER everything somebody is waiting on, and BEFORE the free modes. Both halves of that
+  // placement are load-bearing. Above the free modes, because an organization that explores past a
+  // domain with no direction leaves it with no direction; below the peer verbs, because a hat that
+  // sets a new direction while a colleague waits on its review has not been generative, it has been
+  // absent.
+  for (const g of world.generative ?? []) {
+    candidates.push(generativeAction(g));
   }
 
   const needs = world.backlog.find((i) => i.needsNewAction);
@@ -1134,6 +1266,15 @@ export function simulate(world: World, action: NextAction): World {
     case "convene_meeting":
     case "request_information":
     case "assign_work":
+    // THE GENERATIVE VERBS CHANGE THE ORGANIZATION, NOT THIS SNAPSHOT. `simulate` models one
+    // agent's own world — its backlog, its mode, its operator channel — and none of these touch
+    // any of that. Setting a direction creates work in a cascade this function cannot see, and
+    // writing the change here would be a second, divergent copy of what `org-drive.apply` does.
+    case "set_direction":
+    case "draft_business_doc":
+    case "decide_priority":
+    case "size_hat_supply":
+    case "break_down_work":
       return world;
   }
 }

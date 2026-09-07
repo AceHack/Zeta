@@ -56,6 +56,13 @@ function stateWith(over: Partial<OrgView> = {}): DriveState {
   return { view, cascade: { nodes: NODES }, calendar: EMPTY_CALENDAR };
 }
 
+/** Memoised, because the 200-round drive is the expensive fixture in this file. */
+let cached200: ReturnType<typeof drive> | undefined;
+function out200() {
+  cached200 ??= drive(200);
+  return cached200;
+}
+
 function drive(rounds: number) {
   let n = 0;
   const deps: DriveDeps = {
@@ -85,9 +92,15 @@ describe("A BLOCKED HAT IS NOT AN ASSIGNMENT TARGET", () => {
   test("THE ASSIGNMENTS ACTUALLY LAND — offered, chosen, and applied", () => {
     // Before the fix this was `assign_work` chosen 200 times with zero assignments, every one
     // refused. A menu whose choices never apply is a menu of nothing.
+    //
+    // ASSERTED ON THE TWO TASKS THIS FIXTURE DECLARES, not on a total. The count was 2 and is now
+    // larger, because the generative verbs give this organization work of its own — and a census
+    // that grows whenever the drive gets better at its job is a test that has to be edited every
+    // time it passes, which is a test nobody reads.
     const out = drive(50);
-    const assigned = out.state.cascade.nodes.filter((n) => n.assigneeHatId !== undefined);
-    expect(assigned).toHaveLength(2);
+    const assigned = out.state.cascade.nodes.filter((n) => n.assigneeHatId !== undefined).map((n) => n.workId);
+    expect(assigned).toContain("task-1");
+    expect(assigned).toContain("task-2");
     expect(out.rounds.flatMap((r) => r.ticks).flatMap((t) => t.refusals)).toEqual([]);
   });
 });
@@ -159,14 +172,34 @@ describe("THE PROPERTY NO SINGLE TICK HAS", () => {
   test("RUN IT AGAIN AND SOMETHING IS DIFFERENT — the drive settles instead of repeating", () => {
     // The whole file in one assertion. 200 identical rounds is not an organization working; it is
     // one unresolved state being re-reported until somebody stops the loop.
+    //
+    // THE BOUND WAS `< 10` AND IS NOW A PROPERTY, because a round count is a proxy for the thing
+    // that matters and it stopped tracking it: with generative verbs this organization takes ~38
+    // rounds and does real work in every one of them. Raising the number would have preserved a
+    // proxy at the cost of the claim, so the claim is asserted directly — EVERY ROUND BEFORE THE
+    // LAST CHANGED SOMETHING. A drive that grinds shows up as a round that changed nothing and
+    // kept going, and that is exactly what this now refuses.
     const out = drive(200);
     expect(out.settled).toBe(true);
-    expect(out.rounds.length).toBeLessThan(10);
+    expect(out.rounds.slice(0, -1).filter((r) => r.changes === 0)).toEqual([]);
+    expect(out.rounds[out.rounds.length - 1]?.changes).toBe(0);
+  });
+
+  test("NO ACT IS CHOSEN MORE OFTEN THAN IT LANDS", () => {
+    // The livelock signature stated as a ratio rather than as a count. Three have been found in
+    // this drive — `assign_work` offered to a blocked hat, a blocker re-reported every round, and
+    // `break_down_work` retried for a rung the chart had no hat for — and all three looked like
+    // this: an act chosen far more often than the organization accepted it.
+    const ticks = out200().rounds.flatMap((r) => r.ticks);
+    const refused = ticks.filter((t) => t.refusals.length > 0);
+    expect(refused.map((t) => `${t.hatId}:${t.chosen?.kind}`)).toEqual([]);
   });
 
   test("ONE SIGNAL PER BLOCKER, not one per round", () => {
+    // FILTERED TO BLOCKERS. The organization now raises supply gaps as signals too, and counting
+    // every signal would make this assertion about a total rather than about the rule it names.
     const out = drive(200);
-    expect(out.state.view.signals).toHaveLength(1);
+    expect(out.state.view.signals.filter((s) => s.tool === SignalTool.ReportBlocker)).toHaveLength(1);
   });
 
   test("...and the loop does real work before it settles", () => {

@@ -290,7 +290,21 @@ function best(
 export function acceptGoal(
   cascade: Cascade,
   chart: OrgChart,
-  input: { readonly workId: string; readonly title: string; readonly acceptingHatId: string },
+  input: {
+    readonly workId: string;
+    readonly title: string;
+    readonly acceptingHatId: string;
+    /**
+     * What this direction is ABOUT.
+     *
+     * Optional, and its absence is why the first version of this compiled while dropping it: the
+     * caller passed `domain` through a spread, TypeScript does not excess-property-check a spread,
+     * and every descendant of the goal inherited nothing. A direction whose domain is silently lost
+     * routes its whole branch alphabetically — the exact defect `domain-ontology.ts` exists to end,
+     * reintroduced at the one verb that creates the branch.
+     */
+    readonly domain?: Domain;
+  },
 ): CascadeResult {
   const hat = chart.byId.get(input.acceptingHatId);
   if (hat === undefined) return { ok: false, reason: `unknown hat '${input.acceptingHatId}'` };
@@ -315,6 +329,7 @@ export function acceptGoal(
           title: input.title,
           state: WorkState.Open,
           ownerHatId: hat.id,
+          ...(input.domain === undefined ? {} : { domain: input.domain }),
         },
       ],
     },

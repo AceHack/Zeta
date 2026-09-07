@@ -58,7 +58,24 @@ export type HatGate =
   /** Pulling peers into a room. Spends OTHER hats' calendars, so it needs its own authority. */
   | "convene"
   /** Handing work to someone. The action `canCreateWork` was waiting for. */
-  | "assign_work";
+  | "assign_work"
+  /**
+   * Saying what a part of the company is FOR. A LEVEL check, not a bit.
+   *
+   * The only gate here that is not one of `HatAuthority`'s booleans, and deliberately: direction is
+   * not a capability somebody can be granted at any level, it is the thing the top of a chart
+   * exists to do. `goal-cascade.acceptGoal` already refuses a goal accepted below c_suite, so a bit
+   * that could be set on a lead would put two different answers in the system.
+   */
+  | "set_direction"
+  /**
+   * Deciding what the organization spends itself on — priority, and hat supply.
+   *
+   * Rides `canCreateWork` alongside `assign_work`, which is the same authority read three ways:
+   * who does it, how urgent it is, and whether a hat for it exists at all. Three separate bits
+   * would have to be kept in step, and the first one to drift would be silent.
+   */
+  | "direct_resources";
 
 /** What a room's `ScopePredicate` must permit for this kind. */
 export type ScopeRequirement =
@@ -97,6 +114,21 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // never be gated is the agent's ability to be honest about its own state.
   request_information: { kind: "request_information", gate: "never_gated", scope: "unrestricted", freeMode: false, leadSlot: null },
   assign_work: { kind: "assign_work", gate: "assign_work", scope: "item_in_scope", freeMode: false, leadSlot: null },
+
+  // ── MAKING WORK ──────────────────────────────────────────────────────────
+  // `scope: "unrestricted"` on all four, and it is not a shrug. A room's item scope is a fence
+  // around work that ALREADY EXISTS — `itemIdOf` reads a `BacklogItem` off the action — and none of
+  // these carries one: a direction has no work item because it is what produces them, and a supply
+  // gap is about the chart rather than the backlog. Scoping them by backlog membership would refuse
+  // every one of them in every room, which is a gate that can never open.
+  set_direction: { kind: "set_direction", gate: "set_direction", scope: "unrestricted", freeMode: false, leadSlot: null },
+  draft_business_doc: { kind: "draft_business_doc", gate: "collaborate", scope: "unrestricted", freeMode: false, leadSlot: null },
+  decide_priority: { kind: "decide_priority", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
+  size_hat_supply: { kind: "size_hat_supply", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `decompose`'s gate, because it IS decomposition — one rung of a cascade rather than one backlog
+  // item's sub-tasks. A second authority for the same act would be two answers to "may this hat
+  // break work down", and the first one to drift would be silent.
+  break_down_work: { kind: "break_down_work", gate: "decompose", scope: "unrestricted", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",

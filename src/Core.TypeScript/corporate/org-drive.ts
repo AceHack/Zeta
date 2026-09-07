@@ -32,9 +32,9 @@ import { buildMenu, type NextAction, type World } from "../observe/observe";
 import { effectOf, orgSurfaceFor, type OrgEffect, type OrgView } from "./org-observe-bridge";
 import type { WorkTransfer } from "./work-stealing";
 import type { AlternateAssignment } from "./alternate-work";
-import { assign, reassign, type Cascade } from "./goal-cascade";
+import { acceptGoal, assign, decompose, reassign, type Cascade } from "./goal-cascade";
 import { postToAnchor, type AnchorBoard } from "./discussion-anchor";
-import { headsOf } from "./artifact-deliberation";
+import { headsOf, openArtifact } from "./artifact-deliberation";
 import { conveneOverArtifact } from "./artifact-meeting";
 import { ExpectedOutput } from "./discussion-anchor";
 import type { Calendar } from "./work-schedule";
@@ -97,7 +97,10 @@ export interface DriveDeps {
  * assignment — the delivery pipeline is what does work, and it is driven by `deliverWorkItem`.
  */
 export function tick(state: DriveState, hatId: string, deps: DriveDeps): TickReport {
-  const world: World = { backlog: [], ...orgSurfaceFor(state.view, hatId) };
+  const world: World = {
+    backlog: [],
+    ...orgSurfaceFor(state.view, hatId, deps.resourceAuthorityHatId),
+  };
   const menu = buildMenu(world);
   const chosen = (deps.choose ?? ((m) => m[0]))(menu, hatId);
   if (chosen === undefined) {
@@ -227,6 +230,56 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
         changed: true,
         refusals: [],
       };
+    }
+
+    case "direction": {
+      const accepted = acceptGoal(state.cascade, deps.chart, {
+        workId: effect.workId,
+        title: effect.title,
+        acceptingHatId: effect.byHatId,
+        ...(effect.domain === undefined ? {} : { domain: effect.domain }),
+      });
+      if (!accepted.ok) return { state, changed: false, refusals: [accepted.reason] };
+      const view: OrgView = { ...state.view, cascade: accepted.cascade.nodes };
+      return { state: { ...state, cascade: accepted.cascade, view }, changed: true, refusals: [] };
+    }
+
+    case "document": {
+      // THE FIRST REVISION IS THE DOCUMENT. `artifact-deliberation` already owns what a revision
+      // is and who may add one; creating a bare entry here would be a second way for an artifact to
+      // come into existence, and the two would disagree about authorship the moment one changed.
+      const created = openArtifact({
+        artifactId: effect.artifactId,
+        byHatId: effect.byHatId,
+        atMs: deps.nowMs,
+        content: `draft for ${effect.workId}`,
+        note: `first draft, written for ${effect.workId}`,
+      });
+      if (!created.ok) return { state, changed: false, refusals: [created.reason] };
+      const artifacts = new Map(state.view.artifacts);
+      artifacts.set(effect.artifactId, created.history);
+      return { state: { ...state, view: { ...state.view, artifacts } }, changed: true, refusals: [] };
+    }
+
+    case "breakdown": {
+      // The DOMAIN IS NOT PASSED, and that is the point of inheritance: `decompose` reads it off
+      // the parent. Passing it here would be a second copy of a fact the cascade already holds,
+      // and the two would disagree the first time somebody re-domained a branch.
+      const split = decompose(state.cascade, deps.chart, effect.parentWorkId, [
+        { workId: effect.childWorkId, title: effect.title },
+      ]);
+      if (!split.ok) return { state, changed: false, refusals: [split.reason] };
+      const view: OrgView = { ...state.view, cascade: split.cascade.nodes };
+      return { state: { ...state, cascade: split.cascade, view }, changed: true, refusals: [] };
+    }
+
+    case "priced": {
+      const priorities = new Map(state.view.priorities ?? []);
+      if (priorities.get(effect.workId) === effect.priority) {
+        return { state, changed: false, refusals: [] };
+      }
+      priorities.set(effect.workId, effect.priority);
+      return { state: { ...state, view: { ...state.view, priorities } }, changed: true, refusals: [] };
     }
 
     case "review":

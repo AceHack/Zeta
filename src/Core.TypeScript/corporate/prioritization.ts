@@ -53,6 +53,19 @@ export const PRIORITY_ORDER: readonly PriorityClass[] = [
   PriorityClass.Paused,
 ];
 
+/**
+ * Is this string one of the five?
+ *
+ * The generative menu hands the register a string the grammar never interpreted — deliberately, so
+ * the core stays ignorant of what a priority is. That makes this the boundary where the ignorance
+ * ends, and an unrecognised class must be REFUSED rather than coerced: a work item silently priced
+ * `normal` because somebody sent "urgent" is worse than one that was never priced, because the
+ * first looks decided.
+ */
+export function isPriorityClass(value: string): value is PriorityClass {
+  return (PRIORITY_ORDER as readonly string[]).includes(value);
+}
+
 export function priorityRank(c: PriorityClass): number {
   return PRIORITY_ORDER.indexOf(c);
 }
