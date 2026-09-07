@@ -626,6 +626,10 @@ missing frost-look keys
 both keys is unmeasured, not `missing-os`;
 NamedEnv still requires OS; ISO bun
 `probe` stays null.
+Overlay optional named join takes ISO bun
+JSON look (`081M1YQKYXQ087G0R000NXN8JN`);
+JSON `probe` is ignored even when
+non-null; ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

@@ -20,7 +20,8 @@
  * `ZETA_FROST_LOOK_EFFECTS` (env / argv / conf body).
  * NamedEnv still requires OS. Optional named joins match
  * ISO bun: missing both keys is unmeasured, not
- * `missing-os`. Does not import the frost-look CLI. Does
+ * `missing-os`. Bun JSON join uses `look` and ignores
+ * JSON `probe`. Does not import the frost-look CLI. Does
  * not change ISO bun `probe: null`.
  */
 
@@ -39,8 +40,10 @@ import {
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
   consumeOptionalFrostLookFromArgv,
+  consumeOptionalFrostLookFromBunJson,
   consumeOptionalFrostLookFromConf,
   consumeOptionalFrostLookFromEnv,
+  envHasFrostLookKey,
   frostLookEffectsFromNamed,
   type FrostLookEnvError,
   type FrostLookEnvParse,
@@ -220,5 +223,27 @@ export function planSetupFromFrostLookOptionalNamedConf(
     real,
     (fx, os) => planSetupFromFrostLookConf(restore, conf, env, read, fx, os),
     () => planSetupFromNamedBaoElfConf(restore, conf, env, read, null),
+  );
+}
+
+/**
+ * Bun JSON join. Uses `look`. Ignores JSON `probe` even
+ * when non-null. Env frost-look keys mixed with JSON look
+ * refuse. Bao / unseal stay named from env. Does not
+ * write ESP. Does not default to `realProbeEffects`.
+ */
+export function planSetupFromFrostLookOptionalNamedBunJson(
+  restore: RestoredPkcs11PointerCapture,
+  json: string,
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  real: HardwareProbeEffects,
+): FrostLookNamedJoin {
+  if (envHasFrostLookKey(env)) return { ok: false, reason: "mixed-source" };
+  return optionalLookJoin(
+    consumeOptionalFrostLookFromBunJson(json),
+    real,
+    (fx, os) => planSetupFromFrostLookEnv(restore, env, read, fx, os),
+    () => planSetupFromNamedBaoElfEnv(restore, env, read, null),
   );
 }

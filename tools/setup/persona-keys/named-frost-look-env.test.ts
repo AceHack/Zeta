@@ -16,6 +16,7 @@ import {
   consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
   consumeOptionalFrostLookFromArgv,
+  consumeOptionalFrostLookFromBunJson,
   consumeOptionalFrostLookFromConf,
   consumeOptionalFrostLookFromEnv,
   frostLookProbeFromNamed,
@@ -221,6 +222,7 @@ describe("runFrostLookEnvCli — tpmrm0 is not present", () => {
     expect(cli.split("osFamilyFromOsRelease(").length - 1).toBe(0);
     expect(cli.split("planSetupFromFrostLookEnv(").length - 1).toBe(0);
     expect(cli.split("planSetupFromFrostLookOptionalNamedEnv(").length - 1).toBe(0);
+    expect(cli.split("planSetupFromFrostLookOptionalNamedBunJson(").length - 1).toBe(0);
     expect(cli.split("integrateAtSetup(").length - 1).toBe(0);
     expect(cli.split("appendFirstbootBaoElfConf(").length - 1).toBe(0);
     expect(cli.split("from \"../../../src/Core.TypeScript/zflash/").length - 1).toBe(0);
@@ -302,6 +304,36 @@ describe("consumeOptionalFrostLookFromConf", () => {
       ok: false,
       reason: "missing-os",
     });
+  });
+});
+
+describe("consumeOptionalFrostLookFromBunJson", () => {
+  test("null look is unmeasured; JSON probe is ignored", () => {
+    expect(
+      consumeOptionalFrostLookFromBunJson(
+        JSON.stringify({ ok: true, look: null, probe: { tpm2: "present" } }),
+      ),
+    ).toEqual({ ok: true, look: null });
+  });
+
+  test("JSON effects null is unmeasured, not the named string null", () => {
+    expect(
+      consumeOptionalFrostLookFromBunJson(
+        JSON.stringify({ ok: true, look: { os: "nixos", effects: null }, probe: null }),
+      ),
+    ).toEqual({ ok: true, look: { os: "nixos", effects: null } });
+  });
+
+  test("tpmrm0 as look effects refuses", () => {
+    expect(
+      consumeOptionalFrostLookFromBunJson(
+        JSON.stringify({ ok: true, look: { os: "nixos", effects: TPM_CHAR_DEVICE }, probe: null }),
+      ),
+    ).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+
+  test("malformed JSON is unsafe-json", () => {
+    expect(consumeOptionalFrostLookFromBunJson("{")).toEqual({ ok: false, reason: "unsafe-json" });
   });
 });
 

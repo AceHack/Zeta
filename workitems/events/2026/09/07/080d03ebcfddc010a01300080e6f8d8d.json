@@ -1,0 +1,14 @@
+{
+  "id": "080d03ebcfddc010a01300080e6f8d8d",
+  "at": "2026-09-07T20:05:41.432Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YQKYXQ087G0R000NXN8JN",
+    "type": "task",
+    "title": "Overlay optional named join takes ISO bun JSON look; JSON probe is ignored",
+    "slug": "overlay-optional-named-join-takes-iso-bun-json-look-json-pro",
+    "priority": "P2",
+    "filename": "081M1YQKYXQ087G0R000NXN8JN-overlay-optional-named-join-takes-iso-bun-json-look-json-pro.md"
+  }
+}

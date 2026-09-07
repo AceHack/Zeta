@@ -31,7 +31,8 @@ export type FrostLookEnvError =
   | "empty-effects"
   | "unknown-effects"
   | "unsafe-conf-value"
-  | "mixed-source";
+  | "mixed-source"
+  | "unsafe-json";
 
 export type FrostLookEnvParse =
   | {
@@ -219,6 +220,10 @@ export function argvHasFrostLookFlag(argv: readonly string[]): boolean {
   return false;
 }
 
+export function envHasFrostLookKey(env: { readonly [key: string]: string | undefined }): boolean {
+  return env[FROST_LOOK_OS_KEY] !== undefined || env[FROST_LOOK_EFFECTS_KEY] !== undefined;
+}
+
 /**
  * Missing both flags is unmeasured, not `missing-os`.
  * `--os` without `--effects` stays named with null effects.
@@ -245,6 +250,72 @@ function confHasFrostLookKey(body: string): boolean {
 export function consumeOptionalFrostLookFromConf(body: string): OptionalFrostLookEnvParse {
   if (!confHasFrostLookKey(body)) return { ok: true, look: null };
   return asOptionalLook(consumeFrostLookFromConf(body));
+}
+
+const FROST_LOOK_ENV_ERRORS: readonly FrostLookEnvError[] = [
+  "missing-os",
+  "empty-os",
+  "unknown-os",
+  "empty-effects",
+  "unknown-effects",
+  "unsafe-conf-value",
+  "mixed-source",
+  "unsafe-json",
+];
+
+function isFrostLookEnvError(value: string): value is FrostLookEnvError {
+  return (FROST_LOOK_ENV_ERRORS as readonly string[]).includes(value);
+}
+
+/**
+ * bun JSON `look` field. JSON `probe` is ignored even when
+ * non-null. Missing / null look is unmeasured, not
+ * `missing-os`. JSON `effects: null` is unmeasured, not
+ * the named string `"null"`. `/dev/tpmrm0` is unknown.
+ */
+export function consumeOptionalFrostLookFromLookValue(look: unknown): OptionalFrostLookEnvParse {
+  if (look === null || look === undefined) return { ok: true, look: null };
+  if (typeof look !== "object") return { ok: false, reason: "unsafe-json" };
+  const rec = look as { readonly os?: unknown; readonly effects?: unknown };
+  const osValue = rec.os === undefined || rec.os === null ? undefined : rec.os;
+  if (osValue !== undefined && typeof osValue !== "string") return { ok: false, reason: "unsafe-json" };
+  const effectsValue =
+    rec.effects === undefined || rec.effects === null
+      ? undefined
+      : rec.effects;
+  if (effectsValue !== undefined && typeof effectsValue !== "string") {
+    return { ok: false, reason: "unsafe-json" };
+  }
+  return asOptionalLook(
+    consumeFrostLookFromEnv({
+      ...(osValue === undefined ? {} : { [FROST_LOOK_OS_KEY]: osValue }),
+      ...(effectsValue === undefined ? {} : { [FROST_LOOK_EFFECTS_KEY]: effectsValue }),
+    }),
+  );
+}
+
+/**
+ * ISO bun stdout. Uses `look`. Ignores `probe`. `{ ok:
+ * false, reason }` passes frost-look reasons through.
+ * Other `ok: false` reasons are `unsafe-json`. Does not
+ * mix with env keys (that check lives at the overlay join).
+ */
+export function consumeOptionalFrostLookFromBunJson(text: string): OptionalFrostLookEnvParse {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text) as unknown;
+  } catch {
+    return { ok: false, reason: "unsafe-json" };
+  }
+  if (parsed === null || typeof parsed !== "object") return { ok: false, reason: "unsafe-json" };
+  const rec = parsed as { readonly ok?: unknown; readonly look?: unknown; readonly reason?: unknown };
+  if (rec.ok === false) {
+    if (typeof rec.reason === "string" && isFrostLookEnvError(rec.reason)) {
+      return { ok: false, reason: rec.reason };
+    }
+    return { ok: false, reason: "unsafe-json" };
+  }
+  return consumeOptionalFrostLookFromLookValue(rec.look);
 }
 
 function takeFromConfBody(argv: readonly string[]): { readonly present: boolean; readonly body: string } {

@@ -367,6 +367,15 @@ assume the number.
    `real`. Does not write ESP. Does not call this from
    `zeta-install.sh`. Does not change ISO bun
    `probe: null`. Does not invent an integrate decision.
+   Overlay optional named join takes ISO bun JSON look
+   (`081M1YQKYXQ087G0R000NXN8JN`):
+   `planSetupFromFrostLookOptionalNamedBunJson`. Uses
+   `look`. JSON `probe` is ignored even when non-null.
+   Mixing env frost-look keys with JSON look refuses.
+   NamedEnv still requires OS. Does not write ESP. Does
+   not call this from `zeta-install.sh`. Does not change
+   ISO bun `probe: null`. Does not invent an integrate
+   decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

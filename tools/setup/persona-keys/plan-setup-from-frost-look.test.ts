@@ -23,6 +23,7 @@ import {
   planSetupFromFrostLookNamedConf,
   planSetupFromFrostLookNamedEnv,
   planSetupFromFrostLookOptionalNamedArgv,
+  planSetupFromFrostLookOptionalNamedBunJson,
   planSetupFromFrostLookOptionalNamedConf,
   planSetupFromFrostLookOptionalNamedEnv,
 } from "./plan-setup-from-frost-look.ts";
@@ -239,6 +240,7 @@ describe("planSetupFromFrostLookEnv — tpmrm0 is not present", () => {
       expect(src.split("planSetupFromFrostLookOptionalNamedEnv").length - 1).toBe(0);
       expect(src.split("planSetupFromFrostLookOptionalNamedArgv").length - 1).toBe(0);
       expect(src.split("planSetupFromFrostLookOptionalNamedConf").length - 1).toBe(0);
+      expect(src.split("planSetupFromFrostLookOptionalNamedBunJson").length - 1).toBe(0);
     }
     const join = await Bun.file(new URL("./plan-setup-from-frost-look.ts", import.meta.url)).text();
     expect(join.split("realProbeEffects(").length - 1).toBe(0);
@@ -251,6 +253,7 @@ describe("planSetupFromFrostLookEnv — tpmrm0 is not present", () => {
     expect(join.split("planSetupFromFrostLookOptionalNamedEnv").length - 1).toBe(1);
     expect(join.split("planSetupFromFrostLookOptionalNamedArgv").length - 1).toBe(1);
     expect(join.split("planSetupFromFrostLookOptionalNamedConf").length - 1).toBe(1);
+    expect(join.split("planSetupFromFrostLookOptionalNamedBunJson").length - 1).toBe(1);
     const resultJoin = await Bun.file(new URL("./plan-setup-from-frost.ts", import.meta.url)).text();
     expect(resultJoin.split("probeHardwareSecurity(").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
@@ -259,6 +262,8 @@ describe("planSetupFromFrostLookEnv — tpmrm0 is not present", () => {
     expect(bunCli.split("consumeOptionalFrostLookFromEnv(").length - 1).toBe(1);
     expect(bunCli.split("consumeOptionalFrostLookFromArgv").length - 1).toBe(0);
     expect(bunCli.split("planSetupFromFrostLookOptionalNamedEnv").length - 1).toBe(0);
+    expect(bunCli.split("planSetupFromFrostLookOptionalNamedBunJson").length - 1).toBe(0);
+    expect(bunCli.split("consumeOptionalFrostLookFromBunJson").length - 1).toBe(0);
   });
 });
 
@@ -518,5 +523,83 @@ describe("planSetupFromFrostLookOptionalNamedEnv/Argv/Conf — tpmrm0 is not pre
     expect(fromConf.plan.mayCommitSeal).toBe(false);
     expect(fromConf.plan.mayCommitHostHcl).toBe(true);
     expect(hostBaoSealHcl(fromConf.plan)).not.toBeNull();
+  });
+});
+
+describe("planSetupFromFrostLookOptionalNamedBunJson — tpmrm0 is not present", () => {
+  test("null look is unmeasured even when JSON probe claims present", () => {
+    const opened: string[] = [];
+    const json = JSON.stringify({
+      ok: true,
+      ask: null,
+      epoch: "installed-host",
+      requested: "pkcs11-tpm",
+      probe: { tpm2: "present", osFamily: "nixos" },
+      look: null,
+    });
+    const fromJson = planSetupFromFrostLookOptionalNamedBunJson(
+      missingRestore,
+      json,
+      optionDEnv("pkcs11-tpm"),
+      glibcRead(opened),
+      unusedReal(),
+    );
+    expect(fromJson.ok).toBe(true);
+    if (!fromJson.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromJson.plan.oracle).toBe("none");
+    expect(fromJson.plan.mayCommitHostHcl).toBe(false);
+    expect(fromJson.plan.mayCommitSeal).toBe(false);
+    expect(hostBaoSealHcl(fromJson.plan)).toBeNull();
+  });
+
+  test("named look real uses injected effects; JSON probe is still ignored", () => {
+    const opened: string[] = [];
+    const json = JSON.stringify({
+      ok: true,
+      ask: null,
+      epoch: "installed-host",
+      requested: "pkcs11-tpm",
+      probe: { tpm2: "absent" },
+      look: { os: "nixos", effects: "real" },
+    });
+    const fromJson = planSetupFromFrostLookOptionalNamedBunJson(
+      missingRestore,
+      json,
+      optionDEnv("pkcs11-tpm"),
+      glibcRead(opened),
+      host({ tpm2: tpm2Present() }),
+    );
+    expect(fromJson.ok).toBe(true);
+    if (!fromJson.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromJson.plan.oracle).toBe("tpm2-pkcs11");
+    expect(fromJson.plan.mayCommitSeal).toBe(false);
+    expect(fromJson.plan.mayCommitHostHcl).toBe(true);
+    expect(hostBaoSealHcl(fromJson.plan)).not.toBeNull();
+  });
+
+  test("env frost-look keys mixed with bun JSON look refuse", () => {
+    expect(
+      planSetupFromFrostLookOptionalNamedBunJson(
+        missingRestore,
+        JSON.stringify({ ok: true, look: { os: "nixos", effects: "real" }, probe: null }),
+        { ...optionDEnv("pkcs11-tpm"), [FROST_LOOK_OS_KEY]: "nixos" },
+        glibcRead([]),
+        unusedReal(),
+      ),
+    ).toEqual({ ok: false, reason: "mixed-source" });
+  });
+
+  test("malformed JSON is unsafe-json, not a live look", () => {
+    expect(
+      planSetupFromFrostLookOptionalNamedBunJson(
+        missingRestore,
+        "{",
+        optionDEnv("pkcs11-tpm"),
+        glibcRead([]),
+        unusedReal(),
+      ),
+    ).toEqual({ ok: false, reason: "unsafe-json" });
   });
 });
