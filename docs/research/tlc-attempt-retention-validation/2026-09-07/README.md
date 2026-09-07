@@ -119,3 +119,11 @@ The supplemental annotated ref
 retains this source/evidence head and the original review pins before
 squash-merge branch deletion. Resolve the immutable remote tag for its
 actual target; the publication proof records that resolution separately.
+
+## Initial publication correction
+
+The [CI correction record](ci-correction.md) retains the three original
+publication failures, the descriptor-bound TypeScript source repair, its
+platform limits and the exact local recovery checks. Its
+[separate byte inventory](ci-correction-hashes.json) leaves earlier source
+and log inventories unchanged. The original archive is not moved.

@@ -62,6 +62,24 @@ directory still requires the combined full catalog gate. The source hash
 inventory binds working bytes. `SourceCommit` records checkout HEAD context
 and is explicitly not a clean-source assertion.
 
+The [initial publication CI correction](tlc-attempt-retention-validation/2026-09-07/ci-correction.md)
+records two additional TypeScript findings and their retained failures.
+TypeScript now checks and reads one open source descriptor, copies those
+bytes exclusively and records optional no-follow/nonblocking flag
+availability. Static symlink observation on platforms without no-follow
+retains the stable writer-tree assumption shared with F#. Neither runner
+claims hostile namespace isolation or an atomic whole-tree snapshot.
+The corrected timeout fixture uses an untimed wait in its child; only the
+capture watchdog ends it.
+
+The separate [macOS fixture correction and final native gate](tlc-attempt-retention-validation/2026-09-07/ci-native-correction.md)
+then replaced the fixture's launcher-speed assumption with observed exit
+and explicit cancellation through the shared production start/drain path.
+The final integrated gate at `4b4d9a237` passed 7,539 tests with six existing
+skips and zero failures; the Release build had zero warnings/errors. This
+is this writer's corrected snapshot, distinct from the earlier larger
+root integration. All prior failed attempts remain preserved.
+
 ## Judgment, cleanup and retry
 
 Both runners retain full stdout and stderr as files during execution.

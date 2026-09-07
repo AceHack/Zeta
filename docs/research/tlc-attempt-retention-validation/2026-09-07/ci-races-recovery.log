@@ -1,0 +1,2 @@
+lint-check-then-use-file-races: scanned 2701 TypeScript file(s) under src/Core.TypeScript (295 grandfathered)
+  no check-then-use filesystem races found

@@ -1,0 +1,59 @@
+bun test v1.3.13 (bf2e2cec)
+
+src/Core.TypeScript/formal-verification/tlc-attempts.test.ts:
+(pass) TLC startup retry parity > heap-reservation [1.89ms]
+(pass) TLC startup retry parity > vm-initialization
+(pass) TLC startup retry parity > missing-jar
+(pass) TLC startup retry parity > unclassified
+(pass) TLC startup retry parity > unclassified-oom
+(pass) TLC startup retry parity > banner-and-heap
+(pass) TLC startup retry parity > progress-and-initialization
+(pass) TLC startup retry parity > sigbus-and-startup
+(pass) TLC startup retry parity > internal-checker-error
+(pass) TLC startup retry parity > invariant
+(pass) TLC startup retry parity > completion-then-fatal
+(pass) TLC startup retry parity > startup-then-inrun-oom
+(pass) TLC startup retry parity > metadata-sigbus
+(pass) TLC startup retry parity > metadata-kill
+(pass) TLC startup retry parity > metadata-timeout
+(pass) TLC startup retry parity > process-error-with-exit1
+(pass) TLC startup retry parity > other-exit
+(pass) TLC startup retry parity > a successful recovery retains the earlier failed result [0.20ms]
+(pass) TLC startup retry parity > persistent startup failure stops at three; fatal completion stops at one [0.13ms]
+(pass) TLC owned diagnostic directories > source copying uses the admitted descriptor after pathname replacement [4.52ms]
+(pass) TLC owned diagnostic directories > source flags retain optional platform support and refuse static symlinks/directories [4.50ms]
+(pass) TLC owned diagnostic directories > the actual collector includes unstaged/new helper bytes and refuses ignored helpers [51.53ms]
+(pass) TLC owned diagnostic directories > owned process capture retains streams and refuses missing executables/timeouts [147.45ms]
+(pass) TLC owned diagnostic directories > retains full failure bytes and helper inputs while cleaning only a later expected attempt [4.63ms]
+(pass) TLC owned diagnostic directories > copy/inventory refusals leave explicit attempts rather than disappear [3.43ms]
+(pass) TLC owned diagnostic directories > the explicit crash-report path changes only a diagnostic JVM argument [0.28ms]
+
+src/Core.TypeScript/formal-verification/run-tlc.test.ts:
+(pass) run-tlc CLI contract > --invocation prints the pinned command, so a recorded result can carry it [34.89ms]
+(pass) run-tlc CLI contract > --list names every model in the registry [36.45ms]
+(pass) run-tlc CLI contract > an unknown model id is an error, not a silent no-op [31.96ms]
+(pass) run-tlc CLI contract > an unknown flag exits 3, distinct from a model failure [29.55ms]
+
+src/Core.TypeScript/formal-verification/tlc-invocation.test.ts:
+(pass) buildTlcArgv > always passes -config, so the twelve ungated configs cannot recur [0.11ms]
+(pass) buildTlcArgv > pins the worker count, because halt-on-violation counts move with it
+(pass) buildTlcArgv > never passes -deadlock -- deadlock policy lives in the .cfg [0.11ms]
+(pass) buildTlcArgv > uses C1 only on macOS arm64 without changing common JVM flags
+(pass) buildTlcArgv > invocationLine is copy-pasteable next to a recorded result [0.10ms]
+(pass) judgeTlcRun > accepts the pinned clean shape [0.19ms]
+(pass) judgeTlcRun > REFUSES a witness that has stopped firing [0.01ms]
+(pass) judgeTlcRun > REFUSES a witness that fires on a DIFFERENT property
+(pass) judgeTlcRun > accepts the pinned violation [0.03ms]
+(pass) judgeTlcRun > REFUSES an exit code the registry did not pin -- exit 11 is deadlock, 12 invariant, 13 temporal
+(pass) judgeTlcRun > REFUSES exhaustive state-count drift [0.03ms]
+(pass) judgeTlcRun > parses comma-grouped counts [0.03ms]
+(pass) judgeTlcRun > does NOT assert a count for halt-on-violation models
+(pass) judgeToolchainBanner > accepts the pinned jar banner [0.02ms]
+(pass) judgeToolchainBanner > REFUSES a swapped jar [0.01ms]
+(pass) judgeTlcRun state-count parsing > reads the FINAL summary, not a progress line
+(pass) judgeTlcRun state-count parsing > still fails when the FINAL count drifts, progress lines notwithstanding [0.04ms]
+
+ 47 pass
+ 0 fail
+ 224 expect() calls
+Ran 47 tests across 3 files. [896.00ms]

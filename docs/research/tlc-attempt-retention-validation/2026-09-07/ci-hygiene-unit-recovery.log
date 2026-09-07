@@ -1,0 +1,71 @@
+bun test v1.3.13 (bf2e2cec)
+
+src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.test.ts:
+(pass) the detector goes red on the class it exists to catch > FALSIFIER: a deliberately-introduced ambient-time test is detected [1.88ms]
+(pass) the detector goes red on the class it exists to catch > FALSIFIER: Bun.sleep with a non-zero argument is detected [0.08ms]
+(pass) the detector goes red on the class it exists to catch > FALSIFIER: setInterval with a non-zero period is detected [0.03ms]
+(pass) the detector goes red on the class it exists to catch > FALSIFIER: a non-literal delay is detected, because a variable is not a zero [0.03ms]
+(pass) the detector goes red on the class it exists to catch > FALSIFIER: the delay hidden behind a nested call with its own commas is still found [0.03ms]
+(pass) the detector goes red on the class it exists to catch > a commented-out wall clock is still a wall clock waiting to return
+(pass) the detector does NOT fire on the correct patterns > a zero-delay yield is allowed -- it is deterministic in TURNS [0.15ms]
+(pass) the detector does NOT fire on the correct patterns > an omitted delay is a yield, not a delay [0.12ms]
+(pass) the detector does NOT fire on the correct patterns > an INJECTED fake scheduler is the model answer, not the defect
+(pass) the detector does NOT fire on the correct patterns > a regex that merely MENTIONS the identifier is not a call
+(pass) the detector does NOT fire on the correct patterns > a longer identifier that happens to end in the callee name is not the callee
+(pass) unit: the argument splitter > balances nested parens, brackets and braces [0.19ms]
+(pass) unit: the argument splitter > does not split on a comma inside a string
+(pass) unit: the argument splitter > returns null rather than guessing when the call is unbalanced [0.10ms]
+(pass) unit: the argument splitter > only the literal zero counts as a zero
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > an unallowlisted violation fails [37.82ms]
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > an allowlisted violation at the pinned count passes [28.99ms]
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > THE POINT: a SECOND violation hiding behind a justified one fails on the count pin [27.70ms]
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > the ratchet bites in the OTHER direction too: a stale row fails [27.40ms]
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > a row naming a file that no longer exists fails [26.61ms]
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > a row with no real reason is refused at load time [22.50ms]
+(pass) the allowlist is a ratchet and cannot silently swallow a new violation > a missing registry refuses to pass rather than defaulting to empty [22.27ms]
+(pass) the live tree > main is clean: every wall-clock in a test file is named and counted [0.17ms]
+(pass) the live tree > LIVENESS: the scan actually reached the tree [0.31ms]
+(pass) the live tree > every allowlist row carries a reason a reviewer could refuse [0.13ms]
+
+src/Core.TypeScript/hygiene/lint-check-then-use-file-races.test.ts:
+(pass) the lint can fail -- each observed instance, rebuilt > instance 2: existsSync gating readFileSync on the same path [1.10ms]
+(pass) the lint can fail -- each observed instance, rebuilt > instance 3: existsSync gating readdirSync on the same path [0.15ms]
+(pass) the lint can fail -- each observed instance, rebuilt > instance 1: readdir then re-stat, which no path-identity rule can see [0.32ms]
+(pass) the lint can fail -- each observed instance, rebuilt > the refusal NAMES the fix, per shape [0.30ms]
+(pass) the corrected forms are silent -- so a pass means something > read-then-interpret-ENOENT produces no finding [0.07ms]
+(pass) the corrected forms are silent -- so a pass means something > withFileTypes produces no finding [0.09ms]
+(pass) the corrected forms are silent -- so a pass means something > a stat read for SIZE is a measurement, not a gate [0.20ms]
+(pass) the corrected forms are silent -- so a pass means something > a check and a use in DIFFERENT blocks do not pair [0.03ms]
+(pass) a bound stat is the same defect as an inline one > const st = statSync(p); if (st.isDirectory()) ... still gates [0.04ms]
+(pass) a bound stat is the same defect as an inline one > a bare assignment binding counts too (st = statSync(p) inside a try) [0.09ms]
+(pass) what it cannot read, it reports > an unlexable file is a finding, not a silent skip [0.06ms]
+(pass) what it cannot read, it reports > an unterminated block comment is a finding [0.01ms]
+(pass) what it cannot read, it reports > an unreadable file is a finding, not a skip [0.07ms]
+(pass) the suppression hatch > a reasoned toctou-ok silences that check [0.09ms]
+(pass) the suppression hatch > an UNREASONED toctou-ok is itself a finding [0.04ms]
+(pass) the suppression hatch > suppressions() reads the reason off the line
+(pass) maskNonCode > preserves offsets exactly
+(pass) maskNonCode > a call written inside a comment is not a call site
+(pass) maskNonCode > `return /re/.test(s)` is a regex, not a division (4 files failed on this) [0.17ms]
+(pass) maskNonCode > `h[i]! / h[j]!` is a division, not a regex (TS non-null assertion)
+(pass) maskNonCode > `return !/x/.test(s)` -- a `!` after a KEYWORD is logical not
+(pass) maskNonCode > a template substitution holding a nested template lexes
+(pass) maskNonCode > code inside ${...} is still CODE and is scanned
+(pass) maskNonCode > a path spelled as a literal still pairs (masking must not erase it) [0.12ms]
+(pass) argument and scope primitives > firstArgument takes the top-level comma, not a nested one
+(pass) argument and scope primitives > enclosingBlockEnd stops at the block that encloses the offset
+(pass) argument and scope primitives > enclosingBlockStart is its inverse
+(pass) argument and scope primitives > listingScopeEnd steps over a try wrapper, which enclosingBlockEnd does not [0.10ms]
+(pass) baselineKey > is line-independent, so an edit above a finding does not thaw it [0.03ms]
+(pass) baselineKey > but IS dependent on the path expression, so a rename re-raises it [0.02ms]
+(pass) baselineKey > a REAL finding carries a signature naming both call sites [0.04ms]
+(pass) the scan floor -- an audit that inspected nothing did not pass > a root with no TypeScript in it is a finding, not a clean bill [1.26ms]
+(pass) the scan floor -- an audit that inspected nothing did not pass > --min-files catches a root that went QUIET without going empty [0.83ms]
+(pass) the CLI exits non-zero on a directory carrying the defect > dirty fixture => 1, clean fixture => 0 [1.35ms]
+(pass) the CLI exits non-zero on a directory carrying the defect > a baseline grandfathers exactly the row it names and nothing else [0.96ms]
+(pass) src/Core.TypeScript, against the committed baseline > no NEW check-then-use race, and nothing unlexable or unreadable [1313.10ms]
+
+ 61 pass
+ 0 fail
+ 109 expect() calls
+Ran 61 tests across 2 files. [1.99s]

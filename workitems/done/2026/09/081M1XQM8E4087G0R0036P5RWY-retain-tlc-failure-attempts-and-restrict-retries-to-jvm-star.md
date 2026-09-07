@@ -44,3 +44,16 @@ The C1 merge `536570576` is integrated. The 97 matching inputs and exactly
 six additional project links in the larger gate are recorded explicitly.
 Source/review/evidence ancestry is retained by the immutable supplemental
 archive named in the report; required publication CI remains its own signal.
+
+The [initial publication correction](../../../../docs/research/tlc-attempt-retention-validation/2026-09-07/ci-correction.md)
+retains the visible-description attribution error and two additional CI
+findings. TypeScript source-copy admission now uses the consumed descriptor;
+its watchdog fixture no longer gives its child a wall-clock wake-up timer.
+The original archive and failed runs remain unchanged.
+
+The [final native correction/gate](../../../../docs/research/tlc-attempt-retention-validation/2026-09-07/ci-native-correction.md)
+preserves accepted source `3149e2596` and full validation at integrated
+`4b4d9a237`: 7,539 passes, six skips, zero failures; build zero
+warnings/errors. The initial macOS startup-speed fixture failure remains
+recorded. The supplemental correction archive preserves the final source
+and evidence without moving the original ref.

@@ -1,0 +1,268 @@
+﻿2026-09-07T12:38:52.4819107Z Current runner version: '2.337.0'
+2026-09-07T12:38:52.4839089Z ##[group]Runner Image Provisioner
+2026-09-07T12:38:52.4839837Z Hosted Compute Agent
+2026-09-07T12:38:52.4840428Z Version: 20260828.587
+2026-09-07T12:38:52.4841000Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-07T12:38:52.4841643Z Build Date: 2026-08-28T16:44:25Z
+2026-09-07T12:38:52.4842220Z Worker ID: {97dd24bc-7866-4c27-b9b3-2ec7956fbba8}
+2026-09-07T12:38:52.4842814Z Azure Region: westus3
+2026-09-07T12:38:52.4843332Z ##[endgroup]
+2026-09-07T12:38:52.4844836Z ##[group]Operating System
+2026-09-07T12:38:52.4845361Z Ubuntu
+2026-09-07T12:38:52.4845837Z 24.04.4
+2026-09-07T12:38:52.4846306Z LTS
+2026-09-07T12:38:52.4846748Z ##[endgroup]
+2026-09-07T12:38:52.4847205Z ##[group]Runner Image
+2026-09-07T12:38:52.4847709Z Image: ubuntu-24.04
+2026-09-07T12:38:52.4848211Z Version: 20260831.293.1
+2026-09-07T12:38:52.4849235Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-07T12:38:52.4850503Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+2026-09-07T12:38:52.4851295Z ##[endgroup]
+2026-09-07T12:38:52.4852337Z ##[group]GITHUB_TOKEN Permissions
+2026-09-07T12:38:52.4854190Z Contents: read
+2026-09-07T12:38:52.4854728Z Metadata: read
+2026-09-07T12:38:52.4855283Z PullRequests: read
+2026-09-07T12:38:52.4855768Z ##[endgroup]
+2026-09-07T12:38:52.4857490Z Secret source: Actions
+2026-09-07T12:38:52.4858360Z Prepare workflow directory
+2026-09-07T12:38:52.5118686Z Prepare all required actions
+2026-09-07T12:38:52.5160478Z Getting action download info
+2026-09-07T12:38:52.8394419Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-07T12:38:53.1359181Z Download action repository 'oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+2026-09-07T12:38:53.8882975Z Complete job name: agencysignature (PR body)
+2026-09-07T12:38:53.9487613Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-07T12:38:53.9488752Z with:
+2026-09-07T12:38:53.9489488Z   repository: Lucent-Financial-Group/Zeta
+2026-09-07T12:38:53.9494586Z   token: ***
+2026-09-07T12:38:53.9495298Z   ssh-strict: true
+2026-09-07T12:38:53.9495925Z   ssh-user: git
+2026-09-07T12:38:53.9496544Z   persist-credentials: true
+2026-09-07T12:38:53.9497245Z   clean: true
+2026-09-07T12:38:53.9497874Z   sparse-checkout-cone-mode: true
+2026-09-07T12:38:53.9498581Z   fetch-depth: 1
+2026-09-07T12:38:53.9499231Z   fetch-tags: false
+2026-09-07T12:38:53.9499847Z   show-progress: true
+2026-09-07T12:38:53.9500477Z   lfs: false
+2026-09-07T12:38:53.9501111Z   submodules: false
+2026-09-07T12:38:53.9501763Z   set-safe-directory: true
+2026-09-07T12:38:53.9502472Z   allow-unsafe-pr-checkout: false
+2026-09-07T12:38:53.9503405Z ##[endgroup]
+2026-09-07T12:38:54.0364423Z Syncing repository: Lucent-Financial-Group/Zeta
+2026-09-07T12:38:54.0366598Z ##[group]Getting Git version info
+2026-09-07T12:38:54.0367283Z Working directory is '/home/runner/work/Zeta/Zeta'
+2026-09-07T12:38:54.0368340Z [command]/usr/bin/git version
+2026-09-07T12:38:54.0705272Z git version 2.55.0
+2026-09-07T12:38:54.0751866Z ##[endgroup]
+2026-09-07T12:38:54.0761144Z Temporarily overriding HOME='/home/runner/work/_temp/b1d0b533-fabe-4d23-b1d1-c0080c5e2f3e' before making global git config changes
+2026-09-07T12:38:54.0763322Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-07T12:38:54.0765981Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Zeta/Zeta
+2026-09-07T12:38:54.0804501Z Deleting the contents of '/home/runner/work/Zeta/Zeta'
+2026-09-07T12:38:54.0807910Z ##[group]Determining repository object format
+2026-09-07T12:38:54.0809687Z ##[endgroup]
+2026-09-07T12:38:54.0811199Z ##[group]Initializing the repository
+2026-09-07T12:38:54.0812656Z [command]/usr/bin/git init /home/runner/work/Zeta/Zeta
+2026-09-07T12:38:54.0935305Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-07T12:38:54.0936791Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-07T12:38:54.0938001Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-07T12:38:54.0938939Z hint: call:
+2026-09-07T12:38:54.0939565Z hint:
+2026-09-07T12:38:54.0940321Z hint: 	git config --global init.defaultBranch <name>
+2026-09-07T12:38:54.0941093Z hint:
+2026-09-07T12:38:54.0942106Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-07T12:38:54.0944039Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-07T12:38:54.0945184Z hint:
+2026-09-07T12:38:54.0945817Z hint: 	git branch -m <name>
+2026-09-07T12:38:54.0946357Z hint:
+2026-09-07T12:38:54.0947061Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-07T12:38:54.0948219Z Initialized empty Git repository in /home/runner/work/Zeta/Zeta/.git/
+2026-09-07T12:38:54.0951864Z [command]/usr/bin/git remote add origin https://github.com/Lucent-Financial-Group/Zeta
+2026-09-07T12:38:54.0989902Z ##[endgroup]
+2026-09-07T12:38:54.0990797Z ##[group]Disabling automatic garbage collection
+2026-09-07T12:38:54.0992734Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-07T12:38:54.1014824Z ##[endgroup]
+2026-09-07T12:38:54.1016236Z ##[group]Setting up auth
+2026-09-07T12:38:54.1016877Z Removing SSH command configuration
+2026-09-07T12:38:54.1018904Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-07T12:38:54.1040722Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-07T12:38:54.1324153Z Removing HTTP extra header
+2026-09-07T12:38:54.1328565Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-07T12:38:54.1351252Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-07T12:38:54.1502890Z Removing includeIf entries pointing to credentials config files
+2026-09-07T12:38:54.1506473Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-07T12:38:54.1528888Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-07T12:38:54.1686522Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-07T12:38:54.1712360Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Zeta/Zeta/.git.path /home/runner/work/_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:38:54.1732250Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:38:54.1756011Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:38:54.1777249Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:38:54.1794970Z ##[endgroup]
+2026-09-07T12:38:54.1795982Z ##[group]Fetching the repository
+2026-09-07T12:38:54.1799866Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cd756368da6128c983211697b5949f412be7d139:refs/remotes/pull/16925/merge
+2026-09-07T12:39:01.0258695Z From https://github.com/Lucent-Financial-Group/Zeta
+2026-09-07T12:39:01.0261274Z  * [new ref]           cd756368da6128c983211697b5949f412be7d139 -> pull/16925/merge
+2026-09-07T12:39:01.0266267Z ##[endgroup]
+2026-09-07T12:39:01.0267861Z ##[group]Determining the checkout info
+2026-09-07T12:39:01.0269697Z ##[endgroup]
+2026-09-07T12:39:01.0271023Z [command]/usr/bin/git sparse-checkout disable
+2026-09-07T12:39:01.0308281Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-07T12:39:01.0332992Z ##[group]Checking out the ref
+2026-09-07T12:39:01.0334734Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/16925/merge
+2026-09-07T12:39:02.0950321Z Updating files:  50% (28809/57461)
+2026-09-07T12:39:02.1241548Z Updating files:  51% (29306/57461)
+2026-09-07T12:39:02.1485415Z Updating files:  52% (29880/57461)
+2026-09-07T12:39:02.1757022Z Updating files:  53% (30455/57461)
+2026-09-07T12:39:02.1959506Z Updating files:  54% (31029/57461)
+2026-09-07T12:39:02.2133240Z Updating files:  55% (31604/57461)
+2026-09-07T12:39:02.2298382Z Updating files:  56% (32179/57461)
+2026-09-07T12:39:02.2497930Z Updating files:  57% (32753/57461)
+2026-09-07T12:39:02.2702040Z Updating files:  58% (33328/57461)
+2026-09-07T12:39:02.2895618Z Updating files:  59% (33902/57461)
+2026-09-07T12:39:02.3089385Z Updating files:  60% (34477/57461)
+2026-09-07T12:39:02.3274986Z Updating files:  61% (35052/57461)
+2026-09-07T12:39:02.3549641Z Updating files:  62% (35626/57461)
+2026-09-07T12:39:02.3656331Z Updating files:  63% (36201/57461)
+2026-09-07T12:39:02.3753408Z Updating files:  64% (36776/57461)
+2026-09-07T12:39:02.3875897Z Updating files:  65% (37350/57461)
+2026-09-07T12:39:02.3963486Z Updating files:  66% (37925/57461)
+2026-09-07T12:39:02.4060454Z Updating files:  67% (38499/57461)
+2026-09-07T12:39:02.4158276Z Updating files:  68% (39074/57461)
+2026-09-07T12:39:02.4296000Z Updating files:  69% (39649/57461)
+2026-09-07T12:39:02.4388031Z Updating files:  70% (40223/57461)
+2026-09-07T12:39:02.4479603Z Updating files:  71% (40798/57461)
+2026-09-07T12:39:02.4600497Z Updating files:  72% (41372/57461)
+2026-09-07T12:39:02.4791715Z Updating files:  73% (41947/57461)
+2026-09-07T12:39:02.5027541Z Updating files:  74% (42522/57461)
+2026-09-07T12:39:02.5619487Z Updating files:  75% (43096/57461)
+2026-09-07T12:39:02.5995376Z Updating files:  76% (43671/57461)
+2026-09-07T12:39:02.6372891Z Updating files:  77% (44245/57461)
+2026-09-07T12:39:02.6993087Z Updating files:  78% (44820/57461)
+2026-09-07T12:39:02.7958295Z Updating files:  79% (45395/57461)
+2026-09-07T12:39:02.8295969Z Updating files:  80% (45969/57461)
+2026-09-07T12:39:02.9142770Z Updating files:  81% (46544/57461)
+2026-09-07T12:39:02.9503398Z Updating files:  82% (47119/57461)
+2026-09-07T12:39:03.0418721Z Updating files:  83% (47693/57461)
+2026-09-07T12:39:03.0735423Z Updating files:  84% (48268/57461)
+2026-09-07T12:39:03.0830961Z Updating files:  84% (48694/57461)
+2026-09-07T12:39:03.1814838Z Updating files:  85% (48842/57461)
+2026-09-07T12:39:03.2272473Z Updating files:  86% (49417/57461)
+2026-09-07T12:39:03.2684537Z Updating files:  87% (49992/57461)
+2026-09-07T12:39:03.3047668Z Updating files:  88% (50566/57461)
+2026-09-07T12:39:03.3407217Z Updating files:  89% (51141/57461)
+2026-09-07T12:39:03.3707955Z Updating files:  90% (51715/57461)
+2026-09-07T12:39:03.4027840Z Updating files:  91% (52290/57461)
+2026-09-07T12:39:03.4656233Z Updating files:  92% (52865/57461)
+2026-09-07T12:39:03.4907486Z Updating files:  93% (53439/57461)
+2026-09-07T12:39:03.5139361Z Updating files:  94% (54014/57461)
+2026-09-07T12:39:03.5356408Z Updating files:  95% (54588/57461)
+2026-09-07T12:39:03.5545935Z Updating files:  96% (55163/57461)
+2026-09-07T12:39:03.5736254Z Updating files:  97% (55738/57461)
+2026-09-07T12:39:03.5837064Z Updating files:  98% (56312/57461)
+2026-09-07T12:39:03.5935262Z Updating files:  99% (56887/57461)
+2026-09-07T12:39:03.5935909Z Updating files: 100% (57461/57461)
+2026-09-07T12:39:03.5936512Z Updating files: 100% (57461/57461), done.
+2026-09-07T12:39:03.6435039Z Note: switching to 'refs/remotes/pull/16925/merge'.
+2026-09-07T12:39:03.6435546Z 
+2026-09-07T12:39:03.6436521Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-07T12:39:03.6437342Z changes and commit them, and you can discard any commits you make in this
+2026-09-07T12:39:03.6438104Z state without impacting any branches by switching back to a branch.
+2026-09-07T12:39:03.6438517Z 
+2026-09-07T12:39:03.6438826Z If you want to create a new branch to retain commits you create, you may
+2026-09-07T12:39:03.6439540Z do so (now or later) by using -c with the switch command. Example:
+2026-09-07T12:39:03.6439950Z 
+2026-09-07T12:39:03.6440178Z   git switch -c <new-branch-name>
+2026-09-07T12:39:03.6440511Z 
+2026-09-07T12:39:03.6440648Z Or undo this operation with:
+2026-09-07T12:39:03.6440948Z 
+2026-09-07T12:39:03.6441119Z   git switch -
+2026-09-07T12:39:03.6441295Z 
+2026-09-07T12:39:03.6441560Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-07T12:39:03.6441829Z 
+2026-09-07T12:39:03.6442234Z HEAD is now at cd756368 Merge c247403be5d6320b74903e5562b36f55d6884d6f into 3c937c006b910d349fe5a685fd6f136f066a454d
+2026-09-07T12:39:03.6446171Z ##[endgroup]
+2026-09-07T12:39:03.6486411Z [command]/usr/bin/git log -1 --format=%H
+2026-09-07T12:39:03.6506898Z cd756368da6128c983211697b5949f412be7d139
+2026-09-07T12:39:03.6719799Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+2026-09-07T12:39:03.6720191Z with:
+2026-09-07T12:39:03.6720470Z   no-cache: false
+2026-09-07T12:39:03.6722563Z   token: ***
+2026-09-07T12:39:03.6722860Z ##[endgroup]
+2026-09-07T12:39:03.8072470Z Obtained version 1.3.13 from package.json
+2026-09-07T12:39:04.1570320Z Cache hit for: bun-68bqnNjVR1ckwhD0nFe5oJmGfoU=
+2026-09-07T12:39:05.4018084Z Received 36181061 of 36181061 (100.0%), 34.6 MBs/sec
+2026-09-07T12:39:05.4018900Z Cache Size: ~35 MB (36181061 B)
+2026-09-07T12:39:05.4140620Z [command]/usr/bin/tar -xf /home/runner/work/_temp/3142a629-4379-427d-9e0b-9ac9553824c7/cache.tzst -P -C /home/runner/work/Zeta/Zeta --use-compress-program unzstd
+2026-09-07T12:39:05.5608351Z Cache restored successfully
+2026-09-07T12:39:05.5627999Z [command]/home/runner/.bun/bin/bun --revision
+2026-09-07T12:39:05.5657339Z 1.3.13+bf2e2cecf
+2026-09-07T12:39:05.5661776Z Using a cached version of Bun: 1.3.13+bf2e2cecf
+2026-09-07T12:39:05.5778575Z ##[group]Run set -euo pipefail
+2026-09-07T12:39:05.5779008Z [36;1mset -euo pipefail[0m
+2026-09-07T12:39:05.5779405Z [36;1mprintf '%s' "$PR_BODY" \[0m
+2026-09-07T12:39:05.5779896Z [36;1m  | bun src/Core.TypeScript/hygiene/validate-agencysignature-pr-body.ts \[0m
+2026-09-07T12:39:05.5780363Z [36;1m      --source pr-body \[0m
+2026-09-07T12:39:05.5780757Z [36;1m      --pr-created-at "$PR_CREATED_AT" \[0m
+2026-09-07T12:39:05.5781122Z [36;1m      --grandfather-cutover "$CUTOVER" \[0m
+2026-09-07T12:39:05.5781512Z [36;1m      --author-identity "$PR_AUTHOR"[0m
+2026-09-07T12:39:05.5810416Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:05.5810799Z env:
+2026-09-07T12:39:05.5818690Z   PR_BODY: Unexpected TLC outcomes previously lost the F# runner's full streams/state/crash files, and the TypeScript runner could retry an in-run JVM failure over reused paths. Both runners now give every attempt an owned source workspace and retain complete unexpected-run diagnostics. Only an ordinary, explicitly pre-TLC JVM initialization exit can retry; every earlier failure remains preserved.
+
+The runtime identity probe has its own crash/stream files and a complete capture deadline. Synthetic fixtures cover inherited pipes, metadata-only fatal/timeout outcomes, working-tree helper admission, ignored-input refusal, exclusive file creation and cleanup isolation. CI uploads the owned diagnostic directory with hidden files and seven-day retention. Unexpected local directories have no automatic purge.
+
+Validation: 45 focused TypeScript tests (202 expectations), strict typecheck and 18 F# synthetic/metadata tests, including the CI-pinned Bun 1.3.13. The parent-executed combined integration at `457bdf094f368eb9e6f2b359b72e5677fd015eb3` passed the mapped Release build with zero warnings/errors and the full solution with 7,552 passes, six existing skips and no failures; all 52 pinned TLC cases passed. Its exact input hashes, full logs and seven TRX archives are copied into this repair's self-contained validation record. That total belongs to the larger C1-policy/retention/hidden-switch integration, not a claim that the same total ran in this smaller writer.
+
+Independent source review accepted `07e399929`; prior TLC and compiler failures remain retained without inferred causes. The repair changes no model, jar, expected state count, model-checker timeout or JVM policy. See [repair report](https://github.com/Lucent-Financial-Group/Zeta/blob/c247403be5d6320b74903e5562b36f55d6884d6f/docs/research/2026-09-07-tlc-attempt-retention.md) and [validation inventory](https://github.com/Lucent-Financial-Group/Zeta/blob/c247403be5d6320b74903e5562b36f55d6884d6f/docs/research/tlc-attempt-retention-validation/2026-09-07/README.md).
+
+C1 PR #16917 is integrated from main. The post-integration comparison verifies 97 of 98 native input hashes exactly; the sole delta is six additional hidden-switch project links in the larger tested integration. The annotated immutable archive `archive/validation/081M1XQM8E4087G0R0036P5RWY-tlc-attempt-retention` resolves to `c247403be5d6320b74903e5562b36f55d6884d6f`, preserving both original source-review pins before branch deletion. All 16 final pre-push checks passed.
+
+2026-09-07T12:39:05.5826410Z   PR_CREATED_AT: 2026-09-07T12:38:45Z
+2026-09-07T12:39:05.5826753Z   PR_AUTHOR: AceHack
+2026-09-07T12:39:05.5827038Z   CUTOVER: 2026-08-15T00:00:00Z
+2026-09-07T12:39:05.5827353Z ##[endgroup]
+2026-09-07T12:39:05.6153860Z FAIL: no parseable git trailers found in the PR DESCRIPTION
+2026-09-07T12:39:05.6154543Z   Class:  Trailer Contiguity Survival Failure
+2026-09-07T12:39:05.6155055Z   Cause:  the PR DESCRIPTION carries no 'Agency-Signature-Version:' line. This job
+2026-09-07T12:39:05.6155659Z           read the PR DESCRIPTION and nothing else. The squash preimage is judged
+2026-09-07T12:39:05.6156272Z           by a SEPARATE job in the same workflow; BOTH are required, and this one
+2026-09-07T12:39:05.6156812Z           is not satisfied by a block that exists only on the commit.
+2026-09-07T12:39:05.6157546Z   Fix:    add the 10-trailer block (see .github/PULL_REQUEST_TEMPLATE.md) at the
+2026-09-07T12:39:05.6158098Z           bottom of the PR DESCRIPTION -- `gh pr edit <N> --body-file <file>`.
+2026-09-07T12:39:05.6158647Z           No push, no rebase, no rebuilt branch: editing the description is the
+2026-09-07T12:39:05.6159134Z           whole remedy for THIS job.
+2026-09-07T12:39:05.6159557Z   Maxim:  A governance convention is not shipped when humans can read it.
+2026-09-07T12:39:05.6160077Z           It is shipped when the target substrate can parse it.
+2026-09-07T12:39:05.6161038Z   Spec:   docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md Section 7.4 (canonical shape) + Section 4 (blank-line guardrail)
+2026-09-07T12:39:05.6186346Z ##[error]Process completed with exit code 1.
+2026-09-07T12:39:05.6335227Z Post job cleanup.
+2026-09-07T12:39:05.7027546Z [command]/usr/bin/git version
+2026-09-07T12:39:05.7057865Z git version 2.55.0
+2026-09-07T12:39:05.7084670Z Temporarily overriding HOME='/home/runner/work/_temp/2168963d-31f4-4e4d-b4c2-10d5b76d781f' before making global git config changes
+2026-09-07T12:39:05.7088282Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-07T12:39:05.7089677Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Zeta/Zeta
+2026-09-07T12:39:05.7112943Z Removing SSH command configuration
+2026-09-07T12:39:05.7119013Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-07T12:39:05.7144788Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-07T12:39:05.7354582Z Removing HTTP extra header
+2026-09-07T12:39:05.7359063Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-07T12:39:05.7384080Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-07T12:39:05.7592081Z Removing includeIf entries pointing to credentials config files
+2026-09-07T12:39:05.7596814Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-07T12:39:05.7620127Z includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path
+2026-09-07T12:39:05.7620681Z includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path
+2026-09-07T12:39:05.7621220Z includeif.gitdir:/github/workspace/.git.path
+2026-09-07T12:39:05.7621699Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-07T12:39:05.7626617Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path
+2026-09-07T12:39:05.7645048Z /home/runner/work/_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:39:05.7654637Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-9e122f54\-5e94\-421a\-a2a6\-f2418b14e4f6\.config
+2026-09-07T12:39:05.7681339Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path
+2026-09-07T12:39:05.7702065Z /home/runner/work/_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:39:05.7709281Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-9e122f54\-5e94\-421a\-a2a6\-f2418b14e4f6\.config
+2026-09-07T12:39:05.7733906Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-09-07T12:39:05.7754329Z /github/runner_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:39:05.7761290Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-9e122f54\-5e94\-421a\-a2a6\-f2418b14e4f6\.config
+2026-09-07T12:39:05.7778632Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-07T12:39:05.7794147Z /github/runner_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config
+2026-09-07T12:39:05.7799168Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-9e122f54\-5e94\-421a\-a2a6\-f2418b14e4f6\.config
+2026-09-07T12:39:05.7823324Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-07T12:39:05.8028956Z Removing credentials config '/home/runner/work/_temp/git-credentials-9e122f54-5e94-421a-a2a6-f2418b14e4f6.config'
+2026-09-07T12:39:05.8140209Z Cleaning up orphan processes
