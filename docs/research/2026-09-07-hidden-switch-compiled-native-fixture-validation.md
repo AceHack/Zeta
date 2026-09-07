@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra, independent reference writer
-Artifact status: initial implementation validation; preparation-role repair pending
+Artifact status: corrected implementation validation and bounded source acceptance
 
 The [new pure fixture module](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_native_fixtures.py)
 implements the 38 native-dependent cases in the
@@ -84,8 +84,42 @@ The initial preparation decoder uses the role `certificate-corpus-baseline`
 for the constructor's actual baseline bytes. Those bytes are preserved inside
 the complete constructor result, but the role is absent from the flat
 preparation input roster. This leaves an avoidable implicit link in the helper
-ledger. The repair will add that exact output as an immutable named input before
-its decode, without changing any case-level inputs, operation slots or outcomes.
-A role-resolution regression will discriminate the gap. Initial source and raw
-results above are preserved before that correction; independent source review
-and final coordinator admission remain pending.
+ledger. Initial source and raw results above were preserved before correction.
+
+## Corrected source and independent disposition
+
+Correction `cb0f7868eae2d467901fa3800416f0ac8a28892c` adds that exact constructor
+output as an immutable named input before its decode. The new regression
+requires every preparation helper role to resolve to retained bytes and checks
+the baseline against both the constructor output and baseline case input. It
+first failed against the initial implementation at the missing role; after
+repair, all 43 focused tests passed in 18.45 seconds. Strict source/test mypy,
+Ruff and format checks passed.
+
+The [separate lossless repair manifest](hidden-switch-compiled-validation/2026-09-07/native-fixtures-repair/manifest.json)
+binds 13 source/test/helper files and preserves 91 artifacts, including the
+original failing regression, corrected checks, exact harness and each newly
+returned result. The corrected validation again prepared 38 cases, dispatched
+43 actual Python calls and retained 31 pending native requests. All 74 returned
+call artifacts are byte-identical to the initial capture. All other preparation
+fields are equal; the one added flat input is the only preparation change. The
+retained comparison checks those statements directly.
+
+All 16 quick-preflight checks passed for the corrected source and this evidence
+tree; its complete raw log is preserved in the same repair manifest. Full
+solution and final integration gates remain the coordinator's separate work.
+
+The independent reviewer, Vera, OpenAI Codex using GPT-6 Astra, accepted the
+exact correction pin after reading source/test bytes, the failing regression
+and recovery logs; signed review commit
+`5f422d1da3a6ccd8bd5ccdbd2a6d7c65a520bb4e` preserves that disposition in the
+review writer for coordinator integration. The review confirmed the 38/74
+roster, fresh 43/31 split,
+actual scalar positions and mutation offsets, retained failure prefixes and
+ordinary-process issuance boundary. No additional material source or scope
+finding remained. The reviewer executed no tests, native code or source streams.
+
+This acceptance covers the pure fixture slice. The coordinator still must
+admit actual native certificate-call outcomes, full input/source identities,
+outer envelope and runtime evidence. Neither these tests nor their observed
+loaded-module metadata establish those separate obligations.
