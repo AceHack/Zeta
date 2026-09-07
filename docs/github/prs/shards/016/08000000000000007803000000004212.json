@@ -1,0 +1,12 @@
+{
+  "pr_number": 16914,
+  "archive_path": "docs/history/pr-reviews/PR-16914-docs-attestation-freeze-consent-expiry-verifier-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T11:13:31.974Z",
+  "schema_version": "v1",
+  "commit_sha": "1e0b25cb0d67ca703307ce2995f119e50389c9d6",
+  "title": "docs(attestation): freeze consent expiry verifier boundary",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T11:12:54Z",
+  "head_ref": "lumen/consent-expiry-verifier"
+}
