@@ -25,7 +25,7 @@ beliefs execute the unchanged native recursive evaluator and selector.
 The work depends on the separate hidden-switch experiment
 `081M1XK02XM087G0R00043EW05` landing on main. Its archived source may be
 read while drafting, but no current-study source, receipt, tag or verdict
-is modified. The protocol draft will be indexed here after the claim is
+is modified. The protocol is indexed below after the claim was
 remotely parked. No immutable registration tag, compiled implementation,
 guard constants, tapes or measurements exist for this task at claim time.
 
@@ -45,12 +45,14 @@ identity. Vera, OpenAI Codex using GPT-6 Astra, created this task, as the
 signed claim commit records. The published event remains unchanged;
 subsequent event helpers explicitly use `ZETA_WORKITEM_ACTOR=vera-codex`.
 
-## Draft and review
+## Registration and review
 
-The [complete preregistration draft](../docs/research/2026-09-07-hidden-switch-compiled-protocol.md)
-is not frozen and authorizes no implementation or measurement. It names
-all proposed fresh corpora, fixed cost schedules, certificate and replay
-obligations for review before remote registration. Prior study/design
+The [complete preregistration](../docs/research/2026-09-07-hidden-switch-compiled-protocol.md)
+has accepted mathematical and complete-protocol reviews. Its designated
+annotated tag supplies the freeze event only after remote verification.
+It names all fresh corpora, fixed cost schedules, certificate and replay
+obligations prospectively. Implementation still requires the prior study
+on main; source generation/measurement requires implementation archival. Prior study/design
 integration remains an explicit dependency; no missing source is recreated.
 
 Both the coordinating source reviewer and independent paper reviewer
@@ -73,9 +75,9 @@ Final bounded review of `14786d2ae` accepted those closures and clarified
 that the coordinator waits for successful behavior exit/closed output,
 while admission occurs inside the fresh cost process before any policy
 call. Setup stage counters begin before the corresponding work, including
-archive/certificate validation. The coordinating reviewer accepts the
-complete protocol subject to verification of these two wording corrections;
-registration remains pending their final disposition and provenance import.
+archive/certificate validation. The coordinating reviewer then read and accepted both exact corrections;
+the independent reviewer likewise accepted them. Both review prerequisites
+are satisfied, with no material protocol finding remaining.
 
 The [paper design](../docs/research/2026-09-07-hidden-switch-compiled-controller-design.md)
 and [independent paper review](../docs/research/2026-09-07-hidden-switch-compiled-controller-review.md)
@@ -85,3 +87,10 @@ Independent protocol review accepted the final chronology correction
 `75718b9a8`; no material complete-protocol finding remains. Registration
 publication is next, followed by the explicit prior-study main dependency
 before any implementation.
+
+The [complete independent review](../docs/research/2026-09-07-hidden-switch-compiled-protocol-review.md)
+is imported as `ecf8afdfb` from original `be7e9ab616728a1cf92181567e7dd1a54496c54a`.
+The protocol records both reviewers, the exact final prefreeze SHA256,
+original-history provenance refs, and the remote-verification freeze
+condition. The registration tag will be immutable; its remote proof is
+retained outside the frozen tree. No implementation exists at this step.

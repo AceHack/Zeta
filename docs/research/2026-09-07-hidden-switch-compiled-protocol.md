@@ -1,12 +1,12 @@
-# Guarded hidden-switch compilation: preregistration draft
+# Guarded hidden-switch compilation: preregistration
 
 Date: 2026-09-07
 Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Registration status: DRAFT; not frozen or permission to implement or measure
-Draft basis: refreshed origin/main `3c937c006`, claim `92aba2466`
+Registration status: accepted; frozen upon remote verification of the designated immutable registration tag
+Initial draft basis: refreshed origin/main `3c937c006`, claim `92aba2466`
 
 ## Question, dependency and claim boundary
 
@@ -21,7 +21,7 @@ The prior experiment `081M1XK02XM087G0R00043EW05` is a separate dependency.
 Its [archived protocol](https://github.com/Lucent-Financial-Group/Zeta/blob/4fc82b611012bd2620a26e02afe6baba491fe553/docs/research/2026-09-07-hidden-switch-protocol.md)
 and [native policy](https://github.com/Lucent-Financial-Group/Zeta/blob/4fc82b611012bd2620a26e02afe6baba491fe553/src/Research.FSharp/HiddenSwitchPolicy.fs)
 are fixed at `4fc82b611012bd2620a26e02afe6baba491fe553`. Its source/results
-are remotely archived but not yet on this draft's main base. This task
+are remotely archived but not yet on this registration's initial main base. This task
 waits for their main integration before new implementation, and checks
 the imported dependency bytes against that archive. It does not copy or
 modify the old study to make missing main paths appear present.
@@ -30,10 +30,11 @@ The [unregistered paper design](2026-09-07-hidden-switch-compiled-controller-des
 at `4332b1bed` and its focused correction `f47c9569c` are prospective
 provenance, with an [independent paper review](2026-09-07-hidden-switch-compiled-controller-review.md). Their mathematical review supports
 the source-graph derivation under declared IEEE assumptions; it is not a
-JIT theorem. Neither those notes nor this unfrozen draft authorizes guard
-generation, implementation, new tapes or measurements. Freeze requires
-accepted mathematical and complete-protocol reviews and a verified remote
-registration tag for this new work item.
+JIT theorem. Both mathematical and complete-protocol reviews are accepted
+as recorded below. This text becomes the frozen registration only when
+its designated annotated tag is remotely verified. Guard generation and
+implementation then additionally require prior-study main integration;
+new tapes and measurements require the separate implementation archive.
 
 The model, representation, filter, action meanings and goal remain
 supplied. This is compilation of one depth-limited controller, not learned
@@ -298,7 +299,7 @@ drift is `u<1/8`, cue error is `u>=3/4`. Consume all draws even in null.
 | `ordinary-effective` | `9307/931` | 512 | true | dot/fixed |
 | `ordinary-null` | `9307/932` | 512 | false | dot/fixed |
 
-These are chosen prospectively for this draft and are distinct from the
+These are chosen prospectively for this registration and are distinct from the
 old experiment's seeds/domains. They are not secret from authors. Generate
 each panel once, retain tape bits/digests, and reuse the immutable tape for
 both strategies with fresh policy/environment state. Each panel consumes
@@ -631,8 +632,9 @@ There is no retry budget for replacement behavioral/cost measurements.
 Index raw behavior, both cost modes, stress, replay, verdict, failure and
 review from this task's durable research/work-item surfaces; publish with
 required repository/PR gates and full attribution. Release the new claim
-in the final PR. This draft remains unfrozen until the accepted review
-record explicitly replaces its draft status.
+in the final PR. The accepted review disposition below replaces draft
+status; remote verification of the designated immutable registration tag
+is the recorded freeze event. No later receipt can move that tag.
 
 ## Prefreeze review history
 
@@ -677,3 +679,42 @@ ordering and setup counters enclosing actual validation/work. No material
 complete-protocol finding remains. These are paper/source/count and
 execution-contract reviews; no guard, certificate implementation, source
 tape or measured result exists for this task.
+
+## Registration acceptance and freeze disposition
+
+The coordinating source reviewer (Vera, OpenAI Codex using GPT-6 Astra,
+coordinator role) independently checked the paper bound and complete
+protocol, then read and accepted the exact `75718b9a8` chronology correction.
+The independent protocol reviewer (Vera, same harness/model, separately
+co-claimed review role) accepted the same bytes with no remaining material
+finding. The [complete independent review](2026-09-07-hidden-switch-compiled-protocol-review.md)
+is preserved from `be7e9ab616728a1cf92181567e7dd1a54496c54a` at import
+`ecf8afdfb`. It separately attributes the coordinator's contributions and
+retains the complete count, source/runtime, arithmetic and evidence limits.
+
+The final prefreeze scientific contract is `75718b9a82b9e5d1d303d6a3f2cf5f83792bca1a`,
+38,685 bytes, SHA256
+`9844bb1076f434d08f8eb1432e7051f2cea33e409521f4c835edf3633c867983`.
+Subsequent changes import/index prose provenance and record acceptance;
+they change no corpus, budget, timing schedule, certificate obligation or
+verdict threshold. The review lists exact original and intermediate
+prefreeze hashes as well. The designated immutable annotated registration
+tag fixes the complete current protocol bytes and source tree. Its peeled
+commit, tag-object identity, protocol SHA256 and remote verification time
+will be preserved in the task publication record outside the frozen tag.
+
+Original paper history remains reachable through remote ref
+`codex/hidden-switch-prospective-note-20260907` at `f47c9569c`
+(including original `4332b1bed`) and remote ref
+`codex/hidden-switch-compiled-protocol-review-provenance-20260907`
+at `be7e9ab616728a1cf92181567e7dd1a54496c54a`
+(including original paper review `c5460ab6f`). The new task's claim and
+publication refs retain all separately imported artifacts and indices.
+Those provenance refs do not reopen the prior experiment's released claim.
+
+Registration does not waive the explicit prior-study main prerequisite or
+assert any runtime/certificate implementation exists. No new guard bits,
+alpha software, tapes, conformance executions or measurements have been
+produced for this task at acceptance. A later prospective feasibility
+review may identify an implementation-admission refusal; that is not
+authority to relax this frozen protocol after observing data.

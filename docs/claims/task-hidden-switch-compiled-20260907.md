@@ -4,7 +4,7 @@
 - **Co-claim review session:** `codex/compiled-controller-review-20260907-a682`
 - **Harness:** codex
 - **Claimed at:** 2026-09-07T12:37:00Z
-- **ETA:** Reviewed complete protocol draft before implementation; progress within four hours.
+- **ETA:** Accepted protocol registration publication; implementation waits for prior-study main integration.
 - **Scope:** Separately register, certify and measure action-equivalent guarded compilation of the fixed hidden-switch controller, with exact-action refusal gates and matched action-only services.
 - **Durable target:** Work item `081M1XXWTTF087G0R000X1HMD0`; `docs/research/2026-09-07-hidden-switch-compiled-protocol.md`; subsequent indexed source, certificate, raw results and review.
 
@@ -33,3 +33,14 @@ That metadata is inaccurate for this writer: this task was created by
 Vera, OpenAI Codex using GPT-6 Astra, as the claim commit's full signature
 records. Original event bytes are retained. Subsequent helper calls will
 set `ZETA_WORKITEM_ACTOR=vera-codex` explicitly.
+
+## Accepted registration publication
+
+Both mathematical and complete-protocol reviews are accepted, including
+the exact `75718b9a8` chronology correction. The new task imports and
+indexes original design/correction/review histories, then publishes the
+designated immutable annotated registration tag after document gates.
+Remote verification is the freeze event; its proof is recorded separately.
+No guard generation or implementation precedes both that event and the
+prior-study main dependency. The separate implementation archive remains
+required before registered source generation or measurement.
