@@ -1,0 +1,8 @@
+{
+  "SourceCommit": "47d29d9cb2dc7ebb2cf36135b6699bb9a0d66839",
+  "JavaPath": "/Users/acehack/.local/share/mise/installs/java/26/bin/java",
+  "ResolvedJavaPath": "/Users/acehack/.local/share/mise/installs/java/26.0.0/bin/java",
+  "Version": "openjdk version \"26\" 2026-03-17\nOpenJDK Runtime Environment (build 26+35-2893)\nOpenJDK 64-Bit Server VM (build 26+35-2893, mixed mode, sharing)\n",
+  "RegistrySha256": "1ed72341eab59f78243f82781a837e4177bf67b61c55672d4bbcc75df91ea4a8",
+  "JarSha256": "71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86"
+}

@@ -1,17 +1,18 @@
-# TLC on macOS ARM64: retained failures and a C1 policy candidate
+# TLC on macOS ARM64: retained failures and the C1 policy
 
 Date: 2026-09-07
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XR248G087G0R000H0WJT1
-Status: two direct diagnostics complete; policy candidate awaiting full validation
+Status: direct diagnostics and own-tree policy gate complete; independent source review accepted
 
 The macOS ARM64 TLC policy adds `-XX:TieredStopAtLevel=1`, selecting C1
 compilation after two in-run failures under the previous OpenJDK 26 policy.
 Two separately retained direct C1 diagnostics completed the unchanged
 `BftConsensus` model with exit zero and exactly 4,665,495 distinct states.
-These observations justify evaluating a bounded platform workaround. They do
+Together with the complete policy gate below, these observations support a
+bounded platform workaround. They do
 not establish the failures' cause, general runtime stability or a statistical
 failure-rate improvement.
 
@@ -103,7 +104,7 @@ crash report. Empty stderr files and their empty-byte hashes are retained.
 The second run was authorized only after the first passed, and was the only
 repeat. Two successes cannot estimate a reliable general failure rate.
 
-## Candidate and validation boundary
+## Policy validation and independent review
 
 The shared registry adds C1 only to `jvmDarwinArm64Extra`. Both F# and TypeScript
 consume that same entry. Direct assertions require the exact platform addition
@@ -112,9 +113,42 @@ jar, model/configuration bytes, expected state counts and timeouts remain
 unchanged. Process failure retention and retry classification are owned by the
 separate repair; this change adds no fallback or retry.
 
-The TypeScript policy/helper suite passes 17 tests and 88 assertions. The
-initial claim's pre-push quick preflight passed all sixteen checks. Full
-candidate build/test validation and independent review remain pending and will
-be recorded before publication. Passing the complete model roster under the
-candidate remains necessary; the two direct BFT diagnostics are insufficient
-to call that gate green.
+The own-tree gate at `47d29d9cb2dc7ebb2cf36135b6699bb9a0d66839` completed with
+7,529 native passes, six existing skips and no failures across seven projects.
+All 52 model cases exactly match the registry's gate roster and passed;
+`BftConsensus` took 4m39.692s. Its existing exact state-count assertion remained
+enabled. The direct F# C1 policy assertion also passed. A live child-process
+snapshot confirms that the local BFT invocation used the C1 flag; this is not
+a claim inferred from CI's platform filtering.
+
+The CI-mapped, single-node Release build passed with zero warnings/errors in
+103.59s. `dotnet format` exited zero with workspace-loading warnings and
+notices that it does not format F# projects; its retained output is not an
+F# formatting proof. The repository's F# lint passed. The TypeScript policy/helper suite
+passed 17 tests and 88 assertions, and candidate quick preflight passed all
+sixteen checks. Exact commands, source hashes, runtime identity, all seven
+losslessly compressed original TRX files, full logs and model-case results
+are indexed in [validation.json](data/2026-09-07-tlc-macos-c1-policy/validation.json).
+The compression manifest records both stored and uncompressed byte hashes.
+The own-tree gate is separate from the subsequent combined integration gate
+for the retention repair and hidden-switch work.
+
+The coordinating reviewer independently read every policy source/test/index
+change, the complete report, historical launcher and evidence manifest at the
+same source commit. That review accepted the platform scope, input preservation
+and causal limits, and independently checked all thirteen original diagnostic
+file hashes and lengths. It did not rerun the two diagnostics. The historical
+launcher is preserved byte-for-byte; its successful version probes do not
+imply the stronger pre-probe failure-retention guarantee being implemented by
+the separate retention repair. Source-to-binary records remain engineering
+provenance, not a formal derivation proof.
+
+The final evidence pass independently verified all 28 retained record hashes
+and lengths, all seven decompressed original TRX byte hashes/lengths, 95
+current/source-commit input pins, all 7,535 individual test outcomes and the
+exact 52-case registry roster. No material source, report or index finding
+remained. Six individual outcomes are `NotExecuted`, although the TRX summary
+counter named `notExecuted` is zero; the reported six skips come from the
+individual outcomes and `total - executed`, not that misleading zero counter.
+The formatter wording correction was explicitly accepted: only the Release
+build carries the zero-warning/error claim.
