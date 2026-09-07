@@ -529,3 +529,18 @@ def test_prepared_bytes_do_not_follow_later_caller_mapping_mutation(
         isinstance(actual.Call.Result, corpus.PythonOutcome)
         and actual.Call.Result.Accepted
     )
+
+
+def test_every_preparation_helper_role_resolves_exact_retained_input(
+    prepared: f.PreparedNativeFixtures,
+) -> None:
+    inputs = {item.Role: item.Raw for item in prepared.Inputs}
+    assert len(inputs) == len(prepared.Inputs)
+    for row in prepared.Preparation:
+        assert set(row.InputRoles) <= inputs.keys(), row.Helper
+    constructor = next(
+        row.Result for row in prepared.Preparation if row.Helper == "certificate-cases"
+    )
+    assert isinstance(constructor, s.Success)
+    assert inputs["certificate-corpus-baseline"] == constructor.value.Cases[0].Raw
+    assert inputs["certificate-corpus-baseline"] == _inputs(prepared.Cases[0])["raw"]
