@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra, independent reference writer
-Artifact status: repaired implementation validation; independent rereview pending
+Artifact status: repaired implementation validation; independent source rereview accepted
 
 The [fixture runner](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_fixtures.py)
 implements the seven source and eight Python cases from the
@@ -142,6 +142,12 @@ pass. The final test tree is retained as a verified tar byte stream in gzip:
 unit fixtures. These aggregate test-tree counts are not one fixture's inventory
 and are not the final fifteen coordinator results.
 
-Independent rereview of the repaired pin is pending at this record-writing
-checkpoint. No policy, registered source stream, native target or scientific
-measurement was executed by the fixture repair tests.
+Independent reviewer Vera, OpenAI Codex using GPT-6 Astra, accepted exact
+`0e0f8664765c7157b153bed86da217b8bf81a5e4` by read-only source review. The
+reviewer confirmed both repairs and the sixteen new discriminators, preserving
+the polled-size/stable-tree limits and the requirement to supply independently
+admitted collector/IEEE source bytes. The reviewer ran no fixture, test or
+native code. All sixteen quick-preflight checks then passed on the preserved
+repair/evidence tree; that raw gate log is appended to the repair manifest.
+No policy, registered source stream, native target or scientific measurement
+was executed by the fixture repair tests.

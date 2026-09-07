@@ -141,6 +141,14 @@
       "Encoding": "gzip",
       "StoredBytes": 26117,
       "StoredSha256": "511641AFD3CB52921EC89B0377909C4FEB45A0384B1E27C72F35A90F8D392BD8"
+    },
+    {
+      "File": "preflight-1.log.gz",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E",
+      "Encoding": "gzip",
+      "StoredBytes": 405,
+      "StoredSha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13"
     }
   ],
   "RetainedFixtureRegularFiles": 1067,
