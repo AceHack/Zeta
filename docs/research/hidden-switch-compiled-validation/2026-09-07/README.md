@@ -39,6 +39,11 @@ The [exact outer structure](../../2026-09-07-hidden-switch-compiled-outer-struct
 retains 60 tests for independent identity binding and the complete/failed
 92-case structure. Its read plan is separate from actual reads and replay.
 
+The [actual strict outer artifact reads](../../2026-09-07-hidden-switch-compiled-outer-artifact-validation.md)
+retain the 23-test original and accepted 25-test exception repair, three
+owned fixture trees and complete first-failure read outcomes. Operation replay
+and final source/runtime admission remain separate.
+
 ## Frozen protocol and remote proof
 
 The [preregistration](../../2026-09-07-hidden-switch-compiled-protocol.md)
