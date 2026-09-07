@@ -132,3 +132,46 @@ measurement callers do not yet exist. Runtime admission therefore remains false.
 | `body-candidates.json` | 639109 | `eb0e395c12b69b23c6ddd714f57658659da1ab0334437b1a88d10222b06891c7` |
 | `compiler-blocks.json` | 1225343 | `5b883e74ee9b48fd946b0f8d2fa6f82c89f8794f47ca4578ab2bfda044be6adc` |
 | `outcome.json` | 3756 | `7044f410ee9cfa2e9cf0019dd24049fa2aebec90924514345ed5c57f9625c4f8` |
+
+## Subsequent guard and static-call observations
+
+Attempt 5 uses source `18ef52ac8dea69a0bd98c4cce9c08619d90d7757`, with
+its original records preserved at `bc97c8889e7befbdd4ab5a0e3981cccc255ead73`.
+The reviewer independently checked the retained files without a debugger
+target or policy execution. The first inline audit assumed contiguous raw-body
+filenames and stopped at the first generic-roster gap; the corrected read
+uses each retained method identity to locate its original mapping. Neither
+inline invocation has a separately retained execution log. No receipt changed.
+
+All 123 spans, totaling 33,496 bytes, agree with compiler bytes and complete
+contiguous independent instruction decoding. There are ten literal records.
+All 779 resolved selected-transfer rows retain consistent 16-byte target
+prefix lengths/hashes. The reviewer recomputed the 590 direct target offsets
+and 189 supported indirect cell-address constructions, actual pointer bytes,
+repeated cells and candidate-range associations. The remaining 32 indirect
+rows explicitly retain unsupported-dependency refusals. Among the 189 supported
+sites, there are 67 distinct targets; 56 sites map to existing candidates.
+These 811 rows cover only the declared selected transfer kinds, not a complete
+control-flow graph or observed execution trace.
+
+The actual pinned 32 bytes equal the four ordered getter bit patterns and the
+second stopped read. The native ready record names the same GuardSet observation;
+the finished record for process 89475 records pin release. This strengthens
+the same-reference data/getter correspondence. Actual selector-register and
+object-layout association remain explicitly unestablished. All body, closure,
+layout and runtime admission flags remain false. Twenty particular captured
+source/project/configuration/helper records match the committed capture source;
+this does not establish binary derivation or the final dependency closure.
+
+This capture predates the later conformance-boundary refactor. Its source and
+observed graph must not be labeled as that later implementation's final graph.
+The independent [SOS feasibility record](2026-09-07-hidden-switch-compiled-sos-feasibility-review.md)
+also remains separate from these successful candidate-data observations.
+
+| Attempt 5 record | Bytes | SHA256 |
+| --- | ---: | --- |
+| `body-candidates.json` | 640171 | `d181e2aa960c45e6a9ed253fd1d10ab6d5df1780d5cd9875548e111505b4ca19` |
+| `selected-call-cells.json` | 1294851 | `648d287011c1143381bdfa7542e672e9f53e2629c37ecb5d915b7555774fad2c` |
+| `guard-data-raw.json` | 1547 | `c6d5a764eae572d1db8b116e36a1627b166ebc68f72f12288cd475e8b7fbeb6b` |
+| `guard-data-repeat.json` | 113 | `f881b9ed27c7f9c299d1759701edd879f6ed3320545dfd035f68276e7001224e` |
+| `native.jsonl` | 309074 | `5cb466d95898943dbf2dd61811f24bbb9238d8fe6c4c13758de77ab94062cab6` |
