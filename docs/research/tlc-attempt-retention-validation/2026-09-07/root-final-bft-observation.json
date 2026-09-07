@@ -1,0 +1,19 @@
+{
+  "ObservedAtUtc": "2026-09-07T11:39:12.451642+00:00",
+  "SourceDirectory": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/TestResults/tlc-diagnostics/BftConsensus-0e7e755c744d4bc19f774432d94239ba",
+  "Disposition": "Active-attempt metadata snapshot; not a completed model outcome",
+  "Files": [
+    {
+      "Source": "invocation.json",
+      "Stored": "root-final-bft-invocation-live.json",
+      "Bytes": 35450,
+      "Sha256": "9EDF82F6515F28CD21BC9B2443CAA475FD723F1D9A1C6A69AFB11E839A103D5B"
+    },
+    {
+      "Source": "runtime.json",
+      "Stored": "root-final-bft-runtime-live.json",
+      "Bytes": 1186,
+      "Sha256": "D9DB876214F87CD63644A58A803929DB237404F552B1E31A05BA7D3CA0E4EDDE"
+    }
+  ]
+}

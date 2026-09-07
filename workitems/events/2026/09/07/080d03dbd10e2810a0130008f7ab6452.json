@@ -1,0 +1,14 @@
+{
+  "id": "080d03dbd10e2810a0130008f7ab6452",
+  "at": "2026-09-07T10:46:36.741Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XQM8E4087G0R0036P5RWY",
+    "type": "bug",
+    "title": "Retain TLC failure attempts and restrict retries to JVM startup",
+    "slug": "retain-tlc-failure-attempts-and-restrict-retries-to-jvm-star",
+    "priority": "P1",
+    "filename": "081M1XQM8E4087G0R0036P5RWY-retain-tlc-failure-attempts-and-restrict-retries-to-jvm-star.md"
+  }
+}

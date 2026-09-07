@@ -1,0 +1,132 @@
+{
+  "SourceCommit": "4b4d9a237b23e53a4b297af72eb2053f3c51c8b6",
+  "BuildExitCode": 0,
+  "TestExitCode": 0,
+  "BuildWarnings": 0,
+  "BuildErrors": 0,
+  "BuildElapsed": "00:01:45.43",
+  "GateFinishedAtUtc": "2026-09-07T13:20:08.229131+00:00",
+  "AllInputHashesUnchanged": true,
+  "InputHashCount": 103,
+  "Counts": {
+    "NotExecuted": 6,
+    "Passed": 7539
+  },
+  "Projects": [
+    {
+      "File": "ci-final-Bayesian.Tests.trx.gz",
+      "Bytes": 131067,
+      "Sha256": "F03A213A827E76744C8BB6C04A96A0C1B60A2B352CB402C7C7107BF3292564B7",
+      "UncompressedBytes": 743759,
+      "UncompressedSha256": "CA055630FD78F8E2C18506B8807F305875C218F2F02A0590605AFF6389A0D2BA",
+      "Counts": {
+        "Passed": 503
+      }
+    },
+    {
+      "File": "ci-final-Core.CSharp.Mediator.Tests.trx.gz",
+      "Bytes": 2897,
+      "Sha256": "A9F38F3D62B84E45446979D2EE5B2C274D3D5836E2B0D96ED2E0901A6A3BA654",
+      "UncompressedBytes": 19633,
+      "UncompressedSha256": "DC56B671301D2882FF6704455B6E4FF3789B4FE91D89834E465AD16521088640",
+      "Counts": {
+        "Passed": 12
+      }
+    },
+    {
+      "File": "ci-final-Core.CSharp.Tests.trx.gz",
+      "Bytes": 4117,
+      "Sha256": "E8F8512F0FF00791EDF2ED7FB9DFA693EEFA9758E1F958F78AAD2913A32B4CD1",
+      "UncompressedBytes": 31507,
+      "UncompressedSha256": "56BE8A19E873CFAF3FE218D322461A231A2FDF1F4DB406BE4AA370C5A52ACC74",
+      "Counts": {
+        "Passed": 21
+      }
+    },
+    {
+      "File": "ci-final-Tests.CSharp.trx.gz",
+      "Bytes": 93921,
+      "Sha256": "6608451E8FC3D3DFE5539AE0A6D158BC6670295799B420CC97311ABBA603B73D",
+      "UncompressedBytes": 580919,
+      "UncompressedSha256": "CA85CA5E4C6DEE3D933BDBCFA88219676EFD7EFAD53086429186E020F6FB1C8F",
+      "Counts": {
+        "Passed": 413
+      }
+    },
+    {
+      "File": "ci-final-Tests.CSharp.TypeProvider.trx.gz",
+      "Bytes": 1681,
+      "Sha256": "56F3070D42FED4E1A0070133DDF5A25D703A890AC5285EE36798562962194CC2",
+      "UncompressedBytes": 6348,
+      "UncompressedSha256": "E463B79E8584C62EEB480FF2CBCAECFFC2BFE3A77B6390F799602CDEEEE1E8CF",
+      "Counts": {
+        "Passed": 3
+      }
+    },
+    {
+      "File": "ci-final-Tests.FSharp.trx.gz",
+      "Bytes": 1859140,
+      "Sha256": "8A99AA5E1CC1542622ACE9C0FF8FD76191BE0A41CA24F3D9737A2284E9EB350E",
+      "UncompressedBytes": 9500742,
+      "UncompressedSha256": "DD6A40C28C67BD99060E4E85659DF4A3598ADA0BDE3587A6F0A9C3E81709E13E",
+      "Counts": {
+        "NotExecuted": 6,
+        "Passed": 6549
+      }
+    },
+    {
+      "File": "ci-final-Tests.FSharp.Git.trx.gz",
+      "Bytes": 7697,
+      "Sha256": "4A6CBFF1F8644BFC1EE9B67C5228D2866D1C8EFEB24216D77348F874E92DE36B",
+      "UncompressedBytes": 57530,
+      "UncompressedSha256": "F6A391310B8900AEE1A5FB7714857B3026D31093CB3F32602510005D3850892B",
+      "Counts": {
+        "Passed": 38
+      }
+    }
+  ],
+  "ModelCaseCount": 52,
+  "SyntheticTlcCaseCount": 18,
+  "BftConsensus": {
+    "executionId": "0e67cc1e-4cb9-48d7-805d-ced40af8c844",
+    "testId": "d8520ada-99d0-4c3d-f358-9979afb169c1",
+    "testName": "Zeta.Tests.Formal.TlcRunnerTests.TLC checks the pinned model(id: \"BftConsensus\")",
+    "computerName": "AceHacks-Mac-Studio",
+    "duration": "00:04:54.2858498",
+    "startTime": "2026-09-07T09:14:58.0456460-04:00",
+    "endTime": "2026-09-07T09:19:52.3333620-04:00",
+    "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+    "outcome": "Passed",
+    "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+    "relativeResultsDirectory": "0e67cc1e-4cb9-48d7-805d-ced40af8c844"
+  },
+  "UnexpectedAttemptDirectories": [],
+  "LogFiles": [
+    {
+      "File": "ci-full-gate-attempt-1.json",
+      "Bytes": 13049,
+      "Sha256": "D3009C03E15FF7372A5C4E4808A95819811497E28BEB0D05AF888BE599E322D9"
+    },
+    {
+      "File": "ci-full-build-attempt-1.log",
+      "Bytes": 8972,
+      "Sha256": "632CEFA61D7CE35E631270CE5C2C26E718F64DA7C6C5F527EAA56C154B007C0D"
+    },
+    {
+      "File": "ci-full-tests-attempt-1.log",
+      "Bytes": 6473,
+      "Sha256": "5C5A43515C7FF507F668F8676F34834FA3B93085AC7CE5236BBDDB719CF087DA"
+    },
+    {
+      "File": "ci-final-bft-invocation.json",
+      "Bytes": 35459,
+      "Sha256": "EE2F89A74EB6E20DA583C1EE3479D2DA8D3E9EA418B739AC441784D22D9CB0BB"
+    },
+    {
+      "File": "ci-final-bft-runtime.json",
+      "Bytes": 1189,
+      "Sha256": "B4438F67459D026A4CBD11E097F817F0ED86000ADA04A478EA9EDD6CD136E255"
+    }
+  ],
+  "Scope": "This writer exact4b4d integration full mapped native gate; scientific experiment generation was not performed. TRX parsing and live metadata are evidence for these actual files, not proof of a complete source-to-binary dependency closure."
+}

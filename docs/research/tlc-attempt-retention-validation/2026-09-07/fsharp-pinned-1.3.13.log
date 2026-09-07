@@ -1,0 +1,30 @@
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.11)
+[xUnit.net 00:00:00.35]   Discovering: Tests.FSharp
+[xUnit.net 00:00:01.72]   Discovered:  Tests.FSharp
+[xUnit.net 00:00:01.89]   Starting:    Tests.FSharp
+  Passed Zeta.Tests.Formal.TlcRunnerTests.source inventory and copy refusals retain explicit attempt metadata [105 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.startup retry policy agrees with the cross-runner refusal roster [4 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.an ANSWER is never retried [< 1 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.a jar reporting a different version IS toolchain drift [14 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.models that cannot deadlock say so in the registry [11 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.every TLC invocation carries -config and never -deadlock [3 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.actual source collection admits unstaged and new helpers but refuses ignored helpers [122 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.the TLA+ gate leg actually carries the gate on CI [< 1 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.probe deadline covers inherited pipes after the launcher exits [556 ms]
+[xUnit.net 00:00:03.18]   Finished:    Tests.FSharp (ID = '7cb8f5e549e0605a8d29110a5dbf480aa18cdc1bd0891a0aaec85ae8593dd75e')
+  Passed Zeta.Tests.Formal.TlcRunnerTests.every .cfg on disk is claimed by exactly one pinned model [8 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.a valid completion followed by fatal nonzero exit remains a failed answer [9 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.a JVM that never started is retried [< 1 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.a JVM that never started is reported as such, not as toolchain drift [< 1 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.failed attempt streams states and helper inputs survive later expected cleanup [61 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.owned process capture retains probe streams and bounds timeout without Java [334 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.the retry is BOUNDED — a persistent shortage still fails [< 1 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.the registry pins a violation string for every EXPECT-VIOLATION model [1 ms]
+  Passed Zeta.Tests.Formal.TlcRunnerTests.TLC JVM policy excludes C2 type speculation only on macOS arm64 [5 ms]
+
+Test Run Successful.
+Total tests: 18
+     Passed: 18
+ Total time: 3.4596 Seconds
