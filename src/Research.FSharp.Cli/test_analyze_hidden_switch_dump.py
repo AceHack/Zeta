@@ -6,6 +6,7 @@ import json
 import queue
 import tempfile
 import threading
+import time
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -140,6 +141,28 @@ class AnalyzerDriverTests(unittest.TestCase):
             self.assertEqual(json.loads((attempt / "physical-predict-stub.json").read_text())["Stub"]["Bytes"], 8)
             self.assertEqual(json.loads((attempt / "physical-predict-cell.json").read_text())["Cell"]["Address"], "2000")
             self.assertFalse((attempt / "physical-predict-body.json").exists())
+
+    def test_metadata_prefix_does_not_override_eof_or_command_error(self):
+        command = "u -n -o 0000000000001000"
+        prefix = ("> " + command + "\nMethod signature\nBegin 0000000000001000, size fc\n").encode()
+        for ending in [b"", b"<END_COMMAND_ERROR>\n"]:
+            with tempfile.TemporaryDirectory() as directory:
+                session = Session.__new__(Session)
+                session.attempt = Path(directory)
+                session.count = 0
+                session.deadline = time.monotonic() + 1
+                session.lines = queue.Queue(maxsize=128)
+                for line in (prefix + ending).splitlines(keepends=True):
+                    session.lines.put_nowait(line)
+                session.reader_failure = None
+                session.reader_finished = threading.Event()
+                session.reader_finished.set()
+                session.publication_failures = []
+                session.process = SimpleNamespace(stdin=io.BytesIO())
+                with self.assertRaises(ValueError):
+                    session.command(command)
+                self.assertEqual((session.attempt / "command-00.partial.txt").read_bytes(), prefix + ending)
+                self.assertFalse((session.attempt / "command-00.txt").exists())
 
     def test_reader_bounds_cumulative_bytes_queue_and_auxiliary_files(self):
         for raw, byte_limit, queue_limit, retained in [(b"123456789\n", 6, 2, b"123456"), (b"first\nsecond\n", 100, 1, b"first\nsecond\n")]:

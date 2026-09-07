@@ -458,3 +458,14 @@ stdout bytes survive. The attempt ended at 20:29:46.027323 UTC without extent
 or post-query cached-DAC output. No further automatic attempt follows this
 record; installed host registration requires read-only investigation and
 coordinator disposition. Full runtime/body/closure admission remains false.
+
+The [installed-host correction](native-dump-host-correction/manifest.json)
+binds the actual native export `u`, captures all three current method identities
+and cached-DAC metadata before its disassembly query, and explicitly records
+the owned analyzer PID/return code. Installed host IL returns `E_NOTIMPL` for
+instruction disassembly; version-specific native source emits DAC header bounds
+before that callback. The ARM64 loop may fail to advance. This is consequently
+a bounded metadata-feasibility attempt with all original output/error/deadline
+refusals. Fifteen tests pass, including bounds-prefix output followed by EOF or
+an error delimiter remaining incomplete. Any later bounds interpretation is
+independent of instruction-disassembly success and complete executing closure.

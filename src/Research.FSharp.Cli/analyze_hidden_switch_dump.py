@@ -61,6 +61,8 @@ class Session:
                   "AuxiliaryLimitScope": "stderr/host trace polled during commands and cleanup; not a filesystem quota; overshoot retained"})
             self.process = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                             stderr=self.stderr, cwd=attempt, env=environment, start_new_session=True)
+            write(attempt / "analyzer-started.json", {"ProcessId": self.process.pid, "StartedAtUtc": utc(),
+                  "Ownership": "one direct child in an owned session; not a general descendant-containment claim"})
             self.reader = threading.Thread(target=self._read, daemon=True)
             self.reader.start()
         except BaseException:
@@ -397,17 +399,21 @@ def run(capture, attempt, tool):
             stage = "ip2md-" + method["Name"]
             info = session.command(f"ip2md {body:016X}")
             admit_method(info, method, body)
-            stage = "clru-" + method["Name"]
-            disassembly = session.command(f"clru -n -o {body:016X}")
-            payload = command_payload(disassembly, f"clru -n -o {body:016X}")
-            if not any(re.fullmatch(re.escape(method["Type"] + "." + method["Name"]) + r"\([^\r\n]*\)", line.strip()) for line in payload):
-                raise ValueError("disassembly does not name the selected method/address")
         stage = "runtime-after"
         after = session.command("runtimes")
         dac = runtime / "libmscordaccore.dylib"
         cached_dac = admit_runtime(after, runtime, True)
         write(attempt / "dac-observed.json", {"Identity": identity(dac), "TargetRuntime": str(runtime), "CachedDacLine": cached_dac,
               "Scope": "cached path and file identity only; analyzer acceptance is not proof of source/binary/version equivalence"})
+        # Version-specific u source places DAC bounds before the unsupported host
+        # disassembler callback. A non-progress/output/deadline failure retains
+        # that prefix; missing/error completion is never a successful query.
+        for method, body in methods:
+            stage = "u-" + method["Name"]
+            disassembly = session.command(f"u -n -o {body:016X}")
+            payload = command_payload(disassembly, f"u -n -o {body:016X}")
+            if not any(re.fullmatch(re.escape(method["Type"] + "." + method["Name"]) + r"\([^\r\n]*\)", line.strip()) for line in payload):
+                raise ValueError("managed-code response does not name the selected method")
         result["Complete"] = True
         result["Scope"] = "three bound method queries captured; complete extent interpretation and executing closure remain independent review obligations"
     except Exception as error:  # noqa: BLE001 - preserve exact bounded diagnostic refusal
@@ -432,6 +438,7 @@ def run(capture, attempt, tool):
                 except OSError as error:
                     cleanup.append(str(error))
         if session is not None:
+            result["Analyzer"] = {"ProcessId": session.process.pid, "ExitCode": session.process.returncode}
             result["OutputCapture"] = {"ObservedStdoutBytes": session.stdout_observed_bytes,
                                        "RetainedStdoutBytes": session.stdout_bytes,
                                        "ReaderFailure": None if session.reader_failure is None else str(session.reader_failure)}

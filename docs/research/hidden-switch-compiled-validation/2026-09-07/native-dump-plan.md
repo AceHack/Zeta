@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Status: collection completed; reviewed offline analyzer has not launched
+Status: two offline refusals retained; one reviewed metadata-only correction pending
 
 The coordinator authorized one separately owned nonregistered graph process
 and one bounded offline analyzer feasibility attempt after the fixed hand
@@ -79,14 +79,18 @@ delimiters or unrecognized output stop the attempt. The command sequence is:
    runtime with collection pins; analyzer success alone does not prove
    matching DAC bytes, particularly because installed source guides indicate
    `ignoreMismatch:true` at runtime construction.
-5. Query `ip2md <body-IP>` then `clru -n -o <same-body-IP>` on the three
-   body addresses physically bound before analyzer startup, as described below.
-   Unsupported command or method forms refuse. No stack/heap/environment
-   query is part of this procedure.
-6. Query `runtimes` again after a successful DAC-dependent query and compare
-   the actual cached DAC path/identity with the pinned local file. Missing
-   or mismatched evidence refuses extent admission. Explicit `exit` and a
-   bounded join end the analyzer; owned kill/join is fallback cleanup.
+5. Query `ip2md <body-IP>` for all three body addresses physically bound
+   before analyzer startup. Unsupported method forms refuse. No
+   stack/heap/environment query is part of this procedure.
+6. Query `runtimes` again after those successful DAC-dependent queries and
+   compare the cached DAC path/identity with the pinned local file.
+7. Query the installed native export `u -n -o <same-body-IP>`. Shared LLDB
+   documentation's `clru` name was actually refused by this host. Static
+   installed IL exposes an unimplemented instruction-disassembly callback;
+   version-specific native source prints DAC header bounds before entering
+   that callback. The metadata prefix may survive an error/non-progress
+   refusal but cannot override it. Explicit `exit` and bounded owned
+   kill/join end the attempt. No successful disassembly is assumed.
 
 Exact raw code bytes, method token/MVID, resolved address, compiler bytes
 and DAC-reported hot/cold extents must agree before any candidate gains a
@@ -141,3 +145,11 @@ owned kill if needed and bounded joins. Failed joins do not justify closing
 streams still owned by the reader. First failures survive later cleanup or
 publication failures. All three admission flags remain false even if every
 query completes; interpreting retained extent output is a separate review.
+
+The first actual response corrected provisional `Name`/`CodeAddr` expectations
+to installed `Method Name`/`Current CodeAddr` fields; version-history addresses
+are separate. Attempt two then retained the actual unrecognized `clru` error.
+Neither failure is relabeled passed. The third attempt's `u` export and known
+unsupported callback are source-reviewed metadata feasibility only. Runtime,
+body and closure admission remain false, including if a useful bounds prefix
+is obtained before output/deadline refusal.
