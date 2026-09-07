@@ -363,3 +363,6 @@ implementation task remains open.
 
 - [Sixth integrated validation](integration-6/README.md): 1,164 compiled Python
   tests pass at their exact source pin, with the complete owned fixture tree.
+
+- [Prerequisites verified on main](pr-16982-394e-final-2/README.md): PR #16982,
+  complete 2,314-path proof, current platform passes and retained historical drift.
