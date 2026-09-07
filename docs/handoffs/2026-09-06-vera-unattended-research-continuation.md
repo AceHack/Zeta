@@ -208,3 +208,12 @@ scientific source snapshot or substitute it for the final merged-tree gate.
   start a new claimed branch from refreshed main. Verify merge ancestry with
   `git merge-base --is-ancestor <merge-commit> origin/main`; a green earlier
   head or merely open PR is not a main-state proof.
+
+## Hidden switch implementation checkpoint
+
+The separately registered action-conditioned hidden-switch experiment is
+under implementation review. Read the
+[implementation review](../research/2026-09-07-hidden-switch-implementation-review.md)
+and its retained hand/validation records. Registration is remotely archived;
+implementation archival and registered measurement remain pending. Do not
+mistake hand-fixture agreement for the registered behavioral or cost result.
