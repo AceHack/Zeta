@@ -628,3 +628,8 @@ The [owned source/Python fixture validation](2026-09-07-hidden-switch-compiled-i
 preserves initial implementation `a7548b075`, its actual thirty-case test
 record and two accepted retention/resource findings before repair. It does
 not establish complete coordinator or runtime admission.
+
+The [native-dependent pure fixture implementation record](2026-09-07-hidden-switch-compiled-native-fixture-validation.md)
+tracks the separate 38-case preparation/dispatch slice. Actual Python calls,
+unexecuted native certificate requests and preparation helpers remain distinct;
+its implementation validation does not complete the outer envelope.

@@ -1,0 +1,813 @@
+{
+  "SourceCommit": "113afdb5a96e0df9894af49de102843d7caacacd",
+  "Scope": "initial pure 38-case fixture implementation validation; baseline helper-input role under repair",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate_cases.py",
+      "Bytes": 8344,
+      "Sha256": "F79FA50B58B3B393AEF15BB38528F92FDBCAAECBD8D824844B60B4B0A5236FA1"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_choice_replay.py",
+      "Bytes": 6923,
+      "Sha256": "9A4A7D302F1B7345D4A49A0C1E81D316397C3960426C86C88334B0BED2ABB3CE"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_conformance.py",
+      "Bytes": 17853,
+      "Sha256": "A57C74457740BF1950C8F108CA179E4723E9911E919CBD4A30FE6EB58E0AADA2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "Bytes": 33300,
+      "Sha256": "3D2BFDB3D961D7B30637E7ADB1F28A3B6A1F7703D5C04D0FC986E8F18A19F463"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_native_fixtures.py",
+      "Bytes": 19043,
+      "Sha256": "E950BF314C5A5D4CC5DC8191BE4889B80F6D199F17AF74D8E48694A4099FCDB7"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Bytes": 10841,
+      "Sha256": "8571296D52A4D3F4C00D787ADF258E9558D91072F52BF5E67F9B0387803C45BB"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_negatives.py",
+      "Bytes": 4039,
+      "Sha256": "F94078D01D278E3D4F498020991A782E8DA531904A1D86AE91695C585DF5B60B"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ED2CF49D070F0D9CE3243DD634BA53FE35DEF36742D26ABEB7644469DFBBA45"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_native_fixtures.py",
+      "Bytes": 20791,
+      "Sha256": "394EF600CD0BC98EC977814BBED69CF2B3AC565B2BDB3CBA2961AB466A1A3190"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "attempt-1-hidden_switch_compiled_native_fixtures.py.gz",
+      "Bytes": 18977,
+      "Sha256": "5FCDB55735E35A07DFD22B62A9DEA071A8B379AE5C6125DB0619927F332165C4",
+      "Encoding": "gzip",
+      "StoredBytes": 5071,
+      "StoredSha256": "F232F8CCF1BB88DAC504F55DFD2EE7B8DC81283DB280768FE08ED3C32598DD20"
+    },
+    {
+      "File": "attempt-1-test_hidden_switch_compiled_native_fixtures.py.gz",
+      "Bytes": 17280,
+      "Sha256": "B866DA348034D1C973779DE8424DFE1FA19A8239454CF45FAD6893E039FDE80B",
+      "Encoding": "gzip",
+      "StoredBytes": 4593,
+      "StoredSha256": "AF6CED7BCE1F33A9AD48C97B7AE4D2DF67D9633F768AB06A71BA16F2BBC74335"
+    },
+    {
+      "File": "call-00.json.gz",
+      "Bytes": 956,
+      "Sha256": "144F67BD5FDE70A7107C8F068B4FCD1C4CB162C404771F031BD6B61D7700BEAD",
+      "Encoding": "gzip",
+      "StoredBytes": 462,
+      "StoredSha256": "58E096EB09EC2A6BFFF940E8C0DEFFEF6667402B257509FCB5251D028FB71A1D"
+    },
+    {
+      "File": "call-01.json.gz",
+      "Bytes": 126202,
+      "Sha256": "0297FF3841B70CF08542FE14CAF2B8652547CB166ECB8D81713FCEE39D64DCD6",
+      "Encoding": "gzip",
+      "StoredBytes": 8438,
+      "StoredSha256": "79191361A66A41161DA75A290F287112686792BA4BC741E5FB930209155EA53E"
+    },
+    {
+      "File": "call-02.json.gz",
+      "Bytes": 988,
+      "Sha256": "BEED96FCAA9BC66BC0ECADDF91BC5B72D7C91599EB559960EB66F96081A93297",
+      "Encoding": "gzip",
+      "StoredBytes": 446,
+      "StoredSha256": "6DA392D95CA304B95F88EA23295B34754203F3CF8B8540499C9B52C9ED06370B"
+    },
+    {
+      "File": "call-03.json.gz",
+      "Bytes": 126216,
+      "Sha256": "BBC4A3A93B2AC30DD642FDEDF03F8232C9ACC24A7A4062383ABB6B6CC3BD9599",
+      "Encoding": "gzip",
+      "StoredBytes": 8448,
+      "StoredSha256": "2D62BCBFCE36C65F89C7DD3F9C358C7FFC14CD19A547C64164CF02CC172069DD"
+    },
+    {
+      "File": "call-04.json.gz",
+      "Bytes": 986,
+      "Sha256": "35907F3E48C1E361B514853B0D5534B7AC4633EDDEA9354DD04BE0B808653208",
+      "Encoding": "gzip",
+      "StoredBytes": 445,
+      "StoredSha256": "C3AE3247CA2693E134B9AC38728C667DB0621441B3F0196C5EE22F02825FBF1A"
+    },
+    {
+      "File": "call-05.json.gz",
+      "Bytes": 126214,
+      "Sha256": "7A495A522A543AB87CD62265ECFA2DCA7BD9BC4FC7FF115527C1F1A88656EA74",
+      "Encoding": "gzip",
+      "StoredBytes": 8448,
+      "StoredSha256": "3128E674272A7039779D7E02CE16179A18286AACA73BB617A478972D8B6D6D84"
+    },
+    {
+      "File": "call-06.json.gz",
+      "Bytes": 979,
+      "Sha256": "2995A868AD319A1366B3269F16FC63611AA65F1A59210F253B369A644FFC4B73",
+      "Encoding": "gzip",
+      "StoredBytes": 443,
+      "StoredSha256": "8F5740EDE57EB3CEDD2DED89592CB12BA10603D622AEEEBAA3A63B949E204284"
+    },
+    {
+      "File": "call-07.json.gz",
+      "Bytes": 126207,
+      "Sha256": "A978FC22F46D0655D8423DB5FF5895426A562749A7BC6C4E9292ED3867BECC28",
+      "Encoding": "gzip",
+      "StoredBytes": 8435,
+      "StoredSha256": "4CE30E21C43595D41556E3D2686F251F67160B478A53EAB616E501D9483D3A25"
+    },
+    {
+      "File": "call-08.json.gz",
+      "Bytes": 979,
+      "Sha256": "F0840E85FBC2D596A3E345331D3A73221E586195A3CCAF0634B300C2BC478C2E",
+      "Encoding": "gzip",
+      "StoredBytes": 443,
+      "StoredSha256": "217C8FC8D580221AE0AE3D0FA144E80EA63571EE3C8EFBDD6BBD4AC8858307A3"
+    },
+    {
+      "File": "call-09.json.gz",
+      "Bytes": 126207,
+      "Sha256": "92D487F5D633AD0A19D69A62BA43E18561A3393BB0B4D4527479B8C501ABA85D",
+      "Encoding": "gzip",
+      "StoredBytes": 8447,
+      "StoredSha256": "646F0F9FA2860B4F42EADE11090C75A37ADCA25363C654BE0BDC0303AB4DEC69"
+    },
+    {
+      "File": "call-10.json.gz",
+      "Bytes": 980,
+      "Sha256": "FEFADD19E88875E60D6EF72C95710E24E3D0DEEE8C4A33C16FE2A81A68F4E44A",
+      "Encoding": "gzip",
+      "StoredBytes": 444,
+      "StoredSha256": "63E79162BF599DBA5AEF3E7C346C5C44DF228A735ED19EAFB34851AD30E5F7DA"
+    },
+    {
+      "File": "call-11.json.gz",
+      "Bytes": 126210,
+      "Sha256": "87D11A88C6B23DEE4B538C6BD6E5A16102BF520A57154CD577D59E2E5868EEE3",
+      "Encoding": "gzip",
+      "StoredBytes": 8452,
+      "StoredSha256": "E7FAD5E583826A795429002712656635FD0E6DF84A2AABBCDBEB5EF10237F534"
+    },
+    {
+      "File": "call-12.json.gz",
+      "Bytes": 979,
+      "Sha256": "10AE39542F154BCE4DAA8E36E789110EF21B5CFDEFEC3D3E39707C0D726F8677",
+      "Encoding": "gzip",
+      "StoredBytes": 444,
+      "StoredSha256": "528C8B4F78F97632809A12C6737BB13E3097C5E08A4054C75E7358B54AB50111"
+    },
+    {
+      "File": "call-13.json.gz",
+      "Bytes": 126207,
+      "Sha256": "80748E6D9B9CED478160E2FC3A365D8B5B44228F4BB9D7349EEDC926802BC464",
+      "Encoding": "gzip",
+      "StoredBytes": 8442,
+      "StoredSha256": "F096FD0A9F0656074ADA6697FE90E18A57E2B7F44468C3433FE942F2CE85F44B"
+    },
+    {
+      "File": "call-14.json.gz",
+      "Bytes": 989,
+      "Sha256": "C70798EDFDA427DCFB4287AB22E8613A6D46A6CA626DD5FCA7F2F698A7BA73DF",
+      "Encoding": "gzip",
+      "StoredBytes": 448,
+      "StoredSha256": "F102639404FFC4DE0F28F729C2FF2FCA0D606B84CBF6B4F53661D1DD93EE8846"
+    },
+    {
+      "File": "call-15.json.gz",
+      "Bytes": 126205,
+      "Sha256": "7FE277F302902B17C9128FADD42A5AD897AAE3CBD9BF6E2EB165992F04141702",
+      "Encoding": "gzip",
+      "StoredBytes": 8448,
+      "StoredSha256": "4288937783C3687B360A839FAE18AA602292AA37CA94FEFBB72F96C5340247AF"
+    },
+    {
+      "File": "call-16.json.gz",
+      "Bytes": 989,
+      "Sha256": "36CED198C14649851A823FBF51D80AD4CB171090D2E4331C4F0042FF2FED6A5A",
+      "Encoding": "gzip",
+      "StoredBytes": 448,
+      "StoredSha256": "AD5DC33982EC1416850D8AF8B515A2DE362AA45A01A2F988219F70212C60ED49"
+    },
+    {
+      "File": "call-17.json.gz",
+      "Bytes": 125999,
+      "Sha256": "F347018A95B53365CF1E86EB97AF2B687BB3F5B69C72CD83B17015EF11473C37",
+      "Encoding": "gzip",
+      "StoredBytes": 8443,
+      "StoredSha256": "E069DD14DF248F66BEB2307C1DC6825C419FFA8F3262FF2649CD6070A7D19124"
+    },
+    {
+      "File": "call-18.json.gz",
+      "Bytes": 992,
+      "Sha256": "472EC65DFF2FAAD9CB5573297C3AE7A13DEF1BC123058DDBF347B4DF66AD6D3F",
+      "Encoding": "gzip",
+      "StoredBytes": 450,
+      "StoredSha256": "0BD358ADD3069365832A07B2D06C17BA91AC811A392E6A407041CFA040D97C03"
+    },
+    {
+      "File": "call-19.json.gz",
+      "Bytes": 126220,
+      "Sha256": "E5240FF42C556800E2F80E81BF86AEC55649D7B35AE8A80F2A741D52BF44CB76",
+      "Encoding": "gzip",
+      "StoredBytes": 8432,
+      "StoredSha256": "6EEE4D26362D35C0FCF8DB4F6314369713682480F18FAB4FC04491AC47847C34"
+    },
+    {
+      "File": "call-20.json.gz",
+      "Bytes": 985,
+      "Sha256": "F708460EC9A57C6F185965576F8B7D9F09A6D039B5B0428407C8646CCB6361E7",
+      "Encoding": "gzip",
+      "StoredBytes": 448,
+      "StoredSha256": "3D2263089F3717C6F5D6FD543960F48F6955B825768847E4DB96B316C256268F"
+    },
+    {
+      "File": "call-21.json.gz",
+      "Bytes": 126209,
+      "Sha256": "9FD366CD14EB6A25D8238C52A8AE4010AF5A1617C856C168065F9D328FD0B51A",
+      "Encoding": "gzip",
+      "StoredBytes": 8453,
+      "StoredSha256": "6639B66E97CA7124571466C7F2C83F92965F88226272CDCCCD06808D5B005841"
+    },
+    {
+      "File": "call-22.json.gz",
+      "Bytes": 991,
+      "Sha256": "ACD7D30F5D70C46338A8A6BCA3FA1B13F97AD3280CBD714196E735807C4E78A9",
+      "Encoding": "gzip",
+      "StoredBytes": 449,
+      "StoredSha256": "499886B3066B455F254EE4829CD15036184E2CCDC845B4B44D99172F653883EB"
+    },
+    {
+      "File": "call-23.json.gz",
+      "Bytes": 119271,
+      "Sha256": "8C27B7B20870F94E90439CEE1FF3C8993BA7043112857820ADA5DEF334621BD4",
+      "Encoding": "gzip",
+      "StoredBytes": 8356,
+      "StoredSha256": "13BA43A6016F44834C429B5C5CA40E5510F4C565D43DC4B5CF8A87409081C8AF"
+    },
+    {
+      "File": "call-24.json.gz",
+      "Bytes": 986,
+      "Sha256": "8A2319F96B2C6E9650D585D85127BC204F461FB9C8F2CD0D3587BD0E6C294BCD",
+      "Encoding": "gzip",
+      "StoredBytes": 446,
+      "StoredSha256": "6914F72D2D49BB63C6335FDDD09618C412D78DD64192D286012540D071C25C57"
+    },
+    {
+      "File": "call-25.json.gz",
+      "Bytes": 125950,
+      "Sha256": "BB89950F35CF26ED30BC57EC43E57868799BD387D48D8B37979EDC5CE34F4180",
+      "Encoding": "gzip",
+      "StoredBytes": 8438,
+      "StoredSha256": "2727C778788BE7ECF1500C5B3AC4B51C4CD660298A9908204CB238B6701E6F19"
+    },
+    {
+      "File": "call-26.json.gz",
+      "Bytes": 989,
+      "Sha256": "9A8CCF85E611F94C6721B735FE1EA5592CD8436FA2EF6898D2CBD22D77C6A7D8",
+      "Encoding": "gzip",
+      "StoredBytes": 451,
+      "StoredSha256": "6AB9F9A2A15ED29BEF56E558E1DBED8239343B5E80A7638B8820D83637B8F2F1"
+    },
+    {
+      "File": "call-27.json.gz",
+      "Bytes": 126213,
+      "Sha256": "1595A1A73D6A4B94F4106C2DCD1ABF42D375EFA46853B8D358F136F50878F678",
+      "Encoding": "gzip",
+      "StoredBytes": 8455,
+      "StoredSha256": "67B7C3F16B49BF30DAC98E0A4E68C0AFAC54B0FC29B142B0E69B720A48F6C1F6"
+    },
+    {
+      "File": "call-28.json.gz",
+      "Bytes": 991,
+      "Sha256": "9D6CE08916B2CB0059C78420C819EFFA0948710A29CCBD5F0DF4664703BBE1C5",
+      "Encoding": "gzip",
+      "StoredBytes": 449,
+      "StoredSha256": "668991A2FB74E9A7D54FA24E4C749DD4F23EAD56A2A2F243AA00C7382EA50B80"
+    },
+    {
+      "File": "call-29.json.gz",
+      "Bytes": 126219,
+      "Sha256": "C17DC64F0051F8DEB79975FE6312C8BBD7921A0141C23C49EBDFFC1545A23386",
+      "Encoding": "gzip",
+      "StoredBytes": 8453,
+      "StoredSha256": "E38764BE69842AA0DC917FCE853C3E66888CB955166BAE48AB3C598F53DA0453"
+    },
+    {
+      "File": "call-30.json.gz",
+      "Bytes": 990,
+      "Sha256": "A98BE0857C52F87112D0E87097AAAE1396037DF665E9396E91C77E18C5E52C54",
+      "Encoding": "gzip",
+      "StoredBytes": 451,
+      "StoredSha256": "2EBF4E6DC935EFBA591CE151DDCEE2F128FD6104382F03A536C7AF6E16C72F13"
+    },
+    {
+      "File": "call-31.json.gz",
+      "Bytes": 126218,
+      "Sha256": "C7DBACFC2BB1A0409E573C8EEA5DF4AF9BFEF4F2879CABF5BBC1BFD6CE1BCA2B",
+      "Encoding": "gzip",
+      "StoredBytes": 8457,
+      "StoredSha256": "B5F17FD621B015C7C68609340D7E1AE699565FC9329CB1FF1DA350296A685635"
+    },
+    {
+      "File": "call-32.json.gz",
+      "Bytes": 990,
+      "Sha256": "BB76A4414E5441E422190FF101647C9669C8989C513A96F722D0D054C6D0D869",
+      "Encoding": "gzip",
+      "StoredBytes": 448,
+      "StoredSha256": "067756F29F6E57E82295CCBAE742A38B0D80A873C57FA4AEE608B09000861181"
+    },
+    {
+      "File": "call-33.json.gz",
+      "Bytes": 126218,
+      "Sha256": "E01FB99198EC860497201BDD08012AFFA37D393C0A8FC60CA4E2477900FFE93F",
+      "Encoding": "gzip",
+      "StoredBytes": 8454,
+      "StoredSha256": "963DB45C1FD7E98B204F6536DC24209C28E857E59C003DC7D8E8B8FFF04A0B96"
+    },
+    {
+      "File": "call-34.json.gz",
+      "Bytes": 991,
+      "Sha256": "162E868D5AAD607E743406AC1D3E80DE0DBB3FE6C4D0C3D09C04D78F18BFFFE5",
+      "Encoding": "gzip",
+      "StoredBytes": 451,
+      "StoredSha256": "A7E248BA4F31705DFE897C098CD8C5CBBBC3587BAE24643E08D39122A6C0BBD3"
+    },
+    {
+      "File": "call-35.json.gz",
+      "Bytes": 126219,
+      "Sha256": "C7D4B59D245F67AB6E47CC324DF9CA1FAF0B56451374C60007A74BAD9263D43A",
+      "Encoding": "gzip",
+      "StoredBytes": 8459,
+      "StoredSha256": "0F1CF06215F60D66F770E1E643000B3C9836BB7FDD481BA934B00D304E467B48"
+    },
+    {
+      "File": "call-36.json.gz",
+      "Bytes": 992,
+      "Sha256": "1A5E4D7DEC0AC797C9687025A50F5F573FF1C7EA878FC0052B059FB0A338170D",
+      "Encoding": "gzip",
+      "StoredBytes": 449,
+      "StoredSha256": "AEEAA37894C2CCA2330B0BE7842E2FC1215EFF9777C0E8A029761F8B1ABDA664"
+    },
+    {
+      "File": "call-37.json.gz",
+      "Bytes": 126220,
+      "Sha256": "4C90F81BCD4B343D92F1405B5C2B0642E7CACEF63C0F4B2EE25D036B7A6171C5",
+      "Encoding": "gzip",
+      "StoredBytes": 8449,
+      "StoredSha256": "EE9E4233848996250DEDB652D9EC710395FCF60247706279EF5C73B91BE9B853"
+    },
+    {
+      "File": "call-38.json.gz",
+      "Bytes": 993,
+      "Sha256": "81160C838BF014F16A49DCA084F0B95C7114BB9A23F65201F8F4E6244AB1EE96",
+      "Encoding": "gzip",
+      "StoredBytes": 452,
+      "StoredSha256": "CA06DFB07F6AA26B8DD1D7D41D50C7971AA915C6A778BA955498D5153DCE7D23"
+    },
+    {
+      "File": "call-39.json.gz",
+      "Bytes": 126221,
+      "Sha256": "526A83F2A7C2B2C3151411856BE22D9F656BA5795BF2330D388FA8A3B9E048E8",
+      "Encoding": "gzip",
+      "StoredBytes": 8460,
+      "StoredSha256": "7DD079372FFF50821C468FB04C0AAF6AD81D26B29CD5379596F9AF42CC24194F"
+    },
+    {
+      "File": "call-40.json.gz",
+      "Bytes": 991,
+      "Sha256": "752560EC543F669C1316BD6D4805C4F3A1DA3C4FF41D0CC39AC5F7D57E7CEE20",
+      "Encoding": "gzip",
+      "StoredBytes": 447,
+      "StoredSha256": "47C2A600ACB09BD90A92AD67DBF9BE0323BB3DC5B87D668F940722958A9DAB98"
+    },
+    {
+      "File": "call-41.json.gz",
+      "Bytes": 126219,
+      "Sha256": "BD9EDEA15532FFB5746620C80F492AE7C45917F6E8DE8E6100745D1452DCCBF5",
+      "Encoding": "gzip",
+      "StoredBytes": 8456,
+      "StoredSha256": "5FB82A3A7774B6FCB5B17D714B54867EFD2CBC9BA407F4AF9961B0B73DB89EB4"
+    },
+    {
+      "File": "call-42.json.gz",
+      "Bytes": 987,
+      "Sha256": "66728AC712428E8AABAC1E9578BFC5C08A849EC272B897FF193D33544B2B10FC",
+      "Encoding": "gzip",
+      "StoredBytes": 444,
+      "StoredSha256": "70AA33C1A3274AF2C732C650BE498CBD1ECF2C4BF03AA942EC162DCF8221EAC3"
+    },
+    {
+      "File": "call-43.json.gz",
+      "Bytes": 126217,
+      "Sha256": "FF7755B7B6B5CCE47C0B5C2B511D63D03AAB5740C80683C2881CF7F85A09BD2F",
+      "Encoding": "gzip",
+      "StoredBytes": 8452,
+      "StoredSha256": "722F569E44D48E2E9A2E67B5472AFC2EFDB83E14AD619199846A2E0634F45138"
+    },
+    {
+      "File": "call-44.json.gz",
+      "Bytes": 989,
+      "Sha256": "41A223ACEB266C70BF49A401E1303A50C245F888420A627769234476203008A6",
+      "Encoding": "gzip",
+      "StoredBytes": 448,
+      "StoredSha256": "CBEF214294BAE621B8C62000ECE8F742167BAA9443ED28C2B7F65BB6DF62C404"
+    },
+    {
+      "File": "call-45.json.gz",
+      "Bytes": 126225,
+      "Sha256": "56C90B9DDDDBCF81BCAF1BE2B72DB5EF188075F8308760784EEBDD82460B86DB",
+      "Encoding": "gzip",
+      "StoredBytes": 8462,
+      "StoredSha256": "D63AF49FBE0D1EFF3BA3AA5D959CC4DC5D18BA1FACEA8CBDF506F209A259AF76"
+    },
+    {
+      "File": "call-46.json.gz",
+      "Bytes": 987,
+      "Sha256": "174A145712DC58F8A5485DD628677F3114FE896F3066E565D744BA9495410DE2",
+      "Encoding": "gzip",
+      "StoredBytes": 446,
+      "StoredSha256": "D3B256D5E5031C2977056E6CC943136698379B11E3A22A11ADD67D27250D227C"
+    },
+    {
+      "File": "call-47.json.gz",
+      "Bytes": 126243,
+      "Sha256": "57D1B35FACB9D6AC4A24A3F076E55978AFD7D51AD50B35FB5CB91FA9B8BBF663",
+      "Encoding": "gzip",
+      "StoredBytes": 8465,
+      "StoredSha256": "73DCD4EEAAE468241DCA209570C66DC93F6BDC12E44C2C504BE06A804686FE6D"
+    },
+    {
+      "File": "call-48.json.gz",
+      "Bytes": 989,
+      "Sha256": "51C95BC7577C74A72D5E8C6CADC4B44C0162843D10534B041AE8897BB6D1C2E6",
+      "Encoding": "gzip",
+      "StoredBytes": 447,
+      "StoredSha256": "EE2366ADEA39BDBD3317E2CBC024D5469369181BC44E366DC2FC8A2489EEDFC0"
+    },
+    {
+      "File": "call-49.json.gz",
+      "Bytes": 116379,
+      "Sha256": "FD749F5BE074DD38C6AA4785A2784777A0316205D6B0ECE610FEB9CDED45AA80",
+      "Encoding": "gzip",
+      "StoredBytes": 7295,
+      "StoredSha256": "AE6E30C03A19C59D07941499B76EF83D7BFB7E296BD19D66B0A4FBBEA931D56E"
+    },
+    {
+      "File": "call-50.json.gz",
+      "Bytes": 925,
+      "Sha256": "9EB5D6BBD2F440CB5D2552ECFA4C90244C2947E5D306493383E678088EBF3E69",
+      "Encoding": "gzip",
+      "StoredBytes": 430,
+      "StoredSha256": "26DC2424D3891F49A0C3E1089E3DF66013AAF921CF06AA005AFED324E7ED8F59"
+    },
+    {
+      "File": "call-51.json.gz",
+      "Bytes": 126314,
+      "Sha256": "B0FCE43718FA162EB6F5FBBDD8A93627CACBE7BF24AC6297AD5C244D7605F6E2",
+      "Encoding": "gzip",
+      "StoredBytes": 8495,
+      "StoredSha256": "C94BB0396BBCB1D7C726291B3EA1458AFFE61704E715E3B8EE08388866825158"
+    },
+    {
+      "File": "call-52.json.gz",
+      "Bytes": 953,
+      "Sha256": "2F1E100E81E3FA7EB07D20A01FF3E1DFE8620F60C0ABAECE6A11DAD2EB0F3789",
+      "Encoding": "gzip",
+      "StoredBytes": 446,
+      "StoredSha256": "EFC72F6523435B1AAF8BA04B9EC58802E64D2E997037FA20FF8DCA4BDEA4B5ED"
+    },
+    {
+      "File": "call-53.json.gz",
+      "Bytes": 126213,
+      "Sha256": "8263EE71725D9F99FFBFC6832C6DC8AD28151FB3DFFEE6841C73A24BC4D8B861",
+      "Encoding": "gzip",
+      "StoredBytes": 8456,
+      "StoredSha256": "C0413C0680CDC45AF24F7352A715010A978888754F8EECE931EE3FF5E71084D7"
+    },
+    {
+      "File": "call-54.json.gz",
+      "Bytes": 959,
+      "Sha256": "351C88CA28225F62D21C7884C7A2C62A78A7E0BD580224B7BDA52FFA19B32AE0",
+      "Encoding": "gzip",
+      "StoredBytes": 457,
+      "StoredSha256": "B1D00FD38BB5876972C72F70657CC5599E25C27589903FBBA96DC8417E35BC16"
+    },
+    {
+      "File": "call-55.json.gz",
+      "Bytes": 1304,
+      "Sha256": "F32F403ECC0F1AF3D694156C8FEC5C096E13F983BDFC21D560F50E6F9F736436",
+      "Encoding": "gzip",
+      "StoredBytes": 493,
+      "StoredSha256": "0DE444C331D986703CC4D9F4D835C02F7092C35D2DF441667D46E10559299C65"
+    },
+    {
+      "File": "call-56.json.gz",
+      "Bytes": 930,
+      "Sha256": "F53B5F36AABD743E9111822F1E34B6C7F2B54D1A2E78B9B8511D3271E3353A2A",
+      "Encoding": "gzip",
+      "StoredBytes": 434,
+      "StoredSha256": "1478DD74497CECF6EF56020C97FE18F26EA00BF78A8D56A196E3DDA906CAB022"
+    },
+    {
+      "File": "call-57.json.gz",
+      "Bytes": 1320,
+      "Sha256": "B7BFF2615C4CF61A158876FA5B596FE98A9406B492E97FCAC9F4C89585FD856F",
+      "Encoding": "gzip",
+      "StoredBytes": 501,
+      "StoredSha256": "6FA166CFF70325B5A488BFCA080A2172E26168E94519D67AE750705E5FF6F461"
+    },
+    {
+      "File": "call-58.json.gz",
+      "Bytes": 929,
+      "Sha256": "29E03BAF7E1D58D763A9C145117880CC58175D39A205D8B8307722EBF123E49C",
+      "Encoding": "gzip",
+      "StoredBytes": 443,
+      "StoredSha256": "5D83842DD34FFAB1080F2EDC7484072F3AB2FC8D02FB93E7CC2E67F4A0847D34"
+    },
+    {
+      "File": "call-59.json.gz",
+      "Bytes": 1289,
+      "Sha256": "31FB9A6C634F77881F483B8F885D9ABE5146041B0B91CCC8F26B31B1C838427C",
+      "Encoding": "gzip",
+      "StoredBytes": 481,
+      "StoredSha256": "D01D5AF3E9AD770DFA4D114680E1902E74F18026DABF56A85D602A6CAF64BE43"
+    },
+    {
+      "File": "call-60.json.gz",
+      "Bytes": 949,
+      "Sha256": "54DDED7BA3D563B81899F806ACEEBF1191A2EB0FCA13B5457749F47ED92A2608",
+      "Encoding": "gzip",
+      "StoredBytes": 457,
+      "StoredSha256": "E25C36F86F00132D7FA0E22EC3D66CE6A128D0D3C901DC177F58A0A1C4A48E1E"
+    },
+    {
+      "File": "call-61.json.gz",
+      "Bytes": 126207,
+      "Sha256": "F00368B36DFEE21ADD48403708655E68BC01563D345952EF61C065BFFBA84E27",
+      "Encoding": "gzip",
+      "StoredBytes": 8441,
+      "StoredSha256": "15F7C17C022E3EA42A9AE9A4800E587E918FAFD1EFB2B8DE41854C24F698F518"
+    },
+    {
+      "File": "call-62.json.gz",
+      "Bytes": 2731,
+      "Sha256": "43A6D9B2B50CB0DAAF2F9ECC22A1A1F5C69C5F3632995A117D0D7A4B54AB104C",
+      "Encoding": "gzip",
+      "StoredBytes": 783,
+      "StoredSha256": "A9F38521735157B3800707F2DB3731DAD5472593FD375BDDBA820DD8F5AE58E6"
+    },
+    {
+      "File": "call-63.json.gz",
+      "Bytes": 1420,
+      "Sha256": "EFFC0235E9277E10C1EC1C908D82AB6670931197F1259CFC7ABC19F4A84EBACE",
+      "Encoding": "gzip",
+      "StoredBytes": 572,
+      "StoredSha256": "C62BDAEEB4DF01C09C17A586392750E40BD433DE61AD8CDDE2EB5C5D1EB8BFFD"
+    },
+    {
+      "File": "call-64.json.gz",
+      "Bytes": 1865,
+      "Sha256": "362FF1C00F400A73D46DC3509F1653389F0494A9F164397D4BC539E30A17D5E5",
+      "Encoding": "gzip",
+      "StoredBytes": 625,
+      "StoredSha256": "3F6746918BC6C662FE2FDA12955715D7834418018E0D2C1A0EFB18E8CD7241DB"
+    },
+    {
+      "File": "call-65.json.gz",
+      "Bytes": 1865,
+      "Sha256": "737CFA1EC3A25482870A3F155B58D4E941146C6A6725253E17BC416F8F2A214B",
+      "Encoding": "gzip",
+      "StoredBytes": 614,
+      "StoredSha256": "031AA36D9E53D812171DAAFDF8FCD9F72ED67D7255D97EEFD9F506E9D59276A9"
+    },
+    {
+      "File": "call-66.json.gz",
+      "Bytes": 935,
+      "Sha256": "AF7A1D351252983E92EDE5BFD81A72FED0BF39785B5C4F4BDD30CB94792BE8C6",
+      "Encoding": "gzip",
+      "StoredBytes": 427,
+      "StoredSha256": "F46D41455D5FC0B515C08A6D0041BD6FA3F8E7064A840D0FEC401D5777CE4890"
+    },
+    {
+      "File": "call-67.json.gz",
+      "Bytes": 937,
+      "Sha256": "70E01485A059DF16E44702335DF5C5582BA8F27092A56DD0F44C294E67E6E02F",
+      "Encoding": "gzip",
+      "StoredBytes": 426,
+      "StoredSha256": "8E48F4C2783B21199B906FEFC7FD0C88435D4383DDD59B507F4CD677CFF0F7D1"
+    },
+    {
+      "File": "call-68.json.gz",
+      "Bytes": 923,
+      "Sha256": "9A9D83DD7A73F671AAB2BDD7419B386DDC05D576FE9945084C514B081B09C5B7",
+      "Encoding": "gzip",
+      "StoredBytes": 419,
+      "StoredSha256": "87CF6C878E831C4DFB8ECA5E80D8CB2CB769344A1563B6F546101054EF15FC9D"
+    },
+    {
+      "File": "call-69.json.gz",
+      "Bytes": 925,
+      "Sha256": "EAE2C9FD111CA11291378E5CCBCFBB3C7561AC9D2D02DCC559BB693C20AD895B",
+      "Encoding": "gzip",
+      "StoredBytes": 417,
+      "StoredSha256": "78F38449F196E76C2E20264919340544F97D3B67B6C9CFC359027ECC8CB8337A"
+    },
+    {
+      "File": "call-70.json.gz",
+      "Bytes": 931,
+      "Sha256": "6A6333AB42E37E970455FB3786E27402C7CE5826BEBF78E792C35B48378EE49F",
+      "Encoding": "gzip",
+      "StoredBytes": 419,
+      "StoredSha256": "402BBA9AF4CB12010F6D455DC82F69951277F2296E8EE0E257DD5E61DDE84416"
+    },
+    {
+      "File": "call-71.json.gz",
+      "Bytes": 933,
+      "Sha256": "5D47F3F593B2F167DB45E2E43C917A019B95AB2924AC7893AAF169FF6AA171FE",
+      "Encoding": "gzip",
+      "StoredBytes": 419,
+      "StoredSha256": "A8DA63A7C4BD27D0FA77027298537C55D801B5275B6455ACC5ECB2D6A1C0EBFA"
+    },
+    {
+      "File": "call-72.json.gz",
+      "Bytes": 935,
+      "Sha256": "B9867E3D23DCE1BF59CF24A4D19D800B948AA5A11B21B41B395DE2F2C21F9754",
+      "Encoding": "gzip",
+      "StoredBytes": 420,
+      "StoredSha256": "865B3BBCBFD48EA96D22BDEF6609881E702A9763C4E1FD57BDC5891DE06AF5CC"
+    },
+    {
+      "File": "call-73.json.gz",
+      "Bytes": 937,
+      "Sha256": "045D95D80F3DF5BF8D8B9A35B611873CF308C3058769D16548C31D0915A41D57",
+      "Encoding": "gzip",
+      "StoredBytes": 420,
+      "StoredSha256": "278924964EDB80C8CD374FE0F18752EBA4152E2F6455976AB93B1ECB8B59F462"
+    },
+    {
+      "File": "format-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "96A977F329EC3C59092D40E041A019B49DCF03CA04055E177AA0CCB8C27234DF",
+      "Encoding": "gzip",
+      "StoredBytes": 40,
+      "StoredSha256": "10D1F29FBF0F4CE6D2D3ACA6A94AB91FAF21C712B389879848ED269BD3C77D6F"
+    },
+    {
+      "File": "format-2.log.gz",
+      "Bytes": 42,
+      "Sha256": "10869B88A75066AA23546EF1F95FCD4678C3FB92A56ED46EF91688052B67976A",
+      "Encoding": "gzip",
+      "StoredBytes": 58,
+      "StoredSha256": "9E034AAA1899B92E6331269CD6D05434C6C7961950B18D5A76245A92C9CD89FE"
+    },
+    {
+      "File": "format-check-2.log.gz",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "Encoding": "gzip",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "File": "mypy-1.log.gz",
+      "Bytes": 1091,
+      "Sha256": "CA4BE58FF02727CF5A6358079B2EC993F77C38D0BAF15AA953B0D5F92EAE0168",
+      "Encoding": "gzip",
+      "StoredBytes": 437,
+      "StoredSha256": "A33FB1DA38B349CB34890239A3D9670036E4B1972DC19AA5F26B48A46DC9D254"
+    },
+    {
+      "File": "mypy-2.log.gz",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "preparation.json.gz",
+      "Bytes": 13919084,
+      "Sha256": "CE05C2B3B7FBEDE496A5D99289779DFDA18149CFE6BE171EC2CFA19B6EEF1317",
+      "Encoding": "gzip",
+      "StoredBytes": 612283,
+      "StoredSha256": "8C71F00BDE21AB080256C0814E381505BEA82B7F4946040A6EE611F9D5631618"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Bytes": 1776,
+      "Sha256": "7748934C6C5C015B24674AF1F93ECD61292E656A46C3F4CDC36564AC76615B08",
+      "Encoding": "gzip",
+      "StoredBytes": 917,
+      "StoredSha256": "00BD1B61FE2909113A43CFA35D570581AB5079EE869863CC7D35A5B2EB2BBF8F"
+    },
+    {
+      "File": "ruff-1.log.gz",
+      "Bytes": 3306,
+      "Sha256": "DC088C96C1FE1A9830CE6E0D354F61EE6CDA8F59094CD36DD9176453A40B689A",
+      "Encoding": "gzip",
+      "StoredBytes": 800,
+      "StoredSha256": "E03927950521C8462E5D8545C2273D3228496B974B93437E5F7BB59FA5CAFBAD"
+    },
+    {
+      "File": "ruff-2.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "ruff-project-1.log.gz",
+      "Bytes": 3098,
+      "Sha256": "44EFF9921724C4D45B959D3E6BDD2E3CECB3F14831C368A6DE0A5BF7EFB88316",
+      "Encoding": "gzip",
+      "StoredBytes": 779,
+      "StoredSha256": "0214B7D46EFCB80FD734FF5567A8B18F347378F520F1A73275EAF12E1C6CDCBC"
+    },
+    {
+      "File": "tests-1.log.gz",
+      "Bytes": 100,
+      "Sha256": "C2E259BE398C298F4841451DB691EBC06F1D6CB614A4C8A88B37DBDFB42B295D",
+      "Encoding": "gzip",
+      "StoredBytes": 53,
+      "StoredSha256": "2CA485E7F702516669FE0E61443DAC90219F4E9F4DCDB2D81958DA993221514B"
+    },
+    {
+      "File": "tests-2.log.gz",
+      "Bytes": 100,
+      "Sha256": "890F48ECEB2441E35F1B85E169BFE47FD3C054F2B3337EA7739C277C615C4BBA",
+      "Encoding": "gzip",
+      "StoredBytes": 53,
+      "StoredSha256": "22D266407701F1F3B0A3463FB6F28265FF03AF9F41703811A770B74896422D57"
+    },
+    {
+      "File": "validate.py.gz",
+      "Bytes": 3355,
+      "Sha256": "886B5440C9A180FDBF25B57E940B0FD859239CA04BE817DE07294B25E08011A8",
+      "Encoding": "gzip",
+      "StoredBytes": 1466,
+      "StoredSha256": "7A0ECF53B3D7BF98E3B0C4108E2647F3C55790F9CD453D26CD635282F452B55E"
+    },
+    {
+      "File": "validation.json.gz",
+      "Bytes": 33741,
+      "Sha256": "71FFB03F20C273D0F66E1511AF11BD6DD47C8C900AA801F49C2671996860F5AF",
+      "Encoding": "gzip",
+      "StoredBytes": 6526,
+      "StoredSha256": "61DF315AFC098462D46BD0A63C47C2DF020421BA391CBC8C59A3D8E05CB9F849"
+    },
+    {
+      "File": "validation.stderr.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "validation.stdout.json.gz",
+      "Bytes": 263,
+      "Sha256": "1E27E1766DEFAB1924D63F82F6760A1DACACD5A7B9CB6044C150599D9EA00CA7",
+      "Encoding": "gzip",
+      "StoredBytes": 210,
+      "StoredSha256": "FD58EA1161F5D1C633DB5685FDA63D354128D7F2B02C408298FF8DF1DCADDD31"
+    }
+  ],
+  "ActualPythonCalls": 43,
+  "PendingNativeRequests": 31,
+  "NativeLaunches": 0,
+  "RegisteredSourceGeneration": false
+}
