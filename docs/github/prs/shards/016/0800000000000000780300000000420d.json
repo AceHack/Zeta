@@ -1,0 +1,12 @@
+{
+  "pr_number": 16909,
+  "archive_path": "docs/history/pr-reviews/PR-16909-feat-creds-overlay-argv-conf-take-frost-result-tpmrm0-is-not-present.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T03:33:06.685Z",
+  "schema_version": "v1",
+  "commit_sha": "38c27d061877a73d1b0d1facb18f78417b942fb4",
+  "title": "feat(creds): Overlay argv/conf take frost result; tpmrm0 is not present",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T03:32:21Z",
+  "head_ref": "cursor/frost-argv-conf-27c5"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16907,
+  "archive_path": "docs/history/pr-reviews/PR-16907-feat-creds-overlay-env-join-takes-frost-result-tpmrm0-is-not-present.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T03:05:40.169Z",
+  "schema_version": "v1",
+  "commit_sha": "e33751f92208ee512d2b5a3c102737e9beb685e5",
+  "title": "feat(creds): Overlay env join takes frost result; tpmrm0 is not present",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T03:04:59Z",
+  "head_ref": "cursor/frost-overlay-env-27c5"
+}
