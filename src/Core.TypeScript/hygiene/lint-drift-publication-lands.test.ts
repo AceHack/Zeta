@@ -18,11 +18,13 @@
 // red here and not only in CI.
 
 import { describe, expect, test } from "bun:test";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  SETTINGS_EXPECTED,
+  WORKFLOW_DIR,
   auditDir,
   auditWorkflow,
   blankFullLineComments,
@@ -30,6 +32,7 @@ import {
   isSwallowed,
   logicalCommands,
   pushTargetsMain,
+  recordedWorkflowStates,
   scanSteps,
 } from "./lint-drift-publication-lands.ts";
 
@@ -282,5 +285,50 @@ describe("the real tree", () => {
     const { lanes, violations } = auditDir(dir);
     expect(lanes).toEqual(["drift-sweep.yml"]);
     expect(rules(violations)).toEqual(["capability", "route"]);
+  });
+});
+
+describe("SHAPE IS NOT LIVENESS — enablement is read, not assumed", () => {
+  // This lint exists because a lane computed a ledger and could not publish it for ten days
+  // behind a green check. A lane that is correctly shaped and SWITCHED OFF satisfies every
+  // shape rule and would print a bare "ok" — the same green over a frozen dashboard, one
+  // level out. So the recorded state is read and reported.
+  const fixture = (workflows: unknown): string => {
+    const root = mkdtempSync(join(tmpdir(), "drift-states-"));
+    mkdirSync(join(root, "src/Core.TypeScript/hygiene"), { recursive: true });
+    writeFileSync(join(root, SETTINGS_EXPECTED), JSON.stringify({ workflows }));
+    return root;
+  };
+
+  test("reads path -> state from the settings expectation", () => {
+    const root = fixture([
+      { name: "a", path: ".github/workflows/drift-sweep.yml", state: "disabled_manually" },
+      { name: "b", path: ".github/workflows/other.yml", state: "active" },
+    ]);
+    const m = recordedWorkflowStates(root);
+    expect(m.get(".github/workflows/drift-sweep.yml")).toBe("disabled_manually");
+    expect(m.get(".github/workflows/other.yml")).toBe("active");
+  });
+
+  test("a missing expectation file yields NO states rather than claiming every lane is live", () => {
+    // The dangerous default is the opposite: absent data read as "all active" would restore
+    // exactly the reassurance this change removes.
+    const root = mkdtempSync(join(tmpdir(), "drift-states-none-"));
+    expect(recordedWorkflowStates(root).size).toBe(0);
+  });
+
+  test("malformed entries are skipped, not guessed at", () => {
+    const root = fixture([{ path: 42, state: "active" }, { path: ".github/workflows/x.yml" }]);
+    expect(recordedWorkflowStates(root).size).toBe(0);
+  });
+
+  test("against the real tree: the states map is populated and covers the lanes it validates", () => {
+    // Non-vacuity: if the expectation file moved or its shape changed, this goes red rather
+    // than silently reporting "state unrecorded" for everything.
+    const states = recordedWorkflowStates(process.cwd());
+    expect(states.size).toBeGreaterThan(50);
+    const { lanes } = auditDir(WORKFLOW_DIR);
+    expect(lanes.length).toBeGreaterThan(0);
+    for (const l of lanes) expect(states.has(`.github/workflows/${l}`)).toBe(true);
   });
 });
