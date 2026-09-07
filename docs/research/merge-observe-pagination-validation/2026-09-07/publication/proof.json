@@ -1,0 +1,257 @@
+{
+  "ObservedAtUtc": "2026-09-07T16:02:41.585926+00:00",
+  "Head": "4f8cde2af19c5c3bc5960ebd253280088cb340a3",
+  "Merge": "7fafe1f883599840c5e65c08ce5ebcaec3a0365d",
+  "OriginMain": "7fafe1f883599840c5e65c08ce5ebcaec3a0365d",
+  "RosterMeaning": "Exact squash commit changed paths, compared byte-for-byte to checked head; not all unrelated main history",
+  "AncestryExitCode": 0,
+  "SquashMessageMatchesApi": true,
+  "ExpectedFullSignedBodyContained": true,
+  "ChangedFiles": [
+    {
+      "File": "docs/research/2026-09-07-merge-observe-pagination-correction.md",
+      "Bytes": 7936,
+      "Sha256": "48D9CE650447E9FB47DEBE67AA8A96BD7F777A022A33077DE40FE59374EC8954"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/README.md",
+      "Bytes": 6715,
+      "Sha256": "1FC8B488E61EEBD2678B02D3E082D497E4E0D1C1FB4B16745B65A3859E6B50CF"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/baseline-witness-summary.json",
+      "Bytes": 3763,
+      "Sha256": "73B90DD46341620508D6681C6129D7630F5C7542BCDF9C00E6CDDA24609379BD"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/evidence-manifest.json",
+      "Bytes": 11096,
+      "Sha256": "42F157460B233149CF4176C3F6B13A538FB2957543DE1B6EDF32D49AA6E9ACFE"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-audit-result.json.gz",
+      "Bytes": 810,
+      "Sha256": "C5C2771C2BA508CA32C9CDE8F76A8D7963C2D624F362A80AFB2728A880EEC63A"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-audit.ts.gz",
+      "Bytes": 1154,
+      "Sha256": "D3D917F22889B40F55A679885F153225235D3012667267003172386BD8AF657B"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-baseline-replay-attempt-1.log.gz",
+      "Bytes": 213,
+      "Sha256": "450C00AB2EEAAB958DACCA59836A81307B9184BDA2191CCC6244938CAAF9388B"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-baseline-replay-attempt-1.ts.gz",
+      "Bytes": 1834,
+      "Sha256": "08BEB4D07DF3B1D3F5BF13BC2547EA8C6FFFFDB214440DC48BB9C0E036101EE8"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-baseline-replay-attempt-2.log.gz",
+      "Bytes": 764,
+      "Sha256": "A6F27BE7ED2343A185EDB4C6B483E14FD968295585C8A0EB96CFA5CAFE66EFEA"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-baseline-replay-result.json.gz",
+      "Bytes": 8106,
+      "Sha256": "9FDE52D57E715FB88D92F17E3333BB09693F949711C1B29FDDF5AAFD490BC205"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-baseline-replay.ts.gz",
+      "Bytes": 1833,
+      "Sha256": "BCE64F6FB793C262EF9D2BA748CA4406F9F96756300962166CF722F45396F2C1"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-build-graph.log.gz",
+      "Bytes": 98,
+      "Sha256": "6F9E033508239AC699BBDB3B70426C09B88E534076AC80D3CC5C2200DF863766"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-candidate-request-1.json.gz",
+      "Bytes": 596,
+      "Sha256": "395AE6B08816709F87EFF966A5DF513C36CBDA6E64C0C4599B97EB26457178F4"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-candidate-response-1.json.gz",
+      "Bytes": 2117,
+      "Sha256": "2D6E7ED5963370748B1ACF3DE7D7AA3A3E9F6F3B58B59E62DD1849DFFECA85A2"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-candidate-stderr-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-candidate-summary.json.gz",
+      "Bytes": 785,
+      "Sha256": "D614112CB51772D0FDB040985345752011D85562F67C9A8972999F0AC1233D2A"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-check-enums.json.gz",
+      "Bytes": 196,
+      "Sha256": "F9BD9B0939C1771700FD7AF2A08D320D80A7B258406E163CDF60DF96AA640C78"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-claim-push.log.gz",
+      "Bytes": 732,
+      "Sha256": "80EAF82BB69F1471E17B04B23A6C2B1480733AFB706110D9222476A480F45BC8"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-request-1.json.gz",
+      "Bytes": 596,
+      "Sha256": "FE01906088ADAD9F39ABABBEAF29089F96998DA31AFB7A56ADE902BCBBB569A1"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-request-2.json.gz",
+      "Bytes": 653,
+      "Sha256": "C8203947106695A5DBDC06672522CB964C9FEFB4A3286081719BD7B93866F320"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-response-1.json.gz",
+      "Bytes": 2295,
+      "Sha256": "1B3C8D0F3C3F2D2FEA743CD1D8AE30393B2EC5E7872B688D0066414569A515FE"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-response-2.json.gz",
+      "Bytes": 584,
+      "Sha256": "5247B5F4A951829867C921B313EF4A97938E0FC5BF16458A8A475E1974873434"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-stderr-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-stderr-2.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-closed-candidate-summary.json.gz",
+      "Bytes": 1004,
+      "Sha256": "FD2BF03A1FA93D29F5998C18AC5D0FD5B81C7D85F42D7786C8E405A9BE213A48"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-enums.json.gz",
+      "Bytes": 168,
+      "Sha256": "1800DC5AF910F4965E5292D1B903C6EA6D9BF9153280382B66EE4A2B91D2BE8D"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-focused-attempt-1.log.gz",
+      "Bytes": 1587,
+      "Sha256": "F87C66A7DF8EAC83DBDB00C92A618E0A8F88A34B6304A370B213CE0B709CB39D"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-focused-attempt-2.log.gz",
+      "Bytes": 2539,
+      "Sha256": "77D0E254E9FF35CC086A06E139C300C1942318EE9E8A61D5ECFF7428AD031BC9"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-forge-suite-attempt-1.log.gz",
+      "Bytes": 14893,
+      "Sha256": "28CFC34C091FA9EB6A8405FD499ADC430CE37D97E56F4EC60F307D56ED10B0C5"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-forge-suite-pinned-attempt-1.log.gz",
+      "Bytes": 14801,
+      "Sha256": "0CD412B4EF16A860FD4D33FEF96BC990395E42BB8A91DCCC05B969640DE77F34"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-github-status.json.gz",
+      "Bytes": 1134,
+      "Sha256": "DA34B21D930DC9A3D4EBB91A143FE41E8C929414D013B84A2DAED4E503121C29"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-live-claims-before-write.txt.gz",
+      "Bytes": 506,
+      "Sha256": "B6EAB3C1FBD1C7FA2D83EEC345586E1428AA5E120FD4ADE7082F8C4948DA1270"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-live-first.json.gz",
+      "Bytes": 1203,
+      "Sha256": "2E06E31203F38B84D6B067DC7D3B3C80E8520095990B9B7EAC5FAEEB2D16AD7E"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-live-second.json.gz",
+      "Bytes": 982,
+      "Sha256": "F2967C2105FB505D80C06E9FD405D279B6CF01D710CC31907C82E0AE4E46FEC9"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-project-tsc-attempt-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-quick-attempt-1.log.gz",
+      "Bytes": 768,
+      "Sha256": "49B053D6BC67B7732D3B98F123E0CEC2C60151C115F5496A4EA6F47E4B2EC801"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-quick-attempt-2.log.gz",
+      "Bytes": 405,
+      "Sha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-status-enums.json.gz",
+      "Bytes": 108,
+      "Sha256": "0181362D8A1DAFE053AECA15579F472A0A934022D4AF2AE5CC2DC40F98042F6D"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-typecheck-attempt-1.log.gz",
+      "Bytes": 281,
+      "Sha256": "0D98B99BC1FDF5C90A9F7300F9B424F72D075FC06232926FD55076EE8C4F075D"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/merge-observe-typecheck-attempt-2.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "docs/research/merge-observe-pagination-validation/2026-09-07/source-snapshot.json",
+      "Bytes": 2708,
+      "Sha256": "F448370E2FB3A11D82A0B15FEA4AA4491C2D754C2AA95C32EC5BB295FD83AE76"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-adapter.test.ts",
+      "Bytes": 12181,
+      "Sha256": "2172F32AF113C6CA05708E4F13D337882E6A5FC3FB0ABE38846A0E2161C40A76"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe-pages.test.ts",
+      "Bytes": 11043,
+      "Sha256": "BB94EB05337DAEF0A47CE94AC50354314F4EE8C8D5CB38F8088620FC61A570F1"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe-pages.ts",
+      "Bytes": 11430,
+      "Sha256": "1988926CCC79A4204D2CC3D2650FFDD7082097363A42EF980562520CE70B1577"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe.test.ts",
+      "Bytes": 13672,
+      "Sha256": "821B50DBBBB354975AD7BA98A6C38C4D19DA86FF3FE506B26E5837BE6CCC30B5"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe.ts",
+      "Bytes": 14969,
+      "Sha256": "2139AD6FB6A5B803AC257F831079D76E3B6E2CED23742F84C7797CDB1B2485CB"
+    },
+    {
+      "File": "workitems/done/2026/09/081M1Y58Y72087G0R003820K4Q-reject-truncated-github-merge-receipts-and-page-every-blocke.md",
+      "Bytes": 1616,
+      "Sha256": "C842F5F60B490B75F5C05FFB874AB572625B52279F4F87EB94A5D83B5AA4C398"
+    },
+    {
+      "File": "workitems/events/2026/09/07/080d03e2a3c71810a01300082d267f6d.json",
+      "Bytes": 496,
+      "Sha256": "A48CFADED43FD2D5429535DE881D1C349F8E1974923DE5DF6589FE8FF9B4945C"
+    },
+    {
+      "File": "workitems/events/2026/09/07/080d03e37f69e010a013000879fcf323.json",
+      "Bytes": 238,
+      "Sha256": "357B2895AACE2238BED9B74D253708FCD485993EA1D01FAE2CC2ABE8E671DBE4"
+    }
+  ]
+}
