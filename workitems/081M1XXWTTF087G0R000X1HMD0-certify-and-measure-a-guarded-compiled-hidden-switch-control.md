@@ -85,8 +85,8 @@ are imported under this task in separate commits. The protocol indexes
 original/import commit identities and verified byte counts/SHA256 values.
 Independent protocol review accepted the final chronology correction
 `75718b9a8`; no material complete-protocol finding remains. Registration
-publication is next, followed by the explicit prior-study main dependency
-before any implementation.
+publication is complete as recorded below; the explicit prior-study main
+dependency still precedes any implementation.
 
 The [complete independent review](../docs/research/2026-09-07-hidden-switch-compiled-protocol-review.md)
 is imported as `ecf8afdfb` from original `be7e9ab616728a1cf92181567e7dd1a54496c54a`.
@@ -94,3 +94,15 @@ The protocol records both reviewers, the exact final prefreeze SHA256,
 original-history provenance refs, and the remote-verification freeze
 condition. The registration tag will be immutable; its remote proof is
 retained outside the frozen tree. No implementation exists at this step.
+
+## Remote registration proof
+
+The immutable annotated registration tag was remotely verified at
+2026-09-07T13:21:45Z, peeled commit `8710ae4f4`, tag object
+`52cfa5665c2e21cdfc2be6a08b4b159c1048bb04`. The
+[publication record and raw proof](../docs/research/hidden-switch-compiled-validation/2026-09-07/README.md)
+retain exact protocol/tag/source identities, original-history refs, and
+both successful sixteen-check publication logs. This follow-up preserves
+proof outside the frozen tag and changes no registered protocol bytes.
+Implementation has not started and still waits for prior-study main
+integration. No guard, executable certificate, registered source or measurement exists.

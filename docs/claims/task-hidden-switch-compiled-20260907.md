@@ -4,7 +4,7 @@
 - **Co-claim review session:** `codex/compiled-controller-review-20260907-a682`
 - **Harness:** codex
 - **Claimed at:** 2026-09-07T12:37:00Z
-- **ETA:** Accepted protocol registration publication; implementation waits for prior-study main integration.
+- **ETA:** Registration remotely frozen; implementation waits for prior-study main integration.
 - **Scope:** Separately register, certify and measure action-equivalent guarded compilation of the fixed hidden-switch controller, with exact-action refusal gates and matched action-only services.
 - **Durable target:** Work item `081M1XXWTTF087G0R000X1HMD0`; `docs/research/2026-09-07-hidden-switch-compiled-protocol.md`; subsequent indexed source, certificate, raw results and review.
 
@@ -44,3 +44,10 @@ Remote verification is the freeze event; its proof is recorded separately.
 No guard generation or implementation precedes both that event and the
 prior-study main dependency. The separate implementation archive remains
 required before registered source generation or measurement.
+
+Registration was remotely verified at 2026-09-07T13:21:45Z, tag object
+`52cfa5665c2e21cdfc2be6a08b4b159c1048bb04`, peeled commit `8710ae4f4`.
+The [publication record](../research/hidden-switch-compiled-validation/2026-09-07/README.md)
+retains raw proof and both successful sixteen-check gates. No scientific
+implementation or source generation has started; the named dependency
+is the prior study reaching main before this task implements anything.
