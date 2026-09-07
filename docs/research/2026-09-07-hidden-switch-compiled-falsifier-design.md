@@ -504,3 +504,7 @@ For the initial documentation-only drafts, focused Markdown lint, all six
 repository hygiene checks and diff whitespace validation passed. No native
 build, Python policy/test execution or experiment was needed or performed
 in that design phase. Subsequent source validation is recorded separately.
+
+The [pure checker validation record](2026-09-07-hidden-switch-compiled-falsifier-validation.md)
+preserves the implementation, original and repaired test outcomes, source
+review and remaining native/outer/runtime admission obligations.
