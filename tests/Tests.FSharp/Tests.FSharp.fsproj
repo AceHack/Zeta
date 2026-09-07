@@ -95,6 +95,9 @@
     <Compile Include="../../src/Research.FSharp/HiddenSwitchPolicy.fs" Link="Research/HiddenSwitchPolicy.fs" />
     <Compile Include="../../src/Research.FSharp/HiddenSwitchExperiment.fs" Link="Research/HiddenSwitchExperiment.fs" />
     <Compile Include="HiddenSwitch.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledReceipt.fs" Link="Research/HiddenSwitchCompiledReceipt.fs" />
+    <Compile Include="../../src/Research.FSharp/HiddenSwitchCompiledPolicy.fs" Link="Research/HiddenSwitchCompiledPolicy.fs" />
+    <Compile Include="HiddenSwitchCompiled.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />
