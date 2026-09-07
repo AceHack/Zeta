@@ -300,3 +300,46 @@ Every successfully written physical prefix precedes its dependent read.
 First-failure, publication and cleanup limitations remain as previously
 reviewed. All full runtime/body/closure flags remain false. The separately
 numbered expanded offline attempt has not yet run at this preparation pin.
+
+## First mapped130 offline attempt
+
+The [actual expanded-attempt inventory](clrmd-mapped-attempt-1/manifest.json)
+retains 700 lossless records from execution head
+`5a0ff905e947f2d7aa7ead394183098c2060f009`, using source `af90bfc9e` and
+independent review `619e33121194fd047e7b3fbd3a4d308b3459cc24`. This was one
+separately named attempt against the unchanged fresh dump2, with no target
+launch or registered source draw. The helper PID was 24347; it exited zero,
+and the driver completed at 23:11:38.647443 UTC without cleanup failures.
+
+All 130 declared candidates matched their stored physical bytes, exact
+compiler bytes and actual current DAC hot extents: 34,660 bytes total, every
+cold start and size zero. Copied PE tokens, declaring nested type/name and IL
+matched captured reflection; actual DAC token/type/name/module/current-body
+identity matched each row. Full actual signatures are retained. This does not
+prove a dump-derived MVID, generic-instantiation theorem, or that every
+prepared method was dynamically invoked by hand preparation.
+
+The 84,120-byte helper output has SHA256
+`23A1A78D2DC80E5D4B370C890C4022C4FCCC5345879D23D90F8BD665F298F34B`.
+The 337,193-byte journal contains 787 rows, including each copied definition
+and available method extent before its dependent identity judgment. Its
+SHA256 is `92E5D6B859814630084936CD873E119C709F8F1461D500627F710640AA3A0850`.
+All 48 helper/source/host pins and 31 retained helper copies still match;
+prelaunch target/module/capture checks and the held dump descriptor remained
+unchanged. Raw executable copies and the 6,208,508,456-byte dump stay local-only.
+
+Complete runtime enumeration returned the expected path/base/version/build
+identity. Actual locator requests were zero; the local DAC path/file matched.
+The dyld counts were 358/358/358, an explicitly non-atomic observation, and
+managed assembly counts changed 23 to 28. These observations do not prove
+loaded-memory/file equality, network isolation or complete stable load closure.
+Full-file hashing and library-internal metadata reads remain within the
+previously declared limits.
+
+Literal reads and extra-block reads were both zero. The nine unprepared
+reflection rows and nine additional compiler blocks remain separate retained
+obligations. Independent instruction decoding, arithmetic/data correspondence,
+indirect/native/framework call closure and guard-object/register association
+remain pending. `RuntimeAdmitted`, `BodyResolved` and `ClosureAdmitted` are
+false in every actual result; successful finite extent matching does not
+permit registered behavior or cost work.
