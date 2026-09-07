@@ -827,3 +827,117 @@ def test_unissued_certificate_is_typed_refusal(data, bad):
     failure = f.replay_falsifiers(scalars, hands, controls, witnesses, bad)
     assert isinstance(failure, f.FalsifierFailure)
     assert failure.Completed == f.FalsifierCounts()
+
+
+def semantic_input(data):
+    return {
+        key: copy.deepcopy(item)
+        for key, item in data[4].items()
+        if key != "OuterNegativeEvidence"
+    }
+
+
+def semantic_replay(data, changed=None):
+    cert, scalars, hands, controls, _ = data
+    return f.replay_semantic_falsifiers(
+        scalars,
+        hands,
+        controls,
+        semantic_input(data) if changed is None else changed,
+        cert,
+    )
+
+
+def test_semantic_api_replays_live_slices_without_constructing_descriptor(
+    data, monkeypatch
+):
+    calls = []
+    new, old = new_replay.replay_scalar_and_new_hand, old_replay.replay_old_hand
+
+    def first(*args):
+        calls.append("new")
+        return new(*args)
+
+    def second(*args):
+        calls.append("old")
+        return old(*args)
+
+    def forbidden(*args):
+        pytest.fail("six-member replay must not construct or admit a descriptor")
+
+    monkeypatch.setattr(new_replay, "replay_scalar_and_new_hand", first)
+    monkeypatch.setattr(old_replay, "replay_old_hand", second)
+    monkeypatch.setattr(f, "_descriptor", forbidden)
+    admitted = value(semantic_replay(data))
+    assert type(admitted) is f.SemanticFalsifierReplay
+    assert not isinstance(admitted, f.FalsifierReplay)
+    assert calls == ["new", "old"]
+    assert admitted.Completed == f.FalsifierCounts(222, 48, 24, 10, 10, 53, 15, 10, 8)
+    assert len(admitted.MutantRefusals) == 2
+    assert "OuterNegativeEvidence" not in asdict(admitted)
+    assert admitted.Scope == "pure-six-member-semantic-falsifier-replay"
+    assert admitted.OuterNegativeAdmission == "pending-separate-coordinator-replay"
+    assert admitted.RuntimeAdmission == "not-performed-by-pure-replay"
+
+
+@pytest.mark.parametrize(
+    "mutation", ["descriptor", "missing-refusals", "missing-coverage", "wrong-type"]
+)
+def test_semantic_api_exact_six_member_boundary(data, mutation):
+    changed = semantic_input(data)
+    if mutation == "descriptor":
+        changed["OuterNegativeEvidence"] = data[4]["OuterNegativeEvidence"]
+    elif mutation == "missing-refusals":
+        del changed["RefusalCases"]
+    elif mutation == "missing-coverage":
+        del changed["HandCoverage"]
+    else:
+        changed = []
+    failure = semantic_replay(data, changed)
+    assert type(failure) is f.SemanticFalsifierFailure
+    assert not isinstance(failure, f.FalsifierFailure)
+    assert failure.Code == (
+        "TypeMismatch" if mutation == "wrong-type" else "KeyMismatch"
+    )
+    assert failure.Completed == f.FalsifierCounts(222, 48, 24)
+    assert failure.OuterNegativeAdmission == "pending-separate-coordinator-replay"
+
+
+def test_semantic_api_rejects_old_terminal_q_and_retains_full_row_prefix(data):
+    cert, scalars, hands, controls, _ = data
+    changed = copy.deepcopy(controls)
+    changed[23]["Episode"]["TreeRootQ"][15][0] = 0.0
+    failure = f.replay_semantic_falsifiers(
+        scalars, hands, changed, semantic_input(data), cert
+    )
+    assert type(failure) is f.SemanticFalsifierFailure
+    assert failure.Completed == f.FalsifierCounts(222, 48, 23)
+    assert "TreeRootQ" in failure.Path
+
+
+def test_semantic_api_late_refusal_preserves_every_checked_prefix(data):
+    changed = semantic_input(data)
+    changed["RefusalCases"][14]["Operations"][0]["Calls"]["Operation"]["EntryCalls"] = (
+        True
+    )
+    failure = semantic_replay(data, changed)
+    assert type(failure) is f.SemanticFalsifierFailure
+    assert failure.Code == "TypeMismatch"
+    assert failure.Completed == f.FalsifierCounts(222, 48, 24, 10, 10, 52, 14, 10, 8)
+
+
+def test_semantic_api_cannot_accept_skipped_refusal_replay(data, monkeypatch):
+    monkeypatch.setattr(f._Checker, "refusals", lambda *_: None)
+    failure = semantic_replay(data)
+    assert type(failure) is f.SemanticFalsifierFailure
+    assert failure.Code == "IncompleteReplay"
+    assert failure.Completed == f.FalsifierCounts(222, 48, 24, 10, 10, 0, 0, 10, 8)
+
+
+def test_semantic_api_unissued_certificate_is_typed_and_empty(data):
+    _, scalars, hands, controls, _ = data
+    failure = f.replay_semantic_falsifiers(
+        scalars, hands, controls, semantic_input(data), None
+    )
+    assert type(failure) is f.SemanticFalsifierFailure
+    assert failure.Completed == f.FalsifierCounts()
