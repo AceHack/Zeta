@@ -1,0 +1,14 @@
+{
+  "id": "080d03df0620e010a0130008e0e9abd9",
+  "at": "2026-09-07T12:38:42.972Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XY1H0V087G0R000Q1HK08",
+    "type": "task",
+    "title": "BlockCas Delete crash-mid-sweep leaves extra garbage",
+    "slug": "blockcas-delete-crash-mid-sweep-leaves-extra-garbage",
+    "priority": "P2",
+    "filename": "081M1XY1H0V087G0R000Q1HK08-blockcas-delete-crash-mid-sweep-leaves-extra-garbage.md"
+  }
+}

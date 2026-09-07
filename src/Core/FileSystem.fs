@@ -1265,6 +1265,7 @@ type BlockCas(io: IBlockIo) =
     let lockObj = obj ()
     let origin = BlockLog.origin io
     let mutable pos = origin
+    let mutable deleteCrashArm: string option = None
 
     do
         if io.BlockSize <= 0 then
@@ -1375,9 +1376,20 @@ type BlockCas(io: IBlockIo) =
                 index.[key] <- struct (start, bytes.Length)
                 pos <- after)
 
+    /// One-shot: next matching Delete unpublishes the key then throws
+    /// `CrashMidSweepException`. Remaining keys stay. Same shape as
+    /// `InMemoryFileSystem.ArmCrashOnDelete`.
+    member _.ArmCrashOnDelete(keyContains: string) =
+        if String.IsNullOrEmpty keyContains then
+            invalidArg (nameof keyContains) "keyContains must be non-empty"
+
+        lock lockObj (fun () -> deleteCrashArm <- Some keyContains)
+
     /// Unpublish `key`. Superblock first, then RAM, so a torn slot keeps
     /// the previous generation (the name still exists). Payload bytes stay
     /// on the log until a later compaction. Missing key is a no-op.
+    /// Armed crash-mid-sweep throws after the key is unpublished so a
+    /// partial tick leaves extra garbage, not a missing live object.
     member _.Delete(key: string) : bool =
         if isNull key then
             false
@@ -1396,6 +1408,17 @@ type BlockCas(io: IBlockIo) =
 
                     BlockSuper.writeCas io entries
                     index.Remove key |> ignore
+
+                    let crash =
+                        match deleteCrashArm with
+                        | Some needle when key.IndexOf(needle, StringComparison.Ordinal) >= 0 ->
+                            deleteCrashArm <- None
+                            true
+                        | _ -> false
+
+                    if crash then
+                        raise (CrashMidSweepException key)
+
                     true)
 
 
