@@ -248,3 +248,55 @@ callee or object/register reads require another exact finite roster and
 review. The 130-candidate extent result alone cannot set any full admission
 flag or permit registered study work. No expanded helper or range query has
 yet executed.
+
+## Reviewed mapped130 command preparation
+
+Source `af90bfc9e95fbdb8246c438da26e30a727bcbb5f` implements a separate
+`--mapped-130` helper command and optional exact-mapping argument on the
+physical driver. The three-method command remains available. This expansion
+requests no literal, extra-block, object or register reads: only 130 bounded
+stub/cell/body chains and their matching current DAC metadata.
+
+The [preparation inventory](clrmd-mapped-preparation/manifest.json) retains
+15 lossless records. The standalone helper build passed in 2.12 seconds and
+the mapped Release test-project build in 67.65 seconds, each with zero warnings
+and errors. The focused TRX has 50 Passed outcomes: 13 metadata cases and 37
+existing compiled-study cases, no failures or skips. The final Python run
+passes 30 pure/custody cases. The initial append used the wrong relative
+working path and only four existing Python tests ran; that narrower log is
+retained. Later seven-case and complete 30-case logs are distinct. Ruff's
+initial missing import separator and corrected green results are retained.
+Build-graph derivation reports the checked-in artifact already current.
+
+Native build/test inputs were uncommitted snapshots subsequently committed
+in the source pin; the final driver custody addition was read-only reviewed
+and the final Python suite ran at that committed source. The record binds
+current helper DLL/config fingerprints without implying a full solution gate.
+The build commands use Release, `-m:1 -nr:false`, and
+`ContinuousIntegrationBuild=true`; the helper additionally uses the exact
+installed ClrMD tool directory and local package cache as restore source.
+Tests use the filter `HiddenSwitchMetadataTests|HiddenSwitchCompiled` over
+fully qualified names and `--no-build`.
+
+The helper binds the exact 185,092-byte reviewed mapping before dump access.
+It compares copied PE MethodDef token, declaring nested type, name and IL to
+captured reflection, then retains the actual full ClrMD signature while
+requiring exact token/type/name/module/current-body/extent agreement. It does
+not guess a ClrMD signature spelling from reflection text, normalize a naming
+mismatch, or infer a dump-derived MVID or generic-instantiation theorem.
+
+Independent source review found two diagnostic admission gaps. The cell
+prefix now records its decoded target, alignment and next requested length
+before a missing-body/invalid-target refusal. The driver also requires exact
+integer requested/available count headers, not only a row-array length.
+Synthetic fixtures discriminate both repairs. Before helper launch, 31 module
+and configuration files receive exclusive exact copies through the reviewed
+custody helper, with original and copied identities retained and rechecked.
+The fresh capture's 82 input pins and 22 target custody rows remain unchanged.
+
+The helper stops at its first refusal, retaining available method metadata and
+the requested count; unavailable later rows are not claimed as queried.
+Every successfully written physical prefix precedes its dependent read.
+First-failure, publication and cleanup limitations remain as previously
+reviewed. All full runtime/body/closure flags remain false. The separately
+numbered expanded offline attempt has not yet run at this preparation pin.
