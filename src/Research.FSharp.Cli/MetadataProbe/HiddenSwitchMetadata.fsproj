@@ -11,6 +11,9 @@
     <Error Condition="'$(ClrMdToolDirectory)' == ''" Text="An explicit pinned installed ClrMdToolDirectory is required; no package acquisition is performed." />
   </Target>
   <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="../../Core/Result.fs" Link="Result.fs" />
     <Compile Include="Admission.fs" />
     <Compile Include="NativeImages.fs" />

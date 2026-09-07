@@ -172,6 +172,13 @@ module Program =
                     emit (box {| Kind = "input-identity"; Bytes = raw.Length; Sha256 = sha raw |})
                     let! input = Admission.parse raw |> keep
                     do! dependencies emit |> keep
+                    let languageRuntime = typeof<unit>.Assembly
+                    let languagePin = { File = languageRuntime.Location; Bytes = 2405712L
+                                        Sha256 = "454275E6F64F26C19F989CC0E0C43A2EAF41705FC0F456097FAA1DA445139394" }
+                    do! checkFile languagePin |> keep
+                    emit (box {| Kind = "executable-language-dependency"; Package = "FSharp.Core/10.1.400"
+                                 Assembly = languageRuntime.FullName; Identity = languagePin
+                                 Scope = "F# executable runtime dependency, separate from the thirteen ClrMD transitive assets" |})
                     do! managedLoads emit |> keep
                     do! checkFile input.Dac |> keep
                     do! checkFile input.Runtime.Image |> keep
