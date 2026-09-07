@@ -412,3 +412,68 @@ different items, and two items escalating to `add_agents` — and `tech_lead` as
 raises none.
 
 **All eight signal families now have senders.**
+
+---
+
+## Addendum, 2026-09-07 — the doc sweep, and where it stops
+
+Twelve modules against `agentic-organization/docs`, each with falsifiers and a mutation matrix.
+The list is in the git log; what follows is only what the sweep TAUGHT, and what it could not
+reach.
+
+### Four defects the matrices found that a reading would not have
+
+1. **A guardrail that could not fail.** `alternateWorkFor` built its candidate list *from* the
+   approved scope and then checked those candidates *against* that scope. Protection in name
+   only, at the exact seam where scope creep enters. Every open task is a candidate now, each
+   carrying its own scope, and the module's comparison does the refusing.
+2. **A gate that could not open.** The first `readinessOf` gated the whole maturity ladder, so a
+   signed waiver could never unblock anything. The mirror of a check that cannot fail, and just
+   as useless — the doc's waiver removes the CAUSE, not a step.
+3. **`goal-cascade.assign` overwrote an existing assignee and returned ok** — a reassignment
+   performed by whoever called first, with no trigger, no notice, nothing preserved.
+4. **A steal judged at the menu's clock**, freezing a verdict so work could sit with an owner who
+   went silent afterwards. It is judged at the application's clock now, and observations older
+   than the SLA are refused: past that gap, an owner quiet throughout and one that answered just
+   after the read leave the same record.
+
+### The harness was also wrong, and that is the one worth keeping
+
+Dropping the `seen` set from `org-graph`'s traversal makes `pathExists` loop forever on a cycle —
+the strongest possible kill. The runner had no deadline, so it hung and reported NOTHING, twice.
+
+Two obvious fixes both fail, and the failure is instructive:
+
+- `bun test --timeout` cannot interrupt a **synchronous** infinite loop. It never yields the
+  event loop, so the runner's own deadline never gets a turn.
+- `subprocess.run(timeout=)` with `capture_output` kills the child and then blocks reading pipes
+  its grandchildren still hold open.
+
+Output goes to a file rather than a pipe now, so the kill returns and a hang is reported as the
+kill it is. Every earlier matrix in this register ran without that, which means **a hanging
+mutant anywhere before today would have been invisible.**
+
+### What this register deliberately does NOT implement, and why
+
+Naming it, because "everything in the docs" is not achievable here and pretending otherwise
+would be the vacuity class applied to a work report.
+
+| doc area | why it is not implemented here |
+|---|---|
+| LGTM stack, Kubernetes/k3s, CockroachDB, Temporal, Dapr, NATS, OpenZiti | infrastructure. A pure-TS register can declare the port; it cannot be the cluster |
+| MCP tool surfaces (`create_handoff_brief`, `read_memory`, …) | transport over mechanisms that now exist. The verbs are here; the server is not |
+| Hindsight memory | an external service. `providers.ts` is where its port would land |
+| The full hat catalog — 16 departments, 100+ hats | DATA, not mechanism. `org-seed.ts` carries 8 departments and 29 hats. Expanding it is real doc-implementation work with wide blast radius on existing routing tests, and the doc calls its own catalog a "starter data model" |
+
+The first three are ports, and the register's discipline already covers them: a port that is
+simulated says so, and `weak-point.ts` reports a seam expected real and found otherwise as a
+`telemetry_gap`. The fourth is the only remaining item that is genuinely this layer's work.
+
+### The shape that kept recurring
+
+Nine of the twelve modules ended up carrying the same distinction under different names —
+`notChecked`, `not_recorded`, `unresolved`, `degraded`, `UNDERIVED_EDGE_KINDS`. In every case the
+defect being refused is identical: **a thing nobody looked at, rendered identically to a thing
+that was looked at and found clean.** It is the one failure this organization cannot see from the
+inside, because the report of a healthy system and the report of an unobserved one are the same
+document.
