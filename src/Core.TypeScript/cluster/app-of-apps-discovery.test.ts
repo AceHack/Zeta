@@ -138,7 +138,20 @@ describe("discovery drift audit", () => {
   });
 
   test("every registered reason is non-empty — an entry without a why is a mute button", () => {
-    expect(DISCOVERED_BUT_UNASSERTED_REASONS.size).toBeGreaterThan(0);
+    // WAS `toBeGreaterThan(0)`, and that spelling was a check that failed when the
+    // thing it monitors got FIXED: it required at least one discovered-but-unasserted
+    // Application to exist. The map reached 0 on 2026-09-07 when its only entry
+    // (`game-hosting/gmod/Application.yaml`) stopped being discovered, and a guard that
+    // reads a clean tree as a regression is worse than no guard -- it prices fixing the
+    // defect above leaving it.
+    //
+    // HONEST ADMISSION: with an empty map the loop below is VACUOUS. Rather than invent a
+    // substitute assertion that pretends otherwise, the size is PINNED exactly. That is
+    // what keeps this test falsifiable while the map is empty: adding an entry fails here
+    // and forces the author to read the mute-button discipline above; removing the pin's
+    // premise (a re-populated map) re-arms the loop. The pin is the check while there is
+    // nothing to check.
+    expect(DISCOVERED_BUT_UNASSERTED_REASONS.size).toBe(0);
     for (const [relPath, reason] of DISCOVERED_BUT_UNASSERTED_REASONS) {
       expect(reason.trim().length, `reason for ${relPath}`).toBeGreaterThan(0);
     }

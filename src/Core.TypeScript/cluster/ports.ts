@@ -234,8 +234,64 @@ export const DEFAULT_ROOT_DEV_CATALOG: RootDevCatalogSpec = {
   gitRef: "main",
   gitRepoUrl: process.env.ZETA_ARGOCD_GIT_REPO_URL ?? "https://github.com/Lucent-Financial-Group/Zeta",
   applicationsPath: "full-ai-cluster/k8s/applications",
+  // `game-hosting/gmod/**` ADDED 2026-09-07. A Garry's Mod dedicated server, and the
+  // SINGLE LARGEST MEMORY RESERVATION in the dev lane: 2048Mi of a 9216Mi budget
+  // — 18% — to prove a Source-engine server loads a map and idles. Its own
+  // manifest calls it "a game-server sample workload, not on the PoC critical
+  // path". It is not the platform under test.
+  //
+  // WHY EXCLUDED RATHER THAN SHRUNK, which was tried first and reverted. The dev
+  // lane measured 11148Mi against a 9216Mi budget — over by 1932Mi — and gmod is
+  // the obvious 2048Mi. But storage-profiles.json had already declined exactly
+  // that cut, per app, in writing:
+  //
+  //   gmod    "MEMORY IS UNCHANGED AT BOTH RUNGS AND DELIBERATELY SO: a map's
+  //            working set is real, memory is incompressible, and cutting this
+  //            request would trade a Pending pod for an evicted one."
+  //   kafka   "an OOMKill here loses the un-consumed tail."
+  //   orleans "evicting the silo does not slow the cluster down, it dissolves
+  //            the membership the cluster IS."
+  //
+  // Three reasoned refusals is not an obstacle to route around; it is the
+  // answer. The lane does not need a smaller game server, it needs one fewer.
+  //
+  // MEASURED: this takes the dev lane to 9100Mi, which FITS with 116Mi of spare,
+  // and NO REQUEST ANYWHERE CHANGES — so the metal rung, which the committed tree
+  // carries and the 16-core box deploys, is untouched. That mattered: applying
+  // the dev rung to the tree would have lowered requests for metal too, which
+  // argocd-health-test.ts names as "a maintainer call, not a CI convenience".
+  //
+  // WHAT IS LOST, stated rather than glossed: the lane stops applying and
+  // asserting gmod. That assertion is FAILING today anyway — its own record says
+  // "gmod did not schedule TODAY because its sync fails on gatekeeper's webhook"
+  // — so what is given up is a red assertion, not a green one.
+  //
+  // SCOPED TO `gmod`, NOT TO `game-hosting`, and the difference is not cosmetic. A
+  // directory-level `game-hosting/**` would also hide every FUTURE Application added
+  // beside gmod — app-of-apps-discovery.test.ts caught exactly that with a
+  // `game-hosting/quake` fixture it expects to be reported as UNASSERTED, and a
+  // broader glob swallowed it silently. Excluding one Application must not quietly
+  // exclude its unwritten siblings.
+  //
+  // CARRIED HERE 2026-09-07 from DISCOVERED_BUT_UNASSERTED_REASONS in
+  // app-of-apps-discovery.ts, which had to retire its `game-hosting/gmod/Application.yaml`
+  // key when this glob stopped applying it -- that map's `stale` direction is keyed on
+  // "discovered but unasserted", and an excluded app is no longer discovered. THE DEFECT
+  // IT RECORDED IS NOT RETIRED and is written down here so the exclusion does not bury it:
+  // gmod FAILS TO SYNC on every reconcile in any lane that does apply it, because
+  // gatekeeper's check-ignore-label webhook denies the admission.gatekeeper.sh/ignore label
+  // that game-hosting/gmod/namespace.yaml carries -- `game-hosting` is absent from the
+  // exemptNamespaces list in applications/open-policy-agent/Application.yaml, where
+  // `zeta-platform` is the worked precedent. The fix is a policy change only a live cluster
+  // can confirm (081KSXN940008QG0R000SCP2H1), so it stays REGISTERED rather than guessed at.
+  // This matters for the LIFTS WHEN below: restoring gmod to a lane restores the sync
+  // failure too, so the memory headroom is necessary and NOT sufficient.
+  //
+  // LIFTS WHEN: the lane has 2048Mi of headroom again — a larger runner, or the
+  // metal cluster — at which point gmod returns UNCHANGED, because nothing about
+  // it was modified to make it leave.
   excludeGlob:
-    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**}",
+    "{cilium/**,cilium-lb-ipam/**,longhorn/**,ollama/**,vllm/**,gitlab/**,temporal/**,platform/**,game-hosting/gmod/**}",
 };
 
 /**
