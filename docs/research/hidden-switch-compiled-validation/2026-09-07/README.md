@@ -7,6 +7,11 @@ Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Artifact status: frozen registration and subsequent implementation validation; no new experiment
 
+The [coordinator primitive validation](../../2026-09-07-hidden-switch-compiled-coordinator-primitives-validation.md)
+preserves the exact resource-helper extension, fixed case/prefix contract and
+802-test compiled Python integration pass. Actual complete coordinator execution
+and runtime admission remain separate prerequisites.
+
 ## Frozen protocol and remote proof
 
 The [preregistration](../../2026-09-07-hidden-switch-compiled-protocol.md)
