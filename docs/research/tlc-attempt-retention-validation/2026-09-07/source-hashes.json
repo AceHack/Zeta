@@ -1,0 +1,50 @@
+{
+  "SourceCommit": "07e399929be52669f8ae9cf374690cb1dba4d5a0",
+  "Files": [
+    {
+      "File": ".github/workflows/gate.yml",
+      "Bytes": 255231,
+      "Sha256": "8F24CC5F8B4C9CDC76C275958A5F11665F2CC874305AC92EDFCBA6FADF523335"
+    },
+    {
+      "File": "registry/tlc-retry-fixtures.json",
+      "Bytes": 4143,
+      "Sha256": "06ACDE8663442083126C158C7179FA8FA505B7B49C3511DA9754F195E6795D64"
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/run-tlc.ts",
+      "Bytes": 15182,
+      "Sha256": "E65B529C3762565EBE8FDAE132F6D2C836A9FB0D8CC6CCE54BF734E954C90004"
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-attempts.test.ts",
+      "Bytes": 10467,
+      "Sha256": "E0E694E080B1641D58B8F33452A1284C015BD0DADAF0821431F40D9FAAB1529F"
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-attempts.ts",
+      "Bytes": 8774,
+      "Sha256": "07168DAA2055E34077D449F3F705C02F182F9C469AB18497583CC8FCF9C30E55"
+    },
+    {
+      "File": "src/Core.TypeScript/formal-verification/tlc-invocation.ts",
+      "Bytes": 8737,
+      "Sha256": "5D400E84C8B8D0633711AD29BECAC5C753B1277C2404016F3730C2A97FD1BA74"
+    },
+    {
+      "File": "tests/Tests.FSharp/Formal/Tlc.Attempts.fs",
+      "Bytes": 9286,
+      "Sha256": "B92D6DDB692650123783CB98230446B178B51C2C6F292E955CCDAC1837DE3EAB"
+    },
+    {
+      "File": "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs",
+      "Bytes": 42951,
+      "Sha256": "426106A2CD0271B8D488C1C679DCED188DE11FD09BBEED969CF1112990658914"
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 45118,
+      "Sha256": "D6BD9C089A611F6FBD3086551F3D51A7F55B282820DA9E922F42A6C8B31300AC"
+    }
+  ]
+}
