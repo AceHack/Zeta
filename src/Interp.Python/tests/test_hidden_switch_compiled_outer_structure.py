@@ -412,3 +412,26 @@ def test_late_case_header_failure_keeps_whole_prior_case_plans() -> None:
         ref for ref in admitted.value.References if not ref.At.startswith("Cases[91].")
     )
     assert refused.References == earlier
+
+
+@pytest.mark.parametrize("position", [0, 91])
+@pytest.mark.parametrize("malformed", [None, 0, {"unexpected": "data"}])
+def test_malformed_calls_container_preserves_inputs_and_refuses(
+    position: int, malformed: object
+) -> None:
+    row, expected = fixture()
+    admitted = check(row, expected)
+    assert isinstance(admitted, a.Admitted)
+    row["Cases"][position]["Calls"] = malformed
+    result = check(row, expected)
+    assert isinstance(result, o.StructureFailure)
+    assert result.CheckedCaseRows == position
+    prior_calls = sum(len(spec.Calls) for spec in c.case_specs()[:position])
+    assert result.CheckedCalls == prior_calls
+    first_call = f"Cases[{position}].Calls[0].ResultArtifact"
+    stop = next(
+        index
+        for index, ref in enumerate(admitted.value.References)
+        if ref.At == first_call
+    )
+    assert result.References == admitted.value.References[:stop]

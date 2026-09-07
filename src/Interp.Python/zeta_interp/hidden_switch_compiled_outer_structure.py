@@ -472,7 +472,13 @@ def admit_outer_structure(
                     f"Cases[{index}].Inputs[{ordinal}].Artifact",
                     item["Role"],
                 )
-            calls = case["Calls"] if limit is None else case["Calls"][:limit]
+            calls = (
+                ()
+                if limit == 0
+                else case["Calls"]
+                if limit is None
+                else case["Calls"][:limit]
+            )
             for ordinal, call in enumerate(calls):
                 reference(
                     call["ResultArtifact"],
