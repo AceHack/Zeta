@@ -1,0 +1,45 @@
+{
+  "Schema": "zeta.compiled.sos.no-target.preservation.v1",
+  "Records": [
+    {
+      "File": "invocation.json",
+      "Bytes": 1607,
+      "Sha256": "b2cc0690900129f748e52910b761ed56c7005cb340461373687f25eb51352dac",
+      "Encoding": "identity"
+    },
+    {
+      "File": "completion.json",
+      "Bytes": 160,
+      "Sha256": "01f0bf9325d4227112ea59e141aca59aae2b08b414a40a702157b685db4cf59c",
+      "Encoding": "identity"
+    },
+    {
+      "File": "stdout.log",
+      "Bytes": 974,
+      "Sha256": "7616fe21d47472402545c822ce923fc003199577c34b33b17b8604b91040fbbb",
+      "Encoding": "identity"
+    },
+    {
+      "File": "stderr.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Encoding": "identity"
+    },
+    {
+      "File": "lldb-crash.ips.gz",
+      "Bytes": 22280,
+      "Sha256": "93cecc8f6612c04bc85874d3ba000b05801c99ef697476f9ed49ba1f60ab6adc",
+      "Encoding": "gzip",
+      "StoredBytes": 5253,
+      "StoredSha256": "31be8094d2f66d647560c611db9c041ffbc00c9d7f2c62d0fa32ae66ef663307"
+    },
+    {
+      "File": "identity-correspondence.json",
+      "Bytes": 404,
+      "Sha256": "e5dcdcce93f97d3d46e2c0a3a715a97579f0b3c83c377dc8b95f585b424171aa",
+      "Encoding": "identity"
+    }
+  ],
+  "OriginalFailure": "SIGKILL / EXC_GUARD during explicit 10.0.11 debugger-host initialization",
+  "TargetCreated": false
+}

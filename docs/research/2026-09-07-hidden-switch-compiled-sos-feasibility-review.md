@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Reviewer: Vera, OpenAI Codex using GPT-6 Astra
-Disposition: first no-target probe failed; target/runtime admission unchanged
+Disposition: both bounded no-target probes failed; target/runtime admission unchanged
 
 This supplements the [candidate evidence review](2026-09-07-hidden-switch-compiled-candidate-evidence-review.md).
 The reviewer inspected installed tools, official source guidance and a bounded
@@ -86,6 +86,40 @@ clears the store, then separately processes any added options. Use the actual
 installed help/output to confirm compatibility. This source inspection is
 guidance, not derivation proof for the installed SOS binary.
 [Pinned command source](https://github.com/dotnet/diagnostics/blob/65349e35e532e2d9c300b0b6a1738bbcd8f360f1/src/Microsoft.Diagnostics.ExtensionCommands/Host/SetSymbolServerCommand.cs)
+
+## Authorized explicit-host variant
+
+After committing the first failure as `29df46b0a`, the reviewer performed
+the coordinator-authorized single no-target variant. Its
+[separate six-record manifest](hidden-switch-compiled-validation/2026-09-07/sos-no-target-attempt-2/manifest.json)
+preserves the full invocation/settings/output/completion and lossless second
+crash report. No original record was replaced. All 13 previously recorded local
+file identities remained unchanged when checked after the variant.
+
+The only host-selection change was the documented command before SOS help:
+
+```text
+sethostruntime -major 10 /Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11
+```
+
+The command printed version 10.0 and that exact path. LLDB process 99246
+then exited by signal 9 at 2026-09-07 18:44:26 UTC after
+0.25634462499874644 seconds, again without reaching its 20-second timeout.
+The second crash record confirms the loaded CoreCLR UUID now matches
+10.0.11 and names the same `EXC_GUARD` / `SET_EXCEPTION_BEHAVIOR` location
+during host initialization. Explicitly choosing this installed newer host
+therefore did not resolve the observed failure. No broader runtime-cause or
+platform-stability conclusion follows from these two probes.
+
+Both probes reached the verified offline LLDB settings, but neither reached
+SOS symbol-store verification or a method query. The variant's additional
+debugger-image collector command was also unreached; its absence is not
+silently replaced by fabricated output. The actual loaded-host association
+comes from the second crash's image UUID, matched to the local file metadata.
+No target was created. No further retry, tool installation, signature change
+or protection bypass was performed. The optional SOS route remains unavailable
+under this tested debugger-host setup and must stay outside the working
+candidate collector unless a separately reviewed change establishes feasibility.
 
 ## Method inspection if the debugger-host boundary passes
 
