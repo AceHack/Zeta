@@ -345,3 +345,50 @@ first dependent query and inspect cached DAC paths afterward. Independent
 target/runtime/DAC identities remain necessary; successful metadata commands
 alone do not establish version matching or method/body correspondence.
 [Version-specific runtime source](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/Runtime.cs)
+
+## Physical reader and initial offline-driver review
+
+The native owner's bounded `MachCore` reader was accepted by source and
+synthetic-fixture inspection, before an analyzer launch. The reviewed source
+SHA256 is `680b00b038265ef6bc50ee8a0463d8c540106d11b77f9588c06f39ffa62e0665`;
+the five-fixture test source is
+`6d67d0c4cbdd5befa5a889230f4474ed80caf4190db3c318222c80c496aae208`.
+These were uncommitted source identities at review, not an invented commit pin.
+The parser accepts only the observed little-endian 64-bit ARM64 core format,
+checks exact bounded load-command traversal and segment arithmetic, skips
+thread-state payloads, and refuses unsupported commands, sections or segment
+flags. Each selected range must fit one unambiguous, wholly stored segment
+and contain at most 65,536 bytes. Missing bytes, overlap, a gap, partial
+backing and zero-fill refuse. The caller still owns the held file descriptor,
+its identity and the selected-range roster. The reviewer did not open the
+actual dump or rerun the tests.
+
+The initial uncommitted offline driver, reviewed over native writer head
+`c05a133965d43b004baa1d615e2aea443bc52eea`, required four corrections before
+launch. First, the redirected analyzer echoes the exact command, and path or
+method substrings are insufficient semantic acknowledgements. Second, hashing
+one dump pathname open and reading another fails to bind the selected bytes
+to the hashed object; successful stub/cell prefixes also need immediate
+metadata publication before a later dependent read can fail. Third, the
+actual executable argument must match its captured analyzer pin. Fourth,
+command-side output limits did not bound the asynchronous reader's queue or
+stdout file, and stderr needed an explicit polled bound. The owner accepted
+all four findings for repair; this paragraph records initial findings, not
+acceptance of an unseen successor.
+
+Installed REPL IL confirms a `>` prompt followed by one ASCII space passed into the callback even for
+redirected input. The version-specific analyzer writes prompt plus trimmed
+command before executing it. Command parsing must remove exactly that
+expected echo and independently check the terminal marker and payload.
+The DAC-path command has distinct exact set and query acknowledgements;
+runtime output has named module-path, configured-directory and cached-DAC
+fields. Unique anchored fields avoid accepting a path repeated only inside
+an error or unrelated row. These are source and installed-IL grammar
+expectations; the reviewer has not observed an analyzer session. The runtime
+formatter also includes library, resource, export and settings information,
+so those rows must not be mistaken for a second runtime or silently used as
+its identity.
+[Analyzer callback](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Tools/dotnet-dump/Analyzer.cs),
+[REPL dispatch](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.Repl/ConsoleService.cs),
+[DAC-path acknowledgements](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.ExtensionCommands/Host/SetClrPathCommand.cs),
+[runtime formatting](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/Runtime.cs)
