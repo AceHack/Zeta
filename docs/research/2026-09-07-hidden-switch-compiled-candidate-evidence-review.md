@@ -90,6 +90,20 @@ result/tailcall transport, task callbacks and arithmetic callees need explicit
 role and identity classification. Matching method bytes or an assembly row
 with `Dynamic=false` does not perform that classification.
 
+An additional read-only opcode correlation identified 185 of the 199 indirect
+call sites using the narrow consecutive `MOVZ/MOVK/MOVK`, same-register
+load, indirect-call pattern. Fifty-six refer to pointer cells already captured
+in the method mappings; 129 use 41 distinct uncaptured cells. Fourteen sites
+fall outside this limited pattern. Already matched examples include compiled
+fallback to `CompiledPolicy.native`, selector entry to common admission,
+prediction/conditioning/evaluation to belief validation, continuation to
+conditioning, action value to prediction and evaluation to its tree. This
+reduces the missing-data roster; it is static stopped-cell correspondence,
+not evidence that every site executed or that the complete call graph is known.
+Direct-branch opcode decoding independently places all 453 direct calls
+outside the 123 candidate ranges: 402 compiler-labeled runtime helpers and
+the 51 generated-method calls above.
+
 ## Runtime observations and completion boundary
 
 The same reported managed thread has FPCR zero and rounding-query result zero
