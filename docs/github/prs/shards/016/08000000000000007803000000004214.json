@@ -1,0 +1,12 @@
+{
+  "pr_number": 16916,
+  "archive_path": "docs/history/pr-reviews/PR-16916-feat-attestation-verify-test-only-local-window-receipts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T11:47:41.741Z",
+  "schema_version": "v1",
+  "commit_sha": "cd9c44c20290a366415f946c000b39fad64ccf21",
+  "title": "feat(attestation): verify test-only local window receipts",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T11:47:09Z",
+  "head_ref": "lumen/consent-expiry-receipt"
+}

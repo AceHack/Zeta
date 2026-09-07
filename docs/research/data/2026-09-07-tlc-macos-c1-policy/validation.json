@@ -1,0 +1,451 @@
+{
+  "SourceCommit": "47d29d9cb2dc7ebb2cf36135b6699bb9a0d66839",
+  "Commands": {
+    "Build": "dotnet build Zeta.sln -c Release -p:ContinuousIntegrationBuild=true -m:1 -nr:false",
+    "Test": "dotnet test Zeta.sln -c Release --no-build --blame-crash --blame-hang-timeout 15m --logger 'trx;LogFilePrefix=tlc-c1-policy'",
+    "Format": "dotnet format --verify-no-changes --no-restore",
+    "TypeScript": "bun test src/Core.TypeScript/formal-verification/tlc-invocation.test.ts",
+    "Quick": "bun run preflight:quick"
+  },
+  "Projects": [
+    {
+      "Project": "Bayesian.Tests",
+      "Result": "Bayesian.Tests.trx.gz",
+      "Total": 503,
+      "Passed": 503,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Project": "Core.CSharp.Mediator.Tests",
+      "Result": "Core.CSharp.Mediator.Tests.trx.gz",
+      "Total": 12,
+      "Passed": 12,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Project": "Core.CSharp.Tests",
+      "Result": "Core.CSharp.Tests.trx.gz",
+      "Total": 21,
+      "Passed": 21,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Project": "Tests.CSharp",
+      "Result": "Tests.CSharp.trx.gz",
+      "Total": 413,
+      "Passed": 413,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Project": "Tests.CSharp.TypeProvider",
+      "Result": "Tests.CSharp.TypeProvider.trx.gz",
+      "Total": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 0
+    },
+    {
+      "Project": "Tests.FSharp",
+      "Result": "Tests.FSharp.trx.gz",
+      "Total": 6545,
+      "Passed": 6539,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 6
+    },
+    {
+      "Project": "Tests.FSharp.Git",
+      "Result": "Tests.FSharp.Git.trx.gz",
+      "Total": 38,
+      "Passed": 38,
+      "Failed": 0,
+      "Errors": 0,
+      "Skipped": 0
+    }
+  ],
+  "Totals": {
+    "Total": 7535,
+    "Passed": 7529,
+    "Failed": 0,
+    "Errors": 0,
+    "Skipped": 6
+  },
+  "GateModels": [
+    {
+      "Id": "AsyncStreamEnumerator",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3649460"
+    },
+    {
+      "Id": "BftConsensus",
+      "Outcome": "Passed",
+      "Duration": "00:04:39.6924409"
+    },
+    {
+      "Id": "BftSybilConsensus",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3732852"
+    },
+    {
+      "Id": "Bifurcation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3179334"
+    },
+    {
+      "Id": "BpExactOnTree",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2987202"
+    },
+    {
+      "Id": "ChaosEnvDeterminism",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3253720"
+    },
+    {
+      "Id": "CircuitRegistration",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3869948"
+    },
+    {
+      "Id": "ConsistentHashRebalance",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2948809"
+    },
+    {
+      "Id": "DbspSpec",
+      "Outcome": "Passed",
+      "Duration": "00:00:16.4326710"
+    },
+    {
+      "Id": "DictionaryStripedCAS",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3116178"
+    },
+    {
+      "Id": "EngagementLiveness",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.9086875"
+    },
+    {
+      "Id": "FeatureFlagsResolution",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3489407"
+    },
+    {
+      "Id": "InfoTheoreticSharder",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7973782"
+    },
+    {
+      "Id": "NciLiveness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3882507"
+    },
+    {
+      "Id": "NciNonUrgency",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.4416282"
+    },
+    {
+      "Id": "NciSafety",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3328549"
+    },
+    {
+      "Id": "NciUnbounded",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2971767"
+    },
+    {
+      "Id": "NonRegisterCollapse",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3377193"
+    },
+    {
+      "Id": "OperatorLifecycleRace",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2966333"
+    },
+    {
+      "Id": "PermanentHarmHorizon",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3001750"
+    },
+    {
+      "Id": "PredictiveLookahead",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7477198"
+    },
+    {
+      "Id": "QuorumCollateral",
+      "Outcome": "Passed",
+      "Duration": "00:00:02.0349786"
+    },
+    {
+      "Id": "QuorumCollateralCompulsion",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3138042"
+    },
+    {
+      "Id": "QuorumCollateralCompulsionR1",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3303592"
+    },
+    {
+      "Id": "QuorumCollateralDeterrenceR2",
+      "Outcome": "Passed",
+      "Duration": "00:00:03.7440785"
+    },
+    {
+      "Id": "QuorumCollateralDeterrenceR4",
+      "Outcome": "Passed",
+      "Duration": "00:00:16.1132626"
+    },
+    {
+      "Id": "QuorumCollateralR1",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3398160"
+    },
+    {
+      "Id": "QuorumCollateralR2",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.4828984"
+    },
+    {
+      "Id": "QuorumCollateralR3",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.6135080"
+    },
+    {
+      "Id": "QuorumCollateralThreshold",
+      "Outcome": "Passed",
+      "Duration": "00:00:01.0544979"
+    },
+    {
+      "Id": "QuorumCollateralThresholdWitness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3816024"
+    },
+    {
+      "Id": "QuorumCollateralWitness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3376070"
+    },
+    {
+      "Id": "QuorumCollateralWitnessConflict",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.7601261"
+    },
+    {
+      "Id": "QuorumPhaseCancellation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3829691"
+    },
+    {
+      "Id": "QuorumPhaseHonestSplit",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3155592"
+    },
+    {
+      "Id": "QuorumPhaseOddParity",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2873140"
+    },
+    {
+      "Id": "QuorumPhaseUnnormalised",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3556215"
+    },
+    {
+      "Id": "RecoveryHomeostat",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3103201"
+    },
+    {
+      "Id": "RecursiveCountingLFP",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3145053"
+    },
+    {
+      "Id": "RecursiveSignedSemiNaive",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2951727"
+    },
+    {
+      "Id": "RefuseBinding",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.4015103"
+    },
+    {
+      "Id": "SmokeCheck",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2886101"
+    },
+    {
+      "Id": "SpineAsyncProtocol",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2999094"
+    },
+    {
+      "Id": "SpineMergeInvariants",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3891155"
+    },
+    {
+      "Id": "TickMonotonicity",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.2973900"
+    },
+    {
+      "Id": "TransactionInterleaving",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3080107"
+    },
+    {
+      "Id": "TwoPCSink",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3485771"
+    },
+    {
+      "Id": "WagerSolvency",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3403690"
+    },
+    {
+      "Id": "WagerSolvencyNoSplit",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3115909"
+    },
+    {
+      "Id": "WagerSolvencyPhantom",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3695760"
+    },
+    {
+      "Id": "WagerSolvencyStaleAttestation",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3079057"
+    },
+    {
+      "Id": "WagerSolvencyWitness",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.3479514"
+    }
+  ],
+  "GateModelCount": 52,
+  "PolicyAssertion": [
+    {
+      "Name": "Zeta.Tests.Formal.TlcRunnerTests.TLC JVM policy uses C1 only on macOS arm64",
+      "Outcome": "Passed",
+      "Duration": "00:00:00.0010194"
+    }
+  ],
+  "InputSha256": {
+    "registry/tlc-models.json": "1ed72341eab59f78243f82781a837e4177bf67b61c55672d4bbcc75df91ea4a8",
+    "src/Core.TLA/tla2tools.jar": "71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86",
+    "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs": "f3b974fe0bbd0a599baef0f8c0c44f9fb4740bb39ce0f51724520863cd4492de",
+    "src/Core.TypeScript/formal-verification/tlc-invocation.ts": "fb7aee273a2c52bc100ee99ef4c9c8ccc807e9906d0c9f2b793ed2b27d3bb8bb",
+    "src/Core.TypeScript/formal-verification/tlc-invocation.test.ts": "f3cdd30ac2221f03f3ce60afeb7a971be57963fa558e50cf68c5d2971b9b05f4",
+    ".mise.toml": "5ca1b929b4f9f02f41c3759c832c5bb4e9602ac5306638510a19884801d8fa7d",
+    "src/Core.TLA/specs/AsyncStreamEnumerator.cfg": "191c5d57bc700006a5f700db479ff50ebaa6f984357d8bc2d71333911a42844f",
+    "src/Core.TLA/specs/AsyncStreamEnumerator.tla": "5439ac9301ef6ed739241fc5dccfcbe29e9a276989600d36eb5cf9fc05de0d8d",
+    "src/Core.TLA/specs/BftConsensus.cfg": "73c219ce14d7a838c2345be4c82c8b0b0f209283fb0928ae7e895e5374565bde",
+    "src/Core.TLA/specs/BftConsensus.tla": "e859daaaa872c9df903886573ad5fb6d17849cf6637df37c25376abe8d04854f",
+    "src/Core.TLA/specs/BftLiveness.cfg": "6f2290531d4bf26035b66f930579908ab27fa728aa52db9b704a9cbc3481de30",
+    "src/Core.TLA/specs/BftSybilConsensus.cfg": "c94ecc79882c96422639fbf23a251bd7ff3467b27d6b758e61014e115f133d82",
+    "src/Core.TLA/specs/BftSybilConsensus.tla": "0fe597c557d912a17f1e96dd2cf6405bf0b33ae9bbeaaf91cd6cda52238fab43",
+    "src/Core.TLA/specs/Bifurcation.cfg": "716a252ffb75d5749dad1acc644ea7230aec66669089861aabd61b5ff3cdd728",
+    "src/Core.TLA/specs/Bifurcation.tla": "9216119d3bc3d0e9b805694aad1c5127e5679bfd405e4f1ac6e88909f050aec4",
+    "src/Core.TLA/specs/BpExactOnTree.cfg": "0cc90b2e95bb5d77442e76cab5f28a7df7d394dfd6c1da24ddaae0a6ae0b4e65",
+    "src/Core.TLA/specs/BpExactOnTree.tla": "ed6d3999969aaf9011b3ac27a468296b1a2d8993edffbbf4e237d8390aebee6c",
+    "src/Core.TLA/specs/ChaosEnvDeterminism.cfg": "16d6ddf94904b2f7eeb76b9f6ab0f7a744111f563e97b801e19c0ac22c5e9ca2",
+    "src/Core.TLA/specs/ChaosEnvDeterminism.tla": "cae3c1b9183897083ecc9a7083b11628b0705a239a38f34d34d29452fbba6c42",
+    "src/Core.TLA/specs/CircuitRegistration.cfg": "13d461d9202b7c166b738db069173f056718fbef30b1b69ad56f416816a98fb8",
+    "src/Core.TLA/specs/CircuitRegistration.tla": "9f0775fa0fa57b889abffadb3ac230b1a7d438014c89e69903cad5caaae0c24f",
+    "src/Core.TLA/specs/ConsistentHashRebalance.cfg": "b3f423978a2eda8566dcdae6bcc496b1e175321b76d28f511024d580fe9eb5f2",
+    "src/Core.TLA/specs/ConsistentHashRebalance.tla": "6c760b2942188d62dd1ac22de3c27753cabd56be9325700e415c88cf14ecbd47",
+    "src/Core.TLA/specs/DbspSpec.cfg": "00b42651fbd5ee0400a5272f112de6d3517e7686cb8d3c6d437d00f3847ef64d",
+    "src/Core.TLA/specs/DbspSpec.tla": "0481752f90e2c7d5de12dcbbc9f055ac6ada8578da608ba6c342c2e3822ec06b",
+    "src/Core.TLA/specs/DictionaryStripedCAS.cfg": "25615f687f788f10ddae4855e714fbbdec084730586e295e5a5203337e197bcf",
+    "src/Core.TLA/specs/DictionaryStripedCAS.tla": "774dd38e9ed70b98a9bb864b05e10aa3c3edb8135ec247117ffa1eee4a14baba",
+    "src/Core.TLA/specs/EngagementLiveness.cfg": "14cfc28d820ed176a71b3c1bfac1edde1c3abe674f53b50103e4cea4e391a9a2",
+    "src/Core.TLA/specs/EngagementLiveness.tla": "f278cf332e011dc9e8dc175a2b58bd605c5a7d2049d5e1bde850893e9ffc36bb",
+    "src/Core.TLA/specs/FeatureFlagsResolution.cfg": "322ec2f31a0716bb8efff7e2183f627af47e834d238b1dea19040b5863855400",
+    "src/Core.TLA/specs/FeatureFlagsResolution.tla": "de8a9f1f273b4118402ed1fc0a71604c44117f94fa4d8ee5d40cc56c1ea13707",
+    "src/Core.TLA/specs/InfoTheoreticSharder.cfg": "8cf84b2731a7384284110523a6e217682316371e7ba129bbb387651eaf24bf34",
+    "src/Core.TLA/specs/InfoTheoreticSharder.tla": "61c50585af41ad072a8cc2687d11f53d5bdfbabaa2ef91f2b29972ac00e23936",
+    "src/Core.TLA/specs/NciLiveness.cfg": "f513ba2f1126cf5e139772d4223b85044b8d88cf7bf80a2cfa6a097d83984d43",
+    "src/Core.TLA/specs/NciLiveness.tla": "927343f4339909b118c6407fc4ce2bf320b4aefdf4ae77982568e2416f9f9bbb",
+    "src/Core.TLA/specs/NciNonUrgency.cfg": "98e80eeef8949ffd598cd29cc7ad44dc70eae1636dea6f3cf2b7954bc62340b9",
+    "src/Core.TLA/specs/NciNonUrgency.tla": "3444cb6e66904406460143a27fc8932f30aac4b4d78ad37d09f59dfc0822319f",
+    "src/Core.TLA/specs/NciNonUrgencyProofs.tla": "52975cbc407efcff23970143a3ab2324414bbedf6d441bc593a7558629caffc4",
+    "src/Core.TLA/specs/NciSafety.cfg": "6fbe5a40f86b52095fccb27eac1841bac2469e129615f9c2ec8cc7101b6b8e0a",
+    "src/Core.TLA/specs/NciSafety.tla": "a7348bae4f8a53b359b7a884701a943cfce14b03b2101f51e5a37723761ba5fa",
+    "src/Core.TLA/specs/NciSafetyProofs.tla": "45982883d878ea5c4985c4dda34145a61c272e2ec60752a4de15b6a0116f233f",
+    "src/Core.TLA/specs/NciUnbounded.cfg": "ccbdd6329cfabe0581e379d895b07af2a6a3c84228495e46a30c7e9a90c4ddbc",
+    "src/Core.TLA/specs/NciUnbounded.tla": "17fff7b8386f6972d57a9e9af7d73f5333755bf3d6a60146164152ec42d22651",
+    "src/Core.TLA/specs/NonRegisterCollapse.cfg": "ea712663754eb3241d3c080a4c802d6f33c0e3ef89c511b6f0030f80dd0435db",
+    "src/Core.TLA/specs/NonRegisterCollapse.tla": "fb380cc5675d32c69938182fa097cbb648565daf60ab8f8217a9b6fd7602ed7b",
+    "src/Core.TLA/specs/OperatorLifecycleRace.cfg": "85318e3df2a958c9db647bed3c755aa4029db95c4b224e70f72fe724320ea4d0",
+    "src/Core.TLA/specs/OperatorLifecycleRace.tla": "bf6b5f7dd5779a4b03ebda5d9e01d6db0b9bcc9c1aa6df15668991c1fc5bc609",
+    "src/Core.TLA/specs/PermanentHarmHorizon.cfg": "95573ed6e306320d51122c5d48ec862e1cd5f492595152e1aaf6e7002df67bc4",
+    "src/Core.TLA/specs/PermanentHarmHorizon.tla": "dc55f7c63cad004d43455f6fc8eca023d5c86abde1505d29e6bfc34934ce8f3c",
+    "src/Core.TLA/specs/PredictiveLookahead.cfg": "afb030a728bddc1055aff594c8ef8ec5f2b3d0e84d784705b18146209d688620",
+    "src/Core.TLA/specs/PredictiveLookahead.tla": "d05810020ffad966a33bdbd958703c194b3726914c583e688fadfb62f02dc66a",
+    "src/Core.TLA/specs/QuorumCollateral.cfg": "850c3f52b613bc60d876a998dd563542dcfb98b2c794d199c3eddf9d14357e83",
+    "src/Core.TLA/specs/QuorumCollateral.tla": "7870850a5ccbeb89463148e913bb979611f92890e854d3e6882578a06d99315a",
+    "src/Core.TLA/specs/QuorumCollateralCompulsion.cfg": "15842b718f363b2529f552ace1f239b22fa428149fd4c9ba0ab04a97338450f7",
+    "src/Core.TLA/specs/QuorumCollateralCompulsionR1.cfg": "401fe07341b077f593ee86b02372d1565f6cd2be778688176abc7167c7e2d56c",
+    "src/Core.TLA/specs/QuorumCollateralDeterrenceR2.cfg": "5bc0ad51fd5dc0b280cabb48bde01629dd549a02d29d2129e6f5ad47a1a2d653",
+    "src/Core.TLA/specs/QuorumCollateralDeterrenceR4.cfg": "41b4d879e1848c577da8c4d7846e3a23b654380876b79abaca20e1a4bdb01818",
+    "src/Core.TLA/specs/QuorumCollateralR1.cfg": "06d76a7d69c82a65180680620d7529f5e17f2837138af6ddf1a08b9d1e989292",
+    "src/Core.TLA/specs/QuorumCollateralR2.cfg": "e4243ef7800d05b60d324e03f08cc061d6907dea6695e568170231dde2b8545c",
+    "src/Core.TLA/specs/QuorumCollateralR3.cfg": "5dad3f8648955b1e2ff12f02629dce515b53058ce85f382e25ad8557c0e3916e",
+    "src/Core.TLA/specs/QuorumCollateralThreshold.cfg": "1caa75345522e5b85f07bf4160b7f21214f51f20703b76a9692c7a7eda5ba9c8",
+    "src/Core.TLA/specs/QuorumCollateralThresholdWitness.cfg": "0c69c53e75599539d4888801a67bbe34443c870da1d552e773972258a1f26ebd",
+    "src/Core.TLA/specs/QuorumCollateralWitness.cfg": "2e1afec0ac30ba15e45a704877e39edd19af1ef338aaf7655329610c5dfeeaca",
+    "src/Core.TLA/specs/QuorumCollateralWitnessConflict.cfg": "50204d0fe136eaf34a89533d259c934bfe298e1be1ddd9a46e9dcc590fe176b4",
+    "src/Core.TLA/specs/QuorumPhaseCancellation.cfg": "2a4e0f63f4d610f2d08670200af0a951e0f76ba3cb93e9a49c8a6f354f1599e8",
+    "src/Core.TLA/specs/QuorumPhaseCancellation.tla": "bac8e099064ac391a22a85d6b548ef71f41655a8f49f3b93318817ffe7ac556f",
+    "src/Core.TLA/specs/QuorumPhaseHonestSplit.cfg": "24ce570b52a4f32175d3c2edfad74946200b5632b0ffc1f1ee8730034aa00511",
+    "src/Core.TLA/specs/QuorumPhaseOddParity.cfg": "872b1612588f940b30e22bf9f0a562644d52555d31a6170660c4d3029adf0c6c",
+    "src/Core.TLA/specs/QuorumPhaseUnnormalised.cfg": "0deed630f4efa98523a0e31cb8c7afc3890d677360c8d354ce44341f083488ac",
+    "src/Core.TLA/specs/RecoveryHomeostat.cfg": "747dda1cc1b47269bb39d7bb78e875f3f1e7b0a8c05c8b85f3de38fc5e72b45d",
+    "src/Core.TLA/specs/RecoveryHomeostat.tla": "bc4412aaced2f43840c60bb6bad2d3118c8dd3f75b022650625f2a65d4062649",
+    "src/Core.TLA/specs/RecursiveCountingLFP.cfg": "eecfd7b54a5dbefa04cb5462085e3f05e315ad5d3a93799f74cba90907c3c85a",
+    "src/Core.TLA/specs/RecursiveCountingLFP.tla": "186f6820c63bb9938aac58b9a91086f170f5fbf992e2ef99402cfc943a5d8890",
+    "src/Core.TLA/specs/RecursiveSignedSemiNaive.cfg": "bded54171e911bc2a38a29f4fa3e1fdaf553a84a2da110db227939c35c835a90",
+    "src/Core.TLA/specs/RecursiveSignedSemiNaive.tla": "5f35fe80d91d020ba32981b45f9a80f3a402a1447ae5ed35396c4e3bda80d400",
+    "src/Core.TLA/specs/RefuseBinding.cfg": "59ef88c03c6b0cdc513252d8bd8fbd9b6b01b183c3404db10072a74db15cbb4d",
+    "src/Core.TLA/specs/RefuseBinding.tla": "8d7a3063239635f813203bf2b5fa4bba2ba544c489d96b704db1e4a0466906d1",
+    "src/Core.TLA/specs/SmokeCheck.cfg": "b665adb171fce51a686f6d07aa6f6beaa0111cb080712c0029288250125e7ede",
+    "src/Core.TLA/specs/SmokeCheck.tla": "b76420f6d69d07e7b4258f654cccac42c4e892155eacbf70719e482ad73cc2f4",
+    "src/Core.TLA/specs/SpineAsyncProtocol.cfg": "e6eb42dcbdcdbdcc6341dec8c8306d8885520879132a55514e77736254044e21",
+    "src/Core.TLA/specs/SpineAsyncProtocol.tla": "99326d9b7da03db6736b74825c2872914885921d0429259a90775fc338040cb9",
+    "src/Core.TLA/specs/SpineMergeInvariants.cfg": "dcaa72490711cda16a2bcf8973239e8bf9afd65ea7d9f034466fa01367ff0193",
+    "src/Core.TLA/specs/SpineMergeInvariants.tla": "61dbaf5163ddd2142bbbdd6892f1298b5e48df57233202fe62469d5ca9972e1e",
+    "src/Core.TLA/specs/TickMonotonicity.cfg": "11193fa5a1d56da13dd8174c7d46f2c41eb0a2f12dbf4b47ede37cd9ff1ec3e8",
+    "src/Core.TLA/specs/TickMonotonicity.tla": "d7b99a2c364cc6f7348a10fb2b2d4ddada94778512470b631ffcd7d49abe4e43",
+    "src/Core.TLA/specs/TransactionInterleaving.cfg": "ea96be2f10cd7943a8554bb22910b8410fb32fadcbcfa4ea8f57740b2c4d1156",
+    "src/Core.TLA/specs/TransactionInterleaving.tla": "159c866bfa9031ccb5f77cc323306f4ef01878145cfce698f2390d89c1ff0719",
+    "src/Core.TLA/specs/TwoPCSink.cfg": "f9aa370f5c58eea344be94d5ae8d0f60916b3cdb93d2f35e410625332afcb522",
+    "src/Core.TLA/specs/TwoPCSink.tla": "5a7492bfef933c608ef1c1bcf5399bc5fa2a7e5924d5276742cc68601c0588ee",
+    "src/Core.TLA/specs/WagerSolvency.cfg": "b40ee6afb1688ba325741fd06fe9b7d79e0420527537fd06eae54ca958ae975a",
+    "src/Core.TLA/specs/WagerSolvency.tla": "da5775f327d45099c1bb4c07e06f34511f0efb110a55a06a1d5ae6e04830aab9",
+    "src/Core.TLA/specs/WagerSolvencyNoSplit.cfg": "85bfb648c3c32558d7cc09df11542fa778088839201f00522033d35a1a17f90d",
+    "src/Core.TLA/specs/WagerSolvencyPhantom.cfg": "d6a214feb05c68f6f002e4d5ae97be78ac8474af9de0047d3a986d7aefdd84ac",
+    "src/Core.TLA/specs/WagerSolvencyStaleAttestation.cfg": "a15a2c74dea394350af1e65409da78c22142c1433e9eb67bfc1c8e4a16866a72",
+    "src/Core.TLA/specs/WagerSolvencyWitness.cfg": "ba1e04aef3cfccca6a39d04cf371684b9276047d8e38b6d1d5a479b388da49d8"
+  },
+  "TestAssemblySha256": "74a33f2f7e9afc4fbef12914b76cc71b2ea55db0767980ff571e1984a0ebd036",
+  "SourceToBinaryLimit": "Build logs and hashes are engineering provenance, not a formal derivation proof."
+}

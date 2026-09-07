@@ -32,6 +32,7 @@ const ARGV = ["src/Core.TypeScript/formal-verification/run-tlc.ts", "NciNonUrgen
 const ORACLE = "src/Core.Python/src/zeta/nci_witness_receipt_oracle.py";
 const SOURCE_BYTES = readFileSync(SOURCE, "utf8");
 const EXPECTED = readFileSync("docs/research/data/2026-09-06-nci-witness-v1-typescript.json", "utf8");
+const HISTORICAL_REGISTRY = "docs/research/data/2026-09-06-nci-witness-v1-registry.json";
 const READ_TRACE = [...SUBJECT_FILES.map((path) => `read:${path}:bytes`), "read:registry/tlc-models.json:utf8"];
 
 interface Emitter {
@@ -44,7 +45,14 @@ async function loadEmitter(source = SOURCE_BYTES, status = 0) {
   const trace: string[] = [];
   const dependencies: string[] = [];
   const denials: string[] = [];
-  const files = new Map(SUBJECT_FILES.map((path) => [join(SUBJECT, path), readFileSync(path)]));
+  // The registry is the exact historical subject. Remaining current files must
+  // still satisfy the emitter's original model/config/jar pins on every call.
+  const files = new Map(
+    SUBJECT_FILES.map((path) => [
+      join(SUBJECT, path),
+      readFileSync(path === "registry/tlc-models.json" ? HISTORICAL_REGISTRY : path),
+    ]),
+  );
   const deny = (detail: string): never => {
     denials.push(detail);
     throw new Error(`capability denied: ${detail}`);

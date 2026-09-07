@@ -1,0 +1,167 @@
+{
+  "Scope": "All observed pinned-policy failures and both authorized C1 diagnostics; not a controlled seed-matched causal study",
+  "Records": {
+    "pinned-full-suite-failure.log": {
+      "Sha256": "8450e81203e6c055151751d786befb9e4e3fa5bdbabf38bdd2d956f02ce7d92f",
+      "Bytes": 13894,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/hidden-switch-tests-full.log"
+    },
+    "pinned-isolated-sigbus.log": {
+      "Sha256": "ba431a3b066c43246fa595404a0fa0c9e6de6040a85d7df972b812279e28eae3",
+      "Bytes": 5568,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/hidden-switch-tlc-isolated-recovery.log"
+    },
+    "diagnostic-launcher.py.txt": {
+      "Sha256": "325c024de371e16b3d726b96f7332739c1813a26742b8d6036e646996ec3bfe8",
+      "Bytes": 4982,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/run-bft-c1.py"
+    },
+    "policy-ts-focused.log": {
+      "Sha256": "57cea66899a1190b7ad7854c41c0dd13fb7bfe26c3c222c8364a407467e3fc84",
+      "Bytes": 1569,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-focused.log"
+    },
+    "claim-preflight.log": {
+      "Sha256": "d7c364a1d2acf1236295b063590c20a92906beb62e926c80ec84982a705ce28a",
+      "Bytes": 1942,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-claim-push.log"
+    },
+    "c1-1-attempt.json": {
+      "Sha256": "cba3682a9ff303afba778fae8f20f237a373fb7f9f8e704206251c60726f55a0",
+      "Bytes": 2414,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/attempt.json"
+    },
+    "c1-1-result.json": {
+      "Sha256": "891d42a9237bbf8e03083428a15fa50d8bd3dbbd7317c5fb1b807fd32e54d41a",
+      "Bytes": 474,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/result.json"
+    },
+    "c1-1-stdout.log": {
+      "Sha256": "873e7f0665f093bf4482af481004cf205b84d63abfa4282dbdf81d643ec193d7",
+      "Bytes": 4355,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/stdout.log"
+    },
+    "c1-1-stderr.log": {
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/stderr.log"
+    },
+    "c1-2-attempt.json": {
+      "Sha256": "fcd78ff4ac72cd5022aaa8d732ea039b8784e057565784ebc75a80d91196095b",
+      "Bytes": 2414,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/attempt.json"
+    },
+    "c1-2-result.json": {
+      "Sha256": "2122d4891367bc5e03dc060f978ab5410c5067c65dde1010f035c3d89cb04e32",
+      "Bytes": 472,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/result.json"
+    },
+    "c1-2-stdout.log": {
+      "Sha256": "98cad6ef39a873fd1428a1d3fe28c52531d94022460d099843631158a4c5fb7c",
+      "Bytes": 4370,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/stdout.log"
+    },
+    "c1-2-stderr.log": {
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/stderr.log"
+    },
+    "policy-build.log": {
+      "Sha256": "3655c1be63bd5b2f55da23b4f96609ff7e1abbdca2782442233d9b785e5286f4",
+      "Bytes": 9076,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-build.log"
+    },
+    "policy-tests.log": {
+      "Sha256": "5bc97b0c819e2f77a1c27eaf5216c8d5fd20b5b41311a6e1fbc60d169157487b",
+      "Bytes": 6430,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-tests.log"
+    },
+    "policy-format.log": {
+      "Sha256": "101c8c0b5b92a4ee60fa2cd7597ff05bdf59407acb7043c165a0ab8aa2957c2e",
+      "Bytes": 5242,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-format.log"
+    },
+    "policy-preflight.log": {
+      "Sha256": "78384de8312a3216342fc13b8f8682eaaef4762d3eb4b3d06daed458418e405e",
+      "Bytes": 1224,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-preflight.log"
+    },
+    "policy-source-push.log": {
+      "Sha256": "b917c6fe79cef4cb1c46e552ec05a6dd52a5def9c886deac818b398ff352fca9",
+      "Bytes": 1709,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-source-push.log"
+    },
+    "policy-runtime.json": {
+      "Sha256": "58843d42ba7db73df0481370c78cec23578495e24f4bb9abd52d965b733425da",
+      "Bytes": 566,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-runtime.json"
+    },
+    "policy-live-process.json": {
+      "Sha256": "2e0afc812ac16c87a05db6d446cc8ce7fcb399bf0b8faf418533586ff7cfc8cc",
+      "Bytes": 734,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-live-process.json"
+    },
+    "Bayesian.Tests.trx.gz": {
+      "Sha256": "12b7db07eb92e2cddbbf8ee04a821e17acfd23af7c36427125782c098593f776",
+      "Bytes": 131394,
+      "UncompressedSha256": "3e2db92b99b53863889130a05f2b8e76a57b21aba17714e88f93ad7bc8a8fb75",
+      "UncompressedBytes": 745771,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Bayesian.Tests/TestResults/tlc-c1-policy_net10.0_20260907070957.trx"
+    },
+    "Core.CSharp.Mediator.Tests.trx.gz": {
+      "Sha256": "a8ce5ba2b5a8163f83357f985162184ace9d7ef8e234b752fba2b63245d00d1d",
+      "Bytes": 2895,
+      "UncompressedSha256": "88379e6a11df383bf812db5fa98b07994d5b7b09b8d747538f6fbc1dc62ada20",
+      "UncompressedBytes": 19681,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Core.CSharp.Mediator.Tests/TestResults/tlc-c1-policy_net10.0_20260907070951.trx"
+    },
+    "Core.CSharp.Tests.trx.gz": {
+      "Sha256": "86af1bc97959ded9b55192cba62b00643bc2ff10a9cd5aa3d60235be6a6bbfd9",
+      "Bytes": 4101,
+      "UncompressedSha256": "b46c53150c9e6aee21ccf6824a01cbae2e3423f7eedbc7392476a6ef20ccc12d",
+      "UncompressedBytes": 31591,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Core.CSharp.Tests/TestResults/tlc-c1-policy_net10.0_20260907070951.trx"
+    },
+    "Tests.CSharp.trx.gz": {
+      "Sha256": "3df6c352a817dccf4dbd6510cb9e1aa4863869b1ac1d0be8df523821a0787042",
+      "Bytes": 93593,
+      "UncompressedSha256": "8a3ff6b1da73e96913413393c04c882f7cae855a137a919905015a697dbdc976",
+      "UncompressedBytes": 582571,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Tests.CSharp/TestResults/tlc-c1-policy_net10.0_20260907070954.trx"
+    },
+    "Tests.CSharp.TypeProvider.trx.gz": {
+      "Sha256": "3d9464b352a8a8b1df85ebd88726008f127217e670cd862b6bff5d5aebc15f43",
+      "Bytes": 1680,
+      "UncompressedSha256": "86e2611b3297627004fa62d583c9495525841d29277e227874d92ca0e794d740",
+      "UncompressedBytes": 6360,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Tests.CSharp.TypeProvider/TestResults/tlc-c1-policy_net10.0_20260907070951.trx"
+    },
+    "Tests.FSharp.trx.gz": {
+      "Sha256": "48b4524838b7a8446800d415b4665412ae87ecf71daae0137bf954940ad86d93",
+      "Bytes": 1856265,
+      "UncompressedSha256": "7921b87776be0242d45eeef88bd059624e24a5cd4f2e688283f533cc7b4c3b84",
+      "UncompressedBytes": 9512291,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Tests.FSharp/TestResults/tlc-c1-policy_net10.0_20260907071702.trx"
+    },
+    "Tests.FSharp.Git.trx.gz": {
+      "Sha256": "2afefb39f38f3c3a201a531e5e90d5b102a7c97668df56f62a3a6f2216be317e",
+      "Bytes": 7658,
+      "UncompressedSha256": "cffa8d7aa7c13640b96cbc7a6fe8489c4018122cf6f93d6f2573d3a059db8904",
+      "UncompressedBytes": 57682,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/tests/Tests.FSharp.Git/TestResults/tlc-c1-policy_net10.0_20260907070953.trx"
+    },
+    "validation.json": {
+      "Sha256": "3863ec25f6f3b013faf20182e6b3ea521eb8e02a1d166127ab98a5bdb18b8db4",
+      "Bytes": 19403,
+      "CapturedFrom": "Computed from the retained exact-source gate logs, original TRX bytes and observed source files after successful exit."
+    }
+  },
+  "OriginalGateHsErr": "Runner removed the unique temporary directory before judgment; no hs_err recovered",
+  "C1StateFiles": "TLC removed its successful state working files; launcher retained all remaining artifacts",
+  "OriginalJarModelConfigRegistrySha256": {
+    "src/Core.TLA/tla2tools.jar": "71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86",
+    "src/Core.TLA/specs/BftConsensus.tla": "e859daaaa872c9df903886573ad5fb6d17849cf6637df37c25376abe8d04854f",
+    "src/Core.TLA/specs/BftConsensus.cfg": "73c219ce14d7a838c2345be4c82c8b0b0f209283fb0928ae7e895e5374565bde",
+    "registry/tlc-models.json": "44f1ca2feb2c7ba9cab47f06d2fcd60c097ef6d55ed602299f0e1a645791de54"
+  }
+}

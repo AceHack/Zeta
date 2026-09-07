@@ -120,6 +120,13 @@ build timestamp and short rev, so the version below is exactly what
 | **CTFP book (Milewski)**  | v1.3.0 PDF           | `docs/category-theory/ctfp-milewski.pdf` | Required-reading category theory reference               | `curl -sL -o ... https://github.com/hmemcpy/milewski-ctfp-pdf/.../category-theory-for-programmers.pdf`                                        |
 | **CTFP .NET (Bouderaux)** | archived snapshot    | `docs/category-theory/ctfp-dotnet/`      | F#/C# CT examples (no upstream tracking, .git stripped)  | `git clone ... && rm -rf .git .github`                                                                                                        |
 
+TLC's macOS ARM64 invocation uses C1-only compilation through the shared
+`registry/tlc-models.json` platform entry. The
+[2026-09-07 policy record](research/2026-09-07-tlc-macos-c1-policy.md) preserves
+the earlier failures, two complete controlled diagnostics and the limits of
+this workaround. The Java version and committed verifier jar remain pinned
+as listed above.
+
 ## dotnet global tools
 
 | Tool                   | Version                                                                                          | Why                                                                     | Install                                                                                            |

@@ -1,0 +1,25 @@
+bun test v1.3.14 (0d9b296a)
+
+src/Core.TypeScript/formal-verification/tlc-invocation.test.ts:
+(pass) buildTlcArgv > always passes -config, so the twelve ungated configs cannot recur [0.55ms]
+(pass) buildTlcArgv > pins the worker count, because halt-on-violation counts move with it [0.13ms]
+(pass) buildTlcArgv > never passes -deadlock -- deadlock policy lives in the .cfg [0.08ms]
+(pass) buildTlcArgv > uses C1 only on macOS arm64 without changing common JVM flags [0.06ms]
+(pass) buildTlcArgv > invocationLine is copy-pasteable next to a recorded result [0.04ms]
+(pass) judgeTlcRun > accepts the pinned clean shape [0.27ms]
+(pass) judgeTlcRun > REFUSES a witness that has stopped firing [0.01ms]
+(pass) judgeTlcRun > REFUSES a witness that fires on a DIFFERENT property [0.01ms]
+(pass) judgeTlcRun > accepts the pinned violation
+(pass) judgeTlcRun > REFUSES an exit code the registry did not pin -- exit 11 is deadlock, 12 invariant, 13 temporal
+(pass) judgeTlcRun > REFUSES exhaustive state-count drift [0.02ms]
+(pass) judgeTlcRun > parses comma-grouped counts [0.02ms]
+(pass) judgeTlcRun > does NOT assert a count for halt-on-violation models
+(pass) judgeToolchainBanner > accepts the pinned jar banner [0.02ms]
+(pass) judgeToolchainBanner > REFUSES a swapped jar [0.02ms]
+(pass) judgeTlcRun state-count parsing > reads the FINAL summary, not a progress line [0.02ms]
+(pass) judgeTlcRun state-count parsing > still fails when the FINAL count drifts, progress lines notwithstanding [0.01ms]
+
+ 17 pass
+ 0 fail
+ 88 expect() calls
+Ran 17 tests across 1 file. [438.00ms]

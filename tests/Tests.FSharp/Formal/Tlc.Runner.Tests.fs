@@ -188,11 +188,10 @@ let private currentPlatformIsMacArm64 () =
        System.Runtime.InteropServices.Architecture.Arm64
 
 
-/// JVM policy from the registry pin. OpenJDK 26 on macOS/aarch64 has
-/// crashed in G1, ParallelGC, and C2 type-speculation cleanup while
-/// running this suite, so that one platform keeps C2 and disables only
-/// the observed failing optimization; C1-only is materially slower on
-/// the largest model.
+/// JVM policy from the registry pin. macOS/aarch64 uses C1-only after
+/// in-run OpenJDK 26 failures and two complete BftConsensus diagnostics
+/// under that policy. This is a bounded workaround, not a root-cause or
+/// general-stability claim; see the dated TLC macOS C1 research record.
 let tlcJvmArguments (isMacArm64: bool) (errorFilePath: string) =
     [ yield! jvmBase
       if isMacArm64 then yield! jvmDarwinArm64Extra
@@ -479,11 +478,15 @@ let ``TLC checks the pinned model`` (id: string) =
 
 
 [<Fact>]
-let ``TLC JVM policy excludes C2 type speculation only on macOS arm64`` () =
+let ``TLC JVM policy uses C1 only on macOS arm64`` () =
+    jvmDarwinArm64Extra
+    |> should equal [ "-XX:-UseTypeSpeculation"; "-XX:TieredStopAtLevel=1" ]
     tlcJvmArguments true "error.log"
     |> should equal (jvmBase @ jvmDarwinArm64Extra @ [ "-XX:ErrorFile=error.log" ])
     tlcJvmArguments false "error.log"
     |> should equal (jvmBase @ [ "-XX:ErrorFile=error.log" ])
+    tlcJvmArguments false "error.log"
+    |> should not' (contain "-XX:TieredStopAtLevel=1")
 
 
 [<Fact>]

@@ -1,0 +1,1 @@
+{"schema":"zeta.attestation-consent-expiry-receipt/v1","provenanceMode":"test-only-bound-adapter","attestationRecordSha256":"sha256:9eefdc9a33443163c440ed4cb96a5cd91d1986d179e93cf15e985661af0e877f","scopeId":"attestation-window-observation","evaluationInstant":"2026-09-07T11:30:00.000Z","evaluationMode":"local-status-only","status":"within-declared-window"}
