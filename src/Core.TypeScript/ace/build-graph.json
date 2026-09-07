@@ -1271,6 +1271,23 @@
       }
     },
     {
+      "id": "dotnet:src/Research.FSharp.Cli",
+      "kind": "dotnet",
+      "sources": ["src/Research.FSharp.Cli/**"],
+      "dependsOn": ["dotnet:src/Core"],
+      "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
+      "origin": "derived",
+      "requiredQuorum": {
+        "tier": "T1",
+        "faultModel": {
+          "faultClass": "omission",
+          "f": 1
+        },
+        "reviewerClasses": ["reviewer:fsharp"],
+        "evidence": []
+      }
+    },
+    {
       "id": "dotnet:src/SwarmRunner",
       "kind": "dotnet",
       "sources": ["src/SwarmRunner/**"],

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Zeta.Research.HiddenSwitchCompiled</AssemblyName>
+    <RootNamespace>Zeta.Research</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <UseAppHost>false</UseAppHost>
+    <RuntimeFrameworkVersion>10.0.11</RuntimeFrameworkVersion>
+    <RollForward>Disable</RollForward>
+    <TieredCompilation>false</TieredCompilation>
+    <TieredPGO>false</TieredPGO>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Research.FSharp/ResearchRandom.fs" Link="Research/ResearchRandom.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchReceipt.fs" Link="Research/HiddenSwitchReceipt.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchObservation.fs" Link="Research/HiddenSwitchObservation.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCarrier.fs" Link="Research/HiddenSwitchCarrier.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchPolicy.fs" Link="Research/HiddenSwitchPolicy.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchExperiment.fs" Link="Research/HiddenSwitchExperiment.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledReceipt.fs" Link="Research/HiddenSwitchCompiledReceipt.fs" />
+    <Compile Include="../Research.FSharp/HiddenSwitchCompiledPolicy.fs" Link="Research/HiddenSwitchCompiledPolicy.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.fsproj" />
+  </ItemGroup>
+</Project>

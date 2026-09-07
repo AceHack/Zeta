@@ -1,0 +1,186 @@
+[
+  {
+    "File": "hidden-switch-compiled-build-attempt-1.log",
+    "Bytes": 2443,
+    "Sha256": "E6665C4BC5FA2218CE899775B21989D28A56FF5EB3250EB895F81456A096EC13",
+    "StoredFile": "hidden-switch-compiled-build-attempt-1.log.gz",
+    "StoredBytes": 489,
+    "StoredSha256": "A40389C3B7A557D033737DDF6DE8CFBCDDD1776E9F4A3F68F2EDC0CAE21F9290"
+  },
+  {
+    "File": "hidden-switch-compiled-build-attempt-2.log",
+    "Bytes": 2060,
+    "Sha256": "FFCD3AECC1DD4A9530F742E19F23EC4492643E3C0735855AECC8799C05AA6A8E",
+    "StoredFile": "hidden-switch-compiled-build-attempt-2.log.gz",
+    "StoredBytes": 439,
+    "StoredSha256": "32F18BCDA9C1021DA99A2132ACA7545EFC18A367CC9ABF206A5D0FF43D65DA8A"
+  },
+  {
+    "File": "hidden-switch-compiled-build-attempt-3.log",
+    "Bytes": 979,
+    "Sha256": "C59FA374B0DBFE611D81D3D6BDC641E2787162E5335B3F74AC95FDBBF5174463",
+    "StoredFile": "hidden-switch-compiled-build-attempt-3.log.gz",
+    "StoredBytes": 318,
+    "StoredSha256": "B37F10803EAFCC4E4E3D54B6DA4B3C3554A3304278B1F22BD661EA66C467AC6F"
+  },
+  {
+    "File": "hidden-switch-compiled-graph-derive-1.log",
+    "Bytes": 145,
+    "Sha256": "722D955DEA93F10CD799726184F5652DAE5425C44528F11C49DA778E7D8A2A9F",
+    "StoredFile": "hidden-switch-compiled-graph-derive-1.log.gz",
+    "StoredBytes": 123,
+    "StoredSha256": "112C6EC593794563F5801374D7FFF0F09396FE2D7A045E6835C7A8D8307AB23E"
+  },
+  {
+    "File": "hidden-switch-compiled-pure-tests-attempt-1.log",
+    "Bytes": 504,
+    "Sha256": "34FEB94B13EC22BE07D804468E378FCD8F2772BBC3C94562A2E61247AC2CA843",
+    "StoredFile": "hidden-switch-compiled-pure-tests-attempt-1.log.gz",
+    "StoredBytes": 295,
+    "StoredSha256": "7B8CCB0B397EA95A553631D3B9521F9AC4C221AF924918A8D7099880C0FDBB0E"
+  },
+  {
+    "File": "hidden-switch-compiled-refusal.stderr.log",
+    "Bytes": 104,
+    "Sha256": "DF0AC3432EB683AD4B060D77905A1D4D3D6F5B33390BFC638034D9F2B56AF6AD",
+    "StoredFile": "hidden-switch-compiled-refusal.stderr.log.gz",
+    "StoredBytes": 105,
+    "StoredSha256": "208A131241BAB90B57B04AD970A12FCAA8F0A61454109C2E833C085FD3371DA9"
+  },
+  {
+    "File": "hidden-switch-compiled-refusal.stdout.log",
+    "Bytes": 0,
+    "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "StoredFile": "hidden-switch-compiled-refusal.stdout.log.gz",
+    "StoredBytes": 20,
+    "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+  },
+  {
+    "File": "hidden-switch-compiled-test-build-attempt-1.log",
+    "Bytes": 4579,
+    "Sha256": "0A1A2F2C86DB1CDA64B80B9DCBD261F1251BC7705155523EE7B2399A2027621C",
+    "StoredFile": "hidden-switch-compiled-test-build-attempt-1.log.gz",
+    "StoredBytes": 696,
+    "StoredSha256": "A339F6B82265DD04F18EED8DF24C987483FA2507AF57AF2A0126874178F94AC9"
+  },
+  {
+    "File": "hidden-switch-compiled-test-build-attempt-2.log",
+    "Bytes": 3989,
+    "Sha256": "A01321A0E04BD5F376B34D1BB0EA9FCA8D377B5E6394BF89084F8A76CD09324E",
+    "StoredFile": "hidden-switch-compiled-test-build-attempt-2.log.gz",
+    "StoredBytes": 572,
+    "StoredSha256": "0A4D4090AF952D364D4C4BA0CA006FFB4716BAFF5BDCDE5604613E8BC0AC11D1"
+  },
+  {
+    "File": "hidden-switch-compiled-build-attempt-1-inputs.json",
+    "Bytes": 1921,
+    "Sha256": "C17C78B77ECEBB3225CB2E06019432CE99589D1F12C32CA06757D19E88553742",
+    "StoredFile": "hidden-switch-compiled-build-attempt-1-inputs.json.gz",
+    "StoredBytes": 859,
+    "StoredSha256": "AE86D93D840D2025A02173F96654E8477E7B25174ECE493BE574B00A190AEDA1"
+  },
+  {
+    "File": "hidden-switch-compiled-build-attempt-2-inputs.json",
+    "Bytes": 1938,
+    "Sha256": "786AF2B7E4A7662E15CB37A635FFA303F3A31E362241F0D5D3ABB745EE2A4201",
+    "StoredFile": "hidden-switch-compiled-build-attempt-2-inputs.json.gz",
+    "StoredBytes": 873,
+    "StoredSha256": "240C18670BFC8697A415C205B026FEDECB0ED1A508D54608E88B55D07B848A9D"
+  },
+  {
+    "File": "hidden-switch-compiled-build-attempt-3-inputs.json",
+    "Bytes": 1938,
+    "Sha256": "9890848E8D72A1A5C7A67BBC45F003065E6B4B80FA7DEC4A19BFF07F204F7635",
+    "StoredFile": "hidden-switch-compiled-build-attempt-3-inputs.json.gz",
+    "StoredBytes": 872,
+    "StoredSha256": "81695B0A0CFBB507C15648F8570E65022D9743FF74BB4C6E55255D4E70787721"
+  },
+  {
+    "File": "hidden-switch-compiled-old-source-check.json",
+    "Bytes": 3672,
+    "Sha256": "1102D2497449345FF0A60840849D442399A235191BA66E4867D368D695C85805",
+    "StoredFile": "hidden-switch-compiled-old-source-check.json.gz",
+    "StoredBytes": 1452,
+    "StoredSha256": "84AD48E29AD9FD57E5F0F6074CB3A521878769683E662633DB4877CC0E392A08"
+  },
+  {
+    "File": "hidden-switch-compiled-setup-failures.json",
+    "Bytes": 568,
+    "Sha256": "0E184340227CE9A7CCBFB1B436B199E7F92DBDEEBF80C2C4B0616B21FFA90E46",
+    "StoredFile": "hidden-switch-compiled-setup-failures.json.gz",
+    "StoredBytes": 362,
+    "StoredSha256": "04288157C4E2D115D9D7938E0E711B3352A3D684C1F5D772F00A18D75EC9AA51"
+  },
+  {
+    "File": "hidden-switch-compiled-test-build-attempt-2-input.json",
+    "Bytes": 310,
+    "Sha256": "B66098F81A4FB40A397F6B6FB6C39E6C887CB94F0D55A772F949AAD0CA6998B9",
+    "StoredFile": "hidden-switch-compiled-test-build-attempt-2-input.json.gz",
+    "StoredBytes": 264,
+    "StoredSha256": "0613B750877B011F50B06456CF350DECC1AFF68C8E542ADAFAC375E7D300833E"
+  },
+  {
+    "File": "hidden-switch-compiled-refusal.exit.txt",
+    "Bytes": 2,
+    "Sha256": "53C234E5E8472B6AC51C1AE1CAB3FE06FAD053BEB8EBFD8977B010655BFDD3C3",
+    "StoredFile": "hidden-switch-compiled-refusal.exit.txt.gz",
+    "StoredBytes": 22,
+    "StoredSha256": "769A673844520B9ACDDF8ED00AD8C3B366DAE07CFA1C978D009948A26D0E18F9"
+  },
+  {
+    "File": "hidden-switch-compiled-pure-attempt-1.trx",
+    "Bytes": 7458,
+    "Sha256": "D5D23CAF82CFE0DDBD2F8ABF11E5E654E02691871439BA03ECE34CF98AB06352",
+    "StoredFile": "hidden-switch-compiled-pure-attempt-1.trx.gz",
+    "StoredBytes": 1774,
+    "StoredSha256": "85AFA89775830148CC25A471638E8E18E115CE2436A3F46ABA6913D01670049A"
+  },
+  {
+    "File": "hidden-switch-compiled-census-adjudication.log",
+    "Bytes": 474,
+    "Sha256": "EE44135E7389B6935B0063C1F8F06C9B15E9A89DFB94AEED7DDBFC1D3209C816",
+    "StoredFile": "hidden-switch-compiled-census-adjudication.log.gz",
+    "StoredBytes": 286,
+    "StoredSha256": "625BB1FCA2F62BD1CEF1352933F3D5D9945DC9A8D06632960E6D1E4D84501EB0"
+  },
+  {
+    "File": "hidden-switch-compiled-pure-quick-attempt-1.log",
+    "Bytes": 3511,
+    "Sha256": "E098C95142158600F44E90EAC3D4A3346E400AD96CB43717B89283F11A43CC6D",
+    "StoredFile": "hidden-switch-compiled-pure-quick-attempt-1.log.gz",
+    "StoredBytes": 1262,
+    "StoredSha256": "EBCA2A5848164C6947DD1C23AC30F71961560E16236F199856F09837560CBFE7"
+  },
+  {
+    "File": "hidden-switch-compiled-pure-tests-attempt-2.log",
+    "Bytes": 504,
+    "Sha256": "812A51E04C335C7AC86B7AA214381219C71EA7759359D847BFC088496227C682",
+    "StoredFile": "hidden-switch-compiled-pure-tests-attempt-2.log.gz",
+    "StoredBytes": 295,
+    "StoredSha256": "704D9D454CB5DA768DAAC781EF7C44BE7D78237255A133B01F259C981CE4A938"
+  },
+  {
+    "File": "hidden-switch-compiled-test-build-attempt-3.log",
+    "Bytes": 3989,
+    "Sha256": "1BFA80AF2FBC48D74CCB938A3E9C193DFA9F15ADEFFD1A6CD576ED0026BCDB36",
+    "StoredFile": "hidden-switch-compiled-test-build-attempt-3.log.gz",
+    "StoredBytes": 571,
+    "StoredSha256": "BAD075A8D3B74D5E20F060471F7AAB5236041872A7A15A408AD72EE24B9D4F9C"
+  },
+  {
+    "File": "hidden-switch-compiled-pure-attempt-2.trx",
+    "Bytes": 7509,
+    "Sha256": "40783DC7CCCB06077BFC9B750D7047A22B779FB0CC689964AE39FE6E12E658A6",
+    "StoredFile": "hidden-switch-compiled-pure-attempt-2.trx.gz",
+    "StoredBytes": 1791,
+    "StoredSha256": "B49960BA834822FEF89A5EC32B7E41E74DAA9DE097741F010C3A9136DEF78A75"
+  },
+  {
+    "File": "hidden-switch-compiled-pure-quick-attempt-2.log",
+    "Bytes": 1224,
+    "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E",
+    "StoredFile": "hidden-switch-compiled-pure-quick-attempt-2.log.gz",
+    "StoredBytes": 405,
+    "StoredSha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13"
+  }
+]
