@@ -125,6 +125,13 @@ archive tags to make a later checkout appear to be the measured snapshot.
 
 ## Next bounded preregistration
 
+Continuation on 2026-09-07: the next experiment now has a
+[reviewed hidden-switch protocol](../research/2026-09-07-hidden-switch-protocol.md)
+and [retained design review](../research/2026-09-07-hidden-switch-design-review.md).
+Read those exact frozen choices before implementation. Remote registration,
+implementation and measurement status must be verified independently; this
+link does not claim a completed experiment.
+
 Register a finite hidden-dynamics task in which actions change subsequent
 state and a planning control has a specified potential advantage over a
 myopic policy. Freeze the observation/goal/action interface, hidden-state
