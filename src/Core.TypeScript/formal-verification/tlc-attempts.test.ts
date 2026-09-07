@@ -1,12 +1,13 @@
 // Synthetic process-boundary witnesses only: never launch a real JVM here.
 import { describe, expect, test } from "bun:test";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { closeSync, constants, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  captureProcess, finishAttempt, inventory, prepareAttempt,
-  runWithStartupRetry, sourceInputs, writeDiagnostic,
+  captureProcess, copyRegularSourceDescriptor, finishAttempt, inventory, prepareAttempt,
+  runWithStartupRetry, sourceInputs, sourceOpenPolicy, writeDiagnostic,
 } from "./tlc-attempts";
 import { buildTlcArgv, judgeTlcRun, loadTlcRegistry } from "./tlc-invocation";
 
@@ -42,6 +43,46 @@ describe("TLC startup retry parity", () => {
 });
 
 describe("TLC owned diagnostic directories", () => {
+  test("source copying uses the admitted descriptor after pathname replacement", () => {
+    const scratch = mkdtempSync(join(tmpdir(), "tlc-descriptor-fixture-"));
+    const source = join(scratch, "Fixture.tla");
+    const copied = join(scratch, "copy.tla");
+    const original = "original opened descriptor bytes";
+    let descriptor = -1;
+    try {
+      writeFileSync(source, original);
+      descriptor = openSync(source, sourceOpenPolicy().Flags);
+      renameSync(source, join(scratch, "moved.tla"));
+      writeFileSync(source, "replacement pathname bytes");
+      const identity = copyRegularSourceDescriptor(descriptor, copied, "Fixture.tla");
+      expect(readFileSync(copied, "utf8")).toBe(original);
+      expect(readFileSync(source, "utf8")).toBe("replacement pathname bytes");
+      expect(identity.Sha256).toBe(createHash("sha256").update(original).digest("hex").toUpperCase());
+      expect(identity.CopiedSha256).toBe(identity.Sha256);
+      expect(() => copyRegularSourceDescriptor(descriptor, copied, "Fixture.tla")).toThrow();
+      expect(readFileSync(copied, "utf8")).toBe(original);
+    } finally {
+      if (descriptor >= 0) closeSync(descriptor);
+      rmSync(scratch, { recursive: true });
+    }
+  });
+  test("source flags retain optional platform support and refuse static symlinks/directories", () => {
+    expect(sourceOpenPolicy({})).toEqual({ Flags: constants.O_RDONLY, NoFollowAvailable: false, NonBlockingAvailable: false });
+    const scratch = mkdtempSync(join(tmpdir(), "tlc-source-kind-fixture-"));
+    try {
+      writeFileSync(join(scratch, "Target.tla"), "target bytes");
+      symlinkSync("Target.tla", join(scratch, "Link.tla"));
+      mkdirSync(join(scratch, "Directory.tla"));
+      for (const name of ["Link.tla", "Directory.tla"]) {
+        const refused = prepareAttempt(join(scratch, "diagnostics"), "Fixture", 1, scratch, [name]);
+        expect(refused.ok).toBe(false);
+        if (!refused.ok) expect(readFileSync(join(refused.directory, "preparation-failure.json"), "utf8")).toContain("preparation");
+      }
+      const admitted = prepareAttempt(join(scratch, "diagnostics"), "Fixture", 1, scratch, ["Target.tla"]);
+      if (!admitted.ok) throw new Error(admitted.error);
+      expect(admitted.value.inputs[0]!.OpenPolicy).toEqual(sourceOpenPolicy());
+    } finally { rmSync(scratch, { recursive: true }); }
+  });
   test("the actual collector includes unstaged/new helper bytes and refuses ignored helpers", () => {
     const scratch = mkdtempSync(join(tmpdir(), "tlc-source-fixture-"));
     const specs = join(scratch, "src/Core.TLA/specs");
@@ -79,7 +120,8 @@ describe("TLC owned diagnostic directories", () => {
       const missing = captureProcess(join(scratch, "missing-executable"), [], scratch, join(scratch, "missing-out"), join(scratch, "missing-err"), 100);
       expect(missing.error).toBeDefined();
       expect(missing.status).toBeNull();
-      const timed = captureProcess(process.execPath, ["-e", "setTimeout(()=>{},10000)"], scratch, join(scratch, "timed-out"), join(scratch, "timed-err"), 40, "SIGKILL");
+      // The child has no wake-up timer; only the capture watchdog can end it.
+      const timed = captureProcess(process.execPath, ["-e", "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)"], scratch, join(scratch, "timed-out"), join(scratch, "timed-err"), 40, "SIGKILL");
       expect((timed.error as NodeJS.ErrnoException | undefined)?.code).toBe("ETIMEDOUT");
       expect(runWithStartupRetry(() => ({ ok: false, exitCode: timed.status ?? -1, signal: timed.signal, processError: timed.error !== undefined, stdout: "Error occurred during initialization of VM", stderr: "" }), () => {}).length).toBe(1);
       const partial = join(scratch, "partial-open");

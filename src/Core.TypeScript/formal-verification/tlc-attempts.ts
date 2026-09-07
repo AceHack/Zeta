@@ -1,6 +1,6 @@
 // TLC diagnostic ownership and retry policy. No JVM/model policy lives here.
 import {
-  closeSync, constants, copyFileSync, lstatSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync,
+  closeSync, constants, fstatSync, lstatSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync,
   rmSync, statSync, writeFileSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
@@ -14,13 +14,45 @@ export interface AttemptDirectory {
   readonly stdout: string;
   readonly stderr: string;
   readonly errorFile: string;
-  readonly inputs: readonly (FileIdentity & { readonly CopiedSha256: string })[];
+  readonly inputs: readonly SourceInputIdentity[];
 }
 
 export interface FileIdentity {
   readonly File: string;
   readonly Bytes: number;
   readonly Sha256: string;
+}
+
+export interface SourceOpenPolicy {
+  readonly Flags: number;
+  readonly NoFollowAvailable: boolean;
+  readonly NonBlockingAvailable: boolean;
+}
+
+export interface SourceInputIdentity extends FileIdentity {
+  readonly CopiedSha256: string;
+  readonly OpenPolicy: SourceOpenPolicy;
+}
+
+/** Optional POSIX flags strengthen final-component admission. Their absence
+ * keeps the stable writer-tree contract; it does not silently remove Windows. */
+export function sourceOpenPolicy(available: { O_NOFOLLOW?: number; O_NONBLOCK?: number } = constants): SourceOpenPolicy {
+  const noFollow = available.O_NOFOLLOW ?? 0;
+  const nonBlocking = available.O_NONBLOCK ?? 0;
+  return { Flags: constants.O_RDONLY | noFollow | nonBlocking,
+    NoFollowAvailable: noFollow !== 0, NonBlockingAvailable: nonBlocking !== 0 };
+}
+
+/** Borrow one opened descriptor: type admission and bytes refer to that same
+ * file even if its pathname is replaced. The caller owns descriptor closure. */
+export function copyRegularSourceDescriptor(descriptor: number, destination: string, name: string): FileIdentity & { CopiedSha256: string } {
+  if (!fstatSync(descriptor).isFile()) throw new Error("source input is not a regular file: " + name);
+  const bytes = readFileSync(descriptor);
+  const original = { File: name, Bytes: bytes.length, Sha256: createHash("sha256").update(bytes).digest("hex").toUpperCase() };
+  writeFileSync(destination, bytes, { flag: "wx" });
+  const copied = identifyFile(destination, name);
+  if (original.Sha256 !== copied.Sha256) throw new Error("captured source/copy bytes differ: " + name);
+  return { ...original, CopiedSha256: copied.Sha256 };
 }
 
 export type DiagnosticResult<T> =
@@ -109,8 +141,9 @@ export function runWithStartupRetry<T extends AttemptOutcome>(
   return results;
 }
 
-/** Only admitted source basenames are copied. Generated trace files and symlinks
- * are refused rather than promoted into a model's source universe. */
+/** Only admitted source basenames are copied. Symlink observation assumes a
+ * stable writer-owned tree on platforms without no-follow. This is not hostile
+ * ancestor isolation or an atomic snapshot of concurrently modified files. */
 export function prepareAttempt(
   diagnosticsRoot: string,
   model: string,
@@ -119,11 +152,11 @@ export function prepareAttempt(
   sourceInventory: readonly string[] | (() => readonly string[]),
 ): DiagnosticResult<AttemptDirectory> {
   let directory = "";
-  const inputs: (FileIdentity & { readonly CopiedSha256: string })[] = [];
+  const inputs: SourceInputIdentity[] = [];
   try {
     mkdirSync(diagnosticsRoot, { recursive: true });
     directory = mkdtempSync(join(diagnosticsRoot, model.replace(/[^a-zA-Z0-9_-]/g, "_") + "-"));
-    writeFileSync(join(directory, "attempt.json"), JSON.stringify({ Stage: "preparation", Model: model, Attempt: attempt }) + "\n", { flag: "wx" });
+    writeFileSync(join(directory, "attempt.json"), JSON.stringify({ Stage: "preparation", Model: model, Attempt: attempt, SourceOpenPolicy: sourceOpenPolicy() }) + "\n", { flag: "wx" });
     const workspace = join(directory, "workspace");
     const metadir = join(directory, "states");
     mkdirSync(workspace);
@@ -135,12 +168,14 @@ export function prepareAttempt(
         throw new Error("refusing non-source input: " + name);
       }
       const path = join(specsPath, name);
-      if (!lstatSync(path).isFile()) throw new Error("source input is not a regular file: " + name);
-      copyFileSync(path, join(workspace, name), constants.COPYFILE_EXCL);
-      const original = identifyFile(path, name);
-      const copied = identifyFile(join(workspace, name), name);
-      if (original.Sha256 !== copied.Sha256) throw new Error("source changed while copied: " + name);
-      inputs.push({ ...original, CopiedSha256: copied.Sha256 });
+      const policy = sourceOpenPolicy();
+      const descriptor = openSync(path, policy.Flags);
+      try {
+        // Static symlink observation also covers platforms without O_NOFOLLOW.
+        // It never authorizes a second source-path open: consumption uses the fd.
+        if (!lstatSync(path).isFile()) throw new Error("source path is not an observed regular file: " + name);
+        inputs.push({ ...copyRegularSourceDescriptor(descriptor, join(workspace, name), name), OpenPolicy: policy });
+      } finally { closeSync(descriptor); }
     }
     return { ok: true, value: {
       directory, workspace, metadir, inputs,
