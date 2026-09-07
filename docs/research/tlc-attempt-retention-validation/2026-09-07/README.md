@@ -5,8 +5,12 @@
 All linked logs retain their exact local bytes. [Log fingerprints](log-hashes.json)
 bind the files; [source fingerprints](source-hashes.json) bind the nine repair
 files at `07e399929`. No real TLC catalog case was executed by the focused
-commands below. The historical motivation logs are separate failed attempts
-from source `31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb`.
+commands below. The historical motivation logs are separate failed attempts preserved by
+native source/evidence commit `31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb`.
+That later preservation commit is not a recorded execution HEAD. The logs
+contain no prelaunch SourceCommit field. The earlier source review and
+unchanged isolated command identify the relevant TLC runner/model/jar
+context, without upgrading it to a complete execution provenance receipt.
 
 ## Focused commands
 

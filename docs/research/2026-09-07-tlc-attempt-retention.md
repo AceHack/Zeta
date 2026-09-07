@@ -121,6 +121,10 @@ after an external launcher has exited.
 
 ## Focused verification and reviewed findings
 
+[Independent source review](2026-09-07-tlc-attempt-retention-review.md)
+accepts `07e399929` within the retention/retry scope. Its reviewer separately
+verified the nine source fingerprints and then-retained raw log hashes.
+
 The first source pin is `2e69017ff2c8bf2294adbd7f3ea6b02980fd204c`.
 It passed 45 TypeScript tests with 202 expectations, strict TypeScript
 checking, 17 F# synthetic/metadata cases, formatter, actionlint and all

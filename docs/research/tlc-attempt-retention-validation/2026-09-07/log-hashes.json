@@ -122,6 +122,6 @@
       "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
     }
   ],
-  "HistoricalSourceCommit": "31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb",
-  "Meaning": "Exact preserved raw log bytes; outcomes and command boundaries are described in README.md."
+  "Meaning": "Exact preserved raw log bytes; outcomes and command boundaries are described in README.md.",
+  "HistoricalPreservationCommit": "31ee67f9b4ed68ce6d0b52d1bdeb223c48d57dbb"
 }

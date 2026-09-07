@@ -31,8 +31,9 @@ dependency, not an implicit skip.
 ## Preserved repair and validation
 
 - [Repair report](../docs/research/2026-09-07-tlc-attempt-retention.md)
+- [Accepted independent source review](../docs/research/2026-09-07-tlc-attempt-retention-review.md)
 - [Focused checks and retained failures](../docs/research/tlc-attempt-retention-validation/2026-09-07/README.md)
 
-Source pins: `2e69017ff` and `07e399929`. The independent source review and
-combined C1-policy/retention/hidden-switch full catalog gate remain required
-before publication as locally complete.
+Source pins: `2e69017ff` and `07e399929`. The independent source review accepts the final repair. The combined
+C1-policy/retention/hidden-switch full catalog gate remains required before
+publication as locally complete.
