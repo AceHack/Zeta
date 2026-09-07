@@ -223,6 +223,13 @@ All fifty row headers enforce fixed order, strategy rotation and separate
 action/episode counts. Header conformance alone admits no measured payload,
 resource ledger or executing process.
 
+The [cost-ledger validation](../../2026-09-07-hidden-switch-compiled-cost-ledger-validation.md)
+retains the later 583-case integrated Python pass at `dfc7b7e9c` and a separate
+73-case ledger run at `faa670a4e`. The latter checks chronology, typed resource
+records and exact unpooled median pairs, preserving the difference between a
+refused denominator and a valid ledger that misses the required cost threshold.
+Neither run executes a native measured row or admits its output boundary.
+
 The [falsifier design](../../2026-09-07-hidden-switch-compiled-falsifier-design.md)
 closes the explicit 10 invocation, 10 intervention and 53 refusal-operation
 witnesses. Its [source review](../../2026-09-07-hidden-switch-compiled-falsifier-source-review.md)

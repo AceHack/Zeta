@@ -311,6 +311,21 @@ implementation archive exists, and the 9307/9409 streams remain unopened.
 The validation index preserves the initial failures, repairs and exact scopes;
 none of these implementation tests is a registered cost result.
 
+The subsequent integrated Python checkpoint passes 583 cases across thirteen
+compiled-study modules. A separately added cost-ledger checker passes 73 cases;
+those are different run scopes, retained in the
+[ledger validation](../research/2026-09-07-hidden-switch-compiled-cost-ledger-validation.md).
+The native conformance boundary now counts actual evaluator entries separately
+from delegate entries and tree nodes, with 23 focused native tests. Its first
+test build exited 139 before tests; one unchanged single-node/no-reuse build
+retry passed. Both build outcomes remain preserved without a causal diagnosis.
+Five graph attempts are retained, including actual guard bytes and static
+call-cell reads, with unresolved indirect transfers and all runtime/body/closure
+admission flags false. Both separate no-target SOS host probes failed at a
+Mach-port guard; their lossless crash records and the bounded offline alternative
+are preserved. The newly reviewed native hand collector explicitly emits
+incomplete slices and append-only checkpoints; actual replay is a later gate.
+
 [PR #16949](https://github.com/Lucent-Financial-Group/Zeta/pull/16949) has also
 merged as `7fafe1f883599840c5e65c08ce5ebcaec3a0365d`. Its
 [publication proof](../research/merge-observe-pagination-validation/2026-09-07/publication/README.md)
