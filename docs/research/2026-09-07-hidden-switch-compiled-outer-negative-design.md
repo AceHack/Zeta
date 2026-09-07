@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: proposed finite implementation contract; independent review pending
+Artifact status: finite implementation contract; design accepted; coordinator implementation pending
 
 ## Boundary and unchanged experiment
 
@@ -56,8 +56,8 @@ the same admitted semantic members and slices. The final whole-hand validator
 checks that equality and the actual outer descriptor. No placeholder hash or
 synthetic outer-evidence descriptor is inserted into the final hand.
 
-The coordinator requested a small independent API addition, after this design
-is reviewed:
+The coordinator requested this small independent API addition after design
+review:
 
 ```text
 replay_semantic_falsifiers(scalars, episodes, old_controls, semantic, certificate)
@@ -73,8 +73,10 @@ Its fixed scope is `pure-six-member-semantic-falsifier-replay`, with
 `OuterNegativeAdmission=pending-separate-coordinator-replay` and
 `RuntimeAdmission=not-performed-by-pure-replay`. Its distinct failure type
 retains `Code, Message, Path, Completed` and those same scope fields. The old
-complete API and its 63-case history remain unchanged. This API is pending
-implementation and review; constructing a fake descriptor is not an alternative.
+complete API and its 63-case history remain unchanged. The original design left
+this API pending implementation and review. The subsequently
+accepted [semantic API source and validation](2026-09-07-hidden-switch-compiled-semantic-api-validation.md)
+now provide this boundary; constructing a fake descriptor is not an alternative.
 
 ## Exact envelope and reference schemas
 
@@ -604,4 +606,9 @@ obligations, while requiring three corrections before implementation:
 
 These are design findings, not measured failures. No source generation or
 policy/measurement run was used to make these corrections. Final exact-pin
-acceptance remains pending the reviewer's reread.
+acceptance was subsequently given for `7da46c7f1d2aea9fb4ee721aeb9fd34a7c438681`,
+with no remaining material finding. The signed design review is
+`7a2519953843ac077b44efa798b0a45524b972ea`, retained by the coordinator. The
+reviewer executed no tests, native code, policy or source streams. Design
+acceptance does not imply that the 92 coordinator cases have been implemented
+or executed, or that either separate admission obligation has passed.
