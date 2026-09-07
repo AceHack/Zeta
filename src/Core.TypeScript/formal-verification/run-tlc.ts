@@ -32,7 +32,7 @@
 //   2  toolchain not ready (java / jar absent)
 //   3  argument / usage error
 
-import { readdirSync, statSync, unlinkSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { delimiter, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import {
@@ -46,38 +46,22 @@ import {
   type TlcRegistry,
 } from "./tlc-invocation";
 
+import {
+  captureProcess, finishAttempt, identifyFile, inventory, jvmNeverStarted, prepareAttempt,
+  runWithStartupRetry, sourceInputs, writeDiagnostic,
+} from "./tlc-attempts";
+
 type ExitCode = 0 | 1 | 2 | 3;
 
-/** Max attempts per model when the JVM CRASHES (native OOM / fatal error), NOT
- *  when TLC produces a verdict. Under --all the accumulated memory pressure of
- *  the sequential suite can make a fresh JVM fail to reserve its heap at startup.
- *  A real disagreement with the pin is deterministic and is NEVER retried. */
-const MAX_JVM_ATTEMPTS = 3;
+// Retry at most three explicit JVM startup failures; never a checker/fatal answer.
 const JVM_RETRY_SETTLE_MS = 1500;
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
 export { tlcJvmArguments };
 
-function isJvmFatalCrash(stdout: string, stderr: string): boolean {
-  const blob = stdout + "\n" + stderr;
-  return (
-    /A fatal error has been detected by the Java Runtime Environment/i.test(blob) ||
-    /There is insufficient memory for the Java Runtime Environment/i.test(blob) ||
-    /Could not reserve enough space for .* object heap/i.test(blob) ||
-    /hs_err_pid\d+/i.test(blob) ||
-    /Native memory allocation \(\w+\) failed/i.test(blob)
-  );
-}
-
 function sleepSync(ms: number): void {
   const shared = new Int32Array(new SharedArrayBuffer(4));
   Atomics.wait(shared, 0, 0, ms);
-}
-
-/** Escape regex metacharacters so a model name cannot cause unintended file
- *  matches in trace cleanup (CodeQL #1412 P0). */
-function escapeRegex(s: string): string {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function repoRoot(): string {
@@ -120,6 +104,7 @@ function fileExists(path: string): boolean {
 }
 
 interface Toolchain {
+  readonly root: string;
   readonly tlaJarPath: string;
   readonly specsPath: string;
   readonly javaPath: string;
@@ -134,76 +119,104 @@ function checkToolchain(root: string): Toolchain | null {
   if (javaPath === null) return null;
   if (!fileExists(tlaJarPath)) return null;
   if (!fileExists(specsPath)) return null;
-  return { tlaJarPath, specsPath, javaPath, registry };
-}
-
-function cleanupTraceFiles(specsPath: string, moduleName: string): void {
-  let entries: readonly import("node:fs").Dirent[];
-  try {
-    entries = readdirSync(specsPath, { withFileTypes: true });
-  } catch {
-    return;
-  }
-  const safeName = escapeRegex(moduleName);
-  const traceTla = new RegExp("^" + safeName + "_TTrace_.*\\.tla$");
-  const traceBin = new RegExp("^" + safeName + "_TTrace_.*\\.bin$");
-  const mcTla = /^MC.*\.tla$/;
-  for (const e of entries) {
-    if (!e.isFile()) continue;
-    if (traceTla.test(e.name) || traceBin.test(e.name) || mcTla.test(e.name)) {
-      try {
-        unlinkSync(join(specsPath, e.name));
-      } catch {
-        // best-effort cleanup
-      }
-    }
-  }
+  return { root, tlaJarPath, specsPath, javaPath, registry };
 }
 
 interface TlcResult {
   readonly exitCode: number;
+  readonly signal: string | null;
+  readonly processError: boolean;
   readonly stdout: string;
   readonly stderr: string;
   readonly ok: boolean;
   readonly reason: string;
 }
 
-function runTlc(toolchain: Toolchain, model: TlcModel): TlcResult {
+function gitText(root: string, argv: readonly string[]): string {
+  const result = spawnSync("git", [...argv], { cwd: root, encoding: "utf8", maxBuffer: SPAWN_MAX_BUFFER });
+  if (result.status !== 0) throw new Error("git source identity refused: " + String(result.error ?? result.stderr));
+  return result.stdout.trim();
+}
+
+function runAttempt(toolchain: Toolchain, model: TlcModel, attemptNumber: number): TlcResult {
+  const started = new Date().toISOString();
+  const prepared = prepareAttempt(join(toolchain.root, "TestResults", "tlc-diagnostics"), model.id, attemptNumber,
+    toolchain.specsPath, () => sourceInputs(toolchain.root, toolchain.specsPath, [model.module + ".tla", model.config]));
+  if (!prepared.ok) {
+    process.stderr.write("TLC preparation retained at " + prepared.directory + "\n");
+    return { exitCode: -1, signal: null, processError: true, stdout: "", stderr: "", ok: false, reason: prepared.error + "; diagnostics: " + prepared.directory };
+  }
+  const attempt = prepared.value;
   let stdout = "";
   let stderr = "";
-  let status: number | null = -1;
-  const metadir = join("/tmp", "tlc_run_" + model.id + "_" + String(process.pid));
-  const argv = buildTlcArgv(toolchain.registry, model, toolchain.tlaJarPath, metadir);
-  for (let attempt = 1; attempt <= MAX_JVM_ATTEMPTS; attempt++) {
-    const result = spawnSync(toolchain.javaPath, [...argv], {
-      cwd: toolchain.specsPath,
-      encoding: "utf8",
-      maxBuffer: SPAWN_MAX_BUFFER,
-      timeout: 3_600_000,
+  let stage = "source-identity";
+  try {
+    const argv = [...buildTlcArgv(toolchain.registry, model, toolchain.tlaJarPath, attempt.metadir, process.platform, process.arch, attempt.errorFile)];
+    writeDiagnostic(attempt, "invocation.json", {
+      Schema: 1, Stage: stage, Runner: "typescript", Model: model, Attempt: attemptNumber,
+      StartedAtUtc: started, Java: toolchain.javaPath, Argv: argv, WorkingDirectory: attempt.workspace,
+      TimeoutMilliseconds: 3_600_000, Inputs: attempt.inputs,
+      SourceSnapshotMeaning: "working-tree input hashes; SourceCommit is checkout HEAD, not a clean-source assertion",
+      SourceCommit: gitText(toolchain.root, ["rev-parse", "HEAD"]),
+      RunnerRuntime: { Executable: identifyFile(process.execPath), Version: process.version, BunVersion: process.versions.bun ?? null },
+      Jar: identifyFile(toolchain.tlaJarPath), Registry: identifyFile(join(toolchain.root, "registry/tlc-models.json")),
+      RunnerSource: ["run-tlc.ts", "tlc-attempts.ts", "tlc-invocation.ts"].map((name) => identifyFile(join(import.meta.dir, name))),
     });
-    cleanupTraceFiles(toolchain.specsPath, model.module);
-    stdout = result.stdout ?? "";
-    stderr = result.stderr ?? "";
-    status = result.status;
-    if (judgeTlcRun(model, status ?? -1, stdout).ok) break;
-    // Only a JVM CRASH is a flake worth retrying. A model that disagrees with
-    // its pin is deterministic and must surface on the first attempt.
-    if (attempt < MAX_JVM_ATTEMPTS && isJvmFatalCrash(stdout, stderr)) {
-      process.stderr.write(
-        "WARN: " + model.id + " -- JVM fatal crash (not a TLC verdict) on attempt " +
-        String(attempt) + "/" + String(MAX_JVM_ATTEMPTS) + "; settling and retrying\n",
-      );
+    // The attempt and invocation already exist if this identity subprocess fails.
+    stage = "runtime-identity";
+    const versionArgv = ["-XX:ErrorFile=" + join(attempt.directory, "version_hs_err_pid%p.log"), "-version"];
+    writeDiagnostic(attempt, "runtime-invocation.json", { Stage: stage, Java: toolchain.javaPath, Argv: versionArgv, WorkingDirectory: attempt.workspace, TimeoutMilliseconds: 30000, KillSignal: "SIGKILL" });
+    const versionOut = join(attempt.directory, "version-stdout.log");
+    const versionErr = join(attempt.directory, "version-stderr.log");
+    const version = captureProcess(toolchain.javaPath, versionArgv, attempt.workspace, versionOut, versionErr, 30000, "SIGKILL");
+    writeDiagnostic(attempt, "runtime.json", {
+      Stage: stage, Executable: identifyFile(toolchain.javaPath), Platform: process.platform, Architecture: process.arch,
+      VersionArgv: versionArgv, ExitCode: version.status, Signal: version.signal,
+      Error: version.error?.message ?? null, TimeoutMilliseconds: 30000,
+      Stdout: identifyFile(versionOut), Stderr: identifyFile(versionErr),
+    });
+    if (version.status !== 0 || version.error !== undefined || version.signal !== null) throw new Error("runtime identity subprocess failed: " + String(version.error ?? version.signal ?? version.status));
+    stage = "tlc-process";
+    const result = captureProcess(toolchain.javaPath, argv, attempt.workspace, attempt.stdout, attempt.stderr, 3_600_000);
+    // Raw streams are files, so spawn's buffered-output ceiling cannot truncate them.
+    stdout = readFileSync(attempt.stdout, "utf8");
+    stderr = readFileSync(attempt.stderr, "utf8");
+    stage = "judgement";
+    const exitCode = result.status ?? -1;
+    const banner = judgeToolchainBanner(toolchain.registry, stdout);
+    const judged = jvmNeverStarted(stdout, stderr)
+      ? { ok: false, reason: "TLC DID NOT RUN: explicit JVM startup failure" }
+      : !banner.ok ? banner : judgeTlcRun(model, exitCode, stdout);
+    const ok = judged.ok && result.error === undefined && result.signal === null;
+    const reason = ok ? "" : judged.reason || String(result.error ?? result.signal);
+    writeDiagnostic(attempt, "completion.json", {
+      Stage: "completed", FinishedAtUtc: new Date().toISOString(), ExitCode: result.status, Signal: result.signal,
+      Error: result.error?.message ?? null, Expected: ok, Reason: reason,
+      Stdout: identifyFile(attempt.stdout), Stderr: identifyFile(attempt.stderr),
+      StateInventory: inventory(attempt.metadir), WorkspaceInventory: inventory(attempt.workspace),
+      StateRetention: ok ? "delete this expected attempt only" : "retain complete attempt; no automatic size cap or purge",
+    });
+    finishAttempt(attempt, ok);
+    if (!ok) process.stderr.write("TLC attempt retained at " + attempt.directory + "\n");
+    return { exitCode, signal: result.signal, processError: result.error !== undefined, stdout, stderr, ok, reason: ok ? "" : reason + "; diagnostics: " + attempt.directory };
+  } catch (error) {
+    const detail = String(error);
+    try { writeDiagnostic(attempt, "runner-failure.json", { Stage: stage, FinishedAtUtc: new Date().toISOString(), Error: detail }); }
+    catch { /* The caller still names the unmodified attempt, including any partial logs. */ }
+    process.stderr.write("TLC runner failure retained at " + attempt.directory + "\n");
+    return { exitCode: -1, signal: null, processError: true, stdout, stderr, ok: false, reason: detail + "; diagnostics: " + attempt.directory };
+  }
+}
+
+function runTlc(toolchain: Toolchain, model: TlcModel): TlcResult {
+  const attempts = runWithStartupRetry(
+    (number) => runAttempt(toolchain, model, number),
+    (number) => {
+      process.stderr.write("WARN: " + model.id + " -- explicit JVM startup failure on attempt " + String(number) + "/3; retained before retry\n");
       sleepSync(JVM_RETRY_SETTLE_MS);
-      continue;
-    }
-    break;
-  }
-  const banner = judgeToolchainBanner(toolchain.registry, stdout);
-  if (!banner.ok) {
-    return { exitCode: status ?? -1, stdout, stderr, ok: false, reason: banner.reason };
-  }
-  const judgement = judgeTlcRun(model, status ?? -1, stdout);
-  return { exitCode: status ?? -1, stdout, stderr, ok: judgement.ok, reason: judgement.reason };
+    },
+  );
+  return attempts[attempts.length - 1]!;
 }
 
 function describeModel(model: TlcModel): string {

@@ -46,9 +46,9 @@ open global.Xunit
 // `the TLA+ gate leg actually carries the gate on CI`, which turns the
 // no-op into a failure on the one CI leg that is supposed to run it.
 //
-// Tests are serialized via the `TLC` xunit collection: TLC dumps
-// counterexample traces into the specs directory and parallel runs
-// race on cleanup.
+// Tests remain serialized via the `TLC` xunit collection to bound JVM
+// concurrency. Each attempt now owns its copied source workspace and
+// traces; cleanup never scans the shared specs directory.
 // ═══════════════════════════════════════════════════════════════════
 
 
@@ -269,108 +269,15 @@ let private toolchainReady () : bool =
         | _ -> false
 
 
-/// Runs TLC on one pinned model. Returns `(exitCode, stdout)`.
-let private runTlcUnlocked (model: PinnedModel) : int * string =
-    if not (File.Exists tlaJarPath) then
-        failwithf "TLC jar not found at %s — run tools/setup/install.sh" tlaJarPath
-    let tempDir = Path.Combine(Path.GetTempPath(), $"tlc_run_{model.Id}_{Guid.NewGuid().ToString()}")
-    let errorFilePath = Path.Combine(tempDir, "hs_err_pid%p.log")
-    Directory.CreateDirectory(tempDir) |> ignore
-    let psi = ProcessStartInfo()
-    psi.FileName <- "java"
-    psi.WorkingDirectory <- specsPath
-    for argument in buildTlcArguments model (currentPlatformIsMacArm64 ()) errorFilePath tlaJarPath tempDir do
-        psi.ArgumentList.Add argument
-    psi.RedirectStandardOutput <- true
-    psi.RedirectStandardError <- true
-    psi.UseShellExecute <- false
-    use p = Process.Start psi
-    let stdoutTask = p.StandardOutput.ReadToEndAsync()
-    let stderrTask = p.StandardError.ReadToEndAsync()
-    p.WaitForExit()
-    let stdout = stdoutTask.GetAwaiter().GetResult()
-    let stderr = stderrTask.GetAwaiter().GetResult()
-    try Directory.Delete(tempDir, true) with _ -> ()
-    // Clean up TLC trace dumps so repeated runs do not litter the repo.
-    // TLC emits both a `.tla` mini-spec and a `.bin` state dump whenever
-    // it finds a counterexample — which the EXPECT-VIOLATION models do
-    // every single run, by design.
-    for f in Directory.GetFiles(specsPath, $"{model.Module}_TTrace_*.tla") do
-        try File.Delete f with _ -> ()
-    for f in Directory.GetFiles(specsPath, $"{model.Module}_TTrace_*.bin") do
-        try File.Delete f with _ -> ()
-    for f in Directory.GetFiles(specsPath, "MC*.tla") do
-        try File.Delete f with _ -> ()
-    p.ExitCode, stdout + stderr
+/// Only explicit pre-TLC initialization failures are retryable. Fatal signals,
+/// in-run OOM, checker errors and model answers remain failures on attempt one.
+let private jvmNeverStarted = TlcAttempts.jvmNeverStarted
 
-
-/// Did the JVM fail before TLC ever ran?
-///
-/// The banner check below cannot tell "this jar is a different TLC" from "no TLC ran at all", and
-/// those call for opposite responses: the first is drift an operator must fix, the second is an
-/// environment fault that will pass on the next run.
-///
-/// Observed 2026-09-03, once in three full-suite runs: under the memory pressure of the whole F#
-/// suite the JVM could not start —
-///
-///     Error occurred during initialization of VM
-///     Could not reserve enough space for object heap
-///
-/// — and the test reported `TOOLCHAIN DRIFT … a different TLC is a different experiment`, sending a
-/// reader to hunt a jar mismatch that did not exist. Same class as `forge-diagnosis`: a failure
-/// whose KIND is misreported costs more than the failure.
-let private jvmNeverStarted (stdout: string) =
-    [ "Could not reserve enough space for object heap"
-      "Error occurred during initialization of VM"
-      "Unable to access jarfile"
-      "OutOfMemoryError" ]
-    |> List.exists (fun marker -> stdout.Contains(marker, StringComparison.Ordinal))
-
-/// Attempts allowed when the JVM cannot start. The RUN is retried, never the verdict.
 [<Literal>]
 let private JvmStartAttempts = 3
 
-/// Should this run be attempted again?
-///
-/// Split out of the loop so the POLICY can be tested without launching a JVM. The two ways to get
-/// this wrong are opposite and both bad: retrying an answer turns a real failure intermittent, and
-/// not bounding the retry turns a persistent shortage into a hang.
-let internal shouldRetryJvmStart (attempt: int) (stdout: string) =
-    attempt < JvmStartAttempts && jvmNeverStarted stdout
-
-let private runTlc (model: PinnedModel) : int * string =
-    tlcProcessGate.Wait()
-
-    try
-        // RETRY ONLY A JVM THAT NEVER STARTED.
-        //
-        // The registry pins `-Xmx4g`, and on a box running the whole 6,000-test suite the JVM
-        // sometimes cannot reserve it — observed once in three full runs on 2026-09-03. Nothing
-        // about the model or the jar is wrong when that happens; the process simply never got far
-        // enough to check anything.
-        //
-        // A model check is deterministic and idempotent, so re-running one is free of consequence —
-        // which is exactly the condition that makes a retry honest rather than a way of averaging
-        // over a flaky result. The retry is bounded and the LAST output is returned either way, so a
-        // persistent shortage still fails, and still fails with the "TLC DID NOT RUN" diagnosis
-        // rather than being retried into silence.
-        //
-        // Deliberately NOT retried: a violated invariant, a wrong banner, a missing completion
-        // marker. Those are answers, and re-asking a question you already have an answer to is how a
-        // real failure becomes intermittent.
-        let mutable attempt = 1
-        let mutable result = runTlcUnlocked model
-
-        while shouldRetryJvmStart attempt (snd result) do
-            attempt <- attempt + 1
-            // A moment for whatever else was holding the memory to release it. Re-reserving
-            // instantly would usually just fail again.
-            Thread.Sleep 2000
-            result <- runTlcUnlocked model
-
-        result
-    finally
-        tlcProcessGate.Release() |> ignore
+let internal shouldRetryJvmStart (attempt: int) (exitCode: int) (stdout: string) =
+    attempt < JvmStartAttempts && exitCode = 1 && jvmNeverStarted stdout
 
 
 let private cleanMarker = "Model checking completed. No error has been found"
@@ -436,6 +343,113 @@ let private judge (model: PinnedModel) (exitCode: int) (stdout: string) =
                 model.Id actual expected
 
 
+// ── Attempt-owned execution and diagnostic retention ──────────────────────
+
+let private gitText arguments =
+    let info = ProcessStartInfo("git")
+    info.WorkingDirectory <- repoRoot
+    info.UseShellExecute <- false
+    info.RedirectStandardOutput <- true
+    info.RedirectStandardError <- true
+    for argument in arguments do info.ArgumentList.Add argument
+    use proc = Process.Start info
+    let stdout = proc.StandardOutput.ReadToEnd()
+    let stderr = proc.StandardError.ReadToEnd()
+    proc.WaitForExit()
+    if proc.ExitCode <> 0 then invalidOp ("git source identity refused: " + stderr)
+    stdout.Trim()
+
+let private runTlcUnlocked (model: PinnedModel) attemptNumber =
+    let started = DateTimeOffset.UtcNow
+    let diagnosticRoot = Path.Combine(repoRoot, "TestResults", "tlc-diagnostics")
+    match TlcAttempts.prepare diagnosticRoot model.Id attemptNumber specsPath (fun () -> TlcAttempts.sourceInputs repoRoot specsPath [|model.Module + ".tla"; model.Config|]) with
+    | Error failure ->
+        failwithf "TLC input preparation failed: %s; retained diagnostics: %s" failure.Error failure.Directory
+    | Ok attempt ->
+        let mutable stage = "source-identity"
+        try
+            let java = which "java" |> Option.defaultWith (fun () -> invalidOp "java is unavailable")
+            let argv = buildTlcArguments model (currentPlatformIsMacArm64 ()) attempt.ErrorFile tlaJarPath attempt.Metadir
+            let runnerAssembly = typeof<PinnedModel>.Assembly
+            TlcAttempts.writeDiagnostic attempt "invocation.json"
+                {| Schema = 1; Stage = stage; Runner = "fsharp"; Model = model; Attempt = attemptNumber
+                   StartedAtUtc = started; Java = java; Argv = argv; WorkingDirectory = attempt.Workspace
+                   TimeoutMilliseconds = Nullable<int>(); Inputs = attempt.Inputs
+                   SourceSnapshotMeaning = "working-tree input hashes; SourceCommit is checkout HEAD, not a clean-source assertion"
+                   SourceCommit = gitText ["rev-parse"; "HEAD"]
+                   RunnerRuntime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription
+                   RunnerAssembly = TlcAttempts.identifyFile runnerAssembly.Location runnerAssembly.Location
+                   RunnerAssemblyMvid = runnerAssembly.ManifestModule.ModuleVersionId.ToString("D")
+                   Jar = TlcAttempts.identifyFile tlaJarPath tlaJarPath
+                   Registry = TlcAttempts.identifyFile registryPath registryPath
+                   RunnerSource =
+                     [| for name in ["Tlc.Attempts.fs"; "Tlc.Runner.Tests.fs"] do
+                            let file = Path.Combine(repoRoot, "tests", "Tests.FSharp", "Formal", name)
+                            yield TlcAttempts.identifyFile file file |] |}
+            // Initial attempt metadata exists before the identity subprocess can fail.
+            stage <- "runtime-identity"
+            let versionArgv = [|"-XX:ErrorFile=" + Path.Combine(attempt.Directory, "version_hs_err_pid%p.log"); "-version"|]
+            TlcAttempts.writeDiagnostic attempt "runtime-invocation.json"
+                {| Stage = stage; Java = java; Argv = versionArgv; WorkingDirectory = attempt.Workspace
+                   TimeoutMilliseconds = 30000; TimeoutAction = "kill process tree and retain failure" |}
+            let versionOut = Path.Combine(attempt.Directory, "version-stdout.log")
+            let versionErr = Path.Combine(attempt.Directory, "version-stderr.log")
+            let version = TlcAttempts.captureProcess java versionArgv attempt.Workspace versionOut versionErr (Some 30000)
+            TlcAttempts.writeDiagnostic attempt "runtime.json"
+                {| Stage = stage; Executable = TlcAttempts.identifyFile java java
+                   Platform = System.Runtime.InteropServices.RuntimeInformation.OSDescription
+                   Architecture = string System.Runtime.InteropServices.RuntimeInformation.OSArchitecture
+                   VersionArgv = versionArgv; ExitCode = version.ExitCode; TimedOut = version.TimedOut
+                   TimeoutMilliseconds = 30000
+                   Stdout = TlcAttempts.identifyFile versionOut versionOut; Stderr = TlcAttempts.identifyFile versionErr versionErr |}
+            if version.ExitCode <> 0 || version.TimedOut then invalidOp "runtime identity subprocess failed or timed out"
+            stage <- "tlc-process"
+            let captured = TlcAttempts.captureProcess java argv attempt.Workspace attempt.Stdout attempt.Stderr None
+            let stdout = File.ReadAllText attempt.Stdout
+            let stderr = File.ReadAllText attempt.Stderr
+            let output = stdout + stderr
+            stage <- "judgement"
+            let verdict =
+                try judge model captured.ExitCode output; Ok()
+                with error -> Error error.Message
+            let files, bytes = TlcAttempts.inventory attempt.Metadir
+            let workspaceFiles, workspaceBytes = TlcAttempts.inventory attempt.Workspace
+            TlcAttempts.writeDiagnostic attempt "completion.json"
+                {| Stage = "completed"; FinishedAtUtc = DateTimeOffset.UtcNow; ExitCode = captured.ExitCode
+                   Expected = Result.isOk verdict; Reason = (match verdict with Ok() -> "" | Error error -> error)
+                   Stdout = TlcAttempts.identifyFile attempt.Stdout attempt.Stdout
+                   Stderr = TlcAttempts.identifyFile attempt.Stderr attempt.Stderr
+                   StateInventory = {| Files = files; Bytes = bytes |}
+                   WorkspaceInventory = {| Files = workspaceFiles; Bytes = workspaceBytes |}
+                   StateRetention = (if Result.isOk verdict then "delete this expected attempt only" else "retain complete attempt; no automatic size cap or purge") |}
+            TlcAttempts.finish attempt (Result.isOk verdict)
+            match verdict with
+            | Ok() -> ()
+            | Error _ -> Console.Error.WriteLine("TLC attempt retained at " + attempt.Directory)
+            captured.ExitCode, output, attempt.Directory, verdict
+        with error ->
+            try TlcAttempts.writeDiagnostic attempt "runner-failure.json" {| Stage = stage; FinishedAtUtc = DateTimeOffset.UtcNow; Error = error.Message |}
+            with _ -> ()
+            failwithf "TLC runner failed: %s; retained diagnostics: %s" error.Message attempt.Directory
+
+let private runTlc (model: PinnedModel) =
+    tlcProcessGate.Wait()
+    try
+        let mutable attempt = 1
+        let mutable outcome = runTlcUnlocked model attempt
+        let retry () =
+            let exitCode, output, _, verdict = outcome
+            Result.isError verdict && shouldRetryJvmStart attempt exitCode output
+        while retry () do
+            Console.Error.WriteLine(sprintf "TLC %s: explicit startup failure retained before retry %d/3" model.Id attempt)
+            Thread.Sleep 2000
+            attempt <- attempt + 1
+            outcome <- runTlcUnlocked model attempt
+        outcome
+    finally
+        tlcProcessGate.Release() |> ignore
+
+
 // ═══════════════════════════════════════════════════════════════════
 // The gate. One theory case per pinned model — no hand-maintained
 // list, so a config cannot be added to the specs directory and quietly
@@ -458,8 +472,10 @@ let gateModelIds : obj array seq =
 let ``TLC checks the pinned model`` (id: string) =
     if not (toolchainReady ()) then () else
     let model = modelById id
-    let (exitCode, stdout) = runTlc model
-    judge model exitCode stdout
+    let _, _, directory, verdict = runTlc model
+    match verdict with
+    | Ok() -> ()
+    | Error reason -> failwithf "%s\nFull retained diagnostics: %s" reason directory
 
 
 [<Fact>]
@@ -603,19 +619,164 @@ let ``a jar reporting a different version IS toolchain drift`` () =
 [<Fact>]
 let ``a JVM that never started is retried`` () =
     // The observed case: -Xmx4g cannot be reserved while the whole suite runs.
-    Assert.True(shouldRetryJvmStart 1 "Could not reserve enough space for object heap")
+    Assert.True(shouldRetryJvmStart 1 1 "Could not reserve enough space for object heap")
 
 [<Fact>]
 let ``the retry is BOUNDED — a persistent shortage still fails`` () =
     // Without this the run would spin on a box that simply does not have the memory, and a hang is
     // a worse failure than a red test because nothing reports it.
-    Assert.False(shouldRetryJvmStart JvmStartAttempts "Could not reserve enough space for object heap")
+    Assert.False(shouldRetryJvmStart JvmStartAttempts 1 "Could not reserve enough space for object heap")
 
 [<Fact>]
 let ``an ANSWER is never retried`` () =
     // The half that matters most. TLC reporting a violation, a wrong banner, or a missing completion
     // marker has ANSWERED; re-asking is how a real, reproducible failure becomes intermittent — and
     // an intermittent failure is one people learn to re-run rather than read.
-    Assert.False(shouldRetryJvmStart 1 "Error: Invariant Solvency is violated.")
-    Assert.False(shouldRetryJvmStart 1 "TLC2 Version 1900.01.01.000000 (rev: deadbee)")
-    Assert.False(shouldRetryJvmStart 1 "Model checking completed. No error has been found")
+    Assert.False(shouldRetryJvmStart 1 1 "Error: Invariant Solvency is violated.")
+    Assert.False(shouldRetryJvmStart 1 1 "TLC2 Version 1900.01.01.000000 (rev: deadbee)")
+    Assert.False(shouldRetryJvmStart 1 1 "Model checking completed. No error has been found")
+
+
+[<Fact>]
+let ``startup retry policy agrees with the cross-runner refusal roster`` () =
+    use fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(repoRoot, "registry", "tlc-retry-fixtures.json")))
+    for row in fixture.RootElement.GetProperty("Cases").EnumerateArray() do
+        let output = row.GetProperty("Stdout").GetString() + "\n" + row.GetProperty("Stderr").GetString()
+        let expected = row.GetProperty("Retryable").GetBoolean()
+        let signalFree = row.GetProperty("Signal").ValueKind = JsonValueKind.Null
+        let processError = row.GetProperty("ProcessError").GetBoolean()
+        let exitCode = row.GetProperty("ExitCode").GetInt32()
+        Assert.Equal(expected, signalFree && not processError && shouldRetryJvmStart 1 exitCode output)
+        Assert.False(shouldRetryJvmStart 3 1 output)
+
+
+[<Fact>]
+let ``a valid completion followed by fatal nonzero exit remains a failed answer`` () =
+    let output = pinnedBanner + "\n" + cleanMarker + "\nSIGBUS\nhs_err_pid42.log"
+    Assert.Throws<Exception>(fun () -> judge aModel 134 output) |> ignore
+    Assert.False(shouldRetryJvmStart 1 1 output)
+
+
+[<Fact>]
+let ``failed attempt streams states and helper inputs survive later expected cleanup`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-retention-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    try
+        File.WriteAllText(Path.Combine(scratch, "Fixture.tla"), "---- MODULE Fixture ----\nEXTENDS Helper\n====\n")
+        File.WriteAllText(Path.Combine(scratch, "Helper.tla"), "---- MODULE Helper ----\nVALUE == 1\n====\n")
+        File.WriteAllText(Path.Combine(scratch, "Fixture.cfg"), "SPECIFICATION Spec\n")
+        let foreign = Path.Combine(scratch, "Fixture_TTrace_foreign.tla")
+        File.WriteAllText(foreign, "preexisting trace")
+        let sources () = [|"Fixture.tla"; "Helper.tla"; "Fixture.cfg"|]
+        let prepare number =
+            match TlcAttempts.prepare (Path.Combine(scratch, "diagnostics")) "Fixture" number scratch sources with
+            | Ok value -> value
+            | Error failure -> failwith failure.Error
+        let first, second = prepare 1, prepare 2
+        Assert.NotEqual<string>(first.Directory, second.Directory)
+        Assert.NotEqual<string>(first.ErrorFile, second.ErrorFile)
+        Assert.Equal(3, first.Inputs.Length)
+        Assert.True(first.Inputs |> Array.forall (fun input -> input.Source = input.Copied))
+        Assert.Contains("VALUE == 1", File.ReadAllText(Path.Combine(first.Workspace, "Helper.tla")))
+        Assert.False(File.Exists(Path.Combine(first.Workspace, "Fixture_TTrace_foreign.tla")))
+        let fullLog = "first sentinel\n" + String('x', 65536) + "\nlast sentinel"
+        File.WriteAllText(first.Stdout, fullLog)
+        File.WriteAllText(first.Stderr, "fatal stderr")
+        File.WriteAllText(Path.Combine(first.Directory, "hs_err_pid42.log"), "crash identity")
+        File.WriteAllBytes(Path.Combine(first.Metadir, "state.bin"), [|1uy;2uy;3uy;4uy|])
+        TlcAttempts.writeDiagnostic first "completion.json" {| Expected = false |}
+        Assert.Throws<IOException>(fun () -> TlcAttempts.writeDiagnostic first "completion.json" {| Expected = true |}) |> ignore
+        TlcAttempts.finish first false
+        TlcAttempts.finish second true
+        Assert.Equal(fullLog, File.ReadAllText first.Stdout)
+        Assert.Equal("crash identity", File.ReadAllText(Path.Combine(first.Directory, "hs_err_pid42.log")))
+        Assert.Equal((1,4L), TlcAttempts.inventory first.Metadir)
+        Assert.False(Directory.Exists second.Directory)
+        Assert.Equal("preexisting trace", File.ReadAllText foreign)
+    finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``source inventory and copy refusals retain explicit attempt metadata`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-copy-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    try
+        let inventories =
+            [ (fun () -> [|"missing.tla"|]); (fun () -> [|"../escape.tla"|])
+              (fun () -> [|"Fixture_TTrace_old.tla"|]); (fun () -> failwith "source identity unavailable") ]
+        for sources in inventories do
+            match TlcAttempts.prepare (Path.Combine(scratch, "diagnostics")) "Fixture" 1 scratch sources with
+            | Ok _ -> failwith "expected explicit source-copy refusal"
+            | Error failure ->
+                Assert.True(File.Exists(Path.Combine(failure.Directory, "attempt.json")))
+                Assert.True(File.Exists(Path.Combine(failure.Directory, "preparation-failure.json")))
+    finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``actual source collection admits unstaged and new helpers but refuses ignored helpers`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-source-fixture-" + Guid.NewGuid().ToString("N"))
+    let specs = Path.Combine(scratch, "src", "Core.TLA", "specs")
+    Directory.CreateDirectory specs |> ignore
+    let git arguments =
+        let info = ProcessStartInfo("git")
+        info.WorkingDirectory <- scratch
+        info.UseShellExecute <- false
+        info.RedirectStandardOutput <- true
+        info.RedirectStandardError <- true
+        for argument in arguments do info.ArgumentList.Add argument
+        use proc = Process.Start info
+        let stdout = proc.StandardOutput.ReadToEnd()
+        let stderr = proc.StandardError.ReadToEnd()
+        proc.WaitForExit()
+        Assert.True(proc.ExitCode = 0, stdout + stderr)
+    try
+        git ["init"; "--quiet"]
+        File.WriteAllText(Path.Combine(specs, "Fixture.tla"), "tracked original")
+        File.WriteAllText(Path.Combine(specs, "Fixture.cfg"), "tracked config")
+        git ["add"; "src"]
+        File.WriteAllText(Path.Combine(specs, "Fixture.tla"), "unstaged changed bytes")
+        File.WriteAllText(Path.Combine(specs, "New.tla"), "---- MODULE New ----\nEXTENDS Helper\n====")
+        File.WriteAllText(Path.Combine(specs, "Helper.tla"), "new untracked helper")
+        File.WriteAllText(Path.Combine(specs, "New.cfg"), "new untracked selected config")
+        File.WriteAllText(Path.Combine(specs, "Fixture_TTrace_old.tla"), "foreign generated trace")
+        let sources () = TlcAttempts.sourceInputs scratch specs [|"New.tla"; "New.cfg"|]
+        Assert.True((sources() |> Array.sort) = [|"Fixture.cfg"; "Fixture.tla"; "Helper.tla"; "New.cfg"; "New.tla"|])
+        let attempt =
+            match TlcAttempts.prepare (Path.Combine(scratch, "diagnostics")) "New" 1 specs sources with
+            | Ok value -> value
+            | Error failure -> failwith failure.Error
+        Assert.Equal("unstaged changed bytes", File.ReadAllText(Path.Combine(attempt.Workspace, "Fixture.tla")))
+        Assert.Equal("new untracked helper", File.ReadAllText(Path.Combine(attempt.Workspace, "Helper.tla")))
+        File.WriteAllText(Path.Combine(scratch, ".gitignore"), "Ignored.tla\n")
+        File.WriteAllText(Path.Combine(specs, "Ignored.tla"), "must not silently omit this helper")
+        let error = Assert.Throws<InvalidOperationException>(fun () -> sources() |> ignore)
+        Assert.Contains("ignored local source input would be omitted: Ignored.tla", error.Message)
+    finally Directory.Delete(scratch, true)
+
+
+[<Fact>]
+let ``owned process capture retains probe streams and bounds timeout without Java`` () =
+    let scratch = Path.Combine(Path.GetTempPath(), "tlc-process-fixture-" + Guid.NewGuid().ToString("N"))
+    Directory.CreateDirectory scratch |> ignore
+    try
+        let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
+        let stdout = Path.Combine(scratch, "stdout.log")
+        let stderr = Path.Combine(scratch, "stderr.log")
+        let result = TlcAttempts.captureProcess bun ["-e"; "console.log('output sentinel');console.error('error sentinel')"] scratch stdout stderr (Some 3000)
+        Assert.Equal(0, result.ExitCode)
+        Assert.False result.TimedOut
+        Assert.Contains("output sentinel", File.ReadAllText stdout)
+        Assert.Contains("error sentinel", File.ReadAllText stderr)
+        Assert.ThrowsAny<System.ComponentModel.Win32Exception>(fun () ->
+            TlcAttempts.captureProcess (Path.Combine(scratch, "missing-executable")) [] scratch (Path.Combine(scratch, "missing-out")) (Path.Combine(scratch, "missing-err")) (Some 100) |> ignore) |> ignore
+        let timed = TlcAttempts.captureProcess bun ["-e"; "setTimeout(()=>{},10000)"] scratch (Path.Combine(scratch, "timed-out")) (Path.Combine(scratch, "timed-err")) (Some 40)
+        Assert.True timed.TimedOut
+        Assert.False(not timed.TimedOut && shouldRetryJvmStart 1 timed.ExitCode "Error occurred during initialization of VM")
+        let partial = Path.Combine(scratch, "partial-open")
+        Assert.Throws<IOException>(fun () -> TlcAttempts.captureProcess bun [] scratch partial stderr (Some 100) |> ignore) |> ignore
+        // If opening stderr failed, stdout's earlier descriptor must already be disposed.
+        use exclusive = new FileStream(partial, FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+        Assert.Equal(0L, exclusive.Length)
+        Assert.Contains("error sentinel", File.ReadAllText stderr)
+    finally Directory.Delete(scratch, true)
