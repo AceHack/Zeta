@@ -252,6 +252,26 @@ let private isCi =
 /// below is what actually enforces cleanup: a file we cannot un-mark still fails
 /// loudly there rather than being silently skipped here. That ordering is the
 /// point -- the swallow cannot hide a failure, it can only fail to prevent one.
+/// Read a file another handle may still hold OPEN FOR WRITING.
+///
+/// `File.ReadAllText` opens with share flags that exclude a concurrent writer.
+/// On Windows that is an `IOException` (`IO_SharingViolation_File`) rather than a
+/// read; POSIX imposes no such restriction, which is why the plain call worked
+/// everywhere for as long as the fixture's grandchild could not survive its
+/// launcher on Windows. Once `detached: true` fixed THAT, the surviving writer
+/// made the read illegal -- a second platform difference standing behind the
+/// first, and only reachable after the first was fixed.
+///
+/// `FileShare.ReadWrite` is the explicit statement that a writer is expected and
+/// tolerated. It is the right flag here rather than a retry, because the writer
+/// is not transient: the whole point of the fixture is that it is still holding
+/// the pipe open when this read happens.
+let private readTextSharedWithWriter (path: string) =
+    use stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+    use reader = new StreamReader(stream)
+    reader.ReadToEnd()
+
+
 let private deleteGitScratchTree (path: string) =
     if Directory.Exists path then
         for file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories) do
@@ -904,7 +924,7 @@ let ``probe cancellation drains inherited pipes after observed launcher exit`` (
                 Assert.Equal(0, captured.ExitCode)
                 Assert.True captured.TimedOut
                 Assert.False child.HasExited
-                Assert.Equal(pid.ToString(Globalization.CultureInfo.InvariantCulture), File.ReadAllText(stdout).Trim())
+                Assert.Equal(pid.ToString(Globalization.CultureInfo.InvariantCulture), (readTextSharedWithWriter stdout).Trim())
             with error ->
                 primaryFailure <- Some error
                 recordFailure "fixture-failure.json" (box {| Stage = stage; Error = error.ToString() |})
