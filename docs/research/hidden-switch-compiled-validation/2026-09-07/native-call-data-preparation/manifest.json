@@ -1,0 +1,112 @@
+{
+  "Meaning": "Final SourceFiles and BuiltArtifacts identify corrected synthetic attempt3 and build attempt2 only. Earlier check logs are retained from earlier uncommitted working snapshots, without an independently retained full source pin. ParentCommit is context, not the tested final commit. No target run or runtime admission.",
+  "ParentCommit": "6a998fd4ab73a5304820a9bad9d84252c9327492",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-call-synthetics-1.log",
+      "Bytes": 3569,
+      "Sha256": "ABFD2D97C11424E48F64B367371863D79AE8F8190A35A3F2DC1F131359C7A16B",
+      "StoredFile": "hidden-switch-compiled-call-synthetics-1.log.gz",
+      "StoredBytes": 812,
+      "StoredSha256": "A3AD6EF04D0078227FFC722BA01F4D2873F661A2F6A40BE30446D5E082771EC3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-call-synthetics-2.log",
+      "Bytes": 3569,
+      "Sha256": "96CF939F52D0611B527FB562008C509738E4CE77B33C7EB7C20B4BECEE60E9FF",
+      "StoredFile": "hidden-switch-compiled-call-synthetics-2.log.gz",
+      "StoredBytes": 811,
+      "StoredSha256": "CBC60644A1A6842BBBE33FC42AC9344D0C4086E9946BF4FBED7F6ED186878813",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-call-ruff-1.log",
+      "Bytes": 514,
+      "Sha256": "1D9D14AF8F0E9F38FEA826FF53C84ACA4E0322128CFAD81C93AA2E866FEBFE90",
+      "StoredFile": "hidden-switch-compiled-call-ruff-1.log.gz",
+      "StoredBytes": 309,
+      "StoredSha256": "DB37A93AA4B3A113F6491EF6C20B1D05EBF46A97F6524ACF1353BC7BBFBB896B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-call-ruff-2.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredFile": "hidden-switch-compiled-call-ruff-2.log.gz",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-guard-build-1.log",
+      "Bytes": 979,
+      "Sha256": "C9AA712B1EF90AA53212E27FF78328A951D23EA03AEF60BBB30C250BCA6C7AD8",
+      "StoredFile": "hidden-switch-compiled-guard-build-1.log.gz",
+      "StoredBytes": 320,
+      "StoredSha256": "34F96B16E04E72AF80462BE93CE291C8F282FAFF2CF9EE8F6C6A67506D0E6973",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-call-synthetics-3.log",
+      "Bytes": 3761,
+      "Sha256": "C5E9D1FDAAF9EA2A0D8540A62FFD5C8AD3E6629D4CB15FA1FF03ABACA1585AA6",
+      "StoredFile": "hidden-switch-compiled-call-synthetics-3.log.gz",
+      "StoredBytes": 853,
+      "StoredSha256": "102E5C7E7A9C6E5D37A5903E27930AE205EDA5BBE4FB8018A91D4B48F73308A9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-call-ruff-3.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredFile": "hidden-switch-compiled-call-ruff-3.log.gz",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-guard-build-2.log",
+      "Bytes": 979,
+      "Sha256": "8DE8E627FBA44D04FDC5C5F163803C5150F49542541B038057C083D8094B8174",
+      "StoredFile": "hidden-switch-compiled-guard-build-2.log.gz",
+      "StoredBytes": 319,
+      "StoredSha256": "15F61FBB893897B65B21DDDC51126FC9FF34D51C5C99C079AFC4EDE03C04A836",
+      "Encoding": "gzip"
+    }
+  ],
+  "SourceFiles": [
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledGraph.fs",
+      "Bytes": 24809,
+      "Sha256": "60E79ACC0D27510449537EB3A0A4780816BCFAB6FA3A674637F90C9A7CBEFA95"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/inspect_hidden_switch_graph.py",
+      "Bytes": 16972,
+      "Sha256": "0610D132DCD2234CC591AA1E7E1E4297FA6B749A80745C1E2AEE4CE599FF5B2E"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/inspect_hidden_switch_calls.py",
+      "Bytes": 7424,
+      "Sha256": "343D5B5FE23ACB15FE5CC5C351B8E2D7584B09D62EBCE205249D670089516EF1"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_inspect_hidden_switch_calls.py",
+      "Bytes": 5040,
+      "Sha256": "5500F8D1A904D730190A841C4647AD5557FBAFC89E1B7AFD7DF09D7A0C315CB8"
+    }
+  ],
+  "BuiltArtifacts": [
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.dll",
+      "Bytes": 302080,
+      "Sha256": "9CB2811FC302A0C066A0B38782A89952F1309B004EEBD70523339C434930C77C"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.runtimeconfig.json",
+      "Bytes": 573,
+      "Sha256": "8BE4ED4B6B8A41EB936189FEE1672D4E0AD91EDD88227E90464658C05E9598A0"
+    }
+  ]
+}

@@ -9,6 +9,11 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [`2026-09-07-vera-compiled-controller-continuation.md`](./2026-09-07-vera-compiled-controller-continuation.md)
+  — **Vera, current compiled-controller checkpoint.** Actual native semantic replay,
+  983 compiled Python tests, reviewed fixture/encoding primitives, historical
+  capture-five main proof and remaining runtime/outer-recorder admission work.
+  The implementation archive and registered streams remain unopened.
 - [`../trajectories/own-ai-harness/RESUME.md`](../trajectories/own-ai-harness/RESUME.md)
   — **Harny** (custom agent harness). Device-code first, vendor-CLI import,
   Manus remote API-key. After dogfood: Ace pre-bootstrap + Harny extract.
@@ -35,8 +40,9 @@ Current:
   431-case Interp validation and encountered re-entry hazards. Includes the completed
   supplied-model hidden-switch result, exact replay, matched-work costs, all-row
   descriptive figure and separately retained publication failures/recovery. The next
-  compiled-controller protocol is remotely registered and waits for prior-study main
-  integration; model-identification advice remains unregistered. Keeps learning,
+  compiled-controller protocol and prior-study result are verified on main;
+  implementation proceeds under a fresh co-claim before any new streams.
+  Model-identification advice remains unregistered. Keeps learning,
   online-search necessity, controller counts and quantum equivalence outside earned results.
 - [`2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md`](./2026-09-06-vera-to-vera-predictive-state-research-and-arc3-bridge.md)
   — **Fresh Astra re-entry.** Links Vera's landed ARC honesty audit, WSet/Simplex comparison,

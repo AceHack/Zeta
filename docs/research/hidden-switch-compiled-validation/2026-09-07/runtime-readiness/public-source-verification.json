@@ -1,0 +1,50 @@
+{
+  "StartedAtUtc": "2026-09-07T15:47:06.822011+00:00",
+  "Scope": "Read-only public source retrieval and local metadata; no task execution or debugger attachment",
+  "PublicTagCommit": "79d0c463f1b55624c874a11585f7e47731e8d675",
+  "InstalledReportedCommit": "e2f47b0110ed922f21a1522da67279133ce28f32",
+  "Sources": [
+    {
+      "Url": "https://raw.githubusercontent.com/dotnet/runtime/79d0c463f1b55624c874a11585f7e47731e8d675/src/coreclr/vm/runtimehandles.cpp",
+      "HttpStatus": 200,
+      "Bytes": 71540,
+      "Sha256": "d0de59ac9711b9b10e5c66238f752ecd9a8a880d008ee8d53a63ef827f579456",
+      "TagUrl": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.11/src/coreclr/vm/runtimehandles.cpp",
+      "TagSourceBytesEqual": true,
+      "RetainedSourceBody": false
+    },
+    {
+      "Url": "https://raw.githubusercontent.com/dotnet/runtime/79d0c463f1b55624c874a11585f7e47731e8d675/src/coreclr/vm/method.cpp",
+      "HttpStatus": 200,
+      "Bytes": 126541,
+      "Sha256": "a8fa84792233dd53b9d8ba857928cc6ea03328c8043fb331e1cd9ec64a8c02ba",
+      "TagUrl": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.11/src/coreclr/vm/method.cpp",
+      "TagSourceBytesEqual": true,
+      "RetainedSourceBody": false
+    }
+  ],
+  "VersionFile": {
+    "Bytes": 49,
+    "Sha256": "8faa991e6089e780a6d4bda8e28d3f52776f3e2683d9c476bd26a8447e706c14"
+  },
+  "MetadataCommands": [
+    {
+      "Arguments": [
+        "sw_vers"
+      ],
+      "ExitCode": 0,
+      "StdoutFile": "sw-vers.txt",
+      "Stderr": ""
+    },
+    {
+      "Arguments": [
+        "uname",
+        "-srm"
+      ],
+      "ExitCode": 0,
+      "StdoutFile": "uname.txt",
+      "Stderr": ""
+    }
+  ],
+  "FinishedAtUtc": "2026-09-07T15:47:07.119324+00:00"
+}

@@ -103,3 +103,9 @@ not execute. Its exact source and parse-error log are retained as attempt 1;
 the bounded syntax correction precedes successful attempt 2. This changed
 only audit/evidence files. All five production/test files and six consumers
 remain byte-identical to the reviewed source snapshot.
+
+## Main publication
+
+[Final publication proof](publication/README.md) retains PR #16949's exact checked
+head, merge/source/body/ancestry checks and the complete terminal 97-context
+snapshot, including the one nonblocking historical drift failure.

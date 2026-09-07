@@ -1,0 +1,82 @@
+{
+  "ObservedAtUtc": "2026-09-07T15:57:51.605613+00:00",
+  "CheckoutHead": "d6ec464f4e9898904c2af77fceaefb8b28b48683",
+  "Meaning": "Working-source and built-output bytes observed after successful focused builds/tests; no source-to-binary theorem or registered execution",
+  "Files": [
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledReceipt.fs",
+      "Bytes": 4433,
+      "Sha256": "35E7737D3527700A18EB2326CC4B9844A09732CDF706F5D4BE4036819DBB040D"
+    },
+    {
+      "File": "src/Research.FSharp/HiddenSwitchCompiledPolicy.fs",
+      "Bytes": 5211,
+      "Sha256": "BB6EA3E146F0CF77FE9BDF0A14EA6304C0B7CC068C491AE2E79EF6C8DA4B27FC"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/HiddenSwitchCompiled.fsproj",
+      "Bytes": 1573,
+      "Sha256": "E47D5E1BA8B85C9073537755B88C4D1C85D7908BB4575305C11CE01B04EB2C87"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/Program.fs",
+      "Bytes": 439,
+      "Sha256": "E8B161031095671012B5AD25820C899471434DF181E0EB36AE48D167F6E41569"
+    },
+    {
+      "File": "tests/Tests.FSharp/HiddenSwitchCompiled.Tests.fs",
+      "Bytes": 4472,
+      "Sha256": "3DBF468C202B0F98C389749EB8590C835E05E67BC08EE770504DBC7DA4AFE947"
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 46163,
+      "Sha256": "4600386B0027CABA144A119D8C756F69AA4FA61C976A90BF78547A0E3C409803"
+    },
+    {
+      "File": "Zeta.sln",
+      "Bytes": 70956,
+      "Sha256": "5E7E39E6AC0E919F9BAB2C45A34EFA9A92E097F7C18DD6A01B6435653D3C5D9C"
+    },
+    {
+      "File": "src/Core.TypeScript/ace/build-graph.json",
+      "Bytes": 88375,
+      "Sha256": "4B4B1FA77DBACDF0093D428D32F77EC7800CFA53BAC8275D7900ADC6E5724A66"
+    },
+    {
+      "File": "Directory.Build.props",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA"
+    },
+    {
+      "File": "Directory.Packages.props",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560"
+    },
+    {
+      "File": "global.json",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.dll",
+      "Bytes": 159744,
+      "Sha256": "AFBE669EC220445FA9D15E94CAC4CA59E49B38C7F00266B891CACF23C62A9035"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.deps.json",
+      "Bytes": 12553,
+      "Sha256": "16859052CFF9189BF0163E695B3B068C16DAB7A9F253DAC478042F1EFC8DAC80"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/bin/Release/net10.0/Zeta.Research.HiddenSwitchCompiled.runtimeconfig.json",
+      "Bytes": 573,
+      "Sha256": "8BE4ED4B6B8A41EB936189FEE1672D4E0AD91EDD88227E90464658C05E9598A0"
+    },
+    {
+      "File": "registry/check-arity-census.json",
+      "Bytes": 6011,
+      "Sha256": "5BD0438E859494B658C767417AD817B7B319C7CA3DE8F8B5FC42F811454A4021"
+    }
+  ]
+}

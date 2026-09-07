@@ -1,0 +1,28 @@
+from pathlib import Path
+import datetime,gzip,hashlib,json,subprocess,sys
+M='1193d505de42f7a9406e64389f1496a311fc4b28';H='f99c9f4e2502263943d899ec7a506aa287f76558'; R='Lucent-Financial-Group/Zeta'
+out=Path(sys.argv[1]);out.mkdir(exist_ok=False)
+def git(*a):return subprocess.check_output(['git',*a])
+def save(n,b):(out/n).write_bytes(b)
+def ident(b):return {'Bytes':len(b),'Sha256':hashlib.sha256(b).hexdigest()}
+start=datetime.datetime.now(datetime.timezone.utc).isoformat()
+try:
+ assert git('cat-file','-t',H).strip()==b'commit'
+ main=git('rev-parse','origin/main').decode().strip(); subprocess.run(['git','merge-base','--is-ancestor',M,'origin/main'],check=True)
+ pr=subprocess.check_output(['/opt/homebrew/bin/gh','api',f'repos/{R}/pulls/16928']);p=json.loads(pr);assert p['merged'] and p['head']['sha']==H and p['merge_commit_sha']==M
+ save('pr.json.gz',gzip.compress(pr,mtime=0))
+ commit=subprocess.check_output(['/opt/homebrew/bin/gh','api',f'repos/{R}/commits/{M}']);c=json.loads(commit);assert c['sha']==M
+ save('merge-commit.json.gz',gzip.compress(commit,mtime=0))
+ body=git('show','-s','--format=%B',M);save('squash-body.txt',body)
+ paths=git('diff','--no-renames','--name-status',M+'^',M).decode().splitlines(); rows=[]
+ for line in paths:
+  status,path=line.split('\t')
+  if status=='D':
+   assert subprocess.run(['git','cat-file','-e',H+':'+path],capture_output=True).returncode!=0;rows.append({'Status':status,'Path':path,'AbsentInHeadAndMerge':True})
+  else:
+   a=git('rev-parse',H+':'+path).decode().strip();b=git('rev-parse',M+':'+path).decode().strip();assert a==b,path
+   rows.append({'Status':status,'Path':path,'HeadAndMergeBlob':a})
+ record={'StartedAtUtc':start,'FinishedAtUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'Complete':True,'HeadSha':H,'MergeSha':M,'MergedAtUtc':p['merged_at'],'RefreshedOriginMain':main,'MergeIsAncestorOfOriginMain':True,'MergedPathsComparedToCheckedHead':rows,'RawPR':ident(pr),'RawPRGzip':ident((out/'pr.json.gz').read_bytes()),'RawCommit':ident(commit),'RawCommitGzip':ident((out/'merge-commit.json.gz').read_bytes()),'SquashBody':ident(body),'Scope':'Read-only API and local git object comparison. Git blob equality checks publication content, not source-to-binary correspondence; check outcomes are separately paginated.'}
+ save('proof.json',(json.dumps(record,indent=2)+'\n').encode());print(json.dumps({'Merge':M,'OriginMain':main,'PathsMatched':len(rows),'RawCommitBytes':len(commit)}))
+except Exception as e:
+ save('failure.json',(json.dumps({'StartedAtUtc':start,'Complete':False,'ErrorType':type(e).__name__,'Error':str(e)},indent=2)+'\n').encode());raise

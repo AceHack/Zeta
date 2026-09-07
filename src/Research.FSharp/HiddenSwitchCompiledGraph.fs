@@ -1,0 +1,348 @@
+namespace Zeta.Research
+
+open System
+open System.Diagnostics
+open System.Globalization
+open System.IO
+open System.Reflection
+open System.Runtime.CompilerServices
+open System.Runtime.InteropServices
+open System.Runtime.Loader
+open System.Security.Cryptography
+open System.Text
+open System.Text.Json
+open Zeta.Core
+
+/// Separate graph-hand feasibility collector. This does not admit a runtime or
+/// execute registered streams. It never reads arbitrary native method memory;
+/// the independently decoded callable/stub/body evidence belongs to LLDB.
+[<RequireQualifiedAccess>]
+module HiddenSwitchCompiledGraph =
+    [<Struct; StructLayout(LayoutKind.Sequential)>]
+    type private FpEnvironment =
+        val mutable Fpsr: uint64
+        val mutable Fpcr: uint64
+
+    [<DllImport("/usr/lib/libSystem.B.dylib", EntryPoint = "fegetenv", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)>]
+    extern int private getEnvironment(FpEnvironment& environment)
+    [<DllImport("/usr/lib/libSystem.B.dylib", EntryPoint = "fegetround", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)>]
+    extern int private getRounding()
+    [<DllImport("/usr/lib/system/libdyld.dylib", EntryPoint = "_dyld_image_count", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)>]
+    extern uint32 private imageCount()
+    [<DllImport("/usr/lib/system/libdyld.dylib", EntryPoint = "_dyld_get_image_name", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)>]
+    extern nativeint private imageName(uint32 index)
+    [<DllImport("/usr/lib/system/libdyld.dylib", EntryPoint = "_dyld_get_image_header", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)>]
+    extern nativeint private imageHeader(uint32 index)
+    [<DllImport("/usr/lib/system/libdyld.dylib", EntryPoint = "_dyld_get_image_vmaddr_slide", ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)>]
+    extern nativeint private imageSlide(uint32 index)
+
+    type FileIdentity = { File: string; Available: bool; Bytes: int64; Sha256: string }
+    type FpSnapshot = { ThreadId: int; EnvironmentReturn: int; RoundingReturn: int; Fpsr: string; Fpcr: string; StructBytes: int }
+    type ManagedImage = { Name: string; Dynamic: bool; Context: string; Mvid: string; Identity: FileIdentity }
+    type NativeImage = { Index: uint32; Name: string; Header: string; Slide: int64; Identity: FileIdentity }
+    type RawNativeImage = { Index: uint32; Name: string; Header: string; Slide: int64 }
+    type RawNativeSnapshot =
+        { Kind: string; CountBefore: uint32; CountAfter: uint32; Images: RawNativeImage[]
+          Failure: HiddenSwitchCompiledReceipt.Failure; FileIdentityWorkStarted: bool }
+    type NativeSnapshot =
+        { CountBefore: uint32; CountAfter: uint32; CountAfterFileIdentity: uint32
+          Images: NativeImage[]; Atomic: bool; Limit: string }
+    type MethodEntry =
+        { Type: string; Name: string; Signature: string; Token: int; Mvid: string; Generic: bool
+          Prepared: bool; Refusal: string; Callable: string; IlHex: string }
+    type GuardField = { Name: string; Type: string; Token: int }
+    type GuardObservation =
+        { DataAddress: string; Type: string; Mvid: string; SameReference: bool
+          Fields: GuardField[]; GetterBits: string[]; DataBytes: int; LayoutAdmitted: bool; Scope: string }
+    type Report =
+        { Kind: string; Complete: bool; RuntimeAdmitted: bool; Failure: HiddenSwitchCompiledReceipt.Failure
+          ProcessId: int; ThreadId: int; StartedAtUtc: string; FinishedAtUtc: string
+          Runtime: string; Framework: string; Architecture: string; OS: string
+          Environment: Map<string, string>; BeforeFp: FpSnapshot; AfterFp: FpSnapshot
+          ManagedImages: ManagedImage[]; NativeImages: NativeSnapshot; Methods: MethodEntry[]; Guards: GuardObservation
+          NativePreparationCalls: int; CompiledPreparationCalls: int; SourceDraws: int; Scope: string }
+
+    let private address (value: nativeint) = (uint64 (value.ToInt64())).ToString("X16", CultureInfo.InvariantCulture)
+    let private identity path =
+        if String.IsNullOrEmpty path || not (File.Exists path) then
+            { File = path; Available = false; Bytes = 0L; Sha256 = null }
+        else
+            use stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)
+            { File = path; Available = true; Bytes = stream.Length; Sha256 = SHA256.HashData stream |> Convert.ToHexString }
+
+    let private fp () =
+        let mutable state = Unchecked.defaultof<FpEnvironment>
+        let result = getEnvironment &state
+        { ThreadId = Environment.CurrentManagedThreadId; EnvironmentReturn = result; RoundingReturn = getRounding()
+          Fpsr = state.Fpsr.ToString("X16", CultureInfo.InvariantCulture); Fpcr = state.Fpcr.ToString("X16", CultureInfo.InvariantCulture)
+          StructBytes = Marshal.SizeOf<FpEnvironment>() }
+
+    let private managed () =
+        AppDomain.CurrentDomain.GetAssemblies()
+        |> Array.sortBy (fun a -> a.FullName)
+        |> Array.map (fun assembly ->
+            let context = AssemblyLoadContext.GetLoadContext assembly
+            { Name = assembly.FullName; Dynamic = assembly.IsDynamic
+              Context = if isNull context || isNull context.Name then "<unnamed>" else context.Name
+              Mvid = assembly.ManifestModule.ModuleVersionId.ToString("D", CultureInfo.InvariantCulture)
+              Identity = identity (if assembly.IsDynamic then null else assembly.Location) })
+
+    // dyld returns borrowed NUL-terminated names. The loader/OS are trusted;
+    // this bounds copying, not arbitrary-invalid-pointer isolation.
+    let private name pointer =
+        if pointer = nativeint 0 then Error(HiddenSwitchCompiledReceipt.failure "native-images" "null-name" "dyld returned no image name")
+        else
+            let bytes = ResizeArray<byte>()
+            let mutable ended = false
+            while not ended && bytes.Count < 8192 do
+                let value = Marshal.ReadByte(pointer, bytes.Count)
+                if value = 0uy then ended <- true else bytes.Add value
+            if not ended then Error(HiddenSwitchCompiledReceipt.failure "native-images" "name-bound" "dyld name exceeds 8191 bytes")
+            else Ok(UTF8Encoding(false, true).GetString(bytes.ToArray()))
+
+    let private iterate operation values =
+        values |> Seq.fold (fun state value -> state |> Result.bind (fun () -> operation value)) (Ok())
+
+    let private protect stage operation =
+        try operation()
+        with error -> Error(HiddenSwitchCompiledReceipt.failure stage "collector-exception" (error.GetType().FullName + ": " + error.Message))
+
+    let private nativeImages emit =
+        let before = imageCount()
+        let rows = ResizeArray<RawNativeImage>()
+        let collected = protect "native-images" (fun () -> result {
+            if before = 0u || before > 1024u then
+                return! Error(HiddenSwitchCompiledReceipt.failure "native-images" "count-bound" "requires 1..1024 loaded images")
+            do! [0u .. before - 1u] |> iterate (fun index -> result {
+                let! path = name (imageName index)
+                let header = imageHeader index
+                if header = nativeint 0 then
+                    return! Error(HiddenSwitchCompiledReceipt.failure "native-images" "null-header" ("dyld returned no header at index " + index.ToString(CultureInfo.InvariantCulture)))
+                rows.Add { Index = index; Name = path; Header = address header; Slide = (imageSlide index).ToInt64() }
+            })
+        })
+        let after = imageCount()
+        let admission = collected |> Result.bind (fun () ->
+            if before = after then Ok()
+            else Error(HiddenSwitchCompiledReceipt.failure "native-images" "changed-count"
+                            ("non-atomic raw enumeration: before=" + before.ToString(CultureInfo.InvariantCulture) + ", after=" + after.ToString(CultureInfo.InvariantCulture))))
+        let reason = match admission with Ok () -> null | Error failure -> failure
+        // Preserve actual raw observation and any collected prefix BEFORE file
+        // hashes or their possible lazy metadata/native-library initialization.
+        emit (box ({ Kind = "native-image-raw-observation"; CountBefore = before; CountAfter = after
+                     Images = rows.ToArray(); Failure = reason; FileIdentityWorkStarted = false }: RawNativeSnapshot))
+        result {
+            do! admission
+            let identified = rows |> Seq.map (fun row ->
+                { Index = row.Index; Name = row.Name; Header = row.Header; Slide = row.Slide; Identity = identity row.Name }: NativeImage) |> Seq.toArray
+            let afterIdentity = imageCount()
+            return { CountBefore = before; CountAfter = after; CountAfterFileIdentity = afterIdentity; Images = identified; Atomic = false
+                     Limit = "raw rows precede later file identity work; later loads do not expand that earlier observation; equal counts do not exclude load/unload; OS/loader trusted; unavailable shared-cache files have no invented hash" }
+        }
+
+    let private methods () =
+        let assembly = typeof<HiddenSwitchCompiledReceipt.ChoiceWork>.Assembly
+        let prefixes = [|"Zeta.Research.HiddenSwitchPolicy"; "Zeta.Research.HiddenSwitchCompiledPolicy";
+                         "Zeta.Research.HiddenSwitchObservation"; "Zeta.Research.HiddenSwitchCompiledReceipt";
+                         "Zeta.Research.HiddenSwitchCompiledSelector"|]
+        let flags = BindingFlags.Public ||| BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.Instance ||| BindingFlags.DeclaredOnly
+        let certificateType = "Zeta.Research.HiddenSwitchCompiledCertificate"
+        let graphType = "Zeta.Research.HiddenSwitchCompiledGraph"
+        assembly.GetTypes()
+        |> Array.filter (fun t -> (prefixes |> Array.exists (fun p -> t.FullName.StartsWith(p, StringComparison.Ordinal)))
+                                 || t.FullName = certificateType || t.FullName = graphType
+                                 || t.FullName.StartsWith(graphType + "+prepare", StringComparison.Ordinal))
+        |> Array.collect (fun t ->
+            let moduleType = Array.contains t.FullName prefixes
+            t.GetMethods flags
+            |> Array.filter (fun m -> moduleType || m.Name = "Invoke"
+                                     || (t.FullName = certificateType && List.contains m.Name ["depthTwo"; "depthThree"])
+                                     || (t.FullName = graphType && m.Name.StartsWith("prepare", StringComparison.Ordinal)))
+            |> Array.map (fun method ->
+                let body = method.GetMethodBody()
+                let generic = method.ContainsGenericParameters
+                let prepared = not generic && not method.IsAbstract && not (isNull body)
+                if prepared then RuntimeHelpers.PrepareMethod method.MethodHandle
+                { Type = t.FullName; Name = method.Name; Signature = method.ToString(); Token = method.MetadataToken
+                  Mvid = method.Module.ModuleVersionId.ToString("D", CultureInfo.InvariantCulture); Generic = generic
+                  Prepared = prepared; Refusal = if prepared then null else "open generic, abstract or absent IL: unresolved in this feasibility roster"
+                  Callable = if prepared then address (method.MethodHandle.GetFunctionPointer()) else null
+                  IlHex = if isNull body then null else body.GetILAsByteArray() |> Convert.ToHexString }))
+        |> Array.sortBy (fun item -> item.Type, item.Token)
+
+    let private prepare () =
+        result {
+            let mutable calls = 0
+            let mutable compiledCalls = 0
+            let bindings = Map.ofList ["ProtocolSha256", "8BBDFE44A0844DD8CE4F6C5DD77B060A56E5B84EA94EA7A6FDBB482AEC9D738A"; "hand-validation", String.replicate 64 "0"]
+            let! rawCertificate = HiddenSwitchCompiledCertificate.build bindings
+            let! certificate = HiddenSwitchCompiledCertificate.verify rawCertificate bindings
+            let guards = HiddenSwitchCompiledCertificate.guards certificate
+            let scalarInputs = [for effect in [false; true] do
+                                    for depth in 1 .. 3 do
+                                        for belief in [0.0; 0.25; 0.5; 1.0] do yield effect, depth, belief]
+            do! scalarInputs |> iterate (fun (effect, depth, belief) -> result {
+                let! choice = HiddenSwitchCompiledPolicy.native effect belief depth
+                calls <- calls + 1
+                let bytes = Array.zeroCreate<byte> 28
+                do! HiddenSwitchCompiledReceipt.writeChoice bytes 0 choice
+                let! compiled = HiddenSwitchCompiledSelector.choose guards effect belief depth
+                compiledCalls <- compiledCalls + 1
+                do! HiddenSwitchCompiledReceipt.writeChoice bytes 0 compiled
+            })
+            // These are graph-only hand points, not the registered scalar roster.
+            do! [2; 3] |> iterate (fun depth -> result {
+                let struct(low, high) = if depth = 2 then HiddenSwitchCompiledCertificate.depthTwo guards else HiddenSwitchCompiledCertificate.depthThree guards
+                do! [low; Math.BitIncrement low; Math.BitDecrement high; high] |> iterate (fun belief -> result {
+                    let! choice = HiddenSwitchCompiledSelector.choose guards true belief depth
+                    compiledCalls <- compiledCalls + 1
+                    let bytes = Array.zeroCreate<byte> 28
+                    do! HiddenSwitchCompiledReceipt.writeChoice bytes 0 choice
+                })
+            })
+            let adapterInputs = [for effect in [false; true] do for cue in [0; 1] do yield effect, cue]
+            do! adapterInputs |> iterate (fun (effect, cue) -> result {
+                let cells = Array.zeroCreate<byte> 2048
+                cells.[8 * 64 + (if cue = 0 then 16 else 48)] <- 1uy
+                let frame: GameEnvironment.Frame = { W = 64; H = 32; Palette = 2; Cells = cells }
+                let! projection = HiddenSwitchObservation.project frame |> Result.mapError HiddenSwitchCompiledReceipt.fromPrevious
+                let! initial = HiddenSwitchCompiledPolicy.create effect "dot"
+                let! _, observed = HiddenSwitchCompiledPolicy.observe projection initial
+                let! _, committed = HiddenSwitchCompiledPolicy.chooseNative observed
+                calls <- calls + 1
+                let! _ = HiddenSwitchCompiledPolicy.observe projection committed
+                let! _, compiled = HiddenSwitchCompiledPolicy.chooseWith (HiddenSwitchCompiledSelector.choose guards) observed
+                compiledCalls <- compiledCalls + 1
+                let! _ = HiddenSwitchCompiledPolicy.observe projection compiled
+                return ()
+            })
+            return calls, compiledCalls, guards
+        }
+
+    let private guardObservation (handle: GCHandle) (usedGuards: HiddenSwitchCompiledCertificate.GuardSet) =
+        result {
+            if not (Object.ReferenceEquals(handle.Target, usedGuards)) then
+                return! Error(HiddenSwitchCompiledReceipt.failure "guard-data" "reference" "pin target differs from the actual preparation guards")
+            let guardType = usedGuards.GetType()
+            let fields = guardType.GetFields(BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic)
+                         |> Array.sortBy (fun field -> field.MetadataToken)
+                         |> Array.map (fun field -> { Name = field.Name; Type = field.FieldType.FullName; Token = field.MetadataToken })
+            let struct(a, b) = HiddenSwitchCompiledCertificate.depthTwo usedGuards
+            let struct(c, d) = HiddenSwitchCompiledCertificate.depthThree usedGuards
+            return { DataAddress = address (handle.AddrOfPinnedObject()); Type = guardType.FullName
+                     Mvid = guardType.Module.ModuleVersionId.ToString("D", CultureInfo.InvariantCulture)
+                     SameReference = true; Fields = fields; GetterBits = [|a; b; c; d|] |> Array.map HiddenSwitchCompiledReceipt.bits
+                     DataBytes = 32; LayoutAdmitted = false
+                     Scope = "same verified preparation object pinned only for inspection; AddrOfPinnedObject denotes data, not object/header; getter order is depth2 low/high then depth3 low/high; actual selector object-register/layout association remains unestablished" }
+        }
+
+    let private waitForCompletion path =
+        protect "debugger" (fun () ->
+            let timer = Stopwatch.StartNew()
+            while not (File.Exists path) && timer.Elapsed.TotalSeconds < 120.0 do
+                Threading.Thread.Sleep 25
+            if not (File.Exists path) then
+                Error(HiddenSwitchCompiledReceipt.failure "debugger" "completion-timeout" "owned completion file absent after 120 seconds")
+            else
+                let expected = Encoding.ASCII.GetBytes("graph-capture-complete:" + Environment.ProcessId.ToString(CultureInfo.InvariantCulture) + "\n")
+                use input = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)
+                let bytes = Array.zeroCreate<byte> expected.Length
+                if input.Length <> int64 expected.Length then
+                    Error(HiddenSwitchCompiledReceipt.failure "debugger" "handshake-size" "completion file has unexpected length")
+                else
+                    input.ReadExactly bytes
+                    if bytes <> expected then
+                        Error(HiddenSwitchCompiledReceipt.failure "debugger" "handshake-content" "completion file does not name this process")
+                    else Ok())
+
+    /// Explicit feasibility-only command. The exclusive JSONL stream retains
+    /// the start stage before hand work. Only the owning debugger creates the
+    /// process-bound completion file; the external launcher also bounds lifetime.
+    let run path =
+        let started = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
+        let mutable primaryFailure: HiddenSwitchCompiledReceipt.Failure = null
+        try
+            use stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
+            use writer = new StreamWriter(stream, UTF8Encoding(false))
+            let emit (value: obj) = writer.WriteLine(JsonSerializer.Serialize value); writer.Flush(); stream.Flush(true)
+            let emitDiagnostic (value: obj) =
+                match protect "graph-hand-diagnostic" (fun () -> emit value; Ok()) with
+                | Ok () -> ()
+                | Error secondary ->
+                    // Diagnostic storage is best effort after a primary failure.
+                    // A secondary stderr failure must not replace that failure.
+                    try Console.Error.WriteLine(JsonSerializer.Serialize {| Kind = "graph-hand-diagnostic-write-failed"; Failure = secondary |})
+                    with _ -> ()
+            let completion = path + ".complete"
+            let mutable guardHandle = Unchecked.defaultof<GCHandle>
+            emit {| Kind = "graph-hand-start"; ProcessId = Environment.ProcessId; StartedAtUtc = started; SourceDraws = 0
+                    CompletionFile = completion; CompletionDeadlineSeconds = 120 |}
+            let work = protect "graph-hand-collection" (fun () -> result {
+                if File.Exists completion || Directory.Exists completion then
+                    return! Error(HiddenSwitchCompiledReceipt.failure "debugger" "completion-exists" "completion channel must be absent before hand work")
+                if not (OperatingSystem.IsMacOS()) || RuntimeInformation.ProcessArchitecture <> Architecture.Arm64 then
+                    return! Error(HiddenSwitchCompiledReceipt.failure "runtime" "platform" "this feasibility collector requires macOS ARM64")
+                do! ["DOTNET_TieredCompilation"; "DOTNET_TieredPGO"; "DOTNET_ReadyToRun"] |> iterate (fun key ->
+                    if Environment.GetEnvironmentVariable key <> "0" then
+                        Error(HiddenSwitchCompiledReceipt.failure "runtime" "startup-flags" (key + " must be 0"))
+                    else Ok())
+                let before = fp()
+                emit (box {| Kind = "floating-environment-before"; Observation = before |})
+                let! calls, compiledCalls, usedGuards = prepare()
+                guardHandle <- GCHandle.Alloc(usedGuards, GCHandleType.Pinned)
+                let! guards = guardObservation guardHandle usedGuards
+                emit (box {| Kind = "guard-data-observation"; Observation = guards |})
+                let entries = methods()
+                emit (box {| Kind = "method-callable-observation"; Methods = entries; NativePreparationCalls = calls; CompiledPreparationCalls = compiledCalls; SourceDraws = 0 |})
+                let! images = nativeImages emit
+                let loaded = managed()
+                let after = fp()
+                let environment =
+                    ["DOTNET_TieredCompilation"; "DOTNET_TieredPGO"; "DOTNET_ReadyToRun"; "DOTNET_JitDisasm"; "DOTNET_JitDisasmSummary"; "DOTNET_JitDisasmWithCodeBytes"; "DOTNET_JitStdOutFile"]
+                    |> List.map (fun key -> key, Environment.GetEnvironmentVariable key) |> Map.ofList
+                return { Kind = "graph-hand-ready"; Complete = true; RuntimeAdmitted = false; Failure = null
+                         ProcessId = Environment.ProcessId; ThreadId = Environment.CurrentManagedThreadId
+                         StartedAtUtc = started; FinishedAtUtc = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
+                         Runtime = Environment.Version.ToString(); Framework = RuntimeInformation.FrameworkDescription
+                         Architecture = RuntimeInformation.ProcessArchitecture.ToString(); OS = RuntimeInformation.OSDescription
+                         Environment = environment; BeforeFp = before; AfterFp = after; ManagedImages = loaded
+                         NativeImages = images; Methods = entries; Guards = guards; NativePreparationCalls = calls; SourceDraws = 0
+                         CompiledPreparationCalls = compiledCalls
+                         Scope = "graph hand preparation: 28 direct native-wrapper calls plus 36 compiled-service calls (which may themselves recurse); verified placeholder hand bindings; not registered conformance/streams; callable pointers are not body spans; final caller closure and runtime admission pending" }
+            })
+            // Always release this inspection-only pin once, including writer or
+            // collection refusals. Preserve the primary failure if cleanup fails.
+            let mutable cleanupFailure: HiddenSwitchCompiledReceipt.Failure = null
+            match work with Error failure -> primaryFailure <- failure | Ok _ -> ()
+            let outcome =
+                try
+                    protect "graph-hand-output" (fun () ->
+                        match work with
+                        | Error failure -> Error failure
+                        | Ok report -> emit report; waitForCompletion completion)
+                finally
+                    if guardHandle.IsAllocated then
+                        match protect "guard-data-cleanup" (fun () -> guardHandle.Free(); Ok()) with
+                        | Error failure -> cleanupFailure <- failure
+                        | Ok () -> ()
+            if not (isNull cleanupFailure) then
+                emitDiagnostic {| Kind = "graph-hand-cleanup-failed"; Complete = false; Failure = cleanupFailure |}
+            let final = match outcome with Ok () when not (isNull cleanupFailure) -> Error cleanupFailure | other -> other
+            match final with
+            | Error failure ->
+                primaryFailure <- failure
+                emitDiagnostic {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}
+                Error failure
+            | Ok () ->
+                let finished = protect "graph-hand-finish" (fun () ->
+                    emit {| Kind = "graph-hand-finished"; Complete = true; ProcessId = Environment.ProcessId; GuardPinReleased = true |}
+                    Ok())
+                match finished with
+                | Error failure ->
+                    primaryFailure <- failure
+                    emitDiagnostic {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}
+                | Ok () -> ()
+                finished
+        with error ->
+            if not (isNull primaryFailure) then Error primaryFailure
+            else Error(HiddenSwitchCompiledReceipt.failure "graph-hand" "collector-exception" (error.GetType().FullName + ": " + error.Message))

@@ -1,0 +1,57 @@
+{
+  "SourceHead": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "Bytes": 256078,
+  "Sha256": "6c5f1be46c7a200ef7998072dfb16db8ebb4baa1564d9537af68088f8342487c",
+  "Excerpts": [
+    {
+      "Line": 3,
+      "Lines": [
+        "# Zeta CI gate \u2014 Phase 1 per docs/research/ci-gate-inventory.md.",
+        "#",
+        "# Runs on every PR (opened / reopened / synchronize / ready_for_review)",
+        "# and every push to main, plus workflow_dispatch for manual triage.",
+        "#",
+        "# Discipline (design doc: docs/research/ci-workflow-design.md, human",
+        "# maintainer reviewed 2026-04-18; parity-swap landed round 32; matrix",
+        "# refresh 2026-04-24 per PR #375):",
+        "#   - Runners pinned to explicit versions (not -latest). Active build-",
+        "#     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm.",
+        "#     The ubuntu-slim low-memory verification leg moved to"
+      ]
+    },
+    {
+      "Line": 85,
+      "Lines": [
+        "",
+        "on:",
+        "  pull_request:",
+        "    types: [opened, reopened, synchronize, ready_for_review]",
+        "  push:",
+        "    branches: [main]",
+        "  merge_group:",
+        "  workflow_dispatch:",
+        "",
+        "permissions:",
+        "  contents: read",
+        ""
+      ]
+    },
+    {
+      "Line": 106,
+      "Lines": [
+        "env:",
+        "  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}",
+        "",
+        "concurrency:",
+        "  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}",
+        "  cancel-in-progress: ${{ github.event_name == 'pull_request' }}",
+        "",
+        "jobs:",
+        "  # Dynamic matrix for build-and-test: pre-merge events (pull_request",
+        "  # and merge_group) get Linux-only (production build path, fast \u2014",
+        "  # keeps PR checks and merge-queue runs short). Push-to-main /",
+        "  # workflow_dispatch get the full set including macos-26"
+      ]
+    }
+  ]
+}

@@ -56,6 +56,7 @@
     "tests/Tests.FSharp/ForwardMomentum.Tests.fs": 1,
     "tests/Tests.FSharp/GameFingerprint.Tests.fs": 1,
     "tests/Tests.FSharp/GeneratorRegistry.Tests.fs": 1,
+    "tests/Tests.FSharp/HiddenSwitchCompiled.Tests.fs": 2,
     "tests/Tests.FSharp/HierarchicalPlanning.Tests.fs": 2,
     "tests/Tests.FSharp/HtmlCssBinding.Tests.fs": 1,
     "tests/Tests.FSharp/IbltReconcile.Tests.fs": 1,

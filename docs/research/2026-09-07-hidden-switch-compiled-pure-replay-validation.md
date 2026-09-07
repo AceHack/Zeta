@@ -1,0 +1,138 @@
+# Guarded hidden-switch compilation: pure scalar and hand replay
+
+Date: 2026-09-07
+Operational status: research-grade
+Lifecycle: active
+Work item: 081M1XXWTTF087G0R000X1HMD0
+Author: Vera, OpenAI Codex using GPT-6 Astra
+Artifact status: Python slice implementation; native and outer admission pending
+
+## Source and capability boundary
+
+This follows the unchanged [frozen protocol](2026-09-07-hidden-switch-compiled-protocol.md)
+and [independent numerical implementation](2026-09-07-hidden-switch-compiled-numerical-validation.md).
+Source commit `3a7cc51a7473b9ef19f760cb6758f4808ffacd5c` adds only
+`src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py` and its
+matching test file. It was written in the existing co-claimed task, session
+`codex/20260907-c7b2a403`, on isolated publication branch
+`codex/hidden-switch-compiled-reference-20260907`.
+
+The [source and log manifest](hidden-switch-compiled-validation/2026-09-07/pure-replay/manifest.json)
+binds the replay source/test and three numerical implementation dependencies
+to that commit. Logs are losslessly compressed, with stored and decompressed
+lengths and SHA256 recorded separately. No raw text is stripped or normalized.
+
+The module accepts decoded arrays and an issued `VerifiedCertificate`.
+It reads no filesystem, collects no runtime evidence, calls no source-tape
+generator and stores no numerical result cache. Expected scalar values
+come from the independent software binary64 evaluator; expected episodes
+come from the independent reference on the four explicit hand tapes.
+The public functions are:
+
+- `replay_scalars(rows, certificate)` for the complete 222-row scalar slice.
+- `replay_new_hand(rows, certificate)` for the complete 48-row new-hand slice.
+- `replay_scalar_and_new_hand(scalars, episodes, certificate)` for both.
+
+Each returns `Success.value` containing `ReplayCounts`, or a `ReplayFailure`
+with `Code`, `Message`, `Path` and `Completed`. The latter subclasses the
+existing numerical `Failure`, so the coordinator can map it to its separate
+outer evidence failure without an import cycle. `Completed` counts fully
+verified records preceding the first refusal; partially checked rows are
+excluded. These are verified-record counts, not an execution profiler.
+
+Successful combined counts are 222 scalar rows, 444 scalar choice records,
+48 hand episodes, 768 hand choice records and 816 hand observation records.
+The returned scope is `scalars-and-new-hand-only`. Every result also exposes
+zero admitted old-native controls, `pending-separate-admission` for both
+old controls and falsifiers, and `not-performed-by-pure-replay` for runtime
+and outer admission. The certificate digest identifies the admitted numeric
+tree; it is not the raw certificate file digest or an admission of its source
+and runtime coverage. The coordinator supplies those outer bindings.
+
+## Exact content and refusal behavior
+
+The checker reconstructs all 222 ordered scalar inputs, then compares their
+binary64 strings, both recursive Q bit strings and both complete choice-work
+records. Every nested key, concrete JSON type, list length and value must
+match. Positive and negative zero remain different bit strings; a boolean
+does not stand in for an integer. Missing, additional, duplicate or reordered
+array rows refuse. Raw JSON duplicate object keys are a separate strict-reader
+obligation because an already decoded dictionary cannot retain that history.
+
+The 48 hand rows preserve tape order zero, one, alternating, sparse; true
+then false effect; dot/fixed, bar/fixed, dot/odd-complement rendering; and
+native-recursive then compiled-guarded strategy. The semantic episode index
+0 through 23 is shared by the two strategies. Header labels are checked
+before each fixed case is executed. The entire no-Q episode is then compared,
+including all 17 belief/cue/state/frame/projection observations, 16 actions,
+rewards and choice-work records, filter counters, completion/failure fields
+and total reward. Extra Q fields or timing fields refuse in these slices.
+
+The issued-certificate boundary is checked before replay. Truncated expected
+rosters cannot silently turn an empty loop into successful complete replay:
+the reference roster and final verified counts have explicit checks. This is
+a trusted Python dependency boundary with source admission outside the module,
+not a sandbox against arbitrary mutation of the interpreter or its modules.
+
+## Executed validation and evidence provenance
+
+The [focused validation log](hidden-switch-compiled-validation/2026-09-07/pure-replay/focused-python.log.gz)
+records **59 passing tests** in 6.16 seconds against the source commit above.
+Ruff, format checking and mypy passed, as did `git diff --check`.
+The [publication log](hidden-switch-compiled-validation/2026-09-07/pure-replay/source-publication.log.gz)
+retains the normal sixteen-check push hook and isolated branch publication.
+
+All supplied test payloads are **generated by the independent Python
+reference**. They are neither native-produced inputs nor evidence of actual
+native conformance. The test certificate uses an explicitly synthetic source
+binding; the tests do not admit a complete runtime or archived source roster.
+No seed 9307 or 9409 source tape, registered behavior or cost run occurred.
+
+The load-bearing tests include:
+
+- A live full replay with spies confirming all 222 scalar calls and all 48
+  hand calls in their exact order, with the source generator replaced by a
+  function that fails if invoked.
+- Twenty-one scalar mutations covering incomplete/extra/duplicate/reordered
+  rows, keys, type substitutions, signed-zero/Q bits and each work counter.
+- Thirty-four hand mutations covering roster/header fields, nested keys,
+  timing/Q exclusion, types, action/state/reward/belief/frame/projection data,
+  filter/work counters, total and array length. Terminal observations and
+  the final action's work record have explicit mutations.
+- A late mismatch at `Episodes[7].Episode.FrameSha256[16]` that retains all
+  222 completed scalar rows and seven completed hand episodes.
+- A changed reference action, empty expected scalar/hand rosters, malformed
+  containers and an unissued certificate, all producing typed refusal.
+
+These fixtures establish discriminating behavior of the pure checker at its
+declared boundary. They do not establish admission of the 24 old-native
+controls, executable falsifier evidence, native arithmetic/graph/runtime
+premises, process chronology, CLI/source bindings or complete outer receipt
+bytes. Those remain separate coordinator/native/reviewer obligations under
+the unchanged registration. No experimental result or speed claim follows
+from this Python slice validation alone.
+
+## Bounded independent source review
+
+The independently co-claimed reviewer, Vera using OpenAI Codex / GPT-6
+Astra in session `codex/20260907-c7b2a404`, read source
+`3a7cc51a7473b9ef19f760cb6758f4808ffacd5c` and returned acceptance with
+no material finding in this slice. The review confirmed complete ordered
+rosters, exact recursive key/type/bit/counter comparison, live reference
+calls, whole-row prefix accounting, terminal and boolean-substitution
+mutants, and the late failure's 222 scalar plus seven hand record counts.
+It accepted the explicit separation of old controls, falsifiers and runtime
+admission and the Python-produced fixture provenance.
+
+The reviewer executed no tests, certificate/guard computation, policy,
+source generation or measurement. This is bounded read-only source review,
+not independent execution or admission of the eventual native receipts.
+
+## Subsequent actual native slice comparison
+
+The [first actual native hand-core replay](2026-09-07-hidden-switch-compiled-native-slice-replay.md)
+subsequently matched all 222 scalar positions, 48 new hand episodes and,
+through the separately invoked full checker, 24 old controls. Its exact
+native input, harness and result are preserved separately from the earlier
+Python-generated tests. Complete falsifier, archive and runtime admission
+remain pending; this does not change the original test provenance above.
