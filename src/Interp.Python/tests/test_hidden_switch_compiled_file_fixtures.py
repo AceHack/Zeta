@@ -221,6 +221,40 @@ def test_operation_exception_retains_fault_prefix_and_restores_hooks(
     assert os.write is write and os.fstat is fstat
 
 
+@pytest.mark.parametrize("primary", [False, True])
+def test_real_close_then_error_never_masks_an_earlier_mutation_failure(
+    primary: bool, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = prepare(tmp_path, "storage/changed-read")
+    actual_close = f._close_mutation_descriptor
+    closed: list[int] = []
+
+    def uncertain_close(descriptor: int) -> None:
+        closed.append(descriptor)
+        actual_close(descriptor)
+        raise OSError("retained cleanup failure after actual close")
+
+    def broken_fsync(_descriptor: int) -> None:
+        raise OSError("retained first mutation fsync failure")
+
+    monkeypatch.setattr(f, "_close_mutation_descriptor", uncertain_close)
+    if primary:
+        monkeypatch.setattr(os, "fsync", broken_fsync)
+    row = call(fixture, 0)
+    assert len(closed) == 1
+    assert row.CompletedOperation == 1 and isinstance(row.ActualResult, a.Refused)
+    assert row.ActualResult.code == "file-read"
+    assert (
+        "first mutation fsync" if primary else "cleanup failure"
+    ) in row.ActualResult.detail
+    assert [event.Kind for event in row.Faults][-1] == "mutation-cleanup-failure"
+    assert (
+        any(event.Kind == "mutation-primary-failure" for event in row.Faults) == primary
+    )
+    assert (fixture.Root / fixture.Target).read_bytes() == b"ORIGINAL"
+    assert isinstance(f.file_fixture_inputs(fixture, (row,)), a.Admitted)
+
+
 @pytest.mark.parametrize("value", [None, False, 8])
 def test_missing_or_untyped_return_retains_observation_without_counting_call(
     value: object, tmp_path: Path, monkeypatch: pytest.MonkeyPatch

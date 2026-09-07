@@ -36,6 +36,11 @@ MAX_FIXTURE_BYTES = 1024 * 1024
 _FAULT_LOCK = threading.Lock()
 
 
+def _close_mutation_descriptor(descriptor: int) -> None:
+    """One owned close; separate seam for real-close-then-error validation."""
+    os.close(descriptor)
+
+
 @dataclass(frozen=True, slots=True)
 class FileState:
     File: str
@@ -352,6 +357,7 @@ class _Faults:
         mutation_fd = os.open(
             self.fixture.Root / self.fixture.Target, os.O_WRONLY | os.O_NOFOLLOW
         )
+        mutation_completed = False
         try:
             mutation_info = self.fstat(mutation_fd)
             if (mutation_info.st_dev, mutation_info.st_ino) != (
@@ -368,8 +374,33 @@ class _Faults:
             if written != 8:
                 raise OSError("owned mutation did not write eight bytes")
             os.fsync(mutation_fd)
+            mutation_completed = True
+        except OSError as error:
+            self.events.append(
+                FaultObservation(
+                    "mutation-primary-failure",
+                    info.st_dev,
+                    info.st_ino,
+                    Detail=str(error),
+                )
+            )
+            raise
         finally:
-            os.close(mutation_fd)  # Exactly once, including uncertain close failure.
+            try:
+                _close_mutation_descriptor(mutation_fd)
+            except OSError as error:
+                self.events.append(
+                    FaultObservation(
+                        "mutation-cleanup-failure",
+                        info.st_dev,
+                        info.st_ino,
+                        Detail=str(error),
+                    )
+                )
+                # An active mutation exception continues unchanged. A close-only
+                # failure still refuses. Never retry this uncertain close.
+                if mutation_completed:
+                    raise
         return observed
 
 
