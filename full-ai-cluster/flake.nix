@@ -19,14 +19,19 @@
   description = "Zeta full AI cluster — declarative from USB to running workloads";
 
   inputs = {
-    # iter-6.0 (B-0800; the maintainer 2026-05-26 "24.11 is a 2 year old
-    # version you found a 25.11 when you searched latest we need to make
-    # sure we are on latest too"): bumped from nixos-24.11 (EOL'd
-    # 2025-06-30) to nixos-25.11 "Xantusia" (current stable; EOL
-    # 2026-06-30). Per WebSearch
-    # https://nixos.org/blog/announcements/2025/nixos-2511/
-    # validated per `.claude/rules/dep-pin-search-first-authority.md`.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # 2026-09-07: bumped 25.11 -> nixos-26.05, on Aaron's "we want to be on the
+    # latest everywhere too". This closes a gap that ran the OTHER WAY from what the
+    # roster recorded: the ROOT flake was already on nixos-26.05 while this one — the
+    # flake that actually installs machines — sat a release behind on 25.11. The
+    # cluster was the stale half, not the root.
+    #
+    # Prior bump, kept for the lineage: iter-6.0 (B-0800), the maintainer 2026-05-26
+    # "24.11 is a 2 year old version, you found a 25.11 when you searched latest, we
+    # need to make sure we are on latest too" — 24.11 (EOL 2025-06-30) -> 25.11.
+    #
+    # nix-darwin moves in the SAME commit, never separately: nix-darwin asserts at
+    # eval time that "nix-darwin and Nixpkgs branches in use must match".
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -34,7 +39,7 @@
     # maintainers can build the x86_64-linux ISO via the linux-builder
     # VM (Virtualization.framework + Rosetta 2). Same bump as nixpkgs.
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -54,10 +59,16 @@
       # iter-6.0 stateVersion bump (B-0800; PC1 + future cluster nodes
       # are fresh-install scope per the maintainer 2026-05-26; no
       # persistent K8s workloads yet → safe to bump for new hosts.
+      # RE-CONFIRMED 2026-09-07, and it is the condition that makes this
+      # legal rather than a preference — Aaron: "there are no machines out
+      # there tracking anything yet, I'm waiting to reformat the machine
+      # once we get everything working." A stateVersion left at 25.11 while
+      # every install is 26.05 would record a first-install release that
+      # never happened.
       # Already-installed hosts should NOT bump stateVersion in their
       # per-host nixos/hosts/<name>/configuration.nix without explicit
       # migration handling per the NixOS upgrade guidance).
-      stateVersion = "25.11";
+      stateVersion = "26.05";
 
       supportedSystems = [
         "x86_64-linux"

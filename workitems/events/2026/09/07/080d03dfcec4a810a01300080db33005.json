@@ -1,0 +1,14 @@
+{
+  "id": "080d03dfcec4a810a01300080db33005",
+  "at": "2026-09-07T13:06:06.613Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XZKP4M087G0R000K0JJ34",
+    "type": "task",
+    "title": "bump full-ai-cluster to nixpkgs 26.05 in lockstep with nix-darwin",
+    "slug": "bump-full-ai-cluster-to-nixpkgs-26-05-in-lockstep-with-nix-d",
+    "priority": "P2",
+    "filename": "081M1XZKP4M087G0R000K0JJ34-bump-full-ai-cluster-to-nixpkgs-26-05-in-lockstep-with-nix-d.md"
+  }
+}
