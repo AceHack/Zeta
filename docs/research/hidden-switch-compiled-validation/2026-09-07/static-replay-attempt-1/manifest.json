@@ -1,0 +1,862 @@
+{
+  "SourceCommit": "dc42bd64b302981e9b9a093db8b02183b52e5d05",
+  "Scope": "32 source-fixed static cases and 36 actual shared API call slots; no full outer/runtime admission",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_bindings.py",
+      "Bytes": 14671,
+      "Sha256": "14A91DEEA826EB94F40407B269124D734C5A1AF754B1A7A5036216033AB4C14F"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate_cases.py",
+      "Bytes": 8344,
+      "Sha256": "F79FA50B58B3B393AEF15BB38528F92FDBCAAECBD8D824844B60B4B0A5236FA1"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_conformance.py",
+      "Bytes": 17853,
+      "Sha256": "A57C74457740BF1950C8F108CA179E4723E9911E919CBD4A30FE6EB58E0AADA2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_cost_ledgers.py",
+      "Bytes": 9185,
+      "Sha256": "EDEC1120FCF4FFBF199E3B0EE0831B1F18ED08E573B5E0CF876E3FC5BCE69F8E"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Bytes": 10841,
+      "Sha256": "8571296D52A4D3F4C00D787ADF258E9558D91072F52BF5E67F9B0387803C45BB"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ED2CF49D070F0D9CE3243DD634BA53FE35DEF36742D26ABEB7644469DFBBA45"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_schedule.py",
+      "Bytes": 4685,
+      "Sha256": "9DC2D6EE3AB6037F054E9FC4BACB10E462C0DD8632E2E3D33FB0A73B5F212A68"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_static_fixtures.py",
+      "Bytes": 14785,
+      "Sha256": "CE877FE343A241CE2589338208E4475EEDAD2AE464559EAF8B478228FB320B0E"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_static_replay.py",
+      "Bytes": 15552,
+      "Sha256": "0AD063E0003637A22F6BFA3EB8CB55135B5D8A19E88D499F46FF097B4B07B252"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_static_replay.py",
+      "Bytes": 24506,
+      "Sha256": "70DD52D43E0E1C467A628C073BE40084516C8497069132C4F9019A75A8878AE8"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "capture-stderr.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "capture-stdout.log.gz",
+      "Bytes": 109,
+      "Sha256": "6DA22006944E7A8A86284AE5F33020C967A27A05E2A9FF887C7854DF0013B431",
+      "Encoding": "gzip",
+      "StoredBytes": 102,
+      "StoredSha256": "4FB1CB5526262DF5454155BB9716E6BABBC245FD08A6E262923EDBF52C754095"
+    },
+    {
+      "File": "capture.py.gz",
+      "Bytes": 4835,
+      "Sha256": "B02ECD346F787786D83CE03D28DBCF70141DECB626F94C4D0BF48E3AF70F1BBC",
+      "Encoding": "gzip",
+      "StoredBytes": 1939,
+      "StoredSha256": "660F87A48C60BDD407C3BEBC2897F26A6563C5633031ED1B1342413161A825F4"
+    },
+    {
+      "File": "complete-replay.json.gz",
+      "Bytes": 865433,
+      "Sha256": "1044DBCF9E38387DD435044E1F1CC39D04C25CF91B82B7E8AB4DC34DD75BBFE6",
+      "Encoding": "gzip",
+      "StoredBytes": 24427,
+      "StoredSha256": "D0A3CCDC370A60BB2CD542DA7160712DDB23B681DAA5E09A2B01E18116FD24C0"
+    },
+    {
+      "File": "dependency-pins.json.gz",
+      "Bytes": 1758,
+      "Sha256": "BA39659CEA0EEAE95546A378F602BA5DC6D3E8C5C3B9EC01A22F5646DD6FC452",
+      "Encoding": "gzip",
+      "StoredBytes": 568,
+      "StoredSha256": "6DDE8050B95FCA6208630AA1EF95134BF239EAEA9727A0FCAEF8CE402561A4A4"
+    },
+    {
+      "File": "format-2.log.gz",
+      "Bytes": 20,
+      "Sha256": "96A977F329EC3C59092D40E041A019B49DCF03CA04055E177AA0CCB8C27234DF",
+      "Encoding": "gzip",
+      "StoredBytes": 40,
+      "StoredSha256": "10D1F29FBF0F4CE6D2D3ACA6A94AB91FAF21C712B389879848ED269BD3C77D6F"
+    },
+    {
+      "File": "format-3.log.gz",
+      "Bytes": 42,
+      "Sha256": "10869B88A75066AA23546EF1F95FCD4678C3FB92A56ED46EF91688052B67976A",
+      "Encoding": "gzip",
+      "StoredBytes": 58,
+      "StoredSha256": "9E034AAA1899B92E6331269CD6D05434C6C7961950B18D5A76245A92C9CD89FE"
+    },
+    {
+      "File": "format-check-1.log.gz",
+      "Bytes": 52534,
+      "Sha256": "ABD5A87824790CC5EA3A09BB51862EECD992D7FF94264B91429060ADF5D187BD",
+      "Encoding": "gzip",
+      "StoredBytes": 9920,
+      "StoredSha256": "57CD3F4A041ECE433BF7FCE418DA7471997D3D50C8DA3214309E2511F8CAF5CB"
+    },
+    {
+      "File": "format-check-2.log.gz",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "Encoding": "gzip",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "File": "format-check-3.log.gz",
+      "Bytes": 26,
+      "Sha256": "3BC53BF3E981A98A34A852E175BF9B77AF841EDEA74FCA595D9AEDCBAF9A4938",
+      "Encoding": "gzip",
+      "StoredBytes": 46,
+      "StoredSha256": "9A1A2D79ACCCDB0F46930A600A1382606067033CFB52A4673DC15B0C1030D871"
+    },
+    {
+      "File": "initial-hidden_switch_compiled_static_replay.py.gz",
+      "Bytes": 13186,
+      "Sha256": "D9847D90665276E26C63B862273D656A12B86BEDA8C6FB8384355E604AE60D9C",
+      "Encoding": "gzip",
+      "StoredBytes": 3514,
+      "StoredSha256": "0438518B15257F48498CFBDF83E52CA31A2203D0B2677ECBB676E817E27B3052"
+    },
+    {
+      "File": "initial-test_hidden_switch_compiled_static_replay.py.gz",
+      "Bytes": 20032,
+      "Sha256": "F47805E5CDCEC3E6FAF7479602D08423FCF1381B5B7316B4EFD48C71508DF1BA",
+      "Encoding": "gzip",
+      "StoredBytes": 4242,
+      "StoredSha256": "826778DB0F9C29A39A143592036025D61044D641651E73A67694625C054EB6FB"
+    },
+    {
+      "File": "late-malformed-replay.json.gz",
+      "Bytes": 864358,
+      "Sha256": "582C2F8F4F4A4F260A73F2A3F63217E5B04CD8403298A6113E8D9CAA4BC53B13",
+      "Encoding": "gzip",
+      "StoredBytes": 24522,
+      "StoredSha256": "85D6442FA5CB59A586F006FE96E8FAABBEEFC08A133D3991CA85FB3DB0BDD07C"
+    },
+    {
+      "File": "late-missing-call-replay.json.gz",
+      "Bytes": 862274,
+      "Sha256": "70F4F1F7AD3A7BFA43AF1011556711F788E56CAA125C13653C0226CD5B18C46D",
+      "Encoding": "gzip",
+      "StoredBytes": 24330,
+      "StoredSha256": "275C268E2A10AD19027E89D5099F0F67BB9E1D7A70127FEC329494F2AABBE54F"
+    },
+    {
+      "File": "mypy-1.log.gz",
+      "Bytes": 757,
+      "Sha256": "0C313C05610FC349A56A6372188006C40975D6EC5EA668499E9F241C1854E79F",
+      "Encoding": "gzip",
+      "StoredBytes": 382,
+      "StoredSha256": "48E40C2199A0BEDBFA7F00FA0555DCA330EEFAC42861646E3CB9FB6242CABE47"
+    },
+    {
+      "File": "mypy-2.log.gz",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "mypy-3.log.gz",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "operational-note.txt.gz",
+      "Bytes": 377,
+      "Sha256": "7D327D68062BC032361EEFEE45F8BEAC64A15C8620F44CE21CBAB76100C52821",
+      "Encoding": "gzip",
+      "StoredBytes": 269,
+      "StoredSha256": "16341B93A54412253A411ED4F8007E496E3FB8283C5823CBF31ABD281B7378BB"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Bytes": 1752,
+      "Sha256": "3EC4901AF86C8082689D7855B3F890EBE9C495D459B7EA2C6F8EAECDC2DE1EC4",
+      "Encoding": "gzip",
+      "StoredBytes": 885,
+      "StoredSha256": "3B2B87CBBCA300F60FB3C728B5E1E42FD2D288BF0E4D9DB98D3720B83CCB8CAD"
+    },
+    {
+      "File": "producer-call-00.json.gz",
+      "Bytes": 370,
+      "Sha256": "0718932F565EA39D572CACC84F1A7EB0DAF2C59677B5B93676D22EE94DFB1F96",
+      "Encoding": "gzip",
+      "StoredBytes": 219,
+      "StoredSha256": "86392AA5586B5588C286649A8027DC4B29193E21529B9CD3E089C0B96A5062A0"
+    },
+    {
+      "File": "producer-call-01.json.gz",
+      "Bytes": 291,
+      "Sha256": "34A5E299CE02F3F2659F0BF0AF9C14B2F268EEFE2B204B593599B5BD89D672D0",
+      "Encoding": "gzip",
+      "StoredBytes": 203,
+      "StoredSha256": "5580237B3B0C271A00396A186E0144099E3D5161ABF5FBF9AEE7C4BE30ABED98"
+    },
+    {
+      "File": "producer-call-02.json.gz",
+      "Bytes": 301,
+      "Sha256": "1869B2E55FC5C23DB3C6C2B7E264E58C2A2D769893AA82DF80690418B575A3C9",
+      "Encoding": "gzip",
+      "StoredBytes": 214,
+      "StoredSha256": "1A74DD00B0E5E3F52FE98CDBB2F38C565E15993CED26BB1D1FCF4EC1A8F72F11"
+    },
+    {
+      "File": "producer-call-03.json.gz",
+      "Bytes": 335,
+      "Sha256": "04010E0ACCE5254772E60F70496E8CA936611EF297EEBB65988ACFB01D5164BE",
+      "Encoding": "gzip",
+      "StoredBytes": 245,
+      "StoredSha256": "89B019EE4D5B2997702C9B99D3EC8F7BFF22B23DEE3AADB68A8B4B531A79BD99"
+    },
+    {
+      "File": "producer-call-04.json.gz",
+      "Bytes": 305,
+      "Sha256": "CEA3973DCBADE7F7919311AE0A2D960937CF3A915D1E96C881E87C6E1A8210AA",
+      "Encoding": "gzip",
+      "StoredBytes": 212,
+      "StoredSha256": "CDE0A688A04BE4F09EDFDA75AA5DEF268F8DB34527CC2B86846C47537F3D8694"
+    },
+    {
+      "File": "producer-call-05.json.gz",
+      "Bytes": 305,
+      "Sha256": "CEA3973DCBADE7F7919311AE0A2D960937CF3A915D1E96C881E87C6E1A8210AA",
+      "Encoding": "gzip",
+      "StoredBytes": 212,
+      "StoredSha256": "CDE0A688A04BE4F09EDFDA75AA5DEF268F8DB34527CC2B86846C47537F3D8694"
+    },
+    {
+      "File": "producer-call-06.json.gz",
+      "Bytes": 315,
+      "Sha256": "913533FA63D18AD32D50EF9FB1CD11D5076272B636B3B5F7D72A47354EC20678",
+      "Encoding": "gzip",
+      "StoredBytes": 226,
+      "StoredSha256": "D727273E6594233527EA3A53F5C9B5F29939CAD1FCC80C498E3D6F63C0CC3797"
+    },
+    {
+      "File": "producer-call-07.json.gz",
+      "Bytes": 334,
+      "Sha256": "12991766948EDAF74C0962109F64B7C2A69368067F116D0DC945D447E0D26D40",
+      "Encoding": "gzip",
+      "StoredBytes": 234,
+      "StoredSha256": "1AB0C6DB34AFCA9699509959073A25110F12697C464B0D77FE08A6F461A6265A"
+    },
+    {
+      "File": "producer-call-08.json.gz",
+      "Bytes": 496,
+      "Sha256": "AF51A904E3CAFFDB743EF32523FF582BDEAB10D143B0BE7E3610137B95399DA2",
+      "Encoding": "gzip",
+      "StoredBytes": 294,
+      "StoredSha256": "8ABC45FFD1CE5E7B79A0DB6B79A2767037E31F0A2F103C6C403B4A2576FBB9AF"
+    },
+    {
+      "File": "producer-call-09.json.gz",
+      "Bytes": 488,
+      "Sha256": "4018A88ACA8623D90633401E1E9FC72A2B19D9041F1CAB9B8226BB21E09886D1",
+      "Encoding": "gzip",
+      "StoredBytes": 337,
+      "StoredSha256": "8208C88D7063E87F495A7358F6E73C8DBCE379E461E8E9830FEDEAC4EABCA8D0"
+    },
+    {
+      "File": "producer-call-10.json.gz",
+      "Bytes": 330,
+      "Sha256": "BE05649CE64034BB63F80180A16B6039A764197B6AEDCC4412178BD2FD624456",
+      "Encoding": "gzip",
+      "StoredBytes": 218,
+      "StoredSha256": "527B225FB23AF2E9535CCFD8335A60ABAAE45F9E44FF5B644D8E8A42CC516840"
+    },
+    {
+      "File": "producer-call-11.json.gz",
+      "Bytes": 332,
+      "Sha256": "74CE519E3732E60BC6CA4D9845DB9C840027F80FE5426F748920184C784EA162",
+      "Encoding": "gzip",
+      "StoredBytes": 217,
+      "StoredSha256": "767B6590CDA5D1838316AF0526AC896E58B586FE6D237FC90AF543C1494F9A85"
+    },
+    {
+      "File": "producer-call-12.json.gz",
+      "Bytes": 362,
+      "Sha256": "CDA9EE59DBCBD55719D82BA3210FCC8CC7E1818B0DEA7DBC29230CB0B474B465",
+      "Encoding": "gzip",
+      "StoredBytes": 241,
+      "StoredSha256": "4FB155DBA9F3D8C2D59A8E5525E3D2A79F160BC3F8E88468DCAD04D3F77D5693"
+    },
+    {
+      "File": "producer-call-13.json.gz",
+      "Bytes": 332,
+      "Sha256": "A2529630EFCE200DCBA34400B1860A26974455700CB6C51FA33C353D71ECCC8F",
+      "Encoding": "gzip",
+      "StoredBytes": 223,
+      "StoredSha256": "F320479D6E7665711FA875BFD60622284F16C0BC2C8EBC2257EB6DB228BEA6F4"
+    },
+    {
+      "File": "producer-call-14.json.gz",
+      "Bytes": 2148,
+      "Sha256": "20B17370B87F78507880326CCEA1C69B582B77344B8BFE5D6FE22D9D9F8A14CE",
+      "Encoding": "gzip",
+      "StoredBytes": 798,
+      "StoredSha256": "70386346FDF53C881D0B5BA5E86FB0BE046BCDC08A5AD4D6DF7BB22CE46404D6"
+    },
+    {
+      "File": "producer-call-15.json.gz",
+      "Bytes": 509,
+      "Sha256": "659D3689CD28E78913A116074CD305662B319FEA6DB277B496C5AEF8D9F30501",
+      "Encoding": "gzip",
+      "StoredBytes": 316,
+      "StoredSha256": "F3B7EA62EC31D9CC0A759E51824AA4B6040D44FA1D3A513DC8AABCCB91E02179"
+    },
+    {
+      "File": "producer-call-16.json.gz",
+      "Bytes": 483,
+      "Sha256": "DAF1A50A5C86E6E249A6E25563CD9B8C7824E0248B6C8D2429AF0FB81682D8F7",
+      "Encoding": "gzip",
+      "StoredBytes": 301,
+      "StoredSha256": "90BF248AF5962B082D8998C13D8F6B85911DB5A534B7AEA825041655413F1175"
+    },
+    {
+      "File": "producer-call-17.json.gz",
+      "Bytes": 483,
+      "Sha256": "DAF1A50A5C86E6E249A6E25563CD9B8C7824E0248B6C8D2429AF0FB81682D8F7",
+      "Encoding": "gzip",
+      "StoredBytes": 301,
+      "StoredSha256": "90BF248AF5962B082D8998C13D8F6B85911DB5A534B7AEA825041655413F1175"
+    },
+    {
+      "File": "producer-call-18.json.gz",
+      "Bytes": 483,
+      "Sha256": "DAF1A50A5C86E6E249A6E25563CD9B8C7824E0248B6C8D2429AF0FB81682D8F7",
+      "Encoding": "gzip",
+      "StoredBytes": 301,
+      "StoredSha256": "90BF248AF5962B082D8998C13D8F6B85911DB5A534B7AEA825041655413F1175"
+    },
+    {
+      "File": "producer-call-19.json.gz",
+      "Bytes": 469,
+      "Sha256": "3D8C0B322FE128EAF45603401915AA84D29A8110EE57035580A3FF89A8F2537D",
+      "Encoding": "gzip",
+      "StoredBytes": 292,
+      "StoredSha256": "FDD1D89F8F4BF64709F20D60F10A96D435F11DD24B50A8FF42803D379D23047D"
+    },
+    {
+      "File": "producer-call-20.json.gz",
+      "Bytes": 477,
+      "Sha256": "B61674CFD4FCD7A379C0E6062B52A445490E28AE634B88B290595CD4D079B6B0",
+      "Encoding": "gzip",
+      "StoredBytes": 300,
+      "StoredSha256": "79EA47F57A422D2864BE7BBF6022B98696C9C5B30AAD8A1D328F8DFE0EACCAA2"
+    },
+    {
+      "File": "producer-call-21.json.gz",
+      "Bytes": 509,
+      "Sha256": "659D3689CD28E78913A116074CD305662B319FEA6DB277B496C5AEF8D9F30501",
+      "Encoding": "gzip",
+      "StoredBytes": 316,
+      "StoredSha256": "F3B7EA62EC31D9CC0A759E51824AA4B6040D44FA1D3A513DC8AABCCB91E02179"
+    },
+    {
+      "File": "producer-call-22.json.gz",
+      "Bytes": 557,
+      "Sha256": "C10C1896E69773118DCA90559A8CA9AB147E4990198074A546E957EDE5219B3D",
+      "Encoding": "gzip",
+      "StoredBytes": 311,
+      "StoredSha256": "0B89D347C6E1850713CDF7E80BFC1B85519EECF09DA69EBC3EE7D15BB2B68558"
+    },
+    {
+      "File": "producer-call-23.json.gz",
+      "Bytes": 341,
+      "Sha256": "7A6A0F11252150A917AD66A6428552F7D8FE9E00D2A1FD77C3E159CEF1D268A9",
+      "Encoding": "gzip",
+      "StoredBytes": 224,
+      "StoredSha256": "7A6589920C40AAB94DD506A788AE7CA2146FA3B9A4829C8D58CD88D95E9D13B7"
+    },
+    {
+      "File": "producer-call-24.json.gz",
+      "Bytes": 363,
+      "Sha256": "B7CA643D2C7AB8774C7115EDC400454D580AB7C30D08D743F1B0DA47CA5E66B3",
+      "Encoding": "gzip",
+      "StoredBytes": 237,
+      "StoredSha256": "1C7704B5C4FD3EE6CADCF39AFE1FA25FCEC17CA84FFDEF2919522FC880367E3B"
+    },
+    {
+      "File": "producer-call-25.json.gz",
+      "Bytes": 366,
+      "Sha256": "4C9F3C0244DA1AF97EBACB13311E0996A80DAB05414331D3914DBBC63848E66F",
+      "Encoding": "gzip",
+      "StoredBytes": 240,
+      "StoredSha256": "E1F17D69FD4499560B83E5017CDE54B2B00288AA77196870638161D616710D7A"
+    },
+    {
+      "File": "producer-call-26.json.gz",
+      "Bytes": 363,
+      "Sha256": "1D62C146865E7BBE1900B016785DDD674C2050816A22A36B93165CFBB65B81B0",
+      "Encoding": "gzip",
+      "StoredBytes": 237,
+      "StoredSha256": "87A0C8A9F4F1413A4C17803279BE11D7815D8E14A13914F9882EC6F04ECC5F73"
+    },
+    {
+      "File": "producer-call-27.json.gz",
+      "Bytes": 321,
+      "Sha256": "5D9AA29B0DC266374EAFF8D1157C0B14686972A9B3CC062D540DC867C57829F4",
+      "Encoding": "gzip",
+      "StoredBytes": 214,
+      "StoredSha256": "ACDF2A1CADEEF2EBB6D13F230F669E40DA741E831C55BDADACDEB1B7D9B99C91"
+    },
+    {
+      "File": "producer-call-28.json.gz",
+      "Bytes": 383,
+      "Sha256": "5D18A6E160D5C665C93CCCB3FBA7FD6C8CEBCADD849F0306A04065BB24396730",
+      "Encoding": "gzip",
+      "StoredBytes": 219,
+      "StoredSha256": "A44A5B94DAF0A98E5F9AD7572A4C8EF9CADF3D0EEB451DFC1FACD45A7F4BCE99"
+    },
+    {
+      "File": "producer-call-29.json.gz",
+      "Bytes": 477,
+      "Sha256": "D58091DC158212692B85C1DEE2DFE9B529DCCCCFF825937B437CD013BDCD6E0D",
+      "Encoding": "gzip",
+      "StoredBytes": 235,
+      "StoredSha256": "3A348A6313C52CC3811577CD1DCAA0CC7F37E8003A60EFC56D61A42AC23012D5"
+    },
+    {
+      "File": "producer-call-30.json.gz",
+      "Bytes": 333,
+      "Sha256": "E6D926A4ECD39D4BA8EBCAEA6496CA816A11F46CEA37D78A5DD6CA2631588151",
+      "Encoding": "gzip",
+      "StoredBytes": 241,
+      "StoredSha256": "311E9BD6EAB108CFBA1E4C64177F4E172B40268753DE49A189179F57D64CB5AC"
+    },
+    {
+      "File": "producer-call-31.json.gz",
+      "Bytes": 341,
+      "Sha256": "57B9EA8E57E31D21AB9AA1A982D32EFAC7E93482D1B7934887E53745DE095DF6",
+      "Encoding": "gzip",
+      "StoredBytes": 245,
+      "StoredSha256": "83E3D89B9F52DBFEE05A38EDC3C0DE6137BFB8F1D057879D05E54C8C2F6BB34F"
+    },
+    {
+      "File": "producer-call-32.json.gz",
+      "Bytes": 312,
+      "Sha256": "0B1BCE1F3DEFDE03DD89DCE7073F167A2FCAC703E4AD24FE0EE01A471F64D9F4",
+      "Encoding": "gzip",
+      "StoredBytes": 217,
+      "StoredSha256": "1E26E66DE66401261A86DBE433FC8C5F1A0DBDBCBC02369E259AFDE5170D11CA"
+    },
+    {
+      "File": "producer-call-33.json.gz",
+      "Bytes": 333,
+      "Sha256": "9BC6BC56168C93D5E575FAA224202ECCBEF455806B3B1415CCF12691C296E409",
+      "Encoding": "gzip",
+      "StoredBytes": 218,
+      "StoredSha256": "A3435139EEC79C52AFF62C71B173C4A3B813F00894A99EDCA2F9914334ED3569"
+    },
+    {
+      "File": "producer-call-34.json.gz",
+      "Bytes": 323,
+      "Sha256": "3D175222A937BA3501DD2B7AF47BCF23C2C721317FC148571704D0785BF077CC",
+      "Encoding": "gzip",
+      "StoredBytes": 233,
+      "StoredSha256": "0FC9F94E901AC28A79FADD84244984D4E9E2C2B4CA413CE543948EC64C02C7BA"
+    },
+    {
+      "File": "producer-call-35.json.gz",
+      "Bytes": 327,
+      "Sha256": "6513F48C0FBA277F7C1EE55CBD9F538AF092FD832EBA4213098492D2E2439F31",
+      "Encoding": "gzip",
+      "StoredBytes": 237,
+      "StoredSha256": "10BAB269C2DE742161914E3488F30464B00840D65AF239B2EE99F5D09F11A902"
+    },
+    {
+      "File": "producer-preparation-00.json.gz",
+      "Bytes": 417,
+      "Sha256": "AD7D95428AD24B1EEECE81B5646C7E45A404F717C9E771A1AE837DDFE373F30B",
+      "Encoding": "gzip",
+      "StoredBytes": 267,
+      "StoredSha256": "5AA5463BA709EF1BA73D3BB89E3B2A623FEAFE48B5DEC6F6E036B730427C4FC1"
+    },
+    {
+      "File": "producer-preparation-01.json.gz",
+      "Bytes": 443,
+      "Sha256": "5FCF8B1FBA21B92CC73DD72830E4C5DA09102F18A02496001275BB50A92F9FE8",
+      "Encoding": "gzip",
+      "StoredBytes": 273,
+      "StoredSha256": "9EA88F9324254D848A99150CFE9B9AA9D97F2F0D4B13FFAF0B4758C29C216DAB"
+    },
+    {
+      "File": "producer-preparation-02.json.gz",
+      "Bytes": 421,
+      "Sha256": "EE16832644F36A9C9877636C5F112E4B5743A5B9A9810924E678F452E79E0FFE",
+      "Encoding": "gzip",
+      "StoredBytes": 272,
+      "StoredSha256": "CDEB8DC9B917683607757487CB1563DAC207B5AD501D600BEBF323ED697FF914"
+    },
+    {
+      "File": "producer-preparation-03.json.gz",
+      "Bytes": 430,
+      "Sha256": "64EED256D169DB36F00E291669894C8BF93E915A68F0F7829B420637FE5A7012",
+      "Encoding": "gzip",
+      "StoredBytes": 274,
+      "StoredSha256": "F00E5102299C6139AACC74AC3D5F7BB3144FDFE8BA75F2F7E2924B59D8AE258F"
+    },
+    {
+      "File": "producer-preparation-04.json.gz",
+      "Bytes": 439,
+      "Sha256": "83089A32616FB6CF28AECF92D6A90E39E06840D921E350D1902B823515650B72",
+      "Encoding": "gzip",
+      "StoredBytes": 281,
+      "StoredSha256": "9DBC6D2089B68F19A74358B76C33A91C3E3F5CDC35C2C6D536DD510D809CFC9A"
+    },
+    {
+      "File": "producer-preparation-05.json.gz",
+      "Bytes": 401,
+      "Sha256": "1621377086990E1BA21F4DF1F2074482BB0AD449F7CEF9F7621A617EE868275E",
+      "Encoding": "gzip",
+      "StoredBytes": 259,
+      "StoredSha256": "68881DC90A7A083AA0239011AE57D7DD3B90F0064A39F218FFCADD63AAE84740"
+    },
+    {
+      "File": "producer-preparation-06.json.gz",
+      "Bytes": 417,
+      "Sha256": "7E78A577A933C19368508359EC577CA04D6A1D775F3620B35F4AFDBCE416530A",
+      "Encoding": "gzip",
+      "StoredBytes": 266,
+      "StoredSha256": "EF575C1537A67EDD75844E7314CB42446E4CCE8B73E831B8C611E1126A1CFEF4"
+    },
+    {
+      "File": "producer-preparation-07.json.gz",
+      "Bytes": 422,
+      "Sha256": "E155B404E1821A5317D03B869E9BD429C2D54370C97ED1FC3B8EEF62A0A126B7",
+      "Encoding": "gzip",
+      "StoredBytes": 271,
+      "StoredSha256": "CDF61F470F1D49057D5B656E5F24D3156B4AB0CFE9E0615A6A4E6585ABEC4427"
+    },
+    {
+      "File": "producer-preparation-08.json.gz",
+      "Bytes": 1832,
+      "Sha256": "C55F70349476FA1CC5C365737C116CC8E79C1466FE83F9839E4E2A610EF2F68C",
+      "Encoding": "gzip",
+      "StoredBytes": 539,
+      "StoredSha256": "7A13FEC683520C6EEE1F329788279A31A0A462FBE0EDF7364FFE571B5193758A"
+    },
+    {
+      "File": "producer-preparation-09.json.gz",
+      "Bytes": 1106,
+      "Sha256": "FBE04769C0B8EA6767193C26FF675C94636376C8F64D5CA547EE2C30D9BD113A",
+      "Encoding": "gzip",
+      "StoredBytes": 449,
+      "StoredSha256": "5EB1F085833F23092ECA95541B9895C95BE7D76058EA1580DA915BF5EC6C377B"
+    },
+    {
+      "File": "producer-preparation-10.json.gz",
+      "Bytes": 1108,
+      "Sha256": "3621516571ACC4D8FBD91B530490E02B45DD05F55D8BEC50F42DED8907E02DD5",
+      "Encoding": "gzip",
+      "StoredBytes": 501,
+      "StoredSha256": "4E65FD4CF7D547A98CC0B885D3EDF8923F7EAD9E992D47A8817DC9E613F90BEE"
+    },
+    {
+      "File": "producer-preparation-11.json.gz",
+      "Bytes": 1109,
+      "Sha256": "16E969B7A5977F92E72D7769EA49D61A1D721756422CF4773B24ED5FE4A16EE3",
+      "Encoding": "gzip",
+      "StoredBytes": 506,
+      "StoredSha256": "7CD778865E2D3A8138981C6A420999B0DA7BC0AD61C8239A860E7424A8948A5F"
+    },
+    {
+      "File": "producer-preparation-12.json.gz",
+      "Bytes": 814,
+      "Sha256": "87E86E064DDDCAB037C6EE06AC31C8D75FAE204ECC4CD7FE477293FECC1F7E11",
+      "Encoding": "gzip",
+      "StoredBytes": 449,
+      "StoredSha256": "00C7AC9CB7F69E1E909B6A482D2D8A8F3A4C966953CA3DDC8FCC61E1BB9D3B34"
+    },
+    {
+      "File": "producer-preparation-13.json.gz",
+      "Bytes": 30585,
+      "Sha256": "46F92712A72288BDA8A8432AA755C2BE3944278A15B19A57F882A7279078EB44",
+      "Encoding": "gzip",
+      "StoredBytes": 1787,
+      "StoredSha256": "6A040D838B0E285B6BC07EB54075016F4F6A9742238A6A4461F0E42237697605"
+    },
+    {
+      "File": "producer-preparation-14.json.gz",
+      "Bytes": 30603,
+      "Sha256": "0A458A723AD2AEA8322FE80BF3F93A29596EDE8E6A2D7FC3077CF90FF44424AD",
+      "Encoding": "gzip",
+      "StoredBytes": 1854,
+      "StoredSha256": "FE40AFA6AA4E6E715F8460BEAC81A908A136484A997D53B5B00A12ACBC0840DE"
+    },
+    {
+      "File": "producer-preparation-15.json.gz",
+      "Bytes": 30597,
+      "Sha256": "3008CE182A2187B3CE710D0F42EC4ED7D73DF73BE8D8A31353A2D13BCF06297C",
+      "Encoding": "gzip",
+      "StoredBytes": 1798,
+      "StoredSha256": "9D145212BDB45E64C3FCDA3ACDAACED4022427AC2F5F004D8F158FF7B5A5FB23"
+    },
+    {
+      "File": "producer-preparation-16.json.gz",
+      "Bytes": 30602,
+      "Sha256": "2CF8DFB5C48A71249094BC078A0C00D0E9077A4A37E0BDFC276F8A920EF6ECE9",
+      "Encoding": "gzip",
+      "StoredBytes": 1801,
+      "StoredSha256": "CB7818909A7751EC6A68DA204A83C88C7B95352FE1A314B016ECA6641191CF10"
+    },
+    {
+      "File": "producer-preparation-17.json.gz",
+      "Bytes": 30598,
+      "Sha256": "2561F7D3E7C6A3B0CB5E32CBEBE0735FC9BDCE1F7EEDA09A918B419CF42295EC",
+      "Encoding": "gzip",
+      "StoredBytes": 1803,
+      "StoredSha256": "4FA5F388C33B19012C0053609AE292C391FB23FD22F352CF825BE4B7581D2996"
+    },
+    {
+      "File": "producer-preparation-18.json.gz",
+      "Bytes": 30594,
+      "Sha256": "05936F9C857B550ABE18EB1FAB0258D192EFF7B3542B29A04DBCAA185EEF6CE3",
+      "Encoding": "gzip",
+      "StoredBytes": 1791,
+      "StoredSha256": "57B8D7FF00649EFA9BC0EDDCE8BCC1D4DBF6231837F996C779C6AFFBA40F208D"
+    },
+    {
+      "File": "producer-preparation-19.json.gz",
+      "Bytes": 30598,
+      "Sha256": "A7A7C94BDA02546A561679723116C4782AAC89F27F0D9F260FD7CE38D7345EA9",
+      "Encoding": "gzip",
+      "StoredBytes": 1792,
+      "StoredSha256": "B8CFF5A5C93CF09EA306D2F90DE8CF9076270DBD56A9F4D39BA7D249125B4A8A"
+    },
+    {
+      "File": "producer-preparation-20.json.gz",
+      "Bytes": 30617,
+      "Sha256": "275104522C714C13972803EB8E0D90BCF043D17AFF6E73641BC1A26AA1218898",
+      "Encoding": "gzip",
+      "StoredBytes": 1859,
+      "StoredSha256": "D0AFCA0AB4511F315D46FDC25B6989610FA54D00BE640FB6B041B510A77141AD"
+    },
+    {
+      "File": "producer-preparation-21.json.gz",
+      "Bytes": 18195,
+      "Sha256": "A62832A32F088F774891CE812AE9D326F075C701B9F258BFB91FF5713FA467C3",
+      "Encoding": "gzip",
+      "StoredBytes": 803,
+      "StoredSha256": "3B421EE43D098D1B9711A9E19ED9D1CC3FE9177E594AA19636C26CBC45C056CC"
+    },
+    {
+      "File": "producer-preparation-22.json.gz",
+      "Bytes": 17845,
+      "Sha256": "54CA1ABAE770154EC4F292C29EC686F07F055BD24D16B9334CF99D63BBECEAB4",
+      "Encoding": "gzip",
+      "StoredBytes": 796,
+      "StoredSha256": "97452C5271DAF12CC9C133D0C6E676FEEA45CB1CB3EF0678A0CA16017B0E1B23"
+    },
+    {
+      "File": "producer-preparation-23.json.gz",
+      "Bytes": 18197,
+      "Sha256": "71D84DFF4C98ED126BEE931A2A8DB7EE380C1BB723957608DB5B67938A61CCB8",
+      "Encoding": "gzip",
+      "StoredBytes": 807,
+      "StoredSha256": "AC1C5B4C4FCD332E9A9C662B9C4DF671CA316F0FBD6EC3DEB9592DA34FDC9C85"
+    },
+    {
+      "File": "producer-preparation-24.json.gz",
+      "Bytes": 18194,
+      "Sha256": "947199F4176C72FC00F4CC91A354205E41E9E49D26CF2D1714B619B6154F7EAD",
+      "Encoding": "gzip",
+      "StoredBytes": 811,
+      "StoredSha256": "33C99C935A3C437A481EDEA1B9A945F5197279BB560EE5FBD8A6824CCF7BA406"
+    },
+    {
+      "File": "producer-preparation-25.json.gz",
+      "Bytes": 18197,
+      "Sha256": "C14CFCD95365983A8328351FCA673E30A149EABA23AE74B114649422F55FDD36",
+      "Encoding": "gzip",
+      "StoredBytes": 804,
+      "StoredSha256": "44A30539E7E29C2B11F5B3F70D134FD69CD3BD497EDB350FA2A3533C38B9468F"
+    },
+    {
+      "File": "producer-preparation-26.json.gz",
+      "Bytes": 972,
+      "Sha256": "6F1A28EA60D63976976DF921E094130115E23000726EF0E4B1CBDEB1498E52EB",
+      "Encoding": "gzip",
+      "StoredBytes": 377,
+      "StoredSha256": "8137FA38C84A912015C92320052133E1B5713ED3328C343B213C396A5120DB96"
+    },
+    {
+      "File": "producer-preparation-27.json.gz",
+      "Bytes": 547,
+      "Sha256": "7E22FD308DA9DF45063E50C1EA0A7F7F6EA05EB0ED71BD6EB3AC1E6D5B451AD8",
+      "Encoding": "gzip",
+      "StoredBytes": 308,
+      "StoredSha256": "12F5729374A053B853D3045400DD865AA026C4D41C58EB3461F721DE4E19CA83"
+    },
+    {
+      "File": "producer-preparation-28.json.gz",
+      "Bytes": 559,
+      "Sha256": "48A89568788843E3A923157C5183E30B8666B3B7291A69622DDE101BBD0E666F",
+      "Encoding": "gzip",
+      "StoredBytes": 319,
+      "StoredSha256": "A29DCD42566D2DF55C1C6302AEA20B71277D90C13F9DCD0955639C57F75E2446"
+    },
+    {
+      "File": "producer-preparation-29.json.gz",
+      "Bytes": 551,
+      "Sha256": "D4A5762F0576D69CBD4E7A400A7279DDDEC4A1782EE9037143EE2DE35F4F3B22",
+      "Encoding": "gzip",
+      "StoredBytes": 313,
+      "StoredSha256": "80465D0E5386B34F7FF947B58580962D7786579764217DCD0332C4BEF3C657EF"
+    },
+    {
+      "File": "producer-preparation-30.json.gz",
+      "Bytes": 532,
+      "Sha256": "117EDF24C35B1EB9E1FF42ED788CFDD44B7454524B73BB079A39A83CBC292013",
+      "Encoding": "gzip",
+      "StoredBytes": 247,
+      "StoredSha256": "FAE594853EEE0FC109076D1C008461857D09613EC2B890F89B525078D80A50F3"
+    },
+    {
+      "File": "producer-preparation-31.json.gz",
+      "Bytes": 1145,
+      "Sha256": "469826828EDC3029B9BD5B4B1CC5912546AF4346CE9244E38664D20A8F1A4F33",
+      "Encoding": "gzip",
+      "StoredBytes": 320,
+      "StoredSha256": "4B14ABB459D506C111A304D9BAAF09F2BCBAA36A147FBBFA1D5D7CE044136765"
+    },
+    {
+      "File": "recorded-fixtures.json.gz",
+      "Bytes": 373151,
+      "Sha256": "335729409BBCF9C824597D30FFAAE931651EAE7FA9F7798952BBE8080B3315D7",
+      "Encoding": "gzip",
+      "StoredBytes": 9059,
+      "StoredSha256": "471ADD1245CE140BC40967F40D212B51374E3B08A9D165C55C753C7434617B7D"
+    },
+    {
+      "File": "ruff-1.log.gz",
+      "Bytes": 3772,
+      "Sha256": "E07F7D6323DD69F97C0AF4E61BBAD4762E72917862220DD776036E5723255637",
+      "Encoding": "gzip",
+      "StoredBytes": 655,
+      "StoredSha256": "B02E849BCAD09A05D93E2C04CA04CEC24A5EF2ECDCDC6B08F76AAA6C69EE79F6"
+    },
+    {
+      "File": "ruff-2.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "ruff-3.log.gz",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "tests-1.log.gz",
+      "Bytes": 12966,
+      "Sha256": "0CD0C0D59752E3595BE68A749E79804F1AD9E72112FC40073A58F47665256BFC",
+      "Encoding": "gzip",
+      "StoredBytes": 1467,
+      "StoredSha256": "BA2CA34F623261357DA1475259E00F7912C5A4E08E2B19AE8CB55E9656D616CB"
+    },
+    {
+      "File": "tests-2.log.gz",
+      "Bytes": 99,
+      "Sha256": "BB3783157A4ABFC50C4CAEBEF69BA4D9348AC6798B8CFBAE731429D93ED9D4CF",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "7A92584949D58E84FCCEBC8F4AFA3B649CF3E28302B1633B27E8E9A5E2EC3522"
+    },
+    {
+      "File": "tests-3.log.gz",
+      "Bytes": 99,
+      "Sha256": "1B33F0DD1EE5D6671D549D108A8606A4BE52A06BE347CB18E497D9F14E392DF0",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "1B0014B6292BFE831B69A1899A8190431CDD9B46F75458C1EA3053FC275E99AF"
+    },
+    {
+      "File": "validation.json.gz",
+      "Bytes": 16968,
+      "Sha256": "16F437D30E92B2EF1A5F19BBFF9249F1BA15086F78AC6076EA118B66B12C2B88",
+      "Encoding": "gzip",
+      "StoredBytes": 5143,
+      "StoredSha256": "61A4D3CEF152D7B53D636FCDA137A5D8AF80288CD45F1C22ADBCA66EDA0EB4A1"
+    },
+    {
+      "File": "preflight-quick.log.gz",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E",
+      "Encoding": "gzip",
+      "StoredBytes": 405,
+      "StoredSha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13"
+    },
+    {
+      "File": "markdown.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    }
+  ],
+  "NativeLaunches": 0,
+  "PolicyCalls": 0,
+  "RegisteredSourceGeneration": false
+}
