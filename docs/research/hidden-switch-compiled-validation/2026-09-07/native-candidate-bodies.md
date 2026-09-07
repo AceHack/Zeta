@@ -278,3 +278,14 @@ permits this incomplete hand-core capture; it is not executable fault-injection
 coverage. The envelope always has `Complete=false`, with separate
 `SlicesComplete` and explicit pending falsifier/runtime/source-admission
 categories. Runtime, body and closure admission remain false.
+
+The [first actual hand capture](native-hand-core-attempt-1/manifest.json) ran
+committed source `e8753be7fd022e930d91f4342b57b9e534deb45e` after source
+acceptance and the final build. It exited zero with unchanged source/output
+fingerprints, all 222 scalar, 48 new-episode and 24 old-control slices retained,
+and an empty stderr. Its exact 447,583-byte JSON has SHA256
+`48965F2CD70C40047772DA7E87DD462734D5A371D059BD30C6E1D8C0BFA17D32`.
+The append-only journal independently retains each completed row, current
+location and certificate identity. `SlicesComplete=true` and `Complete=false`
+are distinct; independent replay was pending at this preservation step. No
+registered source or performance measurement was performed.

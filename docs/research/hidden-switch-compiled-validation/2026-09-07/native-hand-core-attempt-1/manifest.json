@@ -1,0 +1,70 @@
+{
+  "SourceCommit": "e8753be7fd022e930d91f4342b57b9e534deb45e",
+  "Meaning": "First incomplete native hand capture. 222 scalar, 48 new and 24 old slices completed, full hand and runtime admission remain false. Independent replay pending at preservation.",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-attempt-1/hand-core.json",
+      "Bytes": 447583,
+      "Sha256": "48965F2CD70C40047772DA7E87DD462734D5A371D059BD30C6E1D8C0BFA17D32",
+      "StoredFile": "hand-core.json.gz",
+      "StoredBytes": 15185,
+      "StoredSha256": "2D4B89BAB1EE0696F0F9E10CC2E4C7686A4FD611ABACE3AEC23E53CE03DB6593",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-attempt-1/hand-core.json.checkpoint.jsonl",
+      "Bytes": 483539,
+      "Sha256": "867B1F409FD48AE7E6EC9000912D51BD7EEFAF13BC8F8392CA785681480E61C5",
+      "StoredFile": "hand-core.json.checkpoint.jsonl.gz",
+      "StoredBytes": 17486,
+      "StoredSha256": "4826245677E24E1F60EAE2077AB06700CE3C992E4325A60487E8F1FD92F098C8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-attempt-1/invocation.json",
+      "Bytes": 2745,
+      "Sha256": "ED7FD147598DC1ABD06E3DF8848C91FDBF3D0F77D4D43BFF2FE777ADF76AAA90",
+      "StoredFile": "invocation.json.gz",
+      "StoredBytes": 1080,
+      "StoredSha256": "B85ABFB8687C3F125BE9C657AAD9527F7CD567BBE23D660A8825335441CF20DD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-attempt-1/outcome.json",
+      "Bytes": 121,
+      "Sha256": "2BBDC4142125AD31C42E146C94654819236D838411983C579219C60EC2A3B757",
+      "StoredFile": "outcome.json.gz",
+      "StoredBytes": 127,
+      "StoredSha256": "A57C878B35AFB00D7537E3BE164ACAF0B5736881771AA72A2928B127F3C1EAD8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-attempt-1/stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredFile": "stderr.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-hand-core-attempt-1/stdout.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredFile": "stdout.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    }
+  ],
+  "CheckpointKinds": {
+    "hand-core-start": 1,
+    "hand-stage": 296,
+    "hand-provenance": 1,
+    "hand-certificate": 1,
+    "hand-scalar": 222,
+    "hand-episode": 48,
+    "hand-old-control": 24,
+    "hand-core-collected": 1
+  }
+}
