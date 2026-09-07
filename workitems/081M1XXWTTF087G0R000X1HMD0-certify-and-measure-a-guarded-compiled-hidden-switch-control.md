@@ -135,3 +135,20 @@ certificate/episode reconstruction, and coordinator replay/verdict scopes.
 It preserves the frozen contract and includes the shared filter/adapter
 caller closure in source-to-machine inspection. This is planning only;
 PR #16928 reaching main remains a prerequisite to implementation.
+
+## Preregistration-only main publication
+
+This publication contains only the new study's protocol, mathematical and
+runtime reviews, ownership plan, raw registration proof, original-history
+indices and this work item/creation event. The comparison against refreshed
+main `9fae5f8c3` contains no source, test, workflow or prior-study/advisory
+changes; normal integration commit `796529923` incorporates that main.
+The immutable registration protocol remains byte-identical to `8710ae4f4`.
+
+The publication claim is released in the same PR under agent-claim
+protocol step 5. This releases the completed preregistration publication
+phase, not the broader experiment: this work item remains open. Before
+implementation, verify the coordinator's PR #16928 main proof and the
+immutable registration, then acquire a fresh implementation claim with
+all three writer roles and the independent reviewer. No implementation,
+guard computation, registered tape or measurement exists in this PR.

@@ -71,3 +71,14 @@ changes only the opening section reference from C/J to C/I. The work item
 records its original bytes and SHA256. No registered protocol requirement
 is changed, and this source-only inspection is not runtime admission or
 experimental evidence.
+
+## Preregistration-only main publication scope
+
+The subsequent publication PR contains the reviewed new-study documents
+and work-item evidence only. Current main was integrated normally at
+`796529923` from `9fae5f8c3`; the frozen protocol remains unchanged.
+The broader experiment remains open. Its publication claim is released
+in the same PR; a new implementation claim must follow the separate
+PR #16928 main proof and retain the existing immutable registration.
+This PR introduces no measured implementation, guard computation or new
+source draws, and adds no changes to the prior study or its advisory.
