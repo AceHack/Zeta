@@ -9,7 +9,7 @@ Artifact status: read-only capability/source inspection; no runtime admission ye
 
 The [accepted protocol](2026-09-07-hidden-switch-compiled-protocol.md),
 reviewed at `75718b9a82b9e5d1d303d6a3f2cf5f83792bca1a`, admits a
-conditional, inspected runtime. This note makes its sections C and J
+conditional, inspected runtime. This note makes its sections C and I
 actionable on the current host. It changes no protocol requirement and
 does not establish any guard, source-to-native correspondence or JIT theorem.
 The [complete protocol review](2026-09-07-hidden-switch-compiled-protocol-review.md)

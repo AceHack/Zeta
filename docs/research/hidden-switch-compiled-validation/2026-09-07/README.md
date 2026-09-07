@@ -61,3 +61,13 @@ a reviewed and remotely archived implementation remains required before
 this task's registered source generation and measurements. Runtime
 feasibility/source inspection alone cannot waive those prerequisites or
 relax the registered admission conditions.
+
+## Subsequent prospective planning
+
+The [runtime feasibility note](../../2026-09-07-hidden-switch-compiled-runtime-feasibility.md)
+is separately indexed after registration. Its original source `51b232a4b`
+is imported unchanged at `bb8121520`; the successor import correction
+changes only the opening section reference from C/J to C/I. The work item
+records its original bytes and SHA256. No registered protocol requirement
+is changed, and this source-only inspection is not runtime admission or
+experimental evidence.

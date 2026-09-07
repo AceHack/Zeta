@@ -106,3 +106,23 @@ both successful sixteen-check publication logs. This follow-up preserves
 proof outside the frozen tag and changes no registered protocol bytes.
 Implementation has not started and still waits for prior-study main
 integration. No guard, executable certificate, registered source or measurement exists.
+
+## Prospective runtime feasibility inspection
+
+The [macOS ARM64 feasibility note](../docs/research/2026-09-07-hidden-switch-compiled-runtime-feasibility.md)
+is a separate post-registration source/capability inspection, imported
+byte-for-byte at `bb8121520931782c6378b395e73f858de25e5ed6` from
+`51b232a4b95c3f7bf6449ef294d7f37d8d687fd2` (15,171 bytes; SHA256
+`6001f7ca84c4650d0e05bc14738edf7bf1f84e4a670f864df5e95639739af3b8`). A distinct import correction fixes
+its opening section reference from C/J to the protocol's actual C/I.
+No frozen protocol, candidate admission condition or scientific source
+changes. The original source history remains reachable through the
+new task's existing review-provenance ref.
+
+The note distinguishes an available diagnostic from successful code
+coverage, records the truncated macOS `Process.Modules` implementation
+and non-atomic dyld snapshot limits, and requires observed full FP modes
+and actual loaded-artifact identities. SDK export stubs are not runtime
+dylib hashes. These are prospective admission requirements and limits;
+no guard, implementation, native probe or policy execution was performed.
+The prior-study main dependency still precedes implementation.
