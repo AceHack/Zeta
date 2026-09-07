@@ -89,9 +89,15 @@ warning. [Mypy](python-combined-types.log) passed 39 source files;
 passed, with 40 formatted files. The Interp workflow floor is raised from
 299 to the actually collected 431; targeted actionlint also passed.
 
-This is not a green full-solution gate. Native full-suite BftConsensus
-failed with TLC trace-recovery bug(4), and its unchanged isolated attempt
-failed with an in-run JVM SIGBUS. Both remain explicit in the native
-record. A separately identified direct C1-runtime diagnostic is pending;
-no alternate run replaces either original failure. Registered source
-generation and measurements remain unexecuted while recovery is investigated.
+This checkpoint is not a green full-solution gate. Native full-suite
+BftConsensus failed with TLC trace-recovery bug(4), and its unchanged
+isolated attempt failed with an in-run JVM SIGBUS. Both remain explicit
+in the native record. The separately indexed
+[C1 policy record](../../2026-09-07-tlc-macos-c1-policy.md) now retains two
+complete alternate-policy diagnostics, each with 4,665,495 distinct states.
+Neither replaces an original failure or establishes its cause. Candidate
+source `47d29d9cb2dc7ebb2cf36135b6699bb9a0d66839` was independently reviewed
+and integrated as `ddbf9520b`; all thirteen indexed diagnostic files were
+verified against their declared hashes and byte lengths. The nineteen
+scientific files are unchanged. Full candidate and integrated validation
+remain pending; registered source generation and measurements are unexecuted.

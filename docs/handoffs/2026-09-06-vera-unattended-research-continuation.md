@@ -143,9 +143,10 @@ policy inputs.
 
 Retain complete arm/seed rosters, failure receipts, independent emulator/model
 replay and matched whole-episode resource accounting. Supplied representation
-and goals remain explicit. This is a proposed next experiment, not a completed
-preregistration, demonstrated planning result or authorization to reinterpret
-public ARC examples as held-out evidence.
+and goals remain explicit. The linked protocol is now preregistered; its
+[measurement record](../research/2026-09-07-hidden-switch-results.md) tracks the
+separate execution boundary. Preregistration alone demonstrates no planning
+result and does not reinterpret public ARC examples as held-out evidence.
 
 ## Combined Interp evidence
 
