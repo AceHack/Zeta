@@ -12,6 +12,10 @@ module HiddenSwitchCompiledProgram =
             match HiddenSwitchCompiledCertificateCheck.run bindings input output with
             | Ok () -> 0
             | Error failure -> Console.Error.WriteLine(failure.Stage + ": " + failure.Code + ": " + failure.Detail); 2
+        | [| "hand-semantic"; output |] ->
+            match HiddenSwitchCompiledSemantic.run output with
+            | Ok () -> 0
+            | Error failure -> Console.Error.WriteLine(failure.Stage + ": " + failure.Code + ": " + failure.Detail); 2
         | [| "hand-invocations"; output |] ->
             match HiddenSwitchCompiledWitness.run output with
             | Ok () -> 0
