@@ -580,6 +580,51 @@ let ``bindName refuses a directory cycle and does not persist it`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``bindSymlink persists UTF-8 target bytes across reopen`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-bind-symlink"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let name = Encoding.UTF8.GetBytes "link"
+    let target = Encoding.UTF8.GetBytes "src/a"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindSymlink volume root name target with
+            | Error e -> Assert.Fail(sprintf "bindSymlink failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.liveResolve volume name with
+                | None -> Assert.Fail("symlink name must be live")
+                | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+                match ZetaFsFreeze.readSymlink volume id with
+                | None -> Assert.Fail("readSymlink must see the target")
+                | Some bytes ->
+                    Assert.True(
+                        bytes.Length = target.Length
+                        && MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> target)
+                    )
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                try
+                    match ZetaFsFreeze.liveResolve reopened name with
+                    | None -> Assert.Fail("symlink name must survive reopen")
+                    | Some again -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id again)
+                    match ZetaFsFreeze.readSymlink reopened id with
+                    | None -> Assert.Fail("readSymlink must survive reopen")
+                    | Some bytes ->
+                        Assert.True(
+                            bytes.Length = target.Length
+                            && MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> target)
+                        )
+                finally
+                    ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()

@@ -948,6 +948,52 @@ module ZetaFsFreeze =
         else
             ZetaFsPolicy.parseCatalog (Encoding.UTF8.GetString(fs.ReadAllBytes path))
 
+    let private symlinksPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "symlinks"
+
+    let private persistSymlinks (storeDir: string) (targets: Dictionary<System.UInt128, byte[]>) =
+        let sb = StringBuilder()
+
+        for kv in targets do
+            sb
+                .Append(ZetaFsNamespace.EntityId.format (ZetaFsNamespace.EntityId.ofRaw kv.Key))
+                .Append(' ')
+                .Append(Convert.ToHexString kv.Value)
+                .Append('\n')
+            |> ignore
+
+        FileSystemIo.writeAllText (FileSystem.Current) (symlinksPath storeDir) (sb.ToString())
+
+    let private loadSymlinks (storeDir: string) : Dictionary<System.UInt128, byte[]> =
+        let acc = Dictionary<System.UInt128, byte[]>()
+        let fs = FileSystem.Current
+        let path = symlinksPath storeDir
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    let parts = raw.Split(' ')
+
+                    if parts.Length >= 1 then
+                        match ZetaFsNamespace.EntityId.tryParse parts.[0] with
+                        | None -> ()
+                        | Some id ->
+                            let bytes =
+                                if parts.Length < 2 || parts.[1].Length = 0 then
+                                    Array.empty
+                                else
+                                    try
+                                        Convert.FromHexString parts.[1]
+                                    with _ ->
+                                        Array.empty
+
+                            acc.[id.Raw] <- bytes
+
+        acc
+
     let private loadNamespace (storeDir: string) (root: ZetaFsNamespace.EntityId) : ZetaFsNamespace.State =
         let fs = FileSystem.Current
         let path = bindingsPath storeDir
@@ -1050,6 +1096,7 @@ module ZetaFsFreeze =
                 | Some rootId -> Some(loadNamespace storeDir rootId)
             )
         let policyState = ref (loadPolicy storeDir)
+        let symlinkTargets = loadSymlinks storeDir
         let log =
             new FreezeLog(
                 storeDir,
@@ -1116,6 +1163,7 @@ module ZetaFsFreeze =
         member _.Root = root
         member internal _.Ns = nsState
         member internal _.Policy = policyState
+        member internal _.Symlinks = symlinkTargets
 
         interface IDisposable with
             member _.Dispose() =
@@ -1746,6 +1794,35 @@ module ZetaFsFreeze =
                 match persistBind volume minted parent name id with
                 | Error e -> Error e
                 | Ok _ -> Ok id)
+
+    /// Mint a Symlink under `parent`. Body is UTF-8 target bytes, not a
+    /// resolved path. Reopen `readSymlink` must return the same bytes.
+    let bindSymlink
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.Symlink entropy
+
+                match persistBind volume minted parent name id with
+                | Error e -> Error e
+                | Ok _ ->
+                    volume.Symlinks.[id.Raw] <- target
+                    persistSymlinks volume.StoreDir volume.Symlinks
+                    Ok id)
+
+    let readSymlink (volume: Volume) (id: ZetaFsNamespace.EntityId) : byte[] option =
+        lock volume.Gate (fun () ->
+            match volume.Symlinks.TryGetValue id.Raw with
+            | true, bytes -> Some bytes
+            | false, _ -> None)
 
     /// Bind an existing entity under `parent`. Refuses a Directory cycle.
     let bindName
