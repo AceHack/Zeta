@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: reviewed source and focused validation; actual capture pending
+Artifact status: actual semantic capture; independent replay pending
 
 Source `7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0` adds the file-backed
 `hand-semantic` entry. It executes the settled ten intervention cases and
@@ -73,5 +73,27 @@ checks, not a full solution/TLC gate or runtime-graph admission. Final combined
 validation and the reviewed implementation archive remain coordinator-owned.
 The protocol reviewer accepted the source by read-only inspection and verified
 the 37 individual retained outcomes; no reviewer test or target execution is
-claimed. A targeted independent schema/counter pass remains pending before the
-first actual semantic capture.
+claimed. A separate targeted independent schema/counter pass also accepted the exact
+source before the first actual semantic capture, without running native code.
+
+
+## First actual semantic capture
+
+The [first actual capture inventory](native-semantic-attempt-1/manifest.json)
+retains every raw output, the append-only journal, exact command/harness,
+prelaunch source/output pins and terminal process outcome. The execution HEAD
+was `731a9467d78c2b249493f75edf12a9b0899cd4d5`; its implementation bytes are
+exactly `7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0`. Process 35002 ran from
+21:28:06.545468 to 21:28:19.776638 UTC and exited zero, with empty stdout/stderr
+and no cleanup failure. These timestamps are audit metadata, not study costs.
+All prelaunch source/output file identities remained unchanged afterward.
+
+The 975,309-byte receipt has SHA256
+`E83775583A18712E4495EB57EFAC80A61316129E85D4EFAC0D02C8E1AB6C1451`.
+It contains 222 scalar rows, 48 new episodes, 24 old controls, ten actual
+invocation rows, ten actual interventions and fifteen groups containing
+fifty-three actual invalid operations. Its 3,499,607-byte journal remains
+available independently. `SlicesComplete=true` records those collected slices;
+`Complete=false` retains the pending outer-negative, final archive and runtime
+admission. The independent Python replay has received these exact bytes but
+has not yet supplied a result. No registered source or timing run occurred.

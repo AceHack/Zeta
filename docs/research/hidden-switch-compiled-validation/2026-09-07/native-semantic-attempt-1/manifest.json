@@ -1,0 +1,97 @@
+{
+  "ImplementationCommit": "7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0",
+  "ExecutionHead": "731a9467d78c2b249493f75edf12a9b0899cd4d5",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/invocation.json",
+      "Bytes": 13312,
+      "Sha256": "860B33E7F89BC912F3F0083FD44E630EE88B8234943C162E05CE937F95C603C2",
+      "Encoding": "gzip",
+      "StoredFile": "invocation.json.gz",
+      "StoredBytes": 3292,
+      "StoredSha256": "7932DB4852752FED3AAAECCE87F3EBF81256C248EB474FF1E993BE1CD161446C"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/outcome.json",
+      "Bytes": 1492,
+      "Sha256": "78C071665DFD14513D0857F40F0DCC3CFD82B4F21EEA871C76041223C5D1FCBA",
+      "Encoding": "gzip",
+      "StoredFile": "outcome.json.gz",
+      "StoredBytes": 586,
+      "StoredSha256": "92162FBC6BDEE48F9931EA5B949C6E6DD8BD28593961340CA1FFDE678198EB6A"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/process.json",
+      "Bytes": 73,
+      "Sha256": "927CCDD4605222B28E5D2FB2DE01B521C75649E6F4315A01324FE43B532AB8C7",
+      "Encoding": "gzip",
+      "StoredFile": "process.json.gz",
+      "StoredBytes": 89,
+      "StoredSha256": "584A7797D86B0222AD96630CF4CE2B8A22552456721A88ECF684A9A187F6BE3E"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/semantic.json",
+      "Bytes": 975309,
+      "Sha256": "E83775583A18712E4495EB57EFAC80A61316129E85D4EFAC0D02C8E1AB6C1451",
+      "Encoding": "gzip",
+      "StoredFile": "semantic.json.gz",
+      "StoredBytes": 28854,
+      "StoredSha256": "9A78C4FFE95E6AFA20979C6A488CD3E030D4D9DC872F6B791A7F2610A9C27C9F"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/semantic.json.checkpoint.jsonl",
+      "Bytes": 3499607,
+      "Sha256": "84F9C40A3F572E33CCAA0089173D3E0935AEA14E680D0BB9C117307E630E2941",
+      "Encoding": "gzip",
+      "StoredFile": "semantic.json.checkpoint.jsonl.gz",
+      "StoredBytes": 97094,
+      "StoredSha256": "BF316933B3A70AD3D6E4D345044627DB16077124116D4AF8B8960D0C6E3B867A"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/stage.json",
+      "Bytes": 604,
+      "Sha256": "A95931932443B311CFFB42E6687D665E1021146BA6D7D634EF675F500D10A061",
+      "Encoding": "gzip",
+      "StoredFile": "stage.json.gz",
+      "StoredBytes": 364,
+      "StoredSha256": "ABBC116E66065FA459EE95C12C308E98905E6238B1FF96FB00B47ACC1E02A395"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredFile": "stderr.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-attempt-1/stdout.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredFile": "stdout.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-capture.py",
+      "Bytes": 4994,
+      "Sha256": "BC57B1484E882598F435B30D15BD3E21189B48AD93EBE5306B56C60416E638AB",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-capture.py.gz",
+      "StoredBytes": 1832,
+      "StoredSha256": "6B4349A97BA87C285F28205A86673B4399E23FE866071354DF6C584A8C62B643"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-semantic-capture-attempt-1.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredFile": "hidden-switch-compiled-semantic-capture-attempt-1.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    }
+  ],
+  "Scope": "first actual fixed semantic hand capture; independent replay pending; all full admission flags false"
+}
