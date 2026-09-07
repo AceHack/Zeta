@@ -177,3 +177,8 @@ source-to-binary derivation proof, or replace the separate replay/verdict
 wrapper review. Float64 agreement within the registered tolerance is not
 exact rational execution. Neither two implementations nor matching hand
 fixtures establish a general correctness theorem or process-level secrecy.
+
+The [unregistered follow-up advisory](2026-09-07-hidden-switch-prospective-model-identification.md)
+preserves a later prospective discussion of compiled-controller equivalence
+and model identification. It is a separate continuity artifact, not part of
+this pre-measurement review, the archived experiment or its promotion criteria.
