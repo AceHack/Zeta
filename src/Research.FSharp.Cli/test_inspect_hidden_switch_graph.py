@@ -140,6 +140,18 @@ class GraphCaptureTests(unittest.TestCase):
         self.assertEqual([sentinel], list(attempt.iterdir()))
         self.assertEqual(b"owned earlier", sentinel.read_bytes())
 
+    def test_completion_is_process_bound_and_exclusive(self):
+        path = self.path / "native.jsonl.complete"
+        MODULE._complete(path, 12345)
+        self.assertEqual(b"graph-capture-complete:12345\n", path.read_bytes())
+        with self.assertRaises(FileExistsError):
+            MODULE._complete(path, 67890)
+        self.assertEqual(b"graph-capture-complete:12345\n", path.read_bytes())
+        for invalid in (True, 0, -1, "12345"):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                MODULE._complete(self.path / "invalid", invalid)
+        self.assertFalse((self.path / "invalid").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
