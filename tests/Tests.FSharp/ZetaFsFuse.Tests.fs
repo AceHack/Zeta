@@ -132,3 +132,22 @@ let ``mkdir unlink rmdir symlink rename through the dispatcher`` () =
             | ZetaFsFuse.Bytes b -> Assert.True(sameBytes (utf8 "b") b)
             | other -> Assert.Fail(sprintf "readlink: %A" other)
         | other -> Assert.Fail(sprintf "symlink: %A" other))
+
+[<Fact>]
+let ``setattr writes caller unix-ns and getattr returns them`` () =
+    withSession "/fuse-setattr" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node node ->
+            let patch =
+                { ZetaFsPosixMeta.emptyPatch with
+                    MtimeNs = Some 42L
+                    CtimeNs = Some 43L }
+
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Setattr(node.Id, patch)) with
+            | ZetaFsFuse.Stat(stat, ino) ->
+                Assert.Equal(42L, stat.Meta.MtimeNs)
+                Assert.Equal(43L, stat.Meta.CtimeNs)
+                Assert.Equal(node.Ino, ino)
+            | other -> Assert.Fail(sprintf "setattr: %A" other)
+        | other -> Assert.Fail(sprintf "create: %A" other))
