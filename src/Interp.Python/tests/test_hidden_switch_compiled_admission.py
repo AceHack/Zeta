@@ -9,6 +9,7 @@ import struct
 from typing import Any
 
 import pytest
+
 from zeta_interp import hidden_switch_compiled_admission as admission
 
 
@@ -51,6 +52,24 @@ def test_json_preserves_distinct_integer_boolean_and_nested_object_types() -> No
         admission.strict_json(b"{}", maximum_bytes=True), admission.Refused
     )
     assert isinstance(admission.strict_json("{}"), admission.Refused)  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("token", [b"-0", b"-0.0", b"-0e0", b"-0E+0"])
+def test_json_preserves_negative_zero_before_numeric_replay(token: bytes) -> None:
+    values = [
+        admitted(admission.strict_json(token)),
+        admitted(admission.strict_json(b'{"nested":[' + token + b"]}"))["nested"][0],
+    ]
+    for value in values:
+        assert type(value) is float
+        assert struct.pack(">d", value).hex().upper() == "8000000000000000"
+        assert isinstance(
+            admission.integer(value, 0, admission.INT64_MAX, "ledger"),
+            admission.Refused,
+        )
+    positive = admitted(admission.strict_json(b"0"))
+    assert type(positive) is int and positive == 0
+    assert admitted(admission.integer(positive, 0, admission.INT64_MAX, "ledger")) == 0
 
 
 @pytest.mark.parametrize("value", [True, False, -1, 1.5, 1 << 63, "1", None])
