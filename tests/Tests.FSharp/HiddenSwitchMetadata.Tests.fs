@@ -125,3 +125,71 @@ module HiddenSwitchMetadataTests =
         Assert.Equal("size", compact.RootElement.GetProperty("OutputFailure").GetProperty("Code").GetString())
         let _, absent = Admission.finalOutput (raw report) None 1
         Assert.Equal("final-output", absent.Value.Stage)
+
+    let private mappedFixture () =
+        use file = IO.File.OpenRead(IO.Path.Combine(AppContext.BaseDirectory, "MetadataProbe.mapping.json.gz"))
+        use gzip = new IO.Compression.GZipStream(file, IO.Compression.CompressionMode.Decompress)
+        use buffer = new IO.MemoryStream()
+        gzip.CopyTo buffer
+        let bytes = buffer.ToArray()
+        use document = JsonDocument.Parse bytes
+        let original = input()
+        let rows = document.RootElement.GetProperty("Rows").EnumerateArray()
+                   |> Seq.filter (fun row -> row.GetProperty("Outcome").GetProperty("Kind").GetString() = "mapped-candidate") |> Seq.toArray
+        let methods : Admission.MappedMethod[] =
+            rows |> Array.mapi (fun position row ->
+                let observed, compiler = row.GetProperty("Input"), row.GetProperty("Outcome")
+                let index = row.GetProperty("Index").GetInt32()
+                { Index = index; Role = "method-" + index.ToString("D3", Globalization.CultureInfo.InvariantCulture)
+                  Address = 0x200000UL + uint64(position * 4096); Bytes = compiler.GetProperty("Bytes").GetUInt32()
+                  Token = observed.GetProperty("Token").GetInt32(); DeclaringType = observed.GetProperty("Type").GetString()
+                  Name = observed.GetProperty("Name").GetString(); ReflectionSignature = observed.GetProperty("Signature").GetString()
+                  IlHex = observed.GetProperty("IlHex").GetString(); BodySha256 = compiler.GetProperty("Sha256").GetString()
+                  CompilerBlockIndex = compiler.GetProperty("CompilerBlockIndex").GetInt32(); CompilerName = compiler.GetProperty("CompilerName").GetString() })
+        let result : Admission.MappedInput =
+            { Dump = original.Dump; Dac = original.Dac; Runtime = original.Runtime
+              Module = { original.Module with Mvid = rows.[0].GetProperty("Input").GetProperty("Mvid").GetString() }
+              Mapping = { File = "/owned/mapping.json"; Bytes = Admission.mappingBytes; Sha256 = Admission.mappingSha256 }; Methods = methods }
+        bytes, result
+
+    [<Fact>]
+    let ``mapped admission binds every exact reviewed row and refuses changed definition or compiler identity`` () =
+        let bytes, baseline = mappedFixture()
+        Assert.True(Result.isOk (Admission.parseMapped(raw baseline)))
+        Assert.True(Result.isOk (Admission.bindMapped bytes baseline))
+        for mutate in [ (fun row -> { row with Admission.MappedMethod.DeclaringType = row.DeclaringType + "+wrong" })
+                        (fun row -> { row with Name = "wrong" })
+                        (fun row -> { row with ReflectionSignature = "wrong" })
+                        (fun row -> { row with IlHex = "00" })
+                        (fun row -> { row with CompilerBlockIndex = row.CompilerBlockIndex + 1 })
+                        (fun row -> { row with BodySha256 = String('C', 64) }) ] do
+            let changed = { baseline with Methods = Array.copy baseline.Methods }
+            changed.Methods.[0] <- mutate changed.Methods.[0]
+            Assert.Equal("row", (Admission.bindMapped bytes changed |> refused).Code)
+        let changedBytes = Array.copy bytes
+        changedBytes.[0] <- 32uy
+        Assert.Equal("identity", (Admission.bindMapped changedBytes baseline |> refused).Code)
+
+    [<Fact>]
+    let ``mapped admission rejects reordered repeated overlapping and malformed inputs`` () =
+        let _, baseline = mappedFixture()
+        for methods in [ Array.rev baseline.Methods; baseline.Methods.[0..128]; Array.create 130 baseline.Methods.[0]
+                         baseline.Methods |> Array.mapi (fun index row -> if index = 1 then { row with Address = baseline.Methods.[0].Address } else row) ] do
+            Assert.True(Result.isError (Admission.parseMapped(raw { baseline with Methods = methods })))
+        let node = JsonNode.Parse(raw baseline)
+        node.["Methods"].[0].AsObject().Remove("Token") |> ignore
+        Assert.Equal("shape", (Admission.parseMapped(Encoding.UTF8.GetBytes(node.ToJsonString())) |> refused).Code)
+        Assert.Equal("size", (Admission.parseMapped(Array.create (256 * 1024 + 1) 32uy) |> refused).Code)
+        Assert.True(Result.isError (Admission.parse(raw baseline)))
+
+    [<Fact>]
+    let ``mapped DAC identity uses exact nested names without signature grammar guesses`` () =
+        let _, baseline = mappedFixture()
+        let expected = baseline.Methods.[0]
+        Assert.True(Result.isOk (Admission.mappedIdentity expected expected.Token expected.DeclaringType expected.Name "/owned/live.dll" "/owned/live.dll"))
+        for token, declaringType, name, moduleName in
+            [expected.Token + 1, expected.DeclaringType, expected.Name, "/owned/live.dll"
+             expected.Token, expected.DeclaringType + "+wrong", expected.Name, "/owned/live.dll"
+             expected.Token, expected.DeclaringType, "wrong", "/owned/live.dll"
+             expected.Token, expected.DeclaringType, expected.Name, "/elsewhere/live.dll"] do
+            Assert.Equal("method-identity", (Admission.mappedIdentity expected token declaringType name moduleName "/owned/live.dll" |> refused).Code)

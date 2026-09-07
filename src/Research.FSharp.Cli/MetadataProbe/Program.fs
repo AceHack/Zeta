@@ -121,6 +121,35 @@ module Program =
             return! read()
         }
 
+    /// This is copied-file metadata/IL corroboration, not a dump-derived MVID or instantiation proof.
+    let private localMappedDefinitions (pin: ModulePin) (methods: MappedMethod[]) emit =
+        try
+            use stream = File.OpenRead pin.Copy.File
+            use image = new PEReader(stream)
+            let metadata = image.GetMetadataReader()
+            let rec typeName handle =
+                let definition = metadata.GetTypeDefinition handle
+                let name = metadata.GetString definition.Name
+                let parent = definition.GetDeclaringType()
+                if parent.IsNil then
+                    let space = metadata.GetString definition.Namespace
+                    if space.Length = 0 then name else space + "." + name
+                else typeName parent + "+" + name
+            methods |> iterate (fun expected -> result {
+                let handle = Ecma335.MetadataTokens.MethodDefinitionHandle(expected.Token &&& 0x00FFFFFF)
+                let definition = metadata.GetMethodDefinition handle
+                let name = metadata.GetString definition.Name
+                let declaringType = typeName(definition.GetDeclaringType())
+                if definition.RelativeVirtualAddress = 0 then return! error "module-file" "absent-il" expected.Role
+                let il = image.GetMethodBody(definition.RelativeVirtualAddress).GetILBytes()
+                let ilHex = Convert.ToHexString il
+                emit (box {| Kind = "copied-method-definition"; Role = expected.Role; Token = expected.Token
+                             DeclaringType = declaringType; Name = name; IlHex = ilHex; ReflectionSignature = expected.ReflectionSignature |})
+                if name <> expected.Name || declaringType <> expected.DeclaringType || ilHex <> expected.IlHex then
+                    return! error "module-file" "definition" "copied MethodDef token/type/name/IL differs from captured reflection"
+            })
+        with exceptionValue -> Error(exceptionFailure "module-file" exceptionValue)
+
     let private managedLoads emit = result {
         let assemblies = AppDomain.CurrentDomain.GetAssemblies()
         let selected =
@@ -138,7 +167,7 @@ module Program =
                      Scope = "one collection of helper-local assemblies plus corelib; not atomic or a complete framework closure" |})
     }
 
-    let private run inputPath outputPath =
+    let private run mappedMode inputPath outputPath =
         let mutable primary: Failure option = None
         try
             use output = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
@@ -168,9 +197,17 @@ module Program =
                     emit (box {| Kind = "metadata-start"; Pid = Environment.ProcessId; Runtime = Environment.Version.ToString()
                                  InputFile = inputPath; RuntimeAdmitted = false; BodyResolved = false; ClosureAdmitted = false |})
                     stage <- "input"
-                    let! raw = readBounded inputPath 65536L |> keep
+                    let! raw = readBounded inputPath (if mappedMode then 256L * 1024L else 65536L) |> keep
                     emit (box {| Kind = "input-identity"; Bytes = raw.Length; Sha256 = sha raw |})
-                    let! input = Admission.parse raw |> keep
+                    let! input, mapped =
+                        (if mappedMode then Admission.parseMapped raw |> Result.map (fun value -> Admission.mappedBase value, Some value)
+                         else Admission.parse raw |> Result.map (fun value -> value, None)) |> keep
+                    match mapped with
+                    | Some mapping ->
+                        emit (box {| Kind = "mapping-file"; Identity = mapping.Mapping; MethodCount = mapping.Methods.Length |})
+                        let! mappingRaw = readBounded mapping.Mapping.File Admission.mappingBytes |> keep
+                        do! Admission.bindMapped mappingRaw mapping |> keep
+                    | None -> ()
                     do! dependencies emit |> keep
                     let languageRuntime = typeof<unit>.Assembly
                     let languagePin = { File = languageRuntime.Location; Bytes = 2405712L
@@ -183,6 +220,9 @@ module Program =
                     do! checkFile input.Dac |> keep
                     do! checkFile input.Runtime.Image |> keep
                     do! localModuleMvid input.Module |> keep
+                    match mapped with
+                    | Some mapping -> do! localMappedDefinitions input.Module mapping.Methods emit |> keep
+                    | None -> ()
                     emit (box {| Kind = "local-file-association"; Module = input.Module; Dac = input.Dac; TargetRuntime = input.Runtime
                                  Scope = "captured file/native reflection association; not a dump-derived managed MVID" |})
                     stage <- "dump"
@@ -253,14 +293,19 @@ module Program =
                         emit (box {| Kind = "method-extent-prefix"; Data = first |})
                         let declaring = method.Type.Module
                         let observed = {| Role = expected.Role; Query = expected.Address; Token = method.MetadataToken
-                                          Signature = method.Signature; NativeCode = method.NativeCode
+                                          Signature = method.Signature; DeclaringType = method.Type.Name; Name = method.Name; NativeCode = method.NativeCode
                                           HotStart = regions.HotStart; HotSize = regions.HotSize; ColdStart = regions.ColdStart; ColdSize = regions.ColdSize
                                           ModuleName = declaring.Name; ModuleAddress = declaring.Address; AssemblyAddress = declaring.AssemblyAddress
                                           ImageBase = declaring.ImageBase; MetadataAddress = declaring.MetadataAddress; MetadataLength = declaring.MetadataLength |}
                         rows.[rows.Count - 1] <- box observed
                         emit (box {| Kind = "method-metadata"; Data = observed |})
-                        if observed.Token <> expected.Token || observed.Signature <> expected.Signature || observed.ModuleName <> input.Module.Original.File then
-                            return! error stage "method-identity" "method token/signature/module path differs from declared executing method" |> keep
+                        match mapped with
+                        | Some mapping ->
+                            let expectedDefinition = mapping.Methods |> Array.find (fun row -> row.Role = expected.Role)
+                            do! Admission.mappedIdentity expectedDefinition observed.Token observed.DeclaringType observed.Name observed.ModuleName input.Module.Original.File |> keep
+                        | None ->
+                            if observed.Token <> expected.Token || observed.Signature <> expected.Signature || observed.ModuleName <> input.Module.Original.File then
+                                return! error stage "method-identity" "method token/signature/module path differs from declared executing method" |> keep
                         if denied.Requests > 64 then return! error stage "locator-bound" "more than 64 denied requests; remaining paths are not emitted" |> keep
                         do! Admission.extents expected observed.NativeCode observed.HotStart observed.HotSize observed.ColdStart observed.ColdSize |> keep
                     })
@@ -285,7 +330,9 @@ module Program =
             let report = {| Complete = primary.IsNone; Failure = primary; Cleanup = cleanup.ToArray(); Methods = rows.ToArray()
                             LocatorRequests = locator |> Option.map (fun value -> value.Requests)
                             RuntimeAdmitted = false; BodyResolved = false; ClosureAdmitted = false; PhysicalCodeVerifiedByHelper = false
-                            Scope = "three current DAC extents only; independent physical-file comparison and complete closure remain separate"
+                            Scope = (if mappedMode then "exact mapped-130 current DAC extents only; full closure remains separate"
+                                     else "three current DAC extents only; independent physical-file comparison and complete closure remain separate")
+                            RequestedMethods = (if mappedMode then 130 else 3); AvailableMethods = rows.Count
                             CleanupScope = "attempted disposal of runtime, one ownership-chain head and held dump; internal disposal after an exception is not guaranteed" |}
             try emit (box {| Kind = "metadata-finished"; Data = report |})
             with exceptionValue -> if primary.IsNone then primary <- Some(exceptionFailure "journal-finish" exceptionValue)
@@ -302,7 +349,11 @@ module Program =
     let main arguments =
         match arguments with
         | [|input; output|] ->
-            match run input output with
+            match run false input output with
+            | Ok () -> 0
+            | Error reason -> Console.Error.WriteLine(JsonSerializer.Serialize reason); 2
+        | [|"--mapped-130"; input; output|] ->
+            match run true input output with
             | Ok () -> 0
             | Error reason -> Console.Error.WriteLine(JsonSerializer.Serialize reason); 2
         | _ -> Console.Error.WriteLine("requires input-manifest and exclusive output path; no study execution"); 2
