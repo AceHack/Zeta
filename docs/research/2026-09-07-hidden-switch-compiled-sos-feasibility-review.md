@@ -437,3 +437,51 @@ or runtime admission. The selected methods are only `predict`, `condition`
 and `select`; successful command capture still leaves `BodyResolved`,
 `ClosureAdmitted` and `RuntimeAdmitted` false pending interpretation. No raw
 dump or unrelated memory is included in this review or its publication.
+
+## First offline result and observed-field correction
+
+The accepted four-file preparation was committed by its owner as
+`e0e2eb082f2d7ed150f7a2ca4ad3a38d62876a7d`. The first actual analysis is
+retained at `ad930de307a0dfa4424c01d46e439559ca0ca917`, with its
+[37-record manifest](hidden-switch-compiled-validation/2026-09-07/native-dump-analysis-attempt-1/manifest.json).
+The reviewer independently checked every stored and decompressed length/hash
+and equality to its retained original, together with the three exact source
+helper identities at the executed commit. This verification read source and
+published diagnostic metadata, not the local-only raw dump.
+
+Physical comparison metadata reports exact compiler equality for `predict`,
+`condition` and `select`: respectively 252, 532 and 224 bytes, totaling 1,008.
+The reviewer checked each retained compiler/body hash equality, without
+independently rereading those ranges from the dump. Analyzer startup, both
+empty symbol-store checks, the exact local DAC-path set/query, and runtime
+metadata completed. The runtime record names the expected module path and
+build identifier; its displayed version is `10.0.1126.37416`, distinct from
+the installation-directory spelling `10.0.11`.
+
+The driver then refused at `ip2md-predict` because the initial parser expected
+`Name`. Actual retained SOS output uses `Method Name` and `Current CodeAddr`,
+plus a separately labeled historical `CodeAddr` under version history.
+The initial field grammar had not been validated against actual installed
+SOS output; the first capture exposed that compatibility assumption. The
+actual predict token is `06000495` and current body address `10B720A20`, both
+matching the retained selected-method metadata. The analyzer exited zero
+with empty cleanup failures; the driver exited two and retained its first
+parser refusal. No `clru` or post-query cached-DAC command ran, and every
+method/closure/runtime admission flag remained false.
+
+The coordinator authorized one separately reviewed corrected attempt.
+The two-file correction, committed as
+`88c60b5f137cc1770d38ab886c54d8ec586261de` and checked against its immutable
+source bytes, is accepted by source review at driver SHA256
+`e03f666c423f01a2a36b2f4c9a7bca92186f51f96d110f154ff47e41247d4550`
+and test SHA256
+`ba281d04b92845c920bf814d0f1617c36d66588eaf6fc2a31d8013bf1c93aef3`.
+It requires unique anchored actual method-name/current-address fields and
+`IsJitted: yes`, while retaining exact token/address/name checks. The retained
+actual command response is a positive parser fixture. Wrong current address
+with matching history, missing/duplicate current fields and non-jitted output
+refuse. The owner reports all 14 parser/driver tests passing; the reviewer
+inspected these cases without executing them. Physical reads, capture bounds,
+command sequencing, first-failure preservation and all false admission flags
+are unchanged. This accepts a correction to the parser, not a replacement
+for the first attempt or advance acceptance of later method extents.
