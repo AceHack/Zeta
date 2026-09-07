@@ -13,7 +13,7 @@ import os
 import stat
 import zlib
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeVar
 
 from zeta_interp.hidden_switch_compiled_admission import (
     INT64_MAX,
@@ -26,9 +26,41 @@ from zeta_interp.hidden_switch_compiled_admission import (
     relative_artifact_path,
 )
 
+T = TypeVar("T")
+
+
+class _Descriptors:
+    """Track ownership before closing; never retry an uncertain close."""
+
+    def __init__(self) -> None:
+        self.owned: list[int] = []
+
+    def take(self, descriptor: int) -> int:
+        self.owned.append(descriptor)
+        return descriptor
+
+    def release(self, descriptor: int) -> int:
+        self.owned.remove(descriptor)
+        return descriptor
+
+    def close(self, descriptor: int, path: str) -> Refused | None:
+        self.release(descriptor)
+        try:
+            os.close(descriptor)
+        except OSError as error:
+            return Refused("descriptor-cleanup", path, str(error))
+        return None
+
+    def finish(self, result: Admission[T], path: str) -> Admission[T]:
+        while self.owned:
+            failure = self.close(self.owned[-1], path)
+            if failure is not None and isinstance(result, Admitted):
+                result = failure
+        return result
+
 
 def _directory(root: Path) -> Admission[int]:
-    if not isinstance(root, Path) or not root.is_absolute():
+    if not isinstance(root, Path) or not root.is_absolute() or "\x00" in str(root):
         return Refused("root", "root", "requires an absolute caller-admitted directory")
     if (
         not all(
@@ -42,25 +74,29 @@ def _directory(root: Path) -> Admission[int]:
             "root",
             "descriptor no-follow directory opens unavailable",
         )
-    descriptor: int | None = None
+    descriptors = _Descriptors()
     try:
         canonical = root.resolve(strict=True)
-        descriptor = os.open(
-            canonical.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+        descriptor = descriptors.take(
+            os.open(canonical.anchor, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         )
         for component in canonical.parts[1:]:
-            child = os.open(
-                component,
-                os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-                dir_fd=descriptor,
+            child = descriptors.take(
+                os.open(
+                    component,
+                    os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                    dir_fd=descriptor,
+                )
             )
-            os.close(descriptor)
+            failure = descriptors.close(descriptor, "root")
+            if failure is not None:
+                return descriptors.finish(failure, "root")
             descriptor = child
-        return Admitted(descriptor)
-    except (OSError, RuntimeError) as error:
-        if descriptor is not None:
-            os.close(descriptor)
-        return Refused("filesystem-root", "root", str(error))
+        return Admitted(descriptors.release(descriptor))
+    except (OSError, RuntimeError, ValueError) as error:
+        return descriptors.finish(
+            Refused("filesystem-root", "root", str(error)), "root"
+        )
 
 
 def _parent(root: Path, relative: Any) -> Admission[tuple[int, str]]:
@@ -71,20 +107,27 @@ def _parent(root: Path, relative: Any) -> Admission[tuple[int, str]]:
     if isinstance(anchor, Refused):
         return anchor
     descriptor = anchor.value
+    descriptors = _Descriptors()
+    descriptors.take(descriptor)
     components = path.value.split("/")
     try:
         for component in components[:-1]:
-            child = os.open(
-                component,
-                os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
-                dir_fd=descriptor,
+            child = descriptors.take(
+                os.open(
+                    component,
+                    os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                    dir_fd=descriptor,
+                )
             )
-            os.close(descriptor)
+            failure = descriptors.close(descriptor, path.value)
+            if failure is not None:
+                return descriptors.finish(failure, path.value)
             descriptor = child
-        return Admitted((descriptor, components[-1]))
+        return Admitted((descriptors.release(descriptor), components[-1]))
     except OSError as error:
-        os.close(descriptor)
-        return Refused("filesystem-parent", path.value, str(error))
+        return descriptors.finish(
+            Refused("filesystem-parent", path.value, str(error)), path.value
+        )
 
 
 def create_directory(root: Path, relative: str) -> Admission[str]:
@@ -93,20 +136,22 @@ def create_directory(root: Path, relative: str) -> Admission[str]:
     if isinstance(parent, Refused):
         return parent
     descriptor, leaf = parent.value
+    descriptors = _Descriptors()
+    descriptors.take(descriptor)
+    result: Admission[str]
     try:
         os.mkdir(leaf, mode=0o700, dir_fd=descriptor)
         os.fsync(descriptor)
-        return Admitted(relative)
+        result = Admitted(relative)
     except FileExistsError:
-        return Refused(
+        result = Refused(
             "existing-output",
             relative,
             "directory already exists; retained without modification",
         )
     except OSError as error:
-        return Refused("directory-write", relative, str(error))
-    finally:
-        os.close(descriptor)
+        result = Refused("directory-write", relative, str(error))
+    return descriptors.finish(result, relative)
 
 
 def write_exclusive(root: Path, relative: str, raw: bytes) -> Admission[int]:
@@ -117,52 +162,56 @@ def write_exclusive(root: Path, relative: str, raw: bytes) -> Admission[int]:
     if isinstance(parent, Refused):
         return parent
     directory, leaf = parent.value
-    descriptor: int | None = None
+    descriptors = _Descriptors()
+    descriptors.take(directory)
+    result: Admission[int]
     try:
-        descriptor = os.open(
-            leaf,
-            os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
-            0o600,
-            dir_fd=directory,
+        descriptor = descriptors.take(
+            os.open(
+                leaf,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                0o600,
+                dir_fd=directory,
+            )
         )
         written = 0
         view = memoryview(raw)
         while written < len(raw):
             count = os.write(descriptor, view[written:])
             if count <= 0:
-                return Refused(
-                    "write-progress",
+                return descriptors.finish(
+                    Refused(
+                        "write-progress",
+                        relative,
+                        f"write stopped after {written} bytes; prefix retained",
+                    ),
                     relative,
-                    f"write stopped after {written} bytes; prefix retained",
                 )
             written += count
         os.fsync(descriptor)
         os.fsync(directory)
-        return Admitted(written)
+        result = Admitted(written)
     except FileExistsError:
-        return Refused(
+        result = Refused(
             "existing-output",
             relative,
             "file already exists; retained without modification",
         )
     except OSError as error:
-        return Refused("file-write", relative, str(error))
-    finally:
-        if descriptor is not None:
-            os.close(descriptor)
-        os.close(directory)
+        result = Refused("file-write", relative, str(error))
+    return descriptors.finish(result, relative)
 
 
 def read_exact(
     root: Path, relative: str, *, expected_bytes: int, maximum_bytes: int
 ) -> Admission[bytes]:
     """Read one regular descriptor with exact length and stable observed metadata."""
-    for result in (
+    for bound in (
         integer(expected_bytes, 0, INT64_MAX, "Bytes"),
         integer(maximum_bytes, 0, INT64_MAX, "MaximumBytes"),
     ):
-        if isinstance(result, Refused):
-            return result
+        if isinstance(bound, Refused):
+            return bound
     if expected_bytes > maximum_bytes:
         return Refused(
             "file-bound", relative, "declared file exceeds the caller's admission bound"
@@ -171,17 +220,22 @@ def read_exact(
     if isinstance(parent, Refused):
         return parent
     directory, leaf = parent.value
-    descriptor: int | None = None
+    descriptors = _Descriptors()
+    descriptors.take(directory)
+    result: Admission[bytes]
     try:
-        descriptor = os.open(
-            leaf, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory
+        descriptor = descriptors.take(
+            os.open(leaf, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=directory)
         )
         before = os.fstat(descriptor)
         if not stat.S_ISREG(before.st_mode) or before.st_size != expected_bytes:
-            return Refused(
-                "regular-file-length",
+            return descriptors.finish(
+                Refused(
+                    "regular-file-length",
+                    relative,
+                    "requires a regular file of the exact declared size",
+                ),
                 relative,
-                "requires a regular file of the exact declared size",
             )
         chunks = []
         total = 0
@@ -196,18 +250,18 @@ def read_exact(
         if total != expected_bytes or any(
             getattr(before, name) != getattr(after, name) for name in names
         ):
-            return Refused(
-                "file-changed",
+            return descriptors.finish(
+                Refused(
+                    "file-changed",
+                    relative,
+                    "length or observed file identity changed during read",
+                ),
                 relative,
-                "length or observed file identity changed during read",
             )
-        return Admitted(b"".join(chunks))
+        result = Admitted(b"".join(chunks))
     except OSError as error:
-        return Refused("file-read", relative, str(error))
-    finally:
-        if descriptor is not None:
-            os.close(descriptor)
-        os.close(directory)
+        result = Refused("file-read", relative, str(error))
+    return descriptors.finish(result, relative)
 
 
 def read_artifact(
