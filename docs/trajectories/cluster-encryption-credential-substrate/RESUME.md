@@ -1,7 +1,7 @@
 # Trajectory - Cluster Encryption / Credential Substrate
 
 Status: active — first surfaced 2026-05-29 from substrate inventory (was tracked only as scattered backlog rows; never had a trajectory surface, which is why it was easy to lose at cold-boot)
-Last refreshed: 2026-09-07 (overlay argv/conf joins take frost result; tpmrm0 is not present)
+Last refreshed: 2026-09-07 (overlay joins take frost look; tpmrm0 is not present)
 Type: workstream (current-focus) — a trajectory the operator is *actively powering*. Many trajectories can be tracked; only a few are workstreams at once (finite-focus / WIP-bounded — a workstream is a trajectory under sustained thrust, and thrust budget is finite, so most trajectories coast). ("Trajectory" is the genus; "workstream" is the species: a trajectory under sustained thrust toward a deliverable, vs. emergent-posture trajectories like `anti-infection`, which self-describes as "not a workstream with a cadence." See [`factory-trajectory-surface`](../factory-trajectory-surface/RESUME.md) for the genus/species taxonomy.) One of the operator's three current cluster workstreams (encryption / usb-zflash / ts-workflow-engine).
 Eventual encoding (design-stage — the human maintainer 2026-05-23 genetic-ID substrate + Clifford/HKT): this trajectory's state is trackable as a 128-bit genetic-ID seed (discrete, reversible via parser-combinator ↔ generator-function) → Clifford-space path (continuous, eventual). Mirrors the three-lane I8-lattice / I9-manifold split.
 Current blocker: none operationally; the live design tension is interactive-login-vs-baked-in-keys-vs-CI-test (081KSGS9H0008QG0R003JNSVR5)
@@ -763,6 +763,48 @@ Workitem: `081M1WP0C7B087G0R000VK9E0V`.
   Overlay passes the probe through. Inner `integrateAtSetup`
   still takes a capture. Does not import frost-hardware-probe.
   Does not call this from `zeta-install.sh`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — overlay joins take frost look (Riven)
+
+Aaron: detect HSM/TPM at setup. The frost look maps named
+effects to a probe. Overlay frost joins still took a frost
+result, so a caller could skip the look.
+
+Join: `tools/setup/persona-keys/plan-setup-from-frost-look.ts`.
+Workitem: `081M1XYSWV0087G0R000ZFKBTD`.
+
+- `planSetupFromFrostLookEnv` / Argv / Conf map via
+  `namedProbeFromFrostLook` then the named-bao overlay joins.
+  Null effects is unmeasured, not a live look. Does not
+  default to `realProbeEffects`. `/dev/tpmrm0` does not
+  upgrade `tpm2` to `present`. A YubiKey / CCID reader is
+  not CardContact. OS family is a named argument. Result
+  joins stay result-only and still do not call
+  `probeHardwareSecurity`. Does not import frost into
+  cluster. Does not call this from `zeta-install.sh`. Does
+  not change ISO bun `probe: null`.
+- Does not invent an integrate decision. Does not expand
+  `ZetaFirstbootRole`. Does not edit Application.yaml.
+
+## 2026-09-07 — frost look with injected effects (Riven)
+
+Aaron: detect HSM/TPM at setup. Overlay joins take a frost
+result. Nobody ran frost with named effects into the mapper.
+
+Look: `tools/setup/persona-keys/named-probe-from-frost-look.ts`.
+Workitem: `081M1WYXT4S087G0R002K1TK4Y`.
+
+- `namedProbeFromFrostLook` runs `probeHardwareSecurity` only
+  when effects are named. Null effects is unmeasured, not a
+  live look. Does not default to `realProbeEffects`.
+  `/dev/tpmrm0` does not upgrade `tpm2` to `present`. A
+  YubiKey / CCID reader is not CardContact. A PKCS#11 driver
+  on disk is not an attached YubiHSM. OS family is a named
+  argument, not `fx.platform`. Does not import frost into
+  cluster. Does not call this from `zeta-install.sh`. Does
+  not change ISO bun `probe: null`.
 - Does not invent an integrate decision. Does not expand
   `ZetaFirstbootRole`. Does not edit Application.yaml.
 

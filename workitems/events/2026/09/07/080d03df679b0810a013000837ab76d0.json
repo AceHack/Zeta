@@ -1,0 +1,14 @@
+{
+  "id": "080d03df679b0810a013000837ab76d0",
+  "at": "2026-09-07T12:52:01.505Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XYSWV0087G0R000ZFKBTD",
+    "type": "task",
+    "title": "Overlay joins take frost look with injected effects; tpmrm0 is not present",
+    "slug": "overlay-joins-take-frost-look-with-injected-effects-tpmrm0-i",
+    "priority": "P2",
+    "filename": "081M1XYSWV0087G0R000ZFKBTD-overlay-joins-take-frost-look-with-injected-effects-tpmrm0-i.md"
+  }
+}
