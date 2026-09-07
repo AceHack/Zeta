@@ -353,30 +353,48 @@ def replay_file_case(
     ):
         return finish("file-case")
     name = record.CaseId.replace("/", "-")
+    if type(producer_root) is not str or "\x00" in producer_root:
+        return finish("file-producer-root")
+    original_root = Path(producer_root)
     if (
-        not isinstance(producer_root, Path)
-        or not producer_root.is_absolute()
-        or producer_root.name != name
-        or str(producer_root) != producer_root.as_posix()
-        or ".." in producer_root.parts
+        not original_root.is_absolute()
+        or original_root.name != name
+        or producer_root != original_root.as_posix()
+        or ".." in original_root.parts
     ):
         return finish(
             "file-producer-root",
             "ProducerRoot",
-            "independent absolute fixed case root required",
+            "independent canonical absolute fixed case root string required",
         )
-    if not isinstance(replay_parent, Path) or not replay_parent.is_absolute():
+    if type(replay_parent) is not str or "\x00" in replay_parent:
         return finish("file-replay-root")
+    parent_root = Path(replay_parent)
+    if (
+        not parent_root.is_absolute()
+        or replay_parent != parent_root.as_posix()
+        or ".." in parent_root.parts
+    ):
+        return finish("file-replay-root")
+    fresh_root = parent_root / name
+    if fresh_root.is_relative_to(original_root) or original_root.is_relative_to(
+        fresh_root
+    ):
+        return finish(
+            "file-root-overlap",
+            "ReplayRoot",
+            "original and fresh fixture trees must be lexically disjoint",
+        )
     if type(record.Calls) is not tuple:
         return finish("file-calls")
     spec = next(row for row in c.case_specs() if row.CaseId == record.CaseId)
     prepared = _observe(
-        lambda: f.prepare_file_fixture(record.CaseId, replay_parent / name)
+        lambda: f.prepare_file_fixture(record.CaseId, parent_root / name)
     )
     fixture = prepared.Returned
     if prepared.RaisedType is not None or type(fixture) is not f.PreparedFileFixture:
         return finish("file-preparation")
-    if fixture.CaseId != fixed_case_id or fixture.Root != replay_parent / name:
+    if fixture.CaseId != fixed_case_id or fixture.Root != str(parent_root / name):
         return finish("file-preparation-contract")
     actual_rows: list[f.FileCallObservation] = []
     for index, operation in enumerate(spec.Calls):
@@ -461,11 +479,13 @@ def replay_file_case(
                     _fixture_projection,
                     recorded_input.Raw,
                     record.CaseId,
-                    producer_root,
+                    original_root,
                 )
             )
             replayed = _observe(
-                partial(_fixture_projection, fresh.Raw, record.CaseId, fixture.Root)
+                partial(
+                    _fixture_projection, fresh.Raw, record.CaseId, Path(fixture.Root)
+                )
             )
             same = _raw(original) is not None and _raw(original) == _raw(replayed)
             comparisons.append(InputComparison(fresh.Role, original, replayed, same))

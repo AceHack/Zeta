@@ -47,9 +47,9 @@ def replay(parent: Path, record: r.RecordedFileCase, original: Path) -> r.FileRe
     parent.mkdir()
     return r.replay_file_case(
         record,
-        parent,
+        str(parent),
         fixed_case_id=original.name.replace("-", "/", 1),
-        producer_root=original,
+        producer_root=str(original),
     )
 
 
@@ -91,12 +91,19 @@ def test_fresh_fixed_operations_match_complete_original_observations(
     result = replay(tmp_path / "replay", recorded, original)
     assert result.Failure is None and result.CaseMatched, result
     assert result.CompletedOperations == result.MatchedCalls == len(recorded.Calls)
-    assert result.Recorded is recorded and result.ProducerRoot == original
+    assert result.Recorded is recorded and result.ProducerRoot == str(original)
     assert result.OuterSourceAndRuntimeAdmission == "not-performed"
     assert all(
         row.Comparison is not None and row.Comparison.Matched for row in result.Calls
     )
     assert all(row.Matched for row in result.InputComparisons)
+    complete = encoding.encode_public_result(result, maximum_bytes=4 * 1024 * 1024)
+    assert isinstance(complete, a.Admitted), complete
+    parsed_complete = json.loads(complete.value)
+    prepared_fields = parsed_complete["Fields"]["Preparation"]["Fields"]["Returned"][
+        "Fields"
+    ]
+    assert prepared_fields["Root"] == str(tmp_path / "replay" / original.name)
     assert result.ActualInputs is not None
     actual = result.ActualInputs.Returned
     assert isinstance(actual, a.Admitted)
@@ -295,9 +302,9 @@ def test_reused_fresh_root_refuses_and_keeps_first_tree(tmp_path: Path) -> None:
     assert first.CaseMatched
     second = r.replay_file_case(
         record,
-        tmp_path / "replay",
+        str(tmp_path / "replay"),
         fixed_case_id=original.name.replace("-", "/", 1),
-        producer_root=original,
+        producer_root=str(original),
     )
     assert second.Failure is not None and second.Failure.code == "file-preparation"
     assert second.CompletedOperations == 0 and not second.Calls
@@ -363,7 +370,10 @@ def test_producer_cannot_change_caller_fixed_case_before_any_operation(
     changed_case = replace(record, CaseId="storage/changed-read")
     parent = tmp_path / "replay"
     result = r.replay_file_case(
-        changed_case, parent, fixed_case_id="storage/control", producer_root=original
+        changed_case,
+        parent,
+        fixed_case_id="storage/control",
+        producer_root=str(original),
     )
     assert result.Failure is not None and result.Failure.code == "file-case"
     assert result.FixedCaseId == "storage/control" and result.Recorded is changed_case
@@ -394,3 +404,41 @@ def test_malformed_actual_input_return_retains_calls_and_object(
     assert result.CompletedOperations == result.MatchedCalls == 2
     assert result.ActualInputs is not None and result.ActualInputs.Returned is actual
     assert not result.CaseMatched
+
+
+@pytest.mark.parametrize("overlap", ["equal", "descendant", "ancestor"])
+def test_original_tree_and_replay_tree_cannot_overlap(
+    overlap: str, tmp_path: Path
+) -> None:
+    base = tmp_path
+    if overlap == "ancestor":
+        base = tmp_path / "overlap" / "storage-control" / "nested"
+        base.mkdir(parents=True)
+    record, original = capture(base, "storage/control")
+    if overlap == "equal":
+        original.rename(original.with_name("preserved-original"))
+        parent = original.parent
+    elif overlap == "descendant":
+        parent = original / "nested"
+        parent.mkdir()
+    else:
+        parent = tmp_path / "overlap"
+    result = r.replay_file_case(
+        record,
+        str(parent),
+        fixed_case_id="storage/control",
+        producer_root=str(original),
+    )
+    encoded = encoding.encode_public_result(result, maximum_bytes=4 * 1024 * 1024)
+    assert isinstance(encoded, a.Admitted)
+    (tmp_path / "actual-overlap-result.json").write_bytes(encoded.value)
+    assert result.Failure is not None and result.Failure.code == "file-root-overlap"
+    assert (
+        result.Preparation is None
+        and not result.Calls
+        and result.CompletedOperations == 0
+    )
+    if overlap == "equal":
+        assert not original.exists()
+    elif overlap == "descendant":
+        assert not (parent / "storage-control").exists()

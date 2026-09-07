@@ -17,6 +17,8 @@ from zeta_interp import hidden_switch_compiled_storage as storage
 def prepare(root: Path, name: str) -> f.PreparedFileFixture:
     result = f.prepare_file_fixture(name, root.resolve() / name.replace("/", "-"))
     assert isinstance(result, f.PreparedFileFixture), result
+    assert type(result.Root) is str
+    assert isinstance(c.result_tree(result), a.Admitted)
     return result
 
 
@@ -59,9 +61,9 @@ def test_actual_file_operations_keep_observed_state_and_exact_return(
     encoded = c.result_tree({"Setup": fixture.Setup, "Observations": observations})
     assert isinstance(encoded, a.Admitted) and value["Audit"] == encoded.value
     if name == "storage/control" or name == "storage/reused-file":
-        assert (fixture.Root / fixture.Target).read_bytes() == b"original"
+        assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"original"
     elif name == "storage/partial-write":
-        assert (fixture.Root / fixture.Target).read_bytes() == b"ori"
+        assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"ori"
         assert [row.Kind for row in observations[0].Faults] == [
             "actual-prefix-write",
             "injected-write-failure",
@@ -76,7 +78,7 @@ def test_actual_file_operations_keep_observed_state_and_exact_return(
             and second.ActualResult.code == "existing-output"
         )
     elif name == "storage/changed-read":
-        assert (fixture.Root / fixture.Target).read_bytes() == b"ORIGINAL"
+        assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"ORIGINAL"
         assert (
             isinstance(observations[0].ActualResult, a.Refused)
             and observations[0].ActualResult.code == "file-changed"
@@ -86,8 +88,8 @@ def test_actual_file_operations_keep_observed_state_and_exact_return(
             "actual-same-length-mutation",
         ]
     elif name == "artifact/symlink-path":
-        assert (fixture.Root / fixture.Target).is_symlink()
-        assert (fixture.Root / "sibling.bin").read_bytes() == b"ABC"
+        assert (Path(fixture.Root) / fixture.Target).is_symlink()
+        assert (Path(fixture.Root) / "sibling.bin").read_bytes() == b"ABC"
         assert (
             isinstance(observations[0].Before, a.Admitted)
             and observations[0].Before.value.SymlinkTarget == "sibling.bin"
@@ -106,13 +108,13 @@ def test_prepare_existing_root_retains_original_and_typed_setup_result(
     tmp_path: Path,
 ) -> None:
     fixture = prepare(tmp_path, "storage/control")
-    (fixture.Root / "sentinel").write_bytes(b"preserve")
-    again = f.prepare_file_fixture(fixture.CaseId, fixture.Root)
+    (Path(fixture.Root) / "sentinel").write_bytes(b"preserve")
+    again = f.prepare_file_fixture(fixture.CaseId, Path(fixture.Root))
     assert isinstance(again, f.FileFixtureFailed)
     assert again.Stage == "create-fixture-root"
     assert isinstance(again.Setup[-1].ActualResult, a.Refused)
     assert again.Setup[-1].ActualResult.code == "existing-output"
-    assert (fixture.Root / "sentinel").read_bytes() == b"preserve"
+    assert (Path(fixture.Root) / "sentinel").read_bytes() == b"preserve"
     assert isinstance(c.result_tree(again), a.Admitted)
 
 
@@ -143,7 +145,7 @@ def test_before_observation_failure_never_becomes_a_counted_operation(
         and row.ActualResult is None
         and row.Failure is problem
     )
-    assert not (fixture.Root / fixture.Target).exists()
+    assert not (Path(fixture.Root) / fixture.Target).exists()
     assert isinstance(f.file_fixture_inputs(fixture, (row,)), a.Admitted)
 
 
@@ -167,7 +169,7 @@ def test_after_observation_failure_keeps_actual_return_and_written_prefix(
     assert isinstance(
         row.ActualResult, a.Refused if name.endswith("partial-write") else a.Admitted
     )
-    assert (fixture.Root / fixture.Target).read_bytes() == (
+    assert (Path(fixture.Root) / fixture.Target).read_bytes() == (
         b"ori" if name.endswith("partial-write") else b"original"
     )
     assert isinstance(f.file_fixture_inputs(fixture, (row,)), a.Admitted)
@@ -205,7 +207,9 @@ def test_operation_exception_retains_fault_prefix_and_restores_hooks(
 
     def crash(_fixture: f.PreparedFileFixture, _index: int) -> object:
         fd = os.open(
-            fixture.Root / fixture.Target, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600
+            Path(fixture.Root) / fixture.Target,
+            os.O_CREAT | os.O_EXCL | os.O_WRONLY,
+            0o600,
         )
         try:
             written = os.write(fd, b"original")
@@ -219,7 +223,7 @@ def test_operation_exception_retains_fault_prefix_and_restores_hooks(
     assert row.CompletedOperation == 0 and row.ActualResult is None
     assert row.Failure is not None and row.Failure.code == "fixture-operation-crash"
     assert [event.Kind for event in row.Faults] == ["actual-prefix-write"]
-    assert (fixture.Root / fixture.Target).read_bytes() == b"ori"
+    assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"ori"
     assert os.write is write and os.fstat is fstat
 
 
@@ -253,7 +257,7 @@ def test_real_close_then_error_never_masks_an_earlier_mutation_failure(
     assert (
         any(event.Kind == "mutation-primary-failure" for event in row.Faults) == primary
     )
-    assert (fixture.Root / fixture.Target).read_bytes() == b"ORIGINAL"
+    assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"ORIGINAL"
     assert isinstance(f.file_fixture_inputs(fixture, (row,)), a.Admitted)
 
 
@@ -273,7 +277,7 @@ def test_missing_or_untyped_return_retains_observation_without_counting_call(
     assert row.CompletedOperation == 0 and row.ActualResult is None
     assert row.UnexpectedReturn is value
     assert row.Failure is not None and row.Failure.code == "fixture-operation-return"
-    assert (fixture.Root / fixture.Target).read_bytes() == b"original"
+    assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"original"
     assert isinstance(f.file_fixture_inputs(fixture, (row,)), a.Admitted)
 
 
@@ -302,7 +306,7 @@ def test_after_result_encoding_refusal_does_not_modify_file_or_actual_result(
     monkeypatch.setattr(c, "result_tree", lambda _value: problem)
     assert f.file_fixture_inputs(fixture, (row,)) is problem
     assert row.CompletedOperation == 1 and row.ActualResult == a.Admitted(8)
-    assert (fixture.Root / fixture.Target).read_bytes() == b"original"
+    assert (Path(fixture.Root) / fixture.Target).read_bytes() == b"original"
 
 
 def test_observed_disappearance_after_actual_read_is_a_failure_not_initial_absence(
@@ -347,7 +351,7 @@ def test_call_index_domain_refuses_without_file_creation(
 ) -> None:
     fixture = prepare(tmp_path, "storage/reused-file")
     assert isinstance(f.execute_file_call(fixture, bad), a.Refused)
-    assert not (fixture.Root / fixture.Target).exists()
+    assert not (Path(fixture.Root) / fixture.Target).exists()
 
 
 def test_truncated_gzip_reaches_decompression_boundary(tmp_path: Path) -> None:
