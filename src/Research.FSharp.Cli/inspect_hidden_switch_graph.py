@@ -197,6 +197,7 @@ def capture(debugger, command, result, _internal_dict):
         stage = "input-identity"
         helper = Path(__file__).resolve()
         body_helper = helper.with_name("inspect_hidden_switch_bodies.py")
+        call_helper = helper.with_name("inspect_hidden_switch_calls.py")
         root = helper.parents[2]
         project = helper.with_name("HiddenSwitchCompiled.fsproj")
         sources = [project, root / "Directory.Build.props", root / "Directory.Packages.props", root / "global.json", root / "src/Core/Result.fs"]
@@ -204,10 +205,13 @@ def capture(debugger, command, result, _internal_dict):
             source = (project.parent / item.attrib["Include"]).resolve()
             source.relative_to(root)
             sources.append(source)
-        _write(attempt / "inputs.json", {"Files": [_file(host), _file(dll), _file(helper), _file(body_helper), _file(dll.with_suffix(".runtimeconfig.json")), _file(dll.with_suffix(".deps.json"))] + [_file(source) for source in sources], "SourceSnapshotMeaning": "working source bytes and observed built artifacts; not a source-to-binary theorem or published implementation archive"})
+        _write(attempt / "inputs.json", {"Files": [_file(host), _file(dll), _file(helper), _file(body_helper), _file(call_helper), _file(dll.with_suffix(".runtimeconfig.json")), _file(dll.with_suffix(".deps.json"))] + [_file(source) for source in sources], "SourceSnapshotMeaning": "working source bytes and observed built artifacts; not a source-to-binary theorem or published implementation archive"})
         body_spec = importlib.util.spec_from_file_location("graph_candidate_bodies", body_helper)
         body_module = importlib.util.module_from_spec(body_spec)
         body_spec.loader.exec_module(body_module)
+        call_spec = importlib.util.spec_from_file_location("graph_candidate_calls", call_helper)
+        call_module = importlib.util.module_from_spec(call_spec)
+        call_spec.loader.exec_module(call_module)
         stage = "launch"
         initial_async = debugger.GetAsync()
         debugger.SetAsync(True)
@@ -242,6 +246,11 @@ def capture(debugger, command, result, _internal_dict):
         _write(attempt / "compiler-blocks.json", blocks)
         bodies = body_module.capture(lldb, target, process, report, blocks, lambda name, value: _write(attempt / name, value))
         _write(attempt / "body-candidates.json", bodies)
+        stage = "guard-data"
+        call_module.capture_guards(lldb, process, report, body_module._read, lambda name, value: _write(attempt / name, value))
+        stage = "selected-call-cells"
+        calls = call_module.capture_transfers(lldb, process, bodies, blocks, body_module._read, lambda name, value: _write(attempt / name, value))
+        _write(attempt / "selected-call-cells.json", calls)
         stage = "resume"
         completion = Path(str(report_path) + ".complete")
         _complete(completion, int(process.GetProcessID()))

@@ -50,12 +50,16 @@ module HiddenSwitchCompiledGraph =
     type MethodEntry =
         { Type: string; Name: string; Signature: string; Token: int; Mvid: string; Generic: bool
           Prepared: bool; Refusal: string; Callable: string; IlHex: string }
+    type GuardField = { Name: string; Type: string; Token: int }
+    type GuardObservation =
+        { DataAddress: string; Type: string; Mvid: string; SameReference: bool
+          Fields: GuardField[]; GetterBits: string[]; DataBytes: int; LayoutAdmitted: bool; Scope: string }
     type Report =
         { Kind: string; Complete: bool; RuntimeAdmitted: bool; Failure: HiddenSwitchCompiledReceipt.Failure
           ProcessId: int; ThreadId: int; StartedAtUtc: string; FinishedAtUtc: string
           Runtime: string; Framework: string; Architecture: string; OS: string
           Environment: Map<string, string>; BeforeFp: FpSnapshot; AfterFp: FpSnapshot
-          ManagedImages: ManagedImage[]; NativeImages: NativeSnapshot; Methods: MethodEntry[]
+          ManagedImages: ManagedImage[]; NativeImages: NativeSnapshot; Methods: MethodEntry[]; Guards: GuardObservation
           NativePreparationCalls: int; CompiledPreparationCalls: int; SourceDraws: int; Scope: string }
 
     let private address (value: nativeint) = (uint64 (value.ToInt64())).ToString("X16", CultureInfo.InvariantCulture)
@@ -212,7 +216,24 @@ module HiddenSwitchCompiledGraph =
                 let! _ = HiddenSwitchCompiledPolicy.observe projection compiled
                 return ()
             })
-            return calls, compiledCalls
+            return calls, compiledCalls, guards
+        }
+
+    let private guardObservation (handle: GCHandle) (usedGuards: HiddenSwitchCompiledCertificate.GuardSet) =
+        result {
+            if not (Object.ReferenceEquals(handle.Target, usedGuards)) then
+                return! Error(HiddenSwitchCompiledReceipt.failure "guard-data" "reference" "pin target differs from the actual preparation guards")
+            let guardType = usedGuards.GetType()
+            let fields = guardType.GetFields(BindingFlags.Instance ||| BindingFlags.Public ||| BindingFlags.NonPublic)
+                         |> Array.sortBy (fun field -> field.MetadataToken)
+                         |> Array.map (fun field -> { Name = field.Name; Type = field.FieldType.FullName; Token = field.MetadataToken })
+            let struct(a, b) = HiddenSwitchCompiledCertificate.depthTwo usedGuards
+            let struct(c, d) = HiddenSwitchCompiledCertificate.depthThree usedGuards
+            return { DataAddress = address (handle.AddrOfPinnedObject()); Type = guardType.FullName
+                     Mvid = guardType.Module.ModuleVersionId.ToString("D", CultureInfo.InvariantCulture)
+                     SameReference = true; Fields = fields; GetterBits = [|a; b; c; d|] |> Array.map HiddenSwitchCompiledReceipt.bits
+                     DataBytes = 32; LayoutAdmitted = false
+                     Scope = "same verified preparation object pinned only for inspection; AddrOfPinnedObject denotes data, not object/header; getter order is depth2 low/high then depth3 low/high; actual selector object-register/layout association remains unestablished" }
         }
 
     let private waitForCompletion path =
@@ -239,11 +260,21 @@ module HiddenSwitchCompiledGraph =
     /// process-bound completion file; the external launcher also bounds lifetime.
     let run path =
         let started = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
+        let mutable primaryFailure: HiddenSwitchCompiledReceipt.Failure = null
         try
             use stream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.Read)
             use writer = new StreamWriter(stream, UTF8Encoding(false))
             let emit (value: obj) = writer.WriteLine(JsonSerializer.Serialize value); writer.Flush(); stream.Flush(true)
+            let emitDiagnostic (value: obj) =
+                match protect "graph-hand-diagnostic" (fun () -> emit value; Ok()) with
+                | Ok () -> ()
+                | Error secondary ->
+                    // Diagnostic storage is best effort after a primary failure.
+                    // A secondary stderr failure must not replace that failure.
+                    try Console.Error.WriteLine(JsonSerializer.Serialize {| Kind = "graph-hand-diagnostic-write-failed"; Failure = secondary |})
+                    with _ -> ()
             let completion = path + ".complete"
+            let mutable guardHandle = Unchecked.defaultof<GCHandle>
             emit {| Kind = "graph-hand-start"; ProcessId = Environment.ProcessId; StartedAtUtc = started; SourceDraws = 0
                     CompletionFile = completion; CompletionDeadlineSeconds = 120 |}
             let work = protect "graph-hand-collection" (fun () -> result {
@@ -257,7 +288,10 @@ module HiddenSwitchCompiledGraph =
                     else Ok())
                 let before = fp()
                 emit (box {| Kind = "floating-environment-before"; Observation = before |})
-                let! calls, compiledCalls = prepare()
+                let! calls, compiledCalls, usedGuards = prepare()
+                guardHandle <- GCHandle.Alloc(usedGuards, GCHandleType.Pinned)
+                let! guards = guardObservation guardHandle usedGuards
+                emit (box {| Kind = "guard-data-observation"; Observation = guards |})
                 let entries = methods()
                 emit (box {| Kind = "method-callable-observation"; Methods = entries; NativePreparationCalls = calls; CompiledPreparationCalls = compiledCalls; SourceDraws = 0 |})
                 let! images = nativeImages emit
@@ -272,19 +306,43 @@ module HiddenSwitchCompiledGraph =
                          Runtime = Environment.Version.ToString(); Framework = RuntimeInformation.FrameworkDescription
                          Architecture = RuntimeInformation.ProcessArchitecture.ToString(); OS = RuntimeInformation.OSDescription
                          Environment = environment; BeforeFp = before; AfterFp = after; ManagedImages = loaded
-                         NativeImages = images; Methods = entries; NativePreparationCalls = calls; SourceDraws = 0
+                         NativeImages = images; Methods = entries; Guards = guards; NativePreparationCalls = calls; SourceDraws = 0
                          CompiledPreparationCalls = compiledCalls
                          Scope = "graph hand preparation: 28 direct native-wrapper calls plus 36 compiled-service calls (which may themselves recurse); verified placeholder hand bindings; not registered conformance/streams; callable pointers are not body spans; final caller closure and runtime admission pending" }
             })
-            match work with
-            | Error failure -> emit {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}; Error failure
-            | Ok report ->
-                emit report
-                match waitForCompletion completion with
+            // Always release this inspection-only pin once, including writer or
+            // collection refusals. Preserve the primary failure if cleanup fails.
+            let mutable cleanupFailure: HiddenSwitchCompiledReceipt.Failure = null
+            match work with Error failure -> primaryFailure <- failure | Ok _ -> ()
+            let outcome =
+                try
+                    protect "graph-hand-output" (fun () ->
+                        match work with
+                        | Error failure -> Error failure
+                        | Ok report -> emit report; waitForCompletion completion)
+                finally
+                    if guardHandle.IsAllocated then
+                        match protect "guard-data-cleanup" (fun () -> guardHandle.Free(); Ok()) with
+                        | Error failure -> cleanupFailure <- failure
+                        | Ok () -> ()
+            if not (isNull cleanupFailure) then
+                emitDiagnostic {| Kind = "graph-hand-cleanup-failed"; Complete = false; Failure = cleanupFailure |}
+            let final = match outcome with Ok () when not (isNull cleanupFailure) -> Error cleanupFailure | other -> other
+            match final with
+            | Error failure ->
+                primaryFailure <- failure
+                emitDiagnostic {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}
+                Error failure
+            | Ok () ->
+                let finished = protect "graph-hand-finish" (fun () ->
+                    emit {| Kind = "graph-hand-finished"; Complete = true; ProcessId = Environment.ProcessId; GuardPinReleased = true |}
+                    Ok())
+                match finished with
                 | Error failure ->
-                    emit {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}
-                    Error failure
-                | Ok () ->
-                    emit {| Kind = "graph-hand-finished"; Complete = true; ProcessId = Environment.ProcessId |}
-                    Ok()
-        with error -> Error(HiddenSwitchCompiledReceipt.failure "graph-hand" "collector-exception" (error.GetType().FullName + ": " + error.Message))
+                    primaryFailure <- failure
+                    emitDiagnostic {| Kind = "graph-hand-failed"; Complete = false; Failure = failure |}
+                | Ok () -> ()
+                finished
+        with error ->
+            if not (isNull primaryFailure) then Error primaryFailure
+            else Error(HiddenSwitchCompiledReceipt.failure "graph-hand" "collector-exception" (error.GetType().FullName + ": " + error.Message))
