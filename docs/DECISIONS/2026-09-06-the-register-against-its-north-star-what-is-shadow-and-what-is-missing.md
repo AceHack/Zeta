@@ -477,3 +477,65 @@ defect being refused is identical: **a thing nobody looked at, rendered identica
 that was looked at and found clean.** It is the one failure this organization cannot see from the
 inside, because the report of a healthy system and the report of an unobserved one are the same
 document.
+
+---
+
+## Correction and addendum, 2026-09-07 — a claim I made without a falsifier
+
+### The correction
+
+The addendum above says the hat catalog is *"the one remaining item that is genuinely this layer's
+work"* and the report accompanying it said **"several blocker and lag routings currently fall back
+because the chart lacks the hat."**
+
+**That was false, and I never measured it.** The 29-hat seed resolved every owner
+`BLOCKER_POLICY` names, in policy order, with zero fallbacks — because the policy had been written
+against the hats that existed. Measured both ways after the expansion: 0 absent owners before, 0
+after.
+
+It is worth naming how the error was made, because the shape recurs. `ownersFor` skips an absent
+hat SILENTLY, and that skip is correct — an organization without a security engineer should still
+reach its security director. Given a mechanism that is deliberately quiet and a chart that was
+admittedly a subset, "therefore routings are falling back" is the obvious inference. It is also
+exactly the inference nobody could contradict, because nothing reported the answer.
+
+**A plausible unmeasured claim about a silent mechanism is the same defect as the silent
+mechanism.** Both produce confident statements nobody checked. This register spent the session
+building detectors for the second and then committed the first about its own data.
+
+### What now answers it
+
+`routing-coverage.ts` — does every hat the policies name actually exist. Three cases, because they
+cost differently: **unroutable** (nobody), **first-owner-absent** (routing succeeds and quietly
+lands on a later owner), **complete**. The seed's coverage is asserted at zero in a test, so the
+next claim about routing has a number to check against rather than a plausibility argument.
+
+### What the expansion was actually worth
+
+Not fixing fallbacks — there were none. Two things:
+
+1. The organization now IS the reference: 16 departments, 124 hats (118 ported plus six the
+   register keeps, because the reference owns only seven of its thirteen quality gates and a
+   verbatim port would leave six unownable).
+2. **It exposed two real defects**, and this is the argument for growing a fixture even when
+   nothing is known to be wrong with it:
+   - `ownerForRung` broke ties by DECLARATION ORDER. Invisible with one candidate per level;
+     at sixteen departments the winner was whichever the file listed first.
+   - `decompose` passed `mustSupportLevel: undefined` for a leaf, switching off the
+     can-this-owner-carry-the-work check at the one rung where the work is done.
+
+Both are the session's recurring class — a choice that looks derived and is actually incidental —
+and neither was reachable while the chart was small enough for the answer to be unique.
+
+### The nine names, resolved
+
+`observation-ledger.ts` gives the one question a single answer: `observed` / `not_run` /
+`no_detector`. The third state is the one nothing had — a gap in the SYSTEM rather than in the run,
+which is what `UNDERIVED_EDGE_KINDS` was reaching for. `observation-sources.ts` adapts the nine
+rather than rewriting them, because each local word is right in its context, and every adapter
+reads a field its module already derives, so a thirteenth lag condition appears in the ledger
+without anyone editing an adapter.
+
+`fullyObserved` deliberately does not mean "no findings". A ledger with findings and no blind spots
+is a trustworthy report of problems; one with no findings and eleven blind spots is not a report at
+all — and treating them alike makes the healthy-LOOKING one the safer-looking one.
