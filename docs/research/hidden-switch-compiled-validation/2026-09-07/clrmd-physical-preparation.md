@@ -406,3 +406,28 @@ active prefix on refusal. Decoding coverage and byte round trips remain
 separate from reachable CFG, arithmetic/data correspondence, exceptions,
 indirect/native/framework targets and full runtime admission. All full flags
 remain false; the actual candidate command has not run at this preparation.
+
+## First actual decoder refusal
+
+The [first decoder-attempt inventory](llvm-decode-attempt-1/manifest.json)
+retains 142 lossless records from source `036c114c093d2021d5e9ff187ddceea2a0befbb5`
+and execution head `bea1417835b1924704c2d327a37365d2f831b2d0`. The owned LLVM
+process, PID 48759, exited one; the driver refused byte admission at
+23:38:00.392405 UTC, exited two and reported no cleanup failure. No dump or
+study target was opened, and no parsed method was admitted.
+
+The exact 8,665-word input used generic AArch64 with no added features. LLVM
+reported 20 invalid-encoding warnings: eight occurrences of `B8BFC021` and
+twelve of `B8BFC000`. The retained JIT labels these words `ldapr w1,[x1]` and
+`ldapr w0,[x0]`. Version-specific decoder feature correspondence requires a
+separate reviewed proposal; this failure is not permission to change study
+runtime settings or silently enable decoder features.
+
+The 658,155-byte stdout and 1,570-byte stderr remain original records. Raw
+stdout contains 9,496 lines: read-only inspection identifies 8,645 concrete
+instruction/encoding lines and 851 separate immediate comments such as
+`; =0x2508` following `mov` output. The existing parser rejects diagnostics
+before reaching its exact line-count check, so no skipped-word realignment or
+comment removal was admitted. These additional formatting observations also
+need a precise reviewed disposition before another attempt. Full runtime,
+body and closure flags remain false.
