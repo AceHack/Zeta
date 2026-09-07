@@ -50,3 +50,9 @@ build and full .NET test command. The raw log is retained in the verification
 inventory. The earlier publication-claim hook and source-history push each
 passed all 16 quick checks. Those are repository publication checks, not
 runtime admission or validation of later compiled implementation source.
+
+The [independent publication review](../../../2026-09-07-hidden-switch-compiled-capture-publication-review.md)
+accepts the exact `11cd3368af8fbd0f20b45ae4a825372ed2144b3a` inventory and
+retention scope. It independently verifies all stored-file hashes and original
+Git blob identities, while distinguishing retained author checks from reviewer
+execution. No runtime admission or new target execution follows from it.
