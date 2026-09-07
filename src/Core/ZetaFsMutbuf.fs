@@ -200,6 +200,13 @@ module ZetaFsMutbuf =
         let slot = slotOf catalog handle.Entity
         lock slot.Gate (fun () -> int64 (activeBuffer slot handle).Length)
 
+    /// Live shared-buffer length if this hub already has a slot. Does not
+    /// create one. Getattr uses this for dirty size; else PosixMeta.Size.
+    let tryLiveLength (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : uint64 option =
+        match catalog.Slots.TryGetValue(keyOf id) with
+        | true, slot -> lock slot.Gate (fun () -> Some(uint64 slot.Live.Length))
+        | false, _ -> None
+
     /// Byte-copy generation G; live becomes G+1 starting as a copy of G.
     /// Later pwrite mutates live only. Snapshot bytes never mix with those writes.
     let snapshot (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Snapshot =

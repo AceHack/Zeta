@@ -203,6 +203,7 @@
     <Compile Include="ZetaFsCollator.fs" />
     <Compile Include="ZetaFsInode.fs" />
     <Compile Include="ZetaFsPosixNode.fs" />
+    <Compile Include="ZetaFsPosixMeta.fs" />
     <Compile Include="ZetaFsPolicy.fs" />
     <Compile Include="ZetaFsPlacement.fs" />
     <Compile Include="ZetaFsMutbuf.fs" />
@@ -271,6 +272,7 @@
     <Compile Include="ZetaFsReclaim.fs" />
     <Compile Include="ZetaFsFormat.fs" />
     <Compile Include="ZetaFsFreeze.fs" />
+    <Compile Include="ZetaFsPosixVfs.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="DeltaLog.fs" />

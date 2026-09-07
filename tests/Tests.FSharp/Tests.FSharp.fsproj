@@ -195,6 +195,7 @@
     <Compile Include="ZetaFsNamespace.Tests.fs" />
     <Compile Include="ZetaFsCollator.Tests.fs" />
     <Compile Include="ZetaFsPosixNode.Tests.fs" />
+    <Compile Include="ZetaFsPosixMeta.Tests.fs" />
     <Compile Include="ZetaFsCli.Tests.fs" />
     <Compile Include="ZetaFsPolicy.Tests.fs" />
     <Compile Include="ZetaFsPlacement.Tests.fs" />
@@ -203,6 +204,7 @@
     <Compile Include="ZetaFsPath.Tests.fs" />
     <Compile Include="InMemoryFileSystemPathIdentity.Tests.fs" />
     <Compile Include="ZetaFsFreeze.Tests.fs" />
+    <Compile Include="ZetaFsPosixVfs.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />

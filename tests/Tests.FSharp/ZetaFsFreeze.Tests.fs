@@ -711,6 +711,77 @@ let ``readdir lists live names after reopen and omits tombstones`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``getattr stamps from the injected clock and setattr caller times persist`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-posix-meta"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let clock =
+        Environment.createVirtualAt (DateTimeOffset.FromUnixTimeSeconds 1L) 11L
+        :> ISimulationEnvironment
+    let volume = ZetaFsFreeze.createManualStreamWith store mutbuf None clock
+    let name = Encoding.UTF8.GetBytes "a"
+
+    try
+        match ZetaFsFreeze.bindFile volume name with
+        | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+        | Ok id ->
+            match ZetaFsFreeze.getattr volume id with
+            | Error e -> Assert.Fail(sprintf "getattr failed: %A" e)
+            | Ok stat ->
+                Assert.Equal(1_000_000_000L, stat.Meta.MtimeNs)
+                Assert.Equal(1_000_000_000L, stat.Meta.CtimeNs)
+                Assert.Equal(ZetaFsPosixMeta.fileMode, stat.Meta.Mode)
+                Assert.Equal(1L, stat.Nlink)
+                Assert.Equal(0UL, stat.Size)
+            match
+                ZetaFsFreeze.setattr
+                    volume
+                    id
+                    { ZetaFsPosixMeta.emptyPatch with
+                        MtimeNs = Some 42L
+                        CtimeNs = Some 43L }
+            with
+            | Error e -> Assert.Fail(sprintf "setattr failed: %A" e)
+            | Ok() ->
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualStreamWith store mutbuf None clock
+                try
+                    match ZetaFsFreeze.getattr reopened id with
+                    | Error e -> Assert.Fail(sprintf "getattr reopen failed: %A" e)
+                    | Ok stat ->
+                        Assert.Equal(42L, stat.Meta.MtimeNs)
+                        Assert.Equal(43L, stat.Meta.CtimeNs)
+                finally
+                    ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``getattr size is dirty mutbuf length not PosixMeta.Size`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-posix-meta-size"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let clock = Environment.createVirtual 12L :> ISimulationEnvironment
+    let volume = ZetaFsFreeze.createManualStreamWith store mutbuf None clock
+    let name = Encoding.UTF8.GetBytes "b"
+
+    try
+        match ZetaFsFreeze.bindFile volume name with
+        | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+        | Ok id ->
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            match ZetaFsFreeze.getattr volume id with
+            | Error e -> Assert.Fail(sprintf "getattr failed: %A" e)
+            | Ok stat ->
+                Assert.Equal(3UL, stat.Size)
+                Assert.Equal(0UL, stat.Meta.Size)
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``Durable freeze on a real directory fsyncs and is readable`` () : Task =
     task {
         ensureHasher ()
@@ -1163,7 +1234,10 @@ let ``Journaled freeze crash during leaf put leaves extra garbage and is not rea
                 |> Array.filter (fun p ->
                     p.IndexOf("FORMAT", StringComparison.Ordinal) < 0
                     && p.IndexOf("ROOT", StringComparison.Ordinal) < 0
-                    && p.IndexOf("bindings", StringComparison.Ordinal) < 0)
+                    && p.IndexOf("bindings", StringComparison.Ordinal) < 0
+                    && p.IndexOf("posix-meta", StringComparison.Ordinal) < 0
+                    && p.IndexOf("policy", StringComparison.Ordinal) < 0
+                    && p.IndexOf("symlinks", StringComparison.Ordinal) < 0)
             Assert.Equal(logPath, freezeWrites.[0])
             ZetaFsFreeze.dispose volume
             let reopened = ZetaFsFreeze.createManualStream store mutbuf None

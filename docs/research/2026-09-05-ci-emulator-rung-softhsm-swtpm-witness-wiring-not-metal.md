@@ -354,17 +354,36 @@ not a live look. Does not default to `realProbeEffects`.
 OS family is named, not inferred. `/dev/tpmrm0` is not
 `real`. Does not call overlay join. Does not call this from
 `zeta-install.sh`. Does not change ISO bun `probe: null`.
+Frost look CLI argv takes named effects (`081M1Y5WKS2087G0R002Q7ZKS7`):
+`--os` / `--effects`. Missing `--effects` is unmeasured.
+`/dev/tpmrm0` is not `real`. Does not mix argv with env.
+Does not call this from `zeta-install.sh`. Does not change
+ISO bun `probe: null`.
+Frost look CLI conf takes named effects (`081M1YAHFVV087G0R001G2TXRE`):
+`--from-conf` body. Missing effects is unmeasured.
+Missing OS is `missing-os`, not `nixos`. `/dev/tpmrm0` is
+not `real`. Does not write ESP. Does not mix conf with
+argv or env. Does not call this from `zeta-install.sh`.
+Does not change ISO bun `probe: null`.
+Overlay named-key joins take frost-look keys (`081M1YCFES8087G0R000R3MV6Y`):
+`planSetupFromFrostLookNamedEnv` / Argv / Conf. Parse lives
+in `named-frost-look.ts`, not the CLI. Missing OS is
+`missing-os`. Missing effects is unmeasured. Does not
+write ESP. Does not call this from `zeta-install.sh`. Does
+not change ISO bun `probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this CLI as that
-   commit. Wiring this look on the live ISO is later and
-   still must not infer from `/dev/tpmrm0`. Bun JSON
-   `probe` stays null until that wiring exists. Does not
-   expand `ZetaFirstbootRole`. `/dev/tpmrm0` is still not
-   an ask and not a PathRequest.
+   two active OpenBao seals. Do not treat this overlay as
+   that commit. Named-key overlay joins landed
+   (`081M1YCFES8087G0R000R3MV6Y`); they do not write ESP.
+   Wiring this look on the live ISO is later and still
+   must not infer from `/dev/tpmrm0`. Bun JSON `probe`
+   stays null until that wiring exists. Does not expand
+   `ZetaFirstbootRole`. `/dev/tpmrm0` is still not an
+   ask and not a PathRequest.
 2. extraContainer Shamir sidecar (`valuesObject` only) until
    kind/CI consume the emulator init.
 

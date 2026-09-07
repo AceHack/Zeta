@@ -6,12 +6,20 @@ import { hostCaptureFromNamedProbe, pickSealOracleFromCapture } from "../../../s
 import type { HardwareProbeEffects } from "./frost-hardware-probe.ts";
 import type { ListOutcome, PathOutcome, Tpm2LinuxEffects } from "./tpm2-linux-probe.ts";
 import {
+  FROST_LOOK_EFFECTS_FLAG,
   FROST_LOOK_EFFECTS_KEY,
+  FROST_LOOK_OS_FLAG,
   FROST_LOOK_OS_KEY,
+  FROST_LOOK_CONF_FLAG,
+  consumeFrostLookFromArgv,
+  consumeFrostLookFromCliArgv,
+  consumeFrostLookFromConf,
   consumeFrostLookFromEnv,
   frostLookProbeFromNamed,
   parseFrostLookEffects,
   parseFrostLookOs,
+  runFrostLookArgvCli,
+  runFrostLookConfCli,
   runFrostLookEnvCli,
 } from "./named-frost-look-env.ts";
 
@@ -203,11 +211,20 @@ describe("runFrostLookEnvCli — tpmrm0 is not present", () => {
       const src = await Bun.file(new URL(rel, import.meta.url)).text();
       expect(src.split("named-frost-look-env").length - 1).toBe(0);
       expect(src.split("runFrostLookEnvCli").length - 1).toBe(0);
+      expect(src.split("runFrostLookArgvCli").length - 1).toBe(0);
+      expect(src.split("runFrostLookConfCli").length - 1).toBe(0);
     }
     const cli = await Bun.file(new URL("./named-frost-look-env.ts", import.meta.url)).text();
     expect(cli.split("osFamilyFromOsRelease(").length - 1).toBe(0);
     expect(cli.split("planSetupFromFrostLookEnv(").length - 1).toBe(0);
     expect(cli.split("integrateAtSetup(").length - 1).toBe(0);
+    expect(cli.split("appendFirstbootBaoElfConf(").length - 1).toBe(0);
+    expect(cli.split("from \"../../../src/Core.TypeScript/zflash/").length - 1).toBe(0);
+    const firstboot = await Bun.file(
+      new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-elf.ts", import.meta.url),
+    ).text();
+    expect(firstboot.split("ZETA_FROST_LOOK_OS").length - 1).toBe(0);
+    expect(firstboot.split("ZETA_FROST_LOOK_EFFECTS").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
     expect(bunCli.split("const probe: NamedHardwareProbe | null = null;").length - 1).toBe(1);
   });
@@ -230,5 +247,168 @@ describe("consumeFrostLookFromEnv", () => {
       os: "nixos",
       effects: null,
     });
+  });
+});
+
+describe("runFrostLookArgvCli — tpmrm0 is not present", () => {
+  test("missing --effects is unmeasured, not real", () => {
+    const lines: string[] = [];
+    const code = runFrostLookArgvCli([`${FROST_LOOK_OS_FLAG}=nixos`], unusedReal(), (line) => {
+      lines.push(line);
+    });
+    expect(code).toBe(0);
+    expect(lines).toEqual([`${JSON.stringify({ ok: true, os: "nixos", effects: null, probe: null })}\n`]);
+  });
+
+  test("tpmrm0 as --effects refuses", () => {
+    const lines: string[] = [];
+    const code = runFrostLookArgvCli(
+      [`${FROST_LOOK_OS_FLAG}=nixos`, `${FROST_LOOK_EFFECTS_FLAG}=${TPM_CHAR_DEVICE}`],
+      unusedReal(),
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(2);
+    expect(lines).toEqual([`${JSON.stringify({ ok: false, reason: "unknown-effects" })}\n`]);
+  });
+
+  test("tpmrm0 as --os refuses", () => {
+    expect(consumeFrostLookFromArgv([`${FROST_LOOK_OS_FLAG}=${TPM_CHAR_DEVICE}`])).toEqual({
+      ok: false,
+      reason: "unknown-os",
+    });
+  });
+
+  test("missing --os refuses — does not default to nixos", () => {
+    const lines: string[] = [];
+    const code = runFrostLookArgvCli([`${FROST_LOOK_EFFECTS_FLAG}=real`], unusedReal(), (line) => {
+      lines.push(line);
+    });
+    expect(code).toBe(2);
+    expect(lines).toEqual([`${JSON.stringify({ ok: false, reason: "missing-os" })}\n`]);
+  });
+
+  test("named real with TPM 2.0 present stays named", () => {
+    const lines: string[] = [];
+    const code = runFrostLookArgvCli(
+      [FROST_LOOK_OS_FLAG, "nixos", FROST_LOOK_EFFECTS_FLAG, "real"],
+      host({ tpm2: tpm2Present() }),
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    const body = JSON.parse(lines[0] ?? "") as { probe: { tpm2: string } | null };
+    expect(body.probe?.tpm2).toBe("present");
+  });
+
+  test("process CLI --os nixos does not call realProbeEffects", () => {
+    const script = fileURLToPath(new URL("./named-frost-look-env.ts", import.meta.url));
+    const ran = spawnSync(process.execPath, [script, `${FROST_LOOK_OS_FLAG}=nixos`], {
+      env: { PATH: process.env.PATH },
+      encoding: "utf8",
+    });
+    expect(ran.status).toBe(0);
+    expect(ran.stdout).toBe(`${JSON.stringify({ ok: true, os: "nixos", effects: null, probe: null })}\n`);
+  });
+});
+
+describe("consumeFrostLookFromConf — tpmrm0 is not real", () => {
+  test("missing effects is unmeasured, not real", () => {
+    expect(consumeFrostLookFromConf(`${FROST_LOOK_OS_KEY}=nixos\n`)).toEqual({
+      ok: true,
+      os: "nixos",
+      effects: null,
+    });
+  });
+
+  test("missing OS refuses — does not default to nixos", () => {
+    expect(consumeFrostLookFromConf("")).toEqual({ ok: false, reason: "missing-os" });
+    expect(consumeFrostLookFromConf(`${FROST_LOOK_EFFECTS_KEY}=real\n`)).toEqual({
+      ok: false,
+      reason: "missing-os",
+    });
+  });
+
+  test("tpmrm0 as OS is unknown, not nixos", () => {
+    expect(consumeFrostLookFromConf(`${FROST_LOOK_OS_KEY}=${TPM_CHAR_DEVICE}\n`)).toEqual({
+      ok: false,
+      reason: "unknown-os",
+    });
+  });
+
+  test("tpmrm0 as effects is unknown, not real", () => {
+    expect(
+      consumeFrostLookFromConf(`${FROST_LOOK_OS_KEY}=nixos\n${FROST_LOOK_EFFECTS_KEY}=${TPM_CHAR_DEVICE}\n`),
+    ).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+
+  test("quoted names stay named; HOST and bao keys are ignored", () => {
+    const body = [
+      "HOST=control-plane",
+      "ZETA_ROLE='control-plane'",
+      "ZETA_BAO_LOAD_SITE='on-host'",
+      "ZETA_BAO_PATH='/run/current-system/sw/bin/bao'",
+      `${FROST_LOOK_OS_KEY}='nixos'`,
+      `${FROST_LOOK_EFFECTS_KEY}='null'`,
+      "",
+    ].join("\n");
+    expect(consumeFrostLookFromConf(body)).toEqual({ ok: true, os: "nixos", effects: "null" });
+  });
+
+  test("unclosed quote is unsafe, not a silent unmeasure", () => {
+    expect(consumeFrostLookFromConf(`${FROST_LOOK_OS_KEY}='nixos\n`)).toEqual({
+      ok: false,
+      reason: "unsafe-conf-value",
+    });
+  });
+});
+
+describe("runFrostLookConfCli — tpmrm0 is not present", () => {
+  test("missing effects writes unmeasured probe and exits 0", () => {
+    const lines: string[] = [];
+    const code = runFrostLookConfCli(`${FROST_LOOK_OS_KEY}=nixos\n`, unusedReal(), (line) => {
+      lines.push(line);
+    });
+    expect(code).toBe(0);
+    expect(lines).toEqual([`${JSON.stringify({ ok: true, os: "nixos", effects: null, probe: null })}\n`]);
+  });
+
+  test("named real with TPM 2.0 present stays named", () => {
+    const lines: string[] = [];
+    const code = runFrostLookConfCli(
+      `${FROST_LOOK_OS_KEY}='nixos'\n${FROST_LOOK_EFFECTS_KEY}='real'\n`,
+      host({ tpm2: tpm2Present() }),
+      (line) => {
+        lines.push(line);
+      },
+    );
+    expect(code).toBe(0);
+    const body = JSON.parse(lines[0] ?? "") as { probe: { tpm2: string } | null };
+    expect(body.probe?.tpm2).toBe("present");
+  });
+
+  test("mixing --from-conf with --os refuses", () => {
+    expect(
+      consumeFrostLookFromCliArgv([
+        `${FROST_LOOK_CONF_FLAG}=${FROST_LOOK_OS_KEY}=nixos`,
+        `${FROST_LOOK_OS_FLAG}=darwin`,
+      ]),
+    ).toEqual({ ok: false, reason: "mixed-source" });
+  });
+
+  test("process CLI --from-conf does not call realProbeEffects or mix env", () => {
+    const script = fileURLToPath(new URL("./named-frost-look-env.ts", import.meta.url));
+    const ran = spawnSync(
+      process.execPath,
+      [script, FROST_LOOK_CONF_FLAG, `${FROST_LOOK_OS_KEY}=nixos`],
+      {
+        env: { PATH: process.env.PATH, [FROST_LOOK_EFFECTS_KEY]: "real" },
+        encoding: "utf8",
+      },
+    );
+    expect(ran.status).toBe(0);
+    expect(ran.stdout).toBe(`${JSON.stringify({ ok: true, os: "nixos", effects: null, probe: null })}\n`);
   });
 });

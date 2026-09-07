@@ -1,0 +1,14 @@
+{
+  "id": "080d03e2f2791810a0130008c18d987b",
+  "at": "2026-09-07T14:55:50.563Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y5WKS2087G0R002Q7ZKS7",
+    "type": "task",
+    "title": "Frost look CLI argv takes named effects; tpmrm0 is not real",
+    "slug": "frost-look-cli-argv-takes-named-effects-tpmrm0-is-not-real",
+    "priority": "P2",
+    "filename": "081M1Y5WKS2087G0R002Q7ZKS7-frost-look-cli-argv-takes-named-effects-tpmrm0-is-not-real.md"
+  }
+}

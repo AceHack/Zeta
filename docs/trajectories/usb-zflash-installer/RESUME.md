@@ -602,6 +602,20 @@ Frost look CLI takes named effects
 missing effects is unmeasured, not
 a live look; `/dev/tpmrm0` is not
 `real`; ISO bun `probe` stays null.
+Frost look CLI argv takes named
+effects (`081M1Y5WKS2087G0R002Q7ZKS7`);
+missing `--effects` is unmeasured;
+`--os` is required; ISO bun `probe`
+stays null.
+Frost look CLI conf takes named
+effects (`081M1YAHFVV087G0R001G2TXRE`);
+missing effects is unmeasured;
+`--from-conf` does not write ESP;
+ISO bun `probe` stays null.
+Overlay named-key joins take frost-look
+keys (`081M1YCFES8087G0R000R3MV6Y`);
+parse is not the CLI; ISO bun `probe`
+stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

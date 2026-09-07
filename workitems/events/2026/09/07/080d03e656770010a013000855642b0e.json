@@ -1,0 +1,14 @@
+{
+  "id": "080d03e656770010a013000855642b0e",
+  "at": "2026-09-07T16:54:21.152Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YCNKPZ087G0R000RXREEH",
+    "type": "bug",
+    "title": "TlcRunnerTests red on Windows and macOS — two platform bugs in one fixture",
+    "slug": "tlcrunnertests-red-on-windows-and-macos-two-platform-bugs-in",
+    "priority": "P2",
+    "filename": "081M1YCNKPZ087G0R000RXREEH-tlcrunnertests-red-on-windows-and-macos-two-platform-bugs-in.md"
+  }
+}
