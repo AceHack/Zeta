@@ -1,0 +1,60 @@
+{
+  "SourceCommit": "8aede9982fc3ce1eb891c5d630710f778b3eff63",
+  "Meaning": "Actual ten invocation rows and supplied-Q strict/inclusive actions. Independent replay pending at preservation; full hand/runtime admission false.",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-invocations-attempt-1/invocation.json",
+      "Bytes": 2760,
+      "Sha256": "FCA60C75DD3927090A6C1A1D044E779C2B8FA858E21F6DC59F351ABB59AC45CB",
+      "StoredFile": "invocation.json.gz",
+      "StoredBytes": 1086,
+      "StoredSha256": "CCD9221E329C1F8748FFBB4C4329385C5DCB1B333C5C92463ADAE72009B1ABB3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-invocations-attempt-1/invocations.json",
+      "Bytes": 7457,
+      "Sha256": "9EBBC621583A24BF45DB3AD50F665CCD3EF3D4A7070004F9CDF4E58D705FD78D",
+      "StoredFile": "invocations.json.gz",
+      "StoredBytes": 1287,
+      "StoredSha256": "E4EB9E7DD299FAEECD4C6E7E589719E6376AA52FAB17F719D35B84A5A44B5F03",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-invocations-attempt-1/invocations.json.checkpoint.jsonl",
+      "Bytes": 20512,
+      "Sha256": "0610D3641AE0EBEA5AF6996DF7EBB5E985F66F3649F34CA74078C1BD191184AB",
+      "StoredFile": "invocations.json.checkpoint.jsonl.gz",
+      "StoredBytes": 1653,
+      "StoredSha256": "A4D606BDE60CCE58EA8AE25C0D130D3701C670E6755D3B5991D83E28C44EE312",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-invocations-attempt-1/outcome.json",
+      "Bytes": 121,
+      "Sha256": "027194820C7EA37857CDD075714E624F576E75DF71B6686383F7EFCF4F1661EA",
+      "StoredFile": "outcome.json.gz",
+      "StoredBytes": 127,
+      "StoredSha256": "EDFF2EC93108BEA505D1B8F4A17C04A7241DBC31DD18ABCEE3FD9ED5637E2549",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-invocations-attempt-1/stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredFile": "stderr.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-invocations-attempt-1/stdout.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredFile": "stdout.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    }
+  ]
+}

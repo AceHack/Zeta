@@ -319,3 +319,15 @@ and unsupported Result-builder constructs. Build 3 corrected those issues;
 builds 4 and 5 cover the preservation refinements, with final build 5 passing
 in 3.30 seconds with zero warnings/errors. No invocation capture, full
 conformance or full solution gate is claimed by this preparation record.
+
+The [first actual invocation capture](native-invocations-attempt-1/manifest.json)
+then ran reviewed source `8aede9982fc3ce1eb891c5d630710f778b3eff63`, exited
+zero and retained all ten cases with unchanged source/build fingerprints.
+Its 7,457-byte JSON SHA256 is
+`9EBBC621583A24BF45DB3AD50F665CCD3EF3D4A7070004F9CDF4E58D705FD78D`.
+The separate supplied-Q record contains exactly
+`[0000000000000000, 3D719799812DEA11]`; unchanged strict selection returned
+harvest zero and the executed inclusive comparison returned switch one.
+The journal retains actual callback events and terminal evidence. Independent
+replay was requested on these bytes and remained pending at preservation;
+full hand, body, closure and runtime admission remain false.
