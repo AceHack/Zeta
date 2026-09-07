@@ -623,3 +623,8 @@ The [shared resource helper review](2026-09-07-hidden-switch-compiled-resource-h
 accepts coordinator commit `1fece22bc84153dae0128c3a90bbca2ed09772dc`, including
 actual production use of the exact ratio and half-median boundaries. This is
 source review of the shared resource cases, without measured cost admission.
+
+The [owned source/Python fixture validation](2026-09-07-hidden-switch-compiled-identity-fixture-validation.md)
+preserves initial implementation `a7548b075`, its actual thirty-case test
+record and two accepted retention/resource findings before repair. It does
+not establish complete coordinator or runtime admission.
