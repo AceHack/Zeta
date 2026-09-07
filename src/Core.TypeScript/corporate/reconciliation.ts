@@ -81,6 +81,32 @@ export const Party = {
 
 export type Party = (typeof Party)[keyof typeof Party];
 
+/**
+ * Which party a disagreement is WITH.
+ *
+ * A property of the kind, not of the instance: `landed_but_not_done` is always a disagreement with
+ * the repository, `tracker_disagrees` always with the tracker. It lives here rather than in a
+ * consumer because a second copy of this mapping is a second thing to keep in step, and the copy
+ * is the one that drifts when a kind is added.
+ */
+export function partyOf(kind: DisagreementKind): Party {
+  switch (kind) {
+    case DisagreementKind.ProjectedMergedButNotLanded:
+    case DisagreementKind.LandedButNotDone:
+    case DisagreementKind.DeliveredOverUnlandedChange:
+      return Party.Repository;
+    case DisagreementKind.DoneWithoutGates:
+      return Party.Gates;
+    case DisagreementKind.TrackerDisagrees:
+      return Party.Tracker;
+  }
+  return assertNeverKind(kind);
+}
+
+function assertNeverKind(x: never): never {
+  throw new Error(`unhandled disagreement kind: ${String(x)}`);
+}
+
 export interface ReconcileInput {
   readonly cascade: readonly CascadeNode[];
   /** Work ids the change-control port actually merged. */
