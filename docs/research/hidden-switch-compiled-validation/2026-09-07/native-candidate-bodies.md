@@ -445,3 +445,16 @@ body. Fourteen tests pass, including the exact preserved first response and
 mutations of its current address, duplicate/missing fields and non-jitted
 status. This source change does not reinterpret the first attempt as passed;
 its retained failure remains unchanged and a second execution is separate.
+
+The [second offline attempt](native-dump-analysis-attempt-2/manifest.json)
+ran reviewed source `88c60b5f137cc1770d38ab886c54d8ec586261de` against the
+same captured dump. It passed the corrected current `predict` identity and
+all earlier gates, then the installed host returned `Unrecognized SOS command`
+for `clru`. The exact error delimiter and command prefix remain retained.
+This is a host command-registration refusal, not an observed absent-memory,
+method or runtime-compatibility failure. Driver exit two and analyzer exit
+zero are separate; cleanup and publication failures are empty. All 2,789
+stdout bytes survive. The attempt ended at 20:29:46.027323 UTC without extent
+or post-query cached-DAC output. No further automatic attempt follows this
+record; installed host registration requires read-only investigation and
+coordinator disposition. Full runtime/body/closure admission remains false.
