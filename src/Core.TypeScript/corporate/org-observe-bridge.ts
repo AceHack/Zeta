@@ -231,6 +231,16 @@ export function assignableBy(
   // was offered exactly one target, itself.
   const reports = hatsAtLevel(view.chart, "individual_contributor")
     .filter((h) => h.id !== hatId && reportsUpTo(view.chart, h.id, hatId))
+    // A BLOCKED HAT IS NOT AN ASSIGNMENT TARGET. Giving work to one is ALTERNATE work — it goes
+    // through a different door (`alternateWorkFor`), which offers it only when the guardrails can
+    // actually be satisfied.
+    //
+    // Measured: without this, a tech lead was offered `assign_work` to a blocked implementer every
+    // round, `placementEffect` correctly routed it through those guardrails, and they refused for
+    // want of decided priorities — the same act offered and refused 200 times in 200 rounds, which
+    // is a livelock rather than an organization. The menu's own rule is never to offer an act the
+    // organization will refuse, and this is the second place it had to be enforced.
+    .filter((h) => blockedOn(view, h.id) === undefined)
     .map((h) => h.id);
   if (reports.length === 0) return [];
   return view.cascade
@@ -456,7 +466,7 @@ export function orgSurfaceFor(view: OrgView, hatId: string): OrgSurface {
   return {
     reviewsAsked: reviewsAskedOf(view, hatId),
     deliberations: deliberationsOf(view, hatId),
-    missing: view.blockers?.get(hatId) ?? [],
+    missing: unraisedBlockers(view, hatId),
     assignable: [...assignableBy(view, hatId), ...stealableBy(view, hatId), ...alternateWorkFor(view, hatId)],
     convenable: convenableBy(view, hatId),
   };
@@ -803,4 +813,41 @@ export function contextPackFor(view: OrgView, hatId: string, resourceAuthorityHa
   }
 
   return buildContextPack(view.chart, { hatId, resourceAuthorityHatId, items, omissions });
+}
+
+/**
+ * What this hat is blocked on and has NOT already said so about.
+ *
+ * ── REPEATING A REPORT IS NOT ESCALATING IT ──────────────────────────────────
+ * Measured over a 200-round drive: a blocked implementer chose `request_information` every single
+ * round and the organization accumulated 200 identical signals about one blocker. Nothing was
+ * wrong with any individual step — the hat was blocked, the surface said so, the signal routed —
+ * and the aggregate was a livelock wearing the appearance of activity.
+ *
+ * The rule is the one `deliberationsOf` already uses for turns: YOU SPEAK ONCE. A blocker the hat
+ * has raised stays off its surface until the blocker itself clears, because the organization's
+ * record already holds it and a second copy adds nothing a reader did not have.
+ *
+ * ── AND THE UNANSWERED CASE IS SOMEBODY ELSE'S JOB ───────────────────────────
+ * The obvious objection is that a report nobody acts on should be raised again. It should — by
+ * ESCALATION, not by repetition, and `lag-detection.ts` already does exactly that:
+ * `blocker_owner_silent` fires when the owner has not answered inside the SLA and addresses the
+ * finding PAST them. Re-reporting to the same hat is the thing that already went unanswered.
+ */
+function unraisedBlockers(view: OrgView, hatId: string): readonly MissingInformation[] {
+  const mine = view.blockers?.get(hatId) ?? [];
+  if (mine.length === 0) return mine;
+  const raised = new Set(
+    view.signals
+      .filter((s) => s.fromHatId === hatId && (s.tool === SignalTool.ReportBlocker || s.tool === SignalTool.AskQuestion))
+      .map((s) => `${s.workItemId ?? ""}:${s.title}`),
+  );
+  // The key is what `effectOf` puts on the signal: the blocked work item, and the TITLE it derives
+  // — the blocker kind when classified, the agent's own words when not. Matching on the work item
+  // alone would silence a second, different blocker on the same task.
+  return mine.filter((m) => {
+    const classified = m.kind !== undefined && isBlockerKind(m.kind);
+    const title = classified ? m.kind! : m.about;
+    return !raised.has(`${m.blocking}:${title}`);
+  });
 }
