@@ -465,7 +465,7 @@ def run_episode(
     private_band: bytes | None = None,
     scorer_override: int | None = None,
 ) -> Episode:
-    _integer(index, 0, 2**31 - 1, "episode index")
+    _integer(index, 0, 1023, "episode index must be in [0,1023]")
     _palette(palette)
     if not isinstance(tape, Tape):
         raise ValueError("immutable tape required")  # noqa: TRY004 - Wrapper converts ValueError to typed refusals.
