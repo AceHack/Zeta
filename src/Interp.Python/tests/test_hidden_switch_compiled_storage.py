@@ -9,8 +9,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
 from zeta_interp import hidden_switch_compiled_storage as storage
-from zeta_interp.hidden_switch_compiled_admission import Admitted, Refused
+from zeta_interp.hidden_switch_compiled_admission import Admission, Admitted, Refused
 
 
 def descriptor(stored: bytes, original: bytes, encoding: str) -> dict[str, Any]:
@@ -211,3 +212,105 @@ def test_missing_nofollow_capability_refuses_before_creating_output(
     monkeypatch.delattr(os, "O_NOFOLLOW")
     assert isinstance(storage.write_exclusive(tmp_path, "row", b"x"), Refused)
     assert not (tmp_path / "row").exists()
+
+
+@pytest.mark.parametrize("operation", ["read", "write", "directory"])
+@pytest.mark.parametrize("primary_failure", [False, True])
+def test_cleanup_refuses_without_masking_primary_failure_or_retrying_close(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    operation: str,
+    primary_failure: bool,
+) -> None:
+    (tmp_path / "input").write_bytes(b"retained")
+    original_close = os.close
+    method = {"read": "read", "write": "write", "directory": "mkdir"}[operation]
+    original_action = getattr(os, method)
+    armed = False
+    closed: list[int] = []
+
+    def action(*args: Any, **kwargs: Any) -> Any:
+        nonlocal armed
+        value = original_action(*args, **kwargs)
+        armed = True
+        if primary_failure:
+            raise OSError("first operation failure")
+        return value
+
+    def failing_close(fd: int) -> None:
+        original_close(fd)
+        if armed:
+            closed.append(fd)
+            raise OSError("later cleanup failure")
+
+    monkeypatch.setattr(os, method, action)
+    # Preserve the platform capability assertion when wrapping mkdir.
+    monkeypatch.setattr(os, "supports_dir_fd", os.supports_dir_fd | {action})
+    monkeypatch.setattr(os, "close", failing_close)
+    result: Admission[Any]
+    if operation == "read":
+        result = storage.read_exact(
+            tmp_path, "input", expected_bytes=8, maximum_bytes=8
+        )
+    elif operation == "write":
+        result = storage.write_exclusive(tmp_path, "output", b"retained")
+    else:
+        result = storage.create_directory(tmp_path, "attempt")
+    assert isinstance(result, Refused)
+    expected = {
+        "read": "file-read",
+        "write": "file-write",
+        "directory": "directory-write",
+    }
+    assert result.code == (
+        expected[operation] if primary_failure else "descriptor-cleanup"
+    )
+    assert result.detail == (
+        "first operation failure" if primary_failure else "later cleanup failure"
+    )
+    assert len(closed) == (1 if operation == "directory" else 2)
+    assert len(closed) == len(set(closed))
+    for fd in closed:
+        with pytest.raises(OSError):
+            os.fstat(fd)
+    assert (tmp_path / "input").read_bytes() == b"retained"
+    if operation == "write":
+        assert (tmp_path / "output").read_bytes() == b"retained"
+    if operation == "directory":
+        assert (tmp_path / "attempt").is_dir()
+
+
+@pytest.mark.parametrize("during_root", [False, True])
+def test_parent_transfer_tracks_child_before_parent_close_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, during_root: bool
+) -> None:
+    (tmp_path / "parent").mkdir()
+    if not during_root:
+        monkeypatch.setattr(
+            storage,
+            "_directory",
+            lambda root: Admitted(os.open(root, os.O_RDONLY | os.O_DIRECTORY)),
+        )
+    original_close = os.close
+    closed: list[int] = []
+
+    def failing_close(fd: int) -> None:
+        original_close(fd)
+        closed.append(fd)
+        raise OSError("transfer cleanup failure")
+
+    monkeypatch.setattr(os, "close", failing_close)
+    result = storage.write_exclusive(tmp_path, "parent/output", b"unwritten")
+    assert isinstance(result, Refused)
+    assert result.code == "descriptor-cleanup"
+    assert len(closed) == len(set(closed)) == 2
+    for fd in closed:
+        with pytest.raises(OSError):
+            os.fstat(fd)
+    assert not (tmp_path / "parent/output").exists()
+
+
+def test_embedded_nul_root_is_a_typed_refusal(tmp_path: Path) -> None:
+    result = storage.create_directory(tmp_path / "invalid\x00root", "attempt")
+    assert isinstance(result, Refused)
+    assert result.code == "root"

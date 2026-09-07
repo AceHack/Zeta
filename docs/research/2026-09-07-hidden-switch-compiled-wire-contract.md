@@ -154,7 +154,7 @@ file/directory operations. Existing directories, files and symlink destinations
 are never reused or overwritten. The helper creates no missing parents behind
 the caller's back; phase orchestration must record its actual setup sequence.
 
-The final storage suite has **nine tests passed in 4.48 seconds**, plus strict
+The initial storage suite had **nine tests passed in 4.48 seconds**, plus strict
 mypy and Ruff passes. An earlier eight-test version passed before the explicit
 unsupported-capability check and its ninth witness were added. Tests include
 existing-output preservation, an actual interrupted write with retained prefix,
@@ -162,6 +162,26 @@ parent/leaf symlink refusal, FIFO and length refusal, changed in-place read
 metadata, complete hash-bound identity/gzip storage, bounded expansion,
 trailing gzip members and missing no-follow capability. These calls use owned
 temporary test files; they generate no registered source and execute no policy.
+
+Independent review of `c0e975fd8` found that an `os.close` failure could escape
+an unguarded `finally`, mask a primary refusal or lose track of a newly opened
+child during directory ownership transfer. The correction records each child
+before closing its parent, removes descriptor ownership before attempting a
+close, and attempts cleanup once for every still-owned descriptor. The first
+operation failure is preserved; cleanup alone failing returns a typed
+`descriptor-cleanup` refusal. An uncertain close is not retried, because its
+descriptor may already have been released. This promises neither successful
+kernel cleanup after an OS failure nor a lock on descriptor reuse by unrelated
+code. Embedded-NUL root paths also refuse before resolution.
+
+The corrected storage suite has **18 tests passed in 3.89 seconds**, with strict
+mypy and Ruff passes. Added witnesses perform the real close and then inject
+an `OSError`, covering read/write/mkdir success and primary failure, both root
+and artifact-parent transfers, closure of the already opened child, no repeated
+close, preservation of output bytes and malformed root input. During correction,
+Ruff first reported import spacing and mypy reported a reused loop-variable
+annotation plus a mixed-result test annotation; both were fixed before this
+passing run. These tests remain filesystem-only and generate no study streams.
 
 Native phase setup needs the same exclusive-attempt property. Microsoft's
 [Directory.CreateDirectory contract](https://learn.microsoft.com/en-us/dotnet/api/system.io.directory.createdirectory?view=net-10.0)
