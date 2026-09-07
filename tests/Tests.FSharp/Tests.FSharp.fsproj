@@ -201,6 +201,7 @@
     <Compile Include="ZetaFsPosixVfs.Tests.fs" />
     <Compile Include="ZetaFsFuse.Tests.fs" />
     <Compile Include="ZetaFsFuseAbi.Tests.fs" />
+    <Compile Include="ZetaFsFuseSession.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
