@@ -90,3 +90,32 @@ admission flags remain load-bearing. Attempt 3 also illustrates a metadata limit
 all 23 managed assembly rows have `Dynamic=false`, while JIT text names
 framework-generated dynamic methods. `Assembly.IsDynamic` does not establish
 their absence. The dynamic-method roster and role analysis remain distinct.
+
+## First actual candidate-span capture
+
+Attempt 4 ran committed source `5ff11d7e5df2493d6bd96853cb3dce73663a2653`
+from 17:17:08.855062 to 17:17:12.464629 UTC. Native process 40573 and LLDB
+both exited zero. The [lossless attempt inventory](native-graph-attempt-4/manifest.json)
+retains every input, mapping, raw/decoded body, literal, compiler block, prefix,
+completion marker and process outcome. The observed roster has 127 entries:
+123 compiler-sized candidates match actual bytes and independent decoding,
+totaling 33,444 code bytes; four open generic `fail`/`previous` helpers remain
+explicitly unprepared. Ten scalar/vector literal loads match their actual data.
+The 1,242 transfer-ledger entries remain unclassified; they are not proof of a
+closed graph. The selector's two guard getters have 20-byte candidates each,
+and `Selector.choose` has a 244-byte candidate plus its generated continuation.
+
+All three loader counts are 357. Both FPCR snapshots are zero and both rounding
+queries return zero. FPSR changed from `0000000008000010` to `0000000008000011`;
+this is a recorded status change with no established cause. It is not silently
+equated to a control-mode change or discarded. The decoded candidate census
+contains four `fadd`, three `fsub`, four `fmul`, one `fdiv`, one `fmax`, 26 `fcmp`
+and 23 `fmov` instructions. This aggregate is descriptive; it cannot replace
+operation-order, reachable-helper, constant or full-closure review.
+
+`Complete=true` means this bounded capture completed. Every candidate still has
+`BodyResolved=false`, `ClosureAdmitted=false` and `RuntimeAdmitted=false`.
+There is no registered-corpus generation, performance result or speed claim.
+The next review must establish the arithmetic/selector graph and data/call
+boundaries, with independent method-extent metadata or an explicitly accepted
+inspection premise; matching sampled outcomes would not discharge that work.
