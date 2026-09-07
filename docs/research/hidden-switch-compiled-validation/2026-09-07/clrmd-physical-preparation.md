@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: three actual current-extent comparisons; full admission pending
+Artifact status: 130 actual current-extent correspondences; full admission pending
 
 Source `2f068ba34da612f82370c64cef4e38a909e7edd5` adds an isolated file-backed
 metadata helper, with no study assembly reference. It uses the already
@@ -26,7 +26,7 @@ network lookup is requested. Copied dependencies are not a claim about all
 actual loads or network isolation. Actual helper-local managed images and a
 bounded dyld roster are separate observations.
 
-Only predict, condition and select are queried. Each actual current body and
+The initial command queries only predict, condition and select. Each actual current body and
 complete hot extent must equal its declared physical candidate; cold/expanded
 ranges refuse and authorize no additional reads. File PE metadata supplies a
 captured MVID checked against native reflection. This is not a dump-derived
@@ -311,8 +311,9 @@ separately named attempt against the unchanged fresh dump2, with no target
 launch or registered source draw. The helper PID was 24347; it exited zero,
 and the driver completed at 23:11:38.647443 UTC without cleanup failures.
 
-All 130 declared candidates matched their stored physical bytes, exact
-compiler bytes and actual current DAC hot extents: 34,660 bytes total, every
+For all 130 declared candidates, the executed driver compared exact bytes read
+from the stored dump to the compiler bytes, and the helper supplied matching
+current DAC hot extents: 34,660 bytes total, every
 cold start and size zero. Copied PE tokens, declaring nested type/name and IL
 matched captured reflection; actual DAC token/type/name/module/current-body
 identity matched each row. Full actual signatures are retained. This does not
@@ -343,3 +344,65 @@ indirect/native/framework call closure and guard-object/register association
 remain pending. `RuntimeAdmitted`, `BodyResolved` and `ClosureAdmitted` are
 false in every actual result; successful finite extent matching does not
 permit registered behavior or cost work.
+
+The archived physical-read records contain addresses, file offsets, lengths,
+SHA-256 values and the executed driver's exact byte-comparison result. They
+do not contain separate raw physical body copies: those bytes remain in the
+local-only dump, while compiler bytes remain in the retained JIT transcript.
+A reviewer who does not open the dump can reconstruct compiler bytes and
+compare recorded read identities/addresses/extents, without claiming an
+independent physical-byte reread. Subsequent decoding can use those bound
+compiler bytes under this explicit executed-comparison correspondence.
+
+## Independent decoder preparation
+
+Source `036c114c093d2021d5e9ff187ddceea2a0befbb5` adds a finite offline
+LLVM decoder over exactly the compiler bytes whose physical-read identities
+and current extents were bound by the mapped130 attempt. It opens no dump,
+loads no study assembly and runs no policy. The
+[preparation inventory](llvm-decoder-preparation/manifest.json) retains 22
+lossless synthetic/tool/fixture records and both committed source fingerprints.
+
+The installed LLVM 23.1.0 executable, libLLVM, z3 and zstd file identities are
+pinned. Declared linked files are not an actual load snapshot or complete
+system-library identity proof. The separately signed decoder plan `fb2c451cd`
+contains version-specific source guidance; no source-to-binary provenance
+claim is inferred from the public tag.
+
+Synthetic probes retained four concrete encodings for `nop`, `ret`, `b` and
+`udf`; the latter is a valid decode of a trapping instruction, not evidence
+of safe fallthrough. A bracketed `0xffffffff` probe returned one with a warning
+and retained its two prior emitted words. Only synthetic words were supplied.
+Newlines do not define decoder chunks; the actual candidate input must use
+one explicit bracketed four-byte chunk per instruction. Re-encoding is checked
+against each original word, with exact counts, empty diagnostics and no
+symbolic/fixup bytes. Printed PC-relative addresses are never runtime targets.
+
+Independent review observed an uncommitted 13,997-byte draft with SHA256
+`B906ADE72D0E11A5C343A47453C06CBBB88CEC87ABB74A29F21FA3BF1029E8C2`.
+This is a reviewer-observed fingerprint, not an archived preimage. Two findings
+were repaired: ordinary pathname opens could wait on a FIFO before descriptor
+admission, and cleanup/status/console errors could mask a first refusal or
+skip terminal publication. The final source opens reads nonblocking and
+no-follow where available, admits the same regular descriptor, limits initial
+size/chunks/deadline and preserves first failure through closure. The exclusive
+input file's original descriptor is reused for the child. Status, kill, join,
+close and both reporting channels are guarded separately. Optional flag support
+is accepted for this macOS host, without claiming a generic unsupported-platform
+FIFO guarantee, kernel-I/O cancellation or hostile-filesystem isolation.
+
+Forty combined pure/custody cases pass, with ten focused decoder cases passing
+again at final source. They include exact/missing/reordered/changed/fixup words,
+address bounds, actual FIFO and symlink refusal, bounded hash reads, failed
+process-status cleanup and a broken console preserving the original outcome.
+Initial Ruff annotation/import findings and their corrected pass are retained.
+No new native build was needed: only offline Python source/tests changed.
+
+The declared candidate command uses generic AArch64 Darwin decoding, no added
+CPU features, one owned 30-second process and two-MiB polled output limits.
+It will bind the exact mapped evidence manifest, emit 130 method inputs and
+8,665 atomic words, retain every completed decoded method and the available
+active prefix on refusal. Decoding coverage and byte round trips remain
+separate from reachable CFG, arithmetic/data correspondence, exceptions,
+indirect/native/framework targets and full runtime admission. All full flags
+remain false; the actual candidate command has not run at this preparation.

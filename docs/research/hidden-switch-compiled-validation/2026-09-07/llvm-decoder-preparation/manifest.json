@@ -1,0 +1,216 @@
+{
+  "SourceCommit": "036c114c093d2021d5e9ff187ddceea2a0befbb5",
+  "SourcePins": [
+    {
+      "File": "src/Research.FSharp.Cli/decode_hidden_switch_methods.py",
+      "Bytes": 17383,
+      "Sha256": "F020F42FF84EF19FD76FD44D7E476359E9F2E718FAB13E131982F59743F636A0"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_decode_hidden_switch_methods.py",
+      "Bytes": 6290,
+      "Sha256": "3F50F5C85A9AD8D51A2C432B85F96443ECEBEA930B9170B2DBABBBFE331C404A"
+    }
+  ],
+  "Scope": "synthetic decoder grammar and pure fixtures only; no candidate/dump/target execution",
+  "Records": [
+    {
+      "File": "atomic-synthetic-invocation.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/atomic-synthetic-invocation.json",
+      "Bytes": 246,
+      "Sha256": "CC9243E03F70D4D9370A6B8A87BAE5C809EDB86AA42EB7C939151ED4E122EC0A",
+      "StoredBytes": 202,
+      "StoredSha256": "4FDA3012EAF368ABEA4F9D5E24B61B4A3642C07A071D5097788C0C11986F7A44",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "atomic-synthetic.input.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/atomic-synthetic.input",
+      "Bytes": 66,
+      "Sha256": "CF1215EE10BE77B65852629D6180150A319173BFF823FCB57C7ED125AE40F9DB",
+      "StoredBytes": 56,
+      "StoredSha256": "32F8D5F920059CC071287973B95BFEA7D46C16167DDB484915F306032CEDBC6B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "atomic-synthetic.stderr.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/atomic-synthetic.stderr",
+      "Bytes": 76,
+      "Sha256": "09A9C405B757F29EA1AE0E280843B3D917310D9254C28BD7FECF2C32128DCA14",
+      "StoredBytes": 81,
+      "StoredSha256": "5C57862E58999BE9A3B3B47CB7ECD1FC1BFD019302F523C48B894D0383A796A0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "atomic-synthetic.stdout.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/atomic-synthetic.stdout",
+      "Bytes": 144,
+      "Sha256": "4609BEAA51B5219927A1AEAC3163238FE994D78493C856AE66153AED73367891",
+      "StoredBytes": 74,
+      "StoredSha256": "E2224E981664FA6AF65ED6EB04D466BC2F793D0D5AE61E83E942D5198C4772F4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "help.stderr.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/help.stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "help.stdout.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/help.stdout",
+      "Bytes": 4498,
+      "Sha256": "ACC96E66C7236AFF0B903D79B8D4214876341AEEE72D3FDD984314F910FF51CE",
+      "StoredBytes": 1396,
+      "StoredSha256": "0471F5770A3C15C31AFF4A6965C1C6D7A857FADB49BFD01B490D76240F8FEC79",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "invocations.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/invocations.json",
+      "Bytes": 956,
+      "Sha256": "15B6AD22286019802A07C361A56901BEE0F989C2BDFD9F0C300DB7B1206AEDB5",
+      "StoredBytes": 362,
+      "StoredSha256": "0E2E62D9516C2C5BE15F4E377FC7BB8692E2D9551E7246AE67C10C5F091C0272",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "llvm-library-linked.txt.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/llvm-library-linked.txt",
+      "Bytes": 830,
+      "Sha256": "71C0E82BB66B657F85AAB3ED88F25678AAFA81C3968635F43FD9E44B54A29A00",
+      "StoredBytes": 239,
+      "StoredSha256": "01A279305421DA4117C0D51E75EF671E083F1926978A98748E05C27C6298715B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "llvm-library.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/llvm-library.json",
+      "Bytes": 174,
+      "Sha256": "066AA0F6BFB4754C897D51830DAA14ACB610917AFF19D6F944D8128FFFEF38F7",
+      "StoredBytes": 166,
+      "StoredSha256": "803A830AA5A6BF01CA455BE6BD066D880E36B5BB512F93EC9651F0C92BBFFF2F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "llvm-mc-linked.txt.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/llvm-mc-linked.txt",
+      "Bytes": 293,
+      "Sha256": "AA2BFF41C21BF9F129D45C602294286C54E79132298E43DDEFF6D552BC5AA84D",
+      "StoredBytes": 164,
+      "StoredSha256": "A3F167CDEC947F66FADFEF2BB093C89523A366B931B6E25D00E1C48C686B81FF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "synthetic.input.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/synthetic.input",
+      "Bytes": 80,
+      "Sha256": "E03440A1F9EA552E09E8D057A56FAF4337075171E69743655A6CFCD6540EB368",
+      "StoredBytes": 60,
+      "StoredSha256": "DE45B0C5CDFB6BDA9C17FBDB39052F5729980A90C9854C9CA23FF44BD230ECB2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "synthetic.stderr.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/synthetic.stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "synthetic.stdout.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/synthetic.stdout",
+      "Bytes": 290,
+      "Sha256": "59267FFA47685858727C7410C8F1FB98ECE24FF5FA1FC5667CC46AFCB3E10609",
+      "StoredBytes": 100,
+      "StoredSha256": "15B34A47BFF3DC7FDB17D531D7E42535E542DEC9FA1A8B401CFCC23F8C1EDBDC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "version.stderr.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/version.stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "version.stdout.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-preparation/version.stdout",
+      "Bytes": 1770,
+      "Sha256": "EE24F182784DB894212508EDAF63804BC1C0332B320CA99998375BEE959D7C4C",
+      "StoredBytes": 656,
+      "StoredSha256": "01A612030B3963E45AD0A58FD6A24E5D99361E05E2E7B150413181F155BA9AEA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-llvm-decoder-ruff-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-ruff-1.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-llvm-decoder-ruff-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-ruff-2.log",
+      "Bytes": 3338,
+      "Sha256": "297B9BCC76D151829484C634465E19469DE264CF5BC19890B26521B77E3BD960",
+      "StoredBytes": 1063,
+      "StoredSha256": "E09BBED745F14E4BB417B563D15DAFE5BF75A4ADB1AB4752D73EBBE73C2EC09D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-llvm-decoder-ruff-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-ruff-3.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-llvm-decoder-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-tests-1.log",
+      "Bytes": 135,
+      "Sha256": "C1858F2079FA4A8A4703CE0564BBCB33F1A2DE091AA6E93668514926C3E197C4",
+      "StoredBytes": 55,
+      "StoredSha256": "FFBB0EEA5A102650B51A24195C8D2ADF2C48C5AE80BC007E5313AD8E95E9BDA3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-llvm-decoder-tests-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-tests-2.log",
+      "Bytes": 139,
+      "Sha256": "7CF4D0FC69B5AB5AC2701957F1A32F9D5ECDA944239EE0B7A94E918D4ADA2AC7",
+      "StoredBytes": 56,
+      "StoredSha256": "372EA35EAEDAD2481B2ED788AC2CEA52715762AEB6B0A6BD59144FEE129C554A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-llvm-decoder-tests-3.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-llvm-decoder-tests-3.log",
+      "Bytes": 109,
+      "Sha256": "69D3092E799B33EB7DCA64BF94A3536AB4FA9FC5969F0629675EDB863629B707",
+      "StoredBytes": 55,
+      "StoredSha256": "2A27F1B7E942B4F1D6F26ECFBAB661A9ED835B5FDA29B6EBAB21B521A96322E3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retain-llvm-preparation.py.gz",
+      "OriginalLocalFile": ".git/retain-llvm-preparation.py",
+      "Bytes": 1416,
+      "Sha256": "97E6A05C3C3617439F6C48890E4B7A4C7867515A920DB7BF56F291EF431B55D4",
+      "StoredBytes": 719,
+      "StoredSha256": "9181E0EA76ED3DE123A3C3A83932FF1CB63BCB4962632327CAC1B8FC5CE95714",
+      "Encoding": "gzip"
+    }
+  ]
+}
