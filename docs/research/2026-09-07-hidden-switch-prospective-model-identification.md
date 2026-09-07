@@ -212,3 +212,7 @@ discovered objectives, learned model structure, generalization to an
 unseen dynamics family, active information gathering or online-search
 necessity. Those are separate questions. This advisory remains prospective
 until a new registration and its own retained evidence exist.
+
+The later [compiled-controller design draft](2026-09-07-hidden-switch-compiled-controller-design.md)
+develops the action-equivalence certificate and recursive fallback in
+paper form. It remains unregistered and supplies no executed follow-up result.
