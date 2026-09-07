@@ -1,0 +1,53 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Zeta.Core.FSharp.Sha256 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Sha256/bin/Release/net10.0/Zeta.Core.FSharp.Sha256.dll
+  Zeta.Clis -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/clis/bin/Release/net10.0/Zeta.Clis.dll
+  Zeta.Core.CSharp.Merkle -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Merkle/bin/Release/net10.0/Zeta.Core.CSharp.Merkle.dll
+  Zeta.Core.FSharp.ZetaId -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.ZetaId/bin/Release/net10.0/Zeta.Core.FSharp.ZetaId.dll
+  Zeta.Core.Abstractions -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll
+  Zeta.Core.CSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Yaml/bin/Release/net10.0/Zeta.Core.CSharp.Yaml.dll
+  Zeta.Core.CSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Mediator/bin/Release/net10.0/Zeta.Core.CSharp.Mediator.dll
+  Zeta.Core.CSharp.Metric -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.Metric/bin/Release/net10.0/Zeta.Core.CSharp.Metric.dll
+  Zeta.Core.FSharp.Observe -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Observe/bin/Release/net10.0/Zeta.Core.FSharp.Observe.dll
+  Zeta.Core.FSharp.Yaml -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Yaml/bin/Release/net10.0/Zeta.Core.FSharp.Yaml.dll
+  Zeta.Core.FSharp.AceCanonical -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.AceCanonical/bin/Release/net10.0/Zeta.Core.FSharp.AceCanonical.dll
+  Zeta.Core.CSharp.DynamicValue -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp.DynamicValue/bin/Release/net10.0/Zeta.Core.CSharp.DynamicValue.dll
+  Zeta.Core.FSharp.Mediator -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Mediator/bin/Release/net10.0/Zeta.Core.FSharp.Mediator.dll
+  Core -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core/bin/Release/net10.0/Zeta.Core.dll
+  Zeta.Core.FSharp.Git -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Git/bin/Release/net10.0/Zeta.Core.FSharp.Git.dll
+  Zeta.Core.FSharp.TriBoolean -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.TriBoolean/bin/Release/net10.0/Zeta.Core.FSharp.TriBoolean.dll
+  Zeta.Core.FSharp.ObserveBridge -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.ObserveBridge/bin/Release/net10.0/Zeta.Core.FSharp.ObserveBridge.dll
+  Core.CSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.CSharp/bin/Release/net10.0/Zeta.Core.CSharp.dll
+  Zeta.Core.Telemetry -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.Telemetry/bin/Release/net10.0/Zeta.Core.Telemetry.dll
+  Bayesian -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll
+  Zeta.Core.FSharp.Blake3 -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Blake3/bin/Release/net10.0/Zeta.Core.FSharp.Blake3.dll
+  Zeta.Cli -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Core.FSharp.Cli/bin/Release/net10.0/zeta.dll
+  Tests.FSharp -> /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll
+Test run for /Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.5+1b188a7b0a (64-bit .NET 10.0.11)
+[xUnit.net 00:00:00.60]   Discovering: Tests.FSharp
+[xUnit.net 00:00:01.92]   Discovered:  Tests.FSharp
+[xUnit.net 00:00:02.06]   Starting:    Tests.FSharp
+  Passed Zeta.Tests.HiddenSwitchTests.Binary private-band substitution preserves projection including equal tie refusal [13 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Fixed configuration returns fresh mutable-array boundaries [3 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Changed unrevealed source suffix leaves the actual runner common-prefix decision fixed [29 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Source and episode admission refuse unsupported numeric bounds without generating tapes [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Depth two values match the independent affine hand derivation [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Selection tolerance chooses harvest but recursion retains numerical maxima [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Registered noisy model has the hand-derived nonmyopic opportunity [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.All frozen hand episodes retain complete chronology and actual expansion accounting [98 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Filter conditions on the committed action while latest-cue resets its prior [< 1 ms]
+[xUnit.net 00:00:02.28]   Finished:    Tests.FSharp (ID = '7cb8f5e549e0605a8d29110a5dbf480aa18cdc1bd0891a0aaec85ae8593dd75e')
+  Passed Zeta.Tests.HiddenSwitchTests.Padded myopic spends the planner tree budget but acts like natural myopic [7 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Adapter copies the tape and refuses unsupported and terminal calls [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Malformed frames priors and action-value arrays refuse instead of repair [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Real runner ignores private-band and scorer changes at the policy boundary [9 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Caller frame and returned Q mutation cannot rewrite retained policy state [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Observe choose chronology refuses repeated calls and terminal decisions [< 1 ms]
+  Passed Zeta.Tests.HiddenSwitchTests.Pre-transition rewards and action effects are separate from drift [2 ms]
+
+Test Run Successful.
+Total tests: 16
+     Passed: 16
+ Total time: 2.5403 Seconds
