@@ -164,26 +164,42 @@ describe("GitHubAdapter", () => {
     expect(calls.some((c) => c.method === "PATCH" && c.path === "repos/o/r/git/refs/heads/main")).toBe(true);
   });
 
-  test("getPrGateState is one graphql POST through injected rest", async () => {
+  test("getPrGateState is one graphql POST for a complete receipt through injected rest", async () => {
     const calls: { method: string; path: string }[] = [];
     const rest: GithubRest = {
       request: (method, path) => {
         calls.push({ method, path });
-        return Promise.resolve(ok(JSON.stringify({
-          data: {
-            repository: {
-              pullRequest: {
-                number: 9,
-                state: "OPEN",
-                mergeStateStatus: "CLEAN",
-                autoMergeRequest: { enabledAt: "t" },
-                mergeCommit: null,
-                reviewThreads: { nodes: [] },
-                commits: { nodes: [{ commit: { statusCheckRollup: { contexts: { nodes: [] } } } }] },
+        return Promise.resolve(
+          ok(
+            JSON.stringify({
+              data: {
+                repository: {
+                  pullRequest: {
+                    number: 9,
+                    headRefOid: "a".repeat(40),
+                    state: "OPEN",
+                    mergeStateStatus: "CLEAN",
+                    autoMergeRequest: { enabledAt: "t" },
+                    mergeCommit: null,
+                    reviewThreads: { totalCount: 0, pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] },
+                    commits: {
+                      nodes: [
+                        {
+                          commit: {
+                            oid: "a".repeat(40),
+                            statusCheckRollup: {
+                              contexts: { totalCount: 0, pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] },
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
               },
-            },
-          },
-        })));
+            }),
+          ),
+        );
       },
     };
     const adapter = new GitHubAdapter("o", "r", { rest });

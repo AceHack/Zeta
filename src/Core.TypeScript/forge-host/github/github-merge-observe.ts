@@ -1,17 +1,20 @@
-// github-merge-observe.ts — ONE GraphQL round-trip that answers "what blocks merge?"
+// github-merge-observe.ts — complete, bounded GraphQL merge observations.
 //
 // 081M107N9P4087G0R0002G5SR0. Naive `gh pr view` + `gh pr checks --required` is two
 // (sometimes N) token-metered calls, and an agent that *chooses* which to run
 // always runs the wrong subset. This verb is a discriminated observation: the
 // substrate refreshes the merge DU; the agent does not poll ad-hoc.
 //
-// Cost: 1 POST /graphql. Required-vs-optional check names are NOT enumerated —
+// Cost: one POST for a complete small PR, otherwise at most 100 paginated POSTs.
+// Incomplete/changed evidence is a Result error, never an actionable prefix.
+// Required-vs-optional check names are NOT enumerated —
 // GitHub's mergeStateStatus already IS that discriminator. Webhooks
 // (check_suite / pull_request_review) are the next cost cut, not this file.
 
 import type { CheckSummary, ForgeError, NextAction, PrGateState, PullRequest, Result, ReviewThread } from "../types";
 import { err, forgeError, ok } from "../result";
 import type { GithubRest } from "./github-pr-rest.ts";
+import { admitCompleteMergeObservation, collectMergeObservation } from "./github-merge-observe-pages.ts";
 
 /**
  * THIS QUERY HAD NEVER RUN SUCCESSFULLY. It spread `... on CheckRun` directly inside `contexts`,
@@ -26,14 +29,18 @@ import type { GithubRest } from "./github-pr-rest.ts";
  * The type condition has to be applied to the NODE, so the connection is traversed explicitly.
  * `__typename` is requested because a union node is otherwise indistinguishable once parsed.
  */
-export const MERGE_OBSERVE_QUERY = `query MergeObserve($owner: String!, $name: String!, $number: Int!) {
+export const MERGE_OBSERVE_QUERY = `query MergeObserve($owner: String!, $name: String!, $number: Int!,
+  $contextCursor: String, $threadCursor: String,
+  $includeContexts: Boolean! = true, $includeThreads: Boolean! = true) {
   repository(owner: $owner, name: $name) {
     pullRequest(number: $number) {
-      number state isDraft mergeable mergeStateStatus reviewDecision
+      number state headRefOid isDraft mergeable mergeStateStatus reviewDecision
       autoMergeRequest { enabledAt }
       mergeCommit { oid }
-      reviewThreads(first: 100) {
-        nodes {
+      reviewThreads(first: 100, after: $threadCursor) {
+        totalCount
+        pageInfo { hasNextPage endCursor }
+        nodes @include(if: $includeThreads) {
           id
           isResolved
           isOutdated
@@ -45,12 +52,15 @@ export const MERGE_OBSERVE_QUERY = `query MergeObserve($owner: String!, $name: S
       commits(last: 1) {
         nodes {
           commit {
+            oid
             statusCheckRollup {
-              contexts(first: 100) {
-                nodes {
+              contexts(first: 100, after: $contextCursor) {
+                totalCount
+                pageInfo { hasNextPage endCursor }
+                nodes @include(if: $includeContexts) {
                   __typename
-                  ... on CheckRun { name status conclusion }
-                  ... on StatusContext { context state }
+                  ... on CheckRun { id name status conclusion }
+                  ... on StatusContext { id context state }
                 }
               }
             }
@@ -71,6 +81,7 @@ export interface MergeObserveCall {
 export function mergeObserveRequest(nwo: string, number: number): Result<MergeObserveCall, ForgeError> {
   const split = splitNwo(nwo);
   if (split === null) return err(forgeError("internal", `bad nwo: ${nwo}`));
+  if (!Number.isSafeInteger(number) || number < 1) return err(forgeError("internal", "invalid PR number"));
   return ok({
     method: "POST",
     path: "graphql",
@@ -184,45 +195,27 @@ export async function observeMerge(
 ): Promise<Result<PrGateState, ForgeError>> {
   const call = mergeObserveRequest(nwo, number);
   if (!call.ok) return call;
-  const raw = await rest.request(call.value.method, call.value.path, {
-    query: call.value.query,
-    variables: call.value.variables,
-  });
+  const raw = await collectMergeObservation(number, (selection) =>
+    rest.request(call.value.method, call.value.path, {
+      query: call.value.query,
+      variables: { ...call.value.variables, ...selection },
+    }),
+  );
   if (!raw.ok) return raw;
   return mapMergeObserve(raw.value);
 }
 
 export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch (e) {
-    return err(forgeError("parse-failure", e instanceof Error ? e.message : String(e)));
-  }
-  if (typeof parsed !== "object" || parsed === null)
-    return err(forgeError("parse-failure", "merge observe: not an object"));
-  const errors = (parsed as { errors?: unknown }).errors;
-  if (Array.isArray(errors) && errors.length > 0) {
-    const first = errors[0] as { message?: unknown };
-    return err(forgeError("internal", typeof first.message === "string" ? first.message : "graphql error"));
-  }
-  const pr = (parsed as { data?: { repository?: { pullRequest?: unknown } } }).data?.repository?.pullRequest;
-  if (typeof pr !== "object" || pr === null) return err(forgeError("not-found", "merge observe: no pullRequest"));
-  const p = pr as GraphQlPr;
+  const admitted = admitCompleteMergeObservation(text);
+  if (!admitted.ok) return admitted;
+  const p = admitted.value as unknown as GraphQlPr;
   const rollup = p.commits?.nodes?.[0]?.commit?.statusCheckRollup?.contexts?.nodes ?? [];
   const checks = classifyChecks(rollup.map(normalizeContext));
-  // TWO different questions, and collapsing them fails OPEN.
-  //
-  // WHAT BLOCKS is every unresolved node, id or no id — counted from the raw response, so a thread
-  // the parser cannot make actionable still holds the merge. Deriving the count from the actionable
-  // subset (the first thing I wrote) meant a malformed thread quietly REDUCED the blocker count,
-  // which is a merge permitted because a field was missing. An existing test caught it.
-  //
-  // WHAT IS ANSWERABLE is the subset carrying an id, because `resolveThread` takes nothing else.
+  // Every thread/context was admitted before this mapping; a missing identity
+  // is an error receipt rather than an omitted blocker.
   const rawThreads = p.reviewThreads?.nodes ?? [];
   const unresolvedThreads = rawThreads.filter((t) => t.isResolved !== true).length;
-  const threads = rawThreads.map(normalizeThread).filter((t): t is ReviewThread => t !== null);
-  const unanswerable = unresolvedThreads - threads.filter((t) => !t.isResolved).length;
+  const threads = rawThreads.map(normalizeThread);
   const state = mapPrState(p.state);
   const gate = classifyGate(p.mergeStateStatus ?? "", p.state ?? "", checks, unresolvedThreads);
   return ok({
@@ -236,13 +229,8 @@ export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
     autoMerge: p.autoMergeRequest ? "armed" : "none",
     mergeCommit: p.mergeCommit?.oid ?? null,
     warnings: [
-      "required-set not enumerated; mergeStateStatus is the discriminator (one GraphQL call)",
-      // Said out loud rather than left as a silent difference between two numbers.
-      ...(unanswerable > 0
-        ? [
-            `${String(unanswerable)} unresolved review thread(s) carry no id and cannot be answered from here — they still block`,
-          ]
-        : []),
+      "required-set not enumerated; all observed checks remain the conservative requiredChecks summary",
+      `complete bounded observation for head ${p.headRefOid}; not an atomic snapshot or a future merge lock`,
     ],
     nextAction: computeNextAction(state, gate, checks, unresolvedThreads),
   });
@@ -250,6 +238,7 @@ export function mapMergeObserve(text: string): Result<PrGateState, ForgeError> {
 
 interface GraphQlPr {
   readonly number: number;
+  readonly headRefOid: string;
   readonly state?: string;
   readonly mergeStateStatus?: string;
   readonly autoMergeRequest?: { readonly enabledAt?: string } | null;
@@ -267,7 +256,7 @@ interface GraphQlPr {
 }
 
 interface GraphQlThread {
-  readonly id?: string;
+  readonly id: string;
   readonly isResolved?: boolean;
   readonly isOutdated?: boolean;
   readonly path?: string | null;
@@ -277,16 +266,8 @@ interface GraphQlThread {
   };
 }
 
-/**
- * A thread with NO id is dropped, not defaulted.
- *
- * The id is the only part that makes a thread actionable — `resolveThread` takes it and nothing
- * else. A thread carried forward without one would show up in the blocked-merge reason as something
- * to answer and then be unanswerable, which is worse than not listing it: it would look like a task
- * and behave like a wall.
- */
-function normalizeThread(t: GraphQlThread): ReviewThread | null {
-  if (typeof t.id !== "string" || t.id.length === 0) return null;
+/** Called only after complete admission has checked every unique, nonempty ID. */
+function normalizeThread(t: GraphQlThread): ReviewThread {
   const first = t.comments?.nodes?.[0];
   const author = first?.author?.login;
   const body = first?.body;
@@ -300,16 +281,17 @@ function normalizeThread(t: GraphQlThread): ReviewThread | null {
   };
 }
 
-interface GraphQlContext {
-  readonly name?: string;
-  readonly status?: string;
-  readonly conclusion?: string;
-  readonly context?: string;
-  readonly state?: string;
-}
+type GraphQlContext =
+  | {
+      readonly __typename: "CheckRun";
+      readonly name: string;
+      readonly status: string;
+      readonly conclusion: string | null;
+    }
+  | { readonly __typename: "StatusContext"; readonly context: string; readonly state: string };
 
 function normalizeContext(c: GraphQlContext): { status?: string; conclusion?: string; name?: string } {
-  if (typeof c.context === "string") {
+  if (c.__typename === "StatusContext") {
     const st = (c.state ?? "").toUpperCase();
     if (st === "PENDING") return { name: c.context, status: "PENDING" };
     if (st === "SUCCESS") return { name: c.context, conclusion: "SUCCESS" };
