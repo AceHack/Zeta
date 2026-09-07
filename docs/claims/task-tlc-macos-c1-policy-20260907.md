@@ -2,7 +2,7 @@
 
 - **Session ID:** codex/tlc-c1-policy-20260907-740d
 - **Harness:** codex
-- **Claimed at:** 2026-09-07T10:53:00Z
+- **Claimed at:** 2026-09-07T06:54:47-04:00
 - **ETA:** Policy candidate, retained diagnostic evidence and independent review this session.
 - **Scope:** Pin C1-only compilation for TLC on macOS ARM64 after two retained alternate-runtime diagnostics; preserve all observed failures and avoid a root-cause claim.
 - **Durable target:** `workitems/081M1XR248G087G0R000H0WJT1-pin-c1-for-tlc-on-macos-arm64-after-in-run-runtime-failures.md` and `docs/research/2026-09-07-tlc-macos-c1-policy.md`.
