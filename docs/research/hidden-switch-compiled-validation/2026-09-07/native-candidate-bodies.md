@@ -416,3 +416,24 @@ fixture now resolves its captured path consistently. Lint/import-format
 failures remain retained. Final 13 tests and Ruff pass; no analyzer or real
 dump was opened during these synthetic checks. Reviewer acceptance is source
 inspection only and all runtime/body/closure admission remains false.
+
+The [first actual offline attempt](native-dump-analysis-attempt-1/manifest.json)
+ran committed source `e0e2eb082f2d7ed150f7a2ca4ad3a38d62876a7d` against the
+unchanged local-only dump. All three callable stub/cell/body chains had exact
+physical backing and body bytes matching the compiler candidates before
+analyzer startup. Empty symbol stores and the explicit local runtime path
+were admitted. The analyzer then returned actual `predict` metadata, but the
+driver refused at `ip2md-predict`: installed output says `Method Name` and
+`Current CodeAddr`, whereas the provisional parser expected `Name` and
+`CodeAddr`. Its separately indented version history also contains `CodeAddr`.
+The raw output preserves current address `000000010B720A20` and token
+`0000000006000495`, matching the selected candidate. This source-specific
+parser mismatch is distinct from a tool/runtime crash or missing method.
+
+The driver exited two; the owned analyzer exited zero, with no cleanup or
+output-publication failure. All 2,700 stdout bytes and empty stderr survive,
+alongside every successful physical prefix and command response. The attempt
+ended at 20:22:47.658546 UTC before any `clru` or post-query cached-DAC command.
+No method-extent, complete-closure or runtime admission is claimed. The
+coordinator authorized one separate corrected attempt only after preserving
+this refusal, exact-source review and discriminating synthetic cases.
