@@ -1,0 +1,56 @@
+{
+  "Task": "081M1XXWTTF087G0R000X1HMD0",
+  "ArtifactStatus": "registration-publication-proof; no implementation or experiment",
+  "RegistrationTag": "archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration",
+  "TagObject": "52cfa5665c2e21cdfc2be6a08b4b159c1048bb04",
+  "PeeledCommit": "8710ae4f4e37b727ccc8bb79e212a7bed433bbd0",
+  "ProtocolPath": "docs/research/2026-09-07-hidden-switch-compiled-protocol.md",
+  "ProtocolBytes": 43162,
+  "ProtocolSha256": "8bbdfe44a0844dd8ce4f6c5dd77b060a56e5b84ea94ea7a6fdbb482aec9d738a",
+  "RemoteTagVerifiedAtUtc": "2026-09-07T13:21:45+00:00",
+  "RemoteRefs": {
+    "refs/tags/archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration": "52cfa5665c2e21cdfc2be6a08b4b159c1048bb04",
+    "refs/tags/archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration^{}": "8710ae4f4e37b727ccc8bb79e212a7bed433bbd0"
+  },
+  "OriginalHistoryRefs": {
+    "refs/heads/codex/hidden-switch-compiled-protocol-review-provenance-20260907": "be7e9ab616728a1cf92181567e7dd1a54496c54a",
+    "refs/heads/codex/hidden-switch-prospective-note-20260907": "f47c9569c14e274225bf2fc1eea03a89d520809c"
+  },
+  "Gates": {
+    "BranchPublicationQuickChecksPassed": 16,
+    "TagPublicationQuickChecksPassed": 16,
+    "FreshNativeBuildOrTestsRun": false,
+    "PolicyOrSourceRuns": false
+  },
+  "ImplementationPrerequisites": [
+    "prior-study main integration verified",
+    "registration already remote-verified"
+  ],
+  "Artifacts": [
+    {
+      "Path": "registration-branches-preflight.log",
+      "Bytes": 2032,
+      "Sha256": "89ab978c4ff83bf31b8f4d41ebbecad33c2df7690da39497c2432e888cebb0b6"
+    },
+    {
+      "Path": "registration-tag-preflight.log",
+      "Bytes": 1535,
+      "Sha256": "e614ebe9524a4998d2e4c4837ebc2dff7c3ffbe2174985a10acbc12aca014528"
+    },
+    {
+      "Path": "registration-remote-tag.txt",
+      "Bytes": 225,
+      "Sha256": "7ae9f5c7da13c45106809071574da16527b4530874cbd4704ef99546499d0c45"
+    },
+    {
+      "Path": "registration-remote-branches.txt",
+      "Bytes": 400,
+      "Sha256": "6e8cb66dbda0149b13c32c30c54ecd450d34a3a11722e8f38ec46467e17fd161"
+    },
+    {
+      "Path": "registration-tag-object.txt",
+      "Bytes": 1445,
+      "Sha256": "36188fdd41e27f4f82ff39762078a92a9d86d9d6113bbd795aab7e376fe835f4"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03def35a7810a01300085396fc58",
+  "at": "2026-09-07T12:36:09.167Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XXWTTF087G0R000X1HMD0",
+    "type": "task",
+    "title": "Certify and measure a guarded compiled hidden-switch controller",
+    "slug": "certify-and-measure-a-guarded-compiled-hidden-switch-control",
+    "priority": "P2",
+    "filename": "081M1XXWTTF087G0R000X1HMD0-certify-and-measure-a-guarded-compiled-hidden-switch-control.md"
+  }
+}
