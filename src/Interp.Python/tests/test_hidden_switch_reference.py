@@ -445,6 +445,15 @@ def test_source_accounting_uses_only_unregistered_seed_and_rejects_bad_configura
             ref.source_tapes(seed, domain, count)
 
 
+def test_episode_index_admits_roster_edge_and_refuses_out_of_bounds():
+    tape = ref.hand_tapes()[0][1]
+    edge = ref.run_episode(ref.ARMS[0], True, "dot", "fixed", tape, index=1023)
+    assert edge["Index"] == 1023 and edge["Complete"] is True
+    for index in (-1, 1024, 2**31 - 1):
+        with pytest.raises(ValueError, match="episode index"):
+            ref.run_episode(ref.ARMS[0], True, "dot", "fixed", tape, index=index)
+
+
 def test_mixer_matches_preexisting_cross_language_golden_vectors():
     # Literal roster from src/Core.TypeScript/splitmix64/golden-vectors.json
     # at registration 6a3150037. No experiment stream is instantiated here.
