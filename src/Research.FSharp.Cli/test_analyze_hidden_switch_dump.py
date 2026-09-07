@@ -1,5 +1,6 @@
 """Synthetic driver admission and retention; no diagnostic tool or real dump."""
 
+import gzip
 import io
 import json
 import queue
@@ -57,12 +58,26 @@ class AnalyzerDriverTests(unittest.TestCase):
     def test_method_identity_fields_are_unique_anchored_and_exact(self):
         method = {"Type": "Zeta.Research.HiddenSwitchPolicy", "Name": "predict", "Token": 0x06000001}
         command = "ip2md 0000000000001000"
-        payload = "Name: Zeta.Research.HiddenSwitchPolicy.predict(Boolean, Double, Int32)\nmdToken: 0000000006000001\nCodeAddr: 0000000000001000"
+        payload = "Method Name: Zeta.Research.HiddenSwitchPolicy.predict(Boolean, Double, Int32)\nmdToken: 0000000006000001\nIsJitted: yes\nCurrent CodeAddr: 0000000000001000\nVersion History:\n     CodeAddr: 0000000000001000  (Optimized)"
         admit_method(response(command, payload), method, 0x1000)
-        for bad in [payload + "\nCodeAddr: 2000", payload.replace("predict(", "predictExtra("),
-                    payload.replace("Name:", "Error mentions Name:"), payload.replace("6000001", "6000002")]:
+        for bad in [payload + "\nCurrent CodeAddr: 2000", payload.replace("predict(", "predictExtra("),
+                    payload.replace("Method Name:", "Error mentions Method Name:"), payload.replace("6000001", "6000002"),
+                    payload.replace("Current CodeAddr:", "CodeAddr:"),
+                    payload.replace("Current CodeAddr: 0000000000001000", "Current CodeAddr: 0000000000002000"),
+                    payload.replace("IsJitted: yes", "IsJitted: no")]:
             with self.assertRaises(ValueError):
                 admit_method(response(command, bad), method, 0x1000)
+
+    def test_retained_installed_ip2md_response_passes_exact_current_fields(self):
+        root = Path(__file__).resolve().parents[2]
+        record = root / "docs/research/hidden-switch-compiled-validation/2026-09-07/native-dump-analysis-attempt-1/command-06.txt.gz"
+        method = {"Type": "Zeta.Research.HiddenSwitchPolicy", "Name": "predict", "Token": 100664469}
+        raw = gzip.decompress(record.read_bytes()).decode("utf-8")
+        admit_method(raw, method, 0x10B720A20)
+        # A matching historical CodeAddr cannot authorize a different current body.
+        changed = raw.replace("Current CodeAddr:     000000010b720a20", "Current CodeAddr:     000000010b720a24")
+        with self.assertRaises(ValueError):
+            admit_method(changed, method, 0x10B720A20)
 
     def test_hash_and_consumption_hold_one_descriptor_and_replacement_refuses(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -299,10 +299,12 @@ def admit_runtime(text, runtime, require_dac):
 
 def admit_method(text, method, body):
     lines = command_payload(text, f"ip2md {body:016X}")
-    name = one_field(lines, "Name")
+    name = one_field(lines, "Method Name")
     if not re.fullmatch(re.escape(method["Type"] + "." + method["Name"]) + r"\([^\r\n]*\)", name):
         raise ValueError("DAC method name is not the exact selected method signature")
-    code, token = one_field(lines, "CodeAddr"), one_field(lines, "mdToken")
+    if one_field(lines, "IsJitted") != "yes":
+        raise ValueError("DAC metadata does not identify generated native code")
+    code, token = one_field(lines, "Current CodeAddr"), one_field(lines, "mdToken")
     if not re.fullmatch(r"(?:0x)?[0-9a-fA-F]+", code) or not re.fullmatch(r"(?:0x)?[0-9a-fA-F]+", token) or int(code, 16) != body or int(token, 16) != method["Token"]:
         raise ValueError("DAC method token/code address differs from physical candidate")
 
