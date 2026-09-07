@@ -76,3 +76,44 @@ That placeholder source binding does not admit a complete implementation
 archive. Full source/runtime, executable falsifier and coordinator negative
 evidence remain prerequisites before the implementation archive and any
 registered measurement or speed claim.
+
+## Subsequent actual invocation and epsilon-tie slice
+
+The first separate native invocation capture also passed independent replay,
+once, with exit zero. Its ten ordered invocation rows matched the real
+independent reference computation, including ten delegate entries and eight
+evaluator entries. The two deliberately stubbed native choices were actually
+compared with the ordinary reference contract and refused with `ValueMismatch`
+at `Falsifiers.InvocationCases[8].Choice.Action` and the corresponding row 9.
+These are actual retained native wrong-action outputs, distinct from the
+earlier Python-generated mutation fixtures.
+
+The separate supplied-Q witness used exactly positive zero and admitted
+epsilon bits `3D719799812DEA11`. Actual unchanged native strict selection
+returned harvest 0; an explicitly executed inclusive-comparison mutant
+returned switch 1. The independent software binary64 selector returned 0,
+and its exact comparator rejected the native mutant at
+`SelectorWitness.Mutation.Action`. This supplied-Q conformance neither adds
+a belief sample/strategy nor demonstrates a registered behavioral outcome.
+
+The [invocation replay manifest](hidden-switch-compiled-validation/2026-09-07/native-invocation-replay-attempt-1/manifest.json)
+retains the exact harness, result/stdout, empty stderr and raw native capture,
+again with lossless stored/decompressed identities:
+
+- Native source: `8aede9982fc3ce1eb891c5d630710f778b3eff63`.
+- Independent reference tree: `05ef2a04fca26f0fb2bb1750d634bcc123ac8168`.
+- Native input: 7,457 bytes, SHA256
+  `9EBBC621583A24BF45DB3AD50F665CCD3EF3D4A7070004F9CDF4E58D705FD78D`.
+- Replay result/stdout SHA256:
+  `094130ADFE4A8F445BABB156533ADFB92EA7B5EE664FA29418EA973FC8EAD7EC`.
+- Producer-observed assembly SHA256:
+  `AC676DB9E4C28AE85ADDE5DF86989FC1020E33AFAEA4E46314E063BF600C04B3`.
+
+The small harness called the existing `_Checker.invocations` internal method
+directly, then the software selector and exact comparator. It did not call or
+claim success of the complete public falsifier API. Its explicit counts for
+all other slices, intervention and refusal groups remain zero. The source/file
+observations match the pinned reference tree; Python executable/version and
+the placeholder certificate bindings are the same as in the earlier slice.
+The input bytes were checked unchanged after replay. Full interventions,
+refusals, whole-hand, source archive and runtime admission remain pending.
