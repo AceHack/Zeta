@@ -129,6 +129,10 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // item's sub-tasks. A second authority for the same act would be two answers to "may this hat
   // break work down", and the first one to drift would be silent.
   break_down_work: { kind: "break_down_work", gate: "decompose", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `execute_item`'s gate, because submitting work IS the last step of doing it — and an IC must be
+  // able to. The bit is `canDoWork`, true at every level including individual contributor, which is
+  // the whole point: the tier that exists to do the work must be able to say it is finished.
+  submit_work: { kind: "submit_work", gate: "execute_item", scope: "unrestricted", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",

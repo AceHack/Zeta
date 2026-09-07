@@ -32,7 +32,16 @@ import { buildMenu, type NextAction, type World } from "../observe/observe";
 import { effectOf, orgSurfaceFor, type OrgEffect, type OrgView } from "./org-observe-bridge";
 import type { WorkTransfer } from "./work-stealing";
 import type { AlternateAssignment } from "./alternate-work";
-import { acceptGoal, assign, decompose, reassign, restateDirection, type Cascade } from "./goal-cascade";
+import {
+  acceptGoal,
+  assign,
+  decompose,
+  reassign,
+  restateDirection,
+  setState,
+  WorkState,
+  type Cascade,
+} from "./goal-cascade";
 import { postToAnchor, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, openArtifact } from "./artifact-deliberation";
 import { conveneOverArtifact } from "./artifact-meeting";
@@ -40,6 +49,8 @@ import { ExpectedOutput } from "./discussion-anchor";
 import type { Calendar } from "./work-schedule";
 import type { OrgChart } from "./org-chart";
 import { detectLag, type LagInput } from "./lag-detection";
+import { GateOutcome, runGateChain } from "./quality-gate";
+import { preferChooser, type OrgChooser } from "./org-decision";
 import { lagSignals } from "./lag-signals";
 
 /** The mutable half of the organization — what a tick can change. */
@@ -90,6 +101,14 @@ export interface DriveDeps {
    * never observes. A cadence supplies both this and a moving clock, together.
    */
   readonly directionReviewMs?: number;
+  /**
+   * How each gate decides. Absent approves, which is the deterministic driver.
+   *
+   * Named rather than hardcoded because a drive whose gates always pass cannot show a turn-back,
+   * and a turn-back is the interesting half: it is what bounds the submission loop and what the
+   * churn escalation exists for.
+   */
+  readonly gateChooser?: OrgChooser<GateOutcome>;
   readonly lagSweep?: {
     readonly observerHatId: string;
     readonly anchorId: string;
@@ -300,6 +319,49 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       if (!split.ok) return { state, changed: false, refusals: [split.reason] };
       const view: OrgView = { ...state.view, cascade: split.cascade.nodes };
       return { state: { ...state, cascade: split.cascade, view }, changed: true, refusals: [] };
+    }
+
+    case "submission": {
+      // THE ORGANIZATION DECIDES WHETHER IT IS DONE, not the hat that says so. Seven gates, each
+      // evaluated by a hat holding that gate's approval scope, and never by the proposer. This is
+      // the same call `org-cycle.ts` makes — deliberately the same call and not a second
+      // implementation of it, because a submission path that judged work differently from the
+      // scripted one would be a second, weaker route to a passed gate.
+      const run = runGateChain(deps.chart, {
+        workId: effect.workId,
+        chooser: deps.gateChooser ?? preferChooser<GateOutcome>(GateOutcome.Approved, "approve"),
+        atMs: deps.nowMs,
+        proposerHatId: effect.proposerHatId,
+      });
+
+      // THE ATTEMPT IS RECORDED WHETHER OR NOT IT PASSED. Counting only failures would leave a
+      // rejected-then-passed item looking untried, and counting only successes would never bound
+      // anything — the count is what closes this act's own opening.
+      const attempts = state.view.gateAttempts ?? { counts: new Map<string, number>(), maxAttempts: 3 };
+      const counts = new Map(attempts.counts);
+      counts.set(effect.workId, (counts.get(effect.workId) ?? 0) + 1);
+      const withAttempt: OrgView = { ...state.view, gateAttempts: { ...attempts, counts } };
+
+      if (!run.merged) {
+        // TURNED BACK IS A CHANGE. The work stayed open, but the organization now knows something
+        // it did not — which gate stopped it, and that an attempt was spent. Reporting this as
+        // "nothing happened" would make a drive settle while a hat was still being turned back.
+        return {
+          state: { ...state, view: withAttempt },
+          changed: true,
+          refusals: run.refusals.map((r) => `gates for ${effect.workId}: ${r}`),
+        };
+      }
+
+      const done = setState(state.cascade, effect.workId, WorkState.Done);
+      if (!done.ok) {
+        return { state: { ...state, view: withAttempt }, changed: true, refusals: [done.reason] };
+      }
+      return {
+        state: { ...state, cascade: done.cascade, view: { ...withAttempt, cascade: done.cascade.nodes } },
+        changed: true,
+        refusals: [],
+      };
     }
 
     case "priced": {

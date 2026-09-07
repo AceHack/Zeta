@@ -26,6 +26,9 @@ import { EMPTY_CALENDAR } from "./work-schedule";
 import { WorkType } from "./goal-cascade";
 import { directionOpenings, GenerativeKind } from "./generative-work";
 import type { DriveDeps, DriveState } from "./org-drive";
+import { GateOutcome } from "./quality-gate";
+import type { OrgChooser } from "./org-decision";
+import { BlockerKind } from "./blocker-taxonomy";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -37,9 +40,17 @@ const HATS = chart.hats.map((h) => h.id);
 const START = 1_000_000;
 const WEEK: Cadence = { periodMs: DAY_MS, periods: 7, maxRoundsPerPeriod: 60 };
 
-function fresh(): DriveState {
+function fresh(gates = false): DriveState {
   return {
-    view: { chart, board: EMPTY_BOARD, signals: [], cascade: [], artifacts: new Map(), blockers: new Map() },
+    view: {
+      chart,
+      board: EMPTY_BOARD,
+      signals: [],
+      cascade: [],
+      artifacts: new Map(),
+      blockers: new Map(),
+      ...(gates ? { gateAttempts: { counts: new Map<string, number>(), maxAttempts: 3 } } : {}),
+    },
     cascade: { nodes: [] },
     calendar: EMPTY_CALENDAR,
   };
@@ -208,5 +219,113 @@ describe("QUIET AND STUCK ARE DIFFERENT, and are counted apart", () => {
       ...out.state.view.signals.map((s) => s.signalId),
     ];
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe("A WEEK, END TO END, FROM AN EMPTY COMPANY", () => {
+  // No fixture: a chart, an empty cascade, and seven days. Everything below is what came out.
+  const week = runCadence(fresh(true), HATS, deps(DAY_MS), { periodMs: DAY_MS, periods: 7, maxRoundsPerPeriod: 80 });
+  const nodes = week.state.cascade.nodes;
+
+  test("it decides what it is for, breaks that down, documents it and prices it", () => {
+    expect(nodes.filter((n) => n.workType === WorkType.Goal)).toHaveLength(16);
+    expect(nodes.length).toBeGreaterThan(40);
+  });
+
+  test("AND IT FINISHES SOMETHING — through the gates, not by declaring itself done", () => {
+    // The last thing only `org-cycle.ts` could do. Work reaches `done` here by the SAME
+    // `runGateChain` the script calls: seven gates, none of them evaluated by the hat that did the
+    // work. A submission path that judged work more leniently than the scripted one would be a
+    // second, weaker route to a passed gate.
+    const done = nodes.filter((n) => n.state === "done");
+    expect(done.length).toBeGreaterThan(0);
+    expect(done.every((n) => n.assigneeHatId !== undefined)).toBe(true);
+  });
+
+  test("...and NOT ONE REFUSAL over seven days", () => {
+    const refused = week.periods
+      .flatMap((p) => p.rounds)
+      .flatMap((r) => r.ticks)
+      .filter((t) => t.refusals.length > 0);
+    expect(refused.map((t) => `${t.hatId}:${t.chosen?.kind}:${t.refusals[0]}`)).toEqual([]);
+  });
+
+  test("THE WORK IT COULD NOT STAFF IS REPORTED, not left sitting open in silence", () => {
+    // Three of the seed's four leads supervise nobody, so three of its four tasks can never be
+    // assigned. Before this the organization looked settled while three quarters of what it had
+    // decided to do was unstaffable — every step correct, the aggregate wrong, and silent.
+    const raised = new Set(week.state.view.signals.map((s) => s.title));
+    const orphanedOwners = new Set(
+      nodes
+        .filter((n) => n.workType === WorkType.Task && n.assigneeHatId === undefined)
+        .map((n) => `staff:${n.ownerHatId}`),
+    );
+    expect(orphanedOwners.size).toBeGreaterThan(0);
+    for (const subject of orphanedOwners) expect(raised.has(subject)).toBe(true);
+  });
+
+  test("every unfinished task is either staffed or reported — none is merely forgotten", () => {
+    // The property the previous test measures, stated as the rule it exists for. A task with
+    // nobody on it and nothing said about it is the exact defect this register was built to end.
+    const raised = new Set(week.state.view.signals.map((s) => s.title));
+    for (const task of nodes.filter((n) => n.workType === WorkType.Task && n.state === "open")) {
+      expect(task.assigneeHatId !== undefined || raised.has(`staff:${task.ownerHatId}`)).toBe(true);
+    }
+  });
+});
+
+describe("WHEN THE GATES SAY NO — the bound, and the fact somebody is told", () => {
+  // Every gate rejects. The interesting half of the submission verb: a passing drive cannot show
+  // that a turned-back submission is bounded, and an unbounded one is a loop.
+  const rejectAll: OrgChooser<GateOutcome> = (legal) => {
+    const i = legal.indexOf(GateOutcome.Rejected);
+    return { index: i < 0 ? 0 : i, reason: "rejected" };
+  };
+  const MAX = 2;
+
+  const out = (() => {
+    let n = 0;
+    const state = fresh(true);
+    const view = { ...state.view, gateAttempts: { counts: new Map<string, number>(), maxAttempts: MAX } };
+    return runCadence(
+      { ...state, view },
+      HATS,
+      {
+        chart,
+        nowMs: START,
+        createId: (p) => `${p}-${String((n += 1))}`,
+        resourceAuthorityHatId: "rmo_office",
+        directionReviewMs: DAY_MS,
+        gateChooser: rejectAll,
+      },
+      { periodMs: DAY_MS, periods: 3, maxRoundsPerPeriod: 80 },
+    );
+  })();
+
+  test("NOTHING IS DELIVERED — the gates decide, and they said no", () => {
+    expect(out.state.cascade.nodes.filter((n) => n.state === "done")).toEqual([]);
+  });
+
+  test("THE SUBMISSION IS BOUNDED — twice, not forever", () => {
+    const attempts = [...(out.state.view.gateAttempts?.counts.values() ?? [])];
+    expect(attempts).toEqual([MAX]);
+    const submissions = out.periods
+      .flatMap((p) => p.rounds)
+      .flatMap((r) => r.ticks)
+      .filter((t) => t.chosen?.kind === "submit_work");
+    expect(submissions).toHaveLength(MAX);
+  });
+
+  test("AND SOMEBODY IS TOLD — exhaustion is a blocker, routed and raised ONCE", () => {
+    // The bound alone was a counter nobody read at the limit: the count reached the maximum, the
+    // opening closed, and the work sat open in silence. A reader with no writer.
+    const blocked = out.state.view.signals.filter((s) => s.title === BlockerKind.ReleaseBlocked);
+    expect(blocked).toHaveLength(1);
+    expect(blocked[0]?.workItemId).toBeDefined();
+    expect(blocked[0]?.toHatId).not.toBe(blocked[0]?.fromHatId);
+  });
+
+  test("...and it still SETTLES — a refusal is not a reason to spin", () => {
+    expect(out.periods.every((p) => p.settled)).toBe(true);
   });
 });

@@ -34,6 +34,10 @@ describe("argument parsing", () => {
     // not have one unless told to.
     expect(parseArgs([])).toEqual({
       qaFails: false, churn: false, json: false, cycleOnly: false, admin: false, store: undefined,
+      // `--week` runs the organization DRIVING ITSELF rather than the scripted cycle. Off by
+      // default like every other mode; `days` is absent rather than undefined, because
+      // `exactOptionalPropertyTypes` makes those different things and the parser respects it.
+      week: false,
       // Every port unspecified means every port SIMULATED — and `providersFromArgs` is where that
       // becomes an adapter, so the default is a decision made in one visible place.
       inbox: undefined, workCmd: undefined, testCmd: undefined, git: undefined, baseBranch: "main",

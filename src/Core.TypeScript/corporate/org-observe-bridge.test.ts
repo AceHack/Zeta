@@ -361,3 +361,122 @@ describe("YOU SPEAK ONCE PER VERSION — deliberation, not chatter", () => {
     expect(deliberationsOf(withPost("qa_director", "some-older-revision"), "qa_director").length).toBe(1);
   });
 });
+
+describe("SUBMITTING WORK — the assignee, and nobody else", () => {
+  const submit = (subjectId: string): NextAction => ({ kind: "submit_work", subjectId, reason: "done" });
+  const assigned = (over: Partial<CascadeNode> = {}) =>
+    view({ cascade: [node({ assigneeHatId: "backend_implementer", ...over })] });
+
+  test("the assignee's submission becomes a submission effect carrying the PROPOSER", () => {
+    // Carried rather than re-derived at the point of application, because `runGateChain` uses it to
+    // keep every gate off the hat that did the work — and the cascade is about to change.
+    const r = effectOf(assigned(), "backend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.effect).toEqual({ kind: "submission", workId: "task-1", proposerHatId: "backend_implementer" });
+  });
+
+  test("REFUSED: a hat submitting work assigned to somebody else", () => {
+    // Re-derived here rather than trusted from the menu: the surface was built at an earlier
+    // moment and the work may have been reassigned since, which would put the real assignee's name
+    // on somebody else's claim.
+    const r = effectOf(assigned(), "frontend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("assigned to 'backend_implementer'");
+  });
+
+  test("REFUSED: work nobody has done", () => {
+    const r = effectOf(view({ cascade: [node()] }), "backend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("no assignee");
+  });
+
+  test("REFUSED: work that is already finished, or cancelled", () => {
+    for (const state of [WorkState.Done, WorkState.Canceled]) {
+      const r = effectOf(assigned({ state }), "backend_implementer", submit("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+      expect(r.ok).toBe(false);
+      if (!r.ok) expect(r.reason).toContain(`already ${state}`);
+    }
+  });
+
+  test("REFUSED: a work item that does not exist", () => {
+    const r = effectOf(assigned(), "backend_implementer", submit("nope"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+  });
+});
+
+describe("EXHAUSTED AT THE GATES is a blocker, not a silence", () => {
+  // `submissionOpenings` bounds resubmission so a turned-back item is not offered forever. Correct,
+  // and by itself it produced a counter nobody read at the limit: the count reached the bound, the
+  // opening closed, and the work sat open with nobody told. This is the writer for that reader.
+  const withAttempts = (count: number, over: Partial<CascadeNode> = {}) =>
+    view({
+      cascade: [node({ assigneeHatId: "backend_implementer", ...over })],
+      gateAttempts: { counts: new Map([["task-1", count]]), maxAttempts: 3 },
+    });
+
+  test("at the bound, the assignee has a classified blocker to raise", () => {
+    const missing = orgSurfaceFor(withAttempts(3), "backend_implementer").missing ?? [];
+    expect(missing).toHaveLength(1);
+    expect(missing[0]?.kind).toBe("release_blocked");
+    expect(missing[0]?.blocking).toBe("task-1");
+  });
+
+  test("BELOW THE BOUND IT IS NOT A BLOCKER — the hat can still try", () => {
+    // Reporting a first turn-back as a blocker would fire on the ordinary case, and a signal that
+    // fires on the ordinary case stops being read.
+    expect(orgSurfaceFor(withAttempts(2), "backend_implementer").missing ?? []).toEqual([]);
+    expect(orgSurfaceFor(withAttempts(0), "backend_implementer").missing ?? []).toEqual([]);
+  });
+
+  test("FINISHED WORK IS NOT BLOCKED, whatever it cost to get there", () => {
+    // An item that took every attempt and then passed is not stuck; reporting it would leave a
+    // blocker standing against work that is done.
+    expect(orgSurfaceFor(withAttempts(3, { state: WorkState.Done }), "backend_implementer").missing ?? []).toEqual([]);
+  });
+
+  test("it is the ASSIGNEE'S blocker, not the owner's", () => {
+    expect(orgSurfaceFor(withAttempts(3), "engineering_manager").missing ?? []).toEqual([]);
+  });
+
+  test("NO GATE TRACKING MEANS NO REPORT — a register that cannot count cannot claim", () => {
+    const untracked = view({ cascade: [node({ assigneeHatId: "backend_implementer" })] });
+    expect(orgSurfaceFor(untracked, "backend_implementer").missing ?? []).toEqual([]);
+  });
+});
+
+describe("A DIRECTION IS NOT AN OUT-OF-DOMAIN FALLBACK", () => {
+  // Measured from a five-day run: seventeen supply reports reached the RMO and SIXTEEN of them were
+  // the design working. A direction is held by an executive by rule — `acceptGoal` refuses one
+  // accepted below c_suite — and an executive is in the governance department, not in the
+  // department that owns the domain. So every goal read as a fallback.
+  //
+  // A signal that fires on the ordinary case stops being read, and the one real fallback in that
+  // list is what it would have cost.
+  const goal = node({
+    workId: "direction-implementation",
+    workType: WorkType.Goal,
+    title: "ship it",
+    ownerHatId: "cto",
+    domain: "implementation",
+  });
+
+  test("a goal held by an executive raises NOTHING", () => {
+    const supply = orgSurfaceFor(view({ cascade: [goal] }), "rmo_office", "rmo_office").generative ?? [];
+    expect(supply.filter((g) => g.subjectId.startsWith("domain-fallback:"))).toEqual([]);
+  });
+
+  test("...and a PROJECT genuinely outside its domain still does", () => {
+    // The falsifier's other half: excluding goals must not silence the real thing. The seed's
+    // engineering line changes department at the manager rung, so an implementation project owned
+    // there is out of domain — measured, and the reason `domain-ontology.ts` reports fallbacks.
+    const project = node({
+      workId: "proj-1",
+      workType: WorkType.Project,
+      title: "cart",
+      ownerHatId: "engineering_manager",
+      domain: "implementation",
+    });
+    const supply = orgSurfaceFor(view({ cascade: [project] }), "rmo_office", "rmo_office").generative ?? [];
+    expect(supply.map((g) => g.subjectId)).toContain("domain-fallback:proj-1");
+  });
+});

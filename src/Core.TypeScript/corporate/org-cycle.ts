@@ -1,9 +1,44 @@
 /**
- * corporate/org-cycle.ts — one full turn of the organization, end to end.
+ * corporate/org-cycle.ts — ONE SCRIPTED STORY, not the organization's loop.
  *
- * This is the module that makes the other five a system rather than five libraries. It runs the
- * whole loop the corporate register describes, in order, with every step's refusal surfaced rather
- * than skipped:
+ * ── READ THIS FIRST: THIS MODULE HAS BEEN DEMOTED ────────────────────────────
+ * For most of this register's life the nine phases below were the ONLY way the acts that create
+ * work could happen. Accepting a goal, deciding a priority, sizing hat supply, submitting finished
+ * work — every one of them was reachable from here and from nowhere else. That had a consequence
+ * nobody wrote down and everybody could read off a run:
+ *
+ *   > **The C-suite did not set direction. This file set direction, in a fixed order, and named a
+ *   > C-suite hat as the one it happened to.**
+ *
+ * That is no longer true. `generative-work.ts` derives those acts as OPENINGS on a hat's own menu,
+ * `org-drive.ts` applies them, and `org-cadence.ts` runs the result across a span of time. An empty
+ * company now decides what it is for, breaks that down, documents it, prices it, staffs it, submits
+ * it through the same gate chain this file calls, and reports what it could not staff — with no
+ * script anywhere in the path.
+ *
+ * **So `runOrgCycle` is a FIXTURE now: one deterministic story, useful because it is the same story
+ * every time.** It is not what the organization does. If you are asking "what would this
+ * organization do next", the answer is `driveRound`; over a week, `runCadence`.
+ *
+ * ── WHAT IT STILL COVERS THAT THE DRIVE DOES NOT ─────────────────────────────
+ * Kept rather than deleted, and this list is the reason. Each is a real capability with real tests
+ * behind it that no tick can reach yet, and shipping a smaller organization to be able to say the
+ * script was gone would be a loss dressed as progress:
+ *
+ *   - **Scheduled work blocks** (phase 5). The drive never books a calendar.
+ *   - **The accountable chain meeting** (phase 6). The drive convenes only over a DIVERGED
+ *     artifact; a planned meeting across every level's calendar is this file's alone.
+ *   - **The churn escalation** (phase 8). The drive bounds resubmission and reports exhaustion as a
+ *     routed blocker — it does not DECIDE what to do about it. `escalation.ts` chooses between
+ *     adding agents, bringing in an architect, re-scoping and the rest, and that decision is still
+ *     only made here.
+ *   - **A configurable outcome per task** (`outcomeFor`). The drive's assignees always submit.
+ *
+ * Each of those is a next change, not a defect in this file.
+ *
+ * ── THE NINE PHASES ──────────────────────────────────────────────────────────
+ * It runs the whole loop the corporate register describes, in order, with every step's refusal
+ * surfaced rather than skipped:
  *
  *   1. the C-suite ACCEPTS a goal                              (goal-cascade)
  *   2. it CASCADES to initiative → project → task, each rung owned by the accountable level

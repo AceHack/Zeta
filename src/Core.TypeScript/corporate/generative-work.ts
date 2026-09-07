@@ -70,6 +70,15 @@ export const GenerativeKind = {
    * decomposition is an organization that decides what it wants and never asks anyone to do it.
    */
   BreakDownWork: "break_down_work",
+  /**
+   * Say the work is finished, and let the organization decide whether it is.
+   *
+   * The last thing `org-cycle.ts` could do that a tick could not, and the reason a cadence's later
+   * days had nothing but restatements in them: work was created, staffed, documented and priced,
+   * and never completed. A company that cannot finish anything has no second week — every domain
+   * stays occupied by its first goal forever, so the C-suite is never asked what is next.
+   */
+  SubmitWork: "submit_work",
 } as const;
 
 export type GenerativeKind = (typeof GenerativeKind)[keyof typeof GenerativeKind];
@@ -432,6 +441,104 @@ export function breakdownOpenings(
   return out;
 }
 
+/**
+ * Assigned leaf work its assignee believes is done.
+ *
+ * OFFERED TO THE ASSIGNEE, never to the owner: the hat that did the work is the only one that can
+ * say it is finished, and the gates that follow are evaluated by everyone EXCEPT that hat. That
+ * separation is `runGateChain`'s, and this offer is shaped so it cannot be sidestepped — an owner
+ * who could submit its report's work would be proposing and approving in one act.
+ *
+ * `attempts` bounds the re-offer. A turned-back submission leaves the work OPEN, which would put
+ * the same act back on the same menu next round — the livelock this drive has produced three times
+ * — so the count is read from the organization and the opening closes when the bound is reached.
+ * That bound is the churn threshold under another name, and reaching it is the escalation's cue
+ * rather than a reason to keep trying.
+ */
+export function submissionOpenings(
+  cascade: readonly CascadeNode[],
+  attempts: ReadonlyMap<string, number>,
+  maxAttempts: number,
+): readonly GenerativeOpening[] {
+  const out: GenerativeOpening[] = [];
+  for (const node of cascade) {
+    if (!isLive(node)) continue;
+    if (!isLeafType(node.workType)) continue;
+    if (node.assigneeHatId === undefined) continue;
+    const tried = attempts.get(node.workId) ?? 0;
+    if (tried >= maxAttempts) continue;
+    out.push({
+      kind: GenerativeKind.SubmitWork,
+      byHatId: node.assigneeHatId,
+      prompt: `submit '${node.title}' for review`,
+      subjectId: node.workId,
+      ...(node.domain === undefined ? {} : { domain: node.domain }),
+      because:
+        tried === 0
+          ? `'${node.workId}' is assigned and open`
+          : `'${node.workId}' came back from the gates ${String(tried)} time(s)`,
+    });
+  }
+  return out;
+}
+
+/**
+ * Work that reached the bottom of the ladder and has nobody to do it.
+ *
+ * ── THE MEASUREMENT ──────────────────────────────────────────────────────────
+ * A full simulated week produced four tasks and delivered ONE. The other three sat open forever,
+ * and nothing anywhere said why. The reason is a fact about the chart that nothing was reporting:
+ *
+ *   team_lead              -> 0 individual contributors
+ *   mission_control_lead   -> 0
+ *   customer_feedback_lead -> 0
+ *   tech_lead              -> 2
+ *
+ * Tasks are owned at LEAD level — `CASCADE_RUNGS` says so — and three of the seed's four leads
+ * supervise nobody. So `assignableBy` correctly offered nothing, the work correctly stayed
+ * unassigned, and the organization looked settled while three quarters of what it had decided to do
+ * was unstaffable. Every step right, the aggregate wrong, and silent: this register's whole subject.
+ *
+ * A DIFFERENT GAP FROM `breakdownOpenings`', and kept separate for that reason. That one is "no hat
+ * exists at the rung below"; this is "the rung's hat exists and has nobody under it". Same owner —
+ * the RMO — and different repairs, so collapsing them would report a hiring problem as a
+ * reorganization one.
+ */
+export function staffingOpenings(
+  chart: OrgChart,
+  cascade: readonly CascadeNode[],
+  resourceAuthorityHatId: string,
+  alreadyRaised: ReadonlySet<string>,
+): readonly GenerativeOpening[] {
+  if (chart.byId.get(resourceAuthorityHatId) === undefined) return [];
+  const out: GenerativeOpening[] = [];
+  for (const node of cascade) {
+    if (!isLive(node)) continue;
+    if (!isLeafType(node.workType)) continue;
+    if (node.assigneeHatId !== undefined) continue;
+    const contributors = hatsAtLevel(chart, "individual_contributor").filter(
+      (h) => h.id !== node.ownerHatId && reportsUpTo(chart, h.id, node.ownerHatId),
+    );
+    // WORK THAT SIMPLY HAS NOT BEEN ASSIGNED YET IS NOT A GAP. The owner has somebody and will
+    // place it; reporting that as a shortfall would fire on the ordinary case, and a signal that
+    // fires on the ordinary case stops being read.
+    if (contributors.length > 0) continue;
+    // Keyed on the OWNER, not the work item: every task a hollow lead owns is one hiring problem.
+    const subjectId = `staff:${node.ownerHatId}`;
+    if (alreadyRaised.has(subjectId)) continue;
+    if (out.some((o) => o.subjectId === subjectId)) continue;
+    out.push({
+      kind: GenerativeKind.SizeHatSupply,
+      byHatId: resourceAuthorityHatId,
+      prompt: `no individual contributor reports up to '${node.ownerHatId}'`,
+      subjectId,
+      ...(node.domain === undefined ? {} : { domain: node.domain }),
+      because: `'${node.workId}' is an open ${node.workType} nobody under '${node.ownerHatId}' can do`,
+    });
+  }
+  return out;
+}
+
 export interface GenerativeInput {
   readonly chart: OrgChart;
   readonly cascade: readonly CascadeNode[];
@@ -453,6 +560,14 @@ export interface GenerativeInput {
   readonly raisedSupplySubjects?: ReadonlySet<string>;
   /** Absent means no direction is ever revisited — see `directionOpenings`. */
   readonly directionClock?: DirectionClock;
+  /**
+   * How many times each work item has been through the gates, and how many times it may be.
+   *
+   * ABSENT MEANS NOTHING IS EVER SUBMITTED. A register that does not track attempts cannot bound
+   * them, and offering an unbounded submission is offering a loop — so the honest default is to
+   * offer nothing rather than to assume a bound nobody set.
+   */
+  readonly gates?: { readonly attempts: ReadonlyMap<string, number>; readonly maxAttempts: number };
 }
 
 /**
@@ -471,6 +586,10 @@ export function generativeOpeningsFor(input: GenerativeInput, hatId: string): re
     ...supplyOpenings(input.chart, input.resourceAuthorityHatId, raised),
     ...outOfDomainOpenings(input.routings ?? [], input.resourceAuthorityHatId, raised),
     ...breakdownOpenings(input.chart, input.cascade, input.resourceAuthorityHatId, raised),
+    ...staffingOpenings(input.chart, input.cascade, input.resourceAuthorityHatId, raised),
+    ...(input.gates === undefined
+      ? []
+      : submissionOpenings(input.cascade, input.gates.attempts, input.gates.maxAttempts)),
   ];
   return all
     .filter((o) => o.byHatId === hatId)

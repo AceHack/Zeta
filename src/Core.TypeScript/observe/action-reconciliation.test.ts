@@ -29,7 +29,7 @@ const OTHER: BacklogItem = { id: "081KQ0YZ80008QG0R002T6TM7Z", title: "Someone e
 const MERGE: BacklogItem = { id: "merge-pr-42", title: "Merge PR 42", ready: true, ambiguous: false };
 
 describe("the table is total and self-consistent", () => {
-  test("covers exactly the 26 NextAction kinds", () => {
+  test("covers exactly the 27 NextAction kinds", () => {
     // SIXTEEN until the grammar gained peer verbs. The number is pinned rather than derived on
     // purpose — the table is `Record<ActionKind, ActionRow>`, so a new kind cannot be missing a
     // row, but it CAN be added without anyone noticing the grammar grew. This assertion is the
@@ -39,13 +39,13 @@ describe("the table is total and self-consistent", () => {
     // `request_information`, `assign_work`. Before them the grammar had exactly one communication
     // verb and it addressed the human.
     //
-    // +5 generative verbs: `set_direction`, `draft_business_doc`, `decide_priority`,
-    // `size_hat_supply`, `break_down_work`. Before them every verb in the grammar ADVANCED work
+    // +6 generative verbs: `set_direction`, `draft_business_doc`, `decide_priority`,
+    // `size_hat_supply`, `break_down_work`, `submit_work`. Before them every verb in the grammar ADVANCED work
     // that already existed and none of them made any, so an organization built from this grammar
     // ran to a fixed point and stopped. The fifth was added after measuring the first four: the
     // drive set sixteen directions and then stopped with sixteen root goals and nothing under
     // any of them.
-    expect(ALL_KINDS).toHaveLength(26);
+    expect(ALL_KINDS).toHaveLength(27);
   });
 
   test("every row's key agrees with its own kind — a copy-paste row is a real risk here", () => {

@@ -15,7 +15,9 @@
  *   bun src/Core.TypeScript/corporate/run-org.ts --qa-fails       (QA rejects; nothing delivers)
  *   bun src/Core.TypeScript/corporate/run-org.ts --churn          (repeated failure → escalation)
  *   bun src/Core.TypeScript/corporate/run-org.ts --json           (the full report, for a pipe)
- *   bun src/Core.TypeScript/corporate/run-org.ts --cycle          (the delivery loop alone)
+ *   bun src/Core.TypeScript/corporate/run-org.ts --week           (the organization running ITSELF)
+ *   bun src/Core.TypeScript/corporate/run-org.ts --week --days 30 (…for longer)
+ *   bun src/Core.TypeScript/corporate/run-org.ts --cycle          (one SCRIPTED story; see org-cycle.ts)
  *   bun src/Core.TypeScript/corporate/run-org.ts --admin          (also exercise the operator surface)
  *
  * By default every port is SIMULATED, and the run says so. To make one of them real:
@@ -44,6 +46,10 @@ import { buildOrgChart } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout } from "./org-runtime";
 import { firstContributorUnder, runOrgCycle } from "./org-cycle";
+import { DAY_MS, runCadence } from "./org-cadence";
+import { EMPTY_CASCADE } from "./goal-cascade";
+import { EMPTY_BOARD } from "./discussion-anchor";
+import { EMPTY_CALENDAR } from "./work-schedule";
 import {
   anchorIsCloseable,
   cascadeHealth,
@@ -155,6 +161,10 @@ export interface Args {
   readonly churn: boolean;
   readonly json: boolean;
   readonly cycleOnly: boolean;
+  /** Run the organization across a span of days, driving itself. No plan, no script. */
+  readonly week: boolean;
+  /** How many days `--week` runs. Absent is seven. */
+  readonly days?: number;
   readonly admin: boolean;
   /** Where to persist the run's history. Absent means the run leaves no trace on disk. */
   readonly store: string | undefined;
@@ -312,6 +322,10 @@ export function parseArgs(argv: readonly string[]): Args {
     json: argv.includes("--json"),
     store: ((i) => (i >= 0 ? argv[i + 1] : undefined))(argv.indexOf("--store")),
     cycleOnly: argv.includes("--cycle"),
+    week: argv.includes("--week"),
+    // Spread rather than assigned, because `exactOptionalPropertyTypes` is on and an explicit
+    // `undefined` is not the same as an absent key.
+    ...((v) => (v === undefined ? {} : { days: Number.parseInt(v, 10) }))(valueAfter(argv, "--days")),
     admin: argv.includes("--admin"),
   };
 }
@@ -585,6 +599,71 @@ export async function main(argv: readonly string[]): Promise<number> {
   // Epoch 0 unless the caller declares otherwise — see `--now`. Never `Date.now()`: an ambient
   // clock would make this run unreplayable and would leak wall time into the observe-act window.
   const nowMs = args.now === undefined ? 0 : Date.parse(args.now);
+
+  // ── A WEEK OF THE ORGANIZATION RUNNING ITSELF ─────────────────────────────
+  // The drive as a SHIPPED path, not only a tested one. Everything below this line and above the
+  // `--cycle` branch is what an empty company does when nobody scripts it: sixteen executives
+  // decide what their departments are for, directors break that down, the business side documents
+  // it, supervisors price it, leads staff what they can, assignees submit through the gates, and
+  // the RMO is told about every rung and every lead the chart cannot fill.
+  //
+  // No plan, no goal title, no phase list — the seeded chart and a calendar.
+  if (args.week) {
+    const chartHats = chart.hats.map((h) => h.id);
+    const result = runCadence(
+      {
+        view: {
+          chart,
+          board: EMPTY_BOARD,
+          signals: [],
+          cascade: [],
+          artifacts: new Map(),
+          blockers: new Map(),
+          gateAttempts: { counts: new Map<string, number>(), maxAttempts: 3 },
+        },
+        cascade: EMPTY_CASCADE,
+        calendar: EMPTY_CALENDAR,
+      },
+      chartHats,
+      {
+        chart,
+        nowMs,
+        createId,
+        resourceAuthorityHatId: "rmo_office",
+        directionReviewMs: DAY_MS,
+      },
+      { periodMs: DAY_MS, periods: args.days ?? 7, maxRoundsPerPeriod: 80 },
+    );
+    if (args.json) {
+      console.log(JSON.stringify({ summary: result.summary, periods: result.periods.map((p) => ({ index: p.index, atMs: p.atMs, changes: p.changes, settled: p.settled })), cascade: result.state.cascade.nodes }, null, 2));
+    } else {
+      console.log(result.summary);
+      for (const p of result.periods) {
+        console.log(`  day ${String(p.index + 1)}: ${String(p.changes)} change(s) over ${String(p.rounds.length)} round(s)${p.settled ? "" : " — DID NOT SETTLE"}`);
+      }
+      const nodes = result.state.cascade.nodes;
+      const byType = new Map<string, number>();
+      for (const node of nodes) byType.set(node.workType, (byType.get(node.workType) ?? 0) + 1);
+      console.log(`
+--- what it built ---`);
+      for (const [type, count] of [...byType].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
+        console.log(`  ${type.padEnd(12)} ${String(count)}`);
+      }
+      console.log(`  ${"delivered".padEnd(12)} ${String(nodes.filter((node) => node.state === "done").length)}`);
+      console.log(`  ${"documents".padEnd(12)} ${String(result.state.view.artifacts.size)}`);
+      // THE GAPS, printed beside the achievements rather than under them. A run that shows what an
+      // organization built and hides what it could not staff is the report this whole register
+      // exists to refuse.
+      const raised = result.state.view.signals;
+      console.log(`
+--- what it could not do ---`);
+      if (raised.length === 0) console.log("  (nothing was raised)");
+      for (const signal of raised) console.log(`  ${signal.fromHatId} -> ${signal.toHatId}: ${signal.title}`);
+    }
+    // A week is not a delivery verdict. It exits 0 if the organization ran; whether it delivered
+    // is in the report, and collapsing that to an exit code would answer a question nobody asked.
+    return 0;
+  }
 
   // ── The delivery loop alone ───────────────────────────────────────────────
   if (args.cycleOnly) {

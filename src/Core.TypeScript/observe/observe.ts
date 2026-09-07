@@ -215,7 +215,8 @@ export type GenerativeOpening =
       readonly prompt: string;
       /** The id the first child would take. Supplied by the register, so a re-offer is the same act. */
       readonly childId: string;
-    };
+    }
+  | { readonly kind: "submit_work"; readonly subjectId: string; readonly prompt: string };
 
 export interface World {
   readonly backlog: readonly BacklogItem[];
@@ -516,7 +517,9 @@ export type NextAction =
   /** Say the organization is missing a hat. The only verb whose effect is on the CHART. */
   | { kind: "size_hat_supply"; subjectId: string; reason: string }
   /** Turn one thing into the things it is made of. The verb that makes a ladder run. */
-  | { kind: "break_down_work"; subjectId: string; childId: string; title: string; reason: string };
+  | { kind: "break_down_work"; subjectId: string; childId: string; title: string; reason: string }
+  /** Say the work is finished. What happens next is not this agent's to decide. */
+  | { kind: "submit_work"; subjectId: string; reason: string };
 
 
 /**
@@ -560,6 +563,8 @@ function generativeAction(g: GenerativeOpening): NextAction {
       };
     case "size_hat_supply":
       return { kind: "size_hat_supply", subjectId: g.subjectId, reason: g.prompt };
+    case "submit_work":
+      return { kind: "submit_work", subjectId: g.subjectId, reason: g.prompt };
     case "break_down_work":
       return {
         kind: "break_down_work",
@@ -1283,6 +1288,7 @@ export function simulate(world: World, action: NextAction): World {
     case "decide_priority":
     case "size_hat_supply":
     case "break_down_work":
+    case "submit_work":
       return world;
   }
 }

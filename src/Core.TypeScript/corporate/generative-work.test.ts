@@ -19,6 +19,8 @@ import {
   GenerativeKind,
   generativeOpeningsFor,
   priorityOpenings,
+  staffingOpenings,
+  submissionOpenings,
   supplyOpenings,
 } from "./generative-work";
 import { Domain } from "./domain-ontology";
@@ -334,5 +336,111 @@ describe("AN EMPTY COMPANY STARTS ITSELF", () => {
   test("and it SETTLES — generative is not the same as never finished", () => {
     expect(out.settled).toBe(true);
     expect(out.rounds.slice(0, -1).filter((r) => r.changes === 0)).toEqual([]);
+  });
+});
+
+describe("SUBMISSION — the assignee says it is done, the organization decides", () => {
+  const task = (over: Partial<CascadeNode> = {}) =>
+    node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "tech_lead", assigneeHatId: "backend_implementer", ...over });
+
+  test("offered to the ASSIGNEE, never the owner", () => {
+    // The hat that did the work is the only one that can say it is finished, and `runGateChain`
+    // then keeps that same hat off every gate. Offering the owner would let one hat propose and
+    // approve in a single act.
+    const open = submissionOpenings([task()], new Map(), 3);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("backend_implementer");
+    expect(open[0]?.kind).toBe(GenerativeKind.SubmitWork);
+  });
+
+  test("unassigned work is not submittable — nobody has done it", () => {
+    const { assigneeHatId: _none, ...unassigned } = task();
+    expect(submissionOpenings([unassigned], new Map(), 3)).toEqual([]);
+  });
+
+  test("a NON-LEAF is not submittable — a project is finished by its children", () => {
+    expect(submissionOpenings([task({ workType: WorkType.Project })], new Map(), 3)).toEqual([]);
+  });
+
+  test("finished work is not resubmitted", () => {
+    expect(submissionOpenings([task({ state: WorkState.Done })], new Map(), 3)).toEqual([]);
+  });
+
+  test("THE ATTEMPT BOUND CLOSES IT — a turn-back leaves the work open, so this is the guard", () => {
+    // Without a bound, a rejected submission is re-offered every round forever: the fourth
+    // instance of this drive's one recurring livelock.
+    expect(submissionOpenings([task()], new Map([["t-1", 2]]), 3)).toHaveLength(1);
+    expect(submissionOpenings([task()], new Map([["t-1", 3]]), 3)).toEqual([]);
+  });
+
+  test("...and the reason SAYS which case it is", () => {
+    expect(submissionOpenings([task()], new Map(), 3)[0]?.because).toContain("assigned and open");
+    expect(submissionOpenings([task()], new Map([["t-1", 1]]), 3)[0]?.because).toContain("came back from the gates");
+  });
+
+  test("NO ATTEMPT TRACKING MEANS NO SUBMISSION AT ALL", () => {
+    // `generativeOpeningsFor` offers none without `gates`, because a register that cannot count
+    // attempts cannot bound them, and an unbounded offer is a loop rather than a permission.
+    const input = {
+      chart,
+      cascade: [task()],
+      artifactIds: new Set(["doc-t-1"]),
+      pricedWorkIds: new Set(["t-1"]),
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "backend_implementer")).toEqual([]);
+    const withGates = generativeOpeningsFor(
+      { ...input, gates: { attempts: new Map(), maxAttempts: 3 } },
+      "backend_implementer",
+    );
+    expect(withGates.map((o) => o.kind)).toEqual([GenerativeKind.SubmitWork]);
+  });
+});
+
+describe("STAFFING — a lead who supervises nobody, and the work that dies there", () => {
+  // MEASURED, and it is a fact about the shipped chart: tasks are owned at LEAD level, and three of
+  // the seed's four leads have zero individual contributors under them.
+  //
+  //   team_lead 0 · mission_control_lead 0 · customer_feedback_lead 0 · tech_lead 2
+  //
+  // A full simulated week produced four tasks and delivered one. The other three sat open forever
+  // and nothing said why — every step correct, the aggregate wrong, and silent.
+  const orphan = node({ workId: "t-9", workType: WorkType.Task, ownerHatId: "team_lead" });
+
+  test("work under a hat with no contributors is a SUPPLY gap, to the RMO", () => {
+    const open = staffingOpenings(chart, [orphan], "rmo_office", NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("rmo_office");
+    expect(open[0]?.subjectId).toBe("staff:team_lead");
+  });
+
+  test("A LEAD THAT DOES HAVE CONTRIBUTORS IS NOT A GAP — it just has not assigned yet", () => {
+    // The permissive half, and the important one: a signal that fires on the ordinary case stops
+    // being read. `tech_lead` has two implementers, so its unassigned task is ordinary.
+    const ordinary = node({ workId: "t-8", workType: WorkType.Task, ownerHatId: "tech_lead" });
+    expect(staffingOpenings(chart, [ordinary], "rmo_office", NONE)).toEqual([]);
+  });
+
+  test("already-assigned work is not a staffing gap", () => {
+    expect(staffingOpenings(chart, [{ ...orphan, assigneeHatId: "someone" }], "rmo_office", NONE)).toEqual([]);
+  });
+
+  test("MANY TASKS UNDER ONE HOLLOW LEAD ARE ONE HIRING PROBLEM", () => {
+    const many = Array.from({ length: 12 }, (_, i) => ({ ...orphan, workId: `t-${String(i)}` }));
+    expect(staffingOpenings(chart, many, "rmo_office", NONE)).toHaveLength(1);
+  });
+
+  test("raised once", () => {
+    expect(staffingOpenings(chart, [orphan], "rmo_office", new Set(["staff:team_lead"]))).toEqual([]);
+  });
+
+  test("KEPT SEPARATE FROM THE MISSING-RUNG GAP — different repairs", () => {
+    // `breakdownOpenings` reports "no hat exists at the rung below"; this reports "the rung's hat
+    // exists and has nobody under it". Collapsing them would report a hiring problem as a
+    // reorganization one.
+    const stuck = node({ ownerHatId: "architecture_director", domain: Domain.Architecture });
+    const rungGap = breakdownOpenings(chart, [stuck], "rmo_office", NONE)[0];
+    expect(rungGap?.subjectId).toContain("rung:");
+    expect(staffingOpenings(chart, [orphan], "rmo_office", NONE)[0]?.subjectId).toContain("staff:");
   });
 });

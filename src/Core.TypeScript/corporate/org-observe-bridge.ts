@@ -40,7 +40,7 @@ import { hatsAtLevel, reportsUpTo, type OrgChart } from "./org-chart";
 import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./supervisor-signal";
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
-import { isBlockerKind, resolutionFor, type BlockerKind } from "./blocker-taxonomy";
+import { BlockerKind, isBlockerKind, resolutionFor } from "./blocker-taxonomy";
 import {
   buildContextPack,
   ContextItemKind,
@@ -69,7 +69,7 @@ import { GenerativeKind, generativeOpeningsFor, type DirectionClock } from "./ge
 import { domainRouting, isDomain, type Domain } from "./domain-ontology";
 import { isPriorityClass } from "./prioritization";
 import type { CascadeNode } from "./goal-cascade";
-import { WorkState } from "./goal-cascade";
+import { WorkState, WorkType } from "./goal-cascade";
 import { isLeafType } from "./goal-cascade";
 
 /** The organization as this bridge reads it. Everything it needs, nothing it does not. */
@@ -112,6 +112,15 @@ export interface OrgView {
    * the profile is intake's job rather than this seam's. Stated because it is the permissive
    * direction — the gate is only as good as what was written down.
    */
+  /**
+   * How many times each work item has been through the quality gates.
+   *
+   * ABSENT MEANS NO WORK IS EVER SUBMITTED, and that is the honest default rather than a cautious
+   * one. A turned-back submission leaves the work open, so an unbounded offer is a loop — and a
+   * register that does not count attempts cannot bound them. `maxAttempts` is the churn threshold
+   * `org-cycle.ts` already applied; it is here so a tick obeys the same bound the script did.
+   */
+  readonly gateAttempts?: { readonly counts: ReadonlyMap<string, number>; readonly maxAttempts: number };
   readonly requirements?: ReadonlyMap<
     string,
     {
@@ -488,10 +497,25 @@ export function generativeFor(
       artifactIds: new Set(view.artifacts.keys()),
       pricedWorkIds: new Set(view.priorities?.keys() ?? []),
       resourceAuthorityHatId,
-      routings: domainRouting(view.cascade, (id) => view.chart.byId.get(id)?.departmentId),
+      // GOALS ARE EXCLUDED, and this is a correction rather than a convenience. A direction is held
+      // by an executive BY RULE — `acceptGoal` refuses one accepted below c_suite — and an
+      // executive is in the governance department, not in the department that owns the domain. So
+      // every one of the sixteen directions read as an out-of-domain fallback and the RMO was told
+      // about all sixteen: seventeen supply reports of which sixteen were the design working.
+      //
+      // A signal that fires on the ordinary case stops being read, which would have cost the ONE
+      // real fallback in that list. The question "did this reach the owning department" is a
+      // question about work that is DELEGATED, and a direction is what delegation starts from.
+      routings: domainRouting(
+        view.cascade.filter((n) => n.workType !== WorkType.Goal),
+        (id) => view.chart.byId.get(id)?.departmentId,
+      ),
       // Read back off the organization's own record, never held beside it. A second list of what
       // has been raised is a list that can disagree with the signals themselves.
       ...(directionClock === undefined ? {} : { directionClock }),
+      ...(view.gateAttempts === undefined
+        ? {}
+        : { gates: { attempts: view.gateAttempts.counts, maxAttempts: view.gateAttempts.maxAttempts } }),
       raisedSupplySubjects: new Set(
         view.signals.filter((sig) => sig.tool === SignalTool.SuggestImprovement).map((sig) => sig.title),
       ),
@@ -525,6 +549,9 @@ export function generativeFor(
         break;
       case GenerativeKind.SizeHatSupply:
         out.push({ kind: "size_hat_supply", subjectId: o.subjectId, prompt: o.prompt });
+        break;
+      case GenerativeKind.SubmitWork:
+        out.push({ kind: "submit_work", subjectId: o.subjectId, prompt: o.prompt });
         break;
       case GenerativeKind.BreakDownWork:
         // DERIVED FROM THE PARENT, so the same undecomposed rung yields the same child id every
@@ -641,6 +668,14 @@ export type OrgEffect =
       readonly title: string;
       readonly byHatId: string;
     }
+  /**
+   * Work its assignee says is finished, on its way to the gates.
+   *
+   * The effect carries the PROPOSER, because `runGateChain` needs it to keep any gate from being
+   * evaluated by the hat that did the work — and re-deriving it at the point of application would
+   * be reading the assignee back out of a cascade that the submission itself is about to change.
+   */
+  | { readonly kind: "submission"; readonly workId: string; readonly proposerHatId: string }
   | { readonly kind: "priced"; readonly workId: string; readonly priority: PriorityClass }
   | {
       readonly kind: "breakdown";
@@ -809,6 +844,24 @@ export function effectOf(
         ok: true,
         effect: { kind: "breakdown", parentWorkId: action.subjectId, childWorkId: action.childId, title: action.title },
       };
+    }
+    case "submit_work": {
+      const node = view.cascade.find((n) => n.workId === action.subjectId);
+      if (node === undefined) return { ok: false, reason: `no work item '${action.subjectId}' to submit` };
+      if (node.assigneeHatId === undefined) {
+        return { ok: false, reason: `'${action.subjectId}' has no assignee; nobody has done it` };
+      }
+      // ONLY THE HAT THAT DID IT. Re-derived here rather than trusted from the menu, because the
+      // surface was built at an earlier moment and the work may have been reassigned since — and a
+      // submission from a hat that no longer holds the work would put the real assignee's name on
+      // somebody else's claim.
+      if (node.assigneeHatId !== hatId) {
+        return { ok: false, reason: `'${action.subjectId}' is assigned to '${node.assigneeHatId}', not '${hatId}'` };
+      }
+      if (node.state === WorkState.Done || node.state === WorkState.Canceled) {
+        return { ok: false, reason: `'${action.subjectId}' is already ${node.state}` };
+      }
+      return { ok: true, effect: { kind: "submission", workId: action.subjectId, proposerHatId: hatId } };
     }
     case "size_hat_supply": {
       const raised = sendSupervisorSignal(
@@ -1050,8 +1103,44 @@ export function contextPackFor(view: OrgView, hatId: string, resourceAuthorityHa
  * `blocker_owner_silent` fires when the owner has not answered inside the SLA and addresses the
  * finding PAST them. Re-reporting to the same hat is the thing that already went unanswered.
  */
+/**
+ * Work that has run out of attempts at the gates, as a blocker its assignee has not yet raised.
+ *
+ * ── A COUNTER NOBODY READ AT THE LIMIT ───────────────────────────────────────
+ * `submissionOpenings` bounds resubmission so a turned-back item is not offered forever. Correct,
+ * and by itself it produced a new defect of a familiar kind: the count reached the bound, the
+ * opening closed, and NOTHING HAPPENED. The work sat open, nobody was told, and the organization
+ * looked settled — a reader with no writer, which is the shape this register keeps finding.
+ *
+ * So exhaustion becomes what it actually is: a hat that cannot get its work through, which is a
+ * blocker. It travels the path blockers already travel — classified, routed by
+ * `blocker-taxonomy.ts` to the hats that own that kind, raised ONCE by the existing dedupe — rather
+ * than through a new channel that would need its own routing and its own de-duplication.
+ *
+ * WHAT THIS IS NOT: the churn escalation. `escalation.ts` decides what to DO about repeated
+ * rejection — add agents, bring in an architect, re-scope — and that decision belongs to a manager
+ * and is still `org-cycle.ts`'s alone. This delivers the fact to a hat that can act on it, and
+ * saying it does more than that would be the promise this comment exists to refuse.
+ */
+function exhaustedAtGates(view: OrgView, hatId: string): readonly MissingInformation[] {
+  const gates = view.gateAttempts;
+  if (gates === undefined) return [];
+  return view.cascade
+    .filter(
+      (n) =>
+        n.assigneeHatId === hatId &&
+        (n.state === WorkState.Open || n.state === WorkState.InProgress) &&
+        (gates.counts.get(n.workId) ?? 0) >= gates.maxAttempts,
+    )
+    .map((n) => ({
+      about: `'${n.title}' has been turned back by the gates ${String(gates.counts.get(n.workId) ?? 0)} time(s)`,
+      blocking: n.workId,
+      kind: BlockerKind.ReleaseBlocked,
+    }));
+}
+
 function unraisedBlockers(view: OrgView, hatId: string): readonly MissingInformation[] {
-  const mine = view.blockers?.get(hatId) ?? [];
+  const mine = [...(view.blockers?.get(hatId) ?? []), ...exhaustedAtGates(view, hatId)];
   if (mine.length === 0) return mine;
   const raised = new Set(
     view.signals
