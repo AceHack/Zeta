@@ -633,3 +633,8 @@ The [native-dependent pure fixture implementation record](2026-09-07-hidden-swit
 tracks the separate 38-case preparation/dispatch slice. Actual Python calls,
 unexecuted native certificate requests and preparation helpers remain distinct;
 its implementation validation does not complete the outer envelope.
+
+The [exclusive record-store implementation record](2026-09-07-hidden-switch-compiled-record-store-validation.md)
+preserves bounded sequential artifact retention, actual failure outcomes and
+the once-only final metadata journal. Store serialization and filesystem
+validation are separate from operation execution and whole-envelope admission.
