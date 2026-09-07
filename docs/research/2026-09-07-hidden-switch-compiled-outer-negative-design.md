@@ -618,3 +618,8 @@ accepts the shared original-byte primitive and synthetic seven-subject adapter
 at coordinator commit `bdeb180c1dbc9766ec90e4f79941ce348995d605`. It retains the
 intermediate chronology regression and its repair, and keeps complete phase
 and runtime admission separate.
+
+The [shared resource helper review](2026-09-07-hidden-switch-compiled-resource-helper-review.md)
+accepts coordinator commit `1fece22bc84153dae0128c3a90bbca2ed09772dc`, including
+actual production use of the exact ratio and half-median boundaries. This is
+source review of the shared resource cases, without measured cost admission.
