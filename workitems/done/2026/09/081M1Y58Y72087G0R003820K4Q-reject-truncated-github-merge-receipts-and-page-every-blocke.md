@@ -1,11 +1,12 @@
 ---
 id: 081M1Y58Y72087G0R003820K4Q
 type: bug
-state: backlog
+state: done
 priority: P2
 slug: reject-truncated-github-merge-receipts-and-page-every-blocke
 title: "Reject truncated GitHub merge receipts and page every blocker"
 created: 2026-09-07T14:45:05.890Z
+completed: 2026-09-07T15:15:05.147Z
 depends_on: []
 composes_with: []
 ---
@@ -29,3 +30,6 @@ Acceptance:
   completeness correction, not a merge-policy amendment.
 - Exercise actual observer and authorization consumers with paginated fixtures,
   retain the live witness and pass focused TS/static/preflight gates.
+
+Evidence: [indexed repair and review](../../../../docs/research/2026-09-07-merge-observe-pagination-correction.md)
+and its [retained validation](../../../../docs/research/merge-observe-pagination-validation/2026-09-07/README.md).
