@@ -392,3 +392,48 @@ its identity.
 [REPL dispatch](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.Repl/ConsoleService.cs),
 [DAC-path acknowledgements](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.ExtensionCommands/Host/SetClrPathCommand.cs),
 [runtime formatting](https://github.com/dotnet/diagnostics/blob/d7b455b46332b31fd9ba3a3f3e020387984c511a/src/Microsoft.Diagnostics.DebugServices.Implementation/Runtime.cs)
+
+## Corrected offline-driver prelaunch acceptance
+
+Final source-only acceptance binds the driver to SHA256
+`aca9ef2a1c9261375c3c267ba135dbf5dd0e0c13819c11c4730b4a0caf504aa6`
+and its eight-case test source to
+`e7eb546f10df1e3202ae4f7c3d596ac44cf30acd8c9c367def99ab6e5a6dddbe`.
+The physical reader's final SHA256 is
+`f0d1d2f30d4a08cb3f7cdc8d402574f494a5920e40d0a05dfcbe2487af342537`;
+its only change from the earlier accepted bytes is blank-line formatting.
+The five-case parser test hash is unchanged. The author reports all 13
+synthetic tests passing. The reviewer read the complete four-file surface
+and these fixtures without executing them or opening the actual dump.
+
+All four initial findings are resolved. Dump hashing and selected physical
+reads use one held regular descriptor, checked against its pathname and
+metadata before and after the analyzer's separate open. Each successful
+stub, pointer-cell and body range publishes its own metadata immediately.
+The actual resolved analyzer executable must match exactly one captured pin.
+Exact command echo, terminal framing, symbol-store state, DAC-path
+acknowledgements and unique anchored runtime/method fields replace substring
+admission. The reader retains at most four MiB of stdout, bounds individual
+lines and its queue, and reports the retained prefix on refusal. The eight-MiB
+stderr/host-trace limit is polled and can overshoot; it is not a disk quota.
+
+A final review finding also removed read-until-EOF hashing: initial file size
+must equal the captured bounded length before any byte read, and hashing
+consumes exactly that length plus at most one extra byte. The producing-stream
+fixture demands the actual size/one-byte read sequence; a separate deadline
+fixture refuses elapsed hashing. Its 120-second deadline is checked between
+bounded regular-file reads, not a kernel cancellation guarantee. Analyzer
+commands separately have 15-second bounds within a 120-second session bound;
+these are not a claim that every preparation and cleanup operation shares
+one 120-second end-to-end deadline. Explicit exit and owned kill/join remain
+bounded, primary failures survive cleanup/publication failures, and a failed
+reader join does not authorize closing a stream it still owns.
+
+This permits the owner's one already authorized local-only analysis attempt
+on the stable captured file. It does not establish an immutable snapshot
+under hostile pathname changes or in-place writes. It does not establish
+loaded-DAC binary identity, complete method extents, executing call closure
+or runtime admission. The selected methods are only `predict`, `condition`
+and `select`; successful command capture still leaves `BodyResolved`,
+`ClosureAdmitted` and `RuntimeAdmitted` false pending interpretation. No raw
+dump or unrelated memory is included in this review or its publication.
