@@ -1,0 +1,78 @@
+{
+  "Scope": "All observed pinned-policy failures and both authorized C1 diagnostics; not a controlled seed-matched causal study",
+  "Records": {
+    "pinned-full-suite-failure.log": {
+      "Sha256": "8450e81203e6c055151751d786befb9e4e3fa5bdbabf38bdd2d956f02ce7d92f",
+      "Bytes": 13894,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/hidden-switch-tests-full.log"
+    },
+    "pinned-isolated-sigbus.log": {
+      "Sha256": "ba431a3b066c43246fa595404a0fa0c9e6de6040a85d7df972b812279e28eae3",
+      "Bytes": 5568,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/hidden-switch-tlc-isolated-recovery.log"
+    },
+    "diagnostic-launcher.py.txt": {
+      "Sha256": "325c024de371e16b3d726b96f7332739c1813a26742b8d6036e646996ec3bfe8",
+      "Bytes": 4982,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/run-bft-c1.py"
+    },
+    "policy-ts-focused.log": {
+      "Sha256": "57cea66899a1190b7ad7854c41c0dd13fb7bfe26c3c222c8364a407467e3fc84",
+      "Bytes": 1569,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-policy-focused.log"
+    },
+    "claim-preflight.log": {
+      "Sha256": "d7c364a1d2acf1236295b063590c20a92906beb62e926c80ec84982a705ce28a",
+      "Bytes": 1942,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-c1-claim-push.log"
+    },
+    "c1-1-attempt.json": {
+      "Sha256": "cba3682a9ff303afba778fae8f20f237a373fb7f9f8e704206251c60726f55a0",
+      "Bytes": 2414,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/attempt.json"
+    },
+    "c1-1-result.json": {
+      "Sha256": "891d42a9237bbf8e03083428a15fa50d8bd3dbbd7317c5fb1b807fd32e54d41a",
+      "Bytes": 474,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/result.json"
+    },
+    "c1-1-stdout.log": {
+      "Sha256": "873e7f0665f093bf4482af481004cf205b84d63abfa4282dbdf81d643ec193d7",
+      "Bytes": 4355,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/stdout.log"
+    },
+    "c1-1-stderr.log": {
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104230Z-b6cc24d6/stderr.log"
+    },
+    "c1-2-attempt.json": {
+      "Sha256": "fcd78ff4ac72cd5022aaa8d732ea039b8784e057565784ebc75a80d91196095b",
+      "Bytes": 2414,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/attempt.json"
+    },
+    "c1-2-result.json": {
+      "Sha256": "2122d4891367bc5e03dc060f978ab5410c5067c65dde1010f035c3d89cb04e32",
+      "Bytes": 472,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/result.json"
+    },
+    "c1-2-stdout.log": {
+      "Sha256": "98cad6ef39a873fd1428a1d3fe28c52531d94022460d099843631158a4c5fb7c",
+      "Bytes": 4370,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/stdout.log"
+    },
+    "c1-2-stderr.log": {
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0,
+      "CapturedFrom": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/tlc-diagnostics/bft-c1-20260907T104747Z-60148ddc/stderr.log"
+    }
+  },
+  "OriginalGateHsErr": "Runner removed the unique temporary directory before judgment; no hs_err recovered",
+  "C1StateFiles": "TLC removed its successful state working files; launcher retained all remaining artifacts",
+  "OriginalJarModelConfigRegistrySha256": {
+    "src/Core.TLA/tla2tools.jar": "71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86",
+    "src/Core.TLA/specs/BftConsensus.tla": "e859daaaa872c9df903886573ad5fb6d17849cf6637df37c25376abe8d04854f",
+    "src/Core.TLA/specs/BftConsensus.cfg": "73c219ce14d7a838c2345be4c82c8b0b0f209283fb0928ae7e895e5374565bde",
+    "registry/tlc-models.json": "44f1ca2feb2c7ba9cab47f06d2fcd60c097ef6d55ed602299f0e1a645791de54"
+  }
+}
