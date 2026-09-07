@@ -348,3 +348,18 @@ def test_call_index_domain_refuses_without_file_creation(
     fixture = prepare(tmp_path, "storage/reused-file")
     assert isinstance(f.execute_file_call(fixture, bad), a.Refused)
     assert not (fixture.Root / fixture.Target).exists()
+
+
+def test_truncated_gzip_reaches_decompression_boundary(tmp_path: Path) -> None:
+    prepared = prepare(tmp_path, "artifact/truncated-gzip")
+    actual = call(prepared, 0)
+    tree = c.result_tree(actual)
+    assert isinstance(tree, a.Admitted)
+    (tmp_path / "truncated-gzip-observation.json").write_text(
+        json.dumps(tree.value, sort_keys=True, ensure_ascii=True) + "\n"
+    )
+    assert actual.Failure is None and actual.CompletedOperation == 1
+    assert isinstance(actual.ActualResult, a.Refused)
+    assert actual.ActualResult.code == "artifact-gzip"
+    assert actual.ActualResult.path == "file.gz"
+    assert prepared.Target == "file.gz"

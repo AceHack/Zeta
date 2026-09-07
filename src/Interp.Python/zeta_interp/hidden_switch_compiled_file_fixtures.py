@@ -240,6 +240,8 @@ def prepare_file_fixture(
         if case_id == "storage/reused-attempt"
         else "attempt/file.bin"
         if case_id == "storage/control"
+        else "file.gz"
+        if case_id == "artifact/truncated-gzip"
         else "file.bin"
     )
     descriptor = None
