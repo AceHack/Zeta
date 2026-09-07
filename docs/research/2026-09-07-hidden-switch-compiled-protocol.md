@@ -320,12 +320,15 @@ eight tapes are warmup, the next 64 measured. Never reuse behavior tapes.
 Use a native behavior process and then exactly one fresh native cost
 process for all fifty cost rows. The behavior process exits after its
 complete behavior/control envelope is exclusively written and closed.
-The cost process starts only after admitting and hashing that complete
-envelope. Its prelude is exactly:
+The coordinator waits for successful behavior-process exit and the closed
+complete output before launching the fresh cost process. The cost process
+itself admits and hashes that envelope before any policy execution. Its
+prelude is exactly:
 
-1. Read and admit the archived source/certificate, stored hand/graph records,
-   native runtime/settings/artifact roster and complete behavior envelope;
-   create the fresh attempt directory and read clocks/allocation counters.
+1. First capture this stage's starting wall, CPU and current-thread allocation
+   counters. Then create the fresh attempt directory, read and admit the
+   archived source/certificate, stored hand/graph records, native
+   runtime/settings/artifact roster and complete behavior envelope.
    These are metadata operations with zero policy, simulator-step, filter,
    evaluator or selector calls. Static initialization may decode/validate
    constants but must not execute a policy or conformance fixture.
@@ -341,8 +344,11 @@ The first measured mode follows immediately after that prelude. Its only
 additional policy execution before a timed row is that row's specified
 warmup. Do not repeat hand conformance, warmup probes, trial rows, graph
 inspection or arbitrary method-preparation policy calls in this process.
-Do not restart it between modes/panels/replicates. Retain prelude stage
-times, allocation, calls and artifacts separately. The old-runner prelude
+Do not restart it between modes/panels/replicates. Capture each prelude
+stage's start counters before any work in that stage and its end counters
+after its work completes. Retain these stage wall/CPU/allocation totals,
+calls and artifacts separately, including actual archive/certificate
+validation in stage one. Process startup remains separately excluded. The old-runner prelude
 warms shared native routines and is part of the fixed, disclosed setup;
 it is not claimed to place both strategies in identical cache states.
 
@@ -510,9 +516,10 @@ managed artifacts and declared native-image roster. Replay records those
 same admitted native identities and its own separately identified Python
 runtime; it does not pretend the two runtimes are identical.
 
-Cost admission binds the complete behavior envelope read before cost
-startup. Require behavior completion time no later than cost startup and
-the recorded exclusive-file/read sequence; all cost rows follow their
+Cost admission binds the complete behavior envelope read in prelude stage
+one, before any cost-process policy execution. Require behavior completion
+and successful process exit before cost startup, followed by the recorded
+closed-file/read sequence and admission; all cost rows follow their
 recorded prelude. Replay/verdict also validate this cross-phase chronology.
 Bind the actual executing CLI, native entry point and loaded Python task
 modules to the admitted source/artifact paths. A command or imported task
@@ -636,3 +643,12 @@ software arithmetic; enumerates the bounded source/runtime dependency
 surface; and binds replay/verdict to exact envelope bytes and cross-phase
 identities. These are prefreeze clarifications, not changes informed by
 guard computation, implementation, generated tapes or measurements.
+
+The final bounded review of `14786d2ae10c761eb2c51695c142da88408b3b6f`
+accepted those closures and required two execution-order clarifications:
+the coordinator waits for successful behavior exit and closed output,
+then the fresh cost process admits that envelope before policy execution;
+and each setup stage starts its counters before its work, including actual
+archive/certificate validation. These changes preserve every declared
+corpus, count, action contract and threshold. No implementation, guard
+bits, source generation or measurement informed the correction.

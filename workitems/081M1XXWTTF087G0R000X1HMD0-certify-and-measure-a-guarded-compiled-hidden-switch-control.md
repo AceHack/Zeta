@@ -68,3 +68,11 @@ source/runtime dependency roster. Independent review also required exact
 envelope binding through replay/verdict and clarification that trivial
 paths still admit inputs. The focused prefreeze correction records these
 dispositions without generating guard bits, implementation or source data.
+
+Final bounded review of `14786d2ae` accepted those closures and clarified
+that the coordinator waits for successful behavior exit/closed output,
+while admission occurs inside the fresh cost process before any policy
+call. Setup stage counters begin before the corresponding work, including
+archive/certificate validation. The coordinating reviewer accepts the
+complete protocol subject to verification of these two wording corrections;
+registration remains pending their final disposition and provenance import.
