@@ -32,3 +32,11 @@ coordinated work item, `081M1XQM8E4087G0R0036P5RWY`.
 Final evidence review verified all 28 retained records, seven original TRX
 streams, 95 source pins and the complete 52-case TLC roster. Claim released
 for the focused publication; no policy code or registry change followed the tested commit.
+
+Publication CI exposed NCI tests replaying historical receipts against the
+changed live registry. The indexed correction retains the exact old registry
+as a historical fixture, all four original pins and both scientific receipts,
+and tests live-registry refusal in Python and TypeScript. Python's named
+exception now permits traceback assignment so the real refusal is retained.
+Core.Python passed 60 tests; both Bun versions passed 20 NCI tests with 40
+assertions. Independent review accepted this bounded integration correction.

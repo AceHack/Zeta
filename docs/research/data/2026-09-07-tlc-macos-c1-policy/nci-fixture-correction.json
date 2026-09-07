@@ -1,0 +1,111 @@
+{
+  "Schema": "zeta.tlc-c1-nci-fixture-correction/v1",
+  "FailedHead": "8736339dd6cf3a93d435f75b600b89eb8fa4f68a",
+  "FailedJob": "https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34117338536/job/101727212129",
+  "HistoricalRegistryCommit": "2f05a60b50390f16e87da2eace6b1a770cc19938",
+  "HistoricalRegistryPath": "registry/tlc-models.json",
+  "HistoricalRegistrySha256": "44f1ca2feb2c7ba9cab47f06d2fcd60c097ef6d55ed602299f0e1a645791de54",
+  "ScientificReceiptRegenerated": false,
+  "TlcExecuted": false,
+  "PythonFocusedPassed": 7,
+  "PythonFullPassed": 60,
+  "BunVersions": [
+    "1.3.13",
+    "1.3.14"
+  ],
+  "TypeScriptPassedEach": 20,
+  "TypeScriptAssertionsEach": 40,
+  "Inputs": [
+    {
+      "Path": "src/Core.Python/src/zeta/nci_witness_receipt_oracle.py",
+      "Bytes": 7368,
+      "Sha256": "afc856a1a5aeb989577dd51c4397dd576f3ce76cbaa59a270ec7f68f8694d0bb"
+    },
+    {
+      "Path": "src/Core.Python/tests/test_nci_witness_receipt_oracle.py",
+      "Bytes": 4017,
+      "Sha256": "0d4216167361933e96d9a6824506888c5a593e267f91ff3bce7903f7bb414906"
+    },
+    {
+      "Path": "src/Core.TypeScript/formal-verification/nci-witness-receipt.ts",
+      "Bytes": 8027,
+      "Sha256": "6872dd43ce2e79b1e7991363b3e9ec94325ce00f479dd3a120e5b05f4cdf2c20"
+    },
+    {
+      "Path": "src/Core.TypeScript/formal-verification/nci-witness-receipt.test.ts",
+      "Bytes": 6538,
+      "Sha256": "ea73c978d015da6dc824e9cdb8ddd7469171420a3f502a304702562314d9eea5"
+    },
+    {
+      "Path": "src/Core.TypeScript/formal-verification/nci-witness-capability.test.ts",
+      "Bytes": 9029,
+      "Sha256": "8dbcadabeb2ef5eb9706fb7ac73061d8c6d60e766a981f7983dd81d1d9fa197c"
+    },
+    {
+      "Path": "docs/research/data/2026-09-06-nci-witness-v1-registry.json",
+      "Bytes": 22748,
+      "Sha256": "44f1ca2feb2c7ba9cab47f06d2fcd60c097ef6d55ed602299f0e1a645791de54"
+    },
+    {
+      "Path": "docs/research/data/2026-09-06-nci-witness-v1-typescript.json",
+      "Bytes": 920,
+      "Sha256": "d5e89f5675f478f3dbfe3ff633bc69f4f8b848ceeac15e5383730120a59a173e"
+    },
+    {
+      "Path": "docs/research/data/2026-09-06-nci-witness-v1-python.json",
+      "Bytes": 920,
+      "Sha256": "d5e89f5675f478f3dbfe3ff633bc69f4f8b848ceeac15e5383730120a59a173e"
+    }
+  ],
+  "Records": [
+    {
+      "Path": "nci-ci-full-verify-failure.log.gz",
+      "Bytes": 110301,
+      "Sha256": "f01e3d87eac84fa92aea79181b26da741fb21b9e5733d23d257fe884514378fb",
+      "OriginalBytes": 1025985,
+      "OriginalSha256": "5142b4aa1055bbc9a169773526ba4dd4c3c545b556e8db651ccf4ef3e7842e4e"
+    },
+    {
+      "Path": "nci-python-focused.log",
+      "Bytes": 98,
+      "Sha256": "df70f53ee144a8d7aa5058e71e4e925aaf4f6be229ba4e079053285812083aad",
+      "OriginalBytes": 98,
+      "OriginalSha256": "df70f53ee144a8d7aa5058e71e4e925aaf4f6be229ba4e079053285812083aad"
+    },
+    {
+      "Path": "nci-python-full.log",
+      "Bytes": 110,
+      "Sha256": "7d35d7514458fe01a43b5734ea605040a2ac1fab28ba8d32d775b5f2aa10c840",
+      "OriginalBytes": 110,
+      "OriginalSha256": "7d35d7514458fe01a43b5734ea605040a2ac1fab28ba8d32d775b5f2aa10c840"
+    },
+    {
+      "Path": "nci-bun-1.3.14.log",
+      "Bytes": 3002,
+      "Sha256": "ef673f3d99e45f48b18cf28627fc8ee6bd0056e5a69a3162af6df993617338aa",
+      "OriginalBytes": 3002,
+      "OriginalSha256": "ef673f3d99e45f48b18cf28627fc8ee6bd0056e5a69a3162af6df993617338aa"
+    },
+    {
+      "Path": "nci-bun-1.3.13.log",
+      "Bytes": 3002,
+      "Sha256": "6976f29294f9403f566c150591af3e3891bbb542b6070985f457d6c04a40e19c",
+      "OriginalBytes": 3002,
+      "OriginalSha256": "6976f29294f9403f566c150591af3e3891bbb542b6070985f457d6c04a40e19c"
+    },
+    {
+      "Path": "nci-python-lint.log",
+      "Bytes": 19,
+      "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "OriginalBytes": 19,
+      "OriginalSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "Path": "nci-python-mypy.log",
+      "Bytes": 43,
+      "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "OriginalBytes": 43,
+      "OriginalSha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8"
+    }
+  ]
+}

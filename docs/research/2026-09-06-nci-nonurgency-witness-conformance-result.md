@@ -11,6 +11,11 @@ TypeScript and independently authored Python wrappers emitted the same canonical
 > is **not** an NCI floor, production safety theorem, policy score, consent
 > record, consensus result, or authority grant.
 
+The [2026-09-07 historical-fixture correction](2026-09-07-tlc-macos-c1-policy.md#publication-integration-historical-nci-fixture)
+preserves the exact original registry after the live TLC platform policy
+changes. The regression tests replay this historical subject; the current
+registry still refuses the old receipt. Both measured receipts remain unchanged.
+
 ## 1. Measured witness
 
 | Field                              | Observed or pinned value                                           |

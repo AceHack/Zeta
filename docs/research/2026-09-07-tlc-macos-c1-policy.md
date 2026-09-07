@@ -152,3 +152,59 @@ counter named `notExecuted` is zero; the reported six skips come from the
 individual outcomes and `total - executed`, not that misleading zero counter.
 The formatter wording correction was explicitly accepted: only the Release
 build carries the zero-warning/error claim.
+
+## Publication integration: historical NCI fixture
+
+PR #16917's first head,
+`8736339dd6cf3a93d435f75b600b89eb8fa4f68a`, failed the
+[full-verify job](https://github.com/Lucent-Financial-Group/Zeta/actions/runs/34117338536/job/101727212129).
+Three Core.Python NCI receipt tests tried to admit the current registry under
+the historical receipt's original whole-file registry pin. C1 legitimately
+changes that file. The first refusal correctly named
+`refuse-identity-mismatch: registry/tlc-models.json`; Python context-manager
+propagation then masked it with `FrozenInstanceError` because the exception
+was a frozen dataclass. The complete original job output is retained in the
+[correction evidence](data/2026-09-07-tlc-macos-c1-policy/README.md).
+
+The correction preserves the exact
+[historical registry](data/2026-09-06-nci-witness-v1-registry.json) from
+`2f05a60b50390f16e87da2eace6b1a770cc19938:registry/tlc-models.json`.
+Its SHA256 is
+`44f1ca2feb2c7ba9cab47f06d2fcd60c097ef6d55ed602299f0e1a645791de54`,
+the unchanged admitted registry pin. The Python receipt tests and TypeScript
+receipt/capability tests now explicitly supply that historical subject. They
+still read the current model, configuration and jar only while those bytes
+satisfy all three unchanged original pins. This is a bounded historical
+fixture, not automatic admission of future current-tree changes.
+
+Both 920-byte scientific receipts and all four pins remain byte-identical.
+No JVM policy field is ignored or normalized; no receipt is regenerated into
+a new observed result. Both languages now exercise rejection of the old
+receipt after the current registry is copied into the historical subject.
+The capability fixture retains its exact read/process trace and controlled
+checker-result boundary; it executes no TLC process.
+
+`WitnessFailure` is now a non-frozen dataclass so Python can set its exception
+traceback fields. A context-manager regression checks that the original named
+refusal object propagates intact. This does not alter receipt admission or
+successful rendering. No native, model, jar, timeout, state-count or runner
+code changes in this integration correction, so the native policy gate above
+remains the relevant unchanged native-source evidence.
+
+The affected complete Core.Python suite passed 60 tests in 83.69s; its seven
+focused receipt/error-propagation tests passed separately. Both Bun 1.3.13
+and 1.3.14 passed all 20 focused TypeScript tests and 40 assertions. Ruff and
+mypy passed for both changed Python files. The coordinating reviewer accepted
+the exact subject boundary, real current-registry refusal and original-error
+preservation after reading the source and retained validation. A second
+reviewer identified an initial TypeScript setup-failure cleanup defect; the
+repair resets/guards teardown, removes the owned failed subject and preserves
+the original admission error. Its new negative fixture passed on both Bun
+versions. All 95 native-policy input pins still match the tested source.
+
+The supplemental annotated tag
+`archive/tlc-macos-c1-policy/081M1XR248G087G0R000H0WJT1-final` preserves the
+final corrected source/evidence history, including the original tested
+`47d29d9cb2dc7ebb2cf36135b6699bb9a0d66839`, independently of the eventual
+squash merge and deletion of the claim branch. Resolve the tag's peeled
+commit; do not recreate or move it when reproducing this record.

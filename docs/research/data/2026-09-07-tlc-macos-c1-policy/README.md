@@ -18,6 +18,8 @@ artifacts explicitly.
 | Own-tree full gate | [Build](policy-build.log), [tests](policy-tests.log), [formatter](policy-format.log), [quick preflight](policy-preflight.log) |
 | Policy runtime evidence | [Runtime identity](policy-runtime.json), [live BFT child arguments](policy-live-process.json) |
 | Source preservation | [Source push and sixteen-check hook](policy-source-push.log) |
+| NCI fixture correction | [Input/log manifest](nci-fixture-correction.json), [complete original failed CI log, gzip](nci-ci-full-verify-failure.log.gz), [historical registry](../2026-09-06-nci-witness-v1-registry.json) |
+| NCI correction validation | [Python focused](nci-python-focused.log), [complete Core.Python suite](nci-python-full.log), [Bun 1.3.13](nci-bun-1.3.13.log), [Bun 1.3.14](nci-bun-1.3.14.log), [Ruff](nci-python-lint.log), [mypy](nci-python-mypy.log) |
 
 The seven original TRX files are retained as lossless gzip archives:
 [Bayesian](Bayesian.Tests.trx.gz),
