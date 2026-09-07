@@ -35,3 +35,19 @@ continues on its dedicated remote branch and is not released by this tree.
 Complete file inventory, current required checks, independent review, exact
 squash body and merge ancestry must be verified before main publication is
 reported. Preserve advisory historical failures without relabeling them green.
+
+## Completed local preparation
+
+All 18 full local preflight checks passed at exact source
+`2d1aff7686823c050fad8e093ac89a3180f29b48`, including release build and
+full native tests. The [lossless local-gate inventory](hidden-switch-compiled-validation/2026-09-07/prerequisites-publication-local/manifest.json)
+retains the actual closed gate and preparation logs. The independent
+[publication review](2026-09-07-hidden-switch-compiled-prerequisites-publication-review.md)
+accepted all 2,298 reviewed paths, unchanged original 19 source/18 result pins,
+all 83 integration-five Python pins and all 502 local links.
+
+The final publication-only release removes both claim files from this tree
+and moves the finite publication work item to its done folder. This does not
+release the parent remote implementation claim. No source changed after the
+full gate. Final quick gate, current CI and exact main proof are separate
+publication observations and must still be verified.

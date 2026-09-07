@@ -1,11 +1,12 @@
 ---
 id: 081M1YYRTYF087G0R003TXBK2W
 type: task
-state: backlog
+state: done
 priority: P2
 slug: publish-reviewed-compiled-controller-prerequisites-and-evide
 title: "Publish reviewed compiled controller prerequisites and evidence"
 created: 2026-09-07T22:10:41.231Z
+completed: 2026-09-07T22:32:27.455Z
 depends_on: []
 composes_with: ["081M1XXWTTF087G0R000X1HMD0"]
 ---
@@ -31,3 +32,11 @@ The publication includes the subsequent documentation-only spacing repair
 gate preserved. Integration into main base `fe90e36e8` merged the native test
 project normally. The parent claim file is omitted only from this publication
 tree; the actual parent claim remains active on its separate remote branch.
+
+## Publication-ready result
+
+The [bounded publication record](../../../../docs/research/2026-09-07-hidden-switch-compiled-prerequisites-publication.md)
+indexes the exact accepted source, all 18 passing full local checks, complete
+validation and current admission limits. The publication claim is released
+in this final tree. Exact CI/main verification follows as a distinct retained
+observation; the parent implementation task and remote claim remain active.
