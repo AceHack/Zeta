@@ -90,9 +90,16 @@ records the initial pure evidence module, 47 passing focused tests, strict type
 checks, the corrected collection failure, and the remaining whole-phase/runtime
 admission boundary. This is implementation validation, not a registered experiment.
 
-The same wire record now includes independent acceptance of primitive source
-`35c12618f` and nine storage tests covering exclusive outputs, retained prefixes,
-descriptor-relative reads, symlink/FIFO refusal and exact lossless artifacts.
+The same wire record includes independent acceptance of primitive source
+`35c12618f`, the initial nine storage tests, the material cleanup failure found
+in `c0e975fd8`, and its corrected 18-test suite. The reviewer accepted exact
+repair `a289c75ff6abc1808107c016d20cc7ccaf57556a`: primary failures survive
+cleanup, child ownership precedes transfer, uncertain closes are not retried,
+and malformed roots refuse. That reread ran no tests or study sources.
+
+The wire record also covers a 20-test archive-to-file helper: actual full-commit
+blob identity and descriptor-read current bytes must both match the complete
+caller-enumerated roster. Loaded task-module and runtime admission remain separate.
 
 ## Installed runtime and actual graph readiness
 

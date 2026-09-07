@@ -190,3 +190,32 @@ does not establish exclusive ownership. The native owner will separately
 declare/review its actual mechanism before implementation archival. Cost
 stage-one counters must start before native attempt creation; coordinator
 precreation cannot replace that registered step.
+
+## Archive-to-file correspondence
+
+[The source helper](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_sources.py)
+requires a caller-reviewed full commit and complete ordered file roster. Every
+row has exactly `File`, `Bytes`, `Sha256`. It checks the real commit object's
+type, exact regular-file tree entry and blob length/hash, then compares those
+immutable bytes with an actual descriptor-relative read from the caller's clone.
+Symlinks, ref expressions, missing/duplicate/reordered files, changed current
+bytes and a descriptor hash changed to match unarchived bytes all refuse.
+
+Git reads use an explicit clone metadata/work-tree path, no replacement objects,
+and no inherited `GIT_*` routing variables. They invoke no shell, hooks, filters,
+checkout, object writes or network. The installed Git executable/object database
+and caller-admitted clone root remain trusted. Admission covers only the finite
+supplied roster: it neither discovers an unspecified dependency closure nor
+admits a tag, loaded module, runtime or whole phase. Full old/new source rosters,
+resolved archives and executing Python/native module identities remain separate
+integration obligations. The explicit limits are 256 files and 32 MiB per source
+file; exceeding a bound refuses rather than truncating evidence.
+
+Twenty focused tests passed in **6.65 seconds**, with strict mypy and Ruff passes
+under the Interp project's own configuration. Tests create owned temporary Git
+objects and files, including an actual replacement ref plus conflicting ambient
+object routing; the checked source still comes from the named immutable commit.
+Other witnesses cover forged live/archived hashes, noncommit objects, regular-file
+mode, symlinks and unavailable Git. An initial Ruff invocation from the repository
+root used a different import-spacing configuration; the applicable Interp checks
+above pass. No task source stream, policy or measurement executes in these tests.
