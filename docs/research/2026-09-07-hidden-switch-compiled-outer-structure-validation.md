@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: pure structure/read-plan primitive; independent source review pending
+Artifact status: reviewed pure structure/read-plan primitive; actual reads/replay separate
 
 The [outer structure module](../../src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_structure.py)
 checks the exact frozen outer schema against independently supplied source,
@@ -52,3 +52,17 @@ then passed with the final 60-case suite. Initial uncommitted drafts are not
 claimed as archived source pins; their actual diagnostic logs remain retained.
 Only the explicitly selected C408 test-dictionary literal rewrite was applied;
 no chronology/pairwise rewrite or broad unsafe source fix was used.
+
+## Accepted malformed-call-container correction
+
+Independent [source review](2026-09-07-hidden-switch-compiled-outer-structure-review.md)
+found that preserving a zero-call prefix sliced the original `Calls` value even
+when it was null, an integer or an object. The inner checker returned a typed
+refusal, but the retention wrapper then raised. All six new regressions at the
+first/final row failed against the original source. Repair
+`9f8dca17624aea59e96db7c2230493997a4a6a86` uses an explicit empty iteration
+when no calls were checked, retaining the already validated inputs. All 66
+tests pass in 4.92 seconds with strict checks passing; independent review
+accepted the exact repair. The [separate lossless inventory](hidden-switch-compiled-validation/2026-09-07/outer-structure-repair/manifest.json)
+retains both outcomes and corrected source pins. No original evidence was
+rewritten or promoted to whole outer conformance.
