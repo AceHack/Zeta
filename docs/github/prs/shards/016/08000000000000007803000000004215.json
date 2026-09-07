@@ -1,0 +1,16 @@
+{
+  "pr_number": 16917,
+  "archive_path": "docs/history/pr-reviews/PR-16917-fix-tlc-select-c1-on-macos-arm64-and-preserve-historical-nci-fixtures.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7raM0z",
+    "comment:PRRC_kwDOSF9kNM7ra_My",
+    "thread:PRRT_kwDOSF9kNM6f5z9U"
+  ],
+  "fetched_at": "2026-09-07T12:29:17.148Z",
+  "schema_version": "v1",
+  "commit_sha": "536570576cfb980f6303be2040d8d3034b2ac13d",
+  "title": "fix(tlc): select C1 on macOS ARM64 and preserve historical NCI fixtures",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T12:28:36Z",
+  "head_ref": "claim/task-tlc-macos-c1-policy-20260907"
+}
