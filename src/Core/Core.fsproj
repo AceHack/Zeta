@@ -201,6 +201,8 @@
     <Compile Include="ZetaFs.fs" />
     <Compile Include="ZetaFsNamespace.fs" />
     <Compile Include="ZetaFsCollator.fs" />
+    <Compile Include="ZetaFsInode.fs" />
+    <Compile Include="ZetaFsPosixNode.fs" />
     <Compile Include="ZetaFsPolicy.fs" />
     <Compile Include="ZetaFsPlacement.fs" />
     <Compile Include="ZetaFsMutbuf.fs" />
