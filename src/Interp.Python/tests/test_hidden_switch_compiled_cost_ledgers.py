@@ -69,6 +69,83 @@ def _ratio(
     return found[0]
 
 
+@pytest.mark.parametrize(
+    "numerator,denominator,kind,pair,reason",
+    [
+        (0, 0, "cpu", None, "zero-native-cpu"),
+        (7, 0, "allocation", None, "zero-native-allocation"),
+        (0, 99, "allocation", ("0", "1"), None),
+        (50, 100, "wall", ("1", "2"), None),
+        (2**53 + 1, 2**54, "allocation", (str(2**53 + 1), str(2**54)), None),
+        (a.INT64_MAX, a.INT64_MAX, "cpu", ("1", "1"), None),
+    ],
+)
+def test_shared_descriptive_resource_ratio_is_exact(
+    numerator: int,
+    denominator: int,
+    kind: str,
+    pair: tuple[str, str] | None,
+    reason: str | None,
+) -> None:
+    result = ledgers.descriptive_ratio(numerator, denominator, kind, "Ratio")
+    assert isinstance(result, a.Admitted), result
+    assert (
+        result.value.Numerator == numerator and result.value.Denominator == denominator
+    )
+    assert result.value.Reason == reason
+    actual = result.value.Ratio
+    assert (None if actual is None else (actual.Num, actual.Den)) == pair
+
+
+@pytest.mark.parametrize(
+    "numerator,denominator,kind",
+    [
+        (True, 1, "cpu"),
+        (0, False, "allocation"),
+        (-1, 1, "cpu"),
+        (1, -1, "cpu"),
+        (1.0, 1, "cpu"),
+        (1, a.INT64_MAX + 1, "allocation"),
+        (1, 0, "wall"),
+        (1, 1, "energy"),
+        (1, 1, False),
+    ],
+)
+def test_descriptive_domain_refuses_aliases_and_unknown_metrics(
+    numerator: object,
+    denominator: object,
+    kind: object,
+) -> None:
+    assert isinstance(
+        ledgers.descriptive_ratio(numerator, denominator, kind, "Ratio"), a.Refused
+    )
+
+
+def test_production_ledger_uses_shared_ratio_and_required_boundary(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Removing either production call must lose the injected typed refusal;
+    # tests of the helper alone would not establish its use by verdict inputs.
+    original = ledgers.descriptive_ratio
+    monkeypatch.setattr(
+        ledgers,
+        "descriptive_ratio",
+        lambda *_args: a.Refused("ratio-witness", "Ratio", "explicit fixture"),
+    )
+    result = _run(*_fixture())
+    assert isinstance(result, ledgers.CostLedgerRefused)
+    assert result.code == "ratio-witness" and result.CompletedRows == 50
+    monkeypatch.setattr(ledgers, "descriptive_ratio", original)
+    monkeypatch.setattr(
+        a,
+        "half_median",
+        lambda *_args: a.Refused("required-witness", "Required", "explicit fixture"),
+    )
+    result = _run(*_fixture())
+    assert isinstance(result, ledgers.CostLedgerRefused)
+    assert result.code == "required-witness" and result.CompletedRows == 50
+
+
 def test_complete_schedule_exact_halves_and_partial_scope() -> None:
     result = _accepted(_run(*_fixture()))
     assert result.CompletedRows == 50

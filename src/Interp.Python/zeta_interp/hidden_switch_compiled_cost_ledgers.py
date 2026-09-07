@@ -9,6 +9,7 @@ UTC chronology is checked independently of monotonic elapsed-wall measurements.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import gcd
 from typing import Literal
 
 from . import hidden_switch_compiled_admission as a
@@ -22,6 +23,47 @@ METRICS = ("WallNs", "CpuNs", "AllocatedBytes")
 class RationalPair:
     Numerator: int
     Denominator: int
+
+
+@dataclass(frozen=True, slots=True)
+class CanonicalRatio:
+    Num: str
+    Den: str
+
+
+@dataclass(frozen=True, slots=True)
+class DescriptiveRatio:
+    Numerator: int
+    Denominator: int
+    Ratio: CanonicalRatio | None
+    Reason: str | None
+
+
+def descriptive_ratio(
+    numerator: object, denominator: object, kind: object, path: str
+) -> a.Admission[DescriptiveRatio]:
+    """Exact resource ratios, including declared zero-denominator meanings."""
+    if type(kind) is not str or kind not in ("wall", "cpu", "allocation"):
+        return a.Refused("ratio-kind", path, "requires wall, cpu or allocation")
+    checked_numerator = a.integer(numerator, 0, a.INT64_MAX, path + ".Numerator")
+    if isinstance(checked_numerator, a.Refused):
+        return checked_numerator
+    checked_denominator = a.integer(denominator, 0, a.INT64_MAX, path + ".Denominator")
+    if isinstance(checked_denominator, a.Refused):
+        return checked_denominator
+    n, d = checked_numerator.value, checked_denominator.value
+    if d == 0:
+        if kind == "wall":
+            return a.Refused(
+                "zero-native-wall",
+                path,
+                "measured native wall denominator must be positive",
+            )
+        return a.Admitted(DescriptiveRatio(n, d, None, "zero-native-" + kind))
+    factor = gcd(n, d)
+    return a.Admitted(
+        DescriptiveRatio(n, d, CanonicalRatio(str(n // factor), str(d // factor)), None)
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -138,17 +180,33 @@ def admit_cost_ledgers(
                 native = sorted(values[(mode, panel, "native-recursive", metric)])[2]
                 compiled = sorted(values[(mode, panel, "compiled-guarded", metric)])[2]
                 required = mode == "ordinary-choice" and metric != "CpuNs"
-                pair = RationalPair(compiled, native) if native > 0 else None
-                reason = None
-                if native == 0:
-                    reason = (
-                        "zero-native-cpu"
-                        if metric == "CpuNs"
-                        else "zero-native-allocation"
-                    )
-                at_most_half = (
-                    2 * compiled <= native if required and native > 0 else None
+                descriptive = descriptive_ratio(
+                    compiled,
+                    native,
+                    {"WallNs": "wall", "CpuNs": "cpu", "AllocatedBytes": "allocation"}[
+                        metric
+                    ],
+                    f"Ratios.{mode}.{panel}.{metric}",
                 )
+                if isinstance(descriptive, a.Refused):
+                    return _failure(descriptive, len(ledger_rows))
+                pair = (
+                    RationalPair(compiled, native)
+                    if descriptive.value.Ratio is not None
+                    else None
+                )
+                at_most_half: bool | None = None
+                if required:
+                    half = a.half_median(
+                        values[(mode, panel, "compiled-guarded", metric)],
+                        values[(mode, panel, "native-recursive", metric)],
+                        f"Required.{mode}.{panel}.{metric}",
+                    )
+                    if isinstance(half, a.Refused):
+                        if half.code != "zero-native-median" or native != 0:
+                            return _failure(half, len(ledger_rows))
+                    else:
+                        at_most_half = half.value["AtMostHalf"] is True
                 ratios.append(
                     CostRatio(
                         mode,
@@ -157,7 +215,7 @@ def admit_cost_ledgers(
                         compiled,
                         native,
                         pair,
-                        reason,
+                        descriptive.value.Reason,
                         required,
                         at_most_half,
                     )
