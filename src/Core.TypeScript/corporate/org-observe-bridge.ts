@@ -41,6 +41,15 @@ import { SignalTool, sendSupervisorSignal, type SupervisorSignal } from "./super
 import { AnchorState, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, type ArtifactHistory } from "./artifact-deliberation";
 import { isBlockerKind, resolutionFor, type BlockerKind } from "./blocker-taxonomy";
+import {
+  buildContextPack,
+  ContextItemKind,
+  OmissionKind,
+  type ContextItem,
+  type Omission,
+  type PackResult,
+} from "./context-pack";
+import { isDiverged } from "./artifact-deliberation";
 import { evaluateSteal, type OwnedWork, type WorkTransfer } from "./work-stealing";
 import {
   type AlternateAssignment,
@@ -736,4 +745,62 @@ function requirementGate(view: OrgView, workId: string): { readonly ok: true } |
   if (recorded === undefined) return { ok: true };
   const verdict = readinessOf(view.chart, recorded.profile, recorded.maturity, recorded.waivers ?? []);
   return verdict.ok ? { ok: true } : { ok: false, reason: `${verdict.refusal}: ${verdict.reason}` };
+}
+
+/**
+ * The context half of this hat's surface, retrieved DETERMINISTICALLY from the organization's own
+ * state.
+ *
+ * `OBSERVE_CONTEXT_PACKS.md` puts the pack beside the menu and the metrics — *"the third half of
+ * the same surface"* — and requires the retrieval to narrow the world before any model helps. This
+ * is that retrieval: it reads the cascade, the blockers and the artifacts this register already
+ * holds, and it invents nothing.
+ *
+ * WHAT IT REPORTS AS AN OMISSION IS THE INTERESTING PART. A DIVERGED artifact is an unresolved
+ * contradiction by construction — two heads, no single current version — and handing an agent one
+ * of them as context would have it act on a version nobody agreed was the version. That is exactly
+ * the omission class the doc wants first-class rather than silently resolved by picking a head.
+ */
+export function contextPackFor(view: OrgView, hatId: string, resourceAuthorityHatId: string): PackResult {
+  const items: ContextItem[] = [];
+  const omissions: Omission[] = [];
+
+  for (const n of view.cascade) {
+    if (n.assigneeHatId !== hatId && n.ownerHatId !== hatId) continue;
+    items.push({
+      kind: ContextItemKind.WorkItem,
+      id: n.workId,
+      summary: n.title,
+      source: { kind: "document", ref: `cascade:${n.workId}` },
+    });
+  }
+
+  for (const m of view.blockers?.get(hatId) ?? []) {
+    items.push({
+      kind: ContextItemKind.Blocker,
+      id: m.blocking.trim() === "" ? m.about : m.blocking,
+      summary: m.about,
+      source: { kind: "trace", ref: `blocked:${m.blocking}` },
+    });
+  }
+
+  for (const [artifactId, history] of view.artifacts) {
+    if (!history.revisions.some((r) => r.byHatId === hatId)) continue;
+    if (isDiverged(history)) {
+      omissions.push({
+        kind: OmissionKind.UnresolvedContradiction,
+        about: artifactId,
+        why: "the artifact has two heads; there is no single current version to hand over",
+      });
+      continue;
+    }
+    items.push({
+      kind: ContextItemKind.Artifact,
+      id: artifactId,
+      summary: `artifact '${artifactId}'`,
+      source: { kind: "document", ref: `artifact:${artifactId}` },
+    });
+  }
+
+  return buildContextPack(view.chart, { hatId, resourceAuthorityHatId, items, omissions });
 }
