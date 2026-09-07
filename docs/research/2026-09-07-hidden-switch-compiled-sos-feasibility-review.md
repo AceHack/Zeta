@@ -147,3 +147,42 @@ must cover supported opcodes, every branch/fallthrough/return and possible
 indirect destination, including exception or secondary-entry paths relevant
 to the admitted execution. A second decoder's control-flow label is supporting
 evidence, not a completeness oracle. Unknown paths remain refusal conditions.
+
+## Read-only alternative-host inspection
+
+After both failures, the reviewer inspected installed alternatives without
+launching another debugger or diagnostic host. Homebrew LLVM versions 23.1.0,
+22.1.8 and 21.1.8 are installed, but their enumerated trees contain no matching
+LLDB executable/library. The searched Rust toolchain trees and editor extension
+directories also provided no alternate LLDB. The installed `rust-lldb` script
+prefers a Rust-bundled debugger when present and otherwise invokes PATH LLDB;
+the wrapper alone is not an independent debugger installation. This is the
+scope of the search, not a claim that every host filesystem location was checked.
+
+The existing `dotnet-dump` 9.0.661903 DLL is locally available under its
+`tools/net8.0/any` package directory. Its runtime configuration targets .NET
+8.0.0 with major roll-forward. No adjacent `extensions` directory is present.
+Official documentation describes dump analysis without a native debugger and
+lists `ip2md`, managed `clru` disassembly and explicit DAC-path selection.
+It does not promise that this particular installed version can inspect the
+study's runtime 10.0.11. [Official dotnet-dump documentation](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump)
+
+A no-target `analyze --help` invocation would test frontend startup only. It
+would not establish SOS/DAC initialization, code-version lookup or method
+extent agreement, so it was not executed or offered as that discriminator.
+The useful candidate is a separately coordinated, bounded offline analysis of
+an owned graph-process dump retaining candidate addresses, code bytes and
+matching runtime metadata. No such graph dump is currently retained. A future
+procedure must establish capture ownership and memory completeness, pin the
+analysis executable/SOS/DAC, clear and inspect symbol-store configuration,
+then compare actual-IP metadata and hot/cold extents with the independent
+captured bytes. Missing memory or incompatible metadata must refuse.
+
+Before any such analysis, remove ambient `DOTNET_DIAGNOSTIC_EXTENSIONS` and
+inspect the actual tool's extension directory. Upstream documents these as
+automatic extension-loading surfaces. Their absence would be a bounded
+configuration observation, not a hostile-process guarantee.
+[Official extension-loading design](https://github.com/dotnet/diagnostics/blob/main/documentation/design-docs/dotnet-dump-extensibility.md)
+No new dump, target, help probe, tool installation or platform-protection change
+was performed in this follow-up inspection. The working candidate collector
+and its unresolved graph obligations remain unchanged.
