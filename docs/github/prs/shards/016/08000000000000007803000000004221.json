@@ -1,0 +1,12 @@
+{
+  "pr_number": 16929,
+  "archive_path": "docs/history/pr-reviews/PR-16929-refactor-flake-the-root-flake-stops-declaring-machines-blocking-consumers-reach-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:11:35.141Z",
+  "schema_version": "v1",
+  "commit_sha": "a3926e6b277e994dad6b72da4b7dc29961aeb946",
+  "title": "refactor(flake): the root flake stops declaring machines — blocking consumers reach ZERO",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:10:58Z",
+  "head_ref": "shadow/root-flake-drops-stale-hosts"
+}

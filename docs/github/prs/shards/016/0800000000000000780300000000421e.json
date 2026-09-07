@@ -1,0 +1,12 @@
+{
+  "pr_number": 16926,
+  "archive_path": "docs/history/pr-reviews/PR-16926-feat-081m1xy1h0v087g0r000q1hk08-blockcas-delete-crash-mid-sweep-leaves-extra-gar.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:15:44.266Z",
+  "schema_version": "v1",
+  "commit_sha": "464aa06aafe70542df9f0876347525590724eba7",
+  "title": "feat(081M1XY1H0V087G0R000Q1HK08): BlockCas Delete crash-mid-sweep leaves extra garbage",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:15:05Z",
+  "head_ref": "feat/zetafs-blockcas-crash-on-delete"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16924,
+  "archive_path": "docs/history/pr-reviews/PR-16924-feat-081m1xxq99j087g0r002xkcsrc-fuse-t-collator-casefold-ascii-refuses-collision.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:15:24.098Z",
+  "schema_version": "v1",
+  "commit_sha": "100112d81cc0a9db4658461b477e0bf7d2dabd8c",
+  "title": "feat(081M1XXQ99J087G0R002XKCSRC): FUSE-T collator CaseFold.Ascii refuses collisions",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:14:42Z",
+  "head_ref": "feat/zetafs-collator-ascii-refuse"
+}
