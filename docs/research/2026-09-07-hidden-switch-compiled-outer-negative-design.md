@@ -122,7 +122,8 @@ Producer, Prerequisites, Cases, Completed, SeparateObligations, Scope
 
 The prerequisite IDs, in order, are `certificate`, `certificate-bindings`,
 `native-certificate-calls`, `hand-slices`, `semantic-witnesses`,
-`selector-witness`, `candidate-native-record`. The last is a bound native
+`selector-witness`, `candidate-native-record`, `byte-binding-mutant-audit`.
+The candidate-native-record input is a bound native
 capture used for identity-link tests; its presence does not admit its contents
 as a valid runtime. The native hand-slice artifact contains exactly `Scalars,
 Episodes, OldControls`; the semantic artifact has the exact six fields above.
@@ -241,6 +242,11 @@ records exactly one actual identity-collector entry in its child trace, but
 that nested entry is not a second `Completed.Calls` entry. Likewise the two
 actual native selector call sites are a prerequisite to the one counted pure
 selector-witness replay, not two additional top-level calls here.
+The two check-omission mutant executions and two corresponding witness-checker
+refusals belong to the separately retained `byte-binding-mutant-audit`
+prerequisite specified below. They are four additional audit operations,
+explicitly outside the 136 case-level calls, and must also be independently
+replayed; their exclusion from this counter does not exclude their evidence.
 
 Directory preparation needed by a storage write, creation of the original
 changed-read file, and post-call file-state/hash observations are explicit
@@ -464,6 +470,25 @@ incorrectly accepted by the mutant, and the witness checker must reject that
 actual acceptance. This tests whether byte binding is load-bearing; merely
 changing a semantically constrained field would not establish that.
 
+Retain those four audit operations in the separate prerequisite artifact with
+exact schema `{Schema, SourceCommit, Cases}`. Schema is
+`zeta.hidden-switch.compiled.byte-binding-mutant-audit.v1`; SourceCommit must
+match the outer envelope. Cases is exactly two ordered rows, first
+`links/envelope-substitution`, then `links/replay-substitution`, each with
+exactly `CaseId, Fixture, Expected, MutantResult, CheckerResult`. The last four
+fields are six-field descriptors of the exact fixture/expected bytes, actual
+mutant validator result, and actual witness-checker refusal result. Their
+result encoding follows the complete API encoding above. The witness checker
+requires refusal for these case IDs, so submitting the actually accepted
+mutant result must produce its typed `negative-outcome` refusal. No fabricated
+refusal or caller boolean can replace that call.
+
+Independent outer replay reconstructs both fixtures, executes both omission
+mutants and both witness comparisons, and checks every retained outcome before
+accepting this prerequisite. The artifact depends only on standalone fixture
+bytes and source, never the final outer or final hand envelope. A missing,
+failed, truncated or unreplayed audit leaves outer conformance incomplete.
+
 The later actual verdict must additionally bind the exact real replay bytes
 and native inputs. Passing these synthetic shared-validator cases does not
 discharge `final-actual-envelope-chain` or permit a missing final binding.
@@ -567,6 +592,10 @@ obligations, while requiring three corrections before implementation:
 2. The prose did not uniquely determine top-level call counts, particularly
    for child/composite/control and storage setup operations. The exact table
    now fixes 136 calls and separates retained child/helper observations.
+   A subsequent exact-pin reread requested an explicit location for the two
+   omission-mutant executions and two witness-checker refusals. Their separate
+   named audit prerequisite now preserves and replays all four operations
+   outside the 136 case-level counter.
 3. A working-draft timeline imposed a total order on output closure and process
    exit. The reviewer clarified that its initial exit-before-closure remark
    referred to a draft read before the 05ef pin; 05ef already had closure before
