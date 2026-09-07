@@ -1,0 +1,98 @@
+{
+  "Scope": "actual native complete hand slices and six semantic members only; no outer/runtime admission",
+  "NativeSourceCommit": "7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0",
+  "NativeInput": {
+    "Bytes": 975309,
+    "File": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/hidden-switch-compiled-semantic-attempt-1/semantic.json",
+    "Sha256": "E83775583A18712E4495EB57EFAC80A61316129E85D4EFAC0D02C8E1AB6C1451"
+  },
+  "ReferenceCommit": "0e0f8664765c7157b153bed86da217b8bf81a5e4",
+  "ExecutedCheckerCommit": "cdcf34d759a74201aa5599f4556e07af00f6dc4a",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "Bytes": 33300,
+      "Sha256": "3D2BFDB3D961D7B30637E7ADB1F28A3B6A1F7703D5C04D0FC986E8F18A19F463"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Bytes": 10841,
+      "Sha256": "8571296D52A4D3F4C00D787ADF258E9558D91072F52BF5E67F9B0387803C45BB"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ED2CF49D070F0D9CE3243DD634BA53FE35DEF36742D26ABEB7644469DFBBA45"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "replay.py.gz",
+      "Bytes": 3260,
+      "Sha256": "4430E7C55CB0DAADAD7792F9E9066D15608CF11737768A52A32BEBD952DF0C28",
+      "Encoding": "gzip",
+      "StoredBytes": 1490,
+      "StoredSha256": "EF72F001E108AEC46BDB2137585D1E00D6C6C8E9D2FE71835AC5457E03999D5B"
+    },
+    {
+      "File": "native-semantic.json.gz",
+      "Bytes": 975309,
+      "Sha256": "E83775583A18712E4495EB57EFAC80A61316129E85D4EFAC0D02C8E1AB6C1451",
+      "Encoding": "gzip",
+      "StoredBytes": 28854,
+      "StoredSha256": "9A78C4FFE95E6AFA20979C6A488CD3E030D4D9DC872F6B791A7F2610A9C27C9F"
+    },
+    {
+      "File": "result.json.gz",
+      "Bytes": 7170,
+      "Sha256": "8FAEE325582ED87C11D54AC628B504C37C0D8E6327D55978BF5747AC84E03954",
+      "Encoding": "gzip",
+      "StoredBytes": 1642,
+      "StoredSha256": "2012CA06D9F4E271467F4341EB260FE8AF2718E988DBFE308D194781B1524939"
+    },
+    {
+      "File": "stdout.json.gz",
+      "Bytes": 7170,
+      "Sha256": "8FAEE325582ED87C11D54AC628B504C37C0D8E6327D55978BF5747AC84E03954",
+      "Encoding": "gzip",
+      "StoredBytes": 1642,
+      "StoredSha256": "2012CA06D9F4E271467F4341EB260FE8AF2718E988DBFE308D194781B1524939"
+    },
+    {
+      "File": "stderr.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "preserve.py.gz",
+      "Bytes": 2302,
+      "Sha256": "42C8801E46F27A1B68BB93E856FF5D3F9563BD00A369FD9E7A2855D864529F3F",
+      "Encoding": "gzip",
+      "StoredBytes": 1051,
+      "StoredSha256": "F78FB661229D4D79400DC4BBE0037FC8B9E7C00417E55C4F1C307F83E4A16A72"
+    }
+  ]
+}
