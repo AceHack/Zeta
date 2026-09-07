@@ -280,3 +280,14 @@ retains both no-target debugger-host failures, including the explicit runtime
 host's Mach-port guard before any study target ran. The read-only alternative
 tool inventory and proposed offline dump path do not establish method extents.
 Body, closure, layout and runtime admission remain false.
+
+The [first actual native hand replay](../../2026-09-07-hidden-switch-compiled-native-slice-replay.md)
+matches all 222 scalar positions, 48 new episodes and 24 old controls exactly,
+including 1,944 old numeric fields. The native envelope remains explicitly
+incomplete; falsifiers and full source/runtime admission are separate.
+
+The [actual strict-epsilon witness](../../2026-09-07-hidden-switch-compiled-selector-tie-validation.md)
+checks the unchanged selector's harvest against an executed inclusive mutant's
+switch at an exact supplied-Q tie. It retains 23 pure tests, independent source
+acceptance and the first actual native witness replay, plus a separately scoped
+3,872-artifact byte-preservation audit with its initial path-interpretation error.

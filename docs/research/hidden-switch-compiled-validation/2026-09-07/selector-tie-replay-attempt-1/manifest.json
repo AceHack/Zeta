@@ -1,0 +1,124 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.selector-tie-validation.v1",
+  "SourceCommit": "16d2ac85bd00ce6664731470a3c5f8345f9df4fb",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_negatives.py",
+      "Bytes": 4039,
+      "Sha256": "F94078D01D278E3D4F498020991A782E8DA531904A1D86AE91695C585DF5B60B"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_outer_negatives.py",
+      "Bytes": 4954,
+      "Sha256": "7ECAC3D47B61A1505307D9C3801879668A061F8F79DAAA72A13B839BD6AA0615"
+    }
+  ],
+  "InventoryAuditTree": "4f2f70d6e",
+  "Artifacts": [
+    {
+      "File": "compiled-selector-tie-mypy-1.log.gz",
+      "Bytes": 474,
+      "Sha256": "94169BFDCFC28EB954E0D6F1B1E66707B05459FF6DD042FE713BFDD6ACC70954",
+      "Encoding": "gzip",
+      "StoredBytes": 280,
+      "StoredSha256": "21F9CE3E75F24F7F493FEFD08AF6D930D8BFD526C2A293E93C8CBE0D0997F7E0"
+    },
+    {
+      "File": "compiled-selector-tie-mypy-2.log.gz",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "compiled-selector-tie-tests-1.log.gz",
+      "Bytes": 99,
+      "Sha256": "8FDBC90347B030CE3B8A3527331B046B718A4DFC5A5905BFF56BE9784AEBC00E",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "2EA27BA9B9AE9CD16C655E29FCACFB7B95D4274E3AA91698DAC3CC8860A91850"
+    },
+    {
+      "File": "compiled-selector-tie-tests-2.log.gz",
+      "Bytes": 99,
+      "Sha256": "D6AE13DA92F0BDC8181E0F0EE8F858953E5D4F4A355D733A84B4622A82E06F36",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "8EC2346C9E1D7AF73E62CA664A2018EC8F4ABD9D8E3F7507182CEFD55F99CA7A"
+    },
+    {
+      "File": "replay.stdout.log.gz",
+      "Bytes": 541,
+      "Sha256": "280463202A92FDA82660427196C3A675B9D96CB72947AEFEC712EFDC14E26F46",
+      "Encoding": "gzip",
+      "StoredBytes": 384,
+      "StoredSha256": "F4B01CA9FA5EE746BABCE933EA024410B7F6AAAC850FC3DC76EF6EA788701EE0"
+    },
+    {
+      "File": "replay.stderr.log.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Encoding": "gzip",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "native-invocations.json.gz",
+      "Bytes": 7457,
+      "Sha256": "9EBBC621583A24BF45DB3AD50F665CCD3EF3D4A7070004F9CDF4E58D705FD78D",
+      "Encoding": "gzip",
+      "StoredBytes": 1287,
+      "StoredSha256": "E4EB9E7DD299FAEECD4C6E7E589719E6376AA52FAB17F719D35B84A5A44B5F03"
+    },
+    {
+      "File": "result.json.gz",
+      "Bytes": 2927,
+      "Sha256": "FCB571180B89230A9D1A558A329F4FCA451254C95BAAAA45C0957192DF7DAA09",
+      "Encoding": "gzip",
+      "StoredBytes": 1217,
+      "StoredSha256": "A163F151BF825B62A16D0F041CF0A11D412353CB1337C7045EB993B77BE62A90"
+    },
+    {
+      "File": "replay-native-selector-witness-1.py.gz",
+      "Bytes": 3410,
+      "Sha256": "56DF90CC47D50D7FF63F690E035B9F0E1863FDB46A5CDC3582C1B4EA4D610D93",
+      "Encoding": "gzip",
+      "StoredBytes": 1522,
+      "StoredSha256": "5FD7D484DAF2ED3DF9BAF758667D200B2F35CB0DF5DBE0765138FCC91B00FCD2"
+    },
+    {
+      "File": "compiled-artifact-audit-1.json.gz",
+      "Bytes": 1697197,
+      "Sha256": "24A27E7CE01D80A0CE22370910FBEC299B8AF06225349F667796B3437D558A6B",
+      "Encoding": "gzip",
+      "StoredBytes": 35288,
+      "StoredSha256": "F1F42C9327DB513B26D03199AD03F2093DB50CC64099756B38DD1FAE0A4F3B6C"
+    },
+    {
+      "File": "compiled-artifact-audit-2.json.gz",
+      "Bytes": 1174154,
+      "Sha256": "495018AF45A50172F6BE4CFB01B055B12C83492723D4F1692DC134DF16709FC3",
+      "Encoding": "gzip",
+      "StoredBytes": 33223,
+      "StoredSha256": "7C7912DF5B91BB640FCED7486665C9995AD39D8617AE32A0F7049DABDCB7BBEA"
+    },
+    {
+      "File": "audit-compiled-artifacts-2.py.gz",
+      "Bytes": 2977,
+      "Sha256": "467F43209F230E757731506AEF926766D6DFFA2D3CAAAC2947C3A835E82BF89E",
+      "Encoding": "gzip",
+      "StoredBytes": 1175,
+      "StoredSha256": "66D68103EC56265CEC80472A0B2990E0AFCA9C0A126F144373AE0F9218401C02"
+    },
+    {
+      "File": "retain-compiled-selector-1.py.gz",
+      "Bytes": 2919,
+      "Sha256": "7BFB35BC68CCD955F3AFA60873373BC59B291B6B7EE02CDF53DA6A69A317E19D",
+      "Encoding": "gzip",
+      "StoredBytes": 1071,
+      "StoredSha256": "92766EE07CC3591D3D8FD37C756919816744DAF2F4C8BB3F053D77748BF6D616"
+    }
+  ],
+  "Scope": "one actual supplied-Q witness and separately scoped inventory audit; no full hand/outer/runtime admission"
+}
