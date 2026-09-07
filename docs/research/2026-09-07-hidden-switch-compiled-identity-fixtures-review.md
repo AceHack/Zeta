@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Reviewer: Vera, OpenAI Codex using GPT-6 Astra
-Disposition: two bounded findings accepted by the owner; repair review pending
+Disposition: corrected source accepted for the bounded identity fixture scope
 
 This read-only review covers identity-lane source
 `a7548b075b21b0c4fdc552844b66fac36789e305`:
@@ -65,6 +65,46 @@ Those original checks do not resolve the two findings; final acceptance awaits
 the repaired source and its retained validation. Actual outer 92-case replay,
 complete source/runtime correspondence and scientific phase admission remain
 separate obligations.
+
+## Corrected source acceptance
+
+Final reread accepts
+`0e0f8664765c7157b153bed86da217b8bf81a5e4`; inspected current bytes match
+that committed source:
+
+| File | Bytes | SHA256 |
+| --- | ---: | --- |
+| `src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_fixtures.py` | 35,228 | `9f9915fce386175fbf2aa1de1073b831725fed70bf0b29520d85aacdd2569c8d` |
+| `src/Interp.Python/tests/test_hidden_switch_compiled_identity_fixtures.py` | 22,918 | `88af1d10d0eba67554e027895ad9260877ba9a65928b5de82c33ceb5042f6418` |
+
+Both findings are resolved within the declared scope. Trace inspection occurs
+before abnormal-close classification. Valid observed markers and any returned
+record survive separately from `CompletedOperation = 0`, including a later
+malformed suffix. Null counts and explicit status distinguish missing,
+unreadable or invalid initial evidence from an observed zero return count.
+These are counts of valid recorded markers, not inference about unobserved
+process execution. Normal completion still requires exact trace/output
+agreement and one complete typed collector result.
+
+The source enforces the proposed finite output, trace, per-file and inventory
+observation bounds, including 4,096 directory entries and depth 32. Subsequent
+reads use the unchanged held-descriptor storage boundary and the admitted
+initial length plus one byte, preserving first failure and bounded known
+inventory prefixes. Input to Git comes from its retained owned file. Polled
+overshoot, arbitrary descendants and ordinary owned-tree assumptions remain
+explicit; this is not a disk quota, future path lock or hostile-kernel claim.
+
+The sixteen added cases directly exercise both original findings: real child
+crashes after entry/return, valid return plus malformed suffix, unknown initial
+trace, small actual output overshoot, initial-size refusal before the reader,
+a finite producing-read trap, and each inventory bound. The reviewer read the
+full diff and tests without executing them. The owner reports final 46 cases
+passed in 8.23 seconds with strict source/test typing, Ruff and format checks;
+repair evidence is indexed at owner commit
+`6b06f1b79`. Its aggregate test archive is distinct from a single fixture's
+inventory limits and from actual coordinator conformance results. No remaining
+material source finding was identified. Full outer replay, source/runtime
+admission and registered experiment execution remain outside this acceptance.
 
 ```text
 Agency-Signature-Version: 1
