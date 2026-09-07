@@ -707,6 +707,16 @@ jobs:
           ZETA_PERF_OBS_FILE: ${{ runner.temp }}/zeta-perf-obs.log
         run: dotnet test Zeta.sln -c Release --no-build --verbosity normal --blame-crash --blame-hang-timeout 15m
 
+      - name: Retain unexpected TLC attempts
+        if: always() && needs.path-filter.outputs.code == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tlc-diagnostics-${{ matrix.os }}-${{ github.run_attempt }}
+          path: TestResults/tlc-diagnostics/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Perf assertion ledger (regression vs flake)
         # THE COLLECTOR. `PerfObservation.emit` (F#) has printed `##perf-obs` lines on every perf
         # assertion for weeks and nothing has ever read them -- two tested halves and no pipeline,
@@ -1399,6 +1409,18 @@ jobs:
 
       - name: Run the ZetaFS virtual-path healer falsifiers
         run: bun test src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts
+
+      # A k3s manifest declared on an AGENT is written and never applied — the deploy
+      # controller that submits them runs on a server. Found 2026-09-07 by evaluating the
+      # flake: worker-gpu (role=agent) declares nvidia-device-plugin, control-plane does not,
+      # and no ArgoCD Application exists — so GPUs are never advertised to the scheduler.
+      # Two hosts are acknowledged in the audit with a LIFTS condition; the roster may only
+      # shrink, and its own test goes red if a fix lands without trimming it.
+      - name: k3s manifests reach a server (an agent writes them and nothing applies them)
+        run: bun run hygiene:k3s-manifests-reach-a-server
+
+      - name: k3s manifest audit — falsifiers (proves it goes red)
+        run: bun test src/Core.TypeScript/hygiene/audit-k3s-manifests-reach-a-server.test.ts
 
       - name: Ambient-credential-hoist guard
         id: cred_hoist

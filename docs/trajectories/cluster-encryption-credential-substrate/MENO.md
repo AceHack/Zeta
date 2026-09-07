@@ -308,6 +308,21 @@ assume the number.
    CardContact. Null frost result is unmeasured, not present.
    Does not add the request to ESP conf. Does not change ISO
    bun `probe: null`. Does not invent an integrate decision.
+   Frost look with injected effects (`081M1WYXT4S087G0R002K1TK4Y`):
+   `namedProbeFromFrostLook`. Null effects is unmeasured, not
+   a live look. Does not default to `realProbeEffects`.
+   `/dev/tpmrm0` is not `present`. A YubiKey is not
+   CardContact. OS family is named, not inferred. Does not
+   call this from `zeta-install.sh`. Does not change ISO bun
+   `probe: null`. Does not invent an integrate decision.
+   Overlay joins take frost look (`081M1XYSWV0087G0R000ZFKBTD`):
+   `planSetupFromFrostLookEnv` / Argv / Conf. Maps via
+   `namedProbeFromFrostLook` then the named-bao overlay joins.
+   Null effects is unmeasured, not a live look. Does not
+   default to `realProbeEffects`. `/dev/tpmrm0` is not
+   `present`. Result joins stay result-only. Does not call
+   this from `zeta-install.sh`. Does not change ISO bun
+   `probe: null`. Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

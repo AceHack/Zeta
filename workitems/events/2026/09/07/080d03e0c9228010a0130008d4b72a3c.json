@@ -1,0 +1,14 @@
+{
+  "id": "080d03e0c9228010a0130008d4b72a3c",
+  "at": "2026-09-07T13:40:17.616Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y1J92F087G0R002WKAWY3",
+    "type": "task",
+    "title": "freeze bindSymlink persists UTF-8 target bytes",
+    "slug": "freeze-bindsymlink-persists-utf-8-target-bytes",
+    "priority": "P2",
+    "filename": "081M1Y1J92F087G0R002WKAWY3-freeze-bindsymlink-persists-utf-8-target-bytes.md"
+  }
+}

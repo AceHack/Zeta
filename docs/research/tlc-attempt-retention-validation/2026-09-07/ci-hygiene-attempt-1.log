@@ -1,0 +1,729 @@
+﻿2026-09-07T12:38:52.2844957Z Current runner version: '2.337.0'
+2026-09-07T12:38:52.2880675Z ##[group]Runner Image Provisioner
+2026-09-07T12:38:52.2882105Z Hosted Compute Agent
+2026-09-07T12:38:52.2883119Z Version: 20260828.587
+2026-09-07T12:38:52.2884334Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-07T12:38:52.2885567Z Build Date: 2026-08-28T16:44:25Z
+2026-09-07T12:38:52.2886698Z Worker ID: {d36ac072-f185-4c98-93ba-46981a556136}
+2026-09-07T12:38:52.2888237Z Azure Region: eastus
+2026-09-07T12:38:52.2889227Z ##[endgroup]
+2026-09-07T12:38:52.2891545Z ##[group]Operating System
+2026-09-07T12:38:52.2892591Z Ubuntu
+2026-09-07T12:38:52.2893515Z 24.04.4
+2026-09-07T12:38:52.2894353Z LTS
+2026-09-07T12:38:52.2895150Z ##[endgroup]
+2026-09-07T12:38:52.2896217Z ##[group]Runner Image
+2026-09-07T12:38:52.2897511Z Image: ubuntu-24.04
+2026-09-07T12:38:52.2898409Z Version: 20260831.293.1
+2026-09-07T12:38:52.2900616Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260831.293/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-07T12:38:52.2903419Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260831.293
+2026-09-07T12:38:52.2905091Z ##[endgroup]
+2026-09-07T12:38:52.2907303Z ##[group]GITHUB_TOKEN Permissions
+2026-09-07T12:38:52.2910252Z Contents: read
+2026-09-07T12:38:52.2911389Z Metadata: read
+2026-09-07T12:38:52.2912257Z ##[endgroup]
+2026-09-07T12:38:52.2915373Z Secret source: Actions
+2026-09-07T12:38:52.2918055Z Prepare workflow directory
+2026-09-07T12:38:52.3684733Z Prepare all required actions
+2026-09-07T12:38:52.3760989Z Getting action download info
+2026-09-07T12:38:52.5965394Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-07T12:38:52.7446805Z Download action repository 'oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+2026-09-07T12:38:52.9840026Z Complete job name: lint (bash retirement inventory + hygiene unit tests)
+2026-09-07T12:38:53.0822801Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-09-07T12:38:53.0823914Z with:
+2026-09-07T12:38:53.0824393Z   repository: Lucent-Financial-Group/Zeta
+2026-09-07T12:38:53.0828602Z   token: ***
+2026-09-07T12:38:53.0829050Z   ssh-strict: true
+2026-09-07T12:38:53.0829495Z   ssh-user: git
+2026-09-07T12:38:53.0829940Z   persist-credentials: true
+2026-09-07T12:38:53.0830438Z   clean: true
+2026-09-07T12:38:53.0830901Z   sparse-checkout-cone-mode: true
+2026-09-07T12:38:53.0831423Z   fetch-depth: 1
+2026-09-07T12:38:53.0831863Z   fetch-tags: false
+2026-09-07T12:38:53.0832314Z   show-progress: true
+2026-09-07T12:38:53.0832767Z   lfs: false
+2026-09-07T12:38:53.0833184Z   submodules: false
+2026-09-07T12:38:53.0833643Z   set-safe-directory: true
+2026-09-07T12:38:53.0834154Z   allow-unsafe-pr-checkout: false
+2026-09-07T12:38:53.0834964Z env:
+2026-09-07T12:38:53.0839031Z   GITHUB_TOKEN: ***
+2026-09-07T12:38:53.0839497Z ##[endgroup]
+2026-09-07T12:38:53.2051281Z Syncing repository: Lucent-Financial-Group/Zeta
+2026-09-07T12:38:53.2053671Z ##[group]Getting Git version info
+2026-09-07T12:38:53.2054391Z Working directory is '/home/runner/work/Zeta/Zeta'
+2026-09-07T12:38:53.2055364Z [command]/usr/bin/git version
+2026-09-07T12:38:53.2205733Z git version 2.55.0
+2026-09-07T12:38:53.2228468Z ##[endgroup]
+2026-09-07T12:38:53.2241664Z Temporarily overriding HOME='/home/runner/work/_temp/f041e53c-a3ad-40cc-936b-3c2e9f0fa9d2' before making global git config changes
+2026-09-07T12:38:53.2244265Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-07T12:38:53.2250752Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Zeta/Zeta
+2026-09-07T12:38:53.2312523Z Deleting the contents of '/home/runner/work/Zeta/Zeta'
+2026-09-07T12:38:53.2316650Z ##[group]Determining repository object format
+2026-09-07T12:38:53.2318848Z ##[endgroup]
+2026-09-07T12:38:53.2320199Z ##[group]Initializing the repository
+2026-09-07T12:38:53.2324614Z [command]/usr/bin/git init /home/runner/work/Zeta/Zeta
+2026-09-07T12:38:53.2475793Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-07T12:38:53.2483078Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-07T12:38:53.2484795Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-07T12:38:53.2486102Z hint: call:
+2026-09-07T12:38:53.2487252Z hint:
+2026-09-07T12:38:53.2488255Z hint: 	git config --global init.defaultBranch <name>
+2026-09-07T12:38:53.2489347Z hint:
+2026-09-07T12:38:53.2490364Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-07T12:38:53.2491955Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-07T12:38:53.2493279Z hint:
+2026-09-07T12:38:53.2494038Z hint: 	git branch -m <name>
+2026-09-07T12:38:53.2494903Z hint:
+2026-09-07T12:38:53.2495999Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-07T12:38:53.2497966Z Initialized empty Git repository in /home/runner/work/Zeta/Zeta/.git/
+2026-09-07T12:38:53.2500925Z [command]/usr/bin/git remote add origin https://github.com/Lucent-Financial-Group/Zeta
+2026-09-07T12:38:53.2561444Z ##[endgroup]
+2026-09-07T12:38:53.2562918Z ##[group]Disabling automatic garbage collection
+2026-09-07T12:38:53.2568114Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-07T12:38:53.2601547Z ##[endgroup]
+2026-09-07T12:38:53.2603163Z ##[group]Setting up auth
+2026-09-07T12:38:53.2604369Z Removing SSH command configuration
+2026-09-07T12:38:53.2610233Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-07T12:38:53.2648066Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-07T12:38:53.3068448Z Removing HTTP extra header
+2026-09-07T12:38:53.3072720Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-07T12:38:53.3112356Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-07T12:38:53.3380077Z Removing includeIf entries pointing to credentials config files
+2026-09-07T12:38:53.3386884Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-07T12:38:53.3421898Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-07T12:38:53.3673962Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-07T12:38:53.3741908Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Zeta/Zeta/.git.path /home/runner/work/_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:38:53.3812661Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:38:53.3890337Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:38:53.3921142Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:38:53.3956699Z ##[endgroup]
+2026-09-07T12:38:53.3958567Z ##[group]Fetching the repository
+2026-09-07T12:38:53.3965849Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cd756368da6128c983211697b5949f412be7d139:refs/remotes/pull/16925/merge
+2026-09-07T12:38:59.0153370Z From https://github.com/Lucent-Financial-Group/Zeta
+2026-09-07T12:38:59.0155964Z  * [new ref]           cd756368da6128c983211697b5949f412be7d139 -> pull/16925/merge
+2026-09-07T12:38:59.0160805Z ##[endgroup]
+2026-09-07T12:38:59.0161991Z ##[group]Determining the checkout info
+2026-09-07T12:38:59.0163628Z ##[endgroup]
+2026-09-07T12:38:59.0168068Z [command]/usr/bin/git sparse-checkout disable
+2026-09-07T12:38:59.0649039Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-07T12:38:59.1084784Z ##[group]Checking out the ref
+2026-09-07T12:38:59.1089531Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/16925/merge
+2026-09-07T12:39:00.3398975Z Updating files:  30% (17246/57461)
+2026-09-07T12:39:00.3636277Z Updating files:  31% (17813/57461)
+2026-09-07T12:39:00.3863452Z Updating files:  32% (18388/57461)
+2026-09-07T12:39:00.4099819Z Updating files:  33% (18963/57461)
+2026-09-07T12:39:00.4327783Z Updating files:  34% (19537/57461)
+2026-09-07T12:39:00.4631383Z Updating files:  35% (20112/57461)
+2026-09-07T12:39:00.4956869Z Updating files:  36% (20686/57461)
+2026-09-07T12:39:00.5287421Z Updating files:  37% (21261/57461)
+2026-09-07T12:39:00.5584818Z Updating files:  38% (21836/57461)
+2026-09-07T12:39:00.5898798Z Updating files:  39% (22410/57461)
+2026-09-07T12:39:00.6224842Z Updating files:  40% (22985/57461)
+2026-09-07T12:39:00.6502919Z Updating files:  41% (23560/57461)
+2026-09-07T12:39:00.6823665Z Updating files:  42% (24134/57461)
+2026-09-07T12:39:00.7133663Z Updating files:  43% (24709/57461)
+2026-09-07T12:39:00.7448228Z Updating files:  44% (25283/57461)
+2026-09-07T12:39:00.7836186Z Updating files:  45% (25858/57461)
+2026-09-07T12:39:00.8214351Z Updating files:  46% (26433/57461)
+2026-09-07T12:39:00.8628624Z Updating files:  47% (27007/57461)
+2026-09-07T12:39:00.9051649Z Updating files:  48% (27582/57461)
+2026-09-07T12:39:00.9398437Z Updating files:  49% (28156/57461)
+2026-09-07T12:39:00.9748277Z Updating files:  50% (28731/57461)
+2026-09-07T12:39:01.0159206Z Updating files:  51% (29306/57461)
+2026-09-07T12:39:01.0516157Z Updating files:  52% (29880/57461)
+2026-09-07T12:39:01.0901470Z Updating files:  53% (30455/57461)
+2026-09-07T12:39:01.1222307Z Updating files:  54% (31029/57461)
+2026-09-07T12:39:01.1512878Z Updating files:  55% (31604/57461)
+2026-09-07T12:39:01.1794781Z Updating files:  56% (32179/57461)
+2026-09-07T12:39:01.2111268Z Updating files:  57% (32753/57461)
+2026-09-07T12:39:01.2430989Z Updating files:  58% (33328/57461)
+2026-09-07T12:39:01.2736441Z Updating files:  59% (33902/57461)
+2026-09-07T12:39:01.3039869Z Updating files:  60% (34477/57461)
+2026-09-07T12:39:01.3171276Z Updating files:  61% (35052/57461)
+2026-09-07T12:39:01.3334148Z Updating files:  61% (35316/57461)
+2026-09-07T12:39:01.3688301Z Updating files:  62% (35626/57461)
+2026-09-07T12:39:01.3907974Z Updating files:  63% (36201/57461)
+2026-09-07T12:39:01.4118386Z Updating files:  64% (36776/57461)
+2026-09-07T12:39:01.4330999Z Updating files:  65% (37350/57461)
+2026-09-07T12:39:01.4539858Z Updating files:  66% (37925/57461)
+2026-09-07T12:39:01.4761492Z Updating files:  67% (38499/57461)
+2026-09-07T12:39:01.4984203Z Updating files:  68% (39074/57461)
+2026-09-07T12:39:01.5204042Z Updating files:  69% (39649/57461)
+2026-09-07T12:39:01.5422479Z Updating files:  70% (40223/57461)
+2026-09-07T12:39:01.5643219Z Updating files:  71% (40798/57461)
+2026-09-07T12:39:01.5864421Z Updating files:  72% (41372/57461)
+2026-09-07T12:39:01.6170498Z Updating files:  73% (41947/57461)
+2026-09-07T12:39:01.6519660Z Updating files:  74% (42522/57461)
+2026-09-07T12:39:01.7256916Z Updating files:  75% (43096/57461)
+2026-09-07T12:39:01.7748310Z Updating files:  76% (43671/57461)
+2026-09-07T12:39:01.8278521Z Updating files:  77% (44245/57461)
+2026-09-07T12:39:01.8999922Z Updating files:  78% (44820/57461)
+2026-09-07T12:39:02.0056636Z Updating files:  79% (45395/57461)
+2026-09-07T12:39:02.0588402Z Updating files:  80% (45969/57461)
+2026-09-07T12:39:02.1531589Z Updating files:  81% (46544/57461)
+2026-09-07T12:39:02.3600641Z Updating files:  82% (47119/57461)
+2026-09-07T12:39:02.3864931Z Updating files:  82% (47387/57461)
+2026-09-07T12:39:02.4455223Z Updating files:  83% (47693/57461)
+2026-09-07T12:39:02.4978734Z Updating files:  84% (48268/57461)
+2026-09-07T12:39:02.5976584Z Updating files:  85% (48842/57461)
+2026-09-07T12:39:02.6535408Z Updating files:  86% (49417/57461)
+2026-09-07T12:39:02.7067994Z Updating files:  87% (49992/57461)
+2026-09-07T12:39:02.7548687Z Updating files:  88% (50566/57461)
+2026-09-07T12:39:02.8021667Z Updating files:  89% (51141/57461)
+2026-09-07T12:39:02.8450842Z Updating files:  90% (51715/57461)
+2026-09-07T12:39:02.8902549Z Updating files:  91% (52290/57461)
+2026-09-07T12:39:02.9650521Z Updating files:  92% (52865/57461)
+2026-09-07T12:39:03.0023162Z Updating files:  93% (53439/57461)
+2026-09-07T12:39:03.0384711Z Updating files:  94% (54014/57461)
+2026-09-07T12:39:03.0706698Z Updating files:  95% (54588/57461)
+2026-09-07T12:39:03.1000323Z Updating files:  96% (55163/57461)
+2026-09-07T12:39:03.1302431Z Updating files:  97% (55738/57461)
+2026-09-07T12:39:03.1523203Z Updating files:  98% (56312/57461)
+2026-09-07T12:39:03.1734757Z Updating files:  99% (56887/57461)
+2026-09-07T12:39:03.1735765Z Updating files: 100% (57461/57461)
+2026-09-07T12:39:03.1736444Z Updating files: 100% (57461/57461), done.
+2026-09-07T12:39:03.2304785Z Note: switching to 'refs/remotes/pull/16925/merge'.
+2026-09-07T12:39:03.2305565Z 
+2026-09-07T12:39:03.2306151Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-09-07T12:39:03.2307549Z changes and commit them, and you can discard any commits you make in this
+2026-09-07T12:39:03.2308638Z state without impacting any branches by switching back to a branch.
+2026-09-07T12:39:03.2309291Z 
+2026-09-07T12:39:03.2309802Z If you want to create a new branch to retain commits you create, you may
+2026-09-07T12:39:03.2310710Z do so (now or later) by using -c with the switch command. Example:
+2026-09-07T12:39:03.2311316Z 
+2026-09-07T12:39:03.2311626Z   git switch -c <new-branch-name>
+2026-09-07T12:39:03.2312447Z 
+2026-09-07T12:39:03.2312690Z Or undo this operation with:
+2026-09-07T12:39:03.2312920Z 
+2026-09-07T12:39:03.2313034Z   git switch -
+2026-09-07T12:39:03.2313179Z 
+2026-09-07T12:39:03.2313444Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-09-07T12:39:03.2313826Z 
+2026-09-07T12:39:03.2314257Z HEAD is now at cd756368 Merge c247403be5d6320b74903e5562b36f55d6884d6f into 3c937c006b910d349fe5a685fd6f136f066a454d
+2026-09-07T12:39:03.2362006Z ##[endgroup]
+2026-09-07T12:39:03.2403553Z [command]/usr/bin/git log -1 --format=%H
+2026-09-07T12:39:03.2431343Z cd756368da6128c983211697b5949f412be7d139
+2026-09-07T12:39:03.2711166Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+2026-09-07T12:39:03.2711568Z with:
+2026-09-07T12:39:03.2711771Z   bun-version: 1.3.13
+2026-09-07T12:39:03.2711997Z   no-cache: false
+2026-09-07T12:39:03.2714536Z   token: ***
+2026-09-07T12:39:03.2714734Z env:
+2026-09-07T12:39:03.2717416Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:03.2717633Z ##[endgroup]
+2026-09-07T12:39:03.5270532Z Cache hit for: bun-68bqnNjVR1ckwhD0nFe5oJmGfoU=
+2026-09-07T12:39:03.8220824Z Received 36181061 of 36181061 (100.0%), 138.0 MBs/sec
+2026-09-07T12:39:03.8221462Z Cache Size: ~35 MB (36181061 B)
+2026-09-07T12:39:03.8258858Z [command]/usr/bin/tar -xf /home/runner/work/_temp/33e1031a-8081-4753-bd08-fa8c12897183/cache.tzst -P -C /home/runner/work/Zeta/Zeta --use-compress-program unzstd
+2026-09-07T12:39:04.0098523Z Cache restored successfully
+2026-09-07T12:39:04.0123210Z [command]/home/runner/.bun/bin/bun --revision
+2026-09-07T12:39:04.0185902Z 1.3.13+bf2e2cecf
+2026-09-07T12:39:04.0187386Z Using a cached version of Bun: 1.3.13+bf2e2cecf
+2026-09-07T12:39:04.0337742Z ##[group]Run bun install --frozen-lockfile
+2026-09-07T12:39:04.0338180Z [36;1mbun install --frozen-lockfile[0m
+2026-09-07T12:39:04.0380502Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:04.0380788Z env:
+2026-09-07T12:39:04.0383494Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:04.0383732Z ##[endgroup]
+2026-09-07T12:39:04.0494370Z bun install v1.3.13 (bf2e2cec)
+2026-09-07T12:39:06.3407725Z 
+2026-09-07T12:39:06.3408764Z + @eslint/js@10.0.1
+2026-09-07T12:39:06.3409222Z + @types/bun@1.4.0
+2026-09-07T12:39:06.3409624Z + @types/semver@7.8.0
+2026-09-07T12:39:06.3410080Z + eslint@10.9.1
+2026-09-07T12:39:06.3410548Z + eslint-plugin-sonarjs@4.2.0
+2026-09-07T12:39:06.3411076Z + fast-check@4.9.0
+2026-09-07T12:39:06.3411499Z + globals@17.12.0
+2026-09-07T12:39:06.3411914Z + jiti@2.7.0
+2026-09-07T12:39:06.3412335Z + markdownlint-cli2@0.23.2
+2026-09-07T12:39:06.3412817Z + playwright@1.62.1
+2026-09-07T12:39:06.3413247Z + prettier@3.9.6
+2026-09-07T12:39:06.3413698Z + prettier-plugin-toml@2.0.6
+2026-09-07T12:39:06.3414313Z + quantum-circuit@0.9.250
+2026-09-07T12:39:06.3414788Z + semver@7.8.5
+2026-09-07T12:39:06.3415143Z + stylelint@17.14.1
+2026-09-07T12:39:06.3415544Z + stylelint-config-standard@40.0.0
+2026-09-07T12:39:06.3416056Z + typescript@6.0.3
+2026-09-07T12:39:06.3416432Z + typescript-eslint@8.69.0
+2026-09-07T12:39:06.3416829Z + vite@8.2.2
+2026-09-07T12:39:06.3417397Z + z3-solver@5.2.0
+2026-09-07T12:39:06.3417736Z + @nats-io/jetstream@3.4.0
+2026-09-07T12:39:06.3418135Z + @nats-io/transport-node@3.4.0
+2026-09-07T12:39:06.3418558Z + @noble/ciphers@2.4.0
+2026-09-07T12:39:06.3418920Z + @noble/curves@2.4.0
+2026-09-07T12:39:06.3419294Z + @noble/hashes@2.4.0
+2026-09-07T12:39:06.3419678Z + @noble/post-quantum@0.7.1
+2026-09-07T12:39:06.3420065Z + @scure/base@2.4.0
+2026-09-07T12:39:06.3420448Z + @scure/bip32@2.4.0
+2026-09-07T12:39:06.3420844Z + @scure/bip39@2.4.0
+2026-09-07T12:39:06.3421174Z + cborg@6.1.2
+2026-09-07T12:39:06.3421512Z + epub-gen-memory@1.1.2
+2026-09-07T12:39:06.3421898Z + micro-key-producer@0.10.2
+2026-09-07T12:39:06.3422333Z + pg@8.23.0
+2026-09-07T12:39:06.3422651Z + yaml@2.9.0
+2026-09-07T12:39:06.3422842Z 
+2026-09-07T12:39:06.3422996Z 764 packages installed [2.29s]
+2026-09-07T12:39:06.3526290Z ##[group]Run bun run hygiene:check-bash-retirement-inventory
+2026-09-07T12:39:06.3526789Z [36;1mbun run hygiene:check-bash-retirement-inventory[0m
+2026-09-07T12:39:06.3563916Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:06.3564184Z env:
+2026-09-07T12:39:06.3566812Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:06.3567341Z ##[endgroup]
+2026-09-07T12:39:06.3673417Z $ bun ./src/Core.TypeScript/hygiene/check-bash-retirement-inventory.ts --enforce
+2026-09-07T12:39:06.6505541Z # Bash Retirement Inventory
+2026-09-07T12:39:06.6506052Z 
+2026-09-07T12:39:06.6507253Z retained_non_lean_shell: 32
+2026-09-07T12:39:06.6507744Z expected_retained: 32
+2026-09-07T12:39:06.6508153Z retained_categories: 4
+2026-09-07T12:39:06.6508559Z allowlist_duplicates: 0
+2026-09-07T12:39:06.6508993Z allowlist_order_violations: 0
+2026-09-07T12:39:06.6509469Z allowlist_uncategorized: 0
+2026-09-07T12:39:06.6509939Z allowlist_stale_category_entries: 0
+2026-09-07T12:39:06.6510428Z unexpected: 0
+2026-09-07T12:39:06.6510892Z missing_retained: 0
+2026-09-07T12:39:06.6511129Z 
+2026-09-07T12:39:06.6511305Z ## Retained shell categories
+2026-09-07T12:39:06.6511585Z 
+2026-09-07T12:39:06.6511734Z - setup/bootstrap: 21
+2026-09-07T12:39:06.6512198Z - git hooks: 4
+2026-09-07T12:39:06.6512561Z - host-service wrappers: 4
+2026-09-07T12:39:06.6512969Z - nixos installer: 3
+2026-09-07T12:39:06.6513200Z 
+2026-09-07T12:39:06.6513858Z OK: retained non-Lean shell surface matches repo-wide setup/bootstrap/service-wrapper/lint-wrapper/installer allowlist.
+2026-09-07T12:39:06.6634881Z ##[group]Run bun run hygiene:check-healer-oscillation
+2026-09-07T12:39:06.6635311Z [36;1mbun run hygiene:check-healer-oscillation[0m
+2026-09-07T12:39:06.6671748Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:06.6672015Z env:
+2026-09-07T12:39:06.6674647Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:06.6674880Z ##[endgroup]
+2026-09-07T12:39:06.6757358Z $ bun ./src/Core.TypeScript/hygiene/check-healer-oscillation.ts
+2026-09-07T12:39:08.4115765Z pairs: 10  dag-height: 1
+2026-09-07T12:39:08.4116267Z   disjoint   10
+2026-09-07T12:39:08.4116614Z   commutes   0
+2026-09-07T12:39:08.4116900Z   override   0
+2026-09-07T12:39:08.4117587Z   oscillate  0
+2026-09-07T12:39:08.4117792Z 
+2026-09-07T12:39:08.4118574Z OK — 10 pair(s), DAG height 1.
+2026-09-07T12:39:08.4119089Z Height 1 is an antichain: the roster composes as a SET, and run-tier0's order is not
+2026-09-07T12:39:08.4119832Z load-bearing today. That is a property of THIS roster, not a guarantee of the harness.
+2026-09-07T12:39:08.4309044Z ##[group]Run bun src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts
+2026-09-07T12:39:08.4309657Z [36;1mbun src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.ts[0m
+2026-09-07T12:39:08.4345445Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:08.4345714Z env:
+2026-09-07T12:39:08.4348860Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:08.4349102Z ##[endgroup]
+2026-09-07T12:39:08.4707822Z [zetafs-virtual-path] scanned 14 ZetaFs module(s)
+2026-09-07T12:39:08.4729303Z ##[warning][zetafs-virtual-path] src/Core/ZetaFsDeltaLog.fs: line 36: Path.GetFullPath resolves against the process CWD — ambient state. NOT auto-healed: removing it changes behaviour for real-path callers. Needs a human.
+2026-09-07T12:39:08.4738652Z [zetafs-virtual-path] no host-separator path construction; 1 tier-2 finding(s) reported above.
+2026-09-07T12:39:08.4782059Z ##[group]Run bun test src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts
+2026-09-07T12:39:08.4782712Z [36;1mbun test src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts[0m
+2026-09-07T12:39:08.4818617Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:08.4818878Z env:
+2026-09-07T12:39:08.4821472Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:08.4821700Z ##[endgroup]
+2026-09-07T12:39:08.4931700Z bun test v1.3.13 (bf2e2cec)
+2026-09-07T12:39:08.6096993Z 
+2026-09-07T12:39:08.6098767Z ##[group]src/Core.TypeScript/hygiene/healers/zetafs-virtual-path.test.ts:
+2026-09-07T12:39:08.6168677Z (pass) scope — this is where the judgement went > a module that routes through the FS abstraction is IN scope
+2026-09-07T12:39:08.6170579Z (pass) scope — this is where the judgement went > a module that touches the HOST filesystem directly is OUT of scope [1.00ms]
+2026-09-07T12:39:08.6172257Z (pass) scope — this is where the judgement went > a file that never reaches the abstraction is OUT of scope
+2026-09-07T12:39:08.6173619Z (pass) scope — this is where the judgement went > scope is DERIVED from the file, not a hand-written roster
+2026-09-07T12:39:08.6174665Z (pass) detector > flags Path.Combine and Path.GetDirectoryName in scope
+2026-09-07T12:39:08.6178032Z (pass) detector > reports Path.GetFullPath as TIER 2 — detected, never rewritten
+2026-09-07T12:39:08.6179014Z (pass) detector > does not flag the module that DEFINES the replacement [1.00ms]
+2026-09-07T12:39:08.6180909Z (pass) rewrite > picks the arity-named helper and parenthesises compound arguments
+2026-09-07T12:39:08.6181789Z (pass) rewrite > nested calls and commas inside arguments do not split the argument list
+2026-09-07T12:39:08.6182691Z (pass) rewrite > an unbalanced call DECLINES rather than guessing
+2026-09-07T12:39:08.6193502Z (pass) harness laws > idempotence, closure and convergence all hold [1.00ms]
+2026-09-07T12:39:08.6199905Z (pass) harness laws > the healed tree has no findings — closure, stated directly [1.00ms]
+2026-09-07T12:39:08.6200702Z (pass) harness laws > an out-of-scope file is byte-identical after healing
+2026-09-07T12:39:08.6449623Z (pass) the live tree > src/Core/ZetaFs*.fs is clean — the healer starts green [25.00ms]
+2026-09-07T12:39:08.6450296Z 
+2026-09-07T12:39:08.6458299Z ##[endgroup]
+2026-09-07T12:39:08.6458753Z 
+2026-09-07T12:39:08.6459114Z  14 pass
+2026-09-07T12:39:08.6459508Z  0 fail
+2026-09-07T12:39:08.6459846Z  22 expect() calls
+2026-09-07T12:39:08.6460249Z Ran 14 tests across 1 file. [152.00ms]
+2026-09-07T12:39:08.6575430Z ##[group]Run bun run hygiene:no-ambient-credential-hoist
+2026-09-07T12:39:08.6575886Z [36;1mbun run hygiene:no-ambient-credential-hoist[0m
+2026-09-07T12:39:08.6612700Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:08.6612973Z env:
+2026-09-07T12:39:08.6615639Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:08.6615872Z ##[endgroup]
+2026-09-07T12:39:08.6698069Z $ bun ./src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts
+2026-09-07T12:39:09.2115750Z ✓ no ambient credential hoist in 3361 tracked executable files
+2026-09-07T12:39:09.2286250Z ##[group]Run bun run hygiene:no-decide-by-grep
+2026-09-07T12:39:09.2286914Z [36;1mbun run hygiene:no-decide-by-grep[0m
+2026-09-07T12:39:09.2339592Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:09.2340079Z env:
+2026-09-07T12:39:09.2345823Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:09.2346272Z ##[endgroup]
+2026-09-07T12:39:09.2452214Z $ bun ./src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts
+2026-09-07T12:39:09.2893990Z ✓ lint-no-decide-by-grep: 92 workflows, no gate decides by a discarded exit status.
+2026-09-07T12:39:09.2988986Z ##[group]Run bun run hygiene:no-orphaned-doc-comments
+2026-09-07T12:39:09.2989743Z [36;1mbun run hygiene:no-orphaned-doc-comments[0m
+2026-09-07T12:39:09.3042308Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:09.3042800Z env:
+2026-09-07T12:39:09.3048758Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:09.3049182Z ##[endgroup]
+2026-09-07T12:39:09.3146143Z $ bun ./src/Core.TypeScript/hygiene/lint-orphaned-doc-comments.ts src/Core.TypeScript/corporate
+2026-09-07T12:39:09.3498917Z lint-orphaned-doc-comments: 119 file(s) clean.
+2026-09-07T12:39:09.3565044Z ##[group]Run bun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift
+2026-09-07T12:39:09.3565638Z [36;1mbun src/Core.TypeScript/hygiene/report-chart-currency.ts --drift[0m
+2026-09-07T12:39:09.3602080Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:09.3602362Z env:
+2026-09-07T12:39:09.3605269Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:09.3605503Z ##[endgroup]
+2026-09-07T12:39:09.6271733Z chart currency: 37 coordinate(s), no NEW drift, 4 carried with a reason and a lift condition, snapshot asOf 2026-09-05T22:22:33Z.
+2026-09-07T12:39:09.6405219Z ##[group]Run bun run hygiene:no-graphql-transport-in-scripts
+2026-09-07T12:39:09.6405718Z [36;1mbun run hygiene:no-graphql-transport-in-scripts[0m
+2026-09-07T12:39:09.6440682Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:09.6440951Z env:
+2026-09-07T12:39:09.6443580Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:09.6443811Z ##[endgroup]
+2026-09-07T12:39:09.6525887Z $ bun ./src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts src/Core.TypeScript .github/workflows tools .claude --min-files 2000 --baseline src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.baseline.json
+2026-09-07T12:39:10.5289134Z lint-graphql-transport-in-scripts: scanned 2991 file(s) under src/Core.TypeScript, .github/workflows, tools, .claude (34 grandfathered)
+2026-09-07T12:39:10.5290922Z   interactive `gh` use by a human is NOT the target; committed scripts, workflows and agent loops are.
+2026-09-07T12:39:10.5292491Z   permitted GraphQL: pr merge --auto (enablePullRequestAutoMerge -- GraphQL-only, no REST equivalent)
+2026-09-07T12:39:10.5293254Z   no un-baselined GraphQL-transport call sites found
+2026-09-07T12:39:10.5456845Z ##[group]Run bun run hygiene:no-clean-sarif-for-skipped-analysis
+2026-09-07T12:39:10.5458049Z [36;1mbun run hygiene:no-clean-sarif-for-skipped-analysis[0m
+2026-09-07T12:39:10.5504127Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:10.5504564Z env:
+2026-09-07T12:39:10.5510194Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:10.5510592Z ##[endgroup]
+2026-09-07T12:39:10.5612331Z $ bun ./src/Core.TypeScript/hygiene/lint-no-clean-sarif-for-skipped-analysis.ts
+2026-09-07T12:39:11.0998410Z workflows scanned:        92
+2026-09-07T12:39:11.1017761Z synthesised-empty SARIFs: 1
+2026-09-07T12:39:11.1037924Z SARIF upload steps:       2
+2026-09-07T12:39:11.1038229Z findings:                 0
+2026-09-07T12:39:11.1158622Z ##[group]Run bun run hygiene:scan-floor-routes
+2026-09-07T12:39:11.1159252Z [36;1mbun run hygiene:scan-floor-routes[0m
+2026-09-07T12:39:11.1194767Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:11.1195030Z env:
+2026-09-07T12:39:11.1197930Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:11.1198171Z ##[endgroup]
+2026-09-07T12:39:11.1289460Z $ bun ./src/Core.TypeScript/hygiene/audit-scan-floor-routes.ts
+2026-09-07T12:39:11.6012536Z scan-floor route audit -- 3792 tracked sources scanned
+2026-09-07T12:39:11.6013316Z 
+2026-09-07T12:39:11.6017910Z Per-route contribution (floor: 1 each -- the non-vacuity boundary):
+2026-09-07T12:39:11.6019129Z     ok  named-min-constant     33  a count compared against a MIN_-named threshold; dies if the naming convention changes
+2026-09-07T12:39:11.6020525Z     ok  cli-min-flag           56  a floor exposed as a --min-* operand; dies if the flag is renamed or the CLI is dropped
+2026-09-07T12:39:11.6021759Z     ok  floor-prose           102  the failure text a floor prints; dies if the wording is rewritten
+2026-09-07T12:39:11.6023010Z     ok  count-assertion        47  a test-side non-vacuity assertion on a gathered corpus; dies if the assertion style changes
+2026-09-07T12:39:11.6023812Z 
+2026-09-07T12:39:11.6023950Z Sites (238):
+2026-09-07T12:39:11.6024733Z   [cli-min-flag] src/Core.TypeScript/agent-heartbeats/merge-heartbeats-to-main.test.ts:354  --min-age-min
+2026-09-07T12:39:11.6025874Z   [cli-min-flag] src/Core.TypeScript/ci/cross-verify-roster.ts:706  --min-files
+2026-09-07T12:39:11.6026792Z   [cli-min-flag] src/Core.TypeScript/ci/cross-verify-roster.ts:714  --min-files
+2026-09-07T12:39:11.6028035Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/backfill-pr-archive.ts:307  --min-delay-ms
+2026-09-07T12:39:11.6029203Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/backfill-pr-archive.ts:315  --min-delay-ms
+2026-09-07T12:39:11.6030284Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.test.ts:212  --min-age-minutes
+2026-09-07T12:39:11.6031446Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.test.ts:215  --min-age-minutes
+2026-09-07T12:39:11.6032574Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.test.ts:216  --min-age-minutes
+2026-09-07T12:39:11.6033685Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.test.ts:217  --min-age-minutes
+2026-09-07T12:39:11.6034815Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.test.ts:218  --min-age-minutes
+2026-09-07T12:39:11.6035903Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:12  --min-age-minutes
+2026-09-07T12:39:11.6036948Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:46  --min-age-minutes
+2026-09-07T12:39:11.6038342Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:54  --min-age-minutes
+2026-09-07T12:39:11.6039404Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:279  --min-age-minutes
+2026-09-07T12:39:11.6040460Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:296  --min-age-minutes
+2026-09-07T12:39:11.6041503Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:304  --min-age-minutes
+2026-09-07T12:39:11.6042542Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/derive-pr-manifest.ts:309  --min-age-minutes
+2026-09-07T12:39:11.6043648Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts:541  --min-age-minutes
+2026-09-07T12:39:11.6044810Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts:541  --min-age-minutes
+2026-09-07T12:39:11.6045944Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts:554  --min-age-minutes
+2026-09-07T12:39:11.6047247Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts:558  --min-age-minutes
+2026-09-07T12:39:11.6048877Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/required-check-started.test.ts:228  --min-age-min
+2026-09-07T12:39:11.6050005Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/required-check-started.ts:28  --min-age-min
+2026-09-07T12:39:11.6051162Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/required-check-started.ts:37  --min-age-min
+2026-09-07T12:39:11.6052297Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/required-check-started.ts:340  --min-age-min
+2026-09-07T12:39:11.6053444Z   [cli-min-flag] src/Core.TypeScript/forge-host/github/required-check-started.ts:343  --min-age-min
+2026-09-07T12:39:11.6054708Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-consent-signoff.ts:44  --min-spans
+2026-09-07T12:39:11.6055689Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-consent-signoff.ts:990  --min-spans
+2026-09-07T12:39:11.6056660Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-consent-signoff.ts:993  --min-spans
+2026-09-07T12:39:11.6057907Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-hidden-oracles.test.ts:228  --min-age-min
+2026-09-07T12:39:11.6058990Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-hidden-oracles.ts:13  --min-age-min
+2026-09-07T12:39:11.6059975Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-hidden-oracles.ts:356  --min-age-min
+2026-09-07T12:39:11.6061019Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts:479  --min-window
+2026-09-07T12:39:11.6062108Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts:480  --min-lifetime
+2026-09-07T12:39:11.6063192Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts:489  --min-window
+2026-09-07T12:39:11.6064275Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts:489  --min-lifetime
+2026-09-07T12:39:11.6065378Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:80  --min-schemas
+2026-09-07T12:39:11.6066470Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:91  --min-schemas
+2026-09-07T12:39:11.6067809Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:982  --min-schemas
+2026-09-07T12:39:11.6068933Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:986  --min-schemas
+2026-09-07T12:39:11.6070037Z   [cli-min-flag] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:997  --min-schemas
+2026-09-07T12:39:11.6071199Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.test.ts:337  --min-files
+2026-09-07T12:39:11.6072415Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.test.ts:342  --min-files
+2026-09-07T12:39:11.6073640Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.test.ts:395  --min-files
+2026-09-07T12:39:11.6074795Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:80  --min-files
+2026-09-07T12:39:11.6075918Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1027  --min-files
+2026-09-07T12:39:11.6077213Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1034  --min-files
+2026-09-07T12:39:11.6078334Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1056  --min-files
+2026-09-07T12:39:11.6079533Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.test.ts:373  --min-files
+2026-09-07T12:39:11.6080720Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.test.ts:374  --min-files
+2026-09-07T12:39:11.6081893Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.test.ts:411  --min-files
+2026-09-07T12:39:11.6099577Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.test.ts:412  --min-files
+2026-09-07T12:39:11.6100891Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:90  --min-files
+2026-09-07T12:39:11.6102191Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:677  --min-files
+2026-09-07T12:39:11.6103677Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:683  --min-files
+2026-09-07T12:39:11.6104880Z   [cli-min-flag] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:714  --min-files
+2026-09-07T12:39:11.6106147Z   [count-assertion] full-ai-cluster/tools/k8s-manifests.test.ts:41  expect(allYaml.length).toBeGreaterThan(20)
+2026-09-07T12:39:11.6107778Z   [count-assertion] full-ai-cluster/tools/k8s-manifests.test.ts:58  expect(perTree.get(tree)?.length ?? 0).toBeGreaterThanOrEqual(1)
+2026-09-07T12:39:11.6109558Z   [count-assertion] full-ai-cluster/tools/k8s-manifests.test.ts:96  expect(mine.length).toBeGreaterThanOrEqual(3)
+2026-09-07T12:39:11.6110960Z   [count-assertion] src/Core.TypeScript/ace/build-graph.test.ts:779  expect(tiers.size).toBeGreaterThanOrEqual(3)
+2026-09-07T12:39:11.6112337Z   [count-assertion] src/Core.TypeScript/ace/build-graph.test.ts:1036  expect(blocks.length).toBeGreaterThan(50)
+2026-09-07T12:39:11.6113754Z   [count-assertion] src/Core.TypeScript/ace/build-graph.test.ts:1047  expect(matching.length).toBeGreaterThanOrEqual(4)
+2026-09-07T12:39:11.6115254Z   [count-assertion] src/Core.TypeScript/cluster/argocd-health-test.test.ts:390  expect(applications.length).toBeGreaterThan(20)
+2026-09-07T12:39:11.6116789Z   [count-assertion] src/Core.TypeScript/cluster/argocd-health-test.test.ts:411  expect(included.length).toBeGreaterThan(10)
+2026-09-07T12:39:11.6118643Z   [count-assertion] src/Core.TypeScript/cluster/argocd-health-test.test.ts:1218  expect(REPO_BACKED_CHILD_APPEAR_TIMEOUT_SECONDS).toBeGreaterThan(60)
+2026-09-07T12:39:11.6120350Z   [count-assertion] src/Core.TypeScript/cluster/image-source-provenance.test.ts:708  expect(result.imageCount).toBeGreaterThan(20)
+2026-09-07T12:39:11.6121953Z   [count-assertion] src/Core.TypeScript/cluster/image-source-provenance.test.ts:709  expect(result.manifestCount).toBeGreaterThan(50)
+2026-09-07T12:39:11.6123467Z   [count-assertion] src/Core.TypeScript/corporate/org-store.test.ts:222  expect(stored.length).toBeGreaterThan(20)
+2026-09-07T12:39:11.6124951Z   [count-assertion] src/Core.TypeScript/corporate/org-store.test.ts:226  expect(eventsFor(root, taskId).length).toBeGreaterThan(3)
+2026-09-07T12:39:11.6126428Z   [count-assertion] src/Core.TypeScript/corporate/register-boundary.test.ts:87  expect(SCAN.core.length).toBeGreaterThan(500)
+2026-09-07T12:39:11.6128199Z   [count-assertion] src/Core.TypeScript/forge-host/github/required-check-started.test.ts:509  expect(DEFAULT_PR_LIST_LIMIT).toBeGreaterThan(50)
+2026-09-07T12:39:11.6129848Z   [count-assertion] src/Core.TypeScript/forge-host/github/workflow-triggers.test.ts:269  expect(files.length).toBeGreaterThan(20)
+2026-09-07T12:39:11.6131298Z   [count-assertion] src/Core.TypeScript/hygiene/add-pipe-row-header.test.ts:137  expect(pipeCount).toBeGreaterThanOrEqual(7)
+2026-09-07T12:39:11.6132945Z   [count-assertion] src/Core.TypeScript/hygiene/audit-bootstrap-application-pin-parity.test.ts:196  expect(entry.reason.length).toBeGreaterThan(80)
+2026-09-07T12:39:11.6134517Z   [count-assertion] src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts:104  expect(files.length).toBeGreaterThan(100)
+2026-09-07T12:39:11.6135995Z   [count-assertion] src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts:107  expect(sources.length).toBeGreaterThan(100)
+2026-09-07T12:39:11.6137775Z   [count-assertion] src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts:135  expect(perRoot.get(root)?.length ?? 0).toBeGreaterThanOrEqual(1)
+2026-09-07T12:39:11.6139372Z   [count-assertion] src/Core.TypeScript/hygiene/no-tracked-file-is-ignored.test.ts:43  expect(tracked.length).toBeGreaterThan(1000)
+2026-09-07T12:39:11.6140930Z   [count-assertion] src/Core.TypeScript/hygiene/workflow-step-env-vars-are-defined.test.ts:116  expect(files.length).toBeGreaterThan(50)
+2026-09-07T12:39:11.6142497Z   [count-assertion] src/Core.TypeScript/observe/attestation-retraction.test.ts:106  expect(records.length).toBeGreaterThan(300)
+2026-09-07T12:39:11.6144318Z   [count-assertion] src/Core.TypeScript/observe/attestation-retraction.test.ts:162  expect(readdirSync(DIR).length).toBeGreaterThan(500)
+2026-09-07T12:39:11.6145933Z   [count-assertion] src/Core.TypeScript/observe/emit-attestation.test.ts:93  expect(bogus.category).toBeGreaterThan(8)
+2026-09-07T12:39:11.6147554Z   [count-assertion] src/Core.TypeScript/observe/tick-shards.test.ts:141  expect(keys.length).toBeGreaterThan(5)
+2026-09-07T12:39:11.6148877Z   [count-assertion] src/Core.TypeScript/observe/tick-shards.test.ts:199  expect(files.length).toBeGreaterThan(100)
+2026-09-07T12:39:11.6150497Z   [count-assertion] src/Core.TypeScript/observe/verify-attestation-events.test.ts:221  expect(records.length).toBeGreaterThan(300)
+2026-09-07T12:39:11.6152167Z   [count-assertion] src/Core.TypeScript/planning/society-population.test.ts:93  expect(scan.agents.length).toBeGreaterThanOrEqual(2)
+2026-09-07T12:39:11.6153850Z   [count-assertion] src/Core.TypeScript/planning/society-population.test.ts:399  expect(society.agents.length).toBeGreaterThanOrEqual(2)
+2026-09-07T12:39:11.6155383Z   [count-assertion] src/Core.TypeScript/search/inverted/inverted-index.test.ts:241  expect(namesOne.length).toBeGreaterThan(2)
+2026-09-07T12:39:11.6156942Z   [count-assertion] src/Core.TypeScript/search/inverted/inverted-index.test.ts:319  expect(VERIFY_FILE_BUDGET).toBeGreaterThan(100)
+2026-09-07T12:39:11.6158784Z   [count-assertion] src/Core.TypeScript/search/inverted/inverted-index.test.ts:477  expect(t.measurement.length).toBeGreaterThan(40)
+2026-09-07T12:39:11.6160440Z   [count-assertion] src/Core.TypeScript/search/inverted/inverted-index.test.ts:495  expect(documentFrequencyCap(32936)).toBeGreaterThan(447)
+2026-09-07T12:39:11.6161919Z   [count-assertion] src/Core.TypeScript/society/rho-series.test.ts:136  expect(rows.length).toBeGreaterThan(100)
+2026-09-07T12:39:11.6163312Z   [count-assertion] src/Core.TypeScript/society/rho-series.test.ts:284  expect(new Set(xs).size).toBeGreaterThan(490)
+2026-09-07T12:39:11.6164639Z   [count-assertion] src/Core.TypeScript/zeta-id/sort-key.test.ts:255  expect(ids.length).toBeGreaterThan(100)
+2026-09-07T12:39:11.6165867Z   [count-assertion] src/Core.TypeScript/zflash/lib.test.ts:1145  expect(r.error.split("\n").length).toBeGreaterThanOrEqual(4)
+2026-09-07T12:39:11.6166860Z   [count-assertion] tests/cross-verification/zeta-ir-v2/interfaces/cross-verify-interfaces.test.ts:36  expect(irsWithLaws).toBeGreaterThanOrEqual(1)
+2026-09-07T12:39:11.6168357Z   [count-assertion] tools/setup/persona-keys/ceremony-reachability.test.ts:92  expect(ALL_CLIS.length).toBeGreaterThan(10)
+2026-09-07T12:39:11.6169279Z   [count-assertion] tools/setup/persona-keys/ceremony-reachability.test.ts:95  expect(polarities.size).toBeGreaterThan(1)
+2026-09-07T12:39:11.6170141Z   [count-assertion] tools/setup/persona-keys/ceremony-reachability.test.ts:142  expect(workflows.length).toBeGreaterThan(5)
+2026-09-07T12:39:11.6171066Z   [count-assertion] tools/setup/persona-keys/onboarding-roundtrip.test.ts:485  expect(before.standby.length).toBeGreaterThanOrEqual(1)
+2026-09-07T12:39:11.6172013Z   [count-assertion] tools/setup/persona-keys/onboarding-roundtrip.test.ts:498  expect(after.standby.length).toBeGreaterThanOrEqual(1)
+2026-09-07T12:39:11.6173266Z   [count-assertion] tools/setup/persona-keys/onboarding-roundtrip.test.ts:499  expect(1 + after.standby.length).toBeGreaterThanOrEqual(2)
+2026-09-07T12:39:11.6174911Z   [count-assertion] tools/setup/persona-keys/rotate-ca-closing-bound.test.ts:569  expect(MAX_RETIRED_GENERATIONS).toBeGreaterThan(1)
+2026-09-07T12:39:11.6176275Z   [floor-prose] full-ai-cluster/k8s/tests/validate-applications.test.ts:407  checked nothing
+2026-09-07T12:39:11.6177764Z   [floor-prose] src/Core.TypeScript/bootstrap-validator/validate-bootstrap-claude-md.test.ts:190  vacuous pass
+2026-09-07T12:39:11.6178902Z   [floor-prose] src/Core.TypeScript/ci/cross-verify-roster.ts:706  scan floor
+2026-09-07T12:39:11.6179793Z   [floor-prose] src/Core.TypeScript/ci/cross-verify-roster.ts:707  inspected nothing
+2026-09-07T12:39:11.6180653Z   [floor-prose] src/Core.TypeScript/ci/gate-blocking-floor.test.ts:21  scan floor
+2026-09-07T12:39:11.6181272Z   [floor-prose] src/Core.TypeScript/ci/rerun-toolchain-install-stall-cli.test.ts:88  scan floor
+2026-09-07T12:39:11.6181931Z   [floor-prose] src/Core.TypeScript/cluster/image-source-provenance.ts:832  checked nothing
+2026-09-07T12:39:11.6182555Z   [floor-prose] src/Core.TypeScript/cluster/inert-valuesobject-keys.ts:1435  checked NOTHING
+2026-09-07T12:39:11.6183171Z   [floor-prose] src/Core.TypeScript/cluster/rendered-storage-claims.ts:1476  checked NOTHING
+2026-09-07T12:39:11.6183910Z   [floor-prose] src/Core.TypeScript/discovery/udp-lossy-transport.test.ts:489  vacuous pass
+2026-09-07T12:39:11.6184542Z   [floor-prose] src/Core.TypeScript/economy/conservation-ledger.test.ts:250  checked nothing
+2026-09-07T12:39:11.6185157Z   [floor-prose] src/Core.TypeScript/eve-translation/aut-budget.test.ts:30  scan floor
+2026-09-07T12:39:11.6185714Z   [floor-prose] src/Core.TypeScript/eve-translation/aut-budget.ts:226  Scan floor
+2026-09-07T12:39:11.6186253Z   [floor-prose] src/Core.TypeScript/eve-translation/aut-budget.ts:232  scan floor
+2026-09-07T12:39:11.6186861Z   [floor-prose] src/Core.TypeScript/hygiene/audit-agencysignature-main-tip.ts:375  checked nothing
+2026-09-07T12:39:11.6187822Z   [floor-prose] src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts:333  inspected nothing
+2026-09-07T12:39:11.6188463Z   [floor-prose] src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts:336  scanned only
+2026-09-07T12:39:11.6189110Z   [floor-prose] src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts:337  inspected nothing
+2026-09-07T12:39:11.6189750Z   [floor-prose] src/Core.TypeScript/hygiene/audit-archive-pr-lane.ts:161  checked nothing
+2026-09-07T12:39:11.6190406Z   [floor-prose] src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.test.ts:18  SCAN FLOOR
+2026-09-07T12:39:11.6191108Z   [floor-prose] src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.test.ts:167  SCAN FLOOR
+2026-09-07T12:39:11.6191810Z   [floor-prose] src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.test.ts:174  SCAN FLOOR
+2026-09-07T12:39:11.6192482Z   [floor-prose] src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts:64  Scan floor
+2026-09-07T12:39:11.6193142Z   [floor-prose] src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts:203  SCAN FLOOR
+2026-09-07T12:39:11.6193784Z   [floor-prose] src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts:582  scanned only
+2026-09-07T12:39:11.6194392Z   [floor-prose] src/Core.TypeScript/hygiene/audit-check-arity.ts:799  scanned only
+2026-09-07T12:39:11.6195260Z   [floor-prose] src/Core.TypeScript/hygiene/audit-flash-entrypoint-parity.test.ts:141  vacuous pass
+2026-09-07T12:39:11.6195904Z   [floor-prose] src/Core.TypeScript/hygiene/audit-hidden-oracles.ts:87  liveness failure
+2026-09-07T12:39:11.6196513Z   [floor-prose] src/Core.TypeScript/hygiene/audit-hidden-oracles.ts:87  inspected nothing
+2026-09-07T12:39:11.6197347Z   [floor-prose] src/Core.TypeScript/hygiene/audit-hidden-oracles.ts:605  LIVENESS FAILURE
+2026-09-07T12:39:11.6197969Z   [floor-prose] src/Core.TypeScript/hygiene/audit-local-helm-charts.ts:456  checked nothing
+2026-09-07T12:39:11.6198612Z   [floor-prose] src/Core.TypeScript/hygiene/audit-observe-event-filenames.test.ts:94  scan floor
+2026-09-07T12:39:11.6199258Z   [floor-prose] src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts:47  Scan floor
+2026-09-07T12:39:11.6199874Z   [floor-prose] src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts:173  scan floor
+2026-09-07T12:39:11.6200495Z   [floor-prose] src/Core.TypeScript/hygiene/audit-observe-event-filenames.ts:190  SCAN FLOOR
+2026-09-07T12:39:11.6201151Z   [floor-prose] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.test.ts:209  LIVENESS FAILURE
+2026-09-07T12:39:11.6201812Z   [floor-prose] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts:349  LIVENESS FAILURE
+2026-09-07T12:39:11.6202442Z   [floor-prose] src/Core.TypeScript/hygiene/audit-pr-archive-coverage.ts:490  liveness failure
+2026-09-07T12:39:11.6203282Z   [floor-prose] src/Core.TypeScript/hygiene/audit-review-archive-thread-capture.ts:306  inspected nothing
+2026-09-07T12:39:11.6203972Z   [floor-prose] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:78  SCAN FLOOR
+2026-09-07T12:39:11.6204575Z   [floor-prose] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:97  scan floor
+2026-09-07T12:39:11.6205197Z   [floor-prose] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:148  scan floor
+2026-09-07T12:39:11.6205815Z   [floor-prose] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:929  scan floor
+2026-09-07T12:39:11.6206671Z   [floor-prose] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:1016  SCAN FLOOR
+2026-09-07T12:39:11.6207626Z   [floor-prose] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:1017  inspected nothing
+2026-09-07T12:39:11.6208456Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.test.ts:130  SCAN FLOOR
+2026-09-07T12:39:11.6209173Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.test.ts:137  SCAN FLOOR
+2026-09-07T12:39:11.6209851Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.test.ts:140  SCAN FLOOR
+2026-09-07T12:39:11.6210504Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.ts:78  scan floor
+2026-09-07T12:39:11.6211142Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.ts:107  Scan floor
+2026-09-07T12:39:11.6211821Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.ts:121  inspected nothing
+2026-09-07T12:39:11.6212493Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.ts:149  scan floor
+2026-09-07T12:39:11.6213128Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.ts:207  SCAN FLOOR
+2026-09-07T12:39:11.6213799Z   [floor-prose] src/Core.TypeScript/hygiene/audit-society-population-health.ts:243  inspected nothing
+2026-09-07T12:39:11.6214451Z   [floor-prose] src/Core.TypeScript/hygiene/audit-tech-radar-claims.test.ts:222  scan floor
+2026-09-07T12:39:11.6215099Z   [floor-prose] src/Core.TypeScript/hygiene/audit-tech-radar-claims.test.ts:223  inspected nothing
+2026-09-07T12:39:11.6215741Z   [floor-prose] src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts:67  inspected nothing
+2026-09-07T12:39:11.6216336Z   [floor-prose] src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts:74  Scan floor
+2026-09-07T12:39:11.6216944Z   [floor-prose] src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts:338  inspected nothing
+2026-09-07T12:39:11.6218233Z   [floor-prose] src/Core.TypeScript/hygiene/bunfig-declares-no-test-timeout.test.ts:40  vacuous pass
+2026-09-07T12:39:11.6218950Z   [floor-prose] src/Core.TypeScript/hygiene/environment-dependent-test-files.ts:219  inspected nothing
+2026-09-07T12:39:11.6219645Z   [floor-prose] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.test.ts:326  scan floor
+2026-09-07T12:39:11.6220352Z   [floor-prose] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.test.ts:326  inspected nothing
+2026-09-07T12:39:11.6221032Z   [floor-prose] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1040  SCAN FLOOR
+2026-09-07T12:39:11.6221700Z   [floor-prose] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1040  inspected nothing
+2026-09-07T12:39:11.6222392Z   [floor-prose] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1055  inspected nothing
+2026-09-07T12:39:11.6223075Z   [floor-prose] src/Core.TypeScript/hygiene/lint-drift-publication-lands.test.ts:256  Scan floor
+2026-09-07T12:39:11.6223721Z   [floor-prose] src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts:298  SCAN FLOOR
+2026-09-07T12:39:11.6224342Z   [floor-prose] src/Core.TypeScript/hygiene/lint-drift-publication-lands.ts:301  scan floor
+2026-09-07T12:39:11.6224991Z   [floor-prose] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:226  scanned only
+2026-09-07T12:39:11.6226034Z   [floor-prose] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:539  scanned only
+2026-09-07T12:39:11.6226753Z   [floor-prose] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:700  SCAN FLOOR
+2026-09-07T12:39:11.6227799Z   [floor-prose] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:713  inspected nothing
+2026-09-07T12:39:11.6228511Z   [floor-prose] src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts:80  SCAN FLOOR
+2026-09-07T12:39:11.6229180Z   [floor-prose] src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts:98  scan floor
+2026-09-07T12:39:11.6230022Z   [floor-prose] src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts:151  scan floor
+2026-09-07T12:39:11.6230690Z   [floor-prose] src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts:384  scan floor
+2026-09-07T12:39:11.6231353Z   [floor-prose] src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts:413  scan floor
+2026-09-07T12:39:11.6232030Z   [floor-prose] src/Core.TypeScript/hygiene/lint-heat-kind-classifier-agreement.ts:443  scan floor
+2026-09-07T12:39:11.6232690Z   [floor-prose] src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts:292  scanned only
+2026-09-07T12:39:11.6233374Z   [floor-prose] src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts:492  scanned only
+2026-09-07T12:39:11.6234022Z   [floor-prose] src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts:13  checked nothing
+2026-09-07T12:39:11.6234638Z   [floor-prose] src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts:236  checked nothing
+2026-09-07T12:39:11.6235343Z   [floor-prose] src/Core.TypeScript/hygiene/lint-orphaned-doc-comments.ts:38  checked nothing
+2026-09-07T12:39:11.6235969Z   [floor-prose] src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts:29  Scan floor
+2026-09-07T12:39:11.6236594Z   [floor-prose] src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts:67  scan floor
+2026-09-07T12:39:11.6237518Z   [floor-prose] src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts:100  covers something
+2026-09-07T12:39:11.6238172Z   [floor-prose] src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts:100  vacuous pass
+2026-09-07T12:39:11.6238800Z   [floor-prose] src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts:102  checked nothing
+2026-09-07T12:39:11.6239447Z   [floor-prose] src/Core.TypeScript/hygiene/report-branch-pigeonholes.test.ts:136  vacuous pass
+2026-09-07T12:39:11.6240047Z   [floor-prose] src/Core.TypeScript/hygiene/run-checked.ts:14  checked nothing
+2026-09-07T12:39:11.6240631Z   [floor-prose] src/Core.TypeScript/hygiene/unexecuted-test-files.test.ts:316  vacuous pass
+2026-09-07T12:39:11.6241257Z   [floor-prose] src/Core.TypeScript/hygiene/unexecuted-test-files.ts:484  inspected nothing
+2026-09-07T12:39:11.6241852Z   [floor-prose] src/Core.TypeScript/observe/room/hat-gate.dst.test.ts:203  vacuous pass
+2026-09-07T12:39:11.6242438Z   [floor-prose] src/Core.TypeScript/society/level-obligations.test.ts:218  vacuous pass
+2026-09-07T12:39:11.6242967Z   [floor-prose] src/Core.TypeScript/society/levels.ts:137  vacuous pass
+2026-09-07T12:39:11.6243466Z   [floor-prose] src/Core.TypeScript/zeta-id/sort-key.test.ts:255  vacuous pass
+2026-09-07T12:39:11.6244007Z   [floor-prose] src/wasm-dla/bytelock/run-bytelock-ci.mjs:13  LIVENESS FAILURE
+2026-09-07T12:39:11.6244544Z   [floor-prose] src/wasm-dla/bytelock/run-bytelock-ci.mjs:597  LIVENESS FAILURE
+2026-09-07T12:39:11.6245066Z   [floor-prose] src/wasm-dla/bytelock/run-bytelock-ci.mjs:632  LIVENESS FAILURE
+2026-09-07T12:39:11.6245967Z   [floor-prose] src/wasm-dla/bytelock/test-fault-injection.mjs:34  LIVENESS FAILURE
+2026-09-07T12:39:11.6246896Z   [floor-prose] src/wasm-dla/bytelock/test-fault-injection.mjs:194  liveness failure
+2026-09-07T12:39:11.6248110Z   [named-min-constant] full-ai-cluster/k8s/tests/render-first-boot-charts.ts:140  < MIN_EXPECTED_CHARTS
+2026-09-07T12:39:11.6249324Z   [named-min-constant] full-ai-cluster/tools/flash-usb-windows.ts:168  >= MIN_USB_BYTES
+2026-09-07T12:39:11.6250428Z   [named-min-constant] full-ai-cluster/tools/flash-usb-windows.ts:202  < MIN_ISO_BYTES
+2026-09-07T12:39:11.6251884Z   [named-min-constant] src/Core.TypeScript/cluster/argocd-health-test.test.ts:745  >= SMOKE_MIN_APPLICATIONS
+2026-09-07T12:39:11.6253248Z   [named-min-constant] src/Core.TypeScript/cluster/argocd-health-test.ts:2866  >= SMOKE_MIN_APPLICATIONS
+2026-09-07T12:39:11.6254671Z   [named-min-constant] src/Core.TypeScript/cluster/committed-chart-credentials.ts:220  < MIN_EXPECTED_VALUES_DOCS
+2026-09-07T12:39:11.6255597Z   [named-min-constant] src/Core.TypeScript/forge-host/github/reconcile-review-archive.ts:152  >= minAgeMs
+2026-09-07T12:39:11.6256534Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-cache-key-namespace-parity.ts:201  < MIN_KEYS_EXPECTED
+2026-09-07T12:39:11.6257662Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts:580  < MIN_SCANNED_FILES
+2026-09-07T12:39:11.6258386Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-check-arity.ts:797  < MIN_SCANNED_FILES
+2026-09-07T12:39:11.6259075Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-consent-signoff.ts:881  < minSpans
+2026-09-07T12:39:11.6259736Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-schema-key-set-parity.ts:961  < minSchemas
+2026-09-07T12:39:11.6260462Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-society-population-health.ts:212  < MIN_POPULATION
+2026-09-07T12:39:11.6261216Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-society-population-health.ts:267  < MIN_POPULATION
+2026-09-07T12:39:11.6261928Z   [named-min-constant] src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts:335  < MIN_TEST_FILES
+2026-09-07T12:39:11.6262558Z   [named-min-constant] src/Core.TypeScript/hygiene/drift-ledger.ts:209  >= a.minHeals
+2026-09-07T12:39:11.6263191Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts:1044  < minFiles
+2026-09-07T12:39:11.6263908Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts:702  < minFiles
+2026-09-07T12:39:11.6264678Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-no-ambient-credential-hoist.ts:291  < MIN_FILES_EXPECTED
+2026-09-07T12:39:11.6265482Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-no-culture-sensitive-collation.ts:491  < MIN_FILES_EXPECTED
+2026-09-07T12:39:11.6266271Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-no-decide-by-grep.ts:218  < MIN_WORKFLOWS_EXPECTED
+2026-09-07T12:39:11.6267340Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts:347  < MIN_SCANNED_FILES
+2026-09-07T12:39:11.6268165Z   [named-min-constant] src/Core.TypeScript/hygiene/lint-workflow-job-timeouts.ts:65  < MIN_JOBS_EXPECTED
+2026-09-07T12:39:11.6268865Z   [named-min-constant] src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts:104  < MIN_SAMPLE
+2026-09-07T12:39:11.6269537Z   [named-min-constant] src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts:158  >= MIN_SAMPLE
+2026-09-07T12:39:11.6270213Z   [named-min-constant] src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts:159  >= MIN_COVERAGE
+2026-09-07T12:39:11.6270895Z   [named-min-constant] src/Core.TypeScript/hygiene/mutation-false-alarm-rate.ts:195  >= MIN_SAMPLE
+2026-09-07T12:39:11.6271562Z   [named-min-constant] src/Core.TypeScript/hygiene/unexecuted-test-files.ts:489  < MIN_TEST_FILES
+2026-09-07T12:39:11.6272220Z   [named-min-constant] src/Core.TypeScript/hygiene/unexecuted-test-files.ts:492  < MIN_INVOCATIONS
+2026-09-07T12:39:11.6272833Z   [named-min-constant] src/Core.TypeScript/ledger/measure.ts:237  >= MIN_KEY_PREFIX
+2026-09-07T12:39:11.6273489Z   [named-min-constant] src/Core.TypeScript/planning/competence-attribution.ts:788  < MIN_PERSUASIVE_WEIGHT
+2026-09-07T12:39:11.6274184Z   [named-min-constant] src/Core.TypeScript/zflash/flash-usb-windows.ts:170  >= MIN_USB_BYTES
+2026-09-07T12:39:11.6274803Z   [named-min-constant] src/Core.TypeScript/zflash/flash-usb-windows.ts:204  < MIN_ISO_BYTES
+2026-09-07T12:39:11.6275174Z 
+2026-09-07T12:39:11.6275412Z Corpus visibly gathered by more than one route (INFORMATIONAL -- a union corpus here
+2026-09-07T12:39:11.6276054Z wants a per-route floor; an intersection corpus does not):
+2026-09-07T12:39:11.6276483Z   src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts
+2026-09-07T12:39:11.6276875Z   src/Core.TypeScript/hygiene/audit-check-arity.ts
+2026-09-07T12:39:11.6277488Z   src/Core.TypeScript/hygiene/audit-tech-radar-claims.ts
+2026-09-07T12:39:11.6277922Z   src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts
+2026-09-07T12:39:11.6278418Z   src/Core.TypeScript/hygiene/lint-no-path-resolved-privilege-elevator.ts
+2026-09-07T12:39:11.6279050Z   src/Core.TypeScript/hygiene/no-agent-gate-bypass.test.ts
+2026-09-07T12:39:11.6279401Z   src/Core.TypeScript/ledger/measure.ts
+2026-09-07T12:39:11.6308889Z ##[group]Run bun run hygiene:no-ambient-time-in-tests
+2026-09-07T12:39:11.6309550Z [36;1mbun run hygiene:no-ambient-time-in-tests[0m
+2026-09-07T12:39:11.6344474Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:11.6344745Z env:
+2026-09-07T12:39:11.6347744Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:11.6347981Z ##[endgroup]
+2026-09-07T12:39:11.6431550Z $ bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts
+2026-09-07T12:39:11.8323511Z FAIL: 1 problem(s) across 1571 test files.
+2026-09-07T12:39:11.8324272Z 
+2026-09-07T12:39:11.8325085Z src/Core.TypeScript/formal-verification/tlc-attempts.test.ts:82: setTimeout(..., 10000) -- a non-zero wall-clock delay in a test.
+2026-09-07T12:39:11.8326540Z     const timed = captureProcess(process.execPath, ["-e", "setTimeout(()=>{},10000)"], scratch, join(scratch, "timed-out"), join(scratch, "timed-err"), 40, "SIGKILL
+2026-09-07T12:39:11.8328140Z     This makes the verdict depend on machine load. Replace it with a barrier or a condition-poll
+2026-09-07T12:39:11.8329032Z     from src/Core.TypeScript/testing/deterministic-async.ts:
+2026-09-07T12:39:11.8329634Z       deferred()   -- the code under test SIGNALS; the test AWAITS. Zero timers. Prefer this.
+2026-09-07T12:39:11.8330223Z       waitUntil()  -- poll until the property holds, deadline as an upper bound on patience.
+2026-09-07T12:39:11.8330836Z       yieldTurns() -- n macrotask turns; a zero-delay yield is load-independent and stays allowed.
+2026-09-07T12:39:11.8331524Z     If this test genuinely OBSERVES elapsed time, add a counted row to registry/wall-clock-test-allowlist.json.
+2026-09-07T12:39:11.8331959Z 
+2026-09-07T12:39:11.8332469Z Rule anchors: .claude/rules/dv2-data-split-discipline-activated.md (#4 DST, #7 noninterference) | .claude/rules/local-time-never-enters-the-shared-fold.md
+2026-09-07T12:39:11.8386311Z error: script "hygiene:no-ambient-time-in-tests" exited with code 1
+2026-09-07T12:39:11.8399595Z ##[error]Process completed with exit code 1.
+2026-09-07T12:39:11.8513161Z ##[group]Run echo "::error title=lint (bash retirement + hygiene): which step failed::install-deps=success bash-retirement=success cred-hoist=success decide-by-grep=success chart-currency=success graphql=success scan-floor=success ambient-time=failure arity-equality=skipped arity-nonequality=skipped hook-script-paths=skipped linter-coverage=skipped consent-signoff=skipped collation=skipped mise-parity=skipped hygiene-tests=skipped audit-tests=skipped hw-inventory=skipped inventory-readmodel=skipped book-index=skipped inventory-tests=skipped"
+2026-09-07T12:39:11.8517467Z [36;1mecho "::error title=lint (bash retirement + hygiene): which step failed::install-deps=success bash-retirement=success cred-hoist=success decide-by-grep=success chart-currency=success graphql=success scan-floor=success ambient-time=failure arity-equality=skipped arity-nonequality=skipped hook-script-paths=skipped linter-coverage=skipped consent-signoff=skipped collation=skipped mise-parity=skipped hygiene-tests=skipped audit-tests=skipped hw-inventory=skipped inventory-readmodel=skipped book-index=skipped inventory-tests=skipped"[0m
+2026-09-07T12:39:11.8519780Z [36;1mecho "[step-outcomes] a failing install means bun never provisioned; read that step's log."[0m
+2026-09-07T12:39:11.8520578Z [36;1mecho "[step-outcomes] arity-equality / arity-nonequality failures carry their own ::error annotations naming file and line."[0m
+2026-09-07T12:39:11.8555794Z shell: /usr/bin/bash -e {0}
+2026-09-07T12:39:11.8556061Z env:
+2026-09-07T12:39:11.8558997Z   GITHUB_TOKEN: ***
+2026-09-07T12:39:11.8559236Z ##[endgroup]
+2026-09-07T12:39:11.8622693Z ##[error]install-deps=success bash-retirement=success cred-hoist=success decide-by-grep=success chart-currency=success graphql=success scan-floor=success ambient-time=failure arity-equality=skipped arity-nonequality=skipped hook-script-paths=skipped linter-coverage=skipped consent-signoff=skipped collation=skipped mise-parity=skipped hygiene-tests=skipped audit-tests=skipped hw-inventory=skipped inventory-readmodel=skipped book-index=skipped inventory-tests=skipped
+2026-09-07T12:39:11.8625552Z [step-outcomes] a failing install means bun never provisioned; read that step's log.
+2026-09-07T12:39:11.8630503Z [step-outcomes] arity-equality / arity-nonequality failures carry their own ::error annotations naming file and line.
+2026-09-07T12:39:11.8752793Z Post job cleanup.
+2026-09-07T12:39:11.9672467Z [command]/usr/bin/git version
+2026-09-07T12:39:11.9724462Z git version 2.55.0
+2026-09-07T12:39:11.9762008Z Temporarily overriding HOME='/home/runner/work/_temp/27293e59-e113-487e-9d91-25873ac9cf5a' before making global git config changes
+2026-09-07T12:39:11.9763570Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-07T12:39:11.9768115Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Zeta/Zeta
+2026-09-07T12:39:11.9805428Z Removing SSH command configuration
+2026-09-07T12:39:11.9812775Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-07T12:39:11.9853199Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-07T12:39:12.0151043Z Removing HTTP extra header
+2026-09-07T12:39:12.0157223Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-07T12:39:12.0200377Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-07T12:39:12.0486384Z Removing includeIf entries pointing to credentials config files
+2026-09-07T12:39:12.0494082Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-07T12:39:12.0525250Z includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path
+2026-09-07T12:39:12.0526527Z includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path
+2026-09-07T12:39:12.0528410Z includeif.gitdir:/github/workspace/.git.path
+2026-09-07T12:39:12.0529316Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-07T12:39:12.0549628Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path
+2026-09-07T12:39:12.0579072Z /home/runner/work/_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:39:12.0591594Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Zeta/Zeta/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-96cbd326\-62d1\-4d03\-9a04\-f12e1768330a\.config
+2026-09-07T12:39:12.0639939Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path
+2026-09-07T12:39:12.0679912Z /home/runner/work/_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:39:12.0691536Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Zeta/Zeta/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-96cbd326\-62d1\-4d03\-9a04\-f12e1768330a\.config
+2026-09-07T12:39:12.0733720Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-09-07T12:39:12.0762705Z /github/runner_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:39:12.0772239Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-96cbd326\-62d1\-4d03\-9a04\-f12e1768330a\.config
+2026-09-07T12:39:12.0809241Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-07T12:39:12.0835288Z /github/runner_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config
+2026-09-07T12:39:12.0845131Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-96cbd326\-62d1\-4d03\-9a04\-f12e1768330a\.config
+2026-09-07T12:39:12.0887871Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-07T12:39:12.1172974Z Removing credentials config '/home/runner/work/_temp/git-credentials-96cbd326-62d1-4d03-9a04-f12e1768330a.config'
+2026-09-07T12:39:12.1333294Z Cleaning up orphan processes

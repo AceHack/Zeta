@@ -184,3 +184,43 @@ let ``source vs target fixtures are not OS dogma — they are named templates`` 
     Assert.Equal(ZetaFsPolicy.History ZetaFsPolicy.KeepNone, ZetaFsPolicy.targetHistory)
     Assert.Equal(ZetaFsPolicy.DurabilityDefault ZetaFsPolicy.Durable, ZetaFsPolicy.sourceDurability)
     Assert.Equal(ZetaFsPolicy.DurabilityDefault ZetaFsPolicy.Buffered, ZetaFsPolicy.targetDurability)
+
+[<Fact>]
+let ``policy catalog text round-trips VolumeDefault ByPrefix and ByEntity`` () =
+    let parent, id = mintFile ()
+    let cat0 =
+        ZetaFsPolicy.empty
+        |> fun c ->
+            ZetaFsPolicy.assertBinding
+                c
+                { Subject = ZetaFsPolicy.VolumeDefault
+                  Kind = ZetaFsPolicy.History ZetaFsPolicy.rollingDefault
+                  Phase = phase 0L
+                  Asserter = asserter }
+        |> fun c ->
+            ZetaFsPolicy.assertBinding
+                c
+                { Subject = ZetaFsPolicy.ByPrefix(parent, utf8 "src/")
+                  Kind = ZetaFsPolicy.sourceHistory
+                  Phase = phase 1L
+                  Asserter = asserter }
+        |> fun c ->
+            ZetaFsPolicy.assertBinding
+                c
+                { Subject = ZetaFsPolicy.ByEntity id
+                  Kind = ZetaFsPolicy.sourceHistory
+                  Phase = phase 2L
+                  Asserter = asserter }
+
+    let text = ZetaFsPolicy.formatCatalog cat0
+    let cat1 = ZetaFsPolicy.parseCatalog text
+    Assert.Equal(ZetaFsPolicy.effectiveHistory cat0 id, ZetaFsPolicy.effectiveHistory cat1 id)
+    match ZetaFsPolicy.effectiveHistory cat1 id with
+    | Some ZetaFsPolicy.KeepAll -> ()
+    | other -> Assert.Fail(sprintf "round-trip must keep ByEntity keep-all, got %A" other)
+    match ZetaFsPolicy.volumeDefault cat1 ZetaFsPolicy.HistoryTag with
+    | Some b ->
+        match b.Kind with
+        | ZetaFsPolicy.History(ZetaFsPolicy.Rolling(Some 32, None, None)) -> ()
+        | other -> Assert.Fail(sprintf "volume-default rolling 32, got %A" other)
+    | None -> Assert.Fail("volume-default must round-trip")

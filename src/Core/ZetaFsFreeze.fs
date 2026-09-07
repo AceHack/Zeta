@@ -933,6 +933,67 @@ module ZetaFsFreeze =
 
         FileSystemIo.writeAllText fs (bindingsPath storeDir) (sb.ToString())
 
+    let private policyPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "policy"
+
+    let private persistPolicy (storeDir: string) (catalog: ZetaFsPolicy.Catalog) =
+        FileSystemIo.writeAllText (FileSystem.Current) (policyPath storeDir) (ZetaFsPolicy.formatCatalog catalog)
+
+    let private loadPolicy (storeDir: string) : ZetaFsPolicy.Catalog =
+        let fs = FileSystem.Current
+        let path = policyPath storeDir
+
+        if not (fs.Exists path) then
+            ZetaFsPolicy.empty
+        else
+            ZetaFsPolicy.parseCatalog (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+
+    let private symlinksPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "symlinks"
+
+    let private persistSymlinks (storeDir: string) (targets: Dictionary<System.UInt128, byte[]>) =
+        let sb = StringBuilder()
+
+        for kv in targets do
+            sb
+                .Append(ZetaFsNamespace.EntityId.format (ZetaFsNamespace.EntityId.ofRaw kv.Key))
+                .Append(' ')
+                .Append(Convert.ToHexString kv.Value)
+                .Append('\n')
+            |> ignore
+
+        FileSystemIo.writeAllText (FileSystem.Current) (symlinksPath storeDir) (sb.ToString())
+
+    let private loadSymlinks (storeDir: string) : Dictionary<System.UInt128, byte[]> =
+        let acc = Dictionary<System.UInt128, byte[]>()
+        let fs = FileSystem.Current
+        let path = symlinksPath storeDir
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    let parts = raw.Split(' ')
+
+                    if parts.Length >= 1 then
+                        match ZetaFsNamespace.EntityId.tryParse parts.[0] with
+                        | None -> ()
+                        | Some id ->
+                            let bytes =
+                                if parts.Length < 2 || parts.[1].Length = 0 then
+                                    Array.empty
+                                else
+                                    try
+                                        Convert.FromHexString parts.[1]
+                                    with _ ->
+                                        Array.empty
+
+                            acc.[id.Raw] <- bytes
+
+        acc
+
     let private loadNamespace (storeDir: string) (root: ZetaFsNamespace.EntityId) : ZetaFsNamespace.State =
         let fs = FileSystem.Current
         let path = bindingsPath storeDir
@@ -1034,6 +1095,8 @@ module ZetaFsFreeze =
                 | None -> None
                 | Some rootId -> Some(loadNamespace storeDir rootId)
             )
+        let policyState = ref (loadPolicy storeDir)
+        let symlinkTargets = loadSymlinks storeDir
         let log =
             new FreezeLog(
                 storeDir,
@@ -1099,11 +1162,17 @@ module ZetaFsFreeze =
                 persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
         member _.Root = root
         member internal _.Ns = nsState
+        member internal _.Policy = policyState
+        member internal _.Symlinks = symlinkTargets
 
         interface IDisposable with
             member _.Dispose() =
                 (reclaim :> IDisposable).Dispose()
                 (log :> IDisposable).Dispose()
+
+    let private applyPolicyCatalog (volume: Volume) (catalog: ZetaFsPolicy.Catalog) =
+        persistPolicy volume.StoreDir catalog
+        volume.Policy := catalog
 
     let private logDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "log"
     let private objectsDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "objects"
@@ -1504,6 +1573,23 @@ module ZetaFsFreeze =
         : Volume =
         let volume = hostFileStore storeDir mutbuf observer session false
         volume.History <- ZetaFsPolicy.rollingDefault
+
+        lock volume.Gate (fun () ->
+            match ZetaFsPolicy.volumeDefault !volume.Policy ZetaFsPolicy.HistoryTag with
+            | Some _ -> ()
+            | None ->
+                applyPolicyCatalog
+                    volume
+                    (ZetaFsPolicy.assertBinding
+                        !volume.Policy
+                        { Subject = ZetaFsPolicy.VolumeDefault
+                          Kind = ZetaFsPolicy.History ZetaFsPolicy.rollingDefault
+                          Phase =
+                            ({ Line = ZetaFsNamespace.PhaseLine
+                               Stamp = Versionstamp.zero }
+                            : ZetaFsNamespace.FsPhase)
+                          Asserter = ZetaFsNamespace.ActorId "freeze" }))
+
         volume
 
     /// Unencrypted control (FORMAT enc=off). The default first-product profile.
@@ -1645,24 +1731,6 @@ module ZetaFsFreeze =
 
     let dispose (volume: Volume) = (volume :> IDisposable).Dispose()
 
-    /// Mint a File under ROOT and persist the TagBinding. Reopen
-    /// `liveResolve` must find the same id. No ROOT => None.
-    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
-        lock volume.Gate (fun () ->
-            match volume.Root, !volume.Ns with
-            | Some root, Some state ->
-                let entropy =
-                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
-                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.File entropy
-
-                match ZetaFsNamespace.bind minted root name id (ZetaFsNamespace.ActorId "freeze") with
-                | Error e -> Error e
-                | Ok next ->
-                    persistNamespace volume.StoreDir next
-                    volume.Ns := Some next
-                    Ok id
-            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
-
     let private persistBind
         (volume: Volume)
         (state: ZetaFsNamespace.State)
@@ -1675,7 +1743,39 @@ module ZetaFsFreeze =
         | Ok next ->
             persistNamespace volume.StoreDir next
             volume.Ns := Some next
+            let phase =
+                match next.Bindings with
+                | b :: _ -> b.Phase
+                | [] ->
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.zero }
+
+            applyPolicyCatalog
+                volume
+                (ZetaFsPolicy.copyAtFirstBind
+                    !volume.Policy
+                    target
+                    parent
+                    name
+                    phase
+                    (ZetaFsNamespace.ActorId "freeze"))
             Ok next
+
+    /// Mint a File under ROOT and persist the TagBinding. First bind copies
+    /// nearest ByPrefix or VolumeDefault onto ByEntity. Reopen
+    /// `liveResolve` must find the same id. No ROOT => None.
+    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match volume.Root, !volume.Ns with
+            | Some root, Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.File entropy
+
+                match persistBind volume minted root name id with
+                | Error e -> Error e
+                | Ok _ -> Ok id
+            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
 
     /// Mint a Directory under `parent` and persist the TagBinding.
     let bindDirectory
@@ -1695,6 +1795,35 @@ module ZetaFsFreeze =
                 | Error e -> Error e
                 | Ok _ -> Ok id)
 
+    /// Mint a Symlink under `parent`. Body is UTF-8 target bytes, not a
+    /// resolved path. Reopen `readSymlink` must return the same bytes.
+    let bindSymlink
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        (target: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                let entropy =
+                    ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
+                let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.Symlink entropy
+
+                match persistBind volume minted parent name id with
+                | Error e -> Error e
+                | Ok _ ->
+                    volume.Symlinks.[id.Raw] <- target
+                    persistSymlinks volume.StoreDir volume.Symlinks
+                    Ok id)
+
+    let readSymlink (volume: Volume) (id: ZetaFsNamespace.EntityId) : byte[] option =
+        lock volume.Gate (fun () ->
+            match volume.Symlinks.TryGetValue id.Raw with
+            | true, bytes -> Some bytes
+            | false, _ -> None)
+
     /// Bind an existing entity under `parent`. Refuses a Directory cycle.
     let bindName
         (volume: Volume)
@@ -1709,6 +1838,33 @@ module ZetaFsFreeze =
                 match persistBind volume state parent name target with
                 | Error e -> Error e
                 | Ok _ -> Ok())
+
+    /// POSIX typed replace. Eisdir / Enotdir / Enotempty do not tombstone.
+    let rename
+        (volume: Volume)
+        (srcParent: ZetaFsNamespace.EntityId)
+        (srcName: byte[])
+        (dstParent: ZetaFsNamespace.EntityId)
+        (dstName: byte[])
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity srcParent)
+            | Some state ->
+                match
+                    ZetaFsNamespace.rename
+                        state
+                        srcParent
+                        srcName
+                        dstParent
+                        dstName
+                        (ZetaFsNamespace.ActorId "freeze")
+                with
+                | Error e -> Error e
+                | Ok next ->
+                    persistNamespace volume.StoreDir next
+                    volume.Ns := Some next
+                    Ok())
 
     /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
     /// row. Reopen `liveResolve` must be None.
@@ -1751,6 +1907,15 @@ module ZetaFsFreeze =
             match !volume.Ns with
             | Some state -> ZetaFsNamespace.resolveAt parent name at state.Bindings
             | None -> None)
+
+    /// Persist a policy fact (ByPrefix / VolumeDefault / ByEntity). Later
+    /// prefix edits do not rewrite an existing ByEntity hub.
+    let assertPolicyBinding (volume: Volume) (binding: ZetaFsPolicy.Binding) : unit =
+        lock volume.Gate (fun () -> applyPolicyCatalog volume (ZetaFsPolicy.assertBinding !volume.Policy binding))
+
+    /// SELECT stored ByEntity history. None until first bind copied it.
+    let effectiveHistory (volume: Volume) (id: ZetaFsNamespace.EntityId) : ZetaFsPolicy.HistoryPolicy option =
+        lock volume.Gate (fun () -> ZetaFsPolicy.effectiveHistory !volume.Policy id)
 
     /// Journal for a crash-mid-sweep. Owned by the volume, not invented by
     /// the caller. `reclaimSweep` is the only apply door that uses it.

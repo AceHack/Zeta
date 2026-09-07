@@ -16,7 +16,6 @@
     ../../modules/common.nix
     ../../modules/k3s-agent.nix
     ../../modules/gpu.nix
-    ../../modules/gpu-device-plugin.nix
     ../../modules/gpu-passthrough.nix
     ../../modules/docker.nix
     ../../modules/local-storage.nix
@@ -27,12 +26,12 @@
   # Cluster join target. Override per-site.
   services.k3s.serverAddr = "https://control-plane:6443";
 
-  # Vendor mix for the K8s device plugin. Override per-host if
-  # this worker has AMD or Intel GPUs alongside (or instead of) NVIDIA.
-  zeta.gpu-device-plugin = {
-    enable = true;
-    vendors = [ "nvidia" ];
-  };
+  # The GPU device plugin is declared on the CONTROL PLANE, not here. It installs via
+  # `services.k3s.manifests`, which only a k3s SERVER applies — declared on this
+  # role="agent" node the files were written and nothing read them, so GPUs were never
+  # advertised to the scheduler (081M1XXA0FC087G0R002F92ZQC). This node still provides
+  # the hardware-level half: drivers, the containerd runtime, and the `zeta.io/gpu`
+  # label the DaemonSet's nodeSelector targets.
 
   # VFIO passthrough disabled by default. Enable + list PCI IDs
   # per-host when you want a GPU bound to vfio-pci for VM workloads.

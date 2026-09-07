@@ -181,6 +181,8 @@
     <Compile Include="ZetaFsStore.Tests.fs" />
     <Compile Include="ZetaFsFormat.Tests.fs" />
     <Compile Include="ZetaFsNamespace.Tests.fs" />
+    <Compile Include="ZetaFsCollator.Tests.fs" />
+    <Compile Include="ZetaFsPosixNode.Tests.fs" />
     <Compile Include="ZetaFsCli.Tests.fs" />
     <Compile Include="ZetaFsPolicy.Tests.fs" />
     <Compile Include="ZetaFsPlacement.Tests.fs" />
@@ -739,6 +741,7 @@
     <Compile Include="Formal/NftCommitDomainSep.Z3.Tests.fs" />
     <Compile Include="Formal/Sketch.Laws.Tests.fs" />
     <Compile Include="Formal/Metric.Bounds.Tests.fs" />
+    <Compile Include="Formal/Tlc.Attempts.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />

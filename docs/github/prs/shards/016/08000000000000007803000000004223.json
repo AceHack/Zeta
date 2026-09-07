@@ -1,0 +1,12 @@
+{
+  "pr_number": 16931,
+  "archive_path": "docs/history/pr-reviews/PR-16931-fix-hygiene-record-the-deliberate-workflow-disabling-the-drift-check-was-red-by-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:15:07.936Z",
+  "schema_version": "v1",
+  "commit_sha": "7a1d9d80c2d25b810f206b9fbc9321521b53636e",
+  "title": "fix(hygiene): record the deliberate workflow disabling — the drift check was red-by-default",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:14:33Z",
+  "head_ref": "shadow/refresh-workflow-state-expectation"
+}

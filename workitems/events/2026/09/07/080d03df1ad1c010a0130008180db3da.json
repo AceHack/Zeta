@@ -1,0 +1,14 @@
+{
+  "id": "080d03df1ad1c010a0130008180db3da",
+  "at": "2026-09-07T12:41:32.472Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XY6PHQ087G0R0013NCFEP",
+    "type": "task",
+    "title": "compose node roles: control plane and gpu on one machine, cluster capabilities refused on agents",
+    "slug": "compose-node-roles-control-plane-and-gpu-on-one-machine-clus",
+    "priority": "P2",
+    "filename": "081M1XY6PHQ087G0R0013NCFEP-compose-node-roles-control-plane-and-gpu-on-one-machine-clus.md"
+  }
+}

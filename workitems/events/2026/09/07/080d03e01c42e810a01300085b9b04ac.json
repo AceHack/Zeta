@@ -1,0 +1,14 @@
+{
+  "id": "080d03e01c42e810a01300085b9b04ac",
+  "at": "2026-09-07T13:16:41.437Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y0722X087G0R002BRXZRJ",
+    "type": "task",
+    "title": "POSIX node cache path-contextual dot-dot",
+    "slug": "posix-node-cache-path-contextual-dot-dot",
+    "priority": "P2",
+    "filename": "081M1Y0722X087G0R002BRXZRJ-posix-node-cache-path-contextual-dot-dot.md"
+  }
+}

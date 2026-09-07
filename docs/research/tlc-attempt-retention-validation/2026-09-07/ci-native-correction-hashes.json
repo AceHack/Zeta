@@ -1,0 +1,48 @@
+{
+  "Schema": 1,
+  "NativeSourceCommit": "3149e2596fb12935ceb3c27568da7b16d405b548",
+  "Logs": [
+    {
+      "File": "ci-native-focused-attempt-1.log",
+      "Bytes": 6588,
+      "Sha256": "7141C9993F858C5CD18355155320ECDE66494FCE508E34D4935AE9E6D6677685"
+    },
+    {
+      "File": "ci-native-focused-attempt-2.log",
+      "Bytes": 6585,
+      "Sha256": "DF9C01CEFB405BF0C1C43B3F19B76CE89E23455368FC490E59EF63A9D4575647"
+    },
+    {
+      "File": "ci-native-before-guard.patch",
+      "Bytes": 12732,
+      "Sha256": "0E4F32FAC742EDA393DC06AB593D2734FC6669BA90A3E86DBE95473669DC6D93"
+    },
+    {
+      "File": "ci-hygiene-unit-recovery.log",
+      "Bytes": 7131,
+      "Sha256": "0016D3CA71618ECB10BEA8CA7735CA5B2BCB16133A53666E29138F1723F23175"
+    },
+    {
+      "File": "ci-ts-correction-preflight.log",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    },
+    {
+      "File": "ci-ts-hermetic-attempt-1.log.gz",
+      "Bytes": 1061699,
+      "Sha256": "10E53325730074D74FC974FEE836EBE9EA77A682F1B011E8B90AEE0497648B3B",
+      "UncompressedBytes": 4788077,
+      "UncompressedSha256": "E06498187AFF9EE2F2FA039A69F037B198A88D2DBA87E8B840E4FA87E41BFF98"
+    },
+    {
+      "File": "ci-final-format.log",
+      "Bytes": 5192,
+      "Sha256": "AE8DF6A64C497F2902CD855C16AA7D23382405EAE5E55AA25B6BFA733A8A7E14"
+    },
+    {
+      "File": "ci-final-preflight.log",
+      "Bytes": 1224,
+      "Sha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    }
+  ]
+}

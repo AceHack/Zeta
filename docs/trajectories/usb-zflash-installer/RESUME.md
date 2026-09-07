@@ -587,6 +587,16 @@ Overlay argv/conf joins take frost
 result (`081M1WXPCAV087G0R002H1X6VY`);
 does not add the request to ESP conf;
 ISO bun `probe` stays null.
+Frost look with injected effects
+(`081M1WYXT4S087G0R002K1TK4Y`);
+null effects is unmeasured, not a
+live look; ISO bun `probe` stays null.
+Overlay joins take frost look
+(`081M1XYSWV0087G0R000ZFKBTD`);
+null effects is unmeasured, not a
+live look; result joins stay
+result-only; ISO bun `probe` stays
+null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

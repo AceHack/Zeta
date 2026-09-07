@@ -111,9 +111,11 @@ export function buildTlcArgv(
   metadir: string,
   platform: NodeJS.Platform = process.platform,
   architecture: string = process.arch,
+  errorFile?: string,
 ): readonly string[] {
   return [
     ...tlcJvmArguments(registry, platform, architecture),
+    ...(errorFile === undefined ? [] : ["-XX:ErrorFile=" + errorFile]),
     "-cp", jarPath,
     "tlc2.TLC",
     "-metadir", metadir,

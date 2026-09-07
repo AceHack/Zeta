@@ -239,6 +239,38 @@ let ``D10 DurabilityMode maps onto freeze class and Journaled has no twin`` () =
     | other -> Assert.Fail(sprintf "Durable maps to StableStorage, got %A" other)
 
 [<Fact>]
+let ``a POSIX-rooted store path is NOT rewritten by OS path resolution`` () =
+    // THE WINDOWS-ONLY FAILURE, pinned as a rule instead of as a platform.
+    //
+    // `ZetaFsDeltaLog` used to do `Path.GetFullPath dir` unconditionally. On Linux and macOS
+    // that is the identity for "/store"; on Windows it returns "D:\store" — drive-qualified and
+    // backslashed. The `FileSystem` still holds the store at "/store", so the FORMAT probe
+    // missed, an `ns=bindings` store was read as a NEW store, and the refusal the test below
+    // asserts never fired. One failure in 6545, on both Windows legs, every run.
+    //
+    // HONEST LIMIT: on a POSIX runner this assertion is trivially true and would NOT have gone
+    // red before the fix. It cannot be made to — the divergence only exists where the OS path
+    // rules differ. What it does is state the rule in a place a reader will find, so the guard
+    // is not just a comment inside a constructor: a virtual, POSIX-rooted ZetaFs path is
+    // resolved by `ZetaFsPath`, never by `System.IO.Path`.
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    try
+        let store = "/rooted-virtual-store"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManualStream store mutbuf None
+        try
+            // Every file the volume created must live under the path we asked for, unchanged.
+            let formatPath = ZetaFsPath.combine2 store ZetaFsFormat.FileName
+            Assert.True(FileSystem.Current.Exists formatPath)
+            Assert.StartsWith("/", formatPath, StringComparison.Ordinal)
+            Assert.DoesNotContain("\\", formatPath, StringComparison.Ordinal)
+        finally
+            ZetaFsFreeze.dispose volume
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``new freeze volume writes ns=bindings and git-trees deltaLog still refuses`` () : Task =
     task {
         ensureHasher ()
@@ -400,6 +432,115 @@ let ``resolveAt prior phase still sees Live after unlink`` () =
         FileSystem.Reset()
 
 [<Fact>]
+let ``bindFile copies nearest ByPrefix onto ByEntity and later prefix edits do not rewrite`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-policy-first-bind"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let prefix = Encoding.UTF8.GetBytes "src/"
+    let name = Encoding.UTF8.GetBytes "src/a"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            ZetaFsFreeze.assertPolicyBinding
+                volume
+                { Subject = ZetaFsPolicy.ByPrefix(root, prefix)
+                  Kind = ZetaFsPolicy.sourceHistory
+                  Phase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 1L }
+                  Asserter = ZetaFsNamespace.ActorId "freeze" }
+            match ZetaFsFreeze.bindFile volume name with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.effectiveHistory volume id with
+                | Some ZetaFsPolicy.KeepAll -> ()
+                | other -> Assert.Fail(sprintf "first bind must copy src/ keep-all, got %A" other)
+                ZetaFsFreeze.assertPolicyBinding
+                    volume
+                    { Subject = ZetaFsPolicy.ByPrefix(root, prefix)
+                      Kind = ZetaFsPolicy.targetHistory
+                      Phase =
+                        { Line = ZetaFsNamespace.PhaseLine
+                          Stamp = Versionstamp.ofInt64 9L }
+                      Asserter = ZetaFsNamespace.ActorId "freeze" }
+                match ZetaFsFreeze.effectiveHistory volume id with
+                | Some ZetaFsPolicy.KeepAll -> ()
+                | other -> Assert.Fail(sprintf "later prefix edit must not rewrite, got %A" other)
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                try
+                    match ZetaFsFreeze.effectiveHistory reopened id with
+                    | Some ZetaFsPolicy.KeepAll -> ()
+                    | other -> Assert.Fail(sprintf "reopen must keep first-bind copy, got %A" other)
+                    Assert.True(FileSystem.Current.Exists(ZetaFsPath.combine2 store "policy"))
+                finally
+                    ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``bindName second parent does not rewrite first-bind policy`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-policy-two-parent"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let srcPrefix = Encoding.UTF8.GetBytes "src/"
+    let targetPrefix = Encoding.UTF8.GetBytes "target/"
+    let srcName = Encoding.UTF8.GetBytes "src/a"
+    let targetName = Encoding.UTF8.GetBytes "target/a"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            ZetaFsFreeze.assertPolicyBinding
+                volume
+                { Subject = ZetaFsPolicy.ByPrefix(root, srcPrefix)
+                  Kind = ZetaFsPolicy.sourceHistory
+                  Phase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 1L }
+                  Asserter = ZetaFsNamespace.ActorId "freeze" }
+            ZetaFsFreeze.assertPolicyBinding
+                volume
+                { Subject = ZetaFsPolicy.ByPrefix(root, targetPrefix)
+                  Kind = ZetaFsPolicy.targetHistory
+                  Phase =
+                    { Line = ZetaFsNamespace.PhaseLine
+                      Stamp = Versionstamp.ofInt64 1L }
+                  Asserter = ZetaFsNamespace.ActorId "freeze" }
+            match ZetaFsFreeze.bindFile volume srcName with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.bindName volume root targetName id with
+                | Error e -> Assert.Fail(sprintf "bindName failed: %A" e)
+                | Ok() ->
+                    match ZetaFsFreeze.effectiveHistory volume id with
+                    | Some ZetaFsPolicy.KeepAll -> ()
+                    | other -> Assert.Fail(sprintf "first-bind src/ keep-all must win, got %A" other)
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                    try
+                        match ZetaFsFreeze.effectiveHistory reopened id with
+                        | Some ZetaFsPolicy.KeepAll -> ()
+                        | other -> Assert.Fail(sprintf "reopen must keep first-bind copy, got %A" other)
+                        match ZetaFsFreeze.liveResolve reopened srcName with
+                        | None -> Assert.Fail("src/a must stay live")
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+                        match ZetaFsFreeze.liveResolve reopened targetName with
+                        | None -> Assert.Fail("target/a must stay live")
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
 let ``bindName refuses a directory cycle and does not persist it`` () =
     ensureHasher ()
     FileSystem.Register(InMemoryFileSystem())
@@ -433,6 +574,96 @@ let ``bindName refuses a directory cycle and does not persist it`` () =
                         match ZetaFsFreeze.liveResolveUnder reopened b nameUp with
                         | Some _ -> Assert.Fail("cycle must not persist")
                         | None -> ()
+                    finally
+                        ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``bindSymlink persists UTF-8 target bytes across reopen`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-bind-symlink"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let name = Encoding.UTF8.GetBytes "link"
+    let target = Encoding.UTF8.GetBytes "src/a"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindSymlink volume root name target with
+            | Error e -> Assert.Fail(sprintf "bindSymlink failed: %A" e)
+            | Ok id ->
+                match ZetaFsFreeze.liveResolve volume name with
+                | None -> Assert.Fail("symlink name must be live")
+                | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id live)
+                match ZetaFsFreeze.readSymlink volume id with
+                | None -> Assert.Fail("readSymlink must see the target")
+                | Some bytes ->
+                    Assert.True(
+                        bytes.Length = target.Length
+                        && MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> target)
+                    )
+                ZetaFsFreeze.dispose volume
+                let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                try
+                    match ZetaFsFreeze.liveResolve reopened name with
+                    | None -> Assert.Fail("symlink name must survive reopen")
+                    | Some again -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare id again)
+                    match ZetaFsFreeze.readSymlink reopened id with
+                    | None -> Assert.Fail("readSymlink must survive reopen")
+                    | Some bytes ->
+                        Assert.True(
+                            bytes.Length = target.Length
+                            && MemoryExtensions.SequenceEqual(ReadOnlySpan<byte> bytes, ReadOnlySpan<byte> target)
+                        )
+                finally
+                    ZetaFsFreeze.dispose reopened
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``rename dest directory and source file is Eisdir and persists both names`` () =
+    ensureHasher ()
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/freeze-rename-eisdir"
+    let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+    let volume = ZetaFsFreeze.createManualStream store mutbuf None
+    let fileName = Encoding.UTF8.GetBytes "a"
+    let dirName = Encoding.UTF8.GetBytes "d"
+
+    try
+        match volume.Root with
+        | None -> Assert.Fail("Volume.Root must exist")
+        | Some root ->
+            match ZetaFsFreeze.bindFile volume fileName with
+            | Error e -> Assert.Fail(sprintf "bindFile failed: %A" e)
+            | Ok file ->
+                match ZetaFsFreeze.bindDirectory volume root dirName with
+                | Error e -> Assert.Fail(sprintf "bindDirectory failed: %A" e)
+                | Ok dir ->
+                    match ZetaFsFreeze.rename volume root fileName root dirName with
+                    | Ok() -> Assert.Fail("rename file onto directory must be Eisdir")
+                    | Error(ZetaFsNamespace.Eisdir dest) ->
+                        Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir dest)
+                    | Error e -> Assert.Fail(sprintf "expected Eisdir, got %A" e)
+                    match ZetaFsFreeze.liveResolve volume fileName with
+                    | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare file live)
+                    | None -> Assert.Fail("source file name must stay live")
+                    match ZetaFsFreeze.liveResolve volume dirName with
+                    | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir live)
+                    | None -> Assert.Fail("dest directory name must stay live")
+                    ZetaFsFreeze.dispose volume
+                    let reopened = ZetaFsFreeze.createManualStream store mutbuf None
+                    try
+                        match ZetaFsFreeze.liveResolve reopened fileName with
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare file live)
+                        | None -> Assert.Fail("source file name must survive reopen")
+                        match ZetaFsFreeze.liveResolve reopened dirName with
+                        | Some live -> Assert.Equal(0, ZetaFsNamespace.EntityId.compare dir live)
+                        | None -> Assert.Fail("dest directory name must survive reopen")
                     finally
                         ZetaFsFreeze.dispose reopened
     finally
@@ -1971,6 +2202,69 @@ let ``reclaimTick paces extra CAS garbage and keeps a committed freeze readable`
                 let n = ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 100UL
                 Assert.Equal(1, n)
                 Assert.False(FileSystem.Current.Exists p2)
+                Assert.False(FileSystem.Current.Exists(ZetaFsFreeze.sweepJournalPath volume))
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``BlockCas Delete crash-mid-sweep leaves extra garbage and a readable freeze`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/freeze-blockcas-crash-delete"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+        let dummy (n: byte) : ContentHash256 =
+            { Raw = Array.init 32 (fun i -> if i = 0 then n else 0uy) }
+        let objectKey (id: ContentHash256) =
+            (ContentHash256.toContentAddress128 id).ToHex()
+        let garbageObj (n: byte) : ZetaFsReclaim.Object =
+            { Id = dummy n; Size = 8UL; Refs = [||] }
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                let g1 = garbageObj 1uy
+                let g2 = garbageObj 2uy
+                let k1 = objectKey g1.Id
+                let k2 = objectKey g2.Id
+                cas.Put(k1, [| 9uy |])
+                cas.Put(k2, [| 8uy |])
+                let roots =
+                    { ZetaFsReclaim.emptyRoots with
+                        LiveRefs = [| ZetaFsReclaim.hex first.Content |] }
+                let objects = [| g1; g2 |]
+                Assert.Equal(0, ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 0UL)
+                Assert.True(cas.Exists k1)
+                Assert.True(cas.Exists k2)
+                cas.ArmCrashOnDelete k1
+                let ex =
+                    Assert.Throws<CrashMidSweepException>(fun () ->
+                        ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 100UL
+                        |> ignore)
+
+                Assert.Equal(k1, ex.Path)
+                Assert.False(cas.Exists k1)
+                Assert.True(cas.Exists k2)
+                Assert.True(FileSystem.Current.Exists(ZetaFsFreeze.sweepJournalPath volume))
+                Assert.True(ZetaFsFreeze.isReadable volume first.Content)
+                let n = ZetaFsFreeze.reclaimTick volume FileSystem.Current roots objects 100UL
+                Assert.Equal(1, n)
+                Assert.False(cas.Exists k2)
                 Assert.False(FileSystem.Current.Exists(ZetaFsFreeze.sweepJournalPath volume))
                 Assert.True(ZetaFsFreeze.isReadable volume first.Content)
         finally

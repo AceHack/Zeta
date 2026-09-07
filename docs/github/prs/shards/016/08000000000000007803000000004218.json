@@ -1,0 +1,12 @@
+{
+  "pr_number": 16920,
+  "archive_path": "docs/history/pr-reviews/PR-16920-feat-cluster-carry-the-byte-lock-toolchain-onto-cluster-hosts.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T12:41:30.046Z",
+  "schema_version": "v1",
+  "commit_sha": "9a100dd24c0217db92cf30b54d77be0e8d9affd9",
+  "title": "feat(cluster): carry the byte-lock toolchain onto cluster hosts",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T12:40:54Z",
+  "head_ref": "shadow/bytelock-toolchain-on-cluster-hosts"
+}

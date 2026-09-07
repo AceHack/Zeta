@@ -19,14 +19,19 @@
   description = "Zeta full AI cluster — declarative from USB to running workloads";
 
   inputs = {
-    # iter-6.0 (B-0800; the maintainer 2026-05-26 "24.11 is a 2 year old
-    # version you found a 25.11 when you searched latest we need to make
-    # sure we are on latest too"): bumped from nixos-24.11 (EOL'd
-    # 2025-06-30) to nixos-25.11 "Xantusia" (current stable; EOL
-    # 2026-06-30). Per WebSearch
-    # https://nixos.org/blog/announcements/2025/nixos-2511/
-    # validated per `.claude/rules/dep-pin-search-first-authority.md`.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # 2026-09-07: bumped 25.11 -> nixos-26.05, on Aaron's "we want to be on the
+    # latest everywhere too". This closes a gap that ran the OTHER WAY from what the
+    # roster recorded: the ROOT flake was already on nixos-26.05 while this one — the
+    # flake that actually installs machines — sat a release behind on 25.11. The
+    # cluster was the stale half, not the root.
+    #
+    # Prior bump, kept for the lineage: iter-6.0 (B-0800), the maintainer 2026-05-26
+    # "24.11 is a 2 year old version, you found a 25.11 when you searched latest, we
+    # need to make sure we are on latest too" — 24.11 (EOL 2025-06-30) -> 25.11.
+    #
+    # nix-darwin moves in the SAME commit, never separately: nix-darwin asserts at
+    # eval time that "nix-darwin and Nixpkgs branches in use must match".
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -34,7 +39,7 @@
     # maintainers can build the x86_64-linux ISO via the linux-builder
     # VM (Virtualization.framework + Rosetta 2). Same bump as nixpkgs.
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -54,10 +59,16 @@
       # iter-6.0 stateVersion bump (B-0800; PC1 + future cluster nodes
       # are fresh-install scope per the maintainer 2026-05-26; no
       # persistent K8s workloads yet → safe to bump for new hosts.
+      # RE-CONFIRMED 2026-09-07, and it is the condition that makes this
+      # legal rather than a preference — Aaron: "there are no machines out
+      # there tracking anything yet, I'm waiting to reformat the machine
+      # once we get everything working." A stateVersion left at 25.11 while
+      # every install is 26.05 would record a first-install release that
+      # never happened.
       # Already-installed hosts should NOT bump stateVersion in their
       # per-host nixos/hosts/<name>/configuration.nix without explicit
       # migration handling per the NixOS upgrade guidance).
-      stateVersion = "25.11";
+      stateVersion = "26.05";
 
       supportedSystems = [
         "x86_64-linux"
@@ -73,6 +84,8 @@
         # bring-up path). Selects nixosConfigurations.installer-aarch64.
         "aarch64-linux"
       ];
+
+      mkHost = import ./nixos/lib/mk-host.nix { inherit (nixpkgs) lib; };
 
       mkSystem = { system ? "x86_64-linux", modules }: nixpkgs.lib.nixosSystem {
         inherit system;
@@ -121,6 +134,88 @@
           modules = [
             ./nixos/hosts/worker-gpu/configuration.nix
           ];
+        };
+
+        # CONTROL PLANE + GPU ON ONE MACHINE — the composition Aaron asked for
+        # 2026-09-07: "we want to be able to support more than one on a machine at
+        # the same time, control plane and gpu, not just one or the other."
+        #
+        # Assembled by `mkHostModules` from a ROLE and CAPABILITIES rather than by
+        # hand-listing modules, which is what made the combination unexpressible
+        # before — nothing technical prevented it; there was simply no bundle for it.
+        #
+        # It is a TEMPLATE: it borrows control-plane's hardware-configuration.nix
+        # because no such machine exists yet. Copy the directory, generate real
+        # hardware config, and add an entry here — the same shape as worker-template.
+        #
+        # Note what the capability split buys: `gpu-device-plugin` is a CLUSTER
+        # capability, so `mkHostModules` would REFUSE it on a role="agent" host. On
+        # this one it is correct, and that is checked rather than assumed —
+        # checks.mk-host-refuses-cluster-capability-on-an-agent proves both directions.
+        control-plane-gpu = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "server";
+            hardware = ./nixos/hosts/control-plane/hardware-configuration.nix;
+            nodeCapabilities = [ "gpu" "docker" "operator-credentials" ];
+            clusterCapabilities = [ "local-storage" "gpu-device-plugin" ];
+            extra = [
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "control-plane-gpu";
+                zeta.gpu-device-plugin = { enable = true; vendors = [ "nvidia" ]; };
+              })
+            ];
+          };
+        };
+
+        # worker-cpu — k3s agent, NO GPU. Row 2 of the taxonomy.
+        worker-cpu = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "agent";
+            hardware = ./nixos/hosts/worker-gpu/hardware-configuration.nix;
+            nodeCapabilities = [ "docker" ];
+            extra = [
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "worker-cpu";
+                services.k3s.serverAddr = lib.mkForce "https://control-plane:6443";
+              })
+            ];
+          };
+        };
+
+        # worker-storage — k3s agent with the extra Longhorn data paths. Row 3:
+        # a storage-heavy node carrying many replicas, no GPU.
+        worker-storage = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "agent";
+            hardware = ./nixos/hosts/worker-gpu/hardware-configuration.nix;
+            nodeCapabilities = [ "docker" "longhorn-disks" ];
+            extra = [
+              inputs.disko.nixosModules.disko
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "worker-storage";
+                services.k3s.serverAddr = lib.mkForce "https://control-plane:6443";
+              })
+            ];
+          };
+        };
+
+        # all-in-one — server + GPU + extra Longhorn disks. Row 4: a single-node
+        # lab cluster that fuses every role, which is the shape Aaron's original
+        # 2026-05-25 ask ends on ("or some that fuse all three").
+        all-in-one = mkSystem {
+          modules = mkHost.mkHostModules {
+            role = "server";
+            hardware = ./nixos/hosts/control-plane/hardware-configuration.nix;
+            nodeCapabilities = [ "gpu" "docker" "operator-credentials" "longhorn-disks" ];
+            clusterCapabilities = [ "local-storage" "gpu-device-plugin" ];
+            extra = [
+              inputs.disko.nixosModules.disko
+              ({ lib, ... }: {
+                networking.hostName = lib.mkForce "all-in-one";
+                zeta.gpu-device-plugin = { enable = true; vendors = [ "nvidia" ]; };
+              })
+            ];
+          };
         };
 
         # Cookie-cutter worker template — uses disko for declarative
@@ -214,6 +309,53 @@
         # x86_64). Run one with:
         #   nix build .#checks.x86_64-linux.k3s-control-plane-cluster-init -L
         checks = {
+          # 081M1XXA0FC087G0R002F92ZQC — the role/capability model REFUSES what the
+          # k3s-manifests audit merely detects.
+          #
+          # A cluster capability installs through `services.k3s.manifests`, which the k3s
+          # deploy controller applies ON A SERVER. Declared on an agent the files are written
+          # and nothing reads them — which is how the NVIDIA device plugin came to be declared
+          # only on worker-gpu and therefore never installed. `mkHostModules` asserts against
+          # it, and this check proves the assertion FIRES rather than trusting that it would.
+          #
+          # `builtins.tryEval` is what makes an assertion testable: `.success` is false when
+          # the assert throws. Both directions are asserted, so this cannot pass by the
+          # refusal never being reachable.
+          mk-host-refuses-cluster-capability-on-an-agent =
+            let
+              mkHost = import ./nixos/lib/mk-host.nix { inherit (nixpkgs) lib; };
+              hw = ./nixos/hosts/control-plane/hardware-configuration.nix;
+              bad = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "agent";
+                hardware = hw;
+                clusterCapabilities = [ "gpu-device-plugin" ];
+              }));
+              goodServer = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                clusterCapabilities = [ "gpu-device-plugin" "local-storage" ];
+                nodeCapabilities = [ "docker" ];
+              }));
+              # The composition Aaron asked for: control plane AND gpu on one machine.
+              goodComposed = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                nodeCapabilities = [ "gpu" "docker" ];
+                clusterCapabilities = [ "gpu-device-plugin" ];
+              }));
+              unknownCap = builtins.tryEval (builtins.length (mkHost.mkHostModules {
+                role = "server";
+                hardware = hw;
+                nodeCapabilities = [ "not-a-capability" ];
+              }));
+            in
+            assert bad.success == false;          # the refusal fires
+            assert goodServer.success == true;    # a server may hold cluster capabilities
+            assert goodComposed.success == true;  # control-plane + gpu composes
+            assert unknownCap.success == false;   # a typo is refused, not silently dropped
+            pkgs.runCommand "mk-host-refuses-cluster-capability-on-an-agent" { } "touch $out";
+
+
           # 081M00KTH58087G0R00120WT6F — properties of the Secure Boot
           # desired-state model (nixos/modules/secure-boot-phase-model.nix).
           #
@@ -596,6 +738,8 @@
               report = import ./nixos/tests/gpu-node-label-preflight-eval-test.nix {
                 inherit pkgs;
                 nixosConfig = self.nixosConfigurations.worker-gpu;
+                # The node that can apply the DaemonSet — see the P6 correction in the test.
+                applierConfig = self.nixosConfigurations.control-plane;
               };
             in
             pkgs.runCommand "gpu-node-label-preflight" { inherit (report) status; } ''

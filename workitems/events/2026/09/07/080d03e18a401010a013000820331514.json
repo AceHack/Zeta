@@ -1,0 +1,14 @@
+{
+  "id": "080d03e18a401010a013000820331514",
+  "at": "2026-09-07T14:06:39.618Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y32J02087G0R003V91R9G",
+    "type": "task",
+    "title": "POSIX rename dest EISDIR ENOTDIR ENOTEMPTY",
+    "slug": "posix-rename-dest-eisdir-enotdir-enotempty",
+    "priority": "P2",
+    "filename": "081M1Y32J02087G0R003V91R9G-posix-rename-dest-eisdir-enotdir-enotempty.md"
+  }
+}

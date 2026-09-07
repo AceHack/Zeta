@@ -1,0 +1,14 @@
+{
+  "id": "080d03e02a398010a0130008ce5a4cc0",
+  "at": "2026-09-07T13:18:35.824Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y0AHSF087G0R001X56TXN",
+    "type": "task",
+    "title": "hardware readiness census: capacity is the blocker, storage and CNI already are not",
+    "slug": "hardware-readiness-census-capacity-is-the-blocker-storage-an",
+    "priority": "P2",
+    "filename": "081M1Y0AHSF087G0R001X56TXN-hardware-readiness-census-capacity-is-the-blocker-storage-an.md"
+  }
+}

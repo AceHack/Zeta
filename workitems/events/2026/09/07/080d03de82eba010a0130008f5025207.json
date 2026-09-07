@@ -1,0 +1,14 @@
+{
+  "id": "080d03de82eba010a0130008f5025207",
+  "at": "2026-09-07T12:20:48.116Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1XX0QBM087G0R0021RMQMZ",
+    "type": "task",
+    "title": "carry the byte-lock toolchain onto cluster hosts so the whole toolchain runs on real hardware",
+    "slug": "carry-the-byte-lock-toolchain-onto-cluster-hosts-so-the-whol",
+    "priority": "P2",
+    "filename": "081M1XX0QBM087G0R0021RMQMZ-carry-the-byte-lock-toolchain-onto-cluster-hosts-so-the-whol.md"
+  }
+}
