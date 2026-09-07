@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: reviewed initial collector; no live graph capture yet
+Artifact status: first live capture refused; reviewed observation-order correction
 
 This bounded next step follows the [pure boundary](native-pure-validation.md) and
 [runtime inspection plan](../../2026-09-07-hidden-switch-compiled-runtime-feasibility.md).
@@ -50,8 +50,43 @@ Five synthetic tests passed, covering those relevant Python writer/decoder paths
 without launching LLDB targets, policies or streams. Live LLDB API introspection
 confirmed the used methods on lldb-2100.0.17.203; that introspection created no
 debug target. One initial F# `For`-builder compile failure is retained locally;
-corrected graph builds finish with zero warnings/errors. Raw build/test/API logs
-will be indexed with the first capture, including every failed attempt.
+corrected graph builds finish with zero warnings/errors. The
+[lossless evidence inventory](native-graph-attempt-1/manifest.json) retains the
+first capture and all preceding build/test/API logs, including failed attempts.
+
+## First capture and observation-order correction
+
+The first actual launch used source `efc8dbe62d5580e1d02bb401eab815bdef6c8db3`
+from 16:22:38.817266 to 16:22:40.381745 UTC. LLDB launched native process 95365;
+the native collector returned exit 2 with `native-images / changed-count` and
+LLDB returned 1. No ready record or independent memory-prefix capture completed.
+The original failure did not retain the two numeric counts. Its 603,673-byte JIT
+log and every output remain unchanged in the inventory. This establishes a
+working launch path, not attach support, body coverage or runtime admission.
+
+The original collector interleaved raw loader enumeration and file identity work.
+Lazy loading during metadata work is a possible explanation for the count change;
+the first record does not establish its cause. The reviewed correction copies
+only image names, headers and slides first, then publishes that raw prefix,
+both actual counts and any refusal before hashing files. A separate
+`CountAfterFileIdentity` records the later observation. Equal counts do not imply
+an atomic loader snapshot. Earlier FP and callable-method observations now publish
+immediately so a later loader refusal cannot discard them.
+
+The independent protocol reviewer accepted the exact 16,429-byte corrected source
+SHA256 `C84C5911DCBE2E6E8CB2C338F634346EF7F6C073B005AAFB13371EA704F15D15`
+by source inspection, without executing a target. Fresh mapped Release build 6
+then passed in 4.56 seconds with zero warnings/errors. Its prelaunch source record
+is retained. Build 5 overlapped subsequent source edits and is not treated as the
+final source binding. The next capture must use a fresh attempt directory and
+retain `RuntimeAdmitted=false` and `BodyResolved=false`.
+
+The first JIT output also exposes later closure obligations: the selector's
+epsilon is a separately referenced `RWD00` literal, and dynamic
+`IL_STUB_StoreTailCallArgs` entries are outside the reflected method roster.
+Complete admission must bind relevant data and classify actual generated helper
+paths as well as resolve callable stubs and body spans. The present probe does
+none of that; the compiler text alone is not a complete graph certificate.
 
 Source guidance remains distinct from installed binary provenance: the public
 .NET v10.0.11 source pin is `79d0c463f1b55624c874a11585f7e47731e8d675`, while the
