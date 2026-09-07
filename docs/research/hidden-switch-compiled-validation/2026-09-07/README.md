@@ -136,3 +136,17 @@ The [wire contract and validation](../../2026-09-07-hidden-switch-compiled-wire-
 records the initial pure evidence module, 47 passing focused tests, strict type
 checks, the corrected collection failure, and the remaining whole-phase/runtime
 admission boundary. This is implementation validation, not a registered experiment.
+
+The same wire record now includes independent acceptance of primitive source
+`35c12618f` and nine storage tests covering exclusive outputs, retained prefixes,
+descriptor-relative reads, symlink/FIFO refusal and exact lossless artifacts.
+
+## Installed runtime and actual graph readiness
+
+The [independent readiness review](../../2026-09-07-hidden-switch-compiled-runtime-readiness-review.md)
+preserves thirteen exact metadata/source-verification artifacts. The installed
+runtime reports a different commit from the current upstream version tag;
+version-tag source guidance is not proven provenance of these binaries. Actual
+code/configuration/image correspondence remains required before admission.
+No build, debugger attachment, P/Invoke probe, guard calculation or policy
+execution occurred in that read-only readiness pass.
