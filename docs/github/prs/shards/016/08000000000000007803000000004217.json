@@ -1,0 +1,12 @@
+{
+  "pr_number": 16919,
+  "archive_path": "docs/history/pr-reviews/PR-16919-chore-db-delete-the-committed-search-index-derived-artifacts-belong-in-a-history.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T12:37:17.331Z",
+  "schema_version": "v1",
+  "commit_sha": "3c937c006b910d349fe5a685fd6f136f066a454d",
+  "title": "chore(db): delete the committed search index — derived artifacts belong in a history-free repo",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T12:35:27Z",
+  "head_ref": "shadow/delete-committed-search-index"
+}
