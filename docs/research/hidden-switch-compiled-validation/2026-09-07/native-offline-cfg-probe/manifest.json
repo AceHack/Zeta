@@ -1,0 +1,52 @@
+{
+  "ContextCommit": "b8d4391c8297495c9b065dced9a55e33922ece32",
+  "Scope": "Offline LLDB decoding of already retained attempt5 bytes; no process launched, no policy execution or classification admission",
+  "Command": "lldb --no-lldbinit --batch -o command-script-import -o hs-cfg-probe; exact helper filenames and full commands retained in logs",
+  "Records": [
+    {
+      "File": ".git/hidden-switch-compiled-cfg-decoder-probe.py",
+      "Bytes": 2656,
+      "Sha256": "58DC77E8D432ECADA3CAD2006906BD5461AE1C0B3539E03AF2ADC9932D04E387",
+      "StoredFile": "hidden-switch-compiled-cfg-decoder-probe.py.gz",
+      "StoredBytes": 1240,
+      "StoredSha256": "A0ED0898490EDBD8EDC2DF0E26E341B5A890625780925CA6F9EE09BC9E04AE1C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden_switch_compiled_cfg_decoder_probe.py",
+      "Bytes": 2656,
+      "Sha256": "903827C8B7810A0A02597B333AF25F1A8E175B60DF9EBFCDF17C37A43CE8709F",
+      "StoredFile": "hidden_switch_compiled_cfg_decoder_probe.py.gz",
+      "StoredBytes": 1254,
+      "StoredSha256": "8AC2F8CF6F5EF288DDB0BC2ABA0D9B64FA38E305662796CCD8D1C2AD692FCDC3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-cfg-decoder-probe.log",
+      "Bytes": 268,
+      "Sha256": "E9904D8BAA771EE6D94CAF8A3738E26866E9AFF95FF23B400F432A35BF2544A3",
+      "StoredFile": "hidden-switch-compiled-cfg-decoder-probe.log.gz",
+      "StoredBytes": 196,
+      "StoredSha256": "80DE14DC05770F7D7D5AF5994EA631E10C65FC4B444440E50FB04545D0DF295A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-cfg-decoder-probe-2.log",
+      "Bytes": 221,
+      "Sha256": "CD2AE61945AB334F53CD9B4A664A77C149A00C3A7D9968C12310130927AC9C26",
+      "StoredFile": "hidden-switch-compiled-cfg-decoder-probe-2.log.gz",
+      "StoredBytes": 188,
+      "StoredSha256": "CB040CA45D86C8FCB9E125E1DEBA60B151C1948DC6E0F2943E72D575DA0D63D6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": ".git/hidden-switch-compiled-cfg-decoder-probe.json",
+      "Bytes": 1494762,
+      "Sha256": "A5E63859CD4320F92518D45EDD7FD12994E9E22BD418E30565A37DF0C5D3ACDD",
+      "StoredFile": "hidden-switch-compiled-cfg-decoder-probe.json.gz",
+      "StoredBytes": 81249,
+      "StoredSha256": "0B19A072A1661CA4923581E6A5DB696AF7495610F9C6EC874115B793CE0BB817",
+      "Encoding": "gzip"
+    }
+  ]
+}

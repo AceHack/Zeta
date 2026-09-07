@@ -224,3 +224,24 @@ warnings/errors. This recovery does not identify the original crash cause.
 All 23 compiled-study focused tests pass (zero failures/skips), with a reported
 290 ms duration. Both assertion audits pass with unchanged censuses. No full
 solution gate or registered conformance completion is claimed by this slice.
+
+## Offline control-flow classifier limit
+
+A separate [buffer-only decoder probe](native-offline-cfg-probe/manifest.json)
+used already retained attempt-5 instruction bytes, with no target process or
+policy launch. LLDB external symbol lookup and symbol-file scripts were
+disabled, and debuginfod URLs cleared. The first helper import refused a
+hyphenated Python module name; its source/log and the corrected underscore
+variant are retained. The corrected probe independently decoded all 123
+buffers with exact byte agreement. However, this installed LLDB's
+`SBInstruction.GetControlFlowKind` returned `Unknown` for every one of their
+8,374 ARM64 instructions, including branches and returns. That API cannot
+serve as an independent complete control-flow classifier in this setup.
+
+Unknown is not treated as sequential execution. A later reachable-code
+argument would require explicit supported ARM64 control semantics,
+independently decoded non-control classes, every branch/fallthrough/trap,
+call and exception boundary, and a stated limit distinct from metadata-defined
+method extent. The current buffers establish neither that argument nor
+runtime admission. Optional SOS/DAC inspection is a separate dependency and
+has not been added to this otherwise working collector.
