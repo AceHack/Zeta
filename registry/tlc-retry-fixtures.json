@@ -1,0 +1,158 @@
+{
+  "Version": 1,
+  "Cases": [
+    {
+      "Name": "heap-reservation",
+      "Stdout": "Could not reserve enough space for object heap",
+      "Stderr": "",
+      "Retryable": true,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "vm-initialization",
+      "Stdout": "",
+      "Stderr": "Error occurred during initialization of VM\nCould not reserve enough space for 4194304KB object heap",
+      "Retryable": true,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "missing-jar",
+      "Stdout": "",
+      "Stderr": "Error: Unable to access jarfile missing.jar",
+      "Retryable": true,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "unclassified",
+      "Stdout": "",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "unclassified-oom",
+      "Stdout": "java.lang.OutOfMemoryError: Java heap space",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "banner-and-heap",
+      "Stdout": "TLC2 Version 2026\nCould not reserve enough space for object heap",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "progress-and-initialization",
+      "Stdout": "Progress(9) at now\nError occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "sigbus-and-startup",
+      "Stdout": "Could not reserve enough space for object heap",
+      "Stderr": "SIGBUS (0xa)\nA fatal error has been detected by the Java Runtime Environment",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "internal-checker-error",
+      "Stdout": "Error: This is probably a TLC bug(4).\nError occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "invariant",
+      "Stdout": "Error: Invariant HonestAgreement is violated.",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "completion-then-fatal",
+      "Stdout": "Model checking completed. No error has been found.",
+      "Stderr": "SIGBUS\nhs_err_pid123.log",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "startup-then-inrun-oom",
+      "Stdout": "Error occurred during initialization of VM",
+      "Stderr": "OutOfMemoryError",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": false
+    },
+    {
+      "Name": "metadata-sigbus",
+      "Stdout": "Error occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 134,
+      "Signal": "SIGBUS",
+      "ProcessError": false
+    },
+    {
+      "Name": "metadata-kill",
+      "Stdout": "Error occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 137,
+      "Signal": "SIGKILL",
+      "ProcessError": false
+    },
+    {
+      "Name": "metadata-timeout",
+      "Stdout": "Error occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": -1,
+      "Signal": "SIGTERM",
+      "ProcessError": true
+    },
+    {
+      "Name": "process-error-with-exit1",
+      "Stdout": "Error occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 1,
+      "Signal": null,
+      "ProcessError": true
+    },
+    {
+      "Name": "other-exit",
+      "Stdout": "Error occurred during initialization of VM",
+      "Stderr": "",
+      "Retryable": false,
+      "ExitCode": 255,
+      "Signal": null,
+      "ProcessError": false
+    }
+  ]
+}
