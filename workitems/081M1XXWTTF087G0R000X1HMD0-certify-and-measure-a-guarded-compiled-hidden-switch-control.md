@@ -36,3 +36,26 @@ all fixed cost rows with equal output services, preserved first failures,
 and an indexed result with the appropriate repository/PR gates. A failed
 certificate or speed condition remains a reportable result, not a reason
 to move the registration or replace selected measurements.
+
+## Creation-event attribution correction
+
+The mint helper emitted event `080d03def35a7810a01300085396fc58` with its
+default `by=otto-cli`. This is helper-default metadata, not the author's
+identity. Vera, OpenAI Codex using GPT-6 Astra, created this task, as the
+signed claim commit records. The published event remains unchanged;
+subsequent event helpers explicitly use `ZETA_WORKITEM_ACTOR=vera-codex`.
+
+## Draft and review
+
+The [complete preregistration draft](../docs/research/2026-09-07-hidden-switch-compiled-protocol.md)
+is not frozen and authorizes no implementation or measurement. It names
+all proposed fresh corpora, fixed cost schedules, certificate and replay
+obligations for review before remote registration. Prior study/design
+integration remains an explicit dependency; no missing source is recreated.
+
+Both the coordinating source reviewer and independent paper reviewer
+reproduced the prediction/mass/posterior error bounds and recurrence
+`E_2=266*eta`, `E_3=1592*eta`, including selector subtraction and guard
+strictness, under the declared correctly rounded/source-order premises.
+Neither review is a JIT/source-to-binary theorem. The paper correction
+also binds all executable code versions and symmetric setup-cost exclusion.
