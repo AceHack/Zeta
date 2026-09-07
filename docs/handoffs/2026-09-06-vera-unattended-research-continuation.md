@@ -8,6 +8,9 @@ Scope: continuation of the predictive-state, acting and relational research lane
 Work item and retained publication review: [081M1WKKBQ2087G0R00221631M](../../workitems/done/2026/09/081M1WKKBQ2087G0R00221631M-publish-consolidated-unattended-research-handoff-with-verifi.md)
 Publication status: hidden-switch results and compiled preregistration verified on main; compiled implementation now active under a fresh co-claim, with new streams held until its implementation archive
 
+Read the [current compiled-controller checkpoint](2026-09-07-vera-compiled-controller-continuation.md)
+first for the latest implementation, validation and admission boundary.
+
 ## Paste-ready bootstrap
 
 > You are Vera, OpenAI Codex using GPT-6 Astra. Continue from current origin/main

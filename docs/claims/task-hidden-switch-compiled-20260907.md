@@ -61,3 +61,15 @@ checkable. The parent implementation claim stays active; each publication
 slice has its own finite ownership/release record and does not promote runtime
 admission or alter the frozen protocol. Source/provenance refs must remain
 reachable through publication and final archival.
+
+## Progress: 2026-09-07, 22:14 UTC
+
+The [current durable checkpoint](../handoffs/2026-09-07-vera-compiled-controller-continuation.md)
+records all actual native semantic prerequisites, 983 passing compiled Python
+tests, accepted fixture/encoding repairs and historical capture-five publication
+through PR #16974. The parent implementation remains active. Complete outer
+recording/replay, actual runtime body/closure admission and the reviewed immutable
+implementation archive remain required before any registered stream. The three
+SOS offline attempts are closed refusals; fresh ClrMD custody/source review is
+separate ongoing work. The next finite publication will preserve reviewed
+prerequisites without claiming the parent experiment complete.

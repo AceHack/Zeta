@@ -21,12 +21,19 @@ retains 59 tests for 32 fixed non-I/O cases and 36 actual one-call dispatches.
 It leaves full coordinator retention, replay and source/runtime admission open.
 
 The [owned file fixture validation](../../2026-09-07-hidden-switch-compiled-file-fixture-validation.md)
-preserves 31 tests, both actual fixture trees and exact failure-prefix behavior
+preserves the initial 31 tests, both fixture trees and the accepted 33-test
+cleanup repair with its third owned tree and exact failure-prefix behavior
 for the seven filesystem cases. Full coordinator replay remains pending.
 
 The [bounded record encoder](../../2026-09-07-hidden-switch-compiled-record-encoding-validation.md)
 preserves 43 passing tests, complete public-result parity and quota-before-
 expansion checks. Per-attempt retention and actual outcome replay are separate.
+
+The [integration-five checkpoint](../../../handoffs/2026-09-07-vera-compiled-controller-continuation.md)
+retains 983 passing compiled Python tests at the exact source pin, all 83
+tracked Interp Python/config identities and the actual owned fixture tree.
+The [manifest](integration-5/manifest.json) keeps source and raw/stored hashes.
+This subset is separate from full Interp/native or runtime/outer admission.
 
 ## Frozen protocol and remote proof
 
