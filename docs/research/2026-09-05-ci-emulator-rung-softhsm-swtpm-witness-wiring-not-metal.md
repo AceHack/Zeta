@@ -365,14 +365,20 @@ Missing OS is `missing-os`, not `nixos`. `/dev/tpmrm0` is
 not `real`. Does not write ESP. Does not mix conf with
 argv or env. Does not call this from `zeta-install.sh`.
 Does not change ISO bun `probe: null`.
+Overlay named-key joins take frost-look keys (`081M1YCFES8087G0R000R3MV6Y`):
+`planSetupFromFrostLookNamedEnv` / Argv / Conf. Parse lives
+in `named-frost-look.ts`, not the CLI. Missing OS is
+`missing-os`. Missing effects is unmeasured. Does not
+write ESP. Does not call this from `zeta-install.sh`. Does
+not change ISO bun `probe: null`.
 
 1. Metal: `seal "pkcs11"` in Application.yaml still waits.
    Same commit as a **reachable** module: same-libc image
    (glibc OpenBao that can load the host `.so`) or option D
    host `bao`. Dual-vendor per node is ZetaFS k-of-n, not
-   two active OpenBao seals. Do not treat this CLI as that
-   commit. Conf consume of named frost-look keys landed
-   (`081M1YAHFVV087G0R001G2TXRE`); it does not write ESP.
+   two active OpenBao seals. Do not treat this overlay as
+   that commit. Named-key overlay joins landed
+   (`081M1YCFES8087G0R000R3MV6Y`); they do not write ESP.
    Wiring this look on the live ISO is later and still
    must not infer from `/dev/tpmrm0`. Bun JSON `probe`
    stays null until that wiring exists. Does not expand

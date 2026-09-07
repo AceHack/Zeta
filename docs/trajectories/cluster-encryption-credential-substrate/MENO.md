@@ -343,6 +343,14 @@ assume the number.
    not mix conf with argv or env. Does not call this from
    `zeta-install.sh`. Does not change ISO bun `probe: null`.
    Does not invent an integrate decision.
+   Overlay named-key joins take frost-look keys (`081M1YCFES8087G0R000R3MV6Y`):
+   `planSetupFromFrostLookNamedEnv` / Argv / Conf. Parse
+   lives in `named-frost-look.ts`, not the CLI. Missing OS
+   is `missing-os`. Missing effects is unmeasured.
+   `/dev/tpmrm0` is not `real`. Does not write ESP. Does
+   not call this from `zeta-install.sh`. Does not change
+   ISO bun `probe: null`. Does not invent an integrate
+   decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

@@ -612,6 +612,10 @@ effects (`081M1YAHFVV087G0R001G2TXRE`);
 missing effects is unmeasured;
 `--from-conf` does not write ESP;
 ISO bun `probe` stays null.
+Overlay named-key joins take frost-look
+keys (`081M1YCFES8087G0R000R3MV6Y`);
+parse is not the CLI; ISO bun `probe`
+stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

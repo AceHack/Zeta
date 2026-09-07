@@ -11,9 +11,17 @@ import {
 import type { HardwareProbeEffects } from "./frost-hardware-probe.ts";
 import type { ListOutcome, PathOutcome, Tpm2LinuxEffects } from "./tpm2-linux-probe.ts";
 import {
+  FROST_LOOK_EFFECTS_KEY,
+  FROST_LOOK_OS_FLAG,
+  FROST_LOOK_OS_KEY,
+} from "./named-frost-look.ts";
+import {
   planSetupFromFrostLookArgv,
   planSetupFromFrostLookConf,
   planSetupFromFrostLookEnv,
+  planSetupFromFrostLookNamedArgv,
+  planSetupFromFrostLookNamedConf,
+  planSetupFromFrostLookNamedEnv,
 } from "./plan-setup-from-frost-look.ts";
 
 function tpm2Absent(over: Partial<Tpm2LinuxEffects> = {}): Tpm2LinuxEffects {
@@ -86,6 +94,19 @@ const missingRestore = {
   contents: null,
   resolvedModuleExists: true,
 };
+
+function unusedReal(): HardwareProbeEffects {
+  return host({
+    exists: () => {
+      throw new Error("unmeasured look does not use real effects");
+    },
+    tpm2: tpm2Absent({
+      statPath: () => {
+        throw new Error("unmeasured look does not use real effects");
+      },
+    }),
+  });
+}
 
 function optionDEnv(request: string): { readonly [key: string]: string } {
   return {
@@ -216,6 +237,11 @@ describe("planSetupFromFrostLookEnv — tpmrm0 is not present", () => {
     const join = await Bun.file(new URL("./plan-setup-from-frost-look.ts", import.meta.url)).text();
     expect(join.split("realProbeEffects(").length - 1).toBe(0);
     expect(join.split("appendFirstbootBaoElfConf(").length - 1).toBe(0);
+    expect(join.split("named-frost-look-env").length - 1).toBe(0);
+    expect(join.split("runFrostLook").length - 1).toBe(0);
+    expect(join.split("planSetupFromFrostLookNamedEnv").length - 1).toBe(1);
+    expect(join.split("planSetupFromFrostLookNamedArgv").length - 1).toBe(1);
+    expect(join.split("planSetupFromFrostLookNamedConf").length - 1).toBe(1);
     const resultJoin = await Bun.file(new URL("./plan-setup-from-frost.ts", import.meta.url)).text();
     expect(resultJoin.split("probeHardwareSecurity(").length - 1).toBe(0);
     const bunCli = await Bun.file(new URL("../../../src/Core.TypeScript/zflash/firstboot-bao-env.ts", import.meta.url)).text();
@@ -319,6 +345,68 @@ describe("planSetupFromFrostLookArgv/Conf — tpmrm0 is not present", () => {
     expect(fromConf.ok).toBe(true);
     if (!fromConf.ok) return;
     expect(confOpened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromConf.plan.oracle).toBe("tpm2-pkcs11");
+    expect(fromConf.plan.mayCommitSeal).toBe(false);
+    expect(fromConf.plan.mayCommitHostHcl).toBe(true);
+  });
+});
+
+describe("planSetupFromFrostLookNamedEnv/Argv/Conf — tpmrm0 is not present", () => {
+  test("named env missing effects is unmeasured and does not use real effects", () => {
+    const opened: string[] = [];
+    const fromEnv = planSetupFromFrostLookNamedEnv(
+      missingRestore,
+      { ...optionDEnv("pkcs11-tpm"), [FROST_LOOK_OS_KEY]: "nixos" },
+      glibcRead(opened),
+      unusedReal(),
+    );
+    expect(fromEnv.ok).toBe(true);
+    if (!fromEnv.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
+    expect(fromEnv.plan.oracle).toBe("none");
+    expect(fromEnv.plan.mayCommitHostHcl).toBe(false);
+  });
+
+  test("named env missing OS refuses — does not default to nixos", () => {
+    expect(planSetupFromFrostLookNamedEnv(missingRestore, optionDEnv("pkcs11-tpm"), glibcRead([]), unusedReal())).toEqual(
+      { ok: false, reason: "missing-os" },
+    );
+  });
+
+  test("named conf tpmrm0 effects refuse", () => {
+    const body = `${optionDConf()}${FROST_LOOK_OS_KEY}='nixos'\n${FROST_LOOK_EFFECTS_KEY}='${TPM_CHAR_DEVICE}'\n`;
+    expect(
+      planSetupFromFrostLookNamedConf(missingRestore, body, requestEnv("pkcs11-tpm"), glibcRead([]), unusedReal()),
+    ).toEqual({ ok: false, reason: "unknown-effects" });
+  });
+
+  test("named argv missing --effects is unmeasured", () => {
+    const fromArgv = planSetupFromFrostLookNamedArgv(
+      missingRestore,
+      [...optionDArgv(), `${FROST_LOOK_OS_FLAG}=nixos`],
+      requestEnv("pkcs11-tpm"),
+      glibcRead([]),
+      unusedReal(),
+    );
+    expect(fromArgv.ok).toBe(true);
+    if (!fromArgv.ok) return;
+    expect(fromArgv.plan.oracle).toBe("none");
+    expect(fromArgv.plan.mayCommitHostHcl).toBe(false);
+  });
+
+  test("named conf real TPM present may emit host HCL and cannot commit Application.yaml", () => {
+    const body = `${optionDConf()}${FROST_LOOK_OS_KEY}='nixos'\n${FROST_LOOK_EFFECTS_KEY}='real'\n${FIRSTBOOT_BAO_ELF_EPOCH_KEY}='installed-host'\n`;
+    const opened: string[] = [];
+    const fromConf = planSetupFromFrostLookNamedConf(
+      missingRestore,
+      body,
+      { ...requestEnv("pkcs11-tpm"), [FIRSTBOOT_BAO_ELF_EPOCH_KEY]: "installed-host" },
+      glibcRead(opened),
+      host({ tpm2: tpm2Present() }),
+    );
+    expect(fromConf.ok).toBe(true);
+    if (!fromConf.ok) return;
+    expect(opened).toEqual([NIXOS_HOST_BAO]);
     expect(fromConf.plan.oracle).toBe("tpm2-pkcs11");
     expect(fromConf.plan.mayCommitSeal).toBe(false);
     expect(fromConf.plan.mayCommitHostHcl).toBe(true);
