@@ -117,3 +117,13 @@ observations match the pinned reference tree; Python executable/version and
 the placeholder certificate bindings are the same as in the earlier slice.
 The input bytes were checked unchanged after replay. Full interventions,
 refusals, whole-hand, source archive and runtime admission remain pending.
+
+The independent [historical capture publication review](2026-09-07-hidden-switch-compiled-capture-publication-review.md)
+checks the separate 2,550-record graph-evidence inventory at `11cd3368af8fbd0f20b45ae4a825372ed2144b3a`.
+Its unchanged-byte preservation and source-history checks do not provide
+runtime admission or extend these numerical slice results.
+
+The later [native semantic source review](2026-09-07-hidden-switch-compiled-native-semantic-source-review.md)
+accepts the ten-intervention/fifty-three-refusal collection boundary at
+`7eaec2bf2312e04ff0fc936a4c28a09d1704b1f0`. It is read-only source review,
+separate from the actual earlier slice captures and pending full semantic replay.
