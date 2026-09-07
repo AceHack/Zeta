@@ -59,3 +59,83 @@ module ZetaFsFuseSession =
                                 MaxReadahead = init.MaxReadahead }
 
                         Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeInitOut body))
+
+    let private nameOf (bytes: byte[]) : byte[] =
+        let mutable n = bytes.Length
+
+        while n > 0 && bytes.[n - 1] = 0uy do
+            n <- n - 1
+
+        if n = bytes.Length then
+            bytes
+        else
+            let dst = Array.zeroCreate n
+            if n > 0 then
+                Buffer.BlockCopy(bytes, 0, dst, 0, n)
+            dst
+
+    let private unixParts (ns: int64) : uint64 * uint32 =
+        if ns < 0L then
+            0UL, 0u
+        else
+            uint64 (ns / 1_000_000_000L), uint32 (ns % 1_000_000_000L)
+
+    let private attrOf (stat: ZetaFsPosixMeta.PosixStat) (ino: uint64) : ZetaFsFuseAbi.Attr =
+        let mSec, mNsec = unixParts stat.Meta.MtimeNs
+        let cSec, cNsec = unixParts stat.Meta.CtimeNs
+        let nlink = if stat.Nlink < 1L then 1u else uint32 stat.Nlink
+
+        { Ino = ino
+          Size = stat.Size
+          Blocks = (stat.Size + 511UL) / 512UL
+          Atime = 0UL
+          Mtime = mSec
+          Ctime = cSec
+          Atimensec = 0u
+          Mtimensec = mNsec
+          Ctimensec = cNsec
+          Mode = stat.Meta.Mode
+          Nlink = nlink
+          Uid = stat.Meta.Uid
+          Gid = stat.Meta.Gid
+          Rdev = 0u
+          Blksize = 4096u }
+
+    /// LOOKUP/GETATTR over a live Fake VFS session. INIT still works.
+    /// Unknown opcodes are ENOSYS. No `/dev/fuse`.
+    let handleMounted
+        (session: ZetaFsFuse.Session)
+        (req: byte[])
+        : Result<byte[] * ZetaFsFuse.Session, Error> =
+        match ZetaFsFuseAbi.decodeInHeader req with
+        | Result.Error e -> Result.Error(Truncated e)
+        | Result.Ok header ->
+            if header.Opcode = ZetaFsFuseAbi.fuseInit then
+                match handle req with
+                | Result.Error e -> Result.Error e
+                | Result.Ok reply -> Result.Ok(reply, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseLookup then
+                match
+                    ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(header.Nodeid, nameOf (payload req)))
+                with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Node node ->
+                    match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr node.Id) with
+                    | ZetaFsFuse.Stat(stat, ino) ->
+                        let entry: ZetaFsFuseAbi.EntryOut =
+                            { Nodeid = node.Id
+                              Generation = 1UL
+                              EntryValid = 0UL
+                              AttrValid = 0UL
+                              EntryValidNsec = 0u
+                              AttrValidNsec = 0u
+                              Attr = attrOf stat ino }
+
+                        Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeEntryOut entry), session)
+                    | ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            else
+                Result.Ok(replyErrno header.Unique 38, session)
