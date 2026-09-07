@@ -126,7 +126,17 @@ tree search is necessary to realize the supplied finite controller.
 The [integrated validation record](hidden-switch-validation/2026-09-07/README.md)
 contains the nineteen-file source manifest, successful mapped Release build,
 sixteen focused native tests, fresh identical hand fixture, full 431-case
-Python gate and exact earlier failures. The full-solution BftConsensus gate
-has not recovered. Its TLC trace-recovery error and subsequent in-run JVM
-SIGBUS are being investigated without changing the model, jar, registered
-experiment or verdict. No registered stream or timing has run.
+Python gate and exact earlier failures. The initial full-solution BftConsensus failure
+and subsequent in-run JVM SIGBUS remain preserved. A separate C1 policy
+and failure-retention repair now pass the combined native gate at
+`457bdf094f368eb9e6f2b359b72e5677fd015eb3`: 7,552 passes, six existing
+skips, all 52 model cases, eighteen TLC metadata/synthetic cases and sixteen
+hidden-switch cases. The mapped Release build has zero warnings/errors.
+No admitted scientific file, model, jar or experimental verdict changed.
+
+The integrated validation index preserves all seven original TRX streams,
+prelaunch source identities and the exact build/test logs. A historical
+NCI receipt fixture correction discovered by CI remains a separate
+Python/TypeScript prerequisite before archival; it must preserve the old
+receipt and refuse the changed current registry. No registered hidden-switch
+stream or timing has run.

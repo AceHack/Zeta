@@ -101,3 +101,50 @@ and integrated as `ddbf9520b`; all thirteen indexed diagnostic files were
 verified against their declared hashes and byte lengths. The nineteen
 scientific files are unchanged. Full candidate and integrated validation
 remain pending; registered source generation and measurements are unexecuted.
+
+## Combined gate after the two TLC repairs
+
+The root integrated the reviewed C1 policy and attempt-retention/capture
+repairs without changing any of the nineteen scientific files. The exact
+combined source commit is `457bdf094f368eb9e6f2b359b72e5677fd015eb3`.
+The [prelaunch inventory](root-final-gate-attempt-1.json) identifies every
+admitted runner, registry, jar and local model/configuration input before
+execution. The [derived result index](root-final-gate-results.json) records
+all seven project outcomes and hashes of the losslessly retained original
+TRX archives. Individual test outcomes, rather than the TRX summary's unused
+`notExecuted` counter, establish the six existing skipped cases.
+
+The [mapped Release build](root-final-build-attempt-1.log) passed with zero
+warnings/errors in 101.75 seconds. The [full solution test](root-final-tests-attempt-1.log)
+completed at 11:44:01 UTC with 7,552 passes, six existing skips and no
+failures. All 52 model IDs exactly match the registry's gate roster and
+passed; all eighteen TLC synthetic/metadata checks and all sixteen
+hidden-switch native tests passed. Every prelaunch input hash remained
+unchanged, and no unexpected attempt directory remained after completion.
+
+The [live BFT observation](root-final-bft-observation.json) retains its
+[invocation](root-final-bft-invocation-live.json) and
+[runtime identity](root-final-bft-runtime-live.json). It verifies use of the
+new private input workspace, admitted source commit and C1 argument during
+this gate. That active snapshot was not itself a completed result; the
+subsequent TRX outcome supplies completion. The
+[team activity record](root-final-team-activity.json) discloses a pre-existing
+quick-preflight overlap at build launch and makes no whole-host isolation
+or causal claim about earlier failures.
+
+This successful combined native gate does not replace either earlier TLC
+failure or the compiler failures. The Interp 431-case gate above concerns
+unchanged Python/scientific source. A separately discovered CI failure in
+historical NCI receipt tests requires an explicit historical registry
+fixture and current-registry refusal checks; that Python/TypeScript
+correction remains separate validation before the implementation freeze.
+Registered hidden-switch source streams and costs remain unexecuted.
+
+Original combined test records, losslessly compressed:
+[Bayesian.Tests](root-final-Bayesian.Tests.trx.gz),
+[Core.CSharp.Mediator.Tests](root-final-Core.CSharp.Mediator.Tests.trx.gz),
+[Core.CSharp.Tests](root-final-Core.CSharp.Tests.trx.gz),
+[Tests.CSharp](root-final-Tests.CSharp.trx.gz),
+[Tests.CSharp.TypeProvider](root-final-Tests.CSharp.TypeProvider.trx.gz),
+[Tests.FSharp](root-final-Tests.FSharp.trx.gz),
+[Tests.FSharp.Git](root-final-Tests.FSharp.Git.trx.gz).
