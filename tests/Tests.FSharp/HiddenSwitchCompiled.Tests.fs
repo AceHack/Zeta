@@ -73,3 +73,25 @@ module HiddenSwitchCompiledTests =
         let _, oldCommitted = HiddenSwitchPolicy.choose oldObserved |> get
         let _, oldNext = HiddenSwitchPolicy.observe (projection 0) oldCommitted |> get
         Assert.Equal(HiddenSwitchCompiledReceipt.bits (HiddenSwitchPolicy.belief oldNext), after.BeliefBits)
+
+    [<Fact>]
+    let ``both services use the same complete observe choose commit chronology`` () =
+        let bindings = Map.ofList ["ProtocolSha256", "8BBDFE44A0844DD8CE4F6C5DD77B060A56E5B84EA94EA7A6FDBB482AEC9D738A"; "hand-validation", String.replicate 64 "0"]
+        let raw = HiddenSwitchCompiledCertificate.build bindings |> get
+        let guards = HiddenSwitchCompiledCertificate.verify raw bindings |> get |> HiddenSwitchCompiledCertificate.guards
+        let mutable native = HiddenSwitchCompiledPolicy.create true "dot" |> get
+        let mutable compiled = HiddenSwitchCompiledPolicy.create true "dot" |> get
+        for time in 0 .. 16 do
+            let frame = projection (time % 2)
+            native <- HiddenSwitchCompiledPolicy.observe frame native |> get |> snd
+            compiled <- HiddenSwitchCompiledPolicy.observe frame compiled |> get |> snd
+            Assert.Equal(HiddenSwitchCompiledPolicy.snapshot native, HiddenSwitchCompiledPolicy.snapshot compiled)
+            if time < 16 then
+                let first, nextNative = HiddenSwitchCompiledPolicy.chooseWith HiddenSwitchCompiledPolicy.native native |> get
+                let second, nextCompiled = HiddenSwitchCompiledPolicy.chooseWith (HiddenSwitchCompiledSelector.choose guards) compiled |> get
+                Assert.Equal(first.Action, second.Action)
+                Assert.True(HiddenSwitchCompiledPolicy.observe frame compiled |> Result.isError)
+                native <- nextNative
+                compiled <- nextCompiled
+        Assert.True(HiddenSwitchCompiledPolicy.chooseWith HiddenSwitchCompiledPolicy.native native |> Result.isError)
+        Assert.True(HiddenSwitchCompiledPolicy.chooseWith (HiddenSwitchCompiledSelector.choose guards) compiled |> Result.isError)
