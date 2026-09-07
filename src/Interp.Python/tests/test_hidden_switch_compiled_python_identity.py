@@ -344,6 +344,10 @@ if os.environ.get("IDENTITY_FIXTURE_DUPLICATE") == "alternate":
     sys.modules["other_entry_load"] = alternate
 if os.environ.get("IDENTITY_FIXTURE_DUPLICATE") == "wrong-name":
     __spec__.name = "zeta_interp.hidden_switch_wrong_entry"
+if os.environ.get("IDENTITY_FIXTURE_DUPLICATE") == "fifo":
+    subject = Path(hidden_switch_identity_fixture.__file__)
+    subject.unlink()
+    os.mkfifo(subject)
 kwargs = {} if os.environ.get("IDENTITY_FIXTURE_DUPLICATE") == "omit" else {"entry_module": "zeta_interp.hidden_switch_identity_entry"}
 result = identity.admit_python_identity(str(root), roster, **kwargs)
 print(json.dumps({"Value": getattr(result, "value", None), "Code": getattr(result, "Code", None)}))
@@ -351,7 +355,7 @@ print(json.dumps({"Value": getattr(result, "value", None), "Code": getattr(resul
 
 
 @pytest.mark.parametrize(
-    "mutation", ["", "logical", "alias", "alternate", "wrong-name", "omit"]
+    "mutation", ["", "logical", "alias", "alternate", "wrong-name", "omit", "fifo"]
 )
 def test_real_module_entry_without_separate_logical_import(tmp_path, mutation):
     root = (tmp_path / "entry-clone").resolve()
@@ -381,7 +385,11 @@ def test_real_module_entry_without_separate_logical_import(tmp_path, mutation):
     record = json.loads(completed.stdout)
     if mutation:
         assert record["Value"] is None
-        assert record["Code"] in ("EntryIdentity", "ModuleIdentity")
+        assert record["Code"] in (
+            ("FileIdentity",)
+            if mutation == "fifo"
+            else ("EntryIdentity", "ModuleIdentity")
+        )
     else:
         evidence = record["Value"]
         assert evidence["EntryAdmitted"] is True
