@@ -1896,6 +1896,16 @@ module ZetaFsFreeze =
             | Some state -> ZetaFsNamespace.liveResolve parent name state.Bindings
             | None -> None)
 
+    /// Live names under `dir`. No `.` / `..`.
+    let readdir
+        (volume: Volume)
+        (dir: ZetaFsNamespace.EntityId)
+        : Result<(byte[] * ZetaFsNamespace.EntityId)[], ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity dir)
+            | Some state -> ZetaFsNamespace.readdir state dir)
+
     /// Title at `at` (inclusive). Tombstone does not erase prior Live.
     let resolveAt
         (volume: Volume)
