@@ -1,0 +1,85 @@
+$ bun ./src/Core.TypeScript/hygiene/preflight.ts --quick
+Preflight (quick: lints + tsc)
+
+▶ no-conflict-markers … PASS
+▶ no-empty-dirs … PASS
+▶ hook-script-paths … PASS
+▶ identity-registry-sync … PASS
+▶ auto-vivify check … PASS
+▶ ace build-graph drift … PASS
+▶ check-arity census drift … PASS
+▶ check-arity census drift (non-equality) … PASS
+▶ inventory items.json current … PASS
+▶ markdownlint … PASS
+▶ lint: TypeScript (tsc) … PASS
+▶ lint: F# … PASS
+▶ lint: C# … PASS
+▶ lint: Python … FAIL
+▶ lint: Rust … PASS
+▶ lint: Go … PASS
+
+════════════════════════════════════════════════════════════
+FAILURES (1)
+════════════════════════════════════════════════════════════
+
+──── lint: Python ────
+=== Linting Python: uv sync [Core.Python] ===
+=== Linting Python: ruff check [Core.Python] ===
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/test_nci_witness_receipt_oracle.py:3:1
+   |
+ 1 |   """Independent finite NciNonUrgency receipt checker controls."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | import shutil
+ 7 | | from collections.abc import Iterator
+ 8 | | from contextlib import contextmanager
+ 9 | | from pathlib import Path
+10 | |
+11 | | import pytest
+12 | | from zeta.nci_witness_receipt_oracle import (
+13 | |     WitnessFailure,
+14 | |     render_receipt,
+15 | |     verify_pinned_subject,
+16 | |     verify_receipt,
+17 | | )
+   | |_^
+18 |
+19 |   ROOT = Path(__file__).resolve().parents[3]
+   |
+help: Organize imports
+   |
+11 | import pytest
+12 +
+13 | from zeta.nci_witness_receipt_oracle import (
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+Resolved 29 packages in 16ms
+Checked 28 packages in 12ms
+✗ Linting Python: ruff check [Core.Python]: exited with code 1
+
+────────────────────────────────────────────────────────────
+Summary
+  ✓ no-conflict-markers
+  ✓ no-empty-dirs
+  ✓ hook-script-paths
+  ✓ identity-registry-sync
+  ✓ auto-vivify check
+  ✓ ace build-graph drift
+  ✓ check-arity census drift
+  ✓ check-arity census drift (non-equality)
+  ✓ inventory items.json current
+  ✓ markdownlint
+  ✓ lint: TypeScript (tsc)
+  ✓ lint: F#
+  ✓ lint: C#
+  ✗ lint: Python
+  ✓ lint: Rust
+  ✓ lint: Go
+
+✗ preflight: 1 check(s) failed.
+error: script "preflight:quick" exited with code 1

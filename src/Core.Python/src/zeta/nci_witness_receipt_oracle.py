@@ -35,9 +35,9 @@ PIN: Final = {
 STATE_RE: Final = re.compile(r"([\d,]+) distinct states found")
 
 
-@dataclass(frozen=True)
+@dataclass
 class WitnessFailure(Exception):
-    """A named finite-witness refusal or checker-defer outcome."""
+    """A named refusal; Python exception propagation must set traceback fields."""
 
     kind: str
     detail: str
