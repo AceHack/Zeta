@@ -87,3 +87,7 @@ The first implementation is admissible only if all controls below are observed.
 This contract does not establish consent, free will, subjective intent, user authorization, legal validity, key custody, revocation, safety, NCI preservation, policy quality, trust, a quorum, consensus, or authority. It does not determine what should be allowed. It does not use an ambient clock, rank attestations, mutate evidence, or select policies.
 
 The immediate next implementation may demonstrate only the finite receipt and its refusal paths. Any future authority or consensus proposal needs separate human review, an explicit authority model, independently pinned evidence, consent and withdrawal semantics, third-party harm boundaries, and a benchmark capable of failing.
+
+## 8. Measured test-only conformance
+
+The v1 local-window evaluator is now implemented and independently replayed only against the non-corpus test fixture described in [the conformance result](2026-09-07-attestation-consent-expiry-verifier-conformance-result.md). The fixture and its `test-only-bound-adapter` outcome do not weaken any production admission condition in this contract. Production without an externally supplied bound record still defers rather than returning an affirmative status.

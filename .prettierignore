@@ -90,6 +90,12 @@ docs/research/data/2026-09-06-policy-admissibility-v1-python.json
 docs/research/data/2026-09-06-nci-witness-v1-typescript.json
 docs/research/data/2026-09-06-nci-witness-v1-python.json
 
+# Test-only consent-window conformance receipts: both independently authored
+# evaluators emit these exact bytes from a fixture outside the durable event
+# corpus. Formatting is an identity mutation, not a presentation improvement.
+docs/research/data/2026-09-07-attestation-consent-expiry-v1-typescript.json
+docs/research/data/2026-09-07-attestation-consent-expiry-v1-python.json
+
 # VERBATIM COPIES OF GIT HISTORY. The four pre-fix `Application.yaml` files under
 # `testdata/inert-valuesobject-history/` are byte-for-byte `git show <sha>:<path>`
 # output, and `inert-valuesobject-keys.test.ts` re-verifies them against those very
