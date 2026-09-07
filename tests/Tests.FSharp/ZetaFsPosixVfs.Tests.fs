@@ -275,3 +275,48 @@ let ``pwrite negative offset is Mutbuf NegativeOffset`` () =
             match ZetaFsPosixVfs.pwrite mount1 node -1L [| 1uy |] with
             | Error(ZetaFsPosixVfs.Mutbuf(ZetaFsMutbuf.NegativeOffset n)) -> Assert.Equal(-1L, n)
             | other -> Assert.Fail(sprintf "expected NegativeOffset, got %A" other))
+
+[<Fact>]
+let ``create then lookup finds the file; mkdir then create under the dir`` () =
+    withVolume "/vfs-create" (fun volume ->
+        let mount0 = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount0
+        let file, mount1 = ok (ZetaFsPosixVfs.create mount0 rootNode (utf8 "a"))
+        let stat = ok (ZetaFsPosixVfs.getattr mount1 file)
+        Assert.Equal(ZetaFsPosixMeta.fileMode, stat.Meta.Mode)
+        let found, mount2 = ok (ZetaFsPosixVfs.lookup mount1 rootNode (utf8 "a"))
+        Assert.Equal(0, ZetaFsNamespace.EntityId.compare file.Entity found.Entity)
+        let dir, mount3 = ok (ZetaFsPosixVfs.mkdir mount2 rootNode (utf8 "d"))
+        let nested, mount4 = ok (ZetaFsPosixVfs.create mount3 dir (utf8 "b"))
+        let nestedStat = ok (ZetaFsPosixVfs.getattr mount4 nested)
+        Assert.Equal(ZetaFsPosixMeta.fileMode, nestedStat.Meta.Mode)
+        let back, _ = ok (ZetaFsPosixVfs.lookup mount4 nested ZetaFsPosixVfs.dotDot)
+        Assert.Equal(dir.Id, back.Id))
+
+[<Fact>]
+let ``Ascii create refuses Notes.md when notes.md is live; store is unchanged`` () =
+    withVolume "/vfs-create-ascii" (fun volume ->
+        let fuse0 = mustMount volume ZetaFsCollator.fuseTDefault
+        let rootNode = ZetaFsPosixVfs.root fuse0
+        let _, fuse1 = ok (ZetaFsPosixVfs.create fuse0 rootNode (utf8 "notes.md"))
+        match ZetaFsPosixVfs.create fuse1 rootNode (utf8 "Notes.md") with
+        | Error(ZetaFsPosixVfs.Confusable existing) ->
+            Assert.True(sameBytes (utf8 "notes.md") existing)
+        | other -> Assert.Fail(sprintf "Ascii must refuse Notes.md, got %A" other)
+        let notes, _ = ok (ZetaFsPosixVfs.lookup fuse1 rootNode (utf8 "notes.md"))
+        match ZetaFsPosixVfs.lookup fuse1 rootNode (utf8 "Notes.md") with
+        | Ok(node, _) ->
+            Assert.Equal(0, ZetaFsNamespace.EntityId.compare notes.Entity node.Entity)
+        | Error e -> Assert.Fail(sprintf "Ascii lookup of Notes.md should fold to notes.md, got %A" e))
+
+[<Fact>]
+let ``create of dot or dotdot is Confusable`` () =
+    withVolume "/vfs-create-dot" (fun volume ->
+        let mount = mustMount volume ZetaFsCollator.linuxDefault
+        let rootNode = ZetaFsPosixVfs.root mount
+        match ZetaFsPosixVfs.create mount rootNode ZetaFsPosixVfs.dot with
+        | Error(ZetaFsPosixVfs.Confusable name) -> Assert.True(sameBytes ZetaFsPosixVfs.dot name)
+        | other -> Assert.Fail(sprintf "dot must be Confusable, got %A" other)
+        match ZetaFsPosixVfs.mkdir mount rootNode ZetaFsPosixVfs.dotDot with
+        | Error(ZetaFsPosixVfs.Confusable name) -> Assert.True(sameBytes ZetaFsPosixVfs.dotDot name)
+        | other -> Assert.Fail(sprintf "dotdot must be Confusable, got %A" other))

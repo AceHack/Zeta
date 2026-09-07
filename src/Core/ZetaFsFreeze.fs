@@ -1820,23 +1820,32 @@ module ZetaFsFreeze =
                     (ZetaFsNamespace.ActorId "freeze"))
             Ok next
 
-    /// Mint a File under ROOT and persist the TagBinding. First bind copies
-    /// nearest ByPrefix or VolumeDefault onto ByEntity. Reopen
-    /// `liveResolve` must find the same id. No ROOT => None.
-    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+    /// Mint a File under `parent` and persist the TagBinding. First bind
+    /// copies nearest ByPrefix or VolumeDefault onto ByEntity.
+    let bindFileUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
         lock volume.Gate (fun () ->
-            match volume.Root, !volume.Ns with
-            | Some root, Some state ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
                 let entropy =
                     ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
                 let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.File entropy
 
-                match persistBind volume minted root name id with
+                match persistBind volume minted parent name id with
                 | Error e -> Error e
                 | Ok _ ->
                     stampPosix volume id ZetaFsNamespace.EntityKind.File
-                    Ok id
-            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+                    Ok id)
+
+    /// Mint a File under ROOT. No ROOT => UnknownEntity.
+    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        match volume.Root with
+        | Some root -> bindFileUnder volume root name
+        | None -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero })
 
     /// Mint a Directory under `parent` and persist the TagBinding.
     let bindDirectory

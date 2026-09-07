@@ -122,19 +122,57 @@ module ZetaFsPosixVfs =
             Ok(acc.ToArray(), { mount with Cache = cache })
 
     /// Adapter oracle for create. Store bind is a later call.
+    /// `.` and `..` are never created; they are synthesized on readdir.
     let refuseCreate
         (mount: Mount)
         (parent: ZetaFsPosixNode.Node)
         (name: byte[])
         : Result<unit, Error> =
-        match liveNames mount parent.Entity with
-        | Error e -> Error e
-        | Ok live ->
-            let names = live |> Array.map fst
+        if sameBytes name dot || sameBytes name dotDot then
+            Error(Confusable name)
+        else
+            match liveNames mount parent.Entity with
+            | Error e -> Error e
+            | Ok live ->
+                let names = live |> Array.map fst
 
-            match ZetaFsCollator.refuseCreate mount.Collator names name with
-            | Ok() -> Ok()
-            | Error(ZetaFsCollator.ConfusableWithExisting existing) -> Error(Confusable existing)
+                match ZetaFsCollator.refuseCreate mount.Collator names name with
+                | Ok() -> Ok()
+                | Error(ZetaFsCollator.ConfusableWithExisting existing) -> Error(Confusable existing)
+
+    let private internChild
+        (mount: Mount)
+        (parent: ZetaFsPosixNode.Node)
+        (id: ZetaFsNamespace.EntityId)
+        : ZetaFsPosixNode.Node * Mount =
+        let node, cache = ZetaFsPosixNode.intern mount.Cache parent id
+        node, { mount with Cache = cache }
+
+    /// Create a File under `parent` after the collator oracle.
+    let create
+        (mount: Mount)
+        (parent: ZetaFsPosixNode.Node)
+        (name: byte[])
+        : Result<ZetaFsPosixNode.Node * Mount, Error> =
+        match refuseCreate mount parent name with
+        | Error e -> Error e
+        | Ok() ->
+            match ZetaFsFreeze.bindFileUnder mount.Volume parent.Entity name with
+            | Error e -> Error(ofBind e)
+            | Ok id -> Ok(internChild mount parent id)
+
+    /// Create a Directory under `parent` after the collator oracle.
+    let mkdir
+        (mount: Mount)
+        (parent: ZetaFsPosixNode.Node)
+        (name: byte[])
+        : Result<ZetaFsPosixNode.Node * Mount, Error> =
+        match refuseCreate mount parent name with
+        | Error e -> Error e
+        | Ok() ->
+            match ZetaFsFreeze.bindDirectory mount.Volume parent.Entity name with
+            | Error e -> Error(ofBind e)
+            | Ok id -> Ok(internChild mount parent id)
 
     let getattr
         (mount: Mount)
