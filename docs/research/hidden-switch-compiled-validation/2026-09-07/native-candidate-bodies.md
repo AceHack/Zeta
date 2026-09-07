@@ -354,3 +354,22 @@ or errors. The test-project build passes in 46.10 seconds with zero warnings
 or errors. Independent source review accepted first-failure retention and
 the supplied-binding scope. The complete 31-input certificate corpus and
 full solution gate remain separate, pending executions.
+
+## Separately owned dump preparation
+
+The coordinator authorized the [separate dump plan](native-dump-plan.md)
+after hand preparation. The [capture-only source inventory](native-dump-preparation/manifest.json)
+retains the exact reviewed Python collector and static-check history. One
+owned graph process, fixed preparation only, remains in its normal ready
+wait while the installed dump tool requests a full diagnostic dump. Runtime,
+body and closure admission remain false. The dump stays local-only;
+bounded code-related offline queries require separately reviewed gated
+analyzer orchestration and cannot be inferred from dump creation.
+
+Independent source review required retaining terminal outcome despite a dump
+identity error, exact owned-PID/complete/pin-release finish admission, and
+the actual tool package/configuration/dependency pins beyond its apphost.
+All three repairs are present. Collector-host resolution tracing is separate
+from target runtime identity. The size limit is polled, cleanup is limited
+to owned direct children/process groups, and partial-dump identity is only
+a post-direct-child snapshot. No target or analyzer ran during this review.
