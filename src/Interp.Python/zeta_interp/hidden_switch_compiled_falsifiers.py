@@ -3,7 +3,8 @@
 All three raw hand slices are rechecked before the 10 invocation, 10
 intervention and 53 refusal operations. Expected events come from independent
 software binary64/reference calls, not native code or producer pass flags.
-The six-field outer-negative descriptor is shape-checked only. This module
+The complete API shape-checks the outer-negative descriptor only. The separate
+six-member semantic API accepts and returns no descriptor. This module
 opens no files, collects no runtime data, generates no source tapes and caches
 no numerical results. Native event authenticity requires separate source and
 runtime admission; Python fixtures alone are not native conformance.
@@ -75,6 +76,7 @@ _TOP = {
     "RefusalCases",
     "OuterNegativeEvidence",
 }
+_SEMANTIC_TOP = _TOP - {"OuterNegativeEvidence"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -115,6 +117,25 @@ class FalsifierFailure(s.Failure):
     Completed: FalsifierCounts
     Scope: str = "pure-complete-hand-and-falsifier-replay"
     OuterNegativeAdmission: str = "pending-coordinator-replay"
+    RuntimeAdmission: str = "not-performed-by-pure-replay"
+
+
+@dataclass(frozen=True, slots=True)
+class SemanticFalsifierReplay:
+    NumericCertificateSha256: str
+    Completed: FalsifierCounts
+    MutantRefusals: tuple[MutantRefusal, ...]
+    Scope: str = "pure-six-member-semantic-falsifier-replay"
+    OuterNegativeAdmission: str = "pending-separate-coordinator-replay"
+    RuntimeAdmission: str = "not-performed-by-pure-replay"
+
+
+@dataclass(frozen=True, slots=True)
+class SemanticFalsifierFailure(s.Failure):
+    Path: str
+    Completed: FalsifierCounts
+    Scope: str = "pure-six-member-semantic-falsifier-replay"
+    OuterNegativeAdmission: str = "pending-separate-coordinator-replay"
     RuntimeAdmission: str = "not-performed-by-pure-replay"
 
 
@@ -741,6 +762,14 @@ class _Checker:
             )
         self.completed = replace(self.completed, OldControlEpisodes=24)
 
+    def coverage(self, row: dict[str, object]) -> None:
+        _same(SCHEMA, row["Schema"], "Falsifiers.Schema")
+        _same(list(range(222)), row["ScalarCoverage"], "Falsifiers.ScalarCoverage")
+        coverage: list[c.Json] = [
+            {"OldIndex": i, "NewIndices": [2 * i, 2 * i + 1]} for i in range(24)
+        ]
+        _same(coverage, row["HandCoverage"], "Falsifiers.HandCoverage")
+
     def invocations(self, raw: object, cert: c.VerifiedCertificate) -> None:
         rows = strict._array(raw, 10, "Falsifiers.InvocationCases")
         roster = _invocation_roster(cert)
@@ -828,6 +857,55 @@ class _Checker:
                 )
             self.completed = replace(self.completed, RefusalGroups=group + 1)
 
+    def witnesses(self, row: dict[str, object], cert: c.VerifiedCertificate) -> None:
+        self.invocations(row["InvocationCases"], cert)
+        self.interventions(row["InterventionCases"], cert)
+        self.refusals(row["RefusalCases"], cert)
+        if (
+            self.completed != FalsifierCounts(222, 48, 24, 10, 10, 53, 15, 10, 8)
+            or len(self.mutants) != 2
+        ):
+            raise strict._Mismatch(
+                "IncompleteReplay",
+                "complete finite witness roster required",
+                "Falsifiers",
+            )
+
+
+def replay_semantic_falsifiers(
+    scalars: object,
+    episodes: object,
+    old_controls: object,
+    semantic: object,
+    certificate: object,
+) -> s.Result[SemanticFalsifierReplay]:
+    """Replay six semantic members and all hand slices without an outer link.
+
+    This distinct boundary permits an acyclic prerequisite artifact. It never
+    constructs an outer descriptor or implies that such an artifact was read.
+    The later complete hand still requires separate outer-byte admission.
+    """
+    checker = _Checker()
+    try:
+        cert = c._admitted(certificate)
+        checker.slices(scalars, episodes, old_controls, cert)
+        row = strict._object(semantic, _SEMANTIC_TOP, "Falsifiers")
+        checker.coverage(row)
+        checker.witnesses(row, cert)
+        return s.Success(
+            SemanticFalsifierReplay(
+                cert.NumericSha256, checker.completed, tuple(checker.mutants)
+            )
+        )
+    except strict._Mismatch as mismatch:
+        return SemanticFalsifierFailure(
+            mismatch.code, mismatch.message, mismatch.path, checker.completed
+        )
+    except s._Refusal as refusal:
+        return SemanticFalsifierFailure(
+            refusal.code, refusal.message, "CertificateOrReference", checker.completed
+        )
+
 
 def replay_falsifiers(
     scalars: object,
@@ -842,27 +920,11 @@ def replay_falsifiers(
         cert = c._admitted(certificate)
         checker.slices(scalars, episodes, old_controls, cert)
         row = strict._object(falsifiers, _TOP, "Falsifiers")
-        _same(SCHEMA, row["Schema"], "Falsifiers.Schema")
-        _same(list(range(222)), row["ScalarCoverage"], "Falsifiers.ScalarCoverage")
-        coverage: list[c.Json] = [
-            {"OldIndex": i, "NewIndices": [2 * i, 2 * i + 1]} for i in range(24)
-        ]
-        _same(coverage, row["HandCoverage"], "Falsifiers.HandCoverage")
+        checker.coverage(row)
         descriptor = _descriptor(
             row["OuterNegativeEvidence"], "Falsifiers.OuterNegativeEvidence"
         )
-        checker.invocations(row["InvocationCases"], cert)
-        checker.interventions(row["InterventionCases"], cert)
-        checker.refusals(row["RefusalCases"], cert)
-        if (
-            checker.completed != FalsifierCounts(222, 48, 24, 10, 10, 53, 15, 10, 8)
-            or len(checker.mutants) != 2
-        ):
-            raise strict._Mismatch(
-                "IncompleteReplay",
-                "complete finite witness roster required",
-                "Falsifiers",
-            )
+        checker.witnesses(row, cert)
         return s.Success(
             FalsifierReplay(
                 cert.NumericSha256,
