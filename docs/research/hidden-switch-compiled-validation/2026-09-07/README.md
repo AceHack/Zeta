@@ -369,3 +369,6 @@ implementation task remains open.
 
 - [Prerequisites verified on main](pr-16982-394e-final-2/README.md): PR #16982,
   complete 2,314-path proof, current platform passes and retained historical drift.
+
+- [Truncated-gzip boundary correction](../../2026-09-07-hidden-switch-compiled-gzip-fixture-correction.md):
+  the original filename refusal is retained; 34 tests verify the intended reader boundary.

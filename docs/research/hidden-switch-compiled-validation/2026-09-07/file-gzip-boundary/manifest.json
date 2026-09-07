@@ -1,0 +1,174 @@
+{
+  "Scope": "fixed gzip conformance fixture boundary repair; not complete outer replay or runtime admission",
+  "CorrectedSourceCommit": "b62655e019914094dc443a6fc5a11d77d63197c3",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 20870,
+      "Sha256": "98CCDF808B27F5A7BEB99C4B262CF696141B3D99B3F611ACD09CE965308809BC"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 14920,
+      "Sha256": "42687902B0F56E7128A6B92AEA66E332506D6B884A83523535B47DC1E678D3E0"
+    }
+  ],
+  "FixtureTrees": [
+    {
+      "Name": "compiled-gzip-boundary-before",
+      "Entries": 5,
+      "RegularBytes": 1415
+    },
+    {
+      "Name": "compiled-gzip-boundary-after",
+      "Entries": 103,
+      "RegularBytes": 1824
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "compiled-gzip-boundary-before.log.gz",
+      "Source": "compiled-gzip-boundary-before.log",
+      "Bytes": 1485,
+      "Sha256": "89D1990843DF85A79888B98F732CF9DDA7685B579B576C84F2058E5A2EAC6E38",
+      "Encoding": "gzip",
+      "StoredBytes": 615,
+      "StoredSha256": "564510F30B50A811BE91EF08A3DECF30FBFF8FCA0E11CC30B064A00053C36304"
+    },
+    {
+      "File": "compiled-gzip-boundary-after.log.gz",
+      "Source": "compiled-gzip-boundary-after.log",
+      "Bytes": 99,
+      "Sha256": "32D7ABD9C00B25AE36C14D3E0254FCFB987DB737141B475DA3FE9967867F7B5B",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "0472A0BEC0820733A8C632B03B7ABF75CDCEFF2A14D72A1040B75B3B50EF15C3"
+    },
+    {
+      "File": "compiled-file-replay-tests-1.log.gz",
+      "Source": "compiled-file-replay-tests-1.log",
+      "Bytes": 1989,
+      "Sha256": "71E66986A43D2C27A46F4721E2270FC7BC0FF60E017E4AC20B43D12DD136DB19",
+      "Encoding": "gzip",
+      "StoredBytes": 736,
+      "StoredSha256": "ACFB879A26F39F82B9E4B38D3BD7F6740B4E2160B6DBC22326082E1B15E66D2B"
+    },
+    {
+      "File": "compiled-file-replay-mypy-2.log.gz",
+      "Source": "compiled-file-replay-mypy-2.log",
+      "Bytes": 43,
+      "Sha256": "71144743C83BABEA384888A735DB0C4DABA3D4D7B7942B6839984BD5C21B52BB",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "872F0C5AE299217FCD9EE560D6773E5624AA62ADE6DD80937BC8FB7A78883CAF"
+    },
+    {
+      "File": "compiled-file-replay-ruff-2.log.gz",
+      "Source": "compiled-file-replay-ruff-2.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-format-2.log.gz",
+      "Source": "compiled-file-replay-format-2.log",
+      "Bytes": 44,
+      "Sha256": "ECADCAB6BA8DB65F26E491B8A5ABF181E94E6E96CF96718DC2E4C83E7C8AB2C5",
+      "Encoding": "gzip",
+      "StoredBytes": 59,
+      "StoredSha256": "912FD54355F02D8F8E54A34DAF9BC592F326F737428A3E76F1043AE53E70BB8E"
+    },
+    {
+      "File": "initial-source--hidden_switch_compiled_file_fixtures.py.gz.gz",
+      "Source": "initial-source/hidden_switch_compiled_file_fixtures.py.gz",
+      "Bytes": 5255,
+      "Sha256": "1482C5B9F364886B651C5763E12EA431CADCD606AFBC075D8F237F2C291E51FC",
+      "Encoding": "gzip",
+      "StoredBytes": 5278,
+      "StoredSha256": "CECF707A9B8F4768A6776D18EC2711F07F7E4339F2163B1A6268E1D45AFFD3D1"
+    },
+    {
+      "File": "initial-source--hidden_switch_compiled_file_replay.py.gz.gz",
+      "Source": "initial-source/hidden_switch_compiled_file_replay.py.gz",
+      "Bytes": 4532,
+      "Sha256": "C8D7853D55B97B8F283159979A6322B58D027485024190552FA8E1AE52AD406C",
+      "Encoding": "gzip",
+      "StoredBytes": 4555,
+      "StoredSha256": "974F96E2288DFDCAF5DECEAB33B412D8A6D5542CF1786D73E02822B584F76458"
+    },
+    {
+      "File": "initial-source--manifest.json.gz",
+      "Source": "initial-source/manifest.json",
+      "Bytes": 1148,
+      "Sha256": "E2C210ED4592E74D8AA73C6535810657062461F619D9B297672F47AE695E6F5C",
+      "Encoding": "gzip",
+      "StoredBytes": 439,
+      "StoredSha256": "CE299A6E085E3835BCD63DAAB48D515550696E3C674352C548A290486FC2FBFA"
+    },
+    {
+      "File": "initial-source--test_hidden_switch_compiled_file_fixtures.py.gz.gz",
+      "Source": "initial-source/test_hidden_switch_compiled_file_fixtures.py.gz",
+      "Bytes": 3452,
+      "Sha256": "9E8AC235DB612DC60D883E5E519F49E7C680CD378995782C32E6E1D0409173D7",
+      "Encoding": "gzip",
+      "StoredBytes": 3475,
+      "StoredSha256": "84DED1B5DBB07A854394286B8CEFFD4B4FAD4A8EAF80B6944D2467D20FA8ED9B"
+    },
+    {
+      "File": "initial-source--test_hidden_switch_compiled_file_replay.py.gz.gz",
+      "Source": "initial-source/test_hidden_switch_compiled_file_replay.py.gz",
+      "Bytes": 3074,
+      "Sha256": "1C8558EFCBD9458B9542EC4260D64E964C03898719C081E2F50A1C874FE9555A",
+      "Encoding": "gzip",
+      "StoredBytes": 3097,
+      "StoredSha256": "FB9F9ED9D8FB5616B4057D0DAD089D79694789FB3327799AD0904CA1080DBACC"
+    },
+    {
+      "File": "compiled-gzip-boundary-before-inventory.json.gz",
+      "Source": "compiled-gzip-boundary-before-inventory.json",
+      "Bytes": 987,
+      "Sha256": "8265A969663AC909DDEB67E1AB8D5FC59AB63C99BD55EB380391BE91BDEDB944",
+      "Encoding": "gzip",
+      "StoredBytes": 415,
+      "StoredSha256": "37E5A6CF294C59E753A60554299A972B62AEA02D3088A2495D8D6BBFF19DB82C"
+    },
+    {
+      "File": "compiled-gzip-boundary-before.tar.gz",
+      "Source": "compiled-gzip-boundary-before.tar",
+      "Bytes": 20480,
+      "Sha256": "A6023CCF0A52942DE2BF72FEA0A48C4020274C6AFD27CA09757B092A79D5332B",
+      "Encoding": "gzip",
+      "StoredBytes": 991,
+      "StoredSha256": "F3BF6CBC277D71585DEB2DFD5E74C8C07B4D290EFF94D9DD1DBDAE8EF41E7AEE"
+    },
+    {
+      "File": "compiled-gzip-boundary-after-inventory.json.gz",
+      "Source": "compiled-gzip-boundary-after-inventory.json",
+      "Bytes": 17446,
+      "Sha256": "107BC5159345C8858B5CC6F2429E5FCE39D85190C1E2F90A1D6CE5EC07AD3D90",
+      "Encoding": "gzip",
+      "StoredBytes": 1615,
+      "StoredSha256": "A8E4C8217F844685E32869E47D7017A8BA7C5D68D684FEBFA13C7BE129603800"
+    },
+    {
+      "File": "compiled-gzip-boundary-after.tar.gz",
+      "Source": "compiled-gzip-boundary-after.tar",
+      "Bytes": 174080,
+      "Sha256": "EC6179DF33263E2164A5BCDFD2995A8EC1DCF8118A7EEFF54B1D1B30F13BFC3F",
+      "Encoding": "gzip",
+      "StoredBytes": 4061,
+      "StoredSha256": "80C0104FBF22BF044682EC604A7A0EB384DDFF7463BF39A3E9BA22FE2E5C0DE1"
+    },
+    {
+      "File": "retainer.py.gz",
+      "Source": "retainer.py",
+      "Bytes": 2879,
+      "Sha256": "1B6766FCDEF2298EB0D11D0FE716651054AA715720A161E79FAC689E2D3C58A2",
+      "Encoding": "gzip",
+      "StoredBytes": 1255,
+      "StoredSha256": "C68BFD91B07C01DA386F2965FE6C8B8E5B24E411842959BE51EED25E75A9C06F"
+    }
+  ]
+}
