@@ -45,3 +45,13 @@ execute the registered numerical comparison.
 The later [rendered-zero admission clarification](2026-09-08-precision-gate-projection-rendered-zero-clarification.md)
 separates nearest-even input rendering from subsequent numerical underflow
 refusal. It leaves all fixed subjects and tolerances unchanged.
+
+The [combined source validation](precision-gate-projection/2026-09-08/combined-source-validation/README.md)
+passes 73 adapter/interval tests and indexes both independent source reviews.
+This remains separate from final numerical comparison and learning evaluation.
+
+## Outcome criteria implementation checkpoint
+
+The [criteria validation](precision-gate-projection/2026-09-08/comparison-criteria-validation/README.md)
+retains the first 24 disposable-fixture tests and source/command records.
+Whole-run custody and independent complete implementation review remain pending.
