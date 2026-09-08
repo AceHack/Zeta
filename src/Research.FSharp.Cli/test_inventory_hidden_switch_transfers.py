@@ -1,4 +1,5 @@
 import json
+import sys
 import tempfile
 import unittest
 from collections import Counter
@@ -8,7 +9,10 @@ from unittest.mock import patch
 from hidden_switch_transfer_inputs import FLAGS
 from hidden_switch_transfer_shapes import ranges_admitted
 from inventory_hidden_switch_transfers import (
+    FINAL_RESERVE,
+    MAX_CONSOLE,
     MAX_RECORD,
+    MAX_SECONDARY,
     MAX_WORD,
     Publisher,
     bounded_terminal,
@@ -134,9 +138,22 @@ class TransferInventoryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             publisher = Publisher(Path(root))
             try:
-                with patch("inventory_hidden_switch_transfers.MAX_OUTPUT", MAX_RECORD + 2), self.assertRaises(ValueError):
+                with patch("inventory_hidden_switch_transfers.MAX_OUTPUT", FINAL_RESERVE + 2), self.assertRaises(ValueError):
                     publisher.checkpoint({})  # three bytes including the newline
                 self.assertEqual(publisher.charged, 0)
+            finally:
+                self.assertIsNone(publisher.close())
+
+    def test_aggregate_budget_reserves_failed_terminal_and_console_bytes(self):
+        self.assertEqual(FINAL_RESERVE, MAX_RECORD + MAX_SECONDARY + MAX_CONSOLE)
+        with tempfile.TemporaryDirectory() as root:
+            publisher = Publisher(Path(root))
+            try:
+                with patch("inventory_hidden_switch_transfers.MAX_OUTPUT", FINAL_RESERVE + 3):
+                    publisher.checkpoint({})
+                    self.assertEqual(publisher.charged, 3)
+                    with self.assertRaises(ValueError): publisher.checkpoint({})
+                self.assertLessEqual(publisher.charged + MAX_RECORD + MAX_SECONDARY + MAX_CONSOLE, FINAL_RESERVE + 3)
             finally:
                 self.assertIsNone(publisher.close())
 
@@ -184,6 +201,32 @@ class TransferInventoryTests(unittest.TestCase):
         self.assertIn("hidden_switch_dump_memory.py", names)
         self.assertIn("hidden_switch_retained_artifacts.py", names)
         self.assertLessEqual(len(pins), 24)
+
+    def test_source_prefix_survives_later_file_and_current_checkpoint_failure(self):
+        real_inventory = source_inventory
+        with tempfile.TemporaryDirectory() as root:
+            directory = Path(root) / "sources"; directory.mkdir()
+            raw = b"from hidden_switch_missing import value\n"
+            (directory / "inventory_hidden_switch_transfers.py").write_bytes(raw)
+            def fixture_inventory(_, observed, locator):
+                with patch.dict(sys.modules, {"inventory_hidden_switch_transfers": None}):
+                    return real_inventory(directory, observed, locator)
+            with patch("inventory_hidden_switch_transfers.source_inventory", side_effect=fixture_inventory):
+                report = run(Path(root), Path(root) / "attempt", "0"*40)
+            self.assertFalse(report["Complete"])
+            self.assertEqual(len(report["Sources"]), 1)
+            self.assertEqual(report["Sources"][0]["Bytes"], len(raw))
+            self.assertEqual(report["Locator"]["File"], "hidden_switch_missing.py")
+            self.assertEqual(report["Failure"]["Code"], "FileNotFoundError")
+        original = Publisher.checkpoint
+        def fail_current(publisher, value):
+            if value["Kind"] == "source-identity": raise OSError("source checkpoint failed")
+            return original(publisher, value)
+        with tempfile.TemporaryDirectory() as root, patch.object(Publisher, "checkpoint", fail_current):
+            report = run(Path(root), Path(root) / "attempt", "0"*40)
+            self.assertEqual(len(report["Sources"]), 1)
+            self.assertEqual(report["Sources"][0]["File"], "inventory_hidden_switch_transfers.py")
+            self.assertEqual(report["Failure"]["Detail"], "source checkpoint failed")
 
 
 if __name__ == "__main__":

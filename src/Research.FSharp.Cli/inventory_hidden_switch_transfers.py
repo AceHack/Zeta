@@ -17,6 +17,9 @@ from hidden_switch_transfer_shapes import classify_word
 MAX_RECORD = 2 * MIB
 MAX_WORD = 8192
 MAX_OUTPUT = 32 * MIB
+MAX_SECONDARY = 16384
+MAX_CONSOLE = 16384
+FINAL_RESERVE = MAX_RECORD + MAX_SECONDARY + MAX_CONSOLE
 
 
 def utc():
@@ -69,7 +72,7 @@ class Publisher:
         self.journal = (self.attempt / "journal.jsonl").open("xb")
 
     def charge(self, raw):
-        if len(raw) > MAX_OUTPUT - MAX_RECORD - self.charged:
+        if len(raw) > MAX_OUTPUT - FINAL_RESERVE - self.charged:
             raise ValueError("inventory aggregate output budget exceeded; terminal reserve retained")
         self.charged += len(raw)  # include attempted bytes even if a write fails
 
@@ -90,7 +93,7 @@ class Publisher:
         return guarded_close(stream)
 
 
-def source_inventory(directory):
+def source_inventory(directory, observed=lambda _: None, locator=lambda _: None):
     """Pin the finite local import closure as source bytes; no policy or diagnostic function is called."""
     directory = Path(directory)
     pending = [Path(__file__).name]; seen = {}; order = []
@@ -99,12 +102,14 @@ def source_inventory(directory):
         if name in seen:
             continue
         require(re.fullmatch(r"[a-z_]+\.py", name) is not None and len(seen) < 24, "local source import roster exceeds its finite grammar/count")
+        locator({"Stage": "source-identity", "File": name})
         module = sys.modules.get(name[:-3])
         if module is not None:
             require(Path(module.__file__).resolve() == (directory / name).resolve(), "loaded helper source path differs from pinned local file")
         raw = regular_bytes(directory / name, 256 * 1024)
         record = {"File": name, "Bytes": len(raw), "Sha256": sha(raw)}
         seen[name] = raw; order.append(record)
+        observed(record)  # actual identity precedes a fallible checkpoint, parse or dependent read
         tree = ast.parse(raw, filename=name)
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
@@ -185,13 +190,17 @@ def run(root, attempt, source_commit):
         pins.append(pin)  # available even if store construction/checkpoint fails
         publisher.checkpoint({"Kind": "input-identity", "Identity": pin})
 
+    def observed_source(pin):
+        sources.append(pin)
+        publisher.checkpoint({"Kind": "source-identity", "Identity": pin})
+
     try:
         require(re.fullmatch(r"[0-9a-f]{40}", source_commit) is not None, "requires an exact externally recorded source commit")
         os.mkdir(attempt); owned = True; publisher = Publisher(attempt)
         publisher.checkpoint({"Kind": "start", "StartedAtUtc": state["StartedAtUtc"], "SourceCommit": source_commit,
                               "ExpectedMethods": 130, "ExpectedWords": 8665, "RawDumpOpened": False, **FLAGS})
         locator({"Stage": "source-identities"})
-        sources = source_inventory(Path(__file__).parent)
+        sources = source_inventory(Path(__file__).parent, observed_source, locator)
         publisher.checkpoint({"Kind": "source-identities", "Sources": sources})
         loaded = loaded_inputs(root, observed, locator); store = loaded["Store"]
         state["Unprepared"] = loaded["Unprepared"]; state["ExtraCompilerBlocks"] = loaded["ExtraCompilerBlocks"]
@@ -229,7 +238,7 @@ def run(root, attempt, source_commit):
                 try:
                     exclusive_bytes(Path(attempt) / "terminal-failure.json", encode({"Complete": False, "Failure": primary,
                                     "PublicationFailure": report["PublicationFailure"], "Locator": state["Locator"],
-                                    "Methods": len(state["Completed"]), "Words": state["Words"], **FLAGS}, 16384))
+                                    "Methods": len(state["Completed"]), "Words": state["Words"], **FLAGS}, MAX_SECONDARY))
                 except Exception as secondary:  # noqa: BLE001 - preserve first failure if independent publication also fails
                     report["SecondaryPublicationFailure"] = failure("secondary-terminal-publication", secondary)
     return report
@@ -241,7 +250,8 @@ if __name__ == "__main__":
         sys.exit(2)
     outcome = run(Path(sys.argv[1]), Path(sys.argv[2]), sys.argv[3])
     try:
-        print(json.dumps({key: outcome[key] for key in ["Kind", "Complete", "Failure", "Methods", "Words", "UnresolvedWords", *FLAGS]}))
+        console = encode({key: outcome[key] for key in ["Kind", "Complete", "Failure", "Methods", "Words", "UnresolvedWords", *FLAGS]}, MAX_CONSOLE)
+        print(console.decode("ascii"), end="")
     except Exception:  # noqa: BLE001 - console is secondary to independent owned outcome; no new success claim
         sys.exit(2)
     sys.exit(0 if outcome["Complete"] else 2)
