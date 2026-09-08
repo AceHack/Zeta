@@ -119,6 +119,8 @@ import { realEffects as realTrustEffects } from "../../../tools/setup/persona-ke
 import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 import { INSTALL_SUBSTRATE_FILES } from "./install-substrate-files.ts";
+import { ZFLASH_ALLOWED_FLAGS } from "./allowed-flags.ts";
+
 
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
 
@@ -1066,25 +1068,7 @@ async function main() {
   // (`zflash --dry-run`) or extra arg (`zflash a.iso b.iso`) would still
   // proceed to sudo dd. Allowlist flags + bail on unrecognized or
   // duplicate-positional.
-  const ALLOWED_FLAGS = new Set([
-    "-h",
-    "--help",
-    "--ssh-key",
-    "--no-inject",
-    "--skip-freshness-check",
-    "--skip-iso-pull",
-    "--iso-arch",
-    "--host",
-    "--agent",
-    "--test",
-    "--bake-cred",
-    "--bake-passphrase-file",
-    "--bake-passphrase-env",
-    "--persona",
-    "--expect-device",
-    "--expect-size",
-    "--expect-model",
-  ]);
+  const ALLOWED_FLAGS = ZFLASH_ALLOWED_FLAGS;
   const argv = process.argv.slice(2);
 
   // Two-arg flag parsing for --ssh-key <path> and --host <name>

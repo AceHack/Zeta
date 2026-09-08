@@ -399,9 +399,26 @@ zeta_discovery_halt() {
   echo "[zeta-discovery] which nobody chose for THIS node, so proceeding would"
   echo "[zeta-discovery] create a second cluster that is undone by hand."
   echo "[zeta-discovery]"
-  echo "[zeta-discovery] Declare the role explicitly and re-flash, e.g.:"
-  echo "[zeta-discovery]   zflash --role first-control-plane"
-  echo "[zeta-discovery]   zflash --role joiner --join-server-url <url> --join-token <file>"
+  # B5: this used to print `zflash --role ...` as the remedy. NO DEVICE-FLASHING
+  # ENTRYPOINT ACCEPTS `--role`. `cli.ts` and `flash-usb.ts` both run a strict
+  # allowlist and exit 2 on an unknown flag; only `file-backed.ts` takes `--role`,
+  # and it writes an IMAGE FILE (`--iso ... --output raw.img --esp-offset-bytes`),
+  # not a stick. So the one instruction given to an operator at the moment they
+  # are blocked named a command that cannot be run on the medium in their hand.
+  #
+  # The keystroke prompt above IS a real declaration path -- it sets
+  # ZETA_ROLE_SOURCE=keystroke:c|w, which `ZETA_ROLE_DECLARED` accepts exactly as
+  # it accepts esp:*. That is what the remedy names now.
+  echo "[zeta-discovery] Declare the role explicitly, then re-run the install:"
+  echo "[zeta-discovery]   reboot this medium and press 'c' (control-plane) or"
+  echo "[zeta-discovery]   'w' (worker-gpu/joiner) at the ${ROLE_PROMPT_SECS}s role prompt."
+  echo "[zeta-discovery]   A keypress counts as DECLARED; the ISO default does not."
+  echo "[zeta-discovery]"
+  echo "[zeta-discovery] NOTE: the device-flashing tools do NOT accept a role flag."
+  echo "[zeta-discovery] --role / --join-server-url / --join-token are taken only by"
+  echo "[zeta-discovery] src/Core.TypeScript/zflash/file-backed.ts, which builds an"
+  echo "[zeta-discovery] IMAGE (--output raw.img), not a flashed stick. Joining a node"
+  echo "[zeta-discovery] to an existing cluster from a device flash is NOT WIRED (B5)."
   echo "[zeta-discovery] Or press on manually from the shell below."
   drop_to_shell
 }
