@@ -154,3 +154,51 @@ source review; the named actual controls remain closed.
 The separate quick gate passed all 16 checks. The archive contains 18 exact
 records, 100,029 original bytes and 23,944 gzip bytes, including the actual
 build, import and quick-gate outcomes.
+
+## Fixed framing and passive response correspondence
+
+The next source slice adds the six closed outgoing kinds, exact payload keys
+and canonical envelope construction. It reserves both the envelope and LF
+before complete allocation, invokes the pinned core's minimal UTF8 codec and
+retains that actual return before the final frame copy. The peer does not
+reconstruct numerical results or instantiate a type named by data. Ordinary
+checkpoints retain their 64 KiB cap; the later actual callback must identify a
+projection-bearing checkpoint before using the separate 16 MiB allowance.
+
+ACK and projection-response admission retain the raw frame, passive parse and
+actual compiled decoder return before session/sequence/source/hash checks.
+An ACK binds the complete sent bytes including LF and the actual selected
+Store's six-field identity descriptor. A valid storage refusal remains a
+refusal; successful passive decoding does not confer storage or application.
+The peer does not open the descriptor's file. The response layer checks the
+outstanding request identities and fixed failure grammar; complete
+Native/Certificate admission remains the core's source-owned responsibility.
+Likewise decoded snapshots still require advancement admission before the
+callback updates its latest observed budget. These are pending integration
+obligations, not completed callback behavior.
+
+The [framing and response archive](mixed-message-epoch/2026-09-08/peer-response-codec-development/manifest.json)
+preserves the first 12 passing framing checks, then an actual ACK-source
+compile failure (`ResultBuilder` was qualified at the namespace rather than
+its `ResultComputation` module). A separately named correction run passed all
+27 framing/ACK/response checks with empty stderr. Fixtures supply synthetic
+frames and invoke actual codecs; they do not invoke storage, scheduler,
+learner, kernel, projection or named controls. The first compile failure
+remains unchanged, rather than being represented as a failed numerical call.
+
+An author source read before that ACK compile found a separate draft mistake:
+it required gzip, borrowing an archive convention. The selected
+`hidden_switch_compiled_record_store._artifact` actually emits `identity`
+with equal original/stored byte counts and hashes. The bridge owner confirmed
+it forwards that actual descriptor unchanged. The unexecuted draft and finding
+are retained; the corrected fixture discriminates an invented gzip descriptor.
+
+The corrected source is 62,223 bytes, SHA-256
+`A167B6F42792AE82A601516CD58F6724CE15B13B8BB975AAB74468D7A5221F8A`.
+It still has no main, actual Ready exchange or runEpoch invocation. The
+complete callback/loop, assembled source review and actual controls remain
+pending. Normal artifact/source gates cannot substitute for those premises.
+The quick gate passed all 16 checks. The response invocations inherited the
+capture helper's framing/canonical-codec scope label; their complete fixture
+source and stdout summary explicitly record the additional ACK/response
+decoder calls. Those original labels are retained without alteration.
