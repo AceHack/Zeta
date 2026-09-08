@@ -94,7 +94,10 @@ def classify_word(words, index, pc, llvm_instruction, compiler_operands, literal
         raise ValueError("decoded instruction text is malformed")
     if not isinstance(compiler_operands, str) or len(compiler_operands) > 4096:
         raise ValueError("compiler operand text is malformed")
-    word = words[index]; name = llvm_instruction.split()[0]
+    tokens = llvm_instruction.split()
+    if not tokens:
+        raise ValueError("decoded instruction text has no token")
+    word = words[index]; name = tokens[0]
     row = {"Word": f"{word:08X}", "Address": address(pc), "Kind": "unsupported",
            "Targets": [], "Continuation": None, "Register": None, "Condition": None, "Bit": None,
            "StaticCell": None, "Literal": None, "AttemptedTargetIntegers": [], "Unresolved": [], "ObservedExecution": False,

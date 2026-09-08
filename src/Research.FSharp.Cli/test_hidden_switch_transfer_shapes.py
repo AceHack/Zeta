@@ -34,6 +34,11 @@ class TransferShapeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     signed(value, bits)
 
+    def test_blank_instruction_text_refuses_structurally(self):
+        for text in ["", " ", "\t\r\n", None]:
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                self.one(0x14000000, text)
+
     def test_range_entry_interior_outside_and_half_open_end(self):
         ranges = ranges_admitted(self.ranges())
         self.assertEqual(control_location(0x1000, ranges)["Membership"], "entry")
