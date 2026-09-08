@@ -1,0 +1,12 @@
+{
+  "pr_number": 17095,
+  "archive_path": "docs/history/pr-reviews/PR-17095-feat-research-a-rendering-surface-generated-from-clifford-e8-on-the-coxeter-plan.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:58:55.930Z",
+  "schema_version": "v1",
+  "commit_sha": "b1e64f07ddf8e59b20833a3253602e0f02759c0f",
+  "title": "feat(research): a rendering surface generated FROM Clifford — E8 on the Coxeter plane",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:58:13Z",
+  "head_ref": "shadow/clifford-e8-coxeter-render-surface"
+}
