@@ -541,6 +541,9 @@ def test_setup_failure_retains_actual_observation(
         assert actual.Preparation.Raised.Message == "owned preparation exception"
     else:
         assert actual.StoreOpen is not None and actual.StoreOpen.Returned is original[0]
+    assert actual.AttemptRoot is not None
+    envelope = json.loads((Path(actual.AttemptRoot) / "outer-final.json").read_bytes())
+    assert envelope["Run"] is None and envelope["SetupFinalJournal"] is None
 
 
 def test_actual_local_module_origin_observation_and_foreign_root(
@@ -861,3 +864,35 @@ def test_cli_stdout_is_small_and_short_write_fails(
     assert d.main() == 2
     assert len(writes) == 1 and len(writes[0]) < d.MANIFEST_CAP
     assert b"ManifestRaw" not in writes[0] and b"RunResult" not in writes[0]
+
+
+@pytest.mark.parametrize("stage", ["complete", "setup-failed"])
+def test_outer_inner_artifact_links_resolve_against_attempt_root(
+    owned: Any, monkeypatch: pytest.MonkeyPatch, stage: str
+) -> None:
+    if stage == "complete":
+        monkeypatch.setattr(runner, "run_comparison", fake_run)
+    else:
+        source, _, _, _ = owned
+        prepare = process.prepare_native
+
+        def changed(*args: Any, **kwargs: Any) -> process.PreparedNative:
+            actual = prepare(*args, **kwargs)
+            (source / d.SOURCE_PATHS[0]).write_bytes(b"owned setup failure")
+            return actual
+
+        monkeypatch.setattr(process, "prepare_native", changed)
+    actual = invoke(owned)
+    assert actual.AttemptRoot is not None
+    root = Path(actual.AttemptRoot)
+    envelope = json.loads((root / "outer-final.json").read_bytes())
+    assert envelope["AttemptRoot"] == str(root)
+    if stage == "complete":
+        descriptors = [envelope["Run"]["Terminal"], envelope["Run"]["FinalJournal"]]
+    else:
+        descriptors = [envelope["SetupFinalJournal"]]
+    for descriptor in descriptors:
+        fields = descriptor["Fields"]
+        assert Path(fields["File"]).parts[0] == "records"
+        raw = (root / fields["File"]).read_bytes()
+        assert len(raw) == fields["StoredBytes"] and sha(raw) == fields["StoredSha256"]
