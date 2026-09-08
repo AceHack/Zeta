@@ -4141,6 +4141,98 @@ let ``append freeze ContentId matches full Jumprope build`` () : Task =
     }
 
 [<Fact>]
+let ``garbage layout after freeze still lets the next overwrite match a full build`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/d9-layout-garbage"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payloadA = Array.init 500_000 (fun i -> byte (i % 251))
+        let payloadB = Array.copy payloadA
+        payloadB.[250_000] <- payloadB.[250_000] ^^^ 1uy
+        let id = mintId ()
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payloadA |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a -> firstContent <- a.Content
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let layout =
+            ZetaFsPath.combine3 store "layout" (ZetaFsNamespace.EntityId.format id)
+
+        FileSystemIo.writeAllText FileSystem.Current layout "not-a-layout\n"
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let h2 = ZetaFsMutbuf.openHandle volume2.Mutbuf id
+            ZetaFsMutbuf.pwrite volume2.Mutbuf h2 0L payloadB |> ignore
+            let pendingB = (freezeAsync volume2 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume2 CancellationToken.None).ConfigureAwait(false)
+            let! second = pendingB.ConfigureAwait(false)
+
+            match second with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok b ->
+                Assert.Equal((ZetaFsJumprope.buildV1 payloadB).Content.ToHex(), b.Content.ToHex())
+                Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+                Assert.True(ZetaFsFreeze.isReadable volume2 b.Content)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``crash-mid-write of layout during freeze B still acks and keeps A`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/d9-hint-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payloadA = Array.init 500_000 (fun i -> byte (i % 251))
+        let payloadB = Array.copy payloadA
+        payloadB.[250_000] <- payloadB.[250_000] ^^^ 1uy
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payloadA |> ignore
+            let pendingA = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a ->
+                mock.ArmCrashMidWrite("/layout/", 1)
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L payloadB |> ignore
+                let pendingB = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pendingB.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok b ->
+                    Assert.Equal((ZetaFsJumprope.buildV1 payloadB).Content.ToHex(), b.Content.ToHex())
+                    Assert.True(ZetaFsFreeze.isReadable volume a.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume b.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``remap-epoch crash-mid-write keeps the prior ContentId readable`` () : Task =
     task {
         ensureHasher ()

@@ -1,0 +1,14 @@
+{
+  "id": "080d0411b22f5010a01300082f1a0dc9",
+  "at": "2026-09-08T18:09:50.058Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M213CHF9087G0R0032FB65S",
+    "type": "task",
+    "title": "D9 torn layout falls back to full build prior ContentId stays",
+    "slug": "d9-torn-layout-falls-back-to-full-build-prior-contentid-stay",
+    "priority": "P2",
+    "filename": "081M213CHF9087G0R0032FB65S-d9-torn-layout-falls-back-to-full-build-prior-contentid-stay.md"
+  }
+}
