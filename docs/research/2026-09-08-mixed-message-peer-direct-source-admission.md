@@ -1,4 +1,4 @@
-# Mixed-message peer: direct source admission progress
+# Mixed-message peer: source and Start admission progress
 
 Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra, peer implementation owner
@@ -83,3 +83,30 @@ Do not alter the original EpochResult failure, reconstruct a missing checkpoint
 or accept arbitrary gaps. Successful and forecast closure still require
 contiguous emitted operation sequences. This is an implementation obligation,
 not a claim that the foundation already implements the final exchange.
+
+## Passive Start envelope follow-up
+
+`tryReadStart` recognizes only the exact amended eight-key Start envelope,
+fixed schema, bounded ASCII session ID, uppercase hashes and object payloads.
+It checks the finite flat string/hash map, rejects the local @host/@python
+roles, and returns owned passive Plan/BudgetSnapshot trees. It does not admit
+their numerical/scheduler semantics or verify their canonical correspondence;
+those remain the owning core codec/admission steps before Ready. Parsing an
+empty object fixture is therefore not admission of an empty epoch plan.
+
+The [separate Start development archive](mixed-message-epoch/2026-09-08/peer-start-envelope-development/manifest.json)
+retains two actual invocations. The first new harness failed compilation on
+an extra closing parenthesis, before its checks ran. Its child completion is
+exit 1; the inherited capture wrapper printed that value but itself returned
+0. Both observations remain distinct. The corrected separately named harness
+also propagates the child exit after retention. It passed 53 combined checks
+with empty stderr: the previous 40 plus 12 passive Start controls and the
+direct-map host-role refusal. No source bytes changed between those two
+invocations, and no failed row was replaced by the later result.
+
+That peer source is 39,137 bytes, SHA-256
+`7DBC3D22A00B8C590F0806C80AEFD8808C2FF4C771C2FEFDE0B576D1EAAEB722`.
+The earlier 34,921-byte source above remains its own completed development
+slice. The new quick gate passed all 16 checks; neither that gate nor these
+fixtures establish a callable complete peer, a runEpoch invocation or actual
+M4/M5 outcomes. Complete source integration/review remains pending.
