@@ -490,6 +490,37 @@ module ZetaFsJumprope =
         let id, _ = encodeChunk (emptyCas ()) data
         id
 
+    /// Index of the first previous window that does not match `bytes`.
+    /// `Leaves.Length` means every previous window matched (identical
+    /// same-span, or grow/append before the Flush-chunk adjustment).
+    let firstChangedWindow (prev: Prev) (bytes: byte[]) : int =
+        if isNull bytes || prev.Leaves.Length = 0 then
+            0
+        else
+            let newLen = uint64 bytes.Length
+            let mutable first = 0
+            let mutable mismatch = false
+
+            while (not mismatch) && first < prev.Leaves.Length do
+                let id, span = prev.Leaves.[first]
+                let off = prev.Starts.[first]
+
+                if off >= newLen then
+                    mismatch <- true
+                elif off + span > newLen then
+                    mismatch <- true
+                else
+                    let n = int span
+                    let slice = Array.zeroCreate n
+                    Buffer.BlockCopy(bytes, int off, slice, 0, n)
+
+                    if chunkIdOf slice <> id then
+                        mismatch <- true
+                    else
+                        first <- first + 1
+
+            first
+
     let private encodePrefixLeaves (prev: Prev) (count: int) : ResizeArray<BuildLeaf> * Cas =
         let prefix = ResizeArray<BuildLeaf>(count)
         let mutable cas = emptyCas ()
@@ -517,32 +548,13 @@ module ZetaFsJumprope =
             build prev.Chunker bytes
         else
             let newLen = uint64 bytes.Length
-            let mutable first = 0
-            let mutable mismatch = false
+            let mutable first = firstChangedWindow prev bytes
+            let matchedAll = first = prev.Leaves.Length
 
-            while (not mismatch) && first < prev.Leaves.Length do
-                let id, span = prev.Leaves.[first]
-                let off = prev.Starts.[first]
-
-                if off >= newLen then
-                    mismatch <- true
-                elif off + span > newLen then
-                    mismatch <- true
-                else
-                    let n = int span
-                    let slice = Array.zeroCreate n
-                    Buffer.BlockCopy(bytes, int off, slice, 0, n)
-
-                    if not ((chunkIdOf slice).Equals id) then
-                        mismatch <- true
-                    else
-                        first <- first + 1
-
-            if (not mismatch) && newLen > prev.Span && prev.Leaves.Length > 0 then
+            if matchedAll && newLen > prev.Span && prev.Leaves.Length > 0 then
                 first <- prev.Leaves.Length - 1
-                mismatch <- true
 
-            if (not mismatch) && newLen = prev.Span && first = prev.Leaves.Length then
+            if matchedAll && newLen = prev.Span then
                 { Content = prev.Content
                   Span = prev.Span
                   Chunker = prev.Chunker

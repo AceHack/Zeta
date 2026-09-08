@@ -260,6 +260,38 @@ let ``buildFromPrev of an append matches full build and does not recopy the pref
     )
 
 [<Fact>]
+let ``buildFromPrev of a mid-file insert matches full build and skips the first prefix chunk`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte ((i * 131) ^^^ (i >>> 8)))
+    let inserted = Array.init 100 (fun i -> byte ((i * 17) ^^^ 0xA5))
+    let after = Array.zeroCreate (before.Length + inserted.Length)
+    Array.Copy(before, 0, after, 0, 250_000)
+    Array.Copy(inserted, 0, after, 250_000, inserted.Length)
+    Array.Copy(before, 250_000, after, 250_100, before.Length - 250_000)
+    Assert.Equal(before.[0], after.[0])
+    Assert.Equal(before.[249_999], after.[249_999])
+    Assert.Equal(inserted.[0], after.[250_000])
+    Assert.Equal(before.[250_000], after.[250_100])
+    let ra = ZetaFsJumprope.buildV1 before
+    let prev = ZetaFsJumprope.prevOf ra
+    let firstChunk, firstSpan = ra.Leaves.[0]
+    let changed = ZetaFsJumprope.firstChangedWindow prev after
+    Assert.True(
+        changed > 0 && firstSpan > 0UL,
+        sprintf "firstChangedWindow=%d firstSpan=%d" changed firstSpan
+    )
+    let full = ZetaFsJumprope.buildV1 after
+    let reused = ZetaFsJumprope.buildFromPrev prev after
+    Assert.Equal(full.Content.ToHex(), reused.Content.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), reused.Content.ToHex())
+    match ZetaFsJumprope.tryGetPayload full.Cas firstChunk with
+    | None -> Assert.Fail("full build of the insert must still hold the unchanged first chunk")
+    | Some _ -> ()
+    match ZetaFsJumprope.tryGetPayload reused.Cas firstChunk with
+    | Some _ -> Assert.Fail("insert rebuild recopied the first prefix chunk")
+    | None -> ()
+
+[<Fact>]
 let ``pread copies into a caller buffer without a full materialize`` () =
     ensureHasher ()
     let bytes = Array.init 50_000 (fun i -> byte (i % 251))
