@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade implementation coordination
 Lifecycle: active
-Status: reviewed bounded contract accepted; source implementation next
+Status: bounded contract and transport amendment accepted; source implementation underway
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Accepted boundary
@@ -88,3 +88,9 @@ compensation context and dependent four-session construction. These omissions
 were found during implementation coordination after the original design review.
 The original contract remains unchanged; the amendment is a separate source
 binding and requires independent review before actual integration execution.
+
+[Independent amendment acceptance](2026-09-08-mixed-message-epoch-peer-amendment-independent-review.md)
+is signed at `235c9a999646fce9ddad08c4f8d7f87cc4524f02` and binds the exact
+coordinator amendment `15b20c513245201e125a0deae7d41c23e7bc136c`. This updates
+the amendment document's historical pending-review status without changing
+its reviewed bytes. No numerical/control input or limit was changed.
