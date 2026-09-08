@@ -1691,3 +1691,28 @@ def test_completed_session_prior_work_uses_coordinator_observed_delta(
         "Observed": 1,
         "Complete": True,
     }
+
+
+@pytest.mark.parametrize(
+    ("path", "refused"),
+    [
+        ("extra/" + "x" * 257, True),
+        ("extra/\nmodule.py", True),
+        ("extra/\x7fmodule.py", True),
+        ("extra/" + "x" * 250, False),
+    ],
+)
+def test_manifest_source_paths_match_compiled_binding_admission(
+    path: str, refused: bool
+) -> None:
+    value = _manifest_fixture()
+    value["SourceFiles"].append({"Path": path, "Bytes": 1, "Sha256": "A" * 64})
+    value["SourceFiles"].sort(key=lambda row: row["Path"])
+    value["ExpectedBindings"][path] = "A" * 64
+    raw = _frame(value)
+    result = bridge.admit_service_manifest(raw, bridge._sha(raw))
+    assert isinstance(result, bridge.Failure) is refused
+    if not refused:
+        assert len(path) == 256
+        assert isinstance(result, bridge.ServiceManifest)
+        assert result.Raw == raw
