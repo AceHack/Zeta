@@ -1,0 +1,490 @@
+{
+  "SourceCommit": "bf2da44b94e770d21add73ce53dacb8fb34259bf",
+  "EvidenceCommit": "cb0e899b0527d85b0d86f4e99288b64bb854b109",
+  "Manifest": {
+    "Bytes": 45052,
+    "Sha256": "8d3d22d11e8010cae4928cf546ed8e54a41b06c938b7998b615da7cf07bab17b"
+  },
+  "Records": 86,
+  "OriginalBytes": 537501,
+  "StoredBytes": 135186,
+  "SourcePins": [
+    {
+      "Path": "src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 36582,
+      "Sha256": "288e0348edc4babeadb993ba1b80c1a45b6d426bab80e14c5e066165d5730d0d"
+    },
+    {
+      "Path": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "c1174406cc4e7d3164714c536207ad2bd72f085a38a3a816c8bc1b14ade917b2"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+      "Bytes": 18076,
+      "Sha256": "b1f2aa954c1186da8471b4cdf3e8a6fadcdc2ffc0a4c1fddff1db03027c66df5"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3329,
+      "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3770,
+      "Sha256": "dd863d702023ce99ced1c1e7cda5b5e4732d7eae0ec10a3006b4176c107e3736"
+    },
+    {
+      "Path": "src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196cb0ade8527dfebf83fbb3e6e42bd36208e38affd09906787a84901c02"
+    },
+    {
+      "Path": "src/Core/Result.fs",
+      "Bytes": 1152,
+      "Sha256": "c2f07dc84dfa5f44215baa1c6dfa88d4d0ce294f8a411ff43a433ada5725beb1"
+    },
+    {
+      "Path": "Directory.Build.props",
+      "Bytes": 2530,
+      "Sha256": "06be09ecbfcb99ce927687617848688cf16f98460c0eb03ebb3f6ff8179becfa"
+    },
+    {
+      "Path": "Directory.Packages.props",
+      "Bytes": 7113,
+      "Sha256": "807b4f9172dcfa69b0dad58ed1e7c9571b2021d3c7a931e155339fad772c5560"
+    },
+    {
+      "Path": "global.json",
+      "Bytes": 491,
+      "Sha256": "6a5420114228737c4f177e41b4de73ed8a19f9c108a02be9dcef1bf4d05fd2e3"
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-projection-proposed-contract.md",
+      "Bytes": 38142,
+      "Sha256": "537054779bf9e0bfa9271b5cc56116fbc80b16c4a2be9f1b5e3c022fe95a0f8e"
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 2025,
+      "Sha256": "ba359e4fec2484a680b6b149e6e887fbea82afbb67a15eafbdb99949101bdab8"
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 2146,
+      "Sha256": "67b7c9efb6b42cefe341507738b6122fac4bedf18c07a72564f3deefee71235e"
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-projection-native-implementation.md",
+      "Bytes": 11522,
+      "Sha256": "51a92c6a50be86290fd68382529f77f366466d26d1457953b681c98eae363d0b"
+    }
+  ],
+  "IncompleteFirstManifest": {
+    "Bytes": 26899,
+    "Sha256": "98bf0d85b0390841b3b89af7e58c471b553f499dde6b71a4509f4fc6455b2dd1"
+  },
+  "IncompleteFirstRecords": 84,
+  "ObservedCommands": [
+    {
+      "Name": "native-build-1",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "build",
+          "src/Bayesian/Bayesian.fsproj",
+          "-c",
+          "Release",
+          "--no-restore"
+        ],
+        "StartedAtUtc": "2026-09-08T05:50:52.347953+00:00"
+      },
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T05:51:18.751789+00:00"
+      },
+      "Stdout": {
+        "Bytes": 4752,
+        "Sha256": "324296e76d750205869e5a7d594656684f1fff6e87003f5ac77ae43c05d85ac5"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "Name": "native-build-2",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "build",
+          "src/Bayesian/Bayesian.fsproj",
+          "-c",
+          "Release",
+          "--no-restore"
+        ],
+        "StartedAtUtc": "2026-09-08T05:53:53.692332+00:00"
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T05:53:58.068891+00:00"
+      },
+      "Stdout": {
+        "Bytes": 855,
+        "Sha256": "550fbe290a7ea815d783e18e2d3257cdbb88694261c5369276c8310dabae84c5"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "Name": "native-tests-1",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "test",
+          "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+          "-c",
+          "Release",
+          "--no-restore",
+          "--filter",
+          "FullyQualifiedName~PrecisionGateProjectionTests",
+          "--logger",
+          "trx;LogFileName=projection.trx",
+          "--results-directory",
+          "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-native-tests-1"
+        ],
+        "StartedAtUtc": "2026-09-08T06:01:06.558899+00:00"
+      },
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T06:01:34.847733+00:00"
+      },
+      "Stdout": {
+        "Bytes": 4465,
+        "Sha256": "43c0cfdc6eaa0313cbf1627f2e6b97b173297ef7249b462fdf70f0ef6c99bdfe"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "Name": "native-tests-2",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "test",
+          "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+          "-c",
+          "Release",
+          "--no-restore",
+          "--filter",
+          "FullyQualifiedName~PrecisionGateProjectionTests",
+          "--logger",
+          "trx;LogFileName=projection.trx",
+          "--results-directory",
+          "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-native-tests-2"
+        ],
+        "StartedAtUtc": "2026-09-08T06:06:04.966092+00:00",
+        "Sources": [
+          {
+            "Path": "src/Bayesian/PrecisionGateProjection.fs",
+            "Bytes": 36187,
+            "Sha256": "55d1966631f069cfd05eda41b3be8208c31504f18b29e134fb86daefcbfe63cb"
+          },
+          {
+            "Path": "src/Bayesian/Bayesian.fsproj",
+            "Bytes": 3329,
+            "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+            "Bytes": 12593,
+            "Sha256": "2a35772f57d832cb2641673cacb71a65020e5d2cf4815244fd12d1582b3deff0"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+            "Bytes": 3634,
+            "Sha256": "85c69f6b0e49dc723ecee635ad0787a4953088d8c81484413e8d1c7ffae73ba5"
+          }
+        ]
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T06:06:11.131810+00:00"
+      },
+      "Stdout": {
+        "Bytes": 1427,
+        "Sha256": "90473a8e65f4a753f648eba1beac61eb1f7fcf4e2758878c34d3f4f12e93d844"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "Name": "native-tests-3",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "test",
+          "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+          "-c",
+          "Release",
+          "--no-restore",
+          "--filter",
+          "FullyQualifiedName~PrecisionGateProjectionTests",
+          "--logger",
+          "trx;LogFileName=projection.trx",
+          "--results-directory",
+          "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-native-tests-3"
+        ],
+        "StartedAtUtc": "2026-09-08T06:11:16.833047+00:00",
+        "Sources": [
+          {
+            "Path": "src/Bayesian/PrecisionGateProjection.fs",
+            "Bytes": 36582,
+            "Sha256": "288e0348edc4babeadb993ba1b80c1a45b6d426bab80e14c5e066165d5730d0d"
+          },
+          {
+            "Path": "src/Bayesian/Bayesian.fsproj",
+            "Bytes": 3329,
+            "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c"
+          },
+          {
+            "Path": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+            "Bytes": 12709,
+            "Sha256": "686caf11e0181fd8da5f373ea26b6a9060b9fbb4e35c5a81251b895256394c31"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+            "Bytes": 18084,
+            "Sha256": "8f57cdc73bf94c957e3efa4b44c9e38a88b3d0355baf7d37157ee3e6ebda1ef9"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+            "Bytes": 3770,
+            "Sha256": "dd863d702023ce99ced1c1e7cda5b5e4732d7eae0ec10a3006b4176c107e3736"
+          }
+        ]
+      },
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T06:11:22.729513+00:00"
+      },
+      "Stdout": {
+        "Bytes": 1166,
+        "Sha256": "80e0c5e82835a157bedf18af8fc35ded99f833db2562194c8f611ca0a600f782"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "Name": "native-tests-4",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "test",
+          "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+          "-c",
+          "Release",
+          "--no-restore",
+          "--filter",
+          "FullyQualifiedName~PrecisionGateProjectionTests",
+          "--logger",
+          "trx;LogFileName=projection.trx",
+          "--results-directory",
+          "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-native-tests-4"
+        ],
+        "StartedAtUtc": "2026-09-08T06:11:53.157679+00:00",
+        "Sources": [
+          {
+            "Path": "src/Bayesian/PrecisionGateProjection.fs",
+            "Bytes": 36582,
+            "Sha256": "288e0348edc4babeadb993ba1b80c1a45b6d426bab80e14c5e066165d5730d0d"
+          },
+          {
+            "Path": "src/Bayesian/Bayesian.fsproj",
+            "Bytes": 3329,
+            "Sha256": "00a6a4c62843516af63d7dae6f712732a4142fd4691b180c2ceeab853b40bb6c"
+          },
+          {
+            "Path": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+            "Bytes": 12709,
+            "Sha256": "686caf11e0181fd8da5f373ea26b6a9060b9fbb4e35c5a81251b895256394c31"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+            "Bytes": 18076,
+            "Sha256": "b1f2aa954c1186da8471b4cdf3e8a6fadcdc2ffc0a4c1fddff1db03027c66df5"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+            "Bytes": 3770,
+            "Sha256": "dd863d702023ce99ced1c1e7cda5b5e4732d7eae0ec10a3006b4176c107e3736"
+          }
+        ]
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T06:11:59.224085+00:00"
+      },
+      "Stdout": {
+        "Bytes": 1427,
+        "Sha256": "d224cc9838dc39060c62cb7c5dbc2e813077ba92530b231048a8af23ac5fc1c0"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "Name": "replay-startup-1",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "fsi",
+          "--exec",
+          "src/Research.FSharp/PrecisionGateProjectionReplay.fsx"
+        ],
+        "StartedAtUtc": "2026-09-08T06:12:52.432994+00:00",
+        "Inputs": [
+          {
+            "Path": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+            "Bytes": 12709,
+            "Sha256": "686caf11e0181fd8da5f373ea26b6a9060b9fbb4e35c5a81251b895256394c31"
+          },
+          {
+            "Path": "src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+            "Bytes": 1175040,
+            "Sha256": "9c087962251bea38c058ccd013b7325a68ae22320dabcb543023ac7634304f2f"
+          },
+          {
+            "Path": "src/Core/bin/Release/net10.0/Zeta.Core.dll",
+            "Bytes": 9268224,
+            "Sha256": "6913127e8dc8e069997ffd2a595464ca10a1fc251d4ed9f0bd24d11f6c23a2bf"
+          },
+          {
+            "Path": "src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+            "Bytes": 46592,
+            "Sha256": "3961dd75aaa7e4828da0332cb96e29dec38ec83894b59556d23758df96c041b2"
+          }
+        ],
+        "Scope": "no-argument CLI startup; no numeric subject"
+      },
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T06:12:53.581032+00:00"
+      },
+      "Stdout": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Stderr": {
+        "Bytes": 273,
+        "Sha256": "0b23b5b95fb89e8e9bd8b700c013810fc16b8f78eb20cb91fa60cacac6391119"
+      }
+    },
+    {
+      "Name": "replay-startup-2",
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "fsi",
+          "--exec",
+          "src/Research.FSharp/PrecisionGateProjectionReplay.fsx"
+        ],
+        "StartedAtUtc": "2026-09-08T06:13:35.811490+00:00",
+        "Source": {
+          "Path": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+          "Bytes": 12723,
+          "Sha256": "c1174406cc4e7d3164714c536207ad2bd72f085a38a3a816c8bc1b14ade917b2"
+        },
+        "Scope": "no-argument CLI startup; no numeric subject"
+      },
+      "Completion": {
+        "ExitCode": 2,
+        "FinishedAtUtc": "2026-09-08T06:13:37.058615+00:00"
+      },
+      "Stdout": {
+        "Bytes": 428,
+        "Sha256": "a2f9a1abbf20ef76c189e244f92662dec9405b572d83353f11b9b9a33f12102c"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "TestResults": [
+    {
+      "Attempt": 2,
+      "Counters": {
+        "total": "29",
+        "executed": "29",
+        "passed": "29",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "ActualPassedRows": 29
+    },
+    {
+      "Attempt": 4,
+      "Counters": {
+        "total": "34",
+        "executed": "34",
+        "passed": "34",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "ActualPassedRows": 34
+    }
+  ],
+  "CorrectedStartup": {
+    "Schema": "zeta.precision-projection.command.v1",
+    "Complete": false,
+    "Failure": {
+      "Stage": "arguments",
+      "Code": "Arguments",
+      "Message": "input path, expected SHA256, subject Id, bindings path and exclusive output path required; total argv <=64 KiB"
+    },
+    "ApiFailure": null,
+    "Cleanup": [],
+    "InputFiles": [],
+    "AssemblyFiles": [],
+    "Output": null,
+    "ReceiptAvailable": false,
+    "ReceiptKind": null,
+    "Counters": null,
+    "TraceRows": null,
+    "Runtime": ".NET 10.0.11"
+  },
+  "ProjectCodeExecutedByAudit": false,
+  "FinalComparisonPerformedByAudit": false
+}
