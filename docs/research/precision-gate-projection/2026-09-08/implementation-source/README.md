@@ -53,3 +53,8 @@ opening the fixed 40-ID/88-call workload.
 The [independent admission](../../../2026-09-08-projection-implementation-archive-independent-review.md)
 closed archive review before the [first actual attempt](../registered-1/README.md).
 The preceding freeze-time statements retain their original temporal scope.
+
+The [post-run hygiene correction](../publication-hygiene/README.md) changes
+project lint classification and seven test separators on the publication branch.
+This frozen capsule still describes the original executed source, not those
+later edited bytes. No numerical result has been reassigned to a new manifest.

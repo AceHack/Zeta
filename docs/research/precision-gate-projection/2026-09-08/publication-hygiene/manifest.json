@@ -1,0 +1,819 @@
+{
+  "Archive": "custody.tar.gz",
+  "Bytes": 693866,
+  "Sha256": "1313EA5CB4C6E2305985BB19778935C6887C12ABC0FABBFECB5AC8413FC6BF92",
+  "MemberCount": 135,
+  "Members": [
+    {
+      "Path": "projection-lint-cwd-correction-1/after/.mise.toml",
+      "Bytes": 20933,
+      "Sha256": "5CA1B929B4F9F02F41C3759C832C5BB4E9602AC5306638510A19884801D8FA7D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/.mise.toml"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/Directory.Build.props",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/Directory.Build.props"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/Directory.Packages.props",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/Directory.Packages.props"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/Zeta.sln",
+      "Bytes": 70956,
+      "Sha256": "5E7E39E6AC0E919F9BAB2C45A34EFA9A92E097F7C18DD6A01B6435653D3C5D9C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/Zeta.sln"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "Bytes": 11200,
+      "Sha256": "BB37C0560984A8D457C9688C283E8B9CC01C72AE7FA7632F453147524484F0E8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 2025,
+      "Sha256": "BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/docs/research/2026-09-08-precision-gate-projection-proposed-contract.md",
+      "Bytes": 38142,
+      "Sha256": "537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/docs/research/2026-09-08-precision-gate-projection-proposed-contract.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 2146,
+      "Sha256": "67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/global.json",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/global.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3329,
+      "Sha256": "00A6A4C62843516AF63D7DAE6F712732A4142FD4691B180C2CEEAB853B40BB6C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Bayesian/Bayesian.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Bayesian/Message.fs",
+      "Bytes": 15816,
+      "Sha256": "983256B985671ACFB2C136B6A82A614E53EBB87B7C9CDA04FA4540E3C7C2EEE7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Bayesian/Message.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196CB0ADE8527DFEBF83FBB3E6E42BD36208E38AFFD09906787A84901C02",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Bayesian/PrecisionGateKernels.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 36804,
+      "Sha256": "05F0DD3D50011698A198D68E2CA5AA0741855F79C5ABC97D235700FBABDE465E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Bayesian/PrecisionGateProjection.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core/Core.fsproj",
+      "Bytes": 25586,
+      "Sha256": "1CF9BF481C15509DA39692A6409D75BC3E2BC5FC5B28E6DFD903B620B6A2A680",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core/Core.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core/ProbabilitySemiring.fs",
+      "Bytes": 8376,
+      "Sha256": "9289FAB0568DAB9F075B28D8EB91D2B681DDEDABB7BB90717190C10BF07F9170",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core/ProbabilitySemiring.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core/Result.fs",
+      "Bytes": 1152,
+      "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core/Result.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core.Abstractions/Zeta.Core.Abstractions.csproj",
+      "Bytes": 1349,
+      "Sha256": "5145F0AB97A8123F9E367CDF5EBECA0B72B33D121DCF04E7F703C3B4D6EF6522",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core.Abstractions/Zeta.Core.Abstractions.csproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj",
+      "Bytes": 500,
+      "Sha256": "B5CCD5FCB7966305C80C13374A4DC2E628B34992A7A65F3F583093BD97A24C5B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj",
+      "Bytes": 555,
+      "Sha256": "0731DDB5F55F966EEBF96A8EF35E8D5D44B25A97B5380E317343ADBF14356AED",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Core.TypeScript/ace/build-graph.json",
+      "Bytes": 88448,
+      "Sha256": "30BB3351A001E6E446053D18179C153567066094625D13B919303F8F987E4FC9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Core.TypeScript/ace/build-graph.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/pyproject.toml",
+      "Bytes": 4639,
+      "Sha256": "A6AA55A1FB237784994BA0609192B4E73E1784C1F7FC634DA238CBEE7A45DFF2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/pyproject.toml"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+      "Bytes": 6186,
+      "Sha256": "14DA824114C27660A6316DA17B7FC6AE3CBFB9FE54538B23D460977F1F60CEE8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_cases.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+      "Bytes": 7990,
+      "Sha256": "3DFABB8ABC986EB34EA00E65A44C97E1FB6256CBC8654551294F55CC25876001",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_comparison.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "Bytes": 32566,
+      "Sha256": "9952B5B2C36B57DAE74428D2C1C4FD7027511DD7D92683AA2C5CDE2B6F21962B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_driver.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+      "Bytes": 8333,
+      "Sha256": "C673182CCC199A2D10D4C085F0D0EDBDC6D6D71CD1872BE535EE0D55291619F6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_intervals.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_process.py",
+      "Bytes": 19858,
+      "Sha256": "576466C29E1ADFCEF2F037EE92E5DB6D298A4575AD589E83F13BAD0F3E2B4422",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_process.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+      "Bytes": 48250,
+      "Sha256": "0D96B6F27592DC34C4396C044369E043156D25A4986DFC2B4FEF1B2A3F402755",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_reference.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_run.py",
+      "Bytes": 24772,
+      "Sha256": "1B0C3E2ECB9C482A1801FF38362DE93F29914DC16D3F368CD77E72D9C7368EC7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/tests/test_precision_gate_projection_run.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/uv.lock",
+      "Bytes": 344990,
+      "Sha256": "3550FDE780C137D9CAA009B9B371A2C43F227C1A8654BBA7D8BA5ADE56BC53A2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/uv.lock"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 382,
+      "Sha256": "FA6DE54ED3F65FD8C7CE8895D68A2D4B0FE040735E55A8E2D01C3BBCF8BE50C9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/__init__.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 3847,
+      "Sha256": "0ECF88098099B11D192A9F1916F342A2DDA3556FE75024E8A95D5BE08ABD5B19",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/activations.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 20305,
+      "Sha256": "75BA7825F7E925460B411C977C4F9F4F34D55BA40383B4F47482C1DB652E1008",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_cases.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_driver.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_process.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Interp.Python/zeta_interp/precision_gate_projection_run.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/src/Research.FSharp/PrecisionGateProjectionReplay.fsx"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3770,
+      "Sha256": "DD863D702023CE99CED1C1E7CDA5B5E4732D7EAE0EC10A3006B4176C107E3736",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/tests/Bayesian.Tests/Bayesian.Tests.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Bytes": 13463,
+      "Sha256": "F443E58DD8C6D5E0C017D36A432DC6DE121FD040DFA68D39E877E4A4EBFEFEBB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/after/tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+      "Bytes": 20227,
+      "Sha256": "A30C59C6D35878FC57CC0C0AE3BD563BADA13D2BD035EE42AC84CEB7FA773857",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/after/tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/.mise.toml",
+      "Bytes": 20933,
+      "Sha256": "5CA1B929B4F9F02F41C3759C832C5BB4E9602AC5306638510A19884801D8FA7D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/.mise.toml"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/Directory.Build.props",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/Directory.Build.props"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/Directory.Packages.props",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/Directory.Packages.props"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/Zeta.sln",
+      "Bytes": 70956,
+      "Sha256": "5E7E39E6AC0E919F9BAB2C45A34EFA9A92E097F7C18DD6A01B6435653D3C5D9C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/Zeta.sln"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "Bytes": 11200,
+      "Sha256": "BB37C0560984A8D457C9688C283E8B9CC01C72AE7FA7632F453147524484F0E8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 2025,
+      "Sha256": "BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/docs/research/2026-09-08-precision-gate-projection-proposed-contract.md",
+      "Bytes": 38142,
+      "Sha256": "537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/docs/research/2026-09-08-precision-gate-projection-proposed-contract.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 2146,
+      "Sha256": "67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/global.json",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/global.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3329,
+      "Sha256": "00A6A4C62843516AF63D7DAE6F712732A4142FD4691B180C2CEEAB853B40BB6C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Bayesian/Bayesian.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Bayesian/Message.fs",
+      "Bytes": 15816,
+      "Sha256": "983256B985671ACFB2C136B6A82A614E53EBB87B7C9CDA04FA4540E3C7C2EEE7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Bayesian/Message.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196CB0ADE8527DFEBF83FBB3E6E42BD36208E38AFFD09906787A84901C02",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Bayesian/PrecisionGateKernels.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 36804,
+      "Sha256": "05F0DD3D50011698A198D68E2CA5AA0741855F79C5ABC97D235700FBABDE465E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Bayesian/PrecisionGateProjection.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core/Core.fsproj",
+      "Bytes": 25586,
+      "Sha256": "1CF9BF481C15509DA39692A6409D75BC3E2BC5FC5B28E6DFD903B620B6A2A680",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core/Core.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core/ProbabilitySemiring.fs",
+      "Bytes": 8376,
+      "Sha256": "9289FAB0568DAB9F075B28D8EB91D2B681DDEDABB7BB90717190C10BF07F9170",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core/ProbabilitySemiring.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core/Result.fs",
+      "Bytes": 1152,
+      "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core/Result.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core.Abstractions/Zeta.Core.Abstractions.csproj",
+      "Bytes": 1349,
+      "Sha256": "5145F0AB97A8123F9E367CDF5EBECA0B72B33D121DCF04E7F703C3B4D6EF6522",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core.Abstractions/Zeta.Core.Abstractions.csproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj",
+      "Bytes": 500,
+      "Sha256": "B5CCD5FCB7966305C80C13374A4DC2E628B34992A7A65F3F583093BD97A24C5B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj",
+      "Bytes": 555,
+      "Sha256": "0731DDB5F55F966EEBF96A8EF35E8D5D44B25A97B5380E317343ADBF14356AED",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Core.TypeScript/ace/build-graph.json",
+      "Bytes": 88448,
+      "Sha256": "30BB3351A001E6E446053D18179C153567066094625D13B919303F8F987E4FC9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Core.TypeScript/ace/build-graph.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/pyproject.toml",
+      "Bytes": 4499,
+      "Sha256": "9AF39874A0B47567E148E33558D1A1A7ABAE4196EAE4AD915E1ECD0C61508B95",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/pyproject.toml"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+      "Bytes": 6185,
+      "Sha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_cases.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+      "Bytes": 7989,
+      "Sha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_comparison.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "Bytes": 32565,
+      "Sha256": "2FBDE2C8A68790C454BD140973145A9E0665DC9AC88C894DDBB4A3826D6C11B6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_driver.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+      "Bytes": 8332,
+      "Sha256": "BCCB9B8E32BBBC2E61C5CB557B1E3E0016C92768C8D90F99B10C8232FD3220F7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_intervals.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_process.py",
+      "Bytes": 19857,
+      "Sha256": "98A5FE6BE65318C41128901507F62BB927487A7425071B9AC0FA72A3117373EF",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_process.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+      "Bytes": 48249,
+      "Sha256": "49715787CCF0FC69A38B39D720CDADB3F2F95D523A26E1582E01DA5A4F47A22C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_reference.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_run.py",
+      "Bytes": 24771,
+      "Sha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/tests/test_precision_gate_projection_run.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/uv.lock",
+      "Bytes": 344990,
+      "Sha256": "3550FDE780C137D9CAA009B9B371A2C43F227C1A8654BBA7D8BA5ADE56BC53A2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/uv.lock"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 382,
+      "Sha256": "FA6DE54ED3F65FD8C7CE8895D68A2D4B0FE040735E55A8E2D01C3BBCF8BE50C9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/__init__.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 3847,
+      "Sha256": "0ECF88098099B11D192A9F1916F342A2DDA3556FE75024E8A95D5BE08ABD5B19",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/activations.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 20305,
+      "Sha256": "75BA7825F7E925460B411C977C4F9F4F34D55BA40383B4F47482C1DB652E1008",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_cases.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_driver.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_process.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Interp.Python/zeta_interp/precision_gate_projection_run.py"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/src/Research.FSharp/PrecisionGateProjectionReplay.fsx"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3770,
+      "Sha256": "DD863D702023CE99CED1C1E7CDA5B5E4732D7EAE0EC10A3006B4176C107E3736",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/tests/Bayesian.Tests/Bayesian.Tests.fsproj"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Bytes": 13463,
+      "Sha256": "F443E58DD8C6D5E0C017D36A432DC6DE121FD040DFA68D39E877E4A4EBFEFEBB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/before/tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+      "Bytes": 20227,
+      "Sha256": "A30C59C6D35878FC57CC0C0AE3BD563BADA13D2BD035EE42AC84CEB7FA773857",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/before/tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/changed-identities.json",
+      "Bytes": 3281,
+      "Sha256": "3714CF4835642DAB4917F7B6CC3C26E28C9DE5E4FA361A7705BD0254153A13E5",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/changed-identities.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/component-pytest.completion.json",
+      "Bytes": 57,
+      "Sha256": "A8DB9E4E5CBE090D2EE326B78CABD982ED807E93419C6FCAA53B445B740E8132",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/component-pytest.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/component-pytest.invocation.json",
+      "Bytes": 1436,
+      "Sha256": "13EAFBBFE988A5E8CC4EE74D63CFBED5EA1DDCE0CDEE18561C4FC78F271B8F0C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/component-pytest.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/component-pytest.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/component-pytest.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/component-pytest.stdout.txt",
+      "Bytes": 420,
+      "Sha256": "C227FD9B2F9A39DAC4E4F24855D900468B8061A9D4ACFBC78D4D9C108A8CE4BD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/component-pytest.stdout.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/fix-import-separators.completion.json",
+      "Bytes": 57,
+      "Sha256": "24DDBE2A259866AADD712A37C4F2390872FBA67C8306E1179E4FC9AD3C34967E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/fix-import-separators.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/fix-import-separators.invocation.json",
+      "Bytes": 1477,
+      "Sha256": "0CF3E0EBD2C42BB755496908B833073C9EF11A92E694D8923FD1344797ED8976",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/fix-import-separators.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/fix-import-separators.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/fix-import-separators.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/fix-import-separators.stdout.txt",
+      "Bytes": 39,
+      "Sha256": "BA2C763752132A3C06896CD52838F1555D4EF0F62B2896CA439C5BDB028351E4",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/fix-import-separators.stdout.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-before.completion.json",
+      "Bytes": 57,
+      "Sha256": "1F067A45F62BE3591D8C1887BDBA4C7D914DEE90B30F6BAFCC748C31F944F78E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-before.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-before.invocation.json",
+      "Bytes": 456,
+      "Sha256": "4E4AA45EB4310C8135FCD29E12BF5782ABC0EE1593BBEB2F083881419A38E101",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-before.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-before.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-before.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-before.stdout.txt",
+      "Bytes": 6188,
+      "Sha256": "57668F75038DB656C18170D9C28B7B6D84F1AC914F7BFA5D8083F0521C9B739C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-before.stdout.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-format.completion.json",
+      "Bytes": 57,
+      "Sha256": "E250C39EC57A95DF6A44ABDCE952B11E94945E0107F852D2100C755A420D766C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-format.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-format.invocation.json",
+      "Bytes": 473,
+      "Sha256": "C02EE9A3FCD4017384889D1A52A4935CFB571E320B3E2344AB47FB68703F4219",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-format.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-format.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-format.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-format.stdout.txt",
+      "Bytes": 28,
+      "Sha256": "7EA26DCF24CD7C1F9E57DF608AF570FD7294996EAAB13186F23C19D7B566EA0B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-format.stdout.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-lint.completion.json",
+      "Bytes": 57,
+      "Sha256": "7C1E677F03FADA62F374DBBB4B90F9896B76F4690C4B02C844E068D80AFD98DD",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-lint.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-lint.invocation.json",
+      "Bytes": 456,
+      "Sha256": "67B2E634F68D81B9DDB4C7C0DC2645B42573B7A2B695633B5F790FDF3A1B31DB",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-lint.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-lint.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-lint.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-lint.stdout.txt",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-lint.stdout.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-mypy.completion.json",
+      "Bytes": 58,
+      "Sha256": "70F70405FAC2FD458DAFF9DE8A8F6820E111D0A89F45A394449F16331775B053",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-mypy.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-mypy.invocation.json",
+      "Bytes": 469,
+      "Sha256": "80489AD08D3AE80736EE1AD291EC11B07F49DD5130F569993B0A356AC212F8B0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-mypy.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-mypy.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-mypy.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/package-mypy.stdout.txt",
+      "Bytes": 45,
+      "Sha256": "D197D6017D587F21AD64746C2D6847A7ECAAC183B973FCF4AA19A188A269CD3F",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/package-mypy.stdout.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/result.json",
+      "Bytes": 286,
+      "Sha256": "E0277924827905C8B49A6CEE911FB95905F821B6BD193A21B95869E266A34DC7",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/result.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/root-lint.completion.json",
+      "Bytes": 57,
+      "Sha256": "6C4A47F2A39C60CDAAE0BF70B441DD5370011B79706EBE3BABA4A790FB0FC356",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/root-lint.completion.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/root-lint.invocation.json",
+      "Bytes": 454,
+      "Sha256": "81109C351593BF2AD6C01E03DC732FDB94A6C5E6F774AABC7A831B82F332F135",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/root-lint.invocation.json"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/root-lint.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/root-lint.stderr.txt"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1/root-lint.stdout.txt",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1/root-lint.stdout.txt"
+    },
+    {
+      "Path": "pr-17051-interp-failure-1/invocation.json",
+      "Bytes": 222,
+      "Sha256": "FB2A489E7948510C80B90436B9A3F0AAC84E152D4F0DBC7C655199A84ED38E63",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-1/invocation.json"
+    },
+    {
+      "Path": "pr-17051-interp-failure-1/stderr.txt",
+      "Bytes": 99,
+      "Sha256": "8B6407B2FDBCA54BF3D53FB93E79A3560DBE59567FA5044CFEE4BED1B5B6E467",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-1/stderr.txt"
+    },
+    {
+      "Path": "pr-17051-interp-failure-1/stdout.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-1/stdout.log"
+    },
+    {
+      "Path": "pr-17051-interp-failure-2/invocation.json",
+      "Bytes": 253,
+      "Sha256": "06AA78C053BF6C409B3AD985BE3D37978B3FE2406CCA0007B82011C7E4E205A0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-2/invocation.json"
+    },
+    {
+      "Path": "pr-17051-interp-failure-2/stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-2/stderr.txt"
+    },
+    {
+      "Path": "pr-17051-interp-failure-2/stdout.log",
+      "Bytes": 997561,
+      "Sha256": "827327566781D09EE6ABE15FBF8E29FD2C8DA5659A44FA6A406D7E46D2D7A8F6",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-2/stdout.log"
+    },
+    {
+      "Path": "projection-lint-cwd-correction-1.py",
+      "Bytes": 3856,
+      "Sha256": "C6159C5DB8BFB1D3C0250282CAC3A9AE1687B66A5DE64118DD23F4BAEB7ECD0D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-lint-cwd-correction-1.py"
+    },
+    {
+      "Path": "projection-ruff-root-settings.txt",
+      "Bytes": 37220,
+      "Sha256": "14FACB3E94DD263D2FBFA95238C79D9D4D18EE5DD198C68333FEF3C83DEC7C64",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-ruff-root-settings.txt"
+    },
+    {
+      "Path": "projection-ruff-verbose.stdout.txt",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-ruff-verbose.stdout.txt"
+    },
+    {
+      "Path": "projection-ruff-verbose.stderr.txt",
+      "Bytes": 3066,
+      "Sha256": "4E88682DD7F00F4D4231DCE0D36AE2CABFE758B8C2EE6BF91949AA09475B427D",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-ruff-verbose.stderr.txt"
+    },
+    {
+      "Path": "pr-17051-interp-failure-locator.json",
+      "Bytes": 228,
+      "Sha256": "049D55B4B7D3927141EE5E1FA5950D4CBDE63FA090185750943B6CB5EE6C659B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/pr-17051-interp-failure-locator.json"
+    }
+  ],
+  "VerifiedWithoutExtraction": true
+}

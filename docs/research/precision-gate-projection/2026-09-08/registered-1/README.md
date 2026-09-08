@@ -59,3 +59,9 @@ Direct-file observations do not prove transitive runtime closure or a mapping
 from source to machine code. The 40.662-second single run includes Python
 startup, repeated native startup and recording; it is not a comparative speed
 benchmark. No numerical operation was rerun to construct this archive.
+
+The [later publication hygiene correction](../publication-hygiene/README.md)
+changes only project lint classification and seven test separators. Its checks
+are separately source-bound. This original attempt, archive and manifest retain
+their original identities; the historical manifest is not a manifest for every
+later checkout.

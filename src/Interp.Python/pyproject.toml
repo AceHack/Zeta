@@ -93,3 +93,7 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = ["sympy.*"]
 ignore_missing_imports = true
+
+# Keep import grouping identical from the repo root and this package directory.
+[tool.ruff.lint.isort]
+known-first-party = ["zeta_interp"]

@@ -12,6 +12,7 @@ from fractions import Fraction
 from typing import Any
 
 import pytest
+
 from zeta_interp import hidden_switch_compiled_admission as a
 from zeta_interp import precision_gate_projection_cases as c
 

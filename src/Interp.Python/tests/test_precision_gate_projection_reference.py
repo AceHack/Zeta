@@ -9,6 +9,7 @@ from fractions import Fraction
 from typing import Any
 
 import pytest
+
 from zeta_interp import precision_gate_projection_intervals as iv
 from zeta_interp import precision_gate_projection_reference as ref
 

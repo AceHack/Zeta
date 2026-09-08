@@ -87,3 +87,13 @@ The user's larger direction remains a composition of neural modules and other
 inference modules over a composable probabilistic DAG. The observed range and
 budget refusals argue for typed uncertainty and application boundaries in that
 higher structure, rather than silently clipping failures into point estimates.
+
+## Later publication hygiene
+
+The first CI interpretability lane passed all 2,286 tests and then found seven
+cwd-dependent import separators. The [separate correction record](precision-gate-projection/2026-09-08/publication-hygiene/README.md)
+adds explicit first-party grouping and those seven blank lines. Production
+source is unchanged; both lint entry points, whole-lane typing/formatting and
+340 component tests pass. The original numerical attempt and immutable
+manifest remain bound to their actual pre-correction source; they are not
+retrospectively reassigned to the publication checkout.

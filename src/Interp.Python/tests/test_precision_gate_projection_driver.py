@@ -11,6 +11,7 @@ from types import SimpleNamespace
 from typing import Any
 
 import pytest
+
 from zeta_interp import hidden_switch_compiled_admission as a
 from zeta_interp import hidden_switch_compiled_record_encoding as encoding
 from zeta_interp import hidden_switch_compiled_record_store as store
