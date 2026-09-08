@@ -13,21 +13,23 @@
     },
     {
       "File": "run-data-proposal-attempt-1.py.gz",
-      "OriginalLocalFile": ".git/run-data-proposal-attempt-1.py",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-1-repaired-1.py",
       "Bytes": 6199,
       "Sha256": "E4084B062D56E9B4E82BEE42CB0C3E9A6748BC68B36C3A6A1C2A42BB9958CB5E",
       "StoredBytes": 2028,
       "StoredSha256": "46B07651C4022277B87ED2A86DBECF2E4BE7F76B05C742B5E9700C4216CE5CFE",
-      "Encoding": "gzip"
+      "Encoding": "gzip",
+      "OriginalCaptureFile": ".git/run-data-proposal-attempt-1.py"
     },
     {
       "File": "test-data-proposal-launcher-cleanup.py.gz",
-      "OriginalLocalFile": ".git/test-data-proposal-launcher-cleanup.py",
+      "OriginalLocalFile": ".git/test-data-proposal-launcher-cleanup-first.py",
       "Bytes": 5137,
       "Sha256": "46DFDB842898BDF6B049F030F03E6A8FA4DACF0151FF22D7D3A182ECAC82C983",
       "StoredBytes": 1679,
       "StoredSha256": "41596E695E607DDDE0D61C7F80FB321FF7853EC322E4D38F1FB6AD21177C480A",
-      "Encoding": "gzip"
+      "Encoding": "gzip",
+      "OriginalCaptureFile": ".git/test-data-proposal-launcher-cleanup.py"
     },
     {
       "File": "hidden-switch-data-proposal-launcher-tests-1.log.gz",

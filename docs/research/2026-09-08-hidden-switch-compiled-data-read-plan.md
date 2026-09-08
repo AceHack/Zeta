@@ -140,6 +140,16 @@ promise an OS quota or descendant quiescence. Final launcher rereview and
 preparation preservation precede the separately authorized metadata-only
 attempt; they authorize no physical read.
 
+Two final review refinements are retained in a
+[separate three-record preparation](hidden-switch-compiled-validation/2026-09-07/data-proposal-launcher-final-preparation/manifest.json):
+an already observed main-wait exit code survives a later cleanup-join
+failure, and the bounded console flushes inside its exception guard. Main
+and cleanup wait codes are separate fields; a failed join never becomes a
+closed-child claim. All five final extracted-function fixtures pass. The
+earlier four-test source/preimages remain unchanged in their archive;
+stable local copy paths now accompany their original capture paths so later
+edits cannot erase the inspected draft. No child ran during these repairs.
+
 ## One held local dump, no chained query
 
 The proposed physical file is the already captured local-only dump 2:
