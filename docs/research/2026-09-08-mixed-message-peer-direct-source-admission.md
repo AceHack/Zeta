@@ -10,9 +10,10 @@ Work item: 081M1Z63YMC087G0R003N5FH9X
 This extends the [transport foundation](2026-09-08-mixed-message-peer-transport-foundation.md)
 in the single owned
 [peer script](../../src/Research.FSharp/MixedMessageEpochReplay.fsx).
-The script still has no main or core invocation. Ready, projection/ACK/Commit,
-EpochReturn and Terminal integration remain pending the core's callable source
-and codecs. This progress must not be promoted as an implemented M4/M5 route.
+The script now calls the pinned core codecs and preliminary admission, but
+still has no main or runEpoch invocation. Ready, projection/ACK/Commit,
+EpochReturn and Terminal integration remain pending. This progress must not
+be promoted as an implemented M4/M5 route.
 
 ## Direct observations before Ready
 
@@ -110,3 +111,46 @@ The earlier 34,921-byte source above remains its own completed development
 slice. The new quick gate passed all 16 checks; neither that gate nor these
 fixtures establish a callable complete peer, a runEpoch invocation or actual
 M4/M5 outcomes. Complete source integration/review remains pending.
+
+## Actual compiled codec/admission follow-up
+
+The exact core checkpoint `b097d56eccc630046cd3bf618a362b01edeba329`
+was imported as `243e4689ba1380e5b00e241d295426d2b25c7b07`. Its six source,
+test and project files were compared byte-for-byte before use. The local
+Bayesian Release build completed with zero warnings/errors. This is the
+learner/declaration/codec checkpoint; its runtime remains unfinished.
+
+`admitStart` observes the four actual direct files before calling their core
+codecs. It retains each actual budget/plan decode, canonical plan encoding,
+compact forecast admission and private plan admission return before later
+judgment. It checks the exact plan/source map and canonical plan hash. Raised
+exceptions have a separate bounded observation. Compact forecasts explicitly
+depend on the selected coordinator's complete prior bundle/closure admission;
+the peer does not turn matching hashes into remote execution evidence.
+
+The [core admission development archive](mixed-message-epoch/2026-09-08/peer-core-admission-development/manifest.json)
+retains the exact source, harness, invocation, outputs and build/import records.
+The first invocation passed all 61 checks with empty stderr: the previous 53
+plus eight checks of actual compiled codecs/preliminary admission using a
+synthetic zero-operation plan. These cover complete admission, source refusal
+before core calls, actual budget and plan errors, retained canonical bytes on
+hash mismatch, binding mismatch before encoding, late private-admission
+failure and null input. No scheduler, learner, kernel, projection, M4 or M5
+operation was invoked.
+
+The raw harness's final `Scope` string incorrectly retained the narrower old
+description, "deterministic transport, passive JSON and actual direct-file
+metadata only". Its exact bytes are unchanged. The invocation's scope and
+this paragraph correct that label: actual zero-operation core codec/admission
+calls occurred. The synthetic BudgetSnapshot and trusted compact-forecast
+context are fixture inputs, not observations of a real coordinator session.
+
+This peer source is 45,352 bytes, SHA-256
+`957F2D5337811959930A6F1C1B720B1ED72E2EDB5FEB1C23B5F62F0124CE82D8`.
+Its actual admission returns remain in a closed in-memory union if later
+checks or publication fail. They are not generic type-dispatched wire data.
+The source slice still awaits complete peer integration and independent
+source review; the named actual controls remain closed.
+The separate quick gate passed all 16 checks. The archive contains 18 exact
+records, 100,029 original bytes and 23,944 gzip bytes, including the actual
+build, import and quick-gate outcomes.
