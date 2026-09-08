@@ -52,6 +52,39 @@ module ZetaFsMutbuf =
 
     let private dataPath catalog id = ZetaFsPath.combine2 (slotPath catalog id) "data"
     let private genPath catalog id = ZetaFsPath.combine2 (slotPath catalog id) "gen"
+    let private slotFile catalog id = ZetaFsPath.combine2 (slotPath catalog id) "slot"
+
+    let private encodeSlot (generation: uint64) (live: byte[]) : byte[] =
+        let prefix =
+            Encoding.ASCII.GetBytes(generation.ToString(CultureInfo.InvariantCulture) + "\n")
+
+        let payload = Array.zeroCreate (prefix.Length + live.Length)
+        Buffer.BlockCopy(prefix, 0, payload, 0, prefix.Length)
+
+        if live.Length > 0 then
+            Buffer.BlockCopy(live, 0, payload, prefix.Length, live.Length)
+
+        payload
+
+    let private tryDecodeSlot (bytes: byte[]) : (byte[] * uint64) option =
+        let nl = Array.IndexOf(bytes, byte '\n')
+
+        if nl < 0 then
+            None
+        else
+            let text = Encoding.ASCII.GetString(bytes, 0, nl).Trim()
+
+            match UInt64.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture) with
+            | false, _ -> None
+            | true, g ->
+                let n = bytes.Length - nl - 1
+
+                if n <= 0 then
+                    Some(Array.empty, g)
+                else
+                    let live = Array.zeroCreate n
+                    Buffer.BlockCopy(bytes, nl + 1, live, 0, n)
+                    Some(live, g)
 
     let create (storeDir: string) (coherence: Coherence) : Catalog =
         FileSystem.Current.CreateDirectory (ZetaFsPath.combine2 storeDir DirName)
@@ -59,22 +92,38 @@ module ZetaFsMutbuf =
           Coherence = coherence
           Slots = ConcurrentDictionary<string, Slot>(StringComparer.Ordinal) }
 
-    let private loadSlot (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Slot =
-        let fs = FileSystem.Current
-        let data = dataPath catalog id
-        let gen = genPath catalog id
+    let private loadLegacy
+        (fs: IFileSystem)
+        (catalog: Catalog)
+        (id: ZetaFsNamespace.EntityId)
+        : byte[] * uint64 =
         let bytes =
-            match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) data with
+            match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) (dataPath catalog id) with
             | Some b -> b
             | None -> Array.empty
+
         let generation =
-            match FileSystemIo.tryReadBytesCapped fs 64L gen with
+            match FileSystemIo.tryReadBytesCapped fs 64L (genPath catalog id) with
             | Some b ->
                 let text = Encoding.ASCII.GetString(b).Trim()
+
                 match UInt64.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture) with
                 | true, g -> g
                 | _ -> 0UL
             | None -> 0UL
+
+        bytes, generation
+
+    let private loadSlot (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Slot =
+        let fs = FileSystem.Current
+        let bytes, generation =
+            match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L + 64L) (slotFile catalog id) with
+            | Some b ->
+                match tryDecodeSlot b with
+                | Some parsed -> parsed
+                | None -> loadLegacy fs catalog id
+            | None -> loadLegacy fs catalog id
+
         { Entity = id
           Gate = obj ()
           Live = bytes
@@ -88,9 +137,18 @@ module ZetaFsMutbuf =
         lock slot.Gate (fun () ->
             let fs = FileSystem.Current
             fs.CreateDirectory (slotPath catalog id)
-            FileSystemIo.writeAllBytes fs (dataPath catalog id) slot.Live
-            let genText = slot.Generation.ToString(CultureInfo.InvariantCulture)
-            FileSystemIo.writeAllText fs (genPath catalog id) genText)
+            FileSystemIo.writeAllBytes fs (slotFile catalog id) (encodeSlot slot.Generation slot.Live))
+
+    /// Live bytes from the atomic `slot` file, else legacy `data`. None if neither exists.
+    let tryReadPersisted (storeDir: string) (id: ZetaFsNamespace.EntityId) : byte[] option =
+        let fs = FileSystem.Current
+        let dir = ZetaFsPath.combine3 storeDir DirName (keyOf id)
+        match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L + 64L) (ZetaFsPath.combine2 dir "slot") with
+        | Some b ->
+            match tryDecodeSlot b with
+            | Some(live, _) -> Some live
+            | None -> FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) (ZetaFsPath.combine2 dir "data")
+        | None -> FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) (ZetaFsPath.combine2 dir "data")
 
     let openHandle (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Handle =
         let slot = slotOf catalog id

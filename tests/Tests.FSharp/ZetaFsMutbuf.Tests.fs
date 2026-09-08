@@ -190,3 +190,59 @@ let ``crash-mid-write during mutbuf persist keeps prior bytes after reopen`` () 
             Assert.Equal<byte>([| 1uy; 2uy; 3uy |], dst)
     finally
         FileSystem.Reset()
+
+[<Fact>]
+let ``legacy data and gen files still load after reopen`` () =
+    FileSystem.Register(InMemoryFileSystem())
+    let store = "/mutbuf-legacy-pair"
+
+    try
+        let id = mintId ()
+        let catalog = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let dir = ZetaFsPath.combine3 store ZetaFsMutbuf.DirName (ZetaFsNamespace.EntityId.format id)
+        FileSystem.Current.CreateDirectory dir
+        FileSystemIo.writeAllBytes FileSystem.Current (ZetaFsPath.combine2 dir "data") [| 4uy; 5uy; 6uy |]
+        FileSystemIo.writeAllText FileSystem.Current (ZetaFsPath.combine2 dir "gen") "7"
+        let loaded = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let h = ZetaFsMutbuf.openHandle loaded id
+        let dst = Array.zeroCreate 3
+
+        match ZetaFsMutbuf.pread loaded h 0L dst with
+        | Error e -> Assert.Fail(sprintf "%A" e)
+        | Ok n ->
+            Assert.Equal(3, n)
+            Assert.Equal<byte>([| 4uy; 5uy; 6uy |], dst)
+            Assert.Equal(7UL, ZetaFsMutbuf.generation loaded id)
+    finally
+        FileSystem.Reset()
+
+[<Fact>]
+let ``crash-mid-write during mutbuf persist keeps prior generation with prior bytes`` () =
+    let mock = InMemoryFileSystem()
+    FileSystem.Register mock
+    let store = "/mutbuf-crash-slot"
+
+    try
+        let id = mintId ()
+        let catalog = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let h = ZetaFsMutbuf.openHandle catalog id
+        ZetaFsMutbuf.pwrite catalog h 0L [| 1uy; 2uy; 3uy |] |> ignore
+        ZetaFsMutbuf.persist catalog id
+        let frozen = ZetaFsMutbuf.snapshot catalog id
+        Assert.Equal(0UL, frozen.Generation)
+        ZetaFsMutbuf.pwrite catalog h 0L [| 9uy; 9uy; 9uy |] |> ignore
+        mock.ArmCrashMidWrite("mutbuf-crash-slot", 1)
+        let ex = Assert.Throws<CrashMidWriteException>(fun () -> ZetaFsMutbuf.persist catalog id)
+        Assert.Equal(1, ex.CommittedBytes)
+        let reopened = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let h2 = ZetaFsMutbuf.openHandle reopened id
+        let dst = Array.zeroCreate 3
+
+        match ZetaFsMutbuf.pread reopened h2 0L dst with
+        | Error e -> Assert.Fail(sprintf "%A" e)
+        | Ok n ->
+            Assert.Equal(3, n)
+            Assert.Equal<byte>([| 1uy; 2uy; 3uy |], dst)
+            Assert.Equal(0UL, ZetaFsMutbuf.generation reopened id)
+    finally
+        FileSystem.Reset()

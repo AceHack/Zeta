@@ -1,0 +1,14 @@
+{
+  "id": "080d03faa0d65810a0130008fc3d2a13",
+  "at": "2026-09-08T04:43:33.451Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZN86PB087G0R003226BCJ",
+    "type": "task",
+    "title": "PR12 mutbuf persist is one tmp-rename so crash cannot mix gen and bytes",
+    "slug": "pr12-mutbuf-persist-is-one-tmp-rename-so-crash-cannot-mix-ge",
+    "priority": "P2",
+    "filename": "081M1ZN86PB087G0R003226BCJ-pr12-mutbuf-persist-is-one-tmp-rename-so-crash-cannot-mix-ge.md"
+  }
+}
