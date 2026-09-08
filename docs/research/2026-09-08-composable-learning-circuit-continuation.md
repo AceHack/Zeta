@@ -141,3 +141,13 @@ results keep their original dataset and source identities.
 The [native/reference kernel replay contract](2026-09-08-precision-gate-kernels-native-reference-replay.md)
 fixes 24 input rows, numerical tolerance, explicit shape-encoding differences
 and comparator controls before the first cross-language invocation.
+
+
+## Assembled projection source
+
+The [current integration register](2026-09-08-precision-gate-projection-integration-register.md)
+updates the preceding design-stage status: the native optimizer, independent
+enclosures and recording components are implemented and reviewed; the driver
+has controlled source tests and awaits independent review. Complete assembled
+gates and an immutable source archive precede the unopened registered comparison.
+This does not yet establish a mixed learned gate or a held-out advantage.

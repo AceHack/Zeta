@@ -1,0 +1,78 @@
+# Scalar Gaussian projection: assembled source and evaluation boundary
+
+Date: 2026-09-08 UTC
+Author: Vera, OpenAI Codex using GPT-6 Astra
+Operational status: research-grade
+Lifecycle: active
+Status: assembled source; complete integration gate and driver review pending
+Work item: 081M1Z63YMC087G0R003N5FH9X
+
+## Scientific scope
+
+The [registration](2026-09-08-precision-gate-projection-registration.md) fixes
+40 subject IDs and 88 ordered calls before the final comparison. The
+[contract](2026-09-08-precision-gate-projection-proposed-contract.md),
+[decimal clarification](2026-09-08-precision-gate-projection-decimal-admission-clarification.md)
+and [rendered-zero clarification](2026-09-08-precision-gate-projection-rendered-zero-clarification.md)
+remain unchanged. No final subject has been run by this assembled driver.
+
+This is a prerequisite for a compositional probabilistic learning graph that
+can contain neural modules and nested subgraphs. It tests a local Gaussian-family
+projection and finite independent enclosures. It does not test learned weights,
+held-out generalization, global mixed-message convergence, ARC-AGI-3 performance
+or a state-of-the-art advantage. Compiled-controller streams 9307 and 9409 remain
+unopened and that investment remains paused.
+
+## Component source and review
+
+| Component | Source record | Independent disposition |
+|---|---|---|
+| Frozen cases and mutants | `2ba65308e6e0a520634c8a8bac49aa4f0c925b3a` | [Case adapter](2026-09-08-projection-case-adapter-independent-review.md) |
+| Outcome criteria | `459df91118b0065123cadf3f5bad4efa1195133b` | [Finite criteria](2026-09-08-projection-comparison-criteria-independent-review.md) |
+| Directed interval arithmetic | `9f0d5ca7c7bf18a9df02b5061ce5665253ce559b` | [Interval core](2026-09-08-projection-interval-core-independent-review.md) |
+| Reference root and certificate | `ae37ac066cd1e0e9e3181cfd0f4f4214dac77a77` | [Root](2026-09-08-projection-root-checkpoint-independent-review.md), [certificate repairs](2026-09-08-projection-certificate-followup-independent-review.md) |
+| Native candidate and wire admission | `e3b87af8f33f09476e939ebbc4f78360c3aa7d1d` | [Native source](2026-09-08-projection-native-source-independent-review.md), [Unicode correction](2026-09-08-projection-native-wire-followup-independent-review.md) |
+| Native process custody | `8254c827044100df1646369f1b0143ec994d5a07` | [Correction acceptance](2026-09-08-projection-process-correction-independent-review.md) |
+| Recording and reduced budget | `e133efe8324331d43187fd87c54bd4ea39c401f5` | [Runner](2026-09-08-projection-runner-draft-independent-review.md), [shared budget](2026-09-08-projection-runner-budget-independent-review.md) |
+| Manifest admission and driver | `1f4db4b7ad2953648a37a38d0613bb99fc7d0633` | [57 controlled tests and source record](2026-09-08-precision-gate-projection-driver.md); independent review pending |
+
+The records retain first failures, corrections, typed refusals, actual available
+returns and stated limits on publication. Fixture receipts do not become actual
+cross-language observations. The [native final gate](precision-gate-projection/2026-09-08/final-native-process-gate-2/manifest.json)
+passed all 18 checks at its recorded source cut; it is separate from the
+forthcoming assembled-system gate.
+
+## Fresh-main composition
+
+The publication clone starts at origin/main
+b6bb61f2b255093790f8bdf84dc1b6f0f612f4d9. It imports the coordinator's 863 new
+source/provenance files at 7c3d19797d3f543ebc95e5c21d20b77c99c35f69 and the
+58 newly added driver files at 1f4db4b7ad2953648a37a38d0613bb99fc7d0633.
+Every transferred byte was checked against its source identity. Existing main
+files were retained; the two F# projects receive only their projection compile
+entries. Re-derivation found the build graph already current.
+
+The [47-path roster](precision-gate-projection/2026-09-08/driver-source-validation/source-roster.json)
+is fixed before final manifest construction. Compared with the coordinator,
+45 paths match exactly. The other two retain current main: the derived build
+graph and the kernel ADR's accepted implementation status/review links. The ADR
+adds no changed numerical equation. Final manifest expectations will name the
+actual assembled bytes, independently of every producer receipt.
+
+The [earlier path census](2026-09-08-projection-integration-source-binding-roster-proposal.md)
+explains the finite dependency scope, including ordinary package initialization.
+This is not a complete transitive runtime closure or a source-to-machine proof.
+
+## Remaining execution boundary
+
+Before opening the final comparison, complete driver review and the assembled
+build/test/lint gate, preserve its immutable source and direct native artifact
+archive, independently admit the fixed manifest, and retain the exact invocation.
+The driver reserves custody and recorder space within one 256 MiB/512-artifact
+ceiling. It cannot add an uncharged result dump, silently replace a failed run,
+or synthesize missing certificate baselines. Any failure keeps the actual prefix
+and receives an explained, separately preserved follow-up attempt.
+
+Even complete passage earns only this local component. A mixed schedule must
+still fix evidence cuts, cavities, epoch boundaries, damping, update/application
+receipts and rollback before a later learned compositional benchmark.

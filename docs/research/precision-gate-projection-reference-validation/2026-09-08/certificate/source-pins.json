@@ -1,0 +1,22 @@
+[
+  {
+    "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+    "Bytes": 10864,
+    "Sha256": "fd8db23e1b077a5bc3b9396e964c30bf927fe7e27a37dfe83ae5412988138616"
+  },
+  {
+    "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+    "Bytes": 52146,
+    "Sha256": "af42bc84b01a1ada681def42d5ac6499f0470fe7532c76782d052bde7e8057e7"
+  },
+  {
+    "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+    "Bytes": 35897,
+    "Sha256": "3c82dfd97576771f26497554485504c9c386eac3bbd363f13f5aba985ccc7f21"
+  },
+  {
+    "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+    "Bytes": 7559,
+    "Sha256": "702a5e6e6bd330cb4d27dd3c3bddbbeba779ea8d6127249efd7e9ecbfa54d8c4"
+  }
+]

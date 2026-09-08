@@ -1,0 +1,373 @@
+{
+  "Scope": "reviewer failure discriminators and corrected runner synthetic fixtures only",
+  "Records": [
+    {
+      "Original": ".git/projection-run-fixture-tests-5/0-stderr",
+      "Stored": "000-0-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/0-stdout",
+      "Stored": "001-0-stdout.gz",
+      "RawBytes": 19,
+      "RawSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/1-stderr",
+      "Stored": "002-1-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/1-stdout",
+      "Stored": "003-1-stdout.gz",
+      "RawBytes": 5009,
+      "RawSha256": "4ba50c31b76227e94a7cc8c61150646e1439fabc9ae9894cd14a8ad8482b8877",
+      "StoredBytes": 1218,
+      "StoredSha256": "0825b8ae5438850c04f2bdbca6cc0a803b31c63f1d099c1fe0b3a4acbe6f768d"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/capture.py",
+      "Stored": "004-capture.py.gz",
+      "RawBytes": 1668,
+      "RawSha256": "a5e7136f6a43c161b22ff5481409ed9aa1bb8f7fe2837cd80d09bd441c84ddbe",
+      "StoredBytes": 835,
+      "StoredSha256": "ee2cb45248954b5ee06aee0c2186341386af7b1f3580c82f8a35dfca4206a9f8"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/dependency/__pycache__/precision_gate_projection_process.cpython-314.pyc",
+      "Stored": "005-precision_gate_projection_process.cpython-314.pyc.gz",
+      "RawBytes": 52837,
+      "RawSha256": "701dd38d2645fc58350102a33c56bfd38302453c3abe4166d32c6f94725899c4",
+      "StoredBytes": 22106,
+      "StoredSha256": "fc731137c0ddc22fee523841bd167c2a2bb1c2c2ff198be1ed59e156e8b291d3"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/dependency/precision_gate_projection_process.py",
+      "Stored": "006-precision_gate_projection_process.py.gz",
+      "RawBytes": 32293,
+      "RawSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+      "StoredBytes": 7820,
+      "StoredSha256": "46ed4f8053340763966cdab53bcd81152dd07f1020d6c70707f31a2d21bb6267"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/precision_gate_projection_run.py",
+      "Stored": "007-precision_gate_projection_run.py.gz",
+      "RawBytes": 20839,
+      "RawSha256": "0c4cce27be20d6d61270f57d0a7293f727fb8bfb6787a30bbc13be4699a68c2f",
+      "StoredBytes": 5202,
+      "StoredSha256": "9c4a4159845abd10545c4d4e3b5e0a7457cddd79d8f50f0d64130a6074db4590"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/process.json",
+      "Stored": "008-process.json.gz",
+      "RawBytes": 835,
+      "RawSha256": "b42a377cc8eb2fc0cb94baa4297d1b8ecba7f8c2cef97391d684246efdeddcff",
+      "StoredBytes": 448,
+      "StoredSha256": "502e5a98a1b9a4339d2fdbba934a340a75ef8e642c9ea9fac0b4eff800a2a769"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/start.json",
+      "Stored": "009-start.json.gz",
+      "RawBytes": 975,
+      "RawSha256": "47ac49d3d32e607de045e3d44bbc81c576758e562d75755d4c9a6780abe0ecc0",
+      "StoredBytes": 569,
+      "StoredSha256": "921521b22013a99a4acfecc2d2db000270d4826b7f02dbfcbf858034e0e390af"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-5/test_precision_gate_projection_run.py",
+      "Stored": "010-test_precision_gate_projection_run.py.gz",
+      "RawBytes": 19453,
+      "RawSha256": "92c240824d65a5b9d91152a13f11fa160b7eca90e0fde1ad73a3c76de9f818ed",
+      "StoredBytes": 4646,
+      "StoredSha256": "fddcdfeb5baf0972977fd1a09e6b08b1c22ee5c1d680e6dbedb3d2cd1c4831a2"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/0-stderr",
+      "Stored": "011-0-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/0-stdout",
+      "Stored": "012-0-stdout.gz",
+      "RawBytes": 1506,
+      "RawSha256": "93d13d296c19e8963a654daebeb9f3819d2db884089cdab9b9534b2cdff2e0f3",
+      "StoredBytes": 329,
+      "StoredSha256": "be723b0d61146b2fee5b103390a1d3bab5eaf57d9f292517dd93bdc84d4f804f"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/1-stderr",
+      "Stored": "013-1-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/1-stdout",
+      "Stored": "014-1-stdout.gz",
+      "RawBytes": 99,
+      "RawSha256": "49675a6a8d90f5a69033379a43757eea5c03a277003a20e3d68c52ed44850995",
+      "StoredBytes": 52,
+      "StoredSha256": "76f02d0933acbfbe3422afd1b507c24c7aef8845691ad77a646a41b25dd43b2b"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/capture.py",
+      "Stored": "015-capture.py.gz",
+      "RawBytes": 1668,
+      "RawSha256": "a5e7136f6a43c161b22ff5481409ed9aa1bb8f7fe2837cd80d09bd441c84ddbe",
+      "StoredBytes": 835,
+      "StoredSha256": "ee2cb45248954b5ee06aee0c2186341386af7b1f3580c82f8a35dfca4206a9f8"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/dependency/__pycache__/precision_gate_projection_process.cpython-314.pyc",
+      "Stored": "016-precision_gate_projection_process.cpython-314.pyc.gz",
+      "RawBytes": 52837,
+      "RawSha256": "8739d0e5498b83d32afc266f1041782a2456654df423a93be784f0ea00d7cb5e",
+      "StoredBytes": 22106,
+      "StoredSha256": "8da707345fc68f206fbf57d68e7addf7c553267ac65f31a23c21ead817029b63"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/dependency/precision_gate_projection_process.py",
+      "Stored": "017-precision_gate_projection_process.py.gz",
+      "RawBytes": 32293,
+      "RawSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+      "StoredBytes": 7820,
+      "StoredSha256": "46ed4f8053340763966cdab53bcd81152dd07f1020d6c70707f31a2d21bb6267"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/precision_gate_projection_run.py",
+      "Stored": "018-precision_gate_projection_run.py.gz",
+      "RawBytes": 22732,
+      "RawSha256": "643d4eda478493bdf1d9d42e5a589e6b6e9f3d042438f2b0424ae3303b7c32f9",
+      "StoredBytes": 5543,
+      "StoredSha256": "2036a3d05ed8b8534642cbe27b141129f56466346dc50b8966c0b845ee1124f4"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/process.json",
+      "Stored": "019-process.json.gz",
+      "RawBytes": 763,
+      "RawSha256": "dff2c52bfb7a19faf9764df4eeb7dc554ae64864e1d8853c88358147f44b861f",
+      "StoredBytes": 405,
+      "StoredSha256": "e16fe75b6bc323c3898ae29b8541a1aec9a5c92900ff74647925f98e0752be01"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/start.json",
+      "Stored": "020-start.json.gz",
+      "RawBytes": 902,
+      "RawSha256": "40e6e6e8b61a5cf5270f98c8a5aca6632b962d7b824e4d20b00af8d928b437f6",
+      "StoredBytes": 528,
+      "StoredSha256": "43d857af1bdb7ab4b5a3f6d43747468bfb90fef5b7642a1c6168d85058b76113"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-6/test_precision_gate_projection_run.py",
+      "Stored": "021-test_precision_gate_projection_run.py.gz",
+      "RawBytes": 19453,
+      "RawSha256": "92c240824d65a5b9d91152a13f11fa160b7eca90e0fde1ad73a3c76de9f818ed",
+      "StoredBytes": 4646,
+      "StoredSha256": "fddcdfeb5baf0972977fd1a09e6b08b1c22ee5c1d680e6dbedb3d2cd1c4831a2"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/0-stderr",
+      "Stored": "022-0-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/0-stdout",
+      "Stored": "023-0-stdout.gz",
+      "RawBytes": 19,
+      "RawSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/1-stderr",
+      "Stored": "024-1-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/1-stdout",
+      "Stored": "025-1-stdout.gz",
+      "RawBytes": 99,
+      "RawSha256": "fd3287ae817bf44d50af8ac80c09fa4ea2d10127bf8187b54e8ae8180ed210e7",
+      "StoredBytes": 52,
+      "StoredSha256": "b3ac07ffecf2210a637d7e8b35ca1fb8bcfc18ede2327fdadd84e71ed8a64a2c"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/capture.py",
+      "Stored": "026-capture.py.gz",
+      "RawBytes": 1668,
+      "RawSha256": "a5e7136f6a43c161b22ff5481409ed9aa1bb8f7fe2837cd80d09bd441c84ddbe",
+      "StoredBytes": 835,
+      "StoredSha256": "ee2cb45248954b5ee06aee0c2186341386af7b1f3580c82f8a35dfca4206a9f8"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/dependency/__pycache__/precision_gate_projection_process.cpython-314.pyc",
+      "Stored": "027-precision_gate_projection_process.cpython-314.pyc.gz",
+      "RawBytes": 52837,
+      "RawSha256": "be21791d2daed866d8719fc941767c9d5bfadc372bfa7f3e1a1b152be61f650b",
+      "StoredBytes": 22106,
+      "StoredSha256": "50bb58af8d4f88482413044e2a1ac62b71f6b596879109dff103ed14e26f0910"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/dependency/precision_gate_projection_process.py",
+      "Stored": "028-precision_gate_projection_process.py.gz",
+      "RawBytes": 32293,
+      "RawSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+      "StoredBytes": 7820,
+      "StoredSha256": "46ed4f8053340763966cdab53bcd81152dd07f1020d6c70707f31a2d21bb6267"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/precision_gate_projection_run.py",
+      "Stored": "029-precision_gate_projection_run.py.gz",
+      "RawBytes": 22763,
+      "RawSha256": "482f474947b9ea5f0cd96747b5c4579ff8b893b7a051e25f36f27fb340766b03",
+      "StoredBytes": 5560,
+      "StoredSha256": "a39a0b38929295690ecd946f12152c9d5c5ebcac2d05c86e8e7db35a9edb40e6"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/process.json",
+      "Stored": "030-process.json.gz",
+      "RawBytes": 761,
+      "RawSha256": "df7f9cf5b50695c54204a1c00aa47f5ec364de89e71775f710dd6de820f816fd",
+      "StoredBytes": 398,
+      "StoredSha256": "73ee3c3ff69cb60278ec0a9d2e4f4bac6e2de47afcf756491ecc07ac6c5323cc"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/start.json",
+      "Stored": "031-start.json.gz",
+      "RawBytes": 902,
+      "RawSha256": "1016d929f3a22fe70e8023c54c116b9f9cbec5eb095b989eeffa17a04a369d70",
+      "StoredBytes": 529,
+      "StoredSha256": "d5770392ca9adc55e4d067f63fbce66f24ac5e94d01c16e76a6b2c45d3e30904"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-7/test_precision_gate_projection_run.py",
+      "Stored": "032-test_precision_gate_projection_run.py.gz",
+      "RawBytes": 21085,
+      "RawSha256": "c3ecdc7313d9b90e1c6c7bc00be5d06e47caae7623d2528317ea9909a917d04a",
+      "StoredBytes": 4872,
+      "StoredSha256": "ba48bebef5e99b02c05ede57ae4eecb6ceecd0b6121d9f526f7cc491e1a0b5a2"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/0-stderr",
+      "Stored": "033-0-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/0-stdout",
+      "Stored": "034-0-stdout.gz",
+      "RawBytes": 19,
+      "RawSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/1-stderr",
+      "Stored": "035-1-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/1-stdout",
+      "Stored": "036-1-stdout.gz",
+      "RawBytes": 99,
+      "RawSha256": "22bcf39ac58f2aab75937eae287b4a3ae859c9da885a1a6c5af0537a66ecdd3a",
+      "StoredBytes": 52,
+      "StoredSha256": "b9bafa119c1148d131c60f91c8046891fdbbed67366c0514e3972ecb1c06e8f4"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/capture.py",
+      "Stored": "037-capture.py.gz",
+      "RawBytes": 1668,
+      "RawSha256": "a5e7136f6a43c161b22ff5481409ed9aa1bb8f7fe2837cd80d09bd441c84ddbe",
+      "StoredBytes": 835,
+      "StoredSha256": "ee2cb45248954b5ee06aee0c2186341386af7b1f3580c82f8a35dfca4206a9f8"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/dependency/__pycache__/precision_gate_projection_process.cpython-314.pyc",
+      "Stored": "038-precision_gate_projection_process.cpython-314.pyc.gz",
+      "RawBytes": 52837,
+      "RawSha256": "23d8446df9064341a04444896d3e2e6ed86852e74b80506108bdfd85cebfbe63",
+      "StoredBytes": 22105,
+      "StoredSha256": "152cfc9b3cd0c598e657d2599c3516dfd205e7595a3131ad9725debcb219144e"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/dependency/precision_gate_projection_process.py",
+      "Stored": "039-precision_gate_projection_process.py.gz",
+      "RawBytes": 32293,
+      "RawSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+      "StoredBytes": 7820,
+      "StoredSha256": "46ed4f8053340763966cdab53bcd81152dd07f1020d6c70707f31a2d21bb6267"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/precision_gate_projection_run.py",
+      "Stored": "040-precision_gate_projection_run.py.gz",
+      "RawBytes": 25193,
+      "RawSha256": "aada2881e4200760d66fbde688a93f314a99fb061d03f408f68880e384a8b7f0",
+      "StoredBytes": 5899,
+      "StoredSha256": "22ce3f7e91d40e5043083010913ff1889fbe340fa654dd897b7dd33b3996e22c"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/process.json",
+      "Stored": "041-process.json.gz",
+      "RawBytes": 763,
+      "RawSha256": "ff0f53cf8953c057a6227dad2158329032e8cf9dcfbb8a96ca1aa4fca1a1052c",
+      "StoredBytes": 401,
+      "StoredSha256": "a9ceec83fcab9de786ee7a2c402f6515932880a300eb5dc82836549ad15720e1"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/start.json",
+      "Stored": "042-start.json.gz",
+      "RawBytes": 902,
+      "RawSha256": "14bd3cb4d7be71c539b2607400f074792c4568571fc5eba069baf11711d984ec",
+      "StoredBytes": 529,
+      "StoredSha256": "af5b6450af43373381bd670c9ffab795f8cfe51d9ac93891c79c44657d77a15f"
+    },
+    {
+      "Original": ".git/projection-run-fixture-tests-8/test_precision_gate_projection_run.py",
+      "Stored": "043-test_precision_gate_projection_run.py.gz",
+      "RawBytes": 22687,
+      "RawSha256": "6c418f7e8f44037ea03623379326c2b04090863eb61d981629610fe19f840d24",
+      "StoredBytes": 5041,
+      "StoredSha256": "7b8eed8088d86e432121f15053e0988fca9ccaf833cf071ed1c783557d664436"
+    },
+    {
+      "Original": ".git/projection-run-draft-push-1.log",
+      "Stored": "044-projection-run-draft-push-1.log.gz",
+      "RawBytes": 1719,
+      "RawSha256": "f73118a307169e20ac53cf11a86848a2744acf50a9f3229f2fbcb14c7943c381",
+      "StoredBytes": 669,
+      "StoredSha256": "ac84c56ecbc0199db5bf0fa1ee1f94d25819459c0f6af4e72d633474d3f32a42"
+    },
+    {
+      "Original": ".git/projection-run-draft-remote-1.txt",
+      "Stored": "045-projection-run-draft-remote-1.txt.gz",
+      "RawBytes": 102,
+      "RawSha256": "44da59e5de410a93271187e758810690bf86e68c3a007330d33fb2172e42cd26",
+      "StoredBytes": 108,
+      "StoredSha256": "d706e446dc43c7b0cb4c4559e1f2016e10708228c2397c7949a598f0bf6e4edb"
+    }
+  ]
+}

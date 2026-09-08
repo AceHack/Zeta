@@ -1,0 +1,218 @@
+[
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/command.json",
+    "Stored": "01-command.json.gz",
+    "Bytes": 382,
+    "Sha256": "744a2bb88fa296efc41467396a286baa946ad053af7cc94151f7e1d73e8d7d75",
+    "StoredBytes": 279,
+    "StoredSha256": "31cb0aab6dac3620af913826c4b1ec702e6c3e23fa1e143c3df26183c5ed23c0"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/format-repair.stdout",
+    "Stored": "01-format-repair.stdout.gz",
+    "Bytes": 42,
+    "Sha256": "10869b88a75066aa23546ef1f95fcd4678c3fb92a56ed46ef91688052b67976a",
+    "StoredBytes": 58,
+    "StoredSha256": "9e034aaa1899b92e6331269cd6d05434c6c7961950b18d5a76245a92c9cd89fe"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/run.py",
+    "Stored": "01-run.py.gz",
+    "Bytes": 918,
+    "Sha256": "e6057bdfb51e0249b37f7024f386e207b0c0061ac5267af6e057465c3d8c9e19",
+    "StoredBytes": 520,
+    "StoredSha256": "3d1b3bf584d04a385d29a64596a375ae3ad1bb3b92dea1ad5099512c73bba376"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/source.py",
+    "Stored": "01-source.py.gz",
+    "Bytes": 52146,
+    "Sha256": "af42bc84b01a1ada681def42d5ac6499f0470fe7532c76782d052bde7e8057e7",
+    "StoredBytes": 11515,
+    "StoredSha256": "211de750c9530362a67dd0e1d07e17b36b568784bce9acf0e8a19610bec18051"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/stderr",
+    "Stored": "01-stderr.gz",
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StoredBytes": 20,
+    "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/stdout",
+    "Stored": "01-stdout.gz",
+    "Bytes": 16944,
+    "Sha256": "a612a027bbfa48b26517e7edd459aa66c5666a9ce5a7b7c97fc66e963b5a8edd",
+    "StoredBytes": 2644,
+    "StoredSha256": "54c3e0b0ca46e33ab23da9d96598836c01487ceb8bac3de06f1097db0f010ee3"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-1/test.py",
+    "Stored": "01-test.py.gz",
+    "Bytes": 37699,
+    "Sha256": "83ca571c0445e235c2f31cac8a37ad2616b314e54a107e8fa5520eee053b1823",
+    "StoredBytes": 7854,
+    "StoredSha256": "4b54ab1eefe031a237eb6be2569533addb9af25d1de8f59e6c8f64eb6cedb5ee"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-2/command.json",
+    "Stored": "02-command.json.gz",
+    "Bytes": 381,
+    "Sha256": "84b89ea0d880eabe0f2d337131476f12426a43498fcf960d983362a01815144c",
+    "StoredBytes": 279,
+    "StoredSha256": "5c05643fa46c252c389bf096e3021117d8b574effc5124bf55924ab1746a3fad"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-2/run.py",
+    "Stored": "02-run.py.gz",
+    "Bytes": 918,
+    "Sha256": "f24b80e798d31f58c4ba95a62b597daaacc62b1adbab8385085973c66f3223aa",
+    "StoredBytes": 520,
+    "StoredSha256": "1de1400c0b03b2ff9d9ecce3087710db79fcae67a9d1daee5fc47cd31450e4a1"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-2/source.py",
+    "Stored": "02-source.py.gz",
+    "Bytes": 52212,
+    "Sha256": "a29cf3bb448f935b9adca54c00623fef437d48a608ecc74095a92ad522f1d9f3",
+    "StoredBytes": 11564,
+    "StoredSha256": "cc5899458ea48c449caddbd64ce979621691051ec770dfb9f8d77dea64b56726"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-2/stderr",
+    "Stored": "02-stderr.gz",
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StoredBytes": 20,
+    "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-2/stdout",
+    "Stored": "02-stdout.gz",
+    "Bytes": 11634,
+    "Sha256": "598ebee9ca68e7a1fe28c3103e5d206023679fabb812df5630e0973ce4ffb3dd",
+    "StoredBytes": 1663,
+    "StoredSha256": "447204763ce46e6a0693e888e60b912a92f5d8a5cf5440f44ebe8c6e3e198853"
+  },
+  {
+    "Original": ".git/precision-gate-projection-root-return-regressions-2/test.py",
+    "Stored": "02-test.py.gz",
+    "Bytes": 37819,
+    "Sha256": "2460d31d6944e055d9752df3cc9e5ec8a4dcb1cc72e792212cf0a1de6dda9236",
+    "StoredBytes": 7846,
+    "StoredSha256": "e0bd5b45aa9cb3ef46cdadf4ebf5e451ba796ac56bd3c055860048c418dd85c6"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/commands.json",
+    "Stored": "03-commands.json.gz",
+    "Bytes": 1599,
+    "Sha256": "51e3278d0cb3cad22e86ca0a0235c523894506115462704589f3dc078b4b7d3b",
+    "StoredBytes": 367,
+    "StoredSha256": "0ec4834331822ecd3eb4764c736e8891198f18e9e9ebe915b5b46318de894614"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/format.stderr",
+    "Stored": "03-format.stderr.gz",
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StoredBytes": 20,
+    "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/format.stdout",
+    "Stored": "03-format.stdout.gz",
+    "Bytes": 26,
+    "Sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "StoredBytes": 46,
+    "StoredSha256": "9a1a2d79acccdb0f46930a600a1382606067033cfb52a4673dc15b0c1030d871"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/mypy.stderr",
+    "Stored": "03-mypy.stderr.gz",
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StoredBytes": 20,
+    "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/mypy.stdout",
+    "Stored": "03-mypy.stdout.gz",
+    "Bytes": 43,
+    "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+    "StoredBytes": 63,
+    "StoredSha256": "76eacbbf7755358f4be970d3cd86b2d0ffa287f96db2193f42233534159c057d"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/pytest.stderr",
+    "Stored": "03-pytest.stderr.gz",
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StoredBytes": 20,
+    "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/pytest.stdout",
+    "Stored": "03-pytest.stdout.gz",
+    "Bytes": 179,
+    "Sha256": "f148047a2d581d0c0c6c9de829d4a32a39be18eef5e562c0c01e2a0c8e6d6020",
+    "StoredBytes": 60,
+    "StoredSha256": "f5b705111429caf3d7052dff70771035f9ee6477e98b25c2959353b0dbfb900a"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/ruff.stderr",
+    "Stored": "03-ruff.stderr.gz",
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "StoredBytes": 20,
+    "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/ruff.stdout",
+    "Stored": "03-ruff.stdout.gz",
+    "Bytes": 19,
+    "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "StoredBytes": 39,
+    "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/run.py",
+    "Stored": "03-run.py.gz",
+    "Bytes": 1883,
+    "Sha256": "b32069b9a655d7e99a17a01c15217f9e1ba173c6b4098a75896f0a115d3fe01e",
+    "StoredBytes": 770,
+    "StoredSha256": "9a2c99a250337e22d7fae1c53bd9a2ad4af6b089652be92690ba1de4ca68f79c"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/source-0",
+    "Stored": "03-source-0.gz",
+    "Bytes": 52212,
+    "Sha256": "a29cf3bb448f935b9adca54c00623fef437d48a608ecc74095a92ad522f1d9f3",
+    "StoredBytes": 11564,
+    "StoredSha256": "cc5899458ea48c449caddbd64ce979621691051ec770dfb9f8d77dea64b56726"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/source-1",
+    "Stored": "03-source-1.gz",
+    "Bytes": 37819,
+    "Sha256": "2460d31d6944e055d9752df3cc9e5ec8a4dcb1cc72e792212cf0a1de6dda9236",
+    "StoredBytes": 7846,
+    "StoredSha256": "e0bd5b45aa9cb3ef46cdadf4ebf5e451ba796ac56bd3c055860048c418dd85c6"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/source-2",
+    "Stored": "03-source-2.gz",
+    "Bytes": 13619,
+    "Sha256": "28e03d0a261e3c531b40f3d33b64a609c30b40197d0ebac894a913a4ba32d41b",
+    "StoredBytes": 5566,
+    "StoredSha256": "105499c1c4f98d06ffdb7a3c85ad82c97988c1b9b224aac9d10f0f8120dbdc89"
+  },
+  {
+    "Original": ".git/precision-gate-projection-certificate-attempt-6/sources.json",
+    "Stored": "03-sources.json.gz",
+    "Bytes": 579,
+    "Sha256": "4d3dbed6b73febfce8545b0de2aebf52501eecf8d582a35012194be5eee2e742",
+    "StoredBytes": 321,
+    "StoredSha256": "43cb345801ce717dff4f70712d2e31c8a0c11909476884ec3119842685f8f1d7"
+  }
+]

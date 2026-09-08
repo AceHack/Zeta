@@ -1,0 +1,429 @@
+{
+  "AcceptedRunnerCut": "e133efe8324331d43187fd87c54bd4ea39c401f5",
+  "Manifest": {
+    "Bytes": 7681,
+    "Sha256": "5B74F49538F008BC7498FD59D0E904622AE1CC19DCA60F2B6B32417F1E493766"
+  },
+  "Archive": {
+    "Bytes": 119192,
+    "Sha256": "DAE8EC3A3DD005CBD0B991D6310BE91B92766C76E64ADA3DAF1DE0953CE03FCA"
+  },
+  "TarBytes": 583680,
+  "Members": 41,
+  "MemberBytes": 547452,
+  "OriginalAlias": {
+    "claim-push-1.log": ".git/projection-driver-claim-push-1.log"
+  },
+  "Module": {
+    "Bytes": 25597,
+    "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+  },
+  "Tests": {
+    "Bytes": 24771,
+    "Sha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8"
+  },
+  "Sources": [
+    {
+      "Attempt": 1,
+      "ActualSourceCut": "8100544b68573e00fa3e99aa51e94673ebbc25de",
+      "RecordedHead": "8100544b68573e00fa3e99aa51e94673ebbc25de",
+      "Sources": [
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+          "File": "source-00.py",
+          "Bytes": 9695,
+          "Sha256": "d5ea9704c1e33429d990f66ba862bc5ed25a1f5c7c9a15e33a8b8d621ca71124"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+          "File": "source-01.py",
+          "Bytes": 11850,
+          "Sha256": "fa748bbb30a4647d85e264e803f2ffebe4214cda222cb84ff623a0ba1893ee5e"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+          "File": "source-02.py",
+          "Bytes": 10864,
+          "Sha256": "fd8db23e1b077a5bc3b9396e964c30bf927fe7e27a37dfe83ae5412988138616"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "File": "source-03.py",
+          "Bytes": 33669,
+          "Sha256": "0a643cc17f39e2536caa963a1cfd6e200d83cca91cc443799d45c7316e54e6de"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+          "File": "source-04.py",
+          "Bytes": 61549,
+          "Sha256": "c1063f29f5c63fd70e7e9923eb10d32037191559194fd2efec4a35619191e25b"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+          "File": "source-05.py",
+          "Bytes": 25193,
+          "Sha256": "aada2881e4200760d66fbde688a93f314a99fb061d03f408f68880e384a8b7f0"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "File": "source-06.py",
+          "Bytes": 6185,
+          "Sha256": "7d60a095da1c5e536e657900d32c7c50a08bc8ee44928af9a1268c2f4d7b7f61"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "File": "source-07.py",
+          "Bytes": 7989,
+          "Sha256": "95f6f2c131e490f5850297e4b9b1b7fab4eb79237853e4f50875449911812500"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "File": "source-08.py",
+          "Bytes": 8333,
+          "Sha256": "c673182ccc199a2d10d4c085f0d0edbdc6d6d71cd1872be535ee0d55291619f6"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "File": "source-09.py",
+          "Bytes": 16989,
+          "Sha256": "2624ec723fa2ec962b9a30469a95d4ae6b60aea3150bdcffbc9f0983f0eb34b8"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "File": "source-10.py",
+          "Bytes": 48250,
+          "Sha256": "0d96b6f27592dc34c4396c044369e043156d25a4986dfc2b4fef1b2a3f402755"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+          "File": "source-11.py",
+          "Bytes": 22687,
+          "Sha256": "6c418f7e8f44037ea03623379326c2b04090863eb61d981629610fe19f840d24"
+        }
+      ]
+    },
+    {
+      "Attempt": 2,
+      "ActualSourceCut": "e133efe8324331d43187fd87c54bd4ea39c401f5",
+      "RecordedHead": "8100544b68573e00fa3e99aa51e94673ebbc25de",
+      "Sources": [
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+          "Bytes": 9695,
+          "Sha256": "d5ea9704c1e33429d990f66ba862bc5ed25a1f5c7c9a15e33a8b8d621ca71124"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+          "Bytes": 11850,
+          "Sha256": "fa748bbb30a4647d85e264e803f2ffebe4214cda222cb84ff623a0ba1893ee5e"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+          "Bytes": 10864,
+          "Sha256": "fd8db23e1b077a5bc3b9396e964c30bf927fe7e27a37dfe83ae5412988138616"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "Bytes": 33669,
+          "Sha256": "0a643cc17f39e2536caa963a1cfd6e200d83cca91cc443799d45c7316e54e6de"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+          "Bytes": 61549,
+          "Sha256": "c1063f29f5c63fd70e7e9923eb10d32037191559194fd2efec4a35619191e25b"
+        },
+        {
+          "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+          "Bytes": 25597,
+          "Sha256": "41d01a033295c28cc9d51f8510f4c3c1df9ba87af028a2d0e299835602bf9cf6"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "Bytes": 6185,
+          "Sha256": "7d60a095da1c5e536e657900d32c7c50a08bc8ee44928af9a1268c2f4d7b7f61"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "Bytes": 7989,
+          "Sha256": "95f6f2c131e490f5850297e4b9b1b7fab4eb79237853e4f50875449911812500"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "Bytes": 8332,
+          "Sha256": "bccb9b8e32bbbc2e61c5cb557b1e3e0016c92768c8d90f99b10c8232fd3220f7"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "Bytes": 16989,
+          "Sha256": "2624ec723fa2ec962b9a30469a95d4ae6b60aea3150bdcffbc9f0983f0eb34b8"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "Bytes": 48249,
+          "Sha256": "49715787ccf0fc69a38b39d720cdadb3f2f95d523a26e1582e01da5a4f47a22c"
+        },
+        {
+          "Path": "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+          "Bytes": 24771,
+          "Sha256": "4726b5ccd43f5b88674c7deef7c8b72033351c72dafed7fe9cbad10946fbb4c8"
+        }
+      ]
+    }
+  ],
+  "Commands": {
+    "projection-integrated-python-tests-1/process.json": [
+      {
+        "Argv": [
+          "ruff",
+          "check",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+        ],
+        "Exit": 1,
+        "Seconds": 0.04891014099121094
+      },
+      {
+        "Argv": [
+          "src/Interp.Python/.venv/bin/python",
+          "-m",
+          "pytest",
+          "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+          "-q"
+        ],
+        "Exit": 0,
+        "Seconds": 14.764904022216797
+      },
+      {
+        "Argv": [
+          "src/Interp.Python/.venv/bin/python",
+          "-m",
+          "mypy",
+          "--follow-imports=silent",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+        ],
+        "Exit": 1,
+        "Seconds": 2.7735390663146973
+      }
+    ],
+    "projection-integrated-python-tests-2/process.json": [
+      {
+        "Argv": [
+          "ruff",
+          "check",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+        ],
+        "Exit": 0,
+        "Seconds": 0.0502467155456543
+      },
+      {
+        "Argv": [
+          "src/Interp.Python/.venv/bin/python",
+          "-m",
+          "pytest",
+          "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+          "-q"
+        ],
+        "Exit": 0,
+        "Seconds": 6.545284748077393
+      },
+      {
+        "Argv": [
+          "src/Interp.Python/.venv/bin/python",
+          "-m",
+          "mypy",
+          "--follow-imports=silent",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+          "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+          "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+        ],
+        "Exit": 0,
+        "Seconds": 1.9458057880401611
+      }
+    ]
+  },
+  "Outputs": {
+    "projection-integrated-python-tests-1/0-stderr": {
+      "Identity": {
+        "Bytes": 0,
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "Tail": []
+    },
+    "projection-integrated-python-tests-1/0-stdout": {
+      "Identity": {
+        "Bytes": 1644,
+        "Sha256": "5A53F285227751E1AB99DB9F830E8DC016A561D7C9CA47AD209D687A7DE0855D"
+      },
+      "Tail": [
+        "help: Organize imports",
+        "   |",
+        "11 | import pytest",
+        "   -",
+        "12 | from zeta_interp import precision_gate_projection_intervals as iv",
+        "   |",
+        "",
+        "Found 2 errors.",
+        "[*] 2 fixable with the `--fix` option."
+      ]
+    },
+    "projection-integrated-python-tests-1/1-stderr": {
+      "Identity": {
+        "Bytes": 0,
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "Tail": []
+    },
+    "projection-integrated-python-tests-1/1-stdout": {
+      "Identity": {
+        "Bytes": 341,
+        "Sha256": "38E372BE30CE21622CA3A7BC350374D0D02DF866F26E3FC9277BFB3650EDEF8D"
+      },
+      "Tail": [
+        "........................................................................ [ 26%]",
+        "........................................................................ [ 52%]",
+        "........................................................................ [ 79%]",
+        "........................................................                 [100%]",
+        "272 passed in 13.81s"
+      ]
+    },
+    "projection-integrated-python-tests-1/2-stderr": {
+      "Identity": {
+        "Bytes": 0,
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "Tail": []
+    },
+    "projection-integrated-python-tests-1/2-stdout": {
+      "Identity": {
+        "Bytes": 1239,
+        "Sha256": "BABA88298725944A6E73BA833D16D433CBF7B3AA3777DDD2C2919BE293B14498"
+      },
+      "Tail": [
+        "src/Interp.Python/zeta_interp/precision_gate_projection_run.py:239: error: Value of type \"tuple[bytes, Artifact] | None\" is not indexable  [index]",
+        "src/Interp.Python/zeta_interp/precision_gate_projection_run.py:315: error: Argument 1 to \"strict_json\" has incompatible type \"bytes | None\"; expected \"bytes\"  [arg-type]",
+        "src/Interp.Python/tests/test_precision_gate_projection_run.py:346: error: Argument 1 has incompatible type \"object\"; expected \"Path\"  [arg-type]",
+        "src/Interp.Python/tests/test_precision_gate_projection_run.py:346: error: Argument 2 has incompatible type \"object\"; expected \"str\"  [arg-type]",
+        "src/Interp.Python/tests/test_precision_gate_projection_run.py:346: error: Argument 3 has incompatible type \"object\"; expected \"bytes\"  [arg-type]",
+        "src/Interp.Python/tests/test_precision_gate_projection_run.py:385: error: Argument 1 has incompatible type \"object\"; expected \"Path\"  [arg-type]",
+        "src/Interp.Python/tests/test_precision_gate_projection_run.py:385: error: Argument 2 has incompatible type \"object\"; expected \"str\"  [arg-type]",
+        "src/Interp.Python/tests/test_precision_gate_projection_run.py:385: error: Argument 3 has incompatible type \"object\"; expected \"bytes\"  [arg-type]",
+        "Found 8 errors in 2 files (checked 12 source files)"
+      ]
+    },
+    "projection-integrated-python-tests-2/0-stderr": {
+      "Identity": {
+        "Bytes": 0,
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "Tail": []
+    },
+    "projection-integrated-python-tests-2/0-stdout": {
+      "Identity": {
+        "Bytes": 19,
+        "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18"
+      },
+      "Tail": [
+        "All checks passed!"
+      ]
+    },
+    "projection-integrated-python-tests-2/1-stderr": {
+      "Identity": {
+        "Bytes": 0,
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "Tail": []
+    },
+    "projection-integrated-python-tests-2/1-stdout": {
+      "Identity": {
+        "Bytes": 99,
+        "Sha256": "43CC16670BD2B3DB4EE26A86B7A4417ED07B3E8B70B5348E087F4E1811F6A30B"
+      },
+      "Tail": [
+        "............................                                             [100%]",
+        "28 passed in 5.46s"
+      ]
+    },
+    "projection-integrated-python-tests-2/2-stderr": {
+      "Identity": {
+        "Bytes": 0,
+        "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      "Tail": []
+    },
+    "projection-integrated-python-tests-2/2-stdout": {
+      "Identity": {
+        "Bytes": 44,
+        "Sha256": "8B88F6D12BD312C1B024B66D07A7F7619A68482AC4D64E475759B1823199FAA5"
+      },
+      "Tail": [
+        "Success: no issues found in 12 source files"
+      ]
+    },
+    "claim-push-1.log": {
+      "Identity": {
+        "Bytes": 2086,
+        "Sha256": "A90DF9BB7816A0EB9F5290EC106A5757C5D6CF83C9435EC8AF9672D42862C64B"
+      },
+      "Tail": [
+        "  \u2713 lint: Python",
+        "  \u2713 lint: Rust",
+        "  \u2713 lint: Go",
+        "",
+        "\u2717 preflight: 1 check(s) failed.",
+        "error: script \"preflight:quick\" exited with code 1",
+        "\u274c Preflight checks failed! Push aborted.",
+        "\ud83d\udca1 You can bypass this self-check using: ZETA_SKIP_PREFLIGHT=1 git push",
+        "error: failed to push some refs to 'https://github.com/Lucent-Financial-Group/Zeta.git'"
+      ]
+    }
+  },
+  "ArchiveExtracted": false,
+  "ProjectCodeExecuted": false,
+  "FinalNumericalRunExecuted": false
+}

@@ -1,0 +1,85 @@
+{
+  "Scope": "24 disposable fixture tests, not final solver evaluation",
+  "Records": [
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/0-stderr",
+      "Stored": "0-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/0-stdout",
+      "Stored": "0-stdout.gz",
+      "RawBytes": 19,
+      "RawSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/1-stderr",
+      "Stored": "1-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/1-stdout",
+      "Stored": "1-stdout.gz",
+      "RawBytes": 99,
+      "RawSha256": "3a79d17954dee27830b9dbba70f17b8cf991188de68027414978e86679f239ae",
+      "StoredBytes": 52,
+      "StoredSha256": "3c2095d645129211fb5e22fb50d451b25265238b4568156bcb32854c3e7afbd9"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/2-stderr",
+      "Stored": "2-stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/2-stdout",
+      "Stored": "2-stdout.gz",
+      "RawBytes": 43,
+      "RawSha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "StoredBytes": 63,
+      "StoredSha256": "76eacbbf7755358f4be970d3cd86b2d0ffa287f96db2193f42233534159c057d"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/precision_gate_projection_comparison.py",
+      "Stored": "precision_gate_projection_comparison.py.gz",
+      "RawBytes": 11850,
+      "RawSha256": "fa748bbb30a4647d85e264e803f2ffebe4214cda222cb84ff623a0ba1893ee5e",
+      "StoredBytes": 3553,
+      "StoredSha256": "19c67eef6f73cd916c9ab947f84742f835e5249e2332da52e1e734a5d48be72d"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/process.json",
+      "Stored": "process.json.gz",
+      "RawBytes": 843,
+      "RawSha256": "b276f44d151820b1737d56ebd8ee8be9572cab61c3a82b5bce2e62e7d3af4f78",
+      "StoredBytes": 271,
+      "StoredSha256": "b6e1ec988fd8dc39f93025817133c5581a9410fe31548f2df23e2b6725b7c126"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/start.json",
+      "Stored": "start.json.gz",
+      "RawBytes": 708,
+      "RawSha256": "b1e1df05fbb36614344fb5dea344ba9b4d9f03a3e276376b924b84aede877628",
+      "StoredBytes": 240,
+      "StoredSha256": "a24ba9ff2321f8aa265fade514b56cfcaf939c7b65d245b61b3a0d358581bc10"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/test_precision_gate_projection_comparison.py",
+      "Stored": "test_precision_gate_projection_comparison.py.gz",
+      "RawBytes": 7989,
+      "RawSha256": "95f6f2c131e490f5850297e4b9b1b7fab4eb79237853e4f50875449911812500",
+      "StoredBytes": 2501,
+      "StoredSha256": "d1b4852eaca9f4e7dbdddee14eeceff6eda6d5fcd8a1d5ffd0d918af91e94935"
+    }
+  ]
+}
