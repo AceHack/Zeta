@@ -296,3 +296,9 @@ the actual caller/API Failure; this structural correction closes the second
 in source. Exact independent acceptance of the combined certificate remains
 pending. No final registered case, native launch or experimental comparison
 has been executed in this lane.
+
+The [publication custody](precision-gate-projection-reference-validation/2026-09-08/publication/README.md)
+retains both normal owner pushes through ae37ac066, exact remote head matches,
+all 16 quick-check results per push and the earlier 150-record read-only
+custody audit. The audit's source observations remain explicitly dated to
+51a96fa11; later source repairs do not rewrite that history.
