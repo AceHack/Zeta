@@ -17,3 +17,6 @@ All 19 original census paths and both additional paths use main
 6544c068ea0a9bba4a5a55e391c9cddcb7bc8daa. The lack of matches for selected
 moral-oracle symbol spellings is a bounded search result, not an exhaustive
 proof of absence. No moral-default policy or runtime source was changed.
+
+The [normal-push custody follow-up](../../review-push-custody/2026-09-08/README.md)
+retains the exact review push log and a fresh remote-head observation.
