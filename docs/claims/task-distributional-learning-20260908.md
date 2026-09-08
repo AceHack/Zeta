@@ -80,3 +80,19 @@ freezes the independently accepted 1bf71 contract before implementation.
 
 All writers preserve actual first attempts and failures. Project source
 changes are integrated by their named owner; root does not race those edits.
+
+## Native process custody co-claim
+
+Native session `codex/20260907-c7b2a402` additionally owns
+`src/Interp.Python/zeta_interp/precision_gate_projection_process.py` and
+`src/Interp.Python/tests/test_precision_gate_projection_process.py`.
+The coordinator retains whole-run ownership and delegates this bounded launcher
+while independently implementing comparison and retention. Prepared native
+custody records direct script/assembly observations once; each call retains its
+actual process observations and complete output or partial failure. This adds
+no transitive runtime claim and does not authorize opening the final evaluation
+before complete source review and archival.
+
+The coordinator additionally owns `precision_gate_projection_run.py` under
+`src/Interp.Python/zeta_interp/` and its dedicated test under
+`src/Interp.Python/tests/`, as the concrete whole-run retention adapter.
