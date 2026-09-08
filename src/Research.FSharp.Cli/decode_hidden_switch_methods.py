@@ -184,7 +184,7 @@ def decoded_rows(stdout, stderr, exit_code, words):
         if cursor < len(lines) and lines[cursor].lstrip().startswith(";"):
             comment = lines[cursor]
             immediate = re.fullmatch(r"mov[ \t]+([wx])(?:[0-9]|[12][0-9]|30), #(-?(?:0|[1-9][0-9]*))", instruction)
-            annotation = re.fullmatch(r"; =0x([0-9a-f]{1,16})", comment)
+            annotation = re.fullmatch(r" {40}; =0x([0-9a-f]{1,16})", comment)
             if immediate is None or annotation is None:
                 raise ValueError(f"word {index} has an unsupported standalone comment association")
             width = 32 if immediate[1] == "w" else 64
