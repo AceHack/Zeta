@@ -1,0 +1,12 @@
+{
+  "pr_number": 16988,
+  "archive_path": "docs/history/pr-reviews/PR-16988-feat-creds-overlay-namedbunjson-takes-look-null-look-is-missing-os.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T00:21:31.966Z",
+  "schema_version": "v1",
+  "commit_sha": "89fef2155a4769b4c803d0175bc11fd7e6d60814",
+  "title": "feat(creds): overlay NamedBunJson takes look; null look is missing-os",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T00:20:49Z",
+  "head_ref": "cursor/named-bun-json-look-27c5"
+}
