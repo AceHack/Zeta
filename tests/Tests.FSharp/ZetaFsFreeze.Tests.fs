@@ -4044,6 +4044,62 @@ let ``one-byte edit freeze does not duplicate known CAS objects`` () : Task =
     }
 
 [<Fact>]
+let ``remap-epoch crash-mid-write keeps the prior ContentId readable`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register(mock)
+        let store = "/remap-epoch-crash"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payloadA = Array.init 500_000 (fun i -> byte (i % 251))
+        let payloadB = Array.copy payloadA
+        payloadB.[250_000] <- payloadB.[250_000] ^^^ 1uy
+        let ropeB = ZetaFsJumprope.buildV1 payloadB
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payloadA |> ignore
+            let n0 = ZetaFsFreeze.knownCount volume1
+            let pendingA = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a ->
+                firstContent <- a.Content
+                let firstGrowth = ZetaFsFreeze.knownCount volume1 - n0
+                Assert.True(firstGrowth > 6, sprintf "first freeze grew known by %d" firstGrowth)
+                Assert.NotEqual<string>(a.Content.ToHex(), ropeB.Content.ToHex())
+                Assert.True(ZetaFsFreeze.isReadable volume1 a.Content)
+                mock.ArmCrashMidWrite("objects", 1)
+                ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payloadB |> ignore
+                let pendingB = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+                let! _ =
+                    Assert
+                        .ThrowsAsync<CrashMidWriteException>(fun () -> pendingB :> Task)
+                        .ConfigureAwait(false)
+
+                Assert.True(ZetaFsFreeze.isReadable volume1 a.Content)
+                Assert.False(ZetaFsFreeze.isReadable volume1 ropeB.Content)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManualStream store mutbuf None
+
+        try
+            Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+            Assert.False(ZetaFsFreeze.isReadable volume2 ropeB.Content)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``freeze-byte meter survives createManual reopen`` () : Task =
     task {
         ensureHasher ()

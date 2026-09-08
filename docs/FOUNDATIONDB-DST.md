@@ -51,7 +51,9 @@ to hit production without a traditional integration suite.
    is the LBA DST door (not POSIX). DST `createManual` / `create`
    ride `FileSystemBlockIo` for the log and for CAS objects. A
    polyfill crash-mid-write, corrupt-last-write, or reorder of the
-   second freeze keeps the first. Torn-sector intercept
+   second freeze keeps the first. Crash-mid-write during freeze B of a
+   1-byte edit (remap-shaped boat) keeps freeze A's ContentId readable;
+   B is not (`081M20W9GA4087G0R0015YDSNQ`). Torn-sector intercept
    (`ArmTornSector`) overlays a 512-byte prefix of the NEW write and
    acks; the rest of the LBA stays OLD. `GroupCommitDiskDeltaLog`
    defaults to the device door (`IBlockIo` / `ZGL2`); POSIX append
