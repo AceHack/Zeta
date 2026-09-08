@@ -228,8 +228,17 @@ Known-cell reuse checks the exact little-endian target hash and current
 role; literal declarations never claim newly observed data. No safe default
 fallthrough or admitted flag is introduced.
 
-Exact source review, bounded artifact-reader/output-retention implementation
-and their fixtures remain pending. These synthetic tests are not an actual
+Independent mask/source review found one malformed-input boundary: a
+whitespace-only LLVM instruction reached `split()[0]` and raised `IndexError`
+instead of the declared structural `ValueError`. Correction
+`8d50ae0b8c6d45eb58d6fc4e5a29693381fc9ecb` rejects an empty token list before
+indexing. The [four correction records](hidden-switch-compiled-validation/2026-09-07/transfer-shapes-whitespace-preparation/manifest.json)
+retain the first regression's two actual errors, the corrected 20-test
+combined pass, clean Ruff result and exact source/helper pins. No original
+failed log is replaced.
+
+The bounded artifact-reader/output-retention implementation and its
+independent review remain pending. These synthetic tests are not an actual
 130-method transfer inventory. No new decoder, dump, target, source stream
 or measurement was executed for this pure slice.
 
