@@ -202,6 +202,37 @@ inventory result. A later memory/query expansion requires a separately
 reviewed finite roster and authorization. The frozen scientific protocol,
 old source bytes, measured strategy and stream/cost schedule are unchanged.
 
+## Pure shape boundary prepared, collector still pending
+
+Source `8d5b846be553f2578b6474d8a4083213a6e9d908` adds only the pure
+shape functions and synthetic fixtures. The
+[ten preparation records](hidden-switch-compiled-validation/2026-09-07/transfer-shapes-preparation/manifest.json)
+retain the final source/direct-helper pins and all initial/final validation
+logs. Twelve new cases and seven existing static-cell cases pass at the
+final source; Ruff passes after a retained list-literal style finding.
+Earlier logs describe their uncommitted draft snapshots, not execution of
+the final source before it existed.
+
+The implemented masks use the version-bound
+[AArch64 instruction formats](https://github.com/llvm/llvm-project/blob/llvmorg-23.1.0/llvm/lib/Target/AArch64/AArch64InstrFormats.td)
+for integer target construction. That source was retained in the earlier
+review at 531,611 bytes, SHA256
+`E2328467BF6FFAE505DB98DD53218C568CC00DAA3EB8C1392A494A865CD28AFF`.
+Its guidance is separate from actual machine execution or a toolchain proof.
+
+Unsupported word shapes produce explicit rows. Structural correspondence
+errors retain the selected word and any attempted target integer, to let
+the future collector stop while preserving that diagnostic. Computed valid
+ARM addresses remain separate from invalid/overflowing attempted integers.
+Known-cell reuse checks the exact little-endian target hash and current
+role; literal declarations never claim newly observed data. No safe default
+fallthrough or admitted flag is introduced.
+
+Exact source review, bounded artifact-reader/output-retention implementation
+and their fixtures remain pending. These synthetic tests are not an actual
+130-method transfer inventory. No new decoder, dump, target, source stream
+or measurement was executed for this pure slice.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
