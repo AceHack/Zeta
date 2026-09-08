@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade continuity record
 Lifecycle: active
-Status: scalar component verified on main; bounded learning proposal reviewed
+Status: scalar component verified on main; bounded learning contract accepted for implementation
 
 ## Bootstrap
 
@@ -12,7 +12,11 @@ Continue in a writer-owned clone from current origin/main. Read the projection
 [integration register](../research/2026-09-08-precision-gate-projection-integration-register.md)
 and [registered result](../research/2026-09-08-precision-gate-projection-registered-results.md),
 then the [mixed-message/learned-module epoch proposal](../research/2026-09-08-mixed-message-learned-module-epoch-proposal.md)
-and its [independent review](../research/2026-09-08-mixed-message-epoch-independent-review.md). The candidate is a composable DAG
+and its [independent review](../research/2026-09-08-mixed-message-epoch-independent-review.md), followed by the
+[accepted ADR](../DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md),
+[source contract](../research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md)
+and [implementation register](../research/2026-09-08-mixed-message-epoch-implementation-register.md).
+The candidate is a composable DAG
 whose nodes may contain neural modules or nested DAGs. The next investment is
 one bounded checked application/epoch adapter and an actual learned comparison;
 scalar projection certificates are a prerequisite, not a system benchmark.
@@ -98,3 +102,12 @@ returns an error without its local threaded state. The adapter must retain
 EpochResult and the last committed prefix independently before that path, and
 M4 must exercise the actual selected scheduler route. This is part of the
 small adapter obligation, not a new framework or a convergence-proof project.
+
+The subsequent contract at `84fa75bc537f0e32f3df7b6159d9ead3a66f0c3c` is
+accepted by [independent review](../research/2026-09-08-checked-mixed-message-epoch-contract-independent-review.md)
+at `caa59da59281654016bffb90239c2fc09c03f092`. It fixes one actual 57-parameter
+learner, explicit child forecast generation, immutable artifacts, the real
+Python/F# bridge and eight finite controls. Implementation ownership is now
+assigned; the actual integration execution still awaits complete source review
+and archival. The [independent main-publication audit](../research/2026-09-08-pr17051-publication-review.md)
+also accepts the scalar receipt, retaining its later audit-helper correction.

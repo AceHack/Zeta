@@ -139,3 +139,9 @@ those checks: 90 successful contexts, two skips, no unfinished checks or
 unresolved review threads, normal matched-head squash, and exact whole-tree
 and 1,063-path verification on main. The original numerical run remains at its
 frozen source identity; publication hygiene is a separately retained cut.
+
+The [independent main-publication review](2026-09-08-pr17051-publication-review.md)
+accepts the retained main proof and original numerical custody. Its helper
+correction preserves the first execution and the subsequent read-only check.
+The next [accepted implementation decision](../DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md)
+is tracked by the [mixed-message implementation register](2026-09-08-mixed-message-epoch-implementation-register.md).

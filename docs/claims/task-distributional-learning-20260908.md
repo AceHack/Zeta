@@ -107,3 +107,28 @@ separately owned runner/process APIs. It changes no scientific criteria,
 source-independent reference mathematics or final case selection. The owner
 must agree its bounded CLI/manifest design before implementation and must not
 execute the final numerical evaluation before complete source review/archive.
+
+## Checked mixed-message epoch implementation co-claim
+
+Progress: 2026-09-08 UTC. Scalar PR17051 is verified on main. The
+[accepted ADR](../DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md)
+and [implementation register](../research/2026-09-08-mixed-message-epoch-implementation-register.md)
+scope one bounded next cycle; earlier source/result identities remain intact.
+
+- `codex/20260907-c7b2a403` (`identity_formalization`) owns the new
+  `src/Bayesian/BoundedModuleLearner.fs`, `src/Bayesian/MixedMessageEpoch.fs`,
+  their dedicated F# tests and Bayesian source/test project wiring.
+- `codex/20260907-c7b2a402` (`predictor_audit`) owns the new
+  `src/Research.FSharp/MixedMessageEpochReplay.fsx` and independent core review.
+- `codex/20260908-epoch-bridge-review` (`protocol_review`) owns the new
+  `src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py`, its dedicated
+  Python test and independent peer review.
+- Coordinator `codex/20260907-c7b2a401` owns derived build-graph integration,
+  source archive/registration, assembled review, first actual integration
+  controls and publication. Its independent implementation review covers the
+  bridge. Existing writers first agree compiled DTO/service/recorder signatures.
+
+Only local development controls may run before assembled source review and
+immutable registration/archive. Actual M4/M5 integration controls are held for
+the coordinator's separately preserved invocation. No new dataset, benchmark
+fit or old compiled stream is opened by this ownership assignment.

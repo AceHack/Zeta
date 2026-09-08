@@ -56,3 +56,11 @@ indexes the original source capsule, sole registered attempt and independent
 reviews. The later import-grouping correction changes historical manifest
 identities without changing numerical production code; the original manifest
 continues to describe its original source cut.
+
+## Independent verification
+
+The [publication review](../../../2026-09-08-pr17051-publication-review.md)
+independently accepts the actual Git, gate, custody and continuation evidence.
+Its [subsequent helper correction](../../../pr17051-publication-review/2026-09-08/helper-correction.md)
+preserves both original and corrected audit identities. Neither pass reran the
+registered numerical study or changed its historical source manifest.

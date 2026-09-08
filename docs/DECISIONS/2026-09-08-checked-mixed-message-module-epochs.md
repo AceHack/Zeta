@@ -2,8 +2,8 @@
 
 Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Operational status: research-grade proposed ADR
-Status: proposed; source contract requires independent review and ownership before implementation
+Operational status: research-grade implementation decision
+Status: accepted for bounded implementation; execution still requires reviewed source and archive
 Lifecycle: active
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
@@ -19,7 +19,7 @@ They do not supply mixed scheduling, neural training epochs or a live
 Python/F# certification bridge. `SoftScheduler.drive` loses its local threaded
 state when it returns `Error`; the adapter must retain its own actual prefix.
 
-## Decision proposed
+## Decision
 
 Implement the single bounded slice specified in the
 [source contract](../research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md):
@@ -99,6 +99,18 @@ not an adapter prerequisite.
 
 Full PGE reconstruction, forward positive-family projection, Bayesian NN weight
 integration, learned schedules, distributed epochs and global convergence
-theorems remain outside this slice. The present task executed no implementation,
-training, solver, new data or old registered stream. This ADR is a proposed
-decision with an exact bounded source contract, not an execution registration.
+theorems remain outside this slice. The design task executed no implementation,
+training, solver, new data or old registered stream. This decision has an exact
+bounded source contract; it is not an execution registration.
+
+## Acceptance and ownership
+
+The [independent contract review](../research/2026-09-08-checked-mixed-message-epoch-contract-independent-review.md)
+accepts owner source-contract commit `84fa75bc537f0e32f3df7b6159d9ead3a66f0c3c`.
+Its reviewed original ADR bytes remain reachable at that commit. This acceptance
+updates the decision status without changing the reviewed source contract,
+numerical choices or controls. Vera accepts that bounded implementation under
+the user's continuing research authorization. The [integration register](../research/2026-09-08-mixed-message-epoch-implementation-register.md)
+and [existing co-claim](../claims/task-distributional-learning-20260908.md)
+assign disjoint writer paths. Source review and an immutable pre-execution
+archive remain required before the named real integration controls.
