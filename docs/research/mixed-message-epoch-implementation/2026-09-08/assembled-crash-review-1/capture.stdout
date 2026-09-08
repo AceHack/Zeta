@@ -1,0 +1,38 @@
+{
+  "SourceCommit": "1a71b4ff0eebd80e7528bfa93d8971d8726b4470",
+  "Files": 17,
+  "Path": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/docs/research/mixed-message-epoch-implementation/2026-09-08/assembled-crash-review-1",
+  "PriorFrames": {
+    "Image": true,
+    "ImageUuid": true,
+    "ImageOffset": true,
+    "Symbol": true,
+    "SymbolLocation": true
+  },
+  "Runtime": {
+    "Kind": "Runtime",
+    "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+    "ObservedAtUtc": "2026-09-08T14:54:03.263652+00:00",
+    "Bytes": 6217584,
+    "Sha256": "10B24D0B11C7F6D838114744097BF10DF9B08B906AFC9016567631A1C009DFD0",
+    "StatStable": true,
+    "UuidCommand": {
+      "Argv": [
+        "/usr/bin/dwarfdump",
+        "--uuid",
+        "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib"
+      ],
+      "ExitCode": 0,
+      "StdoutFile": "runtime-uuid.stdout",
+      "StderrFile": "runtime-uuid.stderr"
+    },
+    "Limit": "Current file observation, not a digest of originally mapped process pages."
+  },
+  "Ips": {
+    "LocalFileName": "Tests.FSharp-2026-09-08-104234.ips",
+    "Bytes": 478353,
+    "Sha256": "17DCB56BA0A93FF96886175B82920CC66D67439C444A27A1D7E8641D18B6398C",
+    "RawBytesCommitted": false,
+    "Selection": "Process/time, exception, faulting-thread frames and runtime image identity only; excludes incident IDs, responsible process, other threads/registers/environment."
+  }
+}

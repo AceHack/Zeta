@@ -1,0 +1,50 @@
+[
+  {
+    "Path": "src/Bayesian/BoundedModuleLearner.fs",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Bayesian/MixedMessageEpoch.fs",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Bayesian/Bayesian.fsproj",
+    "Unchanged": true
+  },
+  {
+    "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+    "Unchanged": true
+  },
+  {
+    "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+    "Unchanged": true
+  },
+  {
+    "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Research.FSharp/MixedMessageEpochReplay.fsx",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py",
+    "Unchanged": true
+  },
+  {
+    "Path": "src/Interp.Python/tests/test_mixed_message_epoch_bridge.py",
+    "Unchanged": true
+  },
+  {
+    "Path": "docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/invoke.py",
+    "Unchanged": true
+  },
+  {
+    "Path": "docs/research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md",
+    "Unchanged": true
+  }
+]
