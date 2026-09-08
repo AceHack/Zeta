@@ -130,6 +130,56 @@ c86c0e2c02f8ca0b57ff284d59cb9799ecdb3d96a4d16b6e092b5fdc9ec7bb0f.
 This accepts the final inspected and retained launcher bytes. The actual
 child outcome remains a separate audit.
 
+## Pre-child refusal and numbered startup repair
+
+The first actual outer invocation refused before creating its invocation file,
+attempt directory or metadata child. Its four-MiB default executable-identity
+limit could not admit the observed regular Python image of 18,090,720 bytes.
+The transcribed combined tool result (exit one) and subsequent bounded stat
+observation are retained at 10777878add7862d4330f14f3f0c016a3a013c6f. I read
+both records and verified their stored/decompressed identities. They are
+explicitly a transcribed tool result and later observation, not invented
+separate stdout/stderr or a successful range derivation. The image-size
+assumption was visible in my accepted launcher and I did not verify it before
+that acceptance; the failed prelaunch boundary remains part of the review.
+
+The separately named numbered-2 launcher moves preparation, source, execution
+head and runtime observations inside guarded main. AvailablePrefix retains
+each available identity and locator before later admission or publication.
+Only the Python image receives an explicit 32-MiB regular-file limit; other
+per-file bounds are unchanged. Elapsed startup is checked before Popen, and
+the existing child deadline includes that elapsed time. Prelaunch reads/Git
+calls keep their individual bounds; this is not hard cancellation of startup.
+
+During this reread I found another inherited gap: an unpinned preparation
+manifest could substitute sixteen other valid source pins and omit the actual
+entry/import file while passing selected Git comparisons. The final repair
+retains the manifest's observed identity, then requires its exact reviewed
+6,130-byte length and 0834A461...8820D9E digest before interpreting the roster.
+The regression replaces one pin with a different actual local file while
+retaining sixteen unique pins and the source commit. It requires the changed
+manifest observation to survive and neither Git comparison nor child launch
+to occur. This gap was also missed in the earlier launcher pass.
+
+Final inspected numbered-2 launcher: 9,105 bytes, SHA-256
+741927f2980759cf50debdbb561d9bf801b673d63f64de67cf603cd062577fff.
+Final extracted-function tests: 10,773 bytes, SHA-256
+05bb15ddd6b308880b651bfedd697d33fe781280de3edb0544ab54e04426ea63.
+The initial eight cases pass in 0.019 seconds and the final nine in 0.020;
+I read both logs and all added cases, without running them. These include
+the finite sparse image-size discriminator, pre-child failure preservation,
+elapsed-startup refusal and the prior cleanup/publication cases. No material
+source blocker remains in these final bytes. Their preservation and a new
+actual outcome are separate; the original authorization is not an automatic
+retry permission and no physical-read scope follows.
+
+Final correction/preparation is
+af6c1935c5240097b459d0508e204609d60855d7. I verified its eight stored/raw
+records and immutable blobs: 12,357 stored bytes and 41,430 original bytes.
+The 3,932-byte manifest has SHA-256
+61A15A4717FA2B4ACBE7FE5527D49E38B3136E0F045614B7A81800D4029294EF.
+The archived final source/tests match the accepted fingerprints above.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
