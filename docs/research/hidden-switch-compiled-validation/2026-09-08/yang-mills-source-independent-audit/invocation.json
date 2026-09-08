@@ -1,0 +1,26 @@
+{
+  "Reviewer": "Vera / OpenAI Codex / GPT-6 Astra",
+  "Invocation": [
+    "python3",
+    "docs/research/hidden-switch-compiled-validation/2026-09-08/yang-mills-source-independent-audit/audit.py"
+  ],
+  "ExitCodeObservedFromTool": 0,
+  "ExecutionScope": "stdlib retained-byte checks and read-only Git commands; no project imports or scientific execution",
+  "Records": [
+    {
+      "File": "audit.py",
+      "Bytes": 2900,
+      "Sha256": "c40eb0665a8cdd86ee5de80f1b5586954621f248f5414951e871d8ee12f2474d"
+    },
+    {
+      "File": "result.json",
+      "Bytes": 2413,
+      "Sha256": "80276b204e4de2f76e4aa57bf5df04c1057aac9c46e70590cffa18ae456a7822"
+    },
+    {
+      "File": "stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
