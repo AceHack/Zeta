@@ -72,8 +72,9 @@ bind all fourteen source/import files plus two tests to that commit. Twelve
 focused tests passed, followed by 73 selected related tests and 89 with the
 retained decoder grammar fixtures included. The initial Ruff import-format
 finding and fixed pass remain separate. Quick preflight passed all sixteen
-executed checks. Independent read-only source review accepted the exact pin;
-its signed record and the actual proposal observation will remain separate.
+executed checks. Independent read-only source review accepted the exact pin
+at `7252b7419aedf581982cc61d29ab7c8a4eb988f2`; the actual proposal
+observation remains separate.
 
 The proposed file-backed wrapper admits exactly the inventory manifest and
 mapped-extent manifest, then 132 selected archived records: the inventory
@@ -117,6 +118,27 @@ has no count override, dump reader, subprocess or target entry point. Final
 source review and an exact retained invocation precede the actual proposal;
 the resulting roster still needs independent review before any physical
 reader may consume it.
+
+The [four launcher preparation records](hidden-switch-compiled-validation/2026-09-07/data-proposal-launcher-preparation/manifest.json)
+retain the original unexecuted draft and two reviewer findings: a poll/kill
+exception skipped the later join, and final publication could replace an
+established failure. The corrected launcher guards poll, kill and join
+separately before each owned stream close. It attempts an exclusive terminal
+file, independent failure file and bounded console; console failure has its
+own separate file. Each terminal channel is limited to 64 KiB. Original
+files are never overwritten. Four fixtures compile only these exact
+AST-extracted functions and inject failures around real file closes/writes;
+they do not execute the child path.
+
+The one proposed launcher checks sixteen source/test identities against the
+reviewed source commit, then records exact arguments, execution head, Python
+file identity, preparation and its own source identity before its child.
+The owned child has a sixty-second checked deadline and a polled 64-KiB
+limit on each stdout/stderr file. The launcher rechecks the source pins and
+retains PID, exit code and direct-child join outcome. These bounds do not
+promise an OS quota or descendant quiescence. Final launcher rereview and
+preparation preservation precede the separately authorized metadata-only
+attempt; they authorize no physical read.
 
 ## One held local dump, no chained query
 
