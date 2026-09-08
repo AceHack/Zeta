@@ -60,3 +60,16 @@ The [publication validation archive](distributional-learning/2026-09-08/publicat
 retains the complete full gate, five fresh process controls, independent replay
 returns, 124-test log and the original claim-removal refusal. Its manifest
 records raw and stored byte identities; all earlier failures remain visible.
+
+## Reviewed documentation continuation
+
+The [publication scope review](2026-09-08-distributional-learning-publication-scope-review.md)
+records the initial claim finding and its corrected source boundary. The
+[composable learning continuation](2026-09-08-composable-learning-circuit-continuation.md)
+restores the September probabilistic-circuit lineage and keeps neural modules
+inside the compositional system hypothesis. The
+[Yang-Mills source record](../ip-questionable/2026-09-08-voyager-yang-mills-mass-gap-talk.md)
+adds Aaron's computer-science question and his explicit correction: fabricated
+memories and coordinated cartels are expected adversarial behavior, with
+existing detector and formal-analysis work. These documentation additions do
+not introduce a learned benchmark or a gauge implementation.
