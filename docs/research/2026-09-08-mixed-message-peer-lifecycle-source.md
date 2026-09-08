@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra, peer implementation owner
 Operational status: research-grade implementation development
 Lifecycle: active
-Status: source checkpoint; independent complete-peer review and assembled admission pending
+Status: bounded peer source review accepted; assembled scientific admission pending
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 The [single peer script](../../src/Research.FSharp/MixedMessageEpochReplay.fsx)
@@ -149,3 +149,34 @@ external peer/coordinator route, data read or training observation is claimed.
 Dedicated empty-input and extra-argument standard invocations are retained
 separately from the in-memory checks. Final source review and assembled gates
 remain required before the coordinator opens any named route.
+
+## Final source gate and independent disposition
+
+The immutable peer source is `d16bafa2a71e503878d645a8ea4f52244b5c227b`:
+99,661 bytes, SHA256
+`5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795`.
+Independent lifecycle review is signed at
+`95d7dca78e771089237fec60eceba45482d1558c`; it checked all 96 stored, raw and
+local original development records and all seven source pins, without an
+additional peer/numerical execution. It found no further bounded source defect.
+The review explicitly distinguishes held objects and test assertions from full
+scientific receipts. Its normal preservation push and exact remote were verified
+by its owner. This peer writer does not substitute that for assembled admission.
+
+The [separate gate archive](mixed-message-epoch/2026-09-08/peer-lifecycle-gate/manifest.json)
+retains the full preflight invocation and original outputs: exit 0, all 18
+executed checks passed, including Release build and the full test suite. All
+seven before/after source, test and project identities remained unchanged.
+The gate began on the working bytes before their d16b source commit; the
+record binds those exact bytes, rather than claiming d16b was already HEAD
+at launch. Later prose/review commits did not change the admitted source set.
+
+`dotnet format --verify-no-changes --include` for the peer path exited 0 and
+left its source unchanged, but explicitly reported that F# projects are not
+supported. This is a retained formatter limitation, not a verified F# formatting
+claim. FSI compilation, focused controls and the repository F# lint are the
+actual source checks reported above. The final quick push gate covers the
+subsequent documentation receipts separately. This gate remains scoped to
+core15b43; later core model/withdrawal corrections require their own final
+source pins and assembled gate. No named M4/M5 or nested query is admitted
+by these results.
