@@ -66,7 +66,8 @@ for row in source_manifest['SourceFiles']:
         else:
             assert path=='src/Interp.Python/pyproject.toml'
             old=tomllib.loads(before.decode()); new=tomllib.loads(after.decode())
-            assert new['tool'].pop('ruff')=={'lint':{'isort':{'known-first-party':['zeta_interp']}}}
+            removed_ruff = new['tool'].pop('ruff')
+            assert removed_ruff=={'lint':{'isort':{'known-first-party':['zeta_interp']}}}
             assert old==new
         changes.append({'Path':path,'BeforeBytes':len(before),'BeforeSha256':sha(before),'AfterBytes':len(after),'AfterSha256':sha(after)})
 assert len(changes)==8
