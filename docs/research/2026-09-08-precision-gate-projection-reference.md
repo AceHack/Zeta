@@ -114,3 +114,42 @@ coordinator and imported unchanged as b13f86f52 before wire implementation.
 The interval checkpoint does not implement that wire boundary yet.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra.
+
+## Root checkpoint plan before first execution
+
+The source now implements `reference_root`; `certify_native` remains pending.
+Public `ReceiptFailure(Failure,Receipt)` is a separate outer result for encoding
+failure after actual work. It retains the complete in-memory receipt, without
+claiming that value was encoded or durably published. The coordinator accepted
+this distinction before these tests. Caller metadata refusal remains the
+ordinary five-field Failure; Success.Value remains the registered receipt.
+
+The rendered-zero clarification at 1d8fd0bb6 was imported as 914349fb2 before
+conversion test execution. A registration-index conflict was resolved with the
+exact coordinator commit's registration bytes; the source correction itself
+was unchanged. Nonzero nominal U/K may render to signed zero. T/C rendering
+to zero retains the target and refuses Domain after numerical entry, before
+parameter work. No new blanket conversion-underflow rule is introduced.
+
+The first root tests use three independently derived arithmetic centers,
+one ordinary noncenter and its one-attempt profile, strict decimal/JSON cases,
+rendered-zero drift/signs, independent binding failures, and injected numeric
+and encoding faults. They do not invoke a native process or the final fixed
+40-case/88-call runner. Complete first diagnostics will be retained.
+
+## Root source checkpoint
+
+The first run passed 41 cases and failed one encoding-fault fixture: its patch
+intercepted JSON fixture construction before the public call. The repair
+prepares the actual input before installing the encoder fault. The first
+strict check reported eleven typing diagnostics; explicit nonreturning failure
+annotations and typed union narrowing resolve them. Ruff passed initially;
+formatting was then applied. All first source bytes and diagnostics remain.
+
+Three added regressions exercise one recoverable midpoint stagnation, exhausted
+precision and an empty proof intersection. They retain actual old bounds,
+context/counter continuity and first-terminal failure. The corrected checkpoint
+passes 45 tests in 5.12 seconds, strict typing, Ruff and format verification.
+The [root checkpoint custody](precision-gate-projection-reference-validation/2026-09-08/root/README.md)
+is separate from the earlier interval archive. This checkpoint implements the
+root service only; candidate-certificate source and review remain pending.
