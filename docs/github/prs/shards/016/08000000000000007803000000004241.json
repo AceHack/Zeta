@@ -1,0 +1,12 @@
+{
+  "pr_number": 16961,
+  "archive_path": "docs/history/pr-reviews/PR-16961-feat-cluster-hindsight-llm-key-eso-on-metal-minted-dev-secret-in-ci.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T23:26:56.665Z",
+  "schema_version": "v1",
+  "commit_sha": "7a396e81482894fac2291e706c4ba26eea4f9133",
+  "title": "feat(cluster): hindsight LLM key — ESO on metal, minted dev Secret in CI",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:26:19Z",
+  "head_ref": "shadow/hindsight-minted-dev-secret"
+}

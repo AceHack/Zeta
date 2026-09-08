@@ -1,0 +1,12 @@
+{
+  "pr_number": 16984,
+  "archive_path": "docs/history/pr-reviews/PR-16984-feat-creds-overlay-namedargv-takes-from-json-null-look-is-missing-os.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T23:28:40.675Z",
+  "schema_version": "v1",
+  "commit_sha": "65d3997dcad005171504b8ec9c288a7882a72d6e",
+  "title": "feat(creds): overlay NamedArgv takes --from-json; null look is missing-os",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:28:03Z",
+  "head_ref": "cursor/named-argv-from-json-27c5"
+}
