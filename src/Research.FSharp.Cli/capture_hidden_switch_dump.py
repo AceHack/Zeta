@@ -9,6 +9,7 @@ import json
 import os
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -35,6 +36,87 @@ def write(path, value):
         stream.write("\n")
         stream.flush()
         os.fsync(stream.fileno())
+
+
+def custody_copy(source, destination):
+    """Same regular descriptor supplies bytes/hash; explicit owned close retains first error."""
+    original = copied = None
+    primary = None
+    cleanup = []
+    result = None
+    try:
+        original = source.open("rb")
+        before = os.fstat(original.fileno())
+        if not stat.S_ISREG(before.st_mode) or not 0 < before.st_size <= 64 * 1024**2:
+            raise ValueError("target custody requires a regular nonempty file of at most 64 MiB")
+        digest = hashlib.sha256()
+        remaining = before.st_size
+        deadline = time.monotonic() + 10
+        copied = destination.open("xb")
+        while remaining:
+            if time.monotonic() >= deadline:
+                raise TimeoutError("target custody copy exceeded checked ten-second deadline")
+            raw = original.read(min(1024 * 1024, remaining))
+            if not raw:
+                raise ValueError("target custody source became short")
+            copied.write(raw)
+            digest.update(raw)
+            remaining -= len(raw)
+        copied.flush()
+        os.fsync(copied.fileno())
+        after = os.fstat(original.fileno())
+        fields = ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+        if original.read(1) or any(getattr(before, key) != getattr(after, key) for key in fields):
+            raise ValueError("target custody descriptor changed during copy; partial copy retained")
+        observed = source.stat()
+        if any(getattr(before, key) != getattr(observed, key) for key in fields):
+            raise ValueError("target custody pathname changed during copy; copied bytes retained")
+        pin = {"File": str(source), "Bytes": before.st_size, "Sha256": digest.hexdigest().upper()}
+        expected = {**pin, "File": str(destination)}
+        if identity(destination) != expected:
+            raise ValueError("exclusive target custody copy differs from captured bytes")
+        result = {"Original": pin, "Copy": expected}
+
+    except Exception as error:  # noqa: BLE001 - retain the first actual copy refusal
+        primary = error
+    finally:
+        for name, stream in [("copy", copied), ("original", original)]:
+            if stream is not None:
+                try:
+                    stream.close()
+                except Exception as error:  # noqa: BLE001 - close exactly once without hiding the copy failure
+                    cleanup.append({"Resource": name, "Code": type(error).__name__, "Detail": str(error)[:4096]})
+        if cleanup and primary is None:
+            primary = OSError("target custody cleanup failed after copy")
+        if primary is not None:
+            primary.custody_cleanup = cleanup
+            raise primary
+    return result
+
+
+def target_custody(dll, attempt):
+    directory = attempt / "target-files"
+    os.mkdir(directory)
+    files = sorted(dll.parent.glob("*.dll")) + [dll.with_suffix(".runtimeconfig.json"), dll.with_suffix(".deps.json")]
+    if dll not in files or not 0 < len(files) <= 64 or len({p.name for p in files}) != len(files):
+        raise ValueError("target custody requires a unique finite adjacent module/config roster")
+    rows = []
+    for index, source in enumerate(files):
+        try:
+            row = custody_copy(source, directory / source.name)
+        except Exception as error:
+            try:
+                write(attempt / f"target-custody-{index:02d}-failure.json", {
+                      "Source": str(source), "Code": type(error).__name__, "Detail": str(error)[:4096],
+                      "CleanupFailures": getattr(error, "custody_cleanup", [])})
+            except Exception as reporting:  # noqa: BLE001 - reporting cannot replace the established copy failure
+                error.custody_reporting = {"Code": type(reporting).__name__, "Detail": str(reporting)[:4096]}
+            raise
+        rows.append(row)
+        write(attempt / f"target-custody-{index:02d}.json", row)
+    write(attempt / "target-custody.json", {"Records": rows,
+          "Scope": "exclusive copies of exact adjacent target DLL/config bytes before launch; stable writer paths through analysis, not hostile namespace or in-place-write isolation"})
+    return rows
 
 
 def stop_owned(process):
@@ -84,7 +166,10 @@ def capture(host, dll, tool, attempt):
         inputs.append(project)
         inputs.extend((project.parent / item.attrib["Include"]).resolve()
                       for item in ET.parse(project).iter("Compile"))
+        custody = target_custody(dll, attempt)
         pins = [identity(p) for p in inputs]
+        if any(row["Original"] not in pins for row in custody):
+            raise ValueError("target custody differs from independently recorded prelaunch pins")
         flags = {"DOTNET_TieredCompilation": "0", "DOTNET_TieredPGO": "0", "DOTNET_ReadyToRun": "0",
                  "DOTNET_JitDisasm": "Zeta.Research.HiddenSwitchPolicy*:* Zeta.Research.HiddenSwitchCompiledPolicy*:* Zeta.Research.HiddenSwitchObservation*:* Zeta.Research.HiddenSwitchCompiledReceipt*:* Zeta.Research.HiddenSwitchCompiledSelector*:* Zeta.Research.HiddenSwitchCompiledCertificate:depth* Zeta.Research.HiddenSwitchCompiledGraph:prepare* Zeta.Research.HiddenSwitchCompiledGraph+prepare*:*",
                  "DOTNET_JitDisasmSummary": "1", "DOTNET_JitDisasmWithCodeBytes": "1",
@@ -99,7 +184,7 @@ def capture(host, dll, tool, attempt):
         collector_env.update(collector_flags)
         commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True, timeout=10).strip()
         write(attempt / "inputs.json", {"SourceCommit": commit, "Pins": pins,
-              "TargetArguments": target_args, "StartupOverrides": flags,
+              "TargetArguments": target_args, "StartupOverrides": flags, "TargetCustody": custody,
               "CollectorHostOverrides": collector_flags,
               "CollectorHostMeaning": "tool apphost/package and possible installed runtimes pinned separately; actual host selection requires retained host trace, not the target 10.0.11 label",
               "OtherRuntimeEnvironmentKeys": sorted(k for k in env if k.startswith(("DOTNET_", "COMPlus_", "CORECLR_", "COR_", "DYLD_")) and k not in flags),
@@ -164,11 +249,16 @@ def capture(host, dll, tool, attempt):
             outcome["Complete"] = True
         stage = "post-target-identities"
         outcome["InputsUnchanged"] = all(identity(Path(pin["File"])) == pin for pin in pins)
+        outcome["TargetCustodyUnchanged"] = all(identity(Path(row["Copy"]["File"])) == row["Copy"] for row in custody)
+        if not outcome["TargetCustodyUnchanged"]:
+            raise ValueError("one or more exclusive target custody copies changed")
         if not outcome["InputsUnchanged"]:
             raise ValueError("one or more pinned input bytes changed")
     except Exception as error:  # noqa: BLE001 - owned CLI boundary retains unexpected failure before cleanup
         outcome["Complete"] = False
         outcome["Failure"] = {"Stage": stage, "Code": type(error).__name__, "Detail": str(error)}
+        outcome["CustodyCleanupFailures"] = getattr(error, "custody_cleanup", [])
+        outcome["CustodyReportingFailure"] = getattr(error, "custody_reporting", None)
     finally:
         for name, process in [("collector", collector), ("target", target)]:
             try:

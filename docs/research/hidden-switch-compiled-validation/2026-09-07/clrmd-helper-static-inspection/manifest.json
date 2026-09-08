@@ -1,0 +1,107 @@
+{
+  "Kind": "read-only-installed-assembly-inspection",
+  "Task": "081M1XXWTTF087G0R000X1HMD0",
+  "SubjectQueried": false,
+  "RawDumpRead": false,
+  "Records": [
+    {
+      "OriginalFile": "process-modules.ildasm.invocation.json",
+      "RawBytes": 1149,
+      "RawSha256": "7e4201e4e82b0bc178942ee31c8fc42b151b1d84daecb08e5fae246d6fd20b2e",
+      "StoredFile": "process-modules.ildasm.invocation.json.gz",
+      "StoredBytes": 554,
+      "StoredSha256": "09fca928a20f9d0ce0a511c65521c239a0b0a5bf18535a6da1394d4aed360256",
+      "Encoding": "gzip; losslessly verified; mtime=0"
+    },
+    {
+      "OriginalFile": "process-modules.ildasm.stdout.txt",
+      "RawBytes": 1690,
+      "RawSha256": "7dc4f8457b035e5f506f8609dd8a31a78ca2396054afca9f47a718098e313a28",
+      "StoredFile": "process-modules.ildasm.stdout.txt.gz",
+      "StoredBytes": 579,
+      "StoredSha256": "69ac84ea6e525d5b4a8266d5c8cd48908b51012c220ce88db2bc6855dfb20b76",
+      "Encoding": "gzip; losslessly verified; mtime=0"
+    },
+    {
+      "OriginalFile": "process-modules.ildasm.stderr.txt",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredFile": "process-modules.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip; losslessly verified; mtime=0"
+    },
+    {
+      "OriginalFile": "clrmd-runtime-enumeration.ildasm.invocation.json",
+      "RawBytes": 938,
+      "RawSha256": "6e5f1b7294f004059b944c8ef27b47babee8da8154b0f08cc00a006b1ca1afa3",
+      "StoredFile": "clrmd-runtime-enumeration.ildasm.invocation.json.gz",
+      "StoredBytes": 486,
+      "StoredSha256": "c474d8c7ead84141d9c1a0ed181ea20f03a6ccb2e60f72d9d51c899bc11c55cc",
+      "Encoding": "gzip; losslessly verified; mtime=0"
+    },
+    {
+      "OriginalFile": "clrmd-runtime-enumeration.ildasm.stdout.txt",
+      "RawBytes": 27030,
+      "RawSha256": "e9c83a30c48284a99339731169bb0a85b89fb84fd468a19a3f0be0aeb8469b23",
+      "StoredFile": "clrmd-runtime-enumeration.ildasm.stdout.txt.gz",
+      "StoredBytes": 2741,
+      "StoredSha256": "8da1a17b13dd67f61849543b477beff01d8e572263464863080a73b8fd91afd3",
+      "Encoding": "gzip; losslessly verified; mtime=0"
+    },
+    {
+      "OriginalFile": "clrmd-runtime-enumeration.ildasm.stderr.txt",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredFile": "clrmd-runtime-enumeration.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip; losslessly verified; mtime=0"
+    }
+  ],
+  "ClrMdInput": {
+    "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.Runtime.dll",
+    "Bytes": 685640,
+    "Sha256": "45fe59b0e9d206b37616f0177279189b53a4eec50717dd6cd60c9d7c38a2a59e"
+  },
+  "ReviewedWorkingSource": [
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/Admission.fs",
+      "Bytes": 8329,
+      "Sha256": "d2914f8a88f146c12681bb22648227a9fc3066a9fdfcea2d8db45eea920b9234"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/Program.fs",
+      "Bytes": 21247,
+      "Sha256": "8befb1751b5fc435bc11a635edb077d42743e9827e86968ce43f1243b8bc55bd"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/NativeImages.fs",
+      "Bytes": 3937,
+      "Sha256": "34cf43ed8d6deaa96e5a90f8b0c32f1e2b9950916d6d8cd49c7b4b488651ce35"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/HiddenSwitchMetadata.fsproj",
+      "Bytes": 3094,
+      "Sha256": "9e32a3b438c43845988a306de1d22aa18f226a561b01e7ed03f7c2753b5f47e7"
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/dependencies.json",
+      "Bytes": 3329,
+      "Sha256": "0d655825ca695206198fb1a6980006bc8f2e468d03ac15fdfd81c59020fafc8e"
+    },
+    {
+      "File": "tests/Tests.FSharp/HiddenSwitchMetadata.Tests.fs",
+      "Bytes": 8239,
+      "Sha256": "12a86c64a7cdce7367c35a5a993d5406b7a7395e36274b6658e0e5952f3fe68b"
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 48100,
+      "Sha256": "f9051ccb85b19b1d56bc6594c54fb4eddcffdcf42b4a7b0fadfc3a9ad0e93558"
+    }
+  ],
+  "SourceStatus": "uncommitted corrected helper at review; final source commit/gates recorded in review note separately",
+  "FinalSourceCommit": "2f068ba34da612f82370c64cef4e38a909e7edd5",
+  "FinalSourceCorrespondence": "All seven reviewed working files were independently verified byte-identical to the final committed files; no metadata query executed by reviewer."
+}

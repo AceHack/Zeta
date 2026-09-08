@@ -1,0 +1,87 @@
+{
+  "SourceCommit": "37a8bc1ca61d7018310d6cfdf5a35efbd73df4b9",
+  "Scope": "metadata-only finite mapping; no dump-byte access or runtime query",
+  "Records": [
+    {
+      "File": "inputs.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-attempt-1/inputs.json",
+      "Bytes": 2196,
+      "Sha256": "AD65963EA39BEC0B257DCA0031F1C4DCCBA77D35AACF3DFB888716A1FFC5385C",
+      "StoredBytes": 739,
+      "StoredSha256": "453DDF74957198A223F0334D0D16B77B2D7E63728AD71F539934E067AB8EBC98",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "mapping.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-attempt-1/mapping.json",
+      "Bytes": 185092,
+      "Sha256": "0D22A5C3679B5F47F874E8C1C10CFD34B17E9E4B7E3B649E2590F22F0F25A39A",
+      "StoredBytes": 20404,
+      "StoredSha256": "5719CD76EDAE4501BE19A3C280161B7AEB689D1E9F0FDDA2C1C6B7EBCE11EBCB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "outcome.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-attempt-1/outcome.json",
+      "Bytes": 372,
+      "Sha256": "55D6772C20902855AABF8FAE0012C069FA8BE46701145681432665FF77675002",
+      "StoredBytes": 295,
+      "StoredSha256": "1DB8FA9CD29C15700EB1596AF6390DB9BEA8BFC54659F65197FBAEA0460B3AEE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "start.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-attempt-1/start.json",
+      "Bytes": 200,
+      "Sha256": "3F02174B66BFE1076D2ACE976435308B5DDFBC3281712B2627DAC983FA1E805B",
+      "StoredBytes": 182,
+      "StoredSha256": "732A59228C67168EF46EBA3B254827AB6AAD85BA59D83DE3B21A79B19EE64776",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-clrmd-mapping-attempt-1-invocation.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-attempt-1-invocation.json",
+      "Bytes": 583,
+      "Sha256": "2A0D15B78790ADD0E48F2BEAFE026BFA8E004E491DE2AEEE51DBBA639B3D3CE7",
+      "StoredBytes": 321,
+      "StoredSha256": "037E38D8D085246DE2FF3331F1CCE7A56410024172F793A520A147C597146AF4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-clrmd-mapping-attempt-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-attempt-1.log",
+      "Bytes": 349,
+      "Sha256": "F39035825D4357E369720378F02DF42AF23F23842FB5D79E03FA742E91BAFB8C",
+      "StoredBytes": 239,
+      "StoredSha256": "CB18A588F966EF463CDCB00EDD59785CB865C9DE86D476BDA814E8623ACF9953",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-clrmd-mapping-tests-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-tests-1.log",
+      "Bytes": 101,
+      "Sha256": "921B60A7FD52E978FBB551CACD29DF2D6708879400278E1FCC70FCEEB0C6F8E0",
+      "StoredBytes": 54,
+      "StoredSha256": "199711F9F11966BDD0300B64DC8E1E7D764ADD50DCA339E3905086D2287B8EE7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-clrmd-mapping-ruff-1.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-ruff-1.log",
+      "Bytes": 778,
+      "Sha256": "705F29430D7E8E7EB773539718BF0A36E93A45E27AF5679A92A9089EBD0E16CF",
+      "StoredBytes": 450,
+      "StoredSha256": "FFC0C22B06E8D2F935B21B2C52E95F124B6650E9329CBCF2932E5D125FD5A38E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-clrmd-mapping-ruff-2.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-clrmd-mapping-ruff-2.log",
+      "Bytes": 38,
+      "Sha256": "AAC3A0503D8B95052CC85FB9F1717DC82B74AA55853A5AA9749B41E30275D472",
+      "StoredBytes": 58,
+      "StoredSha256": "9A293A43CBBDFFC92644CBA254FC3DC7EA239470C11F304101B36540D7ABDBE9",
+      "Encoding": "gzip"
+    }
+  ]
+}

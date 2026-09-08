@@ -1,0 +1,146 @@
+{
+  "SourceCommit": "be839a0c4784b25c35eb4a1cfb43fe087c11c999",
+  "ComparedBase": "fcbfaf8188a31ac6dbe5b00e1731c692ed5919be",
+  "FullGateAttempts": [
+    {
+      "Attempt": 1,
+      "Exit": 1,
+      "PassedChecks": 17,
+      "FailedCheck": "dotnet test",
+      "ObservedFailure": "TLC JVM SIGSEGV; cause unassigned"
+    },
+    {
+      "Attempt": 2,
+      "Exit": 0,
+      "PassedChecks": 18,
+      "SourceUnchanged": true
+    }
+  ],
+  "TargetedUnchangedRetry": {
+    "Passed": 1,
+    "Failed": 0,
+    "Skipped": 0
+  },
+  "NativeHelperUnitTests": {
+    "Passed": 67,
+    "NewTargetExecution": false
+  },
+  "CrashDiagnosticEntries": 114,
+  "ChangedSourceFiles": 31,
+  "ArtifactCount": 14,
+  "Artifacts": [
+    {
+      "File": "replay-publication-full-preflight-1.log.gz",
+      "Bytes": 16168,
+      "Sha256": "e390bd47d3df99e53c9d1f1df25d081a33c3d3ca6468217e4b962776f5d4f7bf",
+      "StoredBytes": 3087,
+      "StoredSha256": "a9b875fc332e6cc30cf77c45f706d907f9e5cc2e904d6ec026fe187e88642305",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-tlc-retry-1.log.gz",
+      "Bytes": 345,
+      "Sha256": "121e6872a1de4e6b9e4ffb5312d7fd7e6d812be595efcc791ec1cca86dd9eb12",
+      "StoredBytes": 252,
+      "StoredSha256": "d361f48d737fbfd23c96bcba85eb67ad8dddb8de1fefda39aac66d7dbeb28b19",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "tlc-crash-inventory.json.gz",
+      "Bytes": 19657,
+      "Sha256": "5c6575474f75d6772aa76488750895700674cba461551feec2fc3ec8d497625f",
+      "StoredBytes": 5759,
+      "StoredSha256": "15db8288852b7de49880ebf90887a8f4b9a8dcefb60df25c917529c8365b7ae4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "tlc-crash.tar.gz",
+      "Bytes": 5273600,
+      "Sha256": "e7e2318110882c0c89d568b8f3c5ccf7d8456db81c06aafabade619e7d8dc0cd",
+      "StoredBytes": 1989004,
+      "StoredSha256": "a791f1560a4eb0aa546fef0b33a759950b638563686104216ef79eb3f137cb8a",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "failed-gate-retention-manifest.json.gz",
+      "Bytes": 1554,
+      "Sha256": "b689602a1319010b508fbf64d722a3dd2ee4236daaadb955e170f636ff9e81ba",
+      "StoredBytes": 756,
+      "StoredSha256": "f1adf9a4c46bc79e407ed8e291eb1ee3182e235bd317ec2a9d534711b2552fef",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-full-preflight-2.log.gz",
+      "Bytes": 1362,
+      "Sha256": "c7561cf0e5dd61e406cffae95b49151dd32602169a68889a2fdb2068e889768d",
+      "StoredBytes": 437,
+      "StoredSha256": "d7a238cfb20ba29f3e750c607ff137ce2206e09a382c0d2ae1b065eb37403d40",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-native-helper-tests-1.log.gz",
+      "Bytes": 166,
+      "Sha256": "b4e7c7880d1181e8d7c7f34c056ada0c43879f2ce7b17206a6a097636192964b",
+      "StoredBytes": 56,
+      "StoredSha256": "0f53a56a94157abd3c77a945d0ce8df1419da829d42efd1d78e2f1dc4bab0b56",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-claim-push-1.log.gz",
+      "Bytes": 1990,
+      "Sha256": "1ebc90dea51169f317ab4ac73593470f7f0cef6ff6e14e8279a038f1e1625ac4",
+      "StoredBytes": 711,
+      "StoredSha256": "62c636b7c850a8f8882eb1929b2a25c3ff58ccaabff458bbabec7dc099414288",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-integration-1.log.gz",
+      "Bytes": 66,
+      "Sha256": "96bb6a194a796153cbd0c640642866371219451832063763d544b942a8d97c4e",
+      "StoredBytes": 80,
+      "StoredSha256": "14f4974eee9fd66172eb9e62f9d392b71c124fb22b039a141d6d9f051a56c6d4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-history-push-1.log.gz",
+      "Bytes": 2073,
+      "Sha256": "d5fac64c1383ab7b49dafdf06af3ab3d92ed28a7fe80202b515ac16d36c88919",
+      "StoredBytes": 829,
+      "StoredSha256": "64ba4e4f3747d34eb29f90f77f0903a48a08d8c16e9d39e69813e37ed7a17e22",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "replay-publication-history-refs-1.log.gz",
+      "Bytes": 369,
+      "Sha256": "ad8020e45f1037510e7a82bec433827c3ad29bbc6bd2205cb074899970424ab4",
+      "StoredBytes": 198,
+      "StoredSha256": "d2ed8b782e52975ecaba7886c0c9807061674ce79488bb09b68916e5f69ead54",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "tested-source-tree.bin.gz",
+      "Bytes": 8617807,
+      "Sha256": "4b12672d1cc85448b99b7eecd555e46930e70723c5291f6ca3a48444ca37ccfc",
+      "StoredBytes": 2572964,
+      "StoredSha256": "c2f9e29085ebdcdc0f1ca6e77e8945dcc0df3a44edc6f095c8e950f332cfa70e",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "changed-source-pins.json.gz",
+      "Bytes": 6272,
+      "Sha256": "a1aea9f1d93a493022f1d8970551f570b35341a4fc141855f2c8bd65ea08867a",
+      "StoredBytes": 1924,
+      "StoredSha256": "5c9e2835ba8ade4cce1fa4b8f0a743477e68db0ce873837146d2b9bf4c334d09",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retainer.py.gz",
+      "Bytes": 4987,
+      "Sha256": "10b2a4c6db3d70f3606ba601e6760870d27c19619e6c24d175856bf769a4979f",
+      "StoredBytes": 2264,
+      "StoredSha256": "8dc8c2957757a39f75ac6383ad69e356ad3848c05444fc4fbf7b83df3d7cf02a",
+      "Encoding": "gzip"
+    }
+  ],
+  "Scope": "Local validation and source preservation only; runtime/body/closure admission and registered measurements remain pending."
+}

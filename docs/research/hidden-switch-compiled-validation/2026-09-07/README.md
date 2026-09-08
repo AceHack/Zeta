@@ -35,6 +35,14 @@ tracked Interp Python/config identities and the actual owned fixture tree.
 The [manifest](integration-5/manifest.json) keeps source and raw/stored hashes.
 This subset is separate from full Interp/native or runtime/outer admission.
 
+The [exact outer structure](../../2026-09-07-hidden-switch-compiled-outer-structure-validation.md)
+retains 60 tests for independent identity binding and the complete/failed
+92-case structure. Its read plan is separate from actual reads and replay.
+
+The [actual strict outer artifact reads](../../2026-09-07-hidden-switch-compiled-outer-artifact-validation.md)
+retain the 23-test original and accepted 25-test exception repair, three
+owned fixture trees and complete first-failure read outcomes. Operation replay
+and final source/runtime admission remain separate.
 The [bounded prerequisite publication](../../2026-09-07-hidden-switch-compiled-prerequisites-publication.md)
 freezes a reviewed source/evidence slice while the parent experiment and
 its runtime/outer admission remain active.
@@ -355,3 +363,28 @@ identities. Its unresolved dependencies remain explicit; runtime admission
 stays false. The [source-history record](source-history-retention.md) indexes
 original writer commits through split publication. The parent compiled
 implementation task remains open.
+
+- [Sixth integrated validation](integration-6/README.md): 1,164 compiled Python
+  tests pass at their exact source pin, with the complete owned fixture tree.
+
+- [Prerequisites verified on main](pr-16982-394e-final-2/README.md): PR #16982,
+  complete 2,314-path proof, current platform passes and retained historical drift.
+
+- [Truncated-gzip boundary correction](../../2026-09-07-hidden-switch-compiled-gzip-fixture-correction.md):
+  the original filename refusal is retained; 34 tests verify the intended reader boundary.
+
+- [Actual file replay validation](../../2026-09-07-hidden-switch-compiled-file-replay-validation.md):
+  81 focused tests and seven actual cases with 11 original/11 fresh operations.
+
+## Seventh integrated validation
+
+The [seventh integrated validation](integration-7/README.md) preserves all
+1,259 compiled Python tests and all 18 full repository preflight checks at
+source `e6238f8acc89c4d619c6631f0cb0111aa9258c20`, with complete logs,
+95 source/config pins and the actual 4,870-entry owned fixture tree.
+
+## Replay publication gate
+
+The [2026-09-08 publication record](../2026-09-08/replay-publication-gates/README.md)
+retains both full-gate attempts, the complete TLC crash diagnostics, unchanged
+retry, 67 helper tests and the four canonical source-history ref receipts.

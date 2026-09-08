@@ -110,6 +110,9 @@
     <Compile Include="HiddenSwitchCompiledCertificate.Tests.fs" />
     <Compile Include="HiddenSwitchCompiledCertificateCheck.Tests.fs" />
     <Compile Include="HiddenSwitchCompiledSemantic.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp.Cli/MetadataProbe/Admission.fs" Link="Research/HiddenSwitchMetadataAdmission.fs" />
+    <Compile Include="../../src/Research.FSharp.Cli/MetadataProbe/NativeImages.fs" Link="Research/HiddenSwitchMetadataNativeImages.fs" />
+    <Compile Include="HiddenSwitchMetadata.Tests.fs" />
     <Compile Include="Algebra/Spine.AsyncProtocol.Properties.fs" />
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />
@@ -874,5 +877,9 @@
     <!-- TEST-ONLY: the in-memory exporter is the seam that turns "an OTLP exporter is
          wired" into "the counters and spans actually arrive". Not a production dep. -->
     <PackageReference Include="OpenTelemetry.Exporter.InMemory" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../src/Research.FSharp.Cli/MetadataProbe/dependencies.json" Link="MetadataProbe.dependencies.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../docs/research/hidden-switch-compiled-validation/2026-09-07/clrmd-mapping-attempt-1/mapping.json.gz" Link="MetadataProbe.mapping.json.gz" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

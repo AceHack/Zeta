@@ -1,0 +1,22 @@
+{
+  "SourceCommit": "20043d1408bfa3a515f5d59864ad858595044707",
+  "ExecutionHead": "1be0fa57b256d34045f3b3e5a9b2f55ce0dfe550",
+  "ManifestSha256": "DDBAE0C9820E8D02B221466D1E3F9677A350A5CE4F7C66BD4D5158652ACFE8E7",
+  "Records": 272,
+  "StoredBytes": 473052,
+  "OriginalBytes": 4907243,
+  "RecheckedFilePins": 144,
+  "Methods": 130,
+  "Words": 8665,
+  "Bytes": 34660,
+  "RawComments": 851,
+  "TextLines": 9516,
+  "Process": {
+    "ProcessId": 89193,
+    "ExitCode": 0
+  },
+  "FinishedAtUtc": "2026-09-08T00:06:24.424737+00:00",
+  "PhysicalScope": "retained read receipts and prior accepted mapping; no dump reread",
+  "NoDecoderOrTargetExecution": true,
+  "FullAdmissionFlags": false
+}
