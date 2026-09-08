@@ -1,0 +1,14 @@
+{
+  "id": "080d03f5e438f810a0130008a4bfd0ef",
+  "at": "2026-09-08T01:57:59.711Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZBS1RY087G0R003ZG6VS2",
+    "type": "bug",
+    "title": "smartcardHsm becomes a capture state so unmeasured stops meaning absent",
+    "slug": "smartcardhsm-becomes-a-capture-state-so-unmeasured-stops-mea",
+    "priority": "P2",
+    "filename": "081M1ZBS1RY087G0R003ZG6VS2-smartcardhsm-becomes-a-capture-state-so-unmeasured-stops-mea.md"
+  }
+}

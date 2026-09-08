@@ -43,7 +43,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -58,7 +58,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -73,7 +73,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -91,7 +91,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -115,7 +115,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: false,
       yubikeyDetected: false,
       pkcs11ModuleOnDisk: false,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(tpm))).toBe("tpm2-pkcs11");
     const hsm = namedProbeFromFrostResult(
@@ -136,7 +136,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: false,
       yubikeyDetected: false,
       pkcs11ModuleOnDisk: false,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(hsm))).toBe("yubihsm2");
   });
@@ -151,7 +151,7 @@ describe("namedProbeFromFrostResult — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
   });
 

@@ -34,6 +34,6 @@ export function namedProbeFromFrostResult(
     smartCardReaderAttached: result.smartCardReaderAttached,
     yubikeyDetected: result.yubikeyDetected,
     pkcs11ModuleOnDisk: result.pkcs11ModuleFound || result.yubiHsm2Pkcs11ModuleFound,
-    smartcardHsm: false,
+    smartcardHsm: "not-asked",
   };
 }

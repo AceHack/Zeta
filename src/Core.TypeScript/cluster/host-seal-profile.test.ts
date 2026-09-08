@@ -48,7 +48,7 @@ describe("metal oracle follows attached hardware, never an emulator", () => {
   });
 
   test("smartcard HSM wins over TPM when no YubiHSM", () => {
-    expect(pickSealOracleFromCapture(nixosMetal({ smartcardHsm: true, tpm2: "present" }))).toBe("smartcard-hsm");
+    expect(pickSealOracleFromCapture(nixosMetal({ smartcardHsm: "present", tpm2: "present" }))).toBe("smartcard-hsm");
   });
 
   test("TPM present is tpm2-pkcs11, not swtpm", () => {
@@ -79,7 +79,7 @@ describe("prod-metal — rotation is automatic; FIDO and biometric are refused",
   });
 
   test("prod + only FIDO refuses FIDO rotation", () => {
-    const p = classifyHostSeal("prod-metal", nixosMetal({ yubikeyFido: true, yubiHsm2: "absent", tpm2: "absent" }));
+    const p = classifyHostSeal("prod-metal", nixosMetal({ yubikeyFido: true, yubiHsm2: "absent", tpm2: "absent", smartcardHsm: "absent" }));
     expect(p.rotation).toEqual({ ok: false, reason: "prod-refuses-fido-rotation" });
     expect(p.assess).toBe("drift");
   });
@@ -87,7 +87,7 @@ describe("prod-metal — rotation is automatic; FIDO and biometric are refused",
   test("prod + only biometric refuses biometric rotation", () => {
     const p = classifyHostSeal(
       "prod-metal",
-      nixosMetal({ biometricEnrolled: true, yubiHsm2: "absent", tpm2: "absent" }),
+      nixosMetal({ biometricEnrolled: true, yubiHsm2: "absent", tpm2: "absent", smartcardHsm: "absent" }),
     );
     expect(p.rotation).toEqual({ ok: false, reason: "prod-refuses-biometric-rotation" });
   });
@@ -108,7 +108,7 @@ describe("prod-metal — rotation is automatic; FIDO and biometric are refused",
   test("a driver without a device is refused, not honoured as HSM", () => {
     const p = classifyHostSeal(
       "prod-metal",
-      nixosMetal({ pkcs11ModuleOnDisk: true, yubiHsm2: "absent", tpm2: "absent" }),
+      nixosMetal({ pkcs11ModuleOnDisk: true, yubiHsm2: "absent", tpm2: "absent", smartcardHsm: "absent" }),
     );
     expect(p.rotation).toEqual({ ok: false, reason: "driver-is-not-a-device" });
   });
@@ -207,7 +207,7 @@ describe("hostCaptureFromNamedProbe — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
       ...partial,
     };
   }
@@ -228,7 +228,7 @@ describe("hostCaptureFromNamedProbe — tpmrm0 is not present", () => {
   test("YubiKey plus CCID reader is not CardContact SmartCard-HSM", () => {
     const capture = hostCaptureFromNamedProbe(snapshot());
     expect(capture.yubikeyFido).toBe(true);
-    expect(capture.smartcardHsm).toBe(false);
+    expect(capture.smartcardHsm).toBe("not-asked");
     expect(pickSealOracleFromCapture(capture)).toBe("none");
   });
 
@@ -250,9 +250,49 @@ describe("hostCaptureFromNamedProbe — tpmrm0 is not present", () => {
     );
     expect(tpm.tpm2).toBe("present");
     expect(pickSealOracleFromCapture(tpm)).toBe("tpm2-pkcs11");
-    const card = hostCaptureFromNamedProbe(snapshot({ smartcardHsm: true, yubikeyDetected: false }));
-    expect(card.smartcardHsm).toBe(true);
+    const card = hostCaptureFromNamedProbe(snapshot({ smartcardHsm: "present", yubikeyDetected: false }));
+    expect(card.smartcardHsm).toBe("present");
     expect(card.yubikeyFido).toBe(false);
     expect(pickSealOracleFromCapture(card)).toBe("smartcard-hsm");
   });
 });
+
+// ---------------------------------------------------------------------------
+// THE BARE BOOLEAN CARRIED TWO MEANINGS. These pin that it no longer can.
+//
+// `smartcardHsm` was `boolean`, and `false` was read as "absent" when picking
+// the seal oracle and as "we did not look" when deciding whether anything had
+// been probed. One field, two incompatible readings, decided by whichever
+// function consulted it -- while its siblings carry `not-asked` precisely so
+// that cannot happen to them.
+//
+// Measured wrong on real hardware 2026-09-08: the frost->named mapper hardcoded
+// `false` on a box with a SmartCard-HSM v4.1 attached and provisioned.
+// ---------------------------------------------------------------------------
+describe("smartcardHsm distinguishes unmeasured from absent", () => {
+  test("NOT-ASKED does not select the smartcard oracle", () => {
+    // The old `if (capture.smartcardHsm)` would also refuse here, but for the
+    // wrong reason: it could not tell this case from a measured absence.
+    expect(pickSealOracleFromCapture(nixosMetal({ smartcardHsm: "not-asked" }))).not.toBe("smartcard-hsm");
+    expect(pickSealOracleFromCapture(nixosMetal({ smartcardHsm: "absent" }))).not.toBe("smartcard-hsm");
+    expect(pickSealOracleFromCapture(nixosMetal({ smartcardHsm: "present" }))).toBe("smartcard-hsm");
+  });
+
+  test("a card nobody asked about is CHECK-DID-NOT-RUN, not drift", () => {
+    // The distinction the old type could not express. TPM and YubiHSM were
+    // both looked at and found absent; the card was never asked. Reporting
+    // `drift` here would be a check that did not run wearing the face of one
+    // that ran and found nothing.
+    const unasked = classifyHostSeal("prod-metal", nixosMetal({ yubiHsm2: "absent", tpm2: "absent", smartcardHsm: "not-asked" }));
+    expect(unasked.assess).toBe("check-did-not-run");
+
+    const looked = classifyHostSeal("prod-metal", nixosMetal({ yubiHsm2: "absent", tpm2: "absent", smartcardHsm: "absent" }));
+    expect(looked.assess).toBe("drift");
+  });
+
+  test("INDETERMINATE is stuck, not absent — it cannot read as a clean look", () => {
+    const stuck = classifyHostSeal("prod-metal", nixosMetal({ yubiHsm2: "absent", tpm2: "absent", smartcardHsm: "indeterminate" }));
+    expect(stuck.assess).toBe("check-did-not-run");
+  });
+});
+

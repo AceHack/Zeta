@@ -70,7 +70,7 @@ describe("namedProbeFromFrostLook — tpmrm0 is not present", () => {
       smartCardReaderAttached: false,
       yubikeyDetected: false,
       pkcs11ModuleOnDisk: false,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -94,7 +94,7 @@ describe("namedProbeFromFrostLook — tpmrm0 is not present", () => {
       smartCardReaderAttached: true,
       yubikeyDetected: true,
       pkcs11ModuleOnDisk: false,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -114,7 +114,7 @@ describe("namedProbeFromFrostLook — tpmrm0 is not present", () => {
       smartCardReaderAttached: false,
       yubikeyDetected: false,
       pkcs11ModuleOnDisk: true,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("none");
   });
@@ -129,7 +129,7 @@ describe("namedProbeFromFrostLook — tpmrm0 is not present", () => {
       smartCardReaderAttached: false,
       yubikeyDetected: false,
       pkcs11ModuleOnDisk: false,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
     expect(pickSealOracleFromCapture(hostCaptureFromNamedProbe(probe))).toBe("tpm2-pkcs11");
   });
@@ -144,7 +144,7 @@ describe("namedProbeFromFrostLook — tpmrm0 is not present", () => {
       smartCardReaderAttached: false,
       yubikeyDetected: false,
       pkcs11ModuleOnDisk: false,
-      smartcardHsm: false,
+      smartcardHsm: "not-asked",
     });
   });
 

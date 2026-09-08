@@ -55,7 +55,7 @@ function namedTpmPresent(): NamedHardwareProbe {
     smartCardReaderAttached: false,
     yubikeyDetected: false,
     pkcs11ModuleOnDisk: false,
-    smartcardHsm: false,
+    smartcardHsm: "not-asked",
   };
 }
 
