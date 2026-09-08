@@ -138,3 +138,11 @@ accepts the exact note and original serialization witness at owner commit
 mixed_message_epoch_controls.py plan builders; they execute no experiment on
 import. Root retains the first registered execution and assembled source-admission
 responsibility. Development controls are not those registered executions.
+
+The first [learner/codec implementation checkpoint](../research/2026-09-08-mixed-message-core-implementation-checkpoint.md)
+is imported after remote verification; the runtime remains unfinished. Read the
+[separate frozen nested-query registration](../research/2026-09-08-mixed-message-frozen-nested-query-register.md)
+before constructing its plan. It fixes a hidden 0.75 input at origin eight,
+actual learned child/parent artifacts and an explicit output alias, without
+another fit or a fifth M5 session. The root import receipt and outstanding
+source/execution gates are indexed by the implementation register.

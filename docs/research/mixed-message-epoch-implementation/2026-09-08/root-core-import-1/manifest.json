@@ -1,0 +1,115 @@
+{
+  "Schema": "zeta.mixed-epoch.root-checkpoint.v1",
+  "Scope": "Imported learner/codec build and development quick gate only; no epoch/runtime or actual M4/M5/nested query entered",
+  "SourceOwner": "b097d56eccc630046cd3bf618a362b01edeba329",
+  "ImportedCommit": "4c3757f7a",
+  "Archive": "custody.tar.gz",
+  "ArchiveBytes": 40849,
+  "ArchiveSha256": "B051465F11955C76F9D98BFE4A0A0698B8047D06720268C108D7FA74B085BECB",
+  "MemberCount": 17,
+  "OriginalBytes": 160504,
+  "Members": [
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/call-0/completion.json",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/call-0/completion.json",
+      "Bytes": 303,
+      "Sha256": "90751BA71413B923CE8A444D00D43DD9AFD997B35D8CFFAD8D0B760A9CDC2A4F"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/call-0/stderr",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/call-0/stderr",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/call-0/stdout",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/call-0/stdout",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/call-1/completion.json",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/call-1/completion.json",
+      "Bytes": 390,
+      "Sha256": "B31C8224040DBA478902CB0DF36EFB5112A7E4722EA2159812B5B9F05E662A28"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/call-1/stderr",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/call-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/call-1/stdout",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/call-1/stdout",
+      "Bytes": 920,
+      "Sha256": "A909C556589ADA8FAD9F7B605A01A20AEB1633843CD30DF1FE1622DD5EF7C31F"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-00",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-00",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-01",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-01",
+      "Bytes": 93397,
+      "Sha256": "B1C33E7829E5B2604950BAF66844703843EF1F27C27EDF5C3E9A82FCD0B6B774"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-02",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-02",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-03",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-03",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-04",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-04",
+      "Bytes": 6298,
+      "Sha256": "797DDFAAB78664D9AAFB4012B5DF2CA65C450209FD006423F5864A5630BC7355"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-05",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-05",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-06",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-06",
+      "Bytes": 5984,
+      "Sha256": "823995732D03E3D93F735CC04C836D591C1F6CA96A69C8D4B7E5A22700A53707"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-07",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-07",
+      "Bytes": 8704,
+      "Sha256": "E654E466551CB578818C0A2A6162173ACB4E42E24D8C2E5201261CFE6174F4D0"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/source-after.json",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/source-after.json",
+      "Bytes": 756,
+      "Sha256": "D539C75E589BA8213BF9FE9358A6C8041FA1809DA45B0B285304FC2945289F22"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint-1/sources.json",
+      "OriginalPath": ".git/epoch-control-root-checkpoint-1/sources.json",
+      "Bytes": 1583,
+      "Sha256": "1524DC857B5A433851492DA2A00B7F7F6AE1CDD9A1920517AE0C6C130636406C"
+    },
+    {
+      "ArchivePath": "originals/epoch-control-root-checkpoint.py",
+      "OriginalPath": ".git/epoch-control-root-checkpoint.py",
+      "Bytes": 2188,
+      "Sha256": "1DD351E46E38F07C0CA360BDC625B2846A03C20222DD801C90D28996B25F3A56"
+    }
+  ]
+}

@@ -65,6 +65,11 @@ two target-hidden frozen queries and parent training, within the shared outer
 ledger. M1-M8 and one frozen nested query must be demonstrated; mocks alone
 cannot close the cycle. A named failed control stops that configuration.
 
+The [separate frozen nested-query registration](2026-09-08-mixed-message-frozen-nested-query-register.md)
+fixes its hidden row, two learned nodes, parent input and composite output alias
+before execution. It uses the two actual M5 artifacts without another fit and
+does not extend the four-session M5 ledger.
+
 After this bounded cycle, register one chronological learned comparison using
 compatible individual, flat, shallow and deeper compositions and a feasible
 pinned published comparator. Fix feature/label availability, inner forecasts,
@@ -119,3 +124,17 @@ It verifies all eight retained witness members and their equal decoded strings
 but unequal encoded bytes. This supersedes the note's historical pending-review
 status without changing its source binding. It accepts conventions only;
 concrete code, encoder golden tests and actual M4/M5 remain separate gates.
+
+## First implementation checkpoint
+
+The [core checkpoint](2026-09-08-mixed-message-core-implementation-checkpoint.md)
+is normally pushed at owner `b097d56eccc630046cd3bf618a362b01edeba329` and
+imported as `4c3757f7a` after fresh remote verification. Its 31 focused tests
+and 16 quick checks are development evidence for the learner and codecs.
+`runEpoch` and final assembled admission remain unfinished. No actual named
+M4/M5 or frozen nested query has run. The derived build graph was re-derived
+after import and reported already current.
+
+The [coordinator import receipt](mixed-message-epoch-implementation/2026-09-08/root-core-import-1/README.md)
+retains its actual 16-check quick pass and Bayesian Release build with zero
+warnings/errors. Neither is a complete solution gate or an actual epoch run.
