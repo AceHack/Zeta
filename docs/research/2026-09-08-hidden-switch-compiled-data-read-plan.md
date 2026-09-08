@@ -171,6 +171,25 @@ image allowance and guarded pre-child prefix/terminal publication require
 a separately reviewed correction. No actual proposal, target or physical
 query occurred, and the failure authorizes no automatic retry.
 
+The [eight startup-repair records](hidden-switch-compiled-validation/2026-09-07/data-proposal-launcher-startup-repair/manifest.json)
+preserve the separately numbered launcher 2, its inspected precursor and
+all eight initial/nine final extracted-function fixtures. The Python image
+alone has a 32-MiB allowance; other identity limits remain unchanged. All
+pre-child preparation/source/runtime observations now enter the guarded
+outcome path, including each observed source hash before its next check.
+The actual preparation manifest hash is retained and then must equal the
+reviewed 6,130-byte identity before the roster is parsed. This closes a
+further reviewer finding: the same SourceCommit and sixteen unique valid
+pins alone could admit a substituted subset. A changed sixteen-pin fixture
+retains the observed manifest identity and refuses before Git or child work.
+
+The final source is 9,105 bytes, SHA256
+`741927F2980759CF50DEBDBB561D9BF801B673D63F64DE67CF603CD062577FFF`.
+Independent read-only review accepted those exact bytes and nine fixtures.
+The original startup failure remains a failure. A separately authorized
+metadata-only attempt 2 must retain its own invocation/output, and still
+authorizes no physical read or target execution.
+
 ## One held local dump, no chained query
 
 The proposed physical file is the already captured local-only dump 2:
