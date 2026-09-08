@@ -290,9 +290,30 @@ terminal data. Size refusal marks omitted metadata explicitly; successful
 checkpoint writes preserve completed prefixes, without a kernel quota or
 abrupt-failure retention guarantee.
 
-Exact collector source review is pending. No complete actual 130-method
-transfer inventory has been run, and these preparations do not authorize
-new target, decoder, memory, registered-source or measurement work.
+Final source `370c110c93598874615efe60a5bed23ac6e5263d` repairs two retention
+edges. The author found that the aggregate byte budget reserved the main
+outcome but omitted the secondary failure report and console bytes; the
+reviewer independently reached the same finding after that message. The
+reviewer also found that a later source read/parse failure could discard
+earlier observed source hashes. Observed hashes now reach the independent
+report before a checkpoint or later dependency can fail; the budget reserves
+two MiB plus two separate 16-KiB terminal/console bounds, including delimiters.
+
+The [ten correction records](hidden-switch-compiled-validation/2026-09-07/transfer-inventory-retention-preparation/manifest.json)
+retain final 20 focused / 69 combined passes, clean Ruff, fourteen exact
+source/test pins and a separately labeled replay of the original `c97efff`
+source. That synthetic old-source replay shows the permitted charge could
+exceed the total when later reports are counted; it does not claim an actual
+disk overflow. Its source-read failure actually retains zero source rows
+despite an instrumented completed first read. Corrected regressions retain
+the observed hash through both later read and current-checkpoint failure.
+
+Independent source review accepted the final pin within this finite scope.
+The proposed selected-record set, checked from manifest metadata alone, is
+534 records and 7,164,913 original bytes including the four manifests; this
+fits the declared limits. No complete actual 130-method transfer inventory
+has been run, and these preparations do not authorize new target, decoder,
+memory, registered-source or measurement work.
 
 ```text
 Agency-Signature-Version: 1
