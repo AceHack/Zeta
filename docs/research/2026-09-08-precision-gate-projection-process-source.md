@@ -112,10 +112,15 @@ survives secondary close errors. This stable owned-tree scope does not guarantee
 kernel-I/O cancellation, hostile namespace isolation, aggregate OS memory quotas
 or all possible mutation-race detection.
 
-Two reader threads retain at most 128 KiB stdout / 64 KiB stderr plus one observed
-byte each as an explicit overflow witness. They have no unbounded queue. Overflow,
+Two reader threads use nonblocking descriptors, 50-millisecond readiness waits
+and an explicit cancellation event. They retain at most 128 KiB stdout / 64 KiB
+stderr plus one observed byte each as an explicit overflow witness. They have no unbounded queue. Overflow,
 read failure, timeout, missing EOF or unjoined readers refuse completion. An
-incomplete reader can yield only its observed prefix. Finite data serialization
+incomplete reader can yield only its observed prefix. Cleanup first attempts a
+one-second join, then cancellation and another one-second join if still alive.
+A reader-owned pipe is closed only after its reader is observed finished; a
+still-live reader retains ownership and a typed refusal. This is Unix pipe
+transport on the verified host, not portable Windows pipe-readiness admission. Finite data serialization
 and file operations remain separate from the child deadline; no universal wall
 time or memory-allocation cancellation is claimed.
 
@@ -162,3 +167,41 @@ optional-observation narrowing, typed reader-join closure, test import ordering
 and explicit test-owned stream cleanup. No initial failed log is rewritten as a
 pass. Final immutable source/evidence and independent review are prerequisites
 to coordinator integration. Full corrected-source gate remains separately logged.
+
+The [immutable preparation inventory](precision-gate-projection/2026-09-08/process-preparation-1/manifest.json)
+binds source `b575e34bd5cda05176ee14f89aedb2fa10edbb96`, all 66 retained
+records (266,984 raw / 70,582 stored bytes) and 14 source/contract/wiring pins.
+The first diagnostic logs without a separate command-completion JSON remain raw
+tool-output records; later invocations retain their actual exit codes explicitly.
+All stored and decompressed bytes were checked against the available originals.
+
+## Reader ownership and available-byte corrections
+
+Independent review of b575 identified a pipe-ownership race: its bounded join
+could leave a reader alive, after which cleanup still closed that reader's pipe.
+The author separately identified that a receipt-read close failure retained the
+output hash but lost already-read receipt bytes because assignment followed the
+fallible return. Both have retained failing fixtures against exact copied b575
+source; neither is a numerical solver or final comparison observation.
+
+The correction uses cancellable nonblocking readers and closes only a
+known-finished reader's pipe. A real pipe with a still-open owned writer tests
+cancellation without waiting for EOF or spawning an unowned descendant. A
+synthetic failed-join seam with real files checks that unresolved reader ownership
+leaves its pipe open, with a failure. The test owns the separate final cleanup.
+
+An output-only available-bytes callback now retains the complete bytes before
+fallible identity observation or close; the original close failure remains primary.
+A real-close-then-error fixture preserves Receipt, Output and parsed Producer while
+refusing completion. No dataclass field, argv, numeric rule or native source changes.
+
+The initial copied correction ran 23 fixtures successfully. That intermediate
+pre-formatter source preimage was not separately retained, so its log is an author
+observation rather than an exact executed-source archive. Later formatted source,
+strict-typing fixture correction and final repository-source checks are retained
+separately. The previously retained 13/17/20 outcomes remain unchanged.
+
+The final repository correction passed all 23 dedicated transport fixtures, Ruff
+and strict mypy. Full preflight on the preceding b575 source completed with all
+18 checks passed and source unchanged during execution. That result is historical
+to the reader/receipt correction; the final source gate is recorded separately.
