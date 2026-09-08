@@ -205,3 +205,9 @@ The final repository correction passed all 23 dedicated transport fixtures, Ruff
 and strict mypy. Full preflight on the preceding b575 source completed with all
 18 checks passed and source unchanged during execution. That result is historical
 to the reader/receipt correction; the final source gate is recorded separately.
+
+The [correction inventory](precision-gate-projection/2026-09-08/process-correction-1/manifest.json)
+binds source `8254c827044100df1646369f1b0143ec994d5a07`, the two actual
+pre-correction failing fixtures, exact final 23-pass source/results, intermediate
+limitations and the historical all-18 gate. The final source gate remains a
+separate observation. No final comparison was opened.
