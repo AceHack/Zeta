@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade continuity record
 Lifecycle: active
-Status: draft awaiting final publication identities
+Status: scalar component verified on main; bounded learning proposal reviewed
 
 ## Bootstrap
 
@@ -63,7 +63,10 @@ Exit the adapter prerequisite after its eight essential control groups and
 one real learned artifact consumed by a frozen nested query. Then preregister
 one chronological learned comparison with individual, flat, shallow and deeper
 compositions, compatible frozen module pools, strong feasible controls and
-explicit training/inference budgets. Include failed fits, abstentions and
+explicit training/inference budgets. To address the user's state-of-the-art
+request, name a current primary published comparator and pinned executable
+implementation, or report its concrete feasibility limitation. A comparison
+only to a new small learner or internal flat controls is not a SOTA result. Include failed fits, abstentions and
 refusals in denominators. Do not expand prerequisites or selection searches
 until a favorable result appears. Compiled streams 9307/9409 remain unopened;
 compiled-controller investment stays paused.
@@ -78,11 +81,14 @@ Noninterference/highest regard alone has not established a normalized CHSH map
 or the 2-sqrt-2 bound. Irreducible resource types retain their units; funding
 and scheduler priority do not become posterior probability or new evidence.
 
-## Publication boundary being completed
+## Verified publication and next boundary
 
-Projection source/result PR17051 is awaiting its complete corrected CI matrix
-and normal merge. Its reviewed source branch head is
-212758f124fbe7d42cf8073c7863fa99183c1d1a. The next proposal is separately
+[Projection source/result PR17051](https://github.com/Lucent-Financial-Group/Zeta/pull/17051)
+is on main at f59b6e395603062882dd1fe69fa8247406842e4d, from reviewed head
+212758f124fbe7d42cf8073c7863fa99183c1d1a. The [main receipt](../research/research-main-publication/2026-09-08/pr-17051/README.md)
+retains all 92 completed contexts (90 success, two skips), normal merge and
+whole-tree/1,063-path proof. The shared main view was clean and refreshed.
+The next proposal is separately
 preserved at 9928404da6cf7ab1c5e2b251ae7afe73bbe2eda0 and accepted by independent
 design review at 6f5c62198aaee8f758d726e0c4c514f3bab57b9a. It has not
 implemented a new learning module or opened a dataset.

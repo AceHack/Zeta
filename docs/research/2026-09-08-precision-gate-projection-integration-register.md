@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
-Status: first registered comparison independently accepted; publication CI in progress
+Status: first registered comparison independently accepted and verified on main
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Scientific scope
@@ -132,5 +132,9 @@ separate from the original experiment and full gate.
 
 The [independent publication hygiene review](2026-09-08-projection-publication-hygiene-independent-review.md)
 accepts that later cut and its corrected distinction between numerical unit
-fixtures and the unrepeated registered driver workload. Complete CI and normal
-main publication remain the final integration checks.
+fixtures and the unrepeated registered driver workload. [PR 17051 main
+publication](research-main-publication/2026-09-08/pr-17051/README.md) completed
+those checks: 90 successful contexts, two skips, no unfinished checks or
+unresolved review threads, normal matched-head squash, and exact whole-tree
+and 1,063-path verification on main. The original numerical run remains at its
+frozen source identity; publication hygiene is a separately retained cut.
