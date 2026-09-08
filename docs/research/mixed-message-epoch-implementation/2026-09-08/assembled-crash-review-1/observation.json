@@ -1,0 +1,357 @@
+{
+  "Scope": "Read-only selected crash-location audit. No test, build, solver, debugger, runtime/configuration change, or root-writer mutation. Raw IPS remains local only.",
+  "StartedAtUtc": "2026-09-08T14:54:03.130161+00:00",
+  "FinishedAtUtc": "2026-09-08T14:54:03.283232+00:00",
+  "AssembledSourceCommit": "1a71b4ff0eebd80e7528bfa93d8971d8726b4470",
+  "RootGate": {
+    "stdout": {
+      "Original": ".git/mixed-assembled-gate-1/call-0/stdout",
+      "File": "gate-stdout",
+      "Bytes": 12425,
+      "Sha256": "165E43D8785B417FFFF15FCED639CA78FC52CC85974F4626DC1C4335F0E28EFF"
+    },
+    "stderr": {
+      "Original": ".git/mixed-assembled-gate-1/call-0/stderr",
+      "File": "gate-stderr",
+      "Bytes": 94,
+      "Sha256": "9DA71A0E867B2ADAA037A34ABF022B4E9E5BA0937F973A4C17F2EE5DD44C4619"
+    },
+    "completion.json": {
+      "Original": ".git/mixed-assembled-gate-1/call-0/completion.json",
+      "File": "gate-completion.json",
+      "Bytes": 296,
+      "Sha256": "A4B974628FCCB892C2F35E3C23ACA1E114622BD0EA2B97424A33383C297B55D5"
+    },
+    "source-after.json": {
+      "Original": ".git/mixed-assembled-gate-1/call-0/source-after.json",
+      "File": "gate-source-after.json",
+      "Bytes": 1202,
+      "Sha256": "779963BD41913644E5F6B7E870EE99D1CEFDA4597E2D0F75A181F446078BA620"
+    },
+    "sources": {
+      "Original": ".git/mixed-assembled-gate-1/sources.json",
+      "File": "gate-sources.json",
+      "Bytes": 2678,
+      "Sha256": "A387A7B409EA96597BDA4230F0CAFEB6B8490676988D7A87F2280B91956686CE"
+    }
+  },
+  "GateCompletion": {
+    "Argv": [
+      "bun",
+      "run",
+      "preflight"
+    ],
+    "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908",
+    "ExitCode": 1,
+    "Started": "2026-09-08T14:39:23.271994+00:00",
+    "Finished": "2026-09-08T14:43:33.152186+00:00",
+    "ElapsedSeconds": 249.8786878749961
+  },
+  "GateSelectedLines": [
+    {
+      "Line": 3,
+      "Text": "\u25b6 no-conflict-markers \u2026 PASS"
+    },
+    {
+      "Line": 4,
+      "Text": "\u25b6 no-empty-dirs \u2026 PASS"
+    },
+    {
+      "Line": 5,
+      "Text": "\u25b6 hook-script-paths \u2026 PASS"
+    },
+    {
+      "Line": 6,
+      "Text": "\u25b6 identity-registry-sync \u2026 PASS"
+    },
+    {
+      "Line": 7,
+      "Text": "\u25b6 auto-vivify check \u2026 PASS"
+    },
+    {
+      "Line": 8,
+      "Text": "\u25b6 ace build-graph drift \u2026 PASS"
+    },
+    {
+      "Line": 9,
+      "Text": "\u25b6 check-arity census drift \u2026 PASS"
+    },
+    {
+      "Line": 10,
+      "Text": "\u25b6 check-arity census drift (non-equality) \u2026 PASS"
+    },
+    {
+      "Line": 11,
+      "Text": "\u25b6 inventory items.json current \u2026 PASS"
+    },
+    {
+      "Line": 12,
+      "Text": "\u25b6 markdownlint \u2026 PASS"
+    },
+    {
+      "Line": 13,
+      "Text": "\u25b6 lint: TypeScript (tsc) \u2026 PASS"
+    },
+    {
+      "Line": 14,
+      "Text": "\u25b6 lint: F# \u2026 PASS"
+    },
+    {
+      "Line": 15,
+      "Text": "\u25b6 lint: C# \u2026 PASS"
+    },
+    {
+      "Line": 16,
+      "Text": "\u25b6 lint: Python \u2026 PASS"
+    },
+    {
+      "Line": 17,
+      "Text": "\u25b6 lint: Rust \u2026 PASS"
+    },
+    {
+      "Line": 18,
+      "Text": "\u25b6 lint: Go \u2026 PASS"
+    },
+    {
+      "Line": 19,
+      "Text": "\u25b6 dotnet build -c Release \u2026 PASS"
+    },
+    {
+      "Line": 20,
+      "Text": "\u25b6 dotnet test -c Release \u2026 FAIL"
+    },
+    {
+      "Line": 23,
+      "Text": "FAILURES (1)"
+    },
+    {
+      "Line": 76,
+      "Text": "Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 24 ms - Tests.CSharp.TypeProvider.dll (net10.0)"
+    },
+    {
+      "Line": 78,
+      "Text": "Passed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 1 s - Tests.FSharp.Git.dll (net10.0)"
+    },
+    {
+      "Line": 92,
+      "Text": "Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21, Duration: 74 ms - Core.CSharp.Tests.dll (net10.0)"
+    },
+    {
+      "Line": 94,
+      "Text": "Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 71 ms - Core.CSharp.Mediator.Tests.dll (net10.0)"
+    },
+    {
+      "Line": 96,
+      "Text": "Passed!  - Failed:     0, Passed:   413, Skipped:     0, Total:   413, Duration: 2 s - Tests.CSharp.dll (net10.0)"
+    },
+    {
+      "Line": 98,
+      "Text": "Passed!  - Failed:     0, Passed:   639, Skipped:     0, Total:   639, Duration: 6 s - Bayesian.Tests.dll (net10.0)"
+    },
+    {
+      "Line": 104,
+      "Text": "Passed!  - Failed:     0, Passed:  4695, Skipped:     2, Total:  4697, Duration: 11 s - Tests.FSharp.dll (net10.0)"
+    },
+    {
+      "Line": 105,
+      "Text": "[xUnit.net 00:01:13.65]     [FATAL ERROR] Xunit.Sdk.TestPipelineException"
+    },
+    {
+      "Line": 106,
+      "Text": "[xUnit.net 00:01:13.65] Catastrophic failure: Test process crashed with exit code 139."
+    }
+  ],
+  "SourceCopies": [
+    {
+      "Path": "src/Core.TypeScript/hygiene/preflight.ts",
+      "File": "source-00.txt",
+      "Bytes": 9607,
+      "Sha256": "DAA058515B0B77AEF99C146B741D51CA6DC345E99AF576FEE00E99133DDD5B4E"
+    },
+    {
+      "Path": "global.json",
+      "File": "source-01.txt",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3"
+    },
+    {
+      "Path": "Directory.Build.props",
+      "File": "source-02.txt",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA"
+    },
+    {
+      "Path": "Directory.Packages.props",
+      "File": "source-03.txt",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560"
+    },
+    {
+      "Path": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "File": "source-04.txt",
+      "Bytes": 48675,
+      "Sha256": "0AF89204133EB6369FD5B2BBDE586954CF5975FC1EA699FB77F220BB6DE570AC"
+    }
+  ],
+  "IpsSource": {
+    "LocalFileName": "Tests.FSharp-2026-09-08-104234.ips",
+    "Bytes": 478353,
+    "Sha256": "17DCB56BA0A93FF96886175B82920CC66D67439C444A27A1D7E8641D18B6398C",
+    "RawBytesCommitted": false,
+    "Selection": "Process/time, exception, faulting-thread frames and runtime image identity only; excludes incident IDs, responsible process, other threads/registers/environment."
+  },
+  "Process": {
+    "procName": "Tests.FSharp",
+    "pid": 94259,
+    "parentProc": "dotnet",
+    "parentPid": 94232,
+    "procLaunch": "2026-09-08 10:42:21.3427 -0400",
+    "captureTime": "2026-09-08 10:42:33.1445 -0400",
+    "procPath": "/Users/USER/*/Tests.FSharp"
+  },
+  "Exception": {
+    "codes": "0x0000000000000001, 0x00000c010dc889b8",
+    "rawCodes": [
+      1,
+      13198665746872
+    ],
+    "type": "EXC_BAD_ACCESS",
+    "signal": "SIGSEGV",
+    "subtype": "KERN_INVALID_ADDRESS at 0x00000c010dc889b8"
+  },
+  "Termination": {
+    "code": 11,
+    "namespace": "SIGNAL",
+    "indicator": "Segmentation fault: 11"
+  },
+  "FaultingThread": {
+    "Index": 75,
+    "Name": ".NET BGC",
+    "Frames": [
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3374448,
+        "Symbol": "SVR::gc_heap::revisit_written_page(unsigned char*, unsigned char*, int, unsigned char*&, unsigned char*&, int, unsigned long&)",
+        "SymbolLocation": 288
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3372024,
+        "Symbol": "SVR::gc_heap::revisit_written_pages(int, int)",
+        "SymbolLocation": 1488
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3246048,
+        "Symbol": "SVR::gc_heap::background_mark_phase()",
+        "SymbolLocation": 2520
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3238352,
+        "Symbol": "SVR::gc_heap::gc1()",
+        "SymbolLocation": 512
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3366144,
+        "Symbol": "SVR::gc_heap::bgc_thread_function()",
+        "SymbolLocation": 204
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 2442584,
+        "Symbol": "(anonymous namespace)::CreateSuspendableThread(void (*)(void*), void*, char16_t const*)::$_0::__invoke(void*)",
+        "SymbolLocation": 132
+      },
+      {
+        "Image": "libcoreclr.dylib",
+        "ImageUuid": "6cb64ff2-42ff-30ea-bc45-4640fa3b0d03",
+        "ImageOffset": 3951088,
+        "Symbol": "CorUnix::CPalThread::ThreadEntry(void*)",
+        "SymbolLocation": 352
+      },
+      {
+        "Image": "libsystem_pthread.dylib",
+        "ImageUuid": "a373f0b0-9880-326a-88b4-dd8be4e33072",
+        "ImageOffset": 27736,
+        "Symbol": "_pthread_start",
+        "SymbolLocation": 136
+      },
+      {
+        "Image": "libsystem_pthread.dylib",
+        "ImageUuid": "a373f0b0-9880-326a-88b4-dd8be4e33072",
+        "ImageOffset": 7196,
+        "Symbol": "thread_start",
+        "SymbolLocation": 8
+      }
+    ]
+  },
+  "CurrentFiles": [
+    {
+      "Kind": "Runtime",
+      "Path": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+      "ObservedAtUtc": "2026-09-08T14:54:03.263652+00:00",
+      "Bytes": 6217584,
+      "Sha256": "10B24D0B11C7F6D838114744097BF10DF9B08B906AFC9016567631A1C009DFD0",
+      "StatStable": true,
+      "UuidCommand": {
+        "Argv": [
+          "/usr/bin/dwarfdump",
+          "--uuid",
+          "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib"
+        ],
+        "ExitCode": 0,
+        "StdoutFile": "runtime-uuid.stdout",
+        "StderrFile": "runtime-uuid.stderr"
+      },
+      "Limit": "Current file observation, not a digest of originally mapped process pages."
+    },
+    {
+      "Kind": "Apphost",
+      "Path": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp",
+      "ObservedAtUtc": "2026-09-08T14:54:03.281279+00:00",
+      "Bytes": 124712,
+      "Sha256": "78897A9D26EBC06F8269D1DA414422ABF31DF77185FCDDB9B02DE3A5E8B0029A",
+      "StatStable": true,
+      "UuidCommand": {
+        "Argv": [
+          "/usr/bin/dwarfdump",
+          "--uuid",
+          "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/tests/Tests.FSharp/bin/Release/net10.0/Tests.FSharp"
+        ],
+        "ExitCode": 0,
+        "StdoutFile": "apphost-uuid.stdout",
+        "StderrFile": "apphost-uuid.stderr"
+      },
+      "Limit": "Current file observation, not a digest of originally mapped process pages."
+    }
+  ],
+  "RuntimeConfig": {
+    "File": "current-runtimeconfig.json",
+    "Bytes": 587,
+    "Sha256": "8A493BFB781588CB83ACF029730FCCBB962DCBA965736C0D406D26C4D9C9831D"
+  },
+  "PriorComparison": {
+    "Path": "docs/research/hidden-switch-validation/2026-09-07/root-main-crash-review.json",
+    "Bytes": 9665,
+    "Sha256": "E2C8ED7AE813571DE49EC401BBC5528E2655A74252C5B676D634A96A2086070C",
+    "FirstSevenFramesEqualByField": {
+      "Image": true,
+      "ImageUuid": true,
+      "ImageOffset": true,
+      "Symbol": true,
+      "SymbolLocation": true
+    },
+    "RuntimeConfigHashEqual": true,
+    "PriorCauseEstablished": false
+  },
+  "AttributionLimit": "OS procPath is privacy-redacted. Same project/apphost name, matching time interval/duration and image UUID support association with the gate; no original gate process tree or test sequence/TRX identifies its exact last/in-flight test. The apphost UUID alone is not a unique checkout identity.",
+  "Conclusion": "Tests.FSharp SIGSEGV in background server-GC is the observed fault location; deterministic cause and responsible test/source remain unresolved. Preserve the failed gate even if a later complete invocation succeeds."
+}

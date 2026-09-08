@@ -1,0 +1,24 @@
+{
+  "Extraction": {
+    "Argv": [
+      "python3",
+      ".git/mixed-assembled-crash-review-1/extract.py"
+    ],
+    "ExitCode": 0,
+    "Stdout": "capture.stdout",
+    "Stderr": "capture.stderr"
+  },
+  "QuickGate": {
+    "Argv": [
+      "bun",
+      "run",
+      "preflight:quick"
+    ],
+    "ExitCode": 0,
+    "Stdout": "quick.stdout",
+    "Stderr": "quick.stderr",
+    "PassedChecks": 16
+  },
+  "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906",
+  "Scope": "Read-only crash extraction followed by documentation/hygiene validation; no .NET test or named numerical route."
+}
