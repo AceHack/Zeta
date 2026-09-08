@@ -138,3 +138,15 @@ after import and reported already current.
 The [coordinator import receipt](mixed-message-epoch-implementation/2026-09-08/root-core-import-1/README.md)
 retains its actual 16-check quick pass and Bayesian Release build with zero
 warnings/errors. Neither is a complete solution gate or an actual epoch run.
+
+The [Python bridge checkpoint](2026-09-08-mixed-message-epoch-bridge-implementation.md)
+is normally pushed at source `8e1fe19a074368c3fd48f5f6cb871b1ce5d6b141`,
+with report/custody `051d02c464e8927b868d158eb54d44f380767d22`, imported after
+fresh remote verification as `9efb1f1c9` and `9b91e3c7b`. Its 85 development
+fixtures and complete owner repository gate passed. The
+[independent review](2026-09-08-mixed-message-epoch-bridge-independent-review.md)
+audits the three source files and 1,352 archive members, but withholds complete
+acceptance pending the counter-knowledge correction and assembled core/peer
+correspondence. The complete actual bridge result is memory-retained; durable
+summaries reference the existing original records and do not serialize that
+entire object graph.
