@@ -2,7 +2,7 @@
 
 Date: 2026-09-08 UTC
 Operational status: research-grade
-Lifecycle: implemented reference; independent source review and retained vectors pending
+Lifecycle: implemented and locally validated reference; independent review pending
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Session: codex/20260907-c7b2a403
 Work item: 081M1Z63YMC087G0R003N5FH9X
@@ -144,8 +144,8 @@ Ruff and format check. These are actual independent Python checks, not
 F# comparison, compiled runtime admission or training.
 
 The local raw directories are .git/precision-gate-reference-attempt-1 and
-.git/precision-gate-reference-attempt-2 in this writer, pending the lossless
-evidence index. The initial command recorder explicitly recorded every child
+.git/precision-gate-reference-attempt-2 in this writer, retained in the lossless
+evidence index below. The initial command recorder explicitly recorded every child
 exit despite its own zero exit; the second recorder uses check=True, retains
 each CalledProcessError if present and exits nonzero on any failed check.
 No failed child result is described as success.
@@ -169,7 +169,15 @@ Decimal100 tests separately form expected energy with a direct weighted
 exponential; central finite differences independently check both derivatives.
 Neither comparison promotes a local objective into an optimizer.
 
-Final vectors will name the committed source and observed interpreter and
-remain separate from any later native comparison.
+The [lossless evidence index](precision-gate-kernels-reference-validation/2026-09-08/README.md)
+now retains both attempts and a final fixed-vector invocation from source
+9e6be94a0ec2b153ba63e100463f91418ceed4fe. The exact
+[vector bytes](precision-gate-kernels-reference-validation/2026-09-08/reference-vectors.json)
+contain the declared 24 rows: 17 successful values and seven typed refusals.
+They are 21985 bytes with SHA256
+ecab012f7084e17097594faabd2ee49ec7a76aa1da8a1fa4f2204ab8df841489.
+The complete actual Success return, source copy and observed Python3.14.6
+interpreter/import identities are retained separately. These observations
+remain distinct from native comparison and full runtime/source admission.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra.

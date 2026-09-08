@@ -1,0 +1,1056 @@
+{
+  "Arithmetic": {
+    "Algebraic": "exact Fraction",
+    "Binary64Emulator": false,
+    "DecimalPrecision": 80,
+    "Rounding": "ROUND_HALF_EVEN",
+    "Transcendental": "Decimal"
+  },
+  "Rows": [
+    {
+      "Id": "soft/uncertain",
+      "Input": {
+        "mean_tau": {
+          "Den": "1",
+          "Num": "2"
+        },
+        "w": {
+          "Mean": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "3"
+          }
+        },
+        "x": {
+          "Mean": {
+            "Den": "1",
+            "Num": "4"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "5"
+          }
+        },
+        "z": {
+          "Mean": {
+            "Den": "1",
+            "Num": "7"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "2"
+          }
+        }
+      },
+      "Operation": "soft_dot_vmp",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "ResidualSecondMoment": {
+            "Den": "1",
+            "Num": "86"
+          },
+          "ToInput": {
+            "Precision": {
+              "Den": "1",
+              "Num": "14"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "28"
+            }
+          },
+          "ToTau": {
+            "LogPower": {
+              "Den": "2",
+              "Num": "1"
+            },
+            "Rate": {
+              "Den": "1",
+              "Num": "43"
+            }
+          },
+          "ToWeight": {
+            "Precision": {
+              "Den": "1",
+              "Num": "42"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "56"
+            }
+          },
+          "ToZ": {
+            "Precision": {
+              "Den": "1",
+              "Num": "2"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "16"
+            }
+          }
+        }
+      }
+    },
+    {
+      "Id": "soft/clamped-zero",
+      "Input": {
+        "mean_tau": {
+          "Den": "1",
+          "Num": "2"
+        },
+        "w": {
+          "Mean": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "0"
+          }
+        },
+        "x": {
+          "Mean": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "0"
+          }
+        },
+        "z": {
+          "Mean": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "0"
+          }
+        }
+      },
+      "Operation": "soft_dot_vmp",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "ResidualSecondMoment": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "ToInput": {
+            "Precision": {
+              "Den": "1",
+              "Num": "8"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "0"
+            }
+          },
+          "ToTau": {
+            "LogPower": {
+              "Den": "2",
+              "Num": "1"
+            },
+            "Rate": {
+              "Den": "1",
+              "Num": "0"
+            }
+          },
+          "ToWeight": {
+            "Precision": {
+              "Den": "1",
+              "Num": "0"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "0"
+            }
+          },
+          "ToZ": {
+            "Precision": {
+              "Den": "1",
+              "Num": "2"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "0"
+            }
+          }
+        }
+      }
+    },
+    {
+      "Id": "soft/fractional",
+      "Input": {
+        "mean_tau": {
+          "Den": "2",
+          "Num": "5"
+        },
+        "w": {
+          "Mean": {
+            "Den": "2",
+            "Num": "-1"
+          },
+          "Variance": {
+            "Den": "3",
+            "Num": "1"
+          }
+        },
+        "x": {
+          "Mean": {
+            "Den": "2",
+            "Num": "3"
+          },
+          "Variance": {
+            "Den": "5",
+            "Num": "2"
+          }
+        },
+        "z": {
+          "Mean": {
+            "Den": "4",
+            "Num": "1"
+          },
+          "Variance": {
+            "Den": "7",
+            "Num": "3"
+          }
+        }
+      },
+      "Operation": "soft_dot_vmp",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "ResidualSecondMoment": {
+            "Den": "420",
+            "Num": "1013"
+          },
+          "ToInput": {
+            "Precision": {
+              "Den": "24",
+              "Num": "35"
+            },
+            "PrecisionMean": {
+              "Den": "16",
+              "Num": "-5"
+            }
+          },
+          "ToTau": {
+            "LogPower": {
+              "Den": "2",
+              "Num": "1"
+            },
+            "Rate": {
+              "Den": "840",
+              "Num": "1013"
+            }
+          },
+          "ToWeight": {
+            "Precision": {
+              "Den": "8",
+              "Num": "53"
+            },
+            "PrecisionMean": {
+              "Den": "16",
+              "Num": "15"
+            }
+          },
+          "ToZ": {
+            "Precision": {
+              "Den": "2",
+              "Num": "5"
+            },
+            "PrecisionMean": {
+              "Den": "8",
+              "Num": "-15"
+            }
+          }
+        }
+      }
+    },
+    {
+      "Id": "normal/uncertain",
+      "Input": {
+        "mean_gamma": {
+          "Den": "2",
+          "Num": "3"
+        },
+        "mu": {
+          "Mean": {
+            "Den": "1",
+            "Num": "-1"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "5"
+          }
+        },
+        "y": {
+          "Mean": {
+            "Den": "1",
+            "Num": "3"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "2"
+          }
+        }
+      },
+      "Operation": "normal_precision_vmp",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "ToMean": {
+            "Precision": {
+              "Den": "2",
+              "Num": "3"
+            },
+            "PrecisionMean": {
+              "Den": "2",
+              "Num": "9"
+            }
+          },
+          "ToPrecision": {
+            "LogPower": {
+              "Den": "2",
+              "Num": "1"
+            },
+            "Rate": {
+              "Den": "2",
+              "Num": "23"
+            }
+          },
+          "ToY": {
+            "Precision": {
+              "Den": "2",
+              "Num": "3"
+            },
+            "PrecisionMean": {
+              "Den": "2",
+              "Num": "-3"
+            }
+          }
+        }
+      }
+    },
+    {
+      "Id": "normal/zero",
+      "Input": {
+        "mean_gamma": {
+          "Den": "1",
+          "Num": "3"
+        },
+        "mu": {
+          "Mean": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "0"
+          }
+        },
+        "y": {
+          "Mean": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "0"
+          }
+        }
+      },
+      "Operation": "normal_precision_vmp",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "ToMean": {
+            "Precision": {
+              "Den": "1",
+              "Num": "3"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "6"
+            }
+          },
+          "ToPrecision": {
+            "LogPower": {
+              "Den": "2",
+              "Num": "1"
+            },
+            "Rate": {
+              "Den": "1",
+              "Num": "0"
+            }
+          },
+          "ToY": {
+            "Precision": {
+              "Den": "1",
+              "Num": "3"
+            },
+            "PrecisionMean": {
+              "Den": "1",
+              "Num": "6"
+            }
+          }
+        }
+      }
+    },
+    {
+      "Id": "gamma/rate",
+      "Input": {
+        "alpha": {
+          "Den": "1",
+          "Num": "2"
+        },
+        "mean_beta": {
+          "Den": "1",
+          "Num": "7"
+        },
+        "mean_gamma": {
+          "Den": "1",
+          "Num": "3"
+        }
+      },
+      "Operation": "gamma_rate_vmp",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "ToRate": {
+            "LogPower": {
+              "Den": "1",
+              "Num": "2"
+            },
+            "Rate": {
+              "Den": "1",
+              "Num": "3"
+            }
+          },
+          "ToValue": {
+            "LogPower": {
+              "Den": "1",
+              "Num": "1"
+            },
+            "Rate": {
+              "Den": "1",
+              "Num": "7"
+            }
+          },
+          "ValueEncoding": {
+            "Kernel": {
+              "LogPower": {
+                "Den": "1",
+                "Num": "1"
+              },
+              "Rate": {
+                "Den": "1",
+                "Num": "7"
+              }
+            },
+            "RepresentedShape": {
+              "Den": "1",
+              "Num": "2"
+            },
+            "RequestedShape": {
+              "Den": "1",
+              "Num": "2"
+            }
+          }
+        }
+      }
+    },
+    {
+      "Id": "gamma/product",
+      "Input": {
+        "left": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "4"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "7"
+          }
+        },
+        "right": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "3"
+          }
+        }
+      },
+      "Operation": "gamma_product",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "6"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "10"
+          }
+        }
+      }
+    },
+    {
+      "Id": "gamma/quotient",
+      "Input": {
+        "left": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "6"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "10"
+          }
+        },
+        "right": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "4"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "7"
+          }
+        }
+      },
+      "Operation": "gamma_quotient",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "3"
+          }
+        }
+      }
+    },
+    {
+      "Id": "gamma/proper",
+      "Input": {
+        "kernel": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "6"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "10"
+          }
+        }
+      },
+      "Operation": "gamma_proper_moments",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "Mean": {
+            "Den": "10",
+            "Num": "7"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "10"
+          },
+          "Shape": {
+            "Den": "1",
+            "Num": "7"
+          },
+          "Variance": {
+            "Den": "100",
+            "Num": "7"
+          }
+        }
+      }
+    },
+    {
+      "Id": "gamma/improper",
+      "Input": {
+        "kernel": {
+          "LogPower": {
+            "Den": "2",
+            "Num": "1"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "0"
+          }
+        }
+      },
+      "Operation": "gamma_proper_moments",
+      "Outcome": {
+        "Failure": {
+          "Code": "ImproperGamma",
+          "Field": "kernel.Rate",
+          "Message": "proper density requires positive rate"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "gaussian/improper-product",
+      "Input": {
+        "left": {
+          "Precision": {
+            "Den": "1",
+            "Num": "-3"
+          },
+          "PrecisionMean": {
+            "Den": "1",
+            "Num": "2"
+          }
+        },
+        "right": {
+          "Precision": {
+            "Den": "1",
+            "Num": "5"
+          },
+          "PrecisionMean": {
+            "Den": "1",
+            "Num": "1"
+          }
+        }
+      },
+      "Operation": "gaussian_product",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "Precision": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "PrecisionMean": {
+            "Den": "1",
+            "Num": "3"
+          }
+        }
+      }
+    },
+    {
+      "Id": "gaussian/linear-improper",
+      "Input": {
+        "kernel": {
+          "Precision": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "PrecisionMean": {
+            "Den": "1",
+            "Num": "1"
+          }
+        }
+      },
+      "Operation": "gaussian_proper_moments",
+      "Outcome": {
+        "Failure": {
+          "Code": "ImproperGaussian",
+          "Field": "kernel.Precision",
+          "Message": "proper density requires positive precision"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "shape/small",
+      "Input": {
+        "alpha": {
+          "Den": "10000000000000000",
+          "Num": "1"
+        },
+        "rate": {
+          "Den": "1",
+          "Num": "1"
+        }
+      },
+      "Operation": "gamma_from_shape",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "Kernel": {
+            "LogPower": {
+              "Den": "10000000000000000",
+              "Num": "-9999999999999999"
+            },
+            "Rate": {
+              "Den": "1",
+              "Num": "1"
+            }
+          },
+          "RepresentedShape": {
+            "Den": "10000000000000000",
+            "Num": "1"
+          },
+          "RequestedShape": {
+            "Den": "10000000000000000",
+            "Num": "1"
+          }
+        }
+      }
+    },
+    {
+      "Id": "reverse/exp",
+      "Input": {
+        "kernel": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "1"
+          }
+        },
+        "orientation": "ExpConstraint",
+        "z": {
+          "Den": "1",
+          "Num": "1"
+        }
+      },
+      "Operation": "reverse_log_kernel",
+      "Outcome": {
+        "Kind": "success",
+        "Value": "-2.7182818284590452353602874713526624977572470936999595749669676277240766303535476"
+      }
+    },
+    {
+      "Id": "reverse/log",
+      "Input": {
+        "kernel": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "1"
+          }
+        },
+        "orientation": "LogConstraint",
+        "z": {
+          "Den": "1",
+          "Num": "1"
+        }
+      },
+      "Operation": "reverse_log_kernel",
+      "Outcome": {
+        "Kind": "success",
+        "Value": "-1.7182818284590452353602874713526624977572470936999595749669676277240766303535476"
+      }
+    },
+    {
+      "Id": "reverse/signed",
+      "Input": {
+        "kernel": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "-2"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "-1"
+          }
+        },
+        "orientation": "ExpConstraint",
+        "z": {
+          "Den": "2",
+          "Num": "1"
+        }
+      },
+      "Operation": "reverse_log_kernel",
+      "Outcome": {
+        "Kind": "success",
+        "Value": "0.6487212707001281468486507878141635716537761007101480115750793116406610211942156"
+      }
+    },
+    {
+      "Id": "objective/stationary",
+      "Input": {
+        "c": "0.77880078307140486824517026697832064729677229042614147424131736626824561205351924",
+        "k": {
+          "Den": "1",
+          "Num": "1"
+        },
+        "m": {
+          "Den": "1",
+          "Num": "0"
+        },
+        "t": {
+          "Den": "1",
+          "Num": "1"
+        },
+        "u": {
+          "Den": "1",
+          "Num": "0"
+        },
+        "v": {
+          "Den": "2",
+          "Num": "1"
+        }
+      },
+      "Operation": "projection_objective",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "DerivativeMean": "-1E-80",
+          "DerivativeVariance": "0E-79",
+          "Value": "1.5965735902799726547086160607290882840377500671801276270603400047466968109848474"
+        }
+      }
+    },
+    {
+      "Id": "objective/general",
+      "Input": {
+        "c": {
+          "Den": "4",
+          "Num": "7"
+        },
+        "k": {
+          "Den": "5",
+          "Num": "-2"
+        },
+        "m": {
+          "Den": "3",
+          "Num": "2"
+        },
+        "t": {
+          "Den": "2",
+          "Num": "3"
+        },
+        "u": {
+          "Den": "3",
+          "Num": "-1"
+        },
+        "v": {
+          "Den": "5",
+          "Num": "3"
+        }
+      },
+      "Operation": "projection_objective",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "DerivativeMean": "6.5010404127331955972443075478990550432668668085854350327585146506633394234885840",
+          "DerivativeVariance": "2.2171868730332644652888204406161941883001000709593841830459239919983363784109586",
+          "Value": "6.3231198912828576055137312627175526773725888734749858345141580962483484373997751"
+        }
+      }
+    },
+    {
+      "Id": "invalid/negative-variance",
+      "Input": {
+        "mean_tau": {
+          "Den": "1",
+          "Num": "2"
+        },
+        "w": {
+          "Mean": {
+            "Den": "1",
+            "Num": "2"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "-1"
+          }
+        },
+        "x": {
+          "Mean": {
+            "Den": "1",
+            "Num": "4"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "5"
+          }
+        },
+        "z": {
+          "Mean": {
+            "Den": "1",
+            "Num": "7"
+          },
+          "Variance": {
+            "Den": "1",
+            "Num": "2"
+          }
+        }
+      },
+      "Operation": "soft_dot_vmp",
+      "Outcome": {
+        "Failure": {
+          "Code": "InvalidMoments",
+          "Field": "w.Variance",
+          "Message": "variance must be nonnegative"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "invalid/nonpositive-gamma",
+      "Input": {
+        "alpha": {
+          "Den": "1",
+          "Num": "2"
+        },
+        "mean_beta": {
+          "Den": "1",
+          "Num": "0"
+        },
+        "mean_gamma": {
+          "Den": "1",
+          "Num": "3"
+        }
+      },
+      "Operation": "gamma_rate_vmp",
+      "Outcome": {
+        "Failure": {
+          "Code": "InvalidDomain",
+          "Field": "mean_beta",
+          "Message": "strictly positive value required"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "invalid/proper-gaussian",
+      "Input": {
+        "kernel": {
+          "Precision": {
+            "Den": "1",
+            "Num": "-1"
+          },
+          "PrecisionMean": {
+            "Den": "1",
+            "Num": "2"
+          }
+        }
+      },
+      "Operation": "gaussian_proper_moments",
+      "Outcome": {
+        "Failure": {
+          "Code": "ImproperGaussian",
+          "Field": "kernel.Precision",
+          "Message": "proper density requires positive precision"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "invalid/objective-variance",
+      "Input": {
+        "c": {
+          "Den": "4",
+          "Num": "7"
+        },
+        "k": {
+          "Den": "5",
+          "Num": "-2"
+        },
+        "m": {
+          "Den": "3",
+          "Num": "2"
+        },
+        "t": {
+          "Den": "2",
+          "Num": "3"
+        },
+        "u": {
+          "Den": "3",
+          "Num": "-1"
+        },
+        "v": {
+          "Den": "1",
+          "Num": "0"
+        }
+      },
+      "Operation": "projection_objective",
+      "Outcome": {
+        "Failure": {
+          "Code": "InvalidDomain",
+          "Field": "v",
+          "Message": "strictly positive value required"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "shape/nonpositive",
+      "Input": {
+        "alpha": {
+          "Den": "1",
+          "Num": "0"
+        },
+        "rate": {
+          "Den": "1",
+          "Num": "1"
+        }
+      },
+      "Operation": "gamma_from_shape",
+      "Outcome": {
+        "Failure": {
+          "Code": "InvalidDomain",
+          "Field": "alpha",
+          "Message": "strictly positive value required"
+        },
+        "Kind": "refused"
+      }
+    },
+    {
+      "Id": "gamma/neutral",
+      "Input": {
+        "left": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "0"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "0"
+          }
+        },
+        "right": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "1"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "2"
+          }
+        }
+      },
+      "Operation": "gamma_product",
+      "Outcome": {
+        "Kind": "success",
+        "Value": {
+          "LogPower": {
+            "Den": "1",
+            "Num": "1"
+          },
+          "Rate": {
+            "Den": "1",
+            "Num": "2"
+          }
+        }
+      }
+    }
+  ],
+  "Schema": "zeta.precision-gate-kernels.reference.v1"
+}
