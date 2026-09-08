@@ -294,3 +294,18 @@ registered learned-system comparison.
 The unchanged-source full-gate retry subsequently passed all 18 checks; both
 attempts remain in the repair record. The formatter's zero exit is separately
 qualified because that tool does not support F# projects.
+
+## Actual small-room results
+
+The [actual Zeta room record](distributional-learning/2026-09-08/actual-zeta-rooms/README.md)
+retains the known-answer controls, original compile and FSI process-exit
+failures, and all five corrected process outcomes. The independent reference
+validates ten exact finite rows, sixteen Zeta observations and all designated
+fault prefixes; the integrated 124-test suite passes.
+
+The next learner should retain decision-relevant distribution shape, distinguish
+repeated evidence from independent evidence, and expose funding separately from
+posterior probabilities. Those requirements follow from these controls. They do
+not establish a learned-performance advantage. The next comparison requires
+actual fitting, chronological holdout, feasible strong baselines and explicit
+interaction/compute budgets before further system investment is justified.
