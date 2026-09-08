@@ -783,6 +783,37 @@ let ``BlockCas XorLastPayloadByte flips one key and leaves the other`` () =
     | _ -> Assert.Fail("both keys must stay published")
 
 [<Fact>]
+let ``BlockCas compact hex index holds 96 ContentAddress128 names and reopens`` () =
+    // ZD4: 32 unique 1-byte jumpropes put chunk+leaf+trunk (96 names). UTF-8
+    // 32-hex keys overflow one 4096-byte ZCA2 superblock; compact 16-byte
+    // payloads must fit and round-trip through CloneMedia.
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    let n = 96
+
+    for i in 0 .. n - 1 do
+        let key = sprintf "%032x" i
+        cas.Put(key, [| byte (i % 256) |])
+
+    Assert.Equal(n, cas.Count)
+
+    for i in 0 .. n - 1 do
+        let key = sprintf "%032x" i
+
+        match cas.TryGet key with
+        | None -> Assert.Fail(sprintf "missing %s" key)
+        | Some got -> Assert.Equal(byte (i % 256), got.[0])
+
+    let cloned = BlockCas(device.CloneMedia())
+    Assert.Equal(n, cloned.Count)
+
+    match cloned.TryGet (sprintf "%032x" 0), cloned.TryGet (sprintf "%032x" (n - 1)) with
+    | Some first, Some last ->
+        Assert.Equal(0uy, first.[0])
+        Assert.Equal(byte ((n - 1) % 256), last.[0])
+    | _ -> Assert.Fail("compact names must survive CloneMedia")
+
+[<Fact>]
 let ``BlockCas Delete unpublishes a key and CloneMedia agrees`` () =
     let device = SimulatedBlockIo(4096)
     let cas = BlockCas(device)

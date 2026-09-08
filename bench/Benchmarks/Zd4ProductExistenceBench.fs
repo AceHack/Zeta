@@ -8,15 +8,15 @@ open BenchmarkDotNet.Attributes
 open Zeta.Core
 open Zeta.Core.FSharp.Blake3
 
-/// ZD4 product-existence harness. Same N=16 small-write storm on host
+/// ZD4 product-existence harness. Same N=32 small-write storm on host
 /// `GroupCommitDiskDeltaLog` and on `.zetafs` FreezeLog (PhysicalFileSystem).
-/// N=16 because BlockCas's one-superblock index cannot hold 32 unique
-/// 1-byte jumpropes. Not FUSE. Not POSIX. Numbers stay toy until a named
-/// run is recorded. Do not copy them into README or claim ZetaFS is faster.
+/// Compact BlockCas hex keys hold the jumprope objects. Not FUSE. Not POSIX.
+/// Numbers stay toy until a named run is recorded. Do not copy them into
+/// README or claim ZetaFS is faster.
 [<MemoryDiagnoser>]
 type Zd4ProductExistenceBench() =
 
-    let storm = 16
+    let storm = 32
     let ct = CancellationToken.None
     let empty: Map<string, string> = Map.empty
     let keyEnc (i: int) : DynamicValue = DynamicValue.Int(int64 i)

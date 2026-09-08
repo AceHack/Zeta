@@ -10,18 +10,17 @@ open Zeta.Core
 open Zeta.Core.FSharp.Blake3
 open Zeta.Tests.Support
 
-// ZD4 product-existence first peel (ZetaDB D4). Same small-write storm on
-// both legs, on PhysicalFileSystem (host APFS/ext4), not InMemory and not
-// FUSE. Host: GroupCommitDiskDeltaLog. `.zetafs`: FreezeLog via createManual
-// + pumpLog (ZD2). Completing both legs is the falsifier. No Stopwatch.
-// No winner. Numbers stay toy.
+// ZD4 product-existence (ZetaDB D4). Same small-write storm on both legs,
+// on PhysicalFileSystem (host APFS/ext4), not InMemory and not FUSE. Host:
+// GroupCommitDiskDeltaLog. `.zetafs`: FreezeLog via createManual + pumpLog
+// (ZD2). Completing both legs is the falsifier. No Stopwatch. No winner.
+// Numbers stay toy.
 //
-// N=16 matches the FreezeLog boat falsifier. N=32 (GroupCommit one-segment
-// floor in DiskDeltaLog.Tests) overflows BlockCas's one-superblock index on
-// unique 1-byte jumpropes (~2 objects each). That polyfill limit is not a
-// speed result. Shared storm is 16 so both legs run on the product CAS path.
+// N=32 matches the GroupCommit one-segment floor in DiskDeltaLog.Tests.
+// Compact BlockCas hex keys (081M1ZCE8W0087G0R0028BYWV2) hold the 96
+// jumprope objects a 32-freeze 1-byte storm puts.
 
-let private storm = 16
+let private storm = 32
 let private ct = CancellationToken.None
 let private empty: Map<string, string> = Map.empty
 

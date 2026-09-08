@@ -274,10 +274,9 @@ ZetaFS exists **for ZetaDB**. If another filesystem plus the ferry is better for
 7. **No central tip / ordinal shared fold.**
 
 The both-legs host-FS storm now runs in CI (`Zd4ProductExistence.Tests.fs`):
-16 concurrent `GroupCommitDiskDeltaLog` appends and 16 Journaled freezes on
-PhysicalFileSystem (product BlockCas path). N=16 because BlockCas's
-one-superblock index cannot hold 32 unique 1-byte jumpropes; the host-only
-32-append floor stays in `DiskDeltaLog.Tests`. The FS-speed claim stays `toy`
+32 concurrent `GroupCommitDiskDeltaLog` appends and 32 Journaled freezes on
+PhysicalFileSystem (product BlockCas path). Compact hex keys in the ZCA2
+superblock hold the 96 jumprope objects. The FS-speed claim stays `toy`
 until a named run of `Zd4ProductExistenceBench` is recorded. This document
 does not invent numbers. FUSE completeness is not this proof. Apple Developer
 Program is not this proof.
@@ -396,8 +395,9 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 
 ### ZD4 — Product-existence bench: host FS + group-commit vs `.zetafs`
 
-- **Files:** `tests/Tests.FSharp/Storage/Zd4ProductExistence.Tests.fs` + `bench/Benchmarks/Zd4ProductExistenceBench.fs`. Small-write storm N=16 on PhysicalFileSystem (product BlockCas path).
-- **First peel:** both legs RUN. Host: 16 concurrent `GroupCommitDiskDeltaLog` appends → one `delta-*.segment`. `.zetafs`: 16 Journaled `freezeAsync` + `pumpLog` → one boat of 16. No Stopwatch. No winner. N=32 unique 1-byte jumpropes overflow BlockCas's one-superblock index; that polyfill limit is not a speed result.
+- **Files:** `tests/Tests.FSharp/Storage/Zd4ProductExistence.Tests.fs` + `bench/Benchmarks/Zd4ProductExistenceBench.fs`. Small-write storm N=32 on PhysicalFileSystem (product BlockCas path).
+- **First peel:** both legs RUN at N=16 (`081M1ZA8S7C087G0R002P9NX40`).
+- **Second peel:** compact BlockCas hex keys so N=32 unique 1-byte jumpropes fit one ZCA2 superblock (`081M1ZCE8W0087G0R0028BYWV2`). Host: 32 concurrent `GroupCommitDiskDeltaLog` appends → one `delta-*.segment`. `.zetafs`: 32 Journaled `freezeAsync` + `pumpLog` → one boat of 32. No Stopwatch. No winner.
 - **Numbers stay `toy`** until a named run of the bench is recorded (not copied into README).
 - **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
 - **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product.
