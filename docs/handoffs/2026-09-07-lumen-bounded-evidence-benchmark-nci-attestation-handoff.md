@@ -89,6 +89,14 @@ This preflight must reject parent substitution, trace/action/reward/terminal
 drift, hidden limits, learning fields, and cross-oracle bridges before the
 larger score-emitter work begins.
 
+### 3.6 ARC-AGI-3 readiness: existing internal lane, no official result
+
+The ARC-AGI-3 readiness report corrects an earlier overbroad summary. Zeta already has an internal ARC/CHIP-8 substrate: the `Arc.Python` lane drives `arc-agi`/`arcengine`, distinguishes source-owned games from hosted wrappers, has a REST scorecard port and action/frame path, and records synthetic ARC/CHIP-8 transfer measurements. The repository also carries a TypeScript static ARC-puzzle harness and an F# ARC REST environment adapter. These are adapters and research seams, not missing work.[14]
+
+What remains absent is a **verified official ARC-AGI-3 evaluation result**: no pinned official public-game/toolkit/harness/scorecard/replay receipt, no public/private official score, and no registered competition submission. ARC is interactive with game-specific actions, official scorecards/replays, public/semi-private/private tiers, and separately reported Standard versus Provider Adapter harnesses. The source-owned scores and hosted-wrapper path explicitly remain non-leaderboard/held-out evidence until a real authorized environment run can be recorded.[14]
+
+The next ARC unit therefore extends—not replaces—the existing hosted-wrapper and ARC REST seams: a no-agent, non-scoring conformance probe for one pinned official public game and toolkit revision. It must make task/interface drift, unexpected tools or network use, undeclared context retention, and artifact mismatches fail before any local agent score is generated. “Smallest model without cheating” remains a future protocol objective requiring declared model/context/tool/harness/data/compute/replay provenance; parameter count alone is not admissible evidence. ARC results remain distinct from MiniGrid and from all NCI, attestation, heartbeat, cluster, and consensus paths.
+
 ## 4. Policy self-knowledge and tick boundary
 
 The merged policy-admissibility slice directly encodes the user’s requested separation. A policy may self-declare a versioned, parseable time and space **shape** over a named input measure. The local receipt checks that shape against an existing registry form where possible; it does not prove actual complexity. Its finite example is `rng.splitmix64 / mix`, declared `O(1)` time and `O(1)` space for input measure `observations`, within a caller-owned 17-tick envelope. [6]
@@ -104,6 +112,14 @@ The current finite F#/Python receipt is 516 bytes, SHA-256:
 ```
 
 The positive `TickBoundaryProbe.UndeclaredDetected` mutation means a particular captured undeclared limit is observable. Its non-detection would **not** prove absence of all hidden channels. This one-way observation boundary is important to retain.
+
+## 4.4 ARC-AGI-3 and CHIP-8 correction: internal adapter exists; official result does not
+
+The earlier ARC readiness wording was too broad and is corrected here. Zeta already has substantial ARC/CHIP-8 work: `src/Arc.Python` drives `arc-agi`/`arcengine`, has source-owned ARC games, an action/frame driver, a hosted `EnvironmentWrapper` path, score/report logic, an ARC REST scorecard port, and synthetic ARC/CHIP-8 transfer controls. The repository also contains a TypeScript static ARC-puzzle harness and cross-emulator F# ARC/CHIP-8 environment seams. These are real internal adapter and game-research assets.[14]
+
+The remaining gap is narrower: there is no **verified official ARC-AGI-3 result** with a pinned official public-game/toolkit/harness/scorecard/replay receipt; no official public/private score; and no registered competition submission. The internal lane's own documentation states that real ARC environments and hosted leaderboard use require an unavailable API key, while offline/source-owned scores and synthetic transfer controls are explicitly non-leaderboard evidence. Therefore, the next ARC step must extend the existing hosted-wrapper and REST seams with a no-agent official conformance probe rather than rebuild an adapter from scratch.
+
+“Smallest model without cheating” remains a future measurement protocol, not a present result. It requires separately declared model/context/tool/harness/data/compute/replay provenance; parameter count alone is not admissible evidence.
 
 ## 5. Formal NCI witness
 
@@ -218,3 +234,4 @@ The current worktree preserves `.cache/` and `todo.md` as untracked local contin
 [11]: ../../src/Core.TypeScript/observe/room/durable-room-evidence-audit.ts "Room evidence audit genesis and prior-hash binding"
 [12]: https://github.com/Lucent-Financial-Group/Zeta/pull/16938 "PR #16938 — Withdrawal declaration contract and consolidated handoff"
 [13]: https://github.com/Lucent-Financial-Group/Zeta/pull/16962 "PR #16962 — MiniGrid policy-comparison contract"
+[14]: ../research/2026-09-08-arc-agi-3-readiness-and-no-cheating-boundary.md "ARC-AGI-3 readiness and no-cheating boundary"
