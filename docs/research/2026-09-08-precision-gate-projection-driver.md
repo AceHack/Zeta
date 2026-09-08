@@ -173,4 +173,34 @@ local module observations before its own four raw records were appended. This
 is local source/fixture validation; the coordinator owns the final integrated
 build/test gate and independently reviewed immutable execution archive.
 
+## Corrected false-positive locator finding
+
+Original source `1f4db4b7ad2953648a37a38d0613bb99fc7d0633` was normally pushed
+with all 16 hook checks passing and its exact remote owner head verified.
+The [separate link-resolution inventory](precision-gate-projection/2026-09-08/driver-link-resolution-validation/manifest.json)
+preserves that full push/ref proof and the following mistaken author finding.
+The original source remains byte-identical after this correction.
+
+I initially asserted that Store Artifact.File values lacked their `records/`
+base. That assertion was false. Store already constructs each File as
+`state.name/record-...` or `state.name/final-journal.json`, relative to the driver
+AttemptRoot. My first two new tests failed because they demanded an unnecessary
+InnerStoreRelativeRoot field. A subsequent uncommitted source addition let those
+tests reach their next error: they constructed `records/records/...` and failed
+with FileNotFoundError (57 other tests passed). Those failures diagnosed my test
+assumption, not a defect in the committed driver. The reviewer initially relayed
+my claimed concern, then independently checked the actual Store path source and
+corrected that relay. No production locator failure was established.
+
+The unnecessary source addition was removed by an exact scoped edit. The final
+tests resolve both ordinary terminal/journal and setup-finalization artifacts
+against AttemptRoot using the already complete descriptor File, then check the
+actual stored length and hash. Existing three preparation/store failure controls
+now additionally check that no Run or setup journal is invented before a Store
+is successfully opened. Final attempt 5 passed all 59 tests in 4.84 seconds,
+strict mypy, Ruff and format. Both mistaken fixture versions and the transient
+uncommitted source bytes remain losslessly retained; none replaces original
+1f4 or its 57-case history. This follow-up changes tests/evidence only and adds
+no driver field, output file, numerical call, source expectation or budget.
+
 Signed: Vera, OpenAI Codex using GPT-6 Astra.
