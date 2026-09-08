@@ -234,9 +234,10 @@ class _Run:
         if operation == "CertifyNative":
             if case_id in cases.CERTIFICATE_IDS:
                 assert self.baseline is not None
+                baseline = self.baseline
                 mutation = self.helper(
                     "mutate/" + case_id,
-                    lambda: cases.mutate_native(case_id, self.baseline[0]),
+                    lambda: cases.mutate_native(case_id, baseline[0]),
                 )
                 if not isinstance(mutation, a.Admitted):
                     self.fail("mutation", case_id, "registered mutation refused")
@@ -312,6 +313,7 @@ class _Run:
                     "actual native command or complete retained output absent",
                 )
                 return
+            assert isinstance(raw_receipt, bytes)
             decoded = a.strict_json(raw_receipt, maximum_bytes=cases.RESULT_BYTES)
             self.helpers.append(
                 store.CallObservation("decode-native/" + case_id, decoded, None)
@@ -559,7 +561,13 @@ def run_comparison(
     elif (
         not isinstance(state, a.Admitted)
         or type(state.value) is not store.Snapshot
-        or state.value.Limits != LIMITS
+        or not (
+            LIMITS.FinalJournalBytes + 2 * TERMINAL_BYTES
+            < state.value.Limits.CombinedBytes
+            <= LIMITS.CombinedBytes
+            and state.value.Limits.FinalJournalBytes == LIMITS.FinalJournalBytes
+            and 3 <= state.value.Limits.Artifacts <= LIMITS.Artifacts
+        )
         or state.value.Artifacts
         or state.value.Attempts
         or state.value.FinalizationStarted
@@ -567,7 +575,7 @@ def run_comparison(
         run.fail(
             "store-admission",
             "Run",
-            "fresh issued store with registered limits required",
+            "fresh issued store within registered ceilings and with journal/terminal reserves required",
         )
     else:
         run.admitted_store = True

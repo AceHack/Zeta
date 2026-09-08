@@ -97,7 +97,6 @@ The coordinator additionally owns `precision_gate_projection_run.py` under
 `src/Interp.Python/zeta_interp/` and its dedicated test under
 `src/Interp.Python/tests/`, as the concrete whole-run retention adapter.
 
-
 ## Finite execution driver co-claim
 
 Independent reference session `codex/20260907-c7b2a403` additionally owns

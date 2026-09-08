@@ -339,7 +339,7 @@ def test_current_failed_return_storage_fault_keeps_process_failure_primary(
     original = store.storage.write_exclusive
     writes: list[str] = []
 
-    def write(root: object, file: object, value: object) -> object:
+    def write(root: Path, file: str, value: bytes) -> object:
         writes.append(str(file))
         if len(writes) == 2:
             return a.Refused("fixture-write", "Store", "synthetic storage failure")
@@ -376,7 +376,7 @@ def test_finalization_failure_never_replaces_primary_or_retries(
     original = store.storage.write_exclusive
     finals: list[str] = []
 
-    def write(root: object, file: object, value: object) -> object:
+    def write(root: Path, file: str, value: bytes) -> object:
         if "final" in str(file):
             finals.append(str(file))
             return a.Refused(
@@ -618,3 +618,57 @@ def test_wrong_admitted_comparison_value_is_not_a_checked_receipt(
         isinstance(result.Finalization, store.Finalized)
         and not result.CollectionAndCriteriaPassed
     )
+
+
+@pytest.mark.parametrize(
+    "limits",
+    [
+        store.Limits(32 * 1024 * 1024, run.LIMITS.FinalJournalBytes, 422),
+        store.Limits(12 * 1024 * 1024, run.LIMITS.FinalJournalBytes, 3),
+    ],
+)
+def test_derived_budget_enters_once_and_preserves_reserves(
+    tmp_path: Path, limits: store.Limits
+) -> None:
+    opened = store.open_store(tmp_path, "derived", limits)
+    assert isinstance(opened, store.Opened)
+    actual = NativeObservation(
+        LaunchAttempted=True, Failure=ProcessFailure("launch", "MissingHost", "fixture")
+    )
+    result = run.run_comparison(
+        opened.Store, bindings(), replace(services(), NativeSolve=lambda _: actual)
+    )
+    assert result.Counters["Entered"] == 1
+    assert result.PrimaryFailure is not None
+    assert result.PrimaryFailure.code == "native-incomplete"
+    assert isinstance(result.Finalization, store.Finalized)
+    snapshot = store.snapshot(opened.Store)
+    assert isinstance(snapshot, a.Admitted)
+    assert snapshot.value.ReservedSlots <= limits.Artifacts
+    assert (
+        snapshot.value.ReservedRawBytes + snapshot.value.ReservedStoredBytes
+        <= limits.CombinedBytes
+    )
+
+
+@pytest.mark.parametrize(
+    "limits",
+    [
+        store.Limits(run.LIMITS.CombinedBytes, run.LIMITS.FinalJournalBytes, 513),
+        store.Limits(10 * 1024 * 1024, run.LIMITS.FinalJournalBytes, 422),
+        store.Limits(32 * 1024 * 1024, run.LIMITS.FinalJournalBytes - 2, 422),
+        store.Limits(32 * 1024 * 1024, run.LIMITS.FinalJournalBytes, 2),
+    ],
+)
+def test_invalid_budget_refuses_without_entering_or_mutating_store(
+    tmp_path: Path, limits: store.Limits
+) -> None:
+    opened = store.open_store(tmp_path, "bad-budget", limits)
+    assert isinstance(opened, store.Opened)
+    before = store.snapshot(opened.Store)
+    result = run.run_comparison(opened.Store, bindings(), services())
+    assert result.PrimaryFailure is not None
+    assert result.PrimaryFailure.code == "store-admission"
+    assert result.Counters["Entered"] == 0
+    assert result.Finalization is None
+    assert store.snapshot(opened.Store) == before

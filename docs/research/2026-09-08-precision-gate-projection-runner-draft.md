@@ -59,3 +59,17 @@ The reference certificate follow-up at ae37ac066 is independently accepted in
 review 527ff454; importing that exact corrected dependency is the next integration
 step. Native Unicode correction and process-adapter integration remain pending.
 No final roster or numerical comparison has been opened.
+
+
+## Ordinary imports and bounded driver allocation
+
+The [integrated validation](precision-gate-projection/2026-09-08/integrated-import-validation/README.md)
+records the first ordinary-package 272-test pass and the subsequent 28-test
+runner validation with strict typing and lint clean. The recorder accepts
+smaller caller-derived limits so driver custody and recording share the same
+registered total. The journal remains fixed; terminal and ordinary reservations
+must fit before any call starts. This tightens aggregate resource accounting
+without changing the case roster, numerical criteria or scientific thresholds.
+The corrected reference and native Unicode source dependencies are now imported;
+final process correction, driver admission and complete source review/archive
+remain prerequisites for the unopened final comparison.

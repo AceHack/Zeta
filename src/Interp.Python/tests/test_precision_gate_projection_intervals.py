@@ -8,7 +8,6 @@ from fractions import Fraction as F
 from typing import Any, cast
 
 import pytest
-
 from zeta_interp import precision_gate_projection_intervals as i
 
 
