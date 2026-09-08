@@ -29,7 +29,7 @@ let scalar key node = prop key node |> number
 let moments node : K.RealMoments = { Mean = scalar "Mean" node; Variance = scalar "Variance" node }
 let gamma node : K.GammaKernel = { LogPower = scalar "LogPower" node; Rate = scalar "Rate" node }
 let gaussian node : Gaussian = { PrecisionMean = scalar "PrecisionMean" node; Precision = scalar "Precision" node }
-let outcome (value: Result<'T, K.KernelError>) =
+let outcome<'T> (value: Result<'T, K.KernelError>) =
     match value with
     | Ok success -> objOf [ "Kind", box "success"; "Value", box success ]
     | Error feedback ->
@@ -63,7 +63,7 @@ let invoke operation input =
     | _ -> Error(K.InvalidInput("Operation", "declared fixed operation")) |> outcome<float>
 let assemblyWitness (assembly: Reflection.Assembly) =
     let bytes = File.ReadAllBytes assembly.Location
-    objOf [ "Name", box assembly.GetName().Name; "Path", box assembly.Location
+    objOf [ "Name", box (assembly.GetName().Name); "Path", box assembly.Location
             "Bytes", box bytes.Length; "Sha256", box (Convert.ToHexString(SHA256.HashData bytes).ToLowerInvariant()) ]
 let run path =
     let bytes = File.ReadAllBytes path
@@ -82,7 +82,7 @@ let run path =
         Ok(objOf [ "Schema", box "zeta.precision-gate-kernels.native.v1"
                    "ReferenceSha256", box expected; "Rows", box rows
                    "Runtime", objOf [ "Framework", box Runtime.InteropServices.RuntimeInformation.FrameworkDescription
-                                       "Assemblies", box [| assemblyWitness typeof<K.GammaKernel>.Assembly; assemblyWitness typeof<Zeta.Core.PrivacyBudget>.Assembly |] ] ])
+                                       "Assemblies", box [| assemblyWitness typeof<K.GammaKernel>.Assembly; assemblyWitness typeof<Zeta.Core.ProbabilitySemiring.Rational>.Assembly |] ] ])
 let args = fsi.CommandLineArgs |> Array.skip 1
 let observed =
     if args.Length <> 1 then Error "one pinned reference path required"
