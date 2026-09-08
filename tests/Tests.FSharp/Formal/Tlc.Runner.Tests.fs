@@ -809,7 +809,19 @@ let ``owned process capture retains probe streams and bounds timeout without Jav
         let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
         let stdout = Path.Combine(scratch, "stdout.log")
         let stderr = Path.Combine(scratch, "stderr.log")
-        let result = TlcAttempts.captureProcess bun ["-e"; "console.log('output sentinel');console.error('error sentinel')"] scratch stdout stderr (Some 3000)
+        // 3000 ms was a BUN COLD-START budget masquerading as a correctness bound.
+        // This assertion is about capture and exit status, not about how fast bun
+        // starts; when the budget is exceeded `captureProcessWithDeadline` calls
+        // `proc.Kill true`, and on Windows that surfaces as ExitCode -1 -- which is
+        // what the next line then reported as a capture failure. Measured: 2 of the
+        // last 14 windows runs on main (windows-2025 and windows-11-arm alike).
+        // 30000 matches the java-version budget above. The timeout paths that ARE
+        // under test keep their tiny budgets and are deliberately unchanged: the
+        // `Atomics.wait` call asserts `TimedOut`, and the empty-argv call asserts
+        // `IOException` on the CreateNew collision. Those name behaviour; this one
+        // named a stopwatch. (Referred to by call, not by line: my own insert here
+        // shifted the numbers a first draft of this comment cited.)
+        let result = TlcAttempts.captureProcess bun ["-e"; "console.log('output sentinel');console.error('error sentinel')"] scratch stdout stderr (Some 30000)
         Assert.Equal(0, result.ExitCode)
         Assert.False result.TimedOut
         Assert.Contains("output sentinel", File.ReadAllText stdout)
@@ -904,11 +916,18 @@ let ``probe cancellation drains inherited pipes after observed launcher exit`` (
                 launcher.StartInfo <- info
                 File.WriteAllText(Path.Combine(scratch, "fixture.json"), JsonSerializer.Serialize
                     {| Kind = "synthetic-inherited-pipe-cancellation"; Executable = bun
-                       Argv = [|"-e"; script; pidPath|]; SetupPatienceMilliseconds = 10000
+                       Argv = [|"-e"; script; pidPath|]; SetupPatienceMilliseconds = 30000
                        DeadlineMode = "cancel only after readiness and observed launcher exit" |})
                 let running = Task.Run(fun () -> TlcAttempts.captureProcessWithDeadline launcher stdoutFile stderrFile deadline)
                 capture <- Some running
-                Assert.True(SpinWait.SpinUntil((fun () -> File.Exists pidPath || running.IsCompleted), 10000), "fixture readiness not observed; retained: " + scratch)
+                // SETUP PATIENCE, not the property under test. This waits for a
+                // fixture that spawns bun which spawns bun again; on Windows that is
+                // two cold starts, and the test burned exactly its 10 s before
+                // failing "fixture readiness not observed". Raising it tolerates the
+                // DELAY and not the ABSENCE -- readiness that never arrives still
+                // fails, and the cancel-and-drain behaviour this test exists to prove
+                // keeps its own bounds at :914, :922 and :957, which are untouched.
+                Assert.True(SpinWait.SpinUntil((fun () -> File.Exists pidPath || running.IsCompleted), 30000), "fixture readiness not observed; retained: " + scratch)
                 if running.IsCompleted then running.GetAwaiter().GetResult() |> ignore
                 Assert.True(File.Exists pidPath, "fixture child PID not published; retained: " + scratch)
                 Assert.True(launcher.WaitForExit(10000), "launcher exit not observed; retained: " + scratch)

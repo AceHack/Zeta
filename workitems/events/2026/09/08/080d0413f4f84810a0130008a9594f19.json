@@ -1,0 +1,14 @@
+{
+  "id": "080d0413f4f84810a0130008a9594f19",
+  "at": "2026-09-08T19:28:51.465Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M217X7R8087G0R0036K1T63",
+    "type": "bug",
+    "title": "Four Windows failures: bounds set at the ideal value with no tolerance",
+    "slug": "four-windows-failures-bounds-set-at-the-ideal-value-with-no",
+    "priority": "P2",
+    "filename": "081M217X7R8087G0R0036K1T63-four-windows-failures-bounds-set-at-the-ideal-value-with-no.md"
+  }
+}

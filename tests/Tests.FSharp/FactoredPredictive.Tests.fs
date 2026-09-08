@@ -134,6 +134,27 @@ let ``allocation growth sampler rejects retained context copies`` () =
     let shortSamples, longSamples = inferenceAllocationSamples copyingInference short long
     let excess = Array.min longSamples - Array.min shortSamples
     let copiedPayload = 128L * int64 long.Length * int64 sizeof<int>
+    // TOLERANCE, because the bound had none and the ideal measurement sits exactly
+    // ON it. `excess >= copiedPayload` demanded that the measured excess reach the
+    // payload size, while a perfect measurement produces exactly the payload size --
+    // so any downward noise in any single sample fails it, and `Array.min` makes one
+    // outlier decisive.
+    //
+    // Measured on windows-11-arm, main @03741bf5:
+    //   short = [43008; 43008; 43008; 43008; 43008]
+    //   long  = [174080; 174080; 174080; 174080; 170240]   <- one sample 3840 low
+    // giving excess 127232 against a threshold of 131072. The discriminator had in
+    // fact detected 97% of the payload and was reported as having "missed" it.
+    //
+    // 90% keeps this a strong discriminator: the null hypothesis it must reject is
+    // NO retained copy, whose excess is ~0, so the threshold still sits an order of
+    // magnitude above the thing being excluded while tolerating ~3x the noise
+    // actually observed. `Array.min` is kept -- it is the right statistic for a
+    // steady-state allocation floor, since noise adds allocations rather than
+    // removing them; the tolerance absorbs the sampler's own variance instead.
+    let detectionFloor = copiedPayload * 90L / 100L
     Assert.True(
-        excess >= copiedPayload,
-        sprintf "Context-copy discriminator missed %d payload bytes; short=%A long=%A" copiedPayload shortSamples longSamples)
+        excess >= detectionFloor,
+        sprintf
+            "Context-copy discriminator saw %d bytes of an expected %d payload bytes (floor %d); short=%A long=%A"
+            excess copiedPayload detectionFloor shortSamples longSamples)
