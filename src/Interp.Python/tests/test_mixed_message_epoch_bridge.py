@@ -1567,3 +1567,127 @@ def test_passive_projection_return_preserves_bool_integer_identity(
         assert caught.value.failure.Field == "ProjectionService"
     else:
         bridge._return_call_links(result, session)
+
+
+@pytest.mark.parametrize(
+    ("core_count", "core_complete", "outer_count", "outer_complete", "compatible"),
+    [
+        (0, True, 0, True, True),
+        (1, True, 0, True, False),
+        (0, False, 1, True, True),
+        (2, False, 1, True, False),
+        (1, True, 0, False, True),
+        (1, True, 2, False, False),
+        (2, False, 1, False, True),
+        (1, False, 2, False, True),
+        (0, False, 0, True, True),
+        (0, True, 0, False, True),
+    ],
+)
+def test_returned_remote_counts_preserve_each_observers_knowledge(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    core_count: int,
+    core_complete: bool,
+    outer_count: int,
+    outer_complete: bool,
+    compatible: bool,
+) -> None:
+    # Full returned-frame admission with synthetic counter observations only.
+    # No certificate, native process, or reference root is entered.
+    owner = _simulated_owner(tmp_path)
+    session = _complete_session(owner, monkeypatch)
+    assert session.EpochReturn is not None and session.Plan is not None
+    assert owner.Budget is not None
+    budget = owner.Budget
+    budget.CertificateEntered = outer_count
+    if not outer_complete:
+        budget.RemoteIncomplete.add("CertificateEntered")
+    value = json.loads(session.EpochReturn.Raw)
+    actual = {"Observed": core_count, "Complete": core_complete}
+    value["Result"]["Counters"]["Remote"]["CertificateEntered"] = actual
+    value["Result"]["Outcome"] = "refused"
+    value["Result"]["Termination"] = "Refused"
+    value["Result"]["Failure"] = {
+        "Code": "Service",
+        "Stage": "project",
+        "Field": "Certificate",
+        "Message": "synthetic unavailable reply",
+    }
+    value["ResultSha256"] = bridge._sha(
+        bridge._canonical(value["Result"], 16 * bridge.MIB)
+    )
+    candidate = bridge.decode_frame(_frame(value), session.SessionId)
+    assert isinstance(candidate, bridge.Frame)
+    original = candidate.Raw
+    if compatible:
+        bridge._returned(candidate, session, session.Plan, budget)
+    else:
+        with pytest.raises(bridge._Stop) as caught:
+            bridge._returned(candidate, session, session.Plan, budget)
+        assert caught.value.failure.Field == "CertificateEntered"
+    assert candidate.Raw == original
+    assert (
+        candidate.Value["Result"]["Counters"]["Remote"]["CertificateEntered"] == actual
+    )
+    assert budget.CertificateEntered == outer_count
+    assert ("CertificateEntered" not in budget.RemoteIncomplete) is outer_complete
+
+
+def test_completed_session_prior_work_uses_coordinator_observed_delta(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Synthetic full transport session: the counters are injected observations,
+    # not evidence of a certificate/native/reference invocation.
+    class CounterPeer(_FixturePeer):
+        def send(self, raw: bytes) -> bridge.WriteObservation:
+            sent = super().send(raw)
+            message = json.loads(raw)
+            if message["Kind"] == "CheckpointAck" and message["Sequence"] == 1:
+                self.budget.CertificateEntered += 1
+                self.result["Counters"]["Remote"]["CertificateEntered"] = {
+                    "Observed": 0,
+                    "Complete": False,
+                }
+                self.result["Outcome"] = "refused"
+                self.result["Termination"] = "Refused"
+                self.result["Failure"] = {
+                    "Code": "Service",
+                    "Stage": "project",
+                    "Field": "Certificate",
+                    "Message": "synthetic unavailable reply",
+                }
+                returned = self.header("EpochReturn") | {
+                    "Sequence": 2,
+                    "Result": self.result,
+                    "ResultSha256": bridge._sha(
+                        bridge._canonical(self.result, 16 * bridge.MIB)
+                    ),
+                }
+                self.return_raw = _frame(returned)
+                self.queue[-1] = self.return_raw
+            return sent
+
+        def close(self, *, normal: bool) -> bridge.PeerObservation:
+            return replace(super().close(normal=normal), ExitCode=2)
+
+    owner = _simulated_owner(tmp_path)
+    plan = _forward_plan()
+    owner.FirstPlan = plan
+    monkeypatch.setattr(
+        bridge, "_sources", lambda *_: bridge.SourceSnapshot((), (), None)
+    )
+    monkeypatch.setattr(bridge, "_Peer", CounterPeer)
+    result = bridge._run_session(owner, plan.Raw, "fixture")
+    assert isinstance(result, bridge.SessionResult)
+    assert result.ReturnAdmitted and result.Closed and not result.ForecastEligible
+    assert result.EpochReturn is not None and owner.Budget is not None
+    assert owner.Budget.PriorWork["CertificateEntered"] == 1
+    assert result.EpochReturn.Value["Result"]["Counters"]["Remote"][
+        "CertificateEntered"
+    ] == {"Observed": 0, "Complete": False}
+    final = bridge._finish_bridge(owner)
+    assert final.Counters["Remote"]["CertificateEntered"] == {
+        "Observed": 1,
+        "Complete": True,
+    }

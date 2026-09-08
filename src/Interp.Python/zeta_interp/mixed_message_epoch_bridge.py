@@ -3692,14 +3692,18 @@ def _returned(
         _artifact(artifact, dict(plan.Value["SourceBindings"]))
     for name in _REMOTE_KEYS:
         remote = row["Counters"]["Remote"][name]
-        if remote["Observed"] != getattr(budget, name) - session.RemoteStart[
-            name
-        ] or remote["Complete"] != (name not in budget.RemoteIncomplete):
+        coordinator_observed = getattr(budget, name) - session.RemoteStart[name]
+        coordinator_complete = name not in budget.RemoteIncomplete
+        # Each side retains its own knowledge: an exact singleton when complete,
+        # otherwise a lower bound. Neither observer upgrades the other's total.
+        if (remote["Complete"] and coordinator_observed > remote["Observed"]) or (
+            coordinator_complete and remote["Observed"] > coordinator_observed
+        ):
             _fail(
                 "Conflict",
                 "publish",
                 name,
-                "core remote counts differ from actual coordinator call prefix",
+                "core and coordinator remote knowledge intervals are disjoint",
             )
 
 
@@ -4970,7 +4974,11 @@ def _run_session(
                 "CertificateEntered",
                 "NestedReferenceEntered",
             ):
-                handle.Budget.PriorWork[name] += counters["Remote"][name]["Observed"]
+                # PriorWork belongs to this coordinator. Keep its observed
+                # delta without upgrading incomplete totals from a core receipt.
+                handle.Budget.PriorWork[name] += (
+                    getattr(handle.Budget, name) - session.RemoteStart[name]
+                )
             if plan.Value["Mode"] == "train":
                 entered_artifacts: set[str] = set()
                 for observation in session.EpochReturn.Value["Result"]["Observations"]:
