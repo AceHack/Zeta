@@ -1,0 +1,96 @@
+# Mixed-message and learned-module epoch implementation register
+
+Date: 2026-09-08 UTC
+Author: Vera, OpenAI Codex using GPT-6 Astra
+Operational status: research-grade implementation coordination
+Lifecycle: active
+Status: bounded contract and transport amendment accepted; source implementation underway
+Work item: 081M1Z63YMC087G0R003N5FH9X
+
+## Accepted boundary
+
+The [ADR](../DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md)
+accepts the exact [source contract](2026-09-08-checked-mixed-message-module-epoch-source-contract.md)
+at owner `84fa75bc537f0e32f3df7b6159d9ead3a66f0c3c`:
+53,198 bytes, SHA256
+`4234015EE650FA7190CF3375C58654499F3BB9EC9C96E4BE21D2FC97A30EC979`.
+[Independent acceptance](2026-09-08-checked-mixed-message-epoch-contract-independent-review.md)
+is signed at `caa59da59281654016bffb90239c2fc09c03f092`.
+The earlier proposal/census and original ADR remain reachable unchanged at
+those source commits. The acceptance changes ADR status, not the reviewed
+source contract or eight required controls.
+
+[Scalar PR17051](https://github.com/Lucent-Financial-Group/Zeta/pull/17051)
+is verified on main at `f59b6e395603062882dd1fe69fa8247406842e4d`.
+Its [main receipt](research-main-publication/2026-09-08/pr-17051/README.md)
+and [independent audit](2026-09-08-pr17051-publication-review.md)
+retain the exact numerical source and first actual result. The new component
+needs its own source identities and archive; it cannot inherit that execution.
+
+## Disjoint implementation ownership
+
+Existing sessions continue in their own writers, based on the reviewed
+publication branch/current main. No new agent is created for this slice.
+The [existing co-claim](../claims/task-distributional-learning-20260908.md)
+records the same assignment.
+
+| Session role | Owned paths and responsibility |
+| --- | --- |
+| `identity_formalization` | `BoundedModuleLearner.fs`, `MixedMessageEpoch.fs`, their two F# test files and Bayesian source/test project wiring. Define the exact compiled DTO/service/recorder signatures first and send them to the other owners. Implement the learner, checked blocks, real scheduler route and immutable state. |
+| `predictor_audit` | `MixedMessageEpochReplay.fsx`: strict F# peer, actual core invocation, request/response correspondence, ACK-before-apply, Commit and terminal observation. Review the core implementation independently after its source is available. |
+| `protocol_review` | `mixed_message_epoch_bridge.py` and its Python test file: actual direct-child coordinator, source/custody admission, fixed budgets, one Store and real native/certificate service. Review peer transport independently after its source is available. |
+| Coordinator | Derived build graph, integration/source registration and archive, assembled review, first fixed M4/M5 controls, actual outcome record and publication. Review bridge implementation independently. |
+
+These are the exact source additions from contract section 1. Necessary
+interface clarifications must be shared before incompatible implementations
+are committed. Each owner retains failures, actual check commands and results,
+then normally signs and pushes its owned changes. No writer edits another
+owner's paths or shared main. A claim is not evidence that implementation exists.
+
+## One implementation cycle and actual execution boundary
+
+Local development/unit controls may run and must retain their failures.
+They do not stand in for the source-admitted integration control. Before the
+named actual M4 and four-session M5 routes, assemble all direct source and
+build/runtime identities, complete independent source review, freeze the
+invocation/control roster and budgets, and preserve its immutable archive.
+Only then execute once and retain every actual return, refusal and lost-prefix
+observation. Do not replace a failed first attempt with a successful rerun.
+An essential repair may lead to a separately named corrected attempt with the
+changed identities and the original outcome preserved.
+
+M4 is exactly the positive projection followed by the cancellation target in
+one real peer session. M5 consumes the same four rows through child training,
+two target-hidden frozen queries and parent training, within the shared outer
+ledger. M1-M8 and one frozen nested query must be demonstrated; mocks alone
+cannot close the cycle. A named failed control stops that configuration.
+
+After this bounded cycle, register one chronological learned comparison using
+compatible individual, flat, shallow and deeper compositions and a feasible
+pinned published comparator. Fix feature/label availability, inner forecasts,
+embargo, scoring, choices and untouched holdout before fitting. Failed fits,
+refusals, abstentions and resource use remain in the result. No component test
+or four-row training loss is a held-out or state-of-the-art score.
+Compiled investment remains paused and streams 9307/9409 remain unopened.
+
+## Current external comparator census
+
+The [current source/feasibility census](2026-09-08-current-forecast-comparator-source-census.md)
+records exact Chronos-2 and TimesFM-3 source/model metadata and the observed
+local package environment. It selects no held-out winner, downloads no weights
+or data, and does not substitute an author-reported benchmark for Zeta's result.
+
+## Process-boundary amendment
+
+The [explicit transport amendment](2026-09-08-mixed-message-epoch-transport-amendment.md)
+adds actual full-result delivery and measured budget snapshots, and fixes the
+compensation context and dependent four-session construction. These omissions
+were found during implementation coordination after the original design review.
+The original contract remains unchanged; the amendment is a separate source
+binding and requires independent review before actual integration execution.
+
+[Independent amendment acceptance](2026-09-08-mixed-message-epoch-peer-amendment-independent-review.md)
+is signed at `235c9a999646fce9ddad08c4f8d7f87cc4524f02` and binds the exact
+coordinator amendment `15b20c513245201e125a0deae7d41c23e7bc136c`. This updates
+the amendment document's historical pending-review status without changing
+its reviewed bytes. No numerical/control input or limit was changed.

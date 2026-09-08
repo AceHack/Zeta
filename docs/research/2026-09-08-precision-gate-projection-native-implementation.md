@@ -241,3 +241,7 @@ acceptance is `abbeb0663555635b1fdbfdbd5193d1bf6e70e3b6`; process source/custody
 acceptance is `2ac23bf2efdc33a57fffc068fb74c2567155356d`. The registered
 comparison remains unopened by this lane. The linked inventory retains a
 separate first preservation failure without replacing any validation outcome.
+
+The [bounded next-step design review](2026-09-08-mixed-message-epoch-independent-review.md)
+assesses the proposed mixed-message and learned-module epochs. It adds no
+implementation or numerical result to the scalar evidence retained here.

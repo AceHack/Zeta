@@ -154,3 +154,18 @@ completes all 88 calls and twelve core certificates, retaining numerical
 refusals. It directs the next investment to mixed-message and module-epoch
 semantics before a learned compositional comparison.
 This does not yet establish a mixed learned gate or a held-out advantage.
+
+
+## Bounded next proposal
+
+The [mixed-message and learned-module epoch proposal](2026-09-08-mixed-message-learned-module-epoch-proposal.md)
+reuses the existing graph/message interfaces and defines eight essential
+control groups before one actual learned compositional comparison. It remains
+a research proposal accepted by [independent design review](2026-09-08-mixed-message-epoch-independent-review.md).
+The subsequent [ADR](../DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md)
+and [exact source contract](2026-09-08-checked-mixed-message-module-epoch-source-contract.md)
+passed [independent contract review](2026-09-08-checked-mixed-message-epoch-contract-independent-review.md).
+The [implementation register](2026-09-08-mixed-message-epoch-implementation-register.md)
+now owns that finite next step. No fit or held-out result is implied by this
+index. The actual scheduler error route and child-to-parent forecasts remain
+required executable controls.

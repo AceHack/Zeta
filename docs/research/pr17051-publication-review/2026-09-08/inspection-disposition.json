@@ -1,0 +1,24 @@
+{
+  "Scope": "Reviewer inspection only; no production finding",
+  "ToolObservedOnly": [
+    {
+      "Observation": "An exploratory manifest read requested the nonexistent member key Path; the actual key is ArchivePath. It produced KeyError: Path.",
+      "RawCaptureAvailable": false,
+      "Representation": "Retrospective description of observed tool output, not an original raw stream"
+    },
+    {
+      "Observation": "An exploratory cat used a guessed research-directory handoff path and returned No such file; rg located the actual docs/handoffs path.",
+      "RawCaptureAvailable": false,
+      "Representation": "Retrospective description of observed tool output, not an original raw stream"
+    }
+  ],
+  "CapturedAuditFailure": {
+    "Attempt": "audit-1",
+    "Failure": "KeyError: originals/pr-17051-merge-1/stdout.txt",
+    "Correction": "Use the manifest-admitted extensionless stdout/stderr names.",
+    "OriginalSourceAndStreamsRetained": true
+  },
+  "Audit2ExitCode": 0,
+  "Continuity1ExitCode": 0,
+  "NumericalExecution": false
+}

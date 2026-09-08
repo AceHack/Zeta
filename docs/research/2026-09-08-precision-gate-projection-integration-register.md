@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
-Status: first registered comparison independently accepted; publication CI in progress
+Status: first registered comparison independently accepted and verified on main
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Scientific scope
@@ -87,7 +87,8 @@ At 096b09126b1f489fc7720b69780263ef01485445 the full preflight passed all
 seconds, with its F#-unsupported limitation. All 47 recorded source paths and
 the checkout head/status stayed unchanged throughout both commands.
 The separate ordinary-import Python run passed 340 component tests in 7.53
-seconds and strict mypy/format checks over all 14 projection source/test files.
+seconds, with the recorded mypy and format checks over all 14 projection
+source/test files.
 Its repository-root Ruff check found one import-separator blank line in the
 driver test. That one-line formatting correction follows this recorded source
 cut and has a separate exact before/after identity; no production source changed.
@@ -132,5 +133,15 @@ separate from the original experiment and full gate.
 
 The [independent publication hygiene review](2026-09-08-projection-publication-hygiene-independent-review.md)
 accepts that later cut and its corrected distinction between numerical unit
-fixtures and the unrepeated registered driver workload. Complete CI and normal
-main publication remain the final integration checks.
+fixtures and the unrepeated registered driver workload. [PR 17051 main
+publication](research-main-publication/2026-09-08/pr-17051/README.md) completed
+those checks: 90 successful contexts, two skips, no unfinished checks or
+unresolved review threads, normal matched-head squash, and exact whole-tree
+and 1,063-path verification on main. The original numerical run remains at its
+frozen source identity; publication hygiene is a separately retained cut.
+
+The [independent main-publication review](2026-09-08-pr17051-publication-review.md)
+accepts the retained main proof and original numerical custody. Its helper
+correction preserves the first execution and the subsequent read-only check.
+The next [accepted implementation decision](../DECISIONS/2026-09-08-checked-mixed-message-module-epochs.md)
+is tracked by the [mixed-message implementation register](2026-09-08-mixed-message-epoch-implementation-register.md).
