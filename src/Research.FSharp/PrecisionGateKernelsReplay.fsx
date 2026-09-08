@@ -81,7 +81,7 @@ let run path =
             |> Seq.toArray
         Ok(objOf [ "Schema", box "zeta.precision-gate-kernels.native.v1"
                    "ReferenceSha256", box expected; "Rows", box rows
-                   "Runtime", objOf [ "Framework", box Runtime.InteropServices.RuntimeInformation.FrameworkDescription
+                   "Runtime", objOf [ "Framework", box Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
                                        "Assemblies", box [| assemblyWitness typeof<K.GammaKernel>.Assembly; assemblyWitness typeof<Zeta.Core.ProbabilitySemiring.Rational>.Assembly |] ] ])
 let args = fsi.CommandLineArgs |> Array.skip 1
 let observed =
