@@ -1,0 +1,77 @@
+{
+  "Scope": "normal quick gate on unchanged runtime source",
+  "SourceFiles": [
+    {
+      "Path": "src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 161298,
+      "Sha256": "95083B86417A20484BE24A862A6C24BB056ABF85DB56FDB34763D90FD9DE053E"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 25020,
+      "Sha256": "FACB2E4399E2D85CBF6FB5951A3F6CCDB0DB7F5D1D32823CD9EC48E7A033CDDB"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    }
+  ],
+  "Records": [
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-runtime-checkpoint-1/command.py",
+      "File": "001.gz",
+      "Bytes": 1172,
+      "Sha256": "0B38DD4B9C3A3684C461D85E673AC31317CF1D8E30796AF44F1F61A01795599A",
+      "StoredBytes": 557,
+      "StoredSha256": "DE7623081B101A56C41612706D90801853BDEC6D165C9AC0908F86E0C645577C"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-runtime-checkpoint-1/quick-1/completion.json",
+      "File": "002.gz",
+      "Bytes": 2333,
+      "Sha256": "9DC408EF0D1FF5F81DD5465B1BEB2B7F42206A598F14515980577C0FA67C8B8F",
+      "StoredBytes": 586,
+      "StoredSha256": "6AEED70FC81E31FE592094F89E671C7543DB2FB8B3CC80C6EC29BFC658A0677D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-runtime-checkpoint-1/quick-1/invocation.json",
+      "File": "003.gz",
+      "Bytes": 1187,
+      "Sha256": "A313AAA01CEB0329DA77B248E59315FE1DDFC8E1D7DE7405872712AFE44CF0B5",
+      "StoredBytes": 540,
+      "StoredSha256": "0CE17E347F389C0891D6CC3BCF03125140FCF925FB2A706E3C24D659663CFB1D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-runtime-checkpoint-1/quick-1/stderr",
+      "File": "004.gz",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-runtime-checkpoint-1/quick-1/stdout",
+      "File": "005.gz",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF"
+    }
+  ]
+}
