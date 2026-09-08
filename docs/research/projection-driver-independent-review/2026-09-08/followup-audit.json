@@ -1,0 +1,257 @@
+{
+  "Pin": "53cf6cdaa75f9dcb1ab1de2c48144685fdc286d5",
+  "Manifest": {
+    "Bytes": 15039,
+    "Sha256": "C4BD9F0C2F0CE44B041364C1DBCA1FCBA252A0BE89A43DCEFDB8B1BD0D0CBF69"
+  },
+  "Records": 38,
+  "RawBytes": 241696,
+  "StoredBytes": 57113,
+  "EveryStoredRawAndLocalOriginalMatches": true,
+  "OwnedFiles": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "Bytes": 32566,
+      "Sha256": "9952B5B2C36B57DAE74428D2C1C4FD7027511DD7D92683AA2C5CDE2B6F21962B"
+    }
+  ],
+  "CapturedCommands": [
+    {
+      "Record": "000-command.json.gz",
+      "Observed": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/test_precision_gate_projection_driver.py",
+          "-q",
+          "-k",
+          "outer_inner_artifact_links"
+        ],
+        "Started": 1788854421.587193,
+        "Finished": 1788854427.06406,
+        "ExitCode": 1
+      }
+    },
+    {
+      "Record": "005-commands.json.gz",
+      "Observed": [
+        {
+          "Name": "pytest",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_driver.py",
+            "-q"
+          ],
+          "Started": 1788854460.478195,
+          "Finished": 1788854465.064272,
+          "ExitCode": 1
+        },
+        {
+          "Name": "mypy",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "mypy",
+            "--strict",
+            "zeta_interp/precision_gate_projection_driver.py",
+            "tests/test_precision_gate_projection_driver.py"
+          ],
+          "Started": 1788854465.064299,
+          "Finished": 1788854466.860877,
+          "ExitCode": 0
+        },
+        {
+          "Name": "ruff",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "ruff",
+            "check",
+            "zeta_interp/precision_gate_projection_driver.py",
+            "tests/test_precision_gate_projection_driver.py"
+          ],
+          "Started": 1788854466.860894,
+          "Finished": 1788854466.8976152,
+          "ExitCode": 0
+        },
+        {
+          "Name": "format",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "ruff",
+            "format",
+            "--check",
+            "zeta_interp/precision_gate_projection_driver.py",
+            "tests/test_precision_gate_projection_driver.py"
+          ],
+          "Started": 1788854466.89763,
+          "Finished": 1788854466.9258518,
+          "ExitCode": 0
+        }
+      ]
+    },
+    {
+      "Record": "017-commands.json.gz",
+      "Observed": [
+        {
+          "Name": "pytest",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_driver.py",
+            "-q"
+          ],
+          "Started": 1788854602.312536,
+          "Finished": 1788854608.042819,
+          "ExitCode": 0
+        },
+        {
+          "Name": "mypy",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "mypy",
+            "--strict",
+            "zeta_interp/precision_gate_projection_driver.py",
+            "tests/test_precision_gate_projection_driver.py"
+          ],
+          "Started": 1788854608.0428429,
+          "Finished": 1788854609.801592,
+          "ExitCode": 0
+        },
+        {
+          "Name": "ruff",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "ruff",
+            "check",
+            "zeta_interp/precision_gate_projection_driver.py",
+            "tests/test_precision_gate_projection_driver.py"
+          ],
+          "Started": 1788854609.8016121,
+          "Finished": 1788854609.8392088,
+          "ExitCode": 0
+        },
+        {
+          "Name": "format",
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "ruff",
+            "format",
+            "--check",
+            "zeta_interp/precision_gate_projection_driver.py",
+            "tests/test_precision_gate_projection_driver.py"
+          ],
+          "Started": 1788854609.839228,
+          "Finished": 1788854609.86959,
+          "ExitCode": 0
+        }
+      ]
+    },
+    {
+      "Record": "029-commands.json.gz",
+      "Observed": [
+        {
+          "Name": "head",
+          "Argv": [
+            "git",
+            "rev-parse",
+            "HEAD"
+          ],
+          "Started": 1788854281.0509388,
+          "Finished": 1788854281.0574,
+          "ExitCode": 0
+        },
+        {
+          "Name": "push",
+          "Argv": [
+            "git",
+            "push",
+            "origin",
+            "HEAD:refs/heads/codex/distributional-rooms-reference-20260908"
+          ],
+          "Started": 1788854281.057662,
+          "Finished": 1788854372.1350772,
+          "ExitCode": 0
+        },
+        {
+          "Name": "remote",
+          "Argv": [
+            "git",
+            "ls-remote",
+            "origin",
+            "refs/heads/codex/distributional-rooms-reference-20260908"
+          ],
+          "Started": 1788854372.135917,
+          "Finished": 1788854372.456275,
+          "ExitCode": 0
+        }
+      ]
+    }
+  ],
+  "CapturedGateSummaries": [
+    {
+      "Record": "007-format.stdout.gz",
+      "Tail": [
+        "2 files already formatted"
+      ]
+    },
+    {
+      "Record": "009-mypy.stdout.gz",
+      "Tail": [
+        "Success: no issues found in 2 source files"
+      ]
+    },
+    {
+      "Record": "011-pytest.stdout.gz",
+      "Tail": [
+        "FAILED tests/test_precision_gate_projection_driver.py::test_outer_inner_artifact_links_name_their_actual_base[complete]",
+        "FAILED tests/test_precision_gate_projection_driver.py::test_outer_inner_artifact_links_name_their_actual_base[setup-failed]",
+        "2 failed, 57 passed in 3.87s"
+      ]
+    },
+    {
+      "Record": "013-ruff.stdout.gz",
+      "Tail": [
+        "All checks passed!"
+      ]
+    },
+    {
+      "Record": "019-format.stdout.gz",
+      "Tail": [
+        "2 files already formatted"
+      ]
+    },
+    {
+      "Record": "021-mypy.stdout.gz",
+      "Tail": [
+        "Success: no issues found in 2 source files"
+      ]
+    },
+    {
+      "Record": "023-pytest.stdout.gz",
+      "Tail": [
+        "...........................................................              [100%]",
+        "59 passed in 4.84s"
+      ]
+    },
+    {
+      "Record": "025-ruff.stdout.gz",
+      "Tail": [
+        "All checks passed!"
+      ]
+    }
+  ]
+}
