@@ -247,3 +247,12 @@ preserves original static findings, final freeze/capture identities and isolated
 failure-retention controls. First source/runtime capsule admission and named
 actual M4/M5/frozen-query execution remain outstanding. These development
 checks do not supply the requested chronological or SOTA comparison.
+
+
+Final test-only correction `cf5744d70` and signed helper review `2fccfeff6` are
+now imported. The assembled clone passes 111 default-temp bridge tests and
+strict typing with all three Python sources unchanged through that recheck.
+The [final assembled validation section](2026-09-08-mixed-message-assembled-validation.md#final-test-correction-and-assembled-source-checks)
+keeps original failed gates and successful recovery checks distinct. Source
+implementation/review is complete for the bounded control; immutable capsule
+admission and all actual named outcomes remain pending.

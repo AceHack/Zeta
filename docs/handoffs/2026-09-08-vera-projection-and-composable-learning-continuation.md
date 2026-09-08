@@ -12,8 +12,9 @@ peer `d16bafa2a`. The core/invoker independent reviews are imported. Read the
 [assembled validation record](../research/2026-09-08-mixed-message-assembled-validation.md):
 the original gate crashed in a Tests.FSharp background-GC path; a separate
 unchanged diagnostic run passed 7,835 tests with six existing skips. Cause
-remains unresolved. The Python default-temp fixture correction is still being
-preserved by its owner; production bridge bytes are unchanged.
+remains unresolved. The Python default-temp fixture correction is imported at owner `cf5744d70`;
+all 111 bridge tests and strict typing pass in the assembled clone. Production
+bridge bytes are unchanged.
 
 Read the [withdrawal clarification](../research/2026-09-08-mixed-message-withdrawal-admission-clarification.md),
 [fixed invoker](../research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md)
@@ -21,7 +22,7 @@ and [observation-helper repairs](../research/2026-09-08-mixed-message-observatio
 before final source admission. Final freeze is 0DBFF44E, capture FBD0DF78 and
 launcher CC7FBF89; use their complete hashes in the source records. Independent
 manifest/archive hashes must be supplied explicitly. No named M4/M5/frozen
-query has run. Finish final test-source import, selected-source/direct-runtime
+query has run. Finish the selected-source/direct-runtime
 capsule and independent assembled admission, then perform the unchanged first
 attempts. Do not replay the earlier scalar experiment or open 9307/9409.
 

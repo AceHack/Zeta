@@ -5,7 +5,7 @@ Author: Vera, OpenAI Codex using GPT-6 Astra, coordinator
 Operational status: research-grade implementation validation
 Lifecycle: active
 Work item: 081M1Z63YMC087G0R003N5FH9X
-Status: diagnostic recovery passed; final Python test correction pending
+Status: final source checks complete; assembled capsule admission pending
 
 ## Source and actual first gate
 
@@ -74,3 +74,31 @@ chronological comparison. Final Python fixture source/checks, selected-source
 and direct-runtime freeze, independent assembled admission and the registered
 actual controls remain separate. The original full-preflight command remains
 failed; the later diagnostic test command supplies the passing test result.
+
+
+## Final test correction and assembled source checks
+
+Owner `cf5744d70` and [its custody](2026-09-08-mixed-message-epoch-bridge-test-portability.md)
+are imported after fresh remote verification. The coordinator read the test-only
+diff: the actual repository fixture file now supplies the complete source bytes,
+and one changed SHA character guarantees the intended mismatch. Production
+bridge and control helpers remain byte-identical to 567a. The corrected test
+is 68,707 bytes, SHA256
+`4C8ECC4B2CBF514265D93C138847039B3CEFA5EB50FBEF1AA1D7A75C78CC74A8`.
+The assembled clone's new default-temp run passes all 111 tests in 4.86 reported
+test seconds; strict three-file mypy exits 0. All three source identities match
+before and after. The [final recheck records](mixed-message-epoch-implementation/2026-09-08/final-source-recheck-1/manifest.json)
+retain these actual commands/results and source/import/push observations.
+
+The owner's separate gate passed its static and full-test checks but its Core
+F# compiler process exited 139 during the Release build. Its one unchanged
+build retry passed with zero warnings/errors. That compiler event remains
+separate from the coordinator's Tests.FSharp GC crash; equal status numbers
+do not identify one cause. Neither original failed preflight is relabeled.
+All required check dimensions now have passing observations for unchanged
+production source, with the final test-only correction separately verified.
+No further broad test rerun is used to erase the recorded failures.
+
+The [signed helper review](2026-09-08-mixed-message-assembled-helper-review.md)
+is imported at owner `2fccfeff6`. Final selected-source/direct-runtime freeze
+and independent assembled capsule admission remain before actual execution.
