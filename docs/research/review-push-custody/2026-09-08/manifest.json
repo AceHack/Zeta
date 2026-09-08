@@ -1,0 +1,61 @@
+{
+  "OperationalStatus": "research-grade",
+  "Records": [
+    {
+      "File": "decorrelation-review-push-1.log.gz",
+      "OriginalBytes": 1718,
+      "OriginalSha256": "ab4ff3cc57923b232ab8bcbfe6da543b0a698b5c5f846c15ae53223f86ac3d57",
+      "StoredBytes": 667,
+      "StoredSha256": "8525d5ff35c74f7f01caef7fb2e9db8318558707e716cd2ae682243073a97dde",
+      "SourceCommit": "477413c08d898147a57d1f1d9952ee48be9a6f81",
+      "OriginalLocalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/decorrelation-review-push-1.log"
+    },
+    {
+      "File": "scalar-projection-review-push-1.log.gz",
+      "OriginalBytes": 1718,
+      "OriginalSha256": "17e8b1c1159a102fe8478855b8c2bd6875d4fb4334fe690d18b0bcc6a9b906c1",
+      "StoredBytes": 668,
+      "StoredSha256": "bb8c78a493e99b402f5b996ff2ee3c2468b7ff7b664d87f50d383210038b4ae7",
+      "SourceCommit": "ef41bb7fbc6da626c466210360260977bddb2d2d",
+      "OriginalLocalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/scalar-projection-review-push-1.log"
+    },
+    {
+      "File": "oracle-selection-review-push-1.log.gz",
+      "OriginalBytes": 1718,
+      "OriginalSha256": "47b8ae5a7cdde51f106ebaf08c0689f8ef6bc0d17342dbd71cb8a7c0986d9c4b",
+      "StoredBytes": 668,
+      "StoredSha256": "6a64cc0dc562bd533974dd77b4c3d718336a048bebc2fa43db71223680c3e6c5",
+      "SourceCommit": "a7747a8540f4f5640edb24abc1f61bdd9be32a6a",
+      "OriginalLocalFile": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/oracle-selection-review-push-1.log"
+    },
+    {
+      "File": "remote.stdout.gz",
+      "OriginalBytes": 101,
+      "OriginalSha256": "f22fd236534223f37aa19e99fb0ce6a403b8634cf075e661f9289daf7525cac9",
+      "StoredBytes": 109,
+      "StoredSha256": "6f9a6ee74fa78f417b0ff5f6c08cbdea5b03e1abb5730b38c1d5c5b6e53d7687"
+    },
+    {
+      "File": "remote.stderr.gz",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "remote.invocation.json.gz",
+      "OriginalBytes": 593,
+      "OriginalSha256": "ca32945ff354c3a284a800927971868364ae5d15d946e65b48e442e4a45eec80",
+      "StoredBytes": 359,
+      "StoredSha256": "4303ed9a92ecee51d9b7be1bed83f7375242e4dab90036e69b25bb40d1920c88"
+    }
+  ],
+  "OriginalBytes": 5848,
+  "StoredBytes": 2491,
+  "Source": {
+    "File": "prepare.py",
+    "Bytes": 3217,
+    "Sha256": "d6503d972c6fd16aec6311d067bdd74c1ef6f58eaa0e771e73930a8aa557491d"
+  },
+  "Limits": "These logs do not establish execution of the reviewed scientific artifacts."
+}
