@@ -1,0 +1,14 @@
+{
+  "id": "080d03f2ff81d810a0130008844494a8",
+  "at": "2026-09-08T00:16:51.771Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z5ZW1T087G0R0002KPWJ8",
+    "type": "task",
+    "title": "Publish reviewed compiled replay and native custody evidence",
+    "slug": "publish-reviewed-compiled-replay-and-native-custody-evidence",
+    "priority": "P2",
+    "filename": "081M1Z5ZW1T087G0R0002KPWJ8-publish-reviewed-compiled-replay-and-native-custody-evidence.md"
+  }
+}
