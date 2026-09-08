@@ -72,3 +72,8 @@ promptly in good faith.
   attributed source and timestamped study map for Aaron's finite computer-science
   gauge-consistency question; includes original attachment identity and the
   boundary between memory-loop checks and the physics mass-gap problem.
+
+- [2026-09-08 Magnet Paradox transcript](2026-09-08-magnet-paradox-memory-history-transcript.md) —
+  supplied transcript preserved verbatim at Aaron's explicit request, with both
+  attachment identities and his memory/history-to-generator clarification.
+  Original analysis and physics qualifications remain separately linked.

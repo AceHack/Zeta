@@ -372,3 +372,12 @@ full threat model, and irreducible resources retain their separate units.
 The separate [HC-8 explanatory correction](2026-09-08-hc8-default-oracle-explanation-correction.md)
 retains the operative non-coercion rule and corrects the claim that the
 default moral oracle had been replaced. Runtime selection remains separate.
+
+## Retained history and generators under repetition
+
+Aaron's [magnet-inspired history/generator direction](2026-09-08-history-generators-and-hidden-evolution-under-repetition.md)
+preserves his specific mapping: retained history supports generators whose
+outcomes can become new history. It distinguishes repeated visible output from
+unchanged internal state, names caller-owned persistence in the current algebra,
+and proposes chronological comparisons before any learning-performance claim.
+The supplied transcript is retained verbatim in the linked IP-questionable record.
