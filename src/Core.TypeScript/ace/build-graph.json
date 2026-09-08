@@ -40,7 +40,12 @@
       "id": "dotnet:bench/Benchmarks",
       "kind": "dotnet",
       "sources": ["bench/Benchmarks/**"],
-      "dependsOn": ["dotnet:src/Core", "dotnet:src/Core.CSharp.Bonsai", "dotnet:src/Core.FSharp.Git"],
+      "dependsOn": [
+        "dotnet:src/Core",
+        "dotnet:src/Core.CSharp.Bonsai",
+        "dotnet:src/Core.FSharp.Blake3",
+        "dotnet:src/Core.FSharp.Git"
+      ],
       "legs": ["gate/build-and-test", "gate/lint-csharp", "gate/lint-fsharp"],
       "origin": "derived",
       "requiredQuorum": {

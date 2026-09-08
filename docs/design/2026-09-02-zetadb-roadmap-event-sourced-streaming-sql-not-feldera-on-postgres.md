@@ -273,7 +273,14 @@ ZetaFS exists **for ZetaDB**. If another filesystem plus the ferry is better for
 6. **Typed durability notified to the DB** — `Buffered | Journaled | Durable`.
 7. **No central tip / ordinal shared fold.**
 
-Until a bench of "ZetaDB small-write storm on ZetaFS" vs "same storm on APFS/ext4 + GroupCommitDiskDeltaLog" exists, the FS-speed claim stays `toy`. This document names that bench; it does not invent its numbers.
+The both-legs host-FS storm now runs in CI (`Zd4ProductExistence.Tests.fs`):
+16 concurrent `GroupCommitDiskDeltaLog` appends and 16 Journaled freezes on
+PhysicalFileSystem (product BlockCas path). N=16 because BlockCas's
+one-superblock index cannot hold 32 unique 1-byte jumpropes; the host-only
+32-append floor stays in `DiskDeltaLog.Tests`. The FS-speed claim stays `toy`
+until a named run of `Zd4ProductExistenceBench` is recorded. This document
+does not invent numbers. FUSE completeness is not this proof. Apple Developer
+Program is not this proof.
 
 ### ReFS-shaped resilience (Aaron 2026-09-02)
 
@@ -389,8 +396,11 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 
 ### ZD4 — Product-existence bench: host FS + group-commit vs `.zetafs`
 
-- **Files:** bench + first-product metering path. Small-write storm. Numbers stay `toy` until both legs run.
-- **Depends on:** ZD2 (otherwise we are comparing ferry-on-host vs freeze-without-ferry — not a FS comparison).
+- **Files:** `tests/Tests.FSharp/Storage/Zd4ProductExistence.Tests.fs` + `bench/Benchmarks/Zd4ProductExistenceBench.fs`. Small-write storm N=16 on PhysicalFileSystem (product BlockCas path).
+- **First peel:** both legs RUN. Host: 16 concurrent `GroupCommitDiskDeltaLog` appends → one `delta-*.segment`. `.zetafs`: 16 Journaled `freezeAsync` + `pumpLog` → one boat of 16. No Stopwatch. No winner. N=32 unique 1-byte jumpropes overflow BlockCas's one-superblock index; that polyfill limit is not a speed result.
+- **Numbers stay `toy`** until a named run of the bench is recorded (not copied into README).
+- **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
+- **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product.
 
 ### ZD5 — ZetaDB SQL package (separate from Core)
 

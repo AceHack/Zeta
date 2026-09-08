@@ -1332,7 +1332,7 @@ Aaron settled K1-K18. E1-E12 closed the implementability holes. C1-C10 closed th
 
 1. **Public name** -- still gated (naming-expert + Ilyana + Aaron). Working label ZetaFS. Never `ZFS`.
 2. **When Secure Enclave and dual-vendor HSM become metered** -- sovereignty-path (`docs/trajectories/ai-sovereignty-path/RESUME.md`): SE seal tier unbuilt; CardContact SmartCard-HSM not in hand. ZetaFS must open this Mac without them. Not a volume-format fork.
-3. **Does ZetaFS-as-product survive ZD4?** -- only after the small-write storm on `.zetafs` vs host FS + `GroupCommitDiskDeltaLog` has numbers. Until then the store stays designed, not proven faster. See ZetaDB roadmap D4 / ZD4.
+3. **Does ZetaFS-as-product survive ZD4?** -- only after the small-write storm on `.zetafs` vs host FS + `GroupCommitDiskDeltaLog` has numbers. Both legs now run on PhysicalFileSystem (`Zd4ProductExistence.Tests.fs`); numbers still `toy`. Until a named bench run, the store stays designed, not proven faster. See ZetaDB roadmap D4 / ZD4. FUSE is not this proof. Apple Developer Program is not this proof.
 
 Numbers that stay **unmetered until measured** (not product forks): C1's N=32, C5 stripe unit and LRC `(k,l,r)`, C2 throughput, K14 expansion ratio, C6 delta T. They earn `metered` from the existing harness **grown by dogfood** (Metering path): PR9/PR8/PR19 are the bench slices; ROADMAP 8b + dogfood ledger row 11 are the factory slices. We do not wait for a harness that is not started.
 
