@@ -285,3 +285,8 @@ entitlements and bounds the sum in Int64. No successful full-gate claim is
 substituted for the recorded compiler/test-process failures. The exact finite
 room reference is separately co-claimed and will compare distributions,
 transport, conditioning and decisions before any learned-system benchmark.
+
+The [fixed small-room protocol](2026-09-08-distributional-learning-small-room-protocol.md)
+now records the exact controls, sixteen Zeta observations and failure journal
+before the actual F# room run. These known-answer controls precede a separately
+registered learned-system comparison.
