@@ -6,17 +6,24 @@ Operational status: research-grade continuity record
 Lifecycle: active
 Status: scalar component verified on main; bounded learning contract accepted for implementation
 
-Current implementation checkpoints are indexed in the
-[implementation register](../research/2026-09-08-mixed-message-epoch-implementation-register.md#runtime-and-correction-follow-through).
-The core runtime is callable at owner `15b43aa` (48 focused development tests),
-and bridge counter/path corrections are imported through owner `a6ca792`
-(100 development fixtures). Their real named integration controls remain
-unrun. The [withdrawal clarification](../research/2026-09-08-mixed-message-withdrawal-admission-clarification.md)
-and [fixed invoker](../research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md)
-must be read before final source admission. Neither a training-cut hash nor
-a DAG address proves independent or unaffected ancestry. Await final core,
-peer and matching bridge source/review, then the assembled gate and archived
-registration; do not replay the earlier scalar experiment.
+Current implementation source is complete for bounded assembled validation:
+core owner `d7e8e3806` (71 focused controls), bridge `567a9f004` and completed
+peer `d16bafa2a`. The core/invoker independent reviews are imported. Read the
+[assembled validation record](../research/2026-09-08-mixed-message-assembled-validation.md):
+the original gate crashed in a Tests.FSharp background-GC path; a separate
+unchanged diagnostic run passed 7,835 tests with six existing skips. Cause
+remains unresolved. The Python default-temp fixture correction is still being
+preserved by its owner; production bridge bytes are unchanged.
+
+Read the [withdrawal clarification](../research/2026-09-08-mixed-message-withdrawal-admission-clarification.md),
+[fixed invoker](../research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md)
+and [observation-helper repairs](../research/2026-09-08-mixed-message-observation-helper-review.md)
+before final source admission. Final freeze is 0DBFF44E, capture FBD0DF78 and
+launcher CC7FBF89; use their complete hashes in the source records. Independent
+manifest/archive hashes must be supplied explicitly. No named M4/M5/frozen
+query has run. Finish final test-source import, selected-source/direct-runtime
+capsule and independent assembled admission, then perform the unchanged first
+attempts. Do not replay the earlier scalar experiment or open 9307/9409.
 
 ## Bootstrap
 

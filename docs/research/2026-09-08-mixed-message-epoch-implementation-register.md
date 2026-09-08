@@ -224,3 +224,26 @@ The fixed invoker's three contract links are repaired at `50610f191`; its
 reviewed Python bytes remain `CC7FBF89...055E69`. No named route has run. Final
 core controls/review, assembled gate, frozen service/source/runtime archive and
 independent admission remain prerequisites to the unchanged first attempts.
+
+
+## Complete core source and original assembled gate
+
+Core model/compensation source `d7e8e3806` is imported, with 71 focused controls,
+323 owner evidence records and [independent source acceptance](2026-09-08-mixed-message-core-model-independent-review.md)
+at `419c7a81d`. This includes the actual local M1/M2/M3/M6/M7/M8 controls and
+conservative withdrawal admission, with synthetic service premises explicitly
+limited. The [invoker review](2026-09-08-mixed-message-invocation-independent-review.md)
+at `2c8adb74c` binds the final CC7FBF89 Python bytes and repaired README.
+
+The [assembled validation record](2026-09-08-mixed-message-assembled-validation.md)
+preserves the first full-gate test-process crash and the original default-temp
+Python fixture failure. The separate unchanged-source diagnostic recovery
+passed 7,835 tests with six existing skips; the crash cause is unresolved.
+The test owner is preserving its portability correction. Production bridge
+source remains unchanged; no broad numerical criterion is relaxed.
+
+The [finite observation-helper record](2026-09-08-mixed-message-observation-helper-review.md)
+preserves original static findings, final freeze/capture identities and isolated
+failure-retention controls. First source/runtime capsule admission and named
+actual M4/M5/frozen-query execution remain outstanding. These development
+checks do not supply the requested chronological or SOTA comparison.
