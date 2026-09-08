@@ -490,30 +490,59 @@ module ZetaFsJumprope =
         let id, _ = encodeChunk (emptyCas ()) data
         id
 
-    /// Same-span overwrite: hash each previous window until the first
-    /// mismatch, then FastCDC only the suffix. Length change falls back
-    /// to a full `build`. Identical bytes reuse the previous trunk and
-    /// put nothing in Cas.
+    let private encodePrefixLeaves (prev: Prev) (count: int) : ResizeArray<BuildLeaf> * Cas =
+        let prefix = ResizeArray<BuildLeaf>(count)
+        let mutable cas = emptyCas ()
+
+        for i in 0 .. count - 1 do
+            let chunkId, span = prev.Leaves.[i]
+            let leafId, cas1 = encodeLeaf cas chunkId span
+            cas <- cas1
+
+            prefix.Add
+                { LeafId = leafId
+                  ChunkId = chunkId
+                  Span = span
+                  Level = levelOf leafId }
+
+        prefix, cas
+
+    /// Hash previous windows until the first mismatch, then FastCDC the
+    /// suffix. Identical bytes reuse the trunk. Append re-chunks from the
+    /// last previous chunk (that chunk was a Flush, not a gear cut).
+    /// Truncate on a chunk boundary keeps the prefix. Mid-chunk truncate
+    /// FastCDC from that window. Empty prev falls back to `build`.
     let buildFromPrev (prev: Prev) (bytes: byte[]) : Rope =
-        if isNull bytes || uint64 bytes.Length <> prev.Span || prev.Leaves.Length = 0 then
+        if isNull bytes || prev.Leaves.Length = 0 then
             build prev.Chunker bytes
         else
+            let newLen = uint64 bytes.Length
             let mutable first = 0
             let mutable mismatch = false
 
             while (not mismatch) && first < prev.Leaves.Length do
                 let id, span = prev.Leaves.[first]
-                let off = int prev.Starts.[first]
-                let n = int span
-                let slice = Array.zeroCreate n
-                Buffer.BlockCopy(bytes, off, slice, 0, n)
+                let off = prev.Starts.[first]
 
-                if not ((chunkIdOf slice).Equals id) then
+                if off >= newLen then
+                    mismatch <- true
+                elif off + span > newLen then
                     mismatch <- true
                 else
-                    first <- first + 1
+                    let n = int span
+                    let slice = Array.zeroCreate n
+                    Buffer.BlockCopy(bytes, int off, slice, 0, n)
 
-            if not mismatch then
+                    if not ((chunkIdOf slice).Equals id) then
+                        mismatch <- true
+                    else
+                        first <- first + 1
+
+            if (not mismatch) && newLen > prev.Span && prev.Leaves.Length > 0 then
+                first <- prev.Leaves.Length - 1
+                mismatch <- true
+
+            if (not mismatch) && newLen = prev.Span && first = prev.Leaves.Length then
                 { Content = prev.Content
                   Span = prev.Span
                   Chunker = prev.Chunker
@@ -521,29 +550,28 @@ module ZetaFsJumprope =
                   Leaves = prev.Leaves
                   Starts = prev.Starts }
             else
-                let prefix = ResizeArray<BuildLeaf>(first)
-                let mutable cas = emptyCas ()
+                let rebuildAt = first
 
-                for i in 0 .. first - 1 do
-                    let chunkId, span = prev.Leaves.[i]
-                    let leafId, cas1 = encodeLeaf cas chunkId span
-                    cas <- cas1
+                if rebuildAt >= prev.Starts.Length then
+                    build prev.Chunker bytes
+                else
+                    let off = int prev.Starts.[rebuildAt]
+                    let prefix, cas0 = encodePrefixLeaves prev rebuildAt
 
-                    prefix.Add
-                        { LeafId = leafId
-                          ChunkId = chunkId
-                          Span = span
-                          Level = levelOf leafId }
-
-                let off = int prev.Starts.[first]
-                let suffixBytes = Array.zeroCreate (bytes.Length - off)
-                Buffer.BlockCopy(bytes, off, suffixBytes, 0, suffixBytes.Length)
-                let suffixChunks = chunkAll prev.Chunker suffixBytes
-                let suffix, cas2 = encodeAllChunks cas suffixChunks
-                let nodes = Array.zeroCreate (prefix.Count + suffix.Length)
-                prefix.CopyTo(nodes, 0)
-                Array.Copy(suffix, 0, nodes, prefix.Count, suffix.Length)
-                ropeFromLeaves prev.Chunker cas2 nodes
+                    if off >= bytes.Length then
+                        if prefix.Count = 0 then
+                            build prev.Chunker bytes
+                        else
+                            ropeFromLeaves prev.Chunker cas0 (prefix.ToArray())
+                    else
+                        let suffixBytes = Array.zeroCreate (bytes.Length - off)
+                        Buffer.BlockCopy(bytes, off, suffixBytes, 0, suffixBytes.Length)
+                        let suffixChunks = chunkAll prev.Chunker suffixBytes
+                        let suffix, cas2 = encodeAllChunks cas0 suffixChunks
+                        let nodes = Array.zeroCreate (prefix.Count + suffix.Length)
+                        prefix.CopyTo(nodes, 0)
+                        Array.Copy(suffix, 0, nodes, prefix.Count, suffix.Length)
+                        ropeFromLeaves prev.Chunker cas2 nodes
 
     let private payloadMemory (cas: Cas) (chunk: ContentHash256) : Result<ReadOnlyMemory<byte>, JumpropeError> =
         match tryGetPayload cas chunk with

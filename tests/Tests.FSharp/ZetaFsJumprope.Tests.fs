@@ -241,6 +241,25 @@ let ``buildFromPrev of a 1-byte edit matches full build and does not recopy the 
     )
 
 [<Fact>]
+let ``buildFromPrev of an append matches full build and does not recopy the prefix`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte (i % 251))
+    let after = Array.append before (Array.init 8_192 (fun i -> byte (i % 199)))
+    let ra = ZetaFsJumprope.buildV1 before
+    let full = ZetaFsJumprope.buildV1 after
+    let reused = ZetaFsJumprope.buildFromPrev (ZetaFsJumprope.prevOf ra) after
+    Assert.Equal(full.Content.ToHex(), reused.Content.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), reused.Content.ToHex())
+    Assert.True(
+        reused.Cas.Payloads.Count > 0
+        && reused.Cas.Payloads.Count < full.Cas.Payloads.Count,
+        sprintf
+            "append reused payloads %d vs full %d — prefix was recopied"
+            reused.Cas.Payloads.Count
+            full.Cas.Payloads.Count
+    )
+
+[<Fact>]
 let ``pread copies into a caller buffer without a full materialize`` () =
     ensureHasher ()
     let bytes = Array.init 50_000 (fun i -> byte (i % 251))
