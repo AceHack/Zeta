@@ -162,3 +162,10 @@ optional-observation narrowing, typed reader-join closure, test import ordering
 and explicit test-owned stream cleanup. No initial failed log is rewritten as a
 pass. Final immutable source/evidence and independent review are prerequisites
 to coordinator integration. Full corrected-source gate remains separately logged.
+
+The [immutable preparation inventory](precision-gate-projection/2026-09-08/process-preparation-1/manifest.json)
+binds source `b575e34bd5cda05176ee14f89aedb2fa10edbb96`, all 66 retained
+records (266,984 raw / 70,582 stored bytes) and 14 source/contract/wiring pins.
+The first diagnostic logs without a separate command-completion JSON remain raw
+tool-output records; later invocations retain their actual exit codes explicitly.
+All stored and decompressed bytes were checked against the available originals.
