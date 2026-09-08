@@ -70,3 +70,12 @@ The [native replay and corrections](precision-gate-kernels/2026-09-08/native-ref
 preserve the first producer compile failure, actual24-row observations,
 comparator review/fix, ten rejected controls and fresh direct assembly custody.
 The original plan remains at ba40d4d0f3bdac59294ccb36fdb8131486c07a6a.
+
+The [native equation/API review](2026-09-08-precision-gate-kernels-native-review.md)
+found no material defect in the reviewed density rules. Its two test-strength
+recommendations are implemented in the retained24-test pass. For improper
+beliefs the native error carries only the family (Gamma or Gaussian): the
+producer's Failure.Field contains that family label, not an observed parameter
+locator. The reference's more specific kernel.Rate/kernel.Precision fields
+remain reference facts. InvalidInput fields are compared directly using the
+declared naming map.
