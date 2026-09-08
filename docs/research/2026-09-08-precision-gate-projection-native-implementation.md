@@ -229,3 +229,7 @@ The [surrogate correction archive](precision-gate-projection/2026-09-08/native-s
 binds correction `e3b87af8f33f09476e939ebbc4f78360c3aa7d1d`, both actual
 TRX outcomes and the separate first documentation-lint refusal. Replay, project
 wiring and the original kernel match their previous bytes.
+
+The separately reviewed [process custody source](2026-09-08-precision-gate-projection-process-source.md)
+defines the coordinator launcher and direct-file scope. It does not execute the
+registered comparison during its transport-only fixture validation.
