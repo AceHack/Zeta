@@ -98,6 +98,10 @@ A later physical-data/callee expansion requires a separately reviewed finite
 roster and authorization. No full runtime, executing graph, body or closure
 admission follows from this completed inventory.
 
+The [next finite data-read proposal](2026-09-08-hidden-switch-compiled-data-read-plan.md)
+separately scopes 43 unknown cells and ten literals. It authorizes no read
+or chained target query; its exact roster and source review remain pending.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
