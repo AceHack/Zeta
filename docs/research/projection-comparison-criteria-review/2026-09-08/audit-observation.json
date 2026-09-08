@@ -1,0 +1,153 @@
+{
+  "SourceCommit": "459df91118b0065123cadf3f5bad4efa1195133b",
+  "Manifest": {
+    "Bytes": 3659,
+    "Sha256": "f1ec36eb63ae5b71f7dfb348d752ec82cc20ce96316aaebdfdc3c55c90d32441"
+  },
+  "Records": [
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/0-stderr",
+      "Stored": "0-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/0-stdout",
+      "Stored": "0-stdout.gz",
+      "Bytes": 19,
+      "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/1-stderr",
+      "Stored": "1-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/1-stdout",
+      "Stored": "1-stdout.gz",
+      "Bytes": 99,
+      "Sha256": "3a79d17954dee27830b9dbba70f17b8cf991188de68027414978e86679f239ae"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/2-stderr",
+      "Stored": "2-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/2-stdout",
+      "Stored": "2-stdout.gz",
+      "Bytes": 43,
+      "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/precision_gate_projection_comparison.py",
+      "Stored": "precision_gate_projection_comparison.py.gz",
+      "Bytes": 11850,
+      "Sha256": "fa748bbb30a4647d85e264e803f2ffebe4214cda222cb84ff623a0ba1893ee5e"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/process.json",
+      "Stored": "process.json.gz",
+      "Bytes": 843,
+      "Sha256": "b276f44d151820b1737d56ebd8ee8be9572cab61c3a82b5bce2e62e7d3af4f78"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/start.json",
+      "Stored": "start.json.gz",
+      "Bytes": 708,
+      "Sha256": "b1e1df05fbb36614344fb5dea344ba9b4d9f03a3e276376b924b84aede877628"
+    },
+    {
+      "Original": ".git/projection-comparison-criteria-tests-1/test_precision_gate_projection_comparison.py",
+      "Stored": "test_precision_gate_projection_comparison.py.gz",
+      "Bytes": 7989,
+      "Sha256": "95f6f2c131e490f5850297e4b9b1b7fab4eb79237853e4f50875449911812500"
+    }
+  ],
+  "OriginalBytes": 21551,
+  "StoredBytes": 6779,
+  "SourcePins": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+      "Bytes": 11850,
+      "Sha256": "fa748bbb30a4647d85e264e803f2ffebe4214cda222cb84ff623a0ba1893ee5e"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+      "Bytes": 7989,
+      "Sha256": "95f6f2c131e490f5850297e4b9b1b7fab4eb79237853e4f50875449911812500"
+    }
+  ],
+  "Start": {
+    "UTC": "2026-09-08T06:33:57.938367+00:00",
+    "Argv": [
+      [
+        "ruff",
+        "check",
+        "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+        "src/Interp.Python/tests/test_precision_gate_projection_comparison.py"
+      ],
+      [
+        "src/Interp.Python/.venv/bin/python",
+        "-m",
+        "pytest",
+        "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+        "-q"
+      ],
+      [
+        "src/Interp.Python/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+        "src/Interp.Python/tests/test_precision_gate_projection_comparison.py"
+      ]
+    ]
+  },
+  "Process": [
+    {
+      "Argv": [
+        "ruff",
+        "check",
+        "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+        "src/Interp.Python/tests/test_precision_gate_projection_comparison.py"
+      ],
+      "Exit": 0,
+      "Seconds": 0.01742100715637207
+    },
+    {
+      "Argv": [
+        "src/Interp.Python/.venv/bin/python",
+        "-m",
+        "pytest",
+        "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+        "-q"
+      ],
+      "Exit": 0,
+      "Seconds": 5.39936900138855
+    },
+    {
+      "Argv": [
+        "src/Interp.Python/.venv/bin/python",
+        "-m",
+        "mypy",
+        "--follow-imports=silent",
+        "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+        "src/Interp.Python/tests/test_precision_gate_projection_comparison.py"
+      ],
+      "Exit": 0,
+      "Seconds": 1.699268102645874
+    }
+  ],
+  "Outputs": {
+    "0-stderr.gz": "",
+    "0-stdout.gz": "All checks passed!\n",
+    "1-stderr.gz": "",
+    "1-stdout.gz": "........................                                                 [100%]\n24 passed in 4.53s\n",
+    "2-stderr.gz": "",
+    "2-stdout.gz": "Success: no issues found in 2 source files\n"
+  },
+  "ApplicationCodeExecuted": false
+}
