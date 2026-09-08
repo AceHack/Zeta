@@ -502,7 +502,7 @@ def synthetic_room_records() -> list[dict[str, Any]]:
                 for name in (
                     "Zeta.Core",
                     "Zeta.Bayesian",
-                    "Zeta.Core.CSharp.DynamicValue",
+                    "Zeta.Core",
                 )
             ],
             "CompleteRuntimeClosureAdmitted": False,
@@ -848,7 +848,7 @@ def test_exact_bounds_and_closed_lines() -> None:
     assert isinstance(r.validate_room_ndjson(b"".join(padded)), r.RoomRunValidated)
     assert refused(b" " + b"".join(padded)).Code == "ByteBound"
     assert refused(normal[:-1]).Code == "UnterminatedLine"
-    assert refused(b"{}\n" * 66).Code == "CheckpointBound"
+    assert refused(b"{}\n" * 66).Code == "MissingCheckpoint"
     assert refused(b"\n").Code == "InvalidJson"
     assert refused(b"").Code == "ByteBound"
     assert refused(None).Code == "InvalidBytes"
@@ -872,3 +872,27 @@ def test_missing_field_reports_exact_first_location() -> None:
     del rows[-1]["Failure"]
     failure = refused(ndjson(rows))
     assert failure.Path == "Lines[25].Failure" and failure.CheckedCheckpoints == 25
+
+
+@pytest.mark.parametrize("suffix", ["unterminated-terminal", "late-excess-lines"])
+def test_late_framing_retains_validated_checkpoint_prefix(suffix: str) -> None:
+    normal = ndjson(synthetic_room_records())
+    raw = normal[:-1] if suffix == "unterminated-terminal" else normal + b"{}\n" * 40
+    failure = refused(raw)
+    assert failure.CheckedCheckpoints == 25
+    assert len(failure.Records) == (25 if suffix == "unterminated-terminal" else 27)
+    assert failure.Code == (
+        "UnterminatedLine" if suffix == "unterminated-terminal" else "AfterTerminal"
+    )
+
+
+def test_type_selected_assembly_observations_repeat_core_exactly() -> None:
+    import copy
+
+    rows = synthetic_room_records()
+    loaded = rows[-1]["Receipt"]["Runtime"]["LoadedAssemblies"]
+    loaded[2] = copy.deepcopy(loaded[0])
+    assert isinstance(r.validate_room_ndjson(ndjson(rows)), r.RoomRunValidated)
+    loaded[2]["Sha256"] = "1" * 64
+    failure = refused(ndjson(rows))
+    assert failure.Path.endswith(".LoadedAssemblies[2].Sha256")

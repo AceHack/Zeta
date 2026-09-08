@@ -728,7 +728,7 @@ def _runtime_shape(actual: object, path: str) -> None:
             "metadata does not admit runtime closure",
         )
     assemblies = actual["LoadedAssemblies"]
-    names = ("Zeta.Core", "Zeta.Bayesian", "Zeta.Core.CSharp.DynamicValue")
+    names = ("Zeta.Core", "Zeta.Bayesian", "Zeta.Core")
     if type(assemblies) is not list or len(assemblies) != len(names):
         _room_error(
             path + ".LoadedAssemblies", "three ordered assembly metadata rows required"
@@ -747,6 +747,8 @@ def _runtime_shape(actual: object, path: str) -> None:
             or re.fullmatch(r"[0-9A-F]{64}", row["Sha256"]) is None
         ):
             _room_error(target + ".Sha256", "uppercase SHA256 observation required")
+    # The first and third type selections name the same actual F# assembly.
+    _same_room(assemblies[2], assemblies[0], path + ".LoadedAssemblies[2]", None)
 
 
 def _receipt_links(
@@ -839,15 +841,10 @@ def validate_room_ndjson(
             raise _RoomError(
                 "ByteBound", "nonempty input at most 1 MiB required", "Raw"
             )
-        if not raw.endswith(b"\n"):
-            raise _RoomError(
-                "UnterminatedLine", "every NDJSON line must end with LF", "Raw"
-            )
-        parts = raw.split(b"\n")[:-1]
-        if len(parts) > 65:
-            raise _RoomError(
-                "CheckpointBound", "at most 64 checkpoints and one terminal", "Raw"
-            )
+        terminated = raw.endswith(b"\n")
+        parts = raw.split(b"\n")
+        if terminated:
+            parts.pop()  # The empty segment after the final line delimiter.
         expected, observations, finite = _room_expectations()
         target = modes[mode]
         terminal_seen = False
@@ -856,6 +853,14 @@ def validate_room_ndjson(
         )
         for index, line in enumerate(parts):
             path = f"Lines[{index}]"
+            if index >= 65:
+                raise _RoomError(
+                    "CheckpointBound", "at most 64 checkpoints and one terminal", path
+                )
+            if not terminated and index == len(parts) - 1:
+                raise _RoomError(
+                    "UnterminatedLine", "every NDJSON line must end with LF", path
+                )
             if len(line) + 1 > _ROOM_LINE_BYTES:
                 raise _RoomError(
                     "LineBound", "line exceeds 64 KiB including delimiter", path
