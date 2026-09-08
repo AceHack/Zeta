@@ -368,3 +368,7 @@ clarification. No runtime selection policy is changed by this research note.
 The default is a moral baseline, not an invented scalar rank or a preferred
 universal oracle. Existing fabrication/cartel detection remains part of the
 full threat model, and irreducible resources retain their separate units.
+
+The separate [HC-8 explanatory correction](2026-09-08-hc8-default-oracle-explanation-correction.md)
+retains the operative non-coercion rule and corrects the claim that the
+default moral oracle had been replaced. Runtime selection remains separate.
