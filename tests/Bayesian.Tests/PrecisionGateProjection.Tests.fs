@@ -356,3 +356,40 @@ let ``actual numerical refusal publishes a complete registered receipt with sepa
         Assert.Equal(0, receipt.Counters.ObjectiveEntries)
         Assert.Equal<byte>(P.tryEncode receipt |> accepted, System.IO.File.ReadAllBytes args.[4])
         Assert.Equal(2, actual.Assemblies.Length))
+
+[<Fact>]
+let ``escaped unpaired surrogate is a wire refusal before numeric entry`` () =
+    let original = input "1" "0" "0" "1" "default" |> Encoding.UTF8.GetString
+    let raw = original.Replace("\"U\":\"0\"", "\"U\":\"\\ud800\"", StringComparison.Ordinal) |> Encoding.UTF8.GetBytes
+    let receipt = callRaw raw
+    let reason, _ = refusal receipt
+    Assert.True(reason.Code = "Wire", sprintf "Actual nonnumeric receipt: %A" receipt)
+    Assert.Equal("input", reason.Stage)
+    Assert.Equal(0, receipt.Counters.Starts)
+    Assert.Equal(0, receipt.Counters.PhiEntries)
+
+[<Theory>]
+[<InlineData("Schema", "zeta.precision-projection.input.v1", "\\ud800")>]
+[<InlineData("Id", "fixture", "\\udc00")>]
+[<InlineData("Profile", "default", "\\ud800x")>]
+[<InlineData("T", "1", "\\ud800\\ud800")>]
+[<InlineData("U", "0", "\\udc00")>]
+let ``deferred escaped string refusals keep the exact field and zero numeric entries`` field originalValue escaped =
+    let original = input "1" "0" "0" "1" "default" |> Encoding.UTF8.GetString
+    let raw = original.Replace(sprintf "\"%s\":\"%s\"" field originalValue, sprintf "\"%s\":\"%s\"" field escaped, StringComparison.Ordinal) |> Encoding.UTF8.GetBytes
+    let receipt = callRaw raw
+    let reason, partial = refusal receipt
+    Assert.Equal("Wire", reason.Code)
+    Assert.Equal(Some(if field = "T" || field = "U" then "Parameters." + field else field), reason.Field)
+    Assert.Equal(0, receipt.Counters.Starts)
+    Assert.True(partial.Target.IsNone)
+
+[<Fact>]
+let ``valid surrogate pair reaches decimal grammar and ordinary escaped digits remain admitted`` () =
+    let original = input "1" "0" "0" "1" "default" |> Encoding.UTF8.GetString
+    let pair = original.Replace("\"U\":\"0\"", "\"U\":\"\\ud83d\\ude00\"", StringComparison.Ordinal) |> Encoding.UTF8.GetBytes |> callRaw
+    let reason, _ = refusal pair
+    Assert.Equal("Wire", reason.Code)
+    Assert.Contains("decimal grammar", reason.Message)
+    let digit = original.Replace("\"U\":\"0\"", "\"U\":\"\\u0030\"", StringComparison.Ordinal) |> Encoding.UTF8.GetBytes |> callRaw
+    Assert.Equal("0000000000000000", (candidate digit).TargetBits.["U"])

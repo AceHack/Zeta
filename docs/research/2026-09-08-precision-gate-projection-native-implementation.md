@@ -207,3 +207,20 @@ formatter exited 0 but explicitly reported F# projects unsupported; that is not
 F# formatting coverage. Independent complete source review and the registered
 final comparison remain pending. These local checks do not substitute for the
 independent reference or that final comparison.
+
+## Deferred string decoding follow-up
+
+After bounded source acceptance `a285b1144255ad4e5a74991f04048c7b69afda97`,
+the reviewer identified a deferred-unescape edge: System.Text.Json can retain an
+escaped unpaired surrogate through Parse/Clone and reject it later at GetString.
+One separately retained nonnumeric fixture against bf2da reproduced
+`Unexpected/input`, `CannotReadIncompleteUTF16`, with zero Starts and PhiEntries.
+The complete observed receipt appears in the failing TRX; it was not replaced.
+
+The correction maps the actual InvalidOperationException at stringField to Wire
+with its original field/message. The numeric loop and objective call are unchanged.
+High/low/mismatched surrogates in root and parameter strings, a valid surrogate
+pair reaching decimal grammar, and an admitted escaped digit discriminate the
+boundary. All 41 focused tests pass after this change. The earlier all-18 gate
+continues to describe bf2da; correction source review and the next complete gate
+remain separate prerequisites. No registered final subject was run.
