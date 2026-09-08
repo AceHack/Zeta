@@ -64,6 +64,51 @@ The final source and hashed roster need independent
 review before a physical reader can accept them. A roster mismatch refuses;
 it does not expand the allowed ranges.
 
+## Metadata-only proposal wrapper
+
+The proposed file-backed wrapper admits exactly the inventory manifest and
+mapped-extent manifest, then 132 selected archived records: the inventory
+outcome, all 130 method reports and the mapped helper input. Their manifest
+tables declare 7,809,397 original record bytes plus 345,987 manifest bytes,
+8,155,384 bytes total. This footprint was calculated from the two manifest
+tables only. It is not an actual range derivation. Maximum selected record
+sizes are 344,800 original and 60,406 stored bytes.
+
+The wrapper requires the completed inventory's exact source, counts,
+read-scope flags, ordered method identities and unresolved rosters. The
+selected mapped helper's manifest/stored/original identities must each occur
+exactly once in that earlier inventory's recorded input roster. Each method
+must equal its mapped current-method metadata and retained complete record.
+This reuses the independently audited immutable inventory; it does not repeat
+the original 534-record classifier or establish new physical correspondence.
+The dump path/size/hash are retained metadata and are never opened here.
+
+The existing retained reader supplies regular nonblocking/no-follow leaf
+descriptors, exact-size-plus-one reads, ten-second checked read deadlines,
+single-member bounded gzip and strict JSON. Its existing per-record two-MiB,
+600-selected-record and sixteen-MiB original-input caps remain in force.
+The wrapper pins its two new entry files plus the inventory's twelve local
+source/import files and rechecks those identities and selected input files.
+These are stable-writer observations; no hostile namespace, kernel I/O
+cancellation or complete Python/framework loading theorem is claimed.
+
+Exclusive attempt/journal/proposal/terminal files reuse the reviewed
+two-MiB per-record and 32-MiB aggregate output bounds. The terminal reserve
+includes the two-MiB main report plus independent sixteen-KiB secondary
+report and sixteen-KiB console. Each observed input/source pin and admitted
+current method reaches in-memory diagnostics before fallible publication.
+The complete pure proposal reaches those diagnostics before recheck/output.
+A later failure keeps the first error and separate cleanup/publication
+failures; oversized terminal metadata is explicitly omitted with counts and
+a refusal. Successful writes are flushed and fsynced. These are bounded
+retention attempts, not survival guarantees for storage or abrupt failure.
+
+Only the pure helper's fixed defaults are used in production. The wrapper
+has no count override, dump reader, subprocess or target entry point. Final
+source review and an exact retained invocation precede the actual proposal;
+the resulting roster still needs independent review before any physical
+reader may consume it.
+
 ## One held local dump, no chained query
 
 The proposed physical file is the already captured local-only dump 2:
