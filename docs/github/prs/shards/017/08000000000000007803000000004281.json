@@ -1,0 +1,12 @@
+{
+  "pr_number": 17025,
+  "archive_path": "docs/history/pr-reviews/PR-17025-fix-cluster-argocd-health-failure-threw-away-the-names-it-had-computed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T03:37:04.788Z",
+  "schema_version": "v1",
+  "commit_sha": "33082590c558032ef55141240c92c0b08fccf206",
+  "title": "fix(cluster): ArgoCD health failure threw away the names it had computed",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T03:36:24Z",
+  "head_ref": "shadow/argocd-health-names-the-failing-app"
+}

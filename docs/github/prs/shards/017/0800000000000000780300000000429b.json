@@ -1,0 +1,15 @@
+{
+  "pr_number": 17051,
+  "archive_path": "docs/history/pr-reviews/PR-17051-add-and-certify-bounded-scalar-gaussian-projection.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7r0djm",
+    "thread:PRRT_kwDOSF9kNM6gLV_y"
+  ],
+  "fetched_at": "2026-09-08T10:12:47.430Z",
+  "schema_version": "v1",
+  "commit_sha": "f59b6e395603062882dd1fe69fa8247406842e4d",
+  "title": "Add and certify bounded scalar Gaussian projection",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T10:11:44Z",
+  "head_ref": "codex/scalar-projection-evaluation-20260908"
+}

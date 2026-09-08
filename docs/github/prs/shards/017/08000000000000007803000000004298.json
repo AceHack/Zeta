@@ -1,0 +1,15 @@
+{
+  "pr_number": 17048,
+  "archive_path": "docs/history/pr-reviews/PR-17048-clarify-deliberate-oracle-choice-and-correct-bounded-quantum-claims.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ruZA7",
+    "thread:PRRT_kwDOSF9kNM6gHROo"
+  ],
+  "fetched_at": "2026-09-08T07:03:08.220Z",
+  "schema_version": "v1",
+  "commit_sha": "b6bb61f2b255093790f8bdf84dc1b6f0f612f4d9",
+  "title": "Clarify deliberate oracle choice and correct bounded quantum claims",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T07:02:15Z",
+  "head_ref": "codex/oracle-grounding-publication-20260908"
+}

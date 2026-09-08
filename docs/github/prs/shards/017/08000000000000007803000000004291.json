@@ -1,0 +1,12 @@
+{
+  "pr_number": 17041,
+  "archive_path": "docs/history/pr-reviews/PR-17041-add-density-consistent-precision-gate-kernels-and-independent-replay.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:25:02.333Z",
+  "schema_version": "v1",
+  "commit_sha": "155d45e32d01152004a03862213550ada96fb036",
+  "title": "Add density-consistent precision gate kernels and independent replay",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:24:19Z",
+  "head_ref": "codex/precision-kernel-publication-20260908"
+}

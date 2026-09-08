@@ -1,0 +1,12 @@
+{
+  "pr_number": 17016,
+  "archive_path": "docs/history/pr-reviews/PR-17016-fix-ci-the-iso-lane-was-red-for-11-runs-and-the-iso-was-never-the-problem.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T03:47:23.058Z",
+  "schema_version": "v1",
+  "commit_sha": "4fc95943deacf83646153cb2ef92122430299dd9",
+  "title": "fix(ci): the ISO lane was red for 11 runs and the ISO was never the problem",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T03:46:41Z",
+  "head_ref": "shadow/iso-lane-three-defects"
+}

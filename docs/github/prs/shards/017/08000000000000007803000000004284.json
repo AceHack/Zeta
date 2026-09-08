@@ -1,0 +1,12 @@
+{
+  "pr_number": 17028,
+  "archive_path": "docs/history/pr-reviews/PR-17028-fix-installer-the-multiboot-usb-booted-a-root-label-nothing-ever-writes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T03:49:51.420Z",
+  "schema_version": "v1",
+  "commit_sha": "8818b4283d02e3dc5966d8da335c4c0192faeb96",
+  "title": "fix(installer): the multiboot USB booted a root label nothing ever writes",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T03:49:14Z",
+  "head_ref": "shadow/multiboot-usb-root-label-never-exists"
+}

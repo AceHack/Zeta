@@ -1,0 +1,12 @@
+{
+  "pr_number": 17026,
+  "archive_path": "docs/history/pr-reviews/PR-17026-docs-research-maximal-decorrelation-where-you-can-still-communicate.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:04:55.466Z",
+  "schema_version": "v1",
+  "commit_sha": "d4d317fbbf2ad1917ae84f9d4588a94d8c1af36c",
+  "title": "docs(research): maximal decorrelation where you can still communicate",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:04:10Z",
+  "head_ref": "shadow/ferry-maximal-decorrelation-still-communicate"
+}

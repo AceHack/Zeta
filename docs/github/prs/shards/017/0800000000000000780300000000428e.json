@@ -1,0 +1,12 @@
+{
+  "pr_number": 17038,
+  "archive_path": "docs/history/pr-reviews/PR-17038-feat-core-statespace-counts-what-it-prunes-the-first-erasure-meter.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:33:48.571Z",
+  "schema_version": "v1",
+  "commit_sha": "cda10d7e70414e227237654abc7bc129ec08ac71",
+  "title": "feat(core): StateSpace counts what it PRUNES — the first erasure meter",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:33:01Z",
+  "head_ref": "shadow/state-space-counts-what-it-prunes"
+}

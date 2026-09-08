@@ -1,0 +1,12 @@
+{
+  "pr_number": 17033,
+  "archive_path": "docs/history/pr-reviews/PR-17033-docs-research-freeze-maximal-decorrelation-measurement-boundary.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:09:21.245Z",
+  "schema_version": "v1",
+  "commit_sha": "38b3acd14f0fc07449ace1b78311959f249468ed",
+  "title": "docs(research): freeze maximal-decorrelation measurement boundary",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:08:39Z",
+  "head_ref": "lumen/max-decorrelation-reconciliation-contract"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17006,
+  "archive_path": "docs/history/pr-reviews/PR-17006-fix-cluster-gatekeeper-s-namespace-webhook-failed-closed-against-its-own-doc.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:00:49.283Z",
+  "schema_version": "v1",
+  "commit_sha": "846ba669ab0c07e7e51c5b9a39f2e0192a8bbad5",
+  "title": "fix(cluster): gatekeeper's namespace webhook failed CLOSED against its own doc",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:00:02Z",
+  "head_ref": "shadow/gatekeeper-namespace-webhook-fails-open"
+}

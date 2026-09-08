@@ -1,0 +1,12 @@
+{
+  "pr_number": 17043,
+  "archive_path": "docs/history/pr-reviews/PR-17043-docs-research-freeze-durable-room-reconciliation-preflight.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T05:38:14.585Z",
+  "schema_version": "v1",
+  "commit_sha": "66c3f045a2635cb3ac564f3eb41786193bcf6c96",
+  "title": "docs(research): freeze durable room reconciliation preflight",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T05:37:35Z",
+  "head_ref": "lumen/max-decorrelation-durable-room-contract"
+}

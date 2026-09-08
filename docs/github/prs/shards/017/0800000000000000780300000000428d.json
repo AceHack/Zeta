@@ -1,0 +1,12 @@
+{
+  "pr_number": 17037,
+  "archive_path": "docs/history/pr-reviews/PR-17037-docs-handoff-record-bounded-reconciliation-contract.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T04:32:08.919Z",
+  "schema_version": "v1",
+  "commit_sha": "6544c068ea0a9bba4a5a55e391c9cddcb7bc8daa",
+  "title": "docs(handoff): record bounded reconciliation contract",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T04:31:29Z",
+  "head_ref": "lumen/max-decorrelation-durable-room-preflight"
+}
