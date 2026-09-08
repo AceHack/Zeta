@@ -701,23 +701,34 @@ def replay_native_cases(
                     ),
                 )
                 ledger.calls[-1] = replace(ledger.calls[-1], Dispatch=actual)
-                if (
-                    actual.Raised is not None
-                    or type(actual.Returned) is not f.Dispatched
-                ):
+                if actual.Raised is not None:
+                    return ledger.fail(
+                        "native-replay-dispatch-raised",
+                        here,
+                        "actual dispatch raised; no normal return is invented",
+                    )
+                # Count and retain every normal return before asking whether it
+                # represents a completed operation of the fixed public shape.
+                ledger.returned += 1
+                if type(actual.Returned) is not f.Dispatched:
                     return ledger.fail(
                         "native-replay-dispatch",
                         here,
                         "actual Python dispatch did not return a completed operation; observation retained",
                     )
-                ledger.returned += 1
                 result = actual.Returned
                 if (
-                    result.CaseId != spec.CaseId
+                    type(result.CaseId) is not str
+                    or result.CaseId != spec.CaseId
+                    or type(result.CallIndex) is not int
                     or result.CallIndex != call_index
                     or type(result.CompletedOperation) is not int
                     or result.CompletedOperation != 1
+                    or type(result.Call) is not c.CallResult
+                    or type(result.Call.Operation) is not str
                     or result.Call.Operation != operation.Operation
+                    or type(result.Call.InputRoles) is not tuple
+                    or any(type(role) is not str for role in result.Call.InputRoles)
                     or result.Call.InputRoles != operation.InputRoles
                 ):
                     return ledger.fail(

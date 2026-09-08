@@ -12,7 +12,7 @@ import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -563,3 +563,74 @@ def test_issued_capability_required_without_executed_case(
 ) -> None:
     got = run(records, supplied, certificate=object())
     assert isinstance(got, r.NativeReplayFailed) and got.Counts.PythonStarted == 0
+
+
+@pytest.mark.parametrize("kind", ["typed-failure", "none", "mapping"])
+def test_normally_returned_dispatch_failure_is_counted_and_retained(
+    records: tuple[r.RecordedCase, ...],
+    supplied: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    kind: str,
+) -> None:
+    returned: object = (
+        f.DispatchFailure(
+            "owned", "actual refusal", "boundary", "certificate/baseline", 0
+        )
+        if kind == "typed-failure"
+        else None
+        if kind == "none"
+        else {"unexpected": True}
+    )
+    monkeypatch.setattr(f, "dispatch_native_fixture", lambda *args: returned)
+    got = run(records, supplied)
+    assert isinstance(got, r.NativeReplayFailed)
+    assert (
+        got.Counts.PythonStarted,
+        got.Counts.PythonReturned,
+        got.Counts.PythonMatched,
+    ) == (1, 1, 0)
+    assert got.Calls[0].Dispatch is not None
+    assert (
+        got.Calls[0].Dispatch.Returned is returned
+        and got.Calls[0].Dispatch.Raised is None
+    )
+
+
+@pytest.mark.parametrize("kind", ["none-call", "mapping-call", "bool-index"])
+def test_malformed_completed_dispatch_retains_typed_failure_and_actual_return(
+    records: tuple[r.RecordedCase, ...],
+    supplied: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+    kind: str,
+) -> None:
+    original = f.dispatch_native_fixture
+    returned: list[f.Dispatched] = []
+
+    def changed(*args: Any) -> object:
+        if returned:
+            raise RuntimeError("malformed first result was incorrectly admitted")
+        actual = original(*args)
+        assert isinstance(actual, f.Dispatched)
+        value = (
+            replace(actual, Call=cast(Any, None))
+            if kind == "none-call"
+            else replace(actual, Call=cast(Any, {}))
+            if kind == "mapping-call"
+            else replace(actual, CallIndex=False)
+        )
+        returned.append(value)
+        return value
+
+    monkeypatch.setattr(f, "dispatch_native_fixture", changed)
+    got = run(records, supplied)
+    assert isinstance(got, r.NativeReplayFailed)
+    assert (
+        got.Counts.PythonStarted,
+        got.Counts.PythonReturned,
+        got.Counts.PythonMatched,
+    ) == (1, 1, 0)
+    assert got.Failure.code == "native-replay-dispatch-contract"
+    assert (
+        got.Calls[0].Dispatch is not None
+        and got.Calls[0].Dispatch.Returned is returned[0]
+    )
