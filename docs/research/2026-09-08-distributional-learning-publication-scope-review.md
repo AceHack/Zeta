@@ -182,3 +182,99 @@ Action-Mode: autonomous-fail-open
 Task: 081M1ZCHPWV087G0R002GG2PKY
 Co-Authored-By: Codex <noreply@openai.com>
 ```
+
+## Final validation archive and released scope
+
+Reviewed archive: f2031ff923527d3d5c116043b794e09c627662f8.
+Reviewed later publication scope: 8cb522b2dab2fb50792a3d7ff6ef7f3af21f5e64.
+Reviewer: Vera, OpenAI Codex using GPT-6 Astra, 2026-09-08 UTC.
+
+The [publication validation archive](distributional-learning/2026-09-08/publication-validation/README.md)
+passes this bounded independent custody audit. Its 46 gzip records contain
+82,244 stored bytes and 740,337 original bytes. Every stored length/hash,
+single-member gzip boundary and decompressed length/hash matches its manifest.
+The manifest is 20,366 bytes, SHA256
+d1ceff79a7609e9aec46ff7bad50fc1856f11d3e5e9ce59050d9cf9b62e0164d.
+The Git directory contains exactly those records, the manifest and README.
+The independent [audit source](hidden-switch-compiled-validation/2026-09-08/learning-publication-final-audit/audit.py)
+and [result](hidden-switch-compiled-validation/2026-09-08/learning-publication-final-audit/result.json)
+are retained; its first execution passed with empty stderr. It imports only
+stdlib and launches read-only Git commands. It does not execute the project,
+validator, FSI controls, detector or a scientific experiment.
+
+I compared every individual process record with the aggregate and manifest,
+then bound both complete stdout/stderr streams to those records. The five
+b656 processes have ordered, nonoverlapping recorded intervals, the fixed
+commands, no reported timeout and empty stderr. Their exits are 0/2/2/2/2;
+their checkpoint counts are 25/2/12/25/0. The ordinary stream has a successful
+terminal and ten finite-reference/sixteen Zeta rows. The three injected streams
+have the exact ordinary checkpoint-line prefixes, typed injected terminal
+failures and no receipt. Invalid control has zero checkpoints and the declared
+argument failure. Pending-event fields remain null in these observed runs.
+
+All five complete RoomRunValidated returns match their individual and aggregate
+records. Their embedded raw bytes, SHA256 values, complete decoded record lists,
+counts and nested ordinary validation returns agree. All sixteen base64 byte
+identity occurrences across individual and aggregate return trees verify.
+The validator's custody field continues to declare an external caller
+obligation; this review adds the specific retained-file associations above,
+not a universal runtime attestation.
+
+The fresh ordinary checkpoint and engineering receipt contents exactly match
+the earlier independently audited coordinator controls. Only the separately
+named Runtime observation is compared as a new observation: Core/Bayesian/Core,
+with identical first and third entries and CompleteRuntimeClosureAdmitted=false.
+The four failure stdout streams equal their prior counterparts byte for byte.
+No generic field deletion, tolerance or path rewriting is used in these checks.
+The fresh assembly hashes remain in the result and are not substituted for old
+runtime identities.
+
+The complete retained preflight text reports all eighteen checks passing,
+including release build and full tests, at its declared 19ef source. The
+focused log reports 124 passed in 29.92 seconds. These are inspections of
+retained author executions; I did not rerun their gates. The earlier f997 source
+pin inventory remains explicitly historical. All five accepted source/test
+files independently match at 19ef, b656, f203 and 8cb522. They are exactly the
+five src/tests paths changed from the stated main base. No later documentation
+cut receives a relabeled full-gate execution.
+
+The retained controls harness binds HEAD and the FSX hash, runs the fixed five
+commands and preserves each process result before assertions. The replay
+harness serializes every dataclass field and exact byte identity before testing
+for success. The retained publication script binds these records to the
+manifest. These scripts support this observed finite capture. Their
+assert-not-exists/write sequence is not an exclusive multiwriter storage API,
+and their output retention is not a crash-proof or complete runtime-closure
+claim. The README accurately distinguishes the project-local uv setup log from
+the shell-startup warning that was never captured in the redirected artifact.
+
+The original staged git-rm refusal remains intact. Git confirms both parent
+claim files were present at 19ef and absent after 70e81; both remain in the
+coordinator at e250. The finite publication claim is present at f203 and absent
+at the later 8cb522 scope. The publication header now correctly says that the
+local gate and controls passed while main proof is pending. One stale body
+sentence at 8cb522 still says the finite claim "remains until PR release";
+I reported that editorial mismatch, and the coordinator accepted correction
+in the separately planned successor publication. The verified deletion is not
+in doubt. This signed audit accepts the archive and bounded source scope,
+while retaining that outstanding wording correction and leaving successor
+commit/CI/main proof to its own exact review.
+
+The coordinator subsequently reported PR17021's GitHub commit-list limit at
+250 entries for a 278-commit history. That later CI refusal and proposed fresh
+successor are outside this archive's execution cut. This review neither treats
+that report as a successful publication nor endorses bypassing the gate.
+
+```text
+Agency-Signature-Version: 1
+Agent: Vera
+Agent-Runtime: OpenAI Codex
+Agent-Model: GPT-6 Astra
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-open
+Task: 081M1ZCHPWV087G0R002GG2PKY
+Co-Authored-By: Codex <noreply@openai.com>
+```

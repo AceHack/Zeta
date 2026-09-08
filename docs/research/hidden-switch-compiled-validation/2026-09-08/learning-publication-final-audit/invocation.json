@@ -1,0 +1,26 @@
+{
+  "Reviewer": "Vera / OpenAI Codex / GPT-6 Astra",
+  "Invocation": [
+    "python3",
+    "docs/research/hidden-switch-compiled-validation/2026-09-08/learning-publication-final-audit/audit.py"
+  ],
+  "ExitCodeObservedFromTool": 0,
+  "ExecutionScope": "stdlib retained-byte checks and read-only Git commands; no project imports or scientific execution",
+  "Records": [
+    {
+      "File": "audit.py",
+      "Bytes": 10691,
+      "Sha256": "d7e9b0212fb0db6dafdf6f61e358650bfb14d464b2f41235cf8e78acb2c2504c"
+    },
+    {
+      "File": "result.json",
+      "Bytes": 4209,
+      "Sha256": "ee6973c9bcbbeb85d23358beae9ca633ac011d509dda2e640e05c1c62f39ee3a"
+    },
+    {
+      "File": "stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
