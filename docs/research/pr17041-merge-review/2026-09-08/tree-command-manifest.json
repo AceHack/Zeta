@@ -1,0 +1,25 @@
+{
+  "Records": [
+    {
+      "File": "tree-command-invocation.json.gz",
+      "OriginalBytes": 836,
+      "OriginalSha256": "bd4449da513ec4ddd20682b6a6f237a5dc77edd01a6a75795155935d43af12eb",
+      "StoredBytes": 482,
+      "StoredSha256": "7d6c51daf13e0f4d238c621310acedc1e665c17387e6b28a21d927ccd8764962"
+    },
+    {
+      "File": "tree-command-stdout.gz",
+      "OriginalBytes": 41,
+      "OriginalSha256": "f750ed889e28bf76a30b9db01cee58500e8258b6288b2852850e2ce081729687",
+      "StoredBytes": 59,
+      "StoredSha256": "71088f55aa510a3f0206edf6610d14047d430b9a14498800f3f8b0f17cd635de"
+    },
+    {
+      "File": "tree-command-stderr.gz",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    }
+  ]
+}
