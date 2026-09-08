@@ -1238,7 +1238,9 @@ module ZetaFsFreeze =
         (entity: ZetaFsNamespace.EntityId)
         (layout: LastLayout)
         =
-        if layout.Prev.Leaves.Length = 0 || layout.Prev.Starts.Length <> layout.Prev.Leaves.Length then
+        // Single-leaf is a hint we can rebuild cheaply. Skip the disk write
+        // on the 1-byte freeze storm. LastLayout in memory still holds.
+        if layout.Prev.Leaves.Length <= 1 || layout.Prev.Starts.Length <> layout.Prev.Leaves.Length then
             ()
         else
             try

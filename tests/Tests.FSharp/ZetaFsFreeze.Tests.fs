@@ -4385,6 +4385,55 @@ let ``crash-mid-write of layout during freeze B still acks and keeps A`` () : Ta
     }
 
 [<Fact>]
+let ``single-leaf freeze does not persist layout and reopen still freezes`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/d10-single-leaf-no-layout"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let id = mintId ()
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L [| 1uy |] |> ignore
+            let pending1 = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a ->
+                Assert.True(ZetaFsFreeze.hasPrev volume1 id)
+                let layoutFile =
+                    ZetaFsPath.combine3 store "layout" (ZetaFsNamespace.EntityId.format id)
+
+                Assert.False(FileSystem.Current.Exists layoutFile)
+                Assert.Equal((ZetaFsJumprope.buildV1 [| 1uy |]).Content.ToHex(), a.Content.ToHex())
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            Assert.False(ZetaFsFreeze.hasPrev volume2 id)
+            let h = ZetaFsMutbuf.openHandle volume2.Mutbuf id
+            ZetaFsMutbuf.pwrite volume2.Mutbuf h 0L [| 2uy |] |> ignore
+            let pending2 = (freezeAsync volume2 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume2 CancellationToken.None).ConfigureAwait(false)
+            let! second = pending2.ConfigureAwait(false)
+
+            match second with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok b ->
+                Assert.Equal((ZetaFsJumprope.buildV1 [| 2uy |]).Content.ToHex(), b.Content.ToHex())
+                Assert.True(ZetaFsFreeze.isReadable volume2 b.Content)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``remap-epoch crash-mid-write keeps the prior ContentId readable`` () : Task =
     task {
         ensureHasher ()

@@ -123,6 +123,12 @@ let ``ZD4 both legs complete the same host-FS small-write storm`` () : Task =
                                 match r with
                                 | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
                                 | Ok ok -> Assert.True(ZetaFsFreeze.isReadable volume ok.Content)
+
+                            let layoutDir = Path.Combine(store, "layout")
+                            Assert.False(
+                                Directory.Exists layoutDir,
+                                "1-byte freeze storm must not persist layout files"
+                            )
                         finally
                             ZetaFsFreeze.dispose volume
                     })
