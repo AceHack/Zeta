@@ -312,20 +312,13 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         (meter: uint64)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         =
-        let fs = FileSystem.Current
-        let mutable maxGen = 0L
-
-        match tryDecodePath fs (catalogSlot storeDir 0) with
-        | Some(g, _, _, _, _) when g > maxGen -> maxGen <- g
-        | _ -> ()
-
-        match tryDecodePath fs (catalogSlot storeDir 1) with
-        | Some(g, _, _, _, _) when g > maxGen -> maxGen <- g
-        | _ -> ()
-
-        let gen = maxGen + 1L
+        // In-memory gen; slots are reopen truth. Do not re-decode on persist.
+        let gen = !catalogGen + 1L
+        catalogGen := gen
         let slot = int (gen % 2L)
+        let fs = FileSystem.Current
         let text = encodeCatalog gen history meter known livePins objectSets
         let bytes = Encoding.UTF8.GetBytes text
 
@@ -353,9 +346,10 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         (meter: uint64)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         : Result<unit, FreezeError> =
         try
-            persistCatalog storeDir known livePins history meter objectSets
+            persistCatalog storeDir known livePins history meter objectSets catalogGen
             Ok()
         with
         | :? CrashMidWriteException as ex -> raise ex
@@ -375,8 +369,9 @@ module ZetaFsFreeze =
         (history: ZetaFsPolicy.HistoryPolicy)
         (meter: uint64)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         =
-        match tryPersistCatalog storeDir known livePins history meter objectSets with
+        match tryPersistCatalog storeDir known livePins history meter objectSets catalogGen with
         | Ok() -> ()
         | Error _ -> ()
 
@@ -386,6 +381,7 @@ module ZetaFsFreeze =
         (livePins: HashSet<ContentHash256>)
         (meter: uint64 ref)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
+        (catalogGen: int64 ref)
         : ZetaFsPolicy.HistoryPolicy =
         let fs = FileSystem.Current
         let mutable bestGen = 0L
@@ -413,6 +409,7 @@ module ZetaFsFreeze =
             applyEntries known livePins bestEntries
             applySets objectSets bestSets
             meter := bestMeter
+            catalogGen := bestGen
             bestHistory
         else
             let path = catalogPath storeDir
@@ -428,6 +425,7 @@ module ZetaFsFreeze =
                 applyEntries known livePins entries
                 applySets objectSets sets
 
+            catalogGen := 0L
             history
 
     /// DoP=1 segment writer. One boat = N freezes, one Flush; Durable adds one
@@ -444,7 +442,8 @@ module ZetaFsFreeze =
             livePins: HashSet<ContentHash256>,
             history: ZetaFsPolicy.HistoryPolicy ref,
             meter: uint64 ref,
-            objectSets: Dictionary<ContentHash256, ContentHash256[]>
+            objectSets: Dictionary<ContentHash256, ContentHash256[]>,
+            catalogGen: int64 ref
         ) =
 
         do
@@ -463,7 +462,7 @@ module ZetaFsFreeze =
 
             let persist () =
                 if err.IsNone then
-                    match tryPersistCatalog storeDir known livePins !history !meter objectSets with
+                    match tryPersistCatalog storeDir known livePins !history !meter objectSets catalogGen with
                     | Ok() -> ()
                     | Error e -> err <- Some e
 
@@ -1111,7 +1110,8 @@ module ZetaFsFreeze =
         let known = Dictionary<ContentHash256, uint64>()
         let livePins = HashSet<ContentHash256>()
         let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
-        let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim objectSets)
+        let catalogGen = ref 0L
+        let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim objectSets catalogGen)
         let root =
             let path = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
             let fs = FileSystem.Current
@@ -1140,7 +1140,8 @@ module ZetaFsFreeze =
                 livePins,
                 history,
                 freezeBytesSinceReclaim,
-                objectSets
+                objectSets,
+                catalogGen
             )
         let reclaim = new ReclaimFerry(storeDir, config, manual, objectCas)
         do
@@ -1187,11 +1188,12 @@ module ZetaFsFreeze =
         member internal _.KnownObjects = known
         member internal _.LivePins = livePins
         member internal _.ObjectSets = objectSets
+        member internal _.CatalogGen = catalogGen
         member _.History
             with get () = !history
             and set v =
                 history := v
-                persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets
+                persistCatalogBestEffort storeDir known livePins v !freezeBytesSinceReclaim objectSets catalogGen
         member _.Root = root
         member internal _.Ns = nsState
         member internal _.Policy = policyState
@@ -2128,7 +2130,7 @@ module ZetaFsFreeze =
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
         lock volume.Gate (fun () ->
             volume.KnownObjects.[id] <- size
-            persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets)
+            persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen)
 
     /// Objects the volume wrote that no live freeze still pins. Keeps full
     /// ids so reclaim can propose them. Empty until something is unpinned
@@ -2148,6 +2150,7 @@ module ZetaFsFreeze =
                 volume.History
                 0UL
                 volume.ObjectSets
+                volume.CatalogGen
             n)
 
     /// Reclaim tick paced from freeze bytes accumulated on this volume
@@ -2243,6 +2246,7 @@ module ZetaFsFreeze =
                 volume.History
                 volume.FreezeBytesSinceReclaim
                 volume.ObjectSets
+                volume.CatalogGen
         | _ -> Error(FreezeError.MissingLeaves 1)
 
     let private tryReadObject (volume: Volume) (id: ContentHash256) : byte[] option =
@@ -2339,7 +2343,8 @@ module ZetaFsFreeze =
                 volume.LivePins
                 volume.History
                 volume.FreezeBytesSinceReclaim
-                volume.ObjectSets)
+                volume.ObjectSets
+                volume.CatalogGen)
 
         result
 
@@ -2374,7 +2379,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+        | None -> persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -2385,7 +2390,7 @@ module ZetaFsFreeze =
             let dropCount = mine.Length - n
 
             if dropCount <= 0 then
-                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen
             else
                 let kept = HashSet<ContentHash256>()
 
@@ -2398,7 +2403,7 @@ module ZetaFsFreeze =
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
 
-                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets
+                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen
 
     let private finish
         (volume: Volume)

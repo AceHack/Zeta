@@ -1,0 +1,14 @@
+{
+  "id": "080d03fa42409810a0130008575e1970",
+  "at": "2026-09-08T04:30:38.611Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZMGJ0J087G0R001W8HX2V",
+    "type": "task",
+    "title": "D10 persist catalog generation in memory not re-decode",
+    "slug": "d10-persist-catalog-generation-in-memory-not-re-decode",
+    "priority": "P2",
+    "filename": "081M1ZMGJ0J087G0R001W8HX2V-d10-persist-catalog-generation-in-memory-not-re-decode.md"
+  }
+}

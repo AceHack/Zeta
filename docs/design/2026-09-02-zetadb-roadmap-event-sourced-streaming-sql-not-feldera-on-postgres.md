@@ -322,7 +322,7 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D7** | Notify ZetaDB of durability class (already K6). Observer does not throw. | Tables must not read a Journaled name with missing leaves (E2). | Freeze observer exists |
 | **D8** | ShivaGC / Futamura: historical data may become a generator. Collecting a generator that still has live `Regen` refs is forbidden. | Same as D3. | ShivaGc is DynamicValue mark-sweep, not volume |
 | **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
-| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | Two vocabularies remain. Freeze-storm thread alloc < 48 MiB after FastCDC skip + persist-once (`081M1ZHZ7EW087G0R00006H4BK`); still ~100× host 351 KiB. |
+| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | Two vocabularies remain. Freeze-storm thread alloc < 48 MiB after FastCDC skip + persist-once (`081M1ZHZ7EW087G0R00006H4BK`) and in-memory catalog generation (`081M1ZMGJ0J087G0R001W8HX2V`); still ~100× host 351 KiB. |
 | **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
 | **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves + mid-CRC prefix keep landed. Native device I/O still open. Recovery stays `toy`. |
 
@@ -407,6 +407,9 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 - **D10 first peel:** skip FastCDC 256 KiB buffer for files ≤ min-chunk;
   persist catalog once per freeze not per CAS put
   (`081M1ZHZ7EW087G0R00006H4BK`). Thread-alloc bound 48 MiB (measured 36 MiB).
+- **D10 second peel:** catalog persist increments in-memory generation;
+  does not re-decode both slots (`081M1ZMGJ0J087G0R001W8HX2V`). Slots stay
+  reopen truth. Bound stays 48 MiB. Still unmetered vs host.
 - **Numbers stay `toy`.** Not copied into README.
 - **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
 - **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product on batching.

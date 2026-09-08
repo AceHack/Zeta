@@ -2,6 +2,7 @@
 module Zeta.Tests.ZetaFsFreezeTests
 
 open System
+open System.Globalization
 open System.IO
 open System.Text
 open System.Threading
@@ -3847,6 +3848,58 @@ let ``torn higher catalog slot loads the previous history policy`` () : Task =
             | other -> Assert.Fail(sprintf "expected KeepNone from slot 1, got %A" other)
         finally
             ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+let private catalogGenOf (path: string) : int64 option =
+    if not (FileSystem.Current.Exists path) then
+        None
+    else
+        let text = Encoding.UTF8.GetString(FileSystem.Current.ReadAllBytes path)
+        let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+        lines
+        |> Array.tryFind (fun line -> line.StartsWith("gen ", StringComparison.Ordinal))
+        |> Option.bind (fun line ->
+            match Int64.TryParse(line.Substring(4), NumberStyles.Integer, CultureInfo.InvariantCulture) with
+            | true, g -> Some g
+            | _ -> None)
+
+[<Fact>]
+let ``catalog persist keeps in-memory generation when both slots fail to decode`` () : Task =
+    task {
+        ensureHasher ()
+        let mock = InMemoryFileSystem()
+        FileSystem.Register mock
+        let store = "/catalog-gen-in-memory"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            volume.History <- ZetaFsPolicy.HistoryPolicy.KeepNone
+            volume.History <- ZetaFsPolicy.HistoryPolicy.KeepAll
+            let slot0 = ZetaFsPath.combine2 store "known.pins.0"
+            let slot1 = ZetaFsPath.combine2 store "known.pins.1"
+            let tear path =
+                let bytes = FileSystem.Current.ReadAllBytes path
+                bytes.[bytes.Length - 1] <- bytes.[bytes.Length - 1] ^^^ 0xA5uy
+                FileSystemIo.writeAllBytes FileSystem.Current path bytes
+
+            tear slot0
+            tear slot1
+            volume.History <- ZetaFsPolicy.HistoryPolicy.KeepNone
+            let g0 = catalogGenOf slot0
+            let g1 = catalogGenOf slot1
+            let highest =
+                match g0, g1 with
+                | Some a, Some b -> max a b
+                | Some a, None -> a
+                | None, Some b -> b
+                | None, None -> 0L
+
+            Assert.Equal(3L, highest)
+        finally
+            ZetaFsFreeze.dispose volume
             FileSystem.Reset()
     }
 
