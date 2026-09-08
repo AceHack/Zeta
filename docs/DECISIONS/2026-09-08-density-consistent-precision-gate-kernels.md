@@ -59,6 +59,24 @@ silently admitted as a different family member. Finite arithmetic overflow or
 an unrepresentable positive exponential is an explicit numerical refusal.
 This does not introduce clamping that changes the stated density.
 
+For shape-to-kernel encoding, return the requested shape, represented shape
+`LogPower+1`, and kernel together. Nonzero roundtrip error is therefore visible;
+only returning the requested shape would conceal the represented density.
+Refuse a nonpositive represented shape. Proper Gamma admission and moments
+refer to the represented shape, never a hidden requested value. The reference
+keeps exact rational shape separately from this binary64 encoding receipt.
+
+Use conservative checked arithmetic for the first implementation. A multiply
+or divide of nonzero finite inputs that produces zero is an underflow refusal;
+a positive exponential that produces zero is likewise refused. Nonfinite
+results are numerical refusals. Exact zero inputs/products and exact signed
+cancellation remain allowed, so clamped predictors and exact zero residuals
+still yield valid improper sites. Proper continuous variances and Gamma means
+must be finite and strictly positive; Gaussian means may be zero or negative.
+This deliberately refuses some expressions whose later rescaling could have
+recovered a representable result. It does not claim maximal numerical range,
+correct rounding of a whole expression, or rigorous interval error bounds.
+
 ## Local rule contract
 
 Gamma uses shape/rate. All VMP rules in this slice use the stated independent
