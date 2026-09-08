@@ -344,6 +344,32 @@ the binary64 candidate. It is not a correctly-rounded optimizer theorem.
 Native gradients are compared at the actual candidate; they are not
 arbitrarily required to be exactly zero.
 
+Post-root certification uses exactly the last context of the successfully
+returned ReferenceRoot. There is no independent retry or precision increase.
+Freshly convert the original dyadic target and candidate bits outward into
+that context; do not reuse a native decimal approximation or a producer
+interval. Apply the same fixed exponent bounds, adjacent exp/ln widening,
+finite/positive/domain and underflow-refusal rules as the root reference.
+Failure to prepare or evaluate these intervals is a certificate refusal,
+retaining the actual root and any completed subsequent observations.
+
+After the mean/variance checks, the coordinate call computes Q=exp(X) and
+R=T*Q, where uppercase variables here denote independently prepared
+intervals. Thus R_ref uses T*ExpInterval(X), not the decoded native
+RatioBits value. The native q/R fields are comparison subjects only.
+Its complete two-field result is retained before the q/R checks.
+The original-objective call computes and shares Delta=M-U and
+E=C*exp(M+V/2), then evaluates
+F=T*(Delta^2+V)/2-K*M+E-ln(V)/2,
+DerivativeMean=T*Delta-K+E and
+DerivativeVariance=T/2+E/2-1/(2*V).
+These are the original objective and partials, not stationarity identities.
+Interval squaring encloses the true square, including zero when its input
+crosses zero. The coordinate call uses at most two actual endpoint exp
+entries; the objective call uses at most two exp and two ln entries.
+Their combined six-entry ceiling is distinct from ReferenceRoot's budget.
+Mathematical singleton cases can avoid actual transcendental entry.
+
 Certified retains the original input/candidate bytes, recomputed
 RootEnclosure, all checked leaf bounds and actual objective outcomes.
 It states TargetScope="exact-native-dyadic",
@@ -432,11 +458,33 @@ duplicating an unbounded state sequence. Retrying the same point at higher
 precision remains an actual separately recorded evaluation.
 
 The CertifyNative receipt is exactly {Schema,CaseId,InputSha256,Bindings,
-Target,NativeRaw,Reference,Outcome,LeafChecks,Counters}, with
+Target,NativeRaw,Reference,CertificateContext,Coordinates,Objective,Outcome,
+LeafChecks,Counters}, with
 Schema="zeta.precision-projection.certificate.v1". NativeRaw is exactly
 {BytesHex,Bytes,Sha256}, binding every byte of the supplied native receipt.
 Target is null or TargetSnapshot. Reference is null or the complete actual
 ReferenceRoot return, retained before subsequent objective work or failure.
+CertificateContext is null until a successful root return supplies its last
+context, then that exact context identity. Coordinates is null before its
+call, or exactly {Kind:"returned",Context,Value:{Ratio:I,R:I}},
+{Kind:"refused",Context,Failure,Partial:{Ratio,R}}, or
+{Kind:"raised",Context,Failure,Partial:{Ratio,R}}. Each partial member is
+I or null. Context must equal CertificateContext. Its complete actual
+observation is retained before the first coordinate leaf is compared.
+Objective is null before its call, or exactly one of
+{Kind:"returned",Context,Value:{Value:I,DerivativeMean:I,DerivativeVariance:I}},
+{Kind:"refused",Context,Failure,Partial:{Value,DerivativeMean,DerivativeVariance}},
+or {Kind:"raised",Context,Failure,Partial:{Value,DerivativeMean,DerivativeVariance}}.
+Context must equal CertificateContext.
+Every Partial member is I or null, retaining only actual admitted partial
+work, with null when none is available. Refused records an actual normal
+typed refusal; raised records an unexpected thrown call with Code=Unexpected.
+Both count as one entered ObjectiveInterval call, but a raised call is not
+a returned operation. Append this complete observation before any objective
+leaf comparison or later encoding. A first-field mismatch must retain both
+returned derivative intervals even though neither was compared. If encoding
+fails, keep the full actual observation in memory and identify separately
+what was durably retained; no fabricated successful observation replaces it.
 Outcome is {Kind:"certified",TargetScope:"exact-native-dyadic",
 NativeTrajectoryCertified:false,GraphApplicationPerformed:false},
 {Kind:"no-candidate",NativeFailure:Failure}, or {Kind:"refused",Failure}.
@@ -446,8 +494,13 @@ acceptance through an upward-rounded tolerance. Finite Decimal interval
 endpoints and binary64 candidate values are converted exactly for the final
 distance comparison. The seven ordered numeric checks are MeanBits, VarianceBits, RatioBits, RBits, then the three
 OriginalObjective fields in their stated order. Counters are Starts,
-ReferenceRootCalls, ObjectiveIntervalCalls and LeafChecks; the two nested
-call counts are each zero or one and LeafChecks is at most seven. Retain the
+ReferenceRootCalls, CertificatePreparations, CoordinateIntervalCalls,
+ObjectiveIntervalCalls, CertificateTranscendentalEntries and LeafChecks.
+The three nested call counts and CertificatePreparations are each zero or
+one; CertificateTranscendentalEntries is at most six and LeafChecks at most
+seven. Entries are charged immediately before actual work, including failed
+entries; refused and raised coordinate/objective observations remain distinct.
+Retain the
 first mismatched field and all prior actual returns/checks; never imply
 success from a valid prefix. Schema/binding checks precede numeric checks
 and cannot be bypassed by supplying a no-candidate outcome.
@@ -513,7 +566,10 @@ identities; a 320-digit enclosure excluded by an incorrectly unwidened
 80-digit exp/ln point; wrong-sign or omitted-half phi; empty intersections;
 sign uncertainty; midpoint stagnation; retries versus terminal failure;
 candidate q/R strict positivity including signed-zero refusals;
-and actual return preservation when encoding later fails. These are
+and complete objective-call return preservation when its first leaf fails
+or encoding later fails, plus actual typed-refusal/raised partial prefixes;
+coordinate return preservation after a first coordinate mismatch; and
+post-root context identity/entry-budget refusal. These are
 separate implementation tests, not additional claimed native corpus rows.
 
 ## Retention, execution and decision
@@ -560,5 +616,21 @@ inference objective, mixed VMP/EP convergence, proper quotient sites,
 learning, generalization or performance. A later schedule contract must
 separately fix cavities/evidence cuts, epoch/iteration boundaries, damping,
 application receipts and rollback before this component changes a graph.
+
+## Draft review correction history
+
+The first proposed contract at ad6eab9892299cbc18c93e9597773e0b1485680c
+remains preserved. Its CertifyNative key set retained the root result and
+checked leaves but omitted a complete objective-call observation. The
+independent reviewer found that a mismatch at the objective's first field
+could therefore lose its two already returned derivative intervals. The
+focused correction adds Objective before any leaf comparison, with distinct
+returned/refused/raised observations and explicit partial/encoding limits.
+The reviewer also identified that post-root coordinate/objective arithmetic
+had no specified context or separate entry budget. The correction fixes
+the last successful root context, no extra retries, independent six-entry
+transcendental accounting, and complete context-bearing Coordinates and
+Objective observations before their respective comparisons.
+This is a design correction; no solver or vector was executed to discover it.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra.
