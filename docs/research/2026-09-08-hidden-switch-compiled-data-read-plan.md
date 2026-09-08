@@ -66,6 +66,15 @@ it does not expand the allowed ranges.
 
 ## Metadata-only proposal wrapper
 
+Wrapper source is `a80211d357d548d97caf850f367543abfbf91638`. Its
+[seven preparation records](hidden-switch-compiled-validation/2026-09-07/data-proposal-wrapper-preparation/manifest.json)
+bind all fourteen source/import files plus two tests to that commit. Twelve
+focused tests passed, followed by 73 selected related tests and 89 with the
+retained decoder grammar fixtures included. The initial Ruff import-format
+finding and fixed pass remain separate. Quick preflight passed all sixteen
+executed checks. Independent read-only source review accepted the exact pin;
+its signed record and the actual proposal observation will remain separate.
+
 The proposed file-backed wrapper admits exactly the inventory manifest and
 mapped-extent manifest, then 132 selected archived records: the inventory
 outcome, all 130 method reports and the mapped helper input. Their manifest
