@@ -1059,6 +1059,33 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     expect(detail.diagnostics["zeta-root-dev"]).toContain("ComparisonError");
   });
 
+  // THE FALSIFIER for the dropped-names defect. The health-wait call site passes
+  // an ARRAY of the verdicts that missed; `asRecord` returns null for an array,
+  // so before the fix the spread produced `{diagnostics}` alone and the app names
+  // were gone. Without the `Array.isArray` branch this test fails on `unhealthy`
+  // being undefined -- which is exactly what a reader of a red run got instead of
+  // a name. The existing merge test above only covers the RECORD-shaped site,
+  // which is why the drop stood.
+  test("array-shaped detail keeps the failing Application names alongside the dumps", () => {
+    const merged = mergeArgoCdTimeoutDiagnostics(
+      {
+        kind: "ApplicationUnhealthy",
+        message: "one or more included dev ArgoCD Applications are not Synced/Healthy",
+        detail: [
+          { name: "weaviate", ok: false, syncStatus: "OutOfSync", healthStatus: "Progressing" },
+          { name: "nats", ok: false, syncStatus: "OutOfSync", healthStatus: "Healthy" },
+        ],
+      },
+      { "not-running-pods": "weaviate-0 Pending" },
+    );
+    const detail = merged.detail as {
+      unhealthy: ReadonlyArray<{ name: string }>;
+      diagnostics: Record<string, string>;
+    };
+    expect(detail.unhealthy.map((verdict) => verdict.name)).toEqual(["weaviate", "nats"]);
+    expect(detail.diagnostics["not-running-pods"]).toContain("weaviate-0");
+  });
+
   test("parses Application conditions from kubectl list JSON", () => {
     const snapshots = parseApplicationList(
       JSON.stringify({

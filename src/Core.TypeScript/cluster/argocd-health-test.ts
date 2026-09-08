@@ -2539,11 +2539,21 @@ export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
 ];
 
 export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<Record<string, string>>): Failure {
+  // `failure.detail` has TWO shapes at the two call sites, and only one of them
+  // is a record. The ArgoCd-timeout site passes `{stdout, stderr, childCount}`;
+  // the health-wait site passes an ARRAY -- the verdicts for exactly the
+  // Applications that missed. `asRecord` returns null for an array, so spreading
+  // `existing` alone silently DROPPED the only field naming which app failed,
+  // leaving `ApplicationUnhealthy` reading "one or more included dev ArgoCD
+  // Applications are not Synced/Healthy" with no way to tell which. The names
+  // were computed and then thrown away one line before they were printed.
   const existing = asRecord(failure.detail) ?? {};
+  const unhealthy = Array.isArray(failure.detail) ? { unhealthy: failure.detail } : {};
   return {
     ...failure,
     detail: {
       ...existing,
+      ...unhealthy,
       diagnostics: dumps,
     },
   };
