@@ -8,8 +8,8 @@ Reviewer: Vera, OpenAI Codex using GPT-6 Astra
 Disposition: bounded source acceptance after sequential failure-retention repairs
 
 I reviewed the private draft, complete tracked source
-`dd39304b9f95e0bd7c2522b491b1999e69fe5b71`, and final correction
-`5475ec0f409076d379ad962c600db45b57e510a9`. The final
+`dd39304b9f95e0bd7c2522b491b1999e69fe5b71`, and initial accepted correction
+`5475ec0f409076d379ad962c600db45b57e510a9`. At that pin,
 src/Research.FSharp/DistributionalLearningRooms.fsx is 19,552 bytes, SHA-256
 103cb2895034a55ccae026ad2aedae002eb12c558d8fe0ed0df647605c7f37a9;
 current bytes equal that immutable blob. The separately committed small-room
@@ -108,6 +108,48 @@ resolve from the intended tracked src/Research.FSharp path. No registered
 compiled-controller source/timing, learned generalization, SOTA result, physical
 Liouville flow or end-to-end scheduler/Ferry/CHIP-8 behavior follows from these
 fixed known-answer engineering rooms.
+
+## Subsequent observed FSI exit correction
+
+The first actual fault-after-2 control at 5475 emitted the correct two
+checkpoints and InjectedCheckpointFailure terminal, but its FSI process
+returned zero despite the Environment.ExitCode assignment. This is a real
+process-boundary failure found by the declared fault control after the source
+acceptance above. Its 545-byte stdout and empty stderr remain retained; no
+corrected exit is assigned to that original attempt.
+
+Correction `2af8d581016d6c5a903aaba0335a3e73c8d5ac9b` adds one executable
+conditional after terminal/sink handling: explicitly call Environment.Exit
+with the established nonzero exit code. The other added lines are explanatory
+comments. No mathematics, schema, room ordering or checkpoint logic changes.
+The current source exactly matches its immutable blob: 19,776 bytes, SHA-256
+a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766.
+I accept this bounded correction.
+
+I independently read all five completed corrected process metadata records and
+their exact stdout/stderr bytes. All have no timeout and empty stderr. The
+terminal count/flag/failure fields match the selected mode, and each injected
+checkpoint stream is byte-identical to the corresponding ordinary prefix.
+
+| Mode | Checkpoints | Stdout bytes | Actual exit |
+| --- | ---: | ---: | ---: |
+| ordinary | 25 | 15689 | 0 |
+| fault-after-2 | 2 | 545 | 2 |
+| fault-after-12 | 12 | 2543 | 2 |
+| fault-after-25 | 25 | 7760 | 2 |
+| invalid-control | 0 | 245 | 2 |
+
+All pending fields are null in these five controls. Failure receipts contain
+no ordinary receipt or later checkpoint. The original 5475 fault-2 stdout is
+byte-identical to corrected fault-2 stdout, SHA-256
+8566d59aca2eaf1ac9b5f1533fef720b5d4ffe903257afa249f5fed520fcde4b.
+The observed exit changes from zero to two. This isolates the demonstrated
+failure from the already correct prefix and typed failure payload.
+
+This follow-up checked local retained process/stream identity and the explicit
+source change; it ran no FSI process. The complete independent numerical
+validator and committed actual-run archive audit remain separate work. The
+exit control does not prove arbitrary broken-sink or runtime-exception recovery.
 
 ```text
 Agency-Signature-Version: 1
