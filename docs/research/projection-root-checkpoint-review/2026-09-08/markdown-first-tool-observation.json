@@ -1,0 +1,10 @@
+{
+  "Provenance": "tool-observed diagnostic; no separately redirected raw stream",
+  "ExitCode": 1,
+  "Rule": "MD037",
+  "Line": 62,
+  "Context": ", _",
+  "DraftBytes": 6360,
+  "DraftSha256": "de25b7bf97a9206b570029f8efcb7621ed68a5ed50818ce159e3223839fdd283",
+  "Correction": "Mark the five Python identifiers as inline code. No source or review disposition changes."
+}

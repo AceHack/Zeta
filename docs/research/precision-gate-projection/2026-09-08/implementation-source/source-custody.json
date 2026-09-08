@@ -1,0 +1,57 @@
+{
+  "Schema": "zeta.precision-projection.source-custody.v1",
+  "SourceCommit": "f33ac42959388344fc3c82058f165764954fa22d",
+  "NativeBuildGateCommit": "096b09126b1f489fc7720b69780263ef01485445",
+  "SourceChangesSinceFullGate": [
+    "src/Interp.Python/tests/test_precision_gate_projection_driver.py"
+  ],
+  "ManifestSha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+  "NativeArchive": [
+    {
+      "Role": "@host",
+      "OriginalPath": "/Users/acehack/.local/share/mise/dotnet-root/dotnet",
+      "ArchivePath": "native/host/dotnet",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Role": "src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "ArchivePath": "sources/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Role": "src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "ArchivePath": "native/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "9F2340026152A68A002EF1F6A8B68B91AF613076C2EC4E55E148E2BD5FF371B8"
+    },
+    {
+      "Role": "src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "ArchivePath": "native/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "A76DF741EDAC585F64BBB94432F9B9F2E440A38585CB6FED3596A1FD5E5BBDDA"
+    },
+    {
+      "Role": "src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "ArchivePath": "native/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 1175040,
+      "Sha256": "EE4EDF2A7510F6BA2203582A95876CD992177694C5F2665BD667126E52E8DC40"
+    }
+  ],
+  "Reservation": {
+    "CopiedBytes": 10502579,
+    "ManifestBytes": 9821,
+    "DriverCombinedBytes": 149737504,
+    "DriverSlots": 90,
+    "InnerCombinedBytes": 118697952,
+    "InnerJournalBytes": 8388608,
+    "InnerSlots": 422,
+    "UnusedReservationsReclaimed": false
+  },
+  "Scope": "47 committed source files, direct native files, installed-distribution metadata and dotnet info; not complete runtime closure or source-to-machine proof; no numerical service executed."
+}

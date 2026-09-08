@@ -1,0 +1,3626 @@
+{
+  "Accepted": true,
+  "Archive": {
+    "AttemptFileBytes": 21527800,
+    "AttemptFiles": 328,
+    "Members": 336,
+    "OriginalPathsMatched": 336,
+    "PayloadBytes": 21658589,
+    "StoredBytes": 6397793,
+    "StoredSha256": "04C079901CEA886500CFD0A5912CD812A997268803FAE3F0DAD4F8EDE65A8167",
+    "TarBytes": 21934080,
+    "TarSha256": "E6E895A60E6C11821B6653AF0ECAAFD823AB2AF2F6C8360F356B49E7FA46192E"
+  },
+  "Baseline": {
+    "CertifiedSlot": 23,
+    "FirstMutationSlot": 76,
+    "NativeArtifact": {
+      "Bytes": 16424,
+      "Encoding": "identity",
+      "File": "records/record-000058.bin",
+      "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+      "StoredBytes": 16424,
+      "StoredSha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B"
+    }
+  },
+  "Coordinator": {
+    "Completion": {
+      "ElapsedSeconds": 40.66178766702069,
+      "ExitCode": 0,
+      "FinishedUnix": 1788857602.988089
+    },
+    "HelperSha256": "CFD871B772830FAC06256D6C7F27AF65F8AE55452BB6C743EC95190B716B4030",
+    "Invocation": {
+      "AccountingScope": "External coordinator process provenance; excluded from attempt retention reservation; no full DriverResult serialization",
+      "Argv": [
+        "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python",
+        "-m",
+        "zeta_interp.precision_gate_projection_driver",
+        "--source-root",
+        "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908",
+        "--manifest",
+        "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/docs/research/precision-gate-projection/2026-09-08/implementation-source/implementation-manifest.json",
+        "--manifest-sha256",
+        "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+        "--output-parent",
+        "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts",
+        "--attempt",
+        "registered-1",
+        "--dotnet",
+        "/Users/acehack/.local/share/mise/dotnet-root/dotnet"
+      ],
+      "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908",
+      "EnvironmentOverride": {
+        "PYTHONPATH": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Interp.Python"
+      },
+      "StartedUnix": 1788857562.3261828
+    },
+    "Locator": {
+      "ActualDriverReturnAvailable": true,
+      "AttemptRoot": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts/registered-1",
+      "Complete": true,
+      "Failure": null,
+      "FullActualResult": "memory-only; outer-final.json is a bounded reference envelope"
+    },
+    "PrerequisiteSha256": "5C438B8605F4357B65F8463C05809AA26C1DBC014E537AD78E61234F6FF0C79E"
+  },
+  "Mutations": [
+    {
+      "CaseId": "cert/mean",
+      "ChangedField": "MeanBits",
+      "Failure": {
+        "Code": "NotCloseToMinimum",
+        "Field": "MeanBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "B61AFC09BE5A0A7AE7B87B73CDD1B468225A369D123DB601CAF3A38D2A617957"
+    },
+    {
+      "CaseId": "cert/variance-zero",
+      "ChangedField": "VarianceBits",
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "VarianceBits",
+        "Message": "strictly positive candidate value required",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "7BF2E07F70229F71E1612CED1E2FAD165032DE7EE4C49D769AF40B56B2E30429"
+    },
+    {
+      "CaseId": "cert/log-ratio",
+      "ChangedField": "LogRatioBits",
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "Bracket",
+        "Message": "ordered bracket must contain candidate x, including endpoints",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "9367B5AB23A9EB67F9B00200B52D4808CAE70ED0815C98C81CC9CBA60EA39937"
+    },
+    {
+      "CaseId": "cert/ratio",
+      "ChangedField": "RatioBits",
+      "Failure": {
+        "Code": "InconsistentCoordinate",
+        "Field": "RatioBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "C0110423FA3E049C38CEC4F8FE240AF6900006FB650F2657A773305C213933AC"
+    },
+    {
+      "CaseId": "cert/r",
+      "ChangedField": "RBits",
+      "Failure": {
+        "Code": "InconsistentCoordinate",
+        "Field": "RBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "2B5BAFE5DB224808A6C3D8AD85C03611D5DDEEF6B1C944FC66AF669257BE537D"
+    },
+    {
+      "CaseId": "cert/objective",
+      "ChangedField": "OriginalObjective.ValueBits",
+      "Failure": {
+        "Code": "ObjectiveMismatch",
+        "Field": "OriginalObjective.ValueBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "37B9793CD5D0B926FFB47DFA69EFE74AF1D7565FA771EAD6495176278D5F5B79"
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "ChangedField": "OriginalObjective.DerivativeMeanBits",
+      "Failure": {
+        "Code": "ObjectiveMismatch",
+        "Field": "OriginalObjective.DerivativeMeanBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "DBF0899EC6F3B711D2DBB680C89C84C5096C0D7ADD00F00E8533207BE391B929"
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "ChangedField": "OriginalObjective.DerivativeVarianceBits",
+      "Failure": {
+        "Code": "ObjectiveMismatch",
+        "Field": "OriginalObjective.DerivativeVarianceBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "86DCB37B93A189A8C5FFCB6FB9E113C9F1D4FE22C0A99B09264D2374DB0B6C4B"
+    },
+    {
+      "CaseId": "cert/target-zero-sign",
+      "ChangedField": "TargetBits.U",
+      "Failure": {
+        "Code": "TargetMismatch",
+        "Field": "Candidate.TargetBits",
+        "Message": "exact independently rendered bits differ",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "192EF0F7D50152F6CE6603242DC4D8B4AB0A1DCE8EBF667DBC34C4D3068A23F2"
+    },
+    {
+      "CaseId": "cert/source-binding",
+      "ChangedField": "Bindings.ProtocolSha256",
+      "Failure": {
+        "Code": "SourceMismatch",
+        "Field": "Native.Bindings",
+        "Message": "complete independent binding map differs",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "F1569FC008B3D763744C11B301CDE6FA36A746CE80D892812EA1DB34958FE77A"
+    },
+    {
+      "CaseId": "cert/missing-objective",
+      "ChangedField": "OriginalObjective",
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "Candidate",
+        "Message": "exact object keys required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "SuppliedSha256": "9CDCABE0597187836BD8D700CDFBEF8CE18381A4E53CF2609EB34E7DBC4DAB17"
+    },
+    {
+      "CaseId": "cert/reversed-bracket",
+      "ChangedField": "Bracket",
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "Bracket",
+        "Message": "ordered bracket must contain candidate x, including endpoints",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "SuppliedSha256": "E9C2CD40864A23D639649D7FA357CF4BED2546833EE734F853E3B159214925F1"
+    }
+  ],
+  "OutcomeCounts": {
+    "candidate": 13,
+    "certified": 12,
+    "enclosure": 15,
+    "no-candidate": 8,
+    "refused": 40
+  },
+  "Outcomes": [
+    {
+      "CaseId": "core/center",
+      "Counters": {
+        "BracketUpdates": 47,
+        "ExpEntries": 49,
+        "LogEntries": 3,
+        "MidpointAttempts": 47,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 49,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 0,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/center",
+      "Counters": {
+        "BracketAdmissions": 43,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 42,
+        "MidpointEvaluations": 42,
+        "MomentEvaluations": 43,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 262
+      },
+      "Failure": null,
+      "Index": 1,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/center",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 2,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/displaced",
+      "Counters": {
+        "BracketUpdates": 46,
+        "ExpEntries": 48,
+        "LogEntries": 3,
+        "MidpointAttempts": 46,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 48,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 3,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/displaced",
+      "Counters": {
+        "BracketAdmissions": 34,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 33,
+        "MidpointEvaluations": 33,
+        "MomentEvaluations": 34,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 212
+      },
+      "Failure": null,
+      "Index": 4,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/displaced",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 5,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "Counters": {
+        "BracketUpdates": 49,
+        "ExpEntries": 51,
+        "LogEntries": 3,
+        "MidpointAttempts": 49,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 51,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 6,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "Counters": {
+        "BracketAdmissions": 143,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 142,
+        "MidpointEvaluations": 142,
+        "MomentEvaluations": 143,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 860
+      },
+      "Failure": null,
+      "Index": 7,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 8,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "Counters": {
+        "BracketUpdates": 48,
+        "ExpEntries": 50,
+        "LogEntries": 3,
+        "MidpointAttempts": 48,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 50,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 9,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "Counters": {
+        "BracketAdmissions": 136,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 135,
+        "MidpointEvaluations": 135,
+        "MomentEvaluations": 136,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 820
+      },
+      "Failure": null,
+      "Index": 10,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 11,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/small-scale",
+      "Counters": {
+        "BracketUpdates": 48,
+        "ExpEntries": 51,
+        "LogEntries": 3,
+        "MidpointAttempts": 49,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 51,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 12,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/small-scale",
+      "Counters": {
+        "BracketAdmissions": 167,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 166,
+        "MidpointEvaluations": 166,
+        "MomentEvaluations": 167,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1010
+      },
+      "Failure": null,
+      "Index": 13,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/small-scale",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 4,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 14,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/large-scale",
+      "Counters": {
+        "BracketUpdates": 43,
+        "ExpEntries": 45,
+        "LogEntries": 3,
+        "MidpointAttempts": 43,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 45,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 15,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/large-scale",
+      "Counters": {
+        "BracketAdmissions": 22,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 21,
+        "MidpointEvaluations": 21,
+        "MomentEvaluations": 22,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 140
+      },
+      "Failure": null,
+      "Index": 16,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/large-scale",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 17,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "Counters": {
+        "BracketUpdates": 47,
+        "ExpEntries": 49,
+        "LogEntries": 3,
+        "MidpointAttempts": 47,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 49,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 18,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "Counters": {
+        "BracketAdmissions": 43,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 42,
+        "MidpointEvaluations": 42,
+        "MomentEvaluations": 43,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 264
+      },
+      "Failure": null,
+      "Index": 19,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 20,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketUpdates": 48,
+        "ExpEntries": 50,
+        "LogEntries": 3,
+        "MidpointAttempts": 48,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 50,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 21,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Failure": null,
+      "Index": 22,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 23,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "Counters": {
+        "BracketUpdates": 48,
+        "ExpEntries": 50,
+        "LogEntries": 3,
+        "MidpointAttempts": 48,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 50,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 24,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "Counters": {
+        "BracketAdmissions": 170,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 169,
+        "MidpointEvaluations": 169,
+        "MomentEvaluations": 170,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1020
+      },
+      "Failure": null,
+      "Index": 25,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 26,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "Counters": {
+        "BracketUpdates": 49,
+        "ExpEntries": 51,
+        "LogEntries": 3,
+        "MidpointAttempts": 49,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 51,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 27,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "Counters": {
+        "BracketAdmissions": 144,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 143,
+        "MidpointEvaluations": 143,
+        "MomentEvaluations": 144,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 862
+      },
+      "Failure": null,
+      "Index": 28,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 29,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "Counters": {
+        "BracketUpdates": 48,
+        "ExpEntries": 50,
+        "LogEntries": 3,
+        "MidpointAttempts": 48,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 50,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 30,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Failure": null,
+      "Index": 31,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 32,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "Counters": {
+        "BracketUpdates": 57,
+        "ExpEntries": 59,
+        "LogEntries": 3,
+        "MidpointAttempts": 57,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 59,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 33,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "Counters": {
+        "BracketAdmissions": 183,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 182,
+        "MidpointEvaluations": 182,
+        "MomentEvaluations": 183,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1106
+      },
+      "Failure": null,
+      "Index": 34,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 4,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 35,
+      "Kind": "certified",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "stress/native-exp-range",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 1,
+        "LogEntries": 3,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NumericalUnderflow",
+        "Field": "phi.exp",
+        "Message": "positive exponential underflow",
+        "OriginalKernelFailure": null,
+        "Stage": "left-endpoint"
+      },
+      "Index": 36,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "stress/native-exp-range",
+      "Counters": {
+        "BracketAdmissions": 2,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 1,
+        "MidpointEvaluations": 1,
+        "MomentEvaluations": 2,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 10
+      },
+      "Failure": null,
+      "Index": 37,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "stress/native-exp-range",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NumericalUnderflow",
+        "Field": "phi.exp",
+        "Message": "positive exponential underflow",
+        "OriginalKernelFailure": null,
+        "Stage": "left-endpoint"
+      },
+      "Index": 38,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "stress/parameter-range",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 2,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NumericalRange",
+        "Field": "K/T",
+        "Message": "nonfinite result",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 39,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "stress/parameter-range",
+      "Counters": {
+        "BracketAdmissions": 178,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 177,
+        "MidpointEvaluations": 177,
+        "MomentEvaluations": 178,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1070
+      },
+      "Failure": null,
+      "Index": 40,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "stress/parameter-range",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NumericalRange",
+        "Field": "K/T",
+        "Message": "nonfinite result",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 41,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "stress/reference-exp-range",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 1,
+        "LogEntries": 3,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NumericalUnderflow",
+        "Field": "phi.exp",
+        "Message": "positive exponential underflow",
+        "OriginalKernelFailure": null,
+        "Stage": "left-endpoint"
+      },
+      "Index": 42,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "stress/reference-exp-range",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 1,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1
+      },
+      "Failure": {
+        "Code": "NumericalUnderflow",
+        "Field": "arithmetic",
+        "Message": "Decimal underflow",
+        "OriginalKernelFailure": null,
+        "Stage": "left-endpoint"
+      },
+      "Index": 43,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "stress/reference-exp-range",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NumericalUnderflow",
+        "Field": "phi.exp",
+        "Message": "positive exponential underflow",
+        "OriginalKernelFailure": null,
+        "Stage": "left-endpoint"
+      },
+      "Index": 44,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "stress/cancellation",
+      "Counters": {
+        "BracketUpdates": 49,
+        "ExpEntries": 51,
+        "LogEntries": 3,
+        "MidpointAttempts": 49,
+        "ObjectiveEntries": 1,
+        "PhiEntries": 51,
+        "Starts": 1
+      },
+      "Failure": null,
+      "Index": 45,
+      "Kind": "candidate",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "stress/cancellation",
+      "Counters": {
+        "BracketAdmissions": 257,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 256,
+        "MidpointEvaluations": 256,
+        "MomentEvaluations": 257,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1542
+      },
+      "Failure": {
+        "Code": "IterationLimit",
+        "Field": "MidpointAttempts",
+        "Message": "registered entry limit",
+        "OriginalKernelFailure": null,
+        "Stage": "midpoint"
+      },
+      "Index": 46,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "stress/cancellation",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NoRootEnclosure",
+        "Field": "Reference",
+        "Message": "actual reference root did not return an enclosure",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 47,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "limit/native-midpoints",
+      "Counters": {
+        "BracketUpdates": 1,
+        "ExpEntries": 3,
+        "LogEntries": 3,
+        "MidpointAttempts": 1,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 3,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "IterationLimit",
+        "Field": null,
+        "Message": "midpoint attempt limit reached",
+        "OriginalKernelFailure": null,
+        "Stage": "midpoint"
+      },
+      "Index": 48,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "limit/native-midpoints",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Failure": null,
+      "Index": 49,
+      "Kind": "enclosure",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "limit/native-midpoints",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "IterationLimit",
+        "Field": null,
+        "Message": "midpoint attempt limit reached",
+        "OriginalKernelFailure": null,
+        "Stage": "midpoint"
+      },
+      "Index": 50,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "domain/t-zero",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "T",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 51,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "domain/t-zero",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "Target",
+        "Message": "rendered t and c must be positive",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 52,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "domain/t-zero",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "T",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 53,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "domain/t-negative",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "T",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 54,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "domain/t-negative",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "Target",
+        "Message": "rendered t and c must be positive",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 55,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "domain/t-negative",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "T",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 56,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "domain/c-zero",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "C",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 57,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "domain/c-zero",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "Target",
+        "Message": "rendered t and c must be positive",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 58,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "domain/c-zero",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "C",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 59,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "domain/c-negative",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "C",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 60,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "domain/c-negative",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "Target",
+        "Message": "rendered t and c must be positive",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 61,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "domain/c-negative",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "Domain",
+        "Field": "C",
+        "Message": "strictly positive target required",
+        "OriginalKernelFailure": null,
+        "Stage": "parameters"
+      },
+      "Index": 62,
+      "Kind": "no-candidate",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "limit/reference-midpoints",
+      "Counters": {
+        "BracketAdmissions": 2,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 1,
+        "MidpointEvaluations": 1,
+        "MomentEvaluations": 2,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 10
+      },
+      "Failure": {
+        "Code": "IterationLimit",
+        "Field": "MidpointAttempts",
+        "Message": "registered entry limit",
+        "OriginalKernelFailure": null,
+        "Stage": "midpoint"
+      },
+      "Index": 63,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "wire/t-boolean",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.T",
+        "Message": "string required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 64,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "wire/t-boolean",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.T",
+        "Message": "registered ASCII decimal string required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 65,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "wire/u-NaN",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.U",
+        "Message": "registered ASCII decimal grammar and 128-character bound required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 66,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "wire/u-NaN",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.U",
+        "Message": "registered ASCII decimal string required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 67,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "wire/u-infinity",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.U",
+        "Message": "registered ASCII decimal grammar and 128-character bound required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 68,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "wire/u-infinity",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.U",
+        "Message": "registered ASCII decimal string required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 69,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "wire/missing-c",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters",
+        "Message": "exact registered property set required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 70,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "wire/missing-c",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters",
+        "Message": "exact object keys required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 71,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "wire/duplicate-t",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Parameters.T",
+        "Message": "duplicate property",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 72,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "wire/duplicate-t",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "T",
+        "Message": "duplicate JSON member",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 73,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "wire/unknown-field",
+      "Counters": {
+        "BracketUpdates": 0,
+        "ExpEntries": 0,
+        "LogEntries": 0,
+        "MidpointAttempts": 0,
+        "ObjectiveEntries": 0,
+        "PhiEntries": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Input",
+        "Message": "exact registered property set required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 74,
+      "Kind": "refused",
+      "Operation": "NativeSolve"
+    },
+    {
+      "CaseId": "wire/unknown-field",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Failure": {
+        "Code": "Wire",
+        "Field": "Input",
+        "Message": "exact object keys required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 75,
+      "Kind": "refused",
+      "Operation": "ReferenceRoot"
+    },
+    {
+      "CaseId": "cert/mean",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 1,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "NotCloseToMinimum",
+        "Field": "MeanBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 76,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/variance-zero",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "VarianceBits",
+        "Message": "strictly positive candidate value required",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 77,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/log-ratio",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "Bracket",
+        "Message": "ordered bracket must contain candidate x, including endpoints",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 78,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/ratio",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 2,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 3,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "InconsistentCoordinate",
+        "Field": "RatioBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 79,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/r",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 2,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 4,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "InconsistentCoordinate",
+        "Field": "RBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 80,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/objective",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 5,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "ObjectiveMismatch",
+        "Field": "OriginalObjective.ValueBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 81,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 6,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "ObjectiveMismatch",
+        "Field": "OriginalObjective.DerivativeMeanBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 82,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "Counters": {
+        "CertificatePreparations": 1,
+        "CertificateTranscendentalEntries": 6,
+        "CoordinateIntervalCalls": 1,
+        "LeafChecks": 7,
+        "ObjectiveIntervalCalls": 1,
+        "ReferenceRootCalls": 1,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "ObjectiveMismatch",
+        "Field": "OriginalObjective.DerivativeVarianceBits",
+        "Message": "maximum exact endpoint distance exceeds fixed tolerance",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 83,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/target-zero-sign",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "TargetMismatch",
+        "Field": "Candidate.TargetBits",
+        "Message": "exact independently rendered bits differ",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 84,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/source-binding",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "SourceMismatch",
+        "Field": "Native.Bindings",
+        "Message": "complete independent binding map differs",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 85,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/missing-objective",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 0
+      },
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "Candidate",
+        "Message": "exact object keys required",
+        "OriginalKernelFailure": null,
+        "Stage": "input"
+      },
+      "Index": 86,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    },
+    {
+      "CaseId": "cert/reversed-bracket",
+      "Counters": {
+        "CertificatePreparations": 0,
+        "CertificateTranscendentalEntries": 0,
+        "CoordinateIntervalCalls": 0,
+        "LeafChecks": 0,
+        "ObjectiveIntervalCalls": 0,
+        "ReferenceRootCalls": 0,
+        "Starts": 1
+      },
+      "Failure": {
+        "Code": "CandidateShape",
+        "Field": "Bracket",
+        "Message": "ordered bracket must contain candidate x, including endpoints",
+        "OriginalKernelFailure": null,
+        "Stage": "certificate"
+      },
+      "Index": 87,
+      "Kind": "refused",
+      "Operation": "CertifyNative"
+    }
+  ],
+  "Processes": [
+    {
+      "ChildPid": 43445,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:47.980442+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:46.486171+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:46.480396+00:00"
+    },
+    {
+      "ChildPid": 43456,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:49.250596+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:48.031602+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:48.025781+00:00"
+    },
+    {
+      "ChildPid": 43464,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:50.530572+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:49.294215+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:49.288500+00:00"
+    },
+    {
+      "ChildPid": 43477,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:51.905121+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:50.703801+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:50.697627+00:00"
+    },
+    {
+      "ChildPid": 43496,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:53.606622+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:52.077333+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:52.070511+00:00"
+    },
+    {
+      "ChildPid": 43550,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:55.483015+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:53.769234+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:53.762308+00:00"
+    },
+    {
+      "ChildPid": 43568,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:56.765309+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:55.519572+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:55.513214+00:00"
+    },
+    {
+      "ChildPid": 43578,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:58.048314+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:56.816247+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:56.810258+00:00"
+    },
+    {
+      "ChildPid": 43587,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:52:59.377970+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:58.122639+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:58.116663+00:00"
+    },
+    {
+      "ChildPid": 43608,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:00.836805+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:52:59.579060+00:00",
+      "StartedAtUtc": "2026-09-08T08:52:59.572835+00:00"
+    },
+    {
+      "ChildPid": 43618,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:02.230752+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:01.011450+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:01.004974+00:00"
+    },
+    {
+      "ChildPid": 43626,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:03.523969+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:02.304056+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:02.298247+00:00"
+    },
+    {
+      "ChildPid": 43639,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:04.909395+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:03.691409+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:03.685299+00:00"
+    },
+    {
+      "ChildPid": 43648,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:06.121064+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:04.924374+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:04.918706+00:00"
+    },
+    {
+      "ChildPid": 43656,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:07.461597+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:06.231619+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:06.225760+00:00"
+    },
+    {
+      "ChildPid": 43667,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:08.721833+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:07.475457+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:07.469820+00:00"
+    },
+    {
+      "ChildPid": 43700,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:10.226972+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:09.033892+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:09.027183+00:00"
+    },
+    {
+      "ChildPid": 43717,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:11.501287+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:10.267411+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:10.261519+00:00"
+    },
+    {
+      "ChildPid": 43728,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:12.687371+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:11.515878+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:11.509454+00:00"
+    },
+    {
+      "ChildPid": 43740,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:13.896017+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:12.700555+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:12.694857+00:00"
+    },
+    {
+      "ChildPid": 43757,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:15.071476+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:13.910083+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:13.904291+00:00"
+    },
+    {
+      "ChildPid": 43767,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:16.266973+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:15.087615+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:15.081893+00:00"
+    },
+    {
+      "ChildPid": 43775,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:17.449807+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:16.278060+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:16.271890+00:00"
+    },
+    {
+      "ChildPid": 43786,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:18.654576+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:17.460614+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:17.454606+00:00"
+    },
+    {
+      "ChildPid": 43795,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:19.846404+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:18.664985+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:18.659249+00:00"
+    },
+    {
+      "ChildPid": 43804,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:21.029150+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:19.857057+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:19.851131+00:00"
+    },
+    {
+      "ChildPid": 43813,
+      "DirectChildClosed": true,
+      "ExitCode": 0,
+      "FinishedAtUtc": "2026-09-08T08:53:22.225308+00:00",
+      "LaunchStartedAtUtc": "2026-09-08T08:53:21.039492+00:00",
+      "StartedAtUtc": "2026-09-08T08:53:21.033794+00:00"
+    }
+  ],
+  "RecordedLeafChecks": [
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "2609024107869117869995534420013427735465314931800322848105689163/2499999999999997390975892130882130004465579986572265625000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "11102230246251565404236316680908203132666276864221020025743126929/74999999999999988897769753748434595763683319091796875000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "206054058843857218510257222146190347499514797284984118270746399/5000000000000002775557561562891351059079170227050781250000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "206054058843857218510257222146190347499514797284984118270746399/5000000000000002775557561562891351059079170227050781250000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "1781286877630065915295684685271545534558709893054388086037068389000000000000/28153235902799726547086160607307006725871910613342409558709893054388086037068389",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "17347234759768293509398443063950879290849031746764450275528123000000000000/312500000000000780625564189563415050645214876389844134599031746764450275528123",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/center",
+      "DistanceOverTolerance": "1526556658859591831974697663094997579354468289924391235536484469000000000000/10000000000000001526556658859591831974697663094997579354468289924391235536484469",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "34139358007223563618026673793792724633373683098106150460401525959/11250000000000034139358007223563618026673793792724609375000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "38857805861880478914827108383178710969373250989672231080220776667/125000000000000038857805861880478914827108383178710937500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "463465058417052016370239112604623435019463047119861675848359917/19999999999999967803532285870460327714681625366210937500000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "463465058417052016370239112604623435019463047119861675848359917/14999999999999967803532285870460327714681625366210937500000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "27447448226259385260249977715678378746552681821540099430005823093750000000/1617975681424982909192885037962750507090682379536465003447318178459900569994177",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "925185853854331670770801956232784931002935546311456745682682890000000000000/3333333333333377557217147568700973123552546127241110663731120355209920983983777",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/displaced",
+      "DistanceOverTolerance": "222044604925030605505482621150629787084562440604943499954039579000000000000/2000000000000000222044604925030605505482621150629787084562440604943499954039579",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "410782519111307919956743717193603516321234013163752191891744331449/149999999999999589217480888692080043256282806396484375000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "2220446049250313080847263336181640631391210667714131449006246793/19999999999999997779553950749686919152736663818359375000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "3839933052807302871620504868954645333041029149779507201171612191/1066666666666666929419449161287047900259494781494140625000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "13049028505323225332037435186116652316346482791828800109838643/106250000000000024980018054066022159531712532043457031250000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "11102230246252407536363799443723999781486883168394958490014139999000000000000/144531250000000000000000000000842132127482762815796656486883168394958490014139999",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "832667268468887373359387157956042494287975196188768806615829669000000000000/40000000000000164035451888366898815633242367306628431787975196188768806615829669",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "DistanceOverTolerance": "1387778780781468170391290028060995171651825604739120430485479297000000000000/100000000000000001387778780781468170391290028060995171651825604739120430485479297",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "77715611723760957829654216766357421909924492365452782329531131877/149999999999999922284388276239042170345783233642578125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "740148683083437693615754445393880208704870486157299102796430481/3333333333333332593184650249895639717578887939453125000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "475406878262716958274069399523514886568767176874539622881851517/16000000000000007105427357601001858711242675781250000000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "1485646494570990494606466873510984020527397427732936321505785991/96875000000000022204460492503130808472633361816406250000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "1063113329301754397509430345834260818821620512609000000000000/12148437500000000000000000000001063113329301754397509430345834260818821620512609",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "1387778780781460120004122489385096075169661582971950187298255291000000000000/100000000000000056898930012039287141185705893926111700169661582971950187298255291",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "DistanceOverTolerance": "3816391647148972969182210048546033462182999701366775249289300149000000000000/100000000000000003816391647148972969182210048546033462182999701366775249289300149",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "1542750729735717806684163767/18000000000000000000000000000000000000000000000000000000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "6171002918942871226736655069/17000000000000000000000000000000000000000000000000000000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "37054015633165171297498598608059882254249370632852404131976787/800000000000000088817841970012523233890533447265625000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "578968994268205801523415603250935660222646416138318814562137297/206250000000000001387778780781445675529539585113525390625000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "92761872553851984619794218555019146016482720037973574487878779000000000000/5710088722239781237668928485832706272302000537441021016482720037973574487878779",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "244140625/17592186044416",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/small-scale",
+      "DistanceOverTolerance": "244140625/35184372088832",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "671337985203024345537414774298667907735590977622725179915915151231/507812499999999328662014796975654462585225701332092285156250000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "5204170427930421283235773444175720215004581221881590541983838381/257812499999999994795829572069578716764226555824279785156250000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "21407091732528056098209949494813794822164004760147537318145967/1250000000000000832667268468867405317723751068115234375000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "137005387088179559028543676766808286861849630464944238836134189/4250000000000005329070518200751394033432006835937500000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "1107758005510228144397491043378512890199571468539153730419188833000000000000/19230914826399863273543080303674174080139571855862109800428531460846269580811173",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "20816681711723460069979841054053287634829596133944819639846559000000000000/125000000000005349887199912474854103411847889990787634829596133944819639846559",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/large-scale",
+      "DistanceOverTolerance": "788230386182710652528426029669151000000000000/500000000000000000000000000000000000000000000788230386182710652528426029669151",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "855292704931858104805405009603917795699648315939553625137289417/666666666666667517837652212620014324784278869628906250000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "22049896015531702415927159510109597283562708966092701371073727659/149999999999999977795539507496869191527366638183593750000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "206054058843857218510257222146190347499514797284984118270746399/5000000000000002775557561562891351059079170227050781250000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "206054058843857218510257222146190347499514797284984118270746399/5000000000000002775557561562891351059079170227050781250000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "3945889310186327734755164008690979693219612388454492626118577000000000000/332894050035893931775204692731033448289073959558219024729105560263456091830141",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "131379805425721082552579858259085323839226677339105146029489113000000000000/10000000000000024556286347179164971872476556257132198839226677339105146029489113",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "DistanceOverTolerance": "726734341747152122326783230856339355841498560322856302071389529000000000000/5000000000000000726734341747152122326783230856339355841498560322856302071389529",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "190302700073506804285637737119746633518835666704553007931311349600000000000/4940898835848372337532026424024132909186481630253366481164333295446992068688651",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "1624598293235850630751974591111418575699388911928330127356738649000000000000/50000000000000179260282233260897098533041485642668575699388911928330127356738649",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "DistanceOverTolerance": "6767402866863920166370281748033606256452952389788190640362280271000000000000/100000000000000004334827379387645237866034932874596868547047610211809359637719731",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "17561785668112436855908058624948527744546174978463302184951878171/7675602748218742554797699995106086134910583496093750000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "112723497615475046219808300936244076299328005833329781029598049117/5006294657469037846482876052967014857131289318203926086425781250000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "204556727733156143716424911577722136603911217949361062755947529/4964527482823721982185816159471869468688964843750000000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "204556727733156143716424911577722136603911217949361062755947529/4964527482823721982185816159471869468688964843750000000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "545627647745487808123995934485124478361785379538192739550735372500000000000/15773973170506892529443627488734603985379065514875521638214620461807260449264629",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "13502126489684507556326525953122239790678625363835183141518390134000000000000/50000000000697040609270415678314797741625002760209321374636164816858481609867",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "DistanceOverTolerance": "1883474385666147090879841025139799409701079694475157697803697853000000000000/12500000000001883474385666147090879841025139799409701079694475157697803697853",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "43523544133281233596339572909468219644136321586638554287182557/35000000005663736146743758581578731536865234375000000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "1973702504019882998588609810268248746499406534160865591813946769/39999999932034642213807273947168141603469848632812500000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "4341914272298652330623864038409056102624942829168574035976987072/32000000108744569669530241780896540927658922015552889206446707248687744140625",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "4341914272298652330623864038409056102624942829168574035976987072/32000000108744569669530241780896540927658922015552889206446707248687744140625",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "1627328465314202424739977253554905874898249905476826616718082371000000000000/75000000169913390541695157320499368613144291518773062398249905476826616718082371",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "18185751684026302269030706400886043849830704978044566434133795251000000000000/5000000000000130570632842719280573935653272470636539824551147838312438066539090383795251",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "DistanceOverTolerance": "2467125932414879271807068082197067471956782786223611383069798319000000000000/50000000000000002467125932414879271807068082197067471956782786223611383069798319",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "190302700073506804285637737119746633518835666704553007931311349600000000000/4940898835848372337532026424024132909186481630253366481164333295446992068688651",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "1624598293235850630751974591111418575699388911928330127356738649000000000000/50000000000000179260282233260897098533041485642668575699388911928330127356738649",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "DistanceOverTolerance": "6767402866863920166370281748033606256452952389788190640362280271000000000000/100000000000000004334827379387645237866034932874596868547047610211809359637719731",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "11368683772161602973937988281250000000000112149644168866066739161/12849999999999988631316227838397026062011718750000000000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "6496390726949487413678850446428571428696523488810072321299909331/7328571428571422075037844479084014892578125000000000000000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "81375380505984818057562008711481250363418201931924401102791327/1666666666666667961926862062682630494236946105957031250000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "3178725801015031955373515965292236342321023512965796918077786211/33365885416666666717262768049323540253681130707263946533203125000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "1283421674158387633596464466869970154474714377980218024713873794000000000000/35618185750019753892377544546536353792146372973779845525285622019781975286126209",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "82031250000/4503599627370497",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "DistanceOverTolerance": "28460307027744488985283205538789015393186255822924825849047257109031250000000/3125000000000000002710505431213763492431062486221808810304955114575174150952742891",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/mean",
+      "DistanceOverTolerance": "51234062002844206939272447731059202224880400430426156234495693219337403387667687889/51250000000000000000000000000000000000000000000000000000000000000000000",
+      "Field": "MeanBits",
+      "Passed": false
+    },
+    {
+      "CaseId": "cert/ratio",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/ratio",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/ratio",
+      "DistanceOverTolerance": "99999999999999999467554604223097363371916555178324380458969596256273566598155897/268124005688413746817388982890406623482704162597656250000000000000000",
+      "Field": "RatioBits",
+      "Passed": false
+    },
+    {
+      "CaseId": "cert/r",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/r",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/r",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/r",
+      "DistanceOverTolerance": "99999999999999999467554604223097363371916555178324380458969596256273566598155897/268124005688413746817388982890406623482704162597656250000000000000000",
+      "Field": "RBits",
+      "Passed": false
+    },
+    {
+      "CaseId": "cert/objective",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/objective",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/objective",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/objective",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/objective",
+      "DistanceOverTolerance": "666666666666666730100900024502268095212579039915544506278555568184335977103783200000000000/1646966278616124112510675474674710969728827210084455493721444431815664022896217",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": false
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "DistanceOverTolerance": "190302700073506804285637737119746633518835666704553007931311349600000000000/4940898835848372337532026424024132909186481630253366481164333295446992068688651",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/mean-gradient",
+      "DistanceOverTolerance": "50000000000000001624598293235850630751974591111418575699388911928330127356738649000000000000/50000000000000179260282233260897098533041485642668575699388911928330127356738649",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": false
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "111771930700411047554642018545403921947150877071188441484131413957/84062002844207051044378431470249779522418975830078125000000000000000",
+      "Field": "MeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "25410029278475450366420383840817891430442617695680885599816349141/79739952837351263381648891481745522469282150268554687500000000000000",
+      "Field": "VarianceBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RatioBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "106489079155380527325616688964335123908206080748745286680368821/33624801137682749363477796578081324696540832519531250000000000000000",
+      "Field": "RBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "190302700073506804285637737119746633518835666704553007931311349600000000000/4940898835848372337532026424024132909186481630253366481164333295446992068688651",
+      "Field": "OriginalObjective.ValueBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "1624598293235850630751974591111418575699388911928330127356738649000000000000/50000000000000179260282233260897098533041485642668575699388911928330127356738649",
+      "Field": "OriginalObjective.DerivativeMeanBits",
+      "Passed": true
+    },
+    {
+      "CaseId": "cert/variance-gradient",
+      "DistanceOverTolerance": "99999999999999995665172620612354762133965067125403131452952389788190640362280271000000000000/100000000000000004334827379387645237866034932874596868547047610211809359637719731",
+      "Field": "OriginalObjective.DerivativeVarianceBits",
+      "Passed": false
+    }
+  ],
+  "RecordedRootChecks": [
+    {
+      "CaseId": "core/center",
+      "Counters": {
+        "BracketAdmissions": 43,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 42,
+        "MidpointEvaluations": 42,
+        "MomentEvaluations": 43,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 262
+      },
+      "Kind": "enclosure",
+      "TraceRows": 90
+    },
+    {
+      "CaseId": "core/center",
+      "Counters": {
+        "BracketAdmissions": 43,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 42,
+        "MidpointEvaluations": 42,
+        "MomentEvaluations": 43,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 262
+      },
+      "Kind": "enclosure",
+      "TraceRows": 90
+    },
+    {
+      "CaseId": "core/displaced",
+      "Counters": {
+        "BracketAdmissions": 34,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 33,
+        "MidpointEvaluations": 33,
+        "MomentEvaluations": 34,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 212
+      },
+      "Kind": "enclosure",
+      "TraceRows": 72
+    },
+    {
+      "CaseId": "core/displaced",
+      "Counters": {
+        "BracketAdmissions": 34,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 33,
+        "MidpointEvaluations": 33,
+        "MomentEvaluations": 34,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 212
+      },
+      "Kind": "enclosure",
+      "TraceRows": 72
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "Counters": {
+        "BracketAdmissions": 143,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 142,
+        "MidpointEvaluations": 142,
+        "MomentEvaluations": 143,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 860
+      },
+      "Kind": "enclosure",
+      "TraceRows": 290
+    },
+    {
+      "CaseId": "core/small-ratio",
+      "Counters": {
+        "BracketAdmissions": 143,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 142,
+        "MidpointEvaluations": 142,
+        "MomentEvaluations": 143,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 860
+      },
+      "Kind": "enclosure",
+      "TraceRows": 290
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "Counters": {
+        "BracketAdmissions": 136,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 135,
+        "MidpointEvaluations": 135,
+        "MomentEvaluations": 136,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 820
+      },
+      "Kind": "enclosure",
+      "TraceRows": 276
+    },
+    {
+      "CaseId": "core/large-ratio",
+      "Counters": {
+        "BracketAdmissions": 136,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 135,
+        "MidpointEvaluations": 135,
+        "MomentEvaluations": 136,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 820
+      },
+      "Kind": "enclosure",
+      "TraceRows": 276
+    },
+    {
+      "CaseId": "core/small-scale",
+      "Counters": {
+        "BracketAdmissions": 167,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 166,
+        "MidpointEvaluations": 166,
+        "MomentEvaluations": 167,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1010
+      },
+      "Kind": "enclosure",
+      "TraceRows": 338
+    },
+    {
+      "CaseId": "core/small-scale",
+      "Counters": {
+        "BracketAdmissions": 167,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 166,
+        "MidpointEvaluations": 166,
+        "MomentEvaluations": 167,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1010
+      },
+      "Kind": "enclosure",
+      "TraceRows": 338
+    },
+    {
+      "CaseId": "core/large-scale",
+      "Counters": {
+        "BracketAdmissions": 22,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 21,
+        "MidpointEvaluations": 21,
+        "MomentEvaluations": 22,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 140
+      },
+      "Kind": "enclosure",
+      "TraceRows": 48
+    },
+    {
+      "CaseId": "core/large-scale",
+      "Counters": {
+        "BracketAdmissions": 22,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 21,
+        "MidpointEvaluations": 21,
+        "MomentEvaluations": 22,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 140
+      },
+      "Kind": "enclosure",
+      "TraceRows": 48
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "Counters": {
+        "BracketAdmissions": 43,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 42,
+        "MidpointEvaluations": 42,
+        "MomentEvaluations": 43,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 264
+      },
+      "Kind": "enclosure",
+      "TraceRows": 90
+    },
+    {
+      "CaseId": "core/rounded-center",
+      "Counters": {
+        "BracketAdmissions": 43,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 42,
+        "MidpointEvaluations": 42,
+        "MomentEvaluations": 43,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 264
+      },
+      "Kind": "enclosure",
+      "TraceRows": 90
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "Counters": {
+        "BracketAdmissions": 170,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 169,
+        "MidpointEvaluations": 169,
+        "MomentEvaluations": 170,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1020
+      },
+      "Kind": "enclosure",
+      "TraceRows": 344
+    },
+    {
+      "CaseId": "core/positive-forcing",
+      "Counters": {
+        "BracketAdmissions": 170,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 169,
+        "MidpointEvaluations": 169,
+        "MomentEvaluations": 170,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1020
+      },
+      "Kind": "enclosure",
+      "TraceRows": 344
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "Counters": {
+        "BracketAdmissions": 144,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 143,
+        "MidpointEvaluations": 143,
+        "MomentEvaluations": 144,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 862
+      },
+      "Kind": "enclosure",
+      "TraceRows": 292
+    },
+    {
+      "CaseId": "core/negative-forcing",
+      "Counters": {
+        "BracketAdmissions": 144,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 143,
+        "MidpointEvaluations": 143,
+        "MomentEvaluations": 144,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 862
+      },
+      "Kind": "enclosure",
+      "TraceRows": 292
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/signed-zero",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "Counters": {
+        "BracketAdmissions": 183,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 182,
+        "MidpointEvaluations": 182,
+        "MomentEvaluations": 183,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1106
+      },
+      "Kind": "enclosure",
+      "TraceRows": 370
+    },
+    {
+      "CaseId": "core/wide-variance",
+      "Counters": {
+        "BracketAdmissions": 183,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 182,
+        "MidpointEvaluations": 182,
+        "MomentEvaluations": 183,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1106
+      },
+      "Kind": "enclosure",
+      "TraceRows": 370
+    },
+    {
+      "CaseId": "stress/native-exp-range",
+      "Counters": {
+        "BracketAdmissions": 2,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 1,
+        "MidpointEvaluations": 1,
+        "MomentEvaluations": 2,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 10
+      },
+      "Kind": "enclosure",
+      "TraceRows": 8
+    },
+    {
+      "CaseId": "stress/parameter-range",
+      "Counters": {
+        "BracketAdmissions": 178,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 177,
+        "MidpointEvaluations": 177,
+        "MomentEvaluations": 178,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1070
+      },
+      "Kind": "enclosure",
+      "TraceRows": 360
+    },
+    {
+      "CaseId": "stress/reference-exp-range",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 1,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1
+      },
+      "Kind": "refused",
+      "TraceRows": 4
+    },
+    {
+      "CaseId": "stress/cancellation",
+      "Counters": {
+        "BracketAdmissions": 257,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 256,
+        "MidpointEvaluations": 256,
+        "MomentEvaluations": 257,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1542
+      },
+      "Kind": "refused",
+      "TraceRows": 518
+    },
+    {
+      "CaseId": "stress/cancellation",
+      "Counters": {
+        "BracketAdmissions": 257,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 256,
+        "MidpointEvaluations": 256,
+        "MomentEvaluations": 257,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 1542
+      },
+      "Kind": "refused",
+      "TraceRows": 518
+    },
+    {
+      "CaseId": "limit/native-midpoints",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "domain/t-zero",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "domain/t-negative",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "domain/c-zero",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "domain/c-negative",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "limit/reference-midpoints",
+      "Counters": {
+        "BracketAdmissions": 2,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 1,
+        "MidpointEvaluations": 1,
+        "MomentEvaluations": 2,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 10
+      },
+      "Kind": "refused",
+      "TraceRows": 8
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 0,
+        "EndpointEvaluations": 0,
+        "MidpointAttempts": 0,
+        "MidpointEvaluations": 0,
+        "MomentEvaluations": 0,
+        "ParameterPreparations": 0,
+        "PrecisionEscalations": 0,
+        "Starts": 0,
+        "TranscendentalEntries": 0
+      },
+      "Kind": "refused",
+      "TraceRows": 2
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    },
+    {
+      "CaseId": "core/unconstructed",
+      "Counters": {
+        "BracketAdmissions": 52,
+        "EndpointEvaluations": 2,
+        "MidpointAttempts": 51,
+        "MidpointEvaluations": 51,
+        "MomentEvaluations": 52,
+        "ParameterPreparations": 1,
+        "PrecisionEscalations": 0,
+        "Starts": 1,
+        "TranscendentalEntries": 310
+      },
+      "Kind": "enclosure",
+      "TraceRows": 108
+    }
+  ],
+  "Retention": {
+    "DistinctDescriptorPaths": 242,
+    "DriverReservedCombined": 149737504,
+    "InnerLimitCombined": 118697952,
+    "InnerReservedEach": 14382753,
+    "InnerReservedSlots": 238,
+    "NoRefund": true,
+    "NumberedRecordBytes": 10188449,
+    "NumberedRecords": 237
+  },
+  "Scope": "retained-data-only; no numerical service or process rerun",
+  "Sources": {
+    "ExecutedCut": "4937d7468446599e966adc65c0ca1e9be54472aa",
+    "GitCut": "f33ac42959388344fc3c82058f165764954fa22d",
+    "Modules": 14,
+    "Rows": 47,
+    "SnapshotSha256": "0F703015BAFF58AB539F9BA9A4A22AB02E4263005B232241265486F43E3584E8"
+  }
+}

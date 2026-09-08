@@ -1,0 +1,339 @@
+{
+  "Archive": "custody.tar.gz",
+  "Bytes": 8623,
+  "Sha256": "E87FBCAA7E6EAB47BD577747A4D6385A2711D0252DA9EAFCD5044F6D4902A858",
+  "MemberCount": 55,
+  "Members": [
+    {
+      "Path": "pr-17050-merge-preparation-1/calls.json",
+      "Bytes": 813,
+      "Sha256": "99C48BE36C68D9734BCCD0E36F919A0A421836FC889C5AB04460222479930996",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/calls.json"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/dependency-completion.json",
+      "Bytes": 61,
+      "Sha256": "5C565C721D0F2D31DAA9E3E7FF4D59CA9141094D65B92EFC99A92E635C6BA40C",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/dependency-completion.json"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/dependency-request.json",
+      "Bytes": 100,
+      "Sha256": "EAF459210C5FB887C7C03576B4560645165D976CD90287B56DCA3A5ACBA8AC0A",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/dependency-request.json"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/dependency-status.json",
+      "Bytes": 4310,
+      "Sha256": "BD140005014AA452B838636A7671624089B3A4926A57EF3925DB23EFF57377D1",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/dependency-status.json"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/graphql.stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/graphql.stderr"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/graphql.stdout",
+      "Bytes": 13293,
+      "Sha256": "8079109438E5C7A2EF2DCBFF4A8E3098BAE13341C94841909C3452668D3622DE",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/graphql.stdout"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/main-rules.stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/main-rules.stderr"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/main-rules.stdout",
+      "Bytes": 568,
+      "Sha256": "BE88F4F5C9C15A86516CDD3E3B85440E86AA26C69B9582797EF49B7BF5B56FA9",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/main-rules.stdout"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/request.json",
+      "Bytes": 1554,
+      "Sha256": "B9F0759810A0368D1204733A125F819FC33BC08EABCA3FB0D861FB599F79E408",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/request.json"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/required.stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/required.stderr"
+    },
+    {
+      "Path": "pr-17050-merge-preparation-1/required.stdout",
+      "Bytes": 145,
+      "Sha256": "6F352BC3647ED3C19DE87D3FF225C7003589B0F3E1C9A58B5DD1EF2E7D8666A2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-preparation-1/required.stdout"
+    },
+    {
+      "Path": "pr-17050-merge-1/body.md",
+      "Bytes": 719,
+      "Sha256": "871EA5FB1D222A53281B47CDD55FB77C710492F47B066C97E09E7C45183D01E0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-1/body.md"
+    },
+    {
+      "Path": "pr-17050-merge-1/completion.json",
+      "Bytes": 53,
+      "Sha256": "C6262176A988260D6DFA14597763ADB05DC6E27EE6131A1737C48ECFF1DC8362",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-1/completion.json"
+    },
+    {
+      "Path": "pr-17050-merge-1/invocation.json",
+      "Bytes": 362,
+      "Sha256": "4211DEB1C2F456563C2E7BC50384D380E258AAF35AD2AA23D04F86BDE74CE66E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-1/invocation.json"
+    },
+    {
+      "Path": "pr-17050-merge-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-1/stderr"
+    },
+    {
+      "Path": "pr-17050-merge-1/stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-merge-1/stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/0-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/0-stdout",
+      "Bytes": 335,
+      "Sha256": "72E230B9EFDECDD123E626A764801C17779A89E898D1C40F7D9B45C8AB2832B0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/0-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/1-stderr",
+      "Bytes": 103,
+      "Sha256": "295BF92D3523F20355450628486E7D1FF8D63E0BBB404B97C13244380065C4B0",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/1-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/1-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/1-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/10-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/10-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/10-stdout",
+      "Bytes": 2101,
+      "Sha256": "3368E64740517C4B64BDDA97E233BBF145012340E339E7171DE13B38E2737D3E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/10-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/11-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/11-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/11-stdout",
+      "Bytes": 2101,
+      "Sha256": "3368E64740517C4B64BDDA97E233BBF145012340E339E7171DE13B38E2737D3E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/11-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/12-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/12-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/12-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/12-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/13-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/13-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/13-stdout",
+      "Bytes": 5,
+      "Sha256": "6403203DD5A0867EB14D104EE8A73730BD72DD9AD92E78D996A6DBA0A5DCFC01",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/13-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/14-stderr",
+      "Bytes": 932,
+      "Sha256": "9EFB6FC9FC837F74F4873FA859F54B3194DBEC9F25518A5004833E8BF0542895",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/14-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/14-stdout",
+      "Bytes": 2464,
+      "Sha256": "7536871E64A9B346F58D492F3F59B26386CB40B0D277D03BEEF9FBD36EA65B2E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/14-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/15-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/15-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/15-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/15-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/16-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/16-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/16-stdout",
+      "Bytes": 41,
+      "Sha256": "BED111F95C3A42FA05F64CB3B45719B67FE52FC75FA4C56EEE816D53833A8394",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/16-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/17-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/17-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/17-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/17-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/2-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/2-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/2-stdout",
+      "Bytes": 41,
+      "Sha256": "BED111F95C3A42FA05F64CB3B45719B67FE52FC75FA4C56EEE816D53833A8394",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/2-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/3-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/3-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/3-stdout",
+      "Bytes": 41,
+      "Sha256": "F90EB10E57F2EB2764A8FA5D5E8ABA088F1AC7D81822EBF615D96503601DC942",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/3-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/4-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/4-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/4-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/4-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/5-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/5-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/5-stdout",
+      "Bytes": 41,
+      "Sha256": "F90EB10E57F2EB2764A8FA5D5E8ABA088F1AC7D81822EBF615D96503601DC942",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/5-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/6-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/6-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/6-stdout",
+      "Bytes": 41,
+      "Sha256": "403783348B02D5AA1B03C480DF32736C6B51BF7D2652C557C4F8B7B0CAB9E6A2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/6-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/7-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/7-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/7-stdout",
+      "Bytes": 41,
+      "Sha256": "403783348B02D5AA1B03C480DF32736C6B51BF7D2652C557C4F8B7B0CAB9E6A2",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/7-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/8-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/8-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/8-stdout",
+      "Bytes": 1200,
+      "Sha256": "452403FCB644B08D4A1EA3C4C9EBF8BEB683B186E82E32CFAA487320D73EC273",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/8-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/9-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/9-stderr"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/9-stdout",
+      "Bytes": 2101,
+      "Sha256": "3368E64740517C4B64BDDA97E233BBF145012340E339E7171DE13B38E2737D3E",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/9-stdout"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/calls.json",
+      "Bytes": 9489,
+      "Sha256": "669F8641074F7EA3F1F24E20C795360ABEDE51D0639989B85834088537474071",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/calls.json"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/proof.json",
+      "Bytes": 6441,
+      "Sha256": "0A9865C440239E7A6449C40A39321587A1FF19A18ED9C51949BAF1218C2B5473",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/proof.json"
+    },
+    {
+      "Path": "pr-17050-main-proof-1/shared-view.json",
+      "Bytes": 147,
+      "Sha256": "69B30406E322E93F5F7D39EE48062BD1EC62E0FFD5ED9EDA87AA3CABDD604B99",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/pr-17050-main-proof-1/shared-view.json"
+    }
+  ],
+  "VerifiedWithoutExtraction": true
+}

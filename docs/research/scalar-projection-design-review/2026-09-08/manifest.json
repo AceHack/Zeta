@@ -1,0 +1,24 @@
+{
+  "Commit": "3f90a67655524ba3e17d6cd3937a9482d1381a62",
+  "Path": "docs/research/2026-09-08-precision-gate-scalar-projection-design.md",
+  "Argv": [
+    "git",
+    "show",
+    "3f90a67655524ba3e17d6cd3937a9482d1381a62:docs/research/2026-09-08-precision-gate-scalar-projection-design.md"
+  ],
+  "ExitCode": 0,
+  "Stderr": {
+    "Bytes": 0,
+    "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "SourceExecutionPerformed": false,
+  "File": "original-design.md.gz",
+  "Original": {
+    "Bytes": 13505,
+    "Sha256": "291e4ce6de14084e377fe74a579eb7ab4b4f01d8b68d84c2e05e090f64f32d3c"
+  },
+  "Stored": {
+    "Bytes": 5990,
+    "Sha256": "e95fcb5ef82f99ecf2fa3ed13aa45a70061e75627212fcd8695db1b7908444a0"
+  }
+}

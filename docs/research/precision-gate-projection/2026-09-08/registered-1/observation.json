@@ -1,0 +1,2965 @@
+{
+  "Schema": "zeta.precision-projection.post-run-observation.v1",
+  "Scope": "Post-run extraction and custody checks, no numerical re-execution",
+  "Invocation": {
+    "Argv": [
+      "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python",
+      "-m",
+      "zeta_interp.precision_gate_projection_driver",
+      "--source-root",
+      "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908",
+      "--manifest",
+      "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/docs/research/precision-gate-projection/2026-09-08/implementation-source/implementation-manifest.json",
+      "--manifest-sha256",
+      "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+      "--output-parent",
+      "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-final-attempts",
+      "--attempt",
+      "registered-1",
+      "--dotnet",
+      "/Users/acehack/.local/share/mise/dotnet-root/dotnet"
+    ],
+    "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908",
+    "EnvironmentOverride": {
+      "PYTHONPATH": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Interp.Python"
+    },
+    "StartedUnix": 1788857562.3261828,
+    "AccountingScope": "External coordinator process provenance; excluded from attempt retention reservation; no full DriverResult serialization"
+  },
+  "Completion": {
+    "ExitCode": 0,
+    "FinishedUnix": 1788857602.988089,
+    "ElapsedSeconds": 40.66178766702069
+  },
+  "ManifestSha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+  "ExecutedHead": "4937d7468446599e966adc65c0ca1e9be54472aa",
+  "Counters": {
+    "Checked": 88,
+    "CompleteReceipts": 88,
+    "Entered": 88,
+    "NativeChildrenClosed": 27,
+    "NativeChildrenStarted": 27,
+    "NativeLaunchAttempts": 27,
+    "Planned": 88,
+    "Raised": 0,
+    "RetainedReceipts": 88,
+    "Returned": 88
+  },
+  "CoreCertified": [
+    "core/center",
+    "core/displaced",
+    "core/small-ratio",
+    "core/large-ratio",
+    "core/small-scale",
+    "core/large-scale",
+    "core/rounded-center",
+    "core/unconstructed",
+    "core/positive-forcing",
+    "core/negative-forcing",
+    "core/signed-zero",
+    "core/wide-variance"
+  ],
+  "ExpectedOutcomesPassed": true,
+  "RosterCollected": true,
+  "Pending": [],
+  "PrimaryFailure": null,
+  "Baseline": {
+    "Bytes": 16424,
+    "Encoding": "identity",
+    "File": "records/record-000058.bin",
+    "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+    "StoredBytes": 16424,
+    "StoredSha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B"
+  },
+  "DescriptorFilesVerified": 242,
+  "AttemptFiles": 328,
+  "AttemptFileBytes": 21527800,
+  "Reservation": {
+    "Fields": {
+      "CopiedBytes": 10502579,
+      "DriverCombinedBytes": 149737504,
+      "DriverSlots": 90,
+      "Inner": {
+        "Fields": {
+          "Artifacts": 422,
+          "CombinedBytes": 118697952,
+          "FinalJournalBytes": 8388608
+        },
+        "Type": "zeta_interp.hidden_switch_compiled_record_store.Limits"
+      },
+      "ManifestBytes": 9821,
+      "UnusedReservationsReclaimed": false
+    },
+    "Type": "__main__.Reservation"
+  },
+  "JournalPreFinalEncodingReservation": {
+    "ReservedRawBytes": 14382753,
+    "ReservedStoredBytes": 14382753,
+    "ReservedSlots": 238
+  },
+  "CurrentSourceFilesUnchanged": 47,
+  "Rows": [
+    {
+      "Index": 0,
+      "CaseId": "core/center",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 137,
+          "Encoding": "identity",
+          "File": "records/record-000000.bin",
+          "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+          "StoredBytes": 137,
+          "StoredSha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1"
+        },
+        {
+          "Bytes": 15811,
+          "Encoding": "identity",
+          "File": "records/record-000001.bin",
+          "Sha256": "6D9B3AC751CF212809B47F415875518EF2F8D429E07D6A4A80AD8D22784EE529",
+          "StoredBytes": 15811,
+          "StoredSha256": "6D9B3AC751CF212809B47F415875518EF2F8D429E07D6A4A80AD8D22784EE529"
+        },
+        {
+          "Bytes": 16232,
+          "Encoding": "identity",
+          "File": "records/record-000002.bin",
+          "Sha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA",
+          "StoredBytes": 16232,
+          "StoredSha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA"
+        }
+      ]
+    },
+    {
+      "Index": 1,
+      "CaseId": "core/center",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 137,
+          "Encoding": "identity",
+          "File": "records/record-000003.bin",
+          "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+          "StoredBytes": 137,
+          "StoredSha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1"
+        },
+        {
+          "Bytes": 90585,
+          "Encoding": "identity",
+          "File": "records/record-000004.bin",
+          "Sha256": "704E2F9B140E0D8987F0F9EB4993215703DD6E5D1DC7B5062AE45A8E699960B9",
+          "StoredBytes": 90585,
+          "StoredSha256": "704E2F9B140E0D8987F0F9EB4993215703DD6E5D1DC7B5062AE45A8E699960B9"
+        }
+      ]
+    },
+    {
+      "Index": 2,
+      "CaseId": "core/center",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 137,
+          "Encoding": "identity",
+          "File": "records/record-000005.bin",
+          "Sha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1",
+          "StoredBytes": 137,
+          "StoredSha256": "A2E453068D82B21661F5F2E00A82B69179EDDE2D8A2917C7EFD8D7D77A1C1AB1"
+        },
+        {
+          "Bytes": 16232,
+          "Encoding": "identity",
+          "File": "records/record-000006.bin",
+          "Sha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA",
+          "StoredBytes": 16232,
+          "StoredSha256": "E7FDC10E3B9FC0946601B596F621E02847D906212177A1813A2DFCA4B89865DA"
+        },
+        {
+          "Bytes": 134131,
+          "Encoding": "identity",
+          "File": "records/record-000007.bin",
+          "Sha256": "27E2DEE9A5214597BFAC7902D6C8482708D886F311DB7AAE28ABEBCB4314F9B9",
+          "StoredBytes": 134131,
+          "StoredSha256": "27E2DEE9A5214597BFAC7902D6C8482708D886F311DB7AAE28ABEBCB4314F9B9"
+        }
+      ]
+    },
+    {
+      "Index": 3,
+      "CaseId": "core/displaced",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000008.bin",
+          "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+          "StoredBytes": 141,
+          "StoredSha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA"
+        },
+        {
+          "Bytes": 15814,
+          "Encoding": "identity",
+          "File": "records/record-000009.bin",
+          "Sha256": "140F2FF9EA7DDBAF612878705B0DB36B7EB86C43FCB9BDE6409224585FACF28B",
+          "StoredBytes": 15814,
+          "StoredSha256": "140F2FF9EA7DDBAF612878705B0DB36B7EB86C43FCB9BDE6409224585FACF28B"
+        },
+        {
+          "Bytes": 16050,
+          "Encoding": "identity",
+          "File": "records/record-000010.bin",
+          "Sha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29",
+          "StoredBytes": 16050,
+          "StoredSha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29"
+        }
+      ]
+    },
+    {
+      "Index": 4,
+      "CaseId": "core/displaced",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000011.bin",
+          "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+          "StoredBytes": 141,
+          "StoredSha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA"
+        },
+        {
+          "Bytes": 74219,
+          "Encoding": "identity",
+          "File": "records/record-000012.bin",
+          "Sha256": "B919ACCFD6381141579DC3DD1551AB742571D15F3B1AA787B339EE008B48A532",
+          "StoredBytes": 74219,
+          "StoredSha256": "B919ACCFD6381141579DC3DD1551AB742571D15F3B1AA787B339EE008B48A532"
+        }
+      ]
+    },
+    {
+      "Index": 5,
+      "CaseId": "core/displaced",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000013.bin",
+          "Sha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA",
+          "StoredBytes": 141,
+          "StoredSha256": "253F1859C0A932514D31C90EAA9E4BC5728D464F60ECA805C2027E6E35F47FDA"
+        },
+        {
+          "Bytes": 16050,
+          "Encoding": "identity",
+          "File": "records/record-000014.bin",
+          "Sha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29",
+          "StoredBytes": 16050,
+          "StoredSha256": "F15BC14D53C78C19487F1A1F8E09FA3333991A83933B52128324A3AAE32F9A29"
+        },
+        {
+          "Bytes": 117426,
+          "Encoding": "identity",
+          "File": "records/record-000015.bin",
+          "Sha256": "C04B8894D1ADED32725F4E34CFF3E71805F3F3C26EDCC85FD426F172DC2F7061",
+          "StoredBytes": 117426,
+          "StoredSha256": "C04B8894D1ADED32725F4E34CFF3E71805F3F3C26EDCC85FD426F172DC2F7061"
+        }
+      ]
+    },
+    {
+      "Index": 6,
+      "CaseId": "core/small-ratio",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 156,
+          "Encoding": "identity",
+          "File": "records/record-000016.bin",
+          "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+          "StoredBytes": 156,
+          "StoredSha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168"
+        },
+        {
+          "Bytes": 15816,
+          "Encoding": "identity",
+          "File": "records/record-000017.bin",
+          "Sha256": "A8C2F84778279E33CCF1BF995F2470819299A4E74D99A74DA2E8D8A9C20CE4AB",
+          "StoredBytes": 15816,
+          "StoredSha256": "A8C2F84778279E33CCF1BF995F2470819299A4E74D99A74DA2E8D8A9C20CE4AB"
+        },
+        {
+          "Bytes": 16607,
+          "Encoding": "identity",
+          "File": "records/record-000018.bin",
+          "Sha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7",
+          "StoredBytes": 16607,
+          "StoredSha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7"
+        }
+      ]
+    },
+    {
+      "Index": 7,
+      "CaseId": "core/small-ratio",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 156,
+          "Encoding": "identity",
+          "File": "records/record-000019.bin",
+          "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+          "StoredBytes": 156,
+          "StoredSha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168"
+        },
+        {
+          "Bytes": 311322,
+          "Encoding": "identity",
+          "File": "records/record-000020.bin",
+          "Sha256": "3930EA70AC1DD6FD2D2A3F96D736163B000DAAE0C04966D50D2DE71AA3C91A33",
+          "StoredBytes": 311322,
+          "StoredSha256": "3930EA70AC1DD6FD2D2A3F96D736163B000DAAE0C04966D50D2DE71AA3C91A33"
+        }
+      ]
+    },
+    {
+      "Index": 8,
+      "CaseId": "core/small-ratio",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 156,
+          "Encoding": "identity",
+          "File": "records/record-000021.bin",
+          "Sha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168",
+          "StoredBytes": 156,
+          "StoredSha256": "0B989CBC6F29DFCEF116EBB74C15155CEF47619A2577028BB8BE224649B79168"
+        },
+        {
+          "Bytes": 16607,
+          "Encoding": "identity",
+          "File": "records/record-000022.bin",
+          "Sha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7",
+          "StoredBytes": 16607,
+          "StoredSha256": "92FA15AE3A3ED78A4B756150416429621BB7E6A4286EEA714D1E6F45EB80E9D7"
+        },
+        {
+          "Bytes": 355680,
+          "Encoding": "identity",
+          "File": "records/record-000023.bin",
+          "Sha256": "98A2F909CD87BBA91B2AF7AA12070181BF7FC66102214CA65FB8E0E9893C83D8",
+          "StoredBytes": 355680,
+          "StoredSha256": "98A2F909CD87BBA91B2AF7AA12070181BF7FC66102214CA65FB8E0E9893C83D8"
+        }
+      ]
+    },
+    {
+      "Index": 9,
+      "CaseId": "core/large-ratio",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 155,
+          "Encoding": "identity",
+          "File": "records/record-000024.bin",
+          "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+          "StoredBytes": 155,
+          "StoredSha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B"
+        },
+        {
+          "Bytes": 15816,
+          "Encoding": "identity",
+          "File": "records/record-000025.bin",
+          "Sha256": "8BA67D72E7ECDB1549CCD83029C41409D444A502535F2EE0847212A918DE18C4",
+          "StoredBytes": 15816,
+          "StoredSha256": "8BA67D72E7ECDB1549CCD83029C41409D444A502535F2EE0847212A918DE18C4"
+        },
+        {
+          "Bytes": 16422,
+          "Encoding": "identity",
+          "File": "records/record-000026.bin",
+          "Sha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14",
+          "StoredBytes": 16422,
+          "StoredSha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14"
+        }
+      ]
+    },
+    {
+      "Index": 10,
+      "CaseId": "core/large-ratio",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 155,
+          "Encoding": "identity",
+          "File": "records/record-000027.bin",
+          "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+          "StoredBytes": 155,
+          "StoredSha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B"
+        },
+        {
+          "Bytes": 294263,
+          "Encoding": "identity",
+          "File": "records/record-000028.bin",
+          "Sha256": "8F224FCC156C88BEE679D67C66AD9E985EF17E9A3534F59238BB3D647E047987",
+          "StoredBytes": 294263,
+          "StoredSha256": "8F224FCC156C88BEE679D67C66AD9E985EF17E9A3534F59238BB3D647E047987"
+        }
+      ]
+    },
+    {
+      "Index": 11,
+      "CaseId": "core/large-ratio",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 155,
+          "Encoding": "identity",
+          "File": "records/record-000029.bin",
+          "Sha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B",
+          "StoredBytes": 155,
+          "StoredSha256": "4D5304F96A62023FA9B90CF743D96A18FCA258368EED7656238348553CDFD07B"
+        },
+        {
+          "Bytes": 16422,
+          "Encoding": "identity",
+          "File": "records/record-000030.bin",
+          "Sha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14",
+          "StoredBytes": 16422,
+          "StoredSha256": "E6154A90E0ADE9EDA22248CD60BEF46246E08E156137A5387F82FE38C74F1F14"
+        },
+        {
+          "Bytes": 338217,
+          "Encoding": "identity",
+          "File": "records/record-000031.bin",
+          "Sha256": "00CC5E6D0D29AB4747DB909E878B18E2764B195FEFC310F1DA7082CF507661CE",
+          "StoredBytes": 338217,
+          "StoredSha256": "00CC5E6D0D29AB4747DB909E878B18E2764B195FEFC310F1DA7082CF507661CE"
+        }
+      ]
+    },
+    {
+      "Index": 12,
+      "CaseId": "core/small-scale",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 158,
+          "Encoding": "identity",
+          "File": "records/record-000032.bin",
+          "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+          "StoredBytes": 158,
+          "StoredSha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4"
+        },
+        {
+          "Bytes": 15816,
+          "Encoding": "identity",
+          "File": "records/record-000033.bin",
+          "Sha256": "D1F6AE49958EE49593FB5B8B1E17B44AE4C5E1D19EE952EEE77EE543FFF73742",
+          "StoredBytes": 15816,
+          "StoredSha256": "D1F6AE49958EE49593FB5B8B1E17B44AE4C5E1D19EE952EEE77EE543FFF73742"
+        },
+        {
+          "Bytes": 16606,
+          "Encoding": "identity",
+          "File": "records/record-000034.bin",
+          "Sha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C",
+          "StoredBytes": 16606,
+          "StoredSha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C"
+        }
+      ]
+    },
+    {
+      "Index": 13,
+      "CaseId": "core/small-scale",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 158,
+          "Encoding": "identity",
+          "File": "records/record-000035.bin",
+          "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+          "StoredBytes": 158,
+          "StoredSha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4"
+        },
+        {
+          "Bytes": 361544,
+          "Encoding": "identity",
+          "File": "records/record-000036.bin",
+          "Sha256": "EF941B989818A2485D91E5604F5C126597A1E78815F7BFE147F2AF7F2875717F",
+          "StoredBytes": 361544,
+          "StoredSha256": "EF941B989818A2485D91E5604F5C126597A1E78815F7BFE147F2AF7F2875717F"
+        }
+      ]
+    },
+    {
+      "Index": 14,
+      "CaseId": "core/small-scale",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 158,
+          "Encoding": "identity",
+          "File": "records/record-000037.bin",
+          "Sha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4",
+          "StoredBytes": 158,
+          "StoredSha256": "9B87EA9C6370CDD1C0D516C7503F3E51D4C58A7C6BBCC1BE2237FC84FF7F4FA4"
+        },
+        {
+          "Bytes": 16606,
+          "Encoding": "identity",
+          "File": "records/record-000038.bin",
+          "Sha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C",
+          "StoredBytes": 16606,
+          "StoredSha256": "93984EDD15A96CCEF02AF069110B03FA59E4D36325B64BFC09F1196035C4800C"
+        },
+        {
+          "Bytes": 405009,
+          "Encoding": "identity",
+          "File": "records/record-000039.bin",
+          "Sha256": "2192D9F036BE001526D1C9718458508BF550667ABAD2F362438A58DB4010E0E6",
+          "StoredBytes": 405009,
+          "StoredSha256": "2192D9F036BE001526D1C9718458508BF550667ABAD2F362438A58DB4010E0E6"
+        }
+      ]
+    },
+    {
+      "Index": 15,
+      "CaseId": "core/large-scale",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 145,
+          "Encoding": "identity",
+          "File": "records/record-000040.bin",
+          "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+          "StoredBytes": 145,
+          "StoredSha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8"
+        },
+        {
+          "Bytes": 15816,
+          "Encoding": "identity",
+          "File": "records/record-000041.bin",
+          "Sha256": "3A0231514562B7734D93AE2DD508267BAF7B6AAF8B130951827C3A1445BC2BD6",
+          "StoredBytes": 15816,
+          "StoredSha256": "3A0231514562B7734D93AE2DD508267BAF7B6AAF8B130951827C3A1445BC2BD6"
+        },
+        {
+          "Bytes": 15497,
+          "Encoding": "identity",
+          "File": "records/record-000042.bin",
+          "Sha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0",
+          "StoredBytes": 15497,
+          "StoredSha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0"
+        }
+      ]
+    },
+    {
+      "Index": 16,
+      "CaseId": "core/large-scale",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 145,
+          "Encoding": "identity",
+          "File": "records/record-000043.bin",
+          "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+          "StoredBytes": 145,
+          "StoredSha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8"
+        },
+        {
+          "Bytes": 51042,
+          "Encoding": "identity",
+          "File": "records/record-000044.bin",
+          "Sha256": "BFD1CD9322A1BA52E8B57EC231A5899A3BFC4BC04B95BDD8186C271ADF241D77",
+          "StoredBytes": 51042,
+          "StoredSha256": "BFD1CD9322A1BA52E8B57EC231A5899A3BFC4BC04B95BDD8186C271ADF241D77"
+        }
+      ]
+    },
+    {
+      "Index": 17,
+      "CaseId": "core/large-scale",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 145,
+          "Encoding": "identity",
+          "File": "records/record-000045.bin",
+          "Sha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8",
+          "StoredBytes": 145,
+          "StoredSha256": "78B8F89E9C6133C613CB5A8016B43B6C36A025744DCF650725FB5EF6A15F95D8"
+        },
+        {
+          "Bytes": 15497,
+          "Encoding": "identity",
+          "File": "records/record-000046.bin",
+          "Sha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0",
+          "StoredBytes": 15497,
+          "StoredSha256": "C7D7360603A19CB2CE2C809DBB4F97F5D9BCE9EA302613415E13DDF665240AE0"
+        },
+        {
+          "Bytes": 93015,
+          "Encoding": "identity",
+          "File": "records/record-000047.bin",
+          "Sha256": "4CFA6D28FD97B85F583EB408E5D7A7CCAEA09CAFF8C75810D5444B780D30C095",
+          "StoredBytes": 93015,
+          "StoredSha256": "4CFA6D28FD97B85F583EB408E5D7A7CCAEA09CAFF8C75810D5444B780D30C095"
+        }
+      ]
+    },
+    {
+      "Index": 18,
+      "CaseId": "core/rounded-center",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 223,
+          "Encoding": "identity",
+          "File": "records/record-000048.bin",
+          "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+          "StoredBytes": 223,
+          "StoredSha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E"
+        },
+        {
+          "Bytes": 15819,
+          "Encoding": "identity",
+          "File": "records/record-000049.bin",
+          "Sha256": "35F918C485D7CD81BD31675E4D114E5C7D25F6FC6474D5375B96EB469AB0CF39",
+          "StoredBytes": 15819,
+          "StoredSha256": "35F918C485D7CD81BD31675E4D114E5C7D25F6FC6474D5375B96EB469AB0CF39"
+        },
+        {
+          "Bytes": 16240,
+          "Encoding": "identity",
+          "File": "records/record-000050.bin",
+          "Sha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB",
+          "StoredBytes": 16240,
+          "StoredSha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB"
+        }
+      ]
+    },
+    {
+      "Index": 19,
+      "CaseId": "core/rounded-center",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 223,
+          "Encoding": "identity",
+          "File": "records/record-000051.bin",
+          "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+          "StoredBytes": 223,
+          "StoredSha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E"
+        },
+        {
+          "Bytes": 92768,
+          "Encoding": "identity",
+          "File": "records/record-000052.bin",
+          "Sha256": "084682E54D175B2775A6540D70FFD9BF9F7B3D34FA7346BD23B75A9FACA78A6F",
+          "StoredBytes": 92768,
+          "StoredSha256": "084682E54D175B2775A6540D70FFD9BF9F7B3D34FA7346BD23B75A9FACA78A6F"
+        }
+      ]
+    },
+    {
+      "Index": 20,
+      "CaseId": "core/rounded-center",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 223,
+          "Encoding": "identity",
+          "File": "records/record-000053.bin",
+          "Sha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E",
+          "StoredBytes": 223,
+          "StoredSha256": "B8423179FA7068FF2201249FD3F8E81DE33E751FB171D44AFC3539DF3190B06E"
+        },
+        {
+          "Bytes": 16240,
+          "Encoding": "identity",
+          "File": "records/record-000054.bin",
+          "Sha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB",
+          "StoredBytes": 16240,
+          "StoredSha256": "3F62F855C8AE564B8D618AEBB441743B3AFA0DA29ED37CA1D296F986027174DB"
+        },
+        {
+          "Bytes": 136560,
+          "Encoding": "identity",
+          "File": "records/record-000055.bin",
+          "Sha256": "771C41924174518CFBE09BA5752A71935437A7AF7503802DEEBC1C024C3B2EE0",
+          "StoredBytes": 136560,
+          "StoredSha256": "771C41924174518CFBE09BA5752A71935437A7AF7503802DEEBC1C024C3B2EE0"
+        }
+      ]
+    },
+    {
+      "Index": 21,
+      "CaseId": "core/unconstructed",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000056.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 15818,
+          "Encoding": "identity",
+          "File": "records/record-000057.bin",
+          "Sha256": "C16CD9B85B7A1A958DEE01DC514319DD2A0A1D793E8BD9A245479D98FA675E6C",
+          "StoredBytes": 15818,
+          "StoredSha256": "C16CD9B85B7A1A958DEE01DC514319DD2A0A1D793E8BD9A245479D98FA675E6C"
+        },
+        {
+          "Bytes": 16424,
+          "Encoding": "identity",
+          "File": "records/record-000058.bin",
+          "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+          "StoredBytes": 16424,
+          "StoredSha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B"
+        }
+      ]
+    },
+    {
+      "Index": 22,
+      "CaseId": "core/unconstructed",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000059.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 117238,
+          "Encoding": "identity",
+          "File": "records/record-000060.bin",
+          "Sha256": "B5942BF9D34380C55E56DFF56770B86E74EE8CCD45E8D12A995AFDA30DEDDB22",
+          "StoredBytes": 117238,
+          "StoredSha256": "B5942BF9D34380C55E56DFF56770B86E74EE8CCD45E8D12A995AFDA30DEDDB22"
+        }
+      ]
+    },
+    {
+      "Index": 23,
+      "CaseId": "core/unconstructed",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000061.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16424,
+          "Encoding": "identity",
+          "File": "records/record-000062.bin",
+          "Sha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B",
+          "StoredBytes": 16424,
+          "StoredSha256": "3D7FC8516C4428301E26A2AB82FEFB2DDEAE0853AC422BAC36AA19AB1617DC6B"
+        },
+        {
+          "Bytes": 161192,
+          "Encoding": "identity",
+          "File": "records/record-000063.bin",
+          "Sha256": "B91C6E62FAAF97A5F9926F2D4ACDE0965F6A21F0832A22AD88007EB9BC8828C9",
+          "StoredBytes": 161192,
+          "StoredSha256": "B91C6E62FAAF97A5F9926F2D4ACDE0965F6A21F0832A22AD88007EB9BC8828C9"
+        }
+      ]
+    },
+    {
+      "Index": 24,
+      "CaseId": "core/positive-forcing",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 146,
+          "Encoding": "identity",
+          "File": "records/record-000064.bin",
+          "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+          "StoredBytes": 146,
+          "StoredSha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402"
+        },
+        {
+          "Bytes": 15821,
+          "Encoding": "identity",
+          "File": "records/record-000065.bin",
+          "Sha256": "809D7D5572D2AA39D98012CC2C65CE53D0F7507BB955B57065C3C92104502218",
+          "StoredBytes": 15821,
+          "StoredSha256": "809D7D5572D2AA39D98012CC2C65CE53D0F7507BB955B57065C3C92104502218"
+        },
+        {
+          "Bytes": 16427,
+          "Encoding": "identity",
+          "File": "records/record-000066.bin",
+          "Sha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1",
+          "StoredBytes": 16427,
+          "StoredSha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1"
+        }
+      ]
+    },
+    {
+      "Index": 25,
+      "CaseId": "core/positive-forcing",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 146,
+          "Encoding": "identity",
+          "File": "records/record-000067.bin",
+          "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+          "StoredBytes": 146,
+          "StoredSha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402"
+        },
+        {
+          "Bytes": 363999,
+          "Encoding": "identity",
+          "File": "records/record-000068.bin",
+          "Sha256": "6CDA6004A77A64BB209274F3A62E6D8D24EEDDEAAE2E5E45A641599046F44366",
+          "StoredBytes": 363999,
+          "StoredSha256": "6CDA6004A77A64BB209274F3A62E6D8D24EEDDEAAE2E5E45A641599046F44366"
+        }
+      ]
+    },
+    {
+      "Index": 26,
+      "CaseId": "core/positive-forcing",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 146,
+          "Encoding": "identity",
+          "File": "records/record-000069.bin",
+          "Sha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402",
+          "StoredBytes": 146,
+          "StoredSha256": "396DEEFC464EE3E63E41CBFAF0F2DCA8D9E92C3356B07D4F065925DFF99F7402"
+        },
+        {
+          "Bytes": 16427,
+          "Encoding": "identity",
+          "File": "records/record-000070.bin",
+          "Sha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1",
+          "StoredBytes": 16427,
+          "StoredSha256": "B48DF38BC753F45B554D17E6CF1D5AF18E1C7E686ED0DDDF93364DD93DEE21B1"
+        },
+        {
+          "Bytes": 407947,
+          "Encoding": "identity",
+          "File": "records/record-000071.bin",
+          "Sha256": "BE6C47FFD7A451E243DEA30FFE61450BC1AB23DAAD8247E8EC4A1F56B0EF65FE",
+          "StoredBytes": 407947,
+          "StoredSha256": "BE6C47FFD7A451E243DEA30FFE61450BC1AB23DAAD8247E8EC4A1F56B0EF65FE"
+        }
+      ]
+    },
+    {
+      "Index": 27,
+      "CaseId": "core/negative-forcing",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 146,
+          "Encoding": "identity",
+          "File": "records/record-000072.bin",
+          "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+          "StoredBytes": 146,
+          "StoredSha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10"
+        },
+        {
+          "Bytes": 15821,
+          "Encoding": "identity",
+          "File": "records/record-000073.bin",
+          "Sha256": "6373845B6A2BE19B1169C98BA210AED8B4CE41BCB0C0EE25409F78B6C51BFB1E",
+          "StoredBytes": 15821,
+          "StoredSha256": "6373845B6A2BE19B1169C98BA210AED8B4CE41BCB0C0EE25409F78B6C51BFB1E"
+        },
+        {
+          "Bytes": 16612,
+          "Encoding": "identity",
+          "File": "records/record-000074.bin",
+          "Sha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D",
+          "StoredBytes": 16612,
+          "StoredSha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D"
+        }
+      ]
+    },
+    {
+      "Index": 28,
+      "CaseId": "core/negative-forcing",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 146,
+          "Encoding": "identity",
+          "File": "records/record-000075.bin",
+          "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+          "StoredBytes": 146,
+          "StoredSha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10"
+        },
+        {
+          "Bytes": 311572,
+          "Encoding": "identity",
+          "File": "records/record-000076.bin",
+          "Sha256": "AA829701F9C4EB8655DD548CEEA8E6DD52BC2DDCE3AA8ED1B06005F47ED1E9D6",
+          "StoredBytes": 311572,
+          "StoredSha256": "AA829701F9C4EB8655DD548CEEA8E6DD52BC2DDCE3AA8ED1B06005F47ED1E9D6"
+        }
+      ]
+    },
+    {
+      "Index": 29,
+      "CaseId": "core/negative-forcing",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 146,
+          "Encoding": "identity",
+          "File": "records/record-000077.bin",
+          "Sha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10",
+          "StoredBytes": 146,
+          "StoredSha256": "7465A96AC36735B0C46D4B7A48977E66E0D72E22158439C91827B0A3D5FF3E10"
+        },
+        {
+          "Bytes": 16612,
+          "Encoding": "identity",
+          "File": "records/record-000078.bin",
+          "Sha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D",
+          "StoredBytes": 16612,
+          "StoredSha256": "699F0B2127AE57B0DB0799D39201D513AF841F9DE13BA1084240D028ED748A9D"
+        },
+        {
+          "Bytes": 356011,
+          "Encoding": "identity",
+          "File": "records/record-000079.bin",
+          "Sha256": "0EB63631CD558F3BCB0D080024175E0FB214BA25B6E9A4BAE4A206BA1D03BB5B",
+          "StoredBytes": 356011,
+          "StoredSha256": "0EB63631CD558F3BCB0D080024175E0FB214BA25B6E9A4BAE4A206BA1D03BB5B"
+        }
+      ]
+    },
+    {
+      "Index": 30,
+      "CaseId": "core/signed-zero",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 140,
+          "Encoding": "identity",
+          "File": "records/record-000080.bin",
+          "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+          "StoredBytes": 140,
+          "StoredSha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674"
+        },
+        {
+          "Bytes": 15816,
+          "Encoding": "identity",
+          "File": "records/record-000081.bin",
+          "Sha256": "461CA84795A88A735069A79074EC97669AF3366FEBAB10C72CCD9FC4E7ECEE69",
+          "StoredBytes": 15816,
+          "StoredSha256": "461CA84795A88A735069A79074EC97669AF3366FEBAB10C72CCD9FC4E7ECEE69"
+        },
+        {
+          "Bytes": 16422,
+          "Encoding": "identity",
+          "File": "records/record-000082.bin",
+          "Sha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763",
+          "StoredBytes": 16422,
+          "StoredSha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763"
+        }
+      ]
+    },
+    {
+      "Index": 31,
+      "CaseId": "core/signed-zero",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 140,
+          "Encoding": "identity",
+          "File": "records/record-000083.bin",
+          "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+          "StoredBytes": 140,
+          "StoredSha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674"
+        },
+        {
+          "Bytes": 117237,
+          "Encoding": "identity",
+          "File": "records/record-000084.bin",
+          "Sha256": "B95E613B69751C8364511DC02D584A9D2F5747C320E611DD746324D16EAE70DB",
+          "StoredBytes": 117237,
+          "StoredSha256": "B95E613B69751C8364511DC02D584A9D2F5747C320E611DD746324D16EAE70DB"
+        }
+      ]
+    },
+    {
+      "Index": 32,
+      "CaseId": "core/signed-zero",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 140,
+          "Encoding": "identity",
+          "File": "records/record-000085.bin",
+          "Sha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674",
+          "StoredBytes": 140,
+          "StoredSha256": "D7AC03BF852D65D68B2EAB43D919F2B4D985370067A47731F057CF36B401E674"
+        },
+        {
+          "Bytes": 16422,
+          "Encoding": "identity",
+          "File": "records/record-000086.bin",
+          "Sha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763",
+          "StoredBytes": 16422,
+          "StoredSha256": "A41912FFC0683E306A0B0194463CA210DB3A5CC28F30BEA39BC0DD3198C47763"
+        },
+        {
+          "Bytes": 161186,
+          "Encoding": "identity",
+          "File": "records/record-000087.bin",
+          "Sha256": "26BBDD812B0DE87E94CD6602F73F331FC8AB94E4EC75C3BAFEAF3A95A367D70E",
+          "StoredBytes": 161186,
+          "StoredSha256": "26BBDD812B0DE87E94CD6602F73F331FC8AB94E4EC75C3BAFEAF3A95A367D70E"
+        }
+      ]
+    },
+    {
+      "Index": 33,
+      "CaseId": "core/wide-variance",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 175,
+          "Encoding": "identity",
+          "File": "records/record-000088.bin",
+          "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+          "StoredBytes": 175,
+          "StoredSha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1"
+        },
+        {
+          "Bytes": 15818,
+          "Encoding": "identity",
+          "File": "records/record-000089.bin",
+          "Sha256": "B391F169544BF6BE9EE1D222004CBB8F864FB39F25490964AE592C997B1603DA",
+          "StoredBytes": 15818,
+          "StoredSha256": "B391F169544BF6BE9EE1D222004CBB8F864FB39F25490964AE592C997B1603DA"
+        },
+        {
+          "Bytes": 18089,
+          "Encoding": "identity",
+          "File": "records/record-000090.bin",
+          "Sha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E",
+          "StoredBytes": 18089,
+          "StoredSha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E"
+        }
+      ]
+    },
+    {
+      "Index": 34,
+      "CaseId": "core/wide-variance",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 175,
+          "Encoding": "identity",
+          "File": "records/record-000091.bin",
+          "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+          "StoredBytes": 175,
+          "StoredSha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1"
+        },
+        {
+          "Bytes": 399149,
+          "Encoding": "identity",
+          "File": "records/record-000092.bin",
+          "Sha256": "15D2F90C6BBB05B8E3FE39FC6D1D2E518AF145862AA69233866D5F0E4AD2765F",
+          "StoredBytes": 399149,
+          "StoredSha256": "15D2F90C6BBB05B8E3FE39FC6D1D2E518AF145862AA69233866D5F0E4AD2765F"
+        }
+      ]
+    },
+    {
+      "Index": 35,
+      "CaseId": "core/wide-variance",
+      "Operation": "CertifyNative",
+      "Kind": "certified",
+      "FailureCode": null,
+      "Expected": true,
+      "CoreCertified": true,
+      "Artifacts": [
+        {
+          "Bytes": 175,
+          "Encoding": "identity",
+          "File": "records/record-000093.bin",
+          "Sha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1",
+          "StoredBytes": 175,
+          "StoredSha256": "FF7FF97BE1129335F5835181A3DD5D3BBE0EB9453B2B4DC9344B7143239A2CF1"
+        },
+        {
+          "Bytes": 18089,
+          "Encoding": "identity",
+          "File": "records/record-000094.bin",
+          "Sha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E",
+          "StoredBytes": 18089,
+          "StoredSha256": "A22DA2968D5D6C4FDCD748012693B0634F29AD529D1ED1B2A5389072E1C8DB0E"
+        },
+        {
+          "Bytes": 446245,
+          "Encoding": "identity",
+          "File": "records/record-000095.bin",
+          "Sha256": "B9EAF5BE4A8A7BCB3FBDF78AD18DD618890305DFFCD952681FF2FD05455CB7E2",
+          "StoredBytes": 446245,
+          "StoredSha256": "B9EAF5BE4A8A7BCB3FBDF78AD18DD618890305DFFCD952681FF2FD05455CB7E2"
+        }
+      ]
+    },
+    {
+      "Index": 36,
+      "CaseId": "stress/native-exp-range",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "NumericalUnderflow",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 150,
+          "Encoding": "identity",
+          "File": "records/record-000096.bin",
+          "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+          "StoredBytes": 150,
+          "StoredSha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4"
+        },
+        {
+          "Bytes": 15798,
+          "Encoding": "identity",
+          "File": "records/record-000097.bin",
+          "Sha256": "EB0CC284E375867755F853893B6EC85420684EBC109B21D63359BA600DBA3BCF",
+          "StoredBytes": 15798,
+          "StoredSha256": "EB0CC284E375867755F853893B6EC85420684EBC109B21D63359BA600DBA3BCF"
+        },
+        {
+          "Bytes": 7532,
+          "Encoding": "identity",
+          "File": "records/record-000098.bin",
+          "Sha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F",
+          "StoredBytes": 7532,
+          "StoredSha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F"
+        }
+      ]
+    },
+    {
+      "Index": 37,
+      "CaseId": "stress/native-exp-range",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 150,
+          "Encoding": "identity",
+          "File": "records/record-000099.bin",
+          "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+          "StoredBytes": 150,
+          "StoredSha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4"
+        },
+        {
+          "Bytes": 10702,
+          "Encoding": "identity",
+          "File": "records/record-000100.bin",
+          "Sha256": "170B57F9954A7CE7E03D5D453A0E0A1AE9AC15722C5EDED7E58A2064F3CB2168",
+          "StoredBytes": 10702,
+          "StoredSha256": "170B57F9954A7CE7E03D5D453A0E0A1AE9AC15722C5EDED7E58A2064F3CB2168"
+        }
+      ]
+    },
+    {
+      "Index": 38,
+      "CaseId": "stress/native-exp-range",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "NumericalUnderflow",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 150,
+          "Encoding": "identity",
+          "File": "records/record-000101.bin",
+          "Sha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4",
+          "StoredBytes": 150,
+          "StoredSha256": "F4F998185392CEC6D77D1B30673C7D9B1887FFFAC3C7CC4EF01DC97627550CD4"
+        },
+        {
+          "Bytes": 7532,
+          "Encoding": "identity",
+          "File": "records/record-000102.bin",
+          "Sha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F",
+          "StoredBytes": 7532,
+          "StoredSha256": "DC048EF299CFDDDE3172615AE34A775431109A1709D55330B82E731AE497539F"
+        },
+        {
+          "Bytes": 21989,
+          "Encoding": "identity",
+          "File": "records/record-000103.bin",
+          "Sha256": "A6F3FE207E19E6A637D3849AB3C96A05285B0680228F6554BF7CF299934F7DBE",
+          "StoredBytes": 21989,
+          "StoredSha256": "A6F3FE207E19E6A637D3849AB3C96A05285B0680228F6554BF7CF299934F7DBE"
+        }
+      ]
+    },
+    {
+      "Index": 39,
+      "CaseId": "stress/parameter-range",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "NumericalRange",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 150,
+          "Encoding": "identity",
+          "File": "records/record-000104.bin",
+          "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+          "StoredBytes": 150,
+          "StoredSha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D"
+        },
+        {
+          "Bytes": 15797,
+          "Encoding": "identity",
+          "File": "records/record-000105.bin",
+          "Sha256": "11EC0DD27AA20F70A53A2C70D36FBBC448C1E62CAC874D6530D56D072F25F884",
+          "StoredBytes": 15797,
+          "StoredSha256": "11EC0DD27AA20F70A53A2C70D36FBBC448C1E62CAC874D6530D56D072F25F884"
+        },
+        {
+          "Bytes": 8271,
+          "Encoding": "identity",
+          "File": "records/record-000106.bin",
+          "Sha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0",
+          "StoredBytes": 8271,
+          "StoredSha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0"
+        }
+      ]
+    },
+    {
+      "Index": 40,
+      "CaseId": "stress/parameter-range",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 150,
+          "Encoding": "identity",
+          "File": "records/record-000107.bin",
+          "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+          "StoredBytes": 150,
+          "StoredSha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D"
+        },
+        {
+          "Bytes": 377984,
+          "Encoding": "identity",
+          "File": "records/record-000108.bin",
+          "Sha256": "6821CD1A600EA99AE0145A79362ED7F3A01DE9BCC498AA7B23ADE6545AFFB04B",
+          "StoredBytes": 377984,
+          "StoredSha256": "6821CD1A600EA99AE0145A79362ED7F3A01DE9BCC498AA7B23ADE6545AFFB04B"
+        }
+      ]
+    },
+    {
+      "Index": 41,
+      "CaseId": "stress/parameter-range",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "NumericalRange",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 150,
+          "Encoding": "identity",
+          "File": "records/record-000109.bin",
+          "Sha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D",
+          "StoredBytes": 150,
+          "StoredSha256": "2CFD8C863CBD9F28F7561C2FD0931827F3680AB430ED6A6557EC2B0378FA065D"
+        },
+        {
+          "Bytes": 8271,
+          "Encoding": "identity",
+          "File": "records/record-000110.bin",
+          "Sha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0",
+          "StoredBytes": 8271,
+          "StoredSha256": "B7FAE0F1E0AF6DBF79FE89C6FF6BF51169785436B7254F9E10C5307BB82EFCB0"
+        },
+        {
+          "Bytes": 24534,
+          "Encoding": "identity",
+          "File": "records/record-000111.bin",
+          "Sha256": "5CA68E32CD9F2BA0FFFB7C35DEDC0EFE4215060C831CF6E377DB8E3AECC8C3B6",
+          "StoredBytes": 24534,
+          "StoredSha256": "5CA68E32CD9F2BA0FFFB7C35DEDC0EFE4215060C831CF6E377DB8E3AECC8C3B6"
+        }
+      ]
+    },
+    {
+      "Index": 42,
+      "CaseId": "stress/reference-exp-range",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "NumericalUnderflow",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 154,
+          "Encoding": "identity",
+          "File": "records/record-000112.bin",
+          "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+          "StoredBytes": 154,
+          "StoredSha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037"
+        },
+        {
+          "Bytes": 15801,
+          "Encoding": "identity",
+          "File": "records/record-000113.bin",
+          "Sha256": "E22E5180F4D3F447EE2BB349ED06D593549AF2AA4554E16B105ABAA07567AD93",
+          "StoredBytes": 15801,
+          "StoredSha256": "E22E5180F4D3F447EE2BB349ED06D593549AF2AA4554E16B105ABAA07567AD93"
+        },
+        {
+          "Bytes": 8133,
+          "Encoding": "identity",
+          "File": "records/record-000114.bin",
+          "Sha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5",
+          "StoredBytes": 8133,
+          "StoredSha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5"
+        }
+      ]
+    },
+    {
+      "Index": 43,
+      "CaseId": "stress/reference-exp-range",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "NumericalUnderflow",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 154,
+          "Encoding": "identity",
+          "File": "records/record-000115.bin",
+          "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+          "StoredBytes": 154,
+          "StoredSha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037"
+        },
+        {
+          "Bytes": 9348,
+          "Encoding": "identity",
+          "File": "records/record-000116.bin",
+          "Sha256": "9AAE108353105050850276FD333106C7B1248E4DE7727EEFAEE8238216629A7F",
+          "StoredBytes": 9348,
+          "StoredSha256": "9AAE108353105050850276FD333106C7B1248E4DE7727EEFAEE8238216629A7F"
+        }
+      ]
+    },
+    {
+      "Index": 44,
+      "CaseId": "stress/reference-exp-range",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "NumericalUnderflow",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 154,
+          "Encoding": "identity",
+          "File": "records/record-000117.bin",
+          "Sha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037",
+          "StoredBytes": 154,
+          "StoredSha256": "2C694ACC7FFD062F3AF9AEA2A3300C8D92C9B12CCFA5D94D116BE27DC9270037"
+        },
+        {
+          "Bytes": 8133,
+          "Encoding": "identity",
+          "File": "records/record-000118.bin",
+          "Sha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5",
+          "StoredBytes": 8133,
+          "StoredSha256": "12D069500E49C69438887EC3401646C140F68C1C31C5AA5EEF78934BEDE200E5"
+        },
+        {
+          "Bytes": 23792,
+          "Encoding": "identity",
+          "File": "records/record-000119.bin",
+          "Sha256": "CB82F90897C00581297BCA6EE1B6946DC6AB200969E3B22C6CC87CD48C393A93",
+          "StoredBytes": 23792,
+          "StoredSha256": "CB82F90897C00581297BCA6EE1B6946DC6AB200969E3B22C6CC87CD48C393A93"
+        }
+      ]
+    },
+    {
+      "Index": 45,
+      "CaseId": "stress/cancellation",
+      "Operation": "NativeSolve",
+      "Kind": "candidate",
+      "FailureCode": null,
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 147,
+          "Encoding": "identity",
+          "File": "records/record-000120.bin",
+          "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+          "StoredBytes": 147,
+          "StoredSha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973"
+        },
+        {
+          "Bytes": 15819,
+          "Encoding": "identity",
+          "File": "records/record-000121.bin",
+          "Sha256": "ADB5E809638F3FEFF9A396BCB9EE52A19784E0BE668A8F967DD67B4763C18095",
+          "StoredBytes": 15819,
+          "StoredSha256": "ADB5E809638F3FEFF9A396BCB9EE52A19784E0BE668A8F967DD67B4763C18095"
+        },
+        {
+          "Bytes": 16610,
+          "Encoding": "identity",
+          "File": "records/record-000122.bin",
+          "Sha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00",
+          "StoredBytes": 16610,
+          "StoredSha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00"
+        }
+      ]
+    },
+    {
+      "Index": 46,
+      "CaseId": "stress/cancellation",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "IterationLimit",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 147,
+          "Encoding": "identity",
+          "File": "records/record-000123.bin",
+          "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+          "StoredBytes": 147,
+          "StoredSha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973"
+        },
+        {
+          "Bytes": 573192,
+          "Encoding": "identity",
+          "File": "records/record-000124.bin",
+          "Sha256": "3EEE788D0B23D4C38F5FD30A42D57B8CF911898432776810AF3EB940D127499B",
+          "StoredBytes": 573192,
+          "StoredSha256": "3EEE788D0B23D4C38F5FD30A42D57B8CF911898432776810AF3EB940D127499B"
+        }
+      ]
+    },
+    {
+      "Index": 47,
+      "CaseId": "stress/cancellation",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "NoRootEnclosure",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 147,
+          "Encoding": "identity",
+          "File": "records/record-000125.bin",
+          "Sha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973",
+          "StoredBytes": 147,
+          "StoredSha256": "F7AB1FA117809C187C9F33D184BA6573D09DC0423C4AD9677F1C6480C7A3C973"
+        },
+        {
+          "Bytes": 16610,
+          "Encoding": "identity",
+          "File": "records/record-000126.bin",
+          "Sha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00",
+          "StoredBytes": 16610,
+          "StoredSha256": "5B5010E47FC3BE9DBFF7D2C4F77ACCA536006CE0C0FBBA559CA8BC2C13FBBB00"
+        },
+        {
+          "Bytes": 614394,
+          "Encoding": "identity",
+          "File": "records/record-000127.bin",
+          "Sha256": "47664A8FACFF241075C7AB641335935A94178841C50B969D8EF984D2259FFEEB",
+          "StoredBytes": 614394,
+          "StoredSha256": "47664A8FACFF241075C7AB641335935A94178841C50B969D8EF984D2259FFEEB"
+        }
+      ]
+    },
+    {
+      "Index": 48,
+      "CaseId": "limit/native-midpoints",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "IterationLimit",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 148,
+          "Encoding": "identity",
+          "File": "records/record-000128.bin",
+          "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+          "StoredBytes": 148,
+          "StoredSha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B"
+        },
+        {
+          "Bytes": 15797,
+          "Encoding": "identity",
+          "File": "records/record-000129.bin",
+          "Sha256": "0B6266AA4D64DEA2003E67C594B9E8902630ED681B50422AEDAE95F6841F59E8",
+          "StoredBytes": 15797,
+          "StoredSha256": "0B6266AA4D64DEA2003E67C594B9E8902630ED681B50422AEDAE95F6841F59E8"
+        },
+        {
+          "Bytes": 7881,
+          "Encoding": "identity",
+          "File": "records/record-000130.bin",
+          "Sha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2",
+          "StoredBytes": 7881,
+          "StoredSha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2"
+        }
+      ]
+    },
+    {
+      "Index": 49,
+      "CaseId": "limit/native-midpoints",
+      "Operation": "ReferenceRoot",
+      "Kind": "enclosure",
+      "FailureCode": null,
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 148,
+          "Encoding": "identity",
+          "File": "records/record-000131.bin",
+          "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+          "StoredBytes": 148,
+          "StoredSha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B"
+        },
+        {
+          "Bytes": 117242,
+          "Encoding": "identity",
+          "File": "records/record-000132.bin",
+          "Sha256": "3D649FC739512158CBD696CC5E8FC7258D7420D4F7F17AEFC808EEF6DBA3D094",
+          "StoredBytes": 117242,
+          "StoredSha256": "3D649FC739512158CBD696CC5E8FC7258D7420D4F7F17AEFC808EEF6DBA3D094"
+        }
+      ]
+    },
+    {
+      "Index": 50,
+      "CaseId": "limit/native-midpoints",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "IterationLimit",
+      "Expected": null,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 148,
+          "Encoding": "identity",
+          "File": "records/record-000133.bin",
+          "Sha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B",
+          "StoredBytes": 148,
+          "StoredSha256": "3B09C4854B315254EAE8B74F0135CE3527E3C7924A4BFDF2A1F2ED32368CB67B"
+        },
+        {
+          "Bytes": 7881,
+          "Encoding": "identity",
+          "File": "records/record-000134.bin",
+          "Sha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2",
+          "StoredBytes": 7881,
+          "StoredSha256": "C5F98833810C172A06E9FF48FFEC054F0E10ACD284519218A2FCAA741F8976F2"
+        },
+        {
+          "Bytes": 22664,
+          "Encoding": "identity",
+          "File": "records/record-000135.bin",
+          "Sha256": "D9FE80E26CC6C79876EFDA84491E54DD2334669FEDF0CB3466EB79FB6493EE9D",
+          "StoredBytes": 22664,
+          "StoredSha256": "D9FE80E26CC6C79876EFDA84491E54DD2334669FEDF0CB3466EB79FB6493EE9D"
+        }
+      ]
+    },
+    {
+      "Index": 51,
+      "CaseId": "domain/t-zero",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 136,
+          "Encoding": "identity",
+          "File": "records/record-000136.bin",
+          "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+          "StoredBytes": 136,
+          "StoredSha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0"
+        },
+        {
+          "Bytes": 15788,
+          "Encoding": "identity",
+          "File": "records/record-000137.bin",
+          "Sha256": "6E3808741EFE8B5C4F20E31156A9A43DEA3A3CF6C8870B80114B892EFEC4E7B6",
+          "StoredBytes": 15788,
+          "StoredSha256": "6E3808741EFE8B5C4F20E31156A9A43DEA3A3CF6C8870B80114B892EFEC4E7B6"
+        },
+        {
+          "Bytes": 7079,
+          "Encoding": "identity",
+          "File": "records/record-000138.bin",
+          "Sha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06",
+          "StoredBytes": 7079,
+          "StoredSha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06"
+        }
+      ]
+    },
+    {
+      "Index": 52,
+      "CaseId": "domain/t-zero",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 136,
+          "Encoding": "identity",
+          "File": "records/record-000139.bin",
+          "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+          "StoredBytes": 136,
+          "StoredSha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0"
+        },
+        {
+          "Bytes": 7445,
+          "Encoding": "identity",
+          "File": "records/record-000140.bin",
+          "Sha256": "E0325491E9D0FCD1018B143E04272573859D6E653F3D0C422387A73FE9F4A522",
+          "StoredBytes": 7445,
+          "StoredSha256": "E0325491E9D0FCD1018B143E04272573859D6E653F3D0C422387A73FE9F4A522"
+        }
+      ]
+    },
+    {
+      "Index": 53,
+      "CaseId": "domain/t-zero",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 136,
+          "Encoding": "identity",
+          "File": "records/record-000141.bin",
+          "Sha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0",
+          "StoredBytes": 136,
+          "StoredSha256": "9263D4A5F465FC2462D16D9E051F764960256C058C9C37F0CA90C7300BE194D0"
+        },
+        {
+          "Bytes": 7079,
+          "Encoding": "identity",
+          "File": "records/record-000142.bin",
+          "Sha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06",
+          "StoredBytes": 7079,
+          "StoredSha256": "D5925258D1D548FC71D7E1802395AE3FB789960EEF55356DBB1F7D198233BF06"
+        },
+        {
+          "Bytes": 21047,
+          "Encoding": "identity",
+          "File": "records/record-000143.bin",
+          "Sha256": "28A8F9B54BC6527DE2A67F4A873F899884CD12C07E8B5AE54410B1FEBE4D3FF7",
+          "StoredBytes": 21047,
+          "StoredSha256": "28A8F9B54BC6527DE2A67F4A873F899884CD12C07E8B5AE54410B1FEBE4D3FF7"
+        }
+      ]
+    },
+    {
+      "Index": 54,
+      "CaseId": "domain/t-negative",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000144.bin",
+          "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+          "StoredBytes": 141,
+          "StoredSha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7"
+        },
+        {
+          "Bytes": 15792,
+          "Encoding": "identity",
+          "File": "records/record-000145.bin",
+          "Sha256": "65B10CBA8275AC1A09C6B46F2D18A249909C95A14FA297E5E3FA831228D1A057",
+          "StoredBytes": 15792,
+          "StoredSha256": "65B10CBA8275AC1A09C6B46F2D18A249909C95A14FA297E5E3FA831228D1A057"
+        },
+        {
+          "Bytes": 7085,
+          "Encoding": "identity",
+          "File": "records/record-000146.bin",
+          "Sha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA",
+          "StoredBytes": 7085,
+          "StoredSha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA"
+        }
+      ]
+    },
+    {
+      "Index": 55,
+      "CaseId": "domain/t-negative",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000147.bin",
+          "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+          "StoredBytes": 141,
+          "StoredSha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7"
+        },
+        {
+          "Bytes": 7451,
+          "Encoding": "identity",
+          "File": "records/record-000148.bin",
+          "Sha256": "334EBF3F6259E28FD0680F4129DABDC56EA2A46E3C8341CB2744A344E0493551",
+          "StoredBytes": 7451,
+          "StoredSha256": "334EBF3F6259E28FD0680F4129DABDC56EA2A46E3C8341CB2744A344E0493551"
+        }
+      ]
+    },
+    {
+      "Index": 56,
+      "CaseId": "domain/t-negative",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000149.bin",
+          "Sha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7",
+          "StoredBytes": 141,
+          "StoredSha256": "4B3E3A2B317FD2FC3F4D56D07895D868BDD526D5D72DD2FA4B0F8F7DDE7461D7"
+        },
+        {
+          "Bytes": 7085,
+          "Encoding": "identity",
+          "File": "records/record-000150.bin",
+          "Sha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA",
+          "StoredBytes": 7085,
+          "StoredSha256": "FFAF38420848624BD37AB0DF8E79D149136ECEA546302EBD142B710F474393FA"
+        },
+        {
+          "Bytes": 21065,
+          "Encoding": "identity",
+          "File": "records/record-000151.bin",
+          "Sha256": "54B43EEDD93DE91E6FF4DE5E06F0AA34740FF3243C829E46813B4F6B7B821B94",
+          "StoredBytes": 21065,
+          "StoredSha256": "54B43EEDD93DE91E6FF4DE5E06F0AA34740FF3243C829E46813B4F6B7B821B94"
+        }
+      ]
+    },
+    {
+      "Index": 57,
+      "CaseId": "domain/c-zero",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 136,
+          "Encoding": "identity",
+          "File": "records/record-000152.bin",
+          "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+          "StoredBytes": 136,
+          "StoredSha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011"
+        },
+        {
+          "Bytes": 15788,
+          "Encoding": "identity",
+          "File": "records/record-000153.bin",
+          "Sha256": "BF6181AF0121FCCE643475FC10CF7D197A3447626F75124B1381BCC8AD97A67D",
+          "StoredBytes": 15788,
+          "StoredSha256": "BF6181AF0121FCCE643475FC10CF7D197A3447626F75124B1381BCC8AD97A67D"
+        },
+        {
+          "Bytes": 7079,
+          "Encoding": "identity",
+          "File": "records/record-000154.bin",
+          "Sha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735",
+          "StoredBytes": 7079,
+          "StoredSha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735"
+        }
+      ]
+    },
+    {
+      "Index": 58,
+      "CaseId": "domain/c-zero",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 136,
+          "Encoding": "identity",
+          "File": "records/record-000155.bin",
+          "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+          "StoredBytes": 136,
+          "StoredSha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011"
+        },
+        {
+          "Bytes": 7445,
+          "Encoding": "identity",
+          "File": "records/record-000156.bin",
+          "Sha256": "6B0F759CB702D9B1974A145FE13A4083574E8BAE1D35BC43A5DE8120FC37AADF",
+          "StoredBytes": 7445,
+          "StoredSha256": "6B0F759CB702D9B1974A145FE13A4083574E8BAE1D35BC43A5DE8120FC37AADF"
+        }
+      ]
+    },
+    {
+      "Index": 59,
+      "CaseId": "domain/c-zero",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 136,
+          "Encoding": "identity",
+          "File": "records/record-000157.bin",
+          "Sha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011",
+          "StoredBytes": 136,
+          "StoredSha256": "84C5342869E6CEF88825B073BDB3EFB426E9E95872230E9C2F6BA120B6C26011"
+        },
+        {
+          "Bytes": 7079,
+          "Encoding": "identity",
+          "File": "records/record-000158.bin",
+          "Sha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735",
+          "StoredBytes": 7079,
+          "StoredSha256": "643620D754D2125D55C42F5CED242A8B28295AB031AD38569080E8D0AD8C6735"
+        },
+        {
+          "Bytes": 21047,
+          "Encoding": "identity",
+          "File": "records/record-000159.bin",
+          "Sha256": "ABCBE181ABF91AA2C0EFF42089B5AF2C861CA5F52909C53775FE41A45A928AC9",
+          "StoredBytes": 21047,
+          "StoredSha256": "ABCBE181ABF91AA2C0EFF42089B5AF2C861CA5F52909C53775FE41A45A928AC9"
+        }
+      ]
+    },
+    {
+      "Index": 60,
+      "CaseId": "domain/c-negative",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000160.bin",
+          "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+          "StoredBytes": 141,
+          "StoredSha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2"
+        },
+        {
+          "Bytes": 15792,
+          "Encoding": "identity",
+          "File": "records/record-000161.bin",
+          "Sha256": "C05662564653196D396A7CA936379A107ADF078E8643FA932199629447E05308",
+          "StoredBytes": 15792,
+          "StoredSha256": "C05662564653196D396A7CA936379A107ADF078E8643FA932199629447E05308"
+        },
+        {
+          "Bytes": 7085,
+          "Encoding": "identity",
+          "File": "records/record-000162.bin",
+          "Sha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8",
+          "StoredBytes": 7085,
+          "StoredSha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8"
+        }
+      ]
+    },
+    {
+      "Index": 61,
+      "CaseId": "domain/c-negative",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000163.bin",
+          "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+          "StoredBytes": 141,
+          "StoredSha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2"
+        },
+        {
+          "Bytes": 7451,
+          "Encoding": "identity",
+          "File": "records/record-000164.bin",
+          "Sha256": "55B9DD8E2B3D613D81BFE6BE61614D98F7B43AFF8D4F332FFF2876AE610D22AF",
+          "StoredBytes": 7451,
+          "StoredSha256": "55B9DD8E2B3D613D81BFE6BE61614D98F7B43AFF8D4F332FFF2876AE610D22AF"
+        }
+      ]
+    },
+    {
+      "Index": 62,
+      "CaseId": "domain/c-negative",
+      "Operation": "CertifyNative",
+      "Kind": "no-candidate",
+      "FailureCode": "Domain",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000165.bin",
+          "Sha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2",
+          "StoredBytes": 141,
+          "StoredSha256": "9AB300A4D350E7FD660892115927A53FC99ADDADAF324B1230074CD05A00A0D2"
+        },
+        {
+          "Bytes": 7085,
+          "Encoding": "identity",
+          "File": "records/record-000166.bin",
+          "Sha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8",
+          "StoredBytes": 7085,
+          "StoredSha256": "0BC8F5FAA0A40DD797E2C933238625999F00EE8BEBAB8C17CA20495E309A92D8"
+        },
+        {
+          "Bytes": 21065,
+          "Encoding": "identity",
+          "File": "records/record-000167.bin",
+          "Sha256": "40FEDA7BC1741252BB5611F01BC9FC378C58889102EF0D0328966E65BCFD06F8",
+          "StoredBytes": 21065,
+          "StoredSha256": "40FEDA7BC1741252BB5611F01BC9FC378C58889102EF0D0328966E65BCFD06F8"
+        }
+      ]
+    },
+    {
+      "Index": 63,
+      "CaseId": "limit/reference-midpoints",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "IterationLimit",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 154,
+          "Encoding": "identity",
+          "File": "records/record-000168.bin",
+          "Sha256": "F8A853996A61F334DD31D3EC62F1985B97945409C80CD93A32CD36E6DB7308A3",
+          "StoredBytes": 154,
+          "StoredSha256": "F8A853996A61F334DD31D3EC62F1985B97945409C80CD93A32CD36E6DB7308A3"
+        },
+        {
+          "Bytes": 11266,
+          "Encoding": "identity",
+          "File": "records/record-000169.bin",
+          "Sha256": "55DE268FABC654D37A39823A597436E4FB3AA1DA320E4CB667EB2C99CA8BDFF4",
+          "StoredBytes": 11266,
+          "StoredSha256": "55DE268FABC654D37A39823A597436E4FB3AA1DA320E4CB667EB2C99CA8BDFF4"
+        }
+      ]
+    },
+    {
+      "Index": 64,
+      "CaseId": "wire/t-boolean",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 142,
+          "Encoding": "identity",
+          "File": "records/record-000170.bin",
+          "Sha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8",
+          "StoredBytes": 142,
+          "StoredSha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8"
+        },
+        {
+          "Bytes": 15793,
+          "Encoding": "identity",
+          "File": "records/record-000171.bin",
+          "Sha256": "BD3977D327AD03D0879EC51D45B5C9CBF520322D0986B920CA7FC19007D85D20",
+          "StoredBytes": 15793,
+          "StoredSha256": "BD3977D327AD03D0879EC51D45B5C9CBF520322D0986B920CA7FC19007D85D20"
+        },
+        {
+          "Bytes": 6522,
+          "Encoding": "identity",
+          "File": "records/record-000172.bin",
+          "Sha256": "DB28FE1BF9E8025D92E35A7BFA0553B83CF9955B6F7C09A28466E1C61CCC2FB1",
+          "StoredBytes": 6522,
+          "StoredSha256": "DB28FE1BF9E8025D92E35A7BFA0553B83CF9955B6F7C09A28466E1C61CCC2FB1"
+        }
+      ]
+    },
+    {
+      "Index": 65,
+      "CaseId": "wire/t-boolean",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 142,
+          "Encoding": "identity",
+          "File": "records/record-000173.bin",
+          "Sha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8",
+          "StoredBytes": 142,
+          "StoredSha256": "00A1D4DC60F969200C3BF6F4658D872E5CE65B8FA451BFDB9928041AC5049EC8"
+        },
+        {
+          "Bytes": 7078,
+          "Encoding": "identity",
+          "File": "records/record-000174.bin",
+          "Sha256": "4842AE13E468C866A3195263D3A11B1A18041D4064EDAD2922C0131980974D8A",
+          "StoredBytes": 7078,
+          "StoredSha256": "4842AE13E468C866A3195263D3A11B1A18041D4064EDAD2922C0131980974D8A"
+        }
+      ]
+    },
+    {
+      "Index": 66,
+      "CaseId": "wire/u-NaN",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 143,
+          "Encoding": "identity",
+          "File": "records/record-000175.bin",
+          "Sha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E",
+          "StoredBytes": 143,
+          "StoredSha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E"
+        },
+        {
+          "Bytes": 15793,
+          "Encoding": "identity",
+          "File": "records/record-000176.bin",
+          "Sha256": "8964D70A4B046E2BDB5D39AE3E863A347ECD44BD017496A92D17433901D9E6A1",
+          "StoredBytes": 15793,
+          "StoredSha256": "8964D70A4B046E2BDB5D39AE3E863A347ECD44BD017496A92D17433901D9E6A1"
+        },
+        {
+          "Bytes": 6622,
+          "Encoding": "identity",
+          "File": "records/record-000177.bin",
+          "Sha256": "C3F341A0E6920E49170A2E2177778EA2AE1DC150968A9FF57C8942D391957F51",
+          "StoredBytes": 6622,
+          "StoredSha256": "C3F341A0E6920E49170A2E2177778EA2AE1DC150968A9FF57C8942D391957F51"
+        }
+      ]
+    },
+    {
+      "Index": 67,
+      "CaseId": "wire/u-NaN",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 143,
+          "Encoding": "identity",
+          "File": "records/record-000178.bin",
+          "Sha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E",
+          "StoredBytes": 143,
+          "StoredSha256": "ED7BC86864838C44BDEE54E9833D09D2C79CDEFEECF924CE5240519B97E07B5E"
+        },
+        {
+          "Bytes": 7078,
+          "Encoding": "identity",
+          "File": "records/record-000179.bin",
+          "Sha256": "107CC2C12840EE024A0A429AF5A84FCD1E13527658E08611E2A543470938E7B0",
+          "StoredBytes": 7078,
+          "StoredSha256": "107CC2C12840EE024A0A429AF5A84FCD1E13527658E08611E2A543470938E7B0"
+        }
+      ]
+    },
+    {
+      "Index": 68,
+      "CaseId": "wire/u-infinity",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 148,
+          "Encoding": "identity",
+          "File": "records/record-000180.bin",
+          "Sha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF",
+          "StoredBytes": 148,
+          "StoredSha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF"
+        },
+        {
+          "Bytes": 15793,
+          "Encoding": "identity",
+          "File": "records/record-000181.bin",
+          "Sha256": "161605DC693810B34465435107DCE3F347011271EFCE09C73FDB5C04D099016A",
+          "StoredBytes": 15793,
+          "StoredSha256": "161605DC693810B34465435107DCE3F347011271EFCE09C73FDB5C04D099016A"
+        },
+        {
+          "Bytes": 6622,
+          "Encoding": "identity",
+          "File": "records/record-000182.bin",
+          "Sha256": "CD3E3C18E53327166185C90139401EA1545EC90C67500AF8E67C8B1A609E4E3C",
+          "StoredBytes": 6622,
+          "StoredSha256": "CD3E3C18E53327166185C90139401EA1545EC90C67500AF8E67C8B1A609E4E3C"
+        }
+      ]
+    },
+    {
+      "Index": 69,
+      "CaseId": "wire/u-infinity",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 148,
+          "Encoding": "identity",
+          "File": "records/record-000183.bin",
+          "Sha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF",
+          "StoredBytes": 148,
+          "StoredSha256": "DDD6AE9DE2E9F88038D2B64908C46D94F0A2A1C3F87EAE89C906326CC7E3D8BF"
+        },
+        {
+          "Bytes": 7078,
+          "Encoding": "identity",
+          "File": "records/record-000184.bin",
+          "Sha256": "28D0A99FB057B61A2C105E83E863DDE37B97C51D3FB8B1E7AE9B17FA1FD716D5",
+          "StoredBytes": 7078,
+          "StoredSha256": "28D0A99FB057B61A2C105E83E863DDE37B97C51D3FB8B1E7AE9B17FA1FD716D5"
+        }
+      ]
+    },
+    {
+      "Index": 70,
+      "CaseId": "wire/missing-c",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 133,
+          "Encoding": "identity",
+          "File": "records/record-000185.bin",
+          "Sha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E",
+          "StoredBytes": 133,
+          "StoredSha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E"
+        },
+        {
+          "Bytes": 15793,
+          "Encoding": "identity",
+          "File": "records/record-000186.bin",
+          "Sha256": "536DD0912D84C15D81F7607C495360BD863FCBF549E48DA388071893027E5E94",
+          "StoredBytes": 15793,
+          "StoredSha256": "536DD0912D84C15D81F7607C495360BD863FCBF549E48DA388071893027E5E94"
+        },
+        {
+          "Bytes": 6564,
+          "Encoding": "identity",
+          "File": "records/record-000187.bin",
+          "Sha256": "76BB561281E60FC0AAD26E86AC057D3347FB9BBEFA44A01C1B8A1D15E397CE00",
+          "StoredBytes": 6564,
+          "StoredSha256": "76BB561281E60FC0AAD26E86AC057D3347FB9BBEFA44A01C1B8A1D15E397CE00"
+        }
+      ]
+    },
+    {
+      "Index": 71,
+      "CaseId": "wire/missing-c",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 133,
+          "Encoding": "identity",
+          "File": "records/record-000188.bin",
+          "Sha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E",
+          "StoredBytes": 133,
+          "StoredSha256": "6F06B71012B52B2DAA7D58E0AA24799E07A0E2D5792C0A1316ABEC44188F4F7E"
+        },
+        {
+          "Bytes": 7030,
+          "Encoding": "identity",
+          "File": "records/record-000189.bin",
+          "Sha256": "6671EB29E626905700020E615371E386BB615FADE27A42C0D46E331122586F99",
+          "StoredBytes": 7030,
+          "StoredSha256": "6671EB29E626905700020E615371E386BB615FADE27A42C0D46E331122586F99"
+        }
+      ]
+    },
+    {
+      "Index": 72,
+      "CaseId": "wire/duplicate-t",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 149,
+          "Encoding": "identity",
+          "File": "records/record-000190.bin",
+          "Sha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD",
+          "StoredBytes": 149,
+          "StoredSha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD"
+        },
+        {
+          "Bytes": 15793,
+          "Encoding": "identity",
+          "File": "records/record-000191.bin",
+          "Sha256": "06513159366D2C4FBB64B8D4F6A0AC4AC57889A24375855481B5900909ABD55B",
+          "StoredBytes": 15793,
+          "StoredSha256": "06513159366D2C4FBB64B8D4F6A0AC4AC57889A24375855481B5900909ABD55B"
+        },
+        {
+          "Bytes": 6528,
+          "Encoding": "identity",
+          "File": "records/record-000192.bin",
+          "Sha256": "C5E11305AAC221CCC21A5D11E733BBD94DCF37EE3113B95A71B763DFC927ED71",
+          "StoredBytes": 6528,
+          "StoredSha256": "C5E11305AAC221CCC21A5D11E733BBD94DCF37EE3113B95A71B763DFC927ED71"
+        }
+      ]
+    },
+    {
+      "Index": 73,
+      "CaseId": "wire/duplicate-t",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 149,
+          "Encoding": "identity",
+          "File": "records/record-000193.bin",
+          "Sha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD",
+          "StoredBytes": 149,
+          "StoredSha256": "D51BF39DB7327561001C87AD93AB4647334ED9E69161C43C3443409C2C2649FD"
+        },
+        {
+          "Bytes": 6988,
+          "Encoding": "identity",
+          "File": "records/record-000194.bin",
+          "Sha256": "5C72CB0751597FA17C9DC7FB49D878B61875C07A561E29794A783118831BAA77",
+          "StoredBytes": 6988,
+          "StoredSha256": "5C72CB0751597FA17C9DC7FB49D878B61875C07A561E29794A783118831BAA77"
+        }
+      ]
+    },
+    {
+      "Index": 74,
+      "CaseId": "wire/unknown-field",
+      "Operation": "NativeSolve",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 156,
+          "Encoding": "identity",
+          "File": "records/record-000195.bin",
+          "Sha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD",
+          "StoredBytes": 156,
+          "StoredSha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD"
+        },
+        {
+          "Bytes": 15793,
+          "Encoding": "identity",
+          "File": "records/record-000196.bin",
+          "Sha256": "8FD14259E9D455A6EA5A375E40ECA78597817F72D00033C180FA6500158841CB",
+          "StoredBytes": 15793,
+          "StoredSha256": "8FD14259E9D455A6EA5A375E40ECA78597817F72D00033C180FA6500158841CB"
+        },
+        {
+          "Bytes": 6554,
+          "Encoding": "identity",
+          "File": "records/record-000197.bin",
+          "Sha256": "D7CDF88D338CC1CF338406079C69A28F86B897AA6DC215411693FB134347950C",
+          "StoredBytes": 6554,
+          "StoredSha256": "D7CDF88D338CC1CF338406079C69A28F86B897AA6DC215411693FB134347950C"
+        }
+      ]
+    },
+    {
+      "Index": 75,
+      "CaseId": "wire/unknown-field",
+      "Operation": "ReferenceRoot",
+      "Kind": "refused",
+      "FailureCode": "Wire",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 156,
+          "Encoding": "identity",
+          "File": "records/record-000198.bin",
+          "Sha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD",
+          "StoredBytes": 156,
+          "StoredSha256": "37F9ABFB2EF82B07620228813761FEF7BF98F966EC5EC371DE0F8BCAD87D8DDD"
+        },
+        {
+          "Bytes": 7015,
+          "Encoding": "identity",
+          "File": "records/record-000199.bin",
+          "Sha256": "7112B652B6D3953D4C8155F60C12A5F3D970C58B31615F9A913F26BDD92A2E1F",
+          "StoredBytes": 7015,
+          "StoredSha256": "7112B652B6D3953D4C8155F60C12A5F3D970C58B31615F9A913F26BDD92A2E1F"
+        }
+      ]
+    },
+    {
+      "Index": 76,
+      "CaseId": "cert/mean",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "NotCloseToMinimum",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000200.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000201.bin",
+          "Sha256": "B61AFC09BE5A0A7AE7B87B73CDD1B468225A369D123DB601CAF3A38D2A617957",
+          "StoredBytes": 16425,
+          "StoredSha256": "B61AFC09BE5A0A7AE7B87B73CDD1B468225A369D123DB601CAF3A38D2A617957"
+        },
+        {
+          "Bytes": 157447,
+          "Encoding": "identity",
+          "File": "records/record-000202.bin",
+          "Sha256": "BE9F167CCE8689ECD6CC3678CDD2B0EB14523BC5868DADC2551B701CF1114915",
+          "StoredBytes": 157447,
+          "StoredSha256": "BE9F167CCE8689ECD6CC3678CDD2B0EB14523BC5868DADC2551B701CF1114915"
+        }
+      ]
+    },
+    {
+      "Index": 77,
+      "CaseId": "cert/variance-zero",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "CandidateShape",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000203.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000204.bin",
+          "Sha256": "7BF2E07F70229F71E1612CED1E2FAD165032DE7EE4C49D769AF40B56B2E30429",
+          "StoredBytes": 16425,
+          "StoredSha256": "7BF2E07F70229F71E1612CED1E2FAD165032DE7EE4C49D769AF40B56B2E30429"
+        },
+        {
+          "Bytes": 39763,
+          "Encoding": "identity",
+          "File": "records/record-000205.bin",
+          "Sha256": "CB6DDB6E25465ADBC1E4797AE91B085168BC7CD945D8047A14E4FBBF2DD0626C",
+          "StoredBytes": 39763,
+          "StoredSha256": "CB6DDB6E25465ADBC1E4797AE91B085168BC7CD945D8047A14E4FBBF2DD0626C"
+        }
+      ]
+    },
+    {
+      "Index": 78,
+      "CaseId": "cert/log-ratio",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "CandidateShape",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000206.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000207.bin",
+          "Sha256": "9367B5AB23A9EB67F9B00200B52D4808CAE70ED0815C98C81CC9CBA60EA39937",
+          "StoredBytes": 16425,
+          "StoredSha256": "9367B5AB23A9EB67F9B00200B52D4808CAE70ED0815C98C81CC9CBA60EA39937"
+        },
+        {
+          "Bytes": 39777,
+          "Encoding": "identity",
+          "File": "records/record-000208.bin",
+          "Sha256": "E6DA93B58AFCB01AE9280832E2B978435CF3D6A8F787E88D7A6A9BC92820E37C",
+          "StoredBytes": 39777,
+          "StoredSha256": "E6DA93B58AFCB01AE9280832E2B978435CF3D6A8F787E88D7A6A9BC92820E37C"
+        }
+      ]
+    },
+    {
+      "Index": 79,
+      "CaseId": "cert/ratio",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "InconsistentCoordinate",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000209.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000210.bin",
+          "Sha256": "C0110423FA3E049C38CEC4F8FE240AF6900006FB650F2657A773305C213933AC",
+          "StoredBytes": 16425,
+          "StoredSha256": "C0110423FA3E049C38CEC4F8FE240AF6900006FB650F2657A773305C213933AC"
+        },
+        {
+          "Bytes": 158738,
+          "Encoding": "identity",
+          "File": "records/record-000211.bin",
+          "Sha256": "D20ABBB471D08B8C15D0DBD65781B578A7539EE82461943127991FADD8E78479",
+          "StoredBytes": 158738,
+          "StoredSha256": "D20ABBB471D08B8C15D0DBD65781B578A7539EE82461943127991FADD8E78479"
+        }
+      ]
+    },
+    {
+      "Index": 80,
+      "CaseId": "cert/r",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "InconsistentCoordinate",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000212.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000213.bin",
+          "Sha256": "2B5BAFE5DB224808A6C3D8AD85C03611D5DDEEF6B1C944FC66AF669257BE537D",
+          "StoredBytes": 16425,
+          "StoredSha256": "2B5BAFE5DB224808A6C3D8AD85C03611D5DDEEF6B1C944FC66AF669257BE537D"
+        },
+        {
+          "Bytes": 159082,
+          "Encoding": "identity",
+          "File": "records/record-000214.bin",
+          "Sha256": "178A8409EFAEC4A148792CD9E1435F3E060EF9C987FCFD1771300635358FA910",
+          "StoredBytes": 159082,
+          "StoredSha256": "178A8409EFAEC4A148792CD9E1435F3E060EF9C987FCFD1771300635358FA910"
+        }
+      ]
+    },
+    {
+      "Index": 81,
+      "CaseId": "cert/objective",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "ObjectiveMismatch",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000215.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000216.bin",
+          "Sha256": "37B9793CD5D0B926FFB47DFA69EFE74AF1D7565FA771EAD6495176278D5F5B79",
+          "StoredBytes": 16425,
+          "StoredSha256": "37B9793CD5D0B926FFB47DFA69EFE74AF1D7565FA771EAD6495176278D5F5B79"
+        },
+        {
+          "Bytes": 160311,
+          "Encoding": "identity",
+          "File": "records/record-000217.bin",
+          "Sha256": "96B1BC397503053033B582223056070AC193594D7548729C95EF23AAC01973C4",
+          "StoredBytes": 160311,
+          "StoredSha256": "96B1BC397503053033B582223056070AC193594D7548729C95EF23AAC01973C4"
+        }
+      ]
+    },
+    {
+      "Index": 82,
+      "CaseId": "cert/mean-gradient",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "ObjectiveMismatch",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000218.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000219.bin",
+          "Sha256": "DBF0899EC6F3B711D2DBB680C89C84C5096C0D7ADD00F00E8533207BE391B929",
+          "StoredBytes": 16425,
+          "StoredSha256": "DBF0899EC6F3B711D2DBB680C89C84C5096C0D7ADD00F00E8533207BE391B929"
+        },
+        {
+          "Bytes": 160807,
+          "Encoding": "identity",
+          "File": "records/record-000220.bin",
+          "Sha256": "2BFFF995616174AED744FAD44F58DE4DB319CD085F142612B1D7567E0A3D19AE",
+          "StoredBytes": 160807,
+          "StoredSha256": "2BFFF995616174AED744FAD44F58DE4DB319CD085F142612B1D7567E0A3D19AE"
+        }
+      ]
+    },
+    {
+      "Index": 83,
+      "CaseId": "cert/variance-gradient",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "ObjectiveMismatch",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000221.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000222.bin",
+          "Sha256": "86DCB37B93A189A8C5FFCB6FB9E113C9F1D4FE22C0A99B09264D2374DB0B6C4B",
+          "StoredBytes": 16425,
+          "StoredSha256": "86DCB37B93A189A8C5FFCB6FB9E113C9F1D4FE22C0A99B09264D2374DB0B6C4B"
+        },
+        {
+          "Bytes": 161298,
+          "Encoding": "identity",
+          "File": "records/record-000223.bin",
+          "Sha256": "15E9847D58429325E9429CEF48B5DB69C03DB17DD680CFE75A9F5C2F6C9A2AC8",
+          "StoredBytes": 161298,
+          "StoredSha256": "15E9847D58429325E9429CEF48B5DB69C03DB17DD680CFE75A9F5C2F6C9A2AC8"
+        }
+      ]
+    },
+    {
+      "Index": 84,
+      "CaseId": "cert/target-zero-sign",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "TargetMismatch",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000224.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000225.bin",
+          "Sha256": "192EF0F7D50152F6CE6603242DC4D8B4AB0A1DCE8EBF667DBC34C4D3068A23F2",
+          "StoredBytes": 16425,
+          "StoredSha256": "192EF0F7D50152F6CE6603242DC4D8B4AB0A1DCE8EBF667DBC34C4D3068A23F2"
+        },
+        {
+          "Bytes": 39769,
+          "Encoding": "identity",
+          "File": "records/record-000226.bin",
+          "Sha256": "6F727CC243C1E08B6D79956EC2B53FFF94BEF4F5A79B389FE9052C6C78091D85",
+          "StoredBytes": 39769,
+          "StoredSha256": "6F727CC243C1E08B6D79956EC2B53FFF94BEF4F5A79B389FE9052C6C78091D85"
+        }
+      ]
+    },
+    {
+      "Index": 85,
+      "CaseId": "cert/source-binding",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "SourceMismatch",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000227.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000228.bin",
+          "Sha256": "F1569FC008B3D763744C11B301CDE6FA36A746CE80D892812EA1DB34958FE77A",
+          "StoredBytes": 16425,
+          "StoredSha256": "F1569FC008B3D763744C11B301CDE6FA36A746CE80D892812EA1DB34958FE77A"
+        },
+        {
+          "Bytes": 39764,
+          "Encoding": "identity",
+          "File": "records/record-000229.bin",
+          "Sha256": "0A3FE9550571D827DA96D249D217D8BE064E53FE7A648FFF663294D1CC750A9C",
+          "StoredBytes": 39764,
+          "StoredSha256": "0A3FE9550571D827DA96D249D217D8BE064E53FE7A648FFF663294D1CC750A9C"
+        }
+      ]
+    },
+    {
+      "Index": 86,
+      "CaseId": "cert/missing-objective",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "CandidateShape",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000230.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16288,
+          "Encoding": "identity",
+          "File": "records/record-000231.bin",
+          "Sha256": "9CDCABE0597187836BD8D700CDFBEF8CE18381A4E53CF2609EB34E7DBC4DAB17",
+          "StoredBytes": 16288,
+          "StoredSha256": "9CDCABE0597187836BD8D700CDFBEF8CE18381A4E53CF2609EB34E7DBC4DAB17"
+        },
+        {
+          "Bytes": 39464,
+          "Encoding": "identity",
+          "File": "records/record-000232.bin",
+          "Sha256": "F16B6ADD5133D2E0457BB858C2A69F126A7F711524D2D76160F5C6A41F06AEB0",
+          "StoredBytes": 39464,
+          "StoredSha256": "F16B6ADD5133D2E0457BB858C2A69F126A7F711524D2D76160F5C6A41F06AEB0"
+        }
+      ]
+    },
+    {
+      "Index": 87,
+      "CaseId": "cert/reversed-bracket",
+      "Operation": "CertifyNative",
+      "Kind": "refused",
+      "FailureCode": "CandidateShape",
+      "Expected": true,
+      "CoreCertified": false,
+      "Artifacts": [
+        {
+          "Bytes": 141,
+          "Encoding": "identity",
+          "File": "records/record-000233.bin",
+          "Sha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA",
+          "StoredBytes": 141,
+          "StoredSha256": "79608BB7967F3F60E6045AB3508621F2551BDEC227BF0853C403BEA16A9844FA"
+        },
+        {
+          "Bytes": 16425,
+          "Encoding": "identity",
+          "File": "records/record-000234.bin",
+          "Sha256": "E9C2CD40864A23D639649D7FA357CF4BED2546833EE734F853E3B159214925F1",
+          "StoredBytes": 16425,
+          "StoredSha256": "E9C2CD40864A23D639649D7FA357CF4BED2546833EE734F853E3B159214925F1"
+        },
+        {
+          "Bytes": 39777,
+          "Encoding": "identity",
+          "File": "records/record-000235.bin",
+          "Sha256": "85B62940EEEB6502051A7F4DEC7EC20AAC92FB9A250D5ADF7B48F68AF959651C",
+          "StoredBytes": 39777,
+          "StoredSha256": "85B62940EEEB6502051A7F4DEC7EC20AAC92FB9A250D5ADF7B48F68AF959651C"
+        }
+      ]
+    }
+  ],
+  "Limitations": [
+    "Post-run byte census is not total process memory/disk cost",
+    "Actual in-memory DriverResult/RunResult were not fully serialized",
+    "No source-to-machine or transitive runtime closure proof",
+    "Finite scalar Gaussian projection, not learned-system or state-of-the-art evaluation"
+  ]
+}

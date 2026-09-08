@@ -1,0 +1,455 @@
+{
+  "Schema": "zeta.precision-projection.assembled-validation.v1",
+  "Archive": {
+    "Path": "custody.tar.gz",
+    "Bytes": 226790,
+    "Sha256": "B84F38656894FAA0EF03F8CA7497DBAE5ABC10292B88CC7E8A7C5E3F24B317B6"
+  },
+  "Members": [
+    {
+      "Path": "projection-assembled-full-gate-1/0-completion.json",
+      "Bytes": 140,
+      "Sha256": "4F1B5B95C04A42595DCB2EE07BF4AE086353387ECF34134E14A4392AA6F0648F"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/0-invocation.json",
+      "Bytes": 94,
+      "Sha256": "033B2A0EF01A46024ABBC200CA47D538F6476C926BEE7B847DEBA8883D68C519"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/0-stderr",
+      "Bytes": 49,
+      "Sha256": "2702855C35B0430A3432C3F284C32B80ECD46D83302246DB156609015E6B2560"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/0-stdout",
+      "Bytes": 1313,
+      "Sha256": "BAB079CA25DC0AE422108D850A086D6753E5FADAEFB06CB0FE8AB4B507869F51"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/1-completion.json",
+      "Bytes": 157,
+      "Sha256": "4FAC960967887A2968B8098A580AC5F3F7492FB82207CFC830AB042CE26F2597"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/1-invocation.json",
+      "Bytes": 110,
+      "Sha256": "1ADABFE10C7B8D7CE687BC5F9E61B80B0EAF6BE55BDDD996C6EF093B088D2FF5"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/1-stderr",
+      "Bytes": 5321,
+      "Sha256": "C29F29AEC2E7D76966A50F5340789DC4C4D43114D090BE35BA123920EDBBB551"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/1-stdout",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/result.json",
+      "Bytes": 5256,
+      "Sha256": "D5C1D14AC54C144311CF46608F6AD0E468F82803D9B3009A1DF344101291A04B"
+    },
+    {
+      "Path": "projection-assembled-full-gate-1/start.json",
+      "Bytes": 8849,
+      "Sha256": "D4F9B6315282F808078AAFEAEA61D8561E3F0B2521EAA43FDDB749C4757AC704"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/0-completion.json",
+      "Bytes": 1155,
+      "Sha256": "990678F193B7B72F64114AEA30AAD4FA4E0DE9D2A91D5EBAB4C005A177A901DE"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/0-invocation.json",
+      "Bytes": 1217,
+      "Sha256": "FEE5F964C60ADA268D437A0086F3D6976926FB20F7A182AC8E6BFF9D4E5A2D41"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/0-stdout",
+      "Bytes": 1355,
+      "Sha256": "FCF56FE52A7EEBCE47D168FD680739C5CA5C67B9C5991C3BECE64EE1F9134B39"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/1-completion.json",
+      "Bytes": 1174,
+      "Sha256": "B3C9C89BBA02017481F75F4A1ABA55498419AB620C52780354A82A60CB779014"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/1-invocation.json",
+      "Bytes": 1233,
+      "Sha256": "650A6C6ECA0A7343395895B322CD061CAB7DB369E9C41ED7C31AC68A5C67E6B9"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/1-stdout",
+      "Bytes": 27,
+      "Sha256": "2AFB1C293434BC55D84B35D54454A0BF9AA84E41CDA426817A5C6693D432E37A"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/2-completion.json",
+      "Bytes": 1299,
+      "Sha256": "C69AAB7AF4117495B0CD3D1C5FC66BF7DABAFF7305F0331B9BAFC840671E3946"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/2-invocation.json",
+      "Bytes": 1360,
+      "Sha256": "443FECA3129948C2BF15967B44EF728680DBB779A9D3A5B7959F42C034DC8447"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/2-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/2-stdout",
+      "Bytes": 44,
+      "Sha256": "FE22D95914D7FDD98483ACE256B7F2708DB4BE1255737E5D7CCA4D16703CA242"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/3-completion.json",
+      "Bytes": 761,
+      "Sha256": "6C513207D6D8CD4B456C4B2480C78CD01925853C269119B03DCC9FA3B22FA067"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/3-invocation.json",
+      "Bytes": 824,
+      "Sha256": "F54C38955C5EA00D7BFB26AF717C1FD5212B521B70410AD7DAD5211BE95996EE"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/3-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/3-stdout",
+      "Bytes": 420,
+      "Sha256": "960AAA84DEC9BD57CDA4353DFB14D3C4425EFD5D3A1208AD8859E90AC0A86FAE"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/result.json",
+      "Bytes": 4859,
+      "Sha256": "73CA8417DC595A95E4E434E5B0B7F8D04C3204AFF3F7421BCD5FE2DE81FEB478"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-00.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-01.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-02.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-03.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-04.py",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-05.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-06.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-07.py",
+      "Bytes": 6185,
+      "Sha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-08.py",
+      "Bytes": 7989,
+      "Sha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-09.py",
+      "Bytes": 32566,
+      "Sha256": "9952B5B2C36B57DAE74428D2C1C4FD7027511DD7D92683AA2C5CDE2B6F21962B"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-10.py",
+      "Bytes": 8332,
+      "Sha256": "BCCB9B8E32BBBC2E61C5CB557B1E3E0016C92768C8D90F99B10C8232FD3220F7"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-11.py",
+      "Bytes": 19857,
+      "Sha256": "98A5FE6BE65318C41128901507F62BB927487A7425071B9AC0FA72A3117373EF"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-12.py",
+      "Bytes": 48249,
+      "Sha256": "49715787CCF0FC69A38B39D720CDADB3F2F95D523A26E1582E01DA5A4F47A22C"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/source-13.py",
+      "Bytes": 24771,
+      "Sha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8"
+    },
+    {
+      "Path": "projection-assembled-python-gate-1/start.json",
+      "Bytes": 2927,
+      "Sha256": "3FB098AB3C0FEB19F6F1C816C47B7D6988C26ABC08803802F6004F97668F9F2A"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/0-completion.json",
+      "Bytes": 1158,
+      "Sha256": "D11299D80E6C51591B55485D207557DEDA32ED2F0167E135C74A2E48A2540BF4"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/0-invocation.json",
+      "Bytes": 1218,
+      "Sha256": "AC0DD98F6CB39441420418E893927341209557292863198D2F2161CCB7C86824"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/0-stdout",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/1-completion.json",
+      "Bytes": 1175,
+      "Sha256": "612CAD05767C9D91844EE01894848B84285FB278A49D21E4C622D30CA3B170DA"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/1-invocation.json",
+      "Bytes": 1233,
+      "Sha256": "AD5200F99A4159CF2082ED86C8E0CF9C8BE0E298B007AE6AADF6628CDAC3870D"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/1-stdout",
+      "Bytes": 27,
+      "Sha256": "2AFB1C293434BC55D84B35D54454A0BF9AA84E41CDA426817A5C6693D432E37A"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/2-completion.json",
+      "Bytes": 1298,
+      "Sha256": "282244D8E1A971B8B8EDE18D5711A4E80B4BA902A58E8CB009B90F5ABA8B05FE"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/2-invocation.json",
+      "Bytes": 1360,
+      "Sha256": "38FA7F512CF44B59FCB04F24868213DF8E16ED8A5A65EEC0CB0CB9D3D977E936"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/2-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/2-stdout",
+      "Bytes": 44,
+      "Sha256": "FE22D95914D7FDD98483ACE256B7F2708DB4BE1255737E5D7CCA4D16703CA242"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/3-completion.json",
+      "Bytes": 760,
+      "Sha256": "0F162541F67381A9ED7106BD516CAA9671B69AC057061E8A248BA82CD4C9ACFC"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/3-invocation.json",
+      "Bytes": 823,
+      "Sha256": "9CCDF062A5E3323B3EFA3F52FE2D49D37036218731A617B9D6AF7EFB412ED6D8"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/3-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/3-stdout",
+      "Bytes": 420,
+      "Sha256": "1CA2EF1A64AE18DF6C79EA588F2580A3B4ED5DB26DEA2228FF0154C8B2CE4B4A"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/result.json",
+      "Bytes": 4861,
+      "Sha256": "559E4BD9A5191E4627FCB55CFA00D57ED5AF024BC176FCB2AF2466206D900590"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-00.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-01.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-02.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-03.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-04.py",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-05.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-06.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-07.py",
+      "Bytes": 6185,
+      "Sha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-08.py",
+      "Bytes": 7989,
+      "Sha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-09.py",
+      "Bytes": 32565,
+      "Sha256": "2FBDE2C8A68790C454BD140973145A9E0665DC9AC88C894DDBB4A3826D6C11B6"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-10.py",
+      "Bytes": 8332,
+      "Sha256": "BCCB9B8E32BBBC2E61C5CB557B1E3E0016C92768C8D90F99B10C8232FD3220F7"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-11.py",
+      "Bytes": 19857,
+      "Sha256": "98A5FE6BE65318C41128901507F62BB927487A7425071B9AC0FA72A3117373EF"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-12.py",
+      "Bytes": 48249,
+      "Sha256": "49715787CCF0FC69A38B39D720CDADB3F2F95D523A26E1582E01DA5A4F47A22C"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/source-13.py",
+      "Bytes": 24771,
+      "Sha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8"
+    },
+    {
+      "Path": "projection-assembled-python-gate-2/start.json",
+      "Bytes": 2927,
+      "Sha256": "1114DDED7F73BE30AD969DB2C5239BF8556A6116014298994561271B2DDC2895"
+    },
+    {
+      "Path": "projection-publication-install-2/completion.json",
+      "Bytes": 52,
+      "Sha256": "3DC3C5652CF0A6C89ECF24CEB322E3C8DDAEA6F91249D49C120C9350CF802D85"
+    },
+    {
+      "Path": "projection-publication-install-2/invocation.json",
+      "Bytes": 161,
+      "Sha256": "A989CACD3DD79A56017545B23E0826C49229CD6E6FAFF469C21B185BF4ED6D84"
+    },
+    {
+      "Path": "projection-publication-install-2/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "projection-publication-install-2/stdout",
+      "Bytes": 797,
+      "Sha256": "FC4D6DA1D221A0D7069C1D940ED43257DAFF6E5DA1C84D1D31AAEA20DD6A201B"
+    },
+    {
+      "Path": "projection-publication-install-1.log",
+      "Bytes": 28,
+      "Sha256": "06DB80E6BBAC7F366B0ADC2F2C6AD9AC72A31CB97AA1B415CB7D8AC72BF7C619"
+    },
+    {
+      "Path": "projection-source-transfer-plan-1.json",
+      "Bytes": 229052,
+      "Sha256": "36CED8BD1BCEE5D7526FC52CBFCFB1C644C6047F6F036DA9A0BBA5628B372EB6"
+    },
+    {
+      "Path": "projection-source-transfer-plan-2.json",
+      "Bytes": 229835,
+      "Sha256": "9C33583E3A0EE2045C4A3011AE29BB76F173569421074F84B54ED1D94749BA44"
+    },
+    {
+      "Path": "projection-source-transfer-result-1.json",
+      "Bytes": 242,
+      "Sha256": "31E49FEA6EC9669C797E0A6C0173ABDF2877B66B7E406BCC4EFE0D29A676FE3C"
+    },
+    {
+      "Path": "projection-driver-transfer-1.json",
+      "Bytes": 13229,
+      "Sha256": "AA86BFDCB1CC5559C25BBB34D2AFCBA5891BDE0384DB77DD3BC0A46B04000444"
+    },
+    {
+      "Path": "projection-fresh-main-source-comparison-1.json",
+      "Bytes": 6165,
+      "Sha256": "B82BBB375EAC22F242DD4E951F7548E30FEE8F03DC0B4CDE03A46F033D23E6FB"
+    },
+    {
+      "Path": "projection-driver-test-import-correction-1.json",
+      "Bytes": 424,
+      "Sha256": "B54B8A1022C4C0950B0F9D9F4CC02B2315C32FA57D80193AB4C658DB832B0F3D"
+    },
+    {
+      "Path": "projection-publication-build-graph-1.log",
+      "Bytes": 116,
+      "Sha256": "A2DB46B278E9D3B3A531CD8901A4F613FAC25B51D99FA2A90DED31682F017EC2"
+    },
+    {
+      "Path": "projection-publication-compose-commit.txt",
+      "Bytes": 388,
+      "Sha256": "50EF50511C33B4B9186BF8DF4D0B136988FCB3D0AF873F2023746C77ABD4C7D3"
+    },
+    {
+      "Path": "projection-publication-compose-commit.log",
+      "Bytes": 119671,
+      "Sha256": "A11CAB89F6C28AD2B60E04278F57B16B4F3A8D9A0C5CB1CB24CF7F7C67F338B7"
+    },
+    {
+      "Path": "projection-publication-index-lint-1.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    }
+  ]
+}

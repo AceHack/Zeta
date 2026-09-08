@@ -387,3 +387,14 @@ unchanged internal state, names caller-owned persistence in the current algebra,
 and proposes chronological comparisons before any learning-performance claim.
 The supplied transcript is retained verbatim in the linked IP-questionable record.
 
+
+
+## Projection integration checkpoint
+
+The [assembled-source register](2026-09-08-precision-gate-projection-integration-register.md)
+links the fixed numerical contract, independent component reviews, current-main
+composition and completed source/archive admission. The [first registered
+projection result](2026-09-08-precision-gate-projection-registered-results.md)
+retains all 88 actual calls and twelve core certificates. The next investment
+is the mixed-message application/epoch contract; this local result is not a
+learned-system score.
