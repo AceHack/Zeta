@@ -20,6 +20,7 @@ module MixedMessageEpochReplay =
     open System.Text.Json
     open System.Threading.Tasks
     open Microsoft.Win32.SafeHandles
+    module E = Zeta.Bayesian.MixedMessageEpoch
 
     [<Literal>]
     let Schema = "zeta.mixed-epoch.peer.v1"
@@ -660,3 +661,110 @@ module MixedMessageEpochReplay =
         with error -> fail (failure "admit" "SourceAdmission" (error.GetType().FullName + ": " + error.Message))
         { Complete = primary.IsNone && observations.Count = 4
           Observations = List.ofSeq observations; Failure = primary }
+
+    /// Complete actual local codec/admission returns. These values remain in
+    /// memory if later identity checks or publication fail; no serialized type
+    /// label selects an operation. No scheduler or learner is called here.
+    type CoreAdmissionCall =
+        | BudgetDecoded of byte array * Result<E.BudgetSnapshot, E.Failure>
+        | PlanDecoded of byte array * Result<E.EpochPlan, E.Failure>
+        | PlanEncoded of Result<byte array, E.Failure>
+        | ForecastsAdmitted of Result<E.AdmittedForecast list, E.Failure>
+        | PlanAdmitted of Result<E.AdmittedPlan, E.Failure>
+        | AdmissionRaised of phase: string * exceptionType: string * message: string
+
+    type CoreStartAttempt =
+        { Envelope: StartEnvelope
+          Sources: SourceAdmission option
+          Calls: CoreAdmissionCall list
+          Admitted: E.AdmittedPlan option
+          Failure: PeerFailure option }
+
+    let private nestedBytes field maximum (value: JsonElement) =
+        try
+            let text = value.GetRawText()
+            if utf8.GetByteCount text > maximum then
+                Error(failure "admit" "PayloadBound" (field + " exceeds its bounded raw payload allowance"))
+            else Ok(utf8.GetBytes text)
+        with error -> Error(failure "admit" "PayloadEncoding" (field + ": " + error.Message))
+
+    /// The incoming Start channel and full source manifest are independently
+    /// admitted coordinator premises. Compact forecast construction below
+    /// trusts that selected coordinator's completed bundle/closure admission;
+    /// matching hashes alone cannot establish prior remote execution.
+    let admitStart (envelope: StartEnvelope) : CoreStartAttempt =
+        let calls = ResizeArray<CoreAdmissionCall>()
+        let mutable sources = None
+        let mutable budget = None
+        let mutable plan = None
+        let mutable forecasts = None
+        let mutable admitted = None
+        let mutable primary = None
+        let mutable phase = "source"
+        let fail error = if primary.IsNone then primary <- Some error
+        let coreFailure name (problem: E.Failure) =
+            fail (failure "admit" "CoreRefusal" (name + ": " + problem.Code + ": " + problem.Message))
+        try
+            if isNull (box envelope) then
+                fail (failure "admit" "StartArguments" "parsed fixed Start envelope required")
+            else
+                // Before calling any codec in the selected core assembly,
+                // retain the actual script/direct-file source observations.
+                let actual = observeDirectSources envelope.ExpectedBindings
+                sources <- Some actual
+                match actual.Failure with
+                | Some error -> fail error
+                | None when not actual.Complete -> fail (failure "admit" "SourceIncomplete" "complete direct-source observations required")
+                | None -> ()
+            if primary.IsNone then
+                phase <- "budget-decode"
+                match nestedBytes "BudgetSnapshot" SmallCap envelope.BudgetSnapshot with
+                | Error error -> fail error
+                | Ok raw ->
+                    let actual = E.tryDecodeBudgetSnapshot raw
+                    calls.Add(BudgetDecoded(raw, actual))
+                    match actual with Ok value -> budget <- Some value | Error error -> coreFailure phase error
+            if primary.IsNone then
+                phase <- "plan-decode"
+                match nestedBytes "Plan" StartCap envelope.Plan with
+                | Error error -> fail error
+                | Ok raw ->
+                    let actual = E.tryReadPlan raw
+                    calls.Add(PlanDecoded(raw, actual))
+                    match actual with Ok value -> plan <- Some value | Error error -> coreFailure phase error
+            if primary.IsNone then
+                phase <- "plan-bindings"
+                let value = Option.get plan
+                if value.SourceBindings <> envelope.ExpectedBindings then
+                    fail (failure "admit" "PlanBindings" "plan source map differs from the independently admitted Start map")
+            if primary.IsNone then
+                phase <- "plan-canonical-identity"
+                let actual = E.tryEncodePlan (Option.get plan)
+                calls.Add(PlanEncoded actual)
+                match actual with
+                | Error error -> coreFailure phase error
+                | Ok raw when (identity raw).Sha256 <> envelope.PlanSha256 ->
+                    fail (failure "admit" "PlanHash" "actual canonical plan identity differs from Start")
+                | Ok _ -> ()
+            if primary.IsNone then
+                phase <- "forecast-admission"
+                let value = Option.get plan
+                let compact = value.Training |> Option.map (fun training -> training.ChildForecasts) |> Option.defaultValue []
+                let actual = E.tryAdmitCoordinatorForecasts compact
+                calls.Add(ForecastsAdmitted actual)
+                match actual with Ok value -> forecasts <- Some value | Error error -> coreFailure phase error
+            if primary.IsNone then
+                phase <- "plan-admission"
+                let context: E.AdmissionContext =
+                    { Identity = { SessionId = envelope.SessionId; ServiceSha256 = envelope.ServiceSha256 }
+                      InitialBudgetSnapshot = Option.get budget; Forecasts = Option.get forecasts }
+                let actual = E.tryAdmit (Option.get plan, context)
+                calls.Add(PlanAdmitted actual)
+                match actual with Ok value -> admitted <- Some value | Error error -> coreFailure phase error
+        with error ->
+            // Preserve the observed exception separately from the bounded
+            // transport failure; never manufacture a missing core return.
+            calls.Add(AdmissionRaised(phase, error.GetType().FullName, error.Message))
+            fail (failure "admit" "CoreRaised" (phase + ": " + error.GetType().FullName + ": " + error.Message))
+        { Envelope = envelope; Sources = sources; Calls = List.ofSeq calls
+          Admitted = admitted; Failure = primary }
