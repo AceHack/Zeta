@@ -1,0 +1,307 @@
+{
+  "Schema": "zeta.precision-projection.source-archive.v1",
+  "SourceCommit": "f33ac42959388344fc3c82058f165764954fa22d",
+  "ManifestSha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7",
+  "Archive": {
+    "Path": "custody.tar.gz",
+    "Bytes": 5152737,
+    "Sha256": "56B80DBAC2D4D8430D4B57D2F429529582457D34582FD9D94E62EE82578502A1"
+  },
+  "Members": [
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+      "Bytes": 25597,
+      "Sha256": "41D01A033295C28CC9D51F8510F4C3C1DF9BA87AF028A2D0E299835602BF9CF6"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+      "Bytes": 9695,
+      "Sha256": "D5EA9704C1E33429D990F66BA862BC5ED25A1F5C7C9A15E33A8B8D621CA71124"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+      "Bytes": 11850,
+      "Sha256": "FA748BBB30A4647D85E264E803F2FFEBE4214CDA222CB84FF623A0BA1893EE5E"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+      "Bytes": 35009,
+      "Sha256": "EC3EADA6DA2AC70067EEE2CE7121F2C553FC9817F6F147FA18965D2E8729EF88"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+      "Bytes": 61549,
+      "Sha256": "C1063F29F5C63FD70E7E9923EB10D32037191559194FD2EFEC4A35619191E25B"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 10864,
+      "Sha256": "FD8DB23E1B077A5BC3B9396E964C30BF927FE7E27A37DFE83AE5412988138616"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 20305,
+      "Sha256": "75BA7825F7E925460B411C977C4F9F4F34D55BA40383B4F47482C1DB652E1008"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 382,
+      "Sha256": "FA6DE54ED3F65FD8C7CE8895D68A2D4B0FE040735E55A8E2D01C3BBCF8BE50C9"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 3847,
+      "Sha256": "0ECF88098099B11D192A9F1916F342A2DDA3556FE75024E8A95D5BE08ABD5B19"
+    },
+    {
+      "Path": "sources/src/Research.FSharp/PrecisionGateProjectionReplay.fsx",
+      "Bytes": 12723,
+      "Sha256": "C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2"
+    },
+    {
+      "Path": "sources/src/Bayesian/PrecisionGateProjection.fs",
+      "Bytes": 36804,
+      "Sha256": "05F0DD3D50011698A198D68E2CA5AA0741855F79C5ABC97D235700FBABDE465E"
+    },
+    {
+      "Path": "sources/src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196CB0ADE8527DFEBF83FBB3E6E42BD36208E38AFFD09906787A84901C02"
+    },
+    {
+      "Path": "sources/src/Bayesian/Message.fs",
+      "Bytes": 15816,
+      "Sha256": "983256B985671ACFB2C136B6A82A614E53EBB87B7C9CDA04FA4540E3C7C2EEE7"
+    },
+    {
+      "Path": "sources/src/Core/Result.fs",
+      "Bytes": 1152,
+      "Sha256": "C2F07DC84DFA5F44215BAA1C6DFA88D4D0CE294F8A411FF43A433ADA5725BEB1"
+    },
+    {
+      "Path": "sources/src/Core/ProbabilitySemiring.fs",
+      "Bytes": 8376,
+      "Sha256": "9289FAB0568DAB9F075B28D8EB91D2B681DDEDABB7BB90717190C10BF07F9170"
+    },
+    {
+      "Path": "sources/Directory.Build.props",
+      "Bytes": 2530,
+      "Sha256": "06BE09ECBFCB99CE927687617848688CF16F98460C0EB03EBB3F6FF8179BECFA"
+    },
+    {
+      "Path": "sources/Directory.Packages.props",
+      "Bytes": 7113,
+      "Sha256": "807B4F9172DCFA69B0DAD58ED1E7C9571B2021D3C7A931E155339FAD772C5560"
+    },
+    {
+      "Path": "sources/global.json",
+      "Bytes": 491,
+      "Sha256": "6A5420114228737C4F177E41B4DE73ED8A19F9C108A02BE9DCEF1BF4D05FD2E3"
+    },
+    {
+      "Path": "sources/.mise.toml",
+      "Bytes": 20933,
+      "Sha256": "5CA1B929B4F9F02F41C3759C832C5BB4E9602AC5306638510A19884801D8FA7D"
+    },
+    {
+      "Path": "sources/Zeta.sln",
+      "Bytes": 70956,
+      "Sha256": "5E7E39E6AC0E919F9BAB2C45A34EFA9A92E097F7C18DD6A01B6435653D3C5D9C"
+    },
+    {
+      "Path": "sources/src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3329,
+      "Sha256": "00A6A4C62843516AF63D7DAE6F712732A4142FD4691B180C2CEEAB853B40BB6C"
+    },
+    {
+      "Path": "sources/src/Core/Core.fsproj",
+      "Bytes": 25586,
+      "Sha256": "1CF9BF481C15509DA39692A6409D75BC3E2BC5FC5B28E6DFD903B620B6A2A680"
+    },
+    {
+      "Path": "sources/src/Core.Abstractions/Zeta.Core.Abstractions.csproj",
+      "Bytes": 1349,
+      "Sha256": "5145F0AB97A8123F9E367CDF5EBECA0B72B33D121DCF04E7F703C3B4D6EF6522"
+    },
+    {
+      "Path": "sources/src/Core.FSharp.ZetaId/Zeta.Core.FSharp.ZetaId.fsproj",
+      "Bytes": 555,
+      "Sha256": "0731DDB5F55F966EEBF96A8EF35E8D5D44B25A97B5380E317343ADBF14356AED"
+    },
+    {
+      "Path": "sources/src/Core.FSharp.Yaml/Zeta.Core.FSharp.Yaml.fsproj",
+      "Bytes": 500,
+      "Sha256": "B5CCD5FCB7966305C80C13374A4DC2E628B34992A7A65F3F583093BD97A24C5B"
+    },
+    {
+      "Path": "sources/src/Core.TypeScript/ace/build-graph.json",
+      "Bytes": 88448,
+      "Sha256": "30BB3351A001E6E446053D18179C153567066094625D13B919303F8F987E4FC9"
+    },
+    {
+      "Path": "sources/src/Interp.Python/pyproject.toml",
+      "Bytes": 4499,
+      "Sha256": "9AF39874A0B47567E148E33558D1A1A7ABAE4196EAE4AD915E1ECD0C61508B95"
+    },
+    {
+      "Path": "sources/src/Interp.Python/uv.lock",
+      "Bytes": 344990,
+      "Sha256": "3550FDE780C137D9CAA009B9B371A2C43F227C1A8654BBA7D8BA5ADE56BC53A2"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3770,
+      "Sha256": "DD863D702023CE99CED1C1E7CDA5B5E4732D7EAE0EC10A3006B4176C107E3736"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+      "Bytes": 20227,
+      "Sha256": "A30C59C6D35878FC57CC0C0AE3BD563BADA13D2BD035EE42AC84CEB7FA773857"
+    },
+    {
+      "Path": "sources/tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Bytes": 13463,
+      "Sha256": "F443E58DD8C6D5E0C017D36A432DC6DE121FD040DFA68D39E877E4A4EBFEFEBB"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_run.py",
+      "Bytes": 24771,
+      "Sha256": "4726B5CCD43F5B88674C7DEEF7C8B72033351C72DAFED7FE9CBAD10946FBB4C8"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+      "Bytes": 6185,
+      "Sha256": "7D60A095DA1C5E536E657900D32C7C50A08BC8EE44928AF9A1268C2F4D7B7F61"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+      "Bytes": 7989,
+      "Sha256": "95F6F2C131E490F5850297E4B9B1B7FAB4EB79237853E4F50875449911812500"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+      "Bytes": 48249,
+      "Sha256": "49715787CCF0FC69A38B39D720CDADB3F2F95D523A26E1582E01DA5A4F47A22C"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+      "Bytes": 8332,
+      "Sha256": "BCCB9B8E32BBBC2E61C5CB557B1E3E0016C92768C8D90F99B10C8232FD3220F7"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-precision-gate-projection-proposed-contract.md",
+      "Bytes": 38142,
+      "Sha256": "537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md",
+      "Bytes": 2025,
+      "Sha256": "BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8"
+    },
+    {
+      "Path": "sources/docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md",
+      "Bytes": 2146,
+      "Sha256": "67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E"
+    },
+    {
+      "Path": "sources/docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "Bytes": 11200,
+      "Sha256": "BB37C0560984A8D457C9688C283E8B9CC01C72AE7FA7632F453147524484F0E8"
+    },
+    {
+      "Path": "sources/src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+      "Bytes": 40992,
+      "Sha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+      "Bytes": 32565,
+      "Sha256": "2FBDE2C8A68790C454BD140973145A9E0665DC9AC88C894DDBB4A3826D6C11B6"
+    },
+    {
+      "Path": "sources/src/Interp.Python/tests/test_precision_gate_projection_process.py",
+      "Bytes": 19857,
+      "Sha256": "98A5FE6BE65318C41128901507F62BB927487A7425071B9AC0FA72A3117373EF"
+    },
+    {
+      "Path": "native/host/dotnet",
+      "Bytes": 141392,
+      "Sha256": "2FF302A3C5CECC4A371FD6482D2F5547C57D93EFF9FE19919EF729A54F69CE04"
+    },
+    {
+      "Path": "native/src/Core/bin/Release/net10.0/Zeta.Core.dll",
+      "Bytes": 9268224,
+      "Sha256": "9F2340026152A68A002EF1F6A8B68B91AF613076C2EC4E55E148E2BD5FF371B8"
+    },
+    {
+      "Path": "native/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll",
+      "Bytes": 46592,
+      "Sha256": "A76DF741EDAC585F64BBB94432F9B9F2E440A38585CB6FED3596A1FD5E5BBDDA"
+    },
+    {
+      "Path": "native/src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll",
+      "Bytes": 1175040,
+      "Sha256": "EE4EDF2A7510F6BA2203582A95876CD992177694C5F2665BD667126E52E8DC40"
+    },
+    {
+      "Path": "implementation-manifest.json",
+      "Bytes": 9821,
+      "Sha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7"
+    },
+    {
+      "Path": "environment/0-stdout",
+      "Bytes": 624,
+      "Sha256": "92E22FA348990ED7A8361D42436CA4867340AFE4DD47315AC340AD4A76E6ADB5"
+    },
+    {
+      "Path": "environment/0-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "environment/1-stdout",
+      "Bytes": 2767,
+      "Sha256": "85C2F898DBA09469E806021E10BDBD8E12E85BFBA2D67EA7002201DB7A21C634"
+    },
+    {
+      "Path": "environment/1-stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "Path": "environment/invocations.json",
+      "Bytes": 858,
+      "Sha256": "DF9F6167B4B4C4076809B80DA4BADF141B0DD68BEAC863B059C2004BD192A9E6"
+    },
+    {
+      "Path": "source-custody.json",
+      "Bytes": 2859,
+      "Sha256": "A5FAC268249F8D866FDCBAD82B6E03F4C22AF98FF605D4AD69BB9AF116EB74FB"
+    },
+    {
+      "Path": "freeze-source.py",
+      "Bytes": 6043,
+      "Sha256": "F07E118388519787876BF1B9B7EDB3E6EBAD6AEB7E1EA70B498BB5B8B36669FA"
+    }
+  ]
+}

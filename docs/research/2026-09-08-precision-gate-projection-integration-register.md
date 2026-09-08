@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
-Status: assembled gate and driver review passed; final source archive pending
+Status: assembled gate and driver review passed; frozen archive admission pending
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Scientific scope
@@ -98,3 +98,13 @@ retains both ordinary-import cuts and the complete full gate. The corrected
 14-file Python check passes Ruff, format and mypy, with all 340 tests passing
 in 7.07 seconds. The only change between those two Python cuts is one blank
 line in the driver test; final manifest expectations use its corrected bytes.
+
+
+## Frozen source capsule
+
+The [implementation source capsule](precision-gate-projection/2026-09-08/implementation-source/README.md)
+binds 47 committed paths and the five direct native roles to an independently
+prepared manifest. It includes actual built DLL/host bytes and explicit finite
+custody/environment limits. The input manifest hash is
+`FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7`.
+Archive admission and verified remote preservation precede the first final call.
