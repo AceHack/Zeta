@@ -222,3 +222,29 @@ covers neither these root repairs nor the certificate boundary. The numeric
 reference continues to rely on reviewed helper source and explicit Decimal
 semantics; its supplied native metadata is not process or trajectory evidence.
 Output/entry quotas are finite refusal limits, not peak-memory guarantees.
+
+## Returned root API failure correction
+
+Independent review of 51a96fa11 found that a normal `reference_root` API
+Failure was replaced with NoRootEnclosure before its original fields were
+retained. Two new fixtures first failed: direct certificate publication and
+an encoding failure after that actual return both lost the original error.
+Their focused logs retain the complete actual public return in both versions.
+
+The coordinator approved a schema-compatible repair: keep Reference=null
+because no root receipt exists, retain ReferenceRootCalls=1, and put the exact
+original five-field Failure unchanged in certificate Outcome.Failure. A root
+receipt with a numerical refusal still remains in Reference and yields
+NoRootEnclosure. Encoding failure continues to preserve the full certificate
+in the separate ReceiptFailure wrapper. No registered field or union expanded.
+
+The focused corrected pair passes, followed by 90 source tests in 5.09 seconds,
+strict typing and style. The [returned-failure custody](precision-gate-projection-reference-validation/2026-09-08/root-return/README.md)
+keeps both failures, both actual returns, and the corrected full check. This
+repeat was required by the reviewer repair; no broad all-fixture outcome
+capture or final experimental evaluation was added.
+
+A further independent finding is pending: native trace admission must validate
+complete structural prefixes/cardinality and their counter associations, not
+only the types of rows present. Its exact failure-prefix grammar is being
+coordinated with the native owner. No whole source acceptance is claimed yet.
