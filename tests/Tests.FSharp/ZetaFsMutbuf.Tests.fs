@@ -162,3 +162,31 @@ let ``namespace bind then mutbuf write leaves the hub unchanged`` () =
         Assert.Equal(file, h.Entity)
     finally
         FileSystem.Reset()
+
+[<Fact>]
+let ``crash-mid-write during mutbuf persist keeps prior bytes after reopen`` () =
+    let mock = InMemoryFileSystem()
+    FileSystem.Register mock
+    let store = "/mutbuf-crash-persist"
+
+    try
+        let id = mintId ()
+        let catalog = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let h = ZetaFsMutbuf.openHandle catalog id
+        ZetaFsMutbuf.pwrite catalog h 0L [| 1uy; 2uy; 3uy |] |> ignore
+        ZetaFsMutbuf.persist catalog id
+        ZetaFsMutbuf.pwrite catalog h 0L [| 9uy; 9uy; 9uy |] |> ignore
+        mock.ArmCrashMidWrite("mutbuf-crash-persist", 1)
+        let ex = Assert.Throws<CrashMidWriteException>(fun () -> ZetaFsMutbuf.persist catalog id)
+        Assert.Equal(1, ex.CommittedBytes)
+        let reopened = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let h2 = ZetaFsMutbuf.openHandle reopened id
+        let dst = Array.zeroCreate 3
+
+        match ZetaFsMutbuf.pread reopened h2 0L dst with
+        | Error e -> Assert.Fail(sprintf "%A" e)
+        | Ok n ->
+            Assert.Equal(3, n)
+            Assert.Equal<byte>([| 1uy; 2uy; 3uy |], dst)
+    finally
+        FileSystem.Reset()
