@@ -126,3 +126,9 @@ using density-consistent rules must retain separate model identities. Before
 implementation, fix the factor orientation, base measure, kernel/proper-belief
 distinction, projection objective and mixed inference schedule. Local analytic
 updates do not establish exact global inference or benchmark superiority.
+
+The [proposed local-kernel ADR](../DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md)
+turns the equation findings into a bounded first implementation: typed scalar
+Gaussian/Gamma kernels, explicit factor orientation and a projection objective
+with independent discriminators. It leaves the mixed schedule and learned
+module epoch interface explicit as the following integration step.
