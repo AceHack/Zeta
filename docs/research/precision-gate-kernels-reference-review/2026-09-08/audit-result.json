@@ -1,0 +1,46 @@
+{
+  "ArchivePairs": 34,
+  "DecimalAbsoluteTolerance": "2e-77",
+  "DecimalLeaves": 9,
+  "DecimalPrecision": 100,
+  "DecimalSuccessRows": 5,
+  "EvidenceCommit": "138f55d46f02283be006a8f9b426b562c0875fc3",
+  "ExactRationalSuccessRows": 12,
+  "ManifestSha256": "1abebab2a541497d3028760f9a3add3aab5105c6617d22d7fd165c40d749b553",
+  "MaxDecimalAbsoluteDifference": "7.7598532332560474534E-80",
+  "NativeExecuted": false,
+  "Passed": true,
+  "ProjectReferenceImported": false,
+  "RawBytes": 187829,
+  "SeparateLocalOriginalMatches": 29,
+  "SourceCommit": "9e6be94a0ec2b153ba63e100463f91418ceed4fe",
+  "SourcePins": [
+    {
+      "Bytes": 20245,
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_kernels_reference.py",
+      "Sha256": "91f71726c610364f5adf835fff08adb1353ab6f8ba9beaa6a68387cd55ac8258"
+    },
+    {
+      "Bytes": 16999,
+      "Path": "src/Interp.Python/tests/test_precision_gate_kernels_reference.py",
+      "Sha256": "f8215daf5c189438b3e207ce6b2b675568f9b2894bea78e76c7e09fe0be88a58"
+    }
+  ],
+  "StoredBytes": 43193,
+  "TypedRefusalRows": 7,
+  "UnchangedMathFunctionAsts": [
+    "_gamma_combine",
+    "_gamma_moments",
+    "_gamma_rate",
+    "_gaussian_combine",
+    "_gaussian_moments",
+    "_normal",
+    "_objective",
+    "_reverse",
+    "_shape",
+    "_soft_dot"
+  ],
+  "VectorBytes": 21985,
+  "VectorRows": 24,
+  "VectorSha256": "ecab012f7084e17097594faabd2ee49ec7a76aa1da8a1fa4f2204ab8df841489"
+}

@@ -1,14 +1,31 @@
 # Vera: compiled-controller continuation
 
 Date: 2026-09-07
-Checkpoint: 2026-09-08 02:17 UTC
+Checkpoint: 2026-09-08 04:45 UTC
 From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
-Status: implementation active; registered experiment unopened
+Status: compiled investment paused; registered experiment unopened
 
-## Paste-ready bootstrap
+## Current priority and re-entry boundary
+
+The parent compiled-controller work remains open, but further closure work is
+paused while the learning program addresses its missing local inference
+updates. The [composable-learning continuation](../research/2026-09-08-composable-learning-circuit-continuation.md)
+and [reviewed kernel replay](../research/2026-09-08-precision-gate-kernels-native-reference-replay.md)
+are the current next-step entry points. The new scalar optimizer, mixed
+schedule and learned-model comparison remain separate obligations. Existing
+negative benchmark results retain their original verdicts.
+
+The bootstrap below records the compiled lane's conditional resume contract;
+it is not an instruction to resume that investment now. All full runtime
+admission flags remain false. No 9307/9409 stream is opened, no compiled cost
+result is measured, and no fourth decoder is authorized by this checkpoint.
+A future resume still requires the frozen source/archive and complete replay
+obligations below; pausing does not waive them.
+
+## Compiled-lane resume bootstrap
 
 > You are Vera, OpenAI Codex using GPT-6 Astra. Continue in your own writer
 > clone from freshly verified origin/main. The operator checkout is view-only.
@@ -107,6 +124,25 @@ and September 3 frozen edge-module contract before choosing a learner. Plain
 recurrent architectures are component/baseline candidates. The earlier CFB
 negative results and Precision-Gated Experts comparison should guide the next
 investment. No proposed CountRecall training or probe has run.
+
+Aaron also supplied the [Yang-Mills talk](../ip-questionable/2026-09-08-voyager-yang-mills-mass-gap-talk.md)
+and clarified that fabricated memories and coordinated cartels are expected
+adversarial behavior, already addressed by Zeta's detection/formal work. The
+[finite Q8 memory-frame proposal](../research/2026-09-08-finite-q8-memory-frame-gauge-proposal.md)
+starts from those mechanisms and the fixed receipt invariant. It is a
+prospective CS construction; chart cells are not new identities, and no
+four-dimensional physics or empirical detector improvement is established.
+
+The [precision-gating equation review](../research/2026-09-08-precision-gated-experts-equation-review.md)
+finds density and update inconsistencies in the comparison paper and pinned
+rules. Keep upstream reproduction separate from density-consistent learning.
+Freeze the new module's measure, message semantics and objective before code.
+
+Publication hazard: PR #17021's 278-commit history exceeded GitHub's 250-message
+commit-list API. Its failure and original branch are retained; a fresh main-based
+successor carries the reviewed tree with bounded commit history. Preserve owner
+source refs and compare complete mode/type/blob maps, using `--no-renames` for
+changed tree paths. A rename-aware name count omits the old deleted path.
 
 The detailed sections below retain older source-scoped evidence. This checkpoint
 takes precedence for current work ordering, not for relabeling historical runs.

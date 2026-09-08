@@ -1,0 +1,97 @@
+{
+  "SourceFilesBoundToTree": [
+    {
+      "Path": "README.md",
+      "GitBlob": "38e2b9cb0b6e18b5ed59f1703307811566719577"
+    },
+    {
+      "Path": "Project.toml",
+      "GitBlob": "368887bfd8ee4485331badcaf7c81caedceafa74"
+    },
+    {
+      "Path": "src/ProbabilisticEnsembling.jl",
+      "GitBlob": "22c53e0d5282d4acb91d154e570b602c376d6631"
+    },
+    {
+      "Path": "src/exp.jl",
+      "GitBlob": "3fa5639577281ee740b81aba90c26574cf61a4d4"
+    },
+    {
+      "Path": "src/log.jl",
+      "GitBlob": "709d09d42ca0be88e5438a1b651079442fc19512"
+    },
+    {
+      "Path": "src/low_rank_normal.jl",
+      "GitBlob": "4746b152eff4898b5f72371b2a38c0c62675f222"
+    },
+    {
+      "Path": "src/low_rank_softdot/mean_field.jl",
+      "GitBlob": "8103955315630964ecad2db5f7c05e15db9472d8"
+    },
+    {
+      "Path": "src/model_zoo/dynamic/univariate.jl",
+      "GitBlob": "3354f9a24d95d21ee17bc92d9f971827ebe0b91c"
+    },
+    {
+      "Path": "src/model_zoo/dynamic/pipeline.jl",
+      "GitBlob": "9473aaeb38ec2bc1e03b289d6d8585b334a86547"
+    },
+    {
+      "Path": "src/model_zoo/dynamic_exp/univariate.jl",
+      "GitBlob": "8e592da1079ae0bc3e2991df62e8fa6aa8f16fa1"
+    },
+    {
+      "Path": "src/model_zoo/noisy_experts/univariate.jl",
+      "GitBlob": "2f12e1c3f7e08b993ffc2e9e0a6355afa8f7e072"
+    },
+    {
+      "Path": "src/model_zoo/shared_pipeline.jl",
+      "GitBlob": "7e62144f1db984cd48e2bf5948e3e1e4b9a544b5"
+    },
+    {
+      "Path": "src/model_zoo/model_specifier.jl",
+      "GitBlob": "3dc2b18278177509d0270910776eb9f35ff0dc26"
+    },
+    {
+      "Path": "src/model_zoo/features.jl",
+      "GitBlob": "20c5f2831cb8d46fc2c4aa7b17d07ee81742b0c9"
+    },
+    {
+      "Path": "src/utils.jl",
+      "GitBlob": "9e502605850b7a83e458dd54260b55555bfa1cee"
+    },
+    {
+      "Path": "License",
+      "GitBlob": "aa0e7a719ff231f08a42be9344d7a1a6da874d7f"
+    },
+    {
+      "Path": "src/neural_ensemble/gating.jl",
+      "GitBlob": "663b643fcbd2bb3d2a8bd63c454654085699627f"
+    },
+    {
+      "Path": "src/neural_ensemble/neural_pipeline.jl",
+      "GitBlob": "dbedf14faac4baed005b60994499f55cf164f385"
+    },
+    {
+      "Path": "src/neural_ensemble/neural_ensemble_specifier.jl",
+      "GitBlob": "d86d8a434be75da5d52e0eb1fe2a8ff6d80843a8"
+    },
+    {
+      "Path": "sessions/dynamic/vae/dynamic_ETTh1_96.yaml",
+      "GitBlob": "3d7243c2ded54be92d57e8f88e65db7fa4aea95c"
+    },
+    {
+      "Path": "sessions/neural_ensemble/neural_ensemble_ETTh1_96.yaml",
+      "GitBlob": "ac8d6e828a2e7e2cc61d37f9c64e8ee56c13e921"
+    }
+  ],
+  "TreeTruncated": false,
+  "ModelBlobCount": 105,
+  "ModelBlobBytes": 62029269,
+  "DataBlobPaths": [
+    "data/.data"
+  ],
+  "AdvertisedHierarchicalDirectoryPresent": false,
+  "AdvertisedDynamicExamplePresent": false,
+  "ModelContentsRead": false
+}

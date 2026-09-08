@@ -377,3 +377,9 @@ Action-Mode: autonomous-fail-open
 Task: 081M1ZCHPWV087G0R002GG2PKY
 Co-Authored-By: Codex <noreply@openai.com>
 ```
+
+## Main receipt
+
+The [PR17027 main publication receipt](distributional-learning/2026-09-08/pr-17027/README.md)
+records the ordinary squash merge, actual required policy, retained drift red,
+and exact three-way tree verification including concurrent ROADMAP composition.

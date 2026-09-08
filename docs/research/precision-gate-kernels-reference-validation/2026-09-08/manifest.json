@@ -1,0 +1,319 @@
+{
+  "PlanCommit": "3888d9a6b3e443f42320ff838f939ae483ecd2c8",
+  "Records": [
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/commands.json",
+      "OriginalBytes": 2030,
+      "OriginalSha256": "08a61a2711de820264a644db174e8eca13e7afeca7325ba8e543aac0b35e29ce",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__commands.json.gz",
+      "StoredBytes": 393,
+      "StoredSha256": "7ba506bfa0270b272e6d91b6376db461cffdd0d336b1dee5b1763223320a88a1"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/format-applied.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__format-applied.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/format-applied.stdout",
+      "OriginalBytes": 20,
+      "OriginalSha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__format-applied.stdout.gz",
+      "StoredBytes": 40,
+      "StoredSha256": "10d1f29fbf0f4ce6d2d3aca6a94ab91faf21c712b389879848ed269bd3c77d6f"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/format.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__format.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/format.stdout",
+      "OriginalBytes": 30829,
+      "OriginalSha256": "614bf0302c7ada023dd3e6e80f096232b44b10b4edd2697b974d2bf517665711",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__format.stdout.gz",
+      "StoredBytes": 6875,
+      "StoredSha256": "d1fec6fac984fead4f004897e0dfa2ca4eab52c888a5b2ff27943bd56754a65e"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/mypy.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__mypy.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/mypy.stdout",
+      "OriginalBytes": 194,
+      "OriginalSha256": "a2a4667ad1fd3ba5c45419f7c39060330cb94d3916194fb9c47843fb70228756",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__mypy.stdout.gz",
+      "StoredBytes": 171,
+      "StoredSha256": "e211591f3a2caf7ee0d96d5f611be2aa587a7b114b2ee6968e09ca684d76828c"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/precision_gate_kernels_reference.py.source",
+      "OriginalBytes": 18130,
+      "OriginalSha256": "47371fde0199179ac1d24934247121d49dd2e31497c45e92f5f92601c0739e1e",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__precision_gate_kernels_reference.py.source.gz",
+      "StoredBytes": 4722,
+      "StoredSha256": "33e4e1863a8c3367e9b1a5ed3a6c04edb925ae341dbcb7511f3f6cc5cc1fbae4"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/pytest.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__pytest.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/pytest.stdout",
+      "OriginalBytes": 179,
+      "OriginalSha256": "f7f0c80173fc04edc2cf1c42e3682e05ffe79ed508febab401d34b1be94f0bce",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__pytest.stdout.gz",
+      "StoredBytes": 61,
+      "StoredSha256": "76503e080de755adb772c099da99d8756924e2fb02afc54f9e7b740cb9619617"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/ruff.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__ruff.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/ruff.stdout",
+      "OriginalBytes": 19,
+      "OriginalSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__ruff.stdout.gz",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-1/test_precision_gate_kernels_reference.py.source",
+      "OriginalBytes": 15879,
+      "OriginalSha256": "63e24c664e9bd5893e4c651744237fc36a02cd159e76f67a3a854b1e781a38bd",
+      "Stored": "artifacts/precision-gate-reference-attempt-1__test_precision_gate_kernels_reference.py.source.gz",
+      "StoredBytes": 4588,
+      "StoredSha256": "360e211bcaedbe1a3c5d6b9f3cd82350f7ccefceeac7ce2aa5c7b548ed266c55"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/commands.json",
+      "OriginalBytes": 2030,
+      "OriginalSha256": "641b2c930b53f09f06a60c5905f3a05898a415850855c923d330d57d5b06b13f",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__commands.json.gz",
+      "StoredBytes": 390,
+      "StoredSha256": "846ffaacca4cb7ec6866af3318dfa4e324baf38bfcda52431c3c6aad3afbd8cb"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/format.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__format.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/format.stdout",
+      "OriginalBytes": 26,
+      "OriginalSha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__format.stdout.gz",
+      "StoredBytes": 46,
+      "StoredSha256": "9a1a2d79acccdb0f46930a600a1382606067033cfb52a4673dc15b0c1030d871"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/mypy.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__mypy.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/mypy.stdout",
+      "OriginalBytes": 43,
+      "OriginalSha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__mypy.stdout.gz",
+      "StoredBytes": 63,
+      "StoredSha256": "76eacbbf7755358f4be970d3cd86b2d0ffa287f96db2193f42233534159c057d"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/precision_gate_kernels_reference.py.source",
+      "OriginalBytes": 20245,
+      "OriginalSha256": "91f71726c610364f5adf835fff08adb1353ab6f8ba9beaa6a68387cd55ac8258",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__precision_gate_kernels_reference.py.source.gz",
+      "StoredBytes": 4976,
+      "StoredSha256": "eed6b3c7cf61ab7e8f3e805167245f76e05fa9dfbb79da946c9f24a6d2b5febf"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/pytest.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__pytest.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/pytest.stdout",
+      "OriginalBytes": 179,
+      "OriginalSha256": "5d9fb05e9e647458d70353fda54d3898ea468517ea9776d40ef8ac5898170550",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__pytest.stdout.gz",
+      "StoredBytes": 61,
+      "StoredSha256": "2db2b9be87464034b8bb95680166708d7170f442ce146c097ab3e2fbe029d32f"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/ruff.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__ruff.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/ruff.stdout",
+      "OriginalBytes": 19,
+      "OriginalSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__ruff.stdout.gz",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-reference-attempt-2/test_precision_gate_kernels_reference.py.source",
+      "OriginalBytes": 16999,
+      "OriginalSha256": "f8215daf5c189438b3e207ce6b2b675568f9b2894bea78e76c7e09fe0be88a58",
+      "Stored": "artifacts/precision-gate-reference-attempt-2__test_precision_gate_kernels_reference.py.source.gz",
+      "StoredBytes": 4800,
+      "StoredSha256": "0e4ea02338ee632ea1ce3f70267bbcae147670e4512f74a6b1582f2bb73c9da9"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-vector-capture-1/actual-return.json",
+      "OriginalBytes": 24131,
+      "OriginalSha256": "0614eb68f2c88b51931ba00ca79d759b59fa24c50a84aa93cc5478fe0f1f7a8b",
+      "Stored": "artifacts/precision-gate-vector-capture-1__actual-return.json.gz",
+      "StoredBytes": 2169,
+      "StoredSha256": "5178a8c15a7ba41d805b86b9d587a163245cae8f3bca8f355a8803fc6055f6ad"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-vector-capture-1/observations.json",
+      "OriginalBytes": 1480,
+      "OriginalSha256": "0f302cd4fa3ef5a808ad7df644a4cf16a3776ac01d44685b282df6443eef4f95",
+      "Stored": "artifacts/precision-gate-vector-capture-1__observations.json.gz",
+      "StoredBytes": 703,
+      "StoredSha256": "db4682cca0dfe4fb4414b1c128adfa68a7b7bb3a3b5def8ca53b3f25bbca2958"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-vector-capture-1/source.py",
+      "OriginalBytes": 20245,
+      "OriginalSha256": "91f71726c610364f5adf835fff08adb1353ab6f8ba9beaa6a68387cd55ac8258",
+      "Stored": "artifacts/precision-gate-vector-capture-1__source.py.gz",
+      "StoredBytes": 4976,
+      "StoredSha256": "eed6b3c7cf61ab7e8f3e805167245f76e05fa9dfbb79da946c9f24a6d2b5febf"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-vector-capture-1.stdout",
+      "OriginalBytes": 21985,
+      "OriginalSha256": "ecab012f7084e17097594faabd2ee49ec7a76aa1da8a1fa4f2204ab8df841489",
+      "Stored": "artifacts/precision-gate-vector-capture-1.stdout.gz",
+      "StoredBytes": 2142,
+      "StoredSha256": "b17b8df6f9a9086f874a5c8850c0d65d66361b11d28b24d7aae091823af01de2"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "precision-gate-vector-capture-1.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/precision-gate-vector-capture-1.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "fixed-plan-3888d9a6b.md",
+      "OriginalBytes": 8233,
+      "OriginalSha256": "34c965089a67a0b809da3f223650b79292393e40fe23027ec0b288c264441dc2",
+      "Stored": "artifacts/fixed-plan-3888d9a6b.md.gz",
+      "StoredBytes": 3664,
+      "StoredSha256": "23924ce4cc5c7abcc547580fe63737bacf041025f1b02079cf8721d096daea79"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "capture_vectors.executed-original.py",
+      "OriginalBytes": 3679,
+      "OriginalSha256": "cc6ddda931de59770175dca278df5eedeaf23753fc10e6212d46d232fac21c6c",
+      "Stored": "artifacts/capture_vectors.executed-original.py.gz",
+      "StoredBytes": 1407,
+      "StoredSha256": "3bd81a73e41446c6e93a8d474d33828fe817a5f3d7be61229e2d099bbaff43b8"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "capture-harness-format.stdout",
+      "OriginalBytes": 919,
+      "OriginalSha256": "110a5055ac403daf9989c16c2364d1218cb04395ac8b3f442e99355faded1f8b",
+      "Stored": "artifacts/capture-harness-format.stdout.gz",
+      "StoredBytes": 421,
+      "StoredSha256": "f93555e4bfd06cfa2145efa38781b5edf05f798fe4fbaad6f077b21b61413319"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "capture-harness-format.stderr",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "artifacts/capture-harness-format.stderr.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "Encoding": "gzip",
+      "Original": "capture-harness-format.json",
+      "OriginalBytes": 336,
+      "OriginalSha256": "b19f52461131db2dbbac4f267a1fdb98699d07bfff0d15ae1e18efda369a3ed5",
+      "Stored": "artifacts/capture-harness-format.json.gz",
+      "StoredBytes": 227,
+      "StoredSha256": "ac28a462f47e158259a7c5bf7553cf7ba82b997c353e22b482c56632b5e0d0ad"
+    }
+  ],
+  "ReferenceVectorCopy": {
+    "Bytes": 21985,
+    "Path": "reference-vectors.json",
+    "Sha256": "ecab012f7084e17097594faabd2ee49ec7a76aa1da8a1fa4f2204ab8df841489"
+  },
+  "Schema": "zeta.precision-gate-reference-evidence.v1",
+  "Scope": "independent Python reference observations; native comparison and full runtime closure unperformed",
+  "SourceCommit": "9e6be94a0ec2b153ba63e100463f91418ceed4fe"
+}

@@ -1,0 +1,18 @@
+import math,json
+# Independent deterministic quadrature of an explicit synthetic scalar density.
+# No upstream code, data, model or training is invoked.
+def simpson(power,n):
+ lo,hi=-12.,6.;h=(hi-lo)/n
+ def f(z): return math.exp(-.5*z*z-math.exp(z)+power*z)
+ return h/3*(f(lo)+f(hi)+sum((4 if k%2 else 2)*f(lo+k*h) for k in range(1,n)))
+rows=[]
+for n in [12000,24000]:
+ z,m,s=[simpson(k,n) for k in [0,1,2]]
+ rows.append({'Steps':n,'Mean':m/z,'Variance':s/z-(m/z)**2})
+ml=math.exp(.5);vl=(math.e-1)*math.e
+heur_v=1/(1+1/vl);heur_m=(1+ml/vl)*heur_v
+A,B,m0,v0,a,b=2.,3.,0.,1.,4.,5.
+L=1-0.5772156649015328606-math.log(B);p1=math.pi**2/6-1;p2=-2*(1.2020569031595942854-1)
+gA=-1+(A+1-a+(L-m0)/v0)*p1+p2/(2*v0)+b/B
+gB=(a-1-(L-m0)/v0)/B-b*A/(B*B)
+print(json.dumps({'ProductQuadrature':rows,'SeparateMomentPrecisionMerge':{'Mean':heur_m,'Variance':heur_v},'GammaProjectionEnergyGradient':{'ShapeDerivative':gA,'RateDerivative':gB}}))

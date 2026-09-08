@@ -1,0 +1,37 @@
+{
+  "Records": [
+    {
+      "File": "status-followup.stdout.gz",
+      "Original": {
+        "Bytes": 255,
+        "Sha256": "535dbf490649b512433da6f5e154ce137e58f856a9e4a9a188b20002c3784942"
+      },
+      "Stored": {
+        "Bytes": 224,
+        "Sha256": "795e47f38195bb1289a6044b0739a00dbad2ea1615199826b597c5c09f20f2cd"
+      }
+    },
+    {
+      "File": "status-followup.stderr.gz",
+      "Original": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Stored": {
+        "Bytes": 20,
+        "Sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+      }
+    },
+    {
+      "File": "status-followup.invocation.json.gz",
+      "Original": {
+        "Bytes": 327,
+        "Sha256": "f21c61f24e0ee6441eaba0bfb14ace56e4ed089cc600f5b5ae4dc6bde890868b"
+      },
+      "Stored": {
+        "Bytes": 234,
+        "Sha256": "a9da89e5c574f8e772e57e3aba89dc825b804e785d6c263168becc6623f2ea6a"
+      }
+    }
+  ]
+}

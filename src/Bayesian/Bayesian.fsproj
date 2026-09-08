@@ -13,6 +13,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="BoundJustification.fs" />
     <Compile Include="Message.fs" />
+    <Compile Include="PrecisionGateKernels.fs" />
     <Compile Include="Attested.fs" />
     <Compile Include="HeavyTailFold.fs" />
     <Compile Include="QuantumFusion.fs" />
