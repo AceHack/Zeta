@@ -1,0 +1,14 @@
+{
+  "id": "080d03f591ddf010a01300080633886c",
+  "at": "2026-09-08T01:46:45.054Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZB4EXW087G0R002BFBZBV",
+    "type": "bug",
+    "title": "smartcardHsm is a bare boolean read as two different meanings; false is wrong on real hardware",
+    "slug": "smartcardhsm-is-a-bare-boolean-read-as-two-different-meaning",
+    "priority": "P2",
+    "filename": "081M1ZB4EXW087G0R002BFBZBV-smartcardhsm-is-a-bare-boolean-read-as-two-different-meaning.md"
+  }
+}
