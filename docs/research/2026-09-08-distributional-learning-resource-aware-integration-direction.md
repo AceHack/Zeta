@@ -393,5 +393,8 @@ The supplied transcript is retained verbatim in the linked IP-questionable recor
 
 The [assembled-source register](2026-09-08-precision-gate-projection-integration-register.md)
 links the fixed numerical contract, independent component reviews, current-main
-composition and remaining driver/archive boundary. The final 40-ID/88-call
-comparison remains unopened; component tests are not learned-system scores.
+composition and completed source/archive admission. The [first registered
+projection result](2026-09-08-precision-gate-projection-registered-results.md)
+retains all 88 actual calls and twelve core certificates. The next investment
+is the mixed-message application/epoch contract; this local result is not a
+learned-system score.

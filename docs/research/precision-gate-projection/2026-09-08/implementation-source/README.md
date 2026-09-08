@@ -3,7 +3,7 @@
 Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
-Status: source frozen; independent archive admission pending; final workload unopened
+Status: source frozen and independently admitted before the first registered run
 
 The independently prepared [input manifest](implementation-manifest.json) has
 SHA256 `FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7`.
@@ -49,3 +49,7 @@ only source/file checks, installed-distribution inspection and dotnet info.
 No NativeSolve, ReferenceRoot, CertifyNative or final driver run occurred.
 Complete independent archive review and a verified remote source ref precede
 opening the fixed 40-ID/88-call workload.
+
+The [independent admission](../../../2026-09-08-projection-implementation-archive-independent-review.md)
+closed archive review before the [first actual attempt](../registered-1/README.md).
+The preceding freeze-time statements retain their original temporal scope.

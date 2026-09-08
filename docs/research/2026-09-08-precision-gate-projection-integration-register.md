@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
-Status: assembled gate and driver review passed; frozen archive admission pending
+Status: first registered comparison passed; independent outcome review pending
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Scientific scope
@@ -14,7 +14,9 @@ The [registration](2026-09-08-precision-gate-projection-registration.md) fixes
 [contract](2026-09-08-precision-gate-projection-proposed-contract.md),
 [decimal clarification](2026-09-08-precision-gate-projection-decimal-admission-clarification.md)
 and [rendered-zero clarification](2026-09-08-precision-gate-projection-rendered-zero-clarification.md)
-remain unchanged. No final subject has been run by this assembled driver.
+remain unchanged. The first assembled-driver invocation has now completed all
+88 calls; the [actual result](2026-09-08-precision-gate-projection-registered-results.md)
+retains every outcome and its finite investment disposition.
 
 This is a prerequisite for a compositional probabilistic learning graph that
 can contain neural modules and nested subgraphs. It tests a local Gaussian-family
@@ -63,11 +65,12 @@ The [earlier path census](2026-09-08-projection-integration-source-binding-roste
 explains the finite dependency scope, including ordinary package initialization.
 This is not a complete transitive runtime closure or a source-to-machine proof.
 
-## Remaining execution boundary
+## Preserved execution boundary
 
-Before opening the final comparison, complete driver review and the assembled
-build/test/lint gate, preserve its immutable source and direct native artifact
-archive, independently admit the fixed manifest, and retain the exact invocation.
+Before opening the final comparison, driver review and the assembled
+build/test/lint gate completed; the immutable source and direct native artifact
+archive was preserved and independently admitted. The actual invocation is
+retained in the first result.
 The driver reserves custody and recorder space within one 256 MiB/512-artifact
 ceiling. It cannot add an uncharged result dump, silently replace a failed run,
 or synthesize missing certificate baselines. Any failure keeps the actual prefix
@@ -108,3 +111,13 @@ prepared manifest. It includes actual built DLL/host bytes and explicit finite
 custody/environment limits. The input manifest hash is
 `FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7`.
 Archive admission and verified remote preservation precede the first final call.
+
+
+## Actual registered comparison
+
+The [first result](2026-09-08-precision-gate-projection-registered-results.md)
+completes all 88 calls with twelve core certificates and no unexecuted suffix.
+All stress and control outcomes remain retained. Source/archive admission and
+remote-ref verification preceded the sole invocation; independent outcome
+review follows. The next investment is a bounded mixed-message schedule, not
+a claim of learned-system superiority.

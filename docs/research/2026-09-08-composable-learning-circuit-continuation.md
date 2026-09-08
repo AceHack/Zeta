@@ -148,6 +148,9 @@ and comparator controls before the first cross-language invocation.
 The [current integration register](2026-09-08-precision-gate-projection-integration-register.md)
 updates the preceding design-stage status: the native optimizer, independent
 enclosures and recording components are implemented and reviewed; the driver
-has controlled source tests and awaits independent review. Complete assembled
-gates and an immutable source archive precede the unopened registered comparison.
+and source archive passed independent review before the first registered run.
+The [actual result](2026-09-08-precision-gate-projection-registered-results.md)
+completes all 88 calls and twelve core certificates, retaining numerical
+refusals. It directs the next investment to mixed-message and module-epoch
+semantics before a learned compositional comparison.
 This does not yet establish a mixed learned gate or a held-out advantage.
