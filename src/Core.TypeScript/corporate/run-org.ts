@@ -631,6 +631,11 @@ export async function main(argv: readonly string[]): Promise<number> {
         createId,
         resourceAuthorityHatId: "rmo_office",
         directionReviewMs: DAY_MS,
+        // An hour of work and a half-hour review. Declared rather than defaulted, because absent
+        // means "this organization does not keep a calendar" and a CLI that ran the whole company
+        // without one would be showing a week in which nobody's time was ever spoken for.
+        workBlockMs: 60 * 60 * 1000,
+        meetingMs: 30 * 60 * 1000,
       },
       { periodMs: DAY_MS, periods: args.days ?? 7, maxRoundsPerPeriod: 80 },
     );
@@ -651,6 +656,11 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       console.log(`  ${"delivered".padEnd(12)} ${String(nodes.filter((node) => node.state === "done").length)}`);
       console.log(`  ${"documents".padEnd(12)} ${String(result.state.view.artifacts.size)}`);
+      const blocks = result.state.calendar.blocks;
+      console.log(`  ${"work blocks".padEnd(12)} ${String(blocks.filter((b) => b.blockType === "prioritized_work").length)}`);
+      console.log(
+        `  ${"meetings".padEnd(12)} ${String(new Set(blocks.filter((b) => b.meetingId !== undefined).map((b) => b.meetingId)).size)}`,
+      );
       // THE GAPS, printed beside the achievements rather than under them. A run that shows what an
       // organization built and hides what it could not staff is the report this whole register
       // exists to refuse.

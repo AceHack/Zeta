@@ -20,21 +20,30 @@
  * every time.** It is not what the organization does. If you are asking "what would this
  * organization do next", the answer is `driveRound`; over a week, `runCadence`.
  *
- * ── WHAT IT STILL COVERS THAT THE DRIVE DOES NOT ─────────────────────────────
- * Kept rather than deleted, and this list is the reason. Each is a real capability with real tests
- * behind it that no tick can reach yet, and shipping a smaller organization to be able to say the
- * script was gone would be a loss dressed as progress:
+ * ── WHAT THIS FILE UNIQUELY COVERS: NOTHING, ANY MORE ────────────────────────
+ * This section used to list four capabilities only the script could reach. All four are now
+ * reachable from a tick, and the list is kept as a record of what closing them took rather than
+ * deleted as if it had never been true:
  *
- *   - **Scheduled work blocks** (phase 5). The drive never books a calendar.
- *   - **The accountable chain meeting** (phase 6). The drive convenes only over a DIVERGED
- *     artifact; a planned meeting across every level's calendar is this file's alone.
- *   - **The churn escalation** (phase 8). The drive bounds resubmission and reports exhaustion as a
- *     routed blocker — it does not DECIDE what to do about it. `escalation.ts` chooses between
- *     adding agents, bringing in an architect, re-scoping and the rest, and that decision is still
- *     only made here.
- *   - **A configurable outcome per task** (`outcomeFor`). The drive's assignees always submit.
+ *   - **Scheduled work blocks** (phase 5) — `org-drive.bookWork`. Not a menu item: an assignment
+ *     that reserves no time is one nobody can honour, so it is a consequence of placement rather
+ *     than an act the assignee might not choose.
+ *   - **The accountable chain meeting** (phase 6) — `convene_chain`, the 29th grammar verb. The
+ *     drive could already convene over a DIVERGED artifact, which is a repair; this is a planned
+ *     review across every accountable level's calendar, at a time they are all free.
+ *   - **The churn escalation** (phase 8) — `escalate_churn`, the 28th. A manager or above rules on
+ *     work that has spent its gate attempts, from the legal set for the trigger and the level, ONCE
+ *     per item.
+ *   - **A configurable outcome per task** (`outcomeFor`) — this one was never true, and the claim
+ *     is corrected rather than closed. `DriveDeps.choose` already let a caller decide per hat and
+ *     per tick which offered act to take, including holding one item back while submitting
+ *     another. `org-cadence.test.ts` pins that.
  *
- * Each of those is a next change, not a defect in this file.
+ * ── SO WHY IS IT STILL HERE ──────────────────────────────────────────────────
+ * Because it is a good FIXTURE and a bad organization. One deterministic story, the same every
+ * time, exercising the nine phases in a fixed order with every refusal surfaced — which is exactly
+ * what four test files want and exactly what an organization must not be. Deleting it would trade
+ * real coverage for the satisfaction of saying the script was gone.
  *
  * ── THE NINE PHASES ──────────────────────────────────────────────────────────
  * It runs the whole loop the corporate register describes, in order, with every step's refusal

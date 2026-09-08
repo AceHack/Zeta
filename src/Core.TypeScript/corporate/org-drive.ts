@@ -46,7 +46,14 @@ import { postToAnchor, type AnchorBoard } from "./discussion-anchor";
 import { headsOf, openArtifact } from "./artifact-deliberation";
 import { conveneOverArtifact } from "./artifact-meeting";
 import { ExpectedOutput } from "./discussion-anchor";
-import type { Calendar } from "./work-schedule";
+import {
+  firstCommonFreeSlot,
+  scheduleBlock,
+  scheduleMeeting,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  type Calendar,
+} from "./work-schedule";
 import type { OrgChart } from "./org-chart";
 import { detectLag, type LagInput } from "./lag-detection";
 import { GateOutcome, runGateChain } from "./quality-gate";
@@ -118,6 +125,31 @@ export interface DriveDeps {
    * the work, and frees its domain for something else.
    */
   readonly escalationChooser?: OrgChooser<EscalationAction>;
+  /**
+   * How long a block of work is, and therefore how the calendar fills.
+   *
+   * ABSENT MEANS NO SCHEDULING AT ALL, which is the honest default: a register that does not know
+   * how long work takes cannot book time for it, and picking an hour on its behalf would put a
+   * number nobody chose into the one surface that decides whether a hat is busy.
+   */
+  readonly workBlockMs?: number;
+  /**
+   * How far ahead a block may be booked. Absent is one day from `nowMs`.
+   *
+   * Bounded on purpose. An unbounded search would always find a slot — by booking work into a week
+   * the cadence will never reach — so a calendar that is genuinely full would look fine.
+   */
+  readonly scheduleHorizonMs?: number;
+  /**
+   * How long a chain meeting takes.
+   *
+   * ABSENT MEANS NO MEETING IS EVER OFFERED, matching `workBlockMs` rather than quietly defaulting.
+   * A caught inconsistency: this used to fall back to half an hour, so a caller who had declared no
+   * scheduling at all still had its calendar filled with meetings. Absent is a caller saying it
+   * does not schedule, and honouring that in one place and not the other is worse than either
+   * choice made consistently.
+   */
+  readonly meetingMs?: number;
   readonly lagSweep?: {
     readonly observerHatId: string;
     readonly anchorId: string;
@@ -137,7 +169,16 @@ export function tick(state: DriveState, hatId: string, deps: DriveDeps): TickRep
   const world: World = {
     backlog: [],
     ...orgSurfaceFor(
-      state.view,
+      // THE CALENDAR TRAVELS WITH THE VIEW, one-directionally, AND ONLY WHEN MEETINGS ARE ON.
+      //
+      // `DriveState.calendar` is where bookings are made; the surface only needs to read it, and
+      // giving the menu its own copy to write would be two calendars that disagree the first time
+      // one of them was updated.
+      //
+      // Withheld when the caller has declared no meeting length, because that is what gates the
+      // chain-meeting offer — the same shape as `gateAttempts` gating submissions. Offering a
+      // meeting this drive would then refuse to book is the livelock it has produced four times.
+      deps.meetingMs === undefined ? state.view : { ...state.view, calendar: state.calendar },
       hatId,
       deps.resourceAuthorityHatId,
       deps.directionReviewMs === undefined
@@ -219,7 +260,8 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       const assigned = assign(state.cascade, deps.chart, effect.workId, effect.toHatId);
       if (!assigned.ok) return { state, changed: false, refusals: [assigned.reason] };
       const view: OrgView = { ...state.view, cascade: assigned.cascade.nodes };
-      return { state: { ...state, cascade: assigned.cascade, view }, changed: true, refusals: [] };
+      const booked = bookWork({ ...state, cascade: assigned.cascade, view }, effect.workId, effect.toHatId, deps);
+      return { state: booked.state, changed: true, refusals: booked.refusals };
     }
 
     case "reassign":
@@ -424,6 +466,46 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       return { state: { ...state, view: { ...state.view, priorities } }, changed: true, refusals: [] };
     }
 
+    case "convene_chain": {
+      // AT A TIME THEY ARE ALL FREE, or not at all. `firstCommonFreeSlot` is what makes this a
+      // booking rather than an announcement — a meeting placed over somebody's existing work is a
+      // conflict the calendar exists to refuse, and forcing it would make "is this hat busy"
+      // unanswerable.
+      const duration = deps.meetingMs;
+      // A GUARD ON A PUBLIC FUNCTION, not a defensive shrug. `apply` is exported and a caller can
+      // hand it any effect; from the drive's own menu this is unreachable, because the offer is
+      // gated on the same field.
+      if (duration === undefined) {
+        return { state, changed: false, refusals: ["no meeting length was declared, so none can be booked"] };
+      }
+      const horizon = deps.scheduleHorizonMs ?? 24 * 60 * 60 * 1000;
+      const start = firstCommonFreeSlot(
+        state.calendar,
+        effect.attendeeHatIds,
+        deps.nowMs,
+        deps.nowMs + horizon,
+        duration,
+        duration,
+      );
+      if (start === undefined) {
+        return {
+          state,
+          changed: false,
+          refusals: [`no slot in the next ${String(horizon)}ms when all ${String(effect.attendeeHatIds.length)} are free`],
+        };
+      }
+      const booked = scheduleMeeting(state.calendar, {
+        meetingId: deps.createId("mtg"),
+        attendeeHatIds: effect.attendeeHatIds,
+        blockIds: effect.attendeeHatIds.map(() => deps.createId("blk")),
+        startMs: start,
+        endMs: start + duration,
+        workItemId: effect.workId,
+      });
+      if (!booked.ok) return { state, changed: false, refusals: [booked.reason] };
+      return { state: { ...state, calendar: booked.calendar }, changed: true, refusals: [] };
+    }
+
     case "review":
       // A REVIEW IS NOT APPLIED HERE. Its verdict belongs to the pipeline's gate, which is where
       // separation of duties, evidence and the legal-outcome clamp all live. Recording an approval
@@ -580,6 +662,42 @@ export function driveUntilSettled(
   return { state: current, rounds, settled: false };
 }
 
+/**
+ * Reserve time for work that has just landed on somebody.
+ *
+ * ── WHY THIS IS A CONSEQUENCE AND NOT A CHOICE ───────────────────────────────
+ * `org-cycle.ts` books work blocks as its own phase, and it was the last thing it did that no tick
+ * could. It is not a menu item here, deliberately: an assignment that reserves no time is an
+ * assignment nobody can honour, and making it a separate act the assignee might not choose would
+ * put "was this scheduled" back into the class of things that can be silently skipped. The schedule
+ * is runtime authority — after this, "is this hat busy" has an answer.
+ *
+ * A FAILURE TO BOOK DOES NOT UNDO THE ASSIGNMENT. Refusing the placement because the calendar is
+ * full would stall the organization over a fact about one week; the work is assigned, the failure
+ * is reported, and a full calendar shows up as a refusal rather than as an assignment that quietly
+ * has no time behind it.
+ */
+function bookWork(state: DriveState, workId: string, hatId: string, deps: DriveDeps): ApplyResult {
+  const duration = deps.workBlockMs;
+  if (duration === undefined) return { state, changed: true, refusals: [] };
+  const horizon = deps.scheduleHorizonMs ?? 24 * 60 * 60 * 1000;
+  const start = firstCommonFreeSlot(state.calendar, [hatId], deps.nowMs, deps.nowMs + horizon, duration, duration);
+  if (start === undefined) {
+    return { state, changed: true, refusals: [`no free slot for '${hatId}' to work on '${workId}'`] };
+  }
+  const booked = scheduleBlock(state.calendar, {
+    blockId: deps.createId("blk"),
+    hatId,
+    blockType: ScheduleBlockType.PrioritizedWork,
+    startMs: start,
+    endMs: start + duration,
+    state: ScheduleBlockState.Scheduled,
+    workItemId: workId,
+  });
+  if (!booked.ok) return { state, changed: true, refusals: [booked.reason] };
+  return { state: { ...state, calendar: booked.calendar }, changed: true, refusals: [] };
+}
+
 /** Land a controlled steal: move the assignee, then tell the hat it was taken from. */
 function applyReassign(state: DriveState, t: WorkTransfer, deps: DriveDeps): ApplyResult {
   const moved = reassign(state.cascade, deps.chart, t.workId, t.toHatId);
@@ -599,7 +717,10 @@ function applyReassign(state: DriveState, t: WorkTransfer, deps: DriveDeps): App
   });
   if (!said.ok) return { state, changed: false, refusals: [said.reason] };
   const view: OrgView = { ...state.view, cascade: moved.cascade.nodes, board: said.board };
-  return { state: { ...state, cascade: moved.cascade, view }, changed: true, refusals: [] };
+  // The new owner needs time on it just as much as a first assignee does. Work that moves and
+  // keeps the old holder's slot is work nobody has booked.
+  const booked = bookWork({ ...state, cascade: moved.cascade, view }, t.workId, t.toHatId, deps);
+  return { state: booked.state, changed: true, refusals: booked.refusals };
 }
 
 /** Land alternate work: place it, then record against the BLOCKED item why the agent moved. */
@@ -620,5 +741,9 @@ function applyAlternate(state: DriveState, a: AlternateAssignment, deps: DriveDe
   });
   if (!noted.ok) return { state, changed: false, refusals: [noted.reason] };
   const view: OrgView = { ...state.view, cascade: placed.cascade.nodes, board: noted.board };
-  return { state: { ...state, cascade: placed.cascade, view }, changed: true, refusals: [] };
+  // Alternate work is still work, and it still needs an hour in somebody's day. Skipping the
+  // booking here would make the one placement path that exists for a BLOCKED hat the one that
+  // reserves nothing — which is the shape where a calendar quietly stops describing anything.
+  const booked = bookWork({ ...state, cascade: placed.cascade, view }, a.candidate.workId, a.agentHatId, deps);
+  return { state: booked.state, changed: true, refusals: booked.refusals };
 }

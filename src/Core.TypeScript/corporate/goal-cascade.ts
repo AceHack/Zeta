@@ -859,9 +859,23 @@ export function cascadeChainOf(cascade: Cascade, workId: string): readonly strin
  * lead, then manager, then director, then C-suite — each named, each reachable.
  */
 export function accountableHatsFor(cascade: Cascade, workId: string): readonly string[] {
-  return cascadeChainOf(cascade, workId)
-    .map((id) => nodeById(cascade, id)?.ownerHatId)
-    .filter((id): id is string => id !== undefined);
+  // DISTINCT HATS, in chain order. One hat can wear several rungs — that is what the bending
+  // ladder produces, and in ten of this chart is sixteen departments it is the normal case: a
+  // director with no manager and no lead owns the initiative, the project and the task.
+  //
+  // Listing it three times is not a longer chain, it is the same hat counted repeatedly, and the
+  // first caller to treat this as a set of people broke on it: `scheduleMeeting` refused every
+  // chain meeting in a simulated week with "lists an attendee twice". Counting duplicates would
+  // also make a one-hat chain look like a room of three.
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const id of cascadeChainOf(cascade, workId)) {
+    const owner = nodeById(cascade, id)?.ownerHatId;
+    if (owner === undefined || seen.has(owner)) continue;
+    seen.add(owner);
+    out.push(owner);
+  }
+  return out;
 }
 
 /** Every task with no assignee — what the RMO is being asked to staff. */

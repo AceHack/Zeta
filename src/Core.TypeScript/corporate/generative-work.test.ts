@@ -16,6 +16,7 @@ import {
   breakdownOpenings,
   directionOpenings,
   escalationOpenings,
+  meetingOpenings,
   draftingOpenings,
   GenerativeKind,
   generativeOpeningsFor,
@@ -510,5 +511,85 @@ describe("ESCALATION — the writer for a counter nobody read at the limit", () 
     // and the guard exists for charts where the walk runs out.
     const top = node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "executive_board_member" });
     expect(escalationOpenings(chart, [top], GATES, NONE)[0]?.byHatId).toBe("executive_board_member");
+  });
+});
+
+describe("THE CHAIN MEETS — a planned review, not a repair", () => {
+  /** A goal, its project, and a staffed task under it: three rungs, three different owners. */
+  const CHAIN: readonly CascadeNode[] = [
+    { workId: "g", workType: WorkType.Goal, title: "g", state: WorkState.Open, ownerHatId: "cto" },
+    { workId: "p", workType: WorkType.Project, title: "p", state: WorkState.Open, ownerHatId: "engineering_director", parentWorkId: "g" },
+    {
+      workId: "t",
+      workType: WorkType.Task,
+      title: "the task",
+      state: WorkState.Open,
+      ownerHatId: "tech_lead",
+      parentWorkId: "p",
+      assigneeHatId: "backend_implementer",
+    },
+  ];
+
+  test("staffed work with a chain above it is offered to its OWNER", () => {
+    const open = meetingOpenings(chart, CHAIN, NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.ConveneChain);
+    expect(open[0]?.byHatId).toBe("tech_lead");
+    expect(open[0]?.subjectId).toBe("t");
+  });
+
+  test("UNSTAFFED WORK IS NOT — a chain convening over work nobody is doing is a meeting about an intention", () => {
+    const { assigneeHatId: _none, ...unstaffed } = CHAIN[2] as CascadeNode;
+    expect(meetingOpenings(chart, [CHAIN[0]!, CHAIN[1]!, unstaffed], NONE)).toEqual([]);
+  });
+
+  test("ONCE — a meeting that exists is a meeting that happened", () => {
+    // The calendar is the record and the opening reads its own effect back, so offering again is
+    // the livelock this drive has produced four times.
+    expect(meetingOpenings(chart, CHAIN, new Set(["t"]))).toEqual([]);
+  });
+
+  test("A CHAIN OF ONE IS NOT A MEETING — and `scheduleMeeting` would refuse it", () => {
+    // The bending ladder makes this the normal case in ten of sixteen departments: one hat owns the
+    // initiative, the project and the task. Offering it a meeting with itself would be an act the
+    // organization refuses — the menu's own rule forbids that.
+    const solo: readonly CascadeNode[] = [
+      { workId: "g2", workType: WorkType.Goal, title: "g", state: WorkState.Open, ownerHatId: "architecture_director" },
+      {
+        workId: "t2",
+        workType: WorkType.Task,
+        title: "t",
+        state: WorkState.Open,
+        ownerHatId: "architecture_director",
+        parentWorkId: "g2",
+        assigneeHatId: "architect",
+      },
+    ];
+    expect(meetingOpenings(chart, solo, NONE)).toEqual([]);
+  });
+
+  test("finished and abandoned work convenes nobody", () => {
+    for (const state of [WorkState.Done, WorkState.Canceled]) {
+      const closed = [CHAIN[0]!, CHAIN[1]!, { ...(CHAIN[2] as CascadeNode), state }];
+      expect(meetingOpenings(chart, closed, NONE)).toEqual([]);
+    }
+  });
+
+  test("a non-leaf is not offered one — the review is of the work being DONE", () => {
+    const project = [CHAIN[0]!, { ...(CHAIN[1] as CascadeNode), assigneeHatId: "backend_implementer" }];
+    expect(meetingOpenings(chart, project, NONE)).toEqual([]);
+  });
+
+  test("NO CALENDAR MEANS NO OFFER — an organization that keeps none cannot hold a meeting twice", () => {
+    const input = {
+      chart,
+      cascade: CHAIN,
+      artifactIds: new Set(["doc-t"]),
+      pricedWorkIds: new Set(["g", "p", "t"]),
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "tech_lead").filter((o) => o.kind === GenerativeKind.ConveneChain)).toEqual([]);
+    const withCalendar = generativeOpeningsFor({ ...input, met: NONE }, "tech_lead");
+    expect(withCalendar.map((o) => o.kind)).toContain(GenerativeKind.ConveneChain);
   });
 });

@@ -76,7 +76,8 @@ import { firstLegalChooser, type OrgChooser } from "./org-decision";
 import { domainRouting, isDomain, type Domain } from "./domain-ontology";
 import { isPriorityClass } from "./prioritization";
 import type { CascadeNode } from "./goal-cascade";
-import { WorkState, WorkType } from "./goal-cascade";
+import { accountableHatsFor, WorkState, WorkType } from "./goal-cascade";
+import type { Calendar } from "./work-schedule";
 import { isLeafType } from "./goal-cascade";
 
 /** The organization as this bridge reads it. Everything it needs, nothing it does not. */
@@ -128,6 +129,15 @@ export interface OrgView {
    * `org-cycle.ts` already applied; it is here so a tick obeys the same bound the script did.
    */
   readonly gateAttempts?: { readonly counts: ReadonlyMap<string, number>; readonly maxAttempts: number };
+  /**
+   * What has been booked, so the surface can tell whether a meeting has already happened.
+   *
+   * READ-ONLY HERE, and a projection of the drive's own calendar rather than a second copy of it:
+   * `DriveState.calendar` is where bookings are made and this is what the menu is shown. Absent
+   * means no chain meeting is ever offered, which is the honest default — a register that cannot
+   * tell whether a meeting happened would offer to hold one again every round.
+   */
+  readonly calendar?: Calendar;
   readonly requirements?: ReadonlyMap<
     string,
     {
@@ -526,6 +536,24 @@ export function generativeFor(
       // READ BACK OFF THE ORGANISATION'S OWN RECORD, never held beside it. An escalation is a
       // routed signal, so the signals ARE the list of what has been ruled on — and a second list
       // could disagree with them.
+      // THE CALENDAR IS THE RECORD OF WHAT MET. Reading it back beats a second list, which could
+      // disagree with the bookings themselves — and a meeting that exists is a meeting that
+      // happened.
+      // ABSENT WHEN THERE IS NO CALENDAR, not an empty set. `?? []` made this always DEFINED, so
+      // `meetingOpenings` ran for callers who had declared no scheduling at all and the drive
+      // offered meetings it would then refuse to book — the livelock, arriving through a nullish
+      // coalescing operator. An empty set means "nothing has met yet"; absent means "this
+      // organization does not keep a calendar", and they are different facts.
+      ...(view.calendar === undefined
+        ? {}
+        : {
+            met: new Set(
+              view.calendar.blocks
+                .filter((b) => b.meetingId !== undefined && b.workItemId !== undefined)
+                .map((b) => b.workItemId)
+                .filter((id): id is string => id !== undefined),
+            ),
+          }),
       escalated: new Set(
         view.signals
           .filter((sig) => sig.tool === SignalTool.RequestEscalation)
@@ -571,6 +599,9 @@ export function generativeFor(
         break;
       case GenerativeKind.EscalateChurn:
         out.push({ kind: "escalate_churn", subjectId: o.subjectId, prompt: o.prompt });
+        break;
+      case GenerativeKind.ConveneChain:
+        out.push({ kind: "convene_chain", subjectId: o.subjectId, prompt: o.prompt });
         break;
       case GenerativeKind.BreakDownWork:
         // DERIVED FROM THE PARENT, so the same undecomposed rung yields the same child id every
@@ -645,6 +676,21 @@ export type OrgEffect =
       readonly kind: "convene";
       readonly artifactId: string;
       readonly withHatIds: readonly string[];
+    }
+  /**
+   * Every level accountable for a piece of work, in one room, at a time they are all free.
+   *
+   * A distinct effect from `convene`, and not a variation on it. That one repairs a DIVERGED
+   * ARTIFACT and its attendees are whoever touched it; this one is a planned review of WORK and its
+   * attendees are derived from the cascade. Collapsing them would make the attendee rule depend on
+   * which caller happened to build the effect.
+   */
+  | {
+      readonly kind: "convene_chain";
+      readonly workId: string;
+      readonly title: string;
+      readonly attendeeHatIds: readonly string[];
+      readonly calledByHatId: string;
     }
   | {
       readonly kind: "turn";
@@ -907,6 +953,30 @@ export function effectOf(
         return { ok: false, reason: `'${action.subjectId}' is already ${node.state}` };
       }
       return { ok: true, effect: { kind: "submission", workId: action.subjectId, proposerHatId: hatId } };
+    }
+    case "convene_chain": {
+      const node = view.cascade.find((n) => n.workId === action.subjectId);
+      if (node === undefined) return { ok: false, reason: `no work item '${action.subjectId}'` };
+      if (node.ownerHatId !== hatId) {
+        return { ok: false, reason: `'${action.subjectId}' is owned by '${node.ownerHatId}', not '${hatId}'` };
+      }
+      // DERIVED FROM THE CASCADE, never from the caller. The attendees of a review of this work ARE
+      // the hats accountable for it, and letting the convener name them would let a hat hold a
+      // review of its own work with nobody who could question it.
+      const attendees = accountableHatsFor({ nodes: view.cascade }, action.subjectId);
+      if (attendees.length < 2) {
+        return { ok: false, reason: `'${action.subjectId}' has no accountable chain above its owner` };
+      }
+      return {
+        ok: true,
+        effect: {
+          kind: "convene_chain",
+          workId: action.subjectId,
+          title: node.title,
+          attendeeHatIds: attendees,
+          calledByHatId: hatId,
+        },
+      };
     }
     case "escalate_churn": {
       const node = view.cascade.find((n) => n.workId === action.subjectId);

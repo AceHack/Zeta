@@ -41,6 +41,7 @@
 
 import { Domain, DomainMatch, departmentFor, type DomainRouting } from "./domain-ontology";
 import {
+  accountableHatsFor,
   isLeafType,
   nextRung,
   ownerForRung,
@@ -98,6 +99,15 @@ export const GenerativeKind = {
    * for this trigger and this level — a manager's act, on a manager's menu.
    */
   EscalateChurn: "escalate_churn",
+  /**
+   * Get the chain accountable for a piece of work into one room.
+   *
+   * The last of `org-cycle.ts`'s phases a tick could not reach. The drive could convene over a
+   * DIVERGED ARTIFACT — two heads and no agreed version — and that is a repair, not a plan. A
+   * booking across every accountable level's calendar, before the work is in trouble, is the act
+   * that makes the levels of this chart address each other rather than merely report upward.
+   */
+  ConveneChain: "convene_chain",
 } as const;
 
 export type GenerativeKind = (typeof GenerativeKind)[keyof typeof GenerativeKind];
@@ -675,6 +685,48 @@ export function escalationOpenings(
   return out;
 }
 
+/**
+ * Staffed work whose accountable chain has never sat down together.
+ *
+ * ── OFFERED TO THE OWNER, ONCE, AND ONLY WHEN THERE IS A CHAIN ───────────────
+ * `accountableHatsFor` walks from the work's own owner up to the goal's, so the attendee list is
+ * derived from the cascade rather than chosen — the same discipline as every routing decision
+ * here. A chain of one is not a meeting and is skipped: `scheduleMeeting` refuses a single
+ * attendee, and offering an act the organization will refuse is the livelock this drive has
+ * produced four times.
+ *
+ * ONCE, because a meeting that exists is a meeting that happened. The calendar is the record, so
+ * the opening reads its own effect back rather than keeping a second list.
+ */
+export function meetingOpenings(
+  chart: OrgChart,
+  cascade: readonly CascadeNode[],
+  alreadyMet: ReadonlySet<string>,
+): readonly GenerativeOpening[] {
+  const live = liveWorkSet({ nodes: cascade });
+  const out: GenerativeOpening[] = [];
+  for (const node of cascade) {
+    if (!isLive(live, node)) continue;
+    if (!isLeafType(node.workType)) continue;
+    // STAFFED WORK ONLY. A chain convening over work nobody is doing yet is a meeting about an
+    // intention, and the rung below it has not been decided.
+    if (node.assigneeHatId === undefined) continue;
+    if (alreadyMet.has(node.workId)) continue;
+    const attendees = accountableHatsFor({ nodes: cascade }, node.workId);
+    if (attendees.length < 2) continue;
+    if (attendees.some((id) => chart.byId.get(id) === undefined)) continue;
+    out.push({
+      kind: GenerativeKind.ConveneChain,
+      byHatId: node.ownerHatId,
+      prompt: `walk '${node.title}' through with the ${String(attendees.length)} levels accountable for it`,
+      subjectId: node.workId,
+      ...(node.domain === undefined ? {} : { domain: node.domain }),
+      because: `'${node.workId}' is staffed and its accountable chain has not met`,
+    });
+  }
+  return out;
+}
+
 export interface GenerativeInput {
   readonly chart: OrgChart;
   readonly cascade: readonly CascadeNode[];
@@ -706,6 +758,14 @@ export interface GenerativeInput {
   readonly gates?: { readonly attempts: ReadonlyMap<string, number>; readonly maxAttempts: number };
   /** Work items a manager has already ruled on. See `escalationOpenings` for why one is the bound. */
   readonly escalated?: ReadonlySet<string>;
+  /**
+   * Work whose accountable chain has already met.
+   *
+   * Absent means NO MEETING IS EVER CONVENED, the same honest default as the gate counts: a
+   * register that cannot tell whether a meeting happened cannot offer to hold one without offering
+   * it again every round.
+   */
+  readonly met?: ReadonlySet<string>;
 }
 
 /**
@@ -731,6 +791,7 @@ export function generativeOpeningsFor(input: GenerativeInput, hatId: string): re
     ...(input.gates === undefined
       ? []
       : escalationOpenings(input.chart, input.cascade, input.gates, input.escalated ?? new Set<string>())),
+    ...(input.met === undefined ? [] : meetingOpenings(input.chart, input.cascade, input.met)),
   ];
   return all
     .filter((o) => o.byHatId === hatId)

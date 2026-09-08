@@ -13,7 +13,7 @@ import { orgSurfaceFor, type OrgView } from "./org-observe-bridge";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { EMPTY_BOARD } from "./discussion-anchor";
-import { EMPTY_CALENDAR } from "./work-schedule";
+import { EMPTY_CALENDAR, ScheduleBlockState, ScheduleBlockType } from "./work-schedule";
 import { headsOf, mergeHistories, openArtifact, revise, type ArtifactHistory } from "./artifact-deliberation";
 import { WorkState, WorkType, type Cascade, type CascadeNode } from "./goal-cascade";
 import { SignalTool } from "./supervisor-signal";
@@ -319,5 +319,78 @@ describe("what the driver REFUSES, and reports", () => {
     expect(r.changes).toBe(1);
     expect(r.ticks[0]?.changed).toBe(true);
     expect(r.ticks[1]?.changed).toBe(false);
+  });
+});
+
+describe("A MEETING GOES WHERE EVERYONE IS FREE, not where the first one is", () => {
+  const HOUR = 60 * 60 * 1000;
+  const NOW = 1_000_000;
+
+  /** The convener is free all day; a hat further up the chain is not. */
+  function withBusyAttendee(): DriveState {
+    const base = state();
+    return {
+      ...base,
+      calendar: {
+        blocks: [
+          {
+            blockId: "busy-1",
+            hatId: "engineering_director",
+            blockType: ScheduleBlockType.PrioritizedWork,
+            startMs: NOW,
+            endMs: NOW + 2 * HOUR,
+            state: ScheduleBlockState.Scheduled,
+          },
+        ],
+      },
+    };
+  }
+
+  const effect = {
+    kind: "convene_chain" as const,
+    workId: "task-1",
+    title: "a task",
+    // ORDER MATTERS TO THIS TEST: the convener comes first and is free, so a search that consulted
+    // only the head of the list would book straight over the director's morning.
+    attendeeHatIds: ["tech_lead", "engineering_director"],
+    calledByHatId: "tech_lead",
+  };
+
+  function deps2(): DriveDeps {
+    let n = 0;
+    return {
+      chart,
+      nowMs: NOW,
+      createId: (p) => `${p}-${String((n += 1))}`,
+      resourceAuthorityHatId: "rmo_office",
+      meetingMs: HOUR,
+    };
+  }
+
+  test("the booking lands AFTER the busy attendee is free again", () => {
+    // A mutation run booked the slot from the convener's calendar alone and killed nothing, because
+    // in every other fixture everybody happens to be free — the two searches were indistinguishable
+    // until somebody was actually busy. This is that somebody.
+    const applied = apply(withBusyAttendee(), effect, deps2());
+    expect(applied.refusals).toEqual([]);
+    expect(applied.changed).toBe(true);
+    const legs = applied.state.calendar.blocks.filter((b) => b.meetingId !== undefined);
+    expect(legs).toHaveLength(2);
+    expect(new Set(legs.map((l) => l.startMs))).toEqual(new Set([NOW + 2 * HOUR]));
+  });
+
+  test("and it is REFUSED when the horizon holds no slot they share", () => {
+    // Bounded on purpose: an unbounded search would always find one, by booking into a week the
+    // cadence will never reach — so a calendar that is genuinely full would look fine.
+    const cramped = apply(withBusyAttendee(), effect, { ...deps2(), scheduleHorizonMs: HOUR });
+    expect(cramped.changed).toBe(false);
+    expect(cramped.refusals[0]).toContain("when all 2 are free");
+  });
+
+  test("no meeting length declared, no booking — a guard on a function callers can reach directly", () => {
+    const { meetingMs: _none, ...noLength } = deps2();
+    const out = apply(withBusyAttendee(), effect, noLength);
+    expect(out.changed).toBe(false);
+    expect(out.refusals[0]).toContain("no meeting length was declared");
   });
 });

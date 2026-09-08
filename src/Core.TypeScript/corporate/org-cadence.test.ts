@@ -461,3 +461,126 @@ describe("A RULING THAT STOPS THE WORK — the other half of an escalation", () 
     expect(out.periods.every((p) => p.settled)).toBe(true);
   });
 });
+
+describe("THE CALENDAR IS RUNTIME AUTHORITY — the last two script-only phases", () => {
+  const HOUR = 60 * 60 * 1000;
+  const week = (scheduling = true) => {
+    let n = 0;
+    return runCadence(
+      fresh(true),
+      HATS,
+      {
+        chart,
+        nowMs: START,
+        createId: (p) => `${p}-${String((n += 1))}`,
+        resourceAuthorityHatId: "rmo_office",
+        directionReviewMs: DAY_MS,
+        // The keys are ABSENT rather than undefined when scheduling is off:
+        // `exactOptionalPropertyTypes` makes those different things, and the register's own rule is
+        // that an absent key means the caller declared nothing.
+        ...(scheduling ? { workBlockMs: HOUR, meetingMs: HOUR / 2 } : {}),
+      },
+      { periodMs: DAY_MS, periods: 3, maxRoundsPerPeriod: 80 },
+    );
+  };
+
+  const out = week();
+
+  test("EVERY ASSIGNMENT RESERVES TIME — an assignment nobody booked is one nobody can honour", () => {
+    // `org-cycle.ts` booked work blocks as its own phase and it was the last thing it did that no
+    // tick could. Not a menu item here, deliberately: making it a separate act the assignee might
+    // not choose would put "was this scheduled" back among the things that can be silently skipped.
+    const assigned = out.state.cascade.nodes.filter((n) => n.assigneeHatId !== undefined);
+    const booked = out.state.calendar.blocks.filter((b) => b.blockType === "prioritized_work");
+    expect(assigned.length).toBeGreaterThan(0);
+    expect(new Set(booked.map((b) => b.workItemId))).toEqual(new Set(assigned.map((n) => n.workId)));
+  });
+
+  test("...for the hat that actually holds the work", () => {
+    const byWork = new Map(out.state.cascade.nodes.map((n) => [n.workId, n.assigneeHatId]));
+    for (const block of out.state.calendar.blocks.filter((b) => b.blockType === "prioritized_work")) {
+      expect(block.hatId).toBe(byWork.get(block.workItemId ?? "") ?? "?");
+    }
+  });
+
+  test("NO `workBlockMs` MEANS NO BOOKING — a register that does not know how long work takes cannot reserve it", () => {
+    // The honest default said out loud. Picking an hour on the caller's behalf would put a number
+    // nobody chose into the one surface that decides whether a hat is busy.
+    const unscheduled = week(false);
+    expect(unscheduled.state.calendar.blocks).toEqual([]);
+    // AND THE ORGANISATION STILL RUNS. Scheduling is a consequence of assignment, not a gate on it.
+    expect(unscheduled.state.cascade.nodes.filter((n) => n.state === "done").length).toBeGreaterThan(0);
+  });
+
+  test("THE ACCOUNTABLE CHAIN MEETS, at a time they are all free", () => {
+    const meetings = out.state.calendar.blocks.filter((b) => b.meetingId !== undefined);
+    expect(meetings.length).toBeGreaterThan(0);
+    // Every leg of a meeting shares its id, its start and its end — that is what makes it one
+    // booking across several calendars rather than several bookings that happen to agree.
+    for (const [, legs] of Object.entries(
+      meetings.reduce<Record<string, typeof meetings>>((acc, b) => {
+        const key = b.meetingId ?? "";
+        return { ...acc, [key]: [...(acc[key] ?? []), b] };
+      }, {}),
+    )) {
+      expect(legs.length).toBeGreaterThan(1);
+      expect(new Set(legs.map((l) => l.startMs)).size).toBe(1);
+      expect(new Set(legs.map((l) => l.hatId)).size).toBe(legs.length);
+    }
+  });
+
+  test("...ONCE per work item — the calendar is the record, so it reads its own effect back", () => {
+    const met = out.state.calendar.blocks
+      .filter((b) => b.meetingId !== undefined)
+      .map((b) => b.workItemId);
+    const perWork = new Map<string, Set<string>>();
+    for (const b of out.state.calendar.blocks.filter((x) => x.meetingId !== undefined)) {
+      const key = b.workItemId ?? "";
+      perWork.set(key, (perWork.get(key) ?? new Set<string>()).add(b.meetingId ?? ""));
+    }
+    expect(met.length).toBeGreaterThan(0);
+    for (const [, ids] of perWork) expect(ids.size).toBe(1);
+  });
+
+  test("NOT ONE REFUSAL, with the calendar in play", () => {
+    // A booking placed over somebody's existing work is a conflict the calendar exists to refuse,
+    // and a run that produced them would mean the drive was proposing meetings it could not hold.
+    const refused = out.periods
+      .flatMap((p) => p.rounds)
+      .flatMap((r) => r.ticks)
+      .filter((t) => t.refusals.length > 0);
+    expect(refused.map((t) => `${t.hatId}:${t.chosen?.kind}:${t.refusals[0]}`)).toEqual([]);
+  });
+});
+
+describe("PER-TASK OUTCOMES — a claim checked rather than asserted", () => {
+  // `org-cycle.ts`'s docstring listed `outcomeFor` among the things only it could do. That was too
+  // strong and this is the check: `DriveDeps.choose` already lets a caller decide, per hat and per
+  // tick, which offered act to take — including declining to submit a particular item while
+  // submitting another.
+  test("a chooser can hold one item back and let the rest through", () => {
+    let n = 0;
+    const held = "direction-implementation-1-1-1-1";
+    const out = runCadence(
+      fresh(true),
+      HATS,
+      {
+        chart,
+        nowMs: START,
+        createId: (p) => `${p}-${String((n += 1))}`,
+        resourceAuthorityHatId: "rmo_office",
+        directionReviewMs: DAY_MS,
+        // Everything except submitting THIS item. The menu is ordered, so declining the first
+        // choice takes the next one rather than idling the hat.
+        choose: (menu) => menu.find((a) => !(a.kind === "submit_work" && a.subjectId === held)),
+      },
+      { periodMs: DAY_MS, periods: 2, maxRoundsPerPeriod: 80 },
+    );
+    const nodes = out.state.cascade.nodes;
+    expect(nodes.filter((x) => x.state === "done").length).toBeGreaterThan(0);
+    const holdout = nodes.find((x) => x.workId === held);
+    // Either the item was never created in this shorter run, or it exists and was NOT completed.
+    // Both are honest; what must not happen is it completing anyway.
+    expect(holdout?.state).not.toBe("done");
+  });
+});

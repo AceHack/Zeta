@@ -138,6 +138,10 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // in the first place. `decideEscalation` applies its own, stricter check — manager and above —
   // and this gate is the menu's half of it.
   escalate_churn: { kind: "escalate_churn", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `convene`, the same authority as pulling peers into a room over an artifact — because it is the
+  // same act. Both spend OTHER hats' calendars, which is exactly what that gate was carved for, and
+  // a second gate meaning the same thing would be two answers to one question.
+  convene_chain: { kind: "convene_chain", gate: "convene", scope: "unrestricted", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",
