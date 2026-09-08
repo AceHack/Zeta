@@ -1,0 +1,14 @@
+{
+  "id": "080d04178408d010a0130008ac75b345",
+  "at": "2026-09-08T21:33:14.906Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21F108S087G0R003JK8WST",
+    "type": "task",
+    "title": "D10 encode catalog with StringBuilder one UTF-8 pass",
+    "slug": "d10-encode-catalog-with-stringbuilder-one-utf-8-pass",
+    "priority": "P2",
+    "filename": "081M21F108S087G0R003JK8WST-d10-encode-catalog-with-stringbuilder-one-utf-8-pass.md"
+  }
+}

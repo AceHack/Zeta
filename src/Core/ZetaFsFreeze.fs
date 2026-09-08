@@ -146,35 +146,6 @@ module ZetaFsFreeze =
         else
             None
 
-    let private catalogObjectLines
-        (known: Dictionary<ContentHash256, uint64>)
-        (livePins: HashSet<ContentHash256>)
-        : string[] =
-        known
-        |> Seq.map (fun kv ->
-            let pin = if livePins.Contains kv.Key then "1" else "0"
-
-            kv.Key.ToHex()
-            + " "
-            + kv.Value.ToString(CultureInfo.InvariantCulture)
-            + " "
-            + pin)
-        |> Seq.toArray
-
-    let private catalogSetLines (objectSets: Dictionary<ContentHash256, ContentHash256[]>) : string[] =
-        objectSets
-        |> Seq.map (fun kv ->
-            let ids =
-                kv.Value
-                |> Array.map (fun id -> id.ToHex())
-                |> String.concat " "
-
-            if ids.Length = 0 then
-                "set " + kv.Key.ToHex()
-            else
-                "set " + kv.Key.ToHex() + " " + ids)
-        |> Seq.toArray
-
     let private encodeCatalog
         (gen: int64)
         (history: ZetaFsPolicy.HistoryPolicy)
@@ -182,28 +153,43 @@ module ZetaFsFreeze =
         (known: Dictionary<ContentHash256, uint64>)
         (livePins: HashSet<ContentHash256>)
         (objectSets: Dictionary<ContentHash256, ContentHash256[]>)
-        : string =
-        let body =
-            String.concat
-                "\n"
-                (Array.concat
-                    [| [| formatHistory history
-                          "meter " + meter.ToString(CultureInfo.InvariantCulture) |]
-                       catalogObjectLines known livePins
-                       catalogSetLines objectSets |])
+        : byte[] =
+        let sb = StringBuilder()
 
-        let payload =
-            "gen "
-            + gen.ToString(CultureInfo.InvariantCulture)
-            + "\n"
-            + body
+        sb
+            .Append("gen ")
+            .Append(gen.ToString(CultureInfo.InvariantCulture))
+            .Append('\n')
+            .Append(formatHistory history)
+            .Append('\n')
+            .Append("meter ")
+            .Append(meter.ToString(CultureInfo.InvariantCulture))
+        |> ignore
 
-        let crc = HardwareCrc.Crc32C(ReadOnlySpan(Encoding.UTF8.GetBytes payload))
+        for kv in known do
+            sb
+                .Append('\n')
+                .Append(kv.Key.ToHex())
+                .Append(' ')
+                .Append(kv.Value.ToString(CultureInfo.InvariantCulture))
+                .Append(' ')
+                .Append(if livePins.Contains kv.Key then "1" else "0")
+            |> ignore
 
-        "crc "
-        + crc.ToString(CultureInfo.InvariantCulture)
-        + "\n"
-        + payload
+        for kv in objectSets do
+            sb.Append('\n').Append("set ").Append(kv.Key.ToHex()) |> ignore
+
+            for id in kv.Value do
+                sb.Append(' ').Append(id.ToHex()) |> ignore
+
+        let payloadBytes = Encoding.UTF8.GetBytes(sb.ToString())
+        let crc = HardwareCrc.Crc32C(ReadOnlySpan payloadBytes)
+        let headerBytes =
+            Encoding.UTF8.GetBytes("crc " + crc.ToString(CultureInfo.InvariantCulture) + "\n")
+        let bytes = Array.zeroCreate (headerBytes.Length + payloadBytes.Length)
+        Buffer.BlockCopy(headerBytes, 0, bytes, 0, headerBytes.Length)
+        Buffer.BlockCopy(payloadBytes, 0, bytes, headerBytes.Length, payloadBytes.Length)
+        bytes
 
     let private parsePinLines
         (lines: string[])
@@ -320,8 +306,7 @@ module ZetaFsFreeze =
         catalogGen := gen
         let slot = int (gen % 2L)
         let fs = FileSystem.Current
-        let text = encodeCatalog gen history meter known livePins objectSets
-        let bytes = Encoding.UTF8.GetBytes text
+        let bytes = encodeCatalog gen history meter known livePins objectSets
 
         let writePublished path =
             let tmp = path + ".tmp"
