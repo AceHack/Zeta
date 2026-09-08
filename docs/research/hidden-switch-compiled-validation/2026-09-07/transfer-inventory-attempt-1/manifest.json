@@ -1,0 +1,1305 @@
+{
+  "SourceCommit": "370c110c93598874615efe60a5bed23ac6e5263d",
+  "ExecutionHead": "ed95d32fcd01bc54e6c4c904baa68e8f83c792d5",
+  "Scope": "Complete finite retained-metadata transfer inventory, not execution/body/runtime/closure admission. No raw dump, new memory query, LLVM/target launch or registered source stream.",
+  "Summary": {
+    "Words": 8665,
+    "Kinds": {
+      "ordinary-instruction-effects-uninspected": 7357,
+      "return": 125,
+      "call-direct": 468,
+      "call-indirect": 201,
+      "test-bit-branch": 58,
+      "compare-zero-branch": 119,
+      "jump-direct": 141,
+      "trap": 17,
+      "jump-indirect": 29,
+      "conditional-branch": 140,
+      "literal-load": 10
+    },
+    "UnresolvedReasons": {
+      "ordinary-instruction-effects-not-inspected": 7357,
+      "return-register-and-caller-not-observed": 125,
+      "control-target-outside-retained-code": 468,
+      "call-return-and-callee-effects-not-established": 669,
+      "static-cell-value-not-observed": 134,
+      "indirect-execution-and-target-set-not-established": 230,
+      "condition-feasibility-not-established": 317,
+      "unsupported-indirect-dependency": 39,
+      "trap-and-exception-path-not-established": 17,
+      "physical-literal-binding-not-observed": 10
+    },
+    "ControlTargetMembership": {
+      "outside-retained-code": 468,
+      "interior": 775,
+      "entry": 57
+    },
+    "StaticCellSites": 191,
+    "KnownCellReuseSites": 57,
+    "DistinctStaticCellAddresses": 67,
+    "UnknownStaticCellAddresses": 43,
+    "LiteralWords": 10,
+    "ExpectedLiteralBytes": 152,
+    "DistinctLiteralAddresses": 10,
+    "PhysicalLiteralsObserved": 0,
+    "Unprepared": 9,
+    "ExtraCompilerBlocks": 9,
+    "SelectedStoredInputs": 534,
+    "OriginalInputBytes": 7164913,
+    "SourcePins": 12,
+    "AllFullAdmissionFlagsFalse": true
+  },
+  "Records": [
+    {
+      "File": "journal.jsonl.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/journal.jsonl",
+      "Bytes": 260459,
+      "Sha256": "2D338A441B7BD5416BFBF6344B170746581534107BA917319E39ABD52A7E34BC",
+      "StoredBytes": 55004,
+      "StoredSha256": "650278D98F66D9BEF190A3917798732347282C94DCA4D768B7F4E9E140103177",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-000.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-000.json",
+      "Bytes": 6683,
+      "Sha256": "43BFF6705FDA5CFBA4D3AF75DDB49F278F88917E74C7829F05A375AC5433B136",
+      "StoredBytes": 1600,
+      "StoredSha256": "DC06D7C26EA4783ACE68DD07FE2E9C16A083C82F538F252C9FB14DF74E165623",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-001.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-001.json",
+      "Bytes": 6705,
+      "Sha256": "2A0F73379396F08EBDB7048E28343D080E76F5A6F226ACE5BF5ABB879D6BCC1F",
+      "StoredBytes": 1599,
+      "StoredSha256": "D3D39B27BF6818A4B5D7EC6F8A0F0C4DA5AE4A7924066A1E5A790B68199A2E22",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-002.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-002.json",
+      "Bytes": 159160,
+      "Sha256": "95121F533FD71994383A5E2B9D09073CD30763C93269B0A97ED5F1082211A1F8",
+      "StoredBytes": 11525,
+      "StoredSha256": "8EF51BF6347A443BF98FE5053718DB639918E91A1FA9FD7023655E24381866E6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-003.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-003.json",
+      "Bytes": 49513,
+      "Sha256": "A8FACB6BB39209655CC3779FF5A24EC7EBF9BC77A87376B46F4B5105AA5DFC93",
+      "StoredBytes": 4869,
+      "StoredSha256": "AA08DE2BAECB3CBA08AC31EA8BC856E42506F7535F960CC97B96CC755E2E179B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-004.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-004.json",
+      "Bytes": 344800,
+      "Sha256": "691082AB2BFD88034AE3857BFAE552BBF3E6E4CE56D8B3DE991B885C153FFA85",
+      "StoredBytes": 21637,
+      "StoredSha256": "8E78EFD7EA96B667EE5291308BEE9E7635CEAE832DED78F944FD954694B15848",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-005.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-005.json",
+      "Bytes": 63244,
+      "Sha256": "780E7477A7D53DFC4472282EFE7B2B3B390CC517F16F57A52ED5D75620EAE397",
+      "StoredBytes": 5950,
+      "StoredSha256": "877CE819035CF7DFFBB2112DD617BBD067CE9D0DA68888444C0342CBE34D6678",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-006.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-006.json",
+      "Bytes": 68251,
+      "Sha256": "F8C241A1911C4F1A72734D9C39F089C2AFA0FB2C39CC819E60B80FB324840C35",
+      "StoredBytes": 6093,
+      "StoredSha256": "07B8C0EFCB9600208040AA5796D60A64A120AADA4BDA0DD60530AAF4FCBB1223",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-007.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-007.json",
+      "Bytes": 62638,
+      "Sha256": "E664E002AE4EDFC6AD51EC55FB90B8CDB2F4F90E3E4FC25286F5163834221EA1",
+      "StoredBytes": 5977,
+      "StoredSha256": "B99FABCA18F24C6FADE1677C80020FC9149E3A5F44C0C6D552B97B89CB670457",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-008.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-008.json",
+      "Bytes": 11089,
+      "Sha256": "3AE4A5BDFC1CEC339B005E62878D4A623D09438CA6AA027DF754932B1DDD2C6A",
+      "StoredBytes": 1981,
+      "StoredSha256": "3E65B828FF1C3DB0B25FF3DAA6012B6C6459E7C00A94646F4B21406F67B0B508",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-009.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-009.json",
+      "Bytes": 50317,
+      "Sha256": "100763DFF287A7F596B474B3EE29272DAF0F02274521E75FF73C94F8D457F8BF",
+      "StoredBytes": 4981,
+      "StoredSha256": "BC1EEB2B46653BADDA25D4C3C81D8BEEB12CAD6B60BFBA2794C6FAB0A194D295",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-010.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-010.json",
+      "Bytes": 7822,
+      "Sha256": "FE2DCF332F73E9F5415DA4C5853E8D0E661E40479F24DFFFDB1127CCC6D0B057",
+      "StoredBytes": 1652,
+      "StoredSha256": "1F14E1878CA80442A7F86DDBA80D6D08A693CFBBA3FE1A509390604E0E9F2A47",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-011.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-011.json",
+      "Bytes": 87817,
+      "Sha256": "D9D147F8CFCEBB6167335F2F2AFAC06DE0B34048D72E420EDDDA05AFF1CB572C",
+      "StoredBytes": 7157,
+      "StoredSha256": "E944FF895CD7DD220F47C12672B02109F5F77A70E05233DA30E9B904CBC10D34",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-012.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-012.json",
+      "Bytes": 108896,
+      "Sha256": "42280527FF3EC6A39774BF2E94C11B3E5B98ACB08139ABDF4A47DBCD84434193",
+      "StoredBytes": 8515,
+      "StoredSha256": "244C972A8C1FBB8536F618DC5FCF15EDB773BC70933C4BE8F70F9D36E641A4F7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-013.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-013.json",
+      "Bytes": 60009,
+      "Sha256": "45ADF54CFDB7492311EC158604024749FCAC56F6568FC6DEA012BD8811E191BE",
+      "StoredBytes": 5838,
+      "StoredSha256": "59E1412245C76393506BA8C6B03B154921C82E23BD583716AFBE1373003B5C97",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-014.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-014.json",
+      "Bytes": 7829,
+      "Sha256": "7355633410EAB186DD8426C97728F0A5891E635282932B3AB83AC437109F2526",
+      "StoredBytes": 1651,
+      "StoredSha256": "8EF56B9D382801E73EE5B553868BD7BE92776D0683D9E789C68CC22AECD9D8C6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-015.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-015.json",
+      "Bytes": 11107,
+      "Sha256": "C3B45DA40A1FBB2A4B59800E67A2E687CBD7A2461F512104DC4EB0F0F2C33A14",
+      "StoredBytes": 1979,
+      "StoredSha256": "9452E8003CCCEBACBA821EA010B4A3F910CC722B71176DD3F0A3E8D292D5AA14",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-016.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-016.json",
+      "Bytes": 56166,
+      "Sha256": "BC845C70286054AC1C0FE963D6473E2C984EACD48454594C5A6BAB7D1CAE6EC5",
+      "StoredBytes": 5360,
+      "StoredSha256": "7EA916244D8C1C60069CEA19D5C29C2B85AF0DCC7547C7E0C316704E550C8319",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-017.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-017.json",
+      "Bytes": 7829,
+      "Sha256": "EDAA97E3208B76B660BAC18B4F58ECC98B122C8D0D40C93A23B2BACB4C611C99",
+      "StoredBytes": 1657,
+      "StoredSha256": "130757D9C872F92D8E4833FC9FC9690A85F2506D47663038E16EAA2C0E842A29",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-018.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-018.json",
+      "Bytes": 264361,
+      "Sha256": "51C689CDF0E84FC41FC1F200B70A80678FC7A30B61B9F28ABC0FCC737CF6BD9F",
+      "StoredBytes": 17170,
+      "StoredSha256": "8CBC6F577D81EE89F4E0BDF9314C4A0965CC3FDB87A9A38295D4A92A77AC60B9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-019.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-019.json",
+      "Bytes": 103817,
+      "Sha256": "0611911B7A1A698751EAC3A6B059A495BF5C13E2AA84F5177AA615B49DA15662",
+      "StoredBytes": 8708,
+      "StoredSha256": "C45D5BC55B42153FAF2D518A430752BADD1BB96597B51E3002E926D44898862C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-020.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-020.json",
+      "Bytes": 59403,
+      "Sha256": "70BE420F26918CA0FF2BBE8E841B105ACAA655641701CA4F6B454F08BCABF3B8",
+      "StoredBytes": 5582,
+      "StoredSha256": "D3A1242D0185AEFC4466FB3AC73B3D9A00B9BC04731A460373A56D45F134CC98",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-021.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-021.json",
+      "Bytes": 68738,
+      "Sha256": "EEABEE5EB8BF4D7131DBCC291CF1ACE62825498EECC8AABC6DA6165604D7F2A5",
+      "StoredBytes": 6192,
+      "StoredSha256": "0D9A7A468B698826F13C888E7A4BF224834A56BE64E9AEA4B51DE95EC11A44AF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-022.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-022.json",
+      "Bytes": 75211,
+      "Sha256": "A4C8C1B5A4151B3B8733A4DA578C2CBC6C71BDBF5D4DB800E61BEE974B3EFA8A",
+      "StoredBytes": 6849,
+      "StoredSha256": "78C619921A5E020CF71557B9AAC589904848C12345F744D3AD59CC6D8430F532",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-023.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-023.json",
+      "Bytes": 11107,
+      "Sha256": "C0F75E8EC775F40571CDD9FD34473A33DAD57ED163D260BA7716209B659B52C1",
+      "StoredBytes": 1982,
+      "StoredSha256": "194D46496601158663FC95E1A6AC18C5E481F3BFA71A5D87B925D4CF470C216C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-024.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-024.json",
+      "Bytes": 71822,
+      "Sha256": "086FC0DF05ED4344205A92580073CB255058CAAE3F2EFF6C49BA23F55127E6E8",
+      "StoredBytes": 6430,
+      "StoredSha256": "2BB24BF29502DF1ED9AD9966F269A81F5BB898F012BE6AB1DB75C5C01087C6EE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-025.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-025.json",
+      "Bytes": 62838,
+      "Sha256": "0EF3108098F39717A4AF3EE04BD4B3FDA9E0378C9DB087FDA66FDBAD07707D83",
+      "StoredBytes": 5810,
+      "StoredSha256": "73D73BAC6046D35E9BF04404EB6CD3B45350A88E2F11F18404FF004103DB6DBA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-026.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-026.json",
+      "Bytes": 11158,
+      "Sha256": "2855F5D1877839FA9427FC372EA4E3F2B6D0CF781FFF8B07AE68758F706D3AE4",
+      "StoredBytes": 1990,
+      "StoredSha256": "6215907A8708E400FC9AB6A2C70C637D8BF15CD41CBDF05293EC7647133DB296",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-027.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-027.json",
+      "Bytes": 55530,
+      "Sha256": "B6D6C4F5C67F02C9D66D2977AE0EC0BCE2EF45AB15B45843835B8FD2A2BF10A5",
+      "StoredBytes": 5413,
+      "StoredSha256": "E8CF1736C98D6F8FC0D26824D2EB5A8907D99EC34F5DCBDF14D4EC914133170C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-028.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-028.json",
+      "Bytes": 8063,
+      "Sha256": "CED50CE69AEC1CAEAA3DDF878A0DAC33D69C804690D7D5FB6F50C3F56629EFB5",
+      "StoredBytes": 1693,
+      "StoredSha256": "A31E7845410B8B0FA710127805A0710D342CA42FD2CC1AE0D34AA4101043C8BE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-029.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-029.json",
+      "Bytes": 25302,
+      "Sha256": "E75B16177E88F87B4FD06A2FEB8B3BD21AB85533762849FDA68049FE0ECF6D6B",
+      "StoredBytes": 3077,
+      "StoredSha256": "E7AA09AC6EAD6C2D63987639BD0169DA35B1551803F08329E4BFCC4B590614B0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-032.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-032.json",
+      "Bytes": 67214,
+      "Sha256": "98A90199461E9F230E26B7115F657B4556C251A708FDEE1043A2C9F9C1D52AD8",
+      "StoredBytes": 5419,
+      "StoredSha256": "F342134F48B20A6C194825CACAA989B4EC1F3723B9AA8C58977C3E9E4E69ECAD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-034.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-034.json",
+      "Bytes": 49148,
+      "Sha256": "3BDAFFB8A29C3116BCE5F0601FA3978B42BC1D58A86ECB73BBA88890F962A73E",
+      "StoredBytes": 4842,
+      "StoredSha256": "8A48237E922E609EDBF562792C1729105044C40827246E4E32A0AC121B056500",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-035.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-035.json",
+      "Bytes": 63254,
+      "Sha256": "9410F7BCC2BBFBEE575DB7521E2AAC6820A56AEC5364B5C6369487B7C056197D",
+      "StoredBytes": 5986,
+      "StoredSha256": "A1E0FBEA1DDF12E61BCAF72FF0C1885B25CAAB4AEF4C77312F08C194F8458000",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-036.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-036.json",
+      "Bytes": 85415,
+      "Sha256": "904BCEE3281F976309837410DC59F27149288CC643F44B45207ED16DB3C74571",
+      "StoredBytes": 7298,
+      "StoredSha256": "834355CDC66425D4385832AA6278C9EF995D920DBFE23B697BB24D4FD9300F77",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-037.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-037.json",
+      "Bytes": 39098,
+      "Sha256": "182E090150DE788F3FF26471E99BE1248A342547505DCE7B446755115DDB566F",
+      "StoredBytes": 3944,
+      "StoredSha256": "40CD3E110DD92BE44EB2BDBCA67669F266F139F965714145FA7E4147263954AA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-038.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-038.json",
+      "Bytes": 40105,
+      "Sha256": "3DC5FD051F7F97F9A3168E537F6CDAA7EA725189C23AA7AF4024261FBAA579A0",
+      "StoredBytes": 4201,
+      "StoredSha256": "75C4571DEC5CA98B50D88F1136428C81AAC037FC420947C44A27C5B9D0FFF069",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-039.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-039.json",
+      "Bytes": 43788,
+      "Sha256": "BE4269458F23D93D62E1206353F9428CA43489E57C5DFD9FCE7C4B49E0EFC284",
+      "StoredBytes": 4407,
+      "StoredSha256": "614F0DF9F1CE60A1CEF1A07456B0378BA28088B82578CB650C7644FC41EB8E0C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-040.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-040.json",
+      "Bytes": 25886,
+      "Sha256": "9073A8313AAAE8683000C0AC40C3CEC74D296F4723DEE1807F49E6EABEB76A05",
+      "StoredBytes": 3107,
+      "StoredSha256": "56E714BCE538B75FA65E398FEC951114F581AFC9BDE3CCC6F1A6C4629AF71690",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-041.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-041.json",
+      "Bytes": 36869,
+      "Sha256": "43B584C8CC6CA5310F0E715C4AE242D64EAD88EB1E083FB90E5444B634682527",
+      "StoredBytes": 3892,
+      "StoredSha256": "C8AE274BF9405416BAED129C2EBEE5CC54BBD1B3DA3438A68CB85CC18E936AFE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-042.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-042.json",
+      "Bytes": 61004,
+      "Sha256": "E2C0FEDB6BEC58806E71DB5233860ABA4BB2BC6A1E8DFC2952B76A56CFE77363",
+      "StoredBytes": 5461,
+      "StoredSha256": "7A6184F3A4EF96120349A7A52925A0E51319AAA5DB212767CE5786E0020318CE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-043.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-043.json",
+      "Bytes": 58628,
+      "Sha256": "5EAFC38CFB54A1F1F7E04F13915E870B968DDC0F1E678E1498BF49B0AD6D6ECE",
+      "StoredBytes": 5290,
+      "StoredSha256": "792E56E5E891E3F12CEBC5375831AAE519911657D134B49927A438B677317578",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-044.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-044.json",
+      "Bytes": 50375,
+      "Sha256": "6DDD663D94D23E007BF389D171D8D87B534DBB5C380AB6F0491864DB7F739213",
+      "StoredBytes": 4713,
+      "StoredSha256": "21F4593B2AB1DE8F9F9668C49CCB54630D3606ECB634BEB0B4E41FEEB3DBF668",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-045.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-045.json",
+      "Bytes": 51082,
+      "Sha256": "EE3B9A04A655D4D735F1DE42381647A167EA948C6686610FEA92895DBB96BBF8",
+      "StoredBytes": 4775,
+      "StoredSha256": "E9D2790FE714BA0C506D8CB6378BB6E09E98E8578F8B1C2FC740E8C50B42945A",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-046.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-046.json",
+      "Bytes": 11122,
+      "Sha256": "AFBADC541D7D3356869E3F758A68DDFEE76B22C8AC42764B44388A433FC5C931",
+      "StoredBytes": 1986,
+      "StoredSha256": "02DC9A914C5609385D63BB57D5CD98180F53FAEC90F1DFF40000B6518704BCD2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-047.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-047.json",
+      "Bytes": 55186,
+      "Sha256": "5678CA7C4746F1D818AD3B188A7F8BD43E7F7AC16C7312192F3199B617C4208B",
+      "StoredBytes": 5199,
+      "StoredSha256": "29B41FF9642AA54482A642466407B4D0F3AAF2A41FEAAF77B74DF341C1603D45",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-048.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-048.json",
+      "Bytes": 49641,
+      "Sha256": "FBC888305C538B542A56BCE9542475BD754C9FDBC978C1BC3640819BEE2BAEFD",
+      "StoredBytes": 4958,
+      "StoredSha256": "4474CF3EFC826632888E0420DBBB550EBB806BA533CA0C35E99753972BB188B5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-049.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-049.json",
+      "Bytes": 26811,
+      "Sha256": "4F84918CA6DFF02C9216697FA7250066110E478CDB728404C33C03142DB099C1",
+      "StoredBytes": 3173,
+      "StoredSha256": "CD0D829B5AA1EC5FAB36B6A078092C6295615285955D7D7E3CDFCD1EBA3337C7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-050.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-050.json",
+      "Bytes": 69522,
+      "Sha256": "0A22C8DE986B780230A308CCB4C197E1422DC2C04C7F579282D143E33F62B4B4",
+      "StoredBytes": 6175,
+      "StoredSha256": "D9D5155C8B374B8EFA441E4D3151653F1A2EE9B49C4A59900A1FF86F07034104",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-051.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-051.json",
+      "Bytes": 30107,
+      "Sha256": "E6F3CBF0638EF0141D38BE00BD93CE375A18D2464FD97F2BF9C70FA4F71F7DF8",
+      "StoredBytes": 3363,
+      "StoredSha256": "6A02AB6E5C21EE56A19E263D78260109F9AC0A7F45A285F7D560ABEB21BC65E6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-052.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-052.json",
+      "Bytes": 40556,
+      "Sha256": "4EFBFADFEB32195F0A5754BCA0ABCAB13293FCE1277512DE5D1688824713F123",
+      "StoredBytes": 4153,
+      "StoredSha256": "4C50B9C27BB82948CB23E3AF47EE89142F97D666BD67BF4E270D69563AB1F431",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-053.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-053.json",
+      "Bytes": 71880,
+      "Sha256": "5EC553F764A8FC07AA4D8D793B2AD62D9E06E0108FDE3AB35FDD7E47512B05BC",
+      "StoredBytes": 6610,
+      "StoredSha256": "17ABF9443E79D3642B82B76A6DAAEE72573D08B060F01A8C03E1802928A26118",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-054.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-054.json",
+      "Bytes": 55812,
+      "Sha256": "9B37768E8A8D343BF1538E33DE5D9299121382A570AD815372487229A6E345E3",
+      "StoredBytes": 5356,
+      "StoredSha256": "6A84BC868B825306A3668B50A1F9F738F64EF910A14175A471B457B249AADD53",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-055.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-055.json",
+      "Bytes": 77301,
+      "Sha256": "533902949A83F166BA9FE9DB2DBFB3FFF00A986E5E12DE3074040F1D9341C031",
+      "StoredBytes": 6598,
+      "StoredSha256": "CEAC971DD5E59C8680D7292DE94A9E7EB3552326EDC3B5ECD27226C0F16139E8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-056.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-056.json",
+      "Bytes": 17712,
+      "Sha256": "993BDB041FF4BC05AA5BE8A115BE0EB62F4374834EB4816FF544A2E86868F7FA",
+      "StoredBytes": 2349,
+      "StoredSha256": "CB76E00F313F3CFD42EC9ADE94C2A69E2222AE44A4258DA98C2FE30731250B05",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-059.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-059.json",
+      "Bytes": 56663,
+      "Sha256": "7605C2EF091F589FB6AA823B7C1E7386FF956637D505A90E2923564CE6FE834C",
+      "StoredBytes": 5401,
+      "StoredSha256": "BCA98154E8CE14C9E0E250A4CCA70A3B8C920572EB539F5601B84F2C911C9B03",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-060.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-060.json",
+      "Bytes": 78330,
+      "Sha256": "59AA7867CAFE6C22C53F3EA479B1D647FA5E7CB2340B4287908F7294BAD06347",
+      "StoredBytes": 6611,
+      "StoredSha256": "75D35AB929EB2943DDE1A48DE4C81D1E0D139BE1E58876573398E45D818B1BB6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-061.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-061.json",
+      "Bytes": 39557,
+      "Sha256": "F17E436118116BC45306F702F25DCD7E558AC095B78B51BFA7FA8D467CE76C46",
+      "StoredBytes": 4076,
+      "StoredSha256": "698E0848E4ED1B6B1AA171F11D85F0B8B06845975135CE1799B847E197A2DEA1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-062.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-062.json",
+      "Bytes": 75340,
+      "Sha256": "E21B47C07DB205F9FAB47B5F4F48D2B1E9874587E5C993514097F20D22341440",
+      "StoredBytes": 6578,
+      "StoredSha256": "6C6E5C47A99DD52B5C7B927A8594F7F410645AADF30880517A0E402013293488",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-063.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-063.json",
+      "Bytes": 61826,
+      "Sha256": "8C1FA07BB4A18D6DF68D153138AC40D92580ED03810EA17E508DD93280B75A9A",
+      "StoredBytes": 5599,
+      "StoredSha256": "2EB0BB4D389E4E8E18BCED811665B3FA860344F8716ECFD27B18CF677D221174",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-064.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-064.json",
+      "Bytes": 76447,
+      "Sha256": "3632467E7210BE2C3C096EEC11B097E5FD71750D398FFD3524FB34F956F1CA82",
+      "StoredBytes": 7011,
+      "StoredSha256": "914402236502C70506F60C24BE0E5DD196AAB649A74CB840108F2B0409C047F5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-065.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-065.json",
+      "Bytes": 65104,
+      "Sha256": "BEFB8CF24FA7C8F6C23C0D324BA611253AAB2283590F9D1EDFC54CF9B2F38F2B",
+      "StoredBytes": 6146,
+      "StoredSha256": "3FCA0B187223390EF10E5A5D2AF9B69C2EFE26F2A768EEC1A0BBB06B6E09CEE6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-066.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-066.json",
+      "Bytes": 58223,
+      "Sha256": "85C4B0ED58BF7BDD680166A53AB551FEBB39A10D995799B6E35B90DA75E20854",
+      "StoredBytes": 5257,
+      "StoredSha256": "CB7EAAD11D8D85DACA2CC3A9CECE4701D9177B4F401BCBCCE1A60F041887D865",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-067.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-067.json",
+      "Bytes": 27701,
+      "Sha256": "F960D352F244F80369E867A02D0146D4B21AF49766AE1EA72F122E51BAD99070",
+      "StoredBytes": 3111,
+      "StoredSha256": "91B15522882D2279BED34854C545A7757B7CA80C41DB96D08F252E2DEC6B6EC1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-068.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-068.json",
+      "Bytes": 33577,
+      "Sha256": "C75BD06AB18AC5647C2E57753A331C80F5EF33C9633A7813ED8FF07EFFF85F6E",
+      "StoredBytes": 3494,
+      "StoredSha256": "6EB0DBC49ADFB37661FD5AEE177295B770E00E5820A93BC83D88FC5F1C7D1A88",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-069.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-069.json",
+      "Bytes": 6344,
+      "Sha256": "1B146DA21F731903ABF9F8543024264F631F2139A7AFCD8F0F4543B693F5A9FC",
+      "StoredBytes": 1536,
+      "StoredSha256": "3917BD8B37F64FD624CC11D0FA013112F53C34A1BDB0C3E57A1846E3317F6F40",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-070.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-070.json",
+      "Bytes": 15130,
+      "Sha256": "37AE7B941493E38DFFF2AA4CE42807585EE8283A3C3064F138FB2E55668B09E7",
+      "StoredBytes": 2230,
+      "StoredSha256": "20148965116A109C49E3709A3D7CFB43A503C03FF77F876AA85B16051DC32973",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-071.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-071.json",
+      "Bytes": 127785,
+      "Sha256": "29139778C18194558BC1C900B55EE8ABF83D06D51C2140788898007F02683F46",
+      "StoredBytes": 8891,
+      "StoredSha256": "F535D50B212B3181E4EB5576147DAD2B9D926386FC295429A7BF158241493F10",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-072.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-072.json",
+      "Bytes": 126690,
+      "Sha256": "B968D809F106855A625C2D1FAF083E8949036E2BF7D0E8C63B04B5222498ED31",
+      "StoredBytes": 8459,
+      "StoredSha256": "0AA4F106735EA6D9F5C6E59AE8D4DF0DBF03A97840A37E51BF25E5129B1868AE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-073.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-073.json",
+      "Bytes": 132850,
+      "Sha256": "944EB358CB170B4A602CA93300B94A6E14CF089C862311ED3EB44BCA27AECAF7",
+      "StoredBytes": 8251,
+      "StoredSha256": "535DC742EB930F48ECAAF58520497BF071DA020857F6551B13167F84EC7B19DB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-074.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-074.json",
+      "Bytes": 91238,
+      "Sha256": "42E81F288DAA0893CC5011F7A529A4A28A0D117C3FF6F295A7BCA9C133EEFB00",
+      "StoredBytes": 6735,
+      "StoredSha256": "87BE5644E2D28AA2636F6C95EC93F9BD3BE805B6FA09D88238502EAC0C880A3E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-075.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-075.json",
+      "Bytes": 121455,
+      "Sha256": "E6CC5186778C03C2BF55FA2FC57A3B7BEAD2F2964DE4275290E9E356378B3922",
+      "StoredBytes": 7944,
+      "StoredSha256": "D1333EA732CC22553CCFE4C5F0DC3913D7EF84A5403437A4B3DEF58C12340AA3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-076.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-076.json",
+      "Bytes": 46383,
+      "Sha256": "94A0B7D18D90351B17AC75BF5E1739AA945B2F5A3A1D18E405E3BBCF012A7A37",
+      "StoredBytes": 4583,
+      "StoredSha256": "725829D0FC5F498D6C80B1035DCCD2A909F6384E1AB5DF0394F1DBB3B8EED7E5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-077.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-077.json",
+      "Bytes": 15485,
+      "Sha256": "8B49AA2BBBB8DD8043E4387F23D14C0AF474942A06BD1B7FB54C62C8F3D3E9FF",
+      "StoredBytes": 2291,
+      "StoredSha256": "57CBB68C29244488A8F5846F131D8F0F551E259B9B6BA9146142349B861531A4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-078.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-078.json",
+      "Bytes": 9585,
+      "Sha256": "E12BD95DFF46752C46FF984B0D445AF09BD2EEEBE2C5F17DFABD95AF90498712",
+      "StoredBytes": 1809,
+      "StoredSha256": "C199C1268FDA9014C5B7AE2D0A0807F61A58251EF77353675004BE5051ADD5CE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-079.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-079.json",
+      "Bytes": 59993,
+      "Sha256": "A5DCC12AE25A4C24F7D486BB3BD93D70B886A29C23A23CB03ECBD953E6B6A2A7",
+      "StoredBytes": 5564,
+      "StoredSha256": "1AF5C7C188FD8FC53D52E56BD9DA484DD111DD812E26ABCFBDE750F93A3B2BBB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-080.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-080.json",
+      "Bytes": 31885,
+      "Sha256": "F53A6A5BB89445BA1DD950BB7C7586186C60AF9A70EEDEEE3D0AB140B9594F37",
+      "StoredBytes": 3565,
+      "StoredSha256": "C602B4DC787D814B0AD7B7BF7FAC5D9E47C64B91B3B60D67FA1FEBD22BF6F206",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-082.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-082.json",
+      "Bytes": 32689,
+      "Sha256": "105D383F6B443C0619CA6BAF4B3E51136F406F1727B9FD98C939F9F7490F2CB2",
+      "StoredBytes": 3593,
+      "StoredSha256": "9827DF16F44A4E6AA6C7993D29A3A38489C41BE9BAF830CA49AC9FC3AD7F794F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-083.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-083.json",
+      "Bytes": 11093,
+      "Sha256": "362F8BB1B868228A0C5D54A13E0868DE22D69BED8DBF99EF053E82746E0A1E71",
+      "StoredBytes": 1980,
+      "StoredSha256": "62F390A8A711EB830F54E0D8829842F9DBD6BACDC811D49C4FAA892EA9E9CB9D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-084.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-084.json",
+      "Bytes": 74588,
+      "Sha256": "1B937B0D4BFA30E9DD9D5F72A5FED1664B785CB5C80D870B575CED18CDEDAE16",
+      "StoredBytes": 6377,
+      "StoredSha256": "F379EE8479A2D1E2309F492EF926F578730864E4BE3BE60A8159FC867430E0B6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-085.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-085.json",
+      "Bytes": 104351,
+      "Sha256": "631D822C90EE96845A82E02CC8F157BC1303FD734C158032AA4E778EA8730909",
+      "StoredBytes": 8221,
+      "StoredSha256": "2FA136BD33669CF05A6F70DC28573A97821CF8DC76D633AE42A534DAAE055FBE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-086.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-086.json",
+      "Bytes": 18525,
+      "Sha256": "88CA663309415E0922551F6C029C6CDF74B2242181D7934221B29BFD7CBA1AF7",
+      "StoredBytes": 2424,
+      "StoredSha256": "742A5947B44594ECDFE8FCA0AFF4ED1719E86918C670743FBB63DE08E07DC2FF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-087.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-087.json",
+      "Bytes": 11177,
+      "Sha256": "69FDD649CAF0D64DE684C1AD7629567959662A8A3A18DADFEAEA78DA38AF6ACD",
+      "StoredBytes": 1985,
+      "StoredSha256": "A034FB585E7931808E48F6EA52A73E1A2664DDEB900563A5ED90F28CFFD79473",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-089.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-089.json",
+      "Bytes": 12955,
+      "Sha256": "61A6D81234E9C534A1A6F5CFCAE32EA249047E3A1752682431F1B40C10A80664",
+      "StoredBytes": 2079,
+      "StoredSha256": "C19062DAD2809C2D4B11584CB013714AF073C441D884B43D02ED080E6FB0E298",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-091.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-091.json",
+      "Bytes": 63014,
+      "Sha256": "D1DAAE34E0424E602D2F09C9702E76A6C5AE39D9A1F11FAB31E61FF8D9FEABE9",
+      "StoredBytes": 5335,
+      "StoredSha256": "7FDC57DA17ABECAC1A54B30F3FC9D87963D881F7580DCAD74A14FACA3CACE3DC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-092.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-092.json",
+      "Bytes": 75268,
+      "Sha256": "51D4DB7F08FA6E849A814ACB0E706EED7A25C57AF7C97928C1361044EC9374B5",
+      "StoredBytes": 6137,
+      "StoredSha256": "5B8EB8C17FB79111B4C8F56AC60F3CE8E036A4D1EC5A6E1037FE4C8D2FD89F0F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-093.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-093.json",
+      "Bytes": 43068,
+      "Sha256": "626BDA91D08D70B2B37B3DC40A86E031F8A098CFACE4C2CFF83B5E9B828E4DF6",
+      "StoredBytes": 4360,
+      "StoredSha256": "2AE744C5165E64B1CCE21DE841E4907ABB469FFE347618731AAE4A0ED44D0EDC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-094.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-094.json",
+      "Bytes": 52226,
+      "Sha256": "872BBCE88E716113D197FFF484F5A967D628F0C0AE4BFFF0494F0EA06AD8E71D",
+      "StoredBytes": 5164,
+      "StoredSha256": "C18F03153D8A2B820C9BBC106701BEAB4588E7A70363522872E3B7575B22BF31",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-095.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-095.json",
+      "Bytes": 52367,
+      "Sha256": "CD1054D17FEF3B3A0F87D1246CC809BB4C7F2FFEE3AA54C523F8048C6F8E8B3D",
+      "StoredBytes": 5134,
+      "StoredSha256": "D2EB66F085F9468723103EAFBB7F13E20E34939B831FAAEA38E2C5F39BEAF538",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-096.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-096.json",
+      "Bytes": 40226,
+      "Sha256": "32601B7D0FED9FBD348A1A8135AE16083CAADE1C2FCFA0E0107C9E78BE75FC41",
+      "StoredBytes": 4308,
+      "StoredSha256": "014F60820493CD1A8A3637A45CDFF574126DF0F3B7832918CF995FD48A6A0565",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-097.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-097.json",
+      "Bytes": 60328,
+      "Sha256": "ED87014B6FC07B37855019A36DFCA1DAA84F7EF26687FD475903387C208B2951",
+      "StoredBytes": 5662,
+      "StoredSha256": "04E821BC276623B7EC9FEE27EA5B408381463FACD8F5F004A417DF5BF8A3C75F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-098.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-098.json",
+      "Bytes": 51985,
+      "Sha256": "9D05C787C12DBD64E6F8CDC3B138BAAF68E9500753D2F6C60D7225DCCF182316",
+      "StoredBytes": 5040,
+      "StoredSha256": "66D1F01C0E61A905F22BD391D2F45832F7691CE2041CDEC8C4AA61D6D3790CAB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-099.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-099.json",
+      "Bytes": 94599,
+      "Sha256": "F5389DD52F8B4AE66B43A15DE0CA9FEED931F363A753D120D78061A3A856D53A",
+      "StoredBytes": 7320,
+      "StoredSha256": "A773C11F077526EF5BBF6EA65F2C35DF2124234E9F26BFA729B2520126E794AB",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-100.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-100.json",
+      "Bytes": 51045,
+      "Sha256": "853997D723DD73281673A8DE5DDFEFAA9AD93C1369E550569D7FFE14076AB003",
+      "StoredBytes": 4998,
+      "StoredSha256": "0A3FC22D53B551F15A240F411CA30D347BA3ACC7F0F1B233C1BBD44830269D92",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-101.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-101.json",
+      "Bytes": 35991,
+      "Sha256": "FC0F768261D95581B49375770BCF05B7400736B38AF8FF74B3805858B3015D9F",
+      "StoredBytes": 3842,
+      "StoredSha256": "CC253BE97B258FC8D17D532EFC41546362233DD1AD8E139636F38ADCCC980E6C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-103.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-103.json",
+      "Bytes": 15260,
+      "Sha256": "8890B2E943ACFD6717B2B6763904CD452A6280E56685503FF6798DB3BC685FCA",
+      "StoredBytes": 2295,
+      "StoredSha256": "548C9C8AFF8BD59EC0AE61B82BC45B0A4C1B71AFBDE59BCD040121D47988E233",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-104.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-104.json",
+      "Bytes": 54547,
+      "Sha256": "CD48CB856AB6300E37A9E7C9BE731E2F4988F118BBE23ED663DA4093D60D5513",
+      "StoredBytes": 5332,
+      "StoredSha256": "B68E14BFE21A44ED0A08371FD8676995B4A1482B5574A5500AD7BAA8E9AB656D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-105.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-105.json",
+      "Bytes": 112499,
+      "Sha256": "056EFF2286D5C0E3EF5CCB5573051F6D9B535ED36C20DAAF9FC01DD7CE27E44D",
+      "StoredBytes": 7983,
+      "StoredSha256": "3F5D3E6F5E682D81B0556B16F621AC3FF9389DEBDD8BBEC324B2C6AAE3CC29AA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-106.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-106.json",
+      "Bytes": 48811,
+      "Sha256": "7854ECF917692872E7716327F10B12C7F817918E2750294E5A87042BA2A7C460",
+      "StoredBytes": 4923,
+      "StoredSha256": "3B869FCD50E6B92453585E37DF1E0346A270D40C467C2926B2ED40DC309AB8B2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-107.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-107.json",
+      "Bytes": 102605,
+      "Sha256": "CD69169D40352F4F9045C2773AE31AA852AA4CB1F9D391F164FC0CE5E2063918",
+      "StoredBytes": 8418,
+      "StoredSha256": "4125083D266FE77F0311BAB753BA71D2B36F2E25353499CD2CCFCFBE213D1C18",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-108.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-108.json",
+      "Bytes": 124250,
+      "Sha256": "09361A9EC949277F2EAB84A7B119DB0E9651B352DFEB01310B0CBAAAF1789FFE",
+      "StoredBytes": 9906,
+      "StoredSha256": "A27CA9582D9B9C4BC8694C9FDCE9CDF04DA8C7B48182E6047BA9D7C2286C2F86",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-109.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-109.json",
+      "Bytes": 81339,
+      "Sha256": "66768A1298E51236DB48FED09F31A9C12D6D8EA179E53154AFAB61B100316A69",
+      "StoredBytes": 7059,
+      "StoredSha256": "A53088E45C85AF1CEC4F17CE8229333918D3073EA157CB1B46E812E0CECB233F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-110.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-110.json",
+      "Bytes": 68177,
+      "Sha256": "EE9749F2E7AD07BE90CF7ACD64180B5CD3A669938221768DF5C6885D3A888301",
+      "StoredBytes": 6036,
+      "StoredSha256": "58B4A5F7D728E913C368025B8E36741D78B9E72342FA0A56CA92F590F9CA690C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-111.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-111.json",
+      "Bytes": 6296,
+      "Sha256": "0549E984B9681B055F9A437ECD1138B981BA965A76E89C946574EE93C7597C60",
+      "StoredBytes": 1546,
+      "StoredSha256": "9017B4486B0AA9CAC32EC800D737E69BDFD5E5AF0778BC807F0A39FD5698078D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-112.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-112.json",
+      "Bytes": 6484,
+      "Sha256": "49CD78ABF8922507EFCEEFA4670754BFFE6D891EE809F0900BE4D7D5A88CB44E",
+      "StoredBytes": 1555,
+      "StoredSha256": "5F9AD836B7F04BBA7F17F33F687C132399B6749C03E3C7726EE58F59E15BA5B1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-113.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-113.json",
+      "Bytes": 25880,
+      "Sha256": "9742EE72C006C647A37D4323B01DAE4AC589C9124723840AFDF0E635369DD047",
+      "StoredBytes": 3100,
+      "StoredSha256": "F125E95622B2A3395C0BC05C3B6896B22CE53DE918808E43B195114F034DFE7C",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-114.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-114.json",
+      "Bytes": 20285,
+      "Sha256": "DDC47E222F3A1F3F3A9BBD88D3BD29A921A60F47AA21D94654950CC51CDB3021",
+      "StoredBytes": 2814,
+      "StoredSha256": "77045F6A94EB331C4262AB13148DF966CEC7D14D71ECB43038E19D08A94C25AD",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-115.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-115.json",
+      "Bytes": 60908,
+      "Sha256": "90E5619D1C512438B134222977E712A7CE996A6092540487462987B196C549FC",
+      "StoredBytes": 5456,
+      "StoredSha256": "8D386792A7B15733793786B6E9E1ED600785191A5BF510538298EDD90365918E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-116.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-116.json",
+      "Bytes": 58532,
+      "Sha256": "040238A67182FC65ADFA04002E4F101390CCD8C79F8711540A2FE0976B53BB20",
+      "StoredBytes": 5285,
+      "StoredSha256": "5A7A719FB12FBF574147BF32A86F8BFCE63C47D9673C8C3AF401057BAAE4FFCA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-117.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-117.json",
+      "Bytes": 64839,
+      "Sha256": "BEAB5EC8E692E4DD71DBD5E6CA3B9A76850C2BDEF66FC75B4278E64D0D5EA944",
+      "StoredBytes": 5198,
+      "StoredSha256": "E4F0F8221245F1810B7A8B4C7A021823A6CA4FAFE2F3357ED4FB98E5E5178314",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-118.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-118.json",
+      "Bytes": 81158,
+      "Sha256": "D501AF8F55672D1B9BD1452BDAEDA25BC768D74B3023615F64F5A3EFC66FBB31",
+      "StoredBytes": 6652,
+      "StoredSha256": "E17AF7920DE808F86FC50588B7B57D9DF1065FC2F155A70A9F2042C2CE66FAEE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-119.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-119.json",
+      "Bytes": 78750,
+      "Sha256": "6B3F0DB4D1D62050006DC7E10E288B9866A47F770FD87F18E2D8381B3212B104",
+      "StoredBytes": 6481,
+      "StoredSha256": "3D192051658D6EE34603C7DDA849AE330DBC066B95EE983941E38F43654A59D6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-120.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-120.json",
+      "Bytes": 68788,
+      "Sha256": "B1093EAB576F4A80E16B8633400D2702AE1731D7A34219C0BE6836D56710E672",
+      "StoredBytes": 6206,
+      "StoredSha256": "34C24B6119017CFD692D99FBED0F133E0A7916AA43068E51732DB14ED908CF72",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-121.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-121.json",
+      "Bytes": 83398,
+      "Sha256": "A2730A162C63AEF9FBD1A20110166DA675BC43DD5DB91D308FD0C07C3B11225B",
+      "StoredBytes": 7319,
+      "StoredSha256": "78093110566453999862BBD78E05A312AAD51EF89B90DE8757180D1AFF782D09",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-122.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-122.json",
+      "Bytes": 73298,
+      "Sha256": "8DD18A273360CE351CA6017D0C4FDD82537A5AF92029790B4123D89379A5BCD6",
+      "StoredBytes": 6480,
+      "StoredSha256": "74F690EAD10294478806E809304201F49962BC0C5BE9D576F48CF4FF378FFA56",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-123.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-123.json",
+      "Bytes": 66498,
+      "Sha256": "5AABDDD127720771ED1A05B2DC0253BF8F45F979B1E1BF494D89444A5EA344C7",
+      "StoredBytes": 6028,
+      "StoredSha256": "2F1399F4DAB7DEF0773C26E4361D087C6DF7D070EB7CE7DE208FE7337F7F6ED4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-124.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-124.json",
+      "Bytes": 50789,
+      "Sha256": "8B586B00870816404FF3EB1527C5879A938C26839B4181D4AEC7606C0038B8A3",
+      "StoredBytes": 5057,
+      "StoredSha256": "C95FF9561F5E32B67D3740D0DD0F6A33FDAC03BE4151DD4CF67FCAC938005B51",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-125.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-125.json",
+      "Bytes": 10740,
+      "Sha256": "FC4DC4D37634912BD08840294197736CB51BADA9C05DFCB686A4F2EA47AD6071",
+      "StoredBytes": 1912,
+      "StoredSha256": "BF8601BDC2F8AB8E689F500EEA65B338C31C217DAD9145423367D70E83F71727",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-126.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-126.json",
+      "Bytes": 75136,
+      "Sha256": "D6685731E5B90AFB055FDD24863BC1DEC2A633A5FFE7CF7C181413958B48DBD5",
+      "StoredBytes": 7021,
+      "StoredSha256": "0D8B2C24DAF5A34754630CC8A6229AC89BCA5D7380B5E97727D540D318E58762",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-127.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-127.json",
+      "Bytes": 86274,
+      "Sha256": "99BD50081D1181FAD8F733AAB361FE80C704C602F498554BC0C72158EA005129",
+      "StoredBytes": 7409,
+      "StoredSha256": "8F3FAFA832A6F8CCA35E307D564C39750638224B3E783BDC501FF0B923D80C63",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-128.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-128.json",
+      "Bytes": 63252,
+      "Sha256": "E4DAE997458279C9FA1CE3E1E274A7708A74A06F686E357DB42F38F9CA2C9553",
+      "StoredBytes": 5293,
+      "StoredSha256": "E3168FAD61C4FEBF3D53FAA391ED4C6CA25DF1607FB551FD6BB0F50C1F11EEAE",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-129.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-129.json",
+      "Bytes": 50969,
+      "Sha256": "B586DB383617B939745529E0E25C7EC6DFF3816E094191E380A29CA0042DE308",
+      "StoredBytes": 5102,
+      "StoredSha256": "723951CA335B98EEAEE5CB5516529231AF21977A8F9F3ED6741123FF157C691F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-130.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-130.json",
+      "Bytes": 17418,
+      "Sha256": "495FB3B7AA3C5BED7C0B536F9CFE1E41799DF37F3D21BD601B46456BAA9698ED",
+      "StoredBytes": 2651,
+      "StoredSha256": "4001505F5841821973F1735C414AA94636DBE7343C7C9AF5814F934F83B6A17F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-131.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-131.json",
+      "Bytes": 50410,
+      "Sha256": "C35778E774F6092B319E5171E8C42574838DCBD8ADA597C10F6DE8B48416B043",
+      "StoredBytes": 4961,
+      "StoredSha256": "18B91565053F0739ADA1F52CAAB4F69F75B90D1CA2A9F92602F70C0771FDF0F5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-132.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-132.json",
+      "Bytes": 33966,
+      "Sha256": "B2F1F402E48C151D14C6EF7B463C76DDD59CAB89C49DB025758F6F3256CA39C6",
+      "StoredBytes": 3651,
+      "StoredSha256": "733444879453B44EE22CF3216067B3CD8040CC46266F69442C1D4CD9FEDDA9CA",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-133.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-133.json",
+      "Bytes": 44268,
+      "Sha256": "144381E9E3C5A2761D03D2CA6EFD58A12E7004ACD5AA4BD3A8513E15B0CE68D9",
+      "StoredBytes": 4516,
+      "StoredSha256": "6818D17397AB7A95033CB710013059D342A060073543156F086A15A625C3ADB0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-134.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-134.json",
+      "Bytes": 85366,
+      "Sha256": "4E47EF4F73CAF48A5519EE1AEF54092BB0E6F23D62E2C12BC28ECA425FF20FA8",
+      "StoredBytes": 7696,
+      "StoredSha256": "1542C114E0D39B316170C1191FAFB2F04877D129C31E94D02F876102BE44BFFC",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-135.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-135.json",
+      "Bytes": 50264,
+      "Sha256": "2C9F32F5EDE58FBC2F685AB9C02FB37E98E0341A4BB906284EBBF4393442E640",
+      "StoredBytes": 4988,
+      "StoredSha256": "886457B77A326C9349803CAB12C605801D7CC07A3F34357BC8AA09CF3D05CBC9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-136.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-136.json",
+      "Bytes": 64859,
+      "Sha256": "F60C801FB063361A484DDCD24FD958184AAF92F300AA70BEE3C99AA224D6A2B8",
+      "StoredBytes": 5800,
+      "StoredSha256": "0E630BC1AE40C1594A552DF9E15F2D7ACE92C6D30B44170E9C6E5A43A4C6169F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-137.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-137.json",
+      "Bytes": 49150,
+      "Sha256": "0141EB379E615A956BD319EAA9FA453935B2DAF79D080FD1CE1453634CB1DA74",
+      "StoredBytes": 4935,
+      "StoredSha256": "AB36995F62576392BB729FC28AC5DA26BD670DFA9F51733CA203B32EFAD26D2E",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "method-138.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/method-138.json",
+      "Bytes": 21278,
+      "Sha256": "5AC130F680751B8BD7B6CBC2017C9C4C4C9BFCF169A9248C185D6667146A03D5",
+      "StoredBytes": 2833,
+      "StoredSha256": "4E457F8564A13D3937B23831752D395E09295F1145728519735073CBDD67C0F3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "outcome.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1/outcome.json",
+      "Bytes": 214496,
+      "Sha256": "8FD12DA0A6510704A96DC9698F73E60FD68E7BA86979972DFB1DC9BF224292BA",
+      "StoredBytes": 60406,
+      "StoredSha256": "9C382BD752F03899784337628D9B361F8661FD6373CD62F385B62DA915EBE976",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "run-transfer-inventory-attempt-1.py.gz",
+      "OriginalLocalFile": ".git/run-transfer-inventory-attempt-1.py",
+      "Bytes": 2436,
+      "Sha256": "840D7D0AEEFE4703BB99ACB22ED9449551106EBF9E11BC542E691BE10200FF0B",
+      "StoredBytes": 1068,
+      "StoredSha256": "2B2E064889C02571462D9CAAF7FA1E5D8470EBA9EAE8A0D644125FF84983FAED",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-attempt-1-invocation.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1-invocation.json",
+      "Bytes": 4088,
+      "Sha256": "57030B8C3D3242F4AB3D554F0DB501AD54FFCD5ADB8A673EDA90ED22F7561E80",
+      "StoredBytes": 1439,
+      "StoredSha256": "5EADD0E2CAE2DED9A7BD55796EB8AF612854EBA1593B335E5BBF3A173426F3EF",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-attempt-1-completion.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1-completion.json",
+      "Bytes": 169,
+      "Sha256": "DB303FE7959059E1CD17B383E7BABCAE1395238EA80490A27E195961BB80BC32",
+      "StoredBytes": 159,
+      "StoredSha256": "0170BAD4E4A665F48AF5B1C17C5924925DD9C09B167AE1E0BF9AFA997117046D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-attempt-1.stdout.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1.stdout.log",
+      "Bytes": 196,
+      "Sha256": "90FB0958127CED7DBD729437BC6F9B556A59F50A62C7199A7BFA66C46464A058",
+      "StoredBytes": 163,
+      "StoredSha256": "DF2D65424FC96BFCF7590C3DE99071A6272934312B20683F818E729EB11FC7A4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-attempt-1.stderr.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1.stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-transfer-inventory-attempt-1-summary.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-transfer-inventory-attempt-1-summary.json",
+      "Bytes": 1406,
+      "Sha256": "8BFC59202562122EAA4988468E6034F1B7EDB39D8F79C0032782335525B4851F",
+      "StoredBytes": 624,
+      "StoredSha256": "4B159CAA329A5937F378B9F9FE15BD25EA21B60A8674AAC8CEC340D8935E2D7F",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retain-transfer-inventory-attempt-1.py.gz",
+      "OriginalLocalFile": ".git/retain-transfer-inventory-attempt-1.py",
+      "Bytes": 4522,
+      "Sha256": "DA1B481A36041BB385A3B036D471E4E956B8652BB26B44467E942E90A4ED0799",
+      "StoredBytes": 1744,
+      "StoredSha256": "4A46E2DF36E64F0202274A0063435890DEDEBB21A9D19F88E12459FC08BD1D21",
+      "Encoding": "gzip"
+    }
+  ]
+}

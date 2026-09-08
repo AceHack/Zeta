@@ -5,7 +5,14 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: 130 current extents and 8,665 decoded words; full admission pending
+Artifact status: 130 current extents and finite 8,665-word inventory; full admission pending
+
+The [completed finite transfer inventory](../../../2026-09-08-hidden-switch-compiled-transfer-inventory.md)
+retains all 130 methods and 8,665 decoded words, including 8,524 rows with
+unresolved premises. Its collector completed without a structural refusal;
+all full admission flags remain false. The 139-record actual inventory
+archive is separate from the earlier physical/current-extent and decoder
+observations, and adds no memory read or target execution.
 
 Source `2f068ba34da612f82370c64cef4e38a909e7edd5` adds an isolated file-backed
 metadata helper, with no study assembly reference. It uses the already
