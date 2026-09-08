@@ -120,3 +120,14 @@ budgets and compensation context; they do not change the numerical controls.
 The [current comparator census](../research/2026-09-08-current-forecast-comparator-source-census.md)
 records Chronos-2 and TimesFM-3 source/model metadata. No comparator weights,
 dataset or benchmark output was downloaded, and no winner was selected.
+
+## Accepted design publication and current implementation cut
+
+PR17052 is [verified on main](../research/research-main-publication/2026-09-08/pr-17052/README.md)
+at `84cc7a0cd2c78bff2ca01fc699fa4d054d3a8223`, with 89 successful and three
+skipped final checks, exact whole-tree/124-path agreement and clean shared view.
+Read the [identity/codec conventions](../research/2026-09-08-mixed-message-epoch-identity-codec-conventions.md)
+before finishing core, peer or bridge source. Their exact implementation pins
+and actual M4/M5 controls remain outstanding. The first local canonical JSON
+mismatch is preserved; the proposed raw-query64 restriction was a review error
+and was withdrawn in favor of the original training-only raw bound.
