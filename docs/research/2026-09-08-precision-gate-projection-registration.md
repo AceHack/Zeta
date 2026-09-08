@@ -37,3 +37,7 @@ unopened streams 9307 and 9409 are outside this registration.
 A separately preserved [decimal admission clarification](2026-09-08-precision-gate-projection-decimal-admission-clarification.md)
 resolves preimplementation grammar ambiguity outside the fixed roster. The
 original contract bytes and numerical criteria remain unchanged.
+
+The [case adapter source validation](precision-gate-projection/2026-09-08/case-adapter-validation/README.md)
+retains first launch/style failures and 31 passing unit controls. It does not
+execute the registered numerical comparison.
