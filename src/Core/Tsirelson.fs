@@ -14,7 +14,7 @@ namespace Zeta.Core
 ///   ⇒ spec(C²) ⊆ {0, 8} ⇒ C⁴ = 8·C² ⇒ ‖C‖ = 2√2 — the irrational appears only at READOUT.
 ///
 /// Ω is the **joint-parity element** (the volume element γ₁γ₂γ₃γ₄): ferry 25 §3's "shadow bind"
-/// is the exact operator whose +1 eigenspace carries saturation. The cocycle is priced
+/// is the exact operator whose -1 eigenspace carries saturation (C² = 4·I - 4·Ω). The cocycle is priced
 /// executable: replace A′ with a commuting partner and C² = 4·I exactly — the classical bound
 /// recovered; anticommutation (the odd-faces sign rule) is literally the term you pay for S > 2.
 /// The doubly-even code appears NOWHERE in this module — that is REPORT #6's verdict made

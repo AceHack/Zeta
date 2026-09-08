@@ -27,3 +27,13 @@ recorded in that review. No oracle is selected by this documentation edit.
 Validation: exact before/after comparison confirmed the operative paragraph
 and every section outside HC-8 remain unchanged. Its UTF-8 SHA256 is
 7b1adedd97e4e6d640fa9b6bff493811f7f0d89146d5a422f0147e7a543cd93f.
+
+The [independent HC-8 review](2026-09-08-hc8-explanation-independent-review.md)
+verifies the unchanged operative and outside-section bytes. The separate
+[interface census](2026-09-08-moral-oracle-disclosure-interface-review.md)
+locates no operational moral-oracle selector in its bounded scope. It does
+not attach a moral default to unrelated action-resolution or renderer oracles.
+The [reviewed source-comment correction](2026-09-08-tsirelson-feedback-comment-patch-review.md)
+is applied with [exact preimage and non-documentation correspondence](oracle-selection-comment-review/2026-09-08/root-application.json).
+It corrects the Omega saturation sign and distinguishes a supra-quantum numeric
+band from a signalling test; executable source lines remain unchanged.
