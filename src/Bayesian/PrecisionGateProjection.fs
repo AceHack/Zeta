@@ -410,8 +410,12 @@ module PrecisionGateProjection =
             else Error(failure "Wire" "input" (Some field) "exact registered property set required")
 
     let private stringField field (node: JsonElement) =
-        if node.ValueKind = JsonValueKind.String then Ok(node.GetString())
-        else Error(failure "Wire" "input" (Some field) "string required")
+        try
+            if node.ValueKind = JsonValueKind.String then Ok(node.GetString())
+            else Error(failure "Wire" "input" (Some field) "string required")
+        with :? InvalidOperationException as ex ->
+            // JsonElement defers malformed UTF-16 escape rejection until GetString.
+            Error(failure "Wire" "input" (Some field) ex.Message)
 
     let private admitInput expectedCaseId (raw: byte array) =
         result {
