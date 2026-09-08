@@ -1,0 +1,14 @@
+{
+  "id": "080d03f30fd46810a013000858fcccdf",
+  "at": "2026-09-08T00:19:05.485Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z63YMC087G0R003N5FH9X",
+    "type": "task",
+    "title": "Integrate distributional learning and resource-aware benchmark decisions",
+    "slug": "integrate-distributional-learning-and-resource-aware-benchma",
+    "priority": "P2",
+    "filename": "081M1Z63YMC087G0R003N5FH9X-integrate-distributional-learning-and-resource-aware-benchma.md"
+  }
+}
