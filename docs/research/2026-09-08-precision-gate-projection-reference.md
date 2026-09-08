@@ -153,3 +153,72 @@ passes 45 tests in 5.12 seconds, strict typing, Ruff and format verification.
 The [root checkpoint custody](precision-gate-projection-reference-validation/2026-09-08/root/README.md)
 is separate from the earlier interval archive. This checkpoint implements the
 root service only; candidate-certificate source and review remain pending.
+
+## Certificate source plan before first execution
+
+The new certificate API checks supplied native JSON shape, exact independently
+expected input/binding identities and every finite numeric field. It then calls
+the independent root service afresh. No native runner or native result is used.
+The synthetic center fixture computes its objective independently as
+47/32 + ln(2)/2 using a 100-digit Decimal test calculation and the integer
+binary64 renderer; its diagnostic trace is explicitly a Python-built fixture.
+
+Before execution, the added inventory covers all seven leaf mismatches,
+strictly positive q/R/v admission including signed zero and negative subnormal,
+source/target/key/counter mutations, non-strict endpoint containment, two fresh
+root calls, no-candidate refusal preservation, failed root preservation,
+maximum endpoint distance, R computed from independently enclosed exp(X),
+late objective partials and complete observations surviving final encoding
+failure. These test the pure certificate boundary, not native conformance.
+
+An additional named source control, before its first execution, evaluates the
+original objective at t=2,u=-1,k=3,c=1,m=1,v=2. Independent rational-series
+bounds for exp(2) and ln(2) check F=3+exp(2)-ln(2)/2, derivative mean
+1+exp(2), and derivative variance 3/4+exp(2)/2. This discriminates falsely
+returning stationary gradients. A supplied x=-1/2 inside the synthetic
+bracket separately discriminates using a native coordinate in place of the
+independent root or exp check. Neither is a final registered evaluation row.
+
+## Combined certificate checkpoint and retained corrections
+
+The first certificate run passed 81 source tests. Four test typing diagnostics,
+one unused lint suppression and requested formatting remain in attempt 1;
+the corrected style/type pass is separate. Subsequent independent and author
+review identified four root boundary defects, all present in the immutable
+root checkpoint a04bba14c:
+
+1. Author finding: a midpoint retry could lose its pending status when the
+   next precision's initial endpoint sign was unresolved. The new fixture
+   first returned zero midpoint evaluations instead of the owed one. The
+   retry flag now survives that intervening preparation failure.
+2. Independent reviewer finding: a typed context-factory refusal during a
+   retry inherited the unregistered failure stage precision-retry. Parameter
+   preparation now starts and is counted before context construction; its
+   row Precision stays null until the requested context is actually admitted.
+   A refused factory does not invent a context or discard earlier bounds.
+3. Independent reviewer finding: input hashing preceded the 64-KiB ceiling.
+   Exact bytes and length now precede hashing. The finite 65,537-byte trap
+   first reached the forbidden hash; the repaired public API refuses before it.
+4. Independent reviewer finding: a one-attempt budget refusal inherited the
+   prior reconstruction stage. The guard now names midpoint without adding
+   an entry, evaluation or fictitious trace row. Its original failed stage
+   assertion remains retained.
+
+The intermediate corrected passes are 82, 85 and 86 cases. The final combined
+checkpoint passes 88 source unit tests in 5.36 seconds, strict mypy of the
+module/test pair, Ruff and format verification. This number is unrelated to
+execution of the frozen 88 top-level experimental calls: no final runner,
+native result, registered vector batch or native process was invoked here.
+
+The [combined custody index](precision-gate-projection-reference-validation/2026-09-08/certificate/README.md)
+retains all five source/check attempts and the three separate fail-before
+regression captures. Source/test copies, full diagnostic output and command
+identity are losslessly preserved. The original a04 source is not rewritten.
+Independent review of the combined root/certificate source remains pending.
+
+The interval primitive's separate exact 9f0d5ca7 acceptance was committed by
+the independent reviewer at 565c98ba0a6bd58605d22b95812b75ff588651a1. That review
+covers neither these root repairs nor the certificate boundary. The numeric
+reference continues to rely on reviewed helper source and explicit Decimal
+semantics; its supplied native metadata is not process or trajectory evidence.
+Output/entry quotas are finite refusal limits, not peak-memory guarantees.
