@@ -29,9 +29,10 @@ and [rendered-zero](2026-09-08-precision-gate-projection-rendered-zero-clarifica
 clarifications and the existing scalar protocol hash. It does not change the
 scalar numerical implementation or call the old fixed-roster driver.
 
-No named actual M4/M5 route, frozen nested query, native numerical producer,
-training run or extra top-level reference root was invoked for this checkpoint.
-Tests use inert complete plans, injected services, a simulated peer, real owned
+No named actual M4/M5 route, frozen nested query, standalone native numerical
+producer or extra top-level reference root was invoked for this checkpoint.
+The repository gate includes existing numerical unit/model tests; the dedicated
+bridge tests use inert complete plans, injected services, a simulated peer, real owned
 Store files, and small Python children for pipe transport. Existing reference
 and process modules are imported; numerical callbacks in these tests are
 injected. The F# core/peer runtime is separately owned and not established by
@@ -236,3 +237,12 @@ current original and stored member without rerunning tests or codecs.
 All source-bound focused tests remain development checks. Independent bridge review,
 assembled peer/core integration, exact service/source manifest admission and
 root's immutable actual-control registration remain outstanding.
+
+## Subsequent source corrections
+
+The [counter/path correction report](2026-09-08-mixed-message-epoch-bridge-corrections.md)
+binds the later `0e0369` and `4402be8` source cuts, original failed controls,
+100-fixture final validation and both unchanged-source repository gates. The
+initial source and checkpoint archive above remain historical. The source-only
+[peer foundation review](2026-09-08-mixed-message-epoch-peer-foundation-review.md)
+keeps final lifecycle acceptance pending.
