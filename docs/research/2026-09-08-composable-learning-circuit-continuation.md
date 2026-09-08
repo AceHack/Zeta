@@ -137,3 +137,7 @@ The [pinned-source design report](2026-09-08-precision-gated-experts-design-and-
 retains source packaging, data-split and score-sign hazards as well as the local
 math. These findings must remain in any reproduction protocol; earlier CFB
 results keep their original dataset and source identities.
+
+The [native/reference kernel replay contract](2026-09-08-precision-gate-kernels-native-reference-replay.md)
+fixes 24 input rows, numerical tolerance, explicit shape-encoding differences
+and comparator controls before the first cross-language invocation.
