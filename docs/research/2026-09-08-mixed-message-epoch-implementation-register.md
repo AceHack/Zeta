@@ -201,3 +201,26 @@ retains the actual failing source and subsequent three development controls,
 plus strict/static checks of the corrected source. Independent review accepts
 those two repaired boundaries for the declared ordinary-Exception scope.
 No named M4, four-session M5, frozen query or new held-out comparison has run.
+
+
+## Completed peer and bridge withdrawal checkpoint
+
+The [completed peer](2026-09-08-mixed-message-peer-lifecycle-source.md) is now
+imported through normal owner push `463102c0a`, with exact 99,661-byte script
+SHA256 `5D0DD505F3849D7F989982DCAE5EBAB2898B8140AE74489540EC016B15AD7795`.
+Its [independent lifecycle review](2026-09-08-mixed-message-peer-lifecycle-review.md)
+is owner `95d7dca78`. That accepts bounded callback/publication behavior against
+core runtime `15b43aa`; final model/compensation source remains a separate pin.
+
+The [bridge withdrawal implementation](2026-09-08-mixed-message-epoch-bridge-withdrawal-admission.md)
+and [independent follow-through](2026-09-08-mixed-message-epoch-bridge-independent-review.md#follow-through-on-conservative-withdrawal-admission)
+now close its conservative admission gap at source `567a9f004`. The original
+clarification remains byte-identical. All 562 owner custody originals and four
+imported source identities match the reviewer audit. Neither static inert
+compensation payloads nor peer zero-operation fixtures are actual assembled
+historical-query evidence.
+
+The fixed invoker's three contract links are repaired at `50610f191`; its
+reviewed Python bytes remain `CC7FBF89...055E69`. No named route has run. Final
+core controls/review, assembled gate, frozen service/source/runtime archive and
+independent admission remain prerequisites to the unchanged first attempts.

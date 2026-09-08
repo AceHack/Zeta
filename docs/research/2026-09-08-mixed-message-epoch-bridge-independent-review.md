@@ -123,3 +123,40 @@ The separately identified
 [withdrawal admission gap](2026-09-08-mixed-message-withdrawal-admission-clarification.md)
 and final actual core/peer correspondence remain open at this checkpoint.
 No named M4, M5 or frozen query is accepted or reported as executed here.
+
+
+## Follow-through on conservative withdrawal admission
+
+The bridge now implements the exact withdrawal clarification at owner source
+`567a9f004cf67b9df6d4a82c55fadaaf4fdd0b9b`, evidence
+`fffb37084db999739e41fd9c0618eec6f925c940`. The coordinator independently read
+the 34-line admission change against 4402 and checked all four imported source
+identities, including the unchanged clarification. The guards cover selected
+artifacts, initial weights, child cuts/forecasts, retained learned query state,
+checkpoint weights and active/retracted overlap. They preserve the existing
+cold-start route and refuse unproved learned reuse before numerical entry.
+This closes the bridge admission gap within the conservative current-cut rule;
+it establishes neither selective ancestry nor global historical revocation.
+
+The [owner account](2026-09-08-mixed-message-epoch-bridge-withdrawal-admission.md)
+retains ten original failed assertions, the intermediate typing diagnostic,
+111 final development tests and its full 18-check gate. The reviewer reopened
+all 562 regular archive members: 3,651,442 original bytes, 647,003 stored bytes,
+SHA256 `1860339907378E047EBEA740713CB7493ED9A4EC0AC61567656F86023964297E`.
+All declared identities agree. Historical local paths were not followed;
+no archive member, numerical service or unit fixture was executed by this audit.
+The positive inert compensation fixtures remain static admission evidence,
+not actual returned historical query/replay evidence.
+
+The [root withdrawal review records](mixed-message-epoch-bridge-validation/2026-09-08/root-withdrawal-review-1/manifest.json)
+retain the independent audit/helper and exact source import commands. They also
+retain fresh remote observation of completed peer source `463102c0a` and review
+`95d7dca78`, followed by conflict-free imports of their unique source/review
+history. The [peer lifecycle review](2026-09-08-mixed-message-peer-lifecycle-review.md)
+accepts its bounded transport behavior; the peer's synthetic zero-operation
+fixtures do not stand in for a nonempty assembled route.
+
+The bridge at this point is 199,844 bytes, SHA256
+`2A6154EB842116837843E8E100AB08CF4A4C735C635ED693E8C3F58E11B4961B`.
+Final compiled-core correspondence, assembled source/runtime admission and
+all named actual M4/M5/frozen-query outcomes remain pending.
