@@ -1,0 +1,26 @@
+# Rebuilding locally
+
+Use Blender 5.2.1 LTS. The master file and GLBs open independently; rebuilding
+uses the original image paths listed in references/source-manifest.json.
+The retained Clifford JSON is already included, so it can be reused without
+rerunning Zeta or changing any learning experiment.
+
+1. Run `scripts/build_characters.py` with Blender in background mode.
+2. Optionally regenerate `research/clifford-turntable.json` using the retained
+   `scripts/export_clifford_motion.fsx` and its explicitly identified local
+   Zeta DLLs. Verify those identities before doing so on another checkout.
+3. Run `scripts/finalize_assets.py` against the new master blend. This applies
+   the retained motion, packs references, adds the cyclorama, renders the three
+   Cycles images and creates the initial portable exports.
+4. Run `scripts/package_assets.py` against the master. It attaches the character
+   effects, saves the master and exports the final GLBs at grounded metre scale.
+5. Run `scripts/validate_assets.py` in a fresh Blender background process.
+6. Run `scripts/render_turntable.py` against the master. Encode its 144 frames
+   at 24 fps with ffmpeg/libx264, CRF 18, yuv420p and faststart.
+7. Run `scripts/set_opening_view.py` against the master to save its opening
+   viewport. No geometry is changed by this final presentation step.
+
+The scripts use the explicit local project path. Move/retarget it deliberately
+if rebuilding elsewhere. Do not overwrite the supplied references. Earlier
+prototype scripts, logs and drafts in the working directory record the local
+iteration; they are not needed to open the delivered assets.

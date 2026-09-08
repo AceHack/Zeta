@@ -1,0 +1,480 @@
+import bpy, math, random, json
+from pathlib import Path
+from mathutils import Vector, Quaternion
+from mathutils.kdtree import KDTree
+from mathutils.bvhtree import BVHTree
+R=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa-Realistic')
+bpy.ops.wm.open_mainfile(filepath=str(R/'realistic-anatomy.blend'))
+random.seed(471)
+for ob in bpy.data.objects:
+ if ob.type=='MESH':
+  for f in ob.data.polygons:f.use_smooth=True
+  if ob.data.has_custom_normals:ob.data.normals_split_custom_set([(0,0,0)]*len(ob.data.loops))
+scene=bpy.context.scene
+
+def mat(name,col,rough=.45,metal=0,emit=0,cloth=False):
+ m=bpy.data.materials.new(name);m.diffuse_color=(*col,1);m.use_nodes=True
+ n=m.node_tree.nodes;l=m.node_tree.links;bs=n.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*col,1);bs.inputs['Metallic'].default_value=metal;bs.inputs['Roughness'].default_value=rough
+ if emit:bs.inputs['Emission Color'].default_value=(*col,1);bs.inputs['Emission Strength'].default_value=emit
+ if cloth:
+  noise=n.new('ShaderNodeTexNoise');noise.inputs['Scale'].default_value=170;noise.inputs['Detail'].default_value=3
+  bump=n.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.20;bump.inputs['Distance'].default_value=.00055;l.new(noise.outputs['Fac'],bump.inputs['Height']);l.new(bump.outputs[0],bs.inputs['Normal'])
+  bs.inputs['Sheen Weight'].default_value=.12
+ return m
+leather=mat('Atelier / black grained leather',(.009,.012,.018),.43,.05,cloth=True)
+fabric=mat('Atelier / tailored charcoal wool',(.006,.008,.012),.58,cloth=True)
+purple=mat('Atelier / nightbloom silk',(.045,.006,.082),.49,.12,cloth=True)
+green=mat('Atelier / emerald brocade',(.003,.026,.013),.56,.08,cloth=True)
+ivory=mat('Atelier / parchment silk lining',(.34,.29,.21),.64,cloth=True)
+brass=mat('Atelier / aged warm brass',(.26,.13,.036),.32,.85)
+darkmetal=mat('Atelier / blackened steel',(.022,.027,.038),.3,.7)
+cyan=mat('Atelier / fine cyan inlay',(.01,.5,.7),.27,.35,2)
+violet=mat('Atelier / violet blade edge',(.29,.012,.7),.28,.4,2.5)
+emerald=mat('Atelier / emerald focus',(.005,.13,.035),.25,.6,.75)
+ink=mat('Atelier / botanical tattoo ink',(.015,.016,.019),.8)
+beardmats=[mat('Atelier / beard '+str(i),c,.68) for i,c in enumerate([(.025,.018,.014),(.15,.14,.12),(.31,.30,.27),(.48,.47,.42)])]
+hairmat=mat('Atelier / individual black hair',(.007,.008,.011),.59)
+steel=mat('Atelier / honed blade',(.14,.19,.26),.22,.85)
+
+C=None;root=None;rig=None;body=None;kd=None;bvh=None;who=''
+def reg(o,name,m=None,bone=None,weighted=True):
+ o.name=who+' | '+name
+ for c in list(o.users_collection):c.objects.unlink(o)
+ C.objects.link(o);o.parent=root;o['Character']=who
+ if m and hasattr(o.data,'materials'):o.data.materials.append(m)
+ if o.type=='MESH':
+  for p in o.data.polygons:p.use_smooth=True
+  if weighted:
+   groups={}
+   for v in o.data.vertices:
+    if bone:weights=[(bone,1.0)]
+    else:
+     _,idx,_=kd.find(o.matrix_basis@v.co);weights=[(body.vertex_groups[g.group].name,g.weight) for g in body.data.vertices[idx].groups if body.vertex_groups[g.group].name in rig.data.bones]
+    for n,w in weights:
+     if n not in groups:groups[n]=o.vertex_groups.new(name=n)
+     groups[n].add([v.index],w,'REPLACE')
+   mod=o.modifiers.new('Character deformation','ARMATURE');mod.object=rig
+ return o
+
+def mesh(name,vs,fs,m,bone=None,sub=0,solid=0):
+ d=bpy.data.meshes.new(name);d.from_pydata(vs,[],fs);d.update();o=bpy.data.objects.new(name,d);C.objects.link(o);reg(o,name,m,bone)
+ if sub:md=o.modifiers.new('Tailored smooth surface','SUBSURF');md.levels=sub;md.render_levels=sub
+ if solid:md=o.modifiers.new('Real fabric thickness','SOLIDIFY');md.thickness=solid
+ return o
+
+def curve(name,pts,r,m,closed=False,bone=None):
+ d=bpy.data.curves.new(name,'CURVE');d.dimensions='3D';d.resolution_u=12;d.bevel_depth=r;d.bevel_resolution=3
+ s=d.splines.new('BEZIER');s.bezier_points.add(len(pts)-1)
+ for p,co in zip(s.bezier_points,pts):p.co=co;p.handle_left_type='VECTOR' if ('spectacle frame' in name or 'buckle' in name or 'clasp' in name) else 'AUTO';p.handle_right_type=p.handle_left_type
+ s.use_cyclic_u=closed;o=bpy.data.objects.new(name,d);C.objects.link(o)
+ # Convert paths to weighted geometry so seams remain fitted while posing.
+ bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o;bpy.ops.object.convert(target='MESH');o=bpy.context.object
+ return reg(o,name,m,bone)
+
+def multi_hair(name,lines,r,m,bone='head'):
+ d=bpy.data.curves.new(name,'CURVE');d.dimensions='3D';d.resolution_u=3;d.bevel_depth=r;d.bevel_resolution=1
+ for pts in lines:
+  s=d.splines.new('POLY');s.points.add(len(pts)-1)
+  for j,(p,co) in enumerate(zip(s.points,pts)):p.co=(*co,1);p.radius=1-j/(len(pts)-1)*.83
+ o=bpy.data.objects.new(name,d);C.objects.link(o)
+ bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o;bpy.ops.object.convert(target='MESH');o=bpy.context.object
+ return reg(o,name,m,bone)
+
+def sphere(name,p,scale,m,bone=None):
+ bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,location=p);o=bpy.context.object;o.scale=scale;bpy.ops.object.transform_apply(location=True,rotation=True,scale=True);return reg(o,name,m,bone)
+
+def rod(name,a,b,r,m,bone=None,r2=None,verts=24):
+ a,b=Vector(a),Vector(b);bpy.ops.mesh.primitive_cone_add(vertices=verts,radius1=r,radius2=r if r2 is None else r2,depth=(b-a).length,location=(a+b)/2);o=bpy.context.object;o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler();bpy.ops.object.transform_apply(location=True,rotation=True,scale=True);return reg(o,name,m,bone)
+
+def buckle(name,p,w,h,m=brass):
+ x,y,z=p;pts=[(x-w/2,y,z-h/2),(x+w/2,y,z-h/2),(x+w/2,y,z+h/2),(x-w/2,y,z+h/2)];curve(name,pts,.002,m,True);rod(name+' tongue',(x,y-.001,z),(x+w*.48,y-.001,z),.0012,m)
+
+def ray(x,z,off=.001):
+ p,n,idx,d=bvh.ray_cast(Vector((x,-1,z)),Vector((0,1,0)),2)
+ 
+ if p:return p+n*off
+ p,n,_,_=bvh.find_nearest(Vector((x,-.08,z)))
+ return p+n*off
+
+def panel(name,rows,m,lining=None):
+ # Each row is left/right; weave a mildly curved surface between seam lines.
+ vs=[];N=8
+ for a,b in rows:
+  a,b=Vector(a),Vector(b)
+  for j in range(N+1):
+   t=j/N;p=a.lerp(b,t);p.y-=.006*math.sin(t*math.pi);vs.append(tuple(p))
+ fs=[(i*(N+1)+j,i*(N+1)+j+1,(i+1)*(N+1)+j+1,(i+1)*(N+1)+j) for i in range(len(rows)-1) for j in range(N)]
+ fs=[f if (Vector(vs[f[1]])-Vector(vs[f[0]])).cross(Vector(vs[f[2]])-Vector(vs[f[0]])).y<0 else tuple(reversed(f)) for f in fs]
+ o=mesh(name,vs,fs,m,sub=2,solid=.003)
+ if lining:
+  o.data.materials.append(lining);o.modifiers[-1].material_offset=1
+ return o
+
+def surface_shell(name,predicate,m,offset=.007,smooth=4):
+ # Retains real anatomical quad topology and original skinning weights.
+ bg=body.vertex_groups['body'].index;allowed={v.index for v in body.data.vertices if any(g.group==bg and g.weight>.5 for g in v.groups)}
+ polys=[p for p in body.data.polygons if all(i in allowed for i in p.vertices) and predicate(sum((body.data.vertices[i].co for i in p.vertices),Vector())/len(p.vertices))]
+ ids=sorted({i for p in polys for i in p.vertices});mp={a:i for i,a in enumerate(ids)}
+ vs=[body.data.vertices[i].co+body.data.vertices[i].normal*offset for i in ids];fs=[tuple(mp[i] for i in p.vertices) for p in polys]
+ o=mesh(name,vs,fs,m,sub=0)
+ if smooth:md=o.modifiers.new('Garment relaxation','SMOOTH');md.factor=.9;md.iterations=smooth
+ md=o.modifiers.new('Garment subdivision','SUBSURF');md.levels=2;md.render_levels=2
+ md=o.modifiers.new('Garment thickness','SOLIDIFY');md.thickness=.004
+ return o
+
+records=json.loads((R/'sources/anatomy-record.json').read_text())
+for rec in records:
+ who=rec['Character'];male=who=='AceHack';C=bpy.data.collections[who+' | Character'];root=bpy.data.objects[who+' | Root'];rig=bpy.data.objects[who+' | Deformation Rig'];body=bpy.data.objects[who+' | Human'];H=rec['Height'];bone=rec['Bones']
+ # Bake the authored morph mix into this delivery copy; the source blend retains all morphs.
+ if body.data.shape_keys:
+  mix=body.shape_key_add(name='Baked likeness',from_mix=True);coords=[v.co.copy() for v in mix.data];body.shape_key_clear()
+  for v,co in zip(body.data.vertices,coords):v.co=co
+ for p in body.data.polygons:p.material_index=0
+ body.data.update();kd=KDTree(len(body.data.vertices))
+ for v in body.data.vertices:kd.insert(v.co,v.index)
+ kd.balance()
+ bg=body.vertex_groups['body'].index;ok={v.index for v in body.data.vertices if any(g.group==bg and g.weight>.5 for g in v.groups)}
+ bvh=BVHTree.FromPolygons([v.co for v in body.data.vertices],[list(p.vertices) for p in body.data.polygons if all(i in ok for i in p.vertices)])
+ # Use fabric, not exposed anatomy, beneath every outer garment.
+ zneck=bone['neck01']['Head'][2];zhip=bone['spine05']['Head'][2];zwaist=bone['spine03']['Head'][2]
+ body.data.materials.append(leather);clothidx=len(body.data.materials)-1
+ for p in body.data.polygons:
+  c=sum((body.data.vertices[i].co for i in p.vertices),Vector())/len(p.vertices)
+  if c.z<zhip+.01 or (c.z<zneck-.11 and abs(c.x)<(.16 if male else .11)):p.material_index=clothidx
+ feet=bpy.data.objects[who+' | Fitted boot feet'];feet.data.materials.clear();feet.data.materials.append(leather)
+ # Tailored silhouettes.
+ if male:
+  suit=bpy.data.objects[who+' | Tailored suit']
+  # Keep the imported suit's actual seams, collar, lapels and folds, recolor into the reference palette.
+  suit.data.materials.clear()
+  for m in [fabric,green,ivory,darkmetal]:suit.data.materials.append(m)
+  for p in suit.data.polygons:
+   c=sum((suit.data.vertices[i].co for i in p.vertices),Vector())/len(p.vertices)
+   p.material_index=0
+   if c.y<-.07 and abs(c.x)<.045 and zwaist<c.z<zneck-.06:p.material_index=1
+   if c.y<-.07 and abs(c.x)<.09 and c.z>zneck-.09:p.material_index=2
+  bvh_skin=bvh
+  suitcoords=[v.co.copy() for v in suit.data.vertices]
+  suitbvh=BVHTree.FromPolygons(suitcoords,[list(p.vertices) for p in suit.data.polygons])
+  bvh=suitbvh
+  # Fitted waistcoat over shirt, under parted outer coat.
+  for s in [-1,1]:
+   rows=[]
+   for z,xx in [(zneck-.045,.045),(zneck-.13,.10),(zwaist+.06,.102),(zwaist-.055,.085),(zwaist-.10,.07)]:
+    inner=.037 if z>zneck-.08 else (.027 if z>zneck-.16 else .004)
+    a=ray(s*inner,z,.026);b=ray(s*xx,z,.026);rows.append((a,b))
+   panel('Emerald waistcoat',rows,green)
+   curve('Waistcoat welt',[r[0] for r in rows],.0013,brass)
+  for j in range(6):
+   z=zwaist-.048+j*.041;p=ray(.007,z,.027);sphere('Waistcoat brass button',p,(.004,.0025,.004),brass)
+  # White shirt collar and black tie taper.
+  for s in [-1,1]:
+   panel('Ivory shirt collar',[(ray(s*.009,zneck-.004,.032),ray(s*.044,zneck-.004,.032)),(ray(s*.031,zneck-.056,.043),ray(s*.056,zneck-.034,.043))],ivory)
+  panel('Silk necktie',[(ray(-.010,zneck-.033,.029),ray(.010,zneck-.033,.029)),(ray(-.019,zneck-.14,.031),ray(.019,zneck-.14,.031)),(ray(-.004,zneck-.19,.035),ray(.004,zneck-.19,.035))],green)
+ else:
+  surface_shell('Fitted sleeveless leather cuirass',lambda c:zhip-.025<c.z<zneck-.065 and abs(c.x)<(.195 if c.z<zneck-.17 else .135),leather,.011,9)
+  surface_shell('Fitted trousers',lambda c:.12<c.z<zhip+.025,leather,.006,5)
+ if male:bvh=bvh_skin
+ # Long open coats: small waist, real cloth folds, broad trailing hems, contrasting inner lining.
+ for s in [-1,1]:
+  # Shoulder-to-waist front facing, sharper tailored lapel.
+  shoulder=.155 if male else .109
+  rows=[((s*.065,-.049,zneck+.009),(s*.095,-.02,zneck+.035)),((s*.088,-.105,zneck-.070),(s*shoulder,-.058,zneck-.03)),((s*.056,-.148,zneck-.23),(s*(.16 if male else .137),-.070,zneck-.19)),((s*.093,-.117,zwaist),(s*(.155 if male else .14),-.036,zwaist)),((s*.12,-.108,zhip-.01),(s*(.19 if male else .177),.0,zhip-.01))]
+  if not male:
+   rows=[((a[0],a[1]+.020,a[2]),(b[0],b[1]+.013,b[2])) for a,b in rows]
+  if male:
+   fitted=[]
+   for a,b in rows:
+    vals=[]
+    for p in [a,b]:
+     hit,n,_,_=suitbvh.ray_cast(Vector((p[0],-1,p[2])),Vector((0,1,0)),2)
+     vals.append((p[0],min(p[1],hit.y-.012) if hit else p[1],p[2]))
+    fitted.append(tuple(vals))
+   rows=fitted
+  if not male:rows=[(ray(a[0],a[2],.033),ray(b[0],b[2],.028)) for a,b in rows]
+  panel('Tailored coat facing',rows,leather,ivory if male else purple)
+  curve('Coat fine edge piping',[r[0] for r in rows],.002,brass if male else darkmetal)
+  if not male:
+   panel('Purple lapel inlay',[(Vector(a).lerp(Vector(b),.10),Vector(a).lerp(Vector(b),.78)) for a,b in rows[:4]],purple)
+   curve('Cyan lapel trace',[Vector(r[1])+Vector((0,-.004,0)) for r in rows[1:4]],.0012,cyan)
+ # Waist-to-hem cloth skirt split into four independently flowing panels.
+ for k,(a0,a1) in enumerate([(.36,1.35),(1.36,2.5),(3.78,4.91),(4.92,5.92)]):
+  vs=[];nu=16;nv=18
+  for i in range(nv+1):
+   t=i/nv
+   for j in range(nu+1):
+    u=j/nu;a=a0+(a1-a0)*u
+    rx=(.18 if male else .165)+(.15 if male else .14)*t
+    ry=.108+.16*t
+    xx=math.sin(a)*rx+(.12 if male else -.14)*t*t
+    yy=-math.cos(a)*ry+.24*t*t+(.012+.025*t)*math.sin(u*math.pi*4+t*1.8)
+    zz=zhip-.035-(.65 if male else .57)*t+.055*t*math.sin(a*2+.4)
+    vs.append((xx,yy,zz))
+  fs=[(i*(nu+1)+j,i*(nu+1)+j+1,(i+1)*(nu+1)+j+1,(i+1)*(nu+1)+j) for i in range(nv) for j in range(nu)]
+  fs=[tuple(reversed(f)) for f in fs]
+  o=mesh('Flowing coat panel '+str(k+1),vs,fs,fabric if male else purple,sub=2,solid=.004);o.data.materials.append(ivory if male else leather);o.modifiers[-1].material_offset=1
+  for col in [0,nu]:curve('Coat hem piping',[vs[i*(nu+1)+col] for i in range(0,nv+1,2)],.0018,brass if male else darkmetal)
+  curve('Weighted lower hem',vs[-(nu+1):],.0016,brass if male else darkmetal)
+  # Brocade motifs on the actual cloth surface, fine enough to read as embroidery.
+  for j in range(2,nu-1,4):
+   line=[Vector(vs[i*(nu+1)+j])+Vector((0,-.004,0)) for i in range(3,nv,2)]
+   curve('Woven brocade stem',line,.00065,brass if male else violet)
+   for ii in range(2,len(line)-1,2):
+    p=line[ii];curve('Woven brocade leaf',[p,p+Vector((.018,-.002,.013)),p+Vector((.007,-.002,.030)),p],.0006,brass if male else violet)
+ # Three-dimensional belts follow the torso surface rather than floating in space.
+ for z,tilt in [(zwaist-.045,.08),(zwaist+.008,-.045)]:
+  pts=[]
+  for i in range(36):
+   a=2*math.pi*i/36;xx=(.151 if male else .134)*math.sin(a);yy=-(.112 if male else .096)*math.cos(a)+.009
+   zz=z+tilt*xx
+   if math.cos(a)>0:
+    hit=ray(xx,zz,.035);yy=min(yy,hit.y)
+   pts.append((xx,yy,zz))
+  # Flat band loft, four edges.
+  vs=[(x,y,z+dz) for dz in [-.015,.015] for x,y,z in pts];N=len(pts);fs=[(i,(i+1)%N,(i+1)%N+N,i+N) for i in range(N)]
+  mesh('Leather waist belt',vs,fs,leather,sub=1,solid=.006)
+  buckle('Forged belt buckle',(.012,ray(.012,z,.045).y,z),.045,.033)
+ # Gloves, boots, greaves use the actual anatomy, not cylinder limbs.
+ for s,side in [(1,'L'),(-1,'R')]:
+  wrist=Vector(bone['wrist.'+side]['Head']);elbow=Vector(bone['lowerarm01.'+side]['Head']);ankle=Vector(bone['foot.'+side]['Head']);knee=Vector(bone['lowerleg01.'+side]['Head'])
+  surface_shell('Leather glove '+side,lambda c,w=wrist,e=elbow:(c-w).length<.12 and c.z<w.z+.055,leather,.004,2)
+  surface_shell('Sculpted boot '+side,lambda c,s=s,k=knee:c.x*s>.025 and .11<c.z<k.z-.035,leather,.009,5)
+  # Anatomically tapered front shin shield and stitched border.
+  rows=[]
+  for t,width in [(0,.046),(.20,.055),(.75,.037),(1,.033)]:
+   z=knee.z-.055-(knee.z-ankle.z-.09)*t;x=knee.x*(1-t)+ankle.x*t
+   rows.append((ray(x-width,z,.023),ray(x+width,z,.023)))
+  panel('Shaped shin armor '+side,rows,darkmetal)
+  curve('Greave border '+side,[r[0] for r in rows]+[r[1] for r in reversed(rows)],.0018,brass if male else purple,True)
+  curve('Greave central ridge '+side,[Vector(a).lerp(Vector(b),.5)+Vector((0,-.004,0)) for a,b in rows],.0015,brass if male else cyan)
+  for t in [.22,.63]:
+   z=knee.z-.045-(knee.z-ankle.z-.08)*t;x=knee.x*(1-t)+ankle.x*t
+   buckle('Boot strap clasp '+side,(x+s*.040,ray(x,z,.025).y,z),.025,.018)
+  # Fitted forearm bracer mesh generated around the bone axis, with thinner walls.
+  v=(wrist-elbow).normalized();u=Vector((0,-1,0));u=(u-v*u.dot(v)).normalized();vv=v.cross(u)
+  verts=[];N=20
+  for t,rad in [(.47,.046 if male else .038),(.52,.047 if male else .039),(.94,.033 if male else .027),(1,.034 if male else .028)]:
+   c=elbow.lerp(wrist,t)
+   for j in range(N):a=2*math.pi*j/N;verts.append(tuple(c+rad*(u*math.cos(a)+vv*math.sin(a))))
+  faces=[(i*N+j,i*N+(j+1)%N,(i+1)*N+(j+1)%N,(i+1)*N+j) for i in range(3) for j in range(N)]
+  mesh('Fitted wrist bracer '+side,verts,faces,leather,sub=1,solid=.002)
+  curve('Bracer inlay '+side,[elbow.lerp(wrist,t)+u*(.052 if male else .043) for t in [.53,.66,.87,.96]],.002,brass if male else cyan)
+ # Closely fitted layered panels, seam lines, straps and hardware from the reference costume.
+ front=bvh
+ if male:bvh=suitbvh
+ if not male:
+  # Angled plates bridge the anatomical surface into a tailored armored garment.
+  for j,(z,half,dh) in enumerate([(zneck-.15,.113,.065),(zneck-.22,.115,.052),(zwaist+.055,.10,.04),(zwaist-.025,.091,.038)]):
+   for s in [-1,1]:
+    pts=[ray(s*.008,z+dh*.45,.029),ray(s*half,z+dh,.027),ray(s*(half+.006),z-dh*.28,.029),ray(s*.012,z-dh,.030)]
+    panel('Angular cuirass panel',[(pts[0],pts[1]),(pts[3],pts[2])],leather if j%2==0 else darkmetal)
+    curve('Cuirass stitched perimeter',pts,.00085,darkmetal,True)
+  # Narrow strap crossing the armored bodice; buckles follow the surface.
+  for s in [-1,1]:
+   rows=[]
+   for j in range(9):
+    t=j/8;z=zneck-.095-(zneck-zwaist-.03)*t;x=s*(.100-.057*t)
+    rows.append((ray(x-.012,z,.048),ray(x+.012,z,.048)))
+   panel('Cross-body harness strap',rows,leather)
+   curve('Harness stitch',[r[0] for r in rows],.00055,ivory)
+   p=Vector(rows[5][0]).lerp(Vector(rows[5][1]),.5);p.y-=.005;buckle('Harness clasp',p,.029,.037)
+  # Longer purple front panels remain visible over the fitted black bodice.
+  for s in [-1,1]:
+   rows=[]
+   for z,inner,outer in [(zneck-.065,.052,.087),(zneck-.15,.070,.135),(zneck-.29,.070,.145),(zwaist-.03,.088,.15),(zhip-.04,.101,.19)]:
+    rows.append((ray(s*inner,z,.051),ray(s*outer,z,.039)))
+   panel('Purple brocade front facing',rows,purple)
+   curve('Purple facing leather border',[r[0] for r in rows],.002,leather)
+   curve('Cyan segmented lapel accent',[Vector(rows[j][1])+Vector((0,-.004,0)) for j in range(1,4)],.00085,cyan)
+   # Sewn jacquard curls, subdued instead of glowing free-floating lines.
+   for j in range(2,5):
+    p=Vector(rows[j][0]).lerp(Vector(rows[j][1]),.45);pts=[]
+    for n in range(16):
+     t=n/15*math.tau;xx=p.x+.010*math.cos(t);zz=p.z+.016*math.sin(t);q=ray(xx,zz,.054);pts.append(q)
+    curve('Subtle lapel jacquard',pts,.00045,darkmetal)
+ else:
+  # Brocade woven into the waistcoat, watch chain and tailored double shoulder piping.
+  for s in [-1,1]:
+   for j in range(6):
+    z=zwaist-.04+j*.045;x=s*.048;pts=[]
+    for k in range(20):
+     t=k/19*math.tau;pts.append(ray(x+.012*math.sin(t),z+.019*math.cos(t),.030))
+    curve('Emerald waistcoat jacquard',pts,.0005,brass)
+  pts=[ray(.09-.17*j/24,zwaist-.045-.028*math.sin(j/24*math.pi),.048) for j in range(25)]
+  curve('Pocket watch chain',pts,.0011,brass)
+  for j in range(0,25,2):sphere('Watch chain link',pts[j],(.0018,.0015,.0018),brass)
+  # Diagonal leather equipment harness.
+  rows=[]
+  for j in range(10):
+   t=j/9;z=zneck-.06-(zneck-zwaist+.06)*t;x=.11-.16*t
+   rows.append((ray(x-.015,z,.049),ray(x+.015,z,.049)))
+  panel('Diagonal leather equipment harness',rows,leather)
+  for jj in [3,7]:
+   p=Vector(rows[jj][0]).lerp(Vector(rows[jj][1]),.5);p.y-=.004;buckle('Equipment harness buckle',p,.036,.044)
+ bvh=front
+ # Extra thigh straps with small brass clasps, projecting onto the fitted trousers.
+ for s,side in [(1,'L'),(-1,'R')]:
+  upper=Vector(bone['upperleg01.'+side]['Head']);lower=Vector(bone['lowerleg01.'+side]['Head'])
+  for t in [.22,.39]:
+   c=upper.lerp(lower,t);pts=[]
+   for j in range(20):
+    a=-1.23+2.46*j/19;x=c.x+(.080 if male else .075)*math.sin(a);p=ray(x,c.z,.026);pts.append(p)
+   vs=[tuple(p+Vector((0,0,dz))) for dz in [-.012,.012] for p in pts];N=len(pts);fs=[(j,j+1,j+1+N,j+N) for j in range(N-1)];mesh('Fitted thigh strap '+side,vs,fs,leather,sub=1,solid=.003)
+   p=pts[14];buckle('Thigh strap buckle '+side,(p.x,p.y-.004,p.z),.022,.029)
+ if not male:
+  # Filled tapered ink leaves replace loose outlined loops.
+  for s,side in [(1,'L'),(-1,'R')]:
+   sh=Vector(bone['upperarm01.'+side]['Head']);wr=Vector(bone['wrist.'+side]['Head'])
+   for j in range(13):
+    t=.08+j*.055;c=sh.lerp(wr,t);xx=c.x+s*.015*math.sin(t*math.pi*3);zz=c.z;direction=-1 if j%2 else 1;vs=[]
+    for k in range(15):
+     u=k/14;centerx=xx+direction*.020*u;centerz=zz+.031*u;wid=.005*math.sin(math.pi*u)**.75
+     for sd in [-1,1]:vs.append(ray(centerx+sd*wid,centerz,.0012))
+    fs=[(2*k,2*k+1,2*k+3,2*k+2) for k in range(14)];mesh('Botanical filled tattoo leaf',vs,fs,ink)
+   for j in range(3):
+    c=sh.lerp(wr,.59+j*.055);curve('Faint cyan botanical filament',[ray(c.x,c.z,.0018),ray(c.x+s*.010,c.z+.018,.0018),ray(c.x+s*.003,c.z+.032,.0018)],.0004,cyan)
+ # Give the hands an actual grip around their tools.
+ for side in ['L','R']:
+  if male and side=='L':continue
+  for finger in range(2,6):
+   for segment in range(1,4):
+    pb=rig.pose.bones.get('finger%d-%d.%s'%(finger,segment,side))
+    if pb:pb.rotation_mode='XYZ';pb.rotation_euler.x=.58 if segment==1 else .82
+
+ # Hair: keep fitted alpha-mapped mesh, add fine individual fibers and wind sweep.
+ hair=bpy.data.objects[who+' | Hair']
+ for p in hair.data.polygons:p.use_smooth=True
+ for m in hair.data.materials:
+  if m and m.node_tree:
+   bs=next((n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED'),None)
+   if bs:
+    bs.inputs['Roughness'].default_value=.59;bs.inputs['Specular IOR Level'].default_value=.25
+    tex=next((n for n in m.node_tree.nodes if n.type=='TEX_IMAGE' and n.name=='DiffuseTexture'),None)
+    if tex:
+     bump=m.node_tree.nodes.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.23;bump.inputs['Distance'].default_value=.001;m.node_tree.links.new(tex.outputs['Color'],bump.inputs['Height']);m.node_tree.links.new(bump.outputs[0],bs.inputs['Normal'])
+ if not male:
+  for v in hair.data.vertices:
+   t=max(0,min(1,(H-.105-v.co.z)/.37));v.co.x-=.18*t*t;v.co.y+=.05*t;v.co.z+=.023*math.sin(t*5+v.co.x*16)*t
+  lines=[]
+  for k in range(680):
+   side=-1 if random.random()<.64 else 1;a=random.uniform(.12,2.9);length=random.uniform(.24,.48);pts=[]
+   x0=side*random.uniform(.061,.094);y0=random.uniform(-.065,.075);z0=H-random.uniform(.09,.16)
+   for j in range(15):
+    t=j/14;pts.append((x0-.20*t*t+side*.016*math.sin(t*11+a),y0+.07*t+.006*math.sin(t*17+a),z0-length*t+.009*math.sin(t*9+a)))
+   lines.append(pts)
+  multi_hair('Fine flowing hair fibers',lines,.00010,hairmat)
+ else:
+  lines=[]
+  for k in range(950):
+   x=random.uniform(-.069,.069);z=H-.013-.056*(abs(x)/.08)**2;y=-.070+random.uniform(-.008,.009);pts=[]
+   for j in range(10):
+    t=j/9;pts.append((x+.015*math.sin(t*2),y+.145*t,z+.019*math.sin(t*math.pi)-.035*t))
+   lines.append(pts)
+  multi_hair('Swept fine hair fibers',lines,.000095,hairmat)
+  # Natural close beard, following the actual face surface with tapered individual strands.
+  mouth=bone['oris01']['Tail'][2];nose=bone['special03']['Tail'][2];chin=bone['oris02']['Head'][2]-.017
+  batches=[[] for _ in beardmats]
+  for k in range(23500):
+   x=random.uniform(-.073,.073);z=random.uniform(chin-.009,nose+.015)
+   # Curved cheek line, closed moustache area, and clean lips.
+   top=mouth+.027+.029*(abs(x)/.073)**1.25
+   if z>top or (abs(x)<.028 and mouth-.008<z<mouth+.012):continue
+   if abs(x)<.014 and z>nose-.007:continue
+   p,n,_,_=bvh.ray_cast(Vector((x,-.4,z)),Vector((0,1,0)),.5)
+   if p is None or p.y>-.065:continue
+   length=random.uniform(.0022,.0045);direction=Vector((x*.6,-.15,-1)).normalized();pts=[p+n*.0004,p+n*.001+direction*length*.5,p+n*.0017+direction*length]
+   batches[random.choices(range(4),[.15,.22,.41,.22])[0]].append(pts)
+  for i,lines in enumerate(batches):multi_hair('Salt and pepper beard fibers '+str(i),lines,.000105,beardmats[i])
+  # Rectangular optical frames, matched to measured eye spacing.
+  eyez=bone['eye.L']['Tail'][2]+.002
+  for s in [-1,1]:
+   cx=s*.033;pts=[(cx-.023,-.169,eyez+.010),(cx+.021,-.169,eyez+.010),(cx+.024,-.170,eyez+.007),(cx+.022,-.173,eyez-.011),(cx+.019,-.173,eyez-.013),(cx-.020,-.173,eyez-.013),(cx-.023,-.172,eyez-.010),(cx-.025,-.170,eyez+.006)]
+   curve('Rectangular black spectacle frame',pts,.0018,leather,True,'head')
+   curve('Spectacle temple',[(s*.060,-.168,eyez+.010),(s*.072,-.09,eyez+.007),(s*.069,-.018,eyez-.003)],.0018,leather,bone='head')
+  curve('Spectacle bridge',[(-.008,-.173,eyez+.006),(0,-.177,eyez+.01),(.008,-.173,eyez+.006)],.0017,darkmetal,bone='head')
+  sphere('Emerald temple instrument',(.068,-.126,eyez+.008),(.006,.010,.009),brass,'head');sphere('Emerald optical inset',(.071,-.134,eyez+.009),(.004,.005,.005),emerald,'head')
+ # Skin details that identify Xenaa: ink botanicals and long faceted earrings.
+ if not male:
+  for s,side in [(1,'L'),(-1,'R')]:
+   sh=Vector(bone['upperarm01.'+side]['Head']);el=Vector(bone['lowerarm01.'+side]['Head']);wr=Vector(bone['wrist.'+side]['Head']);line=[]
+   # Project vine and leaf strokes onto the actual visible arm surface.
+   for j in range(22):
+    t=j/21;c=sh.lerp(wr,t*.81);xx=c.x+s*.021*math.sin(t*math.pi*3);line.append(ray(xx,c.z,.0010))
+   curve('Botanical arm tattoo stem '+side,line,.00065,ink)
+   for j in range(2,20,2):
+    p=line[j];sgn=-1 if j%4 else 1;q=Vector((p.x+sgn*.016,p.y,p.z+.014));end=Vector((p.x+sgn*.021,p.y,p.z+.035))
+    pts=[ray(p.x,p.z,.0011),ray(q.x,q.z,.0011),ray(end.x,end.z,.0011),ray(p.x+.004*sgn,p.z+.017,.0011),ray(p.x,p.z,.0011)]
+    curve('Botanical ink leaf '+side,pts,.00055,ink)
+   # Pendant drops attach to head.
+   z=bone['head']['Head'][2]-.011;x=s*.073
+   for j in range(5):
+    p=(x+s*.002*math.sin(j),-.038,z-j*.009);sphere('Nightbloom earring setting',p,(.0025,.0025,.003),darkmetal,'head');sphere('Violet earring crystal',(p[0],p[1]-.002,p[2]-.003),(.002,.002,.0035),violet,'head')
+ # Pose-neutral signature props, weighted to hand bones.
+ if male:
+  # Right hand's upright staff, ornate but correctly sized.
+  w=Vector(bone['wrist.R']['Tail']);p=w+Vector((-.015,-.035,-.025));hand='wrist.R';end=p+Vector((0,0,-.88))
+  rod('Cipherstorm staff shaft',end,p+Vector((0,0,.24)),.009,darkmetal,hand)
+  for j in range(10):
+   z=end.z+.08+j*.1;rod('Staff brass ferrule',(p.x,p.y,z-.005),(p.x,p.y,z+.005),.012,brass,hand)
+  c=p+Vector((0,0,.29));sphere('Staff focus emerald',c,(.024,.019,.048),emerald,hand)
+  for a in [0,math.pi/2,math.pi,math.pi*1.5]:
+   pts=[c+Vector((.04*math.cos(a),.04*math.sin(a),-.060)),c+Vector((.032*math.cos(a),.032*math.sin(a),0)),c+Vector((0,0,.071))];curve('Staff crown prong',pts,.0035,brass,bone=hand)
+  # Shoulder mechanisms: concentric engineering detail instead of oversized baubles.
+  for s,side in [(1,'L'),(-1,'R')]:
+   c=Vector(bone['upperarm01.'+side]['Head'])+Vector((s*.015,-.080,.030));bn='upperarm01.'+side
+   for rad in [.026,.037,.052]:
+    curve('Shoulder mechanism ring',[c+Vector((rad*math.sin(j*math.tau/48),0,rad*math.cos(j*math.tau/48))) for j in range(48)],.002,brass,True,bn)
+   for j in range(14):
+    a=j*math.tau/14;p=c+Vector((.046*math.sin(a),-.003,.046*math.cos(a)));rod('Gear tooth',p-Vector((.003,0,.003)),p+Vector((.003,0,.003)),.0028,brass,bn)
+   sphere('Shoulder green lens',c+Vector((0,-.005,0)),(.016,.007,.016),emerald,bn)
+ else:
+  for s,side in [(1,'L'),(-1,'R')]:
+   hand='wrist.'+side;w=Vector(bone[hand]['Tail']);c=w+Vector((s*.025,-.03,-.085))
+   rod('Crescent blade leather grip '+side,c+Vector((0,0,.065)),c-Vector((0,0,.065)),.010,leather,hand)
+   # A genuine beveled blade surface, tapering to two sharp ends.
+   vs=[];N=48
+   for j in range(N+1):
+    t=j/N;a=-1.10+2.6*t;outer=.33;inner=outer-.055*math.sin(math.pi*t)**.6
+    for r,y in [(outer,0),(inner,-.007)]:vs.append(tuple(c+Vector((s*(r*math.cos(a)-.16),y,r*math.sin(a)-.06))))
+   fs=[(2*j,2*j+1,2*j+3,2*j+2) for j in range(N)];o=mesh('Forged crescent blade '+side,vs,fs,steel,hand,solid=.005)
+   curve('Violet cutting edge '+side,[vs[j*2] for j in range(N+1)],.0018,violet,bone=hand)
+   curve('Cyan blade fuller '+side,[Vector(vs[j*2]).lerp(Vector(vs[j*2+1]),.65)+Vector((0,-.007,0)) for j in range(2,N-1)],.0012,cyan,bone=hand)
+ # Natural lowered arms. Local quaternions derived from world-space rotation, preserving anatomy.
+ for s,side in [(1,'L'),(-1,'R')]:
+  pb=rig.pose.bones['upperarm01.'+side];rest=pb.bone.matrix_local.to_quaternion();q=Quaternion((0,1,0),s*(.45 if not male else .34));pb.rotation_mode='QUATERNION';pb.rotation_quaternion=rest.inverted()@q@rest
+ # Turn the head a few degrees for a less mannequin-like expression.
+ pb=rig.pose.bones['head'];rest=pb.bone.matrix_local.to_quaternion();pb.rotation_mode='QUATERNION';pb.rotation_quaternion=rest.inverted()@Quaternion((0,0,1),.045 if male else -.07)@rest
+ root['Asset status']='Reference-guided character study; editable skinned anatomy; likeness approximate'
+ bpy.context.view_layer.update()
+# Quiet studio, large soft sources, no cartoon pedestal or distracting particle halo.
+for ob in list(bpy.data.objects):
+ if ob.type=='LIGHT':bpy.data.objects.remove(ob,do_unlink=True)
+world=scene.world;world.use_nodes=True;world.node_tree.nodes['Background'].inputs[0].default_value=(.025,.035,.050,1);world.node_tree.nodes['Background'].inputs[1].default_value=.35
+for name,loc,power,color,size in [('Large warm key',(-3,-4,4),450,(1,.87,.74),3),('Soft portrait fill',(3,-3,2.7),230,(.68,.81,1),3),('Back edge',(0,2,3),370,(.64,.74,1),2.5)]:
+ d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=color;d.shape='DISK';d.size=size;o=bpy.data.objects.new(name,d);scene.collection.objects.link(o);o.location=loc;o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler()
+# Floor is stage-only, separate from characters.
+bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-.018));floor=bpy.context.object;floor.name='Studio floor';floor.data.materials.append(mat('Studio slate',(.026,.032,.045),.72))
+# Seamless studio backing, outside all character collections.
+vs=[]
+for x in [-100,100]:
+ for j in range(25):
+  a=j/24*math.pi/2;vs.append((x,2+3*math.sin(a),-.018+3*(1-math.cos(a))))
+ vs.append((x,5,100))
+fs=[(j,j+1,26+j+1,26+j) for j in range(25)];d=bpy.data.meshes.new('Cyclorama');d.from_pydata(vs,[],fs);back=bpy.data.objects.new('Studio cyclorama',d);scene.collection.objects.link(back);d.materials.append(bpy.data.materials['Studio slate'])
+for f in d.polygons:f.use_smooth=True
+scene.render.engine='CYCLES';scene.cycles.samples=64;scene.cycles.use_denoising=True
+try:
+ p=bpy.context.preferences.addons['cycles'].preferences;p.compute_device_type='METAL';p.get_devices()
+ for d in p.devices:d.use=d.type=='METAL'
+ scene.cycles.device='GPU'
+except Exception:pass
+scene.view_settings.view_transform='AgX';scene.view_settings.exposure=0
+cam=scene.camera;cam.data.lens=65;cam.location=(2.1,-6.5,2.2);cam.rotation_euler=(Vector((0,0,1.0))-cam.location).to_track_quat('-Z','Y').to_euler()
+scene.render.resolution_x=1800;scene.render.resolution_y=1400;scene.render.resolution_percentage=100
+bpy.context.preferences.filepaths.save_version=0
+bpy.ops.file.pack_all();bpy.ops.wm.save_as_mainfile(filepath=str(R/'AceHack_Xenaa_Reference_Study.blend'))
+scene.render.filepath=str(R/'renders/reference-duo-preview.png');bpy.ops.render.render(write_still=True)
+for who,x,H in [('AceHack',-.62,records[0]['Height']),('Xenaa',.62,records[1]['Height'])]:
+ cam.location=(x+.20,-1.75,H-.025);cam.rotation_euler=(Vector((x,-.05,H-.17))-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.lens=95
+ scene.render.resolution_x=1200;scene.render.resolution_y=1300;scene.render.filepath=str(R/'renders'/(who+'-likeness-preview.png'));bpy.ops.render.render(write_still=True)
+print('REFERENCE_COSTUMES_COMPLETE')

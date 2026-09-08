@@ -1,0 +1,36 @@
+[
+  {
+    "character": "AceHack",
+    "importedMeshes": 274,
+    "importedArmatures": 1,
+    "bones": 163,
+    "boundsMin": [
+      -0.8246392011642456,
+      -0.4599050283432007,
+      -0.02624303102493286
+    ],
+    "boundsMax": [
+      0.6308873295783997,
+      0.4925287663936615,
+      1.7982667684555054
+    ],
+    "status": "passed"
+  },
+  {
+    "character": "Xenaa",
+    "importedMeshes": 217,
+    "importedArmatures": 1,
+    "bones": 163,
+    "boundsMin": [
+      -0.6424705386161804,
+      -0.3038753569126129,
+      -0.019391680136322975
+    ],
+    "boundsMax": [
+      0.6424705386161804,
+      0.4925233721733093,
+      1.666121006011963
+    ],
+    "status": "passed"
+  }
+]

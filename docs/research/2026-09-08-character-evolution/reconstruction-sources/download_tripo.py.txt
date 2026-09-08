@@ -1,0 +1,19 @@
+from pathlib import Path
+import json,hashlib,urllib.request
+out=Path('/Users/acehack/Documents/Blender/Character-Learning-Lab/weights/TripoSR');out.mkdir(parents=True,exist_ok=True)
+sha='5b521936b01fbe1890f6f9baed0254ab6351c04a'
+meta=json.load(urllib.request.urlopen('https://huggingface.co/api/models/stabilityai/TripoSR/revision/'+sha+'?blobs=true'))
+(out/'upstream-manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
+for entry in meta['siblings']:
+ name=entry['rfilename']
+ if name not in ['README.md','config.yaml','model.ckpt']:continue
+ p=out/name;url=f'https://huggingface.co/stabilityai/TripoSR/resolve/{sha}/{name}'
+ if not p.exists():
+  print('Downloading',name,flush=True)
+  with urllib.request.urlopen(url,timeout=120) as r,p.with_suffix(p.suffix+'.part').open('wb') as w:
+   while b:=r.read(8*1024*1024):w.write(b)
+  p.with_suffix(p.suffix+'.part').rename(p)
+ digest=hashlib.file_digest(p.open('rb'),'sha256').hexdigest()
+ assert p.stat().st_size==entry['size']
+ if 'lfs' in entry:assert digest==entry['lfs']['sha256']
+ print(name,p.stat().st_size,digest,flush=True)

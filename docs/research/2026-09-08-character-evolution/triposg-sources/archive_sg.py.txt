@@ -1,0 +1,23 @@
+from pathlib import Path
+import hashlib,json,zipfile,subprocess
+root=Path(__file__).resolve().parent;doc=Path('/Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908/docs/research/2026-09-08-character-evolution');out=root.parent/'Character-Evolution-Archive-20260908';archive=out/'triposg-shape-study.zip'
+paths=[]
+for d in ['reconstruction-sg','reconstruction-sg-framed','reconstruction-sg-projected']:
+ paths.extend(p for p in (root/d).rglob('*') if p.is_file())
+for pat in ['references/*square*.png','*sg*.py','*sg*.patch','*sg*.log','requirements-sg-resolved.txt','prepare_square_inputs.py','prepare-square.log']:
+ paths.extend(p for p in root.glob(pat) if p.is_file())
+paths.extend(root/'TripoSG'/f for f in ['LICENSE','NOTICE','README.md'])
+paths.extend(p for p in (root/'weights/TripoSG').rglob('*') if p.is_file() and p.suffix in ['.json','.md'])
+m={'schema':1,'release_tag':'research-character-triposg-20260908','archives':[],'files':[],'model_revision':'2c1c516d22d58db486a058d98d31bb6177344e06','source_revision':subprocess.check_output(['git','-C',str(root/'TripoSG'),'rev-parse','HEAD'],text=True).strip(),'verdict':'Study only; incomplete likeness, hair defects and projection stretching; no user acceptance; raw model weights not redistributed'}
+with zipfile.ZipFile(archive,'x',compression=zipfile.ZIP_DEFLATED,compresslevel=4) as z:
+ for p in sorted(set(paths)):
+  rel=p.relative_to(root).as_posix();name='Character-Learning-Lab/'+rel
+  m['files'].append({'archive':archive.name,'path':name,'bytes':p.stat().st_size,'sha256':hashlib.file_digest(p.open('rb'),'sha256').hexdigest()});z.write(p,name)
+  if p.suffix in ['.py','.patch','.json','.txt'] and p.stat().st_size<100000:
+   q=doc/'triposg-sources'/(rel+'.txt');q.parent.mkdir(parents=True,exist_ok=True);q.write_bytes(p.read_bytes())
+m['archives'].append({'name':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()})
+for directory in [out,doc]:(directory/'triposg-inventory.json').write_text(json.dumps(m,indent=2)+'\n')
+with zipfile.ZipFile(archive) as z:
+ for row in m['files']:
+  with z.open(row['path']) as r:assert hashlib.file_digest(r,'sha256').hexdigest()==row['sha256']
+print(json.dumps({'files':len(m['files']),'archive':m['archives'][0]}))

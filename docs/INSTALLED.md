@@ -237,3 +237,28 @@ file builds green. See DEBT.md.
 - 2026-04-17 — bumped Meziantou 2→3, Test.Sdk 17→18, BenchmarkDotNet 0.15.4→0.15.8, System.Reactive 6.0.1→6.1.0, Apache.Arrow 22.0.0→22.1.0
 - 2026-04-17 (round 17) — added Lamport TLA+ book, an imported 81-entry upstream reference list from prior research, Adam Shostack EoP card game, `docs/security/THREAT-MODEL-SPACE-OPERA.md`, `docs/security/THREAT-MODEL.md`, `docs/security/SDL-CHECKLIST.md`, `docs/FAMILY-EMPATHY.md`, `docs/TECH-RADAR.md`, `docs/LOCKS.md`, `docs/PRIOR-ART-LIST.md`, `docs/DECISIONS/2026-04-17-lock-free-circuit-register.md`. Shipped 6 new code-owner skills (storage / algebra / query-planner / complexity / threat-model-critic / paper-peer-reviewer). Shipped `src/Core/BloomFilter.fs` (blocked + counting, cutting-edge) and `src/Core/Durability.fs` (DurabilityMode DU + WitnessDurableBackingStore skeleton). Added 5 SDL-derived Semgrep rules. Fixed 6 harsh-critic P0s (SpeculativeWatermark logic inversion, Hierarchy Comparer boxing, FastCdc O(n²) buffer scan, Residuated O(n) rebuild, ClosurePair Equals/GetHashCode mismatch, Hierarchy RecursiveSemiNaive monotonicity leak). Added 22 new tests in `Round17Tests.fs`; total suite 471 passing, 0 warnings, 0 errors.
 - 2026-04-17 (round 20) — Lean 4 + Mathlib chain-rule scaffold: `proofs/lean/lakefile.lean` now declares the Mathlib dep at tag `v4.12.0`, `proofs/lean/lean-toolchain` pins `leanprover/lean4:v4.12.0`, and `proofs/lean/ChainRule.lean` was expanded from a one-`sorry` stub to a named-sub-lemma skeleton (six discrete `sorry` goals + three closed lemmas). `proofs/lean/README.md` + `docs/research/mathlib-progress.md` document the sub-goals, effort estimates, and build gate. Flipped the Lean/elan INSTALLED row from "install on demand" to "install next round". `lake build` not verified locally — toolchain install is the round-21 opener.
+
+## Local character reconstruction research (2026-09-08)
+
+Installed in `/Users/acehack/Documents/Blender/Character-Learning-Lab`, separate
+from Zeta runtime dependencies. Source revisions and the resolved Python package
+list are retained with the character experiment; these are opt-in local tools.
+
+| Tool | Version / source revision | Purpose and installation |
+| --- | --- | --- |
+| TripoSR | `107cefdc244c39106fa830359024f6a2f1c78871` | Official Git clone; MIT single-image reconstruction model/code. Isolated Python 3.11 venv with pip dependencies. Model revision `5b521936b01fbe1890f6f9baed0254ab6351c04a`; checkpoint hash verified. |
+| torchmcubes | `3381600ddc3d2e4d74222f8495866be5fafbace4` | Local pip build for CPU mesh extraction. CMake C++ standard changed from 17 to 20 for installed PyTorch headers; patch retained. |
+| Hunyuan3D-Swift | `292331f4d26ddb80b9dcea6bcb5629ff82f12b82` | `swift build -c release` succeeded under Apple Swift 6.3.3. Model not run: output-use restrictions conflict with training another model from this evolution. |
+| MPFB | 2.0.17 source, `437dd513888a92399d1d3200d2e80859fae55abc` | Prior character revision used a local source checkout and MakeHuman system assets. Preserved in the anatomy archive with GPLv3 code / CC0 asset provenance; not installed as a global Blender extension. |
+
+The [character evolution record](research/2026-09-08-character-evolution/README.md)
+indexes the source, archive checks and remaining visual-quality limitations.
+
+TripoSG was subsequently installed in `Character-Learning-Lab/venv-sg` from
+source `fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c`, with its MIT model at
+`2c1c516d22d58db486a058d98d31bb6177344e06`. Local inference uses Apple MPS,
+Diffusers 0.32.2, Transformers 4.48.3, PEFT 0.14.0 and PyTorch 2.14.0. The
+non-flash path avoids `diso`; the local patch and resolved dependencies are
+retained in the third character-study archive. U2Net was explicitly selected
+for masks after discovering rembg's newer default was BRIA RMBG 2.0; that
+default-mask intermediate is quarantined from unrestricted training.

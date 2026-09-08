@@ -1,0 +1,448 @@
+{
+  "schema": 1,
+  "release_tag": "research-character-triposg-20260908",
+  "archives": [
+    {
+      "name": "triposg-shape-study.zip",
+      "bytes": 75203244,
+      "sha256": "ec03bc09e0c2e9a77bc717cc9ba19e57d264620f128e6c1c364985716007650e"
+    }
+  ],
+  "files": [
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/TripoSG/LICENSE",
+      "bytes": 1125,
+      "sha256": "0fc2acd0176b345d3da59f466861ad09b78698de4200739aeaa2ffc9ae7a6842"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/TripoSG/NOTICE",
+      "bytes": 1019,
+      "sha256": "b2a2b68a04f338d53fa7676c2033acb5dd165d0ce6324be0fa14894ee0bb0f39"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/TripoSG/README.md",
+      "bytes": 5719,
+      "sha256": "87024a832f6dc1e81ba3078485b282095fb31941898f81b1c6bfe02d5454288d"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/archive_sg.py",
+      "bytes": 2298,
+      "sha256": "0a9171ee4c2b14a73ee31c15763a2a3647d4f748ba4c0dddb38bff8a54aac4e4"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/download-sg.log",
+      "bytes": 1106,
+      "sha256": "565e5a326ff0d3b1feda15aa176c9af58ad7b1d365c49b3885f3b9ff587a743f"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/download_sg.py",
+      "bytes": 1117,
+      "sha256": "caac839995bfc18334be4858a90893292b59626b88d3850fc22fef21d4ba5560"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/prepare-square.log",
+      "bytes": 32,
+      "sha256": "8feb7ba6f243e76dbd54155321b54f79576e7c88badc29f46f4eb243746946a5"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/prepare_square_inputs.py",
+      "bytes": 792,
+      "sha256": "ae766e4dd45474ae31914c4a9eb39b4a910fd85046c0c53f3badfa619ad102e8"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/project-sg-reference.log",
+      "bytes": 1923,
+      "sha256": "62e88c84f6997fe4d3c6f8e77db20a9f295073488d399ea6144c964d7808898d"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/project_sg_reference.py",
+      "bytes": 3317,
+      "sha256": "560cb969a0a0f86ee1a5c8a13869bb011fbf5168499bc0992c42ec96a7a63c4a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruct-sg-framed.log",
+      "bytes": 1960,
+      "sha256": "c27bc7153c350c35c4675420ff78203229b380f8c0fcea39b75be826e19566d2"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruct-sg.log",
+      "bytes": 1706,
+      "sha256": "408b8f94de95c5acbc33211795fad6c6f2de0b1c6c52b19bea6d43f3fbef9df2"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruct_sg.py",
+      "bytes": 1264,
+      "sha256": "0526929ba7732ce892663e26d3fcc183bcceb28716944f0bdfe750302863e808"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruct_sg_framed.py",
+      "bytes": 1283,
+      "sha256": "5d64cba7ad0b90a9d883e915eb7af22a072350cc9c7b47636c7a039ecfb150c7"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/AceHack-reconstruction.blend",
+      "bytes": 2908442,
+      "sha256": "9a6f0951db3345ea7f7e043ff4125afc3753b86411580818172e95adf5b838b0"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/mesh.glb",
+      "bytes": 2290744,
+      "sha256": "e66004abb343f465d4141dd864d02fc65853aaa5af9a791ce2595884873f9187"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/receipt.json",
+      "bytes": 227,
+      "sha256": "df6ba7f202ebc65ec32eb66db60d28db1580f005b3dbc8079cbddd4610d78586"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/review-0.png",
+      "bytes": 1092633,
+      "sha256": "6b7f895753e0c9ffd82cb3ae3949ccecbe054272a5e67e093855df804cf2efa3"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/review-180.png",
+      "bytes": 1105181,
+      "sha256": "8fa6cd8cfd1209dac79810910cf304d280b0695de99f165eb8328387129d5bef"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/review-270.png",
+      "bytes": 1324293,
+      "sha256": "2ecb1aa42170267d7b80049f18e4e76d45daa6d7524ed6bd54597352e60b8bc3"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/AceHack/review-90.png",
+      "bytes": 1303944,
+      "sha256": "8db12fc3636365aec9ef9f9489273cfc3b881fa928f1197674ebb48827cdf12b"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/Xenaa-reconstruction.blend",
+      "bytes": 1929220,
+      "sha256": "c37d3d9608f1d444193f595973c56946dbbb471e3c0d913cad9d62c43090d91a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/mesh.glb",
+      "bytes": 1526320,
+      "sha256": "0d301c15f6cff425aabcf2a748238db86179fdb8364cede126738cfaef402d26"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/receipt.json",
+      "bytes": 221,
+      "sha256": "df998aa6d9e99a063c99e45c05c9a37ec66a0ec02ae8e9f6c866a56f3d08f1e7"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/review-0.png",
+      "bytes": 1044234,
+      "sha256": "079248006b654fb03f95ac4ffbf75e2dd50cc77f717a847aecbfcefd39f467dc"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/review-180.png",
+      "bytes": 1044381,
+      "sha256": "25d0477676c5aa9c63ac12935deaf6374f88ffc6075bd9f1c18d9cff93fbe490"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/review-270.png",
+      "bytes": 1217321,
+      "sha256": "847d5ff319853ff695cbd35f786530af947f5873b87a3e66abac59fe21fb6480"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg/Xenaa/review-90.png",
+      "bytes": 1206093,
+      "sha256": "5d319538f3fdcee9c25add885d3d129fc0116b8e38e13611bd3700c5a7538637"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/AceHack-reconstruction.blend",
+      "bytes": 5381888,
+      "sha256": "3a98927146547ed22e78f794533083d54e894263c456371f0d73e7b5b62c0c03"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/mesh.glb",
+      "bytes": 4251928,
+      "sha256": "6359e8d7e3d6261b2a500c6ff3167665a84857bf100d19178282293d254019ef"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/receipt.json",
+      "bytes": 231,
+      "sha256": "84ae939a455e6b85320cfd7a9e1df3ab57dbed9c385c6e3ae0d04b5f80dc8cd2"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/review-0.png",
+      "bytes": 922754,
+      "sha256": "48ae0a548e5dab2f46f328f99298620ee65d0ad60befe148a69f7a82b8750f1f"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/review-180.png",
+      "bytes": 931684,
+      "sha256": "e32eb71b73c674948368c0e3fba65855573694c54e4dd398490be6300a0c5f5f"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/review-270.png",
+      "bytes": 1028770,
+      "sha256": "f7dc5d29b69596e4a0277a6c7c8681dfd15bd065d3f8cc7b1e37e36662c0047e"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/AceHack/review-90.png",
+      "bytes": 997743,
+      "sha256": "6c23dde129538bad93c1130248f43bcb02840d78eb7765c81c5c23d9d2f8092a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/Xenaa-reconstruction.blend",
+      "bytes": 5313094,
+      "sha256": "ad324675e7d84b8e2187c1374166dae7d5e4d5d919bbbae1d10d94a93da87948"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/mesh.glb",
+      "bytes": 4212344,
+      "sha256": "a54e82a5d736fe0553eaae836af15dcbb63d1569ad6a21b4dcc3cdb0f8ab6dbb"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/receipt.json",
+      "bytes": 230,
+      "sha256": "a4bec91e8922ca2a481873d958d316d471ecb9be0b54106028755ddb93dd7c05"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/review-0.png",
+      "bytes": 938458,
+      "sha256": "430a33cd754b2c10ce0b8dbd1d6a54fce2e7a9fb1144f648b69f299968e0c14a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/review-180.png",
+      "bytes": 970176,
+      "sha256": "9adafcf22b22922e7c83701944f1a3c8c1b7ccc440e863035c0202619a57e1bc"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/review-270.png",
+      "bytes": 1030479,
+      "sha256": "ad2dbcf49c8d91217b8e11f2f7a89cdcbd8308b9e986a06f6258c6151db35113"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-framed/Xenaa/review-90.png",
+      "bytes": 1039868,
+      "sha256": "aac2805856e9d3881c5ca9790fec4b60f5d7f305c387b6edc0a9f03807a3ae9c"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/AceHack/AceHack-projected-study.blend",
+      "bytes": 8755557,
+      "sha256": "c4ab23ca5e57b418865d5df35b8733da07ffe770678ea4a9ea935b1ce33f01c0"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/AceHack/projected-0.png",
+      "bytes": 2249440,
+      "sha256": "2bb125b3cbe99dd8ef79134d5ce3a002b004e79c65631266bcf00611cc3c1d4a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/AceHack/projected-180.png",
+      "bytes": 1787320,
+      "sha256": "c0dd285310e9a943b1ac196cf834da3652b919534f6aaf2a8164ce93934abc3c"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/AceHack/projected-30.png",
+      "bytes": 2171638,
+      "sha256": "0bc8163d541451035bc74b9f6e06725cdbed752dc21d635f5cc1b37a764f2c64"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/AceHack/projected-90.png",
+      "bytes": 1748291,
+      "sha256": "60b1e53a5e03ecd73545f4cfa36f6106869d449a59819c1a6a5972b5d7da206b"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/Xenaa/Xenaa-projected-study.blend",
+      "bytes": 8531181,
+      "sha256": "65d2831b55a0f4d70ade89bb5a5506e59b8c53d7e928342e5ad97407939951a3"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/Xenaa/projected-0.png",
+      "bytes": 2043810,
+      "sha256": "c6edebde2734d75084ea32bdbf03d9926ef1a7cf4922e1684488df07a61b3bf7"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/Xenaa/projected-180.png",
+      "bytes": 1759143,
+      "sha256": "73cd2c64758ca6249ad8637d23dd43728c6adff1d71c81d3cae5d39af97bbd63"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/Xenaa/projected-30.png",
+      "bytes": 2044051,
+      "sha256": "e366e930ff9c4adc7765881d7f23817b10eb909a4cea40ab56be9f96efffb83a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/reconstruction-sg-projected/Xenaa/projected-90.png",
+      "bytes": 1744225,
+      "sha256": "ce9fd895c8bf4f87f09f643b5970f9d25f6b760e4f64d98c52f997464a1b24ca"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/references/AceHack-square-alpha.png",
+      "bytes": 1512822,
+      "sha256": "b42368947b395e377ae5bbf15a1313601d99cdee3e312dc7243a0b2aa28a8254"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/references/AceHack-square-white.png",
+      "bytes": 1276952,
+      "sha256": "10f4cd36ddad295d415ff4167129a7f94073bf8735ce8e5ca818933d84db0151"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/references/Xenaa-square-alpha.png",
+      "bytes": 1326762,
+      "sha256": "2d935284039fcaebdf77714af6998bf2c67cec9e048552b3b3797e0f9519f65a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/references/Xenaa-square-white.png",
+      "bytes": 1117581,
+      "sha256": "83686002d08249ddfebb3298225db5edca284de4e48fc3699c657d1e64999df9"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/render-sg-framed.log",
+      "bytes": 2141,
+      "sha256": "6f4c04ad8ef68a4e6f40496c1dfeb5c2f0aa92cc169cdb2b88e9261e619a9e06"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/render-sg.log",
+      "bytes": 2076,
+      "sha256": "6221f26856773f8716a65089c3f9df63a5ff098a8b4756e0ba315a4003838363"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/render_sg.py",
+      "bytes": 2639,
+      "sha256": "02058a0132229ef04f18c1016b47729a1ddd5df532390b5cb6b9ddc6ed8c194d"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/render_sg_framed.py",
+      "bytes": 2653,
+      "sha256": "22c938e4af4068906f136b8c84bacc27626a00f9f8fad380d166f14a3c660d1a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/requirements-sg-resolved.txt",
+      "bytes": 764,
+      "sha256": "b6d31a8a38e2086aa302866a746ef502e4983587b6014f488d5f06d5d701cf91"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/sg-archive.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/sg-install.log",
+      "bytes": 10197,
+      "sha256": "ec028003b9f3f0d2721680038d3abead558ded2ab43feabb62040fb27b972806"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/triposg-mps-nonflash.patch",
+      "bytes": 1020,
+      "sha256": "cbd685b9ed15cc3ad2caa82955a2da37d288b505455856137078a1846c512914"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/README.md",
+      "bytes": 1465,
+      "sha256": "0f4c34a1a17acdbcff02c259d7f4f7b5df1b8956395c625c28da97930eb82ef3"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/feature_extractor_dinov2/preprocessor_config.json",
+      "bytes": 436,
+      "sha256": "14e780d86fa1861f8751f868d7f45425b5feb55c38ca26f152ca5097ab30f828"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/image_encoder_dinov2/config.json",
+      "bytes": 1104,
+      "sha256": "8ed81b0d5ffd2c8b2cecd7dc1326d3eefa409bc9d525537b6b2a3c70a992fd02"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/model_index.json",
+      "bytes": 525,
+      "sha256": "750af638d10fc67a5f43d19ef0a0d1d3d446174e24b73bddd0a49226016c80c2"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/scheduler/scheduler_config.json",
+      "bytes": 158,
+      "sha256": "ea7c9b4d502dcaba97cd85291cfd7dbd3c6c82cbc4c775af5c6d9224864279c9"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/transformer/config.json",
+      "bytes": 191,
+      "sha256": "54ad779e68f9bc7303122cdf291f6db48dec7c67e41d28c05ac359daf914128a"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/upstream-manifest.json",
+      "bytes": 4044,
+      "sha256": "394433490adaf2022896d302b069dd3c06f234889cbcdf15861011f742efee83"
+    },
+    {
+      "archive": "triposg-shape-study.zip",
+      "path": "Character-Learning-Lab/weights/TripoSG/vae/config.json",
+      "bytes": 335,
+      "sha256": "2fb6ba9b364d42c9681879dca0f7edcb978f2db974a1ca4b15d28f9b15a5baed"
+    }
+  ],
+  "model_revision": "2c1c516d22d58db486a058d98d31bb6177344e06",
+  "source_revision": "fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c",
+  "verdict": "Study only; incomplete likeness, hair defects and projection stretching; no user acceptance; raw model weights not redistributed"
+}

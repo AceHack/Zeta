@@ -9,6 +9,11 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [Character evolution, generator research and recovery](../research/2026-09-08-character-evolution/README.md)
+  — **Vera, character assets.** Surviving failed and revised models, scripts,
+  images and videos in checksum-bound release archives; generator/Clifford
+  scope, the Astra graphics talk, and the ongoing likeness comparison.
+
 - [`2026-09-08-vera-projection-and-composable-learning-continuation.md`](./2026-09-08-vera-projection-and-composable-learning-continuation.md)
   — **Vera, current learning direction.** Independently accepted finite scalar
   projection result, original and post-experiment source identities, next bounded

@@ -1,0 +1,8 @@
+{
+  "seconds": 27.590900958981365,
+  "vertices": 63630,
+  "faces": 127200,
+  "method": "TripoSG fp16 MPS, 30 steps, dense 128 cubed, non-flash CPU marching cubes",
+  "source_image": "AceHack-derived.png",
+  "texture": "none"
+}

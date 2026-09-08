@@ -1,0 +1,18 @@
+{
+  "Passed": true,
+  "SampleFrames": [
+    1,
+    37,
+    73,
+    109,
+    144
+  ],
+  "Effects": 79,
+  "MaxLocalMatrixDrift": 4.76837158203125e-07,
+  "Tolerance": 1e-05,
+  "RigBones": {
+    "AceHack": 18,
+    "Xenaa": 18
+  },
+  "PackedReferenceImages": 3
+}

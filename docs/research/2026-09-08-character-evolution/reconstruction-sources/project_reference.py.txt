@@ -1,0 +1,47 @@
+"""Front-project the derived reference onto real geometry; retain inferred back colors."""
+import bpy,math
+from pathlib import Path
+from mathutils import Vector
+root=Path('/Users/acehack/Documents/Blender/Character-Learning-Lab')
+for name in ['AceHack','Xenaa']:
+ base=root/'reconstruction-u2net'/name
+ bpy.ops.wm.open_mainfile(filepath=str(base/f'{name}-reconstruction.blend'))
+ scene=bpy.context.scene
+ objs=[o for o in scene.objects if o.type=='MESH']
+ points=[o.matrix_world@v.co for o in objs for v in o.data.vertices]
+ lo=Vector([min(v[i] for v in points) for i in range(3)]);hi=Vector([max(v[i] for v in points) for i in range(3)])
+ im=bpy.data.images.load(str(base/'conditioning.png'),check_existing=True);im.pack()
+ w,h=im.size;px=list(im.pixels);bg=px[:3]
+ xs=[];ys=[]
+ for y in range(h):
+  for x in range(w):
+   i=4*(y*w+x)
+   if max(abs(px[i+c]-bg[c]) for c in range(3))>.07:xs.append(x);ys.append(y)
+ u0,u1=min(xs)/w,max(xs)/w;v0,v1=min(ys)/h,max(ys)/h
+ for obj in objs:
+  bpy.context.view_layer.objects.active=obj
+  smooth=obj.modifiers.new('Reduce reconstructed surface chatter','SMOOTH');smooth.factor=.75;smooth.iterations=8
+  bpy.ops.object.modifier_apply(modifier=smooth.name)
+  uv=obj.data.uv_layers.new(name='FrontReference')
+  for face in obj.data.polygons:
+   for li in face.loop_indices:
+    p=obj.matrix_world@obj.data.vertices[obj.data.loops[li].vertex_index].co
+    uv.data[li].uv=(u0+(p.y-lo.y)/(hi.y-lo.y)*(u1-u0),v0+(p.z-lo.z)/(hi.z-lo.z)*(v1-v0))
+  mat=obj.data.materials[0];mat.use_nodes=True;n=mat.node_tree.nodes;l=mat.node_tree.links
+  bs=n.get('Principled BSDF');old=bs.inputs['Base Color'].links[0].from_socket
+  tex=n.new('ShaderNodeTexImage');tex.image=im;tex.extension='EXTEND'
+  geom=n.new('ShaderNodeNewGeometry');sep=n.new('ShaderNodeSeparateXYZ');l.new(geom.outputs['Normal'],sep.inputs[0])
+  remap=n.new('ShaderNodeMapRange');remap.inputs['From Min'].default_value=-.6;remap.inputs['From Max'].default_value=-.5;l.new(sep.outputs['X'],remap.inputs['Value'])
+  mix=n.new('ShaderNodeMixRGB');l.new(remap.outputs['Result'],mix.inputs[0]);l.new(old,mix.inputs[1]);l.new(tex.outputs['Color'],mix.inputs[2]);l.new(mix.outputs[0],bs.inputs['Base Color'])
+  bs.inputs['Roughness'].default_value=.72;l.new(mix.outputs[0],bs.inputs['Emission Color']);bs.inputs['Emission Strength'].default_value=1.0
+  bs.inputs['Base Color'].default_value=(0,0,0,1)
+  for link in list(bs.inputs['Base Color'].links):l.remove(link)
+ out=root/'reconstruction-projected-v2'/name;out.mkdir(parents=True,exist_ok=True)
+ center=(lo+hi)/2;cam=scene.camera
+ scene.render.resolution_x=1200;scene.render.resolution_y=1600;scene.cycles.samples=64
+ for a in [0,30,90,180]:
+  angle=math.radians(a);cam.location=center+Vector((4*math.cos(angle),4*math.sin(angle),0))
+  cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
+  scene.render.filepath=str(out/f'projected-{a}.png');bpy.ops.render.render(write_still=True)
+ cam.location=center+Vector((4,0,0));cam.rotation_euler=(center-cam.location).to_track_quat('-Z','Y').to_euler()
+ bpy.ops.wm.save_as_mainfile(filepath=str(out/f'{name}-projected-study.blend'))

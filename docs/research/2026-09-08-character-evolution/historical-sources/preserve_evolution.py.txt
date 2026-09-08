@@ -1,0 +1,48 @@
+"""Archive all surviving art versions without changing originals."""
+from pathlib import Path
+import hashlib
+import json
+import zipfile
+
+ROOT = Path('/Users/acehack/Documents/Blender')
+OUT = ROOT / 'Character-Evolution-Archive-20260908'
+OUT.mkdir(exist_ok=True)
+REPO = Path('/Users/acehack/.zeta/agents/codex/Zeta-character-evolution-20260908')
+DOC = REPO / 'docs/research/2026-09-08-character-evolution'
+DOC.mkdir(parents=True, exist_ok=True)
+SOURCES = DOC / 'historical-sources'
+SOURCES.mkdir(exist_ok=True)
+records = []
+archives = []
+for name in ['AceHack-Xenaa', 'AceHack-Xenaa-Realistic']:
+    base = ROOT / name
+    archive = OUT / (name + '-surviving-history.zip')
+    if archive.exists():
+        raise SystemExit('Refusing to overwrite archive: ' + str(archive))
+    with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=4, allowZip64=True) as zf:
+        for path in sorted(base.rglob('*')):
+            if not path.is_file() or any(part in {'.git', '__pycache__', '.DS_Store'} for part in path.parts):
+                continue
+            rel = path.relative_to(ROOT).as_posix()
+            digest = hashlib.file_digest(path.open('rb'), 'sha256').hexdigest()
+            records.append({'archive':archive.name, 'path':rel, 'bytes':path.stat().st_size, 'sha256':digest})
+            zf.write(path, rel)
+            # Immutable historical source snapshots retain original bytes, including old formatting.
+            if path.suffix in {'.py', '.fsx', '.txt', '.json', '.md'} and 'sources' not in path.relative_to(base).parts:
+                target = SOURCES / (rel + '.txt')
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(path.read_bytes())
+    archives.append({'name':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()})
+    print(json.dumps(archives[-1]), flush=True)
+refs = [Path('/Users/acehack/Downloads')/n for n in ['ChatGPT Image Sep 7, 2026, 09_14_32 AM.png','ChatGPT Image Sep 7, 2026, 08_34_46 AM.png','ChatGPT Image Sep 7, 2026, 07_28_27 AM.png','Xenaa_AceHack_Clash_of_Hearts_30s.mp4','hf_20260908_190853_f19217d8-a6f6-43c6-ab95-6b3d19ff319b.mp4']]
+archive=OUT/'original-user-references.zip'
+with zipfile.ZipFile(archive,'x',compression=zipfile.ZIP_DEFLATED,compresslevel=4) as zf:
+    for path in refs:
+        rel='original-user-references/'+path.name
+        records.append({'archive':archive.name,'path':rel,'bytes':path.stat().st_size,'sha256':hashlib.file_digest(path.open('rb'),'sha256').hexdigest()})
+        zf.write(path,rel)
+archives.append({'name':archive.name,'bytes':archive.stat().st_size,'sha256':hashlib.file_digest(archive.open('rb'),'sha256').hexdigest()})
+manifest={'schema':1,'captured':'2026-09-08','scope':'All surviving regular files in both art folders; original 3 images and 2 videos','excluded':['.git metadata','__pycache__','.DS_Store'],'release_tag':'research-character-evolution-20260908','archives':archives,'files':records}
+(DOC/'inventory.json').write_text(json.dumps(manifest,indent=2)+'\n')
+(OUT/'inventory.json').write_text(json.dumps(manifest,indent=2)+'\n')
+print('Inventoried',len(records),'files',flush=True)

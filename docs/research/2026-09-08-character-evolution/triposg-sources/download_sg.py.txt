@@ -1,0 +1,17 @@
+from pathlib import Path
+import json,hashlib,urllib.request,concurrent.futures
+out=Path('/Users/acehack/Documents/Blender/Character-Learning-Lab/weights/TripoSG');out.mkdir(parents=True,exist_ok=True)
+sha='2c1c516d22d58db486a058d98d31bb6177344e06'
+meta=json.load(urllib.request.urlopen('https://huggingface.co/api/models/VAST-AI/TripoSG/revision/'+sha+'?blobs=true'))
+(out/'upstream-manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
+def get(entry):
+ name=entry['rfilename'];p=out/name;p.parent.mkdir(parents=True,exist_ok=True)
+ url=f'https://huggingface.co/VAST-AI/TripoSG/resolve/{sha}/{name}'
+ if not p.exists():
+  with urllib.request.urlopen(url,timeout=120) as r,p.with_suffix(p.suffix+'.part').open('wb') as w:
+   while b:=r.read(8*1024*1024):w.write(b)
+  p.with_suffix(p.suffix+'.part').rename(p)
+ digest=hashlib.file_digest(p.open('rb'),'sha256').hexdigest();assert p.stat().st_size==entry['size']
+ if 'lfs' in entry:assert digest==entry['lfs']['sha256']
+ print(name,p.stat().st_size,digest,flush=True)
+with concurrent.futures.ThreadPoolExecutor(max_workers=3) as e:list(e.map(get,meta['siblings']))
