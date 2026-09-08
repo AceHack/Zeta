@@ -1,0 +1,27 @@
+{
+  "Status": "passed",
+  "EvidenceCommit": "6cd9a0803338eb878dc23a0fe0cc02d49487a89d",
+  "ArtifactCount": 31,
+  "StoredBytes": 33531,
+  "OriginalBytes": 125182,
+  "ManifestBytes": 14960,
+  "ManifestSha256": "df2ba688bdd87179bc12f7a1ca89b70636cb59126562acd383c7e0cd614ae85d",
+  "FinalNativeProcesses": 5,
+  "IndependentCapsuleStreamsMatched": 10,
+  "SourceVersions": [
+    {
+      "Label": "first-compile",
+      "Commit": "dd39304b9f95e0bd7c2522b491b1999e69fe5b71"
+    },
+    {
+      "Label": "first-executable",
+      "Commit": "5475ec0f409076d379ad962c600db45b57e510a9"
+    },
+    {
+      "Label": "explicit-exit",
+      "Commit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b"
+    }
+  ],
+  "NativeProcessesByReviewer": 0,
+  "ValidatorInvocationsByReviewer": 0
+}

@@ -1,0 +1,87 @@
+{
+  "Status": "passed",
+  "EvidenceCommit": "6fefd143eb1a89f69844b4160ee6d2e02f15c3b9",
+  "Files": 78,
+  "OriginalFileBytes": 819460,
+  "CapsuleBytes": 1650374,
+  "StoredBytes": 157783,
+  "SummaryArtifactReferences": 44,
+  "AttemptResults": [
+    [
+      {
+        "Mode": "ordinary",
+        "Type": "RoomRunRefused",
+        "CheckedCheckpoints": 25,
+        "Code": "ContentMismatch",
+        "Path": "Lines[25].Receipt.Runtime.LoadedAssemblies[2].Name"
+      },
+      {
+        "Mode": "fault-2",
+        "Type": "RoomRunRefused",
+        "CheckedCheckpoints": 0,
+        "Code": "InvalidOrdinary",
+        "Path": "Ordinary.Lines[25].Receipt.Runtime.LoadedAssemblies[2].Name"
+      },
+      {
+        "Mode": "fault-12",
+        "Type": "RoomRunRefused",
+        "CheckedCheckpoints": 0,
+        "Code": "InvalidOrdinary",
+        "Path": "Ordinary.Lines[25].Receipt.Runtime.LoadedAssemblies[2].Name"
+      },
+      {
+        "Mode": "fault-25",
+        "Type": "RoomRunRefused",
+        "CheckedCheckpoints": 0,
+        "Code": "InvalidOrdinary",
+        "Path": "Ordinary.Lines[25].Receipt.Runtime.LoadedAssemblies[2].Name"
+      },
+      {
+        "Mode": "invalid-control",
+        "Type": "RoomRunValidated",
+        "CheckedCheckpoints": 0,
+        "Code": null,
+        "Path": null
+      }
+    ],
+    [
+      {
+        "Mode": "ordinary",
+        "Type": "RoomRunValidated",
+        "CheckedCheckpoints": 25,
+        "Code": null,
+        "Path": null
+      },
+      {
+        "Mode": "fault-2",
+        "Type": "RoomRunValidated",
+        "CheckedCheckpoints": 2,
+        "Code": null,
+        "Path": null
+      },
+      {
+        "Mode": "fault-12",
+        "Type": "RoomRunValidated",
+        "CheckedCheckpoints": 12,
+        "Code": null,
+        "Path": null
+      },
+      {
+        "Mode": "fault-25",
+        "Type": "RoomRunValidated",
+        "CheckedCheckpoints": 25,
+        "Code": null,
+        "Path": null
+      },
+      {
+        "Mode": "invalid-control",
+        "Type": "RoomRunValidated",
+        "CheckedCheckpoints": 0,
+        "Code": null,
+        "Path": null
+      }
+    ]
+  ],
+  "ValidatorInvocationsByReviewer": 0,
+  "NativeProcessesByReviewer": 0
+}
