@@ -1,0 +1,77 @@
+{
+  "Scope": "read-only verification of283+35 control records and final source/test identities",
+  "SourceFiles": [
+    {
+      "Path": "src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 167510,
+      "Sha256": "B75CEF997AF2D7D98BF7043039A63B94ED6E770C675EBAADBFC644A79DB57CB2"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 12338,
+      "Sha256": "9260CAC8F8EF58BC7EA927B31C0F1426FCC3B83A4790210AC25D4CFBA676F4A9"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 67508,
+      "Sha256": "F13889BB9450F7BB0AF7F41E019841196512347414BC38DB797A5E041D25DB2B"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    }
+  ],
+  "Records": [
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/audit-1/completion.json",
+      "File": "001.gz",
+      "Bytes": 2352,
+      "Sha256": "54A7EA345870B7BFAD5FAA70629D859877E96A69C6AA7D790EF926A38A1C1FAC",
+      "StoredBytes": 605,
+      "StoredSha256": "B8A8CFBFB9BF92A3808F203F4BC1C3217B005CD3876A85D1DDF4981ADC5C03E2"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/audit-1/invocation.json",
+      "File": "002.gz",
+      "Bytes": 1206,
+      "Sha256": "D98FBF700BF0E6A09A00D36733BCAEDAD4E2CBED901D99D4B9A1985089E4BDF7",
+      "StoredBytes": 560,
+      "StoredSha256": "924ACEBEA063492D2826A326A3EA3D1158E9149A18FF218DD24A3E53B9361ECF"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/audit-1/stderr",
+      "File": "003.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/audit-1/stdout",
+      "File": "004.gz",
+      "Bytes": 82,
+      "Sha256": "B2040CB0F01FD733AEB4BD28C9583D3C49E5058C8B9D0774C894496091E5D96A",
+      "StoredBytes": 90,
+      "StoredSha256": "7675539500BFBD7D0BAB70C2A2FCBAA7A2BDDBA5DF696180F8910F32514724BF"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-model-controls-1/capture-audit.py",
+      "File": "005.gz",
+      "Bytes": 944,
+      "Sha256": "EF80007E19C53674E0C62F16082CB6B997926FC3CB241C04F9905C609B0D0D23",
+      "StoredBytes": 544,
+      "StoredSha256": "86524111EE9A4E262F056021AC8A710A2802160799DEE3768C6B5F84E938F2E5"
+    }
+  ]
+}
