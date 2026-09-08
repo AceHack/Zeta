@@ -1,0 +1,14 @@
+{
+  "id": "080d03f7ee8d3010a013000875c66435",
+  "at": "2026-09-08T03:09:18.630Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZFVMD5087G0R0025C3S40",
+    "type": "bug",
+    "title": "Windows: custody-path fixture is Unix-shaped so IsPathFullyQualified refuses it",
+    "slug": "windows-custody-path-fixture-is-unix-shaped-so-ispathfullyqu",
+    "priority": "P2",
+    "filename": "081M1ZFVMD5087G0R0025C3S40-windows-custody-path-fixture-is-unix-shaped-so-ispathfullyqu.md"
+  }
+}

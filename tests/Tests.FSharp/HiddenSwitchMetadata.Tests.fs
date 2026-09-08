@@ -8,7 +8,15 @@ open Xunit
 open Zeta.Research.MetadataProbe
 
 module HiddenSwitchMetadataTests =
-    let private pin file : Admission.FilePin = { File = "/owned/" + file; Bytes = 128L; Sha256 = String('A', 64) }
+    /// Custody paths must be FULLY QUALIFIED (`Admission.filePin` ->
+    /// `Path.IsPathFullyQualified`), and that predicate is platform-dependent:
+    /// on Windows a leading `/` is drive-RELATIVE, so `/owned/x` is rooted but
+    /// NOT fully qualified -- the fixture itself was refused before any
+    /// assertion under test could run. The production rule is the one we want
+    /// (an unambiguous absolute custody path); only the fixture was Unix-shaped.
+    let private owned = if OperatingSystem.IsWindows() then @"C:\owned\" else "/owned/"
+
+    let private pin file : Admission.FilePin = { File = owned + file; Bytes = 128L; Sha256 = String('A', 64) }
     let private input () : Admission.Input =
         { Dump = pin "graph.core"; Dac = pin "libmscordaccore.dylib"
           Runtime = { Image = pin "libcoreclr.dylib"; ImageBase = 0x100000UL; Version = "10.0.1126.37416"; BuildId = String('A', 32) }
@@ -89,7 +97,7 @@ module HiddenSwitchMetadataTests =
         let records = ResizeArray<string>()
         let mutable counts = 0
         let count () = counts <- counts + 1; if counts = 1 then 2u else 3u
-        let read index = Ok({ Index = index; Name = "/owned/" + string index; Header = int64(index + 1u); Slide = 0L }: NativeImages.Row)
+        let read index = Ok({ Index = index; Name = owned + string index; Header = int64(index + 1u); Slide = 0L }: NativeImages.Row)
         let reason = NativeImages.observe count read (fun row -> records.Add(JsonSerializer.Serialize row)) |> refused
         Assert.Equal("count-changed", reason.Code)
         Assert.Equal(4, records.Count)
@@ -101,7 +109,7 @@ module HiddenSwitchMetadataTests =
     [<Fact>]
     let ``dyld bounded roster and established invalid row survive reporting failure`` () =
         let mutable reads = 0
-        let read index = reads <- reads + 1; Ok({ Index = index; Name = "/owned/dac"; Header = 0L; Slide = 0L }: NativeImages.Row)
+        let read index = reads <- reads + 1; Ok({ Index = index; Name = (owned + "dac"); Header = 0L; Slide = 0L }: NativeImages.Row)
         Assert.Equal("count-bound", (NativeImages.observe (fun () -> 1025u) read ignore |> refused).Code)
         Assert.Equal(0, reads)
         let failRaw value =
@@ -149,7 +157,7 @@ module HiddenSwitchMetadataTests =
         let result : Admission.MappedInput =
             { Dump = original.Dump; Dac = original.Dac; Runtime = original.Runtime
               Module = { original.Module with Mvid = rows.[0].GetProperty("Input").GetProperty("Mvid").GetString() }
-              Mapping = { File = "/owned/mapping.json"; Bytes = Admission.mappingBytes; Sha256 = Admission.mappingSha256 }; Methods = methods }
+              Mapping = { File = (owned + "mapping.json"); Bytes = Admission.mappingBytes; Sha256 = Admission.mappingSha256 }; Methods = methods }
         bytes, result
 
     [<Fact>]
@@ -186,10 +194,10 @@ module HiddenSwitchMetadataTests =
     let ``mapped DAC identity uses exact nested names without signature grammar guesses`` () =
         let _, baseline = mappedFixture()
         let expected = baseline.Methods.[0]
-        Assert.True(Result.isOk (Admission.mappedIdentity expected expected.Token expected.DeclaringType expected.Name "/owned/live.dll" "/owned/live.dll"))
+        Assert.True(Result.isOk (Admission.mappedIdentity expected expected.Token expected.DeclaringType expected.Name (owned + "live.dll") (owned + "live.dll")))
         for token, declaringType, name, moduleName in
-            [expected.Token + 1, expected.DeclaringType, expected.Name, "/owned/live.dll"
-             expected.Token, expected.DeclaringType + "+wrong", expected.Name, "/owned/live.dll"
-             expected.Token, expected.DeclaringType, "wrong", "/owned/live.dll"
+            [expected.Token + 1, expected.DeclaringType, expected.Name, (owned + "live.dll")
+             expected.Token, expected.DeclaringType + "+wrong", expected.Name, (owned + "live.dll")
+             expected.Token, expected.DeclaringType, "wrong", (owned + "live.dll")
              expected.Token, expected.DeclaringType, expected.Name, "/elsewhere/live.dll"] do
-            Assert.Equal("method-identity", (Admission.mappedIdentity expected token declaringType name moduleName "/owned/live.dll" |> refused).Code)
+            Assert.Equal("method-identity", (Admission.mappedIdentity expected token declaringType name moduleName (owned + "live.dll") |> refused).Code)
