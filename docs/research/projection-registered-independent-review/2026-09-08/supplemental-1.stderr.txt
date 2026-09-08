@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/docs/research/projection-registered-independent-review/2026-09-08/supplemental-audit.py", line 57, in <module>
+    assert outer['NativeCallPaths'] == [str(A/f'native-call-{i:03}'/leaf) for i in slots for leaf in ('input.json','bindings.json','receipt.json')]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
