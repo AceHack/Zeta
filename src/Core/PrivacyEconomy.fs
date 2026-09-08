@@ -15,8 +15,8 @@ namespace Zeta.Core
 ///
 /// **Privacy budget is HARD MONEY (Aaron 2026-06-08): you can NEVER lose it — ever.** No punishment, no decay, no
 /// confiscation, no inflation-away: budget is **strictly monotonic non-decreasing**, earned only by reward. That
-/// is exactly a **grow-only counter (G-Counter CRDT)** (`Crdt.fs`) — sound, mergeable, never-decreasing. And it is
-/// **rewards-only** — there is *no* punish operation in this module (punishment would be coercive, violating NCI;
+/// is a **local non-decreasing grant ledger**. A distributed G-Counter merge protocol is not implemented here.
+/// It is **rewards-only** — there is *no* punish operation in this module (punishment would be coercive, violating NCI;
 /// the economy is positive-sum).
 ///
 /// **Each persona has its OWN private definition of good use** (Aaron): good-use is *subjective per persona*; what
@@ -27,8 +27,10 @@ namespace Zeta.Core
 ///
 /// **Honest scope (peel):** sound only if the good-use measures are *revealable and hard to game* (a gameable
 /// measure → reward-hacking, the failure the unsubjective method #7142 avoids; prefer objective categories like
-/// solid-ground gain). Budgets are `int` (byte counts), G-Counter-shaped (never decrease). `cap` is an optional
-/// ceiling on the *rate*-summed total, never a loss. Trade/transfer between personas is a later slice. Deterministic (DST).
+/// solid-ground gain). Budgets are `int` byte entitlements. `cap` limits future growth without reducing an
+/// existing entitlement. A negative target balance in the public map is invalid byte state and is normalized
+/// upward to zero by `reward`; unrelated entries remain unchanged. Trade/transfer and distributed merge are
+/// separate work. Deterministic (DST).
 [<RequireQualifiedAccess>]
 module PrivacyEconomy =
 
@@ -43,10 +45,15 @@ module PrivacyEconomy =
     let budget (persona: string) (ledger: Ledger) : int =
         Map.tryFind persona ledger |> Option.defaultValue 0
 
-    /// **Reward revealed good use:** grow the persona's budget by `gainOf revealed`, capped at `cap`. Self-
-    /// regulating per persona (a function of *its own* revealed good use — no central authority).
+    /// **Reward revealed good use:** grow the target entitlement, preserving any amount already held.
+    /// Negative balances normalize upward to zero; negative grants give no growth. A lower/negative cap
+    /// cannot revoke held bytes. Evaluate `gainOf` exactly once, including when the cap prevents growth.
     let reward (gainOf: float -> int) (cap: int) (u: GoodUse) (ledger: Ledger) : Ledger =
-        let next = min cap (budget u.Persona ledger + max 0 (gainOf u.Revealed))
+        let held = max 0 (budget u.Persona ledger)
+        let grant = max 0 (gainOf u.Revealed)
+        let ceiling = max held cap
+        // The sum can exceed Int32.MaxValue; clamp in the wider type before converting back.
+        let next = int (min (int64 ceiling) (int64 held + int64 grant))
         Map.add u.Persona next ledger
 
     /// Settle a round of revealed good-use claims — each persona's budget updates independently (decentralized).

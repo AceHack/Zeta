@@ -1,11 +1,12 @@
 ---
 id: 081M1Z5ZW1T087G0R0002KPWJ8
 type: task
-state: backlog
+state: done
 priority: P2
 slug: publish-reviewed-compiled-replay-and-native-custody-evidence
 title: "Publish reviewed compiled replay and native custody evidence"
 created: 2026-09-08T00:16:51.770Z
+completed: 2026-09-08T02:04:18.214Z
 depends_on: []
 composes_with: ["081M1XXWTTF087G0R000X1HMD0"]
 ---
