@@ -42,6 +42,13 @@ separately scoped `ToyBosonFermionBnn` does have parameter learning. The next
 implementation census must identify how much of the proposed learned-module
 composition has actually landed before adding another parallel abstraction.
 
+The code also has typed geometric composition: `ReferenceFrameFactorHeterarchy`
+fuses object and pose evidence using separate categorical and Gaussian factor
+graphs, retaining evidence/conflict receipts; `AdinkraEquivariantFactorLayer`
+provides deterministic signed-permutation sectorization. Their source explicitly
+scopes them as non-learners. These are existing integration surfaces to inspect,
+not grounds for claiming that learned parameter composition has landed.
+
 A neural module with point-estimated parameters and a Bayesian neural module
 with a weight posterior are distinct admissible choices. A nonlinear neural
 map of an uncertain input generally requires an approximation; putting it in
@@ -108,3 +115,14 @@ The next investment is the current implementation census and a separately
 registered compositional comparison. The criterion is improved held-out
 prediction, calibration or decisions at a declared resource budget, with
 component reuse and structural effects measured rather than inferred from names.
+
+## Equation review before the next learned module
+
+The [independent precision-gating equation review](2026-09-08-precision-gated-experts-equation-review.md)
+checks the current comparison paper against its defining densities and pinned
+upstream rules. It finds material message-parameter, Jacobian and variational
+stationarity inconsistencies. A faithful upstream reproduction and a learner
+using density-consistent rules must retain separate model identities. Before
+implementation, fix the factor orientation, base measure, kernel/proper-belief
+distinction, projection objective and mixed inference schedule. Local analytic
+updates do not establish exact global inference or benchmark superiority.
