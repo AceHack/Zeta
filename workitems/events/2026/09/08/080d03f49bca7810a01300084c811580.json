@@ -1,0 +1,14 @@
+{
+  "id": "080d03f49bca7810a01300084c811580",
+  "at": "2026-09-08T01:13:09.199Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z96YAE087G0R000G91WCA",
+    "type": "task",
+    "title": "First-metal bring-up findings register",
+    "slug": "first-metal-bring-up-findings-register",
+    "priority": "P2",
+    "filename": "081M1Z96YAE087G0R000G91WCA-first-metal-bring-up-findings-register.md"
+  }
+}
