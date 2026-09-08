@@ -42,3 +42,20 @@ The accepted native candidate bf2da has a subsequently reproduced malformed
 Unicode wire issue, separately undergoing fix-forward validation. The new
 process launcher has no final source pin yet. These open findings bar the final
 evaluation; no result is filled in from the synthetic fixtures.
+
+
+## Independent review repairs
+
+The [follow-up validation](precision-gate-projection/2026-09-08/run-followup-validation/README.md)
+preserves four actual failing controls and the corrected 22-test pass. Public
+Services configuration is checked before work. Preparation, snapshot,
+comparison and per-slot calls are observed before admission; failures retain
+the actual callback return and prefix. Minimal receipt shape precedes the
+complete-receipt count, while full schema/source/custody remain separate.
+The final-envelope fallback returns the original entries if metadata assembly
+itself raises, and never repeats an already-entered finalization.
+
+The reference certificate follow-up at ae37ac066 is independently accepted in
+review 527ff454; importing that exact corrected dependency is the next integration
+step. Native Unicode correction and process-adapter integration remain pending.
+No final roster or numerical comparison has been opened.

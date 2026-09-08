@@ -463,3 +463,158 @@ def test_existing_journal_reservation_is_not_charged_twice(
     encoded, retained = coordinator.put("fixture-quota", b"small", raw=True)
     assert isinstance(encoded, a.Admitted) and isinstance(retained, store.Stored)
     assert coordinator.primary is None
+
+
+def test_uncallable_service_configuration_refuses_before_store_mutation(
+    tmp_path: Path,
+) -> None:
+    s = target(tmp_path)
+    before = store.snapshot(s)
+    bad = run.Services(None, None, None)  # type: ignore[arg-type]
+    result = run.run_comparison(s, bindings(), bad)
+    assert (
+        result.PrimaryFailure is not None and result.PrimaryFailure.code == "services"
+    )
+    assert result.Counters["Entered"] == 0 and result.Finalization is None
+    assert store.snapshot(s) == before
+
+
+def test_comparison_raise_retains_actual_prefix_and_finalizes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def broken(*args: object, **kwargs: object) -> object:
+        raise OSError("synthetic comparison failure")
+
+    monkeypatch.setattr(criteria, "assess_receipt", broken)
+    result = run.run_comparison(target(tmp_path), bindings(), services())
+    assert result.Counters["Returned"] == 1 and len(result.Entries) == 1
+    row = result.Entries[0]
+    assert row.Observation is not None and isinstance(
+        row.Observation.Returned, NativeObservation
+    )
+    assert result.PrimaryFailure is not None and isinstance(
+        result.Finalization, store.Finalized
+    )
+    assert any(
+        h.Raised is not None and "comparison" in h.Operation for h in result.Helpers
+    )
+
+
+@pytest.mark.parametrize("value", [None, 42])
+def test_success_wrapper_without_receipt_is_returned_but_not_complete(
+    tmp_path: Path, value: object
+) -> None:
+    actual = ref.Success(value)
+    result = run.run_comparison(
+        target(tmp_path),
+        bindings(),
+        replace(services(), ReferenceRoot=lambda _: actual),
+    )
+    assert result.Counters["Returned"] == 2 and result.Counters["CompleteReceipts"] == 1
+    assert (
+        result.Entries[1].Observation is not None
+        and result.Entries[1].Observation.Returned is actual
+    )
+    assert result.PrimaryFailure is not None and not result.CollectionAndCriteriaPassed
+
+
+def test_native_json_null_is_not_a_complete_receipt(tmp_path: Path) -> None:
+    actual = NativeObservation(
+        Complete=True, Receipt=b"null", ExitCode=0, DirectChildClosed=True
+    )
+    result = run.run_comparison(
+        target(tmp_path), bindings(), replace(services(), NativeSolve=lambda _: actual)
+    )
+    assert result.Counters["Returned"] == 1 and result.Counters["CompleteReceipts"] == 0
+    assert (
+        result.Entries[0].Observation is not None
+        and result.Entries[0].Observation.Returned is actual
+    )
+
+
+def test_snapshot_raise_after_return_preserves_actual_and_finalizes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    s = target(tmp_path)
+    original = store.snapshot
+    returned: list[NativeObservation] = []
+
+    def observed_native(request: run.Request) -> object:
+        actual = native(request)
+        returned.append(actual)
+        return actual
+
+    def snapshot(value: object) -> object:
+        if returned:
+            raise OSError("synthetic after-return snapshot failure")
+        return original(value)
+
+    monkeypatch.setattr(store, "snapshot", snapshot)
+    result = run.run_comparison(
+        s, bindings(), replace(services(), NativeSolve=observed_native)
+    )
+    assert len(returned) == 1 and result.Entries[0].Observation is not None
+    assert result.Entries[0].Observation.Returned is returned[0]
+    assert (
+        result.PrimaryFailure is not None
+        and result.PrimaryFailure.code == "helper-raised"
+    )
+    assert isinstance(result.Finalization, store.Finalized)
+
+
+def test_preparation_raise_never_enters_service_but_finalizes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def render(_: object) -> object:
+        raise OSError("synthetic preparation failure")
+
+    monkeypatch.setattr(cases, "render_input", render)
+    result = run.run_comparison(target(tmp_path), bindings(), services())
+    assert result.Counters["Entered"] == 0 and len(result.Pending) == 88
+    assert isinstance(result.Finalization, store.Finalized)
+    assert any(
+        h.Operation.startswith("prepare/") and h.Raised is not None
+        for h in result.Helpers
+    )
+
+
+def test_finish_envelope_raise_keeps_prefix_and_finalizes_once(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def finish(_: object) -> object:
+        raise OSError("synthetic envelope construction failure")
+
+    monkeypatch.setattr(run._Run, "finish", finish)
+    actual = NativeObservation(
+        LaunchAttempted=True, Failure=ProcessFailure("launch", "MissingHost", "fixture")
+    )
+    result = run.run_comparison(
+        target(tmp_path), bindings(), replace(services(), NativeSolve=lambda _: actual)
+    )
+    assert (
+        result.PrimaryFailure is not None
+        and result.PrimaryFailure.code == "native-incomplete"
+    )
+    assert (
+        result.Entries[0].Observation is not None
+        and result.Entries[0].Observation.Returned is actual
+    )
+    assert isinstance(result.Finalization, store.Finalized)
+    assert len([h for h in result.Helpers if h.Operation == "finalize"]) == 1
+    assert any(
+        h.Operation == "finish-envelope" and h.Raised is not None
+        for h in result.Helpers
+    )
+
+
+def test_wrong_admitted_comparison_value_is_not_a_checked_receipt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    actual = a.Admitted({"not": "an assessment"})
+    monkeypatch.setattr(criteria, "assess_receipt", lambda *args, **kwargs: actual)
+    result = run.run_comparison(target(tmp_path), bindings(), services())
+    assert result.Entries[0].Assessment is actual and result.Counters["Checked"] == 0
+    assert (
+        isinstance(result.Finalization, store.Finalized)
+        and not result.CollectionAndCriteriaPassed
+    )
