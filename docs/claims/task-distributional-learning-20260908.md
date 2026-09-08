@@ -96,3 +96,15 @@ before complete source review and archival.
 The coordinator additionally owns `precision_gate_projection_run.py` under
 `src/Interp.Python/zeta_interp/` and its dedicated test under
 `src/Interp.Python/tests/`, as the concrete whole-run retention adapter.
+
+
+## Finite execution driver co-claim
+
+Independent reference session `codex/20260907-c7b2a403` additionally owns
+`src/Interp.Python/zeta_interp/precision_gate_projection_driver.py` and
+`src/Interp.Python/tests/test_precision_gate_projection_driver.py`.
+This is source/archive admission and fixed-roster execution glue over the
+separately owned runner/process APIs. It changes no scientific criteria,
+source-independent reference mathematics or final case selection. The owner
+must agree its bounded CLI/manifest design before implementation and must not
+execute the final numerical evaluation before complete source review/archive.
