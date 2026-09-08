@@ -3986,9 +3986,9 @@ let ``one Journaled freeze does not persist catalog again at boat success`` () :
                     | None, Some b -> b
                     | None, None -> 0L
 
-                // Per-item persist (1) + applyRetention (2) + noteFreeze (3).
-                // Boat success used to add a fourth write of the same catalog.
-                Assert.Equal(3L, highest)
+                // Per-item persist (1) + noteFreeze (2). applyRetention
+                // updates pins in memory; noteFreeze writes them once.
+                Assert.Equal(2L, highest)
         finally
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()

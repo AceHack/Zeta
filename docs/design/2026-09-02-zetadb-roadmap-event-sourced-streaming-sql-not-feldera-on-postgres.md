@@ -322,7 +322,7 @@ These are additive to K1–K18 / E1–E12 / C1–C10. They do not reopen them.
 | **D7** | Notify ZetaDB of durability class (already K6). Observer does not throw. | Tables must not read a Journaled name with missing leaves (E2). | Freeze observer exists |
 | **D8** | ShivaGC / Futamura: historical data may become a generator. Collecting a generator that still has live `Regen` refs is forbidden. | Same as D3. | ShivaGc is DynamicValue mark-sweep, not volume |
 | **D9** | Pointer-not-copy (ReFS-shaped allocate-on-write). Forks and small edits remap ids; bits written only for new chunks. | Space and crash: in-place metadata is a torn-write class. | Jumprope prefix-share + `DagFs.editLocal` converge. Volume freeze still whole-object. |
-| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | Two vocabularies remain. Freeze-storm thread alloc < 48 MiB after FastCDC skip + persist-once, in-memory catalog gen, slot-only persist, and no boat-success catalog rewrite (`081M1ZS5N52087G0R0005S5ZYJ`); still ~100× host 351 KiB. |
+| **D10** | One cache authority. DB and FS must not each buffer the same bytes. `Buffered` is one class. | RAM + DST: two caches are two truths. | Two vocabularies remain. Freeze-storm thread alloc < 48 MiB after FastCDC skip + persist-once, in-memory catalog gen, slot-only persist, no boat-success rewrite, and one post-freeze catalog write (`081M1ZTPQW0087G0R001ZM8PFA`); still ~100× host 351 KiB. |
 | **D11** | CoW amplification bounded by policy. `rolling(N)` after M>N freezes ⇒ ≥ M−N bodies reclaim-eligible. | Else the DB explodes the volume (git-forever). | Caller supplies `RollingLive`; window fold not yet the reclaim input. |
 | **D12** | Crash DST for filesystem **and** database on the same door. | ReFS-class survival is earned by a seed, not a journal story. | Intercepts + plain/sealed replay + reclaim sweep + intent-before-leaves + mid-CRC prefix keep landed. Native device I/O still open. Recovery stays `toy`. |
 
@@ -416,6 +416,9 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 - **D10 fourth peel:** FreezeLog boat success does not persist catalog
   again (`081M1ZS5N52087G0R0005S5ZYJ`). Per-item persist before commit
   remains. Bound stays 48 MiB.
+- **D10 fifth peel:** applyRetention updates pins in memory; noteFreeze
+  persists once (`081M1ZTPQW0087G0R001ZM8PFA`). One Journaled freeze
+  ends at catalog gen 2. Bound stays 48 MiB.
 - **Numbers stay `toy`.** Not copied into README.
 - **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
 - **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product on batching.

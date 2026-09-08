@@ -2379,7 +2379,7 @@ module ZetaFsFreeze =
             volume.LivePins.Add id |> ignore
 
         match keepCount volume.History with
-        | None -> persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen
+        | None -> ()
         | Some n ->
             let mine =
                 volume.Commits.Values
@@ -2389,9 +2389,7 @@ module ZetaFsFreeze =
 
             let dropCount = mine.Length - n
 
-            if dropCount <= 0 then
-                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen
-            else
+            if dropCount > 0 then
                 let kept = HashSet<ContentHash256>()
 
                 for i in dropCount .. mine.Length - 1 do
@@ -2402,8 +2400,6 @@ module ZetaFsFreeze =
                     for id in objectsNamed volume mine.[i].Content do
                         if not (kept.Contains id) then
                             volume.LivePins.Remove id |> ignore
-
-                persistCatalogBestEffort volume.StoreDir volume.KnownObjects volume.LivePins volume.History volume.FreezeBytesSinceReclaim volume.ObjectSets volume.CatalogGen
 
     let private finish
         (volume: Volume)
