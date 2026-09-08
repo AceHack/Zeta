@@ -753,6 +753,18 @@ let ``BlockCas Put of an existing key does not rewrite bits`` () =
     Assert.Equal(0, device.Writes - writesAfterFirstPut)
 
 [<Fact>]
+let ``BlockCas Put does not re-read superblock slots`` () =
+    let device = SimulatedBlockIo(4096)
+    let cas = BlockCas(device)
+    cas.Put("aa", [| 1uy |])
+    let readsAfterFirst = device.Reads
+    cas.Put("bb", [| 2uy |])
+    // Payload RMW of a 1-byte append may Read the data LBA once.
+    // Must not parseCas both superblock slots (LBA 0 and 1).
+    let delta = device.Reads - readsAfterFirst
+    Assert.True(delta <= 1, sprintf "second Put read %d times" delta)
+
+[<Fact>]
 let ``BlockCas XorLastPayloadByteAll flips the last published byte`` () =
     let device = SimulatedBlockIo(4096)
     let cas = BlockCas(device)

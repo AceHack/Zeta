@@ -139,8 +139,10 @@ let ``ZD4 both legs complete the same host-FS small-write storm`` () : Task =
 [<Fact>]
 let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
     // D10 peels: FastCDC skip + persist-once (081M1ZHZ7EW087G0R00006H4BK);
-    // catalog gen in memory (081M1ZMGJ0J087G0R001W8HX2V). Named ShortRun
-    // allocated ~94 MiB vs ~351 KiB host. 48 MiB ceiling. Still unmetered.
+    // catalog gen in memory (081M1ZMGJ0J087G0R001W8HX2V); BlockCas Put
+    // writes the next slot from memory (081M21M7FVZ087G0R000PNH46E).
+    // Named ShortRun allocated ~94 MiB vs ~351 KiB host. 12 MiB ceiling.
+    // Still unmetered.
     task {
         FileSystem.Reset()
         ensureHasher ()
@@ -161,6 +163,8 @@ let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
                                     storm
                                 )
 
+                            let ids = [| for i in 1..storm -> mintId (17L + int64 i) |]
+
                             // Current-thread alloc. Awaiting ConfigureAwait(false)
                             // hops; ubuntu-24.04 then subtracted this thread's
                             // `before` from another thread's lifetime (~57e9).
@@ -168,7 +172,7 @@ let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
                             let before = GC.GetAllocatedBytesForCurrentThread()
 
                             for i in 1..storm do
-                                let id = mintId (17L + int64 i)
+                                let id = ids.[i - 1]
                                 let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
                                 ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| byte i |] |> ignore
 
@@ -186,7 +190,7 @@ let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
 
                             let n = GC.GetAllocatedBytesForCurrentThread() - before
                             Assert.True(
-                                n >= 0L && n < 48L * 1024L * 1024L,
+                                n >= 0L && n < 12L * 1024L * 1024L,
                                 sprintf "freeze storm allocated %d bytes" n
                             )
                         finally

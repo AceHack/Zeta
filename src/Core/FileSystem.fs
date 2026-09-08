@@ -767,6 +767,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
     let commitOrder = ResizeArray<uint64>()
     let recorded = ResizeArray<BlockIoOp>()
     let mutable writes = 0
+    let mutable reads = 0
     let mutable logicalBytes = 0L
     let corruptXor = 0xA5uy
 
@@ -875,6 +876,8 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
     member _.Writes = lock lockObj (fun () -> writes)
 
+    member _.Reads = lock lockObj (fun () -> reads)
+
     member _.CommitOrder = lock lockObj (fun () -> commitOrder.ToArray())
 
     /// Issued completed Write/Flush ops in call order — what acted.
@@ -912,6 +915,7 @@ type SimulatedBlockIo(blockSize: int, ?media: IReadOnlyDictionary<uint64, byte[]
 
         member _.Read(lba, dst) =
             ensureInRange lba dst.Length
+            lock lockObj (fun () -> reads <- reads + 1)
 
             if dst.Length = 0 then
                 0
@@ -1295,8 +1299,57 @@ module BlockSuper =
         BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
         io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
 
+    let private encodeCasIndex (buf: byte[]) (index: Dictionary<string, struct (int64 * int)>) =
+        BinaryPrimitives.WriteInt32LittleEndian(Span(buf, 16, 4), index.Count)
+        let mutable o = 20
+
+        for kv in index do
+            let struct (pos, len) = kv.Value
+            let compact = isLowerHex kv.Key
+            let kb =
+                if compact then
+                    Convert.FromHexString kv.Key
+                else
+                    Encoding.UTF8.GetBytes kv.Key
+
+            if o + 2 + kb.Length + 8 + 4 > buf.Length then
+                invalidOp "BlockCas index does not fit in one superblock"
+
+            let stored =
+                if compact then
+                    kb.Length ||| hexKeyBit
+                else
+                    kb.Length
+
+            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 stored)
+            o <- o + 2
+            Buffer.BlockCopy(kb, 0, buf, o, kb.Length)
+            o <- o + kb.Length
+            BinaryPrimitives.WriteInt64LittleEndian(Span(buf, o, 8), pos)
+            o <- o + 8
+            BinaryPrimitives.WriteInt32LittleEndian(Span(buf, o, 4), len)
+            o <- o + 4
+
+    /// Publish `index` into `lba` as generation `gen`. Does not read either
+    /// slot. BlockCas holds the live slot/gen so Put is not parseCas × 2.
+    let writeCasFromIndex
+        (io: IBlockIo)
+        (lba: uint64)
+        (gen: int64)
+        (index: Dictionary<string, struct (int64 * int)>)
+        =
+        let buf = Array.zeroCreate io.BlockSize
+        Buffer.BlockCopy(casMagic, 0, buf, 0, 4)
+        BinaryPrimitives.WriteInt64LittleEndian(Span(buf, 8, 8), gen)
+        encodeCasIndex buf index
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 4, 4), crcOf buf)
+        io.Write(lba, System.ReadOnlyMemory<byte>.op_Implicit buf) |> ignore
+
+    let tryReadCasState (io: IBlockIo) : (uint64 * int64 * (string * int64 * int) array) option =
+        pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL))
+
     let tryReadCas (io: IBlockIo) : (string * int64 * int) array option =
-        match pick (parseCas (readSlot io 0UL)) (parseCas (readSlot io 1UL)) with
+        match tryReadCasState io with
         | Some(_, _, entries) -> Some entries
         | None -> None
 
@@ -1313,13 +1366,15 @@ type BlockCas(io: IBlockIo) =
     let origin = BlockLog.origin io
     let mutable pos = origin
     let mutable deleteCrashArm: string option = None
+    let mutable publishedSlot: uint64 option = None
+    let mutable gen = 0L
 
     do
         if io.BlockSize <= 0 then
             invalidArg (nameof io) "block size must be positive"
 
-        match BlockSuper.tryReadCas io with
-        | Some entries ->
+        match BlockSuper.tryReadCasState io with
+        | Some(slot, g, entries) ->
             let mutable endAt = origin
 
             for key, start, len in entries do
@@ -1330,7 +1385,19 @@ type BlockCas(io: IBlockIo) =
                     endAt <- e
 
             pos <- endAt
+            publishedSlot <- Some slot
+            gen <- g
         | None -> ()
+
+    let persistIndex () =
+        let lba, nextGen =
+            match publishedSlot with
+            | None -> 0UL, 1L
+            | Some s -> 1UL - s, gen + 1L
+
+        BlockSuper.writeCasFromIndex io lba nextGen index
+        publishedSlot <- Some lba
+        gen <- nextGen
 
     let xorLastByte (start: int64) (len: int) : bool =
         if len <= 0 then
@@ -1411,17 +1478,14 @@ type BlockCas(io: IBlockIo) =
                 let after =
                     BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
 
-                let snapshot = Dictionary(index, StringComparer.Ordinal)
-                snapshot.[key] <- struct (start, bytes.Length)
-
-                let entries =
-                    [| for kv in snapshot ->
-                           let struct (s, n) = kv.Value
-                           kv.Key, s, n |]
-
-                BlockSuper.writeCas io entries
                 index.[key] <- struct (start, bytes.Length)
-                pos <- after)
+
+                try
+                    persistIndex ()
+                    pos <- after
+                with _ ->
+                    index.Remove key |> ignore
+                    reraise ())
 
     /// One-shot: next matching Delete unpublishes the key then throws
     /// `CrashMidSweepException`. Remaining keys stay. Same shape as
@@ -1442,19 +1506,16 @@ type BlockCas(io: IBlockIo) =
             false
         else
             lock lockObj (fun () ->
-                if not (index.ContainsKey key) then
-                    false
-                else
-                    let snapshot = Dictionary(index, StringComparer.Ordinal)
-                    snapshot.Remove key |> ignore
-
-                    let entries =
-                        [| for kv in snapshot ->
-                               let struct (s, n) = kv.Value
-                               kv.Key, s, n |]
-
-                    BlockSuper.writeCas io entries
+                match index.TryGetValue key with
+                | false, _ -> false
+                | true, held ->
                     index.Remove key |> ignore
+
+                    try
+                        persistIndex ()
+                    with _ ->
+                        index.[key] <- held
+                        reraise ()
 
                     let crash =
                         match deleteCrashArm with

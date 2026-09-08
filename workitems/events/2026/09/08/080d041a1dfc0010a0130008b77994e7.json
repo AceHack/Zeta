@@ -1,0 +1,14 @@
+{
+  "id": "080d041a1dfc0010a0130008b77994e7",
+  "at": "2026-09-08T23:04:10.368Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21M7FVZ087G0R000PNH46E",
+    "type": "task",
+    "title": "D10 BlockCas Put writes next slot from memory",
+    "slug": "d10-blockcas-put-writes-next-slot-from-memory",
+    "priority": "P2",
+    "filename": "081M21M7FVZ087G0R000PNH46E-d10-blockcas-put-writes-next-slot-from-memory.md"
+  }
+}
