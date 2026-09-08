@@ -1,0 +1,114 @@
+{
+  "EvidenceCommit": "5a75a5eb05518394450dfd3631d0e27523b456c9",
+  "SourceCommit": "d3bd541e1d043e199c4b54b5390450028473c1cd",
+  "ManifestBytes": 25132,
+  "ManifestSha256": "A79B42D54F9D195EE3AFDEB8CCFFC3A7132060CE2E159481541950B359DB3319",
+  "Artifacts": 68,
+  "StoredBytes": 9014517,
+  "OriginalBytes": 74728326,
+  "SourcePins": 12,
+  "OwnedTrees": [
+    {
+      "Archive": "capture-owned.tar.gz",
+      "RegularFiles": 976,
+      "FileBytes": 2452262,
+      "Symlinks": 2,
+      "Directories": 376
+    },
+    {
+      "Archive": "pytest-owned-attempt-1.tar.gz",
+      "RegularFiles": 3689,
+      "FileBytes": 10068327,
+      "Symlinks": 21,
+      "Directories": 1478
+    },
+    {
+      "Archive": "pytest-owned-attempt-2.tar.gz",
+      "RegularFiles": 3730,
+      "FileBytes": 10088110,
+      "Symlinks": 23,
+      "Directories": 1496
+    },
+    {
+      "Archive": "pytest-owned-attempt-3.tar.gz",
+      "RegularFiles": 3730,
+      "FileBytes": 10088110,
+      "Symlinks": 23,
+      "Directories": 1496
+    }
+  ],
+  "CaptureResultReferences": 32,
+  "ObservedLoadedModulePins": 10,
+  "SuppliedChildSourcePins": 2,
+  "ProducerCompletedOperations": 15,
+  "ReplayCounts": {
+    "StartedFixtures": 15,
+    "ReturnedFixtures": 15,
+    "CompletedOperations": 15,
+    "MatchedCases": 15
+  },
+  "Cases": [
+    {
+      "CaseId": "source/control",
+      "Outcome": "admitted"
+    },
+    {
+      "CaseId": "source/current-bytes",
+      "Outcome": "source-bytes"
+    },
+    {
+      "CaseId": "source/wrong-archive",
+      "Outcome": "archive-hash"
+    },
+    {
+      "CaseId": "source/omitted-helper",
+      "Outcome": "source-roster"
+    },
+    {
+      "CaseId": "source/reordered",
+      "Outcome": "source-order"
+    },
+    {
+      "CaseId": "source/unarchived-helper",
+      "Outcome": "archive-file"
+    },
+    {
+      "CaseId": "source/symlink",
+      "Outcome": "file-read"
+    },
+    {
+      "CaseId": "python/control",
+      "Outcome": "admitted"
+    },
+    {
+      "CaseId": "python/foreign-entry",
+      "Outcome": "ModuleOrigin"
+    },
+    {
+      "CaseId": "python/foreign-helper",
+      "Outcome": "ModuleOrigin"
+    },
+    {
+      "CaseId": "python/missing-helper",
+      "Outcome": "ModuleMissing"
+    },
+    {
+      "CaseId": "python/unlisted-module",
+      "Outcome": "UnlistedModule"
+    },
+    {
+      "CaseId": "python/dynamic-module",
+      "Outcome": "ModuleIdentity"
+    },
+    {
+      "CaseId": "python/changed-origin",
+      "Outcome": "ModuleOrigin"
+    },
+    {
+      "CaseId": "python/changed-bytes",
+      "Outcome": "SourceBytes"
+    }
+  ],
+  "NoFixtureOrChildExecution": true,
+  "CompleteOuterAndRuntimeAdmission": false
+}
