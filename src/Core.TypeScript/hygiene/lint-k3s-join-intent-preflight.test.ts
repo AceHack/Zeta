@@ -80,10 +80,16 @@ function inventory(dir: string): readonly string[] {
 function run(endpoint: string | null, resolved: Resolved): { code: number; out: string; root: string } {
   const f = fixture(endpoint);
   const before = inventory(f.root);
+  // Closed env. The hermetic suite runs files concurrently in one
+  // process; spreading process.env lets a sibling's BASH_ENV / ENV /
+  // SHELLOPTS / PATH rewrite become this spawn's input. Firstboot
+  // consume tests already pass only PATH. cat and tr need PATH.
   const r = spawnSync("bash", [SCRIPT], {
     encoding: "utf8",
+    maxBuffer: 64 * 1024,
     env: {
-      ...process.env,
+      PATH: process.env.PATH ?? "/usr/bin:/bin",
+      LC_ALL: "C",
       ZETA_JOIN_URL_FILE: f.joinUrlFile,
       ZETA_JOIN_TOKEN_FILE: join(f.root, "etc/zeta/k3s-join-token"),
       ZETA_RESOLVED_CLUSTER_INIT: resolved.clusterInit,
@@ -233,6 +239,17 @@ describe("the markers are greppable and distinct", () => {
         if (a !== b) expect(a.startsWith(b)).toBe(false);
       }
     }
+  });
+});
+
+describe("the spawn env is closed", () => {
+  test("this file does not spread process.env into bash", () => {
+    // bun's hermetic suite shares one process across files. A spread
+    // of process.env is how a sibling BASH_ENV made the JOIN/FOUND
+    // remediation line disappear while --impure still matched.
+    const text = readFileSync(import.meta.path, "utf8");
+    const needle = ["...", "process.env"].join("");
+    expect(text.split(needle).length - 1).toBe(0);
   });
 });
 
