@@ -100,6 +100,14 @@ controls, not learned-system or state-of-the-art performance. Prepare the
 focused learning/repair publication, then preregister an actual learned
 comparison with chronological holdout and feasible external baselines.
 
+Aaron subsequently clarified that the system candidate is a compositional
+Bayesian/probabilistic circuit with neural modules or nested subgraphs. Read the
+[restored circuit continuation](../research/2026-09-08-composable-learning-circuit-continuation.md)
+and September 3 frozen edge-module contract before choosing a learner. Plain
+recurrent architectures are component/baseline candidates. The earlier CFB
+negative results and Precision-Gated Experts comparison should guide the next
+investment. No proposed CountRecall training or probe has run.
+
 The detailed sections below retain older source-scoped evidence. This checkpoint
 takes precedence for current work ordering, not for relabeling historical runs.
 

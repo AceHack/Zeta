@@ -26,10 +26,14 @@ learned world-model quality. The new learning comparisons need separate
 registration, source archives and held-out data. This program belongs in the
 control plane; it does not move learning into the ordinary data-plane hot path.
 
-The practical target is a composition of existing ports with replaceable
-learners and independently scored outputs. A monolithic implementation is not
-required. A significant architecture change gets a separate ADR after its
-interfaces and evidence obligations are concrete.
+Aaron's further clarification makes the architectural target explicit: a
+**composable Bayesian/probabilistic graph whose modules can contain neural
+learners and nested subgraphs**. The [restored circuit continuation](2026-09-08-composable-learning-circuit-continuation.md)
+connects the September 1-3 research, frozen edge-module contract and existing
+compositional benchmarks. A stand-alone recurrent learner is a possible
+component or baseline; the system hypothesis concerns the higher composition,
+its uncertainty-bearing interfaces and reuse of fitted modules. A significant
+architecture change gets a separate ADR after these obligations are concrete.
 
 ## The supplied talk and the ferry
 
@@ -220,20 +224,28 @@ stage. This document selects the direction, not hidden seeds or tuned winners.
    tests; duplicated-message and neutral-affect controls; queue/resource
    accounting and cost-prediction checks. Compare the same event space and
    information access. Failures identify a component before scale hides it.
-2. **Learned prediction and action.** Train from chronological observations,
+2. **Learned compositional inference.** Reuse the existing DAG and edge-module
+   work. Compare learned probabilistic composition with individual experts,
+   flat fusion and matched neural gating using the same expert artifacts.
+   Inspect the current official [Precision-Gated Experts](https://github.com/biaslab/PrecisionGatedExperts)
+   implementation and [closed-form variational composition paper](https://arxiv.org/abs/2605.29467)
+   before choosing the next slice. Existing CFB negative results and old split
+   identities remain unchanged. Earn any learned or exactness label from the
+   implemented module and approximation, not its historical name.
+3. **Learned prediction and action.** Train from chronological observations,
    with process parameters and evaluation renderings held out. Compare learned
    finite-state/mixture or particle models, actual Zeta EP/BP adapters, and
    recurrent baselines under the same observation and training budget. Keep a
    known-model oracle explicitly privileged. Report one-step and multi-step
    predictive scores, calibration, downstream return and resource use.
-3. **External memory benchmarks.** Reproduce official task semantics and
+4. **External memory benchmarks.** Reproduce official task semantics and
    strong baselines before comparing a Zeta adapter. Start with
    [POPGym](https://github.com/proroklab/popgym) and the pixel-based
    [POPGym Arcade v8 paper](https://arxiv.org/abs/2503.01450v8), revised
    2026-08-27. The latter's observability controls and memory-contamination
    findings are directly relevant. Pin the actual implementation version and
    use its correct observation/action wrappers.
-4. **Learned world-model comparison.** Candidate anchors include the official
+5. **Learned world-model comparison.** Candidate anchors include the official
    [DreamerV3](https://github.com/danijar/dreamerv3) implementation and its
    [2025 Nature evaluation](https://doi.org/10.1038/s41586-025-08744-2).
    For compatible continuous-control tasks, inspect
@@ -269,8 +281,9 @@ duplicated evidence, irrelevant affect and corrupted/stale memory explicitly.
 | A small room passes but external baselines dominate | Improve representation learning or reuse the stronger component |
 | A result fails independent replay or uses holdout information | No promotion; repair the evaluator and register a fresh experiment |
 
-The next concrete work is an executable small-room admission and resource
-audit, then a pinned learned-prediction pilot. The existing compiled study
+The small-room controls are now implemented and independently checked. The
+next concrete work restores the current compositional learner census and
+preregisters a faithful learned-DAG comparison with structural ablations. The existing compiled study
 continues in its own lane. The final research decision will cite actual
 comparative results, including negative outcomes, rather than the number of
 subsystems assembled.
