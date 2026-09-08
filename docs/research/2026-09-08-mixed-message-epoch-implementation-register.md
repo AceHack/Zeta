@@ -172,3 +172,32 @@ acceptance pending the counter-knowledge correction and assembled core/peer
 correspondence. The complete actual bridge result is memory-retained; durable
 summaries reference the existing original records and do not serialize that
 entire object graph.
+
+## Runtime and correction follow-through
+
+The normally pushed [core runtime checkpoint](2026-09-08-mixed-message-core-runtime-checkpoint.md)
+at `15b43aa7271d100842c198a4378eef717e4acef8` is imported as `ded9f886a`.
+Its 48 focused owner tests and retained earlier failures extend the original
+31-test learner/codec checkpoint. The coordinator's
+[actual Release build](mixed-message-epoch-implementation/2026-09-08/root-runtime-build-1/manifest.json)
+passed with zero warnings and errors in 27.68 seconds. This is not a complete
+solution gate or a registered epoch run. Final M1-M8 coverage and withdrawal
+admission are still being completed against separately identified source.
+The runtime calls checked kernels and SoftScheduler; its typed site ledger
+implements the exclusion/replacement laws without invoking FactorGraph itself.
+
+Bridge counter/path corrections at `0e0369a` and `4402be8`, with evidence
+`a6ca792`, are normally pushed and imported as `b8cda99ab`, `94695d197` and
+`1967a7bed`. The
+[independent follow-through](2026-09-08-mixed-message-epoch-bridge-independent-review.md#follow-through-on-the-counter-and-path-corrections)
+accepts those concrete fixes and verifies all 858 correction archive members.
+Withdrawal admission and final core/peer correspondence remain distinct gates.
+
+The fixed invoker's source review found a blocking FIFO manifest read and a
+secondary finalization/console exception that could replace the top-level
+primary exception. The
+[repaired invocation record](mixed-message-epoch-implementation/2026-09-08/registered-source/README.md#launcher-review-and-repair)
+retains the actual failing source and subsequent three development controls,
+plus strict/static checks of the corrected source. Independent review accepts
+those two repaired boundaries for the declared ordinary-Exception scope.
+No named M4, four-session M5, frozen query or new held-out comparison has run.

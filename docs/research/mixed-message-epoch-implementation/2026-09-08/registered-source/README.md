@@ -55,3 +55,45 @@ The draft passed Ruff check/format and a strict mypy check of this one source
 file. The [static-check records](static-1/manifest.json) retain the actual mypy
 invocation and unchanged source identity. These checks perform no named
 learning, peer, native or reference invocation and establish no runtime result.
+
+## Launcher review and repair
+
+The first static-clean artifact at `87bc6b28a` still had two runtime boundary
+defects found by independent source review. A FIFO manifest stalled after the
+fixture's READY marker until its 500-ms watchdog killed the isolated Python
+child. A separate synthetic session RuntimeError was followed by a finalization
+OSError, which became the top-level raised outcome; Python retained the earlier
+exception in its context, not as an independent caller observation. Those exact
+original source and observations remain in the
+[review/repair records](review-repair-1/manifest.json).
+
+The correction uses observed lstat metadata only to supply a length to the
+existing descriptor-relative `read_exact` helper. That helper admits a regular
+file with no-follow/nonblocking open, exact size and the 64-KiB cap; service
+admission still checks the independently supplied SHA256. Its actual public
+return and raised outcome are retained separately from later setup.
+
+The existing `_observe` helper now retains ordinary call, finalization and
+console outcomes separately. A returned BridgeResult is held before summary
+encoding. Session/plan failure cannot be replaced by a later finish or console
+exception in this declared ordinary-Exception scope. CallerObservations reports
+operation names, actual returned scalar/failure values and bounded raised
+records; it does not serialize the full object graph or guarantee stdout/stderr
+delivery after a console failure. There is one separate stderr attempt, without
+recursive recovery. Process termination outside that scope remains an external
+observation, not a fabricated closed result.
+
+The corrected final source is SHA256
+`CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69`.
+It passes strict mypy/Ruff/format. Two synthetic retention fixtures preserve the
+primary plus secondary errors and, when returned, the exact synthetic result
+object before a console exception. The FIFO now returns the actual
+regular-file refusal and exits 2 before the watchdog. These three development
+controls enter no peer, learner, native producer or interval reference. Earlier
+repair formatting and two mypy narrowing failures remain preserved separately;
+the final checks are not assigned to those earlier source bytes.
+
+Independent follow-through source review accepts these two repaired edges for
+that declared scope; final immutable source admission and named execution
+remain pending. Special FIFO entries are recorded by mode and never read into
+the preservation archive.

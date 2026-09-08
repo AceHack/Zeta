@@ -6,6 +6,18 @@ Operational status: research-grade continuity record
 Lifecycle: active
 Status: scalar component verified on main; bounded learning contract accepted for implementation
 
+Current implementation checkpoints are indexed in the
+[implementation register](../research/2026-09-08-mixed-message-epoch-implementation-register.md#runtime-and-correction-follow-through).
+The core runtime is callable at owner `15b43aa` (48 focused development tests),
+and bridge counter/path corrections are imported through owner `a6ca792`
+(100 development fixtures). Their real named integration controls remain
+unrun. The [withdrawal clarification](../research/2026-09-08-mixed-message-withdrawal-admission-clarification.md)
+and [fixed invoker](../research/mixed-message-epoch-implementation/2026-09-08/registered-source/README.md)
+must be read before final source admission. Neither a training-cut hash nor
+a DAG address proves independent or unaffected ancestry. Await final core,
+peer and matching bridge source/review, then the assembled gate and archived
+registration; do not replay the earlier scalar experiment.
+
 ## Bootstrap
 
 Continue in a writer-owned clone from current origin/main. Read the projection

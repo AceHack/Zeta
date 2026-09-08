@@ -87,3 +87,39 @@ The original failed discriminators and separately pinned repair are pending.
 Complete bridge acceptance is withheld until that repair and assembled
 core/peer correspondence have been reviewed. The original checkpoint remains
 preserved as the source of this finding.
+
+## Follow-through on the counter and path corrections
+
+This section supersedes the counter repair's pending status above, while final
+assembled acceptance remains pending. The owner normally pushed counter fix
+`0e0369a22ca9bf1687addf2d328ef82b0d22bdf5`, path fix
+`4402be8a7121f2f1609d4a7213d7ba7d3e3e65ee` and evidence commit
+`a6ca7924b2f36baafc075b2248c027a7b69a6075`. Fresh remote verification preceded
+root imports `b8cda99ab`, `94695d197` and `1967a7bed` respectively.
+
+The actual predicates reject disjoint knowledge intervals without changing
+either observer's original pair. PriorWork now uses the coordinator's own
+observed per-session deltas. The path guard matches the compiled printable
+ASCII, 256-character boundary. These inspected changes close the two concrete
+counter/path findings within the existing source/custody premises; they do
+not establish exact totals from incomplete observations.
+
+The [owner correction record](2026-09-08-mixed-message-epoch-bridge-corrections.md)
+retains the six original knowledge refusals, intermediate PriorWork failure,
+three path discriminators, corrected 100-fixture result, strict/style checks
+and two distinct unchanged-source full repository gates. This reviewer read
+that evidence without rerunning numerical or unit controls.
+
+The [independent follow-through records](mixed-message-epoch-bridge-validation/2026-09-08/root-correction-review-1/manifest.json)
+retain the read-only audit and actual import commands. All 858 archive members
+match their declared original identities: 4,783,518 original bytes and an
+822,952-byte archive, SHA256
+`9C9C3FCF79E4458CECC98E67B9AABCC32114F2ABDA182381FD2C8270439C197B`.
+All three source files match both immutable 4402 and their imported bytes.
+No historical OriginalLocalFile path was followed, and no source was executed
+by this audit. The earlier 1,352-member checkpoint remains unchanged.
+
+The separately identified
+[withdrawal admission gap](2026-09-08-mixed-message-withdrawal-admission-clarification.md)
+and final actual core/peer correspondence remain open at this checkpoint.
+No named M4, M5 or frozen query is accepted or reported as executed here.

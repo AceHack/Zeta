@@ -1,0 +1,500 @@
+{
+  "Schema": "zeta.mixed-epoch.root-followthrough.v1",
+  "NamedControlExecuted": false,
+  "Records": [
+    {
+      "File": "001.gz",
+      "Encoding": "gzip",
+      "Bytes": 13161,
+      "Sha256": "B5D447ACBA152E04D02D2ECF2B9A5E2288C434695B286BD6F432A7432D32FB09",
+      "StoredBytes": 6063,
+      "StoredSha256": "11A80496644D5C9CFCFF82D0063924057F9245BCD5D74BDA89B0AA44E4AC2349",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/__pycache__/invoke.cpython-314.pyc"
+    },
+    {
+      "File": "002.gz",
+      "Encoding": "gzip",
+      "Bytes": 349,
+      "Sha256": "FA9A9029F41F50405D022B2D0EC3D49A732FB701B422EAA96307A457684D8B7F",
+      "StoredBytes": 248,
+      "StoredSha256": "ABBA1D65AD9584948FE36F9385BC727C777EF9CE23814D1741A896AB96B7FDE1",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/fifo-child.py"
+    },
+    {
+      "File": "003.gz",
+      "Encoding": "gzip",
+      "Bytes": 784,
+      "Sha256": "D332C92F624D2832D78A8F2F417D92354FF8759356CC5245A4A6C3202ED5507C",
+      "StoredBytes": 375,
+      "StoredSha256": "4DD9C4B5E82233164EB460FC91505D4E2E63173189343015D7D93E65AAC8B0ED",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/fifo-observation.json"
+    },
+    {
+      "File": "004.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/fifo.stderr"
+    },
+    {
+      "File": "005.gz",
+      "Encoding": "gzip",
+      "Bytes": 6,
+      "Sha256": "3DFA3FB239F56C778A1E9B33EB31328349EDD155A95806DAC4378904E88527E5",
+      "StoredBytes": 26,
+      "StoredSha256": "341883ACAE54206EEB485456AABA713A7BFFC1ACA594C5ECB500D0601E28458B",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/fifo.stdout"
+    },
+    {
+      "File": "006.gz",
+      "Encoding": "gzip",
+      "Bytes": 7559,
+      "Sha256": "991B434155447B81B7B445147AD31AAF455F0C8B89191C383BF774D2BC7D8C54",
+      "StoredBytes": 2447,
+      "StoredSha256": "36409D477494AA6F03FD9305FF35DFDDA2A8E3AE8AA8930C9BC263899B5D2278",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/invoke.py"
+    },
+    {
+      "File": "007.gz",
+      "Encoding": "gzip",
+      "Bytes": 2,
+      "Sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "StoredBytes": 22,
+      "StoredSha256": "C14BFCF1832A180081CE0ABD2061EEB1DC780074F0C2CDFD923BE805F2407368",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/manifest-fixture"
+    },
+    {
+      "File": "008.gz",
+      "Encoding": "gzip",
+      "Bytes": 1387,
+      "Sha256": "8E5A56E7810CC5040F30208BC4FCFD89E5077F09A1757AA7D22B038D1E1F40CD",
+      "StoredBytes": 695,
+      "StoredSha256": "DAB1E1840D71CC0A928D7C0092F6423D7E553E8E1C07A9AF55F68B4E45365856",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/primary-secondary.py"
+    },
+    {
+      "File": "009.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/primary-secondary.stderr"
+    },
+    {
+      "File": "010.gz",
+      "Encoding": "gzip",
+      "Bytes": 248,
+      "Sha256": "C9BB25A290CD703D48AA62F07D581754993E79F114681A1881034AD01483C4A0",
+      "StoredBytes": 183,
+      "StoredSha256": "7ABF00243168B0CD11F97FE7064B6BA00E55F37FB533D33FC06215C4022A9170",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/primary-secondary.stdout"
+    },
+    {
+      "File": "011.gz",
+      "Encoding": "gzip",
+      "Bytes": 281,
+      "Sha256": "6D5521F8847E7D9F59F9F4BB079D54360978861592ED41249F0FB53789BF604A",
+      "StoredBytes": 213,
+      "StoredSha256": "4B12936EAEB8C86C8DD6F69946845F2AA47DD481BE4A9E320E32EA7030034F6B",
+      "OriginalPath": ".git/mixed-invocation-review-before-1/review.txt"
+    },
+    {
+      "File": "012.gz",
+      "Encoding": "gzip",
+      "Bytes": 539,
+      "Sha256": "04A72F7E35349D5C1222D543AC2C5FFE8587ECD77F36F7E6C68782AF9552B146",
+      "StoredBytes": 378,
+      "StoredSha256": "130FA477A78CF5A69B88B9652A29BD52A906B9928D6F8494F8DAC6EC8DB12C6B",
+      "OriginalPath": ".git/mixed-invocation-static-2/0/completion.json"
+    },
+    {
+      "File": "013.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-static-2/0/stderr"
+    },
+    {
+      "File": "014.gz",
+      "Encoding": "gzip",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "OriginalPath": ".git/mixed-invocation-static-2/0/stdout"
+    },
+    {
+      "File": "015.gz",
+      "Encoding": "gzip",
+      "Bytes": 556,
+      "Sha256": "DEBAB1248AE05112511854414BACA58D2EF8A72E18ED88B53F75976C84F52086",
+      "StoredBytes": 386,
+      "StoredSha256": "807E64CCD5897DD6F1DF62B32347C0AB38D1639CDD97467D61FE49BA112E89CC",
+      "OriginalPath": ".git/mixed-invocation-static-2/1/completion.json"
+    },
+    {
+      "File": "016.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-static-2/1/stderr"
+    },
+    {
+      "File": "017.gz",
+      "Encoding": "gzip",
+      "Bytes": 5107,
+      "Sha256": "81DADD0BB3C8152CAA6EE85E77C8EF67D76619F5F54B3FE64230446124888A33",
+      "StoredBytes": 1428,
+      "StoredSha256": "6E39069D653E3567BCAC861AAF9B808172612199BD44F8DE26987076707FE101",
+      "OriginalPath": ".git/mixed-invocation-static-2/1/stdout"
+    },
+    {
+      "File": "018.gz",
+      "Encoding": "gzip",
+      "Bytes": 517,
+      "Sha256": "50601D9744AB7446305F4E7B4722E8858A8CAACF5CC331E2F3E385181B2C8756",
+      "StoredBytes": 373,
+      "StoredSha256": "894A0E2CB819FDFF70BD26D0FBEF482E888C367DAD563506F74AC153E41652FF",
+      "OriginalPath": ".git/mixed-invocation-static-2/2/completion.json"
+    },
+    {
+      "File": "019.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-static-2/2/stderr"
+    },
+    {
+      "File": "020.gz",
+      "Encoding": "gzip",
+      "Bytes": 404,
+      "Sha256": "FDC27D03C47D4D4413264B3C9BD694AE5717BAFA382D1C5F285679EEE60441CA",
+      "StoredBytes": 255,
+      "StoredSha256": "D0C000262297D26C1DFE4CD7654034252C00DA375B013AC5CD243279189BA9DB",
+      "OriginalPath": ".git/mixed-invocation-static-2/2/stdout"
+    },
+    {
+      "File": "021.gz",
+      "Encoding": "gzip",
+      "Bytes": 10944,
+      "Sha256": "A7070E7312C6C3A1A2727689FCAA2BC4B7FFCEBB66BF6A704D70204D528C56D5",
+      "StoredBytes": 3153,
+      "StoredSha256": "A9081799CA4548EAC3763D367447E5EEB840AD320A6A28970E60DC54F1DA59BC",
+      "OriginalPath": ".git/mixed-invocation-static-2/invoke.py"
+    },
+    {
+      "File": "022.gz",
+      "Encoding": "gzip",
+      "Bytes": 19922,
+      "Sha256": "56547B99BEE652198CE050612C1764E2DD3A5F7F6B9664CAC6FB8ACEE17557C9",
+      "StoredBytes": 8695,
+      "StoredSha256": "A1336052CBC364CED6BB16A833AE32275F3146A18C4B69121798BC4968FC7685",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/__pycache__/invoke.cpython-314.pyc"
+    },
+    {
+      "File": "023.gz",
+      "Encoding": "gzip",
+      "Bytes": 349,
+      "Sha256": "FA9A9029F41F50405D022B2D0EC3D49A732FB701B422EAA96307A457684D8B7F",
+      "StoredBytes": 248,
+      "StoredSha256": "ABBA1D65AD9584948FE36F9385BC727C777EF9CE23814D1741A896AB96B7FDE1",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/fifo-child.py"
+    },
+    {
+      "File": "024.gz",
+      "Encoding": "gzip",
+      "Bytes": 781,
+      "Sha256": "F780C2F3F8B6BDE91954DBAEDB01DADF64983FE239CCDC9FBB3CC49D146AE32B",
+      "StoredBytes": 371,
+      "StoredSha256": "C1B8770BD21976DBB9C4263134CFD32446BD26B5C03758CCA166B987F1295C55",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/fifo-observation.json"
+    },
+    {
+      "File": "025.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/fifo.stderr"
+    },
+    {
+      "File": "026.gz",
+      "Encoding": "gzip",
+      "Bytes": 468,
+      "Sha256": "A2A04557EBA59C76A7BF511BA3EE0187D1CEE5000EF3141756B9D9ED8AD478ED",
+      "StoredBytes": 240,
+      "StoredSha256": "A15F05F9F01DF1E06D33889AA033AB5E15580CF2E3A310969870049BC4FE25EE",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/fifo.stdout"
+    },
+    {
+      "File": "027.gz",
+      "Encoding": "gzip",
+      "Bytes": 11381,
+      "Sha256": "584C86B8200B1BA5767673F2F10D0CFEFF7ADA1E34854C31416560A56108688D",
+      "StoredBytes": 3233,
+      "StoredSha256": "EF4C93D34CFEB29455F6D0A8AB6F4EDD1B37359865731A757E263D426C62FC37",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/invoke.py"
+    },
+    {
+      "File": "028.gz",
+      "Encoding": "gzip",
+      "Bytes": 2,
+      "Sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "StoredBytes": 22,
+      "StoredSha256": "C14BFCF1832A180081CE0ABD2061EEB1DC780074F0C2CDFD923BE805F2407368",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/manifest-fixture"
+    },
+    {
+      "File": "029.gz",
+      "Encoding": "gzip",
+      "Bytes": 633,
+      "Sha256": "821A987D1A74F15887B55B3DBBFB9D2D422BA23A5BDA571669A6275B724441A3",
+      "StoredBytes": 291,
+      "StoredSha256": "F2D2868FD712E0CF7F42D0A0612F0E3CEC3A101A0B9B742C71EF610D33BBCBBF",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/retention-completion.json"
+    },
+    {
+      "File": "030.gz",
+      "Encoding": "gzip",
+      "Bytes": 2380,
+      "Sha256": "480C87B56A6DA30EB98DC8CDE82A043B2F4C9E5805F607A38C7357AF4A7AC05F",
+      "StoredBytes": 1015,
+      "StoredSha256": "F32D5539C3D826F165518B259254D32BA44017006EBD5DC7BB773A7615D9E13F",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/retention-fixtures.py"
+    },
+    {
+      "File": "031.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/retention.stderr"
+    },
+    {
+      "File": "032.gz",
+      "Encoding": "gzip",
+      "Bytes": 1121,
+      "Sha256": "40028F36F9C503B4CF3220E7732DFBBB706BB49657534B126F0FF90074A0B254",
+      "StoredBytes": 339,
+      "StoredSha256": "A2789B78B662FC648D9F9DF7B021654AF6AA47744A5C158563166543D923965A",
+      "OriginalPath": ".git/mixed-invocation-review-after-1/retention.stdout"
+    },
+    {
+      "File": "033.gz",
+      "Encoding": "gzip",
+      "Bytes": 540,
+      "Sha256": "DA0057FA867715EA34710E41D73CAF42C9965FC8E21429483EF36EE866D083C7",
+      "StoredBytes": 380,
+      "StoredSha256": "14B43317BD6DB697FAECA8DC6E176941B4F83F96E19EDC0FE53B49AC548921A2",
+      "OriginalPath": ".git/mixed-invocation-static-3/0/completion.json"
+    },
+    {
+      "File": "034.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-static-3/0/stderr"
+    },
+    {
+      "File": "035.gz",
+      "Encoding": "gzip",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53",
+      "OriginalPath": ".git/mixed-invocation-static-3/0/stdout"
+    },
+    {
+      "File": "036.gz",
+      "Encoding": "gzip",
+      "Bytes": 557,
+      "Sha256": "284F4A74B226BB8C6C8AA1A9C6AB025E0241E21AC7A4F3D8E4F09FEBB6134886",
+      "StoredBytes": 384,
+      "StoredSha256": "AEE5E0D3E9FF07D903C019F62B4086AA91148CC3EA3635A3C07B055B2F570F2C",
+      "OriginalPath": ".git/mixed-invocation-static-3/1/completion.json"
+    },
+    {
+      "File": "037.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-static-3/1/stderr"
+    },
+    {
+      "File": "038.gz",
+      "Encoding": "gzip",
+      "Bytes": 25,
+      "Sha256": "FD2299C9F1C6DC869070883E281051BFE93AACF66C1A3B0069F45B4AA410CA50",
+      "StoredBytes": 45,
+      "StoredSha256": "AFDAE4B86058000C02ACC699088589B28FBFE2EAD39A424C4435B13464B2F494",
+      "OriginalPath": ".git/mixed-invocation-static-3/1/stdout"
+    },
+    {
+      "File": "039.gz",
+      "Encoding": "gzip",
+      "Bytes": 517,
+      "Sha256": "6E9F792101CE075BC3115ABA69FE77563E438425A1BE21F28463D3CC7AA4D6CB",
+      "StoredBytes": 375,
+      "StoredSha256": "339466ED0811B0B44E60232052F1B6AAE7C521623104623FF0168B1201598685",
+      "OriginalPath": ".git/mixed-invocation-static-3/2/completion.json"
+    },
+    {
+      "File": "040.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-static-3/2/stderr"
+    },
+    {
+      "File": "041.gz",
+      "Encoding": "gzip",
+      "Bytes": 42,
+      "Sha256": "5D4B6D285B77932E3D08212C3B4974D0A803F98EC60408AC6CCF6A063FA6C19E",
+      "StoredBytes": 62,
+      "StoredSha256": "2F7B9C4111C2BA775333E2EA54F81225E3637B13E8892DF5AA0EB59733A00FCD",
+      "OriginalPath": ".git/mixed-invocation-static-3/2/stdout"
+    },
+    {
+      "File": "042.gz",
+      "Encoding": "gzip",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69",
+      "StoredBytes": 3266,
+      "StoredSha256": "65023EFA88CF6D1E78E037EA32F93D42DB1ABB709F02E0D394DA0DD7E640F6D3",
+      "OriginalPath": ".git/mixed-invocation-static-3/invoke.py"
+    },
+    {
+      "File": "043.gz",
+      "Encoding": "gzip",
+      "Bytes": 20079,
+      "Sha256": "55F1E2EDD6DF3508C01CC83DDBFD9BA04446CF373FF6C06E6F7DF4F3AE79CB30",
+      "StoredBytes": 8770,
+      "StoredSha256": "57B218FB362F236197A030B1521AE543F7FBDB1A5C797A224483CED0CEC83898",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/__pycache__/invoke.cpython-314.pyc"
+    },
+    {
+      "File": "044.gz",
+      "Encoding": "gzip",
+      "Bytes": 349,
+      "Sha256": "FA9A9029F41F50405D022B2D0EC3D49A732FB701B422EAA96307A457684D8B7F",
+      "StoredBytes": 248,
+      "StoredSha256": "ABBA1D65AD9584948FE36F9385BC727C777EF9CE23814D1741A896AB96B7FDE1",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/fifo-child.py"
+    },
+    {
+      "File": "045.gz",
+      "Encoding": "gzip",
+      "Bytes": 781,
+      "Sha256": "4A1614BC361BEEAE78F62BA54A77FC1FD8766DB08126C98C34F0218470218776",
+      "StoredBytes": 370,
+      "StoredSha256": "E045EEEE8FC291100A5B030BA6820FAB7236746D88A1119B57CA46965FD4386D",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/fifo-observation.json"
+    },
+    {
+      "File": "046.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/fifo.stderr"
+    },
+    {
+      "File": "047.gz",
+      "Encoding": "gzip",
+      "Bytes": 537,
+      "Sha256": "4929D9C4789D6841886D0BAEE65271868790A7DA7A8D161D20870C856E7077EC",
+      "StoredBytes": 252,
+      "StoredSha256": "A8200E294B9A875AD86D8718FDA067587BDFA8596BC10CF24C23D3739CF9BC7F",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/fifo.stdout"
+    },
+    {
+      "File": "048.gz",
+      "Encoding": "gzip",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69",
+      "StoredBytes": 3266,
+      "StoredSha256": "65023EFA88CF6D1E78E037EA32F93D42DB1ABB709F02E0D394DA0DD7E640F6D3",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/invoke.py"
+    },
+    {
+      "File": "049.gz",
+      "Encoding": "gzip",
+      "Bytes": 2,
+      "Sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+      "StoredBytes": 22,
+      "StoredSha256": "C14BFCF1832A180081CE0ABD2061EEB1DC780074F0C2CDFD923BE805F2407368",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/manifest-fixture"
+    },
+    {
+      "File": "050.gz",
+      "Encoding": "gzip",
+      "Bytes": 634,
+      "Sha256": "0BA41D0BFDE6AE8CEDB586D16D2C63C26D7DECC672EBE87C8D595B3DE98E1B7B",
+      "StoredBytes": 292,
+      "StoredSha256": "0AA5AF572EF986A0C014D04751835C7482C7D83C5EB05B3C773FE3E588A6A81F",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/retention-completion.json"
+    },
+    {
+      "File": "051.gz",
+      "Encoding": "gzip",
+      "Bytes": 2380,
+      "Sha256": "480C87B56A6DA30EB98DC8CDE82A043B2F4C9E5805F607A38C7357AF4A7AC05F",
+      "StoredBytes": 1015,
+      "StoredSha256": "F32D5539C3D826F165518B259254D32BA44017006EBD5DC7BB773A7615D9E13F",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/retention-fixtures.py"
+    },
+    {
+      "File": "052.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/retention.stderr"
+    },
+    {
+      "File": "053.gz",
+      "Encoding": "gzip",
+      "Bytes": 1121,
+      "Sha256": "40028F36F9C503B4CF3220E7732DFBBB706BB49657534B126F0FF90074A0B254",
+      "StoredBytes": 339,
+      "StoredSha256": "A2789B78B662FC648D9F9DF7B021654AF6AA47744A5C158563166543D923965A",
+      "OriginalPath": ".git/mixed-invocation-review-final-1/retention.stdout"
+    }
+  ],
+  "SpecialFilesNotRead": [
+    {
+      "Path": ".git/mixed-invocation-review-before-1/manifest-fifo",
+      "Mode": "0o10644",
+      "Read": false
+    },
+    {
+      "Path": ".git/mixed-invocation-review-after-1/manifest-fifo",
+      "Mode": "0o10644",
+      "Read": false
+    },
+    {
+      "Path": ".git/mixed-invocation-review-final-1/manifest-fifo",
+      "Mode": "0o10644",
+      "Read": false
+    }
+  ]
+}
