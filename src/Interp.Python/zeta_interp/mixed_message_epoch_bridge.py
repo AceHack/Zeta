@@ -1335,7 +1335,8 @@ def _relative(value: object, field_name: str) -> str:
     if (
         type(value) is not str
         or not value.isascii()
-        or len(value) > 512
+        or not value.isprintable()
+        or len(value) > 256
         or "\\" in value
         or "\x00" in value
     ):
