@@ -111,3 +111,12 @@ Python/F# bridge and eight finite controls. Implementation ownership is now
 assigned; the actual integration execution still awaits complete source review
 and archival. The [independent main-publication audit](../research/2026-09-08-pr17051-publication-review.md)
 also accepts the scalar receipt, retaining its later audit-helper correction.
+
+Implementation then exposed three concrete process-boundary omissions.
+Read the [explicit transport amendment](../research/2026-09-08-mixed-message-epoch-transport-amendment.md)
+and its [independent acceptance](../research/2026-09-08-mixed-message-epoch-peer-amendment-independent-review.md)
+with the original contract. They bind full actual return delivery, observed
+budgets and compensation context; they do not change the numerical controls.
+The [current comparator census](../research/2026-09-08-current-forecast-comparator-source-census.md)
+records Chronos-2 and TimesFM-3 source/model metadata. No comparator weights,
+dataset or benchmark output was downloaded, and no winner was selected.
