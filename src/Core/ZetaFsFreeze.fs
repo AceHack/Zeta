@@ -467,8 +467,8 @@ module ZetaFsFreeze =
                     | Error e -> err <- Some e
 
             let succeed () =
-                persist ()
-
+                // Per-item persist already ran before each commit frame.
+                // A second write here is the same catalog without new pins.
                 if err.IsNone then
                     for i in 0 .. boat.Length - 1 do
                         let it = boat.Span.[i]

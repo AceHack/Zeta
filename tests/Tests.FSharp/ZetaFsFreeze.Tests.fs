@@ -3956,6 +3956,45 @@ let ``reopen still loads leftover known.pins when both slots are missing`` () : 
     }
 
 [<Fact>]
+let ``one Journaled freeze does not persist catalog again at boat success`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/catalog-no-succeed-persist"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy |] |> ignore
+            let pending = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok _ ->
+                let slot0 = ZetaFsPath.combine2 store "known.pins.0"
+                let slot1 = ZetaFsPath.combine2 store "known.pins.1"
+                let g0 = catalogGenOf slot0
+                let g1 = catalogGenOf slot1
+                let highest =
+                    match g0, g1 with
+                    | Some a, Some b -> max a b
+                    | Some a, None -> a
+                    | None, Some b -> b
+                    | None, None -> 0L
+
+                // Per-item persist (1) + applyRetention (2) + noteFreeze (3).
+                // Boat success used to add a fourth write of the same catalog.
+                Assert.Equal(3L, highest)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``freeze-byte meter survives createManual reopen`` () : Task =
     task {
         ensureHasher ()
