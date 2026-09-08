@@ -1,4 +1,6 @@
 """Pure decoder grammar/admission fixtures; no decoder executable or dump access."""
+import gzip
+import hashlib
 import json
 import os
 import tempfile
@@ -101,9 +103,9 @@ class DecodeMethodTests(unittest.TestCase):
         return word, line
 
     def test_mov_comments_bind_to_preceding_instruction_and_register_width(self):
-        for register, value, encoded, comment in [("x0", 1, "200080D2", b"; =0x1\n"),
-                                                   ("w1", -1, "01008012", b"; =0xffffffff\n"),
-                                                   ("x30", -1, "1E008092", b"; =0xffffffffffffffff\n")]:
+        for register, value, encoded, comment in [("x0", 1, "200080D2", b"                                        ; =0x1\n"),
+                                                   ("w1", -1, "01008012", b"                                        ; =0xffffffff\n"),
+                                                   ("x30", -1, "1E008092", b"                                        ; =0xffffffffffffffff\n")]:
             with self.subTest(register=register):
                 word, line = self.mov_word(register, value, encoded)
                 rows = list(decoded_rows(line + comment, b"", 0, [word]))
@@ -116,10 +118,11 @@ class DecodeMethodTests(unittest.TestCase):
 
     def test_orphan_repeated_wrong_non_mov_and_unknown_comments_refuse(self):
         word, line = self.mov_word("x0", 1, "200080D2")
-        comment = b"; =0x1\n"
-        for output in [comment + line, line + comment + comment, line + b"; =0x2\n",
+        comment = b"                                        ; =0x1\n"
+        for output in [comment + line, line + comment + comment, line + b" " * 40 + b"; =0x2\n",
                        line + b"; =1\n", line + b"; anything\n", line + b"\t; =0x1\n",
-                       line + b"; =0x1 trailing\n", line + b"; =0xA\n", line + b"\n" + comment]:
+                       line + b" " * 40 + b"; =0x1 trailing\n", line + b" " * 40 + b"; =0xA\n", line + b"\n" + comment,
+                       line + b"; =0x1\n", line + b" " * 39 + b"; =0x1\n", line + b" " * 41 + b"; =0x1\n"]:
             with self.subTest(output=output), self.assertRaises(ValueError):
                 list(decoded_rows(output, b"", 0, [word]))
         for register in ["w31", "x31", "xzr", "sp"]:
@@ -132,11 +135,11 @@ class DecodeMethodTests(unittest.TestCase):
             list(decoded_rows(self.output().splitlines(keepends=True)[0] + comment, b"", 0, self.words()[:1]))
         word, line = self.mov_word("w1", -1, "01008012")
         with self.assertRaises(ValueError):
-            list(decoded_rows(line + b"; =0xffffffffffffffff\n", b"", 0, [word]))
+            list(decoded_rows(line + b" " * 40 + b"; =0xffffffffffffffff\n", b"", 0, [word]))
 
     def test_comment_lines_do_not_fill_missing_instruction_or_hide_extra_output(self):
         word, line = self.mov_word("x0", 1, "200080D2")
-        comment = b"; =0x1\n"
+        comment = b"                                        ; =0x1\n"
         ret = self.words()[1]
         ret_line = self.output().splitlines(keepends=True)[1]
         valid = line + comment + ret_line
@@ -149,10 +152,49 @@ class DecodeMethodTests(unittest.TestCase):
     def test_prior_attached_comment_survives_later_refusal(self):
         word, line = self.mov_word("x0", 1, "200080D2")
         ret_line = self.output().splitlines(keepends=True)[1].replace(b"0xc0", b"0xc1")
-        rows = decoded_rows(line + b"; =0x1\n" + ret_line, b"", 0, [word, self.words()[1]])
-        self.assertEqual(next(rows)["ImmediateComment"], "; =0x1")
+        comment = b"                                        ; =0x1\n"
+        rows = decoded_rows(line + comment + ret_line, b"", 0, [word, self.words()[1]])
+        self.assertEqual(next(rows)["ImmediateComment"], comment.decode().rstrip("\n"))
         with self.assertRaises(ValueError):
             next(rows)
+
+    def test_exact_retained_failed_attempt_stdout_is_a_complete_parser_fixture(self):
+        base = Path(__file__).resolve().parents[2] / "docs/research/hidden-switch-compiled-validation/2026-09-07/llvm-decode-attempt-2"
+        manifest = json.loads((base / "manifest.json").read_text())
+        records = {row["File"]: row for row in manifest["Records"]}
+
+        def retained(name):
+            record = records[name + ".gz"]
+            stored = (base / record["File"]).read_bytes()
+            self.assertEqual((len(stored), hashlib.sha256(stored).hexdigest().upper()), (record["StoredBytes"], record["StoredSha256"]))
+            raw = gzip.decompress(stored)
+            self.assertEqual((len(raw), hashlib.sha256(raw).hexdigest().upper()), (record["Bytes"], record["Sha256"]))
+            return raw
+
+        stdout = retained("helper.stdout.log")
+        self.assertEqual(hashlib.sha256(stdout).hexdigest().upper(), "B54C1AF8E5FF4B59DE42EFC8FFB60436244E063CF81DD5B208BD20A6BDC872C6")
+        stderr = retained("helper.stderr.log")
+        self.assertEqual(stderr, b"")
+        inputs = [json.loads(retained(name[:-3])) for name in sorted(records) if name.startswith("input-method-")]
+        self.assertEqual(len(inputs), 130)
+        words = [word for method in inputs for word in method["Words"]]
+        self.assertEqual(atomic_input(words), retained("decoder.input"))
+        self.assertEqual(len(words), 8665)
+        decoded = list(decoded_rows(stdout, stderr, 0, words))
+        self.assertEqual(len(decoded), 8665)
+        comments = [row["ImmediateComment"] for row in decoded if row["ImmediateComment"] is not None]
+        self.assertEqual(len(comments), 851)
+        self.assertEqual(comments, [line for line in stdout.decode("ascii").splitlines() if line.lstrip().startswith(";")])
+        first = comments[0].encode("ascii")
+        self.assertEqual(first, b"                                        ; =0x2508")
+        self.assertEqual(decoded[22]["Instruction"], "mov\tx0, #9480")
+        self.assertEqual(decoded[22]["TextLine"], 23)
+        for replacement in [b"; =0x2508", b" " * 39 + b"; =0x2508", b" " * 41 + b"; =0x2508", b"\t; =0x2508"]:
+            with self.subTest(replacement=replacement), self.assertRaises(ValueError):
+                list(decoded_rows(stdout.replace(first, replacement, 1), stderr, 0, words))
+        historical = json.loads(retained("outcome.json"))
+        self.assertFalse(historical["Complete"])
+        self.assertEqual(historical["Failure"]["Detail"], "word 22 has an unsupported standalone comment association")
 
     def test_truncated_word_and_address_overflow_refuse(self):
         for base, offset, raw in [(0x1000, 0, bytes(3)), (0x1000, 1, bytes(4)), (0x1001, 0, bytes(4)),
