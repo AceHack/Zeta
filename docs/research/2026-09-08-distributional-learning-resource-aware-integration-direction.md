@@ -290,3 +290,7 @@ The [fixed small-room protocol](2026-09-08-distributional-learning-small-room-pr
 now records the exact controls, sixteen Zeta observations and failure journal
 before the actual F# room run. These known-answer controls precede a separately
 registered learned-system comparison.
+
+The unchanged-source full-gate retry subsequently passed all 18 checks; both
+attempts remain in the repair record. The formatter's zero exit is separately
+qualified because that tool does not support F# projects.

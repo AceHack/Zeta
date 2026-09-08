@@ -33,3 +33,15 @@ The source and tests, original probes and all command logs are retained
 losslessly. Further validation is appended separately so the failed attempts
 remain visible. This repair is a prerequisite for trustworthy resource tests,
 not evidence that a combined learning system outperforms a baseline.
+
+## Unchanged full-gate retry
+
+The [second validation record](validation-2.json) retains the unchanged-source
+retry at documentation commit `bde72e83c58f8c6317c25cd603881a125ef39c91`.
+All 18 full preflight checks passed, including release build and complete tests.
+No cause for the earlier process crashes is inferred from this recovery.
+
+The separate requested `dotnet format --verify-no-changes` invocation exited
+zero but explicitly reports that F# projects are unsupported. Its complete
+output is retained; it is not represented as an F# formatting pass. The F#
+lint within the full gate did pass.
