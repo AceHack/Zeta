@@ -110,3 +110,12 @@ review found no remaining convention issue; final source review must bind the
 committed note and implementation. The [minimal serialization witness](mixed-message-epoch-implementation/2026-09-08/codec-review-1/README.md)
 preserves the real default-writer mismatch. Original contract/amendment bytes,
 raw-query semantics, numerical roster and controls remain unchanged.
+
+[Independent convention acceptance](2026-09-08-mixed-message-epoch-identity-codec-independent-review.md)
+is signed at `442325f26cc4c86876f226f09ba0189a29cc4097` and binds the exact
+6583-byte note at `02c2ac7249aba31cc8377c1804264c02fff35e47`, SHA256
+`BB623AB96A329A075E8C9BC06953D7284DA62BA10766B0D06479D51A011F98C2`.
+It verifies all eight retained witness members and their equal decoded strings
+but unequal encoded bytes. This supersedes the note's historical pending-review
+status without changing its source binding. It accepts conventions only;
+concrete code, encoder golden tests and actual M4/M5 remain separate gates.

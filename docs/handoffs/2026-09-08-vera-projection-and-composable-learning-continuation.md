@@ -131,3 +131,10 @@ before finishing core, peer or bridge source. Their exact implementation pins
 and actual M4/M5 controls remain outstanding. The first local canonical JSON
 mismatch is preserved; the proposed raw-query64 restriction was a review error
 and was withdrawn in favor of the original training-only raw bound.
+
+The [independent convention review](../research/2026-09-08-mixed-message-epoch-identity-codec-independent-review.md)
+accepts the exact note and original serialization witness at owner commit
+`442325f26cc4c86876f226f09ba0189a29cc4097`. The bridge owner also owns the inert
+mixed_message_epoch_controls.py plan builders; they execute no experiment on
+import. Root retains the first registered execution and assembled source-admission
+responsibility. Development controls are not those registered executions.

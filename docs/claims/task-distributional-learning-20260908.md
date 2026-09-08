@@ -121,8 +121,9 @@ scope one bounded next cycle; earlier source/result identities remain intact.
 - `codex/20260907-c7b2a402` (`predictor_audit`) owns the new
   `src/Research.FSharp/MixedMessageEpochReplay.fsx` and independent core review.
 - `codex/20260908-epoch-bridge-review` (`protocol_review`) owns the new
-  `src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py`, its dedicated
-  Python test and independent peer review.
+  `src/Interp.Python/zeta_interp/mixed_message_epoch_bridge.py`, the inert
+  `src/Interp.Python/zeta_interp/mixed_message_epoch_controls.py` plan builders,
+  the dedicated Python test and independent peer review.
 - Coordinator `codex/20260907-c7b2a401` owns derived build-graph integration,
   source archive/registration, assembled review, first actual integration
   controls and publication. Its independent implementation review covers the
