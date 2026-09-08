@@ -139,6 +139,28 @@ The [coordinator import receipt](mixed-message-epoch-implementation/2026-09-08/r
 retains its actual 16-check quick pass and Bayesian Release build with zero
 warnings/errors. Neither is a complete solution gate or an actual epoch run.
 
+The [initial independent core review](2026-09-08-mixed-message-core-initial-independent-review.md)
+is normally pushed at `81c4c983bfe89d9a4e0306c1996fb1b00b647dad` and
+imported after fresh remote verification. It accepts the inspected learner and
+codec checkpoint boundaries, while retaining three findings against a separately
+identified uncommitted runtime draft: an unsettled task receipt, missing early
+unpublished observation, and unavailable remote work incorrectly reported as
+complete zero. The owner's subsequent repairs require their own source pin,
+actual development evidence and follow-through review. This preliminary review
+does not accept the unfinished runtime or execute the registered controls.
+
+The [withdrawal admission clarification](2026-09-08-mixed-message-withdrawal-admission-clarification.md)
+records a further M7 implementation gap: a TrainingCut hash does not establish
+full ancestry for a new query owner. It proposes conservative refusal of learned
+reuse under a withdrawing cut, with cold-start training separately budgeted.
+Matching core/bridge implementation, actual discriminators and review remain
+pending; inverse-SGD refusal alone cannot close M7.
+
+The [fixed invocation artifact](mixed-message-epoch-implementation/2026-09-08/registered-source/README.md)
+is prepared for M4, then the four actual M5 sessions and separately budgeted
+frozen query. Static checks do not establish execution. Final source/runtime
+identities, custody and assembled admission remain prerequisites.
+
 The [Python bridge checkpoint](2026-09-08-mixed-message-epoch-bridge-implementation.md)
 is normally pushed at source `8e1fe19a074368c3fd48f5f6cb871b1ce5d6b141`,
 with report/custody `051d02c464e8927b868d158eb54d44f380767d22`, imported after
