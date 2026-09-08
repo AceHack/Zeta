@@ -438,10 +438,14 @@ def synthetic_candidate(raw: bytes) -> dict[str, Any]:
                 "Sequence": i,
                 "Stage": stage,
                 "Attempt": 1 if stage == "midpoint" else 0,
-                "PointBits": None,
-                "PhiBits": None,
-                "LowerBits": None,
-                "UpperBits": None,
+                "PointBits": encode_bits(-1 if stage == "left-endpoint" else 0)
+                if stage in ("left-endpoint", "right-endpoint", "midpoint")
+                else None,
+                "PhiBits": encode_bits(-1 if stage == "left-endpoint" else 0)
+                if stage in ("left-endpoint", "right-endpoint", "midpoint")
+                else None,
+                "LowerBits": encode_bits(-1) if stage != "input" else None,
+                "UpperBits": encode_bits(0) if stage != "input" else None,
                 "Failure": None,
             }
             for i, stage in enumerate(stages, 1)
@@ -668,6 +672,11 @@ def test_no_candidate_keeps_original_refusal_without_root_call(
             },
         },
     }
+
+    candidate["Outcome"]["Partial"]["Target"] = ref._input(
+        raw, "unit/independent"
+    ).Snapshot
+    candidate["Trace"][-1]["Failure"] = failure
 
     def forbidden(*args: object, **kwargs: object) -> ref.ReceiptResult:
         pytest.fail("no-candidate invoked root")
@@ -1047,3 +1056,295 @@ def test_normal_root_api_failure_preserved_before_certificate_packaging(
     assert actual_receipt["Counters"]["ReferenceRootCalls"] == 1
     assert actual_receipt["Coordinates"] is None
     assert actual_receipt["Objective"] is None
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "empty",
+        "missing-parameters",
+        "reordered",
+        "duplicate-midpoint",
+        "wrong-attempt",
+        "late-row",
+        "zero-mid-count",
+        "zero-phi-count",
+        "zero-exp-count",
+        "zero-log-count",
+        "wrong-update-count",
+        "missing-point",
+        "missing-phi",
+        "unused-point",
+        "unpaired-bracket",
+        "missing-bracket",
+    ],
+)
+def test_native_candidate_requires_complete_structural_trace(mutation: str) -> None:
+    raw = raw_input()
+    candidate = synthetic_candidate(raw)
+    trace = candidate["Trace"]
+    counters = candidate["Counters"]
+    if mutation == "empty":
+        trace.clear()
+        counters.update(
+            PhiEntries=0,
+            MidpointAttempts=0,
+            BracketUpdates=0,
+            LogEntries=0,
+            ExpEntries=0,
+        )
+    elif mutation == "missing-parameters":
+        del trace[1]
+    elif mutation == "reordered":
+        trace[1], trace[2] = trace[2], trace[1]
+    elif mutation == "duplicate-midpoint":
+        trace.insert(5, dict(trace[4]))
+        counters.update(
+            MidpointAttempts=2, PhiEntries=4, ExpEntries=4, BracketUpdates=1
+        )
+    elif mutation == "wrong-attempt":
+        trace[4]["Attempt"] = 2
+    elif mutation == "late-row":
+        trace.append(dict(trace[0]))
+    elif mutation == "zero-mid-count":
+        counters["MidpointAttempts"] = 0
+    elif mutation == "zero-phi-count":
+        counters["PhiEntries"] = 0
+    elif mutation == "zero-exp-count":
+        counters["ExpEntries"] = 0
+    elif mutation == "zero-log-count":
+        counters["LogEntries"] = 0
+    elif mutation == "wrong-update-count":
+        counters["BracketUpdates"] = 1
+    elif mutation == "missing-point":
+        trace[2]["PointBits"] = None
+    elif mutation == "missing-phi":
+        trace[4]["PhiBits"] = None
+    elif mutation == "unused-point":
+        trace[1]["PointBits"] = encode_bits(0)
+    elif mutation == "unpaired-bracket":
+        trace[3]["LowerBits"] = None
+    else:
+        trace[3]["LowerBits"] = trace[3]["UpperBits"] = None
+    for index, row in enumerate(trace, 1):
+        row["Sequence"] = index
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"]["Kind"] == "refused"
+    assert actual["Outcome"]["Failure"]["Code"] == "CandidateShape"
+    assert actual["Counters"]["ReferenceRootCalls"] == 0
+
+
+def synthetic_refusal(
+    raw: bytes, stage: str = "objective", code: str = "ObjectiveRefusal"
+) -> dict[str, Any]:
+    candidate = synthetic_candidate(raw)
+    trace = candidate["Trace"]
+    stop = next(i for i, row in enumerate(trace) if row["Stage"] == stage)
+    candidate["Trace"] = trace[: stop + 1]
+    failure = {
+        "Code": code,
+        "Stage": stage,
+        "Field": "owned",
+        "Message": "synthetic actual-prefix fixture",
+        "OriginalKernelFailure": None,
+    }
+    candidate["Trace"][-1]["Failure"] = failure
+    candidate["Outcome"] = {
+        "Kind": "refused",
+        "Failure": failure,
+        "Partial": {
+            "Target": ref._input(raw, "unit/independent").Snapshot,
+            "Parameters": None,
+            "Bracket": None,
+            "Candidate": None,
+            "OriginalObjective": None,
+        },
+    }
+    return candidate
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "empty",
+        "failure-missing",
+        "failure-substitution",
+        "earlier-failure",
+        "failure-stage",
+        "missing-stage",
+        "extra-row",
+        "wrong-phi",
+        "wrong-objective",
+    ],
+)
+def test_native_refusal_requires_real_ending_prefix(mutation: str) -> None:
+    raw = raw_input()
+    candidate = synthetic_refusal(raw)
+    trace = candidate["Trace"]
+    if mutation == "empty":
+        trace.clear()
+    elif mutation == "failure-missing":
+        trace[-1]["Failure"] = None
+    elif mutation == "failure-substitution":
+        trace[-1]["Failure"] = {
+            **trace[-1]["Failure"],
+            "Message": "different observed failure",
+        }
+    elif mutation == "earlier-failure":
+        trace[1]["Failure"] = dict(trace[-1]["Failure"])
+    elif mutation == "failure-stage":
+        failure = {**candidate["Outcome"]["Failure"], "Stage": "parameters"}
+        trace[-1]["Failure"] = failure
+        candidate["Outcome"]["Failure"] = failure
+    elif mutation == "missing-stage":
+        del trace[2]
+    elif mutation == "extra-row":
+        trace.append({**trace[0], "Failure": candidate["Outcome"]["Failure"]})
+    elif mutation == "wrong-phi":
+        candidate["Counters"]["PhiEntries"] = 0
+    else:
+        candidate["Counters"]["ObjectiveEntries"] = 0
+    for index, row in enumerate(trace, 1):
+        row["Sequence"] = index
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"]["Kind"] == "refused"
+    assert actual["Outcome"]["Failure"]["Code"] == "CandidateShape"
+    assert actual["Counters"]["ReferenceRootCalls"] == 0
+
+
+@pytest.mark.parametrize(
+    "kind",
+    [
+        "input",
+        "domain",
+        "left",
+        "right",
+        "mid-before",
+        "resolution",
+        "mid-phi",
+        "mid-after",
+        "budget",
+        "reconstruction",
+        "objective",
+    ],
+)
+def test_source_confirmed_normal_refusal_prefixes_are_admitted(kind: str) -> None:
+    # Abstract source-ledger fixtures; the claimed floating failure is not replayed.
+    raw = raw_input(profile="native-one" if kind == "budget" else "default")
+    stage = {
+        "input": "input",
+        "domain": "parameters",
+        "left": "left-endpoint",
+        "right": "right-endpoint",
+        "reconstruction": "reconstruction",
+        "objective": "objective",
+    }.get(kind, "midpoint")
+    code = {
+        "input": "Wire",
+        "domain": "Domain",
+        "right": "NoRoundedBracket",
+        "resolution": "ResolutionLimit",
+        "budget": "IterationLimit",
+        "objective": "ObjectiveRefusal",
+    }.get(kind, "NumericalRange")
+    candidate = synthetic_refusal(raw, stage, code)
+    counts = candidate["Counters"]
+    counts.update(ObjectiveEntries=int(kind == "objective"))
+    last = candidate["Trace"][-1]
+    if kind == "input":
+        for name in counts:
+            counts[name] = 0
+        candidate["Outcome"]["Partial"]["Target"] = None
+    elif kind == "domain":
+        counts.update(
+            LogEntries=0,
+            PhiEntries=0,
+            ExpEntries=0,
+            MidpointAttempts=0,
+            BracketUpdates=0,
+        )
+        last["LowerBits"] = last["UpperBits"] = None
+    elif kind in ("left", "right"):
+        counts.update(
+            PhiEntries=1 if kind == "left" else 2,
+            ExpEntries=1 if kind == "left" else 2,
+            MidpointAttempts=0,
+            BracketUpdates=0,
+        )
+        if kind == "left":
+            last["PhiBits"] = None
+    elif kind in ("mid-before", "resolution"):
+        counts.update(PhiEntries=2, ExpEntries=2, BracketUpdates=0)
+        last["PhiBits"] = None
+        if kind == "mid-before":
+            last["PointBits"] = None
+    elif kind == "mid-phi":
+        last["PhiBits"] = None
+    elif kind in ("mid-after", "budget"):
+        counts["BracketUpdates"] = 1
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"] == {
+        "Kind": "no-candidate",
+        "NativeFailure": candidate["Outcome"]["Failure"],
+    }
+    assert actual["Counters"]["ReferenceRootCalls"] == 0
+
+
+@pytest.mark.parametrize("kind", ["two-midpoints", "rounded-width"])
+def test_complete_candidate_counter_alternatives(kind: str) -> None:
+    raw = raw_input()
+    candidate = synthetic_candidate(raw)
+    if kind == "two-midpoints":
+        second = {**candidate["Trace"][4], "Attempt": 2}
+        candidate["Trace"].insert(5, second)
+        candidate["Counters"].update(
+            MidpointAttempts=2, PhiEntries=4, ExpEntries=4, BracketUpdates=1
+        )
+    else:
+        candidate["Outcome"]["Value"]["Stop"] = "rounded-width"
+        candidate["Counters"]["BracketUpdates"] = 1
+    for index, row in enumerate(candidate["Trace"], 1):
+        row["Sequence"] = index
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"]["Kind"] == "certified"
+    assert actual["Outcome"]["NativeTrajectoryCertified"] is False
+
+
+def test_unexpected_native_prefix_does_not_invent_primitive_completion() -> None:
+    raw = raw_input()
+    candidate = synthetic_refusal(raw, "left-endpoint", "Unexpected")
+    candidate["Counters"].update(
+        PhiEntries=0,
+        ExpEntries=0,
+        MidpointAttempts=0,
+        BracketUpdates=0,
+        ObjectiveEntries=0,
+    )
+    candidate["Trace"][-1]["PointBits"] = candidate["Trace"][-1]["PhiBits"] = None
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"]["Kind"] == "no-candidate"
+    assert actual["Outcome"]["NativeFailure"]["Code"] == "Unexpected"
+    assert actual["Counters"]["ReferenceRootCalls"] == 0
+
+
+@pytest.mark.parametrize(
+    "code", ["NoRoundedBracket", "IterationLimit", "ResolutionLimit"]
+)
+def test_native_stage_specific_refusal_cannot_move_to_objective(code: str) -> None:
+    raw = raw_input()
+    candidate = synthetic_refusal(raw, "objective", code)
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"]["Failure"]["Code"] == "CandidateShape"
+    assert actual["Counters"]["ReferenceRootCalls"] == 0
+
+
+def test_native_pre_phi_arithmetic_failure_has_no_completed_point() -> None:
+    raw = raw_input()
+    candidate = synthetic_refusal(raw, "midpoint", "NumericalRange")
+    candidate["Counters"].update(
+        PhiEntries=2, ExpEntries=2, BracketUpdates=0, ObjectiveEntries=0
+    )
+    candidate["Trace"][-1]["PhiBits"] = None
+    actual = receipt(certify(raw, candidate))
+    assert actual["Outcome"]["Failure"]["Code"] == "CandidateShape"
+    assert actual["Counters"]["ReferenceRootCalls"] == 0

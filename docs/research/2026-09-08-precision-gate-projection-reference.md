@@ -248,3 +248,51 @@ A further independent finding is pending: native trace admission must validate
 complete structural prefixes/cardinality and their counter associations, not
 only the types of rows present. Its exact failure-prefix grammar is being
 coordinated with the native owner. No whole source acceptance is claimed yet.
+
+## Structural native trace admission plan
+
+Source-only DTO coordination with the native owner fixed the candidate order:
+input, parameters, left endpoint, right endpoint, consecutive midpoint rows,
+reconstruction and objective. Starts=1, three solver logarithms, one exponential
+per phi entry, phi entries=2+midpoints and objective entry=1. Bracket updates
+are N-1 for rounded-zero and N for rounded-width. Normal refusal evidence ends
+an allowed prefix with its exact failure; actual pre-phi, failed-phi and
+post-update prefixes have separately declared counter associations. Input and
+parameter-domain refusals retain zero pre-numeric/log work respectively.
+
+The reviewer also required actual-used versus unused trace fields: successful
+endpoint/midpoint point and phi values, paired available bracket fields, and
+null point/phi in other stages. The old synthetic candidate's all-null point
+and phi placeholders were insufficient. Its corrected fixture now supplies
+explicit finite diagnostic fields. These values remain Python-built structural
+fixtures; no phi arithmetic, trajectory or native execution is claimed.
+
+Before the structural repair, all 25 missing/reordered/duplicate/count/used-field
+controls failed. Separate positive fixtures cover eleven source-confirmed
+normal failure prefixes, both candidate count alternatives, and an abnormal
+Unexpected prefix. Unexpected retains bounded available observations and never
+implies completed primitive work or a normal expected-refusal pass. The final
+code checks shape, chronology and counters; it does not replay binary64 phi,
+prove a native bracket contains the root, or establish physical invocation.
+
+The completed structural correction additionally binds NoRoundedBracket to
+right-endpoint and IterationLimit/ResolutionLimit to midpoint. A pre-phi
+midpoint arithmetic refusal has neither a completed point nor phi; the
+separate ResolutionLimit path retains its computed point. Four added controls
+first exposed the missing checks and then passed after repair. These extend
+the existing review finding using the native owner's source-only explanation.
+
+The first full structural pass had 129 passing tests and four Optional-value
+typing diagnostics. Explicit internal union narrowing resolves those diagnostics.
+The final corrected source passes 133 dedicated tests in 2.70 seconds, strict
+mypy, Ruff and formatting. The [trace correction custody](precision-gate-projection-reference-validation/2026-09-08/trace/README.md)
+retains all 29 original negative failures, their corrected focused results and
+both full check attempts. These are source fixtures, not native conformance.
+
+The independent reviewer accepted the root component and its four repairs in
+8fb03a334159852dce30681ca1531b40393df737, while explicitly retaining both
+certificate findings. The first certificate repair is de7237aeb, preserving
+the actual caller/API Failure; this structural correction closes the second
+in source. Exact independent acceptance of the combined certificate remains
+pending. No final registered case, native launch or experimental comparison
+has been executed in this lane.
