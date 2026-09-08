@@ -1,0 +1,25 @@
+{
+  "Source": {
+    "Bytes": 31338,
+    "Sha256": "3e5b487220d5f9a71a32cdae5c26b9e40abea514e21d05a64fa6e3f442b009cb"
+  },
+  "Analysis": {
+    "Bytes": 6671,
+    "Sha256": "ffd4c95b579d5c4f8f535c640ad878eea4123b6680d520b4f840a8574cc45d77"
+  },
+  "FirstAttachment": {
+    "Bytes": 28282,
+    "Sha256": "d5bb0ce914152bc439fbc683f59522443b5904b2e685a24973603cd63865c148"
+  },
+  "PrefixedAttachment": {
+    "Bytes": 28287,
+    "Sha256": "c48054e83727c1b717a8b4b703a1ecf830a4b47fe9152808294887b33aa956eb"
+  },
+  "PreservedPayload": {
+    "Bytes": 28287,
+    "Sha256": "c48054e83727c1b717a8b4b703a1ecf830a4b47fe9152808294887b33aa956eb"
+  },
+  "ExactPayloadEqualsPrefixedAttachment": true,
+  "PrefixedEqualsFiveBytePrefixPlusFirst": true,
+  "Scope": "Byte bookkeeping only. Source and analysis uncommitted observed drafts; reception chronology not independently authenticated."
+}

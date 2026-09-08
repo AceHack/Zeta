@@ -1,0 +1,8 @@
+{
+  "Command": [
+    "/Users/acehack/.local/share/mise/installs/python/3.14.6/bin/python3",
+    "docs/research/magnet-history-generator-review/2026-09-08/coordinator_audit.py"
+  ],
+  "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906",
+  "Scope": "Exact document/attachment byte checks only"
+}

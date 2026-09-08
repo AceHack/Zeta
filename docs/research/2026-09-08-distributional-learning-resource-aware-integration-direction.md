@@ -368,3 +368,13 @@ clarification. No runtime selection policy is changed by this research note.
 The default is a moral baseline, not an invented scalar rank or a preferred
 universal oracle. Existing fabrication/cartel detection remains part of the
 full threat model, and irreducible resources retain their separate units.
+
+## Retained history and generators under repetition
+
+Aaron's [magnet-inspired history/generator direction](2026-09-08-history-generators-and-hidden-evolution-under-repetition.md)
+preserves his specific mapping: retained history supports generators whose
+outcomes can become new history. It distinguishes repeated visible output from
+unchanged internal state, names caller-owned persistence in the current algebra,
+and proposes chronological comparisons before any learning-performance claim.
+The supplied transcript is retained verbatim in the linked IP-questionable record.
+
