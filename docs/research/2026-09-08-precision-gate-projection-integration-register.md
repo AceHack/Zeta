@@ -87,7 +87,8 @@ At 096b09126b1f489fc7720b69780263ef01485445 the full preflight passed all
 seconds, with its F#-unsupported limitation. All 47 recorded source paths and
 the checkout head/status stayed unchanged throughout both commands.
 The separate ordinary-import Python run passed 340 component tests in 7.53
-seconds and strict mypy/format checks over all 14 projection source/test files.
+seconds, with the recorded mypy and format checks over all 14 projection
+source/test files.
 Its repository-root Ruff check found one import-separator blank line in the
 driver test. That one-line formatting correction follows this recorded source
 cut and has a separate exact before/after identity; no production source changed.
