@@ -1,0 +1,717 @@
+{
+  "SourceCommit": "e3b87af8f33f09476e939ebbc4f78360c3aa7d1d",
+  "EvidenceCommit": "763578f7b91bdd2b720b6c7f16da5e12d2597c32",
+  "HistoricalSourceCommit": "bf2da44b94e770d21add73ce53dacb8fb34259bf",
+  "Manifest": {
+    "Bytes": 9122,
+    "Sha256": "39d5b96f81a60227c998d6254a05a62125ad074b169dba4e18c3aa2d199ecd7b"
+  },
+  "Records": 16,
+  "RawBytes": 209118,
+  "StoredBytes": 47336,
+  "Module": {
+    "Bytes": 36804,
+    "Sha256": "05f0dd3d50011698a198d68e2ca5aa0741855f79c5abc97d235700fbabde465e"
+  },
+  "Tests": {
+    "Bytes": 20227,
+    "Sha256": "a30c59c6d35878fc57cc0c0ae3bd563bada13d2bd035ee42ac84ceb7fa773857"
+  },
+  "OnlyStringFieldChanged": true,
+  "ReplayUnchanged": {
+    "Bytes": 12723,
+    "Sha256": "c1174406cc4e7d3164714c536207ad2bd72f085a38a3a816c8bc1b14ade917b2"
+  },
+  "Observations": [
+    {
+      "Number": 1,
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "test",
+          "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+          "-c",
+          "Release",
+          "--no-restore",
+          "--filter",
+          "FullyQualifiedName~escaped unpaired surrogate",
+          "--logger",
+          "trx;LogFileName=surrogate.trx",
+          "--results-directory",
+          "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-native-surrogate-1"
+        ],
+        "StartedAtUtc": "2026-09-08T06:52:10.194592+00:00",
+        "Sources": [
+          {
+            "Path": "src/Bayesian/PrecisionGateProjection.fs",
+            "Bytes": 36582,
+            "Sha256": "288e0348edc4babeadb993ba1b80c1a45b6d426bab80e14c5e066165d5730d0d"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+            "Bytes": 18649,
+            "Sha256": "f4b1edc4d661aa12d668dbae542fb8159b35a3c5ebacc9da10f43de7d8e8a32a"
+          }
+        ],
+        "Scope": "one nonnumeric malformed-wire observation, no root arithmetic"
+      },
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T06:52:41.063383+00:00"
+      },
+      "TrxCounters": {
+        "total": "1",
+        "executed": "1",
+        "passed": "0",
+        "failed": "1",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "TrxResults": [
+        {
+          "executionId": "5833ba61-b065-4b5c-be1c-f0e5ef0aee59",
+          "testId": "a28cf01d-0b80-5421-7e24-6ae48cce7266",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.escaped unpaired surrogate is a wire refusal before numeric entry",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0841786",
+          "startTime": "2026-09-08T02:52:40.8824760-04:00",
+          "endTime": "2026-09-08T02:52:40.9766800-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "5833ba61-b065-4b5c-be1c-f0e5ef0aee59"
+        }
+      ],
+      "FailureMessages": [
+        "Actual nonnumeric receipt: { Schema = \"zeta.precision-projection.native.v1\"\n  CaseId = \"fixture\"\n  InputSha256 =\n   \"604491AC5AF9D7BA8077FAD81C4D8E515505FC34AEF0FA652B629DA213F22ABA\"\n  Bindings =\n   map\n     [(\"ProtocolSha256\",\n       \"537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E\");\n      (\"docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md\",\n       \"BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8\");\n      (\"docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md\",\n       \"67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E\")]\n  Outcome =\n   Refused ({ Code = \"Unexpected\"\n              Stage = \"input\"\n              Field = None\n              Message = \"CannotReadIncompleteUTF16\"\n              OriginalKernelFailure = None }, { Target = None\n                                                Parameters = None\n                                                Bracket = None\n                                                Candidate = None\n                                                OriginalObjective = None })\n  Counters = { Starts = 0\n               PhiEntries = 0\n               MidpointAttempts = 0\n               BracketUpdates = 0\n               LogEntries = 0\n               ExpEntries = 0\n               ObjectiveEntries = 0 }\n  Trace = [|{ Sequence = 1\n              Stage = \"input\"\n              Attempt = 0\n              PointBits = None\n              PhiBits = None\n              LowerBits = None\n              UpperBits = None\n              Failure = Some { Code = \"Unexpected\"\n                               Stage = \"input\"\n                               Field = None\n                               Message = \"CannotReadIncompleteUTF16\"\n                               OriginalKernelFailure = None } }|] }"
+      ],
+      "Stdout": {
+        "Bytes": 3889,
+        "Sha256": "9f62b56153a529ced230bd72d360ccb838b04b205c9896281cb20c98eca0f55c"
+      },
+      "Stderr": {
+        "Bytes": 150,
+        "Sha256": "de948499cbe135c8553020dec1a24c06d2d7cf7e5053c28287a9191c5d7dc2df"
+      }
+    },
+    {
+      "Number": 2,
+      "Invocation": {
+        "Command": [
+          "dotnet",
+          "test",
+          "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+          "-c",
+          "Release",
+          "--no-restore",
+          "--filter",
+          "FullyQualifiedName~PrecisionGateProjectionTests",
+          "--logger",
+          "trx;LogFileName=projection.trx",
+          "--results-directory",
+          "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-native-surrogate-2"
+        ],
+        "StartedAtUtc": "2026-09-08T06:54:50.708151+00:00",
+        "Sources": [
+          {
+            "Path": "src/Bayesian/PrecisionGateProjection.fs",
+            "Bytes": 36804,
+            "Sha256": "05f0dd3d50011698a198d68e2ca5aa0741855f79c5abc97d235700fbabde465e"
+          },
+          {
+            "Path": "tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs",
+            "Bytes": 20227,
+            "Sha256": "a30c59c6d35878fc57cc0c0ae3bd563bada13d2bd035ee42ac84ceb7fa773857"
+          }
+        ],
+        "Scope": "focused unit fixtures, no final roster"
+      },
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T06:55:01.201075+00:00"
+      },
+      "TrxCounters": {
+        "total": "41",
+        "executed": "41",
+        "passed": "41",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "TrxResults": [
+        {
+          "executionId": "3b9bfea9-daca-4bfd-8769-7da5f66effd0",
+          "testId": "de4e05a4-679a-1ea4-3332-2a91255b8dd6",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.nonzero decimal rendered signed zero retains exact conversion delta",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0003352",
+          "startTime": "2026-09-08T02:55:01.1272120-04:00",
+          "endTime": "2026-09-08T02:55:01.1275590-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "3b9bfea9-daca-4bfd-8769-7da5f66effd0"
+        },
+        {
+          "executionId": "e8442e58-fb47-4844-b8b0-ef9c05760030",
+          "testId": "1f9a07d9-4015-057e-d5b6-6b23f76f5f97",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"+1\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000724",
+          "startTime": "2026-09-08T02:55:01.0505650-04:00",
+          "endTime": "2026-09-08T02:55:01.0506480-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "e8442e58-fb47-4844-b8b0-ef9c05760030"
+        },
+        {
+          "executionId": "5e71910e-7d14-451c-aa64-2915b8e0f1e6",
+          "testId": "1f7f9864-d64e-d6c6-0248-adc732ccdd19",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.duplicate escaped keys malformed UTF8 and wrong exact fields are wire refusals",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0005025",
+          "startTime": "2026-09-08T02:55:01.0843090-04:00",
+          "endTime": "2026-09-08T02:55:01.0848220-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "5e71910e-7d14-451c-aa64-2915b8e0f1e6"
+        },
+        {
+          "executionId": "56dae796-1aef-4c02-87b2-5174eb2494d9",
+          "testId": "c1ea777f-a032-7b1f-c677-e4ad3d6b56dc",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.arithmetic exponential underflow still refuses with endpoint prefix",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0002761",
+          "startTime": "2026-09-08T02:55:01.0756280-04:00",
+          "endTime": "2026-09-08T02:55:01.0759200-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "56dae796-1aef-4c02-87b2-5174eb2494d9"
+        },
+        {
+          "executionId": "31402fcd-af25-49b2-9149-84515f0a4a7e",
+          "testId": "6cd6c19c-8a35-2ca8-d2c7-91f1b88bda87",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.actual numerical refusal publishes a complete registered receipt with separate command success",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0151332",
+          "startTime": "2026-09-08T02:55:01.1098760-04:00",
+          "endTime": "2026-09-08T02:55:01.1250220-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "31402fcd-af25-49b2-9149-84515f0a4a7e"
+        },
+        {
+          "executionId": "70a4bcbe-be77-4c70-a29c-cbf31c625bdf",
+          "testId": "1b8142d5-2d0d-eee6-9a3b-8d17dac91478",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.domain refusal preserves rendered target before any root arithmetic(t: \"1\", c: \"-1\", field: \"C\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000475",
+          "startTime": "2026-09-08T02:55:01.0860870-04:00",
+          "endTime": "2026-09-08T02:55:01.0861460-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "70a4bcbe-be77-4c70-a29c-cbf31c625bdf"
+        },
+        {
+          "executionId": "d8f131d4-06ef-45a7-bc85-741df51de7b3",
+          "testId": "7b1bf94f-12a8-e9a1-62e7-7a0f9b9be61b",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"1\\n\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000714",
+          "startTime": "2026-09-08T02:55:01.0504000-04:00",
+          "endTime": "2026-09-08T02:55:01.0504860-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "d8f131d4-06ef-45a7-bc85-741df51de7b3"
+        },
+        {
+          "executionId": "0dcb7613-5c24-4826-8ec3-859b737fde4f",
+          "testId": "052bb7b9-479f-ee7e-0500-823b23a2b8ab",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.exclusive existing output refuses before any input or numeric call",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0073442",
+          "startTime": "2026-09-08T02:55:01.0767920-04:00",
+          "endTime": "2026-09-08T02:55:01.0841530-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "0dcb7613-5c24-4826-8ec3-859b737fde4f"
+        },
+        {
+          "executionId": "bacee45a-1002-4ff4-b9fd-835daf467e17",
+          "testId": "426b7abd-e8c4-f0c3-bd3a-53e08978de64",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"1.\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000461",
+          "startTime": "2026-09-08T02:55:01.0507320-04:00",
+          "endTime": "2026-09-08T02:55:01.0507900-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "bacee45a-1002-4ff4-b9fd-835daf467e17"
+        },
+        {
+          "executionId": "63c0f7bf-b850-4bbe-aadf-e3c860982439",
+          "testId": "1fd9e056-e65a-9874-ef06-8f2f29a3dcc6",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.signed exponent and bounded extreme exponents have declared admission",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0009741",
+          "startTime": "2026-09-08T02:55:01.0512910-04:00",
+          "endTime": "2026-09-08T02:55:01.0522780-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "63c0f7bf-b850-4bbe-aadf-e3c860982439"
+        },
+        {
+          "executionId": "e5a06202-6243-4e3e-a403-3dfb48d89020",
+          "testId": "1a11a9e3-752d-9a89-bb67-7eae4cbc47bc",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.oversized caller binding file is rejected before parsing and numeric entry",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0012949",
+          "startTime": "2026-09-08T02:55:01.1079870-04:00",
+          "endTime": "2026-09-08T02:55:01.1092930-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "e5a06202-6243-4e3e-a403-3dfb48d89020"
+        },
+        {
+          "executionId": "d9e8e148-c8f8-45b3-9c3d-d5ce1e8db2b7",
+          "testId": "a28cf01d-0b80-5421-7e24-6ae48cce7266",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.escaped unpaired surrogate is a wire refusal before numeric entry",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0889444",
+          "startTime": "2026-09-08T02:55:00.9326280-04:00",
+          "endTime": "2026-09-08T02:55:01.0250430-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "d9e8e148-c8f8-45b3-9c3d-d5ce1e8db2b7"
+        },
+        {
+          "executionId": "06f60639-96a6-446b-8833-0163fb9944d5",
+          "testId": "59ea1dc2-9bdd-1879-49e9-5016520dc6f1",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.deferred escaped string refusals keep the exact field and zero numeric entries(field: \"Schema\", originalValue: \"zeta.precision-projection.input.v1\", escaped: \"\\\\ud800\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000423",
+          "startTime": "2026-09-08T02:55:01.0887010-04:00",
+          "endTime": "2026-09-08T02:55:01.0887540-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "06f60639-96a6-446b-8833-0163fb9944d5"
+        },
+        {
+          "executionId": "708d6d4f-a239-4d14-811d-cdc73655fe1f",
+          "testId": "a2f93899-b406-554f-1a73-0853774c9583",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.independent dyadic stationary centers discriminate signs and halves(t: \"1\", u: \"0\", k: \"0.75\", c: \"1\", mean: -0.25, variance: 0.5)",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0001215",
+          "startTime": "2026-09-08T02:55:01.1052210-04:00",
+          "endTime": "2026-09-08T02:55:01.1053540-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "708d6d4f-a239-4d14-811d-cdc73655fe1f"
+        },
+        {
+          "executionId": "ad922157-04a5-4f05-8e17-f7f01b8f9029",
+          "testId": "7d6946bc-38bc-237e-680a-6436fa59fbb5",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"Infinity\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000463",
+          "startTime": "2026-09-08T02:55:01.0508690-04:00",
+          "endTime": "2026-09-08T02:55:01.0509300-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "ad922157-04a5-4f05-8e17-f7f01b8f9029"
+        },
+        {
+          "executionId": "224da153-4ece-46f3-99ff-6fdfc061e6da",
+          "testId": "78e475e1-f71d-fe26-811a-465f2ccb5ef6",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.deferred escaped string refusals keep the exact field and zero numeric entries(field: \"U\", originalValue: \"0\", escaped: \"\\\\udc00\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000507",
+          "startTime": "2026-09-08T02:55:01.0889630-04:00",
+          "endTime": "2026-09-08T02:55:01.0890230-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "224da153-4ece-46f3-99ff-6fdfc061e6da"
+        },
+        {
+          "executionId": "3ff52d8e-2b1b-4646-96bd-6544e5edd35d",
+          "testId": "aa041a73-bac7-8281-705e-64ca9e0f6b63",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.deferred escaped string refusals keep the exact field and zero numeric entries(field: \"T\", originalValue: \"1\", escaped: \"\\\\ud800\\\\ud800\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000427",
+          "startTime": "2026-09-08T02:55:01.0888320-04:00",
+          "endTime": "2026-09-08T02:55:01.0888870-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "3ff52d8e-2b1b-4646-96bd-6544e5edd35d"
+        },
+        {
+          "executionId": "7dbfce4c-3f6d-4a2b-b2ad-47fd06275cea",
+          "testId": "de4562b4-8f2a-c37b-93bd-fc0aa050095f",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.receipt encoding keeps exact refused nulls and actual trace failure",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0018907",
+          "startTime": "2026-09-08T02:55:01.1251680-04:00",
+          "endTime": "2026-09-08T02:55:01.1270710-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "7dbfce4c-3f6d-4a2b-b2ad-47fd06275cea"
+        },
+        {
+          "executionId": "a15ae043-6d9b-44d7-af7f-f27f5ab4d95d",
+          "testId": "0dc5e7d6-06cb-3132-f85c-8d0bec14c50c",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.actual original objective refusal keeps reconstruction and original error",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0007828",
+          "startTime": "2026-09-08T02:55:01.0862580-04:00",
+          "endTime": "2026-09-08T02:55:01.0870510-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "a15ae043-6d9b-44d7-af7f-f27f5ab4d95d"
+        },
+        {
+          "executionId": "859d13a1-4fc2-40d4-81e3-2fc06d64ed2a",
+          "testId": "52a2213a-1cdb-03a4-67b3-3153960a5cd0",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.wrong independent metadata never becomes its own expectation",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0003444",
+          "startTime": "2026-09-08T02:55:01.0849530-04:00",
+          "endTime": "2026-09-08T02:55:01.0853080-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "859d13a1-4fc2-40d4-81e3-2fc06d64ed2a"
+        },
+        {
+          "executionId": "80c73da8-b67d-4103-b4f9-a8c9d8bcf013",
+          "testId": "6188abee-a046-9a3d-0c07-f84a8768efea",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.binding read failure preserves already observed input hash and empty owned output",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0018329",
+          "startTime": "2026-09-08T02:55:01.1054750-04:00",
+          "endTime": "2026-09-08T02:55:01.1073180-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "80c73da8-b67d-4103-b4f9-a8c9d8bcf013"
+        },
+        {
+          "executionId": "45965a4b-3b66-4e70-8c26-194d3c6582c5",
+          "testId": "eb3e78aa-7b31-beba-6450-abe6d8182161",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.subnormal target range failure keeps successful parameter prefix",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0002283",
+          "startTime": "2026-09-08T02:55:01.1281000-04:00",
+          "endTime": "2026-09-08T02:55:01.1283380-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "45965a4b-3b66-4e70-8c26-194d3c6582c5"
+        },
+        {
+          "executionId": "48538789-a9e0-47c2-9110-2d1ded5f52a6",
+          "testId": "1fe28cda-4fed-c963-4d68-1e206eb3cf44",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \".5\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0001202",
+          "startTime": "2026-09-08T02:55:01.0498550-04:00",
+          "endTime": "2026-09-08T02:55:01.0499870-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "48538789-a9e0-47c2-9110-2d1ded5f52a6"
+        },
+        {
+          "executionId": "f4f05dfe-2671-4f87-89e4-9cbdac5077cd",
+          "testId": "24111da4-1995-8cf1-9b2f-a651fff73ebf",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.one midpoint retains updated bracket and actually entered counts",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0206053",
+          "startTime": "2026-09-08T02:55:01.0275880-04:00",
+          "endTime": "2026-09-08T02:55:01.0482330-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "f4f05dfe-2671-4f87-89e4-9cbdac5077cd"
+        },
+        {
+          "executionId": "fd5c8352-a3e3-4459-a21b-87f366807208",
+          "testId": "8fa5d708-c4d7-b841-a6b3-7940b3b48a47",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.deferred escaped string refusals keep the exact field and zero numeric entries(field: \"Id\", originalValue: \"fixture\", escaped: \"\\\\udc00\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0012039",
+          "startTime": "2026-09-08T02:55:01.0871990-04:00",
+          "endTime": "2026-09-08T02:55:01.0884130-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "fd5c8352-a3e3-4459-a21b-87f366807208"
+        },
+        {
+          "executionId": "b78dd4ce-4fda-4e69-92bb-5e1d7bf6125f",
+          "testId": "f6db9d18-7788-89f2-29b0-8674ea471e11",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.encoding size refusal leaves complete candidate objective available to caller",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0229792",
+          "startTime": "2026-09-08T02:55:01.0524050-04:00",
+          "endTime": "2026-09-08T02:55:01.0754110-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "b78dd4ce-4fda-4e69-92bb-5e1d7bf6125f"
+        },
+        {
+          "executionId": "cd97d56e-1cee-47ce-a7c1-a9d2f496e9fe",
+          "testId": "d5f5685f-a536-d355-e587-e4eb5f03211c",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.deferred escaped string refusals keep the exact field and zero numeric entries(field: \"Profile\", originalValue: \"default\", escaped: \"\\\\ud800x\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0001018",
+          "startTime": "2026-09-08T02:55:01.0885110-04:00",
+          "endTime": "2026-09-08T02:55:01.0886240-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "cd97d56e-1cee-47ce-a7c1-a9d2f496e9fe"
+        },
+        {
+          "executionId": "a4fbd0f8-8b16-415c-a9ce-efca6c0fe65f",
+          "testId": "1b7a3757-08da-cdf1-d4e3-818a5c37ca27",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.actual returned receipt survives flush and close refusals with first failure primary",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0149788",
+          "startTime": "2026-09-08T02:55:01.0891320-04:00",
+          "endTime": "2026-09-08T02:55:01.1041330-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "a4fbd0f8-8b16-415c-a9ce-efca6c0fe65f"
+        },
+        {
+          "executionId": "d641154c-9015-4cc8-b5a0-61ecac4daced",
+          "testId": "4518111e-7821-056f-232c-d7be8152a7c4",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.independent dyadic stationary centers discriminate signs and halves(t: \"0.03125\", u: \"0\", k: \"-0.21875\", c: \"0.03125\", mean: -8, variance: 16)",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0002880",
+          "startTime": "2026-09-08T02:55:01.1048330-04:00",
+          "endTime": "2026-09-08T02:55:01.1051320-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "d641154c-9015-4cc8-b5a0-61ecac4daced"
+        },
+        {
+          "executionId": "a2ab2c5b-c082-43ab-a427-1f8e1f9923dc",
+          "testId": "3735b149-dffe-0fb4-fee7-3fe1d14f3409",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.exact decimal drift and negative zero remain distinct observations",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0005709",
+          "startTime": "2026-09-08T02:55:01.0760730-04:00",
+          "endTime": "2026-09-08T02:55:01.0766560-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "a2ab2c5b-c082-43ab-a427-1f8e1f9923dc"
+        },
+        {
+          "executionId": "d741f729-41b7-45e8-a341-3a1bbe273e0c",
+          "testId": "0a81ecf2-3a50-d8be-b8ab-78b3e012f5f4",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"1e401\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0009686",
+          "startTime": "2026-09-08T02:55:01.0487650-04:00",
+          "endTime": "2026-09-08T02:55:01.0497470-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "d741f729-41b7-45e8-a341-3a1bbe273e0c"
+        },
+        {
+          "executionId": "ea269ce1-e5a0-465f-9d5d-fe3520f9e01b",
+          "testId": "15349018-0792-01ee-f74d-7724bf67d51f",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"NaN\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000340",
+          "startTime": "2026-09-08T02:55:01.0510100-04:00",
+          "endTime": "2026-09-08T02:55:01.0510560-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "ea269ce1-e5a0-465f-9d5d-fe3520f9e01b"
+        },
+        {
+          "executionId": "994b5fdf-6afd-4ef3-bcae-5b63b19746fe",
+          "testId": "195d5aee-ba47-0b48-2c6b-23402a4960d0",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"1E2\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0001054",
+          "startTime": "2026-09-08T02:55:01.0501430-04:00",
+          "endTime": "2026-09-08T02:55:01.0502750-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "994b5fdf-6afd-4ef3-bcae-5b63b19746fe"
+        },
+        {
+          "executionId": "bfa7873e-2186-4f5e-87cd-ce9affc389b6",
+          "testId": "deed3cad-b9a1-1587-2182-fce7139a7c91",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.domain refusal preserves rendered target before any root arithmetic(t: \"1\", c: \"0\", field: \"C\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0001173",
+          "startTime": "2026-09-08T02:55:01.0857440-04:00",
+          "endTime": "2026-09-08T02:55:01.0858720-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "bfa7873e-2186-4f5e-87cd-ce9affc389b6"
+        },
+        {
+          "executionId": "88e38e60-bb19-4cad-a37c-76e949150dd9",
+          "testId": "b967dee9-005f-e394-8fa3-fcf33d8de1cc",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.valid surrogate pair reaches decimal grammar and ordinary escaped digits remain admitted",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0002976",
+          "startTime": "2026-09-08T02:55:01.1276510-04:00",
+          "endTime": "2026-09-08T02:55:01.1279590-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "88e38e60-bb19-4cad-a37c-76e949150dd9"
+        },
+        {
+          "executionId": "5413836c-6db1-4c5c-a3b0-306789e92d45",
+          "testId": "08fc706f-b977-07ce-fde9-c03694b31db2",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.independent dyadic stationary centers discriminate signs and halves(t: \"2\", u: \"-1\", k: \"3.75\", c: \"2\", mean: -0.125, variance: 0.25)",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0003579",
+          "startTime": "2026-09-08T02:55:01.1043630-04:00",
+          "endTime": "2026-09-08T02:55:01.1047350-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "5413836c-6db1-4c5c-a3b0-306789e92d45"
+        },
+        {
+          "executionId": "fd022b08-64e0-44b9-82c6-c12c61b1f719",
+          "testId": "4a643182-1a57-e021-9207-fa2f7eebfca8",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.positive forcing does not initialize by overflowing exp of the location",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0003895",
+          "startTime": "2026-09-08T02:55:01.1074600-04:00",
+          "endTime": "2026-09-08T02:55:01.1078590-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "fd022b08-64e0-44b9-82c6-c12c61b1f719"
+        },
+        {
+          "executionId": "5aedcd12-0f3f-4446-b655-6911e9fa1722",
+          "testId": "671b9286-b9c8-f205-6f00-a13a781f159a",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.domain refusal preserves rendered target before any root arithmetic(t: \"0\", c: \"1\", field: \"T\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000477",
+          "startTime": "2026-09-08T02:55:01.0859550-04:00",
+          "endTime": "2026-09-08T02:55:01.0860120-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "5aedcd12-0f3f-4446-b655-6911e9fa1722"
+        },
+        {
+          "executionId": "741fb5b7-eb74-481e-b776-cf85efcef617",
+          "testId": "8fc4673a-b8ae-5a2d-bd1b-1e5fe71892cd",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.registered decimal grammar refuses before numeric entry(literal: \"00.5\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0000400",
+          "startTime": "2026-09-08T02:55:01.0511290-04:00",
+          "endTime": "2026-09-08T02:55:01.0511770-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "741fb5b7-eb74-481e-b776-cf85efcef617"
+        },
+        {
+          "executionId": "e7585370-157e-4838-82cf-fd50d7d81b97",
+          "testId": "95f8ebe3-31c0-222c-77d3-2d7d61b66e9f",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.objective is actual original value at the candidate not a zero-residual substitute",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0003035",
+          "startTime": "2026-09-08T02:55:01.1094350-04:00",
+          "endTime": "2026-09-08T02:55:01.1097530-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "e7585370-157e-4838-82cf-fd50d7d81b97"
+        },
+        {
+          "executionId": "f2fb18d3-7f81-45e9-b1bb-f9f00d67af63",
+          "testId": "7a449e4f-2edb-bb06-178c-8d24031f31f5",
+          "testName": "Zeta.Bayesian.Tests.PrecisionGateProjectionTests.domain refusal preserves rendered target before any root arithmetic(t: \"-1\", c: \"1\", field: \"T\")",
+          "computerName": "AceHacks-Mac-Studio",
+          "duration": "00:00:00.0001459",
+          "startTime": "2026-09-08T02:55:01.0854970-04:00",
+          "endTime": "2026-09-08T02:55:01.0856560-04:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "f2fb18d3-7f81-45e9-b1bb-f9f00d67af63"
+        }
+      ],
+      "FailureMessages": [],
+      "Stdout": {
+        "Bytes": 1431,
+        "Sha256": "bcfc07d4e196237dc05b7cdcd7a809a355cf7c033ba663bbe8fc7888c06da945"
+      },
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "DocGateToolObservation": {
+    "Kind": "transcribed-tool-observation",
+    "Command": "bunx markdownlint-cli2 - < native implementation report",
+    "ExitCode": 1,
+    "Failure": "stdin:211 MD012 multiple consecutive blank lines",
+    "Bytes": 13671,
+    "Sha256": "6222999ebfb0cb50b44f25e52c35686c559118b53da8dbc04e50fe5be7bbab5b"
+  },
+  "ProjectCodeExecuted": false,
+  "FinalRosterExecuted": false
+}
