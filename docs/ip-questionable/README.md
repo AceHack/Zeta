@@ -76,3 +76,7 @@ promptly in good faith.
 - [The Magnet Paradox: supplied transcript and memory/history stimulus](2026-09-08-magnet-paradox-memory-history-transcript.md)
   (2026-09-08): exact user-provided transcript, original attachment hashes and
   separately linked history/generator research analysis.
+
+- [Astra and code-generated graphics: supplied Two Minute Papers transcript](2026-09-08-two-minute-papers-astra-code-generated-graphics-transcript.md)
+  (2026-09-08): exact attachment, all 16 supplied source destinations, verified
+  Variational Stokes paper identity, and a separate generator/evolution bridge.

@@ -1,0 +1,38 @@
+from pathlib import Path
+r=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa');p=r/'scripts/build_characters.py';s=p.read_text()
+s=s.replace("(.256*sin(ph)*cos(a),.255*sin(ph)*sin(a)+.028", "(.267*sin(ph)*cos(a),.280*sin(ph)*sin(a)")
+s=s.replace("curve('Spectacles • tailored frame',pts,black,.010,True)","""frame=curve('Spectacles • tailored frame',pts,black,.009,True)
+   for bp in frame.data.splines[0].bezier_points:bp.handle_left_type='VECTOR';bp.handle_right_type='VECTOR'""")
+s=s.replace("c=pts[k];curve('Coat • leaf stitch',[c,c+Vector((.035,-.01,.055)),c+Vector((.06,0,.08))],darkgold if male else purple,.003)","c=pts[k] # embroidery branches omitted to keep cloth surface and silhouette clean")
+s=s.replace("PART='neck';limb('Neck',(0,0,3.11),(0,0,3.43),.125,.12,sk,'neck')", """PART='neck';limb('Neck',(0,0,3.11),(0,0,3.43),.125,.12,sk,'neck')
+ if male:
+  ringbody('Shirt • high ivory collar',[(3.12,.137,.132),(3.20,.137,.131),(3.30,.13,.12)],cream,sub=1)""")
+# Gear rims integrated with the existing shoulder instruments.
+s=s.replace("c=(s*.48,-.173,3.075);cyl", """c=(s*.48,-.173,3.075)
+   gv=[];gf=[];gn=64
+   for depth in [-.004,.016]:
+    for radiuskind in [0,1]:
+     for gi in range(gn):
+      ga=2*pi*gi/gn;gr=(.125 if gi%4 in [1,2] else .113) if radiuskind==0 else .093
+      gv.append((c[0]+gr*cos(ga),c[1]+depth,c[2]+gr*sin(ga)))
+   for gi in range(gn):
+    gj=(gi+1)%gn;gf.extend([(gi,gj,gn+gj,gn+gi),(2*gn+gi,3*gn+gi,3*gn+gj,2*gn+gj),(gi,2*gn+gi,2*gn+gj,gj)])
+   mesh('Pauldron • sixteen tooth gear',gv,gf,gold,bevel=.002)
+   for j in range(3):
+    cap=(shoulder[0]+s*(.01+j*.055),.075,3.25+j*.025)
+    cyl('Pauldron • emerald capacitor',cap,.025,.13,emerald)
+    for dz in [-.067,.065]:cyl('Capacitor • terminal',(cap[0],cap[1],cap[2]+dz),.032,.015,gold)
+   cyl""")
+s=s.replace('renders/duo-final-draft.png','renders/duo-polished-draft.png');p.write_text(s)
+f=r/'scripts/finalize_assets.py';t=f.read_text().replace("use_selection=True,export_animations=False", "use_selection=True,use_active_scene=True,export_animations=False")
+# The master authoring scale stays explicit; portable assets are ~2m tall.
+t=t.replace("joined.data.calc_loop_triangles()", "joined.scale=(.5,.5,.5);bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);joined.data.calc_loop_triangles()")
+t=t.replace("# Better camera framing and archival render settings.","# Better camera framing and archival render settings.\nscene.unit_settings.system='METRIC';scene.unit_settings.scale_length=.5")
+f.write_text(t)
+import ast;ast.parse(s);ast.parse(t)
+for folder in ['renders','exports']:
+ old=r/folder/'previous-review';old.mkdir(exist_ok=True)
+ names=['AceHack_Xenaa_Hero.png','AceHack_Portrait.png','Xenaa_Portrait.png'] if folder=='renders' else ['AceHack.glb','Xenaa.glb','manifest.json']
+ for name in names:
+  src=r/folder/name
+  if src.exists():src.rename(old/name)

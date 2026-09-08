@@ -1,0 +1,9 @@
+import bpy
+from pathlib import Path
+r=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa');s=bpy.context.scene
+s.render.engine='BLENDER_EEVEE';s.render.resolution_x=1280;s.render.resolution_y=960;s.render.resolution_percentage=100
+if hasattr(s,'eevee') and hasattr(s.eevee,'taa_render_samples'):s.eevee.taa_render_samples=32
+s.camera=bpy.data.objects['Camera | Duo hero'];s.render.fps=24;s.frame_start=1;s.frame_end=144;s.render.image_settings.file_format='PNG'
+frames=r/'renders/turntable-frames';frames.mkdir(exist_ok=True);s.render.filepath=str(frames/'frame_')
+bpy.ops.render.render(animation=True)
+print('TURNTABLE_RENDER_COMPLETE')

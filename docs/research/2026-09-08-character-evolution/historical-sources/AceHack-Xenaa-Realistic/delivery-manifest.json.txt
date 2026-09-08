@@ -1,0 +1,102 @@
+[
+  {
+    "path": "README.md",
+    "bytes": 3857,
+    "sha256": "f0e256797742c404d7c7783f83e1f129bea74b038128a2d5500a0defddb476a3"
+  },
+  {
+    "path": "AceHack_Xenaa_Reference_Revision.blend",
+    "bytes": 97759417,
+    "sha256": "7c4b68f0605c7a6a7fa25b1ac8853160e441d911fa83320262186f093e04048b"
+  },
+  {
+    "path": "sources/provenance.json",
+    "bytes": 1939,
+    "sha256": "053f6b0413a291127b5196b457b5885f3e42516e6b3dc181183db806e953d6a7"
+  },
+  {
+    "path": "sources/anatomy-record.json",
+    "bytes": 89049,
+    "sha256": "58a59b57a693b257207be2e38d7d466f89910552a75e172812884ed25c851ce9"
+  },
+  {
+    "path": "exports/AceHack-rigged.glb",
+    "bytes": 56710204,
+    "sha256": "cafa6a900ac17d423bbfa03a1f6802dd581f262951f967dc586a6cbf56ddd8c5"
+  },
+  {
+    "path": "exports/roundtrip-validation.json",
+    "bytes": 687,
+    "sha256": "7eace10a2548a2a1568eb59bd2c3ac5e7dd21302d19b69195c39de8bc4c0ce76"
+  },
+  {
+    "path": "exports/export-report.json",
+    "bytes": 456,
+    "sha256": "db50f020930bc7fdd9008c89f21ac4556c534f6fbbd670b5cd8ad0ef380b5e0c"
+  },
+  {
+    "path": "exports/validation.json",
+    "bytes": 623,
+    "sha256": "495f8bb327167eebc2f29403209af0b420e376937e74d45b1025f2f8f774a1e2"
+  },
+  {
+    "path": "exports/Xenaa-rigged.glb",
+    "bytes": 138965848,
+    "sha256": "a04c1e7b59d6c04d232143e1795c416aece4bcda4e1270c94cd4625ea0751210"
+  },
+  {
+    "path": "renders/AceHack-Xenaa-reference-revision.png",
+    "bytes": 5216586,
+    "sha256": "c44fa18a96bb68c7f2f7972fd64f29c6d30f77bdb4f9f5aa79cd73b0fa857caa"
+  },
+  {
+    "path": "renders/AceHack-reference-revision.png",
+    "bytes": 3822653,
+    "sha256": "ee7caadbcbed208bb6beb22b3a2342c99214c6edb6956834d40460d71bb3ac3c"
+  },
+  {
+    "path": "renders/Xenaa-reference-revision.png",
+    "bytes": 3828667,
+    "sha256": "a1f06bc3337295e75fd8455c838bcf7787da490a571a51cd83961dbc02a77ea4"
+  },
+  {
+    "path": "renders/AceHack-glb-roundtrip.png",
+    "bytes": 868059,
+    "sha256": "ac77aadb8f91d0ece90eaf034147877172170eb536da3022d99828885105d505"
+  },
+  {
+    "path": "renders/Xenaa-glb-roundtrip.png",
+    "bytes": 875449,
+    "sha256": "ad0c5a5d49ea1181846921d4134d76110a8f6ca7e10b418d4e7761ef9b792f71"
+  },
+  {
+    "path": "scripts/create_realistic_bases.py",
+    "bytes": 8405,
+    "sha256": "347583811b5cf4f8b69d1773e07d93118d2c1292c54fc0ed9f289d01a64a9911"
+  },
+  {
+    "path": "scripts/build_reference_costumes.py",
+    "bytes": 31829,
+    "sha256": "136b892a86167f7f4d69c6b1579c496985bf38713f13f01874a4192895d52b4a"
+  },
+  {
+    "path": "scripts/polish_reference_study.py",
+    "bytes": 8240,
+    "sha256": "b62970dab0b9e5a895847cba7e0b8bb64cf8fb1416f137e1d5c2753b0ba30005"
+  },
+  {
+    "path": "scripts/finalize_reference_assets.py",
+    "bytes": 6317,
+    "sha256": "b0fbf735a1c50c41c3d40dbf4794fc7f95beac11176b79ee9608bd98569eaea6"
+  },
+  {
+    "path": "scripts/export_reference_assets.py",
+    "bytes": 1301,
+    "sha256": "b5f3dbe23f2aba3082c47fc90215f1b3f622c47da4e2266d4951b51bdeebfdfc"
+  },
+  {
+    "path": "scripts/check_glb_roundtrip.py",
+    "bytes": 2296,
+    "sha256": "c1c396ff33c2a6ee7511ae451d406ef50e06552705171d60343b99917af9d5b2"
+  }
+]

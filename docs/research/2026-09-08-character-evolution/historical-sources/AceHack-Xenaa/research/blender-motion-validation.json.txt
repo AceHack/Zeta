@@ -1,0 +1,1456 @@
+{
+  "Tolerance": 1e-06,
+  "MaximumError": 2.2351741790771484e-07,
+  "Rows": [
+    {
+      "Character": "AceHack",
+      "Frame": 1,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 2,
+      "BlenderMatrixMaxError": 3.725290298461914e-09
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 3,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 4,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 5,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 6,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 7,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 8,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 9,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 10,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 11,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 12,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 13,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 14,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 15,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 16,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 17,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 18,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 19,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 20,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 21,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 22,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 23,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 24,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 25,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 26,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 27,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 28,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 29,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 30,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 31,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 32,
+      "BlenderMatrixMaxError": 1.043081283569336e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 33,
+      "BlenderMatrixMaxError": 2.2351741790771484e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 34,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 35,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 36,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 37,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 38,
+      "BlenderMatrixMaxError": 3.725290298461914e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 39,
+      "BlenderMatrixMaxError": 2.2351741790771484e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 40,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 41,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 42,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 43,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 44,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 45,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 46,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 47,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 48,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 49,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 50,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 51,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 52,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 53,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 54,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 55,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 56,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 57,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 58,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 59,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 60,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 61,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 62,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 63,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 64,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 65,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 66,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 67,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 68,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 69,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 70,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 71,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 72,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 73,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 74,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 75,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 76,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 77,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 78,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 79,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 80,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 81,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 82,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 83,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 84,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 85,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 86,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 87,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 88,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 89,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 90,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 91,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 92,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 93,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 94,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 95,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 96,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 97,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 98,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 99,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 100,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 101,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 102,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 103,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 104,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 105,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 106,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 107,
+      "BlenderMatrixMaxError": 2.2351741790771484e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 108,
+      "BlenderMatrixMaxError": 3.725290298461914e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 109,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 110,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 111,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 112,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 113,
+      "BlenderMatrixMaxError": 2.2351741790771484e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 114,
+      "BlenderMatrixMaxError": 1.043081283569336e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 115,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 116,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 117,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 118,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 119,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 120,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 121,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 122,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 123,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 124,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 125,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 126,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 127,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 128,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 129,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 130,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 131,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 132,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 133,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 134,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 135,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 136,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 137,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 138,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 139,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 140,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 141,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 142,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 143,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 144,
+      "BlenderMatrixMaxError": 3.725290298461914e-09
+    },
+    {
+      "Character": "AceHack",
+      "Frame": 145,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 1,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 2,
+      "BlenderMatrixMaxError": 3.725290298461914e-09
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 3,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 4,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 5,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 6,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 7,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 8,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 9,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 10,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 11,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 12,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 13,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 14,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 15,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 16,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 17,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 18,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 19,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 20,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 21,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 22,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 23,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 24,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 25,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 26,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 27,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 28,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 29,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 30,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 31,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 32,
+      "BlenderMatrixMaxError": 1.043081283569336e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 33,
+      "BlenderMatrixMaxError": 2.2351741790771484e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 34,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 35,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 36,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 37,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 38,
+      "BlenderMatrixMaxError": 3.725290298461914e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 39,
+      "BlenderMatrixMaxError": 2.2351741790771484e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 40,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 41,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 42,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 43,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 44,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 45,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 46,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 47,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 48,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 49,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 50,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 51,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 52,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 53,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 54,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 55,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 56,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 57,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 58,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 59,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 60,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 61,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 62,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 63,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 64,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 65,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 66,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 67,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 68,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 69,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 70,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 71,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 72,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 73,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 74,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 75,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 76,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 77,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 78,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 79,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 80,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 81,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 82,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 83,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 84,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 85,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 86,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 87,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 88,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 89,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 90,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 91,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 92,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 93,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 94,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 95,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 96,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 97,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 98,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 99,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 100,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 101,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 102,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 103,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 104,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 105,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 106,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 107,
+      "BlenderMatrixMaxError": 2.2351741790771484e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 108,
+      "BlenderMatrixMaxError": 3.725290298461914e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 109,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 110,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 111,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 112,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 113,
+      "BlenderMatrixMaxError": 2.2351741790771484e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 114,
+      "BlenderMatrixMaxError": 1.043081283569336e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 115,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 116,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 117,
+      "BlenderMatrixMaxError": 8.940696716308594e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 118,
+      "BlenderMatrixMaxError": 1.7881393432617188e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 119,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 120,
+      "BlenderMatrixMaxError": 1.1920928955078125e-07
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 121,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 122,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 123,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 124,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 125,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 126,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 127,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 128,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 129,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 130,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 131,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 132,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 133,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 134,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 135,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 136,
+      "BlenderMatrixMaxError": 5.960464477539063e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 137,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 138,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 139,
+      "BlenderMatrixMaxError": 2.9802322387695312e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 140,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 141,
+      "BlenderMatrixMaxError": 1.4901161193847656e-08
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 142,
+      "BlenderMatrixMaxError": 0.0
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 143,
+      "BlenderMatrixMaxError": 7.450580596923828e-09
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 144,
+      "BlenderMatrixMaxError": 3.725290298461914e-09
+    },
+    {
+      "Character": "Xenaa",
+      "Frame": 145,
+      "BlenderMatrixMaxError": 0.0
+    }
+  ]
+}

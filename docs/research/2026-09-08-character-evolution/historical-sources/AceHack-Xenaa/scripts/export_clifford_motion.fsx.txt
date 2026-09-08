@@ -1,0 +1,23 @@
+#r "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll"
+#r "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/src/Core/bin/Release/net10.0/Zeta.Core.dll"
+open System
+open System.IO
+open System.Text.Json
+open Zeta.Core
+let plane = { Cl3.zero with E12 = 1.0 }
+let xyz (v: Cl3.Mv) = [|v.E1; v.E2; v.E3|]
+let rows =
+    [| for index in 0..144 do
+           let angle = 2.0 * Math.PI * float index / 144.0
+           let rotor = Cl3.rotor angle plane
+           let axes = [|Cl3.vector 1.0 0.0 0.0; Cl3.vector 0.0 1.0 0.0; Cl3.vector 0.0 0.0 1.0|]
+           let transformed = axes |> Array.map (Cl3.rotate rotor >> xyz)
+           let expected = [|[|cos angle; sin angle; 0.0|];[|-sin angle; cos angle; 0.0|];[|0.0;0.0;1.0|]|]
+           let error = Array.map2 (fun a b -> Array.map2 (fun x y -> abs(x-y)) a b |> Array.max) transformed expected |> Array.max
+           {| Frame=index+1; AngleRadians=angle; Rotor=[|rotor.S;rotor.E12;rotor.E13;rotor.E23|]; BasisColumns=transformed; AnalyticMaxError=error |} |]
+let maximum = rows |> Array.map _.AnalyticMaxError |> Array.max
+let packet = {| Scope="Actual Zeta.Core.Cl3 rotor -> Blender rigid root motion; no learned generation"; Frames=rows; MaximumAnalyticError=maximum; Tolerance=1e-12 |}
+let options = JsonSerializerOptions(WriteIndented=true)
+File.WriteAllText("/Users/acehack/Documents/Blender/AceHack-Xenaa/research/clifford-turntable.json",JsonSerializer.Serialize(packet,options))
+printfn "Frames=%d MaximumAnalyticError=%.17g Tolerance=1e-12" rows.Length maximum
+if maximum > 1e-12 || not (Double.IsFinite maximum) then exit 1

@@ -1,0 +1,35 @@
+import bpy,json,math,struct,hashlib
+from pathlib import Path
+from mathutils import Vector
+r=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa');rows=[]
+for who in ['AceHack','Xenaa']:
+ p=r/'exports'/f'{who}.glb';raw=p.read_bytes();magic,version,length=struct.unpack_from('<4sII',raw)
+ if magic!=b'glTF' or version!=2 or length!=len(raw):raise RuntimeError('GLB framing mismatch')
+ n,kind=struct.unpack_from('<II',raw,12);doc=json.loads(raw[20:20+n]);scene_count=len(doc.get('scenes',[]));mesh_count=len(doc.get('meshes',[]))
+ if scene_count!=1 or mesh_count!=1:raise RuntimeError('Export contains an unexpected scene or mesh: '+who)
+ if doc.get('cameras') or doc.get('skins'):raise RuntimeError('Static asset unexpectedly contains camera or skin')
+ bpy.ops.wm.read_factory_settings(use_empty=True)
+ bpy.ops.import_scene.gltf(filepath=str(p))
+ meshes=[o for o in bpy.context.scene.objects if o.type=='MESH']
+ if len(meshes)!=1:raise RuntimeError('Reimport mesh count differs')
+ ob=meshes[0];ob.data.calc_loop_triangles();positions=[ob.matrix_world@v.co for v in ob.data.vertices]
+ if not positions or not all(math.isfinite(c) for v in positions for c in v):raise RuntimeError('Missing/nonfinite geometry')
+ low=[min(v[j] for v in positions) for j in range(3)];high=[max(v[j] for v in positions) for j in range(3)]
+ if not (1.85<high[2]-low[2]<2.3):raise RuntimeError('Unexpected character height')
+ if len(ob.data.loop_triangles)<100000:raise RuntimeError('Unexpectedly missing modeled detail')
+ rows.append({'Character':who,'File':str(p),'Sha256':hashlib.sha256(raw).hexdigest(),'GlbScenes':scene_count,'GlbMeshes':mesh_count,'ReimportedMeshObjects':len(meshes),'ReimportedTriangles':len(ob.data.loop_triangles),'ReimportedVertices':len(ob.data.vertices),'BoundsMin':low,'BoundsMax':high,'FinitePositions':True})
+(r/'exports/reimport-validation.json').write_text(json.dumps({'BlenderVersion':bpy.app.version_string,'Passed':True,'Rows':rows},indent=2)+'\n')
+print('REIMPORT_VALIDATION_PASS',json.dumps(rows))
+# Reopen master and check rig/effect attachment through several actual animation frames.
+bpy.ops.wm.open_mainfile(filepath=str(r/'AceHack_Xenaa_Atelier.blend'));scene=bpy.context.scene;scene.frame_set(1);bpy.context.view_layer.update();attachment=[]
+effects=[o for o in scene.objects if o.get('Role')=='Attached character effect'];reference={}
+for ob in effects:reference[ob.name]=(ob.parent.matrix_world@ob.parent.pose.bones[ob.parent_bone].matrix).inverted()@ob.matrix_world
+for frame in [1,37,73,109,144]:
+ scene.frame_set(frame);bpy.context.view_layer.update()
+ for ob in effects:
+  local=(ob.parent.matrix_world@ob.parent.pose.bones[ob.parent_bone].matrix).inverted()@ob.matrix_world
+  delta=max(abs(local[i][j]-reference[ob.name][i][j]) for i in range(4) for j in range(4));attachment.append(delta)
+maximum=max(attachment,default=float('inf'))
+if maximum>1e-5:raise RuntimeError('FX parent-frame attachment drift exceeds tolerance')
+result={'Passed':True,'SampleFrames':[1,37,73,109,144],'Effects':len(effects),'MaxLocalMatrixDrift':maximum,'Tolerance':1e-5,'RigBones':{who:len(bpy.data.objects[who+' | Pose Rig'].data.bones) for who in ['AceHack','Xenaa']},'PackedReferenceImages':len([im for im in bpy.data.images if im.packed_file])}
+(r/'research/attachment-validation.json').write_text(json.dumps(result,indent=2)+'\n');print('ATTACHMENT_VALIDATION_PASS',json.dumps(result))

@@ -1,0 +1,27 @@
+[
+  {
+    "Path": "/Users/acehack/Downloads/Xenaa_AceHack_Clash_of_Hearts_30s.mp4",
+    "Bytes": 10988974,
+    "Sha256": "baf0d83b24f1632e30aa1c7963ba37594c12837c5124920337a296d69c83d629"
+  },
+  {
+    "Path": "/Users/acehack/Downloads/hf_20260908_190853_f19217d8-a6f6-43c6-ab95-6b3d19ff319b.mp4",
+    "Bytes": 12389664,
+    "Sha256": "d94ab46fecf13aaf76bf2afddd27ad7677c15ed6df563798cb99114854594264"
+  },
+  {
+    "Path": "/Users/acehack/Downloads/ChatGPT Image Sep 7, 2026, 09_14_32 AM.png",
+    "Bytes": 2887794,
+    "Sha256": "c7acd320d07d9fd42ac1b7b0ede64b762637a2274e0452e08cefd713ee6ae36c"
+  },
+  {
+    "Path": "/Users/acehack/Downloads/ChatGPT Image Sep 7, 2026, 08_34_46 AM.png",
+    "Bytes": 2798246,
+    "Sha256": "a0b27bdc355f1261107a44a02a711d304e759cee754cd61abfa16d8365d0066c"
+  },
+  {
+    "Path": "/Users/acehack/Downloads/ChatGPT Image Sep 7, 2026, 07_28_27 AM.png",
+    "Bytes": 2839671,
+    "Sha256": "df27cb1b3451af882a5698bbe5df763a622b004ffffdcddc3aadfe73361d2721"
+  }
+]

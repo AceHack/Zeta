@@ -1,0 +1,81 @@
+ # Closely fitted layered panels, seam lines, straps and hardware from the reference costume.
+ front=bvh
+ if male:bvh=suitbvh
+ if not male:
+  # Angled plates bridge the anatomical surface into a tailored armored garment.
+  for j,(z,half,dh) in enumerate([(zneck-.15,.113,.065),(zneck-.22,.115,.052),(zwaist+.055,.10,.04),(zwaist-.025,.091,.038)]):
+   for s in [-1,1]:
+    pts=[ray(s*.008,z+dh*.45,.029),ray(s*half,z+dh,.027),ray(s*(half+.006),z-dh*.28,.029),ray(s*.012,z-dh,.030)]
+    panel('Angular cuirass panel',[(pts[0],pts[1]),(pts[3],pts[2])],leather if j%2==0 else darkmetal)
+    curve('Cuirass stitched perimeter',pts,.00085,darkmetal,True)
+  # Narrow strap crossing the armored bodice; buckles follow the surface.
+  for s in [-1,1]:
+   rows=[]
+   for j in range(9):
+    t=j/8;z=zneck-.095-(zneck-zwaist-.03)*t;x=s*(.100-.057*t)
+    rows.append((ray(x-.012,z,.048),ray(x+.012,z,.048)))
+   panel('Cross-body harness strap',rows,leather)
+   curve('Harness stitch',[r[0] for r in rows],.00055,ivory)
+   p=Vector(rows[5][0]).lerp(Vector(rows[5][1]),.5);p.y-=.005;buckle('Harness clasp',p,.029,.037)
+  # Longer purple front panels remain visible over the fitted black bodice.
+  for s in [-1,1]:
+   rows=[]
+   for z,inner,outer in [(zneck-.065,.052,.087),(zneck-.15,.070,.135),(zneck-.29,.070,.145),(zwaist-.03,.088,.15),(zhip-.04,.101,.19)]:
+    rows.append((ray(s*inner,z,.051),ray(s*outer,z,.039)))
+   panel('Purple brocade front facing',rows,purple)
+   curve('Purple facing leather border',[r[0] for r in rows],.002,leather)
+   curve('Cyan segmented lapel accent',[Vector(rows[j][1])+Vector((0,-.004,0)) for j in range(1,4)],.00085,cyan)
+   # Sewn jacquard curls, subdued instead of glowing free-floating lines.
+   for j in range(2,5):
+    p=Vector(rows[j][0]).lerp(Vector(rows[j][1]),.45);pts=[]
+    for n in range(16):
+     t=n/15*math.tau;xx=p.x+.010*math.cos(t);zz=p.z+.016*math.sin(t);q=ray(xx,zz,.054);pts.append(q)
+    curve('Subtle lapel jacquard',pts,.00045,darkmetal)
+ else:
+  # Brocade woven into the waistcoat, watch chain and tailored double shoulder piping.
+  for s in [-1,1]:
+   for j in range(6):
+    z=zwaist-.04+j*.045;x=s*.048;pts=[]
+    for k in range(20):
+     t=k/19*math.tau;pts.append(ray(x+.012*math.sin(t),z+.019*math.cos(t),.030))
+    curve('Emerald waistcoat jacquard',pts,.0005,brass)
+  pts=[ray(.09-.17*j/24,zwaist-.045-.028*math.sin(j/24*math.pi),.048) for j in range(25)]
+  curve('Pocket watch chain',pts,.0011,brass)
+  for j in range(0,25,2):sphere('Watch chain link',pts[j],(.0018,.0015,.0018),brass)
+  # Diagonal leather equipment harness.
+  rows=[]
+  for j in range(10):
+   t=j/9;z=zneck-.06-(zneck-zwaist+.06)*t;x=.11-.16*t
+   rows.append((ray(x-.015,z,.049),ray(x+.015,z,.049)))
+  panel('Diagonal leather equipment harness',rows,leather)
+  for jj in [3,7]:
+   p=Vector(rows[jj][0]).lerp(Vector(rows[jj][1]),.5);p.y-=.004;buckle('Equipment harness buckle',p,.036,.044)
+ bvh=front
+ # Extra thigh straps with small brass clasps, projecting onto the fitted trousers.
+ for s,side in [(1,'L'),(-1,'R')]:
+  upper=Vector(bone['upperleg01.'+side]['Head']);lower=Vector(bone['lowerleg01.'+side]['Head'])
+  for t in [.22,.39]:
+   c=upper.lerp(lower,t);pts=[]
+   for j in range(20):
+    a=-1.23+2.46*j/19;x=c.x+(.080 if male else .075)*math.sin(a);p=ray(x,c.z,.026);pts.append(p)
+   vs=[tuple(p+Vector((0,0,dz))) for dz in [-.012,.012] for p in pts];N=len(pts);fs=[(j,j+1,j+1+N,j+N) for j in range(N-1)];mesh('Fitted thigh strap '+side,vs,fs,leather,sub=1,solid=.003)
+   p=pts[14];buckle('Thigh strap buckle '+side,(p.x,p.y-.004,p.z),.022,.029)
+ if not male:
+  # Filled tapered ink leaves replace loose outlined loops.
+  for s,side in [(1,'L'),(-1,'R')]:
+   sh=Vector(bone['upperarm01.'+side]['Head']);wr=Vector(bone['wrist.'+side]['Head'])
+   for j in range(13):
+    t=.08+j*.055;c=sh.lerp(wr,t);xx=c.x+s*.015*math.sin(t*math.pi*3);zz=c.z;direction=-1 if j%2 else 1;vs=[]
+    for k in range(15):
+     u=k/14;centerx=xx+direction*.020*u;centerz=zz+.031*u;wid=.005*math.sin(math.pi*u)**.75
+     for sd in [-1,1]:vs.append(ray(centerx+sd*wid,centerz,.0012))
+    fs=[(2*k,2*k+1,2*k+3,2*k+2) for k in range(14)];mesh('Botanical filled tattoo leaf',vs,fs,ink)
+   for j in range(3):
+    c=sh.lerp(wr,.59+j*.055);curve('Faint cyan botanical filament',[ray(c.x,c.z,.0018),ray(c.x+s*.010,c.z+.018,.0018),ray(c.x+s*.003,c.z+.032,.0018)],.0004,cyan)
+ # Give the hands an actual grip around their tools.
+ for side in ['L','R']:
+  if male and side=='L':continue
+  for finger in range(2,6):
+   for segment in range(1,4):
+    pb=rig.pose.bones.get('finger%d-%d.%s'%(finger,segment,side))
+    if pb:pb.rotation_mode='XYZ';pb.rotation_euler.x=.58 if segment==1 else .82

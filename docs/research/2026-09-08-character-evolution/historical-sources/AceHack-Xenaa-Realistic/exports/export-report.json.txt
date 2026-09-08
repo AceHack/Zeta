@@ -1,0 +1,18 @@
+[
+  {
+    "character": "AceHack",
+    "glb": "exports/AceHack-rigged.glb",
+    "selectedObjects": 276,
+    "rigBones": 163,
+    "bytes": 56710204,
+    "pose": "rest pose for interchange; posed master is in the Blender scene"
+  },
+  {
+    "character": "Xenaa",
+    "glb": "exports/Xenaa-rigged.glb",
+    "selectedObjects": 219,
+    "rigBones": 163,
+    "bytes": 138965848,
+    "pose": "rest pose for interchange; posed master is in the Blender scene"
+  }
+]

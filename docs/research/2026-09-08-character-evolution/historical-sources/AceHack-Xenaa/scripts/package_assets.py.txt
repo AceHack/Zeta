@@ -1,0 +1,50 @@
+import bpy,json,hashlib
+from pathlib import Path
+from mathutils import Vector
+ROOT=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa');scene=bpy.context.scene
+bpy.context.preferences.filepaths.save_version=0
+scene.frame_set(1);bpy.context.view_layer.update()
+for who,bone in [('AceHack','hand.L'),('Xenaa','root')]:
+ rig=bpy.data.objects[who+' | Pose Rig']
+ for coll in bpy.data.collections:
+  if coll.name.startswith(who+' |') and coll.name.endswith('FX'):
+   for ob in coll.objects:
+    world=ob.matrix_world.copy();ob.parent=rig;ob.parent_type='BONE';ob.parent_bone=bone;ob.matrix_world=world;ob['Character']=who;ob['Part']=bone;ob['Role']='Attached character effect'
+bpy.context.view_layer.update()
+bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'AceHack_Xenaa_Atelier.blend'))
+# Portable exports: evaluate actual geometry, join, center on local origin.
+# GLB receives plain PBR material factors; authored procedural textile shaders stay in .blend.
+scene.frame_set(1);stats=[];deps=bpy.context.evaluated_depsgraph_get();original_scene=scene
+for who,x in [('AceHack',-1.45),('Xenaa',1.45)]:
+ source=[o for o in bpy.data.objects if o.get('Character')==who and o.type in {'MESH','CURVE'}]
+ snapshots=[];matmap={}
+ for o in source:
+  ev=o.evaluated_get(deps);data=bpy.data.meshes.new_from_object(ev,preserve_all_data_layers=True,depsgraph=deps)
+  for slot in range(len(data.materials)):
+   old=data.materials[slot]
+   if old.name not in matmap:
+    m=bpy.data.materials.new(old.name+' • GLB');m.use_nodes=True;bs=m.node_tree.nodes.get('Principled BSDF');obs=old.node_tree.nodes.get('Principled BSDF')
+    bs.inputs['Base Color'].default_value=old.diffuse_color
+    for k in ['Metallic','Roughness','Emission Color','Emission Strength']:
+     if obs and k in obs.inputs:bs.inputs[k].default_value=obs.inputs[k].default_value
+    m.diffuse_color=old.diffuse_color;matmap[old.name]=m
+   data.materials[slot]=matmap[old.name]
+  ob=bpy.data.objects.new(who+' • export component',data);snapshots.append(ob);ob.matrix_world=o.matrix_world.copy();ob.location.x-=x
+ export_scene=bpy.data.scenes.new(who+' | Export');bpy.context.window.scene=export_scene
+ for ob in snapshots:export_scene.collection.objects.link(ob)
+ bpy.ops.object.select_all(action='DESELECT')
+ for ob in snapshots:ob.select_set(True)
+ bpy.context.view_layer.objects.active=snapshots[0];bpy.ops.object.join();joined=bpy.context.object;joined.name=who;joined.data.name=who+' • baked sculpt mesh'
+ # Ensure the object origin is at the character's local floor center.
+ bpy.context.scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR');joined.scale=(.5,.5,.5);bpy.ops.object.transform_apply(location=False,rotation=True,scale=True)
+ floor_z=min(v.co.z for v in joined.data.vertices)
+ for v in joined.data.vertices:v.co.z-=floor_z
+ joined.data.calc_loop_triangles()
+ filepath=ROOT/'exports'/f'{who}.glb'
+ bpy.ops.export_scene.gltf(filepath=str(filepath),export_format='GLB',use_selection=True,use_active_scene=True,export_animations=False,export_cameras=False,export_lights=False,export_yup=True)
+ bound=[list(joined.matrix_world@Vector(c)) for c in joined.bound_box]
+ stats.append({'Character':who,'SourceObjects':len(source),'Vertices':len(joined.data.vertices),'Triangles':len(joined.data.loop_triangles),'Materials':len(joined.data.materials),'BoundsZUp':bound,'Export':str(filepath),'Bytes':filepath.stat().st_size,'Sha256':hashlib.sha256(filepath.read_bytes()).hexdigest(),'Scope':'Static hero pose; PBR factors. Basic posing rig and procedural shaders are in the master .blend.'})
+ bpy.context.window.scene=original_scene;bpy.data.scenes.remove(export_scene)
+# Restore master exactly as saved before the temporary export process.
+(ROOT/'exports/manifest.json').write_text(json.dumps(stats,indent=2)+'\n')
+print('FINALIZE_COMPLETE',json.dumps(stats))

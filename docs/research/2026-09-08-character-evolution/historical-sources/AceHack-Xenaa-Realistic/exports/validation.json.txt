@@ -1,0 +1,28 @@
+[
+  {
+    "file": "AceHack-rigged.glb",
+    "bytes": 56710204,
+    "meshes": 274,
+    "primitives": 282,
+    "verticesInPositionAccessors": 763338,
+    "skins": 1,
+    "maximumJoints": 163,
+    "weightedPositionStreams": 282,
+    "embeddedImages": 6,
+    "finitePositions": true,
+    "studioExcluded": true
+  },
+  {
+    "file": "Xenaa-rigged.glb",
+    "bytes": 138965848,
+    "meshes": 217,
+    "primitives": 223,
+    "verticesInPositionAccessors": 1908683,
+    "skins": 1,
+    "maximumJoints": 163,
+    "weightedPositionStreams": 223,
+    "embeddedImages": 5,
+    "finitePositions": true,
+    "studioExcluded": true
+  }
+]

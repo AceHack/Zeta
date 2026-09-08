@@ -1,0 +1,22 @@
+import bpy,json,math
+from pathlib import Path
+from mathutils import Vector
+R=Path('/Users/acehack/Documents/Blender/AceHack-Xenaa-Realistic');reports=[]
+for who in ['AceHack','Xenaa']:
+ bpy.ops.wm.read_factory_settings(use_empty=True);bpy.ops.import_scene.gltf(filepath=str(R/'exports'/(who+'-rigged.glb')))
+ rigs=[o for o in bpy.data.objects if o.type=='ARMATURE'];assert len(rigs)==1
+ meshes=[o for o in bpy.data.objects if o.type=='MESH' and o.name.startswith(who+' | ')];bounds=[o.matrix_world@Vector(c) for o in meshes for c in o.bound_box]
+ lo=[min(v[i] for v in bounds) for i in range(3)];hi=[max(v[i] for v in bounds) for i in range(3)];assert all(math.isfinite(x) for x in lo+hi);assert .8<hi[2]-lo[2]<2.1 and hi[0]-lo[0]<2.2 and lo[2]>-.15
+ reports.append({'character':who,'importedMeshes':len(meshes),'importedArmatures':len(rigs),'bones':len(rigs[0].data.bones),'boundsMin':lo,'boundsMax':hi,'status':'passed'})
+ scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=32;scene.cycles.use_denoising=True
+ try:
+  p=bpy.context.preferences.addons['cycles'].preferences;p.compute_device_type='METAL';p.get_devices()
+  for d in p.devices:d.use=d.type=='METAL'
+  scene.cycles.device='GPU'
+ except Exception:pass
+ scene.world=bpy.data.worlds.new('Verification world');scene.world.use_nodes=True;scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.08,.09,.12,1)
+ for loc,power in [((-2,-3,3),400),((2,-2,2),180)]:
+  d=bpy.data.lights.new('Verification key','AREA');d.energy=power;d.shape='DISK';d.size=2;o=bpy.data.objects.new('Verification key',d);scene.collection.objects.link(o);o.location=loc;o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler()
+ d=bpy.data.cameras.new('Verification camera');o=bpy.data.objects.new('Verification camera',d);scene.collection.objects.link(o);scene.camera=o;o.location=(.6,-4.9,2.1);o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler();d.lens=62
+ scene.render.resolution_x=800;scene.render.resolution_y=1000;scene.render.resolution_percentage=100;scene.render.filepath=str(R/'renders'/(who+'-glb-roundtrip.png'));bpy.ops.render.render(write_still=True)
+(R/'exports/roundtrip-validation.json').write_text(json.dumps(reports,indent=2)+'\n');print('ROUNDTRIP',reports)
