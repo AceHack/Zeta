@@ -47,6 +47,12 @@ integers and never booleans. All records have exact keys. IDs are ASCII
 Reject duplicate JSON keys, invalid UTF8, nonfinite constants, unknown variants
 and counts before allocating arrays or entering numerical code. Sources and
 expected hashes come from independently admitted caller inputs, not receipts.
+Canonical hash preimages use compact UTF8 JSON, ordinal object-key order,
+retained array order, exact base10 integers, lowercase JSON literals and the
+specified Bits/Hash strings. Data IDs/paths and their keys are ASCII; JSON
+quote/backslash escaping is explicit. Exclude only a record's named self-hash:
+EvidenceRow.ContentSha256 hashes its other exact fields. Unknown fields and
+floating JSON numbers cannot enter these canonical data preimages.
 
 | Type | Exact fields / variants |
 | --- | --- |
@@ -56,40 +62,74 @@ expected hashes come from independently admitted caller inputs, not receipts.
 | `EvidenceCut` | `Id,Rows,ActiveIds,PriorOwners,ParentCut,Retractions`; ordered unique row/active IDs; retractions name earlier active IDs; prior owners map variable IDs to one contribution ID. Same ID with changed content refuses. |
 | `Preprocessing` | `TrainingCut,Count,Means,Scales`; exactly eight finite means and positive scales in bits. |
 | `ModuleArtifact` | `Id,ParentVersion,TrainingCut,Architecture,Ports,Parameters,Preprocessing,UpdateReceiptSha256,SourceBindings`; architecture is exactly `point-mlp-12-4-1-v1`; parameters are exactly 57 finite bit strings. `Ports` declares each ordered child slot `required,optional,absent`. Version is the hash of these canonical bytes, excluding an embedded self-hash. |
-| `Node` | `Id,InstancePath,Kind,Inputs,Artifact,Prior,Unary,Children`; kind `neural,precision-gate,composite`; unused fields null, as defined below. |
-| `EpochPlan` | `Id,Mode,EvidenceCut,Nodes,SelectedVersions,InitialState,Operations,Sweeps,Damping,Training,Horizon,SourceBindings`; mode `train,query,compensate`; source-fixed operations are validated against the graph and mode, not dynamically dispatched producer code. Horizon is a positive integer at most 1024, frozen for the plan. |
-| `Training` | Null outside train mode; otherwise `Artifacts,RowIds,CutEnd,ChildCuts`, in ordinal artifact order. `RowIds` maps each artifact to its unique ordered training IDs; `ChildCuts` supplies the full independently admitted evidence cuts named by child artifact lineage. Every cut hash is recomputed from its canonical content. |
-| `State` | `Revision,Weights,GaussianSites,GammaSites,ActiveCut`; maps in canonical ordinal order, site keys `(InstancePath,Factor,Port,ContributionId)`. Sites contain existing `Gaussian` or `GammaKernel` fields encoded in bits. |
+| `Node` | `Id,InstancePath,Kind,Inputs,Artifact,Prior,Unary,Children,OutputAlias`; kind `neural,precision-gate,composite`; unused fields null, as defined below. |
+| `EpochPlan` | `Id,Mode,EvidenceCut,QueryRowId,Nodes,SelectedVersions,InitialState,Operations,Sweeps,Damping,Training,Horizon,SourceBindings`; mode `train,query,compensate`; source-fixed operations are validated against the graph and mode, not dynamically dispatched producer code. Horizon is a positive integer at most 1024, frozen for the plan. |
+| `Training` | Null outside train mode; otherwise `Artifacts,RowIds,CutEnd,ChildCuts,ChildForecasts`, in ordinal artifact order. `RowIds` maps each artifact to its unique ordered training IDs; `ChildCuts` supplies the full independently admitted evidence cuts named by child artifact lineage. Every cut hash is recomputed from its canonical content. ChildForecasts is the exact ordered per-artifact/row/slot mapping defined below. |
+| `State` | `Revision,Weights,GaussianSites,GammaSites,Outputs,ActiveCut`; maps in canonical ordinal order, site keys `(InstancePath,Factor,Port,ContributionId)`. Sites contain existing `Gaussian` or `GammaKernel` fields encoded in bits. |
 | `Observation` | `Sequence,Operation,InputRevision,Inputs,Call,Proposal,Admission,AppliedRevision,Failure`; `Call` is `NotEntered`, `Returned` with its complete source-specific public result, or `Raised` with bounded exception type/message. Union-specific keys only; no runtime type-name instantiation. |
-| `EpochResult` | `PlanSha256,Outcome,Failure,LastCommitted,Observations,Counters,PendingRequest,Scheduler,Publication`; outcome `completed,refused`; scheduler retains actual returned `Ok` or `Error`/raised observation. Publication separates retained-in-memory values from actual artifact references and its own failure. |
+| `EpochResult` | `PlanSha256,Outcome,Termination,Failure,LastCommitted,ProposedArtifacts,Observations,Counters,PendingRequest,Scheduler,Publication`; outcome `completed,refused`; Termination is respectively `BudgetCompleted,Refused`; scheduler retains actual returned `Ok` or `Error`/raised observation. Publication separates retained-in-memory values from actual artifact references and its own failure. |
 
 `Inputs`, source-specific `Call` and `Proposal` use only the finite variants
 `LearnStep,NeuralForward,GammaBlock,GaussianBlock,Projection,Apply,Compensate`:
 their members are the actual admitted inputs and full returns enumerated in
 sections 3-6. No arbitrary `object` is accepted from the wire as an operation.
-Public F# APIs are `tryAdmit(plan) -> Result<AdmittedPlan,Failure>`,
+Public F# APIs are `tryAdmit(plan,admittedForecasts) -> Result<AdmittedPlan,Failure>`,
 `runEpoch(admitted,service,recorder) -> Task<EpochResult>` and
 `tryEncode(result,remainingBytes) -> Result<byte[],PublicationFailure>`.
 `AdmittedPlan` and service/session handles have private constructors under
 ordinary same-process trust. `PublicationFailure` retains the actual result
-in memory plus its encoding failure; it is not a published result. Malformed
-caller admission has zero operations; a numerical refusal returns an actual
-`EpochResult` with its complete observed prefix.
+in memory plus its encoding failure; it is not a published result. A completed
+training epoch returns at most four ProposedArtifacts; a refused training epoch returns no publishable artifacts
+while retaining working weights. `trySelectArtifacts(currentManifest,
+expectedParents,completedTraining) -> Result<SelectedManifest,Failure>` checks
+all expected old versions and atomically returns a new immutable manifest.
+It never changes an active query. Malformed caller admission has zero
+operations; a numerical refusal returns an actual `EpochResult` with its
+complete observed prefix. State.Weights contains only current 57-vectors and
+their vector hashes/base artifact IDs, not repeated provenance/source maps.
+Outputs maps computational node IDs to `{Mean,Variance,SourceSequence}`;
+variance is null for a point NN and the actual admitted variance for a precision
+node. Composite outputs resolve aliases without another stored belief. A
+NeuralForward proposes a new output, then follows the same ACK/atomic swap/Commit
+route before a parent can consume it. Gaussian block application replaces its
+sites and output together; failed publication never silently supplies a new mean.
+`UpdateReceiptSha256` hashes the canonical ordered actual LearnStep ledger for
+that artifact, excluding ProposedArtifacts, manifest selection and final epoch
+publication. Each step names the old/new vector hashes and input artifact ID,
+not the later artifact version. This makes the artifact/receipt dependency
+acyclic; retain that exact ledger preimage.
 
 Each cut contains at most 1024 rows/active IDs/retractions and eight uses/row;
 there are at most 16 child cuts and 32 prior owners. `Node.Inputs` is an ordered
-list of `{SourceNode,SourcePort,TargetSlot}`; the only output port is `mean`,
+list of `{SourceNode,SourcePort,TargetSlot}` with unique target slots 0/1 and
+existing source nodes; the only output port is `mean`,
 with a precision node also retaining its variance in its result. Neural nodes
-have an artifact ID and null prior/unary/children. Precision nodes have null
-artifact/children, prior `{Gaussian,Gammas}` (existing natural fields and
-ordered shape/rate inputs), and unary `{K,C}`. Composites have ordered child
-IDs and null artifact/prior/unary, with explicit exposed port mappings through
-Inputs. Composite aliases do not create a second variable or model factor.
-`SelectedVersions` resolves every neural artifact; no "latest" lookup is allowed.
+have an artifact ID and null prior/unary/children/OutputAlias. Precision nodes
+have null artifact/children/OutputAlias, prior `{Gaussian,Gammas}` (existing
+natural fields and ordered shape/rate inputs), and unary `{K,C}`. Composites
+have ordered child IDs, empty Inputs, null artifact/prior/unary and exactly one
+OutputAlias `{SourceNode,SourcePort}` selecting the `mean` of one declared
+child. No guessed first child, averaging or incoming remapping. Nested aliases
+resolve statically through the declared child map, within depth 3, before DAG
+order is admitted. Children keep their explicit global input edges; aliases do
+not create a second variable, observation or model factor.
+`SelectedVersions` maps each neural artifact ID to exact `{Version,Artifact}`.
+Artifact is the complete ModuleArtifact, with matching Id; its canonical bytes
+must hash to Version. Thus the admitted plan supplies the actual 57 parameters
+and preprocessing, not a hash-only reference requiring an unspecified loader.
+Resolve every neural node through this map; no "latest" lookup is allowed.
 Training's `Artifacts` contains `{Id,ParentVersion,Ports}` requests; every new
 training artifact starts from the fixed initializer, not a warm start that may
 retain withdrawn data. ParentVersion is a publication precondition and lineage.
-Query Sweeps is an integer 1..8; training uses zero. Independently derive the
+In query mode QueryRowId names exactly one active target-null row; require
+FeatureAvailable <= Origin and TargetTime=Origin+Horizon. Other cut rows are
+lineage only and cannot silently supply features. QueryRowId is null in train
+and compensate modes. Compensating replay inherits the exact selected row
+from its retained original query plan; if that row is no longer active, refuse
+rather than choose another row. Query Sweeps is an integer 1..8; training uses zero. Compensation uses zero
+for a direct retained-checkpoint restoration, or 1..8 for active-cut replay;
+Training is null and the new compensation plan names its target revision in
+its initial Compensate operation. Independently derive the
 exact Operations list before admission: training traverses artifact ID, pass
 0..1 and its declared row order; query traverses sweep, topological/ordinal
 node order, neural forward or nonempty Gamma block then Gaussian block.
@@ -97,8 +137,9 @@ Composite and empty Gamma blocks introduce no numerical operation. Each
 operation carries only its fixed kind, node/artifact ID, sweep/pass and row ID
 where applicable; unknown, reordered, duplicate or omitted operations refuse.
 Messages may change under a fixed contribution's state revisions without
-becoming a new immutable evidence row. Compensation carries its target
-revision and replays the same independently derived schedule if needed.
+becoming a new immutable evidence row. Compensation derives one Compensate
+operation followed, when needed, by the same bounded query schedule; it cannot
+accept a producer-selected replay operation list.
 
 ## 3. One bounded actual learner
 
@@ -161,8 +202,76 @@ training row's child forecast must bind a child artifact whose maximum training
 label-availability time is strictly before that row's origin; no in-sample
 child predictions are laundered through a different row ID. The first pool
 uses a chronological inner split for these child forecasts, not an additional
-model-selection search. Dataset/source truth behind these admitted records
-remains an external data-provenance obligation. Query receives target=null;
+model-selection search. Training never evaluates a child implicitly: it consumes
+only precomputed immutable forecasts from completed query epochs. Each exact
+ChildForecast row is `{ArtifactId,TrainingRowId,TargetSlot,BundleSha256,
+QueryRowId,ProducerNode,OutputPort,ProducerVersion,ProducerTrainingCut,
+ObservationSequence,CommitRevision,Mean}`. Slots are unique and ordered;
+missing required rows refuse. Optional absence is explicit. Mean is Bits and
+must equal the selected actual committed output, not a supplied prediction
+with a matching producer verdict.
+
+The coordinator admits each unique bundle from independently supplied raw
+bytes and expected SHA before peer launch. Exact bundle keys are
+`Schema,Plan,Result,ProducerModels,Ancestry`, schema
+`zeta.mixed-epoch.forecast.v1`: Plan is the complete
+query EpochPlan and Result is the complete actual returned EpochResult, with
+its full source-specific observations and nonrecursive artifact references.
+No recorder-helper snapshots or producer-named type instantiation. The bundle
+must represent a completed query with matching plan/source/version/cut/row
+identities, actual successful scheduler return, no failure, and the selected
+observation plus applied/committed revision. Extract neural output from the
+actual NeuralForward result; extract precision output from the actual admitted
+applied marginal. Bind the selected source node and mean port exactly.
+
+Resolve composite aliases before identifying the producer. Neural
+ProducerVersion is its selected artifact hash. For each resolved precision
+producer, ProducerModels contains the exact preimage `{Node,Dependencies,
+SourceBindings}`: Node is its complete admitted node record; Dependencies is
+the ordinal list of `{Id,Kind,Version}` for its resolved direct input producers;
+SourceBindings equals the query plan's full map. A neural dependency's Version
+is its artifact hash and a precision dependency's Version is defined by the
+same acyclic preimage rule. ProducerVersion hashes this exact preimage. Verify
+all preimages against the bundle plan; producer-chosen missing dependencies
+refuse. Composites do not acquire a separate invented parameter version.
+
+Ancestry maps each resolved producer to its exact ordinal list
+`{NodeId,ArtifactVersion,TrainingCut}` for every selected neural ancestor,
+including the producer itself when neural, deduplicated by node identity.
+ProducerTrainingCut hashes that whole list, including the one-cut case;
+it is null only for an empty list. Do not confuse it with one direct cut hash.
+Require every named full cut in Training.ChildCuts, validate each artifact/cut
+association and require every ancestor's maximum label-availability time to
+precede the parent row origin. Preserve reused evidence IDs in those cuts;
+ancestry branches do not create independent data by being separate nodes.
+
+A partial/unanswered peer or an unpublished in-memory result cannot supply a
+forecast. Complete source/process/artifact custody is a separate independently
+admitted caller premise; these raw checks cannot prove a query was executed.
+
+The existing coordinator retains each original bundle through the one Store,
+then constructs a private AdmittedForecast containing its complete evidence
+and a public compact binding equal to ChildForecast. Start carries those exact
+compact bindings inside Training. The peer rechecks row/port/version/value
+correspondence under the selected source-admitted coordinator premise; it does
+not infer full remote evidence from hashes. There is no extra wire protocol or
+hidden training service call. At most 256 unique bundles are admitted, each at
+most 8 MiB and aggregate at most 16 MiB, with bounded reads/decoding before
+expansion and duplicate bytes charged at each input position. Stored copies
+consume the same 256 MiB/4096-artifact budget, not a separate allowance.
+
+Query and training rows have distinct immutable IDs and full content hashes.
+The query Target is null; separately require exact equality of its Features,
+Origin, FeatureAvailable, TargetTime and Horizon projection to the corresponding
+training row. Never reuse an evidence ID with changed target content. Prior
+forecast generation, including fitting, forwards, projection and failed calls,
+must remain charged to the enclosing registered budget before these inputs
+are admitted; artifact reuse does not erase its production cost. Within this
+training epoch P follows only its explicit operations, so it has no child
+solver launch. Missing prior work/custody records refuse that control.
+
+Dataset/source truth behind these admitted records remains an external
+data-provenance obligation. Query receives target=null;
 held-out scoring is separate. Withdrawing a training row invalidates descendant
 lineage and requires a separately budgeted new artifact; no inverse SGD claim.
 
@@ -173,8 +282,11 @@ two feature means, corresponding proper Gamma shape/rate priors, and finite
 k, positive c. Its declared potential is
 `GaussianPrior(z) * exp(k*z-c*exp(z)) * product_i Normal(z;mu_i,1/gamma_i)`
 times the Gamma priors, relative to `dz product_i dgamma_i`.
-Feature means are frozen module outputs; they are not separately observed
-independent evidence. Variational family is `q(z) product_i q(gamma_i)`.
+Every child mean, including another precision node's output, is consumed as
+`RealMoments(Mean=childMean,Variance=0)`: a declared clamped plug-in feature.
+Retaining the child's variance in its receipt does not propagate it through
+this Normal factor. Child forecasts are not separately observed independent
+evidence; message revision changes do not create new evidence rows. Variational family is `q(z) product_i q(gamma_i)`.
 Local supervised neural fitting is not optimization of this model's
 parameter-dependent conditional normalizer.
 
@@ -220,7 +332,12 @@ index, one explicit `Source` yielding `[TimerElapsed 0]` per admitted operation,
 and `drive.Run` with seed=0 and exactly that finite tick budget. Do not call
 `seedSource`, `runDeterministic`, or create an adaptive schedule. The handler
 closure owns an independent append-only ledger and last committed state;
-it retains actual returns/refusals and updates that holder before yielding
+it retains actual returns/refusals before fallible publication. For an update,
+first encode/store its full proposal checkpoint and await the matching actual
+store acknowledgment; on refusal, do not apply. Then swap the admitted state
+and retain the actual apply observation in the holder before publishing Commit.
+A Commit publication failure after that swap preserves the actual new state
+in memory; it cannot be mislabeled an unapplied proposal. The handler yields
 `Error(Failed failureCode)` on failure. `runEpoch` awaits the actual scheduler
 return, retains it, and forms its result from the independent holder. It never
 assumes `Error` contains local scheduler state. M4 must use real `drive` and
@@ -230,8 +347,9 @@ with the existing prefix retained. No cancellation exception is relabeled a
 normal successful stop.
 
 Applied revisions are monotonic and bind expected old state/site hashes.
-Identical repeated attempt content returns its old receipt; changed content
-under that ID conflicts. A stale proposal applies nothing. Compensation is
+Identical repeated contribution-delivery content returns its old receipt;
+changed content under that ID conflicts. This is the internal contribution
+idempotency law, not permission to repeat a bridge request or resume a session. A stale proposal applies nothing. Compensation is
 an append-only revision: select the retained pre-update checkpoint when it has
 no descendants; otherwise replay the active cut from that checkpoint through
 the same declared operations under a new epoch identity and inherited outer
@@ -281,13 +399,34 @@ stdout contains protocol only and stderr is separately capped. Exact outer keys:
 | --- | --- |
 | Coordinator `Start` | `Kind,Schema,SessionId,Plan,PlanSha256,ServiceSha256,ExpectedBindings`; schema `zeta.mixed-epoch.peer.v1`. |
 | Peer `Ready` | `Kind,Schema,SessionId,PlanSha256,ServiceSha256`; sent once after admission, before numerical entry. |
-| Peer `Checkpoint` | `Kind,Schema,SessionId,Sequence,Observation,LastRevision,StateSha256`; full bounded observation, not only a producer verdict. |
+| Peer `Checkpoint` | `Kind,Schema,SessionId,Sequence,Observation,LastRevision,StateSha256`; full bounded pre-apply observation, AppliedRevision=null, with the old committed revision/hash. Nonmutating operations also await storage ACK. |
 | Peer `ProjectionRequest` | `Kind,Schema,SessionId,Sequence,RequestId,InputRevision,Base,TargetBits,RawInputHex,InputSha256,CaseId,BindingsSha256,Remaining`; remaining is the full named session counter allowance. |
+| Coordinator `CheckpointAck` | `Kind,Schema,SessionId,Sequence,CheckpointSha256,Outcome`; Outcome is `{Kind:'stored',Artifact}` or `{Kind:'refused',Failure}`. Artifact uses exact `File,Encoding,Bytes,Sha256,StoredBytes,StoredSha256` from the existing lossless descriptor. Hash the complete original checkpoint frame including LF. |
+| Peer `Commit` | `Kind,Schema,SessionId,Sequence,CheckpointSha256,AppliedRevision,LastCommitted,Counters`; this reports an actual state swap after its proposal ACK. |
 | Coordinator `ProjectionResponse` | `Kind,Schema,SessionId,Sequence,RequestId,InputSha256,BindingsSha256,ServiceSha256,Native,Certificate,Failure`; `Native` is the full encoded public `NativeObservation` or null, `Certificate` is the full actual reference API return or null. No `Verified=true` substitute. |
-| Peer `Terminal` | `Kind,Schema,SessionId,Outcome,Failure,Counters,LastCommitted,LedgerCount,LedgerSha256,PendingRequest,Publication`; a bounded reference summary derived from an actually returned `EpochResult`, never a duplicate of its full recorder snapshots. |
+| Peer `Terminal` | `Kind,Schema,SessionId,Outcome,Termination,Failure,Counters,LastCommitted,LedgerCount,LedgerSha256,PendingRequest,Publication`; a bounded reference summary derived from an actually returned `EpochResult`, never a duplicate of its full recorder snapshots. |
 
-Requests are built internally from the fixed schedule; sequences are 1-based,
-strictly ordered, with one outstanding request and exact response correspondence.
+The coordinator stores a complete checkpoint exclusively before sending a
+stored ACK, retaining the actual Store result first. Peer awaits that matching
+ACK before applying; wrong session/hash/sequence, missing ACK or refused ACK
+stops the epoch. Stored proposal is not observed application: only a real
+Commit frame advances the coordinator's observed committed prefix. If Commit
+is lost, retain the stored proposal and last observed committed state with
+application status unknown. Neither endpoint invents the missing return.
+Commit frames are retained raw in memory and stored in fixed pages of at most
+16 frames or 1 MiB, flushed before a projection request or terminal and at the
+page limit. Before acknowledging the next checkpoint, flush any full page;
+on a failed write withhold that ACK, stop requests and close the peer while
+retaining the actual pending page and observed committed prefix. The peer may
+have returned the next proposal before observing that failure; retain it
+without applying it. No observer claims a rollback of an already observed
+Commit. These pages do not allocate one Store artifact per scalar or duplicate full Store
+snapshots. Learn/forward proposal checkpoints remain individual records.
+
+Requests are built internally from the fixed schedule; sequence is 1-based
+and counts peer Checkpoint and ProjectionRequest operations only. ACK/Commit
+reuse their checkpoint sequence; a response reuses its request sequence.
+There is exactly one outstanding request or checkpoint acknowledgment.
 The raw native input uses the unchanged scalar input schema/default profile;
 binary64 target values are rendered with invariant round-trip decimals,
 lowercase `e`, and explicit negative zero, then independently checked to round
@@ -320,11 +459,12 @@ retention bounds, not peak-memory or hostile-runtime guarantees.
 | --- | --- |
 | Topology | 8 total module instances including composites; depth 3; at most 4 neural and 4 precision nodes within that total; 32 scalar variables; 64 directed sites; 2 data inputs/node; reject cycles. |
 | Query work | At most 8 sweeps, 4096 scheduler operations, 32 projection requests, 256 checked kernel entries and 1024 NN forwards, all counted before actual entry. No zero-work convergence shortcut. |
+| Total NN work | At most 4096 forward evaluations/session, including the one old-weight evaluation inside each training step; query additionally has the 1024 bound above. Count the nested forward as NN work, not as a second training example or second scheduler operation. |
 | Training | At most 256 distinct rows/artifact, exactly 2 passes, at most 4 artifacts and 2048 SGD attempts/session. An attempted step counts even if it refuses before commit. No extra hyperparameter/seed search. |
 | Parameters | Exactly 57 weights plus 16 preprocessing scalars/artifact; at most 292 fitted scalars / 2336 binary64 bytes across four artifacts. Each canonical artifact at most 64 KiB including bounded provenance. At most 64 additional fixed model scalars. |
 | Input | Start/plan at most 1 MiB; native input and bindings each at most 64 KiB; projection request frame at most 256 KiB; all incoming IDs/lists admitted before expansion. |
-| Per-return/frame | Learn/forward/checkpoint at most 64 KiB; native raw and reference result each retain their existing 2 MiB bound; full projection response frame at most 12 MiB; terminal summary at most 1 MiB. Before hex/tree expansion the encoder gets the smaller of this cap and remaining session allowance. |
-| Transcript | Sum of original admitted/sent protocol bytes at most 64 MiB, with 1 MiB of that reserved for the terminal; at most 4096 checkpoint/response records. Repeated bytes count at each position. A completed return survives later encoding failure in memory with explicit durable-prefix status. |
+| Per-return/frame | Learn/forward/non-projection Checkpoint, ACK and Commit at most 64 KiB; native raw and reference result each retain their existing 2 MiB bound; projection response frame at most 12 MiB; a projection-bearing Checkpoint at most 16 MiB; terminal at most 1 MiB. Checkpoint embeds the structured actual service response without hex-encoding that already encoded frame again; original response bytes are retained separately and bound by their hash. No truncation. Before expansion the encoder gets the smaller of the per-frame cap and remaining allowance. |
+| Transcript | Sum of original admitted/sent protocol bytes at most 64 MiB, with 1 MiB of that reserved for the terminal; at most 16384 total protocol frames, including ACK and Commit. Repeated bytes, including projection response/checkpoint duplication, count at each position. A completed return survives later encoding failure in memory with explicit durable-prefix status. |
 | Process | One peer launch, one native preparation, at most 32 native launch attempts, 32 certificate entries and 32 nested reference entries; inherited scalar 256 midpoint and 80/160/320 context limits unchanged. Native timeout 30 seconds with existing cleanup outcomes. Peer stderr cap 64 KiB; process stdout is the bounded protocol. |
 | Elapsed | 300-second cooperative session deadline, checked before/after each operation and while awaiting peer transport; the native helper has its own 30-second bound. A pure reference call is bounded by its existing operation/context limits, not preempted inside Decimal. Deadline overshoot and incomplete child cleanup remain actual observations, not a claimed hard real-time guarantee. |
 | Owned retention | One existing Store, combined raw-plus-stored 256 MiB, 4096 artifact slots, fixed 8 MiB combined final-journal reserve inside the total. Reserve all external owned native files before their creation as below; no refunds, overwrites or retry of failed paths. |
@@ -373,18 +513,26 @@ retained. M4 includes two real bridge calls after source review/archive.
 | M2 rule/model | Current z mean 2, variance 3 and clamped mu=-1 yield residual 12/rate 6; substituting cavity mean 0/variance 1 yields residual 2/rate 1. Gamma prior(2,3) plus correct site has shape 5/2/rate 9. Mutate the declared rule input role, Normal half-log-power or Exp/Log identity; reject. A claimed normalized-likelihood objective lacking its model-dependent normalizer is not the selected local supervised learner. |
 | M3 proper/site/damping | Target(t,u,k,c)=(1,3/2,-3/4,1), projected(m,v)=(-1/4,1/2), base(eta,t)=(3/2,1) gives site(-2,1). Belief-as-site produces(1,3) and must fail the expected reconstruction. Alpha=1/2 from neutral yields proper(eta,t)=(1/2,3/2), not the minimizer. Also distinguish improper site/proper total from improper total; reject nonfinite/bad alpha and lost represented shape. These are analytic controls until executed. |
 | M4 actual retention/bridge | Use real SoftScheduler.drive: apply an initial block, then fail the next; retain the first state despite outer Error. Inject encoding failure after an actual return and premature peer EOF with an outstanding request. Run one actual bridge request for M3's positive target and one for t='1e-300',u='0',k='0',c='1', default scalar budgets. The latter must retain actual native candidate/reference IterationLimit/certificate NoRootEnclosure and apply zero unary updates, or report the changed actual outcome as a failed control. The nested reference is not a separate top-level reference run. |
-| M5 learner/epoch | One explicit four-row training fixture exercises nonzero features/targets; retain the full gradient and all 57 replacements. Independently differentiate half squared loss on paper/reference or finite differences for one hidden and one output parameter; mutate hidden gradient to use a newly updated V. Test late arithmetic/encoding failure, child-version swap, stale apply and validation/test training-row refusal. Parameter movement alone cannot pass. |
-| M6 structure/dependence | Equivalent composite flattening preserves model, port order, artifacts and outputs under a predeclared numerical comparison. Duplicate expert/prior/training lineage cannot mint independent observations. Present a changed factorization as an exact refactor: reject its model identity. |
+| M5 learner/epoch | One explicit four-row training fixture exercises nonzero features/targets; retain the full gradient and all 57 replacements. Check the full displayed analytic gradient and the fixed central-difference discriminator below; mutate hidden gradient to use a newly updated V. Test late arithmetic/encoding failure, child-version swap, stale apply and validation/test training-row refusal. Parameter movement alone cannot pass. |
+| M6 structure/dependence | Equivalent composite flattening must match output bits and numerical site/marginal bits exactly under its explicit OutputAlias resolution, with the same model, arithmetic and operation order. Duplicate expert/prior/training lineage cannot mint independent observations. Present a changed factorization as an exact refactor: reject its model identity. |
 | M7 compensation | Compensate an applied contribution and compare with a fresh active-cut replay from the same checkpoint. Reject retracting an unapplied proposal; preserve spent work and history. Training-data withdrawal invalidates descendants, never uses a weight quotient. |
 | M8 termination/null | Retain a large undamped change with small-alpha applied change and refuse any inferred fixed-point claim. Compare the learned four-row control with frozen initial weights and fixed label permutation; no held-out labels used. A fixture without learning signal is a failed discrimination, not evidence of a learned system. |
 
 The live M4 plan is one sweep over two zero-feature precision nodes, in order:
-`control/positive` has base(eta,t)=(3/2,1), k=-3/4,c=1;
-`control/cancellation` has base(eta,t)=(0,1e-300), k=0,c=1. Empty Gamma blocks
+`control/0-positive` has base(eta,t)=(3/2,1), k=-3/4,c=1;
+`control/1-cancellation` has base(eta,t)=(0,1e-300), k=0,c=1. Empty Gamma blocks
 are skipped. Thus one actual peer session must retain the first applied
 Gaussian block when the second projection refuses, using exactly two native
 and two certificate calls with their actual nested reference work. Report any
 different outcome rather than changing inputs or budgets to force the control.
+
+M6 retains both full receipts. Compare numeric work counts and all numerical
+bits after the independently declared alias/instance-ID mapping. Artifact
+versions, source/data hashes, contribution/prior identities and dependency
+sets remain equal; only the explicit structural/session/path mapping may
+rename identity fields. Protocol byte counts and process observations are
+retained as actual values, not normalized into equality. No numeric tolerance,
+unlisted field erasure or producer-selected mapping is allowed.
 
 M5/M8's sole four-row control has raw observations all zero except the first
 coordinate `[-1,-1/2,1/2,1]`, targets equal to that coordinate, absent children,
@@ -392,8 +540,37 @@ IDs `control/learn/0` through `control/learn/3`, origins/feature times
 0,2,4,6, horizon 1, target/label-availability times 1,3,5,7, split=train and
 training cut end 7. No missing labels. Preprocessing is fitted only on these
 four rows. The fixed permutation swaps targets 0<->3 and 1<->2. Use no RNG.
-Source tests must assert the independently derived gradient rather than just
-fit direction; local training-loss reduction is not a held-out performance claim.
+At the initializer and first preprocessed row, independently evaluate the loss
+at plus/minus h for W[0,0] and V[0], with h=2^-20, holding all other parameters
+at that same old vector. Compare each central difference with its analytic
+gradient using absolute error <= 1e-7 + 1e-6*abs(central difference). Count the
+four actual forward/loss entries, without SGD updates. The old-V mutant must
+fail this same check, or the discriminator fails; do not loosen its tolerance.
+Source tests assert the full analytic gradient and both numerical checks rather
+than just fit direction. Local loss reduction is not held-out performance.
+
+M5 also exercises a real child-to-parent receipt path using only these four
+rows. Fit a child on rows 0/1 (cut end 3); query its frozen artifact on distinct
+target-hidden rows `control/child-query/2` and `/3`, with origins 4/6 and the
+last two feature vectors; fit a parent on training rows 2/3 (cut end 7), with
+slot 0 required and slot 1 absent. Child scaler mean=-3/4 and scale=1/4 imply
+processed query values 5 and 7, within 8. The latest child label 3 precedes both
+query origins. The two fits each use four SGD attempts; combined new work is
+eight SGD attempts and ten forwards, including the two separate frozen child
+queries, with zero projection requests. Retain both full query bundles and
+parent inputs; corrupt target-hidden row association, child version, mean,
+commit or generation work record and refuse. This is a composition control,
+not the later benchmark or a new data fixture.
+
+This composition subcontrol uses four finite non-resumable peer sessions
+(child train, two single-row queries, parent train), with one enclosing
+coordinator, Store and budget ledger; finalize that Store only after the whole
+subcontrol stops. Each session has its own unique identity. Each session still uses the exact per-session protocol/caps;
+all four share at most the same 64 MiB transcript, 256 MiB retention and
+300-second cooperative outer allowance. Count all four launches explicitly;
+no session or child resets the enclosing work/byte ledger. Source tests may
+exercise pure gradients separately; those are counted separately and cannot
+substitute for this actual retained composed route.
 
 ## 8. Exit to the chronological learned comparison
 
@@ -458,3 +635,28 @@ manifest or a claim to have executed those entrypoints.
 | `src/Research.FSharp/PrecisionGateProjectionReplay.fsx` | 12723 | `C1174406CC4E7D3164714C536207AD2BD72F085A38A3A816C8BC1B14ADE917B2` |
 | `src/Bayesian/Bayesian.fsproj` | 3329 | `00A6A4C62843516AF63D7DAE6F712732A4142FD4691B180C2CEEAB853B40BB6C` |
 | `tests/Bayesian.Tests/Bayesian.Tests.fsproj` | 3770 | `DD863D702023CE99CED1C1E7CDA5B5E4732D7EAE0EC10A3006B4176C107E3736` |
+
+## 11. Draft review history
+
+Initial source-contract draft `31b29e17e` is retained unchanged. Root requested
+explicit composite output aliases, exact M6 bit comparison, clamped child-mean
+semantics and a projection-checkpoint cap consistent with the full return. The
+author identified the missing store-ACK-before-apply step; the correction adds
+that ACK and observed Commit, with unknown application on lost Commit. A
+training-internal forward counter clarification avoids conflating query and
+whole-session allowances. Independent reviewer predictor_audit found that the
+original positive/cancellation names sort in the opposite order to M4's promised
+applied prefix. The correction uses control/0-positive and control/1-cancellation
+under the unchanged ordinal scheduler. Artifact-update hash preimages, commit
+page failure handling and the M5 derivative tolerance are now explicit. These
+are design repairs, not test or numerical results. The reviewer also identified
+unspecified training child-forecast generation and the missing selected query
+row. Root accepted explicit QueryRowId and source-admitted precomputed bundles,
+with target-hidden row correspondence and prior generation charged externally;
+the same four-row M5 control now exercises this actual composition route.
+Final review also fixed explicit artifact bytes in SelectedVersions, the
+precision-producer model hash preimage and a sorted ancestry-cut manifest;
+these avoid unspecified loaders or treating multiple training cuts as one.
+The first two documentation gates passed their retained draft bytes; the
+normal push gate binds the final committed correction separately. Only the two owned new
+documents change.
