@@ -354,6 +354,16 @@ verifies 1c06cfcc7115f1557a9212df966f06243cbbc756 on the dedicated review
 branch. That observation is a preservation result for that exact review head,
 not validation of this later appended text.
 
+Reviewer packaging correction: commit 9cf23e23ea9dfb8c130e90a207a09ed7eef9caa1
+initially stored the exact remote push text as a plain log. Diff-check reported
+its trailing whitespace, but my compound shell continued to the commit.
+The follow-up stores those exact bytes as lossless gzip, without stripping or
+rewriting the original commit. The preservation manifest records this error
+and a separately captured replay of the diagnostic against the original cut.
+Remaining mutation blocks stop on failed intermediate checks. This is a
+reviewer log-packaging/control-flow correction, not a change to the successor
+source or independent audit results.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
