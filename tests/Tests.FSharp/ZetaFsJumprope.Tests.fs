@@ -338,6 +338,35 @@ let ``buildFromPrev of a mid-chunk truncate matches full build and skips the fir
     | None -> ()
 
 [<Fact>]
+let ``buildFromPrev of a mid-file delete matches full build and skips the first prefix chunk`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte ((i * 131) ^^^ (i >>> 8)))
+    let after = Array.zeroCreate (before.Length - 100)
+    Array.Copy(before, 0, after, 0, 250_000)
+    Array.Copy(before, 250_100, after, 250_000, before.Length - 250_100)
+    Assert.Equal(before.[0], after.[0])
+    Assert.Equal(before.[249_999], after.[249_999])
+    Assert.Equal(before.[250_100], after.[250_000])
+    let ra = ZetaFsJumprope.buildV1 before
+    let prev = ZetaFsJumprope.prevOf ra
+    let firstChunk, firstSpan = ra.Leaves.[0]
+    let changed = ZetaFsJumprope.firstChangedWindow prev after
+    Assert.True(
+        changed > 0 && firstSpan > 0UL,
+        sprintf "firstChangedWindow=%d firstSpan=%d" changed firstSpan
+    )
+    let full = ZetaFsJumprope.buildV1 after
+    let reused = ZetaFsJumprope.buildFromPrev prev after
+    Assert.Equal(full.Content.ToHex(), reused.Content.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), reused.Content.ToHex())
+    match ZetaFsJumprope.tryGetPayload full.Cas firstChunk with
+    | None -> Assert.Fail("full build of the delete must still hold the unchanged first chunk")
+    | Some _ -> ()
+    match ZetaFsJumprope.tryGetPayload reused.Cas firstChunk with
+    | Some _ -> Assert.Fail("mid-file delete recopied the first prefix chunk")
+    | None -> ()
+
+[<Fact>]
 let ``pread copies into a caller buffer without a full materialize`` () =
     ensureHasher ()
     let bytes = Array.init 50_000 (fun i -> byte (i % 251))
