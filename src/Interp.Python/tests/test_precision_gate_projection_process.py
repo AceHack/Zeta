@@ -10,6 +10,7 @@ import sys
 import tempfile
 from dataclasses import asdict, replace
 from pathlib import Path
+from typing import BinaryIO
 
 import pytest
 from zeta_interp import precision_gate_projection_process as p
@@ -196,8 +197,8 @@ class FakeChild:
         self.pid = (
             123  # Synthetic Popen seam, never an observed operating-system child.
         )
-        self.stdout = tempfile.TemporaryFile("w+b")  # noqa: SIM115 - driver owns fixture close
-        self.stderr = tempfile.TemporaryFile("w+b")  # noqa: SIM115 - driver owns fixture close
+        self.stdout: BinaryIO = tempfile.TemporaryFile("w+b")  # noqa: SIM115 - driver owns fixture close
+        self.stderr: BinaryIO = tempfile.TemporaryFile("w+b")  # noqa: SIM115 - driver owns fixture close
         self.poll_error = poll_error
         self.join_error = join_error
         self.events: list[str] = []
@@ -467,3 +468,85 @@ def test_existing_output_directory_is_not_replaced(tmp_path: Path) -> None:
     assert not actual.Complete and not actual.LaunchAttempted
     assert actual.Failure is not None and actual.Failure.Code == "FileExistsError"
     assert marker.read_bytes() == b"already owned" and actual.CreatedFiles == ()
+
+
+class UnjoinedReader:
+    def __init__(self, **_kwargs: object) -> None:
+        pass
+
+    def start(self) -> None:
+        pass
+
+    def join(self, *, timeout: float) -> None:
+        raise OSError("synthetic reader cannot join")
+
+    def is_alive(self) -> bool:
+        return True
+
+
+def test_unjoined_reader_keeps_its_real_pipe_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import threading
+
+    child = FakeChild(poll_error=False, join_error=False)
+    monkeypatch.setattr(subprocess, "Popen", lambda *_args, **_kwargs: child)
+    monkeypatch.setattr(threading, "Thread", UnjoinedReader)
+    try:
+        actual = p._capture(("synthetic",), tmp_path, 1.0)
+        assert actual.DirectChildClosed and not actual.ReadersClosed
+        assert not child.stdout.closed and not child.stderr.closed
+        assert actual.Failure is not None
+    finally:
+        child.stdout.close()
+        child.stderr.close()
+
+
+def test_output_bytes_survive_real_close_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    prepared = prepare(tmp_path)
+    output = tmp_path / "attempt/receipt.json"
+    original_close = os.close
+    closed: list[int] = []
+
+    def close(fd: int) -> None:
+        target = output.exists() and os.fstat(fd).st_ino == output.stat().st_ino
+        original_close(fd)
+        if target:
+            closed.append(fd)
+            raise OSError("receipt close after actual read")
+
+    def capture(
+        argv: tuple[str, ...], _cwd: Path, _timeout: float
+    ) -> p.NativeObservation:
+        return synthetic_capture(prepared, argv)
+
+    monkeypatch.setattr(p, "_capture", capture)
+    monkeypatch.setattr(os, "close", close)
+    actual = p.launch_native(
+        prepared, b"{}", identity(b"{}").Sha256, "fixture", {}, tmp_path / "attempt"
+    )
+    assert not actual.Complete and actual.Failure is not None
+    assert actual.Receipt == output.read_bytes()
+    assert actual.Output is not None and actual.Producer is not None
+    assert len(closed) == 1
+    assert actual.Failure.Code == "FileClose"
+    assert all(d.After is not None for d in actual.Dependencies)
+
+
+def test_reader_can_cancel_when_owned_pipe_writer_remains_open(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    child = FakeChild(poll_error=False, join_error=False)
+    child.stdout.close()
+    read_fd, write_fd = os.pipe()
+    child.stdout = os.fdopen(read_fd, "rb")
+    monkeypatch.setattr(subprocess, "Popen", lambda *_args, **_kwargs: child)
+    try:
+        actual = p._capture(("synthetic",), tmp_path, 1.0)
+        assert actual.DirectChildClosed and actual.ReadersClosed
+        assert not actual.StdoutEof and child.stdout.closed
+        assert actual.Failure is not None and actual.Failure.Code == "IncompleteStreams"
+    finally:
+        os.close(write_fd)

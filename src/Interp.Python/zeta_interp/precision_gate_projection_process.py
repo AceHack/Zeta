@@ -13,6 +13,7 @@ import json
 import math
 import os
 import re
+import select
 import stat
 import subprocess
 import threading
@@ -160,7 +161,12 @@ def _observation(path: Path, raw: bytes) -> FileObservation:
 
 
 def _read(
-    path: Path, cap: int, state: _State, seen: Callable[[FileObservation], None]
+    path: Path,
+    cap: int,
+    state: _State,
+    seen: Callable[[FileObservation], None],
+    *,
+    available: Callable[[bytes], None] | None = None,
 ) -> bytes:
     """Same regular descriptor, finite initial size plus one, before hashing."""
     descriptor: int | None = None
@@ -204,6 +210,8 @@ def _read(
         ):
             state.refuse("FileChanged", "descriptor metadata changed during read")
         raw = b"".join(chunks)
+        if available is not None:
+            available(raw)
         seen(_observation(path, raw))
     except _Stop:
         pass
@@ -381,14 +389,21 @@ class _Pump:
         self.eof = False
         self.error: str | None = None
         self.exceeded = False
+        self.stop = threading.Event()
         self.thread = threading.Thread(target=self.read, daemon=True)
 
     def read(self) -> None:
         try:
-            while len(self.raw) <= self.cap:
-                chunk = os.read(
-                    self.pipe.fileno(), min(4096, self.cap + 1 - len(self.raw))
-                )
+            descriptor = self.pipe.fileno()
+            os.set_blocking(descriptor, False)
+            while len(self.raw) <= self.cap and not self.stop.is_set():
+                ready, _, _ = select.select([descriptor], [], [], 0.05)
+                if not ready:
+                    continue
+                try:
+                    chunk = os.read(descriptor, min(4096, self.cap + 1 - len(self.raw)))
+                except BlockingIOError:
+                    continue
                 if not chunk:
                     self.eof = True
                     return
@@ -474,9 +489,23 @@ def _capture(
                     pump.thread.join(timeout=1.0)
 
                 state.close(join_reader, "ReaderJoin")
-            for pipe in (child.stdout, child.stderr):
-                if pipe is not None:
-                    state.close(pipe.close, "PipeClose")
+                if pump.thread.is_alive():
+                    pump.stop.set()
+                    state.close(join_reader, "ReaderCancelJoin")
+                if pump.thread.is_alive():
+                    state.cleanup.append(
+                        _error(
+                            "cleanup",
+                            "ReaderAlive",
+                            "reader still owns its pipe; it was not closed",
+                        )
+                    )
+                else:
+                    state.close(pump.pipe.close, "PipeClose")
+            if not pumps:
+                for pipe in (child.stdout, child.stderr):
+                    if pipe is not None:
+                        state.close(pipe.close, "UnstartedPipeClose")
             outcome = replace(
                 outcome,
                 ReadersClosed=len(pumps) == 2
@@ -828,8 +857,18 @@ def launch_native(
                 nonlocal output
                 output = value
 
+            def receipt_available(raw: bytes) -> None:
+                nonlocal receipt
+                receipt = raw
+
             try:
-                receipt = _read(output_path, RECEIPT_CAP, state, output_seen)
+                _read(
+                    output_path,
+                    RECEIPT_CAP,
+                    state,
+                    output_seen,
+                    available=receipt_available,
+                )
             except _Stop:
                 pass
             finally:
