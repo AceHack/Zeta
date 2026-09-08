@@ -1,0 +1,13 @@
+{
+  "SourceBytes": 7363,
+  "SourceSha256": "8622274f5bd9d3fad60ca6049c0017315b01cd1c3edfde133c38439c4ce258d0",
+  "Exit": 1,
+  "StdoutBytes": 0,
+  "EvidenceKind": "Tool-observed failure summary; raw stderr was not separately captured",
+  "Failure": "git merge-base returned 128: Not a valid commit name 347223c09f09e58d47108377ca7326c3f4447edf in oracle publication writer. Original head exists in the separate compiled publication writer.",
+  "Corrections": [
+    "Route PR 17045 Git object and original-file checks to its owning earlier publication writer.",
+    "Use the observed four-backtick transcript delimiter, not a three-backtick assumption."
+  ],
+  "NoArchiveMutation": true
+}

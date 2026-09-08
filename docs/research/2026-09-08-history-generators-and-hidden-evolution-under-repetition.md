@@ -114,3 +114,7 @@ The [independent source and learning review](2026-09-08-magnet-history-generator
 verifies the supplied transcript bytes and corrected consolidation/control
 wording. It traces existing ARC layers and scoped local outcome learning,
 while distinguishing these from an integrated ARC-AGI-3 evaluation.
+
+The later [main publication receipt](magnet-history/2026-09-08/pr-17045/README.md)
+verifies the exact transcript payload, all changed paths and the completed CI
+for PR 17045. This publication adds no empirical learning claim.

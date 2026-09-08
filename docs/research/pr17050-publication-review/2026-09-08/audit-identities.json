@@ -1,0 +1,31 @@
+{
+  "Exit": 0,
+  "StderrBytes": 0,
+  "Records": [
+    {
+      "File": "audit.py",
+      "Bytes": 7619,
+      "Sha256": "b3709b88c6af3523ece28d56e57a7a8d75bb357df78d1f8314cce03cb6a7ced9"
+    },
+    {
+      "File": "audit-observation.json",
+      "Bytes": 5715,
+      "Sha256": "73a6488c9547655c4b64a81d1f14b9c88dfa826379d317bae6b5a59946e9c579"
+    },
+    {
+      "File": "audit-stderr.gz",
+      "Bytes": 20,
+      "Sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "audit-first.py.gz",
+      "Bytes": 2920,
+      "Sha256": "3bf1d43be0ba75fdf11a791a1a47e3ede0ad4e12bc3b7b1c937a7387710b60f3"
+    },
+    {
+      "File": "first-attempt.json",
+      "Bytes": 687,
+      "Sha256": "88abc24395f61a2d8dd5112d77f622d5e55ed77b48c4e71934bb4e243ccc6576"
+    }
+  ]
+}

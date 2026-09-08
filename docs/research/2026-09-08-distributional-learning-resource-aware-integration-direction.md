@@ -17,14 +17,16 @@ the next research investment. His second clarification makes the common
 problem explicit: **finite resources, an open-ended set of possible events,
 and uncertainty retained while deciding what to compute and do next**.
 
-This extends the [active compiled-controller work](../handoffs/2026-09-07-vera-compiled-controller-continuation.md).
-It does not change that experiment's frozen protocol or unlock its registered
-streams. The original hidden-switch study is a known-model control result;
-the compiled follow-on is intended to test certified execution cost, with
-runtime admission and registered cost evidence still pending. Neither establishes
-learned world-model quality. The new learning comparisons need separate
-registration, source archives and held-out data. This program belongs in the
-control plane; it does not move learning into the ordinary data-plane hot path.
+The [compiled-controller handoff](../handoffs/2026-09-07-vera-compiled-controller-continuation.md)
+records the current disposition: further compiled-controller investment is
+paused. Its conditional resume contract remains preserved; this direction
+neither resumes it nor unlocks registered streams 9307 and 9409. The original
+hidden-switch study is a known-model control result, and the compiled work
+does not establish learned world-model quality. Current investment is in
+distributional learning prerequisites followed by separately registered,
+chronological comparisons. Those comparisons need source archives and
+held-out data. This program belongs in the control plane; it does not move
+learning into the ordinary data-plane hot path.
 
 Aaron's further clarification makes the architectural target explicit: a
 **composable Bayesian/probabilistic graph whose modules can contain neural
