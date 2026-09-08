@@ -1,0 +1,156 @@
+{
+  "Schema": "zeta.mixed-message-epoch.independent-review.v1",
+  "ProposalCommit": "9928404da6cf7ab1c5e2b251ae7afe73bbe2eda0",
+  "SourceCommit": "15c634e096674c757f3656c0b8ff9aaa0b5cf203",
+  "SourceFilesVerified": 24,
+  "SourceBytesVerified": 578099,
+  "PriorReportBytesVerified": 5567,
+  "FirstAudit": {
+    "ExitCode": 1,
+    "Cause": "Referenced report commit unavailable in local Git stores; proposed document and census prefix retained"
+  },
+  "SecondAudit": {
+    "ExitCode": 0,
+    "PriorReportSource": "exact immutable raw.githubusercontent.com URL"
+  },
+  "SolverOrTrainingRun": false,
+  "RawNumericalResultsReplayed": false,
+  "Records": [
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/2026-09-08-mixed-message-learned-module-epoch-proposal.md",
+      "File": "001-mixed-message-epoch-review-1-2026-09-08-mixed-message-learned-module-epoch-proposal.md.gz",
+      "Bytes": 23841,
+      "Sha256": "4db5a6223c0abcffc9d8918afb8d64cf48cb51178bfc165c1db934f748e5158f",
+      "StoredBytes": 9723,
+      "StoredSha256": "fbdb44ba7f90260f7e68be421ff4e87ea28cce38b2433dcf9a19e7ee745a2136"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/2026-09-08-mixed-message-learned-module-epoch-source-pins.json",
+      "File": "002-mixed-message-epoch-review-1-2026-09-08-mixed-message-learned-module-epoch-source-pins.json.gz",
+      "Bytes": 7159,
+      "Sha256": "f23598b7ee2249f774d916704a7c98e8fcbe03737c5f3499bcc0dda1918a7fd3",
+      "StoredBytes": 3011,
+      "StoredSha256": "1e20b2cc6ef7781b8120e2a7dff93de70e5c63d3dddc910156493628e6e0796f"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/audit.py",
+      "File": "003-mixed-message-epoch-review-1-audit.py.gz",
+      "Bytes": 2471,
+      "Sha256": "015bea0c1f5be8355caa3bafe44e1d0092873019bead429992df2234bd54c5c6",
+      "StoredBytes": 1036,
+      "StoredSha256": "2330424d2a7b892c640c0a1f251f7156abf527bf21fff54d9fa4fa1a29815280"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/completion.json",
+      "File": "004-mixed-message-epoch-review-1-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "f6edee7a40a6657ca47bc2259466d6ef256d21fc5dcf0ddcb02d64571ee591f0",
+      "StoredBytes": 88,
+      "StoredSha256": "7068691a029df96f1c78eb1389623a69387b0e43b1ed5220971aecc49aeddfa9"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/invocation.json",
+      "File": "005-mixed-message-epoch-review-1-invocation.json.gz",
+      "Bytes": 204,
+      "Sha256": "140d439265e9ef774c71f572fe8c215818f460620d442d60817c7b765fa6de81",
+      "StoredBytes": 190,
+      "StoredSha256": "801f3974dc0530f4a0e1764656a5fc5f09acb08fa913cbd123db872491e091bc"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/stderr",
+      "File": "006-mixed-message-epoch-review-1-stderr.gz",
+      "Bytes": 1105,
+      "Sha256": "e52a4397007740fbc038114f9f98666f9702cf918b05fcf7766f41736ef6650f",
+      "StoredBytes": 544,
+      "StoredSha256": "fb12f0ca0197d73bfbd2061983dd2c40e8e0a5895394b259bbd4be4fa55fbde6"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-1/stdout",
+      "File": "007-mixed-message-epoch-review-1-stdout.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/2026-09-08-mixed-message-learned-module-epoch-proposal.md",
+      "File": "008-mixed-message-epoch-review-2-2026-09-08-mixed-message-learned-module-epoch-proposal.md.gz",
+      "Bytes": 23841,
+      "Sha256": "4db5a6223c0abcffc9d8918afb8d64cf48cb51178bfc165c1db934f748e5158f",
+      "StoredBytes": 9723,
+      "StoredSha256": "fbdb44ba7f90260f7e68be421ff4e87ea28cce38b2433dcf9a19e7ee745a2136"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/2026-09-08-mixed-message-learned-module-epoch-source-pins.json",
+      "File": "009-mixed-message-epoch-review-2-2026-09-08-mixed-message-learned-module-epoch-source-pins.json.gz",
+      "Bytes": 7159,
+      "Sha256": "f23598b7ee2249f774d916704a7c98e8fcbe03737c5f3499bcc0dda1918a7fd3",
+      "StoredBytes": 3011,
+      "StoredSha256": "1e20b2cc6ef7781b8120e2a7dff93de70e5c63d3dddc910156493628e6e0796f"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/audit.py",
+      "File": "010-mixed-message-epoch-review-2-audit.py.gz",
+      "Bytes": 2886,
+      "Sha256": "1bbf71d0aa68dd45e389330b452d44e2bc72eb187b3f3f82f47544c06ea3052d",
+      "StoredBytes": 1215,
+      "StoredSha256": "110e6200ebd2e5f984898e66483c01691189297cce781c2f6135ea15f9f92c3d"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/completion.json",
+      "File": "011-mixed-message-epoch-review-2-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "3aabf773166b65b2ddbc3414febbaa97ef7b169630133a45fc52096f34d947e6",
+      "StoredBytes": 88,
+      "StoredSha256": "85351d415ef8850234aa5698e457a2889f7e0e32e8450c3b966bde5982aad43c"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/invocation.json",
+      "File": "012-mixed-message-epoch-review-2-invocation.json.gz",
+      "Bytes": 204,
+      "Sha256": "3b7cc0a8e3c86cb7e237b27b106aebfb34812b91027fe441da91087fa51f65f1",
+      "StoredBytes": 189,
+      "StoredSha256": "f0738d976948ec00e3f6369a5290c6ddb63b1d7bdf998bb86df4e41afeadf716"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/prior-report-retrieval.json",
+      "File": "013-mixed-message-epoch-review-2-prior-report-retrieval.json.gz",
+      "Bytes": 514,
+      "Sha256": "1371ed27e072b6297afcd4fabeb89eb649c30b07fd6be17cdf30a5f664e2db07",
+      "StoredBytes": 275,
+      "StoredSha256": "b00184f4d9bb8fa23a79ff19fb876b24db6bc58163a27cb9bef4151cf7fc74f0"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/prior-result-report.md",
+      "File": "014-mixed-message-epoch-review-2-prior-result-report.md.gz",
+      "Bytes": 5567,
+      "Sha256": "f5f3a56d21e4a1a79cf67c8d56955e3edf0fe710acc838ea6b2c1df2704c4027",
+      "StoredBytes": 2531,
+      "StoredSha256": "a9c3b598643cb4bc12f69c408b7faae5baae3ef58d215f08083ede193ca6972c"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/result.json",
+      "File": "015-mixed-message-epoch-review-2-result.json.gz",
+      "Bytes": 7821,
+      "Sha256": "3fbcd026461d2363f5b0233600b6c16643c3925c0979cd1b4737f677a4959956",
+      "StoredBytes": 2898,
+      "StoredSha256": "6cb57745469c16619066e6388a31eb3d6508a816f7082501d62533c4f2af1bdd"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/stderr",
+      "File": "016-mixed-message-epoch-review-2-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-epoch-review-2/stdout",
+      "File": "017-mixed-message-epoch-review-2-stdout.gz",
+      "Bytes": 479,
+      "Sha256": "8c2756c62e507682e5ce6b8e1bcd8c35b1b37628404547cf90728a25a7e79a1e",
+      "StoredBytes": 302,
+      "StoredSha256": "fdc663a11b069f79d18ea04c94165c0a20dd98647144cd0d2c049371898312d2"
+    }
+  ]
+}
