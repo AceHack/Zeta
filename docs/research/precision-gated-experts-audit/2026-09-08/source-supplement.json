@@ -1,0 +1,47 @@
+{
+  "Records": [
+    {
+      "Path": "License",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/License",
+      "File": "source-16.txt",
+      "Bytes": 1072,
+      "Sha256": "fdd34e5e60fd11271a66466814d35d25537c375dd9d661fde15c4a870188ec1e"
+    },
+    {
+      "Path": "src/neural_ensemble/gating.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/neural_ensemble/gating.jl",
+      "File": "source-17.txt",
+      "Bytes": 4556,
+      "Sha256": "52ec891772927fea51c4213f312edc8ee9ebe5892577408842da52a64e6327d7"
+    },
+    {
+      "Path": "src/neural_ensemble/neural_pipeline.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/neural_ensemble/neural_pipeline.jl",
+      "File": "source-18.txt",
+      "Bytes": 21153,
+      "Sha256": "4fdbee37535eb39928f6b9d04b99778d8a02abc7ba7fd2b06a2538f3622e28fa"
+    },
+    {
+      "Path": "src/neural_ensemble/neural_ensemble_specifier.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/neural_ensemble/neural_ensemble_specifier.jl",
+      "File": "source-19.txt",
+      "Bytes": 5310,
+      "Sha256": "c21a49ca46b9aa29c10b7f1ecdb729572a2fea3249c159404609d2b87028d404"
+    },
+    {
+      "Path": "sessions/dynamic/vae/dynamic_ETTh1_96.yaml",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/sessions/dynamic/vae/dynamic_ETTh1_96.yaml",
+      "File": "source-20.txt",
+      "Bytes": 732,
+      "Sha256": "bcfc4a27ca046cf880bea5a1a55bf9352b9211950ed9dd71f60b7014014ed07d"
+    },
+    {
+      "Path": "sessions/neural_ensemble/neural_ensemble_ETTh1_96.yaml",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/sessions/neural_ensemble/neural_ensemble_ETTh1_96.yaml",
+      "File": "source-21.txt",
+      "Bytes": 613,
+      "Sha256": "dd6f236d2697fcc723b171942d67a9bdcfd90e940b8646006578a4a40bea0331"
+    }
+  ],
+  "ArtifactContentsRequested": false
+}

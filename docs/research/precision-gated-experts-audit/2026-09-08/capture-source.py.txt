@@ -1,0 +1,46 @@
+"""Source text and repository-tree metadata only; never artifact contents."""
+
+import hashlib
+import json
+from pathlib import Path
+import urllib.request
+from datetime import datetime, timezone
+
+root = Path(__file__).resolve().parent
+commit = "6c0a4832373b953dc6478aecb3ff1ec55934939d"
+paths = [
+    "README.md", "Project.toml", "src/ProbabilisticEnsembling.jl",
+    "src/exp.jl", "src/log.jl", "src/low_rank_normal.jl",
+    "src/low_rank_softdot/mean_field.jl",
+    "src/model_zoo/dynamic/univariate.jl", "src/model_zoo/dynamic/pipeline.jl",
+    "src/model_zoo/dynamic_exp/univariate.jl",
+    "src/model_zoo/noisy_experts/univariate.jl",
+    "src/model_zoo/shared_pipeline.jl", "src/model_zoo/model_specifier.jl",
+    "src/model_zoo/features.jl", "src/utils.jl",
+]
+requests = [(p, f"https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/{commit}/{p}") for p in paths]
+requests.append(("repository-tree-metadata", f"https://api.github.com/repos/biaslab/PrecisionGatedExperts/git/trees/{commit}?recursive=1"))
+records = []
+failure = None
+try:
+    for index, (name, url) in enumerate(requests):
+        with urllib.request.urlopen(url, timeout=20) as response:
+            raw = response.read(1048577)
+        if len(raw) > 1048576:
+            raise ValueError("one-MiB source/metadata bound exceeded")
+        local = f"source-{index:02d}.txt"
+        with (root / local).open("xb") as stream:
+            stream.write(raw)
+        records.append({"Path": name, "Url": url, "File": local, "Bytes": len(raw),
+                        "Sha256": hashlib.sha256(raw).hexdigest()})
+except Exception as error:
+    failure = {"Type": type(error).__name__, "Detail": str(error)}
+finally:
+    with (root / "source-capture.json").open("x") as stream:
+        json.dump({"Commit": commit, "CapturedAtUtc": datetime.now(timezone.utc).isoformat(),
+                   "Records": records, "Failure": failure,
+                   "ArtifactContentsRequested": False}, stream, indent=2)
+        stream.write("\n")
+print(json.dumps({"SourceAndMetadataRecords": len(records), "Failure": failure}))
+if failure is not None:
+    raise SystemExit(2)

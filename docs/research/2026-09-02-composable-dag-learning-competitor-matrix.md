@@ -97,6 +97,12 @@ Zeta is not yet demonstrated as a topology-learning system, a trained neural DAG
 
 ## References
 
+The [September 8 pinned-source audit and factor-module design](2026-09-08-precision-gated-experts-design-and-source-audit.md)
+records later packaging/split/metric checks and material equation/link-rule
+inconsistencies in Precision-Gated Experts. It qualifies the prospective
+non-conjugate implementation path above without replacing the historical
+CFB measurements or admitting a new learned model.
+
 [1]: https://arxiv.org/abs/2112.13251 "Bagaev and de Vries, Reactive Message Passing for Scalable Bayesian Inference"
 [2]: https://arxiv.org/abs/2605.29467 "Lukashchuk et al., Composing Non-Conjugate Factor Graphs with Closed-Form Variational Inference"
 [3]: https://github.com/biaslab/PrecisionGatedExperts "Precision-Gated Experts official implementation"

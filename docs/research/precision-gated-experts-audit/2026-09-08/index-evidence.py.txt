@@ -1,0 +1,21 @@
+"""Index this finite research archive; this file is also included in its index."""
+
+import hashlib
+import json
+from pathlib import Path
+
+root = Path(__file__).resolve().parent
+records = []
+for path in sorted(root.iterdir()):
+    if path.name == "manifest.json" or not path.is_file():
+        continue
+    raw = path.read_bytes()
+    records.append({"File": path.name, "Bytes": len(raw),
+                    "Sha256": hashlib.sha256(raw).hexdigest()})
+with (root / "manifest.json").open("w") as stream:
+    json.dump({"Schema": "pge-read-only-audit-evidence-v1", "Records": records,
+               "Files": len(records), "Bytes": sum(r["Bytes"] for r in records),
+               "SourceCodeAndMetadataOnlyExceptSyntheticMath": True,
+               "HeldOutDataOrModelContents": False}, stream, indent=2)
+    stream.write("\n")
+print(json.dumps({"Files": len(records), "Bytes": sum(r["Bytes"] for r in records)}))

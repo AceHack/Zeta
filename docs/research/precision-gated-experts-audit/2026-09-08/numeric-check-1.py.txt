@@ -1,0 +1,7 @@
+import math,json
+mw,vw,mx,vx,mz,vz,t=2,3,4,5,7,2,2
+r=(mz-mw*mx)**2+vz+vw*mx**2+mw**2*vx+vw*vx
+v=.5;m=0.;k=1.;c=math.exp(-.25);u=0.;t0=1.
+F=lambda mm,vv:.5*t0*((mm-u)**2+vv)-k*mm+c*math.exp(mm+.5*vv)-.5*math.log(vv)
+h=1e-5
+print(json.dumps({'bilinear':{'ResidualSecondMoment':r,'GammaMessageShape':1.5,'GammaMessageRate':r/2,'WeightPrecision':t*(mx*mx+vx),'WeightPrecisionMean':t*mz*mx},'gaussianProjection':{'m':m,'v':v,'ExponentialCoefficient':c,'AnalyticGradient':[t0*(m-u)-k+c*math.exp(m+v/2),(-1/v+t0+c*math.exp(m+v/2))/2],'CentralDifference':[(F(m+h,v)-F(m-h,v))/(2*h),(F(m,v+h)-F(m,v-h))/(2*h)],'Energy':F(m,v)}}))

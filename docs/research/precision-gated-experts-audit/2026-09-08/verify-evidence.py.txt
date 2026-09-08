@@ -1,0 +1,42 @@
+"""Read-only integrity check; no network, models, data or arithmetic reruns."""
+
+import hashlib
+import json
+from pathlib import Path
+
+root = Path(__file__).resolve().parent
+manifest = json.loads((root / "manifest.json").read_bytes())
+assert len(manifest["Records"]) == manifest["Files"]
+assert sum(r["Bytes"] for r in manifest["Records"]) == manifest["Bytes"]
+for row in manifest["Records"]:
+    raw = (root / row["File"]).read_bytes()
+    assert len(raw) == row["Bytes"]
+    assert hashlib.sha256(raw).hexdigest() == row["Sha256"]
+tree = json.loads((root / "source-15.txt").read_bytes())
+assert tree["truncated"] is False
+entries = {row["path"]: row for row in tree["tree"]}
+sources = (json.loads((root / "source-capture.json").read_bytes())["Records"]
+           + json.loads((root / "source-supplement.json").read_bytes())["Records"])
+checked_sources = 0
+for row in sources:
+    raw = (root / row["File"]).read_bytes()
+    assert len(raw) == row["Bytes"]
+    assert hashlib.sha256(raw).hexdigest() == row["Sha256"]
+    if row["Path"] != "repository-tree-metadata":
+        blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+        assert blob == entries[row["Path"]]["sha"]
+        checked_sources += 1
+originals = json.loads((root / "original-tool-observations.json").read_bytes())["Observations"]
+replays = json.loads((root / "numerical-replay.json").read_bytes())["Records"]
+for original, replay in zip(originals, replays, strict=True):
+    index = replay["Index"]
+    stdout = (root / f"check-{index}-replay.stdout.txt").read_bytes()
+    stderr = (root / f"check-{index}-replay.stderr.txt").read_bytes()
+    assert replay["ExitCode"] == 0 and stderr == b""
+    assert stdout == original["Output"].encode()
+    assert hashlib.sha256(stdout).hexdigest() == replay["StdoutSha256"]
+    assert hashlib.sha256(stderr).hexdigest() == replay["StderrSha256"]
+print(json.dumps({"ManifestFilesChecked": manifest["Files"],
+                  "SourceBlobsBoundToTree": checked_sources,
+                  "NumericalReplayOutputsChecked": len(replays),
+                  "NoModelOrDatasetContents": True}))
