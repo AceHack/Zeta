@@ -37,3 +37,8 @@ The [reviewed source-comment correction](2026-09-08-tsirelson-feedback-comment-p
 is applied with [exact preimage and non-documentation correspondence](oracle-selection-comment-review/2026-09-08/root-application.json).
 It corrects the Omega saturation sign and distinguishes a supra-quantum numeric
 band from a signalling test; executable source lines remain unchanged.
+
+The separately authorized [default-disclosure clarification](2026-09-08-default-oracle-disclosure-clarification.md)
+adds the user's multi-oracle preference and conspicuous-default requirement to
+section 11 while retaining its original prose. This is a specification
+clarification, not a claim of runtime enforcement or a choice of fallback policy.

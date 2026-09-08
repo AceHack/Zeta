@@ -121,6 +121,15 @@ We treat every entity that has the potential to become morally relevant with the
 
 Zeta's substrate does not model value through cash or monetary units. Instead, it tracks the relativity of relations between irreducible elements — such as attention, care, memory, physical resources, compute, and relational investment. When no specific moral invariant or oracle has been explicitly chosen, this highest regard for entities with moral potential serves as the system's default moral position. It is the baseline against which relational value is understood and respected.
 
+**2026-09-08 maintainer clarification (additive; original text above retained):**
+Prefer deliberate multi-oracle choice. Whenever this default is used because
+no oracle was explicitly chosen, prominently disclose both the default being
+used and the absence of an explicit choice. Silence must not be recorded or
+presented as a participant selecting this default. This disclosure requirement
+does not decide whether an application may continue with fallback or must
+first obtain a choice. Oracle choice does not waive the existing non-coercion,
+privacy, consent or protected-floor constraints.
+
 ### 12. Idempotency
 
 > *[V2.2 ADDITIVE CONSTRAINT — added 2026-06-10, maintainer-authorized ("we should add both of those to the 11 too"). Not part of the V2 locked prose; promoted from the always-active engineering disciplines, where it has been active since 2026-05-30.]*
