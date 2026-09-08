@@ -32,6 +32,8 @@ let checkpoints = ResizeArray<obj>()
 let mutable writtenCheckpoints = 0
 let mutable journalBytes = 0
 let mutable firstFailure: string option = None
+let mutable pendingCheckpoint: obj option = None
+let mutable pendingEncoded: byte array option = None
 let fail reason =
     if firstFailure.IsNone then firstFailure <- Some reason
 let faultAfter =
@@ -43,19 +45,25 @@ let faultAfter =
         | _ -> fail "InvalidControlArguments"; None
     | _ -> fail "InvalidControlArguments"; None
 let checkpoint category id value =
-    if firstFailure.IsNone then
-        let event = objOf [ "Kind", box "checkpoint"; "Sequence", box (checkpoints.Count + 1)
-                            "Category", box category; "Id", box id; "Value", value ]
-        checkpoints.Add event
-        let line = JsonSerializer.Serialize(event)
-        let bytes = System.Text.Encoding.UTF8.GetByteCount(line) + 1
-        if checkpoints.Count > 64 || bytes > 65536 || journalBytes + bytes > 1048576 then
-            fail "JournalBoundExceeded"
-        else
-            Console.WriteLine(line)
-            writtenCheckpoints <- writtenCheckpoints + 1
-            journalBytes <- journalBytes + bytes
-            if faultAfter = Some writtenCheckpoints then fail "InjectedCheckpointFailure"
+    // Called once after an actual return, including an already-recorded refusal.
+    let event = objOf [ "Kind", box "checkpoint"; "Sequence", box (checkpoints.Count + 1)
+                        "Category", box category; "Id", box id; "Value", value ]
+    checkpoints.Add event
+    pendingCheckpoint <- Some event
+    pendingEncoded <- None
+    let line = JsonSerializer.Serialize(event)
+    let encoded = System.Text.Encoding.UTF8.GetBytes(line)
+    pendingEncoded <- Some encoded
+    let bytes = encoded.Length + 1
+    if checkpoints.Count > 64 || bytes > 65536 || journalBytes + bytes > 1048576 then
+        fail "JournalBoundExceeded"
+    else
+        Console.WriteLine(line)
+        writtenCheckpoints <- writtenCheckpoints + 1
+        journalBytes <- journalBytes + bytes
+        pendingCheckpoint <- None
+        pendingEncoded <- None
+        if faultAfter = Some writtenCheckpoints then fail "InjectedCheckpointFailure"
 let guard () =
     match firstFailure with
     | Some reason -> Error reason
@@ -174,13 +182,14 @@ let softRooms () =
     let weightsOf posterior =
         labels |> Array.mapi (fun i _ -> SoftValue.candidates posterior |> List.sumBy (fun (d, p) -> if d = candidate i then p else 0.0))
     let snapshot = function
-        | None -> objOf [ "Kind", box "refused" ]
-        | Some posterior -> objOf [ "Kind", box "conditioned"; "Posterior", box (weightsOf posterior)
+        | None -> objOf [ ("Kind", box "refused") ]
+        | Some posterior -> objOf [ "Kind", box "conditioned"; "Posterior", box (weightsOf posterior);
                                    "MaximumMass", box (SoftValue.confidence posterior) ]
     let rows = ResizeArray<obj>()
     for id, mass in distributions do
         if firstFailure.IsNone then
             let input = mass |> Array.mapi (fun i p -> candidate i, asFloat p) |> Array.toList |> SoftValue.ofWeighted
+            if input.IsNone then fail ("SoftValue input refused: " + id)
             checkpoint "SoftValueConstructor" id (snapshot input)
             match input with
             | None -> fail ("SoftValue input refused: " + id)
@@ -217,6 +226,9 @@ let predictionRooms () =
             match inferred with
             | Error feedback -> objOf [ "Kind", box "refused"; "Feedback", box (sprintf "%A" feedback) ]
             | Ok inference -> objOf [ "Kind", box "inferred"; "PosteriorShares", rationalArray (inference.Ranked |> List.map (fun x -> PI.posteriorShare x inference) |> List.toArray) ]
+        match inferred with
+        | Error feedback -> fail (sprintf "inference refused: %A" feedback)
+        | Ok _ -> ()
         checkpoint "Inference" "two-candidates" snapshot
         match inferred with
         | Error feedback -> fail (sprintf "inference refused: %A" feedback)
@@ -234,8 +246,8 @@ let predictionRooms () =
                             match value with
                             | Ok prediction -> checkpoint kind id (predictionSnapshot prediction)
                             | Error feedback ->
-                                checkpoint kind id (objOf [ "Kind", box "refused"; "Feedback", box (sprintf "%A" feedback) ])
                                 fail (sprintf "prediction refused: %A" feedback)
+                                checkpoint kind id (objOf [ "Kind", box "refused"; "Feedback", box (sprintf "%A" feedback) ])
                         let predicted = PI.predictWithPriority priority tank inference
                         recordResult "PriorityPrediction" predicted
                         if firstFailure.IsNone then
@@ -295,16 +307,35 @@ let complete, receipt, failure =
     | Ok value -> true, value, null
     | Error reason -> false, null, box reason
 if not complete then Environment.ExitCode <- 2
-let terminal = objOf [ "Kind", box "terminal"; "Schema", box "zeta.distributional-rooms.run.v1"
-                       "Complete", box complete; "Failure", failure; "Receipt", receipt
-                       "ObservedCheckpointCount", box checkpoints.Count; "WrittenCheckpointCount", box writtenCheckpoints ]
+let pendingOmission reason =
+    match pendingCheckpoint with
+    | None -> null
+    | Some _ ->
+        let bytes, digest =
+            match pendingEncoded with
+            | None -> null, null
+            | Some encoded -> box encoded.Length, box (Convert.ToHexString(SHA256.HashData encoded))
+        objOf [ "Sequence", box checkpoints.Count; "EncodedBytes", bytes; "Sha256", digest; "Reason", box reason ]
+let terminal includePending =
+    let pending, omission =
+        match pendingCheckpoint, pendingEncoded with
+        | None, _ -> null, null
+        | Some value, Some _ when includePending -> value, null
+        | Some _, None -> null, pendingOmission "CheckpointSerializationFailed"
+        | Some _, Some _ -> null, pendingOmission "TerminalBoundExceeded"
+    objOf [ "Kind", box "terminal"; "Schema", box "zeta.distributional-rooms.run.v1"
+            "Complete", box complete; "Failure", failure; "Receipt", receipt
+            "ObservedCheckpointCount", box checkpoints.Count; "WrittenCheckpointCount", box writtenCheckpoints
+            "PendingCheckpoint", pending; "PendingCheckpointOmission", omission ]
 try
-    let line = JsonSerializer.Serialize(terminal)
-    let bytes = System.Text.Encoding.UTF8.GetByteCount(line) + 1
-    if bytes > 65536 || journalBytes + bytes > 1048576 then
+    let line = JsonSerializer.Serialize(terminal true)
+    let size (text: string) = System.Text.Encoding.UTF8.GetByteCount(text) + 1
+    let bounded line = size line <= 65536 && journalBytes + size line <= 1048576
+    let finalLine = if bounded line then line else JsonSerializer.Serialize(terminal false)
+    if not (bounded finalLine) then
         Environment.ExitCode <- 2
         Console.Error.WriteLine("TerminalJournalBoundExceeded")
-    else Console.WriteLine(line)
+    else Console.WriteLine(finalLine)
 with ex ->
     Environment.ExitCode <- 2
     Console.Error.WriteLine("TerminalPublicationFailed: " + ex.GetType().FullName)
