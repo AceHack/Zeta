@@ -102,20 +102,22 @@ module MixedMessageEpochReplay =
 
     let private utf8 = UTF8Encoding(false, true)
 
-    let private failure stage code (message: string) =
+    let private diagnosticPrefix (limit: int) (message: string) =
         let text = if isNull message then "" else message
-        let bounded = StringBuilder(1024)
+        let bounded = StringBuilder(limit)
         let mutable enumerator = text.EnumerateRunes()
         let mutable bytes = 0
         let mutable full = false
         while not full && enumerator.MoveNext() do
             let rune = enumerator.Current
-            if rune.Utf8SequenceLength > 1024 - bytes then full <- true
+            if rune.Utf8SequenceLength > limit - bytes then full <- true
             else
                 bounded.Append(rune.ToString()) |> ignore
                 bytes <- bytes + rune.Utf8SequenceLength
-        { Stage = stage; Code = code
-          Message = bounded.ToString() }
+        bounded.ToString()
+
+    let private failure stage code message =
+        { Stage = stage; Code = code; Message = diagnosticPrefix 1024 message }
 
     let private identity (raw: byte array) =
         { Bytes = raw.Length; Sha256 = Convert.ToHexString(SHA256.HashData raw) }
@@ -1026,3 +1028,607 @@ module MixedMessageEpochReplay =
             with error -> Error(failure "admit" "ResponseRaised" (error.GetType().FullName + ": " + error.Message))
         { Raw = received; Parsed = parsed; DecodedReturn = decoded; Response = response
           Failure = match outcome with Error e -> Some e | Ok () -> None }
+
+    /// Closed actual call ledger. A codec or transport refusal cannot erase the
+    /// original checkpoint, request, return, or decoded response that preceded it.
+    type CallbackCall =
+        | SnapshotValidated of E.BudgetSnapshot option * E.BudgetSnapshot * bool * Result<unit, E.Failure>
+        | SnapshotReturned of Result<E.BudgetSnapshot, E.Failure>
+        | CheckpointEntered of E.Checkpoint
+        | CommitEntered of E.Commit
+        | ProjectionEntered of E.ProjectionRequest
+        | PayloadEncoded of OutputKind * Result<byte array, E.Failure>
+        | FrameBuilt of FrameBuild
+        | FrameWritten of OutputKind * Result<unit, PeerFailure>
+        | FrameRead of Result<byte array, PeerFailure>
+        | AcknowledgmentReceived of AcknowledgmentAttempt
+        | ProjectionResponseReceived of ProjectionResponseAttempt
+        | CheckpointReturned of Result<E.StoredCheckpoint, E.Failure>
+        | CommitReturned of Result<unit, E.Failure>
+        | ProjectionReturned of Result<E.ProjectionResponse, E.TransportFailure>
+        | CallbackRaised of stage: string * actual: exn
+
+    type CallbackContext =
+        private
+            { Transport: Transport
+              Admitted: E.AdmittedPlan
+              Identity: E.PeerIdentity
+              Calls: ResizeArray<CallbackCall>
+              mutable LatestBudget: E.BudgetSnapshot
+              mutable StoredForCommit: E.StoredCheckpoint option
+              mutable Busy: bool
+              mutable Failure: PeerFailure option }
+
+    type CallbackSnapshot =
+        { Calls: CallbackCall list
+          LatestBudget: E.BudgetSnapshot
+          StoredForCommit: E.StoredCheckpoint option
+          Busy: bool
+          Failure: PeerFailure option }
+
+    type CallbackCreationFailure = { Failure: PeerFailure; Calls: CallbackCall list }
+
+    let callbackSnapshot (context: CallbackContext) =
+        { Calls = List.ofSeq context.Calls; LatestBudget = context.LatestBudget
+          StoredForCommit = context.StoredForCommit; Busy = context.Busy; Failure = context.Failure }
+
+    let private coreTransportFailure stage (error: PeerFailure) : E.Failure =
+        { Code = "Transport"; Stage = stage; Field = Some error.Code; Message = error.Message }
+
+    let private latchCallback (context: CallbackContext) error =
+        if context.Failure.IsNone then context.Failure <- Some error
+        error
+
+    /// New coordinator carriers advance exactly once. Snapshot callbacks below
+    /// only re-observe this admitted value; they cannot extend a quota or clock.
+    let private acceptCallbackBudget (context: CallbackContext) next =
+        let previous = Some context.LatestBudget
+        let actual = E.tryAdmitBudgetSnapshot(previous, next, false)
+        context.Calls.Add(SnapshotValidated(previous, next, false, actual))
+        match actual with
+        | Error error -> Error(latchCallback context (failure "admit" "BudgetAdmission" error.Message))
+        | Ok () ->
+            match observeBudgetPrefix context.Transport next.SnapshotIndex (int next.TranscriptBytes)
+                      next.TranscriptFrames next.RemainingMilliseconds with
+            | Error error -> Error(latchCallback context error)
+            | Ok () -> context.LatestBudget <- next; Ok()
+
+    /// Start must already have passed direct-file and private core admission.
+    /// The actual decoded budget is taken from that retained admission ledger.
+    let createCallbacks (transport: Transport) (start: CoreStartAttempt) : Result<CallbackContext, CallbackCreationFailure> =
+        let calls = ResizeArray<CallbackCall>()
+        let refuse error = Error { Failure = error; Calls = List.ofSeq calls }
+        try
+            if isNull (box transport) || isNull (box start) || start.Failure.IsSome || start.Admitted.IsNone then
+                refuse (failure "admit" "CallbackArguments" "successful source-admitted Start and finite transport required")
+            else
+                let budgets = start.Calls |> List.choose (function BudgetDecoded(_, Ok b) -> Some b | _ -> None)
+                match budgets with
+                | [initial] ->
+                    let admitted = start.Admitted.Value
+                    let context =
+                        { Transport = transport; Admitted = admitted; Identity = E.admittedIdentity admitted
+                          Calls = calls; LatestBudget = initial; StoredForCommit = None
+                          Busy = false; Failure = None }
+                    let actual = E.tryAdmitBudgetSnapshot(None, initial, false)
+                    context.Calls.Add(SnapshotValidated(None, initial, false, actual))
+                    match actual with
+                    | Error error -> refuse (failure "admit" "InitialBudget" error.Message)
+                    | Ok () ->
+                        match observeBudgetPrefix transport initial.SnapshotIndex (int initial.TranscriptBytes)
+                                  initial.TranscriptFrames initial.RemainingMilliseconds with
+                        | Error error -> refuse error
+                        | Ok () -> Ok context
+                | _ -> refuse (failure "admit" "InitialBudget" "exactly one actual successful initial budget decode required")
+        with error ->
+            calls.Add(CallbackRaised("create", error))
+            refuse (failure "admit" "CallbackRaised" (error.GetType().FullName + ": " + error.Message))
+
+    let private beginCallback (context: CallbackContext) sequence =
+        if context.Busy then Error(latchCallback context (failure "publish" "ConcurrentCallback" "sequential source callback required"))
+        elif context.Failure.IsSome then Error context.Failure.Value
+        elif context.StoredForCommit.IsSome then
+            Error(latchCallback context (failure "publish" "CommitMissing" "stored checkpoint must reach its one Commit before another operation"))
+        elif sequence <> context.Transport.NextSequence || sequence < 1 || sequence >= FrameCap then
+            Error(latchCallback context (failure "publish" "Sequence" "next operational allocation required"))
+        else
+            // Track the actual attempted allocation before encoding. A failed
+            // unpublished allocation can leave a later wire gap; the coordinator
+            // retains any complete return before refusing that gap separately.
+            context.Transport.NextSequence <- sequence + 1
+            context.Busy <- true
+            Ok()
+
+    let private publishCallback (context: CallbackContext) kind encode =
+        task {
+            let _, cap, _ = outputShape kind
+            let allowance = min cap (ordinaryRoom context.Transport)
+            // Do not enter a fixed-cap source encoder after the aggregate
+            // allowance is exhausted. Complete framing applies the tighter cap.
+            let encoded =
+                if allowance <= 0 then
+                    Error(coreTransportFailure "publish" (failure "publish" "FrameBudget" "no payload encoding allowance"))
+                else
+                    let actual = encode allowance
+                    context.Calls.Add(PayloadEncoded(kind, actual))
+                    actual
+            match encoded with
+            | Error error -> return Error(latchCallback context (failure "publish" "CoreEncoding" error.Message))
+            | Ok payload ->
+                let framed = framePayload kind context.Identity.SessionId allowance payload
+                context.Calls.Add(FrameBuilt framed)
+                match framed.Raw, framed.Failure with
+                | Some raw, None ->
+                    let! actual = (writeFrame context.Transport "publish" cap false raw).ConfigureAwait(false)
+                    context.Calls.Add(FrameWritten(kind, actual))
+                    match actual with
+                    | Ok () -> return Ok raw
+                    | Error error -> return Error(latchCallback context error)
+                | _, Some error -> return Error(latchCallback context error)
+                | _ -> return Error(latchCallback context (failure "publish" "FrameAbsent" "no complete framed payload was returned"))
+        }
+
+    let private receiveCallback (context: CallbackContext) maximum =
+        task {
+            let! actual = (readFrame context.Transport "publish" maximum).ConfigureAwait(false)
+            context.Calls.Add(FrameRead actual)
+            return actual |> Result.mapError (latchCallback context)
+        }
+
+    let private receiveAcknowledgment (context: CallbackContext) sequence sent =
+        task {
+            let! received = (receiveCallback context SmallCap).ConfigureAwait(false)
+            match received with
+            | Error error -> return Error(coreTransportFailure "publish" error)
+            | Ok raw ->
+                let actual = admitAcknowledgment context.Identity.SessionId sequence sent raw
+                context.Calls.Add(AcknowledgmentReceived actual)
+                match actual.Failure with
+                | Some error -> return Error(coreTransportFailure "publish" (latchCallback context error))
+                | None ->
+                    let budget =
+                        match actual.Stored, actual.BudgetReturn with
+                        | Some stored, _ -> Some stored.BudgetSnapshot
+                        | None, Some(Ok value) -> Some value
+                        | _ -> None
+                    match budget with
+                    | None -> return Error(coreTransportFailure "publish" (latchCallback context (failure "admit" "AckBudget" "no actual admitted ACK budget returned")))
+                    | Some value ->
+                        match acceptCallbackBudget context value with
+                        | Error error -> return Error(coreTransportFailure "publish" error)
+                        | Ok () ->
+                            match actual.Stored, actual.Refused with
+                            | Some stored, None -> return Ok stored
+                            | None, Some refused -> return Error refused
+                            | _ -> return Error(coreTransportFailure "publish" (latchCallback context (failure "admit" "AckOutcome" "one actual stored or refused outcome required")))
+        }
+
+    let private checkpointCallback (context: CallbackContext) (checkpoint: E.Checkpoint) =
+        task {
+            context.Calls.Add(CheckpointEntered checkpoint)
+            let mutable owns = false
+            let mutable returned = Error(coreTransportFailure "publish" (failure "publish" "CheckpointAbsent" "callback did not return"))
+            try
+                match beginCallback context checkpoint.Sequence with
+                | Error error -> returned <- Error(coreTransportFailure "publish" error)
+                | Ok () ->
+                    owns <- true
+                    let projectionBearing = match checkpoint.Observation.Operation with E.GaussianBlock _ -> true | _ -> false
+                    let! sent = (publishCallback context (CheckpointFrame projectionBearing) (E.tryEncodeCheckpoint checkpoint)).ConfigureAwait(false)
+                    match sent with
+                    | Error error -> returned <- Error(coreTransportFailure "publish" error)
+                    | Ok raw ->
+                        let! actual = (receiveAcknowledgment context checkpoint.Sequence raw).ConfigureAwait(false)
+                        returned <- actual
+                        match actual with
+                        | Ok stored when checkpoint.Observation.Proposal.IsSome
+                                         && checkpoint.Observation.Admission = Some(Ok())
+                                         && checkpoint.Observation.Failure.IsNone ->
+                            context.StoredForCommit <- Some stored
+                        | Ok _ -> ()
+                        | Error _ -> ()
+            with error ->
+                context.Calls.Add(CallbackRaised("checkpoint", error))
+                returned <- Error(coreTransportFailure "publish" (latchCallback context (failure "publish" "CheckpointRaised" (error.GetType().FullName + ": " + error.Message))))
+            context.Calls.Add(CheckpointReturned returned)
+            if owns then context.Busy <- false
+            return returned
+        }
+
+    let private commitCallback (context: CallbackContext) (commit: E.Commit) =
+        task {
+            context.Calls.Add(CommitEntered commit)
+            let mutable owns = false
+            let mutable returned = Error(coreTransportFailure "publish" (failure "publish" "CommitAbsent" "callback did not return"))
+            try
+                let valid =
+                    context.StoredForCommit |> Option.exists (fun stored ->
+                        stored.Sequence = commit.Sequence && stored.CheckpointSha256 = commit.CheckpointSha256)
+                if context.Busy || context.Failure.IsSome || not valid then
+                    returned <- Error(coreTransportFailure "publish" (latchCallback context (failure "publish" "CommitCorrespondence" "one actual matching stored checkpoint required before Commit")))
+                else
+                    context.Busy <- true
+                    owns <- true
+                    context.StoredForCommit <- None
+                    let! actual = (publishCallback context CommitFrame (E.tryEncodeCommit commit)).ConfigureAwait(false)
+                    returned <- actual |> Result.map (fun _ -> ()) |> Result.mapError (coreTransportFailure "publish")
+            with error ->
+                context.Calls.Add(CallbackRaised("commit", error))
+                returned <- Error(coreTransportFailure "publish" (latchCallback context (failure "publish" "CommitRaised" (error.GetType().FullName + ": " + error.Message))))
+            context.Calls.Add(CommitReturned returned)
+            if owns then context.Busy <- false
+            return returned
+        }
+
+    let private snapshotCallback (context: CallbackContext) () =
+        let returned =
+            try
+                let value = context.LatestBudget
+                let actual = E.tryAdmitBudgetSnapshot(Some value, value, true)
+                context.Calls.Add(SnapshotValidated(Some value, value, true, actual))
+                actual |> Result.map (fun () -> value)
+            with error ->
+                context.Calls.Add(CallbackRaised("snapshot", error))
+                Error(coreTransportFailure "publish" (latchCallback context (failure "publish" "SnapshotRaised" error.Message)))
+        context.Calls.Add(SnapshotReturned returned)
+        returned
+
+    let private projectionCallback (context: CallbackContext) (request: E.ProjectionRequest) =
+        task {
+            context.Calls.Add(ProjectionEntered request)
+            let mutable owns = false
+            let mutable raw = None
+            let mutable parsed = None
+            let mutable raised = None
+            let transportError error : E.TransportFailure =
+                { Failure = coreTransportFailure "project" error; Received = parsed
+                  RawSha256 = raw |> Option.map (fun b -> (identity b).Sha256)
+                  ReceivedBytes = raw |> Option.map (fun b -> int64 b.Length) |> Option.defaultValue 0L
+                  Exception = raised }
+            let mutable returned = Error(transportError (failure "project" "ProjectionAbsent" "callback did not return"))
+            try
+                match beginCallback context request.Sequence with
+                | Error error -> returned <- Error(transportError error)
+                | Ok () ->
+                    owns <- true
+                    let! sent = (publishCallback context ProjectionRequestFrame (fun _ -> E.tryEncodeProjectionRequest request)).ConfigureAwait(false)
+                    match sent with
+                    | Error error -> returned <- Error(transportError error)
+                    | Ok _ ->
+                        let! received = (receiveCallback context ResponseCap).ConfigureAwait(false)
+                        match received with
+                        | Error error ->
+                            // An EOF or bounded read failure can still expose a
+                            // raw response prefix. Keep that actual byte identity
+                            // without upgrading it to a parsed response.
+                            if context.Transport.Frames.Count > 0 then
+                                let last = context.Transport.Frames.[context.Transport.Frames.Count - 1]
+                                if last.Direction = "in" then raw <- Some last.Raw
+                            returned <- Error(transportError error)
+                        | Ok bytes ->
+                            raw <- Some bytes
+                            let actual = admitProjectionResponse context.Identity request bytes
+                            context.Calls.Add(ProjectionResponseReceived actual)
+                            parsed <- match actual.Parsed with Ok value -> Some value | Error _ -> None
+                            match actual.Response, actual.Failure with
+                            | Some response, None ->
+                                match acceptCallbackBudget context response.BudgetSnapshot with
+                                | Ok () -> returned <- Ok response
+                                | Error error -> returned <- Error(transportError error)
+                            | _, Some error -> returned <- Error(transportError (latchCallback context error))
+                            | _ -> returned <- Error(transportError (latchCallback context (failure "project" "ResponseAbsent" "no actual associated response returned")))
+            with error ->
+                context.Calls.Add(CallbackRaised("projection", error))
+                let bounded = failure "project" "ProjectionRaised" error.Message
+                raised <- Some { Type = diagnosticPrefix 256 (error.GetType().FullName); Message = diagnosticPrefix 512 error.Message }
+                returned <- Error(transportError (latchCallback context bounded))
+            context.Calls.Add(ProjectionReturned returned)
+            if owns then context.Busy <- false
+            return returned
+        }
+
+    /// Only these fixed callbacks are supplied to the admitted core. Their
+    /// complete local call ledger is independent of the core's returned ledger.
+    let callbackPorts context : E.ProjectionService * E.Recorder =
+        projectionCallback context,
+        { Checkpoint = checkpointCallback context; Commit = commitCallback context; Snapshot = snapshotCallback context }
+
+    type EpochCall =
+        | EpochNotEntered
+        | EpochReturned of E.EpochResult
+        | EpochRaised of exn
+
+    type FinalCall =
+        | ReadyBuilt of FrameBuild
+        | ReadyWritten of Result<unit, PeerFailure>
+        | SourceReobserved of SourceAdmission
+        | EpochInvocationEntered
+        | EpochResultEncoded of Result<byte array, E.PublicationFailure>
+        | ReturnSequenceObserved of int
+        | ReturnFrameBuilt of FrameBuild
+        | ReturnFrameWritten of Result<unit, PeerFailure>
+        | ReturnAcknowledged of Result<E.StoredCheckpoint, E.Failure>
+        | TerminalEncoded of E.TerminalPublication * Result<byte array, E.Failure>
+        | TerminalFrameBuilt of FrameBuild
+        | TerminalFrameWritten of Result<unit, PeerFailure>
+        | FinalRaised of stage: string * actual: exn
+
+    /// This is the actual local return holder, not an invented wire result. It
+    /// keeps source calls, borrowed-stream tasks, and the real EpochResult alive
+    /// through final encoding/publication failure. The coordinator separately
+    /// owns process closure and the records that actually crossed the channel.
+    type PeerRunResult =
+        { Complete: bool
+          ExitCode: int
+          Failure: PeerFailure option
+          StartRead: Result<byte array, PeerFailure> option
+          StartDecoded: Result<StartEnvelope, PeerFailure> option
+          Admission: CoreStartAttempt option
+          CallbackCreation: Result<CallbackContext, CallbackCreationFailure> option
+          EpochTask: Task<E.EpochResult> option
+          Epoch: EpochCall
+          FinalCalls: FinalCall list
+          EpochReturn: E.EpochReturnReference option
+          TerminalWritten: bool
+          Transport: Transport option }
+
+    let private peerTransport (state: Transport) : E.PeerTransport =
+        let partial =
+            state.Frames
+            |> Seq.tryFindBack (fun frame -> frame.Direction = "out" && not frame.Complete)
+            |> Option.map (fun frame ->
+                let sequence =
+                    match strictJson "publish" ResultCap frame.Raw with
+                    | Ok tree -> match integerField "publish" "Sequence" tree with Ok value -> Some value | Error _ -> None
+                    | Error _ -> None
+                ({ Sequence = sequence; ReservedBytes = int64 frame.Raw.Length; ObservedWrittenBytes = None }: E.PartialWrite))
+        { IncomingBytes = int64 state.ReadBytes; IncomingFrames = state.ReadFrames
+          OutgoingReservedBytes = int64 state.ReservedWriteBytes; OutgoingReservedFrames = state.ReservedWriteFrames
+          OutgoingCompletedBytes = int64 state.CompletedWriteBytes; OutgoingCompletedFrames = state.CompletedWriteFrames
+          PartialWrite = partial }
+
+    let private returnPayload sequence remaining (actual: byte array) =
+        if sequence < 1 || sequence >= FrameCap || isNull actual || actual.Length = 0 then
+            Error(failure "publish" "EpochReturnArguments" "actual bounded encoded return and final sequence required")
+        else
+            let prefix = utf8.GetBytes "{\"Result\":"
+            let suffix = utf8.GetBytes (",\"ResultSha256\":\"" + (identity actual).Sha256 + "\",\"Sequence\":"
+                                       + sequence.ToString(Globalization.CultureInfo.InvariantCulture) + "}")
+            if remaining <= 0 || prefix.Length + suffix.Length > remaining || actual.Length > remaining - prefix.Length - suffix.Length then
+                Error(failure "publish" "EpochReturnBound" "complete actual return wrapper exceeds remaining bytes")
+            else
+                let value = Array.zeroCreate<byte> (prefix.Length + actual.Length + suffix.Length)
+                prefix.CopyTo(value, 0)
+                actual.CopyTo(value, prefix.Length)
+                suffix.CopyTo(value, prefix.Length + actual.Length)
+                Ok value
+
+    /// One source-fixed session. No injected scheduler, numerical function, or
+    /// serializer is selected by the wire. Development streams are explicit
+    /// local transport seams; production passes only the standard streams.
+    let runPeer (args: string array) (input: Stream) (output: Stream) : Task<PeerRunResult> =
+        task {
+            let calls = ResizeArray<FinalCall>()
+            let mutable transport = None
+            let mutable startRead = None
+            let mutable startDecoded = None
+            let mutable admission = None
+            let mutable callbackCreation = None
+            let mutable context = None
+            let mutable epochTask = None
+            let mutable epoch = EpochNotEntered
+            let mutable returnedReference: E.EpochReturnReference option = None
+            let mutable terminalWritten = false
+            let mutable primary = None
+            let mutable phase = "arguments"
+            let fail error = if primary.IsNone then primary <- Some error
+            try
+                if isNull args || args.Length <> 0 then
+                    fail (failure "admit" "Arguments" "the admitted peer command accepts no script arguments")
+                else
+                    match createTransport input output 300.0 with
+                    | Error error -> fail error
+                    | Ok state -> transport <- Some state
+                if primary.IsNone then
+                    phase <- "start-read"
+                    let! actual = (readFrame transport.Value "admit" StartCap).ConfigureAwait(false)
+                    startRead <- Some actual
+                    match actual with
+                    | Error error -> fail error
+                    | Ok bytes ->
+                        phase <- "start-decode"
+                        let parsed = tryReadStart bytes
+                        startDecoded <- Some parsed
+                        match parsed with
+                        | Error error -> fail error
+                        | Ok envelope ->
+                            phase <- "source-and-core-admission"
+                            let actual = admitStart envelope
+                            admission <- Some actual
+                            match actual.Failure with Some error -> fail error | None -> ()
+                if primary.IsNone then
+                    phase <- "callback-admission"
+                    let actual = createCallbacks transport.Value admission.Value
+                    callbackCreation <- Some actual
+                    match actual with
+                    | Error error -> fail error.Failure
+                    | Ok value -> context <- Some value
+                if primary.IsNone then
+                    phase <- "ready"
+                    let source = admission.Value.Envelope
+                    let payload = utf8.GetBytes ("{\"PlanSha256\":\"" + source.PlanSha256 + "\",\"ServiceSha256\":\"" + source.ServiceSha256 + "\"}")
+                    let actual = framePayload ReadyFrame source.SessionId (min SmallCap (ordinaryRoom transport.Value)) payload
+                    calls.Add(ReadyBuilt actual)
+                    match actual.Raw, actual.Failure with
+                    | Some bytes, None ->
+                        let! written = (writeFrame transport.Value "publish" SmallCap false bytes).ConfigureAwait(false)
+                        calls.Add(ReadyWritten written)
+                        match written with Error error -> fail error | Ok () -> ()
+                    | _, Some error -> fail error
+                    | _ -> fail (failure "publish" "ReadyAbsent" "no actual Ready frame returned")
+                if primary.IsNone then
+                    phase <- "core-epoch"
+                    let live = context.Value
+                    let service, recorder = callbackPorts live
+                    calls.Add EpochInvocationEntered
+                    try
+                        let actualTask = E.runEpoch(live.Admitted, service, recorder)
+                        epochTask <- Some actualTask
+                        let! actual = actualTask.ConfigureAwait(false)
+                        // The complete real returned object is held before any
+                        // source recheck, encoding, hashing, or publication.
+                        epoch <- EpochReturned actual
+                    with error ->
+                        epoch <- EpochRaised error
+                        fail (failure "scheduler" "EpochRaised" (error.GetType().FullName + ": " + error.Message))
+            with error ->
+                calls.Add(FinalRaised(phase, error))
+                fail (failure "publish" "PeerRaised" (phase + ": " + error.GetType().FullName + ": " + error.Message))
+
+            // Closing publication is independent of the core's own failure.
+            // A complete refused core result is still the actual returned result.
+            match epoch, context, transport with
+            | EpochReturned actualResult, Some live, Some state ->
+                try
+                    phase <- "source-recheck"
+                    let observed = observeDirectSources admission.Value.Envelope.ExpectedBindings
+                    calls.Add(SourceReobserved observed)
+                    match observed.Failure with
+                    | Some error -> fail error
+                    | None when not observed.Complete -> fail (failure "publish" "SourceIncomplete" "post-return direct source observation incomplete")
+                    | None -> ()
+                with error ->
+                    calls.Add(FinalRaised(phase, error))
+                    fail (failure "publish" "SourceRecheckRaised" error.Message)
+                match live.Failure, state.Failure with
+                | Some error, _ | _, Some error -> fail error
+                | _ -> ()
+                try
+                    phase <- "epoch-return"
+                    // Do not race an outstanding borrowed read/write or append
+                    // to a failed output boundary. A known core/codec refusal
+                    // may still publish its actual result through intact I/O.
+                    if state.Failure.IsNone && not state.OutputFailed && state.PendingRead.IsNone && state.PendingWrite.IsNone then
+                        let sequence = E.nextProtocolSequence live.Admitted
+                        calls.Add(ReturnSequenceObserved sequence)
+                        let allowance = min ResultCap (ordinaryRoom state)
+                        // Reserve the bounded wrapper/envelope before entering
+                        // the source encoder. The complete raw Result has its
+                        // own exact SHA; it never contains its future ACK.
+                        let encoded = E.tryEncode actualResult (allowance - 512)
+                        calls.Add(EpochResultEncoded encoded)
+                        match encoded with
+                        | Error error -> fail (failure "publish" "EpochResultEncoding" error.Failure.Message)
+                        | Ok bytes ->
+                            match returnPayload sequence (allowance - 192) bytes with
+                            | Error error -> fail error
+                            | Ok payload ->
+                                let frame = framePayload EpochReturnFrame live.Identity.SessionId allowance payload
+                                calls.Add(ReturnFrameBuilt frame)
+                                match frame.Raw, frame.Failure with
+                                | Some raw, None ->
+                                    state.NextSequence <- sequence + 1
+                                    let! written = (writeFrame state "publish" ResultCap false raw).ConfigureAwait(false)
+                                    calls.Add(ReturnFrameWritten written)
+                                    match written with
+                                    | Error error -> fail error
+                                    | Ok () ->
+                                        let! acknowledged = (receiveAcknowledgment live sequence raw).ConfigureAwait(false)
+                                        calls.Add(ReturnAcknowledged acknowledged)
+                                        match acknowledged with
+                                        | Error error -> fail (failure "publish" "EpochReturnStorage" (error.Code + ": " + error.Message))
+                                        | Ok stored ->
+                                            returnedReference <- Some
+                                                { Sequence = sequence; ResultSha256 = (identity bytes).Sha256
+                                                  FrameSha256 = (identity raw).Sha256; Artifact = stored.Artifact }
+                                | _, Some error -> fail error
+                                | _ -> fail (failure "publish" "EpochReturnAbsent" "no complete actual return frame produced")
+                    else
+                        fail (failure "publish" "EpochReturnUnavailable" "failed or pending transport prevents acknowledged return publication")
+                with error ->
+                    calls.Add(FinalRaised(phase, error))
+                    fail (failure "publish" "EpochReturnRaised" (error.GetType().FullName + ": " + error.Message))
+                try
+                    phase <- "terminal"
+                    if not state.OutputFailed && state.PendingWrite.IsNone then
+                        let publication: E.TerminalPublication =
+                            { EpochReturn = returnedReference
+                              ResultRetention = if returnedReference.IsSome then "acknowledged" else "memory-only"
+                              Failure = primary |> Option.map (coreTransportFailure "publish")
+                              Coordinator = Some live.LatestBudget; Peer = peerTransport state }
+                        let allowance = min TerminalCap (TranscriptCap - state.GlobalChargedBytes)
+                        let encoded = E.tryEncodeTerminal actualResult publication (allowance - 192)
+                        calls.Add(TerminalEncoded(publication, encoded))
+                        match encoded with
+                        | Error error -> fail (failure "publish" "TerminalEncoding" error.Message)
+                        | Ok bytes ->
+                            let frame = framePayload TerminalFrame live.Identity.SessionId allowance bytes
+                            calls.Add(TerminalFrameBuilt frame)
+                            match frame.Raw, frame.Failure with
+                            | Some raw, None ->
+                                let! written = (writeFrame state "publish" TerminalCap true raw).ConfigureAwait(false)
+                                calls.Add(TerminalFrameWritten written)
+                                match written with Ok () -> terminalWritten <- true | Error error -> fail error
+                            | _, Some error -> fail error
+                            | _ -> fail (failure "publish" "TerminalAbsent" "no complete terminal frame returned")
+                with error ->
+                    calls.Add(FinalRaised(phase, error))
+                    fail (failure "publish" "TerminalRaised" (error.GetType().FullName + ": " + error.Message))
+            | _ -> ()
+            let complete = primary.IsNone && returnedReference.IsSome && terminalWritten
+            let successful = match epoch with EpochReturned value -> value.Outcome = "completed" | _ -> false
+            return { Complete = complete; ExitCode = if complete && successful then 0 else 2
+                     Failure = primary; StartRead = startRead; StartDecoded = startDecoded
+                     Admission = admission; CallbackCreation = callbackCreation; EpochTask = epochTask
+                     Epoch = epoch; FinalCalls = List.ofSeq calls; EpochReturn = returnedReference
+                     TerminalWritten = terminalWritten; Transport = transport }
+        }
+
+    /// Standard invocation keeps the complete actual return until process exit.
+    /// Stderr is a separate bounded command diagnostic, never a replacement for
+    /// missing NDJSON frames or a serialized reconstruction of the EpochResult.
+    let mutable private standardReturn: PeerRunResult option = None
+    let mutable private standardRaised: exn option = None
+    let mutable private diagnosticRaised: exn option = None
+
+    let runStandard args =
+        let mutable exitCode = 2
+        try
+            let input = Console.OpenStandardInput()
+            let output = Console.OpenStandardOutput()
+            let actual = (runPeer args input output).GetAwaiter().GetResult()
+            standardReturn <- Some actual
+            exitCode <- actual.ExitCode
+        with error -> standardRaised <- Some error
+        if exitCode <> 0 then
+            try
+                let problem = standardReturn |> Option.bind (fun r -> r.Failure)
+                let resultAvailable = standardReturn |> Option.exists (fun r -> match r.Epoch with EpochReturned _ -> true | _ -> false)
+                let report =
+                    {| Schema = "zeta.mixed-epoch.peer-command.v1"
+                       ExitCode = exitCode
+                       FailureCode = problem |> Option.map (fun p -> p.Code) |> Option.defaultValue "TypedRefusalOrHostFailure"
+                       FailureStage = problem |> Option.map (fun p -> p.Stage) |> Option.defaultValue "entry"
+                       EpochResultAvailable = resultAvailable
+                       EpochReturnAcknowledged = standardReturn |> Option.exists (fun r -> r.EpochReturn.IsSome)
+                       TerminalWritten = standardReturn |> Option.exists (fun r -> r.TerminalWritten)
+                       RaisedType = standardRaised |> Option.map (fun e -> diagnosticPrefix 256 (e.GetType().FullName)) |> Option.defaultValue "" |}
+                let raw = JsonSerializer.SerializeToUtf8Bytes report
+                if raw.Length > SmallCap - 1 then
+                    diagnosticRaised <- Some(InvalidOperationException "bounded command diagnostic exceeded its byte allowance")
+                else
+                    let stderr = Console.OpenStandardError()
+                    stderr.Write(raw, 0, raw.Length)
+                    stderr.WriteByte 10uy
+                    stderr.Flush()
+            with error -> diagnosticRaised <- Some error
+        if diagnosticRaised.IsSome then 2 else exitCode
+
+#if INTERACTIVE
+// Loading the declarations in a development harness does not start a session.
+// The admitted production argv names this exact script as the FSI entry file.
+if fsi.CommandLineArgs.Length > 0
+   && System.IO.Path.GetFullPath(fsi.CommandLineArgs.[0]) = System.IO.Path.GetFullPath(System.IO.Path.Combine(__SOURCE_DIRECTORY__, __SOURCE_FILE__)) then
+    let exitCode = MixedMessageEpochReplay.runStandard (fsi.CommandLineArgs |> Array.skip 1)
+    System.Environment.Exit exitCode
+#endif
