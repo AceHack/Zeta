@@ -77,6 +77,18 @@ The contract specifies four named fixed candidates and matching access to state,
 
 The contract merged as #16962 (`fd9ecb3969fde27b83c9437335529f1dfe1b2d03`). Until separately authored F# and upstream-Python score emitters exist and the source/roster/novelty/evaluation/budget/statistical/cross-oracle mutation controls pass, the MiniGrid adapter’s no-policy-score gate remains closed. A null, negative, or divergent future result must be retained as such.
 
+### 3.5 Score-emitter readiness audit
+
+The score-free readiness audit in
+[`2026-09-08-minigrid-empty-5x5-v310-score-emitter-readiness-audit.md`](../research/2026-09-08-minigrid-empty-5x5-v310-score-emitter-readiness-audit.md)
+identifies the smallest next code unit: independently authored F# static-adapter
+and upstream-Python single-episode preflight emitters. They may verify one
+declared seed-2000 action trace and transition receipt, but cannot train,
+compute novelty, maintain a Q/count table, compare policies, or emit a score.
+This preflight must reject parent substitution, trace/action/reward/terminal
+drift, hidden limits, learning fields, and cross-oracle bridges before the
+larger score-emitter work begins.
+
 ## 4. Policy self-knowledge and tick boundary
 
 The merged policy-admissibility slice directly encodes the user’s requested separation. A policy may self-declare a versioned, parseable time and space **shape** over a named input measure. The local receipt checks that shape against an existing registry form where possible; it does not prove actual complexity. Its finite example is `rng.splitmix64 / mix`, declared `O(1)` time and `O(1)` space for input measure `observations`, within a caller-owned 17-tick envelope. [6]
@@ -168,14 +180,14 @@ The following PRs were open when this handoff was prepared. They are **not** mod
 
 ## 9. Remaining falsifiable work, in recommended order
 
-| Priority | Bounded next unit                            | Must be true before implementation starts                                                                            | Required failure controls                                                                                                                                         | Explicitly excluded result                                    |
-| -------: | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-|        1 | MiniGrid independent score-emitter preflight | Implement separately authored F# static-adapter and upstream-Python fixture score paths exactly as #16962 specifies. | Parent identity, observation/action, policy order/self-report, seed, novelty, frozen evaluation, equal access, hidden-cap, bootstrap, and cross-oracle mutations. | Any MiniGrid score, winner, or transfer conclusion.           |
-|        2 | MiniGrid finite candidate evaluation         | The contract plus independent emitters and all preflight controls are merged.                                        | Complete roster/replay, train-eval separation, frozen table digest, equal access, and statistical-replay faults.                                                  | General curiosity, general transfer, or parameter efficiency. |
-|        3 | Test-only withdrawal-declaration verifier    | A contract-pinned fixture exists without representing production evidence.                                           | Parent/declaration byte change, signer mismatch, invalid scope/reason/window, coexistence with correction/key revocation, local instant boundary.                 | Real production withdrawal, permission, or consent.           |
-|        4 | Production withdrawal input                  | An authorized operator provides an external roster-bound parent attestation and exact verification context.          | Missing/unbound parent and changed source/signature context must defer/refuse.                                                                                    | Automatic authority or consent inference.                     |
-|        5 | NCI witness expansion                        | A new finite subject/model/property, not a relabeling of `NciNonUrgency`.                                            | A discriminating configuration mutation and checker/version mismatch.                                                                                             | Global safety/NCI theorem.                                    |
-|        6 | Recorded-consensus research                  | A human/organizational process specifies immutable evidence, withdrawal, dissent, scope, and accountable authority.  | Missing/dissenting/expired evidence and no automatic threshold escalation.                                                                                        | Emergent global moral scorer or autonomous society authority. |
+| Priority | Bounded next unit                            | Must be true before implementation starts                                                                                 | Required failure controls                                                                                                                         | Explicitly excluded result                                    |
+| -------: | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+|        1 | MiniGrid independent score-emitter preflight | Implement the audited F# static-adapter and upstream-Python single-episode seed-2000 trace emitters, without policy code. | Parent identity, action trace, reward/terminal/truncation, no-learning schema, hidden-cap, and cross-oracle mutations.                            | Any MiniGrid score, winner, or transfer conclusion.           |
+|        2 | MiniGrid finite candidate evaluation         | The contract plus independent emitters and all preflight controls are merged.                                             | Complete roster/replay, train-eval separation, frozen table digest, equal access, and statistical-replay faults.                                  | General curiosity, general transfer, or parameter efficiency. |
+|        3 | Test-only withdrawal-declaration verifier    | A contract-pinned fixture exists without representing production evidence.                                                | Parent/declaration byte change, signer mismatch, invalid scope/reason/window, coexistence with correction/key revocation, local instant boundary. | Real production withdrawal, permission, or consent.           |
+|        4 | Production withdrawal input                  | An authorized operator provides an external roster-bound parent attestation and exact verification context.               | Missing/unbound parent and changed source/signature context must defer/refuse.                                                                    | Automatic authority or consent inference.                     |
+|        5 | NCI witness expansion                        | A new finite subject/model/property, not a relabeling of `NciNonUrgency`.                                                 | A discriminating configuration mutation and checker/version mismatch.                                                                             | Global safety/NCI theorem.                                    |
+|        6 | Recorded-consensus research                  | A human/organizational process specifies immutable evidence, withdrawal, dissent, scope, and accountable authority.       | Missing/dissenting/expired evidence and no automatic threshold escalation.                                                                        | Emergent global moral scorer or autonomous society authority. |
 
 ## 10. Non-negotiable boundary reminders
 
