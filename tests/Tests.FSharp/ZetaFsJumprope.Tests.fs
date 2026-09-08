@@ -241,6 +241,24 @@ let ``buildFromPrev of a 1-byte edit matches full build and does not recopy the 
     )
 
 [<Fact>]
+let ``firstChangedWindow of a 1-byte edit does not allocate a Cas per prefix window`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte ((i * 131) ^^^ (i >>> 8)))
+    let after = Array.copy before
+    after.[250_000] <- after.[250_000] ^^^ 1uy
+    let prev = ZetaFsJumprope.prevOf (ZetaFsJumprope.buildV1 before)
+    let changed = ZetaFsJumprope.firstChangedWindow prev after
+    Assert.True(changed > 0, sprintf "firstChangedWindow=%d" changed)
+    let allocBefore = GC.GetAllocatedBytesForCurrentThread()
+    let walked = ZetaFsJumprope.firstChangedWindow prev after
+    let n = GC.GetAllocatedBytesForCurrentThread() - allocBefore
+    Assert.True(walked > 0, sprintf "second walk firstChangedWindow=%d" walked)
+    Assert.True(
+        n >= 0L && n < 4L * 1024L * 1024L,
+        sprintf "firstChangedWindow allocated %d bytes" n
+    )
+
+[<Fact>]
 let ``buildFromPrev of an append matches full build and does not recopy the prefix`` () =
     ensureHasher ()
     let before = Array.init 500_000 (fun i -> byte (i % 251))

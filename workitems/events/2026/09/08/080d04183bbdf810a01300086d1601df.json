@@ -1,0 +1,14 @@
+{
+  "id": "080d04183bbdf810a01300086d1601df",
+  "at": "2026-09-08T21:58:19.839Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21GEXXY087G0R001WJ79KG",
+    "type": "task",
+    "title": "D10 firstChangedWindow hashes chunk id without a Cas put",
+    "slug": "d10-firstchangedwindow-hashes-chunk-id-without-a-cas-put",
+    "priority": "P2",
+    "filename": "081M21GEXXY087G0R001WJ79KG-d10-firstchangedwindow-hashes-chunk-id-without-a-cas-put.md"
+  }
+}

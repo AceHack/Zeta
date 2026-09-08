@@ -486,9 +486,16 @@ module ZetaFsJumprope =
           Starts = rope.Starts
           Leaves = rope.Leaves }
 
+    /// Chunk ContentId only. `firstChangedWindow` must not put a Cas
+    /// (objects + payload copy) for every prefix window it walks.
     let private chunkIdOf (data: byte[]) : ContentHash256 =
-        let id, _ = encodeChunk (emptyCas ()) data
-        id
+        let dv =
+            dvObj
+                [ "data", dvBytes data
+                  "len", DynamicValue.Int(int64 data.Length)
+                  "t", DynamicValue.String "chunk/1" ]
+
+        hashBytes (DynamicValue.toCanonicalCborOk dv)
 
     /// Index of the first previous window that does not match `bytes`.
     /// `Leaves.Length` means every previous window matched (identical
