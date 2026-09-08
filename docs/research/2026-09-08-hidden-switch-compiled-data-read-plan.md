@@ -38,9 +38,15 @@ data. Preserve method/offset/word and declared label at each of the ten
 addresses. A prospective literal outside the code spans remains valid data
 planning, not an invalid code target.
 
+Order cells first and literals second; within each kind, sort by unsigned
+numeric address. Preserve each range's site references in original mapped
+method order and ascending word offset. After grouping exact repeated cell
+references, require every selected interval to be pairwise disjoint,
+including same-kind partial overlaps as well as cross-kind overlaps.
+
 Require canonical uint64 addresses, checked interval ends, exact order and
-counts, no cross-kind overlap, and no conflicting width/value declarations
-for a repeated address. The final source and hashed roster need independent
+counts, and no conflicting width/value declarations for a repeated address.
+The final source and hashed roster need independent
 review before a physical reader can accept them. A roster mismatch refuses;
 it does not expand the allowed ranges.
 
