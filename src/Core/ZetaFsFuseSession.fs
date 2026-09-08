@@ -74,6 +74,34 @@ module ZetaFsFuseSession =
                 Buffer.BlockCopy(bytes, 0, dst, 0, n)
             dst
 
+    let private splitNames (bytes: byte[]) : (byte[] * byte[]) option =
+        let rec findNul i =
+            if i >= bytes.Length then
+                None
+            elif bytes.[i] = 0uy then
+                Some i
+            else
+                findNul (i + 1)
+
+        match findNul 0 with
+        | None -> None
+        | Some i ->
+            let left = Array.zeroCreate i
+
+            if i > 0 then
+                Buffer.BlockCopy(bytes, 0, left, 0, i)
+
+            let rest =
+                if i + 1 >= bytes.Length then
+                    [||]
+                else
+                    let n = bytes.Length - (i + 1)
+                    let dst = Array.zeroCreate n
+                    Buffer.BlockCopy(bytes, i + 1, dst, 0, n)
+                    dst
+
+            Some(left, nameOf rest)
+
     let private unixParts (ns: int64) : uint64 * uint32 =
         if ns < 0L then
             0UL, 0u
@@ -274,5 +302,79 @@ module ZetaFsFuseSession =
                         Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
                     | _ -> Result.Ok(replyErrno header.Unique 22, session)
                 | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseUnlink then
+                match
+                    ZetaFsFuse.dispatch session (ZetaFsFuse.Unlink(header.Nodeid, nameOf (payload req)))
+                with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Done -> Result.Ok(replyOk header.Unique [||], session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseRmdir then
+                match
+                    ZetaFsFuse.dispatch session (ZetaFsFuse.Rmdir(header.Nodeid, nameOf (payload req)))
+                with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Done -> Result.Ok(replyOk header.Unique [||], session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseReadlink then
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Readlink header.Nodeid) with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Bytes b -> Result.Ok(replyOk header.Unique b, session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseSymlink then
+                match splitNames (payload req) with
+                | None -> Result.Ok(replyErrno header.Unique 22, session)
+                | Some(name, target) ->
+                    match
+                        ZetaFsFuse.dispatch session (ZetaFsFuse.Symlink(header.Nodeid, name, target))
+                    with
+                    | ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | ZetaFsFuse.Node node ->
+                        match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr node.Id) with
+                        | ZetaFsFuse.Stat(stat, ino) ->
+                            let entry: ZetaFsFuseAbi.EntryOut =
+                                { Nodeid = node.Id
+                                  Generation = 1UL
+                                  EntryValid = 0UL
+                                  AttrValid = 0UL
+                                  EntryValidNsec = 0u
+                                  AttrValidNsec = 0u
+                                  Attr = attrOf stat ino }
+
+                            Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeEntryOut entry), session)
+                        | ZetaFsFuse.Fail e ->
+                            Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                        | _ -> Result.Ok(replyErrno header.Unique 22, session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseRename then
+                let body = payload req
+
+                if body.Length < 8 then
+                    Result.Error(Truncated(ZetaFsFuseAbi.Truncated(8, body.Length)))
+                else
+                    let newdir = ZetaFsFuseAbi.decodeFh body
+
+                    match newdir with
+                    | Result.Error e -> Result.Error(Truncated e)
+                    | Result.Ok dstParent ->
+                        let names = Array.zeroCreate (body.Length - 8)
+                        Buffer.BlockCopy(body, 8, names, 0, names.Length)
+
+                        match splitNames names with
+                        | None -> Result.Ok(replyErrno header.Unique 22, session)
+                        | Some(srcName, dstName) ->
+                            match
+                                ZetaFsFuse.dispatch
+                                    session
+                                    (ZetaFsFuse.Rename(header.Nodeid, srcName, dstParent, dstName))
+                            with
+                            | ZetaFsFuse.Fail e ->
+                                Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                            | ZetaFsFuse.Done -> Result.Ok(replyOk header.Unique [||], session)
+                            | _ -> Result.Ok(replyErrno header.Unique 22, session)
             else
                 Result.Ok(replyErrno header.Unique 38, session)

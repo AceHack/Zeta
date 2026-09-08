@@ -24,6 +24,13 @@ module ZetaFsFuseAbi =
     let fuseWrite = 16u
     let fuseRelease = 18u
 
+    /// fuse(4) FUSE_READLINK / SYMLINK / UNLINK / RMDIR / RENAME.
+    let fuseReadlink = 5u
+    let fuseSymlink = 6u
+    let fuseUnlink = 10u
+    let fuseRmdir = 11u
+    let fuseRename = 12u
+
     /// fuse(4) FUSE_MKDIR / CREATE.
     let fuseMkdir = 9u
     let fuseCreate = 35u

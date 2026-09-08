@@ -317,3 +317,100 @@ let ``byte MKDIR and CREATE encode entry_out; CREATE also opens with DirectIo`` 
                 | Ok entry, Ok opened ->
                     Assert.Equal(ZetaFsPosixMeta.fileMode, entry.Attr.Mode)
                     Assert.Equal(ZetaFsFuseAbi.fopenDirectIo, opened.OpenFlags))
+
+let private twoNames (a: string) (b: string) : byte[] =
+    Array.append (namePayload a) (namePayload b)
+
+[<Fact>]
+let ``byte UNLINK SYMLINK READLINK RENAME and nonempty RMDIR`` () =
+    withSession "/fuse-unlink-bytes" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseCreate root 14UL (namePayload "a"))
+        with
+        | Error e -> Assert.Fail(sprintf "create: %A" e)
+        | Ok _ -> ()
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseUnlink root 15UL (namePayload "a"))
+        with
+        | Error e -> Assert.Fail(sprintf "unlink: %A" e)
+        | Ok(reply, _) ->
+            match ZetaFsFuseAbi.decodeOutHeader reply with
+            | Error e -> Assert.Fail(sprintf "unlink out: %A" e)
+            | Ok header -> Assert.Equal(0, header.Error)
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseSymlink root 16UL (twoNames "l" "b"))
+        with
+        | Error e -> Assert.Fail(sprintf "symlink: %A" e)
+        | Ok(symReply, _) ->
+            match ZetaFsFuseAbi.decodeOutHeader symReply with
+            | Error e -> Assert.Fail(sprintf "symlink out: %A" e)
+            | Ok header ->
+                Assert.Equal(0, header.Error)
+                let entryBytes =
+                    Array.sub symReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.entryOutSize
+                match ZetaFsFuseAbi.decodeEntryOut entryBytes with
+                | Error e -> Assert.Fail(sprintf "symlink entry: %A" e)
+                | Ok entry ->
+                    match
+                        ZetaFsFuseSession.handleMounted
+                            session
+                            (req ZetaFsFuseAbi.fuseReadlink entry.Nodeid 17UL [||])
+                    with
+                    | Error e -> Assert.Fail(sprintf "readlink: %A" e)
+                    | Ok(rl, _) ->
+                        match ZetaFsFuseAbi.decodeOutHeader rl with
+                        | Error e -> Assert.Fail(sprintf "readlink out: %A" e)
+                        | Ok rh ->
+                            Assert.Equal(0, rh.Error)
+                            let target =
+                                Array.sub rl ZetaFsFuseAbi.outHeaderSize (rl.Length - ZetaFsFuseAbi.outHeaderSize)
+                            Assert.True(sameBytes (utf8 "b") target)
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseCreate root 18UL (namePayload "x"))
+        with
+        | Error e -> Assert.Fail(sprintf "create x: %A" e)
+        | Ok _ -> ()
+        let renameBody = Array.zeroCreate 8
+        System.Buffers.Binary.BinaryPrimitives.WriteUInt64LittleEndian(Span renameBody, root)
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseRename root 19UL (Array.append renameBody (twoNames "x" "y")))
+        with
+        | Error e -> Assert.Fail(sprintf "rename: %A" e)
+        | Ok(rn, _) ->
+            match ZetaFsFuseAbi.decodeOutHeader rn with
+            | Error e -> Assert.Fail(sprintf "rename out: %A" e)
+            | Ok header -> Assert.Equal(0, header.Error)
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseMkdir root 20UL (namePayload "d"))
+        with
+        | Error e -> Assert.Fail(sprintf "mkdir: %A" e)
+        | Ok _ -> ()
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Lookup(root, utf8 "d")) with
+        | ZetaFsFuse.Node dir ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(dir.Id, utf8 "z")) with
+            | ZetaFsFuse.Node _ -> ()
+            | other -> Assert.Fail(sprintf "create in d: %A" other)
+            match
+                ZetaFsFuseSession.handleMounted
+                    session
+                    (req ZetaFsFuseAbi.fuseRmdir root 21UL (namePayload "d"))
+            with
+            | Error e -> Assert.Fail(sprintf "rmdir: %A" e)
+            | Ok(rd, _) ->
+                match ZetaFsFuseAbi.decodeOutHeader rd with
+                | Error e -> Assert.Fail(sprintf "rmdir out: %A" e)
+                | Ok header -> Assert.Equal(-39, header.Error)
+        | other -> Assert.Fail(sprintf "lookup d: %A" other))
