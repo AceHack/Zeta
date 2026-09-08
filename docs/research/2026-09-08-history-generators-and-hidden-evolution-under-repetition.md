@@ -25,9 +25,9 @@ an integrated learner already outperforms other systems.
 
 This source reading is pinned to `e6fdbe676a87750fc3ba2f4f79a55b043d6b3ba1`.
 In [WSet.FourCornerTrace](../../src/Core/WSet.fs), a generator acts on an
-interpretation I and retained history H. Its consolidated emission is
-E = gen(I,H). Changing I at fixed H produces the signed correction
-Delta = -gen(I_old,H) + gen(I_new,H). `step` updates the interpretation and
+interpretation I and retained history H. Writing C for consolidation, its
+emission is E = C(gen(I,H)). Changing I at fixed H produces the signed correction
+Delta = C(-gen(I_old,H) + gen(I_new,H)). `step` updates the interpretation and
 accumulated emission. It does **not** append an event to H.
 
 `appendCorrection` constructs a causally ordered correction after checking its
@@ -89,8 +89,9 @@ history identifiers, generator versions, interpretation changes and predictions
 before outcomes arrive. Chronological holdout and resource budgets must be
 registered before comparing results or choosing the next investment.
 
-- Compare retained history, erased history and shuffled history with matched
-  interaction and compute budgets. Failure to improve held-out predictions
+- Compare retained history with independently constructed empty-history and
+  shuffled-history controls in disposable experimental copies; no persona
+  history is deleted. Match interaction and compute budgets. Failure to improve held-out predictions
   weakens the proposed benefit of retaining this particular history.
 - Compare a fixed generator with an updating generator, separating evidence
   accumulation from parameter or structure learning. Repetition alone is not
