@@ -3,7 +3,7 @@
 Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade experimental record
-Status: actual fixed workload completed; independent outcome review pending
+Status: actual fixed workload independently accepted within local projection scope
 
 The sole `registered-1` invocation completed with exit zero in 40.661787667
 seconds. All 88 registered calls across 40 subject IDs returned retained,
@@ -65,3 +65,7 @@ changes only project lint classification and seven test separators. Its checks
 are separately source-bound. This original attempt, archive and manifest retain
 their original identities; the historical manifest is not a manifest for every
 later checkout.
+
+The [independent outcome review](../../../2026-09-08-projection-registered-independent-review.md)
+accepts this frozen attempt and archive, including exact finite leaf decisions,
+actual mutations and all direct process/source associations.

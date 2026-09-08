@@ -26,7 +26,9 @@ checking passes; mypy reports no issues in 113 source files. The seven corrected
 component test files pass all 340 cases in 6.95 seconds. Each command has its
 actual argv, cwd, selected import root, timestamps, exit status and original
 stdout/stderr. The first locally reproduced package-cwd refusal is retained.
-No solver, native numerical producer or registered driver workload was rerun.
+The component suite exercised numerical routines, including reference roots
+and interval operations, on its unit fixtures. The registered 40-ID/88-call
+driver workload and native numerical producer were not rerun.
 
 The [manifest](manifest.json) binds all 135 regular members of the
 [custody archive](custody.tar.gz), verified without extraction. It includes

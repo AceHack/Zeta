@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade experimental result
 Lifecycle: active
-Status: first actual comparison passed; independent outcome review pending
+Status: first actual comparison independently accepted; publication CI in progress
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 The first actual [registered comparison](2026-09-08-precision-gate-projection-registration.md)
@@ -97,3 +97,8 @@ source is unchanged; both lint entry points, whole-lane typing/formatting and
 340 component tests pass. The original numerical attempt and immutable
 manifest remain bound to their actual pre-correction source; they are not
 retrospectively reassigned to the publication checkout.
+
+The [independent outcome review](2026-09-08-projection-registered-independent-review.md)
+accepts the frozen actual run and its custody. It checks the exact finite
+leaf comparisons, actual baseline mutations and source/process associations;
+the post-experiment import-format correction has separate validation.

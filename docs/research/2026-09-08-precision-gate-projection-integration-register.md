@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
-Status: first registered comparison passed; independent outcome review pending
+Status: first registered comparison independently accepted; publication CI in progress
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Scientific scope
@@ -80,7 +80,6 @@ Even complete passage earns only this local component. A mixed schedule must
 still fix evidence cuts, cavities, epoch boundaries, damping, update/application
 receipts and rollback before a later learned compositional benchmark.
 
-
 ## Assembled validation
 
 At 096b09126b1f489fc7720b69780263ef01485445 the full preflight passed all
@@ -95,13 +94,11 @@ cut and has a separate exact before/after identity; no production source changed
 The driver review accepts production 1f4 and the 59-test follow-up 53cf, including
 the explicitly withdrawn locator suspicion. That source-validation record preceded the later actual comparison.
 
-
 The [assembled validation archive](precision-gate-projection/2026-09-08/assembled-validation/README.md)
 retains both ordinary-import cuts and the complete full gate. The corrected
 14-file Python check passes Ruff, format and mypy, with all 340 tests passing
 in 7.07 seconds. The only change between those two Python cuts is one blank
 line in the driver test; the frozen manifest uses its corrected bytes.
-
 
 ## Frozen source capsule
 
@@ -112,14 +109,13 @@ custody/environment limits. The input manifest hash is
 `FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7`.
 Archive admission and verified remote preservation precede the first final call.
 
-
 ## Actual registered comparison
 
 The [first result](2026-09-08-precision-gate-projection-registered-results.md)
 completes all 88 calls with twelve core certificates and no unexecuted suffix.
 All stress and control outcomes remain retained. Source/archive admission and
-remote-ref verification preceded the sole invocation; independent outcome
-review follows. The next investment is a bounded mixed-message schedule, not
+remote-ref verification preceded the sole invocation; the [independent outcome
+review](2026-09-08-projection-registered-independent-review.md) accepts its finite scope. The next investment is a bounded mixed-message schedule, not
 a claim of learned-system superiority.
 
 ## Parent-main custody
@@ -128,3 +124,8 @@ The [PR 17050 main receipt](research-main-publication/2026-09-08/pr-17050/README
 preserves the verified parent-main publication: all seventeen changed paths
 and the whole merge tree agree, with the paused compiled investment intact.
 It is publication provenance, separate from the projection's numerical result.
+
+The [post-experiment publication correction](precision-gate-projection/2026-09-08/publication-hygiene/README.md)
+fixes cwd-dependent test import grouping while retaining the original numerical
+source identity. Its full-lane lint/type checks and 340 component tests are
+separate from the original experiment and full gate.
