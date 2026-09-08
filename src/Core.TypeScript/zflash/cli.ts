@@ -120,6 +120,15 @@ import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboar
 import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
 import { INSTALL_SUBSTRATE_FILES } from "./install-substrate-files.ts";
 import { ZFLASH_ALLOWED_FLAGS } from "./allowed-flags.ts";
+import { firstbootRoleFromFlags } from "./firstboot-role.ts";
+import {
+  planFirstbootConfFileContent,
+  validateJoinTokenMaterial,
+  ZETA_FIRSTBOOT_CONF_ESP_DESTINATION,
+  ZETA_JOIN_TOKEN_ESP_DESTINATION,
+  type ZetaFirstbootRole,
+} from "./firstboot-role.ts";
+import { railFindingsForEspWrites, type EspDestination } from "./injection-rail.ts";
 
 
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -836,6 +845,8 @@ async function injectPubkeyToUsb(
   hostOverride: string | null,
   credBake: CredBakeOptions,
   testMode: boolean,
+  firstbootRole: ZetaFirstbootRole | undefined,
+  joinTokenSourcePath: string | undefined,
 ): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
   if (testMode) {
@@ -943,6 +954,88 @@ async function injectPubkeyToUsb(
     }
     process.stdout.write(`iter-5.2: wrote hostname '${hostOverride}' to ${hostnameTarget}\n`);
     process.stdout.write(`iter-5.2: installed node will be reachable as ssh zeta@${hostOverride}.local\n`);
+  }
+
+  // ── B5: join material onto the DEVICE, in this same mount session ─────────
+  //
+  // Same sudo timestamp window as the writes above, so no extra Touch ID. The
+  // conf CONTENT is rendered by `planFirstbootConfFileContent`, the same
+  // function the file-backed image path uses -- a second renderer here would be
+  // two spellings of one file format, and `zeta-first-boot.sh` sources whichever
+  // it finds.
+  if (firstbootRole !== undefined) {
+    const planned = planFirstbootConfFileContent(firstbootRole);
+    if (!planned.ok) {
+      unmountEsp(espPart, mountResult);
+      bail(3, `join material inject failed: ${planned.error}`);
+    }
+
+    // The rail speaks BEFORE the write, not after: an operator who is about to
+    // carry a k3s node-token on a FAT partition should read that while the
+    // decision is still theirs. `railFindingsForEspWrites` is the same rail the
+    // file-backed path runs; wiring the feature without it would move secret
+    // material onto physical media with the existing warning silently bypassed.
+    // `tokenEspPath` is the DESTINATION on the ESP; `joinTokenSourcePath` is the
+    // host file to read. The model separates them deliberately -- a token can be
+    // provisioned by other means, in which case the config names no path at all
+    // rather than naming a file that will not be there.
+    const carriesToken = firstbootRole.kind === "joiner" && firstbootRole.tokenEspPath !== undefined;
+    const espWrites: EspDestination[] = [ZETA_FIRSTBOOT_CONF_ESP_DESTINATION];
+    if (carriesToken) {
+      espWrites.push(ZETA_JOIN_TOKEN_ESP_DESTINATION);
+    }
+    for (const finding of railFindingsForEspWrites(espWrites)) {
+      process.stdout.write(`zflash: constitutional-rail finding: ${finding}\n`);
+    }
+
+    const confTarget = join(mountPoint, "zeta-firstboot.conf");
+    try {
+      execFileSync(sudoProgram(), ["tee", confTarget], {
+        input: planned.value,
+        stdio: ["pipe", "ignore", "inherit"],
+      });
+    } catch (e) {
+      dumpDiagnostics(`sudo tee ${confTarget} failed`);
+      unmountEsp(espPart, mountResult);
+      bail(3, `join material inject failed: sudo tee ${confTarget} failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+    process.stdout.write(`B5: wrote ${confTarget} (role=${firstbootRole.kind})\n`);
+
+    if (carriesToken) {
+      if (joinTokenSourcePath === undefined) {
+        unmountEsp(espPart, mountResult);
+        bail(2, "the resolved role names a token on the ESP but no --join-token source was given");
+      }
+      const tokenSource = joinTokenSourcePath;
+      let tokenContent: string;
+      try {
+        tokenContent = readFileSync(tokenSource, "utf8");
+      } catch (e) {
+        unmountEsp(espPart, mountResult);
+        bail(2, `join token unreadable at ${tokenSource}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+      // Shape-check the material itself, not just the path. A truncated or
+      // wrong-file token produces a node that boots, tries to join, and fails
+      // on the far side -- which is the failure this whole path exists to make
+      // testable on real hardware rather than only in a VM.
+      const tokenProblem = validateJoinTokenMaterial(tokenContent);
+      if (tokenProblem !== null) {
+        unmountEsp(espPart, mountResult);
+        bail(2, `join token refused: ${tokenProblem}`);
+      }
+      const tokenTarget = join(mountPoint, "zeta-join-token");
+      try {
+        execFileSync(sudoProgram(), ["tee", tokenTarget], {
+          input: tokenContent,
+          stdio: ["pipe", "ignore", "inherit"],
+        });
+      } catch (e) {
+        dumpDiagnostics(`sudo tee ${tokenTarget} failed`);
+        unmountEsp(espPart, mountResult);
+        bail(3, `join token inject failed: sudo tee ${tokenTarget} failed: ${e instanceof Error ? e.message : String(e)}`);
+      }
+      process.stdout.write(`B5: wrote ${tokenTarget} (join token)\n`);
+    }
   }
 
   if (credBake.bakeCredArgs.length > 0) {
@@ -1082,6 +1175,10 @@ async function main() {
   // be wrong every time. Use --iso-arch aarch64 for the Raspberry Pi rung.
   let isoArch: IsoArch = "x86_64";
   let hostOverride: string | null = null;
+  let roleFlag: string | undefined;
+  let flakeHostFlag: string | undefined;
+  let joinServerUrlFlag: string | undefined;
+  let joinTokenPathFlag: string | undefined;
   let agentMode = false;
   let testMode = false;
   const bakeCredArgs: string[] = [];
@@ -1146,6 +1243,18 @@ async function main() {
     }
     if (a === "--test") {
       testMode = true;
+      continue;
+    }
+    if (a === "--role" || a === "--flake-host" || a === "--join-server-url" || a === "--join-token") {
+      const next = argv[i + 1];
+      if (next === undefined || next.startsWith("-")) {
+        bail(2, `${a} requires an argument`);
+      }
+      if (a === "--role") roleFlag = next;
+      else if (a === "--flake-host") flakeHostFlag = next;
+      else if (a === "--join-server-url") joinServerUrlFlag = next;
+      else joinTokenPathFlag = next;
+      i += 1;
       continue;
     }
     if (a === "--host") {
@@ -1243,6 +1352,26 @@ async function main() {
         `Refusing to proceed — destructive tool requires exact arg count.`,
     );
   }
+  // ── Join material, validated BEFORE anything is flashed (B5) ──────────────
+  //
+  // `firstbootRoleFromFlags` is the SAME validator the file-backed image path
+  // runs, so `--join-server-url` without `--role joiner`, a bad flake-host, or a
+  // malformed server URL are refused identically on both surfaces. Reusing it is
+  // the point: two entrypoints that accept the same flags must not drift into
+  // two sets of rules.
+  //
+  // Validated here rather than at write time so a typo costs nothing -- the
+  // refusal lands before any device is touched.
+  const firstbootRole = firstbootRoleFromFlags({
+    ...(roleFlag === undefined ? {} : { role: roleFlag }),
+    ...(flakeHostFlag === undefined ? {} : { flakeHost: flakeHostFlag }),
+    ...(joinServerUrlFlag === undefined ? {} : { joinServerUrl: joinServerUrlFlag }),
+    ...(joinTokenPathFlag === undefined ? {} : { joinTokenSourcePath: joinTokenPathFlag }),
+  });
+  if (!firstbootRole.ok) {
+    bail(2, `join material refused: ${firstbootRole.error}`);
+  }
+
   const credBake: CredBakeOptions = {
     bakeCredArgs,
     passphraseFile: bakePassphraseFile,
@@ -1701,7 +1830,7 @@ async function main() {
     }
   } else if (willInject) {
     try {
-      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode);
+      await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake, testMode, firstbootRole.value, joinTokenPathFlag);
     } finally {
       if (tempPubkeyPath && existsSync(tempPubkeyPath)) {
         try {

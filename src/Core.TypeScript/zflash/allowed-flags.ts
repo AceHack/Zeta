@@ -26,4 +26,12 @@ export const ZFLASH_ALLOWED_FLAGS: ReadonlySet<string> = new Set([
   "--expect-device",
   "--expect-size",
   "--expect-model",
+  // Join material on the DEVICE path (B5). Validation, rendering and the
+  // secret-on-ESP rail are all REUSED from `firstboot-role.ts` /
+  // `injection-rail.ts` -- the same code the file-backed image path runs -- so
+  // the two surfaces cannot drift into different rules for the same flags.
+  "--role",
+  "--flake-host",
+  "--join-server-url",
+  "--join-token",
 ]);
