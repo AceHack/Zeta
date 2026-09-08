@@ -1,0 +1,442 @@
+{
+  "SourceCommit": "9f0d5ca7c7bf18a9df02b5061ce5665253ce559b",
+  "Manifest": {
+    "Bytes": 11390,
+    "Sha256": "656cbf9f010c9ab00795ccafbd6a89a728742ee4d98f8aa38bbd7dc2576ef208"
+  },
+  "Records": [
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/format.json",
+      "Stored": "attempt-1-format.json.gz",
+      "RawBytes": 312,
+      "RawSha256": "7125736c8e05946ef3a980425ef465bf640985d97d24fc1c30e85cfcccfa87fc",
+      "StoredBytes": 217,
+      "StoredSha256": "b4a9b35dc37e1e41f7191378661fdb6d5134a5d04f14e0f164a47044a0272f92",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/format.stderr",
+      "Stored": "attempt-1-format.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/format.stdout",
+      "Stored": "attempt-1-format.stdout.gz",
+      "RawBytes": 9674,
+      "RawSha256": "1d1c7425d63d7a782a9ff881536863f44b3245bec8702c2031ec12609bd39faf",
+      "StoredBytes": 2279,
+      "StoredSha256": "f9694ed1703e8e1db5d4a5b3aff2b3c1e00e69d83647301cbb889057f69aadfa",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/mypy.json",
+      "Stored": "attempt-1-mypy.json.gz",
+      "RawBytes": 299,
+      "RawSha256": "ab646091f659267cb12e218417f587236ed57d2d104046474228073688ab5298",
+      "StoredBytes": 207,
+      "StoredSha256": "d7bd862190fd3b96a4c81f8a4156914de983da15de8ad1258a0e15acbbc80a18",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/mypy.stderr",
+      "Stored": "attempt-1-mypy.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/mypy.stdout",
+      "Stored": "attempt-1-mypy.stdout.gz",
+      "RawBytes": 43,
+      "RawSha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "StoredBytes": 63,
+      "StoredSha256": "76eacbbf7755358f4be970d3cd86b2d0ffa287f96db2193f42233534159c057d",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/pytest.json",
+      "Stored": "attempt-1-pytest.json.gz",
+      "RawBytes": 549,
+      "RawSha256": "9f58dce2ef0efa8ddfbb1829abdb62888945d6a296ce9a512f06ec0d8e3b1690",
+      "StoredBytes": 274,
+      "StoredSha256": "b169e9c532ec24a1b6debdaac3b6dd2e8fe5bc0c5961972be2d0ee5e4f2bd165",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/pytest.stderr",
+      "Stored": "attempt-1-pytest.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/pytest.stdout",
+      "Stored": "attempt-1-pytest.stdout.gz",
+      "RawBytes": 99,
+      "RawSha256": "078a84b6d9323594fc17061863c7b9a4317e21ca676d4149171cd691a78b7e2e",
+      "StoredBytes": 52,
+      "StoredSha256": "ea38a95916700ce8aa4b31c8ec4b8815abde51f6b4089bebd5810656daaa4299",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/ruff.json",
+      "Stored": "attempt-1-ruff.json.gz",
+      "RawBytes": 296,
+      "RawSha256": "f3c151711f389b4720d01460658d7a3f2ce602225dd72d1eed1a85790ed5fc42",
+      "StoredBytes": 207,
+      "StoredSha256": "5ae74b7845bbd14239edb44c29d1ae441a75efb04f9aa45c70e67941a30f20de",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/ruff.stderr",
+      "Stored": "attempt-1-ruff.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/ruff.stdout",
+      "Stored": "attempt-1-ruff.stdout.gz",
+      "RawBytes": 431,
+      "RawSha256": "9bf8fb2660b7c4fc24328e2f197a490b4805b3f4e7fda58975ca6268581b91ee",
+      "StoredBytes": 253,
+      "StoredSha256": "6330eea8124d66cf369f446b116f94d6d11991184d691425b33531b5d67d117d",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/source-0",
+      "Stored": "attempt-1-source-0.gz",
+      "RawBytes": 10461,
+      "RawSha256": "017bb7771b7f1697adec0282e70e3e9a5ea8fcc6a636d16c879deb0237eab396",
+      "StoredBytes": 2732,
+      "StoredSha256": "f84851c853795a3141bfc9ca403821fccd3cbcb8154949452c92883a59e4c0df",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/source-1",
+      "Stored": "attempt-1-source-1.gz",
+      "RawBytes": 7493,
+      "RawSha256": "c9c63c555be6f9435700da23a93f220ef504107bddd28418824d0248064678ff",
+      "StoredBytes": 2289,
+      "StoredSha256": "a0edb3fe8ce90e10e58977cbd8292a9d86c960b1c2516bbd11b8cc67eca5f175",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/source-2",
+      "Stored": "attempt-1-source-2.gz",
+      "RawBytes": 5397,
+      "RawSha256": "fbe86d58672af87315831780aa25a085684599f7d2d1f3e7ba9002b82b7270e5",
+      "StoredBytes": 2610,
+      "StoredSha256": "eddc5c8dc5f460e96f835e1c2473bfae3e934754e3a463c09f94810b6b68ec2a",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-1/sources.json",
+      "Stored": "attempt-1-sources.json.gz",
+      "RawBytes": 649,
+      "RawSha256": "dfac80df030890bcea5522bd752f2cc9221b4d584ffad0da617a3724d83280f9",
+      "StoredBytes": 348,
+      "StoredSha256": "e9effb83cc4217e6da2c3c94a0f363f7fd0114304abd20c0d4e519cdcb4c2dc0",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/format.json",
+      "Stored": "attempt-2-format.json.gz",
+      "RawBytes": 421,
+      "RawSha256": "22cacccf23d37492ad1b97af1dcabb0b19d4e72ab16d4182dc08b426c5a8b031",
+      "StoredBytes": 270,
+      "StoredSha256": "5b252a1e320e1e9112f4c25e3e8b3133011613f82327450ca3d2f0d108f50944",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/format.stderr",
+      "Stored": "attempt-2-format.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/format.stdout",
+      "Stored": "attempt-2-format.stdout.gz",
+      "RawBytes": 26,
+      "RawSha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+      "StoredBytes": 46,
+      "StoredSha256": "9a1a2d79acccdb0f46930a600a1382606067033cfb52a4673dc15b0c1030d871",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/mypy.json",
+      "Stored": "attempt-2-mypy.json.gz",
+      "RawBytes": 408,
+      "RawSha256": "f310e32d3051b46eeaf483160a792cbeb31e4dac6c7b17f68ad122e33d1b5674",
+      "StoredBytes": 265,
+      "StoredSha256": "6fe18c969bf8bfa5063d70fa527d29827403627cae6bd646c623ba3c325100c9",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/mypy.stderr",
+      "Stored": "attempt-2-mypy.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/mypy.stdout",
+      "Stored": "attempt-2-mypy.stdout.gz",
+      "RawBytes": 43,
+      "RawSha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "StoredBytes": 63,
+      "StoredSha256": "76eacbbf7755358f4be970d3cd86b2d0ffa287f96db2193f42233534159c057d",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/pytest.json",
+      "Stored": "attempt-2-pytest.json.gz",
+      "RawBytes": 346,
+      "RawSha256": "317131967d99d67a715977a00fe01f43117c26595947870968cf6c7545b6d390",
+      "StoredBytes": 252,
+      "StoredSha256": "29175914d555cd297a21e07a4d7df71c165a710840f7a90370116ee5c1427e70",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/pytest.stderr",
+      "Stored": "attempt-2-pytest.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/pytest.stdout",
+      "Stored": "attempt-2-pytest.stdout.gz",
+      "RawBytes": 99,
+      "RawSha256": "a2d717377b96f5a4bcd883fb858d4bfce7ecf3bf4b2c962d101b919bcfbdb97a",
+      "StoredBytes": 52,
+      "StoredSha256": "22f403d3c98ab69f632a45c030ffbcd05a83f3c4639404db1c71f779e6ab7be5",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/ruff.json",
+      "Stored": "attempt-2-ruff.json.gz",
+      "RawBytes": 405,
+      "RawSha256": "54af3d920650abb49dbaf0556e063c432c64abfe9d1a96449b383c15a3dc535f",
+      "StoredBytes": 262,
+      "StoredSha256": "c6a7bc946ec9ee7ca7b9c3a38c5974bd96c8ef22fc1a3d1bcb245a1e50a6e934",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/ruff.stderr",
+      "Stored": "attempt-2-ruff.stderr.gz",
+      "RawBytes": 0,
+      "RawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/ruff.stdout",
+      "Stored": "attempt-2-ruff.stdout.gz",
+      "RawBytes": 19,
+      "RawSha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/source-0",
+      "Stored": "attempt-2-source-0.gz",
+      "RawBytes": 10864,
+      "RawSha256": "fd8db23e1b077a5bc3b9396e964c30bf927fe7e27a37dfe83ae5412988138616",
+      "StoredBytes": 2811,
+      "StoredSha256": "7ce28c0b81e09600260202cb9012205daba3321c7b2165d745f68be6f73159a6",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/source-1",
+      "Stored": "attempt-2-source-1.gz",
+      "RawBytes": 8333,
+      "RawSha256": "c673182ccc199a2d10d4c085f0d0edbdc6d6d71cd1872be535ee0d55291619f6",
+      "StoredBytes": 2523,
+      "StoredSha256": "136093df0e118ce170a24a391e6c7eeb49bd69742557775d7580a6408f1fd294",
+      "StoredRawOriginalMatch": true
+    },
+    {
+      "Original": ".git/precision-gate-projection-intervals-attempt-2/sources.json",
+      "Stored": "attempt-2-sources.json.gz",
+      "RawBytes": 437,
+      "RawSha256": "094716e9d00c2c700924c0550766ab9c4d1f77d5d4d18feb42141cbb6cdc0f3b",
+      "StoredBytes": 259,
+      "StoredSha256": "d9e7ef7d36fa0ad80531c8c501f9151f3db95854e278fbe4fe1b8ffac720599f",
+      "StoredRawOriginalMatch": true
+    }
+  ],
+  "OriginalBytes": 57104,
+  "StoredBytes": 18533,
+  "SourceIdentities": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+      "Bytes": 10864,
+      "Sha256": "fd8db23e1b077a5bc3b9396e964c30bf927fe7e27a37dfe83ae5412988138616",
+      "Copy": "source-0",
+      "ExecutedCopyMatchesCommittedSource": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+      "Bytes": 8333,
+      "Sha256": "c673182ccc199a2d10d4c085f0d0edbdc6d6d71cd1872be535ee0d55291619f6",
+      "Copy": "source-1",
+      "ExecutedCopyMatchesCommittedSource": true
+    }
+  ],
+  "InitialFinalSourceAstEqual": true,
+  "OriginalProcesses": {
+    "attempt-1-pytest": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/test_precision_gate_projection_intervals.py",
+          "-q"
+        ],
+        "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python",
+        "PYTHONPATH": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python",
+        "StartedAtUtc": "2026-09-08T05:40:09.719997+00:00",
+        "FinishedAtUtc": "2026-09-08T05:40:14.956759+00:00",
+        "ExitCode": 0
+      },
+      "Stdout": ".........................................                                [100%]\n41 passed in 4.21s\n",
+      "Stderr": ""
+    },
+    "attempt-1-mypy": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "mypy",
+          "--strict",
+          "zeta_interp/precision_gate_projection_intervals.py",
+          "tests/test_precision_gate_projection_intervals.py"
+        ],
+        "ExitCode": 0
+      },
+      "Stdout": "Success: no issues found in 2 source files\n",
+      "Stderr": ""
+    },
+    "attempt-1-ruff": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "zeta_interp/precision_gate_projection_intervals.py",
+          "tests/test_precision_gate_projection_intervals.py"
+        ],
+        "ExitCode": 1
+      },
+      "Stdout": "BLE001 Do not catch blind exception: `Exception`\n  --> zeta_interp/precision_gate_projection_intervals.py:77:12\n   |\n75 |     except DecimalException as error:\n76 |         return Failure(\"NumericalRange\", \"parameters\", \"arithmetic\", type(error).__name__)\n77 |     except Exception as error:\n   |            ^^^^^^^^^\n78 |         return Failure(\"Unexpected\", \"parameters\", \"arithmetic\", type(error).__name__)\n   |\n\nFound 1 error.\n",
+      "Stderr": ""
+    },
+    "attempt-1-format": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "zeta_interp/precision_gate_projection_intervals.py",
+          "tests/test_precision_gate_projection_intervals.py"
+        ],
+        "ExitCode": 1
+      },
+      "Stdout": "unformatted: File would be reformatted\n   --> tests/test_precision_gate_projection_intervals.py:41:19\n    |\n40  |     a = arithmetic()\n    -     operations = {\"add\": a.add, \"subtract\": a.subtract, \"multiply\": a.multiply, \"divide\": a.divide}\n41  +     operations = {\n42  +         \"add\": a.add,\n43  +         \"subtract\": a.subtract,\n44  +         \"multiply\": a.multiply,\n45  +         \"divide\": a.divide,\n46  +     }\n47  |     for x, y in itertools.product((F(-7, 3), F(1, 7), F(19, 13)), repeat=2):\n    -         expected = {\"add\": x + y, \"subtract\": x - y, \"multiply\": x * y, \"divide\": x / y}[operation]\n48  +         expected = {\n49  +             \"add\": x + y,\n50  +             \"subtract\": x - y,\n51  +             \"multiply\": x * y,\n52  +             \"divide\": x / y,\n53  +         }[operation]\n54  |         value = ok(operations[operation](ok(a.point(x)), ok(a.point(y))))\n--------------------------------------------------------------------------------\n58  |\n    - @pytest.mark.parametrize(\"denominator\", [interval(\"-1\", \"1\"), interval(\"0\", \"0\"), interval(\"0\", \"2\")])\n59  + @pytest.mark.parametrize(\n60  +     \"denominator\", [interval(\"-1\", \"1\"), interval(\"0\", \"0\"), interval(\"0\", \"2\")]\n61  + )\n62  | def test_division_interval_must_exclude_zero(denominator: i.Interval) -> None:\n--------------------------------------------------------------------------------\n71  |\n    - @pytest.mark.parametrize(\"value,expected\", [(interval(\"-2\", \"3\"), interval(\"0\", \"9\")), (interval(\"-4\", \"-2\"), interval(\"4\", \"16\")), (interval(\"2\", \"4\"), interval(\"4\", \"16\"))])\n    - def test_square_is_not_independent_product(value: i.Interval, expected: i.Interval) -> None:\n72  + @pytest.mark.parametrize(\n73  +     \"value,expected\",\n74  +     [\n75  +         (interval(\"-2\", \"3\"), interval(\"0\", \"9\")),\n76  +         (interval(\"-4\", \"-2\"), interval(\"4\", \"16\")),\n77  +         (interval(\"2\", \"4\"), interval(\"4\", \"16\")),\n78  +     ],\n79  + )\n80  + def test_square_is_not_independent_product(\n81  +     value: i.Interval, expected: i.Interval\n82  + ) -> None:\n83  |     assert ok(arithmetic().square(value)) == expected\n84  |\n85  |\n86  | def test_intersection_and_empty_refusal() -> None:\n    -     assert ok(i.intersect(interval(\"-1\", \"4\"), interval(\"2\", \"7\"))) == interval(\"2\", \"4\")\n87  +     assert ok(i.intersect(interval(\"-1\", \"4\"), interval(\"2\", \"7\"))) == interval(\n88  +         \"2\", \"4\"\n89  +     )\n90  |     assert ok(i.intersect(interval(\"1\", \"2\"), interval(\"2\", \"3\"))) == interval(\"2\", \"2\")\n--------------------------------------------------------------------------------\n132 |     a = arithmetic()\n    -     result = ok(a.exp(ok(a.point(F(1, 2))))) if kind == \"exp\" else ok(a.ln(ok(a.point(2))))\n    -     lower, upper = exp_half_series_bounds() if kind == \"exp\" else log_two_series_bounds()\n133 +     result = (\n134 +         ok(a.exp(ok(a.point(F(1, 2))))) if kind == \"exp\" else ok(a.ln(ok(a.point(2))))\n135 +     )\n136 +     lower, upper = (\n137 +         exp_half_series_bounds() if kind == \"exp\" else log_two_series_bounds()\n138 +     )\n139 |     assert F(result.Lower) < lower < upper < F(result.Upper)\n--------------------------------------------------------------------------------\n146 |     argument = F(1, 2) if kind == \"exp\" else F(2)\n    -     low = ok(a.exp(ok(a.point(argument)))) if kind == \"exp\" else ok(a.ln(ok(a.point(argument))))\n    -     high = ok(b.exp(ok(b.point(argument)))) if kind == \"exp\" else ok(b.ln(ok(b.point(argument))))\n147 +     low = (\n148 +         ok(a.exp(ok(a.point(argument))))\n149 +         if kind == \"exp\"\n150 +         else ok(a.ln(ok(a.point(argument))))\n151 +     )\n152 +     high = (\n153 +         ok(b.exp(ok(b.point(argument))))\n154 +         if kind == \"exp\"\n155 +         else ok(b.ln(ok(b.point(argument))))\n156 +     )\n157 |     assert low.Lower < high.Lower < high.Upper < low.Upper\n--------------------------------------------------------------------------------\n187 |     a = arithmetic()\n    -     refused(a.multiply(interval(\"1e-999999\", \"1e-999999\"), interval(\"1e-999999\", \"1e-999999\")), \"NumericalUnderflow\")\n    -     assert ok(a.multiply(ok(a.point(0)), interval(\"1e-999999\", \"1e-999999\"))) == interval(\"0\", \"0\")\n188 +     refused(\n189 +         a.multiply(\n190 +             interval(\"1e-999999\", \"1e-999999\"), interval(\"1e-999999\", \"1e-999999\")\n191 +         ),\n192 +         \"NumericalUnderflow\",\n193 +     )\n194 +     assert ok(\n195 +         a.multiply(ok(a.point(0)), interval(\"1e-999999\", \"1e-999999\"))\n196 +     ) == interval(\"0\", \"0\")\n197 |     assert a.TranscendentalEntries == 0\n--------------------------------------------------------------------------------\n209 |\n    - @pytest.mark.parametrize(\"value\", [None, (0, 1), i.Interval(cast(Any, 0), Decimal(1)), interval(\"2\", \"1\"), interval(\"NaN\", \"1\"), interval(\"1\", \"Infinity\")])\n210 + @pytest.mark.parametrize(\n211 +     \"value\",\n212 +     [\n213 +         None,\n214 +         (0, 1),\n215 +         i.Interval(cast(Any, 0), Decimal(1)),\n216 +         interval(\"2\", \"1\"),\n217 +         interval(\"NaN\", \"1\"),\n218 +         interval(\"1\", \"Infinity\"),\n219 +     ],\n220 + )\n221 | def test_every_interval_operation_revalidates_ordinary_records(value: object) -> None:\n    |\n\nunformatted: File would be reformatted\n   --> zeta_interp/precision_gate_projection_intervals.py:74:24\n    |\n73  |     except Underflow:\n    -         return Failure(\"NumericalUnderflow\", \"parameters\", \"arithmetic\", \"Decimal underflow\")\n74  +         return Failure(\n75  +             \"NumericalUnderflow\", \"parameters\", \"arithmetic\", \"Decimal underflow\"\n76  +         )\n77  |     except DecimalException as error:\n    -         return Failure(\"NumericalRange\", \"parameters\", \"arithmetic\", type(error).__name__)\n78  +         return Failure(\n79  +             \"NumericalRange\", \"parameters\", \"arithmetic\", type(error).__name__\n80  +         )\n81  |     except Exception as error:\n--------------------------------------------------------------------------------\n111 |     ):\n    -         raise _Refusal(\"Domain\", \"Interval\", \"ordered finite Decimal endpoints required\")\n112 +         raise _Refusal(\n113 +             \"Domain\", \"Interval\", \"ordered finite Decimal endpoints required\"\n114 +         )\n115 |     return value\n--------------------------------------------------------------------------------\n151 |         ):\n    -             raise _Refusal(\"Domain\", \"TranscendentalEntries\", \"valid bounded counter required\")\n152 +             raise _Refusal(\n153 +                 \"Domain\", \"TranscendentalEntries\", \"valid bounded counter required\"\n154 +             )\n155 |         return Context(\n--------------------------------------------------------------------------------\n177 |         if operation == \"add\":\n    -             return Interval(_finite(lo.add(a.Lower, b.Lower)), _finite(hi.add(a.Upper, b.Upper)))\n178 +             return Interval(\n179 +                 _finite(lo.add(a.Lower, b.Lower)), _finite(hi.add(a.Upper, b.Upper))\n180 +             )\n181 |         if operation == \"subtract\":\n182 |             return Interval(\n    -                 _finite(lo.subtract(a.Lower, b.Upper)), _finite(hi.subtract(a.Upper, b.Lower))\n183 +                 _finite(lo.subtract(a.Lower, b.Upper)),\n184 +                 _finite(hi.subtract(a.Upper, b.Lower)),\n185 |             )\n--------------------------------------------------------------------------------\n230 |             if self.TranscendentalEntries >= self.TranscendentalLimit:\n    -                 raise _Refusal(\"IterationLimit\", \"TranscendentalEntries\", \"entry budget exhausted\")\n231 +                 raise _Refusal(\n232 +                     \"IterationLimit\", \"TranscendentalEntries\", \"entry budget exhausted\"\n233 +                 )\n234 |             self.TranscendentalEntries += 1\n235 |             answer = context.exp(point) if operation == \"exp\" else context.ln(point)\n    -             lower, upper = _finite(context.next_minus(answer)), _finite(context.next_plus(answer))\n236 +             lower, upper = (\n237 +                 _finite(context.next_minus(answer)),\n238 +                 _finite(context.next_plus(answer)),\n239 +             )\n240 |             if operation == \"exp\" and lower <= 0:\n    -                 raise _Refusal(\"NumericalUnderflow\", \"Exponential\", \"lost positive lower bound\")\n241 +                 raise _Refusal(\n242 +                     \"NumericalUnderflow\", \"Exponential\", \"lost positive lower bound\"\n243 +                 )\n244 |             bounds.append((lower, upper))\n--------------------------------------------------------------------------------\n259 |         if not a.Lower < point < a.Upper:\n    -             raise _Refusal(\"ResolutionLimit\", \"Midpoint\", \"no represented strict interior point\")\n260 +             raise _Refusal(\n261 +                 \"ResolutionLimit\", \"Midpoint\", \"no represented strict interior point\"\n262 +             )\n263 |         return _finite(point)\n--------------------------------------------------------------------------------\n268 |\n    - def make_arithmetic(precision: object, *, transcendental_limit: object = 4096) -> Result[Arithmetic]:\n269 + def make_arithmetic(\n270 +     precision: object, *, transcendental_limit: object = 4096\n271 + ) -> Result[Arithmetic]:\n272 |     def create() -> Arithmetic:\n--------------------------------------------------------------------------------\n286 |         if lower > upper:\n    -             raise _Refusal(\"EmptyIntersection\", \"Interval\", \"proved intervals are disjoint\")\n287 +             raise _Refusal(\n288 +                 \"EmptyIntersection\", \"Interval\", \"proved intervals are disjoint\"\n289 +             )\n290 |         return Interval(lower, upper)\n    |\n\n2 files would be reformatted\n",
+      "Stderr": ""
+    },
+    "attempt-2-pytest": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "pytest",
+          "tests/test_precision_gate_projection_intervals.py",
+          "-q"
+        ],
+        "StartedAtUtc": "2026-09-08T05:42:25.171287+00:00",
+        "FinishedAtUtc": "2026-09-08T05:42:30.224847+00:00",
+        "ExitCode": 0
+      },
+      "Stdout": "..........................................                               [100%]\n42 passed in 4.13s\n",
+      "Stderr": ""
+    },
+    "attempt-2-mypy": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "mypy",
+          "--strict",
+          "zeta_interp/precision_gate_projection_intervals.py",
+          "tests/test_precision_gate_projection_intervals.py"
+        ],
+        "StartedAtUtc": "2026-09-08T05:42:30.225270+00:00",
+        "FinishedAtUtc": "2026-09-08T05:42:32.109117+00:00",
+        "ExitCode": 0
+      },
+      "Stdout": "Success: no issues found in 2 source files\n",
+      "Stderr": ""
+    },
+    "attempt-2-ruff": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "ruff",
+          "check",
+          "zeta_interp/precision_gate_projection_intervals.py",
+          "tests/test_precision_gate_projection_intervals.py"
+        ],
+        "StartedAtUtc": "2026-09-08T05:42:32.109465+00:00",
+        "FinishedAtUtc": "2026-09-08T05:42:32.142593+00:00",
+        "ExitCode": 0
+      },
+      "Stdout": "All checks passed!\n",
+      "Stderr": ""
+    },
+    "attempt-2-format": {
+      "Process": {
+        "Argv": [
+          "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "zeta_interp/precision_gate_projection_intervals.py",
+          "tests/test_precision_gate_projection_intervals.py"
+        ],
+        "StartedAtUtc": "2026-09-08T05:42:32.142849+00:00",
+        "FinishedAtUtc": "2026-09-08T05:42:32.172621+00:00",
+        "ExitCode": 0
+      },
+      "Stdout": "2 files already formatted\n",
+      "Stderr": ""
+    }
+  },
+  "ReviewerNumericalExecution": false
+}
