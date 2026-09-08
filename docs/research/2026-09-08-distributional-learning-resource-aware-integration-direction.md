@@ -353,3 +353,18 @@ the observed processes.
 The finite gauge proposal has an [independent mathematical review](2026-09-08-finite-q8-memory-frame-independent-review.md).
 Its corrected topology and detector-input distinctions remain prospective;
 the review reports no gauge run or new cartel-detection rate.
+
+## Noninterference, regard and the latest multi-oracle clarification
+
+The [independent Otto ferry review](2026-09-08-decorrelation-noninterference-ferry-review.md)
+preserves the full user conjecture: maximal useful decorrelation with
+reconcilability, noninterference and default highest regard across the four
+corners. It confirms the implemented generator-update/delta mechanism and
+separates the still-missing map to normalized CHSH observables. The user also
+prefers deliberate multi-oracle choice and says an unchosen default must be
+made conspicuous. The coordinator provisionally interprets this as explicit
+fallback disclosure; warning versus mandatory prior choice remains pending
+clarification. No runtime selection policy is changed by this research note.
+The default is a moral baseline, not an invented scalar rank or a preferred
+universal oracle. Existing fabrication/cartel detection remains part of the
+full threat model, and irreducible resources retain their separate units.

@@ -1,0 +1,235 @@
+{
+  "FullGateHead": "afce96353549a27937dc8b5626532c8aca5ec026",
+  "All18ExecutedChecksPassed": true,
+  "SourceFiles": [
+    {
+      "Path": "src/Bayesian/PrecisionGateKernels.fs",
+      "Bytes": 17206,
+      "Sha256": "4004196cb0ade8527dfebf83fbb3e6e42bd36208e38affd09906787a84901c02"
+    },
+    {
+      "Path": "src/Research.FSharp/PrecisionGateKernelsReplay.fsx",
+      "Bytes": 5715,
+      "Sha256": "57d12eb0afed2b438c5e9dc37e78df0785e391b1ddf15f77e625f332a67fce05"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Bytes": 13463,
+      "Sha256": "f443e58dd8c6d5e0c017d36a432dc6de121fd040dfa68d39e877e4a4ebfefebb"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3276,
+      "Sha256": "1d33fbcabf186390c582a53256ac4b3186cadf60129f1b37b2d636dd2ac74bac"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3575,
+      "Sha256": "b96a098c57f89908b5b78c98506b039c24cfbdccdaf77493de69f2c43a4bffb7"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_kernels_reference.py",
+      "Bytes": 20245,
+      "Sha256": "91f71726c610364f5adf835fff08adb1353ab6f8ba9beaa6a68387cd55ac8258"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_kernels_reference.py",
+      "Bytes": 16999,
+      "Sha256": "f8215daf5c189438b3e207ce6b2b675568f9b2894bea78e76c7e09fe0be88a58"
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "000-push.json.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/push.json",
+      "Bytes": 269,
+      "Sha256": "aceb7b40202dd974a430b19545be9ba2f5846042ca9fa8da7b9be46acec2dc35",
+      "StoredBytes": 204,
+      "StoredSha256": "036d014f67e6974f5399e7123d4ed01c1bd36a87d77e38cf24635e4b3afd8e43"
+    },
+    {
+      "File": "001-push.stderr.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/push.stderr",
+      "Bytes": 439,
+      "Sha256": "f7e4b333d0dbb703a378304c209d63b2a80ce34715e0edbbf2a4faa7e0a1292d",
+      "StoredBytes": 290,
+      "StoredSha256": "e376688fb6ff64f6597a68c9448821b5ce19f518cad78b930a107aac47d27c02"
+    },
+    {
+      "File": "002-push.stdout.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/push.stdout",
+      "Bytes": 1276,
+      "Sha256": "07a2e6ba93cb2ba09cdb70684a01e2d240d93d0b84e545325de770b81a4d25c7",
+      "StoredBytes": 430,
+      "StoredSha256": "52e0b6ec285aa43cf0458c013949aaff04ff9ff297fc06760a391e05bd988a92"
+    },
+    {
+      "File": "003-remote.json.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/remote.json",
+      "Bytes": 290,
+      "Sha256": "af6d16c0db483d9ba0b24b275a6ec04c2ab7114a228ebe5e16310e316ecb4d9a",
+      "StoredBytes": 209,
+      "StoredSha256": "68efaa0b64f4f009d64395f6f96fdc043ff3566b3edcecdb9cf20eef0a83742a"
+    },
+    {
+      "File": "004-remote.stderr.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/remote.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "005-remote.stdout.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/remote.stdout",
+      "Bytes": 98,
+      "Sha256": "1943168d2f598ad508a332623a5d7d5966272463540ddfbcbd12ca86896b69ad",
+      "StoredBytes": 105,
+      "StoredSha256": "a72a1257193cd3e05744c2d4353ba1b8292a5b955fe325c6cdce2123dbb0667b"
+    },
+    {
+      "File": "006-summary.json.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-reference-publication-attempt-1/summary.json",
+      "Bytes": 1716,
+      "Sha256": "26e3c6dd6b3ea8a7d42bdd76a0d820fe6a63db46a286fdb8bd9da9d1b3cf8af2",
+      "StoredBytes": 670,
+      "StoredSha256": "72fe9f1f106bef96f5ba57580c97302e2221bb700763df507e81664f217a1ad8"
+    },
+    {
+      "File": "007-push.json.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/push.json",
+      "Bytes": 269,
+      "Sha256": "f4585243be9cfcdcd48177284801aaa7d2df603e35f34938f78b6d315de95aa1",
+      "StoredBytes": 203,
+      "StoredSha256": "b676f0436e103f4b9b1ead06d5e29b10a73a610f9ebd9b80cdbc3da2e0e4a2d1"
+    },
+    {
+      "File": "008-push.stderr.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/push.stderr",
+      "Bytes": 439,
+      "Sha256": "23fa9100bbfeb8ff02bcc0e1e76e7865fe0b4fd30cf4b879825faae75a77b19e",
+      "StoredBytes": 292,
+      "StoredSha256": "b9bfc148aef89174afec0e9e795d5d28482be7ed43ea387edabe92183d97ecd2"
+    },
+    {
+      "File": "009-push.stdout.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/push.stdout",
+      "Bytes": 1276,
+      "Sha256": "07a2e6ba93cb2ba09cdb70684a01e2d240d93d0b84e545325de770b81a4d25c7",
+      "StoredBytes": 430,
+      "StoredSha256": "52e0b6ec285aa43cf0458c013949aaff04ff9ff297fc06760a391e05bd988a92"
+    },
+    {
+      "File": "010-remote.json.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/remote.json",
+      "Bytes": 290,
+      "Sha256": "a6356ed23c54876cdd9a27cb257a515aae5ceddf1748bb6e317a78175230d54f",
+      "StoredBytes": 210,
+      "StoredSha256": "71152adda56c7b6c67cb149a4b38c86660b1b4058017f4868cb3341e08fdd869"
+    },
+    {
+      "File": "011-remote.stderr.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/remote.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "012-remote.stdout.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/remote.stdout",
+      "Bytes": 98,
+      "Sha256": "f47ff82efa36376b3acfc616868c0755dcc259cc17df5feb0bf2a0c4caac3736",
+      "StoredBytes": 106,
+      "StoredSha256": "9912344d398f549afbe2f7b7818753e85e884514fd8e9e5b29820ce0e9f16ed3"
+    },
+    {
+      "File": "013-summary.json.gz",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/precision-gate-replay-review-publication-attempt-1/summary.json",
+      "Bytes": 1716,
+      "Sha256": "de8820ef837c6a30e9588c3b3c7b38880830595b2bb42e4ebbd1ec5520add2e1",
+      "StoredBytes": 670,
+      "StoredSha256": "9f51d228ddacc93a9082e5866b211d949c6e5b9345bab2bd1328b867848b9692"
+    },
+    {
+      "File": "014-kernel-final-reviews-import-1.log.gz",
+      "OriginalPath": ".git/kernel-final-reviews-import-1.log",
+      "Bytes": 1425,
+      "Sha256": "b00a24c5af6c56558f09f5e414217198b62c8cdd1ef0b78a640f0ba0a75ad057",
+      "StoredBytes": 465,
+      "StoredSha256": "c3ea5a9cc72b220de89560bd4390ff7c996a4cef1fd18b44c2ed8b5af23a662c"
+    },
+    {
+      "File": "015-learning-kernel-claim-preservation-push-1.log.gz",
+      "OriginalPath": ".git/learning-kernel-claim-preservation-push-1.log",
+      "Bytes": 2273,
+      "Sha256": "4e3853f14c5c1e518e7b2bef6ff959ddc353314e85ec29301ee9bbe91f75a312",
+      "StoredBytes": 872,
+      "StoredSha256": "0c66ca57e953cf22a48fea5867326ff46e9ffe2fac44bf70eec4c1e56db52c5f"
+    },
+    {
+      "File": "016-learning-kernel-claim-preservation-remote-1.txt.gz",
+      "OriginalPath": ".git/learning-kernel-claim-preservation-remote-1.txt",
+      "Bytes": 662,
+      "Sha256": "d545e1c9576f7903ea192d6f91efe854acbd0c578f3cbefabeaedcd8f9275e15",
+      "StoredBytes": 264,
+      "StoredSha256": "d84e5b82e94af0ef3e4384c48353428ef3bc25bb42a1ec26d4df7f9a67dc95b9"
+    },
+    {
+      "File": "017-otto-decorrelation-review-import-1.log.gz",
+      "OriginalPath": ".git/otto-decorrelation-review-import-1.log",
+      "Bytes": 2250,
+      "Sha256": "a7d562805bc6b3fd5e59b6ac7264b9019be7ca3a928cbdd943189bece81de2c1",
+      "StoredBytes": 501,
+      "StoredSha256": "8474d2dd678eeb04fce12426bb1d2baf3c0823c1857e978355677b204c12af8f"
+    },
+    {
+      "File": "018-process.json.gz",
+      "OriginalPath": ".git/precision-kernel-full-preflight-1/process.json",
+      "Bytes": 130,
+      "Sha256": "7c12d4b8e83a81434116f04092c0c7fef0bd64e9c4a38c26803badd4a2d3512f",
+      "StoredBytes": 137,
+      "StoredSha256": "bfa2cd767a3c77b56e8a6dfd9d1fdb78567c120e787a8b2d26529eb4dd3d8a31"
+    },
+    {
+      "File": "019-start.json.gz",
+      "OriginalPath": ".git/precision-kernel-full-preflight-1/start.json",
+      "Bytes": 123,
+      "Sha256": "5045ef0cf18cb6179f78d7eeb0af5fbc58cd2bfb5b7ea01280617a3f92016338",
+      "StoredBytes": 132,
+      "StoredSha256": "b882109593ad15207aed4421675a13559d195e7decdf0c15de273ff98d2209d9"
+    },
+    {
+      "File": "020-stderr.gz",
+      "OriginalPath": ".git/precision-kernel-full-preflight-1/stderr",
+      "Bytes": 49,
+      "Sha256": "2702855c35b0430a3432c3f284c32b80ecd46d83302246db156609015e6b2560",
+      "StoredBytes": 69,
+      "StoredSha256": "5c00a8fdc5d6679c6621d462c7a2386aeecfb66d2f3cf0f82cdbaf91a490ad35"
+    },
+    {
+      "File": "021-stdout.gz",
+      "OriginalPath": ".git/precision-kernel-full-preflight-1/stdout",
+      "Bytes": 1313,
+      "Sha256": "bab079ca25dc0ae422108d850a086d6753e5fadaefb06cb0fe8ab4b507869f51",
+      "StoredBytes": 408,
+      "StoredSha256": "cc7006133569f8b5ffb89d538817b8c5e5ba7c7bbafb728e0dae7dfeff35de7a"
+    },
+    {
+      "File": "022-precision-kernel-root-preservation-push-1.log.gz",
+      "OriginalPath": ".git/precision-kernel-root-preservation-push-1.log",
+      "Bytes": 1943,
+      "Sha256": "7923b83c7b7b667816ea3b879e9fdd8fdb45c90ab2406090313b63e688b2a6fb",
+      "StoredBytes": 718,
+      "StoredSha256": "74b5884867acd89fd5ced76f06077076fc2174d912b36a38b7d691059d38ce2c"
+    },
+    {
+      "File": "023-precision-kernel-root-preservation-remote-1.txt.gz",
+      "OriginalPath": ".git/precision-kernel-root-preservation-remote-1.txt",
+      "Bytes": 383,
+      "Sha256": "e84702df4ffeb07a0d610b404a0a56d0d12e00336831e21991c5568c64d60ef0",
+      "StoredBytes": 162,
+      "StoredSha256": "4e4d059b68a2b25bca42b42794994a434694f1f60d392e058d53a7471a3ff70e"
+    }
+  ]
+}

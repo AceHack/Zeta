@@ -2,7 +2,7 @@
 
 Date: 2026-09-08 UTC
 Operational status: research-grade
-Status: fixed comparison executed; full integration gates pending
+Status: fixed comparison and full integration gates passed; publication pending
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
@@ -79,3 +79,9 @@ producer's Failure.Field contains that family label, not an observed parameter
 locator. The reference's more specific kernel.Rate/kernel.Precision fields
 remain reference facts. InvalidInput fields are compared directly using the
 declared naming map.
+
+The [independent reference review](2026-09-08-precision-gate-kernels-reference-review.md)
+and [native replay review](2026-09-08-precision-gate-kernels-native-reference-replay-review.md)
+accept their explicitly bounded source, numerical and custody claims. The
+[full integration gate and remote preservation](precision-gate-kernels/2026-09-08/integration-validation/README.md)
+retain all18 passed checks and normal push at the exact tested source cut.

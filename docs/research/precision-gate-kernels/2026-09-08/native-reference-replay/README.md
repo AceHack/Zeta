@@ -15,7 +15,7 @@ The kernel source itself remains byte-identical to7100eefea, SHA256
 ## Results and comparison repair
 
 All16 ordinary successful rows agree within the declared tolerance; allseven
-invalid rows have the expected native error family and field. The remaining
+invalid rows have the expected native error family and, where exposed, input field. The remaining
 successful exact-reference row is explicitly a different encoding observation:
 requested native shape1e-16 becomes represented shape1.1102230246251565e-16.
 Its kernel reports that roundtrip drift. It is not called exact agreement.
