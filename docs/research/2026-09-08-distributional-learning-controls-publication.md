@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1ZCHPWV087G0R002GG2PKY
-Artifact status: integrated; publication gates and main proof pending
+Artifact status: full local gate passed; publication scope correction and main proof pending
 
 This finite publication imports the [learning direction](2026-09-08-distributional-learning-resource-aware-integration-direction.md),
 [fixed room protocol](2026-09-08-distributional-learning-small-room-protocol.md),
@@ -26,8 +26,12 @@ and the independent Python reference and tests. All five match coordinator
 bytes exactly. The inherited main updates are retained by ordinary merge.
 
 The parent learning and compiled-controller claims remain in the coordinator's
-writer and remote branches. Only this finite publication claim is included here
-until PR release. The prior [PR #16999 exact main proof](hidden-switch-compiled-validation/2026-09-08/pr-16999/README.md),
+writer and remote branches. The first attempted publication-only removal failed:
+`git rm` refused the newly staged merge additions, and the shell continued to
+commit. Independent review found both parent claims still present at the gate
+source. The original refusal log is retained. After the complete full gate
+closed, the two publication copies were removed successfully; the root copies
+remain active. Only the finite publication claim remains until PR release. The prior [PR #16999 exact main proof](hidden-switch-compiled-validation/2026-09-08/pr-16999/README.md),
 its completed finite work item, the eighth compiled validation and current
 handoff are continuity artifacts. They do not expand this publication's five
 source changes or open the registered compiled streams.
@@ -46,3 +50,8 @@ that repeated consensus evidence can inflate precision without provenance, and
 that Vision funding confidence is distinct from posterior probability. They do
 not test learned dynamics, physical resources, full runtime closure or public
 benchmark superiority. Those require separate experiments and acceptance gates.
+
+The publication's full gate at `19efca924f6765bbdd3b4017f707fa8f08302bd1`
+passed all 18 checks, including release build and complete tests. Subsequent
+claim removal and direction corrections are recorded separately; the earlier
+source cut is not relabeled.
