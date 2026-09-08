@@ -1,0 +1,14 @@
+{
+  "Records": [
+    {
+      "File": "audit.py",
+      "Bytes": 5835,
+      "Sha256": "a0ab757989067322d8f30ebabd3562f56a95e5c27d5b692e997de4a438d561fb"
+    },
+    {
+      "File": "audit-observation.json",
+      "Bytes": 20065,
+      "Sha256": "848b70ac9a466a6fe34aac351bcaae3919dec2258f0d2a5d458c592ce787d9fe"
+    }
+  ]
+}
