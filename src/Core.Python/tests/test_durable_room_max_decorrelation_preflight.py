@@ -62,6 +62,18 @@ def test_preflight_records_the_pinned_finite_catalogue_without_a_winner() -> Non
         ),
         (lambda value: value["payload"].__setitem__("chshSidecar", "injected"), "chsh"),
         (
+            lambda value: value["payload"].__setitem__(
+                "controlManifestDigest", "0" * 64
+            ),
+            "control-manifest",
+        ),
+        (
+            lambda value: value["payload"].__setitem__(
+                "observationBarrierReceipts", []
+            ),
+            "observation-barrier",
+        ),
+        (
             lambda value: value["payload"]["candidates"][0]["atomSequence"].append(
                 "current-answer"
             ),
@@ -85,6 +97,10 @@ def test_preflight_records_the_pinned_finite_catalogue_without_a_winner() -> Non
                 ["old-positive", "old-retraction", "replacement-positive"],
             ),
             "atom-order",
+        ),
+        (
+            lambda value: value["payload"]["orderedCandidateEvidenceDigests"].reverse(),
+            "candidate-evidence-digest",
         ),
     ],
 )

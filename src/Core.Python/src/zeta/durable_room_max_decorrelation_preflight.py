@@ -92,45 +92,72 @@ def _candidate(
     }
 
 
+def _control_manifest() -> dict[str, str]:
+    return {
+        "anchor": "observed",
+        "catalogue": "observed",
+        "chshSidecar": "observed",
+        "currentCandidatePreload": "refused",
+        "identity": "observed",
+        "metric": "observed",
+        "priorMemory": "accepted",
+        "reconciliationWitness": "observed",
+        "retractionOrder": "observed",
+    }
+
+
+def _observation_barriers() -> list[dict[str, str]]:
+    return [
+        {"candidateId": candidate_id, "currentCandidatePreload": "refused"}
+        for candidate_id in [
+            "identity/v1",
+            "replace-uncertainty/v1",
+            "retract-replace/v1",
+        ]
+    ]
+
+
 def payload_object() -> dict[str, object]:
     anchor_bytes = _canonical(_anchor())
     catalogue = ["identity/v1", "replace-uncertainty/v1", "retract-replace/v1"]
+    candidates = [
+        _candidate(
+            "identity/v1",
+            ["anchor-positive"],
+            "resolved",
+            650000,
+            20,
+            11,
+            "anchor-resolved-tuple/v1",
+        ),
+        _candidate(
+            "replace-uncertainty/v1",
+            ["old-positive", "old-retraction", "replacement-positive"],
+            "resolved",
+            800000,
+            40,
+            8,
+            "replacement-resolved-tuple/v1",
+        ),
+        _candidate(
+            "retract-replace/v1",
+            ["old-retraction", "old-positive", "replacement-positive"],
+            "unresolved",
+            800000,
+            40,
+            8,
+            "replacement-after-unresolved-replay/v1",
+        ),
+    ]
     return {
         "anchorBytes": anchor_bytes,
         "anchorBytesSha256": _sha256(anchor_bytes),
-        "candidates": [
-            _candidate(
-                "identity/v1",
-                ["anchor-positive"],
-                "resolved",
-                650000,
-                20,
-                11,
-                "anchor-resolved-tuple/v1",
-            ),
-            _candidate(
-                "replace-uncertainty/v1",
-                ["old-positive", "old-retraction", "replacement-positive"],
-                "resolved",
-                800000,
-                40,
-                8,
-                "replacement-resolved-tuple/v1",
-            ),
-            _candidate(
-                "retract-replace/v1",
-                ["old-retraction", "old-positive", "replacement-positive"],
-                "unresolved",
-                800000,
-                40,
-                8,
-                "replacement-after-unresolved-replay/v1",
-            ),
-        ],
+        "candidates": candidates,
         "catalogue": catalogue,
         "catalogueSha256": _sha256(_canonical(catalogue)),
         "carrierId": CARRIER,
         "chshSidecar": "absent",
+        "controlManifestDigest": _sha256(_canonical(_control_manifest())),
         "emitterIdentity": "fsharp-durable-room-preflight/v1",
         "memoryInputs": [
             {
@@ -139,6 +166,10 @@ def payload_object() -> dict[str, object]:
                 "kind": "prior-memory",
                 "sourceId": "chip8-orbit/v1",
             }
+        ],
+        "observationBarrierReceipts": _observation_barriers(),
+        "orderedCandidateEvidenceDigests": [
+            _sha256(_canonical(candidate)) for candidate in candidates
         ],
         "reconciliationDefinition": "resolved-tuple-equality/v1",
         "runtimeIdentities": ["dotnet-fsi/v1", "python-uv/v1"],
@@ -170,6 +201,10 @@ def verify_object(receipt: dict[str, Any]) -> None:
         raise PreflightRefusal("refuse-payload-shape")
     if payload.get("chshSidecar") != "absent":
         raise PreflightRefusal("refuse-chsh-sidecar")
+    if payload.get("controlManifestDigest") != _sha256(_canonical(_control_manifest())):
+        raise PreflightRefusal("refuse-control-manifest-mismatch")
+    if payload.get("observationBarrierReceipts") != _observation_barriers():
+        raise PreflightRefusal("refuse-observation-barrier-mismatch")
     if payload.get("catalogue") != [
         "identity/v1",
         "replace-uncertainty/v1",
@@ -223,6 +258,10 @@ def verify_object(receipt: dict[str, Any]) -> None:
             or row.get("reconciliationOutcome") != "pass"
         ):
             raise PreflightRefusal("refuse-reconciliation-witness-mismatch")
+    if payload.get("orderedCandidateEvidenceDigests") != [
+        _sha256(_canonical(row)) for row in candidates
+    ]:
+        raise PreflightRefusal("refuse-candidate-evidence-digest-mismatch")
     if payload.get("memoryInputs") != [
         {
             "acquisitionPhase": "prior-game",

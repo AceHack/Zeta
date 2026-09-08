@@ -98,9 +98,16 @@ let private candidateJson candidate =
     ",\"reconciliationWitness\":" + quote candidate.Witness +
     "}"
 
+let private controlManifestJson =
+    "{\"anchor\":\"observed\",\"catalogue\":\"observed\",\"chshSidecar\":\"observed\",\"currentCandidatePreload\":\"refused\",\"identity\":\"observed\",\"metric\":\"observed\",\"priorMemory\":\"accepted\",\"reconciliationWitness\":\"observed\",\"retractionOrder\":\"observed\"}"
+
+let private observationBarrierJson =
+    "[{\"candidateId\":\"identity/v1\",\"currentCandidatePreload\":\"refused\"},{\"candidateId\":\"replace-uncertainty/v1\",\"currentCandidatePreload\":\"refused\"},{\"candidateId\":\"retract-replace/v1\",\"currentCandidatePreload\":\"refused\"}]"
+
 let payload () =
     let catalogue = candidates |> List.map (fun candidate -> candidate.Id) |> List.map quote |> String.concat "," |> fun values -> "[" + values + "]"
     let candidateRows = candidates |> List.map candidateJson |> String.concat "," |> fun values -> "[" + values + "]"
+    let candidateEvidenceDigests = candidates |> List.map candidateJson |> List.map sha256 |> List.map quote |> String.concat "," |> fun values -> "[" + values + "]"
     "{" +
     "\"anchorBytes\":" + quote anchorJson + "," +
     "\"anchorBytesSha256\":" + quote (sha256 anchorJson) + "," +
@@ -109,8 +116,11 @@ let payload () =
     "\"catalogueSha256\":" + quote (sha256 catalogue) + "," +
     "\"carrierId\":\"zeta.durable-room-evidence/v1\"," +
     "\"chshSidecar\":\"absent\"," +
+    "\"controlManifestDigest\":" + quote (sha256 controlManifestJson) + "," +
     "\"emitterIdentity\":\"fsharp-durable-room-preflight/v1\"," +
     "\"memoryInputs\":[{\"acquisitionPhase\":\"prior-game\",\"availableAt\":\"run-start\",\"kind\":\"prior-memory\",\"sourceId\":\"chip8-orbit/v1\"}]," +
+    "\"observationBarrierReceipts\":" + observationBarrierJson + "," +
+    "\"orderedCandidateEvidenceDigests\":" + candidateEvidenceDigests + "," +
     "\"reconciliationDefinition\":\"resolved-tuple-equality/v1\"," +
     "\"runtimeIdentities\":[\"dotnet-fsi/v1\",\"python-uv/v1\"]," +
     "\"schema\":\"zeta.max-decorrelate-reconcile/preflight/v1\"," +
