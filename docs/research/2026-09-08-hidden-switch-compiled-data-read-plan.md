@@ -5,7 +5,15 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: first launcher startup refused; proposed roster and physical read pending
+Artifact status: complete 53-range proposal; artifact audit and physical read pending
+
+The separately numbered metadata-only attempt 2 completed under source
+`a80211d357d548d97caf850f367543abfbf91638`, execution head
+`af6c1935c5240097b459d0508e204609d60855d7`. Its returned proposal is
+87,278 bytes, SHA256
+`7A30217E5686294E1FFD02593703D5E7348C1A528A7BB88620BB83373E745D07`.
+No physical dump/range or target read occurred. The first launcher's
+startup refusal remains separately retained below.
 
 The [retained transfer inventory](2026-09-08-hidden-switch-compiled-transfer-inventory.md)
 identifies 43 distinct unknown call-cell addresses and ten prospective
@@ -189,6 +197,39 @@ Independent read-only review accepted those exact bytes and nine fixtures.
 The original startup failure remains a failure. A separately authorized
 metadata-only attempt 2 must retain its own invocation/output, and still
 authorizes no physical read or target execution.
+
+## Completed metadata-only proposal
+
+The [twelve actual attempt records](hidden-switch-compiled-validation/2026-09-07/data-proposal-attempt-2/manifest.json)
+retain the exact proposal, outcome, 413-row journal, invocation, both inner
+and outer stdout/stderr streams, process completion, summary, executed
+launcher and preservation script. They occupy 381,147 original and 63,538
+stored bytes. The manifest is 6,248 bytes, SHA256
+`64DB2CAE0E76FCBF7DE3C3EDD5825A215D61EFC19A8ECE778C3BC73D7445942A`.
+Independent source/startup acceptance is signed at
+`63f70ace249068f4e3f75447330769a4d54213a3`; actual artifact audit is pending.
+
+PID 71479 exited zero; both the main and cleanup waits observed zero, with
+the owned child closed. There is no collector, outer or cleanup failure.
+All sixteen outer source/test identities and fourteen collector source
+identities were unchanged. The wrapper admitted the exact 132 archived
+records, 266 input-identity rows and 8,155,384 original bytes including two
+manifests. All 130 method reports and 8,665 words reached the completed
+proposal; the nine unprepared/nine extra rosters remain explicit.
+
+The result contains 43 eight-byte cells with 134 retained site references
+and ten literals totaling 152 bytes: one eight-byte and nine sixteen-byte
+literals. All 53 selected intervals are pairwise disjoint and total 496
+bytes. The cells have no observed value in this result. Literal ExpectedHex
+is inherited compiler data, not a physical read. The returned dump identity
+remains a metadata association to the earlier captured file.
+
+`RuntimeAdmitted`, `BodyResolved`, `ClosureAdmitted`, `ObservedExecution`
+and `RawDumpOpened` remain false. NewMemoryQueries and SourceDraws are zero.
+This completes the proposal collection only. Per coordinator direction,
+preserve and independently audit this result, then pause full runtime-closure
+investment before designing a physical reader. No physical read or further
+target/range expansion is authorized by this result.
 
 ## One held local dump, no chained query
 

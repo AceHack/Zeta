@@ -1,0 +1,159 @@
+{
+  "SourceCommit": "a80211d357d548d97caf850f367543abfbf91638",
+  "ExecutionHead": "af6c1935c5240097b459d0508e204609d60855d7",
+  "Scope": "One completed metadata-only53-range proposal; no physical dump/range/target/decoder/source-stream query. All full admission flags remain false.",
+  "Summary": {
+    "Complete": true,
+    "Failure": null,
+    "CleanupFailures": [],
+    "ProposalFile": {
+      "File": "proposal.json",
+      "Bytes": 87278,
+      "Sha256": "7A30217E5686294E1FFD02593703D5E7348C1A528A7BB88620BB83373E745D07"
+    },
+    "ProposalKind": "finite-data-range-proposal",
+    "Counts": {
+      "Methods": 130,
+      "Words": 8665,
+      "CellSites": 134,
+      "Cells": 43,
+      "Literals": 10,
+      "Bytes": 496
+    },
+    "RangeCount": 53,
+    "Widths": {
+      "8": 44,
+      "16": 9
+    },
+    "Methods": 130,
+    "InputIdentityRows": 266,
+    "SourcePins": 14,
+    "InputOriginalBytes": 8155384,
+    "JournalRows": 413,
+    "ProcessId": 71479,
+    "ExitCode": 0,
+    "MainWaitExitCode": 0,
+    "CleanupWaitExitCode": 0,
+    "DirectChildClosed": true,
+    "OuterFailure": null,
+    "OuterCleanupFailures": [],
+    "SourcesUnchanged": true,
+    "RuntimeAdmitted": false,
+    "BodyResolved": false,
+    "ClosureAdmitted": false,
+    "RawDumpOpened": false,
+    "NewMemoryQueries": 0,
+    "SourceDraws": 0,
+    "ProposalIdentityMatches": true
+  },
+  "Records": [
+    {
+      "File": "journal.jsonl.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2/journal.jsonl",
+      "Bytes": 92103,
+      "Sha256": "9C4602A49FFD4ACA68F230C6F14CF51EFA0F6EAE5F1B2C3F79286BECA3C24921",
+      "StoredBytes": 17751,
+      "StoredSha256": "0D5F2B92015646B51416D5BF21E249CD560F0F077CC0604C56C8AFB8AC1021D8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "outcome.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2/outcome.json",
+      "Bytes": 161572,
+      "Sha256": "02848027F5BD7A4D1E68B6541CC401A17E8732C87CDC55C782741E68BFA6AB88",
+      "StoredBytes": 29058,
+      "StoredSha256": "24A4131AAC321A122F88016CCEEB5AC17366B8B0B05FE6899A06EF023321CB79",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "proposal.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2/proposal.json",
+      "Bytes": 87278,
+      "Sha256": "7A30217E5686294E1FFD02593703D5E7348C1A528A7BB88620BB83373E745D07",
+      "StoredBytes": 6210,
+      "StoredSha256": "9EF166DB91D6B8CF924B3C279E867C412C9185055FAA6160AE86C445C3551792",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-attempt-2-invocation.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2-invocation.json",
+      "Bytes": 6789,
+      "Sha256": "1A1340FCA5F504814E7804961458C0185E13DD5BC6D86B5F0F2BF6D6584F378B",
+      "StoredBytes": 1729,
+      "StoredSha256": "C896F78C276BF19E4B396BD347B03435D9808039FB5C63324B3C1B377C7D2D04",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-attempt-2-completion.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2-completion.json",
+      "Bytes": 9797,
+      "Sha256": "96AD4692DEAFC391792C5AEBA3823D88CC793297D497ACDE833FB4A5ACD33BD8",
+      "StoredBytes": 1972,
+      "StoredSha256": "CF1876902F4F2488B480FC345194ADBA2B032FBB5C23AA31CD13F9D28C3A68C0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-attempt-2.stdout.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2.stdout.log",
+      "Bytes": 279,
+      "Sha256": "D1C8B97F7AF32AC395D5BE340142E7CD49E3024E2B2A811AAFB562E99019B261",
+      "StoredBytes": 225,
+      "StoredSha256": "5D826693C761A92077F68C2D0424B09D5FABACF871AEEC1F1C1B4EF638E55DF9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-attempt-2.stderr.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2.stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-attempt-2-tool-stdout.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-attempt-2-tool-stdout.log",
+      "Bytes": 9797,
+      "Sha256": "96AD4692DEAFC391792C5AEBA3823D88CC793297D497ACDE833FB4A5ACD33BD8",
+      "StoredBytes": 1972,
+      "StoredSha256": "CF1876902F4F2488B480FC345194ADBA2B032FBB5C23AA31CD13F9D28C3A68C0",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-launcher-attempt-2-tool-stderr.log.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-launcher-attempt-2-tool-stderr.log",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "hidden-switch-data-proposal-attempt-2-summary.json.gz",
+      "OriginalLocalFile": ".git/hidden-switch-data-proposal-attempt-2-summary.json",
+      "Bytes": 979,
+      "Sha256": "0698E447C9EE39055072841B8A9DBC9D03998DFC5B018167B0406A96BB2E3EAD",
+      "StoredBytes": 493,
+      "StoredSha256": "49DB84450E44C2E4FF7578A3E3311044D4C00FD78B565039FFFB9FBA8E1CDB7B",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "run-data-proposal-attempt-2.py.gz",
+      "OriginalLocalFile": ".git/run-data-proposal-attempt-2.py",
+      "Bytes": 9105,
+      "Sha256": "741927F2980759CF50DEBDBB561D9BF801B673D63F64DE67CF603CD062577FFF",
+      "StoredBytes": 2728,
+      "StoredSha256": "8C82E05E1DB73302F82EF31970B6F6795B55F5161EE46B3B3066CAF31DA5F43D",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retain-data-proposal-attempt-2.py.gz",
+      "OriginalLocalFile": ".git/retain-data-proposal-attempt-2.py",
+      "Bytes": 3448,
+      "Sha256": "D133DFB7163F21BFE70330D7F8C5B46D4AF6E741F7CAF773929034AB409F9513",
+      "StoredBytes": 1360,
+      "StoredSha256": "8D7392D57D77BC766FFDB040E0C8AC6DF88D2BF6500E2FF099642FFDC70C78DC",
+      "Encoding": "gzip"
+    }
+  ]
+}
