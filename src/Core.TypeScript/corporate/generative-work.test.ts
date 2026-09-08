@@ -17,6 +17,7 @@ import {
   directionOpenings,
   escalationOpenings,
   meetingOpenings,
+  spendOpenings,
   draftingOpenings,
   GenerativeKind,
   generativeOpeningsFor,
@@ -101,7 +102,12 @@ describe("DIRECTION — a domain nobody pointed anywhere", () => {
         [Domain.Delivery, "coo"],
         [Domain.Memory, "coo"],
         [Domain.Documentation, "chief_architect"],
-        [Domain.Operations, "cfo"],
+        // OPERATIONS MOVED FROM THE CFO TO THE COO, and that is the point of the third rule in
+        // `executiveOver`. `cost_controller` sits in the operations department and reports to the
+        // CFO — one hat, one level up — so the nearest-executive rule handed the whole domain to a
+        // line that contains no contributors at any depth. Every operations direction the CFO
+        // accepted was one nobody could do, reported week after week as a rung gap.
+        [Domain.Operations, "coo"],
         [Domain.Observability, "coo"],
         [Domain.CapabilityExpansion, "ceo"],
       ]),
@@ -325,8 +331,12 @@ describe("AN EMPTY COMPANY STARTS ITSELF", () => {
   test("sixteen directions, set by the C-suite, one per domain", () => {
     const goals = out.state.cascade.nodes.filter((n) => n.workType === WorkType.Goal);
     expect(goals).toHaveLength(16);
+    // THE CFO IS NOT AMONG THEM ANY MORE, deliberately: an executive whose line cannot reach a
+    // contributor is not a nearer answer to "who directs this domain", it is a wrong one. The CFO
+    // directs the MONEY — see `spend-decision.ts` — which is a different kind of act and needs no
+    // team beneath it.
     expect(new Set(goals.map((g) => g.ownerHatId))).toEqual(
-      new Set(["ceo", "coo", "cto", "cfo", "chief_architect"]),
+      new Set(["ceo", "coo", "cto", "chief_architect"]),
     );
     expect(new Set(goals.map((g) => g.domain))).toEqual(new Set(Object.values(Domain)));
   });
@@ -591,5 +601,80 @@ describe("THE CHAIN MEETS — a planned review, not a repair", () => {
     expect(generativeOpeningsFor(input, "tech_lead").filter((o) => o.kind === GenerativeKind.ConveneChain)).toEqual([]);
     const withCalendar = generativeOpeningsFor({ ...input, met: NONE }, "tech_lead");
     expect(withCalendar.map((o) => o.kind)).toContain(GenerativeKind.ConveneChain);
+  });
+});
+
+describe("SPEND REACHES THE HAT THAT HOLDS THE MONEY", () => {
+  const NODES: readonly CascadeNode[] = [
+    { workId: "w-1", workType: WorkType.Task, title: "t", state: WorkState.Open, ownerHatId: "tech_lead" },
+    { workId: "w-done", workType: WorkType.Task, title: "d", state: WorkState.Done, ownerHatId: "tech_lead" },
+  ];
+  const PRICED = new Set(["w-1"]);
+  const p = (over: Record<string, unknown> = {}) => ({
+    proposalId: "sp-1",
+    workId: "w-1",
+    what: "a hosted thing",
+    cost: 500,
+    proposedByHatId: "tech_lead",
+    search: { kind: "searched" as const, found: [] },
+    ...over,
+  });
+
+  test("offered to the CFO — derived from the blocker taxonomy, not declared again", () => {
+    const open = spendOpenings(chart, NODES, PRICED, [p()], NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.DecideSpend);
+    expect(open[0]?.byHatId).toBe("cfo");
+  });
+
+  test("NEVER TO THE PROPOSER — the next authority takes it instead", () => {
+    // `decideSpend` refuses self-approval, and the menu must not offer what the organization will
+    // refuse. With the CFO proposing, the ruling falls to the program director.
+    const open = spendOpenings(chart, NODES, PRICED, [p({ proposedByHatId: "cfo" })], NONE);
+    expect(open[0]?.byHatId).toBe("program_director");
+  });
+
+  test("RULED ONCE", () => {
+    expect(spendOpenings(chart, NODES, PRICED, [p()], new Set(["sp-1"]))).toEqual([]);
+  });
+
+  test("A COST THAT IS NOT A COST IS NOT OFFERED — `decideSpend` refuses it, so the menu may not", () => {
+    for (const cost of [0, -5, Number.NaN]) {
+      expect(spendOpenings(chart, NODES, PRICED, [p({ cost })], NONE)).toEqual([]);
+    }
+  });
+
+  test("UNPRICED LIVE WORK WAITS — the price arrives a round later", () => {
+    // Measured: offering here returned two of three proposals for "no decided priority", both of
+    // which had a real answer one round away. The CFO ticks before the supervisor who sets it.
+    expect(spendOpenings(chart, NODES, NONE, [p()], NONE)).toEqual([]);
+  });
+
+  test("WORK THAT DOES NOT EXIST YET WAITS TOO", () => {
+    // Every proposal in a drive that starts from an empty cascade names work the first round has
+    // not created. Offering them produced three rulings of "not work this organization holds" for
+    // goals that appeared moments later.
+    expect(spendOpenings(chart, NODES, PRICED, [p({ workId: "nope" })], NONE)).toEqual([]);
+  });
+
+  test("FINISHED WORK IS RULED ON, not waited on — its price will never be set", () => {
+    // Pricing is offered on live work alone, so a proposal whose goal completed before anybody got
+    // to it would wait for something that will never happen.
+    const open = spendOpenings(chart, NODES, NONE, [p({ workId: "w-done" })], NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.byHatId).toBe("cfo");
+  });
+
+  test("NO PROPOSALS DECLARED MEANS NONE OFFERED — this register does not invent costs", () => {
+    const input = {
+      chart,
+      cascade: NODES,
+      artifactIds: new Set(["doc-w-1"]),
+      pricedWorkIds: PRICED,
+      resourceAuthorityHatId: "rmo_office",
+    };
+    expect(generativeOpeningsFor(input, "cfo").filter((o) => o.kind === GenerativeKind.DecideSpend)).toEqual([]);
+    const withSpend = generativeOpeningsFor({ ...input, spend: { proposals: [p()], ruled: NONE } }, "cfo");
+    expect(withSpend.map((o) => o.kind)).toContain(GenerativeKind.DecideSpend);
   });
 });

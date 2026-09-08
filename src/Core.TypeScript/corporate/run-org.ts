@@ -47,6 +47,9 @@ import { SEED_HATS } from "./org-seed";
 import { agentsFromChart, gateStaffing, runOrgRuntime, staffingReadout } from "./org-runtime";
 import { firstContributorUnder, runOrgCycle } from "./org-cycle";
 import { DAY_MS, runCadence } from "./org-cadence";
+import { openBudget } from "./budget";
+import { Adequacy, EffortClass } from "./spend-decision";
+import { SignalTool } from "./supervisor-signal";
 import { EMPTY_CASCADE } from "./goal-cascade";
 import { EMPTY_BOARD } from "./discussion-anchor";
 import { EMPTY_CALENDAR } from "./work-schedule";
@@ -620,6 +623,76 @@ export async function main(argv: readonly string[]): Promise<number> {
           artifacts: new Map(),
           blockers: new Map(),
           gateAttempts: { counts: new Map<string, number>(), maxAttempts: 3 },
+          // ── THREE THINGS SOMEBODY WANTS TO BUY ────────────────────────────
+          // A FIXTURE, and labelled as one: the register does not invent costs, so a run with
+          // nothing to buy would show none of this. These are the three shapes the CFO can be
+          // handed, and the week's report shows what it did with each.
+          //
+          // They name the first Implementation, Security and Memory directions, which is why the
+          // ids look derived — they are. Those goals exist by the end of day one and are priced by
+          // their executive, and `decideSpend` refuses to rule on unpriced work.
+          spend: {
+            budget: openBudget({
+              budgetId: "fy",
+              allowance: 10_000,
+              unit: "usd",
+              windowStartMs: nowMs,
+              windowEndMs: nowMs + 365 * DAY_MS,
+            }),
+            // How much work a free path may cost before paying wins. The one genuinely subjective
+            // input, stated as policy rather than defaulted inside the decision.
+            effortTolerance: EffortClass.Small,
+            proposals: [
+              {
+                proposalId: "sp-vector-db",
+                workId: "direction-implementation-1",
+                what: "a hosted vector database",
+                cost: 1_200,
+                proposedByHatId: "tech_lead",
+                // Somebody looked, and what they found DOES the job cheaply. The free way wins.
+                search: {
+                  kind: "searched",
+                  found: [
+                    {
+                      what: "pgvector on the postgres we already run",
+                      adequacy: Adequacy.Adequate,
+                      effort: EffortClass.Small,
+                    },
+                  ],
+                },
+              },
+              {
+                proposalId: "sp-pen-test",
+                workId: "direction-security-1",
+                what: "an external penetration test",
+                cost: 6_000,
+                proposedByHatId: "security_director",
+                // Somebody looked and found nothing that does the job. A real, different answer
+                // from nobody having looked — and this one is approved.
+                search: {
+                  kind: "searched",
+                  found: [
+                    {
+                      what: "the open-source scanners we already run in CI",
+                      adequacy: Adequacy.Partial,
+                      effort: EffortClass.Trivial,
+                      shortfall: "no adversarial testing of business logic",
+                    },
+                  ],
+                },
+              },
+              {
+                proposalId: "sp-transcription",
+                workId: "direction-memory-1",
+                what: "a transcription API",
+                cost: 400,
+                proposedByHatId: "memory_manager",
+                // NOBODY LOOKED. The CFO refuses to rule, and the report says so — which is the
+                // whole point of asking.
+                search: { kind: "not_searched", why: "nobody checked for an open-source model" },
+              },
+            ],
+          },
         },
         cascade: EMPTY_CASCADE,
         calendar: EMPTY_CALENDAR,
@@ -661,14 +734,39 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.log(
         `  ${"meetings".padEnd(12)} ${String(new Set(blocks.filter((b) => b.meetingId !== undefined).map((b) => b.meetingId)).size)}`,
       );
+      // ── WHAT THE MONEY DID ────────────────────────────────────────────────
+      // Printed beside the rest rather than buried: a week's report that shows what an organization
+      // built and not what it decided to pay for is missing the half a CFO is for.
+      const spent = result.state.view.spend?.budget;
+      if (spent !== undefined) {
+        console.log(`\n--- what it spent ---`);
+        console.log(`  ${String(spent.spent)} of ${String(spent.allowance)} ${spent.unit}`);
+        for (const ruling of result.state.view.signals.filter((sig) => sig.tool === SignalTool.RequestDecision)) {
+          console.log(`  ${ruling.title.padEnd(22)} ${ruling.workItemId ?? ""}: ${ruling.message}`);
+        }
+        // A PROPOSAL NOBODY COULD RULE ON IS NOT A PROPOSAL THAT PASSED. Reported by difference,
+        // because the refusal leaves no signal — that is what makes it a refusal.
+        const ruled = new Set(
+          result.state.view.signals
+            .filter((sig) => sig.tool === SignalTool.RequestDecision)
+            .map((sig) => sig.workItemId),
+        );
+        for (const p of result.state.view.spend?.proposals ?? []) {
+          if (!ruled.has(p.proposalId)) console.log(`  ${"UNRULED".padEnd(22)} ${p.proposalId}: ${p.what}`);
+        }
+      }
       // THE GAPS, printed beside the achievements rather than under them. A run that shows what an
       // organization built and hides what it could not staff is the report this whole register
       // exists to refuse.
       const raised = result.state.view.signals;
       console.log(`
 --- what it could not do ---`);
-      if (raised.length === 0) console.log("  (nothing was raised)");
-      for (const signal of raised) console.log(`  ${signal.fromHatId} -> ${signal.toHatId}: ${signal.title}`);
+      // THE SUPPLY AND ROUTING GAPS ONLY. Spend rulings are signals too, and they have their own
+      // section above — listing them here as things the organization could not do would report a
+      // decision it made as a failure.
+      const gaps = raised.filter((signal) => signal.tool !== SignalTool.RequestDecision);
+      if (gaps.length === 0) console.log("  (nothing was raised)");
+      for (const signal of gaps) console.log(`  ${signal.fromHatId} -> ${signal.toHatId}: ${signal.title}`);
     }
     // A week is not a delivery verdict. It exits 0 if the organization ran; whether it delivered
     // is in the report, and collapsing that to an exit code would answer a question nobody asked.

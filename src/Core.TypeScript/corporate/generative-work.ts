@@ -61,6 +61,7 @@ import {
 import { PRIORITY_ORDER, type PriorityClass } from "./prioritization";
 import { routingCoverage } from "./routing-coverage";
 import { escalationDeciderFor } from "./escalation";
+import { financeAuthorities, type SpendProposal } from "./spend-decision";
 
 /** The four acts that make new work rather than advancing existing work. */
 export const GenerativeKind = {
@@ -108,6 +109,15 @@ export const GenerativeKind = {
    * that makes the levels of this chart address each other rather than merely report upward.
    */
   ConveneChain: "convene_chain",
+  /**
+   * Rule on money: is paying worth it, or is there a free way?
+   *
+   * The CFO's own act. Every other verb here disposes of PEOPLE and TIME; this one disposes of
+   * money, and it is the only decision in the register whose first question is whether it should be
+   * made at all — `spend-decision.ts` refuses to rule on a proposal where nobody looked for an
+   * open-source or already-owned answer.
+   */
+  DecideSpend: "decide_spend",
 } as const;
 
 export type GenerativeKind = (typeof GenerativeKind)[keyof typeof GenerativeKind];
@@ -195,13 +205,25 @@ function executiveOver(chart: OrgChart, departmentId: string): OrgHat | undefine
   const executives = new Set(
     chart.hats.filter((h) => h.level === "c_suite" || h.level === "executive_board").map((h) => h.id),
   );
-  // NEAREST FIRST, then ordinal. The first version of this sorted ordinally alone, and every one of
-  // the sixteen domains came out owned by the CEO — including engineering, which reports to the
-  // CTO, because "ceo" sorts before "cto". That is precisely the alphabetical routing this whole
-  // register was measured against and rewritten to end, reintroduced one module later.
+  // ABLE TO STAFF IT FIRST, then nearest, then ordinal. Three rules, each added because the one
+  // before it produced a measurably wrong answer:
   //
-  // Distance is the shortest chain from ANY hat in the department, so a department whose director
-  // reports to the CTO answers to the CTO even though the CEO is also above it.
+  //   ordinal alone       -> all sixteen domains came out the CEO's, engineering included, because
+  //                          "ceo" sorts before "cto". The alphabetical routing this whole register
+  //                          was rewritten to end, reintroduced one module later.
+  //   nearest, then ordinal -> operations came out the CFO's, because `cost_controller` sits in the
+  //                          operations department and reports to the CFO — one hat, one level up,
+  //                          beating the COO who is two away from the director that runs it. The
+  //                          CFO's line contains no contributors at any depth, so every operations
+  //                          direction it accepted was one nobody could do, reported week after
+  //                          week as a rung gap.
+  //
+  // So the first question is whether this executive can reach anybody in the department who does
+  // the work. A domain's direction belongs to the executive whose line can execute it; an executive
+  // that cannot is not a nearer answer, it is a wrong one.
+  const contributors = hatsAtLevel(chart, "individual_contributor").filter((h) => h.departmentId === departmentId);
+  const staffs = (id: string): boolean => contributors.some((c) => c.id !== id && reportsUpTo(chart, c.id, id));
+
   const distance = new Map<string, number>();
   for (const hat of inDept) {
     const chain = supervisorChainOf(chart, hat.id);
@@ -213,7 +235,12 @@ function executiveOver(chart: OrgChart, departmentId: string): OrgHat | undefine
     }
   }
   return [...distance.entries()]
-    .sort((a, b) => (a[1] !== b[1] ? a[1] - b[1] : a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
+    .sort((a, b) => {
+      const byStaffing = Number(staffs(b[0])) - Number(staffs(a[0]));
+      if (byStaffing !== 0) return byStaffing;
+      if (a[1] !== b[1]) return a[1] - b[1];
+      return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
+    })
     .map(([id]) => chart.byId.get(id))[0];
 }
 
@@ -732,6 +759,76 @@ export function meetingOpenings(
   return out;
 }
 
+/**
+ * Spend nobody has ruled on, offered to the hats that hold the money.
+ *
+ * DERIVED FROM `blocker-taxonomy`, not declared: that policy already names who owns
+ * `budget_exceeded` — the CFO first — and reading it beats a second answer that could disagree.
+ * Offered to the most specific authority the chart has, and never to the hat that proposed the
+ * spend: `decideSpend` refuses self-approval, and the menu must not offer what the organization
+ * will refuse.
+ */
+export function spendOpenings(
+  chart: OrgChart,
+  cascade: readonly CascadeNode[],
+  priced: ReadonlySet<string>,
+  proposals: readonly SpendProposal[],
+  alreadyRuled: ReadonlySet<string>,
+): readonly GenerativeOpening[] {
+  const live = liveWorkSet({ nodes: cascade });
+  const authorities = financeAuthorities(chart);
+  const out: GenerativeOpening[] = [];
+  for (const proposal of proposals) {
+    if (alreadyRuled.has(proposal.proposalId)) continue;
+    // A COST THAT IS NOT A COST IS NOT A PROPOSAL. `decideSpend` refuses it rather than ruling —
+    // there is no proposer to hand a malformed number back to — so offering it would be an act the
+    // organization turns away, and a refused act leaves its own opening standing. That is this
+    // drive's recurring livelock, and it has now arrived by five different routes.
+    if (!Number.isFinite(proposal.cost) || proposal.cost <= 0) continue;
+
+    // ── UNPRICED WORK IS NOT-YET, NOT A FAULT ───────────────────────────────
+    // `decideSpend` cannot weigh worth against work nobody has valued, and it hands such a proposal
+    // back to whoever raised it. But in a drive the price arrives a tick or two later — the CFO
+    // ticks before the supervisor who sets it — so offering here returned proposals the
+    // organization was about to be able to rule on properly. Measured: two of three sent back for
+    // "no decided priority", both of which had a real answer waiting one round away.
+    //
+    // So the offer WAITS. Work that exists and is not yet priced is simply not ready to be ruled
+    // on, and waiting is what the organization would do.
+    // ── WAIT FOR A PRICE, UNLESS THERE IS NOTHING LEFT TO WAIT FOR ─────────
+    // A proposal that arrives before its work does — which is every proposal in a drive that starts
+    // from an empty cascade — waits rather than being handed straight back.
+    //
+    // But only while the work is still LIVE. Pricing is offered on live work alone, so a proposal
+    // whose goal completed before anybody got to it would wait for something that will never
+    // happen. Measured: a memory-tooling proposal sat through three simulated days while its goal
+    // was decomposed, delivered and superseded twice. Finished work is ruled on, and the ruling is
+    // that there is nothing left to buy for.
+    //
+    // AND WORK THAT DOES NOT EXIST YET ALSO WAITS. Every proposal in a drive that starts empty
+    // names work the first round has not created — offering them produced three rulings of "not
+    // work this organization holds" on the opening tick, for goals that appeared moments later.
+    //
+    // HONEST LIMIT: a proposal naming work that NEVER appears therefore waits forever. It is not
+    // lost — `run-org --week` reports it by difference against the rulings — but nothing in the
+    // organization raises it, and telling "not yet" from "never" needs a clock this opening does
+    // not have. `decideSpend` still rules on it if called directly, which is where that guard lives.
+    const exists = cascade.some((n) => n.workId === proposal.workId);
+    if (!exists) continue;
+    if (!priced.has(proposal.workId) && live.has(proposal.workId)) continue;
+    const decider = authorities.find((h) => h.id !== proposal.proposedByHatId);
+    if (decider === undefined) continue;
+    out.push({
+      kind: GenerativeKind.DecideSpend,
+      byHatId: decider.id,
+      prompt: `is '${proposal.what}' worth ${String(proposal.cost)}, or is there a free way?`,
+      subjectId: proposal.proposalId,
+      because: `'${proposal.proposalId}' proposes spending on '${proposal.workId}' and nobody has ruled`,
+    });
+  }
+  return out;
+}
+
 export interface GenerativeInput {
   readonly chart: OrgChart;
   readonly cascade: readonly CascadeNode[];
@@ -771,6 +868,14 @@ export interface GenerativeInput {
    * it again every round.
    */
   readonly met?: ReadonlySet<string>;
+  /**
+   * Money somebody has asked to spend, and what has already been ruled on.
+   *
+   * Absent means NO SPEND DECISION IS OFFERED. The register does not invent costs — a proposal is
+   * something a hat or an operator raises, exactly as a blocker is — so having none is the ordinary
+   * state of an organization nobody has asked to buy anything.
+   */
+  readonly spend?: { readonly proposals: readonly SpendProposal[]; readonly ruled: ReadonlySet<string> };
 }
 
 /**
@@ -797,6 +902,15 @@ export function generativeOpeningsFor(input: GenerativeInput, hatId: string): re
       ? []
       : escalationOpenings(input.chart, input.cascade, input.gates, input.escalated ?? new Set<string>())),
     ...(input.met === undefined ? [] : meetingOpenings(input.chart, input.cascade, input.met)),
+    ...(input.spend === undefined
+      ? []
+      : spendOpenings(
+          input.chart,
+          input.cascade,
+          input.pricedWorkIds,
+          input.spend.proposals,
+          input.spend.ruled,
+        )),
   ];
   return all
     .filter((o) => o.byHatId === hatId)

@@ -30,6 +30,7 @@
 import { chooseWithinLegal, type OrgChooser } from "./org-decision";
 import { preflightGateEvaluation } from "./hat-guardrails";
 import type { OrgChart, OrgHat } from "./org-chart";
+import { BlockerKind, BLOCKER_POLICY } from "./blocker-taxonomy";
 
 /** The seven gates. */
 export const GateKind = {
@@ -55,6 +56,19 @@ export const GateKind = {
   ArchitectureDesign: "architecture_design",
   /** The architecture document is REVIEWED and approved. */
   ArchitectureApproval: "architecture_approval",
+  /**
+   * What the approved architecture COSTS, ruled on by the hat that holds the money.
+   *
+   * Sits immediately after the design is approved and before anybody builds against it, because
+   * that is the last moment a cost is cheap to avoid. An architecture approved on its merits and
+   * discovered to be unaffordable six gates later has already been built.
+   *
+   * MOST DOCUMENTS IMPLY NO COST, and those pass as `Waived` — the gate does not apply here.
+   * `Waived` rather than `Approved` on purpose: an audit must be able to tell "the CFO looked and
+   * there was nothing to rule on" from "the CFO approved the spending", and `PASSING` already
+   * treats the two as equally passing while keeping them distinguishable in the record.
+   */
+  CostApproval: "cost_approval",
   /**
    * An ADVERSARIAL pass across the context, the BRD and the architecture together.
    *
@@ -94,6 +108,7 @@ export const ORDERED_GATES: readonly GateKind[] = [
   GateKind.PeerReview,
   GateKind.ArchitectureDesign,
   GateKind.ArchitectureApproval,
+  GateKind.CostApproval,
   GateKind.AdversarialReview,
   GateKind.ImplementationReview,
   GateKind.QaUat,
@@ -157,9 +172,50 @@ export function legalGateOutcomesFor(hat: OrgHat): readonly GateOutcome[] {
   return mayWaive ? [...base, GateOutcome.Waived] : base;
 }
 
-/** Every hat authorized to evaluate this gate — derived from the hats' own approval scopes. */
+/**
+ * Gates whose owners have a MEANINGFUL ORDER, and where it comes from.
+ *
+ * `gateOwners` filters `chart.hats`, so without this the order is the order the seed happens to
+ * declare hats in — and `runGateChain` takes the first owner as the default evaluator. The seed
+ * declares the Executive Board first, because it is the root of the chart, so the board evaluated
+ * every cost gate in the organization. That is the "whichever was listed first" defect this
+ * register has now corrected in domain routing, in rung ownership, in alternative ranking and in
+ * executive selection; this is its fifth appearance, through a default nobody had looked at.
+ *
+ * The order is not invented here. `blocker-taxonomy` already answers "who owns money questions",
+ * most specific first — the CFO, then the program director, then the board — and a cost gate goes
+ * to the nearest hat that holds the money, with the board as where it lands when the nearer ones
+ * are the author or absent.
+ *
+ * A gate absent from this table keeps chart order, which is honest: nothing has said those owners
+ * are ranked, and inventing a ranking would be worse than admitting there is none.
+ */
+const GATE_OWNER_ORDER: Partial<Record<GateKind, readonly string[]>> = {
+  [GateKind.CostApproval]: BLOCKER_POLICY[BlockerKind.BudgetExceeded].ownerHatIds,
+};
+
+/**
+ * Every hat authorized to evaluate this gate — derived from the hats' own approval scopes.
+ *
+ * Ranked where the gate declares a ranking (see `GATE_OWNER_ORDER`), chart order otherwise. The
+ * ranking matters because `runGateChain` takes the first as its default evaluator.
+ */
 export function gateOwners(chart: OrgChart, gate: GateKind): readonly OrgHat[] {
-  return chart.hats.filter((h) => h.approvalScopes?.includes(gate) === true);
+  const holders = chart.hats.filter((h) => h.approvalScopes?.includes(gate) === true);
+  const ranking = GATE_OWNER_ORDER[gate];
+  if (ranking === undefined) return holders;
+  // A holder the ranking does not mention sorts AFTER every one it does, rather than being dropped.
+  // Silently omitting a hat that genuinely holds the scope would make a chart's own declaration
+  // count for nothing.
+  const rank = (h: OrgHat): number => {
+    const i = ranking.indexOf(h.id);
+    return i < 0 ? ranking.length : i;
+  };
+  return [...holders].sort((a, b) => {
+    const byRank = rank(a) - rank(b);
+    if (byRank !== 0) return byRank;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  });
 }
 
 export function mayEvaluate(chart: OrgChart, hatId: string, gate: GateKind): boolean {
@@ -213,6 +269,13 @@ export function recoveryPathFor(gate: GateKind): RecoveryPath {
     case GateKind.ArchitectureDesign:
     case GateKind.ArchitectureApproval:
     case GateKind.FinalArchitectureReview:
+      return RecoveryPath.ReopenArchitecture;
+    case GateKind.CostApproval:
+      // BACK TO THE ARCHITECTURE, not to engineering and not to a budget conversation. A cost the
+      // organization will not fund is a fact about the DESIGN — this way of doing it is the
+      // expensive way — and the answer is another design. Routing it to a change request would
+      // make the money somebody else problem to negotiate away, which is how a cost control turns
+      // into a queue.
       return RecoveryPath.ReopenArchitecture;
     case GateKind.AdversarialReview:
       // Deliberately BackToEngineering rather than a path of its own. An adversarial finding is a
@@ -453,6 +516,19 @@ export function runGateChain(
      * fabricating the evidence for a claim it is meant to be checking.
      */
     readonly evidenceFor?: (gate: GateKind) => readonly string[];
+    /**
+     * A chooser for ONE gate, where its outcome is derived rather than judged.
+     *
+     * `cost_approval` is the case this exists for: whether an architecture implies a cost, and
+     * whether the money for it was ruled on, are FACTS the organization already holds — not an
+     * opinion an evaluator forms. A gate whose answer is derivable and asked as a preference is a
+     * check that can disagree with the record it is checking.
+     *
+     * Still a chooser and not an outcome, deliberately: it goes through `chooseWithinLegal` like
+     * every other, so a derived `waived` from a hat too junior to waive is CLAMPED and reported
+     * rather than quietly honoured.
+     */
+    readonly chooserFor?: (gate: GateKind) => OrgChooser<GateOutcome> | undefined;
   },
 ): GateRunResult {
   const evaluations: GateEvaluation[] = [];
@@ -484,7 +560,7 @@ export function runGateChain(
       gate,
       evaluatorHatId: evaluator.id,
       passed,
-      chooser: input.chooser,
+      chooser: input.chooserFor?.(gate) ?? input.chooser,
       atMs: input.atMs,
       proposerHatId: input.proposerHatId,
       evidenceRefs: input.evidenceFor?.(gate) ?? [],

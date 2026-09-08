@@ -142,6 +142,11 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // same act. Both spend OTHER hats' calendars, which is exactly what that gate was carved for, and
   // a second gate meaning the same thing would be two answers to one question.
   convene_chain: { kind: "convene_chain", gate: "convene", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `direct_resources`, with assignment, priority and hat supply: money is the fourth thing the
+  // organization spends itself on, and it is the same authority read a fourth way. The register
+  // applies a far stricter check of its own — `decideSpend` accepts only the hats that own
+  // `budget_exceeded` — and this gate is the menu's half of it.
+  decide_spend: { kind: "decide_spend", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",

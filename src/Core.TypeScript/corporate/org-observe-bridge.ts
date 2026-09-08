@@ -73,10 +73,18 @@ import {
   type EscalationChange,
 } from "./escalation";
 import { firstLegalChooser, type OrgChooser } from "./org-decision";
+import {
+  decideSpend,
+  WorkStanding,
+  type EffortClass,
+  type SpendProposal,
+  type SpendRuling,
+} from "./spend-decision";
+import type { Budget } from "./budget";
 import { domainRouting, isDomain, type Domain } from "./domain-ontology";
 import { isPriorityClass } from "./prioritization";
 import type { CascadeNode } from "./goal-cascade";
-import { accountableHatsFor, WorkState, WorkType } from "./goal-cascade";
+import { accountableHatsFor, liveWorkSet, WorkState, WorkType } from "./goal-cascade";
 import type { Calendar } from "./work-schedule";
 import { isLeafType } from "./goal-cascade";
 
@@ -138,6 +146,21 @@ export interface OrgView {
    * tell whether a meeting happened would offer to hold one again every round.
    */
   readonly calendar?: Calendar;
+  /**
+   * Money somebody has asked to spend, the budget it would come out of, and how much effort a free
+   * path may cost before paying wins.
+   *
+   * ABSENT MEANS NO SPEND DECISION IS OFFERED. The register does not invent costs: a proposal is
+   * raised by a hat or an operator, exactly as a blocker is, and an organization nobody has asked
+   * to buy anything has nothing here. `budget` absent WITHIN this is a different fact again — a
+   * proposal exists and nobody declared what it comes out of — and `decideSpend` refuses to rule
+   * rather than treating an undeclared budget as permission.
+   */
+  readonly spend?: {
+    readonly proposals: readonly SpendProposal[];
+    readonly budget?: Budget;
+    readonly effortTolerance: EffortClass;
+  };
   readonly requirements?: ReadonlyMap<
     string,
     {
@@ -554,6 +577,22 @@ export function generativeFor(
                 .filter((id): id is string => id !== undefined),
             ),
           }),
+      // RULED-ON PROPOSALS COME BACK OFF THE SIGNALS, like every other "has this been raised" here.
+      // A ruling travels as a `request_decision`, so the signals ARE the record of what has been
+      // decided and a second list could disagree with them.
+      ...(view.spend === undefined
+        ? {}
+        : {
+            spend: {
+              proposals: view.spend.proposals,
+              ruled: new Set(
+                view.signals
+                  .filter((sig) => sig.tool === SignalTool.RequestDecision)
+                  .map((sig) => sig.workItemId)
+                  .filter((id): id is string => id !== undefined),
+              ),
+            },
+          }),
       escalated: new Set(
         view.signals
           .filter((sig) => sig.tool === SignalTool.RequestEscalation)
@@ -602,6 +641,9 @@ export function generativeFor(
         break;
       case GenerativeKind.ConveneChain:
         out.push({ kind: "convene_chain", subjectId: o.subjectId, prompt: o.prompt });
+        break;
+      case GenerativeKind.DecideSpend:
+        out.push({ kind: "decide_spend", subjectId: o.subjectId, prompt: o.prompt });
         break;
       case GenerativeKind.BreakDownWork:
         // DERIVED FROM THE PARENT, so the same undecomposed rung yields the same child id every
@@ -756,6 +798,19 @@ export type OrgEffect =
       readonly action: EscalationAction;
       readonly change: EscalationChange;
       readonly haltsTheLoop: boolean;
+      readonly signal: SupervisorSignal;
+    }
+  /**
+   * A ruling on money, and what it commits.
+   *
+   * `charged` is carried rather than re-derived, because it is what `budget.spend` will be handed
+   * and a second computation of it at the point of application could disagree with the ruling that
+   * was recorded. The ruling is the decision; this effect is the decision plus its consequence.
+   */
+  | {
+      readonly kind: "spend_ruling";
+      readonly ruling: SpendRuling;
+      readonly workId: string;
       readonly signal: SupervisorSignal;
     }
   | { readonly kind: "priced"; readonly workId: string; readonly priority: PriorityClass }
@@ -953,6 +1008,60 @@ export function effectOf(
         return { ok: false, reason: `'${action.subjectId}' is already ${node.state}` };
       }
       return { ok: true, effect: { kind: "submission", workId: action.subjectId, proposerHatId: hatId } };
+    }
+    case "decide_spend": {
+      const spend = view.spend;
+      if (spend === undefined) return { ok: false, reason: "this organization records no spend proposals" };
+      const proposal = spend.proposals.find((p) => p.proposalId === action.subjectId);
+      if (proposal === undefined) return { ok: false, reason: `no spend proposal '${action.subjectId}'` };
+      const decided = decideSpend({
+        chart: view.chart,
+        proposal,
+        byHatId: hatId,
+        budget: spend.budget,
+        nowMs: atMs,
+        // THE WORK'S OWN PRICE, read from what the organization decided rather than guessed here.
+        // `decideSpend` refuses when it is absent, which makes `decide_priority` a precondition of
+        // buying anything — the organization must say the work matters before it pays for it.
+        priority: view.priorities?.get(proposal.workId),
+        effortTolerance: spend.effortTolerance,
+        // DERIVED FROM THE CASCADE, using the same roll-up every other liveness question here uses.
+        // A second notion of "is this work still going" would disagree with `liveWorkSet` the first
+        // time either changed.
+        standing: !view.cascade.some((n) => n.workId === proposal.workId)
+          ? WorkStanding.Unknown
+          : liveWorkSet({ nodes: view.cascade }).has(proposal.workId)
+            ? WorkStanding.Live
+            : WorkStanding.Finished,
+      });
+      // REFUSED IS NOT A VERDICT. A proposal where nobody looked for a free way comes back here, and
+      // the reason says so — that is the whole forcing function, and swallowing it into a
+      // "not worth it" would record a judgement nobody made.
+      if (!decided.ok) return { ok: false, reason: decided.reason };
+
+      const said = sendSupervisorSignal(
+        view.chart,
+        view.board,
+        {
+          signalId: ids.signalId,
+          anchorId: ids.anchorId,
+          fromHatId: hatId,
+          tool: SignalTool.RequestDecision,
+          title: decided.ruling.verdict,
+          message: decided.ruling.reason,
+          evidence: [{ kind: "document", ref: `spend:${proposal.proposalId}` }],
+          atMs,
+          // KEYED ON THE PROPOSAL, not the work: a work item can carry several proposals over its
+          // life, and keying on the work would silence every one after the first.
+          workItemId: proposal.proposalId,
+        },
+        resourceAuthorityHatId,
+      );
+      if (!said.ok) return { ok: false, reason: said.reason };
+      return {
+        ok: true,
+        effect: { kind: "spend_ruling", ruling: decided.ruling, workId: proposal.workId, signal: said.signal },
+      };
     }
     case "convene_chain": {
       const node = view.cascade.find((n) => n.workId === action.subjectId);

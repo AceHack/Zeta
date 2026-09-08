@@ -73,17 +73,17 @@ const D = Department;
  */
 export const SEED_HATS: readonly OrgHat[] = [
   // -- Executive Board And Governance --
-  { id: "executive_board_member", name: "Executive Board Member", level: "executive_board", departmentId: D.ExecutiveBoardAndGovernance, approvalScopes: ["major_initiatives", "departments", "high_power_hats", "budget_ceilings", "dangerous_overrides"] },
+  { id: "executive_board_member", name: "Executive Board Member", level: "executive_board", departmentId: D.ExecutiveBoardAndGovernance, approvalScopes: [G.CostApproval, "major_initiatives", "departments", "high_power_hats", "budget_ceilings", "dangerous_overrides"] },
   { id: "ceo", name: "CEO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "executive_board_member", approvalScopes: ["portfolio_priority", "org_direction", "executive_escalation"] },
   { id: "cto", name: "CTO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["technical_standards", "major_technical_gates", "architecture_escalation"] },
   { id: "coo", name: "COO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["operating_cadence", "process_changes", "incident_process", "schedule_policy"] },
-  { id: "cfo", name: "CFO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["budget_ceilings", "cost_exceptions", "capacity_scaling"] },
+  { id: "cfo", name: "CFO", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: [G.CostApproval, "budget_ceilings", "cost_exceptions", "capacity_scaling"] },
   { id: "chief_architect", name: "Chief Architect", level: "c_suite", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "cto", approvalScopes: [G.ArchitectureApproval, G.FinalArchitectureReview, G.AdversarialReview] },
   { id: "policy_steward", name: "Policy Steward", level: "director", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["policy_review"] },
   { id: "hat_approval_steward", name: "Hat Approval Steward", level: "director", departmentId: D.ExecutiveBoardAndGovernance, reportsTo: "ceo", approvalScopes: ["new_hat_classes", "sensitive_hat_activation"] },
 
   // -- Program And Initiative Management --
-  { id: "program_director", name: "Program Director", level: "director", departmentId: D.ProgramAndInitiativeManagement, reportsTo: "coo", approvalScopes: ["department_initiative_priority", "tpm_assignment"] },
+  { id: "program_director", name: "Program Director", level: "director", departmentId: D.ProgramAndInitiativeManagement, reportsTo: "coo", approvalScopes: [G.CostApproval, "department_initiative_priority", "tpm_assignment"] },
   { id: "senior_tpm", name: "Senior TPM", level: "manager", departmentId: D.ProgramAndInitiativeManagement, reportsTo: "program_director", approvalScopes: [G.ReleaseReadiness] },
   { id: "tpm", name: "TPM", level: "manager", departmentId: D.ProgramAndInitiativeManagement, reportsTo: "senior_tpm", approvalScopes: [G.ReleaseReadiness] },
   { id: "mission_control_lead", name: "Mission Control Lead", level: "lead", departmentId: D.ProgramAndInitiativeManagement, reportsTo: "tpm", approvalScopes: ["mission_coordination"] },

@@ -218,7 +218,8 @@ export type GenerativeOpening =
     }
   | { readonly kind: "submit_work"; readonly subjectId: string; readonly prompt: string }
   | { readonly kind: "escalate_churn"; readonly subjectId: string; readonly prompt: string }
-  | { readonly kind: "convene_chain"; readonly subjectId: string; readonly prompt: string };
+  | { readonly kind: "convene_chain"; readonly subjectId: string; readonly prompt: string }
+  | { readonly kind: "decide_spend"; readonly subjectId: string; readonly prompt: string };
 
 export interface World {
   readonly backlog: readonly BacklogItem[];
@@ -525,7 +526,9 @@ export type NextAction =
   /** Decide what changes when work keeps coming back. A management act. */
   | { kind: "escalate_churn"; subjectId: string; reason: string }
   /** Get every level accountable for a piece of work into one room. */
-  | { kind: "convene_chain"; subjectId: string; reason: string };
+  | { kind: "convene_chain"; subjectId: string; reason: string }
+  /** Rule on money: pay, take the free way, or do neither. */
+  | { kind: "decide_spend"; subjectId: string; reason: string };
 
 
 /**
@@ -575,6 +578,8 @@ function generativeAction(g: GenerativeOpening): NextAction {
       return { kind: "escalate_churn", subjectId: g.subjectId, reason: g.prompt };
     case "convene_chain":
       return { kind: "convene_chain", subjectId: g.subjectId, reason: g.prompt };
+    case "decide_spend":
+      return { kind: "decide_spend", subjectId: g.subjectId, reason: g.prompt };
     case "break_down_work":
       return {
         kind: "break_down_work",
@@ -1301,6 +1306,7 @@ export function simulate(world: World, action: NextAction): World {
     case "submit_work":
     case "escalate_churn":
     case "convene_chain":
+    case "decide_spend":
       return world;
   }
 }

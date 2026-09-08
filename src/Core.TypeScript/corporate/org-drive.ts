@@ -56,7 +56,10 @@ import {
 } from "./work-schedule";
 import type { OrgChart } from "./org-chart";
 import { detectLag, type LagInput } from "./lag-detection";
-import { GateOutcome, runGateChain } from "./quality-gate";
+import { spend as chargeBudget } from "./budget";
+import { GateKind, GateOutcome, runGateChain } from "./quality-gate";
+import { costGateOutcome, type SpendVerdict } from "./spend-decision";
+import { SignalTool, type SupervisorSignal } from "./supervisor-signal";
 import { preferChooser, type OrgChooser } from "./org-decision";
 import type { EscalationAction } from "./escalation";
 import { lagSignals } from "./lag-signals";
@@ -384,6 +387,19 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
         chooser: deps.gateChooser ?? preferChooser<GateOutcome>(GateOutcome.Approved, "approve"),
         atMs: deps.nowMs,
         proposerHatId: effect.proposerHatId,
+        // THE COST GATE IS NOT AN OPINION. Whether this work implies a cost, and whether the hat
+        // that holds the money has ruled on it, are facts the organization already carries — so
+        // this gate reads them instead of asking an evaluator to form a view. Every other gate
+        // still goes through `deps.gateChooser`, including a rejecting one, which is why this is a
+        // per-gate override rather than a replacement.
+        chooserFor: (gate) =>
+          gate !== GateKind.CostApproval
+            ? undefined
+            : preferChooser<GateOutcome>(
+                costGateOutcome(effect.workId, state.view.spend?.proposals ?? [], spendRulings(state.view.signals))
+                  .outcome,
+                "the cost ruling",
+              ),
       });
 
       // THE ATTEMPT IS RECORDED WHETHER OR NOT IT PASSED. Counting only failures would leave a
@@ -464,6 +480,29 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       }
       priorities.set(effect.workId, effect.priority);
       return { state: { ...state, view: { ...state.view, priorities } }, changed: true, refusals: [] };
+    }
+
+    case "spend_ruling": {
+      // THE RULING IS RECORDED WHATEVER IT DECIDED, and that is what closes this act's own opening —
+      // `spendOpenings` reads the decision signals back. A ruling that changed the budget without
+      // leaving a record would be money moving with nobody's name on it.
+      const withSignal: OrgView = { ...state.view, signals: [...state.view.signals, effect.signal] };
+      const spend = state.view.spend;
+      if (spend === undefined || spend.budget === undefined || effect.ruling.charged <= 0) {
+        // Nothing to charge: the free way won, the money was not there, or the work was set aside.
+        // A ruling that spends nothing is still a ruling and still a change — the organization now
+        // knows something it did not, and reporting it as idle would let a drive settle mid-decision.
+        return { state: { ...state, view: withSignal }, changed: true, refusals: [] };
+      }
+      // CHARGED THROUGH `budget.spend`, keyed on the proposal. That function is idempotent by
+      // design — a replayed action must not be billed twice — so re-applying this effect commits
+      // once, and the second attempt says so rather than silently doing nothing.
+      const charged = chargeBudget(spend.budget, `spend:${effect.ruling.proposalId}`, effect.ruling.charged);
+      return {
+        state: { ...state, view: { ...withSignal, spend: { ...spend, budget: charged.budget } } },
+        changed: true,
+        refusals: charged.charged ? [] : [charged.reason],
+      };
     }
 
     case "convene_chain": {
@@ -696,6 +735,23 @@ function bookWork(state: DriveState, workId: string, hatId: string, deps: DriveD
   });
   if (!booked.ok) return { state, changed: true, refusals: [booked.reason] };
   return { state: { ...state, calendar: booked.calendar }, changed: true, refusals: [] };
+}
+
+/**
+ * What the money hat has decided so far, keyed by proposal.
+ *
+ * REBUILT FROM THE SIGNALS, which are the organization's own record of its rulings. A second map
+ * held beside them could disagree the first time either was written, and the gate below is about to
+ * let work through on the strength of it.
+ */
+function spendRulings(signals: readonly SupervisorSignal[]): ReadonlyMap<string, SpendVerdict> {
+  const out = new Map<string, SpendVerdict>();
+  for (const signal of signals) {
+    if (signal.tool !== SignalTool.RequestDecision) continue;
+    if (signal.workItemId === undefined) continue;
+    out.set(signal.workItemId, signal.title as SpendVerdict);
+  }
+  return out;
 }
 
 /** Land a controlled steal: move the assignee, then tell the hat it was taken from. */

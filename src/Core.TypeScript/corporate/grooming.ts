@@ -2,7 +2,7 @@
  * grooming.ts — the phase that reads before it judges.
  *
  * ── WHAT `business_context_grooming` WAS ─────────────────────────────────────
- * The first gate of the thirteen, and a judgement-only phase: no producer, so nothing was read and
+ * The first gate of the fourteen, and a judgement-only phase: no producer, so nothing was read and
  * the reviewer was shown whatever had accumulated — which, at phase one, is nothing. An approval
  * there meant "somebody said yes about a title".
  *
