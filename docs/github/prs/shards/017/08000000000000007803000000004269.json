@@ -1,0 +1,12 @@
+{
+  "pr_number": 17001,
+  "archive_path": "docs/history/pr-reviews/PR-17001-docs-ops-findings-register-for-the-first-metal-bring-up.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:33:37.879Z",
+  "schema_version": "v1",
+  "commit_sha": "8f73d046326fa2cedef41965d2907393e07562a2",
+  "title": "docs(ops): findings register for the first metal bring-up",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:32:55Z",
+  "head_ref": "shadow/first-metal-findings-register"
+}
