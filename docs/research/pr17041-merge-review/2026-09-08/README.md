@@ -18,3 +18,10 @@ as three lossless gzip files, bound by [tree-command identity](tree-command-mani
 The invocation names reviewer-owned object output and read-only publication
 object alternates. These are Git metadata operations, not numerical runs.
 No live API refresh or new merge was requested by this review.
+
+Packaging history: the initial local review commit
+9e05b966444fec3ba83cc93e5a494c12cd17dac3 omitted the already produced
+`result-identity.json` because the repository's `result-*` ignore pattern
+excluded it from directory staging. The explicit follow-up adds those
+unchanged bytes before the first push. The executed audit sources and
+results are unchanged; the original omission is retained in Git history.
