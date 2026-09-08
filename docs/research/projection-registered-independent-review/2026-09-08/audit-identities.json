@@ -1,0 +1,143 @@
+{
+  "Schema": "zeta.independent-projection-review.v1",
+  "Scope": "Review custody, no registered numerical rerun",
+  "PythonExecutableObserved": "/Users/acehack/.local/share/mise/installs/python/3.14.6/bin/python3",
+  "PythonVersionObserved": "3.14.6 (main, Jun 11 2026, 03:55:33) [Clang 22.1.3 ]",
+  "Files": [
+    {
+      "File": "README.md",
+      "Bytes": 2046,
+      "Sha256": "B0AF11BBC534FA5A00524C5B364C29179BB72098EA47AF061ED584693DF64B86"
+    },
+    {
+      "File": "audit-1.completion.json",
+      "Bytes": 206,
+      "Sha256": "419AC6AFC384FE2F24D22DBB54622FC9F547ADE511952491CC60CFCE8EDCF7D3"
+    },
+    {
+      "File": "audit-1.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "audit-1.stderr.txt.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "audit-1.stdout.json",
+      "Bytes": 113486,
+      "Sha256": "4509235BC52F3FDA046608341681B29735F42FD78EF03C90DA5716D9A7A9E55C"
+    },
+    {
+      "File": "audit-1.stdout.json.gz",
+      "Bytes": 12253,
+      "Sha256": "D25A9AAF65D7AFA4960EC5F124AFEF1D82CDB1B07819439A6245A6F75768098F"
+    },
+    {
+      "File": "audit.py",
+      "Bytes": 29544,
+      "Sha256": "9328CC3EB57A9A9E53F9001A08DD0C19F43336EA6CDE85171408AD121FC5CA76"
+    },
+    {
+      "File": "pr17050-1.completion.json",
+      "Bytes": 214,
+      "Sha256": "8B4F633C5539F85DB71029EC82A988A504E0C00FA25425FC55282EFB38201A6E"
+    },
+    {
+      "File": "pr17050-1.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "pr17050-1.stderr.txt.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "pr17050-1.stdout.json",
+      "Bytes": 516,
+      "Sha256": "AD0E27D976CF0AAB9926358002E246E0FF2E396C4C5FE6D1EDBBDD59068A2451"
+    },
+    {
+      "File": "pr17050-1.stdout.json.gz",
+      "Bytes": 374,
+      "Sha256": "A9DFA1674E26EAEB439675FC879052160B261BF26D8748E0B4E32A57C8661AEF"
+    },
+    {
+      "File": "pr17050-audit.py",
+      "Bytes": 3800,
+      "Sha256": "43E0F7E9152B8E0464B84BB8BEB06ECC124A5150E3002304304FA62791A0B663"
+    },
+    {
+      "File": "supplemental-1.completion.json",
+      "Bytes": 220,
+      "Sha256": "4EAD18536C90707505F6826B48B46D2377652FA48B2F012740A5A64DBF0EDA37"
+    },
+    {
+      "File": "supplemental-1.stderr.txt",
+      "Bytes": 541,
+      "Sha256": "5822AF0931CA484DBA90E966C524454AEF72FFD7DF04948DC3E89EFADA42D8F1"
+    },
+    {
+      "File": "supplemental-1.stderr.txt.gz",
+      "Bytes": 314,
+      "Sha256": "76669B7C1C06F2E174660A3AFF9CBA538B7A2773B72DD3140DA110210A563947"
+    },
+    {
+      "File": "supplemental-1.stderr.txt.original.gz",
+      "Bytes": 314,
+      "Sha256": "76669B7C1C06F2E174660A3AFF9CBA538B7A2773B72DD3140DA110210A563947"
+    },
+    {
+      "File": "supplemental-1.stdout.json",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "supplemental-1.stdout.json.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "supplemental-1.stdout.json.original.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "supplemental-2.completion.json",
+      "Bytes": 219,
+      "Sha256": "2EF9BE44ADECA4E5224195B9DA824C99FD98B9C4FA18CE2DDF31B32A7EEE8A4A"
+    },
+    {
+      "File": "supplemental-2.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "supplemental-2.stderr.txt.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "supplemental-2.stdout.json",
+      "Bytes": 934,
+      "Sha256": "AD12CEC7E70AFADA7C909775B7F3EB8AA8FB799E1E4EACE6BAF14A3AEA42E849"
+    },
+    {
+      "File": "supplemental-2.stdout.json.gz",
+      "Bytes": 341,
+      "Sha256": "9C3315364CDBECFDEE2CE188156043D42B796383E969E1AC4A1E04E0278CB1C4"
+    },
+    {
+      "File": "supplemental-audit.py",
+      "Bytes": 6598,
+      "Sha256": "77B5E11CEB7D4170E5DBC81A16A7B3A546D4D2ED096D20A0270C3AE803B1E2EE"
+    },
+    {
+      "File": "supplemental-audit.py.original.gz",
+      "Bytes": 2534,
+      "Sha256": "D515F88A65CDB59ADEF582BFE3894EA8248578A324CE0C69C4912A28C0FEEA49"
+    }
+  ]
+}

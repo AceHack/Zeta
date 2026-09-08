@@ -1,0 +1,16 @@
+{
+  "Accepted": true,
+  "Records": 55,
+  "PayloadBytes": 49643,
+  "ArchiveBytes": 8623,
+  "ArchiveSha256": "E87FBCAA7E6EAB47BD577747A4D6385A2711D0252DA9EAFCD5044F6D4902A858",
+  "Head": "2d6161be620d6af3897a7651e11477753a4b7319",
+  "Merge": "0d29df2db91b001bb1b7e39f6c55e906116f328b",
+  "ChangedPathsNoRenames": 17,
+  "WholeTree": "ce3144e4055510aafecec30ff5d7dc95ff787e19",
+  "ObservedChecks": {
+    "SKIPPED": 3,
+    "SUCCESS": 88
+  },
+  "Scope": "retained dated main receipt; no live API or historical CI rerun"
+}
