@@ -33,3 +33,7 @@ This finite local projection exercise supports the compositional probabilistic
 DAG program. It is not a fitted model, mixed-schedule convergence proof or
 state-of-the-art evaluation. Compiled controller investment remains paused;
 unopened streams 9307 and 9409 are outside this registration.
+
+A separately preserved [decimal admission clarification](2026-09-08-precision-gate-projection-decimal-admission-clarification.md)
+resolves preimplementation grammar ambiguity outside the fixed roster. The
+original contract bytes and numerical criteria remain unchanged.
