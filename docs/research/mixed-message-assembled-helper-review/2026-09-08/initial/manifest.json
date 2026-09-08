@@ -1,0 +1,46 @@
+{
+  "Scope": "Source-only initial helper review; no helper or registered invocation executed",
+  "InvokerCommit": "50610f19139cdcf2b75ad20bd2458e4a0db065ca",
+  "Records": [
+    {
+      "File": "freeze-mixed-assembled-source-1.py.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-1/freeze-mixed-assembled-source-1.py",
+      "Bytes": 6213,
+      "Sha256": "E77ED4272FC1D23803A5F92777B1E2346AC22CCDDC3AC9FF6323D0C1592DD918",
+      "StoredBytes": 2469,
+      "StoredSha256": "D4A15896938E2D4AA7E3F9114A78C0F33C2F0A5ABAEE81704EA51C0611730A8E"
+    },
+    {
+      "File": "invoke-50610f191.py.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-1/invoke-50610f191.py",
+      "Bytes": 11511,
+      "Sha256": "CC7FBF89E681909374591516B4227F3D93373E9B5F089C039994B0CA46055E69",
+      "StoredBytes": 3266,
+      "StoredSha256": "65023EFA88CF6D1E78E037EA32F93D42DB1ABB709F02E0D394DA0DD7E640F6D3"
+    },
+    {
+      "File": "invoker-commit.txt.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-1/invoker-commit.txt",
+      "Bytes": 41,
+      "Sha256": "E62E51957CDFA58F09066846B22B49BD02DD4387F5777648F21F4D6BFF65A75E",
+      "StoredBytes": 60,
+      "StoredSha256": "6D6EBCCB5EE5324DC0C8983B35DF7DCE01E615A264F83A95D11FD4CF18C7A39B"
+    },
+    {
+      "File": "run-mixed-registered-1.py.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-1/run-mixed-registered-1.py",
+      "Bytes": 3168,
+      "Sha256": "D7981095EDD315E15CD376F217D39518E7C78AF31846815066611CF9EAAC17DA",
+      "StoredBytes": 1451,
+      "StoredSha256": "B18D923454AC1B42376CE2DE59E674A5EDE0DB65E368FCFEEAE155CF93DA754E"
+    },
+    {
+      "File": "source-identities.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/mixed-assembled-helper-review-1/source-identities.json",
+      "Bytes": 838,
+      "Sha256": "91DA94501671374174EB6D954DC5EDA67D6573ED6B7258FD883E219428956C8E",
+      "StoredBytes": 435,
+      "StoredSha256": "D5EB9BC6986F37FC8CC8C2DD4A26841D9F78874EA9A0BCA1459D04358E39542F"
+    }
+  ]
+}
