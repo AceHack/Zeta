@@ -2,7 +2,7 @@
 
 Date: 2026-09-08 UTC
 Operational status: research-grade
-Lifecycle: active implementation plan; validation pending
+Lifecycle: implemented reference; independent source review and retained vectors pending
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Session: codex/20260907-c7b2a403
 Work item: 081M1Z63YMC087G0R003N5FH9X
@@ -125,11 +125,51 @@ Decimal precision80; these numerical checks are distinct from the symbolic
 derivations. No optimizer, training, benchmark, random source, Q8 experiment
 or native process is in scope.
 
+The agreed GammaRateVmp DTO additionally retains ValueEncoding beside ToValue
+and ToRate. ValueEncoding has RequestedShape, RepresentedShape and Kernel;
+ToValue equals its Kernel. The two shapes coincide in this exact reference.
+This records the coordinator's accepted cross-language encoding boundary
+without implementing binary64 conversion in the oracle.
+
 ## Validation record
 
-Pending source implementation and focused checks. Original failed commands,
-test failures and subsequent successful commands will be retained separately;
-no first diagnostics are overwritten. Final vectors must name the exact source
-and interpreter and remain distinct from any later native comparison.
+The first source check passed 76 tests in 4.43 seconds and Ruff, while strict
+mypy identified one union-narrowing issue in the private row encoder and the
+formatter identified both new files. The actual initial source, complete
+diagnostic streams and command records remain in attempt1. Using an explicit
+Failure isinstance branch fixes the typing issue; formatting changes no
+formula. A further cycle-refusal test guards the public encoder's depth32
+limit. Attempt2 passed 77 tests in 4.28 seconds, strict mypy on both files,
+Ruff and format check. These are actual independent Python checks, not
+F# comparison, compiled runtime admission or training.
+
+The local raw directories are .git/precision-gate-reference-attempt-1 and
+.git/precision-gate-reference-attempt-2 in this writer, pending the lossless
+evidence index. The initial command recorder explicitly recorded every child
+exit despite its own zero exit; the second recorder uses check=True, retains
+each CalledProcessError if present and exits nonzero on any failed check.
+No failed child result is described as success.
+
+Fraction arithmetic has no binary64 magnitude bound. The implementation does
+not claim hostile-object or peak-memory isolation for arbitrary huge integers;
+the host integer-to-string limit yields a typed EncodingFailure. Decimal uses
+precision80, ROUND_HALF_EVEN, Emin=-999999 and Emax=999999 with traps for invalid
+operation, division by zero, overflow and underflow. Conversion to Decimal
+rounds under that owned context, independently of caller settings. This is
+not an interval enclosure. The reference simplifies a reverse-kernel
+exponential term with exact zero rate to zero, while native conservative
+operation ordering may refuse intermediate range loss; that difference is
+outside ordinary cross-language numerical equality.
+
+The independent residual is implemented as E[z^2]-2E[z]E[w]E[x]+E[w^2]E[x^2],
+not the native ADR's nonnegative expansion. Exact Fraction arithmetic avoids
+cancellation error. An eight-point independent finite-support expectation
+checks that derivation, in addition to literal86 and fractional1013/420.
+Decimal100 tests separately form expected energy with a direct weighted
+exponential; central finite differences independently check both derivatives.
+Neither comparison promotes a local objective into an optimizer.
+
+Final vectors will name the committed source and observed interpreter and
+remain separate from any later native comparison.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra.
