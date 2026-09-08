@@ -375,3 +375,10 @@ implementation task remains open.
 
 - [Actual file replay validation](../../2026-09-07-hidden-switch-compiled-file-replay-validation.md):
   81 focused tests and seven actual cases with 11 original/11 fresh operations.
+
+## Seventh integrated validation
+
+The [seventh integrated validation](integration-7/README.md) preserves all
+1,259 compiled Python tests and all 18 full repository preflight checks at
+source `e6238f8acc89c4d619c6631f0cb0111aa9258c20`, with complete logs,
+95 source/config pins and the actual 4,870-entry owned fixture tree.
