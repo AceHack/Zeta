@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade implementation coordination
 Lifecycle: active
-Status: bounded contract and transport amendment accepted; source implementation underway
+Status: assembled source capsule independently accepted; first actual controls pending
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Accepted boundary
@@ -269,3 +269,22 @@ archive SHA256 is
 All 298 archive members were reopened; source bytes equal the named commit,
 direct-after identities match and passive manifest admission succeeds.
 Independent assembled acceptance and every actual named outcome remain pending.
+
+
+## Final assembled admission and model-switch checkpoint
+
+The [independent assembled admission](2026-09-08-mixed-message-assembled-admission-review.md)
+is normally pushed at owner `26eb850ed0282e3395ec54011408738e5cf181c6`, freshly
+fetched and imported as `dec1050fd`. It accepts the exact F92041F0 manifest
+and E51A00FC archive above, all 298 members, 65 sources, seven direct files
+and 69 bindings. It finds no blocker for the unchanged first M4 invocation.
+This supersedes historical pending-admission statements without changing the
+frozen source or capsule. No numerical service ran in that review.
+
+The [model-switch handoff](../handoffs/2026-09-08-vera-model-switch-execution-ready.md)
+records the exact writer/remote branch, command, independently accepted full
+hashes, original failures, M4-before-M5 inspection boundary and remaining
+publication/comparison work. No named M4/M5/frozen query has run; both root
+execution/parent directories were absent at the handoff probe. The user asked
+to preserve this state before switching to a smaller model, so the next
+session owns the first actual invocation and its assessment.

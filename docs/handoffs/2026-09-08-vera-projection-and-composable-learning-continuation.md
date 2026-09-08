@@ -4,7 +4,14 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade continuity record
 Lifecycle: active
-Status: scalar component verified on main; bounded learning contract accepted for implementation
+Status: scalar component on main; assembled implementation admitted; named execution pending
+
+**Current model-switch entry point:** read the
+[execution-ready handoff](2026-09-08-vera-model-switch-execution-ready.md).
+Final admission `26eb850ed` is imported as `dec1050fd`; the capsule and source
+reviews are complete. No named M4/M5/frozen query has run. The historical
+implementation checkpoints below retain their original sequence; the new
+handoff supersedes their pending-source/admission wording.
 
 Current implementation source is complete for bounded assembled validation:
 core owner `d7e8e3806` (71 focused controls), bridge `567a9f004` and completed
@@ -22,13 +29,14 @@ and [observation-helper repairs](../research/2026-09-08-mixed-message-observatio
 before final source admission. Final freeze is 0DBFF44E, capture FBD0DF78 and
 launcher CC7FBF89; use their complete hashes in the source records. Independent
 manifest/archive hashes must be supplied explicitly. No named M4/M5/frozen
-query has run. Finish the selected-source/direct-runtime
-capsule and independent assembled admission, then perform the unchanged first
-attempts. Do not replay the earlier scalar experiment or open 9307/9409.
+query has run. The selected-source/direct-runtime capsule and independent assembled admission
+are complete; use the new handoff for the unchanged first attempts. Do not replay the earlier scalar experiment or open 9307/9409.
 
 ## Bootstrap
 
-Continue in a writer-owned clone from current origin/main. Read the projection
+Continue in the existing writer and pushed integration branch identified by
+the model-switch handoff; starting only from main would omit the admitted
+implementation. Read the projection
 [integration register](../research/2026-09-08-precision-gate-projection-integration-register.md)
 and [registered result](../research/2026-09-08-precision-gate-projection-registered-results.md),
 then the [mixed-message/learned-module epoch proposal](../research/2026-09-08-mixed-message-learned-module-epoch-proposal.md)

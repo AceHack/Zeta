@@ -9,6 +9,12 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [`2026-09-08-vera-model-switch-execution-ready.md`](./2026-09-08-vera-model-switch-execution-ready.md)
+  — **Start here after the model switch.** Pushed implementation branch, accepted
+  source/runtime capsule, exact first M4 command and M5 dependency checks,
+  retained failures, publication status and the remaining chronological comparison.
+  No named M4/M5/frozen query has run.
+
 - [`2026-09-08-vera-projection-and-composable-learning-continuation.md`](./2026-09-08-vera-projection-and-composable-learning-continuation.md)
   — **Vera, current learning direction.** Independently accepted finite scalar
   projection result, original and post-experiment source identities, next bounded
