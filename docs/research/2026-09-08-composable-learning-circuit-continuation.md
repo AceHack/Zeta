@@ -161,5 +161,7 @@ This does not yet establish a mixed learned gate or a held-out advantage.
 The [mixed-message and learned-module epoch proposal](2026-09-08-mixed-message-learned-module-epoch-proposal.md)
 reuses the existing graph/message interfaces and defines eight essential
 control groups before one actual learned compositional comparison. It remains
-a research proposal pending independent review and a separate source/ADR
-contract; no new module, fit or held-out result is implied by this index.
+a research proposal accepted by [independent design review](2026-09-08-mixed-message-epoch-independent-review.md),
+with a separate source/ADR contract still required. No new module, fit or
+held-out result is implied by this index. The review makes the existing
+scheduler's error-state retention gap an explicit adapter control.

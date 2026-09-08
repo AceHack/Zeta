@@ -12,7 +12,7 @@ Continue in a writer-owned clone from current origin/main. Read the projection
 [integration register](../research/2026-09-08-precision-gate-projection-integration-register.md)
 and [registered result](../research/2026-09-08-precision-gate-projection-registered-results.md),
 then the [mixed-message/learned-module epoch proposal](../research/2026-09-08-mixed-message-learned-module-epoch-proposal.md)
-and its independent review. The candidate is a composable DAG
+and its [independent review](../research/2026-09-08-mixed-message-epoch-independent-review.md). The candidate is a composable DAG
 whose nodes may contain neural modules or nested DAGs. The next investment is
 one bounded checked application/epoch adapter and an actual learned comparison;
 scalar projection certificates are a prerequisite, not a system benchmark.
@@ -82,6 +82,13 @@ and scheduler priority do not become posterior probability or new evidence.
 
 Projection source/result PR17051 is awaiting its complete corrected CI matrix
 and normal merge. Its reviewed source branch head is
-e9aa75b64ce3222c20882a2986b56c0f9fd61ae2. The next proposal is separately
-preserved at 9928404da6cf7ab1c5e2b251ae7afe73bbe2eda0 and under independent
-design review; it has not implemented a new learning module or opened a dataset.
+212758f124fbe7d42cf8073c7863fa99183c1d1a. The next proposal is separately
+preserved at 9928404da6cf7ab1c5e2b251ae7afe73bbe2eda0 and accepted by independent
+design review at 6f5c62198aaee8f758d726e0c4c514f3bab57b9a. It has not
+implemented a new learning module or opened a dataset.
+
+The design review adds one concrete reuse constraint: SoftScheduler.drive
+returns an error without its local threaded state. The adapter must retain
+EpochResult and the last committed prefix independently before that path, and
+M4 must exercise the actual selected scheduler route. This is part of the
+small adapter obligation, not a new framework or a convergence-proof project.
