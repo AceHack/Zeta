@@ -2,10 +2,10 @@
 
 Date: 2026-09-08 UTC
 Operational status: research-grade
-Lifecycle: active
+Lifecycle: landed
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1Z5ZW1T087G0R0002KPWJ8
-Artifact status: local gates and independent scope review complete; CI and main proof pending
+Artifact status: merged through PR #16999; exact main proof verified
 
 This finite slice imports reviewed prerequisites through coordinator commit
 `cb4514e06b61fcebb2600ea8ea7f11abd08c8bcd`. It preserves the static,
@@ -59,10 +59,12 @@ read before publication reliance. Additional `wip/vera-compiled-*` aliases
 were also created during coordinator preservation; they remain harmless
 additional refs and do not replace the four declared canonical branches.
 
-The finite work item's final completion and exact main proof remain pending
-until the PR merges. The parent compiled-controller work remains active.
+The [exact main proof](hidden-switch-compiled-validation/2026-09-08/pr-16999/README.md)
+verifies all 2,332 changed paths against reviewed head, merge and observed main.
+PR #16999 merged normally at 01:47:50 UTC. The finite publication work item
+is complete; the parent compiled-controller work remains active.
 
 The [independent source review](2026-09-08-hidden-switch-compiled-replay-publication-review.md)
 accepts the 31 changed source/test files and explicitly identifies six inherited
 main variants. The finite claim is released in this reviewable publication tree;
-its work item remains open until exact main publication is verified.
+its publication work item is completed after exact main verification.

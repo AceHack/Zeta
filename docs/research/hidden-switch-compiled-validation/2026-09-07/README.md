@@ -394,3 +394,8 @@ fixture tree, including the original packaging-limit refusal and its bounded rep
 The [2026-09-08 publication record](../2026-09-08/replay-publication-gates/README.md)
 retains both full-gate attempts, the complete TLC crash diagnostics, unchanged
 retry, 67 helper tests and the four canonical source-history ref receipts.
+
+## Replay prerequisites verified on main
+
+The [PR #16999 proof](../2026-09-08/pr-16999/README.md) retains the complete
+2,332-path equality check, current CI and the original description-gate failure.
