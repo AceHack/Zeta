@@ -553,7 +553,6 @@ module ZetaFsFreeze =
                         | Some cas ->
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
-                            persist ()
                             tryWrite (ZetaFsPath.combine2 storeDir "cas")
 
                             if item.Durable then

@@ -72,6 +72,18 @@ let ``small file below min-chunk is one leaf`` () =
     Assert.Equal<byte>(bytes, got)
 
 [<Fact>]
+let ``thirty-two 1-byte Jumpropes do not pay FastCDC max-chunk buffers`` () =
+    ensureHasher ()
+    let before = GC.GetAllocatedBytesForCurrentThread()
+
+    for i in 1 .. 32 do
+        let rope = ZetaFsJumprope.buildV1 [| byte i |]
+        Assert.Equal(1, rope.Leaves.Length)
+
+    let n = GC.GetAllocatedBytesForCurrentThread() - before
+    Assert.True(n < 1L * 1024L * 1024L, sprintf "32 one-byte Jumpropes allocated %d bytes" n)
+
+[<Fact>]
 let ``multi-chunk file round-trips and seek hits the right byte`` () =
     ensureHasher ()
     let bytes = Array.init 200_000 (fun i -> byte (i % 251))

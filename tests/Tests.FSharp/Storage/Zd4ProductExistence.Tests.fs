@@ -129,3 +129,60 @@ let ``ZD4 both legs complete the same host-FS small-write storm`` () : Task =
         finally
             FileSystem.Reset()
     }
+
+[<Fact>]
+let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
+    // D10 first peel (081M1ZHZ7EW087G0R00006H4BK). Named ShortRun allocated
+    // ~94 MiB per freeze storm vs ~351 KiB host. Small-file Jumprope must
+    // not construct FastCDC's 256 KiB buffer; catalog persist is once per
+    // freeze, not per CAS put. Measured 36 MiB thread-alloc after those
+    // cuts (48 MiB ceiling). Still unmetered vs host 351 KiB.
+    task {
+        FileSystem.Reset()
+        ensureHasher ()
+
+        try
+            do!
+                withDir "zd4-alloc" (fun store ->
+                    task {
+                        let volume =
+                            ZetaFsFreeze.createManual
+                                store
+                                (ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared)
+                                None
+
+                        try
+                            let pending =
+                                ResizeArray<Task<Result<ZetaFsFreeze.FreezeResult, ZetaFsFreeze.FreezeError>>>(
+                                    storm
+                                )
+
+                            let before = GC.GetAllocatedBytesForCurrentThread()
+
+                            for i in 1..storm do
+                                let id = mintId (17L + int64 i)
+                                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| byte i |] |> ignore
+
+                                pending.Add(
+                                    (ZetaFsFreeze.freezeAsync volume id ZetaFsFreeze.Journaled ct)
+                                        .AsTask()
+                                )
+
+                            do! (ZetaFsFreeze.pumpLog volume ct).ConfigureAwait(false)
+
+                            for t in pending do
+                                let! r = t.ConfigureAwait(false)
+
+                                match r with
+                                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                                | Ok _ -> ()
+
+                            let n = GC.GetAllocatedBytesForCurrentThread() - before
+                            Assert.True(n < 48L * 1024L * 1024L, sprintf "freeze storm allocated %d bytes" n)
+                        finally
+                            ZetaFsFreeze.dispose volume
+                    })
+        finally
+            FileSystem.Reset()
+    }
