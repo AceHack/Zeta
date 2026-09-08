@@ -35,6 +35,21 @@ component or baseline; the system hypothesis concerns the higher composition,
 its uncertainty-bearing interfaces and reuse of fitted modules. A significant
 architecture change gets a separate ADR after these obligations are concrete.
 
+## Finite gauge-consistency extension
+
+Aaron's subsequent [Yang-Mills talk ferry](../ip-questionable/2026-09-08-voyager-yang-mills-mass-gap-talk.md)
+asks for a computer-science result. Investigate local memory frames and ordered
+pairwise transformations around explicitly declared loops. Name the preserved
+conjugacy class and retain immutable evidence and model identities. Fabricated
+memories and cartels are expected adversarial behavior, already addressed by
+Zeta's temporal/graph detectors and formal threat models. Evaluate the added
+value of loop checks alongside those mechanisms, including fabrication that
+keeps loops flat, before assigning additional anti-Sybil value. Four presentation
+axes are a possible finite fixture, not four physical dimensions. Neither a
+Bayesian DAG nor an additive resource ledger already supplies a gauge action
+or spectral-gap theorem. This extension is prospective and does not replace
+the learned-module benchmark or change its evidence requirements.
+
 ## The supplied talk and the ferry
 
 Aaron supplied a timestamped transcript of Christopher Fuchs's
