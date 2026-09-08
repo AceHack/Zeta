@@ -132,3 +132,8 @@ turns the equation findings into a bounded first implementation: typed scalar
 Gaussian/Gamma kernels, explicit factor orientation and a projection objective
 with independent discriminators. It leaves the mixed schedule and learned
 module epoch interface explicit as the following integration step.
+
+The [pinned-source design report](2026-09-08-precision-gated-experts-design-and-source-audit.md)
+retains source packaging, data-split and score-sign hazards as well as the local
+math. These findings must remain in any reproduction protocol; earlier CFB
+results keep their original dataset and source identities.

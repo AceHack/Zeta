@@ -349,3 +349,7 @@ passes all 18 repository checks at source `3d1da6b9f7505924a804974100e2758184f0f
 and verifies the preserved remote source. The [independent evidence audit](2026-09-08-distributional-learning-room-evidence-review.md)
 accepts the actual room and independent-reference archives without rerunning
 the observed processes.
+
+The finite gauge proposal has an [independent mathematical review](2026-09-08-finite-q8-memory-frame-independent-review.md).
+Its corrected topology and detector-input distinctions remain prospective;
+the review reports no gauge run or new cartel-detection rate.

@@ -37,8 +37,12 @@ The module carries these objects:
 
 - Real moments: finite mean and finite nonnegative variance. Zero variance
   means a clamped input; it is not a proper continuous Gaussian density.
-- Gaussian site kernels: precision and precision-times-mean. A zero-precision
-  site is permitted. Proper posterior admission is a separate operation.
+- Gaussian site kernels: `exp(PrecisionMean*z - Precision*z*z/2)`, with
+  arbitrary finite coefficients. Negative precision is allowed in quotient
+  kernels. Zero precision with nonzero precision-mean is an improper
+  linear-exponential kernel; only (0,0) is neutral. Proper belief admission
+  requires positive finite precision, finite mean and strictly positive
+  finite variance. Admission remains separate from site arithmetic.
 - Gamma site kernels: `LogPower` and `Rate`, denoting
   `x^LogPower * exp(-Rate*x)` on positive x relative to dx. Products add the
   two coefficients; quotients subtract them. The neutral kernel is (0,0).
@@ -81,10 +85,14 @@ marginals, the Gamma kernel has LogPower=1/2 and
 Rate=((my-mmu)^2+vy+vmu)/2. A correlated q(y,mu) needs a separately specified
 rule retaining covariance; it is not admitted through this independent API.
 
-For Gamma(gamma;alpha,beta), fixed alpha>0 gives the outgoing Gamma kernel
+For Gamma(gamma;alpha,beta), alpha, E[beta] and E[gamma] must be finite
+and strictly positive. Fixed alpha gives the outgoing Gamma kernel
 (LogPower=alpha-1, Rate=E[beta]) and the outgoing beta kernel
 (LogPower=alpha, Rate=E[gamma]). This is the reverse shape increment that
-must survive site multiplication with a prior.
+must survive site multiplication with a prior. These positive expectation
+requirements apply to this VMP rule, not to the arbitrary finite signed
+Gamma site coefficients accepted by product, quotient or reverse-kernel
+operations.
 
 The reverse deterministic kernel on z, for an incoming Gamma kernel (a,b),
 has log value `a*z-b*exp(z)` for ExpConstraint and

@@ -31,3 +31,26 @@ source/split registration; they do not reuse unopened compiled-study streams.
 The coordinator separately owns the F# room harness, room integration protocol
 and evidence. These finite reference controls establish no learned, physical
 or state-of-the-art performance claim.
+
+## Density-consistent scalar gate kernels
+
+The [proposed kernel ADR](../DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md)
+scopes the next additive implementation after the local density audit.
+
+- Coordinator session `codex/20260907-c7b2a401` owns
+  `src/Bayesian/PrecisionGateKernels.fs`,
+  `tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs`, their project-file
+  integration and derived build-graph update, plus the ADR and integration record.
+- Independent reference session `codex/20260907-c7b2a403` owns
+  `src/Interp.Python/zeta_interp/precision_gate_kernels_reference.py`,
+  `src/Interp.Python/tests/test_precision_gate_kernels_reference.py`, and
+  `docs/research/2026-09-08-precision-gate-kernels-reference.md`.
+- The reference independently derives rational scalar sites and decimal
+  objective values. It does not call the F# implementation or use its outputs
+  as an oracle. Agreement on the fixed DTOs precedes retained cross-language
+  results. This slice has no optimizer, mixed schedule, neural training,
+  benchmark, gauge experiment or registered compiled-study execution.
+
+The expected fabricated-memory/cartel program and finite gauge proposal
+remain separately scoped research. Their interpretation is not promoted by
+these local learning-kernel tests.
