@@ -1,0 +1,74 @@
+{
+  "SourceExecutionPerformed": false,
+  "Records": [
+    {
+      "File": "selection-empowerment-bound.ts.gz",
+      "Commit": "8818b4283d02e3dc5966d8da335c4c0192faeb96",
+      "SourcePath": "src/Core.TypeScript/planning/empowerment-bound.ts",
+      "Argv": [
+        "git",
+        "show",
+        "8818b4283d02e3dc5966d8da335c4c0192faeb96:src/Core.TypeScript/planning/empowerment-bound.ts"
+      ],
+      "ExitCode": 0,
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Original": {
+        "Bytes": 12944,
+        "Sha256": "4d31124298e181a1821edbfa25ec95c0571c0ad8e1d6e2029e0a1dd6ab26b865"
+      },
+      "Stored": {
+        "Bytes": 4763,
+        "Sha256": "91a8976b614cfac019614fcedbb2bd69ef4fab046faa874a8b6ddb267198e644"
+      }
+    },
+    {
+      "File": "selection-audit-hidden-oracles.ts.gz",
+      "Commit": "8818b4283d02e3dc5966d8da335c4c0192faeb96",
+      "SourcePath": "src/Core.TypeScript/hygiene/audit-hidden-oracles.ts",
+      "Argv": [
+        "git",
+        "show",
+        "8818b4283d02e3dc5966d8da335c4c0192faeb96:src/Core.TypeScript/hygiene/audit-hidden-oracles.ts"
+      ],
+      "ExitCode": 0,
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Original": {
+        "Bytes": 32275,
+        "Sha256": "24b39381853823d1a282f8b5bf3f77b8ccba4cb51871eb35579ee7ad0c083470"
+      },
+      "Stored": {
+        "Bytes": 12273,
+        "Sha256": "fa5f972077dbc85c80ba4d004880c7d8d4db8103f2f9f74554c45e933836559b"
+      }
+    },
+    {
+      "File": "selection-participant.ts.gz",
+      "Commit": "8818b4283d02e3dc5966d8da335c4c0192faeb96",
+      "SourcePath": "src/Core.TypeScript/observe/participant.ts",
+      "Argv": [
+        "git",
+        "show",
+        "8818b4283d02e3dc5966d8da335c4c0192faeb96:src/Core.TypeScript/observe/participant.ts"
+      ],
+      "ExitCode": 0,
+      "Stderr": {
+        "Bytes": 0,
+        "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "Original": {
+        "Bytes": 13024,
+        "Sha256": "da1b75e1c58a75c02e3882ea56bb2b95e4b1519ee3af6c8fc7630e717785c777"
+      },
+      "Stored": {
+        "Bytes": 4439,
+        "Sha256": "2dc4c3424a03d8a6152bfedfa3e0396d56f32e82ff5f616060957dddf1f50284"
+      }
+    }
+  ]
+}
