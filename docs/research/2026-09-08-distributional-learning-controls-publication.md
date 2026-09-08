@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1ZCHPWV087G0R002GG2PKY
-Artifact status: full local gate passed; publication scope correction and main proof pending
+Artifact status: full local gate and fresh controls passed; scope corrected; main proof pending
 
 This finite publication imports the [learning direction](2026-09-08-distributional-learning-resource-aware-integration-direction.md),
 [fixed room protocol](2026-09-08-distributional-learning-small-room-protocol.md),
@@ -55,3 +55,8 @@ The publication's full gate at `19efca924f6765bbdd3b4017f707fa8f08302bd1`
 passed all 18 checks, including release build and complete tests. Subsequent
 claim removal and direction corrections are recorded separately; the earlier
 source cut is not relabeled.
+
+The [publication validation archive](distributional-learning/2026-09-08/publication-validation/README.md)
+retains the complete full gate, five fresh process controls, independent replay
+returns, 124-test log and the original claim-removal refusal. Its manifest
+records raw and stored byte identities; all earlier failures remain visible.
