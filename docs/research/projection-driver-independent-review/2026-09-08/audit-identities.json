@@ -1,0 +1,77 @@
+{
+  "Commands": [
+    {
+      "Argv": [
+        "python3",
+        "docs/research/projection-driver-independent-review/2026-09-08/audit.py",
+        "1f4db4b7ad2953648a37a38d0613bb99fc7d0633",
+        "driver-source-validation"
+      ],
+      "Exit": 0,
+      "Script": {
+        "File": "audit.py",
+        "Bytes": 3911,
+        "Sha256": "BD70081851A5338A2512E83EB51DAF9AAC48AACE7321D0946F74142211FC4A28"
+      },
+      "Stdout": {
+        "File": "initial-audit.json",
+        "Bytes": 13454,
+        "Sha256": "24C186F04F7A01D0A0B20350F9FAC092AF9C5B37623D450C9EF89340329F8886"
+      },
+      "Stderr": {
+        "File": "initial-stderr.gz",
+        "Bytes": 20,
+        "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+      },
+      "StderrRawBytes": 0
+    },
+    {
+      "Argv": [
+        "python3",
+        "docs/research/projection-driver-independent-review/2026-09-08/audit.py",
+        "53cf6cdaa75f9dcb1ab1de2c48144685fdc286d5",
+        "driver-link-resolution-validation"
+      ],
+      "Exit": 0,
+      "Script": {
+        "File": "audit.py",
+        "Bytes": 3911,
+        "Sha256": "BD70081851A5338A2512E83EB51DAF9AAC48AACE7321D0946F74142211FC4A28"
+      },
+      "Stdout": {
+        "File": "followup-audit.json",
+        "Bytes": 7492,
+        "Sha256": "E58D58C20DD04C7C403DDB0755D3AF9128ECF1001E1FF3243ADB589752BC2EC0"
+      },
+      "Stderr": {
+        "File": "followup-stderr.gz",
+        "Bytes": 20,
+        "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+      },
+      "StderrRawBytes": 0
+    },
+    {
+      "Argv": [
+        "python3",
+        "docs/research/projection-driver-independent-review/2026-09-08/bindings-audit.py"
+      ],
+      "Exit": 0,
+      "Script": {
+        "File": "bindings-audit.py",
+        "Bytes": 2607,
+        "Sha256": "0E7F88935BBEBA21FEE8558567BEB931678D7C3D5D4B8253C243847BEAB1ADC6"
+      },
+      "Stdout": {
+        "File": "bindings-audit.json",
+        "Bytes": 627,
+        "Sha256": "AEFBC91E1213C9A6C5E3CFD9D875816E3437F76AF10F5107FD715ADFAB2BB1EC"
+      },
+      "Stderr": {
+        "File": "bindings-stderr.gz",
+        "Bytes": 20,
+        "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+      },
+      "StderrRawBytes": 0
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "OriginalSource": "1f4db4b7ad2953648a37a38d0613bb99fc7d0633",
+  "FinalTestsEvidence": "53cf6cdaa75f9dcb1ab1de2c48144685fdc286d5",
+  "DriverSourceUnchanged": true,
+  "DriverBytes": 40992,
+  "DriverSha256": "83537F7105042FC077D348EC6F59FD8D44318C0233D1804B01381A6A4EE51706",
+  "MachineReadableRosterMatches47Paths": true,
+  "BothOriginalAndFinalExecutedSourceMatch": true,
+  "TransientWithdrawnSourcePreserved": true,
+  "FinalTestSourceMatches": true,
+  "FirstMistakenFixtureFailures": 2,
+  "SecondMistakenFixtureFailures": 2,
+  "SecondOtherPasses": 57,
+  "FinalPasses": 59,
+  "OriginalNormalPushAndRemoteProofMatch": true
+}
