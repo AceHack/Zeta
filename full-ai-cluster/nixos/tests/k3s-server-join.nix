@@ -486,10 +486,21 @@ pkgs.testers.nixosTest {
     # A node can appear in `kubectl get nodes` as an agent. This asserts it is
     # a control-plane member, which is what `--server` on a role=server node is
     # supposed to produce.
-    founder.succeed(
+    # WAIT, not succeed: k3s applies `node-role.kubernetes.io/control-plane`
+    # asynchronously after the node registers, so a one-shot check races the
+    # controller. Run 34179530170 failed here at ~80s with the joiner still
+    # applying manifests -- and the SPLIT-BRAIN CA assertion immediately above
+    # had already PASSED, so the join itself had genuinely worked and only the
+    # label had not landed yet. That is the signature of a race, not a defect.
+    #
+    # This still fails if the label never appears: `wait_until_succeeds` times
+    # out and raises. It tolerates the delay; it does not tolerate the absence,
+    # so the membership property this assertion exists to prove is unchanged.
+    founder.wait_until_succeeds(
         "KUBECONFIG=/etc/rancher/k3s/k3s.yaml k3s kubectl get node joiner "
         "-o jsonpath='{.metadata.labels}' "
-        "| grep -q 'node-role.kubernetes.io/control-plane'"
+        "| grep -q 'node-role.kubernetes.io/control-plane'",
+        timeout=180,
     )
 
     # ── JOINBLOCKER 2 (the half a booted guest CAN see) ────────────────────
