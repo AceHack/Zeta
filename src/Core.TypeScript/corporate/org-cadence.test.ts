@@ -30,6 +30,8 @@ import type { DriveDeps, DriveState } from "./org-drive";
 import { GateOutcome } from "./quality-gate";
 import type { OrgChooser } from "./org-decision";
 import { BlockerKind } from "./blocker-taxonomy";
+import { SignalTool } from "./supervisor-signal";
+import { EscalationAction } from "./escalation";
 
 const chart = (() => {
   const r = buildOrgChart(SEED_HATS);
@@ -334,18 +336,47 @@ describe("WHEN THE GATES SAY NO — the bound, and the fact somebody is told", (
     expect(out.state.cascade.nodes.filter((n) => n.state === "done")).toEqual([]);
   });
 
-  test("THE SUBMISSION IS BOUNDED — twice PER ITEM, not forever", () => {
+  test("THE SUBMISSION IS BOUNDED — MAX attempts, an escalation, then MAX more, then it stops", () => {
     // Per item rather than in total: the organization staffs every department now, so a run this
     // long has many tasks in flight and a single total would be a census that moves whenever the
     // chart does.
+    //
+    // TWICE MAX, not once, and that is the escalation rather than a leak. A hat spends its
+    // attempts, a manager rules on the churn, the ruling `changes_the_input` and the work gets its
+    // attempts back — ONCE. The second exhaustion is final: `escalationOpenings` refuses a second
+    // ruling on the same item, which is what stops this becoming a pump that does real work
+    // forever.
     const attempts = [...(out.state.view.gateAttempts?.counts.values() ?? [])];
     expect(attempts.length).toBeGreaterThan(0);
     expect(attempts.every((n) => n === MAX)).toBe(true);
-    const submissions = out.periods
-      .flatMap((p) => p.rounds)
-      .flatMap((r) => r.ticks)
-      .filter((t) => t.chosen?.kind === "submit_work");
-    expect(submissions).toHaveLength(attempts.length * MAX);
+
+    const ticks = out.periods.flatMap((p) => p.rounds).flatMap((r) => r.ticks);
+    expect(ticks.filter((t) => t.chosen?.kind === "submit_work")).toHaveLength(attempts.length * MAX * 2);
+    // ONE RULING PER ITEM. More would be the pump; none would leave the bound as a counter nobody
+    // reads at the limit, which is the defect the escalation exists to close.
+    expect(ticks.filter((t) => t.chosen?.kind === "escalate_churn")).toHaveLength(attempts.length);
+  });
+
+  test("A MANAGER DECIDED IT — not the owner, and not nobody", () => {
+    // `decideEscalation` refuses anyone below manager, and `escalationDeciderFor` walks up from the
+    // owner until it finds a level that holds the authority. The owner ruling on its own churn
+    // would be the failing loop assessing itself.
+    const rulings = out.state.view.signals.filter((s) => s.tool === SignalTool.RequestEscalation);
+    expect(rulings.length).toBeGreaterThan(0);
+    for (const ruling of rulings) {
+      const decider = chart.byId.get(ruling.fromHatId);
+      expect(decider).toBeDefined();
+      expect(["manager", "director", "c_suite", "executive_board"]).toContain(decider?.level ?? "?");
+    }
+  });
+
+  test("...and the ruling is an ACTION from the legal set, not a note", () => {
+    // The title carries what was decided. A ruling that recorded only "escalated" would tell the
+    // next reader that something happened and nothing about what.
+    const rulings = out.state.view.signals.filter((s) => s.tool === SignalTool.RequestEscalation);
+    for (const ruling of rulings) {
+      expect((Object.values(EscalationAction) as readonly string[])).toContain(ruling.title);
+    }
   });
 
   test("AND SOMEBODY IS TOLD — exhaustion is a blocker, routed and raised ONCE", () => {
@@ -363,6 +394,70 @@ describe("WHEN THE GATES SAY NO — the bound, and the fact somebody is told", (
   });
 
   test("...and it still SETTLES — a refusal is not a reason to spin", () => {
+    expect(out.periods.every((p) => p.settled)).toBe(true);
+  });
+});
+
+describe("A RULING THAT STOPS THE WORK — the other half of an escalation", () => {
+  // The deterministic ruling always CHANGES THE INPUT, so without a chooser this branch is
+  // unreachable — measured as a surviving mutant that left the halting path untested. A manager who
+  // decides to PAUSE is not a failure case; it is the organization choosing to stop, which is how
+  // it gets to do something else.
+  const rejectAll: OrgChooser<GateOutcome> = (legal) => {
+    const i = legal.indexOf(GateOutcome.Rejected);
+    return { index: i < 0 ? 0 : i, reason: "rejected" };
+  };
+  const pause: OrgChooser<EscalationAction> = (legal) => {
+    const i = legal.indexOf(EscalationAction.Pause);
+    return { index: i < 0 ? 0 : i, reason: "pause it" };
+  };
+
+  const out = (() => {
+    let n = 0;
+    const state = fresh(true);
+    const view = { ...state.view, gateAttempts: { counts: new Map<string, number>(), maxAttempts: 2 } };
+    return runCadence(
+      { ...state, view },
+      HATS,
+      {
+        chart,
+        nowMs: START,
+        createId: (p) => `${p}-${String((n += 1))}`,
+        resourceAuthorityHatId: "rmo_office",
+        directionReviewMs: DAY_MS,
+        gateChooser: rejectAll,
+        escalationChooser: pause,
+      },
+      { periodMs: DAY_MS, periods: 3, maxRoundsPerPeriod: 80 },
+    );
+  })();
+
+  test("the work is CANCELLED — this cascade has no state for 'stopped but not finished'", () => {
+    const cancelled = out.state.cascade.nodes.filter((n) => n.state === "canceled");
+    expect(cancelled.length).toBeGreaterThan(0);
+    expect(cancelled.every((n) => n.workType === WorkType.Task)).toBe(true);
+  });
+
+  test("...and it is NOT retried — a halted loop does not get its attempts back", () => {
+    // The distinction the effect carries. A ruling that halted and then reset would be a manager
+    // saying stop and the organization carrying on.
+    const submissions = out.periods
+      .flatMap((p) => p.rounds)
+      .flatMap((r) => r.ticks)
+      .filter((t) => t.chosen?.kind === "submit_work");
+    const cancelled = out.state.cascade.nodes.filter((n) => n.state === "canceled");
+    expect(submissions).toHaveLength(cancelled.length * 2);
+  });
+
+  test("THE DOMAIN IS FREED — a cancelled child does not hold its goal open forever", () => {
+    // Why cancelling is a real consequence rather than a tidy-up: `deliveredSet` skips cancelled
+    // children, so a cascade whose only failing task is cancelled COMPLETES, and its executive is
+    // asked for a new direction. An organization that decides to stop gets to do something else.
+    const goals = out.state.cascade.nodes.filter((n) => n.workType === WorkType.Goal);
+    expect(goals.length).toBeGreaterThan(16);
+  });
+
+  test("and the run still settles", () => {
     expect(out.periods.every((p) => p.settled)).toBe(true);
   });
 });

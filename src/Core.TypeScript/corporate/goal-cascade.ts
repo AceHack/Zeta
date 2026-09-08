@@ -783,6 +783,61 @@ export function deliveredSet(cascade: Cascade): ReadonlySet<string> {
   return out;
 }
 
+/**
+ * Every work id with something still to DO — a different question from `deliveredSet`.
+ *
+ * ── WHY BOTH EXIST, AND WHY CONFLATING THEM WAS A DEFECT ─────────────────────
+ * `isDelivered` asks whether work SUCCEEDED, and answers no for a node whose children were all
+ * cancelled — correctly, and there is a falsifier pinning it. The generative menu asked that
+ * question when it meant a different one, so a goal whose entire cascade had been cancelled was
+ * neither delivered nor live: its domain stayed occupied forever by work nobody would ever do
+ * again, and the C-suite was never asked to point it somewhere else.
+ *
+ * Measured: a run where every gate rejected and every ruling was PAUSE cancelled its way through
+ * three simulated days and set ZERO new directions.
+ *
+ * So the two are separate and named for what they answer. Delivered means it worked. Live means
+ * somebody could still act on it:
+ *
+ *   - open or in-progress with NO children yet -> live (it needs breaking down)
+ *   - open or in-progress with children        -> live only if some CHILD is live
+ *   - done or cancelled                        -> not live, whichever it was
+ *
+ * A node whose children all finished and a node whose children were all abandoned are both
+ * finished-with; the difference between them is what `deliveredSet` is for, and answering "did
+ * this succeed" is never the same as answering "is there anything left".
+ */
+export function liveWorkSet(cascade: Cascade): ReadonlySet<string> {
+  const children = new Map<string, CascadeNode[]>();
+  for (const node of cascade.nodes) {
+    if (node.parentWorkId === undefined) continue;
+    const bucket = children.get(node.parentWorkId);
+    if (bucket === undefined) children.set(node.parentWorkId, [node]);
+    else bucket.push(node);
+  }
+  const memo = new Map<string, boolean>();
+  const walk = (node: CascadeNode): boolean => {
+    const known = memo.get(node.workId);
+    if (known !== undefined) return known;
+    // Cycle guard, for the same reason `deliveredSet` carries one: an unguarded recursion over
+    // caller-supplied data is a hang waiting for the first malformed input, and a hang is the one
+    // failure a test cannot report.
+    memo.set(node.workId, false);
+    let result: boolean;
+    if (node.state === WorkState.Done || node.state === WorkState.Canceled) {
+      result = false;
+    } else {
+      const kids = children.get(node.workId) ?? [];
+      result = kids.length === 0 || kids.some((c) => walk(c));
+    }
+    memo.set(node.workId, result);
+    return result;
+  };
+  const out = new Set<string>();
+  for (const node of cascade.nodes) if (walk(node)) out.add(node.workId);
+  return out;
+}
+
 /** The chain of work ids from `workId` up to its goal, self first. */
 export function cascadeChainOf(cascade: Cascade, workId: string): readonly string[] {
   const chain: string[] = [];

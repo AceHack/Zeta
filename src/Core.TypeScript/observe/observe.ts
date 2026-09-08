@@ -216,7 +216,8 @@ export type GenerativeOpening =
       /** The id the first child would take. Supplied by the register, so a re-offer is the same act. */
       readonly childId: string;
     }
-  | { readonly kind: "submit_work"; readonly subjectId: string; readonly prompt: string };
+  | { readonly kind: "submit_work"; readonly subjectId: string; readonly prompt: string }
+  | { readonly kind: "escalate_churn"; readonly subjectId: string; readonly prompt: string };
 
 export interface World {
   readonly backlog: readonly BacklogItem[];
@@ -519,7 +520,9 @@ export type NextAction =
   /** Turn one thing into the things it is made of. The verb that makes a ladder run. */
   | { kind: "break_down_work"; subjectId: string; childId: string; title: string; reason: string }
   /** Say the work is finished. What happens next is not this agent's to decide. */
-  | { kind: "submit_work"; subjectId: string; reason: string };
+  | { kind: "submit_work"; subjectId: string; reason: string }
+  /** Decide what changes when work keeps coming back. A management act. */
+  | { kind: "escalate_churn"; subjectId: string; reason: string };
 
 
 /**
@@ -565,6 +568,8 @@ function generativeAction(g: GenerativeOpening): NextAction {
       return { kind: "size_hat_supply", subjectId: g.subjectId, reason: g.prompt };
     case "submit_work":
       return { kind: "submit_work", subjectId: g.subjectId, reason: g.prompt };
+    case "escalate_churn":
+      return { kind: "escalate_churn", subjectId: g.subjectId, reason: g.prompt };
     case "break_down_work":
       return {
         kind: "break_down_work",
@@ -1289,6 +1294,7 @@ export function simulate(world: World, action: NextAction): World {
     case "size_hat_supply":
     case "break_down_work":
     case "submit_work":
+    case "escalate_churn":
       return world;
   }
 }

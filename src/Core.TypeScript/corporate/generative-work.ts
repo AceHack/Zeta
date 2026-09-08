@@ -41,12 +41,11 @@
 
 import { Domain, DomainMatch, departmentFor, type DomainRouting } from "./domain-ontology";
 import {
-  deliveredSet,
   isLeafType,
   nextRung,
   ownerForRung,
+  liveWorkSet,
   supportRequirementFor,
-  WorkState,
   WorkType,
   type CascadeNode,
 } from "./goal-cascade";
@@ -60,6 +59,7 @@ import {
 } from "./org-chart";
 import { PRIORITY_ORDER, type PriorityClass } from "./prioritization";
 import { routingCoverage } from "./routing-coverage";
+import { escalationDeciderFor } from "./escalation";
 
 /** The four acts that make new work rather than advancing existing work. */
 export const GenerativeKind = {
@@ -88,6 +88,16 @@ export const GenerativeKind = {
    * stays occupied by its first goal forever, so the C-suite is never asked what is next.
    */
   SubmitWork: "submit_work",
+  /**
+   * Decide what to DO about work that keeps coming back from the gates.
+   *
+   * The last act `org-cycle.ts` could perform that a tick could not, and the writer for a reader
+   * the drive already had: bounding resubmission and reporting exhaustion as a blocker told
+   * somebody the work was stuck and left the deciding to a script. `escalation.ts` chooses between
+   * adding agents, bringing in an architect, re-scoping, pausing and the rest, from the legal set
+   * for this trigger and this level — a manager's act, on a manager's menu.
+   */
+  EscalateChurn: "escalate_churn",
 } as const;
 
 export type GenerativeKind = (typeof GenerativeKind)[keyof typeof GenerativeKind];
@@ -146,14 +156,20 @@ export interface DirectionClock {
  * directions. Days two through seven were sixteen restatements and nothing else — a company that
  * finishes its work and then has nothing to say about it.
  *
- * So delivery rolls up by DERIVATION rather than by anybody writing a state: a node whose live
- * children are all delivered is not live, whatever its own row says. That is the same discipline
- * this register applies to `degraded`, `completeness` and `replayable` — the fact is computed from
- * what happened, never declared alongside it.
+ * So completion rolls up by DERIVATION rather than by anybody writing a state: a node whose
+ * children are all finished-with is not live, whatever its own row says. That is the same
+ * discipline this register applies to `degraded`, `completeness` and `replayable` — the fact is
+ * computed from what happened, never declared alongside it.
+ *
+ * IT ASKS `liveWorkSet`, NOT `deliveredSet`, and the difference is a defect that got as far as a
+ * test. Delivered means the work SUCCEEDED, and a node whose children were all cancelled is
+ * correctly not delivered — so asking that question left an abandoned cascade looking neither
+ * finished nor live, and its domain stayed occupied forever by work nobody would ever do again.
+ * Measured: a run where every ruling was PAUSE cancelled its way through three days and set zero
+ * new directions.
  */
-function isLive(delivered: ReadonlySet<string>, node: CascadeNode): boolean {
-  if (node.state === WorkState.Done || node.state === WorkState.Canceled) return false;
-  return !delivered.has(node.workId);
+function isLive(live: ReadonlySet<string>, node: CascadeNode): boolean {
+  return live.has(node.workId);
 }
 
 /**
@@ -203,10 +219,10 @@ export function directionOpenings(
   cascade: readonly CascadeNode[],
   clock?: DirectionClock,
 ): readonly GenerativeOpening[] {
-  const delivered = deliveredSet({ nodes: cascade });
-  const live = new Set(
+  const live = liveWorkSet({ nodes: cascade });
+  const occupiedDomains = new Set(
     cascade
-      .filter((n) => isLive(delivered, n))
+      .filter((n) => isLive(live, n))
       .map((n) => n.domain)
       .filter((d): d is Domain => d !== undefined),
   );
@@ -224,7 +240,7 @@ export function directionOpenings(
   if (clock !== undefined) {
     for (const node of cascade) {
       if (node.workType !== WorkType.Goal) continue;
-      if (!isLive(delivered, node)) continue;
+      if (!isLive(live, node)) continue;
       // A direction with no reading is not stale, it is UNDATED. Treating it as old would make the
       // first restatement a fact about the missing field rather than about the passage of time.
       if (node.directedAtMs === undefined) continue;
@@ -247,7 +263,7 @@ export function directionOpenings(
   }
 
   for (const domain of Object.values(Domain)) {
-    if (live.has(domain)) continue;
+    if (occupiedDomains.has(domain)) continue;
     // ── DIRECTION IS PACED BY THE CALENDAR, NEVER BY THE ROUND LOOP ─────────
     //
     // Once delivery rolls up, a domain that finishes its cascade is empty again — and without this
@@ -310,10 +326,10 @@ export function draftingOpenings(
   cascade: readonly CascadeNode[],
   artifacts: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
-  const delivered = deliveredSet({ nodes: cascade });
+  const live = liveWorkSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(delivered, node)) continue;
+    if (!isLive(live, node)) continue;
     if (node.domain === undefined) continue;
     if (node.workType === WorkType.Goal) continue;
     const artifactId = `doc-${node.workId}`;
@@ -362,10 +378,10 @@ export function priorityOpenings(
   cascade: readonly CascadeNode[],
   priced: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
-  const delivered = deliveredSet({ nodes: cascade });
+  const live = liveWorkSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(delivered, node)) continue;
+    if (!isLive(live, node)) continue;
     if (priced.has(node.workId)) continue;
     const decider = supervisorOf(chart, node.ownerHatId) ?? chart.byId.get(node.ownerHatId);
     if (decider === undefined) continue;
@@ -452,10 +468,10 @@ export function breakdownOpenings(
   alreadyRaised: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
   const hasChild = new Set(cascade.map((n) => n.parentWorkId).filter((id): id is string => id !== undefined));
-  const delivered = deliveredSet({ nodes: cascade });
+  const live = liveWorkSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(delivered, node)) continue;
+    if (!isLive(live, node)) continue;
     if (hasChild.has(node.workId)) continue;
     // ONE GUARD FOR THE BOTTOM OF THE LADDER, not two. This read `if (isLeafType(...)) continue;`
     // first, and a mutation run showed that deleting it killed nothing: `nextRung` already returns
@@ -537,10 +553,10 @@ export function submissionOpenings(
   attempts: ReadonlyMap<string, number>,
   maxAttempts: number,
 ): readonly GenerativeOpening[] {
-  const delivered = deliveredSet({ nodes: cascade });
+  const live = liveWorkSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(delivered, node)) continue;
+    if (!isLive(live, node)) continue;
     if (!isLeafType(node.workType)) continue;
     if (node.assigneeHatId === undefined) continue;
     const tried = attempts.get(node.workId) ?? 0;
@@ -589,10 +605,10 @@ export function staffingOpenings(
   alreadyRaised: ReadonlySet<string>,
 ): readonly GenerativeOpening[] {
   if (chart.byId.get(resourceAuthorityHatId) === undefined) return [];
-  const delivered = deliveredSet({ nodes: cascade });
+  const live = liveWorkSet({ nodes: cascade });
   const out: GenerativeOpening[] = [];
   for (const node of cascade) {
-    if (!isLive(delivered, node)) continue;
+    if (!isLive(live, node)) continue;
     if (!isLeafType(node.workType)) continue;
     if (node.assigneeHatId !== undefined) continue;
     const contributors = hatsAtLevel(chart, "individual_contributor").filter(
@@ -613,6 +629,47 @@ export function staffingOpenings(
       subjectId,
       ...(node.domain === undefined ? {} : { domain: node.domain }),
       because: `'${node.workId}' is an open ${node.workType} nobody under '${node.ownerHatId}' can do`,
+    });
+  }
+  return out;
+}
+
+/**
+ * Work that has exhausted the gates and has not yet been escalated.
+ *
+ * ── ONE ESCALATION PER ITEM, AND THAT IS THE WHOLE BOUND ─────────────────────
+ * An escalation whose effect `changes_the_input` gives the work another run at the gates. Offer a
+ * second one and the pair becomes a pump: exhaust, escalate, reset, exhaust, escalate — real work
+ * every round, refusing nothing, forever. This drive has produced that shape four times and it is
+ * always the same mistake, so the guard is stated as a rule rather than discovered again: a hat
+ * escalates a given item ONCE. If the changed input still cannot pass, the exhaustion blocker
+ * stands and a human is the next reader.
+ *
+ * DECIDED BY A MANAGER OR ABOVE — `escalationDeciderFor` walks up from the owner until it finds a
+ * level that holds the authority, and `decideEscalation` refuses anyone who does not. The owner
+ * deciding its own escalation would be the churn assessing itself.
+ */
+export function escalationOpenings(
+  chart: OrgChart,
+  cascade: readonly CascadeNode[],
+  gates: { readonly attempts: ReadonlyMap<string, number>; readonly maxAttempts: number },
+  alreadyEscalated: ReadonlySet<string>,
+): readonly GenerativeOpening[] {
+  const live = liveWorkSet({ nodes: cascade });
+  const out: GenerativeOpening[] = [];
+  for (const node of cascade) {
+    if (!isLive(live, node)) continue;
+    if ((gates.attempts.get(node.workId) ?? 0) < gates.maxAttempts) continue;
+    if (alreadyEscalated.has(node.workId)) continue;
+    const decider = escalationDeciderFor(chart, node.ownerHatId);
+    if (decider === undefined) continue;
+    out.push({
+      kind: GenerativeKind.EscalateChurn,
+      byHatId: decider.id,
+      prompt: `'${node.title}' keeps coming back from the gates — what changes?`,
+      subjectId: node.workId,
+      ...(node.domain === undefined ? {} : { domain: node.domain }),
+      because: `'${node.workId}' has spent all ${String(gates.maxAttempts)} of its gate attempts`,
     });
   }
   return out;
@@ -647,6 +704,8 @@ export interface GenerativeInput {
    * offer nothing rather than to assume a bound nobody set.
    */
   readonly gates?: { readonly attempts: ReadonlyMap<string, number>; readonly maxAttempts: number };
+  /** Work items a manager has already ruled on. See `escalationOpenings` for why one is the bound. */
+  readonly escalated?: ReadonlySet<string>;
 }
 
 /**
@@ -669,6 +728,9 @@ export function generativeOpeningsFor(input: GenerativeInput, hatId: string): re
     ...(input.gates === undefined
       ? []
       : submissionOpenings(input.cascade, input.gates.attempts, input.gates.maxAttempts)),
+    ...(input.gates === undefined
+      ? []
+      : escalationOpenings(input.chart, input.cascade, input.gates, input.escalated ?? new Set<string>())),
   ];
   return all
     .filter((o) => o.byHatId === hatId)

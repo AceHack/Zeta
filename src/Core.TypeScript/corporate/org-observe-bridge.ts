@@ -66,6 +66,13 @@ import {
 } from "./requirement-maturity";
 import type { BacklogItem, GenerativeOpening as GrammarOpening } from "../observe/observe";
 import { GenerativeKind, generativeOpeningsFor, type DirectionClock } from "./generative-work";
+import {
+  decideEscalation,
+  EscalationTrigger,
+  type EscalationAction,
+  type EscalationChange,
+} from "./escalation";
+import { firstLegalChooser, type OrgChooser } from "./org-decision";
 import { domainRouting, isDomain, type Domain } from "./domain-ontology";
 import { isPriorityClass } from "./prioritization";
 import type { CascadeNode } from "./goal-cascade";
@@ -516,6 +523,15 @@ export function generativeFor(
       ...(view.gateAttempts === undefined
         ? {}
         : { gates: { attempts: view.gateAttempts.counts, maxAttempts: view.gateAttempts.maxAttempts } }),
+      // READ BACK OFF THE ORGANISATION'S OWN RECORD, never held beside it. An escalation is a
+      // routed signal, so the signals ARE the list of what has been ruled on — and a second list
+      // could disagree with them.
+      escalated: new Set(
+        view.signals
+          .filter((sig) => sig.tool === SignalTool.RequestEscalation)
+          .map((sig) => sig.workItemId)
+          .filter((id): id is string => id !== undefined),
+      ),
       raisedSupplySubjects: new Set(
         view.signals.filter((sig) => sig.tool === SignalTool.SuggestImprovement).map((sig) => sig.title),
       ),
@@ -552,6 +568,9 @@ export function generativeFor(
         break;
       case GenerativeKind.SubmitWork:
         out.push({ kind: "submit_work", subjectId: o.subjectId, prompt: o.prompt });
+        break;
+      case GenerativeKind.EscalateChurn:
+        out.push({ kind: "escalate_churn", subjectId: o.subjectId, prompt: o.prompt });
         break;
       case GenerativeKind.BreakDownWork:
         // DERIVED FROM THE PARENT, so the same undecomposed rung yields the same child id every
@@ -676,6 +695,23 @@ export type OrgEffect =
    * be reading the assignee back out of a cascade that the submission itself is about to change.
    */
   | { readonly kind: "submission"; readonly workId: string; readonly proposerHatId: string }
+  /**
+   * A manager's ruling on work that keeps failing, and what it does to the loop.
+   *
+   * `haltsTheLoop` is carried rather than re-derived at the point of application, because it is the
+   * only part of an escalation this register can act on today and losing it would leave the ruling
+   * as a note. `escalation.ts` computes it exhaustively over the action set — the compiler refuses
+   * a ninth action until somebody says whether it changes the input or stops it.
+   */
+  | {
+      readonly kind: "escalation";
+      readonly workId: string;
+      readonly byHatId: string;
+      readonly action: EscalationAction;
+      readonly change: EscalationChange;
+      readonly haltsTheLoop: boolean;
+      readonly signal: SupervisorSignal;
+    }
   | { readonly kind: "priced"; readonly workId: string; readonly priority: PriorityClass }
   | {
       readonly kind: "breakdown";
@@ -709,6 +745,15 @@ export function effectOf(
   ids: { readonly signalId: string; readonly anchorId: string },
   atMs: number,
   resourceAuthorityHatId: string,
+  /**
+   * How a management choice is made, where the register has one to make.
+   *
+   * Only `escalate_churn` reads it today. Injectable for the same reason `DriveDeps.gateChooser`
+   * is: a drive whose escalations always `change the input` cannot exercise the branch where one
+   * HALTS it, and a branch no caller can reach is a branch no falsifier can kill — measured
+   * exactly that way, as a surviving mutant that left the halting path untested.
+   */
+  policy?: { readonly escalationChooser?: OrgChooser<EscalationAction> },
 ): EffectResult {
   switch (action.kind) {
     case "request_information": {
@@ -862,6 +907,57 @@ export function effectOf(
         return { ok: false, reason: `'${action.subjectId}' is already ${node.state}` };
       }
       return { ok: true, effect: { kind: "submission", workId: action.subjectId, proposerHatId: hatId } };
+    }
+    case "escalate_churn": {
+      const node = view.cascade.find((n) => n.workId === action.subjectId);
+      if (node === undefined) return { ok: false, reason: `no work item '${action.subjectId}' to escalate` };
+      const decided = decideEscalation(view.chart, {
+        trigger: EscalationTrigger.RepeatedGateRejection,
+        workId: action.subjectId,
+        ownerHatIds: [node.ownerHatId],
+        deciderHatId: hatId,
+        // FIRST LEGAL, deterministically, unless the caller has a policy. What must not happen is
+        // this seam inventing a preference: the legal set is already narrowed by the trigger and
+        // the decider's level, and a second opinion here would be an unrecorded policy.
+        chooser: policy?.escalationChooser ?? firstLegalChooser(),
+      });
+      // REFUSED, not degraded. `decideEscalation` says no when the chosen action cannot be carried
+      // out in this organization — most importantly bringing in an architect where none exists —
+      // and recording a structural fix nobody can perform is worse than the churn it claims to end.
+      if (!decided.ok) return { ok: false, reason: decided.reason };
+
+      // THE RULING TRAVELS AS AN ESCALATION SIGNAL, which routes deliberately PAST the immediate
+      // supervisor: `request_escalation` exists because that level could not resolve it alone, so
+      // handing it back to them would be a no-op that reports success.
+      const raised = sendSupervisorSignal(
+        view.chart,
+        view.board,
+        {
+          signalId: ids.signalId,
+          anchorId: ids.anchorId,
+          fromHatId: hatId,
+          tool: SignalTool.RequestEscalation,
+          title: decided.action,
+          message: decided.reason,
+          evidence: [{ kind: "trace", ref: `gates-exhausted:${action.subjectId}` }],
+          atMs,
+          workItemId: action.subjectId,
+        },
+        resourceAuthorityHatId,
+      );
+      if (!raised.ok) return { ok: false, reason: raised.reason };
+      return {
+        ok: true,
+        effect: {
+          kind: "escalation",
+          workId: action.subjectId,
+          byHatId: hatId,
+          action: decided.action,
+          change: decided.change,
+          haltsTheLoop: decided.effect === "halts_the_loop",
+          signal: raised.signal,
+        },
+      };
     }
     case "size_hat_supply": {
       const raised = sendSupervisorSignal(

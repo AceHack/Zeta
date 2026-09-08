@@ -51,6 +51,7 @@ import type { OrgChart } from "./org-chart";
 import { detectLag, type LagInput } from "./lag-detection";
 import { GateOutcome, runGateChain } from "./quality-gate";
 import { preferChooser, type OrgChooser } from "./org-decision";
+import type { EscalationAction } from "./escalation";
 import { lagSignals } from "./lag-signals";
 
 /** The mutable half of the organization — what a tick can change. */
@@ -109,6 +110,14 @@ export interface DriveDeps {
    * churn escalation exists for.
    */
   readonly gateChooser?: OrgChooser<GateOutcome>;
+  /**
+   * How a manager rules on churn. Absent takes the first legal action for the trigger and level.
+   *
+   * Named for the same reason as `gateChooser`: the deterministic ruling always CHANGES THE INPUT,
+   * so a drive without this can never show the other half — a ruling that HALTS the loop, cancels
+   * the work, and frees its domain for something else.
+   */
+  readonly escalationChooser?: OrgChooser<EscalationAction>;
   readonly lagSweep?: {
     readonly observerHatId: string;
     readonly anchorId: string;
@@ -155,6 +164,7 @@ export function tick(state: DriveState, hatId: string, deps: DriveDeps): TickRep
     { signalId: deps.createId("sig"), anchorId: deps.createId("anchor") },
     deps.nowMs,
     deps.resourceAuthorityHatId,
+    deps.escalationChooser === undefined ? {} : { escalationChooser: deps.escalationChooser },
   );
   if (!derived.ok) {
     // A DERIVATION THAT REFUSED IS NOT A TICK THAT DID NOTHING. The hat chose something the
@@ -359,6 +369,47 @@ export function apply(state: DriveState, effect: OrgEffect, deps: DriveDeps): Ap
       }
       return {
         state: { ...state, cascade: done.cascade, view: { ...withAttempt, cascade: done.cascade.nodes } },
+        changed: true,
+        refusals: [],
+      };
+    }
+
+    case "escalation": {
+      // THE RULING IS RECORDED FIRST, whatever it decided. The signal is what closes this act's own
+      // opening — `escalationOpenings` reads the escalation signals back — and an escalation that
+      // changed the work without leaving a record would be a manager acting invisibly.
+      const withSignal: OrgView = { ...state.view, signals: [...state.view.signals, effect.signal] };
+
+      if (effect.haltsTheLoop) {
+        // PAUSE AND ACCEPT-RISK BOTH STOP THE LOOP, and this cascade has no state for "stopped but
+        // not finished" — so the work is CANCELLED, which is the nearest true thing it can say.
+        //
+        // That is a real consequence and not a tidy-up: `deliveredSet` skips cancelled children, so
+        // a domain whose only failing task is cancelled becomes deliverable, its cascade completes,
+        // and its executive is asked for a new direction. An organization deciding to stop is how
+        // it gets to do something else.
+        const stopped = setState(state.cascade, effect.workId, WorkState.Canceled);
+        if (!stopped.ok) {
+          return { state: { ...state, view: withSignal }, changed: true, refusals: [stopped.reason] };
+        }
+        return {
+          state: { ...state, cascade: stopped.cascade, view: { ...withSignal, cascade: stopped.cascade.nodes } },
+          changed: true,
+          refusals: [],
+        };
+      }
+
+      // `changes_the_input`: the manager changed something, so the work gets its attempts back.
+      //
+      // ONCE. `escalationOpenings` refuses a second escalation for the same item, which is what
+      // stops this becoming a pump — exhaust, escalate, reset, exhaust — doing real work forever.
+      // If the changed input still cannot pass, the exhaustion blocker stands and a human reads it.
+      const gates = state.view.gateAttempts;
+      if (gates === undefined) return { state: { ...state, view: withSignal }, changed: true, refusals: [] };
+      const counts = new Map(gates.counts);
+      counts.delete(effect.workId);
+      return {
+        state: { ...state, view: { ...withSignal, gateAttempts: { ...gates, counts } } },
         changed: true,
         refusals: [],
       };

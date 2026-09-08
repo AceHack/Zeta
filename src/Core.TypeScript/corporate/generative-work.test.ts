@@ -15,6 +15,7 @@ import { describe, expect, test } from "bun:test";
 import {
   breakdownOpenings,
   directionOpenings,
+  escalationOpenings,
   draftingOpenings,
   GenerativeKind,
   generativeOpeningsFor,
@@ -458,5 +459,56 @@ describe("STAFFING — a lead who supervises nobody, and the work that dies ther
     const rungGap = breakdownOpenings(chart, [stuck], "rmo_office", NONE)[0];
     expect(rungGap?.subjectId).toContain("rung:");
     expect(staffingOpenings(chart, [orphan], "rmo_office", NONE)[0]?.subjectId).toContain("staff:");
+  });
+});
+
+describe("ESCALATION — the writer for a counter nobody read at the limit", () => {
+  const GATES = { attempts: new Map([["t-1", 3]]), maxAttempts: 3 };
+  const task = (over: Partial<CascadeNode> = {}) =>
+    node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "tech_lead", assigneeHatId: "backend_implementer", ...over });
+
+  test("exhausted work is offered to a MANAGER OR ABOVE, never to its owner", () => {
+    // The owner ruling on its own churn would be the failing loop assessing itself.
+    // `escalationDeciderFor` walks up from the owner until it finds a level that holds the
+    // authority — from a tech lead, that is the engineering manager.
+    const open = escalationOpenings(chart, [task()], GATES, NONE);
+    expect(open).toHaveLength(1);
+    expect(open[0]?.kind).toBe(GenerativeKind.EscalateChurn);
+    expect(open[0]?.byHatId).toBe("engineering_manager");
+    expect(open[0]?.byHatId).not.toBe("tech_lead");
+  });
+
+  test("BELOW THE BOUND THERE IS NOTHING TO ESCALATE — the hat can still try", () => {
+    const early = { attempts: new Map([["t-1", 2]]), maxAttempts: 3 };
+    expect(escalationOpenings(chart, [task()], early, NONE)).toEqual([]);
+  });
+
+  test("ONE RULING PER ITEM — the bound that stops the pump", () => {
+    // A ruling that `changes_the_input` gives the work its attempts back. Offer a second and the
+    // pair becomes a pump: exhaust, escalate, reset, exhaust — real work every round, refusing
+    // nothing, forever. This drive has produced that shape four times.
+    expect(escalationOpenings(chart, [task()], GATES, new Set(["t-1"]))).toEqual([]);
+  });
+
+  test("finished and cancelled work is not escalated", () => {
+    for (const state of [WorkState.Done, WorkState.Canceled]) {
+      expect(escalationOpenings(chart, [task({ state })], GATES, NONE)).toEqual([]);
+    }
+  });
+
+  test("A NON-LEAF THAT SOMEHOW EXHAUSTED IS STILL ESCALATED — the bound is about attempts", () => {
+    // Deliberately not filtered to leaves. Only leaves are submitted today, so a non-leaf with
+    // spent attempts should be impossible — and silently ignoring it would make the impossible
+    // state invisible rather than absent.
+    const project = node({ workId: "t-1", workType: WorkType.Project, ownerHatId: "engineering_manager" });
+    expect(escalationOpenings(chart, [project], GATES, NONE)).toHaveLength(1);
+  });
+
+  test("nobody with the authority means no opening, rather than a ruling by somebody without it", () => {
+    // The board is the top of the chart. `escalationDeciderFor` finds itself there, which does hold
+    // the authority — so this asserts the honest opposite: there IS always a decider in this chart,
+    // and the guard exists for charts where the walk runs out.
+    const top = node({ workId: "t-1", workType: WorkType.Task, ownerHatId: "executive_board_member" });
+    expect(escalationOpenings(chart, [top], GATES, NONE)[0]?.byHatId).toBe("executive_board_member");
   });
 });

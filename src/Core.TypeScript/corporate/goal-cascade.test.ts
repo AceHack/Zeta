@@ -13,6 +13,8 @@ import {
   LEAF_TYPES,
   nextRung,
   nodeById,
+  deliveredSet,
+  liveWorkSet,
   ownerForRung,
   restateDirection,
   rungFor,
@@ -558,5 +560,76 @@ describe("RESTATING A DIRECTION — a separate verb, because a silent overwrite 
   test("REFUSED: a direction that does not exist, and an unknown hat", () => {
     expect(restateDirection(withGoal(), chart, { workId: "nope", title: "x", byHatId: "ceo", atMs: 1 }).ok).toBe(false);
     expect(restateDirection(withGoal(), chart, { workId: "g-1", title: "x", byHatId: "ghost", atMs: 1 }).ok).toBe(false);
+  });
+});
+
+describe("TWO ROLL-UPS, AND THEY MAY NEVER DISAGREE", () => {
+  /**
+   * Every shape that matters, in one cascade: a delivered branch, an abandoned one, a mixed one, a
+   * childless goal, and a leaf of each terminal state.
+   */
+  const SHAPES: Cascade = {
+    nodes: [
+      // g-done: every leaf finished.
+      { workId: "g-done", workType: WorkType.Goal, title: "d", state: WorkState.Open, ownerHatId: "cto" },
+      { workId: "p-done", workType: WorkType.Project, title: "d", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "g-done" },
+      { workId: "t-done", workType: WorkType.Task, title: "d", state: WorkState.Done, ownerHatId: "cto", parentWorkId: "p-done" },
+      // g-abandoned: every leaf cancelled. NOT delivered, and NOT live — two different facts.
+      { workId: "g-abandoned", workType: WorkType.Goal, title: "a", state: WorkState.Open, ownerHatId: "cto" },
+      { workId: "p-abandoned", workType: WorkType.Project, title: "a", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "g-abandoned" },
+      { workId: "t-abandoned", workType: WorkType.Task, title: "a", state: WorkState.Canceled, ownerHatId: "cto", parentWorkId: "p-abandoned" },
+      // g-mixed: one cancelled leaf and one that is still open.
+      { workId: "g-mixed", workType: WorkType.Goal, title: "m", state: WorkState.Open, ownerHatId: "cto" },
+      { workId: "t-mixed-a", workType: WorkType.Task, title: "m", state: WorkState.Canceled, ownerHatId: "cto", parentWorkId: "g-mixed" },
+      { workId: "t-mixed-b", workType: WorkType.Task, title: "m", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "g-mixed" },
+      // g-bare: accepted and never broken down.
+      { workId: "g-bare", workType: WorkType.Goal, title: "b", state: WorkState.Open, ownerHatId: "cto" },
+    ],
+  };
+
+  test("`deliveredSet` AGREES WITH `isDelivered` on every node", () => {
+    // The strongest form this can take, and it exists because a mutation run showed that
+    // `deliveredSet` — a faster copy of the same rule — could forget "all children cancelled is not
+    // delivered" and kill nothing. Two implementations of one question is the defect; asserting
+    // they agree is the guard that survives either being edited.
+    for (const node of SHAPES.nodes) {
+      expect([node.workId, deliveredSet(SHAPES).has(node.workId)]).toEqual([
+        node.workId,
+        isDelivered(SHAPES, node.workId),
+      ]);
+    }
+  });
+
+  test("delivered is exactly the branch that FINISHED", () => {
+    expect([...deliveredSet(SHAPES)].sort()).toEqual(["g-done", "p-done", "t-done"]);
+  });
+
+  test("LIVE IS A DIFFERENT QUESTION, and the abandoned branch is where they part", () => {
+    // `g-abandoned` is neither delivered nor live. Asking only the first left its domain occupied
+    // forever by work nobody would ever do again — measured as a three-day run that cancelled its
+    // way through everything and set zero new directions.
+    const live = liveWorkSet(SHAPES);
+    expect(live.has("g-abandoned")).toBe(false);
+    expect(deliveredSet(SHAPES).has("g-abandoned")).toBe(false);
+    expect([...live].sort()).toEqual(["g-bare", "g-mixed", "t-mixed-b"]);
+  });
+
+  test("a goal nobody has broken down yet is LIVE — it needs work, it has not had it", () => {
+    expect(liveWorkSet(SHAPES).has("g-bare")).toBe(true);
+    expect(deliveredSet(SHAPES).has("g-bare")).toBe(false);
+  });
+
+  test("neither walks forever on a cascade whose parents form a cycle", () => {
+    // Guarded rather than assumed: nothing here builds one, and an unguarded recursion over
+    // caller-supplied data is a hang waiting for the first malformed input — the one failure a test
+    // cannot report.
+    const cyclic: Cascade = {
+      nodes: [
+        { workId: "a", workType: WorkType.Project, title: "a", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "b" },
+        { workId: "b", workType: WorkType.Project, title: "b", state: WorkState.Open, ownerHatId: "cto", parentWorkId: "a" },
+      ],
+    };
+    expect(deliveredSet(cyclic).size).toBe(0);
+    expect(liveWorkSet(cyclic).size).toBe(0);
   });
 });

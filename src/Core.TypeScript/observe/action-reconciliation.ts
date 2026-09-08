@@ -133,6 +133,11 @@ export const ACTION_RECONCILIATION: Record<ActionKind, ActionRow> = {
   // able to. The bit is `canDoWork`, true at every level including individual contributor, which is
   // the whole point: the tier that exists to do the work must be able to say it is finished.
   submit_work: { kind: "submit_work", gate: "execute_item", scope: "unrestricted", freeMode: false, leadSlot: null },
+  // `direct_resources`, alongside assignment and priority: deciding what the organization spends
+  // itself on when a plan is not working is the same authority as deciding what it spends itself on
+  // in the first place. `decideEscalation` applies its own, stricter check — manager and above —
+  // and this gate is the menu's half of it.
+  escalate_churn: { kind: "escalate_churn", gate: "direct_resources", scope: "unrestricted", freeMode: false, leadSlot: null },
   // Operator priority — above the menu, so no slot; c_suite+ only.
   preserve_ferry: {
     kind: "preserve_ferry",

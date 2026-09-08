@@ -480,3 +480,41 @@ describe("A DIRECTION IS NOT AN OUT-OF-DOMAIN FALLBACK", () => {
     expect(supply.map((g) => g.subjectId)).toContain("domain-fallback:proj-1");
   });
 });
+
+describe("ESCALATING CHURN — a ruling, or an honest refusal", () => {
+  const escalate = (subjectId: string): NextAction => ({ kind: "escalate_churn", subjectId, reason: "stuck" });
+
+  test("a manager's ruling becomes an escalation effect carrying the ACTION and what it does", () => {
+    // `haltsTheLoop` is carried rather than re-derived at the point of application, because it is
+    // the only part of an escalation this register can act on today and losing it would leave the
+    // ruling as a note.
+    const v = view({ cascade: [node({ assigneeHatId: "backend_implementer" })] });
+    const r = effectOf(v, "engineering_manager", escalate("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(true);
+    if (r.ok && r.effect.kind === "escalation") {
+      expect(r.effect.workId).toBe("task-1");
+      expect(r.effect.byHatId).toBe("engineering_manager");
+      expect(typeof r.effect.haltsTheLoop).toBe("boolean");
+      expect(r.effect.signal.tool).toBe(SignalTool.RequestEscalation);
+      // The ACTION is the signal's title, so the next reader learns what was decided rather than
+      // only that something was.
+      expect(r.effect.signal.title).toBe(r.effect.action);
+    } else {
+      throw new Error("expected an escalation effect");
+    }
+  });
+
+  test("REFUSED: a hat below manager may not rule on churn", () => {
+    // `decideEscalation`'s own check, surfaced here rather than discovered three layers down.
+    const v = view({ cascade: [node({ assigneeHatId: "backend_implementer" })] });
+    const r = effectOf(v, "backend_implementer", escalate("task-1"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("escalation is decided at manager and above");
+  });
+
+  test("REFUSED: work that does not exist", () => {
+    const r = effectOf(view(), "engineering_manager", escalate("nope"), { signalId: "s", anchorId: "a" }, 1, "rmo_office");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toContain("no work item");
+  });
+});
