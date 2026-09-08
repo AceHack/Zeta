@@ -231,6 +231,10 @@ preserve and independently audit this result, then pause full runtime-closure
 investment before designing a physical reader. No physical read or further
 target/range expansion is authorized by this result.
 
+The [finite acceptance-gap assessment](2026-09-08-hidden-switch-compiled-runtime-acceptance-gap.md)
+separates the limited cell/literal evidence a later read could add from
+the unresolved executing-call, ordinary-effect, object and runtime premises.
+
 ## One held local dump, no chained query
 
 The proposed physical file is the already captured local-only dump 2:

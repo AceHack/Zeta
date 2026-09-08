@@ -14,6 +14,12 @@ all full admission flags remain false. The 139-record actual inventory
 archive is separate from the earlier physical/current-extent and decoder
 observations, and adds no memory read or target execution.
 
+The later [53-range data proposal](../../2026-09-08-hidden-switch-compiled-data-read-plan.md)
+now has a complete metadata-only result, with physical reading still closed.
+The [finite acceptance-gap assessment](../../2026-09-08-hidden-switch-compiled-runtime-acceptance-gap.md)
+records the coordinator's pause after proposal audit and the remaining call,
+effect, object and runtime obligations before any further investment.
+
 Source `2f068ba34da612f82370c64cef4e38a909e7edd5` adds an isolated file-backed
 metadata helper, with no study assembly reference. It uses the already
 installed ClrMD assembly and exactly thirteen pinned managed dependency files.
