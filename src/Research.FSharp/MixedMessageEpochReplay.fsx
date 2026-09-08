@@ -515,6 +515,87 @@ module MixedMessageEpochReplay =
         not (isNull value) && value.Length = 64
         && (value |> Seq.forall (fun c -> (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')))
 
+    let private bindingsFailure (expected: Map<string, string>) =
+        if isNull (box expected) || expected.IsEmpty || expected.Count > 132
+           || (expected |> Map.exists (fun key value ->
+               isNull key || key.Length = 0 || key.Length > 256
+               || key = "@python" || key = "@host"
+               || (key |> Seq.exists (fun c -> c < ' ' || c > '~'))
+               || not (isHash value))) then
+            Some(failure "admit" "SourceBindings" "bounded independently admitted ASCII path/hash map required")
+        else
+            // Exact canonical length of this ASCII string-to-hash object,
+            // before file reads or expanded encoding. Quote/backslash are
+            // the only escaped allowed key characters.
+            let size =
+                1 + (expected |> Seq.sumBy (fun (KeyValue(key, _)) ->
+                    70 + (key |> Seq.sumBy (fun c -> if c = '"' || c = '\\' then 2 else 1))))
+            if size > SmallCap then Some(failure "admit" "SourceBindingsBound" "canonical source binding map exceeds 64 KiB")
+            else None
+
+    /// Parsed transport data only. The core still admits the complete plan and
+    /// budget snapshot and checks the canonical plan/binding correspondence.
+    type StartEnvelope =
+        { SessionId: string
+          PlanSha256: string
+          ServiceSha256: string
+          ExpectedBindings: Map<string, string>
+          Plan: JsonElement
+          BudgetSnapshot: JsonElement }
+
+    let private isId (value: string) =
+        let alphanumeric c = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
+        not (isNull value) && value.Length > 0 && value.Length <= 64
+        && alphanumeric value.[0]
+        && (value |> Seq.forall (fun c -> alphanumeric c || c = '.' || c = '_' || c = '/' || c = '-'))
+
+    /// Only the one source-fixed Start envelope is recognized. Its nested
+    /// plan/snapshot remain passive until their owning compiled codecs admit
+    /// them. This function performs no source reads, Ready write or core entry.
+    let tryReadStart (raw: byte array) : Result<StartEnvelope, PeerFailure> =
+        try
+            match strictJson "admit" StartCap raw with
+            | Error error -> Error error
+            | Ok root ->
+                match exactKeys "admit" [| "Kind"; "Schema"; "SessionId"; "Plan"; "PlanSha256"; "ServiceSha256"; "ExpectedBindings"; "BudgetSnapshot" |] root with
+                | Error error -> Error error
+                | Ok () ->
+                    let strings = [ "Kind"; "Schema"; "SessionId"; "PlanSha256"; "ServiceSha256" ]
+                    let mutable fields = Map.empty
+                    let mutable problem = None
+                    for key in strings do
+                        if problem.IsNone then
+                            match stringField "admit" key root with
+                            | Error error -> problem <- Some error
+                            | Ok value -> fields <- Map.add key value fields
+                    let plan = root.GetProperty "Plan"
+                    let budget = root.GetProperty "BudgetSnapshot"
+                    let supplied = root.GetProperty "ExpectedBindings"
+                    let mutable expected = Map.empty
+                    if problem.IsNone then
+                        if fields["Kind"] <> "Start" || fields["Schema"] <> Schema || not (isId fields["SessionId"])
+                           || not (isHash fields["PlanSha256"] && isHash fields["ServiceSha256"])
+                           || plan.ValueKind <> JsonValueKind.Object || budget.ValueKind <> JsonValueKind.Object
+                           || supplied.ValueKind <> JsonValueKind.Object then
+                            problem <- Some(failure "admit" "StartIdentity" "fixed Start schema, bounded identities and object payloads required")
+                        else
+                            use entries = (supplied.EnumerateObject() :> IEnumerator<JsonProperty>)
+                            let mutable count = 0
+                            while problem.IsNone && entries.MoveNext() do
+                                count <- count + 1
+                                let entry = entries.Current
+                                if count > 132 || entry.Name.Length > 256 || entry.Value.ValueKind <> JsonValueKind.String then
+                                    problem <- Some(failure "admit" "SourceBindings" "bounded string/hash bindings required before map expansion")
+                                else expected <- Map.add entry.Name (entry.Value.GetString()) expected
+                            if problem.IsNone then problem <- bindingsFailure expected
+                    match problem with
+                    | Some error -> Error error
+                    | None ->
+                        Ok { SessionId = fields["SessionId"]; PlanSha256 = fields["PlanSha256"]
+                             ServiceSha256 = fields["ServiceSha256"]; ExpectedBindings = expected
+                             Plan = plan; BudgetSnapshot = budget }
+        with error -> Error(failure "admit" "StartDecode" (error.GetType().FullName + ": " + error.Message))
+
     /// The caller supplies the separately admitted full binding map. This
     /// routine observes the executing script and the actual three direct
     /// assemblies before Ready. No supplied path chooses a file to load/read.
@@ -527,21 +608,9 @@ module MixedMessageEpochReplay =
             // The manifest has up to 128 SourceFiles (including both scripts),
             // then three direct DLL binding paths and ProtocolSha256. The two
             // local @ executable roles are not members of this flat map.
-            if isNull (box expected) || expected.IsEmpty || expected.Count > 132
-               || (expected |> Map.exists (fun key value ->
-                   isNull key || key.Length = 0 || key.Length > 256
-                   || (key |> Seq.exists (fun c -> c < ' ' || c > '~'))
-                   || not (isHash value))) then
-                fail (failure "admit" "SourceBindings" "bounded independently admitted ASCII path/hash map required")
-            else
-                // Exact canonical length of this ASCII string-to-hash object,
-                // measured before file reads or expanded encoding. Quotes and
-                // backslashes are the only escaped allowed key characters.
-                let bindingBytes =
-                    1 + (expected |> Seq.sumBy (fun (KeyValue(key, _)) ->
-                        70 + (key |> Seq.sumBy (fun c -> if c = '"' || c = '\\' then 2 else 1))))
-                if bindingBytes > SmallCap then
-                    fail (failure "admit" "SourceBindingsBound" "canonical source binding map exceeds 64 KiB")
+            match bindingsFailure expected with
+            | Some error -> fail error
+            | None ->
                 let sourcePath = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, __SOURCE_FILE__))
                 let repository = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, "..", ".."))
                 // Functions defer actual assembly metadata access until each
