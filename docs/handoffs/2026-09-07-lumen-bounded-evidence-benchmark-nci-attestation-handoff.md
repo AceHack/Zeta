@@ -3,7 +3,7 @@
 **Date:** 2026-09-07  
 **Author:** Manus AI (Lumen)  
 **Repository:** `Lucent-Financial-Group/Zeta`  
-**Handoff state:** `origin/main` was `5585c17c81e06878570bb1630786473e7fbec27f` when this document was updated.
+**Handoff state:** `origin/main` was `38b3acd14f0fc07449ace1b78311959f249468ed` when this document was updated.
 
 ## Key recommendation
 
@@ -156,6 +156,15 @@ and exercises exact-once duplication, retraction/replacement, uncertainty/rule/
 task-identity tampering, unresolved predecessor/retraction, and non-absorbing
 query controls. It is still not wired into PixelAgent policy, an ARC score,
 hosted ARC, or a learner implementation. [16]
+
+### 3.8 Maximal decorrelation subject to reconciliation: contract merged; no measurement
+
+The proposed constrained extremum is now frozen as a measurement boundary in
+[`2026-09-08-maximal-decorrelation-reconciliation-measurement-contract.md`](../research/2026-09-08-maximal-decorrelation-reconciliation-measurement-contract.md), merged in #17033 as `38b3acd14f0fc07449ace1b78311959f249468ed`. The contract treats **“maximize declared decorrelation subject to declared reconciliation still succeeding”** as a finite, falsifiable, source-owned protocol question. It explicitly does **not** derive, encode, target, or identify a result with `2√2`; CHSH may appear only as a separately specified sidecar and cannot select the candidate or determine reconciliation.
+
+The first allowed result is only the highest-scoring **passing entry in a finite pre-registered catalogue**. The carrier, anchor bytes, transform catalogue, decorrelation metric, reconciliation predicate, observation barrier, raw receipt identity, causal order, and independent verifier must all be named before execution. `no-passing-candidate` and `unmeasured` are required admissible outcomes. The contract also requires metric/predicate mutation, current-candidate preload refusal, declared prior-memory acceptance, retraction/order/unresolved handling, catalogue omission, and CHSH-separation controls.
+
+The selected candidate carrier for a future score-free preflight is `durable-room-evidence`, not ARC or a quantum simulator. Its existing canonical receipt encoding, content-addressed root, signed `+1`/`−1` uncertainty atoms, unresolved pre-assertion retractions, canonical replay, and Adinkra-compatible transport make it a useful substrate. Its existing DRE-1 through DRE-8 controls cover those properties, but it does **not** currently define the new decorrelation metric, reconciliation predicate, finite catalogue, independent F#/Python receipt pair, or any measurement result. No implementation, Tsirelson conclusion, mutual-empowerment score, agent ranking, or ARC result exists yet.
 
 ## 4. Policy self-knowledge and tick boundary
 
