@@ -1,0 +1,12 @@
+{
+  "pr_number": 17010,
+  "archive_path": "docs/history/pr-reviews/PR-17010-docs-research-freeze-arc-online-memory-provenance-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T02:07:20.889Z",
+  "schema_version": "v1",
+  "commit_sha": "7fd856981b21045eb98d43e079400999e375c5c6",
+  "title": "docs(research): freeze ARC online-memory provenance receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T02:06:42Z",
+  "head_ref": "lumen/arc-online-memory-receipt-contract"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17009,
+  "archive_path": "docs/history/pr-reviews/PR-17009-feat-081m1za8s7c087g0r002p9nx40-zd4-both-legs-host-storm-runs.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T02:06:46.520Z",
+  "schema_version": "v1",
+  "commit_sha": "3ce333c9752bf8a71ba0e3e48e2451b646f0689f",
+  "title": "feat(081M1ZA8S7C087G0R002P9NX40): ZD4 both-legs host storm runs",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T02:06:10Z",
+  "head_ref": "feat/zetadb-zd4-product-existence"
+}

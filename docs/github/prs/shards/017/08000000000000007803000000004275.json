@@ -1,0 +1,12 @@
+{
+  "pr_number": 17013,
+  "archive_path": "docs/history/pr-reviews/PR-17013-fix-nixos-declare-boxrole-prod-metal-the-hardware-consent-path-was-dark.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T02:14:33.492Z",
+  "schema_version": "v1",
+  "commit_sha": "32dd4bda180160c15a5a4eb4e36a617fb158c890",
+  "title": "fix(nixos): declare boxRole prod-metal — the hardware consent path was dark",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T02:13:51Z",
+  "head_ref": "shadow/declare-boxrole-prod-metal"
+}
