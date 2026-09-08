@@ -224,3 +224,8 @@ pair reaching decimal grammar, and an admitted escaped digit discriminate the
 boundary. All 41 focused tests pass after this change. The earlier all-18 gate
 continues to describe bf2da; correction source review and the next complete gate
 remain separate prerequisites. No registered final subject was run.
+
+The [surrogate correction archive](precision-gate-projection/2026-09-08/native-surrogate-1/manifest.json)
+binds correction `e3b87af8f33f09476e939ebbc4f78360c3aa7d1d`, both actual
+TRX outcomes and the separate first documentation-lint refusal. Replay, project
+wiring and the original kernel match their previous bytes.
