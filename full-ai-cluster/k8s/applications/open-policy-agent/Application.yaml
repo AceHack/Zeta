@@ -49,6 +49,38 @@ spec:
         # enforcement still applies whenever gatekeeper is up (the normal case).
         validatingWebhookFailurePolicy: Ignore
         mutatingWebhookFailurePolicy: Ignore
+        # THE THIRD WEBHOOK, WHICH THE TWO KEYS ABOVE DO NOT REACH.
+        #
+        # The stated guarantee above -- "a policy engine must never be able to
+        # take down the API server, so it fails OPEN" -- was FALSE for the one
+        # webhook that gates namespace creation, and false in the direction the
+        # node-09485d incident is cited to prevent.
+        #
+        # The chart ships THREE webhooks in its ValidatingWebhookConfiguration.
+        # `validatingWebhookFailurePolicy` sets the first two. The third,
+        # `check-ignore-label.gatekeeper.sh`, reads its own key --
+        # `validatingWebhookCheckIgnoreFailurePolicy` -- which the chart
+        # defaults to `Fail`, and which nothing in this tree overrode. Its rules
+        # are core apiGroup, `resources: [namespaces]`, `operations: [CREATE,
+        # UPDATE]`, `scope: '*'`, with a namespaceSelector that excludes only
+        # the release namespace.
+        #
+        # WHY THAT IS A COLD-BOOT PROBLEM SPECIFICALLY. Gatekeeper is sync-wave
+        # -25. Once its ValidatingWebhookConfiguration lands but before its pods
+        # are Ready, a `Fail` policy makes the API server REJECT every namespace
+        # CREATE cluster-wide -- and `CreateNamespace=true` is on the root sync
+        # options plus ~40 Applications, with explicit Namespace documents at
+        # waves at or above -25. `controllerManager.exemptNamespaces` does not
+        # help: those become --exempt-namespace process flags, not webhook
+        # selectors, so they cannot admit anything while the process is down.
+        #
+        # HONEST BOUND: this is a WINDOW, and ArgoCD retries, so a cold cluster
+        # may well converge through it. What is not in doubt is that the
+        # property this file states in prose was not the property it configured.
+        # Setting it costs nothing when gatekeeper is up -- the Constraints all
+        # scope to society.zeta.io Hat/HatBinding, so nothing else is being
+        # policed by this webhook anyway.
+        validatingWebhookCheckIgnoreFailurePolicy: Ignore
   destination:
     server: https://kubernetes.default.svc
     namespace: gatekeeper-system

@@ -1,0 +1,14 @@
+{
+  "id": "080d03f526343810a0130008f4638ae0",
+  "at": "2026-09-08T01:32:03.079Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZA9HM6087G0R001RVZJY6",
+    "type": "bug",
+    "title": "Gatekeeper namespace webhook failed closed against a file documenting fail-open",
+    "slug": "gatekeeper-namespace-webhook-failed-closed-against-a-file-do",
+    "priority": "P2",
+    "filename": "081M1ZA9HM6087G0R001RVZJY6-gatekeeper-namespace-webhook-failed-closed-against-a-file-do.md"
+  }
+}
