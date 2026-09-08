@@ -94,6 +94,81 @@ main/merge evidence. A later documentation-only cut can retain the same
 five-source validation scope if those bytes remain unchanged; its actual
 changes and gate observations still need to be recorded.
 
+## Corrected claim scope and circuit continuation
+
+Follow-up cut: b65679674760e64bfe34e903646a2fd211d2420d. The ordinary
+70e81a8e2cd0b75e6acdb1d43baeb2f9dfcdba0f commit actually removes both parent
+claim copies. I verified their absence in that publication tree and their
+continued presence, session and claimed-at fields in the coordinator writer.
+The corrected publication record names the original failed removal and the
+successful removal after the gate. This resolves the reported scope finding.
+Its status header still says scope correction pending; the coordinator was
+asked to update that header in the final publication record.
+
+The full preflight log now reports all eighteen executed checks passed,
+including release build and complete tests, for the coordinator-declared
+19efca924f6765bbdd3b4017f707fa8f08302bd1 cut. The observed log is 1,362 bytes,
+SHA256 c7561cf0e5dd61e406cffae95b49151dd32602169a68889a2fdb2068e889768d.
+The 230-byte failed-removal log has SHA256
+a3c0c26dd04732b89bafb3bdd8d7d88d7fccdabdfd9b5f5d72bbf43b2301995c.
+These are observed local publication logs at this review, pending their
+separate committed gate archive; identical summary text alone is not a unique
+execution identifier or a new source-identity proof.
+
+There are no src/tests changes between 19ef and b656. All five prior accepted
+implementation/test files remain byte-identical. The later fourteen changed
+paths are documentation/evidence and the two claim deletions. The imported
+coordinator integration archive independently checks as six gzip records,
+2,739 stored / 8,427 original bytes, manifest 2,183 bytes with SHA256
+333fcb88a73c3da06dad7b98deb17b061c35b217187fd662195c75f6dfdc2c8d.
+Its source remains 3d1da6b9f7505924a804974100e2758184f0fe7c, with its own
+all-eighteen gate, sixteen-check push and four retained remote-ref observations.
+It is not relabeled as the publication's new gate. The
+[independent check](hidden-switch-compiled-validation/2026-09-08/learning-publication-independent-audit/result.json)
+retains source and result. Its initial assertion incorrectly required the
+literal word `active` in both parent claim files; these use session/claimed-at
+fields instead. The exact initial source and tool-returned assertion are kept,
+and the corrected check passes with empty stderr. This was an auditor
+assumption, not a missing claim or changed lifecycle.
+
+The circuit correction is root 5a5b909e04a4d543bc93e7f8f7213ae1b67fb294,
+imported as b656. I reviewed its continuation and direction edits against the
+September 1 resolved naming record, September 2 online-update contract and
+competitor matrix, and September 3 frozen edge-module contract. The earlier
+PR16494 proposal contains stronger, unaccepted algebra and namespace claims;
+the new continuation explicitly gives the later frozen contract precedence.
+It does not promote that proposal wholesale.
+
+Current FactorGraph exposes factor-local ComputeMessages. MultilayerBnn's
+online boundary updates layer zero once and then returns classified graph
+inference; its names do not establish weight learning. ToyBosonFermionBnn's
+absorb/train functions separately update a weight posterior. These source
+checks support the continuation's limited current-code statements, without
+constituting an exhaustive new implementation census. The old CFB-A posterior
+identity, CFB-B undercoverage/ridge comparison and CFB-C diagonal covariance
+selection remain negative historical evidence with unchanged split identities.
+
+I checked the [PGE paper, version one](https://arxiv.org/html/2605.29467v1)
+and [official repository](https://github.com/biaslab/PrecisionGatedExperts).
+The paper's composition claims require typed ports, declared factorization
+and prescribed message families. Closed-form local updates are not a general
+exact-posterior result for arbitrary neural graphs. The repository exposes
+static, dynamic and hierarchical configurations plus a separate neural-gating
+pipeline. Its configuration includes a choice that changes the training and
+monitoring split, supporting the need to pin actual split semantics before a
+new comparison. This review selects no expert files, training data or outputs.
+The [PNC primary publication](https://ojs.aaai.org/index.php/AAAI/article/view/29675)
+supports a hybrid circuit/neural lineage with an expressivity/tractability
+trade-off; DAG shape alone transfers no such guarantee to Zeta.
+
+The restored system candidate, frozen parameter/query distinction, explicit
+uncertainty and approximation declarations, evidence-provenance controls and
+matched structural ablations are consistent with those sources. No material
+conceptual finding remains in this bounded correction. It introduces no
+CountRecall registration, training, new learned module or measured comparative
+result. Final publication gate custody, finite claim release and exact
+main/merge proof remain separate later records.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
