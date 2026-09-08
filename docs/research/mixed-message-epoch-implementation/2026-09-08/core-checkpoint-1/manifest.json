@@ -1,0 +1,917 @@
+{
+  "Scope": "development source/codec checkpoint; no runnable runEpoch or actual M4/M5 admission",
+  "SourceFiles": [
+    {
+      "Path": "src/Bayesian/BoundedModuleLearner.fs",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236"
+    },
+    {
+      "Path": "src/Bayesian/MixedMessageEpoch.fs",
+      "Bytes": 93232,
+      "Sha256": "DDFF93F65C5D4501E883B88FF72EA12F3CAEBA8FC004A2E2D556A085CF4778BF"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/BoundedModuleLearner.Tests.fs",
+      "Bytes": 12323,
+      "Sha256": "F2862DE5566C0676667327A80F55132BDE0381881DAE187985F9FA8F01D1D261"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/MixedMessageEpoch.Tests.fs",
+      "Bytes": 5647,
+      "Sha256": "0CEFB1D274DF24918149D8A5F17FF7C5173E17A1C2DBC51095A486664C861F0F"
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0"
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC"
+    }
+  ],
+  "Records": [
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/build-1/result.json",
+      "File": "001.gz",
+      "Bytes": 587,
+      "Sha256": "3E00F7343EE70F3F1C46E7DDE59088BB5B1B96E082B9AD9BBB3648D00AAC8D11",
+      "StoredBytes": 343,
+      "StoredSha256": "5A4E80BEC8C68967FF73BD3F0F0FE06D1E6876D6CBA8FB1AEE449AE153C6089E"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/build-1/source-0",
+      "File": "002.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/build-1/source-1",
+      "File": "003.gz",
+      "Bytes": 3379,
+      "Sha256": "660088BD912462C47641162F7516474953B79E9AE3DC7D827A9292668AF5D979",
+      "StoredBytes": 1060,
+      "StoredSha256": "113AC64CCA4E27E40A031B7949609023DFB769DFAFE234472A1E7C55D5AC229F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/build-1/stderr",
+      "File": "004.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/build-1/stdout",
+      "File": "005.gz",
+      "Bytes": 905,
+      "Sha256": "BB7D0E0AB75E279265DCCAC2EEA809CF535EFDDEC4702FB7E2AAF674E5BBA013",
+      "StoredBytes": 296,
+      "StoredSha256": "4C4EC4ABC525A3A021E7FBC51C101DEF360CDE1B224C70DBCB67F040BFB540AC"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/source-0.fs",
+      "File": "006.gz",
+      "Bytes": 18485,
+      "Sha256": "AAB6CEACEA0F6CD678E2AD9869591ED8B6BE5A29B96B7C9D8727B98A8F6EF02B",
+      "StoredBytes": 4397,
+      "StoredSha256": "56BC03B370B6437AE8B123D5A483A0A74D17CBBC6264348AC1D0E57E720765E3"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-0.fs",
+      "File": "007.gz",
+      "Bytes": 11152,
+      "Sha256": "13624ED61800D6F95871C0431E400B0A5D38CAE301D2F6846100B787410D9B6D",
+      "StoredBytes": 3239,
+      "StoredSha256": "FE4F1C60CBEA48B3414D5797BAC620A299325CC32ABAF4D43E9A3E2D76230875"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/result.json",
+      "File": "008.gz",
+      "Bytes": 1031,
+      "Sha256": "0270F20891E2943BD1FD67612B39E5BA225B1390DE4F528D514617DD21E4CA4D",
+      "StoredBytes": 491,
+      "StoredSha256": "3BAC1AE2DFC98F585DD49039AB04FC24E97C7A48CCA70472079A6275E9EBCA1D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/source-0",
+      "File": "009.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/source-1",
+      "File": "010.gz",
+      "Bytes": 3379,
+      "Sha256": "660088BD912462C47641162F7516474953B79E9AE3DC7D827A9292668AF5D979",
+      "StoredBytes": 1060,
+      "StoredSha256": "113AC64CCA4E27E40A031B7949609023DFB769DFAFE234472A1E7C55D5AC229F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/source-2",
+      "File": "011.gz",
+      "Bytes": 11152,
+      "Sha256": "95F6FC80250422012BC7797FC9779F95332CBDB190AE7F9E606157C7080DFE0F",
+      "StoredBytes": 3240,
+      "StoredSha256": "98789B6467A32FB336745D98DD7AE83E785F03D6152D19D78DB1770F6879E1E9"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/source-3",
+      "File": "012.gz",
+      "Bytes": 3826,
+      "Sha256": "5E60A74876F58CB4526E00E483B18FD7AD11B660C1C74D91ECEF5FEF4C01D634",
+      "StoredBytes": 956,
+      "StoredSha256": "FD01E8CBE349E8984C79D5D95B57DDD65247CA2EA751AC34BA6699804C366488"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/stderr",
+      "File": "013.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-1/stdout",
+      "File": "014.gz",
+      "Bytes": 2051,
+      "Sha256": "424CF12051468EFEB3B75E69149B40BB42DE9CFECBC6C96763968CD80E4C2389",
+      "StoredBytes": 508,
+      "StoredSha256": "C2C07D5831A37BB48328C40F9C192788FF8336157CF720BC34AAE8E8D29F9DD5"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/result.json",
+      "File": "015.gz",
+      "Bytes": 1021,
+      "Sha256": "4165CF513BDFCD09102CAF09FEB5706A06416CA18DE1F902A561348637B3BDB1",
+      "StoredBytes": 482,
+      "StoredSha256": "2C2AB69D0581527ADB614C29D5510A113447FD82BBDAA57DD533A89636BCD11C"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/source-0",
+      "File": "016.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/source-1",
+      "File": "017.gz",
+      "Bytes": 11168,
+      "Sha256": "D940D0698EFDDB28D33508DB822D542465B24D55AA7792DD5CCF25356199B7C9",
+      "StoredBytes": 3244,
+      "StoredSha256": "70E0DDC95D3E6CB72E03386BA35E1B0308887A3092793C282DDD85211ADD17AE"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/source-2",
+      "File": "018.gz",
+      "Bytes": 3379,
+      "Sha256": "660088BD912462C47641162F7516474953B79E9AE3DC7D827A9292668AF5D979",
+      "StoredBytes": 1060,
+      "StoredSha256": "113AC64CCA4E27E40A031B7949609023DFB769DFAFE234472A1E7C55D5AC229F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/source-3",
+      "File": "019.gz",
+      "Bytes": 3826,
+      "Sha256": "5E60A74876F58CB4526E00E483B18FD7AD11B660C1C74D91ECEF5FEF4C01D634",
+      "StoredBytes": 956,
+      "StoredSha256": "FD01E8CBE349E8984C79D5D95B57DDD65247CA2EA751AC34BA6699804C366488"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/stderr",
+      "File": "020.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-learner-development/test-2/stdout",
+      "File": "021.gz",
+      "Bytes": 1320,
+      "Sha256": "978FD0DA178671E9951811B3C2FD7BF67805CA29F22B600A1D4A7B2C07C4C9D9",
+      "StoredBytes": 393,
+      "StoredSha256": "64DA863A9A6295BE2F0A27E309B589FC0E8701910F642F7E45EEDA08E27DCAC1"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-1/result.json",
+      "File": "022.gz",
+      "Bytes": 746,
+      "Sha256": "EC40A47629CE4C8A55283B7CEEF53FB69F41D15A60FA3447FDB1B2E085BC636B",
+      "StoredBytes": 401,
+      "StoredSha256": "9CAD96C5B81E5E1BFC17659E824DAC3C7DB4F17830535C9591C53BE354F547CD"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-1/source-0",
+      "File": "023.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-1/source-1",
+      "File": "024.gz",
+      "Bytes": 47739,
+      "Sha256": "EEF77D4BDE3B80FE8153FA7D0D808C16ACEFB99D685AD486A8AB30357F77F3E6",
+      "StoredBytes": 11721,
+      "StoredSha256": "FE1E32A47F90B3C1EE3C2EC1C7CBA2AF6F0D522842BCC4BF188412A2629814E4"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-1/source-2",
+      "File": "025.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-1/stderr",
+      "File": "026.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-1/stdout",
+      "File": "027.gz",
+      "Bytes": 2066,
+      "Sha256": "96BC8F61AC1499BD82F06B754C46629A717A48B31A3A9F262F63DF5EC1889AEA",
+      "StoredBytes": 452,
+      "StoredSha256": "D4C4E415D231CF41DC5E21902AC4669A3B835DB1DFA041C49C7943A1C480C083"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-10/result.json",
+      "File": "028.gz",
+      "Bytes": 746,
+      "Sha256": "2FD8007D42B5A39D88FF69A84578327D8B7A2C2B6181D96E82CDBCDCBA705CF4",
+      "StoredBytes": 401,
+      "StoredSha256": "F6D4B7A769D2C4775F80449525785B7F4337404E5D678792AB7F85F5821E9A36"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-10/source-0",
+      "File": "029.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-10/source-1",
+      "File": "030.gz",
+      "Bytes": 93235,
+      "Sha256": "48A56AF6F0ACB2F00F714B3396FDC651411EF03FD57D3CD6E84DF6BB0675ABFD",
+      "StoredBytes": 21831,
+      "StoredSha256": "D1AA8431BBC64FA691858C2D82DCF2EBADFA0AA320B436A5FEC463710D6C84F1"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-10/source-2",
+      "File": "031.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-10/stderr",
+      "File": "032.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-10/stdout",
+      "File": "033.gz",
+      "Bytes": 2910,
+      "Sha256": "C80AFDAE151F92A220E1C8F5090E27A9E9882442E4857B16A95693F480559C03",
+      "StoredBytes": 446,
+      "StoredSha256": "7078B3811219493EB30ED81099B9156CC6C92BA93873BDB0303BD560AF202E56"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-2/result.json",
+      "File": "034.gz",
+      "Bytes": 746,
+      "Sha256": "AFB2050B4E65E1C6592FE6926485DA08BA480D66E8A3AE5C9ECC86538A54844F",
+      "StoredBytes": 400,
+      "StoredSha256": "C635C1089541A89A44589C9ADCDA54F4DC61BB09115E3BD3C91E70961D4B6423"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-2/source-0",
+      "File": "035.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-2/source-1",
+      "File": "036.gz",
+      "Bytes": 49027,
+      "Sha256": "8BADBA78923B022C07D9B74FEB30E27266AB70EAB73DEE2731B088BA14421510",
+      "StoredBytes": 11956,
+      "StoredSha256": "9298F63BD0FFCE8ECC6308517235E2AEAE052FD144441B7E2F0A4C789304F68E"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-2/source-2",
+      "File": "037.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-2/stderr",
+      "File": "038.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-2/stdout",
+      "File": "039.gz",
+      "Bytes": 20805,
+      "Sha256": "90BF7985F48166B427BD790439270580D4B8C98FA9DC5EBD55661EB1A3B004D2",
+      "StoredBytes": 852,
+      "StoredSha256": "3F3EAE61ADBCF95D7534B1C33C816ABB91A594829FFBC6C8ACD374E001E19693"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-3/result.json",
+      "File": "040.gz",
+      "Bytes": 746,
+      "Sha256": "C22D068D69AF26CF84EBD4386403F318726F4108BE4A1D1E94F55196296030C7",
+      "StoredBytes": 401,
+      "StoredSha256": "28DC2CFACF5DF41719FDC2DCFDBE2DB70F5D72453D778C892D005D77F5B7F0A5"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-3/source-0",
+      "File": "041.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-3/source-1",
+      "File": "042.gz",
+      "Bytes": 49200,
+      "Sha256": "715805F777BC65148DBF1A25F2529BB8F221A8899807F4B7EF1F9ECEEEE01D96",
+      "StoredBytes": 11959,
+      "StoredSha256": "6ECFB75376F17D5F71703FC3E583086C979363A7338A6CC6585E6F9E2D4F5BF5"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-3/source-2",
+      "File": "043.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-3/stderr",
+      "File": "044.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-3/stdout",
+      "File": "045.gz",
+      "Bytes": 3568,
+      "Sha256": "E4641ACFA197C2034C6F4BD5281F59EAD9C3CD4CD0E2CECD19F3F6FF30AEA7CF",
+      "StoredBytes": 668,
+      "StoredSha256": "E81C61AE8578E8106D4B53BA10E11318E437DCFD353130656CDDF39C9ED74009"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-4/result.json",
+      "File": "046.gz",
+      "Bytes": 746,
+      "Sha256": "E7DC67A988C0159D34EDFE4C1E5E51295B24134725983C92E6780745C6E6BDE2",
+      "StoredBytes": 400,
+      "StoredSha256": "4BD82C78618FAA0F93E3A6E02F91C4D83BAC52886174192ED3BF4887E9773505"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-4/source-0",
+      "File": "047.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-4/source-1",
+      "File": "048.gz",
+      "Bytes": 50216,
+      "Sha256": "2B8D9ADBA41C7C06BA70C3B1994993C36ECB4011C9DF1F9F4EA050B1F9A499DD",
+      "StoredBytes": 12180,
+      "StoredSha256": "F12AA28FA3E16DF6E2F37858B1E7A02E8FCAF32684C1F53269892F8DDAF888BA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-4/source-2",
+      "File": "049.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-4/stderr",
+      "File": "050.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-4/stdout",
+      "File": "051.gz",
+      "Bytes": 905,
+      "Sha256": "BD22D2398ACA16856E598216C9E86476AA28655C5C21B9FA0869AE68BCE6AA24",
+      "StoredBytes": 297,
+      "StoredSha256": "58DC1FB6A56905CA005B5FBD27F269D12F4E79D16071A824982D45BCDB865521"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-5/result.json",
+      "File": "052.gz",
+      "Bytes": 746,
+      "Sha256": "7383279C30E411EAAEC97CAFE18319ECCBFD0A7A875F54223076F0D9CA789AB8",
+      "StoredBytes": 400,
+      "StoredSha256": "8E06EC700872335B266E7D95D44F6E9BD1C521D04E09641A87BD387ABCFE92DA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-5/source-0",
+      "File": "053.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-5/source-1",
+      "File": "054.gz",
+      "Bytes": 68274,
+      "Sha256": "B1D5B596DDE2BF8B55C8AB8DC9A25401ECFEB588E78730DA719746B68F83FEEB",
+      "StoredBytes": 16444,
+      "StoredSha256": "629DE54DEEDA82DF1A34879C8122078AF159D881C87D2D63129A0E31F63BDEEC"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-5/source-2",
+      "File": "055.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-5/stderr",
+      "File": "056.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-5/stdout",
+      "File": "057.gz",
+      "Bytes": 27721,
+      "Sha256": "170A744BEB404D63577C86CE2374674BBE117FA931911B0DA70E685CEE20CA20",
+      "StoredBytes": 1498,
+      "StoredSha256": "D16FFF166B82F43B64721C783F7FB1ACD91710EB0328FC13B033370F0DC8E14D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-6/result.json",
+      "File": "058.gz",
+      "Bytes": 746,
+      "Sha256": "CF9FAE20D2748EED06AE3B9C4B8C619D675DD79CF76D29475D5085D5C16483C2",
+      "StoredBytes": 400,
+      "StoredSha256": "5C92CC603CED4580F31C0ABF3F18EB1232EAC1C40A5C4501BC03DECD9DC28E04"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-6/source-0",
+      "File": "059.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-6/source-1",
+      "File": "060.gz",
+      "Bytes": 72514,
+      "Sha256": "31CF4A8FEA210669AAD9964703AB571D9A5F84DB9B00126753304B62F17ABED0",
+      "StoredBytes": 17477,
+      "StoredSha256": "503B015D064410166CCF4C282E70764F51E368FDF395A739A2CB748CC36715F9"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-6/source-2",
+      "File": "061.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-6/stderr",
+      "File": "062.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-6/stdout",
+      "File": "063.gz",
+      "Bytes": 12957,
+      "Sha256": "0477733107B44F1FAB331CD08956EE2D4E29330422B1365369C43A1EDFB87BBF",
+      "StoredBytes": 883,
+      "StoredSha256": "5CA91D3AEF4BF5D2C23B50ADF6451C97A87DF60B105D1F8300B4A6507374A482"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-7/result.json",
+      "File": "064.gz",
+      "Bytes": 746,
+      "Sha256": "38CB8EC6FEA9F7BA87D3191E67AF559F049A0C03BB9C1B8EDA50741E68BC1F80",
+      "StoredBytes": 399,
+      "StoredSha256": "278D72FF1C16887E3777639BC91262F0ED3629EF736425E4BC8CD85895633D4C"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-7/source-0",
+      "File": "065.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-7/source-1",
+      "File": "066.gz",
+      "Bytes": 81512,
+      "Sha256": "CB359AA257B76F9166CD9CEF297FC63474DF1E63166272B416D23D1AE011D9A3",
+      "StoredBytes": 19221,
+      "StoredSha256": "0892CAAC261B09A5A0CE62C18DAC3435D18841994B71BAF3870C4F8C403830EC"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-7/source-2",
+      "File": "067.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-7/stderr",
+      "File": "068.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-7/stdout",
+      "File": "069.gz",
+      "Bytes": 9433,
+      "Sha256": "3363222505EA6B96CAB7B3F62ED4C75601C44E100DB52A3B1E6D32EF11AE1297",
+      "StoredBytes": 659,
+      "StoredSha256": "FD7A95A5E76F0B456785BF5FB9E9A5A9D59939EEFFD1B97772D62C7D5A53607D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-8/result.json",
+      "File": "070.gz",
+      "Bytes": 746,
+      "Sha256": "E227F0B2E78A40998E6045C72E4A405FF687A6C971B509BF1FB0834399F1877C",
+      "StoredBytes": 401,
+      "StoredSha256": "2B2509DDA0B061FDF617637DBEFF3747075502372D7A7577349C51C18571B504"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-8/source-0",
+      "File": "071.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-8/source-1",
+      "File": "072.gz",
+      "Bytes": 91441,
+      "Sha256": "22A4D7640FB7D35D15A3C9004C6FC199F78190B35A47158726972D043450745A",
+      "StoredBytes": 21427,
+      "StoredSha256": "9217BF66A5B33E4A76ADEC5BFE8CE9C2A4D9D317AB0B3F467A71C88379D51442"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-8/source-2",
+      "File": "073.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-8/stderr",
+      "File": "074.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-8/stdout",
+      "File": "075.gz",
+      "Bytes": 1566,
+      "Sha256": "3EA8F5353D039B8BB048902B7F8FAC7A4E529EE034FD0A97C8CEF42122139E4E",
+      "StoredBytes": 452,
+      "StoredSha256": "E63F84A36F7E9EDADD08879FEC4B8EDF0D64D398AAD5DBB62E0728D98B818D6E"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-9/result.json",
+      "File": "076.gz",
+      "Bytes": 746,
+      "Sha256": "02B27105D9A1ED0FDB7DDAAD5560D0DFF552125ED1CCDDC45A3F5034244CAA25",
+      "StoredBytes": 399,
+      "StoredSha256": "51B1A4C9D3D1F225E30B40D0C7E9636E03356790D2357B7E23CE5127C00F8684"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-9/source-0",
+      "File": "077.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-9/source-1",
+      "File": "078.gz",
+      "Bytes": 92996,
+      "Sha256": "1CA37BEA48EEA631A485DDBC28BAAEEE1CEB5F565E816834DA483DDB9E6AB7CC",
+      "StoredBytes": 21749,
+      "StoredSha256": "C5F452FFC8C377EAD2136740FEEE2C739146F7835692BDFC837917719318A43D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-9/source-2",
+      "File": "079.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-9/stderr",
+      "File": "080.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/build-9/stdout",
+      "File": "081.gz",
+      "Bytes": 5950,
+      "Sha256": "9CB077F74EF0F04B858D70DCC7341B9313C506CA489F1A21D708D174EE6F1331",
+      "StoredBytes": 736,
+      "StoredSha256": "5035752D096E44A708F2B139D14DA4AEE838FD0D6923FF2070529B6033B8EBD2"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/result.json",
+      "File": "082.gz",
+      "Bytes": 1414,
+      "Sha256": "5E9C600BD384D92E580ED9F64674B079C6421D1F229AEF05A607CAD9006C9DC9",
+      "StoredBytes": 597,
+      "StoredSha256": "1A215DEF134DF6BBD6454A558220EC5D76D0EEDE63E3E12981F0031BB505F480"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/source-0",
+      "File": "083.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/source-1",
+      "File": "084.gz",
+      "Bytes": 50216,
+      "Sha256": "2B8D9ADBA41C7C06BA70C3B1994993C36ECB4011C9DF1F9F4EA050B1F9A499DD",
+      "StoredBytes": 12180,
+      "StoredSha256": "F12AA28FA3E16DF6E2F37858B1E7A02E8FCAF32684C1F53269892F8DDAF888BA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/source-2",
+      "File": "085.gz",
+      "Bytes": 12323,
+      "Sha256": "F2862DE5566C0676667327A80F55132BDE0381881DAE187985F9FA8F01D1D261",
+      "StoredBytes": 3510,
+      "StoredSha256": "C2191CE878A3083C1BCD441C28190E54090D504F4C3A40BB384AC6409BB15308"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/source-3",
+      "File": "086.gz",
+      "Bytes": 3755,
+      "Sha256": "1578143E222805F6AF3C1A7331B2AE4437EB5BEB1BA0BC21D9AA4407F0B5B1B9",
+      "StoredBytes": 1384,
+      "StoredSha256": "21B1631FD7C821D5A20CB9CB44086D57DAA73F3651940F60B742805B78B2F145"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/source-4",
+      "File": "087.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/source-5",
+      "File": "088.gz",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC",
+      "StoredBytes": 966,
+      "StoredSha256": "6DE2648DF0EC91C9FF9A788041056DDB60BD8188C042E5E9BE38572FF13AE57D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/stderr",
+      "File": "089.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-1/stdout",
+      "File": "090.gz",
+      "Bytes": 1320,
+      "Sha256": "7C144DF3E08EB8F9C13636880B36DD1C11B4ED6E6433FEA0ED441881D352D5AA",
+      "StoredBytes": 392,
+      "StoredSha256": "703C62E1F00E00E15B405BADC3711A06E524E877AB908F49CEB70A3035E7DC91"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/result.json",
+      "File": "091.gz",
+      "Bytes": 1414,
+      "Sha256": "511BB2F26AD786A1678FCF8EED75A89D8D2A5E30CA3425D59AFAD980F318C950",
+      "StoredBytes": 600,
+      "StoredSha256": "F5F99EB42246ED8DFD7E88B68B9147F29E693769990C2A4A8F88503B76E24230"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/source-0",
+      "File": "092.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/source-1",
+      "File": "093.gz",
+      "Bytes": 93232,
+      "Sha256": "DDFF93F65C5D4501E883B88FF72EA12F3CAEBA8FC004A2E2D556A085CF4778BF",
+      "StoredBytes": 21831,
+      "StoredSha256": "CE88B352A946F860F09CD0850184A8424BE42893D3553B4CC4DEC62092ED34AA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/source-2",
+      "File": "094.gz",
+      "Bytes": 12323,
+      "Sha256": "F2862DE5566C0676667327A80F55132BDE0381881DAE187985F9FA8F01D1D261",
+      "StoredBytes": 3510,
+      "StoredSha256": "C2191CE878A3083C1BCD441C28190E54090D504F4C3A40BB384AC6409BB15308"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/source-3",
+      "File": "095.gz",
+      "Bytes": 4958,
+      "Sha256": "7126F1E98DA151D52E44049F0B5795E0C1EE9002CC797012CF27DCA54F74C15A",
+      "StoredBytes": 1608,
+      "StoredSha256": "E3ECD5C0631DE862BE575CF8D70984D621E529942E1B2EEEA0308F8722E585D3"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/source-4",
+      "File": "096.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/source-5",
+      "File": "097.gz",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC",
+      "StoredBytes": 966,
+      "StoredSha256": "6DE2648DF0EC91C9FF9A788041056DDB60BD8188C042E5E9BE38572FF13AE57D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/stderr",
+      "File": "098.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-2/stdout",
+      "File": "099.gz",
+      "Bytes": 1320,
+      "Sha256": "8B3FD9C1574DA1F8DBE12E298230AC4F23C56778B1ACC151B8E1C03963D1D7DB",
+      "StoredBytes": 389,
+      "StoredSha256": "526A3AC0673580205F5CA10AB09390AD0A59DA8C1CE31417C894A9B67F0DA9A4"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/result.json",
+      "File": "100.gz",
+      "Bytes": 1376,
+      "Sha256": "ABDB3AA3EA305A7ECA3B944B377E3BD37D8C6579E41899F9C2BEA2E8411AB282",
+      "StoredBytes": 609,
+      "StoredSha256": "94D6F631BCDB0630C07F0B072B87F1900971F609BA104721E9B21A24FBACBCBD"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/source-0",
+      "File": "101.gz",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/source-1",
+      "File": "102.gz",
+      "Bytes": 93232,
+      "Sha256": "DDFF93F65C5D4501E883B88FF72EA12F3CAEBA8FC004A2E2D556A085CF4778BF",
+      "StoredBytes": 21831,
+      "StoredSha256": "CE88B352A946F860F09CD0850184A8424BE42893D3553B4CC4DEC62092ED34AA"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/source-2",
+      "File": "103.gz",
+      "Bytes": 12323,
+      "Sha256": "F2862DE5566C0676667327A80F55132BDE0381881DAE187985F9FA8F01D1D261",
+      "StoredBytes": 3510,
+      "StoredSha256": "C2191CE878A3083C1BCD441C28190E54090D504F4C3A40BB384AC6409BB15308"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/source-3",
+      "File": "104.gz",
+      "Bytes": 5647,
+      "Sha256": "0CEFB1D274DF24918149D8A5F17FF7C5173E17A1C2DBC51095A486664C861F0F",
+      "StoredBytes": 1831,
+      "StoredSha256": "F1DE651A7064F20703E308A53A9ABC7DDA9146C0E8B5E9B582EC531ADA2769BE"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/source-4",
+      "File": "105.gz",
+      "Bytes": 3426,
+      "Sha256": "24F474046E52A2B703EDA187587D1E15FCBFDA2C835075B7CC13B83AF7B8DCA0",
+      "StoredBytes": 1070,
+      "StoredSha256": "F7C0D070DDFCB0B74463724B1B9FE56D537F8DFA79872DE7985467A3E4974962"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/source-5",
+      "File": "106.gz",
+      "Bytes": 3879,
+      "Sha256": "2361B22D257F61236AE0B9EA4266EEB4883B9E5419680FE5419FFD86C5C620AC",
+      "StoredBytes": 966,
+      "StoredSha256": "6DE2648DF0EC91C9FF9A788041056DDB60BD8188C042E5E9BE38572FF13AE57D"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/stderr",
+      "File": "107.gz",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-epoch-core-development/test-golden/stdout",
+      "File": "108.gz",
+      "Bytes": 1320,
+      "Sha256": "32BCBDC750461871BBB99646C39B907D92176D6122FC55B38F4D85392CF93596",
+      "StoredBytes": 391,
+      "StoredSha256": "500C0B79CAD3ED1C8AFA17D18D1678B84AD063E0C8553E896CE46C1C5D7FFE1B"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/.git/mixed-core-checkpoint-publication-1/capture.py",
+      "File": "109.gz",
+      "Bytes": 1714,
+      "Sha256": "3F7230DCE38C0F33DB66F8FEE2B4B4AD8562A48C6A1AF5DC0DFE10B5CE92C48B",
+      "StoredBytes": 830,
+      "StoredSha256": "CB0DFBD46ED33EBD1954CA4B877B68FC7F24F3DFAB25C862E681DDA0BF3CE4CD"
+    },
+    {
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/epoch-bridge-string-golden-1/stdout",
+      "File": "110.gz",
+      "Bytes": 963,
+      "Sha256": "DF19EC4EFD90BBCE4A4E4B99E3342DABF1E11745D9D292DDEEAAB9E3DEC5AFFA",
+      "StoredBytes": 481,
+      "StoredSha256": "EE9741DA0FFE518254E619BC0F05AC7664EFAEADA4AC536916310911D27612D9"
+    }
+  ]
+}
