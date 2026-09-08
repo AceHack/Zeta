@@ -414,3 +414,74 @@ let ``byte UNLINK SYMLINK READLINK RENAME and nonempty RMDIR`` () =
                 | Error e -> Assert.Fail(sprintf "rmdir out: %A" e)
                 | Ok header -> Assert.Equal(-39, header.Error)
         | other -> Assert.Fail(sprintf "lookup d: %A" other))
+
+let private emptySattr: ZetaFsFuseAbi.SetattrIn =
+    { Valid = 0u
+      Size = 0UL
+      Mtime = 0UL
+      Ctime = 0UL
+      Mtimensec = 0u
+      Ctimensec = 0u
+      Mode = 0u
+      Uid = 0u
+      Gid = 0u }
+
+[<Fact>]
+let ``byte SETATTR FATTR_SIZE truncates; FATTR_MTIME writes caller unix-ns`` () =
+    withSession "/fuse-setattr-bytes" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node created ->
+            match ZetaFsFuse.dispatch session (ZetaFsFuse.Open created.Id) with
+            | ZetaFsFuse.Fh fh ->
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Write(fh, 0L, [| 1uy; 2uy; 3uy |])) with
+                | ZetaFsFuse.Written 3 -> ()
+                | other -> Assert.Fail(sprintf "write: %A" other)
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Release fh) with
+                | ZetaFsFuse.Released -> ()
+                | other -> Assert.Fail(sprintf "release: %A" other)
+            | other -> Assert.Fail(sprintf "open: %A" other)
+            let sizePatch =
+                { emptySattr with
+                    Valid = ZetaFsFuseAbi.fattrSize
+                    Size = 1UL }
+            match
+                ZetaFsFuseSession.handleMounted
+                    session
+                    (req ZetaFsFuseAbi.fuseSetattr created.Id 24UL (ZetaFsFuseAbi.encodeSetattrIn sizePatch))
+            with
+            | Error e -> Assert.Fail(sprintf "size: %A" e)
+            | Ok(sizeReply, _) ->
+                match ZetaFsFuseAbi.decodeOutHeader sizeReply with
+                | Error e -> Assert.Fail(sprintf "size out: %A" e)
+                | Ok header ->
+                    Assert.Equal(0, header.Error)
+                    let body =
+                        Array.sub sizeReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.attrOutSize
+                    match ZetaFsFuseAbi.decodeAttrOut body with
+                    | Error e -> Assert.Fail(sprintf "size attr: %A" e)
+                    | Ok attrOut -> Assert.Equal(1UL, attrOut.Attr.Size)
+            let timePatch =
+                { emptySattr with
+                    Valid = ZetaFsFuseAbi.fattrMtime ||| ZetaFsFuseAbi.fattrCtime
+                    Mtime = 42UL
+                    Ctime = 43UL }
+            match
+                ZetaFsFuseSession.handleMounted
+                    session
+                    (req ZetaFsFuseAbi.fuseSetattr created.Id 25UL (ZetaFsFuseAbi.encodeSetattrIn timePatch))
+            with
+            | Error e -> Assert.Fail(sprintf "time: %A" e)
+            | Ok(timeReply, _) ->
+                match ZetaFsFuseAbi.decodeOutHeader timeReply with
+                | Error e -> Assert.Fail(sprintf "time out: %A" e)
+                | Ok header ->
+                    Assert.Equal(0, header.Error)
+                    let body =
+                        Array.sub timeReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.attrOutSize
+                    match ZetaFsFuseAbi.decodeAttrOut body with
+                    | Error e -> Assert.Fail(sprintf "time attr: %A" e)
+                    | Ok attrOut ->
+                        Assert.Equal(42UL, attrOut.Attr.Mtime)
+                        Assert.Equal(43UL, attrOut.Attr.Ctime)
+        | other -> Assert.Fail(sprintf "create: %A" other))

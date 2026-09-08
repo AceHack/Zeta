@@ -376,5 +376,76 @@ module ZetaFsFuseSession =
                                 Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
                             | ZetaFsFuse.Done -> Result.Ok(replyOk header.Unique [||], session)
                             | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseSetattr then
+                match ZetaFsFuseAbi.decodeSetattrIn (payload req) with
+                | Result.Error e -> Result.Error(Truncated e)
+                | Result.Ok sattr ->
+                    let has bit = (sattr.Valid &&& bit) <> 0u
+                    let unixNs (sec: uint64) (nsec: uint32) : int64 =
+                        int64 sec * 1_000_000_000L + int64 nsec
+
+                    let trunc =
+                        if has ZetaFsFuseAbi.fattrSize then
+                            if sattr.Size > uint64 System.Int64.MaxValue then
+                                Result.Error 22
+                            else
+                                match
+                                    ZetaFsFuse.dispatch session (ZetaFsFuse.Truncate(header.Nodeid, int64 sattr.Size))
+                                with
+                                | ZetaFsFuse.Fail e -> Result.Error(ZetaFsFuse.code e)
+                                | ZetaFsFuse.Stat _ -> Result.Ok()
+                                | _ -> Result.Error 22
+                        else
+                            Result.Ok()
+
+                    match trunc with
+                    | Result.Error errno -> Result.Ok(replyErrno header.Unique errno, session)
+                    | Result.Ok() ->
+                        let patch: ZetaFsPosixMeta.PosixSetattr =
+                            { Mode = if has ZetaFsFuseAbi.fattrMode then Some sattr.Mode else None
+                              Uid = if has ZetaFsFuseAbi.fattrUid then Some sattr.Uid else None
+                              Gid = if has ZetaFsFuseAbi.fattrGid then Some sattr.Gid else None
+                              MtimeNs =
+                                if has ZetaFsFuseAbi.fattrMtime then
+                                    Some(unixNs sattr.Mtime sattr.Mtimensec)
+                                else
+                                    None
+                              CtimeNs =
+                                if has ZetaFsFuseAbi.fattrCtime then
+                                    Some(unixNs sattr.Ctime sattr.Ctimensec)
+                                else
+                                    None }
+
+                        let patched =
+                            if
+                                patch.Mode.IsNone
+                                && patch.Uid.IsNone
+                                && patch.Gid.IsNone
+                                && patch.MtimeNs.IsNone
+                                && patch.CtimeNs.IsNone
+                            then
+                                Result.Ok()
+                            else
+                                match
+                                    ZetaFsFuse.dispatch session (ZetaFsFuse.Setattr(header.Nodeid, patch))
+                                with
+                                | ZetaFsFuse.Fail e -> Result.Error(ZetaFsFuse.code e)
+                                | ZetaFsFuse.Stat _ -> Result.Ok()
+                                | _ -> Result.Error 22
+
+                        match patched with
+                        | Result.Error errno -> Result.Ok(replyErrno header.Unique errno, session)
+                        | Result.Ok() ->
+                            match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr header.Nodeid) with
+                            | ZetaFsFuse.Fail e ->
+                                Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                            | ZetaFsFuse.Stat(stat, ino) ->
+                                let body: ZetaFsFuseAbi.AttrOut =
+                                    { AttrValid = 0UL
+                                      AttrValidNsec = 0u
+                                      Attr = attrOf stat ino }
+
+                                Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeAttrOut body), session)
+                            | _ -> Result.Ok(replyErrno header.Unique 22, session)
             else
                 Result.Ok(replyErrno header.Unique 38, session)

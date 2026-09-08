@@ -1,0 +1,14 @@
+{
+  "id": "080d03f451f86010a013000876e3986d",
+  "at": "2026-09-08T01:03:04.460Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z8MFRB087G0R0003XJRMF",
+    "type": "task",
+    "title": "FUSE byte session SETATTR and FATTR_SIZE truncate",
+    "slug": "fuse-byte-session-setattr-and-fattr-size-truncate",
+    "priority": "P2",
+    "filename": "081M1Z8MFRB087G0R0003XJRMF-fuse-byte-session-setattr-and-fattr-size-truncate.md"
+  }
+}

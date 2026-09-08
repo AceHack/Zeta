@@ -35,6 +35,19 @@ module ZetaFsFuseAbi =
     let fuseMkdir = 9u
     let fuseCreate = 35u
 
+    /// fuse(4) FUSE_SETATTR.
+    let fuseSetattr = 4u
+
+    /// fuse(4) FATTR_* bits on fuse_setattr_in.valid.
+    let fattrMode = 1u
+    let fattrUid = 2u
+    let fattrGid = 4u
+    let fattrSize = 8u
+    let fattrMtime = 32u
+    let fattrCtime = 1024u
+
+    let setattrInSize = 88
+
     /// fuse(4) FUSE_GETATTR.
     let fuseGetattr = 3u
 
@@ -476,6 +489,45 @@ module ZetaFsFuseAbi =
             Error(Truncated(8, buf.Length))
         else
             Ok(BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8)))
+
+    type SetattrIn =
+        { Valid: uint32
+          Size: uint64
+          Mtime: uint64
+          Ctime: uint64
+          Mtimensec: uint32
+          Ctimensec: uint32
+          Mode: uint32
+          Uid: uint32
+          Gid: uint32 }
+
+    let encodeSetattrIn (s: SetattrIn) : byte[] =
+        let buf = Array.zeroCreate setattrInSize
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 0, 4), s.Valid)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 16, 8), s.Size)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 40, 8), s.Mtime)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 48, 8), s.Ctime)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 60, 4), s.Mtimensec)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 64, 4), s.Ctimensec)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 68, 4), s.Mode)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 76, 4), s.Uid)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 80, 4), s.Gid)
+        buf
+
+    let decodeSetattrIn (buf: byte[]) : Result<SetattrIn, DecodeError> =
+        if buf.Length < setattrInSize then
+            Error(Truncated(setattrInSize, buf.Length))
+        else
+            Ok
+                { Valid = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 0, 4))
+                  Size = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 16, 8))
+                  Mtime = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 40, 8))
+                  Ctime = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 48, 8))
+                  Mtimensec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 60, 4))
+                  Ctimensec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 64, 4))
+                  Mode = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 68, 4))
+                  Uid = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 76, 4))
+                  Gid = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 80, 4)) }
 
     let hex (buf: byte[]) : string =
         Convert.ToHexString(buf).ToLowerInvariant()
