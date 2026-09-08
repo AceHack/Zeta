@@ -53,3 +53,11 @@ The exact reviewed source and this original note are retained in the bridge's
 The Python path mismatch and its independently observed pure-manifest refusals
 are tracked in the separate
 [owner correction report](2026-09-08-mixed-message-epoch-bridge-corrections.md).
+
+## Subsequent complete lifecycle review
+
+The separately pinned [lifecycle review](2026-09-08-mixed-message-peer-lifecycle-review.md)
+accepts the bounded completed peer source and 96-record development custody at
+`d16bafa2a71e503878d645a8ea4f52244b5c227b`. The earlier a59 foundation and its
+limited acceptance above remain historical; assembled actual controls are still
+separate from both source reviews.
