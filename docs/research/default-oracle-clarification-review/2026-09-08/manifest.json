@@ -1,0 +1,46 @@
+{
+  "ReviewedCommit": "ac9ec57908cc15ada4412329b29dbf487b1b656d",
+  "Files": [
+    {
+      "File": "audit.py",
+      "Bytes": 2146,
+      "Sha256": "b3a2796436fdd233d7cede6636c61c719c84c427b9b12c981a921947d19ca0c5"
+    },
+    {
+      "File": "inspected-diff.txt",
+      "Bytes": 6027,
+      "Sha256": "95e9daf09dd18dcb42d5fe726be8960c9696946cf6c99bc598a58002b9940681"
+    },
+    {
+      "File": "markdownlint-process.json",
+      "Bytes": 12,
+      "Sha256": "340c11b4f67d82bc2269e32b423a47f7bff84fc090b5795edba7f82ef31ba2e5"
+    },
+    {
+      "File": "markdownlint.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "markdownlint.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "File": "process.json",
+      "Bytes": 106,
+      "Sha256": "f9558f3de43c015a73322c47305d19d2420bffae02eb06c0e0b7ffa686c5052a"
+    },
+    {
+      "File": "result.json",
+      "Bytes": 1579,
+      "Sha256": "adc68fb7f51d7e75eee1826e2ea16995c505d33daa9318979399160d5b14b200"
+    },
+    {
+      "File": "stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "Scope": "Read-only Git and byte comparison; no project execution"
+}
