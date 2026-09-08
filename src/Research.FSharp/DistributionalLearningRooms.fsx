@@ -339,3 +339,7 @@ try
 with ex ->
     Environment.ExitCode <- 2
     Console.Error.WriteLine("TerminalPublicationFailed: " + ex.GetType().FullName)
+
+// FSI can finish successfully despite Environment.ExitCode assignment.
+// Terminate explicitly after the failure receipt/sink diagnostic is written.
+if Environment.ExitCode <> 0 then Environment.Exit(Environment.ExitCode)
