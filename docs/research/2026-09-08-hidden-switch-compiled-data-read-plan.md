@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: proposed finite roster; no new memory read
+Artifact status: first launcher startup refused; proposed roster and physical read pending
 
 The [retained transfer inventory](2026-09-08-hidden-switch-compiled-transfer-inventory.md)
 identifies 43 distinct unknown call-cell addresses and ten prospective
@@ -149,6 +149,27 @@ closed-child claim. All five final extracted-function fixtures pass. The
 earlier four-test source/preimages remain unchanged in their archive;
 stable local copy paths now accompany their original capture paths so later
 edits cannot erase the inspected draft. No child ran during these repairs.
+
+## First launcher startup refusal
+
+The first authorized outer invocation at execution head
+`90e0acc5707505c755c6b17fd1c6efd5c927aca5` failed before creating its
+invocation file, attempt directory or metadata child. The
+[two retained failure records](hidden-switch-compiled-validation/2026-09-07/data-proposal-launcher-startup-failure-1/manifest.json)
+contain the explicitly transcribed tool-returned combined traceback/exit 1
+and the subsequent read-only file-stat observation. No separate raw
+stdout/stderr files existed, so the transcript is not presented as one.
+The executable identity helper's four-MiB default refused the installed
+Python 3.14.6 regular image, which is 18,090,720 bytes. This was an
+unverified runtime-size assumption in the author source; the reviewer also
+states that actual image size was not checked during source acceptance.
+
+The established source/preparation checks completed before that failure,
+but their outer invocation report had not yet been published. The original
+launcher and all earlier preparation remain unchanged. A bounded runtime
+image allowance and guarded pre-child prefix/terminal publication require
+a separately reviewed correction. No actual proposal, target or physical
+query occurred, and the failure authorizes no automatic retry.
 
 ## One held local dump, no chained query
 
