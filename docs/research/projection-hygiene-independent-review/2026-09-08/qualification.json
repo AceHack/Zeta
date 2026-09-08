@@ -1,0 +1,48 @@
+{
+  "OriginalClaimCut": "809bc57bafe847d58e8387b9a4858c52300271f5",
+  "CorrectedClaimCut": "3cfa22d9a9e904dfa64fb65664338745f55664eb",
+  "ClaimPath": "docs/research/precision-gate-projection/2026-09-08/publication-hygiene/README.md",
+  "Proof": [
+    {
+      "Role": "original",
+      "Bytes": 3191,
+      "Sha256": "0862C55FE4DF0FF5A5F86E9345F286002DDA431617CC99F1C5B8D83CB6EA550F"
+    },
+    {
+      "Role": "corrected",
+      "Bytes": 3327,
+      "Sha256": "D1F0535E7E3B65358A5AFD7C8CF22587CD80A452FAA374C8F15B5A6AEAA9752F"
+    },
+    {
+      "Role": "publication-hygiene/custody.tar.gz",
+      "Unchanged": true,
+      "Sha256": "1313EA5CB4C6E2305985BB19778935C6887C12ABC0FABBFECB5AC8413FC6BF92"
+    },
+    {
+      "Role": "publication-hygiene/manifest.json",
+      "Unchanged": true,
+      "Sha256": "690A78E7855FEDA471AEB164AD369E22141BC9925028FC4DC6061FECBB4CCBE5"
+    },
+    {
+      "Role": "registered-1/custody.tar.gz",
+      "Unchanged": true,
+      "Sha256": "04C079901CEA886500CFD0A5912CD812A997268803FAE3F0DAD4F8EDE65A8167"
+    },
+    {
+      "Role": "registered-1/manifest.json",
+      "Unchanged": true,
+      "Sha256": "7A0792FDA9A43F1FF1B29241C3DD434EBFE5E0F5983A799A131828C4113B76D8"
+    },
+    {
+      "Role": "implementation-source/custody.tar.gz",
+      "Unchanged": true,
+      "Sha256": "56B80DBAC2D4D8430D4B57D2F429529582457D34582FD9D94E62EE82578502A1"
+    },
+    {
+      "Role": "implementation-source/implementation-manifest.json",
+      "Unchanged": true,
+      "Sha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7"
+    }
+  ],
+  "DirectNativeRolesStillMatch": 5
+}

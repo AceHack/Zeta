@@ -1,0 +1,55 @@
+{
+  "Schema": "zeta.independent-hygiene-review.v1",
+  "Files": [
+    {
+      "File": "README.md",
+      "Bytes": 1122,
+      "Sha256": "DBAB24A19FE877DE85CABFF7264875868E4E810C801EBEAE3DF701220FDA8526"
+    },
+    {
+      "File": "audit-1.completion.json",
+      "Bytes": 203,
+      "Sha256": "06F3BE2759F1E6DDD95ACE8DCB4711DE65CF960E7DC510885F6C168AA3066F13"
+    },
+    {
+      "File": "audit-1.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "audit-1.stderr.txt.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "audit-1.stdout.json",
+      "Bytes": 9020,
+      "Sha256": "58002DC553083E90909BB2C3CC09A72B4A7D8D9B0C3BC3CE617E29FC9E875CAD"
+    },
+    {
+      "File": "audit-1.stdout.json.gz",
+      "Bytes": 2087,
+      "Sha256": "B993DCCC90019F0C547E230E66A386BC3EA32FB3A7C4404AB82D574BA5C17AB5"
+    },
+    {
+      "File": "audit.py",
+      "Bytes": 5775,
+      "Sha256": "CC8060D7D7E0A0A143EDA4B38F9ECF07F087D5A91A60C402D3C67DDD4DC940F8"
+    },
+    {
+      "File": "corrected-hygiene-readme.md.gz",
+      "Bytes": 1748,
+      "Sha256": "A80D65A268D3B0FDABC5657171020638C0465EEA80FC9AFC06AB468AF71B8E0C"
+    },
+    {
+      "File": "original-hygiene-readme.md.gz",
+      "Bytes": 1688,
+      "Sha256": "BA77902A0646241141129BD1D1D7130679C406891793DEA9F39F61AF6A145CEE"
+    },
+    {
+      "File": "qualification.json",
+      "Bytes": 1615,
+      "Sha256": "A0CF5163D76B014694D6EBD425ADDA1BAEA5B06CB9A508E80EFA5E4E2F37B00D"
+    }
+  ]
+}
