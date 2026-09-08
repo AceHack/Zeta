@@ -14,6 +14,7 @@ import {
   planQemuUeFiBootArgs,
   GRUB_EFI_CFG_PATH,
   GRUB_EFI_IMAGE_PATH,
+  MULTIBOOT_FAT_LABEL,
 } from "./assemble.ts";
 import { bindResolvedArtifacts, resolveLatestPins } from "./resolve-artifacts.ts";
 
@@ -493,5 +494,32 @@ describe("executeAssembleFatImage mtools smoke", () => {
     // FAT 8.3 lists grub.cfg as "grub     cfg"
     expect(out).toMatch(/grub\s+cfg/i);
     expect(mdirListingHasGrubEfiEmbed(out)).toBe(true);
+  });
+});
+
+describe("multiboot USB root label", () => {
+  // THE FALSIFIER for B6. The committed grub.cfg booted `root=LABEL=ZETA_MULTIBOOT`
+  // -- 14 characters. A FAT volume label holds at most 11, so that label could never
+  // be written by anything, and the assembler in fact writes ZETA_MB. Stage-1 was
+  // told to find its root on a device that does not exist. Nothing compared the two
+  // constants, because they lived in different trees (a .cfg and a .ts).
+  const grubCfg = readFileSync(
+    join(import.meta.dir, "../../../../full-ai-cluster/usb-nixos-installer/multiboot/grub.cfg"),
+    "utf8",
+  );
+
+  it("the label GRUB boots is the label the assembler writes", () => {
+    const found = [...grubCfg.matchAll(/root=LABEL=(\S+)/g)].flatMap((m) => (m[1] === undefined ? [] : [m[1]]));
+    expect(found.length).toBeGreaterThan(0);
+    for (const label of found) expect(label).toBe(MULTIBOOT_FAT_LABEL);
+  });
+
+  it("the label is writable as a FAT volume label at all", () => {
+    // The property that made the old value impossible rather than merely wrong.
+    expect(MULTIBOOT_FAT_LABEL.length).toBeLessThanOrEqual(11);
+    const labels = [...grubCfg.matchAll(/root=LABEL=(\S+)/g)].flatMap((m) => (m[1] === undefined ? [] : [m[1]]));
+    for (const label of labels) {
+      expect(label.length).toBeLessThanOrEqual(11);
+    }
   });
 });
