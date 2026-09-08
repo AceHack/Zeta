@@ -67,10 +67,14 @@ assert identity(archive_raw) == {'Bytes': 338621, 'Sha256': '3C0845830B19D7ACBEB
 assert manifest['ArchiveBytes'] == len(archive_raw)
 assert manifest['ArchiveSha256'] == identity(archive_raw)['Sha256']
 assert manifest['Archive'] == 'custody.tar.gz'
-assert (PUB / PACKET / 'manifest.json').read_bytes() == manifest_raw
-assert (PUB / PACKET / 'custody.tar.gz').read_bytes() == archive_raw
-assert committed(PACKET + '/manifest.json', CORRECTED) == manifest_raw
-assert committed(PACKET + '/custody.tar.gz', CORRECTED) == archive_raw
+local_manifest_raw = (PUB / PACKET / 'manifest.json').read_bytes()
+assert local_manifest_raw == manifest_raw
+local_archive_raw = (PUB / PACKET / 'custody.tar.gz').read_bytes()
+assert local_archive_raw == archive_raw
+corrected_manifest_raw = committed(PACKET + '/manifest.json', CORRECTED)
+assert corrected_manifest_raw == manifest_raw
+corrected_archive_raw = committed(PACKET + '/custody.tar.gz', CORRECTED)
+assert corrected_archive_raw == archive_raw
 
 expected = {row['ArchivePath']: row for row in manifest['Members']}
 assert len(expected) == len(manifest['Members']) == manifest['MemberCount'] == 162
@@ -92,7 +96,8 @@ with tarfile.open(fileobj=io.BytesIO(archive_raw), mode='r:gz') as archive:
         assert identity(raw) == {'Bytes': row['Bytes'], 'Sha256': row['Sha256']}
         original = PurePosixPath(row['OriginalPath'])
         assert not original.is_absolute() and original.parts[0] == '.git' and '..' not in original.parts
-        assert (PUB / str(original)).read_bytes() == raw
+        original_raw = (PUB / str(original)).read_bytes()
+        assert original_raw == raw
         retained[member.name] = raw
         inventory.append({**row, 'LocalOriginalEqual': True})
 assert set(retained) == set(expected)
@@ -175,13 +180,17 @@ assert all(instant(c['start']) <= instant(c['end']) for c in calls)
 assert all(instant(a['end']) <= instant(b['start']) for a, b in zip(calls, calls[1:]))
 assert raw('pr-17051-main-proof-1/2-stdout') == (MERGE + '\n').encode()
 assert proof['MergeParent'] == proof['Base'] == BASE and proof['ObservedMain'] == MERGE
-assert git('rev-parse', MERGE + '^').decode().strip() == BASE
-assert git('merge-base', BASE, HEAD).decode().strip() == BASE
+observed_parent = git('rev-parse', MERGE + '^').decode().strip()
+assert observed_parent == BASE
+observed_base = git('merge-base', BASE, HEAD).decode().strip()
+assert observed_base == BASE
 # This is the sole Git object-writing operation, directed to our own clone.
 recomputed = git('merge-tree', '--write-tree', BASE, HEAD, own=True).decode().strip()
 assert recomputed == TREE == proof['ExpectedWholeTree'] == proof['MergedWholeTree']
-assert git('rev-parse', MERGE + '^{tree}').decode().strip() == TREE
-assert git('rev-parse', HEAD + '^{tree}').decode().strip() == TREE
+observed_merge_tree = git('rev-parse', MERGE + '^{tree}').decode().strip()
+assert observed_merge_tree == TREE
+observed_head_tree = git('rev-parse', HEAD + '^{tree}').decode().strip()
+assert observed_head_tree == TREE
 git('merge-base', '--is-ancestor', MERGE, proof['ObservedMain'])
 changed_raw = git('diff', '--no-renames', '--name-only', '-z', BASE, HEAD)
 assert changed_raw == raw('pr-17051-main-proof-1/8-stdout')
@@ -228,7 +237,8 @@ assert b'strict mypy/format checks over all 14 projection source/test files.' in
 assert b'with the recorded mypy and format checks over all 14 projection\nsource/test files.' in after
 assert before.replace(b'seconds and strict mypy/format checks over all 14 projection source/test files.',
                       b'seconds, with the recorded mypy and format checks over all 14 projection\nsource/test files.') == after
-assert git('diff', '--name-only', CUT, CORRECTED).decode().splitlines() == [REGISTER]
+corrected_paths = git('diff', '--name-only', CUT, CORRECTED).decode().splitlines()
+assert corrected_paths == [REGISTER]
 typing_raw = (PUB / '.git/projection-assembled-python-gate-1/2-invocation.json').read_bytes()
 typing_call = json.loads(typing_raw)
 assert '--strict' not in typing_call['Argv'] and '--follow-imports=silent' in typing_call['Argv']
@@ -237,9 +247,11 @@ configuration_raw = committed('src/Interp.Python/pyproject.toml', SOURCE)
 configuration = tomllib.loads(configuration_raw.decode())
 assert 'strict' not in configuration['tool']['mypy']
 for path in ('mypy.ini', '.mypy.ini', 'setup.cfg', 'pyproject.toml'):
-    assert git('ls-tree', '--name-only', SOURCE, '--', path) == b''
+    root_configuration_entry = git('ls-tree', '--name-only', SOURCE, '--', path)
+    assert root_configuration_entry == b''
 handoff = committed(HANDOFF)
-assert handoff == committed(HANDOFF, CORRECTED)
+corrected_handoff = committed(HANDOFF, CORRECTED)
+assert handoff == corrected_handoff
 assert b'compiled-controller investment stays paused' in handoff
 assert b'It has not\nimplemented a new learning module or opened a dataset.' in handoff
 assert b'reference IterationLimit and certificate NoRootEnclosure.' in handoff

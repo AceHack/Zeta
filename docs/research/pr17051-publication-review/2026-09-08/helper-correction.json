@@ -1,0 +1,64 @@
+{
+  "OriginalCommit": "579593337393bb7cb212b5c82fb587a32a566dcb",
+  "OriginalManifestPreimage": {
+    "File": "audit-identities.json.before-assert-correction.gz",
+    "Identity": {
+      "Bytes": 11390,
+      "Sha256": "D71FCB1EDCFB2A66231D3DC04A41355BFC65E7BF1052822A790DF2E6E017E17B"
+    }
+  },
+  "HistoricalCurrentFileMappings": [
+    {
+      "HistoricalFile": "README.md",
+      "HistoricalIdentity": {
+        "Bytes": 1842,
+        "Sha256": "BAAD75997DC1B5B8DCA3783C148C59D233A5E28F069FE4B59E0C827EF999F770"
+      },
+      "RetainedFile": "README.md.before-assert-correction.gz",
+      "Encoding": "gzip"
+    },
+    {
+      "HistoricalFile": "audit.py",
+      "HistoricalIdentity": {
+        "Bytes": 15345,
+        "Sha256": "D4D6D528F10D6399C76170BB231EC1C8476A95CEA3883FC107EDA5EDF1C5A058"
+      },
+      "RetainedFile": "audit-2-audit.py.gz",
+      "Encoding": "gzip"
+    },
+    {
+      "HistoricalFile": "continuity-audit.py",
+      "HistoricalIdentity": {
+        "Bytes": 2321,
+        "Sha256": "44112EB2528A871FE35BF9BB2921EF29F68477BFD8F9BD6B65E1077AFCEF7184"
+      },
+      "RetainedFile": "continuity-1-audit.py.gz",
+      "Encoding": "gzip"
+    },
+    {
+      "HistoricalFile": "inspection-disposition.json",
+      "HistoricalIdentity": {
+        "Bytes": 1047,
+        "Sha256": "C3491D03C2CEE378A9E47F0F3939AFB73BAA094B17BE496E7F159F5E908F410C"
+      },
+      "RetainedFile": "inspection-disposition.json",
+      "Encoding": "identity"
+    }
+  ],
+  "HistoricalGzipRecordsUnchanged": 22,
+  "OriginalSignedReportUnchanged": {
+    "File": "docs/research/2026-09-08-pr17051-publication-review.md",
+    "Bytes": 7230,
+    "Sha256": "8E10FB8AF88201D7C379594061983EC00D10CCC27B3616E000503037C6365C18"
+  },
+  "FreshComparison": {
+    "Complete": true,
+    "AssertSubprocessAndFileReadSites": 0,
+    "ArtifactAndPublicationResultFieldsEqual": true,
+    "ReviewerGitCalls": 24,
+    "CommandOutcomeFieldsEqualExceptActualStartEnd": true,
+    "ContinuityStdoutByteIdentical": true,
+    "NumericalWorkloadExecuted": false,
+    "AssertionsDisabledRunPerformed": false
+  }
+}
