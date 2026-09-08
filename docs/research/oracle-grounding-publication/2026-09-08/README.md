@@ -62,3 +62,14 @@ of all four oracle source/specification files.
 The separate [audit-helper lint correction](../../pr17041-merge-review/2026-09-08/helper-lint-correction.json)
 preserves its original source before removing one unused import from the
 current helper. It neither changes nor reruns the historical audit result.
+
+## Verified main publication
+
+The [PR #17048 verification](pr-17048/README.md) retains the normal merge,
+complete CI and all 126 path/whole-tree checks. The shared view was refreshed
+cleanly to the merged main commit.
+
+The [independent publication review](../../2026-09-08-pr17050-publication-independent-review.md)
+checks both the magnet and oracle archives against their original records and
+actual main merge trees. It also verifies the paused compiled-investment wording;
+this adds no numerical or learned-system result.

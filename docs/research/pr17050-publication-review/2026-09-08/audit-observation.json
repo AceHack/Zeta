@@ -1,0 +1,166 @@
+{
+  "Source": "e6fd8fab2bbc2b2b119f6b475761af27830b5daf",
+  "Archives": [
+    {
+      "PR": 17045,
+      "Manifest": {
+        "Bytes": 10552,
+        "Sha256": "43a8e5de7f943cb7c30f0a4d337ae7d2a201005a7a1a1906a756402e5a6b1e78"
+      },
+      "Stored": {
+        "Bytes": 15342,
+        "Sha256": "bac482665ceb6ae5b9c5735d2b3ea4cabe631e6246d2fd7e54483a32aa6a129f"
+      },
+      "Tar": {
+        "Bytes": 266240,
+        "Sha256": "ad0b6012fc31262e4c4bdc66ced9d4379ba0e0a4a7d68725b74bdbd7a34e51c6"
+      },
+      "Members": 61,
+      "PayloadBytes": 210731,
+      "MatchingAvailableOriginals": 61,
+      "Head": "347223c09f09e58d47108377ca7326c3f4447edf",
+      "Merge": "3f241c5b8d155adab74b82e003ae450d29a32c0a",
+      "Parent": "14e2a7c0c4ad9290a95821302eeeecd6274cf96b",
+      "Base": "155d45e32d01152004a03862213550ada96fb036",
+      "WholeTree": "a1fcf73b58d32f90e1d22d2e4c11b852da611403",
+      "IndependentSimpleThreeWayEquals": true,
+      "PathsNoRenames": 59,
+      "RawSuccess": 89,
+      "RawSkipped": 2,
+      "UnresolvedThreads": 0,
+      "MergeInvocation": {
+        "StartedUTC": "2026-09-08T05:57:34.515582+00:00",
+        "FinishedUTC": "2026-09-08T05:57:37.502892+00:00",
+        "Argv": [
+          "/opt/homebrew/bin/gh",
+          "pr",
+          "merge",
+          "17045",
+          "--squash",
+          "--match-head-commit",
+          "347223c09f09e58d47108377ca7326c3f4447edf",
+          "--body-file",
+          ".git/magnet-publication-pr-body.md"
+        ],
+        "Exit": 0,
+        "Seconds": 2.987208843231201
+      },
+      "MergeProcess": {
+        "StartedUTC": "2026-09-08T05:57:34.515582+00:00",
+        "FinishedUTC": "2026-09-08T05:57:37.502892+00:00",
+        "Argv": [
+          "/opt/homebrew/bin/gh",
+          "pr",
+          "merge",
+          "17045",
+          "--squash",
+          "--match-head-commit",
+          "347223c09f09e58d47108377ca7326c3f4447edf",
+          "--body-file",
+          ".git/magnet-publication-pr-body.md"
+        ],
+        "Exit": 0,
+        "Seconds": 2.987208843231201
+      },
+      "Transcript": {
+        "Bytes": 28287,
+        "Sha256": "c48054e83727c1b717a8b4b703a1ecf830a4b47fe9152808294887b33aa956eb"
+      }
+    },
+    {
+      "PR": 17048,
+      "Manifest": {
+        "Bytes": 23464,
+        "Sha256": "cef66ec162b6644208b1aa114523c852fcd8a2299355cff949f7f7296c9e68ff"
+      },
+      "Stored": {
+        "Bytes": 7995885,
+        "Sha256": "6460c37c23b887e9e3c591884e8635a04b3ca79ac8eaee5d084ac93a94e8233a"
+      },
+      "Tar": {
+        "Bytes": 27279360,
+        "Sha256": "4206911e2bd95bee2306f414b97cda39de5238d1279c59c5c5860b5d5e1c6731"
+      },
+      "Members": 101,
+      "PayloadBytes": 27196305,
+      "MatchingAvailableOriginals": 101,
+      "Head": "b71d9a720cca3e9f2cc5b269e63f3b99b0a23e8c",
+      "Merge": "b6bb61f2b255093790f8bdf84dc1b6f0f612f4d9",
+      "Parent": "8abc664dcd52227b6b9d7f14cac232521dac5502",
+      "Base": "3f241c5b8d155adab74b82e003ae450d29a32c0a",
+      "WholeTree": "a21cac6b0495f8e32ec14956b728a7d0b0a96f38",
+      "IndependentSimpleThreeWayEquals": true,
+      "PathsNoRenames": 126,
+      "RawSuccess": 90,
+      "RawSkipped": 2,
+      "UnresolvedThreads": 0,
+      "MergeInvocation": {
+        "Argv": [
+          "/opt/homebrew/bin/gh",
+          "pr",
+          "merge",
+          "17048",
+          "--squash",
+          "--match-head-commit",
+          "b71d9a720cca3e9f2cc5b269e63f3b99b0a23e8c",
+          "--body-file",
+          ".git/pr-17048-merge-1/body.md"
+        ],
+        "StartUtc": "2026-09-08T07:02:13.668168+00:00",
+        "Cwd": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908"
+      },
+      "MergeProcess": {
+        "Exit": 0,
+        "EndUtc": "2026-09-08T07:02:16.980774+00:00",
+        "Seconds": 3.3123958110809326
+      }
+    }
+  ],
+  "PublicationFiles": [
+    {
+      "Path": "docs/research/2026-09-08-distributional-learning-resource-aware-integration-direction.md",
+      "Bytes": 27685,
+      "Sha256": "a8a362543cd5913dd5175bdcfa8e00679fc1d114ff7838fa7854b3b9469131c8"
+    },
+    {
+      "Path": "docs/research/2026-09-08-history-generators-and-hidden-evolution-under-repetition.md",
+      "Bytes": 7338,
+      "Sha256": "692c030f15aa2e396cc3e918ec50ce0be6552f35b1deb1c53079e765a643e2fa"
+    },
+    {
+      "Path": "docs/research/magnet-history/2026-09-08/pr-17045/README.md",
+      "Bytes": 2116,
+      "Sha256": "20dbc693544e0ad65a48c228ab339ecc3bb4048eeae5f027d3d68c9c6248efa3"
+    },
+    {
+      "Path": "docs/research/magnet-history/2026-09-08/pr-17045/custody.tar.gz",
+      "Bytes": 15342,
+      "Sha256": "bac482665ceb6ae5b9c5735d2b3ea4cabe631e6246d2fd7e54483a32aa6a129f"
+    },
+    {
+      "Path": "docs/research/magnet-history/2026-09-08/pr-17045/manifest.json",
+      "Bytes": 10552,
+      "Sha256": "43a8e5de7f943cb7c30f0a4d337ae7d2a201005a7a1a1906a756402e5a6b1e78"
+    },
+    {
+      "Path": "docs/research/oracle-grounding-publication/2026-09-08/README.md",
+      "Bytes": 4099,
+      "Sha256": "e077a066aa7d62a4e6a54fc3af63dbef11a4856a7ea49771e59ae26023cf0fc3"
+    },
+    {
+      "Path": "docs/research/oracle-grounding-publication/2026-09-08/pr-17048/README.md",
+      "Bytes": 2451,
+      "Sha256": "a2f32d23d61b55981aef184f895990e1bc3e4fe79e5e6e6e2918c5222afbc72a"
+    },
+    {
+      "Path": "docs/research/oracle-grounding-publication/2026-09-08/pr-17048/custody.tar.gz",
+      "Bytes": 7995885,
+      "Sha256": "6460c37c23b887e9e3c591884e8635a04b3ca79ac8eaee5d084ac93a94e8233a"
+    },
+    {
+      "Path": "docs/research/oracle-grounding-publication/2026-09-08/pr-17048/manifest.json",
+      "Bytes": 23464,
+      "Sha256": "cef66ec162b6644208b1aa114523c852fcd8a2299355cff949f7f7296c9e68ff"
+    }
+  ]
+}
