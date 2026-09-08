@@ -1,0 +1,74 @@
+{
+  "PreparationSource": {
+    "Bytes": 5645,
+    "Sha256": "7dfeaf5d20ef1557de017fa44c8ca3ac39528096f549401b9ac471c33d677246"
+  },
+  "Records": [
+    {
+      "File": "Tsirelson.fs.before.gz",
+      "Original": {
+        "Bytes": 3744,
+        "Sha256": "7403f6702faf134062c257c73516c56f986a4ad31ad576d7846953bacae83f92"
+      },
+      "Stored": {
+        "Bytes": 1700,
+        "Sha256": "34547ded0f46671918d5d2839f361de4372ff4ddb87baefcc22c23b49249ad4d"
+      }
+    },
+    {
+      "File": "Tsirelson.fs.proposed.gz",
+      "Original": {
+        "Bytes": 3765,
+        "Sha256": "c3f0a8e5b4a8d07ba71742be4d9a21020ee76b407bc0aa7cc4655a889a1037f6"
+      },
+      "Stored": {
+        "Bytes": 1705,
+        "Sha256": "011fd790750b7d6a49e222da3697751d36ee10167453788c3ba16a763d97f98e"
+      }
+    },
+    {
+      "File": "FeedbackThrottle.fs.before.gz",
+      "Original": {
+        "Bytes": 12378,
+        "Sha256": "63c2feabc69522a93d562c78c1035919ace2f7e3506957c1092992c1000ace7c"
+      },
+      "Stored": {
+        "Bytes": 4724,
+        "Sha256": "70772b7b14811847587cfc24396eb9988532f77f3b25ac7941c4db34f29e7e58"
+      }
+    },
+    {
+      "File": "FeedbackThrottle.fs.proposed.gz",
+      "Original": {
+        "Bytes": 12419,
+        "Sha256": "4fb3d52ce450372dfb1f10483ff57dbce6b4fd12852c3b369b440c36d28909d9"
+      },
+      "Stored": {
+        "Bytes": 4772,
+        "Sha256": "d02fc621ac40d14d6bfcea776b72790378f17fc1a5fa81ea1e5b14113ef10600"
+      }
+    },
+    {
+      "File": "comment-only.patch.gz",
+      "Original": {
+        "Bytes": 2051,
+        "Sha256": "28e6b982d5cb0cc2e80f54c76130360dc8939a406abb391b1dd487b1cf4563d1"
+      },
+      "Stored": {
+        "Bytes": 1100,
+        "Sha256": "326bb4f59d0b14f637aac12ef32a1c34b2fd34fa1ec12c1192ec1b41af5b65b2"
+      }
+    },
+    {
+      "File": "result.json.gz",
+      "Original": {
+        "Bytes": 10324,
+        "Sha256": "bf620afbbb689a0a2c1d4f99125c61fbc2e62a7076743906ff555eb510f8f765"
+      },
+      "Stored": {
+        "Bytes": 2449,
+        "Sha256": "72027f610129a16319cadbbbbab9087b6b948d7ffd7cc8c2b76bff216aefedf3"
+      }
+    }
+  ]
+}
