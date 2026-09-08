@@ -198,7 +198,12 @@ preservation script attempted nonexistent Directory.Build.targets while collecti
 source pins. The second script removed that incorrect conventional filename;
 it did not rerun any native calculation or replace prior command outcomes.
 
-The full local gate is running against bf2da44. Independent complete source
-review and final registration remain pending. Focused validation does not
-substitute for that review, the complete gate, the independent reference or
-the registered final comparison.
+The [full local gate and formatter custody](precision-gate-projection/2026-09-08/native-gate-1/manifest.json)
+retain all eight raw records and exact six unchanged source/test/wiring identities.
+Full preflight at bf2da44 completed exit 0 with all 18 checks passed, including
+Release build and the full test suite (06:17:49.526725 to 06:29:16.477780 UTC).
+Later commits during that gate only preserved evidence and report prose. The
+formatter exited 0 but explicitly reported F# projects unsupported; that is not
+F# formatting coverage. Independent complete source review and the registered
+final comparison remain pending. These local checks do not substitute for the
+independent reference or that final comparison.
