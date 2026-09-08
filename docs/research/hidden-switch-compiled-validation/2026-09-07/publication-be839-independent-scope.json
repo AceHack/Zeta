@@ -1,0 +1,297 @@
+{
+  "Scope": "Publication source/scope comparison only; no test, artifact replay, target or measurement",
+  "Candidate": "be839a0c4784b25c35eb4a1cfb43fe087c11c999",
+  "MainBase": "fcbfaf8188a31ac6dbe5b00e1731c692ed5919be",
+  "ImportedSource": "cb4514e06b61fcebb2600ea8ea7f11abd08c8bcd",
+  "ChangedPaths": 2315,
+  "TopLevelCounts": {
+    "docs": 2282,
+    "src": 29,
+    "tests": 2,
+    "workitems": 2
+  },
+  "SourceAndTestFiles": [
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 15134,
+      "Sha256": "4c0e2f9f8f0179219924079f3bc838def828d12743928a4e306edb78e4a80195",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "e6238f8acc89c4d619c6631f0cb0111aa9258c20",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_replay.py",
+      "Bytes": 16999,
+      "Sha256": "899eee7dcddc21f661502fcfdb4b64dcd17f83a47c514b34e258b4c7effd7466",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "e6238f8acc89c4d619c6631f0cb0111aa9258c20",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_identity_replay.py",
+      "Bytes": 21660,
+      "Sha256": "0f15b0f967b281e17902304e6d8d5c1cb7870efd051f2bed04d9228fecd87d8a",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "d3bd541e1d043e199c4b54b5390450028473c1cd",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_native_fixtures.py",
+      "Bytes": 21458,
+      "Sha256": "5b6e71b3262ac08d6c704273ef7472dbc5b341c0b47852c88791ae49749e4694",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "cb0f7868eae2d467901fa3800416f0ac8a28892c",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_outer_artifacts.py",
+      "Bytes": 12080,
+      "Sha256": "eb51d77ca23ca815aa504c2a4b03fdfe9cbaaef386cb160daa4aed992627b76a",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "0e0008386865202805ab32450c298be9049228a9",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_outer_structure.py",
+      "Bytes": 15198,
+      "Sha256": "f8742ff762092eccbf1afac949675afb20729e2bfabeb34c3a78a7702e619ddd",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "9f8dca17624aea59e96db7c2230493997a4a6a86",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_record_store.py",
+      "Bytes": 27249,
+      "Sha256": "994137f9a83008649cb21d891c6bdafb3f06b090e7d6988f492785b50809a10e",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "f45a7aca501e2dc5125b5f3863ecb83862780eb0",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_static_replay.py",
+      "Bytes": 24506,
+      "Sha256": "70dd52d43e0e1c467a628c073be40084516c8497069132c4f9019a75a8878ae8",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "dc42bd64b302981e9b9a093db8b02183b52e5d05",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 21212,
+      "Sha256": "deb65f08b364923a7f78b7cc56e60b92f877f1cb1f8814891e8b352ab8f4427c",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "e6238f8acc89c4d619c6631f0cb0111aa9258c20",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_replay.py",
+      "Bytes": 18140,
+      "Sha256": "257d8280d03609d8a0f82a44796f402ba9901e1a9e6b101dc15524adb0798efc",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "e6238f8acc89c4d619c6631f0cb0111aa9258c20",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_replay.py",
+      "Bytes": 36876,
+      "Sha256": "00522b05e4679fbda8d201f8b3847bc8cf00ee10beac5d03f8fd5ca1c7eb1150",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "d3bd541e1d043e199c4b54b5390450028473c1cd",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_native_fixtures.py",
+      "Bytes": 19120,
+      "Sha256": "e02a44445949335824af9e09990fe34777723ab054c54bfa6fc5c4dcd96953bd",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "cb0f7868eae2d467901fa3800416f0ac8a28892c",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_artifacts.py",
+      "Bytes": 7194,
+      "Sha256": "b080371d01e61b045a3eb6bcf33feb8af4f5d0b99e5105398fef7bcfd98e8018",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "0e0008386865202805ab32450c298be9049228a9",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_structure.py",
+      "Bytes": 17471,
+      "Sha256": "330ea0276adee2e17bd3ff5729032076c11e7421c77ccf6186364e27b22fcd32",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "9f8dca17624aea59e96db7c2230493997a4a6a86",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 20305,
+      "Sha256": "75ba7825f7e925460b411c977c4f9f4f34d55ba40383b4f47482c1db652e1008",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "f45a7aca501e2dc5125b5f3863ecb83862780eb0",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_static_replay.py",
+      "Bytes": 15552,
+      "Sha256": "0ad063e0003637a22f6bfa3eb8cb55135b5d8a19e88d499f46ff097b4b07b252",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "dc42bd64b302981e9b9a093db8b02183b52e5d05",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/Admission.fs",
+      "Bytes": 14611,
+      "Sha256": "aa2a97f0fc8e2e4160d3e8acbd8e75af9e8d14cf2406600471bb283fdbf35825",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "af90bfc9e95fbdb8246c438da26e30a727bcbb5f",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/HiddenSwitchMetadata.fsproj",
+      "Bytes": 3170,
+      "Sha256": "8eac0c22c0a5ad54c8bd6cdc213548bd108dd04ba314e3ab19ae087df8643dd6",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "c1cf790218d0584330743cf0178f9dc75772c439",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/NativeImages.fs",
+      "Bytes": 3937,
+      "Sha256": "34cf43ed8d6deaa96e5a90f8b0c32f1e2b9950916d6d8cd49c7b4b488651ce35",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "2f068ba34da612f82370c64cef4e38a909e7edd5",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/Program.fs",
+      "Bytes": 25760,
+      "Sha256": "904fe28e51671665bc56d4e47d411696a59b8b6fe93c6dbd2312fac4541a01d8",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "af90bfc9e95fbdb8246c438da26e30a727bcbb5f",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/MetadataProbe/dependencies.json",
+      "Bytes": 3329,
+      "Sha256": "0d655825ca695206198fb1a6980006bc8f2e468d03ac15fdfd81c59020fafc8e",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "2f068ba34da612f82370c64cef4e38a909e7edd5",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/capture_hidden_switch_dump.py",
+      "Bytes": 16991,
+      "Sha256": "446d7e8330f69c553f54d70a3e75d9b37d3b9c3bad7bbb361ceeae3473f7e821",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "a03852a28415c5d8ffffbcb39a852e7ad6b175f9",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/decode_hidden_switch_methods.py",
+      "Bytes": 18726,
+      "Sha256": "95542b00fe4a16728bc1f04de1914f91a952bfebb61654143882b47e6afd211b",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "20043d1408bfa3a515f5d59864ad858595044707",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/map_hidden_switch_methods.py",
+      "Bytes": 7717,
+      "Sha256": "2b5f8fb9b1b8f4d8b6dd219fb6d4ec4fbecdc69ac2c2306637e19658577bb027",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "37a8bc1ca61d7018310d6cfdf5a35efbd73df4b9",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/probe_hidden_switch_metadata.py",
+      "Bytes": 22353,
+      "Sha256": "9a3d1b8864f614598fb0b50b98604752fd80cb9fe8120ca3984c748a48ba79f0",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "af90bfc9e95fbdb8246c438da26e30a727bcbb5f",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_capture_hidden_switch_dump.py",
+      "Bytes": 4514,
+      "Sha256": "9e7b8f53544b68b81d407c71ef7000a1773eef61c03a6e9faf7ae55ae69f5ea1",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "a03852a28415c5d8ffffbcb39a852e7ad6b175f9",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_decode_hidden_switch_methods.py",
+      "Bytes": 13438,
+      "Sha256": "4deda191005c3a50925dad1fffc265bcbe947aa54f083ef8a07fe8fcf9800fbb",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "20043d1408bfa3a515f5d59864ad858595044707",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_map_hidden_switch_methods.py",
+      "Bytes": 2387,
+      "Sha256": "10e32b3191927ea58c21fe1147f074a8f20209b81087376b4254d029498b4104",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "37a8bc1ca61d7018310d6cfdf5a35efbd73df4b9",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "src/Research.FSharp.Cli/test_probe_hidden_switch_metadata.py",
+      "Bytes": 11676,
+      "Sha256": "4655a9be4116f96cc0b2a65be855ebcc5c0c3b2f7a92ca834eb3c33b42830a7e",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "af90bfc9e95fbdb8246c438da26e30a727bcbb5f",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "tests/Tests.FSharp/HiddenSwitchMetadata.Tests.fs",
+      "Bytes": 13421,
+      "Sha256": "3dda07fcaf46ed4aaf414c64135477dd7d794cfdd6d5e25c10a71bf1f48ccc65",
+      "EqualsImportedSource": true,
+      "AcceptedSourcePin": "af90bfc9e95fbdb8246c438da26e30a727bcbb5f",
+      "EqualsAcceptedSource": true
+    },
+    {
+      "File": "tests/Tests.FSharp/Tests.FSharp.fsproj",
+      "Bytes": 48612,
+      "Sha256": "6c139da325c96157263b4230db61507dc887ba8b3f63f0dfa4d7da2a42631b71",
+      "EqualsImportedSource": true,
+      "AcceptedContribution": "Reviewed metadata compile/fixture-copy wiring; seven added lines only over main"
+    }
+  ],
+  "InheritedMainSourceDifferences": [
+    "src/Core.TypeScript/cluster/dev-cluster/lib.ts",
+    "src/Core.TypeScript/cluster/single-node-readiness.test.ts",
+    "src/Core/ZetaFsFuseAbi.fs",
+    "src/Core/ZetaFsFuseSession.fs",
+    "tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs",
+    "tests/Tests.FSharp/ZetaFsFuseSessionLookup.Tests.fs"
+  ],
+  "ClaimPaths": [
+    "docs/claims/task-compiled-replay-custody-publication-20260908.md"
+  ],
+  "WorkItems": [
+    "workitems/081M1Z5ZW1T087G0R0002KPWJ8-publish-reviewed-compiled-replay-and-native-custody-evidence.md",
+    "workitems/events/2026/09/08/080d03f2ff81d810a0130008844494a8.json"
+  ],
+  "OtherTopLevelPaths": [],
+  "Passed": true,
+  "FirstGate": {
+    "ManifestBytes": 1554,
+    "ManifestSha256": "b689602a1319010b508fbf64d722a3dd2ee4236daaadb955e170f636ff9e81ba",
+    "Exit": 1,
+    "PassedChecks": 17,
+    "DiagnosticEntries": 114,
+    "RegularFiles": 111,
+    "RegularFileBytes": 5061374,
+    "ArchiveRoot": "QuorumCollateralDeterrenceR2-3ab297c2fdea4699a411997f8f8f716e",
+    "ArchiveAndAllMemberHashesVerified": true,
+    "TargetedUnchangedRetryPassed": 1
+  },
+  "SecondGate": {
+    "SourceCommit": "be839a0c4784b25c35eb4a1cfb43fe087c11c999",
+    "Bytes": 1362,
+    "Sha256": "c7561cf0e5dd61e406cffae95b49151dd32602169a68889a2fdb2068e889768d",
+    "ExecutedChecksPassed": 18
+  }
+}
