@@ -1,6 +1,6 @@
 # Durable-Room Maximal-Decorrelation/Reconciliation Preflight Contract v1
 
-**Status:** implementation preflight contract; **not yet implemented or measured**.
+**Status:** source-owned score-free preflight implemented; **no selection or measurement result**.
 **Register:** `toy` / source-owned finite conformance.
 **Parent boundary:** [`2026-09-08-maximal-decorrelation-reconciliation-measurement-contract.md`](2026-09-08-maximal-decorrelation-reconciliation-measurement-contract.md).
 
@@ -55,7 +55,7 @@ The value is a declared finite state-distance only. It has no semantic, physical
 
 ## 4. Independent roles and canonical receipt
 
-The F# emitter and independently authored Python verifier must each implement the pinned corpus, ordered catalogue, integer metric, reconciliation predicate, canonical UTF-8 JSON receipt, SHA-256 digest, and result ordering without invoking the other language or the TypeScript fold implementation at runtime. They may use the committed TypeScript fixture only as a source specification.
+The F# emitter (`src/Research.FSharp/DurableRoomMaxDecorrelationPreflight.fsx`) and independently authored Python verifier (`src/Core.Python/src/zeta/durable_room_max_decorrelation_preflight.py`) each implement the pinned corpus, ordered catalogue, integer metric, reconciliation predicate, canonical UTF-8 JSON receipt, SHA-256 digest, and result ordering without invoking the other language or the TypeScript fold implementation at runtime. The Python conformance test invokes the F# script only as a one-shot external emitter and compares its stdout bytes to a separately computed Python receipt; neither receipt implementation may invoke, import, or reuse the other. Both may use the committed TypeScript fixture only as a source specification.
 
 Each receipt must bind: implementation identity and revision, runtime identity, canonical anchor bytes and SHA-256, canonical catalogue bytes and SHA-256, candidate ID, atom sequence, causal-order digest, intermediate unresolved status where required, final folded view, metric value, reconciliation witness, `chshSidecar: absent`, and the receipt digest. The wrapper must fail if the independent receipt bytes or digest differ.
 
@@ -77,7 +77,7 @@ Each receipt must bind: implementation identity and revision, runtime identity, 
 
 ## 6. Decision boundary
 
-The only admissible preflight outcomes are `conformant-preflight`, `unmeasured`, and `refused`. A successful preflight authorizes only a separately reviewed result-receipt implementation. It does not authorize winner selection, a claim that one candidate maximally decorrelates anything beyond this finite catalogue, or any claim about `2√2`, ARC, intelligence, agents, language, physics, or society.
+The implemented preflight emits byte-identical F#/Python receipts for the pinned three-entry catalogue and has ten targeted controls covering the required mutations. It reports the catalogue’s state-distance values (`0`, `150023`, `150023`) but contains no result-selection field and therefore makes no finite-optimum claim. The only admissible preflight outcomes are `conformant-preflight`, `unmeasured`, and `refused`. A successful preflight authorizes only a separately reviewed result-receipt implementation. It does not authorize winner selection, a claim that one candidate maximally decorrelates anything beyond this finite catalogue, or any claim about `2√2`, ARC, intelligence, agents, language, physics, or society.
 
 ## References
 
