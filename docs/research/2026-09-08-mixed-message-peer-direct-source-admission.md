@@ -10,10 +10,11 @@ Work item: 081M1Z63YMC087G0R003N5FH9X
 This extends the [transport foundation](2026-09-08-mixed-message-peer-transport-foundation.md)
 in the single owned
 [peer script](../../src/Research.FSharp/MixedMessageEpochReplay.fsx).
-The script now calls the pinned core codecs and preliminary admission, but
-still has no main or runEpoch invocation. Ready, projection/ACK/Commit,
-EpochReturn and Terminal integration remain pending. This progress must not
-be promoted as an implemented M4/M5 route.
+This report preserves the earlier codec/admission checkpoint, which had no
+main or runEpoch invocation. The later
+[callback and lifecycle implementation](2026-09-08-mixed-message-peer-lifecycle-source.md)
+records that added source separately. Neither checkpoint admits an actual
+M4/M5 route; complete peer review and assembled admission remain pending.
 
 ## Direct observations before Ready
 
