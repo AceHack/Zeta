@@ -20,7 +20,8 @@ and uncertainty retained while deciding what to compute and do next**.
 This extends the [active compiled-controller work](../handoffs/2026-09-07-vera-compiled-controller-continuation.md).
 It does not change that experiment's frozen protocol or unlock its registered
 streams. The original hidden-switch study is a known-model control result;
-the compiled follow-on tests certified execution cost. Neither establishes
+the compiled follow-on is intended to test certified execution cost, with
+runtime admission and registered cost evidence still pending. Neither establishes
 learned world-model quality. The new learning comparisons need separate
 registration, source archives and held-out data. This program belongs in the
 control plane; it does not move learning into the ordinary data-plane hot path.

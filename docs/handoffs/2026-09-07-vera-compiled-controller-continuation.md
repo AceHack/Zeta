@@ -1,7 +1,7 @@
 # Vera: compiled-controller continuation
 
 Date: 2026-09-07
-Checkpoint: 23:24 UTC
+Checkpoint: 2026-09-08 00:29 UTC
 From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
@@ -17,7 +17,7 @@ Status: implementation active; registered experiment unopened
 > original study's source/results. The original hidden-switch result and new
 > registration are on main through PRs #16928 and #16947. Historical graph
 > capture five is on main through #16974, with all runtime admission flags false.
-> The current compiled Python subset passes 1,164 tests; actual native semantic
+> The e623 source cut passes 1,259 compiled Python tests; actual native semantic
 > replay passes all registered hand slices. Neither is full implementation
 > admission. Finish the 92-case recorder/replayer and actual runtime body/closure
 > evidence, independently review the complete source, and publish the immutable
@@ -41,26 +41,47 @@ inventory includes one explicitly checked inherited FUSE project integration.
 Current required/native checks passed; the historical drift reporter remains
 separately red. The shared view is clean and ancestry verified.
 
-The [sixth integrated validation](../research/hidden-switch-compiled-validation/2026-09-07/integration-6/README.md)
-passes 1,164 compiled Python tests in 82.61 seconds at
-`6f497346389491ccd8be30f774aa857f42ad6854`, binding 91 source/config
-files and the complete 4,503-entry owned tree. This adds reviewed record-store,
-outer-structure and strict artifact-reader primitives. Actual complete outer
-production and independent static/file/identity/native replay remain in progress.
+The [seventh integrated validation](../research/hidden-switch-compiled-validation/2026-09-07/integration-7/README.md)
+passes 1,259 compiled Python tests in 92.20 seconds and all 18 full repository
+preflight checks at `e6238f8acc89c4d619c6631f0cb0111aa9258c20`. It binds
+95 source/config files and the complete 4,870-entry owned fixture tree. Later
+identity replay passes its own 55 tests and independently audited fifteen
+original/fresh case pairs; the new combined run is still in progress.
 
-Fresh copied-target custody and a version-pinned isolated ClrMD query now
-establish the first three current method extents. The native owner additionally
-observed all 130 prepared methods matching 34,660 compiler/physical bytes at
-`b672cd5b3c40423982ff7bdaed9439562f6f6e48`; that newer actual evidence is
-awaiting independent review at this checkpoint. This does not imply every
-prepared method dynamically executed. All full runtime/body/closure flags
-remain false. The old SOS refusals are not retroactively changed.
+The actual seven file cases retain eleven original and eleven fresh operations,
+all seven matches and all 56 complete store-return associations. Both the source
+and 132-artifact capture have independent acceptance. The gzip fixture's earlier
+wrong-boundary refusal and all subsequent source/evidence repairs are preserved.
+The static replay source and actual captures are independently accepted.
 
-The detailed sections below retain the prior 22:14 snapshot and its exact run
-scopes; this checkpoint takes precedence for current work ordering. No immutable
-implementation archive or registered 9307/9409 stream exists. The next work is
-finite call decoding/closure and complete outer producer/replay, followed by
-independent admission and archival before any scientific measurement.
+Copied-target custody and the isolated ClrMD query establish all 130 current
+prepared-method extents matching 34,660 compiler/physical bytes. Independent
+review accepted the 700-record actual capture. The separately reviewed LLVM
+attempt three decodes all 8,665 four-byte words, with empty diagnostics and
+complete correspondence, at unchanged actual source/tool pins. Both earlier
+refused decoder attempts remain preserved. This does not imply every prepared
+method ran or that the full call/body closure is resolved. All full runtime,
+body and closure flags remain false; a retained-data transfer inventory is next.
+
+The next bounded publication imports these reviewed prerequisites through
+`cb4514e06b61fcebb2600ea8ea7f11abd08c8bcd` in the separate publication
+writer. Its own full gate is running; no later main publication is yet claimed.
+Native-dependent pure replay and actual complete outer orchestration remain
+active. No immutable implementation archive or registered 9307/9409 stream
+exists. The detailed sections below retain the prior 22:14 snapshot and its
+exact scopes; this checkpoint takes precedence for current work ordering.
+
+## Added learning direction
+
+Aaron's new [distributional learning direction](../research/2026-09-08-distributional-learning-resource-aware-integration-direction.md)
+connects Liouville/QBism, EP/BP/VMP, affective propagation, relational memory,
+FerryThrottler, scheduler/Vision/CHIP8 prediction and multiple resource types.
+Work item `081M1Z63YMC087G0R003N5FH9X` starts with executable small-room
+invariants, then separately registered learned-prediction and external-baseline
+comparisons. Benchmark results determine further investment. The existing
+compiled registration remains unchanged. The first actual resource probe found
+three monotonic-grant counterexamples in `PrivacyEconomy.reward`; their exact
+source/output is preserved and a bounded repair is next.
 
 ## Current evidence
 

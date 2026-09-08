@@ -82,3 +82,13 @@ strict retention and outer read primitives are integrated. All 130 current
 prepared-method extents were observed by the native writer and await independent
 actual-evidence review. Full outer production/replay and runtime closure remain
 pending. The parent co-claim remains active; registered streams remain closed.
+
+## Progress: 2026-09-08, 00:29 UTC
+
+All 18 full repository checks and 1,259 compiled Python tests passed at the
+recorded source cut. Actual file, identity and 130-method extent/LLVM captures
+have independent evidence acceptance. The next finite publication is in its
+own writer and gate; full outer/native closure and immutable archive remain
+pending. The user additionally authorized the separately indexed distributional
+learning program, with independent experiments and benchmark-driven allocation.
+The parent compiled protocol, original results and closed streams are unchanged.
