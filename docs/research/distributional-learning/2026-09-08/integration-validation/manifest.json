@@ -1,0 +1,62 @@
+{
+  "SourceCommit": "3d1da6b9f7505924a804974100e2758184f0fe7c",
+  "FullPreflight": {
+    "ExitCode": 0,
+    "PassedChecks": 18
+  },
+  "OrdinaryPush": {
+    "ExitCode": 0,
+    "QuickChecksPassed": 16,
+    "RemoteRefsVerified": 4
+  },
+  "Artifacts": [
+    {
+      "File": "distributional-integration-full-preflight-1.log.gz",
+      "Bytes": 1362,
+      "Sha256": "c7561cf0e5dd61e406cffae95b49151dd32602169a68889a2fdb2068e889768d",
+      "StoredBytes": 437,
+      "StoredSha256": "d7a238cfb20ba29f3e750c607ff137ce2206e09a382c0d2ae1b065eb37403d40",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-root-preservation-push-1.log.gz",
+      "Bytes": 1943,
+      "Sha256": "ace90277360f58f56c961d9bfa0205ebfaa37b53c856946b3e89268f5c370b64",
+      "StoredBytes": 735,
+      "StoredSha256": "5ffe05c49bb454e608a55c73addc0ee826d6e782b0d2d45ed0a7de42132d7b27",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-root-preservation-remote-1.txt.gz",
+      "Bytes": 383,
+      "Sha256": "8600037baa0fb1bc8974aa27a7285a08ee5d44a6c2db029dfca4e211ee74bb7b",
+      "StoredBytes": 162,
+      "StoredSha256": "8beca8ac325875ab9040cc61d1e3e27b3fb171ad28ccc9a5e63ada16aae484fd",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-reference-import-1.log.gz",
+      "Bytes": 1764,
+      "Sha256": "b3534c8847c545973c2a9796b0d1b6d3f30fbea6af0bab7a2cf86f1db6ba92a5",
+      "StoredBytes": 582,
+      "StoredSha256": "b71a01804ee68d8ce885e887041ccf96db6cfac712a1be1b484245738aedf4b6",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-review-import-1.log.gz",
+      "Bytes": 1522,
+      "Sha256": "59eb77f212a12c8c6262f087e9cb8011fc5d1a5402c2753dc31fdf9823cdb55b",
+      "StoredBytes": 495,
+      "StoredSha256": "071406965f4f032b4ffed3863a98ffe809ad82d094350653cb4bcf546fb1ce7f",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-evidence-review-import-1.log.gz",
+      "Bytes": 1453,
+      "Sha256": "e4933d2f2b583acc7b9f95c8503afe0bc381a4ef7a1244a68c8f013aa956c575",
+      "StoredBytes": 328,
+      "StoredSha256": "9f7934325da9d1291e95bfb2a40470dfdf42f46b2a7d919dba2f83d277d98eb3",
+      "Encoding": "gzip"
+    }
+  ]
+}
