@@ -3,11 +3,11 @@
 **Date:** 2026-09-07  
 **Author:** Manus AI (Lumen)  
 **Repository:** `Lucent-Financial-Group/Zeta`  
-**Handoff state:** `origin/main` was `c9c3b94cb680c839d2ef80fada2a36d6c8bb8dd2` when this document was updated.
+**Handoff state:** `origin/main` was `5585c17c81e06878570bb1630786473e7fbec27f` when this document was updated.
 
 ## Key recommendation
 
-> Preserve the current discipline: **a pinned carrier, a finite claim, independently authored replay, and a mutation that fails** are required before a result becomes an evidence-room candidate. Keep policy self-knowledge as a local declaration/receipt and bounded ticks as execution envelopes. Do not turn either into a hidden global reward, a consent inference, or society-level authority. The MiniGrid policy-comparison and score-emitter-readiness documents have now merged, but their score gate remains closed until independently authored F# and upstream-Python emitters plus their mutations pass. The ARC correction is also merged: the next ARC step is a score-free carry-state partition preflight, not a new score or a claim of general learning. The withdrawal contract has merged, but implementation correctly remains deferred because no externally supplied roster-bound parent attestation exists.
+> Preserve the current discipline: **a pinned carrier, a finite claim, independently authored replay, and a mutation that fails** are required before a result becomes an evidence-room candidate. Keep policy self-knowledge as a local declaration/receipt and bounded ticks as execution envelopes. Do not turn either into a hidden global reward, a consent inference, or society-level authority. The MiniGrid policy-comparison and score-emitter-readiness documents have now merged, but their score gate remains closed until independently authored F# and upstream-Python emitters plus their mutations pass. The ARC correction, task-scoped memory policy, and score-free online-memory receipt contract are now merged: memory can update after each lawful interaction, but its origin, availability, uncertainty, retraction, and causal replay must remain observable before any score is interpreted. The withdrawal contract has merged, but implementation correctly remains deferred because no externally supplied roster-bound parent attestation exists.
 
 ## 1. Executive status
 
@@ -136,6 +136,19 @@ The receipt makes memory origin, availability time, current-level early reads,
 transition-policy changes, and identity mismatch observable. It introduces no
 new agent, score, official interface call, model selection, or generalization
 claim. [15]
+
+The complementary `arc-online-memory/v1` contract merged as #17010
+(`7fd856981b21045eb98d43e079400999e375c5c6`). It identifies a learning update
+as a durable, content-addressed event: prior/next memory state digest, lawful
+event/action/outcome identity, update-rule identity, uncertainty contribution,
+memory reads/writes, causal predecessor, and the current-level observation
+barrier are all bound together. It permits continued prior-level and cross-game
+memory, including CHIP-8/Atari history; it refuses only undeclared memory or
+answer-bearing payload from the ARC level before that level's first lawful
+observation. Updates can be retracted as an exact `−1` atom plus a replacement
+`+1` atom; out-of-order atoms are retained unresolved until their predecessor
+arrives, then causally replayed. This is an online-memory provenance contract,
+not a learner implementation or an ARC score. [16]
 
 ## 4. Policy self-knowledge and tick boundary
 
@@ -278,3 +291,4 @@ The current worktree preserves `.cache/` and `todo.md` as untracked local contin
 [13]: https://github.com/Lucent-Financial-Group/Zeta/pull/16962 "PR #16962 — MiniGrid policy-comparison contract"
 [14]: ../research/2026-09-08-arc-agi-3-readiness-and-no-cheating-boundary.md "ARC-AGI-3 readiness and no-cheating boundary"
 [15]: ../research/2026-09-08-arc-offline-carry-forward-evidence-contract.md "ARC offline carry-forward evidence contract"
+[16]: ../research/2026-09-08-arc-online-memory-provenance-receipt-contract.md "ARC online-memory provenance receipt contract"
