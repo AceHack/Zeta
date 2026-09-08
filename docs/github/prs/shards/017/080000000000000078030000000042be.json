@@ -1,0 +1,12 @@
+{
+  "pr_number": 17086,
+  "archive_path": "docs/history/pr-reviews/PR-17086-feat-081m21f108s087g0r003jk8wst-catalog-persist-one-utf-8-payload.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T21:56:26.609Z",
+  "schema_version": "v1",
+  "commit_sha": "1b0115009f324114317d006da4ad96d3d4857b15",
+  "title": "feat(081M21F108S087G0R003JK8WST): catalog persist one UTF-8 payload",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T21:55:41Z",
+  "head_ref": "feat/zetafs-d10-catalog-stringbuilder"
+}
