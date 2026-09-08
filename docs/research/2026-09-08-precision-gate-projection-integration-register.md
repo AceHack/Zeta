@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade
 Lifecycle: active
-Status: assembled source; complete integration gate and driver review pending
+Status: assembled gate and driver review passed; final source archive pending
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Scientific scope
@@ -34,7 +34,7 @@ unopened and that investment remains paused.
 | Native candidate and wire admission | `e3b87af8f33f09476e939ebbc4f78360c3aa7d1d` | [Native source](2026-09-08-projection-native-source-independent-review.md), [Unicode correction](2026-09-08-projection-native-wire-followup-independent-review.md) |
 | Native process custody | `8254c827044100df1646369f1b0143ec994d5a07` | [Correction acceptance](2026-09-08-projection-process-correction-independent-review.md) |
 | Recording and reduced budget | `e133efe8324331d43187fd87c54bd4ea39c401f5` | [Runner](2026-09-08-projection-runner-draft-independent-review.md), [shared budget](2026-09-08-projection-runner-budget-independent-review.md) |
-| Manifest admission and driver | `1f4db4b7ad2953648a37a38d0613bb99fc7d0633` | [57 controlled tests and source record](2026-09-08-precision-gate-projection-driver.md); independent review pending |
+| Manifest admission and driver | `1f4db4b7ad2953648a37a38d0613bb99fc7d0633` | [59 controlled tests and source record](2026-09-08-precision-gate-projection-driver.md), [independent review](2026-09-08-projection-driver-independent-review.md) |
 
 The records retain first failures, corrections, typed refusals, actual available
 returns and stated limits on publication. Fixture receipts do not become actual
@@ -53,7 +53,7 @@ files were retained; the two F# projects receive only their projection compile
 entries. Re-derivation found the build graph already current.
 
 The [47-path roster](precision-gate-projection/2026-09-08/driver-source-validation/source-roster.json)
-is fixed before final manifest construction. Compared with the coordinator,
+is fixed before final manifest construction. In the initial comparison with the coordinator,
 45 paths match exactly. The other two retain current main: the derived build
 graph and the kernel ADR's accepted implementation status/review links. The ADR
 adds no changed numerical equation. Final manifest expectations will name the
@@ -76,3 +76,25 @@ and receives an explained, separately preserved follow-up attempt.
 Even complete passage earns only this local component. A mixed schedule must
 still fix evidence cuts, cavities, epoch boundaries, damping, update/application
 receipts and rollback before a later learned compositional benchmark.
+
+
+## Assembled validation
+
+At 096b09126b1f489fc7720b69780263ef01485445 the full preflight passed all
+18 checks in 663.540 seconds. Formatter verification exited zero in 15.204
+seconds, with its F#-unsupported limitation. All 47 recorded source paths and
+the checkout head/status stayed unchanged throughout both commands.
+The separate ordinary-import Python run passed 340 component tests in 7.53
+seconds and strict mypy/format checks over all 14 projection source/test files.
+Its repository-root Ruff check found one import-separator blank line in the
+driver test. That one-line formatting correction follows this recorded source
+cut and has a separate exact before/after identity; no production source changed.
+The driver review accepts production 1f4 and the 59-test follow-up 53cf, including
+the explicitly withdrawn locator suspicion. Final numerical work remains closed.
+
+
+The [assembled validation archive](precision-gate-projection/2026-09-08/assembled-validation/README.md)
+retains both ordinary-import cuts and the complete full gate. The corrected
+14-file Python check passes Ruff, format and mypy, with all 340 tests passing
+in 7.07 seconds. The only change between those two Python cuts is one blank
+line in the driver test; final manifest expectations use its corrected bytes.
