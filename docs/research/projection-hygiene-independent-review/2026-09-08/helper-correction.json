@@ -1,0 +1,95 @@
+{
+  "Schema": "zeta.review-helper-correction.v1",
+  "Thread": "PRRT_kwDOSF9kNM6gLV_y",
+  "OriginalCommit": "b9654055876d7479567278740a7051d074a33ca9",
+  "OriginalIdentityManifest": {
+    "File": "audit-identities-original.json.gz",
+    "Encoding": "gzip",
+    "OriginalBytes": 1611,
+    "OriginalSha256": "102AC5EA87A93AEEAEF9A682DF465660D3F33404B459B1273920A71612556900"
+  },
+  "HistoricalFileMappings": [
+    {
+      "HistoricalFile": "README.md",
+      "RetainedFile": "README-original.md.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 1122,
+      "OriginalSha256": "DBAB24A19FE877DE85CABFF7264875868E4E810C801EBEAE3DF701220FDA8526"
+    },
+    {
+      "HistoricalFile": "audit-1.completion.json",
+      "RetainedFile": "audit-1.completion.json",
+      "Encoding": "identity",
+      "OriginalBytes": 203,
+      "OriginalSha256": "06F3BE2759F1E6DDD95ACE8DCB4711DE65CF960E7DC510885F6C168AA3066F13"
+    },
+    {
+      "HistoricalFile": "audit-1.stderr.txt",
+      "RetainedFile": "audit-1.stderr.txt",
+      "Encoding": "identity",
+      "OriginalBytes": 0,
+      "OriginalSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "HistoricalFile": "audit-1.stderr.txt.gz",
+      "RetainedFile": "audit-1.stderr.txt.gz",
+      "Encoding": "identity",
+      "OriginalBytes": 20,
+      "OriginalSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "HistoricalFile": "audit-1.stdout.json",
+      "RetainedFile": "audit-1.stdout.json",
+      "Encoding": "identity",
+      "OriginalBytes": 9020,
+      "OriginalSha256": "58002DC553083E90909BB2C3CC09A72B4A7D8D9B0C3BC3CE617E29FC9E875CAD"
+    },
+    {
+      "HistoricalFile": "audit-1.stdout.json.gz",
+      "RetainedFile": "audit-1.stdout.json.gz",
+      "Encoding": "identity",
+      "OriginalBytes": 2087,
+      "OriginalSha256": "B993DCCC90019F0C547E230E66A386BC3EA32FB3A7C4404AB82D574BA5C17AB5"
+    },
+    {
+      "HistoricalFile": "audit.py",
+      "RetainedFile": "audit-original.py.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 5775,
+      "OriginalSha256": "CC8060D7D7E0A0A143EDA4B38F9ECF07F087D5A91A60C402D3C67DDD4DC940F8"
+    },
+    {
+      "HistoricalFile": "corrected-hygiene-readme.md.gz",
+      "RetainedFile": "corrected-hygiene-readme.md.gz",
+      "Encoding": "identity",
+      "OriginalBytes": 1748,
+      "OriginalSha256": "A80D65A268D3B0FDABC5657171020638C0465EEA80FC9AFC06AB468AF71B8E0C"
+    },
+    {
+      "HistoricalFile": "original-hygiene-readme.md.gz",
+      "RetainedFile": "original-hygiene-readme.md.gz",
+      "Encoding": "identity",
+      "OriginalBytes": 1688,
+      "OriginalSha256": "BA77902A0646241141129BD1D1D7130679C406891793DEA9F39F61AF6A145CEE"
+    },
+    {
+      "HistoricalFile": "qualification.json",
+      "RetainedFile": "qualification.json",
+      "Encoding": "identity",
+      "OriginalBytes": 1615,
+      "OriginalSha256": "A0CF5163D76B014694D6EBD425ADDA1BAEA5B06CB9A508E80EFA5E4E2F37B00D"
+    }
+  ],
+  "CorrectedSource": {
+    "File": "audit.py",
+    "Bytes": 5815,
+    "Sha256": "FD986730A62019CDDFE844BB0C73789975632570DD9B29AFAFB3F396B696F0F6"
+  },
+  "NormalReadOnlyInvocation": "audit-2.invocation.json",
+  "Completion": "audit-2.completion.json",
+  "StdoutByteEquality": true,
+  "StdoutBytes": 9020,
+  "StdoutSha256": "58002DC553083E90909BB2C3CC09A72B4A7D8D9B0C3BC3CE617E29FC9E875CAD",
+  "AssertionsDisabledClaim": false,
+  "NumericalServicesRun": false
+}
