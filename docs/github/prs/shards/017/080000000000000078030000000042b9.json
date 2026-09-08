@@ -1,0 +1,12 @@
+{
+  "pr_number": 17081,
+  "archive_path": "docs/history/pr-reviews/PR-17081-feat-081m21bxyd3087g0r003nrygtk-skip-layout-persist-for-single-leaf.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T21:06:38.337Z",
+  "schema_version": "v1",
+  "commit_sha": "448fc596c36199a060da82ef80a1194b2639f2d5",
+  "title": "feat(081M21BXYD3087G0R003NRYGTK): skip layout persist for single-leaf",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T21:05:54Z",
+  "head_ref": "feat/zetafs-d10-skip-single-leaf-layout"
+}

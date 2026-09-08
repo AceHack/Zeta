@@ -1,0 +1,12 @@
+{
+  "pr_number": 17084,
+  "archive_path": "docs/history/pr-reviews/PR-17084-docs-081m21dbxv8087g0r003hfhjk2-multi-planet-fold-is-calm-not-geo-raft.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T21:33:59.543Z",
+  "schema_version": "v1",
+  "commit_sha": "7829de563274784ae24c46055aebab73055c3a0f",
+  "title": "docs(081M21DBXV8087G0R003HFHJK2): multi-planet fold is CALM, not geo-Raft",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T21:32:06Z",
+  "head_ref": "feat/zetafs-multiplanet-product-reason"
+}
