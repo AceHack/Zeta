@@ -10,6 +10,8 @@
   <ItemGroup>
     <Compile Include="Message.Tests.fs" />
     <Compile Include="PrecisionGateKernels.Tests.fs" />
+    <Compile Include="../../src/Research.FSharp/PrecisionGateProjectionReplay.fsx" Link="Research/PrecisionGateProjectionReplay.fsx" />
+    <Compile Include="PrecisionGateProjection.Tests.fs" />
     <Compile Include="VisionAttentionBudget.Tests.fs" />
     <Compile Include="QuantumFusion.Tests.fs" />
     <Compile Include="FactorGraph.Tests.fs" />
