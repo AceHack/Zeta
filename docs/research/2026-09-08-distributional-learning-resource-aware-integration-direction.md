@@ -309,3 +309,9 @@ posterior probabilities. Those requirements follow from these controls. They do
 not establish a learned-performance advantage. The next comparison requires
 actual fitting, chronological holdout, feasible strong baselines and explicit
 interaction/compute budgets before further system investment is justified.
+
+The [integrated validation](distributional-learning/2026-09-08/integration-validation/README.md)
+passes all 18 repository checks at source `3d1da6b9f7505924a804974100e2758184f0fe7c`
+and verifies the preserved remote source. The [independent evidence audit](2026-09-08-distributional-learning-room-evidence-review.md)
+accepts the actual room and independent-reference archives without rerunning
+the observed processes.
