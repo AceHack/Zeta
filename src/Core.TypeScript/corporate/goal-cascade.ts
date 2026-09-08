@@ -228,21 +228,37 @@ export function childrenOf(cascade: Cascade, workId: string): readonly CascadeNo
  * not been reached yet.
  */
 /**
- * What an owner of `workType` must be able to reach, if anything.
+ * What an owner of `workType` must be able to reach.
+ *
+ * ALWAYS A CONTRIBUTOR, at every rung, and the two earlier answers were both wrong in the same
+ * direction. The original demanded the NEXT RUNG'S level — a project owner must have a lead — which
+ * is false in ten of sixteen departments and refused decomposition to protect a structure the
+ * organization does not have. Replacing it with "only leaves need anything" fixed that and left a
+ * subtler version of the same defect:
+ *
+ *   business_analysis has ONE manager, `business_approver`, and it supervises nobody. Its director
+ *   supervises five contributors. A project routed to the manager therefore could not be broken
+ *   down at all, and the register reported a hiring shortfall for a department that had five people
+ *   in it.
+ *
+ * The requirement that survives both is the one that was always the point: **an owner must be able
+ * to reach somebody who can do the work.** A rung whose candidates are all sterile is skipped, the
+ * search descends, and the director owns the project — which is what actually happens when a
+ * manager has no team.
+ *
+ * It is a FILTER, not a preference, and that is what makes the search descend rather than hand back
+ * an owner it already knows cannot staff anything. Where an entire line has no contributors — the
+ * CFO's, in this chart — the refusal comes at the FIRST decomposition instead of three rungs later,
+ * which says the true thing sooner: nothing under this hat can be done by anyone.
  *
  * EXPORTED BECAUSE TWO CALLERS NEED IT AND THERE MAY ONLY BE ONE ANSWER. `decompose` asks it to
  * pick an owner, and `generative-work.breakdownOpenings` asks it to decide whether to OFFER the
- * decomposition at all — and the menu's own rule is that it must never offer an act the
- * organization will refuse. When the two computed it separately they disagreed the moment one
- * changed, and the disagreement is silent in the worse direction: an opening offered for a rung the
- * effect path then refuses, which is this drive's recurring livelock.
- *
- * Only a LEAF carries a requirement, and it is that the owner can reach a contributor. A non-leaf
- * owner needs nothing: with a ladder that bends, a director with no manager and no lead owns its
- * own projects and its own tasks.
+ * decomposition at all — the menu's own rule is that it must never offer an act the organization
+ * will refuse. When the two computed it separately they disagreed the moment one changed, and the
+ * disagreement is silent in the worse direction.
  */
-export function supportRequirementFor(workType: WorkType): HatLevel | undefined {
-  return isLeafType(workType) ? "individual_contributor" : undefined;
+export function supportRequirementFor(_workType: WorkType): HatLevel {
+  return "individual_contributor";
 }
 
 /**

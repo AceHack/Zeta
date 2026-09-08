@@ -8,7 +8,6 @@
 
 import { describe, expect, test } from "bun:test";
 import { firstContributorUnder, runOrgCycle, type OrgCycleDeps } from "./org-cycle";
-import { isLeafType } from "./goal-cascade";
 import { buildOrgChart, reportsUpTo } from "./org-chart";
 import { SEED_HATS } from "./org-seed";
 import { accountableHatsFor, childrenOf, isDelivered, nodeById, WorkState, WorkType } from "./goal-cascade";
@@ -427,19 +426,20 @@ describe("the cycle refuses rather than pretending", () => {
     expect(report.delivered).toBe(false);
   });
 
-  test("a goal whose line has no contributors is refused at the LEAF, not invented around", () => {
-    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody.
+  test("a goal whose line has no contributors is refused, not invented around", () => {
+    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody, so
+    // nothing under this hat can be done by anyone. The refusal comes at the first decomposition,
+    // which is the moment the fact is knowable.
     //
-    // This used to refuse at the INITIATIVE for want of a director, and the goal had no children at
-    // all. The ladder bends now: the cost controller owns the CFO's initiative and its project,
-    // because that is what happens in a department of one. What the line still cannot do is find
-    // anybody to DO the work, and that is where it stops.
+    // This has been three different answers. It first refused here for want of a DIRECTOR — the
+    // rigid ladder complaining about a rung shape. Then the ladder bent and it built two work items
+    // before discovering nobody could do the third, which looked like progress and was worse: two
+    // rungs of a plan nobody could execute, and the refusal three steps from the fact.
     const report = runOrgCycle(deps({ plan: { ...deps().plan, acceptingHatId: "cfo" } }));
     expect(report.refusals.some((r) => r.includes("cannot be staffed"))).toBe(true);
     expect(report.delivered).toBe(false);
-    // The plan exists as far as the organization can carry it, and stops where it genuinely must.
-    expect(childrenOf(report.cascade, report.goalWorkId).length).toBeGreaterThan(0);
-    expect(report.cascade.nodes.filter((n) => isLeafType(n.workType))).toEqual([]);
+    // The goal exists — the C-suite did accept it — and nothing hangs off it, because nothing could.
+    expect(childrenOf(report.cascade, report.goalWorkId)).toHaveLength(0);
   });
 
   test("staffing that lands outside the owning line is REFUSED at assignment", () => {

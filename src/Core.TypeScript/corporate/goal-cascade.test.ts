@@ -206,25 +206,38 @@ describe("ownership is derived from the graph", () => {
 });
 
 describe("decomposition refuses rather than inventing", () => {
-  test("A LINE WITH NO CONTRIBUTORS FAILS AT THE LEAF, not at the top", () => {
-    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody.
+  test("A LINE WITH NO CONTRIBUTORS IS REFUSED AT THE FIRST DECOMPOSITION", () => {
+    // The CFO has no directors, and its one report — `cost_controller` — supervises nobody. So
+    // nothing under this hat can ever be done by anyone, and the honest moment to say so is the
+    // first time somebody tries to plan it.
     //
-    // This used to refuse at the INITIATIVE, for want of a director. That was the rigid ladder
-    // talking: the honest answer is that the CFO's initiative and project are the cost
-    // controller's, and the thing this line genuinely cannot do is find anyone to DO the work.
-    // Refusing three rungs early hid which fact was missing.
-    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "cost", acceptingHatId: "cfo" }));
-    c = must(decompose(c, chart, "g", [{ workId: "i", title: "x" }]));
-    expect(nodeById(c, "i")?.ownerHatId).toBe("cost_controller");
-    c = must(decompose(c, chart, "i", [{ workId: "p", title: "y" }]));
-    expect(nodeById(c, "p")?.ownerHatId).toBe("cost_controller");
-
-    const r = decompose(c, chart, "p", [{ workId: "t", title: "z" }]);
+    // This has now been three different answers, and the middle one was the interesting mistake.
+    // It first refused here for want of a DIRECTOR — the rigid ladder complaining about a rung
+    // shape. Then the ladder bent, the requirement narrowed to leaves, and it built two work items
+    // the cost controller owned before discovering nobody could do the third. That looked like
+    // progress and was worse: two rungs of a plan nobody could execute, and the refusal three steps
+    // from the fact.
+    const c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "cost", acceptingHatId: "cfo" }));
+    const r = decompose(c, chart, "g", [{ workId: "i", title: "x" }]);
     expect(r.ok).toBe(false);
-    // AND THE MESSAGE NAMES THE REAL CAUSE. It used to say "no lead hat reports up to X", which
-    // sent a reader looking for a lead that would not have helped — the search descends past lead
-    // and past the parent. What is missing is somebody to do the work.
-    if (!r.ok) expect(r.reason).toContain("no individual_contributor reports up to 'cost_controller'");
+    // AND THE MESSAGE NAMES THE REAL CAUSE. It used to say "no director hat reports up to X", which
+    // sent a reader looking for a director that would not have helped — the search descends past
+    // director and past the parent. What is missing is somebody to do the work.
+    if (!r.ok) expect(r.reason).toContain("no individual_contributor reports up to 'cfo'");
+  });
+
+  test("A STERILE MANAGER IS SKIPPED, and its director owns the work instead", () => {
+    // The subtler half of the same rule, and the reason it applies at EVERY rung rather than only
+    // at leaves. `business_analysis` has one manager, `business_approver`, and it supervises
+    // nobody; its director supervises five contributors. A project routed to the manager could not
+    // be broken down at all, and the register reported a hiring shortfall for a department with
+    // five people in it.
+    let c = must(acceptGoal(EMPTY_CASCADE, chart, { workId: "g", title: "brd", acceptingHatId: "ceo" }));
+    c = must(decompose(c, chart, "g", [{ workId: "i", title: "x", domain: Domain.BusinessRequirements }]));
+    expect(nodeById(c, "i")?.ownerHatId).toBe("ba_director");
+    c = must(decompose(c, chart, "i", [{ workId: "p", title: "y" }]));
+    expect(nodeById(c, "p")?.ownerHatId).toBe("ba_director");
+    expect(nodeById(c, "p")?.ownerHatId).not.toBe("business_approver");
   });
 
   test("decomposing into zero children is refused", () => {

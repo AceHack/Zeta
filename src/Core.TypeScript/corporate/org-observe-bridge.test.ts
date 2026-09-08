@@ -477,7 +477,10 @@ describe("A DIRECTION IS NOT AN OUT-OF-DOMAIN FALLBACK", () => {
       domain: "implementation",
     });
     const supply = orgSurfaceFor(view({ cascade: [project] }), "rmo_office", "rmo_office").generative ?? [];
-    expect(supply.map((g) => g.subjectId)).toContain("domain-fallback:proj-1");
+    // KEYED ON THE STRUCTURAL FACT — this domain landing in that department — rather than on the
+    // work item. One report per item buried the handful of real facts under a hundred copies of
+    // themselves as the weeks ran; measured at 42 reports for five distinct truths.
+    expect(supply.map((g) => g.subjectId)).toContain("domain-fallback:implementation:engineering_management");
   });
 });
 

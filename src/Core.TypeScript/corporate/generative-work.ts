@@ -446,7 +446,12 @@ export function outOfDomainOpenings(
     // owner the chart does not hold. That is not a supply gap and staffing a new hat would not fix
     // it, so it belongs to whoever repairs the chart rather than on this menu.
     if (r.domain === undefined) continue;
-    const subjectId = `domain-fallback:${r.workId}`;
+    // KEYED ON THE STRUCTURAL FACT, not on the work item. A fallback is a property of (this
+    // domain, this department) — "engineering_management work keeps landing in architecture" — and
+    // one report per work item buries it under a hundred copies of itself as the weeks run. The
+    // same mistake was made twice before, for missing rungs and for hollow leads, and fixed the
+    // same way both times; measured here at 42 reports for a handful of distinct facts.
+    const subjectId = `domain-fallback:${r.domain}:${r.ownerDepartmentId}`;
     if (alreadyRaised.has(subjectId)) continue;
     out.push({
       kind: GenerativeKind.SizeHatSupply,
