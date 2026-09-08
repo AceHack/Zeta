@@ -4,7 +4,7 @@ Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade source census
 Lifecycle: active
-Status: candidate metadata inspected; no weights, dataset or comparator execution
+Status: candidate metadata and selected API source inspected; no weights, data or execution
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
 ## Purpose and current candidates
@@ -17,7 +17,7 @@ Selection and execution remain a later preregistered step. No model is declared
 the universal state of the art from an author's benchmark claim.
 
 [Chronos-2's technical report](https://arxiv.org/abs/2510.15821) describes an
-inference-only model with group attention and multivariate/covariate support.
+pretrained forecaster with group attention and multivariate/covariate support.
 Its [official card](https://huggingface.co/amazon/chronos-2) specifies 120M
 parameters, quantile forecasts, CPU/GPU inference and Apache-2.0 licensing.
 The authors report strong aggregate benchmark performance. That claim has not
@@ -52,8 +52,8 @@ not downloaded tensor observations. They do not bound runtime memory. The
 [Chronos source pin](https://github.com/amazon-science/chronos-forecasting/tree/8589d1988e9676817548e9626738ff06b6ca6370)
 is `8589d1988e9676817548e9626738ff06b6ca6370`; the
 [TimesFM source pin](https://github.com/google-research/timesfm/tree/8cb7eda91c2b416b37e99a979afc50f2a18e1791)
-is `8cb7eda91c2b416b37e99a979afc50f2a18e1791`. Only README, package metadata
-and license text were retrieved at those pins. This is not a full inference
+is `8cb7eda91c2b416b37e99a979afc50f2a18e1791`. The initial census retrieved only
+README, package metadata and license text at those pins. This is not a full inference
 source/dependency audit or a frozen executable environment.
 
 ## Concrete local feasibility and comparison boundary
@@ -90,3 +90,31 @@ and config retrieval identities are recorded; those bodies are not republished
 in the capsule. No tensor/model binary, dataset, held-out output or paper score
 table was downloaded. No install, training or inference ran. Raw metadata and
 source text remain data, not instructions to the implementation.
+
+## Subsequent Chronos-2 API inspection
+
+Three Apache-2.0 source files at the same Chronos commit were subsequently
+retrieved without importing them. The [additional source manifest](forecast-comparator-sources/2026-09-08/api-source-1/manifest.json)
+preserves their complete original bodies and HTTP observations separately from
+the unchanged 21-record initial capsule. No weights, data, fit or forecast ran.
+
+The pinned [pipeline](https://github.com/amazon-science/chronos-forecasting/blob/8589d1988e9676817548e9626738ff06b6ca6370/src/chronos/chronos2/pipeline.py#L763)
+returns its 0.5 quantile in the `predict_quantiles` result named `mean`; the
+DataFrame `predictions` column inherits that median. Label it accordingly in a
+comparison. Its quantile and point arrays also have different axis shapes.
+The API has a separate fit method; zero-shot use does not mean that fitting is
+absent from the package. Cross-learning defaults off and, when enabled, shares
+information across batched inputs and makes results batch-dependent.
+
+The [dataset implementation](https://github.com/amazon-science/chronos-forecasting/blob/8589d1988e9676817548e9626738ff06b6ca6370/src/chronos/chronos2/dataset.py#L190)
+uses random windows in training, the last window in validation and the full
+supplied history in test mode, truncated to the configured context. It masks
+unknown future targets and past-only covariates in its constructed tensors.
+
+**Comparison implication (coordinator inference):** neither batching nor a
+target mask proves as-of admissibility. If cross-learning is enabled, a later
+rolling-origin context can expose information unavailable at an earlier origin
+in the same group. Fix admissible groups, batch composition and output meaning
+before evaluation. Supply future covariates only when actually available at
+that origin. These observations prepare the later registration; they select no
+metric, model, data split or winner and do not extend the adapter prerequisites.
