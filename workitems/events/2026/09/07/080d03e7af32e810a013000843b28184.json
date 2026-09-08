@@ -1,0 +1,14 @@
+{
+  "id": "080d03e7af32e810a013000843b28184",
+  "at": "2026-09-07T17:41:25.213Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YFBSJX087G0R002FY8RQ1",
+    "type": "task",
+    "title": "Hindsight LLM key: ESO on metal plus a minted dev Secret",
+    "slug": "hindsight-llm-key-eso-on-metal-plus-a-minted-dev-secret",
+    "priority": "P2",
+    "filename": "081M1YFBSJX087G0R002FY8RQ1-hindsight-llm-key-eso-on-metal-plus-a-minted-dev-secret.md"
+  }
+}

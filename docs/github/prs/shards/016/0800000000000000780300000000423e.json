@@ -1,0 +1,12 @@
+{
+  "pr_number": 16958,
+  "archive_path": "docs/history/pr-reviews/PR-16958-feat-cluster-rotation-cli-and-recover-the-ergonomics-fix-that-missed-the-squash.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T17:21:28.701Z",
+  "schema_version": "v1",
+  "commit_sha": "e466efdf19c59b28933ab12b3aa740bdb911ce86",
+  "title": "feat(cluster): rotation CLI — and recover the ergonomics fix that missed the squash",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T17:20:50Z",
+  "head_ref": "shadow/rotate-credentials-cli"
+}

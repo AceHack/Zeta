@@ -1,0 +1,12 @@
+{
+  "pr_number": 16938,
+  "archive_path": "docs/history/pr-reviews/PR-16938-docs-attestation-bound-withdrawal-declarations-and-hand-off-evidence-work.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:43:35.878Z",
+  "schema_version": "v1",
+  "commit_sha": "9f2f4e6f531ee0f20aa22fb94c0fbb5ac52b0345",
+  "title": "docs(attestation): bound withdrawal declarations and hand off evidence work",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:42:51Z",
+  "head_ref": "lumen/withdrawal-declaration-contract"
+}

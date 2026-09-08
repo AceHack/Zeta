@@ -1,0 +1,12 @@
+{
+  "pr_number": 16956,
+  "archive_path": "docs/history/pr-reviews/PR-16956-fix-formal-tlcrunnertests-was-red-on-windows-and-macos-two-separate-platform-bug.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T17:14:41.540Z",
+  "schema_version": "v1",
+  "commit_sha": "af79f149109cdf908749e0257597ce7fc01a684d",
+  "title": "fix(formal): TlcRunnerTests was red on Windows AND macOS — two separate platform bugs",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T17:14:02Z",
+  "head_ref": "shadow/windows-tlc-runner-tests"
+}

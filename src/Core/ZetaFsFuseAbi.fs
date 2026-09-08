@@ -18,11 +18,51 @@ module ZetaFsFuseAbi =
     /// fuse(4) FUSE_LOOKUP.
     let fuseLookup = 1u
 
+    /// fuse(4) FUSE_OPEN / READ / WRITE / RELEASE.
+    let fuseOpen = 14u
+    let fuseRead = 15u
+    let fuseWrite = 16u
+    let fuseRelease = 18u
+
+    /// fuse(4) FUSE_READLINK / SYMLINK / UNLINK / RMDIR / RENAME.
+    let fuseReadlink = 5u
+    let fuseSymlink = 6u
+    let fuseUnlink = 10u
+    let fuseRmdir = 11u
+    let fuseRename = 12u
+
+    /// fuse(4) FUSE_MKDIR / CREATE.
+    let fuseMkdir = 9u
+    let fuseCreate = 35u
+
+    /// fuse(4) FUSE_SETATTR.
+    let fuseSetattr = 4u
+
+    /// fuse(4) FATTR_* bits on fuse_setattr_in.valid.
+    let fattrMode = 1u
+    let fattrUid = 2u
+    let fattrGid = 4u
+    let fattrSize = 8u
+    let fattrMtime = 32u
+    let fattrCtime = 1024u
+
+    let setattrInSize = 88
+
     /// fuse(4) FUSE_GETATTR.
     let fuseGetattr = 3u
 
+    /// fuse(4) FUSE_READDIR.
+    let fuseReaddir = 28u
+
     /// fuse(4) FUSE_INIT.
     let fuseInit = 26u
+
+    /// dirent.h DT_DIR / DT_REG / DT_LNK.
+    let dtDir = 4u
+    let dtReg = 8u
+    let dtLnk = 10u
+
+    let direntHeaderSize = 24
 
     let attrSize = 88
     let entryOutSize = 128
@@ -289,6 +329,205 @@ module ZetaFsFuseAbi =
                     { AttrValid = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
                       AttrValidNsec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 8, 4))
                       Attr = attr }
+
+    type PackedDirent =
+        { Ino: uint64
+          Name: byte[]
+          Typ: uint32 }
+
+    let recAlign (n: int) : int = (n + 7) &&& ~~~7
+
+    let direntRecordSize (nameLen: int) : int = recAlign (direntHeaderSize + nameLen)
+
+    let dtOf (mode: uint32) : uint32 =
+        match mode &&& 0o170000u with
+        | 0o040000u -> dtDir
+        | 0o120000u -> dtLnk
+        | _ -> dtReg
+
+    let encodeDirents (entries: PackedDirent[]) : byte[] =
+        let sizes = entries |> Array.map (fun e -> direntRecordSize e.Name.Length)
+        let total = Array.sum sizes
+        let buf = Array.zeroCreate total
+        let mutable pos = 0
+        let mutable i = 0
+
+        while i < entries.Length do
+            let e = entries.[i]
+            let recLen = sizes.[i]
+            let nextOff = uint64 (pos + recLen)
+            BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, pos, 8), e.Ino)
+            BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, pos + 8, 8), nextOff)
+            BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, pos + 16, 4), uint32 e.Name.Length)
+            BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, pos + 20, 4), e.Typ)
+
+            if e.Name.Length > 0 then
+                Buffer.BlockCopy(e.Name, 0, buf, pos + direntHeaderSize, e.Name.Length)
+
+            pos <- pos + recLen
+            i <- i + 1
+
+        buf
+
+    let decodeDirents (buf: byte[]) : Result<PackedDirent[], DecodeError> =
+        let rec walk (pos: int) (acc: PackedDirent list) : Result<PackedDirent[], DecodeError> =
+            if pos = buf.Length then
+                Ok(acc |> List.rev |> Array.ofList)
+            elif pos + direntHeaderSize > buf.Length then
+                Error(Truncated(direntHeaderSize, buf.Length - pos))
+            else
+                let namelen = int (BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, pos + 16, 4)))
+                let recLen = direntRecordSize namelen
+
+                if namelen < 0 || pos + recLen > buf.Length then
+                    Error(Truncated(max recLen direntHeaderSize, buf.Length - pos))
+                else
+                    let name = Array.zeroCreate namelen
+
+                    if namelen > 0 then
+                        Buffer.BlockCopy(buf, pos + direntHeaderSize, name, 0, namelen)
+
+                    let entry =
+                        { Ino = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, pos, 8))
+                          Name = name
+                          Typ = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, pos + 20, 4)) }
+
+                    walk (pos + recLen) (entry :: acc)
+
+        walk 0 []
+
+    let openOutSize = 16
+    let readInSize = 40
+    let writeInSize = 40
+    let writeOutSize = 8
+
+    type OpenOut =
+        { Fh: uint64
+          OpenFlags: uint32 }
+
+    type ReadIn =
+        { Fh: uint64
+          Offset: uint64
+          Size: uint32 }
+
+    type WriteIn =
+        { Fh: uint64
+          Offset: uint64
+          Size: uint32 }
+
+    let encodeOpenOut (o: OpenOut) : byte[] =
+        let buf = Array.zeroCreate openOutSize
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), o.Fh)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 8, 4), o.OpenFlags)
+        buf
+
+    let decodeOpenOut (buf: byte[]) : Result<OpenOut, DecodeError> =
+        if buf.Length < openOutSize then
+            Error(Truncated(openOutSize, buf.Length))
+        else
+            Ok
+                { Fh = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                  OpenFlags = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 8, 4)) }
+
+    let encodeReadIn (r: ReadIn) : byte[] =
+        let buf = Array.zeroCreate readInSize
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), r.Fh)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 8, 8), r.Offset)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 16, 4), r.Size)
+        buf
+
+    let decodeReadIn (buf: byte[]) : Result<ReadIn, DecodeError> =
+        if buf.Length < readInSize then
+            Error(Truncated(readInSize, buf.Length))
+        else
+            Ok
+                { Fh = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                  Offset = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
+                  Size = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 16, 4)) }
+
+    let encodeWriteIn (w: WriteIn) (data: byte[]) : byte[] =
+        let buf = Array.zeroCreate (writeInSize + data.Length)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), w.Fh)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 8, 8), w.Offset)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 16, 4), w.Size)
+
+        if data.Length > 0 then
+            Buffer.BlockCopy(data, 0, buf, writeInSize, data.Length)
+
+        buf
+
+    let decodeWriteIn (buf: byte[]) : Result<WriteIn * byte[], DecodeError> =
+        if buf.Length < writeInSize then
+            Error(Truncated(writeInSize, buf.Length))
+        else
+            let body: WriteIn =
+                { Fh = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                  Offset = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
+                  Size = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 16, 4)) }
+
+            let dataLen = buf.Length - writeInSize
+            let data = Array.zeroCreate dataLen
+
+            if dataLen > 0 then
+                Buffer.BlockCopy(buf, writeInSize, data, 0, dataLen)
+
+            Ok(body, data)
+
+    let encodeWriteOut (n: uint32) : byte[] =
+        let buf = Array.zeroCreate writeOutSize
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 0, 4), n)
+        buf
+
+    let decodeWriteOut (buf: byte[]) : Result<uint32, DecodeError> =
+        if buf.Length < writeOutSize then
+            Error(Truncated(writeOutSize, buf.Length))
+        else
+            Ok(BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 0, 4)))
+
+    let decodeFh (buf: byte[]) : Result<uint64, DecodeError> =
+        if buf.Length < 8 then
+            Error(Truncated(8, buf.Length))
+        else
+            Ok(BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8)))
+
+    type SetattrIn =
+        { Valid: uint32
+          Size: uint64
+          Mtime: uint64
+          Ctime: uint64
+          Mtimensec: uint32
+          Ctimensec: uint32
+          Mode: uint32
+          Uid: uint32
+          Gid: uint32 }
+
+    let encodeSetattrIn (s: SetattrIn) : byte[] =
+        let buf = Array.zeroCreate setattrInSize
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 0, 4), s.Valid)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 16, 8), s.Size)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 40, 8), s.Mtime)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 48, 8), s.Ctime)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 60, 4), s.Mtimensec)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 64, 4), s.Ctimensec)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 68, 4), s.Mode)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 76, 4), s.Uid)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 80, 4), s.Gid)
+        buf
+
+    let decodeSetattrIn (buf: byte[]) : Result<SetattrIn, DecodeError> =
+        if buf.Length < setattrInSize then
+            Error(Truncated(setattrInSize, buf.Length))
+        else
+            Ok
+                { Valid = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 0, 4))
+                  Size = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 16, 8))
+                  Mtime = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 40, 8))
+                  Ctime = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 48, 8))
+                  Mtimensec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 60, 4))
+                  Ctimensec = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 64, 4))
+                  Mode = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 68, 4))
+                  Uid = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 76, 4))
+                  Gid = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 80, 4)) }
 
     let hex (buf: byte[]) : string =
         Convert.ToHexString(buf).ToLowerInvariant()

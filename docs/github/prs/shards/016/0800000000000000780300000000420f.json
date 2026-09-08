@@ -1,0 +1,12 @@
+{
+  "pr_number": 16911,
+  "archive_path": "docs/history/pr-reviews/PR-16911-feat-creds-overlay-joins-take-frost-look-tpmrm0-is-not-present.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T14:09:39.600Z",
+  "schema_version": "v1",
+  "commit_sha": "04cc59fc5f58fcb4cde1f1cc425765a9fd6091c6",
+  "title": "feat(creds): Overlay joins take frost look; tpmrm0 is not present",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T14:08:57Z",
+  "head_ref": "cursor/frost-look-named-probe-27c5"
+}

@@ -142,11 +142,39 @@ assert_boot_disk_large_enough() {
 # ── Step 1: enumerate internal disks ──────────────────────────────
 # Fixed (RM=0), writable (RO=0), type=disk, NOT USB. Includes NVMe,
 # SATA, SAS, RAID volumes, etc. Excludes loop, removable, read-only.
-echo "Internal storage devices (fixed; USB excluded):"
+# HOTPLUG IS THE DISCRIMINATOR, NOT TRAN. The previous filter excluded only
+# what is KNOWN to be USB (`$5!="usb"`), which is "not proven external" rather
+# than "proven internal" -- and a Thunderbolt/USB4 NVMe enclosure reports
+# TRAN=nvme with RM=0, so it passed as internal. Since `disk_class` sorts NVMe
+# first and DEFAULT_BOOT takes the head of that list, an external SSD could be
+# selected as the BOOT disk purely on enumeration order, and every other disk
+# in scope becomes a whole-disk Longhorn target.
+#
+# `HOTPLUG` is 1 for a hot-pluggable bay -- Thunderbolt and USB enclosures --
+# and 0 for a soldered/internal controller, which is the distinction actually
+# wanted here. This keeps external drives ATTACHED and merely un-targetable,
+# because "unplug everything first" is not a usable instruction when the
+# installer stick itself lives in one of those hubs.
+#
+# FAIL-CLOSED BY CONSTRUCTION: if this filter empties the candidate set, the
+# existing `bail` below fires and nothing is wiped. Excluding a genuine
+# internal disk costs a refusal the operator can read; including an external
+# one costs their data.
+echo "Internal storage devices (fixed; USB and hot-plug bays excluded):"
 mapfile -t ALL_DISKS < <(
-  lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN |
-    awk '$2=="disk" && $3==0 && $4==0 && $5!="usb" {print $1}'
+  lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN,HOTPLUG |
+    awk '$2=="disk" && $3==0 && $4==0 && $5!="usb" && $6==0 {print $1}'
 )
+# Name what was withheld, so an operator whose internal bay reports HOTPLUG=1
+# sees WHY the set is short rather than meeting a bare "no internal disks".
+mapfile -t ZETA_EXCLUDED_HOTPLUG < <(
+  lsblk -d -p -n -o NAME,TYPE,RM,RO,TRAN,HOTPLUG |
+    awk '$2=="disk" && $3==0 && $4==0 && $5!="usb" && $6!=0 {print $1}'
+)
+if [[ ${#ZETA_EXCLUDED_HOTPLUG[@]} -gt 0 ]]; then
+  echo "  withheld as hot-plug/external (never wiped, never a boot target):"
+  for d in "${ZETA_EXCLUDED_HOTPLUG[@]}"; do echo "    $d"; done
+fi
 if [[ ${#ALL_DISKS[@]} -eq 0 ]]; then
   bail "no internal disks found; cannot install"
 fi
@@ -1475,7 +1503,19 @@ if [ "$ZETA_CANCEL_DEFAULT" = "abort" ]; then
     echo "        Reason: $ZETA_BREAKER_STATE breaker / repair-identity refusal above."
     echo "        Manual override once the cause is understood:"
     echo "          ZETA_MAX_DESTRUCTIVE_ATTEMPTS=<n> zeta-install $HOST"
-    exit 0
+    # EXIT 10, NOT 0 -- the same correction the keypress branch below already
+    # carries, applied to the branch that actually fires on a reformat.
+    #
+    # `zeta-first-boot.sh` reads 0 as success and goes on to print "Install
+    # complete. Rebooting in 10s". So a refusal to wipe was announcing a
+    # finished install and rebooting into the same USB, hitting the same gate,
+    # forever -- and because the R9 ledger append happens AFTER this gate, the
+    # breaker never counted the attempts and never tripped.
+    #
+    # This branch is not an edge case: the default flips to ABORT when any
+    # in-scope disk classifies `foreign-data`, and a machine being reformatted
+    # has an operating system on it. It is the ordinary path.
+    exit 10
   fi
   echo "[R7] Keypress received; proceeding past the gate deliberately."
 else
@@ -1519,6 +1559,23 @@ if [ "$ZETA_LEDGER_WRITABLE" = "1" ]; then
 else
   echo "[R9-breaker] ledger not writable; this attempt is NOT counted (breaker stays blind next boot)"
 fi
+
+# ── UEFI preflight — the last cheap refusal before the disk goes ──
+#
+# `common.nix` sets systemd-boot with canTouchEfiVariables, so `bootctl
+# install` needs /sys/firmware/efi/efivars. The installer ISO is HYBRID
+# (makeEfiBootable + makeUsbBootable), so it boots perfectly well in
+# legacy/CSM -- and most firmware menus offer both "USB HDD" and "UEFI: USB
+# HDD", one keystroke apart.
+#
+# Without this check the mistake is not caught until bootloader install, which
+# is AFTER wipe, partition, format and the full closure download: previous OS
+# gone, the better part of an hour gone, nothing bootable, and a drop to a
+# shell. With it, the cost is re-entering the boot menu.
+if [ ! -d /sys/firmware/efi ]; then
+  bail "not booted in UEFI mode (/sys/firmware/efi absent). This ISO is hybrid, so it will boot in legacy/CSM and then fail at bootloader install AFTER the disk has been wiped. Reboot and choose the 'UEFI:' entry for this USB device."
+fi
+echo "[preflight] UEFI mode confirmed (/sys/firmware/efi present)."
 
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do

@@ -1,0 +1,21 @@
+{
+  "pr_number": 16982,
+  "archive_path": "docs/history/pr-reviews/PR-16982-feat-research-preserve-reviewed-compiled-controller-prerequisites.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rnQXc",
+    "comment:PRRC_kwDOSF9kNM7rnQXe",
+    "comment:PRRC_kwDOSF9kNM7rnZ33",
+    "comment:PRRC_kwDOSF9kNM7rnZ3t",
+    "thread:PRRT_kwDOSF9kNM6gCiyA",
+    "thread:PRRT_kwDOSF9kNM6gCiyB",
+    "thread:PRRT_kwDOSF9kNM6gCpQ0",
+    "thread:PRRT_kwDOSF9kNM6gCpQ7"
+  ],
+  "fetched_at": "2026-09-07T23:20:23.669Z",
+  "schema_version": "v1",
+  "commit_sha": "d9100a6fd3ccd88defb33ccd9211a16743792796",
+  "title": "feat(research): Preserve reviewed compiled-controller prerequisites",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:18:59Z",
+  "head_ref": "codex/compiled-prerequisites-publication-20260907"
+}

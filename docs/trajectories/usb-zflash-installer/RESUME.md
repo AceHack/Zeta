@@ -638,6 +638,14 @@ Overlay optional named argv takes bun JSON
 `--from-json` (`081M1YWR8EB087G0R002X0SFX7`);
 JSON `probe` is ignored even when
 non-null; ISO bun `probe` stays null.
+Overlay named argv takes bun JSON `--from-json`
+(`081M1Z1FHDW087G0R00210Z0PG`); null look is
+`missing-os`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
+Overlay named bun JSON join takes look
+(`081M1Z36ZJ4087G0R003HFMT2K`); null look is
+`missing-os`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

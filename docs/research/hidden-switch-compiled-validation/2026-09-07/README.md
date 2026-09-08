@@ -388,3 +388,9 @@ source `e6238f8acc89c4d619c6631f0cb0111aa9258c20`, with complete logs,
 The [eighth integrated validation](integration-8/README.md) preserves all
 1,314 compiled Python tests, 97 source/config pins and the 10,118-entry owned
 fixture tree, including the original packaging-limit refusal and its bounded repair.
+
+## Replay publication gate
+
+The [2026-09-08 publication record](../2026-09-08/replay-publication-gates/README.md)
+retains both full-gate attempts, the complete TLC crash diagnostics, unchanged
+retry, 67 helper tests and the four canonical source-history ref receipts.

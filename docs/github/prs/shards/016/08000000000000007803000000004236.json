@@ -1,0 +1,12 @@
+{
+  "pr_number": 16950,
+  "archive_path": "docs/history/pr-reviews/PR-16950-fix-ci-ghcr-packages-are-public-the-platform-credential-blocker-is-closed.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T15:35:32.910Z",
+  "schema_version": "v1",
+  "commit_sha": "7b8ae24e0f0a7004d450d492b48febf0c6d459e6",
+  "title": "fix(ci): GHCR packages are public — the platform credential blocker is closed",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T15:34:48Z",
+  "head_ref": "shadow/ghcr-packages-are-public-now"
+}

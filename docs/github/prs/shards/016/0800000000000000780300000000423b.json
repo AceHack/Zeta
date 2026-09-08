@@ -1,0 +1,12 @@
+{
+  "pr_number": 16955,
+  "archive_path": "docs/history/pr-reviews/PR-16955-feat-081m1yb9z6h087g0r00220883b-fake-vfs-lookup-and-readdir-synthesize-and.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T17:13:32.949Z",
+  "schema_version": "v1",
+  "commit_sha": "c03236591a95b2593865672c30e91dcfac5b7f40",
+  "title": "feat(081M1YB9Z6H087G0R00220883B): Fake VFS lookup and readdir synthesize . and ..",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T17:12:53Z",
+  "head_ref": "feat/zetafs-posix-vfs-lookup"
+}

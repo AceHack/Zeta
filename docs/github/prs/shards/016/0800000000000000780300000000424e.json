@@ -1,0 +1,12 @@
+{
+  "pr_number": 16974,
+  "archive_path": "docs/history/pr-reviews/PR-16974-docs-research-preserve-historical-compiled-graph-capture-five.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T21:07:19.016Z",
+  "schema_version": "v1",
+  "commit_sha": "0c42b307f74e5298ca90fd1b769621aa1d9a80c6",
+  "title": "docs(research): Preserve historical compiled graph capture five",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T21:06:39Z",
+  "head_ref": "codex/compiled-capture-five-publication-20260907"
+}

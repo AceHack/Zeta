@@ -380,7 +380,28 @@ export const DEV_BLOB_STORE_SECRET: DevSharedSecretSpec = {
     "secret_access_key with -config.expand-env=true. All four must agree on one value.",
 } as const;
 
-export const DEV_SHARED_SECRETS: readonly DevSharedSecretSpec[] = [DEV_BLOB_STORE_SECRET] as const;
+export const DEV_HINDSIGHT_LLM_SECRET: DevSharedSecretSpec = {
+  name: "hindsight-llm-api-key",
+  namespaces: ["hindsight"],
+  // `envFrom: [secretRef]` makes the Secret's KEY NAMES the env var names, so this
+  // key must be spelled exactly as the app reads it. MEASURED against chart 0.9.2:
+  // templates/api-deployment.yaml:42-45 and worker-statefulset.yaml:42-45 both
+  // render `envFrom` under `.Values.existingSecret`.
+  keys: (value) => ({ HINDSIGHT_API_LLM_API_KEY: value }),
+  reason:
+    "Minted per dev/CI cluster so hindsight's api and worker containers START. THE VALUE IS A " +
+    "PLACEHOLDER, NOT A WORKING GROQ KEY: the app's boot check is presence-only " +
+    "(ValueError: LLM API key is required), so a drawn value clears the crash loop and NO " +
+    "LLM CALL WILL SUCCEED. Healthy here therefore means the process runs, never that the " +
+    "extraction path works -- CI must not be read as covering it. On metal the same Secret " +
+    "NAME is supplied by ESO from a real key (Aaron 2026-09-07: ESO on metal plus a minted " +
+    "dev Secret), so the Application names one Secret and only the provenance differs.",
+} as const;
+
+export const DEV_SHARED_SECRETS: readonly DevSharedSecretSpec[] = [
+  DEV_BLOB_STORE_SECRET,
+  DEV_HINDSIGHT_LLM_SECRET,
+] as const;
 
 /**
  * A shared Secret, as a manifest, for ONE namespace.

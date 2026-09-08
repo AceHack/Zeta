@@ -1,0 +1,12 @@
+{
+  "pr_number": 16952,
+  "archive_path": "docs/history/pr-reviews/PR-16952-feat-cluster-a-rotation-verb-for-dev-credentials-deliberate-and-never-a-mint.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T16:12:52.958Z",
+  "schema_version": "v1",
+  "commit_sha": "ed7756cff7e40b9d4acc56f689436dec4f57653a",
+  "title": "feat(cluster): a rotation verb for dev credentials — deliberate, and never a mint",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T16:12:11Z",
+  "head_ref": "shadow/credential-rotation-verb"
+}

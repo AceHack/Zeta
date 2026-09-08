@@ -3,22 +3,23 @@
 **Date:** 2026-09-07  
 **Author:** Manus AI (Lumen)  
 **Repository:** `Lucent-Financial-Group/Zeta`  
-**Handoff state:** `origin/main` was `ad2c423530e185d6b6b7f26df2513fa131ab12cc` when this document was updated.
+**Handoff state:** `origin/main` was `c9c3b94cb680c839d2ef80fada2a36d6c8bb8dd2` when this document was updated.
 
 ## Key recommendation
 
-> Preserve the current discipline: **a pinned carrier, a finite claim, independently authored replay, and a mutation that fails** are required before a result becomes an evidence-room candidate. Keep policy self-knowledge as a local declaration/receipt and bounded ticks as execution envelopes. Do not turn either into a hidden global reward, a consent inference, or society-level authority. The current next learning gate is the proposed MiniGrid policy-comparison contract. The withdrawal contract has merged, but implementation correctly remains deferred because no externally supplied roster-bound parent attestation exists.
+> Preserve the current discipline: **a pinned carrier, a finite claim, independently authored replay, and a mutation that fails** are required before a result becomes an evidence-room candidate. Keep policy self-knowledge as a local declaration/receipt and bounded ticks as execution envelopes. Do not turn either into a hidden global reward, a consent inference, or society-level authority. The MiniGrid policy-comparison and score-emitter-readiness documents have now merged, but their score gate remains closed until independently authored F# and upstream-Python emitters plus their mutations pass. The ARC correction is also merged: the next ARC step is a score-free carry-state partition preflight, not a new score or a claim of general learning. The withdrawal contract has merged, but implementation correctly remains deferred because no externally supplied roster-bound parent attestation exists.
 
 ## 1. Executive status
 
 The primary GitHub Pages provenance experience, the two bounded contextual-grid controls, a source-compatible MiniGrid adapter witness, self-declared policy/tick admissibility receipts, one finite NCI model-check witness, and a test-only attestation-window local-status receipt have all been brought through protected review and merged. These are **independent finite results**, not evidence that they compose into general intelligence, an autonomous social system, consent, safety, or a universal learning process.
 
+<!-- prettier-ignore -->
 | Area                      | Current merged fact                                                                                                                                                                                 | Current hard boundary                                                                                                                      |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | Public evidence UI        | GitHub Pages provenance routes and source-manifest artifact checks were merged in #16671 and #16678. A fresh browser process rendered the public manifest route from the deployed artifact. [1] [2] | The UI is source navigation/provenance only: it does not fetch, rank, mutate, or validate evidence.                                        |
 | Contextual-grid v1        | A 5×5, byte-pinned, 100-seed F#/Python receipt exists and is exactly cross-replayed. `count-first/v1` met the predeclared **within-carrier** comparison rule. [3]                                   | It is not a reproduction of the NeurIPS contextual-MDP paper, nor a transfer, general-curiosity, or general-learning result.               |
 | Reflected contextual grid | A separately fingerprinted x-reflection control preserved action order, used new seeds, and produced byte-identical F#/Python result receipts. [4]                                                  | It is a representation-bias control, not cross-domain transfer.                                                                            |
-| MiniGrid                  | The external `MiniGrid-Empty-5x5-v0` v3.1.0 adapter has a five-action source/transition conformance witness. A separate policy-comparison contract is proposed but unmerged. [5]                    | **No MiniGrid policy score has been run.** The adapter is not connected to contextual-grid policy/evaluator paths.                         |
+| MiniGrid                  | The external `MiniGrid-Empty-5x5-v0` v3.1.0 adapter has a five-action source/transition conformance witness; policy-comparison contract #16962 and score-emitter readiness audit #16992 are merged. [5] [13] | **No MiniGrid policy score has been run.** The adapter is not connected to contextual-grid policy/evaluator paths.                         |
 | Policy/tick admissibility | A finite self-declaration and caller-attributed tick-envelope receipt was independently replayed. [6]                                                                                               | It checks declaration shape and declared boundary only; it does not prove runtime complexity, select policies, or implement NCI/consensus. |
 | NCI                       | One pinned bounded TLC run of `NciNonUrgency` was independently emitted and checked. [7]                                                                                                            | It is not an NCI floor, system-safety proof, consent record, authority, or policy score.                                                   |
 | Attestation windows       | A test-only local subject-window observer was independently replayed from a non-corpus fixture; a withdrawal-declaration contract merged in #16938. [8] [12]                                        | It is not a consent detector, real authorization, revocation system, vote, trust score, or consensus mechanism.                            |
@@ -75,7 +76,66 @@ The proposed [`MiniGrid Empty-5x5 v3.1.0 Policy-Comparison Contract`](../researc
 
 The contract specifies four named fixed candidates and matching access to state, actions, reset, source adapter, and duration ticks. It makes self-declared Big-O shape descriptive, not a proving or ranking mechanism. It allows only the result label `observation-only-no-winner`: a return sign, bootstrap interval, rank, or novelty value cannot select a policy, allocate ticks, authorize deployment, join a heartbeat, admit a society member, or create a global fitness function. The contract’s source/roster/novelty/evaluation/budget/statistical/cross-oracle mutations must all fail before any score receipt can be admitted.
 
-The contract remains **proposed and unmerged**. Until protected review completes and separately authored F# and upstream-Python score emitters exist, the MiniGrid adapter’s no-policy-score gate remains closed. A null, negative, or divergent future result must be retained as such.
+The contract merged as #16962 (`fd9ecb3969fde27b83c9437335529f1dfe1b2d03`). Until separately authored F# and upstream-Python score emitters exist and the source/roster/novelty/evaluation/budget/statistical/cross-oracle mutation controls pass, the MiniGrid adapter’s no-policy-score gate remains closed. A null, negative, or divergent future result must be retained as such.
+
+### 3.5 Score-emitter readiness audit
+
+The score-free readiness audit in
+[`2026-09-08-minigrid-empty-5x5-v310-score-emitter-readiness-audit.md`](../research/2026-09-08-minigrid-empty-5x5-v310-score-emitter-readiness-audit.md)
+identifies the smallest next code unit: independently authored F# static-adapter
+and upstream-Python single-episode preflight emitters. They may verify one
+declared seed-2000 action trace and transition receipt, but cannot train,
+compute novelty, maintain a Q/count table, compare policies, or emit a score.
+This preflight must reject parent substitution, trace/action/reward/terminal
+drift, hidden limits, learning fields, and cross-oracle bridges before the
+larger score-emitter work begins.
+
+### 3.6 ARC-AGI-3 readiness: existing internal lane, no official result
+
+The ARC-AGI-3 readiness report corrects an earlier overbroad summary. Zeta already has an internal ARC/CHIP-8 substrate: the `Arc.Python` lane drives `arc-agi`/`arcengine`, distinguishes source-owned games from hosted wrappers, has a REST scorecard port and action/frame path, and records synthetic ARC/CHIP-8 transfer measurements. The repository also carries a TypeScript static ARC-puzzle harness and an F# ARC REST environment adapter. These are adapters and research seams, not missing work.[14]
+
+What remains absent is a **verified official ARC-AGI-3 evaluation result**: no pinned official public-game/toolkit/harness/scorecard/replay receipt, no public/private official score, and no registered competition submission. ARC is interactive with game-specific actions, official scorecards/replays, public/semi-private/private tiers, and separately reported Standard versus Provider Adapter harnesses. The source-owned scores and hosted-wrapper path explicitly remain non-leaderboard/held-out evidence until a real authorized environment run can be recorded.[14]
+
+The next ARC unit therefore extends—not replaces—the existing hosted-wrapper and ARC REST seams: a no-agent, non-scoring conformance probe for one pinned official public game and toolkit revision. It must make task/interface drift, unexpected tools or network use, undeclared context retention, and artifact mismatches fail before any local agent score is generated. “Smallest model without cheating” remains a future protocol objective requiring declared model/context/tool/harness/data/compute/replay provenance; parameter count alone is not admissible evidence. ARC results remain distinct from MiniGrid and from all NCI, attestation, heartbeat, cluster, and consensus paths.
+
+### 3.7 ARC offline evidence audit and carry-forward boundary
+
+The ARC correction merged in #16996 as
+`3cc4f7f58c3a7ae61c0d1e966cfa67b792e15d36`; that merge is an ancestor of
+the handoff's recorded `origin/main`. The prior claim that Zeta lacked an ARC
+adapter has therefore been corrected on main. The correction recognizes the
+existing `Arc.Python` offline/hosted driver, source-owned games, scorecard REST
+port, static TypeScript puzzle harness, F# ARC environment seam, and synthetic
+CHIP-8 motion controls, while retaining the absence of a verified official
+ARC-AGI-3 result. [14]
+
+The direct offline audit and targeted execution are narrower than an ARC
+leaderboard result but stronger than memory of a prior run. On the current
+source-owned `ztch-v1` carrier, `PixelAgent` with seed `4` deterministically
+clears **3/3** levels at environment score `0.354`; the same source runner's
+decoy variant also clears 3/3 at `0.2659`. The selected 39 offline mode and
+PixelAgent controls passed under the declared `src/Arc.Python` project. The
+tree has three `ZetaChase` levels and asserts `levels_cleared == 3`; no
+reproducible current-main receipt was found for a four-level clear. The latter
+is retained as unverified historical context pending a pinned revision, task,
+seed, action trace, and replayable runner. [15]
+
+This evidence shows within-episode interaction: the agent learns blocked cells
+by bumping, but clears its blocked-map and route-plan state at a perceived
+world boundary because those coordinates can become open floor in the next
+level. It also includes controlled appearance and source-owned motion
+experiments, not a serializable carry-forward learner or a held-out comparison.
+The new offline carry-forward contract freezes the smallest next artifact: a
+score-free memory-provenance receipt. It permits declared, auditable
+prior-level state and cross-game learning—including CHIP-8, Atari, or other
+non-ARC-game caches—rather than treating memory itself as a violation. Its
+load-bearing boundary is task-scoped: before legal observation begins for the
+ARC level currently played, the cache must not contain that current level's
+unobserved task payload, reference trace, target/solution metadata, or outcome.
+The receipt makes memory origin, availability time, current-level early reads,
+transition-policy changes, and identity mismatch observable. It introduces no
+new agent, score, official interface call, model selection, or generalization
+claim. [15]
 
 ## 4. Policy self-knowledge and tick boundary
 
@@ -92,6 +152,14 @@ The current finite F#/Python receipt is 516 bytes, SHA-256:
 ```
 
 The positive `TickBoundaryProbe.UndeclaredDetected` mutation means a particular captured undeclared limit is observable. Its non-detection would **not** prove absence of all hidden channels. This one-way observation boundary is important to retain.
+
+## 4.4 ARC-AGI-3 and CHIP-8 correction: internal adapter exists; official result does not
+
+The earlier ARC readiness wording was too broad and is corrected here. Zeta already has substantial ARC/CHIP-8 work: `src/Arc.Python` drives `arc-agi`/`arcengine`, has source-owned ARC games, an action/frame driver, a hosted `EnvironmentWrapper` path, score/report logic, an ARC REST scorecard port, and synthetic ARC/CHIP-8 transfer controls. The repository also contains a TypeScript static ARC-puzzle harness and cross-emulator F# ARC/CHIP-8 environment seams. These are real internal adapter and game-research assets.[14]
+
+The remaining gap is narrower: there is no **verified official ARC-AGI-3 result** with a pinned official public-game/toolkit/harness/scorecard/replay receipt; no official public/private score; and no registered competition submission. The internal lane's own documentation states that real ARC environments and hosted leaderboard use require an unavailable API key, while offline/source-owned scores and synthetic transfer controls are explicitly non-leaderboard evidence. Therefore, the next ARC step must extend the existing hosted-wrapper and REST seams with a no-agent official conformance probe rather than rebuild an adapter from scratch.
+
+“Smallest model without cheating” remains a future measurement protocol, not a present result. It requires separately declared model/context/tool/harness/data/compute/replay provenance; parameter count alone is not admissible evidence.
 
 ## 5. Formal NCI witness
 
@@ -161,20 +229,23 @@ The following PRs were open when this handoff was prepared. They are **not** mod
 
 |     PR | Branch / title                                                          | Observed state | Handoff guidance                                                                                                    |
 | -----: | ----------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| #16961 | `shadow/hindsight-minted-dev-secret` — Hindsight ESO development secret | BLOCKED        | Kubernetes/cluster-secret lane; Otto is examining Kubernetes-related work. Do not mix with evidence/benchmark work. |
-| #16960 | `feat/zetafs-posix-vfs-pwrite` — Fake VFS pread/pwrite/truncate         | BLOCKED        | ZetaFs correctness lane; retain bounded filesystem claims and test the real path.                                   |
-| #16941 | `heartbeat/pr-archive` — PR-review archive                              | UNKNOWN        | Heartbeat/telemetry lane; do not hand-merge stale archival state.                                                   |
+| #16985 | `feat/zetafs-fuse-readdir-bytes` — FUSE byte-session directory entries  | BLOCKED        | ZetaFs/FUSE correctness lane; retain byte-level and platform-specific claims.                                       |
+| #16984 | `cursor/named-argv-from-json-27c5` — overlay named-argument JSON intake | UNKNOWN        | Credential/overlay input lane; review parser and missing-OS semantics separately.                                   |
+| #16961 | `shadow/hindsight-minted-dev-secret` — Hindsight ESO development secret | UNKNOWN        | Kubernetes/cluster-secret lane; Otto is examining Kubernetes-related work. Do not mix with evidence/benchmark work. |
+| #16941 | `heartbeat/pr-archive` — PR-review archive                              | BLOCKED        | Heartbeat/telemetry lane; do not hand-merge stale archival state.                                                   |
 
 ## 9. Remaining falsifiable work, in recommended order
 
-| Priority | Bounded next unit                                       | Must be true before implementation starts                                                                           | Required failure controls                                                                                                                         | Explicitly excluded result                                    |
-| -------: | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-|        1 | Protected review of MiniGrid policy-comparison contract | The separately proposed contract is individually reviewed and merged.                                               | Source/runtime/projection/action/policy/seed/novelty/tick/budget/statistical/cross-oracle mutations.                                              | Any MiniGrid score or transfer conclusion.                    |
-|        2 | MiniGrid finite candidate evaluation                    | Contract plus independent F#/upstream-Python result emitters are merged.                                            | Full roster/replay, train-eval separation, frozen table digest, equal access, hidden cap, and bootstrap mutations.                                | General curiosity, general transfer, or parameter efficiency. |
-|        3 | Test-only withdrawal-declaration verifier               | A contract-pinned fixture exists without representing production evidence.                                          | Parent/declaration byte change, signer mismatch, invalid scope/reason/window, coexistence with correction/key revocation, local instant boundary. | Real production withdrawal, permission, or consent.           |
-|        4 | Production withdrawal input                             | An authorized operator provides an external roster-bound parent attestation and exact verification context.         | Missing/unbound parent and changed source/signature context must defer/refuse.                                                                    | Automatic authority or consent inference.                     |
-|        5 | NCI witness expansion                                   | A new finite subject/model/property, not a relabeling of `NciNonUrgency`.                                           | A discriminating configuration mutation and checker/version mismatch.                                                                             | Global safety/NCI theorem.                                    |
-|        6 | Recorded-consensus research                             | A human/organizational process specifies immutable evidence, withdrawal, dissent, scope, and accountable authority. | Missing/dissenting/expired evidence and no automatic threshold escalation.                                                                        | Emergent global moral scorer or autonomous society authority. |
+<!-- prettier-ignore -->
+| Priority | Bounded next unit                            | Must be true before implementation starts                                                                                 | Required failure controls                                                                                                                         | Explicitly excluded result                                    |
+| -------: | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+|        1 | ARC offline memory-provenance preflight | The reviewed `arc-offline-carry-v1` contract is frozen; the runner labels every state item as `current_level_live`, `prior_level_memory`, `cross_game_memory`, `candidate_transfer`, `static_program`, or `runner_metadata`, with source and availability time. | Deterministic replay; prior-level and cross-game positive-continuity controls; current-level preload/early-read, undeclared-memory, transition-policy, memory-removal, and source/world/schema identity mutations. | ARC score, agent winner, generic learning, held-out transfer, or official ARC result. |
+|        2 | MiniGrid independent score-emitter preflight | Implement the audited F# static-adapter and upstream-Python single-episode seed-2000 trace emitters, without policy code. | Parent identity, action trace, reward/terminal/truncation, no-learning schema, hidden-cap, and cross-oracle mutations.                            | Any MiniGrid score, winner, or transfer conclusion.           |
+|        3 | MiniGrid finite candidate evaluation         | The contract plus independent emitters and all preflight controls are merged.                                             | Complete roster/replay, train-eval separation, frozen table digest, equal access, and statistical-replay faults.                                  | General curiosity, general transfer, or parameter efficiency. |
+|        4 | Test-only withdrawal-declaration verifier    | A contract-pinned fixture exists without representing production evidence.                                                | Parent/declaration byte change, signer mismatch, invalid scope/reason/window, coexistence with correction/key revocation, local instant boundary. | Real production withdrawal, permission, or consent.           |
+|        5 | Production withdrawal input                  | An authorized operator provides an external roster-bound parent attestation and exact verification context.               | Missing/unbound parent and changed source/signature context must defer/refuse.                                                                    | Automatic authority or consent inference.                     |
+|        6 | NCI witness expansion                        | A new finite subject/model/property, not a relabeling of `NciNonUrgency`.                                                 | A discriminating configuration mutation and checker/version mismatch.                                                                             | Global safety/NCI theorem.                                    |
+|        7 | Recorded-consensus research                  | A human/organizational process specifies immutable evidence, withdrawal, dissent, scope, and accountable authority.       | Missing/dissenting/expired evidence and no automatic threshold escalation.                                                                        | Emergent global moral scorer or autonomous society authority. |
 
 ## 10. Non-negotiable boundary reminders
 
@@ -188,7 +259,7 @@ The following statements remain unsupported and must not be inferred from the me
 
 ## 11. Repository hygiene at handoff
 
-The current worktree preserves `.cache/` and `todo.md` as untracked local continuity material; do not stage either. The proposed MiniGrid policy-comparison contract is on `lumen/minigrid-policy-comparison-contract` and is the only source change in the current branch. Any later score implementation should begin from fresh `origin/main`, carry only its separately reviewed contract/runner/receipt changes, and leave infrastructure lanes untouched.
+The current worktree preserves `.cache/` and `todo.md` as untracked local continuity material; do not stage either. The MiniGrid policy-comparison contract is now merged. Any later score implementation should begin from fresh `origin/main`, carry only its separately reviewed runner/receipt changes, and leave infrastructure lanes untouched.
 
 ## References
 
@@ -204,3 +275,6 @@ The current worktree preserves `.cache/` and `todo.md` as untracked local contin
 [10]: ../../src/Core.TypeScript/federated-identity/revocation.ts "Federated RevocationGSet implementation"
 [11]: ../../src/Core.TypeScript/observe/room/durable-room-evidence-audit.ts "Room evidence audit genesis and prior-hash binding"
 [12]: https://github.com/Lucent-Financial-Group/Zeta/pull/16938 "PR #16938 — Withdrawal declaration contract and consolidated handoff"
+[13]: https://github.com/Lucent-Financial-Group/Zeta/pull/16962 "PR #16962 — MiniGrid policy-comparison contract"
+[14]: ../research/2026-09-08-arc-agi-3-readiness-and-no-cheating-boundary.md "ARC-AGI-3 readiness and no-cheating boundary"
+[15]: ../research/2026-09-08-arc-offline-carry-forward-evidence-contract.md "ARC offline carry-forward evidence contract"

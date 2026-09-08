@@ -1,0 +1,19 @@
+{
+  "pr_number": 16925,
+  "archive_path": "docs/history/pr-reviews/PR-16925-fix-formal-retain-tlc-failures-and-limit-retries-to-startup.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7rc_kS",
+    "comment:PRRC_kwDOSF9kNM7rc_kv",
+    "comment:PRRC_kwDOSF9kNM7rdF-5",
+    "comment:PRRC_kwDOSF9kNM7rdGDh",
+    "thread:PRRT_kwDOSF9kNM6f7r3e",
+    "thread:PRRT_kwDOSF9kNM6f7r3z"
+  ],
+  "fetched_at": "2026-09-07T13:49:22.035Z",
+  "schema_version": "v1",
+  "commit_sha": "c36ac21bf1c561ad0726d4dceb027d3c3cff823e",
+  "title": "fix(formal): Retain TLC failures and limit retries to startup",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:48:38Z",
+  "head_ref": "claim/task-tlc-attempt-retention-20260907"
+}

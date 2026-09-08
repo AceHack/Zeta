@@ -1,0 +1,12 @@
+{
+  "pr_number": 16985,
+  "archive_path": "docs/history/pr-reviews/PR-16985-feat-081m1z2nf1y087g0r001w6x77e-fuse-byte-session-readdir-dirents.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T23:57:48.158Z",
+  "schema_version": "v1",
+  "commit_sha": "577a50f4d7103044f3555d2f90a9cc6e2242fc70",
+  "title": "feat(081M1Z2NF1Y087G0R001W6X77E): FUSE byte session READDIR dirents",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:57:09Z",
+  "head_ref": "feat/zetafs-fuse-readdir-bytes"
+}

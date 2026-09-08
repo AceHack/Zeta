@@ -58,6 +58,16 @@ on:
       - "src/Core.TypeScript/cluster/derive-sync-waves.ts"
       - "src/Core.TypeScript/cluster/derive-sync-waves.test.ts"
       - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
+      # THE FILE THAT DEFINES THIS JOB'S CLUSTER DID NOT TRIGGER THIS JOB.
+      # `ci.kind-config.yaml` / `ci.cilium.kind-config.yaml` are the kind
+      # configs these steps pass to `--config`, so they decide what the cluster
+      # IS -- node count, CNI, and (as of the maxPods change) the pod ceiling
+      # that the scheduler enforces. Editing them could not re-run the only job
+      # that proves the cluster comes up, so a bootstrap change landed unverified
+      # by construction. That is the same shape as a check that cannot run
+      # looking like one that passed, one layer further out: here the check
+      # exists and is green, on a cluster built from a config it never saw.
+      - "full-ai-cluster/dev-cluster/profiles/**"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"
@@ -169,6 +179,16 @@ on:
       - "src/Core.TypeScript/cluster/derive-sync-waves.ts"
       - "src/Core.TypeScript/cluster/derive-sync-waves.test.ts"
       - "full-ai-cluster/k8s/sync-wave-dependency-graph.yaml"
+      # THE FILE THAT DEFINES THIS JOB'S CLUSTER DID NOT TRIGGER THIS JOB.
+      # `ci.kind-config.yaml` / `ci.cilium.kind-config.yaml` are the kind
+      # configs these steps pass to `--config`, so they decide what the cluster
+      # IS -- node count, CNI, and (as of the maxPods change) the pod ceiling
+      # that the scheduler enforces. Editing them could not re-run the only job
+      # that proves the cluster comes up, so a bootstrap change landed unverified
+      # by construction. That is the same shape as a check that cannot run
+      # looking like one that passed, one layer further out: here the check
+      # exists and is green, on a cluster built from a config it never saw.
+      - "full-ai-cluster/dev-cluster/profiles/**"
       - "src/Core.TypeScript/cluster/included-proof-summary.ts"
       - "src/Core.TypeScript/cluster/included-proof-summary.test.ts"
       - "src/Core.TypeScript/cluster/kubevirt-cdi-emulation-test.ts"

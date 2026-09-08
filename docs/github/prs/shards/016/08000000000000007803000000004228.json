@@ -1,0 +1,12 @@
+{
+  "pr_number": 16936,
+  "archive_path": "docs/history/pr-reviews/PR-16936-docs-research-capacity-is-what-the-hardware-cluster-unlocks-storage-and-cni-alre.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T13:46:31.478Z",
+  "schema_version": "v1",
+  "commit_sha": "499cf18d9f572bafa543afb8e3ce0a6a76581a4e",
+  "title": "docs(research): capacity is what the hardware cluster unlocks — storage and CNI already are not",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T13:45:48Z",
+  "head_ref": "shadow/hardware-readiness-census"
+}

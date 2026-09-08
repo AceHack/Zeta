@@ -1,0 +1,12 @@
+{
+  "pr_number": 16998,
+  "archive_path": "docs/history/pr-reviews/PR-16998-feat-081m1z7hw9y087g0r003jctstz-fuse-byte-session-unlink-rename.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T01:02:42.060Z",
+  "schema_version": "v1",
+  "commit_sha": "7b8486bac63108acaf49ad780484e60f38b0d49a",
+  "title": "feat(081M1Z7HW9Y087G0R003JCTSTZ): FUSE byte session UNLINK RENAME",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T01:02:02Z",
+  "head_ref": "feat/zetafs-fuse-unlink-bytes"
+}

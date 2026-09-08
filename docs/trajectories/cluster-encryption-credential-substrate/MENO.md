@@ -394,6 +394,25 @@ assume the number.
    CLI. Does not call this from `zeta-install.sh`. Does
    not change ISO bun `probe: null`. Does not invent an
    integrate decision.
+   Overlay named argv takes bun JSON `--from-json`
+   (`081M1Z1FHDW087G0R00210Z0PG`):
+   `planSetupFromFrostLookNamedArgv`. Uses `look`. JSON
+   `probe` is ignored even when non-null. Null look is
+   `missing-os`, not unmeasured. Mixing `--from-json` with
+   `--os` / `--effects` / `--from-conf` / env frost-look
+   keys refuses. Does not write ESP. Does not import the
+   frost-look CLI. Does not call this from `zeta-install.sh`.
+   Does not change ISO bun `probe: null`. Does not invent
+   an integrate decision.
+   Overlay named bun JSON join takes look
+   (`081M1Z36ZJ4087G0R003HFMT2K`):
+   `planSetupFromFrostLookNamedBunJson`. Uses `look`. JSON
+   `probe` is ignored even when non-null. Null look is
+   `missing-os`, not unmeasured. Mixing env frost-look keys
+   with JSON look refuses. Does not write ESP. Does not
+   import the frost-look CLI. Does not call this from
+   `zeta-install.sh`. Does not change ISO bun `probe: null`.
+   Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

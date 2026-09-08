@@ -1,0 +1,12 @@
+{
+  "pr_number": 16970,
+  "archive_path": "docs/history/pr-reviews/PR-16970-feat-081m1yqm0ws087g0r003q1jmnj-fuse-dispatcher-mkdir-unlink-symlink-rename.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T20:28:32.246Z",
+  "schema_version": "v1",
+  "commit_sha": "d0fd5eb1cdc6acaf458e4097f465fb8bf617dafa",
+  "title": "feat(081M1YQM0WS087G0R003Q1JMNJ): FUSE dispatcher mkdir unlink symlink rename",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T20:27:56Z",
+  "head_ref": "feat/zetafs-fuse-more-ops"
+}

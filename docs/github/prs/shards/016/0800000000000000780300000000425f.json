@@ -1,0 +1,12 @@
+{
+  "pr_number": 16991,
+  "archive_path": "docs/history/pr-reviews/PR-16991-feat-081m1z4wwa2087g0r003ppwf6t-fuse-byte-session-open-read-write.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T00:20:59.347Z",
+  "schema_version": "v1",
+  "commit_sha": "590893248ce59e7d334a8514d11b6c0ffa1e7e3c",
+  "title": "feat(081M1Z4WWA2087G0R003PPWF6T): FUSE byte session OPEN READ WRITE",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T00:20:21Z",
+  "head_ref": "feat/zetafs-fuse-rw-bytes"
+}
