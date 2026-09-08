@@ -11,10 +11,24 @@ The [retained transfer inventory](2026-09-08-hidden-switch-compiled-transfer-inv
 identifies 43 distinct unknown call-cell addresses and ten prospective
 literal addresses. This proposal would inspect only those 53 named ranges:
 43 eight-byte cells plus 152 literal bytes, 496 bytes total. Actual inventory
-artifact review is still pending. No new read, target, metadata-helper or
+artifact review is accepted at `d4aa1f8566c521a9d2c4376a8b3be5160da002f3`.
+No new read, target, metadata-helper or
 decoder invocation is authorized by this document.
 
 ## Roster before a read
+
+Pure helper source `9ce26b4bb6ea05ccdaaac4deef888a5b80fd25ba` implements
+the proposed fixed range selection. Independent source acceptance is signed
+at `0775085e5dae8bfebe35ddc8ef820103ca75e4b8`. The
+[six preparation records](hidden-switch-compiled-validation/2026-09-07/data-range-helper-preparation/manifest.json)
+retain eight focused and 77 combined passing synthetic tests, the initial
+Ruff import-format finding and correction, and all sixteen passing quick
+preflight checks. The initial test log redirection used a wrong relative
+path and failed before Python ran; the successful invocation used the
+explicit writer test directory. No actual roster has been derived in this
+preparation. Its immutable-inventory wrapper and eventual physical reader
+still require separate review. The helper's count override is fixture-only;
+the actual wrapper must use its fixed default counts.
 
 Derive a separately hashed, ordered roster from the 130 method files in
 inventory evidence `a489e850847e240e131e502aa745c69899a146ba`. The manifest

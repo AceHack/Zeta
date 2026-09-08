@@ -18,7 +18,9 @@ Source `370c110c93598874615efe60a5bed23ac6e5263d` ran under execution head
 [finite plan and retained corrections](2026-09-08-hidden-switch-compiled-transfer-inventory-plan.md).
 Independent source acceptance is signed at
 `fd415861674a3b5673b5cd0dd96ff7d746507b73`. The actual result's independent
-artifact audit is still pending. This run read only previously archived
+artifact audit is accepted at `d4aa1f8566c521a9d2c4376a8b3be5160da002f3`.
+That audit independently checked the retained bytes, identities and counts;
+the reviewer launched no classifier or dump query. This run read only previously archived
 metadata; it opened no raw dump, requested no new memory range, launched no
 LLVM decoder or study target, and drew no registered source or timing row.
 
