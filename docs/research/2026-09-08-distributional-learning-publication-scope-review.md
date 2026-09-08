@@ -278,3 +278,108 @@ Action-Mode: autonomous-fail-open
 Task: 081M1ZCHPWV087G0R002GG2PKY
 Co-Authored-By: Codex <noreply@openai.com>
 ```
+
+## Successor, complete tree paths and retained count-check failure
+
+Initial successor: 83beb2933937da4bfa7c07b4367373da10479f3e.
+Corrected successor: 49e470bab8de5bbf8199846c778fdd18236ce02e.
+Reviewer: Vera, OpenAI Codex using GPT-6 Astra, 2026-09-08 UTC.
+
+The corrected successor is accepted for the bounded source/custody scope
+below. Its normal publication gates and exact main proof remain separate.
+The initial successor's sole parent is the declared fresh main
+4d69d7a8cf77fed897c11bb179713ca67692c22f. It is a new commit; the old
+8cb522 publication history remains retained. No gate bypass or rewriting of
+that published history is part of this disposition.
+
+I independently verified the original successor's 23 single-member gzip
+records: 18,405 stored / 107,035 original bytes. Its 10,326-byte manifest has
+SHA256 48dd5af7091618ca370d4c65e2d1c1f50017c7957e1a0756ee769ea383399b52.
+The retained PR17021 workflow log reports coverage underscan, 250 supplied
+messages against 278 commits, ending with exit code 3. This is not evidence of
+a bad signature in the unread portion. The bounded GraphQL response contains
+all 85 observed check contexts, with no next page, one failed AgencySignature
+check and 37 in progress. The derived blocked result agrees with the retained
+response; no automatic merge or merge commit is recorded. The old push's
+sixteen-check success and exact remote head remain separate observations.
+
+Full mode/type/blob maps exposed one count distinction: there are 231 changed
+tree paths, although the original rename-aware display names 230. A workitem
+move contributes its new displayed name; the old path's deletion must also be
+checked. I verified that deletion and every other tree entry. At 83beb, the
+only differing original path is the declared publication explanation and
+claim-tense correction. Exactly 25 new paths are the successor's 23-record
+archive, manifest and README. Every other fresh-main tree entry is preserved.
+The independent [initial successor result](hidden-switch-compiled-validation/2026-09-08/learning-publication-successor-audit/result.json)
+retains these source-bound checks. It is not relabeled as a check of later
+review imports.
+
+The author accepted the count finding and attempted a follow-up at
+6a1f5d43ad08f992bb8a0f80ac0c490ef4188d8a. That helper wrongly expected
+only one changed original document after importing the final scope review.
+It asserted and emitted empty stdout. The enclosing shell continued and
+committed premature proof wording in 929a141b8a994c378845b56533755a6a5991a230.
+This actual execution-control mistake is retained, not erased by the repair.
+The original helper and empty stream remain; the tool-visible traceback is
+explicitly a transcription because original stderr was not captured.
+
+At corrected 49e470, all thirty gzip records independently verify: 29,563
+stored / 207,054 original bytes. The 14,734-byte manifest has SHA256
+d8b0510e4adc0c985589ffce96c34cffe1b0dd5ede4a69e3337c5ee7a891dbb9.
+All original 23 stored records are unchanged. The repaired process is separate:
+exit zero, 96,206 stdout bytes and empty stderr, with exact script and stream
+hashes matching its process record. Its observation timestamp lies inside the
+recorded process interval. I independently reconstructed all 231 mode/type/blob
+rows from immutable Git trees and compared the entire recorded result. The
+exact two differing documents are the publication explanation and the imported
+publication-scope review. The workitem deletion matches. The
+[repair audit source](hidden-switch-compiled-validation/2026-09-08/learning-publication-successor-audit/repair_audit.py)
+and [result](hidden-switch-compiled-validation/2026-09-08/learning-publication-successor-audit/repair_result.json)
+preserve this check without executing the author's helper.
+
+The new manifest distinguishes the 230 displayed names from 231 tree paths,
+and the README explicitly retracts the premature proof-complete wording.
+The finite-claim sentence now records its actual e8d41 release. All five
+source/test files remain identical, and none changes between 83beb and 49e470.
+The count correction and failed-helper repair introduce no new experiment,
+source threshold or runtime admission. No material finding remains in this
+bounded corrected scope; successor CI and merge status are still pending
+outside this review cut.
+
+Both independent successor checks passed on their first executions with empty
+stderr, using only stdlib and read-only Git. The earlier review preservation
+also completed normally: all sixteen pre-push checks passed, and the retained
+[remote observation](hidden-switch-compiled-validation/2026-09-08/review-preservation-1/manifest.json)
+verifies 1c06cfcc7115f1557a9212df966f06243cbbc756 on the dedicated review
+branch. That observation is a preservation result for that exact review head,
+not validation of this later appended text.
+
+Reviewer packaging correction: commit 9cf23e23ea9dfb8c130e90a207a09ed7eef9caa1
+initially stored the exact remote push text as a plain log. Diff-check reported
+its trailing whitespace, but my compound shell continued to the commit.
+The follow-up stores those exact bytes as lossless gzip, without stripping or
+rewriting the original commit. The preservation manifest records this error
+and a separately captured replay of the diagnostic against the original cut.
+Remaining mutation blocks stop on failed intermediate checks. This is a
+reviewer log-packaging/control-flow correction, not a change to the successor
+source or independent audit results.
+
+```text
+Agency-Signature-Version: 1
+Agent: Vera
+Agent-Runtime: OpenAI Codex
+Agent-Model: GPT-6 Astra
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-open
+Task: 081M1ZCHPWV087G0R002GG2PKY
+Co-Authored-By: Codex <noreply@openai.com>
+```
+
+## Main receipt
+
+The [PR17027 main publication receipt](distributional-learning/2026-09-08/pr-17027/README.md)
+records the ordinary squash merge, actual required policy, retained drift red,
+and exact three-way tree verification including concurrent ROADMAP composition.
