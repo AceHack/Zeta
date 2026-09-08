@@ -1,7 +1,8 @@
 # ARC online-memory provenance receipt contract
 
-**Status:** Contract only. No online learner, ARC score, transfer result, or
-official ARC-AGI-3 evaluation is introduced by this document.
+**Status:** Source-owned score-free preflight implemented and independently
+replayed. No online learner, ARC score, transfer result, or official ARC-AGI-3
+evaluation is introduced by this document.
 **Date:** 2026-09-08
 **Author:** Manus AI (Lumen)
 
@@ -35,8 +36,11 @@ from scratch.
 
 This is an engineering boundary, not a claim that any current Zeta agent has
 solved continual learning. The existing `PixelAgent` retains beliefs, blocked
-cells, inert-action observations, and within-episode route information, but it
-does not yet expose a versioned durable memory-update receipt.[2] The existing
+cells, inert-action observations, and within-episode route information. The new
+preflight emits a separate pinned synthetic lawful-event carrier rather than
+silently treating `PixelAgent`'s in-memory object as durable generic memory; an
+adapter from PixelAgent observations remains a later, separately reviewed
+unit.[2] The existing
 multilayer factor-graph path provides a separately bounded online evidence
 update, yet it is an inference update over a declared Gaussian model, not proof
 of general online learning.[3]
@@ -151,6 +155,26 @@ identity, enforce state partition/barrier rules, perform canonical cancellation
 and causal replay, and recompute each materialized memory digest without using
 the emitter’s stored result as an oracle.
 
+### Implemented source-owned preflight
+
+The first bounded implementation is now in
+`src/Arc.Python/zeta_arc/online_memory.py`, with an independently authored
+raw-object verifier in `src/Arc.Python/tests/test_online_memory_receipt.py`.
+The emitter produces canonical JSON update and retraction atoms over a pinned
+two-event synthetic lawful sequence; it is deliberately not wired into
+`PixelAgent.act`, a policy-selection loop, a score emitter, or a hosted ARC
+interface. The verifier does not import the emitter's canonical-byte, digest,
+or state-digest helpers.
+
+The targeted conformance suite passes **14 tests**: byte-identical replay,
+event-by-event state transition, positive prior-level and CHIP-8 cross-game
+continuity, current-level preload and early-live-state refusal, duplicate
+exact-once behavior, rule/uncertainty/task-identity tampering, retraction before
+assertion, exact retraction-uncertainty matching, unresolved retraction,
+replacement correction, missing predecessor, and query non-absorption. The
+full `src/Arc.Python` suite passes **209 tests** in the declared project
+environment. These are finite source-owned conformance observations only.
+
 ## 6. Required observed controls
 
 Every row below must produce a distinct canonical receipt. A comment claiming a
@@ -171,6 +195,8 @@ fault “would be caught” is not an observed control.
 | Retraction before assertion | Deliver an exact `−1` before its matching `+1`. The fold retains the in-flight retraction; final cancellation/replay converges once both arrive. |
 | Replacement correction | Retract one prior update and assert a named replacement. The old atom remains durable, the replacement is distinct, and replay reaches the replacement-derived digest. |
 | Missing predecessor | Supply a successor without its predecessor. The state is `unresolved-predecessor`, never assigned a guessed order or post-state. |
+| Retraction uncertainty | Change the retraction's uncertainty payload even after recomputing its own identity. Verification must refuse because it no longer retracts the exact asserted update. |
+| Retraction without assertion | Deliver a valid retraction whose asserted atom is absent. The state remains `unresolved-retraction`; it is not silently treated as complete cancellation. |
 | Query non-absorption | Query a replayed materialized memory state repeatedly without a new atom. Result digests are stable and no additional update is recorded. |
 | Identity mismatch | Change suite, source, room/level, action schema, agent build, memory origin, or task barrier. The receipt is rejected rather than relabelled. |
 

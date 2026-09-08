@@ -147,8 +147,15 @@ memory, including CHIP-8/Atari history; it refuses only undeclared memory or
 answer-bearing payload from the ARC level before that level's first lawful
 observation. Updates can be retracted as an exact `−1` atom plus a replacement
 `+1` atom; out-of-order atoms are retained unresolved until their predecessor
-arrives, then causally replayed. This is an online-memory provenance contract,
-not a learner implementation or an ARC score. [16]
+arrives, then causally replayed. The first source-owned score-free preflight is
+now implemented: a canonical Python emitter and independently authored verifier
+cover a pinned two-event lawful sequence, with 14 targeted controls and 209
+passing tests across the full ARC Python suite. It accepts declared prior-level
+and CHIP-8 cross-game memory, rejects current-level preload/early-live state,
+and exercises exact-once duplication, retraction/replacement, uncertainty/rule/
+task-identity tampering, unresolved predecessor/retraction, and non-absorbing
+query controls. It is still not wired into PixelAgent policy, an ARC score,
+hosted ARC, or a learner implementation. [16]
 
 ## 4. Policy self-knowledge and tick boundary
 
