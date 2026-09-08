@@ -1,0 +1,104 @@
+{
+  "SourceCommit": "b575e34bd5cda05176ee14f89aedb2fa10edbb96",
+  "ModuleBytes": 33669,
+  "ModuleSha256": "0a643cc17f39e2536caa963a1cfd6e200d83cca91cc443799d45c7316e54e6de",
+  "Records": [
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-reader-finding-1/completion.json",
+      "File": "reader-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "09ef3a1e9b591009977545d8a5dc956c59610af7b394b46a55a9e346ff26f425",
+      "StoredBytes": 88,
+      "StoredSha256": "90ab69a1889a141d203ad3276f71708943a0c9bcf4996fb144d571f8cfa09642"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-reader-finding-1/invocation.json",
+      "File": "reader-invocation.json.gz",
+      "Bytes": 663,
+      "Sha256": "22cdf4501f5af18d3108f6200cddab2a1b6c40116b52a82c8e0351a6b307f10c",
+      "StoredBytes": 283,
+      "StoredSha256": "d5ea0ab129423248bba846167c56560620d0cbb7958384218eb8e942a0e9d2c6"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-reader-finding-1/precision_gate_projection_process.py",
+      "File": "reader-precision_gate_projection_process.py.gz",
+      "Bytes": 33669,
+      "Sha256": "0a643cc17f39e2536caa963a1cfd6e200d83cca91cc443799d45c7316e54e6de",
+      "StoredBytes": 8044,
+      "StoredSha256": "7665ffba977fd2b50fa4ab3dfe71a9307841a528308469d230abdac17cb67ed2"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-reader-finding-1/stderr",
+      "File": "reader-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-reader-finding-1/stdout",
+      "File": "reader-stdout.gz",
+      "Bytes": 1457,
+      "Sha256": "62ab84247550a1cf3a54b858f0cd855fe9bf2ff3bc663d6eef24ca3e508c6d05",
+      "StoredBytes": 619,
+      "StoredSha256": "5a73c570badde36972ad1063c6ecb6952701f5926f1505d94d2fe57a2f51ca06"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-reader-finding-1/test_process.py",
+      "File": "reader-test_process.py.gz",
+      "Bytes": 17917,
+      "Sha256": "4ac946b8a2d522eba6c9134fb3597025bcb650f3db104077ab2f0afff2648159",
+      "StoredBytes": 4533,
+      "StoredSha256": "242d78a5f193dd52b5b94fa036ecd8d3ed37d4dfe78e785821ac5a9c89dc3c4e"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-receipt-finding-1/completion.json",
+      "File": "receipt-completion.json.gz",
+      "Bytes": 69,
+      "Sha256": "e512f30a60ae6ed36dc681bf26b2e5c743ffc5d6a190253cecae6e5cdda84508",
+      "StoredBytes": 88,
+      "StoredSha256": "83802e90d51dbe02c4f0a36ba145cf0b52af0c3ededb40e961f0379a11a1ff7a"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-receipt-finding-1/invocation.json",
+      "File": "receipt-invocation.json.gz",
+      "Bytes": 668,
+      "Sha256": "3d9932274b8111a6fd3f2cd461f5697dd933326646a13e96cfb263db87e757bd",
+      "StoredBytes": 286,
+      "StoredSha256": "d8f54a8d4f8853f65a2c24b30a9546030872c1873c2737d96eb729ea23ff0e5c"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-receipt-finding-1/precision_gate_projection_process.py",
+      "File": "receipt-precision_gate_projection_process.py.gz",
+      "Bytes": 33669,
+      "Sha256": "0a643cc17f39e2536caa963a1cfd6e200d83cca91cc443799d45c7316e54e6de",
+      "StoredBytes": 8044,
+      "StoredSha256": "7665ffba977fd2b50fa4ab3dfe71a9307841a528308469d230abdac17cb67ed2"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-receipt-finding-1/stderr",
+      "File": "receipt-stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-receipt-finding-1/stdout",
+      "File": "receipt-stdout.gz",
+      "Bytes": 2726,
+      "Sha256": "b9f27cd569a17a1150a366a06c193f3e3a6bccc7b5aaabc064d9a032d0ded5fc",
+      "StoredBytes": 1031,
+      "StoredSha256": "7d13a8cc003cc955d093ae5936e68c996e97ec7f32479a85a0569551f014b73a"
+    },
+    {
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/precision-projection-process-receipt-finding-1/test_process.py",
+      "File": "receipt-test_process.py.gz",
+      "Bytes": 19077,
+      "Sha256": "f729d29fb61565c6a71d0eb8f48b78f372408291b0780a4aa4e95e7245a06add",
+      "StoredBytes": 4690,
+      "StoredSha256": "6fa317ca9be3d968137e3a3f7fb4ace039ab52c038e511a802c1649d6396c52e"
+    }
+  ],
+  "ProjectCodeExecutedByReviewer": false
+}
