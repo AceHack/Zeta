@@ -523,3 +523,35 @@ fixture execution over retained data, not a replacement run receipt.
 All 16 focused and 46 combined cases pass, as does Ruff. No new LLVM process,
 dump or study target ran in preparation; the authorized third attempt must
 retain its own invocation/outcome and all full flags remain false.
+
+## Third actual decoder correspondence
+
+The [third decoder-attempt inventory](llvm-decode-attempt-3/manifest.json)
+retains 272 lossless records: 4,907,243 original bytes stored in 473,052
+compressed bytes. Source `20043d1408bfa3a515f5d59864ad858595044707` ran at
+execution head `1be0fa57b256d34045f3b3e5a9b2f55ce0dfe550` after exact-source
+independent acceptance and retained actual-output fixture validation.
+
+LLVM PID 89193 and the driver both exited zero. Completion at
+2026-09-08 00:06:24.424737 UTC binds all 130 methods, 8,665 instruction words
+and 34,660 bytes. Stderr is empty; cleanup reports no failure. All 144
+input/helper/tool identity records remain unchanged. Every concrete
+four-byte re-encoding equals its bound input, and all 851 immediate comments
+are retained with their instruction and original text-line position.
+
+The 190,630-byte atomic input is byte-identical to both prior attempts,
+SHA256 `DDA93E9D8D30E929772D2DB5B7E1CDC235121B909423A0097467E5BC92852B2C`.
+The 659,615-byte raw stdout is byte-identical to attempt two's output;
+the new grammar admits its exact comment-column bytes. Neither prior
+attempt's failed outcome changes. The complete 2,837-byte outcome has
+SHA256 `13ED5149FC05C0B34CDBA23B0FF03AF9842ECD769D74036800F43BBDE95286FC`.
+
+This establishes the declared decoder/re-encoding correspondence under
+its captured-input and installed-tool premises. It does not interpret
+printed branch addresses, prove reachability or close calls, literals,
+guard-object association, exception paths, arithmetic assumptions or
+framework dependencies. The summary's mnemonic frequencies are text
+counts only. No dump was opened and no study target, source generator or
+measurement ran. RuntimeAdmitted, BodyResolved and ClosureAdmitted remain
+false. The next finite transfer/operand inventory requires separate source
+review; this completed slice authorizes no extra memory range or process.
