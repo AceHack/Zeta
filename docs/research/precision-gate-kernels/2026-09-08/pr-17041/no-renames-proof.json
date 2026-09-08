@@ -1,0 +1,2102 @@
+{
+  "UTC": "2026-09-08T05:31:12.034670+00:00",
+  "Correction": "Original346 roster used rename-aware git diff. This no-renames347 roster also checks removed source path. Original proof retained.",
+  "Head": "7aeaf5687fa7668c770ba60e438c193a58a6af21",
+  "Merge": "155d45e32d01152004a03862213550ada96fb036",
+  "ObservedMain": "155d45e32d01152004a03862213550ada96fb036",
+  "Parent": "d35c2b35d1b06d04427a9a4f6972bd1331305af8",
+  "ActualTree": "ea55686f5cb2a8005ce1cc831fb876d86df28ad6",
+  "ExpectedThreeWayTree": "ea55686f5cb2a8005ce1cc831fb876d86df28ad6",
+  "PathsArgv": [
+    "git",
+    "diff",
+    "--no-renames",
+    "--name-only",
+    "d35c2b35d1b06d04427a9a4f6972bd1331305af8",
+    "155d45e32d01152004a03862213550ada96fb036"
+  ],
+  "Paths": [
+    {
+      "Path": "docs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "MergeEntry": "100644 blob b4de11bbac6bf3388760b9e7303e0b25c3221af9\tdocs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "MainEntry": "100644 blob b4de11bbac6bf3388760b9e7303e0b25c3221af9\tdocs/DECISIONS/2026-09-08-density-consistent-precision-gate-kernels.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/handoffs/2026-09-07-vera-compiled-controller-continuation.md",
+      "MergeEntry": "100644 blob 43a370e7dc5cf3b4a209e9fd0797d0da4d559198\tdocs/handoffs/2026-09-07-vera-compiled-controller-continuation.md",
+      "MainEntry": "100644 blob 43a370e7dc5cf3b4a209e9fd0797d0da4d559198\tdocs/handoffs/2026-09-07-vera-compiled-controller-continuation.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-02-composable-dag-learning-competitor-matrix.md",
+      "MergeEntry": "100644 blob ac3d5f6641a44230ed0262b1585754de9138b9db\tdocs/research/2026-09-02-composable-dag-learning-competitor-matrix.md",
+      "MainEntry": "100644 blob ac3d5f6641a44230ed0262b1585754de9138b9db\tdocs/research/2026-09-02-composable-dag-learning-competitor-matrix.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-composable-learning-circuit-continuation.md",
+      "MergeEntry": "100644 blob 75381000c8ff4c40636d1c70d5d312c6e7af597b\tdocs/research/2026-09-08-composable-learning-circuit-continuation.md",
+      "MainEntry": "100644 blob 75381000c8ff4c40636d1c70d5d312c6e7af597b\tdocs/research/2026-09-08-composable-learning-circuit-continuation.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-decorrelation-noninterference-ferry-review.md",
+      "MergeEntry": "100644 blob bc8743b702381e2577f2798baaec9d57a3b21088\tdocs/research/2026-09-08-decorrelation-noninterference-ferry-review.md",
+      "MainEntry": "100644 blob bc8743b702381e2577f2798baaec9d57a3b21088\tdocs/research/2026-09-08-decorrelation-noninterference-ferry-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-distributional-learning-publication-scope-review.md",
+      "MergeEntry": "100644 blob 311fb2abd70b492c5c72f7a916865f0fc08d91bf\tdocs/research/2026-09-08-distributional-learning-publication-scope-review.md",
+      "MainEntry": "100644 blob 311fb2abd70b492c5c72f7a916865f0fc08d91bf\tdocs/research/2026-09-08-distributional-learning-publication-scope-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-distributional-learning-resource-aware-integration-direction.md",
+      "MergeEntry": "100644 blob 508e958699e677add5112a599b27cb9278baca58\tdocs/research/2026-09-08-distributional-learning-resource-aware-integration-direction.md",
+      "MainEntry": "100644 blob 508e958699e677add5112a599b27cb9278baca58\tdocs/research/2026-09-08-distributional-learning-resource-aware-integration-direction.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-finite-q8-memory-frame-gauge-proposal.md",
+      "MergeEntry": "100644 blob b6a2496bfe186568037f872d9dd54fba6d61c0a3\tdocs/research/2026-09-08-finite-q8-memory-frame-gauge-proposal.md",
+      "MainEntry": "100644 blob b6a2496bfe186568037f872d9dd54fba6d61c0a3\tdocs/research/2026-09-08-finite-q8-memory-frame-gauge-proposal.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-finite-q8-memory-frame-independent-review.md",
+      "MergeEntry": "100644 blob 781f4b0787cd11b7295c934cb3bfc455b035d0e6\tdocs/research/2026-09-08-finite-q8-memory-frame-independent-review.md",
+      "MainEntry": "100644 blob 781f4b0787cd11b7295c934cb3bfc455b035d0e6\tdocs/research/2026-09-08-finite-q8-memory-frame-independent-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-kernels-native-reference-replay-review.md",
+      "MergeEntry": "100644 blob 7f3641e59e243b29b7bb7943daa40c31d4109243\tdocs/research/2026-09-08-precision-gate-kernels-native-reference-replay-review.md",
+      "MainEntry": "100644 blob 7f3641e59e243b29b7bb7943daa40c31d4109243\tdocs/research/2026-09-08-precision-gate-kernels-native-reference-replay-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-kernels-native-reference-replay.md",
+      "MergeEntry": "100644 blob 34c050f2f172c5abfd2f571c08e4483ad76ad5e1\tdocs/research/2026-09-08-precision-gate-kernels-native-reference-replay.md",
+      "MainEntry": "100644 blob 34c050f2f172c5abfd2f571c08e4483ad76ad5e1\tdocs/research/2026-09-08-precision-gate-kernels-native-reference-replay.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-kernels-native-review.md",
+      "MergeEntry": "100644 blob 7d1216f7de534663cb37aa8180581bb2d2b61cec\tdocs/research/2026-09-08-precision-gate-kernels-native-review.md",
+      "MainEntry": "100644 blob 7d1216f7de534663cb37aa8180581bb2d2b61cec\tdocs/research/2026-09-08-precision-gate-kernels-native-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-kernels-reference-review.md",
+      "MergeEntry": "100644 blob 50716da019daebd61bd39c8942b4ddca2a770a13\tdocs/research/2026-09-08-precision-gate-kernels-reference-review.md",
+      "MainEntry": "100644 blob 50716da019daebd61bd39c8942b4ddca2a770a13\tdocs/research/2026-09-08-precision-gate-kernels-reference-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gate-kernels-reference.md",
+      "MergeEntry": "100644 blob 598dc65bf20021a0dd5ff962ad9f0e5bf779ad13\tdocs/research/2026-09-08-precision-gate-kernels-reference.md",
+      "MainEntry": "100644 blob 598dc65bf20021a0dd5ff962ad9f0e5bf779ad13\tdocs/research/2026-09-08-precision-gate-kernels-reference.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gated-experts-design-and-source-audit.md",
+      "MergeEntry": "100644 blob b9d4705ba5bf820e10f2f585765ef6de9eeebf28\tdocs/research/2026-09-08-precision-gated-experts-design-and-source-audit.md",
+      "MainEntry": "100644 blob b9d4705ba5bf820e10f2f585765ef6de9eeebf28\tdocs/research/2026-09-08-precision-gated-experts-design-and-source-audit.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gated-experts-design-scope-review.md",
+      "MergeEntry": "100644 blob aa5ad0624c033f30e15ead9ddd7572c30b6c33d3\tdocs/research/2026-09-08-precision-gated-experts-design-scope-review.md",
+      "MainEntry": "100644 blob aa5ad0624c033f30e15ead9ddd7572c30b6c33d3\tdocs/research/2026-09-08-precision-gated-experts-design-scope-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-gated-experts-equation-review.md",
+      "MergeEntry": "100644 blob 1aaf15edbf376ef787a8e93b398c69e5943a54c0\tdocs/research/2026-09-08-precision-gated-experts-equation-review.md",
+      "MainEntry": "100644 blob 1aaf15edbf376ef787a8e93b398c69e5943a54c0\tdocs/research/2026-09-08-precision-gated-experts-equation-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/2026-09-08-precision-kernel-publication-independent-review.md",
+      "MergeEntry": "100644 blob 12928d6a48e0b7e81bebcfa1192b26882dee5f61\tdocs/research/2026-09-08-precision-kernel-publication-independent-review.md",
+      "MainEntry": "100644 blob 12928d6a48e0b7e81bebcfa1192b26882dee5f61\tdocs/research/2026-09-08-precision-kernel-publication-independent-review.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/000-distributional-successor-pr-body.md.gz",
+      "MergeEntry": "100644 blob 7cb6251c5a5753fb18375ce90cea78382f899c40\tdocs/research/distributional-learning/2026-09-08/pr-17027/000-distributional-successor-pr-body.md.gz",
+      "MainEntry": "100644 blob 7cb6251c5a5753fb18375ce90cea78382f899c40\tdocs/research/distributional-learning/2026-09-08/pr-17027/000-distributional-successor-pr-body.md.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/001-distributional-successor-pr-create-1.log.gz",
+      "MergeEntry": "100644 blob 5534fedd4a65335f73b8c38434c4c19305bbe7c7\tdocs/research/distributional-learning/2026-09-08/pr-17027/001-distributional-successor-pr-create-1.log.gz",
+      "MainEntry": "100644 blob 5534fedd4a65335f73b8c38434c4c19305bbe7c7\tdocs/research/distributional-learning/2026-09-08/pr-17027/001-distributional-successor-pr-create-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/002-distributional-successor-push-1.log.gz",
+      "MergeEntry": "100644 blob 3a66dbd298b99b833ec43d25fea373a0f098a912\tdocs/research/distributional-learning/2026-09-08/pr-17027/002-distributional-successor-push-1.log.gz",
+      "MainEntry": "100644 blob 3a66dbd298b99b833ec43d25fea373a0f098a912\tdocs/research/distributional-learning/2026-09-08/pr-17027/002-distributional-successor-push-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/003-distributional-successor-remote-1.txt.gz",
+      "MergeEntry": "100644 blob e095d0c651fd2d815363711315dac47f54c03000\tdocs/research/distributional-learning/2026-09-08/pr-17027/003-distributional-successor-remote-1.txt.gz",
+      "MainEntry": "100644 blob e095d0c651fd2d815363711315dac47f54c03000\tdocs/research/distributional-learning/2026-09-08/pr-17027/003-distributional-successor-remote-1.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/004-pr-17027-bounded-gate-1.json.gz",
+      "MergeEntry": "100644 blob 551f40e06127530d0afd22d0cd072fe226c7efac\tdocs/research/distributional-learning/2026-09-08/pr-17027/004-pr-17027-bounded-gate-1.json.gz",
+      "MainEntry": "100644 blob 551f40e06127530d0afd22d0cd072fe226c7efac\tdocs/research/distributional-learning/2026-09-08/pr-17027/004-pr-17027-bounded-gate-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/005-pr-17027-bounded-gate-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/005-pr-17027-bounded-gate-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/005-pr-17027-bounded-gate-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/006-pr-17027-bounded-gate-2.json.gz",
+      "MergeEntry": "100644 blob 2573d54c213194135aff4d6ffa1da0485840e63c\tdocs/research/distributional-learning/2026-09-08/pr-17027/006-pr-17027-bounded-gate-2.json.gz",
+      "MainEntry": "100644 blob 2573d54c213194135aff4d6ffa1da0485840e63c\tdocs/research/distributional-learning/2026-09-08/pr-17027/006-pr-17027-bounded-gate-2.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/007-pr-17027-bounded-gate-2.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/007-pr-17027-bounded-gate-2.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/007-pr-17027-bounded-gate-2.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/008-pr-17027-bounded-gate-3.json.gz",
+      "MergeEntry": "100644 blob a31932ff81a9bc4b2930da485ebe8de7bc1d3a83\tdocs/research/distributional-learning/2026-09-08/pr-17027/008-pr-17027-bounded-gate-3.json.gz",
+      "MainEntry": "100644 blob a31932ff81a9bc4b2930da485ebe8de7bc1d3a83\tdocs/research/distributional-learning/2026-09-08/pr-17027/008-pr-17027-bounded-gate-3.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/009-pr-17027-bounded-gate-3.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/009-pr-17027-bounded-gate-3.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/009-pr-17027-bounded-gate-3.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/010-pr-17027-checks-2.json.gz",
+      "MergeEntry": "100644 blob 79afe4f35fc106ff211c7ca098deadc3328e591e\tdocs/research/distributional-learning/2026-09-08/pr-17027/010-pr-17027-checks-2.json.gz",
+      "MainEntry": "100644 blob 79afe4f35fc106ff211c7ca098deadc3328e591e\tdocs/research/distributional-learning/2026-09-08/pr-17027/010-pr-17027-checks-2.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/011-pr-17027-checks-3.json.gz",
+      "MergeEntry": "100644 blob 9391a68d3db07b96f25085957c4bead390376331\tdocs/research/distributional-learning/2026-09-08/pr-17027/011-pr-17027-checks-3.json.gz",
+      "MainEntry": "100644 blob 9391a68d3db07b96f25085957c4bead390376331\tdocs/research/distributional-learning/2026-09-08/pr-17027/011-pr-17027-checks-3.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/012-0-request.json.gz",
+      "MergeEntry": "100644 blob 5df72c533747a5c05ba5a838beb99c5012ee2f54\tdocs/research/distributional-learning/2026-09-08/pr-17027/012-0-request.json.gz",
+      "MainEntry": "100644 blob 5df72c533747a5c05ba5a838beb99c5012ee2f54\tdocs/research/distributional-learning/2026-09-08/pr-17027/012-0-request.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/013-0-response.json.gz",
+      "MergeEntry": "100644 blob 49f25a1b1f0741d2f13dc1a3ecc5f82c8336e7a4\tdocs/research/distributional-learning/2026-09-08/pr-17027/013-0-response.json.gz",
+      "MainEntry": "100644 blob 49f25a1b1f0741d2f13dc1a3ecc5f82c8336e7a4\tdocs/research/distributional-learning/2026-09-08/pr-17027/013-0-response.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/014-result.json.gz",
+      "MergeEntry": "100644 blob 90562627b027e48c553a27d52a1d670ee3c14923\tdocs/research/distributional-learning/2026-09-08/pr-17027/014-result.json.gz",
+      "MainEntry": "100644 blob 90562627b027e48c553a27d52a1d670ee3c14923\tdocs/research/distributional-learning/2026-09-08/pr-17027/014-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/015-0-request.json.gz",
+      "MergeEntry": "100644 blob 5df72c533747a5c05ba5a838beb99c5012ee2f54\tdocs/research/distributional-learning/2026-09-08/pr-17027/015-0-request.json.gz",
+      "MainEntry": "100644 blob 5df72c533747a5c05ba5a838beb99c5012ee2f54\tdocs/research/distributional-learning/2026-09-08/pr-17027/015-0-request.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/016-0-response.json.gz",
+      "MergeEntry": "100644 blob 671711c7a0302aa6dbfabf5e21376115689992fd\tdocs/research/distributional-learning/2026-09-08/pr-17027/016-0-response.json.gz",
+      "MainEntry": "100644 blob 671711c7a0302aa6dbfabf5e21376115689992fd\tdocs/research/distributional-learning/2026-09-08/pr-17027/016-0-response.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/017-result.json.gz",
+      "MergeEntry": "100644 blob e5144d195e874b23e9997a793fa5d5ba33ecfcc6\tdocs/research/distributional-learning/2026-09-08/pr-17027/017-result.json.gz",
+      "MainEntry": "100644 blob e5144d195e874b23e9997a793fa5d5ba33ecfcc6\tdocs/research/distributional-learning/2026-09-08/pr-17027/017-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/018-0-request.json.gz",
+      "MergeEntry": "100644 blob 5df72c533747a5c05ba5a838beb99c5012ee2f54\tdocs/research/distributional-learning/2026-09-08/pr-17027/018-0-request.json.gz",
+      "MainEntry": "100644 blob 5df72c533747a5c05ba5a838beb99c5012ee2f54\tdocs/research/distributional-learning/2026-09-08/pr-17027/018-0-request.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/019-0-response.json.gz",
+      "MergeEntry": "100644 blob 16645a4f7c76d6708ee97a3635727439863175ae\tdocs/research/distributional-learning/2026-09-08/pr-17027/019-0-response.json.gz",
+      "MainEntry": "100644 blob 16645a4f7c76d6708ee97a3635727439863175ae\tdocs/research/distributional-learning/2026-09-08/pr-17027/019-0-response.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/020-result.json.gz",
+      "MergeEntry": "100644 blob 31893071e86de4b6cb65852f75ccbd2f40bd9bbe\tdocs/research/distributional-learning/2026-09-08/pr-17027/020-result.json.gz",
+      "MainEntry": "100644 blob 31893071e86de4b6cb65852f75ccbd2f40bd9bbe\tdocs/research/distributional-learning/2026-09-08/pr-17027/020-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/021-pr-17027-drift-loud-failure-1.log.gz",
+      "MergeEntry": "100644 blob b7ddc55edcf9f75f92cdd54137ea530bfa316bdc\tdocs/research/distributional-learning/2026-09-08/pr-17027/021-pr-17027-drift-loud-failure-1.log.gz",
+      "MainEntry": "100644 blob b7ddc55edcf9f75f92cdd54137ea530bfa316bdc\tdocs/research/distributional-learning/2026-09-08/pr-17027/021-pr-17027-drift-loud-failure-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/022-pr-17027-githubstatus-1.json.gz",
+      "MergeEntry": "100644 blob 2a50f74b7cd575fdeb1713e2612f08d8d8ea7300\tdocs/research/distributional-learning/2026-09-08/pr-17027/022-pr-17027-githubstatus-1.json.gz",
+      "MainEntry": "100644 blob 2a50f74b7cd575fdeb1713e2612f08d8d8ea7300\tdocs/research/distributional-learning/2026-09-08/pr-17027/022-pr-17027-githubstatus-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/023-ancestry.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/023-ancestry.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/023-ancestry.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/024-ancestry.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/024-ancestry.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/024-ancestry.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/025-changed-paths.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/025-changed-paths.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/025-changed-paths.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/026-changed-paths.stdout.gz",
+      "MergeEntry": "100644 blob 566c1d5a93725e16fdb309d000fb5c5cdc3913d0\tdocs/research/distributional-learning/2026-09-08/pr-17027/026-changed-paths.stdout.gz",
+      "MainEntry": "100644 blob 566c1d5a93725e16fdb309d000fb5c5cdc3913d0\tdocs/research/distributional-learning/2026-09-08/pr-17027/026-changed-paths.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/027-fetch.stderr.gz",
+      "MergeEntry": "100644 blob 2e99df3c3a572c63091988235f3ce55a257acc5e\tdocs/research/distributional-learning/2026-09-08/pr-17027/027-fetch.stderr.gz",
+      "MainEntry": "100644 blob 2e99df3c3a572c63091988235f3ce55a257acc5e\tdocs/research/distributional-learning/2026-09-08/pr-17027/027-fetch.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/028-fetch.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/028-fetch.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/028-fetch.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/029-mismatches.json.gz",
+      "MergeEntry": "100644 blob 42ff8b0bfb5f70f57b0d89a38b1b5c3aa6d20eae\tdocs/research/distributional-learning/2026-09-08/pr-17027/029-mismatches.json.gz",
+      "MainEntry": "100644 blob 42ff8b0bfb5f70f57b0d89a38b1b5c3aa6d20eae\tdocs/research/distributional-learning/2026-09-08/pr-17027/029-mismatches.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/030-observed-main.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/030-observed-main.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/030-observed-main.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/031-observed-main.stdout.gz",
+      "MergeEntry": "100644 blob 7105b37a23f699dfa1909b8b6ea3acd8810a66e0\tdocs/research/distributional-learning/2026-09-08/pr-17027/031-observed-main.stdout.gz",
+      "MainEntry": "100644 blob 7105b37a23f699dfa1909b8b6ea3acd8810a66e0\tdocs/research/distributional-learning/2026-09-08/pr-17027/031-observed-main.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/032-actual-merge-tree.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/032-actual-merge-tree.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/032-actual-merge-tree.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/033-actual-merge-tree.stdout.gz",
+      "MergeEntry": "100644 blob f7d555c3e91c8fe34c5047d5d1cae9ac76a4fe50\tdocs/research/distributional-learning/2026-09-08/pr-17027/033-actual-merge-tree.stdout.gz",
+      "MainEntry": "100644 blob f7d555c3e91c8fe34c5047d5d1cae9ac76a4fe50\tdocs/research/distributional-learning/2026-09-08/pr-17027/033-actual-merge-tree.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/034-ancestry.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/034-ancestry.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/034-ancestry.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/035-ancestry.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/035-ancestry.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/035-ancestry.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/036-concurrent-roadmap-diff.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/036-concurrent-roadmap-diff.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/036-concurrent-roadmap-diff.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/037-concurrent-roadmap-diff.stdout.gz",
+      "MergeEntry": "100644 blob 736f4f254c8ca77e7512285da3f1445af1ed8574\tdocs/research/distributional-learning/2026-09-08/pr-17027/037-concurrent-roadmap-diff.stdout.gz",
+      "MainEntry": "100644 blob 736f4f254c8ca77e7512285da3f1445af1ed8574\tdocs/research/distributional-learning/2026-09-08/pr-17027/037-concurrent-roadmap-diff.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/038-expected-three-way-tree.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/038-expected-three-way-tree.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/038-expected-three-way-tree.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/039-expected-three-way-tree.stdout.gz",
+      "MergeEntry": "100644 blob f7d555c3e91c8fe34c5047d5d1cae9ac76a4fe50\tdocs/research/distributional-learning/2026-09-08/pr-17027/039-expected-three-way-tree.stdout.gz",
+      "MainEntry": "100644 blob f7d555c3e91c8fe34c5047d5d1cae9ac76a4fe50\tdocs/research/distributional-learning/2026-09-08/pr-17027/039-expected-three-way-tree.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/040-github-files.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/040-github-files.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/040-github-files.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/041-github-files.stdout.gz",
+      "MergeEntry": "100644 blob c629ec9222697f25fbb8c40c2607a86247d02d43\tdocs/research/distributional-learning/2026-09-08/pr-17027/041-github-files.stdout.gz",
+      "MainEntry": "100644 blob c629ec9222697f25fbb8c40c2607a86247d02d43\tdocs/research/distributional-learning/2026-09-08/pr-17027/041-github-files.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/042-merge-parent.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/042-merge-parent.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/042-merge-parent.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/043-merge-parent.stdout.gz",
+      "MergeEntry": "100644 blob a59456dde160de715b087355f0744237a07f190a\tdocs/research/distributional-learning/2026-09-08/pr-17027/043-merge-parent.stdout.gz",
+      "MainEntry": "100644 blob a59456dde160de715b087355f0744237a07f190a\tdocs/research/distributional-learning/2026-09-08/pr-17027/043-merge-parent.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/044-observed-main.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/044-observed-main.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/044-observed-main.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/045-observed-main.stdout.gz",
+      "MergeEntry": "100644 blob 7105b37a23f699dfa1909b8b6ea3acd8810a66e0\tdocs/research/distributional-learning/2026-09-08/pr-17027/045-observed-main.stdout.gz",
+      "MainEntry": "100644 blob 7105b37a23f699dfa1909b8b6ea3acd8810a66e0\tdocs/research/distributional-learning/2026-09-08/pr-17027/045-observed-main.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/046-paths.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/046-paths.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/046-paths.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/047-paths.stdout.gz",
+      "MergeEntry": "100644 blob 566c1d5a93725e16fdb309d000fb5c5cdc3913d0\tdocs/research/distributional-learning/2026-09-08/pr-17027/047-paths.stdout.gz",
+      "MainEntry": "100644 blob 566c1d5a93725e16fdb309d000fb5c5cdc3913d0\tdocs/research/distributional-learning/2026-09-08/pr-17027/047-paths.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/048-proof.json.gz",
+      "MergeEntry": "100644 blob 376a268d0dd656b06522bbc3c8bf14a0ad7c0b73\tdocs/research/distributional-learning/2026-09-08/pr-17027/048-proof.json.gz",
+      "MainEntry": "100644 blob 376a268d0dd656b06522bbc3c8bf14a0ad7c0b73\tdocs/research/distributional-learning/2026-09-08/pr-17027/048-proof.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/049-pr-17027-main-rules-1.json.gz",
+      "MergeEntry": "100644 blob 8d1a2529fc7c1f5d2051073f34a5a8ad3d9f2f60\tdocs/research/distributional-learning/2026-09-08/pr-17027/049-pr-17027-main-rules-1.json.gz",
+      "MainEntry": "100644 blob 8d1a2529fc7c1f5d2051073f34a5a8ad3d9f2f60\tdocs/research/distributional-learning/2026-09-08/pr-17027/049-pr-17027-main-rules-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/050-pr-17027-merge-1.stderr.gz",
+      "MergeEntry": "100644 blob b7571992af543583d0c5d8fb254d62a4b1d73f03\tdocs/research/distributional-learning/2026-09-08/pr-17027/050-pr-17027-merge-1.stderr.gz",
+      "MainEntry": "100644 blob b7571992af543583d0c5d8fb254d62a4b1d73f03\tdocs/research/distributional-learning/2026-09-08/pr-17027/050-pr-17027-merge-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/051-pr-17027-merge-1.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/051-pr-17027-merge-1.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/051-pr-17027-merge-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/052-pr-17027-merge-2.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/052-pr-17027-merge-2.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/052-pr-17027-merge-2.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/053-pr-17027-merge-2.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/053-pr-17027-merge-2.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/053-pr-17027-merge-2.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/054-pr-17027-merged-state-1.json.gz",
+      "MergeEntry": "100644 blob 22498c7bec4a0834ffcfbdc2f557072f2b49204b\tdocs/research/distributional-learning/2026-09-08/pr-17027/054-pr-17027-merged-state-1.json.gz",
+      "MainEntry": "100644 blob 22498c7bec4a0834ffcfbdc2f557072f2b49204b\tdocs/research/distributional-learning/2026-09-08/pr-17027/054-pr-17027-merged-state-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/055-pr-17027-premerge-state-1.json.gz",
+      "MergeEntry": "100644 blob 406cfe3ced7ccd3cb6c7c1ba5be3ad70bb0b8ca4\tdocs/research/distributional-learning/2026-09-08/pr-17027/055-pr-17027-premerge-state-1.json.gz",
+      "MainEntry": "100644 blob 406cfe3ced7ccd3cb6c7c1ba5be3ad70bb0b8ca4\tdocs/research/distributional-learning/2026-09-08/pr-17027/055-pr-17027-premerge-state-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/056-pr-17027-shared-view-pull-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/056-pr-17027-shared-view-pull-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/056-pr-17027-shared-view-pull-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/057-pr-17027-shared-view-pull-1.stdout.gz",
+      "MergeEntry": "100644 blob 924647cf74d554f1b39d068a36b8ec11ad20a1b1\tdocs/research/distributional-learning/2026-09-08/pr-17027/057-pr-17027-shared-view-pull-1.stdout.gz",
+      "MainEntry": "100644 blob 924647cf74d554f1b39d068a36b8ec11ad20a1b1\tdocs/research/distributional-learning/2026-09-08/pr-17027/057-pr-17027-shared-view-pull-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/058-pr-17027-squash-body-1.md.gz",
+      "MergeEntry": "100644 blob e18ba2e8992a21032caf0d1f771c8e265469c1dd\tdocs/research/distributional-learning/2026-09-08/pr-17027/058-pr-17027-squash-body-1.md.gz",
+      "MainEntry": "100644 blob e18ba2e8992a21032caf0d1f771c8e265469c1dd\tdocs/research/distributional-learning/2026-09-08/pr-17027/058-pr-17027-squash-body-1.md.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/059-pr-17027-workitem-completion-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/059-pr-17027-workitem-completion-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/distributional-learning/2026-09-08/pr-17027/059-pr-17027-workitem-completion-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/060-pr-17027-workitem-completion-1.stdout.gz",
+      "MergeEntry": "100644 blob f2f1317e9ec8553fb10440a8914d2971b0a7f75a\tdocs/research/distributional-learning/2026-09-08/pr-17027/060-pr-17027-workitem-completion-1.stdout.gz",
+      "MainEntry": "100644 blob f2f1317e9ec8553fb10440a8914d2971b0a7f75a\tdocs/research/distributional-learning/2026-09-08/pr-17027/060-pr-17027-workitem-completion-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/README.md",
+      "MergeEntry": "100644 blob 0372d483127642e2cf9c281d98fe0e9ef2b50f20\tdocs/research/distributional-learning/2026-09-08/pr-17027/README.md",
+      "MainEntry": "100644 blob 0372d483127642e2cf9c281d98fe0e9ef2b50f20\tdocs/research/distributional-learning/2026-09-08/pr-17027/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/distributional-learning/2026-09-08/pr-17027/manifest.json",
+      "MergeEntry": "100644 blob c98339d499914f9b9113d6d28a9318cac0a814a0\tdocs/research/distributional-learning/2026-09-08/pr-17027/manifest.json",
+      "MainEntry": "100644 blob c98339d499914f9b9113d6d28a9318cac0a814a0\tdocs/research/distributional-learning/2026-09-08/pr-17027/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/README.md",
+      "MergeEntry": "100644 blob 3d206708fdd00fa6fe7886061c0e0b0fd4450dbf\tdocs/research/otto-decorrelation-review/2026-09-08/README.md",
+      "MainEntry": "100644 blob 3d206708fdd00fa6fe7886061c0e0b0fd4450dbf\tdocs/research/otto-decorrelation-review/2026-09-08/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/audit.py",
+      "MergeEntry": "100644 blob b1cc43b607a04ef8b4842f9ecc7b1cc5d30cfaa0\tdocs/research/otto-decorrelation-review/2026-09-08/audit.py",
+      "MainEntry": "100644 blob b1cc43b607a04ef8b4842f9ecc7b1cc5d30cfaa0\tdocs/research/otto-decorrelation-review/2026-09-08/audit.py",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/ferry-document.gz",
+      "MergeEntry": "100644 blob b64a7b702cb5bf854022de4e999f0c878d8d329e\tdocs/research/otto-decorrelation-review/2026-09-08/ferry-document.gz",
+      "MainEntry": "100644 blob b64a7b702cb5bf854022de4e999f0c878d8d329e\tdocs/research/otto-decorrelation-review/2026-09-08/ferry-document.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/manifest.json",
+      "MergeEntry": "100644 blob 803bff669644dfaad776b0751a2c5de94cce646b\tdocs/research/otto-decorrelation-review/2026-09-08/manifest.json",
+      "MainEntry": "100644 blob 803bff669644dfaad776b0751a2c5de94cce646b\tdocs/research/otto-decorrelation-review/2026-09-08/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/pr17026.invocation.json.gz",
+      "MergeEntry": "100644 blob bedb97941b5a287385fd4ee97e48ec15652a10d9\tdocs/research/otto-decorrelation-review/2026-09-08/pr17026.invocation.json.gz",
+      "MainEntry": "100644 blob bedb97941b5a287385fd4ee97e48ec15652a10d9\tdocs/research/otto-decorrelation-review/2026-09-08/pr17026.invocation.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/pr17026.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/otto-decorrelation-review/2026-09-08/pr17026.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/otto-decorrelation-review/2026-09-08/pr17026.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/pr17026.stdout.gz",
+      "MergeEntry": "100644 blob b62df3a00da6112653d4021fb03299175d0a2894\tdocs/research/otto-decorrelation-review/2026-09-08/pr17026.stdout.gz",
+      "MainEntry": "100644 blob b62df3a00da6112653d4021fb03299175d0a2894\tdocs/research/otto-decorrelation-review/2026-09-08/pr17026.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/remote.invocation.json.gz",
+      "MergeEntry": "100644 blob fe8ca5bd6c6d794a3962fc4e2007eed2eba463e2\tdocs/research/otto-decorrelation-review/2026-09-08/remote.invocation.json.gz",
+      "MainEntry": "100644 blob fe8ca5bd6c6d794a3962fc4e2007eed2eba463e2\tdocs/research/otto-decorrelation-review/2026-09-08/remote.invocation.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/remote.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/otto-decorrelation-review/2026-09-08/remote.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/otto-decorrelation-review/2026-09-08/remote.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/remote.stdout.gz",
+      "MergeEntry": "100644 blob bfffeb06ed605ab7c70cfabd4dc300ef60c7573a\tdocs/research/otto-decorrelation-review/2026-09-08/remote.stdout.gz",
+      "MainEntry": "100644 blob bfffeb06ed605ab7c70cfabd4dc300ef60c7573a\tdocs/research/otto-decorrelation-review/2026-09-08/remote.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/result.json.gz",
+      "MergeEntry": "100644 blob 83de804733d3e6bb6329853d4c7c11aea1713fe7\tdocs/research/otto-decorrelation-review/2026-09-08/result.json.gz",
+      "MainEntry": "100644 blob 83de804733d3e6bb6329853d4c7c11aea1713fe7\tdocs/research/otto-decorrelation-review/2026-09-08/result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/selection-audit-hidden-oracles.ts.gz",
+      "MergeEntry": "100644 blob d7ec8b38358f8d93b8c26724910dfa2a25b25da7\tdocs/research/otto-decorrelation-review/2026-09-08/selection-audit-hidden-oracles.ts.gz",
+      "MainEntry": "100644 blob d7ec8b38358f8d93b8c26724910dfa2a25b25da7\tdocs/research/otto-decorrelation-review/2026-09-08/selection-audit-hidden-oracles.ts.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/selection-empowerment-bound.ts.gz",
+      "MergeEntry": "100644 blob 677ead2ede987f846ff4ab94cb83e73bfc00b3f2\tdocs/research/otto-decorrelation-review/2026-09-08/selection-empowerment-bound.ts.gz",
+      "MainEntry": "100644 blob 677ead2ede987f846ff4ab94cb83e73bfc00b3f2\tdocs/research/otto-decorrelation-review/2026-09-08/selection-empowerment-bound.ts.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/selection-participant.ts.gz",
+      "MergeEntry": "100644 blob 090442c3a5df9216374600988d7682097dd3eafb\tdocs/research/otto-decorrelation-review/2026-09-08/selection-participant.ts.gz",
+      "MainEntry": "100644 blob 090442c3a5df9216374600988d7682097dd3eafb\tdocs/research/otto-decorrelation-review/2026-09-08/selection-participant.ts.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/selection-source-manifest.json",
+      "MergeEntry": "100644 blob 2396e0baa11a19bc187e9b4e6cb5c4ddde5512c6\tdocs/research/otto-decorrelation-review/2026-09-08/selection-source-manifest.json",
+      "MainEntry": "100644 blob 2396e0baa11a19bc187e9b4e6cb5c4ddde5512c6\tdocs/research/otto-decorrelation-review/2026-09-08/selection-source-manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/status-followup-manifest.json",
+      "MergeEntry": "100644 blob 7357f41724f25639e6648cef604d8f9357588e5b\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup-manifest.json",
+      "MainEntry": "100644 blob 7357f41724f25639e6648cef604d8f9357588e5b\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup-manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/status-followup.invocation.json.gz",
+      "MergeEntry": "100644 blob 559fbd1046e29a8dc5e2d1195a44fb4f2d623f2c\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup.invocation.json.gz",
+      "MainEntry": "100644 blob 559fbd1046e29a8dc5e2d1195a44fb4f2d623f2c\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup.invocation.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/status-followup.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/otto-decorrelation-review/2026-09-08/status-followup.stdout.gz",
+      "MergeEntry": "100644 blob 9219ce21c1a14e5d36a016aec1e6a8ab94de2404\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup.stdout.gz",
+      "MainEntry": "100644 blob 9219ce21c1a14e5d36a016aec1e6a8ab94de2404\tdocs/research/otto-decorrelation-review/2026-09-08/status-followup.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-review/2026-09-08/audit-process.json",
+      "MergeEntry": "100644 blob 8f6fc9e5a48d21e51b438c64274183aaa0564ddb\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit-process.json",
+      "MainEntry": "100644 blob 8f6fc9e5a48d21e51b438c64274183aaa0564ddb\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit-process.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-review/2026-09-08/audit-result.json",
+      "MergeEntry": "100644 blob 999a76f13f7f61ab7605cc578c4f530fd6f21ea1\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit-result.json",
+      "MainEntry": "100644 blob 999a76f13f7f61ab7605cc578c4f530fd6f21ea1\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit-result.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-review/2026-09-08/audit-stderr.txt",
+      "MergeEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit-stderr.txt",
+      "MainEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit-stderr.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-review/2026-09-08/audit.py",
+      "MergeEntry": "100644 blob 66a164448416c5fdffbe12ef30b4e2831af789eb\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit.py",
+      "MainEntry": "100644 blob 66a164448416c5fdffbe12ef30b4e2831af789eb\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/audit.py",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-review/2026-09-08/manifest.json",
+      "MergeEntry": "100644 blob 778eb82e1421db8aabf45bc5f9605793caf79c31\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/manifest.json",
+      "MainEntry": "100644 blob 778eb82e1421db8aabf45bc5f9605793caf79c31\tdocs/research/precision-gate-kernels-reference-review/2026-09-08/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/README.md",
+      "MergeEntry": "100644 blob bc1de25f94f20f820ce0251c75ec1754dd010211\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/README.md",
+      "MainEntry": "100644 blob bc1de25f94f20f820ce0251c75ec1754dd010211\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.json.gz",
+      "MergeEntry": "100644 blob 59271b0dce3f03697fba23aba8d0fee4beb827df\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.json.gz",
+      "MainEntry": "100644 blob 59271b0dce3f03697fba23aba8d0fee4beb827df\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.stdout.gz",
+      "MergeEntry": "100644 blob 03561afb5c846ca8658512310b94229687d8f1a3\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.stdout.gz",
+      "MainEntry": "100644 blob 03561afb5c846ca8658512310b94229687d8f1a3\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture-harness-format.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture_vectors.executed-original.py.gz",
+      "MergeEntry": "100644 blob eeb8bcd784a1c49ecfc1d9969e2e8f7524a6cf67\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture_vectors.executed-original.py.gz",
+      "MainEntry": "100644 blob eeb8bcd784a1c49ecfc1d9969e2e8f7524a6cf67\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/capture_vectors.executed-original.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/fixed-plan-3888d9a6b.md.gz",
+      "MergeEntry": "100644 blob fe3c6bfeabbbc24da5a21e85def42c0b3f2e89bf\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/fixed-plan-3888d9a6b.md.gz",
+      "MainEntry": "100644 blob fe3c6bfeabbbc24da5a21e85def42c0b3f2e89bf\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/fixed-plan-3888d9a6b.md.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__commands.json.gz",
+      "MergeEntry": "100644 blob 1100523d67af6e2d986a57b198332b8a62f5df46\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__commands.json.gz",
+      "MainEntry": "100644 blob 1100523d67af6e2d986a57b198332b8a62f5df46\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__commands.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format-applied.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format-applied.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format-applied.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format-applied.stdout.gz",
+      "MergeEntry": "100644 blob 9e35a2b53747f361bede66da2253cd195ae42ccb\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format-applied.stdout.gz",
+      "MainEntry": "100644 blob 9e35a2b53747f361bede66da2253cd195ae42ccb\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format-applied.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format.stdout.gz",
+      "MergeEntry": "100644 blob 5c28f11fa2ec4e4453028b81439d33c1f58a28d2\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format.stdout.gz",
+      "MainEntry": "100644 blob 5c28f11fa2ec4e4453028b81439d33c1f58a28d2\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__format.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__mypy.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__mypy.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__mypy.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__mypy.stdout.gz",
+      "MergeEntry": "100644 blob f06539fb751f5e3ae6ecc2f61f7437b34fb5d241\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__mypy.stdout.gz",
+      "MainEntry": "100644 blob f06539fb751f5e3ae6ecc2f61f7437b34fb5d241\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__mypy.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__precision_gate_kernels_reference.py.source.gz",
+      "MergeEntry": "100644 blob 889551ba134b38dc944d9d2d57d9dcc1a1865fb2\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__precision_gate_kernels_reference.py.source.gz",
+      "MainEntry": "100644 blob 889551ba134b38dc944d9d2d57d9dcc1a1865fb2\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__precision_gate_kernels_reference.py.source.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__pytest.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__pytest.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__pytest.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__pytest.stdout.gz",
+      "MergeEntry": "100644 blob 2495ec53821b6a72043f01f2c720079307490209\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__pytest.stdout.gz",
+      "MainEntry": "100644 blob 2495ec53821b6a72043f01f2c720079307490209\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__pytest.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__ruff.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__ruff.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__ruff.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__ruff.stdout.gz",
+      "MergeEntry": "100644 blob 5d48978177cd02e75d3468ec6d6a6ae339e20e2a\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__ruff.stdout.gz",
+      "MainEntry": "100644 blob 5d48978177cd02e75d3468ec6d6a6ae339e20e2a\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__ruff.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__test_precision_gate_kernels_reference.py.source.gz",
+      "MergeEntry": "100644 blob 085c1bac9320fa6f7a351a2f534084448fc9f9f0\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__test_precision_gate_kernels_reference.py.source.gz",
+      "MainEntry": "100644 blob 085c1bac9320fa6f7a351a2f534084448fc9f9f0\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-1__test_precision_gate_kernels_reference.py.source.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__commands.json.gz",
+      "MergeEntry": "100644 blob dce963c05608da6f81b4ed09de54a96ce9ed6a43\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__commands.json.gz",
+      "MainEntry": "100644 blob dce963c05608da6f81b4ed09de54a96ce9ed6a43\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__commands.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__format.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__format.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__format.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__format.stdout.gz",
+      "MergeEntry": "100644 blob 36a6c999954cebb9ea788bab7221f3b119c21d7d\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__format.stdout.gz",
+      "MainEntry": "100644 blob 36a6c999954cebb9ea788bab7221f3b119c21d7d\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__format.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__mypy.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__mypy.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__mypy.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__mypy.stdout.gz",
+      "MergeEntry": "100644 blob 2ec02800707d305d5d3ef1e1598371472c9cbc4a\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__mypy.stdout.gz",
+      "MainEntry": "100644 blob 2ec02800707d305d5d3ef1e1598371472c9cbc4a\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__mypy.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__precision_gate_kernels_reference.py.source.gz",
+      "MergeEntry": "100644 blob 738f89922efffca872fa4de7d2d863c3dadc4067\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__precision_gate_kernels_reference.py.source.gz",
+      "MainEntry": "100644 blob 738f89922efffca872fa4de7d2d863c3dadc4067\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__precision_gate_kernels_reference.py.source.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__pytest.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__pytest.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__pytest.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__pytest.stdout.gz",
+      "MergeEntry": "100644 blob 9a19e647a4509fca1076900d238b7f6928a609f9\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__pytest.stdout.gz",
+      "MainEntry": "100644 blob 9a19e647a4509fca1076900d238b7f6928a609f9\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__pytest.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__ruff.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__ruff.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__ruff.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__ruff.stdout.gz",
+      "MergeEntry": "100644 blob 5d48978177cd02e75d3468ec6d6a6ae339e20e2a\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__ruff.stdout.gz",
+      "MainEntry": "100644 blob 5d48978177cd02e75d3468ec6d6a6ae339e20e2a\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__ruff.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__test_precision_gate_kernels_reference.py.source.gz",
+      "MergeEntry": "100644 blob 83dd83eff2550ac003789aed5bda85da2e9c5a79\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__test_precision_gate_kernels_reference.py.source.gz",
+      "MainEntry": "100644 blob 83dd83eff2550ac003789aed5bda85da2e9c5a79\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-reference-attempt-2__test_precision_gate_kernels_reference.py.source.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1.stdout.gz",
+      "MergeEntry": "100644 blob de2670c201246f24d90844af5930d0d447e956bb\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1.stdout.gz",
+      "MainEntry": "100644 blob de2670c201246f24d90844af5930d0d447e956bb\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__actual-return.json.gz",
+      "MergeEntry": "100644 blob 0c87fb578f3686fae3922d7cbbf86ec09810a499\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__actual-return.json.gz",
+      "MainEntry": "100644 blob 0c87fb578f3686fae3922d7cbbf86ec09810a499\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__actual-return.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__observations.json.gz",
+      "MergeEntry": "100644 blob e10fc62dd221df89cd7db2d24afb16356cf1b34e\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__observations.json.gz",
+      "MainEntry": "100644 blob e10fc62dd221df89cd7db2d24afb16356cf1b34e\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__observations.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__source.py.gz",
+      "MergeEntry": "100644 blob 738f89922efffca872fa4de7d2d863c3dadc4067\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__source.py.gz",
+      "MainEntry": "100644 blob 738f89922efffca872fa4de7d2d863c3dadc4067\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/artifacts/precision-gate-vector-capture-1__source.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/audit-result.json",
+      "MergeEntry": "100644 blob 9d669ef4d39759de147f7780a21163687e227d7c\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/audit-result.json",
+      "MainEntry": "100644 blob 9d669ef4d39759de147f7780a21163687e227d7c\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/audit-result.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/audit_archive.py",
+      "MergeEntry": "100644 blob 09c459d37ea350a58a736f7935ae114ff25c1971\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/audit_archive.py",
+      "MainEntry": "100644 blob 09c459d37ea350a58a736f7935ae114ff25c1971\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/audit_archive.py",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/capture_vectors.py",
+      "MergeEntry": "100644 blob 7c39149fba7775ce354a3fb6b07e27d942991fec\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/capture_vectors.py",
+      "MainEntry": "100644 blob 7c39149fba7775ce354a3fb6b07e27d942991fec\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/capture_vectors.py",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/manifest.json",
+      "MergeEntry": "100644 blob e6e191a68f87f814a8f50f6c3b5ea9b7d5c58135\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/manifest.json",
+      "MainEntry": "100644 blob e6e191a68f87f814a8f50f6c3b5ea9b7d5c58135\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels-reference-validation/2026-09-08/reference-vectors.json",
+      "MergeEntry": "100644 blob 36b655578d786a0557cc100d8e202cd8baf8c464\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/reference-vectors.json",
+      "MainEntry": "100644 blob 36b655578d786a0557cc100d8e202cd8baf8c464\tdocs/research/precision-gate-kernels-reference-validation/2026-09-08/reference-vectors.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/000-push.json.gz",
+      "MergeEntry": "100644 blob 71370cf52cb05f811f344f8e548527770ca6c1a9\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/000-push.json.gz",
+      "MainEntry": "100644 blob 71370cf52cb05f811f344f8e548527770ca6c1a9\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/000-push.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/001-push.stderr.gz",
+      "MergeEntry": "100644 blob 1c470551a86a55567db8e86eeda5ac82d7e9b1ad\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/001-push.stderr.gz",
+      "MainEntry": "100644 blob 1c470551a86a55567db8e86eeda5ac82d7e9b1ad\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/001-push.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/002-push.stdout.gz",
+      "MergeEntry": "100644 blob c6b13919573c274a25ef1b2704fc9508c0fa2004\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/002-push.stdout.gz",
+      "MainEntry": "100644 blob c6b13919573c274a25ef1b2704fc9508c0fa2004\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/002-push.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/003-remote.json.gz",
+      "MergeEntry": "100644 blob 3d0ab353603007a8c1f2e5b40eb7290c81ca8f2e\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/003-remote.json.gz",
+      "MainEntry": "100644 blob 3d0ab353603007a8c1f2e5b40eb7290c81ca8f2e\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/003-remote.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/004-remote.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/004-remote.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/004-remote.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/005-remote.stdout.gz",
+      "MergeEntry": "100644 blob 436883da7cf040a28fc50cc0bb36ec4073f5f174\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/005-remote.stdout.gz",
+      "MainEntry": "100644 blob 436883da7cf040a28fc50cc0bb36ec4073f5f174\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/005-remote.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/006-summary.json.gz",
+      "MergeEntry": "100644 blob cacec2c91efd6cd663d88ba70edfb5d0e7f68588\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/006-summary.json.gz",
+      "MainEntry": "100644 blob cacec2c91efd6cd663d88ba70edfb5d0e7f68588\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/006-summary.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/007-push.json.gz",
+      "MergeEntry": "100644 blob af766e08e30ae6652736dfa35f17a09f6d9b0a16\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/007-push.json.gz",
+      "MainEntry": "100644 blob af766e08e30ae6652736dfa35f17a09f6d9b0a16\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/007-push.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/008-push.stderr.gz",
+      "MergeEntry": "100644 blob 4fd49963d4c24bb3a53a1212a11f463a9f4ced93\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/008-push.stderr.gz",
+      "MainEntry": "100644 blob 4fd49963d4c24bb3a53a1212a11f463a9f4ced93\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/008-push.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/009-push.stdout.gz",
+      "MergeEntry": "100644 blob c6b13919573c274a25ef1b2704fc9508c0fa2004\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/009-push.stdout.gz",
+      "MainEntry": "100644 blob c6b13919573c274a25ef1b2704fc9508c0fa2004\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/009-push.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/010-remote.json.gz",
+      "MergeEntry": "100644 blob 3b948e83168197e655568fc8c136e49b43698763\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/010-remote.json.gz",
+      "MainEntry": "100644 blob 3b948e83168197e655568fc8c136e49b43698763\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/010-remote.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/011-remote.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/011-remote.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/011-remote.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/012-remote.stdout.gz",
+      "MergeEntry": "100644 blob 6506ddef388dcc2ee1d3fce0dca91adc1b2fcf1a\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/012-remote.stdout.gz",
+      "MainEntry": "100644 blob 6506ddef388dcc2ee1d3fce0dca91adc1b2fcf1a\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/012-remote.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/013-summary.json.gz",
+      "MergeEntry": "100644 blob 740a38667edb5bcb8ec951b146cf33abda881ae5\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/013-summary.json.gz",
+      "MainEntry": "100644 blob 740a38667edb5bcb8ec951b146cf33abda881ae5\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/013-summary.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/014-kernel-final-reviews-import-1.log.gz",
+      "MergeEntry": "100644 blob 103af30a6962b627f8f968d47ff923093a6dd2c8\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/014-kernel-final-reviews-import-1.log.gz",
+      "MainEntry": "100644 blob 103af30a6962b627f8f968d47ff923093a6dd2c8\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/014-kernel-final-reviews-import-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/015-learning-kernel-claim-preservation-push-1.log.gz",
+      "MergeEntry": "100644 blob bc79b2289a88f08cd6ad7c506327c3b428b869a8\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/015-learning-kernel-claim-preservation-push-1.log.gz",
+      "MainEntry": "100644 blob bc79b2289a88f08cd6ad7c506327c3b428b869a8\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/015-learning-kernel-claim-preservation-push-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/016-learning-kernel-claim-preservation-remote-1.txt.gz",
+      "MergeEntry": "100644 blob 44f8674c07cbe906a4d053fcea248fa91a67b80d\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/016-learning-kernel-claim-preservation-remote-1.txt.gz",
+      "MainEntry": "100644 blob 44f8674c07cbe906a4d053fcea248fa91a67b80d\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/016-learning-kernel-claim-preservation-remote-1.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/017-otto-decorrelation-review-import-1.log.gz",
+      "MergeEntry": "100644 blob ff8fd23b624087bef62e469947352f531f452947\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/017-otto-decorrelation-review-import-1.log.gz",
+      "MainEntry": "100644 blob ff8fd23b624087bef62e469947352f531f452947\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/017-otto-decorrelation-review-import-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/018-process.json.gz",
+      "MergeEntry": "100644 blob 8acbeb3c1d37105610949972faa56a8566053628\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/018-process.json.gz",
+      "MainEntry": "100644 blob 8acbeb3c1d37105610949972faa56a8566053628\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/018-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/019-start.json.gz",
+      "MergeEntry": "100644 blob 9c7b02fc5380381a117ee8c3bfc8c4d7096ce37b\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/019-start.json.gz",
+      "MainEntry": "100644 blob 9c7b02fc5380381a117ee8c3bfc8c4d7096ce37b\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/019-start.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/020-stderr.gz",
+      "MergeEntry": "100644 blob 3244de48cda71e3ca1067a4317cb6d88dad6c45a\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/020-stderr.gz",
+      "MainEntry": "100644 blob 3244de48cda71e3ca1067a4317cb6d88dad6c45a\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/020-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/021-stdout.gz",
+      "MergeEntry": "100644 blob fe7ab7d17a06833c2190477329909838faa5ec3b\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/021-stdout.gz",
+      "MainEntry": "100644 blob fe7ab7d17a06833c2190477329909838faa5ec3b\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/021-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/022-precision-kernel-root-preservation-push-1.log.gz",
+      "MergeEntry": "100644 blob 2463fce796fb115a5ee30fd9a7ba0d0ed317faf5\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/022-precision-kernel-root-preservation-push-1.log.gz",
+      "MainEntry": "100644 blob 2463fce796fb115a5ee30fd9a7ba0d0ed317faf5\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/022-precision-kernel-root-preservation-push-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/023-precision-kernel-root-preservation-remote-1.txt.gz",
+      "MergeEntry": "100644 blob 7de03ac518132c8dabadca4b1cea28ae736e9b17\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/023-precision-kernel-root-preservation-remote-1.txt.gz",
+      "MainEntry": "100644 blob 7de03ac518132c8dabadca4b1cea28ae736e9b17\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/023-precision-kernel-root-preservation-remote-1.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/README.md",
+      "MergeEntry": "100644 blob 7fc70efa3348fa79cae6b693dad8178e55c87a4e\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/README.md",
+      "MainEntry": "100644 blob 7fc70efa3348fa79cae6b693dad8178e55c87a4e\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/integration-validation/manifest.json",
+      "MergeEntry": "100644 blob a18b93fb439e8567c5b8e35ae03d4eb58cc94ff6\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/manifest.json",
+      "MainEntry": "100644 blob a18b93fb439e8567c5b8e35ae03d4eb58cc94ff6\tdocs/research/precision-gate-kernels/2026-09-08/integration-validation/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/00-precision-kernels-first-validation-0.process.json.gz",
+      "MergeEntry": "100644 blob 4aa84fd5bba003f4aa7ae83043a5fb4c1aa0c43a\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/00-precision-kernels-first-validation-0.process.json.gz",
+      "MainEntry": "100644 blob 4aa84fd5bba003f4aa7ae83043a5fb4c1aa0c43a\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/00-precision-kernels-first-validation-0.process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/01-precision-kernels-first-validation-0.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/01-precision-kernels-first-validation-0.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/01-precision-kernels-first-validation-0.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/02-precision-kernels-first-validation-0.stdout.gz",
+      "MergeEntry": "100644 blob 3c53a18aa1956484bd496d56d4232122cf444c05\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/02-precision-kernels-first-validation-0.stdout.gz",
+      "MainEntry": "100644 blob 3c53a18aa1956484bd496d56d4232122cf444c05\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/02-precision-kernels-first-validation-0.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/03-precision-kernels-first-validation-1.process.json.gz",
+      "MergeEntry": "100644 blob 38b424100df8393ad1e1f36a255b7330da5097df\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/03-precision-kernels-first-validation-1.process.json.gz",
+      "MainEntry": "100644 blob 38b424100df8393ad1e1f36a255b7330da5097df\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/03-precision-kernels-first-validation-1.process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/04-precision-kernels-first-validation-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/04-precision-kernels-first-validation-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/04-precision-kernels-first-validation-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/05-precision-kernels-first-validation-1.stdout.gz",
+      "MergeEntry": "100644 blob 5ef8001b806f25d4012dacb32beb8b63707e986d\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/05-precision-kernels-first-validation-1.stdout.gz",
+      "MainEntry": "100644 blob 5ef8001b806f25d4012dacb32beb8b63707e986d\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/05-precision-kernels-first-validation-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/06-precision-kernels-first-validation-2.process.json.gz",
+      "MergeEntry": "100644 blob a5ff80d27511978cbd6d0db66a888130f850815e\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/06-precision-kernels-first-validation-2.process.json.gz",
+      "MainEntry": "100644 blob a5ff80d27511978cbd6d0db66a888130f850815e\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/06-precision-kernels-first-validation-2.process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/07-precision-kernels-first-validation-2.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/07-precision-kernels-first-validation-2.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/07-precision-kernels-first-validation-2.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/08-precision-kernels-first-validation-2.stdout.gz",
+      "MergeEntry": "100644 blob e7545501aaa43b70992690b4405f439fa71d4bd9\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/08-precision-kernels-first-validation-2.stdout.gz",
+      "MainEntry": "100644 blob e7545501aaa43b70992690b4405f439fa71d4bd9\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/08-precision-kernels-first-validation-2.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/09-precision-kernels-first-validation-source-manifest.json.gz",
+      "MergeEntry": "100644 blob a6e6e1b3d25900e18ec5e538cc9aaeae4947eda3\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/09-precision-kernels-first-validation-source-manifest.json.gz",
+      "MainEntry": "100644 blob a6e6e1b3d25900e18ec5e538cc9aaeae4947eda3\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/09-precision-kernels-first-validation-source-manifest.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/10-precision-kernels-second-validation-process.json.gz",
+      "MergeEntry": "100644 blob cde8ce153cc2db11c7e85db72c5614ec5250cba0\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/10-precision-kernels-second-validation-process.json.gz",
+      "MainEntry": "100644 blob cde8ce153cc2db11c7e85db72c5614ec5250cba0\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/10-precision-kernels-second-validation-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/11-precision-kernels-second-validation-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/11-precision-kernels-second-validation-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/11-precision-kernels-second-validation-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/12-precision-kernels-second-validation-stdout.gz",
+      "MergeEntry": "100644 blob 0a3cc97ab06bbbb41f1e853ae22983d648a597ba\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/12-precision-kernels-second-validation-stdout.gz",
+      "MainEntry": "100644 blob 0a3cc97ab06bbbb41f1e853ae22983d648a597ba\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/12-precision-kernels-second-validation-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/README.md",
+      "MergeEntry": "100644 blob a1ed9f37a71295f145f8f940d368826a659fb7b5\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/README.md",
+      "MainEntry": "100644 blob a1ed9f37a71295f145f8f940d368826a659fb7b5\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-first-validation/manifest.json",
+      "MergeEntry": "100644 blob b51bb283d858204020532f1f8ba0be4d92a79f6f\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/manifest.json",
+      "MainEntry": "100644 blob b51bb283d858204020532f1f8ba0be4d92a79f6f\tdocs/research/precision-gate-kernels/2026-09-08/native-first-validation/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/000-.git-kernel-reference-import-1.log.gz",
+      "MergeEntry": "100644 blob de3b84d721f59feeac8aa3805d9a502bf4f22210\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/000-.git-kernel-reference-import-1.log.gz",
+      "MainEntry": "100644 blob de3b84d721f59feeac8aa3805d9a502bf4f22210\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/000-.git-kernel-reference-import-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/001-.git-pr-17027-receipt-import-1.log.gz",
+      "MergeEntry": "100644 blob a6a89ba0613ab8b6ed6912ec08086c8ecf0d1c98\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/001-.git-pr-17027-receipt-import-1.log.gz",
+      "MainEntry": "100644 blob a6a89ba0613ab8b6ed6912ec08086c8ecf0d1c98\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/001-.git-pr-17027-receipt-import-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/002-.git-pr-17027-receipt-import-resolution-1.log.gz",
+      "MergeEntry": "100644 blob fcc22cc28a245e8fe51c8c28689d27df64bd8610\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/002-.git-pr-17027-receipt-import-resolution-1.log.gz",
+      "MainEntry": "100644 blob fcc22cc28a245e8fe51c8c28689d27df64bd8610\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/002-.git-pr-17027-receipt-import-resolution-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/003-.git-precision-kernel-compare-1.py.gz",
+      "MergeEntry": "100644 blob b4478a51a7bbd92c8a61568f7ee2569944355c67\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/003-.git-precision-kernel-compare-1.py.gz",
+      "MainEntry": "100644 blob b4478a51a7bbd92c8a61568f7ee2569944355c67\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/003-.git-precision-kernel-compare-1.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/004-.git-precision-kernel-compare-2.py.gz",
+      "MergeEntry": "100644 blob e1a7240c0bb7766cf26c20429f3c7c5cf534e02e\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/004-.git-precision-kernel-compare-2.py.gz",
+      "MainEntry": "100644 blob e1a7240c0bb7766cf26c20429f3c7c5cf534e02e\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/004-.git-precision-kernel-compare-2.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/005-.git-precision-kernel-compare-3.py.gz",
+      "MergeEntry": "100644 blob f964232686ff9b7845cb5c762ebd8aea4a3cfba7\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/005-.git-precision-kernel-compare-3.py.gz",
+      "MainEntry": "100644 blob f964232686ff9b7845cb5c762ebd8aea4a3cfba7\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/005-.git-precision-kernel-compare-3.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/006-.git-precision-kernel-compare-preinvoke-draft.py.gz",
+      "MergeEntry": "100644 blob 50e26d089b3ef94636d61a22122d63ffefb124e3\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/006-.git-precision-kernel-compare-preinvoke-draft.py.gz",
+      "MainEntry": "100644 blob 50e26d089b3ef94636d61a22122d63ffefb124e3\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/006-.git-precision-kernel-compare-preinvoke-draft.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/007-precision-kernel-comparison-1-process.json.gz",
+      "MergeEntry": "100644 blob cf8d6381320ee174f9546ac4d91d95956a741f4c\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/007-precision-kernel-comparison-1-process.json.gz",
+      "MainEntry": "100644 blob cf8d6381320ee174f9546ac4d91d95956a741f4c\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/007-precision-kernel-comparison-1-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/008-precision-kernel-comparison-1-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/008-precision-kernel-comparison-1-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/008-precision-kernel-comparison-1-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/009-precision-kernel-comparison-1-stdout.gz",
+      "MergeEntry": "100644 blob b767b18a94df2deba1e1e3559321b223271d0106\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/009-precision-kernel-comparison-1-stdout.gz",
+      "MainEntry": "100644 blob b767b18a94df2deba1e1e3559321b223271d0106\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/009-precision-kernel-comparison-1-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/010-precision-kernel-comparison-2-process.json.gz",
+      "MergeEntry": "100644 blob 808695b646755bdee69359ac358bac1236517f7a\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/010-precision-kernel-comparison-2-process.json.gz",
+      "MainEntry": "100644 blob 808695b646755bdee69359ac358bac1236517f7a\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/010-precision-kernel-comparison-2-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/011-precision-kernel-comparison-2-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/011-precision-kernel-comparison-2-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/011-precision-kernel-comparison-2-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/012-precision-kernel-comparison-2-stdout.gz",
+      "MergeEntry": "100644 blob 787f57bd5ba438a6cd96075f1238296302c3809b\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/012-precision-kernel-comparison-2-stdout.gz",
+      "MainEntry": "100644 blob 787f57bd5ba438a6cd96075f1238296302c3809b\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/012-precision-kernel-comparison-2-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/013-precision-kernel-comparison-3-process.json.gz",
+      "MergeEntry": "100644 blob 42087d00a87e1f09b90d9864103f42e72da37099\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/013-precision-kernel-comparison-3-process.json.gz",
+      "MainEntry": "100644 blob 42087d00a87e1f09b90d9864103f42e72da37099\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/013-precision-kernel-comparison-3-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/014-precision-kernel-comparison-3-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/014-precision-kernel-comparison-3-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/014-precision-kernel-comparison-3-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/015-precision-kernel-comparison-3-stdout.gz",
+      "MergeEntry": "100644 blob 787f57bd5ba438a6cd96075f1238296302c3809b\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/015-precision-kernel-comparison-3-stdout.gz",
+      "MainEntry": "100644 blob 787f57bd5ba438a6cd96075f1238296302c3809b\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/015-precision-kernel-comparison-3-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/016-precision-kernel-native-replay-1-process.json.gz",
+      "MergeEntry": "100644 blob 0fd0e90a27ffb17bba6fb716972c2779c9aec14e\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/016-precision-kernel-native-replay-1-process.json.gz",
+      "MainEntry": "100644 blob 0fd0e90a27ffb17bba6fb716972c2779c9aec14e\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/016-precision-kernel-native-replay-1-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/017-precision-kernel-native-replay-1-stderr.gz",
+      "MergeEntry": "100644 blob eb34fed8bb2742132445c84d5e0fab44a29dd197\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/017-precision-kernel-native-replay-1-stderr.gz",
+      "MainEntry": "100644 blob eb34fed8bb2742132445c84d5e0fab44a29dd197\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/017-precision-kernel-native-replay-1-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/018-precision-kernel-native-replay-1-stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/018-precision-kernel-native-replay-1-stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/018-precision-kernel-native-replay-1-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/019-precision-kernel-native-replay-2-process.json.gz",
+      "MergeEntry": "100644 blob 817542cb7a77558de1509b18dbb9d340cd4f8237\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/019-precision-kernel-native-replay-2-process.json.gz",
+      "MainEntry": "100644 blob 817542cb7a77558de1509b18dbb9d340cd4f8237\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/019-precision-kernel-native-replay-2-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/020-precision-kernel-native-replay-2-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/020-precision-kernel-native-replay-2-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/020-precision-kernel-native-replay-2-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/021-precision-kernel-native-replay-2-stdout.gz",
+      "MergeEntry": "100644 blob 443e2761f0f2b036e1a59f841aed1ef5c83b303d\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/021-precision-kernel-native-replay-2-stdout.gz",
+      "MainEntry": "100644 blob 443e2761f0f2b036e1a59f841aed1ef5c83b303d\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/021-precision-kernel-native-replay-2-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/022-precision-kernel-native-replay-3-0-Zeta.Bayesian.dll.gz",
+      "MergeEntry": "100644 blob 4664b9210ee3e0e53e51a3fa0c63b78a49d411f0\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/022-precision-kernel-native-replay-3-0-Zeta.Bayesian.dll.gz",
+      "MainEntry": "100644 blob 4664b9210ee3e0e53e51a3fa0c63b78a49d411f0\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/022-precision-kernel-native-replay-3-0-Zeta.Bayesian.dll.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/023-precision-kernel-native-replay-3-1-Zeta.Core.dll.gz",
+      "MergeEntry": "100644 blob f7c479c7d99fff1394fb6be95f4d8797e180b9da\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/023-precision-kernel-native-replay-3-1-Zeta.Core.dll.gz",
+      "MainEntry": "100644 blob f7c479c7d99fff1394fb6be95f4d8797e180b9da\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/023-precision-kernel-native-replay-3-1-Zeta.Core.dll.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/024-precision-kernel-native-replay-3-assembly-before-observed-after.json.gz",
+      "MergeEntry": "100644 blob f4450a22fc3a8eb5f3ebbec8bbf2be8222fc3fa2\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/024-precision-kernel-native-replay-3-assembly-before-observed-after.json.gz",
+      "MainEntry": "100644 blob f4450a22fc3a8eb5f3ebbec8bbf2be8222fc3fa2\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/024-precision-kernel-native-replay-3-assembly-before-observed-after.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/025-precision-kernel-native-replay-3-process.json.gz",
+      "MergeEntry": "100644 blob 0de77cc90dc596a66d0e0582682a6fff16da259a\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/025-precision-kernel-native-replay-3-process.json.gz",
+      "MainEntry": "100644 blob 0de77cc90dc596a66d0e0582682a6fff16da259a\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/025-precision-kernel-native-replay-3-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/026-precision-kernel-native-replay-3-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/026-precision-kernel-native-replay-3-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/026-precision-kernel-native-replay-3-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/027-precision-kernel-native-replay-3-stdout.gz",
+      "MergeEntry": "100644 blob a884eb58729648bc45133200928f2e876e57d27f\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/027-precision-kernel-native-replay-3-stdout.gz",
+      "MainEntry": "100644 blob a884eb58729648bc45133200928f2e876e57d27f\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/027-precision-kernel-native-replay-3-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/028-precision-kernels-third-validation-process.json.gz",
+      "MergeEntry": "100644 blob d0c9b05a9542449bae2e3799eb0976e0513c0b0c\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/028-precision-kernels-third-validation-process.json.gz",
+      "MainEntry": "100644 blob d0c9b05a9542449bae2e3799eb0976e0513c0b0c\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/028-precision-kernels-third-validation-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/029-precision-kernels-third-validation-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/029-precision-kernels-third-validation-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/029-precision-kernels-third-validation-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/030-precision-kernels-third-validation-stdout.gz",
+      "MergeEntry": "100644 blob 7ee474ae5977000d80463bc5fb1eb767fc0db4a2\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/030-precision-kernels-third-validation-stdout.gz",
+      "MainEntry": "100644 blob 7ee474ae5977000d80463bc5fb1eb767fc0db4a2\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/030-precision-kernels-third-validation-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/README.md",
+      "MergeEntry": "100644 blob 55a88c15d7209d6dbca07c2f88d4819b3d6e6538\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/README.md",
+      "MainEntry": "100644 blob 55a88c15d7209d6dbca07c2f88d4819b3d6e6538\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/native-reference-replay/manifest.json",
+      "MergeEntry": "100644 blob c3b71e955bc94cefb2787badc36c9ec66ef1a8b8\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/manifest.json",
+      "MainEntry": "100644 blob c3b71e955bc94cefb2787badc36c9ec66ef1a8b8\tdocs/research/precision-gate-kernels/2026-09-08/native-reference-replay/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/000-.git-precision-publication-compare-1.py.gz",
+      "MergeEntry": "100644 blob 19920107f7032745fb7dab7993d369572e3b62a3\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/000-.git-precision-publication-compare-1.py.gz",
+      "MainEntry": "100644 blob 19920107f7032745fb7dab7993d369572e3b62a3\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/000-.git-precision-publication-compare-1.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/001-.git-precision-publication-derive-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/001-.git-precision-publication-derive-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/001-.git-precision-publication-derive-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/002-.git-precision-publication-derive-1.stdout.gz",
+      "MergeEntry": "100644 blob 3c53a18aa1956484bd496d56d4232122cf444c05\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/002-.git-precision-publication-derive-1.stdout.gz",
+      "MainEntry": "100644 blob 3c53a18aa1956484bd496d56d4232122cf444c05\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/002-.git-precision-publication-derive-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/003-.git-precision-publication-existing-import-1.json.gz",
+      "MergeEntry": "100644 blob 596c50e5d2c1bac5c1b25156217d717702dbfb2e\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/003-.git-precision-publication-existing-import-1.json.gz",
+      "MainEntry": "100644 blob 596c50e5d2c1bac5c1b25156217d717702dbfb2e\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/003-.git-precision-publication-existing-import-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/004-.git-precision-publication-format-1.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/004-.git-precision-publication-format-1.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/004-.git-precision-publication-format-1.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/005-.git-precision-publication-format-1.stdout.gz",
+      "MergeEntry": "100644 blob c05dcc6466d94acd242e2fe9a6641ac256598e6d\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/005-.git-precision-publication-format-1.stdout.gz",
+      "MainEntry": "100644 blob c05dcc6466d94acd242e2fe9a6641ac256598e6d\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/005-.git-precision-publication-format-1.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/006-.git-precision-publication-formatter-1-process.json.gz",
+      "MergeEntry": "100644 blob 1123740a85e74306cdf3e325e5e355701d3e668a\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/006-.git-precision-publication-formatter-1-process.json.gz",
+      "MainEntry": "100644 blob 1123740a85e74306cdf3e325e5e355701d3e668a\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/006-.git-precision-publication-formatter-1-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/007-.git-precision-publication-formatter-1-start.json.gz",
+      "MergeEntry": "100644 blob 4a515a5a00a90c47dd98eb32a18f0473c6c3044c\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/007-.git-precision-publication-formatter-1-start.json.gz",
+      "MainEntry": "100644 blob 4a515a5a00a90c47dd98eb32a18f0473c6c3044c\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/007-.git-precision-publication-formatter-1-start.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/008-.git-precision-publication-formatter-1-stderr.gz",
+      "MergeEntry": "100644 blob d8553327c9250a956edfca98ee26013ba8c38789\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/008-.git-precision-publication-formatter-1-stderr.gz",
+      "MainEntry": "100644 blob d8553327c9250a956edfca98ee26013ba8c38789\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/008-.git-precision-publication-formatter-1-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/009-.git-precision-publication-formatter-1-stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/009-.git-precision-publication-formatter-1-stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/009-.git-precision-publication-formatter-1-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/010-.git-precision-publication-full-preflight-1-process.json.gz",
+      "MergeEntry": "100644 blob a722b8f64694134576fd1d0f591bb0469923dc72\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/010-.git-precision-publication-full-preflight-1-process.json.gz",
+      "MainEntry": "100644 blob a722b8f64694134576fd1d0f591bb0469923dc72\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/010-.git-precision-publication-full-preflight-1-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/011-.git-precision-publication-full-preflight-1-start.json.gz",
+      "MergeEntry": "100644 blob 41eb6d1f25f274f8c0f97e6db3151b5c1538dc35\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/011-.git-precision-publication-full-preflight-1-start.json.gz",
+      "MainEntry": "100644 blob 41eb6d1f25f274f8c0f97e6db3151b5c1538dc35\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/011-.git-precision-publication-full-preflight-1-start.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/012-.git-precision-publication-full-preflight-1-stderr.gz",
+      "MergeEntry": "100644 blob 3244de48cda71e3ca1067a4317cb6d88dad6c45a\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/012-.git-precision-publication-full-preflight-1-stderr.gz",
+      "MainEntry": "100644 blob 3244de48cda71e3ca1067a4317cb6d88dad6c45a\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/012-.git-precision-publication-full-preflight-1-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/013-.git-precision-publication-full-preflight-1-stdout.gz",
+      "MergeEntry": "100644 blob fe7ab7d17a06833c2190477329909838faa5ec3b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/013-.git-precision-publication-full-preflight-1-stdout.gz",
+      "MainEntry": "100644 blob fe7ab7d17a06833c2190477329909838faa5ec3b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/013-.git-precision-publication-full-preflight-1-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/014-.git-precision-publication-indexes.patch.gz",
+      "MergeEntry": "100644 blob d406a12f86548d0ce1e95db18ad1073444f93e19\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/014-.git-precision-publication-indexes.patch.gz",
+      "MainEntry": "100644 blob d406a12f86548d0ce1e95db18ad1073444f93e19\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/014-.git-precision-publication-indexes.patch.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/015-.git-precision-publication-main-fetch-1.log.gz",
+      "MergeEntry": "100644 blob 1b9ff13badb1903d5f6899cf1c2bddf2b366b44b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/015-.git-precision-publication-main-fetch-1.log.gz",
+      "MainEntry": "100644 blob 1b9ff13badb1903d5f6899cf1c2bddf2b366b44b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/015-.git-precision-publication-main-fetch-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/016-.git-precision-publication-native-replay-1-0-Zeta.Bayesian.dll.gz",
+      "MergeEntry": "100644 blob f8ac067756a658cfc4acb511d6873143c33800ab\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/016-.git-precision-publication-native-replay-1-0-Zeta.Bayesian.dll.gz",
+      "MainEntry": "100644 blob f8ac067756a658cfc4acb511d6873143c33800ab\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/016-.git-precision-publication-native-replay-1-0-Zeta.Bayesian.dll.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/017-.git-precision-publication-native-replay-1-1-Zeta.Core.dll.gz",
+      "MergeEntry": "100644 blob 351b079c218819dcbae3fde7be5cef6b1de00cb7\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/017-.git-precision-publication-native-replay-1-1-Zeta.Core.dll.gz",
+      "MainEntry": "100644 blob 351b079c218819dcbae3fde7be5cef6b1de00cb7\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/017-.git-precision-publication-native-replay-1-1-Zeta.Core.dll.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/018-.git-precision-publication-native-replay-1-assembly-before-observed-after.json.gz",
+      "MergeEntry": "100644 blob f83a19734d4b50a021ccc0ce245584a2fff867b5\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/018-.git-precision-publication-native-replay-1-assembly-before-observed-after.json.gz",
+      "MainEntry": "100644 blob f83a19734d4b50a021ccc0ce245584a2fff867b5\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/018-.git-precision-publication-native-replay-1-assembly-before-observed-after.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/019-.git-precision-publication-native-replay-1-capture-harness-failure-note.json.gz",
+      "MergeEntry": "100644 blob 608db73c7a1793ea749b761af1581f899d655d5c\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/019-.git-precision-publication-native-replay-1-capture-harness-failure-note.json.gz",
+      "MainEntry": "100644 blob 608db73c7a1793ea749b761af1581f899d655d5c\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/019-.git-precision-publication-native-replay-1-capture-harness-failure-note.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/020-.git-precision-publication-native-replay-1-comparison.process.json.gz",
+      "MergeEntry": "100644 blob 3df00457616b84bceeff8caa67ad542e348ebbd8\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/020-.git-precision-publication-native-replay-1-comparison.process.json.gz",
+      "MainEntry": "100644 blob 3df00457616b84bceeff8caa67ad542e348ebbd8\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/020-.git-precision-publication-native-replay-1-comparison.process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/021-.git-precision-publication-native-replay-1-comparison.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/021-.git-precision-publication-native-replay-1-comparison.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/021-.git-precision-publication-native-replay-1-comparison.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/022-.git-precision-publication-native-replay-1-comparison.stdout.gz",
+      "MergeEntry": "100644 blob 787f57bd5ba438a6cd96075f1238296302c3809b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/022-.git-precision-publication-native-replay-1-comparison.stdout.gz",
+      "MainEntry": "100644 blob 787f57bd5ba438a6cd96075f1238296302c3809b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/022-.git-precision-publication-native-replay-1-comparison.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/023-.git-precision-publication-native-replay-1-process.json.gz",
+      "MergeEntry": "100644 blob 5ff575779ffc726f8c0648a563b37d2d9326f011\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/023-.git-precision-publication-native-replay-1-process.json.gz",
+      "MainEntry": "100644 blob 5ff575779ffc726f8c0648a563b37d2d9326f011\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/023-.git-precision-publication-native-replay-1-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/024-.git-precision-publication-native-replay-1-stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/024-.git-precision-publication-native-replay-1-stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/024-.git-precision-publication-native-replay-1-stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/025-.git-precision-publication-native-replay-1-stdout.gz",
+      "MergeEntry": "100644 blob 1b356bb03cd91c67efb328a9ccc422fceadf60c3\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/025-.git-precision-publication-native-replay-1-stdout.gz",
+      "MainEntry": "100644 blob 1b356bb03cd91c67efb328a9ccc422fceadf60c3\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/025-.git-precision-publication-native-replay-1-stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/026-.git-precision-publication-projects.patch.gz",
+      "MergeEntry": "100644 blob bf76e0bed7dec31b09d2d340215abcbe7c12de57\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/026-.git-precision-publication-projects.patch.gz",
+      "MainEntry": "100644 blob bf76e0bed7dec31b09d2d340215abcbe7c12de57\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/026-.git-precision-publication-projects.patch.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/027-.git-precision-publication-reviews-fetch-1.log.gz",
+      "MergeEntry": "100644 blob e0b5ccd025882d44f58639e84e0ee4c1669ddf4d\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/027-.git-precision-publication-reviews-fetch-1.log.gz",
+      "MainEntry": "100644 blob e0b5ccd025882d44f58639e84e0ee4c1669ddf4d\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/027-.git-precision-publication-reviews-fetch-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/028-.git-precision-publication-reviews-import-1.log.gz",
+      "MergeEntry": "100644 blob 918c9418739e92896686af5cc5a27e91c362505b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/028-.git-precision-publication-reviews-import-1.log.gz",
+      "MainEntry": "100644 blob 918c9418739e92896686af5cc5a27e91c362505b\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/028-.git-precision-publication-reviews-import-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/029-.git-precision-publication-root-fetch-1.log.gz",
+      "MergeEntry": "100644 blob e0b5ccd025882d44f58639e84e0ee4c1669ddf4d\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/029-.git-precision-publication-root-fetch-1.log.gz",
+      "MainEntry": "100644 blob e0b5ccd025882d44f58639e84e0ee4c1669ddf4d\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/029-.git-precision-publication-root-fetch-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/030-.git-precision-publication-source-import-1.json.gz",
+      "MergeEntry": "100644 blob 52ece46621a7633a6969e3c8c33959e61c35974c\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/030-.git-precision-publication-source-import-1.json.gz",
+      "MainEntry": "100644 blob 52ece46621a7633a6969e3c8c33959e61c35974c\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/030-.git-precision-publication-source-import-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/031-.git-precision-publication-source-modes-1.json.gz",
+      "MergeEntry": "100644 blob b30c49cd48a96aee357b83d74bede10fee98dce3\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/031-.git-precision-publication-source-modes-1.json.gz",
+      "MainEntry": "100644 blob b30c49cd48a96aee357b83d74bede10fee98dce3\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/031-.git-precision-publication-source-modes-1.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/032-.git-precision-publication-start-1.log.gz",
+      "MergeEntry": "100644 blob 18fc43bf6b35c6fb9e1447f7f548b21d68b6f1ac\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/032-.git-precision-publication-start-1.log.gz",
+      "MainEntry": "100644 blob 18fc43bf6b35c6fb9e1447f7f548b21d68b6f1ac\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/032-.git-precision-publication-start-1.log.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/README.md",
+      "MergeEntry": "100644 blob 234a8ea944e35ee155a728c221ec8e127f84b26a\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/README.md",
+      "MainEntry": "100644 blob 234a8ea944e35ee155a728c221ec8e127f84b26a\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gate-kernels/2026-09-08/publication-validation/manifest.json",
+      "MergeEntry": "100644 blob 90977e06b49ba14be6810cf83bc1295d91c9e8f1\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/manifest.json",
+      "MainEntry": "100644 blob 90977e06b49ba14be6810cf83bc1295d91c9e8f1\tdocs/research/precision-gate-kernels/2026-09-08/publication-validation/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/README.md",
+      "MergeEntry": "100644 blob 8b9c17dcf702e169cf246876f14eb97f3c4570ae\tdocs/research/precision-gated-experts-audit/2026-09-08/README.md",
+      "MainEntry": "100644 blob 8b9c17dcf702e169cf246876f14eb97f3c4570ae\tdocs/research/precision-gated-experts-audit/2026-09-08/README.md",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/capture-source-supplement.py.txt",
+      "MergeEntry": "100644 blob 2575e9ddece1b06873c2ba00d126e47be402eb61\tdocs/research/precision-gated-experts-audit/2026-09-08/capture-source-supplement.py.txt",
+      "MainEntry": "100644 blob 2575e9ddece1b06873c2ba00d126e47be402eb61\tdocs/research/precision-gated-experts-audit/2026-09-08/capture-source-supplement.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/capture-source.py.txt",
+      "MergeEntry": "100644 blob bd3f293eec0515d095d12c9c11e4960d98cbc77d\tdocs/research/precision-gated-experts-audit/2026-09-08/capture-source.py.txt",
+      "MainEntry": "100644 blob bd3f293eec0515d095d12c9c11e4960d98cbc77d\tdocs/research/precision-gated-experts-audit/2026-09-08/capture-source.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/check-1-replay.stderr.txt",
+      "MergeEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gated-experts-audit/2026-09-08/check-1-replay.stderr.txt",
+      "MainEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gated-experts-audit/2026-09-08/check-1-replay.stderr.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/check-1-replay.stdout.txt",
+      "MergeEntry": "100644 blob 644f2786cf885c7726fa913e8a1a2bf7e48f28d9\tdocs/research/precision-gated-experts-audit/2026-09-08/check-1-replay.stdout.txt",
+      "MainEntry": "100644 blob 644f2786cf885c7726fa913e8a1a2bf7e48f28d9\tdocs/research/precision-gated-experts-audit/2026-09-08/check-1-replay.stdout.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/check-2-replay.stderr.txt",
+      "MergeEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gated-experts-audit/2026-09-08/check-2-replay.stderr.txt",
+      "MainEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gated-experts-audit/2026-09-08/check-2-replay.stderr.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/check-2-replay.stdout.txt",
+      "MergeEntry": "100644 blob 95295d8dbc1cf0b479ed6e0bc9efff40c891a910\tdocs/research/precision-gated-experts-audit/2026-09-08/check-2-replay.stdout.txt",
+      "MainEntry": "100644 blob 95295d8dbc1cf0b479ed6e0bc9efff40c891a910\tdocs/research/precision-gated-experts-audit/2026-09-08/check-2-replay.stdout.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/equation-review-at-e074.txt",
+      "MergeEntry": "100644 blob 1aaf15edbf376ef787a8e93b398c69e5943a54c0\tdocs/research/precision-gated-experts-audit/2026-09-08/equation-review-at-e074.txt",
+      "MainEntry": "100644 blob 1aaf15edbf376ef787a8e93b398c69e5943a54c0\tdocs/research/precision-gated-experts-audit/2026-09-08/equation-review-at-e074.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/equation-review-pin.json",
+      "MergeEntry": "100644 blob 6b5a9390f4bd7877cf5f3b208e7775f88545d42e\tdocs/research/precision-gated-experts-audit/2026-09-08/equation-review-pin.json",
+      "MainEntry": "100644 blob 6b5a9390f4bd7877cf5f3b208e7775f88545d42e\tdocs/research/precision-gated-experts-audit/2026-09-08/equation-review-pin.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/index-evidence.py.txt",
+      "MergeEntry": "100644 blob 915052d95ca8d5e3c34aac484b4fce67a3943427\tdocs/research/precision-gated-experts-audit/2026-09-08/index-evidence.py.txt",
+      "MainEntry": "100644 blob 915052d95ca8d5e3c34aac484b4fce67a3943427\tdocs/research/precision-gated-experts-audit/2026-09-08/index-evidence.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/manifest.json",
+      "MergeEntry": "100644 blob e6d7e9705951be285b81911144da69b88a2c31f9\tdocs/research/precision-gated-experts-audit/2026-09-08/manifest.json",
+      "MainEntry": "100644 blob e6d7e9705951be285b81911144da69b88a2c31f9\tdocs/research/precision-gated-experts-audit/2026-09-08/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/markdownlint-final.log",
+      "MergeEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gated-experts-audit/2026-09-08/markdownlint-final.log",
+      "MainEntry": "100644 blob e69de29bb2d1d6434b8b29ae775ad8c2e48c5391\tdocs/research/precision-gated-experts-audit/2026-09-08/markdownlint-final.log",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/numeric-check-1.py.txt",
+      "MergeEntry": "100644 blob f13008e765cd869599a6278fec55b7d253474f15\tdocs/research/precision-gated-experts-audit/2026-09-08/numeric-check-1.py.txt",
+      "MainEntry": "100644 blob f13008e765cd869599a6278fec55b7d253474f15\tdocs/research/precision-gated-experts-audit/2026-09-08/numeric-check-1.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/numeric-check-2.py.txt",
+      "MergeEntry": "100644 blob 2342d3c004b3e62321d9d2044e23c0660b998ee4\tdocs/research/precision-gated-experts-audit/2026-09-08/numeric-check-2.py.txt",
+      "MainEntry": "100644 blob 2342d3c004b3e62321d9d2044e23c0660b998ee4\tdocs/research/precision-gated-experts-audit/2026-09-08/numeric-check-2.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/numerical-replay.json",
+      "MergeEntry": "100644 blob 19de5a0a832eb47870360466d1f43341990767e8\tdocs/research/precision-gated-experts-audit/2026-09-08/numerical-replay.json",
+      "MainEntry": "100644 blob 19de5a0a832eb47870360466d1f43341990767e8\tdocs/research/precision-gated-experts-audit/2026-09-08/numerical-replay.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/original-tool-observations.json",
+      "MergeEntry": "100644 blob 1dc9fc97d93ebbf98a8a495fb0b6ab1d07fc99dc\tdocs/research/precision-gated-experts-audit/2026-09-08/original-tool-observations.json",
+      "MainEntry": "100644 blob 1dc9fc97d93ebbf98a8a495fb0b6ab1d07fc99dc\tdocs/research/precision-gated-experts-audit/2026-09-08/original-tool-observations.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/preflight-quick.log",
+      "MergeEntry": "100644 blob 5a97b77c2b7c98fdd59aadbd8bdcdecd8e9ce976\tdocs/research/precision-gated-experts-audit/2026-09-08/preflight-quick.log",
+      "MainEntry": "100644 blob 5a97b77c2b7c98fdd59aadbd8bdcdecd8e9ce976\tdocs/research/precision-gated-experts-audit/2026-09-08/preflight-quick.log",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/preserve-checks.py.txt",
+      "MergeEntry": "100644 blob ccdf0d3f684b42d2668dfa66ce7b905c377c7cb8\tdocs/research/precision-gated-experts-audit/2026-09-08/preserve-checks.py.txt",
+      "MainEntry": "100644 blob ccdf0d3f684b42d2668dfa66ce7b905c377c7cb8\tdocs/research/precision-gated-experts-audit/2026-09-08/preserve-checks.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/python-executable.json",
+      "MergeEntry": "100644 blob 0c5db0131a5c1e966dbc36e52d83aa6931e53deb\tdocs/research/precision-gated-experts-audit/2026-09-08/python-executable.json",
+      "MainEntry": "100644 blob 0c5db0131a5c1e966dbc36e52d83aa6931e53deb\tdocs/research/precision-gated-experts-audit/2026-09-08/python-executable.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-00.txt",
+      "MergeEntry": "100644 blob 38e2b9cb0b6e18b5ed59f1703307811566719577\tdocs/research/precision-gated-experts-audit/2026-09-08/source-00.txt",
+      "MainEntry": "100644 blob 38e2b9cb0b6e18b5ed59f1703307811566719577\tdocs/research/precision-gated-experts-audit/2026-09-08/source-00.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-01.txt",
+      "MergeEntry": "100644 blob 368887bfd8ee4485331badcaf7c81caedceafa74\tdocs/research/precision-gated-experts-audit/2026-09-08/source-01.txt",
+      "MainEntry": "100644 blob 368887bfd8ee4485331badcaf7c81caedceafa74\tdocs/research/precision-gated-experts-audit/2026-09-08/source-01.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-02.txt",
+      "MergeEntry": "100644 blob 22c53e0d5282d4acb91d154e570b602c376d6631\tdocs/research/precision-gated-experts-audit/2026-09-08/source-02.txt",
+      "MainEntry": "100644 blob 22c53e0d5282d4acb91d154e570b602c376d6631\tdocs/research/precision-gated-experts-audit/2026-09-08/source-02.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-03.txt",
+      "MergeEntry": "100644 blob 3fa5639577281ee740b81aba90c26574cf61a4d4\tdocs/research/precision-gated-experts-audit/2026-09-08/source-03.txt",
+      "MainEntry": "100644 blob 3fa5639577281ee740b81aba90c26574cf61a4d4\tdocs/research/precision-gated-experts-audit/2026-09-08/source-03.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-04.txt",
+      "MergeEntry": "100644 blob 709d09d42ca0be88e5438a1b651079442fc19512\tdocs/research/precision-gated-experts-audit/2026-09-08/source-04.txt",
+      "MainEntry": "100644 blob 709d09d42ca0be88e5438a1b651079442fc19512\tdocs/research/precision-gated-experts-audit/2026-09-08/source-04.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-05.txt",
+      "MergeEntry": "100644 blob 4746b152eff4898b5f72371b2a38c0c62675f222\tdocs/research/precision-gated-experts-audit/2026-09-08/source-05.txt",
+      "MainEntry": "100644 blob 4746b152eff4898b5f72371b2a38c0c62675f222\tdocs/research/precision-gated-experts-audit/2026-09-08/source-05.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-06.txt",
+      "MergeEntry": "100644 blob 8103955315630964ecad2db5f7c05e15db9472d8\tdocs/research/precision-gated-experts-audit/2026-09-08/source-06.txt",
+      "MainEntry": "100644 blob 8103955315630964ecad2db5f7c05e15db9472d8\tdocs/research/precision-gated-experts-audit/2026-09-08/source-06.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-07.txt",
+      "MergeEntry": "100644 blob 3354f9a24d95d21ee17bc92d9f971827ebe0b91c\tdocs/research/precision-gated-experts-audit/2026-09-08/source-07.txt",
+      "MainEntry": "100644 blob 3354f9a24d95d21ee17bc92d9f971827ebe0b91c\tdocs/research/precision-gated-experts-audit/2026-09-08/source-07.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-08.txt",
+      "MergeEntry": "100644 blob 9473aaeb38ec2bc1e03b289d6d8585b334a86547\tdocs/research/precision-gated-experts-audit/2026-09-08/source-08.txt",
+      "MainEntry": "100644 blob 9473aaeb38ec2bc1e03b289d6d8585b334a86547\tdocs/research/precision-gated-experts-audit/2026-09-08/source-08.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-09.txt",
+      "MergeEntry": "100644 blob 8e592da1079ae0bc3e2991df62e8fa6aa8f16fa1\tdocs/research/precision-gated-experts-audit/2026-09-08/source-09.txt",
+      "MainEntry": "100644 blob 8e592da1079ae0bc3e2991df62e8fa6aa8f16fa1\tdocs/research/precision-gated-experts-audit/2026-09-08/source-09.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-10.txt",
+      "MergeEntry": "100644 blob 2f12e1c3f7e08b993ffc2e9e0a6355afa8f7e072\tdocs/research/precision-gated-experts-audit/2026-09-08/source-10.txt",
+      "MainEntry": "100644 blob 2f12e1c3f7e08b993ffc2e9e0a6355afa8f7e072\tdocs/research/precision-gated-experts-audit/2026-09-08/source-10.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-11.txt",
+      "MergeEntry": "100644 blob 7e62144f1db984cd48e2bf5948e3e1e4b9a544b5\tdocs/research/precision-gated-experts-audit/2026-09-08/source-11.txt",
+      "MainEntry": "100644 blob 7e62144f1db984cd48e2bf5948e3e1e4b9a544b5\tdocs/research/precision-gated-experts-audit/2026-09-08/source-11.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-12.txt",
+      "MergeEntry": "100644 blob 3dc2b18278177509d0270910776eb9f35ff0dc26\tdocs/research/precision-gated-experts-audit/2026-09-08/source-12.txt",
+      "MainEntry": "100644 blob 3dc2b18278177509d0270910776eb9f35ff0dc26\tdocs/research/precision-gated-experts-audit/2026-09-08/source-12.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-13.txt",
+      "MergeEntry": "100644 blob 20c5f2831cb8d46fc2c4aa7b17d07ee81742b0c9\tdocs/research/precision-gated-experts-audit/2026-09-08/source-13.txt",
+      "MainEntry": "100644 blob 20c5f2831cb8d46fc2c4aa7b17d07ee81742b0c9\tdocs/research/precision-gated-experts-audit/2026-09-08/source-13.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-14.txt",
+      "MergeEntry": "100644 blob 9e502605850b7a83e458dd54260b55555bfa1cee\tdocs/research/precision-gated-experts-audit/2026-09-08/source-14.txt",
+      "MainEntry": "100644 blob 9e502605850b7a83e458dd54260b55555bfa1cee\tdocs/research/precision-gated-experts-audit/2026-09-08/source-14.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-15.txt",
+      "MergeEntry": "100644 blob 7f3ed1adc340b4abfbef6150705f11f567e19f35\tdocs/research/precision-gated-experts-audit/2026-09-08/source-15.txt",
+      "MainEntry": "100644 blob 7f3ed1adc340b4abfbef6150705f11f567e19f35\tdocs/research/precision-gated-experts-audit/2026-09-08/source-15.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-16.txt",
+      "MergeEntry": "100644 blob aa0e7a719ff231f08a42be9344d7a1a6da874d7f\tdocs/research/precision-gated-experts-audit/2026-09-08/source-16.txt",
+      "MainEntry": "100644 blob aa0e7a719ff231f08a42be9344d7a1a6da874d7f\tdocs/research/precision-gated-experts-audit/2026-09-08/source-16.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-17.txt",
+      "MergeEntry": "100644 blob 663b643fcbd2bb3d2a8bd63c454654085699627f\tdocs/research/precision-gated-experts-audit/2026-09-08/source-17.txt",
+      "MainEntry": "100644 blob 663b643fcbd2bb3d2a8bd63c454654085699627f\tdocs/research/precision-gated-experts-audit/2026-09-08/source-17.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-18.txt",
+      "MergeEntry": "100644 blob dbedf14faac4baed005b60994499f55cf164f385\tdocs/research/precision-gated-experts-audit/2026-09-08/source-18.txt",
+      "MainEntry": "100644 blob dbedf14faac4baed005b60994499f55cf164f385\tdocs/research/precision-gated-experts-audit/2026-09-08/source-18.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-19.txt",
+      "MergeEntry": "100644 blob d86d8a434be75da5d52e0eb1fe2a8ff6d80843a8\tdocs/research/precision-gated-experts-audit/2026-09-08/source-19.txt",
+      "MainEntry": "100644 blob d86d8a434be75da5d52e0eb1fe2a8ff6d80843a8\tdocs/research/precision-gated-experts-audit/2026-09-08/source-19.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-20.txt",
+      "MergeEntry": "100644 blob 3d7243c2ded54be92d57e8f88e65db7fa4aea95c\tdocs/research/precision-gated-experts-audit/2026-09-08/source-20.txt",
+      "MainEntry": "100644 blob 3d7243c2ded54be92d57e8f88e65db7fa4aea95c\tdocs/research/precision-gated-experts-audit/2026-09-08/source-20.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-21.txt",
+      "MergeEntry": "100644 blob ac8d6e828a2e7e2cc61d37f9c64e8ee56c13e921\tdocs/research/precision-gated-experts-audit/2026-09-08/source-21.txt",
+      "MainEntry": "100644 blob ac8d6e828a2e7e2cc61d37f9c64e8ee56c13e921\tdocs/research/precision-gated-experts-audit/2026-09-08/source-21.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-capture.json",
+      "MergeEntry": "100644 blob 0e93133e721731cc116dcadaf3ac1f7783dadbe0\tdocs/research/precision-gated-experts-audit/2026-09-08/source-capture.json",
+      "MainEntry": "100644 blob 0e93133e721731cc116dcadaf3ac1f7783dadbe0\tdocs/research/precision-gated-experts-audit/2026-09-08/source-capture.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-supplement.json",
+      "MergeEntry": "100644 blob 955c5df38f13ae1dd6f3f7c1799d4edf675a3c0c\tdocs/research/precision-gated-experts-audit/2026-09-08/source-supplement.json",
+      "MainEntry": "100644 blob 955c5df38f13ae1dd6f3f7c1799d4edf675a3c0c\tdocs/research/precision-gated-experts-audit/2026-09-08/source-supplement.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/source-tree-check.json",
+      "MergeEntry": "100644 blob 4b49fab9db6da55287fb82302ef0273f473872d7\tdocs/research/precision-gated-experts-audit/2026-09-08/source-tree-check.json",
+      "MainEntry": "100644 blob 4b49fab9db6da55287fb82302ef0273f473872d7\tdocs/research/precision-gated-experts-audit/2026-09-08/source-tree-check.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/validation.json",
+      "MergeEntry": "100644 blob 6b3a03dd12ae44d6c4d40dffc20d17f58e0a6193\tdocs/research/precision-gated-experts-audit/2026-09-08/validation.json",
+      "MainEntry": "100644 blob 6b3a03dd12ae44d6c4d40dffc20d17f58e0a6193\tdocs/research/precision-gated-experts-audit/2026-09-08/validation.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/verify-evidence.py.txt",
+      "MergeEntry": "100644 blob 2065d3d4cf3fdf953840b65d7bc7f2e3de3a1b8b\tdocs/research/precision-gated-experts-audit/2026-09-08/verify-evidence.py.txt",
+      "MainEntry": "100644 blob 2065d3d4cf3fdf953840b65d7bc7f2e3de3a1b8b\tdocs/research/precision-gated-experts-audit/2026-09-08/verify-evidence.py.txt",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-gated-experts-audit/2026-09-08/zeta-source-pins.json",
+      "MergeEntry": "100644 blob 9e95f866cbdd965ab8fa6a06a8f1844b3d25c8e5\tdocs/research/precision-gated-experts-audit/2026-09-08/zeta-source-pins.json",
+      "MainEntry": "100644 blob 9e95f866cbdd965ab8fa6a06a8f1844b3d25c8e5\tdocs/research/precision-gated-experts-audit/2026-09-08/zeta-source-pins.json",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/00-archive-audit.py.gz",
+      "MergeEntry": "100644 blob 0ddfbc88a17102ca1c23d30dd4e15c7e76b69b78\tdocs/research/precision-kernel-publication-review/2026-09-08/00-archive-audit.py.gz",
+      "MainEntry": "100644 blob 0ddfbc88a17102ca1c23d30dd4e15c7e76b69b78\tdocs/research/precision-kernel-publication-review/2026-09-08/00-archive-audit.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/01-archive-process.json.gz",
+      "MergeEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/01-archive-process.json.gz",
+      "MainEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/01-archive-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/02-archive-result.json.gz",
+      "MergeEntry": "100644 blob 2eea83459676981441b35cd7b8469057b5111a3f\tdocs/research/precision-kernel-publication-review/2026-09-08/02-archive-result.json.gz",
+      "MainEntry": "100644 blob 2eea83459676981441b35cd7b8469057b5111a3f\tdocs/research/precision-kernel-publication-review/2026-09-08/02-archive-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/03-archive-stderr.txt.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/03-archive-stderr.txt.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/03-archive-stderr.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/04-audit-attempt-1.py.gz",
+      "MergeEntry": "100644 blob a21e1e8084ff0fe68791f501dea6caa388fa5754\tdocs/research/precision-kernel-publication-review/2026-09-08/04-audit-attempt-1.py.gz",
+      "MainEntry": "100644 blob a21e1e8084ff0fe68791f501dea6caa388fa5754\tdocs/research/precision-kernel-publication-review/2026-09-08/04-audit-attempt-1.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/05-audit.py.gz",
+      "MergeEntry": "100644 blob 28359f8631c41b813857ee0f0fbdc8beb0d44a7a\tdocs/research/precision-kernel-publication-review/2026-09-08/05-audit.py.gz",
+      "MainEntry": "100644 blob 28359f8631c41b813857ee0f0fbdc8beb0d44a7a\tdocs/research/precision-kernel-publication-review/2026-09-08/05-audit.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/06-process-2.json.gz",
+      "MergeEntry": "100644 blob 99f8ae3662447d3a35247b62bb6a017bd1cab8ce\tdocs/research/precision-kernel-publication-review/2026-09-08/06-process-2.json.gz",
+      "MainEntry": "100644 blob 99f8ae3662447d3a35247b62bb6a017bd1cab8ce\tdocs/research/precision-kernel-publication-review/2026-09-08/06-process-2.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/07-process.json.gz",
+      "MergeEntry": "100644 blob d8f6ba77cc57276443aaa66ed3e7aa2eb89a7e86\tdocs/research/precision-kernel-publication-review/2026-09-08/07-process.json.gz",
+      "MainEntry": "100644 blob d8f6ba77cc57276443aaa66ed3e7aa2eb89a7e86\tdocs/research/precision-kernel-publication-review/2026-09-08/07-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/08-replay-audit-attempt-1.py.gz",
+      "MergeEntry": "100644 blob 058d0ebb1d480eff63ba387725a9c9ad27dca465\tdocs/research/precision-kernel-publication-review/2026-09-08/08-replay-audit-attempt-1.py.gz",
+      "MainEntry": "100644 blob 058d0ebb1d480eff63ba387725a9c9ad27dca465\tdocs/research/precision-kernel-publication-review/2026-09-08/08-replay-audit-attempt-1.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/09-replay-audit.py.gz",
+      "MergeEntry": "100644 blob 606545edb70e7d52377a140f30fd1a782486726a\tdocs/research/precision-kernel-publication-review/2026-09-08/09-replay-audit.py.gz",
+      "MainEntry": "100644 blob 606545edb70e7d52377a140f30fd1a782486726a\tdocs/research/precision-kernel-publication-review/2026-09-08/09-replay-audit.py.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/10-replay-process-2.json.gz",
+      "MergeEntry": "100644 blob 7cfe65209f41dd23c7dfc30b72846e8372bd87b8\tdocs/research/precision-kernel-publication-review/2026-09-08/10-replay-process-2.json.gz",
+      "MainEntry": "100644 blob 7cfe65209f41dd23c7dfc30b72846e8372bd87b8\tdocs/research/precision-kernel-publication-review/2026-09-08/10-replay-process-2.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/11-replay-process.json.gz",
+      "MergeEntry": "100644 blob 8d17b5837c6d4ee4b5b799940bbdc9807a785745\tdocs/research/precision-kernel-publication-review/2026-09-08/11-replay-process.json.gz",
+      "MainEntry": "100644 blob 8d17b5837c6d4ee4b5b799940bbdc9807a785745\tdocs/research/precision-kernel-publication-review/2026-09-08/11-replay-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/12-replay-result-2.json.gz",
+      "MergeEntry": "100644 blob 9b96b09003f9f097aaf15181a9e9d0dd0811912c\tdocs/research/precision-kernel-publication-review/2026-09-08/12-replay-result-2.json.gz",
+      "MainEntry": "100644 blob 9b96b09003f9f097aaf15181a9e9d0dd0811912c\tdocs/research/precision-kernel-publication-review/2026-09-08/12-replay-result-2.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/13-replay-result.json.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/13-replay-result.json.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/13-replay-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/14-replay-stderr-2.txt.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/14-replay-stderr-2.txt.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/14-replay-stderr-2.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/15-replay-stderr.txt.gz",
+      "MergeEntry": "100644 blob 16da3438c9987a308c474c7d0fbcdeb00043ecea\tdocs/research/precision-kernel-publication-review/2026-09-08/15-replay-stderr.txt.gz",
+      "MainEntry": "100644 blob 16da3438c9987a308c474c7d0fbcdeb00043ecea\tdocs/research/precision-kernel-publication-review/2026-09-08/15-replay-stderr.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/16-result-2.json.gz",
+      "MergeEntry": "100644 blob f1c6fc22856836b15856ac31ef7c5913f4f74c86\tdocs/research/precision-kernel-publication-review/2026-09-08/16-result-2.json.gz",
+      "MainEntry": "100644 blob f1c6fc22856836b15856ac31ef7c5913f4f74c86\tdocs/research/precision-kernel-publication-review/2026-09-08/16-result-2.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/17-result.json.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/17-result.json.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/17-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/18-stderr-2.txt.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/18-stderr-2.txt.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/18-stderr-2.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/19-stderr.txt.gz",
+      "MergeEntry": "100644 blob 01bc7873fd8c0bbcd095ffc0758b667c1648abed\tdocs/research/precision-kernel-publication-review/2026-09-08/19-stderr.txt.gz",
+      "MainEntry": "100644 blob 01bc7873fd8c0bbcd095ffc0758b667c1648abed\tdocs/research/precision-kernel-publication-review/2026-09-08/19-stderr.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/20-adr-disposition-diff.txt.gz",
+      "MergeEntry": "100644 blob 2ea5d10857831c90b4eda2d4240fc8dcb7a08224\tdocs/research/precision-kernel-publication-review/2026-09-08/20-adr-disposition-diff.txt.gz",
+      "MainEntry": "100644 blob 2ea5d10857831c90b4eda2d4240fc8dcb7a08224\tdocs/research/precision-kernel-publication-review/2026-09-08/20-adr-disposition-diff.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/21-hc8-markdownlint-final-process.json.gz",
+      "MergeEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/21-hc8-markdownlint-final-process.json.gz",
+      "MainEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/21-hc8-markdownlint-final-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/22-hc8-markdownlint-final.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/22-hc8-markdownlint-final.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/22-hc8-markdownlint-final.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/23-hc8-markdownlint-final.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/23-hc8-markdownlint-final.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/23-hc8-markdownlint-final.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/24-hc8-markdownlint-process.json.gz",
+      "MergeEntry": "100644 blob 5599226eff10867a01e3b4fc161b803cef384429\tdocs/research/precision-kernel-publication-review/2026-09-08/24-hc8-markdownlint-process.json.gz",
+      "MainEntry": "100644 blob 5599226eff10867a01e3b4fc161b803cef384429\tdocs/research/precision-kernel-publication-review/2026-09-08/24-hc8-markdownlint-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/25-hc8-markdownlint.stderr.gz",
+      "MergeEntry": "100644 blob 2aeece180c0b3299fa5b19773105f339ddb827f7\tdocs/research/precision-kernel-publication-review/2026-09-08/25-hc8-markdownlint.stderr.gz",
+      "MainEntry": "100644 blob 2aeece180c0b3299fa5b19773105f339ddb827f7\tdocs/research/precision-kernel-publication-review/2026-09-08/25-hc8-markdownlint.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/26-hc8-markdownlint.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/26-hc8-markdownlint.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/26-hc8-markdownlint.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/27-publication-markdownlint-final-process.json.gz",
+      "MergeEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/27-publication-markdownlint-final-process.json.gz",
+      "MainEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/27-publication-markdownlint-final-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/28-publication-markdownlint-final.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/28-publication-markdownlint-final.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/28-publication-markdownlint-final.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/29-publication-markdownlint-final.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/29-publication-markdownlint-final.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/29-publication-markdownlint-final.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/30-publication-markdownlint-process.json.gz",
+      "MergeEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/30-publication-markdownlint-process.json.gz",
+      "MainEntry": "100644 blob e322b9413cc5a0f90737ad331001f4fc7fb98817\tdocs/research/precision-kernel-publication-review/2026-09-08/30-publication-markdownlint-process.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/31-publication-markdownlint.stderr.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/31-publication-markdownlint.stderr.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/31-publication-markdownlint.stderr.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/32-publication-markdownlint.stdout.gz",
+      "MergeEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/32-publication-markdownlint.stdout.gz",
+      "MainEntry": "100644 blob 86e43ea3218b5890302b754bbf8927f94e79f7ee\tdocs/research/precision-kernel-publication-review/2026-09-08/32-publication-markdownlint.stdout.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/33-handoff-correction-diff.txt.gz",
+      "MergeEntry": "100644 blob 4e20eefc05a3e995d8381631c6ea404d222b3163\tdocs/research/precision-kernel-publication-review/2026-09-08/33-handoff-correction-diff.txt.gz",
+      "MainEntry": "100644 blob 4e20eefc05a3e995d8381631c6ea404d222b3163\tdocs/research/precision-kernel-publication-review/2026-09-08/33-handoff-correction-diff.txt.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/34-handoff-correction-result.json.gz",
+      "MergeEntry": "100644 blob 31eeee63a51000c9f28f71866d5069c28654cff6\tdocs/research/precision-kernel-publication-review/2026-09-08/34-handoff-correction-result.json.gz",
+      "MainEntry": "100644 blob 31eeee63a51000c9f28f71866d5069c28654cff6\tdocs/research/precision-kernel-publication-review/2026-09-08/34-handoff-correction-result.json.gz",
+      "Matches": true
+    },
+    {
+      "Path": "docs/research/precision-kernel-publication-review/2026-09-08/manifest.json",
+      "MergeEntry": "100644 blob f4c8b19243e7d6abc9c375849f174692acd11bbc\tdocs/research/precision-kernel-publication-review/2026-09-08/manifest.json",
+      "MainEntry": "100644 blob f4c8b19243e7d6abc9c375849f174692acd11bbc\tdocs/research/precision-kernel-publication-review/2026-09-08/manifest.json",
+      "Matches": true
+    },
+    {
+      "Path": "src/Bayesian/Bayesian.fsproj",
+      "MergeEntry": "100644 blob c603bfe784aab3ba80c66a3c25af13ec01b49f89\tsrc/Bayesian/Bayesian.fsproj",
+      "MainEntry": "100644 blob c603bfe784aab3ba80c66a3c25af13ec01b49f89\tsrc/Bayesian/Bayesian.fsproj",
+      "Matches": true
+    },
+    {
+      "Path": "src/Bayesian/PrecisionGateKernels.fs",
+      "MergeEntry": "100644 blob 399aac4dda05ed37ccd51afbc37528e67ae2050c\tsrc/Bayesian/PrecisionGateKernels.fs",
+      "MainEntry": "100644 blob 399aac4dda05ed37ccd51afbc37528e67ae2050c\tsrc/Bayesian/PrecisionGateKernels.fs",
+      "Matches": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_kernels_reference.py",
+      "MergeEntry": "100644 blob 28d851c83e883c7ee0f534ddd1055dcb5e5321b1\tsrc/Interp.Python/tests/test_precision_gate_kernels_reference.py",
+      "MainEntry": "100644 blob 28d851c83e883c7ee0f534ddd1055dcb5e5321b1\tsrc/Interp.Python/tests/test_precision_gate_kernels_reference.py",
+      "Matches": true
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_kernels_reference.py",
+      "MergeEntry": "100644 blob 2e21867bf83ef676ab745f57c09647a23be24994\tsrc/Interp.Python/zeta_interp/precision_gate_kernels_reference.py",
+      "MainEntry": "100644 blob 2e21867bf83ef676ab745f57c09647a23be24994\tsrc/Interp.Python/zeta_interp/precision_gate_kernels_reference.py",
+      "Matches": true
+    },
+    {
+      "Path": "src/Research.FSharp/PrecisionGateKernelsReplay.fsx",
+      "MergeEntry": "100644 blob be13fefb0e38a5463ba2116452d2fd43ee476981\tsrc/Research.FSharp/PrecisionGateKernelsReplay.fsx",
+      "MainEntry": "100644 blob be13fefb0e38a5463ba2116452d2fd43ee476981\tsrc/Research.FSharp/PrecisionGateKernelsReplay.fsx",
+      "Matches": true
+    },
+    {
+      "Path": "tests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "MergeEntry": "100644 blob 7413f260e9cb611078165267eba29892e60a1480\ttests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "MainEntry": "100644 blob 7413f260e9cb611078165267eba29892e60a1480\ttests/Bayesian.Tests/Bayesian.Tests.fsproj",
+      "Matches": true
+    },
+    {
+      "Path": "tests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "MergeEntry": "100644 blob 8c98b36fae8006f6c223f316cb59ade80bd68a2a\ttests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "MainEntry": "100644 blob 8c98b36fae8006f6c223f316cb59ade80bd68a2a\ttests/Bayesian.Tests/PrecisionGateKernels.Tests.fs",
+      "Matches": true
+    },
+    {
+      "Path": "workitems/081M1ZCHPWV087G0R002GG2PKY-publish-distributional-learning-controls-and-privacy-grant-r.md",
+      "MergeEntry": "",
+      "MainEntry": "",
+      "Matches": true
+    },
+    {
+      "Path": "workitems/done/2026/09/081M1ZCHPWV087G0R002GG2PKY-publish-distributional-learning-controls-and-privacy-grant-r.md",
+      "MergeEntry": "100644 blob 60a2a94bb27722d8774aac6c95211eaa61925820\tworkitems/done/2026/09/081M1ZCHPWV087G0R002GG2PKY-publish-distributional-learning-controls-and-privacy-grant-r.md",
+      "MainEntry": "100644 blob 60a2a94bb27722d8774aac6c95211eaa61925820\tworkitems/done/2026/09/081M1ZCHPWV087G0R002GG2PKY-publish-distributional-learning-controls-and-privacy-grant-r.md",
+      "Matches": true
+    },
+    {
+      "Path": "workitems/events/2026/09/08/080d03f9321ea810a013000872c2a4b5.json",
+      "MergeEntry": "100644 blob a5078432868b6001443fcc50638583ea3b1fe96d\tworkitems/events/2026/09/08/080d03f9321ea810a013000872c2a4b5.json",
+      "MainEntry": "100644 blob a5078432868b6001443fcc50638583ea3b1fe96d\tworkitems/events/2026/09/08/080d03f9321ea810a013000872c2a4b5.json",
+      "Matches": true
+    }
+  ]
+}

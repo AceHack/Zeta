@@ -52,3 +52,6 @@ Original and stored hashes bind every gzip record. No learned gate, scalar
 projection optimizer, chronological benchmark or state-of-the-art comparison
 has run in this slice. GitHub CI and exact main ancestry remain later publication
 obligations and are not inferred from these local checks.
+
+The later [PR 17041 main receipt](../pr-17041/README.md) preserves actual CI,
+merge, complete-tree reconstruction and the corrected no-renames path audit.

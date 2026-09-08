@@ -1,0 +1,26 @@
+{
+  "After": {
+    "Bytes": 62231,
+    "Sha256": "ceda78b5355e5ea7b83f4a0cf8bfff4bc97867e4fdd4c7451e072b56e072e3b1"
+  },
+  "AfterSection": {
+    "Bytes": 1364,
+    "Sha256": "8f1a4ee52c2691445acab7b1c25f71c3c201f74b977921aabb82655cd14e55fd"
+  },
+  "Before": {
+    "Bytes": 61905,
+    "Sha256": "a2155a781b86b28e255f5a27a8fc656b8c314d1c383b3f72f2c595e5139a8f30"
+  },
+  "BeforeSection": {
+    "Bytes": 1038,
+    "Sha256": "f26bb37b4c8b20bfcf78c9c100a0f4bd826ccfd74733c1d450e104d132a2dfa8"
+  },
+  "Commit": "8c2434003e638b36c347fb47a9397e4a848c041f",
+  "Operative": {
+    "Bytes": 345,
+    "Sha256": "7b1adedd97e4e6d640fa9b6bff493811f7f0d89146d5a422f0147e7a543cd93f"
+  },
+  "OperativeIdentical": true,
+  "OutsideAfterIdentical": true,
+  "OutsideBeforeIdentical": true
+}

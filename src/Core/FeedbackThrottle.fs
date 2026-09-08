@@ -96,10 +96,11 @@ module FeedbackThrottle =
         if targetChsh <= ClassicalBound + 1e-12 || targetChsh >= AlgebraicMax - 1e-12 then None
         else Some(2.0 / (targetChsh - ClassicalBound) - 1.0)
 
-    /// The correlation regime a channel of this `latency` sits in (given the model's attenuation):
-    /// **Classical** (`maxChsh ≤ 2`, e.g. git-over-commits — high latency), **Quantum** (`2 < maxChsh ≤ 2√2`,
-    /// the physical no-signalling band), **Signalling** (`maxChsh > 2√2`, super-quantum / PR-box — the channel
-    /// is effectively communicating). The honest read of a measured S: which band the channel's speed allows.
+    /// Numeric bands of this latency model, with the comparison tolerances in `regimeOf`:
+    /// **Classical** near 2, **Quantum** between 2 and 2√2, and the existing **Signalling** case
+    /// above 2√2. These names label the chosen attenuation model; they are not signalling tests.
+    /// PR-box correlations are non-signalling and attain CHSH 4; exceeding 2√2 alone does not
+    /// establish communication. See Popescu and Rohrlich, https://arxiv.org/abs/quant-ph/9508009.
     type Regime =
         | Classical
         | Quantum

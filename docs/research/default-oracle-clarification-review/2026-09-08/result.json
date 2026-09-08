@@ -1,0 +1,30 @@
+{
+  "Commit": "ac9ec57908cc15ada4412329b29dbf487b1b656d",
+  "Before": {
+    "Bytes": 28990,
+    "Sha256": "02e38aea53ed58abeb386f4ef297359fde843ff1f47dc38992b90a2dc05ad87e"
+  },
+  "After": {
+    "Bytes": 29584,
+    "Sha256": "8d148b9e0d15273dd070abd12340a78c863c8b0b1ffa884e28ef7f56016aa4f6"
+  },
+  "OriginalSection11": {
+    "Bytes": 712,
+    "Sha256": "f72835961b414097a71669a62d434783337c250ad6eaedce97d35dbbc4a05891"
+  },
+  "Addition": {
+    "Bytes": 594,
+    "Sha256": "b9c8be4a8694a5af3e076e93ac3145c84d9978caa07c2a2d0cb8ab1168e4ca9d"
+  },
+  "AdditionText": "**2026-09-08 maintainer clarification (additive; original text above retained):**\nPrefer deliberate multi-oracle choice. Whenever this default is used because\nno oracle was explicitly chosen, prominently disclose both the default being\nused and the absence of an explicit choice. Silence must not be recorded or\npresented as a participant selecting this default. This disclosure requirement\ndoes not decide whether an application may continue with fallback or must\nfirst obtain a choice. Oracle choice does not waive the existing non-coercion,\nprivacy, consent or protected-floor constraints.\n\n",
+  "AddedLines": 9,
+  "RemovingExactAdditionRestoresWholeOriginalFile": true,
+  "OriginalSection11Identical": true,
+  "FileModeUnchanged": true,
+  "ChangedPaths": [
+    "M\tdocs/governance/MANIFESTO.md",
+    "A\tdocs/research/2026-09-08-default-oracle-disclosure-clarification.md",
+    "M\tdocs/research/2026-09-08-hc8-default-oracle-explanation-correction.md"
+  ],
+  "NoExecutableOrAlignmentChanges": true
+}

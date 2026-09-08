@@ -1,0 +1,235 @@
+{
+  "SourceHead": "4933a5f2af12f6b20f273488cf9174179d682fef",
+  "Artifacts": [
+    {
+      "File": "000-oracle-publication-ALIGNMENT.md.patch.gz",
+      "OriginalPath": ".git/oracle-publication-ALIGNMENT.md.patch",
+      "Bytes": 2240,
+      "Sha256": "4aa866c211b521a217516f37f5870f91fae770f849439e49e6cd4523789338ce",
+      "StoredBytes": 1133,
+      "StoredSha256": "792b73844b03d0966452b457e9c6573708fb059f2cf933d2ce2eacd3a43f329f"
+    },
+    {
+      "File": "001-oracle-publication-MANIFESTO.md.patch.gz",
+      "OriginalPath": ".git/oracle-publication-MANIFESTO.md.patch",
+      "Bytes": 1656,
+      "Sha256": "9fea101d2e68c9ff5d968dcb435a257e10a88a32d17425510f986a2f11b02ac7",
+      "StoredBytes": 936,
+      "StoredSha256": "c2627ceb3405babb4c390a99011ea9a0dad19b975a6c4544e52a152c55dc07cc"
+    },
+    {
+      "File": "002-oracle-publication-bun-install-1.stderr.gz",
+      "OriginalPath": ".git/oracle-publication-bun-install-1.stderr",
+      "Bytes": 486,
+      "Sha256": "a9d47e06f0723624a83016b412dafb8f2f3c89430c276cd9fa086daadcbe50ac",
+      "StoredBytes": 297,
+      "StoredSha256": "e8312b7026f1e05a92681db5d5180d9acd371084fc8ac70dad3e268b5fc91a1e"
+    },
+    {
+      "File": "003-oracle-publication-bun-install-1.stdout.gz",
+      "OriginalPath": ".git/oracle-publication-bun-install-1.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "004-oracle-publication-bun-install-2.stderr.gz",
+      "OriginalPath": ".git/oracle-publication-bun-install-2.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "005-oracle-publication-bun-install-2.stdout.gz",
+      "OriginalPath": ".git/oracle-publication-bun-install-2.stdout",
+      "Bytes": 797,
+      "Sha256": "d3349babfdec23a2c1fff3346fdb12401754787fd8f88fb5a9db4f49bbd368e9",
+      "StoredBytes": 441,
+      "StoredSha256": "bd9a571b75fd65f98dd11186eff38c439ec6b3b1e7094b3a2ed1089c981fb4e5"
+    },
+    {
+      "File": "006-process.json.gz",
+      "OriginalPath": ".git/oracle-publication-formatter-1/process.json",
+      "Bytes": 41,
+      "Sha256": "5c5e7e997968660204e347cc09e6c6d3ac6fee25291a5753a657518e9775d8f6",
+      "StoredBytes": 58,
+      "StoredSha256": "2297e670a837b75a61d0ca0e83d34d08869af182c43cbe083f2a6ddae1ddc58a"
+    },
+    {
+      "File": "007-start.json.gz",
+      "OriginalPath": ".git/oracle-publication-formatter-1/start.json",
+      "Bytes": 96,
+      "Sha256": "fe7a8015da000387e8a8902ad7da79072130ea0eed4f65ec9f1ace786e1d325e",
+      "StoredBytes": 109,
+      "StoredSha256": "af97ba127b24aacb96b956d4a739e988b788748cfb565456917a868157acfd38"
+    },
+    {
+      "File": "008-stderr.gz",
+      "OriginalPath": ".git/oracle-publication-formatter-1/stderr",
+      "Bytes": 5477,
+      "Sha256": "a1cd7fbedd5f8f3a8150b12d7db67c8dbfbf1c42d05a16da8a58076554447c56",
+      "StoredBytes": 573,
+      "StoredSha256": "853596ea2cebe19e1826918fc65d0b8d7a8d599e1a8e227a7cd4c5f3f137f2f3"
+    },
+    {
+      "File": "009-stdout.gz",
+      "OriginalPath": ".git/oracle-publication-formatter-1/stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "010-process.json.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-1/process.json",
+      "Bytes": 131,
+      "Sha256": "8f47baa908e605839abfa09cc0346091a7195ffda32e64250b435418474222eb",
+      "StoredBytes": 138,
+      "StoredSha256": "dc2761e01171f967cb20edd356680fa7f4124a77c0248945c563146089ca7823"
+    },
+    {
+      "File": "011-start.json.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-1/start.json",
+      "Bytes": 123,
+      "Sha256": "20cdcb48bc47da1e73c231267bac4b2767495461bc4e9a3639015e6e6bf6d0d9",
+      "StoredBytes": 131,
+      "StoredSha256": "c23d51c5e45da96907712e3d53bf832b51c1f1b9d8778e96035660f9d4341752"
+    },
+    {
+      "File": "012-stderr.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-1/stderr",
+      "Bytes": 49,
+      "Sha256": "2702855c35b0430a3432c3f284c32b80ecd46d83302246db156609015e6b2560",
+      "StoredBytes": 69,
+      "StoredSha256": "5c00a8fdc5d6679c6621d462c7a2386aeecfb66d2f3cf0f82cdbaf91a490ad35"
+    },
+    {
+      "File": "013-stdout.gz",
+      "OriginalPath": ".git/oracle-publication-full-preflight-1/stdout",
+      "Bytes": 1313,
+      "Sha256": "bab079ca25dc0ae422108d850a086d6753e5fadaefb06cb0fe8ab4b507869f51",
+      "StoredBytes": 408,
+      "StoredSha256": "cc7006133569f8b5ffb89d538817b8c5e5ba7c7bbafb728e0dae7dfeff35de7a"
+    },
+    {
+      "File": "014-oracle-publication-index-commit.txt.gz",
+      "OriginalPath": ".git/oracle-publication-index-commit.txt",
+      "Bytes": 517,
+      "Sha256": "453e9f59cac11fd7079a5920bd0820e039ae902f0d30342083df10cec652e506",
+      "StoredBytes": 364,
+      "StoredSha256": "0fa688e1ed22e1cbeac88c8855d3fa8eaa8fd1f15fe7dceb7add4cc51413888a"
+    },
+    {
+      "File": "015-oracle-publication-kernel-fetch-1.log.gz",
+      "OriginalPath": ".git/oracle-publication-kernel-fetch-1.log",
+      "Bytes": 163,
+      "Sha256": "7d718eb819026e5143d6ee8a48f9dddc86784adc28f161119d4972a3439c17b8",
+      "StoredBytes": 156,
+      "StoredSha256": "f841c7aa220407c994e346374529856a1b81fbbc836045ef932f94b2ca7858b7"
+    },
+    {
+      "File": "016-oracle-publication-kernel-merge-1.log.gz",
+      "OriginalPath": ".git/oracle-publication-kernel-merge-1.log",
+      "Bytes": 64439,
+      "Sha256": "3453dfa5c696fad4baaaf35910163fb15a60294cde4575b2a20c76a62bb1c9a5",
+      "StoredBytes": 6481,
+      "StoredSha256": "202e85da8702d2eaecaced333d136c1e243c1958b4ef770c278336eb402a0d1d"
+    },
+    {
+      "File": "017-oracle-publication-kernel-merge-commit.txt.gz",
+      "OriginalPath": ".git/oracle-publication-kernel-merge-commit.txt",
+      "Bytes": 526,
+      "Sha256": "2059b60ff7ea68250417d61392e4121cc478df21e32d92a031e90107117244aa",
+      "StoredBytes": 360,
+      "StoredSha256": "8fd8cc523f3b1776cfc5ed7e4a356191deef1324216ec46a21d6ca700c3669bb"
+    },
+    {
+      "File": "018-oracle-publication-mise-trust-1.stderr.gz",
+      "OriginalPath": ".git/oracle-publication-mise-trust-1.stderr",
+      "Bytes": 77,
+      "Sha256": "ea3f4d5bf47be2376f421d4209c5e6c8504fdad86b2b10b12823a62a0a0ef662",
+      "StoredBytes": 96,
+      "StoredSha256": "cd4c1fb83770752634ab0970cab28b0c0cc10048c7a0313f2387dd24f7bf39ec"
+    },
+    {
+      "File": "019-oracle-publication-mise-trust-1.stdout.gz",
+      "OriginalPath": ".git/oracle-publication-mise-trust-1.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "020-oracle-publication-mise-trust-2.stderr.gz",
+      "OriginalPath": ".git/oracle-publication-mise-trust-2.stderr",
+      "Bytes": 77,
+      "Sha256": "ea3f4d5bf47be2376f421d4209c5e6c8504fdad86b2b10b12823a62a0a0ef662",
+      "StoredBytes": 96,
+      "StoredSha256": "cd4c1fb83770752634ab0970cab28b0c0cc10048c7a0313f2387dd24f7bf39ec"
+    },
+    {
+      "File": "021-oracle-publication-mise-trust-2.stdout.gz",
+      "OriginalPath": ".git/oracle-publication-mise-trust-2.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "022-oracle-publication-root-fetch-1.log.gz",
+      "OriginalPath": ".git/oracle-publication-root-fetch-1.log",
+      "Bytes": 158,
+      "Sha256": "0ec55aae91f92cabd3b0f90dc693859296a35a5acefbd20e110eaf601d6639d5",
+      "StoredBytes": 150,
+      "StoredSha256": "f47d9c70967edac7c4245a544f4a128d8919bf9d4d5dde97fba1e6335f5cb5df"
+    },
+    {
+      "File": "023-oracle-publication-signature.txt.gz",
+      "OriginalPath": ".git/oracle-publication-signature.txt",
+      "Bytes": 303,
+      "Sha256": "5b33c3934f58cf3ddb5fd858a0118a57020e7285f05c30ce50222af92443d5b1",
+      "StoredBytes": 238,
+      "StoredSha256": "293ae4314734b12fcc211ff90759499ed7e3f0cc812dff67754f114244f33764"
+    },
+    {
+      "File": "024-oracle-publication-source-commit.txt.gz",
+      "OriginalPath": ".git/oracle-publication-source-commit.txt",
+      "Bytes": 616,
+      "Sha256": "486878d723e21a5f99dcd506857a3c0b60652a565a8f97ae0e0152269bfcfb3f",
+      "StoredBytes": 418,
+      "StoredSha256": "87112e599461e61c21649ac11c2437702f8b58316d725d092306b1861ac6abbe"
+    },
+    {
+      "File": "025-oracle-publication-source-import-1.json.gz",
+      "OriginalPath": ".git/oracle-publication-source-import-1.json",
+      "Bytes": 4865,
+      "Sha256": "1129da95610b6f4909d88b99e977452e29e2e6f786682a35e494c47f1d4d3c63",
+      "StoredBytes": 1561,
+      "StoredSha256": "beb2d165f062b2a941b7d4117400522aa8c2e7d838afee72bf67c4ac8e237c76"
+    }
+  ],
+  "SourceIdentities": [
+    {
+      "Path": "docs/ALIGNMENT.md",
+      "Bytes": 62231,
+      "Sha256": "ceda78b5355e5ea7b83f4a0cf8bfff4bc97867e4fdd4c7451e072b56e072e3b1"
+    },
+    {
+      "Path": "docs/governance/MANIFESTO.md",
+      "Bytes": 29584,
+      "Sha256": "8d148b9e0d15273dd070abd12340a78c863c8b0b1ffa884e28ef7f56016aa4f6"
+    },
+    {
+      "Path": "src/Core/Tsirelson.fs",
+      "Bytes": 3765,
+      "Sha256": "c3f0a8e5b4a8d07ba71742be4d9a21020ee76b407bc0aa7cc4655a889a1037f6"
+    },
+    {
+      "Path": "src/Core/FeedbackThrottle.fs",
+      "Bytes": 12419,
+      "Sha256": "4fb3d52ce450372dfb1f10483ff57dbce6b4fd12852c3b369b440c36d28909d9"
+    }
+  ]
+}
