@@ -121,7 +121,7 @@ The categorical regular action proposed below is faithful and preserves it.
 
 ## Four axes are declared representation indexes
 
-Use the open four-dimensional unit cube with vertices `{0,1}^4`. Its two
+Use the nonperiodic cubical cell complex with vertices `{0,1}^4`. Its two
 values on each axis select an admitted presentation of the same fixed `D`:
 
 | Axis | Two prospective presentation choices | Required admission |
@@ -142,12 +142,18 @@ The cube has 16 vertices, 32 undirected links and 24 square faces. These are
 chart cells and comparison obligations, not 16 identities. Its connected
 one-skeleton has cycle rank `32 - 16 + 1 = 17`; the 24 faces share links and
 are not 24 independent statistical witnesses. The filled two-skeleton is
-part of the declared object; changing to a torus changes the problem.
+part of the declared object; changing to a torus changes the problem. This
+two-skeleton is simply connected, but is not itself contractible: its second
+homology has rank seven. The full four-dimensional cube is contractible.
 
 No mapping from an actual memory atlas to this cube, no extractor of Q8
 edge labels from real learned representations, and no memory-frame-to-Q8
 adapter is implemented. A future application must supply and validate that
-map. Choosing four indexes alone supplies no such evidence.
+map. Choosing four indexes alone supplies no such evidence. The endpoint and
+loop-conjugation laws work in other dimensions too; this proposal identifies
+no property that makes four software axes uniquely necessary. A later
+four-dimensional advantage claim would require an additional hypothesis and
+dimension-matched comparisons.
 
 ## Exact finite connection and loop invariant
 
@@ -223,7 +229,7 @@ consolidated signed addition is not an idempotent CRDT join.
 
 This note also does not adopt the older document's broad surviving
 identification of a flat connection with an empty-information corner.
-Even on this contractible complex, a flat connection can have nontrivial
+Even on this simply connected cubical base, a flat connection can have nontrivial
 open-path translations `U_uv = h_u inverse(h_v)` and accompany nonempty
 immutable receipts. On a non-simply-connected complex, flatness can coexist
 with global loop holonomy. Those distinctions require an explicit base

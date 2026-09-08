@@ -108,6 +108,25 @@ recurrent architectures are component/baseline candidates. The earlier CFB
 negative results and Precision-Gated Experts comparison should guide the next
 investment. No proposed CountRecall training or probe has run.
 
+Aaron also supplied the [Yang-Mills talk](../ip-questionable/2026-09-08-voyager-yang-mills-mass-gap-talk.md)
+and clarified that fabricated memories and coordinated cartels are expected
+adversarial behavior, already addressed by Zeta's detection/formal work. The
+[finite Q8 memory-frame proposal](../research/2026-09-08-finite-q8-memory-frame-gauge-proposal.md)
+starts from those mechanisms and the fixed receipt invariant. It is a
+prospective CS construction; chart cells are not new identities, and no
+four-dimensional physics or empirical detector improvement is established.
+
+The [precision-gating equation review](../research/2026-09-08-precision-gated-experts-equation-review.md)
+finds density and update inconsistencies in the comparison paper and pinned
+rules. Keep upstream reproduction separate from density-consistent learning.
+Freeze the new module's measure, message semantics and objective before code.
+
+Publication hazard: PR #17021's 278-commit history exceeded GitHub's 250-message
+commit-list API. Its failure and original branch are retained; a fresh main-based
+successor carries the reviewed tree with bounded commit history. Preserve owner
+source refs and compare complete mode/type/blob maps, using `--no-renames` for
+changed tree paths. A rename-aware name count omits the old deleted path.
+
 The detailed sections below retain older source-scoped evidence. This checkpoint
 takes precedence for current work ordering, not for relabeling historical runs.
 

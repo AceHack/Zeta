@@ -50,6 +50,12 @@ Bayesian DAG nor an additive resource ledger already supplies a gauge action
 or spectral-gap theorem. This extension is prospective and does not replace
 the learned-module benchmark or change its evidence requirements.
 
+The [finite Q8 proposal](2026-09-08-finite-q8-memory-frame-gauge-proposal.md)
+now spells out the invariant, nonperiodic four-axis fixture, Bayesian label
+transport and expected adversarial families. It connects the existing cartel
+detectors and formal models through a prospective actor-preserving adapter.
+It is unregistered and unimplemented; no added detection rate is measured.
+
 ## The supplied talk and the ferry
 
 Aaron supplied a timestamped transcript of Christopher Fuchs's
