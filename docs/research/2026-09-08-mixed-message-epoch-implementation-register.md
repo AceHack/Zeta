@@ -72,3 +72,10 @@ embargo, scoring, choices and untouched holdout before fitting. Failed fits,
 refusals, abstentions and resource use remain in the result. No component test
 or four-row training loss is a held-out or state-of-the-art score.
 Compiled investment remains paused and streams 9307/9409 remain unopened.
+
+## Current external comparator census
+
+The [current source/feasibility census](2026-09-08-current-forecast-comparator-source-census.md)
+records exact Chronos-2 and TimesFM-3 source/model metadata and the observed
+local package environment. It selects no held-out winner, downloads no weights
+or data, and does not substitute an author-reported benchmark for Zeta's result.

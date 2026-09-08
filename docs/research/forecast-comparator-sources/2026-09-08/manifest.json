@@ -1,0 +1,174 @@
+{
+  "schema": "zeta.source-read-observations.v1",
+  "records": [
+    {
+      "file": "001-chronos-commit.json.gz",
+      "original": "chronos-commit.json",
+      "bytes": 9661,
+      "sha256": "3E1435B3E8BF44FCE07157589CFCB9C1FBC5F05C2B083F6B67EAB408912BC662",
+      "storedBytes": 3056,
+      "storedSha256": "6D9C3D8C5C82DF08E441CFC51025F758AD4656EE961F411650C49D4F71DD9FFE"
+    },
+    {
+      "file": "002-chronos-commit-stderr.gz",
+      "original": "chronos-commit-stderr",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "storedBytes": 20,
+      "storedSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "file": "003-chronos-call.json.gz",
+      "original": "chronos-call.json",
+      "bytes": 224,
+      "sha256": "B045FF971003C9B9A1B337F4F71905976090FC1B6BDE08D5A450C0735D66F009",
+      "storedBytes": 175,
+      "storedSha256": "12560D9EA178D363E4A4A5DCF413624CD14B2BA7094E0F8BE362915D59579208"
+    },
+    {
+      "file": "004-chronos-README.md.gz",
+      "original": "chronos-README.md",
+      "bytes": 11168,
+      "sha256": "7F9E55723DAADB20F79F3D76D23370888301D917F075E9EAFA3E780C78F9FF35",
+      "storedBytes": 4055,
+      "storedSha256": "A5C4CE9B88FE7BBCFAE7F677B364AB64FBEEFF3B303D338AD71F6D15C464EE0F"
+    },
+    {
+      "file": "005-chronos-pyproject.toml.gz",
+      "original": "chronos-pyproject.toml",
+      "bytes": 2024,
+      "sha256": "A6928789495E4D90C7ABE9C97D84C03E6B2F704DBBCD73692637C30489E1ED32",
+      "storedBytes": 985,
+      "storedSha256": "59035AC0D7EF082A650D58BD8C5349D05A829E8FAE4C5D244A1CEF3E230C8EBF"
+    },
+    {
+      "file": "006-chronos-LICENSE.gz",
+      "original": "chronos-LICENSE",
+      "bytes": 10142,
+      "sha256": "09E8A9BCEC8067104652C168685AB0931E7868F9C8284B66F5AE6EDAE5F1130B",
+      "storedBytes": 3570,
+      "storedSha256": "9ECABC1538F1328261E34AD51F5FF084116CB3D4BCE048B35B24A1E90B9B8963"
+    },
+    {
+      "file": "007-timesfm-commit.json.gz",
+      "original": "timesfm-commit.json",
+      "bytes": 334840,
+      "sha256": "2605C1EF95C0B01654C122C306A335722F4549716237786C0D6A96676DD59621",
+      "storedBytes": 73218,
+      "storedSha256": "3D9A1DECC59DB296A16B88BA72BA08123E0AB65D90A797CB5C56891327F06932"
+    },
+    {
+      "file": "008-timesfm-commit-stderr.gz",
+      "original": "timesfm-commit-stderr",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "storedBytes": 20,
+      "storedSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "file": "009-timesfm-call.json.gz",
+      "original": "timesfm-call.json",
+      "bytes": 215,
+      "sha256": "1A48E67851F7AA8389A7F12B1046F195E4F531DCACB3143FF2F8621A24F4C6E3",
+      "storedBytes": 172,
+      "storedSha256": "EBE29613722E83CF54B783BCC5C5FF26ACA9C35004D92CE9FDE32321DA9F6762"
+    },
+    {
+      "file": "010-timesfm-README.md.gz",
+      "original": "timesfm-README.md",
+      "bytes": 10737,
+      "sha256": "CD387EAD54358C4034E051C4B1A2C9C82B7DB700C49B17B2DAE929FD835B343A",
+      "storedBytes": 3975,
+      "storedSha256": "F9B1CCEFF64C807EAA9FA47EF29FBF211F44D4391D7D41534D63297D67330EE1"
+    },
+    {
+      "file": "011-timesfm-pyproject.toml.gz",
+      "original": "timesfm-pyproject.toml",
+      "bytes": 1136,
+      "sha256": "A3E13CBBF7C42AD5562C6F0462E8F8D6407CB0934184C7312DCD02D8DA08A19C",
+      "storedBytes": 563,
+      "storedSha256": "D00592604A0134DCF0F6CF1A005BEDE371E7ACF23476F0A384460287E7F17ED9"
+    },
+    {
+      "file": "012-timesfm-LICENSE.gz",
+      "original": "timesfm-LICENSE",
+      "bytes": 11358,
+      "sha256": "CFC7749B96F63BD31C3C42B5C471BF756814053E847C10F3EB003417BC523D30",
+      "storedBytes": 3968,
+      "storedSha256": "E4D7A35E0ED07A95E6FC0DA1F3C96C45AF0D6C58854C58FEFE711858ADD243DE"
+    },
+    {
+      "file": "013-manifest.json.gz",
+      "original": "manifest.json",
+      "bytes": 3025,
+      "sha256": "F269161C0D2A71135BAB973523C6D8AA210234DD436B3F78C0DAC6128BE50288",
+      "storedBytes": 750,
+      "storedSha256": "EF056BC8EC04EDBB64E717A8CA5ADED07C37568C4E7AB258143E9D50E614A853"
+    },
+    {
+      "file": "014-model-manifest.json.gz",
+      "original": "model-manifest.json",
+      "bytes": 3264,
+      "sha256": "5709A20FF2199B1D7552FB3955B4DFCFD49BDDDF60E8C696396A519E6832CB4F",
+      "storedBytes": 929,
+      "storedSha256": "D6F67AC65C5DA1E9C3F14D496A34ECD4E544696BEB63FFE2C24248ED0F6A9B1A"
+    },
+    {
+      "file": "015-chronos-model-metadata.json.gz",
+      "original": "chronos-model-metadata.json",
+      "bytes": 2977,
+      "sha256": "21AA6C8D99FAE9870EA87E65533C1C72CD2ABC9A0E7B367C24A0E2CADADADA02",
+      "storedBytes": 1507,
+      "storedSha256": "048D3589AB7D7C0A0433B4A27CF3E004BB66C3CA4E105CBB3136458D28B4A44D"
+    },
+    {
+      "file": "016-chronos-synth-model-metadata.json.gz",
+      "original": "chronos-synth-model-metadata.json",
+      "bytes": 1579,
+      "sha256": "6D932FF827C846B4F234CC3B596D8DFC71A84BDBF203C749545137F5C920A1D0",
+      "storedBytes": 777,
+      "storedSha256": "28AA148B22B520EC33AF335E474A794B5D30270961883D2101D1AE166F096DBB"
+    },
+    {
+      "file": "017-timesfm-model-metadata.json.gz",
+      "original": "timesfm-model-metadata.json",
+      "bytes": 1867,
+      "sha256": "C96A81F8A17A354B97886AF790708077B6A8CCAB6D97FCB26AFC3B6CC0CBFE41",
+      "storedBytes": 947,
+      "storedSha256": "91C71425D947E631417097C6DAF04BE69C16CA984B4763A14EB1726EAADB180A"
+    },
+    {
+      "file": "018-runtime-check.py.gz",
+      "original": "runtime-check.py",
+      "bytes": 356,
+      "sha256": "90DADF6B318E945B8DFDA91E887A0B93AAF5BA06E5B22003757ACF5292210E53",
+      "storedBytes": 239,
+      "storedSha256": "B6BEA57833126E186908ACD9D8C38089131C2551F76607626E24B6FD658CBC56"
+    },
+    {
+      "file": "019-runtime-stdout.json.gz",
+      "original": "runtime-stdout.json",
+      "bytes": 387,
+      "sha256": "E1F6C20A96D7D0FAA848C3CDC371F85334CA44C073E5E5702A9CE904267E0CDF",
+      "storedBytes": 278,
+      "storedSha256": "D468172A8D853B38B98EB23D91D11025ED6C87BAFA7E2A4A475CE68D69A03E67"
+    },
+    {
+      "file": "020-runtime-stderr.gz",
+      "original": "runtime-stderr",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "storedBytes": 20,
+      "storedSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "file": "021-runtime-invocation.json.gz",
+      "original": "runtime-invocation.json",
+      "bytes": 297,
+      "sha256": "702B0F7F9AE64E7F27F3C671163519181FAD474ECB48DFB5CD685A57CA28BCD4",
+      "storedBytes": 228,
+      "storedSha256": "5357D49BB66903D86D22381083E72416AE5804E2415591F445FA50F2E1583A37"
+    }
+  ],
+  "scope": "Repository text, public model metadata and local package metadata only; no weight/data download, import, install or inference. Raw model-card/config identities are in model-manifest; their bodies are not copied into this capsule."
+}
