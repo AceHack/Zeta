@@ -492,3 +492,102 @@ module MixedMessageEpochReplay =
         { Path = path; Bytes = size; ReadBytes = read; Sha256 = hash; ExtraRead = extraRead
           Complete = primary.IsNone && hash.IsSome; Failure = primary
           Cleanup = List.ofSeq cleanup }
+
+    [<Literal>]
+    let PeerRepositoryPath = "src/Research.FSharp/MixedMessageEpochReplay.fsx"
+
+    /// A load-path observation is separate from a byte observation. These are
+    /// the three explicit #r dependencies only, not a transitive closure proof.
+    type DirectSourceObservation =
+        { RepositoryPath: string
+          ExpectedSha256: string option
+          ActualPath: string option
+          AssemblyName: string option
+          File: FileObservation option
+          Failure: PeerFailure option }
+
+    type SourceAdmission =
+        { Complete: bool
+          Observations: DirectSourceObservation list
+          Failure: PeerFailure option }
+
+    let private isHash (value: string) =
+        not (isNull value) && value.Length = 64
+        && (value |> Seq.forall (fun c -> (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F')))
+
+    /// The caller supplies the separately admitted full binding map. This
+    /// routine observes the executing script and the actual three direct
+    /// assemblies before Ready. No supplied path chooses a file to load/read.
+    /// The runtime path itself comes from the source-fixed Type/FSI locations.
+    let observeDirectSources (expected: Map<string, string>) : SourceAdmission =
+        let observations = ResizeArray<DirectSourceObservation>()
+        let mutable primary = None
+        let fail error = if primary.IsNone then primary <- Some error
+        try
+            // The manifest has up to 128 SourceFiles (including both scripts),
+            // then three direct DLL binding paths and ProtocolSha256. The two
+            // local @ executable roles are not members of this flat map.
+            if isNull (box expected) || expected.IsEmpty || expected.Count > 132
+               || (expected |> Map.exists (fun key value ->
+                   isNull key || key.Length = 0 || key.Length > 256
+                   || (key |> Seq.exists (fun c -> c < ' ' || c > '~'))
+                   || not (isHash value))) then
+                fail (failure "admit" "SourceBindings" "bounded independently admitted ASCII path/hash map required")
+            else
+                // Exact canonical length of this ASCII string-to-hash object,
+                // measured before file reads or expanded encoding. Quotes and
+                // backslashes are the only escaped allowed key characters.
+                let bindingBytes =
+                    1 + (expected |> Seq.sumBy (fun (KeyValue(key, _)) ->
+                        70 + (key |> Seq.sumBy (fun c -> if c = '"' || c = '\\' then 2 else 1))))
+                if bindingBytes > SmallCap then
+                    fail (failure "admit" "SourceBindingsBound" "canonical source binding map exceeds 64 KiB")
+                let sourcePath = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, __SOURCE_FILE__))
+                let repository = Path.GetFullPath(Path.Combine(__SOURCE_DIRECTORY__, "..", ".."))
+                // Functions defer actual assembly metadata access until each
+                // preceding observation is retained; one failing lookup cannot
+                // discard identities already read for an earlier direct file.
+                let selected =
+                    [ PeerRepositoryPath, 1024 * 1024, (fun () -> sourcePath, None)
+                      "src/Core/bin/Release/net10.0/Zeta.Core.dll", 32 * 1024 * 1024,
+                          (fun () -> let a = typeof<Zeta.Core.IntrCtx>.Assembly in a.Location, Some a.FullName)
+                      "src/Core.Abstractions/bin/Release/net10.0/Zeta.Core.Abstractions.dll", 32 * 1024 * 1024,
+                          (fun () -> let a = typeof<Zeta.Core.IPort<int>>.Assembly in a.Location, Some a.FullName)
+                      "src/Bayesian/bin/Release/net10.0/Zeta.Bayesian.dll", 32 * 1024 * 1024,
+                          (fun () -> let a = typeof<Zeta.Bayesian.Gaussian>.Assembly in a.Location, Some a.FullName) ]
+                for relative, maximum, actual in selected do
+                    if primary.IsNone then
+                        let expectedHash = Map.tryFind relative expected
+                        let mutable row =
+                            { RepositoryPath = relative; ExpectedSha256 = expectedHash
+                              ActualPath = None; AssemblyName = None; File = None; Failure = None }
+                        let index = observations.Count
+                        observations.Add row
+                        let update () = observations.[index] <- row
+                        let refuse error =
+                            row <- { row with Failure = Some error }
+                            update ()
+                            fail error
+                        try
+                            let path, name = actual ()
+                            row <- { row with ActualPath = Some path; AssemblyName = name }
+                            update ()
+                            let declared = Path.GetFullPath(Path.Combine(repository, relative))
+                            if expectedHash.IsNone then
+                                refuse (failure "admit" "SourceBindingMissing" ("missing direct source binding: " + relative))
+                            elif isNull path || path.Length = 0 || not (String.Equals(path, declared, StringComparison.Ordinal)) then
+                                refuse (failure "admit" "SourceLocation" ("actual direct file is outside its declared source path: " + relative))
+                            else
+                                let file = observeFile path maximum
+                                row <- { row with File = Some file }
+                                update ()
+                                match file.Failure with
+                                | Some error -> refuse error
+                                | None when not file.Complete || file.Sha256 <> expectedHash ->
+                                    refuse (failure "admit" "SourceHash" ("actual direct file hash differs: " + relative))
+                                | None -> ()
+                        with error ->
+                            refuse (failure "admit" "SourceObservation" (error.GetType().FullName + ": " + error.Message))
+        with error -> fail (failure "admit" "SourceAdmission" (error.GetType().FullName + ": " + error.Message))
+        { Complete = primary.IsNone && observations.Count = 4
+          Observations = List.ofSeq observations; Failure = primary }
