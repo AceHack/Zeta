@@ -1,0 +1,12 @@
+{
+  "Argv": [
+    "/Users/acehack/.local/share/mise/installs/python/3.14.6/bin/python3",
+    "docs/research/precision-gate-kernels-reference-review/2026-09-08/audit.py",
+    "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906"
+  ],
+  "StartedAtUtc": "2026-09-08T04:08:22.328253+00:00",
+  "FinishedAtUtc": "2026-09-08T04:08:22.782314+00:00",
+  "ExitCode": 0,
+  "SourceBytes": 13155,
+  "SourceSha256": "05eb490a181984140ba84f21384e4e7b69b8a09f5faaa6d58f0ed61e567b6699"
+}

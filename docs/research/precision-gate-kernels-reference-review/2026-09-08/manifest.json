@@ -1,0 +1,25 @@
+{
+  "Scope": "independent retained-data audit; no project reference or native execution",
+  "Records": [
+    {
+      "Path": "audit-process.json",
+      "Bytes": 486,
+      "Sha256": "46e8573765e9f27f1d725e51850abea7dfef25037f3f35151bab658a4f7f2b76"
+    },
+    {
+      "Path": "audit-result.json",
+      "Bytes": 1425,
+      "Sha256": "ba4840e56e89636df61229e54c926f4cf0d0e98290626681a45ca64f9034c137"
+    },
+    {
+      "Path": "audit-stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "audit.py",
+      "Bytes": 13155,
+      "Sha256": "05eb490a181984140ba84f21384e4e7b69b8a09f5faaa6d58f0ed61e567b6699"
+    }
+  ]
+}
