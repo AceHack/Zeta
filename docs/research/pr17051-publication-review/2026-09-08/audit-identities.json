@@ -2,6 +2,11 @@
   "Schema": "zeta.pr17051-independent-review-custody.v1",
   "ReviewedCut": "4fc4df58b031974f6f371f4cb1a58e19a630f33f",
   "CorrectedCut": "6608fdacc5dce7da60cb0f61d004726b65d78ff0",
+  "SignedReport": {
+    "File": "docs/research/2026-09-08-pr17051-publication-review.md",
+    "Bytes": 7230,
+    "Sha256": "8E10FB8AF88201D7C379594061983EC00D10CCC27B3616E000503037C6365C18"
+  },
   "GzipRecords": [
     {
       "File": "audit-1-audit.py.gz",
@@ -218,36 +223,155 @@
       "StoredBytes": 347,
       "StoredSha256": "D6334DB6409809F467691B8512B46A197603BCE6FA39BEEA17615CBE66F899B0",
       "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-projection-publication-20260908/.git/projection-assembled-python-gate-1/2-invocation.json"
+    },
+    {
+      "File": "audit-identities.json.before-assert-correction.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 11390,
+      "OriginalSha256": "D71FCB1EDCFB2A66231D3DC04A41355BFC65E7BF1052822A790DF2E6E017E17B",
+      "StoredBytes": 2949,
+      "StoredSha256": "536E115E3F128C2729954C7D14B75E2E7BC48C86FF2DF7EA3D155ED99A1DF6E3",
+      "Origin": {
+        "GitCommit": "579593337393bb7cb212b5c82fb587a32a566dcb",
+        "Path": "docs/research/pr17051-publication-review/2026-09-08/audit-identities.json"
+      }
+    },
+    {
+      "File": "README.md.before-assert-correction.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 1842,
+      "OriginalSha256": "BAAD75997DC1B5B8DCA3783C148C59D233A5E28F069FE4B59E0C827EF999F770",
+      "StoredBytes": 969,
+      "StoredSha256": "239ED455D0F75AC32EE50589FD65BBECBC1A5E8BE3599CC3CAE64DBB7EFA2257",
+      "Origin": {
+        "GitCommit": "579593337393bb7cb212b5c82fb587a32a566dcb",
+        "Path": "docs/research/pr17051-publication-review/2026-09-08/README.md"
+      }
+    },
+    {
+      "File": "audit-3-audit.py.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 15827,
+      "OriginalSha256": "8DFA6411DBB3B7F976A084A8EA093ED8123ACAA61154F8D98DB3B032BE7CEFE4",
+      "StoredBytes": 5487,
+      "StoredSha256": "755249C7FC96460F95BA48785EE4780C1850B9AC86F06ADF1BE75824FEEC176E",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-review-execution-3/audit.py"
+    },
+    {
+      "File": "audit-3-invocation.json.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 483,
+      "OriginalSha256": "E6DDFB977E673030876318382C34519C88AB5E521B71BA4ABC5A0A95ADD9D590",
+      "StoredBytes": 313,
+      "StoredSha256": "2FA51FC563CE21D3B9E6335870A1A8024197EFC3EF2171042D8C3C01265DCF77",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-review-execution-3/invocation.json"
+    },
+    {
+      "File": "audit-3-completion.json.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 65,
+      "OriginalSha256": "69A3E975750499DF06383272EB0BD5C226F306B6845E48597413D02BB91581B2",
+      "StoredBytes": 81,
+      "StoredSha256": "DAE2760B4B1B59925867ADB780CD02FE419BB00FE52669762CBAD14795422A20",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-review-execution-3/completion.json"
+    },
+    {
+      "File": "audit-3-stdout.json.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 1210333,
+      "OriginalSha256": "9C7441452094DF145AF98F24E3AF6C2C4337109B075F7B546141D8DAB9F1B5AA",
+      "StoredBytes": 83873,
+      "StoredSha256": "C96E7C12EBA020C7B444714D8DBD687A786A0F312819EEEDB0A4CA191896181F",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-review-execution-3/stdout.json"
+    },
+    {
+      "File": "audit-3-stderr.txt.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 0,
+      "OriginalSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-review-execution-3/stderr.txt"
+    },
+    {
+      "File": "continuity-2-audit.py.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 2441,
+      "OriginalSha256": "DFBBE309B5D98988726D43FC695E8DBDC29300138BA6228DDC5AFBE2975805EC",
+      "StoredBytes": 1219,
+      "StoredSha256": "285266090272B87303E86A6EDC2068246BCC93330989F54B3979025B116D8550",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-continuity-audit-2/audit.py"
+    },
+    {
+      "File": "continuity-2-invocation.json.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 493,
+      "OriginalSha256": "3ADE4EE6594CD78315BAD72C8D5BB81E3A5656FB1B805C3EC5EE4345DCDC3C42",
+      "StoredBytes": 320,
+      "StoredSha256": "F029EBD93574F65D32C0D17AA53A23EDD4ED9BEF4723E6B06EB7EA1843D48407",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-continuity-audit-2/invocation.json"
+    },
+    {
+      "File": "continuity-2-completion.json.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 65,
+      "OriginalSha256": "A716400C966E3DD2DC47898D422AADB58BBE2CC5E7ED34C997B3FBD608DB683D",
+      "StoredBytes": 81,
+      "StoredSha256": "42064642336FA35B2B0477E6DA92675C71328B4EB5F636160E96E13315A54691",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-continuity-audit-2/completion.json"
+    },
+    {
+      "File": "continuity-2-stdout.json.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 3148,
+      "OriginalSha256": "AF7540EDA82F0EA225F6D6A79D126DD8F8700DABF067DCA23D5EA50D145D9BD8",
+      "StoredBytes": 858,
+      "StoredSha256": "BFBBD8957CDF036CEE7B3E0FCA80467E8730B152880C6E3D4581E15155CBC4DC",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-continuity-audit-2/stdout.json"
+    },
+    {
+      "File": "continuity-2-stderr.txt.gz",
+      "Encoding": "gzip",
+      "OriginalBytes": 0,
+      "OriginalSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "Origin": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/.git/pr17051-continuity-audit-2/stderr.txt"
     }
   ],
-  "GzipRecordCount": 22,
-  "OriginalBytes": 1324155,
-  "StoredBytes": 119506,
+  "GzipRecordCount": 34,
+  "OriginalBytes": 2570242,
+  "StoredBytes": 215696,
   "CurrentFiles": [
     {
       "File": "README.md",
-      "Bytes": 1842,
-      "Sha256": "BAAD75997DC1B5B8DCA3783C148C59D233A5E28F069FE4B59E0C827EF999F770"
+      "Bytes": 2787,
+      "Sha256": "B9D6A61557681288F7826F82D33308F80E3E72BE4491D67DAD2E59D7D8DA00D0"
     },
     {
       "File": "audit.py",
-      "Bytes": 15345,
-      "Sha256": "D4D6D528F10D6399C76170BB231EC1C8476A95CEA3883FC107EDA5EDF1C5A058"
+      "Bytes": 15827,
+      "Sha256": "8DFA6411DBB3B7F976A084A8EA093ED8123ACAA61154F8D98DB3B032BE7CEFE4"
     },
     {
       "File": "continuity-audit.py",
-      "Bytes": 2321,
-      "Sha256": "44112EB2528A871FE35BF9BB2921EF29F68477BFD8F9BD6B65E1077AFCEF7184"
+      "Bytes": 2441,
+      "Sha256": "DFBBE309B5D98988726D43FC695E8DBDC29300138BA6228DDC5AFBE2975805EC"
+    },
+    {
+      "File": "helper-correction.json",
+      "Bytes": 2082,
+      "Sha256": "73EE78B76274A6E517CC2359820DE9DA20D0CC3D817B479A564C0E63E0ABE6FC"
+    },
+    {
+      "File": "helper-correction.md",
+      "Bytes": 2248,
+      "Sha256": "B51C8EEACC88EE2276E70DA412D93538AD5C6B6C5E83AAD1C21A1E1A9C49CF2B"
     },
     {
       "File": "inspection-disposition.json",
       "Bytes": 1047,
       "Sha256": "C3491D03C2CEE378A9E47F0F3939AFB73BAA094B17BE496E7F159F5E908F410C"
     }
-  ],
-  "SignedReport": {
-    "File": "docs/research/2026-09-08-pr17051-publication-review.md",
-    "Bytes": 7230,
-    "Sha256": "8E10FB8AF88201D7C379594061983EC00D10CCC27B3616E000503037C6365C18"
-  }
+  ]
 }

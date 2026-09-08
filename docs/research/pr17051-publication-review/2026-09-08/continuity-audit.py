@@ -29,18 +29,22 @@ for original, paths in (
     for leaf in paths:
         path = PREFIX + leaf
         raw = read(original, path)
-        assert all(read(cut, path) == raw for cut in (HEAD, MERGE, CUT))
+        for cut in (HEAD, MERGE, CUT):
+            published_raw = read(cut, path)
+            assert published_raw == raw
         rows.append({'Path': path, 'OriginalCommit': original, 'Bytes': len(raw),
                      'Sha256': hashlib.sha256(raw).hexdigest().upper(),
                      'EqualAt': [HEAD, MERGE, CUT]})
 assert rows[-1]['Sha256'] == 'FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7'
 helper_path = 'docs/research/projection-hygiene-independent-review/2026-09-08/audit.py'
 helper = read(HEAD, helper_path)
-assert helper == read('02c439f7e87d30fb5062cbafa21ffe8759e32da1', helper_path)
+reviewed_helper = read('02c439f7e87d30fb5062cbafa21ffe8759e32da1', helper_path)
+assert helper == reviewed_helper
 assert b"removed_ruff = new['tool'].pop('ruff')" in helper
 report_path = 'docs/research/2026-09-08-mixed-message-epoch-independent-review.md'
 accepted = read('6f5c62198aaee8f758d726e0c4c514f3bab57b9a', report_path)
-assert read(CUT, report_path) == accepted
+published_review = read(CUT, report_path)
+assert published_review == accepted
 print(json.dumps({'Complete': True, 'PreservedArtifactRows': rows,
                   'PublishedThreadCorrectionEqualsReviewedSource': True,
                   'PriorDesignReviewBytesUnchanged': True,
