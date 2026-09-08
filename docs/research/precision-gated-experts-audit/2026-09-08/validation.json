@@ -1,0 +1,22 @@
+{
+  "Kind": "documentation-and-evidence-preservation-gates",
+  "Records": [
+    {
+      "File": "preflight-quick.log",
+      "Bytes": 1224,
+      "Sha256": "78384de8312a3216342fc13b8f8682eaaef4762d3eb4b3d06daed458418e405e",
+      "ExitCode": 0
+    },
+    {
+      "File": "markdownlint-final.log",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ExitCode": 0
+    }
+  ],
+  "PreflightExecutedChecks": 16,
+  "FinalMarkdownFiles": 3,
+  "DiffCheckExitCode": 0,
+  "CompiledLearnerBuildOrTrainingPerformed": false,
+  "NumericalCheckReplays": 2
+}

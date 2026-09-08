@@ -1,0 +1,14 @@
+import json,urllib.request,hashlib
+from pathlib import Path
+p=Path(__file__).resolve().parent
+paths=['License', 'src/neural_ensemble/gating.jl', 'src/neural_ensemble/neural_pipeline.jl', 'src/neural_ensemble/neural_ensemble_specifier.jl', 'sessions/dynamic/vae/dynamic_ETTh1_96.yaml', 'sessions/neural_ensemble/neural_ensemble_ETTh1_96.yaml']
+records=[]
+for i,path in enumerate(paths,16):
+ url='https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/'+path
+ with urllib.request.urlopen(url,timeout=20) as r:raw=r.read(1048577)
+ if len(raw)>1048576:raise ValueError('source bound')
+ name=f'source-{i:02d}.txt'
+ with (p/name).open('xb') as f:f.write(raw)
+ records.append({'Path':path,'Url':url,'File':name,'Bytes':len(raw),'Sha256':hashlib.sha256(raw).hexdigest()})
+with (p/'source-supplement.json').open('x') as f:json.dump({'Records':records,'ArtifactContentsRequested':False},f,indent=2);f.write('\n')
+print(json.dumps({'SupplementarySourceFiles':len(records)}))

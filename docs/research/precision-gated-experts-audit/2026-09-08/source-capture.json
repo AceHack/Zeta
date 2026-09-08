@@ -1,0 +1,120 @@
+{
+  "Commit": "6c0a4832373b953dc6478aecb3ff1ec55934939d",
+  "CapturedAtUtc": "2026-09-08T02:52:29.297749+00:00",
+  "Records": [
+    {
+      "Path": "README.md",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/README.md",
+      "File": "source-00.txt",
+      "Bytes": 7798,
+      "Sha256": "00f5e25d467ef5af0fe6e1cba9bd38bdb0450d35cb659ba10db6b2d4e8f13df5"
+    },
+    {
+      "Path": "Project.toml",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/Project.toml",
+      "File": "source-01.txt",
+      "Bytes": 2819,
+      "Sha256": "eb42243d2e63c9a8a812349bc1f7fb8787c0488ffe22c8426142e17b9461e344"
+    },
+    {
+      "Path": "src/ProbabilisticEnsembling.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/ProbabilisticEnsembling.jl",
+      "File": "source-02.txt",
+      "Bytes": 2586,
+      "Sha256": "3cf2e3f81cfe298556ae26a8980f6a61c421d197ea1fe110bd766e1cb00cb1ec"
+    },
+    {
+      "Path": "src/exp.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/exp.jl",
+      "File": "source-03.txt",
+      "Bytes": 3545,
+      "Sha256": "266a1bbb372fe45bf2ab6986b5e573ad200a98ea47ecb265227375fc80a76115"
+    },
+    {
+      "Path": "src/log.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/log.jl",
+      "File": "source-04.txt",
+      "Bytes": 2539,
+      "Sha256": "ab21fbc2df23d2dc749ac050eb01ce224d479bed0b46a69d3f4b401b1e88e546"
+    },
+    {
+      "Path": "src/low_rank_normal.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/low_rank_normal.jl",
+      "File": "source-05.txt",
+      "Bytes": 5352,
+      "Sha256": "f66dfdfe5b7f173064e6663f1a9d242ef2e864399d90af5b246c446fd9b01929"
+    },
+    {
+      "Path": "src/low_rank_softdot/mean_field.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/low_rank_softdot/mean_field.jl",
+      "File": "source-06.txt",
+      "Bytes": 1699,
+      "Sha256": "a50177d0b227b100993ed190d2d28d747be30fcdd8b8d7ec87f1459e87e39a69"
+    },
+    {
+      "Path": "src/model_zoo/dynamic/univariate.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/dynamic/univariate.jl",
+      "File": "source-07.txt",
+      "Bytes": 1659,
+      "Sha256": "29b4bb50a91c5e04d78bbe167d75dac6bf66047f19e7cc396a0026982fdb2d5c"
+    },
+    {
+      "Path": "src/model_zoo/dynamic/pipeline.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/dynamic/pipeline.jl",
+      "File": "source-08.txt",
+      "Bytes": 1196,
+      "Sha256": "7f71c70cbfdede67b1f4acb442bba3593ed377710a5b1beb3011c37fdafd4069"
+    },
+    {
+      "Path": "src/model_zoo/dynamic_exp/univariate.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/dynamic_exp/univariate.jl",
+      "File": "source-09.txt",
+      "Bytes": 1427,
+      "Sha256": "93fa05ddc6a2fc0c7981bfd046228a49657fd46a82f9528828e7dd3386609ced"
+    },
+    {
+      "Path": "src/model_zoo/noisy_experts/univariate.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/noisy_experts/univariate.jl",
+      "File": "source-10.txt",
+      "Bytes": 4053,
+      "Sha256": "18e23517a5a96ecbff8b96cdd51e3890625f48fe875736f914e5fe7a0dfd5f0a"
+    },
+    {
+      "Path": "src/model_zoo/shared_pipeline.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/shared_pipeline.jl",
+      "File": "source-11.txt",
+      "Bytes": 11632,
+      "Sha256": "3559eb8161df392e9c27957ceb89472f178a7b350cd95e0f6ca5c2129903153d"
+    },
+    {
+      "Path": "src/model_zoo/model_specifier.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/model_specifier.jl",
+      "File": "source-12.txt",
+      "Bytes": 31935,
+      "Sha256": "f7a8565b874987f633ee68bb0d233bd2010148a79df68a35fd9115f13a7c35fb"
+    },
+    {
+      "Path": "src/model_zoo/features.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/model_zoo/features.jl",
+      "File": "source-13.txt",
+      "Bytes": 6422,
+      "Sha256": "6c2b61da6ccc924b2177a03bcd11467d899314c29a939785f5f8dd447cb03c20"
+    },
+    {
+      "Path": "src/utils.jl",
+      "Url": "https://raw.githubusercontent.com/biaslab/PrecisionGatedExperts/6c0a4832373b953dc6478aecb3ff1ec55934939d/src/utils.jl",
+      "File": "source-14.txt",
+      "Bytes": 5627,
+      "Sha256": "9cdeba89f5c5d4b94bd746592e80f32e3b9472bcd795a03795b8217bfecbba48"
+    },
+    {
+      "Path": "repository-tree-metadata",
+      "Url": "https://api.github.com/repos/biaslab/PrecisionGatedExperts/git/trees/6c0a4832373b953dc6478aecb3ff1ec55934939d?recursive=1",
+      "File": "source-15.txt",
+      "Bytes": 265193,
+      "Sha256": "a57a3f578caef44c49ef3227d07160f2c7b9f3db949df324d31f630eece06d65"
+    }
+  ],
+  "Failure": null,
+  "ArtifactContentsRequested": false
+}

@@ -1,0 +1,23 @@
+{
+  "Kind": "conversation-tool-result-transcription",
+  "OriginalRawStdoutFilesAvailable": false,
+  "Scope": "These strings were transcribed from the preceding visible exec_command tool results. They are not independently retained original stdout streams. Numbered preservation replays retain actual new stdout and stderr separately.",
+  "Observations": [
+    {
+      "Source": "numeric-check-1.py.txt",
+      "OriginalInvocation": "python3 - <<'PY'\n<exact source file contents>\nPY",
+      "ToolChunkId": "b29c65",
+      "ExitCode": 0,
+      "WallTimeSeconds": 0.034440417,
+      "Output": "{\"bilinear\": {\"ResidualSecondMoment\": 86, \"GammaMessageShape\": 1.5, \"GammaMessageRate\": 43.0, \"WeightPrecision\": 42, \"WeightPrecisionMean\": 56}, \"gaussianProjection\": {\"m\": 0.0, \"v\": 0.5, \"ExponentialCoefficient\": 0.7788007830714049, \"AnalyticGradient\": [-1.1102230246251565e-16, -5.551115123125783e-17], \"CentralDifference\": [2.2204460492503128e-11, -1.2212453270876722e-10], \"Energy\": 1.5965735902799727}}\n"
+    },
+    {
+      "Source": "numeric-check-2.py.txt",
+      "OriginalInvocation": "python3 - <<'PY'\n<exact source file contents>\nPY",
+      "ToolChunkId": "292628",
+      "ExitCode": 0,
+      "WallTimeSeconds": 0.043059,
+      "Output": "{\"ProductQuadrature\": [{\"Steps\": 12000, \"Mean\": 0.6780661146015575, \"Variance\": 0.2991799146655089}, {\"Steps\": 24000, \"Mean\": 0.6780661146015575, \"Variance\": 0.2991799146655089}], \"SeparateMomentPrecisionMerge\": {\"Mean\": 1.1143973009255714, \"Variance\": 0.8236572375650502}, \"GammaProjectionEnergyGradient\": {\"ShapeDerivative\": -0.6161887739265375, \"RateDerivative\": 0.11416487341210302}}\n"
+    }
+  ]
+}

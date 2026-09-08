@@ -1,0 +1,39 @@
+"""Preserve two already-described, finite synthetic arithmetic checks only."""
+
+import hashlib
+import json
+from pathlib import Path
+import platform
+import subprocess
+import sys
+from datetime import datetime, timezone
+
+root = Path(__file__).resolve().parent
+observations = json.loads((root / "original-tool-observations.json").read_bytes())
+records = []
+for index, original in enumerate(observations["Observations"], 1):
+    source = root / original["Source"]
+    command = [sys.executable, str(source)]
+    started = datetime.now(timezone.utc).isoformat()
+    result = subprocess.run(command, capture_output=True, timeout=10, check=False)
+    finished = datetime.now(timezone.utc).isoformat()
+    for suffix, raw in [("stdout", result.stdout), ("stderr", result.stderr)]:
+        with (root / f"check-{index}-replay.{suffix}.txt").open("xb") as stream:
+            stream.write(raw)
+    records.append({
+        "Index": index, "Command": command, "StartedAtUtc": started,
+        "FinishedAtUtc": finished, "ExitCode": result.returncode,
+        "SourceSha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+        "StdoutSha256": hashlib.sha256(result.stdout).hexdigest(),
+        "StderrSha256": hashlib.sha256(result.stderr).hexdigest(),
+        "MatchesOriginalToolText": result.stdout == original["Output"].encode(),
+    })
+report = {"Kind": "preservation-replay-of-synthetic-math", "Python": sys.version,
+          "Executable": sys.executable, "Platform": platform.platform(),
+          "Records": records, "TrainingPerformed": False,
+          "ExternalModelOrDataLoaded": False, "CertifiedQuadrature": False}
+with (root / "numerical-replay.json").open("x") as stream:
+    json.dump(report, stream, indent=2)
+    stream.write("\n")
+print(json.dumps({"Checks": len(records), "ExitCodes": [r["ExitCode"] for r in records],
+                  "MatchesOriginalToolText": [r["MatchesOriginalToolText"] for r in records]}))
