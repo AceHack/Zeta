@@ -381,3 +381,134 @@ Independent signed source review is e09966093aebaf5390a905566eb09d06380f3a1a,
 owned by the reviewer and delivered separately for coordinator indexing.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra, independent reference author.
+
+## Separate actual-room transcript validation plan
+
+This extension is fixed before validator source execution or reading actual
+native room output. It follows coordinator protocol
+9e64ab3679b8b50c7fdb0719db553aa3b743cb59 and the first source boundary
+dd39304b9f95e0bd7c2522b491b1999e69fe5b71, with the subsequently agreed two
+pending-checkpoint terminal fields. The earlier exact reference, its 4,304-byte
+receipt and all recorded source/evidence identities above remain unchanged as
+historical artifacts. New validation is a separate function and result scope.
+
+The pure API will be validate_room_ndjson(raw, *, mode="ordinary",
+ordinary_raw=None). Modes are exactly ordinary, fault-2, fault-12, fault-25
+and invalid-control. A RoomRunValidated result means the entire supplied fixed
+control transcript met the declared content checks. RoomRunRefused retains the
+first Code, Message, Path and CaseId, full supplied raw value, decoded record
+prefix and checked checkpoint count. Neither result claims process execution,
+exit status, loaded-source/assembly custody or complete runtime admission.
+A checked prefix is never promoted to a successful whole transcript.
+
+Input must be bytes, at most 1 MiB total. Each nonempty NDJSON line, including
+its terminating LF or CRLF, is at most 64 KiB. Every line must be terminated.
+At most 64 checkpoints plus one terminal are allowed. Strict UTF-8 and JSON
+reject duplicate object keys, NaN/infinity including overflowing exponent
+literals, invalid Unicode surrogate strings, and invalid/deep JSON through a
+typed refusal. Full original bytes remain retained independently of parsed
+objects. No producer-selected operation or type is instantiated.
+
+Integer counters and indices must decode as exact int, excluding bool and
+float. Lexical -0 is preserved as negative floating zero and consequently
+refused in integer positions. Declared F# double fields admit finite int or
+float tokens excluding bool, since System.Text.Json emits integral-valued
+doubles as integer tokens. Outside SoftValue they must match the expected
+binary64 value exactly, including zero sign. Canonical rational strings and
+all structural keys/IDs/order remain exact.
+
+### Fixed checkpoint roster
+
+Every checkpoint is exactly Kind, Sequence, Category, Id, Value. Kind is
+checkpoint; Sequence is one-based and consecutive. The fixed 25 rows are:
+
+| Sequence | Category | ID |
+| ---: | --- | --- |
+| 1 | GaussianProjection | P |
+| 2 | GaussianProjection | Q |
+| 3 | RepeatedEvidenceConsensus | 1 |
+| 4 | RepeatedEvidenceConsensus | 2 |
+| 5 | SoftValueConstructor | P |
+| 6 | SoftValueConditioning | P/unit |
+| 7 | SoftValueConditioning | P/soft |
+| 8 | SoftValueConditioning | P/tail |
+| 9 | SoftValueConstructor | Q |
+| 10 | SoftValueConditioning | Q/unit |
+| 11 | SoftValueConditioning | Q/soft |
+| 12 | SoftValueConditioning | Q/tail |
+| 13 | Inference | two-candidates |
+| 14, 15 | PriorityPrediction, DirectPrediction | 0/neutral |
+| 16, 17 | PriorityPrediction, DirectPrediction | 0/attention-ten |
+| 18, 19 | PriorityPrediction, DirectPrediction | 6/neutral |
+| 20, 21 | PriorityPrediction, DirectPrediction | 6/attention-ten |
+| 22, 23 | PriorityPrediction, DirectPrediction | 12/neutral |
+| 24, 25 | PriorityPrediction, DirectPrediction | 12/attention-ten |
+
+The sixteen terminal Zeta rows are two Gaussian projections, two consensus
+rows, six SoftValue observations and six priority/budget rows. The exact finite
+reference is compared against a fresh independent reference_receipt call.
+Terminal observation rows must also agree exactly with their corresponding
+actual decoded checkpoint values, so separate plausible but inconsistent
+checkpoint and summary observations refuse.
+
+Gaussian means and precision-means are 0; variances and precisions are 1.
+Consensus reports one/two supplied copies, source annotation same-evidence,
+ProvenanceEnforcedByApi=false, threshold 2.5, precisions 2/3, means 1/2 and 2/3,
+and states Undecided and ResolvedYes respectively.
+
+SoftValue reconstructs all five support positions. Only posterior, maximum
+mass and sum comparisons use absolute tolerance 1e-12, with no relative
+allowance. Every probability must be finite and exactly in [0,1]. MaximumMass
+is also compared with the actual maximum of the reconstructed probabilities;
+sum is compared with 1. P/tail is exactly {Kind: refused}; all five other
+observations and both constructors are conditioned snapshots.
+
+Inference shares remain 3/4 and 1/4 and Best remains likely. Priority rows use
+capacities 0, 6, 12 and neutral then attention-ten. Full prediction snapshots
+retain ordered Requested/Boarded/Deferred, byte totals, before/after tank charge,
+Outcome, Starved and VisionConfidence. Neutral matches the direct control in
+full; attention-ten differs at all three capacities, including order when sets
+coincide. VisionConfidence is exactly 0, 1/2, 1 according to capacity, while
+BoardedPosteriorMass at capacity 6 is 3/4 or 1/4 according to the chosen order.
+No confidence-calibration claim follows from a funded branch fraction.
+
+### Terminal and partial-control admission
+
+Every terminal has exactly Kind, Schema, Complete, Failure, Receipt,
+ObservedCheckpointCount, WrittenCheckpointCount, PendingCheckpoint and
+PendingCheckpointOmission. Kind is terminal, Schema is
+zeta.distributional-rooms.run.v1. Both pending fields are null in every supported
+mode; unexpected serialization/sink failures remain refused with raw retention.
+
+Ordinary requires Complete=true, Failure=null, both counts 25, the full
+actual-zeta.v1 receipt and exactly 25 preceding checkpoints. Receipt has exactly
+Schema, FiniteReference, ZetaObservations and Runtime. Runtime has exactly
+DotNetVersion, LoadedAssemblies and CompleteRuntimeClosureAdmitted=false.
+Three assembly metadata rows retain Name, positive integer Bytes and uppercase
+64-hex Sha256; their declared order is Zeta.Core, Zeta.Bayesian and
+Zeta.Core.CSharp.DynamicValue. These are metadata shape observations, not proof
+of loading those files or of a source-to-binary relationship.
+
+For each fault mode, the function first independently validates the complete
+ordinary_raw under ordinary mode. It then requires exactly 2, 12 or 25
+checkpoint lines byte-identical to that ordinary prefix, followed by
+Complete=false, Failure=InjectedCheckpointFailure, Receipt=null and both
+counts equal to the selected prefix length. No later checkpoint or terminal is
+allowed. The actual ordinary validation result is retained in the fault result.
+The invalid-control mode requires zero checkpoints, Complete=false,
+Failure=InvalidControlArguments, Receipt=null and zero counts. CLI arguments and
+process exits remain independent external obligations, never inferred here.
+
+### Fixed validator mutation inventory
+
+Tests will construct explicitly synthetic known-answer NDJSON, never label it
+native-produced, and exercise all five supported control modes. Mutants cover
+lost/reordered/duplicate/extra events; structural bool/int and lexical -0;
+posterior or terminal-row rewrite; false Vision/posterior-mass calibration;
+attention/direct full-report equality at all capacities; bad terminal counts,
+pending event, receipt, failure or completion; substituted ordinary prefixes;
+missing ordinary input or invalid ordinary validation; duplicate/nonfinite JSON,
+invalid UTF-8/surrogates/depth; exact line/total/count bounds and unterminated
+lines. Late failures must preserve all earlier checked records and first case.
+Original diagnostics and later actual-native validation will be appended with
+distinct source pins; no native process or registered stream runs in this lane.
