@@ -161,6 +161,8 @@ def _decode(raw: bytes, limit: int, field: str) -> object:
 def _caller(raw: object, bindings: object, input_sha: object, case_id: object) -> Tree:
     if type(raw) is not bytes:
         _fail("Wire", "input", "raw_input", "exact bytes required")
+    if len(raw) > INPUT_LIMIT:
+        _fail("Wire", "input", "raw_input", "input byte limit precedes hashing")
     if type(input_sha) is not str or _HASH.fullmatch(input_sha) is None:
         _fail(
             "SourceMismatch",
@@ -444,12 +446,16 @@ class _Root:
         )
 
     def prepare(self, original: _Input, precision: int) -> None:
+        self.begin("parameters")
+        assert self.row is not None
+        # No requested context has been admitted until its factory returns.
+        self.row["Precision"] = None
+        self.count("ParameterPreparations", 3)
         old_entries = self.receipt["Counters"]["TranscendentalEntries"]
         self.arithmetic = self.take(iv.make_arithmetic(precision))
         self.a.TranscendentalEntries = old_entries
+        self.row["Precision"] = self.a.Spec.Precision
         self.receipt["Contexts"].append(asdict(self.a.Spec))
-        self.begin("parameters")
-        self.count("ParameterPreparations", 3)
         self.target = {
             name: self.point(value) for name, value in original.Values.items()
         }
@@ -589,6 +595,9 @@ class _Root:
                     self.begin("terminal")
                     self.end()
                     return
+                # An exhausted budget refuses the next midpoint operation;
+                # it does not create a phantom entry or reconstruction failure.
+                self.stage = "midpoint"
                 if not retry_midpoint:
                     self.count("MidpointAttempts", limit)
                 retry_midpoint = False
@@ -649,7 +658,7 @@ class _Root:
                 self.count("PrecisionEscalations", 2)
                 precision_index += 1
                 prepared = False
-                retry_midpoint = stage == "midpoint"
+                retry_midpoint = retry_midpoint or stage == "midpoint"
 
     def refuse(self, failure: Failure) -> None:
         self.end(failure)
@@ -706,3 +715,763 @@ def reference_root(
             )
         )
     return _publish(root.receipt)
+
+
+_NATIVE_FIELDS = (
+    "TargetBits",
+    "LogRatioBits",
+    "RatioBits",
+    "RBits",
+    "MeanBits",
+    "VarianceBits",
+    "Bracket",
+    "Stop",
+    "OriginalObjective",
+)
+_OBJECTIVE_BITS = ("ValueBits", "DerivativeMeanBits", "DerivativeVarianceBits")
+_CERT_COUNTERS = (
+    "Starts",
+    "ReferenceRootCalls",
+    "CertificatePreparations",
+    "CoordinateIntervalCalls",
+    "ObjectiveIntervalCalls",
+    "CertificateTranscendentalEntries",
+    "LeafChecks",
+)
+
+
+def _bits(value: object, field: str) -> Fraction:
+    parsed = ieee.parse_bits(value)
+    if isinstance(parsed, ieee.Failure):
+        _fail("CandidateShape", "certificate", field, parsed.Message)
+    exact = ieee.exact_fraction(parsed.value)
+    if isinstance(exact, ieee.Failure):
+        _fail("CandidateShape", "certificate", field, exact.Message)
+    return exact.value
+
+
+def _string(value: object, field: str, limit: int = 1024) -> str:
+    if type(value) is not str or len(value) > limit:
+        _fail("CandidateShape", "certificate", field, "bounded string required")
+    try:
+        value.encode("utf-8", "strict")
+    except UnicodeError:
+        _fail("CandidateShape", "certificate", field, "Unicode scalar string required")
+    return value
+
+
+def _integer(value: object, field: str, limit: int) -> int:
+    if type(value) is not int or not 0 <= value <= limit:
+        _fail(
+            "CandidateShape",
+            "certificate",
+            field,
+            "bounded nonnegative integer required",
+        )
+    return value
+
+
+def _kernel_failure(value: object, field: str) -> Tree:
+    record = _keys(value, ("Kind", "Field", "Detail"), field, "CandidateShape")
+    if type(record["Kind"]) is not str or record["Kind"] not in (
+        "InvalidInput",
+        "NumericalFailure",
+        "ImproperBelief",
+    ):
+        _fail(
+            "CandidateShape",
+            "certificate",
+            field + ".Kind",
+            "existing kernel error kind required",
+        )
+    _string(record["Field"], field + ".Field")
+    if record["Kind"] == "ImproperBelief":
+        if record["Detail"] is not None:
+            _fail(
+                "CandidateShape",
+                "certificate",
+                field + ".Detail",
+                "improper-belief detail must be null",
+            )
+    else:
+        _string(record["Detail"], field + ".Detail")
+    return record
+
+
+def _native_failure(value: object, field: str) -> Tree:
+    record = _keys(
+        value,
+        ("Code", "Stage", "Field", "Message", "OriginalKernelFailure"),
+        field,
+        "CandidateShape",
+    )
+    if type(record["Code"]) is not str or record["Code"] not in _CODES:
+        _fail(
+            "CandidateShape",
+            "certificate",
+            field + ".Code",
+            "registered failure code required",
+        )
+    if type(record["Stage"]) is not str or record["Stage"] not in _STAGES:
+        _fail(
+            "CandidateShape",
+            "certificate",
+            field + ".Stage",
+            "registered failure stage required",
+        )
+    if record["Field"] is not None:
+        _string(record["Field"], field + ".Field")
+    _string(record["Message"], field + ".Message")
+    if record["OriginalKernelFailure"] is not None:
+        _kernel_failure(
+            record["OriginalKernelFailure"], field + ".OriginalKernelFailure"
+        )
+    return record
+
+
+def _bit_map(
+    value: object, fields: tuple[str, ...], path: str, *, nullable: bool = False
+) -> Tree:
+    record = _keys(value, fields, path, "CandidateShape")
+    for name in fields:
+        if record[name] is not None or not nullable:
+            _bits(record[name], path + "." + name)
+    return record
+
+
+def _candidate(value: object, original: _Input, *, nullable: bool = False) -> Tree:
+    record = _keys(value, _NATIVE_FIELDS, "Candidate", "CandidateShape")
+    for name in _NATIVE_FIELDS:
+        item = record[name]
+        if item is None and nullable:
+            continue
+        if name == "TargetBits":
+            target = _bit_map(item, _FIELDS, "Candidate.TargetBits")
+            if target != original.Snapshot["TargetBits"]:
+                _fail(
+                    "TargetMismatch",
+                    "certificate",
+                    "Candidate.TargetBits",
+                    "exact independently rendered bits differ",
+                )
+        elif name == "Bracket":
+            _bit_map(item, ("LowerBits", "UpperBits"), "Candidate.Bracket")
+        elif name == "Stop":
+            if type(item) is not str or item not in ("rounded-zero", "rounded-width"):
+                _fail(
+                    "CandidateShape",
+                    "certificate",
+                    "Candidate.Stop",
+                    "registered stop required",
+                )
+        elif name == "OriginalObjective":
+            _bit_map(item, _OBJECTIVE_BITS, "Candidate.OriginalObjective")
+        else:
+            _bits(item, "Candidate." + name)
+    return record
+
+
+def _native(
+    raw: bytes, original: _Input, case_id: str, input_sha: str, bindings: Tree
+) -> Tree:
+    value = _keys(
+        _decode(raw, RESULT_LIMIT, "NativeRaw"),
+        ("Schema", "CaseId", "InputSha256", "Bindings", "Outcome", "Counters", "Trace"),
+        "Native",
+        "CandidateShape",
+    )
+    if (
+        type(value["Schema"]) is not str
+        or value["Schema"] != "zeta.precision-projection.native.v1"
+    ):
+        _fail(
+            "CandidateShape", "certificate", "Native.Schema", "native schema required"
+        )
+    if type(value["CaseId"]) is not str or value["CaseId"] != case_id:
+        _fail(
+            "TargetMismatch", "certificate", "Native.CaseId", "independent case differs"
+        )
+    if type(value["InputSha256"]) is not str or value["InputSha256"] != input_sha:
+        _fail(
+            "TargetMismatch",
+            "certificate",
+            "Native.InputSha256",
+            "independent original input hash differs",
+        )
+    actual_bindings = _keys(
+        value["Bindings"], set(bindings), "Native.Bindings", "SourceMismatch"
+    )
+    if any(
+        type(actual_bindings[key]) is not str or actual_bindings[key] != expected
+        for key, expected in bindings.items()
+    ):
+        _fail(
+            "SourceMismatch",
+            "certificate",
+            "Native.Bindings",
+            "complete independent binding map differs",
+        )
+    midpoint_limit = 1 if original.Profile == "native-one" else 256
+    limits = {
+        "Starts": 1,
+        "PhiEntries": midpoint_limit + 2,
+        "MidpointAttempts": midpoint_limit,
+        "BracketUpdates": midpoint_limit,
+        "LogEntries": 3,
+        "ExpEntries": midpoint_limit + 2,
+        "ObjectiveEntries": 1,
+    }
+    counters = _keys(
+        value["Counters"], set(limits), "Native.Counters", "CandidateShape"
+    )
+    for name, limit in limits.items():
+        _integer(counters[name], "Native.Counters." + name, limit)
+    if type(value["Trace"]) is not list or len(value["Trace"]) > 262:
+        _fail(
+            "CandidateShape",
+            "certificate",
+            "Native.Trace",
+            "bounded trace array required",
+        )
+    for index, raw_row in enumerate(value["Trace"], 1):
+        path = f"Native.Trace[{index - 1}]"
+        row = _keys(
+            raw_row,
+            (
+                "Sequence",
+                "Stage",
+                "Attempt",
+                "PointBits",
+                "PhiBits",
+                "LowerBits",
+                "UpperBits",
+                "Failure",
+            ),
+            path,
+            "CandidateShape",
+        )
+        if _integer(row["Sequence"], path + ".Sequence", 262) != index:
+            _fail(
+                "CandidateShape", "certificate", path, "consecutive sequence required"
+            )
+        if type(row["Stage"]) is not str or row["Stage"] not in (
+            "input",
+            "parameters",
+            "left-endpoint",
+            "right-endpoint",
+            "midpoint",
+            "reconstruction",
+            "objective",
+        ):
+            _fail(
+                "CandidateShape",
+                "certificate",
+                path + ".Stage",
+                "native stage required",
+            )
+        attempt = _integer(row["Attempt"], path + ".Attempt", midpoint_limit)
+        if (row["Stage"] == "midpoint" and attempt == 0) or (
+            row["Stage"] != "midpoint" and attempt != 0
+        ):
+            _fail(
+                "CandidateShape",
+                "certificate",
+                path + ".Attempt",
+                "attempt only belongs to midpoint stage",
+            )
+        for name in ("PointBits", "PhiBits", "LowerBits", "UpperBits"):
+            if row[name] is not None:
+                _bits(row[name], path + "." + name)
+        if row["Failure"] is not None:
+            _native_failure(row["Failure"], path + ".Failure")
+    outcome = value["Outcome"]
+    if type(outcome) is not dict or type(outcome.get("Kind")) is not str:
+        _fail(
+            "CandidateShape",
+            "certificate",
+            "Native.Outcome",
+            "exact outcome union required",
+        )
+    if outcome["Kind"] == "candidate":
+        _keys(outcome, ("Kind", "Value"), "Native.Outcome", "CandidateShape")
+        _candidate(outcome["Value"], original)
+        if counters["Starts"] != 1 or counters["ObjectiveEntries"] != 1:
+            _fail(
+                "CandidateShape",
+                "certificate",
+                "Native.Counters",
+                "candidate needs numeric and objective entry",
+            )
+        if any(row["Failure"] is not None for row in value["Trace"]):
+            _fail(
+                "CandidateShape",
+                "certificate",
+                "Native.Trace",
+                "native candidate cannot follow a failed stage",
+            )
+    elif outcome["Kind"] == "refused":
+        _keys(
+            outcome, ("Kind", "Failure", "Partial"), "Native.Outcome", "CandidateShape"
+        )
+        _native_failure(outcome["Failure"], "Native.Outcome.Failure")
+        partial = _keys(
+            outcome["Partial"],
+            ("Target", "Parameters", "Bracket", "Candidate", "OriginalObjective"),
+            "Native.Partial",
+            "CandidateShape",
+        )
+        if partial["Target"] is not None and partial["Target"] != original.Snapshot:
+            _fail(
+                "TargetMismatch",
+                "certificate",
+                "Native.Partial.Target",
+                "independent target snapshot differs",
+            )
+        if partial["Parameters"] is not None:
+            _bit_map(
+                partial["Parameters"],
+                ("LogTBits", "LogCBits", "ABits", "BBits", "DBits"),
+                "Native.Partial.Parameters",
+                nullable=True,
+            )
+        if partial["Bracket"] is not None:
+            _bit_map(
+                partial["Bracket"], ("LowerBits", "UpperBits"), "Native.Partial.Bracket"
+            )
+        if partial["Candidate"] is not None:
+            _candidate(partial["Candidate"], original, nullable=True)
+        observed = partial["OriginalObjective"]
+        if observed is not None:
+            if type(observed) is not dict:
+                _fail(
+                    "CandidateShape",
+                    "certificate",
+                    "Native.Partial.OriginalObjective",
+                    "exact observation union required",
+                )
+            if observed.get("Kind") == "returned":
+                _keys(
+                    observed,
+                    ("Kind", "Value"),
+                    "Native.Partial.OriginalObjective",
+                    "CandidateShape",
+                )
+                _bit_map(
+                    observed["Value"],
+                    _OBJECTIVE_BITS,
+                    "Native.Partial.OriginalObjective.Value",
+                )
+            elif observed.get("Kind") == "refused":
+                _keys(
+                    observed,
+                    ("Kind", "Failure"),
+                    "Native.Partial.OriginalObjective",
+                    "CandidateShape",
+                )
+                _kernel_failure(
+                    observed["Failure"], "Native.Partial.OriginalObjective.Failure"
+                )
+            else:
+                _fail(
+                    "CandidateShape",
+                    "certificate",
+                    "Native.Partial.OriginalObjective.Kind",
+                    "returned or refused observation required",
+                )
+    else:
+        _fail(
+            "CandidateShape",
+            "certificate",
+            "Native.Outcome.Kind",
+            "candidate or refused required",
+        )
+    return value
+
+
+class _Post:
+    """One fixed post-root context, shared six-entry budget and actual partials."""
+
+    def __init__(self, arithmetic: iv.Arithmetic):
+        self.a = arithmetic
+        self.stage = "certificate"
+        self.partial: dict[str, iv.Interval | None] = {}
+
+    def take[T](self, result: iv.Result[T]) -> T:
+        return _take(result, self.stage)
+
+    def point(self, number: Fraction | int) -> iv.Interval:
+        return self.take(self.a.point(number))
+
+    def add(self, x: iv.Interval, y: iv.Interval) -> iv.Interval:
+        return self.take(self.a.add(x, y))
+
+    def sub(self, x: iv.Interval, y: iv.Interval) -> iv.Interval:
+        return self.take(self.a.subtract(x, y))
+
+    def mul(self, x: iv.Interval, y: iv.Interval) -> iv.Interval:
+        return self.take(self.a.multiply(x, y))
+
+    def div(self, x: iv.Interval, y: iv.Interval) -> iv.Interval:
+        return self.take(self.a.divide(x, y))
+
+    def coordinates(self, t: iv.Interval, x: iv.Interval) -> dict[str, iv.Interval]:
+        q = self.take(self.a.exp(x))
+        self.partial["Ratio"] = q
+        r = self.mul(t, q)
+        self.partial["R"] = r
+        return {"Ratio": q, "R": r}
+
+    def objective(
+        self, target: dict[str, iv.Interval], m: iv.Interval, v: iv.Interval
+    ) -> dict[str, iv.Interval]:
+        t, u, k, c = (target[name] for name in _FIELDS)
+        delta = self.sub(m, u)
+        two = self.point(2)
+        e = self.mul(c, self.take(self.a.exp(self.add(m, self.div(v, two)))))
+        f = self.sub(
+            self.add(
+                self.sub(
+                    self.div(
+                        self.mul(t, self.add(self.take(self.a.square(delta)), v)), two
+                    ),
+                    self.mul(k, m),
+                ),
+                e,
+            ),
+            self.div(self.take(self.a.ln(v)), two),
+        )
+        self.partial["Value"] = f
+        dm = self.add(self.sub(self.mul(t, delta), k), e)
+        self.partial["DerivativeMean"] = dm
+        dv = self.sub(
+            self.add(self.div(t, two), self.div(e, two)),
+            self.div(self.point(1), self.mul(two, v)),
+        )
+        self.partial["DerivativeVariance"] = dv
+        return {"Value": f, "DerivativeMean": dm, "DerivativeVariance": dv}
+
+
+def _read_interval(value: object, field: str) -> iv.Interval:
+    record = _keys(value, ("Lower", "Upper"), field, "Unexpected")
+    for name in ("Lower", "Upper"):
+        _string(record[name], field + "." + name, 4096)
+    try:
+        result = iv.Interval(Decimal(record["Lower"]), Decimal(record["Upper"]))
+    except ArithmeticError:
+        _fail(
+            "Unexpected",
+            "certificate",
+            field,
+            "actual reference returned malformed interval",
+        )
+    _take(iv.exact_width(result), "certificate")
+    return result
+
+
+class _Certificate:
+    def __init__(self, raw_native: bytes, case_id: str, input_sha: str, bindings: Tree):
+        self.receipt: Tree = {
+            "Schema": "zeta.precision-projection.certificate.v1",
+            "CaseId": case_id,
+            "InputSha256": input_sha,
+            "Bindings": bindings,
+            "Target": None,
+            "NativeRaw": {
+                "BytesHex": raw_native.hex(),
+                "Bytes": len(raw_native),
+                "Sha256": hashlib.sha256(raw_native).hexdigest().upper(),
+            },
+            "Reference": None,
+            "CertificateContext": None,
+            "Coordinates": None,
+            "Objective": None,
+            "Outcome": None,
+            "LeafChecks": [],
+            "Counters": dict.fromkeys(_CERT_COUNTERS, 0),
+        }
+        self.post: _Post | None = None
+
+    def leaf(
+        self,
+        field: str,
+        encoded: str,
+        interval: iv.Interval,
+        code: str,
+        *,
+        objective: bool = False,
+    ) -> None:
+        native = _bits(encoded, field)
+        lo, hi = Fraction(interval.Lower), Fraction(interval.Upper)
+        tolerance = TOLERANCE * (
+            1 + (max(abs(lo), abs(hi)) if objective else abs(native))
+        )
+        passed = max(abs(native - lo), abs(native - hi)) <= tolerance
+        row = {
+            "Field": field,
+            "NativeBits": encoded,
+            "ReferenceInterval": _interval(interval),
+            "Tolerance": _ratio(tolerance),
+            "Passed": passed,
+        }
+        self.receipt["Counters"]["LeafChecks"] += 1
+        self.receipt["LeafChecks"].append(row)
+        if not passed:
+            _fail(
+                code,
+                "certificate",
+                field,
+                "maximum exact endpoint distance exceeds fixed tolerance",
+            )
+
+    def observe(
+        self,
+        name: str,
+        target: dict[str, iv.Interval],
+        candidate: dict[str, iv.Interval],
+    ) -> dict[str, iv.Interval]:
+        assert self.post is not None
+        post = self.post
+        fields = (
+            ("Ratio", "R")
+            if name == "Coordinates"
+            else ("Value", "DerivativeMean", "DerivativeVariance")
+        )
+        post.partial = dict.fromkeys(fields)
+        post.stage = "certificate" if name == "Coordinates" else "objective"
+        counter = (
+            "CoordinateIntervalCalls"
+            if name == "Coordinates"
+            else "ObjectiveIntervalCalls"
+        )
+        self.receipt["Counters"][counter] += 1
+        context = self.receipt["CertificateContext"]
+        try:
+            result = (
+                post.coordinates(target["T"], candidate["LogRatioBits"])
+                if name == "Coordinates"
+                else post.objective(
+                    target, candidate["MeanBits"], candidate["VarianceBits"]
+                )
+            )
+            # Full actual returned observation is assigned before any leaf check.
+            self.receipt[name] = {
+                "Kind": "returned",
+                "Context": context,
+                "Value": {key: _interval(value) for key, value in result.items()},
+            }
+            return result
+        except _Halt as error:
+            self.receipt[name] = {
+                "Kind": "refused",
+                "Context": context,
+                "Failure": asdict(error.failure),
+                "Partial": {
+                    key: _interval(value) for key, value in post.partial.items()
+                },
+            }
+            raise
+        except (
+            Exception
+        ) as error:  # Retain raised entry before rethrowing as typed control flow.
+            failure = Failure("Unexpected", post.stage, name, type(error).__name__)
+            self.receipt[name] = {
+                "Kind": "raised",
+                "Context": context,
+                "Failure": asdict(failure),
+                "Partial": {
+                    key: _interval(value) for key, value in post.partial.items()
+                },
+            }
+            raise _Halt(failure) from error
+        finally:
+            self.receipt["Counters"]["CertificateTranscendentalEntries"] = (
+                post.a.TranscendentalEntries
+            )
+
+    def solve(
+        self, raw_input: bytes, raw_native: bytes, original: _Input
+    ) -> ReceiptFailure | None:
+        r = self.receipt
+        r["Target"] = original.Snapshot
+        native = _native(
+            raw_native, original, r["CaseId"], r["InputSha256"], r["Bindings"]
+        )
+        r["Counters"]["Starts"] = 1
+        if native["Outcome"]["Kind"] == "refused":
+            r["Outcome"] = {
+                "Kind": "no-candidate",
+                "NativeFailure": native["Outcome"]["Failure"],
+            }
+            return None
+        value = native["Outcome"]["Value"]
+        numeric = {
+            name: _bits(value[name], name)
+            for name in (
+                "LogRatioBits",
+                "RatioBits",
+                "RBits",
+                "MeanBits",
+                "VarianceBits",
+            )
+        }
+        if original.Values["T"] <= 0 or original.Values["C"] <= 0:
+            _fail("Domain", "certificate", "Target", "positive dyadic t and c required")
+        for name in ("RatioBits", "RBits", "VarianceBits"):
+            if numeric[name] <= 0:
+                _fail(
+                    "CandidateShape",
+                    "certificate",
+                    name,
+                    "strictly positive candidate value required",
+                )
+        lo = _bits(value["Bracket"]["LowerBits"], "Bracket.LowerBits")
+        hi = _bits(value["Bracket"]["UpperBits"], "Bracket.UpperBits")
+        if not lo < hi or not lo <= numeric["LogRatioBits"] <= hi:
+            _fail(
+                "CandidateShape",
+                "certificate",
+                "Bracket",
+                "ordered bracket must contain candidate x, including endpoints",
+            )
+        r["Counters"]["ReferenceRootCalls"] += 1
+        reference = reference_root(
+            raw_input,
+            r["Bindings"],
+            expected_input_sha256=r["InputSha256"],
+            expected_case_id=r["CaseId"],
+        )
+        if isinstance(reference, ReceiptFailure):
+            r["Reference"] = reference.Receipt
+            r["Outcome"] = {"Kind": "refused", "Failure": asdict(reference.Failure)}
+            return ReceiptFailure(reference.Failure, r)
+        if isinstance(reference, Failure):
+            _fail(
+                "NoRootEnclosure",
+                "certificate",
+                "Reference",
+                "actual root API refused independent admission",
+            )
+        r["Reference"] = reference.Value
+        if reference.Value["Outcome"]["Kind"] != "enclosure":
+            _fail(
+                "NoRootEnclosure",
+                "certificate",
+                "Reference",
+                "actual reference root did not return an enclosure",
+            )
+        enclosure = reference.Value["Outcome"]["Value"]
+        context = reference.Value["Contexts"][-1]
+        r["CertificateContext"] = context
+        self.leaf(
+            "MeanBits",
+            value["MeanBits"],
+            _read_interval(enclosure["Mean"], "Reference.Mean"),
+            "NotCloseToMinimum",
+        )
+        self.leaf(
+            "VarianceBits",
+            value["VarianceBits"],
+            _read_interval(enclosure["Variance"], "Reference.Variance"),
+            "NotCloseToMinimum",
+        )
+        r["Counters"]["CertificatePreparations"] += 1
+        arithmetic = _take(
+            iv.make_arithmetic(context["Precision"], transcendental_limit=6),
+            "certificate",
+        )
+        if asdict(arithmetic.Spec) != context:
+            _fail(
+                "Unexpected",
+                "certificate",
+                "CertificateContext",
+                "actual root context differs from registered context",
+            )
+        self.post = _Post(arithmetic)
+        target = {
+            name: self.post.point(number) for name, number in original.Values.items()
+        }
+        points = {name: self.post.point(number) for name, number in numeric.items()}
+        coordinates = self.observe("Coordinates", target, points)
+        self.leaf(
+            "RatioBits",
+            value["RatioBits"],
+            coordinates["Ratio"],
+            "InconsistentCoordinate",
+        )
+        self.leaf("RBits", value["RBits"], coordinates["R"], "InconsistentCoordinate")
+        objective = self.observe("Objective", target, points)
+        for name, bits_name in zip(
+            ("Value", "DerivativeMean", "DerivativeVariance"),
+            _OBJECTIVE_BITS,
+            strict=True,
+        ):
+            self.leaf(
+                "OriginalObjective." + bits_name,
+                value["OriginalObjective"][bits_name],
+                objective[name],
+                "ObjectiveMismatch",
+                objective=True,
+            )
+        r["Outcome"] = {
+            "Kind": "certified",
+            "TargetScope": "exact-native-dyadic",
+            "NativeTrajectoryCertified": False,
+            "GraphApplicationPerformed": False,
+        }
+        return None
+
+
+def certify_native(
+    raw_input: object,
+    raw_native: object,
+    expected_bindings: object,
+    *,
+    expected_input_sha256: object,
+    expected_case_id: object,
+) -> ReceiptResult:
+    """Certify a supplied candidate; physical source/process custody is external.
+
+    A refused native receipt can yield no-candidate only after complete schema
+    and independent input/binding checks. Encoding failure is a distinct outer
+    outcome preserving the complete actual in-memory receipt.
+    """
+    try:
+        bindings = _caller(
+            raw_input, expected_bindings, expected_input_sha256, expected_case_id
+        )
+        if type(raw_native) is not bytes:
+            _fail("Wire", "input", "raw_native", "exact original native bytes required")
+        if len(raw_native) > RESULT_LIMIT:
+            _fail(
+                "ResultTooLarge",
+                "input",
+                "raw_native",
+                "native byte limit exceeded before hex expansion",
+            )
+    except _Halt as error:
+        return error.failure
+    except Exception as error:  # noqa: BLE001 - public caller boundary is typed.
+        return Failure("Unexpected", "input", None, type(error).__name__)
+    assert type(raw_input) is bytes and type(raw_native) is bytes
+    assert type(expected_case_id) is str and type(expected_input_sha256) is str
+    certificate = _Certificate(
+        raw_native, expected_case_id, expected_input_sha256, bindings
+    )
+    try:
+        original = _input(raw_input, expected_case_id)
+        retained = certificate.solve(raw_input, raw_native, original)
+        if retained is not None:
+            return retained
+    except _Halt as error:
+        certificate.receipt["Outcome"] = {
+            "Kind": "refused",
+            "Failure": asdict(error.failure),
+        }
+    except Exception as error:  # noqa: BLE001 - retain all earlier actual observations.
+        certificate.receipt["Outcome"] = {
+            "Kind": "refused",
+            "Failure": asdict(
+                Failure("Unexpected", "certificate", None, type(error).__name__)
+            ),
+        }
+    return _publish(certificate.receipt)
