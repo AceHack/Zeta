@@ -38,6 +38,8 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 
 **Relativistic, no appointed hub.** Any node may replicate any table or stream and run operations on it. "Replica" is a misnomer — placement is per-stream, not a full copy of the universe. Data **and code** move. There is no split-brain as a failure class: forward progress first, later CRDT reconciliation, or work thrown away, or a named permanent fork. That is why the filesystem must treat fork as first-class.
 
+**Aim (not shipped):** the fastest DBSP database that still **agrees across planets**. The honest statement is not "geo consensus is impossible, therefore federate." Cross-site is already a **strictly weaker coupling than consensus**: commutative observe / a CALM-monotonic fold. **Raft is the wrong tool** — it buys a total order nobody across sites needs, at a price that scales with distance. Same distinction CALM draws (Hellerstein & Alvaro, CIDR 2011 *The Declarative Imperative*; CACM 2020 *Keeping CALM*): monotonic ⇒ coordination-free; non-monotone exclusive claims still need consensus, and those stay local or gated, not geo-Rafted. Earth–Mars light time is minutes, unsynced; HLC-as-linearizability dies there. The designed path is commutative observe + phase-canonical order + local time never entering the shared fold. See [`docs/research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md`](../research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md), [`docs/research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md`](../research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md), and [`docs/handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md`](../handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md). Spacelike vs timelike is already in-tree (`BusRegime` InCone/OutOfCone). This is `toy` until a named interplanetary delay is in the DST corpus. It is still a product reason Earth-only filesystems (and geo-Raft) do not offer. Aaron + Otto 2026-09-08 (`081M21DBXV8087G0R003HFHJK2`).
+
 ---
 
 ## What ZetaDB is
@@ -52,6 +54,7 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 8. **TigerBeetle-shaped ambition on the commit path**, with honesty: we have not metered that yet. Auto-batch + mux/full-duplex + zero-alloc Z-set ops are the *bets*, not the measured result.
 9. **No central tip.** Partitioned Z-set tips joined by shippable Rx queries ([no-single-tip design](2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md)).
 10. **Historical data compresses toward a generator.** When a generator can reproduce a history, the original bytes need not stay on disk. That is the columnar idea aimed at the **event store**, not only at tables.
+11. **Cross-site agreement without geo-Raft.** Fastest DBSP on one planet is not the product if the fold diverges across a light cone. The shared conclusion sees only agreed phase; a node's wall-clock steers only local actions. That is weaker than consensus (CALM-monotonic). Raft across sites is the wrong tool. Not shipped. Not a claim we beat Feldera on Earth today.
 
 ---
 
@@ -74,7 +77,7 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 | Postgres | Input connector + experimental output sink | Wire **adapter** only; never the WAL |
 | Feel | Incremental SQL over changing inputs | Flink unified batch/stream + Reaqtor durable Rx |
 | Testing | Rust benches, their pipeline manager | DoP=1 DST, chaos, four-oracle byte-lock, alloc benches |
-| Distribution | Multi-node (they beat us here today) | Relativistic, per-stream placement, no split-brain |
+| Distribution | Multi-node (they beat us here today); one light cone | Relativistic, per-stream placement, no split-brain; **aim** CALM/commutative fold across light cones, not geo-Raft (designed, not shipped) |
 | SQL | Mature compiler | Host-language first; ANSI SQL is the product overlay |
 
 ROADMAP already records where they beat us (distribution, SQL compiler, compiled Rust circuits, production time). This document does not reopen those as insults; it names the product that *closes* the SQL and storage gaps without becoming them.
@@ -272,6 +275,7 @@ ZetaFS exists **for ZetaDB**. If another filesystem plus the ferry is better for
 5. **Per-entity policy on one volume** — `keep-all` catalog next to `rolling` WAL next to `none` scratch.
 6. **Typed durability notified to the DB** — `Buffered | Journaled | Durable`.
 7. **No central tip / ordinal shared fold.**
+8. **Spacelike vs timelike / multi-planet fold.** APFS/ext4/ReFS assume one planet's wall-clock and one light cone. Geo-Raft buys a total order nobody across sites needs, at a price that scales with distance. ZetaFS history is keyed by **phase**, never wall-clock (`local-time-never-enters-the-shared-fold`). Cross-site is CALM-monotonic (weaker than consensus), not "federate because consensus is impossible." Not a claim that Mars is shipped (`081M21DBXV8087G0R003HFHJK2`).
 
 The both-legs host-FS storm now runs in CI (`Zd4ProductExistence.Tests.fs`):
 32 concurrent `GroupCommitDiskDeltaLog` appends and 32 Journaled freezes on
@@ -424,7 +428,7 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
   stays 48 MiB.
 - **Numbers stay `toy`.** Not copied into README.
 - **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
-- **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product on batching.
+- **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product on batching; claim multi-planet agreement is shipped; put Raft on the geo path.
 
 ### ZD5 — ZetaDB SQL package (separate from Core)
 
@@ -469,7 +473,7 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 1. **Public names** for ZetaDB / ZetaFS — still gated.
 2. **First SQL subset** — which ANSI:2023 features are in v0 vs later (windows? `MATCH_RECOGNIZE` is ROADMAP P2 CEP). Do not silently pick "all of Postgres."
 3. **ZD6 before or after ZD5** — a Postgres-wire *empty server* can prove the adapter without SQL. Prefer a real catalog if ZD5 is close; otherwise a host-language catalog is an allowed thinner cut.
-4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers. Until then it stays the designed store.
+4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers **and** those numbers are read against the reasons it must earn (CAS / fork / `Regen` / placement / policy / durability / ReFS-shaped crash **and** a CALM/commutative fold that does not geo-Raft). Batching-alone loss does not kill. Multi-planet agreement is designed, not metered. Raft across sites is declined, not deferred. Until then it stays the designed store.
 5. **Bloom vs anti-bloom vs CQF** — two grow-only filters (three-valued, no saturation, G-set) vs counting Bloom (shipped) vs CQF (radar Trial, variable-width counts). Settled by ZD10 measurements, not by preferring the story. Resurrection (insert after delete) is UNKNOWN in the two-filter form; that may lose to counting/CQF on retract-heavy workloads.
 
 ---
@@ -485,3 +489,4 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 - Bloom, *Space/time trade-offs in hash coding with allowable errors*, CACM 1970; Fan et al., *Summary cache*, SIGCOMM 1998 (counting Bloom); Shapiro et al., *A comprehensive study of Convergent and Commutative Replicated Data Types*, INRIA 2011 (G-Set). Deletable Bloom is WONT-DO (Rothenberg 2010); two grow-only filters are a different construction.
 - Zhou et al., FoundationDB, SIGMOD 2021; Will Wilson, DST, Strange Loop 2014; TigerBeetle journal (ambition, not a measured claim).
 - ReFS (Beacon, not a port): Sinofsky, "Building the next generation file system for Windows: ReFS" (Building Windows 8, 2012) — allocate-on-write / shadow paging; [Block cloning](https://learn.microsoft.com/en-us/windows-server/storage/refs/block-cloning); [Integrity streams](https://learn.microsoft.com/en-us/windows-server/storage/refs/integrity-streams); Lorie, *Physical Integrity in a Large Segmented Database* (ACM TODS 1977) for shadow paging. KB 4016173 — allocate-on-write metadata + lazy cache can explode RAM.
+- Multi-planet fold (designed, not shipped; **not geo-Raft**): CALM — Hellerstein & Alvaro, CIDR 2011 *The Declarative Imperative*; CACM 2020 *Keeping CALM*. In-repo: [`docs/research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md`](../research/2026-07-11-multi-planet-convergence-three-drift-axes-commutative-observe-adinkra-ecc-hlc-canonical-order-one-attack-vector.md); [`docs/research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md`](../research/2026-06-08-the-reorder-loophole-is-bounded-by-commutativity-non-reversible-claims-need-consensus.md); Earth–Mars light-time [`docs/handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md`](../handoffs/2026-08-13-orbital-asymmetry-brief-for-manus.md); `local-time-never-enters-the-shared-fold`.
