@@ -1,0 +1,555 @@
+{
+  "Schema": "zeta.mixed-message-epoch.peer-transport-foundation.v1",
+  "CompletePeer": false,
+  "CoreInvoked": false,
+  "NamedControlsRun": false,
+  "Records": [
+    {
+      "File": "001-build-1-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 14770,
+      "Sha256": "D1D988D6077F213434B7D849AC31F2C4DE5802C21C46163AE4F2CFB409FAA640",
+      "StoredBytes": 4056,
+      "StoredSha256": "C1964975AB3430748A06803805B28981E1D6DAAEF7C826104F8255ECF86C7F36",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-1/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "002-build-1-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 492,
+      "Sha256": "5454C5930EC65FB2AF89D7D3D1E7D8C0D2818B24C17BBAD5D2C7797971C76F31",
+      "StoredBytes": 364,
+      "StoredSha256": "135E5A4872D0965D6F2D2D9697C78DF149DFF3055061B5A97F0D63011200FCA3",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-1/invocation.json"
+    },
+    {
+      "File": "003-build-1-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-1/stdout"
+    },
+    {
+      "File": "004-build-1-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 221,
+      "Sha256": "94F8806C3EE9547105431C800AA88F2044C07CA040E7FEC41BAFA0AC00F9AAF7",
+      "StoredBytes": 198,
+      "StoredSha256": "4E3FF9F66ABF2D5BBED3E141175F505785DE415D065282861A95752F5CB58786",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-1/stderr"
+    },
+    {
+      "File": "005-build-1-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "8D1A5A99D3C02807F6A054268D89B7C2B43DCBC43D08B0FC020E1CDB27FDEEDB",
+      "StoredBytes": 88,
+      "StoredSha256": "F71EBDBAA2C0026B261B5600425B1421D7DF0473A7C81B3C3BCE5F5C7059A612",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-1/completion.json"
+    },
+    {
+      "File": "006-build-2-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 15022,
+      "Sha256": "0C9B3015F3DE354AC07065E8EE9015CAD81C77B55CADA09E0E456E5240A5D790",
+      "StoredBytes": 4094,
+      "StoredSha256": "EAEF545DF4D0EBD92493B35F15A311068072C81DA58E53BB993951684B054AB4",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-2/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "007-build-2-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 431,
+      "Sha256": "B20CFD296B9964A84AF63E6EFC2A44915CD9AD5F2EEE59CF6D2CBE519824BAC5",
+      "StoredBytes": 322,
+      "StoredSha256": "69ADC98CA0BE2D00313765212A723170F8BE7C35A7419EB56D7911A43DD2D57C",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-2/invocation.json"
+    },
+    {
+      "File": "008-build-2-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-2/stdout"
+    },
+    {
+      "File": "009-build-2-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-2/stderr"
+    },
+    {
+      "File": "010-build-2-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "AC9BE48992A5E8F1AC2763163C382CFECBC8273E539B061DB42D56E037B66578",
+      "StoredBytes": 88,
+      "StoredSha256": "E28BB25EB6BD4B6EDFF852F3474F5EF57482B71CE66AE9A97B0E6C7E7B4739AA",
+      "OriginalPath": ".git/mixed-message-peer-transport-build-2/completion.json"
+    },
+    {
+      "File": "011-checks-draft-1-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 15022,
+      "Sha256": "0C9B3015F3DE354AC07065E8EE9015CAD81C77B55CADA09E0E456E5240A5D790",
+      "StoredBytes": 4094,
+      "StoredSha256": "EAEF545DF4D0EBD92493B35F15A311068072C81DA58E53BB993951684B054AB4",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "012-checks-draft-1-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 568,
+      "Sha256": "FC100F9EF267A29188CC04825D7F65B3A3EF5B6D3A475DED3D406AA8FCDF61D9",
+      "StoredBytes": 365,
+      "StoredSha256": "3DA5BAD1529887457CF284FBC538007061D79417F6141BBDE94A6DBF5068757A",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/invocation.json"
+    },
+    {
+      "File": "013-checks-draft-1-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 214,
+      "Sha256": "577BCF1B8D371BD07C7F0C72FA165D4F0A9D31982955ECC9C51FC1A71F437D56",
+      "StoredBytes": 186,
+      "StoredSha256": "EACBB381ADF7274E54A04F97456FA5F475F2AFB3ED861081B27E20350E8B60FE",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/stdout"
+    },
+    {
+      "File": "014-checks-draft-1-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 476,
+      "Sha256": "FD8418A68C0F853D599378C068586EBAB5B4A2F8C34DE6D36B8C405BC3372812",
+      "StoredBytes": 210,
+      "StoredSha256": "79C1FBDF69BF62A3591B7C98C6F6E726244235E67441BFE96C32C4E109689E1A",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/stderr"
+    },
+    {
+      "File": "015-checks-draft-1-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "8B49DCE9E11DAD35DAFED6528221C5D103218E7A7D84C07B09A71A005F2F489A",
+      "StoredBytes": 88,
+      "StoredSha256": "BC287853B135DD270AB86DCF66E6522C8FC27B92767AB2639B73917687E7D49B",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/completion.json"
+    },
+    {
+      "File": "016-checks-draft-1-checks.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 1611,
+      "Sha256": "BFC87432904FBD1FF97D96BEA9030121C1D92B87FF991CB4DFD35B3A489D71D5",
+      "StoredBytes": 773,
+      "StoredSha256": "F4DA4181293433D5CB27C17EFB9EF017D99A93D322008168EA979E7CD98F5AA8",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/checks.fsx"
+    },
+    {
+      "File": "017-checks-draft-1-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 985,
+      "Sha256": "86BD36C10AC177500038AFC3C191B9781D761F3419323AF41C78119D89B2EA4D",
+      "StoredBytes": 537,
+      "StoredSha256": "3E3B4C71635788D45E5B445A0778443FAE65EC1EFF88A144F47F7C7561A085A8",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-draft-1/run.py"
+    },
+    {
+      "File": "018-checks-2-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 17787,
+      "Sha256": "692506798F0278C6D2AB11103DB0E88E7297882005E3205C360FB2DBF72FBE9C",
+      "StoredBytes": 4758,
+      "StoredSha256": "FEAAE35B872CB7E5A981EF945105DFD6709DB20351CB181A99BB56E90B57E20E",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "019-checks-2-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 548,
+      "Sha256": "1C4F0FB02853854BE0E4A2A370397B35C7C75E39FCAFC207B4098AD13D1ECF42",
+      "StoredBytes": 355,
+      "StoredSha256": "A2AD987F7DE4EBB6915515FB50722E22A875895CA4C3EF77F43D4384EBBF1AE9",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/invocation.json"
+    },
+    {
+      "File": "020-checks-2-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1441,
+      "Sha256": "51CE326C6E7F94757AA7731E381974F12AC6EEB5C3BD74AC047BA4E1C07091CD",
+      "StoredBytes": 462,
+      "StoredSha256": "BFE8C1EBBC84BAFA87C8304430AFFE27D451EF72957CB8716C03333C0BDBA4C3",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/stdout"
+    },
+    {
+      "File": "021-checks-2-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/stderr"
+    },
+    {
+      "File": "022-checks-2-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "030191B55FD8CFE2DD96B4751F8FFB8CAD9F2AF8706E818F84B8F9F3DA0CCBB1",
+      "StoredBytes": 88,
+      "StoredSha256": "6CB105A8B7719091D2B2BC05F084A8ACBA5A0A25B96BDA0D96CFA06EB4397EF3",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/completion.json"
+    },
+    {
+      "File": "023-checks-2-checks.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 9052,
+      "Sha256": "F966D527E6165330B54BCC54C74AECF3E22971D258516A75803084EE715DD8DC",
+      "StoredBytes": 2529,
+      "StoredSha256": "43278A1BBC0A9C8A25E27EA0E9EB0EF16003F17DEC649A3EE7DFBCD0D78624C2",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/checks.fsx"
+    },
+    {
+      "File": "024-checks-2-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 971,
+      "Sha256": "716A15560596C6FD2959A0495F432A063B04A45AC4D19196EF19A28DE22022EC",
+      "StoredBytes": 534,
+      "StoredSha256": "165F57154536FCADC879C2F6FFA1EE77DBC10251D1D8936739748FF5D0CA633D",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-2/run.py"
+    },
+    {
+      "File": "025-checks-3-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 21939,
+      "Sha256": "08ED8231A33185E24BD558DD4B58153B161258B2E9440A0DB5FD2807C64C1BBC",
+      "StoredBytes": 5545,
+      "StoredSha256": "763271AA126AD0BEF2766817B5CCE7DEEF538BB5C4ACA670178AD80BF46773EA",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "026-checks-3-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 553,
+      "Sha256": "4BD46A07A375C10C27783BE30BD8B49C00C42BA1CAE66B6DF9FE3B31F0352E2D",
+      "StoredBytes": 358,
+      "StoredSha256": "96BE6866328524DCBA48AB9848F7DEFDE63547DAB2C7EC92C321DF953798FF40",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/invocation.json"
+    },
+    {
+      "File": "027-checks-3-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1827,
+      "Sha256": "43C719140FFED8DD5ED9131C60E9B34FEC4B0665B4F39E802A19420BD5DAD9FB",
+      "StoredBytes": 558,
+      "StoredSha256": "7B4574113708196ADFC463C6B65456715A0CE9548BF4DC0F454E56B289117396",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/stdout"
+    },
+    {
+      "File": "028-checks-3-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/stderr"
+    },
+    {
+      "File": "029-checks-3-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "7E92E2975623947B2F4DA28E19B51528D6242260C70CC9036E0E99D88E1D4789",
+      "StoredBytes": 86,
+      "StoredSha256": "D92BC6A62B1829F71D3EA74FAF70066F049D2D09BF9254FEA2F34D577EFB2F5D",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/completion.json"
+    },
+    {
+      "File": "030-checks-3-checks.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 12272,
+      "Sha256": "81C054A6657EB374EFEED9923D7925A4E703976AC52F12C7BBEF580AA61E9AA7",
+      "StoredBytes": 3009,
+      "StoredSha256": "1FC145B283BDF060AE434168822BF6B4DB1046B959C115E93A773F3E4924F2D3",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/checks.fsx"
+    },
+    {
+      "File": "031-checks-3-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 976,
+      "Sha256": "FAD33971AAC4AE9F8C4C80B658371E4356DFDE06F3FED636FE94BE3A8C5164A3",
+      "StoredBytes": 537,
+      "StoredSha256": "EC1D0A5B5F1ADB42E53D68B15E9B3DAA3278B098D2D93A6AA90D95766640FF07",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-3/run.py"
+    },
+    {
+      "File": "032-checks-4-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 28469,
+      "Sha256": "4F8FB8ED53744ACAC0C0889C41FADAED327D86CE1ABF36BD5276C8FBF61609B7",
+      "StoredBytes": 7121,
+      "StoredSha256": "78E03F4E43D366B149071195033E59D16EED3130A35F9EED42CACAE632730C66",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "033-checks-4-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 563,
+      "Sha256": "CA2D5402252E9977173A791BD0860F399B20FF687335E7B3C597C2622D2BCBB7",
+      "StoredBytes": 366,
+      "StoredSha256": "1038AE153BAB8EBF2FACE8353DE5D2DA319B3F91FC112D01BE66F6AC69D88BCE",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/invocation.json"
+    },
+    {
+      "File": "034-checks-4-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/stdout"
+    },
+    {
+      "File": "035-checks-4-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 315,
+      "Sha256": "E33A5CCD7CB65DB170E0CD44F9F9CBADF096AD47587DAB9894B3E840C745EB2F",
+      "StoredBytes": 254,
+      "StoredSha256": "7D859AB1BD691A3AC9FFBBC9E36A06B11B78E4ACDE3FE20C3D8FAF43B5154E73",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/stderr"
+    },
+    {
+      "File": "036-checks-4-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "BDCCF39A4788FEA27960DB42A51CF0AE6DE39EB7E9255DC2496EA6366C2215BF",
+      "StoredBytes": 88,
+      "StoredSha256": "38024FEA073A0BAD553A304F985ABA6EDF088C5CFFA99993D85077BE666DEA0C",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/completion.json"
+    },
+    {
+      "File": "037-checks-4-checks.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 13877,
+      "Sha256": "8222A88A47A352F097C540DC24E5DFB49F8D845C413AE320CB053A9C77969582",
+      "StoredBytes": 3402,
+      "StoredSha256": "7E1A86265835939C6462F13B9479DA5D9EEA4F9E107895F882209FF2E3342419",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/checks.fsx"
+    },
+    {
+      "File": "038-checks-4-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 986,
+      "Sha256": "71676EAA82591FE435EA614FC118CC7212859BF26028AC02593DAF4656EBABB5",
+      "StoredBytes": 543,
+      "StoredSha256": "3D3E7DE113A0ACCE4F4F12498F8A114C67C88D78FBF85B733803D73F71F07F7A",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/run.py"
+    },
+    {
+      "File": "039-checks-4-fixture.bin.gz",
+      "Encoding": "gzip",
+      "Bytes": 22,
+      "Sha256": "D144567A957809B4F0D76B814E7A8D1C8DD29E8C14580BDA272DB4454F52D026",
+      "StoredBytes": 42,
+      "StoredSha256": "6BEEF3052B67AFFE4E07BD00EE3D18D8771AD3F9F78F858F78F3AC1859A7A961",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/fixture.bin"
+    },
+    {
+      "File": "040-checks-4-stat-source.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 272,
+      "Sha256": "8FDFE646667E20C207FDAC3BC56E9AEFB05E7B60481C98C0294CF776D38CDDB3",
+      "StoredBytes": 241,
+      "StoredSha256": "6C2A290128BAC8FFB9F968828B53C951E6DAFE5474C9D61E264CB32583505814",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-4/stat-source.json"
+    },
+    {
+      "File": "041-checks-5-MixedMessageEpochReplay.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 28479,
+      "Sha256": "8D8BA3FF7FE26ECB049D8B3AB6C7C08D0DFEA2F2FA288DB0C11C01D9EED78F94",
+      "StoredBytes": 7125,
+      "StoredSha256": "A14615BB8556868E2416167363252FE7DD75CADE6E7CC17D225166546D9360B5",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/MixedMessageEpochReplay.fsx"
+    },
+    {
+      "File": "042-checks-5-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 563,
+      "Sha256": "15DF573192EC2D7F5D306A644C92326A0E7BB985E6110466B9A34B1E93B9431D",
+      "StoredBytes": 368,
+      "StoredSha256": "8E9A576191594A0A5D9AF926FEA7DFF57E1225CB2942D295C39CC485B8078C94",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/invocation.json"
+    },
+    {
+      "File": "043-checks-5-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 2190,
+      "Sha256": "CB6FED109B9B16E32CA1F2894868DA3085D7097F7AB7A32FD647B0E527BBBA38",
+      "StoredBytes": 644,
+      "StoredSha256": "85A0570BD38B1DEAD7DF4B15EBDBDB14439321BF0EB9C8A3707BB0887AA7B31C",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/stdout"
+    },
+    {
+      "File": "044-checks-5-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/stderr"
+    },
+    {
+      "File": "045-checks-5-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "81AD3661BA020C499577B308E316D85C9D1750280A8AEA58C39044746769E6DF",
+      "StoredBytes": 88,
+      "StoredSha256": "D884D3B514AAC8295A84B37365B61367D2F37F1CA8C1488A4C1531B719601BC8",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/completion.json"
+    },
+    {
+      "File": "046-checks-5-checks.fsx.gz",
+      "Encoding": "gzip",
+      "Bytes": 13877,
+      "Sha256": "8222A88A47A352F097C540DC24E5DFB49F8D845C413AE320CB053A9C77969582",
+      "StoredBytes": 3402,
+      "StoredSha256": "7E1A86265835939C6462F13B9479DA5D9EEA4F9E107895F882209FF2E3342419",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/checks.fsx"
+    },
+    {
+      "File": "047-checks-5-run.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 986,
+      "Sha256": "71676EAA82591FE435EA614FC118CC7212859BF26028AC02593DAF4656EBABB5",
+      "StoredBytes": 543,
+      "StoredSha256": "3D3E7DE113A0ACCE4F4F12498F8A114C67C88D78FBF85B733803D73F71F07F7A",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/run.py"
+    },
+    {
+      "File": "048-checks-5-fixture.bin.gz",
+      "Encoding": "gzip",
+      "Bytes": 22,
+      "Sha256": "D144567A957809B4F0D76B814E7A8D1C8DD29E8C14580BDA272DB4454F52D026",
+      "StoredBytes": 42,
+      "StoredSha256": "6BEEF3052B67AFFE4E07BD00EE3D18D8771AD3F9F78F858F78F3AC1859A7A961",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/fixture.bin"
+    },
+    {
+      "File": "049-checks-5-stat-source.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 272,
+      "Sha256": "8FDFE646667E20C207FDAC3BC56E9AEFB05E7B60481C98C0294CF776D38CDDB3",
+      "StoredBytes": 241,
+      "StoredSha256": "6C2A290128BAC8FFB9F968828B53C951E6DAFE5474C9D61E264CB32583505814",
+      "OriginalPath": ".git/mixed-message-peer-transport-checks-5/stat-source.json"
+    },
+    {
+      "File": "preserve-source.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 2516,
+      "Sha256": "B6E94489244BF13142A575123DDBA35CC4E64D13618242C61853358077F44858",
+      "StoredBytes": 908,
+      "StoredSha256": "668BB459FA2AC989857D595D660CDE9A0EDA0EE9863A75170882953A3DD00C4B",
+      "OriginalPath": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-peer-transport-preserve-1.py"
+    },
+    {
+      "File": "gate-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 118,
+      "Sha256": "1C0A127DE02E29C985EAE0DD0872186932BC9E4DD586372A608162DBDC62484D",
+      "StoredBytes": 119,
+      "StoredSha256": "AD8466C3E9089EE5C188AEAED5512DF76449B4C41EFBB6A438AA547DA4AB27C5",
+      "OriginalPath": ".git/mixed-message-peer-foundation-gate-1/invocation.json"
+    },
+    {
+      "File": "gate-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF",
+      "OriginalPath": ".git/mixed-message-peer-foundation-gate-1/stdout"
+    },
+    {
+      "File": "gate-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7",
+      "OriginalPath": ".git/mixed-message-peer-foundation-gate-1/stderr"
+    },
+    {
+      "File": "gate-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "6D36EC1D0553663B6D03C580D9457933E4313C4498DCDA5BC104ACC1D5D98A4D",
+      "StoredBytes": 88,
+      "StoredSha256": "76D8EFB72BD042F2EBFD10318BC411A5BD07F2399FA7C0B3CB565978D25FE91C",
+      "OriginalPath": ".git/mixed-message-peer-foundation-gate-1/completion.json"
+    }
+  ],
+  "CurrentSource": {
+    "Path": "src/Research.FSharp/MixedMessageEpochReplay.fsx",
+    "Bytes": 28479,
+    "Sha256": "8D8BA3FF7FE26ECB049D8B3AB6C7C08D0DFEA2F2FA288DB0C11C01D9EED78F94"
+  },
+  "Validation": [
+    {
+      "Directory": "mixed-message-peer-transport-build-1",
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T11:03:35.378524+00:00"
+      }
+    },
+    {
+      "Directory": "mixed-message-peer-transport-build-2",
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T11:04:57.204073+00:00"
+      }
+    },
+    {
+      "Directory": "mixed-message-peer-transport-checks-draft-1",
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T11:10:59.251443+00:00"
+      }
+    },
+    {
+      "Directory": "mixed-message-peer-transport-checks-2",
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T11:15:35.562705+00:00"
+      }
+    },
+    {
+      "Directory": "mixed-message-peer-transport-checks-3",
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T11:30:05.590278+00:00"
+      }
+    },
+    {
+      "Directory": "mixed-message-peer-transport-checks-4",
+      "Completion": {
+        "ExitCode": 1,
+        "FinishedAtUtc": "2026-09-08T11:36:30.106610+00:00"
+      }
+    },
+    {
+      "Directory": "mixed-message-peer-transport-checks-5",
+      "Completion": {
+        "ExitCode": 0,
+        "FinishedAtUtc": "2026-09-08T11:37:05.830187+00:00"
+      }
+    }
+  ],
+  "QuickGate": {
+    "ExitCode": 0,
+    "Passed": 16,
+    "FullRepositoryGateClaimed": false
+  }
+}
