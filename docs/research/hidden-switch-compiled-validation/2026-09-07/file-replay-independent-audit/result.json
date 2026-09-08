@@ -1,0 +1,77 @@
+{
+  "ManifestBytes": 53477,
+  "ManifestSha256": "39899B118BD2C60F9BFC3BC69BE027A29741A60D6CA41A60C0D2EADD08B18CB5",
+  "Artifacts": 132,
+  "StoredBytes": 2896475,
+  "OriginalBytes": 44122574,
+  "AvailableOriginalRecordsMatched": 111,
+  "SourceVersions": 8,
+  "CapturedSourcePins": 95,
+  "FixtureTrees": 12,
+  "InventoryEntries": 2546,
+  "InventoryRegularBytes": 33929084,
+  "StoreRecords": 56,
+  "FinalJournalBytes": 83017,
+  "FinalizationVerified": true,
+  "StoreReturnBytes": 33339959,
+  "ProducerOperations": 11,
+  "ReplayOperations": 11,
+  "MatchedCases": 7,
+  "CaseSummary": [
+    {
+      "CaseId": "artifact/symlink-path",
+      "Calls": 1,
+      "OutcomeCodes": [
+        "file-read"
+      ]
+    },
+    {
+      "CaseId": "artifact/truncated-gzip",
+      "Calls": 1,
+      "OutcomeCodes": [
+        "artifact-gzip"
+      ]
+    },
+    {
+      "CaseId": "storage/control",
+      "Calls": 2,
+      "OutcomeCodes": [
+        "admitted",
+        "admitted"
+      ]
+    },
+    {
+      "CaseId": "storage/reused-attempt",
+      "Calls": 2,
+      "OutcomeCodes": [
+        "admitted",
+        "existing-output"
+      ]
+    },
+    {
+      "CaseId": "storage/reused-file",
+      "Calls": 2,
+      "OutcomeCodes": [
+        "admitted",
+        "existing-output"
+      ]
+    },
+    {
+      "CaseId": "storage/partial-write",
+      "Calls": 2,
+      "OutcomeCodes": [
+        "file-write",
+        "existing-output"
+      ]
+    },
+    {
+      "CaseId": "storage/changed-read",
+      "Calls": 1,
+      "OutcomeCodes": [
+        "file-changed"
+      ]
+    }
+  ],
+  "NoFixtureExecution": true,
+  "NoFullOuterOrRuntimeAdmission": true
+}

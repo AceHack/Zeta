@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Zeta.Research.HiddenSwitchMetadata</AssemblyName>
+    <IsPackable>false</IsPackable>
+    <UseAppHost>false</UseAppHost>
+    <RuntimeFrameworkVersion>10.0.11</RuntimeFrameworkVersion>
+    <RollForward>Disable</RollForward>
+  </PropertyGroup>
+  <Target Name="RequireInstalledClrMd" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(ClrMdToolDirectory)' == ''" Text="An explicit pinned installed ClrMdToolDirectory is required; no package acquisition is performed." />
+  </Target>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../Core/Result.fs" Link="Result.fs" />
+    <Compile Include="Admission.fs" />
+    <Compile Include="NativeImages.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="dependencies.json" CopyToOutputDirectory="PreserveNewest" />
+    <Reference Include="Microsoft.Diagnostics.Runtime"><HintPath>$(ClrMdToolDirectory)/Microsoft.Diagnostics.Runtime.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Azure.Identity"><HintPath>$(ClrMdToolDirectory)/Azure.Identity.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.Diagnostics.NETCore.Client"><HintPath>$(ClrMdToolDirectory)/Microsoft.Diagnostics.NETCore.Client.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Azure.Core"><HintPath>$(ClrMdToolDirectory)/Azure.Core.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.Identity.Client"><HintPath>$(ClrMdToolDirectory)/Microsoft.Identity.Client.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.Identity.Client.Extensions.Msal"><HintPath>$(ClrMdToolDirectory)/Microsoft.Identity.Client.Extensions.Msal.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions"><HintPath>$(ClrMdToolDirectory)/Microsoft.Extensions.Logging.Abstractions.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces"><HintPath>$(ClrMdToolDirectory)/Microsoft.Bcl.AsyncInterfaces.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="System.ClientModel"><HintPath>$(ClrMdToolDirectory)/System.ClientModel.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="System.Memory.Data"><HintPath>$(ClrMdToolDirectory)/System.Memory.Data.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions"><HintPath>$(ClrMdToolDirectory)/Microsoft.IdentityModel.Abstractions.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="System.Security.Cryptography.ProtectedData"><HintPath>$(ClrMdToolDirectory)/System.Security.Cryptography.ProtectedData.dll</HintPath><Private>true</Private></Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions"><HintPath>$(ClrMdToolDirectory)/Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath><Private>true</Private></Reference>
+  </ItemGroup>
+</Project>

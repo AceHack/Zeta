@@ -628,3 +628,25 @@ The [owned source/Python fixture validation](2026-09-07-hidden-switch-compiled-i
 preserves initial implementation `a7548b075`, its actual thirty-case test
 record and two accepted retention/resource findings before repair. It does
 not establish complete coordinator or runtime admission.
+
+The [native-dependent pure fixture implementation record](2026-09-07-hidden-switch-compiled-native-fixture-validation.md)
+tracks the separate 38-case preparation/dispatch slice. Actual Python calls,
+unexecuted native certificate requests and preparation helpers remain distinct;
+its implementation validation does not complete the outer envelope.
+
+The [exclusive record-store implementation record](2026-09-07-hidden-switch-compiled-record-store-validation.md)
+preserves bounded sequential artifact retention, actual failure outcomes and
+the once-only final metadata journal. Store serialization and filesystem
+validation are separate from operation execution and whole-envelope admission.
+
+The [fixed static replay validation](2026-09-07-hidden-switch-compiled-static-replay-validation.md)
+retains fresh execution and exact typed-result comparison for the 32 static
+cases and 36 shared-API slots. It preserves actual failure prefixes and original
+result bytes while leaving file/native/identity and whole-envelope admission
+separate.
+
+The [owned identity replay validation](2026-09-07-hidden-switch-compiled-identity-replay-validation.md)
+preserves actual fresh execution of the fifteen Git/Python fixtures, complete
+result and child-trace comparison, explicit root/PID associations and disjoint
+owned roots. It retains original raw records and incomplete actual outcomes
+without promoting them to complete outer/source/runtime admission.

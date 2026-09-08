@@ -1,0 +1,61 @@
+OVERVIEW: llvm machine code playground
+
+USAGE: llvm-mc [options] <input file>
+
+OPTIONS:
+
+Color Options:
+
+  --color                                           - Use colors in output (default=autodetect)
+
+Generic Options:
+
+  --help                                            - Display available options (--help-hidden for more)
+  --help-list                                       - Display list of available options (--help-list-hidden for more)
+  --version                                         - Display the version of this program
+
+MC Options:
+
+  -I <directory>                                    - Directory of include files
+  -M <string>                                       - InstPrinter options
+  --arch=<string>                                   - Target arch to assemble for, see -version for available targets
+  Action to perform:
+      --as-lex                                         - Lex tokens from a .s file
+      --assemble                                       - Assemble a .s file (default)
+      --disassemble                                    - Disassemble strings of hex bytes
+      --mdis                                           - Marked up disassembly of strings of hex bytes
+      --cdis                                           - Colored disassembly of strings of hex bytes
+  --compress-debug-sections=<value>                 - Choose DWARF debug sections compression:
+    =none                                           -   No compression
+    =zlib                                           -   Use zlib
+    =zstd                                           -   Use zstd
+  --defsym=<string>                                 - Defines a symbol to be an integer constant
+  --fdebug-compilation-dir=<string>                 - Specifies the debug info's compilation dir
+  --fdebug-prefix-map=<= separated key-value pairs> - Map file source paths in debug info
+  --filetype=<value>                                - Choose an output file type:
+    =asm                                            -   Emit an assembly ('.s') file
+    =null                                           -   Don't emit anything (for timing purposes)
+    =obj                                            -   Emit a native object ('.o') file
+  -g                                                - Generate dwarf debugging info for assembly source files
+  --hex                                             - Take raw hexadecimal bytes as input for disassembly. Whitespace is ignored
+  --large-code-model                                - Create cfi directives that assume the code might be more than 2gb away
+  --main-file-name=<string>                         - Specifies the name we should consider the input file
+  --masm-hexfloats                                  - Enable MASM-style hex float initializers (3F800000r)
+  --masm-integers                                   - Enable binary and hex masm integers (0b110 and 0ABCh)
+  --mattr=<a1,+a2,-a3,...>                          - Target specific attributes (-mattr=help for details)
+  --mcpu=<cpu-name>                                 - Target a specific cpu type (-mcpu=help for details)
+  --motorola-integers                               - Enable binary and hex Motorola integers (%110 and $ABC)
+  -n                                                - Don't assume assembly file starts in the text section
+  --no-exec-stack                                   - File doesn't need an exec stack
+  -o <filename>                                     - Output filename
+  --output-asm-variant=<uint>                       - Syntax variant to use for output printing
+  --position-independent                            - Position independent
+  --preserve-comments                               - Preserve Comments in outputted assembly
+  --print-imm-hex                                   - Prefer hex format for immediate values
+  --runs=<uint>                                     - Number of runs for benchmarking
+  --show-encoding                                   - Show instruction encodings
+  --show-inst                                       - Show internal instruction representation
+  --show-inst-operands                              - Show instructions operands as parsed
+  --split-dwarf-file=<filename>                     - DWO output filename
+  --triple=<string>                                 - Target triple to assemble for, see -version for available targets
+  --validate-cfi                                    - Validate the CFI directives

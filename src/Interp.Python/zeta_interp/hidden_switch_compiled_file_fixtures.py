@@ -65,7 +65,7 @@ class SetupObservation:
 @dataclass(frozen=True, slots=True)
 class PreparedFileFixture:
     CaseId: str
-    Root: Path
+    Root: str
     Target: str
     Setup: tuple[SetupObservation, ...]
     Descriptor: bytes | None
@@ -240,6 +240,8 @@ def prepare_file_fixture(
         if case_id == "storage/reused-attempt"
         else "attempt/file.bin"
         if case_id == "storage/control"
+        else "file.gz"
+        if case_id == "artifact/truncated-gzip"
         else "file.bin"
     )
     descriptor = None
@@ -285,7 +287,9 @@ def prepare_file_fixture(
         setup.append(SetupObservation("create-owned-symlink", linked))
         if isinstance(linked, a.Refused):
             return failed("create-owned-symlink", linked)
-    return PreparedFileFixture(case_id, case_root, target, tuple(setup), descriptor)
+    return PreparedFileFixture(
+        case_id, str(case_root), target, tuple(setup), descriptor
+    )
 
 
 class _Faults:
@@ -303,7 +307,7 @@ class _Faults:
     def target(self, fd: int) -> os.stat_result | None:
         info = self.fstat(fd)
         try:
-            leaf = (self.fixture.Root / self.fixture.Target).lstat()
+            leaf = (Path(self.fixture.Root) / self.fixture.Target).lstat()
         except FileNotFoundError:
             return None
         identity = (fd, info.st_dev, info.st_ino)
@@ -355,7 +359,7 @@ class _Faults:
             )
         )
         mutation_fd = os.open(
-            self.fixture.Root / self.fixture.Target, os.O_WRONLY | os.O_NOFOLLOW
+            Path(self.fixture.Root) / self.fixture.Target, os.O_WRONLY | os.O_NOFOLLOW
         )
         mutation_completed = False
         try:
@@ -405,7 +409,7 @@ class _Faults:
 
 
 def _invoke(fixture: PreparedFileFixture, index: int) -> object:
-    case_id, root = fixture.CaseId, fixture.Root
+    case_id, root = fixture.CaseId, Path(fixture.Root)
     if case_id.startswith("artifact/"):
         assert fixture.Descriptor is not None
         descriptor = a.strict_json(fixture.Descriptor)
@@ -440,7 +444,13 @@ def execute_file_call(
     fixture: PreparedFileFixture, call_index: object
 ) -> FileCallObservation | a.Refused:
     """Return the actual call first, preserving it through any later audit failure."""
-    if type(fixture) is not PreparedFileFixture or fixture.CaseId not in FILE_CASE_IDS:
+    if (
+        type(fixture) is not PreparedFileFixture
+        or fixture.CaseId not in FILE_CASE_IDS
+        or type(fixture.Root) is not str
+        or "\x00" in fixture.Root
+        or not Path(fixture.Root).is_absolute()
+    ):
         return a.Refused(
             "fixture-case", "CaseId", "requires a prepared owned file fixture"
         )
@@ -451,7 +461,7 @@ def execute_file_call(
     index = checked.value
     operation = spec.Calls[index]
     target = "attempt" if operation.Operation == "create-directory" else fixture.Target
-    before = observe_file(fixture.Root, target)
+    before = observe_file(Path(fixture.Root), target)
     actual: object | None = None
     unexpected: object | None = None
     completed = 0
@@ -504,7 +514,7 @@ def execute_file_call(
                 finally:
                     if locked:
                         _FAULT_LOCK.release()
-        after = observe_file(fixture.Root, target)
+        after = observe_file(Path(fixture.Root), target)
         if isinstance(after, a.Refused) and failure is None:
             failure = after
     return FileCallObservation(
@@ -531,7 +541,13 @@ def file_fixture_inputs(
     still be finalized here; this function does not promote that prefix or check
     the intended outcomes. Raw OS facts remain unnormalized in the fixture.
     """
-    if type(fixture) is not PreparedFileFixture or fixture.CaseId not in FILE_CASE_IDS:
+    if (
+        type(fixture) is not PreparedFileFixture
+        or fixture.CaseId not in FILE_CASE_IDS
+        or type(fixture.Root) is not str
+        or "\x00" in fixture.Root
+        or not Path(fixture.Root).is_absolute()
+    ):
         return a.Refused("fixture-case", "CaseId", "requires a prepared file fixture")
     spec = next(row for row in c.case_specs() if row.CaseId == fixture.CaseId)
     if type(observations) is not tuple or len(observations) > len(spec.Calls):

@@ -1,0 +1,1322 @@
+{
+  "Scope": "seven file cases with actual11 producer and11 replay operations; complete outer/source/runtime admission not performed",
+  "SourceGroups": [
+    {
+      "SourceCommit": "e5b7720215e01ac7204dbe7888c8e7cb7bdfa7d2",
+      "Files": [
+        {
+          "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_fixtures.py",
+          "Bytes": 20870,
+          "Sha256": "98CCDF808B27F5A7BEB99C4B262CF696141B3D99B3F611ACD09CE965308809BC"
+        },
+        {
+          "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_fixtures.py",
+          "Bytes": 14920,
+          "Sha256": "42687902B0F56E7128A6B92AEA66E332506D6B884A83523535B47DC1E678D3E0"
+        },
+        {
+          "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_replay.py",
+          "Bytes": 17461,
+          "Sha256": "135E91D805D7A1936B1D9D6EF577904FF89FEE18624DFA137432E7445C02B9B0"
+        },
+        {
+          "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_replay.py",
+          "Bytes": 15201,
+          "Sha256": "8722CC5DB23E57BE10FD1FDDBD1BF9806748C1006A65DC0C0BADD104690E95C9"
+        }
+      ]
+    },
+    {
+      "SourceCommit": "e6238f8acc89c4d619c6631f0cb0111aa9258c20",
+      "Files": [
+        {
+          "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_fixtures.py",
+          "Bytes": 21212,
+          "Sha256": "DEB65F08B364923A7F78B7CC56E60B92F877F1CB1F8814891E8B352AB8F4427C"
+        },
+        {
+          "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_fixtures.py",
+          "Bytes": 15134,
+          "Sha256": "4C0E2F9F8F0179219924079F3BC838DEF828D12743928A4E306EDB78E4A80195"
+        },
+        {
+          "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_replay.py",
+          "Bytes": 18140,
+          "Sha256": "257D8280D03609D8A0F82A44796F402BA9901E1A9E6B101DC15524ADB0798EFC"
+        },
+        {
+          "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_replay.py",
+          "Bytes": 16999,
+          "Sha256": "899EEE7DCDDC21F661502FCFDB4B64DCD17F83A47C514B34E258B4C7EFFD7466"
+        }
+      ]
+    }
+  ],
+  "Validation": {
+    "FinalFocusedPassed": 81,
+    "FinalFocusedSeconds": 3.68,
+    "FixtureTests": 34,
+    "ReplayTests": 47
+  },
+  "ActualCapture": {
+    "ProducerOperations": 11,
+    "ReplayOperations": 11,
+    "MatchedCases": 7,
+    "Failure": null,
+    "Finalized": true,
+    "ReceiptEncoded": true,
+    "StoreRecords": 56
+  },
+  "FixtureTrees": [
+    {
+      "Name": "compiled-file-replay-fixtures-1",
+      "Entries": 240,
+      "RegularBytes": 354
+    },
+    {
+      "Name": "compiled-file-replay-fixtures-2",
+      "Entries": 240,
+      "RegularBytes": 354
+    },
+    {
+      "Name": "compiled-file-replay-fixtures-3",
+      "Entries": 292,
+      "RegularBytes": 434
+    },
+    {
+      "Name": "compiled-file-replay-fixtures-4",
+      "Entries": 320,
+      "RegularBytes": 482
+    },
+    {
+      "Name": "compiled-file-replay-fixtures-5",
+      "Entries": 338,
+      "RegularBytes": 514
+    },
+    {
+      "Name": "compiled-file-replay-fixtures-6",
+      "Entries": 441,
+      "RegularBytes": 2338
+    },
+    {
+      "Name": "compiled-file-replay-fixtures-7",
+      "Entries": 464,
+      "RegularBytes": 25028
+    },
+    {
+      "Name": "compiled-file-replay-helper-before",
+      "Entries": 19,
+      "RegularBytes": 32
+    },
+    {
+      "Name": "compiled-file-replay-overlap-before",
+      "Entries": 29,
+      "RegularBytes": 71932
+    },
+    {
+      "Name": "compiled-file-replay-encoding-refusal",
+      "Entries": 16,
+      "RegularBytes": 30821
+    },
+    {
+      "Name": "compiled-file-replay-actual-1",
+      "Entries": 91,
+      "RegularBytes": 456836
+    },
+    {
+      "Name": "compiled-file-replay-actual-1-store-returns",
+      "Entries": 56,
+      "RegularBytes": 33339959
+    }
+  ],
+  "Artifacts": [
+    {
+      "File": "compiled-file-replay-tests-1.log.gz",
+      "Source": "compiled-file-replay-tests-1.log",
+      "Bytes": 1989,
+      "Sha256": "71E66986A43D2C27A46F4721E2270FC7BC0FF60E017E4AC20B43D12DD136DB19",
+      "Encoding": "gzip",
+      "StoredBytes": 736,
+      "StoredSha256": "ACFB879A26F39F82B9E4B38D3BD7F6740B4E2160B6DBC22326082E1B15E66D2B"
+    },
+    {
+      "File": "compiled-file-replay-tests-2.log.gz",
+      "Source": "compiled-file-replay-tests-2.log",
+      "Bytes": 99,
+      "Sha256": "10D2E86FF2EB9B7B6E42E71474E8420D35426CD46C07DE99FE26E02DAAA6C969",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "697B7119916EB40AB1957740A36E32851BBEF492D27EB20E0164FB47D0F305A6"
+    },
+    {
+      "File": "compiled-file-replay-tests-3.log.gz",
+      "Source": "compiled-file-replay-tests-3.log",
+      "Bytes": 99,
+      "Sha256": "05FE6ED06504232B5B4A829CE5BB845B86E362D2C7666C4FC1EBE1F637CC76DE",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "799CF8B7057BA1AD5E786EE2AD2DE588ED739B9F023F103CCA7052124198E2C2"
+    },
+    {
+      "File": "compiled-file-replay-tests-4.log.gz",
+      "Source": "compiled-file-replay-tests-4.log",
+      "Bytes": 5925,
+      "Sha256": "E5822694DDF5F891C542A85CCEA35612C8853E15D7B8865E97DDC7EF0B33B02B",
+      "Encoding": "gzip",
+      "StoredBytes": 978,
+      "StoredSha256": "E0DBA08DDDBB0FFADCAD490E71F29AB0812D2DE4898BACD0BBAA82A4819F4CB6"
+    },
+    {
+      "File": "compiled-file-replay-tests-5.log.gz",
+      "Source": "compiled-file-replay-tests-5.log",
+      "Bytes": 99,
+      "Sha256": "153E4599A7CA2BCA241ECA400BC332B908ADA9FE5B1CA265646307020C8B4DDB",
+      "Encoding": "gzip",
+      "StoredBytes": 52,
+      "StoredSha256": "380A3D29E70FC604BF46896BD5B7631A80C7D8BA74C0B358209B492166104AB6"
+    },
+    {
+      "File": "compiled-file-replay-tests-6.log.gz",
+      "Source": "compiled-file-replay-tests-6.log",
+      "Bytes": 179,
+      "Sha256": "36B2CB7ADAD7C2DD5B736EDEC321D5BB70FD557F3C34FDAC50C35BAF5CF73BD3",
+      "Encoding": "gzip",
+      "StoredBytes": 60,
+      "StoredSha256": "9312E46F49A37BF78FD97F1CEABFAFE4976E0170BB9FB7CB2455EF7CD7A5C116"
+    },
+    {
+      "File": "compiled-file-replay-tests-7.log.gz",
+      "Source": "compiled-file-replay-tests-7.log",
+      "Bytes": 179,
+      "Sha256": "33A007455043E4B6B83E1838F4ACE4500ED92587E20ABBE80E7FD4853B5DC5ED",
+      "Encoding": "gzip",
+      "StoredBytes": 61,
+      "StoredSha256": "3A6A0E4C0E9975B5000C9B3C11CD4783CD17A14F88980B76DA1673999FD3A1C1"
+    },
+    {
+      "File": "compiled-file-replay-mypy-1.log.gz",
+      "Source": "compiled-file-replay-mypy-1.log",
+      "Bytes": 567,
+      "Sha256": "7E71344C13923F88F527D7D38A57EF7CDC9A52A9C5135FD141059CF94E4C84CF",
+      "Encoding": "gzip",
+      "StoredBytes": 317,
+      "StoredSha256": "CF9156B91B7D497FE18914EE53F184316ABBCB9FF83C5EC1FD38BD41AC71483D"
+    },
+    {
+      "File": "compiled-file-replay-mypy-2.log.gz",
+      "Source": "compiled-file-replay-mypy-2.log",
+      "Bytes": 43,
+      "Sha256": "71144743C83BABEA384888A735DB0C4DABA3D4D7B7942B6839984BD5C21B52BB",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "872F0C5AE299217FCD9EE560D6773E5624AA62ADE6DD80937BC8FB7A78883CAF"
+    },
+    {
+      "File": "compiled-file-replay-mypy-3.log.gz",
+      "Source": "compiled-file-replay-mypy-3.log",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "compiled-file-replay-mypy-4.log.gz",
+      "Source": "compiled-file-replay-mypy-4.log",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "compiled-file-replay-mypy-5.log.gz",
+      "Source": "compiled-file-replay-mypy-5.log",
+      "Bytes": 43,
+      "Sha256": "F9B031E5C45AA702CD4FEF028D465551CB20A2C4698E0913C7B00766B20AC4D8",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "76EACBBF7755358F4BE970D3CD86B2D0FFA287F96DB2193F42233534159C057D"
+    },
+    {
+      "File": "compiled-file-replay-mypy-6.log.gz",
+      "Source": "compiled-file-replay-mypy-6.log",
+      "Bytes": 204,
+      "Sha256": "C7107F26865893043368476554811DCD92EBDEB1C6E60512FE22B8CFF1F7E6F5",
+      "Encoding": "gzip",
+      "StoredBytes": 180,
+      "StoredSha256": "DA660A693501768107C9EB37C7A792BC8432B0B07CA974523185C2462C14FEDA"
+    },
+    {
+      "File": "compiled-file-replay-mypy-7.log.gz",
+      "Source": "compiled-file-replay-mypy-7.log",
+      "Bytes": 43,
+      "Sha256": "71144743C83BABEA384888A735DB0C4DABA3D4D7B7942B6839984BD5C21B52BB",
+      "Encoding": "gzip",
+      "StoredBytes": 63,
+      "StoredSha256": "872F0C5AE299217FCD9EE560D6773E5624AA62ADE6DD80937BC8FB7A78883CAF"
+    },
+    {
+      "File": "compiled-file-replay-ruff-1.log.gz",
+      "Source": "compiled-file-replay-ruff-1.log",
+      "Bytes": 1407,
+      "Sha256": "8F81D168E064A88E9E6252EFD8A31C3759A2A6F3EEBE78063450FEE97B57A888",
+      "Encoding": "gzip",
+      "StoredBytes": 495,
+      "StoredSha256": "66D4086AB7BA69C30CEFECE88DD4CCBBE45E855C1AED1FF1DACFF8AD362EB68B"
+    },
+    {
+      "File": "compiled-file-replay-ruff-2.log.gz",
+      "Source": "compiled-file-replay-ruff-2.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-ruff-3.log.gz",
+      "Source": "compiled-file-replay-ruff-3.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-ruff-4.log.gz",
+      "Source": "compiled-file-replay-ruff-4.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-ruff-5.log.gz",
+      "Source": "compiled-file-replay-ruff-5.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-ruff-6.log.gz",
+      "Source": "compiled-file-replay-ruff-6.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-ruff-7.log.gz",
+      "Source": "compiled-file-replay-ruff-7.log",
+      "Bytes": 19,
+      "Sha256": "82B3E6A6C090A57601D22943BD23FCA9218D1031DBE5A7B754092F9A156B4F18",
+      "Encoding": "gzip",
+      "StoredBytes": 39,
+      "StoredSha256": "F3AF4D142827F5AAD2EB0C72D556D325488A57FB6219AAC10AFEB51085667D53"
+    },
+    {
+      "File": "compiled-file-replay-format-1.log.gz",
+      "Source": "compiled-file-replay-format-1.log",
+      "Bytes": 20,
+      "Sha256": "96A977F329EC3C59092D40E041A019B49DCF03CA04055E177AA0CCB8C27234DF",
+      "Encoding": "gzip",
+      "StoredBytes": 40,
+      "StoredSha256": "10D1F29FBF0F4CE6D2D3ACA6A94AB91FAF21C712B389879848ED269BD3C77D6F"
+    },
+    {
+      "File": "compiled-file-replay-format-2.log.gz",
+      "Source": "compiled-file-replay-format-2.log",
+      "Bytes": 44,
+      "Sha256": "ECADCAB6BA8DB65F26E491B8A5ABF181E94E6E96CF96718DC2E4C83E7C8AB2C5",
+      "Encoding": "gzip",
+      "StoredBytes": 59,
+      "StoredSha256": "912FD54355F02D8F8E54A34DAF9BC592F326F737428A3E76F1043AE53E70BB8E"
+    },
+    {
+      "File": "compiled-file-replay-format-3.log.gz",
+      "Source": "compiled-file-replay-format-3.log",
+      "Bytes": 42,
+      "Sha256": "10869B88A75066AA23546EF1F95FCD4678C3FB92A56ED46EF91688052B67976A",
+      "Encoding": "gzip",
+      "StoredBytes": 58,
+      "StoredSha256": "9E034AAA1899B92E6331269CD6D05434C6C7961950B18D5A76245A92C9CD89FE"
+    },
+    {
+      "File": "compiled-file-replay-format-4.log.gz",
+      "Source": "compiled-file-replay-format-4.log",
+      "Bytes": 42,
+      "Sha256": "10869B88A75066AA23546EF1F95FCD4678C3FB92A56ED46EF91688052B67976A",
+      "Encoding": "gzip",
+      "StoredBytes": 58,
+      "StoredSha256": "9E034AAA1899B92E6331269CD6D05434C6C7961950B18D5A76245A92C9CD89FE"
+    },
+    {
+      "File": "compiled-file-replay-format-5.log.gz",
+      "Source": "compiled-file-replay-format-5.log",
+      "Bytes": 42,
+      "Sha256": "10869B88A75066AA23546EF1F95FCD4678C3FB92A56ED46EF91688052B67976A",
+      "Encoding": "gzip",
+      "StoredBytes": 58,
+      "StoredSha256": "9E034AAA1899B92E6331269CD6D05434C6C7961950B18D5A76245A92C9CD89FE"
+    },
+    {
+      "File": "compiled-file-replay-format-6.log.gz",
+      "Source": "compiled-file-replay-format-6.log",
+      "Bytes": 20,
+      "Sha256": "779CD08BE038AC289C50927416D74769A286B3D89191260AF669534FEB28CF68",
+      "Encoding": "gzip",
+      "StoredBytes": 40,
+      "StoredSha256": "597389D3807EBD8FD9809529151D793A42138DC03856807EC41608451C8FCFAC"
+    },
+    {
+      "File": "compiled-file-replay-format-7.log.gz",
+      "Source": "compiled-file-replay-format-7.log",
+      "Bytes": 44,
+      "Sha256": "ECADCAB6BA8DB65F26E491B8A5ABF181E94E6E96CF96718DC2E4C83E7C8AB2C5",
+      "Encoding": "gzip",
+      "StoredBytes": 59,
+      "StoredSha256": "912FD54355F02D8F8E54A34DAF9BC592F326F737428A3E76F1043AE53E70BB8E"
+    },
+    {
+      "File": "compiled-file-replay-helper-before.log.gz",
+      "Source": "compiled-file-replay-helper-before.log",
+      "Bytes": 16993,
+      "Sha256": "BEC77B5B9A4CE5EB3FC2DF230F1ECDC0E36DB9866819A0F070950D5A78C009B1",
+      "Encoding": "gzip",
+      "StoredBytes": 2497,
+      "StoredSha256": "C1A8D1761E2722C899A4ED16D4C341D5AF218116BED8E7133CB8171A74C42812"
+    },
+    {
+      "File": "compiled-file-replay-overlap-before.log.gz",
+      "Source": "compiled-file-replay-overlap-before.log",
+      "Bytes": 6363,
+      "Sha256": "0B40EBF1855E061CF958F84B65C76FBEE57EB61E5085DBCC2512C2EBEDD2EBC8",
+      "Encoding": "gzip",
+      "StoredBytes": 1079,
+      "StoredSha256": "26D823AF7B55A9AD4F6E5EAF1346D5FCE4B3A9E899191751D305B73C8CF8BD79"
+    },
+    {
+      "File": "compiled-file-replay-encoding-refusal.log.gz",
+      "Source": "compiled-file-replay-encoding-refusal.log",
+      "Bytes": 275,
+      "Sha256": "09DAD6A84637483A18D6C8483704731B3831C05A54E2D3B14949670EDBFA90BA",
+      "Encoding": "gzip",
+      "StoredBytes": 233,
+      "StoredSha256": "9C330B27CC4D5FD004E80F9E828A1ED466CB4C5B9B55352F6C7973A2A429EE93"
+    },
+    {
+      "File": "capture-file-replay-encoding-refusal.py.gz",
+      "Source": "capture-file-replay-encoding-refusal.py",
+      "Bytes": 2181,
+      "Sha256": "F67BFE4FA38410900E1A47881D747034EBAFDBFA7EACF1FE077C0EEC228D4759",
+      "Encoding": "gzip",
+      "StoredBytes": 970,
+      "StoredSha256": "290188FE192592E908DDB37E9734A3B819C4F4EF08792F272B026041097F7942"
+    },
+    {
+      "File": "capture-file-replay-actual-1.py.gz",
+      "Source": "capture-file-replay-actual-1.py",
+      "Bytes": 6112,
+      "Sha256": "5E2B0927E9DECE0574DF8D7F0307C4C0A4AB01BF6AAB98AB8B16AD757B65FCBC",
+      "Encoding": "gzip",
+      "StoredBytes": 2221,
+      "StoredSha256": "E36EA0486CF174FBA134C742925BF09D08AE301F35F0929914EED6D66542D010"
+    },
+    {
+      "File": "compiled-file-replay-actual-1.log.gz",
+      "Source": "compiled-file-replay-actual-1.log",
+      "Bytes": 150,
+      "Sha256": "00438D71373451E2E241F69B2F9FEC8B260ABAEB68F6B3D98440DC4AE6BB4B75",
+      "Encoding": "gzip",
+      "StoredBytes": 130,
+      "StoredSha256": "44891D67249E4357DF2A669119F8B11E84B1198B344C49590C71C9C8CE1C1AA7"
+    },
+    {
+      "File": "compiled-file-replay-actual-1-receipt.json.gz",
+      "Source": "compiled-file-replay-actual-1-receipt.json",
+      "Bytes": 4774622,
+      "Sha256": "80A99273D4E8C224487456A7843E146008A80017B63F1996C51C71FC145E7E44",
+      "Encoding": "gzip",
+      "StoredBytes": 273287,
+      "StoredSha256": "FC89120F0E285F133CBC0434AF92A85E7F8659DDB9C905F4B5264FAE60FB4DE5"
+    },
+    {
+      "File": "compiled-integrated-publication-9.log.gz",
+      "Source": "compiled-integrated-publication-9.log",
+      "Bytes": 2113,
+      "Sha256": "F32C25C7AEE2C4DBF1F22982466AE44FE42A216FC45C8D3A3F98AA0B77EF387B",
+      "Encoding": "gzip",
+      "StoredBytes": 844,
+      "StoredSha256": "B4BF55679F784890E9B4EFD46AAA4B37F50B51144C27E018BE9D2924F42C7486"
+    },
+    {
+      "File": "compiled-file-replay-review-import.log.gz",
+      "Source": "compiled-file-replay-review-import.log",
+      "Bytes": 286,
+      "Sha256": "6CA8F2C66A915BD5B66F0E088396F06462D5201448C82395A5E109166B243121",
+      "Encoding": "gzip",
+      "StoredBytes": 218,
+      "StoredSha256": "518C66799EDEDDEE0707737C71A61647D5346134DC0D86D11BC0E101C2261CF8"
+    },
+    {
+      "File": "compiled-file-replay-pre-helper-hidden_switch_compiled_file_replay.py.gz.gz",
+      "Source": "compiled-file-replay-pre-helper-hidden_switch_compiled_file_replay.py.gz",
+      "Bytes": 4642,
+      "Sha256": "751B7EF7AD5B871D33172A37FA31BEDBA821B72B1CB45A0B0A93829208AB4BCD",
+      "Encoding": "gzip",
+      "StoredBytes": 4665,
+      "StoredSha256": "257330861D8F6988117B7704F2B7F9C48B6E5C93018D1639635F96F6D8500F2D"
+    },
+    {
+      "File": "compiled-file-replay-pre-helper-test_hidden_switch_compiled_file_replay.py.gz.gz",
+      "Source": "compiled-file-replay-pre-helper-test_hidden_switch_compiled_file_replay.py.gz",
+      "Bytes": 3705,
+      "Sha256": "542DFCB56F7A55ACE42DD1BE2B1077515C2774A1CF4ACB09550C8C08E3034933",
+      "Encoding": "gzip",
+      "StoredBytes": 3728,
+      "StoredSha256": "37A12C97C956BAB67CDEF48B3D390102A4DF614E07B2094B6A89B14A7DA92411"
+    },
+    {
+      "File": "compiled-file-replay-pre-overlap-hidden_switch_compiled_file_fixtures.py.gz.gz",
+      "Source": "compiled-file-replay-pre-overlap-hidden_switch_compiled_file_fixtures.py.gz",
+      "Bytes": 5276,
+      "Sha256": "76C9E48FF467BF4967170C73CBFCADEB10223509E985FD5A6631236D047CBBE4",
+      "Encoding": "gzip",
+      "StoredBytes": 5299,
+      "StoredSha256": "21BF55D7EFF12A0EDD52717B6D5C05EA86CD6F6E1DBB677F02D09E45AB8EEA3D"
+    },
+    {
+      "File": "compiled-file-replay-pre-overlap-hidden_switch_compiled_file_replay.py.gz.gz",
+      "Source": "compiled-file-replay-pre-overlap-hidden_switch_compiled_file_replay.py.gz",
+      "Bytes": 4767,
+      "Sha256": "5E9037775862939FD2389ED268746A5DBE20BEA4C69EBA7D8F9861F77EACBB9E",
+      "Encoding": "gzip",
+      "StoredBytes": 4790,
+      "StoredSha256": "FCCE8633479F5B66790C77C98B8EAD6D212FE5D672266780DF192E08981BD728"
+    },
+    {
+      "File": "compiled-file-replay-pre-overlap-test_hidden_switch_compiled_file_fixtures.py.gz.gz",
+      "Source": "compiled-file-replay-pre-overlap-test_hidden_switch_compiled_file_fixtures.py.gz",
+      "Bytes": 3640,
+      "Sha256": "09C7B6BA0EF87C9AA6E99EE7A32EB7553645379BBD1A8B355618A747CF21C214",
+      "Encoding": "gzip",
+      "StoredBytes": 3663,
+      "StoredSha256": "A91DE51EFBE240ECF5CF697E3BCF22539E6C423915BCF74270A1EFDEEF5B3A74"
+    },
+    {
+      "File": "compiled-file-replay-pre-overlap-test_hidden_switch_compiled_file_replay.py.gz.gz",
+      "Source": "compiled-file-replay-pre-overlap-test_hidden_switch_compiled_file_replay.py.gz",
+      "Bytes": 4032,
+      "Sha256": "8F0AFECB12D13FBEDA72788264D2DCA8F8B11E1664A806D63ECDC494F7ACF73B",
+      "Encoding": "gzip",
+      "StoredBytes": 4055,
+      "StoredSha256": "221B7968E11F209BB3EB2332C3C677856BA4B50F69FE07BE26FE3E87B3DC3E7D"
+    },
+    {
+      "File": "e5b77202--hidden_switch_compiled_file_fixtures.py.gz",
+      "Source": "e5b77202/hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 20870,
+      "Sha256": "98CCDF808B27F5A7BEB99C4B262CF696141B3D99B3F611ACD09CE965308809BC",
+      "Encoding": "gzip",
+      "StoredBytes": 5267,
+      "StoredSha256": "5DA6C4DE832B2158E15497588F46D0F8960E4656FE4EB4E0C8A0C63B12B553B4"
+    },
+    {
+      "File": "e5b77202--test_hidden_switch_compiled_file_fixtures.py.gz",
+      "Source": "e5b77202/test_hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 14920,
+      "Sha256": "42687902B0F56E7128A6B92AEA66E332506D6B884A83523535B47DC1E678D3E0",
+      "Encoding": "gzip",
+      "StoredBytes": 3631,
+      "StoredSha256": "722111D2CE66877FF0B05BD9C0C4CE9AE767EE12A170801E02E72900E4CE42CB"
+    },
+    {
+      "File": "e5b77202--hidden_switch_compiled_file_replay.py.gz",
+      "Source": "e5b77202/hidden_switch_compiled_file_replay.py",
+      "Bytes": 17461,
+      "Sha256": "135E91D805D7A1936B1D9D6EF577904FF89FEE18624DFA137432E7445C02B9B0",
+      "Encoding": "gzip",
+      "StoredBytes": 4708,
+      "StoredSha256": "308495856635EA6F69D68F0228B1256255C883CFB14953D860C0F5CA2B9260C3"
+    },
+    {
+      "File": "e5b77202--test_hidden_switch_compiled_file_replay.py.gz",
+      "Source": "e5b77202/test_hidden_switch_compiled_file_replay.py",
+      "Bytes": 15201,
+      "Sha256": "8722CC5DB23E57BE10FD1FDDBD1BF9806748C1006A65DC0C0BADD104690E95C9",
+      "Encoding": "gzip",
+      "StoredBytes": 3705,
+      "StoredSha256": "542DFCB56F7A55ACE42DD1BE2B1077515C2774A1CF4ACB09550C8C08E3034933"
+    },
+    {
+      "File": "e6238f8a--hidden_switch_compiled_file_fixtures.py.gz",
+      "Source": "e6238f8a/hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 21212,
+      "Sha256": "DEB65F08B364923A7F78B7CC56E60B92F877F1CB1F8814891E8B352AB8F4427C",
+      "Encoding": "gzip",
+      "StoredBytes": 5322,
+      "StoredSha256": "25BDA2DF0807BA54DCE9540AB762873A2756964D23EF0A9409DB24B168416403"
+    },
+    {
+      "File": "e6238f8a--test_hidden_switch_compiled_file_fixtures.py.gz",
+      "Source": "e6238f8a/test_hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 15134,
+      "Sha256": "4C0E2F9F8F0179219924079F3BC838DEF828D12743928A4E306EDB78E4A80195",
+      "Encoding": "gzip",
+      "StoredBytes": 3660,
+      "StoredSha256": "0BBD524B6FBA993271DB0DAE84A6F154F7CFE28FF917824EC2F9837CF5AA7D3F"
+    },
+    {
+      "File": "e6238f8a--hidden_switch_compiled_file_replay.py.gz",
+      "Source": "e6238f8a/hidden_switch_compiled_file_replay.py",
+      "Bytes": 18140,
+      "Sha256": "257D8280D03609D8A0F82A44796F402BA9901E1A9E6B101DC15524ADB0798EFC",
+      "Encoding": "gzip",
+      "StoredBytes": 4853,
+      "StoredSha256": "4D4BAA0237E7166F5C6AB997424D272AF05938C504B556B234A460A21437B871"
+    },
+    {
+      "File": "e6238f8a--test_hidden_switch_compiled_file_replay.py.gz",
+      "Source": "e6238f8a/test_hidden_switch_compiled_file_replay.py",
+      "Bytes": 16999,
+      "Sha256": "899EEE7DCDDC21F661502FCFDB4B64DCD17F83A47C514B34E258B4C7EFFD7466",
+      "Encoding": "gzip",
+      "StoredBytes": 4036,
+      "StoredSha256": "399E6683A40DDE163084A578F051FE8D154B5DE989B301B5DA9947721E999A04"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-1-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-1-inventory.json",
+      "Bytes": 38833,
+      "Sha256": "7F2A10BFD055A5D51120F2172BD7BDC512423ED9CE4473935D5FB4EECC1E0366",
+      "Encoding": "gzip",
+      "StoredBytes": 1763,
+      "StoredSha256": "4E7774AAFF10E1A6F7347FEFDCA94B5999C93F46CEC5D5FAF54BE25D23EB187C"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-1-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-1-retained.tar",
+      "Bytes": 409600,
+      "Sha256": "0EDD874A8DE263A530818913171A1FADEC011A3FF7BE225EC65A91A0E7F32F23",
+      "Encoding": "gzip",
+      "StoredBytes": 7386,
+      "StoredSha256": "3B12C29CD912B700759CC334C2A2F7E4CF71AE067D9BCDD9A5484ACAD467EEF7"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-2-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-2-inventory.json",
+      "Bytes": 38831,
+      "Sha256": "15D9E409FE311A074375B2C0869DC71FBCEBB29580EADCA9CE612720BF335991",
+      "Encoding": "gzip",
+      "StoredBytes": 1767,
+      "StoredSha256": "F74269C7C632BAACFE07A4265D668609438F329C63851E4013FE3F975780C5FA"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-2-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-2-retained.tar",
+      "Bytes": 409600,
+      "Sha256": "4DAE60A9E466B52F65797E0390499C818E84A9FA46D4B4466A65DB70692FEC98",
+      "Encoding": "gzip",
+      "StoredBytes": 7458,
+      "StoredSha256": "E77D0AE4D0F4240BCE89741F2CE7935C2455F7BF16C5F3ACFB5F8FEEE1D6853B"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-3-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-3-inventory.json",
+      "Bytes": 47165,
+      "Sha256": "7B3DAF349B0694CFBBE75123716A603D18EE1F2996F575FA7C161B5894C42BF4",
+      "Encoding": "gzip",
+      "StoredBytes": 2071,
+      "StoredSha256": "17D347F58F5EF08D4D393DFE9DEAAD625FEA85B994D59C54176B67406A9E7FFD"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-3-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-3-retained.tar",
+      "Bytes": 491520,
+      "Sha256": "B207BAE80E26E37F8625D765BD5102AD27CE61F291A4F02CAFC4A3D936E272BB",
+      "Encoding": "gzip",
+      "StoredBytes": 8894,
+      "StoredSha256": "7762EB09668ABE713767ABE30943C042006FF9013664099AF0CE2B36A1D48BDE"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-4-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-4-inventory.json",
+      "Bytes": 51628,
+      "Sha256": "4ABD1D202A6C9B59231321981037EDE3F67EDBAB97C65D5EFF58AAF8B6379D2D",
+      "Encoding": "gzip",
+      "StoredBytes": 2209,
+      "StoredSha256": "10091AA775F7848D4EBB4714EF91422DC1DA8A3D5BD4860BB7D7DFAA15320633"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-4-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-4-retained.tar",
+      "Bytes": 542720,
+      "Sha256": "8F7F1565D088A8186E4CDFF11766D6F154FA91D3E38D6B57E0E5461317C6C44C",
+      "Encoding": "gzip",
+      "StoredBytes": 9736,
+      "StoredSha256": "820B0EAEF27DD0035ECA6A55E35D13845980FF208A8CDBCA8F3EBC776058A2A5"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-5-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-5-inventory.json",
+      "Bytes": 54418,
+      "Sha256": "0FED1B725E8028E2E2A2626C2C3EB418955C4D372796A1C70244841C69EB4C31",
+      "Encoding": "gzip",
+      "StoredBytes": 2270,
+      "StoredSha256": "F8D151A9A3427591D5EF82F0079365D54BD8BC61CE2B2D2D8C05D637990C007A"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-5-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-5-retained.tar",
+      "Bytes": 573440,
+      "Sha256": "280810E0CEEE804B4501ADD13618FBAEA25DE199C63427B318CAB246A9515D60",
+      "Encoding": "gzip",
+      "StoredBytes": 10188,
+      "StoredSha256": "B5064D10B9B7045107D24687492CFFCE14623F03DA394CF8DA067F455F352DD4"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-6-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-6-inventory.json",
+      "Bytes": 71909,
+      "Sha256": "A9852BAE61413B8BE77A6731BE23197970EA808779CFB0CF7F3EE9AD6728FC9E",
+      "Encoding": "gzip",
+      "StoredBytes": 3364,
+      "StoredSha256": "F5AD673BA01D4EFD42EC32ECF0B9BB82571C6BF07E230F7B364F6F950B18C179"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-6-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-6-retained.tar",
+      "Bytes": 737280,
+      "Sha256": "0C8ADE70CEB628FDA307A2FD8FFD57A090EAD471A679E08F7CD7DB56C69EC79B",
+      "Encoding": "gzip",
+      "StoredBytes": 14032,
+      "StoredSha256": "2A6D30C771B46F1BCB233219EE4B3FEEC7768C7E5D142543BE1A2EAE3A2CC02E"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-7-inventory.json.gz",
+      "Source": "compiled-file-replay-fixtures-7-inventory.json",
+      "Bytes": 75818,
+      "Sha256": "92ACD01060A683F5CFD014325666A24E6F684901234C903F29E96A854C67D551",
+      "Encoding": "gzip",
+      "StoredBytes": 3711,
+      "StoredSha256": "1908C6F015F8FCE95187504BDAD49599B0F57F8D0AF884E9E410A35D4CF291F7"
+    },
+    {
+      "File": "compiled-file-replay-fixtures-7-retained.tar.gz",
+      "Source": "compiled-file-replay-fixtures-7-retained.tar",
+      "Bytes": 798720,
+      "Sha256": "56E9CC6D93ED58B2BE7184890EBFA0E7EFBD9DE2D1328E08E8DE1C9C716B7B8A",
+      "Encoding": "gzip",
+      "StoredBytes": 16644,
+      "StoredSha256": "A25A626FEFA2192360F6E50A06659388B918DD8582FF12A9C75EE8C5F6B4B1AE"
+    },
+    {
+      "File": "compiled-file-replay-helper-before-inventory.json.gz",
+      "Source": "compiled-file-replay-helper-before-inventory.json",
+      "Bytes": 3074,
+      "Sha256": "19B51CBDC0F19ECF873A08D07EAF7FCC87A877A7A03FB03FB534CD24E4E4CE92",
+      "Encoding": "gzip",
+      "StoredBytes": 425,
+      "StoredSha256": "36B5C4EC7DE7839283EBF85D301F5B3FEA2F8A7694B1D1C4A558A76A3D1EC3E0"
+    },
+    {
+      "File": "compiled-file-replay-helper-before-retained.tar.gz",
+      "Source": "compiled-file-replay-helper-before-retained.tar",
+      "Bytes": 40960,
+      "Sha256": "087EC4F4BE4CE88DAC6DB6B653C9469345662AEC688791FFADB43D5B05AE276F",
+      "Encoding": "gzip",
+      "StoredBytes": 909,
+      "StoredSha256": "86958D6DFE094792387CC49FBECA44EC35A937BB07CDE4E3B64DB42405193447"
+    },
+    {
+      "File": "compiled-file-replay-overlap-before-inventory.json.gz",
+      "Source": "compiled-file-replay-overlap-before-inventory.json",
+      "Bytes": 5030,
+      "Sha256": "3C20AD7E39565E26FA945F2CFAC0BAAA21158740806BBD8AC9C79A8189FE7DA2",
+      "Encoding": "gzip",
+      "StoredBytes": 658,
+      "StoredSha256": "5F3E3CB2B453C7A4BA89D9A353E681EAC275CDE61DEA9459C1EF52FDD5C0DE75"
+    },
+    {
+      "File": "compiled-file-replay-overlap-before-retained.tar.gz",
+      "Source": "compiled-file-replay-overlap-before-retained.tar",
+      "Bytes": 122880,
+      "Sha256": "106D16418D3B8B60F78FD1586AFEBF448F193F71852AC7EA1C2DE623DF3912CC",
+      "Encoding": "gzip",
+      "StoredBytes": 5382,
+      "StoredSha256": "069077725DCCC991CA11199351858A4341095787FE37EAE611A1E154DE15778A"
+    },
+    {
+      "File": "compiled-file-replay-encoding-refusal-inventory.json.gz",
+      "Source": "compiled-file-replay-encoding-refusal-inventory.json",
+      "Bytes": 2527,
+      "Sha256": "AA7AB91BC6DF8CED1B4EDB0E59D62A52B71B67E772C170807DE06B8A4507BDD6",
+      "Encoding": "gzip",
+      "StoredBytes": 689,
+      "StoredSha256": "CE82F25E53FE284815E44879B7F359FCAA05686671A42CCECE7D3C77E0C45535"
+    },
+    {
+      "File": "compiled-file-replay-encoding-refusal-retained.tar.gz",
+      "Source": "compiled-file-replay-encoding-refusal-retained.tar",
+      "Bytes": 71680,
+      "Sha256": "E444CF834407AE082237E84B88F38E47E42D16C461E3160C9FC91E55F31706C1",
+      "Encoding": "gzip",
+      "StoredBytes": 3650,
+      "StoredSha256": "60019E2F875B8E84F4DAF0FC0AB420EFC5E82AE35EFF416B24280BFBB61C6F0C"
+    },
+    {
+      "File": "compiled-file-replay-actual-1-inventory.json.gz",
+      "Source": "compiled-file-replay-actual-1-inventory.json",
+      "Bytes": 15331,
+      "Sha256": "D3D344B4C6E6AC6A88D78A5F12066BAEE7CEF33B254DE84568867178CA1DFCD0",
+      "Encoding": "gzip",
+      "StoredBytes": 3281,
+      "StoredSha256": "093674E17D3F1791F2E5D235885EED90962E423AEAF0D75364BE96CD49244601"
+    },
+    {
+      "File": "compiled-file-replay-actual-1-retained.tar.gz",
+      "Source": "compiled-file-replay-actual-1-retained.tar",
+      "Bytes": 624640,
+      "Sha256": "402A9CB4F36D9EE0E00BC07076276BD76BEBFA7975B942BADE8973387D51F2D3",
+      "Encoding": "gzip",
+      "StoredBytes": 34816,
+      "StoredSha256": "FF31865C69B376A2C472BDD0CBBBABD278FF027F9CF202BCD12035EB038FBCAD"
+    },
+    {
+      "File": "compiled-file-replay-actual-1-store-returns-inventory.json.gz",
+      "Source": "compiled-file-replay-actual-1-store-returns-inventory.json",
+      "Bytes": 9810,
+      "Sha256": "73B420A88832E8F3D98512E1A7ADCBF855C534E0FCA735E766B18D01F3699D96",
+      "Encoding": "gzip",
+      "StoredBytes": 2839,
+      "StoredSha256": "6458AB95D237D5CAD5BEBC08F46832CB4B567A6D941DD5A1B406925D8FF52367"
+    },
+    {
+      "File": "compiled-file-replay-actual-1-store-returns-retained.tar.gz",
+      "Source": "compiled-file-replay-actual-1-store-returns-retained.tar",
+      "Bytes": 33443840,
+      "Sha256": "0380EAEC14EB5EE047A03E0FFAFBFECCD8B897715173C314DC4F16054E6BC3D8",
+      "Encoding": "gzip",
+      "StoredBytes": 2346317,
+      "StoredSha256": "E3FF4B0891B390B6E36D475C75AAA84D930C79AD22AE9E66249D550B1FDB5478"
+    },
+    {
+      "File": "actual-store--final-journal.json.gz",
+      "Source": "actual-store/final-journal.json",
+      "Bytes": 83017,
+      "Sha256": "E32059ABB9D634345EABAEB2BDD3669D23C74A72CEDE61598AA0AFCE9821BC22",
+      "Encoding": "gzip",
+      "StoredBytes": 8446,
+      "StoredSha256": "D95C315C4DFA33502D39947152EF2281CC1F82B2CD2EE005A64830166353DA3E"
+    },
+    {
+      "File": "actual-store--record-000001.json.gz",
+      "Source": "actual-store/record-000001.json",
+      "Bytes": 15536,
+      "Sha256": "6255AEA41FA55FCB13FF36F0A0A88E0F2E330AF71E9C29B35F3D9C04FF4F43A6",
+      "Encoding": "gzip",
+      "StoredBytes": 5198,
+      "StoredSha256": "C210F4DFC5E215D41D2A72648B70353DE63EF9F0E02F221CB2647B2485DF7685"
+    },
+    {
+      "File": "actual-store--record-000002.json.gz",
+      "Source": "actual-store/record-000002.json",
+      "Bytes": 857,
+      "Sha256": "9092E47A9959877648A2653D77CAAB50B03D4FE6C46D941354F8536EA9AFE2CA",
+      "Encoding": "gzip",
+      "StoredBytes": 427,
+      "StoredSha256": "0F5EA81E857958F79CC9BCE826D2668E15400CF799EFB4F17711F2358FAB8406"
+    },
+    {
+      "File": "actual-store--record-000003.json.gz",
+      "Source": "actual-store/record-000003.json",
+      "Bytes": 95,
+      "Sha256": "D458FC6ABA955923AD2E69149ACCE16B12B058BF3FFF81412A23B780F7BF2C22",
+      "Encoding": "gzip",
+      "StoredBytes": 106,
+      "StoredSha256": "D0DCCA0E36105E3B92905A0BC5986B7BF3FD34F1BBF887EF1E574B47BD35D8A3"
+    },
+    {
+      "File": "actual-store--record-000004.json.gz",
+      "Source": "actual-store/record-000004.json",
+      "Bytes": 93,
+      "Sha256": "D6A4B21B5667060B58C8026A7E4EC643831D9886AAA7C1FEDBACD08108CABB7E",
+      "Encoding": "gzip",
+      "StoredBytes": 105,
+      "StoredSha256": "626FB525158BADC174119A98EA1F4BAEF5E83335562A512C9F8E59F0FB73D867"
+    },
+    {
+      "File": "actual-store--record-000005.json.gz",
+      "Source": "actual-store/record-000005.json",
+      "Bytes": 2056,
+      "Sha256": "B6AAD63CAB6F484E0B3AD9D6176391BD4791B0D5C20F45F35F032960C89975F4",
+      "Encoding": "gzip",
+      "StoredBytes": 660,
+      "StoredSha256": "7008AAA53C6AF615855FA24F8B8DD429DDA9CAE21E42D2612FA74C3F1529E61C"
+    },
+    {
+      "File": "actual-store--record-000006.json.gz",
+      "Source": "actual-store/record-000006.json",
+      "Bytes": 1226,
+      "Sha256": "024E73F9E5F545236D0B793F69BC099FD1E662187515CAAAC07BD858C76DD0BE",
+      "Encoding": "gzip",
+      "StoredBytes": 471,
+      "StoredSha256": "B191E6BC757A70E15C15473B7B77C73AFD25A5BA1B6F03E7F24AE4D25401BA66"
+    },
+    {
+      "File": "actual-store--record-000007.json.gz",
+      "Source": "actual-store/record-000007.json",
+      "Bytes": 180,
+      "Sha256": "771AE1169D57213F0124EE178C83B9D6386CF9F72616D8A8A52B3A57B88A69D5",
+      "Encoding": "gzip",
+      "StoredBytes": 167,
+      "StoredSha256": "D055C8B2CA9DEEA4EED9CBE3E1E99384A20705085458473D8B5FDE498BF0FE4C"
+    },
+    {
+      "File": "actual-store--record-000008.json.gz",
+      "Source": "actual-store/record-000008.json",
+      "Bytes": 6367,
+      "Sha256": "0EDEA6A366CF3D7EE2B47C9843080D03417139AA5290237463A8C8CD1E1B8F68",
+      "Encoding": "gzip",
+      "StoredBytes": 1181,
+      "StoredSha256": "80DEEEA96162E7EB77918EB9D5CDE276E71CE2997C9871052EB2E138CD56ED2A"
+    },
+    {
+      "File": "actual-store--record-000009.json.gz",
+      "Source": "actual-store/record-000009.json",
+      "Bytes": 6957,
+      "Sha256": "65FD877E2DA4744DAB6DF1A65E301CE15E04BEFD8CBADA19D6B73AC6C1C82000",
+      "Encoding": "gzip",
+      "StoredBytes": 1287,
+      "StoredSha256": "4D0B2A6BEA5DDF47614C36B55DE6548F4BDB86F4268614AB2249C99BF8204E7D"
+    },
+    {
+      "File": "actual-store--record-000010.json.gz",
+      "Source": "actual-store/record-000010.json",
+      "Bytes": 1840,
+      "Sha256": "109638C41FDDEADB9D596B09DA058F513C8C513A7E743B8ED0C247C4BFF6D276",
+      "Encoding": "gzip",
+      "StoredBytes": 722,
+      "StoredSha256": "CF1C9AC4EC4BC48D2BC8226AEE927A54D3992570EAF047985B3DD6F08438CBA7"
+    },
+    {
+      "File": "actual-store--record-000011.json.gz",
+      "Source": "actual-store/record-000011.json",
+      "Bytes": 1308,
+      "Sha256": "1B6E0B1999157B1D56DAB5680426EEFDE412A5D7C1854F9192B81A6E60E53F33",
+      "Encoding": "gzip",
+      "StoredBytes": 482,
+      "StoredSha256": "308092948F078C3DA75B6601530BA2C0A9834C84DD88CA12838CA932829D5E74"
+    },
+    {
+      "File": "actual-store--record-000012.json.gz",
+      "Source": "actual-store/record-000012.json",
+      "Bytes": 170,
+      "Sha256": "46691F454721FB44EC641E6638DDE308935C01845F128A4C8C4A9452DD720D6D",
+      "Encoding": "gzip",
+      "StoredBytes": 151,
+      "StoredSha256": "CB90DE0888497E3FF76F7E313B97B92A707664223ADC3C95184E9B7EEB43D624"
+    },
+    {
+      "File": "actual-store--record-000013.json.gz",
+      "Source": "actual-store/record-000013.json",
+      "Bytes": 6107,
+      "Sha256": "6D22611DFEA66AD1D69B0D157B6AEAB239A8A25E295BF3F63B966D155370ECF7",
+      "Encoding": "gzip",
+      "StoredBytes": 1165,
+      "StoredSha256": "2738AA455C440C11E23DCEA9847C1CA9E85F5E26004756CDE5DC01B414DD3EBF"
+    },
+    {
+      "File": "actual-store--record-000014.json.gz",
+      "Source": "actual-store/record-000014.json",
+      "Bytes": 6679,
+      "Sha256": "573982D76D974F196C2F93F18056458F5A329E947E455E1DCEFBE1929B33C706",
+      "Encoding": "gzip",
+      "StoredBytes": 1271,
+      "StoredSha256": "BF7DE4DA82F10EC2D12C6344C32748CA557D97210546FD3F6E1AE1C45EB27E01"
+    },
+    {
+      "File": "actual-store--record-000015.json.gz",
+      "Source": "actual-store/record-000015.json",
+      "Bytes": 568,
+      "Sha256": "C3B61B33C2D0E7D15D166772DF1D21B62B99C89FAEECDBAB7BB8DD525E67631E",
+      "Encoding": "gzip",
+      "StoredBytes": 323,
+      "StoredSha256": "90BDD07CA161EC5A24516B8C91342A6D3E5CFC1C898CCA6842C5C437E5DAA998"
+    },
+    {
+      "File": "actual-store--record-000016.json.gz",
+      "Source": "actual-store/record-000016.json",
+      "Bytes": 1067,
+      "Sha256": "CB01364088C18FC8ADA93144FE445339B69E0CEA1293976C713A5B1A93850973",
+      "Encoding": "gzip",
+      "StoredBytes": 414,
+      "StoredSha256": "D22DE933EBA5E2BBCDBD8849A6668A927EEBBA1B670E69180D1C2A80A9DB20B0"
+    },
+    {
+      "File": "actual-store--record-000017.json.gz",
+      "Source": "actual-store/record-000017.json",
+      "Bytes": 94,
+      "Sha256": "4D005F93FEE4C2AAF2042751593F1DE1E86D800B9590A75A94AB7662896B18D9",
+      "Encoding": "gzip",
+      "StoredBytes": 107,
+      "StoredSha256": "9FB8C7C506889FA7D8071C0FF7F83F368F0BD5BB54B4754D20B76CD2F7512704"
+    },
+    {
+      "File": "actual-store--record-000018.json.gz",
+      "Source": "actual-store/record-000018.json",
+      "Bytes": 1111,
+      "Sha256": "3C7AB884C5A0B0725863581D3705281A0F73F1029673C35AEA8380A7C91A702D",
+      "Encoding": "gzip",
+      "StoredBytes": 449,
+      "StoredSha256": "E3C229C21CB63439B1D989C49309A2572ACCB29F153A828E40527AC19F7FB89A"
+    },
+    {
+      "File": "actual-store--record-000019.json.gz",
+      "Source": "actual-store/record-000019.json",
+      "Bytes": 86,
+      "Sha256": "104B402B084ACA7272464DD871BC1212198477BCF36F9EFC24460CBDC1AEED7E",
+      "Encoding": "gzip",
+      "StoredBytes": 101,
+      "StoredSha256": "07A64C361F12D83A8FD52C6EB66B9C608464D030E219DF1B111B1C496E3124BA"
+    },
+    {
+      "File": "actual-store--record-000020.json.gz",
+      "Source": "actual-store/record-000020.json",
+      "Bytes": 5781,
+      "Sha256": "45E89C7664B592A1AED17AD51951468C9D87A164E73C1DEF959B02FEC792F704",
+      "Encoding": "gzip",
+      "StoredBytes": 1012,
+      "StoredSha256": "D0A436D148B08204CD9C95469337AD6A0E905A47E6A2F734C945E2B9AB56E9E0"
+    },
+    {
+      "File": "actual-store--record-000021.json.gz",
+      "Source": "actual-store/record-000021.json",
+      "Bytes": 6531,
+      "Sha256": "1E853A201AF2E4E75982216F003A00E06FA4BA5E814525796248166AD8BC80DF",
+      "Encoding": "gzip",
+      "StoredBytes": 1146,
+      "StoredSha256": "93B16E32CC7F7C00487C604523A0EA1D6427C4C75A6052DC172448694D5E1BEE"
+    },
+    {
+      "File": "actual-store--record-000022.json.gz",
+      "Source": "actual-store/record-000022.json",
+      "Bytes": 580,
+      "Sha256": "CEEE71CEA5AA55B39E0B4413FF30924E479B382A4C8E7CE55D9118F0110341BF",
+      "Encoding": "gzip",
+      "StoredBytes": 321,
+      "StoredSha256": "C5455E62682A6E3CBD664B0BEB82EF08ED40C079C21F16F61BE28337B2064DB0"
+    },
+    {
+      "File": "actual-store--record-000023.json.gz",
+      "Source": "actual-store/record-000023.json",
+      "Bytes": 1074,
+      "Sha256": "2F14275B21D9BF41E845592D6C7231CFC443CDEC3EDB174A13404BC8813EA9AA",
+      "Encoding": "gzip",
+      "StoredBytes": 416,
+      "StoredSha256": "CBD401DD0C90CFAB93E172ECDBCAF2EA4E8EBF4AC248387BC148091961652968"
+    },
+    {
+      "File": "actual-store--record-000024.json.gz",
+      "Source": "actual-store/record-000024.json",
+      "Bytes": 94,
+      "Sha256": "4D005F93FEE4C2AAF2042751593F1DE1E86D800B9590A75A94AB7662896B18D9",
+      "Encoding": "gzip",
+      "StoredBytes": 107,
+      "StoredSha256": "9FB8C7C506889FA7D8071C0FF7F83F368F0BD5BB54B4754D20B76CD2F7512704"
+    },
+    {
+      "File": "actual-store--record-000025.json.gz",
+      "Source": "actual-store/record-000025.json",
+      "Bytes": 1205,
+      "Sha256": "6897C3B1A56492ABDE36B14BC2E58AA32556C52047B8A7D2267CB8E8FED8E22C",
+      "Encoding": "gzip",
+      "StoredBytes": 454,
+      "StoredSha256": "73694D812A13C7488245DA1B1FB2E2DDA11F9EAA1E2291D292805C6833079CA1"
+    },
+    {
+      "File": "actual-store--record-000026.json.gz",
+      "Source": "actual-store/record-000026.json",
+      "Bytes": 184,
+      "Sha256": "0764D469671D9077C07CEE774162D708C205C9FC5BBBB78F67A205010B3922BA",
+      "Encoding": "gzip",
+      "StoredBytes": 161,
+      "StoredSha256": "63185375F79B0A076538517D2124DDEA2CF4ED12E35900BCF1C41FAAFCD908DF"
+    },
+    {
+      "File": "actual-store--record-000027.json.gz",
+      "Source": "actual-store/record-000027.json",
+      "Bytes": 5871,
+      "Sha256": "FFE006DBD5558684E0EB2A4D166E6051A5BD3A0236DA343EE7EB36B541C35057",
+      "Encoding": "gzip",
+      "StoredBytes": 956,
+      "StoredSha256": "B571324658016BBA2BFC41903A5A715A8B83F565B89E342CBE9CD6D631F1ACDC"
+    },
+    {
+      "File": "actual-store--record-000028.json.gz",
+      "Source": "actual-store/record-000028.json",
+      "Bytes": 6814,
+      "Sha256": "CD8DE4FDF639D592A31E4808840A60A1691C516C89F1884C74653594D982BB6B",
+      "Encoding": "gzip",
+      "StoredBytes": 1078,
+      "StoredSha256": "8919E0506F30EDDABDB10F1D73F9ADC06B02A7D13CBBCE11DB44C62A40DDCA3D"
+    },
+    {
+      "File": "actual-store--record-000029.json.gz",
+      "Source": "actual-store/record-000029.json",
+      "Bytes": 572,
+      "Sha256": "C96D02E3D6B5389584F745FDEFD766FF900D2AD85C602999EDB4738414403CB4",
+      "Encoding": "gzip",
+      "StoredBytes": 318,
+      "StoredSha256": "3B135D5D352FABB98A32C44D66B11CD50346D8A0784F84BD4BCCB6BBE61ED86D"
+    },
+    {
+      "File": "actual-store--record-000030.json.gz",
+      "Source": "actual-store/record-000030.json",
+      "Bytes": 1099,
+      "Sha256": "D0325E31B8C6BC1D5098283F8E10AA8EDCE4EE742276DC9BBF3A61CAE438C02D",
+      "Encoding": "gzip",
+      "StoredBytes": 441,
+      "StoredSha256": "BD97462038995FEEFD08FD85B82ABADACB379DFDF4DF3DE83D3D77CD62A092F0"
+    },
+    {
+      "File": "actual-store--record-000031.json.gz",
+      "Source": "actual-store/record-000031.json",
+      "Bytes": 86,
+      "Sha256": "104B402B084ACA7272464DD871BC1212198477BCF36F9EFC24460CBDC1AEED7E",
+      "Encoding": "gzip",
+      "StoredBytes": 101,
+      "StoredSha256": "07A64C361F12D83A8FD52C6EB66B9C608464D030E219DF1B111B1C496E3124BA"
+    },
+    {
+      "File": "actual-store--record-000032.json.gz",
+      "Source": "actual-store/record-000032.json",
+      "Bytes": 1261,
+      "Sha256": "593D5F9F9FF7B6A914E44C7DC4821B6001A82B6C6206DD5BDCEBDF8D9B767C7E",
+      "Encoding": "gzip",
+      "StoredBytes": 478,
+      "StoredSha256": "2661B837103ABE004F554AB399467431031CFA6B7FE4F94620E21F54009545C6"
+    },
+    {
+      "File": "actual-store--record-000033.json.gz",
+      "Source": "actual-store/record-000033.json",
+      "Bytes": 180,
+      "Sha256": "CCC62F34E2CC630EBA708EACB99C8D9F26B73BABE8E0D9ADC14EAC4A63430FE4",
+      "Encoding": "gzip",
+      "StoredBytes": 158,
+      "StoredSha256": "E09A01C886EE051E8BA4E8D872989FCD160D692C1B79415BFA66B97676DC21B6"
+    },
+    {
+      "File": "actual-store--record-000034.json.gz",
+      "Source": "actual-store/record-000034.json",
+      "Bytes": 6298,
+      "Sha256": "02E6C4961CA04E9B6A2BF83595C0E4FEAEC7218765FA84AC852118FFD33A29A2",
+      "Encoding": "gzip",
+      "StoredBytes": 1047,
+      "StoredSha256": "D0996D4E65FAC4A5BDA309AA4B4A0DB639342D146DB70F6B479C883384ADCE28"
+    },
+    {
+      "File": "actual-store--record-000035.json.gz",
+      "Source": "actual-store/record-000035.json",
+      "Bytes": 7237,
+      "Sha256": "E5F3A77A62D99A2598C52E42B9930EFFB962B00DE062867F9588575A70072702",
+      "Encoding": "gzip",
+      "StoredBytes": 1179,
+      "StoredSha256": "06E20CBE3583CC78B0D01D3FE9CCF498B5E064DD85A93FE4C63CE08B90360446"
+    },
+    {
+      "File": "actual-store--record-000036.json.gz",
+      "Source": "actual-store/record-000036.json",
+      "Bytes": 578,
+      "Sha256": "FE921263FFDF0179DBF30D12E19E9D84DB88C0554948D4F9747CBFAE4A87970E",
+      "Encoding": "gzip",
+      "StoredBytes": 324,
+      "StoredSha256": "D13265B20FE07748CC057AD675DEF6594BD60FB0242576882F3836D8AD277B8B"
+    },
+    {
+      "File": "actual-store--record-000037.json.gz",
+      "Source": "actual-store/record-000037.json",
+      "Bytes": 1553,
+      "Sha256": "54745778F2E22B308E9EF0D34942471230850E5C88BCA581991F3EE4C61193D0",
+      "Encoding": "gzip",
+      "StoredBytes": 547,
+      "StoredSha256": "53EF1EF7134C3B764F0CB5842388C6DBA68E74559588FAC11A01E1E122A72480"
+    },
+    {
+      "File": "actual-store--record-000038.json.gz",
+      "Source": "actual-store/record-000038.json",
+      "Bytes": 168,
+      "Sha256": "F0363B6179578AB62E651C2C15BE508D071C000734227BED5C5AA55DBED33811",
+      "Encoding": "gzip",
+      "StoredBytes": 150,
+      "StoredSha256": "C772BBA37BBD6AAE15D7F5E561F41F638F0912352A4E53E9D7128354811B2BAB"
+    },
+    {
+      "File": "actual-store--record-000039.json.gz",
+      "Source": "actual-store/record-000039.json",
+      "Bytes": 1243,
+      "Sha256": "A49622C51481466D889EBA3D1378CD542F6E36EA6DCEAE7F0107A0601D4B12E5",
+      "Encoding": "gzip",
+      "StoredBytes": 472,
+      "StoredSha256": "91C8814A5413CCD14C099E2A22837BD1C380F5342BF9559C117736E355F3D75F"
+    },
+    {
+      "File": "actual-store--record-000040.json.gz",
+      "Source": "actual-store/record-000040.json",
+      "Bytes": 180,
+      "Sha256": "CCC62F34E2CC630EBA708EACB99C8D9F26B73BABE8E0D9ADC14EAC4A63430FE4",
+      "Encoding": "gzip",
+      "StoredBytes": 158,
+      "StoredSha256": "E09A01C886EE051E8BA4E8D872989FCD160D692C1B79415BFA66B97676DC21B6"
+    },
+    {
+      "File": "actual-store--record-000041.json.gz",
+      "Source": "actual-store/record-000041.json",
+      "Bytes": 7182,
+      "Sha256": "E03BEAF9E859DA8312490168072A5B2543E30A2F2D50A0602838305B61A3F9D3",
+      "Encoding": "gzip",
+      "StoredBytes": 1148,
+      "StoredSha256": "89AF5AE3C0F275E408267B77AB3923F8401A678C1962B41CBC05E4D9DE50C416"
+    },
+    {
+      "File": "actual-store--record-000042.json.gz",
+      "Source": "actual-store/record-000042.json",
+      "Bytes": 8287,
+      "Sha256": "6CE9EB08966FDCD593E550952D0F5469480F054D52E104A823251F6B00B5D2B4",
+      "Encoding": "gzip",
+      "StoredBytes": 1268,
+      "StoredSha256": "853B0A195879882834E56508AC5B6CA8AD29A4EF5005FE49FB59439889BCDA00"
+    },
+    {
+      "File": "actual-store--record-000043.json.gz",
+      "Source": "actual-store/record-000043.json",
+      "Bytes": 1350,
+      "Sha256": "461BCD2A5A39244868785998058D5250A077958BAD77453614929A90906D7CE9",
+      "Encoding": "gzip",
+      "StoredBytes": 489,
+      "StoredSha256": "6C3EC162A5ED9BE7C0D6490F1D37E64ABECEB234A83F9905F539B6E0C6794AB5"
+    },
+    {
+      "File": "actual-store--record-000044.json.gz",
+      "Source": "actual-store/record-000044.json",
+      "Bytes": 1616,
+      "Sha256": "4A2A0B1961060476C344B291514DE8CA7410309FAFC277A09E3EB8269A0DD140",
+      "Encoding": "gzip",
+      "StoredBytes": 538,
+      "StoredSha256": "393627C509E5C2BB34BBA5C1E149B6D03AB757FEBA2BCCA570DCF3627493353D"
+    },
+    {
+      "File": "actual-store--record-000045.json.gz",
+      "Source": "actual-store/record-000045.json",
+      "Bytes": 179,
+      "Sha256": "EB7228070B8A87B2F7DA467EB4ACE2E2D5AD79F9CE7ECC31794B74A29D7DAB3C",
+      "Encoding": "gzip",
+      "StoredBytes": 157,
+      "StoredSha256": "4949420D50433D59EDAD72E9F0C7612F027E7AD4783123CDDD037428A8C2FD95"
+    },
+    {
+      "File": "actual-store--record-000046.json.gz",
+      "Source": "actual-store/record-000046.json",
+      "Bytes": 6379,
+      "Sha256": "EE030174E522BAC18576F158AA846535C14AFE0AA7AD7AFE92B561D30AAABE8A",
+      "Encoding": "gzip",
+      "StoredBytes": 1136,
+      "StoredSha256": "774ED518D80219256B9D477CAC7A7DEA21F7DE4B5DBA2D7AA0F4B0FDBDE84A78"
+    },
+    {
+      "File": "actual-store--record-000047.json.gz",
+      "Source": "actual-store/record-000047.json",
+      "Bytes": 6961,
+      "Sha256": "7EF5ABD340B8EC0496874CBBA5833318E36EE9B91261A98F9AF35B57025C9FD0",
+      "Encoding": "gzip",
+      "StoredBytes": 1243,
+      "StoredSha256": "B6C1012ABB4D04AF4D24FDDD6404700DD723DE060EFE1791DD7AA72B90465FD5"
+    },
+    {
+      "File": "actual-store--record-000048.json.gz",
+      "Source": "actual-store/record-000048.json",
+      "Bytes": 32740,
+      "Sha256": "A883D0E7A1D544DCDECCE4ECC128F49F300F4D1AE8D951574135E93E652F4AC4",
+      "Encoding": "gzip",
+      "StoredBytes": 2566,
+      "StoredSha256": "F1B7F976F010DF7BCF5CAE49452951F72D6CA8046105841287EC335A9037EA00"
+    },
+    {
+      "File": "actual-store--record-000049.json.gz",
+      "Source": "actual-store/record-000049.json",
+      "Bytes": 31426,
+      "Sha256": "3BB55E433EF0F5A7DB536C9F1670C546256E128333033D90FC49A95004290FD8",
+      "Encoding": "gzip",
+      "StoredBytes": 2434,
+      "StoredSha256": "3EB9D4E9E22C2E1805139AC4296757616944C0EE8C7BD249FBDCE6DD63D1A9E6"
+    },
+    {
+      "File": "actual-store--record-000050.json.gz",
+      "Source": "actual-store/record-000050.json",
+      "Bytes": 31332,
+      "Sha256": "4DAF70511B664EEDCEEBE478E6F93A09C713F388AE0BB04AFBEFFE63F0294EC3",
+      "Encoding": "gzip",
+      "StoredBytes": 2349,
+      "StoredSha256": "AFB19C5538003F2BA22C2795892C4B9C95171E68D9C01EE2E9E893BF1C771C5F"
+    },
+    {
+      "File": "actual-store--record-000051.json.gz",
+      "Source": "actual-store/record-000051.json",
+      "Bytes": 32890,
+      "Sha256": "AF2CC3FAC328D37FB3873A57282A03A9F502DC3C59E807800B18881ECB8A99A1",
+      "Encoding": "gzip",
+      "StoredBytes": 2243,
+      "StoredSha256": "3AD8D03F969387A866FDDE58A73A4E2C902EFB954A0F437507905758189D3382"
+    },
+    {
+      "File": "actual-store--record-000052.json.gz",
+      "Source": "actual-store/record-000052.json",
+      "Bytes": 34257,
+      "Sha256": "366822BFD639869DE24D9DC4D70077290F2D464A30B974301AA15C880C27DD16",
+      "Encoding": "gzip",
+      "StoredBytes": 2372,
+      "StoredSha256": "27A6C68B7A826AB350845F9004596BA22ED802B9D2404B8B6E722E5EB31A2DFB"
+    },
+    {
+      "File": "actual-store--record-000053.json.gz",
+      "Source": "actual-store/record-000053.json",
+      "Bytes": 39139,
+      "Sha256": "42F388ACDDCFFBD7344D66D436A0B1490202B895A068AE09BFE29B0F88F2E6BB",
+      "Encoding": "gzip",
+      "StoredBytes": 2603,
+      "StoredSha256": "9F7CF0F37EE96B579CD862FB1B807793542E1DA9D646ACE6DAB7F7FFCCC1DBD4"
+    },
+    {
+      "File": "actual-store--record-000054.json.gz",
+      "Source": "actual-store/record-000054.json",
+      "Bytes": 32600,
+      "Sha256": "94222B8BF1A8C50319221A10A5D46752D8CA777781BF7870797A1550813EEDDB",
+      "Encoding": "gzip",
+      "StoredBytes": 2488,
+      "StoredSha256": "A829CB0404FD49406613F5E395A242D4F21888DC27C1AAD577CB55BF8934518A"
+    },
+    {
+      "File": "actual-store--record-000055.json.gz",
+      "Source": "actual-store/record-000055.json",
+      "Bytes": 279,
+      "Sha256": "EDCB5CE69FB53E1F7F4F1AB966783E7E64DA7F55006E9066D3447AD6E8A24B94",
+      "Encoding": "gzip",
+      "StoredBytes": 209,
+      "StoredSha256": "952ED4B792AFEBE98093C2C3BAA69A84E51C1A77A173CD1927A2A25DDF57A398"
+    },
+    {
+      "File": "retainer.py.gz",
+      "Source": "retainer.py",
+      "Bytes": 4276,
+      "Sha256": "89C7DCBD5F902FA57764464876940054BC4F3890F8CD618B0D9646E8B45C3A57",
+      "Encoding": "gzip",
+      "StoredBytes": 1751,
+      "StoredSha256": "29BFC699388CED813797F217C6199C4127AC3D09ACC0EADB35EDE7052DB66332"
+    }
+  ]
+}
