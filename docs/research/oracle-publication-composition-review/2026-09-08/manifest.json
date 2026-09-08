@@ -1,0 +1,110 @@
+{
+  "AuditObservation": {
+    "Bytes": 24450,
+    "Sha256": "99cb723ce6343ddf432f80c2afeb9949db4c57bf8a10e5a11541c0679a512094"
+  },
+  "AuditSource": {
+    "Bytes": 11643,
+    "Sha256": "6d78d18fbec60075e970fc18573fe77b83b6e26af9c777e9903ba5532d84dcc9"
+  },
+  "RawBytes": 6470,
+  "Records": [
+    {
+      "Bytes": 93,
+      "File": "000-gate2-process.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-publication-full-preflight-2/process.json",
+      "Sha256": "44f4b29416a840f1b91c6898db3c8c57c8990a11ce311a08d75eb03cdd89685e",
+      "StoredBytes": 107,
+      "StoredSha256": "9138942ec579dfe06427623361b97fadd0f48a19578ab270e0d95bf6a4be1a3c"
+    },
+    {
+      "Bytes": 132,
+      "File": "001-gate2-start.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-publication-full-preflight-2/start.json",
+      "Sha256": "dedbac40a6da431495ea06c4fa7f1ee81bf7e1292e4881ff1c8aec53a346e68c",
+      "StoredBytes": 136,
+      "StoredSha256": "627589c7ad5d4bcd010ac1f2ad51cebf9bcd1ccd61e57a11798e6a08386a8baa"
+    },
+    {
+      "Bytes": 1313,
+      "File": "002-gate2-stdout.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-publication-full-preflight-2/stdout",
+      "Sha256": "bab079ca25dc0ae422108d850a086d6753e5fadaefb06cb0fe8ab4b507869f51",
+      "StoredBytes": 408,
+      "StoredSha256": "cc7006133569f8b5ffb89d538817b8c5e5ba7c7bbafb728e0dae7dfeff35de7a"
+    },
+    {
+      "Bytes": 49,
+      "File": "003-gate2-stderr.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-publication-full-preflight-2/stderr",
+      "Sha256": "2702855c35b0430a3432c3f284c32b80ecd46d83302246db156609015e6b2560",
+      "StoredBytes": 69,
+      "StoredSha256": "5c00a8fdc5d6679c6621d462c7a2386aeecfb66d2f3cf0f82cdbaf91a490ad35"
+    },
+    {
+      "Bytes": 508,
+      "File": "004-merge-1.log.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-actual-main-merge-1.log",
+      "Sha256": "ff1b69d34b3a0779fe312dacc0d95b7e8ba8160fca2354ade54ddde21313bb0b",
+      "StoredBytes": 237,
+      "StoredSha256": "540c2bd40f73c9ebd24b15f47ea397c3f4965ab1cb528de8a870085cc4063a94"
+    },
+    {
+      "Bytes": 1534,
+      "File": "005-added-paths-1.txt.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-actual-main-added-paths-1.txt",
+      "Sha256": "135b7bb471830ca25b6841fbf34fb6681f5107186d22d2cdb9fba99bab9018bd",
+      "StoredBytes": 701,
+      "StoredSha256": "1fabf18befd99a1c56207c99ec788306fdf59ee3a6664263e3a2f8b9aa30a63d"
+    },
+    {
+      "Bytes": 370,
+      "File": "006-merge-message.txt.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-actual-main-merge-message.txt",
+      "Sha256": "42f8134b6617c6eb44b6bf7a2b2455cf3c6f692433e08436e62c4c16dfe7f6db",
+      "StoredBytes": 277,
+      "StoredSha256": "9eca0b294ad123e8568fbf000ead02eb614997eed3ddfb1d7120f02e66ebfe26"
+    },
+    {
+      "Bytes": 122,
+      "File": "007-merge-commit-1.log.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-actual-main-merge-commit-1.log",
+      "Sha256": "f29784c44b40f7550dbd940686678aa9fc799bc23bbbb1d78f3afdc4d2caf24f",
+      "StoredBytes": 119,
+      "StoredSha256": "a707a8afe44d8f27bfe1639c3295b5e86b58d6bfca87def631fcef1967df5420"
+    },
+    {
+      "Bytes": 475,
+      "File": "008-resolution-1.json.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-oracle-grounding-publication-20260908/.git/oracle-actual-main-resolution-1.json",
+      "Sha256": "aad867268a47b08a466aa6a3abbc8a28a54d74e9422d20071f33549331c2147d",
+      "StoredBytes": 249,
+      "StoredSha256": "83289833099c4ceba8b719762a213eaa7b5c1676a07dd57c39733adb7bda8e9c"
+    },
+    {
+      "Bytes": 711,
+      "File": "009-independent-merge-invocation.json.gz",
+      "Original": "reviewer invocation",
+      "Sha256": "3a2c114f0574940f9c2c8f17ee7a3f0260e941e3206c8b6fd728ff5f97b0027e",
+      "StoredBytes": 354,
+      "StoredSha256": "ca35a4452b1d55bb923f1751a4cbf55dcdf03f545625e5a80e8a5e580d4b787d"
+    },
+    {
+      "Bytes": 1163,
+      "File": "010-independent-merge-stdout.gz",
+      "Original": "reviewer actual command stdout",
+      "Sha256": "f7070cab59e1a1eb857379529117fc22cbead750eee4e6e425f93f03ea211bf5",
+      "StoredBytes": 395,
+      "StoredSha256": "92b2e2f18de8e6a7548f3092c51189c629b64f1a64306fee34032df6a20d1883"
+    },
+    {
+      "Bytes": 0,
+      "File": "011-independent-merge-stderr.gz",
+      "Original": "reviewer actual command stderr",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    }
+  ],
+  "StoredBytes": 3072
+}

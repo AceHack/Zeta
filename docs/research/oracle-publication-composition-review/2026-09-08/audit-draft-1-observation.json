@@ -1,0 +1,11 @@
+{
+  "Status": "reviewer tool-observed failure; no separately redirected process output",
+  "Command": "python3 docs/research/oracle-publication-composition-review/2026-09-08/audit.py",
+  "Exit": 1,
+  "Failure": "AssertionError at audit.py:82 exact(row, raw), then line40 len(raw)==row[size]",
+  "Cause": "The first draft incorrectly required original import hashes to equal all final research-note bytes; two notes received later additive index paragraphs. Four current-state source files and all26 retained archive records passed before this assertion.",
+  "DraftBytes": 11138,
+  "DraftSha256": "df6913c7beaf03317d5f62b654bff92c704f39b5e4ad7ca786923acf47a7eacc",
+  "StoredBytes": 3988,
+  "StoredSha256": "414d02881202256f2f1118c0571a75ec1e39d3d1095ecc44f164ad52a8e91fb3"
+}
