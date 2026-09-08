@@ -1020,8 +1020,12 @@ function resolveOvmfFirmware(): { readonly code: string; readonly varsTemplate: 
   return null;
 }
 
-function prepareWritableOvmfVars(tmpDir: string, varsTemplate: string): string {
-  const varsPath = join(tmpDir, "OVMF_VARS.fd");
+function prepareWritableOvmfVars(
+  tmpDir: string,
+  varsTemplate: string,
+  fileName = "OVMF_VARS.fd",
+): string {
+  const varsPath = join(tmpDir, fileName);
   execFileSync("cp", [varsTemplate, varsPath]);
   return varsPath;
 }
@@ -1041,8 +1045,35 @@ type InstallBootMedia =
   | { readonly kind: "iso"; readonly path: string }
   | { readonly kind: "usb-image"; readonly path: string };
 
-function buildQemuInstallArgs(bootMedia: InstallBootMedia, diskPath: string, serialLogPath: string): string[] {
-  return buildQemuInstallArgsPure(bootMedia, diskPath, serialLogPath, kvmEnabled());
+function buildQemuInstallArgs(
+  bootMedia: InstallBootMedia,
+  diskPath: string,
+  serialLogPath: string,
+  tmpDir: string,
+): string[] {
+  // PHASE 1 UEFI-BOOTS TOO. It used to boot the installer on the default SeaBIOS,
+  // i.e. legacy/CSM. `zeta-install.sh` now refuses when `/sys/firmware/efi` is
+  // absent (the B3 preflight, added because the failure otherwise surfaces at
+  // `bootctl install` AFTER the disk has been wiped), so a legacy-booted phase 1
+  // fails with "not booted in UEFI mode" -- correctly. Metal boots UEFI; the
+  // harness has to as well or it is testing a path the installer rejects.
+  //
+  // Phase 2 already resolves OVMF for the systemd-boot disk boot. Phase 1 needs
+  // its OWN writable VARS copy: `prepareWritableOvmfVars` writes into `tmpDir`,
+  // and both phases share that directory.
+  const ovmf = resolveOvmfFirmware();
+  if (!ovmf) {
+    throw new Error("OVMF firmware missing; cannot UEFI-boot the installer in phase 1");
+  }
+  const varsPath = prepareWritableOvmfVars(tmpDir, ovmf.varsTemplate, "OVMF_VARS_phase1.fd");
+  return buildQemuInstallArgsPure(
+    bootMedia,
+    diskPath,
+    serialLogPath,
+    kvmEnabled(),
+    ovmf.code,
+    varsPath,
+  );
 }
 
 /** Exported for unit tests. */
@@ -1051,10 +1082,18 @@ export function buildQemuInstallArgsPure(
   diskPath: string,
   serialLogPath: string,
   kvm: boolean,
+  ovmfCodePath: string,
+  ovmfVarsPath: string,
 ): string[] {
   const args: string[] = [
     "-machine",
     "q35",
+    // UEFI, not SeaBIOS: the installer's B3 preflight refuses a legacy/CSM boot.
+    // unit=0 is the read-only firmware, unit=1 the writable VARS copy.
+    "-drive",
+    `if=pflash,format=raw,unit=0,readonly=on,file=${ovmfCodePath}`,
+    "-drive",
+    `if=pflash,format=raw,unit=1,file=${ovmfVarsPath}`,
     "-m",
     String(MEMORY_MB),
     "-smp",
@@ -1648,7 +1687,7 @@ async function main(): Promise<never> {
   }
 
   const phase1 = await runQemuUntil(
-    buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath),
+    buildQemuInstallArgs(bootMedia, diskPath, phase1SerialLogPath, tmpDir),
     phase1SerialLogPath,
     () => waitForInstallComplete(phase1SerialLogPath),
     phase1Label,

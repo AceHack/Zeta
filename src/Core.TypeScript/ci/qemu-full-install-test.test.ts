@@ -127,8 +127,15 @@ describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
       "/tmp/disk.qcow2",
       "/tmp/serial.log",
       true,
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS_phase1.fd",
     );
     expect(args.join(" ")).toContain("-cdrom /tmp/installer.iso");
+    // B3: the installer refuses a legacy/CSM boot, so phase 1 MUST be UEFI.
+    // Without pflash this booted SeaBIOS and every ISO install failed with
+    // "not booted in UEFI mode" -- after the ISO had already built fine.
+    expect(args.join(" ")).toContain("if=pflash,format=raw,unit=0,readonly=on");
+    expect(args.join(" ")).toContain("if=pflash,format=raw,unit=1,file=/tmp/OVMF_VARS_phase1.fd");
     expect(args.join(" ")).toContain("virtio-net");
     expect(args.join(" ")).not.toContain("usb-storage");
   });
@@ -139,6 +146,8 @@ describe("qemu-full-install-test phase 1 boot media QEMU args", () => {
       "/tmp/disk.qcow2",
       "/tmp/serial.log",
       false,
+      "/usr/share/OVMF/OVMF_CODE_4M.fd",
+      "/tmp/OVMF_VARS_phase1.fd",
     );
     expect(args.join(" ")).toContain("usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1");
     expect(args.join(" ")).toContain(`serial=${QEMU_USB_TEST_SERIAL}`);

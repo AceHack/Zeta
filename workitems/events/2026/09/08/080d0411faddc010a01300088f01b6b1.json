@@ -1,0 +1,14 @@
+{
+  "id": "080d0411faddc010a01300088f01b6b1",
+  "at": "2026-09-08T18:19:45.464Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M213YPXR087G0R003DBEY62",
+    "type": "bug",
+    "title": "QEMU phase 1 booted legacy BIOS, so the B3 UEFI preflight refused every ISO install",
+    "slug": "qemu-phase-1-booted-legacy-bios-so-the-b3-uefi-preflight-ref",
+    "priority": "P2",
+    "filename": "081M213YPXR087G0R003DBEY62-qemu-phase-1-booted-legacy-bios-so-the-b3-uefi-preflight-ref.md"
+  }
+}
