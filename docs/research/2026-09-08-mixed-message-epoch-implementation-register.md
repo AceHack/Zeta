@@ -256,3 +256,16 @@ The [final assembled validation section](2026-09-08-mixed-message-assembled-vali
 keeps original failed gates and successful recovery checks distinct. Source
 implementation/review is complete for the bounded control; immutable capsule
 admission and all actual named outcomes remain pending.
+
+
+## Frozen assembled capsule
+
+The [first source/direct-runtime capsule](mixed-message-epoch-implementation/2026-09-08/implementation-source/README.md)
+is frozen from `3c3a76ad6674bb40b2e1309021735950c282d8d5`: 65 selected sources,
+seven direct files, 69 flat bindings. Service manifest SHA256 is
+`F92041F0DBC344DA877DFA970B3C5C7AD6817C8285AAA28E164872F2CE6D56F1`;
+archive SHA256 is
+`E51A00FC29FA2A13B09F152AB0F55908B7E03982036E5084F54A221815149445`.
+All 298 archive members were reopened; source bytes equal the named commit,
+direct-after identities match and passive manifest admission succeeds.
+Independent assembled acceptance and every actual named outcome remain pending.
