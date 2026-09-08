@@ -1,0 +1,12 @@
+{
+  "pr_number": 17055,
+  "archive_path": "docs/history/pr-reviews/PR-17055-feat-research-add-durable-room-reconciliation-preflight.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T16:27:59.478Z",
+  "schema_version": "v1",
+  "commit_sha": "ec62ab8aabdc18b78152dd0732783dab2cc24cde",
+  "title": "feat(research): add durable room reconciliation preflight",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T16:27:13Z",
+  "head_ref": "lumen/durable-room-reconcile-preflight"
+}
