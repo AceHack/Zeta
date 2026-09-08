@@ -278,7 +278,11 @@ V = [v(U),v(L)].
 ~~~
 
 Require nonempty finite M and V with V.lower>0. Stop ReferenceRoot only
-when widths of both M and V are <=1e-50. Otherwise keep refining within
+when widths of both M and V are <=1e-50. Convert their finite Decimal
+endpoints to exact rationals and perform each subtraction and comparison
+against the exact rational 1/10^50; an ordinary half-even width is not an
+admission test. This internal rule is distinct from the native diagnostic
+rounded-width rule. Otherwise keep refining within
 the fixed budgets. This absolute internal enclosure target is not a claim
 that all scaled stress rows can meet it. ReferenceRoot may refuse with its
 best proved bracket and moments rather than return false success.
@@ -631,6 +635,10 @@ had no specified context or separate entry budget. The correction fixes
 the last successful root context, no extra retries, independent six-entry
 transcendental accounting, and complete context-bearing Coordinates and
 Objective observations before their respective comparisons.
+The follow-up clarification after 9a950c2dcf9fa0a260e7e2e20f72de242c92a611
+also explicitly makes the internal root-width stopping decision an exact
+rational endpoint subtraction/comparison, matching the real inequality
+rather than relying on an ordinarily rounded width.
 This is a design correction; no solver or vector was executed to discover it.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra.
