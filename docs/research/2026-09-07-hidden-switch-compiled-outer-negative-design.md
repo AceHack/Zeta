@@ -644,3 +644,9 @@ retains fresh execution and exact typed-result comparison for the 32 static
 cases and 36 shared-API slots. It preserves actual failure prefixes and original
 result bytes while leaving file/native/identity and whole-envelope admission
 separate.
+
+The [owned identity replay validation](2026-09-07-hidden-switch-compiled-identity-replay-validation.md)
+preserves actual fresh execution of the fifteen Git/Python fixtures, complete
+result and child-trace comparison, explicit root/PID associations and disjoint
+owned roots. It retains original raw records and incomplete actual outcomes
+without promoting them to complete outer/source/runtime admission.
