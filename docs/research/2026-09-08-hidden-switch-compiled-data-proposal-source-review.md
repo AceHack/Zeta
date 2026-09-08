@@ -81,6 +81,55 @@ proposal. Its review and a separately reviewed physical reader/authorization
 remain necessary before new selected dump reads. BodyResolved,
 ClosureAdmitted and RuntimeAdmitted remain false.
 
+## Preparation and separate outer launcher
+
+I subsequently audited preparation
+`e74f676c0b94478d008679a90961a50862db6984`: all seven gzip records match their
+stored and original hashes and immutable Git blobs; all sixteen source/test
+pins match a802 and current bytes. The logs total 1,433 stored and 3,542
+original bytes. The 6,130-byte manifest has SHA-256
+0834a46190760fc23d147c0bf400205534e54785de7470d5c6e9518768820d9e.
+It includes the retained all-sixteen-check quick preflight in addition to the
+focused gates above. No original-local-file path was used for this archive
+comparison.
+
+The separate one-child launcher was inspected before its actual invocation.
+Its initial draft, retained by the author at SHA-256
+44c0ea8c8d1c3bb275d9d813e0b690c8d4a337b1b1d32b83f42d3e17da92c450,
+had two findings: a poll/kill exception skipped the later join because cleanup
+shared one try block; and an unguarded terminal publication could replace the
+established primary failure and prevent independent final reporting.
+
+The repair independently guards poll, kill, join and each owned stream close.
+Main completion, secondary completion-failure, flushed console and optional
+console-failure records each have a 64-KiB bound and independent attempts.
+The original computation failure survives later publication errors. Two
+follow-up refinements preserve a previously observed main wait exit code
+when cleanup wait fails, with separate MainWaitExitCode, CleanupWaitExitCode
+and DirectChildClosed fields, and put console flush inside its guarded write.
+An exit-code disagreement is an explicit cleanup failure.
+
+Final inspected launcher bytes: 6,783, SHA-256
+29650060363da14bd947a1f3b6b966c5deaaaa3accce574c7a4d4dc0ced4b11b.
+Final extracted-function test bytes: 5,729, SHA-256
+86269c8761477c2fe1ab0fc7bceed9531e9cd32cffbf37a170940b4ecd6e4969.
+I read the first four-case pass (0.005 seconds) and final five-case pass
+(0.003 seconds). These tests execute only AST-extracted cleanup/publication
+functions with synthetic processes and owned real files; they do not launch
+the proposed child. The source uses a sixty-second polled child deadline,
+64-KiB stdout/stderr checks, exact source/blob and preparation checks, and
+post-child source rechecks. Polling is not an OS quota or hard cancellation
+guarantee. Git metadata commands and fixed local source reads are separate
+prelaunch operations; no study target, dump or decoder is invoked.
+
+The final launcher preservation is
+`90e0acc5707505c755c6b17fd1c6efd5c927aca5`. I verified all three stored/raw
+records and their immutable Git blobs: 4,050 stored bytes and 12,615 original
+bytes. Its 1,469-byte manifest has SHA-256
+c86c0e2c02f8ca0b57ff284d59cb9799ecdb3d96a4d16b6e092b5fdc9ec7bb0f.
+This accepts the final inspected and retained launcher bytes. The actual
+child outcome remains a separate audit.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
