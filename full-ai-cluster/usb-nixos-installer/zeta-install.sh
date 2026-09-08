@@ -1577,6 +1577,37 @@ if [ ! -d /sys/firmware/efi ]; then
 fi
 echo "[preflight] UEFI mode confirmed (/sys/firmware/efi present)."
 
+# ── B4: the network is a HARD requirement, and it was checked AFTER the wipe ──
+#
+# `git clone "$REPO_URL" /mnt/etc/zeta` is at :1776. The wipe below is at :1583.
+# So on a machine with no working network the installer destroyed every disk in
+# scope and then, ~190 lines later, discovered it could not fetch the thing it
+# needed to install -- previous OS gone, nothing bootable, drop to a shell. That
+# is the same shape as the UEFI check directly above, which exists because the
+# identical mistake surfaced at `bootctl install` after the wipe.
+#
+# `git ls-remote` is the right probe rather than a ping: it exercises DNS, the
+# route, TCP, TLS and the repository actually being readable, which is the full
+# set of things `git clone` needs, and it transfers no objects. A ping would pass
+# on a network that blocks 443 or has no DNS.
+#
+# GIT_TERMINAL_PROMPT=0 so a credential prompt cannot hang a non-interactive
+# install waiting for a username; `timeout` bounds a black-hole route that
+# accepts SYN and never replies. Both failure modes otherwise hang here forever
+# rather than bailing, which on the zero-typing path means a machine that never
+# finishes and never says why.
+#
+# NOT COVERED, stated rather than implied: the closure download from the
+# substituter is a SECOND network dependency, later still, and this does not
+# probe it. A network that reaches GitHub but not the binary cache still fails
+# after the wipe. Narrowing that is separate work; this closes the first and
+# most common failure -- no working network at all.
+echo "[preflight] checking the repository is reachable before anything is destroyed ..."
+if ! GIT_TERMINAL_PROMPT=0 timeout 60 git ls-remote "$REPO_URL" HEAD >/dev/null 2>&1; then
+  bail "cannot reach $REPO_URL (git ls-remote failed or timed out after 60s). The install clones this repo AFTER wiping every disk in scope, so proceeding would destroy the current system and then fail with nothing bootable. Fix networking first -- the role prompt offers nmtui, or configure from the shell and re-run. Nothing has been wiped."
+fi
+echo "[preflight] repository reachable ($REPO_URL)."
+
 # ── Step 3: wipe every disk in scope ──────────────────────────────
 for d in "$BOOT_DISK" "${DATA_DISKS[@]}"; do
   echo "Wiping $d ..."
