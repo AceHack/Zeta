@@ -23,8 +23,10 @@
  * `missing-os`. Bun JSON join uses `look` and ignores
  * JSON `probe`. Optional named argv `--from-json` uses
  * that same look field. Named argv `--from-json` uses it
- * too; null look is `missing-os`. Does not import the
- * frost-look CLI. Does not change ISO bun `probe: null`.
+ * too; null look is `missing-os`. Named bun JSON join is
+ * the required string sibling of the optional bun JSON
+ * join. Does not import the frost-look CLI. Does not
+ * change ISO bun `probe: null`.
  */
 
 import type { OsFamily } from "../../../src/Core.TypeScript/cluster/host-seal-profile.ts";
@@ -270,5 +272,30 @@ export function planSetupFromFrostLookOptionalNamedBunJson(
     real,
     (fx, os) => planSetupFromFrostLookEnv(restore, env, read, fx, os),
     () => planSetupFromNamedBaoElfEnv(restore, env, read, null),
+  );
+}
+
+/**
+ * Required bun JSON join. Uses `look`. Ignores JSON `probe`
+ * even when non-null. Null look is `missing-os`, not
+ * unmeasured. Env frost-look keys mixed with JSON look
+ * refuse. Bao / unseal stay named from env. Does not
+ * write ESP. Does not default to `realProbeEffects`.
+ */
+export function planSetupFromFrostLookNamedBunJson(
+  restore: RestoredPkcs11PointerCapture,
+  json: string,
+  env: { readonly [key: string]: string | undefined },
+  read: BaoElfRead,
+  real: HardwareProbeEffects,
+): FrostLookNamedJoin {
+  if (envHasFrostLookKey(env)) return { ok: false, reason: "mixed-source" };
+  const parsed = consumeOptionalFrostLookFromBunJson(json);
+  if (!parsed.ok) return parsed;
+  if (parsed.look === null) return { ok: false, reason: "missing-os" };
+  return namedLookJoin(
+    { ok: true, os: parsed.look.os, effects: parsed.look.effects },
+    real,
+    (fx, os) => planSetupFromFrostLookEnv(restore, env, read, fx, os),
   );
 }
