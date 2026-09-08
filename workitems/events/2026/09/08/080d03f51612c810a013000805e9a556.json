@@ -1,0 +1,14 @@
+{
+  "id": "080d03f51612c810a013000805e9a556",
+  "at": "2026-09-08T01:29:50.937Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZA5GJQ087G0R002XX13YC",
+    "type": "bug",
+    "title": "Three first-boot guards: abort exit code, UEFI preflight, hot-plug disk exclusion",
+    "slug": "three-first-boot-guards-abort-exit-code-uefi-preflight-hot-p",
+    "priority": "P2",
+    "filename": "081M1ZA5GJQ087G0R002XX13YC-three-first-boot-guards-abort-exit-code-uefi-preflight-hot-p.md"
+  }
+}
