@@ -496,3 +496,30 @@ A separately reviewed column-grammar correction must test the retained
 actual output bytes before a further explicitly numbered attempt. No dump,
 study target, source generator or measurement ran. Runtime, body and closure
 admission remain false.
+
+## Actual comment-column preparation
+
+Source `20043d1408bfa3a515f5d59864ad858595044707` changes one production
+regex: exactly 40 ASCII spaces precede the previously admitted comment
+payload. The [seven preparation records](llvm-column-preparation/manifest.json)
+preserve exact source pins, validation and all 286 unchanged records from
+the two prior attempts. The independent reviewer accepted this exact source
+and its retained-output fixture; the earlier guidance correction is signed
+separately at `5cfa45ba302fd9d7c7e3189d3b1215679e346a3c`.
+
+The installed MCAsmInfo header matches the LLVM 23.1.0 source with default
+comment column 40; MCAsmStreamer pads standalone comments to that column
+using spaces. This source/observed-format correspondence motivates the
+exact grammar, without a source-to-binary theorem or generic whitespace
+removal. Zero, 39 or 41 spaces, tabs and the earlier malformed-comment cases
+continue to refuse. Raw comment bytes, including spaces, remain attached.
+
+The new fixture reads the exact stored attempt-two stdout, empty stderr,
+all 130 input records and the atomic byte stream, checking their retained
+identities. It exhausts the complete 8,665-word/851-comment output through
+the corrected parser and mutates indentation in the actual first pair.
+It also asserts that the historical outcome remains failed. This is parser
+fixture execution over retained data, not a replacement run receipt.
+All 16 focused and 46 combined cases pass, as does Ruff. No new LLVM process,
+dump or study target ran in preparation; the authorized third attempt must
+retain its own invocation/outcome and all full flags remain false.
