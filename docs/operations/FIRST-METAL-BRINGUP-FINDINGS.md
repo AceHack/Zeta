@@ -32,7 +32,8 @@ outliving its measurement, and both directions cost real work.
 | **B6** | **Multiboot stick cannot find its own root.** GRUB boots `root=LABEL=ZETA_MULTIBOOT` (15 chars — not a legal FAT label); the builder writes `ZETA_MB`. Zero runs on `main`. | `multiboot/grub.cfg:38`; `multiboot/assemble.ts:311-317` | OPEN — use the single-ISO path |
 | **B7** | **OpenBao comes up sealed at wave −60 and nothing unseals it.** A sealed pod is NotReady by design; the repo's own doc says an unhealthy wave blocks all higher waves. Metal applies the whole catalogue (no `excludeGlob` outside the dev entrypoint). The only written procedure is marked superseded/history. | `openbao/Application.yaml:29-35, 59, 103-113`; `dev-cluster/SYNC-WAVES.md:191-195`; `openbao/TOPOLOGY.md:25-30` | OPEN — **payload exists**, see R1 |
 | **B8** | **Twelve Secrets are named by `automated: true` Applications and nothing on metal creates any of them.** No `Secret`/`SealedSecret`/`ExternalSecret`/`ClusterSecretStore` exists anywhere under `full-ai-cluster/k8s/`, against 22 references. Several exist only as a `kubectl create secret` in a code comment. | `k3s-server.nix:200-254` mints none; per-app refs listed in the secrets review | OPEN |
-| **B9** | **No biometric gate exists on Linux, so every key-custody ceremony refuses.** darwin→Touch ID, win32→Hello, everything else fail-closed. Eleven CLIs abort. No machine key, no CA, no certs on the target hardware. The runbook is 100% Touch ID / Hello; the `fprintd` adapter named in an ADR does not exist. | `tools/setup/persona-keys/biometric.ts:178-182, 447-451` | OPEN — needs a Linux consent adapter |
+| **B9** | **The consent gate on metal is the WRONG GATE, not a missing one.** Eleven key-custody CLIs inject `realBiometric()` (darwin -> Touch ID, win32 -> Hello, everything else fail-closed), so on NixOS no machine key, no CA and no certs can be minted. **The fix is NOT an `fprintd` adapter.** Aaron 2026-09-08: the intended mechanism is **TPM or HSM**; biometrics exists on many machines but its use should be few and far between, because the goal is hardware **completely controlled by the AI and the code after bootup**, with human intervention only through declared remote interfaces. A fingerprint prompt on an unattended node is the opposite of that -- it requires a body at the console. The CLIs are refusing the *wrong question*. | `persona-keys/biometric.ts:178-182, 447-451` | OPEN -- reframed 2026-09-08 |
+| **B9a** | **The TPM/HSM path exists and is INERT.** `host-seal-profile.nix:61` gates everything on `zeta.hostSeal.boxRole != "undeclared"` and **no host sets `boxRole`**, so `pcscd` and the YubiHSM udev rules are off on every real host; `tpm2Seal.mode` defaults to off. The mechanism Aaron names as the intended one is not merely unwired to the ceremonies -- it is switched off at the host level. This, not biometrics, is what stands between a reformatted box and an unattended bring-up. | `host-seal-profile.nix:61`; `host-seal-model.nix:46-55` | OPEN |
 | **B10** | **Gatekeeper's namespace webhook is fail-CLOSED against a file documenting the opposite.** The Application sets two failure policies to `Ignore`; the chart ships **three** webhooks, and `check-ignore-label.gatekeeper.sh` has its own key defaulting to `Fail`, never overridden. Its rules are `resources:[namespaces] operations:[CREATE,UPDATE] scope:'*'`, at wave −25, with `CreateNamespace=true` on the root and ~40 apps. The rationale cites an incident that already bricked a cluster. | `open-policy-agent/Application.yaml:40-51`; chart `values.yaml:18`; webhook template `:95-114` | OPEN — one values key |
 
 ## TRAP
@@ -97,7 +98,7 @@ plan assumed are not met**. These are recorded here because the cleanup was goin
 
 | id | finding | state |
 |---|---|---|
-| **X1** | **THE OFF-SITE MIRROR IS DEAD.** `.github/workflows/mirror-to-fork.yml` is `disabled_manually` since 2026-08-29; the fork's `pushed_at` is 2026-08-28. Measured: `archive/*` tags — origin **442**, fork **359**. `archive/2026-09-03-branch-sweep/*` — origin **49**, fork **0**. `archive/experiments/*` (the tags running code reads) — origin **16**, fork **0**. **The entire tag-preservation safety net exists on origin only**, and every ref created after 2026-08-28 has no off-site copy at all. The workflow's own header records this contract silently breaking once before, for ten weeks. | OPEN — blocks deletion |
+| **X1** | **CORRECTED 2026-09-08 -- the mirror is MANUAL, not dead.** Aaron: mirroring to `acehack` works and is done by hand; the AUTOMATION is what is off, and extra data on the fork "we can blow away" -- deltas there are deliberately suppressed, so a force-push from origin is sanctioned repair rather than loss. The measurements below describe the fork's CURRENT staleness, not an unrecoverable state. Original finding follows. **THE MIRROR AUTOMATION IS OFF.** `.github/workflows/mirror-to-fork.yml` is `disabled_manually` since 2026-08-29; the fork's `pushed_at` is 2026-08-28. Measured: `archive/*` tags — origin **442**, fork **359**. `archive/2026-09-03-branch-sweep/*` — origin **49**, fork **0**. `archive/experiments/*` (the tags running code reads) — origin **16**, fork **0**. **The entire tag-preservation safety net exists on origin only**, and every ref created after 2026-08-28 has no off-site copy at all. The workflow's own header records this contract silently breaking once before, for ten weeks. | OPEN — blocks deletion |
 | **X1a** | When re-enabled the mirror pushes `--prune --force`, so it **propagates deletions within 24h**. It is a mirror, not an archive. Re-enabling it does not create a backup of anything already deleted. | OPEN |
 | **X2** | **`lumen/fix-heartbeat-actionlint` was classified merged-safe and is NOT on main.** PR #16542 closed unmerged; the branch's one-line actionlint fix is absent (main fixed a *different* sub-issue on the same line, which is what made it read as landed). 100% of its substance missing, not tag-preserved. Deleting it loses the fix **and** the record that the finding is still open. | OPEN — the one wrong "safe" call found |
 | **X3** | **Several target branches are LIVE and moving hourly.** One branch showed **four** distinct SHAs inside 45 minutes; four branches appeared and two vanished during the review. These are a running agent's working refs — deleting them is deleting live state, and any SHA-keyed approval is stale on arrival. | OPEN |
@@ -115,3 +116,24 @@ plan assumed are not met**. These are recorded here because the cleanup was goin
 3. **Re-measure immediately before acting** — live branches moved four times in 45 minutes.
 4. **Exclude `liveness/observations` and `agent-heartbeats` unconditionally.**
 5. **Resolve X2** before trusting any "merged-safe" list.
+
+---
+
+## The standing design constraint these findings must be read against
+
+Aaron 2026-09-08, and it changes what "fixed" means for several rows above:
+
+> the hardware should be **completely controlled by the AI and the code after bootup**, and should
+> **not need human intervention except through our declared UI and interfaces from humans remotely**.
+
+A remedy that adds a console prompt, a fingerprint, or a physical-presence requirement is therefore
+not a fix here -- it is a new blocker wearing a fix's clothes. That rules out the obvious-looking
+answer to B9 and makes **B9a** the real work: the TPM/HSM consent path is switched off at the host
+level, and it is the only mechanism in the tree that can gate an unattended node without a body at
+the console.
+
+It also sharpens **T3**. The first-boot path silently skips every credential prompt, and under this
+constraint the *absence of prompting is correct* -- prompts should not exist on an unattended boot.
+What remains a defect is that `PROVISIONING.md` presents all seven as the normal flow, and that
+skipping the cred-blob passphrase means **no credential persistence ever happens**. The outcome is
+wrong even though the silence is right.
