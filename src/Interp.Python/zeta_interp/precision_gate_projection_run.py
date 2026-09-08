@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 from collections.abc import Callable
 from dataclasses import dataclass, fields
+from functools import partial
 
 from . import hidden_switch_compiled_admission as a
 from . import hidden_switch_compiled_record_encoding as encoding
@@ -89,6 +90,21 @@ def _observe(name: str, call: Callable[[], object]) -> store.CallObservation:
         )
 
 
+def _receipt_shaped(value: object, operation: str) -> bool:
+    """Minimal service-envelope shape; full schema and custody remain separate."""
+    return (
+        type(value) is dict
+        and value.get("Schema") == criteria.SCHEMAS[operation]
+        and all(
+            type(value.get(key)) is str for key in ("Schema", "CaseId", "InputSha256")
+        )
+        and type(value.get("Bindings")) is dict
+        and type(value.get("Counters")) is dict
+        and type(value.get("Outcome")) is dict
+        and type(value["Outcome"].get("Kind")) is str
+    )
+
+
 class _Run:
     def __init__(
         self, target: store.Store, bindings: dict[str, str], services: Services
@@ -107,6 +123,7 @@ class _Run:
         self.terminal: object = None
         self.finalization: object = None
         self.admitted_store = False
+        self.finalization_entered = False
 
     def fail(self, code: str, path: str, detail: str) -> None:
         value = a.Refused(code, path, detail)
@@ -142,10 +159,12 @@ class _Run:
         if not isinstance(encoded, a.Admitted) or type(encoded.value) is not bytes:
             self.fail("encoding", role, "actual result could not be completely encoded")
             return encoded, None
-        snapshot = store.snapshot(self.target)
-        self.helpers.append(store.CallObservation("snapshot/" + role, snapshot, None))
-        if isinstance(snapshot, a.Refused):
-            self.fail("store-handle", role, snapshot.detail)
+        snapshot = self.helper("snapshot/" + role, lambda: store.snapshot(self.target))
+        if (
+            not isinstance(snapshot, a.Admitted)
+            or type(snapshot.value) is not store.Snapshot
+        ):
+            self.fail("store-handle", role, "actual issued-store snapshot required")
             return encoded, None
         state = snapshot.value
         reserve = 0 if terminal else 2 * TERMINAL_BYTES
@@ -199,8 +218,11 @@ class _Run:
                 "actual retained certified core/unconstructed baseline required",
             )
             return
-        row.Preparation = cases.render_input(
-            "core/unconstructed" if case_id in cases.CERTIFICATE_IDS else case_id
+        row.Preparation = self.helper(
+            "prepare/" + case_id,
+            lambda: cases.render_input(
+                "core/unconstructed" if case_id in cases.CERTIFICATE_IDS else case_id
+            ),
         )
         if not isinstance(row.Preparation, a.Admitted):
             self.fail("input-preparation", case_id, "fixed input rendering refused")
@@ -298,6 +320,11 @@ class _Run:
                 self.fail("native-json", case_id, decoded.detail)
                 return
             receipt = decoded.value
+            if not _receipt_shaped(receipt, operation):
+                self.fail(
+                    "native-receipt-shape", case_id, "actual receipt envelope required"
+                )
+                return
             row.CompleteReceipt = True
             row.ReceiptRetained = True
         else:
@@ -312,19 +339,41 @@ class _Run:
                 self.artifact(row, "outer-return", actual)
                 return
             receipt = actual.Value
+            if not _receipt_shaped(receipt, operation):
+                self.fail(
+                    "reference-receipt-shape",
+                    case_id,
+                    "success wrapper did not contain a receipt",
+                )
+                self.artifact(row, "invalid-receipt", receipt)
+                return
             row.CompleteReceipt = True
             receipt_artifact = self.artifact(row, "receipt", receipt)
             if receipt_artifact is None:
                 return
             row.CompleteReceipt = True
             row.ReceiptRetained = True
-        row.Assessment = criteria.assess_receipt(
-            case_id, operation, receipt, raw_input, self.bindings, raw_native=raw_native
+        row.Assessment = self.helper(
+            "comparison/" + case_id + "/" + operation,
+            lambda: criteria.assess_receipt(
+                case_id,
+                operation,
+                receipt,
+                raw_input,
+                self.bindings,
+                raw_native=raw_native,
+            ),
         )
         if isinstance(row.Assessment, a.Refused):
             self.fail("receipt-envelope", case_id, row.Assessment.detail)
             return
-        if not isinstance(row.Assessment, a.Admitted):
+        if (
+            not (
+                isinstance(row.Assessment, a.Admitted)
+                and type(row.Assessment.value) is criteria.Assessment
+            )
+            or type(row.Assessment.value) is not criteria.Assessment
+        ):
             self.fail("comparison-return", case_id, "actual assessment absent")
             return
         result = row.Assessment.value
@@ -352,7 +401,13 @@ class _Run:
         plan = cases.ordered_calls()
         completed = sum(row.CompleteReceipt for row in self.entries)
         retained = sum(row.ReceiptRetained for row in self.entries)
-        checked = sum(isinstance(row.Assessment, a.Admitted) for row in self.entries)
+        checked = sum(
+            (
+                isinstance(row.Assessment, a.Admitted)
+                and type(row.Assessment.value) is criteria.Assessment
+            )
+            for row in self.entries
+        )
         returned = sum(
             row.Observation is not None and row.Observation.Raised is None
             for row in self.entries
@@ -391,7 +446,11 @@ class _Run:
             tuple(
                 plan[row.Index]
                 for row in self.entries
-                if not row.ReceiptRetained or not isinstance(row.Assessment, a.Admitted)
+                if not row.ReceiptRetained
+                or not (
+                    isinstance(row.Assessment, a.Admitted)
+                    and type(row.Assessment.value) is criteria.Assessment
+                )
             )
             + plan[len(self.entries) :]
         )
@@ -399,7 +458,10 @@ class _Run:
             completed == len(plan) and retained == len(plan) and checked == len(plan)
         )
         expected = checked == len(plan) and all(
-            isinstance(row.Assessment, a.Admitted)
+            (
+                isinstance(row.Assessment, a.Admitted)
+                and type(row.Assessment.value) is criteria.Assessment
+            )
             and row.Assessment.value.Expected is not False
             for row in self.entries
         )
@@ -428,15 +490,17 @@ class _Run:
             "FailedValueRetention": "actual objects remain in returned in-memory ledger; only linked artifacts are durable",
             "Finalization": "separate once-only store journal follows",
         }
-        snap = store.snapshot(self.target)
+        snap = self.helper("snapshot/final", lambda: store.snapshot(self.target))
         if (
             self.admitted_store
             and isinstance(snap, a.Admitted)
+            and type(snap.value) is store.Snapshot
             and snap.value.PrimaryFailure is None
             and not snap.value.FinalizationStarted
         ):
             self.terminal = self.put("terminal", body, terminal=True)
         if self.admitted_store:
+            self.finalization_entered = True
             self.finalization = self.helper(
                 "finalize", lambda: store.finalize(self.target)
             )
@@ -476,15 +540,25 @@ def run_comparison(
     The caller must separately admit the complete archived source map and actual
     service wrappers. Disposable callbacks cannot constitute a registered run.
     """
-    admitted = criteria.validate_bindings(bindings)
-    run = _Run(
-        target, admitted.value if isinstance(admitted, a.Admitted) else {}, services
+    run = _Run(target, {}, services)
+    admitted = run.helper(
+        "bindings-admission", lambda: criteria.validate_bindings(bindings)
     )
-    state = store.snapshot(target)
-    if isinstance(admitted, a.Refused):
-        run.fail("bindings", "Run", admitted.detail)
+    state = run.helper("store-admission", lambda: store.snapshot(target))
+    if type(services) is not Services or not all(
+        callable(value)
+        for value in (
+            services.NativeSolve,
+            services.ReferenceRoot,
+            services.CertifyNative,
+        )
+    ):
+        run.fail("services", "Run", "three callable source-bound services required")
+    elif not isinstance(admitted, a.Admitted) or type(admitted.value) is not dict:
+        run.fail("bindings", "Run", "independent binding admission did not complete")
     elif (
-        isinstance(state, a.Refused)
+        not isinstance(state, a.Admitted)
+        or type(state.value) is not store.Snapshot
         or state.value.Limits != LIMITS
         or state.value.Artifacts
         or state.value.Attempts
@@ -497,11 +571,56 @@ def run_comparison(
         )
     else:
         run.admitted_store = True
+        run.bindings = admitted.value
         for index, (case_id, operation) in enumerate(cases.ordered_calls()):
-            run.step(index, case_id, operation)
+            run.helper(
+                "slot/" + str(index), partial(run.step, index, case_id, operation)
+            )
             if run.primary is not None:
                 break
-    return run.finish()
+    try:
+        return run.finish()
+    except Exception as error:  # noqa: BLE001 - preserve prefix if envelope construction fails
+        raised = store.Raised(
+            type(error).__module__ + "." + type(error).__qualname__, str(error)
+        )
+        run.helpers.append(store.CallObservation("finish-envelope", None, raised))
+        run.fail("finish-envelope", "Run", raised.Message)
+        if run.admitted_store and not run.finalization_entered:
+            run.finalization_entered = True
+            run.finalization = run.helper("finalize", lambda: store.finalize(target))
+        # No descriptor reconstruction or comparison is attempted in this
+        # fallback. The complete entries and actual helper returns stay present.
+        counters = {
+            "Planned": len(cases.ordered_calls()),
+            "Entered": sum(row.Entered for row in run.entries),
+            "Returned": sum(
+                row.Observation is not None and row.Observation.Raised is None
+                for row in run.entries
+            ),
+            "Raised": sum(
+                row.Observation is not None and row.Observation.Raised is not None
+                for row in run.entries
+            ),
+            "CompleteReceipts": sum(row.CompleteReceipt for row in run.entries),
+            "RetainedReceipts": sum(row.ReceiptRetained for row in run.entries),
+        }
+        return RunResult(
+            tuple(run.entries),
+            cases.ordered_calls(),
+            run.primary,
+            tuple(run.secondary),
+            tuple(run.helpers),
+            run.terminal,
+            run.finalization,
+            counters,
+            tuple(run.core),
+            False,
+            False,
+            False,
+            run.baseline[1] if run.baseline else None,
+            "incomplete-envelope-preserved-prefix; pending slots are unverified, not invented failures",
+        )
 
 
 def reference_services(native: Callable[[Request], object]) -> Services:
