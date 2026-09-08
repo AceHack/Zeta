@@ -192,6 +192,19 @@ actors; existing fabricated-memory/cartel mechanisms remain foundational.
 No registered experiment, speedup, empirical detector improvement, physical
 bound, default-oracle selection or full compiled runtime closure follows.
 
+## Final handoff correction
+
+The separate documentation commit
+`3fe633b4bac2cbb1fa5ebd7d5597b5de89e84132` changes only the compiled
+handoff's leading checkpoint/status and re-entry explanation. I accept its
+explicit current pause, unopened registered streams and conditional future
+resume. It does not waive the old closure/archive obligations or claim a
+new decoder authorization. The entire 13461-byte suffix following the
+renamed resume heading is byte-identical, SHA256
+`0c4092a7a34b1b4dfcab9ae034ae31b818f0b7942941b6fc72432401ae27e7f1`.
+The exact diff and independent byte-check result are appended to the review
+inventory. This one-file correction changes no executable or gate identity.
+
 ## Attribution
 
 ```text

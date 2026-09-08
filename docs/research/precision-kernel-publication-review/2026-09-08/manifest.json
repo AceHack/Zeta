@@ -268,7 +268,24 @@
       "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "StoredBytes": 20,
       "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "33-handoff-correction-diff.txt.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/handoff-correction-diff.txt",
+      "Bytes": 2851,
+      "Sha256": "762596b38b31acb4529d89a51c535463369afb53cf6763ca9ef78aeb7dfda7f5",
+      "StoredBytes": 1373,
+      "StoredSha256": "9a70cc7de0b9634bef2b05d62393985440b3ddadb8e9801eebdfde81a4e10877"
+    },
+    {
+      "File": "34-handoff-correction-result.json.gz",
+      "OriginalPath": ".git/precision-publication-independent-review-1/handoff-correction-result.json",
+      "Bytes": 575,
+      "Sha256": "bc93dac7d7106d5ae9c24438d7f2c4a75ff5154690b32a1e17bfe3a32daef640",
+      "StoredBytes": 372,
+      "StoredSha256": "b3560bfea82868f05af3634048237eedee256f5957887cd1c111b527703fd209"
     }
   ],
-  "DocumentationDisposition": "b98f5256fcc29fd9d75c4ca2d18f8be6b7a5385b"
+  "DocumentationDisposition": "b98f5256fcc29fd9d75c4ca2d18f8be6b7a5385b",
+  "HandoffCorrection": "3fe633b4bac2cbb1fa5ebd7d5597b5de89e84132"
 }
