@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="Message.Tests.fs" />
+    <Compile Include="PrecisionGateKernels.Tests.fs" />
     <Compile Include="VisionAttentionBudget.Tests.fs" />
     <Compile Include="QuantumFusion.Tests.fs" />
     <Compile Include="FactorGraph.Tests.fs" />
