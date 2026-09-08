@@ -969,15 +969,21 @@ def test_manifest_drift_refuses_before_source_read_or_setup(mutation: str) -> No
     assert isinstance(observed, bridge.Failure)
 
 
-def test_source_identity_refusal_keeps_actual_read_and_hash(tmp_path: Path) -> None:
+def test_source_identity_refusal_keeps_actual_read_and_hash() -> None:
     import time
 
     root = Path(__file__).resolve().parents[3]
-    path = tmp_path / "source.txt"
-    path.write_bytes(b"read me")
+    path = Path(__file__).resolve()
+    raw = path.read_bytes()
+    actual_hash = bridge._sha(raw)
+    wrong_hash = ("0" if actual_hash[0] != "0" else "1") + actual_hash[1:]
     relative = str(path.relative_to(root))
     manifest = bridge.ServiceManifest(
-        b"fixture", "A" * 64, (), (bridge.SourceFile(relative, 7, "B" * 64),), ()
+        b"fixture",
+        "A" * 64,
+        (),
+        (bridge.SourceFile(relative, len(raw), wrong_hash),),
+        (),
     )
     budget = bridge._Budget(
         bridge.Reservation(0, 0, 0, records.Limits()), time.monotonic()
@@ -985,8 +991,8 @@ def test_source_identity_refusal_keeps_actual_read_and_hash(tmp_path: Path) -> N
     snapshot = bridge._sources(root, root / "unused-host", manifest, budget)
     assert snapshot.Failure is not None and snapshot.Failure.Code == "Conflict"
     assert len(snapshot.Reads) == 1
-    assert snapshot.Reads[0].Actual == native.FileIdentity(7, bridge._sha(b"read me"))
-    assert cast(Any, snapshot.Reads[0].Observation.Returned).value == b"read me"
+    assert snapshot.Reads[0].Actual == native.FileIdentity(len(raw), actual_hash)
+    assert cast(Any, snapshot.Reads[0].Observation.Returned).value == raw
 
 
 def test_ordinary_store_write_preserves_terminal_reserve(tmp_path: Path) -> None:
