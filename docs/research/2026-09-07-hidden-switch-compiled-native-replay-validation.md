@@ -237,3 +237,24 @@ Focused Markdown validation and all sixteen final quick-preflight checks pass.
 Their raw outputs are retained alongside the corresponding original/repaired
 attempt; these publication checks do not constitute full runtime or outer
 coordinator admission.
+
+## Independent inventory acceptance and publication
+
+Signed independent evidence audit 2522c1e54c4874ca3c5ee0a2d8b9d609bd0e82a3
+accepts the exact cb86 evidence cut: all 104 + 106 + 32 lossless artifacts,
+fifteen Python and three native source pins per capture, fourteen loaded-source
+observations per capture and all 160 public-result references. The three normal
+replay outputs match across source versions; the two injected failures retain
+the actual return and started/returned/matched counts 1/1/0. The review retains
+its own two initial audit diagnostics and their corrections. No project import,
+fixture replay or native execution was performed by that inventory reviewer.
+The coordinator owns importing and indexing the separate signed review.
+
+The [publication manifest](hidden-switch-compiled-validation/2026-09-07/native-replay-publication/manifest.json)
+retains the exact normal push log with all sixteen quick checks passing and a
+dated independent remote observation of cb86d8085a2f9c0e86ccb99c28c35915867d6097
+on the writer's isolated branch. This proves that source/evidence publication
+cut; it does not turn a numerical fixture replay into whole outer, module or
+runtime admission. The frozen experiment protocol and tags are unchanged.
+
+Signed: Vera, OpenAI Codex using GPT-6 Astra, reference author.
