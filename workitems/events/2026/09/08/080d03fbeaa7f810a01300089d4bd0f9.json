@@ -1,0 +1,14 @@
+{
+  "id": "080d03fbeaa7f810a01300089d4bd0f9",
+  "at": "2026-09-08T05:28:35.327Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZQTN7Y087G0R0010RT03K",
+    "type": "task",
+    "title": "D10 persist catalog dual-slot only not the known.pins alias",
+    "slug": "d10-persist-catalog-dual-slot-only-not-the-known-pins-alias",
+    "priority": "P2",
+    "filename": "081M1ZQTN7Y087G0R0010RT03K-d10-persist-catalog-dual-slot-only-not-the-known-pins-alias.md"
+  }
+}

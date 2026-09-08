@@ -3904,6 +3904,58 @@ let ``catalog persist keeps in-memory generation when both slots fail to decode`
     }
 
 [<Fact>]
+let ``catalog persist writes dual slots and not the known.pins alias`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/catalog-no-alias"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            volume.History <- ZetaFsPolicy.HistoryPolicy.KeepNone
+            let alias = ZetaFsPath.combine2 store "known.pins"
+            let slot0 = ZetaFsPath.combine2 store "known.pins.0"
+            let slot1 = ZetaFsPath.combine2 store "known.pins.1"
+            Assert.False(FileSystem.Current.Exists alias)
+            Assert.True(FileSystem.Current.Exists slot0 || FileSystem.Current.Exists slot1)
+        finally
+            ZetaFsFreeze.dispose volume
+
+        let reopened = ZetaFsFreeze.createManual store mutbuf None
+        try
+            match reopened.History with
+            | ZetaFsPolicy.HistoryPolicy.KeepNone -> ()
+            | other -> Assert.Fail(sprintf "expected KeepNone from slots, got %A" other)
+        finally
+            ZetaFsFreeze.dispose reopened
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``reopen still loads leftover known.pins when both slots are missing`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/catalog-legacy-alias"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        FileSystem.Current.CreateDirectory store
+        FileSystemIo.writeAllText
+            FileSystem.Current
+            (ZetaFsPath.combine2 store "known.pins")
+            "history keep-none\nmeter 0\n"
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            match volume.History with
+            | ZetaFsPolicy.HistoryPolicy.KeepNone -> ()
+            | other -> Assert.Fail(sprintf "expected KeepNone from leftover alias, got %A" other)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``freeze-byte meter survives createManual reopen`` () : Task =
     task {
         ensureHasher ()

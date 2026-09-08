@@ -25,8 +25,9 @@ open Zeta.Core.FSharp.Blake3
 /// last reclaim tick are metered on the volume (`reclaimTickMetered`).
 /// Orphan catalog keeps full ContentHash256 (`orphanObjects`); a path
 /// scan cannot reconstruct ids. Catalog persists in dual-slot
-/// `known.pins.0` / `known.pins.1` (generation + CRC); `known.pins`
-/// is a copy. Reopen still sees crash leftovers. Successful freeze enqueues orphan
+/// `known.pins.0` / `known.pins.1` (generation + CRC). Reopen still
+/// loads a leftover `known.pins` alias if both slots are missing.
+/// Successful freeze enqueues orphan
 /// reclaim when the catalog is nonempty. Reopen enqueues from leftover
 /// sizes. The freeze-byte meter persists in the catalog so reopen
 /// does not start at pacer(0). Default `create` stores CAS on `BlockCas`; reclaim
@@ -334,7 +335,6 @@ module ZetaFsFreeze =
             fs.Move(tmp, path, true)
 
         writePublished (catalogSlot storeDir slot)
-        writePublished (catalogPath storeDir)
 
     let private catalogPersistError (storeDir: string) =
         FreezeError.Fsync(FileSync.FileSyncError.FlushFailed(catalogPath storeDir, 5))
