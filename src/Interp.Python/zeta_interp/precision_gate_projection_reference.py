@@ -1085,7 +1085,253 @@ def _native(
             "Native.Outcome.Kind",
             "candidate or refused required",
         )
+    _trace_admission(value, midpoint_limit)
     return value
+
+
+def _trace_admission(native: Tree, midpoint_limit: int) -> None:
+    """Check the source-fixed structural ledger, not floating computations."""
+    trace = native["Trace"]
+    counters = native["Counters"]
+    outcome = native["Outcome"]
+    candidate = outcome["Kind"] == "candidate"
+    failure = None if candidate else outcome["Failure"]
+    abnormal = failure is not None and failure["Code"] == "Unexpected"
+
+    def require(condition: bool, field: str, message: str) -> None:
+        if not condition:
+            _fail("CandidateShape", "certificate", field, message)
+
+    require(
+        bool(trace), "Native.Trace", "a receipt must retain its actual stage prefix"
+    )
+    mids = [row for row in trace if row["Stage"] == "midpoint"]
+    count = len(mids)
+    complete = (
+        ["input", "parameters", "left-endpoint", "right-endpoint"]
+        + ["midpoint"] * max(count, 1)
+        + ["reconstruction", "objective"]
+    )
+    stages = [row["Stage"] for row in trace]
+    require(
+        stages == (complete if candidate else complete[: len(trace)]),
+        "Native.Trace",
+        "source-fixed complete stage order or ending prefix required",
+    )
+    for attempt, row in enumerate(mids, 1):
+        require(
+            row["Attempt"] == attempt,
+            "Native.Trace.Attempt",
+            "midpoint attempts must be consecutive",
+        )
+    if not candidate:
+        assert failure is not None  # The admitted refusal union owns this value.
+        require(
+            trace[-1]["Failure"] == failure,
+            "Native.Trace.Failure",
+            "last stage must retain the exact returned failure",
+        )
+        require(
+            all(row["Failure"] is None for row in trace[:-1]),
+            "Native.Trace.Failure",
+            "no normal work follows a failed stage",
+        )
+        if not abnormal:
+            require(
+                failure["Stage"] == trace[-1]["Stage"],
+                "Native.Trace.Failure.Stage",
+                "normal failure belongs to its ending stage",
+            )
+            fixed_stage = {
+                "NoRoundedBracket": "right-endpoint",
+                "IterationLimit": "midpoint",
+                "ResolutionLimit": "midpoint",
+            }.get(failure["Code"])
+            if fixed_stage is not None:
+                require(
+                    trace[-1]["Stage"] == fixed_stage,
+                    "Native.Trace.Failure.Stage",
+                    "source-specific refusal belongs to its fixed stage",
+                )
+
+    for index, row in enumerate(trace):
+        stage = row["Stage"]
+        failed = row["Failure"] is not None
+        pair = row["LowerBits"] is not None
+        require(
+            pair == (row["UpperBits"] is not None),
+            "Native.Trace.Bracket",
+            "bracket fields occur together",
+        )
+        if abnormal and index == len(trace) - 1:
+            # The abnormal available prefix does not invent completed work.
+            continue
+        require(
+            pair == (stage != "input" and not (stage == "parameters" and failed)),
+            "Native.Trace.Bracket",
+            "bracket presence must match the admitted stage",
+        )
+        if stage in ("input", "parameters", "reconstruction", "objective"):
+            require(
+                row["PointBits"] is None and row["PhiBits"] is None,
+                "Native.Trace.PointBits",
+                "point and phi are unused in this stage",
+            )
+        elif not failed:
+            require(
+                row["PointBits"] is not None and row["PhiBits"] is not None,
+                "Native.Trace.PhiBits",
+                "completed endpoint or midpoint retains point and phi",
+            )
+        elif stage in ("left-endpoint", "right-endpoint"):
+            assert failure is not None  # Candidate stages cannot be failed.
+            require(
+                row["PointBits"] is not None,
+                "Native.Trace.PointBits",
+                "endpoint point precedes phi entry",
+            )
+            require(
+                (row["PhiBits"] is not None) == (failure["Code"] == "NoRoundedBracket"),
+                "Native.Trace.PhiBits",
+                "endpoint failure retains exactly the reached phi",
+            )
+
+    if abnormal:
+        # This remains NoCandidate with the original Unexpected failure, never
+        # a normal expected-refusal pass or completed primitive-call inference.
+        return
+    require(
+        counters["MidpointAttempts"] == count,
+        "Native.Counters.MidpointAttempts",
+        "one stage row per actual midpoint attempt required",
+    )
+    require(
+        counters["PhiEntries"] == counters["ExpEntries"],
+        "Native.Counters.ExpEntries",
+        "the fixed native phi enters its one exponential",
+    )
+    last = trace[-1]["Stage"]
+    phi = counters["PhiEntries"]
+    updates = counters["BracketUpdates"]
+    if last == "input":
+        require(
+            all(number == 0 for number in counters.values()),
+            "Native.Counters",
+            "input refusal has no numeric entries",
+        )
+        return
+    require(
+        counters["Starts"] == 1,
+        "Native.Counters.Starts",
+        "numeric prefix requires its actual entry",
+    )
+    if last == "parameters":
+        assert failure is not None  # A candidate has the complete stage roster.
+        require(
+            phi == updates == counters["ObjectiveEntries"] == 0,
+            "Native.Counters",
+            "parameter refusal precedes endpoint and objective work",
+        )
+        if failure["Code"] == "Domain":
+            require(
+                counters["LogEntries"] == 0,
+                "Native.Counters.LogEntries",
+                "target-domain refusal precedes logarithms",
+            )
+        return
+    require(
+        counters["LogEntries"] == 3,
+        "Native.Counters.LogEntries",
+        "completed parameters require all three logarithms",
+    )
+    if last in ("left-endpoint", "right-endpoint"):
+        require(
+            phi == (1 if last == "left-endpoint" else 2)
+            and updates == counters["ObjectiveEntries"] == 0,
+            "Native.Counters",
+            "endpoint prefix counters differ",
+        )
+        return
+    require(
+        count >= 1,
+        "Native.Counters.MidpointAttempts",
+        "later stages require a midpoint attempt",
+    )
+    if last == "midpoint":
+        assert failure is not None  # A candidate ends at objective.
+        require(
+            counters["ObjectiveEntries"] == 0,
+            "Native.Counters.ObjectiveEntries",
+            "midpoint failure precedes objective work",
+        )
+        row = trace[-1]
+        code = failure["Code"]
+        if code == "IterationLimit":
+            require(
+                count == midpoint_limit and phi == 2 + count and updates == count,
+                "Native.Counters",
+                "budget refusal follows the final phi and update",
+            )
+            require(
+                row["PointBits"] is not None and row["PhiBits"] is not None,
+                "Native.Trace.PhiBits",
+                "budget refusal retains its completed phi",
+            )
+        elif code == "ResolutionLimit":
+            require(
+                phi == 1 + count and updates == count - 1,
+                "Native.Counters",
+                "resolution refusal precedes phi",
+            )
+            require(
+                row["PointBits"] is not None and row["PhiBits"] is None,
+                "Native.Trace.PointBits",
+                "resolution refusal retains its computed point only",
+            )
+        else:
+            require(
+                (phi, updates)
+                in ((1 + count, count - 1), (2 + count, count - 1), (2 + count, count)),
+                "Native.Counters",
+                "midpoint prefix entry/update counters differ",
+            )
+            if phi == 1 + count:
+                require(
+                    row["PointBits"] is None and row["PhiBits"] is None,
+                    "Native.Trace.PointBits",
+                    "midpoint arithmetic refused before publishing its point",
+                )
+            else:
+                require(
+                    row["PointBits"] is not None,
+                    "Native.Trace.PointBits",
+                    "entered phi has an admitted point",
+                )
+                require(
+                    (row["PhiBits"] is not None) == (updates == count),
+                    "Native.Trace.PhiBits",
+                    "completed phi precedes its update or stop check",
+                )
+        return
+    require(
+        phi == 2 + count and updates in (count - 1, count),
+        "Native.Counters",
+        "reconstruction/objective requires the complete midpoint prefix",
+    )
+    require(
+        counters["ObjectiveEntries"] == (1 if last == "objective" else 0),
+        "Native.Counters.ObjectiveEntries",
+        "objective entry must match its stage row",
+    )
+    if candidate:
+        expected_updates = (
+            count - 1 if outcome["Value"]["Stop"] == "rounded-zero" else count
+        )
+        require(
+            updates == expected_updates,
+            "Native.Counters.BracketUpdates",
+            "candidate stop and update count differ",
+        )
 
 
 class _Post:
