@@ -49,7 +49,18 @@ module StateSpace =
           /// Self-loops: a child whose content equals its parent's (a fixed-point cycle).
           SelfLoops: int
           /// Hit `maxStates` before the space was exhausted.
-          Truncated: bool }
+          Truncated: bool
+          /// Children COMPUTED and then DROPPED because they violated the invariant.
+          ///
+          /// `frameStep` runs before `invariant` is checked, so a pruned child is a fully
+          /// materialised frame that is then discarded with no record kept — the erasure
+          /// is real work, not an unexplored option. Every other ending here was already
+          /// counted (`Revisits`, `SelfLoops`, `Truncated`); this one alone left no trace,
+          /// which is the asymmetry `Chip8ConsultCensus` warns about: "a bucket with count
+          /// zero is a measurement, not an absence."
+          ///
+          /// `explore` never prunes (it takes no invariant) and always reports 0.
+          Pruned: int }
 
         member g.StateCount = g.Frames.Length
 
@@ -93,7 +104,9 @@ module StateSpace =
           Edges = List.ofSeq edges
           Revisits = revisits
           SelfLoops = selfLoops
-          Truncated = truncated }
+          Truncated = truncated
+          /// `explore` takes no invariant, so nothing is ever pruned here.
+          Pruned = 0 }
 
     /// Was any cycle detected (a transposition/revisit or a self-loop)? — branching converges/loops in soft mode.
     let hasCycle (g: Graph) : bool = g.Revisits > 0 || g.SelfLoops > 0
@@ -115,6 +128,7 @@ module StateSpace =
         let mutable revisits = 0
         let mutable selfLoops = 0
         let mutable truncated = false
+        let mutable pruned = 0
 
         let addNew (f: Chip8Cow.Frame) =
             let id = frames.Count
@@ -141,12 +155,14 @@ module StateSpace =
                     | false, _ ->
                         if frames.Count >= maxStates then truncated <- true
                         else edges.Add(fromId, a, addNew child)
+                else pruned <- pruned + 1
 
         { Frames = frames.ToArray()
           Edges = List.ofSeq edges
           Revisits = revisits
           SelfLoops = selfLoops
-          Truncated = truncated }
+          Truncated = truncated
+          Pruned = pruned }
 
     /// **Guarded explore — the invariant constraint** (the don't-die ≡ no-downtime guard, #7119). Same BFS as
     /// `explore`, but a child that **violates `invariant`** is *never entered* (not indexed, not expanded) — it's
@@ -162,6 +178,7 @@ module StateSpace =
         let mutable revisits = 0
         let mutable selfLoops = 0
         let mutable truncated = false
+        let mutable pruned = 0
 
         let addNew (f: Chip8Cow.Frame) =
             let id = frames.Count
@@ -190,12 +207,14 @@ module StateSpace =
                     | false, _ ->
                         if frames.Count >= maxStates then truncated <- true
                         else edges.Add(fromId, a, addNew child)
+                else pruned <- pruned + 1
 
         { Frames = frames.ToArray()
           Edges = List.ofSeq edges
           Revisits = revisits
           SelfLoops = selfLoops
-          Truncated = truncated }
+          Truncated = truncated
+          Pruned = pruned }
 
 
     /// **Backward plan recovery:** the shortest input sequence from state 0 to `goal`, by BFS over the edges
