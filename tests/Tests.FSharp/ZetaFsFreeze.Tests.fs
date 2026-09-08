@@ -3995,6 +3995,55 @@ let ``one Journaled freeze does not persist catalog again at boat success`` () :
     }
 
 [<Fact>]
+let ``one-byte edit freeze does not duplicate known CAS objects`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/d9-pointer-not-copy"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            let before = Array.init 500_000 (fun i -> byte (i % 251))
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L before |> ignore
+            let n0 = ZetaFsFreeze.knownCount volume
+            let pending1 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a ->
+                let n1 = ZetaFsFreeze.knownCount volume
+                let firstGrowth = n1 - n0
+                Assert.True(firstGrowth > 6, sprintf "first freeze grew known by %d" firstGrowth)
+                let after = Array.copy before
+                after.[250_000] <- after.[250_000] ^^^ 1uy
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L after |> ignore
+                let pending2 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! second = pending2.ConfigureAwait(false)
+
+                match second with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok b ->
+                    Assert.NotEqual<string>(a.Content.ToHex(), b.Content.ToHex())
+                    let n2 = ZetaFsFreeze.knownCount volume
+                    let secondGrowth = n2 - n1
+                    Assert.True(
+                        secondGrowth < firstGrowth / 2 && secondGrowth <= 32,
+                        sprintf "1-byte edit grew known by %d after first grew by %d" secondGrowth firstGrowth
+                    )
+                    Assert.True(ZetaFsFreeze.isReadable volume a.Content)
+                    Assert.True(ZetaFsFreeze.isReadable volume b.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``freeze-byte meter survives createManual reopen`` () : Task =
     task {
         ensureHasher ()

@@ -2125,6 +2125,19 @@ module ZetaFsFreeze =
 
     let freezeBytesSinceReclaim (volume: Volume) = volume.FreezeBytesSinceReclaim
 
+    let knownCount (volume: Volume) =
+        lock volume.Gate (fun () -> volume.KnownObjects.Count)
+
+    let private objectsNotYetKnown (volume: Volume) (cas: ZetaFsJumprope.Cas) =
+        lock volume.Gate (fun () ->
+            let acc = ResizeArray<struct (ContentHash256 * byte[])>(cas.Objects.Count)
+
+            for kv in cas.Objects do
+                if not (volume.KnownObjects.ContainsKey kv.Key) then
+                    acc.Add(struct (kv.Key, kv.Value))
+
+            acc.ToArray())
+
     /// DST / crash leftover: record a CAS object the volume wrote. Full
     /// ContentHash256, not the 128-bit path. Disk scan cannot reconstruct this.
     let noteKnownObject (volume: Volume) (id: ContentHash256) (size: uint64) =
@@ -2460,9 +2473,9 @@ module ZetaFsFreeze =
             | Buffered ->
                 let mutable putErr: FreezeError option = None
 
-                for kv in rope.Cas.Objects do
+                for struct (id, bytes) in objectsNotYetKnown volume rope.Cas do
                     if putErr.IsNone then
-                        match putObject volume kv.Key kv.Value with
+                        match putObject volume id bytes with
                         | Error e -> putErr <- Some e
                         | Ok() -> ()
 
@@ -2511,15 +2524,7 @@ module ZetaFsFreeze =
                             TaskCreationOptions.RunContinuationsAsynchronously
                         )
 
-                    let objects =
-                        let arr = Array.zeroCreate rope.Cas.Objects.Count
-                        let mutable i = 0
-
-                        for kv in rope.Cas.Objects do
-                            arr.[i] <- struct (kv.Key, kv.Value)
-                            i <- i + 1
-
-                        arr
+                    let objects = objectsNotYetKnown volume rope.Cas
 
                     let item =
                         { IntentLsn = intentLsn
