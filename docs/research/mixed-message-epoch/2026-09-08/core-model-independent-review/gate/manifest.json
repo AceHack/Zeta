@@ -1,0 +1,45 @@
+{
+  "Scope": "Reviewer documentation-only quick gate; all16 pass; two unique reports and independent archive results, no named execution",
+  "Records": [
+    {
+      "File": "001.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-final-reviews-quick-1/completion.json",
+      "Bytes": 51,
+      "Sha256": "E75A852F826851DFCDF2E591A92B2A3189B4246C546A91237CA90AE50D79CC07",
+      "StoredBytes": 70,
+      "StoredSha256": "BC5C7E0E30EBB3636AE019E101F6CE1DE2FB0C3FEE9203B7CCD889E629B06A38"
+    },
+    {
+      "File": "002.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-final-reviews-quick-1/invocation.json",
+      "Bytes": 158,
+      "Sha256": "65FEF9D34EBD3FAB2DEF5EC182FA5A997CE03E3B0AB976E715957405A1DCC950",
+      "StoredBytes": 153,
+      "StoredSha256": "D0C90410F1E07F4AB743F3786C343244513B660F4C0625573F852535257D5D85"
+    },
+    {
+      "File": "003.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-final-reviews-quick-1/pid.json",
+      "Bytes": 15,
+      "Sha256": "408A7E5A8F4480E567A936890CB4A268B00F675063D65FEAE0142B08AAADC36D",
+      "StoredBytes": 35,
+      "StoredSha256": "F2D4240D580207DFB80F93B455BF180702C6197F9E7337552FE4913DCEAA863E"
+    },
+    {
+      "File": "004.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-final-reviews-quick-1/stderr",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7"
+    },
+    {
+      "File": "005.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-final-reviews-quick-1/stdout",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF"
+    }
+  ]
+}
