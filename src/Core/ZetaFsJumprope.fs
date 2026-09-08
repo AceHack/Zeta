@@ -116,6 +116,9 @@ module ZetaFsJumprope =
     let private dvBytes (b: byte[]) : DynamicValue =
         DynamicValue.Bytes(ImmutableArray.CreateRange b)
 
+    let private dvBytesSpan (s: ReadOnlySpan<byte>) : DynamicValue =
+        DynamicValue.Bytes(ImmutableArray.Create<byte>(s))
+
     let private dvObj (pairs: (string * DynamicValue) list) : DynamicValue =
         DynamicValue.Object(
             pairs
@@ -488,11 +491,11 @@ module ZetaFsJumprope =
 
     /// Chunk ContentId only. `firstChangedWindow` must not put a Cas
     /// (objects + payload copy) for every prefix window it walks.
-    let private chunkIdOf (data: byte[]) : ContentHash256 =
+    let private chunkIdOfSpan (s: ReadOnlySpan<byte>) : ContentHash256 =
         let dv =
             dvObj
-                [ "data", dvBytes data
-                  "len", DynamicValue.Int(int64 data.Length)
+                [ "data", dvBytesSpan s
+                  "len", DynamicValue.Int(int64 s.Length)
                   "t", DynamicValue.String "chunk/1" ]
 
         hashBytes (DynamicValue.toCanonicalCborOk dv)
@@ -518,10 +521,9 @@ module ZetaFsJumprope =
                     mismatch <- true
                 else
                     let n = int span
-                    let slice = Array.zeroCreate n
-                    Buffer.BlockCopy(bytes, int off, slice, 0, n)
+                    let window = ReadOnlySpan<byte>(bytes, int off, n)
 
-                    if chunkIdOf slice <> id then
+                    if chunkIdOfSpan window <> id then
                         mismatch <- true
                     else
                         first <- first + 1

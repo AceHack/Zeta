@@ -254,7 +254,7 @@ let ``firstChangedWindow of a 1-byte edit does not allocate a Cas per prefix win
     let n = GC.GetAllocatedBytesForCurrentThread() - allocBefore
     Assert.True(walked > 0, sprintf "second walk firstChangedWindow=%d" walked)
     Assert.True(
-        n >= 0L && n < 4L * 1024L * 1024L,
+        n >= 0L && n < 3L * 1024L * 1024L,
         sprintf "firstChangedWindow allocated %d bytes" n
     )
 
