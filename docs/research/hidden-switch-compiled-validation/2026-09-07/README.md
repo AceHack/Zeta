@@ -382,3 +382,9 @@ The [seventh integrated validation](integration-7/README.md) preserves all
 1,259 compiled Python tests and all 18 full repository preflight checks at
 source `e6238f8acc89c4d619c6631f0cb0111aa9258c20`, with complete logs,
 95 source/config pins and the actual 4,870-entry owned fixture tree.
+
+## Replay publication gate
+
+The [2026-09-08 publication record](../2026-09-08/replay-publication-gates/README.md)
+retains both full-gate attempts, the complete TLC crash diagnostics, unchanged
+retry, 67 helper tests and the four canonical source-history ref receipts.
