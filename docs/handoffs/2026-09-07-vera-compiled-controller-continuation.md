@@ -1,7 +1,7 @@
 # Vera: compiled-controller continuation
 
 Date: 2026-09-07
-Checkpoint: 23:24 UTC
+Checkpoint: 2026-09-08 02:17 UTC
 From: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade handoff
 Lifecycle: active
@@ -17,7 +17,7 @@ Status: implementation active; registered experiment unopened
 > original study's source/results. The original hidden-switch result and new
 > registration are on main through PRs #16928 and #16947. Historical graph
 > capture five is on main through #16974, with all runtime admission flags false.
-> The current compiled Python subset passes 1,164 tests; actual native semantic
+> The f2c621 source cut passes 1,314 compiled Python tests; actual native semantic
 > replay passes all registered hand slices. Neither is full implementation
 > admission. Finish the 92-case recorder/replayer and actual runtime body/closure
 > evidence, independently review the complete source, and publish the immutable
@@ -41,26 +41,75 @@ inventory includes one explicitly checked inherited FUSE project integration.
 Current required/native checks passed; the historical drift reporter remains
 separately red. The shared view is clean and ancestry verified.
 
-The [sixth integrated validation](../research/hidden-switch-compiled-validation/2026-09-07/integration-6/README.md)
-passes 1,164 compiled Python tests in 82.61 seconds at
-`6f497346389491ccd8be30f774aa857f42ad6854`, binding 91 source/config
-files and the complete 4,503-entry owned tree. This adds reviewed record-store,
-outer-structure and strict artifact-reader primitives. Actual complete outer
-production and independent static/file/identity/native replay remain in progress.
+The [eighth integrated validation](../research/hidden-switch-compiled-validation/2026-09-07/integration-8/README.md)
+passes 1,314 compiled Python tests in 98.34 seconds at
+`f2c6219dccd7172c75662132647d6bdb9e2ff76f`, binding 97 source/config
+files and the complete 10,118-entry owned fixture tree. The seventh source
+cut separately passed all 18 full gates. Historical runs keep their original
+source and evidence scope.
 
-Fresh copied-target custody and a version-pinned isolated ClrMD query now
-establish the first three current method extents. The native owner additionally
-observed all 130 prepared methods matching 34,660 compiler/physical bytes at
-`b672cd5b3c40423982ff7bdaed9439562f6f6e48`; that newer actual evidence is
-awaiting independent review at this checkpoint. This does not imply every
-prepared method dynamically executed. All full runtime/body/closure flags
-remain false. The old SOS refusals are not retroactively changed.
+[PR #16999](../research/hidden-switch-compiled-validation/2026-09-08/pr-16999/README.md)
+merged the reviewed replay and native custody prerequisites at 01:47:50 UTC.
+All 2,332 changed paths exactly match reviewed head, merge and observed main
+`d2b1af4be9d72b02c5b324b8b0c9de0ce390bf77`; the shared view was clean
+and ancestry verified there. The full publication gate passed all 18 checks
+on an unchanged retry. Complete CI passed, with the original missing PR-body
+signature and its successful correction both retained. Its finite publication
+work item is complete; the parent compiled-controller work remains active.
 
-The detailed sections below retain the prior 22:14 snapshot and its exact run
-scopes; this checkpoint takes precedence for current work ordering. No immutable
-implementation archive or registered 9307/9409 stream exists. The next work is
-finite call decoding/closure and complete outer producer/replay, followed by
-independent admission and archival before any scientific measurement.
+The seven actual file cases retain eleven original and eleven fresh operations,
+all seven matches and all 56 store-return associations. Identity replay retains
+fifteen independently audited original/fresh pairs. Copied-target custody and
+isolated ClrMD establish all 130 prepared-method extents matching 34,660 bytes;
+LLVM attempt three decodes all 8,665 words with full correspondence. Earlier
+refused attempts remain preserved. These finite checks do not establish full
+runtime/body/call closure; all full admission flags remain false.
+
+The native owner has additionally completed an independently reviewed retained
+metadata transfer inventory: 139 output records, 130 methods and 8,665 words.
+Its unresolved premises remain explicit. A proposed finite data-range roster is
+being derived from retained metadata only; no physical data-range read is yet
+claimed. Native-dependent pure replay has a separately reviewed 55-test source
+and actual complete/pending/missing records awaiting coordinator integration.
+Complete 92-case outer orchestration remains open. No implementation archive
+or registered 9307/9409 source or scientific measurement exists.
+
+## Added learning direction
+
+Aaron's [distributional learning direction](../research/2026-09-08-distributional-learning-resource-aware-integration-direction.md)
+connects Liouville/QBism, EP/BP/VMP, affective propagation, relational memory,
+FerryThrottler, scheduler/Vision/CHIP8 prediction and multiple resource types.
+Work item `081M1Z63YMC087G0R003N5FH9X` uses results to choose investment.
+The old compiled registration remains unchanged.
+
+The [PrivacyEconomy repair](../research/distributional-learning/2026-09-08/privacy-grant-repair/README.md)
+fixes actual lower-cap revocation and integer overflow. Seven new tests fail on
+the old source; all sixteen pass after repair, including a 512-combination grid.
+An unchanged-source retry passes all 18 repository gates. Original compiler and
+test-process crashes remain retained; no cause is inferred from the retry.
+
+The [actual small rooms](../research/distributional-learning/2026-09-08/actual-zeta-rooms/README.md)
+retain ten exact finite rows, sixteen Zeta rows, 25 designated checkpoints and
+five process controls. Independent validation accepts all five final streams;
+124 imported reference tests pass. Original tuple syntax, FSI zero-exit and
+independent validator framing/assembly-identity errors remain retained.
+Identical Gaussian moments can lose decision-relevant distribution shape,
+duplicated consensus messages can inflate precision, and Vision funding
+confidence must remain separate from probability. These are known-answer
+controls, not learned-system or state-of-the-art performance. Prepare the
+focused learning/repair publication, then preregister an actual learned
+comparison with chronological holdout and feasible external baselines.
+
+Aaron subsequently clarified that the system candidate is a compositional
+Bayesian/probabilistic circuit with neural modules or nested subgraphs. Read the
+[restored circuit continuation](../research/2026-09-08-composable-learning-circuit-continuation.md)
+and September 3 frozen edge-module contract before choosing a learner. Plain
+recurrent architectures are component/baseline candidates. The earlier CFB
+negative results and Precision-Gated Experts comparison should guide the next
+investment. No proposed CountRecall training or probe has run.
+
+The detailed sections below retain older source-scoped evidence. This checkpoint
+takes precedence for current work ordering, not for relabeling historical runs.
 
 ## Current evidence
 

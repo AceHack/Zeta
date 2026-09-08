@@ -383,8 +383,19 @@ The [seventh integrated validation](integration-7/README.md) preserves all
 source `e6238f8acc89c4d619c6631f0cb0111aa9258c20`, with complete logs,
 95 source/config pins and the actual 4,870-entry owned fixture tree.
 
+## Eighth integrated Python validation
+
+The [eighth integrated validation](integration-8/README.md) preserves all
+1,314 compiled Python tests, 97 source/config pins and the 10,118-entry owned
+fixture tree, including the original packaging-limit refusal and its bounded repair.
+
 ## Replay publication gate
 
 The [2026-09-08 publication record](../2026-09-08/replay-publication-gates/README.md)
 retains both full-gate attempts, the complete TLC crash diagnostics, unchanged
 retry, 67 helper tests and the four canonical source-history ref receipts.
+
+## Replay prerequisites verified on main
+
+The [PR #16999 proof](../2026-09-08/pr-16999/README.md) retains the complete
+2,332-path equality check, current CI and the original description-gate failure.

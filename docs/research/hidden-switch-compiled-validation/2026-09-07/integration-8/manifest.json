@@ -1,0 +1,533 @@
+{
+  "Scope": "1314 compiled Python tests including identity replay at the unchanged source cut; not actual complete outer or runtime admission",
+  "SourceCommit": "f2c6219dccd7172c75662132647d6bdb9e2ff76f",
+  "Command": "uv run pytest -q --basetemp=../../.git/compiled-integrated-test-fixtures-8 tests/test_hidden_switch_compiled_*.py",
+  "WorkingDirectory": "src/Interp.Python",
+  "ExitCode": 0,
+  "Passed": 1314,
+  "ElapsedSeconds": 98.34,
+  "SourceUnchangedThrough": "bd229f56aafb9a387285f59b198bb4b1bc6d5c2e",
+  "SourceFiles": [
+    {
+      "File": "src/Interp.Python/pyproject.toml",
+      "Bytes": 4499,
+      "Sha256": "9AF39874A0B47567E148E33558D1A1A7ABAE4196EAE4AD915E1ECD0C61508B95"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_activation_access.py",
+      "Bytes": 5765,
+      "Sha256": "84CD03CD167ECEB9EA7DC565668B20DCCE9DEF02DC19D069FDEEFF9590E28F6F"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_dense_hmm.py",
+      "Bytes": 2904,
+      "Sha256": "8BBCBC3AC57B193755B63D9D4531A1BB4EDCDC4BE04A43D2DB1CA12EF3125DE3"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_factored_comparison.py",
+      "Bytes": 2855,
+      "Sha256": "85293155E41D28C3E96A3E1ADE123BFAA8E175BECED45267894F604FF1075C00"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_finite_stochastic_bridge.py",
+      "Bytes": 7203,
+      "Sha256": "C68774442DDE4CE2D517A3DDBBBB7E01BE298E18816FE4FCD6849305DD6EE4EC"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_admission.py",
+      "Bytes": 10411,
+      "Sha256": "0D72CFEB5B56C9BC4843BBDB99C91CFFB43951E84B2907ECA32E86AC2442E9C0"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_bindings.py",
+      "Bytes": 15607,
+      "Sha256": "70FE51D15C62094BA2139D1BC653D2E9BBE12AFC824297AE6846DF896B9FB92A"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_certificate.py",
+      "Bytes": 6998,
+      "Sha256": "59D196BDC65C07DE8CE70BDDBAEDEC85385E8B0D7251B3798307B7FB218ED80D"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_certificate_cases.py",
+      "Bytes": 4391,
+      "Sha256": "A9BFA7215ADE84D674C0C8C207B5BB4726ED2B376C8E871FC4CBBD0EBA84DDEB"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_choice_replay.py",
+      "Bytes": 9098,
+      "Sha256": "0D369F53F24D7492A6C9EA5DA52202EF5F8F7CBDFDA4956CB40AD770D3D56768"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_conformance.py",
+      "Bytes": 8814,
+      "Sha256": "38F34E690FE102B2D315A209D398BAEDAB0974B2FFCFD15675D6F1C7328ACC40"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_cost_ledgers.py",
+      "Bytes": 12146,
+      "Sha256": "EF8020A1752CEE40A181C30A91BCD3CD9DEAEB4A09345752FC9FA74FD9215FAB"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_falsifiers.py",
+      "Bytes": 33720,
+      "Sha256": "B736E3D1D5D41A9CB3EC2BE7AEE4C88A112A4DCD5F5F0D0C5CDA7ADC768BD789"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 15134,
+      "Sha256": "4C0E2F9F8F0179219924079F3BC838DEF828D12743928A4E306EDB78E4A80195"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_file_replay.py",
+      "Bytes": 16999,
+      "Sha256": "899EEE7DCDDC21F661502FCFDB4B64DCD17F83A47C514B34E258B4C7EFFD7466"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_identity_fixtures.py",
+      "Bytes": 22918,
+      "Sha256": "88AF1D10D0EBA67554E027895AD9260877BA9A65928B5DE82C33CEB5042F6418"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_identity_replay.py",
+      "Bytes": 21660,
+      "Sha256": "0F15B0F967B281E17902304E6D8D5C1CB7870EFD051F2BED04D9228FECD87D8A"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_ieee.py",
+      "Bytes": 4586,
+      "Sha256": "553320BD23876AF30610EFA82BEFB84BFDA1C56A825CFC428CE8A496303CCB91"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_native_fixtures.py",
+      "Bytes": 21458,
+      "Sha256": "5B6E71B3262AC08D6C704273EF7472DBC5B341C0B47852C88791AE49749E4694"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_old_replay.py",
+      "Bytes": 12765,
+      "Sha256": "2FFDED7CC2183C5E28ABAA1F26A4549DE94B13812E0AA54B59228790D793F61E"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_outer_artifacts.py",
+      "Bytes": 12080,
+      "Sha256": "EB51D77CA23CA815AA504C2A4B03FDFE9CBAAEF386CB160DAA4AED992627B76A"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_outer_negatives.py",
+      "Bytes": 4954,
+      "Sha256": "7ECAC3D47B61A1505307D9C3801879668A061F8F79DAAA72A13B839BD6AA0615"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_outer_structure.py",
+      "Bytes": 15198,
+      "Sha256": "F8742FF762092ECCBF1AFAC949675AFB20729E2BFABEB34C3A78A7702E619DDD"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_python_identity.py",
+      "Bytes": 17882,
+      "Sha256": "921F0DFC045380FA2744C5E69BED5F5BB60AB314E9797F2DCF1863109CF8A224"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_record_encoding.py",
+      "Bytes": 7877,
+      "Sha256": "29F07FA07B1381C2257F9E047FF2064E2A19A7CB371453FB42DAA1F6563DE702"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_record_store.py",
+      "Bytes": 27249,
+      "Sha256": "994137F9A83008649CB21D891C6BDAFB3F06B090E7D6988F492785B50809A10E"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_reference.py",
+      "Bytes": 13831,
+      "Sha256": "23EBB497F30D92C9360FB90273F84F6C96747599A087E6CA130038881901220A"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_replay.py",
+      "Bytes": 13034,
+      "Sha256": "7F3C147A6B8E7C0D28612169379EFA7A805FA714BC84DDDC55ECE5FB8D539149"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_schedule.py",
+      "Bytes": 5420,
+      "Sha256": "3977317EF720605123256299D6BD5801E32FC2F7DB531FDBF3DE555D7234F019"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_sources.py",
+      "Bytes": 9443,
+      "Sha256": "CB8B44F6D9FC30D4A4F4A1AF562D3341AC06B627C0A4209C8E37B1424C66223E"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_static_fixtures.py",
+      "Bytes": 11700,
+      "Sha256": "0C082A2926B7B4E45022E0D87254DFC899A4966F94E402592E19BAAFD1E45004"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_static_replay.py",
+      "Bytes": 24506,
+      "Sha256": "70DD52D43E0E1C467A628C073BE40084516C8497069132C4F9019A75A8878AE8"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_compiled_storage.py",
+      "Bytes": 10766,
+      "Sha256": "336EF1B5FF4E17368A6F378B6B4F6EE660F7DF35FD22E8E52E9345803728B3A4"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_reference.py",
+      "Bytes": 19096,
+      "Sha256": "AEEED7696F0E5D058228281ED6C47396FA1146EF337CFD8F2F0F41BA71B49FA5"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_replay.py",
+      "Bytes": 13446,
+      "Sha256": "078BA7C3873F31D9E7F3831794AFC36FB04532CD93F89765F1705C9164808879"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_hidden_switch_verdict.py",
+      "Bytes": 10588,
+      "Sha256": "29038C52873EAD48A73430867207D690C0EF06CEE86CBE71F3D2E40114AA6F6F"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_mess3_reference.py",
+      "Bytes": 5476,
+      "Sha256": "EBBE34BE2739C9C347B616CCF8E87DE49EC54B2A318A370B6B0877ADF200D64D"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_predictive_state.py",
+      "Bytes": 9483,
+      "Sha256": "F807C612865B358D36E6208C226CC436F11DBEC41F6D4666BCF67A50ADE73BB4"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_relational_identity.py",
+      "Bytes": 6192,
+      "Sha256": "7224637A7AC5A3C70FB4EBD101F74505E0265232BDB37A1E645A9ADE57A22F9D"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_catch_carrier.py",
+      "Bytes": 7063,
+      "Sha256": "1E2A6E4A73B2205C1AEFC5F6D3F7736162A0AA9C8C23D347F88332D711A2EF27"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_catch_envelope.py",
+      "Bytes": 12435,
+      "Sha256": "A6A84BD312606F8ACAE6CAEE787E65A11ABCFA1D9A42557A7BD519F877DE7922"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_catch_replay.py",
+      "Bytes": 7489,
+      "Sha256": "E95CB7971CFB33DBA28B13CB4079F4F16603194024238028101D9B0434E55F35"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_catch_verdict.py",
+      "Bytes": 21906,
+      "Sha256": "843191076FBB54AEF3642602D177D5B6C9F41A183C597231C4F137A3834AF76B"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_signal_replay.py",
+      "Bytes": 10074,
+      "Sha256": "1FE5C61DBE7954C889740A232FF7E71994B87E4374F0747E80A5153F68C2765D"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_signal_training.py",
+      "Bytes": 8997,
+      "Sha256": "D00EA75FD2B475D3AFB19423879DD2CFB8E0F584440E063397152E7CAE953154"
+    },
+    {
+      "File": "src/Interp.Python/tests/test_rendered_signal_verdict.py",
+      "Bytes": 10446,
+      "Sha256": "907D80533A8A105871B676598FB570EA68D99245491772E9CA68C37B0B74183A"
+    },
+    {
+      "File": "src/Interp.Python/uv.lock",
+      "Bytes": 344990,
+      "Sha256": "3550FDE780C137D9CAA009B9B371A2C43F227C1A8654BBA7D8BA5ADE56BC53A2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/__init__.py",
+      "Bytes": 382,
+      "Sha256": "FA6DE54ED3F65FD8C7CE8895D68A2D4B0FE040735E55A8E2D01C3BBCF8BE50C9"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/activations.py",
+      "Bytes": 3847,
+      "Sha256": "0ECF88098099B11D192A9F1916F342A2DDA3556FE75024E8A95D5BE08ABD5B19"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/comparison_replay.py",
+      "Bytes": 10758,
+      "Sha256": "BFE67D16C0BF5B9B29B9EF1552279C6800346D918A62045E11D8B52455E7CA0A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/factor_change_replay.py",
+      "Bytes": 10282,
+      "Sha256": "F19E817F0801230F9087E39BBC1D546237150D00F8356AE2AFB6CCA2EBFC89B4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/finite_stochastic_bridge.py",
+      "Bytes": 20122,
+      "Sha256": "2746DA7950EFDB88854151095BF35DCBE44531318A05F6A13F24FE0635CAA77C"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "BD5BFEAA68735581E17BCEEB01C24AC0AF975021F35302DCBD76E30B2211EE91"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_bindings.py",
+      "Bytes": 14671,
+      "Sha256": "14A91DEEA826EB94F40407B269124D734C5A1AF754B1A7A5036216033AB4C14F"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0AD02607FF6FD06620F9FC447B653E1798BBFBA566CD7A4142C0C3C0256ECEC3"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate_cases.py",
+      "Bytes": 8344,
+      "Sha256": "F79FA50B58B3B393AEF15BB38528F92FDBCAAECBD8D824844B60B4B0A5236FA1"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_choice_replay.py",
+      "Bytes": 6923,
+      "Sha256": "9A4A7D302F1B7345D4A49A0C1E81D316397C3960426C86C88334B0BED2ABB3CE"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_conformance.py",
+      "Bytes": 17853,
+      "Sha256": "A57C74457740BF1950C8F108CA179E4723E9911E919CBD4A30FE6EB58E0AADA2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_cost_ledgers.py",
+      "Bytes": 9185,
+      "Sha256": "EDEC1120FCF4FFBF199E3B0EE0831B1F18ED08E573B5E0CF876E3FC5BCE69F8E"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "Bytes": 33300,
+      "Sha256": "3D2BFDB3D961D7B30637E7ADB1F28A3B6A1F7703D5C04D0FC986E8F18A19F463"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_fixtures.py",
+      "Bytes": 21212,
+      "Sha256": "DEB65F08B364923A7F78B7CC56E60B92F877F1CB1F8814891E8B352AB8F4427C"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_file_replay.py",
+      "Bytes": 18140,
+      "Sha256": "257D8280D03609D8A0F82A44796F402BA9901E1A9E6B101DC15524ADB0798EFC"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_fixtures.py",
+      "Bytes": 35228,
+      "Sha256": "9F9915FCE386175FBF2AA1DE1073B831725FED70BF0B29520D85AACDD2569C8D"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_identity_replay.py",
+      "Bytes": 36876,
+      "Sha256": "00522B05E4679FBDA8D201F8B3847BC8CF00EE10BEAC5D03F8FD5CA1C7EB1150"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702A5E6E6BD330CB4D27DD3C3BDDBBEBA779EA8D6127249EFD7E9ECBFA54D8C4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_native_fixtures.py",
+      "Bytes": 19120,
+      "Sha256": "E02A44445949335824AF9E09990FE34777723AB054C54BFA6FC5C4DCD96953BD"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_old_replay.py",
+      "Bytes": 10841,
+      "Sha256": "8571296D52A4D3F4C00D787ADF258E9558D91072F52BF5E67F9B0387803C45BB"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_artifacts.py",
+      "Bytes": 7194,
+      "Sha256": "B080371D01E61B045A3EB6BCF33FEB8AF4F5D0B99E5105398FEF7BCFD98E8018"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_negatives.py",
+      "Bytes": 4039,
+      "Sha256": "F94078D01D278E3D4F498020991A782E8DA531904A1D86AE91695C585DF5B60B"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_outer_structure.py",
+      "Bytes": 17471,
+      "Sha256": "330EA0276ADEE2E17BD3FF5729032076C11E7421C77CCF6186364E27B22FCD32"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_python_identity.py",
+      "Bytes": 16229,
+      "Sha256": "DE6D55FBBDAEE11C82F6A99E13C2342C7AE043199BB8A2BF3E91982BD18E4A0E"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892B59A1572B093805171E0F495126F006A72D56CA87260251C9544C29019744"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_record_store.py",
+      "Bytes": 20305,
+      "Sha256": "75BA7825F7E925460B411C977C4F9F4F34D55BA40383B4F47482C1DB652E1008"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "F9C88B46766034EF67DD78380213BA9C3CC153762D01505BB615DC69A3175B6A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ED2CF49D070F0D9CE3243DD634BA53FE35DEF36742D26ABEB7644469DFBBA45"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_schedule.py",
+      "Bytes": 4685,
+      "Sha256": "9DC2D6EE3AB6037F054E9FC4BACB10E462C0DD8632E2E3D33FB0A73B5F212A68"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_sources.py",
+      "Bytes": 7226,
+      "Sha256": "7D048A1CD862934B6FA53D634FB05893852F8A528D8004B0297D78611742AC44"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_static_fixtures.py",
+      "Bytes": 14785,
+      "Sha256": "CE877FE343A241CE2589338208E4475EEDAD2AE464559EAF8B478228FB320B0E"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_static_replay.py",
+      "Bytes": 15552,
+      "Sha256": "0AD063E0003637A22F6BFA3EB8CB55135B5D8A19E88D499F46FF097B4B07B252"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_compiled_storage.py",
+      "Bytes": 10694,
+      "Sha256": "3C7A9C8FECF51B10AA034E4764D18E773AB892382E8CDB4BE3E0945D3CD01750"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "Bytes": 27739,
+      "Sha256": "7130FBF88E4A5F7393AD59CFFD6C56637B3D226F630B8CF547167D319BF880E2"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_replay.py",
+      "Bytes": 31240,
+      "Sha256": "1F676223B32583AB3313476373A6FA9FBA792231827F504788F39C1BA42D50D5"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hidden_switch_verdict.py",
+      "Bytes": 12349,
+      "Sha256": "DEB49D086669FC71C8675548408EE251FDB175624FEB48931993D60F70D36F23"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/hmm_reference.py",
+      "Bytes": 2281,
+      "Sha256": "0FA3177689ABD915234DA0D7E9AB51B29EFE220F8FCF2481783794E5E693A0D8"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/inference_replay.py",
+      "Bytes": 4942,
+      "Sha256": "AA225B477D68DBB895935EAEB40B2328EE413C51A2863F24D87B4FF8B773ABE6"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/mess3_reference.py",
+      "Bytes": 6537,
+      "Sha256": "A142B8C6EE22CF5FF7B39A64E8B3D4C5B652B118E083CBDE3E1066BE8D1CC365"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/mess3_replay.py",
+      "Bytes": 13677,
+      "Sha256": "EC79404E483298B4878AFF9F9D730B716A7C2ECEF06309445B9E55E19303199A"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/predictive_reference.py",
+      "Bytes": 10464,
+      "Sha256": "34BFEB52549D3FA03A211E82F518A1064D42DA20BD2D06D806A8A6CE09FBE7E5"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/relational_identity.py",
+      "Bytes": 25993,
+      "Sha256": "4387FE30E23C5D6EB14B0234E8EB7422BFDD687F37D24BA0FC9BE7DF532D1714"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_catch_carrier.py",
+      "Bytes": 15380,
+      "Sha256": "E9341904BF33323C5982845D39DD2C205AF6E3BD7853ACF416C0D2E9075002A4"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_catch_replay.py",
+      "Bytes": 25494,
+      "Sha256": "3E1770B4A18571E87E515E3CEFBB834C178BB5618B8ABA9B83073D8FA67E2918"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_catch_verdict.py",
+      "Bytes": 33419,
+      "Sha256": "5220028DB504BAFAC4517EE193AC5C2A6AE0B9003C110A89B8EF5BEA9929F509"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_signal_carrier.py",
+      "Bytes": 8081,
+      "Sha256": "9BE778C3ADC8D4A0B3640B5596702BD05B3B7B2B522217AA73753C9E580FBE02"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_signal_replay.py",
+      "Bytes": 26251,
+      "Sha256": "D2EB008F0CC8E2CE5D667E10F36A082AA1F3A94EBC4D51D9A0DE59294D1ED318"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_signal_training.py",
+      "Bytes": 8884,
+      "Sha256": "2500E27994AD1E60CABFC19D38007F22AA716EC14EABC1452D706D6BC911D6D0"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rendered_signal_verdict.py",
+      "Bytes": 13460,
+      "Sha256": "EFBC2F4E3C2CEA092FD95A59D98B9E5925EA6E7D1460A81CFAC2A470DD2D2609"
+    },
+    {
+      "File": "src/Interp.Python/zeta_interp/rrxor_replay.py",
+      "Bytes": 11830,
+      "Sha256": "4DC5AE12D176E72553D73C6691BEA0CF84A48C315A692E8942A919C384093B91"
+    }
+  ],
+  "FixtureEntries": 10118,
+  "FixtureRegularBytes": 18371604,
+  "Artifacts": [
+    {
+      "File": "compiled-integrated-tests-8.log.gz",
+      "Bytes": 1552,
+      "Sha256": "7D39171E3C4C8CAE9FD913716AA9CFC21C23A9DFD4CE074F30DA71D54ADE88D0",
+      "Encoding": "gzip",
+      "StoredBytes": 136,
+      "StoredSha256": "FF37EA8D9FFDD0DFBBC379CF2EFD4CC1FCF7BC8B237D9E69EECBAB28BAFF6F34"
+    },
+    {
+      "File": "compiled-integrated-test-fixtures-8-inventory.json.gz",
+      "Bytes": 2048851,
+      "Sha256": "5C0901DE8FDEF779242D37B78FA3B2AAF47892941FEDE9DFD72F99A86D2C5C74",
+      "Encoding": "gzip",
+      "StoredBytes": 204478,
+      "StoredSha256": "BF4FF978B8FF8F4951FAC2A48AEA44A3724C8C05B56161BF3E29F2B97D814A8C"
+    },
+    {
+      "File": "compiled-integrated-test-fixtures-8.tar.gz",
+      "Bytes": 36003840,
+      "Sha256": "7CE322046DB7BB5D9EA2117799F988CE9E90E793A5DB03156FDAA441762F6EFF",
+      "Encoding": "gzip",
+      "StoredBytes": 5071556,
+      "StoredSha256": "B8DA4B36C3E7593F10B617EE4F4BB0A5395D585FE2CFAEF181E2C4FD101F241B"
+    },
+    {
+      "File": "retain-compiled-integration-8.py.gz",
+      "Bytes": 2921,
+      "Sha256": "559EC97265C7E9B2A9605D4CAB295575F5F1D0CE081470F571940D10C65DE03F",
+      "Encoding": "gzip",
+      "StoredBytes": 1344,
+      "StoredSha256": "18753F5B60764BCE3FBB14DBE8BCA2970F3C89B77A034462A75CE855F4E0A06C"
+    }
+  ]
+}

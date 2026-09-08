@@ -1,0 +1,67 @@
+{
+  "InitialRecordCommit": "85ebb64ed45af7576d58870eeb7173933c4dbd47",
+  "CorrectedRecordCommit": "e2503d3b3fcbfc1359c64486d02782140009f7e0",
+  "PublicationCopyCommit": "8cb522b2dab2fb50792a3d7ff6ef7f3af21f5e64",
+  "InitialRecord": {
+    "Bytes": 7237,
+    "Sha256": "3d0725d69251e9a66a4ad1bbb6a607ad6c3a53af2052760c120e566097bfae0a"
+  },
+  "CorrectedRecord": {
+    "Bytes": 7282,
+    "Sha256": "a53b07bad7715826e995e9f54ddde06edbc5e91f23b401312a6304f66cbb0136"
+  },
+  "Attachment": {
+    "Bytes": 41873,
+    "Sha256": "11c4c4d7c0b6343cd1fec36fcd62caa4bad59a18455cf03a3f3a202698abc6cf"
+  },
+  "LFSeparators": 273,
+  "CRSeparators": 0,
+  "LogicalLines": 274,
+  "FinalNewline": false,
+  "OriginalAttachmentRepublished": false,
+  "SourceInspectionCommit": "5a5b909e04a4d543bc93e7f8f7213ae1b67fb294",
+  "SourceFilesUnchangedAcrossAllThreeRootCuts": [
+    {
+      "Path": "src/Core/TemporalCoordinationDetection.fs",
+      "Bytes": 16543,
+      "Sha256": "47e119ea97bf6fc800e1cce1afd664024ea41603db808cd8375d327cefcba330"
+    },
+    {
+      "Path": "src/Core/Graph.fs",
+      "Bytes": 38663,
+      "Sha256": "73ef78f0e0111a22655e7f88a325f336deee2bccda170ec613acd5ccd4babd52"
+    },
+    {
+      "Path": "tests/Tests.FSharp/Simulation/CartelToy.Tests.fs",
+      "Bytes": 3820,
+      "Sha256": "2c1d337ab88d2c2f46206c60dcfccdd34e472fcf772b39447c7667d1ec219f75"
+    },
+    {
+      "Path": "tests/Tests.FSharp/Formal/CoordRiskSpectralCrossVerify.Tests.fs",
+      "Bytes": 9226,
+      "Sha256": "beaf89bcce9c8d7f366d3cc4817ead7d8947e708d94634d36bff9a1a8a1bffe6"
+    },
+    {
+      "Path": "src/Core.TLA/specs/BftSybilConsensus.tla",
+      "Bytes": 6258,
+      "Sha256": "0fe597c557d912a17f1e96dd2cf6405bf0b33ae9bbeaaf91cd6cda52238fab43"
+    },
+    {
+      "Path": "src/Core/ForgerRace.fs",
+      "Bytes": 10145,
+      "Sha256": "312fa74b5ed6c049680efa58e365ddb53dccde38edce4356fe10c09c6f06d9fb"
+    },
+    {
+      "Path": "tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs",
+      "Bytes": 65450,
+      "Sha256": "4b2cabd6fb3c872b179d48265b8bcfb221ab5b3d4c9791b11b72f469266f9a34"
+    },
+    {
+      "Path": "docs/research/2026-08-17-path-independence-is-four-properties-refuting-the-monoid-bell-holonomy-calm-identification.md",
+      "Bytes": 29293,
+      "Sha256": "606c439258b11db2336b182412625665b31a8caff4fc3a51c38b9718348804a3"
+    }
+  ],
+  "ScientificOrDetectorExecutions": 0,
+  "VideoChannelIndependentlyVerified": false
+}

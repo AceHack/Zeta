@@ -67,3 +67,8 @@ promptly in good faith.
   auto-transcript while connecting the interview to Zeta's pairwise-memory, anti-Sybil, Bayesian,
   categorical-quantum, Clifford, and emulator research. Original analysis remains in the linked
   Vera handoff and treats these as hypotheses and analogies, not source-established equivalences.
+
+- [2026-09-08 Voyager Yang-Mills talk](2026-09-08-voyager-yang-mills-mass-gap-talk.md) —
+  attributed source and timestamped study map for Aaron's finite computer-science
+  gauge-consistency question; includes original attachment identity and the
+  boundary between memory-loop checks and the physics mass-gap problem.

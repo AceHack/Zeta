@@ -1,0 +1,62 @@
+{
+  "ReviewedSuccessor": "83beb2933937da4bfa7c07b4367373da10479f3e",
+  "SoleParent": "4d69d7a8cf77fed897c11bb179713ca67692c22f",
+  "OriginalPublication": "8cb522b2dab2fb50792a3d7ff6ef7f3af21f5e64",
+  "ManifestBytes": 10326,
+  "ManifestSha256": "48dd5af7091618ca370d4c65e2d1c1f50017c7957e1a0756ee769ea383399b52",
+  "Records": 23,
+  "StoredBytes": 18405,
+  "OriginalBytes": 107035,
+  "AllSingleMemberGzipAndHashesMatch": true,
+  "RenameAwareReportedNames": 230,
+  "ActualOriginalChangedTreePaths": 231,
+  "AdditionalVerifiedDeletion": "workitems/081M1Z5ZW1T087G0R0002KPWJ8-publish-reviewed-compiled-replay-and-native-custody-evidence.md",
+  "OriginalPathsDifferentOnlyAt": [
+    "docs/research/2026-09-08-distributional-learning-controls-publication.md"
+  ],
+  "NewArchivePaths": 25,
+  "NewChangedTreePaths": 256,
+  "AllOtherBaseEntriesPreserved": true,
+  "FiveSourceFilesUnchanged": [
+    {
+      "Path": "src/Core/PrivacyEconomy.fs",
+      "Bytes": 7279,
+      "Sha256": "5087fa8c89328ddc82691924870cdeef255637ade092e7c4c901c8693481002c",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_distributional_learning_rooms_reference.py",
+      "Bytes": 32046,
+      "Sha256": "90886b2f6679601c70dc567f9381156b28526bc10d3e438355bb9c6db1c40413",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/distributional_learning_rooms_reference.py",
+      "Bytes": 37612,
+      "Sha256": "c7b5d66066dd6a5a203c69e405871f5fae6948157a5f9d87ef03a5822a97e1c2",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Research.FSharp/DistributionalLearningRooms.fsx",
+      "Bytes": 19776,
+      "Sha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "tests/Tests.FSharp/PrivacyEconomy.Tests.fs",
+      "Bytes": 5977,
+      "Sha256": "e10fd07b05f67191ea717ffef56ee016daaeaee64f73008e4d8547b940d0957e",
+      "MatchesCoordinatorSource": true
+    }
+  ],
+  "FiniteClaimTenseCorrected": true,
+  "RecordedFailedPr": 17021,
+  "RecordedCoverageCounts": {
+    "Supplied": 250,
+    "Total": 278
+  },
+  "CompleteRecordedCheckContexts": 85,
+  "RecordedGate": "blocked",
+  "SuccessorGithubOrMainAdmission": false,
+  "ScientificOrProjectExecutionsByReviewer": 0
+}

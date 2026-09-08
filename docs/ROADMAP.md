@@ -7,6 +7,17 @@
 > `docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-cells-control-plane-three-host-substrates-aaron-otto.md`.
 > Master checklist **081KSXN940008QG0R003FCQ7WT**.
 
+## Active learning research direction: bounded decisions under uncertainty
+
+Aaron's 2026-09-08 direction is to connect distributional inference, relational
+memory, affective propagation, Vision, predictive scheduling and the agent
+resource economy, then use held-out comparisons to choose the next investment.
+The [research program](research/2026-09-08-distributional-learning-resource-aware-integration-direction.md)
+records the current source boundaries, Liouville/QBism correspondence, distinct
+resource units, component ablations and current external benchmark candidates.
+Work item `081M1Z63YMC087G0R003N5FH9X`. This is control-plane research; the
+existing compiled-controller registration remains frozen and separately gated.
+
 ## North Star — the git-native database
 
 A relativistic git-native database: a **reliable data plane** (storage + read/write over git), a
