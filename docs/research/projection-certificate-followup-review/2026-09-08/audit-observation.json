@@ -1,0 +1,709 @@
+{
+  "OriginalCertificateCut": "51a96fa11bd7590af3d5ed45b6fb6ebfdca414fe",
+  "RootReturnCorrection": "de7237aebc6694d285f0ddcd11fd6b085a11a017",
+  "FinalCut": "ae37ac066cd1e0e9e3181cfd0f4f4214dac77a77",
+  "Module": {
+    "Bytes": 61549,
+    "Sha256": "c1063f29f5c63fd70e7e9923eb10d32037191559194fd2efec4a35619191e25b"
+  },
+  "Tests": {
+    "Bytes": 48250,
+    "Sha256": "0d96b6f27592dc34c4396c044369e043156d25a4986dfc2b4fef1b2a3f402755"
+  },
+  "RootAstUnchangedFromAcceptedCut": [
+    "_Root",
+    "_take",
+    "_input",
+    "_caller",
+    "reference_root"
+  ],
+  "Archives": [
+    {
+      "Group": "root-return",
+      "Commit": "de7237aebc6694d285f0ddcd11fd6b085a11a017",
+      "Manifest": {
+        "Bytes": 9145,
+        "Sha256": "1e1b89a6fef7f2d3ed474584bc7d446a43c3d8b355367c91904898f776e3ecfd"
+      },
+      "Records": 27,
+      "RawBytes": 319073,
+      "StoredBytes": 71504,
+      "Tables": [
+        {
+          "File": "03-sources.json.gz",
+          "Rows": [
+            {
+              "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+              "Bytes": 52212,
+              "Sha256": "a29cf3bb448f935b9adca54c00623fef437d48a608ecc74095a92ad522f1d9f3"
+            },
+            {
+              "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+              "Bytes": 37819,
+              "Sha256": "2460d31d6944e055d9752df3cc9e5ec8a4dcb1cc72e792212cf0a1de6dda9236"
+            },
+            {
+              "Path": "docs/research/2026-09-08-precision-gate-projection-reference.md",
+              "Bytes": 13619,
+              "Sha256": "28e03d0a261e3c531b40f3d33b64a609c30b40197d0ebac894a913a4ba32d41b"
+            }
+          ]
+        }
+      ],
+      "Commands": {
+        "01-command.json.gz": {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_reference.py::test_normal_root_api_failure_preserved_before_certificate_packaging",
+            "-q",
+            "-s"
+          ],
+          "Started": 1788849015.1124191,
+          "Finished": 1788849020.331124,
+          "ExitCode": 1
+        },
+        "02-command.json.gz": {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_reference.py::test_normal_root_api_failure_preserved_before_certificate_packaging",
+            "-q",
+            "-s"
+          ],
+          "Started": 1788849077.376183,
+          "Finished": 1788849082.194583,
+          "ExitCode": 0
+        },
+        "03-commands.json.gz": [
+          {
+            "Name": "pytest",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "pytest",
+              "tests/test_precision_gate_projection_reference.py",
+              "-q"
+            ],
+            "Started": 1788849113.058235,
+            "Finished": 1788849119.10416,
+            "ExitCode": 0
+          },
+          {
+            "Name": "mypy",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "mypy",
+              "--strict",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788849119.104196,
+            "Finished": 1788849121.184333,
+            "ExitCode": 0
+          },
+          {
+            "Name": "ruff",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "ruff",
+              "check",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788849121.1843588,
+            "Finished": 1788849121.265414,
+            "ExitCode": 0
+          },
+          {
+            "Name": "format",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "ruff",
+              "format",
+              "--check",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788849121.265434,
+            "Finished": 1788849121.305079,
+            "ExitCode": 0
+          }
+        ]
+      },
+      "Outputs": {
+        "01-format-repair.stdout.gz": {
+          "Identity": {
+            "Bytes": 42,
+            "Sha256": "10869b88a75066aa23546ef1f95fcd4678c3fb92a56ed46ef91688052b67976a"
+          },
+          "LastLines": [
+            "1 file reformatted, 1 file left unchanged"
+          ]
+        },
+        "01-stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "01-stdout.gz": {
+          "Identity": {
+            "Bytes": 16944,
+            "Sha256": "a612a027bbfa48b26517e7edd459aa66c5666a9ce5a7b7c97fc66e963b5a8edd"
+          },
+          "LastLines": [
+            "E         Use -v to get more diff",
+            "",
+            "tests/test_precision_gate_projection_reference.py:1023: AssertionError",
+            "=========================== short test summary info ============================",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_normal_root_api_failure_preserved_before_certificate_packaging[False]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_normal_root_api_failure_preserved_before_certificate_packaging[True]",
+            "2 failed in 4.25s"
+          ]
+        },
+        "02-stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "02-stdout.gz": {
+          "Identity": {
+            "Bytes": 11634,
+            "Sha256": "598ebee9ca68e7a1fe28c3103e5d206023679fabb812df5630e0973ce4ffb3dd"
+          },
+          "LastLines": [
+            "ACTUAL_PUBLIC_RETURN Success(Value={'Schema': 'zeta.precision-projection.certificate.v1', 'CaseId': 'unit/independent', 'InputSha256': '4517ADC726733AE6B46D105983CC79F2FD139A22689819B0E7500F57255290E6', 'Bindings': {'ProtocolSha256': '537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E', 'src/independent-fixture.py': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'}, 'Target': {'RequestedParameters': {'T': '1', 'U': '0', 'K': '0.75', 'C': '1'}, 'TargetBits': {'T': '3FF0000000000000', 'U': '0000000000000000', 'K': '3FE8000000000000', 'C': '3FF0000000000000'}, 'DyadicTarget': {'T': {'Num': '1', 'Den': '1'}, 'U': {'Num': '0', 'Den': '1'}, 'K': {'Num': '3', 'Den': '4'}, 'C': {'Num': '1', 'Den': '1'}}, 'ConversionDelta': {'T': {'Num': '0', 'Den': '1'}, 'U': {'Num': '0', 'Den': '1'}, 'K': {'Num': '0', 'Den': '1'}, 'C': {'Num': '0', 'Den': '1'}}}, 'NativeRaw': {'BytesHex': '7b22536368656d61223a20227a6574612e707265636973696f6e2d70726f6a656374696f6e2e6e61746976652e7631222c2022436173654964223a2022756e69742f696e646570656e64656e74222c2022496e707574536861323536223a202234353137414443373236373333414536423436443130353938334343373946324644313339413232363839383139423045373530304635373235353239304536222c202242696e64696e6773223a207b2250726f746f636f6c536861323536223a202235333730353437373942463945304246413932373142354343353631313646424338304231364334413242453946314235453343303232464539354130463845222c20227372632f696e646570656e64656e742d666978747572652e7079223a202241414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141227d2c20224f7574636f6d65223a207b224b696e64223a202263616e646964617465222c202256616c7565223a207b2254617267657442697473223a207b2254223a202233464630303030303030303030303030222c202255223a202230303030303030303030303030303030222c20224b223a202233464538303030303030303030303030222c202243223a202233464630303030303030303030303030227d2c20224c6f67526174696f42697473223a202230303030303030303030303030303030222c2022526174696f42697473223a202233464630303030303030303030303030222c20225242697473223a202233464630303030303030303030303030222c20224d65616e42697473223a202242464430303030303030303030303030222c202256617269616e636542697473223a202233464530303030303030303030303030222c2022427261636b6574223a207b224c6f77657242697473223a202242464630303030303030303030303030222c2022557070657242697473223a202230303030303030303030303030303030227d2c202253746f70223a2022726f756e6465642d7a65726f222c20224f726967696e616c4f626a656374697665223a207b2256616c756542697473223a202233464644304239304246424538453743222c2022446572697661746976654d65616e42697473223a202230303030303030303030303030303030222c20224465726976617469766556617269616e636542697473223a202230303030303030303030303030303030227d7d7d2c2022436f756e74657273223a207b22537461727473223a20312c2022506869456e7472696573223a20332c20224d6964706f696e74417474656d707473223a20312c2022427261636b657455706461746573223a20302c20224c6f67456e7472696573223a20332c2022457870456e7472696573223a20332c20224f626a656374697665456e7472696573223a20317d2c20225472616365223a205b7b2253657175656e6365223a20312c20225374616765223a2022696e707574222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20322c20225374616765223a2022706172616d6574657273222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20332c20225374616765223a20226c6566742d656e64706f696e74222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20342c20225374616765223a202272696768742d656e64706f696e74222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20352c20225374616765223a20226d6964706f696e74222c2022417474656d7074223a20312c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20362c20225374616765223a20227265636f6e737472756374696f6e222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20372c20225374616765223a20226f626a656374697665222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d5d7d', 'Bytes': 2108, 'Sha256': '71CB6850D9A334BCFF49761C9E72DAD900D6B2917BCD10C88B1A9AF1B12A184F'}, 'Reference': None, 'CertificateContext': None, 'Coordinates': None, 'Objective': None, 'Outcome': {'Kind': 'refused', 'Failure': {'Code': 'SourceMismatch', 'Stage': 'input', 'Field': 'Bindings.owned-helper', 'Message': 'actual nested caller refusal, retained verbatim', 'OriginalKernelFailure': None}}, 'LeafChecks': [], 'Counters': {'Starts': 1, 'ReferenceRootCalls': 1, 'CertificatePreparations': 0, 'CoordinateIntervalCalls': 0, 'ObjectiveIntervalCalls': 0, 'CertificateTranscendentalEntries': 0, 'LeafChecks': 0}})",
+            ".ACTUAL_PUBLIC_RETURN ReceiptFailure(Failure=Failure(Code='Unexpected', Stage='encoding', Field='Receipt', Message='OSError', OriginalKernelFailure=None), Receipt={'Schema': 'zeta.precision-projection.certificate.v1', 'CaseId': 'unit/independent', 'InputSha256': '4517ADC726733AE6B46D105983CC79F2FD139A22689819B0E7500F57255290E6', 'Bindings': {'ProtocolSha256': '537054779BF9E0BFA9271B5CC56116FBC80B16C4A2BE9F1B5E3C022FE95A0F8E', 'src/independent-fixture.py': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'}, 'Target': {'RequestedParameters': {'T': '1', 'U': '0', 'K': '0.75', 'C': '1'}, 'TargetBits': {'T': '3FF0000000000000', 'U': '0000000000000000', 'K': '3FE8000000000000', 'C': '3FF0000000000000'}, 'DyadicTarget': {'T': {'Num': '1', 'Den': '1'}, 'U': {'Num': '0', 'Den': '1'}, 'K': {'Num': '3', 'Den': '4'}, 'C': {'Num': '1', 'Den': '1'}}, 'ConversionDelta': {'T': {'Num': '0', 'Den': '1'}, 'U': {'Num': '0', 'Den': '1'}, 'K': {'Num': '0', 'Den': '1'}, 'C': {'Num': '0', 'Den': '1'}}}, 'NativeRaw': {'BytesHex': '7b22536368656d61223a20227a6574612e707265636973696f6e2d70726f6a656374696f6e2e6e61746976652e7631222c2022436173654964223a2022756e69742f696e646570656e64656e74222c2022496e707574536861323536223a202234353137414443373236373333414536423436443130353938334343373946324644313339413232363839383139423045373530304635373235353239304536222c202242696e64696e6773223a207b2250726f746f636f6c536861323536223a202235333730353437373942463945304246413932373142354343353631313646424338304231364334413242453946314235453343303232464539354130463845222c20227372632f696e646570656e64656e742d666978747572652e7079223a202241414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141227d2c20224f7574636f6d65223a207b224b696e64223a202263616e646964617465222c202256616c7565223a207b2254617267657442697473223a207b2254223a202233464630303030303030303030303030222c202255223a202230303030303030303030303030303030222c20224b223a202233464538303030303030303030303030222c202243223a202233464630303030303030303030303030227d2c20224c6f67526174696f42697473223a202230303030303030303030303030303030222c2022526174696f42697473223a202233464630303030303030303030303030222c20225242697473223a202233464630303030303030303030303030222c20224d65616e42697473223a202242464430303030303030303030303030222c202256617269616e636542697473223a202233464530303030303030303030303030222c2022427261636b6574223a207b224c6f77657242697473223a202242464630303030303030303030303030222c2022557070657242697473223a202230303030303030303030303030303030227d2c202253746f70223a2022726f756e6465642d7a65726f222c20224f726967696e616c4f626a656374697665223a207b2256616c756542697473223a202233464644304239304246424538453743222c2022446572697661746976654d65616e42697473223a202230303030303030303030303030303030222c20224465726976617469766556617269616e636542697473223a202230303030303030303030303030303030227d7d7d2c2022436f756e74657273223a207b22537461727473223a20312c2022506869456e7472696573223a20332c20224d6964706f696e74417474656d707473223a20312c2022427261636b657455706461746573223a20302c20224c6f67456e7472696573223a20332c2022457870456e7472696573223a20332c20224f626a656374697665456e7472696573223a20317d2c20225472616365223a205b7b2253657175656e6365223a20312c20225374616765223a2022696e707574222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20322c20225374616765223a2022706172616d6574657273222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20332c20225374616765223a20226c6566742d656e64706f696e74222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20342c20225374616765223a202272696768742d656e64706f696e74222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20352c20225374616765223a20226d6964706f696e74222c2022417474656d7074223a20312c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20362c20225374616765223a20227265636f6e737472756374696f6e222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d2c207b2253657175656e6365223a20372c20225374616765223a20226f626a656374697665222c2022417474656d7074223a20302c2022506f696e7442697473223a206e756c6c2c202250686942697473223a206e756c6c2c20224c6f77657242697473223a206e756c6c2c2022557070657242697473223a206e756c6c2c20224661696c757265223a206e756c6c7d5d7d', 'Bytes': 2108, 'Sha256': '71CB6850D9A334BCFF49761C9E72DAD900D6B2917BCD10C88B1A9AF1B12A184F'}, 'Reference': None, 'CertificateContext': None, 'Coordinates': None, 'Objective': None, 'Outcome': {'Kind': 'refused', 'Failure': {'Code': 'SourceMismatch', 'Stage': 'input', 'Field': 'Bindings.owned-helper', 'Message': 'actual nested caller refusal, retained verbatim', 'OriginalKernelFailure': None}}, 'LeafChecks': [], 'Counters': {'Starts': 1, 'ReferenceRootCalls': 1, 'CertificatePreparations': 0, 'CoordinateIntervalCalls': 0, 'ObjectiveIntervalCalls': 0, 'CertificateTranscendentalEntries': 0, 'LeafChecks': 0}})",
+            ".",
+            "2 passed in 3.99s"
+          ]
+        },
+        "03-format.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "03-format.stdout.gz": {
+          "Identity": {
+            "Bytes": 26,
+            "Sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+          },
+          "LastLines": [
+            "2 files already formatted"
+          ]
+        },
+        "03-mypy.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "03-mypy.stdout.gz": {
+          "Identity": {
+            "Bytes": 43,
+            "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8"
+          },
+          "LastLines": [
+            "Success: no issues found in 2 source files"
+          ]
+        },
+        "03-pytest.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "03-pytest.stdout.gz": {
+          "Identity": {
+            "Bytes": 179,
+            "Sha256": "f148047a2d581d0c0c6c9de829d4a32a39be18eef5e562c0c01e2a0c8e6d6020"
+          },
+          "LastLines": [
+            "........................................................................ [ 80%]",
+            "..................                                                       [100%]",
+            "90 passed in 5.09s"
+          ]
+        },
+        "03-ruff.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "03-ruff.stdout.gz": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "LastLines": [
+            "All checks passed!"
+          ]
+        }
+      }
+    },
+    {
+      "Group": "trace",
+      "Commit": "ae37ac066cd1e0e9e3181cfd0f4f4214dac77a77",
+      "Manifest": {
+        "Bytes": 18164,
+        "Sha256": "e9b1d6977007b4105e464b788593fd7f8acea5a8873d53057100390d1462bc84"
+      },
+      "Records": 54,
+      "RawBytes": 748604,
+      "StoredBytes": 159057,
+      "Tables": [
+        {
+          "File": "05-sources.json.gz",
+          "Rows": [
+            {
+              "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+              "Bytes": 60714,
+              "Sha256": "a53a017ff51c35c9969103a208264ac2d6717b7fae9b6b6af362bc99b6eafb4e"
+            },
+            {
+              "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+              "Bytes": 47316,
+              "Sha256": "7e05a7a6940f6ac6eb150ad49e8235ee9b796749b48af35edb2c34f522bf48b6"
+            },
+            {
+              "Path": "docs/research/2026-09-08-precision-gate-projection-reference.md",
+              "Bytes": 16886,
+              "Sha256": "31ea4ede18e2068fedc8ef98b3bec3603795868aa1488bc4aa5661df08a0d407"
+            }
+          ]
+        },
+        {
+          "File": "06-sources.json.gz",
+          "Rows": [
+            {
+              "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+              "Bytes": 61549,
+              "Sha256": "c1063f29f5c63fd70e7e9923eb10d32037191559194fd2efec4a35619191e25b"
+            },
+            {
+              "Path": "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+              "Bytes": 48250,
+              "Sha256": "0d96b6f27592dc34c4396c044369e043156d25a4986dfc2b4fef1b2a3f402755"
+            },
+            {
+              "Path": "docs/research/2026-09-08-precision-gate-projection-reference.md",
+              "Bytes": 16886,
+              "Sha256": "31ea4ede18e2068fedc8ef98b3bec3603795868aa1488bc4aa5661df08a0d407"
+            }
+          ]
+        }
+      ],
+      "Commands": {
+        "01-command.json.gz": {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_reference.py::test_native_candidate_requires_complete_structural_trace",
+            "tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix",
+            "-q"
+          ],
+          "Started": 1788849770.201704,
+          "Finished": 1788849775.508914,
+          "ExitCode": 1
+        },
+        "02-command.json.gz": {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_reference.py::test_native_candidate_requires_complete_structural_trace",
+            "tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix",
+            "-q"
+          ],
+          "Started": 1788849993.226233,
+          "Finished": 1788849998.622429,
+          "ExitCode": 0
+        },
+        "03-command.json.gz": {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_reference.py::test_native_stage_specific_refusal_cannot_move_to_objective",
+            "tests/test_precision_gate_projection_reference.py::test_native_pre_phi_arithmetic_failure_has_no_completed_point",
+            "-q"
+          ],
+          "Started": 1788850543.868098,
+          "Finished": 1788850548.809029,
+          "ExitCode": 1
+        },
+        "04-command.json.gz": {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "tests/test_precision_gate_projection_reference.py::test_native_stage_specific_refusal_cannot_move_to_objective",
+            "tests/test_precision_gate_projection_reference.py::test_native_pre_phi_arithmetic_failure_has_no_completed_point",
+            "-q"
+          ],
+          "Started": 1788850570.1866162,
+          "Finished": 1788850573.281117,
+          "ExitCode": 0
+        },
+        "05-commands.json.gz": [
+          {
+            "Name": "pytest",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "pytest",
+              "tests/test_precision_gate_projection_reference.py",
+              "-q"
+            ],
+            "Started": 1788850166.737708,
+            "Finished": 1788850172.787213,
+            "ExitCode": 0
+          },
+          {
+            "Name": "mypy",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "mypy",
+              "--strict",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788850172.7872388,
+            "Finished": 1788850174.680207,
+            "ExitCode": 1
+          },
+          {
+            "Name": "ruff",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "ruff",
+              "check",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788850174.680228,
+            "Finished": 1788850174.7167318,
+            "ExitCode": 0
+          },
+          {
+            "Name": "format",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "ruff",
+              "format",
+              "--check",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788850174.716751,
+            "Finished": 1788850174.750038,
+            "ExitCode": 0
+          }
+        ],
+        "06-commands.json.gz": [
+          {
+            "Name": "pytest",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "pytest",
+              "tests/test_precision_gate_projection_reference.py",
+              "-q"
+            ],
+            "Started": 1788850582.566114,
+            "Finished": 1788850586.1023622,
+            "ExitCode": 0
+          },
+          {
+            "Name": "mypy",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "mypy",
+              "--strict",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788850586.102392,
+            "Finished": 1788850587.996299,
+            "ExitCode": 0
+          },
+          {
+            "Name": "ruff",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "ruff",
+              "check",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788850587.996323,
+            "Finished": 1788850588.0668318,
+            "ExitCode": 0
+          },
+          {
+            "Name": "format",
+            "Argv": [
+              "/Users/acehack/.zeta/agents/codex/Zeta-relational-identity-20260906/src/Interp.Python/.venv/bin/python",
+              "-m",
+              "ruff",
+              "format",
+              "--check",
+              "zeta_interp/precision_gate_projection_reference.py",
+              "tests/test_precision_gate_projection_reference.py"
+            ],
+            "Started": 1788850588.066858,
+            "Finished": 1788850588.0982661,
+            "ExitCode": 0
+          }
+        ]
+      },
+      "Outputs": {
+        "01-stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "01-stdout.gz": {
+          "Identity": {
+            "Bytes": 60604,
+            "Sha256": "eb982dbe9c113e68a121017fc4a7761bf206e6498e14acdc03e250209c752a5e"
+          },
+          "LastLines": [
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix[earlier-failure]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix[failure-stage]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix[missing-stage]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix[extra-row]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix[wrong-phi]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_refusal_requires_real_ending_prefix[wrong-objective]",
+            "25 failed in 4.44s"
+          ]
+        },
+        "02-format.stdout.gz": {
+          "Identity": {
+            "Bytes": 20,
+            "Sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df"
+          },
+          "LastLines": [
+            "2 files reformatted"
+          ]
+        },
+        "02-stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "02-stdout.gz": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "de1f48b54eb9b11b1a1e69cee2d99f529e4ae47dd7788ab52290ecaddd68dca7"
+          },
+          "LastLines": [
+            ".........................                                                [100%]",
+            "25 passed in 4.37s"
+          ]
+        },
+        "03-stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "03-stdout.gz": {
+          "Identity": {
+            "Bytes": 3444,
+            "Sha256": "a950f91ab059ce234a770f6d000633b935c5799ded7ed4b5a08c6598cc47c5f1"
+          },
+          "LastLines": [
+            "tests/test_precision_gate_projection_reference.py:1349: KeyError",
+            "=========================== short test summary info ============================",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_stage_specific_refusal_cannot_move_to_objective[NoRoundedBracket]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_stage_specific_refusal_cannot_move_to_objective[IterationLimit]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_stage_specific_refusal_cannot_move_to_objective[ResolutionLimit]",
+            "FAILED tests/test_precision_gate_projection_reference.py::test_native_pre_phi_arithmetic_failure_has_no_completed_point",
+            "4 failed in 4.05s"
+          ]
+        },
+        "04-stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "04-stdout.gz": {
+          "Identity": {
+            "Bytes": 98,
+            "Sha256": "38632ed3c07f9246848fb52956928f9d2c1ce4d692322739a2aebab384ef837e"
+          },
+          "LastLines": [
+            "....                                                                     [100%]",
+            "4 passed in 2.38s"
+          ]
+        },
+        "05-format.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "05-format.stdout.gz": {
+          "Identity": {
+            "Bytes": 26,
+            "Sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+          },
+          "LastLines": [
+            "2 files already formatted"
+          ]
+        },
+        "05-mypy.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "05-mypy.stdout.gz": {
+          "Identity": {
+            "Bytes": 518,
+            "Sha256": "3e6406edbd2e7372149102789316c2e0d8f309f4834ae9704e00d3acde32ac8c"
+          },
+          "LastLines": [
+            "zeta_interp/precision_gate_projection_reference.py:1140: error: Value of type \"Any | None\" is not indexable  [index]",
+            "zeta_interp/precision_gate_projection_reference.py:1181: error: Value of type \"Any | None\" is not indexable  [index]",
+            "zeta_interp/precision_gate_projection_reference.py:1221: error: Value of type \"Any | None\" is not indexable  [index]",
+            "zeta_interp/precision_gate_projection_reference.py:1253: error: Value of type \"Any | None\" is not indexable  [index]",
+            "Found 4 errors in 1 file (checked 2 source files)"
+          ]
+        },
+        "05-pytest.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "05-pytest.stdout.gz": {
+          "Identity": {
+            "Bytes": 180,
+            "Sha256": "13107bec850c5ff316c05509b27ae1aadd252a34fb29b13df0ae61e117807478"
+          },
+          "LastLines": [
+            "........................................................................ [ 55%]",
+            ".........................................................                [100%]",
+            "129 passed in 5.06s"
+          ]
+        },
+        "05-ruff.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "05-ruff.stdout.gz": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "LastLines": [
+            "All checks passed!"
+          ]
+        },
+        "06-format.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "06-format.stdout.gz": {
+          "Identity": {
+            "Bytes": 26,
+            "Sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+          },
+          "LastLines": [
+            "2 files already formatted"
+          ]
+        },
+        "06-mypy.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "06-mypy.stdout.gz": {
+          "Identity": {
+            "Bytes": 43,
+            "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8"
+          },
+          "LastLines": [
+            "Success: no issues found in 2 source files"
+          ]
+        },
+        "06-pytest.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "06-pytest.stdout.gz": {
+          "Identity": {
+            "Bytes": 180,
+            "Sha256": "e89b3f384f618de60f3e23f4e46fc982b9fbaf5c2e5c2d8b1bb165bc853064a8"
+          },
+          "LastLines": [
+            "........................................................................ [ 54%]",
+            ".............................................................            [100%]",
+            "133 passed in 2.70s"
+          ]
+        },
+        "06-ruff.stderr.gz": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "LastLines": []
+        },
+        "06-ruff.stdout.gz": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "LastLines": [
+            "All checks passed!"
+          ]
+        }
+      }
+    }
+  ],
+  "ProjectCodeExecuted": false,
+  "NumericalRosterExecuted": false
+}
