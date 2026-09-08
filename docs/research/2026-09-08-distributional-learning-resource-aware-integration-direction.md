@@ -40,7 +40,8 @@ commit attribution is `shadow`, Claude Code, Claude Opus 5; retain that actual
 attribution rather than silently changing its author. Its source is
 `c1c94ebd61dd02363a0149c7d37e9cfb123e2316`, submitted in
 [PR #16993](https://github.com/Lucent-Financial-Group/Zeta/pull/16993).
-The PR was open at the initial check; live GitHub state determines publication.
+The PR was open at the initial check and subsequently merged as
+`2f9277c1bd8e159171b57505c2d112f40a6088c5`; live GitHub state was verified.
 The original source record remains in `docs/ip-questionable/`; this analysis
 does not depend on retaining the entire transcript. The talk URL could not be
 fetched by the browsing tool; the user-supplied transcript was read directly.
@@ -273,3 +274,14 @@ audit, then a pinned learned-prediction pilot. The existing compiled study
 continues in its own lane. The final research decision will cite actual
 comparative results, including negative outcomes, rather than the number of
 subsystems assembled.
+
+## First accounting repair and validation boundary
+
+The [PrivacyEconomy repair record](distributional-learning/2026-09-08/privacy-grant-repair/README.md)
+retains the lower-cap and integer-overflow counterexamples, original failed
+regressions, repaired 16-test result and the separate first full-gate process
+crashes. Source `e2a8f7fb23b57aba614da2499273f679bf0935ad` preserves held
+entitlements and bounds the sum in Int64. No successful full-gate claim is
+substituted for the recorded compiler/test-process failures. The exact finite
+room reference is separately co-claimed and will compare distributions,
+transport, conditioning and decisions before any learned-system benchmark.
