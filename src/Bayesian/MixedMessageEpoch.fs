@@ -165,13 +165,12 @@ module MixedMessageEpoch =
     type AdmissionContext =
         { Identity: PeerIdentity; InitialBudgetSnapshot: BudgetSnapshot
           Forecasts: AdmittedForecast list }
-    type private TrainingPrepared = { Request: TrainingArtifact; Preprocessing: L.Preprocessing }
     type AdmittedPlan =
         private
             { Plan: EpochPlan; Context: AdmissionContext; PlanSha256: string
               Resolved: Map<string,string>; Ordered: Node list
-              TrainingPrepared: Map<string,TrainingPrepared>; Replay: EpochPlan option
-              RestoreState: State option; Sequence: int ref; Entered: bool ref }
+              Replay: EpochPlan option
+              RestoreState: State option; Sequence: int ref; Execution: Task<EpochResult> option ref }
     type EpochReturnReference =
         { Sequence: int; ResultSha256: string; FrameSha256: string; Artifact: Artifact }
     type PartialWrite = { Sequence: int option; ReservedBytes: int64; ObservedWrittenBytes: int64 option }
@@ -183,8 +182,42 @@ module MixedMessageEpoch =
         { EpochReturn: EpochReturnReference option; ResultRetention: string; Failure: Failure option
           Coordinator: BudgetSnapshot option; Peer: PeerTransport }
 
+    // Diagnostic prefixes are bounded by encoded bytes, never UTF16 code units.
+    // Invalid input code units become U+FFFD; no supplementary scalar is split.
+    // This policy applies to our diagnostic observations, not a rewritten
+    // original returned Failure held in a source Call.
+    let private diagnosticPrefix limit (value:string) =
+        if isNull value then ""
+        else
+            let result=StringBuilder(min limit value.Length)
+            let mutable runes=value.EnumerateRunes()
+            let mutable used=0
+            let mutable more=true
+            while more && runes.MoveNext() do
+                let rune=runes.Current
+                if rune.Utf8SequenceLength>limit-used then more<-false
+                else
+                    result.Append(rune.ToString()) |> ignore
+                    used<-used+rune.Utf8SequenceLength
+            result.ToString()
+    let private diagnosticField (value:string) =
+        if isNull value then ""
+        else
+            value.Substring(0,min 256 value.Length)
+            |> Seq.map(fun c -> if c<=char 127 then c else '?') |> Seq.toArray |> String
     let private failure code stage field message : Failure =
-        { Code = code; Stage = stage; Field = field; Message = message }
+        {Code=code;Stage=stage;Field=Option.map diagnosticField field;Message=diagnosticPrefix 1024 message}
+    let private validFailure (f:Failure) =
+        try
+            not(isNull(box f))
+            && List.contains f.Code ["Admission";"Conflict";"Stale";"Family";"Improper";"Arithmetic";"Service";"Uncertified";"Budget";"Storage";"Transport";"Unexpected"]
+            && List.contains f.Stage ["admit";"learn";"forward";"gamma";"gaussian";"project";"apply";"publish";"retract";"scheduler"]
+            && (f.Field |> Option.forall(fun v -> not(isNull v) && v.Length<=256 && (v |> Seq.forall(fun c -> c<=char 127))))
+            && not(isNull f.Message) && f.Message.Length<=1024 && UTF8Encoding(false,true).GetByteCount(f.Message)<=1024
+        with _ -> false
+    let private sourceFailure f =
+        if validFailure f then f
+        else failure "Transport" "publish" (Some "Failure") "source returned an invalid Failure; complete original return remains retained"
     let private error field message = Error(failure "Admission" "admit" (Some field) message)
     let private present x = not (isNull (box x))
     let private hash (bytes: byte[]) = Convert.ToHexString(SHA256.HashData bytes)
@@ -388,10 +421,14 @@ module MixedMessageEpoch =
         | :? DecoderFallbackException as ex -> error "utf8" ex.Message
         | ex -> Error(failure "Unexpected" "admit" None (ex.GetType().FullName + ": " + ex.Message))
 
-    let private jFailure (f: Failure) = O ["Code",S f.Code;"Stage",S f.Stage;"Field",jOpt S f.Field;"Message",S f.Message]
+    let private jFailure (f: Failure) =
+        if not(validFailure f) then wireError "Failure" "closed codes/stages, ASCII field and at most 1024 well-formed UTF8 message bytes required"
+        O ["Code",S f.Code;"Stage",S f.Stage;"Field",jOpt S f.Field;"Message",S f.Message]
     let private readFailure e : Failure =
         keys ["Code";"Stage";"Field";"Message"] e
-        {Code=text (prop "Code" e);Stage=text (prop "Stage" e);Field=opt text (prop "Field" e);Message=text (prop "Message" e)}
+        let actual:Failure={Code=text (prop "Code" e);Stage=text (prop "Stage" e);Field=opt text (prop "Field" e);Message=text (prop "Message" e)}
+        if not(validFailure actual) then wireError "Failure" "invalid bounded source Failure"
+        actual
     let private jResult f = function Ok x -> O ["Kind",S "Ok";"Value",f x] | Error e -> O ["Kind",S "Error";"Failure",jFailure e]
     let private jException (e: ExceptionObservation) = O ["Type",S e.Type;"Message",S e.Message]
     let private jGaussian (g: Gaussian) = O ["PrecisionMean",jBits g.PrecisionMean;"Precision",jBits g.Precision]
@@ -714,6 +751,10 @@ module MixedMessageEpoch =
             O ["Kind",S "NeuralForward";"NodeId",S value.NodeId;"RowId",S value.RowId
                "ArtifactVersion",S value.ArtifactVersion;"Transform",jCall value.Transform;"Inputs",A(Seq.map jBits value.Inputs)]
     let private returned value = Returned {Value=box value}
+    // The existing friend test assembly can create explicitly inert codec
+    // values; no public or wire constructor gains this internal capability.
+    module internal SourceReturns =
+        let retain value = returned value
     /// Read-only access to an already retained actual value; no decoder uses it
     /// to select a type, source implementation, or executable operation.
     let tryReturnedValue = function Returned actual -> Some actual.Value | _ -> None
@@ -832,6 +873,20 @@ module MixedMessageEpoch =
                || next.RemainingMilliseconds > old.RemainingMilliseconds then
                 return! error "BudgetSnapshot" "snapshot reversed reservations, extended time or changed prior-session work"
         }
+    /// Source-owned full/advance admission. Fresh received carrier snapshots
+    /// must advance; an identical local Snapshot observation may repeat.
+    let tryAdmitBudgetSnapshot (previous:BudgetSnapshot option,next:BudgetSnapshot,allowSame:bool) =
+        try
+            flow {
+                match previous with
+                | None -> return! validateSnapshot next
+                | Some old ->
+                    do! validateSnapshot old
+                    return! validateSnapshotAdvance old next allowSame
+            }
+        with
+        | WireFailure f -> Error f
+        | ex -> Error(failure "Unexpected" "admit" (Some "BudgetSnapshot") ex.Message)
     let private bindingsValid (m: Map<string,string>) =
         present m && m.Count > 0 && m.Count <= 1024
         && (m |> Map.forall (fun key value -> key.Length > 0 && key.Length <= 256 && (key |> Seq.forall (fun c -> c >= ' ' && c <= '~')) && L.isHash value))
@@ -1271,7 +1326,7 @@ module MixedMessageEpoch =
                    || (plan.Training |> Option.map (fun t -> t.Artifacts.Length) |> Option.defaultValue 0)+prior.TrainingArtifacts>4 then
                     return! Error(failure "Budget" "admit" (Some "Operations") "derived full schedule exceeds inherited fixed work limits")
                 return {Plan=plan;Context=context;PlanSha256=hash raw;Resolved=resolved;Ordered=ordered
-                        TrainingPrepared=Map.empty;Replay=replay;RestoreState=restore;Sequence=ref 1;Entered=ref false}
+                        Replay=replay;RestoreState=restore;Sequence=ref 1;Execution=ref None}
             }
         with
         | WireFailure f -> Error f
@@ -1279,3 +1334,895 @@ module MixedMessageEpoch =
     let admittedIdentity (plan:AdmittedPlan) = plan.Context.Identity
     let admittedPlanSha256 (plan:AdmittedPlan) = plan.PlanSha256
     let nextProtocolSequence (plan:AdmittedPlan) = plan.Sequence.Value
+
+    // The following arithmetic belongs only to the fixed scalar block. Every
+    // checked public kernel return is retained before admission of its value.
+    let private exceptionObservation (ex:exn) =
+        {Type=diagnosticPrefix 256 (ex.GetType().FullName);Message=diagnosticPrefix 512 ex.Message}
+    let private kernelFailure stage = function
+        | K.InvalidInput(name,requirement) -> failure "Admission" stage (Some name) requirement
+        | K.NumericalFailure(operation,reason) -> failure "Arithmetic" stage (Some operation) reason
+        | K.ImproperBelief family -> failure "Improper" stage (Some family) "proper finite combined belief required"
+    let private checkedNumber stage name value =
+        if not (finite value) then raise(WireFailure(failure "Arithmetic" stage (Some name) "nonfinite result"))
+        value
+    let private checkedMultiply stage name a b =
+        let value=checkedNumber stage name (a*b)
+        if a<>0.0 && b<>0.0 && value=0.0 then
+            raise(WireFailure(failure "Arithmetic" stage (Some name) "nonzero product underflow"))
+        value
+    let private checkedDivide stage name a b =
+        if b=0.0 then raise(WireFailure(failure "Arithmetic" stage (Some name) "zero denominator"))
+        let value=checkedNumber stage name (a/b)
+        if a<>0.0 && value=0.0 then
+            raise(WireFailure(failure "Arithmetic" stage (Some name) "nonzero quotient underflow"))
+        value
+    let private damp stage alpha old proposed =
+        let left=checkedMultiply stage "damping.old" (1.0-alpha) old
+        let right=checkedMultiply stage "damping.proposed" alpha proposed
+        checkedNumber stage "damping.sum" (left+right)
+    let private dampGaussian alpha (old:Gaussian) (proposal:Gaussian) : Gaussian =
+        {PrecisionMean=damp "gaussian" alpha old.PrecisionMean proposal.PrecisionMean
+         Precision=damp "gaussian" alpha old.Precision proposal.Precision}
+    let private dampGamma alpha (old:K.GammaKernel) (proposal:K.GammaKernel) : K.GammaKernel =
+        {LogPower=damp "gamma" alpha old.LogPower proposal.LogPower
+         Rate=damp "gamma" alpha old.Rate proposal.Rate}
+    let private neutralGaussian : Gaussian = {PrecisionMean=0.0;Precision=0.0}
+    let private neutralGamma : K.GammaKernel = {LogPower=0.0;Rate=0.0}
+    type private KernelCapture =
+        { Stage:string; Enter:unit->unit; Calls:ResizeArray<PrimitiveObservation> }
+    let private invokeKernel (capture:KernelCapture) name inputs operation =
+        let rawInputs=element inputs
+        let index=capture.Calls.Count
+        capture.Calls.Add {Operation=name;Inputs=rawInputs;Call=NotEntered}
+        try
+            capture.Enter()
+            let actual=operation()
+            capture.Calls[index] <- {Operation=name;Inputs=rawInputs;Call=returned actual}
+            match actual with Ok value -> value | Error f -> raise(WireFailure(kernelFailure capture.Stage f))
+        with
+        | WireFailure f -> raise(WireFailure f)
+        | ex ->
+            // A normal returned value above is never replaced by a later error.
+            match capture.Calls[index].Call with
+            | NotEntered -> capture.Calls[index] <- {Operation=name;Inputs=rawInputs;Call=Raised(exceptionObservation ex)}
+            | _ -> ()
+            raise(WireFailure(failure "Unexpected" capture.Stage (Some name) ex.Message))
+    let private gaussianProduct capture left right =
+        invokeKernel capture "tryGaussianProduct" (O ["Left",jGaussian left;"Right",jGaussian right])
+            (fun () -> K.tryGaussianProduct left right)
+    let private gaussianQuotient capture left right =
+        invokeKernel capture "tryGaussianQuotient" (O ["Left",jGaussian left;"Right",jGaussian right])
+            (fun () -> K.tryGaussianQuotient left right)
+    let private gaussianMoments capture kernel =
+        invokeKernel capture "tryGaussianMoments" (O ["Kernel",jGaussian kernel])
+            (fun () -> K.tryGaussianMoments kernel)
+    let private gammaProduct capture left right =
+        invokeKernel capture "tryGammaProduct" (O ["Left",jGamma left;"Right",jGamma right])
+            (fun () -> K.tryGammaProduct left right)
+    let private gammaMoments capture kernel =
+        invokeKernel capture "tryGammaMoments" (O ["Kernel",jGamma kernel])
+            (fun () -> K.tryGammaMoments kernel)
+    let private encodeGamma capture (prior:GammaPrior) =
+        invokeKernel capture "tryEncodeGamma" (O ["Shape",jBits prior.Shape;"Rate",jBits prior.Rate])
+            (fun () -> K.tryEncodeGamma prior.Shape prior.Rate)
+    let private normalPrecision capture (z:K.RealMoments) mean precision =
+        let moments (v:K.RealMoments)=O ["Mean",jBits v.Mean;"Variance",jBits v.Variance]
+        invokeKernel capture "tryNormalPrecisionVmp"
+            (O ["Y",moments z;"Mean",moments {Mean=mean;Variance=0.0};"MeanGamma",jBits precision])
+            (fun () -> K.tryNormalPrecisionVmp z {Mean=mean;Variance=0.0} precision)
+    let private nodeOutput (admitted:AdmittedPlan) (state:State) id =
+        let resolved=admitted.Resolved[id]
+        match Map.tryFind resolved state.Outputs with
+        | Some output when finite output.Mean && abs output.Mean<=64.0 -> output
+        | _ -> raise(WireFailure(failure "Admission" "forward" (Some id) "required child has no admitted committed output"))
+    let private childMeans admitted state (node:Node) =
+        node.Inputs |> List.map (fun input -> input.TargetSlot,(nodeOutput admitted state input.SourceNode).Mean)
+    let private combinedGaussian capture (state:State) (node:Node) excluded =
+        let prior=(Option.get node.Prior).Gaussian
+        state.GaussianSites
+        |> Map.toList
+        |> List.filter (fun (key,_) -> key.InstancePath=node.InstancePath && key.Port="z" && Some key.Factor<>excluded)
+        |> List.fold (fun current (_,siteValue) -> gaussianProduct capture current siteValue) prior
+    let private combinedGamma capture (state:State) (node:Node) (port:InputPort) prior =
+        let encoded=encodeGamma capture prior
+        let key=site node ("normal/"+invariant port.TargetSlot) "gamma"
+        let kernel=gammaProduct capture encoded.Kernel (Map.tryFind key state.GammaSites |> Option.defaultValue neutralGamma)
+        encoded,gammaMoments capture kernel
+    let private blockInputs (admitted:AdmittedPlan) (state:State) (node:Node) sweep =
+        O ["Kind",S node.Kind;"NodeId",S node.Id;"Sweep",jInt sweep;"InputRevision",I state.Revision
+           "Node",jNode node;"State",jState state;"Damping",jBits admitted.Plan.Damping
+           "ChildMeans",A (seq {for slot,mean in childMeans admitted state node -> O ["TargetSlot",jInt slot;"Mean",jBits mean]})]
+    let private makeProposal state next details =
+        {ExpectedRevision=state.Revision;ExpectedStateSha256=tryEncodeState state |> getOrRaise |> hash
+         State={next with Revision=state.Revision+1L};Details=element details}
+    let private gammaProposal admitted state node capture =
+        // VMP uses the other variable's marginal, including its unary site.
+        let z=combinedGaussian capture state node None |> gaussianMoments capture
+        let means=childMeans admitted state node |> Map.ofList
+        let paired=List.zip node.Inputs (Option.get node.Prior).Gammas
+        let mutable next=state.GammaSites
+        let changes=ResizeArray<J>()
+        for port,prior in paired |> List.sortBy (fun (p,_) -> p.TargetSlot) do
+            let encoded,oldMoments=combinedGamma capture state node port prior
+            let actual=normalPrecision capture z means[port.TargetSlot] oldMoments.Mean
+            let key=site node ("normal/"+invariant port.TargetSlot) "gamma"
+            let old=Map.tryFind key state.GammaSites |> Option.defaultValue neutralGamma
+            let proposal=actual.ToPrecision
+            let applied=dampGamma admitted.Plan.Damping old proposal
+            let combined=gammaProduct capture encoded.Kernel applied
+            let moments=gammaMoments capture combined
+            changes.Add(O ["Key",jSiteKey key;"Old",jGamma old;"Proposal",jGamma proposal;"Applied",jGamma applied
+                           "RequestedShape",jBits encoded.RequestedShape;"RepresentedShape",jBits moments.RepresentedShape
+                           "UndampedDelta",O ["LogPower",jBits(checkedNumber "gamma" "undamped.delta.log-power" (proposal.LogPower-old.LogPower));"Rate",jBits(checkedNumber "gamma" "undamped.delta.rate" (proposal.Rate-old.Rate))]
+                           "AppliedDelta",O ["LogPower",jBits(checkedNumber "gamma" "applied.delta.log-power" (applied.LogPower-old.LogPower));"Rate",jBits(checkedNumber "gamma" "applied.delta.rate" (applied.Rate-old.Rate))]])
+            next <- Map.add key applied next
+        makeProposal state {state with GammaSites=next} (O ["Kind",S "GammaBlock";"Sites",A changes])
+
+    type private LiveEpoch =
+        { Admitted:AdmittedPlan; Recorder:Recorder; Service:ProjectionService
+          Observations:ResizeArray<Observation>; RecorderCalls:ResizeArray<RecorderObservation>
+          Unpublished:ResizeArray<int>; Prepared:System.Collections.Generic.Dictionary<string,L.Preprocessing>
+          SnapshotClock:Stopwatch; DeadlineClock:Stopwatch; mutable Snapshot:BudgetSnapshot; mutable State:State
+          mutable Work:Work; mutable Counters:Counters; mutable FirstFailure:Failure option
+          mutable PublicationFailure:Failure option; mutable Pending:ProjectionRequest option }
+    let private zeroCount = {Observed=0;Complete=true}
+    let private emptyCounters (snapshot:BudgetSnapshot) : Counters =
+        {SchedulerEntered=0;KernelEntered=0;ForwardEntered=0;LearnEntered=0;Returned=0;Proposed=0;Certified=0
+         Applied=0;ProjectionRequested=0;ProtocolBytes=snapshot.TranscriptBytes
+         ReservedBytes=snapshot.Store.ReservedCombinedBytes;ArtifactSlots=snapshot.Store.ReservedArtifactSlots
+         Remote={NativeCallEntered=zeroCount;NativeLaunchAttempted=zeroCount;NativeReturned=zeroCount
+                 CertificateEntered=zeroCount;CertificateReturned=zeroCount;NestedReferenceEntered=zeroCount}}
+    let private createLive admitted service recorder : LiveEpoch =
+        let snapshot=admitted.Context.InitialBudgetSnapshot
+        {Admitted=admitted;Recorder=recorder;Service=service;Observations=ResizeArray();RecorderCalls=ResizeArray()
+         Unpublished=ResizeArray();Prepared=System.Collections.Generic.Dictionary(StringComparer.Ordinal)
+         SnapshotClock=Stopwatch.StartNew();DeadlineClock=Stopwatch.StartNew();Snapshot=snapshot
+         State=admitted.Plan.InitialState;Work=zeroWork;Counters=emptyCounters snapshot
+         FirstFailure=None;PublicationFailure=None;Pending=None}
+    let private latch (live:LiveEpoch) f = if live.FirstFailure.IsNone then live.FirstFailure<-Some(sourceFailure f)
+    let private publicationFailure live f =
+        if live.PublicationFailure.IsNone then live.PublicationFailure<-Some(sourceFailure f)
+        latch live f
+    let private timeLeft live =
+        let observed=live.Snapshot.RemainingMilliseconds-int(min 300000L live.SnapshotClock.ElapsedMilliseconds)
+        let absolute=live.Admitted.Context.InitialBudgetSnapshot.RemainingMilliseconds-int(min 300000L live.DeadlineClock.ElapsedMilliseconds)
+        max 0 (min observed absolute)
+    let private requireTime live stage =
+        if timeLeft live=0 then raise(WireFailure(failure "Budget" stage (Some "RemainingMilliseconds") "cooperative deadline exhausted"))
+    let private addWork (a:Work) (b:Work) : Work =
+        {SchedulerEntered=a.SchedulerEntered+b.SchedulerEntered;KernelEntered=a.KernelEntered+b.KernelEntered
+         ForwardEntered=a.ForwardEntered+b.ForwardEntered;LearnEntered=a.LearnEntered+b.LearnEntered
+         ProjectionRequested=a.ProjectionRequested+b.ProjectionRequested;NativeLaunchAttempted=a.NativeLaunchAttempted+b.NativeLaunchAttempted
+         CertificateEntered=a.CertificateEntered+b.CertificateEntered;NestedReferenceEntered=a.NestedReferenceEntered+b.NestedReferenceEntered
+         TrainingArtifacts=a.TrainingArtifacts+b.TrainingArtifacts}
+    let private subtractWork (a:Work) (b:Work) : Work =
+        {SchedulerEntered=a.SchedulerEntered-b.SchedulerEntered;KernelEntered=a.KernelEntered-b.KernelEntered
+         ForwardEntered=a.ForwardEntered-b.ForwardEntered;LearnEntered=a.LearnEntered-b.LearnEntered
+         ProjectionRequested=a.ProjectionRequested-b.ProjectionRequested;NativeLaunchAttempted=a.NativeLaunchAttempted-b.NativeLaunchAttempted
+         CertificateEntered=a.CertificateEntered-b.CertificateEntered;NestedReferenceEntered=a.NestedReferenceEntered-b.NestedReferenceEntered
+         TrainingArtifacts=a.TrainingArtifacts-b.TrainingArtifacts}
+    let private requireWork live stage delta =
+        requireTime live stage
+        let next=addWork (addWork live.Snapshot.PriorWork live.Work) delta
+        if not(List.forall2 (<=) (workValues next) (workValues workLimits)) then
+            raise(WireFailure(failure "Budget" stage (Some "Work") "fixed inherited work allowance exhausted"))
+    let private enterWork live stage delta =
+        requireWork live stage delta
+        live.Work<-addWork live.Work delta
+        live.Counters<-{live.Counters with SchedulerEntered=live.Work.SchedulerEntered;KernelEntered=live.Work.KernelEntered;
+                                         ForwardEntered=live.Work.ForwardEntered;LearnEntered=live.Work.LearnEntered;
+                                         ProjectionRequested=live.Work.ProjectionRequested}
+    let private acceptSnapshot live next allowSame =
+        validateSnapshotAdvance live.Snapshot next allowSame |> getOrRaise
+        if next.SnapshotIndex<>live.Snapshot.SnapshotIndex then live.SnapshotClock.Restart()
+        live.Snapshot<-next
+        live.Counters<-{live.Counters with ProtocolBytes=next.TranscriptBytes;ReservedBytes=next.Store.ReservedCombinedBytes;
+                                         ArtifactSlots=next.Store.ReservedArtifactSlots}
+    let private observeSnapshot live =
+        let index=live.RecorderCalls.Count
+        live.RecorderCalls.Add {Kind="Snapshot";Sequence=None;Call=NotEntered}
+        try
+            let actual=live.Recorder.Snapshot()
+            live.RecorderCalls[index]<-{Kind="Snapshot";Sequence=None;Call=returned actual}
+            match actual with Ok next -> acceptSnapshot live next true | Error f -> raise(WireFailure f)
+        with
+        | WireFailure f -> publicationFailure live f;raise(WireFailure f)
+        | ex ->
+            match live.RecorderCalls[index].Call with
+            | NotEntered -> live.RecorderCalls[index]<-{Kind="Snapshot";Sequence=None;Call=Raised(exceptionObservation ex)}
+            | _ -> ()
+            let f=failure "Unexpected" "publish" (Some "Snapshot") ex.Message
+            publicationFailure live f;raise(WireFailure f)
+    let private allocateSequence live =
+        let sequence=live.Admitted.Sequence.Value
+        live.Admitted.Sequence.Value<-sequence+1
+        sequence
+    let private remaining live : Remaining =
+        {Work=subtractWork workLimits (addWork live.Snapshot.PriorWork live.Work)
+         Store={CombinedBytes=268435456L-live.Snapshot.Store.ReservedCombinedBytes
+                ArtifactSlots=4096-live.Snapshot.Store.ReservedArtifactSlots}
+         TranscriptBytes=67108864L-live.Snapshot.TranscriptBytes;TranscriptFrames=16384-live.Snapshot.TranscriptFrames
+         RemainingMilliseconds=timeLeft live;SnapshotIndex=live.Snapshot.SnapshotIndex}
+    let private captureFor live stage =
+        {Stage=stage;Calls=ResizeArray();Enter=fun () -> enterWork live stage {zeroWork with KernelEntered=1}}
+    let private queryPlan admitted = Option.defaultValue admitted.Plan admitted.Replay
+    let private queryRow admitted =
+        let plan=queryPlan admitted
+        plan.EvidenceCut.Rows |> List.find (fun row -> Some row.Id=plan.QueryRowId)
+    let private withChildSlots (ports:string list) means processed =
+        let values=[for slot in 0..1 -> Map.tryFind slot means |> Option.defaultValue 0.0]
+        let presence=[for slot in 0..1 -> if Map.containsKey slot means then 1.0 else 0.0]
+        for slot in 0..1 do
+            if ports[slot]="required" && not(Map.containsKey slot means) then
+                raise(WireFailure(failure "Admission" "forward" (Some "Ports") "missing required frozen child output"))
+            if ports[slot]="absent" && Map.containsKey slot means then
+                raise(WireFailure(failure "Admission" "forward" (Some "Ports") "undeclared child output"))
+        processed@values@presence
+    let private learnedOperation live artifactId pass rowId (setInputs:EpochInputs->unit) (retain:Call->unit) =
+        let plan=live.Admitted.Plan
+        let training=Option.get plan.Training
+        let request=training.Artifacts |> List.find(fun a -> a.Id=artifactId)
+        let row=plan.EvidenceCut.Rows |> List.find(fun r -> r.Id=rowId)
+        let old=Map.tryFind artifactId live.State.Weights |> Option.map(fun w -> w.Parameters) |> Option.defaultWith L.initialParameters
+        let mutable inputs:LearningInput=
+            {ArtifactId=artifactId;Pass=pass;RowId=rowId;Row=row;OldVector=old;Inputs=[]
+             Target=Option.get row.Target;ArtifactEntry=None;Transform=NotEntered}
+        let update ()=setInputs(LearningInputs inputs)
+        update()
+        if not(live.Prepared.ContainsKey artifactId) then
+            // Artifact-entry observation precedes fallible preprocessing.
+            inputs<-{inputs with ArtifactEntry=Some {Request=request;Preprocessing=NotEntered}}
+            update()
+            enterWork live "learn" {zeroWork with TrainingArtifacts=1}
+            let rows=training.RowIds[artifactId] |> List.map(fun id -> (plan.EvidenceCut.Rows |> List.find(fun r -> r.Id=id)).Features)
+            let actual=L.tryFitPreprocessing live.State.ActiveCut rows
+            inputs<-{inputs with ArtifactEntry=Some {Request=request;Preprocessing=returned actual}}
+            update()
+            let preprocessing=actual.Outcome |> getOrRaise
+            live.Prepared.Add(artifactId,preprocessing)
+        let transformed=L.tryTransform live.Prepared[artifactId] row.Features
+        inputs<-{inputs with Transform=returned transformed}
+        update()
+        transformed.Outcome |> getOrRaise
+        let means=training.ChildForecasts |> List.filter(fun f -> f.ArtifactId=artifactId && f.TrainingRowId=rowId)
+                  |> List.map(fun f -> f.TargetSlot,f.Mean) |> Map.ofList
+        let vector=withChildSlots request.Ports means transformed.Values
+        inputs<-{inputs with Inputs=vector}
+        update()
+        // Reserve the nested old-vector forward allowance before Step. Its
+        // observed entry is counted from the complete actual StepAttempt.
+        requireWork live "learn" {zeroWork with LearnEntered=1;ForwardEntered=1}
+        enterWork live "learn" {zeroWork with LearnEntered=1}
+        let actual=L.tryStep {Parameters=old;Inputs=vector;Target=inputs.Target}
+        retain(returned actual)
+        live.Counters<-{live.Counters with Returned=live.Counters.Returned+1}
+        if actual.Forward.IsSome then
+            live.Work<-{live.Work with ForwardEntered=live.Work.ForwardEntered+1}
+            live.Counters<-{live.Counters with ForwardEntered=live.Work.ForwardEntered}
+        actual.Outcome |> getOrRaise
+        let next=actual.ProposedParameters
+        let oldHash=tryVectorHash old |> getOrRaise
+        let nextHash=tryVectorHash next |> getOrRaise
+        let weight={BaseArtifactId=artifactId;Parameters=next;VectorSha256=nextHash}
+        makeProposal live.State {live.State with Weights=Map.add artifactId weight live.State.Weights}
+            (O ["Kind",S "LearnStep";"ArtifactId",S artifactId;"OldVectorSha256",S oldHash;"NewVectorSha256",S nextHash])
+    let private forwardOperation live (node:Node) (setInputs:EpochInputs->unit) (retain:Call->unit) =
+        let row=queryRow live.Admitted
+        let selected=live.Admitted.Plan.SelectedVersions[Option.get node.Artifact]
+        let mutable inputs:ForwardingInput=
+            {NodeId=node.Id;RowId=row.Id;ArtifactVersion=selected.Version;Transform=NotEntered;Inputs=[]}
+        let update ()=setInputs(ForwardingInputs inputs)
+        update()
+        let transformed=L.tryTransform selected.Artifact.Preprocessing row.Features
+        inputs<-{inputs with Transform=returned transformed};update()
+        transformed.Outcome |> getOrRaise
+        let means=childMeans live.Admitted live.State node |> Map.ofList
+        let vector=withChildSlots selected.Artifact.Ports means transformed.Values
+        inputs<-{inputs with Inputs=vector};update()
+        enterWork live "forward" {zeroWork with ForwardEntered=1}
+        let actual=L.tryForward {Parameters=selected.Artifact.Parameters;Inputs=vector}
+        retain(returned actual)
+        live.Counters<-{live.Counters with Returned=live.Counters.Returned+1}
+        let mean=actual.Outcome |> getOrRaise
+        // The pending checkpoint owns the next sequence; no request occurs in
+        // a neural operation. The sequence itself is consumed at publication.
+        let output={Mean=mean;Variance=None;SourceSequence=live.Admitted.Sequence.Value}
+        makeProposal live.State {live.State with Outputs=Map.add node.Id output live.State.Outputs}
+            (O ["Kind",S "NeuralForward";"NodeId",S node.Id;"ArtifactVersion",S selected.Version
+                "Output",O ["Mean",jBits mean;"Variance",N;"SourceSequence",jInt output.SourceSequence]])
+
+    let private roundTrip (value:float) =
+        let rendered=
+            if value=0.0 && BitConverter.DoubleToInt64Bits(value)<0L then "-0"
+            else value.ToString("R",CultureInfo.InvariantCulture).Replace("E","e",StringComparison.Ordinal)
+        let mutable parsed=0.0
+        if not(finite value) || not(Double.TryParse(rendered,NumberStyles.Float,CultureInfo.InvariantCulture,&parsed))
+           || L.bits parsed<>L.bits value then
+            raise(WireFailure(failure "Arithmetic" "project" (Some "Rendering") "round-trip rendering did not retain exact bits"))
+        rendered
+    let private renderProjection caseId (target:K.ProjectionTarget) =
+        encodeSource 65536 (fun () ->
+            O ["Schema",S "zeta.precision-projection.input.v1";"Id",S caseId;"Profile",S "default"
+               "Parameters",O ["T",S(roundTrip target.Precision);"U",S(roundTrip target.Location)
+                               "K",S(roundTrip target.Linear);"C",S(roundTrip target.ExponentialRate)]]) |> getOrRaise
+    let private encodedBytes limit value =
+        keys ["BytesHex"] value
+        let encoded=text(prop "BytesHex" value)
+        if encoded.Length>2*limit || encoded.Length%2<>0 || (encoded |> Seq.exists(fun c -> not((c>='0' && c<='9') || (c>='a' && c<='f')))) then
+            wireError "BytesHex" "bounded lowercase original bytes required"
+        Convert.FromHexString encoded
+    let private exactTree expected actual field =
+        let a=encodeSource (16*1024*1024) (fun () -> expected) |> getOrRaise
+        let b=encodeSource (16*1024*1024) (fun () -> tree actual) |> getOrRaise
+        if a<>b then wireError field "complete canonical source correspondence differs"
+    let private publicFields name value =
+        keys ["Type";"Fields"] value
+        if text(prop "Type" value)<>name then wireError "Type" "actual source return type differs"
+        prop "Fields" value
+    let private boundedCounter limit field value =
+        let n=intSmall value
+        if n<0 || n>limit then wireError field "source counter outside fixed bound"
+        n
+    let private addObserved (old:CountObservation) count complete =
+        {Observed=old.Observed+count;Complete=old.Complete && complete}
+    let private remoteUnknown live =
+        let r=live.Counters.Remote
+        let unknown:RemoteCounters=
+            {NativeCallEntered=addObserved r.NativeCallEntered 0 false
+             NativeLaunchAttempted=addObserved r.NativeLaunchAttempted 0 false
+             NativeReturned=addObserved r.NativeReturned 0 false
+             CertificateEntered=addObserved r.CertificateEntered 0 false
+             CertificateReturned=addObserved r.CertificateReturned 0 false
+             NestedReferenceEntered=addObserved r.NestedReferenceEntered 0 false}
+        live.Counters<-{live.Counters with Remote=unknown}
+    let private observeRemote live (response:ProjectionResponse) =
+        // These are observed source-carrier counts under the admitted service
+        // premise, not physical-call proof inferred from JSON metadata.
+        if not(present response) then
+            remoteUnknown live
+            wireError "ProjectionResponse" "complete source response required"
+        let mutable remote=live.Counters.Remote
+        match response.Native with
+        | None ->
+            remote<-{remote with NativeCallEntered=addObserved remote.NativeCallEntered 0 false;
+                                  NativeLaunchAttempted=addObserved remote.NativeLaunchAttempted 0 false;
+                                  NativeReturned=addObserved remote.NativeReturned 0 false}
+        | Some value ->
+            remote<-{remote with NativeCallEntered=addObserved remote.NativeCallEntered 1 true;
+                                  NativeReturned=addObserved remote.NativeReturned 1 true}
+            try
+                let fields=publicFields "zeta_interp.precision_gate_projection_process.NativeObservation" value
+                let launched=boolean(prop "LaunchAttempted" fields)
+                remote<-{remote with NativeLaunchAttempted=addObserved remote.NativeLaunchAttempted (if launched then 1 else 0) true}
+                if launched then live.Work<-{live.Work with NativeLaunchAttempted=live.Work.NativeLaunchAttempted+1}
+            with _ -> remote<-{remote with NativeLaunchAttempted=addObserved remote.NativeLaunchAttempted 0 false}
+        match response.Certificate with
+        | None ->
+            remote<-{remote with CertificateEntered=addObserved remote.CertificateEntered 0 false;
+                                  CertificateReturned=addObserved remote.CertificateReturned 0 false;
+                                  NestedReferenceEntered=addObserved remote.NestedReferenceEntered 0 false}
+        | Some value ->
+            remote<-{remote with CertificateEntered=addObserved remote.CertificateEntered 1 true;
+                                  CertificateReturned=addObserved remote.CertificateReturned 1 true}
+            live.Work<-{live.Work with CertificateEntered=live.Work.CertificateEntered+1}
+            try
+                keys ["Type";"Fields"] value
+                let fields=prop "Fields" value
+                let kind=text(prop "Type" value)
+                let count=
+                    match kind with
+                    | "zeta_interp.precision_gate_projection_intervals.Success" ->
+                        boundedCounter 1 "ReferenceRootCalls" (prop "ReferenceRootCalls" (prop "Counters" (prop "Value" fields)))
+                    | "zeta_interp.precision_gate_projection_reference.ReceiptFailure" ->
+                        boundedCounter 1 "ReferenceRootCalls" (prop "ReferenceRootCalls" (prop "Counters" (prop "Receipt" fields)))
+                    | "zeta_interp.precision_gate_projection_intervals.Failure" -> 0
+                    | _ -> wireError "Certificate.Type" "unknown source return type"
+                remote<-{remote with NestedReferenceEntered=addObserved remote.NestedReferenceEntered count true}
+                live.Work<-{live.Work with NestedReferenceEntered=live.Work.NestedReferenceEntered+count}
+            with _ -> remote<-{remote with NestedReferenceEntered=addObserved remote.NestedReferenceEntered 0 false}
+        live.Counters<-{live.Counters with Remote=remote}
+    let private admitCertified (live:LiveEpoch) (request:ProjectionRequest) (response:ProjectionResponse) =
+        if response.Sequence<>request.Sequence || response.RequestId<>request.RequestId
+           || response.InputSha256<>request.InputSha256 || response.BindingsSha256<>request.BindingsSha256
+           || response.ServiceSha256<>live.Admitted.Context.Identity.ServiceSha256 then
+            wireError "ProjectionResponse" "independently supplied request/service correspondence differs"
+        acceptSnapshot live response.BudgetSnapshot false
+        live.Pending<-None
+        match response.Failure with
+        | Some f -> raise(WireFailure(failure "Service" "project" (Some "ProjectionResponse.Failure") f.Code))
+        | None -> ()
+        let native=match response.Native with Some v -> v | None -> wireError "Native" "complete actual source return required"
+        let fields=publicFields "zeta_interp.precision_gate_projection_process.NativeObservation" native
+        keys ["Complete";"Receipt";"Argv";"StartedAtUtc";"FinishedAtUtc";"LaunchAttempted";"LaunchStartedAtUtc"
+              "ChildPid";"ExitCode";"CleanupExitCode";"DirectChildClosed";"ReadersClosed";"Stdout";"Stderr"
+              "StdoutEof";"StderrEof";"StdoutLimitExceeded";"StderrLimitExceeded";"StdoutFailure";"StderrFailure"
+              "Failure";"Cleanup";"InputFiles";"Output";"Producer";"Dependencies";"CreatedFiles";"EnvironmentOverrides"] fields
+        if not(boolean(prop "Complete" fields)) || not(boolean(prop "LaunchAttempted" fields))
+           || not(boolean(prop "DirectChildClosed" fields)) || not(boolean(prop "ReadersClosed" fields))
+           || integer(prop "ExitCode" fields)<>0L || (prop "Failure" fields).ValueKind<>JsonValueKind.Null then
+            raise(WireFailure(failure "Service" "project" (Some "Native") "native source carrier did not complete"))
+        let nativeRaw=encodedBytes (2*1024*1024) (prop "Receipt" fields)
+        let receipt=strictDecode (2*1024*1024) nativeRaw (fun e -> e.Clone()) |> getOrRaise
+        keys ["Schema";"CaseId";"InputSha256";"Bindings";"Outcome";"Counters";"Trace"] receipt
+        let identity schema (value:JsonElement) =
+            if text(prop "Schema" value)<>schema || text(prop "CaseId" value)<>request.CaseId
+               || text(prop "InputSha256" value)<>request.InputSha256 then wireError "Receipt.Identity" "actual source identity mismatch"
+            exactTree (jMap S live.Admitted.Plan.SourceBindings) (prop "Bindings" value) "Receipt.Bindings"
+        identity "zeta.precision-projection.native.v1" receipt
+        let certificate=match response.Certificate with Some v -> v | None -> wireError "Certificate" "actual certificate return required"
+        let cf=publicFields "zeta_interp.precision_gate_projection_intervals.Success" certificate
+        keys ["Value"] cf
+        let c=prop "Value" cf
+        keys ["Schema";"CaseId";"InputSha256";"Bindings";"Target";"NativeRaw";"Reference";"CertificateContext"
+              "Coordinates";"Objective";"Outcome";"LeafChecks";"Counters"] c
+        identity "zeta.precision-projection.certificate.v1" c
+        let bound=prop "NativeRaw" c
+        keys ["BytesHex";"Bytes";"Sha256"] bound
+        if integer(prop "Bytes" bound)<>int64 nativeRaw.Length || text(prop "Sha256" bound)<>hash nativeRaw
+           || text(prop "BytesHex" bound)<>Convert.ToHexString(nativeRaw).ToLowerInvariant() then
+            wireError "Certificate.NativeRaw" "certificate did not bind exact supplied native receipt"
+        let outcome=prop "Outcome" c
+        if text(prop "Kind" outcome)<>"certified" then
+            let code=if (prop "Kind" outcome).GetString()="refused" then text(prop "Code" (prop "Failure" outcome)) else text(prop "Kind" outcome)
+            raise(WireFailure(failure "Uncertified" "project" (Some "Certificate.Outcome") code))
+        keys ["Kind";"TargetScope";"NativeTrajectoryCertified";"GraphApplicationPerformed"] outcome
+        if text(prop "TargetScope" outcome)<>"exact-native-dyadic" || boolean(prop "NativeTrajectoryCertified" outcome)
+           || boolean(prop "GraphApplicationPerformed" outcome) then wireError "Certificate.Outcome" "local certificate scope differs"
+        let target=prop "Target" c
+        keys ["RequestedParameters";"TargetBits";"DyadicTarget";"ConversionDelta"] target
+        exactTree (jTarget request.TargetBits) (prop "TargetBits" target) "Certificate.TargetBits"
+        let inputBytes=Convert.FromHexString request.RawInputHex
+        let original=strictDecode 65536 inputBytes (fun e -> e.Clone()) |> getOrRaise
+        exactTree (tree(prop "Parameters" original)) (prop "RequestedParameters" target) "Certificate.RequestedParameters"
+        let no=prop "Outcome" receipt
+        keys ["Kind";"Value"] no
+        if text(prop "Kind" no)<>"candidate" then wireError "Native.Outcome" "certified result requires actual candidate"
+        let candidate=prop "Value" no
+        keys ["TargetBits";"LogRatioBits";"RatioBits";"RBits";"MeanBits";"VarianceBits";"Bracket";"Stop";"OriginalObjective"] candidate
+        exactTree (jTarget request.TargetBits) (prop "TargetBits" candidate) "Native.TargetBits"
+        let mean=bits(prop "MeanBits" candidate)
+        let variance=bits(prop "VarianceBits" candidate)
+        if variance<=0.0 || bits(prop "RatioBits" candidate)<=0.0 || bits(prop "RBits" candidate)<=0.0 then
+            wireError "Native.Candidate" "positive-family values must remain strictly positive"
+        let counters=prop "Counters" c
+        keys ["Starts";"ReferenceRootCalls";"CertificatePreparations";"CoordinateIntervalCalls";"ObjectiveIntervalCalls"
+              "CertificateTranscendentalEntries";"LeafChecks"] counters
+        for name in ["Starts";"ReferenceRootCalls";"CertificatePreparations";"CoordinateIntervalCalls";"ObjectiveIntervalCalls"] do
+            if integer(prop name counters)<>1L then wireError "Certificate.Counters" "one actual source entry required"
+        boundedCounter 6 "CertificateTranscendentalEntries" (prop "CertificateTranscendentalEntries" counters) |> ignore
+        if integer(prop "LeafChecks" counters)<>7L then wireError "Certificate.LeafChecks" "all seven fixed comparisons required"
+        let names=["MeanBits";"VarianceBits";"RatioBits";"RBits";"OriginalObjective.ValueBits";"OriginalObjective.DerivativeMeanBits";"OriginalObjective.DerivativeVarianceBits"]
+        let leaves=arr 7 (prop "LeafChecks" c)
+        if leaves.Length<>7 then wireError "Certificate.LeafChecks" "complete ordered comparison roster required"
+        for name,leaf in List.zip names leaves do
+            keys ["Field";"NativeBits";"ReferenceInterval";"Tolerance";"Passed"] leaf
+            let expected=if name.StartsWith("OriginalObjective.",StringComparison.Ordinal) then prop (name.Substring(18)) (prop "OriginalObjective" candidate) else prop name candidate
+            if text(prop "Field" leaf)<>name || text(prop "NativeBits" leaf)<>text expected || not(boolean(prop "Passed" leaf)) then
+                wireError "Certificate.LeafChecks" "fixed candidate leaf association or pass differs"
+            let interval=prop "ReferenceInterval" leaf
+            keys ["Lower";"Upper"] interval
+            text(prop "Lower" interval) |> ignore;text(prop "Upper" interval) |> ignore
+        let reference=prop "Reference" c
+        identity "zeta.precision-projection.reference.v1" reference
+        if text(prop "Kind" (prop "Outcome" reference))<>"enclosure" then wireError "Certificate.Reference" "actual root enclosure required"
+        live.Counters<-{live.Counters with Certified=live.Counters.Certified+1}
+        ({Mean=mean;Variance=variance}:K.RealMoments)
+
+    let private gaussianProposal (live:LiveEpoch) (node:Node) (capture:KernelCapture) =
+        task {
+            let state=live.State
+            let prior=Option.get node.Prior
+            let unary=Option.get node.Unary
+            let entryMoments=combinedGaussian capture state node None |> gaussianMoments capture
+            let means=childMeans live.Admitted state node |> Map.ofList
+            let mutable baseKernel=prior.Gaussian
+            let mutable nextSites=state.GaussianSites
+            let changes=ResizeArray<J>()
+            for port,gammaPrior in List.zip node.Inputs prior.Gammas |> List.sortBy(fun (p,_) -> p.TargetSlot) do
+                let _,moments=combinedGamma capture state node port gammaPrior
+                let messages=normalPrecision capture entryMoments means[port.TargetSlot] moments.Mean
+                let key=site node ("normal/"+invariant port.TargetSlot) "z"
+                let proposed=messages.ToY
+                baseKernel<-gaussianProduct capture baseKernel proposed
+                let old=Map.tryFind key state.GaussianSites |> Option.defaultValue neutralGaussian
+                let applied=dampGaussian live.Admitted.Plan.Damping old proposed
+                nextSites<-Map.add key applied nextSites
+                changes.Add(O ["Key",jSiteKey key;"Old",jGaussian old;"Proposal",jGaussian proposed;"Applied",jGaussian applied])
+            let baseMoments=gaussianMoments capture baseKernel
+            let target:K.ProjectionTarget=
+                {Precision=baseKernel.Precision;Location=baseMoments.Mean;Linear=unary.K;ExponentialRate=unary.C}
+            // Reserve all prospective remote work before the single service
+            // invocation; observed entries are retained separately on return.
+            requireWork live "project" {zeroWork with ProjectionRequested=1;NativeLaunchAttempted=1;CertificateEntered=1;NestedReferenceEntered=1}
+            enterWork live "project" {zeroWork with ProjectionRequested=1}
+            let sequence=allocateSequence live
+            let requestId="projection/"+invariant sequence
+            let caseId=live.Admitted.Context.Identity.SessionId+"/"+requestId
+            let raw=renderProjection caseId target
+            let request:ProjectionRequest=
+                {Sequence=sequence;RequestId=requestId;InputRevision=state.Revision;Base=baseKernel;TargetBits=target
+                 RawInputHex=Convert.ToHexString(raw).ToLowerInvariant();InputSha256=hash raw;CaseId=caseId
+                 BindingsSha256=encodeSource 262144 (fun () -> jMap S live.Admitted.Plan.SourceBindings) |> getOrRaise |> hash
+                 Remaining=remaining live}
+            live.Pending<-Some request
+            let input=element(jRequest request)
+            let index=capture.Calls.Count
+            capture.Calls.Add {Operation="ProjectionService";Inputs=input;Call=NotEntered}
+            let! observed=
+                task {
+                    try
+                        let! actual=(live.Service request).ConfigureAwait(false)
+                        capture.Calls[index]<-{Operation="ProjectionService";Inputs=input;Call=returned actual}
+                        return actual
+                    with ex ->
+                        capture.Calls[index]<-{Operation="ProjectionService";Inputs=input;Call=Raised(exceptionObservation ex)}
+                        return Error {Failure=failure "Unexpected" "project" None ex.Message;Received=None;RawSha256=None
+                                      ReceivedBytes=0L;Exception=Some(exceptionObservation ex)}
+                }
+            let response=
+                match observed with
+                | Ok response -> response
+                | Error _ ->
+                    remoteUnknown live
+                    let f=failure "Transport" "project" (Some "ProjectionService") "service did not return an admitted response"
+                    publicationFailure live f
+                    raise(WireFailure f)
+            observeRemote live response
+            tryEncodeProjectionResponse response |> getOrRaise |> ignore
+            let candidate=admitCertified live request response
+            // Conversion does not use Gaussian.ofMeanVariance (which throws),
+            // and the proposal is the projected belief divided by this base.
+            let precision=checkedDivide "gaussian" "projection.inverse-variance" 1.0 candidate.Variance
+            let eta=checkedMultiply "gaussian" "projection.precision-mean" candidate.Mean precision
+            let projected:Gaussian={PrecisionMean=eta;Precision=precision}
+            let projectedMoments=gaussianMoments capture projected
+            let proposed=gaussianQuotient capture projected baseKernel
+            let key=site node "unary" "z"
+            let old=Map.tryFind key state.GaussianSites |> Option.defaultValue neutralGaussian
+            let applied=dampGaussian live.Admitted.Plan.Damping old proposed
+            nextSites<-Map.add key applied nextSites
+            let privateState={state with GaussianSites=nextSites}
+            let combined=combinedGaussian capture privateState node None
+            let moments=gaussianMoments capture combined
+            if abs moments.Mean>64.0 then raise(WireFailure(failure "Arithmetic" "gaussian" (Some "Output.Mean") "plugin output exceeds fixed bound"))
+            let output:Output={Mean=moments.Mean;Variance=Some moments.Variance;SourceSequence=live.Admitted.Sequence.Value}
+            changes.Add(O ["Key",jSiteKey key;"Old",jGaussian old;"Proposal",jGaussian proposed;"Applied",jGaussian applied;
+                           "UndampedDelta",O ["PrecisionMean",jBits(checkedNumber "gaussian" "undamped.delta.eta" (proposed.PrecisionMean-old.PrecisionMean));
+                                              "Precision",jBits(checkedNumber "gaussian" "undamped.delta.precision" (proposed.Precision-old.Precision))];
+                           "AppliedDelta",O ["PrecisionMean",jBits(checkedNumber "gaussian" "applied.delta.eta" (applied.PrecisionMean-old.PrecisionMean));
+                                            "Precision",jBits(checkedNumber "gaussian" "applied.delta.precision" (applied.Precision-old.Precision))]])
+            let details=O ["Kind",S "GaussianBlock";"Base",jGaussian baseKernel;"TargetBits",jTarget target;"Request",jRequest request;
+                           "Candidate",O ["Mean",jBits candidate.Mean;"Variance",jBits candidate.Variance];
+                           "ReconstructedProposal",O ["Mean",jBits projectedMoments.Mean;"Variance",jBits projectedMoments.Variance];
+                           "UndampedCertificateOnly",B true;"Sites",A changes;
+                           "AppliedMoments",O ["Mean",jBits moments.Mean;"Variance",jBits moments.Variance]]
+            return makeProposal state {privateState with Outputs=Map.add node.Id output state.Outputs} details
+        }
+    let private blockOperation live operation node sweep setInputs =
+        task {
+            let stage=match operation with GammaBlock _ -> "gamma" | GaussianBlock _ -> "gaussian" | _ -> "retract"
+            let capture=captureFor live stage
+            let mutable inputs=element(O ["Kind",S stage;"InputRevision",I live.State.Revision;"State",jState live.State])
+            let mutable proposal=None
+            let mutable outcome=Ok()
+            try
+                match operation with
+                | Compensate _ ->
+                    let retained=Option.get live.Admitted.RestoreState
+                    let cut=tryCutHash live.Admitted.Plan.EvidenceCut |> getOrRaise
+                    inputs<-element(O ["Kind",S "Compensate";"Operation",jOperation operation;"InputRevision",I live.State.Revision])
+                    setInputs(RawInputs inputs)
+                    let next={retained with ActiveCut=cut}
+                    proposal<-Some(makeProposal live.State next (O ["Kind",S "Compensate";"Target",jOperation operation;
+                                                                      "Replay",B live.Admitted.Replay.IsSome]))
+                | _ ->
+                    let node=Option.get node
+                    inputs<-element(blockInputs live.Admitted live.State node sweep)
+                    setInputs(RawInputs inputs)
+                    match operation with
+                    | GammaBlock _ -> proposal<-Some(gammaProposal live.Admitted live.State node capture)
+                    | GaussianBlock _ ->
+                        let! p=(gaussianProposal live node capture).ConfigureAwait(false)
+                        proposal<-Some p
+                    | _ -> raise(WireFailure(failure "Admission" stage None "closed block operation required"))
+            with
+            | WireFailure f -> outcome<-Error(sourceFailure f)
+            | ex -> outcome<-Error(failure "Unexpected" stage None ex.Message)
+            // Entire actual block return exists before outer proposal judgment.
+            return {Inputs=inputs;Calls=List.ofSeq capture.Calls;Proposal=proposal;Outcome=outcome}
+        }
+    let private validateProposal live (proposal:Proposal) =
+        let oldHash=tryEncodeState live.State |> getOrRaise |> hash
+        if proposal.ExpectedRevision<>live.State.Revision || proposal.ExpectedStateSha256<>oldHash then
+            raise(WireFailure(failure "Stale" "apply" None "proposal names a different committed revision or state"))
+        if proposal.State.Revision<>live.State.Revision+1L || proposal.State.ActiveCut<>(tryCutHash live.Admitted.Plan.EvidenceCut |> getOrRaise) then
+            raise(WireFailure(failure "Conflict" "apply" None "one new revision and exact active cut required"))
+        let plan={live.Admitted.Plan with Mode=(if live.Admitted.Plan.Mode="train" then "train" else "query");InitialState=proposal.State}
+        validateState plan live.Admitted.Ordered |> getOrRaise
+    let private checkpointFrameIdentity live checkpoint =
+        let payload=match jCheckpoint checkpoint with O values -> values | _ -> Seq.empty
+        let fields=seq {
+            yield "Kind",S "Checkpoint"
+            yield "Schema",S "zeta.mixed-epoch.peer.v1"
+            yield "SessionId",S live.Admitted.Context.Identity.SessionId
+            yield! payload
+        }
+        let limit=match checkpoint.Observation.Operation with GaussianBlock _ -> 16*1024*1024 | _ -> 65536
+        let raw=encodeSource (limit-1) (fun () -> O fields) |> getOrRaise
+        let framed=Array.append raw [|10uy|]
+        hash framed,int64 framed.Length
+    let private publishObservation (live:LiveEpoch) index =
+        task {
+            let observation=live.Observations[index]
+            let mutable position=None
+            let mutable stored=None
+            try
+                // Identity construction is publication work too. A retained
+                // observation remains unpublished if encoding fails here.
+                let checkpoint:Checkpoint=
+                    {Sequence=observation.Sequence;Observation=observation;LastRevision=live.State.Revision
+                     StateSha256=tryEncodeState live.State |> getOrRaise |> hash}
+                let expectedHash,expectedBytes=checkpointFrameIdentity live checkpoint
+                let callbackIndex=live.RecorderCalls.Count
+                live.RecorderCalls.Add {Kind="Checkpoint";Sequence=Some observation.Sequence;Call=NotEntered}
+                position<-Some callbackIndex
+                let! actual=(live.Recorder.Checkpoint checkpoint).ConfigureAwait(false)
+                live.RecorderCalls[callbackIndex]<-{Kind="Checkpoint";Sequence=Some observation.Sequence;Call=returned actual}
+                match actual with
+                | Error f -> publicationFailure live f
+                | Ok receipt ->
+                    if receipt.Sequence<>observation.Sequence || receipt.CheckpointSha256<>expectedHash
+                       || receipt.Artifact.Sha256<>expectedHash || receipt.Artifact.Bytes<>expectedBytes then
+                        raise(WireFailure(failure "Transport" "publish" (Some "CheckpointAck") "source-admitted acknowledgment correspondence differs"))
+                    acceptSnapshot live receipt.BudgetSnapshot false
+                    stored<-Some receipt
+            with
+            | WireFailure f -> publicationFailure live f
+            | ex ->
+                match position with
+                | Some callbackIndex when live.RecorderCalls[callbackIndex].Call=NotEntered ->
+                    live.RecorderCalls[callbackIndex]<-{Kind="Checkpoint";Sequence=Some observation.Sequence;Call=Raised(exceptionObservation ex)}
+                | _ -> ()
+                publicationFailure live (failure "Unexpected" "publish" (Some "Checkpoint") ex.Message)
+            if stored.IsNone && not(live.Unpublished.Contains observation.Sequence) then live.Unpublished.Add observation.Sequence
+            match stored,observation.Proposal,observation.Admission,observation.Failure with
+            | Some receipt,Some proposed,Some(Ok()),None when live.FirstFailure.IsNone ->
+                try
+                    validateProposal live proposed
+                    live.State<-proposed.State
+                    live.Counters<-{live.Counters with Applied=live.Counters.Applied+1}
+                    live.Observations[index]<-{observation with AppliedRevision=Some live.State.Revision}
+                    let commit:Commit={Sequence=observation.Sequence;CheckpointSha256=receipt.CheckpointSha256
+                                       AppliedRevision=live.State.Revision;LastCommitted=live.State;Counters=live.Counters}
+                    let position=live.RecorderCalls.Count
+                    live.RecorderCalls.Add {Kind="Commit";Sequence=Some observation.Sequence;Call=NotEntered}
+                    try
+                        let! actual=(live.Recorder.Commit commit).ConfigureAwait(false)
+                        live.RecorderCalls[position]<-{Kind="Commit";Sequence=Some observation.Sequence;Call=returned actual}
+                        match actual with Ok() -> () | Error f -> publicationFailure live f
+                    with ex ->
+                        match live.RecorderCalls[position].Call with
+                        | NotEntered -> live.RecorderCalls[position]<-{Kind="Commit";Sequence=Some observation.Sequence;Call=Raised(exceptionObservation ex)}
+                        | _ -> ()
+                        publicationFailure live (failure "Unexpected" "publish" (Some "Commit") ex.Message)
+                with
+                | WireFailure f -> latch live f
+                | ex -> latch live (failure "Unexpected" "apply" None ex.Message)
+            | _ -> ()
+        }
+    let private executeOperation (live:LiveEpoch) operation =
+        task {
+            let inputRevision=live.State.Revision
+            let mutable inputs=RawInputs(element(O ["Kind",S "NotEntered";"Operation",jOperation operation]))
+            let mutable actualCall=NotEntered
+            let mutable proposal=None
+            let mutable admission=None
+            let mutable problem=None
+            let setInputs value=inputs<-value
+            let retain value=actualCall<-value
+            try
+                // Handler entry is charged even if the immediately following
+                // recorder snapshot or deadline check refuses.
+                live.Work<-{live.Work with SchedulerEntered=live.Work.SchedulerEntered+1}
+                live.Counters<-{live.Counters with SchedulerEntered=live.Work.SchedulerEntered}
+                observeSnapshot live
+                requireTime live "scheduler"
+                match operation with
+                | LearnStep(id,pass,row) -> proposal<-Some(learnedOperation live id pass row setInputs retain)
+                | NeuralForward(id,_) ->
+                    let node=live.Admitted.Ordered |> List.find(fun n -> n.Id=id)
+                    proposal<-Some(forwardOperation live node setInputs retain)
+                | GammaBlock(id,sweep) | GaussianBlock(id,sweep) ->
+                    let node=live.Admitted.Ordered |> List.find(fun n -> n.Id=id)
+                    let! actual=(blockOperation live operation (Some node) sweep setInputs).ConfigureAwait(false)
+                    retain(returned actual)
+                    live.Counters<-{live.Counters with Returned=live.Counters.Returned+1}
+                    actual.Outcome |> getOrRaise
+                    proposal<-actual.Proposal
+                | Compensate _ ->
+                    let! actual=(blockOperation live operation None 0 setInputs).ConfigureAwait(false)
+                    retain(returned actual)
+                    live.Counters<-{live.Counters with Returned=live.Counters.Returned+1}
+                    actual.Outcome |> getOrRaise
+                    proposal<-actual.Proposal
+                match proposal with
+                | None -> raise(WireFailure(failure "Conflict" "apply" None "successful fixed update returned no proposal"))
+                | Some proposed ->
+                    live.Counters<-{live.Counters with Proposed=live.Counters.Proposed+1}
+                    validateProposal live proposed
+                    admission<-Some(Ok())
+            with
+            | WireFailure f -> problem<-Some(sourceFailure f);latch live f
+            | ex ->
+                let f=failure "Unexpected" "scheduler" None ex.Message
+                problem<-Some f;latch live f
+                match actualCall with NotEntered -> actualCall<-Raised(exceptionObservation ex) | _ -> ()
+            if proposal.IsSome && admission.IsNone then admission<-problem |> Option.map Error
+            // Actual values are retained before this allocation and callback.
+            let sequence=allocateSequence live
+            let observation:Observation=
+                {Sequence=sequence;Operation=operation;InputRevision=inputRevision;Inputs=inputs;Call=actualCall
+                 Proposal=proposal;Admission=admission;AppliedRevision=None;Failure=problem}
+            let index=live.Observations.Count
+            live.Observations.Add observation
+            try
+                if live.PublicationFailure.IsNone then
+                    do! (publishObservation live index).ConfigureAwait(false)
+                else live.Unpublished.Add sequence
+            with
+            | WireFailure f -> publicationFailure live f
+            | ex -> publicationFailure live (failure "Unexpected" "publish" None ex.Message)
+            return live.FirstFailure
+        }
+
+    let private completedArtifacts live =
+        match live.Admitted.Plan.Training with
+        | None -> []
+        | Some training ->
+            training.Artifacts |> List.map(fun request ->
+                let ledger=live.Observations |> Seq.filter(fun o -> match o.Operation with LearnStep(id,_,_) -> id=request.Id | _ -> false)
+                let preimage=encodeSource (16*1024*1024) (fun () -> A(Seq.map jObservation ledger)) |> getOrRaise
+                let weight=live.State.Weights[request.Id]
+                let artifact:L.ModuleArtifact=
+                    {Id=request.Id;ParentVersion=request.ParentVersion;TrainingCut=live.State.ActiveCut
+                     Architecture=L.Architecture;Ports=request.Ports;Parameters=weight.Parameters
+                     Preprocessing=live.Prepared[request.Id];UpdateReceiptSha256=hash preimage
+                     SourceBindings=live.Admitted.Plan.SourceBindings}
+                L.tryValidateArtifact artifact |> getOrRaise
+                L.tryEncodeArtifact artifact |> getOrRaise |> ignore
+                artifact)
+    let private runOwned admitted service recorder =
+        task {
+            let live=createLive admitted service recorder
+            let operations=List.toArray admitted.Plan.Operations
+            let handler=SoftScheduler.handler "checked-mixed-message-epoch" (function TimerElapsed 0 -> true | _ -> false)
+                            (fun _ index -> task {
+                                let! problem=(executeOperation live operations[index]).ConfigureAwait(false)
+                                return match problem with None -> Ok(index+1) | Some f -> Error(Failed f.Code) })
+            let scheduler=SoftScheduler.drive [handler] (fun _ -> [TimerElapsed 0])
+            let context:IntrCtx=
+                {Memetic="checked-mixed-message-epoch";Prompt=admitted.Context.Identity.SessionId
+                 Trust="independently supplied source/custody premise";Log="owned recorder";Otel=ActivityContext()}
+            let! schedulerObservation=
+                task {
+                    try
+                        let! actual=(scheduler.Run context 0L 0 operations.Length).ConfigureAwait(false)
+                        return SchedulerReturned actual
+                    with ex -> return SchedulerRaised(exceptionObservation ex)
+                }
+            match schedulerObservation with
+            | SchedulerReturned(Ok count) when count=operations.Length -> ()
+            | SchedulerReturned(Error(Failed code)) ->
+                latch live (failure "Unexpected" "scheduler" None code)
+            | SchedulerReturned(Error _) ->
+                latch live (failure "Unexpected" "scheduler" None "actual scheduler interrupted")
+            | SchedulerReturned(Ok _) -> latch live (failure "Conflict" "scheduler" None "actual scheduler returned an incomplete operation index")
+            | SchedulerRaised ex -> latch live (failure "Unexpected" "scheduler" None ex.Message)
+            let mutable artifacts=[]
+            if live.FirstFailure.IsNone then
+                try artifacts<-completedArtifacts live
+                with
+                | WireFailure f -> publicationFailure live f
+                | ex -> publicationFailure live (failure "Unexpected" "publish" (Some "ProposedArtifacts") ex.Message)
+            let completed=live.FirstFailure.IsNone
+            return
+                {PlanSha256=admitted.PlanSha256;Outcome=(if completed then "completed" else "refused")
+                 Termination=(if completed then "BudgetCompleted" else "Refused");Failure=live.FirstFailure
+                 LastCommitted=live.State;ProposedArtifacts=(if completed then artifacts else [])
+                 Observations=List.ofSeq live.Observations;Counters=live.Counters;PendingRequest=live.Pending
+                 Scheduler=schedulerObservation
+                 Publication={Recorder=List.ofSeq live.RecorderCalls;Unpublished=List.ofSeq live.Unpublished
+                              Failure=live.PublicationFailure;BudgetSnapshot=live.Snapshot}}
+        }
+    let private startOwned (admitted:AdmittedPlan) (invoke:unit->Task<EpochResult>) =
+        match admitted.Execution.Value with
+        | Some original -> original
+        | None ->
+            let completion=TaskCompletionSource<EpochResult>(TaskCreationOptions.RunContinuationsAsynchronously)
+            admitted.Execution.Value<-Some completion.Task
+            let finish=task {
+                try
+                    let! actual=(invoke()).ConfigureAwait(false)
+                    completion.TrySetResult actual |> ignore
+                with
+                | :? OperationCanceledException as ex -> completion.TrySetCanceled(ex.CancellationToken) |> ignore
+                | ex -> completion.TrySetException ex |> ignore
+            }
+            // No worker or parallel schedule is started. `finish` is the one
+            // owned asynchronous chain; every ordinary returned/faulted/cancelled
+            // outcome settles the installed task. No EpochResult is fabricated
+            // for an exception outside the retained runOwned result boundary.
+            ignore finish
+            completion.Task
+    /// The first invocation owns this admitted session and its callbacks. Later
+    /// same-process calls return the exact original in-flight/completed task:
+    /// receipt lookup only, with no callback, clock read, or work reset. This
+    /// is the registered sequential caller scope, not a thread-safety claim.
+    /// A null private handle is CLR misuse outside source-admitted execution:
+    /// its task faults promptly with no invented epoch or scheduler observation.
+    let runEpoch (admitted:AdmittedPlan,service:ProjectionService,recorder:Recorder) : Task<EpochResult> =
+        if not(present admitted) then Task.FromException<EpochResult>(ArgumentNullException(nameof admitted))
+        else startOwned admitted (fun () -> runOwned admitted service recorder)
+
+    // Closed friend-assembly seams exercise actual completion/publication
+    // boundaries with explicitly synthetic values, without a numerical service.
+    module internal RuntimeControls =
+        let owned admitted invoke = startOwned admitted invoke
+        let publishRetained admitted recorder observation =
+            task {
+                let service:ProjectionService=fun _ -> Task.FromException<Result<ProjectionResponse,TransportFailure>>(InvalidOperationException "inert publication control")
+                let live=createLive admitted service recorder
+                live.Observations.Add observation
+                let mutable actual=Ok()
+                try do! (publishObservation live 0).ConfigureAwait(false)
+                with
+                | WireFailure f -> actual<-Error f
+                | ex -> actual<-Error(failure "Unexpected" "publish" None ex.Message)
+                return actual,List.ofSeq live.Observations,List.ofSeq live.Unpublished,List.ofSeq live.RecorderCalls
+            }
+    type SelectedManifest = Map<string,SelectedVersion>
+    /// Atomic immutable publication selection. This consumes a complete source
+    /// result under the same ordinary caller premise; no artifact is loaded by
+    /// a producer name, and no currently running query is changed.
+    let trySelectArtifacts (current:SelectedManifest,expectedParents:Map<string,string option>,completed:EpochResult) =
+        try
+            flow {
+                if not(present current && present expectedParents && present completed) || current.Count>4
+                   || completed.Outcome<>"completed" || completed.Termination<>"BudgetCompleted" || completed.Failure.IsSome
+                   || completed.Publication.Failure.IsSome || completed.PendingRequest.IsSome
+                   || not(bounded 4 completed.ProposedArtifacts) || completed.ProposedArtifacts.IsEmpty then
+                    return! error "Selection" "complete bounded actual training return required"
+                match completed.Scheduler with
+                | SchedulerReturned(Ok count) when count=completed.Observations.Length -> ()
+                | _ -> return! error "Selection.Scheduler" "complete actual scheduler return required"
+                if completed.Observations |> List.exists(fun o -> match o.Operation with LearnStep _ -> o.AppliedRevision.IsNone || o.Failure.IsSome | _ -> true) then
+                    return! error "Selection.Observations" "only complete applied training operations may publish artifacts"
+                let ids=completed.ProposedArtifacts |> List.map(fun a -> a.Id)
+                if not(unique ids) || Set.ofList ids<>(expectedParents |> Map.keys |> Set.ofSeq) then
+                    return! error "Selection.ExpectedParents" "exact unique replacement roster required"
+                for KeyValue(id,selected) in current do
+                    let! version=L.tryVersion selected.Artifact
+                    if id<>selected.Artifact.Id || version<>selected.Version then return! error "Selection.Current" "current immutable artifact hash mismatch"
+                let mutable selected=current
+                for artifact in completed.ProposedArtifacts do
+                    let old=Map.tryFind artifact.Id current |> Option.map(fun s -> s.Version)
+                    if old<>expectedParents[artifact.Id] || artifact.ParentVersion<>old then
+                        return! Error(failure "Stale" "apply" (Some artifact.Id) "expected parent version differs from current manifest")
+                    let! version=L.tryVersion artifact
+                    let! vector=tryVectorHash artifact.Parameters
+                    match Map.tryFind artifact.Id completed.LastCommitted.Weights with
+                    | None -> return! error "Selection.Weights" "no actual committed training vector"
+                    | Some weight when weight.VectorSha256=vector && weight.BaseArtifactId=artifact.Id -> ()
+                    | _ -> return! error "Selection.Weights" "proposed artifact differs from committed vector"
+                    let ledger=completed.Observations |> List.filter(fun o -> match o.Operation with LearnStep(id,_,_) -> id=artifact.Id | _ -> false)
+                    let! bytes=encodeSource (16*1024*1024) (fun () -> A(Seq.map jObservation ledger))
+                    if hash bytes<>artifact.UpdateReceiptSha256 || artifact.TrainingCut<>completed.LastCommitted.ActiveCut then
+                        return! error "Selection.UpdateReceiptSha256" "actual update ledger/cut differs"
+                    selected<-Map.add artifact.Id {Version=version;Artifact=artifact} selected
+                if selected.Count>4 then return! error "Selection" "manifest exceeds fixed artifact cap"
+                return selected
+            }
+        with
+        | WireFailure f -> Error f
+        | ex -> Error(failure "Unexpected" "apply" None ex.Message)
