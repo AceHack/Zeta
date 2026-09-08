@@ -41,8 +41,8 @@ unopened and that investment remains paused.
 The records retain first failures, corrections, typed refusals, actual available
 returns and stated limits on publication. Fixture receipts do not become actual
 cross-language observations. The [native final gate](precision-gate-projection/2026-09-08/final-native-process-gate-2/manifest.json)
-passed all 18 checks at its recorded source cut; it is separate from the
-forthcoming assembled-system gate.
+passed all 18 checks at its recorded source cut; the separate assembled-system
+gate and actual comparison are recorded below.
 
 ## Fresh-main composition
 
@@ -93,14 +93,14 @@ Its repository-root Ruff check found one import-separator blank line in the
 driver test. That one-line formatting correction follows this recorded source
 cut and has a separate exact before/after identity; no production source changed.
 The driver review accepts production 1f4 and the 59-test follow-up 53cf, including
-the explicitly withdrawn locator suspicion. Final numerical work remains closed.
+the explicitly withdrawn locator suspicion. That source-validation record preceded the later actual comparison.
 
 
 The [assembled validation archive](precision-gate-projection/2026-09-08/assembled-validation/README.md)
 retains both ordinary-import cuts and the complete full gate. The corrected
 14-file Python check passes Ruff, format and mypy, with all 340 tests passing
 in 7.07 seconds. The only change between those two Python cuts is one blank
-line in the driver test; final manifest expectations use its corrected bytes.
+line in the driver test; the frozen manifest uses its corrected bytes.
 
 
 ## Frozen source capsule
@@ -121,3 +121,10 @@ All stress and control outcomes remain retained. Source/archive admission and
 remote-ref verification preceded the sole invocation; independent outcome
 review follows. The next investment is a bounded mixed-message schedule, not
 a claim of learned-system superiority.
+
+## Parent-main custody
+
+The [PR 17050 main receipt](research-main-publication/2026-09-08/pr-17050/README.md)
+preserves the verified parent-main publication: all seventeen changed paths
+and the whole merge tree agree, with the paused compiled investment intact.
+It is publication provenance, separate from the projection's numerical result.
