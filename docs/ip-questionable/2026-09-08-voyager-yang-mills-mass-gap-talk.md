@@ -16,7 +16,7 @@ YouTube fetch failed and exact-ID searches returned no result. The transcript
 was read directly; this record does not claim that the video was watched.
 
 The supplied attachment was `pasted-text.txt`, attachment identifier
-`1047813f-bb05-4492-87a1-bbf660f94d53`: 41,873 bytes, 273 lines, SHA-256
+`1047813f-bb05-4492-87a1-bbf660f94d53`: 41,873 bytes, 273 LF separators, 274 logical lines, no final newline; SHA-256
 `11c4c4d7c0b6343cd1fec36fcd62caa4bad59a18455cf03a3f3a202698abc6cf`.
 The hash identifies the original supplied bytes, including transcription errors
 and duplicated timestamp text. It is not a claim that those bytes are preserved
