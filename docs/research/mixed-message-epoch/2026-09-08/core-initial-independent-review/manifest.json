@@ -1,0 +1,171 @@
+{
+  "Schema": "zeta.mixed-message.core-initial-independent-review.v1",
+  "CoreCheckpoint": "b097d56eccc630046cd3bf618a362b01edeba329",
+  "RuntimeDraftAccepted": false,
+  "FullRuntimeAccepted": false,
+  "ReviewerNumericalExecution": false,
+  "Records": [
+    {
+      "File": "draft1-BoundedModuleLearner.fs.gz",
+      "Encoding": "gzip",
+      "Bytes": 19114,
+      "Sha256": "C59FDB8F5F2178297DB350AD43BD54C1ABCF6422DEDD5A3C7F85B797CC5D8236",
+      "StoredBytes": 4635,
+      "StoredSha256": "7511B230453621E8946B9C0D48DC107662D0ADF1B27DACF75E33665EDE3C4D7F",
+      "OriginalPath": ".git/mixed-message-core-draft-review-1/BoundedModuleLearner.fs"
+    },
+    {
+      "File": "draft1-BoundedModuleLearner.Tests.fs.gz",
+      "Encoding": "gzip",
+      "Bytes": 11168,
+      "Sha256": "D940D0698EFDDB28D33508DB822D542465B24D55AA7792DD5CCF25356199B7C9",
+      "StoredBytes": 3244,
+      "StoredSha256": "70E0DDC95D3E6CB72E03386BA35E1B0308887A3092793C282DDD85211ADD17AE",
+      "OriginalPath": ".git/mixed-message-core-draft-review-1/BoundedModuleLearner.Tests.fs"
+    },
+    {
+      "File": "draft1-MixedMessageEpoch.fs.gz",
+      "Encoding": "gzip",
+      "Bytes": 49200,
+      "Sha256": "715805F777BC65148DBF1A25F2529BB8F221A8899807F4B7EF1F9ECEEEE01D96",
+      "StoredBytes": 11959,
+      "StoredSha256": "6ECFB75376F17D5F71703FC3E583086C979363A7338A6CC6585E6F9E2D4F5BF5",
+      "OriginalPath": ".git/mixed-message-core-draft-review-1/MixedMessageEpoch.fs"
+    },
+    {
+      "File": "draft1-observed.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 1155,
+      "Sha256": "E046FB3DD6C95E08CC5A0CA46F5589C472A8D0B3BF3CFA3D4A546AB0B96D5600",
+      "StoredBytes": 555,
+      "StoredSha256": "16195DC9816BFCB2D710740420F70F58E7379E429107316308A3C3E65360D891",
+      "OriginalPath": ".git/mixed-message-core-draft-review-1/observed.json"
+    },
+    {
+      "File": "draft2-MixedMessageEpoch.fs.gz",
+      "Encoding": "gzip",
+      "Bytes": 92996,
+      "Sha256": "1CA37BEA48EEA631A485DDBC28BAAEEE1CEB5F565E816834DA483DDB9E6AB7CC",
+      "StoredBytes": 21749,
+      "StoredSha256": "C5F452FFC8C377EAD2136740FEEE2C739146F7835692BDFC837917719318A43D",
+      "OriginalPath": ".git/mixed-message-core-draft-review-2/MixedMessageEpoch.fs"
+    },
+    {
+      "File": "draft2-observed.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 363,
+      "Sha256": "50ACA43AAF2A1C090034EE985721F8DEE928CD8EAC3274C400F1A5DA389362DE",
+      "StoredBytes": 296,
+      "StoredSha256": "6C285ED60957B90B4F8BB71A16184ACC6B035B5309546E68A5B12EB6232C401B",
+      "OriginalPath": ".git/mixed-message-core-draft-review-2/observed.json"
+    },
+    {
+      "File": "runtime-MixedMessageEpoch.fs.gz",
+      "Encoding": "gzip",
+      "Bytes": 155611,
+      "Sha256": "38DC4E07237DD84F14CB1664BAD5FE528192828C167FB7789A503A942DDD018A",
+      "StoredBytes": 35693,
+      "StoredSha256": "A5D27A9B2C40A0F0C96EEBB421595B399487E614A8E36BA1AC49B8F1E3772589",
+      "OriginalPath": ".git/mixed-message-core-runtime-draft-review-1/MixedMessageEpoch.fs"
+    },
+    {
+      "File": "runtime-finding.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 594,
+      "Sha256": "938D981A2B84B45804A45CB1C88058136B3461876721DB9637DF499857EAFAB8",
+      "StoredBytes": 430,
+      "StoredSha256": "5C5DA5B83F82C6FC6485C826A911E54BF3E5FB736029BF1FB8DF68F41BACC258",
+      "OriginalPath": ".git/mixed-message-core-runtime-draft-review-1/finding.json"
+    },
+    {
+      "File": "runtime-followup-findings.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 821,
+      "Sha256": "FDA920EB4A340DF0E4A14759ED934218D9D2F885561F8AB6BE576DD3C08C82BF",
+      "StoredBytes": 495,
+      "StoredSha256": "7EA7605CAEB551D1787B79D133337D9C50B53754FB32ADE966DDE10F0A8EB655",
+      "OriginalPath": ".git/mixed-message-core-runtime-draft-review-1/followup-findings.json"
+    },
+    {
+      "File": "audit-audit.py.gz",
+      "Encoding": "gzip",
+      "Bytes": 1798,
+      "Sha256": "7E2A1EF847379B178D93BCD159CFF545F007122326EBBE42660911E0A6655D7B",
+      "StoredBytes": 883,
+      "StoredSha256": "9B89498720D9157D962024F820EC67B81E9E839E59EA10926FA1789621558C4D",
+      "OriginalPath": ".git/mixed-message-core-checkpoint-independent-audit-1/audit.py"
+    },
+    {
+      "File": "audit-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 46,
+      "Sha256": "4246ECAC4EF6450DB07C609F30F604FD1A6F18ECB2CF26894C77D53624F8DA8C",
+      "StoredBytes": 65,
+      "StoredSha256": "C76CA40671BE5A3441A368EC3D3353F4E7E05EFFF49BF84943181527BE2EF148",
+      "OriginalPath": ".git/mixed-message-core-checkpoint-independent-audit-1/stdout"
+    },
+    {
+      "File": "audit-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "OriginalPath": ".git/mixed-message-core-checkpoint-independent-audit-1/stderr"
+    },
+    {
+      "File": "audit-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 16,
+      "Sha256": "3033D769A5AD69AB6EDDFAD07727494EB9C09A9A311E86DEF61B931B18C12C6E",
+      "StoredBytes": 36,
+      "StoredSha256": "D5F9070E6C30F689FFEEA70ADA4B3548DE057EB5DAB0251BD1804963DE7E07EB",
+      "OriginalPath": ".git/mixed-message-core-checkpoint-independent-audit-1/completion.json"
+    },
+    {
+      "File": "audit-result.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 32275,
+      "Sha256": "8201C8562618851E275298D1B0359305BC5288F799061D8D647F56AADFC6608D",
+      "StoredBytes": 4809,
+      "StoredSha256": "A72EEB54FA30E6AB338A2A13DF0DB92D5878C23C36DFB637C0D9ABE6010295C3",
+      "OriginalPath": ".git/mixed-message-core-checkpoint-independent-audit-1/result.json"
+    },
+    {
+      "File": "quick-invocation.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 118,
+      "Sha256": "5EF7630E8D2DCBE0B766EC46324569B4F2C36B989B31EDC5CB253EB36CB7FDF3",
+      "StoredBytes": 119,
+      "StoredSha256": "E3350B9482A72984A57F5921F265F0D5C22E9B3B0AB569CEBD03CAA5600D1656",
+      "OriginalPath": ".git/mixed-message-core-initial-review-gate-1/invocation.json"
+    },
+    {
+      "File": "quick-stdout.gz",
+      "Encoding": "gzip",
+      "Bytes": 1167,
+      "Sha256": "4167192A5F69F0E03959F4DF63DDA87D1D9D07C7F6F46AD058960CB384ACE0A4",
+      "StoredBytes": 375,
+      "StoredSha256": "D9609B6914A36A006AE5B1CEA9CE0934F941EA4D76997A7383732D422563C2EF",
+      "OriginalPath": ".git/mixed-message-core-initial-review-gate-1/stdout"
+    },
+    {
+      "File": "quick-stderr.gz",
+      "Encoding": "gzip",
+      "Bytes": 57,
+      "Sha256": "FC5CEA057558784B9285265B206AE14E6629D39610EC93EFC443C21AD0D05961",
+      "StoredBytes": 77,
+      "StoredSha256": "DC19432FFF48A51A2BE835947A121911035939B067CF6ED507E168F48EF85CC7",
+      "OriginalPath": ".git/mixed-message-core-initial-review-gate-1/stderr"
+    },
+    {
+      "File": "quick-completion.json.gz",
+      "Encoding": "gzip",
+      "Bytes": 69,
+      "Sha256": "677C915507320E1C4BE5F03AA637F2198369AA2CD038ED64951B8488512D1DA8",
+      "StoredBytes": 88,
+      "StoredSha256": "2BA2222B6B5D38735CBF48A0185A87523E958024785060F79065FF91794B2C54",
+      "OriginalPath": ".git/mixed-message-core-initial-review-gate-1/completion.json"
+    }
+  ]
+}
