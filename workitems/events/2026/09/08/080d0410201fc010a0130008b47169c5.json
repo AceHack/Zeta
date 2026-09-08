@@ -1,0 +1,14 @@
+{
+  "id": "080d0410201fc010a0130008b47169c5",
+  "at": "2026-09-08T17:14:56.376Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21080ZQ087G0R0037YY66R",
+    "type": "task",
+    "title": "D9 persist Jumprope layout so reopen still reuses prefix",
+    "slug": "d9-persist-jumprope-layout-so-reopen-still-reuses-prefix",
+    "priority": "P2",
+    "filename": "081M21080ZQ087G0R0037YY66R-d9-persist-jumprope-layout-so-reopen-still-reuses-prefix.md"
+  }
+}

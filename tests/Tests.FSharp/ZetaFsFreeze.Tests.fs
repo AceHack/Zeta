@@ -4045,6 +4045,57 @@ let ``one-byte edit freeze does not duplicate known CAS objects`` () : Task =
     }
 
 [<Fact>]
+let ``reopen still has layout so a 1-byte edit reuses prefix`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/d9-layout-reopen"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let payloadA = Array.init 500_000 (fun i -> byte (i % 251))
+        let payloadB = Array.copy payloadA
+        payloadB.[250_000] <- payloadB.[250_000] ^^^ 1uy
+        let id = mintId ()
+        let mutable firstContent = Unchecked.defaultof<ContentHash256>
+        let volume1 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let h = ZetaFsMutbuf.openHandle volume1.Mutbuf id
+            ZetaFsMutbuf.pwrite volume1.Mutbuf h 0L payloadA |> ignore
+            let pending = (freezeAsync volume1 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume1 CancellationToken.None).ConfigureAwait(false)
+            let! first = pending.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a ->
+                firstContent <- a.Content
+                Assert.True(ZetaFsFreeze.hasPrev volume1 id)
+        finally
+            ZetaFsFreeze.dispose volume1
+
+        let volume2 = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            Assert.True(ZetaFsFreeze.hasPrev volume2 id)
+            let h2 = ZetaFsMutbuf.openHandle volume2.Mutbuf id
+            ZetaFsMutbuf.pwrite volume2.Mutbuf h2 0L payloadB |> ignore
+            let pendingB = (freezeAsync volume2 id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume2 CancellationToken.None).ConfigureAwait(false)
+            let! second = pendingB.ConfigureAwait(false)
+
+            match second with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok b ->
+                Assert.NotEqual<string>(firstContent.ToHex(), b.Content.ToHex())
+                Assert.Equal((ZetaFsJumprope.buildV1 payloadB).Content.ToHex(), b.Content.ToHex())
+                Assert.True(ZetaFsFreeze.isReadable volume2 firstContent)
+                Assert.True(ZetaFsFreeze.isReadable volume2 b.Content)
+        finally
+            ZetaFsFreeze.dispose volume2
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``remap-epoch crash-mid-write keeps the prior ContentId readable`` () : Task =
     task {
         ensureHasher ()

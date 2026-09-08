@@ -1093,6 +1093,165 @@ module ZetaFsFreeze =
         { Prev: ZetaFsJumprope.Prev
           ObjectIds: ContentHash256[] }
 
+    let private layoutPath (storeDir: string) (entity: ZetaFsNamespace.EntityId) =
+        ZetaFsPath.combine3 storeDir "layout" (ZetaFsNamespace.EntityId.format entity)
+
+    let private encodeLayout (layout: LastLayout) : string =
+        let sb = StringBuilder()
+        sb.Append("layout/1\n") |> ignore
+        sb.Append("content ").Append(layout.Prev.Content.ToHex()).Append('\n') |> ignore
+        sb.Append("span ").Append(layout.Prev.Span.ToString(CultureInfo.InvariantCulture)).Append('\n')
+        |> ignore
+        sb.Append("chunker ").Append(ZetaFsJumprope.chunkerName layout.Prev.Chunker).Append('\n')
+        |> ignore
+        sb.Append("objects") |> ignore
+
+        for id in layout.ObjectIds do
+            sb.Append(' ').Append(id.ToHex()) |> ignore
+
+        sb.Append('\n') |> ignore
+
+        for i in 0 .. layout.Prev.Leaves.Length - 1 do
+            let id, span = layout.Prev.Leaves.[i]
+            let start = layout.Prev.Starts.[i]
+
+            sb.Append("leaf ")
+                .Append(start.ToString(CultureInfo.InvariantCulture))
+                .Append(' ')
+                .Append(id.ToHex())
+                .Append(' ')
+                .Append(span.ToString(CultureInfo.InvariantCulture))
+                .Append('\n')
+            |> ignore
+
+        sb.ToString()
+
+    let private tryParseHex (s: string) : ContentHash256 option =
+        try
+            Some(ContentHash256.ofHex s)
+        with _ ->
+            None
+
+    let private tryParseUInt64 (s: string) : uint64 option =
+        match UInt64.TryParse(s, NumberStyles.None, CultureInfo.InvariantCulture) with
+        | true, n -> Some n
+        | _ -> None
+
+    let private tryDecodeLayout (text: string) : LastLayout option =
+        let lines =
+            text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+        if lines.Length = 0 || not (String.Equals(lines.[0], "layout/1", StringComparison.Ordinal)) then
+            None
+        else
+            let mutable content = None
+            let mutable span = None
+            let mutable chunker = None
+            let mutable objects: ContentHash256[] = [||]
+            let leaves = ResizeArray<uint64 * ContentHash256 * uint64>()
+            let mutable bad = false
+            let mutable i = 1
+
+            while (not bad) && i < lines.Length do
+                let line = lines.[i]
+
+                if line.Length > 0 then
+                    if line.StartsWith("content ", StringComparison.Ordinal) then
+                        content <- tryParseHex (line.Substring(8))
+                        if content.IsNone then bad <- true
+                    elif line.StartsWith("span ", StringComparison.Ordinal) then
+                        span <- tryParseUInt64 (line.Substring(5))
+                        if span.IsNone then bad <- true
+                    elif line.StartsWith("chunker ", StringComparison.Ordinal) then
+                        chunker <- ZetaFsJumprope.parseChunker (line.Substring(8))
+                        if chunker.IsNone then bad <- true
+                    elif line.StartsWith("objects", StringComparison.Ordinal) then
+                        let rest =
+                            if line.Length = 7 then ""
+                            elif line.Length > 8 && line.[7] = ' ' then line.Substring(8)
+                            else
+                                bad <- true
+                                ""
+
+                        if not bad then
+                            if rest.Length = 0 then
+                                objects <- [||]
+                            else
+                                let parts = rest.Split(' ')
+                                let acc = ResizeArray<ContentHash256>(parts.Length)
+                                let mutable j = 0
+
+                                while (not bad) && j < parts.Length do
+                                    match tryParseHex parts.[j] with
+                                    | Some id -> acc.Add id
+                                    | None -> bad <- true
+
+                                    j <- j + 1
+
+                                if not bad then
+                                    objects <- acc.ToArray()
+                    elif line.StartsWith("leaf ", StringComparison.Ordinal) then
+                        let parts = line.Substring(5).Split(' ')
+
+                        if parts.Length <> 3 then
+                            bad <- true
+                        else
+                            match tryParseUInt64 parts.[0], tryParseHex parts.[1], tryParseUInt64 parts.[2] with
+                            | Some start, Some id, Some n -> leaves.Add(start, id, n)
+                            | _ -> bad <- true
+                    else
+                        bad <- true
+
+                i <- i + 1
+
+            match bad, content, span, chunker with
+            | false, Some c, Some n, Some ch when leaves.Count > 0 ->
+                let starts = Array.zeroCreate leaves.Count
+                let leafIds = Array.zeroCreate leaves.Count
+
+                for k in 0 .. leaves.Count - 1 do
+                    let start, id, ln = leaves.[k]
+                    starts.[k] <- start
+                    leafIds.[k] <- (id, ln)
+
+                Some
+                    { Prev =
+                        { Content = c
+                          Span = n
+                          Chunker = ch
+                          Starts = starts
+                          Leaves = leafIds }
+                      ObjectIds = objects }
+            | _ -> None
+
+    let private tryLoadLayout (storeDir: string) (entity: ZetaFsNamespace.EntityId) : LastLayout option =
+        let path = layoutPath storeDir entity
+        let fs = FileSystem.Current
+
+        if not (fs.Exists path) then
+            None
+        else
+            tryDecodeLayout (Encoding.UTF8.GetString(fs.ReadAllBytes path))
+
+    let private persistLayoutBestEffort
+        (storeDir: string)
+        (entity: ZetaFsNamespace.EntityId)
+        (layout: LastLayout)
+        =
+        if layout.Prev.Leaves.Length = 0 || layout.Prev.Starts.Length <> layout.Prev.Leaves.Length then
+            ()
+        else
+            try
+                let path = layoutPath storeDir entity
+                FileSystem.Current.CreateDirectory(ZetaFsPath.directoryName path)
+                FileSystemIo.writeAllText FileSystem.Current path (encodeLayout layout)
+            with
+            | :? CrashMidWriteException -> ()
+            | :? PowerOutageException -> ()
+            | :? BadMemoryException -> ()
+            | :? IOException -> ()
+            | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 -> ()
+
     [<Sealed>]
     type Volume
         (
@@ -2134,6 +2293,11 @@ module ZetaFsFreeze =
     let knownCount (volume: Volume) =
         lock volume.Gate (fun () -> volume.KnownObjects.Count)
 
+    let hasPrev (volume: Volume) (entity: ZetaFsNamespace.EntityId) : bool =
+        lock volume.Gate (fun () ->
+            volume.LastLayout.ContainsKey entity
+            || FileSystem.Current.Exists(layoutPath volume.StoreDir entity))
+
     let private objectsNotYetKnown (volume: Volume) (cas: ZetaFsJumprope.Cas) =
         lock volume.Gate (fun () ->
             let acc = ResizeArray<struct (ContentHash256 * byte[])>(cas.Objects.Count)
@@ -2359,10 +2523,12 @@ module ZetaFsFreeze =
         (rope: ZetaFsJumprope.Rope)
         (objectIds: ContentHash256[])
         =
-        lock volume.Gate (fun () ->
-            volume.LastLayout.[entity] <-
-                { Prev = ZetaFsJumprope.prevOf rope
-                  ObjectIds = objectIds })
+        let layout =
+            { Prev = ZetaFsJumprope.prevOf rope
+              ObjectIds = objectIds }
+
+        lock volume.Gate (fun () -> volume.LastLayout.[entity] <- layout)
+        persistLayoutBestEffort volume.StoreDir entity layout
 
     let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
         lock volume.Gate (fun () ->
@@ -2486,7 +2652,12 @@ module ZetaFsFreeze =
                 lock volume.Gate (fun () ->
                     match volume.LastLayout.TryGetValue entity with
                     | true, layout -> Some layout
-                    | _ -> None)
+                    | _ ->
+                        match tryLoadLayout volume.StoreDir entity with
+                        | Some layout ->
+                            volume.LastLayout.[entity] <- layout
+                            Some layout
+                        | None -> None)
 
             let rope =
                 match prev with
