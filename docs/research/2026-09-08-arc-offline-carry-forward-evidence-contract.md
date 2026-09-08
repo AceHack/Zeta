@@ -13,17 +13,19 @@ from its _candidate transferable state_, and then tries to falsify the latter on
 a declared holdout world.
 
 The immediate implementation unit after review is intentionally smaller still:
-a score-free, no-training **carry-state partition preflight**. It must emit
-byte-stable receipts showing which state was created while solving source world
-`A`, which state was discarded at the world boundary, and which explicitly
-allow-listed state, if any, was offered to held-out world `B`. It must not choose
-an agent, change weights, select a policy, report a transfer win rate, or make
-an official ARC call. A score comparison can be proposed only after this
-partition receipt and its mutations pass.
+a score-free, no-training **memory-provenance partition preflight**. It must
+emit byte-stable receipts showing which state was observed while solving source
+world `A`, which declared prior-level or cross-game state was available at the
+world-`B` boundary, and when the runner first made `B`'s own observation
+available. It must not choose an agent, change weights, select a policy, report
+a transfer win rate, or make an official ARC call. A score comparison can be
+proposed only after this partition receipt and its mutations pass.
 
 > A cleared source-owned level is an observation about that declared environment.
-> It becomes evidence of carry-forward only when a separately declared held-out
-> environment can distinguish the carried state from a reset-state control.
+> A prior-level cache or cross-game learning record is not invalid by itself.
+> It becomes evidence of a particular carry-forward claim only when its origin,
+> availability boundary, and any held-out task separation are declared and
+> independently checkable.
 
 ## 2. Current offline evidence inventory
 
@@ -63,13 +65,24 @@ caused by a permitted generic rule rather than retained level geometry. Static
 source code may embody a general hypothesis; it is not a measured learned
 update merely because it is reused on another level.
 
-The distinction is material for the intended research direction. Carrying a
-literal blocked-cell map, a source-world grid fingerprint, target coordinates,
-or replay-derived action sequence into a different level is memorization or
-leakage unless that representation is itself declared as part of the task
-interface. Conversely, discarding every learned item at the boundary does not
-test whether a useful generic update was possible. The preflight below exists to
-make that separation observable before any performance comparison is made.
+The distinction is material for the intended research direction, but it is not a
+blanket cache ban. A literal blocked-cell map, grid fingerprint, target
+coordinate, replay-derived action sequence, or learned rule from an earlier
+level may legitimately be retained and reused. So may declared experience from
+another game, including CHIP-8 or Atari, with its source, acquisition time, and
+interface recorded. Such memory is a **known input to the experiment**, not
+automatically evidence of generality or cheating.
+
+The non-leakage boundary is instead task-scoped: before the agent legally
+observes the level it is currently playing, no cache may contain that current
+level's unobserved task payload, reference trace, target/solution metadata, or
+reward outcome. During legal interaction, the agent may retain and use its own
+observations and action consequences. At a level boundary, prior-level state may
+be retained, transformed, or discarded according to a declared transition
+policy. A result using earlier ARC tasks remains a development-data result unless
+the evaluation task is separately held out from that declared ARC corpus. The
+preflight below makes these origins, times, and boundaries observable before any
+performance comparison is made.
 
 ## 4. Normative carrier model for the preflight
 
@@ -89,35 +102,44 @@ not be combined by averaging, last-write-wins, or implicit consensus.
 | `runner` | Interpreter/package lock identity, runner entrypoint, operation mode, declared egress mode, and wall-duration tick envelope. A duration ceiling is caller-owned quantization, never a reward. |
 | `agent_build` | Source commit plus immutable executable/package identity. It is a label, not a claim about parameter count or learning. |
 | `state_before_a` / `state_after_a` / `state_before_b` | SHA-256 plus a typed census of each state partition. Raw state may be retained only when the suite permits it; secret or private hosted data is never printed into a public receipt. |
-| `local_discard` | Canonically sorted identifiers of state created from world `A` and removed before `B`; absence of a discard entry is explicit rather than inferred. |
-| `carry_offer` | Canonically sorted, versioned allow-list of the exact state offered to `B`; an empty list is valid and must differ from omitted. |
-| `access_log` | Canonical event stream of inputs supplied to the agent: world identity, frame/input digest, legal-action digest, action chosen, transition digest, and boundary event. It must make an early read of `B` detectable. |
+| `memory_manifest` | Canonically sorted records for every persisted memory item: partition, origin game/task/level identity, source digest, acquisition phase, transition policy, and allowed action interface. Missing provenance is a refusal. |
+| `boundary_offer` | Canonically sorted, versioned list of memory offered when `B` begins. It may contain declared prior-level or cross-game state; an empty list is valid and must differ from omitted. |
+| `first_observation_b` | Monotonic event identity at which `B`'s first legal input becomes available. It separates pre-level cache from state acquired while playing `B`. |
+| `access_log` | Canonical event stream of inputs supplied to the agent: world identity, frame/input digest, legal-action digest, action chosen, transition digest, boundary event, and memory-read identity. It must make a pre-observation read of `B` detectable. |
 | `result` | Only `partition-observed`, `refused`, or `mutation-detected` for this preflight. No score, winner, policy rank, learning rate, or ARC claim is permitted. |
 
-`world_b` may be selected before the run but its task payload must remain
-unavailable to the world-`A` portion of the runner. The suite manifest must
-state whether the holdout is source-visible to reviewers, because a public
-source-visible holdout is still development data for any later claim. This
-first preflight can establish **boundary enforcement**, not held-out
-generalization.
+`world_b` may be selected before the run. Its current-level task payload,
+solution/reference trace, target metadata, and outcome information must remain
+unavailable to pre-`first_observation_b` state. This does not forbid declared
+earlier-level or cross-game caches. The suite manifest must state whether `B`
+or a corpus containing it was available during development, because a
+source-visible ARC task is development data for any later ARC generalization
+claim. This first preflight can establish **memory-provenance and task-boundary
+enforcement**, not held-out generalization.
 
 ## 5. Required state partition
 
 The runner must place every persisted item in exactly one of these partitions;
-an unclassified item is a refusal, not an implicitly transferable value.
+an unclassified item is a refusal, not an implicitly transferable value. The
+partitions record origin and availability; they do not make previous learning
+invalid merely because it is remembered.
 
 <!-- prettier-ignore -->
 | Partition | Examples in the present PixelAgent | Boundary rule |
 | --- | --- | --- |
-| `world_local` | Blocked cells, route plan, exact-grid inert-action entries, level-specific component positions, and source-world frame cache. | Must be removed or cryptographically proved absent before `B` begins. It is never carried as a convenience. |
-| `candidate_transfer` | A versioned, declaratively named hypothesis such as an action-schema adapter or a self-motion calibration rule. | May be offered only via the explicit `carry_offer`, with provenance of the observations that created it. It cannot include raw coordinates, grid digests, target identity, or a source-world action sequence. |
+| `current_level_live` | Observations, action consequences, transient map, route plan, and exact-grid inert-action entries acquired while playing the current level. | May inform actions only after legal observation on that level. It may become `prior_level_memory` at a declared boundary, but it cannot be preloaded as unseen information for the level currently played. |
+| `prior_level_memory` | A blocked-cell map, frame cache, coordinate, target hypothesis, action suffix, or learned rule acquired from an earlier level during the declared run. | May be retained, transformed, or discarded before `B` if `memory_manifest` records its precise origin and transition policy. It is not called held-out transfer merely because it crosses a level boundary. |
+| `cross_game_memory` | Declared experience, cached representations, replay data, or learned updates acquired from another game such as CHIP-8 or Atari. | Allowed when source identity, acquisition phase, and action interface are declared. It is not an ARC task leak solely because it predates the ARC run. |
+| `candidate_transfer` | A versioned, declaratively named hypothesis such as an action-schema adapter or a self-motion calibration rule. | May be offered only through `boundary_offer`, with provenance of the observations that created it. ARC-task-derived candidates support a held-out claim only if their corpus/task split says so. |
 | `static_program` | Action selection logic present before world `A`, fixed ordering, and declared policy constants. | Reported as pre-existing code. It is not called “learned” in the receipt. |
 | `runner_metadata` | Seed, package lock, operation mode, source ref, and caller-owned tick envelope. | May be retained only as provenance; it cannot become an action feature unless the suite declares that interface. |
 
-The current `PixelAgent` has no separately serializable `candidate_transfer`
-partition. The preflight must therefore start with an explicit empty
-`carry_offer` or a newly specified, independently inspectable carrier. It may
-not silently reinterpret the existing in-memory object as generic knowledge.
+The current `PixelAgent` has no separately serializable memory manifest or
+`candidate_transfer` partition. The preflight must therefore start with an
+explicit empty `boundary_offer` or a newly specified, independently inspectable
+carrier. It may not silently reinterpret the existing in-memory object as a
+generic rule, but it may represent declared prior-level or cross-game memory
+when its provenance is explicit.
 
 ## 6. Required controls and fault injections
 
@@ -128,11 +150,13 @@ that a fault “would be caught” is not an observed control.
 | Control | Required observation |
 | --- | --- |
 | Deterministic replay | The same manifest, build, and seed yield byte-identical canonical receipts, excluding declared wall-duration measurement fields. |
-| World-local leak | Inject one `world_local` blocked cell, frame digest, coordinate, or source-world action suffix into `carry_offer`. The runner must refuse before `B` receives any action. |
+| Declared prior-level continuity | Supply a manifest-bound item acquired during `A`, such as a blocked-cell map or action suffix. The preflight must accept and report it as `prior_level_memory`; rejecting it merely for being remembered fails this positive control. |
+| Declared cross-game continuity | Supply a manifest-bound CHIP-8, Atari, or other non-ARC-game item. The preflight must accept and report its origin/interface; treating it as an ARC leak without task evidence fails this positive control. |
+| Current-level preload | Inject `B`'s unobserved frame/task digest, target/solution metadata, reference trace, or outcome into pre-`first_observation_b` memory. The runner must refuse before it can act on `B`. |
 | Undeclared carry | Add a state field without a declared partition. The receipt must be `refused`; silent default classification fails. |
-| Holdout early-read | Instrument an attempt to read `B`'s frame, level data, or task digest while `A` is active. The access log and checker must reject it. |
-| Boundary reset removal | Disable the specified local-state clear. The checker must distinguish the altered `state_before_b` or reject the receipt; a control that reports the same partition is vacuous. |
-| Carry removal | Remove a nonempty declared `candidate_transfer` value in a later comparison stage. The receipt must make the carrier difference observable; it does not have to change a score in the score-free preflight. |
+| Current-level early-read | Instrument an attempt to read `B`'s frame, level data, task digest, target/solution metadata, or outcome before `first_observation_b`. The access log and checker must reject it. |
+| Transition-policy mutation | Change a manifest-declared retain, transform, or discard rule. The checker must distinguish the altered `state_before_b`/`memory_manifest` or reject the receipt; a control that reports the same state is vacuous. |
+| Memory-removal | Remove a nonempty declared prior-level, cross-game, or `candidate_transfer` item in a later comparison stage. The receipt must make the carrier difference observable; it does not have to change a score in the score-free preflight. |
 | Identity mismatch | Change world content, action schema, source ref, suite manifest, package identity, or declared egress mode. Verification must reject the mismatched receipt. |
 
 The preflight verifier must be independently authored from the runner where
@@ -152,8 +176,10 @@ pass and a new comparison contract is reviewed. That later contract must fix:
    tools, prompt/context, action ceiling, runner, and seed schedule;
 3. a metric that is reported per world before aggregation, along with all
    failures and retries;
-4. an exact allow-list of carried state and a raw-byte audit demonstrating that
-   the heldout task was not exposed during development execution; and
+4. a `memory_manifest` for all carried state, including earlier-level and
+   cross-game experience, plus a raw-byte/timeline audit demonstrating that the
+   current heldout task was not exposed before its declared legal observation;
+   and
 5. a predeclared rule for null, negative, and inconclusive outcomes.
 
 If the carried and reset controls tie, the result is **no measured advantage on
@@ -172,9 +198,11 @@ not authorize `ARC_API_KEY` use, public task probing, private task access,
 competition submission, external network access, or manual intervention.
 
 It preserves a more modest but testable objective: before claiming that the
-system carries a generic rule forward, make it possible to observe whether it
-instead carried a map, coordinate, trace, cached task, or an undeclared runner
-state across the boundary.
+system carries a generic rule forward, make it possible to observe **what** it
+carried, **when** it became available, and whether it included the unobserved
+task payload of the ARC level currently being played. A prior-level map or a
+declared CHIP-8/Atari cache is evidence with scope to report, not an automatic
+violation. An undeclared or current-level preloaded payload is the failure.
 
 ## References
 

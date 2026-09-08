@@ -126,10 +126,16 @@ world boundary because those coordinates can become open floor in the next
 level. It also includes controlled appearance and source-owned motion
 experiments, not a serializable carry-forward learner or a held-out comparison.
 The new offline carry-forward contract freezes the smallest next artifact: a
-score-free state-partition receipt that makes world-local state removal,
-explicit carry offers, early holdout reads, and identity mismatch observable.
-It introduces no new agent, score, official interface call, model selection, or
-generalization claim. [15]
+score-free memory-provenance receipt. It permits declared, auditable
+prior-level state and cross-game learning—including CHIP-8, Atari, or other
+non-ARC-game caches—rather than treating memory itself as a violation. Its
+load-bearing boundary is task-scoped: before legal observation begins for the
+ARC level currently played, the cache must not contain that current level's
+unobserved task payload, reference trace, target/solution metadata, or outcome.
+The receipt makes memory origin, availability time, current-level early reads,
+transition-policy changes, and identity mismatch observable. It introduces no
+new agent, score, official interface call, model selection, or generalization
+claim. [15]
 
 ## 4. Policy self-knowledge and tick boundary
 
@@ -233,7 +239,7 @@ The following PRs were open when this handoff was prepared. They are **not** mod
 <!-- prettier-ignore -->
 | Priority | Bounded next unit                            | Must be true before implementation starts                                                                                 | Required failure controls                                                                                                                         | Explicitly excluded result                                    |
 | -------: | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-|        1 | ARC offline carry-state partition preflight  | The reviewed `arc-offline-carry-v1` contract is frozen; the runner is able to label every state item as `world_local`, `candidate_transfer`, `static_program`, or `runner_metadata`. | Deterministic replay, local-state leak, undeclared-carry, early-holdout-read, reset-removal, carry-removal, and source/world/schema identity mutations. | ARC score, agent winner, generic learning, held-out transfer, or official ARC result. |
+|        1 | ARC offline memory-provenance preflight | The reviewed `arc-offline-carry-v1` contract is frozen; the runner labels every state item as `current_level_live`, `prior_level_memory`, `cross_game_memory`, `candidate_transfer`, `static_program`, or `runner_metadata`, with source and availability time. | Deterministic replay; prior-level and cross-game positive-continuity controls; current-level preload/early-read, undeclared-memory, transition-policy, memory-removal, and source/world/schema identity mutations. | ARC score, agent winner, generic learning, held-out transfer, or official ARC result. |
 |        2 | MiniGrid independent score-emitter preflight | Implement the audited F# static-adapter and upstream-Python single-episode seed-2000 trace emitters, without policy code. | Parent identity, action trace, reward/terminal/truncation, no-learning schema, hidden-cap, and cross-oracle mutations.                            | Any MiniGrid score, winner, or transfer conclusion.           |
 |        3 | MiniGrid finite candidate evaluation         | The contract plus independent emitters and all preflight controls are merged.                                             | Complete roster/replay, train-eval separation, frozen table digest, equal access, and statistical-replay faults.                                  | General curiosity, general transfer, or parameter efficiency. |
 |        4 | Test-only withdrawal-declaration verifier    | A contract-pinned fixture exists without representing production evidence.                                                | Parent/declaration byte change, signer mismatch, invalid scope/reason/window, coexistence with correction/key revocation, local instant boundary. | Real production withdrawal, permission, or consent.           |
