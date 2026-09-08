@@ -1716,3 +1716,177 @@ def test_manifest_source_paths_match_compiled_binding_admission(
         assert len(path) == 256
         assert isinstance(result, bridge.ServiceManifest)
         assert result.Raw == raw
+
+
+def _withdrawal_mark(plan: dict[str, Any]) -> None:
+    plan["EvidenceCut"]["Retractions"] = ["fixture/withdrawn-history"]
+    plan["InitialState"]["ActiveCut"] = bridge._sha(
+        bridge._canonical(plan["EvidenceCut"], bridge.MIB)
+    )
+
+
+def _withdrawal_weight() -> dict[str, Any]:
+    parameters = [_hex(0)] * 57
+    return {
+        "fixture/model": {
+            "BaseArtifactId": "fixture/model",
+            "VectorSha256": bridge._sha(bridge._canonical(parameters, 65536)),
+            "Parameters": parameters,
+        }
+    }
+
+
+def _withdrawal_compensation() -> dict[str, Any]:
+    # Inert plan-admission payloads only: no actual historical epoch is claimed.
+    retained = _query_plan()
+    plan: dict[str, Any] = json.loads(json.dumps(retained))
+    _withdrawal_mark(plan)
+    plan.update(Mode="compensate", QueryRowId=None, Sweeps=0)
+    plan["InitialState"]["Revision"] = 1
+    checkpoint = json.loads(json.dumps(plan["InitialState"]))
+    checkpoint["Revision"] = 0
+    prior = {
+        "PlanSha256": bridge._sha(bridge._canonical(retained, bridge.MIB)),
+        "Outcome": "completed",
+        "Termination": "BudgetCompleted",
+        "Failure": None,
+        "LastCommitted": json.loads(json.dumps(plan["InitialState"])),
+        "ProposedArtifacts": [],
+        "Observations": [],
+        "Counters": _counter_fixture(),
+        "PendingRequest": None,
+        "Scheduler": {"Kind": "NotEntered"},
+        "Publication": {
+            "Recorder": [],
+            "Unpublished": [],
+            "Failure": None,
+            "BudgetSnapshot": None,
+        },
+    }
+    plan["Operations"] = [
+        {
+            "Kind": "Compensate",
+            "Inputs": {
+                "TargetRevision": 1,
+                "RetainedPlan": retained,
+                "RetainedResult": prior,
+                "Checkpoint": {
+                    "State": checkpoint,
+                    "StateSha256": bridge._sha(
+                        bridge._canonical(checkpoint, bridge.MIB)
+                    ),
+                    "Prefix": [],
+                    "PrefixSha256": bridge._sha(bridge._canonical([], bridge.MIB)),
+                },
+            },
+        }
+    ]
+    return plan
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "selected",
+        "weights",
+        "child-cuts",
+        "child-forecasts",
+        "retained-selected",
+        "retained-weights",
+        "checkpoint-weights",
+        "overlap",
+    ],
+)
+def test_withdrawal_admission_refuses_unproved_learned_reuse(mutation: str) -> None:
+    from zeta_interp import mixed_message_epoch_controls as controls
+
+    if mutation.startswith("child-"):
+        built = controls.m5_child_plan({})
+        assert isinstance(built, controls.ControlPlan)
+        plan = json.loads(built.Raw)
+        _withdrawal_mark(plan)
+        if mutation == "child-cuts":
+            cut = _query_plan()["EvidenceCut"]
+            plan["Training"]["ChildCuts"] = {
+                bridge._sha(bridge._canonical(cut, bridge.MIB)): cut
+            }
+        else:
+            plan["Training"]["ChildForecasts"] = [
+                {
+                    "ArtifactId": "control/child",
+                    "TrainingRowId": "control/learn/0",
+                    "TargetSlot": 0,
+                    "BundleSha256": "A" * 64,
+                    "QueryRowId": "fixture/query",
+                    "ProducerNode": "fixture/gate",
+                    "OutputPort": "mean",
+                    "ProducerVersion": "B" * 64,
+                    "ProducerTrainingCut": "C" * 64,
+                    "ObservationSequence": 1,
+                    "CommitRevision": 1,
+                    "Mean": _hex(0),
+                }
+            ]
+    elif mutation.startswith("retained-") or mutation == "checkpoint-weights":
+        plan = _withdrawal_compensation()
+        context = plan["Operations"][0]["Inputs"]
+        if mutation == "retained-selected":
+            context["RetainedPlan"] = _forward_plan().Value
+        elif mutation == "retained-weights":
+            context["RetainedPlan"]["InitialState"]["Weights"] = _withdrawal_weight()
+        else:
+            context["Checkpoint"]["State"]["Weights"] = _withdrawal_weight()
+            context["Checkpoint"]["StateSha256"] = bridge._sha(
+                bridge._canonical(context["Checkpoint"]["State"], bridge.MIB)
+            )
+        context["RetainedResult"]["PlanSha256"] = bridge._sha(
+            bridge._canonical(context["RetainedPlan"], bridge.MIB)
+        )
+    else:
+        plan = _forward_plan().Value if mutation == "selected" else _query_plan()
+        _withdrawal_mark(plan)
+        if mutation == "weights":
+            plan["InitialState"]["Weights"] = _withdrawal_weight()
+        elif mutation == "overlap":
+            plan["EvidenceCut"]["Retractions"] = [plan["QueryRowId"]]
+            plan["InitialState"]["ActiveCut"] = bridge._sha(
+                bridge._canonical(plan["EvidenceCut"], bridge.MIB)
+            )
+    result = bridge.admit_plan(_frame(plan), {})
+    assert isinstance(result, bridge.Failure), result
+    assert result.Code == "Conflict" and result.Stage == "admit"
+    assert result.Field == "Retractions"
+
+
+def test_withdrawal_admission_keeps_cold_start_and_pure_plan_scope() -> None:
+    from zeta_interp import mixed_message_epoch_controls as controls
+
+    built = controls.m5_child_plan({})
+    assert isinstance(built, controls.ControlPlan)
+    training = json.loads(built.Raw)
+    _withdrawal_mark(training)
+    training["Training"]["Artifacts"][0]["ParentVersion"] = "A" * 64
+    pure_query = _query_plan()
+    _withdrawal_mark(pure_query)
+    for candidate in (training, pure_query, _withdrawal_compensation()):
+        result = bridge.admit_plan(_frame(candidate), {})
+        assert isinstance(result, bridge.AdmittedPlan), result
+    # The static admission pass does not establish actual compensation history.
+    # That remains the core's retained source/checkpoint/operation admission.
+
+
+@pytest.mark.parametrize("wrong_hash", [False, True])
+def test_withdrawal_manifest_requires_exact_clarification(wrong_hash: bool) -> None:
+    path = (
+        "docs/research/2026-09-08-mixed-message-withdrawal-admission-clarification.md"
+    )
+    value = _manifest_fixture()
+    value["SourceFiles"] = [row for row in value["SourceFiles"] if row["Path"] != path]
+    value["ExpectedBindings"].pop(path, None)
+    if wrong_hash:
+        value["SourceFiles"].append({"Path": path, "Bytes": 4448, "Sha256": "D" * 64})
+        value["SourceFiles"].sort(key=lambda row: row["Path"])
+        value["ExpectedBindings"][path] = "D" * 64
+    raw = _frame(value)
+    result = bridge.admit_service_manifest(raw, bridge._sha(raw))
+    assert isinstance(result, bridge.Failure), result
