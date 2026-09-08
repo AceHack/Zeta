@@ -1,0 +1,143 @@
+{
+  "Artifacts": [
+    {
+      "File": "000-projection-cases-format-1.log.gz",
+      "OriginalPath": ".git/projection-cases-format-1.log",
+      "Bytes": 20,
+      "Sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df",
+      "StoredBytes": 40,
+      "StoredSha256": "10d1f29fbf0f4ce6d2d3aca6a94ab91faf21c712b389879848ed269bd3c77d6f"
+    },
+    {
+      "File": "001-0.stderr.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-1/0.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "002-0.stdout.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-1/0.stdout",
+      "Bytes": 720,
+      "Sha256": "f326651072b002899cab8ec4c208fd426d730a4d034b8e89afe88850de1f844c",
+      "StoredBytes": 355,
+      "StoredSha256": "8052638b3b40cf86ffefb29a866e83cdba2866e068e004cf7f24e000af10c855"
+    },
+    {
+      "File": "003-1.stderr.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-1/1.stderr",
+      "Bytes": 92,
+      "Sha256": "3445fe5b1bbe421bb0f54568f74cf8c584fde3794770a2e319fa16a43037c035",
+      "StoredBytes": 102,
+      "StoredSha256": "f29f7d2f7b20d007d2166664ebc6aacef1b67f43129aaaef82204d8d73e99355"
+    },
+    {
+      "File": "004-1.stdout.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-1/1.stdout",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "005-process.json.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-1/process.json",
+      "Bytes": 495,
+      "Sha256": "dca89de8aa12c3b559cd43e0597e89634927f4f61ab45bee41fbbd8807235735",
+      "StoredBytes": 219,
+      "StoredSha256": "97bc87d08b6f223d852463f310c114702a46a99f3cd31fa2f18bf769f7d99544"
+    },
+    {
+      "File": "006-0.stderr.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/0.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "007-0.stdout.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/0.stdout",
+      "Bytes": 19,
+      "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "StoredBytes": 39,
+      "StoredSha256": "f3af4d142827f5aad2eb0c72d556d325488a57fb6219aac10afeb51085667d53"
+    },
+    {
+      "File": "008-1.stderr.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/1.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "009-1.stdout.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/1.stdout",
+      "Bytes": 99,
+      "Sha256": "a1705ab45a5e143f66ade9b8056f29c76366b97ad72a8973f3fe505e7c1890ba",
+      "StoredBytes": 52,
+      "StoredSha256": "1e0d0ec16b644ad7039e8e67e4b3db56f7a68624caed14b744109429420fa4d3"
+    },
+    {
+      "File": "010-2.stderr.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/2.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "011-2.stdout.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/2.stdout",
+      "Bytes": 43,
+      "Sha256": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+      "StoredBytes": 63,
+      "StoredSha256": "76eacbbf7755358f4be970d3cd86b2d0ffa287f96db2193f42233534159c057d"
+    },
+    {
+      "File": "012-process.json.gz",
+      "OriginalPath": ".git/projection-cases-source-tests-2/process.json",
+      "Bytes": 837,
+      "Sha256": "f237de94f360186c7e973fc8ba910d0ef80821f90b9f01bccb244d6e4764e8b8",
+      "StoredBytes": 259,
+      "StoredSha256": "707d5fcf0042e7b804372fed71ff100fd1dd079f1996c36969d8b896450be252"
+    },
+    {
+      "File": "013-projection-cases-style-fix-1.log.gz",
+      "OriginalPath": ".git/projection-cases-style-fix-1.log",
+      "Bytes": 38,
+      "Sha256": "aac3a0503d8b95052cc85fb9f1717dc82b74aa55853a5aa9749b41e30275d472",
+      "StoredBytes": 58,
+      "StoredSha256": "9a293a43cbbdffc92644cba254fc3dc7ea239470c11f304101b36540d7abdbe9"
+    }
+  ],
+  "SourceIdentitiesAtPassingAttempt": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+      "Bytes": 9695,
+      "Sha256": "d5ea9704c1e33429d990f66ba862bc5ed25a1f5c7c9a15e33a8b8d621ca71124"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+      "Bytes": 6185,
+      "Sha256": "7d60a095da1c5e536e657900d32c7c50a08bc8ee44928af9a1268c2f4d7b7f61"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_admission.py",
+      "Bytes": 14129,
+      "Sha256": "bd5bfeaa68735581e17bceeb01c24ac0af975021f35302dcbd76e30b2211ee91"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702a5e6e6bd330cb4d27dd3c3bddbbeba779ea8d6127249efd7e9ecbfa54d8c4"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_record_encoding.py",
+      "Bytes": 9555,
+      "Sha256": "892b59a1572b093805171e0f495126f006a72d56ca87260251c9544c29019744"
+    }
+  ]
+}
