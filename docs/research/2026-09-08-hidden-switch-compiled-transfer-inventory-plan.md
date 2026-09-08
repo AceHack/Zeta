@@ -264,6 +264,36 @@ checked deadlines do not cancel blocked kernel I/O. Exact associations and
 output retention in the outer collector are still under development; no
 actual transfer inventory was run for this preparation.
 
+## Input association and output collector prepared
+
+Source `c97efff55ca56baa530e21c117527b8f2f4351ec` adds the fixed four-manifest
+input association and exclusive output collector. The
+[eight preparation records](hidden-switch-compiled-validation/2026-09-07/transfer-inventory-preparation/manifest.json)
+bind its local source import closure and both test files, initial lint
+findings and final 18 focused / 67 combined passes with clean Ruff.
+
+The association requires exact complete method-file order, reconstructs the
+139-row mapping including both nine-row unresolved rosters, matches current
+DAC/physical/compiler/reflection identities, corroborates each eight-byte
+cell hash, and reparses the retained raw decoder stream/comments against
+the atomic input. Physical records remain prior executed-read identities;
+no raw dump or binary custody path is opened. The imported historical
+modules supply only their pure parser/association functions here; their
+process and memory-query entry points are not called.
+
+Fixtures include one actual archived method's metadata and mutations, and
+a separate synthetic 130-method / 8,665-NOP roster whose every word remains
+unresolved. The latter checks accounting and output completion, not the
+actual retained program's transfer result. Broken journal/cleanup fixtures
+retain actual computed word targets and the first failure in independent
+terminal data. Size refusal marks omitted metadata explicitly; successful
+checkpoint writes preserve completed prefixes, without a kernel quota or
+abrupt-failure retention guarantee.
+
+Exact collector source review is pending. No complete actual 130-method
+transfer inventory has been run, and these preparations do not authorize
+new target, decoder, memory, registered-source or measurement work.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
