@@ -109,3 +109,7 @@ registered before comparing results or choosing the next investment.
 These are proposed comparisons, not completed ARC-AGI-3 trials or current
 state-of-the-art results. Local kernel agreement and a source-level analogy
 cannot substitute for actual fitting and held-out evaluation.
+
+The later [main publication receipt](magnet-history/2026-09-08/pr-17045/README.md)
+verifies the exact transcript payload, all changed paths and the completed CI
+for PR 17045. This publication adds no empirical learning claim.
