@@ -1,0 +1,12 @@
+{
+  "pr_number": 17074,
+  "archive_path": "docs/history/pr-reviews/PR-17074-test-081m218759r087g0r000esy8ey-truncate-fastcdc-from-first-mismatch.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T20:15:20.259Z",
+  "schema_version": "v1",
+  "commit_sha": "6a57fe1e76a8e49a9d138d5e13489b7f5999eb68",
+  "title": "test(081M218759R087G0R000ESY8EY): truncate FastCDC from first mismatch",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T20:14:32Z",
+  "head_ref": "feat/zetafs-d9-truncate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17071,
+  "archive_path": "docs/history/pr-reviews/PR-17071-fix-tests-four-windows-failures-one-diagnosis-bounds-with-no-tolerance.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T19:57:51.252Z",
+  "schema_version": "v1",
+  "commit_sha": "f8ad252930b19683fcc24f82efaa3023db4aff81",
+  "title": "fix(tests): four Windows failures, one diagnosis — bounds with no tolerance",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T19:57:03Z",
+  "head_ref": "shadow/windows-bun-coldstart-budgets"
+}
