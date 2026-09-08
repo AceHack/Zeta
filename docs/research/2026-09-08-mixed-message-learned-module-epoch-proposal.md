@@ -164,6 +164,14 @@ a stale proposal. Repeating identical content for an already applied attempt
 ID is an idempotent receipt lookup, not a second multiply; changed content under
 that ID is a conflict.
 
+The scalar optimizer returns a projected Gaussian belief, not a site. Form
+the new unary site by checked quotient of that belief by the exact retained
+Gaussian base used to construct the target, then replace the old unary site.
+Multiplying the projected belief back as a site would count the base twice.
+Retain the base and its rendered target construction, including numerical
+rounding; the certificate refers to the exact rendered target, not an inferred
+nominal target.
+
 Damping is fixed natural-parameter interpolation
 `new = (1-alpha)*old + alpha*proposed`, with finite `0 < alpha <= 1`.
 Use checked arithmetic and the kernel admission rules, not unchecked
@@ -172,6 +180,11 @@ candidate belief must have finite admitted moments and positive precision or
 represented Gamma shape/rate as appropriate; retain `GammaEncoding` drift.
 A rule needing a proper cavity refuses if it lacks one. Do not clamp a failed
 belief into validity or silently reduce alpha/retry with a larger budget.
+The interval certificate applies to the undamped proposed Gaussian for its
+exact target. With `alpha < 1`, the applied belief has its own properness check
+and is not thereby certified as that local minimizer. Record the actual
+reconstructed belief even at `alpha = 1`; certificate scope does not silently
+transfer across finite-arithmetic reconstruction.
 
 Keep topology class, factor/approximation classes, weight-learning class and
 termination status separate. A small damped step alone is not convergence:
@@ -219,7 +232,7 @@ mutant at the adapter boundary. These are proposed future tests, all unrun here.
 | --- | --- |
 | M1 contribution and cavity | Re-deliver a contribution through two nested paths; retain one contribution or refuse incompatible use. Include the factor's own site deliberately: the control must distinguish it. Separate factor IDs cannot launder the duplicate. |
 | M2 rule and model identity | On unequal cavity/marginal inputs, swap BP and VMP inputs; change the Exp/Log orientation or suppress a required normalizer in a claimed likelihood objective. Refuse the wrong rule/model identity, not merely a nonfinite number. |
-| M3 proper application | Admit an improper site that yields a proper combined belief; refuse an improper/nonfinite combined belief, bad alpha, and lost represented Gamma shape. A refused block leaves its entry state unchanged. |
+| M3 proper application | Admit an improper site that yields a proper combined belief; refuse an improper/nonfinite combined belief, bad alpha, and lost represented Gamma shape. Distinguish belief-as-site double counting and a false minimizer label on a damped application. A refused block leaves its entry state unchanged. |
 | M4 retained work and budget | Exercise a late returned failure and serialization failure after earlier calls. Use the archived cancellation result as the candidate-without-certificate control; never apply it. Count nested work and distinguish returned from certified/applied. |
 | M5 epoch freeze and learning | A real learner changes parameter bytes on a named nontrivial training fixture; query leaves them unchanged. Swap a child weight version mid-query, reuse an old proposal revision, or present a validation/test training row: refuse before application. |
 | M6 composition and dependence | Flatten a nested module while preserving the same model/ports/order: outputs agree under the fixed numerical criterion. Duplicate a correlated expert, shared prior or training lineage: no invented independent evidence. A deliberately different factorization must be labeled different, not exactness-preserving refactoring. |
@@ -271,3 +284,10 @@ vectors, data download, model deserialization, training, benchmark or new
 registered workload ran. The source-pins companion is indexed by this note;
 coordinator indexing and any accepted operational/source contract remain a
 separate integration step.
+
+Review history: the original draft is signed at
+`17be7ee94cba7610a7896d66930442affff8c4bb` and was normally pushed with all
+16 hook checks passing. Root's read requested the explicit projected-belief to
+site quotient and undamped-certificate scope above; this follow-up preserves
+the original and makes those two application obligations explicit. No
+implementation or numerical result changed.
