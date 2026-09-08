@@ -248,7 +248,11 @@ dF/dB = [a-1-(L-m0)/v0]/B-b A/B^2.
 
 These closed expectations/derivatives use digamma and higher polygamma
 functions. They still require finite numerical optimization and validated
-special-function accuracy. From F=-H+E[-ell] and grad H=-I eta, interior
+special-function accuracy. This objective is for the stated LogNormal times
+Gamma target: for the f_L forward kernel Normal(log(gamma)), the extra gamma
+factor shifts the effective Gamma shape from a to a+1. That shift must be
+applied explicitly when selecting the objective for an admitted orientation.
+From F=-H+E[-ell] and grad H=-I eta, interior
 stationarity is eta=-I^-1 grad E[-ell]. The independent review records the
 opposite sign printed in paper equations 8/34 and missing/wrong Gamma
 gradient terms in equation 35, alongside the softdot, Gamma and Normal
