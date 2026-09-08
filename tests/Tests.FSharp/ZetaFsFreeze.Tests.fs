@@ -4190,6 +4190,58 @@ let ``mid-file insert freeze ContentId matches full Jumprope build`` () : Task =
     }
 
 [<Fact>]
+let ``truncate freeze ContentId matches full Jumprope build`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/d9-truncate"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let before = Array.init 500_000 (fun i -> byte ((i * 131) ^^^ (i >>> 8)))
+        let layout = ZetaFsJumprope.buildV1 before
+        Assert.True(layout.Leaves.Length > 3, sprintf "expected several leaves, got %d" layout.Leaves.Length)
+        let cut = int layout.Starts.[3] + 100
+        let after = Array.zeroCreate cut
+        Array.Copy(before, 0, after, 0, cut)
+        let volume = ZetaFsFreeze.createManual store mutbuf None
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L before |> ignore
+            let pending1 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pending1.ConfigureAwait(false)
+
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok a ->
+                let n1 = ZetaFsFreeze.knownCount volume
+
+                match ZetaFsMutbuf.truncate volume.Mutbuf h (int64 cut) with
+                | Error e -> Assert.Fail(sprintf "%A" e)
+                | Ok() ->
+                    let pending2 = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                    do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                    let! second = pending2.ConfigureAwait(false)
+
+                    match second with
+                    | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                    | Ok b ->
+                        Assert.NotEqual<string>(a.Content.ToHex(), b.Content.ToHex())
+                        Assert.Equal((ZetaFsJumprope.buildV1 after).Content.ToHex(), b.Content.ToHex())
+                        let secondGrowth = ZetaFsFreeze.knownCount volume - n1
+                        Assert.True(
+                            secondGrowth < n1 / 2 && secondGrowth <= 32,
+                            sprintf "truncate grew known by %d after first count %d" secondGrowth n1
+                        )
+                        Assert.True(ZetaFsFreeze.isReadable volume a.Content)
+                        Assert.True(ZetaFsFreeze.isReadable volume b.Content)
+        finally
+            ZetaFsFreeze.dispose volume
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``garbage layout after freeze still lets the next overwrite match a full build`` () : Task =
     task {
         ensureHasher ()

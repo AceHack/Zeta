@@ -1,0 +1,14 @@
+{
+  "id": "080d04141ca9c810a0130008ca8ffb4e",
+  "at": "2026-09-08T19:34:16.633Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M218759R087G0R000ESY8EY",
+    "type": "task",
+    "title": "D9 truncate FastCDC from first mismatched window",
+    "slug": "d9-truncate-fastcdc-from-first-mismatched-window",
+    "priority": "P2",
+    "filename": "081M218759R087G0R000ESY8EY-d9-truncate-fastcdc-from-first-mismatched-window.md"
+  }
+}

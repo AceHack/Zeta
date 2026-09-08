@@ -292,6 +292,52 @@ let ``buildFromPrev of a mid-file insert matches full build and skips the first 
     | None -> ()
 
 [<Fact>]
+let ``buildFromPrev of a chunk-boundary truncate keeps prefix leaves and skips payloads`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte ((i * 131) ^^^ (i >>> 8)))
+    let ra = ZetaFsJumprope.buildV1 before
+    Assert.True(ra.Leaves.Length > 3, sprintf "expected several leaves, got %d" ra.Leaves.Length)
+    let cut = int ra.Starts.[3]
+    Assert.True(cut > 0 && cut < before.Length, sprintf "cut=%d len=%d" cut before.Length)
+    let after = Array.zeroCreate cut
+    Array.Copy(before, 0, after, 0, cut)
+    let firstChunk, _ = ra.Leaves.[0]
+    let full = ZetaFsJumprope.buildV1 after
+    let reused = ZetaFsJumprope.buildFromPrev (ZetaFsJumprope.prevOf ra) after
+    Assert.Equal(full.Content.ToHex(), reused.Content.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), reused.Content.ToHex())
+    Assert.Equal(3, reused.Leaves.Length)
+    Assert.Equal(0, reused.Cas.Payloads.Count)
+    match ZetaFsJumprope.tryGetPayload reused.Cas firstChunk with
+    | Some _ -> Assert.Fail("boundary truncate recopied the first prefix chunk")
+    | None -> ()
+
+[<Fact>]
+let ``buildFromPrev of a mid-chunk truncate matches full build and skips the first prefix chunk`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte ((i * 131) ^^^ (i >>> 8)))
+    let ra = ZetaFsJumprope.buildV1 before
+    Assert.True(ra.Leaves.Length > 3, sprintf "expected several leaves, got %d" ra.Leaves.Length)
+    let cut = int ra.Starts.[3] + 100
+    Assert.True(cut < before.Length, sprintf "cut=%d len=%d" cut before.Length)
+    let after = Array.zeroCreate cut
+    Array.Copy(before, 0, after, 0, cut)
+    Assert.Equal(before.[0], after.[0])
+    Assert.Equal(before.[cut - 1], after.[cut - 1])
+    let firstChunk, firstSpan = ra.Leaves.[0]
+    Assert.True(firstSpan > 0UL)
+    let full = ZetaFsJumprope.buildV1 after
+    let reused = ZetaFsJumprope.buildFromPrev (ZetaFsJumprope.prevOf ra) after
+    Assert.Equal(full.Content.ToHex(), reused.Content.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), reused.Content.ToHex())
+    match ZetaFsJumprope.tryGetPayload full.Cas firstChunk with
+    | None -> Assert.Fail("full build of the truncate must still hold the unchanged first chunk")
+    | Some _ -> ()
+    match ZetaFsJumprope.tryGetPayload reused.Cas firstChunk with
+    | Some _ -> Assert.Fail("mid-chunk truncate recopied the first prefix chunk")
+    | None -> ()
+
+[<Fact>]
 let ``pread copies into a caller buffer without a full materialize`` () =
     ensureHasher ()
     let bytes = Array.init 50_000 (fun i -> byte (i % 251))
