@@ -1,0 +1,14 @@
+{
+  "id": "080d03f25b642810a0130008a26a9604",
+  "at": "2026-09-07T23:54:27.333Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z4PV44087G0R0039GGAPM",
+    "type": "bug",
+    "title": "live kind blocked by kubelet maxPods ceiling, not by resource capacity",
+    "slug": "live-kind-blocked-by-kubelet-maxpods-ceiling-not-by-resource",
+    "priority": "P2",
+    "filename": "081M1Z4PV44087G0R0039GGAPM-live-kind-blocked-by-kubelet-maxpods-ceiling-not-by-resource.md"
+  }
+}
