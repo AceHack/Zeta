@@ -114,3 +114,9 @@ the user's continuing research authorization. The [integration register](../rese
 and [existing co-claim](../claims/task-distributional-learning-20260908.md)
 assign disjoint writer paths. Source review and an immutable pre-execution
 archive remain required before the named real integration controls.
+
+The [process-boundary amendment](../research/2026-09-08-mixed-message-epoch-transport-amendment.md)
+records three concrete implementation omissions found after that design review:
+full actual result delivery, observed budget transport and retained compensation
+context. Read it with the original source contract. It explicitly changes the
+finite wire records without changing the numerical control inputs or limits.

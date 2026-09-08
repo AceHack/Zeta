@@ -79,3 +79,12 @@ The [current source/feasibility census](2026-09-08-current-forecast-comparator-s
 records exact Chronos-2 and TimesFM-3 source/model metadata and the observed
 local package environment. It selects no held-out winner, downloads no weights
 or data, and does not substitute an author-reported benchmark for Zeta's result.
+
+## Process-boundary amendment
+
+The [explicit transport amendment](2026-09-08-mixed-message-epoch-transport-amendment.md)
+adds actual full-result delivery and measured budget snapshots, and fixes the
+compensation context and dependent four-session construction. These omissions
+were found during implementation coordination after the original design review.
+The original contract remains unchanged; the amendment is a separate source
+binding and requires independent review before actual integration execution.
