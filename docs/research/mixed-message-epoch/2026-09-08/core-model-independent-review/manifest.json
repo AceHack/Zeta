@@ -1,0 +1,62 @@
+{
+  "Scope": "Independent read-only source/retained-evidence audit. No target source, learner, scheduler, bridge, peer, numerical service or named control execution.",
+  "ReviewedPin": "d7e8e3806afaecdaed8a4a1ff5244c899201c870",
+  "Records": [
+    {
+      "File": "001.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/audit.py",
+      "Bytes": 6595,
+      "Sha256": "4075891CE069166EBE2AFBB1C2B15C3CB7E31AD4082A207D9137DCD25C33D7A3",
+      "StoredBytes": 2438,
+      "StoredSha256": "5EADFF93497C2997556E0E011CE96204D757E96E75ECFCF11C80EBB6247F21F1"
+    },
+    {
+      "File": "002.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/completion.json",
+      "Bytes": 51,
+      "Sha256": "B8AEF67978E53A3E7189E7A1F1EB7EE9F37EB718960485E1E1DC814551A0CB35",
+      "StoredBytes": 70,
+      "StoredSha256": "9D94C61833360EE7246DEEF7B654AC85F39288B43F119F57941EE138DB4E2AE5"
+    },
+    {
+      "File": "003.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/final-read-identities.json",
+      "Bytes": 1532,
+      "Sha256": "92AE4EEA950BA6DF5C9D3E642384EAF60E64D03F8CA519F0C9CA7F55E7BF8A00",
+      "StoredBytes": 627,
+      "StoredSha256": "757CB8365C5E5411AC56AEFBAFD4338ABCF06B17BAEC1486017D72A6E3E27D07"
+    },
+    {
+      "File": "004.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/invocation.json",
+      "Bytes": 556,
+      "Sha256": "47F10C647972B31F25D6FDD1E974579B34AA1DFBE87084203AF2D3F5DEC57CA8",
+      "StoredBytes": 298,
+      "StoredSha256": "AE8E7CF92C29E7F568FC4AC9AB4A3C560CC64DEA3344CA561025787AE836D8A2"
+    },
+    {
+      "File": "005.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/result.json",
+      "Bytes": 90660,
+      "Sha256": "73B25DAA3FEFA1850C76070DE7BED367C7A43ADA186208733CC0B743D4063989",
+      "StoredBytes": 8725,
+      "StoredSha256": "BFB3A0502D2A481A099EBC2288B239CB4FBBCDBCE4D3AEB989A7CC08FC9D7289"
+    },
+    {
+      "File": "006.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/stderr",
+      "Bytes": 0,
+      "Sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "StoredBytes": 20,
+      "StoredSha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "007.gz",
+      "Original": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/.git/mixed-message-core-model-independent-audit-1/stdout",
+      "Bytes": 117,
+      "Sha256": "6C5160823DAE7C993B0BD8F62F6126A9482079870AC64E6677B9AAFC61584DD9",
+      "StoredBytes": 119,
+      "StoredSha256": "8579E07A1F9213C30483A544FA9F9E97F489877C12EE1F3BED80F6F2941CE471"
+    }
+  ]
+}
