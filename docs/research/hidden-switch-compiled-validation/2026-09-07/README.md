@@ -372,3 +372,6 @@ implementation task remains open.
 
 - [Truncated-gzip boundary correction](../../2026-09-07-hidden-switch-compiled-gzip-fixture-correction.md):
   the original filename refusal is retained; 34 tests verify the intended reader boundary.
+
+- [Actual file replay validation](../../2026-09-07-hidden-switch-compiled-file-replay-validation.md):
+  81 focused tests and seven actual cases with 11 original/11 fresh operations.
