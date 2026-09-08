@@ -1089,6 +1089,10 @@ module ZetaFsFreeze =
           Next = next
           Line = ZetaFsNamespace.PhaseLine }
 
+    type internal LastLayout =
+        { Prev: ZetaFsJumprope.Prev
+          ObjectIds: ContentHash256[] }
+
     [<Sealed>]
     type Volume
         (
@@ -1111,6 +1115,7 @@ module ZetaFsFreeze =
         let livePins = HashSet<ContentHash256>()
         let objectSets = Dictionary<ContentHash256, ContentHash256[]>()
         let catalogGen = ref 0L
+        let lastLayout = Dictionary<ZetaFsNamespace.EntityId, LastLayout>()
         let history = ref (loadCatalog storeDir known livePins freezeBytesSinceReclaim objectSets catalogGen)
         let root =
             let path = ZetaFsPath.combine2 storeDir ZetaFsNamespace.RootFileName
@@ -1189,6 +1194,7 @@ module ZetaFsFreeze =
         member internal _.LivePins = livePins
         member internal _.ObjectSets = objectSets
         member internal _.CatalogGen = catalogGen
+        member internal _.LastLayout = lastLayout
         member _.History
             with get () = !history
             and set v =
@@ -2347,6 +2353,17 @@ module ZetaFsFreeze =
 
                     ok)
 
+    let private rememberLayout
+        (volume: Volume)
+        (entity: ZetaFsNamespace.EntityId)
+        (rope: ZetaFsJumprope.Rope)
+        (objectIds: ContentHash256[])
+        =
+        lock volume.Gate (fun () ->
+            volume.LastLayout.[entity] <-
+                { Prev = ZetaFsJumprope.prevOf rope
+                  ObjectIds = objectIds })
+
     let private noteFreeze (volume: Volume) (span: uint64) (result: FreezeResult) =
         lock volume.Gate (fun () ->
             volume.FreezeBytesSinceReclaim <- volume.FreezeBytesSinceReclaim + span
@@ -2465,9 +2482,27 @@ module ZetaFsFreeze =
             ValueTask<Result<FreezeResult, FreezeError>>(Error FreezeError.WindowsDurableNotClaimed)
         else
             let snap = ZetaFsMutbuf.snapshot volume.Mutbuf entity
-            let rope = ZetaFsJumprope.buildV1 snap.Bytes
+            let prev =
+                lock volume.Gate (fun () ->
+                    match volume.LastLayout.TryGetValue entity with
+                    | true, layout -> Some layout
+                    | _ -> None)
+
+            let rope =
+                match prev with
+                | Some layout -> ZetaFsJumprope.buildFromPrev layout.Prev snap.Bytes
+                | None -> ZetaFsJumprope.buildV1 snap.Bytes
+
             let leafIds = [| for id, _ in rope.Leaves -> id |]
-            let objectIds = [| for kv in rope.Cas.Objects -> kv.Key |]
+            let casIds = [| for kv in rope.Cas.Objects -> kv.Key |]
+
+            let objectIds =
+                if rope.Cas.Objects.Count = 0 then
+                    match prev with
+                    | Some layout when layout.Prev.Content.Equals rope.Content -> layout.ObjectIds
+                    | _ -> leafIds
+                else
+                    Array.append leafIds casIds
 
             match cls with
             | Buffered ->
@@ -2491,6 +2526,7 @@ module ZetaFsFreeze =
                           IntentLsn = 0L
                           CommitLsn = 0L }
 
+                    rememberLayout volume entity rope objectIds
                     ValueTask<Result<FreezeResult, FreezeError>>(
                         afterFreeze volume ct (Ok(noteFreeze volume rope.Span result))
                     )
@@ -2541,12 +2577,14 @@ module ZetaFsFreeze =
                         match pending.Result with
                         | Error e -> ValueTask<Result<FreezeResult, FreezeError>>(Error e)
                         | Ok(struct (i, c)) ->
-                            ValueTask<Result<FreezeResult, FreezeError>>(
-                                afterFreeze
-                                    volume
-                                    ct
-                                    (finish volume entity rope.Content rope.Span cls snap.Generation leafIds objectIds i c)
-                            )
+                            let finished =
+                                finish volume entity rope.Content rope.Span cls snap.Generation leafIds objectIds i c
+
+                            match finished with
+                            | Ok _ -> rememberLayout volume entity rope objectIds
+                            | Error _ -> ()
+
+                            ValueTask<Result<FreezeResult, FreezeError>>(afterFreeze volume ct finished)
                     else
                         let work =
                             task {
@@ -2555,21 +2593,24 @@ module ZetaFsFreeze =
                                 match logged with
                                 | Error e -> return Error e
                                 | Ok(struct (i, c)) ->
-                                    return
-                                        afterFreeze
+                                    let finished =
+                                        finish
                                             volume
-                                            ct
-                                            (finish
-                                                volume
-                                                entity
-                                                rope.Content
-                                                rope.Span
-                                                cls
-                                                snap.Generation
-                                                leafIds
-                                                objectIds
-                                                i
-                                                c)
+                                            entity
+                                            rope.Content
+                                            rope.Span
+                                            cls
+                                            snap.Generation
+                                            leafIds
+                                            objectIds
+                                            i
+                                            c
+
+                                    match finished with
+                                    | Ok _ -> rememberLayout volume entity rope objectIds
+                                    | Error _ -> ()
+
+                                    return afterFreeze volume ct finished
                             }
 
                         ValueTask<Result<FreezeResult, FreezeError>> work

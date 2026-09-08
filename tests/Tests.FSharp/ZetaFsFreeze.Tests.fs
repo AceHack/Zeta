@@ -4038,6 +4038,7 @@ let ``one-byte edit freeze does not duplicate known CAS objects`` () : Task =
                     )
                     Assert.True(ZetaFsFreeze.isReadable volume a.Content)
                     Assert.True(ZetaFsFreeze.isReadable volume b.Content)
+                    Assert.Equal((ZetaFsJumprope.buildV1 after).Content.ToHex(), b.Content.ToHex())
         finally
             ZetaFsFreeze.dispose volume
             FileSystem.Reset()

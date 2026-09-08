@@ -210,6 +210,35 @@ let ``one-byte edit remaps the trunk and reuses most chunk ContentIds`` () =
         sprintf "union %d vs 2× %d — bit-copy, not pointer-not-copy" combined.Count ra.Leaves.Length
     )
 
+[<Fact>]
+let ``buildFromPrev of identical bytes reuses the trunk and puts nothing in Cas`` () =
+    ensureHasher ()
+    let bytes = Array.init 500_000 (fun i -> byte (i % 251))
+    let first = ZetaFsJumprope.buildV1 bytes
+    let second = ZetaFsJumprope.buildFromPrev (ZetaFsJumprope.prevOf first) bytes
+    Assert.Equal(first.Content.ToHex(), second.Content.ToHex())
+    Assert.Equal(0, second.Cas.Objects.Count)
+    Assert.Equal(first.Leaves.Length, second.Leaves.Length)
+
+[<Fact>]
+let ``buildFromPrev of a 1-byte edit matches full build and does not recopy the prefix`` () =
+    ensureHasher ()
+    let before = Array.init 500_000 (fun i -> byte (i % 251))
+    let after = Array.copy before
+    after.[250_000] <- after.[250_000] ^^^ 1uy
+    let ra = ZetaFsJumprope.buildV1 before
+    let full = ZetaFsJumprope.buildV1 after
+    let reused = ZetaFsJumprope.buildFromPrev (ZetaFsJumprope.prevOf ra) after
+    Assert.Equal(full.Content.ToHex(), reused.Content.ToHex())
+    Assert.NotEqual<string>(ra.Content.ToHex(), reused.Content.ToHex())
+    Assert.True(
+        reused.Cas.Payloads.Count > 0
+        && reused.Cas.Payloads.Count < full.Cas.Payloads.Count,
+        sprintf
+            "reused payloads %d vs full %d — prefix was recopied or suffix was empty"
+            reused.Cas.Payloads.Count
+            full.Cas.Payloads.Count
+    )
 
 [<Fact>]
 let ``pread copies into a caller buffer without a full materialize`` () =

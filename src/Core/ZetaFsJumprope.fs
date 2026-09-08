@@ -399,44 +399,7 @@ module ZetaFsJumprope =
 
                 acc.ToArray(), store
 
-    let private chunkAll (chunker: ChunkerId) (bytes: byte[]) : byte[][] =
-        let minC, avgC, maxC = sizes chunker
-
-        if isNull bytes || bytes.Length = 0 then
-            [| Array.empty |]
-        elif bytes.Length <= minC then
-            // FastCdcChunker allocates maxChunk*4 (256 KiB at v1). A 1-byte
-            // freeze must not pay that. Copy so Cas does not alias mutbuf.
-            [| Array.copy bytes |]
-        else
-            let c = FastCdcChunker(minC, avgC, maxC)
-            c.Push(ReadOnlySpan<byte> bytes)
-            c.Flush()
-            let chunks = c.DrainChunks()
-
-            if chunks.Length = 0 then
-                [| Array.empty |]
-            else
-                chunks
-
-    /// FastCDC + Jumprope. Small files (below min-chunk) are a single-leaf rope.
-    let build (chunker: ChunkerId) (bytes: byte[]) : Rope =
-        let chunks = chunkAll chunker bytes
-        let mutable cas = emptyCas ()
-        let leaves = ResizeArray<BuildLeaf>()
-
-        for ch in chunks do
-            let chunkId, cas1 = encodeChunk cas ch
-            let leafId, cas2 = encodeLeaf cas1 chunkId (uint64 ch.Length)
-            cas <- cas2
-
-            leaves.Add
-                { LeafId = leafId
-                  ChunkId = chunkId
-                  Span = uint64 ch.Length
-                  Level = levelOf leafId }
-
-        let nodes = leaves.ToArray()
+    let private ropeFromLeaves (chunker: ChunkerId) (cas: Cas) (nodes: BuildLeaf[]) : Rope =
         let last = nodes.[nodes.Length - 1]
 
         let endEntry =
@@ -462,7 +425,125 @@ module ZetaFsJumprope =
           Leaves = [| for n in nodes -> n.ChunkId, n.Span |]
           Starts = starts }
 
+    let private encodeAllChunks (cas: Cas) (chunks: byte[][]) : BuildLeaf[] * Cas =
+        let leaves = ResizeArray<BuildLeaf>()
+        let mutable store = cas
+
+        for ch in chunks do
+            let chunkId, cas1 = encodeChunk store ch
+            let leafId, cas2 = encodeLeaf cas1 chunkId (uint64 ch.Length)
+            store <- cas2
+
+            leaves.Add
+                { LeafId = leafId
+                  ChunkId = chunkId
+                  Span = uint64 ch.Length
+                  Level = levelOf leafId }
+
+        leaves.ToArray(), store
+
+    let private chunkAll (chunker: ChunkerId) (bytes: byte[]) : byte[][] =
+        let minC, avgC, maxC = sizes chunker
+
+        if isNull bytes || bytes.Length = 0 then
+            [| Array.empty |]
+        elif bytes.Length <= minC then
+            // FastCdcChunker allocates maxChunk*4 (256 KiB at v1). A 1-byte
+            // freeze must not pay that. Copy so Cas does not alias mutbuf.
+            [| Array.copy bytes |]
+        else
+            let c = FastCdcChunker(minC, avgC, maxC)
+            c.Push(ReadOnlySpan<byte> bytes)
+            c.Flush()
+            let chunks = c.DrainChunks()
+
+            if chunks.Length = 0 then
+                [| Array.empty |]
+            else
+                chunks
+
+    /// FastCDC + Jumprope. Small files (below min-chunk) are a single-leaf rope.
+    let build (chunker: ChunkerId) (bytes: byte[]) : Rope =
+        let chunks = chunkAll chunker bytes
+        let nodes, cas = encodeAllChunks (emptyCas ()) chunks
+        ropeFromLeaves chunker cas nodes
+
     let buildV1 (bytes: byte[]) : Rope = build ChunkerId.FastCdcV1 bytes
+
+    /// Last freeze's chunk layout. Starts + chunk ids, not payloads.
+    /// Holding payloads here would be a second copy of the file (D10).
+    type Prev =
+        { Content: ContentHash256
+          Span: uint64
+          Chunker: ChunkerId
+          Starts: uint64[]
+          Leaves: (ContentHash256 * uint64)[] }
+
+    let prevOf (rope: Rope) : Prev =
+        { Content = rope.Content
+          Span = rope.Span
+          Chunker = rope.Chunker
+          Starts = rope.Starts
+          Leaves = rope.Leaves }
+
+    let private chunkIdOf (data: byte[]) : ContentHash256 =
+        let id, _ = encodeChunk (emptyCas ()) data
+        id
+
+    /// Same-span overwrite: hash each previous window until the first
+    /// mismatch, then FastCDC only the suffix. Length change falls back
+    /// to a full `build`. Identical bytes reuse the previous trunk and
+    /// put nothing in Cas.
+    let buildFromPrev (prev: Prev) (bytes: byte[]) : Rope =
+        if isNull bytes || uint64 bytes.Length <> prev.Span || prev.Leaves.Length = 0 then
+            build prev.Chunker bytes
+        else
+            let mutable first = 0
+            let mutable mismatch = false
+
+            while (not mismatch) && first < prev.Leaves.Length do
+                let id, span = prev.Leaves.[first]
+                let off = int prev.Starts.[first]
+                let n = int span
+                let slice = Array.zeroCreate n
+                Buffer.BlockCopy(bytes, off, slice, 0, n)
+
+                if not ((chunkIdOf slice).Equals id) then
+                    mismatch <- true
+                else
+                    first <- first + 1
+
+            if not mismatch then
+                { Content = prev.Content
+                  Span = prev.Span
+                  Chunker = prev.Chunker
+                  Cas = emptyCas ()
+                  Leaves = prev.Leaves
+                  Starts = prev.Starts }
+            else
+                let prefix = ResizeArray<BuildLeaf>(first)
+                let mutable cas = emptyCas ()
+
+                for i in 0 .. first - 1 do
+                    let chunkId, span = prev.Leaves.[i]
+                    let leafId, cas1 = encodeLeaf cas chunkId span
+                    cas <- cas1
+
+                    prefix.Add
+                        { LeafId = leafId
+                          ChunkId = chunkId
+                          Span = span
+                          Level = levelOf leafId }
+
+                let off = int prev.Starts.[first]
+                let suffixBytes = Array.zeroCreate (bytes.Length - off)
+                Buffer.BlockCopy(bytes, off, suffixBytes, 0, suffixBytes.Length)
+                let suffixChunks = chunkAll prev.Chunker suffixBytes
+                let suffix, cas2 = encodeAllChunks cas suffixChunks
+                let nodes = Array.zeroCreate (prefix.Count + suffix.Length)
+                prefix.CopyTo(nodes, 0)
+                Array.Copy(suffix, 0, nodes, prefix.Count, suffix.Length)
+                ropeFromLeaves prev.Chunker cas2 nodes
 
     let private payloadMemory (cas: Cas) (chunk: ContentHash256) : Result<ReadOnlyMemory<byte>, JumpropeError> =
         match tryGetPayload cas chunk with
