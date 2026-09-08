@@ -141,3 +141,14 @@ results keep their original dataset and source identities.
 The [native/reference kernel replay contract](2026-09-08-precision-gate-kernels-native-reference-replay.md)
 fixes 24 input rows, numerical tolerance, explicit shape-encoding differences
 and comparator controls before the first cross-language invocation.
+
+## Next investment: bounded Gaussian projection
+
+The [scalar projection design](2026-09-08-precision-gate-scalar-projection-design.md)
+and its [independent review](2026-09-08-scalar-projection-design-independent-review.md)
+reduce the reverse-KL Gaussian-family objective to one monotone scalar root.
+This supplies an explicit finite initial bracket and a proposed path to
+independent moment enclosures. The optimizer and certified interval arithmetic
+are not implemented or registered yet. Completing this missing local update
+is the next prerequisite for testing a mixed learned gate; it does not imply
+that a full inference schedule converges or beats any held-out baseline.

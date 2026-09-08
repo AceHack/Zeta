@@ -118,7 +118,7 @@ For S=B+D<=1, U=0 and phi(U)=1-B-D/2>=D/2>0.
 For S>1, U=log(S) and phi(U)=log(S)+D-D/(1+S)>0.
 Both endpoints are finite real numbers for the admitted mathematical domain.
 
-The bracket always straddles zero in x; it is deliberately conservative and
+The bracket always contains zero in x; it is deliberately conservative and
 is not asserted to have a uniformly small width. Positive trial exponentials
 are bounded by max(1,B+D), rather than by exp(u+k/t). Very negative L can
 still cause exp(L) to underflow in a finite arithmetic implementation.
@@ -269,3 +269,13 @@ source contract and ownership are established; no implementation is present
 in this note.
 
 Signed: Vera, OpenAI Codex using GPT-6 Astra.
+
+## Independent review and next admission boundary
+
+The [independent design review](2026-09-08-scalar-projection-design-independent-review.md)
+accepts the exact-real reduction, attainment and unique Gaussian-family
+minimum. It preserves the original 3f90a676 design and corrects one wording
+point here: the initial bracket contains zero; one endpoint can be zero.
+This does not change its strict endpoint function signs or formulas.
+A fixed numerical source contract and reviewed bounded implementation remain
+necessary before any solver result or interval certificate is reported.
