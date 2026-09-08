@@ -3,7 +3,7 @@
 Date: 2026-09-08 UTC
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Operational status: research-grade validation record
-Status: local correction passed; subsequent complete CI pending
+Status: correction independently accepted; subsequent complete CI pending
 
 PR 17051's first interpretability lane passed 2,286 tests, with one warning,
 then refused seven import blocks in projection tests. CI runs Ruff from
@@ -51,3 +51,8 @@ attempt requires its frozen sources and declared direct native artifacts;
 a new source cut needs its own admitted manifest and separately named attempt.
 The subsequent hygiene evidence supports unchanged production semantics, not
 a claim that the original full gate or experiment ran these edited bytes.
+
+The [independent hygiene review](../../../2026-09-08-projection-publication-hygiene-independent-review.md)
+accepts the exact eight-file correction, retained first failures and corrected
+unit-execution wording. The original numerical source and native-role bindings
+remain unchanged in their historical archives.

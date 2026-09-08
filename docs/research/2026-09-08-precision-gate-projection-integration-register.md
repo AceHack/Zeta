@@ -129,3 +129,8 @@ The [post-experiment publication correction](precision-gate-projection/2026-09-0
 fixes cwd-dependent test import grouping while retaining the original numerical
 source identity. Its full-lane lint/type checks and 340 component tests are
 separate from the original experiment and full gate.
+
+The [independent publication hygiene review](2026-09-08-projection-publication-hygiene-independent-review.md)
+accepts that later cut and its corrected distinction between numerical unit
+fixtures and the unrepeated registered driver workload. Complete CI and normal
+main publication remain the final integration checks.
