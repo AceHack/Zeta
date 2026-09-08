@@ -768,3 +768,261 @@ module MixedMessageEpochReplay =
             fail (failure "admit" "CoreRaised" (phase + ": " + error.GetType().FullName + ": " + error.Message))
         { Envelope = envelope; Sources = sources; Calls = List.ofSeq calls
           Admitted = admitted; Failure = primary }
+
+    /// Closed peer output kinds; no supplied string selects a protocol variant.
+    type OutputKind =
+        | ReadyFrame
+        | CheckpointFrame of projectionBearing: bool
+        | ProjectionRequestFrame
+        | CommitFrame
+        | EpochReturnFrame
+        | TerminalFrame
+
+    type FrameBuild =
+        { Kind: OutputKind
+          Payload: byte array
+          CanonicalReturn: Result<byte array, E.Failure> option
+          Raw: byte array option
+          Failure: PeerFailure option }
+
+    let private outputShape = function
+        | ReadyFrame -> "Ready", SmallCap, [| "PlanSha256"; "ServiceSha256" |]
+        | CheckpointFrame projection ->
+            "Checkpoint", (if projection then ResultCap else SmallCap),
+            [| "Sequence"; "Observation"; "LastRevision"; "StateSha256" |]
+        | ProjectionRequestFrame ->
+            "ProjectionRequest", RequestCap,
+            [| "Sequence"; "RequestId"; "InputRevision"; "Base"; "TargetBits"; "RawInputHex"
+               "InputSha256"; "CaseId"; "BindingsSha256"; "Remaining" |]
+        | CommitFrame ->
+            "Commit", SmallCap, [| "Sequence"; "CheckpointSha256"; "AppliedRevision"; "LastCommitted"; "Counters" |]
+        | EpochReturnFrame -> "EpochReturn", ResultCap, [| "Sequence"; "Result"; "ResultSha256" |]
+        | TerminalFrame ->
+            "Terminal", TerminalCap,
+            [| "Outcome"; "Termination"; "Failure"; "Counters"; "LastCommitted"; "LedgerCount"
+               "LedgerSha256"; "PendingRequest"; "Publication" |]
+
+    /// The remaining allowance already includes the LF. The payload is the
+    /// actual returned core encoding, retained by the caller before framing.
+    /// Only the three fixed envelope fields are added; numeric/source result
+    /// trees are never reconstructed by the peer.
+    let framePayload kind sessionId remainingBytes (payload: byte array) : FrameBuild =
+        let mutable canonical = None
+        let mutable raw = None
+        let mutable primary = None
+        let fail error = if primary.IsNone then primary <- Some error
+        try
+            let name, cap, keys = outputShape kind
+            let maximum = min cap remainingBytes
+            if maximum <= 0 || not (isId sessionId) || isNull payload then
+                fail (failure "publish" "FrameArguments" "positive allowance, admitted session and actual payload required")
+            else
+                // ID/schema/kind alphabets are source-fixed ASCII without any
+                // escaping characters. Count this small envelope before the
+                // payload prewalk or any complete envelope allocation.
+                let header = "{\"Kind\":\"" + name + "\",\"Schema\":\"" + Schema + "\",\"SessionId\":\"" + sessionId + "\","
+                let headerBytes = utf8.GetBytes header
+                // header + payload without its initial '{' + one LF. Require
+                // braces in exact core encodings; arbitrary whitespace layouts
+                // are not accepted as a returned core payload.
+                if payload.Length < 2 || payload.[0] <> 123uy || payload.[payload.Length - 1] <> 125uy
+                   || payload.Length > maximum || headerBytes.Length > maximum - payload.Length then
+                    fail (failure "publish" "FrameBound" "complete envelope and LF exceed their finite allowance or payload braces are absent")
+                else
+                    match strictJson "publish" (maximum - headerBytes.Length) payload with
+                    | Error error -> fail error
+                    | Ok tree ->
+                        match exactKeys "publish" keys tree with
+                        | Error error -> fail error
+                        | Ok () ->
+                            let assembled = Array.zeroCreate<byte> (headerBytes.Length + payload.Length - 1)
+                            headerBytes.CopyTo(assembled, 0)
+                            Array.Copy(payload, 1, assembled, headerBytes.Length, payload.Length - 1)
+                            let actual = E.tryCanonicalPayload assembled (maximum - 1)
+                            canonical <- Some actual
+                            match actual with
+                            | Error error -> fail (failure "publish" "FrameEncoding" (error.Code + ": " + error.Message))
+                            | Ok encoded ->
+                                // Retain the actual codec return above before
+                                // the final allocation/copy can fail.
+                                let framed = Array.zeroCreate<byte> (encoded.Length + 1)
+                                encoded.CopyTo(framed, 0)
+                                framed.[encoded.Length] <- 10uy
+                                raw <- Some framed
+        with error -> fail (failure "publish" "FrameRaised" (error.GetType().FullName + ": " + error.Message))
+        { Kind = kind; Payload = payload; CanonicalReturn = canonical; Raw = raw; Failure = primary }
+
+    let private flow = Zeta.Core.ResultComputation.ResultBuilder()
+
+    /// Copies a fixed subset of an already bounded passive object. The caller
+    /// first checks exact outer keys; names here are source constants. Each raw
+    /// value and the complete object are bounded before aggregate expansion.
+    let private selectPayload maximum (fields: (string * JsonElement) list) =
+        try
+            if maximum <= 0 || maximum > ResultCap then
+                Error(failure "admit" "PayloadBound" "positive fixed payload allowance required")
+            else
+                let parts = ResizeArray<string>()
+                let mutable size = 2
+                let mutable primary = None
+                for name, value in fields do
+                    if primary.IsNone then
+                        let text = value.GetRawText()
+                        let count = utf8.GetByteCount text
+                        let extra = name.Length + 3 + (if parts.Count = 0 then 0 else 1)
+                        if extra > maximum - size || count > maximum - size - extra then
+                            primary <- Some(failure "admit" "PayloadBound" "fixed selected payload exceeds allowance")
+                        else
+                            size <- size + extra + count
+                            parts.Add("\"" + name + "\":" + text)
+                match primary with
+                | Some error -> Error error
+                | None -> Ok(utf8.GetBytes("{" + String.Join(",", parts) + "}"))
+        with error -> Error(failure "admit" "PayloadSelection" (error.GetType().FullName + ": " + error.Message))
+
+    let private headerMatches kind session (tree: JsonElement) =
+        flow {
+            let! actualKind = stringField "admit" "Kind" tree
+            let! schema = stringField "admit" "Schema" tree
+            let! actualSession = stringField "admit" "SessionId" tree
+            if actualKind = kind && schema = Schema && actualSession = session && isId session then return ()
+            else return! Error(failure "admit" "ResponseIdentity" "kind/schema/session differs from the outstanding exchange")
+        }
+
+    let private readFailure (tree: JsonElement) : Result<E.Failure, PeerFailure> =
+        flow {
+            do! exactKeys "admit" [| "Code"; "Stage"; "Field"; "Message" |] tree
+            let! code = stringField "admit" "Code" tree
+            let! stage = stringField "admit" "Stage" tree
+            let! message = stringField "admit" "Message" tree
+            let field = tree.GetProperty "Field"
+            let! actualField =
+                if field.ValueKind = JsonValueKind.Null then Ok None
+                elif field.ValueKind = JsonValueKind.String then
+                    let value = field.GetString()
+                    if not (isNull value) && value.Length <= 256 && (value |> Seq.forall Char.IsAscii) then Ok(Some value)
+                    else Error(failure "admit" "FailureShape" "bounded optional ASCII failure field required")
+                else Error(failure "admit" "FailureShape" "string or null failure field required")
+            if not (List.contains code ["Admission";"Conflict";"Stale";"Family";"Improper";"Arithmetic";"Service";"Uncertified";"Budget";"Storage";"Transport";"Unexpected"])
+               || not (List.contains stage ["admit";"learn";"forward";"gamma";"gaussian";"project";"apply";"publish";"retract";"scheduler"])
+               || utf8.GetByteCount message > 1024 then
+                return! Error(failure "admit" "FailureShape" "registered failure code/stage and bounded UTF8 message required")
+            return { Code = code; Stage = stage; Field = actualField; Message = message }
+        }
+
+    type AcknowledgmentAttempt =
+        { Raw: byte array
+          Parsed: Result<JsonElement, PeerFailure>
+          StoredReturn: Result<E.StoredCheckpoint, E.Failure> option
+          BudgetReturn: Result<E.BudgetSnapshot, E.Failure> option
+          Refused: E.Failure option
+          Stored: E.StoredCheckpoint option
+          Failure: PeerFailure option }
+
+    /// Retains raw/parsed/decoded ACK evidence before checking correspondence.
+    /// This does not read the descriptor's named file or prove remote storage:
+    /// the selected coordinator's actual Store/ACK route is the trust premise.
+    let admitAcknowledgment session sequence (sent: byte array) (received: byte array) : AcknowledgmentAttempt =
+        let parsed = strictJson "admit" SmallCap received
+        let mutable storedReturn = None
+        let mutable budgetReturn = None
+        let mutable refused = None
+        let mutable stored = None
+        let outcome =
+            try
+                flow {
+                    if not (isId session) || sequence < 1 || isNull sent || sent.Length = 0 || sent.Length > ResultCap then
+                        return! Error(failure "admit" "AckArguments" "bounded original sent frame and admitted exchange required")
+                    let! tree = parsed
+                    do! exactKeys "admit" [| "Kind"; "Schema"; "SessionId"; "Sequence"; "CheckpointSha256"; "Outcome"; "BudgetSnapshot" |] tree
+                    let ackOutcome = tree.GetProperty "Outcome"
+                    let! outcomeKind = stringField "admit" "Kind" ackOutcome
+                    if outcomeKind = "stored" then
+                        do! exactKeys "admit" [| "Kind"; "Artifact" |] ackOutcome
+                        let! payload = selectPayload SmallCap
+                                           ["Sequence",tree.GetProperty "Sequence"; "CheckpointSha256",tree.GetProperty "CheckpointSha256"
+                                            "Artifact",ackOutcome.GetProperty "Artifact"; "BudgetSnapshot",tree.GetProperty "BudgetSnapshot"]
+                        let actual = E.tryDecodeStoredCheckpoint payload
+                        storedReturn <- Some actual
+                        let! value = actual |> Result.mapError (fun e -> failure "admit" "AckDecode" (e.Code + ": " + e.Message))
+                        // Keep the complete actual decoded return above even
+                        // if its session, descriptor or hash is inconsistent.
+                        do! headerMatches "CheckpointAck" session tree
+                        let sentIdentity = identity sent
+                        let a = value.Artifact
+                        if value.Sequence <> sequence || value.CheckpointSha256 <> sentIdentity.Sha256
+                           || a.Bytes <> int64 sentIdentity.Bytes || a.Sha256 <> sentIdentity.Sha256
+                           || a.Encoding <> "identity" || a.StoredBytes <> a.Bytes || a.StoredSha256 <> a.Sha256
+                           || isNull a.File || a.File.Length = 0 || a.File.Length > 512
+                           || not (a.File |> Seq.forall (fun c -> c >= ' ' && c <= '~')) then
+                            return! Error(failure "admit" "AckCorrespondence" "ACK sequence/hash/complete original descriptor differs from the sent frame")
+                        stored <- Some value
+                    elif outcomeKind = "refused" then
+                        do! exactKeys "admit" [| "Kind"; "Failure" |] ackOutcome
+                        let! actualFailure = readFailure (ackOutcome.GetProperty "Failure")
+                        refused <- Some actualFailure
+                        let! payload = nestedBytes "BudgetSnapshot" SmallCap (tree.GetProperty "BudgetSnapshot")
+                        let actual = E.tryDecodeBudgetSnapshot payload
+                        budgetReturn <- Some actual
+                        let! _ = actual |> Result.mapError (fun e -> failure "admit" "AckDecode" (e.Code + ": " + e.Message))
+                        do! headerMatches "CheckpointAck" session tree
+                        let! actualSequence = integerField "admit" "Sequence" tree
+                        let! actualHash = stringField "admit" "CheckpointSha256" tree
+                        if actualSequence <> sequence || actualHash <> (identity sent).Sha256 then
+                            return! Error(failure "admit" "AckCorrespondence" "refused ACK differs from the outstanding sent frame")
+                    else
+                        return! Error(failure "admit" "AckOutcome" "stored or refused ACK outcome required")
+                    return ()
+                }
+            with error -> Error(failure "admit" "AckRaised" (error.GetType().FullName + ": " + error.Message))
+        { Raw = received; Parsed = parsed; StoredReturn = storedReturn; BudgetReturn = budgetReturn
+          Refused = refused; Stored = stored; Failure = match outcome with Error e -> Some e | Ok () -> None }
+
+    type ProjectionResponseAttempt =
+        { Raw: byte array
+          Parsed: Result<JsonElement, PeerFailure>
+          DecodedReturn: Result<E.ProjectionResponse, E.Failure> option
+          Response: E.ProjectionResponse option
+          Failure: PeerFailure option }
+
+    /// Fixed transport/identity correspondence only. The source-owned core
+    /// separately admits the complete actual Native/Certificate result and its
+    /// numerical proposal before any application. Passive decoding is not a
+    /// certificate verdict or proof that a service/process ran.
+    let admitProjectionResponse (peer: E.PeerIdentity) (request: E.ProjectionRequest) received : ProjectionResponseAttempt =
+        let parsed = strictJson "admit" ResponseCap received
+        let mutable decoded = None
+        let mutable response = None
+        let outcome =
+            try
+                flow {
+                    if isNull (box peer) || isNull (box request) || not (isId peer.SessionId)
+                       || not (isHash peer.ServiceSha256) || request.Sequence < 1 then
+                        return! Error(failure "admit" "ResponseArguments" "admitted peer and actual outstanding request required")
+                    let! tree = parsed
+                    let names = [| "Sequence"; "RequestId"; "InputSha256"; "BindingsSha256"; "ServiceSha256"
+                                   "Native"; "Certificate"; "Failure"; "BudgetSnapshot" |]
+                    do! exactKeys "admit" (Array.append [| "Kind"; "Schema"; "SessionId" |] names) tree
+                    let! payload = selectPayload ResponseCap (names |> Array.map (fun key -> key, tree.GetProperty key) |> Array.toList)
+                    let actual = E.tryDecodeProjectionResponse payload
+                    decoded <- Some actual
+                    let! value = actual |> Result.mapError (fun e -> failure "admit" "ResponseDecode" (e.Code + ": " + e.Message))
+                    do! headerMatches "ProjectionResponse" peer.SessionId tree
+                    if value.Sequence <> request.Sequence || value.RequestId <> request.RequestId
+                       || value.InputSha256 <> request.InputSha256 || value.BindingsSha256 <> request.BindingsSha256
+                       || value.ServiceSha256 <> peer.ServiceSha256 then
+                        return! Error(failure "admit" "ProjectionCorrespondence" "response differs from the outstanding request/source/binding identities")
+                    // Use the same fixed four-field failure grammar for both
+                    // coordinator response variants. The complete decoded
+                    // value remains retained if this later check refuses.
+                    match value.Failure with
+                    | Some _ ->
+                        let! _ = readFailure (tree.GetProperty "Failure")
+                        ()
+                    | None -> ()
+                    response <- Some value
+                    return ()
+                }
+            with error -> Error(failure "admit" "ResponseRaised" (error.GetType().FullName + ": " + error.Message))
+        { Raw = received; Parsed = parsed; DecodedReturn = decoded; Response = response
+          Failure = match outcome with Error e -> Some e | Ok () -> None }
