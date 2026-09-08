@@ -188,7 +188,17 @@ Retained first outcomes, without row replacement:
    no receipt and null counters; stderr empty. This is an executable-loading
    regression, not a numeric subject or final-vector run.
 
-Complete source and raw command/result evidence will be indexed in the immutable
-preparation archive before independent final source review and any coordinator
-execution. Focused validation does not substitute for that review, the complete
-local gate, the independent reference, or the registered final comparison.
+The implementation source is pinned at
+`bf2da44b94e770d21add73ce53dacb8fb34259bf`. The
+[complete preparation inventory](precision-gate-projection/2026-09-08/native-preparation-2/manifest.json)
+retains exact raw command/results, original source snapshots and 14 source pins.
+The [first preservation prefix](precision-gate-projection/2026-09-08/native-preparation-1/manifest.json)
+remains explicitly incomplete: after storing its raw records, the author's
+preservation script attempted nonexistent Directory.Build.targets while collecting
+source pins. The second script removed that incorrect conventional filename;
+it did not rerun any native calculation or replace prior command outcomes.
+
+The full local gate is running against bf2da44. Independent complete source
+review and final registration remain pending. Focused validation does not
+substitute for that review, the complete gate, the independent reference or
+the registered final comparison.
