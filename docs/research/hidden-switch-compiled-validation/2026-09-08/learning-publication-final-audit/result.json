@@ -1,0 +1,121 @@
+{
+  "ArchiveCommit": "f2031ff923527d3d5c116043b794e09c627662f8",
+  "FinalPublicationScopeCut": "8cb522b2dab2fb50792a3d7ff6ef7f3af21f5e64",
+  "ManifestBytes": 20366,
+  "ManifestSha256": "d1ceff79a7609e9aec46ff7bad50fc1856f11d3e5e9ce59050d9cf9b62e0164d",
+  "Artifacts": 46,
+  "StoredBytes": 82244,
+  "OriginalBytes": 740337,
+  "AllSingleMemberGzipAndHashesMatch": true,
+  "ReadmeSha256": "f76de3f8137b96cccab0a0612ef4fa285da92959ff45646443beb7e053b2f1db",
+  "Runs": [
+    {
+      "Label": "ordinary",
+      "Checkpoints": 25,
+      "ExitCode": 0,
+      "StdoutBytes": 15689,
+      "StdoutSha256": "c509ca851f18b221820fd7e862053ee21e40e45d717b5687b33076d0ae5b5de0",
+      "ActualReturnType": "RoomRunValidated",
+      "PriorEngineeringContentsMatch": true
+    },
+    {
+      "Label": "fault-2",
+      "Checkpoints": 2,
+      "ExitCode": 2,
+      "StdoutBytes": 545,
+      "StdoutSha256": "8566d59aca2eaf1ac9b5f1533fef720b5d4ffe903257afa249f5fed520fcde4b",
+      "ActualReturnType": "RoomRunValidated",
+      "PriorEngineeringContentsMatch": true
+    },
+    {
+      "Label": "fault-12",
+      "Checkpoints": 12,
+      "ExitCode": 2,
+      "StdoutBytes": 2543,
+      "StdoutSha256": "b2e11e80ae48de4f188790f46e89f5951ecba02c77ebef37cb4ecf457f6f0653",
+      "ActualReturnType": "RoomRunValidated",
+      "PriorEngineeringContentsMatch": true
+    },
+    {
+      "Label": "fault-25",
+      "Checkpoints": 25,
+      "ExitCode": 2,
+      "StdoutBytes": 7760,
+      "StdoutSha256": "d03b0471fc5610c3f5b605ee753daf68409f485f8c5d8136227b744137772613",
+      "ActualReturnType": "RoomRunValidated",
+      "PriorEngineeringContentsMatch": true
+    },
+    {
+      "Label": "invalid-control",
+      "Checkpoints": 0,
+      "ExitCode": 2,
+      "StdoutBytes": 245,
+      "StdoutSha256": "de6b49a872da6c01487e79637007f36fc8be1b70f807ecf0cf32307475a85ede",
+      "ActualReturnType": "RoomRunValidated",
+      "PriorEngineeringContentsMatch": true
+    }
+  ],
+  "VerifiedBase64DescriptorOccurrences": 16,
+  "FullGateSource": "19efca924f6765bbdd3b4017f707fa8f08302bd1",
+  "FullGateObservedPassedChecks": 18,
+  "ActualControlsSource": "b65679674760e64bfe34e903646a2fd211d2420d",
+  "FocusedReferenceTestsObservedPassed": 124,
+  "FiveSourceFiles": [
+    {
+      "Path": "src/Core/PrivacyEconomy.fs",
+      "Bytes": 7279,
+      "Sha256": "5087fa8c89328ddc82691924870cdeef255637ade092e7c4c901c8693481002c",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_distributional_learning_rooms_reference.py",
+      "Bytes": 32046,
+      "Sha256": "90886b2f6679601c70dc567f9381156b28526bc10d3e438355bb9c6db1c40413",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/distributional_learning_rooms_reference.py",
+      "Bytes": 37612,
+      "Sha256": "c7b5d66066dd6a5a203c69e405871f5fae6948157a5f9d87ef03a5822a97e1c2",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Research.FSharp/DistributionalLearningRooms.fsx",
+      "Bytes": 19776,
+      "Sha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "tests/Tests.FSharp/PrivacyEconomy.Tests.fs",
+      "Bytes": 5977,
+      "Sha256": "e10fd07b05f67191ea717ffef56ee016daaeaee64f73008e4d8547b940d0957e",
+      "MatchesCoordinatorSource": true
+    }
+  ],
+  "SourceFilesUnchangedAcrossFourCuts": true,
+  "ParentClaimsRemovedAt70e81AndRemainInRoot": true,
+  "FiniteClaimRemovedBeforeLatestCut": true,
+  "OrdinaryActualRuntime": {
+    "DotNetVersion": "10.0.11",
+    "LoadedAssemblies": [
+      {
+        "Name": "Zeta.Core",
+        "Bytes": 9265664,
+        "Sha256": "1EC467A1E8EF7E85CA546B6C283BE77498218C9D24AFFAA3AFC9B9DF3C14D6D3"
+      },
+      {
+        "Name": "Zeta.Bayesian",
+        "Bytes": 957952,
+        "Sha256": "FDE9D2D78FF954E849907CFA96014121FB9C1E9E06A29C2D490CAD0F205A8808"
+      },
+      {
+        "Name": "Zeta.Core",
+        "Bytes": 9265664,
+        "Sha256": "1EC467A1E8EF7E85CA546B6C283BE77498218C9D24AFFAA3AFC9B9DF3C14D6D3"
+      }
+    ],
+    "CompleteRuntimeClosureAdmitted": false
+  },
+  "StudyOrValidatorExecutionsByReviewer": 0,
+  "NewScientificAdmission": false
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03f875d28010a0130008f3556e10",
+  "at": "2026-09-08T03:27:46.768Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZGXEJG087G0R0011WT6HW",
+    "type": "bug",
+    "title": "Multiboot USB boots root=LABEL= a FAT label that can never exist",
+    "slug": "multiboot-usb-boots-root-label-a-fat-label-that-can-never-ex",
+    "priority": "P2",
+    "filename": "081M1ZGXEJG087G0R0011WT6HW-multiboot-usb-boots-root-label-a-fat-label-that-can-never-ex.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16995,
+  "archive_path": "docs/history/pr-reviews/PR-16995-feat-081m1z67dfe087g0r0000v74wv-fuse-byte-session-create-mkdir.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T00:44:11.455Z",
+  "schema_version": "v1",
+  "commit_sha": "97a7ba5f22970aee2f2d0cccdf8d85bd6297fa3a",
+  "title": "feat(081M1Z67DFE087G0R0000V74WV): FUSE byte session CREATE MKDIR",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T00:43:31Z",
+  "head_ref": "feat/zetafs-fuse-create-bytes"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "080d03e545fbe010a0130008653996c5",
+  "at": "2026-09-07T16:17:08.988Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YAHFVV087G0R001G2TXRE",
+    "type": "task",
+    "title": "Frost look CLI conf takes named effects; tpmrm0 is not real",
+    "slug": "frost-look-cli-conf-takes-named-effects-tpmrm0-is-not-real",
+    "priority": "P2",
+    "filename": "081M1YAHFVV087G0R001G2TXRE-frost-look-cli-conf-takes-named-effects-tpmrm0-is-not-real.md"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "SourceCommit": "e5b6bf5b1913f3df1cf55d1dd4c608fbfd5376fd",
+  "BaseCommit": "9fae5f8c3c499d424bc773fa4a13c057d7990495",
+  "Meaning": "Committed final source snapshot verified against current file bytes after checks; not a prelaunch process or binary attestation. The final discriminated-union typing refinement erases at runtime; final full tsc/quick checks include it.",
+  "ChangedSourceFiles": [
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe.ts",
+      "Bytes": 14969,
+      "Sha256": "2139AD6FB6A5B803AC257F831079D76E3B6E2CED23742F84C7797CDB1B2485CB"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe-pages.ts",
+      "Bytes": 11430,
+      "Sha256": "1988926CCC79A4204D2CC3D2650FFDD7082097363A42EF980562520CE70B1577"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe-pages.test.ts",
+      "Bytes": 11043,
+      "Sha256": "BB94EB05337DAEF0A47CE94AC50354314F4EE8C8D5CB38F8088620FC61A570F1"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-merge-observe.test.ts",
+      "Bytes": 13672,
+      "Sha256": "821B50DBBBB354975AD7BA98A6C38C4D19DA86FF3FE506B26E5837BE6CCC30B5"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/github/github-adapter.test.ts",
+      "Bytes": 12181,
+      "Sha256": "2172F32AF113C6CA05708E4F13D337882E6A5FC3FB0ABE38846A0E2161C40A76"
+    }
+  ],
+  "UnchangedConsumerFiles": [
+    {
+      "File": "src/Core.TypeScript/forge-host/result.ts",
+      "Bytes": 1347,
+      "Sha256": "A1772A0F4CDDA28C98B1127887DDB5F86DE75F0A51471BCF25684FF76246D4EB"
+    },
+    {
+      "File": "src/Core.TypeScript/forge-host/types.ts",
+      "Bytes": 24938,
+      "Sha256": "30954E4E12A9BB13D7E75BAB24B2387DAA1606E6E9DB934CC0A8E283B1A65D3F"
+    },
+    {
+      "File": "src/Core.TypeScript/observe/merge-receipt.ts",
+      "Bytes": 9596,
+      "Sha256": "25CE29D70E2348D19790AAB4C971CD3717A6C6DEC1511CD1DADC4DB6E718D823"
+    },
+    {
+      "File": "src/Core.TypeScript/observe/codegen-executor.ts",
+      "Bytes": 18949,
+      "Sha256": "95E56BED7CB508242EA5A54F055BA107D931985EF6AFBEFF66BB6A416CA78195"
+    },
+    {
+      "File": "src/Core.TypeScript/observe/run-loop-real.ts",
+      "Bytes": 41265,
+      "Sha256": "17D2BA4CCB5715ADB6C7891B8E725E7162180471BF877B8A2EB8B51181DA266D"
+    },
+    {
+      "File": "src/Core.TypeScript/workflow-engine/agent-loop/work-lifecycle-state-machine.ts",
+      "Bytes": 16416,
+      "Sha256": "BB3BC85D92CA7A2A17EC6FB6E37964CD1A3EBF2EDBB6ED54442FEA1A5A50EED1"
+    }
+  ],
+  "Runtimes": {
+    "OwnerBun": "1.3.14",
+    "CiBun": "1.3.13",
+    "TypeScript": "Version 6.0.3",
+    "GitHubCli": "gh version 2.98.0 (2026-08-20)"
+  }
+}

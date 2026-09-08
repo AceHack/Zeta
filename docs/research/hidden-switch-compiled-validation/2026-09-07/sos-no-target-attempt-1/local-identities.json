@@ -1,0 +1,74 @@
+{
+  "Scope": "post-probe local file identities, not a complete loaded debugger closure",
+  "Files": [
+    {
+      "File": "/usr/bin/lldb",
+      "Bytes": 118640,
+      "Sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9"
+    },
+    {
+      "File": "/Applications/Xcode.app/Contents/Developer/usr/bin/lldb",
+      "Bytes": 554848,
+      "Sha256": "0035650adb4c8278122f70771e2e052a2b6e6d644a76745ffecf8c3a0bd686ca"
+    },
+    {
+      "File": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+      "Bytes": 188277312,
+      "Sha256": "db5e422f2794a5a04cab75d334953f1e29b0bb7cea57111dd2f585e6236f6b7b"
+    },
+    {
+      "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsosplugin.dylib",
+      "Bytes": 201552,
+      "Sha256": "37ba4dc31dbef55ba961d56a63414d7ca3e8e0bd08343caa15cebc30216fb792"
+    },
+    {
+      "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/libsos.dylib",
+      "Bytes": 793968,
+      "Sha256": "d6ba022e580d0e94ebacd5e2f60b58afbbeba668ee0d0218c88c87234bcecf92"
+    },
+    {
+      "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/osx-arm64/sosdocsunix.txt",
+      "Bytes": 66843,
+      "Sha256": "8a4ca323212a5a41570b275001532f66ac10bd6f1e73d9fb833338a7959b5f01"
+    },
+    {
+      "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.ExtensionCommands.dll",
+      "Bytes": 517664,
+      "Sha256": "ec067c10e58683872ed66f4c860e13bdc1873fd850475e15af3a192c873f0a47"
+    },
+    {
+      "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/Microsoft.Diagnostics.DebugServices.Implementation.dll",
+      "Bytes": 149024,
+      "Sha256": "6f75dfb60ea740411243464ad4f0cbcdbf60ac987e2314326c7231ca103bb241"
+    },
+    {
+      "File": "/Users/acehack/.dotnet/tools/.store/dotnet-dump/9.0.661903/dotnet-dump/9.0.661903/tools/net8.0/any/SOS.Hosting.dll",
+      "Bytes": 327200,
+      "Sha256": "54ef3b592a663e1ef1d90ff0f53c40fb03ca0a17c8d79ad35ccccec2be5b6b63"
+    },
+    {
+      "File": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/8.0.0/libcoreclr.dylib",
+      "Bytes": 6526864,
+      "Sha256": "ce82f455aa1ab1485e8c70c50375d406bda98fcfa097d4091e12ed267804126b"
+    },
+    {
+      "File": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libcoreclr.dylib",
+      "Bytes": 6217584,
+      "Sha256": "10b24d0b11c7f6d838114744097bf10df9b08b906afc9016567631a1c009dfd0"
+    },
+    {
+      "File": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libmscordaccore.dylib",
+      "Bytes": 2408704,
+      "Sha256": "f83d4ff7907e659312c49a730ac57aaca627eeed47828984c1e61bb2666307b2"
+    },
+    {
+      "File": "/Users/acehack/.local/share/mise/dotnet-root/shared/Microsoft.NETCore.App/10.0.11/libmscordbi.dylib",
+      "Bytes": 1787216,
+      "Sha256": "4c3461ed6c336ac0a3a7db39715124586c6d4b1e9498457a89112d7010f21574"
+    }
+  ],
+  "LoadedCoreClrImageUuid": "43B09202-812A-3BCB-B5FF-CB4829A9C699",
+  "MatchingLocalHostVersion": "8.0.0",
+  "ProposedHostVersion": "10.0.11",
+  "StudyTargetCreated": false
+}

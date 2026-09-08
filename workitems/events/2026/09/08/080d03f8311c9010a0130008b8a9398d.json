@@ -1,0 +1,14 @@
+{
+  "id": "080d03f8311c9010a0130008b8a9398d",
+  "at": "2026-09-08T03:18:23.890Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZGC8WH087G0R003Q25JAY",
+    "type": "task",
+    "title": "Measure the greatest decorrelation at which reconciliation still succeeds",
+    "slug": "measure-the-greatest-decorrelation-at-which-reconciliation-s",
+    "priority": "P2",
+    "filename": "081M1ZGC8WH087G0R003Q25JAY-measure-the-greatest-decorrelation-at-which-reconciliation-s.md"
+  }
+}

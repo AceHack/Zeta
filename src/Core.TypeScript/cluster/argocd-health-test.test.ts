@@ -624,7 +624,20 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test manifest parsing", () =>
     // conclusion about the shadow set is wrong.
     expect(rootDevCatalogExcludedDirs("{alpha/**,beta/**}")).toEqual(new Set(["alpha", "beta"]));
     expect(rootDevCatalogExcludedDirs()).toEqual(
-      new Set(["cilium", "cilium-lb-ipam", "gitlab", "longhorn", "ollama", "platform", "temporal", "vllm"]),
+      // `game-hosting/gmod` joined 2026-09-07: a Garry's Mod sample workload holding 2048Mi of a
+      // 9216Mi budget, excluded so the dev lane fits the free runner without changing any
+      // request (three apps decline a memory cut in writing — see its reason entry).
+      new Set([
+        "cilium",
+        "cilium-lb-ipam",
+        "game-hosting/gmod",
+        "gitlab",
+        "longhorn",
+        "ollama",
+        "platform",
+        "temporal",
+        "vllm",
+      ]),
     );
   });
 
@@ -1044,6 +1057,33 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
     const detail = merged.detail as { childCount: number; diagnostics: Record<string, string> };
     expect(detail.childCount).toBe(0);
     expect(detail.diagnostics["zeta-root-dev"]).toContain("ComparisonError");
+  });
+
+  // THE FALSIFIER for the dropped-names defect. The health-wait call site passes
+  // an ARRAY of the verdicts that missed; `asRecord` returns null for an array,
+  // so before the fix the spread produced `{diagnostics}` alone and the app names
+  // were gone. Without the `Array.isArray` branch this test fails on `unhealthy`
+  // being undefined -- which is exactly what a reader of a red run got instead of
+  // a name. The existing merge test above only covers the RECORD-shaped site,
+  // which is why the drop stood.
+  test("array-shaped detail keeps the failing Application names alongside the dumps", () => {
+    const merged = mergeArgoCdTimeoutDiagnostics(
+      {
+        kind: "ApplicationUnhealthy",
+        message: "one or more included dev ArgoCD Applications are not Synced/Healthy",
+        detail: [
+          { name: "weaviate", ok: false, syncStatus: "OutOfSync", healthStatus: "Progressing" },
+          { name: "nats", ok: false, syncStatus: "OutOfSync", healthStatus: "Healthy" },
+        ],
+      },
+      { "not-running-pods": "weaviate-0 Pending" },
+    );
+    const detail = merged.detail as {
+      unhealthy: ReadonlyArray<{ name: string }>;
+      diagnostics: Record<string, string>;
+    };
+    expect(detail.unhealthy.map((verdict) => verdict.name)).toEqual(["weaviate", "nats"]);
+    expect(detail.diagnostics["not-running-pods"]).toContain("weaviate-0");
   });
 
   test("parses Application conditions from kubectl list JSON", () => {
@@ -1790,8 +1830,8 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
       // (1000m at metal, 250m at dev). The citations move with the ladder because
       // that is what they are for -- prose that did not follow is the drift
       // `reason-truth.ts` catches, and it caught exactly this pair today.
-      "[cite: lane-cpu metal 8390 over]",
-      "[cite: lane-cpu dev 1815 fits]",
+      "[cite: lane-cpu metal 7390 over]",
+      "[cite: lane-cpu dev 1715 fits]",
     ]) {
       expect(reason).toContain(cited);
     }

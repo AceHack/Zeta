@@ -1,0 +1,14 @@
+{
+  "Command": "python3 .git/retain-compiled-integration-8.py",
+  "ExitCode": 1,
+  "ObservedFailure": "AssertionError at combined entry-count / regular-byte precondition",
+  "OriginalEntryLimitExclusive": 10000,
+  "OriginalRegularByteLimitExclusive": 67108864,
+  "MeasuredEntries": 10118,
+  "MeasuredRegularBytes": 18371604,
+  "Scope": "Evidence packaging only; test execution and source unchanged",
+  "RetainerBytes": 2921,
+  "RetainerSha256": "b9499f31227a0887eb06742fd8cbb01c38ce1f686324440d6aa680c36e8551d1",
+  "StoredBytes": 1342,
+  "StoredSha256": "8c5b9acc01eeb217b8ced54723859bf7b26e9b88aabf02a205143640adb0e6e2"
+}

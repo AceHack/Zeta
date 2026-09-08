@@ -1,0 +1,14 @@
+{
+  "id": "080d03e5a7e69010a0130008717901eb",
+  "at": "2026-09-07T16:30:31.122Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YB9Z6H087G0R00220883B",
+    "type": "task",
+    "title": "Fake VFS lookup and readdir synthesize dot and dotdot",
+    "slug": "fake-vfs-lookup-and-readdir-synthesize-dot-and-dotdot",
+    "priority": "P2",
+    "filename": "081M1YB9Z6H087G0R00220883B-fake-vfs-lookup-and-readdir-synthesize-dot-and-dotdot.md"
+  }
+}

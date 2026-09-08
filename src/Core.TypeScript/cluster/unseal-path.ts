@@ -193,7 +193,7 @@ export function yubiHsmAccessible(capture: HostHardwareCapture): boolean {
 
 /** CardContact SmartCard-HSM (sc-hsm / OpenSC), not a YubiKey. */
 export function smartcardHsmAccessible(capture: HostHardwareCapture): boolean {
-  return capture.smartcardHsm;
+  return capture.smartcardHsm === "present";
 }
 
 export function hsmAccessible(capture: HostHardwareCapture): boolean {

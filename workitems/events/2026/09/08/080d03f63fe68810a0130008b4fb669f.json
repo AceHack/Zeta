@@ -1,0 +1,14 @@
+{
+  "id": "080d03f63fe68810a0130008b4fb669f",
+  "at": "2026-09-08T02:10:30.737Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZCFZ6G087G0R003ZSXXHM",
+    "type": "bug",
+    "title": "ISO lane red for 11 runs: a false-positive marker, a full disk, and a label race",
+    "slug": "iso-lane-red-for-11-runs-a-false-positive-marker-a-full-disk",
+    "priority": "P2",
+    "filename": "081M1ZCFZ6G087G0R003ZSXXHM-iso-lane-red-for-11-runs-a-false-positive-marker-a-full-disk.md"
+  }
+}

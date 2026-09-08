@@ -1,0 +1,61 @@
+{
+  "Scope": "Installed managed dependency and API static inspection only; no dump or target data",
+  "Records": [
+    {
+      "File": "clrmd-managed-dependency-closure.json",
+      "Bytes": 3329,
+      "Sha256": "0d655825ca695206198fb1a6980006bc8f2e468d03ac15fdfd81c59020fafc8e",
+      "StoredFile": "clrmd-managed-dependency-closure.json.gz",
+      "StoredBytes": 1216,
+      "StoredSha256": "aa3399c60da2e0504338d62346f15a04676cc684a4b5645c306a33aa4b9fc6f2"
+    },
+    {
+      "File": "clrmd-module.ildasm.stdout.txt",
+      "Bytes": 55732,
+      "Sha256": "b15dede5047be29dd3c7b684a96da2faeea623d93a344d430a9406ac8ca6cca3",
+      "StoredFile": "clrmd-module.ildasm.stdout.txt.gz",
+      "StoredBytes": 5068,
+      "StoredSha256": "89d01148bd8e1012b2bcc66d22cb374d1b9595895b109cf9a481d0cdc5f09d3d"
+    },
+    {
+      "File": "clrmd-module.ildasm.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredFile": "clrmd-module.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "clrmd-module.ildasm.invocation.json",
+      "Bytes": 884,
+      "Sha256": "6d9720069b810ec53250b64ad7c452878d71624b7379aefc7c869abb0c2adfba",
+      "StoredFile": "clrmd-module.ildasm.invocation.json.gz",
+      "StoredBytes": 471,
+      "StoredSha256": "faa75625446ffdbc261d92f9eda83f5e662663265036d393f7392ea7143ba5a9"
+    },
+    {
+      "File": "clrmd-moduleinfo.ildasm.stdout.txt",
+      "Bytes": 25096,
+      "Sha256": "e54c023c9430f6058b0eafb110b108dcf1ce9cd9726fd829989da14e4f981bc2",
+      "StoredFile": "clrmd-moduleinfo.ildasm.stdout.txt.gz",
+      "StoredBytes": 3394,
+      "StoredSha256": "c5d3e23426e52dbd0d0653d8dad91194a6e44036f1c2c6208b81d9e3acec60ca"
+    },
+    {
+      "File": "clrmd-moduleinfo.ildasm.stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredFile": "clrmd-moduleinfo.ildasm.stderr.txt.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64"
+    },
+    {
+      "File": "clrmd-moduleinfo.ildasm.invocation.json",
+      "Bytes": 893,
+      "Sha256": "a747ed19a3b269627f6b9b31a3dafe7ce659743b09e8e11af50efa984e09860c",
+      "StoredFile": "clrmd-moduleinfo.ildasm.invocation.json.gz",
+      "StoredBytes": 476,
+      "StoredSha256": "591f6a3f0926ae4d64a0080d85978e3bc242ee934b60faca7d6f23dd7ddb8745"
+    }
+  ]
+}

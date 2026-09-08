@@ -1,0 +1,408 @@
+{
+  "ProtocolCommit": "9e64ab3679b8b50c7fdb0719db553aa3b743cb59",
+  "SourceVersions": [
+    {
+      "Label": "first-compile",
+      "Commit": "dd39304b9f95e0bd7c2522b491b1999e69fe5b71"
+    },
+    {
+      "Label": "first-executable",
+      "Commit": "5475ec0f409076d379ad962c600db45b57e510a9"
+    },
+    {
+      "Label": "explicit-exit",
+      "Commit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b"
+    }
+  ],
+  "FinalRuns": [
+    {
+      "Label": "ordinary",
+      "SourceCommit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b",
+      "SourceSha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "Command": [
+        "dotnet",
+        "fsi",
+        "--exec",
+        "src/Research.FSharp/DistributionalLearningRooms.fsx"
+      ],
+      "StartedAt": "2026-09-08T01:46:08.000416+00:00",
+      "FinishedAt": "2026-09-08T01:46:09.509734+00:00",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "StdoutBytes": 15689,
+      "StderrBytes": 0,
+      "StdoutSha256": "68885221740aec726670b20311621184a26405452386014b6f7d521ca3cf0ea8",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Label": "fault-2",
+      "SourceCommit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b",
+      "SourceSha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "Command": [
+        "dotnet",
+        "fsi",
+        "--exec",
+        "src/Research.FSharp/DistributionalLearningRooms.fsx",
+        "--fault-after-checkpoint",
+        "2"
+      ],
+      "StartedAt": "2026-09-08T01:46:09.510246+00:00",
+      "FinishedAt": "2026-09-08T01:46:10.899823+00:00",
+      "ExitCode": 2,
+      "TimedOut": false,
+      "StdoutBytes": 545,
+      "StderrBytes": 0,
+      "StdoutSha256": "8566d59aca2eaf1ac9b5f1533fef720b5d4ffe903257afa249f5fed520fcde4b",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Label": "fault-12",
+      "SourceCommit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b",
+      "SourceSha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "Command": [
+        "dotnet",
+        "fsi",
+        "--exec",
+        "src/Research.FSharp/DistributionalLearningRooms.fsx",
+        "--fault-after-checkpoint",
+        "12"
+      ],
+      "StartedAt": "2026-09-08T01:46:10.900334+00:00",
+      "FinishedAt": "2026-09-08T01:46:12.292138+00:00",
+      "ExitCode": 2,
+      "TimedOut": false,
+      "StdoutBytes": 2543,
+      "StderrBytes": 0,
+      "StdoutSha256": "b2e11e80ae48de4f188790f46e89f5951ecba02c77ebef37cb4ecf457f6f0653",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Label": "fault-25",
+      "SourceCommit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b",
+      "SourceSha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "Command": [
+        "dotnet",
+        "fsi",
+        "--exec",
+        "src/Research.FSharp/DistributionalLearningRooms.fsx",
+        "--fault-after-checkpoint",
+        "25"
+      ],
+      "StartedAt": "2026-09-08T01:46:12.292633+00:00",
+      "FinishedAt": "2026-09-08T01:46:13.725759+00:00",
+      "ExitCode": 2,
+      "TimedOut": false,
+      "StdoutBytes": 7760,
+      "StderrBytes": 0,
+      "StdoutSha256": "d03b0471fc5610c3f5b605ee753daf68409f485f8c5d8136227b744137772613",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Label": "invalid-control",
+      "SourceCommit": "2af8d581016d6c5a903aaba0335a3e73c8d5ac9b",
+      "SourceSha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "Command": [
+        "dotnet",
+        "fsi",
+        "--exec",
+        "src/Research.FSharp/DistributionalLearningRooms.fsx",
+        "--not-a-control"
+      ],
+      "StartedAt": "2026-09-08T01:46:13.726215+00:00",
+      "FinishedAt": "2026-09-08T01:46:15.148101+00:00",
+      "ExitCode": 2,
+      "TimedOut": false,
+      "StdoutBytes": 245,
+      "StderrBytes": 0,
+      "StdoutSha256": "de6b49a872da6c01487e79637007f36fc8be1b70f807ecf0cf32307475a85ede",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "RuntimeObservations": {
+    "DotNetVersion": "10.0.11",
+    "LoadedAssemblies": [
+      {
+        "Name": "Zeta.Core",
+        "Bytes": 9233408,
+        "Sha256": "088810720D46CEB667D137349D5A106D471DD664AB521E57FC5E97AF5BF1955A"
+      },
+      {
+        "Name": "Zeta.Bayesian",
+        "Bytes": 957952,
+        "Sha256": "3559B256ACC79FA2C4ECF48103870CB002B51F557C8425CA78343BA2C4D4E21B"
+      },
+      {
+        "Name": "Zeta.Core",
+        "Bytes": 9233408,
+        "Sha256": "088810720D46CEB667D137349D5A106D471DD664AB521E57FC5E97AF5BF1955A"
+      }
+    ],
+    "CompleteRuntimeClosureAdmitted": false
+  },
+  "CompleteRuntimeClosureAdmitted": false,
+  "ArtifactCount": 31,
+  "Artifacts": [
+    {
+      "File": "distributional-room-attempt-1.stderr.gz",
+      "Bytes": 647,
+      "Sha256": "b65b14fbea26bcb893548af40fd0cb444ec398f6b4d4cdf1f0e6bb8337de800b",
+      "StoredBytes": 351,
+      "StoredSha256": "52cf3fff0b98b5bb72fdede94d7855270e5aafb0421502fcc689297cd22ddbe7",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-attempt-1.stdout.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-attempt-2.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-attempt-2.stdout.gz",
+      "Bytes": 15689,
+      "Sha256": "68885221740aec726670b20311621184a26405452386014b6f7d521ca3cf0ea8",
+      "StoredBytes": 2059,
+      "StoredSha256": "5ca2d54da6f45eea8b85af9f8aa01aa42891776ebb28e830ce6659be983272eb",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-control-capture-2.log.gz",
+      "Bytes": 159,
+      "Sha256": "cbe96dad8dc988b08d18c7b1a67f1cf01643180b9a547fc82597f126b8d66465",
+      "StoredBytes": 136,
+      "StoredSha256": "975fa70cbc1815b9cef3ac650b46684c38603e5b4b4cca9a40b643503d794cb1",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-control-runs-2.json.gz",
+      "Bytes": 3600,
+      "Sha256": "2a1fae8cd729f6993a14bd95bb29d74cbc7645b436f6dad2c225febb5b29ab78",
+      "StoredBytes": 760,
+      "StoredSha256": "79231527ba5a3a7c85a5e762d946f26438de1e153cad842062435ab6eb572e32",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-12-2.json.gz",
+      "Bytes": 689,
+      "Sha256": "05037ca68afff6e981a118314fbb5a785c17f3538386447cb5781992ca6dfc86",
+      "StoredBytes": 430,
+      "StoredSha256": "504689c56fd836e9cf904ba5294841192587bdb1eb1cebb5e3a85fc54c1c02ff",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-12-2.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-12-2.stdout.gz",
+      "Bytes": 2543,
+      "Sha256": "b2e11e80ae48de4f188790f46e89f5951ecba02c77ebef37cb4ecf457f6f0653",
+      "StoredBytes": 625,
+      "StoredSha256": "741d339499236419ef70acdd3a0d5179f40c207aa5f0d80ae5b468046cd0af66",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-2-1.json.gz",
+      "Bytes": 665,
+      "Sha256": "6e3bf52508ccae535dacd0055c829b21236b6902d02b7cfbc08b52710470653f",
+      "StoredBytes": 414,
+      "StoredSha256": "850f990df68f309df7a386123948c28c75ff7c98e89262fda749a8824e041f24",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-2-1.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-2-1.stdout.gz",
+      "Bytes": 545,
+      "Sha256": "8566d59aca2eaf1ac9b5f1533fef720b5d4ffe903257afa249f5fed520fcde4b",
+      "StoredBytes": 263,
+      "StoredSha256": "694845d790829d368a9df96442017b8567734f8863db75212fda5b229d64b6fb",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-2-2.json.gz",
+      "Bytes": 686,
+      "Sha256": "739c7aafc426f6ecff2c6081d9c63e5153416c317a503cace9636b94e7daa3c0",
+      "StoredBytes": 430,
+      "StoredSha256": "077dba84eee943da14374ce62f425d41aff312c40404699cb0afa390d739e7f8",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-2-2.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-2-2.stdout.gz",
+      "Bytes": 545,
+      "Sha256": "8566d59aca2eaf1ac9b5f1533fef720b5d4ffe903257afa249f5fed520fcde4b",
+      "StoredBytes": 263,
+      "StoredSha256": "694845d790829d368a9df96442017b8567734f8863db75212fda5b229d64b6fb",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-25-2.json.gz",
+      "Bytes": 689,
+      "Sha256": "9c870f01aacdef914cf107a6d0cc4fee0ea4a32cc5792f1a45e52a022f2a7f35",
+      "StoredBytes": 432,
+      "StoredSha256": "49d1f7507a3628091a943738b37ff0f3f2e060ed6fe881718f6bb187e2b40681",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-25-2.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-fault-25-2.stdout.gz",
+      "Bytes": 7760,
+      "Sha256": "d03b0471fc5610c3f5b605ee753daf68409f485f8c5d8136227b744137772613",
+      "StoredBytes": 1030,
+      "StoredSha256": "b2e62e0731105c0820b09dc6deed63f85439916a9a038a2bb0bf4c5ef0c56b59",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-invalid-control-2.json.gz",
+      "Bytes": 676,
+      "Sha256": "0793acf2b398d877712a0b23dedced17c52bd1dacacff267144410c40c9f5bfa",
+      "StoredBytes": 422,
+      "StoredSha256": "a9e5322114fed7276a63b3086a309c8089130ec7dea94b3b557ca37ee47b40ea",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-invalid-control-2.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-invalid-control-2.stdout.gz",
+      "Bytes": 245,
+      "Sha256": "de6b49a872da6c01487e79637007f36fc8be1b70f807ecf0cf32307475a85ede",
+      "StoredBytes": 181,
+      "StoredSha256": "5a00d49119ad7d7d6448683db7221f33e42a37c5916322a37ac83377c9169180",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-ordinary-2.json.gz",
+      "Bytes": 648,
+      "Sha256": "f18575e4607fdbece3d1b862446bcbe797a85b805181657fc4c860828ab1af4e",
+      "StoredBytes": 412,
+      "StoredSha256": "98001bb7076bc745eac1dfb83baad732d6d613a4dd483219e6b94c2d7173b0a5",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-ordinary-2.stderr.gz",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "distributional-room-ordinary-2.stdout.gz",
+      "Bytes": 15689,
+      "Sha256": "68885221740aec726670b20311621184a26405452386014b6f7d521ca3cf0ea8",
+      "StoredBytes": 2059,
+      "StoredSha256": "5ca2d54da6f45eea8b85af9f8aa01aa42891776ebb28e830ce6659be983272eb",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "run-distributional-room-controls-2.py.gz",
+      "Bytes": 2200,
+      "Sha256": "3fdc1811aa1d0c60c7ea70ec6b86898d0a1d85e58d93ab706f3b70973af2aad4",
+      "StoredBytes": 985,
+      "StoredSha256": "fef2e9acee7b3fa04b295ccdf8dacf8b8364f961471ffa8b039c6c29888c1866",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "first-compile.fsx.gz",
+      "Bytes": 18062,
+      "Sha256": "e7e1ec79ea245b1ef17a54d3e69bdb1a373171375b59d0e776614eb5adb65c83",
+      "StoredBytes": 4901,
+      "StoredSha256": "ff50f337883f9872cc901a87c691ff704f0e68facc3fdd0b4fc8a4d55739705e",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "first-executable.fsx.gz",
+      "Bytes": 19552,
+      "Sha256": "103cb2895034a55ccae026ad2aedae002eb12c558d8fe0ed0df647605c7f37a9",
+      "StoredBytes": 5292,
+      "StoredSha256": "4af7a45e3b4c05b54ab60dc723a07328ebf9b71318a684a6cda192aaa707d7e4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "explicit-exit.fsx.gz",
+      "Bytes": 19776,
+      "Sha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "StoredBytes": 5378,
+      "StoredSha256": "57eb2bccb8139924264c5e3770a0364e048d227d2a03996e07d43d7b8cf653d9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "protocol.md.gz",
+      "Bytes": 6981,
+      "Sha256": "0914084bd3dec478f9e4af34a4139125be9f21211e29d4349ae89ab11a23eeea",
+      "StoredBytes": 3327,
+      "StoredSha256": "f8d37f846442e949a8da1cf6b258930deece41c416854dfcc37a9f987f1a6e49",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "retainer.py.gz",
+      "Bytes": 6956,
+      "Sha256": "2e52cc43f7c4c6b0609ced5ed799fc14ef18a7a9710fa3e2779efd8647f41468",
+      "StoredBytes": 3159,
+      "StoredSha256": "466e37564fa4f62c5e0e4defd73ae99eba6956214681e38b2a51f057804dd136",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "integrated-reference-tests-1.log.gz",
+      "Bytes": 180,
+      "Sha256": "86b4c116470f54d21394bea668f6a41595e15b77c0740d8e222c46db1def3ca5",
+      "StoredBytes": 62,
+      "StoredSha256": "1d046ba4d147bace6a06ea7c8c3a9dedaa66a924471d78e8d6267afd811ccead",
+      "Encoding": "gzip"
+    }
+  ],
+  "IntegratedReferenceTests": {
+    "SourceCommit": "ecb35bf73a669d2552af7d2dd53b1d94e4efc4c0",
+    "Command": [
+      "uv",
+      "run",
+      "pytest",
+      "tests/test_distributional_learning_rooms_reference.py",
+      "-q"
+    ],
+    "WorkingDirectory": "src/Interp.Python",
+    "ExitCode": 0,
+    "Passed": 124,
+    "Seconds": 4.66
+  }
+}

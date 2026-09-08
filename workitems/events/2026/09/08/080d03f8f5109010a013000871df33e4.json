@@ -1,0 +1,14 @@
+{
+  "id": "080d03f8f5109010a013000871df33e4",
+  "at": "2026-09-08T03:45:09.138Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZHX8GH087G0R003C1R4X7",
+    "type": "bug",
+    "title": "zflash freshness gate watched a retired flake and not the real one",
+    "slug": "zflash-freshness-gate-watched-a-retired-flake-and-not-the-re",
+    "priority": "P2",
+    "filename": "081M1ZHX8GH087G0R003C1R4X7-zflash-freshness-gate-watched-a-retired-flake-and-not-the-re.md"
+  }
+}

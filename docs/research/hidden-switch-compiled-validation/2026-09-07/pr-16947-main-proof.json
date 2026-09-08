@@ -1,0 +1,22 @@
+{
+  "VerifiedAt": "2026-09-07T15:06:53.780367+00:00",
+  "PR": 16947,
+  "Head": "140a9eac714508dbd7e156d3588ae23672aa6ba6",
+  "Merge": "6a371b881a44aa4e7a967264cdb30f31b9d0f552",
+  "Main": "6a371b881a44aa4e7a967264cdb30f31b9d0f552",
+  "MergeAncestor": true,
+  "ProtocolBytes": 43162,
+  "ProtocolSha256": "8bbdfe44a0844dd8ce4f6c5dd77b060a56e5b84ea94ea7a6fdbb482aec9d738a",
+  "FrozenProtocolByteEqual": true,
+  "TagRemote": "52cfa5665c2e21cdfc2be6a08b4b159c1048bb04\trefs/tags/archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration\n8710ae4f4e37b727ccc8bb79e212a7bed433bbd0\trefs/tags/archive/experiments/081M1XXWTTF087G0R000X1HMD0-registration^{}",
+  "FinalChecks": {
+    "Success": 85,
+    "Skipped": 3,
+    "Failure": 1,
+    "FailureName": "drift (loud)",
+    "Disposition": "Historical nonblocking platform-drift audit; gate (required) passed; three current native platform jobs passed."
+  },
+  "ClaimFileAbsent": true,
+  "ExperimentTask": "081M1XXWTTF087G0R000X1HMD0",
+  "ImplementationStillRequires": "PR #16928 main proof and a fresh implementation co-claim"
+}

@@ -1,0 +1,257 @@
+{
+  "Meaning": "SHA256 of retained bytes and losslessly decompressed original local outputs; source validation snapshot is recorded separately. No raw external JSON was normalized.",
+  "Files": [
+    {
+      "File": "merge-observe-audit-result.json.gz",
+      "Bytes": 810,
+      "Sha256": "C5C2771C2BA508CA32C9CDE8F76A8D7963C2D624F362A80AFB2728A880EEC63A",
+      "UncompressedBytes": 4148,
+      "UncompressedSha256": "72F56B956B0273D01454E906F183AAE80689AEAB1948DA35388C27BF0F314D1E"
+    },
+    {
+      "File": "merge-observe-audit.ts.gz",
+      "Bytes": 1154,
+      "Sha256": "D3D917F22889B40F55A679885F153225235D3012667267003172386BD8AF657B",
+      "UncompressedBytes": 2644,
+      "UncompressedSha256": "0D17F667496F5D627178A2FBEC47F9303ACB027CA651E738870D52C619905E3C"
+    },
+    {
+      "File": "merge-observe-baseline-replay-attempt-1.log.gz",
+      "Bytes": 213,
+      "Sha256": "450C00AB2EEAAB958DACCA59836A81307B9184BDA2191CCC6244938CAAF9388B",
+      "UncompressedBytes": 387,
+      "UncompressedSha256": "3ECAE1805BAD86DEED5287F083E8DE8196B7C848ED93FC1D5E853B2CBFA3210D"
+    },
+    {
+      "File": "merge-observe-baseline-replay-attempt-1.ts.gz",
+      "Bytes": 1834,
+      "Sha256": "08BEB4D07DF3B1D3F5BF13BC2547EA8C6FFFFDB214440DC48BB9C0E036101EE8",
+      "UncompressedBytes": 4162,
+      "UncompressedSha256": "0BC4BAFE5FDF57A83AAD1E3607F12C0EFD7A6B60DF2809514B650E1112B79AE5"
+    },
+    {
+      "File": "merge-observe-baseline-replay-attempt-2.log.gz",
+      "Bytes": 764,
+      "Sha256": "A6F27BE7ED2343A185EDB4C6B483E14FD968295585C8A0EB96CFA5CAFE66EFEA",
+      "UncompressedBytes": 3539,
+      "UncompressedSha256": "BF43F72A286BCC16856904F8B8EACA90406878A5E7BE095688BE74CA1403216C"
+    },
+    {
+      "File": "merge-observe-baseline-replay-result.json.gz",
+      "Bytes": 8106,
+      "Sha256": "9FDE52D57E715FB88D92F17E3333BB09693F949711C1B29FDDF5AAFD490BC205",
+      "UncompressedBytes": 258712,
+      "UncompressedSha256": "DD091EB3DEE28BD766407C2EBCE6807F3C722651F91CA6520AEDB30BD72FB35A"
+    },
+    {
+      "File": "merge-observe-baseline-replay.ts.gz",
+      "Bytes": 1833,
+      "Sha256": "BCE64F6FB793C262EF9D2BA748CA4406F9F96756300962166CF722F45396F2C1",
+      "UncompressedBytes": 4163,
+      "UncompressedSha256": "FE4DB429C11E57E63FE70685EF3657135F75638B71706FCFFA1E183541EB4DF2"
+    },
+    {
+      "File": "merge-observe-build-graph.log.gz",
+      "Bytes": 98,
+      "Sha256": "6F9E033508239AC699BBDB3B70426C09B88E534076AC80D3CC5C2200DF863766",
+      "UncompressedBytes": 116,
+      "UncompressedSha256": "96BE8648EA711E6A9F3290DA005551764CBC3BC20BD492C6F48742CC13405679"
+    },
+    {
+      "File": "merge-observe-candidate-request-1.json.gz",
+      "Bytes": 596,
+      "Sha256": "395AE6B08816709F87EFF966A5DF513C36CBDA6E64C0C4599B97EB26457178F4",
+      "UncompressedBytes": 1500,
+      "UncompressedSha256": "F45B9F37787E6BA43060DD133A47F29F4BE1E1FF1B8EEC18CD0804F922A346CE"
+    },
+    {
+      "File": "merge-observe-candidate-response-1.json.gz",
+      "Bytes": 2117,
+      "Sha256": "2D6E7ED5963370748B1ACF3DE7D7AA3A3E9F6F3B58B59E62DD1849DFFECA85A2",
+      "UncompressedBytes": 14126,
+      "UncompressedSha256": "0180C91242B6CEE21CB1820134900218EF57856AD4D0306D0468C0CD14347DC3"
+    },
+    {
+      "File": "merge-observe-candidate-stderr-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "UncompressedBytes": 0,
+      "UncompressedSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "merge-observe-candidate-summary.json.gz",
+      "Bytes": 785,
+      "Sha256": "D614112CB51772D0FDB040985345752011D85562F67C9A8972999F0AC1233D2A",
+      "UncompressedBytes": 1604,
+      "UncompressedSha256": "9CFF32C16BF804C10ADE915447C4F9600F11B957FF494945E51F14A9ADB5BC72"
+    },
+    {
+      "File": "merge-observe-check-enums.json.gz",
+      "Bytes": 196,
+      "Sha256": "F9BD9B0939C1771700FD7AF2A08D320D80A7B258406E163CDF60DF96AA640C78",
+      "UncompressedBytes": 375,
+      "UncompressedSha256": "7019990ABB9C7F3096916A6AA8554E49AADF5E70404EBCAC20C894D7A89CA259"
+    },
+    {
+      "File": "merge-observe-claim-push.log.gz",
+      "Bytes": 732,
+      "Sha256": "80EAF82BB69F1471E17B04B23A6C2B1480733AFB706110D9222476A480F45BC8",
+      "UncompressedBytes": 2077,
+      "UncompressedSha256": "D5EA64AA083612C1EF6D4C790645E289170871D0568DF4122ED26A21B16CF382"
+    },
+    {
+      "File": "merge-observe-closed-candidate-request-1.json.gz",
+      "Bytes": 596,
+      "Sha256": "FE01906088ADAD9F39ABABBEAF29089F96998DA31AFB7A56ADE902BCBBB569A1",
+      "UncompressedBytes": 1500,
+      "UncompressedSha256": "BA6123CE6BF3E739F8C37A7E3717042D96018A5FE27FD1492B3768C570E8BD6A"
+    },
+    {
+      "File": "merge-observe-closed-candidate-request-2.json.gz",
+      "Bytes": 653,
+      "Sha256": "C8203947106695A5DBDC06672522CB964C9FEFB4A3286081719BD7B93866F320",
+      "UncompressedBytes": 1553,
+      "UncompressedSha256": "70DE112BC5514AC98966AD0583AB1D132E964ED4702A8E3A02C8BF659D90C3D9"
+    },
+    {
+      "File": "merge-observe-closed-candidate-response-1.json.gz",
+      "Bytes": 2295,
+      "Sha256": "1B3C8D0F3C3F2D2FEA743CD1D8AE30393B2EC5E7872B688D0066414569A515FE",
+      "UncompressedBytes": 15638,
+      "UncompressedSha256": "7A5F95D38A2A7A01945C8ADEFB15ADFB37AE01F26BA5C4996E7096589E2B0D4E"
+    },
+    {
+      "File": "merge-observe-closed-candidate-response-2.json.gz",
+      "Bytes": 584,
+      "Sha256": "5247B5F4A951829867C921B313EF4A97938E0FC5BF16458A8A475E1974873434",
+      "UncompressedBytes": 1574,
+      "UncompressedSha256": "A8D0E0B56FA7E5F3347C79A4F184A923450D4015F880B6E4778BC67674A8AA6A"
+    },
+    {
+      "File": "merge-observe-closed-candidate-stderr-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "UncompressedBytes": 0,
+      "UncompressedSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "merge-observe-closed-candidate-stderr-2.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "UncompressedBytes": 0,
+      "UncompressedSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "merge-observe-closed-candidate-summary.json.gz",
+      "Bytes": 1004,
+      "Sha256": "FD2BF03A1FA93D29F5998C18AC5D0FD5B81C7D85F42D7786C8E405A9BE213A48",
+      "UncompressedBytes": 2541,
+      "UncompressedSha256": "3C56D7033291867A48A17D10849B024476BE5CB8DA64A504ABE8C77528C1368C"
+    },
+    {
+      "File": "merge-observe-enums.json.gz",
+      "Bytes": 168,
+      "Sha256": "1800DC5AF910F4965E5292D1B903C6EA6D9BF9153280382B66EE4A2B91D2BE8D",
+      "UncompressedBytes": 175,
+      "UncompressedSha256": "BCD8B59A73BD678907F569A48CFA4A36F8C253F8DAAFF88ED1CE2F158E1545E5"
+    },
+    {
+      "File": "merge-observe-focused-attempt-1.log.gz",
+      "Bytes": 1587,
+      "Sha256": "F87C66A7DF8EAC83DBDB00C92A618E0A8F88A34B6304A370B213CE0B709CB39D",
+      "UncompressedBytes": 4139,
+      "UncompressedSha256": "15EE92D9C249981BE20536F4E2FFB78BE588CBB3C83B0202715D03EA7D8812E6"
+    },
+    {
+      "File": "merge-observe-focused-attempt-2.log.gz",
+      "Bytes": 2539,
+      "Sha256": "77D0E254E9FF35CC086A06E139C300C1942318EE9E8A61D5ECFF7428AD031BC9",
+      "UncompressedBytes": 9646,
+      "UncompressedSha256": "21FFEEA4059887EBF0346B51FF1EAAE25CA810FBDBBA65F57E320692B036E52A"
+    },
+    {
+      "File": "merge-observe-forge-suite-attempt-1.log.gz",
+      "Bytes": 14893,
+      "Sha256": "28CFC34C091FA9EB6A8405FD499ADC430CE37D97E56F4EC60F307D56ED10B0C5",
+      "UncompressedBytes": 59996,
+      "UncompressedSha256": "05E985A0BA4942E600E0BBFC100EBEF7054D1CF3F3034494D3BC3EAF5F9BC020"
+    },
+    {
+      "File": "merge-observe-forge-suite-pinned-attempt-1.log.gz",
+      "Bytes": 14801,
+      "Sha256": "0CD412B4EF16A860FD4D33FEF96BC990395E42BB8A91DCCC05B969640DE77F34",
+      "UncompressedBytes": 58853,
+      "UncompressedSha256": "1FDD7AF57F56B2E59B46616533B3294B25151972090246307D3BF1BEEF536B17"
+    },
+    {
+      "File": "merge-observe-github-status.json.gz",
+      "Bytes": 1134,
+      "Sha256": "DA34B21D930DC9A3D4EBB91A143FE41E8C929414D013B84A2DAED4E503121C29",
+      "UncompressedBytes": 4310,
+      "UncompressedSha256": "B8B349A27BBB79B23646D8635FD7D1A877FAA860666DEF09AA3CA220028FB204"
+    },
+    {
+      "File": "merge-observe-live-claims-before-write.txt.gz",
+      "Bytes": 506,
+      "Sha256": "B6EAB3C1FBD1C7FA2D83EEC345586E1428AA5E120FD4ADE7082F8C4948DA1270",
+      "UncompressedBytes": 1131,
+      "UncompressedSha256": "40A2A7C604462D8A333B1AB2E349D81E872020FFE1630F56FD0D2F66B00890CD"
+    },
+    {
+      "File": "merge-observe-live-first.json.gz",
+      "Bytes": 1203,
+      "Sha256": "2E06E31203F38B84D6B067DC7D3B3C80E8520095990B9B7EAC5FAEEB2D16AD7E",
+      "UncompressedBytes": 10919,
+      "UncompressedSha256": "4E5C91DE45E1D231D16B60937EF8D0658B37B8AE2C044C2D58F1B0A19F705A35"
+    },
+    {
+      "File": "merge-observe-live-second.json.gz",
+      "Bytes": 982,
+      "Sha256": "F2967C2105FB505D80C06E9FD405D279B6CF01D710CC31907C82E0AE4E46FEC9",
+      "UncompressedBytes": 8709,
+      "UncompressedSha256": "D39135095D7E6A4227BA4EE7F9712F4747459AA267E56C568C3211C41B418E66"
+    },
+    {
+      "File": "merge-observe-project-tsc-attempt-1.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "UncompressedBytes": 0,
+      "UncompressedSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "File": "merge-observe-quick-attempt-1.log.gz",
+      "Bytes": 768,
+      "Sha256": "49B053D6BC67B7732D3B98F123E0CEC2C60151C115F5496A4EA6F47E4B2EC801",
+      "UncompressedBytes": 4280,
+      "UncompressedSha256": "9E429E50B186D5C47C41BDF4949882B4342C295FB13BAA869A63A2D2D1E1284A"
+    },
+    {
+      "File": "merge-observe-quick-attempt-2.log.gz",
+      "Bytes": 405,
+      "Sha256": "A96E24BB16A9334442FD1E5FD894379C994BD63E91534FE5C91405B3B1F60C13",
+      "UncompressedBytes": 1224,
+      "UncompressedSha256": "78384DE8312A3216342FC13B8F8682EAAEF4762D3EB4B3D06DAED458418E405E"
+    },
+    {
+      "File": "merge-observe-status-enums.json.gz",
+      "Bytes": 108,
+      "Sha256": "0181362D8A1DAFE053AECA15579F472A0A934022D4AF2AE5CC2DC40F98042F6D",
+      "UncompressedBytes": 130,
+      "UncompressedSha256": "8E4A328DD608B20BB1AFD0F2A8C51E8504F93FBFC8064374090DC8D83ED6A7E3"
+    },
+    {
+      "File": "merge-observe-typecheck-attempt-1.log.gz",
+      "Bytes": 281,
+      "Sha256": "0D98B99BC1FDF5C90A9F7300F9B424F72D075FC06232926FD55076EE8C4F075D",
+      "UncompressedBytes": 2115,
+      "UncompressedSha256": "0F3CD9B8C6C910AC68279EA78C3FDBA5B160DE4BF65454FEA9555D0C6E8D9BAF"
+    },
+    {
+      "File": "merge-observe-typecheck-attempt-2.log.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64",
+      "UncompressedBytes": 0,
+      "UncompressedSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    }
+  ]
+}

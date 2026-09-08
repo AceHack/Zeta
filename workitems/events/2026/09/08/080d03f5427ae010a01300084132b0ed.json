@@ -1,0 +1,14 @@
+{
+  "id": "080d03f5427ae010a01300084132b0ed",
+  "at": "2026-09-08T01:35:54.716Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZAGKTV087G0R001SB2DCC",
+    "type": "bug",
+    "title": "K3s preflight tests must not inherit ambient process.env",
+    "slug": "k3s-preflight-tests-must-not-inherit-ambient-process-env",
+    "priority": "P1",
+    "filename": "081M1ZAGKTV087G0R001SB2DCC-k3s-preflight-tests-must-not-inherit-ambient-process-env.md"
+  }
+}

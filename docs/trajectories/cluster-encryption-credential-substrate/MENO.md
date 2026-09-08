@@ -330,6 +330,89 @@ assume the number.
    `real`. Does not call overlay join. Does not call this
    from `zeta-install.sh`. Does not change ISO bun
    `probe: null`. Does not invent an integrate decision.
+   Frost look CLI argv takes named effects (`081M1Y5WKS2087G0R002Q7ZKS7`):
+   `--os` / `--effects`. Missing `--effects` is unmeasured,
+   not a live look. `/dev/tpmrm0` is not `real`. Does not
+   mix argv with env. Does not call this from
+   `zeta-install.sh`. Does not change ISO bun `probe: null`.
+   Does not invent an integrate decision.
+   Frost look CLI conf takes named effects (`081M1YAHFVV087G0R001G2TXRE`):
+   `--from-conf` body. Missing effects is unmeasured, not a
+   live look. Missing OS is `missing-os`, not `nixos`.
+   `/dev/tpmrm0` is not `real`. Does not write ESP. Does
+   not mix conf with argv or env. Does not call this from
+   `zeta-install.sh`. Does not change ISO bun `probe: null`.
+   Does not invent an integrate decision.
+   Overlay named-key joins take frost-look keys (`081M1YCFES8087G0R000R3MV6Y`):
+   `planSetupFromFrostLookNamedEnv` / Argv / Conf. Parse
+   lives in `named-frost-look.ts`, not the CLI. Missing OS
+   is `missing-os`. Missing effects is unmeasured.
+   `/dev/tpmrm0` is not `real`. Does not write ESP. Does
+   not call this from `zeta-install.sh`. Does not change
+   ISO bun `probe: null`. Does not invent an integrate
+   decision.
+   ISO bun consume reports named frost-look keys (`081M1YGP8BF087G0R002Z1YH8R`):
+   bun JSON includes `look`. Missing both keys is
+   unmeasured, not `missing-os`. Named `"real"` still
+   leaves `probe: null`. `/dev/tpmrm0` is not `real`.
+   Parse does not import the look mapper. Does not import
+   the frost-look CLI. Does not export frost-look keys
+   from `zeta-install.sh`. Does not invent an integrate
+   decision.
+   Overlay optional named joins match ISO bun missing
+   frost-look keys (`081M1YNNVFQ087G0R001J5SEPD`):
+   `planSetupFromFrostLookOptionalNamedEnv` / Argv / Conf.
+   Missing both keys is unmeasured, not `missing-os`.
+   NamedEnv still requires OS. `/dev/tpmrm0` is not
+   `real`. Does not write ESP. Does not call this from
+   `zeta-install.sh`. Does not change ISO bun
+   `probe: null`. Does not invent an integrate decision.
+   Overlay optional named join takes ISO bun JSON look
+   (`081M1YQKYXQ087G0R000NXN8JN`):
+   `planSetupFromFrostLookOptionalNamedBunJson`. Uses
+   `look`. JSON `probe` is ignored even when non-null.
+   Mixing env frost-look keys with JSON look refuses.
+   NamedEnv still requires OS. Does not write ESP. Does
+   not call this from `zeta-install.sh`. Does not change
+   ISO bun `probe: null`. Does not invent an integrate
+   decision.
+   Frost look CLI takes bun JSON look (`081M1YS9661087G0R001YK5CEY`):
+   `--from-json`. Uses `look`. JSON `probe` is ignored
+   even when non-null. Null look is unmeasured, not
+   `missing-os`. Mixing with `--os` / `--effects` /
+   `--from-conf` / env frost-look keys refuses. Does not
+   write ESP. Does not call overlay join. Does not call
+   this from `zeta-install.sh`. Does not change ISO bun
+   `probe: null`. Does not invent an integrate decision.
+   Overlay optional named argv takes bun JSON `--from-json`
+   (`081M1YWR8EB087G0R002X0SFX7`):
+   `planSetupFromFrostLookOptionalNamedArgv`. Uses `look`.
+   JSON `probe` is ignored even when non-null. Mixing
+   `--from-json` with `--os` / `--effects` / `--from-conf`
+   / env frost-look keys refuses. NamedEnv still requires
+   OS. Does not write ESP. Does not import the frost-look
+   CLI. Does not call this from `zeta-install.sh`. Does
+   not change ISO bun `probe: null`. Does not invent an
+   integrate decision.
+   Overlay named argv takes bun JSON `--from-json`
+   (`081M1Z1FHDW087G0R00210Z0PG`):
+   `planSetupFromFrostLookNamedArgv`. Uses `look`. JSON
+   `probe` is ignored even when non-null. Null look is
+   `missing-os`, not unmeasured. Mixing `--from-json` with
+   `--os` / `--effects` / `--from-conf` / env frost-look
+   keys refuses. Does not write ESP. Does not import the
+   frost-look CLI. Does not call this from `zeta-install.sh`.
+   Does not change ISO bun `probe: null`. Does not invent
+   an integrate decision.
+   Overlay named bun JSON join takes look
+   (`081M1Z36ZJ4087G0R003HFMT2K`):
+   `planSetupFromFrostLookNamedBunJson`. Uses `look`. JSON
+   `probe` is ignored even when non-null. Null look is
+   `missing-os`, not unmeasured. Mixing env frost-look keys
+   with JSON look refuses. Does not write ESP. Does not
+   import the frost-look CLI. Does not call this from
+   `zeta-install.sh`. Does not change ISO bun `probe: null`.
+   Does not invent an integrate decision.
 7. extraContainer sidecar — later, **same commit as the
    sidecar**, and only for the Shamir kind path until the
    emulator job replaces it. `valuesObject` only. Do not fork

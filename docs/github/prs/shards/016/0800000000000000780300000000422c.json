@@ -1,0 +1,12 @@
+{
+  "pr_number": 16940,
+  "archive_path": "docs/history/pr-reviews/PR-16940-feat-081m1y1j92f087g0r002wkawy3-freeze-bindsymlink-persists-utf-8-target-bytes.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T14:06:25.012Z",
+  "schema_version": "v1",
+  "commit_sha": "3aa837518800fd810a7bf22c55eb05f2c0426c49",
+  "title": "feat(081M1Y1J92F087G0R002WKAWY3): freeze bindSymlink persists UTF-8 target bytes",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T14:05:47Z",
+  "head_ref": "feat/zetafs-bind-symlink"
+}

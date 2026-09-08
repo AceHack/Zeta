@@ -1,0 +1,12 @@
+{
+  "pr_number": 17020,
+  "archive_path": "docs/history/pr-reviews/PR-17020-docs-081m1ze5wsp087g0r002cvmvcn-record-zd4-shortrun-as-unmetered.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T03:05:13.799Z",
+  "schema_version": "v1",
+  "commit_sha": "0f2173ce50c682a542e34d27d5b41948c6784164",
+  "title": "docs(081M1ZE5WSP087G0R002CVMVCN): record ZD4 ShortRun as unmetered",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T03:04:31Z",
+  "head_ref": "feat/zetadb-zd4-named-unmetered-run"
+}

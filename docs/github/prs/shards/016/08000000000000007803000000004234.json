@@ -1,0 +1,12 @@
+{
+  "pr_number": 16948,
+  "archive_path": "docs/history/pr-reviews/PR-16948-feat-creds-frost-look-cli-argv-takes-named-effects-tpmrm0-is-not-real.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T16:14:00.240Z",
+  "schema_version": "v1",
+  "commit_sha": "c98a31adc4772f91f19fc4dbd553359edc06819f",
+  "title": "feat(creds): Frost look CLI argv takes named effects; tpmrm0 is not real",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T16:13:24Z",
+  "head_ref": "cursor/frost-look-argv-27c5"
+}

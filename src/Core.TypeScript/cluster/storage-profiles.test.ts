@@ -1291,7 +1291,7 @@ describe("the checked-in resource ladder", () => {
   // measurement"). This is the first move where ONLY the applied count changed,
   // and that is correct here: the shipped count is about the tree and the applied
   // count is about the glob, and only the glob moved.
-  test("the dev lane applies 41 of the 49 Applications", () => {
+  test("the dev lane applies 40 of the 49 Applications", () => {
     // 47/39 -> 48/40 on 2026-09-04: `keda` joined the tree (Aaron: "i want to make
     // sure we have KEDA"). It is NOT in the exclude glob, so it is applied.
     // 48/40 -> 49/41 on 2026-09-04: `opensearch` joined (Aaron: "lets pull in open
@@ -1299,11 +1299,17 @@ describe("the checked-in resource ladder", () => {
     // "we want to try to test on dev for all of these". A new Application that went
     // straight into the dev-excluded set would be one more thing CI never applies.
     expect(applicationDirs()).toHaveLength(49);
-    expect(devLaneAppliedDirs()).toHaveLength(41);
+    // 49/41 -> 49/40 on 2026-09-07: `game-hosting/gmod/**` joined the excludeGlob. The
+    // catalogue is unchanged at 49 -- the Application still exists and is still
+    // governed; the LANE is one smaller. That distinction is asserted just below.
+    expect(devLaneAppliedDirs()).toHaveLength(40);
     expect(devLaneAppliedDirs()).toContain("keda");
     expect(devLaneAppliedDirs()).toContain("opensearch");
     expect(devLaneAppliedDirs()).toContain("agent-memory");
+    // Still in the catalogue, NOT in the lane — the exclusion moved the cohort, it did
+    // not hide the cost.
     expect(applicationDirs()).toContain("game-hosting/gmod");
+    expect(devLaneAppliedDirs()).not.toContain("game-hosting/gmod");
   });
 
   // MEASURED 2026-08-21 by `helm pull` at each pinned targetRevision followed
@@ -1349,8 +1355,15 @@ describe("the checked-in resource ladder", () => {
     // GOVERNED (100m at metal). It was previously an `ungovernedRequests` row at 0/0
     // because its chart left resources unset -- so the lane total did not move because
     // headscale started costing more, it moved because the cost became VISIBLE.
-    expect(lane.cpuMillis).toBe(8390);
-    expect(lane.memoryMib).toBe(17596);
+    // 8390 -> 7390 on 2026-09-07: `game-hosting` LEFT the applied set (metal 1000m).
+    // The metal rung itself is unchanged -- gmod still carries its whole core in the
+    // committed tree, which the 16-core box deploys; it simply is no longer inside the
+    // dev lane's denominator. A lane total falling because the cohort shrank, not
+    // because a request did.
+    expect(lane.cpuMillis).toBe(7390);
+    // 17596 -> 15548 on 2026-09-07, same cause: gmod's 2048Mi left the dev lane's
+    // denominator. Unchanged in the tree; simply no longer counted here.
+    expect(lane.memoryMib).toBe(15548);
     const all = resourceTotal(catalogue, "metal", applicationDirs());
     expect(all.cpuMillis).toBe(12365);
     expect(all.memoryMib).toBe(25867);
@@ -1393,7 +1406,7 @@ describe("the checked-in resource ladder", () => {
   // for the same reason the previous two are still in it: a quietly-rewritten assertion
   // erases the sequence, and the sequence is the finding. The 52Mi of spare recorded by
   // inversion two is exactly why one Application was enough to tip it.
-  test("`dev` fits on CPU at 1815m and is over on memory at 11148Mi", () => {
+  test("`dev` fits on BOTH axes at 1715m / 9100Mi, after game-hosting left the lane", () => {
     const budget = envelopeBudget(catalogue.envelope);
     const dev = resourceTotal(catalogue, "dev", devLaneAppliedDirs());
     // 1140m/9100Mi -> 1165m/9164Mi on 2026-09-03: `agent-memory` joined the dev
@@ -1415,21 +1428,39 @@ describe("the checked-in resource ladder", () => {
     // look like it fit.
     // 1490 -> 1515 on 2026-09-05: `openbao` at the dev rung (25m).
     // 1515 -> 1815 on 2026-09-05: `headscale` governed at the dev rung (50m); see above.
-    expect(dev.cpuMillis).toBe(1815);
-    expect(dev.memoryMib).toBe(11148);
+    //
+    // 1815m/11148Mi -> 1715m/9100Mi on 2026-09-07, 41 applied Applications -> 40:
+    // `game-hosting/**` joined the dev root catalog's excludeGlob. A Garry's Mod
+    // dedicated server holding 2048Mi -- 18% of a 9216Mi budget -- to prove a
+    // Source-engine server loads a map and idles. MEMORY NOW FITS with 116Mi of spare,
+    // and it is the FIRST entry in this sequence that closed an overage rather than
+    // widening one.
+    //
+    // WHY EXCLUDED AND NOT SHRUNK, because shrinking is what this sequence otherwise
+    // records and it was tried first and reverted: gmod, mimir/kafka and orleans/silo
+    // each decline a memory cut in their own `consequence`, in writing -- "cutting this
+    // request would trade a Pending pod for an evicted one", "an OOMKill here loses the
+    // un-consumed tail", "evicting the silo ... dissolves the membership the cluster
+    // IS". Three reasoned refusals is the answer, not an obstacle to route around. NO
+    // REQUEST CHANGED, so the metal rung the committed tree carries is untouched.
+    expect(dev.cpuMillis).toBe(1715);
+    expect(dev.memoryMib).toBe(9100);
     expect(dev.cpuMillis).toBeLessThan(budget.cpuMillis);
-    // STILL OVER, and I briefly claimed otherwise. I recomputed the lane myself
-    // and got 7436Mi -- under budget -- then wrote a test asserting it fit. The
-    // catalogue's OWN helper says 11148Mi. My set was not `devLaneAppliedDirs()`,
-    // and the tool's reading is the authority over my arithmetic. Same mistake
-    // as reading a grep result for a claim; recorded rather than quietly undone.
-    expect(dev.memoryMib).toBeGreaterThan(budget.memoryMib);
+    // IT FITS NOW, and the earlier note is kept rather than deleted because it records
+    // a real mistake: "STILL OVER, and I briefly claimed otherwise. I recomputed the
+    // lane myself and got 7436Mi -- under budget -- then wrote a test asserting it fit.
+    // The catalogue's OWN helper says 11148Mi. My set was not `devLaneAppliedDirs()`,
+    // and the tool's reading is the authority over my arithmetic." The difference in
+    // 2026-09-07 is that the helper ITSELF now returns a fitting number, computed the
+    // same way, over a lane one Application smaller.
+    expect(dev.memoryMib).toBeLessThanOrEqual(budget.memoryMib);
 
-    // THE REGISTER IS NON-EMPTY AGAIN, and it is non-empty because the arithmetic moved
-    // BACK -- not because anyone added a row to make a red run go green. It carries one
-    // key, and that key is the live shortfall rather than a spare one kept around.
-    expect(catalogue.acknowledgedLaneBudgetShortfall).toHaveLength(1);
-    expect(catalogue.acknowledgedLaneBudgetShortfall[0]?.key).toBe("dev memory 11148>9216");
+    // THE REGISTER IS EMPTY AGAIN, and empty because the shortfall is GONE rather than
+    // because a row was deleted to make a red run green: `dev memory 11148>9216` was
+    // retired by its own pin the moment the arithmetic moved, which is what the pin is
+    // for. `auditRunnerBudget` convicts a revived entry as STALE, so an empty register
+    // cannot hide a live overage.
+    expect(catalogue.acknowledgedLaneBudgetShortfall).toHaveLength(0);
 
     expect(auditRunnerBudget(catalogue, "dev")).toEqual([]);
 
@@ -1455,15 +1486,34 @@ describe("the checked-in resource ladder", () => {
     // defaults. `metal` moved because an APPLICATION was added, which is a different
     // thing from a rung being re-cut -- the dev floors below are still rung-scoped.
     // +1000m/+2048Mi on 2026-09-04 from opensearch's single pod at the metal rung.
-    expect(metal.cpuMillis).toBe(8390);
-    expect(metal.memoryMib).toBe(17596);
+    expect(metal.cpuMillis).toBe(7390);
+    expect(metal.memoryMib).toBe(15548);
 
-    // gmod is still COUNTED -- reachability is not exclusion. It contributes
-    // 100m at `dev` where it used to contribute 1000m, and 1000m at `metal`
-    // where it always did.
+    // gmod is NO LONGER IN THE LANE, and this assertion is inverted rather than deleted
+    // because what it used to say is the finding it replaced. It read: "gmod is still
+    // COUNTED -- reachability is not exclusion. It contributes 100m at `dev` where it
+    // used to contribute 1000m, and 1000m at `metal` where it always did." That was
+    // true and load-bearing when the lane could afford it: being reachable by a rung is
+    // not the same as being excluded, and the row was governed rather than hidden.
+    //
+    // On 2026-09-07 the lane could not afford it. `game-hosting/**` joined the dev root
+    // catalog's excludeGlob, so gmod is no longer in `devLaneAppliedDirs()` at all and
+    // removing it from that set changes NOTHING -- the delta is zero because it is
+    // already gone. Its rows are untouched: still governed, still 100m/2048Mi at `dev`
+    // and 1000m/2048Mi at `metal`, still counted by `applicationDirs()`. Excluded from
+    // a LANE, not from the catalogue.
     const withoutGmod = devLaneAppliedDirs().filter((dir) => dir !== "game-hosting/gmod");
-    expect(dev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(100);
-    expect(metal.cpuMillis - resourceTotal(catalogue, "metal", withoutGmod).cpuMillis).toBe(1000);
+    expect(dev.cpuMillis - resourceTotal(catalogue, "dev", withoutGmod).cpuMillis).toBe(0);
+    expect(devLaneAppliedDirs()).not.toContain("game-hosting/gmod");
+    // And it is still a governed row -- the exclusion did not hide the cost, it moved
+    // the cohort. A rung that stopped reaching it would be a different and worse change.
+    expect(catalogue.claims.some((c) => c.dir === "game-hosting/gmod")).toBe(true);
+    // Zero for the same reason at BOTH rungs: the cohort no longer contains gmod, so
+    // subtracting it from that cohort removes nothing. `metal`'s 1000m for gmod is
+    // unchanged in the catalogue -- it is simply outside this lane's denominator now,
+    // which is exactly what "excluded from a LANE, not from the catalogue" means.
+    expect(metal.cpuMillis - resourceTotal(catalogue, "metal", withoutGmod).cpuMillis).toBe(0);
+    expect(catalogue.claims.find((c) => c.dir === "game-hosting/gmod")?.cpuMillis["metal"]).toBe(1000);
   });
 
   // Stated because it is the honest answer to the question that was asked, and

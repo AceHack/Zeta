@@ -1,0 +1,14 @@
+{
+  "id": "080d03eded2a8810a01300085bbe4101",
+  "at": "2026-09-07T21:19:35.761Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YVV9AG087G0R000THB9KS",
+    "type": "task",
+    "title": "FUSE ABI INIT headers little-endian no /dev/fuse",
+    "slug": "fuse-abi-init-headers-little-endian-no-dev-fuse",
+    "priority": "P2",
+    "filename": "081M1YVV9AG087G0R000THB9KS-fuse-abi-init-headers-little-endian-no-dev-fuse.md"
+  }
+}

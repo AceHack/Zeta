@@ -1,0 +1,12 @@
+{
+  "pr_number": 17014,
+  "archive_path": "docs/history/pr-reviews/PR-17014-fix-cluster-smartcardhsm-becomes-a-capture-state-unmeasured-stopped-meaning-abse.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T02:17:50.646Z",
+  "schema_version": "v1",
+  "commit_sha": "7234521fcbd6e209daa511c3e2f7368fe0b4dcd9",
+  "title": "fix(cluster): smartcardHsm becomes a capture state — unmeasured stopped meaning absent",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T02:17:10Z",
+  "head_ref": "shadow/smartcard-hsm-capture-state"
+}

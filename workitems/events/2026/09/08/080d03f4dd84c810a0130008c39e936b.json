@@ -1,0 +1,14 @@
+{
+  "id": "080d03f4dd84c810a0130008c39e936b",
+  "at": "2026-09-08T01:22:07.641Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Z9QC4R087G0R0032KN0JX",
+    "type": "task",
+    "title": "OpenBao Shamir unseal sidecar adapters for the kind path",
+    "slug": "openbao-shamir-unseal-sidecar-adapters-for-the-kind-path",
+    "priority": "P2",
+    "filename": "081M1Z9QC4R087G0R0032KN0JX-openbao-shamir-unseal-sidecar-adapters-for-the-kind-path.md"
+  }
+}

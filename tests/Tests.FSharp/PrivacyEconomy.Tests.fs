@@ -75,3 +75,39 @@ let ``rewardIfGood: rewards confirmed good, HOLDS on Unknown (no reward, no puni
     Assert.Equal(15, PrivacyEconomy.budget "otto" confirmed) // confidence 0.9 >= 0.7 -> rewarded
     let held = start |> PrivacyEconomy.rewardIfGood 0.7 0.4 gainOf 1000 { Persona = "otto"; Revealed = 5.0 }
     Assert.Equal(10, PrivacyEconomy.budget "otto" held) // Unknown -> unchanged (held, NOT punished -> still 10)
+
+[<Theory>]
+[<InlineData(100, 10, 0, 100)>]
+[<InlineData(100, -1, 0, 100)>]
+[<InlineData(2147483642, 2147483647, 10, 2147483647)>]
+[<InlineData(100, 100, 2147483647, 100)>]
+[<InlineData(-5, -1, 0, 0)>]
+[<InlineData(0, -1, 10, 0)>]
+[<InlineData(5, 8, -7, 5)>]
+let ``reward preserves held entitlements through cap changes and integer boundaries``
+    (held: int) (cap: int) (grant: int) (expected: int) =
+    let initial = Map.ofList [ ("target", held); ("other", 17) ]
+    let mutable calls = 0
+    let grantOf (_: float) =
+        calls <- calls + 1
+        grant
+    let actual = PrivacyEconomy.reward grantOf cap { Persona = "target"; Revealed = 0.0 } initial
+    Assert.Equal(expected, PrivacyEconomy.budget "target" actual)
+    Assert.Equal(17, PrivacyEconomy.budget "other" actual)
+    Assert.Equal(1, calls)
+    Assert.Equal(held, PrivacyEconomy.budget "target" initial)
+
+[<Fact>]
+let ``reward's byte-entitlement invariants hold across the signed integer boundary grid`` () =
+    let boundaries = [ System.Int32.MinValue; -1; 0; 1; 7; 100; System.Int32.MaxValue - 1; System.Int32.MaxValue ]
+    for held in boundaries do
+        for cap in boundaries do
+            for grant in boundaries do
+                let initial = Map.ofList [ ("target", held) ]
+                let actual = PrivacyEconomy.reward (fun _ -> grant) cap { Persona = "target"; Revealed = 0.0 } initial
+                let after = PrivacyEconomy.budget "target" actual
+                Assert.True(after >= held, $"held={held}; cap={cap}; grant={grant}; after={after}")
+                Assert.True(after >= 0)
+                Assert.True(after <= max (max 0 held) cap)
+                if grant <= 0 || cap <= max 0 held then
+                    Assert.Equal(max 0 held, after)

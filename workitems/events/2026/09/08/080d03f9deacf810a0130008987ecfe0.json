@@ -1,0 +1,14 @@
+{
+  "id": "080d03f9deacf810a0130008987ecfe0",
+  "at": "2026-09-08T04:17:02.879Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZKQNCY087G0R000K1B80D",
+    "type": "task",
+    "title": "PR12 crash during mutbuf persist keeps prior bytes",
+    "slug": "pr12-crash-during-mutbuf-persist-keeps-prior-bytes",
+    "priority": "P1",
+    "filename": "081M1ZKQNCY087G0R000K1B80D-pr12-crash-during-mutbuf-persist-keeps-prior-bytes.md"
+  }
+}

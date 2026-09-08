@@ -75,8 +75,27 @@ const SELF_REG_CI_MARKER = "[iter-5.4.1-ci] composed ClusterNode";
 /** Mid-install progress — nixos-install reached post-install wifi step. */
 const NIXOS_INSTALL_PROGRESS_MARKER = "[iter-5.1]";
 
+// MARKERS ARE SUBSTRING-SCANNED over the whole serial log, so a broad one
+// fails GOOD images. The sibling harness already learned this: qemu-boot-test.ts
+// matches "Kernel panic" and carries a comment explaining why "Boot failed:" was
+// deliberately NOT used, because healthy boots print it.
+//
+// "panic" was the broad one, and it took this lane red for every run after the
+// nixpkgs 25.11 -> 26.05 bump. 26.05 ships a stock systemd unit whose derivation
+// name is `unit-panic-on-fail.service.drv`, which `nixos-install` prints inside
+// its "these 346 derivations will be built" list. The installer was killed at
+// 8 minutes, mid-install, having done nothing wrong -- and the ISO itself built
+// successfully in every one of those runs. The bump did not break the image; it
+// broke this marker.
+//
+// STILL SUSPECT, left alone deliberately: "bail". The installer's `bail()` emits
+// `ERROR: $*` (zeta-install.sh:72) and never the literal word, so this marker
+// cannot catch the thing it is named for -- it is false-positive surface with no
+// true-positive behind it. Narrowing it is a change to DETECTION semantics and
+// wants its own evidence about what should replace it, so it is reported here
+// rather than guessed at.
 const FAILURE_MARKERS: readonly string[] = [
-  "panic",
+  "Kernel panic",
   "FATAL",
   "Refusing to wipe",
   "no internet",
@@ -97,7 +116,21 @@ const DISK_BOOT_TIMEOUT_SECONDS = 1800;
 const POLL_INTERVAL_MS = 2000;
 const MEMORY_MB = 4096;
 const CPU_COUNT = 2;
-const DISK_SIZE_GB = 20;
+// 20 -> 40. The first failure in this lane's red streak was ENOSPC, not the
+// marker above: `uv tool install` died with "No space left on device" while the
+// installed system was being provisioned, after #16920 added nine toolchains
+// (wabt, binaryen, emscripten, nodejs, zig, llvm, rustup, go, lua5) to the
+// cluster hosts. The last run that reached that stage reclaimed 17.28 GiB of a
+// 20 GB image.
+//
+// HONEST STATUS: a PREDICTION, not a measurement. No 26.05 run has survived past
+// the 8-minute marker kill, so nothing has re-reached the provisioning stage to
+// confirm the overflow recurs. The package list is unchanged and the headroom
+// was under 3 GiB, so raising it is the cheap direction to be wrong in.
+//
+// AND THIS IS A REAL-METAL FINDING, not just a CI one: the same nine toolchains
+// install onto a real host, so any target disk near 20 GB fails the same way.
+const DISK_SIZE_GB = 40;
 const KVM_PATH = "/dev/kvm";
 
 /** Separator between phase-1 installer serial and phase-2 disk-boot serial in artifacts. */

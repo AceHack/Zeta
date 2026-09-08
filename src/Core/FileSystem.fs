@@ -1157,6 +1157,32 @@ module BlockSuper =
         else
             None
 
+    /// High bit of the uint16 key-length: payload is raw even-length lowercase
+    /// hex decoded to bytes. Clears the UTF-8 tax on ContentAddress128 names
+    /// (32 hex chars → 16 bytes) so a 4096-byte ZCA2 superblock holds the ZD4
+    /// 32-freeze storm (96 jumprope objects). Old slots with the bit clear
+    /// still decode as UTF-8.
+    let private hexKeyBit = 0x8000
+
+    let private isLowerHex (s: string) =
+        let n = s.Length
+
+        if n < 2 || (n &&& 1) <> 0 then
+            false
+        else
+            let mutable i = 0
+            let mutable ok = true
+
+            while ok && i < n do
+                let c = s.[i]
+
+                if (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') then
+                    i <- i + 1
+                else
+                    ok <- false
+
+            ok
+
     let private parseCasEntries (buf: byte[]) : (string * int64 * int) array option =
         let count = BinaryPrimitives.ReadInt32LittleEndian(ReadOnlySpan(buf, 16, 4))
 
@@ -1172,13 +1198,20 @@ module BlockSuper =
                 if o + 2 > buf.Length then
                     ok <- false
                 else
-                    let klen = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
+                    let stored = int (BinaryPrimitives.ReadUInt16LittleEndian(ReadOnlySpan(buf, o, 2)))
                     o <- o + 2
+                    let compact = (stored &&& hexKeyBit) <> 0
+                    let klen = stored &&& 0x7FFF
 
                     if klen < 1 || o + klen + 12 > buf.Length then
                         ok <- false
                     else
-                        let key = Encoding.UTF8.GetString(buf, o, klen)
+                        let key =
+                            if compact then
+                                Convert.ToHexStringLower(buf, o, klen)
+                            else
+                                Encoding.UTF8.GetString(buf, o, klen)
+
                         o <- o + klen
                         let pos = BinaryPrimitives.ReadInt64LittleEndian(ReadOnlySpan(buf, o, 8))
                         o <- o + 8
@@ -1204,12 +1237,23 @@ module BlockSuper =
         let mutable o = 20
 
         for key, pos, len in entries do
-            let kb = Encoding.UTF8.GetBytes key
+            let compact = isLowerHex key
+            let kb =
+                if compact then
+                    Convert.FromHexString key
+                else
+                    Encoding.UTF8.GetBytes key
 
             if o + 2 + kb.Length + 8 + 4 > buf.Length then
                 invalidOp "BlockCas index does not fit in one superblock"
 
-            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 kb.Length)
+            let stored =
+                if compact then
+                    kb.Length ||| hexKeyBit
+                else
+                    kb.Length
+
+            BinaryPrimitives.WriteUInt16LittleEndian(Span(buf, o, 2), uint16 stored)
             o <- o + 2
             Buffer.BlockCopy(kb, 0, buf, o, kb.Length)
             o <- o + kb.Length
@@ -1258,7 +1302,10 @@ module BlockSuper =
 
 /// Content-addressed objects on an `IBlockIo`. Payload starts at LBA 2.
 /// LBA 0 and 1 hold checksummed `ZCA2` copies. Crash during `Put` leaves the
-/// previous generation readable. Keys are ordinal hex strings.
+/// previous generation readable. Keys are ordinal strings. Lowercase even-length
+/// hex (ContentAddress128 / 32 chars) encodes as raw bytes with the uint16
+/// length high bit set, so ~135 compact names fit a 4096-byte superblock.
+/// UTF-8 remains for non-hex names; old UTF-8 hex slots still decode.
 [<Sealed>]
 type BlockCas(io: IBlockIo) =
     let index = Dictionary<string, struct (int64 * int)>(StringComparer.Ordinal)

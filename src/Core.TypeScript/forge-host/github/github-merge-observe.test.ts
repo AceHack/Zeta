@@ -10,19 +10,59 @@ import {
   observeOpenPullRequests,
 } from "./github-merge-observe.ts";
 
+const HEAD = "a".repeat(40);
 function envelope(over: Record<string, unknown>): string {
+  const pr = {
+    number: 42,
+    state: "OPEN",
+    headRefOid: HEAD,
+    mergeStateStatus: "CLEAN",
+    autoMergeRequest: null,
+    mergeCommit: null,
+    reviewThreads: { nodes: [] },
+    commits: { nodes: [{ commit: { oid: HEAD, statusCheckRollup: { contexts: { nodes: [] } } } }] },
+    ...over,
+  };
+  // Compact semantic fixtures still receive the metadata a complete API receipt
+  // must carry. Malformation tests mutate the resulting JSON after this builder.
+  const threads = pr.reviewThreads as { nodes: unknown[] };
+  const commits = pr.commits as {
+    nodes: { commit: { oid?: string; statusCheckRollup: { contexts: { nodes: Record<string, unknown>[] } } } }[];
+  };
+  const commit = commits.nodes[0]!.commit;
+  const contexts = commit.statusCheckRollup.contexts;
+  const complete = (nodes: unknown[], label: string) => ({
+    totalCount: nodes.length,
+    pageInfo: { hasNextPage: false, endCursor: nodes.length > 0 ? label : null },
+    nodes,
+  });
   return JSON.stringify({
     data: {
       repository: {
         pullRequest: {
-          number: 42,
-          state: "OPEN",
-          mergeStateStatus: "CLEAN",
-          autoMergeRequest: null,
-          mergeCommit: null,
-          reviewThreads: { nodes: [] },
-          commits: { nodes: [{ commit: { statusCheckRollup: { contexts: { nodes: [] } } } }] },
-          ...over,
+          ...pr,
+          reviewThreads: complete(threads.nodes, "threads-end"),
+          commits: {
+            nodes: [
+              {
+                commit: {
+                  ...commit,
+                  oid: commit.oid ?? HEAD,
+                  statusCheckRollup: {
+                    contexts: complete(
+                      contexts.nodes.map((n, i) => ({
+                        id: `check-${i}`,
+                        __typename: typeof n.context === "string" ? "StatusContext" : "CheckRun",
+                        conclusion: null,
+                        ...n,
+                      })),
+                      "checks-end",
+                    ),
+                  },
+                },
+              },
+            ],
+          },
         },
       },
     },
@@ -93,7 +133,12 @@ describe("mapMergeObserve", () => {
     const got = mapMergeObserve(
       envelope({
         mergeStateStatus: "BLOCKED",
-        reviewThreads: { nodes: [{ isResolved: false }, { isResolved: true }] },
+        reviewThreads: {
+          nodes: [
+            { id: "a", isResolved: false },
+            { id: "b", isResolved: true },
+          ],
+        },
       }),
     );
     expect(got.ok).toBe(true);
@@ -174,7 +219,7 @@ describe("observeOpenPullRequests", () => {
 });
 
 describe("observeMerge", () => {
-  test("issues exactly one graphql POST — the cost bound", async () => {
+  test("issues one graphql POST when both connections are complete", async () => {
     const calls: { method: string; path: string }[] = [];
     const rest: GithubRest = {
       request: (method, path) => {
@@ -182,7 +227,7 @@ describe("observeMerge", () => {
         return Promise.resolve(ok(envelope({})));
       },
     };
-    const got = await observeMerge(rest, "o/r", 1);
+    const got = await observeMerge(rest, "o/r", 42);
     expect(got.ok).toBe(true);
     expect(calls).toEqual([{ method: "POST", path: "graphql" }]);
   });
@@ -221,21 +266,18 @@ describe("review threads — what BLOCKS vs what can be ANSWERED", () => {
     expect(got.value.threads[0]?.firstComment).toEqual({ author: "lior", body: "unbounded retry" });
   });
 
-  test("an ID-LESS unresolved thread still BLOCKS — the count must not fail open", () => {
+  test("an ID-LESS thread refuses the entire receipt instead of shrinking its blockers", () => {
     // Deriving the blocker count from the answerable subset would let a malformed thread quietly
     // reduce it, which is a merge permitted because a field was missing.
     const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t(undefined, false), t("PRRT_2", false)] } }));
-    expect(got.ok).toBe(true);
-    if (!got.ok) return;
-    expect(got.value.unresolvedThreads).toBe(2);
-    expect(got.value.threads).toHaveLength(1);
+    expect(got.ok).toBe(false);
+    if (got.ok) return;
+    expect(got.error.message).toContain("identity");
   });
 
-  test("and the gap is SAID, not left as a difference between two numbers", () => {
-    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t(undefined, false)] } }));
-    expect(got.ok).toBe(true);
-    if (!got.ok) return;
-    expect(got.value.warnings.some((w) => w.includes("cannot be answered from here"))).toBe(true);
+  test("duplicate thread IDs refuse even when both copies say resolved", () => {
+    const got = mapMergeObserve(envelope({ reviewThreads: { nodes: [t("same", true), t("same", true)] } }));
+    expect(got.ok).toBe(false);
   });
 
   test("no warning when every unresolved thread is answerable", () => {
@@ -275,7 +317,7 @@ describe("review threads — what BLOCKS vs what can be ANSWERED", () => {
   test("the reviewThreads selection asks for the id, the outdated flag and the first comment", () => {
     // Scoped to the reviewThreads BLOCK. `toContain("id")` over the whole query is satisfied by
     // `mergeCommit { oid }` — a mutant deleting the thread id survived it. Found by the matrix.
-    const at = MERGE_OBSERVE_QUERY.indexOf("reviewThreads(first: 100)");
+    const at = MERGE_OBSERVE_QUERY.indexOf("reviewThreads(first: 100,");
     expect(at).toBeGreaterThan(-1);
     const block = MERGE_OBSERVE_QUERY.slice(at, MERGE_OBSERVE_QUERY.indexOf("commits(last: 1)", at));
     // A STANDALONE `id` field, not the substring: `oid` and `isOutdated` both contain "id".
@@ -298,7 +340,7 @@ describe("MERGE_OBSERVE_QUERY — the shape GitHub will actually accept", () => 
     const at = MERGE_OBSERVE_QUERY.indexOf("contexts");
     expect(at).toBeGreaterThan(-1);
     const rest = MERGE_OBSERVE_QUERY.slice(at);
-    const nodesAt = rest.indexOf("nodes {");
+    const nodesAt = rest.indexOf("nodes @include");
     const spreadAt = rest.indexOf("... on CheckRun");
     expect(nodesAt).toBeGreaterThan(-1);
     expect(spreadAt).toBeGreaterThan(-1);

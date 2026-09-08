@@ -1,0 +1,102 @@
+{
+  "StartedAtUtc": "2026-09-07T14:59:54.138260+00:00",
+  "FinishedAtUtc": "2026-09-07T14:59:56.503431+00:00",
+  "Jobs": [
+    {
+      "JobId": 101784615565,
+      "Metadata": {
+        "Bytes": 2267,
+        "Sha256": "08b9c3bba22f3333b1612bdc0dec208242fe438618554a7da4997de96b803705"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 23893,
+        "Sha256": "fabe4ea86891a612393487d4cb660f393e6f8f5ad50d00ff33dea0bbcb64ec06"
+      },
+      "LogGzip": {
+        "Bytes": 6364,
+        "Sha256": "aff4fe819e61398aca1b63a7736a0b12ea9248987c3091113616dfea21376beb"
+      }
+    },
+    {
+      "JobId": 101784516195,
+      "Metadata": {
+        "Bytes": 2296,
+        "Sha256": "3293cdad7bc20ef19bb80c16de46137a012207c1357ba5891562ad38f31f6f79"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 27337,
+        "Sha256": "0b6ea37cb3d5c01a8546fe7b0f4dcda55d6ab3be440433704a23a7dc7a548a7a"
+      },
+      "LogGzip": {
+        "Bytes": 6580,
+        "Sha256": "5265859eb9419591501bfc481ba29682c440e4fbbeb97b30f4ea5b7b701cd072"
+      }
+    },
+    {
+      "JobId": 101780447339,
+      "Metadata": {
+        "Bytes": 3040,
+        "Sha256": "bf035becf09d786f4fedd81b584dd52e4421ae70a9c66b3ca1ff08946c4b764e"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 4777614,
+        "Sha256": "c7a8937e953e1f108434bac0e887f0ca84a360bb69091c02a1491676f821a3a8"
+      },
+      "LogGzip": {
+        "Bytes": 1053845,
+        "Sha256": "e27303af462ff6680d816e1b88737a4147775076d57fd449a8174832cfd8fbda"
+      }
+    },
+    {
+      "JobId": 101780533634,
+      "Metadata": {
+        "Bytes": 5612,
+        "Sha256": "812cc81b730be4a4eb8770e5d3d140a6da456c663d220666e2a9160ee23a06bd"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 2085602,
+        "Sha256": "89c24daed1f199215ead10b0477940039301b62ded3216fb0c7e7727fa5d61e4"
+      },
+      "LogGzip": {
+        "Bytes": 385251,
+        "Sha256": "ac771791b00becad5785af8e28adbbc551aaf63db404c8dc99bd3036b041823a"
+      }
+    },
+    {
+      "JobId": 101780533664,
+      "Metadata": {
+        "Bytes": 5604,
+        "Sha256": "a9030f40924fbfb63659ea85871b34c8bb3e4b07cb7ac1a544901528e392787d"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 1246813,
+        "Sha256": "9c38221af15cc0d1b718d20cea45b7274bdedb2f875be6b08071f925bdd719cc"
+      },
+      "LogGzip": {
+        "Bytes": 301889,
+        "Sha256": "5e374ab8a28103b53a905f905805a335c54136a58ea5162cd96debe644df6ae3"
+      }
+    },
+    {
+      "JobId": 101780533806,
+      "Metadata": {
+        "Bytes": 5620,
+        "Sha256": "8960a027e016a1d7867e75f10dd88f44947441dcc466ce22c9238d2a00624818"
+      },
+      "LogExitCode": 0,
+      "Log": {
+        "Bytes": 2085051,
+        "Sha256": "2a6dcb97c2db2da0b9e5f746927f58bd1784e8062ba5b0cd62311f853511306c"
+      },
+      "LogGzip": {
+        "Bytes": 379947,
+        "Sha256": "e78bdb481270318a23a6fe68cd43d91d83f44f404513ae1c623fab577eb47ef6"
+      }
+    }
+  ]
+}

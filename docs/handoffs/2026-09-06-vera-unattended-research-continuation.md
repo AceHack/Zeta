@@ -6,7 +6,10 @@ Operational status: research-grade handoff
 Lifecycle: active
 Scope: continuation of the predictive-state, acting and relational research lanes
 Work item and retained publication review: [081M1WKKBQ2087G0R00221631M](../../workitems/done/2026/09/081M1WKKBQ2087G0R00221631M-publish-consolidated-unattended-research-handoff-with-verifi.md)
-Publication status: earlier studies and tooling repairs merged; hidden-switch results in draft PR #16928 pending final integration validation and main proof; next compiled-controller protocol remotely registered
+Publication status: hidden-switch results and compiled preregistration verified on main; compiled implementation now active under a fresh co-claim, with new streams held until its implementation archive
+
+Read the [current compiled-controller checkpoint](2026-09-07-vera-compiled-controller-continuation.md)
+first for the latest implementation, validation and admission boundary.
 
 ## Paste-ready bootstrap
 
@@ -20,8 +23,9 @@ Publication status: earlier studies and tooling repairs merged; hidden-switch re
 > cost criteria with exact replay, using a supplied correct model and decoder.
 > ARC and learned dynamics remain untested by those trials. Read the result,
 > exact-envelope caveat and separately registered compiled-controller protocol
-> before implementing that next study. Preserve its prior-study main dependency;
-> action-conditioned model identification remains an unregistered advisory. Keep
+> before continuing that next study. Its prior-study main dependency is verified;
+> preserve its fresh co-claim and separate implementation archive before new streams.
+> Action-conditioned model identification remains an unregistered advisory. Keep
 > conditional entropy premises separate from stipulated work: B=sum b_i,
 > R=sum r_e, M=1+R/B for B>0. Correlation components do not count controllers.
 > Preserve the declared-cut receipt invariant without calling it Lorentz
@@ -160,7 +164,7 @@ Maintain explicit observation/model assumptions, admission falsifiers and
 fresh frozen evaluation streams before new measurements. No public ARC
 example becomes held-out evidence through this continuation.
 
-Draft [PR #16928](https://github.com/Lucent-Financial-Group/Zeta/pull/16928)
+Merged [PR #16928](https://github.com/Lucent-Financial-Group/Zeta/pull/16928)
 retains the original hidden-switch result. Its initial CI failures are
 [indexed with exact source and logs](../research/hidden-switch-validation/2026-09-07/README.md):
 two TypeScript hygiene/race findings and a macOS inherited-pipe fixture
@@ -177,9 +181,18 @@ its first local full-test attempt crashed in the F# test host. One unchanged
 recovery completed 7,568 tests with six existing skips, all 52 formal models,
 eighteen synthetic checks and sixteen hidden-switch cases. Source and selected
 DLL hashes stayed unchanged. The first crash remains retained with a bounded
-GC-stack review and no established cause. Publication still requires
-the final result head's current checks and ancestry proof. The original scientific
-files, once-collected receipts and archived implementation are unchanged.
+GC-stack review and no established cause. Final reviewed head
+`f99c9f4e2502263943d899ec7a506aa287f76558` merged at 15:16:24 UTC on
+2026-09-07 as `1193d505de42f7a9406e64389f1496a311fc4b28`.
+The [coordinator proof](../research/hidden-switch-validation/2026-09-07/main-publication/README.md)
+verifies the actual signed body, refreshed main ancestry and all nineteen
+scientific/eighteen original result records. The
+[independent complete publication review](../research/hidden-switch-validation/2026-09-07/pr-16928-f99c9f4e-final/README.md)
+also verifies all 266 landed paths and seven descriptive-figure artifacts.
+Final CI has 93 successful checks, three skips and one retained historical-drift
+advisory failure; required/native/TypeScript/CodeQL checks pass, with no pending
+check or unresolved thread. The entire matrix is not green. Earlier failed and
+superseded checks remain separately indexed. No original experiment was rerun.
 
 ## Registered compiled-controller follow-up
 
@@ -195,8 +208,20 @@ read the same remote identities. Protocol size is 43,162 bytes; SHA256 is
 `8bbdfe44a0844dd8ce4f6c5dd77b060a56e5b84ea94ea7a6fdbb482aec9d738a`.
 
 At that freeze, no compiled implementation, guard bits, source streams or
-measurements existed. Implementation additionally waits for the prior
-hidden-switch study's main integration. The new protocol requires universal
+measurements existed. Preregistration-only
+[PR #16947](https://github.com/Lucent-Financial-Group/Zeta/pull/16947) subsequently
+merged as `6a371b881a44aa4e7a967264cdb30f31b9d0f552`; its
+[publication record](../research/hidden-switch-compiled-validation/2026-09-07/README.md)
+retains all 89 checks (85 successful, three skipped, one nonblocking historical
+drift failure), exact frozen protocol and unchanged remote tag. The prior-study
+main prerequisite above is now independently verified. Fresh implementation
+co-claim `d6ec464f4e9898904c2af77fceaefb8b28b48683` was remotely published with
+all sixteen quick checks passing. The
+[implementation plan](../research/2026-09-07-hidden-switch-compiled-implementation-plan.md)
+separates native/build wiring, independent Python arithmetic/certificate/reference,
+and coordinator evidence admission/replay/verdict. Runtime graph feasibility is
+an early implementation check. New behavior/cost streams still wait for the
+separate reviewed implementation archive. The new protocol requires universal
 action agreement under a declared binary64 source/runtime model, independent
 certificate and exact replay, and the same action-only output service in
 both timed arms. Both ordinary panels must independently meet wall and
@@ -269,6 +294,48 @@ scientific source snapshot or substitute it for the final merged-tree gate.
   head or merely open PR is not a main-state proof.
 
 ## Hidden-switch validation and preservation checkpoint
+
+The compiled follow-on now has reviewed independent software binary64 arithmetic,
+numeric-certificate reconstruction, guarded/reference control and a file-backed
+native action-only adapter. The [compiled validation index](../research/hidden-switch-compiled-validation/2026-09-07/README.md)
+retains source identities, native build/test evidence and a real filesystem
+cleanup finding with its corrected 18-test suite. Actual native conformance and
+executing-code admission remain pending; the compiled study's new streams and
+timing are still unopened, with no implementation archive yet. Earlier test
+counts below are dated checkpoints, not a count of this expanded tree.
+
+The later compiled checkpoint has an exact 62,458-byte native/independent
+certificate match, 21 integrated native tests and 401 focused Python tests.
+Independent review accepted exact old-control and every-invocation binary
+replay. Four retained debugger attempts culminated in 123 candidate spans
+and ten bound literals; actual guard-object contents and indirect-call
+closure remain under inspection. Runtime admission is still false, no
+implementation archive exists, and the 9307/9409 streams remain unopened.
+The validation index preserves the initial failures, repairs and exact scopes;
+none of these implementation tests is a registered cost result.
+
+The subsequent integrated Python checkpoint passes 583 cases across thirteen
+compiled-study modules. A separately added cost-ledger checker passes 73 cases;
+those are different run scopes, retained in the
+[ledger validation](../research/2026-09-07-hidden-switch-compiled-cost-ledger-validation.md).
+The native conformance boundary now counts actual evaluator entries separately
+from delegate entries and tree nodes, with 23 focused native tests. Its first
+test build exited 139 before tests; one unchanged single-node/no-reuse build
+retry passed. Both build outcomes remain preserved without a causal diagnosis.
+Five graph attempts are retained, including actual guard bytes and static
+call-cell reads, with unresolved indirect transfers and all runtime/body/closure
+admission flags false. Both separate no-target SOS host probes failed at a
+Mach-port guard; their lossless crash records and the bounded offline alternative
+are preserved. The newly reviewed native hand collector explicitly emits
+incomplete slices and append-only checkpoints; actual replay is a later gate.
+
+[PR #16949](https://github.com/Lucent-Financial-Group/Zeta/pull/16949) has also
+merged as `7fafe1f883599840c5e65c08ce5ebcaec3a0365d`. Its
+[publication proof](../research/merge-observe-pagination-validation/2026-09-07/publication/README.md)
+verifies all 49 changed paths, the actual signed squash body and merge ancestry.
+The final matrix had 93 successes, three skips and one nonblocking historical
+drift failure. Complete check/thread pagination now guards the merge observer;
+the historical failure is retained and is not a current native-platform failure.
 
 Read the [implementation review](../research/2026-09-07-hidden-switch-implementation-review.md),
 [premeasurement validation](../research/hidden-switch-validation/2026-09-07/README.md)

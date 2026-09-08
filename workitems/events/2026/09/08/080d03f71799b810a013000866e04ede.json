@@ -1,0 +1,14 @@
+{
+  "id": "080d03f71799b810a013000866e04ede",
+  "at": "2026-09-08T02:39:57.751Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZE5WSP087G0R002CVMVCN",
+    "type": "task",
+    "title": "ZD4 named unmetered N=32 ShortRun on one Mac",
+    "slug": "zd4-named-unmetered-n-32-shortrun-on-one-mac",
+    "priority": "P2",
+    "filename": "081M1ZE5WSP087G0R002CVMVCN-zd4-named-unmetered-n-32-shortrun-on-one-mac.md"
+  }
+}

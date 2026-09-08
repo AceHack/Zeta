@@ -32,6 +32,44 @@ spec:
         # api.database.url for an external CockroachDB/Postgres
         # backing store once the cluster's CockroachDB Application
         # is healthy.
+        # THE LLM API KEY, BY REFERENCE ONLY -- the Secret is never in git.
+        #
+        # Aaron 2026-09-07 made the call this file asked for ("the decision that
+        # is not mine to make"): ESO on metal plus a minted dev Secret. So the
+        # Application names ONE Secret and only the PROVENANCE differs -- CI
+        # mints it at bring-up (`DEV_HINDSIGHT_LLM_SECRET`, the same mechanism
+        # that mints Grafana's admin credential), metal resolves it through an
+        # ExternalSecret. The dev lane is therefore allowed to diverge from metal
+        # on secret provenance, and only on that.
+        #
+        # THE OLD BLOCK BELOW SAID THIS WAS BLOCKED ON FIVE LAYERS. Two of those
+        # do not apply, MEASURED against the pinned chart 0.9.2 rather than
+        # inherited from the 0.3.0 notes:
+        #
+        #   - `postgres-password` DOES NOT need to move into this Secret.
+        #     api-deployment.yaml:49 reads it under `{{- if not
+        #     .Values.postgresql.enabled }}` -- the EXTERNAL-postgres path only --
+        #     and postgresql-statefulset.yaml:33 takes the bundled password from
+        #     `.Values.postgresql.auth.password` as a plain value, never from a
+        #     Secret. We run the bundled Postgres, so suppressing the chart's
+        #     Secret costs it nothing.
+        #   - SUPPRESSING templates/secret.yaml COSTS NOTHING ELSE. It renders
+        #     `api.secrets`, `controlPlane.secrets` and that external
+        #     `postgres-password`. This valuesObject sets none of the three, so
+        #     the object it would have produced is empty of keys.
+        #
+        # WHAT IS STILL TRUE, and is why the metal half is not done here: a
+        # ClusterSecretStore and an ExternalSecret still do not exist in either
+        # tree. Metal must not be brought up against this line until they do --
+        # `envFrom` on an absent Secret holds the api AND worker pods in
+        # CreateContainerConfigError, which is the two-pods-worse outcome the
+        # earlier note correctly warned about. CI is safe because CI mints it.
+        #
+        # AND THE CI VALUE IS A PLACEHOLDER. The app's boot check is
+        # presence-only, so a drawn value clears the crash loop and no LLM call
+        # will succeed. Healthy in CI means the process runs -- never that
+        # extraction works. Do not read this lane as covering that path.
+        existingSecret: hindsight-llm-api-key
         postgresql:
           # OFF `ankane/pgvector:latest`, WHICH IS ARCHIVED. Docker Hub reports that
           # repository `status_description: archived` with no push since 2023-10-11, and

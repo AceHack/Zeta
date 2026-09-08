@@ -1,0 +1,78 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.numerical-validation.v1",
+  "RecordedAt": "2026-09-07T16:01:21.209096+00:00",
+  "SourceCommit": "aa62eea53f3d896aa2805d2d554f82ec02f6eaf3",
+  "Branch": "codex/hidden-switch-compiled-reference-20260907",
+  "Sources": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702a5e6e6bd330cb4d27dd3c3bddbbeba779ea8d6127249efd7e9ecbfa54d8c4",
+      "Role": "independent numerical source/test"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0ad02607ff6fd06620f9fc447b653e1798bbfba566cd7a4142c0c3c0256ecec3",
+      "Role": "independent numerical source/test"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "f9c88b46766034ef67dd78380213ba9c3cc153762d01505bb615dc69a3175b6a",
+      "Role": "independent numerical source/test"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_hidden_switch_compiled_ieee.py",
+      "Bytes": 4585,
+      "Sha256": "a0709ca7653d7ba2b1e2d546531ee99336af49b6832cddf5c90b1ffccc7154bc",
+      "Role": "independent numerical source/test"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_hidden_switch_compiled_certificate.py",
+      "Bytes": 6997,
+      "Sha256": "0fe25b261cd4f1184e7e6377ac4498d9e9f547787586432daf4ddb12364e684a",
+      "Role": "independent numerical source/test"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_hidden_switch_compiled_reference.py",
+      "Bytes": 13830,
+      "Sha256": "81b7c3ae8afa738c2375f0fdc60315ec2a7971ecc9d953f72bf2e66763bdfa12",
+      "Role": "independent numerical source/test"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_reference.py",
+      "Bytes": 27739,
+      "Sha256": "7130fbf88e4a5f7393ad59cffd6c56637b3d226f630b8cf547167d319bf880e2",
+      "Role": "unchanged old-Python control"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "focused-python.log.gz",
+      "Compression": "gzip",
+      "Bytes": 61,
+      "Sha256": "952e61fa6ac7031c539fff00056714e4c93d2a068f8e96aa90b451d03f005f34",
+      "DecompressedBytes": 179,
+      "DecompressedSha256": "c27b2ba921bf3f539c5b1be455d3642b40cffdf59a14abe13bf430c3b816061c",
+      "LiteralControls": []
+    },
+    {
+      "Path": "source-publication.log.gz",
+      "Compression": "gzip",
+      "Bytes": 663,
+      "Sha256": "17a1008a511f527e0f1fefbaeb283cf7a56174a5d58a40a4340d0812839bb149",
+      "DecompressedBytes": 1760,
+      "DecompressedSha256": "e3693477256d85f9f8737900b1b55790216bc656699d089c6d4e63a110ede988",
+      "LiteralControls": []
+    }
+  ],
+  "PythonTests": 87,
+  "ReferenceScalarPositions": 222,
+  "NewPythonHandEpisodes": 48,
+  "OldPythonControlCalls": 24,
+  "NativeConformancePerformed": false,
+  "RegisteredSourceRunsPerformed": false,
+  "CostMeasurementsPerformed": false,
+  "ControlDescription": "Fresh calls to unchanged hidden_switch_reference.run_episode belief-depth3 on its four explicit hand tapes; not saved or freshly executed native receipts."
+}

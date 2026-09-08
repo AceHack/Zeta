@@ -1,0 +1,12 @@
+{
+  "pr_number": 16977,
+  "archive_path": "docs/history/pr-reviews/PR-16977-feat-081m1yvv9ag087g0r000thb9ks-fuse-abi-init-headers-little-endian.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T21:54:02.870Z",
+  "schema_version": "v1",
+  "commit_sha": "fe90e36e80be59da23cc6c382b8bf377a75349f9",
+  "title": "feat(081M1YVV9AG087G0R000THB9KS): FUSE ABI INIT headers little-endian",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T21:53:18Z",
+  "head_ref": "feat/zetafs-fuse-abi"
+}

@@ -207,6 +207,7 @@
     <Compile Include="ZetaFsNamespace.Tests.fs" />
     <Compile Include="ZetaFsCollator.Tests.fs" />
     <Compile Include="ZetaFsPosixNode.Tests.fs" />
+    <Compile Include="ZetaFsPosixMeta.Tests.fs" />
     <Compile Include="ZetaFsCli.Tests.fs" />
     <Compile Include="ZetaFsPolicy.Tests.fs" />
     <Compile Include="ZetaFsPlacement.Tests.fs" />
@@ -215,6 +216,11 @@
     <Compile Include="ZetaFsPath.Tests.fs" />
     <Compile Include="InMemoryFileSystemPathIdentity.Tests.fs" />
     <Compile Include="ZetaFsFreeze.Tests.fs" />
+    <Compile Include="ZetaFsPosixVfs.Tests.fs" />
+    <Compile Include="ZetaFsFuse.Tests.fs" />
+    <Compile Include="ZetaFsFuseAbi.Tests.fs" />
+    <Compile Include="ZetaFsFuseSession.Tests.fs" />
+    <Compile Include="ZetaFsFuseSessionLookup.Tests.fs" />
     <Compile Include="ZetaFsCrypto.Tests.fs" />
     <Compile Include="ZetaFsReclaim.Tests.fs" />
     <Compile Include="ZetaFsDualFold.Tests.fs" />
@@ -667,6 +673,7 @@
     <Compile Include="Storage/DeltaLog.Tests.fs" />
     <Compile Include="Storage/DeltaCodec.Tests.fs" />
     <Compile Include="Storage/DiskDeltaLog.Tests.fs" />
+    <Compile Include="Storage/Zd4ProductExistence.Tests.fs" />
     <Compile Include="Storage/DurabilityTier.Tests.fs" />
     <Compile Include="Storage/RecoverableSpine.Tests.fs" />
     <Compile Include="Storage/DurableSaga.Tests.fs" />

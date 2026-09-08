@@ -1,0 +1,12 @@
+{
+  "pr_number": 16963,
+  "archive_path": "docs/history/pr-reviews/PR-16963-feat-creds-iso-bun-reports-frost-look-keys-probe-stays-null.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T19:31:40.225Z",
+  "schema_version": "v1",
+  "commit_sha": "85f253d6a13f453592655132a339706102d665e5",
+  "title": "feat(creds): ISO bun reports frost-look keys; probe stays null",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T19:31:04Z",
+  "head_ref": "cursor/iso-bun-frost-look-27c5"
+}

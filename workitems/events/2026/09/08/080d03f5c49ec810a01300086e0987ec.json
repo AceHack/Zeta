@@ -1,0 +1,14 @@
+{
+  "id": "080d03f5c49ec810a01300086e0987ec",
+  "at": "2026-09-08T01:53:40.825Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZBH4YR087G0R0025M0YJT",
+    "type": "bug",
+    "title": "Declare boxRole prod-metal so the hardware consent path is not dark",
+    "slug": "declare-boxrole-prod-metal-so-the-hardware-consent-path-is-n",
+    "priority": "P2",
+    "filename": "081M1ZBH4YR087G0R0025M0YJT-declare-boxrole-prod-metal-so-the-hardware-consent-path-is-n.md"
+  }
+}

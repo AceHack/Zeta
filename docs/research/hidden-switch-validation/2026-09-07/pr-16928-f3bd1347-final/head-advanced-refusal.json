@@ -1,0 +1,8 @@
+{
+  "StartedAtUtc": "2026-09-07T14:57:17.818367+00:00",
+  "FinishedAtUtc": "2026-09-07T14:57:18.550117+00:00",
+  "HeadSha": "f3bd1347e490084f411198dc8abff197c817eb1b",
+  "Complete": false,
+  "FailureType": "AssertionError",
+  "Failure": ""
+}

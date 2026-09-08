@@ -1,0 +1,12 @@
+{
+  "pr_number": 16978,
+  "archive_path": "docs/history/pr-reviews/PR-16978-feat-081m1yvkkhy087g0r003e4te1m-fuse-dispatcher-refuses-map-shared.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T22:17:12.073Z",
+  "schema_version": "v1",
+  "commit_sha": "f4046a671fa8b29d185f96e1b235c0ba181d8ded",
+  "title": "feat(081M1YVKKHY087G0R003E4TE1M): FUSE dispatcher refuses MAP_SHARED",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T22:16:30Z",
+  "head_ref": "feat/zetafs-fuse-mmap"
+}

@@ -1,0 +1,51 @@
+from pathlib import Path
+from collections import Counter
+import datetime, json, subprocess, sys
+HEAD='f3bd1347e490084f411198dc8abff197c817eb1b'
+OUT=Path(sys.argv[1]); OUT.mkdir(exist_ok=False)
+API='repos/Lucent-Financial-Group/Zeta'; GH='/opt/homebrew/bin/gh'
+def now(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
+def api(*args): return json.loads(subprocess.check_output([GH,'api',*args]))
+def save(n,v): (OUT/n).write_text(json.dumps(v,indent=2)+'\n')
+Q='''query($cursor:String) { repository(owner:"Lucent-Financial-Group",name:"Zeta") { object(expression:"f3bd1347e490084f411198dc8abff197c817eb1b") { ... on Commit { oid statusCheckRollup {state contexts(first:50,after:$cursor) {totalCount pageInfo {hasNextPage endCursor} nodes {__typename ... on CheckRun {id databaseId name status conclusion detailsUrl startedAt completedAt checkSuite {commit {oid} workflowRun {databaseId workflow {name}}}} ... on StatusContext {id context state targetUrl createdAt}}}}}}}}'''
+def rest(path,key):
+ rows=[]; pages=[]; n=None
+ for page in range(1,101):
+  d=api(path+('&' if '?' in path else '?')+f'per_page=100&page={page}')
+  if n is None:n=d['total_count']
+  assert d['total_count']==n
+  rows+=d[key];pages.append(d)
+  if len(d[key])<100:
+   assert len(rows)==n;return rows,pages
+ raise ValueError('page cap')
+start=now()
+try:
+ cursor=None; seen=set(); rows=[]; pages=[]; count=None
+ for i in range(100):
+  args=['graphql','-f','query='+Q]
+  if cursor:args+=['-f','cursor='+cursor]
+  d=api(*args); assert not d.get('errors')
+  c=d['data']['repository']['object']; assert c['oid']==HEAD
+  p=c['statusCheckRollup']['contexts']
+  if count is None:count=p['totalCount']
+  assert count==p['totalCount']
+  for n in p['nodes']:
+   if n['__typename']=='CheckRun':assert n['checkSuite']['commit']['oid']==HEAD
+   assert n['id'] not in seen;seen.add(n['id'])
+  rows+=p['nodes'];pages.append({'ObservedAtUtc':now(),'RequestedCursor':cursor,'Connection':p})
+  if not p['pageInfo']['hasNextPage']:
+   assert len(rows)==count;break
+  cursor=p['pageInfo']['endCursor'];assert cursor
+ else:raise ValueError('page cap')
+ save('checks.json',{'HeadSha':HEAD,'Complete':True,'Count':count,'Pages':pages})
+ runs,rp=rest(API+'/actions/runs?head_sha='+HEAD,'workflow_runs');save('runs.json',{'HeadSha':HEAD,'Pages':rp})
+ gs=[]
+ for r in runs:
+  assert r['head_sha']==HEAD
+  if r['name']=='gate':
+   js,jp=rest(API+f'/actions/runs/{r["id"]}/jobs','jobs');save(f'jobs-{r["id"]}.json',{'RunId':r['id'],'Pages':jp})
+   gs.append({k:r[k] for k in ('id','name','event','created_at','status','conclusion','run_attempt')}|{'JobConclusions':dict(Counter(j['conclusion'] or j['status'] for j in js))})
+ summary={'StartedAtUtc':start,'FinishedAtUtc':now(),'HeadSha':HEAD,'Complete':True,'CheckCount':count,'CheckPages':len(pages),'States':dict(Counter(r.get('conclusion') or r.get('status') or r.get('state') for r in rows)),'GateRuns':gs,'NonSuccess':[{'Id':r.get('databaseId'),'Name':r.get('name'),'Status':r.get('status'),'Conclusion':r.get('conclusion')} for r in rows if r.get('conclusion') not in ('SUCCESS','SKIPPED')],'Scope':'Historical fixed-commit connection after PR head advanced; no current-PR admission claim; complete paginated non-atomic read.'}
+ save('summary.json',summary);print(json.dumps(summary,indent=2))
+except Exception as e:
+ save('failure.json',{'StartedAtUtc':start,'FinishedAtUtc':now(),'HeadSha':HEAD,'Complete':False,'FailureType':type(e).__name__,'Failure':str(e)});raise

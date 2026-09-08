@@ -1,0 +1,12 @@
+{
+  "pr_number": 16987,
+  "archive_path": "docs/history/pr-reviews/PR-16987-fix-formal-windows-capture-read-hit-a-sharing-violation-once-the-fixture-worked.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T23:48:16.304Z",
+  "schema_version": "v1",
+  "commit_sha": "1ff43985d01faa13e7b919fcc70718bb3e84b633",
+  "title": "fix(formal): Windows capture read hit a sharing violation once the fixture worked",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:47:36Z",
+  "head_ref": "shadow/windows-capture-sharing-violation"
+}

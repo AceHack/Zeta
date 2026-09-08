@@ -1,0 +1,14 @@
+{
+  "id": "080d03ead76fc010a0130008a2c3a53c",
+  "at": "2026-09-07T19:31:46.296Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YNNVFQ087G0R001J5SEPD",
+    "type": "task",
+    "title": "Overlay optional named joins match ISO bun missing frost-look keys; probe stays null",
+    "slug": "overlay-optional-named-joins-match-iso-bun-missing-frost-loo",
+    "priority": "P2",
+    "filename": "081M1YNNVFQ087G0R001J5SEPD-overlay-optional-named-joins-match-iso-bun-missing-frost-loo.md"
+  }
+}

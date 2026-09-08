@@ -1,0 +1,14 @@
+{
+  "id": "080d03f6391c0810a0130008da345ab7",
+  "at": "2026-09-08T02:09:35.105Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1ZCE8W0087G0R0028BYWV2",
+    "type": "task",
+    "title": "ZD4 BlockCas compact hex index so 32 unique jumpropes fit",
+    "slug": "zd4-blockcas-compact-hex-index-so-32-unique-jumpropes-fit",
+    "priority": "P1",
+    "filename": "081M1ZCE8W0087G0R0028BYWV2-zd4-blockcas-compact-hex-index-so-32-unique-jumpropes-fit.md"
+  }
+}

@@ -53,7 +53,7 @@ function namedTpmPresent(): NamedHardwareProbe {
     smartCardReaderAttached: false,
     yubikeyDetected: false,
     pkcs11ModuleOnDisk: false,
-    smartcardHsm: false,
+    smartcardHsm: "not-asked",
   };
 }
 
@@ -66,7 +66,7 @@ function namedMetalAbsent(): NamedHardwareProbe {
     smartCardReaderAttached: false,
     yubikeyDetected: false,
     pkcs11ModuleOnDisk: false,
-    smartcardHsm: false,
+    smartcardHsm: "not-asked",
   };
 }
 
@@ -97,7 +97,7 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("CardContact SmartCard-HSM wins over TPM when no YubiHSM", () => {
-    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true, tpm2: "present" }));
+    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present", tpm2: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-smartcard");
@@ -105,7 +105,7 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("CardContact SmartCard-HSM is a peer vendor — measure-on-device, not YubiHSM AES-GCM", () => {
-    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-smartcard");
@@ -121,14 +121,14 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("both metal HSM vendors attached → one OpenBao seal (YubiHSM first)", () => {
-    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "auto" }, capture({ yubiHsm2: "attached", smartcardHsm: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-yubihsm");
   });
 
   test("umbrella pkcs11-hsm with only CardContact names pkcs11-smartcard", () => {
-    const r = integrateAtSetup({ requested: "pkcs11-hsm" }, capture({ smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "pkcs11-hsm" }, capture({ smartcardHsm: "present" }));
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.path).toBe("pkcs11-smartcard");
@@ -143,7 +143,7 @@ describe("integrateAtSetup — PKCS#11 only when the device is accessible", () =
   });
 
   test("requested pkcs11-yubihsm with only SmartCard-HSM refuses — not the other vendor", () => {
-    const r = integrateAtSetup({ requested: "pkcs11-yubihsm" }, capture({ smartcardHsm: true }));
+    const r = integrateAtSetup({ requested: "pkcs11-yubihsm" }, capture({ smartcardHsm: "present" }));
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.reason).toBe("requested-pkcs11-not-accessible");
@@ -231,7 +231,7 @@ describe("availablePaths — fleet may mix; Lucent is always listed", () => {
   });
 
   test("both metal HSM vendors + TPM are listed; Lucent stays a peer", () => {
-    expect(availablePaths(capture({ yubiHsm2: "attached", smartcardHsm: true, tpm2: "present" }))).toEqual([
+    expect(availablePaths(capture({ yubiHsm2: "attached", smartcardHsm: "present", tpm2: "present" }))).toEqual([
       "pkcs11-yubihsm",
       "pkcs11-smartcard",
       "pkcs11-tpm",
@@ -404,7 +404,7 @@ describe("setup integrate decision feeds the PKCS#11 overlay", () => {
   });
 
   test("blank companion on CardContact falls back to the NixOS OpenSC contract", () => {
-    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present" }));
     expect(sealOracleFromUnsealPath("pkcs11-smartcard")).toBe("smartcard-hsm");
     const plan = planSetupOverlayFromIntegrate(decision, "  ", true);
     expect(plan.modulePath).toBe(NIXOS_PKCS11_MODULE_PATH["smartcard-hsm"]);
@@ -475,7 +475,7 @@ describe("setup overlay reads the restored pointer file", () => {
   });
 
   test("missing restore file falls back to the NixOS contract", () => {
-    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: true }));
+    const decision = integrateAtSetup({ requested: "auto" }, capture({ smartcardHsm: "present" }));
     const plan = planSetupFromRestoredCompanion(decision, {
       openedPath: USB_PKCS11_MODULE_POINTER,
       exists: false,

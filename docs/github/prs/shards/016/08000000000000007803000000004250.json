@@ -1,0 +1,12 @@
+{
+  "pr_number": 16976,
+  "archive_path": "docs/history/pr-reviews/PR-16976-feat-081m1yv7zwa087g0r001awnbf7-fuse-dispatcher-path-contextual-dotdot.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T21:32:26.298Z",
+  "schema_version": "v1",
+  "commit_sha": "f21bd3b094f2f622da33769be5c9cff32b963c27",
+  "title": "feat(081M1YV7ZWA087G0R001AWNBF7): FUSE dispatcher path-contextual dotdot",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T21:31:46Z",
+  "head_ref": "feat/zetafs-fuse-dotdot"
+}

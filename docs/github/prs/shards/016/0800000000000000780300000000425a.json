@@ -1,0 +1,12 @@
+{
+  "pr_number": 16986,
+  "archive_path": "docs/history/pr-reviews/PR-16986-docs-handoff-record-minigrid-policy-gate-merge.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T23:43:52.747Z",
+  "schema_version": "v1",
+  "commit_sha": "00ca3d510ddb43fe4c8e30663a36bcc039c5b335",
+  "title": "docs(handoff): record MiniGrid policy gate merge",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T23:43:10Z",
+  "head_ref": "lumen/handoff-minigrid-policy-contract-status"
+}

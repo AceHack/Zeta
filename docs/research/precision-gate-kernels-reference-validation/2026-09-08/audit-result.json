@@ -1,0 +1,13 @@
+{
+  "ArtifactPairs": 34,
+  "ManifestSha256": "1abebab2a541497d3028760f9a3add3aab5105c6617d22d7fd165c40d749b553",
+  "OriginalBytes": 187829,
+  "Passed": true,
+  "PinnedSourceFiles": 2,
+  "Schema": "zeta.precision-gate-reference-archive-audit.v1",
+  "Scope": "offline archive identity audit; no project import or execution",
+  "StoredBytes": 43193,
+  "VectorRefusals": 7,
+  "VectorRows": 24,
+  "VectorSuccesses": 17
+}

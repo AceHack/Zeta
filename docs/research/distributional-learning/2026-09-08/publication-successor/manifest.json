@@ -1,0 +1,344 @@
+{
+  "OriginalHead": "8cb522b2dab2fb50792a3d7ff6ef7f3af21f5e64",
+  "SuccessorBase": "4d69d7a8cf77fed897c11bb179713ca67692c22f",
+  "OriginalPr": 17021,
+  "ObservedCommitTotal": 278,
+  "ApiCommitMessagesSupplied": 250,
+  "SourceFiles": [
+    {
+      "Path": "src/Core/PrivacyEconomy.fs",
+      "Bytes": 7279,
+      "Sha256": "5087fa8c89328ddc82691924870cdeef255637ade092e7c4c901c8693481002c",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_distributional_learning_rooms_reference.py",
+      "Bytes": 32046,
+      "Sha256": "90886b2f6679601c70dc567f9381156b28526bc10d3e438355bb9c6db1c40413",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/distributional_learning_rooms_reference.py",
+      "Bytes": 37612,
+      "Sha256": "c7b5d66066dd6a5a203c69e405871f5fae6948157a5f9d87ef03a5822a97e1c2",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "src/Research.FSharp/DistributionalLearningRooms.fsx",
+      "Bytes": 19776,
+      "Sha256": "a895af74c2c4619df31aa6d6b7cfd255bb53c256969db2f3d48b0bd30bcf5766",
+      "MatchesCoordinatorSource": true
+    },
+    {
+      "Path": "tests/Tests.FSharp/PrivacyEconomy.Tests.fs",
+      "Bytes": 5977,
+      "Sha256": "e10fd07b05f67191ea717ffef56ee016daaeaee64f73008e4d8547b940d0957e",
+      "MatchesCoordinatorSource": true
+    }
+  ],
+  "ArtifactCount": 30,
+  "Artifacts": [
+    {
+      "File": "000-distributional-final-review-import-1.log.gz",
+      "OriginalPath": "distributional-final-review-import-1.log",
+      "Bytes": 1180,
+      "Sha256": "096092c3513ebcc5986e017972d55827cee5dca5864bae2aaff73985d523e334",
+      "StoredBytes": 349,
+      "StoredSha256": "4eca959133058996b741574c18c4189702b523cf95d52fc4fbedfee7ea673221",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "001-distributional-publication-github-status-1.json.gz",
+      "OriginalPath": "distributional-publication-github-status-1.json",
+      "Bytes": 4310,
+      "Sha256": "d69d7d924758f81e8fc40b84430165f9df7ef8ae2c281d2ae44db78c9f512369",
+      "StoredBytes": 1133,
+      "StoredSha256": "03c078134e8bf21f0845c4d406dc9383dbbd75bdeb013f003cf6036eb5cbc8c3",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "002-distributional-publication-pr-body.md.gz",
+      "OriginalPath": "distributional-publication-pr-body.md",
+      "Bytes": 2466,
+      "Sha256": "afc8066a2bbaa7d9989e7327a49ab79b374253eb3ada7038d211c774fc4e550c",
+      "StoredBytes": 1315,
+      "StoredSha256": "9140efcf8f72f97ee7779077505934f1940416842bd596676bcf30a9421fca95",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "003-distributional-publication-pr-create-1.log.gz",
+      "OriginalPath": "distributional-publication-pr-create-1.log",
+      "Bytes": 58,
+      "Sha256": "cf786ddd895ccc6615019da771909692836dd1669ad4f45dc10e08c3cbbb7fec",
+      "StoredBytes": 78,
+      "StoredSha256": "6c74beaccf79ca34ec3e295eb427c7590369cc7a4ee7a4d9669397ba916b2af4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "004-distributional-publication-pr-first-1.json.gz",
+      "OriginalPath": "distributional-publication-pr-first-1.json",
+      "Bytes": 25537,
+      "Sha256": "a6d902a00a6f8bf5b5cdb2be1d92f503c8e6fce855fc5d928c90295638f2bc85",
+      "StoredBytes": 2149,
+      "StoredSha256": "310fbecc6a8d8b70fefa601cf4666209f8fc0207cc42a643133f81148484439d",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "005-distributional-publication-push-1.log.gz",
+      "OriginalPath": "distributional-publication-push-1.log",
+      "Bytes": 1993,
+      "Sha256": "6f9241fb4e94a340ce243c607c038dfed2a2f87e94a993967f826e7cd05f8eae",
+      "StoredBytes": 709,
+      "StoredSha256": "fc0a3b3183a2cb976cf9ce45c00d5f9b8c78e74b306472affac8cc16d9aceae9",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "006-distributional-publication-remote-1.txt.gz",
+      "OriginalPath": "distributional-publication-remote-1.txt",
+      "Bytes": 109,
+      "Sha256": "557cdd351d9f307b9bbb01599986e269a812684e336c4f4f120f829a09c2f4ac",
+      "StoredBytes": 113,
+      "StoredSha256": "238f8f2f148bf708989d154df6fe4ee962b15bfe5594b3e8a2f8afe2623faed2",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "007-distributional-successor-main-fetch-1.log.gz",
+      "OriginalPath": "distributional-successor-main-fetch-1.log",
+      "Bytes": 153,
+      "Sha256": "02b78647aa1c65cc81641ffa7152f81470c22f0ddedfbd530cb70d64697096a7",
+      "StoredBytes": 136,
+      "StoredSha256": "d211c739964878e5dc7f796145b159c13c5d738fef79c12b6201fab92fa94bab",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "008-distributional-successor-squash-1.log.gz",
+      "OriginalPath": "distributional-successor-squash-1.log",
+      "Bytes": 101,
+      "Sha256": "4eb0074afa6f262bf35daf7cce041b3ebf2646ab0bca030a3012934dfe1b5aaa",
+      "StoredBytes": 107,
+      "StoredSha256": "577fdf064341d26f3a78fb44bcbd7280b90e25d667920e58ead7a130a97776fe",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "009-distributional-successor-status-before-1.txt.gz",
+      "OriginalPath": "distributional-successor-status-before-1.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "010-distributional-successor-switch-1.log.gz",
+      "OriginalPath": "distributional-successor-switch-1.log",
+      "Bytes": 163,
+      "Sha256": "f421252f7aea45cf239a9532b04f49fc948103cff77f2d4ab78a8fdb6a2e45f0",
+      "StoredBytes": 120,
+      "StoredSha256": "f4eb85859493bb9b46c587581e14c25d6cab49d9fb04a840d501f13d176e4f1b",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "011-distributional-successor-tree-before-docs-1.json.gz",
+      "OriginalPath": "distributional-successor-tree-before-docs-1.json",
+      "Bytes": 25426,
+      "Sha256": "069098b6d3a8f9144a7c411bc8cc57bb73e42f5923212ccbb6e8bc9db1c4cb15",
+      "StoredBytes": 2225,
+      "StoredSha256": "3195f5bb295d98cd6bf45c94ad32977c13be0905c9044a18ee064150dc0f4372",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "012-distributional-yang-source-correction-import-1.log.gz",
+      "OriginalPath": "distributional-yang-source-correction-import-1.log",
+      "Bytes": 212,
+      "Sha256": "cc166a7bb2523c623e7bfe4930114457bc61b5bb88443a4a05c3d9ca76aef586",
+      "StoredBytes": 187,
+      "StoredSha256": "1732a617f4769fb1539c8c9af63c2f836026d7028a62c0b5e435d9752c4c86aa",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "013-distributional-yang-source-import-1.log.gz",
+      "OriginalPath": "distributional-yang-source-import-1.log",
+      "Bytes": 298,
+      "Sha256": "fef0f353461019484111c66d4b8f29f24bcaca457006473387fb8224da231209",
+      "StoredBytes": 242,
+      "StoredSha256": "f16f04db138e669228ca9fce81e8558e5b0a4b11c52a52da2a0b3326a5a6302c",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "014-pr-17021-agencysignature-failure-1.log.gz",
+      "OriginalPath": "pr-17021-agencysignature-failure-1.log",
+      "Bytes": 5572,
+      "Sha256": "ff28be356eff82aa1fac73f25012db2c0a56340e8dfe437397b4b157d3d1fea1",
+      "StoredBytes": 1254,
+      "StoredSha256": "5700f12d5c1674fc053b1acc3464f8ddf3cda5d3ff9a5350fe6a3dcf933c5646",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "015-pr-17021-body-1.json.gz",
+      "OriginalPath": "pr-17021-body-1.json",
+      "Bytes": 2561,
+      "Sha256": "0dc07489ca77a85b541aced7e58e0f5e4ab1d3b1305354a6a8efc30e0b0d32fb",
+      "StoredBytes": 1380,
+      "StoredSha256": "672f61a14dda0257b37f506f450c3253a590ee3cf7a16ce2789501ec1d88e6f4",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "016-pr-17021-bounded-gate-1.json.gz",
+      "OriginalPath": "pr-17021-bounded-gate-1.json",
+      "Bytes": 538,
+      "Sha256": "d1981d305e02640814081d079efcec67c352832b78856c85e653220d7145bbfe",
+      "StoredBytes": 345,
+      "StoredSha256": "34eff2021b23534eb4120731c2316430162747f4fea28aa932d5331b666d5d07",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "017-pr-17021-bounded-gate-1.stderr.gz",
+      "OriginalPath": "pr-17021-bounded-gate-1.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "018-pr-17021-checks-2.json.gz",
+      "OriginalPath": "pr-17021-checks-2.json",
+      "Bytes": 16126,
+      "Sha256": "ff60e4811de52ef21060c285a230e26f701b83c790be689bbe4bad4be4fc8429",
+      "StoredBytes": 1866,
+      "StoredSha256": "66acf55867a42fe6d6ee4eba4bc1549f2166809889c4680886a51b4891a4ed98",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "019-0-request.json.gz",
+      "OriginalPath": "pr-17021-complete-observation-1/0-request.json",
+      "Bytes": 1631,
+      "Sha256": "d31e4f31bd37395f385db6610a05885444c418bb07359700925b286ec18da502",
+      "StoredBytes": 635,
+      "StoredSha256": "4e224e6458032a87437c902ef559274680a412554e3db65c83cf43160ac0c451",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "020-0-response.json.gz",
+      "OriginalPath": "pr-17021-complete-observation-1/0-response.json",
+      "Bytes": 14180,
+      "Sha256": "091523e8a39749d6b8b0ca02741107959833ddec688dbaa5df594736de30b434",
+      "StoredBytes": 1855,
+      "StoredSha256": "1abc19e32aa7f1e6b8914a3706f69476ab45ff3bb5eadec6e4dc55b93e32761a",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "021-result.json.gz",
+      "OriginalPath": "pr-17021-complete-observation-1/result.json",
+      "Bytes": 839,
+      "Sha256": "5aa8c68d0a62cf506115748a7106effef81cde377fbcb561f5ef99c2137e2c85",
+      "StoredBytes": 418,
+      "StoredSha256": "588512088c9084bd08107525f7558f7d16efa79262fa9111c498727ad1494b67",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "022-retain-distributional-successor.py.gz",
+      "OriginalPath": "retain-distributional-successor.py",
+      "Bytes": 3582,
+      "Sha256": "3cd3e1f002082f3c124e0ca157555b9fba7fbfe8d16183cb90c70db47c9fc16a",
+      "StoredBytes": 1749,
+      "StoredSha256": "7f9efe60216f711cd8a0d5528803b1995012d7d889c752e718d4019a74cd013e",
+      "Encoding": "gzip"
+    },
+    {
+      "File": "count-correction-distributional-successor-tree-count-correction.py.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction.py",
+      "Bytes": 1234,
+      "Sha256": "d1dd11b0dc1bc4186e95e2b256c624a7f649e7a7cf2d805616e0890ad9882165",
+      "StoredBytes": 761,
+      "StoredSha256": "9d7a8907c718b5c8b99bbe60b5b5c420cdfd9839863d51ab67ffb9e055285bc6",
+      "Encoding": "gzip",
+      "Stage": "First count follow-up: assertion failed; stdout empty"
+    },
+    {
+      "File": "count-correction-distributional-successor-tree-count-correction.json.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction.json",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip",
+      "Stage": "First count follow-up: assertion failed; stdout empty"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-failure-transcription.txt.gz",
+      "OriginalPath": "distributional-successor-tree-count-failure-transcription.txt",
+      "Bytes": 719,
+      "Sha256": "f6d060eeee8e26e42850aecdef3e19cd5d5600835e1c739e805926b31574716e",
+      "StoredBytes": 452,
+      "StoredSha256": "b88e89af8f5d2a767e3928782a11e1e6fb2cdc28a2ac250c2928f3b1750a8dbc",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.py.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.py",
+      "Bytes": 1337,
+      "Sha256": "6877d63337cb2a8b79b7d97ab353b43426834a7bdf52ac251d3dec91f3faa391",
+      "StoredBytes": 791,
+      "StoredSha256": "70a166034e9a236f790248d6aaa958f3795a1f5ec02a38a301bcb80186f136e2",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.stdout.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.stdout",
+      "Bytes": 96206,
+      "Sha256": "aba1b622cd2afaa5b87d49ecfa5c376b50a7507f92a55fb94845822f7ea3b5e6",
+      "StoredBytes": 8766,
+      "StoredSha256": "059e314a96eb190ab1b0ed257aced5182b7e41f0f81dfa372702a0a3d645c9b0",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.stderr.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.stderr",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredBytes": 20,
+      "StoredSha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    },
+    {
+      "File": "repair-distributional-successor-tree-count-correction-2.process.json.gz",
+      "OriginalPath": "distributional-successor-tree-count-correction-2.process.json",
+      "Bytes": 523,
+      "Sha256": "05ab1abd1fd1bcd48ff90fa7a880e890b72a618cdeea750cfdbd127453f780d8",
+      "StoredBytes": 348,
+      "StoredSha256": "e749b245c76a479c849cc6ec9134687564506507033a58cbc8b1026f114f2df0",
+      "Encoding": "gzip",
+      "Stage": "Captured count follow-up repair"
+    }
+  ],
+  "OriginalObservedRenameAwareDiffNameCount": 230,
+  "VerifiedChangedTreePathCount": 231,
+  "AllObservedRenameAwareEntriesIdenticalBeforeExplanation": true,
+  "CountFollowup": {
+    "FirstAttempt": "Assertion failed; premature wording committed then corrected",
+    "RepairedProcess": {
+      "Command": [
+        "python3",
+        ".git/distributional-successor-tree-count-correction-2.py"
+      ],
+      "StartedAt": "2026-09-08T03:12:06.125724+00:00",
+      "FinishedAt": "2026-09-08T03:12:10.276574+00:00",
+      "ExitCode": 0,
+      "StdoutBytes": 96206,
+      "StderrBytes": 0,
+      "ScriptSha256": "6877d63337cb2a8b79b7d97ab353b43426834a7bdf52ac251d3dec91f3faa391",
+      "StdoutSha256": "aba1b622cd2afaa5b87d49ecfa5c376b50a7507f92a55fb94845822f7ea3b5e6",
+      "StderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "VerifiedSource": "6a1f5d43ad08f992bb8a0f80ac0c490ef4188d8a",
+    "ExpectedChangedDocumentation": [
+      "docs/research/2026-09-08-distributional-learning-controls-publication.md",
+      "docs/research/2026-09-08-distributional-learning-publication-scope-review.md"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16953,
+  "archive_path": "docs/history/pr-reviews/PR-16953-feat-081m1y96p55087g0r003zqre6z-posixmeta-getattr-setattr-injected-clock.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T16:48:57.498Z",
+  "schema_version": "v1",
+  "commit_sha": "316f40001bcd61f225cc7eaaa24c373d89582071",
+  "title": "feat(081M1Y96P55087G0R003ZQRE6Z): PosixMeta getattr setattr injected clock",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T16:48:14Z",
+  "head_ref": "feat/zetafs-posix-meta-injected-clock"
+}

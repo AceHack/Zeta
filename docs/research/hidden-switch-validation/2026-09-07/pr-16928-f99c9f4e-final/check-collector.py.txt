@@ -1,0 +1,96 @@
+from pathlib import Path
+from collections import Counter
+import datetime, hashlib, json, subprocess, sys
+
+OUT=Path(sys.argv[1]); OUT.mkdir(parents=True,exist_ok=False)
+HEAD='f99c9f4e2502263943d899ec7a506aa287f76558'
+REPO='Lucent-Financial-Group/Zeta'; API='repos/'+REPO
+GH='/opt/homebrew/bin/gh'
+
+def now(): return datetime.datetime.now(datetime.timezone.utc).isoformat()
+def cmd(*a): return subprocess.check_output([GH,*a])
+def api(path): return json.loads(cmd('api',path))
+def save(name,data): (OUT/name).write_text(json.dumps(data,indent=2)+'\n')
+def gql(query,cursor):
+ a=['api','graphql','-f','query='+query]
+ if cursor is not None:a+=['-f','cursor='+cursor]
+ d=json.loads(cmd(*a))
+ if d.get('errors'): raise ValueError(d['errors'])
+ p=d['data']['repository']['pullRequest']; assert p['headRefOid']==HEAD
+ return p
+CHECKS='''query($cursor:String) {
+ repository(owner:"Lucent-Financial-Group",name:"Zeta") {
+  pullRequest(number:16928) {headRefOid commits(last:1) {nodes {commit {
+   oid statusCheckRollup {state contexts(first:50,after:$cursor) {
+    totalCount pageInfo {hasNextPage endCursor}
+    nodes {__typename ... on CheckRun {
+     id databaseId name status conclusion detailsUrl startedAt completedAt
+     checkSuite {commit {oid} workflowRun {databaseId workflow {name}}}
+    } ... on StatusContext {id context state targetUrl createdAt}}
+ }}}}}}}
+}'''
+THREADS='''query($cursor:String) {
+ repository(owner:"Lucent-Financial-Group",name:"Zeta") {
+  pullRequest(number:16928) {headRefOid reviewThreads(first:50,after:$cursor) {
+   totalCount pageInfo {hasNextPage endCursor}
+   nodes {id isResolved isOutdated path line originalLine
+    comments(first:100) {totalCount pageInfo {hasNextPage endCursor}
+     nodes {id databaseId body url createdAt lastEditedAt author {login}}}
+ }}}}
+}'''
+def paged(query,select,filename):
+ cursor=None; cursors=set(); nodes=[]; ids=set(); pages=[]; count=None
+ for i in range(100):
+  p=gql(query,cursor); c=select(p)
+  if count is None:count=c['totalCount']
+  assert c['totalCount']==count
+  for node in c['nodes']:
+   assert node['id'] not in ids; ids.add(node['id'])
+  nodes+=c['nodes']; pages.append({'ObservedAtUtc':now(),'RequestedCursor':cursor,'Connection':c})
+  save(filename,{'HeadSha':HEAD,'Complete':False,'Pages':pages})
+  if not c['pageInfo']['hasNextPage']:
+   assert len(nodes)==count
+   save(filename,{'HeadSha':HEAD,'Complete':True,'Count':count,'Pages':pages})
+   return nodes,len(pages)
+  cursor=c['pageInfo']['endCursor']; assert cursor and cursor not in cursors; cursors.add(cursor)
+ raise ValueError('page cap')
+def checks(p):
+ c=p['commits']['nodes'][0]['commit']; assert c['oid']==HEAD
+ return c['statusCheckRollup']['contexts']
+def pr_meta():
+ p=api(API+'/pulls/16928'); assert p['head']['sha']==HEAD
+ return {k:p[k] for k in ('number','state','draft','merged','mergeable','mergeable_state','merge_commit_sha','merged_at')}|{'HeadSha':p['head']['sha'],'BaseSha':p['base']['sha']}
+def rest_pages(path,key):
+ rows=[]; pages=[]; expected=None
+ for page in range(1,101):
+  d=api(path+('&' if '?' in path else '?')+f'per_page=100&page={page}')
+  if expected is None:expected=d['total_count']
+  assert d['total_count']==expected
+  rows+=d[key]; pages.append(d)
+  if len(d[key])<100:
+   assert len(rows)==expected
+   return rows,pages
+ raise ValueError('rest cap')
+started=now()
+try:
+ before=pr_meta()
+ cs,cp=paged(CHECKS,checks,'checks.json')
+ ts,tp=paged(THREADS,lambda p:p['reviewThreads'],'threads.json')
+ for t in ts:
+  c=t['comments']; assert not c['pageInfo']['hasNextPage'] and c['totalCount']==len(c['nodes'])
+ runs,pages=rest_pages(API+'/actions/runs?head_sha='+HEAD,'workflow_runs')
+ save('runs.json',{'HeadSha':HEAD,'Pages':pages})
+ jobs={}
+ for r in runs:
+  if r['name']=='gate':
+   rows,jp=rest_pages(API+f'/actions/runs/{r["id"]}/jobs','jobs')
+   jobs[r['id']]=rows; save(f'jobs-{r["id"]}.json',{'RunId':r['id'],'Pages':jp})
+ required=subprocess.run([GH,'pr','checks','16928','--repo',REPO,'--required','--json','name,state,bucket,link'],capture_output=True)
+ save('required.json',{'ExitCode':required.returncode,'Stdout':required.stdout.decode(),'Stderr':required.stderr.decode()})
+ after=pr_meta()
+ summary={'StartedAtUtc':started,'FinishedAtUtc':now(),'HeadSha':HEAD,'Complete':True,'PRBefore':before,'PRAfter':after,'CheckPages':cp,'CheckCount':len(cs),'States':dict(Counter(c.get('conclusion') or c.get('status') or c.get('state') for c in cs)),'NonSuccessChecks':[{'Id':c.get('databaseId'),'Name':c.get('name'),'Status':c.get('status'),'Conclusion':c.get('conclusion'),'RunId':((c.get('checkSuite') or {}).get('workflowRun') or {}).get('databaseId')} for c in cs if c.get('conclusion') not in ('SUCCESS','SKIPPED')],'ThreadPages':tp,'ThreadCount':len(ts),'UnresolvedThreads':[{'Id':t['id'],'Path':t['path'],'Comments':t['comments']} for t in ts if not t['isResolved']],'GateRuns':[{'Id':r['id'],'Event':r['event'],'CreatedAt':r['created_at'],'Status':r['status'],'Conclusion':r['conclusion'],'Attempt':r['run_attempt'],'JobConclusions':dict(Counter(x['conclusion'] or x['status'] for x in jobs[r['id']]))} for r in runs if r['name']=='gate'],'RequiredExitCode':required.returncode,'Scope':'Read-only bounded non-atomic snapshot; full pagination and fixed-head binding; no CI or PR mutation.'}
+ save('summary.json',summary)
+ print(json.dumps(summary,indent=2))
+except Exception as e:
+ save('failure.json',{'StartedAtUtc':started,'FinishedAtUtc':now(),'HeadSha':HEAD,'Complete':False,'FailureType':type(e).__name__,'Failure':str(e)})
+ raise

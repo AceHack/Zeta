@@ -1,0 +1,48 @@
+[
+  {
+    "Command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "tests/test_hidden_switch_compiled_falsifiers.py"
+    ],
+    "ExitCode": 0,
+    "Log": "final-static-1.log.gz"
+  },
+  {
+    "Command": [
+      "uv",
+      "run",
+      "ruff",
+      "format",
+      "--check",
+      "zeta_interp/hidden_switch_compiled_falsifiers.py",
+      "tests/test_hidden_switch_compiled_falsifiers.py"
+    ],
+    "ExitCode": 0,
+    "Log": "final-static-2.log.gz"
+  },
+  {
+    "Command": [
+      "uv",
+      "run",
+      "mypy",
+      "--strict",
+      "zeta_interp/hidden_switch_compiled_falsifiers.py"
+    ],
+    "ExitCode": 0,
+    "Log": "final-static-3.log.gz"
+  },
+  {
+    "Command": [
+      "uv",
+      "run",
+      "mypy",
+      "tests/test_hidden_switch_compiled_falsifiers.py"
+    ],
+    "ExitCode": 0,
+    "Log": "final-static-4.log.gz"
+  }
+]

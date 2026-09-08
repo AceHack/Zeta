@@ -1,0 +1,268 @@
+{
+  "Schema": "zeta.research.lossless-validation.v1",
+  "SourceCommit": "82939e5015e7606befaec4fcf9135cbec072ba5a",
+  "Scope": "Native exact-certificate and selector implementation validation only; no registered stream, final CLI graph or measurement admission.",
+  "Artifacts": [
+    {
+      "File": "build-attempt-1.log.gz",
+      "Bytes": 400,
+      "Sha256": "D214AF804324B69A8A3C8EDBBD8639D8BC2E0EB84EAC1B783DBACB4544D90358",
+      "Encoding": "gzip",
+      "StoredBytes": 238,
+      "StoredSha256": "8D1BEDD558842BF8022277ED7256E0100B72E152179906E0F241AD67F6420B7B",
+      "OriginalCapture": ".git/compiled-certificate-check/build-attempt-1.log"
+    },
+    {
+      "File": "build-attempt-2.log.gz",
+      "Bytes": 400,
+      "Sha256": "2FA7995DD1A74D3943FF2BE71ADE7BB428D3E8F53E1135B303E473D1A3F54AA4",
+      "Encoding": "gzip",
+      "StoredBytes": 238,
+      "StoredSha256": "31884CC2CAFAD29E533896E8C444EA5A47CB021FFD8797074571D5F2F1B36942",
+      "OriginalCapture": ".git/compiled-certificate-check/build-attempt-2.log"
+    },
+    {
+      "File": "run-attempt-1.log.gz",
+      "Bytes": 359,
+      "Sha256": "2B74EEC401296A6502B9CC29A15C68D73B73C51AEF7704064EBB286FABBF6788",
+      "Encoding": "gzip",
+      "StoredBytes": 242,
+      "StoredSha256": "88A1735D11870B37C3927BE10152AC1BBF7A7FBD5A89152183D1E8C013EB1B5E",
+      "OriginalCapture": ".git/compiled-certificate-check/run-attempt-1.log"
+    },
+    {
+      "File": "run-attempt-2.log.gz",
+      "Bytes": 65,
+      "Sha256": "415B4461CC8C0E72F1B49A8C0DA584AE7980E4E4DF6E06CE791397D980AEABD4",
+      "Encoding": "gzip",
+      "StoredBytes": 71,
+      "StoredSha256": "FA6D80A919F0233107F4472B13BF7C94D86B61A8CB3BFAE1CD90C1AFC1362419",
+      "OriginalCapture": ".git/compiled-certificate-check/run-attempt-2.log"
+    },
+    {
+      "File": "source-snapshot-1.json.gz",
+      "Bytes": 2246,
+      "Sha256": "63EE1BF2648CF0A2DF6D73C76B56FA67B44F666E195D979103AF3CBA0F3653D8",
+      "Encoding": "gzip",
+      "StoredBytes": 915,
+      "StoredSha256": "EED0701259E7C504B94C35E8122272B24FDBC607F48D75C0F0A2A67E50418759",
+      "OriginalCapture": ".git/compiled-certificate-check/source-snapshot-1.json"
+    },
+    {
+      "File": "Check.attempt-1.fsproj.txt.gz",
+      "Bytes": 1664,
+      "Sha256": "B3FDFCEFA49DC3B8213229168030F52B47FEC1F79F1C2DF16149947FAF689BF9",
+      "Encoding": "gzip",
+      "StoredBytes": 439,
+      "StoredSha256": "C55F15D61A6C59E0CB7D23317B379BC83A8EACB9888AC0C90D58B03607B13520",
+      "OriginalCapture": ".git/compiled-certificate-check/Check.attempt-1.fsproj.txt"
+    },
+    {
+      "File": "Check.fsproj.gz",
+      "Bytes": 1732,
+      "Sha256": "4E4A258007971D2C3219B751B03EC0339D9894DCECEC07ACC02EECCAD40249D9",
+      "Encoding": "gzip",
+      "StoredBytes": 453,
+      "StoredSha256": "0A8B407045DDA0E64ADF01523C7A437F3261CDC82279B015C22FDBBA672A0FCD",
+      "OriginalCapture": ".git/compiled-certificate-check/Check.fsproj"
+    },
+    {
+      "File": "Program.fs.gz",
+      "Bytes": 688,
+      "Sha256": "629844C55DC18B20942583C3FEB322E12F38188AAE2FA2EDA8FA6278F861B6E3",
+      "Encoding": "gzip",
+      "StoredBytes": 395,
+      "StoredSha256": "237B982E4C3B6ECCFEA88D9FF5A194CCAABD9CFC8FCE0FF9DF7DD3EB3B44FCB4",
+      "OriginalCapture": ".git/compiled-certificate-check/Program.fs"
+    },
+    {
+      "File": "Tests.fsproj.gz",
+      "Bytes": 2037,
+      "Sha256": "F99BB900D8AB6A92A3824EF0A9BF57423853E95510ADD5CC459C04AFAC55EABC",
+      "Encoding": "gzip",
+      "StoredBytes": 507,
+      "StoredSha256": "973009F5FCC61C4508BEFDD20C12D014C8280D25A237CD3373A3FE69E42BF0BB",
+      "OriginalCapture": ".git/compiled-certificate-check/Tests.fsproj"
+    },
+    {
+      "File": "tests__Tests.fsproj.gz",
+      "Bytes": 2036,
+      "Sha256": "F36AC3D6B97AD313E2BCD636DBB8219EF4CEA83DB014E7058985DF2067019B62",
+      "Encoding": "gzip",
+      "StoredBytes": 507,
+      "StoredSha256": "754E4529D6FA1396F1984A2641AA7FF705034DC4394A4B12627D29BB9974C9A5",
+      "OriginalCapture": ".git/compiled-certificate-check/tests/Tests.fsproj"
+    },
+    {
+      "File": "test-attempt-1.log.gz",
+      "Bytes": 601,
+      "Sha256": "027254D6E932BBC1D7A0C8156EC7B3EB46652F63E363FAABB39677B4700F4904",
+      "Encoding": "gzip",
+      "StoredBytes": 327,
+      "StoredSha256": "25D4D4900D205E7EA5A7FB0AFF281909AE9D1513A6FE6DF10306A1D50B0045E2",
+      "OriginalCapture": ".git/compiled-certificate-check/test-attempt-1.log"
+    },
+    {
+      "File": "test-attempt-2.log.gz",
+      "Bytes": 1459,
+      "Sha256": "B7F6D1F4D5345D3A3590C6F5AFE263018D28B6A508BD4EBD904D9624C67D8680",
+      "Encoding": "gzip",
+      "StoredBytes": 425,
+      "StoredSha256": "F669C081E93D2F92A39E7207C604E52A3E3E85555DE30BDFD47F4D50598206DC",
+      "OriginalCapture": ".git/compiled-certificate-check/test-attempt-2.log"
+    },
+    {
+      "File": "test-attempt-3.log.gz",
+      "Bytes": 3239,
+      "Sha256": "6D0809AA59F295A486B3D2FCD23AD7D93FFD280665D7517174900EA10A87985C",
+      "Encoding": "gzip",
+      "StoredBytes": 1020,
+      "StoredSha256": "4539504AF3B426AA00AC85E1D108CF2BF097819B586CC6D646899BB48FF36E1F",
+      "OriginalCapture": ".git/compiled-certificate-check/test-attempt-3.log"
+    },
+    {
+      "File": "test-attempt-4.log.gz",
+      "Bytes": 740,
+      "Sha256": "E7CDABB85763884595C2F9018647135446C6C76686212516640CD442C8F2A389",
+      "Encoding": "gzip",
+      "StoredBytes": 343,
+      "StoredSha256": "F4F203EA416B605E01F14EC0A213C2A32C3D21736C83E0349BEF5EB534303954",
+      "OriginalCapture": ".git/compiled-certificate-check/test-attempt-4.log"
+    },
+    {
+      "File": "test-results-3__certificate-attempt-3.trx.gz",
+      "Bytes": 31137,
+      "Sha256": "0A4A7FD30A604B7DAC8010E0033AC69820E226ACA4282358DE575F4CB137E8FD",
+      "Encoding": "gzip",
+      "StoredBytes": 4255,
+      "StoredSha256": "9A32A9870B6C8D559E01C790C12047F396DEC0BC2074FBB97F8D212E1EBC5440",
+      "OriginalCapture": ".git/compiled-certificate-check/test-results-3/certificate-attempt-3.trx"
+    },
+    {
+      "File": "test-results-4__certificate-attempt-4.trx.gz",
+      "Bytes": 25871,
+      "Sha256": "DD13B675FE93CA7AD0DC6E58D763E6F1A8BB2748815CD6DF92A4A5FD6E56E825",
+      "Encoding": "gzip",
+      "StoredBytes": 3391,
+      "StoredSha256": "1638529A2C6C579BF74D77DDEA934363B012AA65D915724309A3296B50F20A81",
+      "OriginalCapture": ".git/compiled-certificate-check/test-results-4/certificate-attempt-4.trx"
+    },
+    {
+      "File": "tests-attempt-2-source.fs.txt.gz",
+      "Bytes": 8582,
+      "Sha256": "1803285DD5D551E8046AF44430A0B1DCC2F20F2622F33C3307A277953C890072",
+      "Encoding": "gzip",
+      "StoredBytes": 2453,
+      "StoredSha256": "E311C1C4838AA1E4E2B12862D9C16D33F88616CCE0B07F28793954756FA80F53",
+      "OriginalCapture": ".git/compiled-certificate-check/tests-attempt-2-source.fs.txt"
+    },
+    {
+      "File": "certificate-initial-source.fs.txt.gz",
+      "Bytes": 23740,
+      "Sha256": "2B5E36887CE2B5FD3229050A13BB2E7F5C2AA6080B6BF1F8FBB8E84ACCF7276E",
+      "Encoding": "gzip",
+      "StoredBytes": 7040,
+      "StoredSha256": "BAD21F09FF3D23D661C1FD03951CE0B17444E2224B0FC94FB7457B01CCE1C6CC",
+      "OriginalCapture": ".git/compiled-certificate-check/certificate-initial-source.fs.txt"
+    },
+    {
+      "File": "native-certificate-attempt-2.json.gz",
+      "Bytes": 62458,
+      "Sha256": "8883D8C91C18F5D53360C64579D6F5241A606E0907E57E06C0CD69941BC1CA7F",
+      "Encoding": "gzip",
+      "StoredBytes": 5828,
+      "StoredSha256": "CA01931AFADAA76985E8E51064B1C789B1B16234041931605F0B5C00590A0C2E",
+      "OriginalCapture": ".git/compiled-certificate-check/native-certificate-attempt-2.json"
+    },
+    {
+      "File": "independent-comparison-1.json.gz",
+      "Bytes": 1593,
+      "Sha256": "59EA9E245B357FDC18299A0EBD7DD78999C8F7976985FFF0F3420865C1C5A44C",
+      "Encoding": "gzip",
+      "StoredBytes": 618,
+      "StoredSha256": "2D871EC95788D1477A2F605D997487A1F77784348D1998CB1CA611E9402BAB04",
+      "OriginalCapture": ".git/compiled-certificate-check/independent-comparison-1.json"
+    },
+    {
+      "File": "fsharp-lint-1.log.gz",
+      "Bytes": 69,
+      "Sha256": "13E16B112F96C8FAD82A17F050A93861A8174B0691B0C6B4B0C7EB539C900ADF",
+      "Encoding": "gzip",
+      "StoredBytes": 89,
+      "StoredSha256": "8EEAC9C1244F5EEE7DD059FCC57DCB5359C6485530E1C81EDD350A67493E676E",
+      "OriginalCapture": ".git/compiled-certificate-check/fsharp-lint-1.log"
+    },
+    {
+      "File": "fsharp-lint-2.log.gz",
+      "Bytes": 16277,
+      "Sha256": "203A5B79CC33E550E882627A02629D5942771013203D60E2E9F4674A737F9113",
+      "Encoding": "gzip",
+      "StoredBytes": 761,
+      "StoredSha256": "EBC70B98DF9497A392037B68485EDF6201F132CA889B83A471A8936B376FB079",
+      "OriginalCapture": ".git/compiled-certificate-check/fsharp-lint-2.log"
+    },
+    {
+      "File": "final-source-output-snapshot.json.gz",
+      "Bytes": 11050,
+      "Sha256": "60E913FDD7B34A955A15223766EFC4C65F1BCD06232C5584970DB4195F45F1E6",
+      "Encoding": "gzip",
+      "StoredBytes": 3009,
+      "StoredSha256": "25A4EAD78D93BE039323A7A3BB618AF06BE8737930826FE6BFF44CBFCBF2C5F0",
+      "OriginalCapture": "coordinator capture at source82939e501"
+    },
+    {
+      "File": "build-attempt-3.log.gz",
+      "Bytes": 401,
+      "Sha256": "36C51839F9D14FA0C144112B2B99B4BB7FBA6D7567B154D746A4BB970D6424E8",
+      "Encoding": "gzip",
+      "StoredBytes": 238,
+      "StoredSha256": "ED19DD97C990F30ACF9B11BC8CBBAFAE382CF453BB080884BC3C9C2AAE63CBC7",
+      "OriginalCapture": ".git/compiled-certificate-check/build-attempt-3.log"
+    },
+    {
+      "File": "run-attempt-3.log.gz",
+      "Bytes": 65,
+      "Sha256": "415B4461CC8C0E72F1B49A8C0DA584AE7980E4E4DF6E06CE791397D980AEABD4",
+      "Encoding": "gzip",
+      "StoredBytes": 71,
+      "StoredSha256": "FA6D80A919F0233107F4472B13BF7C94D86B61A8CB3BFAE1CD90C1AFC1362419",
+      "OriginalCapture": ".git/compiled-certificate-check/run-attempt-3.log"
+    },
+    {
+      "File": "native-certificate-attempt-3.json.gz",
+      "Bytes": 62458,
+      "Sha256": "8883D8C91C18F5D53360C64579D6F5241A606E0907E57E06C0CD69941BC1CA7F",
+      "Encoding": "gzip",
+      "StoredBytes": 5828,
+      "StoredSha256": "CA01931AFADAA76985E8E51064B1C789B1B16234041931605F0B5C00590A0C2E",
+      "OriginalCapture": ".git/compiled-certificate-check/native-certificate-attempt-3.json"
+    },
+    {
+      "File": "independent-comparison-2.json.gz",
+      "Bytes": 510,
+      "Sha256": "DA2AFEEC30B0977B76AC1D213063577E58517D5804001EE1DB22B61EF43BCB51",
+      "Encoding": "gzip",
+      "StoredBytes": 354,
+      "StoredSha256": "09E7F9419AE61C296F4D9CD4AC1B90621A1A72F387B3533EA5F25DDBB9DA6CCA",
+      "OriginalCapture": ".git/compiled-certificate-check/independent-comparison-2.json"
+    },
+    {
+      "File": "independent-compare.py.gz",
+      "Bytes": 1536,
+      "Sha256": "EF857B2AAFD08F2AACA1611110891F02417E0D27DE8EAF981150795DA0E5A74A",
+      "Encoding": "gzip",
+      "StoredBytes": 758,
+      "StoredSha256": "3D2A0DDD2AC939CFE48C7E093201D32B0B52C17AF481F2FE6C96D9C71001601E",
+      "OriginalCapture": ".git/compiled-certificate-check/independent-compare.py"
+    },
+    {
+      "File": "final-rebuilt-output-snapshot.json.gz",
+      "Bytes": 1061,
+      "Sha256": "A9B1B420DF49868E1939F848A9AC3C8F3DD98CAABCCE176990F67D7616E9D98D",
+      "Encoding": "gzip",
+      "StoredBytes": 520,
+      "StoredSha256": "B85797D24DB7A68B236889C21B08AF5DA7A738882D9FC5DD0013EA3F3ACB44E3",
+      "OriginalCapture": "coordinator final scratch build snapshot"
+    }
+  ]
+}

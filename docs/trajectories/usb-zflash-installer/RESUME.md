@@ -602,6 +602,50 @@ Frost look CLI takes named effects
 missing effects is unmeasured, not
 a live look; `/dev/tpmrm0` is not
 `real`; ISO bun `probe` stays null.
+Frost look CLI argv takes named
+effects (`081M1Y5WKS2087G0R002Q7ZKS7`);
+missing `--effects` is unmeasured;
+`--os` is required; ISO bun `probe`
+stays null.
+Frost look CLI conf takes named
+effects (`081M1YAHFVV087G0R001G2TXRE`);
+missing effects is unmeasured;
+`--from-conf` does not write ESP;
+ISO bun `probe` stays null.
+Overlay named-key joins take frost-look
+keys (`081M1YCFES8087G0R000R3MV6Y`);
+parse is not the CLI; ISO bun `probe`
+stays null.
+ISO bun consume reports named frost-look
+keys (`081M1YGP8BF087G0R002Z1YH8R`);
+missing is unmeasured `look`; named
+`"real"` still leaves `probe` null.
+Overlay optional named joins match ISO bun
+missing frost-look keys
+(`081M1YNNVFQ087G0R001J5SEPD`); missing
+both keys is unmeasured, not `missing-os`;
+NamedEnv still requires OS; ISO bun
+`probe` stays null.
+Overlay optional named join takes ISO bun
+JSON look (`081M1YQKYXQ087G0R000NXN8JN`);
+JSON `probe` is ignored even when
+non-null; ISO bun `probe` stays null.
+Frost look CLI takes bun JSON look
+(`081M1YS9661087G0R001YK5CEY`); `--from-json`
+uses `look`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
+Overlay optional named argv takes bun JSON
+`--from-json` (`081M1YWR8EB087G0R002X0SFX7`);
+JSON `probe` is ignored even when
+non-null; ISO bun `probe` stays null.
+Overlay named argv takes bun JSON `--from-json`
+(`081M1Z1FHDW087G0R00210Z0PG`); null look is
+`missing-os`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
+Overlay named bun JSON join takes look
+(`081M1Z36ZJ4087G0R003HFMT2K`); null look is
+`missing-os`; JSON `probe` is ignored;
+ISO bun `probe` stays null.
 glibc-host-into-musl-image is not a
 module; Application.yaml stays Shamir.
 

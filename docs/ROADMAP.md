@@ -7,6 +7,17 @@
 > `docs/research/2026-06-07-two-plane-git-native-database-minimal-nouns-cells-control-plane-three-host-substrates-aaron-otto.md`.
 > Master checklist **081KSXN940008QG0R003FCQ7WT**.
 
+## Active learning research direction: bounded decisions under uncertainty
+
+Aaron's 2026-09-08 direction is to connect distributional inference, relational
+memory, affective propagation, Vision, predictive scheduling and the agent
+resource economy, then use held-out comparisons to choose the next investment.
+The [research program](research/2026-09-08-distributional-learning-resource-aware-integration-direction.md)
+records the current source boundaries, Liouville/QBism correspondence, distinct
+resource units, component ablations and current external benchmark candidates.
+Work item `081M1Z63YMC087G0R003N5FH9X`. This is control-plane research; the
+existing compiled-controller registration remains frozen and separately gated.
+
 ## North Star — the git-native database
 
 A relativistic git-native database: a **reliable data plane** (storage + read/write over git), a
@@ -154,7 +165,8 @@ targeting Core, not a compiler stuffed into Core (WONT-DO 2026-04-17 revisit).
 Design:
 [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md)
 (`081M1HGD1QA087G0R001GRHPFW`). ZetaFS is optional as a product until it wins
-the small-write bench against host FS + `GroupCommitDiskDeltaLog`.
+the small-write bench against host FS + `GroupCommitDiskDeltaLog`. Both legs
+now run (`081M1ZA8S7C087G0R002P9NX40`); numbers still `toy`.
 
 **First-product spec (2026-08-30/31):** ZetaFS is the custom filesystem **for ZetaDB**
 (git/Venti-class CAS, POSIX as a mount, history as a fold, per-entity policy). Not
@@ -547,7 +559,7 @@ Gaps: **fsync floor** (unshipped), **multi-key ACID/isolation** (only single-str
 - **Remaining TLA+ specs** — `TransactionInterleaving`, `ChaosEnvDeterminism`, `ConsistentHashRebalance`
 - **TLC-validation test** — run the `.tla` files in a `dotnet test` to prevent drift
 - **No-`app` needle remaining** — do not fuse `InterruptFeedback` into `FourCornerTrace`; keep Kleisli ISR for interrupts so CHIP-8/9 / scheduler self-prediction stays run-ahead (`081M10AZ6KS087G0R0000SSFMH`)
-- **ZetaDB product** — map landed 2026-09-02 (event log as WAL, tables as views, Flink/Reaqtor feel, Feldera as DBSP competitor not Postgres-on-DBSP). SQL is a package targeting Core, not inside Core. ZD2 freeze-through-ferry (D4) landed (`FreezeLog`). Next: PR12 crash DST for FS *and* DB, ZD1 standing-query bench, ZD4 FS product-existence bench. D9–D12: pointer-not-copy, one cache authority, CoW amplification bound, crash DST. **Bloom vs anti-bloom** (two G-set filters, `{present, absent, unknown}`) is ZD10: toy type plus unit measurements; counting stays shipped. [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) `081M1HGD1QA087G0R001GRHPFW` · `081M1HK4AQE087G0R002RRJXWE` · `081M1T9SMM9087G0R002FS29S4`
+- **ZetaDB product** — map landed 2026-09-02 (event log as WAL, tables as views, Flink/Reaqtor feel, Feldera as DBSP competitor not Postgres-on-DBSP). SQL is a package targeting Core, not inside Core. ZD2 freeze-through-ferry (D4) landed (`FreezeLog`). ZD4 both-legs N=32 storm runs; one named ShortRun is unmetered (`081M1ZE5WSP087G0R002CVMVCN`). Next: PR12 crash DST for FS *and* DB, ZD1 standing-query bench. D9–D12: pointer-not-copy, one cache authority, CoW amplification bound, crash DST. **Bloom vs anti-bloom** (two G-set filters, `{present, absent, unknown}`) is ZD10: toy type plus unit measurements; counting stays shipped. [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) `081M1HGD1QA087G0R001GRHPFW` · `081M1HK4AQE087G0R002RRJXWE` · `081M1T9SMM9087G0R002FS29S4`
 - **ZetaFS dual-fold remaining** — Parent edge shipped. **CLI factory path:** `zeta init` writes `.zetafs`; `StoreSelect` prefers it over LibGit2Sharp git discover (`081M177JJX9087G0R000BDYG88`). Own BLAKE3 (`Blake3Spec`) is the store hasher; NuGet is the test oracle. Core's `defaultHasher` stays XxHash128. Remaining: factory scripts still exec `git`/`gh`; git fallback stays for repos without `.zetafs`. First-product cut (CAS store, per-entity policy, log-as-truth, POSIX as a mount) is specified in [`docs/design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md`](design/2026-08-30-zetafs-first-product-cas-store-per-entity-policy.md) (`081M1C59ZG4087G0R000VM8DZN`). ZetaDB product map and FS requirements D1–D8: [`docs/design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md`](design/2026-09-02-zetadb-roadmap-event-sourced-streaming-sql-not-feldera-on-postgres.md) (`081M1HGD1QA087G0R001GRHPFW`). `081M108RYNT087G0R001JSRNZE`
 - **DU expand remaining** — route `NextAction` / `DbCommand` through `DuExpand`; BNN chooser reads SoftValue over DU cases (`081M10AAVAT087G0R0027M0GV5`)
 - **Next extract after Harny** — pick by measured git-history co-change **and** live dependency graph (not by a layer name); DV2 change-rate *or* toolchain closure (round 3: `zeta-formal` / `zeta-wasm` strongest on CRP); **12-factor** as the app-shaped categorization of an extract. Dogfood first, then `create-repo` cutover (gated). `081M120GFSV087G0R003XCPC64` · `081M12CZRHC087G0R0008X7SYG`

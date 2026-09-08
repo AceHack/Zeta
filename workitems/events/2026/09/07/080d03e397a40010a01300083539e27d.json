@@ -1,0 +1,14 @@
+{
+  "id": "080d03e397a40010a01300083539e27d",
+  "at": "2026-09-07T15:18:23.616Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1Y75X40087G0R000HRVFP5",
+    "type": "task",
+    "title": "GHCR packages are public — the platform token blocker is closed",
+    "slug": "ghcr-packages-are-public-the-platform-token-blocker-is-close",
+    "priority": "P2",
+    "filename": "081M1Y75X40087G0R000HRVFP5-ghcr-packages-are-public-the-platform-token-blocker-is-close.md"
+  }
+}

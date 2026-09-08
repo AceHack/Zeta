@@ -1,0 +1,25 @@
+{
+  "Invocation": [
+    "python3",
+    "docs/research/hidden-switch-compiled-validation/2026-09-08/learning-publication-successor-audit/audit.py"
+  ],
+  "ObservedToolExitCode": 0,
+  "Scope": "stdlib archive and complete-tree audit; read-only Git; no project execution",
+  "Records": [
+    {
+      "File": "audit.py",
+      "Bytes": 7125,
+      "Sha256": "8451548757be7b23f210162e9a5cf4f1e2a7a5057476f8872c8dc60f197cbd42"
+    },
+    {
+      "File": "result.json",
+      "Bytes": 2327,
+      "Sha256": "21655f1c576f834ae5966215d6a88b7764f756299e34cdfbaf7692516a51f006"
+    },
+    {
+      "File": "stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

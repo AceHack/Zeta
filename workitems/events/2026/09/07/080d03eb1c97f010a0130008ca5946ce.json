@@ -1,0 +1,14 @@
+{
+  "id": "080d03eb1c97f010a0130008ca5946ce",
+  "at": "2026-09-07T19:41:12.830Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YP74QY087G0R002QMN71M",
+    "type": "task",
+    "title": "FUSE opcode dispatcher over Fake VFS no kernel",
+    "slug": "fuse-opcode-dispatcher-over-fake-vfs-no-kernel",
+    "priority": "P2",
+    "filename": "081M1YP74QY087G0R002QMN71M-fuse-opcode-dispatcher-over-fake-vfs-no-kernel.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 16964,
+  "archive_path": "docs/history/pr-reviews/PR-16964-feat-081m1yh9tp1087g0r002s6gbzx-fake-vfs-create-mkdir-with-collator-refuse.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-07T18:33:17.797Z",
+  "schema_version": "v1",
+  "commit_sha": "f6835661f873e94f02f0f8d49df05dff151dbb98",
+  "title": "feat(081M1YH9TP1087G0R002S6GBZX): Fake VFS create mkdir with collator refuse",
+  "state": "MERGED",
+  "merged_at": "2026-09-07T18:32:35Z",
+  "head_ref": "feat/zetafs-posix-vfs-create"
+}

@@ -31,6 +31,7 @@
     <Compile Include="EncryptedDiskBackingStoreBench.fs" />
     <Compile Include="ZetaFsVolumeCryptoBench.fs" />
     <Compile Include="FerryThrottlerBench.fs" />
+    <Compile Include="Zd4ProductExistenceBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -38,6 +39,7 @@
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Bonsai\Zeta.Core.CSharp.Bonsai.csproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Git\Zeta.Core.FSharp.Git.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Blake3\Zeta.Core.FSharp.Blake3.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

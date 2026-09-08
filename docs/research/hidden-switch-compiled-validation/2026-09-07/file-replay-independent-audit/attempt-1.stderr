@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/acehack/.zeta/agents/codex/Zeta-rendered-training-reference-20260906/docs/research/hidden-switch-compiled-validation/2026-09-07/file-replay-independent-audit/audit.py", line 97, in <module>
+    raise AssertionError('undeclared archive entry kind')
+AssertionError: undeclared archive entry kind

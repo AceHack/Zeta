@@ -553,7 +553,6 @@ module ZetaFsFreeze =
                         | Some cas ->
                             cas.Put(hex, bytes)
                             known.[id] <- uint64 bytes.Length
-                            persist ()
                             tryWrite (ZetaFsPath.combine2 storeDir "cas")
 
                             if item.Durable then
@@ -994,6 +993,37 @@ module ZetaFsFreeze =
 
         acc
 
+    let private posixPath (storeDir: string) =
+        ZetaFsPath.combine2 storeDir "posix-meta"
+
+    let private persistPosix
+        (storeDir: string)
+        (metas: Dictionary<System.UInt128, ZetaFsPosixMeta.PosixMeta>)
+        =
+        let sb = StringBuilder()
+
+        for kv in metas do
+            sb.Append(ZetaFsPosixMeta.format kv.Value).Append('\n') |> ignore
+
+        FileSystemIo.writeAllText (FileSystem.Current) (posixPath storeDir) (sb.ToString())
+
+    let private loadPosix (storeDir: string) : Dictionary<System.UInt128, ZetaFsPosixMeta.PosixMeta> =
+        let acc = Dictionary<System.UInt128, ZetaFsPosixMeta.PosixMeta>()
+        let fs = FileSystem.Current
+        let path = posixPath storeDir
+
+        if fs.Exists path then
+            let text = Encoding.UTF8.GetString(fs.ReadAllBytes path)
+            let lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n')
+
+            for raw in lines do
+                if raw.Length > 0 then
+                    match ZetaFsPosixMeta.parse raw with
+                    | None -> ()
+                    | Some meta -> acc.[meta.Entity.Raw] <- meta
+
+        acc
+
     let private loadNamespace (storeDir: string) (root: ZetaFsNamespace.EntityId) : ZetaFsNamespace.State =
         let fs = FileSystem.Current
         let path = bindingsPath storeDir
@@ -1070,7 +1100,8 @@ module ZetaFsFreeze =
             config: FerryThrottlerConfig,
             manual: bool,
             blockIo: FreezeBlockIo option,
-            objectCas: BlockCas option
+            objectCas: BlockCas option,
+            clock: ISimulationEnvironment
         ) =
         let gate = obj ()
         let commits = Dictionary<ContentHash256, FreezeResult>()
@@ -1097,6 +1128,7 @@ module ZetaFsFreeze =
             )
         let policyState = ref (loadPolicy storeDir)
         let symlinkTargets = loadSymlinks storeDir
+        let posixMeta = loadPosix storeDir
         let log =
             new FreezeLog(
                 storeDir,
@@ -1164,6 +1196,8 @@ module ZetaFsFreeze =
         member internal _.Ns = nsState
         member internal _.Policy = policyState
         member internal _.Symlinks = symlinkTargets
+        member internal _.Posix = posixMeta
+        member _.Clock = clock
 
         interface IDisposable with
             member _.Dispose() =
@@ -1173,6 +1207,15 @@ module ZetaFsFreeze =
     let private applyPolicyCatalog (volume: Volume) (catalog: ZetaFsPolicy.Catalog) =
         persistPolicy volume.StoreDir catalog
         volume.Policy := catalog
+
+    let private stampPosix
+        (volume: Volume)
+        (id: ZetaFsNamespace.EntityId)
+        (kind: ZetaFsNamespace.EntityKind)
+        =
+        let now = ZetaFsPosixMeta.unixNs volume.Clock
+        volume.Posix.[id.Raw] <- ZetaFsPosixMeta.born id kind now
+        persistPosix volume.StoreDir volume.Posix
 
     let private logDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "log"
     let private objectsDir (v: Volume) = ZetaFsPath.combine2 v.StoreDir "objects"
@@ -1506,6 +1549,7 @@ module ZetaFsFreeze =
         (manual: bool)
         (blockIo: FreezeBlockIo option)
         (objectCas: BlockCas option)
+        (clock: ISimulationEnvironment)
         : Volume =
         let fs = FileSystem.Current
         fs.CreateDirectory storeDir
@@ -1525,10 +1569,16 @@ module ZetaFsFreeze =
                     )
                 FileSystemIo.writeAllText fs rootPath (ZetaFsNamespace.EntityId.format ns.Root)
 
-        let volume = new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas)
+        let volume =
+            new Volume(storeDir, mutbuf, observer, session, config, manual, blockIo, objectCas, clock)
 
         try
             lock volume.Gate (fun () ->
+                match volume.Root with
+                | Some root when not (volume.Posix.ContainsKey root.Raw) ->
+                    stampPosix volume root ZetaFsNamespace.EntityKind.Directory
+                | _ -> ()
+
                 match session with
                 | None -> replayPlainLog fs volume
                 | Some s -> replaySealedLog fs volume s)
@@ -1549,7 +1599,7 @@ module ZetaFsFreeze =
         fs.CreateDirectory(ZetaFsPath.combine2 storeDir "log")
         let path = ZetaFsPath.combine3 storeDir "log" "freeze"
         let io = FileSystemBlockIo(fs, path, 4096)
-        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile io)) None SystemEnvironment.Default
 
     let private hostFileStore
         (storeDir: string)
@@ -1563,7 +1613,7 @@ module ZetaFsFreeze =
         let logIo = FileSystemBlockIo(fs, ZetaFsPath.combine3 storeDir "log" "freeze", 4096)
         let casIo = FileSystemBlockIo(fs, ZetaFsPath.combine2 storeDir "cas", 4096)
         let cas = BlockCas(casIo)
-        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas)
+        createFull storeDir mutbuf observer session defaultConfig manual (Some(HostFile logIo)) (Some cas) SystemEnvironment.Default
 
     let createWith
         (storeDir: string)
@@ -1605,7 +1655,15 @@ module ZetaFsFreeze =
         (mutbuf: ZetaFsMutbuf.Catalog)
         (observer: IDurabilityObserver option)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true None None
+        createFull storeDir mutbuf observer None defaultConfig true None None SystemEnvironment.Default
+
+    let createManualStreamWith
+        (storeDir: string)
+        (mutbuf: ZetaFsMutbuf.Catalog)
+        (observer: IDurabilityObserver option)
+        (clock: ISimulationEnvironment)
+        : Volume =
+        createFull storeDir mutbuf observer None defaultConfig true None None clock
 
     let createManualWithStream
         (storeDir: string)
@@ -1613,7 +1671,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (session: ZetaFsCrypto.Session option)
         : Volume =
-        createFull storeDir mutbuf observer session defaultConfig true None None
+        createFull storeDir mutbuf observer session defaultConfig true None None SystemEnvironment.Default
 
     /// DST / test: no background ferry. Caller drives with `pumpLog`.
     /// Journaled log and CAS objects ride `FileSystemBlockIo`.
@@ -1641,7 +1699,7 @@ module ZetaFsFreeze =
         (observer: IDurabilityObserver option)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated blocks)) None
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated blocks)) None SystemEnvironment.Default
 
     /// DST: sealed Journaled frames through `IBlockIo`. Same dual-slot
     /// superblock as `createManualWithBlocks`. Wrong-key MAC on the first
@@ -1653,7 +1711,7 @@ module ZetaFsFreeze =
         (session: ZetaFsCrypto.Session)
         (blocks: SimulatedBlockIo)
         : Volume =
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated blocks)) None
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated blocks)) None SystemEnvironment.Default
 
     /// DST: log on one simulated disk, CAS objects on another. Two devices
     /// so a crash arm on objects cannot tear the log. LBA 0 and 1 on each
@@ -1665,7 +1723,7 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(Simulated logBlocks)) (Some objectCas) SystemEnvironment.Default
 
     /// DST inject: log is an already-populated `FileSystemBlockIo` polyfill
     /// (e.g. `SimulatedBlockIo.ReplayTo`). CAS is a `BlockCas` on a second
@@ -1677,7 +1735,7 @@ module ZetaFsFreeze =
         (logFile: FileSystemBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logFile)) (Some objectCas)
+        createFull storeDir mutbuf observer None defaultConfig true (Some(HostFile logFile)) (Some objectCas) SystemEnvironment.Default
 
     /// DST: sealed Journaled log on one disk, CAS objects on another.
     let createManualWithSealedBlockStore
@@ -1688,7 +1746,7 @@ module ZetaFsFreeze =
         (logBlocks: SimulatedBlockIo)
         (objectCas: BlockCas)
         : Volume =
-        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas)
+        createFull storeDir mutbuf observer (Some session) defaultConfig true (Some(Simulated logBlocks)) (Some objectCas) SystemEnvironment.Default
 
     /// DST: journaled freeze log through the `FileSystemBlockIo` polyfill
     /// (one host file, LBA offsets). Same door as `createManual`.
@@ -1761,21 +1819,32 @@ module ZetaFsFreeze =
                     (ZetaFsNamespace.ActorId "freeze"))
             Ok next
 
-    /// Mint a File under ROOT and persist the TagBinding. First bind copies
-    /// nearest ByPrefix or VolumeDefault onto ByEntity. Reopen
-    /// `liveResolve` must find the same id. No ROOT => None.
-    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+    /// Mint a File under `parent` and persist the TagBinding. First bind
+    /// copies nearest ByPrefix or VolumeDefault onto ByEntity.
+    let bindFileUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
         lock volume.Gate (fun () ->
-            match volume.Root, !volume.Ns with
-            | Some root, Some state ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
                 let entropy =
                     ZetaFsNamespace.Entropy(fun () -> SystemEnvironment.Default.NextInt64())
                 let id, minted = ZetaFsNamespace.mint state ZetaFsNamespace.EntityKind.File entropy
 
-                match persistBind volume minted root name id with
+                match persistBind volume minted parent name id with
                 | Error e -> Error e
-                | Ok _ -> Ok id
-            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+                | Ok _ ->
+                    stampPosix volume id ZetaFsNamespace.EntityKind.File
+                    Ok id)
+
+    /// Mint a File under ROOT. No ROOT => UnknownEntity.
+    let bindFile (volume: Volume) (name: byte[]) : Result<ZetaFsNamespace.EntityId, ZetaFsNamespace.BindError> =
+        match volume.Root with
+        | Some root -> bindFileUnder volume root name
+        | None -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero })
 
     /// Mint a Directory under `parent` and persist the TagBinding.
     let bindDirectory
@@ -1793,7 +1862,9 @@ module ZetaFsFreeze =
 
                 match persistBind volume minted parent name id with
                 | Error e -> Error e
-                | Ok _ -> Ok id)
+                | Ok _ ->
+                    stampPosix volume id ZetaFsNamespace.EntityKind.Directory
+                    Ok id)
 
     /// Mint a Symlink under `parent`. Body is UTF-8 target bytes, not a
     /// resolved path. Reopen `readSymlink` must return the same bytes.
@@ -1816,6 +1887,7 @@ module ZetaFsFreeze =
                 | Ok _ ->
                     volume.Symlinks.[id.Raw] <- target
                     persistSymlinks volume.StoreDir volume.Symlinks
+                    stampPosix volume id ZetaFsNamespace.EntityKind.Symlink
                     Ok id)
 
     let readSymlink (volume: Volume) (id: ZetaFsNamespace.EntityId) : byte[] option =
@@ -1866,19 +1938,28 @@ module ZetaFsFreeze =
                     volume.Ns := Some next
                     Ok())
 
-    /// POSIX unlink: append Tombstone under ROOT. Does not retract the Live
-    /// row. Reopen `liveResolve` must be None.
-    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+    /// POSIX unlink: append Tombstone under `parent`. Does not retract Live.
+    let unlinkUnder
+        (volume: Volume)
+        (parent: ZetaFsNamespace.EntityId)
+        (name: byte[])
+        : Result<unit, ZetaFsNamespace.BindError> =
         lock volume.Gate (fun () ->
-            match volume.Root, !volume.Ns with
-            | Some root, Some state ->
-                match ZetaFsNamespace.unlink state root name (ZetaFsNamespace.ActorId "freeze") with
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity parent)
+            | Some state ->
+                match ZetaFsNamespace.unlink state parent name (ZetaFsNamespace.ActorId "freeze") with
                 | Error e -> Error e
                 | Ok next ->
                     persistNamespace volume.StoreDir next
                     volume.Ns := Some next
-                    Ok()
-            | _ -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero }))
+                    Ok())
+
+    /// POSIX unlink under ROOT.
+    let unlinkFile (volume: Volume) (name: byte[]) : Result<unit, ZetaFsNamespace.BindError> =
+        match volume.Root with
+        | Some root -> unlinkUnder volume root name
+        | None -> Error(ZetaFsNamespace.UnknownEntity { Raw = System.UInt128.Zero })
 
     let liveResolve (volume: Volume) (name: byte[]) : ZetaFsNamespace.EntityId option =
         lock volume.Gate (fun () ->
@@ -1905,6 +1986,55 @@ module ZetaFsFreeze =
             match !volume.Ns with
             | None -> Error(ZetaFsNamespace.UnknownEntity dir)
             | Some state -> ZetaFsNamespace.readdir state dir)
+
+    let getattr
+        (volume: Volume)
+        (id: ZetaFsNamespace.EntityId)
+        : Result<ZetaFsPosixMeta.PosixStat, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity id)
+            | Some state ->
+                match Map.tryFind id state.Entities with
+                | None -> Error(ZetaFsNamespace.UnknownEntity id)
+                | Some kind ->
+                    let meta =
+                        match volume.Posix.TryGetValue id.Raw with
+                        | true, m -> m
+                        | false, _ ->
+                            ZetaFsPosixMeta.born id kind (ZetaFsPosixMeta.unixNs volume.Clock)
+
+                    let size =
+                        match ZetaFsMutbuf.tryLiveLength volume.Mutbuf id with
+                        | Some n -> n
+                        | None -> meta.Size
+
+                    Ok
+                        { Meta = meta
+                          Nlink = ZetaFsNamespace.liveNlink state id
+                          Size = size })
+
+    let setattr
+        (volume: Volume)
+        (id: ZetaFsNamespace.EntityId)
+        (patch: ZetaFsPosixMeta.PosixSetattr)
+        : Result<unit, ZetaFsNamespace.BindError> =
+        lock volume.Gate (fun () ->
+            match !volume.Ns with
+            | None -> Error(ZetaFsNamespace.UnknownEntity id)
+            | Some state ->
+                match Map.tryFind id state.Entities with
+                | None -> Error(ZetaFsNamespace.UnknownEntity id)
+                | Some kind ->
+                    let now = ZetaFsPosixMeta.unixNs volume.Clock
+                    let current =
+                        match volume.Posix.TryGetValue id.Raw with
+                        | true, m -> m
+                        | false, _ -> ZetaFsPosixMeta.born id kind now
+
+                    volume.Posix.[id.Raw] <- ZetaFsPosixMeta.apply current patch now
+                    persistPosix volume.StoreDir volume.Posix
+                    Ok())
 
     /// Title at `at` (inclusive). Tombstone does not erase prior Live.
     let resolveAt

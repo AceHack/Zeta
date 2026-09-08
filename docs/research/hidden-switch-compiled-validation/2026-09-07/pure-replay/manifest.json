@@ -1,0 +1,66 @@
+{
+  "Schema": "zeta.hidden-switch.compiled.pure-replay-validation.v1",
+  "RecordedAt": "2026-09-07T16:25:15.235147+00:00",
+  "SourceCommit": "3a7cc51a7473b9ef19f760cb6758f4808ffacd5c",
+  "Branch": "codex/hidden-switch-compiled-reference-20260907",
+  "Sources": [
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_replay.py",
+      "Bytes": 10004,
+      "Sha256": "4ed2cf49d070f0d9ce3243dd634ba53fe35def36742d26abeb7644469dfbba45"
+    },
+    {
+      "Path": "src/Interp.Python/tests/test_hidden_switch_compiled_replay.py",
+      "Bytes": 13033,
+      "Sha256": "95af3aa4e7639108474fbb63a0bddcd1542e6947ca7c778a2a1830f2c04179a9"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_ieee.py",
+      "Bytes": 7559,
+      "Sha256": "702a5e6e6bd330cb4d27dd3c3bddbbeba779ea8d6127249efd7e9ecbfa54d8c4"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_certificate.py",
+      "Bytes": 19745,
+      "Sha256": "0ad02607ff6fd06620f9fc447b653e1798bbfba566cd7a4142c0c3c0256ecec3"
+    },
+    {
+      "Path": "src/Interp.Python/zeta_interp/hidden_switch_compiled_reference.py",
+      "Bytes": 23008,
+      "Sha256": "f9c88b46766034ef67dd78380213ba9c3cc153762d01505bb615dc69a3175b6a"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "focused-python.log.gz",
+      "Compression": "gzip",
+      "Bytes": 127,
+      "Sha256": "1dad64e8cda076d7bec8b310cb576c65d8e4095e9dea8e57bccf2415538f305f",
+      "DecompressedBytes": 186,
+      "DecompressedSha256": "03e90b93a208ae9f2b1e9f73be22dc037ba7c601d0f22b4a667368c285f4090e",
+      "LiteralControls": []
+    },
+    {
+      "Path": "source-publication.log.gz",
+      "Compression": "gzip",
+      "Bytes": 664,
+      "Sha256": "ba4a2aecb457d782ec9093da4d0b7567ec65bd6e040276e432fbb1184284ed7b",
+      "DecompressedBytes": 1760,
+      "DecompressedSha256": "508bead71a49d4b07d30f1f47595d3e491869d61f8170a046ccf524ca845a17e",
+      "LiteralControls": []
+    }
+  ],
+  "PythonTests": 59,
+  "ScalarRows": 222,
+  "ScalarChoiceRecords": 444,
+  "NewPythonHandEpisodes": 48,
+  "HandChoiceRecords": 768,
+  "HandObservationRecords": 816,
+  "PayloadOrigin": "independent Python reference fixtures, not native-produced inputs",
+  "OldNativeControlsAdmitted": 0,
+  "FalsifierAdmissionPerformed": false,
+  "NativeConformancePerformed": false,
+  "RuntimeAndOuterAdmissionPerformed": false,
+  "RegisteredSourceRunsPerformed": false,
+  "CostMeasurementsPerformed": false
+}

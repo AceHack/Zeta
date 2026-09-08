@@ -1,0 +1,14 @@
+{
+  "id": "080d03e8a7560810a0130008795413b3",
+  "at": "2026-09-07T18:15:17.953Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M1YH9TP1087G0R002S6GBZX",
+    "type": "task",
+    "title": "Fake VFS create mkdir with collator refuse",
+    "slug": "fake-vfs-create-mkdir-with-collator-refuse",
+    "priority": "P2",
+    "filename": "081M1YH9TP1087G0R002S6GBZX-fake-vfs-create-mkdir-with-collator-refuse.md"
+  }
+}

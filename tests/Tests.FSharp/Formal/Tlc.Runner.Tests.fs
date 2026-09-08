@@ -238,6 +238,47 @@ let private isCi =
     | _ -> false
 
 
+/// Recursive delete that survives Windows' read-only bit.
+///
+/// `git init` marks everything under `.git/objects` READ-ONLY, and Windows
+/// refuses to unlink a read-only file, so `Directory.Delete(path, true)` throws
+/// `UnauthorizedAccessException` mid-sweep. POSIX ignores the bit on unlink,
+/// which is why this only ever bit Windows -- and why only the ONE test in this
+/// file that runs `git init` needs it. The other three scratch trees hold no
+/// `.git`, so they keep the plain delete rather than acquiring a helper they do
+/// not need.
+///
+/// Clearing the attribute is BEST-EFFORT per file and the `Directory.Delete`
+/// below is what actually enforces cleanup: a file we cannot un-mark still fails
+/// loudly there rather than being silently skipped here. That ordering is the
+/// point -- the swallow cannot hide a failure, it can only fail to prevent one.
+/// Read a file another handle may still hold OPEN FOR WRITING.
+///
+/// `File.ReadAllText` opens with share flags that exclude a concurrent writer.
+/// On Windows that is an `IOException` (`IO_SharingViolation_File`) rather than a
+/// read; POSIX imposes no such restriction, which is why the plain call worked
+/// everywhere for as long as the fixture's grandchild could not survive its
+/// launcher on Windows. Once `detached: true` fixed THAT, the surviving writer
+/// made the read illegal -- a second platform difference standing behind the
+/// first, and only reachable after the first was fixed.
+///
+/// `FileShare.ReadWrite` is the explicit statement that a writer is expected and
+/// tolerated. It is the right flag here rather than a retry, because the writer
+/// is not transient: the whole point of the fixture is that it is still holding
+/// the pipe open when this read happens.
+let private readTextSharedWithWriter (path: string) =
+    use stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+    use reader = new StreamReader(stream)
+    reader.ReadToEnd()
+
+
+let private deleteGitScratchTree (path: string) =
+    if Directory.Exists path then
+        for file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories) do
+            try File.SetAttributes(file, FileAttributes.Normal) with _ -> ()
+        Directory.Delete(path, true)
+
+
 let private isLinuxX64NonSlim () =
     let isLinux =
         System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
@@ -756,7 +797,8 @@ let ``actual source collection admits unstaged and new helpers but refuses ignor
         File.WriteAllText(Path.Combine(specs, "Ignored.tla"), "must not silently omit this helper")
         let error = Assert.Throws<InvalidOperationException>(fun () -> sources() |> ignore)
         Assert.Contains("ignored local source input would be omitted: Ignored.tla", error.Message)
-    finally Directory.Delete(scratch, true)
+    // `git init` above leaves read-only objects; see `deleteGitScratchTree`.
+    finally deleteGitScratchTree scratch
 
 
 [<Fact>]
@@ -788,6 +830,35 @@ let ``owned process capture retains probe streams and bounds timeout without Jav
 
 [<Fact>]
 let ``probe cancellation drains inherited pipes after observed launcher exit`` () =
+    // THE HOLDER IS SPAWNED DETACHED, and that is a cross-platform requirement
+    // rather than a stylistic choice.
+    //
+    // What is under test is that the drain stays BOUNDED when the captured
+    // process exits while some OTHER process still holds the write end of its
+    // pipe -- `CopyToAsync` never sees EOF, so `WhenAll` must be released by the
+    // deadline rather than hanging forever. That needs a grandchild which (a)
+    // inherits the launcher's stdout and (b) OUTLIVES it. The inheritance is
+    // intrinsic: .NET cannot spawn the holder itself, because a second
+    // .NET-spawned process would get its own pipe, not this one.
+    //
+    // The first draft used `Bun.spawn(..., {stdout:'inherit'})` + `child.unref()`.
+    // That satisfies (a) everywhere and (b) only on POSIX: `unref()` detaches the
+    // child from Bun's event loop, NOT from the OS. On Windows the grandchild
+    // stays in the launcher's job object and is terminated when the launcher
+    // exits, so `Process.GetProcessById` threw `ArgumentException: MissingProcess`
+    // before the drain was ever exercised -- 53 of 59 runs on `windows-2025` and
+    // `windows-11-arm`, invisible to `gate (required)` the whole time.
+    //
+    // `node:child_process.spawn(..., { detached: true })` is the documented
+    // cross-platform mechanism for outliving a parent: `setsid` on POSIX,
+    // `DETACHED_PROCESS` on Windows. `stdio: ['ignore','inherit','inherit']`
+    // keeps property (a) exactly as before.
+    //
+    // HONEST LIMIT: this cannot be verified from macOS or Linux, where the old
+    // fixture already worked -- only Windows CI can falsify it. It is landed
+    // WITHOUT a platform skip on purpose: a skip would hide whether the redesign
+    // worked, and Windows is already red, so an unsuccessful attempt costs a
+    // cycle rather than a regression.
     let scratch = Path.Combine(repoRoot, "TestResults", "tlc-diagnostics", "inherited-pipe-fixture-" + Guid.NewGuid().ToString("N"))
     Directory.CreateDirectory scratch |> ignore
     let stdout = Path.Combine(scratch, "stdout.log")
@@ -813,9 +884,17 @@ let ``probe cancellation drains inherited pipes after observed launcher exit`` (
         try
             try
                 let bun = which "bun" |> Option.defaultWith (fun () -> failwith "synthetic process fixture requires the configured Bun runtime")
+                // `process.stdout.write(String(pid))`, NOT `console.log(pid)`, and the
+                // difference is a real bug this test caught on macOS. Bun COLOURISES
+                // numbers in `console.log`, so the captured pipe held
+                // `ESC[0m ESC[33m 74140 ESC[0m` and the comparison against a bare PID
+                // failed with "Strings differ" while printing two identical-looking
+                // values -- the escapes are invisible in the diff, and `.Trim()` does
+                // not remove them. Writing the string directly emits exactly the bytes
+                // asserted, with no dependence on TTY detection or NO_COLOR.
                 // PID ownership is independent of the drain path under test. Rename
                 // publishes complete bytes; readiness/exit precede cancellation.
-                let script = "const fs=require('node:fs');const child=Bun.spawn([process.execPath,'-e','Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)'],{stdout:'inherit',stderr:'inherit'});child.unref();fs.writeFileSync(process.argv[1]+'.partial',String(child.pid));fs.renameSync(process.argv[1]+'.partial',process.argv[1]);console.log(child.pid);process.exit(0)"
+                let script = "const fs=require('node:fs');const cp=require('node:child_process');const child=cp.spawn(process.execPath,['-e','Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0)'],{detached:true,stdio:['ignore','inherit','inherit']});child.unref();fs.writeFileSync(process.argv[1]+'.partial',String(child.pid));fs.renameSync(process.argv[1]+'.partial',process.argv[1]);process.stdout.write(String(child.pid));process.exit(0)"
                 let info = ProcessStartInfo(bun)
                 info.WorkingDirectory <- scratch
                 info.UseShellExecute <- false
@@ -845,7 +924,7 @@ let ``probe cancellation drains inherited pipes after observed launcher exit`` (
                 Assert.Equal(0, captured.ExitCode)
                 Assert.True captured.TimedOut
                 Assert.False child.HasExited
-                Assert.Equal(pid.ToString(Globalization.CultureInfo.InvariantCulture), File.ReadAllText(stdout).Trim())
+                Assert.Equal(pid.ToString(Globalization.CultureInfo.InvariantCulture), (readTextSharedWithWriter stdout).Trim())
             with error ->
                 primaryFailure <- Some error
                 recordFailure "fixture-failure.json" (box {| Stage = stage; Error = error.ToString() |})

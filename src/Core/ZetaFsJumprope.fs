@@ -401,15 +401,23 @@ module ZetaFsJumprope =
 
     let private chunkAll (chunker: ChunkerId) (bytes: byte[]) : byte[][] =
         let minC, avgC, maxC = sizes chunker
-        let c = FastCdcChunker(minC, avgC, maxC)
-        c.Push(ReadOnlySpan<byte> bytes)
-        c.Flush()
-        let chunks = c.DrainChunks()
 
-        if chunks.Length = 0 then
+        if isNull bytes || bytes.Length = 0 then
             [| Array.empty |]
+        elif bytes.Length <= minC then
+            // FastCdcChunker allocates maxChunk*4 (256 KiB at v1). A 1-byte
+            // freeze must not pay that. Copy so Cas does not alias mutbuf.
+            [| Array.copy bytes |]
         else
-            chunks
+            let c = FastCdcChunker(minC, avgC, maxC)
+            c.Push(ReadOnlySpan<byte> bytes)
+            c.Flush()
+            let chunks = c.DrainChunks()
+
+            if chunks.Length = 0 then
+                [| Array.empty |]
+            else
+                chunks
 
     /// FastCDC + Jumprope. Small files (below min-chunk) are a single-leaf rope.
     let build (chunker: ChunkerId) (bytes: byte[]) : Rope =

@@ -30,7 +30,9 @@ module ZetaFsMutbuf =
         { Entity: ZetaFsNamespace.EntityId
           Coherence: Coherence
           /// Close-to-open private copy. None on the shared path.
-          mutable Isolated: byte[] option }
+          mutable Isolated: byte[] option
+          /// Close-to-open only: close publishes Isolated iff this fd wrote.
+          mutable Dirty: bool }
 
     type Slot =
         { Entity: ZetaFsNamespace.EntityId
@@ -50,6 +52,39 @@ module ZetaFsMutbuf =
 
     let private dataPath catalog id = ZetaFsPath.combine2 (slotPath catalog id) "data"
     let private genPath catalog id = ZetaFsPath.combine2 (slotPath catalog id) "gen"
+    let private slotFile catalog id = ZetaFsPath.combine2 (slotPath catalog id) "slot"
+
+    let private encodeSlot (generation: uint64) (live: byte[]) : byte[] =
+        let prefix =
+            Encoding.ASCII.GetBytes(generation.ToString(CultureInfo.InvariantCulture) + "\n")
+
+        let payload = Array.zeroCreate (prefix.Length + live.Length)
+        Buffer.BlockCopy(prefix, 0, payload, 0, prefix.Length)
+
+        if live.Length > 0 then
+            Buffer.BlockCopy(live, 0, payload, prefix.Length, live.Length)
+
+        payload
+
+    let private tryDecodeSlot (bytes: byte[]) : (byte[] * uint64) option =
+        let nl = Array.IndexOf(bytes, byte '\n')
+
+        if nl < 0 then
+            None
+        else
+            let text = Encoding.ASCII.GetString(bytes, 0, nl).Trim()
+
+            match UInt64.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture) with
+            | false, _ -> None
+            | true, g ->
+                let n = bytes.Length - nl - 1
+
+                if n <= 0 then
+                    Some(Array.empty, g)
+                else
+                    let live = Array.zeroCreate n
+                    Buffer.BlockCopy(bytes, nl + 1, live, 0, n)
+                    Some(live, g)
 
     let create (storeDir: string) (coherence: Coherence) : Catalog =
         FileSystem.Current.CreateDirectory (ZetaFsPath.combine2 storeDir DirName)
@@ -57,22 +92,38 @@ module ZetaFsMutbuf =
           Coherence = coherence
           Slots = ConcurrentDictionary<string, Slot>(StringComparer.Ordinal) }
 
-    let private loadSlot (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Slot =
-        let fs = FileSystem.Current
-        let data = dataPath catalog id
-        let gen = genPath catalog id
+    let private loadLegacy
+        (fs: IFileSystem)
+        (catalog: Catalog)
+        (id: ZetaFsNamespace.EntityId)
+        : byte[] * uint64 =
         let bytes =
-            match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) data with
+            match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) (dataPath catalog id) with
             | Some b -> b
             | None -> Array.empty
+
         let generation =
-            match FileSystemIo.tryReadBytesCapped fs 64L gen with
+            match FileSystemIo.tryReadBytesCapped fs 64L (genPath catalog id) with
             | Some b ->
                 let text = Encoding.ASCII.GetString(b).Trim()
+
                 match UInt64.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture) with
                 | true, g -> g
                 | _ -> 0UL
             | None -> 0UL
+
+        bytes, generation
+
+    let private loadSlot (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Slot =
+        let fs = FileSystem.Current
+        let bytes, generation =
+            match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L + 64L) (slotFile catalog id) with
+            | Some b ->
+                match tryDecodeSlot b with
+                | Some parsed -> parsed
+                | None -> loadLegacy fs catalog id
+            | None -> loadLegacy fs catalog id
+
         { Entity = id
           Gate = obj ()
           Live = bytes
@@ -86,9 +137,18 @@ module ZetaFsMutbuf =
         lock slot.Gate (fun () ->
             let fs = FileSystem.Current
             fs.CreateDirectory (slotPath catalog id)
-            FileSystemIo.writeAllBytes fs (dataPath catalog id) slot.Live
-            let genText = slot.Generation.ToString(CultureInfo.InvariantCulture)
-            FileSystemIo.writeAllText fs (genPath catalog id) genText)
+            FileSystemIo.writeAllBytes fs (slotFile catalog id) (encodeSlot slot.Generation slot.Live))
+
+    /// Live bytes from the atomic `slot` file, else legacy `data`. None if neither exists.
+    let tryReadPersisted (storeDir: string) (id: ZetaFsNamespace.EntityId) : byte[] option =
+        let fs = FileSystem.Current
+        let dir = ZetaFsPath.combine3 storeDir DirName (keyOf id)
+        match FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L + 64L) (ZetaFsPath.combine2 dir "slot") with
+        | Some b ->
+            match tryDecodeSlot b with
+            | Some(live, _) -> Some live
+            | None -> FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) (ZetaFsPath.combine2 dir "data")
+        | None -> FileSystemIo.tryReadBytesCapped fs (64L * 1024L * 1024L) (ZetaFsPath.combine2 dir "data")
 
     let openHandle (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : Handle =
         let slot = slotOf catalog id
@@ -96,20 +156,26 @@ module ZetaFsMutbuf =
         | Coherence.Shared ->
             { Entity = id
               Coherence = Coherence.Shared
-              Isolated = None }
+              Isolated = None
+              Dirty = false }
         | Coherence.CloseToOpen ->
             let copy = lock slot.Gate (fun () -> Array.copy slot.Live)
             { Entity = id
               Coherence = Coherence.CloseToOpen
-              Isolated = Some copy }
+              Isolated = Some copy
+              Dirty = false }
 
     let close (catalog: Catalog) (handle: Handle) =
-        match handle.Coherence, handle.Isolated with
-        | Coherence.CloseToOpen, Some copy ->
+        match handle.Coherence, handle.Isolated, handle.Dirty with
+        | Coherence.CloseToOpen, Some copy, true ->
             let slot = slotOf catalog handle.Entity
             lock slot.Gate (fun () -> slot.Live <- Array.copy copy)
             handle.Isolated <- None
+            handle.Dirty <- false
             persist catalog handle.Entity
+        | Coherence.CloseToOpen, _, _ ->
+            handle.Isolated <- None
+            handle.Dirty <- false
         | _ -> ()
 
     let private grow (buf: byte[]) (needed: int) : byte[] =
@@ -148,6 +214,10 @@ module ZetaFsMutbuf =
                 if src.Length > 0 then
                     Buffer.BlockCopy(src, 0, grown, start, src.Length)
                 setActive slot handle grown
+
+                if handle.Coherence = Coherence.CloseToOpen then
+                    handle.Dirty <- true
+
                 Ok src.Length)
 
     let pread
@@ -182,6 +252,10 @@ module ZetaFsMutbuf =
                 let copy = min n buf.Length
                 Buffer.BlockCopy(buf, 0, next, 0, copy)
                 setActive slot handle next
+
+                if handle.Coherence = Coherence.CloseToOpen then
+                    handle.Dirty <- true
+
                 Ok())
 
     /// O_APPEND: serialized per EntityId (DoP=1). Does not tear two appends.
@@ -194,11 +268,22 @@ module ZetaFsMutbuf =
             if src.Length > 0 then
                 Buffer.BlockCopy(src, 0, grown, buf.Length, src.Length)
             setActive slot handle grown
+
+            if handle.Coherence = Coherence.CloseToOpen then
+                handle.Dirty <- true
+
             Ok src.Length)
 
     let length (catalog: Catalog) (handle: Handle) : int64 =
         let slot = slotOf catalog handle.Entity
         lock slot.Gate (fun () -> int64 (activeBuffer slot handle).Length)
+
+    /// Live shared-buffer length if this hub already has a slot. Does not
+    /// create one. Getattr uses this for dirty size; else PosixMeta.Size.
+    let tryLiveLength (catalog: Catalog) (id: ZetaFsNamespace.EntityId) : uint64 option =
+        match catalog.Slots.TryGetValue(keyOf id) with
+        | true, slot -> lock slot.Gate (fun () -> Some(uint64 slot.Live.Length))
+        | false, _ -> None
 
     /// Byte-copy generation G; live becomes G+1 starting as a copy of G.
     /// Later pwrite mutates live only. Snapshot bytes never mix with those writes.

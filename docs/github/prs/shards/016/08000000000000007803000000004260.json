@@ -1,0 +1,12 @@
+{
+  "pr_number": 16992,
+  "archive_path": "docs/history/pr-reviews/PR-16992-docs-benchmark-record-minigrid-score-emitter-preflight.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T00:23:32.700Z",
+  "schema_version": "v1",
+  "commit_sha": "928a34365c90ef997c0ee4014a8cca72463011bc",
+  "title": "docs(benchmark): record MiniGrid score-emitter preflight",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T00:22:50Z",
+  "head_ref": "lumen/minigrid-score-emitter-readiness"
+}
