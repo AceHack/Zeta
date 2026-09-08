@@ -994,3 +994,56 @@ def test_candidate_x_not_substituted_for_independent_root_or_coordinate() -> Non
     assert actual["Outcome"]["Failure"]["Code"] == "InconsistentCoordinate"
     assert actual["Counters"]["LeafChecks"] == 3
     assert actual["Reference"]["Outcome"]["Kind"] == "enclosure"
+
+
+@pytest.mark.parametrize("encoding_failure", [False, True])
+def test_normal_root_api_failure_preserved_before_certificate_packaging(
+    monkeypatch: pytest.MonkeyPatch, encoding_failure: bool
+) -> None:
+    from dataclasses import asdict
+
+    raw = raw_input()
+    native_raw = json.dumps(synthetic_candidate(raw)).encode()
+    original_failure = ref.Failure(
+        "SourceMismatch",
+        "input",
+        "Bindings.owned-helper",
+        "actual nested caller refusal, retained verbatim",
+    )
+    calls: list[object] = []
+
+    def returns_failure(*args: object, **kwargs: object) -> ref.ReceiptResult:
+        calls.append(original_failure)
+        return original_failure
+
+    monkeypatch.setattr(ref, "reference_root", returns_failure)
+    if encoding_failure:
+
+        def refuses_encoding(*args: object, **kwargs: object) -> Any:
+            raise OSError("owned subsequent certificate encoding failure")
+
+        monkeypatch.setattr(json.JSONEncoder, "iterencode", refuses_encoding)
+    actual = ref.certify_native(
+        raw,
+        native_raw,
+        BINDINGS,
+        expected_input_sha256=hashlib.sha256(raw).hexdigest().upper(),
+        expected_case_id="unit/independent",
+    )
+    # The focused fail-before/pass-after capture retains the whole actual return.
+    print("ACTUAL_PUBLIC_RETURN", repr(actual))
+    if encoding_failure:
+        assert isinstance(actual, ref.ReceiptFailure)
+        actual_receipt = actual.Receipt
+        assert actual.Failure.Stage == "encoding"
+    else:
+        actual_receipt = receipt(actual)
+    assert actual_receipt["Outcome"] == {
+        "Kind": "refused",
+        "Failure": asdict(original_failure),
+    }
+    assert calls == [original_failure]
+    assert actual_receipt["Reference"] is None
+    assert actual_receipt["Counters"]["ReferenceRootCalls"] == 1
+    assert actual_receipt["Coordinates"] is None
+    assert actual_receipt["Objective"] is None

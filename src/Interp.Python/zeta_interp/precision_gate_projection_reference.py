@@ -1345,12 +1345,10 @@ class _Certificate:
             r["Outcome"] = {"Kind": "refused", "Failure": asdict(reference.Failure)}
             return ReceiptFailure(reference.Failure, r)
         if isinstance(reference, Failure):
-            _fail(
-                "NoRootEnclosure",
-                "certificate",
-                "Reference",
-                "actual root API refused independent admission",
-            )
+            # An API refusal is an actual returned failure, not a root receipt.
+            # Preserve it unchanged in the existing outcome before packaging.
+            r["Outcome"] = {"Kind": "refused", "Failure": asdict(reference)}
+            return None
         r["Reference"] = reference.Value
         if reference.Value["Outcome"]["Kind"] != "enclosure":
             _fail(
