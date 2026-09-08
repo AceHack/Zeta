@@ -1,0 +1,12 @@
+{
+  "pr_number": 16990,
+  "archive_path": "docs/history/pr-reviews/PR-16990-fix-cluster-live-kind-was-blocked-by-kubelet-maxpods-not-by-capacity.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T00:14:34.829Z",
+  "schema_version": "v1",
+  "commit_sha": "fcbfaf8188a31ac6dbe5b00e1731c692ed5919be",
+  "title": "fix(cluster): live kind was blocked by kubelet maxPods, not by capacity",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T00:13:55Z",
+  "head_ref": "shadow/kind-maxpods-ceiling"
+}
