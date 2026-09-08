@@ -1203,6 +1203,15 @@ module MixedMessageEpoch =
             do! validateSnapshot context.InitialBudgetSnapshot
             if not (bounded 2048 context.Forecasts) then return! error "Forecasts" "bounded source-admitted forecasts required"
             do! validateCut plan.EvidenceCut
+            if not plan.EvidenceCut.Retractions.IsEmpty then
+                if not plan.SelectedVersions.IsEmpty then
+                    return! error "Retractions.SelectedVersions" "withdrawal forbids frozen learned-artifact reuse without complete ancestry"
+                if not plan.InitialState.Weights.IsEmpty then
+                    return! error "Retractions.Weights" "withdrawal forbids retained learned parameters"
+                match plan.Training with
+                | Some training when not training.ChildCuts.IsEmpty || not training.ChildForecasts.IsEmpty ->
+                    return! error "Retractions.ChildForecasts" "withdrawal requires cold-start training without inherited learned child forecasts"
+                | _ -> ()
             let! resolved,ordered = topology plan.Nodes
             do! validateIdentities plan ordered
             do! validateSelected plan ordered
@@ -1213,6 +1222,9 @@ module MixedMessageEpoch =
     let private historicalRestore (plan:EpochPlan) (context:AdmissionContext) (inputs:CompensationInputs) =
         flow {
             let retained = readPlan inputs.RetainedPlan
+            if not plan.EvidenceCut.Retractions.IsEmpty
+               && (not retained.SelectedVersions.IsEmpty || not retained.InitialState.Weights.IsEmpty) then
+                return! error "Retractions.RetainedPlan" "withdrawal forbids learned retained query history"
             if retained.Mode <> "query" || retained.Operations |> List.exists (function Compensate _ -> true | _ -> false) then
                 return! error "RetainedPlan" "query-only nonrecursive history required"
             let! _,ordered = validatePlanBase retained context
@@ -1228,6 +1240,8 @@ module MixedMessageEpoch =
             let checkpoint = inputs.Checkpoint
             keys ["State";"StateSha256";"Prefix";"PrefixSha256"] checkpoint
             let restore = readState (prop "State" checkpoint)
+            if not plan.EvidenceCut.Retractions.IsEmpty && (not last.Weights.IsEmpty || not restore.Weights.IsEmpty) then
+                return! error "Retractions.Checkpoint" "withdrawal forbids learned retained/checkpoint parameters"
             let! stateRaw = tryEncodeState restore
             if hash stateRaw <> text (prop "StateSha256" checkpoint) then return! error "Checkpoint.StateSha256" "checkpoint bytes differ"
             let prefix = arr 4096 (prop "Prefix" checkpoint)
@@ -1241,15 +1255,38 @@ module MixedMessageEpoch =
             let mutable atCheckpoint = if prefix.IsEmpty then Some current else None
             let mutable targetApplied = false
             let mutable descendants = false
+            let mutable previousSequence = 0
+            let mutable stopped = false
             for i,o in List.indexed observations do
                 keys ["Sequence";"Operation";"InputRevision";"Inputs";"Call";"Proposal";"Admission";"AppliedRevision";"Failure"] o
                 if i >= retained.Operations.Length then return! error "RetainedResult.Observations" "ledger exceeds fixed original schedule"
                 let! sameOperation = canonicalEqual jOperation (readOperation (prop "Operation" o)) retained.Operations[i]
-                if not sameOperation || integer (prop "InputRevision" o) <> current.Revision then
+                let sequence = intSmall (prop "Sequence" o)
+                if stopped || sequence <= previousSequence || not sameOperation || integer (prop "InputRevision" o) <> current.Revision then
                     return! error "RetainedResult.Observations" "operation/revision chain differs"
+                previousSequence <- sequence
                 match opt integer (prop "AppliedRevision" o) with
-                | None -> ()
+                | None -> stopped <- true
                 | Some revision ->
+                    let admission=prop "Admission" o
+                    keys ["Kind";"Value"] admission
+                    if text(prop "Kind" admission)<>"Ok" || (prop "Value" admission).ValueKind<>JsonValueKind.Null
+                       || (prop "Failure" o).ValueKind<>JsonValueKind.Null then
+                        return! error "RetainedResult.Admission" "applied work requires successful admission and no operation failure"
+                    let call=prop "Call" o
+                    keys ["Kind";"Result"] call
+                    if text(prop "Kind" call)<>"Returned" then return! error "RetainedResult.Call" "applied work requires an actual returned operation"
+                    let result=prop "Result" call
+                    keys ["Type";"Fields"] result
+                    let fields=prop "Fields" result
+                    let expectedType=
+                        match retained.Operations[i] with
+                        | NeuralForward _ -> "Zeta.Bayesian.BoundedModuleLearner+ForwardAttempt"
+                        | _ -> "Zeta.Bayesian.MixedMessageEpoch+BlockAttempt"
+                    if text(prop "Type" result)<>expectedType then return! error "RetainedResult.Call" "returned source family differs"
+                    let outcome=prop "Outcome" fields
+                    keys ["Kind";"Value"] outcome
+                    if text(prop "Kind" outcome)<>"Ok" then return! error "RetainedResult.Call" "refused operation cannot have been applied"
                     let proposal = prop "Proposal" o
                     keys ["ExpectedRevision";"ExpectedStateSha256";"State";"Details"] proposal
                     let! oldRaw = tryEncodeState current
@@ -1258,6 +1295,19 @@ module MixedMessageEpoch =
                         return! error "RetainedResult.Proposal" "applied revision lacks its exact old state"
                     let next = readState (prop "State" proposal)
                     if next.Revision <> revision then return! error "RetainedResult.AppliedRevision" "state/revision mismatch"
+                    match retained.Operations[i] with
+                    | NeuralForward(id,_) ->
+                        keys ["Input";"Preactivations";"Hidden";"Outcome"] fields
+                        let mean=bits(prop "Value" outcome)
+                        match Map.tryFind id next.Outputs with
+                        | Some output when L.bits output.Mean=L.bits mean && output.Variance.IsNone && output.SourceSequence=sequence -> ()
+                        | _ -> return! error "RetainedResult.Output" "applied point output differs from its returned source value"
+                    | _ ->
+                        keys ["Inputs";"Calls";"Proposal";"Outcome"] fields
+                        if (prop "Value" outcome).ValueKind<>JsonValueKind.Null then return! error "RetainedResult.Call" "successful block value must be null"
+                        let! sameProposal=canonicalEqual tree (prop "Proposal" fields) proposal
+                        let! sameInputs=canonicalEqual tree (prop "Inputs" fields) (prop "Inputs" o)
+                        if not sameProposal || not sameInputs then return! error "RetainedResult.Call" "complete block proposal/input association differs"
                     if revision=inputs.TargetRevision then targetApplied <- true
                     if revision>inputs.TargetRevision then descendants <- true
                     current <- next
@@ -1403,6 +1453,13 @@ module MixedMessageEpoch =
     let private gammaMoments capture kernel =
         invokeKernel capture "tryGammaMoments" (O ["Kernel",jGamma kernel])
             (fun () -> K.tryGammaMoments kernel)
+    let private projectedSite capture baseKernel (candidate:K.RealMoments) =
+        let precision=checkedDivide "gaussian" "projection.inverse-variance" 1.0 candidate.Variance
+        let eta=checkedMultiply "gaussian" "projection.precision-mean" candidate.Mean precision
+        let projected:Gaussian={PrecisionMean=eta;Precision=precision}
+        let moments=gaussianMoments capture projected
+        let proposed=gaussianQuotient capture projected baseKernel
+        projected,moments,proposed
     let private encodeGamma capture (prior:GammaPrior) =
         invokeKernel capture "tryEncodeGamma" (O ["Shape",jBits prior.Shape;"Rate",jBits prior.Rate])
             (fun () -> K.tryEncodeGamma prior.Shape prior.Rate)
@@ -1453,7 +1510,8 @@ module MixedMessageEpoch =
             let combined=gammaProduct capture encoded.Kernel applied
             let moments=gammaMoments capture combined
             changes.Add(O ["Key",jSiteKey key;"Old",jGamma old;"Proposal",jGamma proposal;"Applied",jGamma applied
-                           "RequestedShape",jBits encoded.RequestedShape;"RepresentedShape",jBits moments.RepresentedShape
+                           "RequestedShape",jBits encoded.RequestedShape;"RepresentedShape",jBits encoded.RepresentedShape
+                           "CombinedRepresentedShape",jBits moments.RepresentedShape
                            "UndampedDelta",O ["LogPower",jBits(checkedNumber "gamma" "undamped.delta.log-power" (proposal.LogPower-old.LogPower));"Rate",jBits(checkedNumber "gamma" "undamped.delta.rate" (proposal.Rate-old.Rate))]
                            "AppliedDelta",O ["LogPower",jBits(checkedNumber "gamma" "applied.delta.log-power" (applied.LogPower-old.LogPower));"Rate",jBits(checkedNumber "gamma" "applied.delta.rate" (applied.Rate-old.Rate))]])
             next <- Map.add key applied next
@@ -1873,11 +1931,7 @@ module MixedMessageEpoch =
             let candidate=admitCertified live request response
             // Conversion does not use Gaussian.ofMeanVariance (which throws),
             // and the proposal is the projected belief divided by this base.
-            let precision=checkedDivide "gaussian" "projection.inverse-variance" 1.0 candidate.Variance
-            let eta=checkedMultiply "gaussian" "projection.precision-mean" candidate.Mean precision
-            let projected:Gaussian={PrecisionMean=eta;Precision=precision}
-            let projectedMoments=gaussianMoments capture projected
-            let proposed=gaussianQuotient capture projected baseKernel
+            let _,projectedMoments,proposed=projectedSite capture baseKernel candidate
             let key=site node "unary" "z"
             let old=Map.tryFind key state.GaussianSites |> Option.defaultValue neutralGaussian
             let applied=dampGaussian live.Admitted.Plan.Damping old proposed
@@ -1892,7 +1946,7 @@ module MixedMessageEpoch =
                                               "Precision",jBits(checkedNumber "gaussian" "undamped.delta.precision" (proposed.Precision-old.Precision))];
                            "AppliedDelta",O ["PrecisionMean",jBits(checkedNumber "gaussian" "applied.delta.eta" (applied.PrecisionMean-old.PrecisionMean));
                                             "Precision",jBits(checkedNumber "gaussian" "applied.delta.precision" (applied.Precision-old.Precision))]])
-            let details=O ["Kind",S "GaussianBlock";"Base",jGaussian baseKernel;"TargetBits",jTarget target;"Request",jRequest request;
+            let details=O ["Kind",S "GaussianBlock";"Base",jGaussian baseKernel;"TargetBits",jTarget target;"RequestId",S request.RequestId;
                            "Candidate",O ["Mean",jBits candidate.Mean;"Variance",jBits candidate.Variance];
                            "ReconstructedProposal",O ["Mean",jBits projectedMoments.Mean;"Variance",jBits projectedMoments.Variance];
                            "UndampedCertificateOnly",B true;"Sites",A changes;
@@ -1914,7 +1968,8 @@ module MixedMessageEpoch =
                     inputs<-element(O ["Kind",S "Compensate";"Operation",jOperation operation;"InputRevision",I live.State.Revision])
                     setInputs(RawInputs inputs)
                     let next={retained with ActiveCut=cut}
-                    proposal<-Some(makeProposal live.State next (O ["Kind",S "Compensate";"Target",jOperation operation;
+                    let target=match operation with Compensate value -> value.TargetRevision | _ -> 0L
+                    proposal<-Some(makeProposal live.State next (O ["Kind",S "Compensate";"Target",I target;
                                                                       "Replay",B live.Admitted.Replay.IsSome]))
                 | _ ->
                     let node=Option.get node
@@ -2169,6 +2224,37 @@ module MixedMessageEpoch =
     // boundaries with explicitly synthetic values, without a numerical service.
     module internal RuntimeControls =
         let owned admitted invoke = startOwned admitted invoke
+        let cavity (admitted:AdmittedPlan) state nodeId excluded =
+            let calls=ResizeArray<PrimitiveObservation>()
+            let capture={Stage="gaussian";Enter=ignore;Calls=calls}
+            let actual=
+                try
+                    let node=admitted.Ordered |> List.find(fun n -> n.Id=nodeId)
+                    Ok(combinedGaussian capture state node excluded)
+                with WireFailure f -> Error f
+            actual,List.ofSeq calls
+        let gamma (admitted:AdmittedPlan) state nodeId =
+            let capture={Stage="gamma";Enter=ignore;Calls=ResizeArray()}
+            let node=admitted.Ordered |> List.find(fun n -> n.Id=nodeId)
+            let inputs=element(blockInputs admitted state node 0)
+            let mutable proposal=None
+            let outcome=
+                try
+                    proposal<-Some(gammaProposal admitted state node capture)
+                    Ok()
+                with WireFailure f -> Error f
+            {Inputs=inputs;Calls=List.ofSeq capture.Calls;Proposal=proposal;Outcome=outcome}
+        let projectionSite baseKernel candidate old alpha =
+            let capture={Stage="gaussian";Enter=ignore;Calls=ResizeArray()}
+            let actual=
+                try
+                    let projected,_,site=projectedSite capture baseKernel candidate
+                    let applied=dampGaussian alpha old site
+                    let combined=gaussianProduct capture baseKernel applied
+                    let moments=gaussianMoments capture combined
+                    Ok(projected,site,applied,combined,moments)
+                with WireFailure f -> Error f
+            actual,List.ofSeq capture.Calls
         let publishRetained admitted recorder observation =
             task {
                 let service:ProjectionService=fun _ -> Task.FromException<Result<ProjectionResponse,TransportFailure>>(InvalidOperationException "inert publication control")
