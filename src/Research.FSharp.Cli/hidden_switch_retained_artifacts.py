@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import re
 import stat
@@ -34,7 +35,14 @@ def strict_json(raw):
     def constant(_):
         raise ValueError("nonfinite retained JSON constant")
 
-    return json.loads(raw.decode("utf-8", errors="strict"), object_pairs_hook=pairs, parse_constant=constant)
+    def finite_float(text):
+        value = float(text)
+        if not math.isfinite(value):
+            raise ValueError("retained JSON exponent exceeds finite binary64 range")
+        return value
+
+    return json.loads(raw.decode("utf-8", errors="strict"), object_pairs_hook=pairs,
+                      parse_constant=constant, parse_float=finite_float)
 
 
 def relative_name(name):

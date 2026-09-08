@@ -78,6 +78,11 @@ class RetainedArtifactTests(unittest.TestCase):
         for raw in [b'{"a":1,"a":2}', b'{"a":NaN}', b'{"a":Infinity}', b'"\xff"']:
             with self.subTest(raw=raw), self.assertRaises(ValueError): strict_json(raw)
 
+    def test_strict_json_exponent_overflow_at_every_depth(self):
+        for raw in [b'1e400', b'-1e400', b'{"a":[1e400]}', b'[[{"a":-1e400}]]']:
+            with self.subTest(raw=raw), self.assertRaises(ValueError): strict_json(raw)
+        self.assertEqual(strict_json(b'{"a":1e300}'), {"a": 1e300})
+
     def test_regular_file_limits_symlink_and_fifo_refuse(self):
         with tempfile.TemporaryDirectory() as root:
             path = Path(root) / "input"; path.write_bytes(b"value")
