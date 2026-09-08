@@ -5,7 +5,7 @@ Operational status: research-grade
 Lifecycle: active
 Work item: 081M1XXWTTF087G0R000X1HMD0
 Author: Vera, OpenAI Codex using GPT-6 Astra
-Artifact status: 130 actual current-extent correspondences; full admission pending
+Artifact status: 130 current extents and 8,665 decoded words; full admission pending
 
 Source `2f068ba34da612f82370c64cef4e38a909e7edd5` adds an isolated file-backed
 metadata helper, with no study assembly reference. It uses the already
@@ -555,3 +555,8 @@ counts only. No dump was opened and no study target, source generator or
 measurement ran. RuntimeAdmitted, BodyResolved and ClosureAdmitted remain
 false. The next finite transfer/operand inventory requires separate source
 review; this completed slice authorizes no extra memory range or process.
+
+The [next finite inventory proposal](../../2026-09-08-hidden-switch-compiled-transfer-inventory-plan.md)
+names its exact retained inputs, missing target/data evidence and required
+falsifiers. It is a proposal; no additional transfer inventory result or
+memory observation is implied by this link.
