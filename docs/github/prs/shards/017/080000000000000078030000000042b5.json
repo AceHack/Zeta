@@ -1,0 +1,12 @@
+{
+  "pr_number": 17077,
+  "archive_path": "docs/history/pr-reviews/PR-17077-docs-research-geo-distributed-sites-federate-and-the-rtt-that-decides-it.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:07:13.585Z",
+  "schema_version": "v1",
+  "commit_sha": "baf79e56752216a61e435c6b2f45e0bdbd857063",
+  "title": "docs(research): geo-distributed sites — federate, and the RTT that decides it",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:06:28Z",
+  "head_ref": "shadow/geo-distribution-federate-not-stretch"
+}

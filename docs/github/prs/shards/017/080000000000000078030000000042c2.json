@@ -1,0 +1,12 @@
+{
+  "pr_number": 17090,
+  "archive_path": "docs/history/pr-reviews/PR-17090-feat-081m21gexxy087g0r001wj79kg-window-walk-hashes-without-a-cas-put.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:26:09.885Z",
+  "schema_version": "v1",
+  "commit_sha": "a09b35f7057c9d95292bc199bde7d3b71e5f78d9",
+  "title": "feat(081M21GEXXY087G0R001WJ79KG): window walk hashes without a Cas put",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:25:25Z",
+  "head_ref": "feat/zetafs-d10-chunkid-no-cas"
+}

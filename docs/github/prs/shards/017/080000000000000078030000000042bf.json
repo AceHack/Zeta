@@ -1,0 +1,12 @@
+{
+  "pr_number": 17087,
+  "archive_path": "docs/history/pr-reviews/PR-17087-feat-research-emit-durable-room-admission-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:07:35.510Z",
+  "schema_version": "v1",
+  "commit_sha": "4e912e31c036bf580adb1f43d51abf8c9fce2b3a",
+  "title": "feat(research): emit durable room admission receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:06:44Z",
+  "head_ref": "lumen/durable-room-immutable-admission"
+}
