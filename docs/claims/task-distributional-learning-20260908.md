@@ -92,3 +92,7 @@ custody records direct script/assembly observations once; each call retains its
 actual process observations and complete output or partial failure. This adds
 no transitive runtime claim and does not authorize opening the final evaluation
 before complete source review and archival.
+
+The coordinator additionally owns `precision_gate_projection_run.py` under
+`src/Interp.Python/zeta_interp/` and its dedicated test under
+`src/Interp.Python/tests/`, as the concrete whole-run retention adapter.

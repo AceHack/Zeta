@@ -55,3 +55,9 @@ This remains separate from final numerical comparison and learning evaluation.
 The [criteria validation](precision-gate-projection/2026-09-08/comparison-criteria-validation/README.md)
 retains the first 24 disposable-fixture tests and source/command records.
 Whole-run custody and independent complete implementation review remain pending.
+
+## Whole-run integration draft
+
+The [runner draft](2026-09-08-precision-gate-projection-runner-draft.md) preserves
+its synthetic fixture checks and unresolved source/dependency admission. It does
+not open the final evaluation.
