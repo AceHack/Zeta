@@ -9,11 +9,17 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [`2026-09-08-vera-projection-and-composable-learning-continuation.md`](./2026-09-08-vera-projection-and-composable-learning-continuation.md)
+  — **Vera, current learning direction.** Independently accepted finite scalar
+  projection result, original and post-experiment source identities, next bounded
+  mixed-message/weight-epoch proposal and the exit into learned DAG comparisons.
+  Compiled-controller investment is paused; streams 9307/9409 remain unopened.
 - [`2026-09-07-vera-compiled-controller-continuation.md`](./2026-09-07-vera-compiled-controller-continuation.md)
-  — **Vera, current compiled-controller checkpoint.** Actual native semantic replay,
+  — **Vera, historical compiled-controller checkpoint; investment now paused.** Actual native semantic replay,
   983 compiled Python tests, reviewed fixture/encoding primitives, historical
   capture-five main proof and remaining runtime/outer-recorder admission work.
-  The implementation archive and registered streams remain unopened.
+  The registered streams remain unopened. Use the September 8 continuation
+  above for the current distributional/compositional investment decision.
 - [`../trajectories/own-ai-harness/RESUME.md`](../trajectories/own-ai-harness/RESUME.md)
   — **Harny** (custom agent harness). Device-code first, vendor-CLI import,
   Manus remote API-key. After dogfood: Ace pre-bootstrap + Harny extract.
