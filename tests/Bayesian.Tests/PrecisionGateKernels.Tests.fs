@@ -233,3 +233,27 @@ let ``projection refuses invalid domains and unrepresentable exponential energy`
         PrecisionGateKernels.tryProjectionObjective (target 1.0 0.0 0.0 1.0) (moments 0.0 invalid) |> refused
     PrecisionGateKernels.tryProjectionObjective (target 1.0 0.0 0.0 1.0) (moments -1000.0 1.0) |> refused
     PrecisionGateKernels.tryProjectionObjective (target 1.0 0.0 0.0 1.0) (moments 1000.0 1.0) |> refused
+
+[<Fact>]
+let ``typed errors distinguish invalid moments improper beliefs and lost arithmetic`` () =
+    Assert.Equal(
+        Error(PrecisionGateKernels.InvalidInput("Weight.Variance", "nonnegative")),
+        PrecisionGateKernels.trySoftDotVmp (moments 0.0 -1.0) (moments 1.0 0.0) (moments 1.0 0.0) 1.0)
+    Assert.Equal(
+        Error(PrecisionGateKernels.ImproperBelief "Gamma"),
+        PrecisionGateKernels.tryGammaMoments (gamma 0.5 0.0))
+    Assert.Equal(
+        Error(PrecisionGateKernels.ImproperBelief "Gaussian"),
+        PrecisionGateKernels.tryGaussianMoments (gaussian 1.0 0.0))
+    Assert.Equal(
+        Error(PrecisionGateKernels.NumericalFailure("normal squared residual", "nonzero product underflow")),
+        PrecisionGateKernels.tryNormalPrecisionVmp (moments Double.Epsilon 0.0) (moments 0.0 0.0) 1.0)
+
+[<Fact>]
+let ``independent nonstationary fixture fixes objective value and both derivatives`` () =
+    let evaluated =
+        PrecisionGateKernels.tryProjectionObjective (target 2.0 -1.0 3.0 (exp -2.0)) (moments 1.0 2.0)
+        |> accepted
+    near (4.0 - 0.5 * log 2.0) evaluated.Value 2e-15
+    near 2.0 evaluated.DerivativeMean 2e-15
+    near 1.25 evaluated.DerivativeVariance 2e-15

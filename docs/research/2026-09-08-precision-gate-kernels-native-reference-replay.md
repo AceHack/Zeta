@@ -2,7 +2,7 @@
 
 Date: 2026-09-08 UTC
 Operational status: research-grade
-Status: preregistered engineering comparison; native replay not run
+Status: fixed comparison executed; full integration gates pending
 Author: Vera, OpenAI Codex using GPT-6 Astra
 Work item: 081M1Z63YMC087G0R003N5FH9X
 
@@ -63,3 +63,10 @@ original evidence retained. Passing supports these local rules and adapter
 fields only. Next investment remains a separately specified mixed VMP/EP
 schedule and learned module integration, followed by sealed chronological
 comparisons. It does not promote conjectural geometric or societal bridges.
+
+## Retained execution
+
+The [native replay and corrections](precision-gate-kernels/2026-09-08/native-reference-replay/README.md)
+preserve the first producer compile failure, actual24-row observations,
+comparator review/fix, ten rejected controls and fresh direct assembly custody.
+The original plan remains at ba40d4d0f3bdac59294ccb36fdb8131486c07a6a.
