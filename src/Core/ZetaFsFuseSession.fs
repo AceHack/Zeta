@@ -215,5 +215,64 @@ module ZetaFsFuseSession =
                         Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
                     | ZetaFsFuse.Released -> Result.Ok(replyOk header.Unique [||], session)
                     | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseMkdir then
+                match
+                    ZetaFsFuse.dispatch session (ZetaFsFuse.Mkdir(header.Nodeid, nameOf (payload req)))
+                with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Node node ->
+                    match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr node.Id) with
+                    | ZetaFsFuse.Stat(stat, ino) ->
+                        let entry: ZetaFsFuseAbi.EntryOut =
+                            { Nodeid = node.Id
+                              Generation = 1UL
+                              EntryValid = 0UL
+                              AttrValid = 0UL
+                              EntryValidNsec = 0u
+                              AttrValidNsec = 0u
+                              Attr = attrOf stat ino }
+
+                        Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeEntryOut entry), session)
+                    | ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseCreate then
+                match
+                    ZetaFsFuse.dispatch session (ZetaFsFuse.Create(header.Nodeid, nameOf (payload req)))
+                with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Node node ->
+                    match ZetaFsFuse.dispatch session (ZetaFsFuse.Getattr node.Id),
+                          ZetaFsFuse.dispatch session (ZetaFsFuse.Open node.Id)
+                        with
+                    | ZetaFsFuse.Stat(stat, ino), ZetaFsFuse.Fh fh ->
+                        let entry: ZetaFsFuseAbi.EntryOut =
+                            { Nodeid = node.Id
+                              Generation = 1UL
+                              EntryValid = 0UL
+                              AttrValid = 0UL
+                              EntryValidNsec = 0u
+                              AttrValidNsec = 0u
+                              Attr = attrOf stat ino }
+
+                        let opened: ZetaFsFuseAbi.OpenOut =
+                            { Fh = fh
+                              OpenFlags = ZetaFsFuseAbi.fopenDirectIo }
+
+                        let body =
+                            Array.append
+                                (ZetaFsFuseAbi.encodeEntryOut entry)
+                                (ZetaFsFuseAbi.encodeOpenOut opened)
+
+                        Result.Ok(replyOk header.Unique body, session)
+                    | ZetaFsFuse.Fail e, _ ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | _, ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
             else
                 Result.Ok(replyErrno header.Unique 38, session)

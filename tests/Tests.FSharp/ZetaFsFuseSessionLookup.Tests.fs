@@ -263,3 +263,57 @@ let ``byte OPEN WRITE READ RELEASE round-trips with FOPEN_DIRECT_IO`` () =
                             | Error e -> Assert.Fail(sprintf "release out: %A" e)
                             | Ok relh -> Assert.Equal(0, relh.Error)
         | other -> Assert.Fail(sprintf "create: %A" other))
+
+let private namePayload (s: string) : byte[] =
+    let n = utf8 s
+    let p = Array.zeroCreate (n.Length + 1)
+    if n.Length > 0 then
+        Buffer.BlockCopy(n, 0, p, 0, n.Length)
+    p
+
+[<Fact>]
+let ``byte MKDIR and CREATE encode entry_out; CREATE also opens with DirectIo`` () =
+    withSession "/fuse-create-bytes" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseMkdir root 12UL (namePayload "d"))
+        with
+        | Error e -> Assert.Fail(sprintf "mkdir: %A" e)
+        | Ok(mkdirReply, _) ->
+            match ZetaFsFuseAbi.decodeOutHeader mkdirReply with
+            | Error e -> Assert.Fail(sprintf "mkdir out: %A" e)
+            | Ok header ->
+                Assert.Equal(0, header.Error)
+                let entryBytes =
+                    Array.sub mkdirReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.entryOutSize
+                match ZetaFsFuseAbi.decodeEntryOut entryBytes with
+                | Error e -> Assert.Fail(sprintf "mkdir entry: %A" e)
+                | Ok entry ->
+                    Assert.Equal(ZetaFsPosixMeta.directoryMode, entry.Attr.Mode)
+                    Assert.Equal(ZetaFsFuseAbi.dtDir, ZetaFsFuseAbi.dtOf entry.Attr.Mode)
+        match
+            ZetaFsFuseSession.handleMounted
+                session
+                (req ZetaFsFuseAbi.fuseCreate root 13UL (namePayload "a"))
+        with
+        | Error e -> Assert.Fail(sprintf "create: %A" e)
+        | Ok(createReply, _) ->
+            match ZetaFsFuseAbi.decodeOutHeader createReply with
+            | Error e -> Assert.Fail(sprintf "create out: %A" e)
+            | Ok header ->
+                Assert.Equal(0, header.Error)
+                let entryBytes =
+                    Array.sub createReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.entryOutSize
+                let openBytes =
+                    Array.sub
+                        createReply
+                        (ZetaFsFuseAbi.outHeaderSize + ZetaFsFuseAbi.entryOutSize)
+                        ZetaFsFuseAbi.openOutSize
+                match ZetaFsFuseAbi.decodeEntryOut entryBytes, ZetaFsFuseAbi.decodeOpenOut openBytes with
+                | Error e, _ -> Assert.Fail(sprintf "create entry: %A" e)
+                | _, Error e -> Assert.Fail(sprintf "create open: %A" e)
+                | Ok entry, Ok opened ->
+                    Assert.Equal(ZetaFsPosixMeta.fileMode, entry.Attr.Mode)
+                    Assert.Equal(ZetaFsFuseAbi.fopenDirectIo, opened.OpenFlags))

@@ -24,6 +24,10 @@ module ZetaFsFuseAbi =
     let fuseWrite = 16u
     let fuseRelease = 18u
 
+    /// fuse(4) FUSE_MKDIR / CREATE.
+    let fuseMkdir = 9u
+    let fuseCreate = 35u
+
     /// fuse(4) FUSE_GETATTR.
     let fuseGetattr = 3u
 
