@@ -118,6 +118,7 @@ import {
 import { realEffects as realTrustEffects } from "../../../tools/setup/persona-keys/github-trust.ts";
 import { onboard, formatOnboard } from "../../../tools/setup/persona-keys/onboard.ts";
 import { resolveElevatorPathOrThrow } from "../privilege/elevator.ts";
+import { INSTALL_SUBSTRATE_FILES } from "./install-substrate-files.ts";
 
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
 
@@ -158,15 +159,6 @@ function bail(code: number, msg: string): never {
 //   - autoDownloadFreshIsoIfNeeded(): pulls latest CI ISO if newer than
 //     local newest → contributor never has to remember `gh run download`
 
-const INSTALL_SUBSTRATE_FILES = [
-  "src/Core.TypeScript/zflash/cli.ts",
-  "src/Core.TypeScript/zflash/flash-usb.ts",
-  "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
-  "full-ai-cluster/usb-nixos-installer/flake.nix",
-  "full-ai-cluster/nixos/modules/initial-password.nix",
-  "full-ai-cluster/nixos/modules/operator-ssh-keys.nix",
-  "full-ai-cluster/nixos/modules/operator-ssh-keys.txt",
-];
 
 const ZETA_REPO_GH = "Lucent-Financial-Group/Zeta";
 const ISO_BUILD_WORKFLOW = "build-ai-cluster-iso.yml";
