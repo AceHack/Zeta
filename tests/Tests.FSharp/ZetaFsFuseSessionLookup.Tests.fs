@@ -173,3 +173,93 @@ let ``byte READDIR synthesizes dot and dirents; records are 8-byte aligned`` () 
                         Assert.True(found)
                         Assert.Equal(0, body.Length % 8)
         | other -> Assert.Fail(sprintf "create: %A" other))
+
+let private req (opcode: uint32) (nodeid: uint64) (unique: uint64) (body: byte[]) : byte[] =
+    let header: ZetaFsFuseAbi.InHeader =
+        { Len = uint32 (ZetaFsFuseAbi.inHeaderSize + body.Length)
+          Opcode = opcode
+          Unique = unique
+          Nodeid = nodeid
+          Uid = 0u
+          Gid = 0u
+          Pid = 0u }
+
+    Array.append (ZetaFsFuseAbi.encodeInHeader header) body
+
+[<Fact>]
+let ``byte OPEN WRITE READ RELEASE round-trips with FOPEN_DIRECT_IO`` () =
+    withSession "/fuse-rw-bytes" (fun session ->
+        let root = session.Mount.Cache.Root.Id
+        match ZetaFsFuse.dispatch session (ZetaFsFuse.Create(root, utf8 "a")) with
+        | ZetaFsFuse.Node created ->
+            match ZetaFsFuseSession.handleMounted session (req ZetaFsFuseAbi.fuseOpen created.Id 8UL [||]) with
+            | Error e -> Assert.Fail(sprintf "open: %A" e)
+            | Ok(openReply, _) ->
+                match ZetaFsFuseAbi.decodeOutHeader openReply with
+                | Error e -> Assert.Fail(sprintf "open out: %A" e)
+                | Ok header ->
+                    Assert.Equal(0, header.Error)
+                    let openBody =
+                        Array.sub openReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.openOutSize
+                    match ZetaFsFuseAbi.decodeOpenOut openBody with
+                    | Error e -> Assert.Fail(sprintf "open_out: %A" e)
+                    | Ok o ->
+                        Assert.Equal(ZetaFsFuseAbi.fopenDirectIo, o.OpenFlags)
+                        let payload = [| 9uy; 8uy; 7uy |]
+                        let writeIn: ZetaFsFuseAbi.WriteIn =
+                            { Fh = o.Fh
+                              Offset = 0UL
+                              Size = uint32 payload.Length }
+                        match
+                            ZetaFsFuseSession.handleMounted
+                                session
+                                (req ZetaFsFuseAbi.fuseWrite created.Id 9UL (ZetaFsFuseAbi.encodeWriteIn writeIn payload))
+                        with
+                        | Error e -> Assert.Fail(sprintf "write: %A" e)
+                        | Ok(writeReply, _) ->
+                            match ZetaFsFuseAbi.decodeOutHeader writeReply with
+                            | Error e -> Assert.Fail(sprintf "write out: %A" e)
+                            | Ok wh ->
+                                Assert.Equal(0, wh.Error)
+                                let n =
+                                    ZetaFsFuseAbi.decodeWriteOut (
+                                        Array.sub writeReply ZetaFsFuseAbi.outHeaderSize ZetaFsFuseAbi.writeOutSize
+                                    )
+                                match n with
+                                | Error e -> Assert.Fail(sprintf "written: %A" e)
+                                | Ok count -> Assert.Equal(3u, count)
+                        let readIn: ZetaFsFuseAbi.ReadIn =
+                            { Fh = o.Fh
+                              Offset = 0UL
+                              Size = 8u }
+                        match
+                            ZetaFsFuseSession.handleMounted
+                                session
+                                (req ZetaFsFuseAbi.fuseRead created.Id 10UL (ZetaFsFuseAbi.encodeReadIn readIn))
+                        with
+                        | Error e -> Assert.Fail(sprintf "read: %A" e)
+                        | Ok(readReply, _) ->
+                            match ZetaFsFuseAbi.decodeOutHeader readReply with
+                            | Error e -> Assert.Fail(sprintf "read out: %A" e)
+                            | Ok rh ->
+                                Assert.Equal(0, rh.Error)
+                                let data =
+                                    Array.sub
+                                        readReply
+                                        ZetaFsFuseAbi.outHeaderSize
+                                        (readReply.Length - ZetaFsFuseAbi.outHeaderSize)
+                                Assert.Equal(3, data.Length)
+                                Assert.Equal(9uy, data.[0])
+                        let fhBytes = Array.zeroCreate 8
+                        System.Buffers.Binary.BinaryPrimitives.WriteUInt64LittleEndian(Span fhBytes, o.Fh)
+                        match
+                            ZetaFsFuseSession.handleMounted
+                                session
+                                (req ZetaFsFuseAbi.fuseRelease created.Id 11UL fhBytes)
+                        with
+                        | Error e -> Assert.Fail(sprintf "release: %A" e)
+                        | Ok(rel, _) ->
+                            match ZetaFsFuseAbi.decodeOutHeader rel with
+                            | Error e -> Assert.Fail(sprintf "release out: %A" e)
+                            | Ok relh -> Assert.Equal(0, relh.Error)
+        | other -> Assert.Fail(sprintf "create: %A" other))

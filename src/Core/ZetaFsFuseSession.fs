@@ -171,5 +171,49 @@ module ZetaFsFuseSession =
 
                     Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeDirents packed), session)
                 | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseOpen then
+                match ZetaFsFuse.dispatch session (ZetaFsFuse.Open header.Nodeid) with
+                | ZetaFsFuse.Fail e ->
+                    Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                | ZetaFsFuse.Fh fh ->
+                    let body: ZetaFsFuseAbi.OpenOut =
+                        { Fh = fh
+                          OpenFlags = ZetaFsFuseAbi.fopenDirectIo }
+
+                    Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeOpenOut body), session)
+                | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseRead then
+                match ZetaFsFuseAbi.decodeReadIn (payload req) with
+                | Result.Error e -> Result.Error(Truncated e)
+                | Result.Ok r ->
+                    let off = int64 r.Offset
+                    let size = int r.Size
+
+                    match ZetaFsFuse.dispatch session (ZetaFsFuse.Read(r.Fh, off, size)) with
+                    | ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | ZetaFsFuse.Bytes b -> Result.Ok(replyOk header.Unique b, session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseWrite then
+                match ZetaFsFuseAbi.decodeWriteIn (payload req) with
+                | Result.Error e -> Result.Error(Truncated e)
+                | Result.Ok(w, data) ->
+                    let off = int64 w.Offset
+
+                    match ZetaFsFuse.dispatch session (ZetaFsFuse.Write(w.Fh, off, data)) with
+                    | ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | ZetaFsFuse.Written n ->
+                        Result.Ok(replyOk header.Unique (ZetaFsFuseAbi.encodeWriteOut (uint32 n)), session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
+            elif header.Opcode = ZetaFsFuseAbi.fuseRelease then
+                match ZetaFsFuseAbi.decodeFh (payload req) with
+                | Result.Error e -> Result.Error(Truncated e)
+                | Result.Ok fh ->
+                    match ZetaFsFuse.dispatch session (ZetaFsFuse.Release fh) with
+                    | ZetaFsFuse.Fail e ->
+                        Result.Ok(replyErrno header.Unique (ZetaFsFuse.code e), session)
+                    | ZetaFsFuse.Released -> Result.Ok(replyOk header.Unique [||], session)
+                    | _ -> Result.Ok(replyErrno header.Unique 22, session)
             else
                 Result.Ok(replyErrno header.Unique 38, session)

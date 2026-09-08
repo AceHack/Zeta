@@ -18,6 +18,12 @@ module ZetaFsFuseAbi =
     /// fuse(4) FUSE_LOOKUP.
     let fuseLookup = 1u
 
+    /// fuse(4) FUSE_OPEN / READ / WRITE / RELEASE.
+    let fuseOpen = 14u
+    let fuseRead = 15u
+    let fuseWrite = 16u
+    let fuseRelease = 18u
+
     /// fuse(4) FUSE_GETATTR.
     let fuseGetattr = 3u
 
@@ -365,6 +371,100 @@ module ZetaFsFuseAbi =
                     walk (pos + recLen) (entry :: acc)
 
         walk 0 []
+
+    let openOutSize = 16
+    let readInSize = 40
+    let writeInSize = 40
+    let writeOutSize = 8
+
+    type OpenOut =
+        { Fh: uint64
+          OpenFlags: uint32 }
+
+    type ReadIn =
+        { Fh: uint64
+          Offset: uint64
+          Size: uint32 }
+
+    type WriteIn =
+        { Fh: uint64
+          Offset: uint64
+          Size: uint32 }
+
+    let encodeOpenOut (o: OpenOut) : byte[] =
+        let buf = Array.zeroCreate openOutSize
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), o.Fh)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 8, 4), o.OpenFlags)
+        buf
+
+    let decodeOpenOut (buf: byte[]) : Result<OpenOut, DecodeError> =
+        if buf.Length < openOutSize then
+            Error(Truncated(openOutSize, buf.Length))
+        else
+            Ok
+                { Fh = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                  OpenFlags = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 8, 4)) }
+
+    let encodeReadIn (r: ReadIn) : byte[] =
+        let buf = Array.zeroCreate readInSize
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), r.Fh)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 8, 8), r.Offset)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 16, 4), r.Size)
+        buf
+
+    let decodeReadIn (buf: byte[]) : Result<ReadIn, DecodeError> =
+        if buf.Length < readInSize then
+            Error(Truncated(readInSize, buf.Length))
+        else
+            Ok
+                { Fh = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                  Offset = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
+                  Size = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 16, 4)) }
+
+    let encodeWriteIn (w: WriteIn) (data: byte[]) : byte[] =
+        let buf = Array.zeroCreate (writeInSize + data.Length)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 0, 8), w.Fh)
+        BinaryPrimitives.WriteUInt64LittleEndian(Span(buf, 8, 8), w.Offset)
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 16, 4), w.Size)
+
+        if data.Length > 0 then
+            Buffer.BlockCopy(data, 0, buf, writeInSize, data.Length)
+
+        buf
+
+    let decodeWriteIn (buf: byte[]) : Result<WriteIn * byte[], DecodeError> =
+        if buf.Length < writeInSize then
+            Error(Truncated(writeInSize, buf.Length))
+        else
+            let body: WriteIn =
+                { Fh = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8))
+                  Offset = BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 8, 8))
+                  Size = BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 16, 4)) }
+
+            let dataLen = buf.Length - writeInSize
+            let data = Array.zeroCreate dataLen
+
+            if dataLen > 0 then
+                Buffer.BlockCopy(buf, writeInSize, data, 0, dataLen)
+
+            Ok(body, data)
+
+    let encodeWriteOut (n: uint32) : byte[] =
+        let buf = Array.zeroCreate writeOutSize
+        BinaryPrimitives.WriteUInt32LittleEndian(Span(buf, 0, 4), n)
+        buf
+
+    let decodeWriteOut (buf: byte[]) : Result<uint32, DecodeError> =
+        if buf.Length < writeOutSize then
+            Error(Truncated(writeOutSize, buf.Length))
+        else
+            Ok(BinaryPrimitives.ReadUInt32LittleEndian(ReadOnlySpan(buf, 0, 4)))
+
+    let decodeFh (buf: byte[]) : Result<uint64, DecodeError> =
+        if buf.Length < 8 then
+            Error(Truncated(8, buf.Length))
+        else
+            Ok(BinaryPrimitives.ReadUInt64LittleEndian(ReadOnlySpan(buf, 0, 8)))
 
     let hex (buf: byte[]) : string =
         Convert.ToHexString(buf).ToLowerInvariant()
