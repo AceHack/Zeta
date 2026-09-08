@@ -7,9 +7,9 @@ Lifecycle: active
 Status: source draft; no named route entered
 
 [`invoke.py`](invoke.py) fixes the calling sequence for the existing
-[source contract](../../../../2026-09-08-checked-mixed-message-module-epoch-source-contract.md),
-[transport amendment](../../../../2026-09-08-mixed-message-epoch-transport-amendment.md)
-and [separate frozen query](../../../../2026-09-08-mixed-message-frozen-nested-query-register.md).
+[source contract](../../../2026-09-08-checked-mixed-message-module-epoch-source-contract.md),
+[transport amendment](../../../2026-09-08-mixed-message-epoch-transport-amendment.md)
+and [separate frozen query](../../../2026-09-08-mixed-message-frozen-nested-query-register.md).
 The final source/runtime/service manifest, immutable archive and independent
 assembled admission are still required before invoking it. Its presence is
 not authorization to skip those unfinished checks.
