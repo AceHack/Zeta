@@ -1,0 +1,303 @@
+{
+  "Publication": "ba7c312d55233f507ecbbfd62e3c3fb733fd35a7",
+  "SourceCommit": "f33ac42959388344fc3c82058f165764954fa22d",
+  "InputManifest": {
+    "Bytes": 9821,
+    "Sha256": "FE1F5BDF732FA6B08092887210552BA9CEF68D724E519C77958A282366A348E7"
+  },
+  "ImplementationArchive": {
+    "Manifest": {
+      "Bytes": 11472,
+      "Sha256": "AF903D90A89CB03D940E24895C1DE442743F6AA25DE15E81B57936B4F32E47BA"
+    },
+    "Stored": {
+      "Bytes": 5152737,
+      "Sha256": "56B80DBAC2D4D8430D4B57D2F429529582457D34582FD9D94E62EE82578502A1"
+    },
+    "Tar": {
+      "Bytes": 11868160,
+      "Sha256": "64E6948E101E847FBFF2C888CFB58EA72EB182B0BC95782A88CBA1CEE531DEB1"
+    },
+    "Members": 59,
+    "PayloadBytes": 11818524
+  },
+  "AssembledArchive": {
+    "Manifest": {
+      "Bytes": 16297,
+      "Sha256": "0A0957C65DF0DD5D5583B2532FF7AEEDA11636C26D3F2D08523C7CF939F73E2D"
+    },
+    "Stored": {
+      "Bytes": 226790,
+      "Sha256": "B84F38656894FAA0EF03F8CA7497DBAE5ABC10292B88CC7E8A7C5E3F24B317B6"
+    },
+    "Tar": {
+      "Bytes": 1423360,
+      "Sha256": "540FC6D30451F5C6AA5A6530AE8C2AA9EA0DD87A880C67EF45047B1C0F252CF5"
+    },
+    "Members": 89,
+    "PayloadBytes": 1344436
+  },
+  "SourceRowsVerified": 47,
+  "NativeRolesVerified": 5,
+  "SourceUniqueOriginalFiles": 51,
+  "AssembledOriginalFilesVerified": 89,
+  "Reservation": {
+    "CopiedBytes": 10502579,
+    "ManifestBytes": 9821,
+    "DriverCombinedBytes": 149737504,
+    "DriverSlots": 90,
+    "InnerCombinedBytes": 118697952,
+    "InnerJournalBytes": 8388608,
+    "InnerSlots": 422,
+    "UnusedReservationsReclaimed": false
+  },
+  "OnlySourceChangeSinceFullGate": [
+    "src/Interp.Python/tests/test_precision_gate_projection_driver.py"
+  ],
+  "FullGate": [
+    {
+      "Argv": [
+        "bun",
+        "run",
+        "preflight"
+      ],
+      "Exit": 0,
+      "FinishedUnix": 1788855474.746751,
+      "Seconds": 663.5401850420167
+    },
+    {
+      "Argv": [
+        "dotnet",
+        "format",
+        "--verify-no-changes"
+      ],
+      "Exit": 0,
+      "FinishedUnix": 1788855489.950853,
+      "Seconds": 15.203822583018336
+    }
+  ],
+  "PythonCuts": [
+    {
+      "RecordedBaseHead": "096b09126b1f489fc7720b69780263ef01485445",
+      "ExecutedSnapshotDifferencesFromBase": [],
+      "Files": 14,
+      "Exits": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "Pytest": "340 passed in 7.53s",
+      "Commands": [
+        {
+          "Argv": [
+            "ruff",
+            "check",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+          ],
+          "Exit": 1,
+          "FinishedUnix": 1788854812.548949,
+          "Seconds": 0.184259916015435
+        },
+        {
+          "Argv": [
+            "ruff",
+            "format",
+            "--check",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788854812.6281931,
+          "Seconds": 0.06974329199874774
+        },
+        {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "mypy",
+            "--follow-imports=silent",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788854843.378586,
+          "Seconds": 30.747686499991687
+        },
+        {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+            "-q"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788854851.985771,
+          "Seconds": 8.606679791992065
+        }
+      ]
+    },
+    {
+      "RecordedBaseHead": "fdc2e42e0ffdb9f5b295ab0f8c31a05b8a730905",
+      "ExecutedSnapshotDifferencesFromBase": [
+        "src/Interp.Python/tests/test_precision_gate_projection_driver.py"
+      ],
+      "Files": 14,
+      "Exits": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "Pytest": "340 passed in 7.07s",
+      "Commands": [
+        {
+          "Argv": [
+            "ruff",
+            "check",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788855622.795085,
+          "Seconds": 0.050873917003627867
+        },
+        {
+          "Argv": [
+            "ruff",
+            "format",
+            "--check",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788855622.8088908,
+          "Seconds": 0.013548457995057106
+        },
+        {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "mypy",
+            "--follow-imports=silent",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_cases.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_driver.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_reference.py",
+            "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788855624.856498,
+          "Seconds": 2.047391083993716
+        },
+        {
+          "Argv": [
+            "/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/bin/python",
+            "-m",
+            "pytest",
+            "src/Interp.Python/tests/test_precision_gate_projection_cases.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_comparison.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_driver.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_intervals.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_process.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_reference.py",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py",
+            "-q"
+          ],
+          "Exit": 0,
+          "FinishedUnix": 1788855632.78717,
+          "Seconds": 7.930498416011687
+        }
+      ]
+    }
+  ],
+  "FreezeExitObservation": {
+    "Command": [
+      "python3",
+      ".git/freeze-projection-source-1.py"
+    ],
+    "ExitCode": 0,
+    "ExitObservation": "Actual exec tool return; no separately captured original invocation timestamp.",
+    "StdoutSha256": "F54457BE1680F99743874250622E70167A793083AE68946D69CCA401FAA034AF",
+    "StderrSha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "NumericalServicesEntered": 0
+  },
+  "NoNumericalServicesInvokedByReview": true
+}

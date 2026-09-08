@@ -1,0 +1,46 @@
+{
+  "Command": [
+    "python3",
+    "docs/research/projection-implementation-archive-review/2026-09-08/audit.py"
+  ],
+  "FirstExit": 1,
+  "FinalExit": 0,
+  "FinalStderrBytes": 0,
+  "Records": [
+    {
+      "File": "audit.py",
+      "Bytes": 9140,
+      "Sha256": "6C0AD0137062F497A049364279A2663853DE2B933A1899B51F1C5A2EA424096C"
+    },
+    {
+      "File": "audit-observation.json",
+      "Bytes": 13505,
+      "Sha256": "3407C1AF67EB5028DFC6216796C2532EDDD89FF154C16D43CD4B627F515FB2A2"
+    },
+    {
+      "File": "audit-stderr.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "audit-first.py.gz",
+      "Bytes": 3113,
+      "Sha256": "244404418B94C6036ECD5C1C23EDBDA2DA9204A85DA2F56C409813DF007E57CE"
+    },
+    {
+      "File": "first-stdout.gz",
+      "Bytes": 20,
+      "Sha256": "9CEFFB7310338057CFE71A4AE1E2C98D2C485D81CDEF906532A801F457A38D64"
+    },
+    {
+      "File": "first-stderr.gz",
+      "Bytes": 253,
+      "Sha256": "3ADC6D8C911CBD1FA1A9E8711F3B163A9AB66BA5DB68505841FB43C72680E7FF"
+    },
+    {
+      "File": "first-disposition.json",
+      "Bytes": 654,
+      "Sha256": "D0CC9CB4CBB65F06979C152DC6BEE3AA9C2C164F378F622F3AA9622EF03FE010"
+    }
+  ]
+}
