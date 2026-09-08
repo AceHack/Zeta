@@ -1269,6 +1269,7 @@ FIXED_SOURCE_PINS = {
     "docs/research/2026-09-08-checked-mixed-message-module-epoch-source-contract.md": "4234015EE650FA7190CF3375C58654499F3BB9EC9C96E4BE21D2FC97A30EC979",
     "docs/research/2026-09-08-mixed-message-epoch-transport-amendment.md": "ABB0E47938DF9ECD8CD4A64536289451D70FF0245B84EF9C05D1A2710C340707",
     "docs/research/2026-09-08-mixed-message-epoch-identity-codec-conventions.md": "BB623AB96A329A075E8C9BC06953D7284DA62BA10766B0D06479D51A011F98C2",
+    "docs/research/2026-09-08-mixed-message-withdrawal-admission-clarification.md": "99576A0F9113839905463FF43CB35FF224524EDF8C207F38C7089984E7914DEE",
     "docs/research/2026-09-08-precision-gate-projection-decimal-admission-clarification.md": "BA359E4FEC2484A680B6B149E6E887FBEA82AFBB67A15EAFBDB99949101BDAB8",
     "docs/research/2026-09-08-precision-gate-projection-rendered-zero-clarification.md": "67B7C9EFB6B42CEFE341507738B6122FAC4BEDF18C07A72564F3DEEFEE71235E",
 }
@@ -1810,6 +1811,8 @@ def _cut(value: object) -> Tree:
             _fail("Conflict", "admit", name, "unique evidence IDs required")
         if name == "ActiveIds" and not set(members) <= ids:
             _fail("Conflict", "admit", name, "active row not present in complete cut")
+    if set(cut["ActiveIds"]) & set(cut["Retractions"]):
+        _fail("Conflict", "admit", "Retractions", "active and withdrawn rows overlap")
     for variable, owner in _map(cut["PriorOwners"], "PriorOwners", 32).items():
         _id(variable, "Variable")
         _id(owner, "PriorOwner")
@@ -2243,6 +2246,13 @@ def _plan(
     nodes, ordered, _ = _nodes(plan["Nodes"])
     _identity_definitions(nodes, cut, state)
     selected = _map(plan["SelectedVersions"], "SelectedVersions", 4)
+    if cut["Retractions"] and (selected or state["Weights"]):
+        _fail(
+            "Conflict",
+            "admit",
+            "Retractions",
+            "withdrawal refuses selected learned artifacts and retained weights",
+        )
     neural_ids = {
         node["Artifact"] for node in nodes.values() if node["Kind"] == "neural"
     }
@@ -2272,6 +2282,13 @@ def _plan(
             {"Artifacts", "RowIds", "CutEnd", "ChildCuts", "ChildForecasts"},
             "Training",
         )
+        if cut["Retractions"] and (training["ChildCuts"] or training["ChildForecasts"]):
+            _fail(
+                "Conflict",
+                "admit",
+                "Retractions",
+                "withdrawal refuses learned child cuts and forecasts",
+            )
         requests = _array(training["Artifacts"], "Artifacts", 4, minimum=1)
         identities = []
         for request in requests:
@@ -2423,6 +2440,16 @@ def _plan(
                     "RetainedPlan",
                     "retained original plan must be query-only",
                 )
+            if cut["Retractions"] and (
+                retained.Value["SelectedVersions"]
+                or retained.Value["InitialState"]["Weights"]
+            ):
+                _fail(
+                    "Conflict",
+                    "admit",
+                    "Retractions",
+                    "withdrawal refuses retained learned query history",
+                )
             prior = _keys(context["RetainedResult"], _RESULT_KEYS, "RetainedResult")
             if prior["PlanSha256"] != retained.Sha256 or not _same(
                 prior["LastCommitted"], state
@@ -2439,6 +2466,13 @@ def _plan(
                 "Checkpoint",
             )
             checkpoint_state = _state(checkpoint["State"])
+            if cut["Retractions"] and checkpoint_state["Weights"]:
+                _fail(
+                    "Conflict",
+                    "admit",
+                    "Retractions",
+                    "withdrawal refuses learned checkpoint weights",
+                )
             if (
                 _sha(_canonical(checkpoint_state, MIB)) != checkpoint["StateSha256"]
                 or _sha(_canonical(checkpoint["Prefix"], MIB))
