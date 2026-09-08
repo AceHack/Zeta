@@ -465,3 +465,34 @@ The independent protocol-review agent accepted the exact source pin on a
 read-only pass, including the strict comment/feature boundary and unchanged
 refusal rules. The separately authorized second attempt will preserve its
 own invocation and outcome. All full admission flags remain false.
+
+## Second actual decoder refusal
+
+The [second decoder-attempt inventory](llvm-decode-attempt-2/manifest.json)
+retains 144 lossless records from exact source
+`4a570eaf3ee2d5dccef07b5eeea229a363cd7365` and execution head
+`386783454f0f11328e3ab39dba66a6081dfaf1d8`. LLVM PID 73912 exited zero with
+empty stderr, under the explicit `+rcpc` decoder feature. Its atomic input
+is byte-identical to attempt one's 8,665-word input.
+
+The driver still exited two at 23:59:00.733421 UTC: word 22's standalone
+immediate comment has exactly 40 leading ASCII spaces. The zero-indent
+comment grammar refused it. Two complete five-word methods and 12 words
+from the next method remain in their completed files/current prefix. No
+cleanup error occurred; no complete 130-method decoding was admitted.
+
+The 659,615-byte stdout is preserved with SHA256
+`B54C1AF8E5FF4B59DE42EFC8FFB60436244E063CF81DD5B208BD20A6BDC872C6`.
+Read-only inspection counts 8,665 encoding lines and 851 comment lines;
+every comment has the same 40-space prefix. These raw formatting counts do
+not substitute for the refused complete parsing. Source and synthetic
+fixtures had encoded a zero-indent assumption. The independent reviewer
+also identified its earlier payload-only guidance as incomplete because it
+omitted the actual leading-column bytes. Both the implementation assumption
+and review-guidance defect are retained here; the failure is not relabeled
+successful after discovering the layout.
+
+A separately reviewed column-grammar correction must test the retained
+actual output bytes before a further explicitly numbered attempt. No dump,
+study target, source generator or measurement ran. Runtime, body and closure
+admission remain false.
