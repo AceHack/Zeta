@@ -1,0 +1,12 @@
+{
+  "pr_number": 17097,
+  "archive_path": "docs/history/pr-reviews/PR-17097-feat-081m21j21ne087g0r002x2k0qn-window-walk-hashes-a-span-not-a-copy.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:58:06.192Z",
+  "schema_version": "v1",
+  "commit_sha": "dac6281652af9e66db94dcd7892f7bb2164d0284",
+  "title": "feat(081M21J21NE087G0R002X2K0QN): window walk hashes a span not a copy",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:57:26Z",
+  "head_ref": "feat/zetafs-d10-window-span-hash"
+}

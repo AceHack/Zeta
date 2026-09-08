@@ -1,0 +1,12 @@
+{
+  "pr_number": 17088,
+  "archive_path": "docs/history/pr-reviews/PR-17088-preserve-character-evolution-and-code-generated-graphics-research.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:33:52.108Z",
+  "schema_version": "v1",
+  "commit_sha": "57b9c88e0dd375e35b5187057d82e69a02344c3c",
+  "title": "Preserve character evolution and code-generated graphics research",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:33:08Z",
+  "head_ref": "codex/character-evolution-20260908"
+}

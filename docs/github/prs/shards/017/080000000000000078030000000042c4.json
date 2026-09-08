@@ -1,0 +1,12 @@
+{
+  "pr_number": 17092,
+  "archive_path": "docs/history/pr-reviews/PR-17092-docs-research-freeze-durable-room-finite-result-receipt.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-08T22:36:21.765Z",
+  "schema_version": "v1",
+  "commit_sha": "1eb4872d2ddc2edb760e2c368b2fe314d8df9caf",
+  "title": "docs(research): freeze durable room finite result receipt",
+  "state": "MERGED",
+  "merged_at": "2026-09-08T22:35:31Z",
+  "head_ref": "lumen/durable-room-finite-result-contract"
+}
