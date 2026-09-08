@@ -242,6 +242,28 @@ independent review remain pending. These synthetic tests are not an actual
 130-method transfer inventory. No new decoder, dump, target, source stream
 or measurement was executed for this pure slice.
 
+## Retained artifact reader prepared
+
+Reader source `aef64955ea6401d6c52f3f4985f793b0bedaf18f` adds same-descriptor
+regular-file reads, exact manifest and selected compressed/original
+identities, bounded single-member decompression, aggregate budgets and
+identity checkpoints. The [twelve preparation records](hidden-switch-compiled-validation/2026-09-07/transfer-artifact-reader-preparation/manifest.json)
+retain source pins, initial setup/style findings, evolving test logs and the
+final 13 focused / 33 combined passes with clean Ruff.
+
+Independent review found that Python's default float parser converts JSON
+exponent text `1e400` to infinity even when literal `NaN`/`Infinity` tokens
+are rejected. The actual top-level and nested overflow probe is retained.
+Correction `e9d4c654da515097b13aa1d9f57f744155198ca9` checks parsed float
+finiteness; four overflow regressions and a finite control cover it.
+
+The reader assumes a stable writer tree and sequential stop on first error.
+It does not latch a failed state or provide hostile namespace isolation;
+the outer collector owns constructor/read/checkpoint exceptions. Its
+checked deadlines do not cancel blocked kernel I/O. Exact associations and
+output retention in the outer collector are still under development; no
+actual transfer inventory was run for this preparation.
+
 ```text
 Agency-Signature-Version: 1
 Agent: Vera
