@@ -19,27 +19,49 @@ outliving its measurement, and both directions cost real work.
 
 ---
 
+## Re-verify before you trust a row
+
+**2026-09-08: every one of the 24 rows read `OPEN` while three were fixed on `main`.**
+Nothing rechecks a roster, so a register drifts in the *safe-looking* direction — it
+under-reports progress, and an operator reading it before a format sees blockers that
+are already gone. That is the same failure class as a stale doc anywhere else, except
+this sheet is the thing consulted immediately before destroying a disk.
+
+**So do not trust a row; re-run its evidence.** Each `LANDED` row now names a file and
+line. The cheap sweep:
+
+```bash
+S=full-ai-cluster/usb-nixos-installer/zeta-install.sh
+grep -n "exit 10" "$S"                 # B2 — ABORT must not exit 0
+grep -n "sys/firmware/efi" "$S"        # B3 — UEFI preflight before the wipe
+grep -n -i "hotplug" "$S"              # T1 — HOTPLUG is the discriminator, not TRAN
+```
+
+A row marked `FIX OPEN (PR #N)` is **not on `main`**: check the PR merged before
+counting it. A row marked `LANDED` still says nothing about whether a stick **boots** —
+landing is a code fact, booting is a hardware fact, and only B1 can settle the second.
+
 ## BLOCKER
 
 | id | finding | evidence | state |
 |---|---|---|---|
 | **B1** | **No installer ISO has ever been built from the current flake.** nixpkgs bumped 25.11→26.05 (`1dd20510ba`, 2026-09-07); last successful `build-ai-cluster-iso` on `main` predates it (`git merge-base --is-ancestor` = NO). Last 14 runs: 10 failure, 4 cancelled, 0 success. zflash auto-pull serves the pre-bump ISO while the node clones live `main` at 26.05 — a combination never run. | `full-ai-cluster/flake.nix:34`; workflow runs on `main` | OPEN — root cause is in the scenario-2 log, which returned 99 bytes via the API |
 | **B1a** | **The freshness gate cannot notice B1, in both directions.** It diffs `usb-nixos-installer/flake.nix`, a path that **does not exist** (`git diff --quiet` on an absent path exits 0 — a check that cannot fail); and `full-ai-cluster/flake.nix`, the file that actually changed, is **not in the list**. | `src/Core.TypeScript/zflash/cli.ts:161-169, 294-360` | OPEN |
-| **B2** | **The ABORT default exits 0**, so first-boot reads success, prints "Install complete", reboots, and loops forever. The R9 ledger append is *after* the gate, so the breaker never counts it. The trigger is `foreign-data` — **a machine being reformatted has an OS on it**, so this is the default path. The same file fixed the identical defect on the keypress branch (`exit 10`). | `full-ai-cluster/usb-nixos-installer/zeta-install.sh:1471-1478` vs `:1486-1490` | OPEN — one-line fix |
-| **B3** | **No UEFI preflight.** The ISO is hybrid and boots in legacy/CSM; the failure surfaces at `bootctl install`, *after* wipe/partition/format/closure-download. Prior OS gone, ~40 min gone, nothing bootable. | `common.nix:546-549`; no `/sys/firmware` reference anywhere in the installer | OPEN — three-line fix |
+| **B2** | **The ABORT default exits 0**, so first-boot reads success, prints "Install complete", reboots, and loops forever. The R9 ledger append is *after* the gate, so the breaker never counts it. The trigger is `foreign-data` — **a machine being reformatted has an OS on it**, so this is the default path. The same file fixed the identical defect on the keypress branch (`exit 10`). | `full-ai-cluster/usb-nixos-installer/zeta-install.sh:1471-1478` vs `:1486-1490` | **LANDED** — `zeta-install.sh:1518` is `exit 10`; verified on `main` 2026-09-08 |
+| **B3** | **No UEFI preflight.** The ISO is hybrid and boots in legacy/CSM; the failure surfaces at `bootctl install`, *after* wipe/partition/format/closure-download. Prior OS gone, ~40 min gone, nothing bootable. | `common.nix:546-549`; no `/sys/firmware` reference anywhere in the installer | **LANDED** — UEFI preflight at `zeta-install.sh:1575` (`[ ! -d /sys/firmware/efi ]`); verified on `main` 2026-09-08 |
 | **B4** | **Working internet is a hard requirement and its failure lands after the wipe.** `git clone` is at `:1719`; wipe at `:1524`. Offline path proceeds anyway after a 90s wait. | `zeta-first-boot.sh:199-204, 260`; `zeta-install.sh:1524, 1719` | OPEN |
 | **B5** | **`zflash --role` does not exist** — strict allowlist, exit 2 — yet first-boot **prints it as the operator remedy** when discovery refuses. Role, join-token and WiFi are structurally not flashable. | `zflash/cli.ts:1077-1094`; `zeta-first-boot.sh:403-404` | OPEN |
-| **B6** | **Multiboot stick cannot find its own root.** GRUB boots `root=LABEL=ZETA_MULTIBOOT` (15 chars — not a legal FAT label); the builder writes `ZETA_MB`. Zero runs on `main`. | `multiboot/grub.cfg:38`; `multiboot/assemble.ts:311-317` | OPEN — use the single-ISO path |
-| **B7** | **OpenBao comes up sealed at wave −60 and nothing unseals it.** A sealed pod is NotReady by design; the repo's own doc says an unhealthy wave blocks all higher waves. Metal applies the whole catalogue (no `excludeGlob` outside the dev entrypoint). The only written procedure is marked superseded/history. | `openbao/Application.yaml:29-35, 59, 103-113`; `dev-cluster/SYNC-WAVES.md:191-195`; `openbao/TOPOLOGY.md:25-30` | OPEN — **payload exists**, see R1 |
+| **B6** | **Multiboot stick cannot find its own root.** GRUB boots `root=LABEL=ZETA_MULTIBOOT` (15 chars — not a legal FAT label); the builder writes `ZETA_MB`. Zero runs on `main`. | `multiboot/grub.cfg:38`; `multiboot/assemble.ts:311-317` | **FIX OPEN (PR #17028)** — builder writes `ZETA_MB`, grub.cfg booted `ZETA_MULTIBOOT` (14 chars; FAT max 11, so unwritable). Label exported + drift guard. NOT boot-verified |
+| **B7** | **OpenBao comes up sealed at wave −60 and nothing unseals it.** A sealed pod is NotReady by design; the repo's own doc says an unhealthy wave blocks all higher waves. Metal applies the whole catalogue (no `excludeGlob` outside the dev entrypoint). The only written procedure is marked superseded/history. | `openbao/Application.yaml:29-35, 59, 103-113`; `dev-cluster/SYNC-WAVES.md:191-195`; `openbao/TOPOLOGY.md:25-30` | **PAYLOAD LANDED (#17003)** — unseal adapters on `main`; packaging (sidecar image) still open |
 | **B8** | **Twelve Secrets are named by `automated: true` Applications and nothing on metal creates any of them.** No `Secret`/`SealedSecret`/`ExternalSecret`/`ClusterSecretStore` exists anywhere under `full-ai-cluster/k8s/`, against 22 references. Several exist only as a `kubectl create secret` in a code comment. | `k3s-server.nix:200-254` mints none; per-app refs listed in the secrets review | OPEN |
 | **B9** | **No biometric gate exists on Linux, so every key-custody ceremony refuses.** darwin→Touch ID, win32→Hello, everything else fail-closed. Eleven CLIs abort. No machine key, no CA, no certs on the target hardware. The runbook is 100% Touch ID / Hello; the `fprintd` adapter named in an ADR does not exist. | `tools/setup/persona-keys/biometric.ts:178-182, 447-451` | OPEN — needs a Linux consent adapter |
-| **B10** | **Gatekeeper's namespace webhook is fail-CLOSED against a file documenting the opposite.** The Application sets two failure policies to `Ignore`; the chart ships **three** webhooks, and `check-ignore-label.gatekeeper.sh` has its own key defaulting to `Fail`, never overridden. Its rules are `resources:[namespaces] operations:[CREATE,UPDATE] scope:'*'`, at wave −25, with `CreateNamespace=true` on the root and ~40 apps. The rationale cites an incident that already bricked a cluster. | `open-policy-agent/Application.yaml:40-51`; chart `values.yaml:18`; webhook template `:95-114` | OPEN — one values key |
+| **B10** | **Gatekeeper's namespace webhook is fail-CLOSED against a file documenting the opposite.** The Application sets two failure policies to `Ignore`; the chart ships **three** webhooks, and `check-ignore-label.gatekeeper.sh` has its own key defaulting to `Fail`, never overridden. Its rules are `resources:[namespaces] operations:[CREATE,UPDATE] scope:'*'`, at wave −25, with `CreateNamespace=true` on the root and ~40 apps. The rationale cites an incident that already bricked a cluster. | `open-policy-agent/Application.yaml:40-51`; chart `values.yaml:18`; webhook template `:95-114` | **FIX OPEN (PR #17006)** — `validatingWebhookCheckIgnoreFailurePolicy: Ignore`, verified by helm render diff |
 
 ## TRAP
 
 | id | finding | evidence | state |
 |---|---|---|---|
-| **T1** | **A Thunderbolt/USB-enclosure NVMe can be selected as the BOOT disk.** The filter excludes only *known-USB*; a Thunderbolt enclosure reports `TRAN=nvme, RM=0` and passes, and NVMe sorts first for `DEFAULT_BOOT`. Every non-boot disk becomes a whole-disk Longhorn target. Maintainer runs Thunderbolt hubs **and keeps the target USB stick in one**, so "unplug everything" is not an acceptable mitigation. | `zeta-install.sh:146-150, 118-127, 176, 194` | OPEN |
+| **T1** | **A Thunderbolt/USB-enclosure NVMe can be selected as the BOOT disk.** The filter excludes only *known-USB*; a Thunderbolt enclosure reports `TRAN=nvme, RM=0` and passes, and NVMe sorts first for `DEFAULT_BOOT`. Every non-boot disk becomes a whole-disk Longhorn target. Maintainer runs Thunderbolt hubs **and keeps the target USB stick in one**, so "unplug everything" is not an acceptable mitigation. | `zeta-install.sh:146-150, 118-127, 176, 194` | **LANDED** — HOTPLUG discriminator at `zeta-install.sh:145-153`; verified on `main` 2026-09-08 |
 | **T2** | **A zflash stick OVERWRITES baked operator keys** (`tee`, not append) — raw `dd` preserves them; a zflash stick discards them for whatever single ESP key it carries. Raw `dd` instead loses the R9 ledger marker, forcing the breaker to `blind`. | `zeta-install.sh:1868-1878` | OPEN |
 | **T3** | **On the first-boot path every credential prompt is silently skipped** (`ZETA_AUTO_CONFIRM=WIPE`), including the cred-blob passphrase — **so no credential persistence ever happens** — while `PROVISIONING.md` presents all seven as the normal flow. Downstream, three AI agent units restart every 30s forever. | `zeta-install.sh:78-80`; `zeta-first-boot.sh:536`; `PROVISIONING.md:69-126` | OPEN |
 | **T4** | **Static cluster addressing is written where Nix evaluation cannot see it.** Written to `/mnt/etc/zeta/…`; read at eval time from `/etc/zeta/…`; the symlink block covers four other files and not these three. `builtins.pathExists` returns false silently. | `injected-cluster-address.nix:88-96`; `zeta-install.sh:2072-2078, 3097-3130` | OPEN |
