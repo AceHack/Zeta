@@ -112,3 +112,10 @@ learned-artifact reuse on a cut with retractions was proposed to the coordinator
 as a separate follow-up. It is not implemented or validated by this checkpoint,
 does not establish selective ancestry or revocation across independent owners,
 and must not be described as inverse SGD.
+
+## Subsequent withdrawal boundary
+
+The [withdrawal implementation report](2026-09-08-mixed-message-epoch-bridge-withdrawal-admission.md)
+binds the separate `567a9f0` admission correction, exact unchanged root
+clarification, ten original failures and 111-test source validation. The
+`4402be8` source and custody above remain the original historical cut.
