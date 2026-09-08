@@ -204,8 +204,8 @@ Full preflight at bf2da44 completed exit 0 with all 18 checks passed, including
 Release build and the full test suite (06:17:49.526725 to 06:29:16.477780 UTC).
 Later commits during that gate only preserved evidence and report prose. The
 formatter exited 0 but explicitly reported F# projects unsupported; that is not
-F# formatting coverage. Independent complete source review and the registered
-final comparison remain pending. These local checks do not substitute for the
+F# formatting coverage. At that historical capture, independent complete source review and the
+registered final comparison remained pending. These local checks do not substitute for the
 independent reference or that final comparison.
 
 ## Deferred string decoding follow-up
@@ -233,3 +233,11 @@ wiring and the original kernel match their previous bytes.
 The separately reviewed [process custody source](2026-09-08-precision-gate-projection-process-source.md)
 defines the coordinator launcher and direct-file scope. It does not execute the
 registered comparison during its transport-only fixture validation.
+
+The [final native/process gate](precision-gate-projection/2026-09-08/final-native-process-gate-2/manifest.json)
+now records all 18 checks passing at `8254c827044100df1646369f1b0143ec994d5a07`,
+including the e3b87 native wire correction and final process source. Native wire
+acceptance is `abbeb0663555635b1fdbfdbd5193d1bf6e70e3b6`; process source/custody
+acceptance is `2ac23bf2efdc33a57fffc068fb74c2567155356d`. The registered
+comparison remains unopened by this lane. The linked inventory retains a
+separate first preservation failure without replacing any validation outcome.

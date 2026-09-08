@@ -211,3 +211,23 @@ binds source `8254c827044100df1646369f1b0143ec994d5a07`, the two actual
 pre-correction failing fixtures, exact final 23-pass source/results, intermediate
 limitations and the historical all-18 gate. The final source gate remains a
 separate observation. No final comparison was opened.
+
+The [final native/process gate](precision-gate-projection/2026-09-08/final-native-process-gate-2/manifest.json)
+completed at exact source `8254c827044100df1646369f1b0143ec994d5a07`: all
+18 preflight checks passed, including Release build and the full test suite.
+Thirteen task source/contract/wiring files remained exact; intervening edits only
+retained documentation/evidence. The formatter exited 0 with a diagnostic that
+only C# and Visual Basic projects are supported, so no F# formatting coverage
+is inferred. Independent final source/custody acceptance is
+`2ac23bf2efdc33a57fffc068fb74c2567155356d`. The preceding owner push passed
+all 16 quick checks and remote head 59e1867 was verified.
+
+The [first final-gate preservation prefix](precision-gate-projection/2026-09-08/final-native-process-gate-1/manifest.json)
+remains incomplete: after storing 13 raw records, an author assertion expected
+the literal text F# in formatter stderr. The actual diagnostic names the fsproj
+and says only C#/VB are supported. Its transcribed tool failure is labeled; the
+original preservation-script preimage was not retained. The second archive
+checks the actual diagnostic and retains its executed preservation script. No
+formatter, test or numerical calculation was rerun to correct that archive.
+Coordinator integration and the unopened final comparison remain separate;
+these implementation/transport gates are not numerical certification.
