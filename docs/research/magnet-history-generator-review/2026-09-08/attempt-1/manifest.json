@@ -1,0 +1,30 @@
+{
+  "Schema": "magnet-history-source-review-evidence-v1",
+  "Records": [
+    {
+      "Path": "source_audit.py",
+      "Bytes": 2664,
+      "Sha256": "895a8da860ee979a42ecc5df78558133bfa0a81d306e055e270f47347ba1dd54"
+    },
+    {
+      "Path": "invocation.json",
+      "Bytes": 357,
+      "Sha256": "c5bf270be9e15904791237e61380e4deecfeb271ccd632c37d380642a5880c54"
+    },
+    {
+      "Path": "result.json",
+      "Bytes": 4840,
+      "Sha256": "be3b78403fbe3fe8997975385f3935bc4a65f96b42de62df234a4ffedaa9f3e2"
+    },
+    {
+      "Path": "stderr.txt",
+      "Bytes": 0,
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "completion.json",
+      "Bytes": 75,
+      "Sha256": "782e946959b0603190e581cb063c1391fae5314cd7979139f69cf76c3485f4b7"
+    }
+  ]
+}

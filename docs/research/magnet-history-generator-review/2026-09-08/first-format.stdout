@@ -1,0 +1,44 @@
+unformatted: File would be reformatted
+  --> docs/research/magnet-history-generator-review/2026-09-08/source_audit.py:56:14
+   |
+55 |         rows.append(
+   -             {"Path": name, "Bytes": len(raw), "Sha256": digest(raw), "CurrentEqualsGit": True}
+56 +             {
+57 +                 "Path": name,
+58 +                 "Bytes": len(raw),
+59 +                 "Sha256": digest(raw),
+60 +                 "CurrentEqualsGit": True,
+61 +             }
+62 |         )
+--------------------------------------------------------------------------------
+67 |         raise ValueError("Transcript identity changed")
+   -     print(json.dumps({
+   -         "SourceCommit": COMMIT,
+   -         "Scope": "Named source-byte bookkeeping; targeted reading is described in the report",
+   -         "Sources": rows,
+   -         "Attachment": {"Path": str(ATTACHMENT), "Bytes": len(raw), "Sha256": digest(raw)},
+   -         "StudyOrModelProcessesLaunched": 0,
+   -         "GitProcessesLaunched": len(FILES),
+   -     }, indent=2), flush=True)
+68 +     print(
+69 +         json.dumps(
+70 +             {
+71 +                 "SourceCommit": COMMIT,
+72 +                 "Scope": "Named source-byte bookkeeping; targeted reading is described in the report",
+73 +                 "Sources": rows,
+74 +                 "Attachment": {
+75 +                     "Path": str(ATTACHMENT),
+76 +                     "Bytes": len(raw),
+77 +                     "Sha256": digest(raw),
+78 +                 },
+79 +                 "StudyOrModelProcessesLaunched": 0,
+80 +                 "GitProcessesLaunched": len(FILES),
+81 +             },
+82 +             indent=2,
+83 +         ),
+84 +         flush=True,
+85 +     )
+86 |
+   |
+
+1 file would be reformatted

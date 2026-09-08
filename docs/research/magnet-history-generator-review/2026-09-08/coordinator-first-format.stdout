@@ -1,0 +1,24 @@
+unformatted: File would be reformatted
+  --> docs/research/magnet-history-generator-review/2026-09-08/coordinator_audit.py:29:8
+   |
+28 |     analysis = blob(FINAL, ANALYSIS)
+   -     if source != (REPO / SOURCE).read_bytes() or analysis != (REPO / ANALYSIS).read_bytes():
+29 +     if (
+30 +         source != (REPO / SOURCE).read_bytes()
+31 +         or analysis != (REPO / ANALYSIS).read_bytes()
+32 +     ):
+33 |         raise ValueError("Current coordinator docs differ from final Git blobs")
+34 |     if source != blob(INITIAL, SOURCE):
+35 |         raise ValueError("Transcript envelope changed during correction")
+   -     a = (ATTACHMENTS / "8a484dca-8024-4796-af57-afdf9ff4e355/pasted-text.txt").read_bytes()
+   -     b = (ATTACHMENTS / "531c8ec6-6416-46ef-9668-5bde87a24a15/pasted-text.txt").read_bytes()
+36 +     a = (
+37 +         ATTACHMENTS / "8a484dca-8024-4796-af57-afdf9ff4e355/pasted-text.txt"
+38 +     ).read_bytes()
+39 +     b = (
+40 +         ATTACHMENTS / "531c8ec6-6416-46ef-9668-5bde87a24a15/pasted-text.txt"
+41 +     ).read_bytes()
+42 |     begin = b"<!-- BEGIN USER-SUPPLIED TRANSCRIPT -->\n````text\n"
+   |
+
+1 file would be reformatted
