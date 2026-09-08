@@ -94,3 +94,19 @@ is signed at `235c9a999646fce9ddad08c4f8d7f87cc4524f02` and binds the exact
 coordinator amendment `15b20c513245201e125a0deae7d41c23e7bc136c`. This updates
 the amendment document's historical pending-review status without changing
 its reviewed bytes. No numerical/control input or limit was changed.
+
+## Main publication and implementation conventions
+
+The accepted design and transport amendment are
+[verified on main through PR17052](research-main-publication/2026-09-08/pr-17052/README.md),
+merge `84cc7a0cd2c78bff2ca01fc699fa4d054d3a8223`. The 124 changed paths and
+complete tree match; final checks were 89 success and three skipped. This
+publishes the design, not the still-in-progress implementation.
+
+The [identity/codec conventions](2026-09-08-mixed-message-epoch-identity-codec-conventions.md)
+make derived variable/model-factor identities and prior/input pairing explicit,
+align canonical bytes, and fix the ChildCuts concrete shape. Independent draft
+review found no remaining convention issue; final source review must bind the
+committed note and implementation. The [minimal serialization witness](mixed-message-epoch-implementation/2026-09-08/codec-review-1/README.md)
+preserves the real default-writer mismatch. Original contract/amendment bytes,
+raw-query semantics, numerical roster and controls remain unchanged.
