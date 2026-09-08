@@ -1,0 +1,677 @@
+{
+  "OriginalSourceCut": "2e051e8d0e5715dc3da6aa5176037d25598e74df",
+  "CorrectedCut": "c124a621db83d96894310cb079be20d942ebc45e",
+  "Module": {
+    "Bytes": 25193,
+    "Sha256": "aada2881e4200760d66fbde688a93f314a99fb061d03f408f68880e384a8b7f0"
+  },
+  "Tests": {
+    "Bytes": 22687,
+    "Sha256": "6c418f7e8f44037ea03623379326c2b04090863eb61d981629610fe19f840d24"
+  },
+  "Archives": [
+    {
+      "Group": "run-draft-validation",
+      "Commit": "2e051e8d0e5715dc3da6aa5176037d25598e74df",
+      "Manifest": {
+        "Bytes": 14926,
+        "Sha256": "6b620d6b09a7fa26303ec514ee7416f968b6a8628f38fb7abe3795d0d3e2494a"
+      },
+      "Records": 40,
+      "RawBytes": 488456,
+      "StoredBytes": 159494,
+      "IncidentalPycacheRecords": 4,
+      "Commands": {
+        ".git/projection-run-fixture-tests-1/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.051976919174194336
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import zeta_interp,pytest; zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-1/dependency'); raise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py','-q']))"
+            ],
+            "Exit": 0,
+            "Seconds": 4.9066832065582275
+          }
+        ],
+        ".git/projection-run-fixture-tests-1/start.json": {
+          "UTC": "2026-09-08T06:48:38.868346+00:00",
+          "Scope": "synthetic callback tests with captured draft DTO dependency; no native process, solver or final subject executed",
+          "DraftDependency": "/Users/acehack/.zeta/agents/codex/Zeta-rendered-predictor-native-20260906/src/Interp.Python/zeta_interp/precision_gate_projection_process.py",
+          "DraftBytes": 32293,
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import zeta_interp,pytest; zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-1/dependency'); raise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py','-q']))"
+            ]
+          ]
+        },
+        ".git/projection-run-fixture-tests-2/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.015294790267944336
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-2/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py',\"-q\"],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 0,
+            "Seconds": 5.085911750793457
+          }
+        ],
+        ".git/projection-run-fixture-tests-2/start.json": {
+          "UTC": "2026-09-08T06:50:53.212460+00:00",
+          "Scope": "synthetic callback tests with same immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-2/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py',\"-q\"],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        },
+        ".git/projection-run-fixture-tests-3/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.015074968338012695
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-3/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py',\"-q\"],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 0,
+            "Seconds": 5.012754201889038
+          }
+        ],
+        ".git/projection-run-fixture-tests-3/start.json": {
+          "UTC": "2026-09-08T06:52:42.820066+00:00",
+          "Scope": "synthetic callback tests with same immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-3/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py',\"-q\"],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        },
+        ".git/projection-run-fixture-tests-4/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.013634204864501953
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-4/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py',\"-q\"],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 0,
+            "Seconds": 5.012985944747925
+          }
+        ],
+        ".git/projection-run-fixture-tests-4/start.json": {
+          "UTC": "2026-09-08T06:54:16.869002+00:00",
+          "Scope": "synthetic callback tests with same immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-4/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py',\"-q\"],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        }
+      },
+      "Outputs": {
+        ".git/projection-run-fixture-tests-1/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-1/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-1/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-1/1-stdout": {
+          "Identity": {
+            "Bytes": 1435,
+            "Sha256": "c842fd95b5aef542a1ddfdcf5fbcd5b214367219ba00768961450c479a550496"
+          },
+          "Tail": [
+            "    self._mark_plugins_for_rewrite(hook, disable_autoload)",
+            "",
+            "src/Interp.Python/.venv/lib/python3.14/site-packages/_pytest/config/__init__.py:1345",
+            "  /Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/src/Interp.Python/.venv/lib/python3.14/site-packages/_pytest/config/__init__.py:1345: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; typeguard",
+            "    self._mark_plugins_for_rewrite(hook, disable_autoload)",
+            "",
+            "-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html",
+            "9 passed, 3 warnings in 0.35s"
+          ]
+        },
+        ".git/projection-run-fixture-tests-2/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-2/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-2/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-2/1-stdout": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "9420e1c2fa229c60ba298003d1c07c7714bd0fa4d6cc704d2f01fe9515146ad6"
+          },
+          "Tail": [
+            "...........                                                              [100%]",
+            "11 passed in 0.36s"
+          ]
+        },
+        ".git/projection-run-fixture-tests-3/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-3/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-3/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-3/1-stdout": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "7ddf902669c1b5b839000cc52807693cf8527cefdbf90c09106c0005990aa0fd"
+          },
+          "Tail": [
+            "............                                                             [100%]",
+            "12 passed in 0.36s"
+          ]
+        },
+        ".git/projection-run-fixture-tests-4/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-4/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-4/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-4/1-stdout": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "5f9e216aad3508c24933586c89f55213316824cb73379461aa5467701df3a379"
+          },
+          "Tail": [
+            ".............                                                            [100%]",
+            "13 passed in 0.41s"
+          ]
+        }
+      }
+    },
+    {
+      "Group": "run-followup-validation",
+      "Commit": "c124a621db83d96894310cb079be20d942ebc45e",
+      "Manifest": {
+        "Bytes": 16941,
+        "Sha256": "44216c53716ab7449629aa5955e556ac359d45838d58f6ad20d8eb0376277596"
+      },
+      "Records": 46,
+      "RawBytes": 536890,
+      "StoredBytes": 171016,
+      "IncidentalPycacheRecords": 4,
+      "Commands": {
+        ".git/projection-run-fixture-tests-5/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.016319990158081055
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-5/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q', '-k', 'comparison_raise or success_wrapper_without or native_json_null'],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 1,
+            "Seconds": 5.57850193977356
+          }
+        ],
+        ".git/projection-run-fixture-tests-5/start.json": {
+          "UTC": "2026-09-08T07:01:28.473249+00:00",
+          "Scope": "synthetic callback tests with immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-5/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q', '-k', 'comparison_raise or success_wrapper_without or native_json_null'],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        },
+        ".git/projection-run-fixture-tests-6/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 1,
+            "Seconds": 0.019582033157348633
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-6/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q'],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 0,
+            "Seconds": 5.697946071624756
+          }
+        ],
+        ".git/projection-run-fixture-tests-6/start.json": {
+          "UTC": "2026-09-08T07:03:19.865999+00:00",
+          "Scope": "synthetic callback tests with immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-6/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q'],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        },
+        ".git/projection-run-fixture-tests-7/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.017986774444580078
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-7/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q'],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 0,
+            "Seconds": 5.2270348072052
+          }
+        ],
+        ".git/projection-run-fixture-tests-7/start.json": {
+          "UTC": "2026-09-08T07:05:36.741648+00:00",
+          "Scope": "synthetic callback tests with immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-7/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q'],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        },
+        ".git/projection-run-fixture-tests-8/process.json": [
+          {
+            "Argv": [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            "Exit": 0,
+            "Seconds": 0.014893770217895508
+          },
+          {
+            "Argv": [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-8/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q'],plugins=[Bootstrap()]))\n"
+            ],
+            "Exit": 0,
+            "Seconds": 5.321290016174316
+          }
+        ],
+        ".git/projection-run-fixture-tests-8/start.json": {
+          "UTC": "2026-09-08T07:08:12.328862+00:00",
+          "Scope": "synthetic callback tests with immutable captured draft DTO; no native process, solver or final subject executed",
+          "DraftSha256": "6d2eac2f399120454ea9e5890253687b087fc255ee7dd6b3da1d65a5116604ab",
+          "Argv": [
+            [
+              "ruff",
+              "check",
+              "src/Interp.Python/zeta_interp/precision_gate_projection_run.py",
+              "src/Interp.Python/tests/test_precision_gate_projection_run.py"
+            ],
+            [
+              "src/Interp.Python/.venv/bin/python",
+              "-c",
+              "import pytest\nclass Bootstrap:\n def pytest_configure(self):\n  import zeta_interp\n  zeta_interp.__path__.append('/Users/acehack/.zeta/agents/codex/Zeta-rendered-catch-reference-20260906/.git/projection-run-fixture-tests-8/dependency')\nraise SystemExit(pytest.main(['src/Interp.Python/tests/test_precision_gate_projection_run.py', '-q'],plugins=[Bootstrap()]))\n"
+            ]
+          ]
+        }
+      },
+      "Outputs": {
+        ".git/projection-run-fixture-tests-5/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-5/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-5/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-5/1-stdout": {
+          "Identity": {
+            "Bytes": 5009,
+            "Sha256": "4ba50c31b76227e94a7cc8c61150646e1439fabc9ae9894cd14a8ad8482b8877"
+          },
+          "Tail": [
+            "",
+            "src/Interp.Python/tests/test_precision_gate_projection_run.py:528: AssertionError",
+            "=========================== short test summary info ============================",
+            "FAILED src/Interp.Python/tests/test_precision_gate_projection_run.py::test_comparison_raise_retains_actual_prefix_and_finalizes",
+            "FAILED src/Interp.Python/tests/test_precision_gate_projection_run.py::test_success_wrapper_without_receipt_is_returned_but_not_complete[None]",
+            "FAILED src/Interp.Python/tests/test_precision_gate_projection_run.py::test_success_wrapper_without_receipt_is_returned_but_not_complete[42]",
+            "FAILED src/Interp.Python/tests/test_precision_gate_projection_run.py::test_native_json_null_is_not_a_complete_receipt",
+            "4 failed, 14 deselected in 0.20s"
+          ]
+        },
+        ".git/projection-run-fixture-tests-6/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-6/0-stdout": {
+          "Identity": {
+            "Bytes": 1506,
+            "Sha256": "93d13d296c19e8963a654daebeb9f3819d2db884089cdab9b9534b2cdff2e0f3"
+          },
+          "Tail": [
+            "557 |             run.helper(",
+            "558 |                 \"slot/\" + str(index), lambda: run.step(index, case_id, operation)",
+            "    |                                                                        ^^^^^^^^^",
+            "559 |             )",
+            "560 |             if run.primary is not None:",
+            "    |",
+            "",
+            "Found 3 errors."
+          ]
+        },
+        ".git/projection-run-fixture-tests-6/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-6/1-stdout": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "49675a6a8d90f5a69033379a43757eea5c03a277003a20e3d68c52ed44850995"
+          },
+          "Tail": [
+            "..................                                                       [100%]",
+            "18 passed in 0.47s"
+          ]
+        },
+        ".git/projection-run-fixture-tests-7/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-7/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-7/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-7/1-stdout": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "fd3287ae817bf44d50af8ac80c09fa4ea2d10127bf8187b54e8ae8180ed210e7"
+          },
+          "Tail": [
+            "....................                                                     [100%]",
+            "20 passed in 0.39s"
+          ]
+        },
+        ".git/projection-run-fixture-tests-8/0-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-8/0-stdout": {
+          "Identity": {
+            "Bytes": 19,
+            "Sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+          },
+          "Tail": [
+            "All checks passed!"
+          ]
+        },
+        ".git/projection-run-fixture-tests-8/1-stderr": {
+          "Identity": {
+            "Bytes": 0,
+            "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "Tail": []
+        },
+        ".git/projection-run-fixture-tests-8/1-stdout": {
+          "Identity": {
+            "Bytes": 99,
+            "Sha256": "22bcf39ac58f2aab75937eae287b4a3ae859c9da885a1a6c5af0537a66ecdd3a"
+          },
+          "Tail": [
+            "......................                                                   [100%]",
+            "22 passed in 0.47s"
+          ]
+        },
+        ".git/projection-run-draft-push-1.log": {
+          "Identity": {
+            "Bytes": 1719,
+            "Sha256": "f73118a307169e20ac53cf11a86848a2744acf50a9f3229f2fbcb14c7943c381"
+          },
+          "Tail": [
+            "\u2713 preflight: all 16 executed check(s) passed.",
+            "\u2705 Preflight checks passed. Proceeding with push.",
+            "remote: ",
+            "remote: GitHub found 13 vulnerabilities on Lucent-Financial-Group/Zeta's default branch (7 high, 6 moderate). To find out more, visit:        ",
+            "remote:      https://github.com/Lucent-Financial-Group/Zeta/security/dependabot        ",
+            "remote: ",
+            "To https://github.com/Lucent-Financial-Group/Zeta.git",
+            "   459df9111..2e051e8d0  HEAD -> codex/hidden-switch-compiled-integration-20260907"
+          ]
+        },
+        ".git/projection-run-draft-remote-1.txt": {
+          "Identity": {
+            "Bytes": 102,
+            "Sha256": "44da59e5de410a93271187e758810690bf86e68c3a007330d33fb2172e42cd26"
+          },
+          "Tail": [
+            "2e051e8d0e5715dc3da6aa5176037d25598e74df\trefs/heads/codex/hidden-switch-compiled-integration-20260907"
+          ]
+        }
+      }
+    }
+  ],
+  "FailingAttemptWholeModuleDiffersFromOriginal": true,
+  "FailingAttemptOriginalAstMatches": [
+    "_Run",
+    "_observe",
+    "reference_services"
+  ],
+  "ProjectCodeExecuted": false,
+  "ActualNumericalServicesCalled": false,
+  "FinalRunAccepted": false
+}
