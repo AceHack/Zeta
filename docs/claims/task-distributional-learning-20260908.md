@@ -54,3 +54,29 @@ scopes the next additive implementation after the local density audit.
 The expected fabricated-memory/cartel program and finite gauge proposal
 remain separately scoped research. Their interpretation is not promoted by
 these local learning-kernel tests.
+
+## Registered scalar projection co-claim
+
+The [separate registration](../research/2026-09-08-precision-gate-projection-registration.md)
+freezes the independently accepted 1bf71 contract before implementation.
+
+- Native session `codex/20260907-c7b2a402` owns
+  `src/Bayesian/PrecisionGateProjection.fs`,
+  `tests/Bayesian.Tests/PrecisionGateProjection.Tests.fs`,
+  `src/Research.FSharp/PrecisionGateProjectionReplay.fsx`, Bayesian source/test
+  project wiring and any corresponding derived build-graph update.
+- Independent reference session `codex/20260907-c7b2a403` owns
+  `src/Interp.Python/zeta_interp/precision_gate_projection_intervals.py`,
+  `src/Interp.Python/zeta_interp/precision_gate_projection_reference.py`,
+  `src/Interp.Python/tests/test_precision_gate_projection_intervals.py` and
+  `src/Interp.Python/tests/test_precision_gate_projection_reference.py`.
+- Coordinator session `codex/20260907-c7b2a401` owns
+  `src/Interp.Python/zeta_interp/precision_gate_projection_cases.py`,
+  `src/Interp.Python/zeta_interp/precision_gate_projection_comparison.py`,
+  their dedicated tests, whole-run envelopes, launch, source bindings,
+  artifact storage and final comparison ledger.
+- The existing independent reviewer owns uniquely named review reports and
+  reviews the complete implementation before final comparison execution.
+
+All writers preserve actual first attempts and failures. Project source
+changes are integrated by their named owner; root does not race those edits.

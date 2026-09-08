@@ -381,3 +381,7 @@ outcomes can become new history. It distinguishes repeated visible output from
 unchanged internal state, names caller-owned persistence in the current algebra,
 and proposes chronological comparisons before any learning-performance claim.
 The supplied transcript is retained verbatim in the linked IP-questionable record.
+
+The next [scalar projection registration](2026-09-08-precision-gate-projection-registration.md)
+fixes the independent certificate contract and source ownership before
+implementation. It remains a local numerical prerequisite to learning trials.
