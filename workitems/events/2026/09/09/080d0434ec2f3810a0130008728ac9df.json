@@ -1,0 +1,14 @@
+{
+  "id": "080d0434ec2f3810a0130008728ac9df",
+  "at": "2026-09-09T14:41:05.511Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M239V1F6087G0R0029DXVZC",
+    "type": "bug",
+    "title": "check-then-write TOCTOU is invisible to the race linter, and 4 alert directories are out of its scope",
+    "slug": "check-then-write-toctou-is-invisible-to-the-race-linter-and",
+    "priority": "P2",
+    "filename": "081M239V1F6087G0R0029DXVZC-check-then-write-toctou-is-invisible-to-the-race-linter-and.md"
+  }
+}

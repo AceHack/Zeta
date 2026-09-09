@@ -55,7 +55,7 @@
     "hygiene:no-orphaned-doc-comments": "bun ./src/Core.TypeScript/hygiene/lint-orphaned-doc-comments.ts src/Core.TypeScript/corporate",
     "hygiene:no-clean-sarif-for-skipped-analysis": "bun ./src/Core.TypeScript/hygiene/lint-no-clean-sarif-for-skipped-analysis.ts",
     "hygiene:no-graphql-transport-in-scripts": "bun ./src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.ts src/Core.TypeScript .github/workflows tools .claude --min-files 2000 --baseline src/Core.TypeScript/hygiene/lint-graphql-transport-in-scripts.baseline.json",
-    "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts src/Core.TypeScript --min-files 1500 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
+    "hygiene:no-check-then-use-file-races": "bun ./src/Core.TypeScript/hygiene/lint-check-then-use-file-races.ts . --min-files 3400 --baseline src/Core.TypeScript/hygiene/lint-check-then-use-file-races.baseline.json",
     "hygiene:no-ambient-time-in-tests": "bun ./src/Core.TypeScript/hygiene/audit-ambient-time-in-tests.ts",
     "hygiene:check-arity": "bun ./src/Core.TypeScript/hygiene/audit-check-arity.ts",
     "hygiene:check-arity-nonequality": "bun ./src/Core.TypeScript/hygiene/audit-check-arity-nonequality.ts",
