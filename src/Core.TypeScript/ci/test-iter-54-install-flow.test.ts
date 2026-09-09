@@ -95,6 +95,11 @@ const ITER_595_BLOCK = extractStep(
   "Step 7: print initial credentials",
 );
 
+const ITER_656_BLOCK = extractStep(
+  "Step 6.56: 081KSKBP80008QG0R003AX2A69.3b cred-blob passphrase prompt",
+  "Step 6.6: iter-5.2 hostname injection",
+);
+
 describe("iter-5.4.0 — gh auth + ssh-key flow (081KSGS9H0008QG0R00120EEHM Bug 2a + 2b)", () => {
   test("the gh auth login branch is gated on user opt-in", () => {
     // Operator must answer Y/y to GH_AUTH_REPLY. Opt-out path (n) skips.
@@ -276,6 +281,34 @@ describe("iter-5.5.0 target runtime bootstrap uses canonical install.sh", () => 
     expect(ITER_595_BLOCK).toContain(
       'sudo install -m 0600 "$PICKER_TMP_FACTOR" /mnt/boot/zeta-creds.factor',
     );
+  });
+
+  test("WIPE empty-passphrase skip writes CREDS-PERSISTENCE-SKIPPED at picker, not 6.56", () => {
+    // T3 / 081M23BTKZ8087G0R002W6BFCF. ZETA_AUTO_CONFIRM=WIPE skips the
+    // typed prompt; the picker then opts out on empty passphrase. A 6.56
+    // marker would fire before QEMU fills ZETA_CREDS_PASSPHRASE_VAL from
+    // zeta-qemu-creds-passphrase (after 6.56, before 6.95-picker).
+    expect(ITER_656_BLOCK.includes("/mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED")).toBe(false);
+    expect(ITER_656_BLOCK).toContain(
+      "non-interactive install (ZETA_AUTO_CONFIRM=WIPE or non-TTY); skipping cred-blob passphrase prompt",
+    );
+
+    const emptyPass = ITER_595_BLOCK.indexOf(
+      'PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"',
+    );
+    expect(emptyPass).toBeGreaterThan(-1);
+    const arm = ITER_595_BLOCK.slice(emptyPass, ITER_595_BLOCK.indexOf("\n  fi", emptyPass));
+    expect(arm).toContain("/mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED");
+    expect(arm).toContain("if ! zeta_install_prompts_enabled; then");
+    expect(arm).toContain(
+      "CREDS-PERSISTENCE-SKIPPED: non-interactive (ZETA_AUTO_CONFIRM=WIPE or non-TTY); no cred-blob this install",
+    );
+
+    const preseeded = ITER_595_BLOCK.slice(
+      ITER_595_BLOCK.indexOf("BOOT_USB_CREDS_PRESEEDED"),
+      emptyPass,
+    );
+    expect(preseeded.includes("/mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED")).toBe(false);
   });
 
   test("agent CLI package installs are not duplicated in zeta-install.sh", () => {

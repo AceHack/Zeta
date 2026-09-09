@@ -1,9 +1,14 @@
 # .github/workflows/build-platform-images.yml
 #
-# Builds + publishes the two platform container images the cluster pulls:
+# Builds + publishes the platform container images the cluster pulls:
 #   - ghcr.io/lucent-financial-group/zeta-portal              (full-ai-cluster/portal)
 #   - ghcr.io/lucent-financial-group/zeta-platform-controller (full-ai-cluster/platform-controller)
 #   - ghcr.io/lucent-financial-group/zeta-orleans-silo       (full-ai-cluster/orleans-silo)
+#   - ghcr.io/lucent-financial-group/zeta-bao-unseal         (full-ai-cluster/openbao-unseal)
+#
+# zeta-bao-unseal is the Shamir unseal sidecar image (081M23BTKZX087G0R0034VN466).
+# extraContainers stay out of openbao/Application.yaml until the first
+# anonymous GHCR 200; pin that publish by digest in the follow-up.
 #
 # WHY this exists: the platform manifests
 # (full-ai-cluster/k8s/applications/platform/{portal,controller}.yaml) pin
@@ -37,6 +42,10 @@ on:
       - 'full-ai-cluster/portal/**'
       - 'full-ai-cluster/platform-controller/**'
       - 'full-ai-cluster/orleans-silo/**'
+      - 'full-ai-cluster/openbao-unseal/**'
+      - 'src/Core.TypeScript/cluster/openbao-unseal-sidecar.ts'
+      - 'src/Core.TypeScript/cluster/vault-unsealer.ts'
+      - 'src/Core.TypeScript/cluster/ephemeral-vault-init.ts'
       - '.github/workflows/build-platform-images.yml'
   push:
     branches: [main]
@@ -44,6 +53,10 @@ on:
       - 'full-ai-cluster/portal/**'
       - 'full-ai-cluster/platform-controller/**'
       - 'full-ai-cluster/orleans-silo/**'
+      - 'full-ai-cluster/openbao-unseal/**'
+      - 'src/Core.TypeScript/cluster/openbao-unseal-sidecar.ts'
+      - 'src/Core.TypeScript/cluster/vault-unsealer.ts'
+      - 'src/Core.TypeScript/cluster/ephemeral-vault-init.ts'
       - '.github/workflows/build-platform-images.yml'
   workflow_dispatch:
 
@@ -82,6 +95,13 @@ jobs:
           # It was not: the packages API returned 404 Package not found.
           - image: zeta-orleans-silo
             context: full-ai-cluster/orleans-silo
+          # 081M23BTKZX087G0R0034VN466. Context is the repo root so the
+          # Dockerfile can COPY the sidecar TypeScript. extraContainers are
+          # NOT added in this commit — GHCR 401 on a missing package would
+          # make openbao-0 NotReady on Otto's included catalog.
+          - image: zeta-bao-unseal
+            context: .
+            dockerfile: full-ai-cluster/openbao-unseal/Dockerfile
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -110,11 +130,14 @@ jobs:
       - name: Build image
         env:
           CONTEXT: ${{ matrix.context }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
           TAG_SHA: ${{ steps.meta.outputs.tag_sha }}
           TAG_LATEST: ${{ steps.meta.outputs.tag_latest }}
         run: |
           set -euo pipefail
+          dockerfile="${DOCKERFILE:-$CONTEXT/Dockerfile}"
           docker build \
+            --file "$dockerfile" \
             --tag "$TAG_SHA" \
             --tag "$TAG_LATEST" \
             --label "org.opencontainers.image.source=https://github.com/${GITHUB_REPOSITORY}" \

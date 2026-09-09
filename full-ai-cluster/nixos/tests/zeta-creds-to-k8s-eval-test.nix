@@ -78,8 +78,13 @@ let
     (check "ExecStart invokes k3s kubectl via --k3s-bin" (
       lib.hasInfix "--k3s-bin" exec && lib.hasInfix "/stub-k3s/bin/k3s" exec
     ))
-    (check "ExecStart names a skip when preconditions are missing" (
+    (check "ExecStart names a skip when bun/script are missing" (
       lib.hasInfix "MISSING precondition" exec && lib.hasInfix "skipping projection" exec
+    ))
+    (check "missing kubeconfig retries (exit 1), bun/script skip does not swallow it" (
+      lib.hasInfix "kubeconfig missing" exec
+      && lib.hasInfix "exit 1" exec
+      && (unit.serviceConfig.Restart or "") == "on-failure"
     ))
     (check "oneshot RemainAfterExit" (
       unit != null

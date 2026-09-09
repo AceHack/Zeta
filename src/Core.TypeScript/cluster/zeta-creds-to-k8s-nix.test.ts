@@ -47,4 +47,22 @@ describe("zeta-creds-to-k8s.nix wiring lock", () => {
     expect(text).toContain("--k3s-bin");
     expect(text).toContain("MISSING precondition");
   });
+
+  test("missing bun/script is a named skip; missing kubeconfig retries", () => {
+    // T5 / 081M23BTKYK087G0R002J6E297. Lumping kubeconfig into the exit-0
+    // skip loop + RemainAfterExit made first-boot look like projection ran.
+    // k3s writes the admin kubeconfig after the unit has already succeeded.
+    const skipLoop = text.match(/for _req in [^\n]+/)?.[0];
+    expect(skipLoop).toBe("for _req in ${cfg.scriptPath} ${bunShimPath}; do");
+
+    const kubeStart = text.indexOf('if [ ! -e "${cfg.kubeconfig}" ]; then');
+    expect(kubeStart).toBeGreaterThan(-1);
+    const kubeArm = text.slice(kubeStart, text.indexOf("\n          fi", kubeStart));
+    const kubeLines = kubeArm
+      .split("\n")
+      .map((l) => l.trim())
+      .filter((l) => l.length > 0 && !l.startsWith("#"));
+    expect(kubeLines.at(-1)).toBe("exit 1");
+    expect(text).toContain('Restart = "on-failure"');
+  });
 });

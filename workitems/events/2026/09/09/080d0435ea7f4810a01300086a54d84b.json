@@ -1,0 +1,14 @@
+{
+  "id": "080d0435ea7f4810a01300086a54d84b",
+  "at": "2026-09-09T15:15:48.841Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23BTKZ8087G0R002W6BFCF",
+    "type": "bug",
+    "title": "T3 WIPE cred-blob skip writes a durable marker",
+    "slug": "t3-wipe-cred-blob-skip-writes-a-durable-marker",
+    "priority": "P1",
+    "filename": "081M23BTKZ8087G0R002W6BFCF-t3-wipe-cred-blob-skip-writes-a-durable-marker.md"
+  }
+}

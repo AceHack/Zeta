@@ -3778,6 +3778,18 @@ if [ -d "$ZETA_HOME" ]; then
   elif [ -z "${ZETA_CREDS_PASSPHRASE_VAL:-}" ]; then
     PICKER_OPT_OUT=1
     PICKER_SKIP_REASON="ZETA_CREDS_PASSPHRASE_VAL empty (operator skipped passphrase at Step 6.56)"
+    # T3 / 081M23BTKZ8087G0R002W6BFCF: WIPE / non-TTY skip is not a check
+    # that passed. Written HERE (picker skip), not at 6.56 — QEMU may fill
+    # ZETA_CREDS_PASSPHRASE_VAL from zeta-qemu-creds-passphrase after 6.56.
+    # Preseeded /mnt/boot/zeta-creds.enc is a different branch above and
+    # must not take this path.
+    if ! zeta_install_prompts_enabled; then
+      sudo mkdir -p /mnt/etc/zeta
+      echo "non-interactive install skipped cred-blob persistence; no /mnt/boot/zeta-creds.enc this install" \
+        | sudo tee /mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED >/dev/null
+      sudo chmod 0644 /mnt/etc/zeta/CREDS-PERSISTENCE-SKIPPED
+      echo "[iter-5.5.0] CREDS-PERSISTENCE-SKIPPED: non-interactive (ZETA_AUTO_CONFIRM=WIPE or non-TTY); no cred-blob this install"
+    fi
   fi
   if [ "$PICKER_OPT_OUT" = "0" ]; then
     USB_UUID="$(cat /etc/zeta/usb-uuid)"

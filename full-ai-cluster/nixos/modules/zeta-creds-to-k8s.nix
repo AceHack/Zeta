@@ -20,7 +20,9 @@
 #
 # Failure does not take k3s down (no requiredBy). Missing blob / missing
 # bun / empty disk is a named skip, exit 0 — same skip discipline as
-# zeta-creds-restore. API-not-ready exits 1 so Restart=on-failure retries.
+# zeta-creds-restore. Missing kubeconfig exits 1 so Restart=on-failure
+# retries until k3s has written the admin file. API-not-ready from the
+# projector also exits 1.
 
 { config, lib, pkgs, ... }:
 
@@ -118,7 +120,7 @@ in
           log_proj "zeta-creds-to-k8s: ExecStart entered"
 
           _missing=""
-          for _req in ${cfg.scriptPath} ${bunShimPath} ${cfg.kubeconfig}; do
+          for _req in ${cfg.scriptPath} ${bunShimPath}; do
             if [ ! -e "$_req" ]; then
               _missing="$_missing $_req"
               log_proj "zeta-creds-to-k8s: MISSING precondition $_req; skipping projection"
@@ -126,6 +128,11 @@ in
           done
           if [ -n "$_missing" ]; then
             exit 0
+          fi
+
+          if [ ! -e "${cfg.kubeconfig}" ]; then
+            log_proj "zeta-creds-to-k8s: kubeconfig missing (${cfg.kubeconfig}); retrying"
+            exit 1
           fi
 
           cd "${cfg.repoRoot}"

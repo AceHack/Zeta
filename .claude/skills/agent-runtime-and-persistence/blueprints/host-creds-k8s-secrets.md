@@ -87,7 +87,7 @@ zeta.credsToK8s.enable = false;
 - `src/Core.TypeScript/installer/zeta-creds-to-k8s.test.ts` — allowlist,
   host-only refusal, summary leak lock, apply skip
 - `src/Core.TypeScript/cluster/zeta-creds-to-k8s-nix.test.ts` — After=
-  restore+k3s, not requiredBy k3s
+  restore+k3s, not requiredBy k3s, missing kubeconfig retries (T5)
 
 ## Composes with
 

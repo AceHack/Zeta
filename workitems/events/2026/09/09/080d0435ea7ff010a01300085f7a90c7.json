@@ -1,0 +1,14 @@
+{
+  "id": "080d0435ea7ff010a01300085f7a90c7",
+  "at": "2026-09-09T15:15:48.862Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23BTKZX087G0R0034VN466",
+    "type": "task",
+    "title": "zeta-bao-unseal image in build-platform-images matrix",
+    "slug": "zeta-bao-unseal-image-in-build-platform-images-matrix",
+    "priority": "P1",
+    "filename": "081M23BTKZX087G0R0034VN466-zeta-bao-unseal-image-in-build-platform-images-matrix.md"
+  }
+}

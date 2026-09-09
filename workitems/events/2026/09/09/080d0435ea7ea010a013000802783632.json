@@ -1,0 +1,14 @@
+{
+  "id": "080d0435ea7ea010a013000802783632",
+  "at": "2026-09-09T15:15:48.820Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23BTKYK087G0R002J6E297",
+    "type": "bug",
+    "title": "T5 zeta-creds-to-k8s retries when kubeconfig is missing",
+    "slug": "t5-zeta-creds-to-k8s-retries-when-kubeconfig-is-missing",
+    "priority": "P1",
+    "filename": "081M23BTKYK087G0R002J6E297-t5-zeta-creds-to-k8s-retries-when-kubeconfig-is-missing.md"
+  }
+}
