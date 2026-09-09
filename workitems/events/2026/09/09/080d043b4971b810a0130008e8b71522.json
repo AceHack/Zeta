@@ -1,0 +1,14 @@
+{
+  "id": "080d043b4971b810a0130008e8b71522",
+  "at": "2026-09-09T18:23:32.407Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23PJBHP087G0R001GT2E3E",
+    "type": "task",
+    "title": "Representation layer for the graphics/physics engine: PGA Cl(3,0,1) measured against the 8D-then-project pipeline",
+    "slug": "representation-layer-for-the-graphics-physics-engine-pga-cl",
+    "priority": "P2",
+    "filename": "081M23PJBHP087G0R001GT2E3E-representation-layer-for-the-graphics-physics-engine-pga-cl.md"
+  }
+}
