@@ -33,10 +33,67 @@ export interface InterfaceIr {
   laws?: string[]; // Documentation of algebraic laws (not machine-checked here)
 }
 
+// ─── Type mapping: DATA, applied in ONE pass ──────────────────────────────
+//
+// Each target language declares its IR-primitive -> native-type map as data, and
+// `applyTypeMap` rewrites every declared token in a SINGLE scan.
+//
+// Why one pass instead of the chain of `.replace` calls this replaced: a chain is
+// order-dependent because every later pattern re-scans the OUTPUT of every earlier
+// one. `int64 -> int` followed by `int -> long` yields `long` for `int64`, which
+// is a silent miscompile of the IR. The chains here were safe only by accident —
+// several of their links mapped a token to ITSELF (`.replace(/\bint\b/g, "int")`,
+// ten of which CodeQL flagged as js/identity-replacement), and a dead link is
+// indistinguishable by eye from a load-bearing one. A single pass CANNOT cascade,
+// so the property is structural rather than a fact about the current ordering.
+//
+// Falsifiers: `codegen-interface.test.ts` §"type maps are single-pass" shuffles
+// each map's key order and requires byte-identical output (a chain fails this),
+// and `codegen-interface-golden.json` byte-locks all seven emitters.
+
+export type TypeMap = Readonly<Record<string, string>>;
+
+/** The IR primitive type names every language map must account for. */
+export const IR_PRIMITIVES: readonly string[] = ["int", "int64", "bool", "string", "void"];
+
+/**
+ * A map key must be a bare word: the pattern below anchors each key with `\b`, so
+ * a key containing punctuation could never match the way its author intended.
+ * Such a key is REFUSED rather than quietly escaped into an entry that matches
+ * nothing — a map entry that cannot fire is the vacuity class.
+ */
+const BARE_WORD_KEY = /^\w+$/;
+
+/**
+ * Rewrite every whole-word occurrence of a map key with its value, in ONE pass.
+ *
+ * Key order is irrelevant, and that is a property of the PATTERN rather than of
+ * any sorting done here: both ends of every alternative are anchored with a word
+ * boundary, so a key that is a prefix of another key cannot match the prefix and
+ * stop. `(?:int|int64)` tries `int` inside `int64` first, fails the trailing
+ * boundary against the `6`, backtracks, and takes `int64`. A longest-first sort
+ * was written here first and a mutation proved it dead — removing it changed no
+ * result, because the boundaries had already decided every case.
+ *
+ * The falsifier for the claim is `codegen-interface.test.ts` §"longer keys win
+ * over their own prefixes": drop either `\\b` from the pattern and it fails.
+ */
+export function applyTypeMap(t: string, map: TypeMap): string {
+  const keys = Object.keys(map);
+  for (const k of keys) {
+    if (!BARE_WORD_KEY.test(k)) {
+      throw new Error(`type-map key ${JSON.stringify(k)} is not a bare word; \\b cannot anchor it`);
+    }
+  }
+  if (keys.length === 0) return t;
+  const pattern = new RegExp(`\\b(?:${keys.join("|")})\\b`, "g");
+  return t.replace(pattern, m => map[m] ?? m);
+}
+
+export const CS_TYPES: TypeMap = { int64: "long", int: "int" };
+
 function csType(t: string): string {
-  return t
-    .replace(/\bint64\b/g, "long")
-    .replace(/\bint\b/g, "int");
+  return applyTypeMap(t, CS_TYPES);
 }
 
 // ─── Emit C# ──────────────────────────────────────────────────────────────
@@ -109,12 +166,12 @@ ${members}
 `;
 }
 
+// Type param names are absent from the map, so they pass through untouched
+// (they match the generic declaration emitted above).
+export const TS_TYPES: TypeMap = { bool: "boolean", int64: "number", int: "number" };
+
 function tsType(t: string): string {
-  // Keep type param names as-is (they match the generic declaration)
-  return t
-    .replace(/\bbool\b/g, "boolean")
-    .replace(/\bint64\b/g, "number")
-    .replace(/\bint\b/g, "number");
+  return applyTypeMap(t, TS_TYPES);
 }
 
 // ─── Emit Rust ───────────────────────────────────────────────────────────
@@ -147,13 +204,17 @@ ${members}
 `;
 }
 
+// Type param names are absent from the map, so they stay as declared in the IR.
+//
+// `void` was MISSING from this map until 2026-09-09, and the chain of `.replace`
+// calls it replaced made that invisible: the chain listed four tokens, two of
+// which mapped to THEMSELVES, so it read as exhaustive. Every void-returning IR
+// member therefore emitted `-> void;`, which is not a Rust type and does not
+// compile. Rust spells the unit return `()`.
+export const RUST_TYPES: TypeMap = { int64: "i64", int: "i32", bool: "bool", string: "&str", void: "()" };
+
 function rustType(t: string): string {
-  // Keep type param names as declared in the IR
-  return t
-    .replace(/\bint64\b/g, "i64")
-    .replace(/\bint\b/g, "i32")
-    .replace(/\bbool\b/g, "bool")
-    .replace(/\bstring\b/g, "&str");
+  return applyTypeMap(t, RUST_TYPES);
 }
 
 function toSnake(s: string): string {
@@ -163,17 +224,16 @@ function toSnake(s: string): string {
 // ─── Emit F# ────────────────────────────────────────────────────────────
 
 export function emitFSharp(ir: InterfaceIr): string {
-  const fsharpType = (t: string): string => {
-    let res = t;
-    for (const tp of ir.typeParams) {
-      const regex = new RegExp(`\\b${tp.name}\\b`, "g");
-      res = res.replace(regex, `'${tp.name}`);
-    }
-    res = res.replace(/\bvoid\b/g, "unit")
-             .replace(/\bint64\b/g, "int64")
-             .replace(/\bint\b/g, "int");
-    return res;
+  // Per-IR map: type params become F# tick-prefixed generics, then the shared
+  // primitives. Built as ONE map so a type param named after a primitive cannot
+  // be rewritten twice (a chain would turn a param named `void` into `'unit`).
+  const fsharpTypes: TypeMap = {
+    ...Object.fromEntries(ir.typeParams.map(tp => [tp.name, `'${tp.name}`])),
+    void: "unit",
+    int64: "int64",
+    int: "int",
   };
+  const fsharpType = (t: string): string => applyTypeMap(t, fsharpTypes);
 
   const typeParams = ir.typeParams.length
     ? `<${ir.typeParams.map(tp => `'${tp.name}`).join(", ")}>`
@@ -244,13 +304,12 @@ ${doc}${members}
 `;
 }
 
+export const PYTHON_TYPES: TypeMap = {
+  int64: "int", int: "int", bool: "bool", string: "str", void: "None",
+};
+
 function pythonType(t: string): string {
-  return t
-    .replace(/\bint64\b/g, "int")
-    .replace(/\bint\b/g, "int")
-    .replace(/\bbool\b/g, "bool")
-    .replace(/\bstring\b/g, "str")
-    .replace(/\bvoid\b/g, "None");
+  return applyTypeMap(t, PYTHON_TYPES);
 }
 
 // ─── Emit Go ─────────────────────────────────────────────────────────────
@@ -269,7 +328,11 @@ export function emitGo(ir: InterfaceIr): string {
       return `${doc}    ${m.name}() ${goType(m.type!)}`;
     } else {
       const params = (m.params || []).map(p => `${p.name} ${goType(p.type)}`).join(", ");
-      return `${doc}    ${m.name}(${params}) ${goType(m.returns!)}`;
+      // A Go method that returns nothing has NO result type — not the word
+      // `void`, which is what this emitted before 2026-09-09. `GO_TYPES` maps
+      // `void` to the empty string; the result is appended only when non-empty.
+      const ret = goType(m.returns!);
+      return `${doc}    ${m.name}(${params})${ret ? ` ${ret}` : ""}`;
     }
   }).join("\n\n");
 
@@ -284,12 +347,19 @@ ${embeds}${members}
 `;
 }
 
+// Go names four of the five IR primitives identically. The map is spelled out
+// rather than left empty so the mapping is DECLARED and checkable, instead of
+// merely happening to be the identity.
+//
+// `void` maps to the EMPTY STRING because Go has no void type: a method that
+// returns nothing simply omits the result type. The call site appends the
+// result only when it is non-empty.
+export const GO_TYPES: TypeMap = {
+  int64: "int64", int: "int", bool: "bool", string: "string", void: "",
+};
+
 function goType(t: string): string {
-  return t
-    .replace(/\bint64\b/g, "int64")
-    .replace(/\bint\b/g, "int")
-    .replace(/\bbool\b/g, "bool")
-    .replace(/\bstring\b/g, "string");
+  return applyTypeMap(t, GO_TYPES);
 }
 
 // ─── Emit Q# ─────────────────────────────────────────────────────────────
@@ -319,18 +389,14 @@ ${functions}
 `;
 }
 
+// Q# has no generics in the same way — the known type params collapse to Int.
+export const QSHARP_TYPES: TypeMap = {
+  TWeight: "Int", TState: "Int", TEvent: "Int", T: "Int",
+  int64: "Int", int: "Int", bool: "Bool", string: "String", void: "Unit",
+};
+
 function qsharpType(t: string): string {
-  // Q# doesn't have generics in the same way — use Int as the concrete type
-  return t
-    .replace(/\bTWeight\b/g, "Int")
-    .replace(/\bTState\b/g, "Int")
-    .replace(/\bTEvent\b/g, "Int")
-    .replace(/\bT\b/g, "Int")
-    .replace(/\bint64\b/g, "Int")
-    .replace(/\bint\b/g, "Int")
-    .replace(/\bbool\b/g, "Bool")
-    .replace(/\bstring\b/g, "String")
-    .replace(/\bvoid\b/g, "Unit");
+  return applyTypeMap(t, QSHARP_TYPES);
 }
 
 // ─── Main: read IR JSON, emit all 7 ──────────────────────────────────────
@@ -376,3 +442,23 @@ if (import.meta.main) {
   }
   emitAll(ir, outDir);
 }
+
+/**
+ * Every language type map that is a compile-time constant, keyed by emitter.
+ *
+ * Exported so the falsifiers can shuffle each map key order and require
+ * byte-identical output — a property the chain of `.replace` calls this
+ * replaced could not hold, and the reason the identity-mapping links were
+ * load-bearing-LOOKING rather than load-bearing.
+ *
+ * F# is absent by construction: its map is built per-IR from `ir.typeParams`,
+ * and `emitFSharp` is covered by the golden byte-lock instead.
+ */
+export const STATIC_TYPE_MAPS: Readonly<Record<string, TypeMap>> = {
+  cs: CS_TYPES,
+  ts: TS_TYPES,
+  rs: RUST_TYPES,
+  py: PYTHON_TYPES,
+  go: GO_TYPES,
+  qs: QSHARP_TYPES,
+};
