@@ -28,7 +28,6 @@ spec:
           target_name := input.review.object.spec.hat
 
           target_hat := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"][target_name]
-          some conflict_name
           conflict_name := target_hat.spec.throttles.conflictsWith[_]
 
           some ns

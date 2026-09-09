@@ -1981,6 +1981,44 @@ jobs:
         # parser is ever closed. It costs nothing meanwhile.
         run: bun src/Core.TypeScript/cluster/included-proof-summary.ts --log "$RUNNER_TEMP/included-proof.log"
 
+      # A CONSTRAINTTEMPLATE THAT DID NOT COMPILE IS A POLICY THAT IS NOT ENFORCED,
+      # and nothing above this line could see it. Gatekeeper generates the constraint
+      # CRD only after the Rego compiles; when it does not, the CRD never appears, the
+      # `wait-gatekeeper-hat-constraint-crds` Sync hook exhausts its backoffLimit, the
+      # hat-system sync fails -- and the Application still reports `health=Healthy`,
+      # because Constraints and ConstraintTemplates carry no ArgoCD health. Measured on
+      # runs 34323056405 (red) and 34338106811 (GREEN): all seven Hat Constraints sat
+      # OutOfSync in both, `hatconflict` and `hatnocycle` never compiled, and the lane
+      # passed anyway (081M23B24P5087G0R002BJWEN1).
+      #
+      # Gatekeeper itself is the oracle here -- it writes the compile error into
+      # `status.byPod[].errors` -- so this asserts against the thing that actually
+      # judges the policy rather than against a local parser.
+      #
+      # The zero-template case is a FAILURE, not a skip: a loop over an empty list
+      # passes trivially, which is exactly the check-that-cannot-fail this step exists
+      # to remove.
+      - name: Gatekeeper compiled every ConstraintTemplate
+        if: always() && steps.proof.conclusion != 'skipped'
+        run: |
+          set -o pipefail
+          total="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json | jq '.items | length')"
+          if [ "$total" -eq 0 ]; then
+            echo "::error::no ConstraintTemplate exists -- gatekeeper compiled nothing, so this check would have been vacuous"
+            exit 1
+          fi
+          bad="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json \
+            | jq -r '.items[]
+                | select((.status.created != true)
+                         or (((.status.byPod // []) | map(.errors // []) | flatten | length) > 0))
+                | "\(.metadata.name): created=\(.status.created // false) errors=\((.status.byPod // []) | map(.errors // []) | flatten | map(.message) | join(" ~ "))"')"
+          if [ -n "$bad" ]; then
+            echo "$bad"
+            echo "::error::a ConstraintTemplate did not compile; gatekeeper never generates its constraint CRD and the policy is not enforced"
+            exit 1
+          fi
+          echo "all $total ConstraintTemplates compiled and created"
+
       # NAME THE RESOURCE, NOT JUST THE APPLICATION.
       #
       # Added 2026-08-21 after a run where `weaviate` reported
