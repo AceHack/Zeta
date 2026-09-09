@@ -1,0 +1,12 @@
+{
+  "pr_number": 17157,
+  "archive_path": "docs/history/pr-reviews/PR-17157-fix-creds-pin-openbao-shamir-extracontainer-by-digest.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T17:32:52.703Z",
+  "schema_version": "v1",
+  "commit_sha": "d303464591bfb7645a26920a9db1f30029c5e419",
+  "title": "fix(creds): pin OpenBao Shamir extraContainer by digest",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:32:05Z",
+  "head_ref": "cursor/bao-unseal-extracontainers-27c5"
+}

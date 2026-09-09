@@ -1,0 +1,12 @@
+{
+  "pr_number": 17151,
+  "archive_path": "docs/history/pr-reviews/PR-17151-fix-081m23fgf16087g0r0028kjkpa-a-comment-said-the-finding-was-cleared-the-findin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T16:41:42.092Z",
+  "schema_version": "v1",
+  "commit_sha": "08c74a54003e7dce7344f8eac10a106038388b2c",
+  "title": "fix(081M23FGF16087G0R0028KJKPA): a comment said the finding was cleared; the finding is open on that line",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T16:40:53Z",
+  "head_ref": "fix-false-cleared-claim"
+}

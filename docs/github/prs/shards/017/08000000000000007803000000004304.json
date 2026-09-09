@@ -1,0 +1,12 @@
+{
+  "pr_number": 17156,
+  "archive_path": "docs/history/pr-reviews/PR-17156-fix-security-drop-pull-requests-write-that-github-token-cannot-reach.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T17:11:40.752Z",
+  "schema_version": "v1",
+  "commit_sha": "ec67cd0abd837718112674c0d2f258cea83d2187",
+  "title": "fix(security): drop pull-requests write that GITHUB_TOKEN cannot reach",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:10:55Z",
+  "head_ref": "nazar/unreachable-pr-write"
+}

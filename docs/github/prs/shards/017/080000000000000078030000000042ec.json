@@ -1,0 +1,12 @@
+{
+  "pr_number": 17132,
+  "archive_path": "docs/history/pr-reviews/PR-17132-feat-081m239jrj0087g0r001fcakeh-jumprope-encode-writes-cbor-without-dynamicvalue.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:08:48.150Z",
+  "schema_version": "v1",
+  "commit_sha": "d9faf226ef95aac76753c3b0ce731790c3652b90",
+  "title": "feat(081M239JRJ0087G0R001FCAKEH): jumprope encode writes CBOR without DynamicValue",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:07:01Z",
+  "head_ref": "feat/zetafs-d10-jumprope-direct-cbor"
+}

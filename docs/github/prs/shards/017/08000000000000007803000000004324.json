@@ -1,0 +1,12 @@
+{
+  "pr_number": 17188,
+  "archive_path": "docs/history/pr-reviews/PR-17188-docs-081m245gdbn087g0r000qwr0m4-first-class-is-algebra-not-jumprope.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T23:38:15.563Z",
+  "schema_version": "v1",
+  "commit_sha": "b5cd1e32350a2a9256508ad2d337bf45a0b1aa32",
+  "title": "docs(081M245GDBN087G0R000QWR0M4): first-class is algebra, not Jumprope",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T23:37:33Z",
+  "head_ref": "feat/zetadb-first-class-algebra-not-fs"
+}

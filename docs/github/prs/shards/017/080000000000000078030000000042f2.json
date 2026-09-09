@@ -1,0 +1,12 @@
+{
+  "pr_number": 17138,
+  "archive_path": "docs/history/pr-reviews/PR-17138-fix-081m23bcr90087g0r002gyp7te-the-included-proof-laundered-a-failed-sync-as-rec.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T15:52:05.027Z",
+  "schema_version": "v1",
+  "commit_sha": "e5c599fcdc9a1f1f4b818d1bdd640c14091cbe72",
+  "title": "fix(081M23BCR90087G0R002GYP7TE): the included proof laundered a failed sync as reconciled whenever health was Healthy",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:51:20Z",
+  "head_ref": "proof-refuses-a-failed-sync"
+}

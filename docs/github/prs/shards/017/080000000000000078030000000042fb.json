@@ -1,0 +1,12 @@
+{
+  "pr_number": 17147,
+  "archive_path": "docs/history/pr-reviews/PR-17147-docs-081m23dc9s6087g0r003p8vcdt-jumprope-zetadb-discriminator-chunk-sizes-rust-a.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T16:13:32.898Z",
+  "schema_version": "v1",
+  "commit_sha": "dc70b59c9630f134aa4b5927247e4486ea7dddd7",
+  "title": "docs(081M23DC9S6087G0R003P8VCDT): Jumprope ZetaDB discriminator, chunk sizes, Rust after ZD4",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T16:12:35Z",
+  "head_ref": "feat/zetafs-jumprope-zd4-chunking-rust"
+}

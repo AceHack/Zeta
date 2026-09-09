@@ -1,0 +1,12 @@
+{
+  "pr_number": 17172,
+  "archive_path": "docs/history/pr-reviews/PR-17172-fix-ci-push-pr-archive-flush-with-the-branch-push-pat.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T22:57:29.410Z",
+  "schema_version": "v1",
+  "commit_sha": "858f3fcf3574b75133a8c6255b412302de292338",
+  "title": "fix(ci): push pr-archive flush with the BRANCH-PUSH PAT",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T22:56:34Z",
+  "head_ref": "cursor/pr-archive-flush-pat-27c5"
+}

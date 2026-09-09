@@ -1,0 +1,33 @@
+{
+  "pr_number": 17135,
+  "archive_path": "docs/history/pr-reviews/PR-17135-fix-security-a-regex-built-from-argv-and-an-anchor-bound-to-one-alternative.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7soTh2",
+    "comment:PRRC_kwDOSF9kNM7soTi-",
+    "comment:PRRC_kwDOSF9kNM7soTiO",
+    "comment:PRRC_kwDOSF9kNM7soTir",
+    "comment:PRRC_kwDOSF9kNM7soTj0",
+    "comment:PRRC_kwDOSF9kNM7soTjP",
+    "comment:PRRC_kwDOSF9kNM7soTjh",
+    "comment:PRRC_kwDOSF9kNM7soTk0",
+    "comment:PRRC_kwDOSF9kNM7soTkK",
+    "comment:PRRC_kwDOSF9kNM7soTkf",
+    "thread:PRRT_kwDOSF9kNM6gtwc4",
+    "thread:PRRT_kwDOSF9kNM6gtwcV",
+    "thread:PRRT_kwDOSF9kNM6gtwcl",
+    "thread:PRRT_kwDOSF9kNM6gtwd2",
+    "thread:PRRT_kwDOSF9kNM6gtwdH",
+    "thread:PRRT_kwDOSF9kNM6gtwdQ",
+    "thread:PRRT_kwDOSF9kNM6gtwdZ",
+    "thread:PRRT_kwDOSF9kNM6gtwdn",
+    "thread:PRRT_kwDOSF9kNM6gtweC",
+    "thread:PRRT_kwDOSF9kNM6gtweQ"
+  ],
+  "fetched_at": "2026-09-09T15:58:21.718Z",
+  "schema_version": "v1",
+  "commit_sha": "c6f83e35e20f8648a8a408d23f13ea3e42927264",
+  "title": "fix(security): a regex built from argv, and an anchor bound to one alternative",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T15:57:37Z",
+  "head_ref": "fix/regex-injection-and-anchor-precedence"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17150,
+  "archive_path": "docs/history/pr-reviews/PR-17150-fix-081m23fa0de087g0r00303pz9a-the-constrainttemplate-check-asserted-an-instant-.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T17:04:57.929Z",
+  "schema_version": "v1",
+  "commit_sha": "dd682244af7561d782f4190ba89ca2f4f7cdc925",
+  "title": "fix(081M23FA0DE087G0R00303PZ9A): the ConstraintTemplate check asserted an instant on an eventually-consistent cluster",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T17:04:04Z",
+  "head_ref": "constrainttemplate-check-must-wait"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17162,
+  "archive_path": "docs/history/pr-reviews/PR-17162-research-3dgut-the-unscented-transform-is-a-measured-no-op-on-our-linear-project.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T18:07:51.362Z",
+  "schema_version": "v1",
+  "commit_sha": "aa8d886b8dad84791cefde7a029b89245969ed61",
+  "title": "research(3dgut): the unscented transform is a measured no-op on our linear projection",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T18:07:07Z",
+  "head_ref": "3dgut-unscented-transform-assessment"
+}

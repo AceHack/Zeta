@@ -1,0 +1,23 @@
+{
+  "pr_number": 17154,
+  "archive_path": "docs/history/pr-reviews/PR-17154-build-081m23esc5b087g0r002hj39dg-de-vendor-tla2tools-onto-a-reusable-rolling-tag.md",
+  "source_ids": [
+    "comment:PRRC_kwDOSF9kNM7ssbl9",
+    "comment:PRRC_kwDOSF9kNM7ssblt",
+    "comment:PRRC_kwDOSF9kNM7stR0W",
+    "comment:PRRC_kwDOSF9kNM7stR0m",
+    "comment:PRRC_kwDOSF9kNM7stRz-",
+    "thread:PRRT_kwDOSF9kNM6gweB5",
+    "thread:PRRT_kwDOSF9kNM6gweCF",
+    "thread:PRRT_kwDOSF9kNM6gxBOT",
+    "thread:PRRT_kwDOSF9kNM6gxBOj",
+    "thread:PRRT_kwDOSF9kNM6gxBOz"
+  ],
+  "fetched_at": "2026-09-09T18:43:45.465Z",
+  "schema_version": "v1",
+  "commit_sha": "0985a2ae9a1c8c989bbc1ae10a954310b23c8d8f",
+  "title": "build(081M23ESC5B087G0R002HJ39DG): de-vendor tla2tools onto a reusable rolling-tag pin",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T18:42:57Z",
+  "head_ref": "agent/rolling-tag-pin-tla2tools-081M23ESC5B087G0R002HJ39DG"
+}

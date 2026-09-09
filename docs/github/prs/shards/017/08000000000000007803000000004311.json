@@ -1,0 +1,12 @@
+{
+  "pr_number": 17169,
+  "archive_path": "docs/history/pr-reviews/PR-17169-fix-tests-stop-writing-a-discharge-certificate-to-a-hard-coded-tmp-path.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T19:36:33.191Z",
+  "schema_version": "v1",
+  "commit_sha": "e702e7f16dbad1853003814d12cda7c7abc282e5",
+  "title": "fix(tests): stop writing a discharge certificate to a hard-coded /tmp path",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T19:35:52Z",
+  "head_ref": "codeql-insecure-temporary-file"
+}
