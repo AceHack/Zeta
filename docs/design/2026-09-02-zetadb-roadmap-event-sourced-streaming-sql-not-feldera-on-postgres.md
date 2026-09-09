@@ -288,6 +288,20 @@ stays `toy`. Do not copy those numbers into README. Do not kill
 ZetaFS-as-product on batching. FUSE completeness is not this proof. Apple
 Developer Program is not this proof.
 
+**Jumprope is not the 1-byte batcher (Aaron 2026-09-09, `081M23DC9S6087G0R003P8VCDT`).**
+It is the seekable CAS body for **multi-chunk** files (D9 prefix-share, fork,
+seek). A 1-byte freeze is a single-leaf rope; FastCDC does not run
+(`min = 2048`). Small DB records ride the log boat. Chunk **file bodies**
+above min; do not mint a Jumprope per tiny append. **"Large"** means more
+than one FastCDC chunk (operationally > 2 KiB); prefix-share is worth the
+CAS objects at **hundreds of KiB** (500 KiB falsifiers). Detail and the
+size table live in the first-product Jumprope section.
+
+**Rust second version after ZD4.** F# stays the first oracle. A Rust
+oracle of the same FORMAT/goldens is allowed only if ZD4 says the custom
+FS earned it. If ZD4 kills it on those earn-reasons, do not write the
+Rust FS. Large sequential boats, big slices. Not a rewrite now.
+
 ### ReFS-shaped resilience (Aaron 2026-09-02)
 
 **Feel, not a port.** Windows ReFS (Sinofsky / Microsoft, 2012 allocate-on-write; Server 2016 block cloning) is the Beacon for *resilience by pointer updates*: copies remap logical clusters, writes to shared regions allocate new clusters, metadata is never patched in place (shadow paging — Lorie 1977), checksums detect torn writes and bit-rot, repair needs a redundant copy (mirror/parity). On a single disk ReFS **detects** and returns an error; it does not invent a second copy. Same as our K14 (1-disk ECC is sector/die, not disk death).
@@ -502,7 +516,7 @@ ZetaFS PR12 (DST corpus) and PR13 (FUSE) remain on the FS spec. They are not del
 1. **Public names** for ZetaDB / ZetaFS — still gated.
 2. **First SQL subset** — which ANSI:2023 features are in v0 vs later (windows? `MATCH_RECOGNIZE` is ROADMAP P2 CEP). Do not silently pick "all of Postgres."
 3. **ZD6 before or after ZD5** — a Postgres-wire *empty server* can prove the adapter without SQL. Prefer a real catalog if ZD5 is close; otherwise a host-language catalog is an allowed thinner cut.
-4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers **and** those numbers are read against the reasons it must earn (CAS / fork / `Regen` / placement / policy / durability / ReFS-shaped crash **and** a CALM/commutative fold that does not geo-Raft). Batching-alone loss does not kill. Multi-planet agreement is designed, not metered. Raft across sites is declined, not deferred. Until then it stays the designed store.
+4. **When ZetaFS-as-product is killed** — only after ZD4 has numbers **and** those numbers are read against the reasons it must earn (CAS / fork / `Regen` / placement / policy / durability / ReFS-shaped crash **and** a CALM/commutative fold that does not geo-Raft). Batching-alone loss does not kill. Multi-planet agreement is designed, not metered. Raft across sites is declined, not deferred. Until then it stays the designed store. A **Rust second version** is allowed only if that test says the custom FS earned it (`081M23DC9S6087G0R003P8VCDT`).
 5. **Bloom vs anti-bloom vs CQF** — two grow-only filters (three-valued, no saturation, G-set) vs counting Bloom (shipped) vs CQF (radar Trial, variable-width counts). Settled by ZD10 measurements, not by preferring the story. Resurrection (insert after delete) is UNKNOWN in the two-filter form; that may lose to counting/CQF on retract-heavy workloads.
 
 ---

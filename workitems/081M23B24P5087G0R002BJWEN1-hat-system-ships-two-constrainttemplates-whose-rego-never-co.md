@@ -57,8 +57,8 @@ installed, in the green run as well as the red one.
 
 ## Fixed
 
-- `policies/03-conflict-of-interest.yaml` -- drop the redundant `some`.
-- `policies/07-no-supervisor-cycles.yaml` -- `{"CREATE","UPDATE"}[op]` for the
+- `full-ai-cluster/k8s/applications/hat-system/policies/03-conflict-of-interest.yaml` -- drop the redundant `some`.
+- `full-ai-cluster/k8s/applications/hat-system/policies/07-no-supervisor-cycles.yaml` -- `{"CREATE","UPDATE"}[op]` for the
   disjunction, `graph.reachable` for transitive reachability, `some` dropped.
   Both re-verified by evaluation, not only by compilation: a cycle violates on
   CREATE and on UPDATE, a non-cycle does not, and a DELETE does not.

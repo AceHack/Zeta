@@ -2,7 +2,7 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-09-02 (D1–D12: ReFS-shaped pointer-not-copy, crash DST for FS and DB, cache co-design, CoW amplification bound)
+**Revised:** 2026-09-09 (Jumprope ZetaDB discriminator, FastCDC size table, Rust second version after ZD4)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
 **Status:** Design spec. PR1-PR11 polyfill is in-tree. Freeze log uses the ferry (D4/ZD2). Crash-mid-write intercept is `InMemoryFileSystem.ArmCrashMidWrite` (D12 door). Crash *recovery* remains `toy` until the rest of the PR12 corpus (reclaim sweep). `ISimulatedFs` is flush-fail and write-fail; crash-mid-write stays `InMemoryFileSystem.ArmCrashMidWrite`. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`.
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
@@ -693,6 +693,30 @@ Beacon: Scott Vokes, Strange Loop 2012; Pugh skip lists 1990. Workitem `081KTH1Z
 - Seek to offset: walk express lanes O(log n) using cumulative `span`.
 - Two files sharing a chunk share the leaf object. Unchanged prefixes/suffixes survive edits (FastCDC's point).
 
+**What this buys ZetaDB (Aaron 2026-09-09).** Jumprope is not the small-write batcher — `FerryThrottler` / `GroupCommitDiskDeltaLog` already is (D4 / ZD2). It is the seekable, content-addressed **file body** so a freeze is a pointer update:
+
+- **D9 pointer-not-copy.** A 1-byte edit of a multi-chunk file remaps the trunk and keeps prefix chunks.
+- **Fork / history.** Two freezes of one entity share chunk objects. `rolling(N)` drops old trunks without copying live data.
+- **Identity.** EntityId stays the hub; ContentId names the body. `write()` does not churn foreign keys.
+- **Seek.** `pread` at offset walks the skiplist. A git blob is not a seekable WAL/column file.
+- **CAS / CALM.** Chunks are commutative facts. Level is hash-as-probability (no RNG). ContentId is the data checksum.
+
+It does **not** earn on a 1-byte file. That path is a single-leaf rope (three CAS objects for one byte). The 32×1-byte freeze-storm is that case. Host group-commit already batches those. ZD4 must not score Jumprope on that storm.
+
+**Chunking.** Yes, **file bodies** above FastCDC min. No, not every tiny DB append as its own Jumprope. Small records ride the freeze/group-commit **log boat**. The *segment* or *table file* that grows is the entity that gets chunked.
+
+Shipped `FastCdc.v1` sizes (bytes): min=2048, avg=8192, max=65536. `bytes.Length <= min` skips the 256 KiB FastCDC buffer and stores a single leaf. `FastCdc.v1-large` (8 KiB / 64 KiB / 256 KiB) is the 1-SSD named triple, not the default.
+
+| Size | What happens | When Jumprope earns |
+|---|---|---|
+| ≤ 2 KiB (min) | Single leaf. No FastCDC. | Wrapper only. 1-byte storm is this. |
+| 2–8 KiB | First extra leaf possible. | Chunking starts. |
+| 8–64 KiB | Few chunks (avg 8 KiB, force-cut 64 KiB). | Last-window append can reuse prefix. |
+| ≥ ~500 KiB | Current prefix-reuse falsifier. | 1-byte mid-file edit must not recopy prefix. |
+| ≥ ~1 MiB | ~16 chunks at max, ~128 at avg. | Seek/skiplist vs a git blob. |
+
+**"Large"** here means **more than one FastCDC chunk** — operationally **> 2 KiB**. The size where prefix-share is worth the CAS objects is **hundreds of KiB** (the 500 KiB tests). Do not call a 1-byte freeze large. Vokes' talk used ~64 KiB leaves; that is our v1 max, not a new number.
+
 **Body as Z-set:** the logical Z-set is `(offset, chunk ContentId)` with weight +1 for coverage. Jumprope is the seekable encoding; `ZSetMerkle` of that Z-set is available as a proof/sync form for structured tools. Do not store both as source of truth -- Jumprope is source; Z-set Merkle is derivable.
 
 **Delta objects -- deferred (E11, C6).** First product always stores the Jumprope trunk. Lookup(ContentId) returns the trunk encoding. A later PR may store `{stored-as: delta, base, codec, payload}` in a container that does **not** change the ContentId (ContentId remains over the Jumprope bytes, not over the container). Until then there is no digest-to-stored-form index to invent. T, codec, and the byte threshold stay unmetered for PR19. Encrypted-without-MLE and already-compressed inputs are the expected delta case *when* it ships.
@@ -949,6 +973,8 @@ OS FDE (optional, external)
 **16 domains and Docker secrets (Aaron 2026-08-31).** YubiHSM 2 partitions objects into 16 domains (`YH_MAX_DOMAINS=16`) with 16 sessions device-wide (`YH_MAX_SESSIONS=16`). Mapping: container → SPIFFE → HSM domain 1–16. Docker secrets inject **that container's authkey**, not the filesystem. Confidentiality of *use* is device-enforced (A cannot USE B's keys). Availability and client integrity are **not** isolated — the connector is an unauthenticated shared multiplexer. ZetaFS `SecurityContext` may later *name* a domain; Docker secrets are not a substitute for FORMAT `enc=` or C9 unwrap oracles. Decision function: `src/Core.TypeScript/federated-identity/hsm-domain-map.ts`. Honesty peel: [`docs/research/2026-08-18-hsm-container-isolation-a-shared-connector-is-not-a-boundary-and-what-prove-ish-can-honestly-mean.md`](../research/2026-08-18-hsm-container-isolation-a-shared-connector-is-not-a-boundary-and-what-prove-ish-can-honestly-mean.md). Otto owns secret-injection; this FS records the mapping so C9 can compose with it.
 
 **Extract-repo later, not now.** If dogfood on ZetaDB shows this FS is worth a separate clone, that is a later starting point. `git clone` at a tag stays sufficient here. Do not mint a GitHub repo as a prerequisite of PR1-PR12. v0.9ish (signed + tested) is the split gate: [`docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`](../research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md).
+
+**Rust second version after ZD4, not instead of it (Aaron 2026-09-09).** F# in Core is the first oracle (algebra, DST, `Result`, goldens). A handwritten Rust oracle of the same FORMAT and vectors is allowed **only after** ZD4 says ZetaFS-as-product earned it (CAS / fork / `Regen` / placement / policy / durability / CALM — not batching). If ZD4 kills the custom FS on those reasons, do not write the Rust FS. The second version writes large sequential boats (PutMany / ferry), not one object per syscall, and lands in big slices against the F# goldens. Stay in this monorepo until v0.9ish. Not Apple.
 
 **Benchmark plan (promotion from `toy` to `metered`):**
 
