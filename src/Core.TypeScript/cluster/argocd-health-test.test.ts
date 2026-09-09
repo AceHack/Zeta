@@ -40,6 +40,8 @@ import {
   restartingContainersFromPodsJson,
   parseApplicationList,
   formatHealthWaitProgress,
+  confirmedDegradedTerminalFailure,
+  degradedApplicationNames,
   degradedHealthTerminalFailure,
   isGitHubHostUnresolvableText,
   isTerminalFailure,
@@ -1255,7 +1257,11 @@ describe("081KSXN940008QG0R000SCP2H1 argocd-health-test planning", () => {
       source.indexOf("async function waitForApplications"),
       source.indexOf("async function runDriftRepairCheck"),
     );
-    expect(waitBody).toContain("degradedHealthTerminalFailure(lastVerdicts)");
+    // The CALL, not the identifier. It now takes two polls, and a guard that
+    // still matched the one-poll spelling would pass over the regression it
+    // exists to catch (081M23CWG35087G0R003HXVV5Y).
+    expect(waitBody).toContain("confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts)");
+    expect(waitBody).toContain("previousVerdicts = lastVerdicts;");
     expect(waitBody).toContain("rootCatalogRefsFailure(snapshots)");
   });
 
@@ -2102,6 +2108,54 @@ describe("crash-loop containers are found, not guessed", () => {
     expect(restartingContainersFromPodsJson("not json")).toEqual([]);
     expect(restartingContainersFromPodsJson("{}")).toEqual([]);
     expect(restartingContainersFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
+  });
+});
+
+describe("081M23CWG35087G0R003HXVV5Y a Degraded read on ONE poll is not a Degraded Application", () => {
+  const degradedNow = [
+    { name: "openziti-controller", ok: false, syncStatus: "Synced", healthStatus: "Degraded" },
+    { name: "nats", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+  ];
+  const recovered = [
+    { name: "openziti-controller", ok: false, syncStatus: "Synced", healthStatus: "Progressing" },
+    { name: "nats", ok: true, syncStatus: "Synced", healthStatus: "Healthy" },
+  ];
+
+  test("ONE Degraded poll does not abort -- run 34369317553 lost 2277s to exactly this", () => {
+    // Cluster events from that job, captured seconds after the abort:
+    //   49s  Progressing -> Degraded
+    //   32s  Degraded -> Progressing
+    // It had already recovered when the failure was printed.
+    expect(confirmedDegradedTerminalFailure([], degradedNow)).toBe(null);
+  });
+
+  test("a Degraded that RECOVERS on the next poll does not abort", () => {
+    expect(confirmedDegradedTerminalFailure(degradedNow, recovered)).toBe(null);
+  });
+
+  test("TWO consecutive Degraded polls DO abort, and the abort is terminal", () => {
+    const failure = confirmedDegradedTerminalFailure(degradedNow, degradedNow);
+    expect(failure).not.toBe(null);
+    expect(failure?.terminal).toBe(true);
+    expect(failure?.message).toContain("openziti-controller=Synced/Degraded");
+  });
+
+  test("a DIFFERENT app degrading on the next poll does not confirm the first", () => {
+    // Two single-sample blips in a row are still two single samples.
+    const otherDegraded = [
+      { name: "mimir", ok: false, syncStatus: "Synced", healthStatus: "Degraded" },
+    ];
+    expect(confirmedDegradedTerminalFailure(degradedNow, otherDegraded)).toBe(null);
+  });
+
+  test("the single-poll predicate is unchanged, and still refuses OutOfSync/Degraded", () => {
+    // Rollout, not a finished failed sync -- the narrowing from run 33830308187.
+    expect(degradedApplicationNames(degradedNow)).toEqual(["openziti-controller"]);
+    expect(
+      degradedApplicationNames([
+        { name: "openziti-controller", ok: false, syncStatus: "OutOfSync", healthStatus: "Degraded" },
+      ]),
+    ).toEqual([]);
   });
 });
 

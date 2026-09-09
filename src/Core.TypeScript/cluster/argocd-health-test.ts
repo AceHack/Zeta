@@ -2503,6 +2503,13 @@ export function formatHealthWaitProgress(elapsedSec: number, verdicts: readonly 
  * OutOfSync/Degraded still waits. This does not repair mimir and does not
  * re-defer agent-memory.
  */
+/** The Applications a single poll reports as `Synced/Degraded`. One sample. */
+export function degradedApplicationNames(verdicts: readonly ApplicationVerdict[]): readonly string[] {
+  return verdicts
+    .filter((verdict) => !verdict.ok && verdict.healthStatus === "Degraded" && verdict.syncStatus === "Synced")
+    .map((verdict) => verdict.name);
+}
+
 export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerdict[]): Failure | null {
   const degraded = verdicts.filter(
     (verdict) => !verdict.ok && verdict.healthStatus === "Degraded" && verdict.syncStatus === "Synced",
@@ -2516,6 +2523,52 @@ export function degradedHealthTerminalFailure(verdicts: readonly ApplicationVerd
     detail: degraded,
   };
 }
+
+/**
+ * A DEGRADED READ ON ONE POLL IS NOT A DEGRADED APPLICATION.
+ *
+ * The predicate above is correct about what `Synced/Degraded` MEANS and wrong
+ * about how many samples it takes to know. Acting on a single poll converts a
+ * rollout blip into a hard stop, and the run then reports a failure the cluster
+ * had already recovered from -- the same shape as a check that did not run
+ * looking like one that passed, pointed the other way.
+ *
+ * MEASURED, run 34369317553 (main, `de612352`). The wait aborted at T+123s of a
+ * 2400s budget on `openziti-controller=Synced/Degraded`. The cluster events
+ * captured seconds later, in the same job:
+ *
+ *   49s  Updated health status: Progressing -> Degraded
+ *   32s  Updated health status: Degraded -> Progressing
+ *
+ * It had already left Degraded when the abort was printed. 2277 seconds of
+ * budget went unspent on an Application that was recovering.
+ *
+ * AND THE SAME APPLICATION DID THIS BEFORE. The docstring above records run
+ * 33830308187: the wait aborted on `openziti-controller=OutOfSync/Degraded`
+ * while the pod was still `Init:0/1`, and "events after the abort went
+ * Degraded -> Progressing -> Synced". The remedy then was to narrow the rule
+ * from any Degraded to `Synced/Degraded`. That narrowing was right and was not
+ * enough, because the defect was never WHICH sync status -- it was trusting one
+ * sample.
+ *
+ * So the abort now needs the SAME Application degraded on TWO CONSECUTIVE polls.
+ * The fail-fast property this exists for is kept: a genuinely dead workload is
+ * still abandoned after roughly one poll interval (15s in CI) instead of 2400s.
+ * What is removed is the single-sample false positive.
+ *
+ * Not a debounce over time, deliberately: consecutive POLLS, so the guarantee
+ * does not silently change when `--poll-sec` moves.
+ */
+export function confirmedDegradedTerminalFailure(
+  previous: readonly ApplicationVerdict[],
+  current: readonly ApplicationVerdict[],
+): Failure | null {
+  const previouslyDegraded = new Set(degradedApplicationNames(previous));
+  if (previouslyDegraded.size === 0) return null;
+  const confirmed = current.filter((verdict) => previouslyDegraded.has(verdict.name));
+  return degradedHealthTerminalFailure(confirmed);
+}
+
 
 export const REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS: readonly {
   readonly label: string;
@@ -3133,6 +3186,7 @@ async function waitForApplications(
   options: CliOptions,
 ): Promise<readonly ApplicationVerdict[] | Failure> {
   let lastVerdicts: readonly ApplicationVerdict[] = [];
+  let previousVerdicts: readonly ApplicationVerdict[] = [];
   const startedAt = Date.now();
   let lastProgressAt = startedAt;
   console.log(`Waiting: ArgoCD Applications Synced+Healthy (cap ${String(options.timeoutSeconds)}s)`);
@@ -3155,7 +3209,11 @@ async function waitForApplications(
           ? classifyApplications(plan.expectedApplications, snapshots)
           : classifyApplications(plan.expectedApplications, snapshots);
     if (lastVerdicts.every((verdict) => verdict.ok)) return null;
-    const degraded = degradedHealthTerminalFailure(lastVerdicts);
+    // TWO CONSECUTIVE POLLS, never one. See confirmedDegradedTerminalFailure:
+    // run 34369317553 aborted at T+123s of 2400s on a Degraded that the
+    // cluster's own events show had already gone back to Progressing.
+    const degraded = confirmedDegradedTerminalFailure(previousVerdicts, lastVerdicts);
+    previousVerdicts = lastVerdicts;
     if (degraded !== null) return degraded;
     const now = Date.now();
     if (now - lastProgressAt >= 60_000) {

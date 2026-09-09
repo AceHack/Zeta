@@ -1,0 +1,14 @@
+{
+  "id": "080d043672032810a0130008a4428dee",
+  "at": "2026-09-09T15:34:18.981Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23CWG35087G0R003HXVV5Y",
+    "type": "bug",
+    "title": "one transient Synced/Degraded poll aborts the included proof 2277 seconds early",
+    "slug": "one-transient-synced-degraded-poll-aborts-the-included-proof",
+    "priority": "P2",
+    "filename": "081M23CWG35087G0R003HXVV5Y-one-transient-synced-degraded-poll-aborts-the-included-proof.md"
+  }
+}
