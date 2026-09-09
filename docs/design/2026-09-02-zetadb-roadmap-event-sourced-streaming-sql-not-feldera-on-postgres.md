@@ -30,7 +30,7 @@ This PR does **not** ship ZetaFS v0.9. Crash recovery stays `toy` until first-pr
 
 ## Overview
 
-ZetaDB is the **whole database**: event log as source of truth, tables as incremental materialized views over that log, a streaming SQL pipeline on top of Rx / LINQ / F# computation expressions, protocol adapters so existing clients can migrate, and ZetaFS as the custom store *if and only if* it makes the database faster or safer than a host filesystem plus the ferry.
+ZetaDB is the **whole database**: event log as source of truth, tables as incremental materialized views over that log, a streaming SQL pipeline on top of Rx / LINQ / F# computation expressions, protocol adapters so existing clients can migrate, and ZetaFS as the custom store *if and only if* it makes the database faster or safer than a host filesystem plus the ferry. A primary use (Aaron 2026-09-09, `081M23K0S2W087G0R001H50Z8M`): **agents carry their source, evolve it here with zero downtime.** The product ships **with agents, a compiler, and its own source** — not a SQL engine that agents visit. Designed, not shipped.
 
 **Feel, not clone:** Apache Flink (unified batch + streaming) and [Reaqtor](https://github.com/reaqtive/reaqtor) (durable standing Rx queries that survive restart). Feldera is the **DBSP competitor**, not the product shape.
 
@@ -55,6 +55,7 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 9. **No central tip.** Partitioned Z-set tips joined by shippable Rx queries ([no-single-tip design](2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md)).
 10. **Historical data compresses toward a generator.** When a generator can reproduce a history, the original bytes need not stay on disk. That is the columnar idea aimed at the **event store**, not only at tables.
 11. **Cross-site agreement without geo-Raft.** Fastest DBSP on one planet is not the product if the fold diverges across a light cone. The shared conclusion sees only agreed phase; a node's wall-clock steers only local actions. That is weaker than consensus (CALM-monotonic). Raft across sites is the wrong tool. Not shipped. Not a claim we beat Feldera on Earth today.
+12. **Agents carry source and evolve it without downtime.** Skills, compiler, and the database's own source are EntityIds on the same volume. A live generation keeps its ContentId; a new freeze is a new ContentId; the switch is a binding at a phase. Readers are not kicked. Fork is how an agent tries a version while the previous one keeps running. `Regen` is how compiled artifacts drop once the generator is metered. Closed command set: the far side names a verb, never defines one. Not a sidecar REPL with source in a Python variable. Not shipped.
 
 ---
 
@@ -257,6 +258,10 @@ Closed command set: the far side **names** a verb, never **defines** one.
 ROADMAP two-plane split stays: data plane is fast and dumb; Futamura / `gen/` / stored-proc *evolution* live in the control plane. A stored proc on the data plane is a standing query (Bonsai / `zeta { }` / SQL) with no learner on the hot path.
 
 Shipping a query to another node is the no-single-tip mechanism. Shipping an operator implementation (specialized IL, WASM procedure ABI from the browser ADR) is the code-mobility half. Untrusted procs need a metered host before they join automatic ticks (ADR already says `trusted-cooperative`).
+
+**Zero-downtime source evolution (Aaron 2026-09-09).** Not hot-patch of a running image in place. Old ContentId stays readable and running. New freeze is a new ContentId (D9: bits only for new chunks). Binding update at a **phase** is the switch. Standing queries keep ticking (Reaqtor feel, plus the *code they run* can be replaced). Compiler is a standing query over the source Z-set: source deltas → artifacts; those artifacts are `Regen` until the generator is metered (D3). Per-entity policy: proofs / signed source `keep-all`; working copies `rolling`; scratch `none`; derived pretty-print / object files `regen`.
+
+Jumprope's earn on this use is the **volume fork** of an agent's tree and the **artifacts** (IL, WASM, goldens), not FastCDC of a median 7 KiB `.fs` file. This repo's source is ~89% over 2 KiB and almost never 500 KiB; prefix-share pays on the compiled/log bodies and on a few large modules (`ZetaFsFreeze.fs` ~119 KiB), not on every stub. Designed. Not shipped.
 
 ---
 

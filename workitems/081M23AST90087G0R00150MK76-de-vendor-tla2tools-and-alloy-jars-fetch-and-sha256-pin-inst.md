@@ -23,7 +23,7 @@ latest version there too."*
 | measured 2026-09-09 | value |
 |---|---|
 | latest Alloy release | **v6.2.0**, published 2025-01-09 (`releases/latest` returns it; the only newer tag is `v6.3.0-begin`, with no release) |
-| committed `src/Core.Alloy/alloy.jar` | sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` |
+| committed Alloy jar (removed; was under Core.Alloy) | sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` |
 | upstream v6.2.0 `org.alloytools.alloy.dist.jar` | sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` — **byte-identical** |
 | asset mutability | `created_at == updated_at == 2025-01-09T08:18`, untouched since. No rolling hazard. |
 

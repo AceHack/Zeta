@@ -2,7 +2,7 @@
 
 **Author:** Ani (Grok Build) / design-doc-writer; human maintainer Aaron
 **Date:** 2026-08-30
-**Revised:** 2026-09-09 (Jumprope ZetaDB discriminator, FastCDC size table, Rust second version after ZD4)
+**Revised:** 2026-09-09 (agents carry source and evolve with zero downtime; Jumprope discriminator; Rust after ZD4)
 **Work item:** `081M1C59ZG4087G0R000VM8DZN`
 **Status:** Design spec. PR1-PR11 polyfill is in-tree. Freeze log uses the ferry (D4/ZD2). Crash-mid-write intercept is `InMemoryFileSystem.ArmCrashMidWrite` (D12 door). Crash *recovery* remains `toy` until the rest of the PR12 corpus (reclaim sweep). `ISimulatedFs` is flush-fail and write-fail; crash-mid-write stays `InMemoryFileSystem.ArmCrashMidWrite`. Stay in this monorepo until a signed, tested v0.9ish FS. Do not mint a GitHub product repo as a prerequisite. Later split: `docs/research/2026-09-01-zetafs-stays-in-monorepo-until-v09-then-product-per-language-ir-oracles.md`.
 **Register:** product design. Existing code cited below is a polyfill / algebra substrate, not this product.
@@ -79,6 +79,7 @@ The factory already speaks content-addressed objects, Z-set deltas, and git as a
 2. **Keeps identity stable across `write()`** so POSIX `st_ino` / NFS filehandles / ZetaDB foreign keys do not churn every store.
 3. **Forgets on purpose.** Git-forever and APFS-keep-until-you-snapshot are both wrong defaults for agent scratch, build `target/`, and emulator savestates.
 4. **Places bytes on devices by hash**, so a laptop with two disks and a box with many disks are the same code path with a different profile (manifesto section 1).
+5. **Lets agents carry source and evolve it without downtime** (Aaron 2026-09-09, `081M23K0S2W087G0R001H50Z8M`). The database ships with agents, a compiler, and its own source. A live generation keeps its ContentId; a new freeze is a new ContentId; the switch is a binding at a phase. Fork is the experiment. Not in-place rewrite. Not shipped.
 
 ### What is in the tree today (cite, do not invent)
 
@@ -702,6 +703,8 @@ Beacon: Scott Vokes, Strange Loop 2012; Pugh skip lists 1990. Workitem `081KTH1Z
 - **CAS / CALM.** Chunks are commutative facts. Level is hash-as-probability (no RNG). ContentId is the data checksum.
 
 It does **not** earn on a 1-byte file. That path is a single-leaf rope (three CAS objects for one byte). The 32×1-byte freeze-storm is that case. Host group-commit already batches those. ZD4 must not score Jumprope on that storm.
+
+Agent source on this volume is a **fork of the tree** plus compiler artifacts, not FastCDC of every 7 KiB `.fs`. This repo's code is ~89% over 2 KiB and almost never 500 KiB. Prefix-share pays on logs, compiled bodies, and a few large modules — and on keeping the previous ContentId running while a new freeze is bound (zero-downtime evolve).
 
 **Chunking.** Yes, **file bodies** above FastCDC min. No, not every tiny DB append as its own Jumprope. Small records ride the freeze/group-commit **log boat**. The *segment* or *table file* that grows is the entity that gets chunked.
 

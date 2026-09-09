@@ -1,0 +1,14 @@
+{
+  "id": "080d04398322e010a01300080894017a",
+  "at": "2026-09-09T17:21:30.716Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23K0S2W087G0R001H50Z8M",
+    "type": "task",
+    "title": "ZetaDB primary use: agents carry source, evolve with zero downtime",
+    "slug": "zetadb-primary-use-agents-carry-source-evolve-with-zero-down",
+    "priority": "P2",
+    "filename": "081M23K0S2W087G0R001H50Z8M-zetadb-primary-use-agents-carry-source-evolve-with-zero-down.md"
+  }
+}
