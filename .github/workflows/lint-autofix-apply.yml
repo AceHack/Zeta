@@ -109,21 +109,27 @@ jobs:
           # otherwise break out of the fence and inject markdown into the summary.
           # The ampersand is substituted first so later entities are not
           # double-escaped.
+          # One redirect for the whole report, not fourteen: shellcheck SC2129, which
+          # actionlint escalates to a gate failure. The group is also the honest shape —
+          # the summary is written once, as one document, rather than appended to
+          # line by line.
           summary="${GITHUB_STEP_SUMMARY}"
-          echo "### Markdown heal available (not pushed)" >> "$summary"
-          echo "" >> "$summary"
-          echo "This heal is REPORTED rather than pushed — a bot push here would" >> "$summary"
-          echo "re-trigger the PR workflows as action_required and block the PR." >> "$summary"
-          echo "" >> "$summary"
-          echo "Apply locally with the certified markdown healer:" >> "$summary"
-          echo "" >> "$summary"
-          echo "    bun src/Core.TypeScript/hygiene/healers/md-fixer-certified.ts FILES" >> "$summary"
-          echo "" >> "$summary"
-          echo "Diff that would have been applied:" >> "$summary"
-          echo "" >> "$summary"
-          echo "<pre>" >> "$summary"
-          head -200 "$patch" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' >> "$summary"
-          echo "</pre>" >> "$summary"
+          {
+            echo "### Markdown heal available (not pushed)"
+            echo ""
+            echo "This heal is REPORTED rather than pushed — a bot push here would"
+            echo "re-trigger the PR workflows as action_required and block the PR."
+            echo ""
+            echo "Apply locally with the certified markdown healer:"
+            echo ""
+            echo "    bun src/Core.TypeScript/hygiene/healers/md-fixer-certified.ts FILES"
+            echo ""
+            echo "Diff that would have been applied:"
+            echo ""
+            echo "<pre>"
+            head -200 "$patch" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'
+            echo "</pre>"
+          } >> "$summary"
           # Static notice text: HEAD_BRANCH is PR-controlled and a workflow
           # command must not interpolate untrusted data.
           echo "::notice title=Markdown heal available::Reported in the job summary; not pushed."
