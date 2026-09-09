@@ -3719,6 +3719,105 @@ let ``bad memory on the second freeze Write keeps the first`` () : Task =
     }
 
 [<Fact>]
+let ``power outage on the second freeze CAS Flush keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/power-outage-cas-second-freeze"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096, volatileUntilFlush = true)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            if OperatingSystem.IsWindows() then
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy |] |> ignore
+                let! r = (freezeAsync volume id ZetaFsFreeze.Durable).AsTask().ConfigureAwait(false)
+                match r with
+                | Error e -> Assert.Equal("WindowsDurableNotClaimed", ZetaFsFreeze.errorName e)
+                | Ok _ -> Assert.Fail("Windows Durable must not ack")
+            else
+                let id = mintId ()
+                let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+                let pendingA = (freezeAsync volume id ZetaFsFreeze.Durable).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! first = pendingA.ConfigureAwait(false)
+                match first with
+                | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+                | Ok first ->
+                    objDev.ArmPowerOutageOnFlush()
+                    ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 8uy; 7uy |] |> ignore
+                    let pendingB = (freezeAsync volume id ZetaFsFreeze.Durable).AsTask()
+                    do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                    let! _ =
+                        Assert
+                            .ThrowsAsync<PowerOutageException>(fun () -> pendingB :> Task)
+                            .ConfigureAwait(false)
+
+                    ZetaFsFreeze.dispose volume
+                    let logClone = logDev.CloneMedia()
+                    let objClone = objDev.CloneMedia()
+                    let cas2 = BlockCas(objClone)
+                    let reopened = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logClone cas2
+
+                    try
+                        Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                    finally
+                        ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
+let ``bad memory on the second freeze CAS Write keeps the first`` () : Task =
+    task {
+        ensureHasher ()
+        FileSystem.Register(InMemoryFileSystem())
+        let store = "/bad-memory-cas-second-freeze"
+        let mutbuf = ZetaFsMutbuf.create store ZetaFsMutbuf.Coherence.Shared
+        let logDev = SimulatedBlockIo(4096)
+        let objDev = SimulatedBlockIo(4096)
+        let cas = BlockCas(objDev)
+        let volume = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logDev cas
+
+        try
+            let id = mintId ()
+            let h = ZetaFsMutbuf.openHandle volume.Mutbuf id
+            ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 1uy; 2uy; 3uy |] |> ignore
+            let pendingA = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+            do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+            let! first = pendingA.ConfigureAwait(false)
+            match first with
+            | Error e -> Assert.Fail(ZetaFsFreeze.errorName e)
+            | Ok first ->
+                objDev.ArmBadMemoryOnWrite()
+                ZetaFsMutbuf.pwrite volume.Mutbuf h 0L [| 9uy; 8uy; 7uy |] |> ignore
+                let pendingB = (freezeAsync volume id ZetaFsFreeze.Journaled).AsTask()
+                do! (ZetaFsFreeze.pumpLog volume CancellationToken.None).ConfigureAwait(false)
+                let! _ =
+                    Assert
+                        .ThrowsAsync<BadMemoryException>(fun () -> pendingB :> Task)
+                        .ConfigureAwait(false)
+
+                ZetaFsFreeze.dispose volume
+                let logClone = logDev.CloneMedia()
+                let objClone = objDev.CloneMedia()
+                let cas2 = BlockCas(objClone)
+                let reopened = ZetaFsFreeze.createManualWithBlockStore store mutbuf None logClone cas2
+
+                try
+                    Assert.True(ZetaFsFreeze.isReadable reopened first.Content)
+                finally
+                    ZetaFsFreeze.dispose reopened
+        finally
+            FileSystem.Reset()
+    }
+
+[<Fact>]
 let ``XOR of a later freeze object is not readable; the prior freeze still is`` () : Task =
     task {
         ensureHasher ()

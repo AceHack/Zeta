@@ -1,0 +1,14 @@
+{
+  "id": "080d0436ee1e7810a0130008ca71c816",
+  "at": "2026-09-09T15:51:15.663Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23DVGYE087G0R0008ZBBSY",
+    "type": "task",
+    "title": "PR12 power outage and bad memory on CAS keep the prior freeze",
+    "slug": "pr12-power-outage-and-bad-memory-on-cas-keep-the-prior-freez",
+    "priority": "P2",
+    "filename": "081M23DVGYE087G0R0008ZBBSY-pr12-power-outage-and-bad-memory-on-cas-keep-the-prior-freez.md"
+  }
+}
