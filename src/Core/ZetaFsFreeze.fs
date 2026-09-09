@@ -527,21 +527,57 @@ module ZetaFsFreeze =
                     d
 
                 let putLeaves (item: LogItem) =
-                    let mutable j = 0
+                    match objectCas with
+                    | Some cas ->
+                        if err.IsNone && item.Objects.Length > 0 then
+                            let staged = Array.zeroCreate item.Objects.Length
 
-                    while err.IsNone && j < item.Objects.Length do
-                        let struct (id, bytes) = item.Objects.[j]
-                        let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                            for j in 0 .. item.Objects.Length - 1 do
+                                let struct (id, bytes) = item.Objects.[j]
+                                let hex = (ContentHash256.toContentAddress128 id).ToHex()
+                                staged.[j] <- hex, bytes
 
-                        match objectCas with
-                        | Some cas ->
-                            cas.Put(hex, bytes)
-                            known.[id] <- uint64 bytes.Length
-                            tryWrite (ZetaFsPath.combine2 storeDir "cas")
+                            try
+                                cas.PutMany staged
 
-                            if item.Durable then
-                                tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
-                        | None ->
+                                for j in 0 .. item.Objects.Length - 1 do
+                                    let struct (id, bytes) = item.Objects.[j]
+                                    known.[id] <- uint64 bytes.Length
+
+                                tryWrite (ZetaFsPath.combine2 storeDir "cas")
+
+                                if item.Durable then
+                                    tryFlush cas.Device (ZetaFsPath.combine2 storeDir "cas")
+                            with
+                            | :? CrashMidWriteException as ex -> raise ex
+                            | :? PowerOutageException as ex -> raise ex
+                            | :? BadMemoryException as ex -> raise ex
+                            | :? IOException ->
+                                err <-
+                                    Some(
+                                        FreezeError.Fsync(
+                                            FileSync.FileSyncError.FlushFailed(
+                                                ZetaFsPath.combine2 storeDir "cas",
+                                                5
+                                            )
+                                        )
+                                    )
+                            | ex when ex.Message.IndexOf("BUGGIFY", StringComparison.Ordinal) >= 0 ->
+                                err <-
+                                    Some(
+                                        FreezeError.Fsync(
+                                            FileSync.FileSyncError.FlushFailed(
+                                                ZetaFsPath.combine2 storeDir "cas",
+                                                5
+                                            )
+                                        )
+                                    )
+                    | None ->
+                        let mutable j = 0
+
+                        while err.IsNone && j < item.Objects.Length do
+                            let struct (id, bytes) = item.Objects.[j]
+                            let hex = (ContentHash256.toContentAddress128 id).ToHex()
                             let path = ZetaFsPath.combine3 objectsDir (hex.Substring(0, 2)) (hex.Substring(2))
                             let dir = ZetaFsPath.directoryName path
                             fsDoor.CreateDirectory dir
@@ -580,12 +616,12 @@ module ZetaFsFreeze =
                                 | Ok() -> ()
                                 | Error e -> err <- Some(FreezeError.Fsync e)
 
-                        j <- j + 1
+                            j <- j + 1
 
-                    if err.IsNone && item.Durable && objectCas.IsNone then
-                        match FileSync.fsyncDir objectsDir with
-                        | Error e -> err <- Some(FreezeError.Fsync e)
-                        | Ok() -> ()
+                        if err.IsNone && item.Durable then
+                            match FileSync.fsyncDir objectsDir with
+                            | Error e -> err <- Some(FreezeError.Fsync e)
+                            | Ok() -> ()
 
                 let objectMatchesStored (id: ContentHash256) : bool =
                     let hex = (ContentHash256.toContentAddress128 id).ToHex()

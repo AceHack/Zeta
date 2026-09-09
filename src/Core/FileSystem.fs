@@ -1460,32 +1460,48 @@ type BlockCas(io: IBlockIo) =
 
             n)
 
+    /// Append each new payload, then publish the superblock once. Index and
+    /// superblock update only after that Write returns. A torn superblock
+    /// slot does not publish the names. Existing keys are skipped.
+    member _.PutMany(pairs: (string * byte[])[]) =
+        if isNull pairs then
+            invalidArg (nameof pairs) "pairs must not be null"
+
+        lock lockObj (fun () ->
+            let added = ResizeArray<string>()
+            let mutable cursor = pos
+
+            try
+                for key, bytes in pairs do
+                    if String.IsNullOrEmpty key then
+                        invalidArg (nameof pairs) "key must be non-empty"
+
+                    if isNull bytes then
+                        invalidArg (nameof pairs) "bytes must not be null"
+
+                    if not (index.ContainsKey key) then
+                        let start = cursor
+                        let after =
+                            BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
+
+                        index.[key] <- struct (start, bytes.Length)
+                        added.Add key
+                        cursor <- after
+
+                if added.Count > 0 then
+                    persistIndex ()
+                    pos <- cursor
+            with _ ->
+                for key in added do
+                    index.Remove key |> ignore
+
+                reraise ())
+
     /// Append `bytes` through `BlockLog` after the superblock. Index and
     /// superblock update only after both the payload Write and the superblock
     /// Write return. A torn superblock slot does not publish the name.
-    member _.Put(key: string, bytes: byte[]) =
-        if String.IsNullOrEmpty key then
-            invalidArg (nameof key) "key must be non-empty"
-
-        if isNull bytes then
-            invalidArg (nameof bytes) "bytes must not be null"
-
-        lock lockObj (fun () ->
-            if index.ContainsKey key then
-                ()
-            else
-                let start = pos
-                let after =
-                    BlockLog.append io start (System.ReadOnlyMemory<byte>.op_Implicit bytes)
-
-                index.[key] <- struct (start, bytes.Length)
-
-                try
-                    persistIndex ()
-                    pos <- after
-                with _ ->
-                    index.Remove key |> ignore
-                    reraise ())
+    member this.Put(key: string, bytes: byte[]) =
+        this.PutMany([| key, bytes |])
 
     /// One-shot: next matching Delete unpublishes the key then throws
     /// `CrashMidSweepException`. Remaining keys stay. Same shape as

@@ -137,7 +137,7 @@ let ``ZD4 both legs complete the same host-FS small-write storm`` () : Task =
     }
 
 [<Fact>]
-let ``ZD4 freeze-storm thread alloc stays under 48 MiB`` () : Task =
+let ``ZD4 freeze-storm thread alloc stays under 12 MiB`` () : Task =
     // D10 peels: FastCDC skip + persist-once (081M1ZHZ7EW087G0R00006H4BK);
     // catalog gen in memory (081M1ZMGJ0J087G0R001W8HX2V); BlockCas Put
     // writes the next slot from memory (081M21M7FVZ087G0R000PNH46E).

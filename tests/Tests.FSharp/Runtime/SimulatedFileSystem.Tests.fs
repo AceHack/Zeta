@@ -765,6 +765,29 @@ let ``BlockCas Put does not re-read superblock slots`` () =
     Assert.True(delta <= 1, sprintf "second Put read %d times" delta)
 
 [<Fact>]
+let ``BlockCas PutMany publishes three keys with one superblock write`` () =
+    let batched = SimulatedBlockIo(4096)
+    let casMany = BlockCas(batched)
+    casMany.PutMany(
+        [| "aa", [| 1uy |]
+           "bb", [| 2uy |]
+           "cc", [| 3uy |] |]
+    )
+    Assert.Equal(3, casMany.Count)
+    let writesMany = batched.Writes
+
+    let sequential = SimulatedBlockIo(4096)
+    let casSeq = BlockCas(sequential)
+    casSeq.Put("aa", [| 1uy |])
+    casSeq.Put("bb", [| 2uy |])
+    casSeq.Put("cc", [| 3uy |])
+    Assert.Equal(3, casSeq.Count)
+    Assert.True(
+        writesMany < sequential.Writes,
+        sprintf "PutMany writes %d vs sequential %d" writesMany sequential.Writes
+    )
+
+[<Fact>]
 let ``BlockCas XorLastPayloadByteAll flips the last published byte`` () =
     let device = SimulatedBlockIo(4096)
     let cas = BlockCas(device)

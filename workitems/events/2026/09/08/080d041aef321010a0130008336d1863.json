@@ -1,0 +1,14 @@
+{
+  "id": "080d041aef321010a0130008336d1863",
+  "at": "2026-09-08T23:32:44.226Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M21NVSJ2087G0R002J9WVRP",
+    "type": "task",
+    "title": "D10 BlockCas PutMany publishes the superblock once",
+    "slug": "d10-blockcas-putmany-publishes-the-superblock-once",
+    "priority": "P2",
+    "filename": "081M21NVSJ2087G0R002J9WVRP-d10-blockcas-putmany-publishes-the-superblock-once.md"
+  }
+}
