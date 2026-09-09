@@ -1,0 +1,14 @@
+{
+  "id": "080d042c435cf810a0130008f92901f5",
+  "at": "2026-09-09T09:38:25.311Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22RGTWZ087G0R0024H1F9X",
+    "type": "bug",
+    "title": "root package-lock.json was stale against bun.lock and carried patched-elsewhere CVEs",
+    "slug": "root-package-lock-json-was-stale-against-bun-lock-and-carrie",
+    "priority": "P2",
+    "filename": "081M22RGTWZ087G0R0024H1F9X-root-package-lock-json-was-stale-against-bun-lock-and-carrie.md"
+  }
+}

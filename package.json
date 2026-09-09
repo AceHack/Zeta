@@ -101,7 +101,8 @@
     "z3-solver": "5.2.0"
   },
   "overrides": {
-    "smol-toml": "1.6.1"
+    "smol-toml": "1.6.1",
+    "fast-uri": "3.1.7"
   },
   "dependencies": {
     "@nats-io/jetstream": "3.4.0",
