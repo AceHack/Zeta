@@ -1,7 +1,7 @@
 // Says what the two verifier jars ARE, and refuses documentation that says
 // otherwise.
 //
-// TWO REGIMES, AND THE LINT HOLDS BOTH. The original sentence was
+// THREE REGIMES, AND THE LINT HOLDS ALL OF THEM. The original sentence was
 // "Committed binary => derive its identity; fetched binary => pin the digest."
 // Both halves are now live at once, so the regime is DERIVED per jar rather
 // than assumed for the file:
@@ -15,13 +15,26 @@
 //             is the check the realizer already performs at fetch time and
 //             this one repeats at rest.
 //
-//   COMMITTED src/Core.TLA/tla2tools.jar -- byte-pinned by the diff, so its
-//             identity is DERIVED from the bytes: sha256 over the file,
+//   FETCHED-ROLLING src/Core.TLA/tla2tools.jar -- a from-url row that ALSO
+//             carries `rolling=<name>`, declaring that upstream replaces the
+//             asset in place. Everything the fetched regime checks still
+//             applies, unchanged: the digest is the pin and a disagreement
+//             fails. What is ADDED is that the pin must name the run that
+//             judged those bytes -- a matching row in
+//             `tools/setup/manifests/from-url-rolling-receipts`. That is the
+//             only guard against the cheap fix, which is pasting the rebuilt
+//             digest into the manifest so the tree goes green. That one-line
+//             diff swaps the model checker under every claim the model checker
+//             ever established, and it is indistinguishable from housekeeping
+//             unless something demands a second, explicit assertion.
+//
+//   COMMITTED (no jar is in this regime today) -- byte-pinned by the diff, so
+//             its identity is DERIVED from the bytes: sha256 over the file,
 //             provenance out of META-INF/MANIFEST.MF. Absence is a FAILURE
 //             here, never a skip: a committed jar that is not on disk is a
 //             broken checkout.
 //
-// The two regimes are mutually exclusive by construction and the lint says so:
+// The regimes are mutually exclusive by construction and the lint says so:
 // a jar that is both tracked AND manifest-pinned would be fetched over its own
 // committed copy, and a jar that is neither would be a path nothing ever puts a
 // file at. Either combination fails. That pair is what stops a half-finished
@@ -36,17 +49,20 @@
 //
 // 081M001E114087G0R001AZF4KD (derive-the-identity half)
 // 081M23AST90087G0R00150MK76 (pin-the-digest half)
+// 081M23ESC5B087G0R002HJ39DG (the rolling regime + the TLA de-vendoring)
 
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-export type JarRegime = "fetched" | "committed";
+export type JarRegime = "fetched" | "fetched-rolling" | "committed";
 
 export interface JarProvenance {
   readonly jarPath: string;
   readonly regime: JarRegime;
-  /** The manifest pin. Present iff regime is "fetched". */
+  /** The declared mutable upstream name. Present iff regime is "fetched-rolling". */
+  readonly rolling?: string;
+  /** The manifest pin. Present iff the regime is a fetched one. */
   readonly pinnedSha256?: string;
   /** sha256 of the bytes on disk. Null when a fetched jar has not been installed. */
   readonly sha256: string | null;
@@ -58,6 +74,25 @@ export interface UrlPin {
   readonly dest: string;
   readonly url: string;
   readonly sha256: string | null;
+  /** `rolling=<name>`: upstream replaces these bytes in place. */
+  readonly rolling: string | null;
+  /** `remeasure=<script>[:<arg>...]`: the evidence run a rolling pin must cite. */
+  readonly remeasure: string | null;
+  /** `pinsurfaces=a,b,c`: every OTHER file that restates this digest. */
+  readonly pinSurfaces: readonly string[];
+  /** `derivedpins=a,b`: files whose OWN sha256 is quoted inside a pin surface. */
+  readonly derivedPins: readonly string[];
+  /** `identity=jar-tlc|jar-alloy`: how to read a human identity out of the bytes. */
+  readonly identity: string | undefined;
+}
+
+/** One row of `from-url-rolling-receipts`. */
+export interface RollingReceipt {
+  readonly dest: string;
+  readonly sha256: string | null;
+  readonly result: string | null;
+  readonly remeasure: string | null;
+  readonly evidence: string | null;
 }
 
 export function jarSha256(absPath: string): string {
@@ -107,6 +142,7 @@ const TLA_JAR = "src/Core.TLA/tla2tools.jar";
 const ALLOY_JAR = "src/Core.Alloy/alloy.jar";
 const JARS: readonly string[] = [TLA_JAR, ALLOY_JAR];
 const FROM_URL_MANIFEST = "tools/setup/manifests/from-url";
+export const ROLLING_RECEIPTS = "tools/setup/manifests/from-url-rolling-receipts";
 const DOCS = ["docs/INSTALLED.md", "docs/dependency-status.md"];
 const SHA256_HEX = /^[0-9a-f]{64}$/;
 
@@ -117,6 +153,14 @@ const SHA256_HEX = /^[0-9a-f]{64}$/;
  * digest is a finding this lint has to be able to STATE. The realizer refuses
  * such a row at install time; that refusal is not reachable from here.
  */
+function splitList(token: string, prefix: string): string[] {
+  return token
+    .slice(prefix.length)
+    .split(",")
+    .map((part) => part.trim())
+    .filter((part) => part !== "");
+}
+
 export function parseFromUrlPins(text: string): readonly UrlPin[] {
   const pins: UrlPin[] = [];
   for (const raw of text.split("\n")) {
@@ -127,12 +171,53 @@ export function parseFromUrlPins(text: string): readonly UrlPin[] {
     const url = tokens[1];
     if (dest === undefined || url === undefined) continue;
     let sha256: string | null = null;
+    let rolling: string | null = null;
+    let remeasure: string | null = null;
+    let pinSurfaces: string[] = [];
+    let derivedPins: string[] = [];
+    let identity: string | undefined;
     for (const token of tokens.slice(2)) {
       if (token.startsWith("sha256=")) sha256 = token.slice("sha256=".length).toLowerCase();
+      else if (token.startsWith("rolling=")) rolling = token.slice("rolling=".length);
+      else if (token.startsWith("remeasure=")) remeasure = token.slice("remeasure=".length);
+      else if (token.startsWith("identity=")) identity = token.slice("identity=".length);
+      else if (token.startsWith("pinsurfaces=")) pinSurfaces = splitList(token, "pinsurfaces=");
+      else if (token.startsWith("derivedpins=")) derivedPins = splitList(token, "derivedpins=");
     }
-    pins.push({ dest, url, sha256 });
+    pins.push({ dest, url, sha256, rolling, remeasure, pinSurfaces, derivedPins, identity });
   }
   return pins;
+}
+
+/**
+ * Rows of the receipts ledger: `<dest>  sha256=  measured=  result=  remeasure=  evidence=`.
+ *
+ * Missing fields come back null for the same reason `parseFromUrlPins` does it:
+ * a malformed receipt is a finding this lint has to be able to STATE, and
+ * throwing here would turn a reportable defect into a crash on a tree that is
+ * merely wrong rather than unreadable.
+ */
+export function parseRollingReceipts(text: string): readonly RollingReceipt[] {
+  const rows: RollingReceipt[] = [];
+  for (const raw of text.split("\n")) {
+    const line = raw.trim();
+    if (line === "" || line.startsWith("#")) continue;
+    const tokens = line.split(/\s+/);
+    const dest = tokens[0];
+    if (dest === undefined) continue;
+    let sha256: string | null = null;
+    let result: string | null = null;
+    let remeasure: string | null = null;
+    let evidence: string | null = null;
+    for (const token of tokens.slice(1)) {
+      if (token.startsWith("sha256=")) sha256 = token.slice("sha256=".length).toLowerCase();
+      else if (token.startsWith("result=")) result = token.slice("result=".length);
+      else if (token.startsWith("remeasure=")) remeasure = token.slice("remeasure=".length);
+      else if (token.startsWith("evidence=")) evidence = token.slice("evidence=".length);
+    }
+    rows.push({ dest, sha256, result, remeasure, evidence });
+  }
+  return rows;
 }
 
 function derivedVersion(jarPath: string, absPath: string): string {
@@ -163,6 +248,8 @@ export function isTracked(repoRoot: string, relPath: string): boolean {
 
 export interface ProvenanceInputs {
   readonly manifestText: string;
+  /** Contents of `from-url-rolling-receipts`. */
+  readonly receiptsText: string;
   readonly tracked: (relPath: string) => boolean;
   readonly present: (relPath: string) => boolean;
   readonly hashOf: (relPath: string) => string;
@@ -172,6 +259,7 @@ export interface ProvenanceInputs {
 function realInputs(repoRoot: string): ProvenanceInputs {
   return {
     manifestText: readFileSync(join(repoRoot, FROM_URL_MANIFEST), "utf8"),
+    receiptsText: readFileSync(join(repoRoot, ROLLING_RECEIPTS), "utf8"),
     tracked: (rel) => isTracked(repoRoot, rel),
     present: (rel) => existsSync(join(repoRoot, rel)),
     hashOf: (rel) => jarSha256(join(repoRoot, rel)),
@@ -206,9 +294,12 @@ export function deriveJarProvenance(
       );
     }
     const present = inputs.present(jarPath);
+    const regime: JarRegime =
+      pin === undefined ? "committed" : pin.rolling === null ? "fetched" : "fetched-rolling";
     out.push({
       jarPath,
-      regime: pin === undefined ? "committed" : "fetched",
+      regime,
+      ...(pin?.rolling == null ? {} : { rolling: pin.rolling }),
       ...(pin === undefined ? {} : { pinnedSha256: pin.sha256 ?? "" }),
       sha256: present ? inputs.hashOf(jarPath) : null,
       version: present ? inputs.versionOf(jarPath) : null,
@@ -231,9 +322,10 @@ export function checkVerifierJarProvenance(
   }
 
   for (const jar of derived) {
+    const fetched = jar.regime !== "committed";
     // The digest the docs must carry: the manifest pin for a fetched jar (it is
     // the pin whether or not the bytes are here), the bytes for a committed one.
-    if (jar.regime === "fetched") {
+    if (fetched) {
       if (jar.pinnedSha256 === undefined || !SHA256_HEX.test(jar.pinnedSha256)) {
         failures.push(
           FROM_URL_MANIFEST + " row for " + jar.jarPath + " has no valid sha256= pin",
@@ -254,7 +346,7 @@ export function checkVerifierJarProvenance(
       continue;
     }
 
-    const expectedSha = jar.regime === "fetched" ? (jar.pinnedSha256 ?? "") : (jar.sha256 ?? "");
+    const expectedSha = fetched ? (jar.pinnedSha256 ?? "") : (jar.sha256 ?? "");
     const installed = readDoc("docs/INSTALLED.md");
     if (!installed.includes(expectedSha)) {
       failures.push("docs/INSTALLED.md lacks the sha256 of " + jar.jarPath + ": " + expectedSha);
@@ -270,6 +362,90 @@ export function checkVerifierJarProvenance(
       if (!text.includes(jarName)) continue;
       if (text.includes(jar.version)) continue;
       failures.push(docRel + " names " + jarName + " but not its derived version: " + jar.version);
+    }
+  }
+  failures.push(...checkRollingPins(inputs, readDoc));
+  return failures;
+}
+
+/**
+ * The rolling regime's own checks. Everything the fetched regime asks is
+ * already asked above; these are the three things a MUTABLE upstream adds.
+ *
+ * They exist because of one specific, cheap, plausible move: upstream rebuilds
+ * the asset, install.sh goes red fleet-wide, and the fastest way to green is to
+ * paste the new digest into the manifest. Nothing in the fetched regime can
+ * tell that apart from a legitimate re-pin -- both are one hex string. So:
+ *
+ *   1. the pinned digest must be NAMED by a receipt whose result is `pass`,
+ *   2. that receipt must cite the SAME `remeasure=` command the row declares
+ *      (a receipt earned by a weaker run does not buy the pin), and its
+ *      evidence file must exist,
+ *   3. every file the row declares as a `pinsurfaces=` restatement of the
+ *      digest must actually carry it -- which is what catches a HALF re-pin,
+ *      the manifest moved and the restatements left behind.
+ *
+ * A hand-written receipt still passes, and the ledger says so in its own
+ * header. What this buys is that the laundering stops being a one-line diff
+ * that reads as maintenance.
+ */
+function checkRollingPins(
+  inputs: ProvenanceInputs,
+  readDoc: (rel: string) => string,
+): string[] {
+  const failures: string[] = [];
+  const receipts = parseRollingReceipts(inputs.receiptsText);
+  for (const pin of parseFromUrlPins(inputs.manifestText)) {
+    if (pin.rolling === null) continue;
+    if (pin.sha256 === null) continue; // already reported by the fetched-regime check
+    if (pin.remeasure === null) {
+      failures.push(
+        FROM_URL_MANIFEST + " row for " + pin.dest + " is rolling=" + pin.rolling +
+          " but declares no remeasure= command -- a rolling pin with no named" +
+          " evidence run cannot be re-pinned honestly",
+      );
+      continue;
+    }
+    const matching = receipts.filter((r) => r.dest === pin.dest && r.sha256 === pin.sha256);
+    if (matching.length === 0) {
+      failures.push(
+        pin.dest + " pins rolling sha256=" + pin.sha256 + " with no matching row in " +
+          ROLLING_RECEIPTS + " -- the digest was bumped without a recorded re-measure." +
+          " Re-pin with: bun tools/setup/repin-rolling.ts " + pin.dest,
+      );
+      continue;
+    }
+    const passing = matching.filter((r) => r.result === "pass" && r.remeasure === pin.remeasure);
+    if (passing.length === 0) {
+      failures.push(
+        ROLLING_RECEIPTS + " has a row for " + pin.dest + " sha256=" + pin.sha256 +
+          " but none that both passed and ran the declared remeasure=" + pin.remeasure,
+      );
+      continue;
+    }
+    for (const receipt of passing) {
+      if (receipt.evidence === null || !inputs.present(receipt.evidence)) {
+        failures.push(
+          ROLLING_RECEIPTS + " row for " + pin.dest + " cites evidence=" +
+            String(receipt.evidence) + ", which is not in the tree",
+        );
+      }
+    }
+    for (const surface of pin.pinSurfaces) {
+      let text: string;
+      try {
+        text = readDoc(surface);
+      } catch {
+        failures.push(pin.dest + " declares pinsurfaces=" + surface + ", which is unreadable");
+        continue;
+      }
+      if (!text.includes(pin.sha256)) {
+        failures.push(
+          surface + " is a declared pin surface for " + pin.dest +
+            " but does not carry sha256=" + pin.sha256 +
+            " -- a HALF re-pin leaves the verifier and its restatements disagreeing",
+        );
+      }
     }
   }
   return failures;

@@ -5,6 +5,7 @@ import { describe, expect, test } from "bun:test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { createContext, SourceTextModule, SyntheticModule } from "node:vm";
 import {
   createSourceFile,
@@ -33,6 +34,51 @@ const ORACLE = "src/Core.Python/src/zeta/nci_witness_receipt_oracle.py";
 const SOURCE_BYTES = readFileSync(SOURCE, "utf8");
 const EXPECTED = readFileSync("docs/research/data/2026-09-06-nci-witness-v1-typescript.json", "utf8");
 const HISTORICAL_REGISTRY = "docs/research/data/2026-09-06-nci-witness-v1-registry.json";
+const HISTORICAL_JAR = "src/Core.TLA/tla2tools.jar";
+
+/**
+ * The historical subject's JAR, by git blob id.
+ *
+ * The 2026-09-06 witness is pinned to TLC2 2026.05.18.174321. The tree stopped
+ * carrying those bytes when the jar was de-vendored onto the rolling from-url
+ * row (081M23ESC5B087G0R002HJ39DG), and this tier is HERMETIC -- it never runs
+ * install.sh, so even the current jar is absent here. Upstream cannot return the
+ * historical bytes either: tlaplus re-uploads the v1.8.0 asset in place.
+ *
+ * git can. A blob stays reachable from the commits that carried it, so
+ * `git cat-file` is a permanent, content-addressed source for exactly the bytes
+ * the receipt names. CI checks out at the default `fetch-depth: 1`, so the
+ * object is not in the clone and the one commit that carries it is fetched
+ * first; `--depth` bounds history, not tree contents.
+ */
+const HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3";
+const HISTORICAL_JAR_COMMIT = "c6f83e35e20f8648a8a408d23f13ea3e42927264";
+
+function git(args: readonly string[]): { status: number | null; stdout: Buffer } {
+  const result = spawnSync("git", args, { maxBuffer: 64 * 1024 * 1024 });
+  return { status: result.status, stdout: result.stdout };
+}
+
+function historicalJarBytes(): Buffer {
+  const direct = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
+  if (direct.status === 0) return direct.stdout;
+  git(["fetch", "--depth", "1", "--no-tags", "origin", HISTORICAL_JAR_COMMIT]);
+  const retry = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
+  if (retry.status === 0) return retry.stdout;
+  // RAISE rather than skip: a silently-skipped historical witness is the exact
+  // vacuity this file exists to prevent. This cannot tell "wrong bytes" from
+  // "git could not answer", and says so rather than picking one.
+  throw new Error(
+    `cannot obtain historical tla2tools blob ${HISTORICAL_JAR_BLOB}, even after` +
+      ` fetching ${HISTORICAL_JAR_COMMIT} -- that is an UNKNOWN, not a mismatch`,
+  );
+}
+
+function subjectBytes(path: string): Buffer {
+  if (path === "registry/tlc-models.json") return readFileSync(HISTORICAL_REGISTRY);
+  if (path === HISTORICAL_JAR) return historicalJarBytes();
+  return readFileSync(path);
+}
 const READ_TRACE = [...SUBJECT_FILES.map((path) => `read:${path}:bytes`), "read:registry/tlc-models.json:utf8"];
 
 interface Emitter {
@@ -48,10 +94,7 @@ async function loadEmitter(source = SOURCE_BYTES, status = 0) {
   // The registry is the exact historical subject. Remaining current files must
   // still satisfy the emitter's original model/config/jar pins on every call.
   const files = new Map(
-    SUBJECT_FILES.map((path) => [
-      join(SUBJECT, path),
-      readFileSync(path === "registry/tlc-models.json" ? HISTORICAL_REGISTRY : path),
-    ]),
+    SUBJECT_FILES.map((path) => [join(SUBJECT, path), subjectBytes(path)]),
   );
   const deny = (detail: string): never => {
     denials.push(detail);

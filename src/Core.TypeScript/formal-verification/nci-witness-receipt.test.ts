@@ -3,10 +3,68 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { canonicalReceipt, renderCanonicalReceipt, verifyPinnedSubject, verifyReceipt } from "./nci-witness-receipt";
 
 const LIVE_ROOT = process.cwd();
 const HISTORICAL_REGISTRY = "docs/research/data/2026-09-06-nci-witness-v1-registry.json";
+
+/**
+ * The historical subject's JAR, by git blob id.
+ *
+ * The 2026-09-06 witness is pinned to TLC2 2026.05.18.174321, and the tree
+ * stopped carrying those bytes when `src/Core.TLA/tla2tools.jar` was de-vendored
+ * onto the rolling from-url row (081M23ESC5B087G0R002HJ39DG). Upstream cannot
+ * return them either -- tlaplus re-uploads the v1.8.0 asset in place, so the
+ * build that produced this witness is gone from every URL.
+ *
+ * It is NOT gone from git. A blob stays reachable from the commits that carried
+ * it, so `git cat-file` is a permanent, content-addressed source for exactly the
+ * bytes the receipt names -- which is the whole point of pinning by digest.
+ * Reading it here keeps the historical witness reproducible without either
+ * re-committing a binary or republishing a dated research artefact to match a
+ * newer checker.
+ *
+ * The live tree deliberately does NOT satisfy this pin any more, and
+ * `verifyPinnedSubject` says so: the current registry names a different jar, so
+ * a receipt minted from the current tree is refused rather than silently
+ * re-derived under a checker that did not produce it.
+ */
+const HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3";
+
+/**
+ * The last commit that carried the blob. CI checks out with the default
+ * `fetch-depth: 1`, so the object is NOT in the clone -- measured, on the first
+ * CI run after the de-vendoring, which is the only place that could have shown
+ * it. Fetching that one commit brings the blob with it, and GitHub serves a
+ * fetch by explicit sha.
+ */
+const HISTORICAL_JAR_COMMIT = "c6f83e35e20f8648a8a408d23f13ea3e42927264";
+
+function git(args: readonly string[]): { status: number | null; stdout: Buffer } {
+  const result = spawnSync("git", args, { cwd: LIVE_ROOT, maxBuffer: 64 * 1024 * 1024 });
+  return { status: result.status, stdout: result.stdout };
+}
+
+function historicalJarBytes(): Buffer {
+  const direct = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
+  if (direct.status === 0) return direct.stdout;
+  // Shallow clone: deepen by exactly the one commit that carries the blob.
+  git(["fetch", "--depth", "1", "--no-tags", "origin", HISTORICAL_JAR_COMMIT]);
+  const retry = git(["cat-file", "blob", HISTORICAL_JAR_BLOB]);
+  if (retry.status === 0) return retry.stdout;
+  // RAISE rather than skip. A silently-skipped historical witness is the exact
+  // vacuity this file exists to prevent -- a check that did not run reading as
+  // one that passed. What this cannot distinguish is "the bytes are wrong" from
+  // "git could not answer"; the message says so rather than picking one.
+  throw new Error(
+    `cannot obtain historical tla2tools blob ${HISTORICAL_JAR_BLOB}, even after` +
+      ` fetching ${HISTORICAL_JAR_COMMIT} -- that is an UNKNOWN, not a mismatch.` +
+      " Run in a clone with network access, or `git fetch --depth 1 origin" +
+      ` ${HISTORICAL_JAR_COMMIT}` + "` first.",
+  );
+}
+
 let historicalSubject: string | undefined;
 
 function root(): string {
@@ -25,9 +83,13 @@ function copiedSubject(
       "src/Core.TLA/tla2tools.jar",
       "registry/tlc-models.json",
     ]) {
-      const from = join(LIVE_ROOT, relative === "registry/tlc-models.json" ? registry : relative);
       const to = join(subject, relative);
       mkdirSync(dirname(to), { recursive: true });
+      if (relative === "src/Core.TLA/tla2tools.jar") {
+        writeFileSync(to, historicalJarBytes());
+        continue;
+      }
+      const from = join(LIVE_ROOT, relative === "registry/tlc-models.json" ? registry : relative);
       cpSync(from, to, { recursive: false, force: true });
     }
     // Current model/config/jar bytes are usable only while all original pins hold.

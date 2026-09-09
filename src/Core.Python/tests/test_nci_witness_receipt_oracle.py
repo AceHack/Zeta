@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
@@ -22,6 +23,51 @@ HISTORICAL_REGISTRY = (
     ROOT / "docs/research/data/2026-09-06-nci-witness-v1-registry.json"
 )
 
+# The historical subject's JAR, by git blob id.
+#
+# The 2026-09-06 witness is pinned to TLC2 2026.05.18.174321, and the tree
+# stopped carrying those bytes when src/Core.TLA/tla2tools.jar was de-vendored
+# onto the rolling from-url row (081M23ESC5B087G0R002HJ39DG). Upstream cannot
+# return them either -- tlaplus re-uploads the v1.8.0 asset in place, so the
+# build that produced this witness is gone from every URL.
+#
+# It is NOT gone from git. A blob stays reachable from the commits that carried
+# it, so `git cat-file` is a permanent, content-addressed source for exactly the
+# bytes the receipt names -- which is the whole point of pinning by digest.
+# Reading it here keeps the historical witness reproducible without either
+# re-committing a binary or republishing a dated research artefact to match a
+# newer checker. Mirrors the TypeScript oracle's test.
+HISTORICAL_JAR_BLOB = "2fb671d8be5a1e137f001965d0246509e882aed3"
+
+# The last commit that carried the blob. CI checks out with the default
+# `fetch-depth: 1`, so the object is NOT in the clone -- measured, on the first
+# CI run after the de-vendoring. Fetching that one commit brings the blob with
+# it, and GitHub serves a fetch by explicit sha.
+HISTORICAL_JAR_COMMIT = "c6f83e35e20f8648a8a408d23f13ea3e42927264"
+
+
+def _git(args: list[str]) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(args, cwd=ROOT, capture_output=True, check=False)
+
+
+def historical_jar_bytes() -> bytes:
+    direct = _git(["git", "cat-file", "blob", HISTORICAL_JAR_BLOB])
+    if direct.returncode == 0:
+        return direct.stdout
+    # Shallow clone: deepen by exactly the one commit that carries the blob.
+    _git(["git", "fetch", "--depth", "1", "--no-tags", "origin", HISTORICAL_JAR_COMMIT])
+    retry = _git(["git", "cat-file", "blob", HISTORICAL_JAR_BLOB])
+    if retry.returncode == 0:
+        return retry.stdout
+    # RAISE rather than skip. A silently-skipped historical witness is the exact
+    # vacuity this file exists to prevent. What this cannot distinguish is "the
+    # bytes are wrong" from "git could not answer"; the message says so.
+    raise RuntimeError(
+        f"cannot obtain historical tla2tools blob {HISTORICAL_JAR_BLOB}, even "
+        f"after fetching {HISTORICAL_JAR_COMMIT} -- that is an UNKNOWN, not a "
+        "mismatch"
+    )
+
 
 def copied_subject(tmp_path: Path) -> Path:
     for relative in (
@@ -32,6 +78,9 @@ def copied_subject(tmp_path: Path) -> Path:
     ):
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
+        if relative == Path("src/Core.TLA/tla2tools.jar"):
+            target.write_bytes(historical_jar_bytes())
+            continue
         source = (
             HISTORICAL_REGISTRY
             if relative == Path("registry/tlc-models.json")

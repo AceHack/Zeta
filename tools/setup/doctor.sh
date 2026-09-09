@@ -54,11 +54,12 @@ echo
 
 # ── 2. Verifier jars at canonical locations ─────────────────────────
 echo "[2/7] Verifier jars (at the paths the runners load)"
+# BOTH jars are fetched now (081M23ESC5B087G0R002HJ39DG). The TLA one used to be
+# committed, and its remedy used to be `git checkout --`, which after the
+# de-vendoring would have sent a user to restore a file git no longer tracks --
+# a remedy that cannot work is worse than none, because it reads as a diagnosis.
 for jar in "src/Core.TLA/tla2tools.jar" "src/Core.Alloy/alloy.jar"; do
-  case "$jar" in
-    src/Core.TLA/*) remedy="it is committed to git; restore with: git checkout -- $jar" ;;
-    *)              remedy="it is fetched and digest-pinned; run: ./tools/setup/install.sh" ;;
-  esac
+  remedy="it is fetched and digest-pinned; run: ./tools/setup/install.sh"
   if [ -f "$REPO_ROOT/$jar" ]; then
     size=$(stat -f%z "$REPO_ROOT/$jar" 2>/dev/null || stat -c%s "$REPO_ROOT/$jar" 2>/dev/null || echo 0)
     if [ "$size" -lt 100000 ]; then
@@ -76,7 +77,7 @@ done
 if command -v bun >/dev/null 2>&1; then
   PROV="$REPO_ROOT/src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts"
   if bun "$PROV" >/dev/null 2>&1; then
-    pass "jar provenance: docs match the committed jar and the pinned fetch"
+    pass "jar provenance: docs, manifest pins and rolling receipts all agree"
   else
     fail "jar provenance drift — run: bun $PROV"
   fi
@@ -86,14 +87,14 @@ fi
 echo
 
 # ── 3. Drift check: unused copies of the verifier jars ──────────────
-echo "[3/7] Jar-location drift (jars outside the committed src/Core.* paths)"
+echo "[3/7] Jar-location drift (jars outside the pinned src/Core.* paths)"
 DRIFT_FOUND=0
 for stray in $(find "$REPO_ROOT" \
                     -name "tla2tools*.jar" -o -name "alloy*.jar" \
                     2>/dev/null \
                     | grep -vE "/src/Core\.(TLA|Alloy)/" \
                     | grep -vE "/\.git/"); do
-  warn "stray verifier jar: ${stray#"$REPO_ROOT"/} -- the runners load the committed src/Core.TLA and src/Core.Alloy jars; this copy is unused (safe to delete)"
+  warn "stray verifier jar: ${stray#"$REPO_ROOT"/} -- the runners load the digest-pinned src/Core.TLA and src/Core.Alloy jars; this copy is unused (safe to delete)"
   DRIFT_FOUND=1
 done
 if [ "$DRIFT_FOUND" -eq 0 ]; then

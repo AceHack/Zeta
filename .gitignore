@@ -95,11 +95,24 @@ lake-packages/
 # line is what satisfies that for the jar cache entry.
 src/Core.Alloy/*.jar
 #
-# src/Core.TLA/tla2tools.jar is deliberately still COMMITTED (#8053) and so is
-# NOT ignored: the build the gate runs is no longer obtainable from any upstream
-# URL. The measurement and the two costed alternatives live in the from-url
-# manifest's comment; changing that decision means adding a row there and an
-# ignore line here.
+# src/Core.TLA/tla2tools.jar is FETCHED too, as of 081M23ESC5B087G0R002HJ39DG.
+# Its from-url row carries `rolling=`, because tlaplus re-uploads the v1.8.0
+# prerelease asset in place; the digest still fails closed on every rebuild and
+# `tools/setup/repin-rolling.ts` is the re-measure-then-re-pin path. It stopped
+# being committed because a checked-in verifier is a binary nobody re-derives,
+# and the maintainer chose the newer checker on the ground that its updates may
+# find cases the old one misses.
+src/Core.TLA/*.jar
+#
+# The realizer's and the re-pin tool's working files: `<dest>.part` is the
+# fetch staging path (verified before the rename, so it exists only mid-fetch)
+# and `<dest>.prepin` is the previous bytes repin-rolling.ts keeps until the
+# re-measure passes. Both are deleted on the happy path; ignoring them keeps an
+# interrupted run from offering a jar for commit.
+src/Core.TLA/*.jar.part
+src/Core.TLA/*.jar.prepin
+src/Core.Alloy/*.jar.part
+src/Core.Alloy/*.jar.prepin
 #
 # The LEGACY tools/ paths. Nothing writes tools/{tla,alloy}/ any more; these
 # patterns stay as a guard so a jar copied here by hand cannot be committed as a

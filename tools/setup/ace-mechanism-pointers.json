@@ -9,6 +9,11 @@
         "ecosystem": "from-url",
         "spec": "src/Core.Alloy/alloy.jar https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar",
         "update": "pinned-url"
+      },
+      {
+        "ecosystem": "from-url",
+        "spec": "src/Core.TLA/tla2tools.jar https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar",
+        "update": "when-drift-bump-pin"
       }
     ]
   },

@@ -507,6 +507,38 @@ if (Test-Path $agentCliManifest) {
 }
 Repair-CodexConfigServiceTier
 
+# 5a. The from-url realizer -- the ONE mechanism manifest Windows was silently
+# skipping. `install.ps1` re-implements `manifests\windows` and
+# `manifests\from-bun-global` inline and drove NO Bun realizer at all, so a
+# Windows box provisioned by this script never got `src/Core.Alloy/alloy.jar`
+# and, since 081M23ESC5B087G0R002HJ39DG, would never get
+# `src/Core.TLA/tla2tools.jar` either. That was invisible rather than loud:
+# Alloy's gate leg only asserts the jar on Linux-x64 CI, so Windows just
+# skipped the checks and reported green.
+#
+# Scope is DELIBERATELY one mechanism, not `--all`. The other fourteen `from-*`
+# realizers were written against Unix hosts and have never run here; turning
+# them all on in a fix for the jars would be shipping fourteen untested code
+# paths under one commit. `from-url` is curl-to-a-digest-pinned-path, which is
+# platform-neutral, and it is the mechanism the verifier jars actually use.
+#
+# GRACEFUL, matching every other optional step in this file: a network failure
+# WARNS and continues rather than bricking a dev laptop's install. The jars'
+# absence is not silent afterwards -- the F# gate-leg tests and
+# `lint-verifier-jar-provenance.ts` are what turn a missing jar red, and they
+# are the right place for that verdict.
+$setupRealize = Join-Path $RepoRoot 'src\Core.TypeScript\ace\setup-realize.ts'
+if (Test-Path $setupRealize) {
+  Push-Location $RepoRoot
+  try {
+    $urCode = Invoke-ToolSoft { mise exec -- bun src/Core.TypeScript/ace/setup-realize.ts from-url }
+    if ($urCode -eq 0) { Write-Host 'ok from-url realizer -- digest-pinned verifier jars fetched' }
+    else { Write-Host "warn: from-url realizer failed (exit $urCode); verifier jars may be absent; continuing" }
+  } finally { Pop-Location }
+} else {
+  Write-Host 'warn: setup-realize.ts missing; skipping from-url realizer'
+}
+
 # 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
 # `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and
 # continues -- convenience commands, not hard deps; never brick install. Parity with

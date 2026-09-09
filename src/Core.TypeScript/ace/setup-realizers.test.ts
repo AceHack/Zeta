@@ -1,13 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { realizeFromAgdaCubical } from "./setup-realizers/from-agda-cubical.ts";
 import { realizeFromElan } from "./setup-realizers/from-elan.ts";
 import { realizeFromInstaller } from "./setup-realizers/from-installer.ts";
 import { realizeFromOllama } from "./setup-realizers/from-ollama.ts";
 import { realizeFromShim } from "./setup-realizers/from-shim.ts";
-import { realizeFromUrl } from "./setup-realizers/from-url.ts";
+import { realizeFromUrl, rollingRemedy } from "./setup-realizers/from-url.ts";
 import { realizeFromUvVenv } from "./setup-realizers/from-uv-venv.ts";
 import { repairCodexServiceTierConfig } from "./setup-realizers/from-bun-global.ts";
 import { realizeFromUvTool } from "./setup-realizers/from-uv-tool.ts";
@@ -130,6 +131,120 @@ describe("realizeFromUrl dry-run", () => {
     );
     const ctx = createContext({ repoRoot, dryRun: true });
     expect(realizeFromUrl(ctx)).rejects.toThrow("sha256= pin required");
+  });
+
+  /**
+   * The wedge. Before this, an on-disk file whose digest no longer matched made
+   * `from-url` THROW -- and `from-url` is not best-effort, so `install.sh`
+   * aborted. Every already-provisioned machine hits that the moment a pin moves,
+   * which under a rolling row is roughly weekly, and the error printed no
+   * remedy. The stale bytes are not evidence of anything; the pin is.
+   *
+   * Fail-closed is untouched: the replacement is still verified before it lands.
+   */
+  function wedgeRepo(): string {
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-url"),
+      "tools/probe/jar.jar https://example.com/jar.jar sha256=" + "0".repeat(64) + "\n",
+    );
+    mkdirSync(join(repoRoot, "tools/probe"), { recursive: true });
+    writeFileSync(join(repoRoot, "tools/probe/jar.jar"), "stale bytes from an older pin");
+    return repoRoot;
+  }
+
+  test("a stale file on disk is discarded and re-fetched, not wedged", async () => {
+    const repoRoot = wedgeRepo();
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromUrl(ctx);
+    expect(result.skipped).toBe(false);
+    // It went on to fetch rather than aborting the whole realizer...
+    expect(result.actions.some((a) => a.includes("example.com/jar.jar"))).toBe(true);
+    // ...and the bytes that disagreed with the pin are gone.
+    expect(existsSync(join(repoRoot, "tools/probe/jar.jar"))).toBe(false);
+  });
+
+  test("the discard is LOUD -- it names both digests", async () => {
+    const repoRoot = wedgeRepo();
+    const warnings: string[] = [];
+    const base = createContext({ repoRoot, dryRun: true });
+    const ctx = { ...base, warn: (msg: string) => { warnings.push(msg); base.warn(msg); } };
+    await realizeFromUrl(ctx);
+    expect(warnings.some((w) => w.includes("disagrees with the pin"))).toBe(true);
+    expect(warnings.some((w) => w.includes("0".repeat(64)))).toBe(true);
+  });
+
+  test("an ABSENT dest is not reported as a stale one", async () => {
+    // Vacuity control on the discard branch: if it fired for a missing file it
+    // would warn about bytes that were never there, and the warning would stop
+    // meaning anything.
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-url"),
+      "tools/probe/jar.jar https://example.com/jar.jar sha256=" + "0".repeat(64) + "\n",
+    );
+    const warnings: string[] = [];
+    const base = createContext({ repoRoot, dryRun: true });
+    const ctx = { ...base, warn: (msg: string) => { warnings.push(msg); base.warn(msg); } };
+    await realizeFromUrl(ctx);
+    expect(warnings.some((w) => w.includes("disagrees with the pin"))).toBe(false);
+  });
+
+  test("a dest that cannot be read at all is UNKNOWN, not absent", async () => {
+    // ENOENT means "not there". Every other errno means the question could not
+    // be answered, and answering it anyway would let a directory, a permission
+    // failure, or an I/O error read as a clean install.
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    writeFileSync(
+      join(manifestDir, "from-url"),
+      "tools/probe/jar.jar https://example.com/jar.jar sha256=" + "0".repeat(64) + "\n",
+    );
+    mkdirSync(join(repoRoot, "tools/probe/jar.jar"), { recursive: true });
+    const ctx = createContext({ repoRoot, dryRun: true });
+    expect(realizeFromUrl(ctx)).rejects.toThrow();
+  });
+
+  test("a matching file on disk is left alone and NOT re-fetched", async () => {
+    // Vacuity control: without this, "discard and re-fetch" could be firing on
+    // every run, which would make the digest check decorative.
+    const repoRoot = mkdtempSync(join(tmpdir(), "setup-realize-url-"));
+    const manifestDir = join(repoRoot, "tools/setup/manifests");
+    mkdirSync(manifestDir, { recursive: true });
+    const body = "exactly the pinned bytes";
+    const digest = createHash("sha256").update(body).digest("hex");
+    writeFileSync(join(manifestDir, "from-url"), `tools/probe/jar.jar https://example.com/jar.jar sha256=${digest}\n`);
+    mkdirSync(join(repoRoot, "tools/probe"), { recursive: true });
+    writeFileSync(join(repoRoot, "tools/probe/jar.jar"), body);
+    const ctx = createContext({ repoRoot, dryRun: true });
+    const result = await realizeFromUrl(ctx);
+    expect(result.actions.some((a) => a.includes("example.com/jar.jar"))).toBe(false);
+    expect(existsSync(join(repoRoot, "tools/probe/jar.jar"))).toBe(true);
+  });
+});
+
+describe("from-url rolling diagnosis", () => {
+  // A rolling rebuild is not corruption, and a message that reads like
+  // corruption sends the reader hunting for a compromise that did not happen.
+  test("the remedy names the event, both digests, and the re-pin command", () => {
+    const message = rollingRemedy("src/Core.TLA/tla2tools.jar", "a".repeat(64), "b".repeat(64), "some-tag");
+    expect(message).toContain("REBUILT this asset in place");
+    expect(message).toContain("rolling=some-tag");
+    expect(message).toContain("a".repeat(64));
+    expect(message).toContain("b".repeat(64));
+    expect(message).toContain("bun tools/setup/repin-rolling.ts src/Core.TLA/tla2tools.jar");
+  });
+
+  // The whole point of the regime, and the sentence a reader in a hurry needs.
+  test("the remedy says a hand-bumped digest is the failure mode", () => {
+    const message = rollingRemedy("x.jar", "a".repeat(64), "b".repeat(64), "t");
+    expect(message).toContain("Do NOT hand-edit");
+    expect(message).toContain("without a re-measure");
   });
 });
 

@@ -846,6 +846,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -931,6 +933,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -1236,6 +1240,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2150,6 +2156,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2219,6 +2227,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -2285,6 +2295,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3005,6 +3017,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3062,6 +3076,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3119,6 +3135,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3176,6 +3194,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3233,6 +3253,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3666,6 +3688,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes
@@ -3762,7 +3786,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Cache install.sh outputs (mise runtimes + cargo + dotnet)
+      - name: Cache install.sh outputs (mise runtimes + cargo + dotnet + verifier jars)
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -3772,6 +3796,8 @@ jobs:
             ~/.dotnet/tools
             ~/.elan
             ~/.config/zeta
+            src/Core.TLA/tla2tools.jar
+            src/Core.Alloy/alloy.jar
             ~/.rustup/toolchains/1.99.0-beta.3-*
             ~/.rustup/settings.toml
             ~/.rustup/update-hashes

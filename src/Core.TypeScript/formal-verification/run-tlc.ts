@@ -111,6 +111,13 @@ interface Toolchain {
   readonly registry: TlcRegistry;
 }
 
+// "the committed jar" for as long as it WAS committed. It is fetched now
+// (081M23ESC5B087G0R002HJ39DG), and a remedy that names the wrong provenance
+// sends a reader to `git checkout` a file git no longer tracks.
+const TOOLCHAIN_NOT_READY =
+  "ERROR: TLC toolchain not ready (need java on PATH + the digest-pinned jar" +
+  " at src/Core.TLA/tla2tools.jar). Run tools/setup/install.sh\n";
+
 function checkToolchain(root: string): Toolchain | null {
   const registry = loadTlcRegistry(root);
   const tlaJarPath = join(root, registry.toolchain.jar);
@@ -307,17 +314,38 @@ function main(argv: readonly string[]): ExitCode {
     return 0;
   }
 
+  // ARGV IS VALIDATED BEFORE THE TOOLCHAIN IS PROBED. Those are different
+  // questions and they have different exit codes -- 3 for "you asked for
+  // something that does not exist", 2 for "I could not run". Probing first made
+  // the answer depend on whether a jar happened to be installed, which was
+  // invisible while the jar was committed and surfaced the moment it was not:
+  // `run-tlc.ts NoSuchModel` on a machine without the jar reported a missing
+  // toolchain, which is true and is not the answer to the question asked.
+  const registry = loadTlcRegistry(root);
+  const known = registry.models;
+  if (first !== "--all" && first !== "--extended" && first !== "--check-toolchain") {
+    if (first.startsWith("--")) {
+      process.stderr.write("unknown flag: " + first + "\n");
+      usage();
+      return 3;
+    }
+    if (!known.some((m) => m.id === first)) {
+      process.stderr.write("unknown model id: " + first + " (try --list)\n");
+      return 3;
+    }
+  }
+
   const toolchain = checkToolchain(root);
   if (first === "--check-toolchain") {
     if (toolchain === null) {
-      process.stderr.write("ERROR: TLC toolchain not ready (need java on PATH + the committed jar). Run tools/setup/install.sh\n");
+      process.stderr.write(TOOLCHAIN_NOT_READY);
       return 2;
     }
     process.stdout.write("OK: TLC toolchain ready\n");
     return 0;
   }
   if (toolchain === null) {
-    process.stderr.write("ERROR: TLC toolchain not ready (need java on PATH + the committed jar). Run tools/setup/install.sh\n");
+    process.stderr.write(TOOLCHAIN_NOT_READY);
     return 2;
   }
 
@@ -328,15 +356,10 @@ function main(argv: readonly string[]): ExitCode {
   if (first === "--extended") {
     return runMany(toolchain, models);
   }
-  if (first.startsWith("--")) {
-    process.stderr.write("unknown flag: " + first + "\n");
-    usage();
-    return 3;
-  }
   const model = models.find((m) => m.id === first);
   if (model === undefined) {
     process.stderr.write("unknown model id: " + first + " (try --list)\n");
-    return 1;
+    return 3;
   }
   return runOne(toolchain, model);
 }

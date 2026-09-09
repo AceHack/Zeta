@@ -5,6 +5,7 @@ import {
   checkVerifierJarProvenance,
   deriveJarProvenance,
   parseFromUrlPins,
+  parseRollingReceipts,
   tlcVersionFromManifest,
   type ProvenanceInputs,
 } from "./lint-verifier-jar-provenance.ts";
@@ -17,14 +18,23 @@ const TLA_SHA = "71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f8
 const ALLOY_SHA = "6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d";
 const TLA_VERSION = "2026.05.18.174321 (rev: 8ba1027)";
 const ALLOY_VERSION = "6.2.0.202501090817 (rev: 794226d)";
+const REMEASURE = "src/Core.TypeScript/formal-verification/run-tlc.ts:--all";
+const EVIDENCE = "docs/cross-verify/some-sweep.md";
 
 const ALLOY_ROW =
   `${ALLOY}  https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar  sha256=${ALLOY_SHA}`;
 
-/** The shipped shape: Alloy fetched, TLA committed, both installed. */
+/**
+ * The synthetic tree these tests reason over: Alloy on a plain fetched row, TLA
+ * COMMITTED. That is not the shipped shape any more -- both jars are fetched
+ * today -- and it is kept deliberately, because the committed regime is still
+ * reachable (any future row could use it) and these are the only tests that
+ * exercise it.
+ */
 function inputs(over: Partial<ProvenanceInputs> = {}): ProvenanceInputs {
   return {
     manifestText: `# a comment row\n\n${ALLOY_ROW}\n`,
+    receiptsText: "# no receipts\n",
     tracked: (rel) => rel === TLA,
     present: () => true,
     hashOf: (rel) => (rel === TLA ? TLA_SHA : ALLOY_SHA),
@@ -32,6 +42,35 @@ function inputs(over: Partial<ProvenanceInputs> = {}): ProvenanceInputs {
     ...over,
   };
 }
+
+const ROLLING_TLA_ROW =
+  `${TLA}  https://example.invalid/tla2tools.jar  sha256=${TLA_SHA}` +
+  `  rolling=upstream-tag  identity=jar-tlc  remeasure=${REMEASURE}` +
+  "  pinsurfaces=registry/tlc-models.json";
+
+const GOOD_RECEIPT =
+  `${TLA}  sha256=${TLA_SHA}  measured=2026-09-09  result=pass` +
+  `  remeasure=${REMEASURE}  evidence=${EVIDENCE}`;
+
+/** Alloy fetched, TLA fetched-ROLLING with a passing receipt: the shipped shape. */
+function rollingInputs(over: Partial<ProvenanceInputs> = {}): ProvenanceInputs {
+  return {
+    manifestText: `${ALLOY_ROW}\n${ROLLING_TLA_ROW}\n`,
+    receiptsText: `# header\n${GOOD_RECEIPT}\n`,
+    tracked: () => false,
+    present: () => true,
+    hashOf: (rel) => (rel === TLA ? TLA_SHA : ALLOY_SHA),
+    versionOf: (rel) => (rel === TLA ? TLA_VERSION : ALLOY_VERSION),
+    ...over,
+  };
+}
+
+const ROLLING_DOCS =
+  `${TLA} ${TLA_SHA} ${TLA_VERSION}\n${ALLOY} ${ALLOY_SHA} ${ALLOY_VERSION}\n`;
+
+/** Doc reader that also answers for `registry/tlc-models.json`, the pin surface. */
+const rollingDocs = (text = ROLLING_DOCS, surface = `pinned ${TLA_SHA}`) =>
+  (rel: string) => (rel === "registry/tlc-models.json" ? surface : text);
 
 const docs = (text: string) => () => text;
 const GOOD_DOCS = `${TLA} ${TLA_SHA} ${TLA_VERSION}\n${ALLOY} ${ALLOY_SHA} ${ALLOY_VERSION}\n`;
@@ -45,7 +84,124 @@ describe("verifier jar provenance — the real tree", () => {
     const jars = deriveJarProvenance(repoRoot);
     expect(jars).toHaveLength(2);
     expect(jars.find((j) => j.jarPath === ALLOY)?.regime).toBe("fetched");
-    expect(jars.find((j) => j.jarPath === TLA)?.regime).toBe("committed");
+    expect(jars.find((j) => j.jarPath === TLA)?.regime).toBe("fetched-rolling");
+  });
+});
+
+describe("rolling regime — a mutable upstream must cite the run that judged it", () => {
+  test("a rolling pin with a passing receipt and an intact pin surface is clean", () => {
+    expect(checkVerifierJarProvenance(repoRoot, rollingInputs(), rollingDocs())).toEqual([]);
+  });
+
+  // THE failure this regime exists for: upstream rebuilds, the tree goes red,
+  // and the cheapest green is one new hex string in the manifest.
+  test("a digest bumped with no receipt fails and names the re-pin command", () => {
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs({ receiptsText: "# nothing was measured\n" }),
+      rollingDocs(),
+    );
+    expect(failures.some((f) => f.includes("bumped without a recorded re-measure"))).toBe(true);
+    expect(failures.some((f) => f.includes("bun tools/setup/repin-rolling.ts " + TLA))).toBe(true);
+  });
+
+  test("a receipt recording a FAILED re-measure does not buy the pin", () => {
+    const failing = GOOD_RECEIPT.replace("result=pass", "result=fail");
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs({ receiptsText: `${failing}\n` }),
+      rollingDocs(),
+    );
+    expect(failures.some((f) => f.includes("none that both passed"))).toBe(true);
+  });
+
+  test("a receipt earned by a WEAKER command does not buy the pin", () => {
+    const weaker = GOOD_RECEIPT.replace(REMEASURE, "src/Core.TypeScript/formal-verification/run-tlc.ts:SmokeCheck");
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs({ receiptsText: `${weaker}\n` }),
+      rollingDocs(),
+    );
+    expect(failures.some((f) => f.includes("ran the declared remeasure="))).toBe(true);
+  });
+
+  test("a receipt for a DIFFERENT digest does not carry over to the new one", () => {
+    const other = GOOD_RECEIPT.replace(TLA_SHA, "a".repeat(64));
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs({ receiptsText: `${other}\n` }),
+      rollingDocs(),
+    );
+    expect(failures.some((f) => f.includes("bumped without a recorded re-measure"))).toBe(true);
+  });
+
+  test("a receipt citing evidence that is not in the tree fails", () => {
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs({ present: (rel) => rel !== EVIDENCE }),
+      rollingDocs(),
+    );
+    expect(failures.some((f) => f.includes("which is not in the tree"))).toBe(true);
+  });
+
+  // The HALF re-pin: manifest moved, the registry's restatement left behind.
+  test("a declared pin surface that lost the digest fails", () => {
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs(),
+      rollingDocs(ROLLING_DOCS, "pinned 0000"),
+    );
+    expect(failures.some((f) => f.includes("does not carry sha256="))).toBe(true);
+  });
+
+  test("a rolling row with no remeasure= cannot be re-pinned honestly", () => {
+    const noRemeasure = ROLLING_TLA_ROW.replace(`  remeasure=${REMEASURE}`, "");
+    const failures = checkVerifierJarProvenance(
+      repoRoot,
+      rollingInputs({ manifestText: `${ALLOY_ROW}\n${noRemeasure}\n` }),
+      rollingDocs(),
+    );
+    expect(failures.some((f) => f.includes("declares no remeasure= command"))).toBe(true);
+  });
+
+  // Vacuity control. Without it the rolling checks could be "passing" because
+  // they demand a receipt of everything, or of nothing.
+  test("a plain fetched row is NOT asked for a receipt", () => {
+    expect(checkVerifierJarProvenance(repoRoot, inputs(), docs(GOOD_DOCS))).toEqual([]);
+  });
+});
+
+describe("receipt parsing", () => {
+  test("reads every field and ignores comments", () => {
+    const rows = parseRollingReceipts(`# header\n\n${GOOD_RECEIPT}\n`);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.dest).toBe(TLA);
+    expect(rows[0]?.sha256).toBe(TLA_SHA);
+    expect(rows[0]?.result).toBe("pass");
+    expect(rows[0]?.remeasure).toBe(REMEASURE);
+    expect(rows[0]?.evidence).toBe(EVIDENCE);
+  });
+
+  test("a row missing fields parses with nulls rather than throwing", () => {
+    const rows = parseRollingReceipts(`${TLA}\n`);
+    expect(rows[0]?.sha256).toBeNull();
+    expect(rows[0]?.result).toBeNull();
+  });
+});
+
+describe("rolling attributes on a from-url row", () => {
+  test("rolling, identity, remeasure and pinsurfaces are all read", () => {
+    const pins = parseFromUrlPins(`${ROLLING_TLA_ROW}\n`);
+    expect(pins[0]?.rolling).toBe("upstream-tag");
+    expect(pins[0]?.identity).toBe("jar-tlc");
+    expect(pins[0]?.remeasure).toBe(REMEASURE);
+    expect(pins[0]?.pinSurfaces).toEqual(["registry/tlc-models.json"]);
+  });
+
+  test("a row with no rolling= reports null, which is what keeps it a plain pin", () => {
+    const pins = parseFromUrlPins(`${ALLOY_ROW}\n`);
+    expect(pins[0]?.rolling).toBeNull();
+    expect(pins[0]?.pinSurfaces).toEqual([]);
   });
 });
 

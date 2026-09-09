@@ -28,35 +28,84 @@
 # created_at == updated_at == 2025-01-09T08:18, untouched since.
 src/Core.Alloy/alloy.jar  https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar  sha256=6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d
 #
-# ── TLA+ / tla2tools: DELIBERATELY NOT A ROW YET ────────────────────
+# ── ROLLING ROWS: rolling=<tag> ─────────────────────────────────
 #
-# src/Core.TLA/tla2tools.jar stays committed, and the reason is a
-# measurement rather than a preference. MEASURED 2026-09-09:
+# Most upstreams publish an IMMUTABLE asset: the tag is cut once, the
+# bytes never move, and the sha256 below is a formality that only ever
+# fires on corruption or attack. Some do not. A row may carry
 #
-#   * the build we run is TLC2 2026.05.18.174321 (rev 8ba1027),
-#     sha256 71546dff...
-#   * tlaplus tags v1.8.0 as a ROLLING PRERELEASE. Its tla2tools.jar
-#     asset was re-uploaded that same day and now serves
-#     2026.09.09.124804 (rev 65fbace), sha256 ae41e3f6... -- a
-#     different verifier under an unchanged URL.
-#   * the newest IMMUTABLE upstream release is v1.7.4 (2024-08-05),
-#     sha256 936a2620..., assets untouched since 2024-08-08.
-#   * tla2tools is NOT published to Maven Central
-#     (search.maven.org a:tla2tools -> numFound 0).
+#   rolling=<the mutable upstream name>
+#   identity=<jar-tlc|jar-alloy>            how to derive a human identity
+#   remeasure=<script>[:<arg>...]           the evidence run, argv-encoded
+#   pinsurfaces=<path>[,<path>...]          every OTHER file carrying this
+#                                           digest or identity
+#   derivedpins=<path>[,<path>...]          files whose OWN sha256 is
+#                                           recorded inside a pinsurface
 #
-# So the bytes we run are no longer obtainable from any upstream URL:
-# a from-url row for TLA is necessarily a VERSION CHANGE, not a
-# de-vendoring. Both destinations cost something real, both are
-# costed in the PR that added this comment, and the choice is the
-# maintainer's:
+# to declare that the bytes behind the URL are REPLACED IN PLACE. The
+# digest stays mandatory and stays enforced -- a rolling row fails
+# CLOSED on a rebuild exactly like any other, and nothing auto-accepts.
+# What `rolling=` buys is the DIAGNOSIS: the realizer stops saying
+# "sha256 mismatch" (which reads as corruption) and says "upstream
+# rebuilt this asset in place", prints both digests, and names the one
+# command that re-measures and re-pins.
 #
-#   v1.7.4 -- immutable, but 51/52 gate models only. TLC 1.7.4 prints
-#     the generic "Temporal properties were violated." where 1.8.0
-#     prints "Temporal property Deterrence was violated", so the
-#     QuorumCollateralDeterrenceR2 witness loses the discrimination
-#     that tells one violated temporal property from another.
-#   v1.8.0 rolling -- keeps that diagnostic, and the digest below
-#     would fail closed on the next upstream rebuild (three observed:
-#     2026-05-18, 2026-08-11, 2026-09-09), breaking install.sh
-#     fleet-wide until 53 models are re-measured and the NCI witness
-#     receipt is re-pinned.
+# RE-PINNING IS `bun tools/setup/repin-rolling.ts <dest>`, AND IT RUNS
+# THE RE-MEASURE ITSELF. Bumping the digest by hand to make a red tree
+# green is THE failure mode this whole regime exists to prevent: it
+# would silently swap the verifier under every claim the verifier ever
+# established. The tool refuses to write a digest whose `remeasure=`
+# run did not pass, and `lint-verifier-jar-provenance.ts` refuses a
+# rolling pin with no matching row in `from-url-rolling-receipts`.
+#
+# ── TLA+ / tla2tools (081M23ESC5B087G0R002HJ39DG) ─────────────────
+#
+# READS IT: registry/tlc-models.json `toolchain.jar`, which is the only
+# source of the path for both runners -- run-tlc.ts and the xUnit gate
+# tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs.
+#
+# NOT A PIN SURFACE, deliberately: nci-witness-receipt.ts stays pinned to
+# TLC2 2026.05.18.174321. That receipt is a dated claim about which
+# checker produced a witness, not a statement about which checker we run
+# now, so advancing it here would have republished a 2026-09-06 research
+# artefact to match a newer build. Its test reads those exact bytes back
+# out of git by blob id instead.
+#
+# PINS IT: the sha256 below. MEASURED 2026-09-09.
+#
+# WHY THE ROLLING TAG AND NOT THE IMMUTABLE v1.7.4: because a newer
+# model checker finds cases an older one misses, and a forced
+# re-measure is the point rather than the cost (maintainer, 2026-09-09:
+# "the updates may find new cases"). v1.7.4 is immutable and passes
+# only 51/52 gate models -- it prints the generic "Temporal properties
+# were violated." where 1.8.0 names WHICH property, so the
+# QuorumCollateralDeterrenceR2 witness loses the discrimination the
+# registry pins as expectDetail. An immutable verifier that cannot tell
+# one violated property from another is the weaker artefact.
+#
+# WHAT THE ROLLING TAG COSTS, MEASURED RATHER THAN GUESSED: tlaplus
+# republishes this asset from its CI, and its CI runs on pushes to
+# master, which is bursty. Over the 180 days to 2026-09-09 master had
+# commits on 24 distinct days -- but on 2026-09-09 the asset was
+# rebuilt THREE times in four hours:
+#
+#   12:48:04  rev 65fbace
+#   15:25:40  rev 4ad12e8   sha256 82cc5759...  52/52
+#   16:25:36  rev 4ad12e8   sha256 bb82311b...  52/52   <- pinned below
+#
+# Note the last two share a rev: same source, different bytes, and no
+# new master commit between them -- consistent with several matrix legs
+# of one long CI run each uploading the artefact. So a rebuild is often
+# not a new checker at all, and the digest cannot tell the difference,
+# which is exactly why the re-measure is mechanical rather than a
+# judgement call.
+#
+# Expect this pin to fail closed on the order of weekly, with several
+# moves inside one upstream CI burst. THE OPEN QUESTION THAT COST
+# BUYS, recorded for the maintainer rather than decided here: mirroring
+# the measured bytes to one immutable asset under our own org would
+# keep every property asked for (no jar in git, newest checker, clone
+# at a tag still sufficient) and remove the fleet-wide breakage window
+# -- at the price of becoming a redistributor of an MIT-licensed
+# third-party binary. See 081M23ESC5B087G0R002HJ39DG.
+src/Core.TLA/tla2tools.jar  https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar  sha256=bb82311bc0493a8d30112a1baa0aece42a5f91b928866c7593930e390c14c340  requires=java  rolling=tlaplus-v1.8.0-prerelease  update=when-drift-bump-pin  identity=jar-tlc  remeasure=src/Core.TypeScript/formal-verification/run-tlc.ts:--all  pinsurfaces=registry/tlc-models.json,docs/INSTALLED.md,docs/dependency-status.md
