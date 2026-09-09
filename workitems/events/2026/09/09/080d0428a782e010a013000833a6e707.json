@@ -1,0 +1,14 @@
+{
+  "id": "080d0428a782e010a013000833a6e707",
+  "at": "2026-09-09T07:32:17.116Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22H9W2V087G0R0011EBB9T",
+    "type": "task",
+    "title": "TikTok avatar handoff to Vera for the next pass",
+    "slug": "tiktok-avatar-handoff-to-vera-for-the-next-pass",
+    "priority": "P2",
+    "filename": "081M22H9W2V087G0R0011EBB9T-tiktok-avatar-handoff-to-vera-for-the-next-pass.md"
+  }
+}
