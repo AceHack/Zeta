@@ -1,0 +1,14 @@
+{
+  "id": "080d0428875c7010a013000832542bbe",
+  "at": "2026-09-09T07:27:53.742Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22H1TWE087G0R0019MQB0G",
+    "type": "bug",
+    "title": "TLC JVM SIGBUS on macOS ARM64 is host memory corruption, not the Java 26 pin",
+    "slug": "tlc-jvm-sigbus-on-macos-arm64-is-host-memory-corruption-not",
+    "priority": "P2",
+    "filename": "081M22H1TWE087G0R0019MQB0G-tlc-jvm-sigbus-on-macos-arm64-is-host-memory-corruption-not.md"
+  }
+}
