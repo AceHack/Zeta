@@ -3,7 +3,7 @@
 **Author:** Ani (Grok Build) / Aaron 2026-09-02
 **Date:** 2026-09-02
 **Work item:** `081M1HGD1QA087G0R001GRHPFW`
-**Composes with:** ZetaFS first product `081M1C59ZG4087G0R000VM8DZN`
+**Composes with:** ZetaFS store spec `081M1C59ZG4087G0R000VM8DZN` (store satellite, not the database identity)
 **Status:** Product design. Pieces are in-tree; the assembled engine is not.
 **Register:** product design. Does not replace [`docs/ROADMAP.md`](../ROADMAP.md) (hub) or the ZetaFS first-product spec. This is the **ZetaDB satellite**.
 **Extends (do not contradict):**
@@ -30,7 +30,9 @@ This PR does **not** ship ZetaFS v0.9. Crash recovery stays `toy` until first-pr
 
 ## Overview
 
-ZetaDB is the **whole database**: event log as source of truth, tables as incremental materialized views over that log, a streaming SQL pipeline on top of Rx / LINQ / F# computation expressions, protocol adapters so existing clients can migrate, and ZetaFS as the custom store *if and only if* it makes the database faster or safer than a host filesystem plus the ferry. A primary use (Aaron 2026-09-09, `081M23K0S2W087G0R001H50Z8M`): **agents carry their source, evolve it here with zero downtime.** The product ships **with agents, a compiler, and its own source** — not a SQL engine that agents visit. Designed, not shipped.
+ZetaDB is the **whole database**: event log as source of truth, tables as incremental materialized views over that log, a streaming SQL pipeline on top of Rx / LINQ / F# computation expressions, protocol adapters so existing clients can migrate, and ZetaFS as the custom store *if and only if* it makes the database faster or safer than a host filesystem plus the ferry.
+
+The **first-class pieces** are DBSP, Z-sets, and G-sets: 0-downtime schema evolution and key rotation (same overlap-window rotator), Flink-like incremental join onto materialized tables. Code storage, document storage, event streaming, transactional processing, multi-planet CALM. Jumprope, POSIX, FUSE, video/images are **sprinkles** — later, not the identity (`081M245GDBN087G0R000QWR0M4`). Agents carrying source is not a 2026-09-09 invention: it is [`durable-functions-as-the-db`](../research/2026-06-21-durable-functions-as-the-db-codebase-on-zsets-functions-rotate-like-keys-futamura.md) plus the VISION compiler ladder. `081M23K0S2W087G0R001H50Z8M` is a pointer, not the origin.
 
 **Feel, not clone:** Apache Flink (unified batch + streaming) and [Reaqtor](https://github.com/reaqtive/reaqtor) (durable standing Rx queries that survive restart). Feldera is the **DBSP competitor**, not the product shape.
 
@@ -55,7 +57,33 @@ ZetaDB is the **whole database**: event log as source of truth, tables as increm
 9. **No central tip.** Partitioned Z-set tips joined by shippable Rx queries ([no-single-tip design](2026-08-28-there-is-no-single-tip-partitioned-zset-tips-joined-by-shippable-rx-queries.md)).
 10. **Historical data compresses toward a generator.** When a generator can reproduce a history, the original bytes need not stay on disk. That is the columnar idea aimed at the **event store**, not only at tables.
 11. **Cross-site agreement without geo-Raft.** Fastest DBSP on one planet is not the product if the fold diverges across a light cone. The shared conclusion sees only agreed phase; a node's wall-clock steers only local actions. That is weaker than consensus (CALM-monotonic). Raft across sites is the wrong tool. Not shipped. Not a claim we beat Feldera on Earth today.
-12. **Agents carry source and evolve it without downtime.** Skills, compiler, and the database's own source are EntityIds on the same volume. A live generation keeps its ContentId; a new freeze is a new ContentId; the switch is a binding at a phase. Readers are not kicked. Fork is how an agent tries a version while the previous one keeps running. `Regen` is how compiled artifacts drop once the generator is metered. Closed command set: the far side names a verb, never defines one. Not a sidecar REPL with source in a Python variable. Not shipped.
+12. **Agents carry source and evolve it without downtime.** Already specified 2026-06-21: the codebase lives on Z-sets; a deploy is a key-rotation (overlap window); rollback is a retraction. VISION compiler ladder: tick-N loads tick-(N−1)'s compiler edits. Harny / `gen/` / Ace are **separate lanes** (`docs/PRODUCT-LANES.md`), not a filesystem feature. EntityId + phase binding is the store half. Not a sidecar REPL. Not shipped.
+
+---
+
+## First-class vs sprinkle (Aaron 2026-09-09)
+
+Adversarial path check (`081M245GDBN087G0R000QWR0M4`). The queue has been freeze-storm / Jumprope / CAS DST. The product is not that.
+
+**First-class (if removed, it is a different database):**
+
+| Piece | Where it already is | Job |
+|---|---|---|
+| Z-set retract/assert | `src/Core/ZSet.fs` | data, schema, keys, code versions |
+| G-set expand | `src/Core/GSet.fs` | monotone overlap (CALM, coordination-free) |
+| Schema as Z-set | `src/Core/SchemaZ.fs`, `SchemaEvolution.fs`, `docs/specs/zero-downtime-schema-evolution/` | 0-downtime evolution; TLC + FsCheck on the primitive |
+| Key rotation | `src/Core/KeyCustody.fs`, ADR 2026-06-15 | **same overlap rotator as schema** — do not build a second one |
+| Incremental join → tables | `src/Core/Incremental.fs` `IncrementalJoin`; QuerySurface **must** lower to it | Flink-like standing join; still `toy` as a workload |
+| Event log as truth | `GroupCommitDiskDeltaLog` **on a host directory** | WAL; tables are `I` of standing queries |
+| CALM fold | `local-time-never-enters-the-shared-fold`; 2026-07-11 multi-planet research | multi-planet low consensus; Raft declined |
+
+**Sprinkle (wait unless a first-class caller needs it):** Jumprope as product identity, POSIX/FUSE, freeze-storm 12 MiB peels, video/image blobs, native NVMe, TPM. Jumprope stays a **body codec** for code/docs/WAL segments that actually grow. Large blobs are second.
+
+**FS that is still essential, not sprinkle:** stable EntityId across `write()`, first-class fork, typed `Buffered\|Journaled\|Durable` on the log. Those serve schema FKs, named divergence, and the WAL. They do not require Jumprope to be the face of the product. ZD4 still kills ZetaFS-as-product only on those earn-reasons, **not** on batching.
+
+**Wrong tree:** more freeze-volume DST while `QuerySurface` stays toy and `SchemaZ` / `KeyCustody` never ride the WAL. **Right tree:** wire schema deltas and key windows as events on the log; materialize tables through `IncrementalJoin`; keep the custom volume parked until that has a caller.
+
+S2 "schema evolution PROVEN" is the DynamicValue field algebra + a TLC overlap model (~27,848 states in the pitch). Spec refuses version numbers (`docs/specs/zero-downtime-schema-evolution/requirements.md`). Catalog `ensure` is LWW `TableStream` DML (`Catalog.fs`); `StreamTableDuality` instance B is last-writer-wins, **not commutative** — cannot sit under multi-planet CALM. S2 does **not** prove live catalog overlap, key rotation on the WAL, or multi-planet schema. Do not round that up.
 
 ---
 
@@ -134,6 +162,10 @@ Local time never filters the shared fold (`.claude/rules/local-time-never-enters
 
 | Piece | Path | Register | What it actually is |
 |---|---|---|---|
+| Schema as Z-set | `src/Core/SchemaZ.fs`, `SchemaEvolution.fs` | primitive shipped; live catalog overlap unmetered | Evolution = retract+insert. Spec: `docs/specs/zero-downtime-schema-evolution/`. **First-class.** |
+| G-set | `src/Core/GSet.fs` | four-oracle proven | Expand-safe monotone floor. Overlap window uses this, then Z-set contract. **First-class.** Not the Bloom sketch. |
+| Incremental join | `src/Core/Incremental.fs` `IncrementalJoin` | shipped operator; QuerySurface still **toy** | Three-term bilinear. Streaming join **is** this. Flink-shaped tables. **First-class.** |
+| Key rotation | `src/Core/KeyCustody.fs` | three-slot primitive | Previous/current/next. Sibling of schema overlap. **First-class.** Not a volume-key lifetime clock. |
 | LINQ on streams | `src/Core/Query.fs` | unmetered | Fluent `Where`/`Select`/`Join` on `Stream<ZSet<_>>`. Not F# `query { }`. |
 | One plan, two modes | `src/Core/QuerySurface.fs` | **toy** | `IQueryable` / `IQbservable` → one plan. Batch vs streaming. Mode-equivalence test exists; no real workload. |
 | `zeta { }` CE | `src/Core/ZetaSqlBuilder.fs` | unmetered | Typed eager CE. Delegates to `ZSet.filter/map/join/flatMap` (the Seq copies were a defect). Sibling of `ToyPlan`, not merged. |
