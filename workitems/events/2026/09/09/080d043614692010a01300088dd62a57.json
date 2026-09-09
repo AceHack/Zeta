@@ -1,0 +1,14 @@
+{
+  "id": "080d043614692010a01300088dd62a57",
+  "at": "2026-09-09T15:21:32.196Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23C5394087G0R000QS9J9D",
+    "type": "bug",
+    "title": "the smoke lane makes ArgoCD clone a 649 MiB repo inside kind, so its verdict tracks repo size and GitHub throughput",
+    "slug": "the-smoke-lane-makes-argocd-clone-a-649-mib-repo-inside-kind",
+    "priority": "P2",
+    "filename": "081M23C5394087G0R000QS9J9D-the-smoke-lane-makes-argocd-clone-a-649-mib-repo-inside-kind.md"
+  }
+}
