@@ -10,8 +10,8 @@
 # short set without throwing. A sidecar CrashLoopBackOff is
 # indistinguishable from a broken store.
 #
-# extraContainers stay out of Application.yaml until this image is
-# anonymously pullable (GHCR 200) and pinned by digest.
+# extraContainers in openbao/Application.yaml pin this image by digest
+# once GHCR answers 200 anonymously (081M23HCFYK087G0R003M8HJDF).
 
 FROM oven/bun:1.3.14-alpine@sha256:5acc90a93e91ff07bf72aa90a7c9f0fa189765aec90b47bdbf2152d2196383c0 AS build
 WORKDIR /src

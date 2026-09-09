@@ -22,6 +22,7 @@ const KNOWN_UNPRODUCED = [
   "grafana-admin-credentials",
   "hindsight-llm-api-key",
   "kubevirt-operator-certs",
+  "openbao-unseal-shares",
   "opensearch-admin-credentials",
   "temporal-default-store",
   "temporal-visibility-store",
@@ -45,9 +46,11 @@ describe("B8 — Secrets referenced by the metal catalogue vs Secrets produced",
   it("records the measured gap, and corrects the register's stale count", () => {
     // FIRST-METAL-BRINGUP-FINDINGS said "twelve Secrets ... against 22
     // references". Measured 2026-09-08: NINE distinct across TEN sites, and zero
-    // producer files. The finding is real; its arithmetic had aged. A number in
-    // a roster ages; a number a check recomputes does not.
-    expect(audit.referenced.length).toBe(9);
+    // producer files. 2026-09-09: OpenBao's optional Shamir cache
+    // (`openbao-unseal-shares`) is a tenth unproduced name. The finding is
+    // real; its arithmetic ages. A number in a roster ages; a number a check
+    // recomputes does not.
+    expect(audit.referenced.length).toBe(10);
     expect(audit.producerFiles.length).toBe(0);
   });
 

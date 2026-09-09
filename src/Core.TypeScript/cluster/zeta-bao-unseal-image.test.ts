@@ -5,7 +5,7 @@
  * Otto 2026-09-09: one matrix entry in build-platform-images.yml, pin the
  * published image by digest, do not fork the OpenBao chart, do not use
  * zeta-ci-runtime / alpine:latest + apk add curl, do not commit a compiled
- * binary. extraContainers stay out of Application.yaml until GHCR answers
+ * binary. extraContainers pin the published digest after GHCR answers
  * 200 anonymously. Missing share cache must wait, not crash-loop.
  */
 import { describe, expect, test } from "bun:test";
@@ -54,11 +54,19 @@ describe("zeta-bao-unseal image recipe", () => {
     );
   });
 
-  test("Application.yaml still has no extraContainers (image is not pullable yet)", () => {
-    // An unpullable extraContainer makes openbao-0 NotReady and turns the
-    // included-catalog health red. extraContainers land after GHCR 200.
-    expect(application.includes("extraContainers")).toBe(false);
-    expect(application.includes("zeta-bao-unseal")).toBe(false);
+  test("Application.yaml pins extraContainers by digest with an optional share cache", () => {
+    const pin =
+      "ghcr.io/lucent-financial-group/zeta-bao-unseal@sha256:51f3008f68cdc3ca02debf7726522dbefbd7f7919b2b566655dfc5d54ccc0b82";
+    expect(application).toContain("extraContainers:");
+    expect(application).toContain(pin);
+    expect(application).toContain("secretName: openbao-unseal-shares");
+    expect(application).toContain("optional: true");
+    expect(application).toContain("mountPath: /etc/openbao/unseal-shares");
+    expect(application.includes("zeta-bao-unseal:latest")).toBe(false);
+    expect(application.includes("zeta-ci-runtime")).toBe(false);
+    expect(application.includes("alpine:latest")).toBe(false);
+    expect(application.includes("apk add")).toBe(false);
+    expect(application.includes("extraVolumes:")).toBe(false);
   });
 
   test("the compiled bundle is produced at image build, not committed", () => {

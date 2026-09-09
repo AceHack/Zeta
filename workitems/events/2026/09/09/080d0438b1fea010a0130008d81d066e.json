@@ -1,0 +1,14 @@
+{
+  "id": "080d0438b1fea010a0130008d81d066e",
+  "at": "2026-09-09T16:52:57.428Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23HCFYK087G0R003M8HJDF",
+    "type": "task",
+    "title": "OpenBao extraContainers Shamir sidecar pinned by digest",
+    "slug": "openbao-extracontainers-shamir-sidecar-pinned-by-digest",
+    "priority": "P1",
+    "filename": "081M23HCFYK087G0R003M8HJDF-openbao-extracontainers-shamir-sidecar-pinned-by-digest.md"
+  }
+}

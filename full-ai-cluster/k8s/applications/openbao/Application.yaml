@@ -41,6 +41,11 @@
 # hardware wiring is done. TPM is the floor (almost all machines); HSM is the
 # stronger path where present. A TPM-backed seal MUST pin CKM_RSA_PKCS_OAEP;
 # tpm2-pkcs11 has no AES-GCM.
+#
+# Post-init Shamir unseal on kind/CI is the extraContainer below
+# (081M23HCFYK087G0R003M8HJDF). That is NOT PKCS#11. Init stays gated.
+# A missing share cache must wait, not crash-loop: the Secret is optional
+# and the sidecar returns [] rather than exiting.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -121,6 +126,23 @@ spec:
             size: 5Gi
           resources:
             requests: { cpu: 100m, memory: 256Mi }
+          # YAML list, not a `|` string — the chart does
+          # `tpl (toYaml .Values.server.extraContainers)`. Digest pin, not
+          # `:latest`. Chart 0.29.4 `server.volumes` (toYaml, shared), not
+          # deprecated `server.extraVolumes` (wrong mount path).
+          extraContainers:
+            - name: unseal
+              image: ghcr.io/lucent-financial-group/zeta-bao-unseal@sha256:51f3008f68cdc3ca02debf7726522dbefbd7f7919b2b566655dfc5d54ccc0b82
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: unseal-shares
+                  mountPath: /etc/openbao/unseal-shares
+                  readOnly: true
+          volumes:
+            - name: unseal-shares
+              secret:
+                secretName: openbao-unseal-shares
+                optional: true
         injector:
           # `affinity: ""` DECLARED EVEN THOUGH THE INJECTOR IS OFF. The chart
           # defaults `injector.affinity` to a REQUIRED podAntiAffinity

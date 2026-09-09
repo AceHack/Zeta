@@ -7,8 +7,8 @@
 #   - ghcr.io/lucent-financial-group/zeta-bao-unseal         (full-ai-cluster/openbao-unseal)
 #
 # zeta-bao-unseal is the Shamir unseal sidecar image (081M23BTKZX087G0R0034VN466).
-# extraContainers stay out of openbao/Application.yaml until the first
-# anonymous GHCR 200; pin that publish by digest in the follow-up.
+# extraContainers pin the published digest in openbao/Application.yaml
+# (081M23HCFYK087G0R003M8HJDF) after the first anonymous GHCR 200.
 #
 # WHY this exists: the platform manifests
 # (full-ai-cluster/k8s/applications/platform/{portal,controller}.yaml) pin
@@ -96,9 +96,8 @@ jobs:
           - image: zeta-orleans-silo
             context: full-ai-cluster/orleans-silo
           # 081M23BTKZX087G0R0034VN466. Context is the repo root so the
-          # Dockerfile can COPY the sidecar TypeScript. extraContainers are
-          # NOT added in this commit — GHCR 401 on a missing package would
-          # make openbao-0 NotReady on Otto's included catalog.
+          # Dockerfile can COPY the sidecar TypeScript. extraContainers pin
+          # the published digest (081M23HCFYK087G0R003M8HJDF).
           - image: zeta-bao-unseal
             context: .
             dockerfile: full-ai-cluster/openbao-unseal/Dockerfile

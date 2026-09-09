@@ -22,23 +22,26 @@
 > | CLI | `vault` | `bao` |
 > | PKCS#11 seal | Enterprise-only | **free** |
 >
-> **THE UNSEAL SECTION BELOW IS SUPERSEDED AND IS KEPT AS HISTORY.** It describes
-> a human ceremony behind a biometric gate. Aaron 2026-09-05: *"we are working on
-> getting auto unseal working"* — that is Riven's work (a 1Password sidecar, with
-> HSM-backed unseal on the new hardware), and it replaces the ceremony rather
-> than amending it. Read section 5 as the record of what was, not as the
-> instruction for what to do.
+> **INIT STAYS GATED. POST-INIT UNSEAL IS THE SIDECAR.** Section 5's init
+> ceremony (steps 1-4) is still a gated class: no agent runs `operator init`.
+> Step 5 (post-init unseal on pod restart) is no longer a human standing at
+> the console. `Application.yaml` mounts `server.extraContainers` with the
+> digest-pinned `zeta-bao-unseal` image (081M23HCFYK087G0R003M8HJDF). PKCS#11
+> auto-unseal is still not live -- `seal "pkcs11"` stays out until a same-libc
+> module exists in the image in the same commit. SoftHSM green is not YubiHSM
+> green. The human-ceremony prose is kept as the record of the init gate, not
+> as the instruction for reboot unseal.
 >
 > **CI emulator rung (2026-09-05):** SoftHSM2 / swtpm can witness the PKCS#11
 > *wiring* in CI. They cannot witness YubiHSM domains, USB, or this board's
-> firmware PCRs. `seal "pkcs11"` stays out of this Application until a module
-> exists in the image in the same commit.
+> firmware PCRs.
 > [`seal-emulator-rung.ts`](../../../../src/Core.TypeScript/cluster/seal-emulator-rung.ts).
 
 Companion to `Application.yaml`. That file declares
 `cluster.zeta.io/topology: single-node`; this file records the delta to
-three-node, why each knob is set the way it is, and the gated ceremony that
-is **designed here and never run by an agent**.
+three-node, why each knob is set the way it is, the init ceremony that is
+**designed here and never run by an agent**, and the post-init Shamir
+unseal sidecar that **is** run beside the store.
 
 Everything below marked **MEASURED** was produced by `helm template` against
 chart `vault-0.29.1` on 2026-08-21, locally. **Nothing has been applied to any
@@ -70,8 +73,9 @@ or handled.**
 - **What they observe:** `vault-0` Pending or NotReady, ArgoCD Application
   `vault` Degraded, and any attempt to wire the two consumers above failing at
   the first request.
-- **Action:** none for consumers. The fix is this manifest plus, separately,
-  the gated init ceremony in section 5.
+- **Action:** none for consumers. The fix is this manifest plus the gated
+  init ceremony in section 5 (still not run by an agent) and the post-init
+  Shamir extraContainer on the same Application.
 - **SLA:** this is a broken-since-inception configuration, not an incident.
   No customer-visible surface, no exploited state, no revocation. It is filed
   under work item `081M0H19QD3087G0R003GV76ZY`, not under
@@ -183,14 +187,24 @@ StatefulSet PVCs outlive their StatefulSet by default, so the exposure is a
 deliberate manual delete. Recovery is re-init plus restore, which is the
 ceremony below.
 
-## 5. Initialisation and unseal -- GATED, DESIGNED, NOT RUN
+## 5. Initialisation (gated) and post-init unseal (sidecar)
 
-> **No agent runs any command in this section.** `vault operator init` mints
-> the root token and the unseal key shares. That is a gated class under
+> **No agent runs `operator init`.** That command mints the root token and
+> the unseal key shares. That is a gated class under
 > `.claude/rules/no-directives.md`: it needs **fresh human authorization**
 > plus the biometric gate, and the material it produces cannot be un-minted.
 > It is recorded here so that when a human runs it the procedure is already
 > reviewed rather than improvised.
+>
+> **Post-init unseal is the extraContainer.** After a successful init, a
+> sealed-on-restart store is unsealed by `server.extraContainers` in
+> `Application.yaml`: image
+> `ghcr.io/lucent-financial-group/zeta-bao-unseal` pinned by digest, share
+> cache at `/etc/openbao/unseal-shares`, Secret `openbao-unseal-shares` with
+> `optional: true`. The sidecar cannot init (`UnsealHttp` has no init
+> method). A missing cache is a wait, not a crash-loop. Threshold stays
+> >= 2. This is the kind/CI Shamir path. Metal PKCS#11 is a later commit
+> with a same-libc module; it replaces this loop rather than calling it.
 
 **The gate to run first.** `tools/setup/persona-keys/biometric.ts` is the
 repo's single physical-presence approval primitive -- fail-closed, never
@@ -221,24 +235,28 @@ who can reconstitute the barrier key.
    used once to configure an auth method and then **revoked**
    (`vault token revoke`), which removes the single most valuable standing
    credential in the cluster.
-5. Human runs `vault operator unseal` threshold-many times.
+5. **WAS** "human runs `vault operator unseal` threshold-many times."
+   **NOW** the extraContainer. Shares are a cache (USB / Keychain / optional
+   k8s Secret), not an ESO copy into etcd, not threshold 1, not a PIN in
+   HCL. The Vault CE sentence "do not automate step 5" is history: the
+   Vault Application is gone. Against OpenBao Shamir, step 5 is this
+   sidecar. Against metal hardware, step 5 is `seal "pkcs11"` in a later
+   commit -- not this one.
 6. Only after that: wire the two consumers whose config currently sits in
    comments (`spire`, `external-secrets`).
 
-**Does this survive a move to OpenBao?** Yes -- and that is the reason to keep
-the ceremony manual rather than build machinery around it.
-`docs/research/2026-08-20-hsm-tpm-into-vault-and-cert-manager-yes-for-tpm-but-not-through-vault-openbao-is-the-answer.md`
-measured that Vault CE has **no** free auto-unseal path (`seal "pkcs11"` is
-Enterprise-only; there is no `tpm` seal type at all) while OpenBao ships
-`seal "pkcs11"` under MPL-2.0. So:
+**Does this survive a move to OpenBao?** The store **is** OpenBao. Vault CE
+had **no** free auto-unseal path (`seal "pkcs11"` is Enterprise-only; there
+is no `tpm` seal type at all). OpenBao ships `seal "pkcs11"` under MPL-2.0.
+Citation:
+`docs/research/2026-08-20-hsm-tpm-into-vault-and-cert-manager-yes-for-tpm-but-not-through-vault-openbao-is-the-answer.md`.
 
-- Today's story is **Shamir plus manual unseal**, which is also what OpenBao
-  does before a seal is configured. Nothing designed here is thrown away.
-- A later OpenBao migration **replaces step 5** with a hardware seal and
-  leaves steps 1-4 intact.
-- Do not automate step 5 against Vault CE. Automation would have to hold
-  unseal shares somewhere a process can read them -- strictly worse than a
-  human holding them, and discarded on the OpenBao move anyway.
+- Kind/CI story is **Shamir plus the extraContainer**, which is also what
+  OpenBao does before a seal is configured. Steps 1-4 stay gated.
+- Metal **replaces step 5** with a hardware seal and leaves steps 1-4
+  intact. That replacement is R3 (same-libc image or host `bao`, same
+  commit). Dual-vendor per node is ZetaFS k-of-n, not two OpenBao seals.
+- Do not put the PIN in HCL. Do not fork chart 0.29.4.
 
 That note's conditions carry over unchanged and are not re-derived here:
 OpenBao's PKCS#11 seal needs a cgo build, and it becomes an external plugin
