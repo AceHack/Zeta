@@ -208,13 +208,52 @@ export const DEV_ZITI_ADMIN_SECRET: DevBootstrapSecretSpec = {
  * present so this object stays on the same DevBootstrapSecretSpec as the
  * other two rather than growing a password-only fork for one consumer.
  */
-export const DEV_REDIS_AUTH_SECRET: DevBootstrapSecretSpec = {
-  namespace: "redis",
+/** The ACL user the Valkey chart's `default` entry carries, and Orleans authenticates as. */
+export const REDIS_AUTH_DEFAULT_USER = "default";
+/** The key the Valkey chart reads (`aclUsers.default.passwordKey`) and Orleans projects. */
+export const REDIS_AUTH_PASSWORD_KEY = "password";
+/** Unused by the chart; kept so the Secret's shape matches the admin secrets. */
+export const REDIS_AUTH_USER_KEY = "username";
+
+/**
+ * MOVED FROM `DEV_BOOTSTRAP_SECRETS` TO `DEV_SHARED_SECRETS` on 2026-09-09,
+ * because it acquired a SECOND consumer and a Secret reference is
+ * namespace-local (081M22P1265087G0R001VVYSWZ).
+ *
+ * The mint put `redis-auth` in namespace `redis`, where the Valkey chart reads
+ * it as `auth.usersExistingSecret`. That was correct while Valkey was the only
+ * consumer. Then `orleans/statefulset.yaml` began projecting the SAME name via
+ * `secretKeyRef: { name: redis-auth, key: password, optional: true }` -- and a
+ * `secretKeyRef` resolves in the POD's namespace, which is `orleans`. Nothing
+ * ever minted it there.
+ *
+ * `optional: true` then converted the miss into silence: the env var was simply
+ * unset, the silo connected with no password, and Valkey answered
+ * `NOAUTH Returned - connection has not yet authenticated`. Measured in run
+ * 34323056405 -- `orleans-silo-0` CrashLoopBackOff x10, the silo's own stack
+ * trace naming `RedisClusteringOptions.DefaultCreateMultiplexer`. One absence
+ * (Secret not in this namespace) wearing another absence's meaning (Redis has
+ * no auth), which is the failure class this repo keeps finding.
+ *
+ * `applyDevSharedSecrets` draws ONCE and applies to every namespace, which is
+ * exactly what a producer plus its consumers require: drawing per namespace
+ * would mint two different values and leave the silo authenticating with a key
+ * Valkey does not know. That mechanism already existed for the blob store; this
+ * entry is not a new one, it is this credential moved to the list it belongs on.
+ */
+export const DEV_REDIS_AUTH_SECRET: DevSharedSecretSpec = {
   name: "redis-auth",
-  userKey: "username",
-  passwordKey: "password",
-  user: "default",
-  reason: "Minted per dev/CI cluster at bring-up so the Valkey chart's " + "auth.usersExistingSecret resolves.",
+  // The producer (Valkey) and its consumer (the Orleans silo). Order is the
+  // mint order and carries no other meaning.
+  namespaces: ["redis", "orleans"],
+  keys: (value) => ({
+    [REDIS_AUTH_USER_KEY]: REDIS_AUTH_DEFAULT_USER,
+    [REDIS_AUTH_PASSWORD_KEY]: value,
+  }),
+  reason:
+    "Minted per dev/CI cluster at bring-up so the Valkey chart's auth.usersExistingSecret " +
+    "resolves in namespace redis AND the Orleans silo's secretKeyRef resolves in namespace " +
+    "orleans. Both must present the same value or the silo fails membership with NOAUTH.",
 } as const;
 
 /**
@@ -401,6 +440,7 @@ export const DEV_HINDSIGHT_LLM_SECRET: DevSharedSecretSpec = {
 export const DEV_SHARED_SECRETS: readonly DevSharedSecretSpec[] = [
   DEV_BLOB_STORE_SECRET,
   DEV_HINDSIGHT_LLM_SECRET,
+  DEV_REDIS_AUTH_SECRET,
 ] as const;
 
 /**
@@ -436,7 +476,6 @@ export function buildDevSharedSecretManifest(
 export const DEV_BOOTSTRAP_SECRETS: readonly DevBootstrapSecretSpec[] = [
   DEV_GRAFANA_ADMIN_SECRET,
   DEV_ZITI_ADMIN_SECRET,
-  DEV_REDIS_AUTH_SECRET,
   DEV_OPENSEARCH_ADMIN_SECRET,
   DEV_FORGEJO_ADMIN_SECRET,
 ] as const;

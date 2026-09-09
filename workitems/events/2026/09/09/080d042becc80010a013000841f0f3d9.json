@@ -1,0 +1,14 @@
+{
+  "id": "080d042becc80010a013000841f0f3d9",
+  "at": "2026-09-09T09:26:36.032Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22QV67Z087G0R0036GHH1K",
+    "type": "task",
+    "title": "Rotation register is blind to shared credentials: zeta-blob-store and hindsight-llm-api-key have no rows",
+    "slug": "rotation-register-is-blind-to-shared-credentials-zeta-blob-s",
+    "priority": "P2",
+    "filename": "081M22QV67Z087G0R0036GHH1K-rotation-register-is-blind-to-shared-credentials-zeta-blob-s.md"
+  }
+}

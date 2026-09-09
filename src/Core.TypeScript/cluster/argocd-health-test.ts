@@ -32,6 +32,8 @@ import { parse as parseYaml } from "yaml";
 import { bootstrapKindClusterInProcess, bootstrapK3dClusterInProcess } from "./harness/bootstrap.ts";
 import {
   DEV_BOOTSTRAP_SECRETS,
+  DEV_SHARED_SECRETS,
+  type DevSharedSecretSpec,
   DEV_CILIUM_LB_KIND_MANIFEST_RELPATH,
   DEV_CILIUM_LB_KIND_POOL_NAME,
   DEV_GHCR_PULL_SECRET,
@@ -2307,11 +2309,40 @@ function assertDevRegistryPullSecretPresent(plan: HarnessPlan): Failure | null {
   };
 }
 
+/**
+ * SHARED credentials are checked in EVERY namespace they are minted into, not
+ * just the producer's.
+ *
+ * This walk did not exist until 2026-09-09, and its absence is what let the
+ * Orleans silo crash-loop for days. `redis-auth` was minted only into namespace
+ * `redis`; the silo projects it in namespace `orleans`, where a `secretKeyRef`
+ * actually resolves. The bootstrap walk above passed -- the Secret WAS present,
+ * in the one namespace it looked at -- so the assertion that exists to catch a
+ * missing credential reported green for a missing credential. A per-namespace
+ * walk is the only form that can see it.
+ */
+function devSharedSecretFailure(plan: HarnessPlan, spec: DevSharedSecretSpec, namespace: string): Failure | null {
+  return devBootstrapSecretFailure(plan, {
+    namespace,
+    name: spec.name,
+    userKey: "",
+    passwordKey: "",
+    user: "",
+    reason: spec.reason,
+  });
+}
+
 function assertDevBootstrapSecretsPresent(plan: HarnessPlan): Failure | null {
   if (!isIncludedScope(plan.scope)) return null;
   for (const spec of DEV_BOOTSTRAP_SECRETS) {
     const failure = devBootstrapSecretFailure(plan, spec);
     if (failure !== null) return failure;
+  }
+  for (const spec of DEV_SHARED_SECRETS) {
+    for (const namespace of spec.namespaces) {
+      const failure = devSharedSecretFailure(plan, spec, namespace);
+      if (failure !== null) return failure;
+    }
   }
   return null;
 }

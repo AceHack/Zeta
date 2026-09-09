@@ -38,7 +38,7 @@
 // names what would produce a real one. A entry may only become a number when a
 // live run produces it.
 
-import { DEV_BOOTSTRAP_SECRETS } from "./dev-cluster/lib.ts";
+import { DEV_BOOTSTRAP_SECRETS, DEV_SHARED_SECRETS } from "./dev-cluster/lib.ts";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -143,13 +143,41 @@ export interface ConformanceDrift {
   readonly forkedOnUnverified: readonly string[];
 }
 
+/**
+ * THE TWO DIRECTIONS ANSWER DIFFERENT QUESTIONS, and they are scoped
+ * differently on purpose (081M22P1265087G0R001VVYSWZ, 2026-09-09).
+ *
+ * `orphaned` asks "does this row name a Secret NOTHING mints?" -- a row about a
+ * credential that does not exist is stale by definition, so it must be checked
+ * against EVERY mint: bootstrap and shared alike. Scoping it to bootstrap made
+ * it report `redis/redis-auth` as orphaned the moment that credential moved to
+ * `DEV_SHARED_SECRETS`, which was a true statement about the audit's model and
+ * a false one about the cluster. Widened here.
+ *
+ * `unregistered` asks "is every minted credential covered by a rotation row?"
+ * and is DELIBERATELY still bootstrap-only, because widening it is a different
+ * and larger piece of work rather than a one-line change:
+ * `object-store/zeta-blob-store` and `hindsight/hindsight-llm-api-key` have no
+ * rows at all, and `object-store` has no `Application.yaml`, so
+ * `auditFieldStillNamesSecret` has no consumer directory to check a row
+ * against. Authoring those rows needs a consumer convention for a producer that
+ * is not an Application, plus real measurement routes.
+ *
+ * SO COVERAGE IS INCOMPLETE AND THIS SAYS SO OUT LOUD. Shared credentials are
+ * not covered by the rotation register today. That is tracked, not silently
+ * true: 081M22QV67Z087G0R0036GHH1K. Do not read a green `unregistered` as "every credential
+ * has a rotation constraint" -- it means every BOOTSTRAP credential does.
+ */
 export function auditRotationConformance(): ConformanceDrift {
-  const minted = new Set(DEV_BOOTSTRAP_SECRETS.map((s) => `${s.namespace}/${s.name}`));
+  const bootstrapMinted = DEV_BOOTSTRAP_SECRETS.map((s) => `${s.namespace}/${s.name}`);
+  const sharedMinted = DEV_SHARED_SECRETS.flatMap((s) => s.namespaces.map((n) => `${n}/${s.name}`));
+  const minted = new Set(bootstrapMinted);
+  const everyMint = new Set([...bootstrapMinted, ...sharedMinted]);
   const registered = new Set(CHART_ROTATION_CONSTRAINTS.map((c) => c.secret));
 
   return {
     unregistered: [...minted].filter((s) => !registered.has(s)).sort(),
-    orphaned: [...registered].filter((s) => !minted.has(s)).sort(),
+    orphaned: [...registered].filter((s) => !everyMint.has(s)).sort(),
     // An UNMEASURED cost with no route is a number nobody can ever produce.
     missingMeasurementRoute: CHART_ROTATION_CONSTRAINTS.filter(
       (c) => c.downtimeSeconds === "UNMEASURED" && c.measurementRoute.trim().length === 0,

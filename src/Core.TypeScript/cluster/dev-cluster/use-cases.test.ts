@@ -518,7 +518,19 @@ describe("dev/CI bootstrap credentials", () => {
   test("the roster holds every Application's credential, and they are distinct objects", () => {
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_GRAFANA_ADMIN_SECRET);
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_ZITI_ADMIN_SECRET);
-    expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_REDIS_AUTH_SECRET);
+    // MOVED to DEV_SHARED_SECRETS 2026-09-09: it gained a second consumer in
+    // another namespace, and a secretKeyRef resolves namespace-locally.
+    // The positive assertion carries the claim: an EXACT roster pin fails if
+    // redis-auth is on this list, and also if anything else appears or moves.
+    // `not.toContain` would have been the weak form -- it passes for any list
+    // that merely lacks one element, including an empty one.
+    expect(DEV_SHARED_SECRETS).toContain(DEV_REDIS_AUTH_SECRET);
+    expect([...DEV_BOOTSTRAP_SECRETS]).toEqual([
+      DEV_GRAFANA_ADMIN_SECRET,
+      DEV_ZITI_ADMIN_SECRET,
+      DEV_OPENSEARCH_ADMIN_SECRET,
+      DEV_FORGEJO_ADMIN_SECRET,
+    ]);
     // 3 -> 4 on 2026-09-05: `DEV_OPENSEARCH_ADMIN_SECRET`. OpenSearch >= 2.12
     // refuses to boot without OPENSEARCH_INITIAL_ADMIN_PASSWORD while the
     // security plugin is on, which is what the live lane reported as
@@ -531,7 +543,9 @@ describe("dev/CI bootstrap credentials", () => {
     // in `existing-secret-is-minted.baseline.json` named, and that entry is gone rather
     // than re-worded.
     expect(DEV_BOOTSTRAP_SECRETS).toContain(DEV_FORGEJO_ADMIN_SECRET);
-    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(5);
+    // 5 -> 4 on 2026-09-09: `redis-auth` moved to DEV_SHARED_SECRETS when the
+    // Orleans silo became a second consumer in a second namespace.
+    expect(DEV_BOOTSTRAP_SECRETS.length).toBe(4);
     const refs = DEV_BOOTSTRAP_SECRETS.map((spec) => `${spec.namespace}/${spec.name}`);
     expect(new Set(refs).size).toBe(refs.length);
   });
@@ -639,7 +653,7 @@ describe("dev/CI bootstrap credentials", () => {
   test("a cluster holding every rostered credential but one converges by minting the missing metadata.name", () => {
     const log: string[] = [];
     const already = [
-      ...DEV_BOOTSTRAP_SECRETS.filter((spec) => spec !== DEV_REDIS_AUTH_SECRET).map(
+      ...DEV_BOOTSTRAP_SECRETS.filter((spec) => spec !== DEV_GRAFANA_ADMIN_SECRET).map(
         (spec) => `secret/${spec.name}@${spec.namespace}`,
       ),
       // The shared secrets are present in FULL. A shared spec is all-or-nothing on re-run --
@@ -656,7 +670,7 @@ describe("dev/CI bootstrap credentials", () => {
         if (match === null) throw new Error(`minted manifest has no metadata.name:\n${entry}`);
         return match[1];
       });
-    expect(mintedNames).toEqual([DEV_REDIS_AUTH_SECRET.name]);
+    expect(mintedNames).toEqual([DEV_GRAFANA_ADMIN_SECRET.name]);
   });
 
   /**

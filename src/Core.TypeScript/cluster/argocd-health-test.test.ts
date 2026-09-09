@@ -11,7 +11,12 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
-import { DEV_GRAFANA_ADMIN_SECRET, DEV_REDIS_AUTH_SECRET, DEV_ZITI_ADMIN_SECRET } from "./dev-cluster/lib.ts";
+import {
+  DEV_GRAFANA_ADMIN_SECRET,
+  DEV_REDIS_AUTH_SECRET,
+  DEV_ZITI_ADMIN_SECRET,
+  REDIS_AUTH_PASSWORD_KEY,
+} from "./dev-cluster/lib.ts";
 import { join, resolve } from "node:path";
 import {
   APPLIED_BUT_UNASSERTED_REASONS,
@@ -1965,8 +1970,26 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
   test("the redis ACL credential the bring-up mints is the one the chart asks for", () => {
     const text = readApp("redis");
     expect(text).toContain(`usersExistingSecret: ${DEV_REDIS_AUTH_SECRET.name}`);
-    expect(text).toContain(`passwordKey: ${DEV_REDIS_AUTH_SECRET.passwordKey}`);
-    expect(text).toContain(`namespace: ${DEV_REDIS_AUTH_SECRET.namespace}`);
+    expect(text).toContain(`passwordKey: ${REDIS_AUTH_PASSWORD_KEY}`);
+    // The PRODUCER's namespace -- the one the Valkey chart resolves the Secret in.
+    expect(text).toContain(`namespace: ${DEV_REDIS_AUTH_SECRET.namespaces[0]}`);
+  });
+
+  /**
+   * The consumer half, and the one that was missing. `redis-auth` is minted per
+   * namespace, and a `secretKeyRef` resolves in the POD's namespace -- so the
+   * Orleans silo's namespace has to be on the spec or the projection silently
+   * yields nothing (`optional: true`) and the silo dies with NOAUTH.
+   */
+  test("the redis credential is minted into every namespace that reads it", () => {
+    const silo = readFileSync(
+      join(import.meta.dir, "../../../full-ai-cluster/k8s/applications/orleans/statefulset.yaml"),
+      "utf8",
+    );
+    expect(silo).toContain("name: redis-auth");
+    expect(silo).toContain("namespace: orleans");
+    expect(DEV_REDIS_AUTH_SECRET.namespaces).toContain("orleans");
+    expect(DEV_REDIS_AUTH_SECRET.namespaces).toContain("redis");
   });
 
   /**

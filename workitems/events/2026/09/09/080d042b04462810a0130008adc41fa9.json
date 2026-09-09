@@ -1,0 +1,14 @@
+{
+  "id": "080d042b04462810a0130008adc41fa9",
+  "at": "2026-09-09T08:54:51.333Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22P1265087G0R001VVYSWZ",
+    "type": "bug",
+    "title": "headscale probes the wrong listener and the Orleans silo reads redis-auth from a namespace nothing mints it into",
+    "slug": "headscale-probes-the-wrong-listener-and-the-orleans-silo-rea",
+    "priority": "P2",
+    "filename": "081M22P1265087G0R001VVYSWZ-headscale-probes-the-wrong-listener-and-the-orleans-silo-rea.md"
+  }
+}

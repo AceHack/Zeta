@@ -46,16 +46,28 @@ spec:
               memory: 128Mi
             limits:
               memory: 512Mi
+          # PORT IS `http` (8080), NOT `metrics` (9090). Headscale serves /health
+          # on the MAIN listener; the metrics listener serves /metrics and
+          # /debug/* and nothing else. Measured against the pinned tag v0.29.3,
+          # both directions:
+          #   hscontrol/app.go   -- registers GET /health on the primary router
+          #   hscontrol/debug.go -- registers /metrics and /debug/*; no /health
+          # Probing :9090/health therefore got a 404 from a HEALTHY server, and a
+          # 404 is an answer, so the container was up and being killed anyway:
+          #   "Liveness probe failed: HTTP probe failed with statuscode: 404"
+          #   "Container headscale failed liveness probe, will be restarted"
+          # then BackOff. Run 34323056405. The probe was measuring the wrong
+          # listener, not a sick process.
           readinessProbe:
             httpGet:
               path: /health
-              port: metrics
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
-              port: metrics
+              port: http
             initialDelaySeconds: 30
             periodSeconds: 30
           securityContext:
