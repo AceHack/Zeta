@@ -1,0 +1,14 @@
+{
+  "id": "080d043567490010a0130008e762fb9f",
+  "at": "2026-09-09T14:57:53.952Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23AST90087G0R00150MK76",
+    "type": "task",
+    "title": "de-vendor tla2tools and alloy jars: fetch and sha256-pin instead of committing",
+    "slug": "de-vendor-tla2tools-and-alloy-jars-fetch-and-sha256-pin-inst",
+    "priority": "P2",
+    "filename": "081M23AST90087G0R00150MK76-de-vendor-tla2tools-and-alloy-jars-fetch-and-sha256-pin-inst.md"
+  }
+}

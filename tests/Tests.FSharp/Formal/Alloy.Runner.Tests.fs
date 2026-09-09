@@ -10,17 +10,23 @@ open Zeta.Tests.Support
 
 
 // ═══════════════════════════════════════════════════════════════════
-// Alloy runner — parses every `.als` spec under `tools/alloy/specs/`
+// Alloy runner — parses every `.als` spec under `src/Core.Alloy/specs/`
 // that we want to validate, shells out to
 // `java -cp alloy.jar:<runner-class-dir>
-// AlloyRunner tools/alloy/specs/<Spec>.als`, and checks that every
+// AlloyRunner src/Core.Alloy/specs/<Spec>.als`, and checks that every
 // `check` command proves (unsat of its negation) and every `run`
 // command finds an instance.
 //
-// `AlloyRunner.java` lives in `tools/alloy/` and is compiled on demand
-// into an `obj/` scratch directory the first time any test runs. If
-// `javac` or `java` is absent, the whole suite is silently skipped —
-// CI should install a JDK ≥ 17.
+// `AlloyRunner.java` lives in `src/Core.Alloy/` and is compiled on demand
+// into `src/Core.Alloy/classes/` the first time any test runs.
+//
+// `src/Core.Alloy/alloy.jar` is FETCHED by `tools/setup/install.sh` from
+// the digest-pinned row in `tools/setup/manifests/from-url` — it is not in
+// git (081M23AST90087G0R00150MK76). When java/javac/the jar are absent the
+// per-spec tests skip, which is honest de-duplication off the gate leg and
+// would be the vacuity class on it; `the Alloy gate leg actually carries
+// the gate on CI` below is what stops that, and it is the reason a skip
+// here is not a silent green.
 //
 // Alloy 6 dist-jar bundles SAT4J (pure Java), so no native libs / JNI
 // configuration is needed.
@@ -230,12 +236,45 @@ let ``Alloy spec IdentityReissuable threshold path-existence`` () =
 
 
 [<Fact>]
-let ``Alloy jar is installed where tools/setup/install.sh drops it`` () =
-    // Informational gate: fails when someone forgets to re-run
-    // `tools/setup/install.sh`. Keeps the "why is the runner
-    // silently skipping?" diagnosis out of CI.
-    if File.Exists alloyJarPath then
-        (FileInfo alloyJarPath).Length |> should be (greaterThan 1_000_000L)
-    else
-        // Fresh clone without install step — not an error, just a skip.
+let ``the Alloy gate leg actually carries the gate on CI`` () =
+    // This test USED to pass silently when the jar was absent, and that became
+    // load-bearing the moment the jar stopped being committed
+    // (081M23AST90087G0R00150MK76). toolchainReady () returns false with no
+    // src/Core.Alloy/alloy.jar, every assertSpecValid then returns unit, and
+    // the whole Alloy suite reports green having checked nothing. While the jar
+    // was in git that could not fire; now that tools/setup/install.sh FETCHES
+    // it, a failed or skipped install would turn the Alloy lane into a check
+    // that cannot fail.
+    //
+    // Same shape and same reason as `the TLA+ gate leg actually carries the
+    // gate on CI` in Tlc.Runner.Tests.fs: off the gate leg a skip is honest
+    // de-duplication; ON the leg that is supposed to carry the gate, a missing
+    // toolchain is a FAILURE, not a skip.
+    let isCi =
+        match Environment.GetEnvironmentVariable "CI" with
+        | "true" -> true
+        | _ -> false
+    let isLinux =
+        System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(
+            System.Runtime.InteropServices.OSPlatform.Linux)
+    let isX64 =
+        System.Runtime.InteropServices.RuntimeInformation.OSArchitecture =
+            System.Runtime.InteropServices.Architecture.X64
+    let isLowMemoryWorkflow =
+        match Environment.GetEnvironmentVariable "GITHUB_WORKFLOW" with
+        | "low-memory" -> true
+        | _ -> false
+    if not isCi then
+        // Dev-local: a fresh clone that has not run install.sh has no jar yet,
+        // and failing there would punish the correct first-run path. The size
+        // assertion still runs when the jar IS present, which is what catches a
+        // truncated fetch.
+        if File.Exists alloyJarPath then
+            (FileInfo alloyJarPath).Length |> should be (greaterThan 1_000_000L)
+    elif not isLinux || not isX64 || isLowMemoryWorkflow then
         ()
+    else
+        File.Exists alloyJarPath |> should be True
+        (FileInfo alloyJarPath).Length |> should be (greaterThan 1_000_000L)
+        (which "java").IsSome |> should be True
+        (which "javac").IsSome |> should be True

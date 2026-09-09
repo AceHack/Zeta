@@ -7,19 +7,56 @@
 # a name, not a pin: GitHub release assets can be re-uploaded under an
 # unchanged tag, so only the digest says which bytes you got.
 #
-# Two rows lived here until 081M001E114087G0R001AZF4KD and both were
-# deleted rather than checksummed, because nothing read what they wrote:
-#
-#   tools/tla/tla2tools.jar   ← the runners load src/Core.TLA/tla2tools.jar
-#   tools/alloy/alloy.jar     ← the runners load src/Core.Alloy/alloy.jar
-#
-# Both verifier jars are COMMITTED to git (#8053), so the toolchain is
-# byte-pinned by the diff and no install-time fetch is involved. The TLA
-# row also demonstrated the re-upload hazard first-hand: its URL is
-# tagged v1.8.0 but that tag is a rolling PRERELEASE whose tla2tools.jar
-# asset was last re-uploaded 2026-08-11, serving a build three months
-# newer than the jar the gate actually runs.
-#
 # Before adding a row, answer both: (1) what reads this path, and
 # (2) what digest pins these bytes. A fetch that fails either question
 # is attack surface, not a dependency.
+#
+# ── Alloy (081M23AST90087G0R00150MK76) ──────────────────────────────
+#
+# READS IT: tests/Tests.FSharp/Formal/Alloy.Runner.Tests.fs and
+# src/Core.TypeScript/formal-verification/run-alloy.ts, both by the
+# literal path src/Core.Alloy/alloy.jar.
+#
+# PINS IT: the sha256 below. MEASURED 2026-09-09 -- the jar that was
+# committed to git at src/Core.Alloy/alloy.jar and the upstream asset
+# org.alloytools.alloy.dist.jar of release v6.2.0 are BYTE-IDENTICAL
+# (both sha256 6b8c1cb5...), so de-vendoring changed the verifier by
+# exactly nothing. v6.2.0 (published 2025-01-09) is also the LATEST
+# Alloy release: `gh api repos/AlloyTools/org.alloytools.alloy/releases`
+# lists nothing newer, and releases/latest returns v6.2.0. The tag
+# carries no rolling hazard either -- every asset on it has
+# created_at == updated_at == 2025-01-09T08:18, untouched since.
+src/Core.Alloy/alloy.jar  https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar  sha256=6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d
+#
+# ── TLA+ / tla2tools: DELIBERATELY NOT A ROW YET ────────────────────
+#
+# src/Core.TLA/tla2tools.jar stays committed, and the reason is a
+# measurement rather than a preference. MEASURED 2026-09-09:
+#
+#   * the build we run is TLC2 2026.05.18.174321 (rev 8ba1027),
+#     sha256 71546dff...
+#   * tlaplus tags v1.8.0 as a ROLLING PRERELEASE. Its tla2tools.jar
+#     asset was re-uploaded that same day and now serves
+#     2026.09.09.124804 (rev 65fbace), sha256 ae41e3f6... -- a
+#     different verifier under an unchanged URL.
+#   * the newest IMMUTABLE upstream release is v1.7.4 (2024-08-05),
+#     sha256 936a2620..., assets untouched since 2024-08-08.
+#   * tla2tools is NOT published to Maven Central
+#     (search.maven.org a:tla2tools -> numFound 0).
+#
+# So the bytes we run are no longer obtainable from any upstream URL:
+# a from-url row for TLA is necessarily a VERSION CHANGE, not a
+# de-vendoring. Both destinations cost something real, both are
+# costed in the PR that added this comment, and the choice is the
+# maintainer's:
+#
+#   v1.7.4 -- immutable, but 51/52 gate models only. TLC 1.7.4 prints
+#     the generic "Temporal properties were violated." where 1.8.0
+#     prints "Temporal property Deterrence was violated", so the
+#     QuorumCollateralDeterrenceR2 witness loses the discrimination
+#     that tells one violated temporal property from another.
+#   v1.8.0 rolling -- keeps that diagnostic, and the digest below
+#     would fail closed on the next upstream rebuild (three observed:
+#     2026-05-18, 2026-08-11, 2026-09-09), breaking install.sh
+#     fleet-wide until 53 models are re-measured and the NCI witness
+#     receipt is re-pinned.

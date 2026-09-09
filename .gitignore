@@ -86,11 +86,24 @@ lake-packages/
 *.ilean
 *.trace
 
-# Verifier JARs at the LEGACY tools/ paths. The jars the runners load are
-# committed at src/Core.TLA/tla2tools.jar + src/Core.Alloy/alloy.jar (#8053);
-# nothing writes tools/{tla,alloy}/ any more (081M001E114087G0R001AZF4KD
-# deleted the from-url rows). These patterns stay as a guard so a jar copied
-# here by hand cannot be committed as a second, unused toolchain.
+# Verifier JARs.
+#
+# src/Core.Alloy/alloy.jar is FETCHED by tools/setup/install.sh from the
+# digest-pinned row in tools/setup/manifests/from-url (081M23AST90087G0R00150MK76),
+# so it must not be tracked. audit-ci-cache-paths.ts additionally requires any
+# repo-relative path named in an actions/cache block to be git-ignored, and this
+# line is what satisfies that for the jar cache entry.
+src/Core.Alloy/*.jar
+#
+# src/Core.TLA/tla2tools.jar is deliberately still COMMITTED (#8053) and so is
+# NOT ignored: the build the gate runs is no longer obtainable from any upstream
+# URL. The measurement and the two costed alternatives live in the from-url
+# manifest's comment; changing that decision means adding a row there and an
+# ignore line here.
+#
+# The LEGACY tools/ paths. Nothing writes tools/{tla,alloy}/ any more; these
+# patterns stay as a guard so a jar copied here by hand cannot be committed as a
+# second, unused toolchain.
 tools/alloy/*.jar
 tools/tla/*.jar
 

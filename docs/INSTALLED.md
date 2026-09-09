@@ -104,18 +104,31 @@ they would fit. They are synced today by explicit steps in `gate.yml` and
 
 ## Project-specific binary artifacts
 
-The two verifier jars are COMMITTED to git (#8053), not downloaded: the
-toolchain is byte-pinned by the diff. Their version and sha256 below are
-DERIVED from the jars themselves and checked by
-`src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts`; edit the jar
-and this table fails until it is updated. TLC composes its banner from the
-build timestamp and short rev, so the version below is exactly what
-`java -cp src/Core.TLA/tla2tools.jar tlc2.TLC` prints.
+The two verifier jars sit in **different provenance regimes**, and
+`src/Core.TypeScript/hygiene/lint-verifier-jar-provenance.ts` checks both — edit
+a jar, a pin, or this table out of agreement and it fails.
+
+- **Alloy is FETCHED** by `tools/setup/install.sh` from a digest-pinned row in
+  `tools/setup/manifests/from-url`; the digest is the pin, verified before the
+  file is put in place and re-verified on every subsequent run. MEASURED
+  2026-09-09: those bytes are **byte-identical** to the jar that used to be
+  committed, and v6.2.0 is the latest Alloy release, so de-vendoring changed the
+  verifier by exactly nothing.
+- **TLA+ is COMMITTED** to git (#8053), byte-pinned by the diff, and its version
+  and sha256 are DERIVED from the bytes. It is not fetched because the build the
+  gate runs is no longer obtainable upstream: `tlaplus` tags `v1.8.0` as a
+  ROLLING prerelease whose `tla2tools.jar` asset is re-uploaded in place (three
+  builds observed on one tag: 2026-05-18, 2026-08-11, 2026-09-09), the newest
+  immutable release is v1.7.4 (2024-08-05), and tla2tools is not on Maven
+  Central. The two costed alternatives are written out in the from-url manifest.
+
+TLC composes its banner from the build timestamp and short rev, so the version
+below is exactly what `java -cp src/Core.TLA/tla2tools.jar tlc2.TLC` prints.
 
 | Artifact                  | Version              | Path                                     | Why                                                      | Install command                                                                                                                               |
 | ------------------------- | -------------------- | ---------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | **TLA+ / TLC** | `TLC2 Version 2026.05.18.174321 (rev: 8ba1027)` | `src/Core.TLA/tla2tools.jar` | Model-check every `src/Core.TLA/specs/*.tla` spec in CI | Committed to git; sha256 `71546dff3897a01b0ee4fa64135d9f5e9384d2b7e47b3cc20a16b655b0eb4f86` |
-| **Alloy** | `6.2.0.202501090817 (rev: 794226d)` | `src/Core.Alloy/alloy.jar` | Bounded-model structural invariants (Spine sizeDoubling) | Committed to git; sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` -- byte-identical to upstream v6.2.0 `org.alloytools.alloy.dist.jar` |
+| **Alloy** | `6.2.0.202501090817 (rev: 794226d)` | `src/Core.Alloy/alloy.jar` (gitignored) | Bounded-model structural invariants (Spine sizeDoubling) | `tools/setup/install.sh` fetches upstream v6.2.0 `org.alloytools.alloy.dist.jar`, pinned sha256 `6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d` |
 | **Feldera (cloned)**      | 0.342.0 `48312b6` (main, 2026-09-01) | `references/prior-art/feldera/` (gitignored) | Apples-to-apples Nexmark; MSRV 1.93.1, build with factory rust 1.99.0-beta.3 | `git clone --depth 1 https://github.com/feldera/feldera.git` |
 | **CTFP book (Milewski)**  | v1.3.0 PDF           | `docs/category-theory/ctfp-milewski.pdf` | Required-reading category theory reference               | `curl -sL -o ... https://github.com/hmemcpy/milewski-ctfp-pdf/.../category-theory-for-programmers.pdf`                                        |
 | **CTFP .NET (Bouderaux)** | archived snapshot    | `docs/category-theory/ctfp-dotnet/`      | F#/C# CT examples (no upstream tracking, .git stripped)  | `git clone ... && rm -rf .git .github`                                                                                                        |
@@ -183,7 +196,8 @@ audit is idempotent; `⚠ bump available` lines are actionable.
 # devcontainer). See
 # memory/feedback_install_script_is_preferred_update_method_2026_04_24.md.
 # .NET, Java, Rust, Python, and the other language runtimes come from `.mise.toml`.
-# SDKs + dotnet-stryker + elan (the TLC/Alloy jars are committed, not installed):
+# SDKs + dotnet-stryker + elan + the digest-pinned Alloy jar (the TLC jar is
+# committed, not installed — see "Project-specific binary artifacts" above):
 ./tools/setup/install.sh            # reads .mise.toml + global.json pins
                                     # (CI-parity form; same as `bash tools/...`
                                     # but catches missing exec-bit / shebang
