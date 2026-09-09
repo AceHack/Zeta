@@ -140,6 +140,31 @@ jobs:
       # location (books/<lang>/index.html) once copied, and that is where their ../<lang>/
       # switcher links resolve. Checking here covers ~3x the links of checking right after
       # pages:build. Guards the 2026-08-14 hall-card class — see the script header.
+      # 081M23MBXT3087G0R001CRDEBW — SERVE THE DERIVED-GEOMETRY DEMO FROM PAGES.
+      #
+      # `demo/clifford-e8/` landed on `main` in #17155 and was NOT reachable at
+      # https://lucent-financial-group.github.io/Zeta/demo/clifford-e8/ , because
+      # this site is `build_type=workflow` and publishes `./dist` — not the repo
+      # root. A page committed to `main` is therefore not a published page here,
+      # and nothing said so: the merge looked like the last step and the URL 404s.
+      #
+      # Copied rather than generated: the bundle is a build artifact of the rung
+      # 1-7 modules that is COMMITTED beside its page, and a falsifier already
+      # executes the committed bundle and asserts its positions, levels,
+      # histogram and a ray-traced frame equal the TypeScript modules'. Rebuilding
+      # it here would add a second producer of the same bytes — the duplicated
+      # -implementation shape that mutation testing caught in rung 6.
+      - name: Copy the Clifford/E8 demo into the artifact
+        run: |
+          set -euo pipefail
+          test -f demo/clifford-e8/index.html
+          test -f demo/clifford-e8/clifford-e8-substrate.js
+          mkdir -p dist/demo/clifford-e8
+          cp demo/clifford-e8/index.html demo/clifford-e8/clifford-e8-substrate.js dist/demo/clifford-e8/
+          # A missing file here must fail the build, not publish a 404.
+          test -s dist/demo/clifford-e8/index.html
+          test -s dist/demo/clifford-e8/clifford-e8-substrate.js
+
       - name: Audit internal links in the artifact
         run: bun src/Core.TypeScript/hygiene/audit-dist-internal-links.ts --dist dist --base /Zeta/
       - name: Upload artifact

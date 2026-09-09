@@ -1,0 +1,14 @@
+{
+  "id": "080d043a2fba1810a01300089474fbdb",
+  "at": "2026-09-09T17:45:04.579Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23MBXT3087G0R001CRDEBW",
+    "type": "bug",
+    "title": "A page merged to main is not a published page: Pages builds ./dist, so demo/clifford-e8 404s",
+    "slug": "a-page-merged-to-main-is-not-a-published-page-pages-builds-d",
+    "priority": "P2",
+    "filename": "081M23MBXT3087G0R001CRDEBW-a-page-merged-to-main-is-not-a-published-page-pages-builds-d.md"
+  }
+}
