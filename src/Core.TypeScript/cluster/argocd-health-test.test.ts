@@ -29,6 +29,7 @@ import {
   isIncludedScope,
   isZetaGitDirectoryApplicationSource,
   mergeArgoCdTimeoutDiagnostics,
+  restartingContainersFromPodsJson,
   parseApplicationList,
   formatHealthWaitProgress,
   degradedHealthTerminalFailure,
@@ -2005,5 +2006,75 @@ describe("081M0JXXFV0087G0R00...: the four newly-visible non-storage defects", (
     // Without this the ignored fields are still PUSHED on every sync, rotating
     // the cluster credential for no reason.
     expect(document.spec?.syncPolicy?.syncOptions ?? []).toContain("RespectIgnoreDifferences=true");
+  });
+});
+
+describe("crash-loop containers are found, not guessed", () => {
+  // Measured 2026-09-08: `headscale` and `orleans` held the whole included
+  // Synced+Healthy proof open, and NEITHER appeared in `not-running-pods` --
+  // because a CrashLoopBackOff pod is in phase Running between restarts. Only
+  // `warning-events` caught them, saying "BackOff restarting failed container",
+  // which is the symptom. This selector is what reaches the cause.
+  const pods = (items: unknown[]): string => JSON.stringify({ items });
+
+  test("selects a container in CrashLoopBackOff even with zero recorded restarts", () => {
+    const out = restartingContainersFromPodsJson(
+      pods([
+        {
+          metadata: { namespace: "headscale", name: "headscale-0" },
+          status: {
+            phase: "Running",
+            containerStatuses: [
+              { name: "headscale", restartCount: 0, state: { waiting: { reason: "CrashLoopBackOff" } } },
+            ],
+          },
+        },
+      ]),
+    );
+    expect(out.length).toBe(1);
+    expect(out[0]?.pod).toBe("headscale-0");
+  });
+
+  test("selects a restarting container whose waiting state is empty mid-restart", () => {
+    const out = restartingContainersFromPodsJson(
+      pods([
+        {
+          metadata: { namespace: "orleans", name: "orleans-silo-0" },
+          status: { phase: "Running", containerStatuses: [{ name: "silo", restartCount: 7, state: {} }] },
+        },
+      ]),
+    );
+    expect(out.length).toBe(1);
+    expect(out[0]?.restarts).toBe(7);
+  });
+
+  test("ignores healthy containers, so the bundle is not flooded", () => {
+    const out = restartingContainersFromPodsJson(
+      pods([
+        {
+          metadata: { namespace: "kube-system", name: "coredns-abc" },
+          status: { phase: "Running", containerStatuses: [{ name: "coredns", restartCount: 0, state: { running: {} } }] },
+        },
+      ]),
+    );
+    expect(out).toEqual([]);
+  });
+
+  test("orders by restart count, so the worst offender is logged first under the cap", () => {
+    const out = restartingContainersFromPodsJson(
+      pods([
+        { metadata: { namespace: "a", name: "p1" }, status: { containerStatuses: [{ name: "c", restartCount: 2, state: {} }] } },
+        { metadata: { namespace: "b", name: "p2" }, status: { containerStatuses: [{ name: "c", restartCount: 9, state: {} }] } },
+      ]),
+    );
+    expect(out.map((r) => r.pod)).toEqual(["p2", "p1"]);
+  });
+
+  test("returns empty rather than throwing on malformed kubectl output", () => {
+    // The bundle runs while something is already broken. A parser that throws
+    // here replaces one diagnosis with two failures.
+    expect(restartingContainersFromPodsJson("not json")).toEqual([]);
+    expect(restartingContainersFromPodsJson("{}")).toEqual([]);
+    expect(restartingContainersFromPodsJson(JSON.stringify({ items: "nope" }))).toEqual([]);
   });
 });

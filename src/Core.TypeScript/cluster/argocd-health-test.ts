@@ -2559,6 +2559,100 @@ export function mergeArgoCdTimeoutDiagnostics(failure: Failure, dumps: Readonly<
   };
 }
 
+/**
+ * Containers that are RESTARTING, with the log line that says why.
+ *
+ * The static roster above answers "why is a pod not running". It cannot answer
+ * "why does this pod keep dying", and the difference is not academic: a
+ * CrashLoopBackOff pod is in phase **Running** between restarts, so it does not
+ * appear in `not-running-pods` at all. Measured 2026-09-08 on the live lane --
+ * `headscale` and `orleans` were the two Applications holding the whole
+ * `included Synced+Healthy` proof open, and neither showed up in that dump. Only
+ * `warning-events` caught them, with `BackOff restarting failed container`, which
+ * names the SYMPTOM. The container's own last words were nowhere in the bundle.
+ *
+ * `--previous` is the point: the current attempt is usually still starting or
+ * already dead, and the useful output is the exit of the attempt BEFORE this one.
+ *
+ * Bounded on purpose: the pod scan is one call, only restarting containers are
+ * logged, at most `MAX_CRASHLOOP_LOGS` of them, tail-limited. A diagnostic bundle
+ * that can itself hang or explode is a second failure on top of the first.
+ */
+const MAX_CRASHLOOP_LOGS = 8;
+const CRASHLOOP_LOG_TAIL = 60;
+
+interface RestartingContainer {
+  readonly namespace: string;
+  readonly pod: string;
+  readonly container: string;
+  readonly restarts: number;
+  readonly reason: string;
+}
+
+/** Exported for unit tests: parse `kubectl get pods -A -o json` into restarting containers. */
+export function restartingContainersFromPodsJson(stdout: string): RestartingContainer[] {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout);
+  } catch {
+    return [];
+  }
+  const items = asRecord(parsed)?.["items"];
+  if (!Array.isArray(items)) return [];
+  const out: RestartingContainer[] = [];
+  for (const item of items) {
+    const pod = asRecord(item);
+    const meta = asRecord(pod?.["metadata"]);
+    const status = asRecord(pod?.["status"]);
+    const namespace = typeof meta?.["namespace"] === "string" ? meta["namespace"] : "";
+    const name = typeof meta?.["name"] === "string" ? meta["name"] : "";
+    const statuses = status?.["containerStatuses"];
+    if (namespace === "" || name === "" || !Array.isArray(statuses)) continue;
+    for (const cs of statuses) {
+      const c = asRecord(cs);
+      const container = typeof c?.["name"] === "string" ? c["name"] : "";
+      const restarts = typeof c?.["restartCount"] === "number" ? c["restartCount"] : 0;
+      const waiting = asRecord(asRecord(c?.["state"])?.["waiting"]);
+      const reason = typeof waiting?.["reason"] === "string" ? waiting["reason"] : "";
+      // Either signal alone is enough: a container can be mid-restart with an
+      // empty waiting state, and one that has settled into backoff may have been
+      // counted already.
+      if (container !== "" && (restarts > 0 || reason === "CrashLoopBackOff")) {
+        out.push({ namespace, pod: name, container, restarts, reason });
+      }
+    }
+  }
+  return out.sort((a, b) => b.restarts - a.restarts);
+}
+
+function collectCrashLoopLogs(): Record<string, string> {
+  const dumps: Record<string, string> = {};
+  const listed = kubectl(["get", "pods", "-A", "-o", "json"], 20);
+  const restarting = restartingContainersFromPodsJson(listed.stdout);
+  if (restarting.length === 0) {
+    // A measurement, not an absence: saying so beats an empty key that reads as
+    // "nothing was looked at".
+    dumps["crashloop-logs"] = "(no restarting containers found)";
+    return dumps;
+  }
+  dumps["crashloop-summary"] = restarting
+    .map((r) => `${r.namespace}/${r.pod} [${r.container}] restarts=${String(r.restarts)} ${r.reason}`)
+    .join("\n");
+  for (const r of restarting.slice(0, MAX_CRASHLOOP_LOGS)) {
+    const result = kubectl(
+      ["-n", r.namespace, "logs", r.pod, "-c", r.container, "--previous", `--tail=${String(CRASHLOOP_LOG_TAIL)}`],
+      20,
+    );
+    const text = [result.stdout, result.stderr]
+      .filter((part) => part.length > 0)
+      .join("\n")
+      .slice(-4000);
+    dumps[`crashloop:${r.namespace}/${r.pod}/${r.container}`] =
+      text.length > 0 ? text : `(no previous-container log, exit ${String(result.status)})`;
+  }
+  return dumps;
+}
+
 function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
   const dumps: Record<string, string> = {};
   for (const { label, args } of REPO_BACKED_CHILD_WAIT_DIAGNOSTIC_COMMANDS) {
@@ -2569,7 +2663,7 @@ function collectRepoBackedChildWaitDiagnostics(): Record<string, string> {
       .slice(-4000);
     dumps[label] = text.length > 0 ? text : `(empty, exit ${String(result.status)})`;
   }
-  return dumps;
+  return { ...dumps, ...collectCrashLoopLogs() };
 }
 
 /**
