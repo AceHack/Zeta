@@ -1,0 +1,14 @@
+{
+  "id": "080d0437a80d7810a0130008d37116a4",
+  "at": "2026-09-09T16:16:38.831Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23FA0DE087G0R00303PZ9A",
+    "type": "bug",
+    "title": "the ConstraintTemplate compile check asserts an instantaneous condition on an eventually-consistent cluster",
+    "slug": "the-constrainttemplate-compile-check-asserts-an-instantaneou",
+    "priority": "P2",
+    "filename": "081M23FA0DE087G0R00303PZ9A-the-constrainttemplate-compile-check-asserts-an-instantaneou.md"
+  }
+}

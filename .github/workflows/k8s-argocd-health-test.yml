@@ -2002,21 +2002,56 @@ jobs:
         if: always() && steps.proof.conclusion != 'skipped'
         run: |
           set -o pipefail
-          total="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json | jq '.items | length')"
+          # THE PROOF CAN FINISH BEFORE GATEKEEPER HAS ITS TEMPLATES, so this waits.
+          #
+          # MEASURED on run 34373356539: the verdict came at T+512s while
+          # hat-system still had `ServiceAccount/gatekeeper-crd-wait` OutOfSync and
+          # gatekeeper's own `constrainttemplates.templates.gatekeeper.sh` CRD had
+          # only just been created. Zero ConstraintTemplates existed, and this step
+          # -- correctly, by its own rule -- refused. But zero-at-that-instant is a
+          # RACE, not a finding: the proof passes hat-system through the
+          # `OutOfSync + Healthy` allowance, which admits an app whose resources are
+          # not applied YET as readily as one whose sync failed.
+          #
+          # So: wait, bounded. A bound that EXPIRES is still a failure, never a
+          # skip -- "gatekeeper compiled nothing" is the finding this step exists
+          # for, and waiting must not become a way of never saying it.
+          APPEAR_DEADLINE=$(( SECONDS + 300 ))
+          total=0
+          while [ "$SECONDS" -lt "$APPEAR_DEADLINE" ]; do
+            total="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json 2>/dev/null | jq -r ".items | length" 2>/dev/null | tail -1)"
+            case "$total" in ""|*[!0-9]*) total=0 ;; esac
+            if [ "$total" -gt 0 ]; then break; fi
+            sleep 10
+          done
           if [ "$total" -eq 0 ]; then
-            echo "::error::no ConstraintTemplate exists -- gatekeeper compiled nothing, so this check would have been vacuous"
+            echo "::error::no ConstraintTemplate exists after 300s -- gatekeeper compiled nothing, and a loop over an empty list would pass trivially"
             exit 1
           fi
-          bad="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json \
-            | jq -r '.items[]
-                | select((.status.created != true)
-                         or (((.status.byPod // []) | map(.errors // []) | flatten | length) > 0))
-                | "\(.metadata.name): created=\(.status.created // false) errors=\((.status.byPod // []) | map(.errors // []) | flatten | map(.message) | join(" ~ "))"')"
-          if [ -n "$bad" ]; then
-            echo "$bad"
-            echo "::error::a ConstraintTemplate did not compile; gatekeeper never generates its constraint CRD and the policy is not enforced"
-            exit 1
-          fi
+          # Compilation is also not instantaneous: gatekeeper fills status.created
+          # and status.byPod[].errors after it ingests each template. A template
+          # that FAILED to compile keeps its errors, so a non-empty `errors` is
+          # decided immediately; only "not yet created" is worth waiting on.
+          COMPILE_DEADLINE=$(( SECONDS + 180 ))
+          while :; do
+            snapshot="$(kubectl get constrainttemplates.templates.gatekeeper.sh -o json)"
+            errored="$(printf "%s" "$snapshot" | jq -r ".items[]
+                | select(((.status.byPod // []) | map(.errors // []) | flatten | length) > 0)
+                | \"\(.metadata.name): \((.status.byPod // []) | map(.errors // []) | flatten | map(.message) | join(\" ~ \"))\"")"
+            if [ -n "$errored" ]; then
+              echo "$errored"
+              echo "::error::a ConstraintTemplate did not compile; gatekeeper never generates its constraint CRD and the policy is not enforced"
+              exit 1
+            fi
+            uncreated="$(printf "%s" "$snapshot" | jq -r ".items[] | select(.status.created != true) | .metadata.name")"
+            if [ -z "$uncreated" ]; then break; fi
+            if [ "$SECONDS" -ge "$COMPILE_DEADLINE" ]; then
+              echo "$uncreated"
+              echo "::error::a ConstraintTemplate never reached status.created=true within 180s"
+              exit 1
+            fi
+            sleep 10
+          done
           echo "all $total ConstraintTemplates compiled and created"
 
       # NAME THE RESOURCE, NOT JUST THE APPLICATION.
