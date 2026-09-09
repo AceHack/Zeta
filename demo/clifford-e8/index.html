@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gosset 4_21 — derived surface, derived light</title>
+<meta name="description" content="The 2-skeleton of the Gosset 4_21 polytope, generated in the browser from Zeta's Clifford/E8 modules and shaded by a derived E8-root light. WebGPU, WebGL2 and Canvas 2D.">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #07070a;
+    --panel: rgba(22, 22, 28, 0.72);
+    --line: rgba(255, 255, 255, 0.09);
+    --text: #eef0f4;
+    --muted: #8f96a6;
+    --accent: #7dd3fc;
+    --warn: #fbbf24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 13px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    min-height: 100vh;
+  }
+  @media (max-width: 900px) { body { grid-template-columns: 1fr; } }
+  #stage { position: relative; min-height: 60vh; }
+  canvas { display: block; width: 100%; height: 100%; background: #05050a; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+  #overlay {
+    position: absolute; left: 14px; top: 14px; pointer-events: none;
+    font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted);
+    text-shadow: 0 1px 3px #000;
+  }
+  #overlay b { color: var(--accent); font-weight: 600; }
+  aside { border-left: 1px solid var(--line); background: var(--panel); padding: 18px 18px 40px; overflow-y: auto; }
+  @media (max-width: 900px) { aside { border-left: 0; border-top: 1px solid var(--line); } }
+  h1 { font-size: 15px; letter-spacing: .2px; margin-bottom: 2px; }
+  h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); margin: 20px 0 8px; }
+  p.sub { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+  .row { display: flex; align-items: center; gap: 8px; margin: 7px 0; flex-wrap: wrap; }
+  label { color: var(--muted); font-size: 11px; min-width: 74px; }
+  select, button {
+    background: #14141b; color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px 9px; font: inherit; font-size: 12px; cursor: pointer;
+  }
+  button:hover, select:hover { border-color: var(--accent); }
+  button[disabled] { opacity: .45; cursor: default; }
+  input[type=range] { flex: 1; min-width: 120px; accent-color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font: 11px/1.5 ui-monospace, Menlo, monospace; }
+  td { padding: 2px 0; vertical-align: middle; }
+  td.k { color: var(--muted); }
+  td.v { text-align: right; }
+  .swatch { display: inline-block; width: 12px; height: 12px; border: 1px solid var(--line); vertical-align: -2px; margin-right: 6px; }
+  .bar { height: 7px; background: var(--accent); opacity: .55; border-radius: 2px; }
+  .note { color: var(--muted); font-size: 11px; margin-top: 8px; }
+  .warn { color: var(--warn); }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div id="overlay">generating the surface from the substrate…</div>
+</div>
+
+<aside>
+  <h1>Gosset 4<sub>21</sub>, lit by a root</h1>
+  <p class="sub">
+    Nothing on this page was authored as geometry. The 240 vertices, the 6,720 edges, the
+    60,480 triangles and the five brightness levels are all computed in your browser by the
+    same Clifford/E8 modules the test suite runs.
+  </p>
+
+  <h2>Renderer</h2>
+  <div class="row"><label for="backend">backend</label><select id="backend"></select></div>
+  <div class="row"><label for="mode">surface</label>
+    <select id="mode">
+      <option value="solid">solid — z-buffer nearest hit</option>
+      <option value="additive">additive — order independent</option>
+      <option value="wire">wireframe — 6,720 edges</option>
+    </select>
+  </div>
+  <div class="row"><label for="spin">spin</label><input id="spin" type="range" min="0" max="100" value="18"></div>
+  <div class="row"><label for="exposure">exposure</label><input id="exposure" type="range" min="1" max="400" value="120"><span id="exposurev"></span></div>
+  <p class="note">
+    Exposure is <b>authored</b>, and is the only authored number in the picture. The surface
+    is roughly 700 triangle-layers deep along a chord (total triangle area ÷ silhouette area
+    ≈ 738), so an order-independent accumulation with no exposure saturates every interior
+    pixel to white. It is a property of your eye, not of the polytope.
+  </p>
+
+  <h2>Light gauge</h2>
+  <div class="row"><label for="light">root</label><input id="light" type="range" min="0" max="239" value="0"><span id="lightv">0</span></div>
+  <p class="note">
+    The light direction is an E8 root. <em>Which</em> root is a gauge: the Weyl group is
+    transitive on roots, so the face census below is identical for all 240 choices while the
+    picture turns. Move the slider and watch the table not move.
+  </p>
+
+  <h2>Derived shading levels</h2>
+  <table id="levels"></table>
+  <p class="note">
+    Five levels, not a gradient. The two-sided Lambert numerator is an integer taking
+    <code>{0,4,8,12,16}</code> over the whole surface; brightness is that integer over
+    <code>√384 = 8√6</code>. The shader evaluates no lighting — it indexes a 5-entry palette.
+  </p>
+
+  <h2>Occlusion</h2>
+  <div class="row">
+    <button id="trace">CPU ray trace this view</button>
+    <span id="tracev" class="note"></span>
+  </div>
+  <p class="note">
+    Every edge carries 27 faces, so there is no inside and a painter's sort over primitives
+    is undefined here. Per-sample nearest hit is not — which is what the z-buffer above and
+    this single-threaded BVH tracer both compute.
+  </p>
+
+  <h2>Measured</h2>
+  <table id="stats"></table>
+  <p class="note" id="limits"></p>
+</aside>
+
+<script src="./clifford-e8-substrate.js"></script>
+<script>
+"use strict";
+(function () {
+  // ── everything geometric comes from the bundle; everything below is presentation ──
+  var E8 = globalThis.CliffordE8;
+  var canvas = document.getElementById("gl");
+  var overlay = document.getElementById("overlay");
+  var backendSelect = document.getElementById("backend");
+  var modeSelect = document.getElementById("mode");
+  var spinInput = document.getElementById("spin");
+  var lightInput = document.getElementById("light");
+  var lightValue = document.getElementById("lightv");
+  var levelsTable = document.getElementById("levels");
+  var statsTable = document.getElementById("stats");
+  var limitsNote = document.getElementById("limits");
+  var traceButton = document.getElementById("trace");
+  var traceNote = document.getElementById("tracev");
+  var exposureInput = document.getElementById("exposure");
+  var exposureValue = document.getElementById("exposurev");
+
+  // ── DOM construction, never innerHTML ───────────────────────────────────
+  // CodeQL flagged `js/xss-through-dom` on the overlay: a <select> value flowed into an
+  // innerHTML sink. The values are three options this file authors, so it was not
+  // exploitable -- and "not exploitable because I control the inputs" is a claim that rots
+  // the moment someone adds a fourth option or an error string. So the SINK CLASS is
+  // removed rather than the taint argued away: this page assigns `innerHTML` nowhere, and a
+  // falsifier in clifford-e8-page.test.ts asserts the string does not appear at all. Every
+  // dynamic value below reaches the document as a text node.
+  function el(tag, options) {
+    var node = document.createElement(tag);
+    var o = options || {};
+    if (o.text !== undefined) node.textContent = String(o.text);
+    if (o.cls) node.className = o.cls;
+    if (o.style) node.style.cssText = o.style;
+    return node;
+  }
+  // `fill` takes NODES ONLY -- never a string. The first version accepted either and
+  // branched at the sink (`appendChild(typeof p === "string" ? createTextNode(p) : p)`),
+  // which CodeQL then flagged as `js/xss-through-exception`: taint tracking cannot see
+  // through the ternary, so an `err.message` reaching that call looks like a string handed
+  // to `appendChild`. Narrowing the parameter removes the union rather than the warning --
+  // the sink now provably receives a Node built by `createTextNode` or `createElement`, and
+  // callers say `txt("...")` where they mean text.
+  function txt(value) {
+    return document.createTextNode(String(value));
+  }
+  function fill(node, nodes) {
+    while (node.firstChild) node.removeChild(node.firstChild);
+    for (var i = 0; i < nodes.length; i++) node.appendChild(nodes[i]);
+    return node;
+  }
+
+  if (!E8) {
+    fill(overlay, [
+      el("b", { cls: "warn", text: "clifford-e8-substrate.js did not load." }),
+      el("br"),
+      txt("Serve this directory over http (for example "),
+      el("code", { text: "python3 -m http.server" }),
+      txt(") or open it from GitHub Pages."),
+    ]);
+    return;
+  }
+
+  // ── authored: framing only. No geometry, no brightness. ──────────────────
+  var state = {
+    yaw: 0.6, pitch: 0.35, distance: 3.1, dragging: false, lastX: 0, lastY: 0,
+    backend: null, mode: "solid", light: 0, frames: 0, fpsAt: 0, fps: 0,
+  };
+
+  function multiply(a, b) {
+    var o = new Float32Array(16);
+    for (var r = 0; r < 4; r++) for (var c = 0; c < 4; c++) {
+      var s = 0;
+      for (var k = 0; k < 4; k++) s += a[k * 4 + c] * b[r * 4 + k];
+      o[r * 4 + c] = s;
+    }
+    return o;
+  }
+  function perspective(fovY, aspect, near, far, zeroToOne) {
+    var f = 1 / Math.tan(fovY / 2), o = new Float32Array(16);
+    o[0] = f / aspect; o[5] = f; o[11] = -1;
+    if (zeroToOne) { o[10] = far / (near - far); o[14] = (far * near) / (near - far); }
+    else { o[10] = (far + near) / (near - far); o[14] = (2 * far * near) / (near - far); }
+    return o;
+  }
+  function cameraBasis() {
+    var cy = Math.cos(state.yaw), sy = Math.sin(state.yaw);
+    var cp = Math.cos(state.pitch), sp = Math.sin(state.pitch);
+    var dir = [cp * sy, sp, cp * cy];                       // eye direction from origin
+    var eye = [dir[0] * state.distance, dir[1] * state.distance, dir[2] * state.distance];
+    var forward = [-dir[0], -dir[1], -dir[2]];
+    var upHint = Math.abs(forward[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+    var right = normalise(cross(forward, upHint));
+    var up = cross(right, forward);
+    return { eye: eye, forward: forward, right: right, up: up };
+  }
+  function cross(a, b) { return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+  function normalise(v) { var n = Math.hypot(v[0], v[1], v[2]); return [v[0]/n, v[1]/n, v[2]/n]; }
+  function viewMatrix() {
+    var c = cameraBasis(), r = c.right, u = c.up, f = c.forward, e = c.eye;
+    return new Float32Array([
+      r[0], u[0], -f[0], 0,
+      r[1], u[1], -f[1], 0,
+      r[2], u[2], -f[2], 0,
+      -(r[0]*e[0]+r[1]*e[1]+r[2]*e[2]),
+      -(u[0]*e[0]+u[1]*e[1]+u[2]*e[2]),
+      (f[0]*e[0]+f[1]*e[1]+f[2]*e[2]), 1,
+    ]);
+  }
+  // AUTHORED, and named as such: a display exposure, not a derived quantity. Measured: the
+  // total triangle area of the derived surface is 738x the area of its own bounding sphere,
+  // so a chord crosses hundreds of layers and an unscaled additive pass saturates every
+  // interior pixel to pure white. The exposure is a property of the viewer's eye.
+  function accumulationAlpha() {
+    if (state.mode === "wire") return 0.3;
+    if (state.mode === "solid") return 1;
+    return Number(exposureInput.value) / 100000;
+  }
+
+  function mvp(aspect, zeroToOne) {
+    return multiply(perspective(0.9, aspect, 0.1, 20, zeroToOne), viewMatrix());
+  }
+
+  // ── the substrate call. This is the only place geometry enters. ──────────
+  var t0 = performance.now();
+  var roots = E8.e8Roots();
+  var faces = E8.triangleFaces(roots);
+  var edges = E8.gossetEdges(roots);
+  var tTopology = performance.now() - t0;
+
+  var scene = null, levelAttribute = null, edgeLines = null, bvh = null, tScene = 0;
+
+  function rebuildScene(lightRoot) {
+    var t = performance.now();
+    scene = E8.buildScene(lightRoot, roots, faces);
+    tScene = performance.now() - t;
+    levelAttribute = new Float32Array(scene.levels.length);
+    for (var i = 0; i < scene.levels.length; i++) levelAttribute[i] = scene.levels[i];
+    if (!edgeLines) edgeLines = E8.buildEdgeLines(edges, roots);
+  }
+  rebuildScene(0);
+
+  // ── the three backends ───────────────────────────────────────────────────
+  var backends = {};
+
+  backends.webgpu = {
+    label: "WebGPU",
+    available: function () { return typeof navigator !== "undefined" && !!navigator.gpu; },
+    device: null, pipelines: null,
+    init: async function () {
+      var adapter = await navigator.gpu.requestAdapter();
+      if (!adapter) throw new Error("no WebGPU adapter");
+      var device = await adapter.requestDevice();
+      var context = canvas.getContext("webgpu");
+      var format = navigator.gpu.getPreferredCanvasFormat();
+      context.configure({ device: device, format: format, alphaMode: "opaque" });
+
+      var shader = device.createShaderModule({ code: [
+        "struct U { mvp : mat4x4<f32>, palette : array<vec4<f32>, 5>, params : vec4<f32> };",
+        "@group(0) @binding(0) var<uniform> u : U;",
+        "struct VSOut { @builtin(position) pos : vec4<f32>, @location(0) @interpolate(flat) shade : f32 };",
+        "@vertex fn vs(@location(0) p : vec3<f32>, @location(1) lvl : f32) -> VSOut {",
+        "  var o : VSOut;",
+        "  o.pos = u.mvp * vec4<f32>(p, 1.0);",
+        // The whole lighting model, in the shader: one array index. The intensity was
+        // computed in 8-dimensional integer arithmetic before this buffer existed.
+        "  o.shade = u.palette[u32(lvl)].x;",
+        "  return o;",
+        "}",
+        "@fragment fn fs(i : VSOut) -> @location(0) vec4<f32> {",
+        "  return vec4<f32>(i.shade, i.shade, i.shade, u.params.x);",
+        "}",
+      ].join("\n") });
+
+      var layout = device.createBindGroupLayout({
+        // Both stages: the vertex shader indexes the palette, the fragment shader reads the
+        // exposure. Declaring VERTEX alone makes the pipeline invalid the moment the
+        // fragment touches `u`, and the symptom is a silently black additive pass.
+        entries: [{
+          binding: 0,
+          visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
+          buffer: { type: "uniform" },
+        }],
+      });
+      var pipelineLayout = device.createPipelineLayout({ bindGroupLayouts: [layout] });
+      var buffers = [
+        { arrayStride: 12, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }] },
+        { arrayStride: 4, attributes: [{ shaderLocation: 1, offset: 0, format: "float32" }] },
+      ];
+      function make(topology, blend, depth) {
+        return device.createRenderPipeline({
+          layout: pipelineLayout,
+          vertex: { module: shader, entryPoint: "vs", buffers: buffers },
+          fragment: { module: shader, entryPoint: "fs", targets: [{ format: format, blend: blend }] },
+          // No culling, ever: 27 faces per edge means there is no inside to cull.
+          primitive: { topology: topology, cullMode: "none" },
+          depthStencil: depth
+            ? { format: "depth24plus", depthWriteEnabled: true, depthCompare: "less" }
+            : undefined,
+        });
+      }
+      var additiveBlend = {
+        color: { srcFactor: "src-alpha", dstFactor: "one", operation: "add" },
+        alpha: { srcFactor: "zero", dstFactor: "one", operation: "add" },
+      };
+      this.device = device;
+      this.context = context;
+      this.pipelines = {
+        solid: make("triangle-list", undefined, true),
+        additive: make("triangle-list", additiveBlend, false),
+        wire: make("line-list", additiveBlend, false),
+      };
+      this.uniform = device.createBuffer({ size: 64 + 5 * 16 + 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+      this.bind = device.createBindGroup({ layout: layout, entries: [{ binding: 0, resource: { buffer: this.uniform } }] });
+      this.upload();
+      this.depth = null;
+      this.depthSize = [0, 0];
+    },
+    upload: function () {
+      var d = this.device;
+      function make(data, usage) {
+        var b = d.createBuffer({ size: Math.max(4, data.byteLength), usage: usage, mappedAtCreation: true });
+        new data.constructor(b.getMappedRange()).set(data);
+        b.unmap();
+        return b;
+      }
+      if (this.positions) this.positions.destroy();
+      if (this.levels) this.levels.destroy();
+      if (this.edgePositions) this.edgePositions.destroy();
+      if (this.edgeLevels) this.edgeLevels.destroy();
+      this.positions = make(scene.positions, GPUBufferUsage.VERTEX);
+      this.levels = make(levelAttribute, GPUBufferUsage.VERTEX);
+      this.edgePositions = make(edgeLines.positions, GPUBufferUsage.VERTEX);
+      // Wireframe carries the brightest level so the lines read at all.
+      var el = new Float32Array(edgeLines.edgeCount * 2);
+      el.fill(scene.levelNumerators.length - 1);
+      this.edgeLevels = make(el, GPUBufferUsage.VERTEX);
+    },
+    draw: function (width, height) {
+      var d = this.device;
+      if (this.depthSize[0] !== width || this.depthSize[1] !== height) {
+        if (this.depth) this.depth.destroy();
+        this.depth = d.createTexture({ size: [width, height], format: "depth24plus", usage: GPUTextureUsage.RENDER_ATTACHMENT });
+        this.depthSize = [width, height];
+      }
+      var u = new Float32Array(16 + 5 * 4 + 4);
+      u.set(mvp(width / height, true), 0);
+      for (var i = 0; i < 5; i++) u[16 + i * 4] = scene.brightness[i] || 0;
+      u[36] = accumulationAlpha();
+      d.queue.writeBuffer(this.uniform, 0, u);
+
+      var encoder = d.createCommandEncoder();
+      var attachment = {
+        view: this.context.getCurrentTexture().createView(),
+        clearValue: { r: 0.02, g: 0.02, b: 0.04, a: 1 },
+        loadOp: "clear", storeOp: "store",
+      };
+      var descriptor = { colorAttachments: [attachment] };
+      if (state.mode === "solid") {
+        descriptor.depthStencilAttachment = {
+          view: this.depth.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store",
+        };
+      }
+      var pass = encoder.beginRenderPass(descriptor);
+      pass.setPipeline(this.pipelines[state.mode]);
+      pass.setBindGroup(0, this.bind);
+      if (state.mode === "wire") {
+        pass.setVertexBuffer(0, this.edgePositions);
+        pass.setVertexBuffer(1, this.edgeLevels);
+        pass.draw(edgeLines.edgeCount * 2);
+      } else {
+        pass.setVertexBuffer(0, this.positions);
+        pass.setVertexBuffer(1, this.levels);
+        pass.draw(scene.faceCount * 3);
+      }
+      pass.end();
+      d.queue.submit([encoder.finish()]);
+    },
+  };
+
+  backends.webgl2 = {
+    label: "WebGL2",
+    available: function () {
+      try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; }
+    },
+    init: function () {
+      var gl = canvas.getContext("webgl2", { antialias: true });
+      if (!gl) throw new Error("no WebGL2 context");
+      this.gl = gl;
+      function compile(type, src) {
+        var s = gl.createShader(type);
+        gl.shaderSource(s, src); gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || "shader");
+        return s;
+      }
+      var vs = compile(gl.VERTEX_SHADER, [
+        "#version 300 es",
+        "in vec3 aPos; in float aLevel;",
+        "uniform mat4 uMvp; uniform float uPalette[5];",
+        "flat out float vShade;",
+        "void main() {",
+        "  gl_Position = uMvp * vec4(aPos, 1.0);",
+        "  vShade = uPalette[int(aLevel)];",   // same one-index lighting model as the WGSL
+        "}",
+      ].join("\n"));
+      var fs = compile(gl.FRAGMENT_SHADER, [
+        "#version 300 es",
+        "precision highp float;",
+        "flat in float vShade; uniform float uAlpha; out vec4 outColor;",
+        "void main() { outColor = vec4(vShade, vShade, vShade, uAlpha); }",
+      ].join("\n"));
+      var p = gl.createProgram();
+      gl.attachShader(p, vs); gl.attachShader(p, fs); gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p) || "link");
+      this.program = p;
+      this.uMvp = gl.getUniformLocation(p, "uMvp");
+      this.uAlpha = gl.getUniformLocation(p, "uAlpha");
+      this.uPalette = gl.getUniformLocation(p, "uPalette[0]");
+      this.aPos = gl.getAttribLocation(p, "aPos");
+      this.aLevel = gl.getAttribLocation(p, "aLevel");
+      this.buffers = {};
+      this.upload();
+      gl.disable(gl.CULL_FACE);   // no inside to cull
+    },
+    upload: function () {
+      var gl = this.gl, self = this;
+      function buffer(name, data) {
+        if (!self.buffers[name]) self.buffers[name] = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, self.buffers[name]);
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      }
+      buffer("pos", scene.positions);
+      buffer("lvl", levelAttribute);
+      buffer("edgePos", edgeLines.positions);
+      var el = new Float32Array(edgeLines.edgeCount * 2);
+      el.fill(scene.levelNumerators.length - 1);
+      buffer("edgeLvl", el);
+    },
+    draw: function (width, height) {
+      var gl = this.gl;
+      gl.viewport(0, 0, width, height);
+      gl.clearColor(0.02, 0.02, 0.04, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.useProgram(this.program);
+      gl.uniformMatrix4fv(this.uMvp, false, mvp(width / height, false));
+      var palette = new Float32Array(5);
+      for (var i = 0; i < 5; i++) palette[i] = scene.brightness[i] || 0;
+      gl.uniform1fv(this.uPalette, palette);
+
+      var solid = state.mode === "solid";
+      if (solid) { gl.enable(gl.DEPTH_TEST); gl.disable(gl.BLEND); gl.uniform1f(this.uAlpha, 1); }
+      else {
+        gl.disable(gl.DEPTH_TEST); gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        gl.uniform1f(this.uAlpha, accumulationAlpha());
+      }
+      var wire = state.mode === "wire";
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers[wire ? "edgePos" : "pos"]);
+      gl.enableVertexAttribArray(this.aPos);
+      gl.vertexAttribPointer(this.aPos, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers[wire ? "edgeLvl" : "lvl"]);
+      gl.enableVertexAttribArray(this.aLevel);
+      gl.vertexAttribPointer(this.aLevel, 1, gl.FLOAT, false, 0, 0);
+      if (wire) gl.drawArrays(gl.LINES, 0, edgeLines.edgeCount * 2);
+      else gl.drawArrays(gl.TRIANGLES, 0, scene.faceCount * 3);
+    },
+  };
+
+  backends.canvas2d = {
+    label: "Canvas 2D",
+    available: function () { return true; },
+    init: function () { this.ctx = canvas.getContext("2d"); },
+    upload: function () {},
+    draw: function (width, height) {
+      var ctx = this.ctx;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = "#05050a";
+      ctx.fillRect(0, 0, width, height);
+      var m = mvp(width / height, false);
+      var half = Math.min(width, height) / 2;
+      function project(x, y, z) {
+        var cx = m[0]*x + m[4]*y + m[8]*z + m[12];
+        var cy = m[1]*x + m[5]*y + m[9]*z + m[13];
+        var cw = m[3]*x + m[7]*y + m[11]*z + m[15];
+        if (cw <= 0.0001) return null;
+        return [width / 2 + (cx / cw) * half, height / 2 - (cy / cw) * half];
+      }
+      // Additive, never sorted. A painter's order over this surface is undefined, so the
+      // software path draws only order-independent marks: lines, accumulated.
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(150,200,255,0.14)";
+      ctx.beginPath();
+      var p = edgeLines.positions;
+      for (var i = 0; i < edgeLines.edgeCount; i++) {
+        var a = project(p[i*6], p[i*6+1], p[i*6+2]);
+        var b = project(p[i*6+3], p[i*6+4], p[i*6+5]);
+        if (!a || !b) continue;
+        ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
+      }
+      ctx.stroke();
+      // Vertices: read out of the edge buffer's endpoints, which is the same normalised
+      // embedding the GPU paths use — so the software path shares the substrate exactly.
+      ctx.fillStyle = "rgba(220,240,255,0.9)";
+      var seen = {};
+      for (var e = 0; e < edgeLines.edgeCount; e++) {
+        for (var k = 0; k < 2; k++) {
+          var base = (e * 2 + k) * 3;
+          var key = p[base] + "," + p[base+1] + "," + p[base+2];
+          if (seen[key]) continue;
+          seen[key] = 1;
+          var s = project(p[base], p[base+1], p[base+2]);
+          if (!s) continue;
+          ctx.fillRect(s[0] - 1, s[1] - 1, 2, 2);
+        }
+      }
+      ctx.globalCompositeOperation = "source-over";
+    },
+  };
+
+  // ── backend selection ────────────────────────────────────────────────────
+  var order = ["webgpu", "webgl2", "canvas2d"];
+  order.forEach(function (name) {
+    var option = document.createElement("option");
+    option.value = name;
+    option.textContent = backends[name].label + (backends[name].available() ? "" : " — unavailable");
+    option.disabled = !backends[name].available();
+    backendSelect.appendChild(option);
+  });
+
+  async function selectBackend(name) {
+    // A fresh canvas: a element can hold only one context kind for its lifetime.
+    var replacement = document.createElement("canvas");
+    replacement.id = "gl";
+    canvas.replaceWith(replacement);
+    canvas = replacement;
+    attachPointer();
+    state.backend = backends[name];
+    await state.backend.init();
+    state.backend.upload();
+    backendSelect.value = name;
+    render();
+  }
+
+  function attachPointer() {
+    canvas.addEventListener("pointerdown", function (e) {
+      state.dragging = true; state.lastX = e.clientX; state.lastY = e.clientY;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener("pointermove", function (e) {
+      if (!state.dragging) return;
+      state.yaw -= (e.clientX - state.lastX) * 0.008;
+      state.pitch = Math.max(-1.5, Math.min(1.5, state.pitch + (e.clientY - state.lastY) * 0.008));
+      state.lastX = e.clientX; state.lastY = e.clientY;
+    });
+    canvas.addEventListener("pointerup", function () { state.dragging = false; });
+    canvas.addEventListener("wheel", function (e) {
+      e.preventDefault();
+      state.distance = Math.max(1.4, Math.min(9, state.distance * (1 + e.deltaY * 0.0012)));
+    }, { passive: false });
+  }
+
+  // ── the loop ─────────────────────────────────────────────────────────────
+  var lastFrame = performance.now();
+  function render() {
+    var now = performance.now();
+    var dt = Math.min(0.1, (now - lastFrame) / 1000);
+    lastFrame = now;
+    if (!state.dragging) state.yaw += dt * (Number(spinInput.value) / 100) * 0.9;
+
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var width = Math.max(1, Math.round(canvas.clientWidth * dpr));
+    var height = Math.max(1, Math.round(canvas.clientHeight * dpr));
+    if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
+    try { state.backend.draw(width, height); }
+    catch (err) {
+      fill(overlay, [el("b", { cls: "warn", text: "draw failed:" }), txt(" " + err.message)]);
+      return;
+    }
+
+    state.frames++;
+    if (now - state.fpsAt > 500) {
+      state.fps = (state.frames * 1000) / (now - state.fpsAt);
+      state.frames = 0; state.fpsAt = now;
+      paintOverlay();
+    }
+    requestAnimationFrame(render);
+  }
+
+  function paintOverlay() {
+    fill(overlay, [
+      el("b", { text: state.backend.label }),
+      txt(" · " + state.mode + " · " + state.fps.toFixed(0) + " fps"),
+      el("br"),
+      txt("60,480 triangles · 181,440 vertices · 5 levels"),
+      el("br"),
+      txt("light = root " + state.light),
+    ]);
+  }
+
+  // ── panels ───────────────────────────────────────────────────────────────
+  function paintLevels() {
+    var max = Math.max.apply(null, Array.prototype.slice.call(scene.histogram));
+    var rows = [];
+    for (var i = 0; i < scene.levelNumerators.length; i++) {
+      var grey = Math.round(scene.brightness[i] * 255);
+      var count = scene.histogram[i];
+      var key = el("td", { cls: "k" });
+      key.appendChild(el("span", {
+        cls: "swatch",
+        style: "background:rgb(" + grey + "," + grey + "," + grey + ")",
+      }));
+      key.appendChild(txt(scene.levelNumerators[i] + "/√" + scene.denominatorSquared));
+      var barCell = el("td");
+      barCell.appendChild(el("div", { cls: "bar", style: "width:" + Math.round((count / max) * 100) + "%" }));
+      rows.push(fill(el("tr"), [key, barCell, el("td", { cls: "v", text: count.toLocaleString() })]));
+    }
+    rows.push(fill(el("tr"), [
+      el("td", { cls: "k", text: "total" }),
+      el("td"),
+      el("td", { cls: "v", text: scene.faceCount.toLocaleString() }),
+    ]));
+    fill(levelsTable, rows);
+  }
+
+  function paintStats() {
+    var rows = [
+      ["roots (vertices)", roots.length.toLocaleString()],
+      ["Gosset edges", edges.length.toLocaleString()],
+      ["triangles", faces.length.toLocaleString()],
+      ["faces per edge", E8.EDGE_FACE_INCIDENCE],
+      ["shading levels", scene.levelNumerators.length],
+      ["topology built in", tTopology.toFixed(0) + " ms"],
+      ["shading built in", tScene.toFixed(0) + " ms"],
+      ["position buffer", (scene.positions.byteLength / 1048576).toFixed(2) + " MiB (in browser)"],
+      ["geometry shipped", "0 bytes"],
+    ];
+    fill(statsTable, rows.map(function (r) {
+      return fill(el("tr"), [el("td", { cls: "k", text: r[0] }), el("td", { cls: "v", text: r[1] })]);
+    }));
+    fill(limitsNote, [
+      txt("The page ships "),
+      el("b", { text: "no geometry" }),
+      txt(": it ships the derivation and runs it here. Every buffer above was built in your " +
+        "browser from the same functions the test suite runs."),
+    ]);
+  }
+
+  // ── the CPU tracer ───────────────────────────────────────────────────────
+  traceButton.addEventListener("click", function () {
+    traceButton.disabled = true;
+    traceNote.textContent = "building BVH…";
+    setTimeout(function () {
+      var t = performance.now();
+      if (!bvh) bvh = E8.buildBvh(scene.positions);
+      var built = performance.now() - t;
+      var c = cameraBasis();
+      var size = 220;
+      t = performance.now();
+      var frame = E8.renderFrame(scene.positions, scene.levels, bvh,
+        { eye: c.eye, forward: c.forward, right: c.right, up: c.up, halfWidth: E8.DEFAULT_HALF_WIDTH }, size, size);
+      var traced = performance.now() - t;
+      showFrame(frame, size);
+      fill(traceNote, [
+        txt(size + "×" + size + " in "),
+        el("b", { text: traced.toFixed(0) + " ms" }),
+        txt(" (" + (traced / (size * size) * 1000).toFixed(1) + " µs/ray, " +
+          (frame.stats.triangleTests / (size * size)).toFixed(0) + " triangle tests/ray)" +
+          "; BVH " + built.toFixed(0) + " ms"),
+      ]);
+      traceButton.disabled = false;
+    }, 20);
+  });
+
+  function showFrame(frame, size) {
+    var image = document.createElement("canvas");
+    image.width = size; image.height = size;
+    var ctx = image.getContext("2d");
+    var data = ctx.createImageData(size, size);
+    for (var i = 0; i < size * size; i++) {
+      var level = frame.pixels[i];
+      var value = level === E8.MISS ? 8 : Math.round(scene.brightness[level] * 255);
+      data.data[i * 4] = value; data.data[i * 4 + 1] = value; data.data[i * 4 + 2] = value;
+      data.data[i * 4 + 3] = 255;
+    }
+    ctx.putImageData(data, 0, 0);
+    image.style.cssText = "width:100%;image-rendering:pixelated;border:1px solid var(--line);border-radius:6px;margin-top:8px";
+    var old = document.getElementById("traced");
+    if (old) old.remove();
+    image.id = "traced";
+    traceNote.parentNode.parentNode.insertBefore(image, traceNote.parentNode.nextSibling);
+  }
+
+  // ── controls ─────────────────────────────────────────────────────────────
+  backendSelect.addEventListener("change", function () { selectBackend(backendSelect.value); });
+  modeSelect.addEventListener("change", function () { state.mode = modeSelect.value; paintExposure(); });
+  exposureInput.addEventListener("input", paintExposure);
+  function paintExposure() {
+    exposureValue.textContent = state.mode === "additive" ? "1/" + Math.round(1 / accumulationAlpha()) : "n/a";
+  }
+  paintExposure();
+  lightInput.addEventListener("input", function () {
+    state.light = Number(lightInput.value);
+    lightValue.textContent = state.light;
+    rebuildScene(state.light);
+    bvh = null;
+    state.backend.upload();
+    paintLevels();
+    paintStats();
+  });
+
+  paintLevels();
+  paintStats();
+  var first = order.find(function (n) { return backends[n].available(); });
+  selectBackend(first).catch(function (err) {
+    fill(overlay, [
+      el("b", { cls: "warn", text: first + " failed:" }),
+      txt(" " + err.message + " — falling back."),
+    ]);
+    var rest = order.slice(order.indexOf(first) + 1).find(function (n) { return backends[n].available(); });
+    if (rest) selectBackend(rest);
+  });
+})();
+</script>
+</body>
+</html>
