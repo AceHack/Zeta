@@ -7,6 +7,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
+# Least privilege: this job runs `bun install`, which executes PR-controlled
+# lifecycle scripts, so the token it is handed must be read-only. Declared
+# rather than inherited -- the repo default is currently `read`, but that is a
+# mutable repo setting and an implicit grant is not a guarantee.
+# Scorecard TokenPermissionsID alert 671 / CodeQL actions/missing-workflow-permissions.
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}

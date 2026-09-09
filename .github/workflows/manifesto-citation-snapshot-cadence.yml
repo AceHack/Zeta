@@ -56,9 +56,12 @@ on:
         required: false
         default: ""
 
+# Top-level is READ-ONLY on purpose: the single job below declares the exact
+# write scope it needs, so a job added later inherits nothing. The identical
+# write block used to sit here as well, which granted the whole workflow the
+# job's privilege for no reason (Scorecard TokenPermissionsID, topLevel).
 permissions:
-  contents: write       # push the staging branch
-  pull-requests: write  # open/arm the flush PR
+  contents: read
 
 concurrency:
   group: manifesto-citation-snapshot-cadence

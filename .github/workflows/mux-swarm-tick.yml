@@ -5,9 +5,14 @@ on:
     - cron: '0 * * * *'  # every hour
   workflow_dispatch:         # manual trigger
 
+# READ-ONLY. The only payload step runs swarm-controller.ts, which shells out
+# nowhere and performs no git or forge write -- the write scope was never
+# exercised. It was not harmless: this job installs and runs a third-party
+# script fetched at runtime (ollama.com install.sh), and a write-scoped
+# GITHUB_TOKEN was persisted into .git/config by the checkout below while
+# that ran. Scorecard TokenPermissionsID alert 687.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: mux-swarm-tick
@@ -30,6 +35,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # Nothing here pushes, and a runtime-fetched installer runs in this
+          # job -- so no credential is left on disk for it to find.
+          persist-credentials: false
 
       - name: Install Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
