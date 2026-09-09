@@ -28,7 +28,7 @@
 //
 // Exit codes: 0 ok · 2 usage error.
 
-import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pack, DEFAULT_ENV } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
@@ -202,7 +202,7 @@ function main(argv: readonly string[]): number {
   const args = parseArgs(argv);
   if (args["help"] || args["h"] || argv.length === 0) {
     process.stdout.write(
-      "Usage: bun src/Core.TypeScript/backlog/new-workitem.ts --type task|bug --title \"...\"\n" +
+      'Usage: bun src/Core.TypeScript/backlog/new-workitem.ts --type task|bug --title "..."\n' +
         "       [--priority P2] [--depends-on a,b] [--composes-with a,b] [--persona N] [--dir workitems] [--dry-run]\n",
     );
     return argv.length === 0 ? 2 : 0;
@@ -213,7 +213,13 @@ function main(argv: readonly string[]): number {
     process.stderr.write("new-workitem: --type (task|bug) and --title are required\n");
     return 2;
   }
-  const splitList = (s?: string) => (s ? s.split(",").map((x) => x.trim()).filter(Boolean) : []);
+  const splitList = (s?: string) =>
+    s
+      ? s
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean)
+      : [];
 
   let minted: MintedWorkItem;
   let spec: NewWorkItemSpec;
@@ -247,12 +253,19 @@ function main(argv: readonly string[]): number {
   }
 
   mkdirSync(dir, { recursive: true });
-  if (existsSync(path)) {
-    // Astronomically unlikely (128-bit id) — but never clobber.
+  // NEVER CLOBBER, ATOMICALLY. `existsSync` then `writeFileSync` is a TOCTOU:
+  // two concurrent mints that both saw "absent" both write, and the second wins
+  // silently -- the exact outcome the guard is here to prevent. `flag: "wx"` is
+  // O_CREAT|O_EXCL, so the kernel decides the race and the loser gets EEXIST.
+  // Astronomically unlikely at 128 bits; the point is that the refusal is real.
+  // CodeQL js/file-system-race alert 462.
+  try {
+    writeFileSync(path, minted.content, { encoding: "utf8", flag: "wx" });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
     process.stderr.write(`new-workitem: refusing to overwrite existing ${path}\n`);
     return 2;
   }
-  writeFileSync(path, minted.content, "utf8");
   const actor = process.env.ZETA_WORKITEM_ACTOR ?? "otto-cli";
   const eventResult = publishCreatedEvent(minted, spec, SYSTEM_ENV, actor, workItemEventsRoot(dir), push);
   if (eventResult.kind === "collision") {

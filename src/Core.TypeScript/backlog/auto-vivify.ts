@@ -487,9 +487,24 @@ export function processAll(
       mkdirSync(dir, { recursive: true });
 
       // 2. Create the file (idempotent write)
-      if (!existsSync(path)) {
-        const content = getStubContent(resolved);
-        writeFileSync(path, content, "utf8");
+      //
+      // IDEMPOTENT BY THE KERNEL, NOT BY A PRIOR LOOK. `!existsSync(path)` then
+      // `writeFileSync` is a TOCTOU: two vivifiers racing on the same stub both
+      // see "absent" and both write, and the loser overwrites a file the winner
+      // had already published -- and each counts a creation, so processedCount
+      // over-reports. `flag: "wx"` makes "create only if absent" one atomic
+      // step; EEXIST means somebody else vivified it, which is success for an
+      // idempotent operation and is therefore not counted and not an error.
+      // CodeQL js/file-system-race alert 275.
+      const content = getStubContent(resolved);
+      let created = true;
+      try {
+        writeFileSync(path, content, { encoding: "utf8", flag: "wx" });
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+        created = false;
+      }
+      if (created) {
         processedCount++;
         console.log(`Auto-vivified: ${relative(REPO_ROOT, path)} (${resolved.type})`);
       }

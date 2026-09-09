@@ -3,7 +3,7 @@
 // under inventory/items/. Git is the database: the file IS the row, git log IS
 // the change log. Sibling of backlog/new-workitem.ts (same governed-mint shape).
 
-import { writeFileSync, existsSync } from "node:fs";
+import { writeFileSync } from "node:fs";
 import { join, normalize } from "node:path";
 import { packGeneric } from "../zeta-id/zeta-id";
 import { format } from "../zeta-id/encoding";
@@ -41,7 +41,9 @@ function arg(flag: string, fallback = ""): string {
 function main(): number {
   const name = arg("--name");
   if (!name) {
-    console.error('usage: bun new-item.ts --name "..." [--brand X] [--model-pn X] [--qty N] [--device-type X] [--category X] [--status X] [--location X] [--purpose X] [--value-usd N] [--serial X] [--sample]');
+    console.error(
+      'usage: bun new-item.ts --name "..." [--brand X] [--model-pn X] [--qty N] [--device-type X] [--category X] [--status X] [--location X] [--purpose X] [--value-usd N] [--serial X] [--sample]',
+    );
     return 1;
   }
   const status = arg("--status", "active");
@@ -56,10 +58,6 @@ function main(): number {
   }
   const id = mintInventoryZetaId();
   const file = join(ITEMS_DIR, `${id}-${slugify(name)}.md`);
-  if (existsSync(file)) {
-    console.error(`collision (should be impossible): ${file}`);
-    return 1;
-  }
   const sample = Bun.argv.includes("--sample");
   const fm = [
     "---",
@@ -82,7 +80,18 @@ function main(): number {
     "",
     "",
   ].join("\n");
-  writeFileSync(file, fm, "utf8");
+  // "Should be impossible" is a claim about the id, not about the write. The
+  // existsSync guard that used to sit above the frontmatter build was a TOCTOU
+  // -- it could pass and then be overtaken before this line. `flag: "wx"` lets
+  // the kernel settle it, so the impossible case is refused rather than
+  // silently clobbering. CodeQL js/file-system-race alert 460.
+  try {
+    writeFileSync(file, fm, { encoding: "utf8", flag: "wx" });
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code !== "EEXIST") throw e;
+    console.error(`collision (should be impossible): ${file}`);
+    return 1;
+  }
   console.log(`created inventory/items/${id}-${slugify(name)}.md`);
   return 0;
 }
