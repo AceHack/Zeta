@@ -1,0 +1,12 @@
+{
+  "pr_number": 17102,
+  "archive_path": "docs/history/pr-reviews/PR-17102-feat-081m21nvsj2087g0r002j9wvrp-blockcas-putmany-publishes-superblock-once.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T00:01:21.107Z",
+  "schema_version": "v1",
+  "commit_sha": "5fe7a65bbc17ee7630d586cc0d4014f613b3e8a6",
+  "title": "feat(081M21NVSJ2087G0R002J9WVRP): BlockCas PutMany publishes superblock once",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T00:00:36Z",
+  "head_ref": "feat/zetafs-d10-blockcas-putmany"
+}
