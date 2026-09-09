@@ -167,9 +167,10 @@ module ZetaFsFreeze =
         |> ignore
 
         for kv in known do
+            sb.Append('\n') |> ignore
+            kv.Key.AppendHex(sb) |> ignore
+
             sb
-                .Append('\n')
-                .Append(kv.Key.ToHex())
                 .Append(' ')
                 .Append(kv.Value.ToString(CultureInfo.InvariantCulture))
                 .Append(' ')
@@ -177,10 +178,12 @@ module ZetaFsFreeze =
             |> ignore
 
         for kv in objectSets do
-            sb.Append('\n').Append("set ").Append(kv.Key.ToHex()) |> ignore
+            sb.Append('\n').Append("set ") |> ignore
+            kv.Key.AppendHex(sb) |> ignore
 
             for id in kv.Value do
-                sb.Append(' ').Append(id.ToHex()) |> ignore
+                sb.Append(' ') |> ignore
+                id.AppendHex(sb) |> ignore
 
         let payloadBytes = Encoding.UTF8.GetBytes(sb.ToString())
         let crc = HardwareCrc.Crc32C(ReadOnlySpan payloadBytes)
