@@ -1,0 +1,33 @@
+"""Reimport the exported GLBs and verify pose direction after the format boundary."""
+import bpy,json,math
+from pathlib import Path
+from mathutils import Matrix,Vector
+R=Path(__file__).resolve().parent;O=R/'roundtrip-v14';O.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(R/'mobile-export-v14/TikTok-Candidates-v14.blend'));scene=bpy.context.scene
+for ob in list(scene.objects):
+ if ob.type=='ARMATURE' or ob.parent and ob.parent.type=='ARMATURE':bpy.data.objects.remove(ob,do_unlink=True)
+# Remove orphan character meshes whose parent was removed first.
+for ob in list(scene.objects):
+ if ob.type=='MESH' and any(ob.name.startswith(n+' | ') for n in ['AceHack','Xenaa']):bpy.data.objects.remove(ob,do_unlink=True)
+rigs=[]
+for name,x in [('AceHack',-.68),('Xenaa',.68)]:
+ before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(R/'mobile-export-v14'/(name+'-body-v14.glb')));added=set(bpy.data.objects)-before;rig=next(o for o in added if o.type=='ARMATURE');rig.location.x+=x;rigs.append((name,rig))
+scene.camera.data.ortho_scale=3.7;scene.camera.location=(.15,-5,1.2);scene.camera.rotation_euler=(Vector((0,-.1,1))-scene.camera.location).to_track_quat('-Z','Y').to_euler();scene.render.resolution_x=1200;scene.render.resolution_y=900;scene.cycles.samples=12
+rows=[]
+def turn(rig,n,axis,angle):
+ b=rig.pose.bones[n];world=rig.matrix_world@b.matrix;p=world.translation.copy();b.matrix=rig.matrix_world.inverted()@Matrix.Translation(p)@Matrix.Rotation(math.radians(angle),4,axis)@Matrix.Translation(-p)@world;bpy.context.view_layer.update()
+for label,ops in [('neutral',[]),('left-arm',[('LeftUpperArm','Y',35)]),('head-turn',[('Head','Z',30)]),('left-leg',[('LeftThigh','X',-35),('LeftShin','X',65)])]:
+ for name,rig in rigs:
+  for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+  bpy.context.view_layer.update();base={side:rig.matrix_world@rig.pose.bones[side+'Hand'].head for side in ['Left','Right']}
+  for op in ops:turn(rig,*op)
+  now={side:rig.matrix_world@rig.pose.bones[side+'Hand'].head for side in ['Left','Right']};dz=now['Left'].z-base['Left'].z;right=(now['Right']-base['Right']).length
+  if label=='left-arm':assert dz<-.15 and right<1e-5
+  row={'character':name,'pose':label,'joints':len(rig.data.bones),'left_hand_height_change_m':dz,'right_hand_displacement_m':right,'left_anatomical_side_positive_x':base['Left'].x>rig.matrix_world.translation.x,'right_anatomical_side_negative_x':base['Right'].x<rig.matrix_world.translation.x}
+  assert row['left_anatomical_side_positive_x'] and row['right_anatomical_side_negative_x'];rows.append(row)
+ for name,rig in rigs:
+  for other,other_rig in rigs:
+   for ob in other_rig.children:ob.hide_render=other!=name
+  center=Vector((rig.location.x,-.1,1));scene.camera.location=center+Vector((0,-5,.15));scene.camera.rotation_euler=(center-scene.camera.location).to_track_quat('-Z','Y').to_euler();scene.camera.data.ortho_scale=2.55
+  scene.render.filepath=str(O/(name+'-'+label+'.png'));bpy.ops.render.render(write_still=True)
+(R/'roundtrip-validation-v14.json').write_text(json.dumps({'checks':rows,'scope':'Actual GLB import into Blender; bone side/pose direction and rendered neutral, left arm and head turn. Not an Effect House test.'},indent=2))

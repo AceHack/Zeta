@@ -9,8 +9,9 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [TikTok character v14: garment, facial and limb review](../research/2026-09-09-tiktok-character-v14/README.md)
 - [TikTok character necks, mobile budgets and tracking prototypes](../research/2026-09-09-tiktok-character-seams/README.md)
-  — **Vera, latest character iteration.** Separate 1.7/1.9 MB face effects pass
+  — **Vera, v13 character iteration.** Separate 1.7/1.9 MB face effects pass
   Effect House performance tests; user-rejected first joins, Blender-tested v13 upper-body motion; failed full-body
   rigs and remaining facial topology work are preserved explicitly.
 

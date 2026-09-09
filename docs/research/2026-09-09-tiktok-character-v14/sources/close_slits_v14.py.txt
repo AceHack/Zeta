@@ -1,0 +1,41 @@
+"""Close bounded arm cut loops with inset curved lining, not global hole filling."""
+import bpy,bmesh,math,json,os
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'blender-v14';bpy.ops.wm.open_mainfile(filepath=os.environ.get('V14_CLOSE_SOURCE',str(O/'Characters-v14.blend')));rows=[]
+for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+ body=bpy.data.objects[name+' | Body generator'];rig=body.parent;bm=bmesh.new();bm.from_mesh(body.data);pending=set(e for e in bm.edges if e.is_boundary);loops=[];added=[]
+ mat=bpy.data.materials.new(name+' | Inset garment lining');mat.use_nodes=True;bs=mat.node_tree.nodes['Principled BSDF'];bs.inputs['Base Color'].default_value=(.012,.014,.011,1) if name=='AceHack' else (.015,.008,.025,1);bs.inputs['Roughness'].default_value=.85;bs.inputs['Specular IOR Level'].default_value=.10;mi=len(body.data.materials);body.data.materials.append(mat)
+ while pending:
+  component=[];queue=[pending.pop()]
+  while queue:
+   edge=queue.pop();component.append(edge)
+   for v in edge.verts:
+    for e in v.link_edges:
+     if e in pending:pending.remove(e);queue.append(e)
+  points={v for e in component for v in e.verts};zmin=min(v.co.z for v in points);zmax=max(v.co.z for v in points);xs=[v.co.x for v in points];degrees={v:sum(v in e.verts for e in component) for v in points}
+  bounded=zmin>.80*(H/1.9) and zmax<1.63*(H/1.9) and (min(xs)>.075 or max(xs)<-.075) and len(component)>=12 and all(d==2 for d in degrees.values())
+  loops.append({'edges':len(component),'z':[zmin,zmax],'x':[min(xs),max(xs)],'closed_with_inset':bounded})
+  if not bounded:continue
+  ordered=[];start=component[0].verts[0];current=start;previous=None
+  for _ in range(len(points)):
+   ordered.append(current);neighbors=[e.other_vert(current) for e in component if current in e.verts];nxt=next(v for v in neighbors if v!=previous);previous,current=current,nxt
+  center=sum((v.co for v in ordered),Vector())/len(ordered);diameter=max((a.co-b.co).length for a in ordered for b in ordered);center.x-=math.copysign(min(.022,.06*diameter),center.x);center.y+=min(.015,.04*diameter)
+  rings=[ordered]
+  for t in [.35,.70]:
+   ring=[]
+   for v in ordered:
+    co=v.co.lerp(center,t);co.x-=math.copysign(min(.012,.035*diameter)*math.sin(math.pi*t),co.x);nv=bm.verts.new(co);ring.append(nv);added.append(nv)
+   rings.append(ring)
+  for a,b in zip(rings,rings[1:]):
+   for i in range(len(a)):
+    f=bm.faces.new((a[i],a[(i+1)%len(a)],b[(i+1)%len(a)],b[i]));f.material_index=mi;f.smooth=True
+  middle=bm.verts.new(center);added.append(middle)
+  for i in range(len(ordered)):
+   f=bm.faces.new((rings[-1][i],rings[-1][(i+1)%len(ordered)],middle));f.material_index=mi;f.smooth=True
+ # All new lining vertices follow the adjacent torso field, not either arm.
+ deform=bm.verts.layers.deform.verify()
+ for v in added:
+  z=v.co.z;n='Spine3' if z>H*.75 else 'Spine2' if z>H*.60 else 'Spine1' if z>H*.52 else 'Pelvis';v[deform].clear();v[deform][body.vertex_groups[n].index]=1.0
+ bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(body.data);bm.free();body.data.update();rows.append({'character':name,'loops':loops,'added_vertices':len(added)})
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Characters-v14.blend'));(R/'garment-lining-v14.json').write_text(json.dumps(rows,indent=2))

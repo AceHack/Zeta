@@ -1,0 +1,9 @@
+{
+  "frames": 177,
+  "source_frames": "1..353 step 2",
+  "fps": 12,
+  "all_frames_newer_than_final_scene": true,
+  "scene_mtime": 1788968581.367446,
+  "encoding": "H.264 yuv420p crf18",
+  "source": "Blender-Motion-Review-v14.blend"
+}

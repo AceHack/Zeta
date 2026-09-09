@@ -1,0 +1,66 @@
+[
+  {
+    "character": "AceHack",
+    "legs": {
+      "Left": {
+        "faces_separated": 2465,
+        "short_end_caps": 24,
+        "vertices": 1397
+      },
+      "Right": {
+        "faces_separated": 2155,
+        "short_end_caps": 15,
+        "vertices": 1264
+      }
+    },
+    "mouth_seam_edges": 23,
+    "lower_lip_seam_vertices": 117,
+    "mouth_front_y": -0.2568240761756897,
+    "mouth_z": 1.692,
+    "morph_moved_vertices": {
+      "jawOpen": 372,
+      "jawLeft": 793,
+      "jawRight": 793,
+      "mouthSmileLeft": 385,
+      "mouthSmileRight": 435,
+      "mouthPucker": 805,
+      "browInnerUp": 117,
+      "browDownLeft": 110,
+      "browDownRight": 90,
+      "eyeBlinkLeft": 105,
+      "eyeBlinkRight": 100
+    }
+  },
+  {
+    "character": "Xenaa",
+    "legs": {
+      "Left": {
+        "faces_separated": 1277,
+        "short_end_caps": 5,
+        "vertices": 728
+      },
+      "Right": {
+        "faces_separated": 1435,
+        "short_end_caps": 15,
+        "vertices": 835
+      }
+    },
+    "mouth_seam_edges": 26,
+    "lower_lip_seam_vertices": 53,
+    "mouth_front_y": -0.273275762796402,
+    "mouth_z": 1.612,
+    "morph_moved_vertices": {
+      "jawOpen": 320,
+      "jawLeft": 1024,
+      "jawRight": 1024,
+      "mouthSmileLeft": 508,
+      "mouthSmileRight": 588,
+      "mouthPucker": 1053,
+      "browInnerUp": 260,
+      "browDownLeft": 280,
+      "browDownRight": 230,
+      "eyeBlinkLeft": 176,
+      "eyeBlinkRight": 232
+    }
+  }
+]

@@ -1,0 +1,9 @@
+"""Verify packed review assets from the selected delivery folder."""
+import bpy,json
+from pathlib import Path
+R=Path(__file__).resolve().parents[1];p=R/'current/Blender-Motion-Review-v14.blend';bpy.ops.wm.open_mainfile(filepath=str(p));bpy.context.scene.frame_set(1)
+images=[{'name':im.name,'packed':bool(im.packed_file),'size':list(im.size)} for im in bpy.data.images if im.source=='FILE' and im.users]
+assert all(im['packed'] for im in images)
+rigs={o.name:len(o.data.bones) for o in bpy.data.objects if o.type=='ARMATURE'};assert sorted(rigs.values())==[50,50]
+assert all(k.value==0 for o in bpy.data.objects if o.type=='MESH' and o.data.shape_keys for k in o.data.shape_keys.key_blocks[1:])
+(R/'receipts/portable-delivery.json').write_text(json.dumps({'packed_images':images,'rigs':rigs,'neutral_frame':1,'source':str(p.relative_to(R))},indent=2)+'\n')

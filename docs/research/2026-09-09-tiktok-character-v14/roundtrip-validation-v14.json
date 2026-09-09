@@ -1,0 +1,77 @@
+{
+  "checks": [
+    {
+      "character": "AceHack",
+      "pose": "neutral",
+      "joints": 50,
+      "left_hand_height_change_m": 0.0,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "Xenaa",
+      "pose": "neutral",
+      "joints": 50,
+      "left_hand_height_change_m": 0.0,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "AceHack",
+      "pose": "left-arm",
+      "joints": 50,
+      "left_hand_height_change_m": -0.2751920223236084,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "Xenaa",
+      "pose": "left-arm",
+      "joints": 50,
+      "left_hand_height_change_m": -0.26360511779785156,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "AceHack",
+      "pose": "head-turn",
+      "joints": 50,
+      "left_hand_height_change_m": 0.0,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "Xenaa",
+      "pose": "head-turn",
+      "joints": 50,
+      "left_hand_height_change_m": 0.0,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "AceHack",
+      "pose": "left-leg",
+      "joints": 50,
+      "left_hand_height_change_m": 0.0,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    },
+    {
+      "character": "Xenaa",
+      "pose": "left-leg",
+      "joints": 50,
+      "left_hand_height_change_m": 0.0,
+      "right_hand_displacement_m": 0.0,
+      "left_anatomical_side_positive_x": true,
+      "right_anatomical_side_negative_x": true
+    }
+  ],
+  "scope": "Actual GLB import into Blender; bone side/pose direction and rendered neutral, left arm and head turn. Not an Effect House test."
+}

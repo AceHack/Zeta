@@ -1,0 +1,198 @@
+# Executed after the v14 source geometry stage. All coordinates are metres.
+from mathutils.kdtree import KDTree
+
+def bind(o,rig,weights):
+ o.vertex_groups.clear();groups={n:o.vertex_groups.new(name=n) for n in rig.data.bones.keys()}
+ for v in o.data.vertices:
+  ws=weights(v.co)
+  for n,w in ws.items():
+   if w>1e-8:groups[n].add([v.index],w,'REPLACE')
+ for mod in list(o.modifiers):
+  if mod.type=='ARMATURE':o.modifiers.remove(mod)
+ mod=o.modifiers.new('Character skeleton','ARMATURE');mod.object=rig
+ bpy.context.view_layer.update();world=o.matrix_world.copy();o.parent=rig;o.matrix_world=world
+
+def surface(label,verts,faces,material,offset):
+ me=bpy.data.meshes.new(label);me.from_pydata(verts,[],faces);me.update();ob=bpy.data.objects.new(label,me);scene.collection.objects.link(ob);ob.location.x=offset;me.materials.append(material)
+ for p in me.polygons:p.use_smooth=True
+ return ob
+
+def bake(o,size,label):
+ # Freeze front/back shading in the neutral surface. No world-normal texture switching during motion.
+ bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
+ olduv=o.data.uv_layers.active.name if o.data.uv_layers else None
+ for m in o.data.materials:
+  if m and m.use_nodes:
+   for node in list(m.node_tree.nodes):
+    if node.type=='TEX_IMAGE' and node.image and not node.inputs['Vector'].is_linked and olduv:
+     uv=m.node_tree.nodes.new('ShaderNodeUVMap');uv.uv_map=olduv;m.node_tree.links.new(uv.outputs[0],node.inputs['Vector'])
+ uv=o.data.uv_layers.new(name='ReviewAtlas');o.data.uv_layers.active=uv;uv.active_render=True
+ bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(angle_limit=1.3,island_margin=.006);bpy.ops.object.mode_set(mode='OBJECT')
+ img=bpy.data.images.new(label,width=size,height=size,alpha=False)
+ for m in o.data.materials:
+  if m:
+   n=m.node_tree.nodes.new('ShaderNodeTexImage');n.image=img;m.node_tree.nodes.active=n
+ scene.render.bake.margin=12;scene.render.bake.use_pass_direct=False;scene.render.bake.use_pass_indirect=False;scene.render.bake.use_pass_color=True;scene.cycles.samples=4
+ bpy.ops.object.bake(type='DIFFUSE');img.filepath_raw=str(O/(label+'.jpg'));img.file_format='JPEG';scene.render.image_settings.quality=95;img.save();img.pack()
+ material=mat(label+' stable surface',(.02,.02,.02));bs=material.node_tree.nodes['Principled BSDF'];bs.inputs['Roughness'].default_value=.64;bs.inputs['Specular IOR Level'].default_value=.24;tex=material.node_tree.nodes.new('ShaderNodeTexImage');tex.image=img;material.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color']);o.data.materials.clear();o.data.materials.append(material)
+ for p in o.data.polygons:p.material_index=0
+ for uv in list(o.data.uv_layers):
+  if uv.name!='ReviewAtlas':o.data.uv_layers.remove(uv)
+ return material
+
+changes=[]
+for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+ s=H/1.9;rig=bpy.data.objects[name+' | Motion rig'];body=bpy.data.objects[name+' | Body generator'];head=bpy.data.objects[name+' | Independent head generator'];offset=rig.location.x
+ # Remove any source posing/driver remnants. There is one skin modifier per mesh.
+ rig.animation_data_clear()
+ for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+ bpy.context.view_layer.update()
+ # Remove the remaining reconstructed head/hair stump above Xenaa's jacket.
+ if name=='Xenaa':
+  bm=bmesh.new();bm.from_mesh(body.data)
+  bmesh.ops.bisect_plane(bm,geom=list(bm.verts)+list(bm.edges)+list(bm.faces),dist=1e-6,plane_co=(0,0,1.54),plane_no=(0,0,1),clear_outer=True)
+  # Detached reconstruction specks are not clothing details.
+  pending=set(bm.verts);discard=[]
+  while pending:
+   group=[];queue=[pending.pop()]
+   while queue:
+    v=queue.pop();group.append(v)
+    for edge in v.link_edges:
+     w=edge.other_vert(v)
+     if w in pending:pending.remove(w);queue.append(w)
+   if len(group)<45:discard.extend(group)
+  bmesh.ops.delete(bm,geom=discard,context='VERTS');finish(body,bm)
+  # Seat the scalp portion of the new hair on the actual retained head surface.
+  tree=KDTree(len(head.data.vertices))
+  for v in head.data.vertices:tree.insert(v.co,v.index)
+  tree.balance()
+  curtain=bpy.data.objects['Xenaa | Continuous rooted hair']
+  for v in curtain.data.vertices:
+   t=(v.index//72)/43
+   if t<.26:
+    nearest,idx,dist=tree.find(v.co);weight=1-smooth((t-.13)/.13);v.co=v.co.lerp(nearest-head.data.vertices[idx].normal*.003,weight)
+  curtain.data.update()
+  lock=bpy.data.objects['Xenaa | Rooted shoulder lock']
+  for v in lock.data.vertices:
+   j=v.index//16;t=j/31;center=Vector((-.10-.13*t+.013*math.sin(t*7),-.155-.060-.025*math.sin(t*math.pi),1.738-.405*t));v.co=center+(v.co-center)*(1-.90*t**5)
+  lock.data.update()
+ # Bake original high-detail reference at 2048 for the review scene. Export independently downsamples.
+ bodymat=bake(body,2048,name+'-body-review');bake(head,2048,name+'-head-review')
+ for side in ['Left','Right']:bake(bpy.data.objects[name+' | '+side+' arm surface'],1024,name+'-'+side+'-arm-review')
+ # The legacy Xenaa hair has been removed, including the loose shoulder clump.
+ # Rebuild a fitted jacket back/side instead of filling the deletion with a huge n-gon.
+ if name=='Xenaa':
+  cloth=mat('Xenaa | Reconstructed jacket under hair',(.021,.011,.034));p=cloth.node_tree.nodes['Principled BSDF'];p.inputs['Roughness'].default_value=.69
+  vs=[];fs=[];N=56;L=22
+  for j in range(L):
+   t=j/(L-1);z=1.20+.35*t;rx=.123+.038*math.sin(t*math.pi*.8);front=-.258+.043*t;back=-.067+.025*t
+   for k in range(N):
+    a=2*math.pi*k/N;cy=(front+back)/2;ry=(back-front)/2;vs.append((rx*math.cos(a),cy+ry*math.sin(a),z))
+  for j in range(L-1):
+   for k in range(N):
+    a=2*math.pi*(k+.5)/N
+    # Keep the original central chest/buckles visible, replacing only side and rear surfaces.
+    if math.sin(a)>-.25 or math.cos(a)<-.50:fs.append((j*N+k,j*N+(k+1)%N,(j+1)*N+(k+1)%N,(j+1)*N+k))
+  jacket=surface('Xenaa | Hair-free fitted jacket back',vs,fs,cloth,offset);bind(jacket,rig,lambda p:{'Spine3':smooth((p.z-1.23)/.17),'Spine2':1-smooth((p.z-1.23)/.17)})
+ # Correct leg joint positions against the reconstructed trousers and boot centres.
+ bpy.ops.object.select_all(action='DESELECT');rig.select_set(True);bpy.context.view_layer.objects.active=rig;bpy.ops.object.mode_set(mode='EDIT')
+ for side,sgn in [('Left',1),('Right',-1)]:
+  hip=Vector((sgn*.113,-.215,1.00))*s;knee=Vector((sgn*.177,-.205,.57))*s;ankle=Vector((sgn*.218,-.195,.15))*s;toe=Vector((sgn*.235,-.36,.055))*s
+  for bone,a,b in [(side+'Thigh',hip,knee),(side+'Shin',knee,ankle),(side+'Foot',ankle,toe)]:rig.data.edit_bones[bone].head=a;rig.data.edit_bones[bone].tail=b;rig.data.edit_bones[bone].align_roll(Vector((0,-1,0)))
+ bpy.ops.object.mode_set(mode='OBJECT')
+ # Separate the anatomical front leg surfaces from the independently retained coat.
+ legcounts={}
+ for side,sgn in [('Left',1),('Right',-1)]:
+  def leg_region(p):
+   x,y,z=p/s
+   limit=.315 if z<.20 else .218-.105*min(1,z)+.085
+   return .018<x*sgn<limit and z<.94 and y<(-.075 if z<.20 else -.095)
+  texture=next(n.image for n in bodymat.node_tree.nodes if n.type=='TEX_IMAGE' and n.image);pixels=np.array(texture.pixels[:],dtype=np.float32).reshape(texture.size[1],texture.size[0],4)
+  def is_trouser(f,bm):
+   uv=bm.loops.layers.uv.get('ReviewAtlas');c=f.calc_center_median()
+   if not uv or c.z<.22*s:return True
+   colors=[]
+   for loop in f.loops:
+    u,v=loop[uv].uv;colors.append(pixels[min(texture.size[1]-1,max(0,int(v*texture.size[1]))),min(texture.size[0]-1,max(0,int(u*texture.size[0])))][:3])
+   rr,gg,bb=np.mean(colors,axis=0)
+   if name=='AceHack':return not (gg>.24 and bb>gg*.68 and rr>gg*.8)
+   return not (bb>rr*1.18 and bb>gg*1.20 and bb>.045)
+  leg,count=cut_part(body,name+' | '+side+' trouser and boot',leg_region,bodymat,is_trouser)
+  # Close only short loops, with an inset dark lining. Never span the whole torso.
+  bm=bmesh.new();bm.from_mesh(leg.data);edges=set(e for e in bm.edges if e.is_boundary);caps=0
+  while edges:
+   pending=[edges.pop()];loop=[]
+   while pending:
+    e=pending.pop();loop.append(e)
+    for v in e.verts:
+     for ee in v.link_edges:
+      if ee in edges:edges.remove(ee);pending.append(ee)
+   pts={v for e in loop for v in e.verts}
+   if len(pts)>2 and max((v.co-w.co).length for v in pts for w in pts)<.27:
+    made=bmesh.ops.holes_fill(bm,edges=loop,sides=0).get('faces',[]);caps+=len(made)
+    # These end faces face the interior, not large planar torso walls.
+    for f in made:f.material_index=0
+  finish(leg,bm)
+  def legweights(p,side=side):
+   z=p.z/s;k=smooth((.64-z)/.15);f=smooth((.21-z)/.10);return {side+'Thigh':1-k,side+'Shin':k*(1-f),side+'Foot':k*f}
+  bind(leg,rig,legweights);legcounts[side]={'faces_separated':count,'short_end_caps':caps,'vertices':len(leg.data.vertices)}
+ # Facial mouth seam: split only a short front-surface edge chain; shared corner vertices taper the opening.
+ mouthz=1.692 if name=='AceHack' else 1.612;eyez=1.769 if name=='AceHack' else 1.683;width=.034 if name=='AceHack' else .025
+ bm=bmesh.new();bm.from_mesh(head.data)
+ mouthvs=[v for v in bm.verts if abs(v.co.x)<width and abs(v.co.z-mouthz)<.012]
+ fronty=min(v.co.y for v in mouthvs);frontcut=fronty+.015
+ faces=[f for f in bm.faces if abs(f.calc_center_median().x)<width+.007 and abs(f.calc_center_median().z-mouthz)<.02 and f.calc_center_median().y<frontcut]
+ geom=list(bm.verts)+list(bm.edges)+list(bm.faces)
+ bmesh.ops.bisect_plane(bm,geom=geom,dist=1e-7,plane_co=(0,0,mouthz),plane_no=(0,0,1),clear_inner=False,clear_outer=False)
+ seam=[e for e in bm.edges if all(abs(v.co.z-mouthz)<1e-6 and abs(v.co.x)<width and v.co.y<frontcut for v in e.verts)]
+ bmesh.ops.split_edges(bm,edges=seam)
+ lower=set()
+ for v in bm.verts:
+  if abs(v.co.z-mouthz)<1e-6 and v.link_faces and sum(f.calc_center_median().z for f in v.link_faces)/len(v.link_faces)<mouthz:lower.add(v)
+ bm.verts.index_update();lower_indices={v.index for v in lower};finish(head,bm)
+ head.shape_key_add(name='Basis',from_mix=False).value=0;deltas={}
+ channels=['jawOpen','jawLeft','jawRight','mouthSmileLeft','mouthSmileRight','mouthPucker','browInnerUp','browDownLeft','browDownRight','eyeBlinkLeft','eyeBlinkRight']
+ for channel in channels:
+  key=head.shape_key_add(name=channel,from_mix=False);key.value=0;count=0
+  for i,v in enumerate(head.data.vertices):
+   x,y,z=v.co;front=smooth((frontcut+.028-y)/.032);mouth=math.exp(-((x/.050)**4+((z-mouthz)/.042)**4))*front;d=Vector((0,0,0));side=smooth((x*(1 if channel.endswith('Left') else -1)+.004)/.024)
+   if channel=='jawOpen':
+    below=1 if z<mouthz-1e-6 or i in lower_indices else 0
+    corner=math.sqrt(max(0,1-(x/width)**2));relax=smooth((mouthz-z)/.026);w=below*front*((1-relax)*corner+relax*math.exp(-(x/.060)**4))*smooth((z-(mouthz-.09))/.030);d.z=-.021*w;d.y=.003*w
+   elif channel in ['jawLeft','jawRight']:d.x=(.005 if channel=='jawLeft' else -.005)*mouth
+   elif channel.startswith('mouthSmile'):d.z=.005*mouth*side;d.x=(.003 if channel.endswith('Left') else -.003)*mouth*side
+   elif channel=='mouthPucker':d.x=-x*.12*mouth;d.y=-.006*mouth
+   elif channel=='browInnerUp':d.z=.004*front*math.exp(-((x/.028)**4+((z-(eyez+.026))/.014)**4))
+   elif channel.startswith('browDown'):d.z=-.003*front*side*math.exp(-(((abs(x)-.045)/.03)**4+((z-(eyez+.026))/.013)**4))
+   elif channel.startswith('eyeBlink'):
+    # Small bounded eyelid prototype. Shared glasses topology remains a known limit.
+    ex=.044*(1 if channel.endswith('Left') else -1);w=front*math.exp(-(((x-ex)/.018)**4+((z-eyez)/.011)**4));d.z=(eyez-z)*w*.80
+   key.data[i].co=v.co+d;count+=d.length>1e-6
+  deltas[channel]=count
+ # Dark cavity exists behind the lip seam; teeth sit behind the upper lip.
+ cavitymat=mat(name+' | Mouth interior',(.009,.002,.003));vs=[];fs=[];N=32;L=10
+ for j in range(L):
+  t=j/(L-1);zz=mouthz+.003-.033*t
+  for k in range(N):
+   a=2*math.pi*k/N;vs.append((width*.96*math.cos(a)*(1-.35*t*t),fronty+.018+.042*t*t+.020*(1+math.sin(a))/2,zz))
+ for j in range(L-1):
+  for k in range(N):fs.append((j*N+k,j*N+(k+1)%N,(j+1)*N+(k+1)%N,(j+1)*N+k))
+ fs.extend([tuple(reversed(range(N))),tuple((L-1)*N+k for k in range(N))])
+ cavity=surface(name+' | Mouth cavity',vs,fs,cavitymat,offset);bind(cavity,rig,lambda p:{'Head':1.0})
+ tooth=mat(name+' | Upper teeth',(.68,.64,.55));vs=[];fs=[]
+ for k in range(17):
+  x=width*.76*(2*k/16-1);y=fronty+.012+.006*(x/width)**2
+  vs.extend([(x,y,mouthz-.001),(x,y,mouthz-.005-.0015*(1-(x/width)**2))])
+ for k in range(16):fs.append((2*k,2*k+1,2*k+3,2*k+2))
+ teeth=surface(name+' | Upper teeth strip',vs,fs,tooth,offset);bind(teeth,rig,lambda p:{'Head':1.0})
+ # Front face and mouth internals follow Head; the short neck base stays attached.
+ base=1.475 if name=='AceHack' else 1.435;cut=1.605 if name=='AceHack' else 1.525
+ bind(head,rig,lambda p:{'Spine3':1-smooth((p.z-base-.005)/(cut-base-.005)),'Head':smooth((p.z-base-.005)/(cut-base-.005))})
+ changes.append({'character':name,'legs':legcounts,'mouth_seam_edges':len(seam),'lower_lip_seam_vertices':len(lower_indices),'mouth_front_y':fronty,'mouth_z':mouthz,'morph_moved_vertices':deltas})
+scene.render.resolution_x=1600;scene.render.resolution_y=1200;scene.render.resolution_percentage=100;scene.cycles.samples=48;scene.cycles.use_denoising=True
+cam=scene.camera;cam.animation_data_clear();cam.data.type='ORTHO';cam.data.ortho_scale=2.85;cam.location=(.1,-5,1.2);cam.rotation_euler=(Vector((0,-.10,.98))-cam.location).to_track_quat('-Z','Y').to_euler()
+scene.name='01 | Character v14 review';scene['Status']='Candidate awaiting user review; head/arm/leg/facial channels have separate tests.'
+scene.render.film_transparent=False
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Characters-v14.blend'))
+scene.render.filepath=str(O/'neutral.png');bpy.ops.render.render(write_still=True)
+(R/'blender-v14-receipt.json').write_text(json.dumps(changes,indent=2))

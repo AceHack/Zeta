@@ -1,0 +1,66 @@
+"""Evaluate deformation, neutral morph defaults and attachment isolation in Blender."""
+import bpy,math,json
+from pathlib import Path
+from mathutils import Matrix,Vector
+R=Path(__file__).resolve().parent;O=R/'blender-v14'
+bpy.ops.wm.open_mainfile(filepath=str(O/'Characters-v14.blend'));sc=bpy.context.scene
+
+def reset(rig):
+ for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+ for o in rig.children:
+  if o.type=='MESH' and o.data.shape_keys:
+   for k in o.data.shape_keys.key_blocks:k.value=0
+ bpy.context.view_layer.update()
+def turn(rig,n,axis,degrees):
+ b=rig.pose.bones[n];m=b.matrix.copy();p=m.translation.copy();b.matrix=Matrix.Translation(p)@Matrix.Rotation(math.radians(degrees),4,axis)@Matrix.Translation(-p)@m;bpy.context.view_layer.update()
+def coords(o):
+ evaluated=o.evaluated_get(bpy.context.evaluated_depsgraph_get());me=evaluated.to_mesh();vs=[evaluated.matrix_world@v.co for v in me.vertices];evaluated.to_mesh_clear();return vs
+rows=[];fails=[]
+for name in ['AceHack','Xenaa']:
+ rig=bpy.data.objects[name+' | Motion rig'];meshes=[o for o in rig.children if o.type=='MESH'];head=bpy.data.objects[name+' | Independent head generator'];defaults={k.name:k.value for k in head.data.shape_keys.key_blocks if k.name!='Basis'}
+ if any(v!=0 for v in defaults.values()):fails.append(name+' non-neutral initial morphs')
+ weight_errors=[]
+ for o in meshes:
+  for v in o.data.vertices:
+   weights=[g.weight for g in v.groups if g.weight>0]
+   if len(weights)>4 or abs(sum(weights)-1)>1e-5:weight_errors.append([o.name,v.index,weights])
+  for mat in o.data.materials:
+   if mat and mat.use_nodes and any(n.type=='NEW_GEOMETRY' for n in mat.node_tree.nodes):fails.append(o.name+' motion-dependent geometry shader')
+ if weight_errors:fails.append(name+' invalid weights')
+ reset(rig);base={o.name:coords(o) for o in meshes};cases=[]
+ poses=[('left-arm',[('LeftUpperArm','Y',-60)]),('right-arm',[('RightUpperArm','Y',60)]),('elbows',[('LeftForeArm','X',-65),('RightForeArm','X',-65)]),('head-left',[('Head','Z',40)]),('head-right',[('Head','Z',-40)]),('head-nod',[('Head','X',15)]),('left-leg',[('LeftThigh','X',-35),('LeftShin','X',65)]),('right-leg',[('RightThigh','X',-35),('RightShin','X',65)]),('left-ankle',[('LeftFoot','X',20)]),('right-ankle',[('RightFoot','X',20)]),('index-only',[('LeftHandIndex1','X',-60),('LeftHandIndex2','X',-60),('LeftHandIndex3','X',-60)]),('fist',[(side+'Hand'+finger+str(j),'X',-40) for side in ['Left','Right'] for finger in ['Index','Middle','Ring','Pinky','Thumb'] for j in range(1,4)])]
+ for label,ops in poses:
+  reset(rig)
+  for op in ops:turn(rig,*op)
+  maxmove={};finite=True
+  for o in meshes:
+   after=coords(o);maxmove[o.name]=max(((a-b).length for a,b in zip(after,base[o.name])),default=0);finite=finite and all(math.isfinite(q) for p in after for q in p)
+  checks={}
+  if label in ['left-arm','right-arm']:
+   other='Right' if label=='left-arm' else 'Left';checks['opposite_arm_fixed']=maxmove[name+' | '+other+' arm surface']<1e-5
+  if label.startswith('head-'):
+   bone=rig.pose.bones['Head'];transform=rig.matrix_world@bone.matrix@bone.bone.matrix_local.inverted()@rig.matrix_world.inverted();hair_error=0
+   for o in meshes:
+    if 'hair' in o.name.lower() and 'Hair-free' not in o.name or 'Rooted shoulder lock' in o.name:
+     after=coords(o);hair_error=max(hair_error,max(((a-transform@b).length for a,b in zip(after,base[o.name])),default=0))
+   checks['hair_follows_head']=hair_error<1e-5
+  if label in ['left-leg','right-leg']:
+   moving='Left' if label=='left-leg' else 'Right';other='Right' if moving=='Left' else 'Left';checks['moving_leg_deforms']=maxmove[name+' | '+moving+' trouser and boot']>.08;checks['opposite_leg_fixed']=maxmove[name+' | '+other+' trouser and boot']<1e-5;checks['garment_fixed']=maxmove[bodyname:=name+' | Body generator']<1e-5
+  if label=='index-only':checks['index_moves']=maxmove[name+' | Left Index finger']>.025;checks['middle_fixed']=maxmove[name+' | Left Middle finger']<1e-5
+  checks['finite']=finite
+  if not all(checks.values()):fails.append(name+' '+label+' '+str(checks))
+  cases.append({'pose':label,'checks':checks,'maximum_vertex_motion_m':max(maxmove.values())})
+ reset(rig);basis=[v.co.copy() for v in head.data.shape_keys.key_blocks['Basis'].data];jaw=head.data.shape_keys.key_blocks['jawOpen'];mouth=1.692 if name=='AceHack' else 1.612;seam={}
+ for i,p in enumerate(basis):
+  if abs(p.z-mouth)<1e-6 and abs(p.x)<.01 and p.y<-.20:seam.setdefault(tuple(round(c,6) for c in p),[]).append(i)
+ gaps=[]
+ for ids in seam.values():
+  if len(ids)>1:gaps.append(max((jaw.data[i].co-jaw.data[j].co).length for i in ids for j in ids))
+ if not gaps or max(gaps)<.014:fails.append(name+' mouth split did not open')
+ morphcases=[]
+ for key in list(head.data.shape_keys.key_blocks)[1:]:
+  reset(rig);key.value=1;actual=coords(head);delta=max((a-b).length for a,b in zip(actual,base[head.name]));morphcases.append({'channel':key.name,'max_motion_m':delta})
+  if not (0<delta<.06):fails.append(name+' bad morph '+key.name)
+ reset(rig);rows.append({'character':name,'bones':len(rig.data.bones),'initial_morph_values':defaults,'weight_error_count':len(weight_errors),'motion_cases':cases,'mouth_max_gap_m':max(gaps,default=0),'morph_cases':morphcases})
+receipt={'status':'pass' if not fails else 'fail','tolerance_m':1e-5,'failures':fails,'characters':rows,'scope':'Blender deformation and graph consistency, not live tracking, collisions, topology quality or likeness acceptance'}
+(R/'motion-validation-v14.json').write_text(json.dumps(receipt,indent=2));print(json.dumps({'status':receipt['status'],'failures':fails}));assert not fails,fails

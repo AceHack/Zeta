@@ -1,0 +1,12 @@
+import bpy,json,os
+from pathlib import Path
+from mathutils import Vector
+R=Path(__file__).resolve().parent;O=R/'blender-v14';F=O/'motion-frames';F.mkdir(exist_ok=True)
+bpy.ops.wm.open_mainfile(filepath=str(O/'Blender-Motion-Review-v14.blend'));sc=bpy.context.scene
+markers=sorted((m.frame,m.name) for m in sc.timeline_markers)
+# Camera-parented labels are geometry in the render, and are excluded from avatar exports.
+curve=bpy.data.curves.new('Review captions','FONT');curve.size=.035;curve.align_x='LEFT';ob=bpy.data.objects.new('Review caption',curve);sc.collection.objects.link(ob);ob.parent=sc.camera
+mat=bpy.data.materials.new('Caption');mat.use_nodes=True;nodes=mat.node_tree.nodes;nodes.clear();out=nodes.new('ShaderNodeOutputMaterial');em=nodes.new('ShaderNodeEmission');em.inputs['Color'].default_value=(.85,.87,.94,1);mat.node_tree.links.new(em.outputs[0],out.inputs['Surface']);curve.materials.append(mat)
+for frame in range(int(os.environ.get("V14_START_FRAME",1)),int(os.environ.get("V14_END_FRAME",354)),2):
+ sc.frame_set(frame);scale=sc.camera.data.ortho_scale;ob.location=(-scale*.47,-scale*.35,-1);curve.size=scale*.019;curve.body=next((label for f,label in reversed(markers) if f<=frame),'Neutral')
+ sc.render.filepath=str(F/f'frame-{frame:04}.png');bpy.ops.render.render(write_still=True)

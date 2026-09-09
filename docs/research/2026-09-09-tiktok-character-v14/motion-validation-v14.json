@@ -1,0 +1,336 @@
+{
+  "status": "pass",
+  "tolerance_m": 1e-05,
+  "failures": [],
+  "characters": [
+    {
+      "character": "AceHack",
+      "bones": 50,
+      "initial_morph_values": {
+        "jawOpen": 0.0,
+        "jawLeft": 0.0,
+        "jawRight": 0.0,
+        "mouthSmileLeft": 0.0,
+        "mouthSmileRight": 0.0,
+        "mouthPucker": 0.0,
+        "browInnerUp": 0.0,
+        "browDownLeft": 0.0,
+        "browDownRight": 0.0,
+        "eyeBlinkLeft": 0.0,
+        "eyeBlinkRight": 0.0
+      },
+      "weight_error_count": 0,
+      "motion_cases": [
+        {
+          "pose": "left-arm",
+          "checks": {
+            "opposite_arm_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.5786728067803898
+        },
+        {
+          "pose": "right-arm",
+          "checks": {
+            "opposite_arm_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.5786729097827038
+        },
+        {
+          "pose": "elbows",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.3756404811315724
+        },
+        {
+          "pose": "head-left",
+          "checks": {
+            "hair_follows_head": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.09926354104054766
+        },
+        {
+          "pose": "head-right",
+          "checks": {
+            "hair_follows_head": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.09926354983647481
+        },
+        {
+          "pose": "head-nod",
+          "checks": {
+            "hair_follows_head": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.05797094793350407
+        },
+        {
+          "pose": "left-leg",
+          "checks": {
+            "moving_leg_deforms": true,
+            "opposite_leg_fixed": true,
+            "garment_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.27749143952945077
+        },
+        {
+          "pose": "right-leg",
+          "checks": {
+            "moving_leg_deforms": true,
+            "opposite_leg_fixed": true,
+            "garment_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.2760268877867338
+        },
+        {
+          "pose": "left-ankle",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.09152710492295575
+        },
+        {
+          "pose": "right-ankle",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.07625268354442487
+        },
+        {
+          "pose": "index-only",
+          "checks": {
+            "index_moves": true,
+            "middle_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.08612784355940417
+        },
+        {
+          "pose": "fist",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.07830035824708391
+        }
+      ],
+      "mouth_max_gap_m": 0.021211905996801284,
+      "morph_cases": [
+        {
+          "channel": "jawOpen",
+          "max_motion_m": 0.021213229878131293
+        },
+        {
+          "channel": "jawLeft",
+          "max_motion_m": 0.0049999952074699415
+        },
+        {
+          "channel": "jawRight",
+          "max_motion_m": 0.0049999952074699415
+        },
+        {
+          "channel": "mouthSmileLeft",
+          "max_motion_m": 0.005670522464577667
+        },
+        {
+          "channel": "mouthSmileRight",
+          "max_motion_m": 0.005676083343795277
+        },
+        {
+          "channel": "mouthPucker",
+          "max_motion_m": 0.00631453352690435
+        },
+        {
+          "channel": "browInnerUp",
+          "max_motion_m": 0.003999114048997311
+        },
+        {
+          "channel": "browDownLeft",
+          "max_motion_m": 0.0025999545941709215
+        },
+        {
+          "channel": "browDownRight",
+          "max_motion_m": 0.0028207301992745747
+        },
+        {
+          "channel": "eyeBlinkLeft",
+          "max_motion_m": 0.0044739245796661005
+        },
+        {
+          "channel": "eyeBlinkRight",
+          "max_motion_m": 0.004229783951366009
+        }
+      ]
+    },
+    {
+      "character": "Xenaa",
+      "bones": 50,
+      "initial_morph_values": {
+        "jawOpen": 0.0,
+        "jawLeft": 0.0,
+        "jawRight": 0.0,
+        "mouthSmileLeft": 0.0,
+        "mouthSmileRight": 0.0,
+        "mouthPucker": 0.0,
+        "browInnerUp": 0.0,
+        "browDownLeft": 0.0,
+        "browDownRight": 0.0,
+        "eyeBlinkLeft": 0.0,
+        "eyeBlinkRight": 0.0
+      },
+      "weight_error_count": 0,
+      "motion_cases": [
+        {
+          "pose": "left-arm",
+          "checks": {
+            "opposite_arm_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.5543077673456783
+        },
+        {
+          "pose": "right-arm",
+          "checks": {
+            "opposite_arm_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.5543076060508428
+        },
+        {
+          "pose": "elbows",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.3598239623578781
+        },
+        {
+          "pose": "head-left",
+          "checks": {
+            "hair_follows_head": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.22180648152050875
+        },
+        {
+          "pose": "head-right",
+          "checks": {
+            "hair_follows_head": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.22180646682468427
+        },
+        {
+          "pose": "head-nod",
+          "checks": {
+            "hair_follows_head": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.14605401398859783
+        },
+        {
+          "pose": "left-leg",
+          "checks": {
+            "moving_leg_deforms": true,
+            "opposite_leg_fixed": true,
+            "garment_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.2516087009449045
+        },
+        {
+          "pose": "right-leg",
+          "checks": {
+            "moving_leg_deforms": true,
+            "opposite_leg_fixed": true,
+            "garment_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.2599881507951539
+        },
+        {
+          "pose": "left-ankle",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.07108616369254775
+        },
+        {
+          "pose": "right-ankle",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.059038152834272516
+        },
+        {
+          "pose": "index-only",
+          "checks": {
+            "index_moves": true,
+            "middle_fixed": true,
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.08250163204426124
+        },
+        {
+          "pose": "fist",
+          "checks": {
+            "finite": true
+          },
+          "maximum_vertex_motion_m": 0.07500358544412136
+        }
+      ],
+      "mouth_max_gap_m": 0.021192156238093944,
+      "morph_cases": [
+        {
+          "channel": "jawOpen",
+          "max_motion_m": 0.021213229878131293
+        },
+        {
+          "channel": "jawLeft",
+          "max_motion_m": 0.0049999952074699415
+        },
+        {
+          "channel": "jawRight",
+          "max_motion_m": 0.0049999952074699415
+        },
+        {
+          "channel": "mouthSmileLeft",
+          "max_motion_m": 0.0056869086035504
+        },
+        {
+          "channel": "mouthSmileRight",
+          "max_motion_m": 0.005688298765845135
+        },
+        {
+          "channel": "mouthPucker",
+          "max_motion_m": 0.006315286697172578
+        },
+        {
+          "channel": "browInnerUp",
+          "max_motion_m": 0.003998994877021001
+        },
+        {
+          "channel": "browDownLeft",
+          "max_motion_m": 0.002994775762604297
+        },
+        {
+          "channel": "browDownRight",
+          "max_motion_m": 0.0029761791897729194
+        },
+        {
+          "channel": "eyeBlinkLeft",
+          "max_motion_m": 0.0048084259033203125
+        },
+        {
+          "channel": "eyeBlinkRight",
+          "max_motion_m": 0.004571199460637182
+        }
+      ]
+    }
+  ],
+  "scope": "Blender deformation and graph consistency, not live tracking, collisions, topology quality or likeness acceptance"
+}
