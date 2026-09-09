@@ -1,0 +1,14 @@
+{
+  "id": "080d04291740d810a01300083da97b2a",
+  "at": "2026-09-09T07:47:32.507Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M22J5T0T087G0R00189SA2P",
+    "type": "task",
+    "title": "D10 layout persist appends hex without ToHex strings",
+    "slug": "d10-layout-persist-appends-hex-without-tohex-strings",
+    "priority": "P2",
+    "filename": "081M22J5T0T087G0R00189SA2P-d10-layout-persist-appends-hex-without-tohex-strings.md"
+  }
+}

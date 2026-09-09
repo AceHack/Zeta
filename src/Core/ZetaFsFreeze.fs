@@ -1123,7 +1123,9 @@ module ZetaFsFreeze =
     let private encodeLayout (layout: LastLayout) : string =
         let sb = StringBuilder()
         sb.Append("layout/1\n") |> ignore
-        sb.Append("content ").Append(layout.Prev.Content.ToHex()).Append('\n') |> ignore
+        sb.Append("content ") |> ignore
+        layout.Prev.Content.AppendHex(sb) |> ignore
+        sb.Append('\n') |> ignore
         sb.Append("span ").Append(layout.Prev.Span.ToString(CultureInfo.InvariantCulture)).Append('\n')
         |> ignore
         sb.Append("chunker ").Append(ZetaFsJumprope.chunkerName layout.Prev.Chunker).Append('\n')
@@ -1131,7 +1133,8 @@ module ZetaFsFreeze =
         sb.Append("objects") |> ignore
 
         for id in layout.ObjectIds do
-            sb.Append(' ').Append(id.ToHex()) |> ignore
+            sb.Append(' ') |> ignore
+            id.AppendHex(sb) |> ignore
 
         sb.Append('\n') |> ignore
 
@@ -1139,13 +1142,12 @@ module ZetaFsFreeze =
             let id, span = layout.Prev.Leaves.[i]
             let start = layout.Prev.Starts.[i]
 
-            sb.Append("leaf ")
-                .Append(start.ToString(CultureInfo.InvariantCulture))
-                .Append(' ')
-                .Append(id.ToHex())
-                .Append(' ')
-                .Append(span.ToString(CultureInfo.InvariantCulture))
-                .Append('\n')
+            sb.Append("leaf ").Append(start.ToString(CultureInfo.InvariantCulture)).Append(' ')
+            |> ignore
+
+            id.AppendHex(sb) |> ignore
+
+            sb.Append(' ').Append(span.ToString(CultureInfo.InvariantCulture)).Append('\n')
             |> ignore
 
         sb.ToString()

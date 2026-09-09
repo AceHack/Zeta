@@ -445,6 +445,9 @@ Independently reviewable. Tests green or it does not land. ZetaFS numbered PRs s
 - **D10 twelfth peel:** catalog persist AppendHex's ContentHash256 nibbles
   into the StringBuilder (`081M22GKEXS087G0R0033JNZ2F`). No ToHex string
   per pin. Bound stays 12 MiB.
+- **D10 thirteenth peel:** layout persist AppendHex's content, object, and
+  leaf ids (`081M22J5T0T087G0R00189SA2P`). Single-leaf still skips layout.
+  Bound stays 12 MiB.
 - **Numbers stay `toy`.** Not copied into README.
 - **Depends on:** ZD2 (landed). Workitem `081M1ZA8S7C087G0R002P9NX40`.
 - **Does not:** claim ZetaFS is faster than APFS/ext4; FUSE; Apple Developer Program; kill ZetaFS-as-product on batching; claim multi-planet agreement is shipped; put Raft on the geo path.
