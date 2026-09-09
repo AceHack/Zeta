@@ -339,9 +339,23 @@ function tryExclusiveWrite(absPath: string, content: string): boolean {
     // openSync with the "wx" flag (O_CREAT | O_EXCL) is the canonical exclusive
     // create: a single kernel op that fails with EEXIST rather than following a
     // pre-planted symlink or racing a competing writer. Using the dedicated
-    // descriptor form (rather than writeFileSync's options-object flag) is what
-    // the CodeQL insecure-temporary-file dataflow query models as a secure
-    // create, so it clears the finding substantively, not by suppression.
+    // descriptor form (rather than writeFileSync's options-object flag) is the
+    // shape CodeQL's insecure-temporary-file query models as a secure create.
+    //
+    // THIS COMMENT USED TO SAY the change "clears the finding substantively,
+    // not by suppression". THAT WAS FALSE, and it read as settled. Measured
+    // 2026-09-09: code-scanning alert 224 (js/insecure-temporary-file) is
+    // `state=open` against THIS FILE at THIS LINE. A comment asserting a
+    // finding is cleared, sitting on the line the finding names, is worse than
+    // no comment -- it retires the question for the next reader.
+    //
+    // What is true: the exclusive-create mechanism above is correct on its own
+    // terms. What is NOT established: why the query still flags it. The
+    // suspected reason is that `absPath` arrives as a PARAMETER -- this file
+    // never calls `tmpdir()` -- so the query is following a caller that has not
+    // been identified. Until someone identifies that caller and either fixes it
+    // or shows the flow is infeasible, the honest register is UNRESOLVED.
+    // Do not re-close this in a comment; close it with a measurement.
     fd = openSync(absPath, "wx");
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "EEXIST") {
