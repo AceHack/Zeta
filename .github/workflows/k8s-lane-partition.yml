@@ -80,6 +80,11 @@ on:
       - "full-ai-cluster/k8s/bootstrap/**"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      # The coverage falsifier asks whether every Application the INCLUDED
+      # PROOF asserts has a lane. That roster comes from
+      # `discoverExpectedApplications`, so a change to what dev excludes moves
+      # the set being covered without touching anything else listed here.
+      - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - ".github/workflows/k8s-lane-partition.yml"
   push:
     branches: [main]
@@ -95,6 +100,11 @@ on:
       - "full-ai-cluster/k8s/bootstrap/**"
       - "src/Core.TypeScript/cluster/app-of-apps-discovery.ts"
       - "src/Core.TypeScript/cluster/rendered-storage-claims.ts"
+      # The coverage falsifier asks whether every Application the INCLUDED
+      # PROOF asserts has a lane. That roster comes from
+      # `discoverExpectedApplications`, so a change to what dev excludes moves
+      # the set being covered without touching anything else listed here.
+      - "src/Core.TypeScript/cluster/argocd-health-test.ts"
       - ".github/workflows/k8s-lane-partition.yml"
   workflow_dispatch:
 

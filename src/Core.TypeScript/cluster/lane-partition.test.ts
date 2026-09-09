@@ -29,6 +29,7 @@ import {
   type PartitionModel,
   type RosterEntry,
 } from "./lane-partition.ts";
+import { discoverExpectedApplications } from "./argocd-health-test.ts";
 import { envelopeOverstatements, loadRecordedEnvelope } from "./assert-runner-envelope.ts";
 import { collectImages, FOOTPRINTS_PATH, parseImageRef, type LaneFootprints } from "./measure-lane-footprints.ts";
 
@@ -737,3 +738,81 @@ describe("image collection", () => {
 // The test named "an Application with no measured footprint REFUSES the build"
 // was written to kill it, and did.
 // ---------------------------------------------------------------------------
+
+// -------------------------------------------------- coverage, as a falsifier ---
+//
+// AARON, 2026-09-09: "we want to make sure these charts are tested too" and
+// "we can also split up things that don't depend on each other into more lanes".
+// A split is only honest if nothing can fall out of every lane on the way, so
+// the coverage claim gets a check rather than a printed number.
+//
+// `lane-partition.ts` PRINTS "covered by a lane: 47/49". Nothing failed when
+// that ratio dropped. `k8s-lane-partition.yml` fails only on a ZERO-lane
+// matrix, so a single Application quietly leaving every lane -- a new chart, a
+// changed dependency edge, a footprint that grew past the budget -- was
+// invisible. That is the shape this repo already refuses everywhere else: a
+// report is not an assertion.
+//
+// The rule: every Application the INCLUDED PROOF asserts is either assigned to
+// exactly one lane, or quarantined with a named artifact. Quarantine is a
+// third answer, never a pass -- so the reason has to be non-empty and it has
+// to name the thing a human would fix.
+describe("081M23BCR90087G0R002GYP7TE lane coverage of the asserted roster", () => {
+  const model = buildModel({ repoRoot: REPO_ROOT, rung: "dev" });
+  const partition = packLanes(model);
+  const asserted = discoverExpectedApplications(REPO_ROOT)
+    .filter((app) => !app.excludedFromDev)
+    .map((app) => app.name);
+
+  test("every asserted Application is in exactly one lane, or quarantined with a reason", () => {
+    const assignedCount = new Map<string, number>();
+    for (const lane of partition.lanes) {
+      for (const name of lane.assigned) {
+        assignedCount.set(name, (assignedCount.get(name) ?? 0) + 1);
+      }
+    }
+    const quarantined = new Map<string, string>();
+    for (const entry of [...partition.oversize, ...partition.unpriced]) {
+      quarantined.set(entry.name, entry.reason);
+    }
+
+    const homeless: string[] = [];
+    const duplicated: string[] = [];
+    const unexplained: string[] = [];
+    for (const name of asserted) {
+      const count = assignedCount.get(name) ?? 0;
+      if (count > 1) duplicated.push(name);
+      if (count === 1) continue;
+      const reason = quarantined.get(name);
+      if (reason === undefined) homeless.push(name);
+      else if (reason.trim().length === 0) unexplained.push(name);
+    }
+
+    // A chart in no lane is a chart nobody brings up. A chart in two lanes is
+    // asserted twice, which hides which lane actually proved it.
+    expect({ homeless, duplicated, unexplained }).toEqual({
+      homeless: [],
+      duplicated: [],
+      unexplained: [],
+    });
+  });
+
+  test("the check is NOT vacuous -- the asserted roster is large and lanes exist", () => {
+    // Both halves can fail. An empty `asserted` would make the loop above
+    // pass over nothing, and a zero-lane partition would make every app
+    // homeless. Neither is allowed to look like coverage.
+    expect(asserted.length).toBeGreaterThanOrEqual(30);
+    expect(partition.lanes.length).toBeGreaterThanOrEqual(1);
+    expect(partition.lanes.some((lane) => lane.assigned.length > 0)).toBe(true);
+  });
+
+  test("a quarantine reason names the artifact, so it is fixable", () => {
+    // `hat-system` and `gitlab` are the live instances. The reason must say
+    // WHAT blocks them -- an unmeasurable image, or the axis and both
+    // numbers -- never a bare "quarantined".
+    for (const entry of [...partition.oversize, ...partition.unpriced]) {
+      expect(entry.reason.length).toBeGreaterThan(0);
+      expect(entry.reason).toMatch(/unmeasurable image|no CPU\/memory row|cpu |memory |disk /);
+    }
+  });
+});
