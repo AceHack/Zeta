@@ -1,0 +1,12 @@
+{
+  "pr_number": 17125,
+  "archive_path": "docs/history/pr-reviews/PR-17125-fix-hygiene-untrack-the-compiled-alloyrunner-class-and-add-the-falsifier-that-wo.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:03:58.311Z",
+  "schema_version": "v1",
+  "commit_sha": "2f9630893ef04aa675ec9ec9eb30ce8cd3e35318",
+  "title": "fix(hygiene): untrack the compiled AlloyRunner.class and add the falsifier that would have caught it",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:03:00Z",
+  "head_ref": "security/binary-artifacts-audit"
+}

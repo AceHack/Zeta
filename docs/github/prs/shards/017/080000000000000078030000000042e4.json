@@ -1,0 +1,12 @@
+{
+  "pr_number": 17124,
+  "archive_path": "docs/history/pr-reviews/PR-17124-fix-deps-refresh-the-stale-root-npm-lockfile-and-pin-fast-uri-past-its-cve.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:01:21.911Z",
+  "schema_version": "v1",
+  "commit_sha": "7f3c2a2e96bf3e5129450fa09f0fb74e41a0f2cf",
+  "title": "fix(deps): refresh the stale root npm lockfile and pin fast-uri past its CVE",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:00:38Z",
+  "head_ref": "security/npm-lockfile-cves"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17116,
+  "archive_path": "docs/history/pr-reviews/PR-17116-fix-toolchain-the-tlc-jvm-sigbus-is-host-memory-corruption-not-the-java-26-pin.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:53:55.439Z",
+  "schema_version": "v1",
+  "commit_sha": "b0b1f9411adc373685d7b175f5911c4f2348bd5a",
+  "title": "fix(toolchain): the TLC JVM SIGBUS is host memory corruption, not the Java 26 pin",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:53:09Z",
+  "head_ref": "bug/tlc-jvm-sigbus-is-host-corruption-not-java-version"
+}

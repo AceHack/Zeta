@@ -1,0 +1,12 @@
+{
+  "pr_number": 17108,
+  "archive_path": "docs/history/pr-reviews/PR-17108-feat-081m22ekt5a087g0r00137cvqq-rung-3-3d-by-eigenlayer-tessellation-of-the-e8-r.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:28:04.944Z",
+  "schema_version": "v1",
+  "commit_sha": "27115153031e2f7c1cc4ec92d3388753e7f0f52b",
+  "title": "feat(081M22EKT5A087G0R00137CVQQ): rung 3 — 3D by eigenlayer tessellation of the E8 roots",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:27:20Z",
+  "head_ref": "shadow/clifford-e8-rung3-eigenlayer-tessellation"
+}

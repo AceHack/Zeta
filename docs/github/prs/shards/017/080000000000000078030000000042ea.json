@@ -1,0 +1,12 @@
+{
+  "pr_number": 17130,
+  "archive_path": "docs/history/pr-reviews/PR-17130-fix-081m22t9cfa087g0r0026yn1nw-a-qemu-failure-must-carry-what-the-guest-actually.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:41:07.829Z",
+  "schema_version": "v1",
+  "commit_sha": "90e6027a4586c75f46a44a731fc34b905d2a8c33",
+  "title": "fix(081M22T9CFA087G0R0026YN1NW): a QEMU failure must carry what the guest actually said",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:40:27Z",
+  "head_ref": "qemu-serial-tail-on-failure"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17123,
+  "archive_path": "docs/history/pr-reviews/PR-17123-fix-ci-declare-the-one-missing-permissions-block-and-drop-three-unexercised-writ.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T09:51:04.921Z",
+  "schema_version": "v1",
+  "commit_sha": "699f9c88463fb0b5a6ecae223e2ee97486dc12f9",
+  "title": "fix(ci): declare the one missing permissions block and drop three unexercised write grants",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T09:50:24Z",
+  "head_ref": "security/workflow-token-permissions"
+}

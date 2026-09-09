@@ -1,0 +1,12 @@
+{
+  "pr_number": 17128,
+  "archive_path": "docs/history/pr-reviews/PR-17128-fix-backlog-make-four-never-clobber-guards-atomic-instead-of-advisory.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:13:02.561Z",
+  "schema_version": "v1",
+  "commit_sha": "7f5b18ce1e4a90111d716c3dca5a5dd01b00fdce",
+  "title": "fix(backlog): make four never-clobber guards atomic instead of advisory",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:12:15Z",
+  "head_ref": "security/file-system-race"
+}

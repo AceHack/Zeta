@@ -1,0 +1,12 @@
+{
+  "pr_number": 17107,
+  "archive_path": "docs/history/pr-reviews/PR-17107-docs-research-b9-s-obvious-fix-would-defeat-the-gate-it-unblocks.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:17:35.937Z",
+  "schema_version": "v1",
+  "commit_sha": "f95c4eae5d94288c05f58b4d91c49b043bb84f5d",
+  "title": "docs(research): B9's obvious fix would defeat the gate it unblocks",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:16:55Z",
+  "head_ref": "shadow/b9-the-linux-adapter-must-not-swallow-the-gate"
+}

@@ -1,0 +1,12 @@
+{
+  "pr_number": 17127,
+  "archive_path": "docs/history/pr-reviews/PR-17127-research-avatars-preserve-tiktok-face-prototypes-and-blender-rig-correction-tria.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:34:35.760Z",
+  "schema_version": "v1",
+  "commit_sha": "4b0bef404baf4cd92f1605ee8f1e574eafbe30f4",
+  "title": "research(avatars): Preserve TikTok face prototypes and Blender rig correction trials",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:33:47Z",
+  "head_ref": "codex/tiktok-character-seams-20260909"
+}

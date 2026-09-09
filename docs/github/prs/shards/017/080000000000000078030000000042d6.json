@@ -1,0 +1,12 @@
+{
+  "pr_number": 17110,
+  "archive_path": "docs/history/pr-reviews/PR-17110-preserve-the-next-composed-character-evolution-and-measured-failures.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T07:44:09.678Z",
+  "schema_version": "v1",
+  "commit_sha": "09b556e73298219d56b1b953edf1fc7f7813cf2c",
+  "title": "Preserve the next composed character evolution and measured failures",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T07:43:28Z",
+  "head_ref": "codex/character-evolution-20260909"
+}

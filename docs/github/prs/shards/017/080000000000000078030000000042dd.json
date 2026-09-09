@@ -1,0 +1,12 @@
+{
+  "pr_number": 17117,
+  "archive_path": "docs/history/pr-reviews/PR-17117-feat-081m22j5t0t087g0r00189sa2p-layout-persist-appends-hex-without-tohex.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T08:15:36.154Z",
+  "schema_version": "v1",
+  "commit_sha": "e607ad99bf5560c4c044fd0ad8d543cb8bdf1dbc",
+  "title": "feat(081M22J5T0T087G0R00189SA2P): layout persist appends hex without ToHex",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T08:14:14Z",
+  "head_ref": "feat/zetafs-d10-layout-append-hex"
+}

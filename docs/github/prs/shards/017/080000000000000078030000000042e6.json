@@ -1,0 +1,12 @@
+{
+  "pr_number": 17126,
+  "archive_path": "docs/history/pr-reviews/PR-17126-feat-081m22rz3vd087g0r0009780nx-rung-5-the-4-21-face-set-derived-f-vector-as-its.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:10:33.464Z",
+  "schema_version": "v1",
+  "commit_sha": "139105f8bbed8e4c0d74182c97fb58c198c49074",
+  "title": "feat(081M22RZ3VD087G0R0009780NX): rung 5 - the 4_21 face set derived, f-vector as its falsifier",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:09:47Z",
+  "head_ref": "rung-5-face-lattice-euler-falsifier"
+}

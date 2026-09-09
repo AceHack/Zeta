@@ -1,0 +1,12 @@
+{
+  "pr_number": 17118,
+  "archive_path": "docs/history/pr-reviews/PR-17118-fix-setup-windows-arm64-had-no-java-at-all-give-it-the-newest-that-exists.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T08:46:55.192Z",
+  "schema_version": "v1",
+  "commit_sha": "9b69455404a604f7a2477eaff3d521dbe29727bc",
+  "title": "fix(setup): Windows ARM64 had NO Java at all; give it the newest that exists",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T08:46:06Z",
+  "head_ref": "shadow/windows-arm64-gets-a-java"
+}

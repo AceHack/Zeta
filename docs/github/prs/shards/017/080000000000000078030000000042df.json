@@ -1,0 +1,12 @@
+{
+  "pr_number": 17119,
+  "archive_path": "docs/history/pr-reviews/PR-17119-feat-081m22j18fz087g0r0034awa5h-rung-4-exact-integer-coverage-of-clifford-derive.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T08:16:58.305Z",
+  "schema_version": "v1",
+  "commit_sha": "4c729a06e12a1cb1cebdd5520b2076e3b7556648",
+  "title": "feat(081M22J18FZ087G0R0034AWA5H): rung 4 — exact integer coverage of Clifford-derived regions",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T08:16:09Z",
+  "head_ref": "otto-graphics-rung4-exact-coverage"
+}

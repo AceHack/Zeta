@@ -1,0 +1,12 @@
+{
+  "pr_number": 17096,
+  "archive_path": "docs/history/pr-reviews/PR-17096-build-deps-bump-the-pip-group-across-2-directories-with-2-updates.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T14:57:24.616Z",
+  "schema_version": "v1",
+  "commit_sha": "28527c40c7a7cf7816dcd535a39c218d166846ba",
+  "title": "build(deps): Bump the pip group across 2 directories with 2 updates",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T14:56:42Z",
+  "head_ref": "dependabot/pip/docs/research/2026-09-08-character-evolution/reconstruction-sources/pip-761304edb1"
+}

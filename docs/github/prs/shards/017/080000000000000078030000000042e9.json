@@ -1,0 +1,12 @@
+{
+  "pr_number": 17129,
+  "archive_path": "docs/history/pr-reviews/PR-17129-fix-081m22scsm4087g0r001k51fwf-main-is-red-group-the-summary-redirects-that-trip.md",
+  "source_ids": [],
+  "fetched_at": "2026-09-09T10:14:59.415Z",
+  "schema_version": "v1",
+  "commit_sha": "6e9164790ad27a4f8bf52e509eb4c5d08958c63d",
+  "title": "fix(081M22SCSM4087G0R001K51FWF): main is red - group the summary redirects that trip SC2129",
+  "state": "MERGED",
+  "merged_at": "2026-09-09T10:14:18Z",
+  "head_ref": "fix-actionlint-sc2129-lint-autofix-apply"
+}
