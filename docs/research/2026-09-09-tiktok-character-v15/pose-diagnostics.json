@@ -1,0 +1,872 @@
+[
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 2.5790741936372184e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 1.2289223971371862e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 1.519626234052415e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 1.3329305248569582e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.0,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 1,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 0.5404919392031868,
+    "edges_longer_than_1mm_stretched_over_3x": 8,
+    "worst_edges": [
+      {
+        "ratio": 3.4237706057639046,
+        "rest_midpoint": [
+          0.1671326458454132,
+          -0.12284449487924576,
+          1.3779518008232117
+        ]
+      },
+      {
+        "ratio": 3.395805717606376,
+        "rest_midpoint": [
+          0.16569916158914566,
+          -0.11586260423064232,
+          1.3774235248565674
+        ]
+      },
+      {
+        "ratio": 3.300093215122579,
+        "rest_midpoint": [
+          0.1662663146853447,
+          -0.10705023258924484,
+          1.3710178136825562
+        ]
+      },
+      {
+        "ratio": 3.2803049250624756,
+        "rest_midpoint": [
+          0.2341422438621521,
+          -0.07385771721601486,
+          1.5902990102767944
+        ]
+      },
+      {
+        "ratio": 3.223056434309175,
+        "rest_midpoint": [
+          0.17515526711940765,
+          -0.10748300328850746,
+          1.3768444657325745
+        ]
+      }
+    ]
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 1.2289223971371862e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 0.4923630933761492,
+    "edges_longer_than_1mm_stretched_over_3x": 3,
+    "worst_edges": [
+      {
+        "ratio": 3.967802682660343,
+        "rest_midpoint": [
+          0.22340168803930283,
+          -0.11017246544361115,
+          1.346823275089264
+        ]
+      },
+      {
+        "ratio": 3.5205643903326522,
+        "rest_midpoint": [
+          0.17349381744861603,
+          -0.11124076321721077,
+          1.2901251316070557
+        ]
+      },
+      {
+        "ratio": 3.271281491831538,
+        "rest_midpoint": [
+          0.17397933453321457,
+          -0.12603743374347687,
+          1.2894054651260376
+        ]
+      }
+    ]
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 1.3329305248569582e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.0,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 25,
+    "pose": "Left arm",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 0.5464915493113212,
+    "edges_longer_than_1mm_stretched_over_3x": 7,
+    "worst_edges": [
+      {
+        "ratio": 3.4363352659325415,
+        "rest_midpoint": [
+          -0.23324774205684662,
+          -0.14914818108081818,
+          1.378533124923706
+        ]
+      },
+      {
+        "ratio": 3.435405477962766,
+        "rest_midpoint": [
+          -0.20013687014579773,
+          -0.054725490510463715,
+          1.3789912462234497
+        ]
+      },
+      {
+        "ratio": 3.3135633901983224,
+        "rest_midpoint": [
+          -0.2338915467262268,
+          -0.14765959233045578,
+          1.3766595125198364
+        ]
+      },
+      {
+        "ratio": 3.1740465720028164,
+        "rest_midpoint": [
+          -0.26794518530368805,
+          -0.06511363387107849,
+          1.5901308059692383
+        ]
+      },
+      {
+        "ratio": 3.1694806754589795,
+        "rest_midpoint": [
+          -0.26756806671619415,
+          -0.08768420293927193,
+          1.59042626619339
+        ]
+      }
+    ]
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 1.2289223971371862e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 0.500467099919449,
+    "edges_longer_than_1mm_stretched_over_3x": 54,
+    "worst_edges": [
+      {
+        "ratio": 6.390741852446777,
+        "rest_midpoint": [
+          -0.14425420761108398,
+          -0.07060480862855911,
+          1.306426763534546
+        ]
+      },
+      {
+        "ratio": 5.953342932384461,
+        "rest_midpoint": [
+          -0.1446719542145729,
+          -0.07684877887368202,
+          1.2995737791061401
+        ]
+      },
+      {
+        "ratio": 5.155295437374437,
+        "rest_midpoint": [
+          -0.14462509751319885,
+          -0.07907677441835403,
+          1.2984148859977722
+        ]
+      },
+      {
+        "ratio": 4.903967741995255,
+        "rest_midpoint": [
+          -0.14457805454730988,
+          -0.06892383843660355,
+          1.3076759576797485
+        ]
+      },
+      {
+        "ratio": 4.9025059476516075,
+        "rest_midpoint": [
+          -0.14410552382469177,
+          -0.08556462079286575,
+          1.2978841066360474
+        ]
+      }
+    ]
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 1.3329305248569582e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.0,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 49,
+    "pose": "Right arm",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 2.5790741936372184e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 1.2289223971371862e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 0.23510016017499494,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 1.519626234052415e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 1.3329305248569582e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.0,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 0.22286318008797035,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 73,
+    "pose": "Left knee",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 2.5790741936372184e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 1.2289223971371862e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 0.23024585192668517,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 1.519626234052415e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 1.3329305248569582e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.0,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 97,
+    "pose": "Right knee",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 0.22552517531374552,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 2.5790741936372184e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 0.07659097341620075,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 1.519626234052415e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 0.08514637993878911,
+    "edges_longer_than_1mm_stretched_over_3x": 9,
+    "worst_edges": [
+      {
+        "ratio": 4.42372323773994,
+        "rest_midpoint": [
+          -0.06951894983649254,
+          -0.23331820964813232,
+          1.5560802817344666
+        ]
+      },
+      {
+        "ratio": 4.179464740767738,
+        "rest_midpoint": [
+          0.0693889893591404,
+          -0.2242986261844635,
+          1.556398630142212
+        ]
+      },
+      {
+        "ratio": 3.7650694012047796,
+        "rest_midpoint": [
+          0.07050296291708946,
+          -0.22201193869113922,
+          1.5593413710594177
+        ]
+      },
+      {
+        "ratio": 3.6434796270743917,
+        "rest_midpoint": [
+          0.06985485926270485,
+          -0.22286532074213028,
+          1.5580989122390747
+        ]
+      },
+      {
+        "ratio": 3.5809457422583164,
+        "rest_midpoint": [
+          -0.07036659494042397,
+          -0.23245885968208313,
+          1.5580174922943115
+        ]
+      }
+    ]
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.16899042531331118,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 121,
+    "pose": "Head left",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 2.5790741936372184e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 0.07659097502382778,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 1.519626234052415e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 0.08514636469679988,
+    "edges_longer_than_1mm_stretched_over_3x": 12,
+    "worst_edges": [
+      {
+        "ratio": 5.516671743548765,
+        "rest_midpoint": [
+          -0.06951894983649254,
+          -0.23331820964813232,
+          1.5560802817344666
+        ]
+      },
+      {
+        "ratio": 4.712451973536119,
+        "rest_midpoint": [
+          -0.07036659494042397,
+          -0.23245885968208313,
+          1.5580174922943115
+        ]
+      },
+      {
+        "ratio": 4.442540927229009,
+        "rest_midpoint": [
+          -0.07041782513260841,
+          -0.2331552356481552,
+          1.5566104650497437
+        ]
+      },
+      {
+        "ratio": 3.8454336721179954,
+        "rest_midpoint": [
+          -0.0694986954331398,
+          -0.2315674126148224,
+          1.5594477653503418
+        ]
+      },
+      {
+        "ratio": 3.750473425007413,
+        "rest_midpoint": [
+          0.06985485926270485,
+          -0.22286532074213028,
+          1.5580989122390747
+        ]
+      }
+    ]
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.16899043356640198,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 145,
+    "pose": "Head right",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "AceHack | Body generator",
+    "max_displacement_m": 2.5790741936372184e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "AceHack | Independent head generator",
+    "max_displacement_m": 1.2289223971371862e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "AceHack | Source left leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "AceHack | Source right leg",
+    "max_displacement_m": 6.828569911354542e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Body generator",
+    "max_displacement_m": 1.519626234052415e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Independent head generator",
+    "max_displacement_m": 1.3329305248569582e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Jacket back lining",
+    "max_displacement_m": 1.341104507446289e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Recovered source hair",
+    "max_displacement_m": 0.0,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Source left leg",
+    "max_displacement_m": 6.322027276634104e-08,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  },
+  {
+    "frame": 169,
+    "pose": "Neutral",
+    "mesh": "Xenaa | Source right leg",
+    "max_displacement_m": 1.2310379476739693e-07,
+    "edges_longer_than_1mm_stretched_over_3x": 0,
+    "worst_edges": []
+  }
+]

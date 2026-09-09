@@ -1,0 +1,173 @@
+"""Quality experiment: retain pre-rig surfaces and UVs; add bounded skeletal weights."""
+import bpy,bmesh,json,math,hashlib
+import numpy as np
+from pathlib import Path
+from mathutils import Vector,Matrix
+R=Path(__file__).resolve().parent;B=R.parent;O=R/'review';O.mkdir(exist_ok=True)
+source=B/'Character-Evolution-20260909/delivery-v5/AceHack-Xenaa-Evolution-20260909.blend'
+bpy.ops.wm.open_mainfile(filepath=str(source));sc=bpy.context.scene
+for other in list(bpy.data.scenes):
+ if other!=sc:bpy.data.scenes.remove(other)
+# Retain the already-tested bone layout; do not inherit the replacement surfaces.
+with bpy.data.libraries.load(str(B/'TikTok-Character-Evolution-20260909/blender-v14/Characters-v14.blend'),link=False) as (a,b):b.objects=[n+' | Motion rig' for n in ['AceHack','Xenaa']]
+rigs={}
+for rig in b.objects:
+ sc.collection.objects.link(rig);rig.animation_data_clear()
+ for bone in rig.pose.bones:bone.matrix_basis=Matrix.Identity(4)
+ rigs[rig.name.split(' | ')[0]]=rig
+bpy.context.view_layer.update();receipts=[]
+def smooth(x):x=max(0,min(1,x));return x*x*(3-2*x)
+def segment(p,a,b):
+ q=b-a;t=max(0,min(1,(p-a).dot(q)/q.length_squared));return (p-a-q*t).length,t
+
+def freeze_projection(o):
+ # Store the source-space signals used by projection/material mixing. Lighting normals remain live.
+ coords=np.empty(len(o.data.vertices)*3,dtype=np.float32);normals=coords.copy();o.data.vertices.foreach_get('co',coords);o.data.vertices.foreach_get('normal',normals)
+ coords=coords.reshape(-1,3);normals=normals.reshape(-1,3);mat=np.array(o.matrix_world);coords=coords@mat[:3,:3].T+mat[:3,3];normals=normals@mat[:3,:3].T
+ for name,data in [('sourceRestNormal',normals),('sourceRestPosition',coords)]:
+  attr=o.data.attributes.get(name) or o.data.attributes.new(name=name,type='FLOAT_VECTOR',domain='POINT');attr.data.foreach_set('vector',data.ravel())
+ for m in o.data.materials:
+  if m and m.use_nodes:
+   for n in list(m.node_tree.nodes):
+    if n.type=='NEW_GEOMETRY':
+     for output,key in [('Normal','sourceRestNormal'),('Position','sourceRestPosition')]:
+      targets=[l.to_socket for l in list(n.outputs[output].links)]
+      if targets:
+       at=m.node_tree.nodes.new('ShaderNodeAttribute');at.attribute_name=key
+       for to in targets:m.node_tree.links.new(at.outputs['Vector'],to)
+
+def bind(o,rig,field):
+ o.vertex_groups.clear();groups={n:o.vertex_groups.new(name=n) for n in rig.data.bones.keys()}
+ for v in o.data.vertices:
+  weights={n:w for n,w in field(v.co,v.index).items() if w>1e-7};total=sum(weights.values())
+  for n,w in weights.items():groups[n].add([v.index],w/total,'REPLACE')
+ bpy.context.view_layer.update();world=o.matrix_world.copy();o.parent=rig;o.matrix_world=world
+ mod=o.modifiers.new('Surface-preserving skeleton','ARMATURE');mod.object=rig;mod.use_deform_preserve_volume=False
+
+def split_faces(o,selected,label):
+ part=o.copy();part.data=o.data.copy();sc.collection.objects.link(part);part.name=label
+ for ob,keep in [(o,False),(part,True)]:
+  bm=bmesh.new();bm.from_mesh(ob.data);bm.faces.ensure_lookup_table();bmesh.ops.delete(bm,geom=[f for f in bm.faces if (f.index in selected)!=keep],context='FACES');bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bm.to_mesh(ob.data);bm.free();ob.data.update()
+ return part
+
+for name,H in [('AceHack',1.9),('Xenaa',1.82)]:
+ print('CHARACTER',name,flush=True);rig=rigs[name];s=H/1.9;body=bpy.data.objects[name+' | Body generator'];head=bpy.data.objects[name+' | Independent head generator']
+ for o in [body,head]:
+  bpy.context.view_layer.objects.active=o
+  for m in list(o.modifiers):bpy.ops.object.modifier_apply(modifier=m.name)
+  print("FREEZE",o.name,flush=True);freeze_projection(o)
+ original_polygons=len(body.data.polygons);hair=None
+ legs=[]
+ for side,sign in [('Left',1),('Right',-1)]:
+  a=rig.data.bones[side+'Thigh'].head_local;b=rig.data.bones[side+'Shin'].head_local;c=rig.data.bones[side+'Foot'].head_local;selected=set()
+  for f in body.data.polygons:
+   p=f.center;dist=min(segment(p,a,b)[0],segment(p,b,c)[0])
+   if p.x*sign>0 and p.z<.96*s and ((dist<.105*s and p.y<-.065*s) or (p.z<.22*s and abs(p.x-sign*.225*s)<.13*s and p.y<.025*s)):selected.add(f.index)
+  leg=split_faces(body,selected,name+' | Source '+side.lower()+' leg');legs.append(leg)
+  def legfield(p,i):
+   hip=smooth((.96*s-p.z)/(.16*s));k=smooth((.64*s-p.z)/(.14*s));ank=smooth((.22*s-p.z)/(.10*s));return {'Pelvis':1-hip,side+'Thigh':hip*(1-k),side+'Shin':hip*k*(1-ank),side+'Foot':hip*k*ank}
+  bind(leg,rig,legfield)
+
+ if name=='Xenaa':
+  # Recover the original sculpted shoulder hair. This is a bounded mask, not a learned segmentation.
+  selected=set();im=next(n.image for n in body.data.materials[0].node_tree.nodes if n.type=='TEX_IMAGE');pixels=np.empty(len(im.pixels),dtype=np.float32);im.pixels.foreach_get(pixels);pixels=pixels.reshape(im.size[1],im.size[0],4);uv=body.data.uv_layers.active.data
+  for f in body.data.polygons:
+   p=f.center
+   t=sum((uv[i].uv for i in f.loop_indices),Vector((0,0)))/len(f.loop_indices);rgb=pixels[min(im.size[1]-1,max(0,int(t.y*im.size[1]))),min(im.size[0]-1,max(0,int(t.x*im.size[0])))][:3];skin=rgb[0]>.18 and rgb[0]>rgb[2]*1.35
+   near_arm=min(segment(p,rig.data.bones[side+'UpperArm'].head_local,rig.data.bones[side+'UpperArm'].tail_local)[0] for side in ['Left','Right'])<.09
+   if ((-.40<p.x<-.115 and p.z>1.34 and p.y<-.075 and not skin) or (p.z>1.33 and p.y>-.12 and abs(p.x)<.205 and not skin and not near_arm)):selected.add(f.index)
+  hair=split_faces(body,selected,name+' | Recovered source hair')
+  bind(hair,rig,lambda p,i:{'Head':1.0})
+  # A fitted jacket back covers the removed reconstruction, independently of the hair.
+  verts=[];faces=[];rings=[(1.16,.155,.075),(1.32,.17,.095),(1.44,.185,.075),(1.51,.12,.025)]
+  for z,width,depth in rings:
+   for j in range(17):
+    theta=math.pi*j/16;verts.append((width*math.cos(theta),depth*math.sin(theta)-.11,z))
+  for k in range(len(rings)-1):
+   for j in range(16):a=k*17+j;faces.append((a,a+1,a+18,a+17))
+  mesh=bpy.data.meshes.new('Fitted jacket back');mesh.from_pydata(verts,[],faces);mesh.update();panel=bpy.data.objects.new(name+' | Jacket back lining',mesh);sc.collection.objects.link(panel);panel.location.x=rig.location.x
+  mat=bpy.data.materials.new('Xenaa | Dark violet jacket lining');mat.use_nodes=True;bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(.019,.008,.035,1);bs.inputs['Roughness'].default_value=.78;panel.data.materials.append(mat)
+  for f in mesh.polygons:f.use_smooth=True
+  bind(panel,rig,lambda p,i:{'Spine3':1.0})
+
+ # Move the detailed original head to the corrected torso centre. Preserve its existing neck texture.
+ delta=Vector((0,-.105,-.030)) if name=='AceHack' else Vector((0,-.115,-.018))
+ for v in head.data.vertices:
+  v.co+=delta
+  neck=smooth(((1.675 if name=='AceHack' else 1.60)-v.co.z)/.065);v.co.x*=1-.48*neck
+ head.data.update()
+ if name=='Xenaa':
+  # The source back/side hair contains bright background contamination.
+  # Reuse its existing dark hair material only behind the facial surface.
+  dark=next((i for i,m in enumerate(head.data.materials) if m and 'Dark back hair' in m.name),None)
+  if dark is not None:
+   hairbs=head.data.materials[dark].node_tree.nodes.get('Principled BSDF');hairbs.inputs['Roughness'].default_value=.85;hairbs.inputs['Specular IOR Level'].default_value=.18
+   for f in head.data.polygons:
+    if (f.center.y>-.14 and f.center.z>1.60) or (abs(f.center.x)>.082 and f.center.y>-.20 and f.center.z>1.64):f.material_index=dark
+   if hair:
+    hair.data.materials.append(head.data.materials[dark]);slot=len(hair.data.materials)-1
+    for f in hair.data.polygons:
+     if f.center.y>-.12 or f.normal.y>-.35:f.material_index=slot
+ base=1.53 if name=='AceHack' else 1.485;top=1.645 if name=='AceHack' else 1.575
+ hair_vertices={i for f in head.data.polygons if head.data.materials[f.material_index] and 'Dark back hair' in head.data.materials[f.material_index].name for i in f.vertices}
+ if name=='Xenaa':hair_vertices.update(v.index for v in head.data.vertices if abs(v.co.x)>.07 or v.co.y>-.10)
+ attr=head.data.attributes.new(name='reviewScalpHair',type='BOOLEAN',domain='POINT')
+ for i in hair_vertices:attr.data[i].value=True
+ bind(head,rig,lambda p,i:{'Spine3':0 if i in hair_vertices else 1-smooth((p.z-base)/(top-base)),'Head':1 if i in hair_vertices else smooth((p.z-base)/(top-base))})
+ # Below the shoulder, arm surfaces are separate connected components of the source mesh.
+ # Flood from the hand inside a height-limited graph; a spatial mask alone captures coat tails.
+ limit=1.37*s
+ eligible={v.index for v in body.data.vertices if v.co.z<limit}
+ adjacency={i:[] for i in eligible}
+ for edge in body.data.edges:
+  a,b=edge.vertices
+  if a in eligible and b in eligible:adjacency[a].append(b);adjacency[b].append(a)
+ arm_components={}
+ for side in ['Left','Right']:
+  hand=rig.data.bones[side+'Hand'];point=(hand.head_local+hand.tail_local)/2
+  seed=min(eligible,key=lambda i:(body.data.vertices[i].co-point).length_squared)
+  seen={seed};todo=[seed]
+  while todo:
+   for j in adjacency[todo.pop()]:
+    if j not in seen:seen.add(j);todo.append(j)
+  assert len(seen)<len(eligible)*.2,(name,side,'arm component reached torso',len(seen))
+  arm_components[side]=seen
+ print('Arm components',name,{k:len(v) for k,v in arm_components.items()},flush=True)
+
+ # Diffuse arm influence through the shoulder while fixing torso and lower-arm anchors.
+ # This avoids a discontinuous horizontal cut in the skin weights.
+ xyz=np.array([tuple(v.co) for v in body.data.vertices]);edges=np.array([tuple(e.vertices) for e in body.data.edges],dtype=np.int32);n=len(xyz);src=np.r_[edges[:,0],edges[:,1]];dst=np.r_[edges[:,1],edges[:,0]];degree=np.maximum(1,np.bincount(src,minlength=n));arm_weight={}
+ for side,sign in [('Left',1),('Right',-1)]:
+  fixed=(xyz[:,2]<limit-.025*s)|(xyz[:,2]>1.60*s)|(xyz[:,0]*sign<.145*s)
+  values=np.zeros(n);ids=np.array(sorted(arm_components[side]));values[ids]=1
+  outer=(xyz[:,2]>=limit-.025*s)&(xyz[:,2]<1.50*s)&(xyz[:,0]*sign>.235*s)&(xyz[:,1]<.025*s);values[outer]=1;fixed|=outer
+  anchors=values.copy()
+  for _ in range(240):
+   averaged=np.bincount(src,weights=values[dst],minlength=n)/degree;values=.25*values+.75*averaged;values[fixed]=anchors[fixed]
+  arm_weight[side]=values
+ def field(p,index):
+  x,y,z=p;side='Left' if x>0 else 'Right';ax=abs(x)
+  torso='Spine3' if z>1.42*s else 'Spine2' if z>1.20*s else 'Spine1' if z>1.04*s else 'Pelvis'
+  if index in arm_components[side] or (.89*s<z<1.59*s):
+   arm=float(arm_weight[side][index])
+   if arm>0:
+    e=smooth((1.34*s-z)/(.13*s));w=smooth((1.105*s-z)/(.075*s));return {torso:1-arm,side+'UpperArm':arm*(1-e),side+'ForeArm':arm*e*(1-w),side+'Hand':arm*e*w}
+  return {torso:1}
+ assert len(body.data.polygons)+sum(len(o.data.polygons) for o in legs)+(len(hair.data.polygons) if hair else 0)==original_polygons
+ print("BIND BODY",name,flush=True);bind(body,rig,field)
+ collar=bpy.data.objects.get(name+' | Collar join')
+ if collar:
+  # Source collar vertices were authored in world coordinates. Normalize before parenting.
+  for v in collar.data.vertices:v.co.x-=rig.location.x;v.co.y+=delta.y;v.co.z+=delta.z
+  collar.location.x=rig.location.x;bind(collar,rig,lambda p,i:{'Spine3':1.0})
+ # The material graph's stored coordinates preserve the original projection while limbs move.
+ bpy.context.view_layer.update();dg=bpy.context.evaluated_depsgraph_get();ob=body.evaluated_get(dg);mesh=ob.to_mesh();err=max((v.co-body.data.vertices[v.index].co).length for v in mesh.vertices);ob.to_mesh_clear();assert err<1e-5
+ receipts.append({'character':name,'source_body_faces':original_polygons,'body_faces':len(body.data.polygons),'leg_faces':sum(len(o.data.polygons) for o in legs),'hair_faces':len(hair.data.polygons) if hair else 0,'body_neutral_max_displacement_m':err,'head_translation_m':list(delta),'head_faces':len(head.data.polygons),'joints':len(rig.data.bones),'status':'visual/deformation experiment; no mobile or facial acceptance'})
+sc.render.engine='CYCLES';sc.cycles.samples=24;sc.cycles.use_denoising=True;sc.render.resolution_x=1440;sc.render.resolution_y=1200;sc.render.resolution_percentage=100
+for area in bpy.context.screen.areas:
+ if area.type=='VIEW_3D':area.spaces.active.shading.type='MATERIAL'
+sc.frame_set(1);bpy.ops.wm.save_as_mainfile(filepath=str(O/'Characters-v15-surface-study.blend'));sc.render.filepath=str(O/'neutral.png');bpy.ops.render.render(write_still=True)
+for name,rig in rigs.items():
+ bone=rig.pose.bones['LeftUpperArm'];m=bone.matrix.copy();p=m.translation.copy();bone.matrix=Matrix.Translation(p)@Matrix.Rotation(math.radians(-50),4,'Y')@Matrix.Translation(-p)@m
+bpy.context.view_layer.update();sc.render.filepath=str(O/'left-arm.png');bpy.ops.render.render(write_still=True)
+(R/'surface-retention.json').write_text(json.dumps(receipts,indent=2)+'\n')

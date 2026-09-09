@@ -1,0 +1,40 @@
+"""Pose evidence and edge stretch diagnostics; these do not certify tracking or mobile quality."""
+import bpy,math,json,numpy as np
+from pathlib import Path
+from mathutils import Matrix,Vector
+R=Path(__file__).resolve().parent;O=R/'review';bpy.ops.wm.open_mainfile(filepath=str(O/'Characters-v15-surface-study.blend'));sc=bpy.context.scene
+rigs=[bpy.data.objects[n+' | Motion rig'] for n in ['AceHack','Xenaa']]
+poses=[(1,'Neutral',[]),(25,'Left arm',[('LeftUpperArm','Y',-50)]),(49,'Right arm',[('RightUpperArm','Y',50)]),(73,'Left knee',[('LeftThigh','X',-30),('LeftShin','X',55)]),(97,'Right knee',[('RightThigh','X',-30),('RightShin','X',55)]),(121,'Head left',[('Head','Z',30)]),(145,'Head right',[('Head','Z',-30)]),(169,'Neutral',[])]
+base={};report=[]
+for rig in rigs:
+ rig.animation_data_clear()
+ for b in rig.pose.bones:b.rotation_mode='QUATERNION'
+ for ob in rig.children:
+  if ob.type!='MESH' or not any(m.type=='ARMATURE' for m in ob.modifiers):continue
+  a=np.empty(len(ob.data.vertices)*3);ob.data.vertices.foreach_get('co',a);a=a.reshape(-1,3)
+  e=np.empty(len(ob.data.edges)*2,dtype=np.int32);ob.data.edges.foreach_get('vertices',e);e=e.reshape(-1,2)
+  base[ob.name]=(a,e,np.linalg.norm(a[e[:,0]]-a[e[:,1]],axis=1))
+sc.timeline_markers.clear()
+for frame,label,ops in poses:
+ sc.frame_set(frame);sc.timeline_markers.new(label,frame=frame)
+ for rig in rigs:
+  for b in rig.pose.bones:b.matrix_basis=Matrix.Identity(4)
+  bpy.context.view_layer.update()
+  for n,axis,angle in ops:
+   b=rig.pose.bones[n];m=b.matrix.copy();p=m.translation.copy();b.matrix=Matrix.Translation(p)@Matrix.Rotation(math.radians(angle),4,axis)@Matrix.Translation(-p)@m;bpy.context.view_layer.update()
+  for b in rig.pose.bones:
+   for prop in ['rotation_quaternion','location','scale']:b.keyframe_insert(data_path=prop,frame=frame)
+ bpy.context.view_layer.update();dg=bpy.context.evaluated_depsgraph_get()
+ for name,(a,e,length) in base.items():
+  if 'Collar' in name:continue
+  ob=bpy.data.objects[name].evaluated_get(dg);m=ob.to_mesh();v=np.empty(len(m.vertices)*3);m.vertices.foreach_get('co',v);v=v.reshape(-1,3);assert np.isfinite(v).all()
+  ratio=np.linalg.norm(v[e[:,0]]-v[e[:,1]],axis=1)/np.maximum(length,1e-9);ix=np.where((length>.001)&(ratio>3))[0]
+  report.append({'frame':frame,'pose':label,'mesh':name,'max_displacement_m':float(np.linalg.norm(v-a,axis=1).max()),'edges_longer_than_1mm_stretched_over_3x':len(ix),'worst_edges':[{'ratio':float(ratio[i]),'rest_midpoint':list((a[e[i,0]]+a[e[i,1]])/2)} for i in sorted(ix,key=lambda j:ratio[j],reverse=True)[:5]]})
+  ob.to_mesh_clear()
+ if frame in [49,73,121,145]:
+  sc.render.filepath=str(O/('pose-%04d.png'%frame));bpy.ops.render.render(write_still=True)
+sc.frame_start=1;sc.frame_end=169;sc.frame_set(1)
+for screen in bpy.data.screens:
+ for area in screen.areas:
+  if area.type=='VIEW_3D':area.spaces.active.shading.type='MATERIAL';area.spaces.active.overlay.show_overlays=False;area.spaces.active.region_3d.view_perspective='CAMERA'
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Blender-Quality-Review-v15.blend'));(R/'pose-diagnostics.json').write_text(json.dumps(report,indent=2)+'\n')

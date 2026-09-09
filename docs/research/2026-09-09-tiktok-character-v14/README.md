@@ -12,7 +12,10 @@ missing leg motion and a need to test facial expressions. He also requested
 roughly two asset versions for rollback. This record supersedes the earlier
 requirement to duplicate every experimental asset revision in each new release.
 
-The active delivery policy is one current candidate plus one previous candidate.
+The v14 delivery bundled one current candidate plus one previous candidate.
+This is superseded by the [character asset storage policy](../../CHARACTER-ASSET-STORAGE.md):
+each future release contains only its own version, with rollback supplied by
+previous releases.
 Existing immutable releases retain historical provenance; new deliveries do not
 repeat every older binary. Source code, measurements, failure explanations and
 source-art provenance remain indexed. V14 is a review candidate, not user approval.
@@ -188,7 +191,9 @@ This is a self-review, not an independent reviewer endorsement.
   then measure the combined effect on the intended device. Do not infer that
   the face-only performance results apply to it.
 
-Selected [neutral](evidence/frame-0001.png), [arm](evidence/frame-0017.png),
-[leg](evidence/frame-0081.png), [head](evidence/frame-0145.png),
-[AceHack mouth](evidence/frame-0221.png), [Xenaa mouth](evidence/frame-0269.png)
-and [index finger](evidence/frame-0321.png) frames retain the visible evidence.
+Selected evidence frames are inside `TikTok-Characters/evidence/` in the
+[release ZIP](https://github.com/Lucent-Financial-Group/Zeta/releases/download/research-tiktok-character-v14-20260909/tiktok-characters-v14-current-and-previous.zip):
+`frame-0001.png` neutral, `frame-0017.png` arm, `frame-0081.png` leg,
+`frame-0145.png` head, `frame-0221.png` AceHack mouth, `frame-0269.png` Xenaa
+mouth, and `frame-0321.png` index finger. The raw PNGs were removed from the
+current Git tree at Aaron's request. The historical commit remains unchanged.

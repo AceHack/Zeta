@@ -9,6 +9,10 @@ the LAST hop of a ferry, never as the home.
 
 Current:
 
+- [Character v15 quality study](../research/2026-09-09-tiktok-character-v15/README.md) - restored pre-rig surfaces, pose evidence, archive cleanup and remaining mobile work.
+
+- [Character asset storage policy](../CHARACTER-ASSET-STORAGE.md) — recipes and hashes in Git; one version per release ZIP.
+
 - [TikTok character v14: garment, facial and limb review](../research/2026-09-09-tiktok-character-v14/README.md)
 - [TikTok character necks, mobile budgets and tracking prototypes](../research/2026-09-09-tiktok-character-seams/README.md)
   — **Vera, v13 character iteration.** Separate 1.7/1.9 MB face effects pass
