@@ -1,0 +1,14 @@
+{
+  "id": "080d043bff592010a01300083e391549",
+  "at": "2026-09-09T18:48:22.564Z",
+  "by": "otto-cli",
+  "kind": "created",
+  "payload": {
+    "workItemId": "081M23QZTS3087G0R003T4JP4S",
+    "type": "task",
+    "title": "Graphics/physics engine roadmap: read the generator at rank 3, split correct from fast, and price the split",
+    "slug": "graphics-physics-engine-roadmap-read-the-generator-at-rank-3",
+    "priority": "P2",
+    "filename": "081M23QZTS3087G0R003T4JP4S-graphics-physics-engine-roadmap-read-the-generator-at-rank-3.md"
+  }
+}
